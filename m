@@ -2,170 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8393B231957
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0225923196F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgG2GNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 02:13:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726286AbgG2GNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 02:13:34 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EC2C2070B
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 06:13:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596003213;
-        bh=u7d5xK7YvZOBGWh1UlpubqMP0fRaHhDT8+EFryfPydc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=V5ZJBNCgjljMU5XeW52AONwfUK28LmE1GLwePhYZwRh/TV4yB7tKR5/xOnSIW36Qk
-         7gksdnHlZwrQXWefT4b3DZBQFa6BVKeatDFVcQBXPpMdLYvumyucwXpJVNyRZ6raDR
-         o4qdUAY/cSOrN18Y/Z1uYFHF/Z2Uxp0HMJyE5KSQ=
-Received: by mail-ot1-f49.google.com with SMTP id o72so11134804ota.11
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 23:13:33 -0700 (PDT)
-X-Gm-Message-State: AOAM531ekFTLRfE04euQnB/I9azUBIa7ltmTRcP0QOH1Coc5o18ica2g
-        wr6xxn5FdIXethmR4GdqWt91wZyBcgPQSI/0amQ=
-X-Google-Smtp-Source: ABdhPJzisB9A1LhQj4M7/NTAkUb9eJtp9/Ra3dmt8xSVIi2/rJEIGK31x1dU71fnIQt9LT+836SKAM4L/8rZIFEx0gk=
-X-Received: by 2002:a9d:3b23:: with SMTP id z32mr9899829otb.77.1596003212957;
- Tue, 28 Jul 2020 23:13:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
- <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com>
- <20200724092746.GD517988@gmail.com> <20200725031648.GG17052@linux.intel.com>
- <20200726081408.GB2927915@kernel.org> <CAMj1kXHDK5RSbTu3SG1AzbLRJD_FsdAmCnjmf31P=Db6J0ktww@mail.gmail.com>
- <20200728171715.0800093e2226e3d72b04a3ae@kernel.org> <CAMj1kXGJ_7mUtFHWsLaBj-MSK_VxpBet=wi1Z7frkKRVEgozpQ@mail.gmail.com>
- <20200728223545.ce4ff78cac73b571a27bb357@kernel.org> <CAMj1kXG9Fr6ym43JN9FLnzk9vdANPFe95LPKaLK6KF8BiRK0NQ@mail.gmail.com>
- <20200729105054.06f74749eb933c08342e6dd6@kernel.org>
-In-Reply-To: <20200729105054.06f74749eb933c08342e6dd6@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 29 Jul 2020 09:13:21 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXFdzXFH8b8fu1oKNLk-khBzWVqnBuiu1GEnWSV13jcAHQ@mail.gmail.com>
-Message-ID: <CAMj1kXFdzXFH8b8fu1oKNLk-khBzWVqnBuiu1GEnWSV13jcAHQ@mail.gmail.com>
-Subject: Re: [PATCH v5 5/6] kprobes: Use text_alloc() and text_free()
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        id S1726916AbgG2GVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 02:21:02 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6700 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726367AbgG2GVB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 02:21:01 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06T62BJk021360;
+        Wed, 29 Jul 2020 02:20:43 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32jp1me30v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 02:20:42 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06T629Hs021130;
+        Wed, 29 Jul 2020 02:20:42 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32jp1me302-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 02:20:42 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06T69pK2007761;
+        Wed, 29 Jul 2020 06:14:00 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 32gcpx4p8x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 06:14:00 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06T6CXTA56754548
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Jul 2020 06:12:33 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6FC4AE051;
+        Wed, 29 Jul 2020 06:13:58 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5EBF6AE04D;
+        Wed, 29 Jul 2020 06:13:56 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 29 Jul 2020 06:13:56 +0000 (GMT)
+Date:   Wed, 29 Jul 2020 11:43:55 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
         Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, Andi Kleen <ak@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jessica Yu <jeyu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jordan Niethe <jniethe5@gmail.com>
+Subject: Re: [PATCH v4 09/10] Powerpc/smp: Create coregroup domain
+Message-ID: <20200729061355.GA14603@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com>
+ <20200727053230.19753-10-srikar@linux.vnet.ibm.com>
+ <jhjr1sviswg.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <jhjr1sviswg.mognet@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-29_02:2020-07-28,2020-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ priorityscore=1501 phishscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007290038
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Jul 2020 at 04:51, Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> On Tue, 28 Jul 2020 20:51:08 +0300
-> Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> > On Tue, 28 Jul 2020 at 16:35, Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > >
-> > > On Tue, 28 Jul 2020 13:56:43 +0300
-> > > Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > > On Tue, 28 Jul 2020 at 11:17, Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > > > > Masami or Peter should correct me if I am wrong, but it seems to me
-> > > > > > that the way kprobes uses these pages does not require them to be in
-> > > > > > relative branching range of the core kernel on any architecture, given
-> > > > > > that they are populated with individual instruction opcodes that are
-> > > > > > executed in single step mode, and relative branches are emulated (when
-> > > > > > needed)
-> > > > >
-> > > > > Actually, x86 and arm has the "relative branching range" requirements
-> > > > > for the jump optimized kprobes. For the other architectures, I think
-> > > > > we don't need it. Only executable text buffer is needed.
-> > > > >
-> > > >
-> > > > Thanks for the explanation. Today, arm64 uses the definition below.
-> > > >
-> > > > void *alloc_insn_page(void)
-> > > > {
-> > > >   return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
-> > > >     GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
-> > > >     NUMA_NO_NODE, __builtin_return_address(0));
-> > > > }
-> > > >
-> > > > Do you think we could use that as the generic implementation if we use
-> > > > MODULES_START/_END as the allocation window?
-> > >
-> > > Yes, but for the generic implementation, we don't need to consider the
-> > > relative branching range since we can override it for x86 and arm.
-> > > (and that will be almost same as module_alloc() default code)
+* Valentin Schneider <valentin.schneider@arm.com> [2020-07-28 16:03:11]:
+
+Hi Valentin,
+
+Thanks for looking into the patches.
+
+> On 27/07/20 06:32, Srikar Dronamraju wrote:
+> > Add percpu coregroup maps and masks to create coregroup domain.
+> > If a coregroup doesn't exist, the coregroup domain will be degenerated
+> > in favour of SMT/CACHE domain.
 > >
-> > Indeed. So having kprobes specific macros that default to
-> > VMALLOC_START/END but can be overridden would be sufficient.
-> >
-> > > BTW, is PAGE_KERNEL_ROX flag available generically?
-> > >
-> >
-> > Turns out that it is not :-(
->
-> Hmm, in that case, we need to use PAGE_KERNEL_EXEC.
->
-> In the result, may it be similar to this? :)
->
-> void * __weak module_alloc(unsigned long size)
-> {
->         return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
->                         GFP_KERNEL, PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS,
->                         NUMA_NO_NODE, __builtin_return_address(0));
-> }
->
-> The major difference between module_alloc() and kprobe's alloc_page_insn()
-> is the alloc_page_insn() makes the page ROX after allocating the pages *ONLY*
-> on x86 and arm64.
->
+> 
+> So there's at least one arm64 platform out there with the same "pairs of
+> cores share L2" thing (Ampere eMAG), and that lives quite happily with the
+> default scheduler topology (SMT/MC/DIE). Each pair of core gets its MC
+> domain, and the whole system is covered by DIE.
+> 
+> Now arguably it's not a perfect representation; DIE doesn't have
+> SD_SHARE_PKG_RESOURCES so the highest level sd_llc can point to is MC. That
+> will impact all callsites using cpus_share_cache(): in the eMAG case, only
+> pairs of cores will be seen as sharing cache, even though *all* cores share
+> the same L3.
+> 
 
-Right.
+Okay, Its good to know that we have a chip which is similar to P9 in
+topology.
 
-> $ git grep -w alloc_insn_page -- arch
-> arch/arm64/kernel/probes/kprobes.c:void *alloc_insn_page(void)
-> arch/x86/kernel/kprobes/core.c:void *alloc_insn_page(void)
->
-> However since the module_alloc() owns its arch-dependent implementations
-> most of major architectures, if we implement independent text_alloc_kprobe(),
-> we need to make deadcopies of module_alloc() for each architecture.
->
+> I'm trying to paint a picture of what the P9 topology looks like (the one
+> you showcase in your cover letter) to see if there are any similarities;
+> from what I gather in [1], wikichips and your cover letter, with P9 you can
+> have something like this in a single DIE (somewhat unsure about L3 setup;
+> it looks to be distributed?)
+> 
+>      +---------------------------------------------------------------------+
+>      |                                  L3                                 |
+>      +---------------+-+---------------+-+---------------+-+---------------+
+>      |       L2      | |       L2      | |       L2      | |       L2      |
+>      +------+-+------+ +------+-+------+ +------+-+------+ +------+-+------+
+>      |  L1  | |  L1  | |  L1  | |  L1  | |  L1  | |  L1  | |  L1  | |  L1  |
+>      +------+ +------+ +------+ +------+ +------+ +------+ +------+ +------+
+>      |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs|
+>      +------+ +------+ +------+ +------+ +------+ +------+ +------+ +------+
+> 
+> Which would lead to (ignoring the whole SMT CPU numbering shenanigans)
+> 
+> NUMA     [                                                   ...
+> DIE      [                                             ]
+> MC       [         ] [         ] [         ] [         ]
+> BIGCORE  [         ] [         ] [         ] [         ]
+> SMT      [   ] [   ] [   ] [   ] [   ] [   ] [   ] [   ]
+>          00-03 04-07 08-11 12-15 16-19 20-23 24-27 28-31  <other node here>
+> 
 
-No, that is what we are trying to avoid.
+What you have summed up is perfectly what a P9 topology looks like. I dont
+think I could have explained it better than this.
 
-> $ git grep 'module_alloc(unsigned' arch/
-> arch/arm/kernel/module.c:void *module_alloc(unsigned long size)
-> arch/arm64/kernel/module.c:void *module_alloc(unsigned long size)
-> arch/mips/kernel/module.c:void *module_alloc(unsigned long size)
-> arch/nds32/kernel/module.c:void *module_alloc(unsigned long size)
-> arch/nios2/kernel/module.c:void *module_alloc(unsigned long size)
-> arch/parisc/kernel/module.c:void *module_alloc(unsigned long size)
-> arch/riscv/kernel/module.c:void *module_alloc(unsigned long size)
-> arch/s390/kernel/module.c:void *module_alloc(unsigned long size)
-> arch/sparc/kernel/module.c:void *module_alloc(unsigned long size)
-> arch/unicore32/kernel/module.c:void *module_alloc(unsigned long size)
-> arch/x86/kernel/module.c:void *module_alloc(unsigned long size)
->
-> It seems that some constrains for module_alloc() exists for above
-> architectures.
->
-> Anyway, for kprobe's text_alloc() requirements are
-> - It must be executable for the arch which uses a single-step out-of-line.
->   (and need to be registered to KASAN?)
+> This however has MC == BIGCORE; what makes it you can have different spans
+> for these two domains? If it's not too much to ask, I'd love to have a P9
+> topology diagram.
+> 
+> [1]: 20200722081822.GG9290@linux.vnet.ibm.com
 
-No, kasan shadow is not needed here.
+At this time the current topology would be good enough i.e BIGCORE would
+always be equal to a MC. However in future we could have chips that can have
+lesser/larger number of CPUs in llc than in a BIGCORE or we could have
+granular or split L3 caches within a DIE. In such a case BIGCORE != MC.
 
-> - It must be ROX if implemented (currently only for x86 and arm64)
+Also in the current P9 itself, two neighbouring core-pairs form a quad.
+Cache latency within a quad is better than a latency to a distant core-pair.
+Cache latency within a core pair is way better than latency within a quad.
+So if we have only 4 threads running on a DIE all of them accessing the same
+cache-lines, then we could probably benefit if all the tasks were to run
+within the quad aka MC/Coregroup.
 
-x86 does not actually define thr macro, but the result is the same.
+I have found some benchmarks which are latency sensitive to benefit by
+having a grouping a quad level (using kernel hacks and not backed by
+firmware changes). Gautham also found similar results in his experiments
+but he only used binding within the stock kernel.
 
-> - It must be in the range of relative branching only for x86 and arm.
->
+I am not setting SD_SHARE_PKG_RESOURCES in MC/Coregroup sd_flags as in MC
+domain need not be LLC domain for Power.
 
-So in summary, the generic module_alloc() above can be reused for
-kprobes on all arches except x86 and arm64, right? Then we can remove
-the call to it, and drop the modules dependency.
+-- 
+Thanks and Regards
+Srikar Dronamraju
