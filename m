@@ -2,144 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E245231D71
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 13:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9BF231D7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 13:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgG2Lhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 07:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgG2Lhy (ORCPT
+        id S1726878AbgG2LjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 07:39:11 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23990 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726858AbgG2LjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 07:37:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39EBC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 04:37:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=An6TpoUKg3WCau/inEvSwInZHOWFx2ZCQCj4oJPDHP8=; b=aYMO2nWLzrk9uO8jt/GY9jR84O
-        tfWAJxthdJnOegxiFL7ayfJV386JsKV9Y0+ptbwXOmpgRLD8pfi9X0ZnahmYJt0tXBHfUw423niv/
-        NxeDjUWlxdZwIXPC6kHVn4TWXS+3GNr/1PDSAqpRJPrbrMKkwmlyAjaKKGeCD9up+JL+9auA/2Ija
-        hxvgTI2HDaEcAu842cj7QfcqrdGQjBItWbKS4Sty6QQPIzJrgPgHOvKDAtsMvbO0xTTv3Z+qF2Szr
-        AOZCKWEb7mBAK79PZMntWq7Bty+nNNPXgD63vuYtyYG8cMmzl1UijRY2w6SsAoaI+5/zvNXEZZmAD
-        +u7Pacqg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k0kOs-0002FJ-J0; Wed, 29 Jul 2020 11:37:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 902CA304BAE;
-        Wed, 29 Jul 2020 13:37:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7BC06205B8B6F; Wed, 29 Jul 2020 13:37:31 +0200 (CEST)
-Date:   Wed, 29 Jul 2020 13:37:31 +0200
-From:   peterz@infradead.org
-To:     David Howells <dhowells@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        David Windsor <dwindsor@gmail.com>,
-        Hans Liljestrand <ishkamiel@gmail.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Paul Moore <paul@paul-moore.com>, edumazet@google.com,
-        paulmck@kernel.org, shakeelb@google.com,
-        James Morris <jamorris@linux.microsoft.com>,
-        alex.huangjianhui@huawei.com, dylix.dailei@huawei.com,
-        chenzefeng2@huawei.com, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>
-Subject: Re: [RFC][PATCH] locking/refcount: Provide __refcount API to obtain
- the old value
-Message-ID: <20200729113731.GA2678@hirez.programming.kicks-ass.net>
-References: <20200721195132.GJ10769@hirez.programming.kicks-ass.net>
- <202006142054.C00B3E9C9@keescook>
- <20200612183450.4189588-1-keescook@chromium.org>
- <7be4d56b-0406-099b-e505-02e074c5173e@huawei.com>
- <544539.1595328664@warthog.procyon.org.uk>
- <202007211144.A68C31D@keescook>
- <3211866.1595933798@warthog.procyon.org.uk>
- <20200729111120.GA2638@hirez.programming.kicks-ass.net>
+        Wed, 29 Jul 2020 07:39:09 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06TBWiuw131703;
+        Wed, 29 Jul 2020 07:38:57 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32jp1mq05d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 07:38:57 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06TBXSHI134334;
+        Wed, 29 Jul 2020 07:38:57 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32jp1mq04m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 07:38:56 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06TBWup2022392;
+        Wed, 29 Jul 2020 11:38:54 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06fra.de.ibm.com with ESMTP id 32jgvps2sd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 11:38:54 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06TBco0458458270
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Jul 2020 11:38:50 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B919E4C04A;
+        Wed, 29 Jul 2020 11:38:50 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1017F4C046;
+        Wed, 29 Jul 2020 11:38:47 +0000 (GMT)
+Received: from [192.168.0.8] (unknown [9.79.217.86])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 29 Jul 2020 11:38:46 +0000 (GMT)
+Subject: [PATCH v6 00/11] ppc64: enable kdump support for kexec_file_load
+ syscall
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Dave Young <dyoung@redhat.com>, Pingfan Liu <piliu@redhat.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        kernel test robot <lkp@intel.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Pingfan Liu <piliu@redhat.com>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pingfan Liu <piliu@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Date:   Wed, 29 Jul 2020 17:08:44 +0530
+Message-ID: <159602259854.575379.16910915605574571585.stgit@hbathini>
+User-Agent: StGit/0.21
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729111120.GA2638@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-29_04:2020-07-29,2020-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ priorityscore=1501 phishscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007290071
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 01:11:20PM +0200, peterz@infradead.org wrote:
+Sorry! There was a gateway issue on my system while posting v5, due to
+which some patches did not make it through. Resending...
 
-> Subject: locking/refcount: Provide __refcount API to obtain the old value
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Wed Jul 29 13:00:57 CEST 2020
-> 
-> David requested means to obtain the old/previous value from the
-> refcount API for tracing purposes.
-> 
-> Duplicate (most of) the API as __refcount*() with an additional
-> 'int *' argument into which, if !NULL, the old value will be stored.
-> 
-> Requested-by: David Howells <dhowells@redhat.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  include/linux/refcount.h |   65 +++++++++++++++++++++++++++++++++++++++++------
->  1 file changed, 57 insertions(+), 8 deletions(-)
-> 
-> --- a/include/linux/refcount.h
-> +++ b/include/linux/refcount.h
-> @@ -165,7 +165,7 @@ static inline unsigned int refcount_read
->   *
->   * Return: false if the passed refcount is 0, true otherwise
->   */
-> -static inline __must_check bool refcount_add_not_zero(int i, refcount_t *r)
-> +static inline __must_check bool __refcount_add_not_zero(int i, refcount_t *r, int *oldp)
->  {
->  	int old = refcount_read(r);
->  
-> @@ -174,12 +174,20 @@ static inline __must_check bool refcount
->  			break;
->  	} while (!atomic_try_cmpxchg_relaxed(&r->refs, &old, old + i));
->  
-> +	if (oldp)
-> +		*oldp = old;
-> +
->  	if (unlikely(old < 0 || old + i < 0))
->  		refcount_warn_saturate(r, REFCOUNT_ADD_NOT_ZERO_OVF);
->  
->  	return old;
->  }
->  
-> +static inline __must_check bool refcount_add_not_zero(int i, refcount_t *r)
-> +{
-> +	return __refcount_add_not_zero(i, r, NULL);
-> +}
+This patch series enables kdump support for kexec_file_load system
+call (kexec -s -p) on PPC64. The changes are inspired from kexec-tools
+code but heavily modified for kernel consumption.
 
-so, I could also emulate C++'s
+The first patch adds a weak arch_kexec_locate_mem_hole() function to
+override locate memory hole logic suiting arch needs. There are some
+special regions in ppc64 which should be avoided while loading buffer
+& there are multiple callers to kexec_add_buffer making it complicated
+to maintain range sanity and using generic lookup at the same time.
 
-bool refcount_add_not_zero(int i, refcount_t *r, int *oldp = NULL)
+The second patch marks ppc64 specific code within arch/powerpc/kexec
+and arch/powerpc/purgatory to make the subsequent code changes easy
+to understand.
 
-style by going to town on this with a bunch of CPP magic, but I don't
-think that'll actually make things clearer.
+The next patch adds helper function to setup different memory ranges
+needed for loading kdump kernel, booting into it and exporting the
+crashing kernel's elfcore.
 
-It'll look something like:
+The fourth patch overrides arch_kexec_locate_mem_hole() function to
+locate memory hole for kdump segments by accounting for the special
+memory regions, referred to as excluded memory ranges, and sets
+kbuf->mem when a suitable memory region is found.
 
-#define __REF_ARGS(_0, _1, _2, _3, _n, X...) _n
-#define REG_ARGS(X...) __REF_ARGS(, ##X, 3, 2, 1, 0)
+The fifth patch moves walk_drmem_lmbs() out of .init section with
+a few changes to reuse it for setting up kdump kernel's usable memory
+ranges. The next patch uses walk_drmem_lmbs() to look up the LMBs
+and set linux,drconf-usable-memory & linux,usable-memory properties
+in order to restrict kdump kernel's memory usage.
 
-#define __REF_CONCAT(a, b) a ## b
-#define REF_CONCAT(a, b) __REF_CONCAT(a, b)
+The next patch setups up backup region as a kexec segment while
+loading kdump kernel and teaches purgatory to copy data from source
+to destination.
 
-#define REF_UNARY_2(func, arg1, arg2)	func(arg1, arg2)
-#define REF_UNARY_1(func, arg1)		func(arg1, NULL)
-#define REF_UNARY(func, X...) REF_CONCAT(REF_UNARY_, REF_ARGS(X))(func, X)
+Patch 09 builds the elfcore header for the running kernel & passes
+the info to kdump kernel via "elfcorehdr=" parameter to export as
+/proc/vmcore file. The next patch sets up the memory reserve map
+for the kexec kernel and also claims kdump support for kdump as
+all the necessary changes are added.
 
-#define REF_BINARY_3(func, arg1, arg2, arg3)	func(arg1, arg2, arg3)
-#define REF_BINARY_2(func, arg1, arg2)		func(arg1, arg2, NULL)
-#define REF_BINARY(func, X...) REF_CONCAT(REF_BINARY_, REF_ARGS(X))(func, X)
+The next patch fixes a lookup issue for `kexec -l -s` case when
+memory is reserved for crashkernel.
 
-#define refcount_add(X...)	REF_BINARY(__refcount_add, X)
-#define refcount_inc(X...)	REF_UNARY(__refcount_inc, X)
+The last patch updates purgatory to setup r8 & r9 with opal base
+and opal entry addresses respectively to aid kernels built with
+CONFIG_PPC_EARLY_DEBUG_OPAL enabled.
 
-Opinions?
+Tested the changes successfully on P8, P9 lpars, couple of OpenPOWER
+boxes, one with secureboot enabled, KVM guest and a simulator.
+
+v5 -> v6:
+* Fixed reference count leak in add_tce_mem_ranges() function and also
+  updated error handling in reading tce table base & sizes.
+* Instead of trying to reinvent the wheel with get_node_path() &
+  get_node_path_size() functions, used %pOF format as suggested by mpe.
+* Moved patch 07/11 to end of the series for mpe to take a call on
+  whether to have it or not.
+
+v4 -> v5:
+* Dropped patches 07/12 & 08/12 and updated purgatory to do everything
+  in assembly.
+* Added a new patch (which was part of patch 08/12 in v4) to update
+  r8 & r9 registers with opal base & opal entry addresses as it is
+  expected on kernels built with CONFIG_PPC_EARLY_DEBUG_OPAL enabled.
+* Fixed kexec load issue on KVM guest.
+
+v3 -> v4:
+* Updated get_node_path() function to be iterative instead of a recursive one.
+* Added comment explaining why low memory is added to kdump kernel's usable
+  memory ranges though it doesn't fall in crashkernel region.
+* Fixed stack_buf to be quadword aligned in accordance with ABI.
+* Added missing of_node_put() in setup_purgatory_ppc64().
+* Added a FIXME tag to indicate issue in adding opal/rtas regions to
+  core image.
+
+v2 -> v3:
+* Fixed TOC pointer calculation for purgatory by using section info
+  that has relocations applied.
+* Fixed arch_kexec_locate_mem_hole() function to fallback to generic
+  kexec_locate_mem_hole() lookup if exclude ranges list is empty.
+* Dropped check for backup_start in trampoline_64.S as purgatory()
+  function takes care of it anyway.
+
+v1 -> v2:
+* Introduced arch_kexec_locate_mem_hole() for override and dropped
+  weak arch_kexec_add_buffer().
+* Addressed warnings reported by lkp.
+* Added patch to address kexec load issue when memory is reserved
+  for crashkernel.
+* Used the appropriate license header for the new files added.
+* Added an option to merge ranges to minimize reallocations while
+  adding memory ranges.
+* Dropped within_crashkernel parameter for add_opal_mem_range() &
+  add_rtas_mem_range() functions as it is not really needed.
+
+---
+
+Hari Bathini (11):
+      kexec_file: allow archs to handle special regions while locating memory hole
+      powerpc/kexec_file: mark PPC64 specific code
+      powerpc/kexec_file: add helper functions for getting memory ranges
+      ppc64/kexec_file: avoid stomping memory used by special regions
+      powerpc/drmem: make lmb walk a bit more flexible
+      ppc64/kexec_file: restrict memory usage of kdump kernel
+      ppc64/kexec_file: setup backup region for kdump kernel
+      ppc64/kexec_file: prepare elfcore header for crashing kernel
+      ppc64/kexec_file: add appropriate regions for memory reserve map
+      ppc64/kexec_file: fix kexec load failure with lack of memory hole
+      ppc64/kexec_file: enable early kernel's OPAL calls
+
+
+ arch/powerpc/include/asm/crashdump-ppc64.h |   19 
+ arch/powerpc/include/asm/drmem.h           |    9 
+ arch/powerpc/include/asm/kexec.h           |   29 +
+ arch/powerpc/include/asm/kexec_ranges.h    |   25 +
+ arch/powerpc/kernel/prom.c                 |   13 
+ arch/powerpc/kexec/Makefile                |    2 
+ arch/powerpc/kexec/elf_64.c                |   36 +
+ arch/powerpc/kexec/file_load.c             |   60 +-
+ arch/powerpc/kexec/file_load_64.c          | 1119 ++++++++++++++++++++++++++++
+ arch/powerpc/kexec/ranges.c                |  412 ++++++++++
+ arch/powerpc/mm/drmem.c                    |   87 +-
+ arch/powerpc/mm/numa.c                     |   13 
+ arch/powerpc/purgatory/Makefile            |    4 
+ arch/powerpc/purgatory/trampoline.S        |  117 ---
+ arch/powerpc/purgatory/trampoline_64.S     |  163 ++++
+ include/linux/kexec.h                      |   29 -
+ kernel/kexec_file.c                        |   16 
+ 17 files changed, 1958 insertions(+), 195 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/crashdump-ppc64.h
+ create mode 100644 arch/powerpc/include/asm/kexec_ranges.h
+ create mode 100644 arch/powerpc/kexec/file_load_64.c
+ create mode 100644 arch/powerpc/kexec/ranges.c
+ delete mode 100644 arch/powerpc/purgatory/trampoline.S
+ create mode 100644 arch/powerpc/purgatory/trampoline_64.S
+
+
