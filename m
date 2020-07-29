@@ -2,101 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497E923206B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 16:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DBC7232070
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 16:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgG2OdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 10:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgG2OdQ (ORCPT
+        id S1726961AbgG2Odb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 10:33:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42884 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgG2Od1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 10:33:16 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2E6C0619D2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 07:33:16 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id g19so10778729ejc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 07:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kMlKqVpMYZrkq++S2RWxZ8THr8EJ0z+y5ejuGh6soGk=;
-        b=WnK6zVseynpYShz7AuRIaVykQvUyr0PeVQ+YEYnugHbrxaPTg77BOqUSx+H2KBXM90
-         zw/paDsb8vkp0/OZUl2xs+7ygdSQRg4NI2g9Jwz4Fk10Twtc8cpCHx+S8Ap/7hExNtA6
-         Hu9L2x/lVBxvSXEjHdf6Pr0V7+zzd39waCyQTvSz6DPcpPdKsJP6tA48AihdTV2SmUeO
-         HNJwe6HGBi6mFDaC0EZ7qT8yiGYcxvJBRgzvZ8XoUf7A4RZqwAaIkwBzssEXW6BQal5q
-         /FMsF+6sAVsfK+X6uBrpfnNJlYdQSume74AVeI1gtosVjPYW1BUwpAaRsSJnStmGab3/
-         5Yow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kMlKqVpMYZrkq++S2RWxZ8THr8EJ0z+y5ejuGh6soGk=;
-        b=cLJF7GRoG/ySWtbiIyRLMqIjSlEFIqXDxDI29ch1QfMYRAQ1ozCz1Fkj22J/J8cMIS
-         FyIYEKAh3FBO+Xt7JpFToJ2Xru25h7ZuXHKya1A3Si5eHnV6jUwB1Vkw2w721vWCYGCx
-         paA4GKN81JdP8Natz9Od1P03g8On+c4T14rOmTzZ+wGNXbnWOeLJhXrbnwYEWQglpVyD
-         HERlSbByAShztrhgptUs1AZTL7bESnVEdIT1hUdOnrrMpx8OTZxQCwGLUgi4iRN4k8bf
-         tRHbsIA1iFmW/FXDHpGbLreaZExUb94ycDWB7KL1yPemzePqRL725gIXGRvzq2Dll8pN
-         OyhQ==
-X-Gm-Message-State: AOAM533TQi7o8i3mz7dcHx+jgjrveVsPjIxfhiU8Y0jqitHLBCWqzhdk
-        uD9uIRwiH3VlAPkGdRY1x9wbKyFf30/v/HupJd60
-X-Google-Smtp-Source: ABdhPJxu3J7ZoN3kZhJpKA1IX3J82l3Bi86eK/HpPbP3LYDzrwmhud5SD+ftjnc27nh35GLdzF1yxpuRBb6pIis3cPs=
-X-Received: by 2002:a17:906:43c9:: with SMTP id j9mr14520051ejn.542.1596033194870;
- Wed, 29 Jul 2020 07:33:14 -0700 (PDT)
+        Wed, 29 Jul 2020 10:33:27 -0400
+Date:   Wed, 29 Jul 2020 14:33:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1596033204;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=t1J8270onhTTPuSHY3hWD9ArlzSCaBEaQPrHyRfd0uA=;
+        b=NZ7BTSBwCqq/Vtj/m0ujvpgSK7ws9pnb0+75hvKg6706JpHd+IBtYFl/EgEMyZv4y4v3vt
+        Wbyf8oxzyzvZ3sRUHzK77Um2MvpYg0ycIIqMUnziaMaWWtjy4brntyOWFXbucLCPH5NgzP
+        /yUA4nPXIv/CC1nYSVNSPgg/j2P2inHOnVHWSTa5hsunk5sKioOsV4xC3qHJMk7KD31GB0
+        m/CdRQIOTmMW26qtZvBSnmPCqNo3kXvIMYjhGOx3cxwVSfuZbNR9Qpjky69jI2F5EXIGK0
+        IYyeY1vCjvwhhSD9sUIoc74o93BhxLQ/BxT7W8JGuyx4WCTkosDVOAS7lvJMxQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1596033204;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=t1J8270onhTTPuSHY3hWD9ArlzSCaBEaQPrHyRfd0uA=;
+        b=We6VCptrU58zt+XaiAnqVYMApktwPIlU35imIE+gveY0GVJJ4NF/wpmwqpsrJPTOoWv2L/
+        ignd8oyechR0K1AA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] seqcount: More consistent seqprop names
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-References: <e3e9c9da9115fd233c5a7895dbb4a698a365b1b0.1595884394.git.rgb@redhat.com>
- <CAHC9VhSx23JiN6GprskxdEcs9uftJOp03Svh7YJbQLOV91AMiQ@mail.gmail.com>
- <20200728162722.djvy3qyclj57wsfn@madcap2.tricolour.ca> <CAHC9VhSDoi8QS3c6Wmx6agmmphja60cS3+aTKVx76xvdkxJ0DQ@mail.gmail.com>
- <20200729020106.x5tfijvnxdmujtbj@madcap2.tricolour.ca>
-In-Reply-To: <20200729020106.x5tfijvnxdmujtbj@madcap2.tricolour.ca>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 29 Jul 2020 10:33:03 -0400
-Message-ID: <CAHC9VhSf6eSjTvUA4FfUP+qBv_GDufBPfs=t3+BPPdFcTCD_4w@mail.gmail.com>
-Subject: Re: [PATCH V3fix ghak120] audit: initialize context values in case of
- mandatory events
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Eric Paris <eparis@parisplace.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <159603320383.4006.8951996259705754037.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 10:01 PM Richard Guy Briggs <rgb@redhat.com> wrote:
->
-> On 2020-07-28 14:47, Paul Moore wrote:
-> > On Tue, Jul 28, 2020 at 12:27 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > > I know you like only really minimal fixes this late, but this seemed
-> > > pretty minimal to me...
-> >
-> > Minimal is a one (two?) line NULL check in audit_log_name(), this
-> > patch is not that.
->
-> I didn't try and test that since I'm not sure that would have worked
-> because there appeared to be a low non-NULL value in it.  brauer1's trace had
-> 0x60 and mine had 0xd0.  Or am I missing something obvious?
+The following commit has been merged into the locking/core branch of tip:
 
-Well, you mentioned the obvious already: both 0x60 and 0xd0 are not
-NULL.  We already have a NULL check for context->pwd elsewhere so
-there is precedence for this solving a similar problem, although
-without going through the git log I'm not sure what problem that
-solved, or if it was precautionary.
+Commit-ID:     b5e6a027bd327daa679ca55182a920659e2cbb90
+Gitweb:        https://git.kernel.org/tip/b5e6a027bd327daa679ca55182a920659e2cbb90
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Thu, 23 Jul 2020 12:11:49 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 29 Jul 2020 16:14:30 +02:00
 
-I agree the low value looks suspicious, it almost looks like an offset
-to me, ideally it would be good to understand how/why that value is
-"off'.  It could be that the audit_context is not being properly
-initialized, reset, or something unrelated is clobbering the value;
-all things that would be nice to know.
+seqcount: More consistent seqprop names
 
-> The patch provided the information rather than ignoring the problem ...
+Attempt uniformity and brevity.
 
-I disagree.
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ include/linux/seqlock.h | 52 ++++++++++++++++++++--------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
---
-paul moore
-www.paul-moore.com
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index 251dcd6..a076f78 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -247,9 +247,9 @@ SEQCOUNT_LOCKTYPE(struct ww_mutex,	ww_mutex,	true,	&s->lock->base)
+ 	__seqprop_case((s),	mutex,		prop),			\
+ 	__seqprop_case((s),	ww_mutex,	prop))
+ 
+-#define __to_seqcount_t(s)				__seqprop(s, ptr)
+-#define __associated_lock_exists_and_is_preemptible(s)	__seqprop(s, preemptible)
+-#define __assert_write_section_is_protected(s)		__seqprop(s, assert)
++#define __seqcount_ptr(s)		__seqprop(s, ptr)
++#define __seqcount_lock_preemptible(s)	__seqprop(s, preemptible)
++#define __seqcount_assert_lock_held(s)	__seqprop(s, assert)
+ 
+ /**
+  * __read_seqcount_begin() - begin a seqcount_t read section w/o barrier
+@@ -266,7 +266,7 @@ SEQCOUNT_LOCKTYPE(struct ww_mutex,	ww_mutex,	true,	&s->lock->base)
+  * Return: count to be passed to read_seqcount_retry()
+  */
+ #define __read_seqcount_begin(s)					\
+-	__read_seqcount_t_begin(__to_seqcount_t(s))
++	__read_seqcount_t_begin(__seqcount_ptr(s))
+ 
+ static inline unsigned __read_seqcount_t_begin(const seqcount_t *s)
+ {
+@@ -289,7 +289,7 @@ repeat:
+  * Return: count to be passed to read_seqcount_retry()
+  */
+ #define raw_read_seqcount_begin(s)					\
+-	raw_read_seqcount_t_begin(__to_seqcount_t(s))
++	raw_read_seqcount_t_begin(__seqcount_ptr(s))
+ 
+ static inline unsigned raw_read_seqcount_t_begin(const seqcount_t *s)
+ {
+@@ -305,7 +305,7 @@ static inline unsigned raw_read_seqcount_t_begin(const seqcount_t *s)
+  * Return: count to be passed to read_seqcount_retry()
+  */
+ #define read_seqcount_begin(s)						\
+-	read_seqcount_t_begin(__to_seqcount_t(s))
++	read_seqcount_t_begin(__seqcount_ptr(s))
+ 
+ static inline unsigned read_seqcount_t_begin(const seqcount_t *s)
+ {
+@@ -325,7 +325,7 @@ static inline unsigned read_seqcount_t_begin(const seqcount_t *s)
+  * Return: count to be passed to read_seqcount_retry()
+  */
+ #define raw_read_seqcount(s)						\
+-	raw_read_seqcount_t(__to_seqcount_t(s))
++	raw_read_seqcount_t(__seqcount_ptr(s))
+ 
+ static inline unsigned raw_read_seqcount_t(const seqcount_t *s)
+ {
+@@ -353,7 +353,7 @@ static inline unsigned raw_read_seqcount_t(const seqcount_t *s)
+  * Return: count to be passed to read_seqcount_retry()
+  */
+ #define raw_seqcount_begin(s)						\
+-	raw_seqcount_t_begin(__to_seqcount_t(s))
++	raw_seqcount_t_begin(__seqcount_ptr(s))
+ 
+ static inline unsigned raw_seqcount_t_begin(const seqcount_t *s)
+ {
+@@ -380,7 +380,7 @@ static inline unsigned raw_seqcount_t_begin(const seqcount_t *s)
+  * Return: true if a read section retry is required, else false
+  */
+ #define __read_seqcount_retry(s, start)					\
+-	__read_seqcount_t_retry(__to_seqcount_t(s), start)
++	__read_seqcount_t_retry(__seqcount_ptr(s), start)
+ 
+ static inline int __read_seqcount_t_retry(const seqcount_t *s, unsigned start)
+ {
+@@ -400,7 +400,7 @@ static inline int __read_seqcount_t_retry(const seqcount_t *s, unsigned start)
+  * Return: true if a read section retry is required, else false
+  */
+ #define read_seqcount_retry(s, start)					\
+-	read_seqcount_t_retry(__to_seqcount_t(s), start)
++	read_seqcount_t_retry(__seqcount_ptr(s), start)
+ 
+ static inline int read_seqcount_t_retry(const seqcount_t *s, unsigned start)
+ {
+@@ -414,10 +414,10 @@ static inline int read_seqcount_t_retry(const seqcount_t *s, unsigned start)
+  */
+ #define raw_write_seqcount_begin(s)					\
+ do {									\
+-	if (__associated_lock_exists_and_is_preemptible(s))		\
++	if (__seqcount_lock_preemptible(s))				\
+ 		preempt_disable();					\
+ 									\
+-	raw_write_seqcount_t_begin(__to_seqcount_t(s));			\
++	raw_write_seqcount_t_begin(__seqcount_ptr(s));			\
+ } while (0)
+ 
+ static inline void raw_write_seqcount_t_begin(seqcount_t *s)
+@@ -433,9 +433,9 @@ static inline void raw_write_seqcount_t_begin(seqcount_t *s)
+  */
+ #define raw_write_seqcount_end(s)					\
+ do {									\
+-	raw_write_seqcount_t_end(__to_seqcount_t(s));			\
++	raw_write_seqcount_t_end(__seqcount_ptr(s));			\
+ 									\
+-	if (__associated_lock_exists_and_is_preemptible(s))		\
++	if (__seqcount_lock_preemptible(s))				\
+ 		preempt_enable();					\
+ } while (0)
+ 
+@@ -456,12 +456,12 @@ static inline void raw_write_seqcount_t_end(seqcount_t *s)
+  */
+ #define write_seqcount_begin_nested(s, subclass)			\
+ do {									\
+-	__assert_write_section_is_protected(s);				\
++	__seqcount_assert_lock_held(s);					\
+ 									\
+-	if (__associated_lock_exists_and_is_preemptible(s))		\
++	if (__seqcount_lock_preemptible(s))				\
+ 		preempt_disable();					\
+ 									\
+-	write_seqcount_t_begin_nested(__to_seqcount_t(s), subclass);	\
++	write_seqcount_t_begin_nested(__seqcount_ptr(s), subclass);	\
+ } while (0)
+ 
+ static inline void write_seqcount_t_begin_nested(seqcount_t *s, int subclass)
+@@ -483,12 +483,12 @@ static inline void write_seqcount_t_begin_nested(seqcount_t *s, int subclass)
+  */
+ #define write_seqcount_begin(s)						\
+ do {									\
+-	__assert_write_section_is_protected(s);				\
++	__seqcount_assert_lock_held(s);					\
+ 									\
+-	if (__associated_lock_exists_and_is_preemptible(s))		\
++	if (__seqcount_lock_preemptible(s))				\
+ 		preempt_disable();					\
+ 									\
+-	write_seqcount_t_begin(__to_seqcount_t(s));			\
++	write_seqcount_t_begin(__seqcount_ptr(s));			\
+ } while (0)
+ 
+ static inline void write_seqcount_t_begin(seqcount_t *s)
+@@ -504,9 +504,9 @@ static inline void write_seqcount_t_begin(seqcount_t *s)
+  */
+ #define write_seqcount_end(s)						\
+ do {									\
+-	write_seqcount_t_end(__to_seqcount_t(s));			\
++	write_seqcount_t_end(__seqcount_ptr(s));			\
+ 									\
+-	if (__associated_lock_exists_and_is_preemptible(s))		\
++	if (__seqcount_lock_preemptible(s))				\
+ 		preempt_enable();					\
+ } while (0)
+ 
+@@ -558,7 +558,7 @@ static inline void write_seqcount_t_end(seqcount_t *s)
+  *      }
+  */
+ #define raw_write_seqcount_barrier(s)					\
+-	raw_write_seqcount_t_barrier(__to_seqcount_t(s))
++	raw_write_seqcount_t_barrier(__seqcount_ptr(s))
+ 
+ static inline void raw_write_seqcount_t_barrier(seqcount_t *s)
+ {
+@@ -578,7 +578,7 @@ static inline void raw_write_seqcount_t_barrier(seqcount_t *s)
+  * will complete successfully and see data older than this.
+  */
+ #define write_seqcount_invalidate(s)					\
+-	write_seqcount_t_invalidate(__to_seqcount_t(s))
++	write_seqcount_t_invalidate(__seqcount_ptr(s))
+ 
+ static inline void write_seqcount_t_invalidate(seqcount_t *s)
+ {
+@@ -604,7 +604,7 @@ static inline void write_seqcount_t_invalidate(seqcount_t *s)
+  * checked with read_seqcount_retry().
+  */
+ #define raw_read_seqcount_latch(s)					\
+-	raw_read_seqcount_t_latch(__to_seqcount_t(s))
++	raw_read_seqcount_t_latch(__seqcount_ptr(s))
+ 
+ static inline int raw_read_seqcount_t_latch(seqcount_t *s)
+ {
+@@ -695,7 +695,7 @@ static inline int raw_read_seqcount_t_latch(seqcount_t *s)
+  *	patterns to manage the lifetimes of the objects within.
+  */
+ #define raw_write_seqcount_latch(s)					\
+-	raw_write_seqcount_t_latch(__to_seqcount_t(s))
++	raw_write_seqcount_t_latch(__seqcount_ptr(s))
+ 
+ static inline void raw_write_seqcount_t_latch(seqcount_t *s)
+ {
