@@ -2,184 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32213232533
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4AA232546
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgG2TQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 15:16:39 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:53290 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726391AbgG2TQi (ORCPT
+        id S1726890AbgG2TUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 15:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726813AbgG2TUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 15:16:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DMu/9cwtHmi0bix+JDlgrcS0fN7h/PuWcrGpUj9X+KI=; b=SmB7UulXmX8eWXCcTcGcEqgK70
-        7ZRvPLKAbaAmUq6OCoufsd7b4Z3BNjxqSiPIx9de+Gt3qGhK8O/nN6S0jJUVvkQoRZbOVMCDavoXy
-        51z1uz7oLa1tX4P0NZRXYJn3O5eb8lepOBB1OuSiC2eBqYNIXYNFHNaL7E+XuEPWd1F71cdwfDqlH
-        zUrZtKvJ2dlY7W9em0MgkSrvpAfPshaSXLGNoftFRozjiSrFi2EhYnLVNLl40ZnyagxrcAzd+0pjI
-        3nUsyggzIbGsLicD6HtMPnAsHYRWeJ/qft9rWRfltVIjisHmo2req3bPjVsz3b6WCpXFcE/jHrEtZ
-        YKm2Q7Xg==;
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1k0rZ6-0007cQ-Ke; Wed, 29 Jul 2020 13:16:37 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1k0rZ3-0001FC-94; Wed, 29 Jul 2020 13:16:33 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, Keith Busch <kbusch@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <keith.busch@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        =?UTF-8?q?Javier=20Gonz=C3=A1lez?= <javier.gonz@samsung.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        =?UTF-8?q?Matias=20Bj=C3=B8rling?= <matias.bjorling@wdc.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Wed, 29 Jul 2020 13:16:28 -0600
-Message-Id: <20200729191628.4741-1-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 29 Jul 2020 15:20:08 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80022C0619D5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:20:08 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id r11so5575648pfl.11
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:20:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HGXcQxniYOJ/L+/BbSJHGqRZ1csrAGecCIYczpmNch4=;
+        b=CWQeakntD3r4UHVDonF0RsCdeZ+R7/FiH6YY8MnpigA19viBWrwaAmlWRUzimnUFkF
+         yyAufnaYCoPsh35cHMstxZE/NVB+enOaPdFZu5HTb8cy1x6VnmFZ/JMOliwgoNmXeZOK
+         L27U5zsKI6cBxWAnJUBYMRFGwRxTh72dDC/z8o0HoIpB1L+7HLPEznLyI9Z7M1QNuUpN
+         QeTsz7Mh4Quj5r+4bE+L81UR0FwjDbKvv6tpA/GGBfMIumWqzvTrEhRlNvGpJ4wwGD7I
+         dbiuC5v1uZBgGdjZMphJmcD7sF4jmo1V5BIxX0JO1OHT9xJ6qWabr3SbuV9eAm/BfDRr
+         nU9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HGXcQxniYOJ/L+/BbSJHGqRZ1csrAGecCIYczpmNch4=;
+        b=uNQJv1Il7enAZr4PU1XhATlYfjWD64c++lOcUZnZlcoaXLF+/r2znpJFVeNnjSRSOi
+         DMbLiWQtHOhG9fXYHKpRgpS3WlXJB4/HJmgZg4vaYFav9DqPBFhzPrRDLYjyb2769JMi
+         2agCeJnY4kCZfiM5iYRuWoWSYR8pAPmjm8qRK0vxwEXQmcjV713w98MQJElEkZfV1htS
+         5Feue/zcvjFe4V5d5o+c7XM6niQJ1twvPrMxtz8pfMZyV1eimZv2JCmkYkl++B7zpK7M
+         zRnzlkSiJz3uvYBQwgCSuwO3M1ZYVea8NVsXOoDkewnKqWsa1yw0oNVQhnYzO6QyaA9s
+         mgOg==
+X-Gm-Message-State: AOAM533bPwjPvnScaRZAAXYTOYbph6+dobzC3queRe5JH3++eZolTzJO
+        Y5C24BhWnUBW9AjlfzbRMkNTkg==
+X-Google-Smtp-Source: ABdhPJwoUuUGN1m8e0bLII+ZzoMSh6x28a7Fj+eVz1nRdWqgeRnvvc9OdaVEmSRBTmlIVHbzgSRN/g==
+X-Received: by 2002:a63:7d16:: with SMTP id y22mr29049887pgc.136.1596050407636;
+        Wed, 29 Jul 2020 12:20:07 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id 79sm3207215pfu.86.2020.07.29.12.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 12:20:07 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 12:16:38 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     agross@kernel.org, ohad@wizery.com, corbet@lwn.net,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] remoteproc: core: Register the character device
+ interface
+Message-ID: <20200729191638.GF229995@builder.lan>
+References: <1596044401-22083-1-git-send-email-sidgup@codeaurora.org>
+ <1596044401-22083-3-git-send-email-sidgup@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, axboe@kernel.dk, martin.petersen@oracle.com, javier.gonz@samsung.com, hare@suse.de, dwagner@suse.de, keith.busch@wdc.com, johannes.thumshirn@wdc.com, matias.bjorling@wdc.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,MYRULES_NO_TEXT autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: [PATCH] nvme: Use spin_lock_irqsave() when taking the ctrl->lock
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1596044401-22083-3-git-send-email-sidgup@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When locking the ctrl->lock spinlock IRQs need to be disabled to avoid a
-dead lock. The new spin_lock() calls recently added produce the
-following lockdep warning when running the blktest nvme/003:
+On Wed 29 Jul 10:40 PDT 2020, Siddharth Gupta wrote:
 
-    ================================
-    WARNING: inconsistent lock state
-    --------------------------------
-    inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
-    ksoftirqd/2/22 [HC0[0]:SC1[1]:HE0:SE0] takes:
-    ffff888276a8c4c0 (&ctrl->lock){+.?.}-{2:2}, at: nvme_keep_alive_end_io+0x50/0xc0
-    {SOFTIRQ-ON-W} state was registered at:
-      lock_acquire+0x164/0x500
-      _raw_spin_lock+0x28/0x40
-      nvme_get_effects_log+0x37/0x1c0
-      nvme_init_identify+0x9e4/0x14f0
-      nvme_reset_work+0xadd/0x2360
-      process_one_work+0x66b/0xb70
-      worker_thread+0x6e/0x6c0
-      kthread+0x1e7/0x210
-      ret_from_fork+0x22/0x30
-    irq event stamp: 1449221
-    hardirqs last  enabled at (1449220): [<ffffffff81c58e69>] ktime_get+0xf9/0x140
-    hardirqs last disabled at (1449221): [<ffffffff83129665>] _raw_spin_lock_irqsave+0x25/0x60
-    softirqs last  enabled at (1449210): [<ffffffff83400447>] __do_softirq+0x447/0x595
-    softirqs last disabled at (1449215): [<ffffffff81b489b5>] run_ksoftirqd+0x35/0x50
+> Add the character device during rproc_add. This would create
+> a character device node at /dev/remoteproc<index>. Userspace
+> applications can interact with the remote processor using this
+> interface.
+> 
 
-    other info that might help us debug this:
-     Possible unsafe locking scenario:
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-           CPU0
-           ----
-      lock(&ctrl->lock);
-      <Interrupt>
-        lock(&ctrl->lock);
-
-     *** DEADLOCK ***
-
-    no locks held by ksoftirqd/2/22.
-
-    stack backtrace:
-    CPU: 2 PID: 22 Comm: ksoftirqd/2 Not tainted 5.8.0-rc4-eid-vmlocalyes-dbg-00157-g7236657c6b3a #1450
-    Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-    Call Trace:
-     dump_stack+0xc8/0x11a
-     print_usage_bug.cold.63+0x235/0x23e
-     mark_lock+0xa9c/0xcf0
-     __lock_acquire+0xd9a/0x2b50
-     lock_acquire+0x164/0x500
-     _raw_spin_lock_irqsave+0x40/0x60
-     nvme_keep_alive_end_io+0x50/0xc0
-     blk_mq_end_request+0x158/0x210
-     nvme_complete_rq+0x146/0x500
-     nvme_loop_complete_rq+0x26/0x30 [nvme_loop]
-     blk_done_softirq+0x187/0x1e0
-     __do_softirq+0x118/0x595
-     run_ksoftirqd+0x35/0x50
-     smpboot_thread_fn+0x1d3/0x310
-     kthread+0x1e7/0x210
-     ret_from_fork+0x22/0x30
-
-Fixes: be93e87e7802 ("nvme: support for multiple Command Sets Supported and Effects log pages")
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
----
-
-Note: this patch may be squashed with the patch noted in the fixes
-tag, currently in nvme-5.9.
-
- drivers/nvme/host/core.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 05aa568a60af..ed8872022219 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2971,15 +2971,16 @@ int nvme_get_log(struct nvme_ctrl *ctrl, u32 nsid, u8 log_page, u8 lsp, u8 csi,
- static struct nvme_cel *nvme_find_cel(struct nvme_ctrl *ctrl, u8 csi)
- {
- 	struct nvme_cel *cel, *ret = NULL;
-+	unsigned long flags;
-
--	spin_lock(&ctrl->lock);
-+	spin_lock_irqsave(&ctrl->lock, flags);
- 	list_for_each_entry(cel, &ctrl->cels, entry) {
- 		if (cel->csi == csi) {
- 			ret = cel;
- 			break;
- 		}
- 	}
--	spin_unlock(&ctrl->lock);
-+	spin_unlock_irqrestore(&ctrl->lock, flags);
-
- 	return ret;
- }
-@@ -2988,6 +2989,7 @@ static int nvme_get_effects_log(struct nvme_ctrl *ctrl, u8 csi,
- 				struct nvme_effects_log **log)
- {
- 	struct nvme_cel *cel = nvme_find_cel(ctrl, csi);
-+	unsigned long flags;
- 	int ret;
-
- 	if (cel)
-@@ -3006,9 +3008,9 @@ static int nvme_get_effects_log(struct nvme_ctrl *ctrl, u8 csi,
-
- 	cel->csi = csi;
-
--	spin_lock(&ctrl->lock);
-+	spin_lock_irqsave(&ctrl->lock, flags);
- 	list_add_tail(&cel->entry, &ctrl->cels);
--	spin_unlock(&ctrl->lock);
-+	spin_unlock_irqrestore(&ctrl->lock, flags);
- out:
- 	*log = &cel->log;
- 	return 0;
-
-base-commit: b6cec06d19d90db5dbcc50034fb33983f6259b8b
---
-2.20.1
+> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 277d3bf..7f90eee 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1986,6 +1986,11 @@ int rproc_add(struct rproc *rproc)
+>  	/* create debugfs entries */
+>  	rproc_create_debug_dir(rproc);
+>  
+> +	/* add char device for this remoteproc */
+> +	ret = rproc_char_device_add(rproc);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	/*
+>  	 * Remind ourselves the remote processor has been attached to rather
+>  	 * than booted by the remoteproc core.  This is important because the
+> @@ -2262,6 +2267,7 @@ int rproc_del(struct rproc *rproc)
+>  	mutex_unlock(&rproc->lock);
+>  
+>  	rproc_delete_debug_dir(rproc);
+> +	rproc_char_device_remove(rproc);
+>  
+>  	/* the rproc is downref'ed as soon as it's removed from the klist */
+>  	mutex_lock(&rproc_list_mutex);
+> @@ -2430,6 +2436,7 @@ static int __init remoteproc_init(void)
+>  {
+>  	rproc_init_sysfs();
+>  	rproc_init_debugfs();
+> +	rproc_init_cdev();
+>  	rproc_init_panic();
+>  
+>  	return 0;
+> -- 
+> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
