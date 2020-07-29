@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0DE231B0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC73D231B13
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgG2ITG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:19:06 -0400
-Received: from nsfocus.com ([221.122.62.131]:47378 "HELO nsfocus.com"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with SMTP
-        id S1727044AbgG2ITF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:19:05 -0400
-Received: (qmail 8939 invoked from network); 29 Jul 2020 08:17:41 -0000
-Received: from unknown (HELO ?192.168.7.10?) (221.122.62.131)
-  by nsfocus.com with SMTP; 29 Jul 2020 08:17:41 -0000
-Subject: Re: [PATCH] vgacon: fix out of bounds write to the scrollback buffer
-To:     Jiri Slaby <jirislaby@kernel.org>, b.zolnierkie@samsung.com
-Cc:     linux-kernel@vger.kernel.org,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Kyungtae Kim <kt0755@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg KH <greg@kroah.com>, Solar Designer <solar@openwall.com>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Security Officers <security@kernel.org>,
-        linux-distros@vs.openwall.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-References: <c1f267aa-dfb3-91fa-3111-30c1676f1a91@kernel.org>
-From:   =?UTF-8?B?5byg5LqR5rW3?= <zhangyunhai@nsfocus.com>
-Autocrypt: addr=zhangyunhai@nsfocus.com; keydata=
- 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
-Message-ID: <c5a73038-f441-602b-584b-3d84622b1fb1@nsfocus.com>
-Date:   Wed, 29 Jul 2020 16:19:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728092AbgG2IUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 04:20:17 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:37209 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727885AbgG2IUQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 04:20:16 -0400
+Received: by mail-io1-f69.google.com with SMTP id f6so1316422ioa.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:20:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=cl416RZjUF3O9jXjZQ0k7KWHBcYWC7cjCtLUFQMx9CY=;
+        b=Ga8MJa+y/Kuz+6iZzOkcfuJZPni/S9mH3fE0MHftsB9hHl5rbM9LgAAkgyOB2b789Z
+         Bh58TdWIykTQAAtoZk7YXjQZy09Ty76AlbgRK3EpYmnLHZeAezW2jZkTUntUyqa2qSxT
+         7ZTuMmcGhqwynmifdccqoRMswkczi4zdT95YEe2WgJRsWxNykwWs5miMKGUnFyKLJ50u
+         VoZn0ott5n5vUlywyCNCvCo3pAqI7lsd2AYgXK4oRwQHuEmb/GvZCW+ZkiEFUhhnR311
+         ro/qYUjOl+waiQHZYWzjrtNjEa7g1P7gN1sVS3jP0OuiUGvceP5ckf8WBovlMmxRzFDD
+         06xg==
+X-Gm-Message-State: AOAM530vLprYHeiyaXpwq9BvTz5ZZlVgPL5Q1TfQ4sCR0jTMai5VTKKD
+        zNHoHSYqRfcX4joF3PFAdVy0KP96TIHSv2fni32LYrbBEa4d
+X-Google-Smtp-Source: ABdhPJxL9LdW97OSd1IKs5yaFXouU/Fjr1b85o13NOy0MxxGgoXq2IBV5g08QwJaz1+n03lC8bIroLaMPPMFiHTm61YSOLmmcwN7
 MIME-Version: 1.0
-In-Reply-To: <c1f267aa-dfb3-91fa-3111-30c1676f1a91@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6602:154d:: with SMTP id h13mr33043619iow.210.1596010814962;
+ Wed, 29 Jul 2020 01:20:14 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 01:20:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000af016405ab903954@google.com>
+Subject: KASAN: vmalloc-out-of-bounds Read in get_counters
+From:   syzbot <syzbot+a450cb4aa95912e62487@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/29 16:11, Jiri Slaby wrote:
-> But the loop checks for the overflow:
->   if (vgacon_scrollback_cur->tail >= vgacon_scrollback_cur->size)
->         vgacon_scrollback_cur->tail = 0;
-> 
-> So the first 2 iterations would write to the end of the buffer and this
-> 3rd one should have zeroed ->tail.
+Hello,
 
-In the 2nd  iteration before the check:
-vgacon_scrollback_cur->tail is 65360 which is still less then
-vgacon_scrollback_cur->size(65440), so the ->tail won't be zeroed.
+syzbot found the following issue on:
 
-Then it gose to the 3rd  iteration, overflow occurs.
+HEAD commit:    68845a55 Merge branch 'akpm' into master (patches from And..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13668964900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f87a5e4232fdb267
+dashboard link: https://syzkaller.appspot.com/bug?extid=a450cb4aa95912e62487
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Regards,
-Yunhai Zhang / NSFOCUS Security Team
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a450cb4aa95912e62487@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in get_counters+0x593/0x610 net/ipv6/netfilter/ip6_tables.c:780
+Read of size 8 at addr ffffc9000528b048 by task syz-executor.1/6968
+
+CPU: 1 PID: 6968 Comm: syz-executor.1 Not tainted 5.8.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x436 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ get_counters+0x593/0x610 net/ipv6/netfilter/ip6_tables.c:780
+ do_ip6t_get_ctl+0x516/0x910 net/ipv6/netfilter/ip6_tables.c:821
+ nf_sockopt net/netfilter/nf_sockopt.c:104 [inline]
+ nf_getsockopt+0x72/0xd0 net/netfilter/nf_sockopt.c:122
+ ipv6_getsockopt+0x1bf/0x270 net/ipv6/ipv6_sockglue.c:1468
+ tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:3893
+ __sys_getsockopt+0x14b/0x2e0 net/socket.c:2172
+ __do_sys_getsockopt net/socket.c:2187 [inline]
+ __se_sys_getsockopt net/socket.c:2184 [inline]
+ __x64_sys_getsockopt+0xba/0x150 net/socket.c:2184
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45ee7a
+Code: Bad RIP value.
+RSP: 002b:0000000000c9f618 EFLAGS: 00000212 ORIG_RAX: 0000000000000037
+RAX: ffffffffffffffda RBX: 0000000000c9f640 RCX: 000000000045ee7a
+RDX: 0000000000000041 RSI: 0000000000000029 RDI: 0000000000000003
+RBP: 0000000000744ca0 R08: 0000000000c9f63c R09: 0000000000004000
+R10: 0000000000c9f740 R11: 0000000000000212 R12: 0000000000000003
+R13: 0000000000000000 R14: 0000000000000029 R15: 00000000007445e0
 
 
+Memory state around the buggy address:
+ ffffc9000528af00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ ffffc9000528af80: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+>ffffc9000528b000: 00 00 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9 f9 f9
+                                              ^
+ ffffc9000528b080: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ ffffc9000528b100: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+==================================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
