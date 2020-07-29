@@ -2,54 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15541232208
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727AC2321E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgG2P4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 11:56:52 -0400
-Received: from vmicros1.altlinux.org ([194.107.17.57]:40614 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgG2P4w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 11:56:52 -0400
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id B267972CCDC;
-        Wed, 29 Jul 2020 18:56:49 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-        by imap.altlinux.org (Postfix) with ESMTPSA id 7EABE4A5036;
-        Wed, 29 Jul 2020 18:56:47 +0300 (MSK)
-Date:   Wed, 29 Jul 2020 18:56:47 +0300
-From:   Vitaly Chikunov <vt@altlinux.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Vitaly Chikunov <vt@altlinux.org>,
-        "Dmitry V. Levin" <ldv@altlinux.org>
-Subject: Should perf version match kernel version?
-Message-ID: <20200729155647.xte33krus3mak3wu@altlinux.org>
-Mail-Followup-To: Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel@vger.kernel.org, "Dmitry V. Levin" <ldv@altlinux.org>
+        id S1726968AbgG2PtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 11:49:09 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40736 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726365AbgG2PtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 11:49:09 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id EEFA4C45F786571383A1;
+        Wed, 29 Jul 2020 23:49:06 +0800 (CST)
+Received: from kernelci-master.huawei.com (10.175.101.6) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 29 Jul 2020 23:49:00 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Hulk Robot <hulkci@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] irqchip/imx-intmux: Fix irqdata regs save in imx_intmux_runtime_suspend()
+Date:   Wed, 29 Jul 2020 23:58:49 +0800
+Message-ID: <20200729155849.33919-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215-106-ac61c7
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Gcc report warning as follows:
 
-It seems that most distros try to have perf version to match with
-running kernel version. Is is requirement? Would it be better to have
-single perf from kernel mainline to work with any (older) kernel
-version?
+drivers/irqchip/irq-imx-intmux.c:316:29: warning:
+ variable 'irqchip_data' set but not used [-Wunused-but-set-variable]
+  316 |  struct intmux_irqchip_data irqchip_data;
+      |                             ^~~~~~~~~~~~
 
-We have different kernel versions in ALT Linux (stable for 4.19, 5.4,
-and 5.7) and I want to understand if we should have three perfs or
-single package will be enough.
+irqdata regs is stored to this variable on the stack in
+imx_intmux_runtime_suspend(), which means a nop. this commit
+fix to save regs to the right place.
 
-Thanks,
+Fixes: bb403111e017 ("irqchip/imx-intmux: Implement intmux runtime power management")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/irqchip/irq-imx-intmux.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/irqchip/irq-imx-intmux.c b/drivers/irqchip/irq-imx-intmux.c
+index 4c9e40d193d6..e35b7b09c3ab 100644
+--- a/drivers/irqchip/irq-imx-intmux.c
++++ b/drivers/irqchip/irq-imx-intmux.c
+@@ -313,12 +313,12 @@ static int imx_intmux_remove(struct platform_device *pdev)
+ static int imx_intmux_runtime_suspend(struct device *dev)
+ {
+ 	struct intmux_data *data = dev_get_drvdata(dev);
+-	struct intmux_irqchip_data irqchip_data;
++	struct intmux_irqchip_data *irqchip_data;
+ 	int i;
+ 
+ 	for (i = 0; i < data->channum; i++) {
+-		irqchip_data = data->irqchip_data[i];
+-		irqchip_data.saved_reg = readl_relaxed(data->regs + CHANIER(i));
++		irqchip_data = &data->irqchip_data[i];
++		irqchip_data->saved_reg = readl_relaxed(data->regs + CHANIER(i));
+ 	}
+ 
+ 	clk_disable_unprepare(data->ipg_clk);
+@@ -329,7 +329,7 @@ static int imx_intmux_runtime_suspend(struct device *dev)
+ static int imx_intmux_runtime_resume(struct device *dev)
+ {
+ 	struct intmux_data *data = dev_get_drvdata(dev);
+-	struct intmux_irqchip_data irqchip_data;
++	struct intmux_irqchip_data *irqchip_data;
+ 	int ret, i;
+ 
+ 	ret = clk_prepare_enable(data->ipg_clk);
+@@ -339,8 +339,8 @@ static int imx_intmux_runtime_resume(struct device *dev)
+ 	}
+ 
+ 	for (i = 0; i < data->channum; i++) {
+-		irqchip_data = data->irqchip_data[i];
+-		writel_relaxed(irqchip_data.saved_reg, data->regs + CHANIER(i));
++		irqchip_data = &data->irqchip_data[i];
++		writel_relaxed(irqchip_data->saved_reg, data->regs + CHANIER(i));
+ 	}
+ 
+ 	return 0;
 
