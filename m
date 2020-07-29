@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A41231985
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F921231986
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbgG2G1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 02:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
+        id S1727038AbgG2G1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 02:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgG2G1Q (ORCPT
+        with ESMTP id S1727014AbgG2G1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 02:27:16 -0400
+        Wed, 29 Jul 2020 02:27:17 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115D0C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 23:27:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CDBC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 23:27:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=kyDnkIZfiYc5HdpHKygOWGKf//8LSrRaf0oSdcv2LvI=; b=SQ/SAVYuDu/oD8zQ6EDW39kCMb
-        UsPYS0EKn4GLeE/91bK6mVUA2ABfoSfIWvr2Rp+U9pHKvTg2QKJ9t3H3O2Mk3DeYDVnvI0hZvvR19
-        JR9gkyZ7dUB2Ev+zx7N/EXAcwxemUUZFdvqpqfmhcRCQMqcnxg7LAmCef+0ho8K1shxnQYa5v9m4M
-        ESdS3W/OdpK1wdj/TQhPFnzppyIR1ROtbrnH9+2Oz1s3TLkDipZ8793aQv4HyRMqx+WIe/ohIWnwv
-        LOpm3vTVfZ9OeUqJbEoEPsbL/H4VNvocbpEtsXxlaZhDwN3Th2FdpSePBXwe3323M8cAWoCCJfOuU
-        BhDYM4Rw==;
+        bh=GGiUP2bVq/JP9FTtUqNBNL3J94yI7DyjZeZtZ4EfQfQ=; b=tZMAGxMGzKmkk0aBD0W6dswI9H
+        6QN58eWQjJ4rjNIbGF9Vwtn6uc5MGS5R0FjceugXUy5hnSkTNJU/upS7H717TsDneDmAMM4h5hJ/7
+        j2x23JR4oa72C5CTEwwcejQAa5c1w7F1WXUZY80HRtHuld7wdc4f/VknPfNuEHQOFxWKsMsk8LPMa
+        kQyA1p+uKSxEJBU/V+dd9KiKvCTlAhtaPOu01JTpRfveV6asfbS6Cfw+HLBr7UEXAPUeihU00Q2jt
+        bUvhYtZUDTpwmwWcG2hPOnaU7n83wCMIHw2+gVx+Y7lW3EZaoM7j8tT5qqtTI8tHyXR/deI5stqa1
+        fC+A/OPw==;
 Received: from 089144218008.atnat0027.highway.a1.net ([89.144.218.8] helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k0fYX-00040q-Ry; Wed, 29 Jul 2020 06:27:14 +0000
+        id 1k0fYZ-00040z-D5; Wed, 29 Jul 2020 06:27:15 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jessica Yu <jeyu@kernel.org>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/7] modules: mark ref_module static
-Date:   Wed, 29 Jul 2020 08:27:05 +0200
-Message-Id: <20200729062711.13016-2-hch@lst.de>
+Subject: [PATCH 2/7] modules: mark find_symbol static
+Date:   Wed, 29 Jul 2020 08:27:06 +0200
+Message-Id: <20200729062711.13016-3-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200729062711.13016-1-hch@lst.de>
 References: <20200729062711.13016-1-hch@lst.de>
@@ -46,60 +46,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ref_module isn't used anywhere outside of module.c.
+find_symbol is only used in module.c.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/module.h | 1 -
- kernel/module.c        | 6 ++----
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ include/linux/module.h | 11 -----------
+ kernel/module.c        |  3 +--
+ 2 files changed, 1 insertion(+), 13 deletions(-)
 
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 2e6670860d275f..f1fdbeef2153a8 100644
+index f1fdbeef2153a8..90bdc362be3681 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
-@@ -657,7 +657,6 @@ static inline void __module_get(struct module *module)
- #define symbol_put_addr(p) do { } while (0)
+@@ -590,17 +590,6 @@ struct symsearch {
+ 	bool unused;
+ };
  
- #endif /* CONFIG_MODULE_UNLOAD */
--int ref_module(struct module *a, struct module *b);
- 
- /* This is a #define so the string doesn't get put in every .o file */
- #define module_name(mod)			\
+-/*
+- * Search for an exported symbol by name.
+- *
+- * Must be called with module_mutex held or preemption disabled.
+- */
+-const struct kernel_symbol *find_symbol(const char *name,
+-					struct module **owner,
+-					const s32 **crc,
+-					bool gplok,
+-					bool warn);
+-
+ /*
+  * Walk the exported symbol table
+  *
 diff --git a/kernel/module.c b/kernel/module.c
-index aa183c9ac0a256..17d64dae756c80 100644
+index 17d64dae756c80..84da96a6d8241c 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -869,7 +869,7 @@ static int add_module_usage(struct module *a, struct module *b)
+@@ -585,7 +585,7 @@ static bool find_exported_symbol_in_section(const struct symsearch *syms,
+ 
+ /* Find an exported symbol and return it, along with, (optional) crc and
+  * (optional) module which owns it.  Needs preempt disabled or module_mutex. */
+-const struct kernel_symbol *find_symbol(const char *name,
++static const struct kernel_symbol *find_symbol(const char *name,
+ 					struct module **owner,
+ 					const s32 **crc,
+ 					bool gplok,
+@@ -608,7 +608,6 @@ const struct kernel_symbol *find_symbol(const char *name,
+ 	pr_debug("Failed to find symbol %s\n", name);
+ 	return NULL;
  }
+-EXPORT_SYMBOL_GPL(find_symbol);
  
- /* Module a uses b: caller needs module_mutex() */
--int ref_module(struct module *a, struct module *b)
-+static int ref_module(struct module *a, struct module *b)
- {
- 	int err;
- 
-@@ -888,7 +888,6 @@ int ref_module(struct module *a, struct module *b)
- 	}
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(ref_module);
- 
- /* Clear the unload stuff of the module. */
- static void module_unload_free(struct module *mod)
-@@ -1169,11 +1168,10 @@ static inline void module_unload_free(struct module *mod)
- {
- }
- 
--int ref_module(struct module *a, struct module *b)
-+static int ref_module(struct module *a, struct module *b)
- {
- 	return strong_try_module_get(b);
- }
--EXPORT_SYMBOL_GPL(ref_module);
- 
- static inline int module_unload_init(struct module *mod)
- {
+ /*
+  * Search for module by name: must hold module_mutex (or preempt disabled
 -- 
 2.27.0
 
