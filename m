@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5671723276B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 00:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB4023277E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 00:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgG2WMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 18:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
+        id S1727789AbgG2WRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 18:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgG2WMG (ORCPT
+        with ESMTP id S1726709AbgG2WRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 18:12:06 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE4FC061794;
-        Wed, 29 Jul 2020 15:12:06 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BH77S29d9z9sRN;
-        Thu, 30 Jul 2020 08:12:04 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1596060724;
-        bh=7fKYQ0GIqxzYhLE+SptIOOonvGCwgJtP9mTrebtsbFg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YzLwV/DQrswjnJrEmhEd9FZ3LC6MZ/o3ygDPWEMzD/wctw57v1FHVykDnqfTJnN92
-         MyYlUUQh7l51cj1wB383LnOiwae7sOaYpyxz81Awxcme1DZJcYLmBoogapSXcXg7Ge
-         CipeOfVlUh1GMxWblWI4c8DwvKAemXn4k8k5J6INFPOketMGx4PcL8tBtiZwmLCCBQ
-         SqwxTWxFmp+K0H7bqxtgMG2uRrIU6dZgzxPgI3rI/+B22mH7xOmsxFRTJ+VACQMDoQ
-         CIVfoApjIXTCY6lDfM2VjylgOOY+5encRSaaGYBPnKAlr+WXx6xTVgw3SNhyNSoluk
-         aMe5ED6aWp4GA==
-Date:   Thu, 30 Jul 2020 08:12:03 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: linux-next: Fixes tag needs some work in the block tree
-Message-ID: <20200730081203.5358cbc3@canb.auug.org.au>
-In-Reply-To: <20200730080849.70cfeeb6@canb.auug.org.au>
-References: <20200730080849.70cfeeb6@canb.auug.org.au>
+        Wed, 29 Jul 2020 18:17:54 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0D1C0619D2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 15:17:54 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id z6so26275409iow.6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 15:17:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pBUbpHMrOzLkTRO1VgnWvJTXTiC0psLpW17xVwkMvZk=;
+        b=HjswJK9z3OCMr3E84OQrrTlnUI+in5Bf7kAqFPkDWECbZpo+b5Rw9dDWCE6DvaQg3W
+         3TNRWRWu/422ORMp15P/yzlWaMc3d4wSEZdSwasGlVZDvOpLJ6Y5/jSJUaNgm9/DAQMw
+         lQ8Tp/y64LPWZsXwn8Lf54v3lJ/ck5BU4ojJ3IH377iKtEeBZc+WOT70LAfpaHgdm5yY
+         2RioRkZqcdrQrtz2AcIOAwO21XLC1vO05P/GiW/vc3ERcNjBfZVRiqIYfqQvydD8gmdt
+         SCHY8tVID4+C9rVoEETryRqeKlSYZKMbWMyHPkmxddJLtpDu+GeEStffJUWFmDIra9l6
+         C9Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pBUbpHMrOzLkTRO1VgnWvJTXTiC0psLpW17xVwkMvZk=;
+        b=cKyKN6i2Q3qeEINFpSXwvUGj8vDx8Mp4JpA13NCyC4B4BMjlvOr63JJUJHg4IYgkXc
+         +rQHA2qoEpUR9300BtmjThhAv88lxAatLgoHCwiK1Hp/I1xtc2KmTnTs7M5bktthNSoM
+         XUQOU84eMsQ80aUBK5Aa6xo6mTs0i9T4esHzSlUFJzKd2FqPGhC1ueN6RRjrQ++LJtQG
+         HRQplSOB+ev7UPvzseZRf9szqUzlkkfp8ffb7NUzY994jVg3zWKFbaxUjEKhceU7ojE4
+         yLITox6QUWfbDxuSGqRmz7EV5L+KUu0RNuwCST0rc8KbdGmCQUoiiV4IecvpDbol1Mxn
+         34XQ==
+X-Gm-Message-State: AOAM5338w+n7m19yQM0qyXJkD1C1+F5+p4jjJHP4h6R5c8dXhdHKFl5V
+        cG7Nu1FThLt7aytZsOvyXmjl2KbU7QHHdQSf/NUwyg==
+X-Google-Smtp-Source: ABdhPJxe6ROlG1A5mJ7AYQwm7PIFzAKasC8m2xiJlm4UqwYsToWY9DPIQf9/kQ6A+YxE02236Ql5MvlXPzwBucSkncY=
+X-Received: by 2002:a6b:b4d1:: with SMTP id d200mr33823109iof.70.1596061073142;
+ Wed, 29 Jul 2020 15:17:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5XaBg/+=/CdN4mC/oQz0gL_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <159597929496.12744.14654593948763926416.stgit@bmoger-ubuntu> <159597952647.12744.15718760666138643079.stgit@bmoger-ubuntu>
+In-Reply-To: <159597952647.12744.15718760666138643079.stgit@bmoger-ubuntu>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 29 Jul 2020 15:17:41 -0700
+Message-ID: <CALMp9eQtvodpmE07DkQBu+zqE8yvrigw4N6dMQQoiEetRPFA_Q@mail.gmail.com>
+Subject: Re: [PATCH v3 09/11] KVM: SVM: Remove set_exception_intercept and clr_exception_intercept
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5XaBg/+=/CdN4mC/oQz0gL_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-[Just adding cc's]
-
-On Thu, 30 Jul 2020 08:08:49 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Tue, Jul 28, 2020 at 4:38 PM Babu Moger <babu.moger@amd.com> wrote:
 >
-> In commit
->=20
->   64d452b3560b ("nvme-loop: set ctrl state connecting after init")
->=20
-> Fixes tag
->=20
->   Fixes: aa63fa6776a7 ("nvme-fabrics: allow to queue requests for live qu=
-eues")
->=20
-> has these problem(s):
->=20
->   - Target SHA1 does not exist
->=20
-> I can't easily find what commit is meant :-(
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/5XaBg/+=/CdN4mC/oQz0gL_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8h9DMACgkQAVBC80lX
-0Gx5BQf/YkFOmshd3g2Qni1RSqUeR4GPf2E4ieAb9IoaXvdLnFD1ba5csTdFotre
-AjU3rqkvwk0A9o/CvNr32nHte01TCDIaKLyzbN/5kRlw3ZrVTpSRNVR9ClE5xjd4
-Vv7z/9esSFFN2VW3RvJHspoO3GcCH30zPYRN3R4gKalrsG1OnViLCdyIY1UHPkFc
-SWoQG0gKEmCqmuJm3B6uhNydggLRaqfNBr99QpGNKe0ttxc0G69X1xo1TLUyBrHt
-KeSLZDG9ibBeu9gkZ8upy+f1GgmZxacFVzdbNheffMx6gPHCjtvMTBDiEkCDsAB9
-0CRyyeROKNEO6GpwM541FhXg7GLLKw==
-=9Acc
------END PGP SIGNATURE-----
-
---Sig_/5XaBg/+=/CdN4mC/oQz0gL_--
+> Remove set_exception_intercept and clr_exception_intercept.
+> Replace with generic set_intercept and clr_intercept for these calls.
+>
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
