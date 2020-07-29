@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E75231AAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E21D231AB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgG2H6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 03:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgG2H6p (ORCPT
+        id S1727991AbgG2H7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 03:59:55 -0400
+Received: from fallback13.mail.ru ([94.100.179.30]:58808 "EHLO
+        fallback13.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727059AbgG2H7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 03:58:45 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED47C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 00:58:44 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1k0gz3-0007if-Qp; Wed, 29 Jul 2020 09:58:41 +0200
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1k0gz3-0005B2-63; Wed, 29 Jul 2020 09:58:41 +0200
-Date:   Wed, 29 Jul 2020 09:58:41 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v2] arm: dts: imx7: add QSPI
-Message-ID: <20200729075841.2fiudq2ypcbvlymx@pengutronix.de>
-References: <20200729071106.8213-1-matthias.schiffer@ew.tq-group.com>
- <33fbac338c9d9accda37837eb1338003b28cafee.camel@ew.tq-group.com>
+        Wed, 29 Jul 2020 03:59:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail;
+        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=3fa8RFKjs5/eLABjYBvhcRWbXI9ViB/wI2i1z+xTyGY=;
+        b=mZf+zAvKB8KeTCda+dX91NAKUZT4kFyHHrPScRngvBXBdbSRJC3DbsxHYtoLdCdpNeSuWpsf8pCEqVu+uSUqCrP7Jk0NvK9GregV9tJOCbhcVHjPdfDwf313Tidqrnvu1Maq0m/k1iF9R1+euEOQ30oTwZhc5juxWD00rCPGxW8=;
+Received: from [10.161.25.37] (port=33762 helo=smtp60.i.mail.ru)
+        by fallback13.m.smailru.net with esmtp (envelope-from <fido_max@inbox.ru>)
+        id 1k0h08-0000xU-P8; Wed, 29 Jul 2020 10:59:49 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail;
+        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=3fa8RFKjs5/eLABjYBvhcRWbXI9ViB/wI2i1z+xTyGY=;
+        b=mZf+zAvKB8KeTCda+dX91NAKUZT4kFyHHrPScRngvBXBdbSRJC3DbsxHYtoLdCdpNeSuWpsf8pCEqVu+uSUqCrP7Jk0NvK9GregV9tJOCbhcVHjPdfDwf313Tidqrnvu1Maq0m/k1iF9R1+euEOQ30oTwZhc5juxWD00rCPGxW8=;
+Received: by smtp60.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
+        id 1k0gzz-0006Kh-6v; Wed, 29 Jul 2020 10:59:39 +0300
+From:   Maxim Kochetkov <fido_max@inbox.ru>
+Cc:     bigunclemax@gmail.com, Maxim Kochetkov <fido_max@inbox.ru>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: adc: ti-ads1015: fix conversion when CONFIG_PM is not set
+Date:   Wed, 29 Jul 2020 10:59:07 +0300
+Message-Id: <20200729075908.10463-1-fido_max@inbox.ru>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <33fbac338c9d9accda37837eb1338003b28cafee.camel@ew.tq-group.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:57:24 up 256 days, 23:15, 248 users,  load average: 0.29, 0.22,
- 0.14
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD90521F83352E4771D993A5AF778ACCB6BD626CC7DA16DF88C182A05F53808504029DC496DEEEB89501932489FB8A54D596D0B58E080D7C80BF2A5A0F2AACCC7CB
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7978947DCA0D4215FEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006371895637A5F0B45FF8638F802B75D45FF5571747095F342E8C7A0BC55FA0FE5FC1ECBB32B1B289FC7BA662DC30B7A2373D3D44096FD8F85F2389733CBF5DBD5E913377AFFFEAFD269176DF2183F8FC7C0A3E989B1926288338941B15DA834481FCF19DD082D7633A0E7DDDDC251EA7DABA471835C12D1D977725E5C173C3A84C3CF36E64A7E3F8E58117882F4460429728AD0CFFFB425014E09623437467D3AE276E601842F6C81A19E625A9149C048EE7B96B19DC4093321F206494F22AA87D6D8FC6C240DEA76429449624AB7ADAF37B2D370F7B14D4BC40A6AB1C7CE11FEE3FD04FE2AD1523FDB9735652A29929C6CC4224003CC8364767A15B7713DBEF166A7F4EDE966BC389F9E8FC8737B5C2249BDB2DFE734BD6C7C089D37D7C0E48F6CCF19DD082D7633A0E7DDDDC251EA7DABAAAE862A0553A39223F8577A6DFFEA7CE31A2885C41F97C443847C11F186F3C5E7DDDDC251EA7DABCC89B49CDF41148FA8EF81845B15A4842623479134186CDE6BA297DBC24807EABDAD6C7F3747799A
+X-C8649E89: EBB7AE862102F8157F69ED8697A74C3F65EFCD698A4D0A16881DBFC9FC99910044CD825B82ED7068
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojbl0bm2lVv3IuJKNyOiYHdg==
+X-Mailru-Sender: 11C2EC085EDE56FA9C10FA2967F5AB24BD2D83D0D925C654C403DFFB4822EE44AC90A8F9D9BFD8A8EE9242D420CFEBFD3DDE9B364B0DF2891A624F84B2C74EDA4239CF2AF0A6D4F80DA7A0AF5A3A8387
+X-Mras: Ok
+X-7564579A: 646B95376F6C166E
+X-77F55803: 6242723A09DB00B43A7801844A72E373BDE407F6AFEC0A433A29991C6D1240E4049FFFDB7839CE9EB969E7E82AF4D4E2A040CA83889AFC6C6916E1F39D14DC337D1E73DB6B2E3940
+X-7FA49CB5: 0D63561A33F958A560901FAB13B8EA56A8927752ED17BC0FED3ADAC3660D3CA88941B15DA834481FA18204E546F3947C0A6B3CD6EB70C818117882F4460429724CE54428C33FAD30A8DF7F3B2552694A4A5EC4583E1CDF108941B15DA834481F8AA50765F7900637F924B32C592EA89F389733CBF5DBD5E9B5C8C57E37DE458BB4E76B3161857BFDD32BA5DBAC0009BE9E8FC8737B5C22496CA36251E56197FE76E601842F6C81A12EF20D2F80756B5FDA63EEEA5E5E9D65089D37D7C0E48F6CA18204E546F3947C29C2079CDE5AC98057739F23D657EF2BC8A9BA7A39EFB7666BA297DBC24807EA089D37D7C0E48F6C8AA50765F7900637AD0424077D726551EFF80C71ABB335746BA297DBC24807EA27F269C8F02392CD20465B3A5AADEC6827F269C8F02392CD5571747095F342E88FB05168BE4CE3AF
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojbl0bm2lVv3L3S8xTD+SNEQ==
+X-Mailru-MI: 800
+X-Mailru-Sender: A5480F10D64C9005631A4012884FA1630C4A2E81BE2FD80F9A84FF1F07161318E1934491450442A6C099ADC76E806A99D50E20E2BC48EF5A30D242760C51EA9CEAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: Ok
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+To stop conversion ads1015_set_power_state function use unimplemented
+function pm_runtime_put_autosuspend if CONFIG_PM is not set.
+If CONFIG_PM is disabled, there is no need to start/stop conversion.
+Fix it by adding return 0 function variant if CONFIG_PM is not set.
 
-On 20-07-29 09:14, Matthias Schiffer wrote:
-> On Wed, 2020-07-29 at 09:11 +0200, Matthias Schiffer wrote:
-> > In preparation for an update of the TQ-Systems TQMa7x/MBa7x DTS, add
-> > the
-> > QSPI controller to imx7s.dtsi.
-> > 
-> > Based-on-patch-by: Han Xu <han.xu@nxp.com>
-> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> > ---
-> > 
-> > v2:
-> > - renamed node and label
-> > - reordered properties
-> > (as suggested by Marco Felsch)
-> 
-> Ugh, I neglected to check for compile warnings after adjusting the node
-> name. This now gives the following warning:
-> 
-> arch/arm/boot/dts/imx7s.dtsi:1165.24-1176.6: Warning (spi_bus_bridge): 
-> /soc/bus@30800000/qspi@30bb0000: node name for SPI buses should be
-> 'spi'
-> 
-> So I guess this should be called spi@ after all?
+Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
+---
+ drivers/iio/adc/ti-ads1015.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Unfortunately yes, this would cause a longer discussion but it still
-seems wrong to me.
-
-Regards,
-  Marco
-
-> > 
-> > 
-> >  arch/arm/boot/dts/imx7s.dtsi | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> > 
-> > diff --git a/arch/arm/boot/dts/imx7s.dtsi
-> > b/arch/arm/boot/dts/imx7s.dtsi
-> > index 1cfaf410aa43..22e4c38223bd 100644
-> > --- a/arch/arm/boot/dts/imx7s.dtsi
-> > +++ b/arch/arm/boot/dts/imx7s.dtsi
-> > @@ -1162,6 +1162,19 @@
-> >  				status = "disabled";
-> >  			};
-> >  
-> > +			qspi: qspi@30bb0000 {
-> > +				compatible = "fsl,imx7d-qspi";
-> > +				reg = <0x30bb0000 0x10000>, <0x60000000
-> > 0x10000000>;
-> > +				reg-names = "QuadSPI", "QuadSPI-
-> > memory";
-> > +				#address-cells = <1>;
-> > +				#size-cells = <0>;
-> > +				interrupts = <GIC_SPI 107
-> > IRQ_TYPE_LEVEL_HIGH>;
-> > +				clocks = <&clks IMX7D_QSPI_ROOT_CLK>,
-> > +					<&clks IMX7D_QSPI_ROOT_CLK>;
-> > +				clock-names = "qspi_en", "qspi";
-> > +				status = "disabled";
-> > +			};
-> > +
-> >  			sdma: sdma@30bd0000 {
-> >  				compatible = "fsl,imx7d-sdma",
-> > "fsl,imx35-sdma";
-> >  				reg = <0x30bd0000 0x10000>;
-> 
-> 
-
+diff --git a/drivers/iio/adc/ti-ads1015.c b/drivers/iio/adc/ti-ads1015.c
+index 5ea4f45d6bad..64fe3b2a6ec6 100644
+--- a/drivers/iio/adc/ti-ads1015.c
++++ b/drivers/iio/adc/ti-ads1015.c
+@@ -316,6 +316,7 @@ static const struct iio_chan_spec ads1115_channels[] = {
+ 	IIO_CHAN_SOFT_TIMESTAMP(ADS1015_TIMESTAMP),
+ };
+ 
++#ifdef CONFIG_PM
+ static int ads1015_set_power_state(struct ads1015_data *data, bool on)
+ {
+ 	int ret;
+@@ -333,6 +334,15 @@ static int ads1015_set_power_state(struct ads1015_data *data, bool on)
+ 	return ret < 0 ? ret : 0;
+ }
+ 
++#else /* !CONFIG_PM */
++
++static int ads1015_set_power_state(struct ads1015_data *data, bool on)
++{
++	return 0;
++}
++
++#endif /* !CONFIG_PM */
++
+ static
+ int ads1015_get_adc_result(struct ads1015_data *data, int chan, int *val)
+ {
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.27.0
+
