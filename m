@@ -2,150 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BFB231C0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC07231C18
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgG2JW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 05:22:59 -0400
-Received: from esa4.mentor.iphmx.com ([68.232.137.252]:29404 "EHLO
-        esa4.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgG2JW6 (ORCPT
+        id S1728135AbgG2J3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 05:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726907AbgG2J3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 05:22:58 -0400
-IronPort-SDR: DQW/OrdW6y9aBLoNFuSz+u29IKhdkeiJEMYOnKHmwZCke314r3qFaWu2LoMyZln1Ubkeo+dxxe
- sfhGgL3GE6q8X5wxkOXV1MpZnf9SFftdKFh3kMLOQrgOi5LUXHtl5IJOIJt5P2fOUtUitT/mT7
- m3kh53kXwjSHYwnQRUtpAC5tMUJZePAPRSQkGZopHslU6QqaGbGznrIa+hZ5CNfsu4i8jNwt9N
- vF6CYb8WUyfCuExGJpQ4/WOovghTT6HM1IB3hrB8Ypwz0CtJJqg5UkBdcibSC2GvMsMn2QAIkT
- LOA=
-X-IronPort-AV: E=Sophos;i="5.75,409,1589270400"; 
-   d="scan'208";a="51525656"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa4.mentor.iphmx.com with ESMTP; 29 Jul 2020 01:22:57 -0800
-IronPort-SDR: F3bDoXGx/6X38yatA2Y/3REPwZxCD7Tk6gQCa4cYBJ89X0DQObeKnNzW8JP3aeYLx6AYRP+Goz
- DZqDPN48xwG/a+74hFJSwJhKvXa4wyNpGX/Jvu3hfev/0yvO2DJ7KG2sAlZvbjaA5PqIo245f8
- RdGTZtFxQ3lmUcQgIPxBPsRahAv84S5KtB8T9FdP66IugJuO6VCoWsG7+76I/RG2ApMbghMqyV
- EY+n7iRXo/wSFyu2KZVD0bG68n26oLDAEqkh78fbhggL2zmgT2zUSWML7ksbhxnMrW4WD7OJXm
- gks=
-From:   Jiada Wang <jiada_wang@mentor.com>
-To:     <nick@shmanahar.org>, <dmitry.torokhov@gmail.com>
-CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>, <Andrew_Gabbasov@mentor.com>,
-        <digetx@gmail.com>, <jiada_wang@mentor.com>
-Subject: [PATCH 1/1] Input: atmel_mxt_ts: split large i2c transfers into blocks
-Date:   Wed, 29 Jul 2020 18:22:52 +0900
-Message-ID: <20200729092252.6394-1-jiada_wang@mentor.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 29 Jul 2020 05:29:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54978C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 02:29:07 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1k0iOT-0001ti-Sm; Wed, 29 Jul 2020 11:29:01 +0200
+Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1k0iOT-00009e-4f; Wed, 29 Jul 2020 11:29:01 +0200
+Date:   Wed, 29 Jul 2020 11:29:01 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andreas Pretzsch <apr@cn-eng.de>
+Subject: Re: [PATCH] media: i2c: tvp5150: Fix horizontal crop stop boundry
+Message-ID: <20200729092901.yfic3vywmnykncod@pengutronix.de>
+References: <20190917071442.24986-1-robin@protonic.nl>
+ <23cbd4c0-b53e-d01f-e6d6-b4d2d689bb59@xs4all.nl>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23cbd4c0-b53e-d01f-e6d6-b4d2d689bb59@xs4all.nl>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 11:27:34 up 257 days, 46 min, 240 users,  load average: 0.13, 0.10,
+ 0.08
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiada wang <jiada_wang@mentor.com>
+Hi,
 
-Some I2C controllers constrain maximum transferred data in an I2C
-transaction by set max_[read|write]_len of i2c_adapter_quirk.
-Large i2c transfer transaction beyond this limitation may fail to complete,
-cause I2C controller driver aborts the transaction and returns failure.
+On 20-06-25 13:05, Hans Verkuil wrote:
+> On 17/09/2019 09:14, Robin van der Gracht wrote:
+> > The value for AVID stop is relative to the width of the active video area,
+> > not the maximum register value. Zero means equal and a negative value means
+> > we're cropping on the right side.
+> 
+> While going through old unreviewed patches I came across this one (sorry Robin,
+> your patch fell through the cracks).
+> 
+> Can someone verify/test that this is correct? Marco perhaps?
 
-Therefore this patch was created to split large i2c transaction into
-smaller chunks which can complete within max_[read|write]_len defined
-by I2C controller driver.
+sorry for my long absence on this. I will test it next week if it is not
+already to late.
 
-CC: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Jiada wang <jiada_wang@mentor.com>
----
- drivers/input/touchscreen/atmel_mxt_ts.c | 60 ++++++++++++++++++++++--
- 1 file changed, 55 insertions(+), 5 deletions(-)
+Regards,
+  Marco
 
-diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
-index a2189739e30f..d7c3c24aa663 100644
---- a/drivers/input/touchscreen/atmel_mxt_ts.c
-+++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-@@ -620,8 +620,8 @@ static int mxt_send_bootloader_cmd(struct mxt_data *data, bool unlock)
- 	return 0;
- }
- 
--static int __mxt_read_reg(struct i2c_client *client,
--			       u16 reg, u16 len, void *val)
-+static int __mxt_read_chunk(struct i2c_client *client,
-+			    u16 reg, u16 len, void *val)
- {
- 	struct i2c_msg xfer[2];
- 	u8 buf[2];
-@@ -655,8 +655,33 @@ static int __mxt_read_reg(struct i2c_client *client,
- 	return ret;
- }
- 
--static int __mxt_write_reg(struct i2c_client *client, u16 reg, u16 len,
--			   const void *val)
-+static int __mxt_read_reg(struct i2c_client *client,
-+			  u16 reg, u16 len, void *buf)
-+{
-+	const struct i2c_adapter_quirks *quirks = client->adapter->quirks;
-+	u16 size, offset = 0, max_read_len = len;
-+	int ret;
-+
-+	if (quirks && quirks->max_read_len)
-+		max_read_len = quirks->max_read_len;
-+
-+	while (offset < len) {
-+		size = min_t(u16, max_read_len, len - offset);
-+
-+		ret = __mxt_read_chunk(client,
-+				       reg + offset,
-+				       size, buf + offset);
-+		if (ret)
-+			return ret;
-+
-+		offset += size;
-+	}
-+
-+	return 0;
-+}
-+
-+static int __mxt_write_chunk(struct i2c_client *client, u16 reg, u16 len,
-+			     const void *val)
- {
- 	u8 *buf;
- 	size_t count;
-@@ -685,9 +710,34 @@ static int __mxt_write_reg(struct i2c_client *client, u16 reg, u16 len,
- 	return ret;
- }
- 
-+static int __mxt_write_reg(struct i2c_client *client, u16 reg, u16 len,
-+			   const void *val)
-+{
-+	const struct i2c_adapter_quirks *quirks = client->adapter->quirks;
-+	u16 size, offset = 0, max_write_len = len;
-+	int ret;
-+
-+	if (quirks && quirks->max_write_len)
-+		max_write_len = quirks->max_write_len;
-+
-+	while (offset < len) {
-+		size = min_t(u16, max_write_len, len - offset);
-+
-+		ret = __mxt_write_chunk(client,
-+					reg + offset,
-+					size, val + offset);
-+		if (ret)
-+			return ret;
-+
-+		offset += size;
-+	}
-+
-+	return 0;
-+}
-+
- static int mxt_write_reg(struct i2c_client *client, u16 reg, u8 val)
- {
--	return __mxt_write_reg(client, reg, 1, &val);
-+	return __mxt_write_chunk(client, reg, 1, &val);
- }
- 
- static struct mxt_object *
+> Regards,
+> 
+> 	Hans
+> 
+> > 
+> > Signed-off-by: Robin van der Gracht <robin@protonic.nl>
+> > ---
+> >  drivers/media/i2c/tvp5150.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/media/i2c/tvp5150.c b/drivers/media/i2c/tvp5150.c
+> > index f47cb9a023fb..6bc65ab5e8ab 100644
+> > --- a/drivers/media/i2c/tvp5150.c
+> > +++ b/drivers/media/i2c/tvp5150.c
+> > @@ -1231,10 +1231,10 @@ __tvp5150_set_selection(struct v4l2_subdev *sd, struct v4l2_rect rect)
+> >  	regmap_write(decoder->regmap, TVP5150_ACT_VD_CROP_ST_LSB,
+> >  		     rect.left | (1 << TVP5150_CROP_SHIFT));
+> >  	regmap_write(decoder->regmap, TVP5150_ACT_VD_CROP_STP_MSB,
+> > -		     (rect.left + rect.width - TVP5150_MAX_CROP_LEFT) >>
+> > +		     (rect.left + rect.width - TVP5150_H_MAX) >>
+> >  		     TVP5150_CROP_SHIFT);
+> >  	regmap_write(decoder->regmap, TVP5150_ACT_VD_CROP_STP_LSB,
+> > -		     rect.left + rect.width - TVP5150_MAX_CROP_LEFT);
+> > +		     rect.left + rect.width - TVP5150_H_MAX);
+> >  }
+> >  
+> >  static int tvp5150_set_selection(struct v4l2_subdev *sd,
+> > 
+> 
+> 
+
 -- 
-2.17.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
