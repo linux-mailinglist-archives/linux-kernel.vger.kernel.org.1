@@ -2,76 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB4023277E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 00:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFBF23276C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 00:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgG2WRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 18:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgG2WRy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 18:17:54 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0D1C0619D2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 15:17:54 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id z6so26275409iow.6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 15:17:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pBUbpHMrOzLkTRO1VgnWvJTXTiC0psLpW17xVwkMvZk=;
-        b=HjswJK9z3OCMr3E84OQrrTlnUI+in5Bf7kAqFPkDWECbZpo+b5Rw9dDWCE6DvaQg3W
-         3TNRWRWu/422ORMp15P/yzlWaMc3d4wSEZdSwasGlVZDvOpLJ6Y5/jSJUaNgm9/DAQMw
-         lQ8Tp/y64LPWZsXwn8Lf54v3lJ/ck5BU4ojJ3IH377iKtEeBZc+WOT70LAfpaHgdm5yY
-         2RioRkZqcdrQrtz2AcIOAwO21XLC1vO05P/GiW/vc3ERcNjBfZVRiqIYfqQvydD8gmdt
-         SCHY8tVID4+C9rVoEETryRqeKlSYZKMbWMyHPkmxddJLtpDu+GeEStffJUWFmDIra9l6
-         C9Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pBUbpHMrOzLkTRO1VgnWvJTXTiC0psLpW17xVwkMvZk=;
-        b=cKyKN6i2Q3qeEINFpSXwvUGj8vDx8Mp4JpA13NCyC4B4BMjlvOr63JJUJHg4IYgkXc
-         +rQHA2qoEpUR9300BtmjThhAv88lxAatLgoHCwiK1Hp/I1xtc2KmTnTs7M5bktthNSoM
-         XUQOU84eMsQ80aUBK5Aa6xo6mTs0i9T4esHzSlUFJzKd2FqPGhC1ueN6RRjrQ++LJtQG
-         HRQplSOB+ev7UPvzseZRf9szqUzlkkfp8ffb7NUzY994jVg3zWKFbaxUjEKhceU7ojE4
-         yLITox6QUWfbDxuSGqRmz7EV5L+KUu0RNuwCST0rc8KbdGmCQUoiiV4IecvpDbol1Mxn
-         34XQ==
-X-Gm-Message-State: AOAM5338w+n7m19yQM0qyXJkD1C1+F5+p4jjJHP4h6R5c8dXhdHKFl5V
-        cG7Nu1FThLt7aytZsOvyXmjl2KbU7QHHdQSf/NUwyg==
-X-Google-Smtp-Source: ABdhPJxe6ROlG1A5mJ7AYQwm7PIFzAKasC8m2xiJlm4UqwYsToWY9DPIQf9/kQ6A+YxE02236Ql5MvlXPzwBucSkncY=
-X-Received: by 2002:a6b:b4d1:: with SMTP id d200mr33823109iof.70.1596061073142;
- Wed, 29 Jul 2020 15:17:53 -0700 (PDT)
+        id S1727877AbgG2WMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 18:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727852AbgG2WMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 18:12:31 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62A212075D;
+        Wed, 29 Jul 2020 22:12:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596060750;
+        bh=uuWR9RWRb4B0cH6RJkoUD/WtjpUMu5kNVDOG1H0bw2A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ja3dDLHmzZ18TqbJR1kw1hok45YfyoAI24ku9snZTjIk8Jn3IFFUt3ts6co3e8EV/
+         0Cq710zV2Hds7hx3wXtFxzEVHGmGyDaZt9iRhRiKZRpWCNAqZ/v+RZMYal8A18ufxO
+         b2BU4E8xuNogYO8vdvOpEYRYLYNgiYnQqUQa+55s=
+Date:   Wed, 29 Jul 2020 17:18:29 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] ALSA: vmaster: Use flex_array_size() helper in memcpy()
+Message-ID: <20200729221829.GA10623@embeddedor>
 MIME-Version: 1.0
-References: <159597929496.12744.14654593948763926416.stgit@bmoger-ubuntu> <159597952647.12744.15718760666138643079.stgit@bmoger-ubuntu>
-In-Reply-To: <159597952647.12744.15718760666138643079.stgit@bmoger-ubuntu>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 29 Jul 2020 15:17:41 -0700
-Message-ID: <CALMp9eQtvodpmE07DkQBu+zqE8yvrigw4N6dMQQoiEetRPFA_Q@mail.gmail.com>
-Subject: Re: [PATCH v3 09/11] KVM: SVM: Remove set_exception_intercept and clr_exception_intercept
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 4:38 PM Babu Moger <babu.moger@amd.com> wrote:
->
-> Remove set_exception_intercept and clr_exception_intercept.
-> Replace with generic set_intercept and clr_intercept for these calls.
->
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
+Make use of the flex_array_size() helper to calculate the size of a
+flexible array member within an enclosing structure.
+
+This helper offers defense-in-depth against potential integer overflows
+and makes it explicitly clear that we are dealing with a flexible array
+member.
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ sound/core/vmaster.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/core/vmaster.c b/sound/core/vmaster.c
+index ab36f9898711..21ce4082cb5f 100644
+--- a/sound/core/vmaster.c
++++ b/sound/core/vmaster.c
+@@ -262,7 +262,8 @@ int _snd_ctl_add_follower(struct snd_kcontrol *master,
+ 		return -ENOMEM;
+ 	srec->kctl = follower;
+ 	srec->follower = *follower;
+-	memcpy(srec->follower.vd, follower->vd, follower->count * sizeof(*follower->vd));
++	memcpy(srec->follower.vd, follower->vd, flex_array_size(srec, follower.vd,
++								srec->follower.count));
+ 	srec->master = master_link;
+ 	srec->flags = flags;
+ 
+-- 
+2.27.0
+
