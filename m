@@ -2,72 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796C5231E8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D43231E93
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgG2MaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 08:30:00 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:57006 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726054AbgG2M37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 08:29:59 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 0093AEF0BE9D4ACCC48C;
-        Wed, 29 Jul 2020 20:29:53 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Wed, 29 Jul 2020
- 20:29:45 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <dan.j.williams@intel.com>, <vkoul@kernel.org>,
-        <anup.patel@broadcom.com>, <ray.jui@broadcom.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH] dmaengine: bcm-sba-raid: add missing put_device() call in sba_probe()
-Date:   Wed, 29 Jul 2020 20:30:02 +0800
-Message-ID: <20200729123002.2476320-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1726976AbgG2Ma4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 08:30:56 -0400
+Received: from m9748.mail.qiye.163.com ([220.181.97.48]:64996 "EHLO
+        m9748.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726054AbgG2Ma4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 08:30:56 -0400
+X-Greylist: delayed 509 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 08:30:42 EDT
+Received: from ucloud.cn (wm-8.hmbj.internal [127.0.0.1])
+        by m9748.mail.qiye.163.com (Hmail) with ESMTP id 9F9852012A3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 20:22:11 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AP6AXwDuE2vKkeWl-pKSFKo*.1.1596025331642.Hmail.owen.si@ucloud.cn>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?B?bWlzYWxpZ25lZCB2c3lzY2FsbCB3aGVuIHZzeXNjYWxsPWVtdWxhdGU=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2015-163.com
+X-Originating-IP: 117.48.120.186
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Received: from owen.si@ucloud.cn( [117.48.120.186) ] by ajax-webmail ( [127.0.0.1] ) ; Wed, 29 Jul 2020 20:22:11 +0800 (GMT+08:00)
+From:   sibingsong <owen.si@ucloud.cn>
+Date:   Wed, 29 Jul 2020 20:22:11 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
+        oVCBIfWUFZT05DSxgfHh9DGkpCVkpOQk1LSU5ISEpNTElVGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZVUtZBg++
+X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzorTTojDD8OPkkNMBAeLBdWCzAo
+        PTAUUVVKVUpOQk1LSU5ISEpCS0tVMxYaEhdVFAweFVUIEjsOGBcUDh9VGBVFWVdZEgtZQVlKSkxV
+        T0NVSklLVUpDTVlXWQgBWUFDSEpLNwY+
+X-HM-Tid: 0a739a85dfc62076kuqy9f9852012a3
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if of_find_device_by_node() succeed, sba_probe() doesn't have a
-corresponding put_device(). Thus add a jump target to fix the
-exception handling for this function implementation.
-
-Fixes: 743e1c8ffe4e ("dmaengine: Add Broadcom SBA RAID driver")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/dma/bcm-sba-raid.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/dma/bcm-sba-raid.c b/drivers/dma/bcm-sba-raid.c
-index 64239da02e74..322d48b397e7 100644
---- a/drivers/dma/bcm-sba-raid.c
-+++ b/drivers/dma/bcm-sba-raid.c
-@@ -1707,7 +1707,7 @@ static int sba_probe(struct platform_device *pdev)
- 	/* Prealloc channel resource */
- 	ret = sba_prealloc_channel_resources(sba);
- 	if (ret)
--		goto fail_free_mchan;
-+		goto put_device;
- 
- 	/* Check availability of debugfs */
- 	if (!debugfs_initialized())
-@@ -1737,6 +1737,8 @@ static int sba_probe(struct platform_device *pdev)
- fail_free_resources:
- 	debugfs_remove_recursive(sba->root);
- 	sba_freeup_channel_resources(sba);
-+put_device:
-+	put_device(&)
- fail_free_mchan:
- 	mbox_free_channel(sba->mchan);
- 	return ret;
--- 
-2.25.4
-
+PCEtLQpfZm9udC1mYWNlCkhlbGxvIGZvbGtzLApXaGVuIEkgcnVuIGEgdnN5c2NhbGwgaW4gbXkg
+YXBwIG9uIGNwdSA2MSBvciAyMSAoYm90aCBhcmUgb24gY29yZSAyMSksIEl0IGNyYXNoZWQgcXVp
+Y2tseS4gRnJvbSB0aGUga2VybmVsIGxvZywgQ1IyID09IGZmZmZmZmZmZmY2MDA1MDAsIGlwID09
+IGZmZmZmZmZmZmY2MDA0MDAsIGFuZCBDUjIgIT0gaXAgdHJpZ2dlcmVkIHRoaXMgYnVnLCBoYXMg
+YW55b25lIGVuY291bnRlcmVkIGl0PwrCoApDUFU6IEludGVsKFIpIFhlb24oUikgR29sZCA2MjQ4
+IENQVSBAIDIuNTBHSHoKS2VybmVsOiA1LjguMC1yYzcgYW5kIDUuNy4xMQpUZXN0IGNvZGUgYW5k
+IGtlcm5lbCBsb2cgYXJlIGFzIGZvbGxvd3M6CsKgCiNjYXQgdGltZS5jCiNpbmNsdWRlIDx0aW1l
+Lmg+CmludCBtYWluKHZvaWQpCnsKwqDCoMKgIGZvciAoOzspIHsKwqDCoMKgwqDCoMKgwqAgdGlt
+ZShOVUxMKTsKwqDCoMKgIH0KwqDCoMKgIHJldHVybiAwOwp9CiMgZ2NjIC0tc3RhdGljIC1vIHRp
+bWUgdGltZS5jICh3aXRoIGdsaWJjIDIuMTIgdGhhdCB1c2UgdnN5c2NhbGwpCiMgdGFza3NldCAt
+YyA2MSAuL3RpbWUKU2VnbWVudGF0aW9uIGZhdWx0IChjb3JlIGR1bXBlZCkKwqAKSnVsIDI5IDE3
+OjA2OjEzIGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBd
+LS0tLS0tLS0tLS0tCkp1bCAyOSAxNzowNjoxMyBoYjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IFdB
+Uk5JTkc6IENQVTogNjEgUElEOiAxMzA0NCBhdCBhcmNoL3g4Ni9lbnRyeS92c3lzY2FsbC92c3lz
+Y2FsbF82NC5jOjE1MSBlbXVsYXRlX3ZzeXNjYWxsKzB4MzFlLzB4M2YwCkp1bCAyOSAxNzowNjox
+MyBoYjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IE1vZHVsZXMgbGlua2VkIGluOiBtbHg1X2liIGli
+X3V2ZXJicyBpYl9jb3JlIG1seDVfY29yZSBtbHhmdyBwdHAgcHBzX2NvcmUgcGNpX2h5cGVydl9p
+bnRmIG5iZCBlYnRhYmxlX2ZpbHRlciBlYnRhYmxlcyBpcDZ0YWJsZV9maWx0ZXIgaXA2X3RhYmxl
+cyBib25kaW5nIGVzcDZfb2ZmbG9hZCBlc3A2IGVzcDRfb2ZmbG9hZCBlc3A0IGFjdF9nYWN0IGNs
+c19mbG93ZXIgc2NoX2luZ3Jlc3MgaXBfZ3JlIGlwX3R1bm5lbCBncmUgb3BlbnZzd2l0Y2ggbnNo
+IG5mX2Nvbm5jb3VudCBuZl9uYXQgbmZfY29ubnRyYWNrIG5mX2RlZnJhZ19pcHY2IG5mX2RlZnJh
+Z19pcHY0IHNreF9lZGFjIG5maXQgeDg2X3BrZ190ZW1wX3RoZXJtYWwgaW50ZWxfcG93ZXJjbGFt
+cCBpcHRhYmxlX2ZpbHRlciBpVENPX3dkdCBjb3JldGVtcAppVENPX3ZlbmRvcl9zdXBwb3J0IGNy
+Y3QxMGRpZl9wY2xtdWwgY3JjMzJfcGNsbXVsIGdoYXNoX2NsbXVsbmlfaW50ZWwgYWVzbmlfaW50
+ZWwgY3J5cHRvX3NpbWQgY3J5cHRkIGdsdWVfaGVscGVyIHJhcGwgaW50ZWxfY3N0YXRlIHNlcyBl
+bmNsb3N1cmUgbWVpX21lIGxwY19pY2ggaTJjX2k4MDEgcGNzcGtyIHNnIGlucHV0X2xlZHMgam95
+ZGV2IG1mZF9jb3JlIGkyY19zbWJ1cyBtZWkgaW9hdGRtYSBkY2Egd21pIGFjcGlfaXBtaSBpcG1p
+X3NpIGlwbWlfZGV2aW50ZiBpcG1pX21zZ2hhbmRsZXIgYWNwaV9wb3dlcl9tZXRlciBhY3BpX3Bh
+ZCB2aG9zdF9uZXQgdHVuIHZob3N0IG5mc2Qgdmhvc3RfaW90bGIgdGFwIGt2bV9pbnRlbCBhdXRo
+X3JwY2dzcyBrdm0gbmZzX2FjbCBsb2NrZCBncmFjZSBpcnFieXBhc3Mgc3VucnBjIGlwX3RhYmxl
+cyB4ZnMgbGliY3JjMzJjIHNkX21vZCB0MTBfcGkgY3JjMzJjX2ludGVsIGFzdCBpMmNfYWxnb19i
+aXQgZHJtX3ZyYW1faGVscGVyIGRybV9rbXNfaGVscGVyIHN5c2NvcHlhcmVhIHN5c2ZpbGxyZWN0
+IHN5c2ltZ2JsdCBmYl9zeXNfZm9wcyBkcm1fdHRtX2hlbHBlciBzbWFydHBxaSB0dG0KSnVsIDI5
+IDE3OjA2OjEzIGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogc2NzaV90cmFuc3BvcnRfc2FzIGFo
+Y2kgbGliYWhjaSBkcm0gbGliYXRhIFtsYXN0IHVubG9hZGVkOiBtbHhmd10KSnVsIDI5IDE3OjA2
+OjEzIGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogQ1BVOiA2MSBQSUQ6IDEzMDQ0IENvbW06IHRp
+bWUgS2R1bXA6IGxvYWRlZCBOb3QgdGFpbnRlZCA1LjguMC1yYzcgIzMKSnVsIDI5IDE3OjA2OjEz
+IGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogSGFyZHdhcmUgbmFtZTogSDNDIFI0OTAwIEczL1JT
+MzNNMkM5UywgQklPUyAyLjAwLjM3UDIxIDAzLzEyLzIwMjAKSnVsIDI5IDE3OjA2OjEzIGhiMTAt
+dWhvc3QtMTQ3LTY4IGtlcm5lbDogUklQOiAwMDEwOmVtdWxhdGVfdnN5c2NhbGwrMHgzMWUvMHgz
+ZjAKSnVsIDI5IDE3OjA2OjEzIGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogQ29kZTogNDggODkg
+ZGYgZTggNDQgZmIgMGYgMDAgZTkgNjAgZmUgZmYgZmYgNDggOGIgNmIgNjAgNDggYzcgNDMgNjAg
+MDAgMDAgMDAgMDAgNDggODkgZGYgZTggNWIgYzEgMDggMDAgNDggODkgNmIgNjAgZTkgNDMgZmUg
+ZmYgZmYgPDBmPiAwYiBlOSAyMCBmZCBmZiBmZiA0OCBjNyBjMiBlMCBiNSAwYiA4MiA0OCA4OQpk
+ZSA0OCBjNyBjNyA2ZCBiNApKdWwgMjkgMTc6MDY6MTMgaGIxMC11aG9zdC0xNDctNjgga2VybmVs
+OiBSU1A6IDAwMDA6ZmZmZmM5MDAwZWE1N2ViMCBFRkxBR1M6IDAwMDEwMjg3Ckp1bCAyOSAxNzow
+NjoxMyBoYjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IFJBWDogMDAwMDAwMDAwMDAwMDAwNCBSQlg6
+IGZmZmZjOTAwMGVhNTdmNTggUkNYOiAwMDAwMDAwMDAwMDAwMDEwCkp1bCAyOSAxNzowNjoxMyBo
+YjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IFJEWDogMDAwMDAwMDAwMDAwMDAwMCBSU0k6IGZmZmZj
+OTAwMGVhNTdmNTggUkRJOiAwMDAwMDAwMDAwMDAwMDEwCkp1bCAyOSAxNzowNjoxMyBoYjEwLXVo
+b3N0LTE0Ny02OCBrZXJuZWw6IFJCUDogZmZmZmZmZmZmZjYwMDUwMCBSMDg6IGZmZmZmZmZmZmY2
+MDAwMDAgUjA5OiAwMDAwMDAwMDAwMDAwMDAwCkp1bCAyOSAxNzowNjoxMyBoYjEwLXVob3N0LTE0
+Ny02OCBrZXJuZWw6IFIxMDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAwMDAg
+UjEyOiAwMDAwMDAwMDAwMDAwMDE1Ckp1bCAyOSAxNzowNjoxMyBoYjEwLXVob3N0LTE0Ny02OCBr
+ZXJuZWw6IFIxMzogZmZmZmZmZmZmZjYwMDUwMCBSMTQ6IGZmZmY4OGZmNmM5MGJkMDAgUjE1OiBm
+ZmZmODhmZjdkNzAyYzAwCkp1bCAyOSAxNzowNjoxMyBoYjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6
+IEZTOsKgIDAwMDAwMDAwMDIzNmQ4NjAoMDAwMCkgR1M6ZmZmZjg4ZmY3Zjk0MDAwMCgwMDAwKSBr
+bmxHUzowMDAwMDAwMDAwMDAwMDAwCkp1bCAyOSAxNzowNjoxMyBoYjEwLXVob3N0LTE0Ny02OCBr
+ZXJuZWw6IENTOsKgIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMz
+Ckp1bCAyOSAxNzowNjoxMyBoYjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IENSMjogZmZmZmZmZmZm
+ZjYwMDUwMCBDUjM6IDAwMDAwMDQ1N2RiYWMwMDYgQ1I0OiAwMDAwMDAwMDAwNzYwNmUwCkp1bCAy
+OSAxNzowNjoxMyBoYjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IERSMDogMDAwMDAwMDAwMDAwMDAw
+MCBEUjE6IDAwMDAwMDAwMDAwMDAwMDAgRFIyOiAwMDAwMDAwMDAwMDAwMDAwCkp1bCAyOSAxNzow
+NjoxMyBoYjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IERSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6
+IDAwMDAwMDAwZmZmZTBmZjAgRFI3OiAwMDAwMDAwMDAwMDAwNDAwCkp1bCAyOSAxNzowNjoxMyBo
+YjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IFBLUlU6IDU1NTU1NTU0Ckp1bCAyOSAxNzowNjoxMyBo
+YjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IENhbGwgVHJhY2U6Ckp1bCAyOSAxNzowNjoxMyBoYjEw
+LXVob3N0LTE0Ny02OCBrZXJuZWw6IGV4Y19wYWdlX2ZhdWx0KzB4NDIzLzB4NjAwCkp1bCAyOSAx
+NzowNjoxMyBoYjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6ID8gX19wcmVwYXJlX2V4aXRfdG9fdXNl
+cm1vZGUrMHgxM2IvMHgxNTAKSnVsIDI5IDE3OjA2OjEzIGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5l
+bDogPyBhc21fZXhjX3BhZ2VfZmF1bHQrMHg4LzB4MzAKSnVsIDI5IDE3OjA2OjEzIGhiMTAtdWhv
+c3QtMTQ3LTY4IGtlcm5lbDogYXNtX2V4Y19wYWdlX2ZhdWx0KzB4MWUvMHgzMApKdWwgMjkgMTc6
+MDY6MTMgaGIxMC11aG9zdC0xNDctNjgga2VybmVsOiBSSVA6IDAwMzM6X19pbml0X3NjcmF0Y2hf
+ZW5kKzB4N2I2MDA0MDAvMHhmZmZmZmZmZmZmYTI2MDAwCkp1bCAyOSAxNzowNjoxMyBoYjEwLXVo
+b3N0LTE0Ny02OCBrZXJuZWw6IENvZGU6IEJhZCBSSVAgdmFsdWUuCkp1bCAyOSAxNzowNjoxMyBo
+YjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IFJTUDogMDAyYjowMDAwN2ZmYzlkOTNmNWQ4IEVGTEFH
+UzogMDAwMTAyMDIKSnVsIDI5IDE3OjA2OjEzIGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogUkFY
+OiBmZmZmZmZmZmZmNjAwNDAwIFJCWDogMDAwMDAwMDAwMDQwMGUwMCBSQ1g6IDAwMDAwMDAwMDA0
+MGQ3MTAKSnVsIDI5IDE3OjA2OjEzIGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogUkRYOiAwMDAw
+MDAwMDAwMDAwMDAwIFJTSTogMDAwMDdmZmM5ZDkzZjViMCBSREk6IDAwMDAwMDAwMDAwMDAwMDAK
+SnVsIDI5IDE3OjA2OjEzIGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogUkJQOiAwMDAwN2ZmYzlk
+OTNmNWYwIFIwODogMDAwMDdmZmM5ZDkzZjQxMCBSMDk6IDAwMDAwMDAwMDAwMDAwM2YKSnVsIDI5
+IDE3OjA2OjEzIGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogUjEwOiAwMDAwMDAwMDAwMDAwMDA4
+IFIxMTogMDAwMDAwMDAwMDAwMDI0NiBSMTI6IDAwMDAwMDAwMDAwMDAwMDAKSnVsIDI5IDE3OjA2
+OjEzIGhiMTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogUjEzOiAwMDAwMDAwMDAwMDAwMDAwIFIxNDog
+MDAwMDAwMDAwMDAwMDAwMCBSMTU6IDAwMDAwMDAwMDAwMDAwMDAKSnVsIDI5IDE3OjA2OjEzIGhi
+MTAtdWhvc3QtMTQ3LTY4IGtlcm5lbDogLS0tWyBlbmQgdHJhY2UgMzU3NjU3MGY3NzNkMTQ0NCBd
+LS0tCkp1bCAyOSAxNzowNjoxMyBoYjEwLXVob3N0LTE0Ny02OCBrZXJuZWw6IHRpbWVbMTMwNDRd
+IG1pc2FsaWduZWQgdnN5c2NhbGwgKGV4cGxvaXQgYXR0ZW1wdCBvciBidWdneSBwcm9ncmFtKSAt
+LSBsb29rIHVwIHRoZSB2c3lzY2FsbCBrZXJuZWwgcGFyYW1ldGVyIGlmIHlvdSBuZWVkIGEgd29y
+a2Fyb3VuZCBpcDpmZmZmZmZmZmZmNjAwNDAwIGNzOjMzIHNwOjdmZmM5ZDkzZjVkOCBheDpmZmZm
+ZmZmZmZmNjAwNDAwIHNpOjdmZmM5ZDkzZjViMCBkaTowCsKgCgrCoA0KDQo=
