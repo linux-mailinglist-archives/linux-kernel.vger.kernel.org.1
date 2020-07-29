@@ -2,94 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D6223169C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 02:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4DD2316A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 02:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730516AbgG2AJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 20:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730219AbgG2AJ6 (ORCPT
+        id S1730561AbgG2ALd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 20:11:33 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:15422 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730219AbgG2ALb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 20:09:58 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCB5C0619D2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 17:09:57 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id z3so7612797ilh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 17:09:57 -0700 (PDT)
+        Tue, 28 Jul 2020 20:11:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NIt8V+0Ly8zCDHiK1shQ9ILtxkb0CmTmo030ThJYXRc=;
-        b=At1MN+FzIe1tFpSFrYfVBPnrEMgocxF1GxQ6l661JXfQUSL09B22WGVDFknoRIDEIf
-         tRG+xOoU3FZZZMnJGjfuPFPl8E3+qbBa1Vlm4WmIsAbjoTRHML/YfD3T/yXLluhZFamt
-         03u7pLSnNw9w6hrsyoPycGKgrdJ8a0GfGb+EJqEpgT61mXDlTtQoyLi6YAldXQP6hk2d
-         BEHoVxL9MInXNDCyKtRve/qoG6kRFZAXukmBRrpkKEederyrHc1E92VdClFR/zAuOXzL
-         H82qr89vU69GvNOybrP5Hr/3yHj9zyTZjsAPIr9a735oJjC5eCGbhb+/saHV//RnJXPj
-         cvpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NIt8V+0Ly8zCDHiK1shQ9ILtxkb0CmTmo030ThJYXRc=;
-        b=VM+2/ylcbuNiAMXp9hGX3H5Sw5tX5Djo4S5xJaEE71gXxlOX2RdvjUguirvWdgxUFX
-         ZQLR73c1k2AMxQVJMvEK6wRcSDwWXEvLu5J+3d9aEbTZZoVGcw/QBRpEa0zJEZAv56Ns
-         H3a947OeG1lH6tOzrq8bnR4rG6Bj7B7fj2zCbEp2gkgY1Hp0sPHBUBNwV8+Tuh4ZduTO
-         9ZfwLblgO1dMyCbIVSdtLGxJHnmfdfaBnYytbLbVu4nkS7MxsLyyQ+mV+JEdhfMvMU5p
-         L15k2GZbMnDql1h0+82MEcypKt8zGPY4wTMT1JrxFA+N2RLeD4avCSvfck2jwHzeCWp4
-         KV8Q==
-X-Gm-Message-State: AOAM5337+S5sfrAKAW1ETUiqlCkKWV8oSgx2tfjlpAW1CA9DEyr2n6rJ
-        gU1fPa4m1K9/Q/hnFJUjzR15lIx8HLXv5hUPEy4pLg==
-X-Google-Smtp-Source: ABdhPJxyhD76VhGtYfRPQiK8bjnt1QDL1vQFerPzksCcZjDbHKglJfD/550b3SdXVkkWhSkJmPrnLJQ0xSN4XUuyCTk=
-X-Received: by 2002:a92:790d:: with SMTP id u13mr25673361ilc.26.1595981396870;
- Tue, 28 Jul 2020 17:09:56 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1595981492; x=1627517492;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=7Oc9V4RDTZk1Ywvt8FSw4+O3aSjH/U/7af3EsamIx2s=;
+  b=f126Ewz6V+cdHRw6YVBLEixyLvMhcZ/iG08Td079TVY6cW+hJqwo6kHt
+   ZJjGloLOH82p0klj09VUszcLu/l6Ng8aqJAaAlDW2ZdXVg21Yg0/ttY0z
+   cJF1eeCdHbbXx697nVkYOl4FgN17g2w0cd3J9fYvzOkCjBuWcMa/58U87
+   I=;
+IronPort-SDR: R4s/W+lI+qLH6v8AQ2ALqLBSxrRPGfst6OQ+40LaapuKloQQeDjvsuDIWAN77NAn4XI+ymDYOF
+ Y9BaKGJr/ArA==
+X-IronPort-AV: E=Sophos;i="5.75,408,1589241600"; 
+   d="scan'208";a="62520189"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 29 Jul 2020 00:11:27 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 0BC2228644C;
+        Wed, 29 Jul 2020 00:11:23 +0000 (UTC)
+Received: from EX13D01UWA003.ant.amazon.com (10.43.160.107) by
+ EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 29 Jul 2020 00:11:23 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
+ EX13d01UWA003.ant.amazon.com (10.43.160.107) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 29 Jul 2020 00:11:23 +0000
+Received: from localhost (10.143.192.232) by mail-relay.amazon.com
+ (10.43.160.118) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 29 Jul 2020 00:11:21 +0000
+From:   Balbir Singh <sblbir@amazon.com>
+To:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>
+CC:     <jpoimboe@redhat.com>, <tony.luck@intel.com>,
+        <keescook@chromium.org>, <benh@kernel.crashing.org>,
+        <x86@kernel.org>, <dave.hansen@intel.com>,
+        <thomas.lendacky@amd.com>, <torvalds@linux-foundation.org>,
+        <mingo@kernel.org>, Balbir Singh <sblbir@amazon.com>
+Subject: [PATCH v2 0/5] Implement optional L1D flushing for
+Date:   Wed, 29 Jul 2020 10:10:58 +1000
+Message-ID: <20200729001103.6450-1-sblbir@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <159597929496.12744.14654593948763926416.stgit@bmoger-ubuntu>
-In-Reply-To: <159597929496.12744.14654593948763926416.stgit@bmoger-ubuntu>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 28 Jul 2020 17:09:46 -0700
-Message-ID: <CALMp9eTkGtk=baceQs7ATY6FU55+ubSfO9e71fzwiqO8oTH2vA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/11] SVM cleanup and INVPCID support for the AMD guests
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 4:37 PM Babu Moger <babu.moger@amd.com> wrote:
->
-> The following series adds the support for PCID/INVPCID on AMD guests.
-> While doing it re-structured the vmcb_control_area data structure to
-> combine all the intercept vectors into one 32 bit array. Makes it easy
-> for future additions.
->
-> INVPCID interceptions are added only when the guest is running with
-> shadow page table enabled. In this case the hypervisor needs to handle
-> the tlbflush based on the type of invpcid instruction.
->
-> For the guests with nested page table (NPT) support, the INVPCID feature
-> works as running it natively. KVM does not need to do any special handlin=
-g.
->
-> AMD documentation for INVPCID feature is available at "AMD64 Architecture
-> Programmer=E2=80=99s Manual Volume 2: System Programming, Pub. 24593 Rev.=
- 3.34(or later)"
->
-> The documentation can be obtained at the links below:
-> Link: https://www.amd.com/system/files/TechDocs/24593.pdf
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D206537
+Implement a mechanism that allows tasks to conditionally flush
+their L1D cache (mitigation mechanism suggested in 2). The previous
+posts of these patches were sent for inclusion (see 3) and were not
+included due to the concern for the need for additional checks,
+those checks were:
 
-Very nice cleanup. Thanks for doing this!
+1. Implement this mechanism only for CPUs affected by the L1TF bug
+2. Disable the software fallback
+3. Provide an override to disable this mechanism completely
+
+The patches support a use case where the entire system is not in
+non SMT mode, but rather a few CPUs can have their SMT turned off
+and processes that want to opt-in are expected to run on non SMT
+cores. This gives the administrator complete control over setting
+up the mitigation for the issue. In addition, the administrator
+has a boot time override (l1d_flush_out=off) to turn of the mechanism
+completely.
+
+To implement these efficiently, a new per cpu view of whether the core
+is in SMT mode or not is implemented in patch 1. The code is refactored
+in patch 2 so that the existing code can allow for other speculation
+related checks when switching mm between tasks, this mechanism has not
+changed since the last post. The ability to flush L1D for tasks if the
+TIF_SPEC_L1D_FLUSH bit is set and the task has context switched out of a
+non SMT core is provided by patch 3. Hooks for the user space API, for
+this feature to be invoked via prctl are provided in patch 4, along with
+the checks described above (1, 2, and 3).
+
+The checks are:
+	a. If the CPU is affected by L1TF
+        b. Hardware L1D flush mechanism is available
+	c. The task opting in has it's affinity set to only non SMT cores. 
+
+Documentation updates are in patch 5, with updates on l1d_flush, the
+prctl changes and updates to the kernel-parameters (l1d_flush_out).
+
+Balbir Singh (5):
+  Add a per-cpu view of SMT state
+  x86/mm: Refactor cond_ibpb() to support other use cases
+  x86/mm: Optionally flush L1D on context switch
+  prctl: Hook L1D flushing in via prctl
+  Documentation: Add L1D flushing Documentation
+
+References:
+[1] https://software.intel.com/security-software-guidance/software-guidance/snoop-assisted-l1-data-sampling
+[2] https://software.intel.com/security-software-guidance/insights/deep-dive-snoop-assisted-l1-data-sampling
+[3] https://lkml.org/lkml/2020/6/2/1150
+
+ Documentation/admin-guide/hw-vuln/index.rst   |   1 +
+ .../admin-guide/hw-vuln/l1d_flush.rst         |  70 ++++++++++++
+ .../admin-guide/kernel-parameters.txt         |  17 +++
+ Documentation/userspace-api/spec_ctrl.rst     |   8 ++
+ arch/x86/include/asm/cacheflush.h             |   8 ++
+ arch/x86/include/asm/processor.h              |   2 +
+ arch/x86/include/asm/thread_info.h            |   9 +-
+ arch/x86/include/asm/tlbflush.h               |   2 +-
+ arch/x86/kernel/cpu/bugs.c                    |  54 +++++++++
+ arch/x86/kernel/smpboot.c                     |  11 +-
+ arch/x86/mm/tlb.c                             | 104 +++++++++++++-----
+ include/uapi/linux/prctl.h                    |   1 +
+ 12 files changed, 258 insertions(+), 29 deletions(-)
+ create mode 100644 Documentation/admin-guide/hw-vuln/l1d_flush.rst
+
+-- 
+2.17.1
+
