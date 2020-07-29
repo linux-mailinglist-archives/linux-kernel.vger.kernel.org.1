@@ -2,131 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C4B2326A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 23:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10BBD2326B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 23:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgG2VM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 17:12:59 -0400
-Received: from mail.efficios.com ([167.114.26.124]:33320 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgG2VM6 (ORCPT
+        id S1726989AbgG2VSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 17:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbgG2VSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 17:12:58 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E8A602A579A;
-        Wed, 29 Jul 2020 17:12:56 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id ZwQr0TonsNU0; Wed, 29 Jul 2020 17:12:56 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id A2F892A5E0B;
-        Wed, 29 Jul 2020 17:12:56 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com A2F892A5E0B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1596057176;
-        bh=gt3bVhTf4NH8xJJdNbMFxQ+mzNS6Qgctt02qgftClfg=;
-        h=From:To:Date:Message-Id;
-        b=E5oF6wmDEW195Nnbqp/abwNLagRdwGAU1SkSaoXelIsW/W/EIFwG8YVNT7Cudnn0w
-         r99cd7VtNDhrzddUtYO4IPG//mPqOogs19kwO/ctXT7Kb6hkwI6AX5PGFT9ol8MYEL
-         ay2wK8ZLXMN9vO5EUNm8HQyH94k4LsN5mBLDLJBtcfXqR6jM771J6vZcGwmslRM0JC
-         tzpH6/HgTFd62W014nSoyy4ccgKUZZY8KH8o3fLPnh9sAxhI7W5swBJ8xrcPcDcdD1
-         AgeI2ICz1Yldx1OxrUguvrWRXaER6LU3zVKri9HbxRsf9qE1YsWt1nQmgX8FZxxFFQ
-         zhcqRBwXRKkBg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id v4D23FbX4-eV; Wed, 29 Jul 2020 17:12:56 -0400 (EDT)
-Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id 560292A5C33;
-        Wed, 29 Jul 2020 17:12:56 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     David Ahern <dsa@cumulusnetworks.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Subject: [RFC PATCH 3/3] ipv6/icmp: l3mdev: Perform icmp error route lookup on source device routing table
-Date:   Wed, 29 Jul 2020 17:12:48 -0400
-Message-Id: <20200729211248.10146-3-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200729211248.10146-1-mathieu.desnoyers@efficios.com>
-References: <20200729211248.10146-1-mathieu.desnoyers@efficios.com>
+        Wed, 29 Jul 2020 17:18:20 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F16DC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 14:18:20 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id k71so2648097pje.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 14:18:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g0KUC06W8wfVDa5/aZnaCNDXj9N7Ln444BL6AjoPMxY=;
+        b=Ov00EPcpcds4iXOLfFieegwR7hRlUtJeKUY5QQkoF0Jh9tZT4y47ON4fxaZEsShZVi
+         fUtVBaFg6UI206ysebvZU7XlJKrNCGUtO3b3dYfZbBpeEv2+k58TFlsv9W2l+H5RlU/x
+         xMnrIcH5vYD2zHkhisMgP8KYicUzt69+3EeaY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g0KUC06W8wfVDa5/aZnaCNDXj9N7Ln444BL6AjoPMxY=;
+        b=JrV1n4IjJAfZfNIEdfwCtn9nXmYNmPZ2AyaFFPjG3rpt6xstSQoqyQ00U75xUhZRef
+         mcPYNuiSb6LtQiIZfBExvX8h89u6f09yC5dJA+N62B++lL/rWTThy9qEP5NQXzYwHBCX
+         HC50lNwAAYFvySmmcXfUBMd6453sbQdLdfV2DdU2H4KHMETR2HqkrXo7fffKULoGXLYG
+         6rDgNRdTxp7SxOyzsAOalg69n9RgCkA8gb9hGq/numAr2WPY0y2uH7h+vRoq+i8O0Vcf
+         EN22ZL7A4QxtAmgKjMkQXY8fjWFRj2P2b0GzQ5w5Njmrrm+/vMqWN+BiK9fCumY1R2oY
+         HySw==
+X-Gm-Message-State: AOAM530Gu/Wgjyo8rgzGJ20EY7bqUp70kFSDc2sklrJF33lBEkXZvoqE
+        u55aTOYHv4gua70XBFCbfSEnPg==
+X-Google-Smtp-Source: ABdhPJwi4J+xm/nvozPDUCQnat7NJCVcTCoGI36EfCZlyYLjp9/7AClfhzP1RAFLsh2ytY1lCy1vVg==
+X-Received: by 2002:a17:90a:3488:: with SMTP id p8mr12222748pjb.211.1596057499443;
+        Wed, 29 Jul 2020 14:18:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h63sm2367630pjb.29.2020.07.29.14.18.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 14:18:18 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 14:18:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, Emese Revfy <re.emese@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] kbuild: move shared library build rules to
+ scripts/gcc-plugins/Makefile
+Message-ID: <202007291401.A50E25BB@keescook>
+References: <20200729031537.37926-1-masahiroy@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200729031537.37926-1-masahiroy@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per RFC4443, the destination address field for ICMPv6 error messages
-is copied from the source address field of the invoking packet.
+On Wed, Jul 29, 2020 at 12:15:36PM +0900, Masahiro Yamada wrote:
+> The shared library build rules are currently implemented in
+> scripts/Makefile.host, but actually GCC-plugin is the only user of
+> them. Hence, they do not need to be treewide available.
 
-In configurations with Virtual Routing and Forwarding tables, looking up
-which routing table to use for sending ICMPv6 error messages is
-currently done by using the destination net_device.
+Are none of the VDSOs intending to use these rules?
 
-If the source and destination interfaces are within separate VRFs, or
-one in the global routing table and the other in a VRF, looking up the
-source address of the invoking packet in the destination interface's
-routing table will fail if the destination interface's routing table
-contains no route to the invoking packet's source address.
+> Move all the relevant build rules to scripts/gcc-plugins/Makefile.
+> 
+> I also optimized the build steps so *.so is directly built from .c
+> because every upstream plugin is compiled from a single source file.
+> 
+> I am still keeping the infrastructure to build a plugin from multiple
+> files because Kees suggested to do so in my previous attempt.
+> (https://lkml.org/lkml/2019/1/11/1107)
+> 
+> If the plugin, foo.so, is compiled from two files foo.c and foo2.c,
+> then you can do like follows:
+> 
+>   foo-objs := foo.o foo2.o
+> 
+> Single-file plugins do not need the *-objs notation.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-One observable effect of this issue is that traceroute6 does not work in
-the following cases:
+But, yeah, sure!
 
-- Route leaking between global routing table and VRF
-- Route leaking between VRFs
+Acked-by: Kees Cook <keescook@chromium.org>
 
-Preferably use the source device routing table when sending ICMPv6 error
-messages. If no source device is set, fall-back on the destination
-device routing table.
+Unrelated, but I do note that objtool maybe has the wrong indentation,
+path name reporting, and tool names (HOSTLD vs CC)?
 
-Link: https://tools.ietf.org/html/rfc4443
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: David Ahern <dsa@cumulusnetworks.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org
----
- net/ipv6/icmp.c       | 15 +++++++++++++--
- net/ipv6/ip6_output.c |  2 --
- 2 files changed, 13 insertions(+), 4 deletions(-)
+...
+  HOSTCC  scripts/asn1_compiler
+  HOSTCC  scripts/extract-cert
+  HOSTCC  scripts/genksyms/genksyms.o
+  YACC    scripts/genksyms/parse.tab.[ch]
+  LEX     scripts/genksyms/lex.lex.c
+  DESCEND  objtool
+  HOSTCXX scripts/gcc-plugins/cyc_complexity_plugin.so
+  HOSTCXX scripts/gcc-plugins/latent_entropy_plugin.so
+  HOSTCXX scripts/gcc-plugins/structleak_plugin.so
+  GENSEED scripts/gcc-plugins/randomize_layout_seed.h
+  HOSTCXX scripts/gcc-plugins/stackleak_plugin.so
+  HOSTCC  scripts/genksyms/parse.tab.o
+  HOSTCC  scripts/genksyms/lex.lex.o
+  HOSTCC   /home/kees/src/linux-build/plugins/tools/objtool/fixdep.o
+  HOSTLD  arch/x86/tools/relocs
+  HOSTLD   /home/kees/src/linux-build/plugins/tools/objtool/fixdep-in.o
+  LINK     /home/kees/src/linux-build/plugins/tools/objtool/fixdep
+  CC       /home/kees/src/linux-build/plugins/tools/objtool/exec-cmd.o
+  CC       /home/kees/src/linux-build/plugins/tools/objtool/help.o
+  CC       /home/kees/src/linux-build/plugins/tools/objtool/weak.o
+...
 
-diff --git a/net/ipv6/icmp.c b/net/ipv6/icmp.c
-index 9df8737ae0d3..beee93065688 100644
---- a/net/ipv6/icmp.c
-+++ b/net/ipv6/icmp.c
-@@ -501,8 +501,19 @@ static void icmp6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info,
- 	if (__ipv6_addr_needs_scope_id(addr_type)) {
- 		iif = icmp6_iif(skb);
- 	} else {
--		dst = skb_dst(skb);
--		iif = l3mdev_master_ifindex(dst ? dst->dev : skb->dev);
-+		struct net_device *route_lookup_dev = NULL;
-+
-+		/*
-+		 * The device used for looking up which routing table to use is
-+		 * preferably the source whenever it is set, which should
-+		 * ensure the icmp error can be sent to the source host, else
-+		 * fallback on the destination device.
-+		 */
-+		if (skb->dev)
-+			route_lookup_dev = skb->dev;
-+		else if (skb_dst(skb))
-+			route_lookup_dev = skb_dst(skb)->dev;
-+		iif = l3mdev_master_ifindex(route_lookup_dev);
- 	}
- 
- 	/*
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 8a8c2d0cfcc8..00243d7d276c 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -468,8 +468,6 @@ int ip6_forward(struct sk_buff *skb)
- 	 *	check and decrement ttl
- 	 */
- 	if (hdr->hop_limit <= 1) {
--		/* Force OUTPUT device used as source address */
--		skb->dev = dst->dev;
- 		icmpv6_send(skb, ICMPV6_TIME_EXCEED, ICMPV6_EXC_HOPLIMIT, 0);
- 		__IP6_INC_STATS(net, idev, IPSTATS_MIB_INHDRERRORS);
- 
 -- 
-2.17.1
-
+Kees Cook
