@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5157D231F00
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 15:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2192A231F0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 15:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgG2NHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 09:07:06 -0400
-Received: from mail.fudan.edu.cn ([202.120.224.10]:52969 "EHLO fudan.edu.cn"
+        id S1727054AbgG2NJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 09:09:36 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42620 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726496AbgG2NHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 09:07:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Disposition; bh=SiN
-        pc9WM7eKH/lgSs7lDo7p4zip8qUWuXCdbE7O2qys=; b=BtJFvuLD7Nl26b9h+Vz
-        DqK7Z4tkRSTjE3DhWtvmomrQVC0ef1iT+UIN5yg2y6lP7FzSAaKZheLbQGeDgzTd
-        6GF83MTzjHiC74jC6G9gBrxA2GQJVGfd3ZSntbcYGwBFXIiHqgKqeIvPvcqkKF6J
-        wy32NDPAOqoosj8iYPdHVfuo=
-Received: from xin-virtual-machine (unknown [111.192.143.50])
-        by app1 (Coremail) with SMTP id XAUFCgDHzd10dCFfM3FlAg--.212S3;
-        Wed, 29 Jul 2020 21:07:02 +0800 (CST)
-Date:   Wed, 29 Jul 2020 21:06:59 +0800
-From:   Xin Xiong <xiongx18@fudan.edu.cn>
-To:     Chas Williams <3chas3@gmail.com>,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, yuanxzhang@fudan.edu.cn
-Subject: [PATCH] atm: fix atm_dev refcnt leaks in atmtcp_remove_persistent
-Message-ID: <20200729130659.GA7712@xin-virtual-machine>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: XAUFCgDHzd10dCFfM3FlAg--.212S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7urWDuFW7ZF4DWF1fJr1xAFb_yoW8Gr1kpr
-        W7W3WFkr9YgF9rJwnrtwn29a45GFnrXry8K34Y9343Ar17Xa43Wr1YgFWjgasrZFWkKr1f
-        Zw4qqFW5urWqkFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-        4I1lc2xSY4AK67AK6ry8MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        id S1726476AbgG2NJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 09:09:36 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP97xdCFf0hcCAA--.2S2;
+        Wed, 29 Jul 2020 21:09:05 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Cc:     "Tobin C. Harding" <me@tobin.cc>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] Documentation/bpf: Use valid and new links in index.rst
+Date:   Wed, 29 Jul 2020 21:09:04 +0800
+Message-Id: <1596028144-31374-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxP97xdCFf0hcCAA--.2S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7trW3ZF13Wr4UXr4Dtr1UZFb_yoW8GrWkpF
+        15WF1Sgrn8tF43Xws7GF47Cr1YgayfGF4Uua1UJw1Fqrn8Xa4v9F1S9rs0q3WUtrWFvFWr
+        ZFyfKr90qrn7u3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvvb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1lc2xSY4AK67AK6ry8MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
         8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
         xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUjkhLUUUUUU==
-X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/
+        8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+        IFyTuYvjxUyOVyDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-atmtcp_remove_persistent() invokes atm_dev_lookup(), which returns a
-reference of atm_dev with increased refcount or NULL if fails.
+There exists an error "404 Not Found" when I clik the html link of
+"Documentation/networking/filter.rst" in the BPF documentation [1],
+fix it.
 
-The refcount leaks issues occur in two error handling paths. If
-dev_data->persist is zero or PRIV(dev)->vcc isn't NULL, the function
-returns 0 without decreasing the refcount kept by a local variable,
-resulting in refcount leaks.
+Additionally, use the new links about "BPF and XDP Reference Guide"
+and "bpf(2)" to avoid redirects.
 
-Fix the issue by adding atm_dev_put() before returning 0 both when
-dev_data->persist is zero or PRIV(dev)->vcc isn't NULL.
+[1] https://www.kernel.org/doc/html/latest/bpf/
 
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Fixes: d9b9170a2653 ("docs: bpf: Rename README.rst to index.rst")
+Fixes: cb3f0d56e153 ("docs: networking: convert filter.txt to ReST")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/atm/atmtcp.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ Documentation/bpf/index.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/atm/atmtcp.c b/drivers/atm/atmtcp.c
-index d9fd70280482..7f814da3c2d0 100644
---- a/drivers/atm/atmtcp.c
-+++ b/drivers/atm/atmtcp.c
-@@ -433,9 +433,15 @@ static int atmtcp_remove_persistent(int itf)
- 		return -EMEDIUMTYPE;
- 	}
- 	dev_data = PRIV(dev);
--	if (!dev_data->persist) return 0;
-+	if (!dev_data->persist) {
-+		atm_dev_put(dev);
-+		return 0;
-+	}
- 	dev_data->persist = 0;
--	if (PRIV(dev)->vcc) return 0;
-+	if (PRIV(dev)->vcc) {
-+		atm_dev_put(dev);
-+		return 0;
-+	}
- 	kfree(dev_data);
- 	atm_dev_put(dev);
- 	atm_dev_deregister(dev);
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index 26f4bb3..1b901b4 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -68,7 +68,7 @@ Testing and debugging BPF
+ 
+ 
+ .. Links:
+-.. _Documentation/networking/filter.rst: ../networking/filter.txt
++.. _Documentation/networking/filter.rst: ../networking/filter.html
+ .. _man-pages: https://www.kernel.org/doc/man-pages/
+-.. _bpf(2): http://man7.org/linux/man-pages/man2/bpf.2.html
+-.. _BPF and XDP Reference Guide: http://cilium.readthedocs.io/en/latest/bpf/
++.. _bpf(2): https://man7.org/linux/man-pages/man2/bpf.2.html
++.. _BPF and XDP Reference Guide: https://docs.cilium.io/en/latest/bpf/
 -- 
-2.25.1
+2.1.0
 
