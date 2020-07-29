@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D082323B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 19:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377752323C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 19:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgG2RuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 13:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
+        id S1727098AbgG2Rvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 13:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgG2RuQ (ORCPT
+        with ESMTP id S1726336AbgG2Rvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 13:50:16 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3673FC061794;
-        Wed, 29 Jul 2020 10:50:16 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id e8so14642319pgc.5;
-        Wed, 29 Jul 2020 10:50:16 -0700 (PDT)
+        Wed, 29 Jul 2020 13:51:43 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4B0C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 10:51:43 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id d2so7887170lfj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 10:51:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=53jL1gCIZPJ/fUs+rrvedrXgW51WiC52+XUIhgRgdC4=;
-        b=KAP1c9zwOHZJT007ketCdNEM3axHvVyg3WtUW02b7Ff7jujo1BmmQ4wg3RlBUvfcQK
-         MFiscEKEDRiPm5cHq3p0rIKUU9WVRytEKAStmrVKTwenh1FM3NvGIJu3pibZmiJUGYN4
-         LHcPL6qeAjUG/wMjkyTiAHPbg69vDZhQJIXTGoYbtfXnx0mPyoGzShmee2UPhQYebGGv
-         hKbjBDJhXdSPws9eHnQSwsQSkYfB8PJvsBwYoK4Oi/dkjkKqOuixzUx3LC7Uo3G/+juI
-         UdbFwrxHgFubtRL70cFPHEYjArtcjT+lQN4fhTxxAHpX1SHTj23iiQv9BVHH/62NqqF7
-         Uj1g==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=M8EEzQgedASRzziAlVDiAKTIfPr1kKdI9aJL7xZj35I=;
+        b=Avfq4sQKVEg2XPwPbiU8kQbX0afWtDg8GvOGJu3topccu/yIq0pEIwM3DYccHYnHQD
+         zz2PpmdVhy3VPbgBuLXyv4eVyZ+O3SEEwjm7dJLAPEv2bYc/ITzzys9gCaaRZM5w1S9y
+         O8oQ/aZAjl4SzMP46wY/xkHoH3L+BzhCNNL90=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=53jL1gCIZPJ/fUs+rrvedrXgW51WiC52+XUIhgRgdC4=;
-        b=kDCBsaS1jR8EmtwFqPUlCav5oAFUuo7459f8a7l5VRSOaW6OMErMnHCq3K4BKjd38z
-         6z/OftvQ6ha4owShoOMk2q7PnQmk3TECqoxuOtzDTI4LlTfRbG4+h33xsypCP8w5nOhj
-         zRM+kFwz6lUik5yVZsdRLQ7fVmjfLA4sPTKgzFwyKAq1x2uX0guQrRRjjY4q/2ezIHyQ
-         c5qfC9c2DLCcL3JdNe8n8BuG8ARsamlk45gKB5IRM8nyMq03MapVhF4qEN8u98ioXBqT
-         y9uNaFOPgf/gJ4HjfG8TuMfjqwOOa3qwXEg7zaBn4pEhp1uXzDN3Ek1BjpHZgghM3C+3
-         aiEA==
-X-Gm-Message-State: AOAM531oWSeFwCzjdm3dyTKxkwTC4wMu55slzBYI1iYKLI60wsX6RKAA
-        kFwMG0hx61g3veyEK0CcUxE=
-X-Google-Smtp-Source: ABdhPJxBMJ6Y/cuQz2xzSY6RfEwMgrehyKQdChtrXWsY4fXTK+U9CwOlHGUJeBwQ8ac+/a+CmK7+Gw==
-X-Received: by 2002:a62:2e45:: with SMTP id u66mr6559748pfu.121.1596045015723;
-        Wed, 29 Jul 2020 10:50:15 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id z4sm3046126pfb.55.2020.07.29.10.50.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 10:50:14 -0700 (PDT)
-Date:   Thu, 30 Jul 2020 02:50:12 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Petr Mladek <pmladek@suse.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 0/2] locking/qspinlock: Break qspinlock_types.h header
- loop
-Message-ID: <20200729175012.GE1160@jagdpanzerIV.localdomain>
-References: <20200729210311.425d0e9b@canb.auug.org.au>
- <20200729114757.GA19388@gondor.apana.org.au>
- <20200729122807.GA7047@gondor.apana.org.au>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=M8EEzQgedASRzziAlVDiAKTIfPr1kKdI9aJL7xZj35I=;
+        b=oK21ab6Bb0mQxkcJn+O7PgX8zzGdPrSv9RF5ThQP6Gt+hYM27IlZ83S8oaz9OhaOyQ
+         i6S9zbhcTT8jd7A+/4uR7Wv7C2qUTGHONrVU2mob+WL5it0gvDL5Z0myHUO7VwAiseU0
+         QGGT0RXkTCG1B0ODUNw0jxugo3CgnDlTYJBEfHbCeXpuRUvjMee+kbgAWq3oYL3TvyOr
+         F/kKuNwXPltKY16QiktJaEBRJV6vZ6Y53uZa8otPL9DM+kQjBYzVwAvNtZhGryuHr2bd
+         909C1/OhgJBX/kSO4cQk9blfHUSHLhJfusSTqZJ/TSdyUmeJYWyQHURNoA/dDu/98SjZ
+         lnjA==
+X-Gm-Message-State: AOAM532mRgnbJ2ihiFRTqK0ZZbATUOc0wahKYgNeo9oqAKMZplckdSoF
+        GWiyfNWoJeU1jD/ciR4ObEG6iTdVN3Y=
+X-Google-Smtp-Source: ABdhPJzBNdGolOtWTHXT8RiRVgcTa2qCVyaNWWhRHVLogYH3aZqrkF3/+nJXmecogFUw3YKLkWwh8A==
+X-Received: by 2002:a19:8295:: with SMTP id e143mr17387445lfd.95.1596045101219;
+        Wed, 29 Jul 2020 10:51:41 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id h26sm516083ljb.78.2020.07.29.10.51.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Jul 2020 10:51:40 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id q6so26001271ljp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 10:51:40 -0700 (PDT)
+X-Received: by 2002:a2e:991:: with SMTP id 139mr14828926ljj.314.1596045099867;
+ Wed, 29 Jul 2020 10:51:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729122807.GA7047@gondor.apana.org.au>
+References: <20200708131751.334457-1-lionel.g.landwerlin@intel.com>
+ <20200708131751.334457-3-lionel.g.landwerlin@intel.com> <CAKMK7uFkMKiwyTFMRASk5L=1NdFqeuKfCh_FHRLg4FxzHpXpfw@mail.gmail.com>
+In-Reply-To: <CAKMK7uFkMKiwyTFMRASk5L=1NdFqeuKfCh_FHRLg4FxzHpXpfw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 29 Jul 2020 10:51:23 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjD-6phO85fvLMt7rvk5ZwaJ1Q5Zor4urYps6C8vG_Txg@mail.gmail.com>
+Message-ID: <CAHk-=wjD-6phO85fvLMt7rvk5ZwaJ1Q5Zor4urYps6C8vG_Txg@mail.gmail.com>
+Subject: Re: [Intel-gfx] [PATCH v12 2/3] drm/i915: add syncobj timeline support
+To:     Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/07/29 22:28), Herbert Xu wrote:
-> This miniseries breaks a header loop involving qspinlock_types.h.
-> The issue is that qspinlock_types.h includes atomic.h, which then
-> eventually includes kernel.h which could lead back to the original
-> file via spinlock_types.h.
-> 
-> The first patch moves ATOMIC_INIT into linux/types.h while the second
-> patch actuallys breaks the loop by no longer including atomic.h
-> in qspinlock_types.h.
+On Wed, Jul 29, 2020 at 5:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> Do we have a access_ok_array or so? Instead of duplicating overflow checks
+> everywhere and getting it all wrong ...
 
-Thanks for staying on this.
+I really really think you should get away from access_ok() entirely.
 
-I pulled locking/header, run some cross-compilation tests locally
-(powerpc, arm, arm64, x86) and pushed printk/for-next. Let's see.
+Please just get rid of it, and use "copy_from_user()" instead.
 
-	-ss
+Seriously.
+
+access_ok() is completely wrong, because
+
+ (a) it doesn't actually protect from any fault returns, it only doe
+sthe high-level check of "is the pointer even ok".
+
+So you can't say "ok, I did access_ok(), so I don't have to check the
+return value", and you're actually making the source code more
+complicated, and only introducing the possibility of bugs.
+
+Overflow is just _one_ such bug. Missing the access_ok() entirely
+because it was in some caller but not another is another common bug.
+
+ (b) it no longer even makes the code faster.
+
+It never really did for the the copy_to/from_user() case _anyway_, it
+was always for the "I will now do several get/put_user() accesses and
+I only want to do the range check once".
+
+And that has simply not been true for the last few CPU generations -
+because the cost isn't in the range check any more. Now allk the real
+costs are about CLAC/STAC. The range check takes two cycles and
+schedules well (so it's generally not even visible). The CLAC/STAC
+takes 30+ cycles, and stalls the pipeline.
+
+>Similar I guess for copy_from/to_user_array.
+
+No. I refuse to add complexity onto the garbage that is access_ok().
+
+Just remove it. It's not helping. People who think it's helping
+haven't actually looked at profiles, or are working with hardware that
+is no longer relevant.
+
+                Linus
