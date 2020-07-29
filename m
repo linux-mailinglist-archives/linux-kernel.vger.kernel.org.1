@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E4D232387
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 19:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAB6232392
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 19:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgG2RkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 13:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgG2RkB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 13:40:01 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01064C061794;
-        Wed, 29 Jul 2020 10:40:01 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id c16so8333007ils.8;
-        Wed, 29 Jul 2020 10:40:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aEIYYq2kW/WiB6gUi4gfbO509LEn/L/Pyhh8ZaCEkmE=;
-        b=ZIAkcoprPEJ+NVIytPXW7aSmDNMFVtiigUDPl/ClKFR8KIIQsziLh0oVZ0wnHihULU
-         uXFjNq74e7qd8p4nRqlufhnQ+KV4/AnDIfG6PkEccPwwY53UWbBQdoKVHDbnlYm0x/zt
-         7g85MxLYVCd60/lbpRH2F1wAn8yCWMLdffq31MXEdjhEL95Y5uXMgJ8QNfLUm6QMcLK0
-         gTFcJh5phQAFCZbSYhfQx3ULbKrbPvIYdy8Q8W0XjxIxO9rs75F7+8Bjf9c4SdBjpjdY
-         VRqzj/RazUGauvupuwGUFHaVitpZT5dE8vtqXDkAJ/1m5e15P/awYrDdN2P3aNKb0Cjm
-         EhwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aEIYYq2kW/WiB6gUi4gfbO509LEn/L/Pyhh8ZaCEkmE=;
-        b=e5uFTRCq9gyjuZVhbmhfVdGPhIwi0kP+Wd5Kj+dBSAvg7o+WOovp5nR7pf8uG1FDQ+
-         fq0ATRZiVQdIQIktEk4wWvh1aKrSkLV2sronIREko+hZQ7aJ1k+JTQhK0+X69s8rvmSs
-         /wzuDp+jwH9t8+6PDvDWj35NV+LXTA2mDGF8WhyTtKTI1GYTghI6lcqkNHYzW+ILxgBi
-         cGHFQW7zK35sMcGl4kXNJePVPG/8RdeiyJ4cAI1aPAbwI1McEVtGR21/QNbm8M86Oluv
-         +4F1t/xl0bM7zJfFGz/TWAeUXlgjpC8PI7ZZ4n6ibvxazwbWJ+2qkW9wUA4YlOYHhqbm
-         /+Aw==
-X-Gm-Message-State: AOAM532wnusYvQ2O5QqKh8XEpdsMAxaUGCdgjMJfi0FhQeBLmfPf7U83
-        YrpHKYrdqO7rb7oi8SU16thjy193m6CoA713Qt0=
-X-Google-Smtp-Source: ABdhPJwlp3xYVIJRiw+Y130nbuhCK+JvFexj+zBfdC3ovRWCIz3H/lUQR0sXo63rj1TyhNei7XVXo1nGHy8fELiAB2A=
-X-Received: by 2002:a92:8946:: with SMTP id n67mr16523409ild.168.1596044400155;
- Wed, 29 Jul 2020 10:40:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200729160942.28867-1-krzk@kernel.org> <20200729160942.28867-2-krzk@kernel.org>
-In-Reply-To: <20200729160942.28867-2-krzk@kernel.org>
-From:   Tomasz Figa <tomasz.figa@gmail.com>
-Date:   Wed, 29 Jul 2020 19:39:47 +0200
-Message-ID: <CA+Ln22E_VkAYz7cpE1TdVGj6AkjWOgyVm01gzSjMPs=JE8+qLw@mail.gmail.com>
-Subject: Re: [PATCH 1/7] clk: samsung: s3c64xx: Declare s3c64xx_clk_init() in
- shared header
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Kukjin Kim <kgene@kernel.org>,
-        Vincent Sanders <vince@simtec.co.uk>,
-        Simtec Linux Team <linux@simtec.co.uk>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:SAMSUNG SOC CLOCK DRIVERS" 
-        <linux-samsung-soc@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        patches@opensource.cirrus.com,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Sergio Prado <sergio.prado@e-labworks.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Cedric Roux <sed@free.fr>, Lihua Yao <ylhuajnu@outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1727069AbgG2Rkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 13:40:41 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:13153 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727017AbgG2Rkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 13:40:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596044439; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=I/IQdNkreYiTRKc48552j/BGYeKsZ+oHQdQeMynB8Og=; b=nbn/1+vrChmBBPV3U1g5wFww6LIFtFPfPUko2DUmy6CPtd1sWSJBQrHYbMZ0eiIuy5ohcdoV
+ d01VDSj6sIgdWLghR9e8vNYpsBguNNFQqCXz8ROxU9z082s3GLhMk0rzjyEGjxvqHxlJPGvM
+ yZnTLFDo1mLCbBSpuS9i6moP5bg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f21b48370ff737ddb4cfa35 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Jul 2020 17:40:19
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B4D39C433A0; Wed, 29 Jul 2020 17:40:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4E151C433C9;
+        Wed, 29 Jul 2020 17:40:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4E151C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sidgup@codeaurora.org
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com,
+        corbet@lwn.net
+Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v5 0/2] Add character device interface to remoteproc
+Date:   Wed, 29 Jul 2020 10:39:59 -0700
+Message-Id: <1596044401-22083-1-git-send-email-sidgup@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=E5=B9=B47=E6=9C=8829=E6=97=A5(=E6=B0=B4) 18:11 Krzysztof Kozlowski <kr=
-zk@kernel.org>:
->
-> The s3c64xx_clk_init() is defined and used by clk-s3c64xx driver and
-> also used in mach-s3c64xx machine code.  Move the declaration to a
-> header to fix W=3D1 build warning:
->
->     drivers/clk/samsung/clk-s3c64xx.c:391:13: warning: no previous protot=
-ype for 's3c64xx_clk_init' [-Wmissing-prototypes]
->       391 | void __init s3c64xx_clk_init(struct device_node *np, unsigned=
- long xtal_f,
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  MAINTAINERS                       |  1 +
->  arch/arm/mach-s3c64xx/common.c    |  1 +
->  arch/arm/mach-s3c64xx/common.h    |  2 --
->  drivers/clk/samsung/clk-s3c64xx.c |  1 +
->  include/linux/clk/samsung.h       | 21 +++++++++++++++++++++
->  5 files changed, 24 insertions(+), 2 deletions(-)
->  create mode 100644 include/linux/clk/samsung.h
->
+This patch series adds a character device interface to remoteproc
+framework. Currently there is only a sysfs interface which the userspace
+clients can use. If a usersapce application crashes after booting
+the remote processor through the sysfs interface the remote processor
+does not get any indication about the crash. It might still assume
+that the  application is running.
+For example modem uses remotefs service to data from disk/flash memory.
+If the remotefs service crashes, modem still keeps on requesting data
+which might lead to crash on modem. Even if the service is restarted the
+file handles modem requested previously would become stale.
+Adding a character device interface makes the remote processor tightly
+coupled with the user space application. A crash of the application
+leads to a close on the file descriptors therefore shutting down the
+remoteproc.
 
-Reviewed-by: Tomasz Figa <tomasz.figa@gmail.com>
+Changelog:
+v4 -> v5:
+- Addressed comments from Bjorn and Mathieu.
+- Added cdev_set_parent call to set remoteproc device as parent of cdev.
+- Fixed error with rproc_major introduced in the last patch.
+- Fixed implementation for compat calls. With previous implementation 64bit
+  userspace applications failed to perform the ioctl call, returning errno 25,
+  or "Inappropriate ioctl for device."
+- Removed exit functions from the driver as remoteproc framework is statically
+  compiled.
 
-Best regards,
-Tomasz
+v3 -> v4:
+- Addressed comments from Mathieu and Arnaud.
+- Added locks while writing/reading from the automatic-shutdown-on-release bool.
+- Changed return value when failing to copy to/from userspace.
+- Changed logic for calling shutdown on release.
+- Moved around code after the increase of max line length from 80 to 100.
+- Moved the call adding character device before device_add in rproc_add to add
+  both sysfs and character device interface together.
+
+v2 -> v3:
+- Move booting of remoteproc from open to a write call.
+- Add ioctl interface for future functionality extension.
+- Add an ioctl call to default to rproc shutdown on release.
+
+v1 -> v2:
+- Fixed comments from Bjorn and Matthew.
+
+Siddharth Gupta (2):
+  remoteproc: Add remoteproc character device interface
+  remoteproc: core: Register the character device interface
+
+ Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +
+ drivers/remoteproc/Kconfig                         |   9 ++
+ drivers/remoteproc/Makefile                        |   1 +
+ drivers/remoteproc/remoteproc_cdev.c               | 124 +++++++++++++++++++++
+ drivers/remoteproc/remoteproc_core.c               |   7 ++
+ drivers/remoteproc/remoteproc_internal.h           |  28 +++++
+ include/linux/remoteproc.h                         |   5 +
+ include/uapi/linux/remoteproc_cdev.h               |  37 ++++++
+ 8 files changed, 212 insertions(+)
+ create mode 100644 drivers/remoteproc/remoteproc_cdev.c
+ create mode 100644 include/uapi/linux/remoteproc_cdev.h
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
