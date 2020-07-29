@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398B0231784
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 04:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE0523177F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 04:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730909AbgG2CH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 22:07:27 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:32000 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728401AbgG2CH1 (ORCPT
+        id S1730773AbgG2CEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 22:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728401AbgG2CEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 22:07:27 -0400
-X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Jul 2020 22:07:26 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595988444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DeolwL/8SdMeyvaIjqFbfDjnFfnpKQhKODlzhWE0ad4=;
-        b=K7wKjCuldFiHSEJy65oR/auF1xx3bLnbGXzhw7DR1GCYwDtKJ4B2UwbzrWiDnIV7RVpXVw
-        N7R9ATz7K5e8l5Cu1Lg4TUpvYZsKMA94quWEGntauf6snXYx5Q6t/pasIR1kNZ8T7nopZH
-        zyhnkueof4qcSJmKOfoHKrX7+t/dmS0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-5cxjp49uMeyN4-6Az-5SbA-1; Tue, 28 Jul 2020 22:01:17 -0400
-X-MC-Unique: 5cxjp49uMeyN4-6Az-5SbA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78F8D1DE2;
-        Wed, 29 Jul 2020 02:01:16 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 986A38A169;
-        Wed, 29 Jul 2020 02:01:09 +0000 (UTC)
-Date:   Tue, 28 Jul 2020 22:01:06 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Eric Paris <eparis@parisplace.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3fix ghak120] audit: initialize context values in case
- of mandatory events
-Message-ID: <20200729020106.x5tfijvnxdmujtbj@madcap2.tricolour.ca>
-References: <e3e9c9da9115fd233c5a7895dbb4a698a365b1b0.1595884394.git.rgb@redhat.com>
- <CAHC9VhSx23JiN6GprskxdEcs9uftJOp03Svh7YJbQLOV91AMiQ@mail.gmail.com>
- <20200728162722.djvy3qyclj57wsfn@madcap2.tricolour.ca>
- <CAHC9VhSDoi8QS3c6Wmx6agmmphja60cS3+aTKVx76xvdkxJ0DQ@mail.gmail.com>
+        Tue, 28 Jul 2020 22:04:00 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8F1C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 19:04:00 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id k4so11061306pld.12
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 19:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=opm5/07OD3J2p/0n+7i7LzhKbmftCJUmIROWDMPvtU4=;
+        b=KQ72dvnDALPU5r/omXmjdtZI2XRViO+8jLujYN8p1OScazfUGU7iVn84MKvhxWdR2X
+         /QlikExYwVM9nSbPHOa6/fmtXlYXXOpn69tvZE/2cng2+Yto3ke8d/yfsmlL7ZJMi7TY
+         S3x7Xrj99aYdBZDGwD+hFBmGGfPoYLaNvRQLaVejUc0K7v0okGraPCGZBvbVaV/revk1
+         wpCJWHjQHO2ad/cyQ8oUDVxr9x/C2PFNcf3fwuJm6pEnqaOETaa0P/zL+A09z6BdJFiG
+         XS7Wl0XILYkRpZr2PkT10IPXVyjjGMN1CNKZ9Punu9fRxt5LKMbGRuM9hRBp2odHNHAG
+         /NPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=opm5/07OD3J2p/0n+7i7LzhKbmftCJUmIROWDMPvtU4=;
+        b=L+eUkJmth5Ehg2XqmmJYT0HFS7UpDYeDr7ttDg0dAUnCFpAiYmeMs6DrwWSDY58Ks3
+         B4HAHtUu3dd4OaQiPiwaaJECW96JQxFNCfbDSJs7eliNBiGId5K9bt0u6o+OheU2g1MZ
+         L4G6S+JhNPWVt4J43uDobY4kgatUMQ54mNWgJQfoid96f/UgBvMiY9sjMCoBj6P2/Gwh
+         sEC/MBZxMv3NKwuICdbfHkeUxkwPRoYxPifhP+J20cvwqTQ0luYtJWjDCHm8qR1ikhEr
+         h81qyINL5PwQT8a3kFHkOEGWYhf/B3dOVNrEZctffebP48AQoimK2cwpqBsZ3R2HsAck
+         +qqw==
+X-Gm-Message-State: AOAM533h7NPO5PatWgRDUgHwVPDa/n97StDq/q0LouRQCV/2bbeCRlLp
+        JVJjGzKxtDghK83MGwPTthM=
+X-Google-Smtp-Source: ABdhPJzfqV6zX0OF8YTJPMPc+QE9i+TUzyTtuShT2IGRvxssqK3wFB5dF5s6Ru/Dfve74pIFmvrHxA==
+X-Received: by 2002:a17:90a:9f4a:: with SMTP id q10mr7309395pjv.139.1595988239749;
+        Tue, 28 Jul 2020 19:03:59 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id lt17sm401897pjb.6.2020.07.28.19.03.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 19:03:56 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 11:03:55 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] printk: store instead of processing cont parts
+Message-ID: <20200729020355.GA1534750@jagdpanzerIV.localdomain>
+References: <20200717234818.8622-1-john.ogness@linutronix.de>
+ <20200717234818.8622-3-john.ogness@linutronix.de>
+ <20200719143527.GA566@jagdpanzerIV.localdomain>
+ <CAHk-=wg70es2rSYsHbBcWrBPsoHmbZ8vmeqTS_Kypv6zHAwQjA@mail.gmail.com>
+ <20200720015057.GA463@jagdpanzerIV.localdomain>
+ <CAHk-=whqiemoYRE41+qMuwQ_Qw3pn7gy2-Mso=ZDrwxQCVkncg@mail.gmail.com>
+ <20200721144220.GE44523@jagdpanzerIV.localdomain>
+ <87ft9kx6er.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHC9VhSDoi8QS3c6Wmx6agmmphja60cS3+aTKVx76xvdkxJ0DQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <87ft9kx6er.fsf@jogness.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-28 14:47, Paul Moore wrote:
-> On Tue, Jul 28, 2020 at 12:27 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > I know you like only really minimal fixes this late, but this seemed
-> > pretty minimal to me...
+On (20/07/21 17:03), John Ogness wrote:
+> On 2020-07-21, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
+> >> That said, we have traditionally used not just "current process", but
+> >> also "last irq-level" as the context information, so I do think it
+> >> would be good to continue to do that.
+> >
+> > OK, so basically, extending printk_caller_id() so that for IRQ/NMI
+> > we will have more info than just "0x80000000 + raw_smp_processor_id()".
 > 
-> Minimal is a one (two?) line NULL check in audit_log_name(), this
-> patch is not that.
+> If bit31 is set, the upper 8 bits could specify what the lower 24 bits
+> represent. That would give some freedom for the future.
+> 
+> For example:
+> 
+> 0x80 = cpu id (generic context)
+> 0x81 = interrupt number
+> 0x82 = cpu id (nmi context)
 
-I didn't try and test that since I'm not sure that would have worked
-because there appeared to be a low non-NULL value in it.  brauer1's trace had
-0x60 and mine had 0xd0.  Or am I missing something obvious?
+Looks good to me. I'd probably add in_softirq state. So the contexts
+are: in_task, in_softirq, in_irq, in_nmi
 
-The patch provided the information rather than ignoring the problem
-(which maybe should have been caught by WARN_ONCE?).
+For the purpose of future extensions, I would probably consider
+u64 for callerid. So that we can store more "state bits" in the future,
+like disabled/enabled preemption; disabled/enabled local irqs; etc.
 
-> paul moore
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+	-ss
