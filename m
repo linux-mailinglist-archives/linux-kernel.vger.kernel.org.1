@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CFC232788
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 00:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CA723279C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 00:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgG2WUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 18:20:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726365AbgG2WUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 18:20:09 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79C0720656;
-        Wed, 29 Jul 2020 22:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596061209;
-        bh=KLvPsavYrofWM6f4AXDigwHYBLrvjA0P788PW9BOn3I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lQ6SWJrwmliagnaaj9AARYqFgysmTQLl9kIdZPWtkh9xXkOIBIpNnBRq2/xX9rbNM
-         KJxT6KVIXBtwPDzKKUE7379wEXYB6xKcVN1vG2gwRoOUsqR7ZK6MNVqLwoSI9wV5ea
-         mnP7+7JCN8ciFZRnbDmEazP0YfwViqMXbk5m542s=
-Date:   Wed, 29 Jul 2020 17:26:07 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] ALSA: hda_codec: Use flex_array_size() helper in
- memcpy()
-Message-ID: <20200729222607.GA11750@embeddedor>
+        id S1727956AbgG2W2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 18:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727072AbgG2W2B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 18:28:01 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DC0C0619D2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 15:28:01 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id lx9so3026170pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 15:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HakOP25I3XRzn6emIyIn+SNaVVoDU428IKwQeNMWETw=;
+        b=JnQqskZz2TH+OX/BxntmELHkDL8XBjDxamqluvS5qO71nT10lxrBAcfjbUiiZL6BFQ
+         d9S8JEVN3ue1HfEEPzt83I/bjcT+s5b8i8c0PKB2MY4FI8xJAGzltx8kaJvx7MOtbIpj
+         sebV33rN9euwB4owI+P9wXiXkvwTNaVit+UFw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HakOP25I3XRzn6emIyIn+SNaVVoDU428IKwQeNMWETw=;
+        b=UiM6jdWFUBMLc87h/53JI5VwxPgBu45+F1Yp3hrriQ60z/QKP2X/E3DT19JjPzPdis
+         yjGwliP6jXoowu82Ezv2nn/ReZOxo4O2s9r//aiWGXIAJY/IS7RNMSoVsMW+cAIKZ3J0
+         9AH1kHEGc9rXbLN5o+yrZswc0L3wvI6U/LXpn5jMN0yCSs1j5WS/RnM81XKKf/i1VdAt
+         5sP1HcS3/Hmvcr8n8odYq8Ifs6R5GSAMxDgBVmqzNTT2L9jtOtDUli0Lzb8o4RZfphIz
+         T6CzbHuv701EdO64szj+PQeKJkTET64Ib7Y+QfaFJbUVuIKW4A98dFZFYmkKFigNSzxt
+         MkiA==
+X-Gm-Message-State: AOAM5339U+9jjI3BVBQRHx3Tp/4M/HgUeVlI3EL7neUBXbkbaYojVNLV
+        hVfyDwFwxl99vpZIHnm/r2Zd0g==
+X-Google-Smtp-Source: ABdhPJwDfwZlf3Y94wXlvwwOetYjB5EwTN8SUq/khGfqIu55ajJehBwt91Ox5CU2A2OKvfKlTL4C8Q==
+X-Received: by 2002:a17:902:161:: with SMTP id 88mr30361526plb.325.1596061681297;
+        Wed, 29 Jul 2020 15:28:01 -0700 (PDT)
+Received: from google.com ([2620:15c:202:1:8edc:d4ff:fe53:350d])
+        by smtp.gmail.com with ESMTPSA id a16sm3647844pgj.27.2020.07.29.15.27.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 15:28:00 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 15:27:57 -0700
+From:   Brian Norris <briannorris@chromium.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v3 0/6] platform/chrome: cros_ec_proto: Convert EC error
+ codes to Linux error codes
+Message-ID: <20200729222757.GB970863@google.com>
+References: <20200726220101.29059-1-linux@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200726220101.29059-1-linux@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the flex_array_size() helper to calculate the size of a
-flexible array member within an enclosing structure.
+On Sun, Jul 26, 2020 at 03:00:55PM -0700, Guenter Roeck wrote:
+> The EC reports a variety of error codes. Most of those, with the exception
+> of EC_RES_INVALID_VERSION, are converted to -EPROTO. As result, the actual
+> error code gets lost. In cros_ec_cmd_xfer_status(), convert all EC errors
+> to Linux error codes to report a more meaningful error to the caller to aid
+> debugging.
+> 
+> To prepare for this change, handle error codes other than -EPROTO for all
+> callers of cros_ec_cmd_xfer_status(). Specifically, no longer assume that
+> -EPROTO reflects an error from the EC and all other error codes reflect a
+> transfer error.
+> 
+> v2: Add patches 1/4 to 3/4 to handle callers of cros_ec_cmd_xfer_status()
+> v3: Add patches 4/6 and 5/6 to handle additional callers of
+> 	cros_ec_cmd_xfer_status()
+>     Use -ENOPROTOOPT for EC_RES_INVALID_VERSION
+>     Implement function to convert error codes
 
-This helper offers defense-in-depth against potential integer overflows
-and makes it explicitly clear that we are dealing with a flexible array
-member.
+A small potential (i.e., being paranoid about future changes) note on
+patch 6, but otherwise looks fine to me:
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- sound/pci/hda/hda_codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 58c698f4d131..453c4ec77c48 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -113,7 +113,7 @@ static int add_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
- 		return -ENOMEM;
- 	p->len = len;
- 	p->nid = nid;
--	memcpy(p->conns, list, len * sizeof(hda_nid_t));
-+	memcpy(p->conns, list, flex_array_size(p, conns, len));
- 	list_add(&p->list, &codec->conn_list);
- 	return 0;
- }
--- 
-2.27.0
-
+Reviewed-by: Brian Norris <briannorris@chromium.org>
