@@ -2,114 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA7F23245A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 20:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB3B232464
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 20:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgG2SID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 14:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
+        id S1727816AbgG2SJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 14:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbgG2SID (ORCPT
+        with ESMTP id S1726606AbgG2SJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 14:08:03 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08912C061794;
-        Wed, 29 Jul 2020 11:08:03 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id t23so2534824ljc.3;
-        Wed, 29 Jul 2020 11:08:02 -0700 (PDT)
+        Wed, 29 Jul 2020 14:09:12 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3585C061794;
+        Wed, 29 Jul 2020 11:09:11 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id m8so6487168pfh.3;
+        Wed, 29 Jul 2020 11:09:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rP5EEJynL4vgrWif7lHCElf13y97LueeJ9XmjRFRzS0=;
-        b=EHIjsZuIB3TgAX8r22RZWI/8jR1FJnzWSlLGYPXpB+kD8YvVZV8aze0sZ/Mi0CfV/U
-         UAbiD9oRa9su9lvZI+vgs9vtebyHkewkpGA9V6w6V0viYqr8TkoPVw91aIqccFNNNsvq
-         eReEsCq6wV4/eNP0zks13qdCs0azKEuKAQL3kluP8SaJwaxjuz8XrheyxQnAbrbmBjGF
-         oq9mWeTJCWu8Z+0LhNmSfeXFD2E8sN+vChyvX6TQKQO9X3/PO9sFIojBK9yRpkWEqL4b
-         buQrjMJySHkHtstvBgAmwD8vjShSs03rdauPB0TXzTWCUnrwSLqgDzrsfDlXuvs9bnyU
-         9m6g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sfPOG6a/47cUtALYSnlvnZ/WCh4i+al44aw0zmYjang=;
+        b=UrOswiFuZZhn7uoyGWLSFZsV1RbtprxsD0S5/apScsqI3N3xK3Hxa8rCh0jK2GuiFv
+         dtmU9p7g16P2a9Liqnk9mW8m1VPQ+Nlb3Gld6fOLXjetzOiAROMCueh3Dw2vnyQXszDx
+         wxWRthkdzuVdIcfzFFFTvdpiZxWTyZIDdq+RXA0i6Ae7NSmF9hPm//Mu2jVBZgB75DrM
+         +Oky3bbQPfp5WfiWcYxGQH1kCr2/NE09Px3ykC6Bm1jCnvj2p2lv49d8kQfJthsbs4OU
+         XwCpwEq4nVnvE1EyrVO1xj0iO/qzkxIZHCB0i6P5JEzTixSVg1s68X8ZTJtCQEuXkwbW
+         bcJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rP5EEJynL4vgrWif7lHCElf13y97LueeJ9XmjRFRzS0=;
-        b=ptNfz55lVYC4Eak+ksR7iyxC0mV4IZMmFxGqyHUFPD62eJ/UG8LQmqlJZ1YUCUUIFe
-         yEsFNPNfCXohr1wUH9l9roHB+6jq7xBmrDZJi0kLqLSuO8Yx/1I0sUby3ZHwG5ICWKeb
-         WeIId+8BZcco8feIydUkLgRveWtV2/MXmgq0K/+A7SggBpJVZuh4vz6z8QOMK6P1iqrq
-         vZ6jfXV1Wt9mT8qC0ZvPhmn7MgxuxYs6/Dty76c9MFujFDpWadm+4t/tzlUL4lubHOx6
-         ubddUIOltazWd1+sq1SopR9Oq7aONpTM46E0Ujn1hy778JaIrZYafR4k6ARRahD0iyl6
-         xcDQ==
-X-Gm-Message-State: AOAM533ZrRebqSrN3Xh4+bMuGEDNpxDyFBzUOyjFnPjFgid48Ns8/Acy
-        36sXFYmXD7s0YxoB6FnT5nvCINLEdd8=
-X-Google-Smtp-Source: ABdhPJxcfwFKEXxoYle9H02FAwEpkRJE3h4+zoXeAqWpIEyYOxLKpX2yOdVWUTis4U5IW3fPT30rgQ==
-X-Received: by 2002:a2e:9cc2:: with SMTP id g2mr13926210ljj.442.1596046081288;
-        Wed, 29 Jul 2020 11:08:01 -0700 (PDT)
-Received: from wasted.omprussia.ru ([2a00:1fa0:609:47e:1634:9053:a274:2373])
-        by smtp.gmail.com with ESMTPSA id e14sm520837ljj.120.2020.07.29.11.08.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Jul 2020 11:08:00 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] usb: xhci: define IDs for various ASMedia host
- controllers
-To:     Forest Crossman <cyrozap@gmail.com>, linux-usb@vger.kernel.org
-Cc:     mathias.nyman@intel.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200727090629.169701-1-cyrozap@gmail.com>
- <20200728042408.180529-1-cyrozap@gmail.com>
- <20200728042408.180529-2-cyrozap@gmail.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <3dbfff9a-e64e-e11f-c032-2bbbb7359c97@gmail.com>
-Date:   Wed, 29 Jul 2020 21:08:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sfPOG6a/47cUtALYSnlvnZ/WCh4i+al44aw0zmYjang=;
+        b=gG18iD0tl2Mx8nQeXVaQCRMsHZhfZfd/G2p+cg2SdINkVY7ytVIEwhuZRN8zXvCVNW
+         DlBawSzyGT/57V7dR46P2HBpOQfSZ7BMI+lWhjCfQm9Tibne5ejJ1PRDFCXXiX4DRxwo
+         xOBRT3oB1cWWcF3G1UPSb9g+X5MUa6adTMtXQp2+QwacImL7xDQQycYvR/YIJjwOc1Fi
+         ZgtK/RPxWUiy6Ukia8H8boWlSlu+HAahp5H1a8Av7Z31UharKqCTsa9jaHH2esB5qAOU
+         g4SIZO2vvLqioWcqmkGPwwUFJ9LgyQupaT9Q7Uy+DAkgNSlPxStBtmL1ucDUouA52LL2
+         XRfA==
+X-Gm-Message-State: AOAM530iq4iM9au7gV2GdpRBTrFiejHl1uKySdJrPriCBYkYOCBi3Rtj
+        LdeMYcPA6A8ZwJZJQoOJWfQ=
+X-Google-Smtp-Source: ABdhPJwV3nArYEU4oL7nEaqu3Z7hw2oYoxv+xYvZJDjnXh+nBXIKqwdkdo68TPhpbOujjV47+doUhg==
+X-Received: by 2002:aa7:9189:: with SMTP id x9mr29558415pfa.325.1596046151452;
+        Wed, 29 Jul 2020 11:09:11 -0700 (PDT)
+Received: from blackclown ([103.88.82.91])
+        by smtp.gmail.com with ESMTPSA id g8sm3074779pgr.70.2020.07.29.11.09.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 29 Jul 2020 11:09:10 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 23:38:55 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com, oliver@neukum.org,
+        aliakc@web.de, lenehan@twibble.org, dc395x@twibble.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@linux-kernel.org
+Subject: [PATCH 3/7] scsi: dc395x: Remove pci-dma-compat wrapper APIs.
+Message-ID: <b8acc51ec774507050a9e9e8edf28e4933322a9e.1596045683.git.usuraj35@gmail.com>
+References: <cover.1596045683.git.usuraj35@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200728042408.180529-2-cyrozap@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
+Content-Disposition: inline
+In-Reply-To: <cover.1596045683.git.usuraj35@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
 
-On 7/28/20 7:24 AM, Forest Crossman wrote:
+--gKMricLos+KVdGMg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Not all ASMedia host controllers have a device ID that matches its part
-> number. #define some of these IDs to make it clearer at a glance which
-> chips require what quirks.
-> 
-> Signed-off-by: Forest Crossman <cyrozap@gmail.com>
-> ---
->  drivers/usb/host/xhci-pci.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-> index 9234c82e70e4..baa5af88ca67 100644
-> --- a/drivers/usb/host/xhci-pci.c
-> +++ b/drivers/usb/host/xhci-pci.c
-[...]
-> @@ -260,13 +262,13 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
->  		xhci->quirks |= XHCI_LPM_SUPPORT;
->  
->  	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
-> -			pdev->device == 0x1042)
-> +		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042_XHCI)
+The legacy API wrappers in include/linux/pci-dma-compat.h
+should go away as it creates unnecessary midlayering for
+include/linux/dma-mapping.h APIs.
+Instead use dma-mapping.h APIs directly.
 
-   You shouldn't have un-indented it, blends with the branch below.
-   The 80-column line length limit is history now. :-)
+The patch has been generated with the coccinelle script below.
+Compile tested.
 
->  		xhci->quirks |= XHCI_BROKEN_STREAMS;
->  	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
-> -			pdev->device == 0x1142)
-> +		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI)
->  		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
->  	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
-> -			pdev->device == 0x2142)
-> +		pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI)
->  		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
->  
->  	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+@@@@
+- PCI_DMA_BIDIRECTIONAL
++ DMA_BIDIRECTIONAL
 
-MBR, Sergei
+@@@@
+- PCI_DMA_TODEVICE
++ DMA_TO_DEVICE
+
+@@@@
+- PCI_DMA_FROMDEVICE
++ DMA_FROM_DEVICE
+
+@@@@
+- PCI_DMA_NONE
++ DMA_NONE
+
+@@ expression E1, E2, E3; @@
+- pci_alloc_consistent(E1, E2, E3)
++ dma_alloc_coherent(&E1->dev, E2, E3, GFP_)
+
+@@ expression E1, E2, E3; @@
+- pci_zalloc_consistent(E1, E2, E3)
++ dma_alloc_coherent(&E1->dev, E2, E3, GFP_)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_free_consistent(E1, E2, E3, E4)
++ dma_free_coherent(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_map_single(E1, E2, E3, E4)
++ dma_map_single(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_unmap_single(E1, E2, E3, E4)
++ dma_unmap_single(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4, E5; @@
+- pci_map_page(E1, E2, E3, E4, E5)
++ dma_map_page(&E1->dev, E2, E3, E4, E5)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_unmap_page(E1, E2, E3, E4)
++ dma_unmap_page(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_map_sg(E1, E2, E3, E4)
++ dma_map_sg(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_unmap_sg(E1, E2, E3, E4)
++ dma_unmap_sg(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_single_for_cpu(E1, E2, E3, E4)
++ dma_sync_single_for_cpu(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_single_for_device(E1, E2, E3, E4)
++ dma_sync_single_for_device(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_sg_for_cpu(E1, E2, E3, E4)
++ dma_sync_sg_for_cpu(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_sg_for_device(E1, E2, E3, E4)
++ dma_sync_sg_for_device(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2; @@
+- pci_dma_mapping_error(E1, E2)
++ dma_mapping_error(&E1->dev, E2)
+
+@@ expression E1, E2; @@
+- pci_set_consistent_dma_mask(E1, E2)
++ dma_set_coherent_mask(&E1->dev, E2)
+
+@@ expression E1, E2; @@
+- pci_set_dma_mask(E1, E2)
++ dma_set_mask(&E1->dev, E2)
+
+Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+---
+ drivers/scsi/dc395x.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
+index 37c6cc374079..58d4acdb0447 100644
+--- a/drivers/scsi/dc395x.c
++++ b/drivers/scsi/dc395x.c
+@@ -902,7 +902,7 @@ static void build_srb(struct scsi_cmnd *cmd, struct Dev=
+iceCtlBlk *dcb,
+ 	nseg =3D scsi_dma_map(cmd);
+ 	BUG_ON(nseg < 0);
+=20
+-	if (dir =3D=3D PCI_DMA_NONE || !nseg) {
++	if (dir =3D=3D DMA_NONE || !nseg) {
+ 		dprintkdbg(DBG_0,
+ 			"build_srb: [0] len=3D%d buf=3D%p use_sg=3D%d !MAP=3D%08x\n",
+ 			   cmd->bufflen, scsi_sglist(cmd), scsi_sg_count(cmd),
+@@ -3135,7 +3135,7 @@ static void pci_unmap_srb(struct AdapterCtlBlk *acb, =
+struct ScsiReqBlk *srb)
+ 	struct scsi_cmnd *cmd =3D srb->cmd;
+ 	enum dma_data_direction dir =3D cmd->sc_data_direction;
+=20
+-	if (scsi_sg_count(cmd) && dir !=3D PCI_DMA_NONE) {
++	if (scsi_sg_count(cmd) && dir !=3D DMA_NONE) {
+ 		/* unmap DC395x SG list */
+ 		dprintkdbg(DBG_SG, "pci_unmap_srb: list=3D%08x(%05x)\n",
+ 			srb->sg_bus_addr, SEGMENTX_LEN);
+@@ -3333,7 +3333,7 @@ static void srb_done(struct AdapterCtlBlk *acb, struc=
+t DeviceCtlBlk *dcb,
+=20
+ 		if (!ckc_only && (cmd->result & RES_DID) =3D=3D 0
+ 		    && cmd->cmnd[2] =3D=3D 0 && scsi_bufflen(cmd) >=3D 8
+-		    && dir !=3D PCI_DMA_NONE && ptr && (ptr->Vers & 0x07) >=3D 2)
++		    && dir !=3D DMA_NONE && ptr && (ptr->Vers & 0x07) >=3D 2)
+ 			dcb->inquiry7 =3D ptr->Flags;
+=20
+ 	/*if( srb->cmd->cmnd[0] =3D=3D INQUIRY && */
+--=20
+2.17.1
+
+
+--gKMricLos+KVdGMg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8huzcACgkQ+gRsbIfe
+747TcA/9H6YeOJ2U5ImXBbiuwJG9NV6jOsd4fh1XI3zZnWeQkwM6uV0hHGa/cIpG
+M0GypqovQ6VCkA8FDM3I6re5j5f3u+lMMFqDUmMB3+R20TX51MzJpJJMK2C8Zn55
+aWXwA0B0Ku75+mNYjfKs/0IIWQFlDgY3xBXbT35JfmZ5xJDMgd1EeUsGMK8HqEm7
+N0l0S9Z060H90GtZ3Eh7ug1dEErd0X4bTeijtJ2Y4L01Mrx5ZDft8KJPwbr4/vnE
+2rO+LzRkRAavvjUhyaRbOZQz/owoy2KJu5ZbIjfmRmMIe+UT5CM1FppsZkUfMPSD
+RPhLBKcE9BbdIz+fGcKRyrHOje20kR11zioos344bF1/B4D5QoN3u3roosjz7599
+U3qP9JHgIXbyQ/TNGeqDffeVwnktScpmP+ZJ4uPmxNnxkzns3q1mVl/7/KXPB4Zp
+MmGBFcEvViWeaHHYilYYHQumLzHo2i4ON7tE16K1cNRxLQD0rbaGXigxw50RQvWX
+uzP/hhThuuVYZ0T+MHkRZQtGY7dLctX/GjSyq+oF2s9cwyh5+Ds4xEIp/1brWZPy
+er1vdjcEVBA7eaLKJLtFTdAvDv+NdfNNijzy3LSPFyAqLOQF1jwpab0JbcX+pUQw
+E0HZyg7ya+kTvsrVXTxEZA4cGVqC6rPP1H82WMtejQuwa+scvuE=
+=7PNN
+-----END PGP SIGNATURE-----
+
+--gKMricLos+KVdGMg--
