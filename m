@@ -2,206 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CF823201E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 16:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F25232023
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 16:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgG2ON3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 10:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726774AbgG2ON1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 10:13:27 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B644BC061794;
-        Wed, 29 Jul 2020 07:13:27 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f193so2590081pfa.12;
-        Wed, 29 Jul 2020 07:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nV4YN/dLjAONm1QhoydYK1B7TYuCyvgjOkW8X9Cld4U=;
-        b=CwCvU6Ku4GnfZWPNKQSggQSI4YicRXI1EKfMK8i7IWCl30EZtwO1BERFAZnICfrC88
-         k1RnXx3qWYJkFNJy4TlpcBbBn2xqDE5mo16g6dRK3MwmF8ct4IxwqiWHjyPe1K34DsB0
-         IOSOvEkYpmGMSm4EVJorM7zA5lZ+UU6dxuI8d8LM/NA0hMXddmK9SAL9qTDwYAjsfba6
-         t+McJ8eg1rTuLFGAwZgOjQ3DMhd2IOdDPFcmrsWAfgI3izy/xbDzEzF+povJEJI0+GTE
-         R6PneTMBtSpJkBQ5KYIOsD6DOa6iyl2a39HOVK9DQHdR3ze2xVpfWRU5TuNTg3XSziCE
-         jOKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=nV4YN/dLjAONm1QhoydYK1B7TYuCyvgjOkW8X9Cld4U=;
-        b=SaqvQ+1ebeVi1Qu5vZjYdz+UaucbeD8ChH2Icj5NxFwJ4xIxQMaTIYmBeHDKMmCzwh
-         ZZb6gMVOUAQ71D1k1J0RbpKNk121qJ6o/yNwsa8ZIVzp13IcmHduh/ysIXsbINd6UVUO
-         CeWgVREwGVk4qo6FgyQioXX2oX7klItawNYtAExKWurfZSsqHqvqZskMgAFyOrzzOkI8
-         rDBgkWO10dR9ICFc6YG321mXF6J2a8SI3+wKMPk4Tl/Ddq1KEDD0AeM9XL7T37Qc7ZHL
-         Oir7kdwpX+o7V6M3eWbji0D9um6aeWfC/6SoYzApYxgywJZbjTPI3wN3EXwt+ocdoGOg
-         IpFg==
-X-Gm-Message-State: AOAM533o3E6NKEU1DspRVawp1aFjBSecjCtzo7FB8MioXgKVPzMsCym5
-        Kcb4Bx3zL0+oMk8N23uOZhM=
-X-Google-Smtp-Source: ABdhPJyCXzGK2Ao7mMyI2xq1z7/3bkUGawYV7avLV9LlngyLeELVBBfzNrXEP/n7exC1Ppgfg692/A==
-X-Received: by 2002:aa7:83c9:: with SMTP id j9mr18263798pfn.151.1596032007218;
-        Wed, 29 Jul 2020 07:13:27 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c132sm2635965pfb.112.2020.07.29.07.13.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Jul 2020 07:13:26 -0700 (PDT)
-Subject: Re: [PATCH V2 1/2] watchdog: imx7ulp: Strictly follow the sequence
- for wdog operations
-To:     Anson Huang <anson.huang@nxp.com>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
+        id S1726939AbgG2OOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 10:14:45 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:52236 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726449AbgG2OOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 10:14:45 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 53FFB2D61C162CC64CB8;
+        Wed, 29 Jul 2020 22:14:42 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Wed, 29 Jul 2020
+ 22:14:33 +0800
+Subject: Re: [PATCH v10 4/5] arm64: kdump: fix kdump broken with ZONE_DMA
+ reintroduced
+To:     Catalin Marinas <catalin.marinas@arm.com>
+References: <20200703035816.31289-1-chenzhou10@huawei.com>
+ <20200703035816.31289-5-chenzhou10@huawei.com> <20200727173014.GL13938@gaia>
+ <dd40f6ee-d5bd-1798-e7d6-1fb8ae91dc8b@huawei.com>
+ <20200729115851.GC5524@gaia>
+CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <dyoung@redhat.com>,
+        <bhe@redhat.com>, <will@kernel.org>, <james.morse@arm.com>,
+        <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
+        <nsaenzjulienne@suse.de>, <corbet@lwn.net>, <bhsharma@redhat.com>,
+        <horms@verge.net.au>, <guohanjun@huawei.com>,
+        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     dl-linux-imx <linux-imx@nxp.com>
-References: <1595989227-24700-1-git-send-email-Anson.Huang@nxp.com>
- <00587a78-8069-4fbd-7e02-b774d541f75a@roeck-us.net>
- <DB3PR0402MB3916C412DE1E83A2D40B2341F5700@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <6ac07203-a966-f985-52ae-b3dd264b3786@roeck-us.net>
-Date:   Wed, 29 Jul 2020 07:13:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <217004f5-dd8e-d04c-038b-c88b132d5495@huawei.com>
+Date:   Wed, 29 Jul 2020 22:14:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <DB3PR0402MB3916C412DE1E83A2D40B2341F5700@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200729115851.GC5524@gaia>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/20 9:50 PM, Anson Huang wrote:
-> Hi, Guenter
-> 
-> 
->> Subject: Re: [PATCH V2 1/2] watchdog: imx7ulp: Strictly follow the sequence
->> for wdog operations
->>
->> On 7/28/20 7:20 PM, Anson Huang wrote:
->>> According to reference manual, the i.MX7ULP WDOG's operations should
->>> follow below sequence:
->>>
->>> 1. disable global interrupts;
->>> 2. unlock the wdog and wait unlock bit set; 3. reconfigure the wdog
->>> and wait for reconfiguration bit set; 4. enabel global interrupts.
->>>
->>> Strictly follow the recommended sequence can make it more robust.
->>>
->>> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
->>> ---
->>> Changes since V1:
->>> 	- use readl_poll_timeout_atomic() instead of usleep_ranges() since IRQ is
->> disabled.
->>> ---
->>>  drivers/watchdog/imx7ulp_wdt.c | 29 +++++++++++++++++++++++++++++
->>>  1 file changed, 29 insertions(+)
->>>
->>> diff --git a/drivers/watchdog/imx7ulp_wdt.c
->>> b/drivers/watchdog/imx7ulp_wdt.c index 7993c8c..7d2b12e 100644
->>> --- a/drivers/watchdog/imx7ulp_wdt.c
->>> +++ b/drivers/watchdog/imx7ulp_wdt.c
->>> @@ -5,6 +5,7 @@
->>>
->>>  #include <linux/clk.h>
->>>  #include <linux/io.h>
->>> +#include <linux/iopoll.h>
->>>  #include <linux/kernel.h>
->>>  #include <linux/module.h>
->>>  #include <linux/of.h>
->>> @@ -36,6 +37,7 @@
->>>  #define DEFAULT_TIMEOUT	60
->>>  #define MAX_TIMEOUT	128
->>>  #define WDOG_CLOCK_RATE	1000
->>> +#define WDOG_WAIT_TIMEOUT	10000
->>>
->>>  static bool nowayout = WATCHDOG_NOWAYOUT;
->> module_param(nowayout,
->>> bool, 0000); @@ -48,17 +50,31 @@ struct imx7ulp_wdt_device {
->>>  	struct clk *clk;
->>>  };
->>>
->>> +static inline void imx7ulp_wdt_wait(void __iomem *base, u32 mask) {
->>> +	u32 val = readl(base + WDOG_CS);
->>> +
->>> +	if (!(val & mask))
->>> +		WARN_ON(readl_poll_timeout_atomic(base + WDOG_CS, val,
->>> +						  val & mask, 0,
->>> +						  WDOG_WAIT_TIMEOUT));
->>
->> I am not a friend of WARN_ON, especially in situations like this.
->> Please explain why this is needed, and why a return of -ETIMEDOUT is not
->> feasible.
-> 
-> OK, I will use return value of -ETIMEOUT and handle it in the caller.
-> 
->>
->> Also, I do not believe that a 10 milli-second timeout is warranted.
->> This will need to be backed up by the datasheet.
->>
-> 
-> There is no such info provided in reference manual or datasheet, but I just did
-> an experiment, the unlock window is open in less than 1us after sending unlock command,
-> and ONLY last for ONLY 2~3 us then close, the reconfiguration status bit will be set in less than
-> 1us after register write. So what do you recommend for this timeout value? 100mS for safe?
-> 
+Hi Catalin,
 
-That would be even worse. You say yourself that the window is only open for a few
-microseconds. Now you are suggesting to hold the entire system hostage for up to
-100 mS if the code misses that window for some reason. Based on what you said,
-100 uS might be barely acceptable. 10-20 uS would be reasonable. But not 100 mS.
+On 2020/7/29 19:58, Catalin Marinas wrote:
+> Hi Chen,
+>
+> On Wed, Jul 29, 2020 at 11:52:39AM +0800, chenzhou wrote:
+>> On 2020/7/28 1:30, Catalin Marinas wrote:
+>>> Anyway, there are two series solving slightly different issues with
+>>> kdump reservations:
+>>>
+>>> 1. This series which relaxes the crashkernel= allocation to go anywhere
+>>>    in the accessible space while having a dedicated crashkernel=X,low
+>>>    option for ZONE_DMA.
+>>>
+>>> 2. Bhupesh's series [1] forcing crashkernel=X allocations only from
+>>>    ZONE_DMA.
+>>>
+>>> For RPi4 support, we limited ZONE_DMA allocations to the 1st GB.
+>>> Existing crashkernel= uses may no longer work, depending on where the
+>>> allocation falls. Option (2) above is a quick fix assuming that the
+>>> crashkernel reservation is small enough. What's a typical crashkernel
+>>> option here? That series is probably more prone to reservation failures.
+>>>
+>>> Option (1), i.e. this series, doesn't solve the problem raised by
+>>> Bhupesh unless one uses the crashkernel=X,low argument. It can actually
+>>> make it worse even for ZONE_DMA32 since the allocation can go above 4G
+>>> (assuming that we change the ZONE_DMA configuration to only limit it to
+>>> 1GB on RPi4).
+>>>
+>>> I'm more inclined to keep the crashkernel= behaviour to ZONE_DMA
+>>> allocations. If this is too small for typical kdump, we can look into
+>>> expanding ZONE_DMA to 4G on non-RPi4 hardware (we had patches on the
+>>> list). In addition, if Chen thinks allocations above 4G are still needed
+>>> or if RPi4 needs a sufficiently large crashkernel=, I'd rather have a
+>>> ",high" option to explicitly require such access.
+>> Thanks for your reply and exhaustive explanation.
+>>
+>> In our ARM servers, we need to to reserve a large chunk for kdump(512M
+>> or 1G), there is no enough low memory. So we proposed this patch
+>> series "support reserving crashkernel above 4G on arm64 kdump" In
+>> April 2019.
+> Trying to go through the discussions last year, hopefully things get
+> clearer.
+>
+> So prior to the ZONE_DMA change, you still couldn't reserve 1G in the
+> first 4GB? It shouldn't be sparsely populated during early boot.
+Yes, we prior to the ZONE_DMA change, you still couldn't reserve 1G/512M in the first 4GB.
+The memory reported by the bios may be splitted by some "reserved" entries.
+Like this:
+...
+2f126000-2fbfffff : reserved
+2fc00000-396affff : System RAM
+  30de8000-30de9fff : reserved
+  30dec000-30decfff : reserved
+  30df2000-30df2fff : reserved
+  30e20000-30e4ffff : reserved
+  39620000-3968ffff : reserved
+396b0000-3974ffff : reserved
+39750000-397affff : System RAM
+397b0000-398fffff : reserved
+39900000-3990ffff : System RAM
+  39900000-3990ffff : reserved
+...
+>
+>> I introduce parameters "crashkernel=X,[high,low]" as x86_64 does in earlier versions.
+>> Suggested by James, to simplify, we call reserve_crashkernel_low() at the beginning of
+>> reserve_crashkernel() and then relax the arm64_dma32_phys_limit if reserve_crashkernel_low()
+>> allocated something.
+>> That is, just the parameter "crashkernel=X,low" is ok and i deleted "crashkernel=X,high".
+> The problem I see is that with your patches we diverge from x86
+> behaviour (and the arm64 behaviour prior to the ZONE_DMA reduction) as
+> we now require that crashkernel=X,low is always passed if you want
+> something in ZONE_DMA (and you do want, otherwise the crashdump kernel
+> fails to boot).
+>
+> My main requirement is that crashkernel=X, without any suffix, still
+> works which I don't think is guaranteed with your patches (well,
+> ignoring RPi4 ZONE_DMA). Bhupesh's series is a quick fix but doesn't
+> solve your large allocation requirements (that may have worked prior to
+> the ZONE_DMA change).
+The main purpose of this series is to solve the large allocation requirements.
+Before the DMA_ZONE, both the original crashkernel=X and large allocation with my  patches
+work well.
 
-Guenter
+With the DMA_ZONE, both the original crashkernel=X and large allocation with my  patches
+may fail to boot. Both need to think about the DMA_ZONE.
+
+>
+>> After the ZONE_DMA introduced in December 2019, the issue occurred as
+>> you said above. In fact, we didn't have RPi4 machine.
+> You don't even need to have a RPi4 machine, ZONE_DMA has been set to 1GB
+> unconditionally. And while we could move it back to 4GB on non-RPi4
+> hardware, I'd rather have a solution that fixes kdump for RPi4 as well.
+>
+>> Originally, i suggested to fix this based on this patch series and
+>> used the dedicated option.
+>>
+>> According to your clarify, for typical kdump, there are other
+>> solutions. In this case, "keep the crashkernel= behaviour to ZONE_DMA
+>> allocations" looks much better.
+>>
+>> How about like this:
+>> 1. For ZONE_DMA issue, use Bhupesh's solution, keep the crashkernel=
+>>    behaviour to ZONE_DMA allocations.
+>> 2. For this patch series, make the reserve_crashkernel_low() to
+>>    ZONE_DMA allocations.
+> So you mean rebasing your series on top of Bhupesh's? I guess you can
+> combine the two, I really don't care which way as long as we fix both
+> issues and agree on the crashkernel= semantics. I think with some tweaks
+> we can go with your series alone.
+>
+> IIUC from the x86 code (especially the part you #ifdef'ed out for
+> arm64), if ",low" is not passed (so just standard crashkernel=X), it
+> still allocates sufficient low memory for the swiotlb in ZONE_DMA. The
+> rest can go in a high region. Why can't we do something similar on
+> arm64? Of course, you can keep the ",low" argument for explicit
+> allocation but I don't want to mandate it.
+It is a good idea to combine the two.
+
+For parameter crashkernel=X, we do like this:
+1. allocate some low memory in ZONE_DMA(or ZONE_DMA32 if CONFIG_ZONE_DMA=n)
+2. allocate X size memory in a high region
+
+",low" argument can be used to specify the low memory.
+
+Do i understand correctly?
+>
+> So with an implicit ZONE_DMA allocation similar to the x86 one, we
+> probably don't need Bhupesh's series at all. In addition, we can limit
+> crashkernel= to the first 4G with a fall-back to high like x86 (not sure
+> if memblock_find_in_range() is guaranteed to search in ascending order).
+> I don't think we need an explicit ",high" annotation.
+>
+> So with the above, just a crashkernel=1G gives you at least 256MB in
+> ZONE_DMA followed by the rest anywhere, with a preference for
+> ZONE_DMA32. This way we can also keep the reserve_crashkernel_low()
+> mostly intact from x86 (less #ifdef's).
+>
+> Do I miss anything?
+Yes. We can let crashkernel=X  try to reserve low memory and fall back to use high memory
+if failing to find a low range.
+
+About the function reserve_crashkernel_low(), if we put it in arch/arm64, there is some common
+code with x86_64. Some suggestions about this?
+
+Thanks,
+Chen Zhou
+>
+
+
