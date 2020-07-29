@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28948231BF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F708231C02
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728316AbgG2JUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 05:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728008AbgG2JUU (ORCPT
+        id S1728105AbgG2JVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 05:21:51 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:33283 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726536AbgG2JVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 05:20:20 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AAAC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 02:20:20 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id m22so13930752pgv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 02:20:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=laWlLvysNkw+EqkUXXWh3qRKnJp9myxjPBYwvjpsBKI=;
-        b=RevM9dPyszfsbo00TAsrrA5RNf/6znzZWEF3bluYJrFli5YQ2K1kR0L/MK5QK7Msxp
-         uX5o143Tp13ao35F2TpjObPOmZnSWvwtGvs3NimBOhGM4ZytcQLt3yyRdCR5AhhBcEgg
-         eMzDvf7XfOL3CqNQY8Vm7t9pqaZoeyDFT+CrU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=laWlLvysNkw+EqkUXXWh3qRKnJp9myxjPBYwvjpsBKI=;
-        b=YZFmo7Q+K+GJ4c9c1dsjXQRLN0AvHj/D1nF5CyRszz9sRtZNfhqeQOtwGILIHJBaiY
-         fLnLksKOqsILCFJgzd2gon+Y5FCuPx0xLYM4kpnWiuLw0ge9v7kSmJ8tHU0K1OmR/skS
-         VD8ZPl/TmyvrRu2jtTSMH3+ycFxZ2NoaUdvsFgK/xLknNPOr0ONI02xsPGfCbOEQVrex
-         TrYo3gt98WwUojyOTZ6xiDweQScLSYrPm7foT/h8VwhbqQ71BSCXgheuroi+Z8q4whhT
-         eP0bhhyiWS2OPgWm+4RAiYDuR/0y0crMwxbD+tEEzvxii7lgkRbZGlwCCqapLrcUo42y
-         cUCA==
-X-Gm-Message-State: AOAM532lXPmiWDbIzWa1iyWY6nl4un8WtHDNEjDdxQCX+7obnNJvXip1
-        Go5u3anPCGR/wxyCxb7sc735Bw==
-X-Google-Smtp-Source: ABdhPJx9/lhEja1H2gezD9OyVNkzKTD4MosXtyG0cjUNZuaSWJgrv5Sj6Z9PzF0YYChW1FJeoNBA5Q==
-X-Received: by 2002:aa7:93c3:: with SMTP id y3mr28318781pff.206.1596014419908;
-        Wed, 29 Jul 2020 02:20:19 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id p1sm1568332pjp.10.2020.07.29.02.20.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 02:20:19 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 29 Jul 2020 05:21:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596014510; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=etwntT/UXHBGXrs4qAMnLbYZVQi1JM8geWOVCkcTuo0=;
+ b=fY+iDjNcQwBZZKTi7HCkSjgMLmX0k6zWD5U8XJo9XoQHS11JatOk0M4QDdOoyxQV3BfbWsIq
+ 3eAnjuHkahIz+5F/5lwys+tDGWlOnm+8lTS2o8+JzTnEfkYbUSKRCST4YGI//cFlV4ss8ExP
+ 6OADBs9TngVSSWHPpT4ESc3ssig=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
+ 5f213fad1db0b33fd8e1e59f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Jul 2020 09:21:49
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB02CC43391; Wed, 29 Jul 2020 09:21:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7C02C433C6;
+        Wed, 29 Jul 2020 09:21:47 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200728230520.2011240-1-campello@chromium.org>
-References: <20200728151258.1222876-1-campello@chromium.org> <20200728230520.2011240-1-campello@chromium.org>
-Subject: Re: [PATCH v2 00/14] sx9310 iio driver updates
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Daniel Campello <campello@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Enrico Granata <egranata@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org
-To:     Daniel Campello <campello@chromium.org>,
-        LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 29 Jul 2020 02:20:17 -0700
-Message-ID: <159601441795.1360974.13003926832878715423@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 29 Jul 2020 17:21:47 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com
+Subject: Re: [PATCH v1 1/2] scsi: ufs: Introduce device quirk
+ "DELAY_AFTER_LPM"
+In-Reply-To: <20200729051840.31318-2-stanley.chu@mediatek.com>
+References: <20200729051840.31318-1-stanley.chu@mediatek.com>
+ <20200729051840.31318-2-stanley.chu@mediatek.com>
+Message-ID: <1cf315e12d21dd91906321d7303cff99@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Daniel Campello (2020-07-28 16:05:06)
-> The first patch resends the DT binding for the driver that was merged in
-> v5.8-rc1 with a small change to update for proper regulators. The second
-> through the eleventh patch fixes several issues dropped from v8 to v9
-> when the initial patch was merged. The twelveth patch fixes a few
-> printks that are missing newlines and should be totally non-trivial to
-> apply. The thirteenth patch drops channel_users because it's unused. The
-> final patch adds support to enable the svdd and vdd supplies so that
-> this driver can work on a board where the svdd supply isn't enabled at
-> boot and needs to be turned on before this driver starts to communicate
-> with the chip.
->=20
+On 2020-07-29 13:18, Stanley Chu wrote:
+> Some UFS devices require delay after VCC power rail is turned-off.
+> Introduce a device quirk "DELAY_AFTER_LPM" to add 5ms delays after
+> VCC power-off during suspend flow.
+> 
+> Signed-off-by: Andy Teng <andy.teng@mediatek.com>
+> Signed-off-by: Peter Wang <peter.wang@mediatek.com>
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+>  drivers/scsi/ufs/ufs_quirks.h |  7 +++++++
+>  drivers/scsi/ufs/ufshcd.c     | 11 +++++++++++
+>  2 files changed, 18 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufs_quirks.h 
+> b/drivers/scsi/ufs/ufs_quirks.h
+> index 2a0041493e30..07f559ac5883 100644
+> --- a/drivers/scsi/ufs/ufs_quirks.h
+> +++ b/drivers/scsi/ufs/ufs_quirks.h
+> @@ -109,4 +109,11 @@ struct ufs_dev_fix {
+>   */
+>  #define UFS_DEVICE_QUIRK_SUPPORT_EXTENDED_FEATURES (1 << 10)
+> 
+> +/*
+> + * Some UFS devices require delay after VCC power rail is turned-off.
+> + * Enable this quirk to introduce 5ms delays after VCC power-off 
+> during
+> + * suspend flow.
+> + */
+> +#define UFS_DEVICE_QUIRK_DELAY_AFTER_LPM        (1 << 11)
+> +
+>  #endif /* UFS_QUIRKS_H_ */
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index acba2271c5d3..63f4e2f75aa1 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -8111,6 +8111,8 @@ static int ufshcd_link_state_transition(struct
+> ufs_hba *hba,
+> 
+>  static void ufshcd_vreg_set_lpm(struct ufs_hba *hba)
+>  {
+> +	bool vcc_off = false;
+> +
+>  	/*
+>  	 * It seems some UFS devices may keep drawing more than sleep current
+>  	 * (atleast for 500us) from UFS rails (especially from VCCQ rail).
+> @@ -8139,13 +8141,22 @@ static void ufshcd_vreg_set_lpm(struct ufs_hba 
+> *hba)
+>  	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba) &&
+>  	    !hba->dev_info.is_lu_power_on_wp) {
+>  		ufshcd_setup_vreg(hba, false);
+> +		vcc_off = true;
+>  	} else if (!ufshcd_is_ufs_dev_active(hba)) {
+>  		ufshcd_toggle_vreg(hba->dev, hba->vreg_info.vcc, false);
+> +		vcc_off = true;
+>  		if (!ufshcd_is_link_active(hba)) {
+>  			ufshcd_config_vreg_lpm(hba, hba->vreg_info.vccq);
+>  			ufshcd_config_vreg_lpm(hba, hba->vreg_info.vccq2);
+>  		}
+>  	}
+> +
+> +	/*
+> +	 * Some UFS devices require delay after VCC power rail is turned-off.
+> +	 */
+> +	if (vcc_off && hba->vreg_info.vcc &&
+> +		hba->dev_quirks & UFS_DEVICE_QUIRK_DELAY_AFTER_LPM)
+> +		usleep_range(5000, 5100);
+>  }
+> 
+>  static int ufshcd_vreg_set_hpm(struct ufs_hba *hba)
 
-Can you add this patch onto the end?
-
-----8<----
-From: Stephen Boyd <swboyd@chromium.org>
-Subject: [PATCH] iio: sx9310: Use irq trigger flags from firmware
-
-We shouldn't need to set default irq trigger flags here as the firmware
-should have properly indicated the trigger type, i.e. level low, in the
-DT or ACPI tables.
-
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/iio/proximity/sx9310.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-index 24a2360b6314..2106b9141928 100644
---- a/drivers/iio/proximity/sx9310.c
-+++ b/drivers/iio/proximity/sx9310.c
-@@ -945,7 +945,7 @@ static int sx9310_probe(struct i2c_client *client)
- 		ret =3D devm_request_threaded_irq(dev, client->irq,
- 						sx9310_irq_handler,
- 						sx9310_irq_thread_handler,
--						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
-+						IRQF_ONESHOT,
- 						"sx9310_event", indio_dev);
- 		if (ret)
- 			return ret;
---=20
-Sent by a computer, using git, on the internet
+Reviewed-by: Can Guo <cang@codeaurora.org>
