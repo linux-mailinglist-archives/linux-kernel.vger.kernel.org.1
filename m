@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA80B23254C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA037232552
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726927AbgG2TWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 15:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48618 "EHLO
+        id S1726967AbgG2TWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 15:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726509AbgG2TWD (ORCPT
+        with ESMTP id S1726944AbgG2TWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 15:22:03 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108E6C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:22:03 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id kr4so486606pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:22:03 -0700 (PDT)
+        Wed, 29 Jul 2020 15:22:06 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7C8C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:22:06 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z188so5633264pfc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:22:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=P2grRz9PCgk2ZeVIhCfAMiKPxOtnJvOaxKg6ZGO8mUA=;
-        b=dIX6XtBN+kUmQxdsfW7VBR+hCZQ5Fd9HKvN3ZdpR3J3i1X3bbfXMPofN8G0gh+h8Ee
-         tm2YRFo0ttxD6LqFuxHrFCWlDvrHw0sZ+0ykWXAO/+Qbgc/PxP47xZiU3w+//Yihb+0R
-         +T2rton5eG3+3k3+hjd/JIodLrXJfa4TDmBQn22vyLL+b/vezZXOj4vrSLTglbSy0ZQu
-         Gevz4Y/sV/fEEBTfsSD9E6C31xHejzWHN+1Js/xH4FYwXgdrQ5bHid2CcVvWu6NKMmGi
-         dluC+nfneIHvB3WKOMCDfW3tPYgg83AjLMCaE/B8cKDTPnHgYRuU7hcD+6O3dhWeSGdp
-         56EQ==
+        bh=sxdfgFg/+YKF2vVbSCxbDEow+54W6Crwq1vgBu5NBEs=;
+        b=luCydVO9DWb8AUtr2HzSKMOCmL4a6u5HHJ8WUXnbsPvghNMRuqUjH8IvhTSeWJ9v8t
+         lebJddla/iyAPy9GmxWlYtGhwhpqAKbt3XjBCHRe/ZP7KHrum6GkVqXlvjTSSFou5KPk
+         pJZhA56FClTffQw9gBJ+KfHzh+q7YtsxJqBZXQsBLsyimz7jUGt2DW/1SrIdZ37u4OJ3
+         1JFeTTmNl/Gj1vTczhkuUsUsx2xAo9kVM6UA1US3KKZKegiYxBmoJD+Agxm4Tv7qCd8Z
+         xIaoazZaqfFqepWqc7Aa4Nu7Q4J+57ISA4srXQrHdzM923IoBy873FaBieqEBEmRVbon
+         KTXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=P2grRz9PCgk2ZeVIhCfAMiKPxOtnJvOaxKg6ZGO8mUA=;
-        b=SuxBpEuxS/oewwDcItBroADydteay/qrRMiXrxC2nkJL27V+RobyLcOmoUno9KKTkL
-         4H4hRWNcvU5qiP0HLRBRIFDAEJOgHWXqF+R7FMOe7ysbdvGvkq4x1od8vX/GTMFaU+WA
-         iKuAErV1NAAIE7BvJLkWTu+TK6n+TUPn/dL45+n204MXvNaQKGBroc6jGsukSBkqm1Ms
-         EGgLE95Hf6wMAazFTwpt00Hyz5K+g8IXXUtbPVVvDPjdBqolHZ6Y6zrJyWajWGd/dFv8
-         42SUUl371WjtAVgmdIm+QsT/cDsZjmo/RoWrQZml/yCo4lvUa1qYqPdr9qbGeD2G+bXq
-         EdOA==
-X-Gm-Message-State: AOAM530q9yV3GxsCQIF5Q3vCDYjfA3bzOzb/6x1vrDFBrx05bZwaW9EA
-        eiYWQk0/33XM5U30oESWbzA=
-X-Google-Smtp-Source: ABdhPJx9d00VTRIC589bDdRp4nk/Do8tibFvjOXpjwsfs9SJUvWMyFY5Bjf5e4Q9DNDr7bT7Ypidjw==
-X-Received: by 2002:a17:902:6b08:: with SMTP id o8mr29014174plk.104.1596050522549;
-        Wed, 29 Jul 2020 12:22:02 -0700 (PDT)
+        bh=sxdfgFg/+YKF2vVbSCxbDEow+54W6Crwq1vgBu5NBEs=;
+        b=kI9Uif9vGh/uIgJla17JI68/6GRnGoEFGSmTCnx8eZ0j1lhFZG9O23PYyOVLolpkw3
+         80IkvlvGwHuGypBLAkFv6NjRqjobsZ3WpXXpvIv2nDko5SQq/3ckRmboyfUo0XzWpXo7
+         yKpWIcm9u46HMv4fL+PiVnWW/Vd+Uw00QnFqWXES3b8RhdOjSnqigiHj/2PM2pGgtpBs
+         YVUPuI4atR0AuAm5meO4CzqKPMFUZl+FzzgoFQyo+qVkpZAZ50M9HDF5Adgg2F9zDKBl
+         odNMZA6I+isMnKHjek86SddCeypNq72CoW0AFnJg6X+VrjFYUOBjZsTsbvHrdAe2a11K
+         sdKg==
+X-Gm-Message-State: AOAM530tCFYEg3Am/8WoqF5Sqi8BCScQvKbn/bzrV6msQpXQZj+4VCMG
+        NKa22CA8in5SCfBt8gtHazM=
+X-Google-Smtp-Source: ABdhPJyKiyRtOMcLkIJ0dDVgMCU3eDC6dC8GyPT1NQ2lR8sKkgj0IpIhsGZmgOklXEg9n0wu6RL3Ag==
+X-Received: by 2002:a63:1408:: with SMTP id u8mr31585696pgl.282.1596050525566;
+        Wed, 29 Jul 2020 12:22:05 -0700 (PDT)
 Received: from localhost.localdomain ([122.167.86.75])
-        by smtp.googlemail.com with ESMTPSA id hg7sm599431pjb.24.2020.07.29.12.21.59
+        by smtp.googlemail.com with ESMTPSA id hg7sm599431pjb.24.2020.07.29.12.22.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 12:22:01 -0700 (PDT)
+        Wed, 29 Jul 2020 12:22:04 -0700 (PDT)
 From:   Aditya Jain <aditya.jainadityajain.jain@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hdegoede@redhat.com, joe@perches.com, Larry.Finger@lwfinger.net,
         devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         Aditya Jain <aditya.jainadityajain.jain@gmail.com>
-Subject: [PATCH v4 1/3] staging: rtl8723bs: Fix coding style errors
-Date:   Thu, 30 Jul 2020 00:51:34 +0530
-Message-Id: <20200729192136.23828-2-aditya.jainadityajain.jain@gmail.com>
+Subject: [PATCH v4 2/3] staging: rtl8723bs: Clean up function declations
+Date:   Thu, 30 Jul 2020 00:51:35 +0530
+Message-Id: <20200729192136.23828-3-aditya.jainadityajain.jain@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200729192136.23828-1-aditya.jainadityajain.jain@gmail.com>
 References: <CAJAoDUjVBon2iiztdER82mHgJtVS6s5XYSajbCTne0KWAzoLvg@mail.gmail.com>
@@ -67,87 +67,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixing ERROR: "foo *	bar" should be "foo *bar" in hal_phy_cfg.h
-as reported by checkpatch.pl
+Clean up multiline function declartions in hal_phy_cfg.h
+to improve code readablility
 
 Signed-off-by: Aditya Jain <aditya.jainadityajain.jain@gmail.com>
 ---
- .../staging/rtl8723bs/include/hal_phy_cfg.h    | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ .../staging/rtl8723bs/include/hal_phy_cfg.h   | 110 +++++-------------
+ 1 file changed, 29 insertions(+), 81 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
-index 419ddb0733aa..7e48abc4c760 100644
+index 7e48abc4c760..0eb3e57f4082 100644
 --- a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
 +++ b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
-@@ -42,7 +42,7 @@ u32 	Data
+@@ -25,37 +25,16 @@
+ /*------------------------------Define structure End----------------------------*/
  
- u32
- PHY_QueryRFReg_8723B(
--struct adapter *		Adapter,
-+struct adapter *Adapter,
- u8 		eRFPath,
- u32 			RegAddr,
- u32 			BitMask
-@@ -50,7 +50,7 @@ u32 			BitMask
+ /*--------------------------Exported Function prototype---------------------*/
+-u32
+-PHY_QueryBBReg_8723B(
+-struct adapter *Adapter,
+-u32 	RegAddr,
+-u32 	BitMask
+-	);
+-
+-void
+-PHY_SetBBReg_8723B(
+-struct adapter *Adapter,
+-u32 	RegAddr,
+-u32 	BitMask,
+-u32 	Data
+-	);
+-
+-u32
+-PHY_QueryRFReg_8723B(
+-struct adapter *Adapter,
+-u8 		eRFPath,
+-u32 			RegAddr,
+-u32 			BitMask
+-	);
+-
+-void
+-PHY_SetRFReg_8723B(
+-struct adapter *Adapter,
+-u8 		eRFPath,
+-u32 			RegAddr,
+-u32 			BitMask,
+-u32 			Data
+-	);
++u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask);
++
++void PHY_SetBBReg_8723B(struct adapter *Adapter, u32 RegAddr,
++			u32 BitMask, u32 Data);
++
++u32 PHY_QueryRFReg_8723B(struct adapter *Adapter, u8 eRFPath,
++			 u32 RegAddr, u32 BitMask);
++
++void PHY_SetRFReg_8723B(struct adapter *Adapter, u8 eRFPath,
++			u32 RegAddr, u32 BitMask, u32 Data);
  
- void
- PHY_SetRFReg_8723B(
--struct adapter *		Adapter,
-+struct adapter *Adapter,
- u8 		eRFPath,
- u32 			RegAddr,
- u32 			BitMask,
-@@ -66,7 +66,7 @@ s32 PHY_MACConfig8723B(struct adapter *padapter);
+ /* MAC/BB/RF HAL config */
+ int PHY_BBConfig8723B(struct adapter *Adapter);
+@@ -64,56 +43,25 @@ int PHY_RFConfig8723B(struct adapter *Adapter);
  
- void
- PHY_SetTxPowerIndex(
--struct adapter *		Adapter,
-+struct adapter *Adapter,
- u32 				PowerIndex,
- u8 			RFPath,
- u8 			Rate
-@@ -74,7 +74,7 @@ u8 			Rate
+ s32 PHY_MACConfig8723B(struct adapter *padapter);
  
- u8
- PHY_GetTxPowerIndex(
--struct adapter *		padapter,
-+struct adapter *padapter,
- u8 			RFPath,
- u8 			Rate,
- enum CHANNEL_WIDTH		BandWidth,
-@@ -83,19 +83,19 @@ u8 			Channel
+-void
+-PHY_SetTxPowerIndex(
+-struct adapter *Adapter,
+-u32 				PowerIndex,
+-u8 			RFPath,
+-u8 			Rate
+-	);
+-
+-u8
+-PHY_GetTxPowerIndex(
+-struct adapter *padapter,
+-u8 			RFPath,
+-u8 			Rate,
+-enum CHANNEL_WIDTH		BandWidth,
+-u8 			Channel
+-	);
+-
+-void
+-PHY_GetTxPowerLevel8723B(
+-struct adapter *Adapter,
+-	s32 *powerlevel
+-	);
+-
+-void
+-PHY_SetTxPowerLevel8723B(
+-struct adapter *Adapter,
+-u8 	channel
+-	);
+-
+-void
+-PHY_SetBWMode8723B(
+-struct adapter *Adapter,
+-enum CHANNEL_WIDTH			Bandwidth,	/*  20M or 40M */
+-unsigned char 			Offset		/*  Upper, Lower, or Don't care */
+-);
+-
+-void
+-PHY_SwChnl8723B(/*  Call after initialization */
+-struct adapter *Adapter,
+-u8 channel
+-	);
+-
+-void
+-PHY_SetSwChnlBWMode8723B(
+-struct adapter *Adapter,
+-u8 			channel,
+-enum CHANNEL_WIDTH		Bandwidth,
+-u8 			Offset40,
+-u8 			Offset80
+-);
++void PHY_SetTxPowerIndex(struct adapter *Adapter, u32 PowerIndex,
++			 u8 RFPath, u8 Rate);
++
++u8 PHY_GetTxPowerIndex(struct adapter *padapter, u8 RFPath, u8 Rate,
++			enum CHANNEL_WIDTH BandWidth, u8 Channel);
++
++void PHY_GetTxPowerLevel8723B(struct adapter *Adapter, s32 *powerlevel);
++
++void PHY_SetTxPowerLevel8723B(struct adapter *Adapter, u8 channel);
++
++void PHY_SetBWMode8723B(struct adapter *Adapter, enum CHANNEL_WIDTH Bandwidth,
++			unsigned char Offset);
++
++/*  Call after initialization */
++void PHY_SwChnl8723B(struct adapter *Adapter, u8 channel);
++
++void PHY_SetSwChnlBWMode8723B(struct adapter *Adapter, u8 channel,
++				enum CHANNEL_WIDTH Bandwidth,
++				u8 Offset40, u8 Offset80);
  
- void
- PHY_GetTxPowerLevel8723B(
--struct adapter *	Adapter,
--	s32*			powerlevel
-+struct adapter *Adapter,
-+	s32 *powerlevel
- 	);
+ /*--------------------------Exported Function prototype End---------------------*/
  
- void
- PHY_SetTxPowerLevel8723B(
--struct adapter *	Adapter,
-+struct adapter *Adapter,
- u8 	channel
- 	);
- 
- void
- PHY_SetBWMode8723B(
--struct adapter *			Adapter,
-+struct adapter *Adapter,
- enum CHANNEL_WIDTH			Bandwidth,	/*  20M or 40M */
- unsigned char 			Offset		/*  Upper, Lower, or Don't care */
- );
-@@ -108,7 +108,7 @@ u8 channel
- 
- void
- PHY_SetSwChnlBWMode8723B(
--struct adapter *		Adapter,
-+struct adapter *Adapter,
- u8 			channel,
- enum CHANNEL_WIDTH		Bandwidth,
- u8 			Offset40,
 -- 
 2.25.1
 
