@@ -2,59 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F222319D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747CC2319F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgG2G4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 02:56:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47300 "EHLO mail.kernel.org"
+        id S1727775AbgG2G76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 02:59:58 -0400
+Received: from verein.lst.de ([213.95.11.211]:51231 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726290AbgG2G4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 02:56:09 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32DB2206D4;
-        Wed, 29 Jul 2020 06:56:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596005768;
-        bh=kh1VsqAFdvoIwnbd4u/yWyXxzaqDdZRI3AOfNdCIOHQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n0IdOqB0Ooku1vMr/HKKyRhQ3ee8JHb5Z6P4C9RSaaGMySgLJZt2AgdNQ86rjZmB8
-         G4SQA2maX0uyxZahCHG4JjpZPnETYxzXqrZ2qdUE9zYXbff0wZWf8VBTLCEcr8cZYo
-         lPYR7TPH/lBD8ZakK0Los4OCwY2LJ44wnwQ2qat4=
-Date:   Wed, 29 Jul 2020 08:55:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jessica Yu <jeyu@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/7] modules: inherit TAINT_PROPRIETARY_MODULE
-Message-ID: <20200729065559.GA476238@kroah.com>
-References: <20200729062711.13016-1-hch@lst.de>
- <20200729062711.13016-8-hch@lst.de>
+        id S1726536AbgG2G76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 02:59:58 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E3DD968B05; Wed, 29 Jul 2020 08:59:55 +0200 (CEST)
+Date:   Wed, 29 Jul 2020 08:59:55 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com
+Subject: Re: [PATCH 2/6] arch: x86: Wrap TIF_IA32 checks
+Message-ID: <20200729065955.GA32309@lst.de>
+References: <20200728202229.1195682-1-krisman@collabora.com> <20200728202229.1195682-3-krisman@collabora.com> <CALCETrV_HJCrDLCKLrqNbLiOsoEcC9M7zn-v_hcVMvDgnWW8yw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200729062711.13016-8-hch@lst.de>
+In-Reply-To: <CALCETrV_HJCrDLCKLrqNbLiOsoEcC9M7zn-v_hcVMvDgnWW8yw@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 08:27:11AM +0200, Christoph Hellwig wrote:
-> If a TAINT_PROPRIETARY_MODULE exports symbol, inherit the tain flag
-
-s/tain/taint/
-
-> for all modules importing these symbols, and don't allow loading
-> symbols from TAINT_PROPRIETARY_MODULE modules if the module previously
-> imported gplonly symbols.  Add a anti-circumvention devices so people
-> don't accidentally get themselves into trouble this way.
+On Tue, Jul 28, 2020 at 08:43:27PM -0700, Andy Lutomirski wrote:
+> > index d4edf281fff4..d39f9b3ae683 100644
+> > --- a/arch/x86/include/asm/compat.h
+> > +++ b/arch/x86/include/asm/compat.h
+> > @@ -181,7 +181,7 @@ static inline void __user *arch_compat_alloc_user_space(long len)
+> >  {
+> >         compat_uptr_t sp;
+> >
+> > -       if (test_thread_flag(TIF_IA32)) {
+> > +       if (TASK_IA32(current)) {
+> >                 sp = task_pt_regs(current)->sp;
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Christoph, you spend a *lot* more time looking at this stuff lately
+> than I do, but this looks totally wrong.  Shouldn't this be either:
+> 
+> sp = task_pt_regs(current)->sp;
+> 
+> /* This might be a compat syscall issued via int $0x80 from 64-bit-ABI code. */
+> if (user_64bit_mode(task_pt_regs(current))
+>   sp -= 128;
+> 
+> Or perhaps the same thing without the user_64bit_mode() check at all?
+> There shouldn't be much if any harm done by respecting the redzone
+> unnecessarily.
 
-Ah, the proven-to-be-illegal "GPL Condom" defense :)
+compat_alloc_user_space is only used when either called from compat
+calls or if in_compat_syscall() is true (and there are very few callers
+left, and we plan to kill it off entirely..).
 
-Nice, work, thanks for doing this:
+Which means we are either called from an i386 or x32 syscall, but then
+again IIRC user_64bit_mode would also return true for x32.  So your
+above version looks correct, and I'd also be tempted to just always
+respect the redzone.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Surely this should be:
+> 
+> if (user_64bit_mode(task_pt_regs(regs))
+
+s/regs/current/
+
+Btw, I wonder if want a shorthand for
+
+	user_64bit_mode(task_pt_regs(thread))
+
+instead of always open coding it.
