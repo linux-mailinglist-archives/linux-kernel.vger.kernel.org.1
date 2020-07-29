@@ -2,221 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30F923264A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6555232656
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgG2UiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 16:38:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726496AbgG2UiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:38:15 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A16602082E;
-        Wed, 29 Jul 2020 20:38:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596055094;
-        bh=ZtMcHWQnSDUOUOzW/vC7NhMNa3Qp8SiMpTQ/mWVh7U0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y4T3sk8fvc7n3G47mmUhCqU/gvics2lWHwuY1amVr6/L9M3minKu19QoXvidQ1gFm
-         2PicXlIDKJWr4nzY5QSl3YD+ujUHUoCc4ClM/YaNVhc8dMdtFdOY1sSAabyiTcSwNL
-         NEXzNhn71xkoOmtD/vyc0Krs5EKvk1sM0Te4ZfgY=
-Received: by earth.universe (Postfix, from userid 1000)
-        id 00BBE3C0B87; Wed, 29 Jul 2020 22:38:12 +0200 (CEST)
-Date:   Wed, 29 Jul 2020 22:38:12 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     afd@ti.com, pali@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh@kernel.org
-Subject: Re: [PATCH v6 4/4] power: supply: bq27xxx_battery: Add the BQ28z610
- Battery monitor
-Message-ID: <20200729203812.v4etph4qcfius3ka@earth.universe>
-References: <20200729183145.6066-1-dmurphy@ti.com>
- <20200729183145.6066-4-dmurphy@ti.com>
+        id S1726956AbgG2Ulw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 16:41:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbgG2Ulu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 16:41:50 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34062C0619D2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:41:50 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d1so12475924plr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:41:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YvzhXhs+JqZkgfJI4360duB0MXbYsCTMFViWzLaBlaY=;
+        b=ebUQVAeh8oE9FLMF9AsZ87X4Bi3SZ95sD+qPv7yxrGQmqc+m4ZVd8/q1WbFVTG4dSa
+         9oackYGLw45aqQ7gFTRCKhWBkluwx4XZYOm5TTgTGBg/Zb+PslBiRvk7seA/bm+2DjWu
+         M//BLJQkWMKgRBOUqc3roEaOE3dDfQQyuSMJAsMERWRsPgV0Tg0ri3BEgzZ9PI9zIw/9
+         9qdREY/BrrI9H3juf0wAXWPAo68hTJr9IPs7rdCr1lEZl1HCPlEl3KCYE+vnhdoVU+8q
+         A+k4GiJbHiwlx5wHARK8m26FHHJvh/mVeLTQh5Vo/bpg5omN1TcDTh2Wd9t3YHCvFjgg
+         TBfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YvzhXhs+JqZkgfJI4360duB0MXbYsCTMFViWzLaBlaY=;
+        b=uYp/nnWTd6uhn69AJFgyHJ8Y79sV44ZA/7pLQJc7d4HEJvs7s3bDGw2r8DzDBzX3Ag
+         H47gnDW2/kiaEJTdjXAjj4Hnl4yz2sd82t6l0CB+Ipt9BQ7BkhX+gFbE81qaAnE1e+mY
+         T+zKY7F7fHUEu0OzLBadWLsdLvKeeTtzCIicfhxV+WyTz9EkmcO6/tfGgtF7Zt5UeXoQ
+         C/opabAmzXHnkFfTFdHNKBzKiGxvibIOIJFtpnLBd4XX08s45mmq9RcsaKkF/zMwUDSe
+         IAbqJef+djv+OEKxOpAbbfPN3TmNbcgzPiOayw33EBkzQwddkv7xwS/YNBtaItz6vagk
+         B61A==
+X-Gm-Message-State: AOAM530l2e16MYjlyMORFryiGL8Nbe1fEz6jeOfa5wuxd+kTLRpQA8X0
+        g84z68yW2fKGnofTg7cWyTNrKw==
+X-Google-Smtp-Source: ABdhPJwsED3u/CI8qpXKMn9KJe3biAkdbIN+MAMnL/4+m7CEx4Qr6JR9g57bHrdOIP94RHn84laC3g==
+X-Received: by 2002:a17:90a:ef17:: with SMTP id k23mr260429pjz.45.1596055309594;
+        Wed, 29 Jul 2020 13:41:49 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id s30sm3448581pgn.34.2020.07.29.13.41.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 13:41:48 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 13:38:20 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Lina Iyer <ilina@codeaurora.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        robh+dt@kernel.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, Maulik Shah <mkshah@codeaurora.org>
+Subject: Re: [PATCH v4 4/5] arm64: dts: sdm845: Add OPP tables and
+ power-domains for venus
+Message-ID: <20200729203820.GK229995@builder.lan>
+References: <1595503612-2901-1-git-send-email-rnayak@codeaurora.org>
+ <1595503612-2901-5-git-send-email-rnayak@codeaurora.org>
+ <e68ff810-362a-5b99-206b-f676b204101d@linaro.org>
+ <654e0fcb-ae4d-c151-fa8a-4d029fc823fb@codeaurora.org>
+ <20200724162825.GH9185@codeaurora.org>
+ <159589714088.1360974.13205114501389777927@swboyd.mtv.corp.google.com>
+ <20200728165212.GA32586@codeaurora.org>
+ <159596590401.1360974.283437162250734878@swboyd.mtv.corp.google.com>
+ <20200728201133.GB32586@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k3uapmft6h66ytra"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200729183145.6066-4-dmurphy@ti.com>
+In-Reply-To: <20200728201133.GB32586@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 28 Jul 13:11 PDT 2020, Lina Iyer wrote:
 
---k3uapmft6h66ytra
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Tue, Jul 28 2020 at 13:51 -0600, Stephen Boyd wrote:
+> > Quoting Lina Iyer (2020-07-28 09:52:12)
+> > > On Mon, Jul 27 2020 at 18:45 -0600, Stephen Boyd wrote:
+> > > >Quoting Lina Iyer (2020-07-24 09:28:25)
+> > > >> On Fri, Jul 24 2020 at 03:03 -0600, Rajendra Nayak wrote:
+> > > >> >Hi Maulik/Lina,
+> > > >> >
+> > > >> >On 7/23/2020 11:36 PM, Stanimir Varbanov wrote:
+> > > >> >>Hi Rajendra,
+> > > >> >>
+> > > >> >>After applying 2,3 and 4/5 patches on linaro-integration v5.8-rc2 I see
+> > > >> >>below messages on db845:
+> > > >> >>
+> > > >> >>qcom-venus aa00000.video-codec: dev_pm_opp_set_rate: failed to find
+> > > >> >>current OPP for freq 533000097 (-34)
+> > > >> >>
+> > > >> >>^^^ This one is new.
+> > > >> >>
+> > > >> >>qcom_rpmh TCS Busy, retrying RPMH message send: addr=0x30000
+> > > >> >>
+> > > >> >>^^^ and this message is annoying, can we make it pr_debug in rpmh?
+> > > >> >
+> > > >> How annoyingly often do you see this message?
+> > > >> Usually, this is an indication of bad system state either on remote
+> > > >> processors in the SoC or in Linux itself. On a smooth sailing build you
+> > > >> should not see this 'warning'.
+> > > >>
+> > > >> >Would you be fine with moving this message to a pr_debug? Its currently
+> > > >> >a pr_info_ratelimited()
+> > > >> I would rather not, moving this out of sight will mask a lot serious
+> > > >> issues that otherwise bring attention to the developers.
+> > > >>
+> > > >
+> > > >I removed this warning message in my patch posted to the list[1]. If
+> > > >it's a serious problem then I suppose a timeout is more appropriate, on
+> > > >the order of several seconds or so and then a pr_warn() and bail out of
+> > > >the async call with an error.
+> > > >
+> > > The warning used to capture issues that happen within a second and it
+> > > helps capture system related issues. Timing out after many seconds
+> > > overlooks the system issues that generally tend to resolve itself, but
+> > > nevertheless need to be investigated.
+> > > 
+> > 
+> > Is it correct to read "system related issues" as performance problems
+> > where the thread is spinning forever trying to send a message and it
+> > can't? So the problem is mostly that it's an unbounded amount of time
+> > before the message is sent to rpmh and this printk helps identify those
+> > situations where that is happening?
+> > 
+> Yes, but mostly a short period of time like when other processors are in
+> the middle of a restart or resource states changes have taken unusual
+> amounts of time. The system will generally recover from this without
+> crashing in this case. User action is investigation of the situation
+> leading to these messages.
+> 
 
-Hi,
+Given that these messages shows up from time and seemingly is harmless,
+users such as myself implements the action of ignoring these printouts.
 
-On Wed, Jul 29, 2020 at 01:31:45PM -0500, Dan Murphy wrote:
-> Add the Texas Instruments BQ28z610 battery monitor.
-> The register address map is laid out the same as compared to other
-> devices within the file.
->=20
-> The battery status register bits are similar to the bq27z561 but they
-> are different compared to other fuel gauge devices within this file.
->=20
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
+In the cases I do see these messages it seems, as you say, to be related
+to something happening in the firmware. So it's not something that a
+user typically could investigate/debug anyways.
 
-Thanks, queued.
 
--- Sebastian
+As such I do second Doug's request of not printing what looks like error
+messages unless there is a persistent problem - but provide some means
+for the few who would find them useful..
 
->  drivers/power/supply/bq27xxx_battery.c     | 42 ++++++++++++++++++++++
->  drivers/power/supply/bq27xxx_battery_i2c.c |  2 ++
->  include/linux/power/bq27xxx_battery.h      |  1 +
->  3 files changed, 45 insertions(+)
->=20
-> diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/suppl=
-y/bq27xxx_battery.c
-> index a05b9a2d112d..a123f6e21f08 100644
-> --- a/drivers/power/supply/bq27xxx_battery.c
-> +++ b/drivers/power/supply/bq27xxx_battery.c
-> @@ -44,6 +44,7 @@
->   * https://www.ti.com/product/bq27441-g1
->   * https://www.ti.com/product/bq27621-g1
->   * https://www.ti.com/product/bq27z561
-> + * https://www.ti.com/product/bq28z610
->   */
-> =20
->  #include <linux/device.h>
-> @@ -462,6 +463,26 @@ static u8
->  		[BQ27XXX_REG_DCAP] =3D 0x3c,
->  		[BQ27XXX_REG_AP] =3D 0x22,
->  		BQ27XXX_DM_REG_ROWS,
-> +	},
-> +	bq28z610_regs[BQ27XXX_REG_MAX] =3D {
-> +		[BQ27XXX_REG_CTRL] =3D 0x00,
-> +		[BQ27XXX_REG_TEMP] =3D 0x06,
-> +		[BQ27XXX_REG_INT_TEMP] =3D INVALID_REG_ADDR,
-> +		[BQ27XXX_REG_VOLT] =3D 0x08,
-> +		[BQ27XXX_REG_AI] =3D 0x14,
-> +		[BQ27XXX_REG_FLAGS] =3D 0x0a,
-> +		[BQ27XXX_REG_TTE] =3D 0x16,
-> +		[BQ27XXX_REG_TTF] =3D 0x18,
-> +		[BQ27XXX_REG_TTES] =3D INVALID_REG_ADDR,
-> +		[BQ27XXX_REG_TTECP] =3D INVALID_REG_ADDR,
-> +		[BQ27XXX_REG_NAC] =3D INVALID_REG_ADDR,
-> +		[BQ27XXX_REG_FCC] =3D 0x12,
-> +		[BQ27XXX_REG_CYCT] =3D 0x2a,
-> +		[BQ27XXX_REG_AE] =3D 0x22,
-> +		[BQ27XXX_REG_SOC] =3D 0x2c,
-> +		[BQ27XXX_REG_DCAP] =3D 0x3c,
-> +		[BQ27XXX_REG_AP] =3D 0x22,
-> +		BQ27XXX_DM_REG_ROWS,
->  	};
-> =20
->  static enum power_supply_property bq27000_props[] =3D {
-> @@ -717,6 +738,25 @@ static enum power_supply_property bq27z561_props[] =
-=3D {
->  	POWER_SUPPLY_PROP_MANUFACTURER,
->  };
-> =20
-> +static enum power_supply_property bq28z610_props[] =3D {
-> +	POWER_SUPPLY_PROP_STATUS,
-> +	POWER_SUPPLY_PROP_PRESENT,
-> +	POWER_SUPPLY_PROP_VOLTAGE_NOW,
-> +	POWER_SUPPLY_PROP_CURRENT_NOW,
-> +	POWER_SUPPLY_PROP_CAPACITY,
-> +	POWER_SUPPLY_PROP_CAPACITY_LEVEL,
-> +	POWER_SUPPLY_PROP_TEMP,
-> +	POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW,
-> +	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
-> +	POWER_SUPPLY_PROP_TECHNOLOGY,
-> +	POWER_SUPPLY_PROP_CHARGE_FULL,
-> +	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
-> +	POWER_SUPPLY_PROP_CYCLE_COUNT,
-> +	POWER_SUPPLY_PROP_POWER_AVG,
-> +	POWER_SUPPLY_PROP_HEALTH,
-> +	POWER_SUPPLY_PROP_MANUFACTURER,
-> +};
-> +
->  struct bq27xxx_dm_reg {
->  	u8 subclass_id;
->  	u8 offset;
-> @@ -813,6 +853,7 @@ static struct bq27xxx_dm_reg bq27621_dm_regs[] =3D {
->  #endif
-> =20
->  #define bq27z561_dm_regs 0
-> +#define bq28z610_dm_regs 0
-> =20
->  #define BQ27XXX_O_ZERO	0x00000001
->  #define BQ27XXX_O_OTDC	0x00000002 /* has OTC/OTD overtemperature flags */
-> @@ -865,6 +906,7 @@ static struct {
->  	[BQ27441]   =3D BQ27XXX_DATA(bq27441,   0x80008000, BQ27XXX_O_UTOT | BQ=
-27XXX_O_CFGUP | BQ27XXX_O_RAM),
->  	[BQ27621]   =3D BQ27XXX_DATA(bq27621,   0x80008000, BQ27XXX_O_UTOT | BQ=
-27XXX_O_CFGUP | BQ27XXX_O_RAM),
->  	[BQ27Z561]  =3D BQ27XXX_DATA(bq27z561,  0         , BQ27Z561_O_BITS),
-> +	[BQ28Z610]  =3D BQ27XXX_DATA(bq28z610,  0         , BQ27Z561_O_BITS),
->  };
-> =20
->  static DEFINE_MUTEX(bq27xxx_list_lock);
-> diff --git a/drivers/power/supply/bq27xxx_battery_i2c.c b/drivers/power/s=
-upply/bq27xxx_battery_i2c.c
-> index 15f4e75786ab..ab02456d69e5 100644
-> --- a/drivers/power/supply/bq27xxx_battery_i2c.c
-> +++ b/drivers/power/supply/bq27xxx_battery_i2c.c
-> @@ -254,6 +254,7 @@ static const struct i2c_device_id bq27xxx_i2c_id_tabl=
-e[] =3D {
->  	{ "bq27441", BQ27441 },
->  	{ "bq27621", BQ27621 },
->  	{ "bq27z561", BQ27Z561 },
-> +	{ "bq28z610", BQ28Z610 },
->  	{},
->  };
->  MODULE_DEVICE_TABLE(i2c, bq27xxx_i2c_id_table);
-> @@ -288,6 +289,7 @@ static const struct of_device_id bq27xxx_battery_i2c_=
-of_match_table[] =3D {
->  	{ .compatible =3D "ti,bq27441" },
->  	{ .compatible =3D "ti,bq27621" },
->  	{ .compatible =3D "ti,bq27z561" },
-> +	{ .compatible =3D "ti,bq28z610" },
->  	{},
->  };
->  MODULE_DEVICE_TABLE(of, bq27xxx_battery_i2c_of_match_table);
-> diff --git a/include/linux/power/bq27xxx_battery.h b/include/linux/power/=
-bq27xxx_battery.h
-> index 1f6ea5d5063d..987d9652aa4e 100644
-> --- a/include/linux/power/bq27xxx_battery.h
-> +++ b/include/linux/power/bq27xxx_battery.h
-> @@ -31,6 +31,7 @@ enum bq27xxx_chip {
->  	BQ27441,
->  	BQ27621,
->  	BQ27Z561,
-> +	BQ28Z610,
->  };
-> =20
->  struct bq27xxx_device_info;
-> --=20
-> 2.28.0
->=20
+Regards,
+Bjorn
 
---k3uapmft6h66ytra
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl8h3jQACgkQ2O7X88g7
-+ppp9g//dMUOavZiN1FqPSL4Qsxsx7nyHPyY/mahN6Ekbgg4S/Dwu3Le+d6VG1mC
-mbtR1D48o/ZoZR0Z5wfbR+2eNbIcGUae/IzVHFNXiuqAosHdykHuHNJ25S3kzBfi
-b9lbKaGdi7eFXjg7lPGrWYYO8dt768sL1ShMjaQjYTv+Bt1FZHfyuDASzaETXXDZ
-P9WADGOV4I3dV9Llyi7mK662j/PwdjGJrC1FkQofGvS8rvuA/AL0BqbZVM2Gro1X
-XEH6bFzyHKl35Afa1aUKAeq3x57wdp5onj3VSbyLfBA1/Jof9VXcukwx0l8cEu0b
-uB3S+0rq72BHv/XOi/3xf3f+rHHerHyAt3/ScCGJaEeM7mQjARu1YNlFbZwWBS6B
-/BR0VZmZPCxFdbp7U4TVU9gr1u3QYQkPl0Ie47Wjl+h0TihC9aI9aODsRBprtNEp
-J6Qluhd+AB1Z140yFhLErjKJ4a31UUEmNZMwbHKz+cj4mta1PvxFyKRhTDWl4Bls
-npsnEKIB4cMXwJK+Q7amL7Mhcmt1ZMNlAS7JSCZdAcMB48iIps6DPETie14m1Q6a
-Zr0vVjRrYQjlRw1YfOlUAGUDhJpSME0bRNBak1Q+D14c+TKmX3sCy+wUeGYRXCt1
-1Jkct0RYnObHRZ3AtMYiJKDHQYceHZ8bCvuGbq2ZbhTunY4c8SA=
-=rSL2
------END PGP SIGNATURE-----
-
---k3uapmft6h66ytra--
+> > Otherwise as you say above it's a bad system state where the rpmh
+> > processor has gotten into a bad state like a crash? Can we recover from
+> > that? Or is the only recovery a reboot of the system? Does the rpmh
+> > processor reboot the system if it crashes?
+> We cannot recover from such a state. The remote processor will reboot if
+> it detects a failure at it's end. If the system entered a bad state, it
+> is possible that RPMH requests start timing out in Linux and remote
+> processor may not detect it. Hence, the timeout in rpmh_write() API. The
+> advised course of action is a restart as there is no way to recover from
+> this state.
+> 
+> --Lina
+> 
+> 
