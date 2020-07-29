@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727AC2321E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16472321F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgG2PtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 11:49:09 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:40736 "EHLO huawei.com"
+        id S1727808AbgG2Pts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 11:49:48 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8296 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726365AbgG2PtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 11:49:09 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id EEFA4C45F786571383A1;
-        Wed, 29 Jul 2020 23:49:06 +0800 (CST)
+        id S1726365AbgG2Pts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 11:49:48 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 332E61107CF368C86491;
+        Wed, 29 Jul 2020 23:49:45 +0800 (CST)
 Received: from kernelci-master.huawei.com (10.175.101.6) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 29 Jul 2020 23:49:00 +0800
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 29 Jul 2020 23:49:35 +0800
 From:   Wei Yongjun <weiyongjun1@huawei.com>
 To:     Hulk Robot <hulkci@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        Ofir Bitton <obitton@habana.ai>, Tomer Tayar <ttayar@habana.ai>
 CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] irqchip/imx-intmux: Fix irqdata regs save in imx_intmux_runtime_suspend()
-Date:   Wed, 29 Jul 2020 23:58:49 +0800
-Message-ID: <20200729155849.33919-1-weiyongjun1@huawei.com>
+Subject: [PATCH -next] habanalabs: make some functions static
+Date:   Wed, 29 Jul 2020 23:59:25 +0800
+Message-ID: <20200729155925.34131-1-weiyongjun1@huawei.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -41,62 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gcc report warning as follows:
+The sparse tool complains as follows:
 
-drivers/irqchip/irq-imx-intmux.c:316:29: warning:
- variable 'irqchip_data' set but not used [-Wunused-but-set-variable]
-  316 |  struct intmux_irqchip_data irqchip_data;
-      |                             ^~~~~~~~~~~~
+drivers/misc/habanalabs/gaudi/gaudi.c:6275:5: warning:
+ symbol 'gaudi_ctx_init' was not declared. Should it be static?
+drivers/misc/habanalabs/goya/goya.c:5228:5: warning:
+ symbol 'goya_ctx_init' was not declared. Should it be static?
 
-irqdata regs is stored to this variable on the stack in
-imx_intmux_runtime_suspend(), which means a nop. this commit
-fix to save regs to the right place.
+Those functions are not used outside of source file, so this
+commit marks them static.
 
-Fixes: bb403111e017 ("irqchip/imx-intmux: Implement intmux runtime power management")
+Fixes: a04b7cd97eef ("habanalabs: create internal CB pool")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- drivers/irqchip/irq-imx-intmux.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
+ drivers/misc/habanalabs/goya/goya.c | 2 +-
+ 2 file changed, 2 insertion(+), 2 deletion(-)
 
-diff --git a/drivers/irqchip/irq-imx-intmux.c b/drivers/irqchip/irq-imx-intmux.c
-index 4c9e40d193d6..e35b7b09c3ab 100644
---- a/drivers/irqchip/irq-imx-intmux.c
-+++ b/drivers/irqchip/irq-imx-intmux.c
-@@ -313,12 +313,12 @@ static int imx_intmux_remove(struct platform_device *pdev)
- static int imx_intmux_runtime_suspend(struct device *dev)
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index d4b3b995f69d..00a0a7238d81 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -6272,7 +6272,7 @@ static enum hl_device_hw_state gaudi_get_hw_state(struct hl_device *hdev)
+ 	return RREG32(mmHW_STATE);
+ }
+ 
+-int gaudi_ctx_init(struct hl_ctx *ctx)
++static int gaudi_ctx_init(struct hl_ctx *ctx)
  {
- 	struct intmux_data *data = dev_get_drvdata(dev);
--	struct intmux_irqchip_data irqchip_data;
-+	struct intmux_irqchip_data *irqchip_data;
- 	int i;
- 
- 	for (i = 0; i < data->channum; i++) {
--		irqchip_data = data->irqchip_data[i];
--		irqchip_data.saved_reg = readl_relaxed(data->regs + CHANIER(i));
-+		irqchip_data = &data->irqchip_data[i];
-+		irqchip_data->saved_reg = readl_relaxed(data->regs + CHANIER(i));
- 	}
- 
- 	clk_disable_unprepare(data->ipg_clk);
-@@ -329,7 +329,7 @@ static int imx_intmux_runtime_suspend(struct device *dev)
- static int imx_intmux_runtime_resume(struct device *dev)
- {
- 	struct intmux_data *data = dev_get_drvdata(dev);
--	struct intmux_irqchip_data irqchip_data;
-+	struct intmux_irqchip_data *irqchip_data;
- 	int ret, i;
- 
- 	ret = clk_prepare_enable(data->ipg_clk);
-@@ -339,8 +339,8 @@ static int imx_intmux_runtime_resume(struct device *dev)
- 	}
- 
- 	for (i = 0; i < data->channum; i++) {
--		irqchip_data = data->irqchip_data[i];
--		writel_relaxed(irqchip_data.saved_reg, data->regs + CHANIER(i));
-+		irqchip_data = &data->irqchip_data[i];
-+		writel_relaxed(irqchip_data->saved_reg, data->regs + CHANIER(i));
- 	}
- 
  	return 0;
+ }
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index dedcd2211fb7..85030759b2af 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -5225,7 +5225,7 @@ static enum hl_device_hw_state goya_get_hw_state(struct hl_device *hdev)
+ 	return RREG32(mmHW_STATE);
+ }
+ 
+-int goya_ctx_init(struct hl_ctx *ctx)
++static int goya_ctx_init(struct hl_ctx *ctx)
+ {
+ 	return 0;
+ }
 
