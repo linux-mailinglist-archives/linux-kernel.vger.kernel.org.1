@@ -2,184 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EC3232547
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DDD23254B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgG2TVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 15:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
+        id S1726903AbgG2TV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 15:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgG2TVT (ORCPT
+        with ESMTP id S1726509AbgG2TVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 15:21:19 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11934C0619D2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:21:19 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id h7so23339006qkk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:21:19 -0700 (PDT)
+        Wed, 29 Jul 2020 15:21:55 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDF1C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:21:55 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id d1so12306770plr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=xf8y6+QE7u4z9tDYoWpKfnyILr6WJGhsLpbcNKIkelU=;
-        b=n8so8KYJL7JTmU4FRh9v0OQdg1omhOYvRSE92qmDvKlITdi/LJg3OMvlrRg7KCISxw
-         GDiEDm6vbZDm4z7zCnQ9gOZen6GBUgOVlhajnAsr/bMFrhTaaNfLHX6ukTqQc3u9ykaz
-         vpfHcgO1dQPjfiB4BBf0JmXcZAONXwPrRp/fHP/7yMRdFvHzaxud620vIIfCJkM31y/u
-         L9Vuw+e+5PV9CF1QdpRziQUdRphSv2XcZkdlItKQQib8zHIYmj31ZVVNPDcL7HUx1bYa
-         D4ZPuZTk8pwt0T18C2F5ftoc4JBv5FbT7S2naq/vJtjg8z0HqS+SFgPElReYcxMN1Ewn
-         bkOQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CyZyqFI+XAr4XPDXxXl/eruhWi9Hm+rYqmX4iZ+USns=;
+        b=FRfOzvLbV/mf5lnlVREPCAuLLWN993iqbGhRBftPZBoNeFAkU2XbZjCgBKw0nkU6Lb
+         fNIBcg/B4NcVq35Qk2vIizFFcHDK3E8/iIYDnNN9p9SdWsZZfcCuGO7da1L2SOBEr8wt
+         /WcLELl09txi5pqBKeyodMdyHCeZcF3z0LXAax46+ypLjcp7zBaSoZhsoQOi/3mu5fw6
+         WNZ2opzWv1EFV+mkd+IJJRvseEE/8n96xEOsGCopMjF863lK7VudXfH30A5UdyuN7UbF
+         tB05rKoTI4eMN9+n+caFMzv9yWZ276cgY4EtZ1MMtrNYUPdZgC+DNbEp6Tg5vSEge9XT
+         cecw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=xf8y6+QE7u4z9tDYoWpKfnyILr6WJGhsLpbcNKIkelU=;
-        b=fj3MIjEDDXk7bFZWLcTJeH2OB3oFV4eGAQiArDRZhMpT/ZDX5zh0raNyZQyQsG8zt9
-         iiTB1hBAWJR8ZQTV7S4iwLwcOHG9rtaQCe78Qm8PGpQyEKpUBISuEkXAkvQSpdHMWJ2J
-         iO2bpdIrZxW/ZLvRmR9dmdU/tTrIPYxRa3BJBc3IdinUHRViE9KjNeprtbx2LETXeAGL
-         6uQMQSQQufsHUJz6L4vhlFt09S6cK2qZXnbjCLUlDsqQUk2PNQr5WTaw+DFpQj3lt/Hv
-         /y9U/40jEDvPSanPnE8VfEOU8H1RB3lxk5von5YtCXmT1x+7IT5tmSfQBiuDLQkSiwmu
-         w9Sg==
-X-Gm-Message-State: AOAM532as62BgzeuNhGvXUHgE9P/Tvmfck+JDRd/lUNs0FWwEqxv+YFQ
-        Tc2i0G0EvKzhTw5LwqCPKu5shQ==
-X-Google-Smtp-Source: ABdhPJztd8X9PkPqPBt+mePsOqrRf4zvhkmVEscAYT44kSObS9rUvpzOQV1mbjxPBgBiGbWIkNUOYg==
-X-Received: by 2002:a37:b307:: with SMTP id c7mr35592806qkf.307.1596050477865;
-        Wed, 29 Jul 2020 12:21:17 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id s128sm2212336qkd.108.2020.07.29.12.21.12
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 29 Jul 2020 12:21:16 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 12:21:11 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Pengfei Li <fly@kernel.page>
-cc:     akpm@linux-foundation.org, bmt@zurich.ibm.com, dledford@redhat.com,
-        willy@infradead.org, vbabka@suse.cz,
-        kirill.shutemov@linux.intel.com, jgg@ziepe.ca,
-        alex.williamson@redhat.com, cohuck@redhat.com,
-        daniel.m.jordan@oracle.com, dbueso@suse.de, jglisse@redhat.com,
-        jhubbard@nvidia.com, ldufour@linux.ibm.com,
-        Liam.Howlett@oracle.com, peterz@infradead.org, cl@linux.com,
-        jack@suse.cz, rientjes@google.com, walken@google.com,
-        hughd@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 2/2] mm, util: account_locked_vm() does not hold
- mmap_lock
-In-Reply-To: <20200726080224.205470-2-fly@kernel.page>
-Message-ID: <alpine.LSU.2.11.2007291121280.4649@eggly.anvils>
-References: <20200726080224.205470-1-fly@kernel.page> <20200726080224.205470-2-fly@kernel.page>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CyZyqFI+XAr4XPDXxXl/eruhWi9Hm+rYqmX4iZ+USns=;
+        b=g71m7KrBXtLeNJoobYX3c6Krg73wAlJhyFOlkpuLYmG0J+mADdUEAc3drxuvLb37u7
+         I6xKt3GG6wnx4ynuffOT9NCn5yUc45kDjZUBLsBBFZRHeS0b0dPeAU+z5aJAUcnLXpJm
+         Cr3lLJ0JRa1gyW27vLsPM1afBLVGJaUf70Oft7jpGAS8Su7NKJjouVYvr5rXGd8Z8xSu
+         DBHL+AgzeW34v2YEINHYIRsg/sfZ6nVjm8XulDUczByPA7enDhfjjs+83unEYXDjgOWp
+         WPbo9KFfv0L/FYBn6DeoN+/h2Qb2IS6AIsrsbubvFlqQMpaWoR2IVOXbopEOGw+WXjWw
+         24Ew==
+X-Gm-Message-State: AOAM530p26QrJT1ycJL/grtRlNb8LdtOIG1mbdXU9ZAaPXDKA1YLGYi9
+        yMe8WQVA+nLfMmMRXLLM1Gw=
+X-Google-Smtp-Source: ABdhPJwSMhh3G/aPj7aRHxIrocMc+jlvrmkMz+HumqEtyC+4OjsjsEBRGXKhcJLLnw6Tc4CoM8EpHg==
+X-Received: by 2002:a17:90a:ea8e:: with SMTP id h14mr11149292pjz.105.1596050514903;
+        Wed, 29 Jul 2020 12:21:54 -0700 (PDT)
+Received: from localhost.localdomain ([122.167.86.75])
+        by smtp.googlemail.com with ESMTPSA id hg7sm599431pjb.24.2020.07.29.12.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 12:21:54 -0700 (PDT)
+From:   Aditya Jain <aditya.jainadityajain.jain@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, joe@perches.com, Larry.Finger@lwfinger.net,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Aditya Jain <aditya.jainadityajain.jain@gmail.com>
+Subject: [PATCH v4 0/3] Fix coding style issues in staging
+Date:   Thu, 30 Jul 2020 00:51:33 +0530
+Message-Id: <20200729192136.23828-1-aditya.jainadityajain.jain@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAJAoDUjVBon2iiztdER82mHgJtVS6s5XYSajbCTne0KWAzoLvg@mail.gmail.com>
+References: <CAJAoDUjVBon2iiztdER82mHgJtVS6s5XYSajbCTne0KWAzoLvg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020, Pengfei Li wrote:
+Hey everyone,
 
-> Since mm->locked_vm is already an atomic counter, account_locked_vm()
-> does not need to hold mmap_lock.
+Following the comments received I've updated the patch.
+The patch cleans up coding style issues in the file
+drivers/staging/rtl8723bs/include/hal_phy_cfg.h
 
-I am worried that this patch, already added to mmotm, along with its
-1/2 making locked_vm an atomic64, might be rushed into v5.9 with just
-that two-line commit description, and no discussion at all.
+Changelog:
 
-locked_vm belongs fundamentally to mm/mlock.c, and the lock to guard
-it is mmap_lock; and mlock() has some complicated stuff to do under
-that lock while it decides how to adjust locked_vm.
+v1:
+Fixed ERROR: "foo *	bar" should be "foo *bar" reported by
+checkpatch.pl
 
-It is very easy to convert an unsigned long to an atomic64_t, but
-"atomic read, check limit and do stuff, atomic add" does not give
-the same guarantee as holding the right lock around it all.
+v1 -> v2:
+Cleaned up multiline function declarations as suggested
+by Greg and adjusted spacing in macro definitions to align them.
 
-(At the very least, __account_locked_vm() in 1/2 should be changed to
-replace its atomic64_add by an atomic64_cmpxchg, to enforce the limit
-that it just checked.  But that will be no more than lipstick on a pig,
-when the right lock that everyone else agrees upon is not being held.)
+v2 -> v3:
+Broke the single patch in v2 into multiple patches with each
+patch doing one single task.
 
-Now, it can be argued that our locked_vm and pinned_vm maintenance
-is so random and deficient, and too difficult to keep right across
-a sprawl of drivers, that we should just be grateful for those that
-do volunteer to subject themselves to RLIMIT_MEMLOCK limitation,
-and never mind if it's a little racy.
+v3 -> v4:
+1. Corrected the patch subject following Larry's suggestion.    
+2. Merged the second and third patches into one following Greg's 
+comment.
+3. Removed comments from the PHY_SetBWMode8723B function declaration.
 
-And it may well be that all those who have made considerable efforts
-in the past to improve the situation, have more interesting things to
-devote their time to, and would prefer not to get dragged back here.
+Aditya Jain (3):
+  staging: rtl8723bs: Fix coding style errors
+  staging: rtl8723bs: Clean up function declations
+  staging: rtl8723bs: Align macro definitions
 
-But let's at least give this a little more visibility, and hope
-to hear opinions one way or the other from those who care.
+ .../staging/rtl8723bs/include/hal_phy_cfg.h   | 116 +++++-------------
+ 1 file changed, 32 insertions(+), 84 deletions(-)
 
-Hugh
+-- 
+2.25.1
 
-> 
-> Signed-off-by: Pengfei Li <fly@kernel.page>
-> ---
->  drivers/vfio/vfio_iommu_type1.c |  8 ++------
->  mm/util.c                       | 15 +++------------
->  2 files changed, 5 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 78013be07fe7..53818fce78a6 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -376,12 +376,8 @@ static int vfio_lock_acct(struct vfio_dma *dma, long npage, bool async)
->  	if (!mm)
->  		return -ESRCH; /* process exited */
->  
-> -	ret = mmap_write_lock_killable(mm);
-> -	if (!ret) {
-> -		ret = __account_locked_vm(mm, abs(npage), npage > 0, dma->task,
-> -					  dma->lock_cap);
-> -		mmap_write_unlock(mm);
-> -	}
-> +	ret = __account_locked_vm(mm, abs(npage), npage > 0,
-> +					dma->task, dma->lock_cap);
->  
->  	if (async)
->  		mmput(mm);
-> diff --git a/mm/util.c b/mm/util.c
-> index 473add0dc275..320fdd537aea 100644
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -424,8 +424,7 @@ void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
->   * @task:        task used to check RLIMIT_MEMLOCK
->   * @bypass_rlim: %true if checking RLIMIT_MEMLOCK should be skipped
->   *
-> - * Assumes @task and @mm are valid (i.e. at least one reference on each), and
-> - * that mmap_lock is held as writer.
-> + * Assumes @task and @mm are valid (i.e. at least one reference on each).
->   *
->   * Return:
->   * * 0       on success
-> @@ -437,8 +436,6 @@ int __account_locked_vm(struct mm_struct *mm, unsigned long pages, bool inc,
->  	unsigned long locked_vm, limit;
->  	int ret = 0;
->  
-> -	mmap_assert_write_locked(mm);
-> -
->  	locked_vm = atomic64_read(&mm->locked_vm);
->  	if (inc) {
->  		if (!bypass_rlim) {
-> @@ -476,17 +473,11 @@ EXPORT_SYMBOL_GPL(__account_locked_vm);
->   */
->  int account_locked_vm(struct mm_struct *mm, unsigned long pages, bool inc)
->  {
-> -	int ret;
-> -
->  	if (pages == 0 || !mm)
->  		return 0;
->  
-> -	mmap_write_lock(mm);
-> -	ret = __account_locked_vm(mm, pages, inc, current,
-> -				  capable(CAP_IPC_LOCK));
-> -	mmap_write_unlock(mm);
-> -
-> -	return ret;
-> +	return __account_locked_vm(mm, pages, inc,
-> +					current, capable(CAP_IPC_LOCK));
->  }
->  EXPORT_SYMBOL_GPL(account_locked_vm);
->  
-> -- 
-> 2.26.2
