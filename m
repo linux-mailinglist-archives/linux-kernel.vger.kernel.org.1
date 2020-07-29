@@ -2,93 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB81232542
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EC3232547
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgG2TTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 15:19:54 -0400
-Received: from mga09.intel.com ([134.134.136.24]:6307 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726813AbgG2TTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 15:19:53 -0400
-IronPort-SDR: Kbs0mnr1F0haw7UsaLZIbz4v/rDcSNWCDgtNizq3QTASpTP5uflnLBbDKhWahqdiuJvMDmYC+a
- /eXE7IoX1D0A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="152719831"
-X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
-   d="scan'208";a="152719831"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 12:19:52 -0700
-IronPort-SDR: 9RzVGALLuwjEf6BbEneL9Y8lhW66wiDJI9yQHUpi82JXlsMRSLvM/YpEAcDLtJ0yE68qDNGsgR
- PD7ny7XnW9OA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
-   d="scan'208";a="364941243"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001.jf.intel.com with ESMTP; 29 Jul 2020 12:19:49 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1k0rcC-004ksx-SW; Wed, 29 Jul 2020 22:19:48 +0300
-Date:   Wed, 29 Jul 2020 22:19:48 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Vitor Massaru Iha <vitor@massaru.org>
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brendanhiggins@google.com,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        gregkh@linuxfoundation.org, tglx@linutronix.de, fkostenzer@live.at,
-        geert@linux-m68k.org, paul.gortmaker@windriver.com,
-        akpm@linux-foundation.org, torvalds@linux-foundation.org
-Subject: Re: [PATCH v2] lib: kunit: Convert test_sort to KUnit test
-Message-ID: <20200729191948.GZ3703480@smile.fi.intel.com>
-References: <20200729191151.476368-1-vitor@massaru.org>
+        id S1726859AbgG2TVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 15:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726581AbgG2TVT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 15:21:19 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11934C0619D2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:21:19 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id h7so23339006qkk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=xf8y6+QE7u4z9tDYoWpKfnyILr6WJGhsLpbcNKIkelU=;
+        b=n8so8KYJL7JTmU4FRh9v0OQdg1omhOYvRSE92qmDvKlITdi/LJg3OMvlrRg7KCISxw
+         GDiEDm6vbZDm4z7zCnQ9gOZen6GBUgOVlhajnAsr/bMFrhTaaNfLHX6ukTqQc3u9ykaz
+         vpfHcgO1dQPjfiB4BBf0JmXcZAONXwPrRp/fHP/7yMRdFvHzaxud620vIIfCJkM31y/u
+         L9Vuw+e+5PV9CF1QdpRziQUdRphSv2XcZkdlItKQQib8zHIYmj31ZVVNPDcL7HUx1bYa
+         D4ZPuZTk8pwt0T18C2F5ftoc4JBv5FbT7S2naq/vJtjg8z0HqS+SFgPElReYcxMN1Ewn
+         bkOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=xf8y6+QE7u4z9tDYoWpKfnyILr6WJGhsLpbcNKIkelU=;
+        b=fj3MIjEDDXk7bFZWLcTJeH2OB3oFV4eGAQiArDRZhMpT/ZDX5zh0raNyZQyQsG8zt9
+         iiTB1hBAWJR8ZQTV7S4iwLwcOHG9rtaQCe78Qm8PGpQyEKpUBISuEkXAkvQSpdHMWJ2J
+         iO2bpdIrZxW/ZLvRmR9dmdU/tTrIPYxRa3BJBc3IdinUHRViE9KjNeprtbx2LETXeAGL
+         6uQMQSQQufsHUJz6L4vhlFt09S6cK2qZXnbjCLUlDsqQUk2PNQr5WTaw+DFpQj3lt/Hv
+         /y9U/40jEDvPSanPnE8VfEOU8H1RB3lxk5von5YtCXmT1x+7IT5tmSfQBiuDLQkSiwmu
+         w9Sg==
+X-Gm-Message-State: AOAM532as62BgzeuNhGvXUHgE9P/Tvmfck+JDRd/lUNs0FWwEqxv+YFQ
+        Tc2i0G0EvKzhTw5LwqCPKu5shQ==
+X-Google-Smtp-Source: ABdhPJztd8X9PkPqPBt+mePsOqrRf4zvhkmVEscAYT44kSObS9rUvpzOQV1mbjxPBgBiGbWIkNUOYg==
+X-Received: by 2002:a37:b307:: with SMTP id c7mr35592806qkf.307.1596050477865;
+        Wed, 29 Jul 2020 12:21:17 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id s128sm2212336qkd.108.2020.07.29.12.21.12
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 29 Jul 2020 12:21:16 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 12:21:11 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Pengfei Li <fly@kernel.page>
+cc:     akpm@linux-foundation.org, bmt@zurich.ibm.com, dledford@redhat.com,
+        willy@infradead.org, vbabka@suse.cz,
+        kirill.shutemov@linux.intel.com, jgg@ziepe.ca,
+        alex.williamson@redhat.com, cohuck@redhat.com,
+        daniel.m.jordan@oracle.com, dbueso@suse.de, jglisse@redhat.com,
+        jhubbard@nvidia.com, ldufour@linux.ibm.com,
+        Liam.Howlett@oracle.com, peterz@infradead.org, cl@linux.com,
+        jack@suse.cz, rientjes@google.com, walken@google.com,
+        hughd@google.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 2/2] mm, util: account_locked_vm() does not hold
+ mmap_lock
+In-Reply-To: <20200726080224.205470-2-fly@kernel.page>
+Message-ID: <alpine.LSU.2.11.2007291121280.4649@eggly.anvils>
+References: <20200726080224.205470-1-fly@kernel.page> <20200726080224.205470-2-fly@kernel.page>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729191151.476368-1-vitor@massaru.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 04:11:51PM -0300, Vitor Massaru Iha wrote:
-> This adds the conversion of the test_sort.c to KUnit test.
+On Sun, 26 Jul 2020, Pengfei Li wrote:
+
+> Since mm->locked_vm is already an atomic counter, account_locked_vm()
+> does not need to hold mmap_lock.
+
+I am worried that this patch, already added to mmotm, along with its
+1/2 making locked_vm an atomic64, might be rushed into v5.9 with just
+that two-line commit description, and no discussion at all.
+
+locked_vm belongs fundamentally to mm/mlock.c, and the lock to guard
+it is mmap_lock; and mlock() has some complicated stuff to do under
+that lock while it decides how to adjust locked_vm.
+
+It is very easy to convert an unsigned long to an atomic64_t, but
+"atomic read, check limit and do stuff, atomic add" does not give
+the same guarantee as holding the right lock around it all.
+
+(At the very least, __account_locked_vm() in 1/2 should be changed to
+replace its atomic64_add by an atomic64_cmpxchg, to enforce the limit
+that it just checked.  But that will be no more than lipstick on a pig,
+when the right lock that everyone else agrees upon is not being held.)
+
+Now, it can be argued that our locked_vm and pinned_vm maintenance
+is so random and deficient, and too difficult to keep right across
+a sprawl of drivers, that we should just be grateful for those that
+do volunteer to subject themselves to RLIMIT_MEMLOCK limitation,
+and never mind if it's a little racy.
+
+And it may well be that all those who have made considerable efforts
+in the past to improve the situation, have more interesting things to
+devote their time to, and would prefer not to get dragged back here.
+
+But let's at least give this a little more visibility, and hope
+to hear opinions one way or the other from those who care.
+
+Hugh
+
 > 
-> Please apply this commit first (linux-kselftest/kunit-fixes):
-> 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
-
-Looks like you mixed up commit message and changelog / comments.
-
-> Code Style Documentation: [0]
+> Signed-off-by: Pengfei Li <fly@kernel.page>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c |  8 ++------
+>  mm/util.c                       | 15 +++------------
+>  2 files changed, 5 insertions(+), 18 deletions(-)
 > 
-> Fix these warnings Reported-by lkp@intel.com
-> 
-> WARNING: modpost: vmlinux.o(.data+0x4fc70): Section mismatch in reference from the variable sort_test_cases to the variable .init.text:sort_test
->    The variable sort_test_cases references
->    the variable __init sort_test
->    If the reference is valid then annotate the
->    variable with or __refdata (see linux/init.h) or name the variable
-> 
-> WARNING: modpost: lib/sort_kunit.o(.data+0x11c): Section mismatch in reference from the variable sort_test_cases to the function .init.text:sort_test()
->    The variable sort_test_cases references
->    the function __init sort_test()
-
-> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: [0] https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/T/#u
-
-This should be in different order: Link, Reported-by, SoB.
-Also [0] is unnecessary
-
->  lib/{test_sort.c => sort_kunit.c} | 31 +++++++++++++++----------------
-
-Still opened question why kunit is a suffix? Can't we leave same name? Can't we
-do it rather prefix?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 78013be07fe7..53818fce78a6 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -376,12 +376,8 @@ static int vfio_lock_acct(struct vfio_dma *dma, long npage, bool async)
+>  	if (!mm)
+>  		return -ESRCH; /* process exited */
+>  
+> -	ret = mmap_write_lock_killable(mm);
+> -	if (!ret) {
+> -		ret = __account_locked_vm(mm, abs(npage), npage > 0, dma->task,
+> -					  dma->lock_cap);
+> -		mmap_write_unlock(mm);
+> -	}
+> +	ret = __account_locked_vm(mm, abs(npage), npage > 0,
+> +					dma->task, dma->lock_cap);
+>  
+>  	if (async)
+>  		mmput(mm);
+> diff --git a/mm/util.c b/mm/util.c
+> index 473add0dc275..320fdd537aea 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -424,8 +424,7 @@ void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
+>   * @task:        task used to check RLIMIT_MEMLOCK
+>   * @bypass_rlim: %true if checking RLIMIT_MEMLOCK should be skipped
+>   *
+> - * Assumes @task and @mm are valid (i.e. at least one reference on each), and
+> - * that mmap_lock is held as writer.
+> + * Assumes @task and @mm are valid (i.e. at least one reference on each).
+>   *
+>   * Return:
+>   * * 0       on success
+> @@ -437,8 +436,6 @@ int __account_locked_vm(struct mm_struct *mm, unsigned long pages, bool inc,
+>  	unsigned long locked_vm, limit;
+>  	int ret = 0;
+>  
+> -	mmap_assert_write_locked(mm);
+> -
+>  	locked_vm = atomic64_read(&mm->locked_vm);
+>  	if (inc) {
+>  		if (!bypass_rlim) {
+> @@ -476,17 +473,11 @@ EXPORT_SYMBOL_GPL(__account_locked_vm);
+>   */
+>  int account_locked_vm(struct mm_struct *mm, unsigned long pages, bool inc)
+>  {
+> -	int ret;
+> -
+>  	if (pages == 0 || !mm)
+>  		return 0;
+>  
+> -	mmap_write_lock(mm);
+> -	ret = __account_locked_vm(mm, pages, inc, current,
+> -				  capable(CAP_IPC_LOCK));
+> -	mmap_write_unlock(mm);
+> -
+> -	return ret;
+> +	return __account_locked_vm(mm, pages, inc,
+> +					current, capable(CAP_IPC_LOCK));
+>  }
+>  EXPORT_SYMBOL_GPL(account_locked_vm);
+>  
+> -- 
+> 2.26.2
