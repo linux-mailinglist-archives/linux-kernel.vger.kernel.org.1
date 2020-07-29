@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F921231986
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FB623198B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbgG2G1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 02:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
+        id S1727095AbgG2G1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 02:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727014AbgG2G1R (ORCPT
+        with ESMTP id S1727026AbgG2G1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 02:27:17 -0400
+        Wed, 29 Jul 2020 02:27:19 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CDBC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 23:27:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447F0C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 23:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=GGiUP2bVq/JP9FTtUqNBNL3J94yI7DyjZeZtZ4EfQfQ=; b=tZMAGxMGzKmkk0aBD0W6dswI9H
-        6QN58eWQjJ4rjNIbGF9Vwtn6uc5MGS5R0FjceugXUy5hnSkTNJU/upS7H717TsDneDmAMM4h5hJ/7
-        j2x23JR4oa72C5CTEwwcejQAa5c1w7F1WXUZY80HRtHuld7wdc4f/VknPfNuEHQOFxWKsMsk8LPMa
-        kQyA1p+uKSxEJBU/V+dd9KiKvCTlAhtaPOu01JTpRfveV6asfbS6Cfw+HLBr7UEXAPUeihU00Q2jt
-        bUvhYtZUDTpwmwWcG2hPOnaU7n83wCMIHw2+gVx+Y7lW3EZaoM7j8tT5qqtTI8tHyXR/deI5stqa1
-        fC+A/OPw==;
+        bh=bGuOkLNWGQ9LxT3B//lrGZur5LQfmYsPpu4EyjGJMyo=; b=nAYwGuB1LtHnqvggPILgzURxwP
+        L9HtQxb33I5kEkN7Hf0NGgo0Sfbs2xBfMPh1m/m8jZTOMixhZ5GYIbQPKrny469RZdgTrELFolgNM
+        3BuGGwDjMgrIwcHyylAbgwYCnekc4emwbh6q++8n0rpTOXg8s0APznoRnCf0AaaWF97IcX9XzDs+T
+        DV1ZF9gmM2Vkzdf1mYTzoAKUOLEyoAIxSuhqireOMuT6KVURktuPPUKvwRu48Lg/1rb1tYKzX4Nfi
+        2xySack/kh2U2dK3gGppYqOccB6UFqdssq7v2HkKonF3u96ebr6NRI2op34InTMKflHyERLnocwQw
+        y2iTTooA==;
 Received: from 089144218008.atnat0027.highway.a1.net ([89.144.218.8] helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k0fYZ-00040z-D5; Wed, 29 Jul 2020 06:27:15 +0000
+        id 1k0fYb-000415-1C; Wed, 29 Jul 2020 06:27:17 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jessica Yu <jeyu@kernel.org>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/7] modules: mark find_symbol static
-Date:   Wed, 29 Jul 2020 08:27:06 +0200
-Message-Id: <20200729062711.13016-3-hch@lst.de>
+Subject: [PATCH 3/7] modules: mark each_symbol_section static
+Date:   Wed, 29 Jul 2020 08:27:07 +0200
+Message-Id: <20200729062711.13016-4-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200729062711.13016-1-hch@lst.de>
 References: <20200729062711.13016-1-hch@lst.de>
@@ -46,57 +46,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-find_symbol is only used in module.c.
+each_symbol_section is only used inside of module.c.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/module.h | 11 -----------
- kernel/module.c        |  3 +--
- 2 files changed, 1 insertion(+), 13 deletions(-)
+ include/linux/module.h | 9 ---------
+ kernel/module.c        | 3 +--
+ 2 files changed, 1 insertion(+), 11 deletions(-)
 
 diff --git a/include/linux/module.h b/include/linux/module.h
-index f1fdbeef2153a8..90bdc362be3681 100644
+index 90bdc362be3681..b79219eed83c56 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
-@@ -590,17 +590,6 @@ struct symsearch {
+@@ -590,15 +590,6 @@ struct symsearch {
  	bool unused;
  };
  
 -/*
-- * Search for an exported symbol by name.
+- * Walk the exported symbol table
 - *
 - * Must be called with module_mutex held or preemption disabled.
 - */
--const struct kernel_symbol *find_symbol(const char *name,
--					struct module **owner,
--					const s32 **crc,
--					bool gplok,
--					bool warn);
+-bool each_symbol_section(bool (*fn)(const struct symsearch *arr,
+-				    struct module *owner,
+-				    void *data), void *data);
 -
- /*
-  * Walk the exported symbol table
-  *
+ /* Returns 0 and fills in value, defined and namebuf, or -ERANGE if
+    symnum out of range. */
+ int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
 diff --git a/kernel/module.c b/kernel/module.c
-index 17d64dae756c80..84da96a6d8241c 100644
+index 84da96a6d8241c..feeaa9629eb179 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -585,7 +585,7 @@ static bool find_exported_symbol_in_section(const struct symsearch *syms,
- 
- /* Find an exported symbol and return it, along with, (optional) crc and
-  * (optional) module which owns it.  Needs preempt disabled or module_mutex. */
--const struct kernel_symbol *find_symbol(const char *name,
-+static const struct kernel_symbol *find_symbol(const char *name,
- 					struct module **owner,
- 					const s32 **crc,
- 					bool gplok,
-@@ -608,7 +608,6 @@ const struct kernel_symbol *find_symbol(const char *name,
- 	pr_debug("Failed to find symbol %s\n", name);
- 	return NULL;
+@@ -422,7 +422,7 @@ static bool each_symbol_in_section(const struct symsearch *arr,
  }
--EXPORT_SYMBOL_GPL(find_symbol);
  
- /*
-  * Search for module by name: must hold module_mutex (or preempt disabled
+ /* Returns true as soon as fn returns true, otherwise false. */
+-bool each_symbol_section(bool (*fn)(const struct symsearch *arr,
++static bool each_symbol_section(bool (*fn)(const struct symsearch *arr,
+ 				    struct module *owner,
+ 				    void *data),
+ 			 void *data)
+@@ -484,7 +484,6 @@ bool each_symbol_section(bool (*fn)(const struct symsearch *arr,
+ 	}
+ 	return false;
+ }
+-EXPORT_SYMBOL_GPL(each_symbol_section);
+ 
+ struct find_symbol_arg {
+ 	/* Input */
 -- 
 2.27.0
 
