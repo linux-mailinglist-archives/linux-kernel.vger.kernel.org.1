@@ -2,150 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8BC2318D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 07:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A922318DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 07:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgG2FCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 01:02:40 -0400
-Received: from mail-eopbgr50044.outbound.protection.outlook.com ([40.107.5.44]:60629
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725986AbgG2FCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 01:02:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Oc2ymKO8JSkpqQo5vmGi42+yblR9+GwNoaB/Q/9CUTi6JVGBAOiqrDEtHp9SZXGCoWnO7cOoyI7PhI1FDFp7MjYn/4nkJCSGDjlVsPNJxt34mEY85qhoxYt8+FINKmhjUixCY2NxU/29ALAsYWv1AZzegrK/7TVqsHvVtb+kVtg9tGgyvPKJN/dtYM5eSm6Qz8C0hM1VWSXpByuyeHTABXAnEeYGEbv3NHVmeQYXby5qLbm/JjH6wBDFW02QquEg7w3r/dMIkc68iOqDljRNS9uLur6jjOfe0DbqKYlWfziSxPNKHd7WY2Ju4EP+Gl0GFXKAyMGIh4mLJqxSHyRGhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4gl9y+kEKXff4dMnb99WMPT0KU2472V8KgkbfOQ6ooY=;
- b=SJfKWDFxszdU0pFunZymAS+b4lPP6xL6gOHQQktCqe1vOQEU6gmHhFaSJuK22pcQEBalcGPYeXINvThIoX+0puPLkehodeh0lhYxHeqbIlp80jqu7O8+r0Sgyn/NFvAIR0xGefoeigY9A5jhrLhZ1oMVEZo4WHTrtAGo1inKCvsicGv5ZjOXyNPhFL+jw6dhWMUXLXhMpNsCuAMghPxvu8LjuJXn3TWUhWEFQp9PhlkA3inBdVC/jEpUKNNdfZCGgheAI1yIVC7mRfOj6WCzauECvkHwKB7vrvMfemcB0dOo0sSgS/wIdTJMAethG/Z+x2ji5KC0wL4fQYKe7BG5FQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4gl9y+kEKXff4dMnb99WMPT0KU2472V8KgkbfOQ6ooY=;
- b=gf8tXoh7IvtsBavyUgLtPfCowwe8j0RvyNho0w03mtCZGhTTkaTCKtA6HvUwPkzSR/IF0Jd+66xPyX3mHA5eAmkZ13gzjMTDC6wbxKCHzUJV0uTbkVfEC+IAp2q3Ond+g5dmlrO7d0Pvh6dAR1CqzzRGU+k77hkIieHqeLwbzN4=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB6PR0401MB2375.eurprd04.prod.outlook.com (2603:10a6:4:4a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22; Wed, 29 Jul
- 2020 05:02:33 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::49f8:20ce:cf20:80b3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::49f8:20ce:cf20:80b3%6]) with mapi id 15.20.3216.034; Wed, 29 Jul 2020
- 05:02:33 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH V2 1/2] watchdog: imx7ulp: Strictly follow the sequence
- for wdog operations
-Thread-Topic: [PATCH V2 1/2] watchdog: imx7ulp: Strictly follow the sequence
- for wdog operations
-Thread-Index: AQHWZU9toVNXTyNlR0yNnyvd1DR7Makd8woAgAAEoFCAAAamIA==
-Date:   Wed, 29 Jul 2020 05:02:33 +0000
-Message-ID: <DB3PR0402MB3916B38E7DA20A35403F5B1EF5700@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1595989227-24700-1-git-send-email-Anson.Huang@nxp.com>
- <00587a78-8069-4fbd-7e02-b774d541f75a@roeck-us.net>
- <DB3PR0402MB3916C412DE1E83A2D40B2341F5700@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB3916C412DE1E83A2D40B2341F5700@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: roeck-us.net; dkim=none (message not signed)
- header.d=none;roeck-us.net; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: db0fb9d7-46a9-481b-3d25-08d8337c9a88
-x-ms-traffictypediagnostic: DB6PR0401MB2375:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB6PR0401MB23754CD2AC94B87834253E58F5700@DB6PR0401MB2375.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eMWofhjn4LkzyrRMxvqg4wYukMAqVxP0sO9ysOXjpzFt4tvUg0yoqF83dCfv06Net1rUmGQS/KMMyyWJD5SB1QgCapIS6ni7ZS+XdBiKvkZdRs7uTuNxNcomN+nzfWsOfEUV8/qSovAOGDE1t/swPJxIxcTwdEER4OHUtdQaiSwLm4HUlKaJst7tJtA2aTmlHGkW8K6aLpURf09AfG8BmXAT4QinI9Vr2RrA01dGwyY4M+lJjdkSPCkMb/1Du682xIJCSOHtbzzTGjRMpXHa5QJflHcPEr8e913fWLta0vV5DLV42S9dKg+O6woDDB4GXRv1N0JKLSJhySiYmR9QsA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(136003)(366004)(396003)(39860400002)(478600001)(26005)(186003)(44832011)(86362001)(83380400001)(33656002)(9686003)(66556008)(76116006)(53546011)(66446008)(52536014)(66476007)(8936002)(5660300002)(7696005)(55016002)(6506007)(64756008)(8676002)(316002)(2940100002)(110136005)(71200400001)(2906002)(4326008)(66946007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: uY2PwIJJbdQaaeVf6JvOuWmcNoPcbmH6pR8YHFycCHbTkMfu9ZKMgzQFTmyCeXQHgr0ibqq6OzKu3FBOp596kLFqiyt5t9Q3rEpw+/zoh2a0ZFrxBAXdP6o9PO/PcTYPaBusvXo54YhTQpg8tKaMIiqYhoRZ19IcwVPf0aHltCCJ1uX+t38ubXhTEgPa2aMpKcMLApKO4F7AcbCcG0Oz+Zu//QtwM2qNAkzgowc7P9OhdJ6q37NcT1RSmR8Ktkatj7K0YzZZo8NnDlUjMx7Z8BUeOfpXyiv+xXIYqTFACIPEsKO1+LKnYj6DRLY5/V/Hp2Kq/LI6YrWCnhrrS9rftfoEIdwE1WzTsK95Zj6n/j9h8poweFrPCNaniuvhz6ZSPn0FhHtOASKT46/zibbrD2MxQO9qHJImdJfku0ChVQLIVPmRS7J/lB56pvf1HyQb3DzdCdtoNaatDBRwUEYATPG5vOlKxQnWjUKwEVvdSf4=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726756AbgG2FET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 01:04:19 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:22659 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726054AbgG2FES (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 01:04:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595999057; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uy1CHEEp/QDUXfLSRvgW4cSL35sMtji9dnF2rf/Lqn0=;
+ b=ntixGgpVMDqYczOzvyXKQAUtGbJaf/cz9sS3A+YDKlMjwYUZ/W123kF7TaiL4I0J937wYegg
+ j4Bkc454yOZpMopPmTlJAF7Ksn2BG6iNJCrb2eMXO+CgcgFxBaFSKpN2W5eQzxSf8/Bq1YFa
+ aNLaOUBX14Fazr/tDVENBUoRNCk=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5f210340fcbecb3df1c197f9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Jul 2020 05:04:00
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CB8D1C43395; Wed, 29 Jul 2020 05:03:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2026C433C6;
+        Wed, 29 Jul 2020 05:03:58 +0000 (UTC)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3916.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: db0fb9d7-46a9-481b-3d25-08d8337c9a88
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2020 05:02:33.2947
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RyPx0HHVW4CTR8BOqCpDMiDVd03N/H2/M4DJLlA3lkSeiIQJ9QZ9j4DHI9QxH/YRA1ax5DcxFTBdMG8GrscG4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2375
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 29 Jul 2020 10:33:58 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-msm@vger.kernel.org,
+        Coresight ML <coresight@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCHv2] coresight: etm4x: Fix etm4_count race by moving cpuhp
+ callbacks to init
+In-Reply-To: <CAJ9a7VjQCEJ80+7AZnZ-Mv5-EUzOZHnnYr2HeFpm7aktYt5fHA@mail.gmail.com>
+References: <20200728075102.30807-1-saiprakash.ranjan@codeaurora.org>
+ <CAJ9a7VjQCEJ80+7AZnZ-Mv5-EUzOZHnnYr2HeFpm7aktYt5fHA@mail.gmail.com>
+Message-ID: <08767949db1c9e142d29e8d3ab16bd1f@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEd1ZW50ZXINCg0KDQo+IFN1YmplY3Q6IFJFOiBbUEFUQ0ggVjIgMS8yXSB3YXRjaGRvZzog
-aW14N3VscDogU3RyaWN0bHkgZm9sbG93IHRoZSBzZXF1ZW5jZQ0KPiBmb3Igd2RvZyBvcGVyYXRp
-b25zDQo+IA0KPiBIaSwgR3VlbnRlcg0KPiANCj4gDQo+ID4gU3ViamVjdDogUmU6IFtQQVRDSCBW
-MiAxLzJdIHdhdGNoZG9nOiBpbXg3dWxwOiBTdHJpY3RseSBmb2xsb3cgdGhlDQo+ID4gc2VxdWVu
-Y2UgZm9yIHdkb2cgb3BlcmF0aW9ucw0KPiA+DQo+ID4gT24gNy8yOC8yMCA3OjIwIFBNLCBBbnNv
-biBIdWFuZyB3cm90ZToNCj4gPiA+IEFjY29yZGluZyB0byByZWZlcmVuY2UgbWFudWFsLCB0aGUg
-aS5NWDdVTFAgV0RPRydzIG9wZXJhdGlvbnMgc2hvdWxkDQo+ID4gPiBmb2xsb3cgYmVsb3cgc2Vx
-dWVuY2U6DQo+ID4gPg0KPiA+ID4gMS4gZGlzYWJsZSBnbG9iYWwgaW50ZXJydXB0czsNCj4gPiA+
-IDIuIHVubG9jayB0aGUgd2RvZyBhbmQgd2FpdCB1bmxvY2sgYml0IHNldDsgMy4gcmVjb25maWd1
-cmUgdGhlIHdkb2cNCj4gPiA+IGFuZCB3YWl0IGZvciByZWNvbmZpZ3VyYXRpb24gYml0IHNldDsg
-NC4gZW5hYmVsIGdsb2JhbCBpbnRlcnJ1cHRzLg0KPiA+ID4NCj4gPiA+IFN0cmljdGx5IGZvbGxv
-dyB0aGUgcmVjb21tZW5kZWQgc2VxdWVuY2UgY2FuIG1ha2UgaXQgbW9yZSByb2J1c3QuDQo+ID4g
-Pg0KPiA+ID4gU2lnbmVkLW9mZi1ieTogQW5zb24gSHVhbmcgPEFuc29uLkh1YW5nQG54cC5jb20+
-DQo+ID4gPiAtLS0NCj4gPiA+IENoYW5nZXMgc2luY2UgVjE6DQo+ID4gPiAJLSB1c2UgcmVhZGxf
-cG9sbF90aW1lb3V0X2F0b21pYygpIGluc3RlYWQgb2YgdXNsZWVwX3JhbmdlcygpIHNpbmNlDQo+
-ID4gPiBJUlEgaXMNCj4gPiBkaXNhYmxlZC4NCj4gPiA+IC0tLQ0KPiA+ID4gIGRyaXZlcnMvd2F0
-Y2hkb2cvaW14N3VscF93ZHQuYyB8IDI5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+
-ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDI5IGluc2VydGlvbnMoKykNCj4gPiA+DQo+ID4gPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy93YXRjaGRvZy9pbXg3dWxwX3dkdC5jDQo+ID4gPiBiL2RyaXZlcnMv
-d2F0Y2hkb2cvaW14N3VscF93ZHQuYyBpbmRleCA3OTkzYzhjLi43ZDJiMTJlIDEwMDY0NA0KPiA+
-ID4gLS0tIGEvZHJpdmVycy93YXRjaGRvZy9pbXg3dWxwX3dkdC5jDQo+ID4gPiArKysgYi9kcml2
-ZXJzL3dhdGNoZG9nL2lteDd1bHBfd2R0LmMNCj4gPiA+IEBAIC01LDYgKzUsNyBAQA0KPiA+ID4N
-Cj4gPiA+ICAjaW5jbHVkZSA8bGludXgvY2xrLmg+DQo+ID4gPiAgI2luY2x1ZGUgPGxpbnV4L2lv
-Lmg+DQo+ID4gPiArI2luY2x1ZGUgPGxpbnV4L2lvcG9sbC5oPg0KPiA+ID4gICNpbmNsdWRlIDxs
-aW51eC9rZXJuZWwuaD4NCj4gPiA+ICAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+DQo+ID4gPiAg
-I2luY2x1ZGUgPGxpbnV4L29mLmg+DQo+ID4gPiBAQCAtMzYsNiArMzcsNyBAQA0KPiA+ID4gICNk
-ZWZpbmUgREVGQVVMVF9USU1FT1VUCTYwDQo+ID4gPiAgI2RlZmluZSBNQVhfVElNRU9VVAkxMjgN
-Cj4gPiA+ICAjZGVmaW5lIFdET0dfQ0xPQ0tfUkFURQkxMDAwDQo+ID4gPiArI2RlZmluZSBXRE9H
-X1dBSVRfVElNRU9VVAkxMDAwMA0KPiA+ID4NCj4gPiA+ICBzdGF0aWMgYm9vbCBub3dheW91dCA9
-IFdBVENIRE9HX05PV0FZT1VUOw0KPiA+IG1vZHVsZV9wYXJhbShub3dheW91dCwNCj4gPiA+IGJv
-b2wsIDAwMDApOyBAQCAtNDgsMTcgKzUwLDMxIEBAIHN0cnVjdCBpbXg3dWxwX3dkdF9kZXZpY2Ug
-ew0KPiA+ID4gIAlzdHJ1Y3QgY2xrICpjbGs7DQo+ID4gPiAgfTsNCj4gPiA+DQo+ID4gPiArc3Rh
-dGljIGlubGluZSB2b2lkIGlteDd1bHBfd2R0X3dhaXQodm9pZCBfX2lvbWVtICpiYXNlLCB1MzIg
-bWFzaykgew0KPiA+ID4gKwl1MzIgdmFsID0gcmVhZGwoYmFzZSArIFdET0dfQ1MpOw0KPiA+ID4g
-Kw0KPiA+ID4gKwlpZiAoISh2YWwgJiBtYXNrKSkNCj4gPiA+ICsJCVdBUk5fT04ocmVhZGxfcG9s
-bF90aW1lb3V0X2F0b21pYyhiYXNlICsgV0RPR19DUywgdmFsLA0KPiA+ID4gKwkJCQkJCSAgdmFs
-ICYgbWFzaywgMCwNCj4gPiA+ICsJCQkJCQkgIFdET0dfV0FJVF9USU1FT1VUKSk7DQo+ID4NCj4g
-PiBJIGFtIG5vdCBhIGZyaWVuZCBvZiBXQVJOX09OLCBlc3BlY2lhbGx5IGluIHNpdHVhdGlvbnMg
-bGlrZSB0aGlzLg0KPiA+IFBsZWFzZSBleHBsYWluIHdoeSB0aGlzIGlzIG5lZWRlZCwgYW5kIHdo
-eSBhIHJldHVybiBvZiAtRVRJTUVET1VUIGlzDQo+ID4gbm90IGZlYXNpYmxlLg0KPiANCj4gT0ss
-IEkgd2lsbCB1c2UgcmV0dXJuIHZhbHVlIG9mIC1FVElNRU9VVCBhbmQgaGFuZGxlIGl0IGluIHRo
-ZSBjYWxsZXIuDQoNCkFmdGVyIGEgZnVydGhlciBsb29rLCBzb21lIG9mIHRoZSBpbXg3dWxwX3dk
-dF93YWl0ICgpIGNhbGxlcnMgYXJlIHZvaWQgZnVuY3Rpb24sIHNvIGlmIHdhbnQNCnRvIGhhbmRs
-ZSB0aGUgcmV0dXJuIHZhbHVlLCBhbGwgdGhvc2UgZnVuY3Rpb25zIHJldHVybiB0eXBlIG5lZWQg
-dG8gYmUgY2hhbmdlZC4gQW5kLCB3aGVuDQp0aGUgcmV0dXJuIHZhbHVlIGlzIC1FVElNRURPVVQs
-IHRoZSBPTkxZIGFjdGlvbiBpcyB0byBwcmludCBvdXQgc29tZSBlcnJvciBtZXNzYWdlDQpmb3Ig
-dGhlc2Ugdm9pZCBmdW5jdGlvbiwgbmVlZCB0byB1c2UgcHJfZXJyKCkgZHVlIHRvIG5vIGRldiBw
-b2ludGVyIGF2YWlsYWJsZSwgc28NCmRvIHlvdSB0aGluayBpdCBpcyBhY2NlcHRhYmxlIHRvIGp1
-c3QgcmVwbGFjZSB0aGUgV0FSTl9PTiB3aXRoIHByX2VycigpIGFzIGJlbG93Pw0KDQorCWlmICgh
-KHZhbCAmIG1hc2spKSB7DQorCQlpZiAocmVhZGxfcG9sbF90aW1lb3V0X2F0b21pYyhiYXNlICsg
-V0RPR19DUywgdmFsLA0KKwkJCQkJCSAgdmFsICYgbWFzaywgMCwNCisJCQkJCQkgIFdET0dfV0FJ
-VF9USU1FT1VUKSkNCisgICAgICAgICAgIHByX2Vycigid2RvZyB3YWl0IHRpbWVvdXQsIG1hc2sg
-MHgleFxuIiwgbWFzayk7DQorICAgfQ0KDQpUaGFua3MsDQpBbnNvbg0KDQo=
+Hi Mike,
+
+On 2020-07-29 01:46, Mike Leach wrote:
+> Hi Sai,
+> 
+> On Tue, 28 Jul 2020 at 08:51, Sai Prakash Ranjan
+> <saiprakash.ranjan@codeaurora.org> wrote:
+>> 
+>> etm4_count keeps track of number of ETMv4 registered and on some 
+>> systems,
+>> a race is observed on etm4_count variable which can lead to multiple 
+>> calls
+>> to cpuhp_setup_state_nocalls_cpuslocked(). This function internally 
+>> calls
+>> cpuhp_store_callbacks() which prevents multiple registrations of 
+>> callbacks
+>> for a given state and due to this race, it returns -EBUSY leading to 
+>> ETM
+>> probe failures like below.
+>> 
+>>  coresight-etm4x: probe of 7040000.etm failed with error -16
+>> 
+>> This race can easily be triggered with async probe by setting probe 
+>> type
+>> as PROBE_PREFER_ASYNCHRONOUS and with ETM power management property
+>> "arm,coresight-loses-context-with-cpu".
+>> 
+>> Prevent this race by moving cpuhp callbacks to etm driver init since 
+>> the
+>> cpuhp callbacks doesn't have to depend on the etm4_count and can be 
+>> once
+>> setup during driver init. Similarly we move cpu_pm notifier 
+>> registration
+>> to driver init and completely remove etm4_count usage.
+>> 
+>> Fixes: 9b6a3f3633a5 ("coresight: etmv4: Fix CPU power management setup 
+>> in probe() function")
+>> Fixes: 58eb457be028 ("hwtracing/coresight-etm4x: Convert to hotplug 
+>> state machine")
+>> Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
+>> 
+>> Changes in v2:
+>>  * Rearrange cpuhp callbacks and move them to driver init (Suzuki K 
+>> Poulose)
+>> 
+>> ---
+>>  drivers/hwtracing/coresight/coresight-etm4x.c | 51 
+>> ++++++++++---------
+>>  1 file changed, 27 insertions(+), 24 deletions(-)
+>> 
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c 
+>> b/drivers/hwtracing/coresight/coresight-etm4x.c
+>> index 6d7d2169bfb2..adb71987a1e3 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
+>> @@ -48,8 +48,6 @@ module_param(pm_save_enable, int, 0444);
+>>  MODULE_PARM_DESC(pm_save_enable,
+>>         "Save/restore state on power down: 1 = never, 2 = 
+>> self-hosted");
+>> 
+>> -/* The number of ETMv4 currently registered */
+>> -static int etm4_count;
+>>  static struct etmv4_drvdata *etmdrvdata[NR_CPUS];
+>>  static void etm4_set_default_config(struct etmv4_config *config);
+>>  static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
+>> @@ -1403,12 +1401,9 @@ static int etm4_pm_setup_cpuslocked(void)
+>>  {
+> 
+> consider renaming this to etm4_pm_setup() and handing any cpu locking
+> inside the function.
+> In the circumstances - as part of the driver init rather than probe it
+> may be sufficient to call the cpuhp_setup functions without the
+> _cpuslocked suffix and allow the calls to lock the cpus as they are
+> made.
+> i.e. cpuhp_setup_state_nocalls_cpuslocked() => 
+> cpuhp_setup_state_nocalls()
+
+Sure, will make this change.
+
+> 
+>>         int ret;
+>> 
+>> -       if (etm4_count++)
+>> -               return 0;
+>> -
+>>         ret = cpu_pm_register_notifier(&etm4_cpu_pm_nb);
+>>         if (ret)
+>> -               goto reduce_count;
+>> +               return ret;
+>> 
+>>         ret = 
+>> cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ARM_CORESIGHT_STARTING,
+>>                                                    
+>> "arm/coresight4:starting",
+>> @@ -1432,17 +1427,11 @@ static int etm4_pm_setup_cpuslocked(void)
+>> 
+>>  unregister_notifier:
+>>         cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
+>> -
+>> -reduce_count:
+>> -       --etm4_count;
+>>         return ret;
+>>  }
+>> 
+>>  static void etm4_pm_clear(void)
+>>  {
+>> -       if (--etm4_count != 0)
+>> -               return;
+>> -
+>>         cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
+>>         cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
+>>         if (hp_online) {
+>> @@ -1498,22 +1487,12 @@ static int etm4_probe(struct amba_device 
+>> *adev, const struct amba_id *id)
+>>         if (!desc.name)
+>>                 return -ENOMEM;
+>> 
+>> -       cpus_read_lock();
+>>         etmdrvdata[drvdata->cpu] = drvdata;
+>> 
+>>         if (smp_call_function_single(drvdata->cpu,
+>>                                 etm4_init_arch_data,  drvdata, 1))
+>>                 dev_err(dev, "ETM arch init failed\n");
+>> 
+>> -       ret = etm4_pm_setup_cpuslocked();
+>> -       cpus_read_unlock();
+>> -
+>> -       /* etm4_pm_setup_cpuslocked() does its own cleanup - exit on 
+>> error */
+>> -       if (ret) {
+>> -               etmdrvdata[drvdata->cpu] = NULL;
+>> -               return ret;
+>> -       }
+>> -
+>>         if (etm4_arch_supported(drvdata->arch) == false) {
+>>                 ret = -EINVAL;
+>>                 goto err_arch_supported;
+>> @@ -1560,7 +1539,6 @@ static int etm4_probe(struct amba_device *adev, 
+>> const struct amba_id *id)
+>> 
+>>  err_arch_supported:
+>>         etmdrvdata[drvdata->cpu] = NULL;
+>> -       etm4_pm_clear();
+>>         return ret;
+>>  }
+>> 
+>> @@ -1598,4 +1576,29 @@ static struct amba_driver etm4x_driver = {
+>>         .probe          = etm4_probe,
+>>         .id_table       = etm4_ids,
+>>  };
+>> -builtin_amba_driver(etm4x_driver);
+>> +
+>> +static int __init etm4x_init(void)
+>> +{
+>> +       int ret;
+>> +
+>> +       cpus_read_lock();
+>> +       ret = etm4_pm_setup_cpuslocked();
+>> +       cpus_read_unlock();
+> 
+> See my comment above about rename and use of cpus_read_lock
+> 
+
+Yes, thanks for the review Mike.
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
