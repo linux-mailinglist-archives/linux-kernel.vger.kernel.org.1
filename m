@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8185D23253B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB81232542
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgG2TTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 15:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgG2TTi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 15:19:38 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E008C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:19:38 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k18so6241364pfp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:19:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=In/D8z7gXollo69UOvFLAqKOH13VGluD7VCN2My2HlQ=;
-        b=LNxPwbmWGNwoKFWOhWj+aic4gew6jbzuSQoWMCIW9H3Bu4L9ERufl8BuSoq4xKURew
-         6YtlzSH4znGguD72XRJPXxpiJSwjSTx2PFtdX0hVaxffUFlSxmk66dN5xrMOTr36xF13
-         vCZFLASN9sUauLJWKZr72/6Tj3uGsr8VyvPbg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=In/D8z7gXollo69UOvFLAqKOH13VGluD7VCN2My2HlQ=;
-        b=I1rvC3/8qIN/VwLt8T5RRZ95fM9v8KdVlJSSdbPw4NAemU107aP01KGRuRecaQHMsG
-         k1YEHffl78ZqIa/ZA00ygIlzkYHBGPP4vciYBHHv+UIccuU3Vmi1nlETtPUIhyjC/a08
-         VaWJN7ymMDiBfhdUk75T3zx7Vib087AX8QEzgfGhfkHEih4VufK41pe5eBOlltTVGL2G
-         Qc2VvUlANiqtuNtDm1Vqiqkeo0P7TXvbwUoUDGOml+X0cCeezb7/c6T9/uTn2nXTl2Ya
-         oQc4gRnWWFYmPNHE4qSHmMOVJ3Q0lwLKG38krRWPJUa5XpN7AFXzeP6y6W8A0bsbMLZ+
-         zzng==
-X-Gm-Message-State: AOAM530jMSILV7aHtszKZDR5kYMsrAyw3TiYlRse1OdooTQNbTVAaK1x
-        kW+WonuHws2bT6rd+kXhZon7A95QPoc=
-X-Google-Smtp-Source: ABdhPJzqnH4uuQ8Tg6K+0tUON2W91DHVjKrpN7yvvLhVnzAdDTcIF8VPsDlQt2A3jI4YlO70HoOINg==
-X-Received: by 2002:a63:f254:: with SMTP id d20mr31037862pgk.119.1596050378022;
-        Wed, 29 Jul 2020 12:19:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g8sm3197436pgr.70.2020.07.29.12.19.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 12:19:37 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 12:19:35 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>
-Subject: Re: [Intel-gfx] [PATCH v12 2/3] drm/i915: add syncobj timeline
- support
-Message-ID: <202007291218.E129CEE@keescook>
-References: <20200708131751.334457-1-lionel.g.landwerlin@intel.com>
- <20200708131751.334457-3-lionel.g.landwerlin@intel.com>
- <CAKMK7uFkMKiwyTFMRASk5L=1NdFqeuKfCh_FHRLg4FxzHpXpfw@mail.gmail.com>
- <CAHk-=wjD-6phO85fvLMt7rvk5ZwaJ1Q5Zor4urYps6C8vG_Txg@mail.gmail.com>
+        id S1726877AbgG2TTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 15:19:54 -0400
+Received: from mga09.intel.com ([134.134.136.24]:6307 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726813AbgG2TTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 15:19:53 -0400
+IronPort-SDR: Kbs0mnr1F0haw7UsaLZIbz4v/rDcSNWCDgtNizq3QTASpTP5uflnLBbDKhWahqdiuJvMDmYC+a
+ /eXE7IoX1D0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="152719831"
+X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
+   d="scan'208";a="152719831"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 12:19:52 -0700
+IronPort-SDR: 9RzVGALLuwjEf6BbEneL9Y8lhW66wiDJI9yQHUpi82JXlsMRSLvM/YpEAcDLtJ0yE68qDNGsgR
+ PD7ny7XnW9OA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
+   d="scan'208";a="364941243"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001.jf.intel.com with ESMTP; 29 Jul 2020 12:19:49 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1k0rcC-004ksx-SW; Wed, 29 Jul 2020 22:19:48 +0300
+Date:   Wed, 29 Jul 2020 22:19:48 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        gregkh@linuxfoundation.org, tglx@linutronix.de, fkostenzer@live.at,
+        geert@linux-m68k.org, paul.gortmaker@windriver.com,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org
+Subject: Re: [PATCH v2] lib: kunit: Convert test_sort to KUnit test
+Message-ID: <20200729191948.GZ3703480@smile.fi.intel.com>
+References: <20200729191151.476368-1-vitor@massaru.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjD-6phO85fvLMt7rvk5ZwaJ1Q5Zor4urYps6C8vG_Txg@mail.gmail.com>
+In-Reply-To: <20200729191151.476368-1-vitor@massaru.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 10:51:23AM -0700, Linus Torvalds wrote:
-> On Wed, Jul 29, 2020 at 5:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > Do we have a access_ok_array or so? Instead of duplicating overflow checks
-> > everywhere and getting it all wrong ...
+On Wed, Jul 29, 2020 at 04:11:51PM -0300, Vitor Massaru Iha wrote:
+> This adds the conversion of the test_sort.c to KUnit test.
 > 
-> I really really think you should get away from access_ok() entirely.
-> 
-> Please just get rid of it, and use "copy_from_user()" instead.
+> Please apply this commit first (linux-kselftest/kunit-fixes):
+> 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
 
-Yes please. :) It also makes code SO much easier to audit (both
-automatically and manually).
+Looks like you mixed up commit message and changelog / comments.
+
+> Code Style Documentation: [0]
+> 
+> Fix these warnings Reported-by lkp@intel.com
+> 
+> WARNING: modpost: vmlinux.o(.data+0x4fc70): Section mismatch in reference from the variable sort_test_cases to the variable .init.text:sort_test
+>    The variable sort_test_cases references
+>    the variable __init sort_test
+>    If the reference is valid then annotate the
+>    variable with or __refdata (see linux/init.h) or name the variable
+> 
+> WARNING: modpost: lib/sort_kunit.o(.data+0x11c): Section mismatch in reference from the variable sort_test_cases to the function .init.text:sort_test()
+>    The variable sort_test_cases references
+>    the function __init sort_test()
+
+> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: [0] https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/T/#u
+
+This should be in different order: Link, Reported-by, SoB.
+Also [0] is unnecessary
+
+>  lib/{test_sort.c => sort_kunit.c} | 31 +++++++++++++++----------------
+
+Still opened question why kunit is a suffix? Can't we leave same name? Can't we
+do it rather prefix?
 
 -- 
-Kees Cook
+With Best Regards,
+Andy Shevchenko
+
+
