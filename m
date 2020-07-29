@@ -2,203 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC20232835
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 01:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080CC23283E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 01:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgG2XhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 19:37:07 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:22305 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728155AbgG2XhC (ORCPT
+        id S1728009AbgG2Xkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 19:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbgG2Xkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 19:37:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1596065822; x=1627601822;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+GUmN6ZNbnCfom5PIzX3LeRfgAzIkaN7Tqfa0vPyyjQ=;
-  b=r754yuF9ScsKCYz+YkrlG9ZDeGdIYaK2HlB55aglDMVZhnD2rvKF/yZs
-   JTLDcmRurxfpoBOTl0Pe7q7lGeo+iM0ZVa3BTJxYFU3BXMZHBsdUqij+X
-   +L7AOzCrMwO2g+VRV+9B/0ePtu7sFRCbEE0rvBCItVeI24Iz1QklIYS8h
-   TJnNz+5qYV7T87gXIKfpeANKtikxvTi5QweCaRQbmu2IDz8pdPo7cesP0
-   jf1QLGtk9o3X6ETG7iAGXdhSNhOVPHFBHi0qsyCHcqHeH31+IS9x0dR49
-   w6MowSebeVUdl6cc7+peA+lMWXYfY6BUXlM7vYGnLssdQRM7aUWHT8cWQ
-   g==;
-IronPort-SDR: 8z6VTxWjqqgN5Yd21RVf52uqPmvZozrmLBAesRcx2lgdWie3ZUTeVUqht6cJJU1kHyqj3c+T4L
- t8q2i+N8SVOYSULSzrYIVE2F2W8yZLwmeu7R//BOTKxtbFfrAbu8r3V4Uvf58HC/9w9uj3tx8r
- GhHVNeRD2mNloLbpzl7JS76bU+0f7qrNijmZSq3i9PQO278/gjU3mknUEg57IY3OXOuK7VxIut
- 8qv63RT1CxAPuBE4xGCRCOf3EiJwAX2b3etqnTlStvodWtZ4ZdLVvRyoR7Ano1VVgTCc3h4KpK
- ISM=
-X-IronPort-AV: E=Sophos;i="5.75,412,1589212800"; 
-   d="scan'208";a="144951834"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 30 Jul 2020 07:36:59 +0800
-IronPort-SDR: Yj/asdOe52xdBSgIH54O+p8qld/7wPOX4hRhKZk19dAeG4pDlfRO7u156rDpqIjhlKaszYciBk
- 8Y/wHT/TGg4ThAIdUUaV2cbweV72uJhfg=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 16:25:06 -0700
-IronPort-SDR: oRu3jhyRAp3Dj6mouWcVjsE0ucflLYfALvrIxFoA6rnYtVsNahoUfJ32FT80J3fm4iHiwUDjKn
- Hiz/xaSry70Q==
-WDCIronportException: Internal
-Received: from jpf009043.ad.shared (HELO jedi-01.hgst.com) ([10.86.58.210])
-  by uls-op-cesaip01.wdc.com with ESMTP; 29 Jul 2020 16:36:59 -0700
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>, Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>, linux-efi@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Yash Shah <yash.shah@sifive.com>, Zong Li <zong.li@sifive.com>
-Subject: [RFT PATCH v4 9/9] RISC-V: Add page table dump support for uefi
-Date:   Wed, 29 Jul 2020 16:36:35 -0700
-Message-Id: <20200729233635.14406-10-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20200729233635.14406-1-atish.patra@wdc.com>
-References: <20200729233635.14406-1-atish.patra@wdc.com>
+        Wed, 29 Jul 2020 19:40:45 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEFBC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 16:40:45 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a9so2908356pjd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 16:40:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=ehka3Bw+qd9RU1NQVDq9GEs2det9sBZFzS6S/ACMdzA=;
+        b=mqCQBH9vMHhimagKysVjN9pVeYMzrPOTA5ICK+rRv5APsM1O7Hptx0qoD/CSJ1A8Da
+         n4hoN2jH/nJCLkamRiv7OdvcLtd8lqgPZIGkeLgqiPT8RMisVPsLQOXgN9klc1YnP75y
+         dwikCB+pB1/CN52Wm++Hlq2jC5eicp0lpCaRLBo6usz5UXcHSlV1BwOYzmCtFMl0PjOI
+         3M2YNMRfnRNItbbPlUgMs4q38Kdk4fqjb9Iavq5kPuGr2CnzHB/NUyLHpPIZtxE3nuR9
+         LRkr6ApHxjUGcYzeWQCrzG/396tzmLd3Ye4k/bBxNzsDe4l93mGr/IuzGJJR2XEH872F
+         ThRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=ehka3Bw+qd9RU1NQVDq9GEs2det9sBZFzS6S/ACMdzA=;
+        b=Kf1ZA9SQbIGRS+44bLvsA8WMhqixnGBGDYb1zoK4Cvp3mErYVnaGwwFhXxOvmd/eIw
+         HftL25OwslL8CMIL9B1KXycufLLa5suDsdl6h0n7FXVCA3wVuH3/vDOXa8mCfjJLS1Xj
+         nbwo+NgRX4yunI7ipnU09GBXQeOdOcq8/1JNo6GpJzPGkkbeIIHM0sRQEedUEEXUQhol
+         O6TcorqEoKdPZ0iylZmnrWTdYTrA7bUUHMz1fI4B3iPbhbxdqDItpI1cjPiU4hrEmO2A
+         EPmyylO5tUYW21XySTuBK6OsfiezdDP/o/W6i0t1pkyoZN3OJeue+KlBYkQ7RS20PChX
+         /EZg==
+X-Gm-Message-State: AOAM531KDWwgdIvK4Zl2dbFiyPqTOQxzO0zT6p3GD+zuNxkAaEY6qw1w
+        1zN8tsjGpBSFV+Y+zSA5oFSVJw==
+X-Google-Smtp-Source: ABdhPJxJSNtCj/X3Tb+Q37+Ym+uH8rDguC9MqpnlzO9RvztZlOCocJLBoapccfc1XEhib+ITKb8rAg==
+X-Received: by 2002:a17:902:7c8b:: with SMTP id y11mr28788386pll.142.1596066044318;
+        Wed, 29 Jul 2020 16:40:44 -0700 (PDT)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id m190sm2051252pfm.89.2020.07.29.16.40.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 16:40:43 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 16:40:42 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Qianli Zhao <zhaoqianligood@gmail.com>,
+        Roman Gushchin <guro@fb.com>
+cc:     cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        zhaoqianli@xiaomi.com
+Subject: Re: [PATCH] mm: slab: Avoid the use of one-element array and use
+ struct_size() helper
+In-Reply-To: <1596034214-15010-1-git-send-email-zhaoqianligood@gmail.com>
+Message-ID: <alpine.DEB.2.23.453.2007291640140.3120473@chino.kir.corp.google.com>
+References: <1596034214-15010-1-git-send-email-zhaoqianligood@gmail.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="1482994552-2092936226-1596066043=:3120473"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the current page table dump support in RISC-V to include efi
-pages as well.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Here is the output of efi runtime page table mappings.
+--1482994552-2092936226-1596066043=:3120473
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
----[ UEFI runtime start ]---
-0x0000000020002000-0x0000000020003000 0x00000000be732000 4K PTE D A . . . W R V
-0x0000000020018000-0x0000000020019000 0x00000000be738000 4K PTE D A . . . W R V
-0x000000002002c000-0x000000002002d000 0x00000000be73c000 4K PTE D A . . . W R V
-0x0000000020031000-0x0000000020032000 0x00000000bff61000 4K PTE D A . . X W R V
----[ UEFI runtime end ]---
+On Wed, 29 Jul 2020, Qianli Zhao wrote:
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
----
- arch/riscv/mm/ptdump.c | 48 ++++++++++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 6 deletions(-)
+> From: Qianli Zhao <zhaoqianli@xiaomi.com>
+> 
+> There is a regular need in the kernel to provide a way to declare having a
+> dynamically sized set of trailing elements in a structure. Kernel code should
+> always use “flexible array members”[1] for these cases. The older style of
+> one-element or zero-length arrays should no longer be used[2].
+> 
+> Make use of the struct_size() helper instead of an open-coded version
+> in order to avoid any potential type mistakes.
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://github.com/KSPP/linux/issues/21
+> 
+> Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
+> ---
+>  mm/slab.h        | 2 +-
+>  mm/slab_common.c | 7 ++-----
+>  2 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 74f7e09..c12fb65 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -34,7 +34,7 @@ struct kmem_cache {
+>  
+>  struct memcg_cache_array {
+>  	struct rcu_head rcu;
+> -	struct kmem_cache *entries[0];
+> +	struct kmem_cache *entries[];
+>  };
+>  
+>  /*
 
-diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
-index 0831c2e61a8f..ace74dec7492 100644
---- a/arch/riscv/mm/ptdump.c
-+++ b/arch/riscv/mm/ptdump.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2019 SiFive
-  */
- 
-+#include <linux/efi.h>
- #include <linux/init.h>
- #include <linux/debugfs.h>
- #include <linux/seq_file.h>
-@@ -49,6 +50,14 @@ struct addr_marker {
- 	const char *name;
- };
- 
-+/* Private information for debugfs */
-+struct ptd_mm_info {
-+	struct mm_struct		*mm;
-+	const struct addr_marker	*markers;
-+	unsigned long base_addr;
-+	unsigned long end;
-+};
-+
- static struct addr_marker address_markers[] = {
- #ifdef CONFIG_KASAN
- 	{KASAN_SHADOW_START,	"Kasan shadow start"},
-@@ -68,6 +77,28 @@ static struct addr_marker address_markers[] = {
- 	{-1, NULL},
- };
- 
-+static struct ptd_mm_info kernel_ptd_info = {
-+	.mm		= &init_mm,
-+	.markers	= address_markers,
-+	.base_addr	= KERN_VIRT_START,
-+	.end		= ULONG_MAX,
-+};
-+
-+#ifdef CONFIG_EFI
-+static struct addr_marker efi_addr_markers[] = {
-+		{ 0,		"UEFI runtime start" },
-+		{ SZ_1G,	"UEFI runtime end" },
-+		{ -1,		NULL }
-+};
-+
-+static struct ptd_mm_info efi_ptd_info = {
-+	.mm		= &efi_mm,
-+	.markers	= efi_addr_markers,
-+	.base_addr	= 0,
-+	.end		= SZ_2G,
-+};
-+#endif
-+
- /* Page Table Entry */
- struct prot_bits {
- 	u64 mask;
-@@ -245,22 +276,22 @@ static void note_page(struct ptdump_state *pt_st, unsigned long addr,
- 	}
- }
- 
--static void ptdump_walk(struct seq_file *s)
-+static void ptdump_walk(struct seq_file *s, struct ptd_mm_info *pinfo)
- {
- 	struct pg_state st = {
- 		.seq = s,
--		.marker = address_markers,
-+		.marker = pinfo->markers,
- 		.level = -1,
- 		.ptdump = {
- 			.note_page = note_page,
- 			.range = (struct ptdump_range[]) {
--				{KERN_VIRT_START, ULONG_MAX},
-+				{pinfo->base_addr, pinfo->end},
- 				{0, 0}
- 			}
- 		}
- 	};
- 
--	ptdump_walk_pgd(&st.ptdump, &init_mm, NULL);
-+	ptdump_walk_pgd(&st.ptdump, pinfo->mm, NULL);
- }
- 
- void ptdump_check_wx(void)
-@@ -293,7 +324,7 @@ void ptdump_check_wx(void)
- 
- static int ptdump_show(struct seq_file *m, void *v)
- {
--	ptdump_walk(m);
-+	ptdump_walk(m, m->private);
- 
- 	return 0;
- }
-@@ -308,8 +339,13 @@ static int ptdump_init(void)
- 		for (j = 0; j < ARRAY_SIZE(pte_bits); j++)
- 			pg_level[i].mask |= pte_bits[j].mask;
- 
--	debugfs_create_file("kernel_page_tables", 0400, NULL, NULL,
-+	debugfs_create_file("kernel_page_tables", 0400, NULL, &kernel_ptd_info,
- 			    &ptdump_fops);
-+#ifdef CONFIG_EFI
-+	if (efi_enabled(EFI_RUNTIME_SERVICES))
-+		debugfs_create_file("efi_page_tables", 0400, NULL, &efi_ptd_info,
-+				    &ptdump_fops);
-+#endif
- 
- 	return 0;
- }
--- 
-2.24.0
+This is removed in the -mm tree, see 
+https://www.ozlabs.org/~akpm/mmotm/broken-out/mm-memcg-slab-use-a-single-set-of-kmem_caches-for-all-allocations.patch
 
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index fe8b684..56f4818 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -166,9 +166,7 @@ static int init_memcg_params(struct kmem_cache *s,
+>  	if (!memcg_nr_cache_ids)
+>  		return 0;
+>  
+> -	arr = kvzalloc(sizeof(struct memcg_cache_array) +
+> -		       memcg_nr_cache_ids * sizeof(void *),
+> -		       GFP_KERNEL);
+> +	arr = kvzalloc(struct_size(arr, entries, memcg_nr_cache_ids), GFP_KERNEL);
+>  	if (!arr)
+>  		return -ENOMEM;
+>  
+> @@ -199,8 +197,7 @@ static int update_memcg_params(struct kmem_cache *s, int new_array_size)
+>  {
+>  	struct memcg_cache_array *old, *new;
+>  
+> -	new = kvzalloc(sizeof(struct memcg_cache_array) +
+> -		       new_array_size * sizeof(void *), GFP_KERNEL);
+> +	new = kvzalloc(struct_size(new, entries, new_array_size), GFP_KERNEL);
+>  	if (!new)
+>  		return -ENOMEM;
+>  
+> -- 
+> 2.7.4
+> 
+> 
+--1482994552-2092936226-1596066043=:3120473--
