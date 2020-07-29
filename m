@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D73232673
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FCD23266C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgG2UuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 16:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33902 "EHLO
+        id S1726847AbgG2Urn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 16:47:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbgG2Ut7 (ORCPT
+        with ESMTP id S1726365AbgG2Urm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:49:59 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBBCC0619D6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:49:58 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id z5so15086719pgb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:49:58 -0700 (PDT)
+        Wed, 29 Jul 2020 16:47:42 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49339C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:47:42 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id p16so9850517ile.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:47:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZCFo51SeNUkOi0joTAI0GNw0Kvqf2JKQKS+2k/u6bwE=;
-        b=btWkfvp0JkQdCpC7uMqhXszwJqeXh1l5pSFL8aj+MwGVvWN4n0+PxZBiq5CjPaKB1b
-         3ruNPSm8qEV8W5hLyYr0it8cgH1lIt3QvxvFMRPPSCcS1ITuBJyfTzrlGr/sNz+CgrdW
-         uqZS2dCFzNCuRJmNpqgUBe8PKtVkAWi2/QYj0XNDb9uKf0SW24RtEmORwfhlqLdhtrtu
-         YFh1YD9vKn9Ky3B+kwhtXYlekEYn+iWaOznXeQw0qq6Gb7u1JedGsOlUX8G7EdeK/YmK
-         48E4/CPcMv64caVasW3t78Lq3ZnGm2IMu84DgPgWiw2MFDQZcjxpNM0f/F3xhBBl8RsX
-         cTWQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XoJlKZaLXbUuLV4nosYhBKGNv2CAMoP0UIqUb30Ie3A=;
+        b=Y3SIw4LskqRgpE5LgviYVSqSY/tsY3kr0cGoeYpoSrb/hJFhZYg+3dksqJxt5TnNVg
+         +kd/B2h0bHIex0pJlfbkVupUVGjKPkcfXCQsBRd29pMsENwEr0RcO3nh6B/51Zsc+Aqw
+         g196Yk+hPQGkHyI/Qrq6mbc/E5XFXIFTt0Wt8OExHcXRv6bArhgpMbzGTtWO1rbleXWf
+         pHBpCDNR69Q9H8CL1mfd6ont/outxJCZSOCcju4df3bumqlpZj4K6a5JQ9BpFT/wIZO5
+         i5ormwI5TjDN5YGwVrFbFlo1rrILQ6/pdlJEtsAX5t5uwu8R2LwZwYL92n/44xP2Tg5b
+         8ZYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZCFo51SeNUkOi0joTAI0GNw0Kvqf2JKQKS+2k/u6bwE=;
-        b=kVefhJ2jdLHL6eJa95IlQloKzCALscNFNqr8iv48Fthu5s2WvUJ3JHTkSNnJ034NX4
-         G0H4IP2qcfxm5Zpee12HJ6rf6eC9mu66oBg/+rsX/G1amQdAkQks2LuCR6MQ7GHF6AZa
-         KUE78be1gMYCT+cSCSeWNB2A9ibuoDTWSns41jXBt/oEBiEijG+g3KcxuVGLfE4Ws/ZE
-         tk+pzJhq2DaqQHnaymyKFIUw7SjBP3dJKy1q0i/6zy2rNZfZ3M/8IoACuDsfo3wVSTI8
-         6y4tZABfI3P9fTITRPo3EbSPdFuS3N70htrFb7ff/1Nj73aqWAderAAVGTxGzvzaMFh/
-         ZdPg==
-X-Gm-Message-State: AOAM533WZzh/T4oX140HDs0fFhQ5VNqIhM7HQbHU9tRsNux0z5j8HAA/
-        XLddWxRMJ3szIZCr4W/cNXmzUw==
-X-Google-Smtp-Source: ABdhPJx7ckWZ845NwYLBsMDvRn/h2HR2lmuehBnFT2QcLP6PH+H6EGe1o5XMMXAGcMF9VcygBTZ9DA==
-X-Received: by 2002:a65:43c1:: with SMTP id n1mr30164858pgp.67.1596055797739;
-        Wed, 29 Jul 2020 13:49:57 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id a26sm3025188pgm.20.2020.07.29.13.49.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 13:49:57 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 13:46:28 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 2/2] soc: qcom: smd-rpm: Fix kerneldoc
-Message-ID: <20200729204628.GL229995@builder.lan>
-References: <20200729074415.28393-1-krzk@kernel.org>
- <20200729074415.28393-2-krzk@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XoJlKZaLXbUuLV4nosYhBKGNv2CAMoP0UIqUb30Ie3A=;
+        b=ldvJdRM509sia2Fda5m//SUm4l6E3nAOLSf9inf+/Pgy6Zr3gbZD0Z4c5RaB0CzRMH
+         hAvFSg+1c56eU8Lix86gSbmrRJsPhjYVCUsyabmZ7xFWqRtVNjSzbiuYcR0X6p79rRvF
+         rvC74oLN6UfWdQn3sCrg7OdykdCL83lcRPHaCQ7RI7yHOj8Mb1b+MDZiciQdBI4DAQ7m
+         A4rqdAOSjByOHO30G12Jhj8LomjAdr7ItWYyolz2rDm79a0C5Y31scGPbGlrP5uOfBlN
+         /3F+4j2ivZPgkhywD8uVVy2ztcjOAmtwls1f5lWoL2GSIUnE/kf5fmBbU9thXmTK0dPf
+         TqQA==
+X-Gm-Message-State: AOAM532TeXVlBFOnnRBjpxy6eg3SKqjlGHicuZAbhEdK2tYz7I0roAQ7
+        docOp9SuO5bnM4IReECroIw4QlRAnysC8nA0i/TfiA==
+X-Google-Smtp-Source: ABdhPJxnn1nGoFy9ElsyLRQgWdscrHapUJ1Bb7Gtsqx96+CKmabOpGB+seMqVJ940AENql5HW66eqKFs2WUDC/shPiA=
+X-Received: by 2002:a92:b60a:: with SMTP id s10mr28883334ili.119.1596055661499;
+ Wed, 29 Jul 2020 13:47:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729074415.28393-2-krzk@kernel.org>
+References: <159597929496.12744.14654593948763926416.stgit@bmoger-ubuntu> <159597949343.12744.9555364824745485311.stgit@bmoger-ubuntu>
+In-Reply-To: <159597949343.12744.9555364824745485311.stgit@bmoger-ubuntu>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 29 Jul 2020 13:47:30 -0700
+Message-ID: <CALMp9eTO-Det6u3Fa2Lrzkgw7SRj=Jbf2kJ1YuokZRmCEpj=EA@mail.gmail.com>
+Subject: Re: [PATCH v3 04/11] KVM: SVM: Modify intercept_exceptions to generic intercepts
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 29 Jul 00:44 PDT 2020, Krzysztof Kozlowski wrote:
-
-> Fix W=1 compile warnings (invalid kerneldoc):
-> 
->     drivers/soc/qcom/smd-rpm.c:35: warning: Function parameter or member 'dev' not described in 'qcom_smd_rpm'
->     drivers/soc/qcom/smd-rpm.c:99: warning: Function parameter or member 'state' not described in 'qcom_rpm_smd_write'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Thanks for spotting these, applied.
-
-PS. This doesn't have any relationship with the Mediatek patch, the two
-goes through different maintainer trees and my manual mailbox filter
-almost discarded the series. So please send patches like this
-individually in the future.
-
-Thanks,
-Bjorn
-
+On Tue, Jul 28, 2020 at 4:38 PM Babu Moger <babu.moger@amd.com> wrote:
+>
+> Modify intercept_exceptions to generic intercepts in vmcb_control_area.
+> Use the generic __set_intercept, __clr_intercept and __is_intercept to
+> set the intercept_exceptions bits.
+>
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
 > ---
->  drivers/soc/qcom/smd-rpm.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/soc/qcom/smd-rpm.c b/drivers/soc/qcom/smd-rpm.c
-> index 877b13850730..1d4eb46b417a 100644
-> --- a/drivers/soc/qcom/smd-rpm.c
-> +++ b/drivers/soc/qcom/smd-rpm.c
-> @@ -20,6 +20,7 @@
->   * struct qcom_smd_rpm - state of the rpm device driver
->   * @rpm_channel:	reference to the smd channel
->   * @icc:		interconnect proxy device
-> + * @dev:		rpm device
->   * @ack:		completion for acks
->   * @lock:		mutual exclusion around the send/complete pair
->   * @ack_status:		result of the rpm request
-> @@ -86,6 +87,7 @@ struct qcom_rpm_message {
->  /**
->   * qcom_rpm_smd_write - write @buf to @type:@id
->   * @rpm:	rpm handle
-> + * @state:	active/sleep state flags
->   * @type:	resource type
->   * @id:		resource identifier
->   * @buf:	the data to be written
-> -- 
-> 2.17.1
-> 
+
+> @@ -52,6 +54,25 @@ enum {
+>         INTERCEPT_DR5_WRITE,
+>         INTERCEPT_DR6_WRITE,
+>         INTERCEPT_DR7_WRITE,
+> +       /* Byte offset 008h (Vector 2) */
+> +       INTERCEPT_DE_VECTOR = 64 + DE_VECTOR,
+> +       INTERCEPT_DB_VECTOR,
+> +       INTERCEPT_BP_VECTOR = 64 + BP_VECTOR,
+> +       INTERCEPT_OF_VECTOR,
+> +       INTERCEPT_BR_VECTOR,
+> +       INTERCEPT_UD_VECTOR,
+> +       INTERCEPT_NM_VECTOR,
+> +       INTERCEPT_DF_VECTOR,
+> +       INTERCEPT_TS_VECTOR = 64 + TS_VECTOR,
+> +       INTERCEPT_NP_VECTOR,
+> +       INTERCEPT_SS_VECTOR,
+> +       INTERCEPT_GP_VECTOR,
+> +       INTERCEPT_PF_VECTOR,
+> +       INTERCEPT_MF_VECTOR = 64 + MF_VECTOR,
+> +       INTERCEPT_AC_VECTOR,
+> +       INTERCEPT_MC_VECTOR,
+> +       INTERCEPT_XM_VECTOR,
+> +       INTERCEPT_VE_VECTOR,
+>  };
+
+I think it's demanding a lot of the reader to know where there are and
+are not gaps in the allocated hardware exception vectors. Perhaps all
+of the above enumeration definitions could have initializers? Either
+way...
+
+Reviewed-by: Jim Mattson <jmattson@google.com>
