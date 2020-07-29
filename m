@@ -2,90 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A884E23274E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 00:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323C0232751
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 00:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgG2WEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 18:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgG2WEp (ORCPT
+        id S1727808AbgG2WGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 18:06:33 -0400
+Received: from sonic305-21.consmr.mail.sg3.yahoo.com ([106.10.241.84]:43592
+        "EHLO sonic305-21.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726628AbgG2WGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 18:04:45 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91109C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 15:04:45 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id p3so15234583pgh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 15:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HjociY7OAB6oMEemFlGGf0Ydinx3jHC68l3tE+c8Rt8=;
-        b=LmCSkNmGEKE4QdJu/HP6QGJvsB/o5q79hwyaVXIFJHxUXG87os6TCyKewrhbx9XAbM
-         69xsJa10/QOSwlEOlW2z5Le1mxysvgtLLHnJbO8usIFtuiL/1qY+pV8TujgZKKCYI/0u
-         /jeRW3d9b1uhhrsMkP6JO+21mfnkUKlqzL1Wk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HjociY7OAB6oMEemFlGGf0Ydinx3jHC68l3tE+c8Rt8=;
-        b=lvWbcSINe+tVSQwWYeo42BWUPuFQhDSzgk3kKTQD9rFoNcH6cGqN+QQTDjiXcLttc9
-         JmrjctxhAZ1yt66p4/KxRTVhS9yxjy4JnCp5MY0skA6dB7uTnJCkx/j945tAR67rgcWO
-         Y/nhPIML6fyNLZKQmVHVTT1cLPsiqVD/JvnQ8nkJiadUKxGDR8Ro94jzIOjbZUEKZmXC
-         VliL8MNwx47wLuQZ+U0ThMNnXmJQOXvagIFxX7U3IZosQ+a8Eeu3VBop7Dw9fTKmGF5T
-         /hLgg6BkSXiTidF2WECFU/qz5SSL6l2tJ7xQOYjEHtlUL9kzp3kuLaZkgH2iJhwU8cgK
-         PUsQ==
-X-Gm-Message-State: AOAM533FIvEMUTGvEhsDTa4IB+ad2UvJw1s85dTojMHYZKmW4nQp2MIH
-        fzWPe90Aqci6pnJ9rTdbLKVOAw==
-X-Google-Smtp-Source: ABdhPJyimSXlShA82ax0CME0Kw+5UaN5LiJYIZcLV01qEHptUEr9G08uucfcktpyk8JwBKnQoCuxmw==
-X-Received: by 2002:a63:4543:: with SMTP id u3mr29084995pgk.398.1596060285159;
-        Wed, 29 Jul 2020 15:04:45 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j94sm3165634pje.44.2020.07.29.15.04.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 15:04:44 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 15:04:43 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH-next v5 0/7] x86/boot: Remove run-time relocations from
- compressed kernel
-Message-ID: <202007291502.18DC4C0F@keescook>
-References: <CAKwvOdnTbatx8VB-rJSzyFPwfYnkMYK28yLBn1G+hUu8dyfYRA@mail.gmail.com>
- <20200717201801.3661843-1-nivedita@alum.mit.edu>
+        Wed, 29 Jul 2020 18:06:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596060388; bh=fWjln6K44Eskt5xJ54p36XH05v6HgNA/YUSUPVdtmXQ=; h=Date:From:Reply-To:Subject:References:From:Subject; b=drXx6Pui6u79iFHerEJS5yFeD6ckeNCbPelfMxpBWczyAzfR1BS4OlshYOk5EWbVSELmOpkSBVhOiTSneU/KChc7/XrraTlLn2olPh7t1w6T/izGWPYRlioOOoAQNCc9EYKmX43e/dzLZvU2BFQnDUHgvGeU5X5e0QBFNYAg+Bx/LiC0Rgi/AF4aeCOrxFaETGnZ063ym8ot3/xy9UNyN9rvGEbffYchJcDTGrSBuX4+O2CETs7whnOoCmFRSju6XIVCVeIFEkeKueT8/Z54Hdz31u3mx/4wIRCTt8J4rTUxFc0aIMknZSL2L1rxEpe1J518NnZk7RDE7CA3zRXCpA==
+X-YMail-OSG: C9KlBWkVM1kDjaVQZdecNuQmeZvQNHMMF_ciACBI4tTqBksOxnGGobLSMCqY4_e
+ CjskP6C0eidnYqQSposLRSLQmtwxLwe4Zm.Wc.id0BWXwXD6Sv1bQ7RTo7YaaHnXuKOT3Nh9PGM_
+ f7qFfQsVOVTqxqV_qpnnSWVa6kq555A1po2Sa1CCh7FwNFRcUAER.BH504iHmmSkxENB47g7Endd
+ GcF5KElFGGja21XZgtlO1dN.aaBjKP9pwnuIKTLB0Yd_vEbPQKUCtIKe6SKvRgOQEAE0zFZVmQuy
+ y2IkRWT4fTlGIYEpw6qfiiQ7OZJxl85YiVXRGW80RvK.UVgCI16UWO1_c1qGtNCSp.lbyi4z9LtM
+ pjpP.sYYVAdR0Hq86uJyXUCojTxb.ncOWrJqJ.Fy38JWSWhwnJuyUAz1Hw0I6DDN33nwCcgT8dzV
+ 4DrRRxp_SwLzYUWrHEeL.1RNgME3.Xbck4FVxSTLFriKjVWZV4z7q8pqzUSXJFx5WMsJ1COpwJ1f
+ aA82jk.jLw4RMa7_NOpKOVACe9xjdmB3wm0ZGq9ompCyeKB1mYcDAqyYOm0V6xNIgSzF_lyGJ3Mk
+ XLP.dHmlVK2s2vqZwXM_Oq.voZnva066gKhbWNaapU4Nugrc.pRPsxzqalDJk294GNzXhs16ijnQ
+ tgqrh2e5NLdUWkyVqBarFOl8Zf.ER2McMeb9L3MxDJRLEdWczLLR.pr1gaQzP_Xee.4EllI8J9xR
+ DIj8L3AiHDjOQc0UeKcMSP8lts1Kt9TYLGNv4xJqVHsPzHKuFwSbvQOQeepzAoaQP734itIpHUwA
+ kpI.xK0RW2ZmAbg3DUBuUG8g8j5a5pn3MMAseCFajgFMWDFMRfEV2S94.1weQPJrunB4p84Bzrpp
+ 4V1NHfq.aMTEbrpptoUuT5IiOzDD.fYE7tfU0z8w.CLsX_wRjgyKqGI99wESbp8SX5ulJhg1c1XG
+ Zt..5mUABG5fbAw.G5Ez2BxRF31QcixJU1E0T1vccovHErUzemuwsHY0Sm20HlOfnnzJgLG5Od4X
+ QXQ7FtnyyfobFkp5bXgsv5r0I13FLJ1od_YrQ8UrYC12U0dLl7glCkbdDSd07AcQ6OdrkAF8y5P3
+ krJuElwcwFIT.Wzq4AztBQDvnVxvSeEesPQ0msbweYJwc1xVTNGxR2XyfVNH7hVCHsgnlQ7vpjf0
+ Q5WQeK1DBd3KUHrP0CJUHRgywoaEbK5lJfmZru9umYOW7cUcIveRPjobaqaRDMydCF3WeO8YvMN.
+ kGtJlTOz.bFM1hJ0hzbVYpq535mf1WjiG0jyluQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.sg3.yahoo.com with HTTP; Wed, 29 Jul 2020 22:06:28 +0000
+Date:   Wed, 29 Jul 2020 22:06:24 +0000 (UTC)
+From:   Celine Marchand <official017892@uymail.com>
+Reply-To: celine88492@gmail.com
+Message-ID: <1117425258.7485600.1596060384026@mail.yahoo.com>
+Subject: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717201801.3661843-1-nivedita@alum.mit.edu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1117425258.7485600.1596060384026.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 04:17:54PM -0400, Arvind Sankar wrote:
-> Same as v5 previously posted, but rebased onto next-20200717.
-> 
-> v5: https://lore.kernel.org/lkml/20200715004133.1430068-1-nivedita@alum.mit.edu/
 
-BTW, some bits of feedback on process:
 
-- please don't re-use version numbers, this is confusing :)
-- please fix whatever is happening with the "In-Reply-To:" headers, the
-  threading is extremely hard to understand (each patch isn't a reply to
-  the cover letter, and everything is a reply to a single earlier email)
+Urgent attention please
+Dearest, how are you? I am sorry for intruding your mailbox, but I need to =
+talk to you. I got your email address in my dream and i wonder if it is cor=
+rect because i emailed you earlier without any response. You should know th=
+at my contact to you is by the special grace of God. I am in urgent need of=
+ a reliable and reputable person and i believe you are a person of fine rep=
+ute, hence the revelation of your email to me in the dream.
+I am Mrs. Celine Marchand a citizen of France (French). But reside in Burki=
+na Faso for business purposes. I need your collaboration to execute some pr=
+ojects worth =E2=82=AC 2.800.000 Euro and it is very urgent as am presently=
+ in very critical condition.
+Please reply through this email address ( celine88492@gmail.com ) with your=
+ full contact information for more private and confidential communication.
 
--- 
-Kees Cook
+Thank you as i wait for your reply.
+Mrs. Celine Marchand
