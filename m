@@ -2,127 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AB2231DC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 13:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BF4231DF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgG2L7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 07:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgG2L7U (ORCPT
+        id S1726858AbgG2MC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 08:02:28 -0400
+Received: from 18.mo3.mail-out.ovh.net ([87.98.172.162]:52848 "EHLO
+        18.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgG2MC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 07:59:20 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3296FC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 04:59:20 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id c2so11340515edx.8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 04:59:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5QRWy1YBlieNCizCX79fYi5/kvniVQ9BIqFKoJ+v6lY=;
-        b=Onozl2PvdryGi9YD+CsC7unot6+rdgNl73NAR/I++XEkM/ICfb2X5HUb9upkVoQ5lR
-         LWcTDVhZzlficsyzPt23J8l8HKMfciLClrRJ+X8j5F+jNX7PG89SmCaJQcmujDl47pw5
-         hALGlMtR8EwQKPcr6wEtumEdIBpNGCaL8QebI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5QRWy1YBlieNCizCX79fYi5/kvniVQ9BIqFKoJ+v6lY=;
-        b=JstPOt7pz40D5zjOreVGOO5Z0EN+kiUlruoo9D3eRjJjsr7mKa3ypCPvxIdBORkHL8
-         NhV559nPeVluxi1qFy+uy+gSuU2ELNWRb8W2QAdnENkp4Zkofml8rls2fmpboDVbHAfq
-         InBAeKasVmenOOacEfNGUB73w9RSlxv19MobPYleZJi/Nyq1SuOt6NqLxAhN0bK3zhSy
-         +UhZJOOICi8LzZ3rOHaVspaL/BagkZo4lyOrnlCvxWxfaowN4YTUs+6aIHYuHo3TtSqG
-         kZ/M5FTU425gptUtKzTazguSe4urQDWDCBitnvIXCFLXw87685f1IX/HmvtZ7XG34ICI
-         e48Q==
-X-Gm-Message-State: AOAM531wm0LPzjRJ3BiRc6miN0EwiQaHM4TDXq2BfHNE1YrKLeFVZEbJ
-        Z5XlZKc+lZ36PUi8frqsNycKD+ygrXtZS2DH4v53oQ==
-X-Google-Smtp-Source: ABdhPJxJTqL+yv4XQZ+e0Yu1p1dYX4jQwhJQ/xCQBLuR5o92WBnb1MdF57usX1MRal33FHuF6Ysjh0ffW2dn1NvjC0w=
-X-Received: by 2002:a05:6402:c86:: with SMTP id cm6mr12777305edb.205.1596023958843;
- Wed, 29 Jul 2020 04:59:18 -0700 (PDT)
+        Wed, 29 Jul 2020 08:02:28 -0400
+X-Greylist: delayed 4206 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 08:02:27 EDT
+Received: from player731.ha.ovh.net (unknown [10.108.42.83])
+        by mo3.mail-out.ovh.net (Postfix) with ESMTP id 909DD25AACE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:06:42 +0200 (CEST)
+Received: from kaod.org (lns-bzn-46-82-253-208-248.adsl.proxad.net [82.253.208.248])
+        (Authenticated sender: groug@kaod.org)
+        by player731.ha.ovh.net (Postfix) with ESMTPSA id A82B81493DA7D;
+        Wed, 29 Jul 2020 06:06:31 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-103G0054b49c4c4-d057-4c56-8bb1-1a67c11c2913,A40F6FE0CFFE28C23AB4AFBB3D5D665E11D39731) smtp.auth=groug@kaod.org
+Date:   Wed, 29 Jul 2020 08:06:30 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     v9fs-developer@lists.sourceforge.net,
+        Latchesar Ionkov <lucho@ionkov.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: Re: [V9fs-developer] [PATCH kernel] 9p/trans_fd: Check file mode at
+ opening
+Message-ID: <20200729080630.2741f2e5@bahia.lan>
+In-Reply-To: <ceaa4de6-e4df-e6b0-8085-7020240c57b4@ozlabs.ru>
+References: <20200728124129.130856-1-aik@ozlabs.ru>
+        <20200728194235.52660c08@bahia.lan>
+        <ceaa4de6-e4df-e6b0-8085-7020240c57b4@ozlabs.ru>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20200723090210.41201-1-jagan@amarulasolutions.com> <20200723155028.GA427258@bogus>
-In-Reply-To: <20200723155028.GA427258@bogus>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Wed, 29 Jul 2020 17:29:07 +0530
-Message-ID: <CAMty3ZDgrxeLxshKMMjXgg6wgDsan8mJeLr9d+YC9F=5uLPMqw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] dt-bindings: arm: rockchip: Update ROCKPi 4 binding
-To:     Rob Herring <robh@kernel.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-amarula <linux-amarula@amarulasolutions.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Ovh-Tracer-Id: 1293096043977742837
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrieefgddutdefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtgfesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepheekhfdtheegheehjeeludefkefhvdelfedvieehhfekhfdufffhueeuvdfftdfhnecukfhppedtrddtrddtrddtpdekvddrvdehfedrvddtkedrvdegkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejfedurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 9:20 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Thu, Jul 23, 2020 at 02:32:07PM +0530, Jagan Teki wrote:
-> > ROCKPi 4 has 3 variants of hardware platforms called
-> > ROCKPi 4A, 4B, and 4C.
-> >
-> > - ROCKPi 4A has no Wif/BT.
-> > - ROCKPi 4B has AP6256 Wifi/BT, PoE.
-> > - ROCKPi 4C has AP6256 Wifi/BT, PoE, miniDP, USB Host enabled
-> >   GPIO pin change compared to 4B, 4C
-> >
-> > So, update the existing ROCKPi 4 binding to support
-> > ROCKPi 4A/B/C hardware platforms.
-> >
-> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> > ---
-> > Changes for v3:
-> > - new patch
-> >
-> >  Documentation/devicetree/bindings/arm/rockchip.yaml | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> > index db2e35796795..e6f656b0bd56 100644
-> > --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-> > +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> > @@ -430,8 +430,12 @@ properties:
-> >            - const: radxa,rock
-> >            - const: rockchip,rk3188
-> >
-> > -      - description: Radxa ROCK Pi 4
-> > +      - description: Radxa ROCK Pi 4A/B/C
-> >          items:
-> > +          - enum:
-> > +              - const: radxa,rockpi4a
-> > +              - const: radxa,rockpi4b
-> > +              - const: radxa,rockpi4c
-> >            - const: radxa,rockpi4
->
-> radxa,rockpi4 already meant 'ROCKPi 4A' and should continue to do so.
-> Just add 4B and 4C strings. It's up to you if they should be backwards
-> compatible with 'radxa,rockpi4' (meaning 4A), but I'd guess not unless
-> it's just a board pop option.
+On Wed, 29 Jul 2020 09:50:21 +1000
+Alexey Kardashevskiy <aik@ozlabs.ru> wrote:
 
-At-least from dts nodes enablement point of view the existing dts
-(with radxa,rockpi4) is 4B since it has wifi/bt enabled. 4A is the
-real name of the board so having a compatible with radxa,rockpi4a is
-meaningful as I understood.
+> 
+> 
+> On 29/07/2020 03:42, Greg Kurz wrote:
+> > Hi Alexey,
+> > 
+> > Working on 9p now ?!? ;-)
+> 
+> No, I am running syzkaller and seeing things :)
+> 
 
-So, based on the above statements the respective binding look like
+:)
 
-      - description: Radxa ROCK Pi 4A/B/C
-        items:
-          - enum:
-              - radxa,rockpi4a
-              - radxa,rockpi4b
-              - radxa,rockpi4c
-          - const: radxa,rockpi4
-          - const: rockchip,rk3399
+> 
+> > Cc'ing Dominique Martinet who appears to be the person who takes care of 9p
+> > these days.
+> > 
+> > On Tue, 28 Jul 2020 22:41:29 +1000
+> > Alexey Kardashevskiy <aik@ozlabs.ru> wrote:
+> > 
+> >> The "fd" transport layer uses 2 file descriptors passed externally
+> >> and calls kernel_write()/kernel_read() on these. If files were opened
+> >> without FMODE_WRITE/FMODE_READ, WARN_ON_ONCE() will fire.
+> >>
+> >> This adds file mode checking in p9_fd_open; this returns -EBADF to
+> >> preserve the original behavior.
+> >>
+> > 
+> > So this would cause open() to fail with EBADF, which might look a bit
+> > weird to userspace since it didn't pass an fd... Is this to have a
+> > different error than -EIO that is returned when either rfd or wfd
+> > doesn't point to an open file descriptor ?
+> 
+> This is only to preserve the existing behavior.
+> 
+> > If yes, why do we care ?
+> 
+> 
+> Without the patch, p9_fd_open() produces a kernel warning which is not
+> great by itself and becomes crash with panic_on_warn.
+> 
 
-Comments, please?
+I don't question the patch, just the errno. Why not returning -EIO ?
 
-Jagan.
+> 
+> 
+> > 
+> >> Found by syzkaller.
+> >>
+> >> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> >> ---
+> >>  net/9p/trans_fd.c | 7 ++++++-
+> >>  1 file changed, 6 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
+> >> index 13cd683a658a..62cdfbd01f0a 100644
+> >> --- a/net/9p/trans_fd.c
+> >> +++ b/net/9p/trans_fd.c
+> >> @@ -797,6 +797,7 @@ static int parse_opts(char *params, struct p9_fd_opts *opts)
+> >>  
+> >>  static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
+> >>  {
+> >> +	bool perm;
+> >>  	struct p9_trans_fd *ts = kzalloc(sizeof(struct p9_trans_fd),
+> >>  					   GFP_KERNEL);
+> >>  	if (!ts)
+> >> @@ -804,12 +805,16 @@ static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
+> >>  
+> >>  	ts->rd = fget(rfd);
+> >>  	ts->wr = fget(wfd);
+> >> -	if (!ts->rd || !ts->wr) {
+> >> +	perm = ts->rd && (ts->rd->f_mode & FMODE_READ) &&
+> >> +	       ts->wr && (ts->wr->f_mode & FMODE_WRITE);
+> >> +	if (!ts->rd || !ts->wr || !perm) {
+> >>  		if (ts->rd)
+> >>  			fput(ts->rd);
+> >>  		if (ts->wr)
+> >>  			fput(ts->wr);
+> >>  		kfree(ts);
+> >> +		if (!perm)
+> >> +			return -EBADF;
+> >>  		return -EIO;
+> >>  	}
+> >>  
+> > 
+> 
+
