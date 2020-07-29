@@ -2,120 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061A62326C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 23:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC6C2326E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 23:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727064AbgG2VeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 17:34:23 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:46845 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgG2VeW (ORCPT
+        id S1727861AbgG2VhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 17:37:20 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54964 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727824AbgG2VhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 17:34:22 -0400
-Received: by mail-io1-f69.google.com with SMTP id n1so3669746ion.13
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 14:34:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=SBci7a5McQ4HLstQc3jrus8wwIympT0MXoOHI9RYxPM=;
-        b=KY5WjWuhTmdrG/vtjh2cMYzyyDEw9/QNTHQM08Vrzk7/A1J6oSdJaUJh5phXLJozSa
-         vGWl4N/2qbas2kcsRTGM0g9RZL8+VKWZXKEo8TQe/BItFA3wh2me8QkeU6h0EukTC7c9
-         q12IL0NA9gSytBLotvyyA+jML9y78BY7O1x6Qd0NqUea4UGXuHqCax1+CwNiPIQi970R
-         hnZBz149/4rTOu7ldGZ+/g9C0B3nLUTU8YqNrZ776tTboJb6PabWC00l/W2F9zWY31Pb
-         nLa1eqNgC4V7TJa7xfwAQK2Cr/fMqU/3fb1I3q5/91WUPSFFtIHlwNg/lYZryZMFuozV
-         UUsw==
-X-Gm-Message-State: AOAM530Mt5tbpjI9tQCsOkTp2Q0ZIGvpoylyyWjutWGkB2TXJN6I8ogE
-        WifQRULg2zyl1zx+dQD84WZm39VdWiH+BDvLn/T8buSrDa7a
-X-Google-Smtp-Source: ABdhPJzhWG6qKoEvK5UQnZJrfoEPA690PyPZfKLPaeZUtrOmC+VXn9PLvCylYCQfXHYTqiIjB9yXAhS8qwhyQSSq3pm5jhE5dA3/
+        Wed, 29 Jul 2020 17:37:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596058636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WhkCWwPB9RkgFRVKaewK6/9aoLErXC4RnUkvrrja2Pw=;
+        b=fKiB/NQJftA5RUH0ded5GHzlhPqErXXPhHfpzcUfoUrTM/0EnFee94qw6E1zVMKRWGqmvB
+        Sx3mfki6nqEy3wzhnYKYeJX0PlMUiZvzI6fUFM0YhBOkGYP+okqWOi3TyPvGhLQXJImErm
+        BAqNMnSnKleRVW9S1TiHwSvjSqAklZ8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-GtqNS00LNMKFdWOJ8hygRQ-1; Wed, 29 Jul 2020 17:37:12 -0400
+X-MC-Unique: GtqNS00LNMKFdWOJ8hygRQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4E1A1005504;
+        Wed, 29 Jul 2020 21:37:10 +0000 (UTC)
+Received: from Ruby.redhat.com (ovpn-119-146.rdu2.redhat.com [10.10.119.146])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E9E9A60C84;
+        Wed, 29 Jul 2020 21:37:08 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau@lists.freedesktop.org
+Cc:     stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Karol Herbst <kherbst@redhat.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/9] drm/nouveau/kms: Handle -EINPROGRESS in nouveau_connector_hotplug()
+Date:   Wed, 29 Jul 2020 17:36:55 -0400
+Message-Id: <20200729213703.119137-2-lyude@redhat.com>
+In-Reply-To: <20200729213703.119137-1-lyude@redhat.com>
+References: <20200729213703.119137-1-lyude@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2c01:: with SMTP id w1mr36279869iov.130.1596058462261;
- Wed, 29 Jul 2020 14:34:22 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 14:34:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000af1b3b05ab9b51c2@google.com>
-Subject: kernel BUG at arch/x86/mm/physaddr.c:LINE! (6)
-From:   syzbot <syzbot+dfb45ba0aafa4329fd19@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Looks like that we forgot to handle -EINPROGRESS being returned by
+pm_runtime_get(), which can happen if multiple callers try to
+asynchronously resume the GPU before it wakes up. This is perfectly
+normal and OK, so fix this by treating -EINPROGRESS as success.
 
-syzbot found the following issue on:
-
-HEAD commit:    23ee3e4e Merge tag 'pci-v5.8-fixes-2' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16c45f78900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f87a5e4232fdb267
-dashboard link: https://syzkaller.appspot.com/bug?extid=dfb45ba0aafa4329fd19
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dfb45ba0aafa4329fd19@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at arch/x86/mm/physaddr.c:28!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 15249 Comm: syz-executor.4 Not tainted 5.8.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__phys_addr+0xa7/0x110 arch/x86/mm/physaddr.c:28
-Code: 61 7a 09 4c 89 e3 31 ff 48 d3 eb 48 89 de e8 90 60 3f 00 48 85 db 75 0d e8 e6 63 3f 00 4c 89 e0 5b 5d 41 5c c3 e8 d9 63 3f 00 <0f> 0b e8 d2 63 3f 00 48 c7 c0 10 10 a8 89 48 ba 00 00 00 00 00 fc
-RSP: 0018:ffffc90015be7c18 EFLAGS: 00010216
-RAX: 0000000000003629 RBX: 0000000000077000 RCX: ffffc900116ea000
-RDX: 0000000000040000 RSI: ffffffff813458b7 RDI: 0000000000000006
-RBP: 0000000080077000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000080077000 R11: 0000000000000000 R12: 0000778000077000
-R13: ffffc90015be7c70 R14: 0000000000000000 R15: 0000000000000286
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0063) knlGS:00000000f5db6b40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000055bcdd3fe588 CR3: 0000000070105000 CR4: 00000000001426e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- virt_to_head_page include/linux/mm.h:841 [inline]
- qlink_to_cache mm/kasan/quarantine.c:128 [inline]
- qlist_free_all+0xbb/0x140 mm/kasan/quarantine.c:164
- quarantine_reduce+0x17e/0x200 mm/kasan/quarantine.c:260
- __kasan_kmalloc.constprop.0+0x9e/0xd0 mm/kasan/common.c:475
- slab_post_alloc_hook mm/slab.h:586 [inline]
- slab_alloc mm/slab.c:3320 [inline]
- kmem_cache_alloc+0x12c/0x3b0 mm/slab.c:3484
- __d_alloc+0x2a/0x920 fs/dcache.c:1709
- d_alloc_pseudo+0x19/0x70 fs/dcache.c:1838
- alloc_file_pseudo+0xc6/0x250 fs/file_table.c:226
- sock_alloc_file+0x4f/0x190 net/socket.c:411
- sock_map_fd net/socket.c:435 [inline]
- __sys_socket+0x13d/0x200 net/socket.c:1525
- __do_sys_socket net/socket.c:1530 [inline]
- __se_sys_socket net/socket.c:1528 [inline]
- __ia32_sys_socket+0x6f/0xb0 net/socket.c:1528
- do_syscall_32_irqs_on+0x3f/0x60 arch/x86/entry/common.c:428
- __do_fast_syscall_32 arch/x86/entry/common.c:475 [inline]
- do_fast_syscall_32+0x7f/0x120 arch/x86/entry/common.c:503
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7fbb569
-Code: Bad RIP value.
-RSP: 002b:00000000f5db60cc EFLAGS: 00000296 ORIG_RAX: 0000000000000167
-RAX: ffffffffffffffda RBX: 000000000000000a RCX: 0000000000000001
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
-
-
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Fixes: 3e1a12754d4d ("drm/nouveau: Fix deadlocks in nouveau_connector_detect()")
+Cc: stable@vger.kernel.org
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: nouveau@lists.freedesktop.org
+Cc: <stable@vger.kernel.org> # v4.19+
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/gpu/drm/nouveau/nouveau_connector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
+index 7674025a4bfe8..38e226b8cfd05 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_connector.c
++++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
+@@ -1173,7 +1173,7 @@ nouveau_connector_hotplug(struct nvif_notify *notify)
+ 	}
+ 
+ 	ret = pm_runtime_get(drm->dev->dev);
+-	if (ret == 0) {
++	if (ret == 0 || ret == -EINPROGRESS) {
+ 		/* We can't block here if there's a pending PM request
+ 		 * running, as we'll deadlock nouveau_display_fini() when it
+ 		 * calls nvif_put() on our nvif_notify struct. So, simply
+-- 
+2.26.2
+
