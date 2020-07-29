@@ -2,105 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF022322D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 18:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB872322D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 18:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726916AbgG2Qle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 12:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgG2Qle (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 12:41:34 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EAFC061794;
-        Wed, 29 Jul 2020 09:41:33 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id j20so13209774pfe.5;
-        Wed, 29 Jul 2020 09:41:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UROC5uvy/pRDRtev5ApXcVyx7axSfteZjS9YrXtJFCg=;
-        b=u5Z5VUktcQuY0CDhUoFUoSXx/m4DD9i3tHcHdnIkRD4xze00CyYJ5G/9/gB5FbQrds
-         XGctPDakbYVJurJ4T66K+N61cmcG3TzhfWcIWdZHa/vKDGxinTyQWUTpoXorbm3mVdV+
-         JaD1uYEyL+Qa7aQ5ctBT9G8wEhNf70yi63VMNW4pq2csWti/PabyDrYcnt1eRtTA1Kgw
-         qkNzEtGjbKmAYyD7eK05R7IGZPAKgHwAhSZMb/1AJsmugsz8eVqulcRPFDSUE+P9QMse
-         NsNGS4pnmcakZygz/wt1kU6EpEh3vT9WddFMsDuhlS1pn1JXPmvKx/EkH+tDNs5/kwL+
-         /wzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UROC5uvy/pRDRtev5ApXcVyx7axSfteZjS9YrXtJFCg=;
-        b=GoiE54M6kf3E8Z3YxRqOB4Gp9ADJn1moZyPf4Pd0+g3SXIhoTaSIy6oy2Eo7+s3td7
-         91idmJ11sMPFH+DpFfhDgE3KYGfihvT2QdSBCMkHA/bt2W7kN6ZZXMg0Dm1r86VdBa2Q
-         /BKLzP+DFzR1bDQvbe9zuJJ17JP/+I7GS5Dca4BfiRjJ79J2/FK3/RCAjngGUv2utWQj
-         Jwdy0cNoIIsdEGCCU91pseRF1jy7idl9PiuNmb+9CWFQWbs9PT5f8IT3fwhAWbn61yXu
-         0+8KEvxIZFmc5bKW1E4UiOH9AXlm55PsOt5ZspeJPgkty1YbVF+6yUvkxV6jEgEVGHYk
-         vVSw==
-X-Gm-Message-State: AOAM53116utPDJKhvsxDylDqUXuXtAXPihEdQISjZ76UugRyMpK7N1Jd
-        aEoFZMr2Md7Fj94in3pPoZw=
-X-Google-Smtp-Source: ABdhPJzKU1GA7XKMyqBcfL+Hd9QULAao97HjUtYVZZhtNrs5EC2f+nk7ErBbaSR8IStpOHzgjBj5YQ==
-X-Received: by 2002:aa7:9e8d:: with SMTP id p13mr2384617pfq.32.1596040893272;
-        Wed, 29 Jul 2020 09:41:33 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id m6sm3222051pfk.36.2020.07.29.09.41.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 09:41:32 -0700 (PDT)
-Date:   Thu, 30 Jul 2020 01:41:30 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     peterz@infradead.org
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Petr Mladek <pmladek@suse.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 0/2] locking/qspinlock: Break qspinlock_types.h header
- loop
-Message-ID: <20200729164130.GD1160@jagdpanzerIV.localdomain>
-References: <20200729210311.425d0e9b@canb.auug.org.au>
- <20200729114757.GA19388@gondor.apana.org.au>
- <20200729122807.GA7047@gondor.apana.org.au>
- <20200729124744.GC2638@hirez.programming.kicks-ass.net>
- <20200729125144.GA7184@gondor.apana.org.au>
- <20200729130000.GA2655@hirez.programming.kicks-ass.net>
- <20200729132849.GA1160@jagdpanzerIV.localdomain>
- <20200729142813.GD2638@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729142813.GD2638@hirez.programming.kicks-ass.net>
+        id S1726900AbgG2QoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 12:44:25 -0400
+Received: from comms.puri.sm ([159.203.221.185]:54404 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726496AbgG2QoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 12:44:25 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id B78D1E044E;
+        Wed, 29 Jul 2020 09:43:54 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id TegbL7tiphgE; Wed, 29 Jul 2020 09:43:53 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 18:43:48 +0200
+In-Reply-To: <1596037482.4356.37.camel@HansenPartnership.com>
+References: <20200706164135.GE704149@rowland.harvard.edu> <d0ed766b-88b0-5ad5-9c10-a4c3b2f994e3@puri.sm> <20200728200243.GA1511887@rowland.harvard.edu> <f3958758-afce-8add-1692-2a3bbcc49f73@puri.sm> <20200729143213.GC1530967@rowland.harvard.edu> <1596033995.4356.15.camel@linux.ibm.com> <1596034432.4356.19.camel@HansenPartnership.com> <d9bb92e9-23fa-306f-c7f2-71a81ab28811@puri.sm> <1596037482.4356.37.camel@HansenPartnership.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+CC:     Bart Van Assche <bvanassche@acm.org>,
+        Can Guo <cang@codeaurora.org>, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+Message-ID: <A1653792-B7E5-46A9-835B-7FA85FCD0378@puri.sm>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/07/29 16:28), peterz@infradead.org wrote:
-> On Wed, Jul 29, 2020 at 10:28:49PM +0900, Sergey Senozhatsky wrote:
-> > On (20/07/29 15:00), peterz@infradead.org wrote:
-> > > On Wed, Jul 29, 2020 at 10:51:44PM +1000, Herbert Xu wrote:
-> > > > On Wed, Jul 29, 2020 at 02:47:44PM +0200, peterz@infradead.org wrote:
-> > > > >
-> > [..]
-> > > > > Anyway, the patches look sane enough, I'll go stick them in
-> > > > > tip/locking/core or somesuch.
-> > > > 
-> > > > Perhaps add them on top of the other two patches in locking/header?
-> > > 
-> > > Can do,
-> > 
-> > locking/header would be better
-> 
-> Done.
 
-Thanks a lot!
-I'll run some cross-compilation tests.
 
-	-ss
+Am 29=2E Juli 2020 17:44:42 MESZ schrieb James Bottomley <James=2EBottomle=
+y@HansenPartnership=2Ecom>:
+>On Wed, 2020-07-29 at 17:40 +0200, Martin Kepplinger wrote:
+>> On 29=2E07=2E20 16:53, James Bottomley wrote:
+>> > On Wed, 2020-07-29 at 07:46 -0700, James Bottomley wrote:
+>> > > On Wed, 2020-07-29 at 10:32 -0400, Alan Stern wrote:
+>[=2E=2E=2E]
+>> > > > This error report comes from the SCSI layer, not the block
+>> > > > layer=2E
+>> > >=20
+>> > > That sense code means "NOT READY TO READY CHANGE, MEDIUM MAY HAVE
+>> > > CHANGED" so it sounds like it something we should be
+>> > > ignoring=2E  Usually this signals a problem, like you changed the
+>> > > medium manually (ejected the CD)=2E  But in this case you can tell
+>> > > us to expect this by setting
+>> > >=20
+>> > > sdev->expecting_cc_ua
+>> > >=20
+>> > > And we'll retry=2E  I think you need to set this on all resumed
+>> > > devices=2E
+>> >=20
+>> > Actually, it's not quite that easy, we filter out this ASC/ASCQ
+>> > combination from the check because we should never ignore medium
+>> > might have changed events on running devices=2E  We could ignore it
+>> > if we had a flag to say the power has been yanked (perhaps an
+>> > additional sdev flag you set on resume) but we would still miss the
+>> > case where you really had powered off the drive and then changed
+>> > the media =2E=2E=2E if you can regard this as the user's problem, the=
+n we
+>> > might have a solution=2E
+>> >=20
+>> > James
+>> > =20
+>>=20
+>> oh I see what you mean now, thanks for the ellaboration=2E
+>>=20
+>> if I do the following change, things all look normal and runtime pm
+>> works=2E I'm not 100% sure if just setting expecting_cc_ua in resume()
+>> is "correct" but that looks like it is what you're talking about:
+>>=20
+>> (note that this is of course with the one block layer diff applied
+>> that Alan posted a few emails back)
+>>=20
+>>=20
+>> --- a/drivers/scsi/scsi_error=2Ec
+>> +++ b/drivers/scsi/scsi_error=2Ec
+>> @@ -554,16 +554,8 @@ int scsi_check_sense(struct scsi_cmnd *scmd)
+>>                  * so that we can deal with it there=2E
+>>                  */
+>>                 if (scmd->device->expecting_cc_ua) {
+>> -                       /*
+>> -                        * Because some device does not queue unit
+>> -                        * attentions correctly, we carefully check
+>> -                        * additional sense code and qualifier so as
+>> -                        * not to squash media change unit attention=2E
+>> -                        */
+>> -                       if (sshdr=2Easc !=3D 0x28 || sshdr=2Eascq !=3D =
+0x00)
+>> {
+>> -                               scmd->device->expecting_cc_ua =3D 0;
+>> -                               return NEEDS_RETRY;
+>> -                       }
+>> +                       scmd->device->expecting_cc_ua =3D 0;
+>> +                       return NEEDS_RETRY;
+>
+>Well, yes, but you can't do this because it would lose us media change
+>events in the non-suspend/resume case which we really don't want=2E=20
+>That's why I was suggesting a new flag=2E
+>
+>James
+
+also if I set expecting_cc_ua in resume() only, like I did?
+
+--=20
+Martin Kepplinger
+xmpp: martink@jabber=2Eat
+Sent from mobile=2E
