@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7418423222E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 18:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BC7232260
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 18:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgG2QK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 12:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgG2QK2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 12:10:28 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90A0C061794;
-        Wed, 29 Jul 2020 09:10:27 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id t6so14494190pgq.1;
-        Wed, 29 Jul 2020 09:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3KszJd66+FR9j6KwsFqF55Ai/n2YjvAK1QdFNRfzzsA=;
-        b=slW7M1Gb00VsPVVBQAXgmEOHzjruf7qnHOBgBbHPltSz19hyM7YxDO+dZBz0jAjDny
-         PhFchOZBPjFVNqrntXDMshOadjo8arB9xFkXbx+IB+4exq8p/QG5XjZnnPt5/2IRKh34
-         Hhe4gKskNtSlICOYctBYdHqH2SuCLtYy1tsPbcyqa2h4Zj4UKRApvrtD7LRkWfLePGgE
-         IGSs/3DJzMv6QzqohzZiZur6HmFMCunuICFTjwTcultYjwtGBD6mTFiQ/5QRgYL2OxAP
-         WtE8YejzUx0vEInoKNa2SpV+R2HC4ABPK/+SRmNvoWGiqibCgdOdSvQnLbSuqvmNcC10
-         GCKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3KszJd66+FR9j6KwsFqF55Ai/n2YjvAK1QdFNRfzzsA=;
-        b=S3mlG2163DEgUOs1dixjz2KxUV4JdJoBXmc5VfS4s8elEn+K4fC10OiitXCLyN6SaR
-         6kn5l9Sb4fxSjYhrzexHvBUs4BiL9w9009x4dWRdvj+HGDnBVa5SO9GywtFesgOxMBT5
-         UxsZkSOW2HS7kdCAhPuWyUjY71/UHPyHrqXltwf3khIbe41x3Hdf/SuEQrXXyK4gszBp
-         OEHNDVtDflKULt949d7EirlDNV0gjm3B0Fwj86GryG0VOJoyI/cc0cHRqL5i+HysimXY
-         E3vpg8dCXVrSLtxAez6I67373wEhq3RMVS9ggvnxDtlpCtkOh58pPN1wuag1+ei2EfL9
-         RPuQ==
-X-Gm-Message-State: AOAM531owTT2NS8qWubxaGkRsWaRcbub3G9n06nMxGNFS7pxm3Wqyi+n
-        D7V1ReYpBseGqhCw5VXNEq71ReF1qkFMnqN6x1U=
-X-Google-Smtp-Source: ABdhPJxk4Ccq49N7j3ka7r2c7b2liLe9RQp6QwM+jJpcIj4duAtmnA3Vabbse/9sQCu8c3oSvMd5A4YSIn+dfmrIxCg=
-X-Received: by 2002:a63:711e:: with SMTP id m30mr8171759pgc.40.1596039027236;
- Wed, 29 Jul 2020 09:10:27 -0700 (PDT)
+        id S1726707AbgG2QNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 12:13:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726341AbgG2QNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 12:13:23 -0400
+Received: from linux-8ccs (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5FA920FC3;
+        Wed, 29 Jul 2020 16:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596039202;
+        bh=Dr2f1rnIAwAbgJYQlSq8HsSXozp4VHgRlAMcB3TsJwI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VbFyGvQaGLh/SJN5nvdnlpgMswUCpssnC9Nl7UBme2OYXtALrCxRXizttfSXu0hB/
+         o/qDT0CWgK2s5/EKiaxIsxqNpPFYUsgZb1dMsgY4B4uivr3KQfMr54qT33UYvdO/uH
+         lRY6C1kcYcdHG4PvvkTlrguh+GS7BLCg6RendzIw=
+Date:   Wed, 29 Jul 2020 18:13:18 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH 2/7] modules: mark find_symbol static
+Message-ID: <20200729161318.GA30898@linux-8ccs>
+References: <20200729062711.13016-1-hch@lst.de>
+ <20200729062711.13016-3-hch@lst.de>
 MIME-Version: 1.0
-References: <20200728204417.23912-1-lkmlabelt@gmail.com> <BN6PR21MB08361CE726C8D3541E657054CC730@BN6PR21MB0836.namprd21.prod.outlook.com>
-In-Reply-To: <BN6PR21MB08361CE726C8D3541E657054CC730@BN6PR21MB0836.namprd21.prod.outlook.com>
-From:   Andres Beltran <lkmlabelt@gmail.com>
-Date:   Wed, 29 Jul 2020 12:10:17 -0400
-Message-ID: <CAGpZZ6un6VT2ZVje0tVXbZkvH_HH+pn2Du6WPa5qeJDOz7rUmg@mail.gmail.com>
-Subject: Re: [PATCH] hv_utils: Add validation for untrusted Hyper-V values
-To:     Stephen Hemminger <sthemmin@microsoft.com>
-Cc:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michael Kelley <mikelley@microsoft.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Saruhan Karademir <skarade@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200729062711.13016-3-hch@lst.de>
+X-OS:   Linux linux-8ccs 5.5.0-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 5:04 PM Stephen Hemminger
-<sthemmin@microsoft.com> wrote:
++++ Christoph Hellwig [29/07/20 08:27 +0200]:
+>find_symbol is only used in module.c.
 >
-> You may want to use one of the macros that prints this once only.
-> This is a "should never happen" type error, so if something goes wrong it might happens so much that journal/syslog would get overloaded.
+>Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Certainly, printing error messages once would be ideal if we were only
-dealing with Linux kernel bugs. But under the assumption that Hyper-V
-can send bogus values at any time, I think it would be better to print
-error messages every time so that we are aware of malicious/erroneous
-data sent by the host.
+CCing the livepatching ML, as this may or may not impact its users.
+
+AFAIK, the out-of-tree kpatch module had used find_symbol() in the
+past, I am not sure what its current status is. I suspect all of its
+functionality has been migrated to upstream livepatch already.
+
+>---
+> include/linux/module.h | 11 -----------
+> kernel/module.c        |  3 +--
+> 2 files changed, 1 insertion(+), 13 deletions(-)
+>
+>diff --git a/include/linux/module.h b/include/linux/module.h
+>index f1fdbeef2153a8..90bdc362be3681 100644
+>--- a/include/linux/module.h
+>+++ b/include/linux/module.h
+>@@ -590,17 +590,6 @@ struct symsearch {
+> 	bool unused;
+> };
+>
+>-/*
+>- * Search for an exported symbol by name.
+>- *
+>- * Must be called with module_mutex held or preemption disabled.
+>- */
+>-const struct kernel_symbol *find_symbol(const char *name,
+>-					struct module **owner,
+>-					const s32 **crc,
+>-					bool gplok,
+>-					bool warn);
+>-
+> /*
+>  * Walk the exported symbol table
+>  *
+>diff --git a/kernel/module.c b/kernel/module.c
+>index 17d64dae756c80..84da96a6d8241c 100644
+>--- a/kernel/module.c
+>+++ b/kernel/module.c
+>@@ -585,7 +585,7 @@ static bool find_exported_symbol_in_section(const struct symsearch *syms,
+>
+> /* Find an exported symbol and return it, along with, (optional) crc and
+>  * (optional) module which owns it.  Needs preempt disabled or module_mutex. */
+>-const struct kernel_symbol *find_symbol(const char *name,
+>+static const struct kernel_symbol *find_symbol(const char *name,
+> 					struct module **owner,
+> 					const s32 **crc,
+> 					bool gplok,
+>@@ -608,7 +608,6 @@ const struct kernel_symbol *find_symbol(const char *name,
+> 	pr_debug("Failed to find symbol %s\n", name);
+> 	return NULL;
+> }
+>-EXPORT_SYMBOL_GPL(find_symbol);
+>
+> /*
+>  * Search for module by name: must hold module_mutex (or preempt disabled
+>-- 
+>2.27.0
+>
