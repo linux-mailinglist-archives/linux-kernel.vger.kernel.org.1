@@ -2,132 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12352231A21
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BC8231A2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgG2HO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 03:14:59 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:55620 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726476AbgG2HO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 03:14:59 -0400
-IronPort-SDR: x6StlzwikKWDu1MOZ0lA7CIUwNWCYDVuzr/wNV85ZLZNahD9l+LtZvUbjgZtyuLNhZqKKuMIfG
- 2WEDe27GU/1TZpsA7+CFYJa8n7Myd7ChKkeeZv/2PPILyCuxG5ShNoEuPhzWQtX/yYjx2koW2R
- YPPMEELd4HF2D7IUR6QByLdCjEjJvaXs1SnpkJpU2R2biRRxPSYz7/yeiOc4v5xOMr/kPcBFF4
- 3BMPWxG5wkFsd9U3ybsFDYZxCIH1VkcktLRrY9QBX0W4MmvjorpOM2WeXwQdMGGRMWIJlYsIOg
- cB0=
-X-IronPort-AV: E=Sophos;i="5.75,409,1589234400"; 
-   d="scan'208";a="13271882"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 29 Jul 2020 09:14:57 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 29 Jul 2020 09:14:57 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 29 Jul 2020 09:14:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1596006897; x=1627542897;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=RVYf9+lqvm1U2wO113y5gOtAIDQlfnbNeYkosjkOWCU=;
-  b=YwnB92Trmyt3ofc52zOhG4gETYac5x/lw7NqxhZa10gtlL634WeimzDD
-   2I19oBDm2vkzzTcbrm7dVejTKDS2GZsPF1IU0eoKoWlgW3aakEC6wWB8Y
-   TWaOA48KUweNv1Y7/kKKhsQtPjJsRsyUJZW6WSPz7y+m31yZOspy6v7uu
-   wLg7quDIB/xzk9Hb1eVLxuRwTKY6zoAnHVnl/y73BOxJv9Vm2n+6y1amL
-   Z91ReshLG96z1ilYT3jn618+NF5/hfUHkZiOEbKxCEXCp7JUqQy0mycus
-   6HzCXCbq5HVc+zuokwIb//ziiXj3U1t3tBsQiuJfy8PT9Ns7ZeYU2WMNa
-   w==;
-IronPort-SDR: 4ekXAohnQBN3XC+6/ijUyNP+u9C3mqLFYEwu/rygbCet+KCi0fDsWXEdCXsXv1zI9JcL13FrDp
- CWX6Af7fK1Vaf2LFSwvPzKJkU5gr8asQ62BplKYpTkCf+5jKFPxdnU4NCNJ2M1pgQXNFVOY7sR
- JzG90z1Lt/uxBZ4CdRGbYLZX+hHNYb9O9prWhsrXbfWZAq2URqeqxZRtdzn9TwMOrx5NMEuhsF
- SNsOtn/MWTFquS4gV8EDjbeP4Wo66qjYu+mnCzlQXdWOx37dpzX790Bs1Ez9KO766LZJ8A6RSa
- y24=
-X-IronPort-AV: E=Sophos;i="5.75,409,1589234400"; 
-   d="scan'208";a="13271881"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 29 Jul 2020 09:14:57 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 579AE280065;
-        Wed, 29 Jul 2020 09:14:57 +0200 (CEST)
-Message-ID: <33fbac338c9d9accda37837eb1338003b28cafee.camel@ew.tq-group.com>
-Subject: Re: [PATCH v2] arm: dts: imx7: add QSPI
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Date:   Wed, 29 Jul 2020 09:14:55 +0200
-In-Reply-To: <20200729071106.8213-1-matthias.schiffer@ew.tq-group.com>
-References: <20200729071106.8213-1-matthias.schiffer@ew.tq-group.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1727896AbgG2HRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 03:17:15 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:18796 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727033AbgG2HRN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 03:17:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1596007027;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=sdhs3yS8aMc4aowa6IxLuB0eXJ97dxSTuJg2++WqobQ=;
+        b=OyPRLcFDNnoth0RGD+/DE6IPhruJ8IST7NNMkmwxOc7CoTrXtBrGFE6CSoK4Q/y4wc
+        QFiXbYnXOxLUpIbIHqbOhb/Ktg5syXF8C9Cb1k2fpWWQH7FpqjZtK52zSXIhD9YW16Bb
+        +4zOHa00RlgTQP9uxwGQNU6tWIVUNZmqsidm34+mhIOFfEQvV1+01zURmstiK7YEszl4
+        pcFp+wZBQjUnCk5y75g9DUWD4lxeXnzfrjLNPLxY50xknQogjgvCnhSu4lbheiGV66bV
+        OWkD86Oe5Rfx+60We1s/BMxyNgtZ8IMwFJ8VAe8V51UjWS3j8yjLcLS17F8tr8O4OxHX
+        dxmg==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzHHXDbLvSf24qr"
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
+        with ESMTPSA id y0546bw6T7FgBYj
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Wed, 29 Jul 2020 09:15:42 +0200 (CEST)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Nicolai Stange <nstange@suse.de>,
+        "Peter, Matthias" <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Roman Drahtmueller <draht@schaltsekun.de>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v31 00/12] /dev/random - a new approach with full SP800-90B
+Date:   Wed, 29 Jul 2020 09:15:42 +0200
+Message-ID: <2739109.8hzESeGDPO@tauon.chronox.de>
+In-Reply-To: <20200728204044.GD1012@bug>
+References: <2050754.Mh6RI2rZIc@positron.chronox.de> <20200728204044.GD1012@bug>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-07-29 at 09:11 +0200, Matthias Schiffer wrote:
-> In preparation for an update of the TQ-Systems TQMa7x/MBa7x DTS, add
-> the
-> QSPI controller to imx7s.dtsi.
-> 
-> Based-on-patch-by: Han Xu <han.xu@nxp.com>
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> ---
-> 
-> v2:
-> - renamed node and label
-> - reordered properties
-> (as suggested by Marco Felsch)
+Am Dienstag, 28. Juli 2020, 22:40:44 CEST schrieb Pavel Machek:
 
-Ugh, I neglected to check for compile warnings after adjusting the node
-name. This now gives the following warning:
+Hi Pavel,
 
-arch/arm/boot/dts/imx7s.dtsi:1165.24-1176.6: Warning (spi_bus_bridge): 
-/soc/bus@30800000/qspi@30bb0000: node name for SPI buses should be
-'spi'
-
-So I guess this should be called spi@ after all?
-
-
+> Hi!
 > 
+> > The following patch set provides a different approach to /dev/random which
+> > is called Linux Random Number Generator (LRNG) to collect entropy within
+> > the Linux kernel. The main improvements compared to the existing
+> > /dev/random is to provide sufficient entropy during boot time as well as
+> > in virtual environments and when using SSDs. A secondary design goal is
+> > to limit the impact of the entropy collection on massive parallel systems
+> > and also allow the use accelerated cryptographic primitives. Also, all
+> > steps of the entropic data processing are testable.
 > 
->  arch/arm/boot/dts/imx7s.dtsi | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+> That sounds good.. maybe too good. Where does LRNG get the entropy? That is
+> the part that should be carefully documented..
 > 
-> diff --git a/arch/arm/boot/dts/imx7s.dtsi
-> b/arch/arm/boot/dts/imx7s.dtsi
-> index 1cfaf410aa43..22e4c38223bd 100644
-> --- a/arch/arm/boot/dts/imx7s.dtsi
-> +++ b/arch/arm/boot/dts/imx7s.dtsi
-> @@ -1162,6 +1162,19 @@
->  				status = "disabled";
->  			};
->  
-> +			qspi: qspi@30bb0000 {
-> +				compatible = "fsl,imx7d-qspi";
-> +				reg = <0x30bb0000 0x10000>, <0x60000000
-> 0x10000000>;
-> +				reg-names = "QuadSPI", "QuadSPI-
-> memory";
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				interrupts = <GIC_SPI 107
-> IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks = <&clks IMX7D_QSPI_ROOT_CLK>,
-> +					<&clks IMX7D_QSPI_ROOT_CLK>;
-> +				clock-names = "qspi_en", "qspi";
-> +				status = "disabled";
-> +			};
-> +
->  			sdma: sdma@30bd0000 {
->  				compatible = "fsl,imx7d-sdma",
-> "fsl,imx35-sdma";
->  				reg = <0x30bd0000 0x10000>;
+> 									Pavel
+
+The entire description of the LRNG is given in [1].
+
+[1] section 2.1 outlines the general architecture specifying that there are 
+currently 3 noise sources. Per default, the interrupt-based noise source is 
+the main source.
+
+Section 2.4 outlines the details of the interrupt noise source handling. The 
+key now is unlike the existing implementation that there is no separate block/
+HID noise collection because they are "just" derivatives of the interrupt 
+noise source which would imply that noise events are double credited with 
+entropy. This allows for a massively higher valuation of the entropy rate that 
+exists in interrupt events.
+
+To support the design, a large scale noise source analysis is performed in 
+chapter 3 [1]. Specifically sections 3.2.3 and 3.2.4 provide quantitative 
+statements which are further analyzed in subsequent sections. This includes 
+reboot tests as well as runtime tests.
+
+[1] appendix C performs these measurements on other CPU architectures, 
+including very small environments which could be expected to have too little 
+entropy (specifically the first listed ARM system mentioned there and the MIPS 
+system are older embedded devices that yet show sufficient entropy). Also, the 
+entropy available in virtual environments is shown in appendix C.
+
+The tools perform the aforementioned measurements are provided with the 
+enabling of CONFIG_LRNG_RAW_ENTROPY supported by [2]. This allows everybody to 
+re-perform the analysis on the system of his choice.
+
+Also, the entire entropy assessment of the LRNG is supported by the entropy 
+analysis of the existing implementation in [3]. Specifically section 6.1 shows 
+that the existing implementation has much more entropy available in the 
+interrupt events than it credits. Yet, due to the design of the existing 
+implementation with the fast pool (for which we have no assessment how much 
+entropy is lost by it) and the fact of double counting of entropy with HID/
+block devices, the massive underestimation of existing entropy with the 
+existing /dev/random implementation is warranted.
+
+Lastly, [4] performs the entropy assessment of the existing /dev/random 
+implementation in virtualized environments showing that still sufficient 
+entropy is available in interrupt events supporting the approach taken in the 
+LRNG. Writing the assessment of [4] was the initial trigger point for me to 
+start the LRNG implementation.
+
+The second noise source that, however, is credited much less entropy is 
+documented in [5] including its entropy assessment.
+
+[1] https://chronox.de/lrng/doc/lrng.pdf
+
+[2] https://chronox.de/lrng/lrng-tests-20200415.tar.xz
+
+[3] https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Studies/
+LinuxRNG/LinuxRNG_EN.pdf?__blob=publicationFile
+
+[4] https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/Studien/
+ZufallinVMS/Randomness-in-VMs.pdf?__blob=publicationFile
+
+[5] https://chronox.de/jent/doc/CPU-Jitter-NPTRNG.pdf
+
+Ciao
+Stephan
+
 
