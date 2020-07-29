@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017F92321D3
+	by mail.lfdr.de (Postfix) with ESMTP id 928EF2321D4
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgG2PpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 11:45:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
+        id S1727777AbgG2PpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 11:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbgG2PpS (ORCPT
+        with ESMTP id S1726987AbgG2PpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 11:45:18 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F97CC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:45:18 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id d190so3140238wmd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:45:18 -0700 (PDT)
+        Wed, 29 Jul 2020 11:45:19 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EA6C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:45:19 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id q76so2230116wme.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4N4tDfzOiQqATdi2Zol4rwsnSDbJ8cgT+uEdMs1E22o=;
-        b=WWZhs4MLKcUYxBMvUVTtWl0OAPx5neW6I3yi2mxSSN5FUCj+m2aiudakBjm5Zyn49G
-         qNoZzgivw+l/W6yq8djsxGTazCCcggn8Pdw1nVPO/SxKY53BIYC8rJ37jQ6oVHIFn9bj
-         TDE/IMadGdIEd6FW0+Uwn11oO/Wt7jiYKgY1uaAnpifIqkVnE+paKfydATCD8pnB1t8H
-         RMPrl8/PzhHRDQVdgqTHRLIwQ0auujdmd+dX2focKFZz9yigqXmKMHqD8pW9euBmr4h9
-         l2TOcSdKUsvE2xOj9nfWpk0IyMTwrJVcgBAyrVcS3yeK80UKf8oHd2oQg9BgVPf5Gep3
-         qT6g==
+        bh=FWqyEKTC/HJjMKifmyPTB4RZCmPL+DNrii7Si5MfMvM=;
+        b=R6e6hElLlc+cKRmwfD9negfPjHCnH1BoA3KEGyKUVu+4cXtnt3BZD57hM2PlEEHmI/
+         sqd2gXZg6qgdERDcATkW1xvA2BW9ApWfymSmV2YB6nEbHiIMBJJDmrsI+BaHWWeG/Us5
+         U5Sm96lEvo7l/QRv4D6UEIgelIEez1Ks7QNRWZ1C/D8Cu5whCC7FoPyMb2z3BhRG2qgy
+         FnBLSmNJOF1c50vViNF9o6VQ7a4k8Cx1fyQCIiNcYpM1c9YgLxXz7T+LYBgIxVV/A6Rw
+         KkgIGG2I94TbAxr15mGQj9KGOCXZ8j9Xy0OLXIE2Z7A/ceEyEaCYB0q9i2y1J9ZGF17h
+         1iRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4N4tDfzOiQqATdi2Zol4rwsnSDbJ8cgT+uEdMs1E22o=;
-        b=PeJ9yy3mB2oehdv7vhXAk5lGm0+RdJuiq3v2Xk7lwbRL6gxuBX+/Jv9imu6HSDTUKi
-         7BfrGJateA6v2mEtyneUgw7dXvGSYEC1GG586n3IHhgFTU6MDWxUdlk6GHgroC6KInRz
-         ivuXMD5C9yVWhBzamo9Dgny9z6S6nrf71YU9Bbic5MpQUvDuOoGoA6fG7X49qAXAx3yi
-         ruh0qYVf7/Kn32rUnwHf21+uphSD3h3NNN7FkYeGbVUtEmJXY6vzbKPdhJpBa3H6ZM0I
-         nmMr3VVOjyGlGd1EAVkm4/SObcqNGOhYB83JO2IJesMOLnPtS2T2UwlSiUPLHWpk3Smk
-         rBKA==
-X-Gm-Message-State: AOAM530zzlh2Mb9KKRn5oKgYL5WVNaUyT+n9x3Xp9vzloBFamyEFIDvE
-        HupoFggZd5nEPniO2OFZeq1jD3ZBXOj1bg==
-X-Google-Smtp-Source: ABdhPJxDdW0mOc4UD1kq9GZvvkv4pRetXTg0qhqbn32pV9vNmdYnY++BBuAjJwZ83bppWNUoVHSA5g==
-X-Received: by 2002:a7b:c3d2:: with SMTP id t18mr6152075wmj.92.1596037516141;
-        Wed, 29 Jul 2020 08:45:16 -0700 (PDT)
+        bh=FWqyEKTC/HJjMKifmyPTB4RZCmPL+DNrii7Si5MfMvM=;
+        b=RcfenMIAl/GysT7m/VpoE9DowZwTck/DkvG7f7qwFouGwfEwWxmyp72tGvGCMmzvvR
+         zAaLAqH1pHjkb6kqOM2MV3bTB6TiCC6JHOFBdG0S/JINW9a8YBa8+oEcsxJxMf1byUtf
+         bhjSQep+0UufMgXHT7L5yf2HebV5yNiWTOGSek3KDn1qfZFLV7OoMWIx9LXxYEd49ZMs
+         E1Inwq3Ronju+M1aRe0RtL9cZpXlVoYMsYkNeF4Y9kHPo4ZXckL1DuN7KtT/EBX7i+3h
+         6JGK2fyqPKM2HmIMD9/DKaRBQhRyDFJ0QIANl5dVR5Q8USELUvgEIlbyZf4og85FmldE
+         VWFQ==
+X-Gm-Message-State: AOAM532nL0Wr4QJ34+CcWJvfflXSzVsQOWPwdgE6CLIN0ECRYJEUbbMD
+        ew82A9ZZPFzUi9ebMaBMG7V81/SLHp/bUA==
+X-Google-Smtp-Source: ABdhPJxgGC9nboToZyRcUcXbiOSxER7K3hBnDiXzlzkgzlpkoRrJEvHRzVMhiuKp6ZHByGydbFxnFg==
+X-Received: by 2002:a1c:2109:: with SMTP id h9mr9082184wmh.174.1596037517108;
+        Wed, 29 Jul 2020 08:45:17 -0700 (PDT)
 Received: from starbuck.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id k10sm5950967wrm.74.2020.07.29.08.45.15
+        by smtp.googlemail.com with ESMTPSA id k10sm5950967wrm.74.2020.07.29.08.45.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 08:45:15 -0700 (PDT)
+        Wed, 29 Jul 2020 08:45:16 -0700 (PDT)
 From:   Jerome Brunet <jbrunet@baylibre.com>
 To:     Mark Brown <broonie@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>
 Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
         Kevin Hilman <khilman@baylibre.com>
-Subject: [PATCH 3/4] ASoC: meson: axg-tdm-formatters: fix sclk inversion
-Date:   Wed, 29 Jul 2020 17:44:55 +0200
-Message-Id: <20200729154456.1983396-4-jbrunet@baylibre.com>
+Subject: [PATCH 4/4] ASoC: meson: cards: remove DT_PREFIX for standard daifmt properties
+Date:   Wed, 29 Jul 2020 17:44:56 +0200
+Message-Id: <20200729154456.1983396-5-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200729154456.1983396-1-jbrunet@baylibre.com>
 References: <20200729154456.1983396-1-jbrunet@baylibre.com>
@@ -68,112 +68,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After carefully checking, it appears that both tdmout and tdmin require the
-rising edge of the sclk they get to be synchronized with the frame sync
-event (which should be a rising edge of lrclk).
+Standard dai format property don't need the "amlogic," prefix.
+There nothing amlogic specific about them. Just remove it.
 
-TDMIN was improperly set before this patch. Remove the sclk_invert quirk
-which is no longer needed and fix the sclk phase.
-
-Fixes: 1a11d88f499c ("ASoC: meson: add tdm formatter base driver")
+Fixes: 435857e015dc ("ASoC: meson: align axg card driver with DT bindings documentation")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/meson/axg-tdm-formatter.c | 11 ++++++-----
- sound/soc/meson/axg-tdm-formatter.h |  1 -
- sound/soc/meson/axg-tdmin.c         |  2 --
- sound/soc/meson/axg-tdmout.c        |  3 ---
- 4 files changed, 6 insertions(+), 11 deletions(-)
+ sound/soc/meson/meson-card-utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-tdm-formatter.c b/sound/soc/meson/axg-tdm-formatter.c
-index 358c8c0d861c..f7e8e9da68a0 100644
---- a/sound/soc/meson/axg-tdm-formatter.c
-+++ b/sound/soc/meson/axg-tdm-formatter.c
-@@ -70,7 +70,7 @@ EXPORT_SYMBOL_GPL(axg_tdm_formatter_set_channel_masks);
- static int axg_tdm_formatter_enable(struct axg_tdm_formatter *formatter)
- {
- 	struct axg_tdm_stream *ts = formatter->stream;
--	bool invert = formatter->drv->quirks->invert_sclk;
-+	bool invert;
- 	int ret;
+diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
+index 29b601a0e274..f9ce03f3921f 100644
+--- a/sound/soc/meson/meson-card-utils.c
++++ b/sound/soc/meson/meson-card-utils.c
+@@ -119,7 +119,7 @@ unsigned int meson_card_parse_daifmt(struct device_node *node,
+ 	struct device_node *framemaster = NULL;
+ 	unsigned int daifmt;
  
- 	/* Do nothing if the formatter is already enabled */
-@@ -96,11 +96,12 @@ static int axg_tdm_formatter_enable(struct axg_tdm_formatter *formatter)
- 		return ret;
+-	daifmt = snd_soc_of_parse_daifmt(node, DT_PREFIX,
++	daifmt = snd_soc_of_parse_daifmt(node, "",
+ 					 &bitclkmaster, &framemaster);
+ 	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
  
- 	/*
--	 * If sclk is inverted, invert it back and provide the inversion
--	 * required by the formatter
-+	 * If sclk is inverted, it means the bit should latched on the
-+	 * rising edge which is what our HW expects. If not, we need to
-+	 * invert it before the formatter.
- 	 */
--	invert ^= axg_tdm_sclk_invert(ts->iface->fmt);
--	ret = clk_set_phase(formatter->sclk, invert ? 180 : 0);
-+	invert = axg_tdm_sclk_invert(ts->iface->fmt);
-+	ret = clk_set_phase(formatter->sclk, invert ? 0 : 180);
- 	if (ret)
- 		return ret;
- 
-diff --git a/sound/soc/meson/axg-tdm-formatter.h b/sound/soc/meson/axg-tdm-formatter.h
-index 9ef98e955cb2..a1f0dcc0ff13 100644
---- a/sound/soc/meson/axg-tdm-formatter.h
-+++ b/sound/soc/meson/axg-tdm-formatter.h
-@@ -16,7 +16,6 @@ struct snd_kcontrol;
- 
- struct axg_tdm_formatter_hw {
- 	unsigned int skew_offset;
--	bool invert_sclk;
- };
- 
- struct axg_tdm_formatter_ops {
-diff --git a/sound/soc/meson/axg-tdmin.c b/sound/soc/meson/axg-tdmin.c
-index 3d002b4eb939..88ed95ae886b 100644
---- a/sound/soc/meson/axg-tdmin.c
-+++ b/sound/soc/meson/axg-tdmin.c
-@@ -228,7 +228,6 @@ static const struct axg_tdm_formatter_driver axg_tdmin_drv = {
- 	.regmap_cfg	= &axg_tdmin_regmap_cfg,
- 	.ops		= &axg_tdmin_ops,
- 	.quirks		= &(const struct axg_tdm_formatter_hw) {
--		.invert_sclk	= false,
- 		.skew_offset	= 2,
- 	},
- };
-@@ -238,7 +237,6 @@ static const struct axg_tdm_formatter_driver g12a_tdmin_drv = {
- 	.regmap_cfg	= &axg_tdmin_regmap_cfg,
- 	.ops		= &axg_tdmin_ops,
- 	.quirks		= &(const struct axg_tdm_formatter_hw) {
--		.invert_sclk	= false,
- 		.skew_offset	= 3,
- 	},
- };
-diff --git a/sound/soc/meson/axg-tdmout.c b/sound/soc/meson/axg-tdmout.c
-index 418ec314b37d..3ceabddae629 100644
---- a/sound/soc/meson/axg-tdmout.c
-+++ b/sound/soc/meson/axg-tdmout.c
-@@ -238,7 +238,6 @@ static const struct axg_tdm_formatter_driver axg_tdmout_drv = {
- 	.regmap_cfg	= &axg_tdmout_regmap_cfg,
- 	.ops		= &axg_tdmout_ops,
- 	.quirks		= &(const struct axg_tdm_formatter_hw) {
--		.invert_sclk = true,
- 		.skew_offset = 1,
- 	},
- };
-@@ -248,7 +247,6 @@ static const struct axg_tdm_formatter_driver g12a_tdmout_drv = {
- 	.regmap_cfg	= &axg_tdmout_regmap_cfg,
- 	.ops		= &axg_tdmout_ops,
- 	.quirks		= &(const struct axg_tdm_formatter_hw) {
--		.invert_sclk = true,
- 		.skew_offset = 2,
- 	},
- };
-@@ -309,7 +307,6 @@ static const struct axg_tdm_formatter_driver sm1_tdmout_drv = {
- 	.regmap_cfg	= &axg_tdmout_regmap_cfg,
- 	.ops		= &axg_tdmout_ops,
- 	.quirks		= &(const struct axg_tdm_formatter_hw) {
--		.invert_sclk = true,
- 		.skew_offset = 2,
- 	},
- };
 -- 
 2.25.4
 
