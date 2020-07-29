@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F028232843
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 01:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B254C23284C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 01:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728109AbgG2XmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 19:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
+        id S1728142AbgG2Xn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 19:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728057AbgG2XmR (ORCPT
+        with ESMTP id S1727858AbgG2XnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 19:42:17 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2BBC061794;
-        Wed, 29 Jul 2020 16:42:17 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id q6so26913814ljp.4;
-        Wed, 29 Jul 2020 16:42:17 -0700 (PDT)
+        Wed, 29 Jul 2020 19:43:25 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E613C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 16:43:25 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id t23so3394859ljc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 16:43:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cL2JbRcE84h2qOJ9vLmukrsnsm1WHbQr6e0UJNvxVQ8=;
-        b=Hw5bzSCGuATwPt9i7H48mIAiyWGoJbDEZaqHcG2vxIF4HpH7FXB8gDRaT8JQpYmki1
-         tBNoT4uUTteMVlP7jJGrF8i2Bj9Zz57K1BVrMZP6IQK2k2CjKGtOLmzFps3z+Xp1FTkL
-         c1skc6+4LaTU6b2VquBJJl201uG7AK3XXzt2X115UlqZTmssD6RyQqxipva5PZ9y0vXE
-         A9/CDFUJ07ys1JzXXgys1RZH+ox6KNfo1O9cfiCUV225ikSNUWn3lb/cbHcv9t3n3j/2
-         VtmXzcqYd1MrnCTrsLHRkCxFy9G60Ec84jm2KYXR26ZARSf8qANsy8Rvi96A163OmM6E
-         WrCw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cLb39v1oq5FRSvzH9bhk1WYh4C3cI/mPlFpmehg+P8U=;
+        b=bJY1IJETI9mZ6ooPJU+FDg9B7jzap0h2Yz93SPYM9zKJ9Wdg5rhq1Q38+uqHFUftp6
+         yXS3OWEtQE+ECx5vOXCBAGIp+ZFWxHA4xV5cJeTIyP54f59CP+/hvMrC1NPhC8s3Ij31
+         Sk8Hf3X7mT+6eSMW+Rv2JLhvzWZAuA8ve65jI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cL2JbRcE84h2qOJ9vLmukrsnsm1WHbQr6e0UJNvxVQ8=;
-        b=s6P6T4Lz0oslOueSewQUP8OSZ2p86g4hQweo33srR9VqeQCv5USqDn2ZAu7zF1dh2d
-         x6rDXP7PK1rutWs7hIOdl8hV/z3v/i6DXK8esJnuJt4pK7ChWrOTWdN2HFgtBJ15LhSc
-         AapVW8x8bGAsr4NVVQBSzF3NA2rVN6oWiYdOpHu7Y3e0ZZYHKkn+wjeqKlpEMVEri2vJ
-         889Aeb39AOQ9uCr9SjUZk2C35b/JBLN1p/KKaNYRkbOJw1sT6+OItV/GpHO+3k0KhbZC
-         sLoFwxwohGAQIXXqeuBZV/V9mPVzb32zCn9Zu/O5O0a78IXbmUSGP/8wJvR8uk7eg5Zw
-         rHqg==
-X-Gm-Message-State: AOAM5301gdoLbq0Wl617/JhXPvwUHWrCpizrqZGWvdfeQPo8woaWf/Av
-        H5AD39hoDAs68YfXyhJY9DVaVoSh
-X-Google-Smtp-Source: ABdhPJyTScdeMMtRUvJkfnoJ7SDC2kYuGF7oePiRrOQNL7i3VhpW7YvR0Mn+59qMcpvQAA94eAT7KQ==
-X-Received: by 2002:a2e:9d53:: with SMTP id y19mr144090ljj.2.1596066135805;
-        Wed, 29 Jul 2020 16:42:15 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-76-12-16.pppoe.mtu-net.ru. [91.76.12.16])
-        by smtp.googlemail.com with ESMTPSA id b18sm934122lfp.36.2020.07.29.16.42.14
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cLb39v1oq5FRSvzH9bhk1WYh4C3cI/mPlFpmehg+P8U=;
+        b=TFbRTVtGQiR49Ul/7IIDRP9bbmkcm7BCZqMk1d8C/89MlV6qGy03lIWVS2GPpOD+yC
+         VExxvh2p7aJTEqTapz6x3zSy/53kaW1QBVua0h+fru/XVyUsM6b4ShmadI2b4Wd9Kajd
+         Y4DBClYT3fsJYdsAQ4KZc5Yl/mikcidv9DkWDNRoQr+lBsMZxLCejWzvuYCnEwe6oZgW
+         hV991qiPPo33JuhIJ6OFpGeGPAlu6IYp/dil9sMc5W2OabrP0P7e87nO6ZhDj38v5ocH
+         mNYYHjNrEmPjwSpULaOLV8S8rFtz4EtTFHGtPTDRpYW1oCJhGx2SJ0sYiKkrbbtGy/5g
+         tCBg==
+X-Gm-Message-State: AOAM532nEzd2qouSa7nwmUxrUCwJ/OSTVW6ibyrkhBN+cwVlgvXtYeT+
+        6PxBobvq7TVIC9QswZwsrcF/txZGjnY=
+X-Google-Smtp-Source: ABdhPJx3Xq2AerslklrMh7aiLx8bmRRrLdeZY+o3uhH1zfzioX3eq2R/ZWR75fimIiqyQ6Kdz4ItZQ==
+X-Received: by 2002:a2e:1641:: with SMTP id 1mr119858ljw.73.1596066202099;
+        Wed, 29 Jul 2020 16:43:22 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id y26sm660612ljm.132.2020.07.29.16.43.20
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Jul 2020 16:42:15 -0700 (PDT)
-Subject: Re: [RFC PATCH v5 12/14] gpu: host1x: mipi: Keep MIPI clock enabled
- till calibration is done
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, robh+dt@kernel.org,
-        helen.koike@collabora.com
-Cc:     sboyd@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-References: <1595883452-17343-1-git-send-email-skomatineni@nvidia.com>
- <1595883452-17343-13-git-send-email-skomatineni@nvidia.com>
- <b21e3227-d0d8-5b4a-ae69-aa29551a22c3@gmail.com>
- <69903c67-8e5f-11c2-45ec-c76b97634aba@nvidia.com>
- <d291d306-55d4-2264-dc05-0e47f0dfef20@gmail.com>
- <b5fcc292-8ce3-2833-491f-5aefbe0196eb@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <48977b6b-ef7e-1bdf-e3e0-2903032aa225@gmail.com>
-Date:   Thu, 30 Jul 2020 02:42:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 29 Jul 2020 16:43:21 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id i19so13965710lfj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 16:43:20 -0700 (PDT)
+X-Received: by 2002:a05:6512:241:: with SMTP id b1mr171970lfo.125.1596066200379;
+ Wed, 29 Jul 2020 16:43:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b5fcc292-8ce3-2833-491f-5aefbe0196eb@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200730090828.2349e159@canb.auug.org.au>
+In-Reply-To: <20200730090828.2349e159@canb.auug.org.au>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 29 Jul 2020 16:43:04 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjK8+12i8iDC41LXfZBcMjGsF+WyW_+ncPFmrexRT0yxw@mail.gmail.com>
+Message-ID: <CAHk-=wjK8+12i8iDC41LXfZBcMjGsF+WyW_+ncPFmrexRT0yxw@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the origin tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Emese Revfy <re.emese@gmail.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-29.07.2020 20:55, Sowjanya Komatineni пишет:
-> 
-> On 7/29/20 10:08 AM, Dmitry Osipenko wrote:
->> 28.07.2020 19:04, Sowjanya Komatineni пишет:
->> ...
->>>>> +void tegra_mipi_cancel_calibration(struct tegra_mipi_device *device)
->>>>> +{
->>>> Doesn't MIPI_CAL need to be reset here?
->>> No need to reset MIPI CAL
->> Could you please explain why. There is a calibration state-machine that
->> apparently needs to be returned into initial state, does it return by
->> itself?
->>
->> TRM says that MIPI block needs to be reset before of starting
->> calibration process. The reset is completely missing in the driver, I
->> assume it needs to be corrected with another patch.
-> 
-> TRM documented incorrectly. There is no need to reset MIPI_CAL.
-> 
-> MIPI CAL is FSM and it does not hang and done bit is to indicate if
-> results are applied to pads or not.
-> 
-> If we don't see done bit set meaning, MIPI CAL did not see LP-11 and
-> results are not applied to pads.
+On Wed, Jul 29, 2020 at 4:08 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> include/linux/random.h:123:24: error: variable 'net_rand_state' with 'latent_entropy' attribute must not be local
+>   123 | DECLARE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
 
-But how to stop calibration from triggering on LP-11 once it has been
-enabled? The reset should be needed since there is no other way to reset
-the calibration state.
+Hmm.
 
-> Also while multiple streams can happen in parallel and we can't reset
-> MIPI CAL as other CSI channel streams (using other pads) may also be
-> going thru calibration process in parallel depending and also DSI pads
-> also are calibrated thru same MIPI CAL controller.
+Ok, this shows a limitation of my allmodconfig testing (and all my
+normal builds) - no plugins. So that problem wasn't as obvious as it
+should have been.
 
-Perhaps this should be the case for a shared reset control API usage.
+That error isn't very helpful, in that I think it actually is very
+wrong. The variable really isn't local at all.
+
+I think what the plugin *means* by "local" is "automatic", and I think
+it uses the wrong test for it. IOW, looking at the plugin, it does
+
+                if (!TREE_STATIC(*node)) {
+                        *no_add_attrs = true;
+                        error("variable %qD with %qE attribute must
+not be local",
+                                *node, name);
+
+and what I think it really wants is that it has a static address - so
+a global variable is fine - as opposed to being an actual static
+declaration.
+
+Also looking at the plugin, I suspect it is going to be very unhappy
+about the fact that the attribute is there both on a declaration and
+on the actual definition. The code later seems to really only want to
+work on the definition, since it's creating an initializer..
+
+IOW, I get the feeling that the plugin is confused, and it so happened
+that the only variables we'd marked for latent entropy were static
+ones. But I haven't done gcc plugins, so...
+
+Adding the gcc plugin people. Otherwise the only option seems to be to
+just remove that __latent_entropy marker.
+
+                    Linus
