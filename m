@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4EB231822
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4FE2317EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgG2D3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 23:29:09 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:55135 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726290AbgG2D3F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 23:29:05 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R841e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U46nKlX_1595993332;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U46nKlX_1595993332)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 29 Jul 2020 11:28:53 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     axboe@kernel.dk
-Cc:     ming.lei@redhat.com, hch@lst.de, baolin.wang@linux.alibaba.com,
-        baolin.wang7@gmail.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] block: Remove __blk_mq_sched_bio_merge() helper
-Date:   Wed, 29 Jul 2020 11:28:37 +0800
-Message-Id: <d0e8446df5a34264c22637b742c762efcb2c4241.1595987955.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1595987955.git.baolin.wang@linux.alibaba.com>
-References: <cover.1595987955.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <cover.1595987955.git.baolin.wang@linux.alibaba.com>
-References: <cover.1595987955.git.baolin.wang@linux.alibaba.com>
+        id S1731214AbgG2DEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 23:04:32 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8292 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731057AbgG2DEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 23:04:31 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 27FFA65DC97449FFB3C6;
+        Wed, 29 Jul 2020 11:04:29 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Wed, 29 Jul 2020
+ 11:04:21 +0800
+From:   Lu Wei <luwei32@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <wangyunjian@huawei.com>,
+        <dan.carpenter@oracle.com>, <andrew@lunn.ch>,
+        <alex.williams@ni.com>, <mdf@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net: nixge: fix potential memory leak in nixge_probe()
+Date:   Wed, 29 Jul 2020 11:50:05 +0800
+Message-ID: <20200729035005.89161-1-luwei32@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The blk_mq_sched_bio_merge() just wrap the __blk_mq_sched_bio_merge(), and
-no other places will use __blk_mq_sched_bio_merge(). Thus we can combine
-these 2 similar functions into one function.
+If some processes in nixge_probe() fail, free_netdev(dev)
+needs to be called to aviod a memory leak.
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Fixes: 87ab207981ec ("net: nixge: Separate ctrl and dma resources")
+Fixes: abcd3d6fc640 ("net: nixge: Fix error path for obtaining mac address")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Lu Wei <luwei32@huawei.com>
 ---
- block/blk-mq-sched.c |  5 ++++-
- block/blk-mq-sched.h | 13 ++-----------
- 2 files changed, 6 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/ni/nixge.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index 4e3eef5..f7ae74a 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -408,7 +408,7 @@ bool blk_mq_bio_list_merge(struct request_queue *q, struct list_head *list,
- }
- EXPORT_SYMBOL_GPL(blk_mq_bio_list_merge);
+diff --git a/drivers/net/ethernet/ni/nixge.c b/drivers/net/ethernet/ni/nixge.c
+index d2708a57f2ff..4075f5e59955 100644
+--- a/drivers/net/ethernet/ni/nixge.c
++++ b/drivers/net/ethernet/ni/nixge.c
+@@ -1299,19 +1299,21 @@ static int nixge_probe(struct platform_device *pdev)
+ 	netif_napi_add(ndev, &priv->napi, nixge_poll, NAPI_POLL_WEIGHT);
+ 	err = nixge_of_get_resources(pdev);
+ 	if (err)
+-		return err;
++		goto free_netdev;
+ 	__nixge_hw_set_mac_address(ndev);
  
--bool __blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio,
-+bool blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio,
- 		unsigned int nr_segs)
- {
- 	struct elevator_queue *e = q->elevator;
-@@ -417,6 +417,9 @@ bool __blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio,
- 	bool ret = false;
- 	enum hctx_type type;
+ 	priv->tx_irq = platform_get_irq_byname(pdev, "tx");
+ 	if (priv->tx_irq < 0) {
+ 		netdev_err(ndev, "could not find 'tx' irq");
+-		return priv->tx_irq;
++		err = priv->tx_irq;
++		goto free_netdev;
+ 	}
  
-+	if (blk_queue_nomerges(q) || !bio_mergeable(bio))
-+		return false;
-+
- 	if (e && e->type->ops.bio_merge)
- 		return e->type->ops.bio_merge(hctx, bio, nr_segs);
+ 	priv->rx_irq = platform_get_irq_byname(pdev, "rx");
+ 	if (priv->rx_irq < 0) {
+ 		netdev_err(ndev, "could not find 'rx' irq");
+-		return priv->rx_irq;
++		err = priv->rx_irq;
++		goto free_netdev;
+ 	}
  
-diff --git a/block/blk-mq-sched.h b/block/blk-mq-sched.h
-index 126021f..65151de 100644
---- a/block/blk-mq-sched.h
-+++ b/block/blk-mq-sched.h
-@@ -13,8 +13,6 @@ void blk_mq_sched_free_hctx_data(struct request_queue *q,
- void blk_mq_sched_request_inserted(struct request *rq);
- bool blk_mq_sched_try_merge(struct request_queue *q, struct bio *bio,
- 		unsigned int nr_segs, struct request **merged_request);
--bool __blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio,
--		unsigned int nr_segs);
- bool blk_mq_sched_try_insert_merge(struct request_queue *q, struct request *rq);
- void blk_mq_sched_mark_restart_hctx(struct blk_mq_hw_ctx *hctx);
- void blk_mq_sched_restart(struct blk_mq_hw_ctx *hctx);
-@@ -31,15 +29,8 @@ void blk_mq_sched_insert_requests(struct blk_mq_hw_ctx *hctx,
- void blk_mq_exit_sched(struct request_queue *q, struct elevator_queue *e);
- void blk_mq_sched_free_requests(struct request_queue *q);
- 
--static inline bool
--blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio,
--		unsigned int nr_segs)
--{
--	if (blk_queue_nomerges(q) || !bio_mergeable(bio))
--		return false;
--
--	return __blk_mq_sched_bio_merge(q, bio, nr_segs);
--}
-+bool blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio,
-+			    unsigned int nr_segs);
- 
- static inline bool
- blk_mq_sched_allow_merge(struct request_queue *q, struct request *rq,
+ 	priv->coalesce_count_rx = XAXIDMA_DFT_RX_THRESHOLD;
 -- 
-1.8.3.1
+2.17.1
 
