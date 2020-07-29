@@ -2,116 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808162318DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 07:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339072318DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 07:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgG2FEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 01:04:06 -0400
-Received: from mta01.start.ca ([162.250.196.97]:37316 "EHLO mta01.start.ca"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726203AbgG2FEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 01:04:06 -0400
-Received: from mta01.start.ca (localhost [127.0.0.1])
-        by mta01.start.ca (Postfix) with ESMTP id AFC8541E7E;
-        Wed, 29 Jul 2020 01:04:03 -0400 (EDT)
-Received: from localhost (dhcp-24-53-240-163.cable.user.start.ca [24.53.240.163])
-        by mta01.start.ca (Postfix) with ESMTPS id 747A141E12;
-        Wed, 29 Jul 2020 01:04:03 -0400 (EDT)
-Date:   Wed, 29 Jul 2020 01:04:03 -0400
-From:   Nick Bowler <nbowler@draconx.ca>
-To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     James Jones <jajones@nvidia.com>, Ben Skeggs <bskeggs@redhat.com>
-Subject: PROBLEM: 5.8-rc7 no video output with nouveau on NV36 (regression)
-Message-ID: <20200729050403.jwbgdmvmc3ajdnem@atlas.draconx.ca>
+        id S1726341AbgG2FHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 01:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725986AbgG2FHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 01:07:01 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBAC4C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 22:07:00 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z18so16741007wrm.12
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 22:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7GpifdEc6/Oc47TVBKpBwXB5I1TE7MgsWaCzxZQmbVY=;
+        b=SkGAKM4vmqg3Msrjk1lw+Z0tzr2H1O4AexEGpm1tkin8xvNP/5Y9RvAEmEjQrLa65U
+         SbmI/Uo/tDJXmOJfmxH7xW5Jm+vVXpRPWQzRVnORHeFwhcyZd44wtmnd1ABDD7dW4CiB
+         TTyrnTWqZJVt+A+yfI96ySNQv7mCbULcoyDM0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7GpifdEc6/Oc47TVBKpBwXB5I1TE7MgsWaCzxZQmbVY=;
+        b=RNI7uVIF0QinaOOYzAmr6NXymwRmtVxeoK9GQRiuWfbWCQKtdvl+fk7Cq03JsTdssr
+         i4WjEDPbHdzWYzPlq03Speqm5sY7opqetkuEXgGQAacXPq5i1RrcWoxtJ0+/v/nR8kmk
+         1BT8j0JRJ0pStHpVAQDCO+VxACN8BBSHWT9sSILrGYnaG0KPyfVelzIWFEjtz6akbHw5
+         VAXHshCUiy311ke+6qhzZLP274+TDkEXgknuSZvtbUWme5pyyvdTfR4rVtd1YxP/fbbB
+         namaJMAdqCI9Lzm5VX1nUCOIwrUk9I/fkj/M4xZPFQ7Yvv49CMH1TUSIM/bn1bhaYZLX
+         W7fQ==
+X-Gm-Message-State: AOAM530fPc9I0jwh+RH1a3238X00tDSjhuSSqjD26BFa/qxFEet7/0ql
+        JZS+7MYoG772p37DMgAQuhu1rxeveUMVHMpNNQ/Ml2gwKATvKw==
+X-Google-Smtp-Source: ABdhPJxbnyDe18hT7bjCWGNi5c5AT3QkDh5H/5AFBe0xvxZwMfVY1VwpKS/VFk6Ivj9WACTb+i1bEnsFK4MGE1RYQkk=
+X-Received: by 2002:a5d:5588:: with SMTP id i8mr27809549wrv.177.1595999219359;
+ Tue, 28 Jul 2020 22:06:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20180716
-X-Virus-Scanned: ClamAV using ClamSMTP
+References: <1595779727-31404-1-git-send-email-brent.lu@intel.com>
+ <7dec7fcd-0381-d279-4dac-77c27ea5f6fe@linux.intel.com> <DM6PR11MB3642BE84A5C91504D6AF4ECB97730@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <14fde5e9-a11a-077d-b533-1e6db4b7a262@linux.intel.com> <DM6PR11MB3642AF0905E0CF57B094906297730@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <216b86eb-aec6-dab9-7901-9e0f2cc5af7f@linux.intel.com>
+In-Reply-To: <216b86eb-aec6-dab9-7901-9e0f2cc5af7f@linux.intel.com>
+From:   Cheng-yi Chiang <cychiang@chromium.org>
+Date:   Wed, 29 Jul 2020 13:06:32 +0800
+Message-ID: <CAFv8NwLEHf=3ejrr1m74cRSjiX3mOKfx0oRyu51ENo6mktEgEQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: Intel: Atom: use hardware counter to update hw_ptr
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     "Lu, Brent" <brent.lu@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jul 29, 2020 at 1:31 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+>
+>
+> On 7/28/20 12:02 PM, Lu, Brent wrote:
+> >>
+> >> So if there are already quirks in atom machine drivers to change the period
+> >> size, why is this patch necessary?
+> >>
+> >
+> > The story is: google implemented the constraint but doesn't know why it works
+> > so asked us to explain. After checking the two counters I realized the increase of
+> > ring buffer pointer follows the period size setting in hw_param (256) but the
+> > period of interrupt is always 5ms instead of 5.33 so it's running little bit too fast.
+> > It seems the LPE keeps tracking the difference of two counters. When the
+> > difference exceeds 2160 samples, the next interrupt will be canceled so the
+> > hardware counter could catch up a little.
+> >
+> > [   43.208299] intel_sst_acpi 808622A8:00: mrfld ring_buffer_counter 107520 hardware_counter 98880 pcm delay 8640 (in bytes)
+> > [   43.208306] intel_sst_acpi 808622A8:00: buffer ptr 26880 pcm_delay rep: 2160
+> > [   43.208321] sound pcmC1D0p: [Q] pos 26880 hw_ptr 26880 appl_ptr 40000 avail 191680
+> > => one interrupt is skipped.
+> > [   43.218299] intel_sst_acpi 808622A8:00: mrfld ring_buffer_counter 108544 hardware_counter 100800 pcm delay 7744 (in bytes)
+> > [   43.218307] intel_sst_acpi 808622A8:00: buffer ptr 27136 pcm_delay rep: 1936
+> > [   43.218336] sound pcmC1D0p: [Q] pos 27136 hw_ptr 27136 appl_ptr 40000 avail 191936
+> >
+> > So I think why not using the hardware counter? It increases 240 samples every 5ms
+> > perfectly match the 48000 sample rate. The test result is good but I know there must
+> > be a reason for the original designer to use ring buffer counter instead of hardware
+> > counter. I uploaded this patch to see if anyone still remember the reason and share
+> > some insight with me.
+> >
+> > I totally agree that we shouldn't touch this part of design. Do you think it make sense
+> > to add a constraint to enforce the period size in machine driver? If yes then I would
+> > upload patches for Chrome atom machines for google.
+>
+> I think it'd make sense to add this constraint, either in the machine
+> driver or in the platform driver, so that we don't change the position
+> updates and introduce more issues by accident by doing so. As you
+> rightly said, I don't think anyone tested periods multiple of 256
+> samples so it's not a regression, more aligning with the internal design.
 
-After installing Linux 5.8-rc7 I seem to get no video output on my
-NV36 card once the nouveau module is loaded.  The display (connected
-to the digital output) simply reports "No Signal".
-
-I bisected to the following commit, and reverting this commit on
-top of 5.8-rc7 appears to correct the issue.
-
-  fa4f4c213f5f7807360c41f2501a3031a9940f3a is the first bad commit
-  commit fa4f4c213f5f7807360c41f2501a3031a9940f3a
-  Author: James Jones <jajones@nvidia.com>
-  Date:   Mon Feb 10 15:15:55 2020 -0800
-  
-      drm/nouveau/kms: Support NVIDIA format modifiers
-      
-      Allow setting the block layout of a nouveau FB
-      object using DRM format modifiers.  When
-      specified, the format modifier block layout and
-      kind overrides the GEM buffer's implicit layout
-      and kind.  The specified format modifier is
-      validated against the list of modifiers supported
-      by the target display hardware.
-      
-      v2: Used Tesla family instead of NV50 chipset compare
-      v4: Do not cache kind, tile_mode in nouveau_framebuffer
-      v5: Resolved against nouveau_framebuffer cleanup
-      
-      Signed-off-by: James Jones <jajones@nvidia.com>
-      Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-  
-   drivers/gpu/drm/nouveau/dispnv50/wndw.c   | 20 ++++---
-   drivers/gpu/drm/nouveau/nouveau_display.c | 89 ++++++++++++++++++++++++++++++-
-   drivers/gpu/drm/nouveau/nouveau_display.h |  4 ++
-   3 files changed, 104 insertions(+), 9 deletions(-)
-
-The dmesg output from loading the driver is identical except several
-lines are missing in the non-working case, which I have marked with
-"XXX" below:
-
-      [  168.222926] PCI Interrupt Link [LNKE] enabled at IRQ 16
-      [  168.223199] nouveau 0000:01:00.0: vgaarb: deactivate vga console
-      [  168.224379] Console: switching to colour dummy device 80x25
-      [  168.224612] nouveau 0000:01:00.0: NVIDIA NV36 (436200a1)
-      [  168.324779] nouveau 0000:01:00.0: bios: version 04.36.20.21.00
-      [  168.325646] agpgart-amd64 0000:00:00.0: AGP 3.0 bridge
-      [  168.325657] agpgart: modprobe tried to set rate=x12. Setting to AGP3 x8 mode.
-      [  168.325662] agpgart-amd64 0000:00:00.0: putting AGP V3 device into 8x mode
-      [  168.325679] nouveau 0000:01:00.0: putting AGP V3 device into 8x mode
-      [  168.325908] agpgart-amd64 0000:00:00.0: AGP 3.0 bridge
-      [  168.325914] agpgart: modprobe tried to set rate=x12. Setting to AGP3 x8 mode.
-      [  168.325918] agpgart-amd64 0000:00:00.0: putting AGP V3 device into 8x mode
-      [  168.325933] nouveau 0000:01:00.0: putting AGP V3 device into 8x mode
-      [  168.325990] nouveau 0000:01:00.0: tmr: unknown input clock freq
-      [  168.326732] nouveau 0000:01:00.0: fb: 256 MiB DDR1
-      [  168.328174] [TTM] Zone  kernel: Available graphics memory: 1022540 KiB
-      [  168.328175] [TTM] Initializing pool allocator
-      [  168.328181] [TTM] Initializing DMA pool allocator
-      [  168.328200] nouveau 0000:01:00.0: DRM: VRAM: 255 MiB
-      [  168.328201] nouveau 0000:01:00.0: DRM: GART: 128 MiB
-      [  168.328204] nouveau 0000:01:00.0: DRM: BMP version 5.40
-      [  168.328208] nouveau 0000:01:00.0: DRM: DCB version 2.2
-      [  168.328210] nouveau 0000:01:00.0: DRM: DCB outp 00: 01000300 00009c40
-      [  168.328214] nouveau 0000:01:00.0: DRM: DCB outp 01: 02010310 00009c40
-      [  168.328215] nouveau 0000:01:00.0: DRM: DCB outp 02: 04000302 00000000
-      [  168.328217] nouveau 0000:01:00.0: DRM: DCB outp 03: 02020321 00000303
-      [  168.328495] nouveau 0000:01:00.0: DRM: Loading NV17 power sequencing microcode
-      [  168.329691] nouveau 0000:01:00.0: DRM: MM: using M2MF for buffer copies
-      [  168.330258] nouveau 0000:01:00.0: DRM: Saving VGA fonts
-      [  168.389460] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
-      [  168.391250] nouveau 0000:01:00.0: DRM: Setting dpms mode 3 on TV encoder (output 3)
-  XXX [  168.487647] nouveau 0000:01:00.0: DRM: allocated 1920x1080 fb: 0x9000, bo 00000000ff426de1
-  XXX [  168.491835] fbcon: nouveaudrmfb (fb0) is primary device
-  XXX [  168.608512] nouveau 0000:01:00.0: DRM: 0xE4FB: Parsing digital output script table
-  XXX [  168.662451] Console: switching to colour frame buffer device 240x67
-  XXX [  168.755987] nouveau 0000:01:00.0: fb0: nouveaudrmfb frame buffer device
-      [  168.763736] [drm] Initialized nouveau 1.3.1 20120801 for 0000:01:00.0 on minor 0
-
-Let me know if you need any more info.
-
-Cheers,
-  Nick
+Thanks for the explanation and discussion.
+A slight correction in this thread is that CRAS does not set period size to 256.
+It just uses whatever value that driver wants to use, which happens to be 256.
+If the driver can limit the selection to only correct values that
+would be the best.
+Adding constraints in the machine driver or platform driver looks
+good. Prefer to adding in platform driver so we don't need to add for
+each machine driver.
+Thanks!
