@@ -2,79 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FC8232654
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634E023265F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgG2Uls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 16:41:48 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44908 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726476AbgG2Ulr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:41:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596055306;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tz3AJclcgpUUd5Ie5LOD0OGxJo0zoLyE3foe8l24nRs=;
-        b=iYGtfwM1QPF1Eb5HNsD0EOkj2xutyTFT+KM5wYrftob6UEvn+xznLuuVZrDTPpblgAPb1y
-        l0ys5aavG8HhqnUDIFF1l7pM40Y8nVYJdRofYrppBX27/GBJLHLSP/cfAuqk77cuufJdNH
-        3hsWggVZiv13VhPzWNCKw01HhrL52k0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-RahEJVJbP9CvmEsIJZ3KEQ-1; Wed, 29 Jul 2020 16:41:44 -0400
-X-MC-Unique: RahEJVJbP9CvmEsIJZ3KEQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726615AbgG2UoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 16:44:02 -0400
+Received: from correo.us.es ([193.147.175.20]:55770 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726631AbgG2UoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 16:44:01 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 000C4FB36E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 22:44:00 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id E0A8FDA84D
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 22:44:00 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id CA3E6DA793; Wed, 29 Jul 2020 22:44:00 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id AFB7DDA78A;
+        Wed, 29 Jul 2020 22:43:58 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Wed, 29 Jul 2020 22:43:58 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B21101083E85;
-        Wed, 29 Jul 2020 20:41:41 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DFD08A18A;
-        Wed, 29 Jul 2020 20:41:38 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200729111120.GA2638@hirez.programming.kicks-ass.net>
-References: <20200729111120.GA2638@hirez.programming.kicks-ass.net> <20200721195132.GJ10769@hirez.programming.kicks-ass.net> <202006142054.C00B3E9C9@keescook> <20200612183450.4189588-1-keescook@chromium.org> <7be4d56b-0406-099b-e505-02e074c5173e@huawei.com> <544539.1595328664@warthog.procyon.org.uk> <202007211144.A68C31D@keescook> <3211866.1595933798@warthog.procyon.org.uk>
-To:     peterz@infradead.org
-Cc:     dhowells@redhat.com, Kees Cook <keescook@chromium.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        David Windsor <dwindsor@gmail.com>,
-        Hans Liljestrand <ishkamiel@gmail.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Paul Moore <paul@paul-moore.com>, edumazet@google.com,
-        paulmck@kernel.org, shakeelb@google.com,
-        James Morris <jamorris@linux.microsoft.com>,
-        alex.huangjianhui@huawei.com, dylix.dailei@huawei.com,
-        chenzefeng2@huawei.com, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>
-Subject: Re: [RFC][PATCH] locking/refcount: Provide __refcount API to obtain the old value
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 742A34265A2F;
+        Wed, 29 Jul 2020 22:43:58 +0200 (CEST)
+Date:   Wed, 29 Jul 2020 22:43:58 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
+        kuba@kernel.org, paul@paul-moore.com,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v2] netfilter: Replace HTTP links with HTTPS ones
+Message-ID: <20200729204358.GA11388@salvia>
+References: <20200724112856.GA26061@salvia>
+ <20200725170225.4505-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4041519.1596055297.1@warthog.procyon.org.uk>
-Date:   Wed, 29 Jul 2020 21:41:37 +0100
-Message-ID: <4041520.1596055297@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200725170225.4505-1-grandmaster@al2klimov.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-peterz@infradead.org wrote:
+On Sat, Jul 25, 2020 at 07:02:25PM +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
 
-> I'm not entirely sure what you mean with interpret, provided you don't
-> trigger a refcount fail, the number will be just what you expect and
-> would get from refcount_read(). If you do trigger a fail, you'll get a
-> negative value.
-
-That's fine.  I seem to remember talk about the possibility that the number
-wouldn't necessarily bottom out at zero - for instance if it was arranged such
-that the overflow flag was set on an overflow or underflow so that it could be
-trapped on (using INTO or TRAPV, for example).
-
-David
-
+Applied.
