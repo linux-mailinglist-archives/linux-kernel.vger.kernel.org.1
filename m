@@ -2,112 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3695232853
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 01:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7679C23285A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 01:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgG2Xpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 19:45:53 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:47238 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbgG2Xpx (ORCPT
+        id S1728144AbgG2Xru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 19:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728010AbgG2Xrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 19:45:53 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06TNcHW0155864;
-        Wed, 29 Jul 2020 23:45:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=4vcgnr5eAgcF2LE8tun+6DGHCSCSV2Mi6qpXUFIm8C0=;
- b=e7BeT72iVO1LKsBXMYkADGU6On7OMfkKNWjhqa4Imj1IyHs5IVlMyBvfIvsAoZenolkE
- gDuw4bXUFWU5l9JnGyBLqSYTyd9cqrL50ILgflJatj/nFIKpfxpyXLIBEisfgi3AC7Ih
- cY4+gPitOH/C3Vyb5FWU+dzBZCLYZRSL0isNBx+3SO8uJ6WNpcnu7gUbm2zvvegfKRQG
- RY87UCXXpbJLOIY4ME/5MZzHLQFXMil68G3TNF+Q62C+9IVELgWPfm0/net+0Jl+Jqj1
- Dah6LlMaVJgKh8h2EsgIHTm0BezFyIDK9WHVRpeTN3P9a8qymFqpUMfjdhjSTXuIztVL xg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 32hu1jrpqc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 29 Jul 2020 23:45:49 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06TNcdEG133121;
-        Wed, 29 Jul 2020 23:45:48 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 32hu5vsdmc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Jul 2020 23:45:48 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06TNjlNj019183;
-        Wed, 29 Jul 2020 23:45:47 GMT
-Received: from [192.168.1.106] (/47.220.71.223)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 29 Jul 2020 16:45:47 -0700
-Subject: Re: (resend) [PATCH [linux-4.14.y]] dm cache: submit writethrough
- writes in parallel to origin and cache
-To:     Mike Snitzer <snitzer@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <37c5a615-655d-c106-afd0-54e03f3c0eef@oracle.com>
- <20200727150014.GA27472@redhat.com> <20200729115119.GB2674635@kroah.com>
- <20200729115557.GA2799681@kroah.com> <20200729141607.GA7215@redhat.com>
-From:   John Donnelly <John.P.donnelly@oracle.com>
-Message-ID: <851f749a-5c92-dcb1-f8e4-95b4434a1ec4@oracle.com>
-Date:   Wed, 29 Jul 2020 18:45:46 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 29 Jul 2020 19:47:49 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1244FC0619D2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 16:47:49 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id f1so22626782wro.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 16:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Yb8JOoh+LSsOfdrY/X9ZAwRyZ4kLPnC6nnWUaDd9tc=;
+        b=DIdFres5Tl0wvrFB+fV7XnLJIh0s3Mx7Nf0HnayGSLVRNXGZ7hGXtBGliczuymiZ1z
+         Iw3nDLtxttfnafX/ne+/ag+iZfQVnWEayVP6KNkMEn2DSmInHFdDr5dihgquTWd22rfp
+         wg5yuDm5f6fXU6cCAW097RA7NxPfimeOKMImel28VeoArOsaHebtEo5+7kPgB+qJCttJ
+         nfYJdF8AZCBMo4NL+F1Tm4EFeF67dSpW3ygCenqbgjqYcO3nglgoDX7FR9fB04aK26tT
+         wkmb7g5mSF8m7Qs3zIzS8UHXGu+zjrtULZZTq7Qe4ww1dyZBsqJZqyaKk4LwogcBgjus
+         sA/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Yb8JOoh+LSsOfdrY/X9ZAwRyZ4kLPnC6nnWUaDd9tc=;
+        b=J9Y2DfcCdfmEN92jgv+bjluiX3fXm+9/KlPnLMbSBHKzbuMF9D/qA+wrIfwuO3L47Q
+         oFcF9aMHXNlGx+0Tn3XaOATxe1wpRx1fmGsCjLyzifBSw7lKqiiN2CLPr95oUOWdX6ac
+         BGfwQbV0irVhKvnIWDK2neMEsOF+wUfSbyR6FstNDuhZkqGBwXkYalhQgf8dTcsREGkz
+         ILgxa2277paLhYCqpXXD66XN39IQnTWcxwUkVUAvuVLxrpgbHATTJaGPLWxgJI0wEvKp
+         aTQ9qjV1QEUnqgPQ1Rh1pbcbmrwJ1ph/te7DcJ5Jy2liFna7cHUoEMT9GPcmOSCEJAQ1
+         JQxg==
+X-Gm-Message-State: AOAM532WiayizT3Xz9NsA3mXaMROUjiFY/z1xRZRqKfTk4aaqg2ONl93
+        MAah8n8qePrSQn2LEVRFkH3Evwp90SF/Nh7sx81oiA==
+X-Google-Smtp-Source: ABdhPJzYAo02NOPiYYCLKzjRcaDGeIZSfaiMglLqS2wtsgbBUCbIXJACEL6jUL7zCrH7G+ngDj4YEPUeaSOWSQUkLrk=
+X-Received: by 2002:adf:fe0c:: with SMTP id n12mr89894wrr.48.1596066467544;
+ Wed, 29 Jul 2020 16:47:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200729141607.GA7215@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9697 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
- malwarescore=0 suspectscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007290161
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9697 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 mlxlogscore=999
- malwarescore=0 impostorscore=0 priorityscore=1501 spamscore=0 phishscore=0
- suspectscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007290161
+References: <20200724100706.48330-1-bobo.shaobowang@huawei.com>
+In-Reply-To: <20200724100706.48330-1-bobo.shaobowang@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 29 Jul 2020 16:47:36 -0700
+Message-ID: <CAP-5=fX9YUucA-3QMxO_jV954104UPNg04=_JGstuLekNJHzJw@mail.gmail.com>
+Subject: Re: [PATCH -next] tools build: Check return value of fwrite_unlocked
+ in jvmti_agent.c
+To:     Wang ShaoBo <bobo.shaobowang@huawei.com>
+Cc:     cj.chengjian@huawei.com, Li Bin <huawei.libin@huawei.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 24, 2020 at 3:07 AM Wang ShaoBo <bobo.shaobowang@huawei.com> wrote:
+>
+> Function jvmti_write_code called by compiled_method_load_cb may return
+> error in using fwrite_unlocked, this failure should be captured and
+> warned.
+>
+> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+> ---
+>  tools/perf/jvmti/jvmti_agent.c | 23 +++++++++++++++--------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
+>
+> diff --git a/tools/perf/jvmti/jvmti_agent.c b/tools/perf/jvmti/jvmti_agent.c
+> index 88108598d6e9..a1fe6aa16b6d 100644
+> --- a/tools/perf/jvmti/jvmti_agent.c
+> +++ b/tools/perf/jvmti/jvmti_agent.c
+> @@ -363,7 +363,7 @@ jvmti_write_code(void *agent, char const *sym,
+>         struct jr_code_load rec;
+>         size_t sym_len;
+>         FILE *fp = agent;
+> -       int ret = -1;
+> +       int ret;
+>
+>         /* don't care about 0 length function, no samples */
+>         if (size == 0)
+> @@ -401,16 +401,23 @@ jvmti_write_code(void *agent, char const *sym,
+>         rec.code_index = code_generation++;
+>
+>         ret = fwrite_unlocked(&rec, sizeof(rec), 1, fp);
+> -       fwrite_unlocked(sym, sym_len, 1, fp);
+> +       if (ret)
+> +               goto error;
 
+Sorry, it seems I lost a reply to this. Won't ret here be the number
+of items written and not an error code? Consequently all writes will
+immediately goto error?
 
-On 7/29/20 9:16 AM, Mike Snitzer wrote:
-> On Wed, Jul 29 2020 at  7:55am -0400,
-> Greg KH <gregkh@linuxfoundation.org> wrote:
-> 
->> On Wed, Jul 29, 2020 at 01:51:19PM +0200, Greg KH wrote:
->>> On Mon, Jul 27, 2020 at 11:00:14AM -0400, Mike Snitzer wrote:
->>>> This mail needs to be saent to stable@vger.kernel.org (now cc'd).
->>>>
->>>> Greg et al: please backport 2df3bae9a6543e90042291707b8db0cbfbae9ee9
->>>
->>> Now backported, thanks.
->>
->> Nope, it broke the build, I need something that actually works :)
->>
-> 
-> OK, I'll defer to John Donnelly to get back with you (and rest of
-> stable@).  He is more invested due to SUSE also having this issue.  I
-> can put focus to it if John cannot sort this out.
-> 
-> Mike
-> 
+Thanks,
+Ian
 
-
-Hi.
-
-
-Thank you for reaching out.
-
-What specifically is broken? . If it that applying 
-2df3bae9a6543e90042291707b8db0cbfbae9ee9 to 4.14.y is failing?
-
-JD.
-
+> +       ret = fwrite_unlocked(sym, sym_len, 1, fp);
+> +       if (ret)
+> +               goto error;
+>
+> -       if (code)
+> -               fwrite_unlocked(code, size, 1, fp);
+> +       if (code) {
+> +               ret = fwrite_unlocked(code, size, 1, fp);
+> +               if (ret)
+> +                       goto error;
+> +       }
+>
+>         funlockfile(fp);
+> -
+> -       ret = 0;
+> -
+> -       return ret;
+> +       return 0;
+> +error:
+> +       funlockfile(fp);
+> +       return -1;
+>  }
+>
+>  int
+> --
+> 2.17.1
+>
