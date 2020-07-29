@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9C3231D2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 13:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E927A231D36
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 13:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbgG2LFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 07:05:47 -0400
-Received: from mga04.intel.com ([192.55.52.120]:49337 "EHLO mga04.intel.com"
+        id S1726820AbgG2LIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 07:08:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726365AbgG2LFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 07:05:47 -0400
-IronPort-SDR: HyOEsUpt/AxxptsfqCzCTP/xaPOPpE01CtFkoeRMI4kmL0FghL0t0bnmgVMOtWjiPACiu5rerI
- Fq1Decum+Veg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="148852198"
-X-IronPort-AV: E=Sophos;i="5.75,410,1589266800"; 
-   d="scan'208";a="148852198"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 04:05:47 -0700
-IronPort-SDR: kg/cJaFMDnNJa1D3qND0GmO9CQHVhp+QB/RAt7s6bwbWQKLglFZgcdkAKP/8A9yxqDTPDz+kpr
- /AaNOSD2XKoA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,410,1589266800"; 
-   d="scan'208";a="464822552"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by orsmga005.jf.intel.com with ESMTP; 29 Jul 2020 04:05:44 -0700
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Joe Perches <joe@perches.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: [char-misc-next] MAINTAINERS: Fix maintainer entry for mei driver
-Date:   Wed, 29 Jul 2020 14:05:40 +0300
-Message-Id: <20200729110540.3205585-1-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.25.4
+        id S1726365AbgG2LIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 07:08:48 -0400
+Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AAC52076E;
+        Wed, 29 Jul 2020 11:08:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596020928;
+        bh=qpkQt7O/lilrkZLtnzRagKgCqMR1TKJtQco0k6DLtFI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f8v4q+0rPBk2KtJkmPvkucvAwFhwKI6U6+QJ/XJZnXsTvqkU0EeZscCk3795AW4DJ
+         XCX7hgxtyGuzEhNsoSUh2/cUZzs4rGbqG5zdG1tXUmKou3scMxcfUH0Tnpt0kPxNMe
+         tIlkRIdfFHK+ZBsQSw14S0iKEi12uhO38KKUvlHM=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6C97940E57; Wed, 29 Jul 2020 08:08:45 -0300 (-03)
+Date:   Wed, 29 Jul 2020 08:08:45 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kajoljain <kjain@linux.ibm.com>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 16/19] perf metric: Make compute_single function more
+ precise
+Message-ID: <20200729110845.GD40195@kernel.org>
+References: <20200719181320.785305-1-jolsa@kernel.org>
+ <20200719181320.785305-17-jolsa@kernel.org>
+ <20200728123629.GW40195@kernel.org>
+ <CAP-5=fWAC4DkKiPzKvAiVpMDFWvf3HPZ5=tiSUbJ50w+kjXhfg@mail.gmail.com>
+ <8fbc4b4f-1886-0ab6-ee83-cdb0f2caefc9@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8fbc4b4f-1886-0ab6-ee83-cdb0f2caefc9@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mei driver has sub modules, those are not
-listed via scripts/get_maintainer.pl when using asterisk:
-drivers/misc/mei/*
-The correct notation is:
-drivers/misc/mei/
+Em Wed, Jul 29, 2020 at 01:47:01AM +0530, kajoljain escreveu:
+> 
+> 
+> On 7/28/20 10:56 PM, Ian Rogers wrote:
+> > On Tue, Jul 28, 2020 at 5:36 AM Arnaldo Carvalho de Melo
+> > <acme@kernel.org> wrote:
+> >>
+> >> Em Sun, Jul 19, 2020 at 08:13:17PM +0200, Jiri Olsa escreveu:
+> >>> So far compute_single function relies on the fact, that
+> >>> there's only single metric defined within evlist in all
+> >>> tests. In following patch we will add test for metric
+> >>> group, so we need to be able to compute metric by given
+> >>> name.
+> >>>
+> >>> Adding the name argument to compute_single and iterating
+> >>> evlist and evsel's expression to find the given metric.
+> >>
+> >> Applied, thanks.
+> >>
+> >> Ian, Kajol, I didn't notice your Acked-by or Reviewed-by, like for the
+> >> other patches, can you check?
+> > 
+> > 
+> > Acked-by: Ian Rogers <irogers@google.com>
+> 
+> Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
 
-Cc: Joe Perches <joe@perches.com>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks, updated the patch with both tags,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 86994c35d56e..dbe6a71eb6f2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8789,7 +8789,7 @@ M:	Tomas Winkler <tomas.winkler@intel.com>
- L:	linux-kernel@vger.kernel.org
- S:	Supported
- F:	Documentation/driver-api/mei/*
--F:	drivers/misc/mei/*
-+F:	drivers/misc/mei/
- F:	drivers/watchdog/mei_wdt.c
- F:	include/linux/mei_cl_bus.h
- F:	include/uapi/linux/mei.h
--- 
-2.25.4
-
+- Arnaldo
