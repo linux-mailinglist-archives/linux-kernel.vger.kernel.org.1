@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52233231BF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807AB231BF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbgG2JUH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Jul 2020 05:20:07 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:40726 "EHLO
+        id S1728299AbgG2JUK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Jul 2020 05:20:10 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38165 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728195AbgG2JUG (ORCPT
+        by vger.kernel.org with ESMTP id S1728195AbgG2JUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 05:20:06 -0400
+        Wed, 29 Jul 2020 05:20:09 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-H4aIQLXRPBeTA11LrF0Y8Q-1; Wed, 29 Jul 2020 05:19:58 -0400
-X-MC-Unique: H4aIQLXRPBeTA11LrF0Y8Q-1
+ us-mta-171-8BytmW01OcWCfHyTO70nbQ-1; Wed, 29 Jul 2020 05:20:02 -0400
+X-MC-Unique: 8BytmW01OcWCfHyTO70nbQ-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D0751800D4A;
-        Wed, 29 Jul 2020 09:19:56 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02DBF10059A8;
+        Wed, 29 Jul 2020 09:20:00 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.193.247])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A9116932D;
-        Wed, 29 Jul 2020 09:19:52 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 804E66931E;
+        Wed, 29 Jul 2020 09:19:56 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Kajol Jain <kjain@linux.ibm.com>, Ian Rogers <irogers@google.com>,
@@ -38,9 +38,9 @@ Cc:     Kajol Jain <kjain@linux.ibm.com>, Ian Rogers <irogers@google.com>,
         lkml <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>
-Subject: [PATCH 11/19] perf metric: Compute referenced metrics
-Date:   Wed, 29 Jul 2020 11:19:00 +0200
-Message-Id: <20200729091908.1378911-12-jolsa@kernel.org>
+Subject: [PATCH 12/19] perf metric: Add events for the current list
+Date:   Wed, 29 Jul 2020 11:19:01 +0200
+Message-Id: <20200729091908.1378911-13-jolsa@kernel.org>
 In-Reply-To: <20200729091908.1378911-1-jolsa@kernel.org>
 References: <20200729091908.1378911-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -54,12 +54,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding computation (expr__parse call) of referenced metric at
-the point when it needs to be resolved during the parent metric
-computation.
-
-Once the inner metric is computed, the result is stored and
-used if there's another usage of that metric.
+There's no need to iterate the whole list of groups, when adding new
+events. The currently created groups are the ones we want to add.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 Reviewed-by: Kajol Jain <kjain@linux.ibm.com>
@@ -72,109 +68,60 @@ Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Paul Clarke <pc@us.ibm.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20200719181320.785305-12-jolsa@kernel.org
+Link: http://lore.kernel.org/lkml/20200719181320.785305-13-jolsa@kernel.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/expr.c | 31 +++++++++++++++++++++++++++++++
- tools/perf/util/expr.h |  3 +++
- tools/perf/util/expr.y |  4 ++--
- 3 files changed, 36 insertions(+), 2 deletions(-)
+ tools/perf/util/metricgroup.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-index d3997c2b4a90..a346ca590513 100644
---- a/tools/perf/util/expr.c
-+++ b/tools/perf/util/expr.c
-@@ -112,6 +112,7 @@ int expr__add_ref(struct expr_parse_ctx *ctx, struct metric_ref *ref)
- 	 */
- 	data_ptr->ref.metric_name = ref->metric_name;
- 	data_ptr->ref.metric_expr = ref->metric_expr;
-+	data_ptr->ref.counted = false;
- 	data_ptr->is_ref = true;
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index a9f101948e1f..caec3696e52b 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -813,6 +813,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+ {
+ 	struct pmu_event *pe;
+ 	struct egroup *eg;
++	LIST_HEAD(list);
+ 	int i, ret;
+ 	bool has_match = false;
  
- 	ret = hashmap__set(&ctx->ids, name, data_ptr,
-@@ -133,6 +134,34 @@ int expr__get_id(struct expr_parse_ctx *ctx, const char *id,
- 	return hashmap__find(&ctx->ids, id, (void **)data) ? 0 : -1;
+@@ -820,7 +821,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+ 		has_match = true;
+ 		eg = NULL;
+ 
+-		ret = add_metric(group_list, pe, metric_no_group, &eg);
++		ret = add_metric(&list, pe, metric_no_group, &eg);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -829,7 +830,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+ 		 * included in the expression.
+ 		 */
+ 		ret = resolve_metric(eg, metric_no_group,
+-				     group_list, map);
++				     &list, map);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -838,7 +839,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+ 	if (!has_match)
+ 		return -EINVAL;
+ 
+-	list_for_each_entry(eg, group_list, nd) {
++	list_for_each_entry(eg, &list, nd) {
+ 		if (events->len > 0)
+ 			strbuf_addf(events, ",");
+ 
+@@ -850,6 +851,8 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+ 							   &eg->pctx);
+ 		}
+ 	}
++
++	list_splice(&list, group_list);
+ 	return 0;
  }
  
-+int expr__resolve_id(struct expr_parse_ctx *ctx, const char *id,
-+		     struct expr_id_data **datap)
-+{
-+	struct expr_id_data *data;
-+
-+	if (expr__get_id(ctx, id, datap) || !*datap) {
-+		pr_debug("%s not found\n", id);
-+		return -1;
-+	}
-+
-+	data = *datap;
-+
-+	pr_debug2("lookup: is_ref %d, counted %d, val %f: %s\n",
-+		  data->is_ref, data->ref.counted, data->val, id);
-+
-+	if (data->is_ref && !data->ref.counted) {
-+		data->ref.counted = true;
-+		pr_debug("processing metric: %s ENTRY\n", id);
-+		if (expr__parse(&data->val, ctx, data->ref.metric_expr, 1)) {
-+			pr_debug("%s failed to count\n", id);
-+			return -1;
-+		}
-+		pr_debug("processing metric: %s EXIT: %f\n", id, data->val);
-+	}
-+
-+	return 0;
-+}
-+
- void expr__del_id(struct expr_parse_ctx *ctx, const char *id)
- {
- 	struct expr_id_data *old_val = NULL;
-@@ -173,6 +202,8 @@ __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
- 	void *scanner;
- 	int ret;
- 
-+	pr_debug2("parsing metric: %s\n", expr);
-+
- 	ret = expr_lex_init_extra(&scanner_ctx, &scanner);
- 	if (ret)
- 		return ret;
-diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
-index 81d04ff7f857..9ed208d93418 100644
---- a/tools/perf/util/expr.h
-+++ b/tools/perf/util/expr.h
-@@ -23,6 +23,7 @@ struct expr_id_data {
- 		struct {
- 			const char *metric_name;
- 			const char *metric_expr;
-+			bool counted;
- 		} ref;
- 	};
- 
-@@ -42,6 +43,8 @@ int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val);
- int expr__add_ref(struct expr_parse_ctx *ctx, struct metric_ref *ref);
- int expr__get_id(struct expr_parse_ctx *ctx, const char *id,
- 		 struct expr_id_data **data);
-+int expr__resolve_id(struct expr_parse_ctx *ctx, const char *id,
-+		     struct expr_id_data **datap);
- int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
- 		const char *expr, int runtime);
- int expr__find_other(const char *expr, const char *one,
-diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-index 0d4f5d324be7..d34b370391c6 100644
---- a/tools/perf/util/expr.y
-+++ b/tools/perf/util/expr.y
-@@ -88,11 +88,11 @@ expr:	  NUMBER
- 	| ID			{
- 					struct expr_id_data *data;
- 
--					if (expr__get_id(ctx, $1, &data) || !data) {
--						pr_debug("%s not found\n", $1);
-+					if (expr__resolve_id(ctx, $1, &data)) {
- 						free($1);
- 						YYABORT;
- 					}
-+
- 					$$ = data->val;
- 					free($1);
- 				}
 -- 
 2.25.4
 
