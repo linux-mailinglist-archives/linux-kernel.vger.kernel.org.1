@@ -2,73 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4DF231747
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 03:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBB023174C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 03:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730541AbgG2Bbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 21:31:37 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:30009 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729918AbgG2Bbg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 21:31:36 -0400
-X-UUID: 1c06fdcc60cf40a5a4e78055950f36cd-20200729
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=jWKLQWc5BKXvsqie3oUfmWGaQGm2Es3847LVVs0DT64=;
-        b=qOo1JPUlBQxEHOw1OvyMoNlrz2zAvufDesZxhNLnWFPHXTK0+rcN3o9F7Zz2utfdR9+X7Hri4sHdw3MP6JIbLAHhRmExqIu4K5FDJ7yNRybQa1btl1h8+0phCsCqIUxWApA5oqbYbPYw53LciOm+kSOD0HKlJ69iMIclKFS/j5M=;
-X-UUID: 1c06fdcc60cf40a5a4e78055950f36cd-20200729
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <seiya.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1215441968; Wed, 29 Jul 2020 09:31:32 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 29 Jul 2020 09:31:31 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 29 Jul 2020 09:31:31 +0800
-From:   Seiya Wang <seiya.wang@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>
-Subject: [PATCH v3 3/3] dt-bindings: timer: Add compatible for Mediatek MT8192
-Date:   Wed, 29 Jul 2020 09:31:00 +0800
-Message-ID: <20200729013100.19539-4-seiya.wang@mediatek.com>
-X-Mailer: git-send-email 2.14.1
-In-Reply-To: <20200729013100.19539-1-seiya.wang@mediatek.com>
-References: <20200729013100.19539-1-seiya.wang@mediatek.com>
+        id S1730376AbgG2BfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 21:35:19 -0400
+Received: from mga14.intel.com ([192.55.52.115]:6431 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730117AbgG2BfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 21:35:19 -0400
+IronPort-SDR: J6nrg5ZV2i6tp/dHjEMSSHNElqWo7VGGnMQhLFr63+4a7knAxY8SZsTdLqaEpE9rjypcNQUqHf
+ oWvzaH2YXCPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="150512010"
+X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
+   d="scan'208";a="150512010"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 18:35:11 -0700
+IronPort-SDR: YNsFNSmhqfBBgmI35x/2O7/pNXoR+a/bwag1n6Mwd4MKRcnT4XpSjxN7jGO6jeRF7/XLdB/SmJ
+ NIW6+0gsiTZw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
+   d="scan'208";a="364700282"
+Received: from vverma7-mobl4.lm.intel.com (HELO localhost6.localdomain6) ([10.254.21.148])
+  by orsmga001.jf.intel.com with ESMTP; 28 Jul 2020 18:35:09 -0700
+Message-ID: <25cb1c0c35d2ea2aa233c1db726abd86dadc54c0.camel@intel.com>
+Subject: Re: [PATCH v3 10/11] PM, libnvdimm: Add runtime firmware activation
+ support
+From:   Vishal Verma <vishal.l.verma@intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        Pavel Machek <pavel@ucw.cz>, Ira Weiny <ira.weiny@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 28 Jul 2020 19:35:09 -0600
+In-Reply-To: <CAJZ5v0jb87PnwVXKuvgFeP=c-BGstc4YmANGpbOOnXi-b1oL8w@mail.gmail.com>
+References: <159528284411.993790.11733759435137949717.stgit@dwillia2-desk3.amr.corp.intel.com>
+         <159528289856.993790.11787167534159675987.stgit@dwillia2-desk3.amr.corp.intel.com>
+         <CAJZ5v0jb87PnwVXKuvgFeP=c-BGstc4YmANGpbOOnXi-b1oL8w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: FE79BA7B28F3EE66442C9FEA8249509AE3874054714F2E46A0D2F3D39FBC43FD2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBjb21taXQgYWRkcyBkdC1iaW5kaW5nIGRvY3VtZW50YXRpb24gb2YgdGltZXIgZm9yIE1l
-ZGlhdGVrIE1UODE5MiBTb0MNClBsYXRmb3JtLg0KDQpTaWduZWQtb2ZmLWJ5OiBTZWl5YSBXYW5n
-IDxzZWl5YS53YW5nQG1lZGlhdGVrLmNvbT4NCi0tLQ0KIERvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy90aW1lci9tZWRpYXRlayxtdGstdGltZXIudHh0IHwgMSArDQogMSBmaWxlIGNo
-YW5nZWQsIDEgaW5zZXJ0aW9uKCspDQoNCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvdGltZXIvbWVkaWF0ZWssbXRrLXRpbWVyLnR4dCBiL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy90aW1lci9tZWRpYXRlayxtdGstdGltZXIudHh0DQppbmRl
-eCAwZDI1NjQ4NmY4ODYuLjY5MGE5YzA5NjZhYyAxMDA2NDQNCi0tLSBhL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy90aW1lci9tZWRpYXRlayxtdGstdGltZXIudHh0DQorKysgYi9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdGltZXIvbWVkaWF0ZWssbXRrLXRpbWVy
-LnR4dA0KQEAgLTIyLDYgKzIyLDcgQEAgUmVxdWlyZWQgcHJvcGVydGllczoNCiANCiAJRm9yIHRo
-b3NlIFNvQ3MgdGhhdCB1c2UgU1lTVA0KIAkqICJtZWRpYXRlayxtdDgxODMtdGltZXIiIGZvciBN
-VDgxODMgY29tcGF0aWJsZSB0aW1lcnMgKFNZU1QpDQorCSogIm1lZGlhdGVrLG10ODE5Mi10aW1l
-ciIgZm9yIE1UODE5MiBjb21wYXRpYmxlIHRpbWVycyAoU1lTVCkNCiAJKiAibWVkaWF0ZWssbXQ3
-NjI5LXRpbWVyIiBmb3IgTVQ3NjI5IGNvbXBhdGlibGUgdGltZXJzIChTWVNUKQ0KIAkqICJtZWRp
-YXRlayxtdDY3NjUtdGltZXIiIGZvciBNVDY3NjUgYW5kIGFsbCBhYm92ZSBjb21wYXRpYmxlIHRp
-bWVycyAoU1lTVCkNCiANCi0tIA0KMi4xNC4xDQo=
+On Mon, 2020-07-27 at 14:37 +0200, Rafael J. Wysocki wrote:
+> On Tue, Jul 21, 2020 at 12:24 AM Dan Williams <dan.j.williams@intel.com> wrote:
+> > Abstract platform specific mechanics for nvdimm firmware activation
+> > behind a handful of generic ops. At the bus level ->activate_state()
+> > indicates the unified state (idle, busy, armed) of all DIMMs on the bus,
+> > and ->capability() indicates the system state expectations for activate.
+> > At the DIMM level ->activate_state() indicates the per-DIMM state,
+> > ->activate_result() indicates the outcome of the last activation
+> > attempt, and ->arm() attempts to transition the DIMM from 'idle' to
+> > 'armed'.
+> > 
+> > A new hibernate_quiet_exec() facility is added to support firmware
+> > activation in an OS defined system quiesce state. It leverages the fact
+> > that the hibernate-freeze state wants to assert that a memory
+> > hibernation snapshot can be taken. This is in contrast to a platform
+> > firmware defined quiesce state that may forcefully quiet the memory
+> > controller independent of whether an individual device-driver properly
+> > supports hibernate-freeze.
+> > 
+> > The libnvdimm sysfs interface is extended to support detection of a
+> > firmware activate capability. The mechanism supports enumeration and
+> > triggering of firmware activate, optionally in the
+> > hibernate_quiet_exec() context.
+> > 
+> > Cc: Pavel Machek <pavel@ucw.cz>
+> > Cc: Ira Weiny <ira.weiny@intel.com>
+> > Cc: Len Brown <len.brown@intel.com>
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > Cc: Dave Jiang <dave.jiang@intel.com>
+> > Cc: Vishal Verma <vishal.l.verma@intel.com>
+> > [rafael: hibernate_quiet_exec() proposal]
+> > Co-developed-by: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> 
+> IMO it's better to change this to
+> 
+> Co-developed-by: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> 
+> and please to add
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> to it as per the development process documentation.
+
+Thanks Rafael, I've fixed this up in the branch I've prepared for the pull
+request:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm.git/log/?h=libnvdimm-for-next
+
+> 
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-nvdimm         |    2
+> >  .../driver-api/nvdimm/firmware-activate.rst        |   86 ++++++++++++
+> >  drivers/nvdimm/core.c                              |  149 ++++++++++++++++++++
+> >  drivers/nvdimm/dimm_devs.c                         |  115 +++++++++++++++
+> >  drivers/nvdimm/nd-core.h                           |    1
+> >  include/linux/libnvdimm.h                          |   44 ++++++
+> >  include/linux/suspend.h                            |    6 +
+> >  kernel/power/hibernate.c                           |   97 +++++++++++++
+> >  8 files changed, 500 insertions(+)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-nvdimm
+> >  create mode 100644 Documentation/driver-api/nvdimm/firmware-activate.rst
+> > 
+
+[..]
+
+> > @@ -464,6 +466,10 @@ static inline void hibernation_set_ops(const struct platform_hibernation_ops *op
+> >  static inline int hibernate(void) { return -ENOSYS; }
+> >  static inline bool system_entering_hibernation(void) { return false; }
+> >  static inline bool hibernation_available(void) { return false; }
+> > +
+> > +static inline hibernate_quiet_exec(int (*func)(void *data), void *data) {
+> 
+> This needs to be "static inline int".
+> 
+Yep I got a build warning for this and also fixed it up.
+
+Thanks,
+-Vishal
+
 
