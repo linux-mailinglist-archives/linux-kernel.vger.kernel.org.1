@@ -2,143 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A71A231B6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8A7231B76
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727892AbgG2Inb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:43:31 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:60579 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727794AbgG2Inb (ORCPT
+        id S1727988AbgG2Ioo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 04:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726707AbgG2Ion (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:43:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596012210; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=cIxFU1Sf6NzJjHO4VHHHl57xTd4T7Fn4JzLrmk5w8xk=;
- b=ixT2Au1O31fiI5G2+e91XLqSC2TQPf4F9PwfG4bob8O36/oCp89Iu2x06kGqidkm8N/2Eqag
- 4IQODi/3hNG7efSYIN2VfBpa8BJrz0RvRRpQYD0EUy5yOXIUd1zilOFYSKxgr6D4LNmIOHmw
- kKq3LEgujZWeFfKbIYPA+9mGCQw=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
- 5f2136b135f3e3d31631d45d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Jul 2020 08:43:29
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 28C60C433A0; Wed, 29 Jul 2020 08:43:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 988A4C433CA;
-        Wed, 29 Jul 2020 08:43:27 +0000 (UTC)
+        Wed, 29 Jul 2020 04:44:43 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49448C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:44:43 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t18so18733443ilh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:44:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eDpsIzFQs4UostU3d175HM40L3ctsRPQboCEBf+fEY8=;
+        b=vAXXkxLlLmo3Mg95KzzQSAigRBzjV4MgGii1xUhDlEMWoxREn8MvV3c+iQaa8F9Lyw
+         H5dESD6EsGSQgaRQYd1PxIjahmNGz+jUufXsS6QXFFL4MSOx4g6UYfRWMGI4DE9SrTFu
+         rwBeYo3gA7HBkYwZvhBlBeVrHokWBM6Oin/4lTOrDXgwpMh4jAWjEImgj0QlXMRg5jRS
+         1cZ17U6nQU+HO5EBvzQmhME+Y+wMHFenzKaGSNCufKfqIiMuAjoMZ/p81M45NDta+ff8
+         KG9M9bvv+b7VTtxaE4NhJh/li3ViMAxDNeHQQv83gTtuqYl4EsBzwGJVSnDOv7w+P4Aw
+         EefQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eDpsIzFQs4UostU3d175HM40L3ctsRPQboCEBf+fEY8=;
+        b=AuRxCticuPi/8O9AmBfk6EXCs+ioIYyc+qQ9IVeERPNP31T8T3m+lZmS1Eua9SjVmT
+         f1i71YZ2YDu8qgcgOQU/5jhfvXlfh3hP3FVHe1MDTk/2WRkcN3w8mRuO+l7OsomTceLK
+         4uhKypEgZsiJ3BZ+9i1PI/k3z90WsJ7aQvuZPFk0pLwbpvYXRJ/JKM8/wQIKnv5cWSJs
+         Ei/RV3fU3CERfFV7dvmNnBOGoSAmIlETLmRC7cSmfSk4UK1x0BRyiCPoDwtjon5Zv7Nk
+         AylzMjkl0346f3s7cjbwg4YhUvVaDgvaYktZ2wtqC2KZ6mSzVhkSPZYmjaNzAMQ26nuC
+         AoQA==
+X-Gm-Message-State: AOAM531U736X2eHyHtOS4gLccycdX53gP+ZO2dtCIBIPNZrIBWhnLKzs
+        rc/2PogRJ7eNleszNdEGEsAHxr+V1ieAt7jvyMVn6nh7ilI=
+X-Google-Smtp-Source: ABdhPJzOKF+Wcdg+vf2wuYy/Or6CmJeQjHWY6lDTpzf/zM7Su1gGI5jPg2YDYfx7SNgTcxxKeGgLLP3ns6YlvkBqCR0=
+X-Received: by 2002:a92:1b9d:: with SMTP id f29mr980299ill.241.1596012282435;
+ Wed, 29 Jul 2020 01:44:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 29 Jul 2020 16:43:27 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        bvanassche@acm.org, beanhuo@micron.com, asutoshd@codeaurora.org,
-        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com
-Subject: Re: [PATCH v2] scsi: ufs: Fix possible infinite loop in ufshcd_hold
-In-Reply-To: <20200729024037.23105-1-stanley.chu@mediatek.com>
-References: <20200729024037.23105-1-stanley.chu@mediatek.com>
-Message-ID: <bfbb48b06fa3464da0cbd2aee8a32649@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <CAGvU0H=AAPt0wSTh1dyb-aTnG9zeUY6U2uBkmi6K9Bvpuc9YAA@mail.gmail.com>
+ <9d9a48e0-844d-8ba4-b839-92cb1af622ee@fb.com>
+In-Reply-To: <9d9a48e0-844d-8ba4-b839-92cb1af622ee@fb.com>
+From:   Giuliano Procida <gprocida@google.com>
+Date:   Wed, 29 Jul 2020 09:44:05 +0100
+Message-ID: <CAGvU0HmUnMq=7W=GhW+Mut9henBf5yDDgG7S2RfVFny7VdoUJQ@mail.gmail.com>
+Subject: Re: BTF_KIND_FWD enums
+To:     Yonghong Song <yhs@fb.com>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stanley,
+Hi.
 
-On 2020-07-29 10:40, Stanley Chu wrote:
-> In ufshcd_suspend(), after clk-gating is suspended and link is set
-> as Hibern8 state, ufshcd_hold() is still possibly invoked before
-> ufshcd_suspend() returns. For example, MediaTek's suspend vops may
-> issue UIC commands which would call ufshcd_hold() during the command
-> issuing flow.
-> 
-> Now if UFSHCD_CAP_HIBERN8_WITH_CLK_GATING capability is enabled,
-> then ufshcd_hold() may enter infinite loops because there is no
-> clk-ungating work scheduled or pending. In this case, ufshcd_hold()
-> shall just bypass, and keep the link as Hibern8 state.
-> 
+On Wed, 29 Jul 2020 at 08:09, Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 7/28/20 1:56 PM, Giuliano Procida wrote:
+> > Hi.
+> >
+> > Re: https://github.com/torvalds/linux/commit/9d5f9f701b1891466fb3dbb1806ad97716f95cc3
+> >
+> > Both GCC and LLVM support forward-declared (a.k.a. incomplete) enums
+> > as a language extension -
+> > https://gcc.gnu.org/onlinedocs/gcc/Incomplete-Enums.html.
+> >
+> > (C++11 has a different notion of incomplete enum type - opaque enum
+> > declaration - storage size is known but enumerators are not)
+> >
+> > Forward-declared enums feature in various places in kernel code and
+> > allow the usual things to be done (passing around pointers to such).
+> > I'm curious as to if and how they are they are handled by BTF and
+> > whether a further change to btf_type is needed:
+> >
+> > 1. Use BTF_KIND_FWD, with another spare bit to allow up to 4 kinds of
+> > forward-declaration; or
+> > 2. use BTF_KIND_ENUM, kind_flag 0 and vlen 0 (as empty enums are
+> > currently illegal C); or
+>
+> #2 above is the current way.
+> -bash-4.4$ cat t.c
+> enum H;
+> enum H * func(enum H *arg) { return arg; }
+> -bash-4.4$ clang -target bpf -S -g -O2 t.c
+>
+> -bash-4.4$
+>
+> The generated BTF enum type:
+>
+>          .long   1                               # BTF_KIND_ENUM(id = 2)
+>          .long   100663296                       # 0x6000000
+>          .long   0
+>
+> So vlen = 0 here indicates it is a forward declaration.
+>
 
-The infinite loop is expected as ufshcd_hold is called again after
-link is put to hibern8 state, so in QCOM's code, we never do this.
-The cap UFSHCD_CAP_HIBERN8_WITH_CLK_GATING means UIC link state
-must not be HIBERN8 after ufshcd_hold(async=false) returns.
+Thanks, that's all clear. There is a small risk that C will follow C++
+and allow zero enumerators in the future.
 
-Instead of bailing out from that loop, which makes the logic of
-ufshcd_hold and clk gating even more complex, how about removing
-ufshcd_hold/release from ufshcd_send_uic_cmd()? I think they are
-redundant and we should never send DME cmds if clocks/powers are
-not ready. I mean callers should make sure they are ready to send
-DME cmds (and only callers know when), but not leave that job to
-ufshcd_send_uic_cmd(). It is convenient to remove ufshcd_hold/
-release from ufshcd_send_uic_cmd() as there are not many places
-sending DME cmds without holding the clocks, ufs_bsg.c is one.
-And I have tested my idea on my setup, it worked well for me.
-Another benefit is that it also allows us to use DME cmds
-in clk gating/ungating contexts if we need to in the future.
+>
+> > 3. use BTF_KIND_ENUM, kind_flag 1 and vlen 0.
+> >
+> > If I had a working pahole -J, I'd test this myself. :-)
+> >
+> > $ cat /tmp/en.c
+> > enum H;
+> > enum H * fun(enum H * x) { return x; }
+> > $ clang -Wall -Wextra -ggdb -c /tmp/en.c
+> > $ build/pahole -J /tmp/en.o
+> > Segmentation fault
+> > $ build/pahole -J /dev/null
+> > btf_elf__new: cannot get elf header.
+> > ctf__new: cannot get elf header.
+> > Segmentation fault
+>
+> -bash-4.4$ cat t.c
+> enum H;
+> enum H * func(enum H *arg) { return arg; }
+> -bash-4.4$ ~/work/pahole/build/pahole --version
+> v1.17
+> -bash-4.4$ clang -Wall -Wextra -ggdb -c t.c
+>
+> -bash-4.4$ ~/work/pahole/build/pahole -JV t.o
+> File t.o:
+> [1] PTR (anon) type_id=2
+> [2] ENUM H size=4 vlen=0
+> [3] INT (anon) size=4 bit_offset=0 nr_bits=32 encoding=(none)
+> [4] FUNC_PROTO (anon) return=1 args=(1 arg)
+> [5] FUNC func type_id=4
+>
+> pahole also generates vlen=0 ENUM type to indicate it is a
+> forward declaration.
+>
+> Maybe your pahole is too old?
 
-Please let me know your idea, thanks.
+I tried both master and v1.17. Perhaps my libdw (Debian 0.176-1.1) is
+incompatible or some other library is too old.
 
-Can Guo.
+Regards,
+Giuliano.
 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> Signed-off-by: Andy Teng <andy.teng@mediatek.com>
-> 
-> ---
-> 
-> Changes since v1:
-> - Fix return value: Use unique bool variable to get the result of
-> flush_work(). Thcan prevent incorrect returned value, i.e., rc, if
-> flush_work() returns true
-> - Fix commit message
-> 
-> ---
->  drivers/scsi/ufs/ufshcd.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 577cc0d7487f..acba2271c5d3 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1561,6 +1561,7 @@ static void ufshcd_ungate_work(struct work_struct 
-> *work)
->  int ufshcd_hold(struct ufs_hba *hba, bool async)
->  {
->  	int rc = 0;
-> +	bool flush_result;
->  	unsigned long flags;
-> 
->  	if (!ufshcd_is_clkgating_allowed(hba))
-> @@ -1592,7 +1593,9 @@ int ufshcd_hold(struct ufs_hba *hba, bool async)
->  				break;
->  			}
->  			spin_unlock_irqrestore(hba->host->host_lock, flags);
-> -			flush_work(&hba->clk_gating.ungate_work);
-> +			flush_result = flush_work(&hba->clk_gating.ungate_work);
-> +			if (hba->clk_gating.is_suspended && !flush_result)
-> +				goto out;
->  			spin_lock_irqsave(hba->host->host_lock, flags);
->  			goto start;
->  		}
+> >
+> > My interest here is that I helped add support for incomplete enums to
+> > libabigail which we're using to monitor kernel ABIs.
+> >
+> > Regards,
+> > Giuliano.
+> >
+> > (resend due to email address typo)
+> >
