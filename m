@@ -2,152 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C333231D23
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 13:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EBC231D32
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 13:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgG2LDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 07:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726826AbgG2LDD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 07:03:03 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15CDC0619D2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 04:03:03 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id w22so7296408vsi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 04:03:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gwrmcmEFgHmE2elsCA3SQReEP7dtrnHUEc+lw41Ownc=;
-        b=FwWqEJiqgTcRl9RLLuyH4qkEABEtXo3DtQFBEuq7WHwYZxqB3mG0CHZD3uUpi/uuMM
-         pzPmDybDQpuYWZeaXue++7H72rsGLcrlC7pn9ApVJ/UKSCrB0GtfysxLOueCwUEyhQxa
-         rbkTJ1SJlJJWU7SHFGVtQ/GXcEwJDweIJAP5Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gwrmcmEFgHmE2elsCA3SQReEP7dtrnHUEc+lw41Ownc=;
-        b=TNyHoCKvcJ2RsSHhRwI+/TcdMSK9jQ5xOjO4FRfYbexTROOLD0JLXKAfmswuR5DZ9D
-         I7ay6Bk6q+UpI4DmQDVUQDQf1v2hTBOD/+Pg0MhNso6fB5qmjzx+5CVxJidMLUDOs9im
-         cOqRD6xQkoStJoE7jrCWok1sDAVCzKIeewvrSkTle+3ACLm30YkVozeLXf52D2LowrUQ
-         04Qv0AqQOZo1E17cQQZahyJDDcn9j3R6qP6Cc1pekmB54lJ2wJWfA46QpuuMpFm80G96
-         dFh+DNCrDXLDJRDxnggo0mFlYOTVaLK/TeMFufcAHIY9G8dMWEPNc5soiRV38MHAvlAq
-         jYiA==
-X-Gm-Message-State: AOAM5325h0GQGAinFvlULMcTEGgD9LVsxzL0ci1dRyRVuVoeGhREm2E2
-        HoofCfnHZyDC5UHQ1sCakHO2fa192J2I0MRZTeW2a78+Aa9MKw==
-X-Google-Smtp-Source: ABdhPJxf6gmq/1Vn4jyFC8rLBzVhmaXoarShTaaxIz+4CLlWEE/Ex5LiltCrFY4PE3r0Xot21uyjY+pVSlZu2o6pC5E=
-X-Received: by 2002:a67:bb06:: with SMTP id m6mr379702vsn.54.1596020582972;
- Wed, 29 Jul 2020 04:03:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <1596012277-8448-1-git-send-email-weiyi.lu@mediatek.com>
- <1596012277-8448-4-git-send-email-weiyi.lu@mediatek.com> <CANMq1KBJ3QgpZ4EuSOWYTpOatsOte5sGkqtSZQs337x3fMFFYw@mail.gmail.com>
-In-Reply-To: <CANMq1KBJ3QgpZ4EuSOWYTpOatsOte5sGkqtSZQs337x3fMFFYw@mail.gmail.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Wed, 29 Jul 2020 19:02:52 +0800
-Message-ID: <CANMq1KAYg2+RQiF0w7-2FKZj1QwoPDsXtmak-DHfserRjX-TWA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] clk: mediatek: Fix asymmetrical PLL enable and
- disable control
-To:     Weiyi Lu <weiyi.lu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Wendell Lin <wendell.lin@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726664AbgG2LIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 07:08:00 -0400
+Received: from mga06.intel.com ([134.134.136.31]:6746 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726365AbgG2LIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 07:08:00 -0400
+IronPort-SDR: f9qGAA6BYOLuaY29Vjq93xjhtklZ+W46kExS02fKrS/P81Qz5aNhrnypfOU8Jo9O9P+pGQHoi2
+ oy7PR/Rlnz+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="212927275"
+X-IronPort-AV: E=Sophos;i="5.75,410,1589266800"; 
+   d="scan'208";a="212927275"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 04:07:59 -0700
+IronPort-SDR: 6q3ObfXHhAmD/7ZkVTNxq7TjBbtQxv4gPtus3R33bX3z+k7cQWfbvY1vcf5AWir2F7yANU6IZ4
+ K09zWkdPHbKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,410,1589266800"; 
+   d="scan'208";a="490254701"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+  by fmsmga006.fm.intel.com with ESMTP; 29 Jul 2020 04:07:54 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Brent Lu <brent.lu@intel.com>, linux-kernel@vger.kernel.org,
+        Daniel Stuart <daniel.stuart14@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Sam McNally <sammc@chromium.org>,
+        Damian van Soelen <dj.vsoelen@gmail.com>
+Subject: [PATCH 0/2] Add period size constraint for Atom Chromebook
+Date:   Wed, 29 Jul 2020 19:03:03 +0800
+Message-Id: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 6:51 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
->
-> On Wed, Jul 29, 2020 at 4:44 PM Weiyi Lu <weiyi.lu@mediatek.com> wrote:
-> >
-> > The en_mask actually is a combination of divider enable mask
-> > and pll enable bit(bit0).
-> > Before this patch, we enabled both divider mask and bit0 in prepare(),
-> > but only cleared the bit0 in unprepare().
-> > Now, setting the enable register(CON0) in 2 steps: first divider mask,
-> > then bit0 during prepare(), vice versa.
-> > Hence, en_mask will only be used as divider enable mask.
-> > Meanwhile, all the SoC PLL data are updated.
->
-> I like this a lot better, most changes look fine, just a few nits.
->
-> >
-> > Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-> > ---
-> >  drivers/clk/mediatek/clk-mt2701.c | 26 ++++++++++++------------
-> >  drivers/clk/mediatek/clk-mt2712.c | 30 ++++++++++++++--------------
-> >  drivers/clk/mediatek/clk-mt6765.c | 20 +++++++++----------
-> >  drivers/clk/mediatek/clk-mt6779.c | 24 +++++++++++-----------
-> >  drivers/clk/mediatek/clk-mt6797.c | 20 +++++++++----------
-> >  drivers/clk/mediatek/clk-mt7622.c | 18 ++++++++---------
-> >  drivers/clk/mediatek/clk-mt7629.c | 12 +++++------
-> >  drivers/clk/mediatek/clk-mt8173.c | 42 ++++++++++++++++++++++++++-------------
-> >  drivers/clk/mediatek/clk-mt8183.c | 22 ++++++++++----------
-> >  drivers/clk/mediatek/clk-pll.c    | 10 ++++++++--
-> >  10 files changed, 122 insertions(+), 102 deletions(-)
-> >
-[snip]
-> > diff --git a/drivers/clk/mediatek/clk-pll.c b/drivers/clk/mediatek/clk-pll.c
-> > index f440f2cd..3c79e1a 100644
-> > --- a/drivers/clk/mediatek/clk-pll.c
-> > +++ b/drivers/clk/mediatek/clk-pll.c
-> > @@ -247,8 +247,10 @@ static int mtk_pll_prepare(struct clk_hw *hw)
-> >         writel(r, pll->pwr_addr);
-> >         udelay(1);
-> >
-> > -       r = readl(pll->base_addr + REG_CON0);
-> > -       r |= pll->data->en_mask;
-> > +       r = readl(pll->base_addr + REG_CON0) | CON0_BASE_EN;
-> > +       writel(r, pll->base_addr + REG_CON0);
-> > +
-> > +       r = readl(pll->base_addr + REG_CON0) | pll->data->en_mask;
+Two different constraints are implemented: one is in platform's CPU
+DAI to enforce period sizes which are already used in Android BSP. The
+other is in Atom Chromebook's machine driver to use 240 as period size.
 
-One more question. I have the feeling that CON0_BASE_EN is what
-enables the clock for good (and pll->data->en_mask is just an
-additional setting/mask, since you could disable the clock by simply
-clearing CON0_BASE_EN). Shouldn't you set pll->data->en_mask _first_,
-then CON0_BASE_EN?
+Brent Lu (1):
+  ASoC: intel: atom: Add period size constraint
 
-> >         writel(r, pll->base_addr + REG_CON0);
->
-> As a small optimization, you can do:
->
-> if (pll->data->en_mask) {
->    r = readl(pll->base_addr + REG_CON0) | pll->data->en_mask;
->    writel(r, pll->base_addr + REG_CON0);
-> }
->
-> >
-> >         __mtk_pll_tuner_enable(pll);
-> > @@ -278,6 +280,10 @@ static void mtk_pll_unprepare(struct clk_hw *hw)
-> >         __mtk_pll_tuner_disable(pll);
-> >
-> >         r = readl(pll->base_addr + REG_CON0);
-> > +       r &= ~pll->data->en_mask;
->
-> Move this to one line? (so that the code looks symmetrical, too?)
->
-> > +       writel(r, pll->base_addr + REG_CON0);
-> > +
-> > +       r = readl(pll->base_addr + REG_CON0);
-> >         r &= ~CON0_BASE_EN;
+Yu-Hsuan Hsu (1):
+  ASoC: Intel: Add period size constraint on strago board
 
-And ditto, ~CON0_BASE_EN then ~pll->data->en_mask?
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 15 +++++++++++++++
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 14 +++++++++++++-
+ sound/soc/intel/boards/cht_bsw_rt5645.c      | 14 +++++++++++++-
+ 3 files changed, 41 insertions(+), 2 deletions(-)
 
->
-> ditto?
->
-> >         writel(r, pll->base_addr + REG_CON0);
-> >
-> > --
-> > 1.8.1.1.dirty
+-- 
+2.7.4
+
