@@ -2,119 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776892319D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F222319D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgG2GzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 02:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgG2GzH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 02:55:07 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA52C061794;
-        Tue, 28 Jul 2020 23:55:06 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id e22so1583097pjt.3;
-        Tue, 28 Jul 2020 23:55:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U92rYb0+TwGY8zlPAefy1rRg023bgbGHmt6DlPysSbE=;
-        b=VY6IUoYjKXKRjRWH0ph58QPyVXNjhf1ZrmDeymuKLS34LOaCvII7jQi/p9QBtzpRDf
-         I1oZFIZsAkiUmiVX9antZvETncgRdreGJNXoyyTrAWkMh/eJt8SMA5rcJfVZzyWK2IvL
-         jC5TZ+hRNbYfJ8H1EKaliqMMn/v6/Kvs2dFcTAq298FW7f3BYyr0WszmoUL7htFkxDtm
-         qK5if0Zzf9fVJmWaFjIga89to7YQpmFVvQukJJ+7g4nU4bFg0gbB9eh3s62n+UxOukDY
-         7zOcRlxkC79KIv9n9kuW9gRHMsr07KieZeiEmnR03aYYcaAlT1ro7Wt7a84EmljQhY1B
-         2/Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U92rYb0+TwGY8zlPAefy1rRg023bgbGHmt6DlPysSbE=;
-        b=Foaac5k8T8dTncH7bajZb36TWW8Y3Zs+u9/fHZLO9zzhcCXpOvxI6L4844g6YvETVj
-         PmEv9GHYzoBRTzM76ot7NV/MJrta0BpG5zkJJ1wbCxBT5kEL0ospfXKzUX39j7TJ+2jX
-         a9m4CTuVq32LUfC3Y5OM2h8OPVfXur4bdOecdqupRal52wcZ+51gjJsZ2pqof9E2q2H6
-         vkSj4mHwTcarhp1DolWTKzpL63VgzBgLsSYyU0DxaQRmuTmZ+EGsn14BnA2l3TvRdepB
-         G0ewL9mN0X9hykJdnmjcBhXbIF3GjZjHJzmMlZd9MSum7+fpmMFBgRkldhnmrSvdY89v
-         EA6g==
-X-Gm-Message-State: AOAM532/lG/HkjxOzeiLbNFn1agHqmSs7qpwCpfEQID+gPO5mGKsD12v
-        JcKGPVC2J4ThpeURfRaF7Zg7WsNadPyN3wgVKfc=
-X-Google-Smtp-Source: ABdhPJxlzMpzxpTX2nZWp7zuUifsx3/qC2nScve7EvSpqfgAtH56PXOrZv3AreiCKdsRuYfWKzRL4h5c52N8VIIhzX8=
-X-Received: by 2002:a17:90a:390f:: with SMTP id y15mr817996pjb.181.1596005705069;
- Tue, 28 Jul 2020 23:55:05 -0700 (PDT)
+        id S1727771AbgG2G4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 02:56:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726290AbgG2G4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 02:56:09 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32DB2206D4;
+        Wed, 29 Jul 2020 06:56:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596005768;
+        bh=kh1VsqAFdvoIwnbd4u/yWyXxzaqDdZRI3AOfNdCIOHQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n0IdOqB0Ooku1vMr/HKKyRhQ3ee8JHb5Z6P4C9RSaaGMySgLJZt2AgdNQ86rjZmB8
+         G4SQA2maX0uyxZahCHG4JjpZPnETYxzXqrZ2qdUE9zYXbff0wZWf8VBTLCEcr8cZYo
+         lPYR7TPH/lBD8ZakK0Los4OCwY2LJ44wnwQ2qat4=
+Date:   Wed, 29 Jul 2020 08:55:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jessica Yu <jeyu@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 7/7] modules: inherit TAINT_PROPRIETARY_MODULE
+Message-ID: <20200729065559.GA476238@kroah.com>
+References: <20200729062711.13016-1-hch@lst.de>
+ <20200729062711.13016-8-hch@lst.de>
 MIME-Version: 1.0
-References: <20200728151258.1222876-1-campello@chromium.org>
- <20200728230520.2011240-1-campello@chromium.org> <20200728170317.v2.4.I9bf713a86d6076b44441ef5f534f9c240271699a@changeid>
-In-Reply-To: <20200728170317.v2.4.I9bf713a86d6076b44441ef5f534f9c240271699a@changeid>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 29 Jul 2020 09:54:48 +0300
-Message-ID: <CAHp75VdYnXsB2KKkJZg-JRoSEkLz91BQwxaYR1uFMbbzU=M_WQ@mail.gmail.com>
-Subject: Re: [PATCH v2 04/14] iio: sx9310: Remove acpi and of table macros
-To:     Daniel Campello <campello@chromium.org>
-Cc:     LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        kbuild test robot <lkp@intel.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-iio <linux-iio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200729062711.13016-8-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 2:05 AM Daniel Campello <campello@chromium.org> wrote:
->
-> Avoids unused warnings due to acpi/of table macros.
+On Wed, Jul 29, 2020 at 08:27:11AM +0200, Christoph Hellwig wrote:
+> If a TAINT_PROPRIETARY_MODULE exports symbol, inherit the tain flag
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+s/tain/taint/
 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Daniel Campello <campello@chromium.org>
-> ---
->
-> Changes in v2:
->  - Added #include <linux/mod_devicetable.h>
->
->  drivers/iio/proximity/sx9310.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-> index 108d82ba81146e..04b646ae8a1009 100644
-> --- a/drivers/iio/proximity/sx9310.c
-> +++ b/drivers/iio/proximity/sx9310.c
-> @@ -15,8 +15,8 @@
->  #include <linux/i2c.h>
->  #include <linux/irq.h>
->  #include <linux/kernel.h>
-> +#include <linux/mod_devicetable.h>
->  #include <linux/module.h>
-> -#include <linux/of.h>
->  #include <linux/pm.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
-> @@ -1051,8 +1051,8 @@ MODULE_DEVICE_TABLE(i2c, sx9310_id);
->  static struct i2c_driver sx9310_driver = {
->         .driver = {
->                 .name   = "sx9310",
-> -               .acpi_match_table = ACPI_PTR(sx9310_acpi_match),
-> -               .of_match_table = of_match_ptr(sx9310_of_match),
-> +               .acpi_match_table = sx9310_acpi_match,
-> +               .of_match_table = sx9310_of_match,
->                 .pm = &sx9310_pm_ops,
->         },
->         .probe          = sx9310_probe,
-> --
-> 2.28.0.163.g6104cc2f0b6-goog
->
+> for all modules importing these symbols, and don't allow loading
+> symbols from TAINT_PROPRIETARY_MODULE modules if the module previously
+> imported gplonly symbols.  Add a anti-circumvention devices so people
+> don't accidentally get themselves into trouble this way.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
+Ah, the proven-to-be-illegal "GPL Condom" defense :)
 
--- 
-With Best Regards,
-Andy Shevchenko
+Nice, work, thanks for doing this:
+
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
