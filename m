@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7C3232849
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 01:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3695232853
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 01:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgG2XnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 19:43:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727072AbgG2XnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 19:43:10 -0400
-Received: from localhost (mobile-166-175-62-240.mycingular.net [166.175.62.240])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50AE02074B;
-        Wed, 29 Jul 2020 23:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596066189;
-        bh=J4o9KJnDavuZtqTw30BUp/XAeVD31Zav05Kpfm5YbMU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=W3q62+6SvHxB9kPFEDBw06ARSwxy5PkFKQlzKijG6niWMScQFnYEMugK3olxRDR8w
-         v6HCZXcXnGWWTBNmgHmNf+mbFCrwkrUUaUz5tLE2DZSTYrC/5F7E6qr+p1RaS1ESWa
-         +hjR927ybX/SEKUWV9Ik7iGzlQHpNheo/fps418c=
-Date:   Wed, 29 Jul 2020 18:43:07 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Robert Hancock <hancockrwd@gmail.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] PCI: Disallow ASPM on ASMedia ASM1083/1085 PCIe-PCI
- bridge
-Message-ID: <20200729234307.GA1978955@bjorn-Precision-5520>
+        id S1728057AbgG2Xpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 19:45:53 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:47238 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726876AbgG2Xpx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 19:45:53 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06TNcHW0155864;
+        Wed, 29 Jul 2020 23:45:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=4vcgnr5eAgcF2LE8tun+6DGHCSCSV2Mi6qpXUFIm8C0=;
+ b=e7BeT72iVO1LKsBXMYkADGU6On7OMfkKNWjhqa4Imj1IyHs5IVlMyBvfIvsAoZenolkE
+ gDuw4bXUFWU5l9JnGyBLqSYTyd9cqrL50ILgflJatj/nFIKpfxpyXLIBEisfgi3AC7Ih
+ cY4+gPitOH/C3Vyb5FWU+dzBZCLYZRSL0isNBx+3SO8uJ6WNpcnu7gUbm2zvvegfKRQG
+ RY87UCXXpbJLOIY4ME/5MZzHLQFXMil68G3TNF+Q62C+9IVELgWPfm0/net+0Jl+Jqj1
+ Dah6LlMaVJgKh8h2EsgIHTm0BezFyIDK9WHVRpeTN3P9a8qymFqpUMfjdhjSTXuIztVL xg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 32hu1jrpqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 29 Jul 2020 23:45:49 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06TNcdEG133121;
+        Wed, 29 Jul 2020 23:45:48 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 32hu5vsdmc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Jul 2020 23:45:48 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06TNjlNj019183;
+        Wed, 29 Jul 2020 23:45:47 GMT
+Received: from [192.168.1.106] (/47.220.71.223)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 29 Jul 2020 16:45:47 -0700
+Subject: Re: (resend) [PATCH [linux-4.14.y]] dm cache: submit writethrough
+ writes in parallel to origin and cache
+To:     Mike Snitzer <snitzer@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <37c5a615-655d-c106-afd0-54e03f3c0eef@oracle.com>
+ <20200727150014.GA27472@redhat.com> <20200729115119.GB2674635@kroah.com>
+ <20200729115557.GA2799681@kroah.com> <20200729141607.GA7215@redhat.com>
+From:   John Donnelly <John.P.donnelly@oracle.com>
+Message-ID: <851f749a-5c92-dcb1-f8e4-95b4434a1ec4@oracle.com>
+Date:   Wed, 29 Jul 2020 18:45:46 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722021803.17958-1-hancockrwd@gmail.com>
+In-Reply-To: <20200729141607.GA7215@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9697 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 suspectscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007290161
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9697 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 mlxlogscore=999
+ malwarescore=0 impostorscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007290161
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 08:18:03PM -0600, Robert Hancock wrote:
-> Recently ASPM handling was changed to no longer disable ASPM on all
-> PCIe to PCI bridges. Unfortunately these ASMedia PCIe to PCI bridge
-> devices don't seem to function properly with ASPM enabled, as they
-> cause the parent PCIe root port to cause repeated AER timeout errors.
-> In addition to flooding the kernel log, this also causes the machine
-> to wake up immediately after suspend is initiated.
-> 
-> Fixes: 66ff14e59e8a ("PCI/ASPM: Allow ASPM on links to PCIe-to-PCI/PCI-X Bridges")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Robert Hancock <hancockrwd@gmail.com>
 
-I applied this to for-linus for v5.8, since 66ff14e59e8a was merged
-for v5.8.  Thanks very much for finding, debugging, and fixing this!
 
-66ff14e59e8a wasn't marked for stable, so if it *was* backported to
-stable kernels, I assume whatever process backported it will also
-catch this because of the Fixes: tag.
+On 7/29/20 9:16 AM, Mike Snitzer wrote:
+> On Wed, Jul 29 2020 at  7:55am -0400,
+> Greg KH <gregkh@linuxfoundation.org> wrote:
+> 
+>> On Wed, Jul 29, 2020 at 01:51:19PM +0200, Greg KH wrote:
+>>> On Mon, Jul 27, 2020 at 11:00:14AM -0400, Mike Snitzer wrote:
+>>>> This mail needs to be saent to stable@vger.kernel.org (now cc'd).
+>>>>
+>>>> Greg et al: please backport 2df3bae9a6543e90042291707b8db0cbfbae9ee9
+>>>
+>>> Now backported, thanks.
+>>
+>> Nope, it broke the build, I need something that actually works :)
+>>
+> 
+> OK, I'll defer to John Donnelly to get back with you (and rest of
+> stable@).  He is more invested due to SUSE also having this issue.  I
+> can put focus to it if John cannot sort this out.
+> 
+> Mike
+> 
 
-> ---
->  drivers/pci/quirks.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 812bfc32ecb8..e5713114f2ab 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -2330,6 +2330,19 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x10f1, quirk_disable_aspm_l0s);
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x10f4, quirk_disable_aspm_l0s);
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x1508, quirk_disable_aspm_l0s);
->  
-> +static void quirk_disable_aspm_l0s_l1(struct pci_dev *dev)
-> +{
-> +	pci_info(dev, "Disabling ASPM L0s/L1\n");
-> +	pci_disable_link_state(dev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
-> +}
-> +
-> +/*
-> + * ASM1083/1085 PCIe-PCI bridge devices cause AER timeout errors on the
-> + * upstream PCIe root port when ASPM is enabled. At least L0s mode is affected,
-> + * disable both L0s and L1 for now to be safe.
-> + */
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ASMEDIA, 0x1080, quirk_disable_aspm_l0s_l1);
-> +
->  /*
->   * Some Pericom PCIe-to-PCI bridges in reverse mode need the PCIe Retrain
->   * Link bit cleared after starting the link retrain process to allow this
-> -- 
-> 2.26.2
-> 
+
+Hi.
+
+
+Thank you for reaching out.
+
+What specifically is broken? . If it that applying 
+2df3bae9a6543e90042291707b8db0cbfbae9ee9 to 4.14.y is failing?
+
+JD.
+
