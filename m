@@ -2,264 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456D1232192
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0C62321A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgG2PbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 11:31:22 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:10011 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726821AbgG2PbI (ORCPT
+        id S1727079AbgG2Pbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 11:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726365AbgG2Pbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 11:31:08 -0400
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 29 Jul 2020 08:31:07 -0700
-Received: from sivaprak-linux.qualcomm.com ([10.201.3.202])
-  by ironmsg03-sd.qualcomm.com with ESMTP; 29 Jul 2020 08:31:02 -0700
-Received: by sivaprak-linux.qualcomm.com (Postfix, from userid 459349)
-        id 7517321A13; Wed, 29 Jul 2020 21:00:55 +0530 (IST)
-From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, kishon@ti.com, vkoul@kernel.org,
-        svarbanov@mm-sol.com, lorenzo.pieralisi@arm.com,
-        p.zabel@pengutronix.de, sivaprak@codeaurora.org,
-        mgautam@codeaurora.org, smuthayy@codeaurora.org,
-        varada@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 7/7] arm64: dts: ipq8074: Fixup PCIe dts nodes
-Date:   Wed, 29 Jul 2020 21:00:07 +0530
-Message-Id: <1596036607-11877-8-git-send-email-sivaprak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596036607-11877-1-git-send-email-sivaprak@codeaurora.org>
-References: <1596036607-11877-1-git-send-email-sivaprak@codeaurora.org>
+        Wed, 29 Jul 2020 11:31:45 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8B4C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:31:44 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id s16so10288218ljc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NMeyNl/YEFo9jsdBtV0Ewno5/AetGS5V1mo5zWRK34w=;
+        b=v23BGnv5jqHqaVKTCmWas4+MNmFdeSPsoMW6klb2HNXQESBQg0J336Elj73Cq47tVl
+         2wdAwaOHf3IZQUvS8LiC3w72kCrGGxNdzpe/pet54t/U+/LSEmP8PGVd5KMJpvMPCveU
+         jm1/hThjiCiAuaEjpJblZLDjXSMqRfMG2+NkajW77QszAevSZS58PQqhSpF0FfLDLlFy
+         IFbS6kT7RdNFPyZ6gma06J+JEk9vln93SNCP4ifs4fE9D9+Y31rCVFUi9n/XfiUKGtqB
+         8JMvXNWZe/L//xR4Kh/+go+TWtSh954Qkm287V5y47Gz4VWNajlzZJPnjQNesHu7Ty7O
+         QlJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NMeyNl/YEFo9jsdBtV0Ewno5/AetGS5V1mo5zWRK34w=;
+        b=tMkeEX7T2qFfHVSyjyXGJAz41lt9fA+o5/OwbeJQuxhAdLfEW3MBjA7YBenI4htsVC
+         wC1Qv8IeNN52LBc5OM02jiXRUfskX5eIj7P5IWG4GGsj9fI1cQS/ZAluGBdv8h+hoOIA
+         qSl80i6cHDEGm6i5HgpcJmnjW3S/U9lhiSH/tE5Of3ORbx8ryqNGxEOsKCLQKl+Vfnid
+         S8o8sFNW+MiTiJX9hNv6YDSj9bs76fNjLc5umOSAkMJoR5Rc6KWgUcD8o+pVE8+Ukd5s
+         kZ9Dlhh9a7nrktEgmvPwqQZQySfsXcRFooTu03BsfZG7ktB5JrO6ym89fUA9/SpjghHX
+         Cogg==
+X-Gm-Message-State: AOAM532P9g3K/4IXa3wZNoaFNrO6QrhOBMEm4Bf5tL+eFIRp6gG/3Fw4
+        oR6aRuhLQRawC0SuhdrXVwZ4kLnMaKRdDomzn69ERg==
+X-Google-Smtp-Source: ABdhPJyI8qc29rns9dXHG0oc0JEPnWfGWcNX+IOeYkGrx2a1w2l5uUMoZHmTpRWS/l/JTn89UMDlJsEwRgpcw7m8Y6g=
+X-Received: by 2002:a2e:5d8:: with SMTP id 207mr6264537ljf.58.1596036701488;
+ Wed, 29 Jul 2020 08:31:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <CALvZod7MZaE52408O6eGNpGGW77xFTyr56YK0F7qjNH1HX98MQ@mail.gmail.com>
+ <20200718133106.4787-1-sjpark@amazon.com>
+In-Reply-To: <20200718133106.4787-1-sjpark@amazon.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 29 Jul 2020 08:31:29 -0700
+Message-ID: <CALvZod6cd4698njE+_dQ6UiL=uRL9xm=aKVm5=-sV28T9Y+fVw@mail.gmail.com>
+Subject: Re: Re: [PATCH v18 02/14] mm: Introduce Data Access MONitor (DAMON)
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
+        Andrea Arcangeli <aarcange@redhat.com>, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Qian Cai <cai@lca.pw>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
+        foersleo@amazon.de, Ian Rogers <irogers@google.com>,
+        jolsa@redhat.com, "Kirill A. Shutemov" <kirill@shutemov.name>,
+        mark.rutland@arm.com, Mel Gorman <mgorman@suse.de>,
+        Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>, rppt@kernel.org,
+        sblbir@amazon.com, shuah@kernel.org, sj38.park@gmail.com,
+        snu@amazon.de, Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>, linux-damon@amazon.com,
+        Linux MM <linux-mm@kvack.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ipq8074 PCIe nodes missing required properties to make them work.
-Add these properties.
+On Sat, Jul 18, 2020 at 6:31 AM SeongJae Park <sjpark@amazon.com> wrote:
+>
+> On Fri, 17 Jul 2020 19:47:50 -0700 Shakeel Butt <shakeelb@google.com> wrote:
+>
+> > On Mon, Jul 13, 2020 at 1:43 AM SeongJae Park <sjpark@amazon.com> wrote:
+> > >
+> > > From: SeongJae Park <sjpark@amazon.de>
+> > >
+> > > DAMON is a data access monitoring framework subsystem for the Linux
+> > > kernel.  The core mechanisms of DAMON make it
+> > >
+> > >  - accurate (the monitoring output is useful enough for DRAM level
+> > >    memory management; It might not appropriate for CPU Cache levels,
+> > >    though),
+> > >  - light-weight (the monitoring overhead is low enough to be applied
+> > >    online), and
+> > >  - scalable (the upper-bound of the overhead is in constant range
+> > >    regardless of the size of target workloads).
+> > >
+> > > Using this framework, therefore, the kernel's memory management
+> > > mechanisms can make advanced decisions.  Experimental memory management
+> > > optimization works that incurring high data accesses monitoring overhead
+> > > could implemented again.  In user space, meanwhile, users who have some
+> > > special workloads can write personalized applications for better
+> > > understanding and optimizations of their workloads and systems.
+> > >
+> > > This commit is implementing only the stub for the module load/unload,
+> > > basic data structures, and simple manipulation functions of the
+> > > structures to keep the size of commit small.  The core mechanisms of
+> > > DAMON will be implemented one by one by following commits.
+> > >
+> > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > > Reviewed-by: Leonard Foerster <foersleo@amazon.de>
+> > > Reviewed-by: Varad Gautam <vrd@amazon.de>
+> > > ---
+> > >  include/linux/damon.h |  63 ++++++++++++++
+> > >  mm/Kconfig            |  12 +++
+> > >  mm/Makefile           |   1 +
+> > >  mm/damon.c            | 188 ++++++++++++++++++++++++++++++++++++++++++
+> > >  4 files changed, 264 insertions(+)
+> > >  create mode 100644 include/linux/damon.h
+> > >  create mode 100644 mm/damon.c
+> > >
+> > > diff --git a/include/linux/damon.h b/include/linux/damon.h
+> > > new file mode 100644
+> > > index 000000000000..c8f8c1c41a45
+> > > --- /dev/null
+> > > +++ b/include/linux/damon.h
+> > > @@ -0,0 +1,63 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +/*
+> > > + * DAMON api
+> > > + *
+> > > + * Copyright 2019-2020 Amazon.com, Inc. or its affiliates.
+> > > + *
+> > > + * Author: SeongJae Park <sjpark@amazon.de>
+> > > + */
+> > > +
+> [...]
+> > > +
+> > > +/**
+> > > + * struct damon_task - Represents a monitoring target task.
+> > > + * @pid:               Process id of the task.
+> > > + * @regions_list:      Head of the monitoring target regions of this task.
+> > > + * @list:              List head for siblings.
+> > > + *
+> > > + * If the monitoring target address space is task independent (e.g., physical
+> > > + * memory address space monitoring), @pid should be '-1'.
+> > > + */
+> > > +struct damon_task {
+> > > +       int pid;
+> >
+> > Storing and accessing pid like this is racy. Why not save the "struct
+> > pid" after getting the reference? I am still going over the usage,
+> > maybe storing mm_struct would be an even better choice.
+> >
+> > > +       struct list_head regions_list;
+> > > +       struct list_head list;
+> > > +};
+> > > +
+> [...]
+> > > +
+> > > +#define damon_get_task_struct(t) \
+> > > +       (get_pid_task(find_vpid(t->pid), PIDTYPE_PID))
+> >
+> > You need at least rcu lock around find_vpid(). Also you need to be
+> > careful about the context. If you accept my previous suggestion then
+> > you just need to do this in the process context which is registering
+> > the pid (no need to worry about the pid namespace).
+> >
+> > I am wondering if there should be an interface to register processes
+> > with DAMON using pidfd instead of integer pid.
+>
+> Good points!  I will use pidfd for this purpose, instead.
+>
+> BTW, 'struct damon_task' was introduced while DAMON supports only virtual
+> address spaces and recently extended to support physical memory address
+> monitoring case by defining an exceptional pid (-1) for such case.  I think it
+> doesn't smoothly fit with the design.
+>
+> Therefore, I would like to change it with more general named struct, e.g.,
+>
+>     struct damon_target {
+>             void *id;
+>             struct list_head regions_list;
+>             struct list_head list;
+>     };
+>
+> The 'id' field will be able to store or point pid_t, struct mm_struct, struct
+> pid, or anything relevant, depending on the target address space.
+>
+> Only one part of the address space independent logics of DAMON, namely
+> 'kdamon_need_stop()', uses '->pid' of the 'struct damon_task'.  It will be
+> introduced by the next patch ("mm/damon: Implement region based sampling").
+> Therefore, the conversion will be easy.  For the part, I could add another
+> callback, e.g.,
+>
+>     struct damon_ctx {
+>             [...]
+>             bool (*is_target_valid)(struct damon_target *t);
+>     };
+>
+> And let the address space specific primitives to implement this.
+>
+> Then, damon_get_task_struct() and damon_get_mm() will be introduced by the
+> sixth patch ("mm/damon: Implement callbacks for the virtual memory address
+> spaces") as a part of the virtual address space specific primitives
+> implementation.
+>
+> I gonna make the change in the next spin.  If you have some opinions on this,
+> please let me know.
+>
+>
 
-Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/ipq8074-hk01.dts |   8 +--
- arch/arm64/boot/dts/qcom/ipq8074.dtsi     | 109 ++++++++++++++++++++----------
- 2 files changed, 78 insertions(+), 39 deletions(-)
+Sorry for the late response. I think the general direction you are
+taking is fine but there are still some open questions. I am trying to
+reason if 'address space' is general enough abstraction for different
+types of monitoring targets. It fits well for the 'processes' targets.
+For the physical memory, the monitoring part of the abstraction (i.e.
+damon_ctx) seems fine but I am not sure about the optimization part
+(i.e. [merge|split]_regions) which raises the question that should the
+merge/split functionality be part of the abstraction.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts b/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
-index f4a7616..de6171d 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
-+++ b/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
-@@ -52,19 +52,19 @@
- 
- &pcie0 {
- 	status = "ok";
--	perst-gpio = <&tlmm 61 0x1>;
-+	perst-gpio = <&tlmm 58 0x1>;
- };
- 
- &pcie1 {
- 	status = "ok";
--	perst-gpio = <&tlmm 58 0x1>;
-+	perst-gpio = <&tlmm 61 0x1>;
- };
- 
--&pcie_phy0 {
-+&qmp_pcie_phy0 {
- 	status = "ok";
- };
- 
--&pcie_phy1 {
-+&qmp_pcie_phy1 {
- 	status = "ok";
- };
- 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 96a5ec8..148b8f9 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -167,34 +167,66 @@
- 			resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
- 		};
- 
--		pcie_phy0: phy@86000 {
--			compatible = "qcom,ipq8074-qmp-pcie-phy";
--			reg = <0x00086000 0x1000>;
--			#phy-cells = <0>;
--			clocks = <&gcc GCC_PCIE0_PIPE_CLK>;
--			clock-names = "pipe_clk";
--			clock-output-names = "pcie20_phy0_pipe_clk";
-+		qmp_pcie_phy0: phy@84000 {
-+			compatible = "qcom,ipq8074-qmp-pcie-gen3-phy";
-+			reg = <0x00084000 0x1bc>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			clocks = <&gcc GCC_PCIE0_AUX_CLK>,
-+				 <&gcc GCC_PCIE0_AHB_CLK>;
-+			clock-names = "aux", "cfg_ahb";
- 
- 			resets = <&gcc GCC_PCIE0_PHY_BCR>,
--				<&gcc GCC_PCIE0PHY_PHY_BCR>;
-+				 <&gcc GCC_PCIE0PHY_PHY_BCR>;
- 			reset-names = "phy",
- 				      "common";
-+
- 			status = "disabled";
-+			pcie_phy0: lane@84200 {
-+				reg = <0x84200 0x16c>, /* Serdes Tx */
-+				      <0x84400 0x200>, /* Serdes Rx */
-+				      <0x84800 0x4f4>; /* PCS: Lane0, COM, PCIE */
-+				#phy-cells = <0>;
-+
-+				clocks = <&gcc GCC_PCIE0_PIPE_CLK>;
-+				clock-names = "pipe0";
-+				clock-output-names = "gcc_pcie0_pipe_clk_src";
-+				clock-output-rate = <250000000>;
-+				#clock-cells = <0>;
-+			};
- 		};
- 
--		pcie_phy1: phy@8e000 {
-+		qmp_pcie_phy1: phy@8e000 {
- 			compatible = "qcom,ipq8074-qmp-pcie-phy";
--			reg = <0x0008e000 0x1000>;
--			#phy-cells = <0>;
--			clocks = <&gcc GCC_PCIE1_PIPE_CLK>;
--			clock-names = "pipe_clk";
--			clock-output-names = "pcie20_phy1_pipe_clk";
-+			reg = <0x8e000 0x1c4>; /* Serdes PLL */
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			clocks = <&gcc GCC_PCIE1_AUX_CLK>,
-+				 <&gcc GCC_PCIE1_AHB_CLK>;
-+			clock-names = "aux", "cfg_ahb";
- 
- 			resets = <&gcc GCC_PCIE1_PHY_BCR>,
--				<&gcc GCC_PCIE1PHY_PHY_BCR>;
-+				 <&gcc GCC_PCIE1PHY_PHY_BCR>;
- 			reset-names = "phy",
- 				      "common";
-+
- 			status = "disabled";
-+			pcie_phy1: lane@8e200 {
-+				reg = <0x8e200 0x130>, /* Serdes Tx */
-+				      <0x8e400 0x200>, /* Serdes Rx */
-+				      <0x8e800 0x1f8>; /* PCS */
-+				#phy-cells = <0>;
-+
-+				clocks = <&gcc GCC_PCIE1_PIPE_CLK>;
-+				clock-names = "pipe0";
-+				clock-output-names = "gcc_pcie1_pipe_clk_src";
-+				clock-output-rate = <125000000>;
-+				#clock-cells = <0>;
-+			};
- 		};
- 
- 		tlmm: pinctrl@1000000 {
-@@ -559,10 +591,10 @@
- 
- 		pcie1: pci@10000000 {
- 			compatible = "qcom,pcie-ipq8074";
--			reg =  <0x10000000 0xf1d
--				0x10000f20 0xa8
--				0x00088000 0x2000
--				0x10100000 0x1000>;
-+			reg =  <0x10000000 0xf1d>,
-+			       <0x10000f20 0xa8>,
-+			       <0x00088000 0x2000>,
-+			       <0x10100000 0x1000>;
- 			reg-names = "dbi", "elbi", "parf", "config";
- 			device_type = "pci";
- 			linux,pci-domain = <1>;
-@@ -575,9 +607,9 @@
- 			phy-names = "pciephy";
- 
- 			ranges = <0x81000000 0 0x10200000 0x10200000
--				  0 0x100000   /* downstream I/O */
--				  0x82000000 0 0x10300000 0x10300000
--				  0 0xd00000>; /* non-prefetchable memory */
-+				  0 0x100000>,   /* downstream I/O */
-+				 <0x82000000 0 0x10220000 0x10220000
-+				  0 0xfde0000>; /* non-prefetchable memory */
- 
- 			interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "msi";
-@@ -620,12 +652,13 @@
- 		};
- 
- 		pcie0: pci@20000000 {
--			compatible = "qcom,pcie-ipq8074";
--			reg =  <0x20000000 0xf1d
--				0x20000f20 0xa8
--				0x00080000 0x2000
--				0x20100000 0x1000>;
--			reg-names = "dbi", "elbi", "parf", "config";
-+			compatible = "qcom,pcie-ipq8074-gen3";
-+			reg =  <0x20000000 0xf1d>,
-+			       <0x20000f20 0xa8>,
-+			       <0x20001000 0x1000>,
-+			       <0x00080000 0x4000>,
-+			       <0x20100000 0x1000>;
-+			reg-names = "dbi", "elbi", "atu", "parf", "config";
- 			device_type = "pci";
- 			linux,pci-domain = <0>;
- 			bus-range = <0x00 0xff>;
-@@ -637,9 +670,9 @@
- 			phy-names = "pciephy";
- 
- 			ranges = <0x81000000 0 0x20200000 0x20200000
--				  0 0x100000   /* downstream I/O */
--				  0x82000000 0 0x20300000 0x20300000
--				  0 0xd00000>; /* non-prefetchable memory */
-+				  0 0x100000>,   /* downstream I/O */
-+				 <0x82000000 0 0x20220000 0x20220000
-+				  0 0xfde0000>; /* non-prefetchable memory */
- 
- 			interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "msi";
-@@ -658,27 +691,33 @@
- 				 <&gcc GCC_PCIE0_AXI_M_CLK>,
- 				 <&gcc GCC_PCIE0_AXI_S_CLK>,
- 				 <&gcc GCC_PCIE0_AHB_CLK>,
--				 <&gcc GCC_PCIE0_AUX_CLK>;
-+				 <&gcc GCC_PCIE0_AUX_CLK>,
-+				 <&gcc GCC_PCIE0_AXI_S_BRIDGE_CLK>,
-+				 <&gcc GCC_PCIE0_RCHNG_CLK>;
- 
- 			clock-names = "iface",
- 				      "axi_m",
- 				      "axi_s",
- 				      "ahb",
--				      "aux";
-+				      "aux",
-+				      "axi_bridge",
-+				      "rchng";
- 			resets = <&gcc GCC_PCIE0_PIPE_ARES>,
- 				 <&gcc GCC_PCIE0_SLEEP_ARES>,
- 				 <&gcc GCC_PCIE0_CORE_STICKY_ARES>,
- 				 <&gcc GCC_PCIE0_AXI_MASTER_ARES>,
- 				 <&gcc GCC_PCIE0_AXI_SLAVE_ARES>,
- 				 <&gcc GCC_PCIE0_AHB_ARES>,
--				 <&gcc GCC_PCIE0_AXI_MASTER_STICKY_ARES>;
-+				 <&gcc GCC_PCIE0_AXI_MASTER_STICKY_ARES>,
-+				 <&gcc GCC_PCIE0_AXI_SLAVE_STICKY_ARES>;
- 			reset-names = "pipe",
- 				      "sleep",
- 				      "sticky",
- 				      "axi_m",
- 				      "axi_s",
- 				      "ahb",
--				      "axi_m_sticky";
-+				      "axi_m_sticky",
-+				      "axi_s_sticky";
- 			status = "disabled";
- 		};
- 	};
--- 
-2.7.4
+I am also very interested in the 'cgroups' as the target and I am not
+sure if 'address space' is the right abstraction for the cgroups as
+well. Well we can think of cgroups as a combination of tasks but
+cgroup also contains unmapped pages. So, maybe it is a combination of
+virtual and physical address space targets damon can monitor but I am
+still not clear how to specify that in the abstractions provided by
+damon. Anyways these are the questions for later and we can start
+simple with just processes but I would like to not expose these
+abstractions/interfaces to userspace otherwise it would be really hard
+to change later.
 
+Another topic I want to discuss is managing/charging the resource
+(cpu) usage of monitoring. Yes, damon with optimization has low cpu
+cost but as the number of targets increase the cpu cost will increase
+which will be in a range which can not be ignored as system overhead.
+At the moment, it seems like there is one kthread doing all the
+monitoring, since we can control the cpu usage of kthreads, it might
+make sense to allow different kthreads for different sets of targets
+(processes in a cgroup).
