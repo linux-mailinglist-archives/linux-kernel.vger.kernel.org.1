@@ -2,119 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DF8231BDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F25FD231BE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728042AbgG2JOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 05:14:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:48378 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgG2JOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 05:14:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98600101E;
-        Wed, 29 Jul 2020 02:14:17 -0700 (PDT)
-Received: from localhost (unknown [10.1.198.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A2E43F718;
-        Wed, 29 Jul 2020 02:14:17 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 10:14:15 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/7] cpufreq: set invariance scale factor on
- transition end
-Message-ID: <20200729091405.GB12941@arm.com>
-References: <20200722093732.14297-1-ionela.voinescu@arm.com>
- <20200722093732.14297-3-ionela.voinescu@arm.com>
- <CAJZ5v0iiF75+POMF5oX8_NOBiLLqMQSYTTf-X0QoLAPV7fF0-g@mail.gmail.com>
+        id S1728147AbgG2JSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 05:18:48 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:38265 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728122AbgG2JSs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 05:18:48 -0400
+Received: by mail-lf1-f65.google.com with SMTP id 140so12618415lfi.5;
+        Wed, 29 Jul 2020 02:18:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=5QxkY45+uCy195vrLbQYBt0kHQqjeOPMda3MxmvESpo=;
+        b=U4bsrf5w/dXVIqf1U43Tlu+fGy6n4kXjZo56Qz57a2rSgFglQPNbtnQ9HoECyEoRxQ
+         2xidSDi1ySWiAUJMWOvAfjG78amwBzNBgw6icX0OkZASY89TkOYWl2XITUvAsU9wTXcd
+         hZaua3l8Ad/oj9+4z/YV6dxHUsGiNiMY8xCHSXU25wDhdLAzarXtmg+2S275iHHVzfVn
+         OpMSll1OsWuXq1AZmLh+1bPmJ/5F/rr4oculEqnaSlJilkk34NKzVWivozzmbTCjKd+i
+         Z4mTHa2ps0v7HDwELGKxQmYsWomBzUo+IDFMPfgNwzcWMzuyaG6i6p0dGv/KnWOCifuQ
+         9LIw==
+X-Gm-Message-State: AOAM533obqtluuCH2iWCBZskOjqfbymKRgX2m/YSI4Mjwhw0P1LMaeQt
+        nnU8VMDxFTHa2NchcqmMOck=
+X-Google-Smtp-Source: ABdhPJxUtN4D/kIeSqIdHGZhpYfyQqlo5gDTMNn8jl5XcXrXmDY/FqRDWRKOkx4Y/DYIK6PFs8DkuQ==
+X-Received: by 2002:a05:6512:752:: with SMTP id c18mr16550623lfs.53.1596014324266;
+        Wed, 29 Jul 2020 02:18:44 -0700 (PDT)
+Received: from [10.68.32.147] (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
+        by smtp.gmail.com with ESMTPSA id d14sm325942lfj.30.2020.07.29.02.18.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Jul 2020 02:18:43 -0700 (PDT)
+Reply-To: efremov@linux.com
+To:     Peilin Ye <yepeilin.cs@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <20200728141946.426245-1-yepeilin.cs@gmail.com>
+From:   Denis Efremov <efremov@linux.com>
+Autocrypt: addr=efremov@linux.com; keydata=
+ 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
+Subject: Re: [Linux-kernel-mentees] [PATCH] block/floppy: Prevent
+ kernel-infoleak in raw_cmd_copyout()
+Message-ID: <f80acf0f-3e7e-89c5-a00e-d5a89553f0b4@linux.com>
+Date:   Wed, 29 Jul 2020 12:18:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0iiF75+POMF5oX8_NOBiLLqMQSYTTf-X0QoLAPV7fF0-g@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200728141946.426245-1-yepeilin.cs@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 27 Jul 2020 at 15:52:41 (+0200), Rafael J. Wysocki wrote:
-> On Wed, Jul 22, 2020 at 11:38 AM Ionela Voinescu
-> <ionela.voinescu@arm.com> wrote:
-> >
-> > While the move of the invariance setter calls (arch_set_freq_scale())
-> > from cpufreq drivers to cpufreq core maintained the previous
-> > functionality for existing drivers that use target_index() and
-> > fast_switch() for frequency switching, it also gives the possibility
-> > of adding support for users of the target() callback, which is exploited
-> > here.
-> >
-> > To be noted that the target() callback has been flagged as deprecated
-> > since:
-> >
-> > commit 9c0ebcf78fde ("cpufreq: Implement light weight ->target_index() routine")
-> >
-> > It also doesn't have that many users:
-> >
-> >   cpufreq-nforce2.c:371:2:      .target = nforce2_target,
-> >   cppc_cpufreq.c:416:2:         .target = cppc_cpufreq_set_target,
-> >   gx-suspmod.c:439:2:           .target = cpufreq_gx_target,
-> >   pcc-cpufreq.c:573:2:          .target = pcc_cpufreq_target,
-> >
-> > Similarly to the path taken for target_index() calls in the cpufreq core
-> > during a frequency change, all of the drivers above will mark the end of a
-> > frequency change by a call to cpufreq_freq_transition_end().
-> >
-> > Therefore, cpufreq_freq_transition_end() can be used as the location for
-> > the arch_set_freq_scale() call to potentially inform the scheduler of the
-> > frequency change.
-> >
-> > This change maintains the previous functionality for the drivers that
-> > implement the target_index() callback, while also adding support for the
-> > few drivers that implement the deprecated target() callback.
-> >
-> > Two notes are worthwhile here:
-> >  - In __target_index(), cpufreq_freq_transition_end() is called only for
-> >    drivers that have synchronous notifications enabled. There is only one
-> >    driver that disables them,
-> >
-> >    drivers/cpufreq/powernow-k8.c:1142: .flags = CPUFREQ_ASYNC_NOTIFICATION,
-> >
-> >    which is deprecated.
-> >
-> >  - Despite marking a successful frequency change, many cpufreq drivers
-> >    will populate the new policy->cur with the new requested frequency,
-> >    although this might not be the one granted by the hardware.
-> >
-> >    Therefore, the call to arch_set_freq_scale() is a "best effort" one,
-> >    and it is up to the architecture if the new frequency is used in the
-> >    new frequency scale factor setting or eventually used by the scheduler.
-> >    The architecture is in a better position to decide if it has better
-> >    methods to obtain more accurate information regarding the current
-> >    frequency (for example the use of counters).
-> >
-[..]
 
-> I would fold this patch into the previous one.
+
+On 7/28/20 5:19 PM, Peilin Ye wrote:
+> raw_cmd_copyout() is potentially copying uninitialized kernel stack memory
+> since it is initializing `cmd` by assignment, which may cause the compiler
+> to leave uninitialized holes in this structure. Fix it by using memcpy()
+> instead.
 > 
-> I don't see much reason for it to be separate and it looks like
-> folding it in would cause the previous patch to be simpler.
+> Cc: stable@vger.kernel.org
+> Fixes: 2145e15e0557 ("floppy: don't write kernel-only members to FDRAWCMD ioctl output")
 
-I kept it separate in this version as a proposal to move the call to
-cpufreq_freq_transition_end() and properly justify it in the commit
-message.
+Nitpick, I would say this fix is not related to commit 2145e15e0557.
 
-I'll squash it into the previous one, as recommended.
-
-Thanks,
-Ionela.
+> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
