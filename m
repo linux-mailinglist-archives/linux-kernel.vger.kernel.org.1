@@ -2,108 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84650231A16
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12352231A21
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgG2HN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 03:13:58 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:46672 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726918AbgG2HNw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 03:13:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596006831; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=OLPKTdSqqloYxw93IHUq14f5yJAcWoSaKHnlKyo6IBE=; b=DTjiujtgrt9m+4iEcxwwM2Cq94mibco/3DAHJoPPQSIelLCeBxtDt8crWpvSP0yiK3LDpq4q
- TP1uoEpEW5mdlTMGtmfDM0V01REJ2pGChRl0GS1vEdi1iUQPTrdpjjnlQEXAWCJYoUEw7Jr3
- t9pT9XJuVhmDp6lw07Ik5pRSf1U=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5f2121af8db7256a95383cc2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Jul 2020 07:13:51
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 57550C433A1; Wed, 29 Jul 2020 07:13:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 49346C433CA;
-        Wed, 29 Jul 2020 07:13:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 49346C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     gregkh@linuxfoundation.org, robh+dt@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, heikki.krogerus@linux.intel.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v6 4/4] arm64: boot: dts: qcom: pm8150b: Add DTS node for PMIC VBUS booster
-Date:   Wed, 29 Jul 2020 00:13:40 -0700
-Message-Id: <20200729071340.7673-5-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200729071340.7673-1-wcheng@codeaurora.org>
-References: <20200729071340.7673-1-wcheng@codeaurora.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727867AbgG2HO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 03:14:59 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:55620 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726476AbgG2HO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 03:14:59 -0400
+IronPort-SDR: x6StlzwikKWDu1MOZ0lA7CIUwNWCYDVuzr/wNV85ZLZNahD9l+LtZvUbjgZtyuLNhZqKKuMIfG
+ 2WEDe27GU/1TZpsA7+CFYJa8n7Myd7ChKkeeZv/2PPILyCuxG5ShNoEuPhzWQtX/yYjx2koW2R
+ YPPMEELd4HF2D7IUR6QByLdCjEjJvaXs1SnpkJpU2R2biRRxPSYz7/yeiOc4v5xOMr/kPcBFF4
+ 3BMPWxG5wkFsd9U3ybsFDYZxCIH1VkcktLRrY9QBX0W4MmvjorpOM2WeXwQdMGGRMWIJlYsIOg
+ cB0=
+X-IronPort-AV: E=Sophos;i="5.75,409,1589234400"; 
+   d="scan'208";a="13271882"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 29 Jul 2020 09:14:57 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Wed, 29 Jul 2020 09:14:57 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Wed, 29 Jul 2020 09:14:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1596006897; x=1627542897;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=RVYf9+lqvm1U2wO113y5gOtAIDQlfnbNeYkosjkOWCU=;
+  b=YwnB92Trmyt3ofc52zOhG4gETYac5x/lw7NqxhZa10gtlL634WeimzDD
+   2I19oBDm2vkzzTcbrm7dVejTKDS2GZsPF1IU0eoKoWlgW3aakEC6wWB8Y
+   TWaOA48KUweNv1Y7/kKKhsQtPjJsRsyUJZW6WSPz7y+m31yZOspy6v7uu
+   wLg7quDIB/xzk9Hb1eVLxuRwTKY6zoAnHVnl/y73BOxJv9Vm2n+6y1amL
+   Z91ReshLG96z1ilYT3jn618+NF5/hfUHkZiOEbKxCEXCp7JUqQy0mycus
+   6HzCXCbq5HVc+zuokwIb//ziiXj3U1t3tBsQiuJfy8PT9Ns7ZeYU2WMNa
+   w==;
+IronPort-SDR: 4ekXAohnQBN3XC+6/ijUyNP+u9C3mqLFYEwu/rygbCet+KCi0fDsWXEdCXsXv1zI9JcL13FrDp
+ CWX6Af7fK1Vaf2LFSwvPzKJkU5gr8asQ62BplKYpTkCf+5jKFPxdnU4NCNJ2M1pgQXNFVOY7sR
+ JzG90z1Lt/uxBZ4CdRGbYLZX+hHNYb9O9prWhsrXbfWZAq2URqeqxZRtdzn9TwMOrx5NMEuhsF
+ SNsOtn/MWTFquS4gV8EDjbeP4Wo66qjYu+mnCzlQXdWOx37dpzX790Bs1Ez9KO766LZJ8A6RSa
+ y24=
+X-IronPort-AV: E=Sophos;i="5.75,409,1589234400"; 
+   d="scan'208";a="13271881"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 29 Jul 2020 09:14:57 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 579AE280065;
+        Wed, 29 Jul 2020 09:14:57 +0200 (CEST)
+Message-ID: <33fbac338c9d9accda37837eb1338003b28cafee.camel@ew.tq-group.com>
+Subject: Re: [PATCH v2] arm: dts: imx7: add QSPI
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Date:   Wed, 29 Jul 2020 09:14:55 +0200
+In-Reply-To: <20200729071106.8213-1-matthias.schiffer@ew.tq-group.com>
+References: <20200729071106.8213-1-matthias.schiffer@ew.tq-group.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the required DTS node for the USB VBUS output regulator, which is
-available on PM8150B.  This will provide the VBUS source to connected
-peripherals.
+On Wed, 2020-07-29 at 09:11 +0200, Matthias Schiffer wrote:
+> In preparation for an update of the TQ-Systems TQMa7x/MBa7x DTS, add
+> the
+> QSPI controller to imx7s.dtsi.
+> 
+> Based-on-patch-by: Han Xu <han.xu@nxp.com>
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> ---
+> 
+> v2:
+> - renamed node and label
+> - reordered properties
+> (as suggested by Marco Felsch)
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/pm8150b.dtsi   | 6 ++++++
- arch/arm64/boot/dts/qcom/sm8150-mtp.dts | 4 ++++
- 2 files changed, 10 insertions(+)
+Ugh, I neglected to check for compile warnings after adjusting the node
+name. This now gives the following warning:
 
-diff --git a/arch/arm64/boot/dts/qcom/pm8150b.dtsi b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-index 053c659734a7..9e560c1ca30d 100644
---- a/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-@@ -53,6 +53,12 @@ power-on@800 {
- 			status = "disabled";
- 		};
- 
-+		pm8150b_vbus: dcdc@1100 {
-+			compatible = "qcom,pm8150b-vbus-reg";
-+			status = "disabled";
-+			reg = <0x1100>;
-+		};
-+
- 		pm8150b_typec: typec@1500 {
- 			compatible = "qcom,pm8150b-usb-typec";
- 			status = "disabled";
-diff --git a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-index 6c6325c3af59..ba3b5b802954 100644
---- a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-@@ -409,6 +409,10 @@ &ufs_mem_phy {
- 	vdda-pll-max-microamp = <19000>;
- };
- 
-+&pm8150b_vbus {
-+	status = "okay";
-+};
-+
- &usb_1_hsphy {
- 	status = "okay";
- 	vdda-pll-supply = <&vdd_usb_hs_core>;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+arch/arm/boot/dts/imx7s.dtsi:1165.24-1176.6: Warning (spi_bus_bridge): 
+/soc/bus@30800000/qspi@30bb0000: node name for SPI buses should be
+'spi'
+
+So I guess this should be called spi@ after all?
+
+
+> 
+> 
+>  arch/arm/boot/dts/imx7s.dtsi | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/imx7s.dtsi
+> b/arch/arm/boot/dts/imx7s.dtsi
+> index 1cfaf410aa43..22e4c38223bd 100644
+> --- a/arch/arm/boot/dts/imx7s.dtsi
+> +++ b/arch/arm/boot/dts/imx7s.dtsi
+> @@ -1162,6 +1162,19 @@
+>  				status = "disabled";
+>  			};
+>  
+> +			qspi: qspi@30bb0000 {
+> +				compatible = "fsl,imx7d-qspi";
+> +				reg = <0x30bb0000 0x10000>, <0x60000000
+> 0x10000000>;
+> +				reg-names = "QuadSPI", "QuadSPI-
+> memory";
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				interrupts = <GIC_SPI 107
+> IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&clks IMX7D_QSPI_ROOT_CLK>,
+> +					<&clks IMX7D_QSPI_ROOT_CLK>;
+> +				clock-names = "qspi_en", "qspi";
+> +				status = "disabled";
+> +			};
+> +
+>  			sdma: sdma@30bd0000 {
+>  				compatible = "fsl,imx7d-sdma",
+> "fsl,imx35-sdma";
+>  				reg = <0x30bd0000 0x10000>;
 
