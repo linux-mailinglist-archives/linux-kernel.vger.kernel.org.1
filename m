@@ -2,161 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C05231B72
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 023A6231B78
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgG2IoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:44:18 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:53211 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727849AbgG2IoR (ORCPT
+        id S1727915AbgG2Ion (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 04:44:43 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:39718 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726476AbgG2Ion (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:44:17 -0400
-Received: by mail-il1-f198.google.com with SMTP id o17so16122281ilt.19
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:44:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=anzIlk8uQ2cLlHxDMSgByVSFr/B869Yekt2qxwnA7oA=;
-        b=nlXVqo9TamVtCgMLVTQ3/ZGS78uQknt7MJeKY2h1DGk6DMbT66/VNA42tGu+Zd8CaI
-         WSlhrIAVJgXOa6Ejm8LE81/xpb/yQowSPPU0BCdGYpvVhQocmUX2KS9Zzd5DNH98DZ9Z
-         VkQ42kkzEAp7I60V1aAwPffMCRy9jjH4cjQ0cU+WYQVO3kQxyMoFxJti3XsPrzqt3MOi
-         F/C3h8h2lQoqCpcG/QyQOsaBm+s6Nhet4fU4qlfjH8SeK0hmQepfhbjy0O4llG/jDZ+r
-         04jk+c5Owxpn24lyEH+rckJO+mdPnmQei1S/JPV+vzSiK46pRbtk4dfK0B7MiQVirbzC
-         4ujw==
-X-Gm-Message-State: AOAM531Lggiiq0KEzZD1Yb3LHEQxWrxg70uc+BWHnRnq6WJFTWygXf7I
-        TbqeW90HGGgCYKYLzcebKaH6BBbqKrbQFbf2fFCLxqHcOduf
-X-Google-Smtp-Source: ABdhPJynPK1t3lnNnbdq5kkpeHB0FMH/dDa47bfj7obpIa0e2iQNibVSj4ceL7COUZmWH8C/vgRU0zC11syELo0U3gGpVxB4WM7Z
+        Wed, 29 Jul 2020 04:44:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596012280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=5y6sLodwxeVWldEuLL7e40j+rSSieWkQYEctvruINb4=;
+        b=DdkIpYLKcu3yzmuwY8+Ms6y4lv9/RNxSn4b+NZzxrV8iaQD3HxdulPQm3QATh+q6tOvQyO
+        0QsnC9MovDRa+7BGvvoNZxCI2Z7bMbA8xg0wMu/e8FSd8NcmZgmuR28NmA/mRBH7HBStr6
+        qZvdWkIeH1u+jL+tFcMVe51YXfD4Rg8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-zesZOHQjPKmULJPKd38RQw-1; Wed, 29 Jul 2020 04:44:34 -0400
+X-MC-Unique: zesZOHQjPKmULJPKd38RQw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8656B59;
+        Wed, 29 Jul 2020 08:44:31 +0000 (UTC)
+Received: from [10.36.114.111] (ovpn-114-111.ams2.redhat.com [10.36.114.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C10175C1BD;
+        Wed, 29 Jul 2020 08:44:21 +0000 (UTC)
+Subject: Re: [RFC PATCH 0/6] decrease unnecessary gap due to pmem kmem
+ alignment
+To:     Justin He <Justin.He@arm.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steve Capper <Steve.Capper@arm.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Anshuman Khandual <Anshuman.Khandual@arm.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Wei Yang <richardw.yang@linux.intel.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Ira Weiny <ira.weiny@intel.com>, Kaly Xin <Kaly.Xin@arm.com>
+References: <20200729033424.2629-1-justin.he@arm.com>
+ <D1981D47-61F1-42E9-A426-6FEF0EC310C8@redhat.com>
+ <AM6PR08MB40690714A2E77A7128B2B2ADF7700@AM6PR08MB4069.eurprd08.prod.outlook.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63W5Ag0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAGJAjwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <a6c56f12-9978-88b2-3cc5-2947356b3294@redhat.com>
+Date:   Wed, 29 Jul 2020 10:44:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:9242:: with SMTP id u63mr30892261iod.92.1596012255787;
- Wed, 29 Jul 2020 01:44:15 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 01:44:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000903d5805ab908fc4@google.com>
-Subject: INFO: rcu detected stall in smp_call_function
-From:   syzbot <syzbot+cb3b69ae80afd6535b0e@syzkaller.appspotmail.com>
-To:     fweisbec@gmail.com, linux-kernel@vger.kernel.org, mingo@kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <AM6PR08MB40690714A2E77A7128B2B2ADF7700@AM6PR08MB4069.eurprd08.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 29.07.20 10:27, Justin He wrote:
+> Hi David
+> 
+>> -----Original Message-----
+>> From: David Hildenbrand <david@redhat.com>
+>> Sent: Wednesday, July 29, 2020 2:37 PM
+>> To: Justin He <Justin.He@arm.com>
+>> Cc: Dan Williams <dan.j.williams@intel.com>; Vishal Verma
+>> <vishal.l.verma@intel.com>; Mike Rapoport <rppt@linux.ibm.com>; David
+>> Hildenbrand <david@redhat.com>; Catalin Marinas <Catalin.Marinas@arm.com>;
+>> Will Deacon <will@kernel.org>; Greg Kroah-Hartman
+>> <gregkh@linuxfoundation.org>; Rafael J. Wysocki <rafael@kernel.org>; Dave
+>> Jiang <dave.jiang@intel.com>; Andrew Morton <akpm@linux-foundation.org>;
+>> Steve Capper <Steve.Capper@arm.com>; Mark Rutland <Mark.Rutland@arm.com>;
+>> Logan Gunthorpe <logang@deltatee.com>; Anshuman Khandual
+>> <Anshuman.Khandual@arm.com>; Hsin-Yi Wang <hsinyi@chromium.org>; Jason
+>> Gunthorpe <jgg@ziepe.ca>; Dave Hansen <dave.hansen@linux.intel.com>; Kees
+>> Cook <keescook@chromium.org>; linux-arm-kernel@lists.infradead.org; linux-
+>> kernel@vger.kernel.org; linux-nvdimm@lists.01.org; linux-mm@kvack.org; Wei
+>> Yang <richardw.yang@linux.intel.com>; Pankaj Gupta
+>> <pankaj.gupta.linux@gmail.com>; Ira Weiny <ira.weiny@intel.com>; Kaly Xin
+>> <Kaly.Xin@arm.com>
+>> Subject: Re: [RFC PATCH 0/6] decrease unnecessary gap due to pmem kmem
+>> alignment
+>>
+>>
+>>
+>>> Am 29.07.2020 um 05:35 schrieb Jia He <justin.he@arm.com>:
+>>>
+>>> ﻿When enabling dax pmem as RAM device on arm64, I noticed that kmem_start
+>>> addr in dev_dax_kmem_probe() should be aligned w/
+>> SECTION_SIZE_BITS(30),i.e.
+>>> 1G memblock size. Even Dan Williams' sub-section patch series [1] had
+>> been
+>>> upstream merged, it was not helpful due to hard limitation of kmem_start:
+>>> $ndctl create-namespace -e namespace0.0 --mode=devdax --map=dev -s 2g -f
+>> -a 2M
+>>> $echo dax0.0 > /sys/bus/dax/drivers/device_dax/unbind
+>>> $echo dax0.0 > /sys/bus/dax/drivers/kmem/new_id
+>>> $cat /proc/iomem
+>>> ...
+>>> 23c000000-23fffffff : System RAM
+>>>  23dd40000-23fecffff : reserved
+>>>  23fed0000-23fffffff : reserved
+>>> 240000000-33fdfffff : Persistent Memory
+>>>  240000000-2403fffff : namespace0.0
+>>>  280000000-2bfffffff : dax0.0          <- aligned with 1G boundary
+>>>    280000000-2bfffffff : System RAM
+>>> Hence there is a big gap between 0x2403fffff and 0x280000000 due to the
+>> 1G
+>>> alignment.
+>>>
+>>> Without this series, if qemu creates a 4G bytes nvdimm device, we can
+>> only
+>>> use 2G bytes for dax pmem(kmem) in the worst case.
+>>> e.g.
+>>> 240000000-33fdfffff : Persistent Memory
+>>> We can only use the memblock between [240000000, 2ffffffff] due to the
+>> hard
+>>> limitation. It wastes too much memory space.
+>>>
+>>> Decreasing the SECTION_SIZE_BITS on arm64 might be an alternative, but
+>> there
+>>> are too many concerns from other constraints, e.g. PAGE_SIZE, hugetlb,
+>>> SPARSEMEM_VMEMMAP, page bits in struct page ...
+>>>
+>>> Beside decreasing the SECTION_SIZE_BITS, we can also relax the kmem
+>> alignment
+>>> with memory_block_size_bytes().
+>>>
+>>> Tested on arm64 guest and x86 guest, qemu creates a 4G pmem device. dax
+>> pmem
+>>> can be used as ram with smaller gap. Also the kmem hotplug add/remove
+>> are both
+>>> tested on arm64/x86 guest.
+>>>
+>>
+>> Hi,
+>>
+>> I am not convinced this use case is worth such hacks (that’s what it is)
+>> for now. On real machines pmem is big - your example (losing 50% is
+>> extreme).
+>>
+>> I would much rather want to see the section size on arm64 reduced. I
+>> remember there were patches and that at least with a base page size of 4k
+>> it can be reduced drastically (64k base pages are more problematic due to
+>> the ridiculous THP size of 512M). But could be a section size of 512 is
+>> possible on all configs right now.
+> 
+> Yes, I once investigated how to reduce section size on arm64 thoughtfully:
+> There are many constraints for reducing SECTION_SIZE_BITS
+> 1. Given page->flags bits is limited, SECTION_SIZE_BITS can't be reduced too
+>    much.
+> 2. Once CONFIG_SPARSEMEM_VMEMMAP is enabled, section id will not be counted
+>    into page->flags.
 
-syzbot found the following issue on:
+Yep.
 
-HEAD commit:    6ba1b005 Merge tag 'asm-generic-fixes-5.8' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14da5522900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=812bbfcb6ae2cd60
-dashboard link: https://syzkaller.appspot.com/bug?extid=cb3b69ae80afd6535b0e
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> 3. MAX_ORDER depends on SECTION_SIZE_BITS 
+>  - 3.1 mmzone.h
+> #if (MAX_ORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS
+> #error Allocator MAX_ORDER exceeds SECTION_SIZE
+> #endif
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Yep, with 4k base pages it's 4 MB. However, with 64k base pages its
+512MB ( :( ).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cb3b69ae80afd6535b0e@syzkaller.appspotmail.com
+>  - 3.2 hugepage_init()
+> MAYBE_BUILD_BUG_ON(HPAGE_PMD_ORDER >= MAX_ORDER);
+> 
+> Hence when ARM64_4K_PAGES && CONFIG_SPARSEMEM_VMEMMAP are enabled,
+> SECTION_SIZE_BITS can be reduced to 27.
+> But when ARM64_64K_PAGES, given 3.2, MAX_ORDER > 29-16 = 13.
+> Given 3.1 SECTION_SIZE_BITS >= MAX_ORDER+15 > 28. So SECTION_SIZE_BITS can not
+> be reduced to 27.
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1):
-------------[ cut here ]------------
-IRQs not enabled as expected
-WARNING: CPU: 0 PID: 32297 at kernel/sched/core.c:2701 try_invoke_on_locked_down_task+0x18b/0x320 kernel/sched/core.c:2701
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 32297 Comm: syz-executor.2 Not tainted 5.8.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1f0/0x31e lib/dump_stack.c:118
- panic+0x264/0x7a0 kernel/panic.c:231
- __warn+0x227/0x250 kernel/panic.c:600
- report_bug+0x1b1/0x2e0 lib/bug.c:198
- handle_bug+0x42/0x80 arch/x86/kernel/traps.c:235
- exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:255
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:540
-RIP: 0010:try_invoke_on_locked_down_task+0x18b/0x320 kernel/sched/core.c:2701
-Code: 48 89 df e8 f7 35 09 00 4c 89 f7 e8 df b5 cf 06 e9 b5 00 00 00 c6 05 34 82 38 08 01 48 c7 c7 8c d7 07 89 31 c0 e8 a5 a9 f5 ff <0f> 0b e9 15 ff ff ff 48 c7 c1 30 71 8d 89 80 e1 07 80 c1 03 38 c1
-RSP: 0018:ffffc90000007c50 EFLAGS: 00010046
-RAX: 1aaa08be6903c500 RBX: ffff888085d16ac8 RCX: ffff888085d16240
-RDX: 0000000000010004 RSI: 0000000000010004 RDI: 0000000000000000
-RBP: ffff888085d16b0c R08: ffffffff815dd389 R09: ffffed1015d041c3
-R10: ffffed1015d041c3 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff8880a8bac140 R14: ffff8880a8bac4c0 R15: dffffc0000000000
- rcu_print_task_stall kernel/rcu/tree_stall.h:269 [inline]
- print_other_cpu_stall kernel/rcu/tree_stall.h:477 [inline]
- check_cpu_stall kernel/rcu/tree_stall.h:636 [inline]
- rcu_pending kernel/rcu/tree.c:3489 [inline]
- rcu_sched_clock_irq+0x12ec/0x1eb0 kernel/rcu/tree.c:2504
- update_process_times+0x12c/0x180 kernel/time/timer.c:1737
- tick_sched_handle kernel/time/tick-sched.c:176 [inline]
- tick_sched_timer+0x254/0x410 kernel/time/tick-sched.c:1320
- __run_hrtimer kernel/time/hrtimer.c:1520 [inline]
- __hrtimer_run_queues+0x42d/0x930 kernel/time/hrtimer.c:1584
- hrtimer_interrupt+0x373/0xd60 kernel/time/hrtimer.c:1646
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
- __sysvec_apic_timer_interrupt+0xf0/0x260 arch/x86/kernel/apic/apic.c:1097
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- sysvec_apic_timer_interrupt+0xb9/0x130 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:585
-RIP: 0010:csd_lock_wait kernel/smp.c:108 [inline]
-RIP: 0010:smp_call_function_single+0x307/0x450 kernel/smp.c:382
-Code: e6 01 31 ff e8 6a 05 0b 00 41 83 e5 01 75 14 e8 4f 01 0b 00 eb 45 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 f3 90 42 0f b6 04 23 <84> c0 75 0d 41 f6 07 01 74 22 e8 2a 01 0b 00 eb e8 44 89 f9 80 e1
-RSP: 0018:ffffc90006d5faa0 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 1ffff92000dabf59 RCX: ffff888085d16240
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc90006d5fb28 R08: ffffffff816990e6 R09: ffffed1015d26d11
-R10: ffffed1015d26d11 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000001 R14: 0000000000000000 R15: ffffc90006d5fac8
- smp_call_function_many kernel/smp.c:577 [inline]
- smp_call_function kernel/smp.c:599 [inline]
- on_each_cpu+0x4d/0x1f0 kernel/smp.c:699
- text_poke_sync arch/x86/kernel/alternative.c:996 [inline]
- text_poke_bp_batch+0x1df/0x640 arch/x86/kernel/alternative.c:1174
- text_poke_flush arch/x86/kernel/alternative.c:1296 [inline]
- text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1303
- arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:126
- __static_key_slow_dec_cpuslocked kernel/jump_label.c:248 [inline]
- __static_key_slow_dec+0x109/0x140 kernel/jump_label.c:255
- tracepoint_remove_func kernel/tracepoint.c:285 [inline]
- tracepoint_probe_unregister+0x48a/0x540 kernel/tracepoint.c:355
- trace_event_reg+0x215/0x250 kernel/trace/trace_events.c:308
- perf_trace_event_unreg+0xb1/0x1d0 kernel/trace/trace_event_perf.c:162
- perf_trace_destroy+0x93/0xb0 kernel/trace/trace_event_perf.c:243
- _free_event+0xc08/0x1120 kernel/events/core.c:4795
- put_event kernel/events/core.c:4889 [inline]
- perf_event_release_kernel+0xbd7/0xc90 kernel/events/core.c:5004
- perf_release+0x37/0x40 kernel/events/core.c:5014
- __fput+0x2f0/0x750 fs/file_table.c:281
- task_work_run+0x137/0x1c0 kernel/task_work.c:135
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_usermode_loop arch/x86/entry/common.c:239 [inline]
- __prepare_exit_to_usermode+0x14c/0x1e0 arch/x86/entry/common.c:269
- do_syscall_64+0x7f/0xe0 arch/x86/entry/common.c:393
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x415ee1
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ffcaab40390 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000415ee1
-RDX: 0000000000000000 RSI: 0000000000001c3c RDI: 0000000000000004
-RBP: 0000000000000001 R08: 00000000ad6d3c3b R09: 00000000ad6d3c3f
-R10: 00007ffcaab40480 R11: 0000000000000293 R12: 000000000078c900
-R13: 000000000078c900 R14: ffffffffffffffff R15: 000000000078bfac
-Shutting down cpus with NMI
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+I think there were plans to eventually switch to 2MB THP with 64k base
+pages as well (which can be emulated using some sort of consecutive PTE
+entries under arm64, don't ask me how this feature is called),
+theoretically also allowing smaller section sizes (when also reducing
+MAX_ORDER properly) I would highly appreciate that switch. Having max
+allocation/THP in the size of gigantic pages sounds very weird to me
+(and creates issues e.g., to support hot(un)plug of small memory blocks
+for virtio-mem). But I guess this is not under our control :)
+
+> 
+> In one word, if we considered to reduce SECTION_SIZE_BITS on arm64, the Kconfig
+> might be very complicated,e.g. we still need to consider the case for
+> ARM64_16K_PAGES.
+
+Haven't looked into 16k base pages yet. But I remember it's in general
+more similar to 4k than to 64k (speaking about sane THP sizes and
+similar ...).
+
+> 
+>>
+>> In the long term we might want to rework the memory block device model
+>> (eventually supporting old/new as discussed with Michal some time ago
+>> using a kernel parameter), dropping the fixed sizes
+> 
+> Has this been posted to Linux mm maillist? Sorry, searched and didn't find it.
+
+Yeah, but I might not be able to dig it out anymore ...
+
+Anyhow, the idea would be to have some magic switch that converts
+between old and new world, to not break userspace that relies on that.
+
+With old, everything would continue to work as it is. With *new* we
+would have the reduced number of memory blocks for boot memory and
+decoupled it from a strict, static memory block size.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+There would be another option in corner cases right now. If you would
+*know* that the metadata memory has no memmap/idendity mapping and have
+1G alignment for your pmem device (including the metadata part)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+1. add_memory_device_managed() the whole memory, including the metadata part
+2. use generic_online_pages() to not expose metadata pages to the buddy
+3. Mark metdata pages in a special way, such that you can e.g., allow to
+offline memory again, including the metdata pages (e.g., PG_offline +
+memory notifier like virtio-mem does)
+
+3. would only be relevant to support offlining of memory again.
+
+If the metadata part is, however, already ZONE_DEVICE with a memmap,
+then that's not an option. (I have no idea how that metadata part is
+used, sorry)
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
