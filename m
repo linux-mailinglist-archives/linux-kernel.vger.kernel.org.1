@@ -2,86 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1014231BD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC2D231BD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgG2JL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 05:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726737AbgG2JL6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 05:11:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83AA8C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 02:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=J0SIyyCqtngJmxWOxvkn9MOwqoIdVm/BuYE3QogVzc8=; b=hpVGUku45zWWGcg3Prx2nBUfqb
-        wC7X8NqIK6c6gnNIbhOYj17a2dqHkheORFnbppCmKyIBj/YKeSpuQyiisJqs50YqU3dAyGOIems4V
-        LHIXzMKWl6aFtCjwT1NrwYz2JAmdz/FS2XpPJ9NKiP6AYrQ0T8NUz3aPFAuadCNZrl8sQJeEO7yhY
-        NfBCwK4vvGWkub3aVF14dJdSw2TasQjmhM1EshBuXO9ZWJ9ca87kAYesGvw6kMeMFjDCJpWLuJ0ou
-        gI+D78lyyCVpDihtztlVMkpTsBqbMuluBhHYDHfhaxQ9ZuYYFF6G7+MVd3xjGvcRthS7+WBZEnMcz
-        B8FIoJoA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k0i7u-0003PP-J3; Wed, 29 Jul 2020 09:11:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3265F300238;
-        Wed, 29 Jul 2020 11:11:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1D9B22B804951; Wed, 29 Jul 2020 11:11:54 +0200 (CEST)
-Date:   Wed, 29 Jul 2020 11:11:54 +0200
-From:   peterz@infradead.org
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com
-Subject: Re: [PATCH 2/6] arch: x86: Wrap TIF_IA32 checks
-Message-ID: <20200729091154.GB119549@hirez.programming.kicks-ass.net>
-References: <20200728202229.1195682-1-krisman@collabora.com>
- <20200728202229.1195682-3-krisman@collabora.com>
- <CALCETrV_HJCrDLCKLrqNbLiOsoEcC9M7zn-v_hcVMvDgnWW8yw@mail.gmail.com>
+        id S1728064AbgG2JIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 05:08:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:48256 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726548AbgG2JIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 05:08:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 111D631B;
+        Wed, 29 Jul 2020 02:08:10 -0700 (PDT)
+Received: from [10.37.8.154] (unknown [10.37.8.154])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5768B3F718;
+        Wed, 29 Jul 2020 02:08:06 -0700 (PDT)
+Subject: Re: [PATCH 1/4] drivers/perf: Add support for ARMv8.3-SPE
+To:     liwei391@huawei.com, adrian.hunter@intel.com,
+        alexander.shishkin@linux.intel.com, acme@kernel.org,
+        catalin.marinas@arm.com, James.Clark@arm.com, jolsa@redhat.com,
+        leo.yan@linaro.org, mark.rutland@arm.com, namhyung@kernel.org,
+        will@kernel.org, zhangshaokun@hisilicon.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org, guohanjun@huawei.com
+References: <20200724091607.41903-1-liwei391@huawei.com>
+ <20200724091607.41903-2-liwei391@huawei.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <a9c59cb6-80f7-1abe-cef4-33127f051488@arm.com>
+Date:   Wed, 29 Jul 2020 10:12:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrV_HJCrDLCKLrqNbLiOsoEcC9M7zn-v_hcVMvDgnWW8yw@mail.gmail.com>
+In-Reply-To: <20200724091607.41903-2-liwei391@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 08:43:27PM -0700, Andy Lutomirski wrote:
-> On Tue, Jul 28, 2020 at 1:22 PM Gabriel Krisman Bertazi
-
-> > diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-> > index dc43cc124e09..27d1cc1f3d05 100644
-> > --- a/arch/x86/events/intel/ds.c
-> > +++ b/arch/x86/events/intel/ds.c
-> > @@ -1261,7 +1261,7 @@ static int intel_pmu_pebs_fixup_ip(struct pt_regs *regs)
-> >                 old_to = to;
-> >
-> >  #ifdef CONFIG_X86_64
-> > -               is_64bit = kernel_ip(to) || !test_thread_flag(TIF_IA32);
-> > +               is_64bit = kernel_ip(to) || !TASK_IA32(current);
+On 07/24/2020 10:16 AM, Wei Li wrote:
+> Armv8.3 extends the SPE by adding:
+> - Alignment field in the Events packet, and filtering on this event
+>    using PMSEVFR_EL1.
+> - Support for the Scalable Vector Extension (SVE).
 > 
-> PeterZ, does PEBS not give us a CPL?  Is it really just IP?
+> The main additions for SVE are:
+> - Recording the vector length for SVE operations in the Operation Type
+>    packet. It is not possible to filter on vector length.
+> - Incomplete predicate and empty predicate fields in the Events packet,
+>    and filtering on these events using PMSEVFR_EL1.
 > 
-> Anyway, this should probably be:
+> Update the check of pmsevfr for empty/partial predicated SVE and
+> alignment event in kernel driver.
 > 
-> is_64bit = kernel_ip(to) || user_64bit_mode(regs) || !user_mode(regs);
+> Signed-off-by: Wei Li <liwei391@huawei.com>
+> ---
+>   arch/arm64/include/asm/sysreg.h |  4 +++-
+>   drivers/perf/arm_spe_pmu.c      | 18 ++++++++++++++----
+>   2 files changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index 463175f80341..be4c44ccdb56 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -281,7 +281,6 @@
+>   #define SYS_PMSFCR_EL1_ST_SHIFT		18
+>   
+>   #define SYS_PMSEVFR_EL1			sys_reg(3, 0, 9, 9, 5)
+> -#define SYS_PMSEVFR_EL1_RES0		0x0000ffff00ff0f55UL
+>   
+>   #define SYS_PMSLATFR_EL1		sys_reg(3, 0, 9, 9, 6)
+>   #define SYS_PMSLATFR_EL1_MINLAT_SHIFT	0
+> @@ -769,6 +768,9 @@
+>   #define ID_AA64DFR0_PMUVER_8_5		0x6
+>   #define ID_AA64DFR0_PMUVER_IMP_DEF	0xf
+>   
+> +#define ID_AA64DFR0_PMSVER_8_2		0x1
+> +#define ID_AA64DFR0_PMSVER_8_3		0x2
+> +
+>   #define ID_DFR0_PERFMON_SHIFT		24
+>   
+>   #define ID_DFR0_PERFMON_8_1		0x4
+> diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+> index e51ddb6d63ed..5ec7ee0c8fa1 100644
+> --- a/drivers/perf/arm_spe_pmu.c
+> +++ b/drivers/perf/arm_spe_pmu.c
+> @@ -54,7 +54,7 @@ struct arm_spe_pmu {
+>   	struct hlist_node			hotplug_node;
+>   
+>   	int					irq; /* PPI */
+> -
+> +	int					pmuver;
+>   	u16					min_period;
+>   	u16					counter_sz;
+>   
+> @@ -80,6 +80,15 @@ struct arm_spe_pmu {
+>   /* Keep track of our dynamic hotplug state */
+>   static enum cpuhp_state arm_spe_pmu_online;
+>   
+> +static u64 sys_pmsevfr_el1_mask[] = {
+> +	[ID_AA64DFR0_PMSVER_8_2] = GENMASK_ULL(63, 48) | GENMASK_ULL(31, 24) |
+> +		GENMASK_ULL(15, 12) | BIT_ULL(7) | BIT_ULL(5) | BIT_ULL(3) |
+> +		BIT_ULL(1),
+> +	[ID_AA64DFR0_PMSVER_8_3] = GENMASK_ULL(63, 48) | GENMASK_ULL(31, 24) |
+> +		GENMASK_ULL(18, 17) | GENMASK_ULL(15, 11) | BIT_ULL(7) |
+> +		BIT_ULL(5) | BIT_ULL(3) | BIT_ULL(1),
+> +};
+> +
+>   enum arm_spe_pmu_buf_fault_action {
+>   	SPE_PMU_BUF_FAULT_ACT_SPURIOUS,
+>   	SPE_PMU_BUF_FAULT_ACT_FATAL,
+> @@ -670,7 +679,7 @@ static int arm_spe_pmu_event_init(struct perf_event *event)
+>   	    !cpumask_test_cpu(event->cpu, &spe_pmu->supported_cpus))
+>   		return -ENOENT;
+>   
+> -	if (arm_spe_event_to_pmsevfr(event) & SYS_PMSEVFR_EL1_RES0)
+> +	if (arm_spe_event_to_pmsevfr(event) & ~sys_pmsevfr_el1_mask[spe_pmu->pmuver])
+>   		return -EOPNOTSUPP;
+>   
+>   	if (attr->exclude_idle)
+> @@ -937,6 +946,7 @@ static void __arm_spe_pmu_dev_probe(void *info)
+>   			fld, smp_processor_id());
+>   		return;
+>   	}
+> +	spe_pmu->pmuver = fld;
 
-Correct, PEBS doesn't have the segment registers and we get to guess :/
-Look at the various pebs_record_* structures in
-arch/x86/events/intel/ds.c.
+How do we deal with cases where we have big.LITTLE system with differing
+SPE versions ?
 
-That said, in fixup_ip() we're guaranteed to be in the same process, so
-unless the task does really funny things like switch mode between
-triggering the assist and getting the PMI, we ought to be able to trust
-regs.
+Cheers
+Suzuki
