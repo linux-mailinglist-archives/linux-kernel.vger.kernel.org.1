@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EBD2327F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 01:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9C42327F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 01:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgG2XSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 19:18:50 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:55744 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbgG2XSu (ORCPT
+        id S1728139AbgG2XT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 19:19:29 -0400
+Received: from sonic315-21.consmr.mail.ne1.yahoo.com ([66.163.190.147]:38716
+        "EHLO sonic315-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727115AbgG2XT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 19:18:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-Id:Date:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=89S+0e9qaMFizZD+RqQQwt4PtCqG160SQSXRodd2/rg=; b=HVEQ5APHaKvLskI7TAL5CaUC9X
-        pGYeq7ZPshVY64Hg8IB+e22hnLINwW/LMYgLoxtfKEYsXRqAZpchZC8TEDgjMBI1R8V66Vk2xwuEQ
-        xjFgOsfcv0uck1cZCu8/pyKreXsOHBwwmVc/3tCPrUpoKFuZVHsfBP/eejQ+KUTYfwNgYS1EvgnWj
-        BfAl6F78l2XuNaA+AQvNwrtHG1vOVfOgvNEzbG9+Y+Dy5nHgMVum/ITFGiiG9jEul8RIqUm/jNyx+
-        XFgO8vglejw+chzGuCfPbPVfQaSPW3WSirDgcE1xvB7mWD33jwhjuGSBM93AG3G3cLJZSjQ2GyAeT
-        CWwTtpRA==;
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1k0vLT-0002wJ-GY; Wed, 29 Jul 2020 17:18:49 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1k0vLS-0001Do-Du; Wed, 29 Jul 2020 17:18:46 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>
-Date:   Wed, 29 Jul 2020 17:18:44 -0600
-Message-Id: <20200729231844.4653-1-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 29 Jul 2020 19:19:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596064768; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=KDM8QcoV2GGvZxoI6Lu168Svm5qcunrUrKhc7t0lms/V7DYB0Exslv9jQDuO3EF3mP0ClGIeDeGBdAPX1whQbEJkdxpoc5T8OKg9Vk4VoTwrErjPG+WR2qCk9wgs2cg27Gi4ZYqequdD804gjByrKI9xjKnfUaP6ZVBFpn1yIcYc60ckb6+supqY30izaeOdb1Yf1jOrrdLw8iYOzGsCCzztIO67AjKk4vzlZg+ZdyuU5XeRFZUXV53EqQsEOZuEzz6AMIpYWF443Sfv+08p1w6fudWSEQCzS/vqfTbuE40HmGP2ECEuXJLlOdXBTCP+X09rNLmwZ9OJ7wPmBfE6CQ==
+X-YMail-OSG: hkUI6wUVM1kV1U2LTmY6oy4hynaNxuoHCj_DmQovQwuwDbM9y0EOUjRCg3WbD8N
+ NGRNO2v7_2RSjhHyrZ0s61SfSkRzO7WX4LVAbbZJrfA0luaFL4X.jRyMAvLDx_oNUH3MKBePvrID
+ hFOFcuoEedqxClFBavnYqVQkPJVsQixfGskq57nIlNTBkPRJPuEdDBJXvau07RIdmmL56nbGcveS
+ yU2NLzbZxp4iiIfIOUnBFQSTeZUWJyLs4dcPfj68toT7cdJ1mlDwhl5q_Vs6ehRbZj3E3FRYJ0HF
+ 0QptTE3q9S4OfZH6gcRW_hgwWUZRrxgDimnWIFqOGOPcHVaKeFhZaeOplxXczqMI6wrx.xcRFXlj
+ 7Y6A.XKd6hl4bGL9_uzHAYeZi9M72AwkYxU8UHj7mhtHNgBpaSSOdoIX2eTSrMxXSJOd0S7J9pYz
+ p8bdyLOroAPTezXjTZqX7wSc_FqT2LS2lQNxYMZ4ZgJ89dff_Dq5kY3Jf.rCPZggwJNvlCdzXnzV
+ SnfuQf8v97Wkk7apAOwEh61CFPKJZygl8a7b8l6XkiL28qbf58sZp4A9zqNHP4Kr8Kyj4wU4Z_Tu
+ HVJiibEianNTb5YOfJITA1QiU4TavmhiBIOoRAz6wxJPwo3N3cKwKk0MMd.VUF_M.sVGFno0Pwt7
+ wUoevKEj0N2UQU8V3lUZnKpW7LuaRH.Q4ixPlNR6uRSazm3IXrrkgkbOIVz1k.p_oo82ATV48d9D
+ coP6P4wfLOXH2BlwarJTx8wemGG3Drxl6GBOiNiShSyKS0UNA3hhclluSpe1d6Nypo84ZBJmpLuB
+ ZE1Bpg94VKfBPWmj_Cuxw7ZAhXOLWXEmWOrPoGO.d_moTK6vgi0S85QHRgAidwYTSVqwp0V0pZB4
+ zRCHZYebbRZ8b9.A4SAXti4STU75HeVfPin0KWIhRLXv3PQqKILRqyFDS9P8fKzDeVQNKIRjeSEl
+ hLWWuJLOKrYO1zLnXFFTc79._5K62DAOD2vV02adRSaTZe3j02VNo8y7jWf.hwbrUV9OA9yxe752
+ Rlu.ftDG0VnghVF4M.77dWsOz8H67VsTeywCE7phFyZXfG2Y11OaXREIfBuATCVLYMsWNhmI6uAs
+ uKlQacD.rYrylmROAeE.N99xYGUeRGNPuad4n6pn1kqNratt5sUISnbBB25y5RzI4..ZHzSFCBmP
+ D5432tKxTjIhXuHtgMeyseenOyJejJVUJwAqLTppXuucuIqZNR79yI6bdsU6uutBib5O.LZHa.WL
+ 7x5GMxSKnBJaEoPi5ikdqCvEsAfp9SRi9DKw-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Wed, 29 Jul 2020 23:19:28 +0000
+Date:   Wed, 29 Jul 2020 23:19:24 +0000 (UTC)
+From:   "Mina A. Brunel" <mrsminaabrunel2334@gmail.com>
+Reply-To: mrsminaabrunel57044@gmail.com
+Message-ID: <568704924.9238132.1596064764684@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, logang@deltatee.com, bhelgaas@google.com, alexdeucher@gmail.com, christian.koenig@amd.com, ray.huang@amd.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: [PATCH v2] PCI/P2PDMA: Allow P2PDMA on all AMD CPUs newer than the Zen family
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Transfer-Encoding: quoted-printable
+References: <568704924.9238132.1596064764684.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to avoid needing to add every new AMD CPU host bridge to the list
-every cycle, allow P2PDMA if the CPUs vendor is AMD and family is
-greater than 0x17 (Zen).
-
-This should cut down a bunch of the churn adding to the list of allowed
-host bridges.
-
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Alex Deucher <alexdeucher@gmail.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Huang Rui <ray.huang@amd.com>
-
----
-
-Here's a reworked patch to enable P2PDMA on Zen2 (and in fact all
-subsequent Zen platforms).
-
-This should remove all the churn on the list for the AMD side. Still
-don't have a good solution for Intel.
-
- drivers/pci/p2pdma.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-index e8e444eeb1cd..f1cab2c50595 100644
---- a/drivers/pci/p2pdma.c
-+++ b/drivers/pci/p2pdma.c
-@@ -273,6 +273,24 @@ static void seq_buf_print_bus_devfn(struct seq_buf *buf, struct pci_dev *pdev)
- 	seq_buf_printf(buf, "%s;", pci_name(pdev));
- }
-
-+#ifdef CONFIG_X86
-+static bool cpu_supports_p2pdma(void)
-+{
-+	struct cpuinfo_x86 *c = &cpu_data(0);
-+
-+	/* Any AMD CPU who's family id is newer than Zen will support p2pdma */
-+	if (c->x86_vendor == X86_VENDOR_AMD && c->x86 >= 0x17)
-+		return true;
-+
-+	return false;
-+}
-+#else
-+static bool cpu_supports_p2pdma(void)
-+{
-+	return false;
-+}
-+#endif
-+
- static const struct pci_p2pdma_whitelist_entry {
- 	unsigned short vendor;
- 	unsigned short device;
-@@ -280,11 +298,6 @@ static const struct pci_p2pdma_whitelist_entry {
- 		REQ_SAME_HOST_BRIDGE	= 1 << 0,
- 	} flags;
- } pci_p2pdma_whitelist[] = {
--	/* AMD ZEN */
--	{PCI_VENDOR_ID_AMD,	0x1450,	0},
--	{PCI_VENDOR_ID_AMD,	0x15d0,	0},
--	{PCI_VENDOR_ID_AMD,	0x1630,	0},
--
- 	/* Intel Xeon E5/Core i7 */
- 	{PCI_VENDOR_ID_INTEL,	0x3c00, REQ_SAME_HOST_BRIDGE},
- 	{PCI_VENDOR_ID_INTEL,	0x3c01, REQ_SAME_HOST_BRIDGE},
-@@ -473,7 +486,8 @@ upstream_bridge_distance(struct pci_dev *provider, struct pci_dev *client,
- 					      acs_redirects, acs_list);
-
- 	if (map_type == PCI_P2PDMA_MAP_THRU_HOST_BRIDGE) {
--		if (!host_bridge_whitelist(provider, client))
-+		if (!cpu_supports_p2pdma() &&
-+		    !host_bridge_whitelist(provider, client))
- 			map_type = PCI_P2PDMA_MAP_NOT_SUPPORTED;
- 	}
 
 
-base-commit: 92ed301919932f777713b9172e525674157e983d
---
-2.20.1
+My Dear in the lord
+
+
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
+u the capital city of of Burkina in West Africa. The money was from the sal=
+e of his company and death benefits payment and entitlements of my deceased=
+ husband by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
