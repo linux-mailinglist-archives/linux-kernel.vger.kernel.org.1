@@ -2,188 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F92F231BCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9507231BD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgG2JH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 05:07:26 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:37669 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgG2JH0 (ORCPT
+        id S1728068AbgG2JJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 05:09:38 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:48659 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgG2JJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 05:07:26 -0400
-Received: by mail-lj1-f193.google.com with SMTP id q6so24209786ljp.4;
-        Wed, 29 Jul 2020 02:07:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:to:cc:references:from:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0ixb1jJgq4PcU3Usk6ZmktN5ND8M3VvBo7EWZku4aSU=;
-        b=Apdf3v2D68FwynV5cJZeswSoxaqucrbGWikP0iFCGPdc/1vz5UQeFT0fY8FqtT78Cs
-         3QGyEiRJioMXUUJOhtQ/3ksNQt6w9EGqBJ7+nxDcT7Mwx7ZVO2DIrVZ+EC24HT34tApz
-         sSFuiGeHBCqB1IqjvDtS28u7DXBXa9nPOonIToLOeu6lq4wC462bVmLV6iyeeIpbDYmK
-         ojbES/F03W2LHxmbKAlAXl+UHvVIo+1hJuVO2hkBCrPUVxU3HgVNNGxr0kEXoxbk69zF
-         mFnjjdOngyM94FjGI9TtAVSNFEKdX9fY65oZV9XGa/Js2PPQM79iqNWcrhPhVSNltAko
-         PTZg==
-X-Gm-Message-State: AOAM532Hj6HaDCUicgHMWAEYc7ctu/T9/hUQAojtjFBFlMtKI5d0fRgm
-        yorSy8/WkzaiTX+SdGhFuFqam03hW+0=
-X-Google-Smtp-Source: ABdhPJz9wf5QNR65CUpnlh+TUZNMEDvEXktIZ0HKeeIx2T09rKAAfP4I9f9dvG9YIgjg0Z8Oj+VLrQ==
-X-Received: by 2002:a2e:7601:: with SMTP id r1mr15299166ljc.111.1596013642633;
-        Wed, 29 Jul 2020 02:07:22 -0700 (PDT)
-Received: from [10.68.32.147] (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
-        by smtp.gmail.com with ESMTPSA id s2sm272584ljg.84.2020.07.29.02.07.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Jul 2020 02:07:22 -0700 (PDT)
-Reply-To: efremov@linux.com
-To:     Peilin Ye <yepeilin.cs@gmail.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <20200728141946.426245-1-yepeilin.cs@gmail.com>
-From:   Denis Efremov <efremov@linux.com>
-Autocrypt: addr=efremov@linux.com; keydata=
- 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
-Subject: Re: [Linux-kernel-mentees] [PATCH] block/floppy: Prevent
- kernel-infoleak in raw_cmd_copyout()
-Message-ID: <40446b2c-3885-1b30-c0b3-5f544a96ed78@linux.com>
-Date:   Wed, 29 Jul 2020 12:07:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 29 Jul 2020 05:09:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1596013777; x=1627549777;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=SciFhlKfOyQgoHR3W2u7HoyEVe3pSryfx/QBiBfKds8=;
+  b=pmZEnPWomMJY0KtcEhkzCIU6S1wsBHtwU2FcLwE5RL/dyAmflqLrGZpj
+   buZtwtLWD+uDJLdYDd1ac6JtjEiCJk0Eck+6RQ88IkdtdHoAO0lENHIRP
+   XADF7GesljeYckuvCb62xv+3jD8zNjj3nSTjYS8w81txPOi6IWjs+EKAc
+   M=;
+IronPort-SDR: iGhMXsEFZ7rmehllBU/6DXbQhQ9ceJjM/OTGQL0+l9iOw433CMybv2oqS2CGcWtQPX5PXSPwfO
+ aV5zYwDbdVxA==
+X-IronPort-AV: E=Sophos;i="5.75,409,1589241600"; 
+   d="scan'208";a="44709903"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 29 Jul 2020 09:09:35 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 4DA8628392C;
+        Wed, 29 Jul 2020 09:09:31 +0000 (UTC)
+Received: from EX13D20UWC002.ant.amazon.com (10.43.162.163) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 29 Jul 2020 09:09:31 +0000
+Received: from 38f9d3867b82.ant.amazon.com (10.43.162.109) by
+ EX13D20UWC002.ant.amazon.com (10.43.162.163) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 29 Jul 2020 09:09:28 +0000
+Subject: Re: [PATCH] KVM: x86: Deflect unknown MSR accesses to user space
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>
+CC:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>
+References: <20200728004446.932-1-graf@amazon.com>
+ <87d04gm4ws.fsf@vitty.brq.redhat.com>
+ <a1f30fc8-09f5-fe2f-39e2-136b881ed15a@amazon.com>
+ <CALMp9eQ3OxhQZYiHPiebX=KyvjWQgxQEO-owjSoxgPKsOMRvjw@mail.gmail.com>
+ <87y2n2log7.fsf@vitty.brq.redhat.com>
+From:   Alexander Graf <graf@amazon.com>
+Message-ID: <173948e8-4c7a-6dc4-de17-99151bc56d91@amazon.com>
+Date:   Wed, 29 Jul 2020 11:09:26 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200728141946.426245-1-yepeilin.cs@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <87y2n2log7.fsf@vitty.brq.redhat.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.162.109]
+X-ClientProxiedBy: EX13D03UWC003.ant.amazon.com (10.43.162.79) To
+ EX13D20UWC002.ant.amazon.com (10.43.162.163)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 7/28/20 5:19 PM, Peilin Ye wrote:
-> raw_cmd_copyout() is potentially copying uninitialized kernel stack memory
-> since it is initializing `cmd` by assignment, which may cause the compiler
-> to leave uninitialized holes in this structure. Fix it by using memcpy()
-> instead.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 2145e15e0557 ("floppy: don't write kernel-only members to FDRAWCMD ioctl output")
-> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-
-Reviewed-by: Denis Efremov <efremov@linux.com>
-
-ptr comes from raw_cmd_copyin and it should be ok to use memcpy.
-
-Jens, could you please take this one to your 5.9 branch?
 
 
-> ---
-> $ pahole -C "floppy_raw_cmd" drivers/block/floppy.o
-> struct floppy_raw_cmd {
-> 	unsigned int               flags;                /*     0     4 */
-> 
-> 	/* XXX 4 bytes hole, try to pack */
-> 
-> 	void *                     data;                 /*     8     8 */
-> 	char *                     kernel_data;          /*    16     8 */
-> 	struct floppy_raw_cmd *    next;                 /*    24     8 */
-> 	long int                   length;               /*    32     8 */
-> 	long int                   phys_length;          /*    40     8 */
-> 	int                        buffer_length;        /*    48     4 */
-> 	unsigned char              rate;                 /*    52     1 */
-> 	unsigned char              cmd_count;            /*    53     1 */
-> 	union {
-> 		struct {
-> 			unsigned char cmd[16];           /*    54    16 */
-> 			/* --- cacheline 1 boundary (64 bytes) was 6 bytes ago --- */
-> 			unsigned char reply_count;       /*    70     1 */
-> 			unsigned char reply[16];         /*    71    16 */
-> 		};                                       /*    54    33 */
-> 		unsigned char      fullcmd[33];          /*    54    33 */
-> 	};                                               /*    54    33 */
-> 
-> 	/* XXX 1 byte hole, try to pack */
-> 
-> 	/* --- cacheline 1 boundary (64 bytes) was 24 bytes ago --- */
-> 	int                        track;                /*    88     4 */
-> 	int                        resultcode;           /*    92     4 */
-> 	int                        reserved1;            /*    96     4 */
-> 	int                        reserved2;            /*   100     4 */
-> 
-> 	/* size: 104, cachelines: 2, members: 14 */
-> 	/* sum members: 99, holes: 2, sum holes: 5 */
-> 	/* last cacheline: 40 bytes */
-> };
-> 
+On 29.07.20 10:23, Vitaly Kuznetsov wrote:
+> =
 
-It would be nice to add lkml links with discussion on the issue or
-https://www.nccgroup.com/us/about-us/newsroom-and-events/blog/2019/october/padding-the-struct-how-a-compiler-optimization-can-disclose-stack-memory/
-in addition to pahole output.
+> =
 
->  drivers/block/floppy.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-> index 09079aee8dc4..b8ea98f7a9cb 100644
-> --- a/drivers/block/floppy.c
-> +++ b/drivers/block/floppy.c
-> @@ -3126,7 +3126,9 @@ static int raw_cmd_copyout(int cmd, void __user *param,
->  	int ret;
->  
->  	while (ptr) {
-> -		struct floppy_raw_cmd cmd = *ptr;
-> +		struct floppy_raw_cmd cmd;
-> +
-> +		memcpy(&cmd, ptr, sizeof(cmd))>  		cmd.next = NULL;
->  		cmd.kernel_data = NULL;
->  		ret = copy_to_user(param, &cmd, sizeof(cmd));
-> 
+> =
 
-Thanks,
-Denis
+> Jim Mattson <jmattson@google.com> writes:
+> =
+
+>> On Tue, Jul 28, 2020 at 5:41 AM Alexander Graf <graf@amazon.com> wrote:
+>>>
+> =
+
+> ...
+> =
+
+>>> While it does feel a bit overengineered, it would solve the problem that
+>>> we're turning in-KVM handled MSRs into an ABI.
+>>
+>> It seems unlikely that userspace is going to know what to do with a
+>> large number of MSRs. I suspect that a small enumerated list will
+>> suffice.
+> =
+
+> The list can also be 'wildcarded', i.e.
+> {
+>   u32 index;
+>   u32 mask;
+>   ...
+> }
+> =
+
+> to make it really short.
+
+I like the idea of wildcards, but I can't quite wrap my head around how =
+
+we would implement ignore_msrs in user space with them?
+
+
+Alex
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
