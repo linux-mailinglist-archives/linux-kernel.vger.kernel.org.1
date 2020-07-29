@@ -2,90 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660A9231C6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 12:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF5E231C6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 12:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgG2KCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 06:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726208AbgG2KCD (ORCPT
+        id S1726859AbgG2KCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 06:02:38 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:54247 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726664AbgG2KCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 06:02:03 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BD0C061794;
-        Wed, 29 Jul 2020 03:02:03 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id w2so13976471pgg.10;
-        Wed, 29 Jul 2020 03:02:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TcAbcu4b2MCOdxF06fdyH7UgcMhYEDFeJHrp4ij7/R4=;
-        b=UG2Q/DcxeP3B/3eMJa8fn4+P0L10ezGDWil0QNLIK3XVYn61soZPteCAuoGwTv2Ie5
-         JgzH1+L8pjQ0K+cZqIUKYcgV/g4gqhAuv0MMeuQS+puFp+IGl7LZ6WB2F6D7FUfp1CPo
-         LwFU1o460xSozJaSeTsOEI/htJ5EX/dxjgGP3etijEOYx0QidZchFRdovmRY4gF5Hkyd
-         wntOyVpBJnuhRnyXRusFBKjC08VMfkhNWJyBUqx4HpYMfCu585RUc8z8yxLabE2EYd2L
-         GXIUGNQ/Kn54GpQDMSszT13roSXz8Z2mspv/SgFSs7ytXHyIw3uo8dcokyYLvduRFI9Y
-         5Xaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TcAbcu4b2MCOdxF06fdyH7UgcMhYEDFeJHrp4ij7/R4=;
-        b=VbzZ+9ACPHcQrNyKey7vDXSN64qqbi0B9Rftn2fa/ii29jXZGOy+hfyehDjx4OZ+cZ
-         O1oqWaDYEXh3Prp1RKMKqlUDSJEDc14A++4X7rjEWuSLpwqBvsk0964w/bniIfiK1ZQt
-         CIpPZHaQDeGq5fRH4iwUIahsmE9BAUOSz3vGxtAa4+IrdkmXZP14X7RqE/VUQc9uA6uG
-         h+r4nxAJKJbxyUOIwO70w5p21Yv93rPUks5jwsp9Cgb6HM0b5kOk3/q0azhcGPZ/rc9k
-         FlKCMMpwNjunFM8JGxWi9M6XyMuSy46p5fiUoaPdx+nUhnkEK/6FOlmWZc2ZHtGnTjQv
-         BjDA==
-X-Gm-Message-State: AOAM530VwZouo9jF2kYVNwA0QvpEw2FVgmZwXzN9KWzzomEb+j3en4PJ
-        l8xnKZVZr5J0bSMmDlEYQwc=
-X-Google-Smtp-Source: ABdhPJxzag6GQkCa/vOhIcD+UJxGkue/MQu2bEm9A+8suxjrrR1GApoJcFOvJj+6J3XyhJFpbujQCQ==
-X-Received: by 2002:a63:1007:: with SMTP id f7mr22824756pgl.147.1596016923046;
-        Wed, 29 Jul 2020 03:02:03 -0700 (PDT)
-Received: from sol (106-69-185-93.dyn.iinet.net.au. [106.69.185.93])
-        by smtp.gmail.com with ESMTPSA id d128sm1742650pfa.24.2020.07.29.03.01.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 03:02:01 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 18:01:57 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 05/18] gpiolib: cdev: support GPIO_GET_LINE_IOCTL and
- GPIOLINE_GET_VALUES_IOCTL
-Message-ID: <20200729100157.GA761242@sol>
-References: <20200725041955.9985-1-warthog618@gmail.com>
- <20200725041955.9985-6-warthog618@gmail.com>
- <CAHp75VcKtATPDKGAViWqjOJDqukDrgZ13aTU6rTJ1jEeB3vmVw@mail.gmail.com>
- <20200726011244.GA6587@sol>
- <20200729022814.GA1750878@sol>
- <CAHp75VdUZ=N7Gd8NgYY4ifY68Rc5DyEOqrfjdTJvwiZ3ayNCMg@mail.gmail.com>
+        Wed, 29 Jul 2020 06:02:33 -0400
+X-UUID: 67651818c438449585071583ed6ddc9d-20200729
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=PQhqwCQspnAXNFobjzXHfwsqOP2Lc1A+L/OtZnfUCGg=;
+        b=YSM4RwS7CdHSnR+0/wj3NkKaYPdb8BQMtAEziLOQcxwkPe9/QKvEdRkHFuu4acYaPhCAZZ/XqsAVVvFCnavjVcdiWmd6UxGQahaNQvosfO3FbvUA1sz+RO4zEfCX+7TH5+d1HFxLDiThiBSa/dJ3aOOkkRElub6uX4Kx9nD51vc=;
+X-UUID: 67651818c438449585071583ed6ddc9d-20200729
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <crystal.guo@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 591561856; Wed, 29 Jul 2020 18:02:30 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 29 Jul 2020 18:02:27 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 29 Jul 2020 18:02:26 +0800
+From:   Crystal Guo <crystal.guo@mediatek.com>
+To:     <linux@roeck-us.net>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>
+CC:     <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <seiya.wang@mediatek.com>, <erin.lo@mediatek.com>
+Subject: [v2,0/3] add watchdog support for mt8192 
+Date:   Wed, 29 Jul 2020 18:01:59 +0800
+Message-ID: <1596016922-13184-1-git-send-email-crystal.guo@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdUZ=N7Gd8NgYY4ifY68Rc5DyEOqrfjdTJvwiZ3ayNCMg@mail.gmail.com>
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 11:05:48AM +0300, Andy Shevchenko wrote:
-> On Wed, Jul 29, 2020 at 5:28 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > On Sun, Jul 26, 2020 at 09:12:44AM +0800, Kent Gibson wrote:
-> 
-> ...
-> 
-> > I'll rework that for v3.
-> 
-> Please give some more time to review v2. Especially the v2 API approach.
-> 
+djEgY2hhbmdlczoNCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTE2ODA0OTUv
+DQpodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzExNjgwNDk3Lw0KDQpDcnlzdGFs
+IEd1byAoMyk6DQogIGR0LWJpbmRpbmc6IG1lZGlhdGVrOiBtdDgxOTI6IHVwZGF0ZSBtdGstd2R0
+IGRvY3VtZW50DQogIGR0LWJpbmRpbmc6IG10ODE5MjogYWRkIHRvcHJndSByZXNldC1jb250cm9s
+bGVyIGhlYWQgZmlsZQ0KICB3YXRjaGRvZzogbXQ4MTkyOiBhZGQgd2R0IHN1cHBvcnQNCg0KIC4u
+Li9kZXZpY2V0cmVlL2JpbmRpbmdzL3dhdGNoZG9nL210ay13ZHQudHh0ICAgICAgIHwgIDUgKyst
+LQ0KIGRyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+IDYgKysrKysNCiAuLi4vZHQtYmluZGluZ3MvcmVzZXQtY29udHJvbGxlci9tdDgxOTItcmVzZXRz
+LmggICB8IDMwICsrKysrKysrKysrKysrKysrKysrKysNCiAzIGZpbGVzIGNoYW5nZWQsIDM5IGlu
+c2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUv
+ZHQtYmluZGluZ3MvcmVzZXQtY29udHJvbGxlci9tdDgxOTItcmVzZXRzLmgNCg0K
 
-For sure.  I'll be spending some time setting up and testing on a BE 32
-target so I wont be ready to submit a v3 for a few days anyway.
-
-Cheers,
-Kent.
