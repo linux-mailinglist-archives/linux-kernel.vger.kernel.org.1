@@ -2,132 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12C62319B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BACA2319C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgG2GrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 02:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbgG2GrQ (ORCPT
+        id S1727783AbgG2Gr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 02:47:59 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49014 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726445AbgG2Grv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 02:47:16 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF447C061794;
-        Tue, 28 Jul 2020 23:47:15 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BGkcK12Y3z9sRW;
-        Wed, 29 Jul 2020 16:47:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1596005233;
-        bh=ijyyUr82wI4HGbRSdFt2yLXZvyup+U2Kte8u90b/Go0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YjGyXU2UayxF+EpN+uQL/BM2Hyx/tT2nZSgTgjC1xzEkY6KSF9Yc22ixCNRNu0hjA
-         BEAtGCl67giZnwKliNaKWPUhofKH92pD+8XXgyBufPMltFc4xqzmjPxsCbOZVNAkL+
-         AwnXvyiM0DBLpTorLCJS7hc2bg7QeJz0oM4v0ennWaW5HD+FLD5Vz5TDO5QN/RsUat
-         0QtxeEmGROekvXVZb8CD9BdkNSk2bP0yW61QZa3NdTqjmqGGqcGSriJgVxHEYIdCKR
-         UJQuSy4u9FargUgsSz2HwgSLAw0KzDpw0mPGkEujn09EFdB+g6MsogXClPkpFssf9K
-         sLZy6z913zr8g==
-Date:   Wed, 29 Jul 2020 16:47:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: linux-next: manual merge of the kvm tree with the tip tree
-Message-ID: <20200729164712.4f429876@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XHfzbWnBxBMDLwmII4hFvje";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Wed, 29 Jul 2020 02:47:51 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06T64WLj117379;
+        Wed, 29 Jul 2020 02:47:47 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32jw71196q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 02:47:47 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06T6511m119473;
+        Wed, 29 Jul 2020 02:47:46 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32jw711967-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 02:47:46 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06T6TjHF010667;
+        Wed, 29 Jul 2020 06:47:45 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma05wdc.us.ibm.com with ESMTP id 32gcy9qkku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 06:47:45 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06T6ljUp55247354
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Jul 2020 06:47:45 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EF943AC05B;
+        Wed, 29 Jul 2020 06:47:44 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2474DAC059;
+        Wed, 29 Jul 2020 06:47:44 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.85.85.173])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 29 Jul 2020 06:47:44 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 99BD22E2FF3; Wed, 29 Jul 2020 12:17:39 +0530 (IST)
+From:   "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>
+Cc:     linuxppc-dev@ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Subject: [PATCH v2 0/3] cpuidle-pseries: Parse extended CEDE information for idle.
+Date:   Wed, 29 Jul 2020 12:17:31 +0530
+Message-Id: <1596005254-25753-1-git-send-email-ego@linux.vnet.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-29_02:2020-07-28,2020-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ spamscore=0 impostorscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
+ malwarescore=0 phishscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007290041
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/XHfzbWnBxBMDLwmII4hFvje
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
 
-Hi all,
+Hi,
 
-Today's linux-next merge of the kvm tree got a conflict in:
+This is a v2 of the patch series to parse the extended CEDE
+information in the pseries-cpuidle driver.
 
-  arch/x86/kernel/kvm.c
+The v1 of this patchset can be found here :
+https://lore.kernel.org/linuxppc-dev/1594120299-31389-1-git-send-email-ego@linux.vnet.ibm.com/
 
-between commits:
+The change from v1 --> v2 :
 
-  b037b09b9058 ("x86/entry: Rename idtentry_enter/exit_cond_rcu() to idtent=
-ry_enter/exit()")
-  a27a0a55495c ("x86/entry: Cleanup idtentry_enter/exit")
+ * Dropped Patches 4 and 5 which would expose extended idle-states,
+   that wakeup on external interrupts, to cpuidle framework.  These
+   were RFC patches in v1. Dropped them because currently the only
+   extended CEDE state that wakesup on external interrupts is CEDE(1)
+   which adds no signifcant value over CEDE(0).
+   
+ * Rebased the patches onto powerpc/merge.
+ 
+ * No changes in code for Patches 1-3.
 
-from the tip tree and commits:
+Motivation:
+===========
+On pseries Dedicated Linux LPARs, apart from the polling snooze idle
+state, we currently have the CEDE idle state which cedes the CPU to
+the hypervisor with latency-hint = 0.
 
-  b1d405751cd5 ("KVM: x86: Switch KVM guest to using interrupts for page re=
-ady APF delivery")
-  26d05b368a5c ("Merge branch 'kvm-async-pf-int' into HEAD")
+However, the PowerVM hypervisor supports additional extended CEDE
+states, which can be queried through the "ibm,get-systems-parameter"
+rtas-call with the CEDE_LATENCY_TOKEN. The hypervisor maps these
+extended CEDE states to appropriate platform idle-states in order to
+provide energy-savings as well as shifting power to the active
+units. On existing pseries LPARs today we have extended CEDE with
+latency-hints {1,2} supported.
 
-from the kvm tree.
+The patches in this patchset, adds code to parse the CEDE latency
+records provided by the hypervisor. We use this information to
+determine the wakeup latency of the regular CEDE (which we have been
+so far hardcoding to 10us while experimentally it is much lesser ~
+1us), by looking at the wakeup latency provided by the hypervisor for
+Extended CEDE states. Since the platform currently advertises Extended
+CEDE 1 to have wakeup latency of 2us, we can be sure that the wakeup
+latency of the regular CEDE is no more than this.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+With Patches 1-3, we see an improvement in the single-threaded
+performance on ebizzy.
 
---=20
-Cheers,
-Stephen Rothwell
+2 ebizzy threads bound to the same big-core. 25% improvement in the
+avg records/s (higher the better) with patches 1-3.
+x without_patches
+* with_patches
+    N           Min           Max        Median           Avg        Stddev
+x  10       2491089       5834307       5398375       4244335     1596244.9
+*  10       2893813       5834474       5832448     5327281.3     1055941.4
 
-diff --cc arch/x86/kernel/kvm.c
-index 233c77d056c9,d9995931ea18..000000000000
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@@ -232,18 -235,13 +235,13 @@@ EXPORT_SYMBOL_GPL(kvm_read_and_reset_ap
- =20
-  noinstr bool __kvm_handle_async_pf(struct pt_regs *regs, u32 token)
-  {
-- 	u32 reason =3D kvm_read_and_reset_apf_flags();
-+ 	u32 flags =3D kvm_read_and_reset_apf_flags();
- -	bool rcu_exit;
- +	irqentry_state_t state;
- =20
-- 	switch (reason) {
-- 	case KVM_PV_REASON_PAGE_NOT_PRESENT:
-- 	case KVM_PV_REASON_PAGE_READY:
-- 		break;
-- 	default:
-+ 	if (!flags)
-  		return false;
-- 	}
- =20
- -	rcu_exit =3D idtentry_enter_cond_rcu(regs);
- +	state =3D irqentry_enter(regs);
-  	instrumentation_begin();
- =20
-  	/*
+We do not observe any major regression in either the context_switch2
+benchmark or the schbench benchmark
 
---Sig_/XHfzbWnBxBMDLwmII4hFvje
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+context_switch2 across CPU0 CPU1 (Both belong to same big-core, but different
+small cores). We observe a minor 0.14% regression in the number of
+context-switches (higher is better).
+x without_patch
+* with_patch
+    N           Min           Max        Median           Avg        Stddev
+x 500        348872        362236        354712     354745.69      2711.827
+* 500        349422        361452        353942      354215.4     2576.9258
 
------BEGIN PGP SIGNATURE-----
+context_switch2 across CPU0 CPU8 (Different big-cores). We observe a 0.37%
+improvement in the number of context-switches (higher is better).
+x without_patch
+* with_patch
+    N           Min           Max        Median           Avg        Stddev
+x 500        287956        294940        288896     288977.23     646.59295
+* 500        288300        294646        289582     290064.76     1161.9992
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8hG3AACgkQAVBC80lX
-0GzXTAf/UAzhjiwuIBm+VzF5IuHJ0gdp9QmrlbRsW2OIKY3Py04zMX8umaPT08dF
-tGEV/2hAwC8bBVm10fhfXeQonLsRiIrgsCHyTaRi31okGrqkFNc/ntKqKLK9qJf6
-iZt/TdJOaGZRV+dusjOK8Z8Vo+ndUhPR2NFCVV2digKBbFfaM2En0lBpNEMtxDJM
-ZsIhORnUv3JfQ0AdpkVoUb46mKb17jHkqWTewdFJGnfxR3F9ijhtsveEMp1PxGhv
-39RzeCeSu6GTZtaWLmdA/mqdKXUWms44wCDc+RGbzFuLwV+sItWB74i10ovWzbZZ
-5GZzPlqX0s1r9y2M5qoyHX9fdSomYw==
-=Q1Ke
------END PGP SIGNATURE-----
+schbench:
+No major difference could be seen until the 99.9th percentile.
 
---Sig_/XHfzbWnBxBMDLwmII4hFvje--
+Without-patch
+Latency percentiles (usec)
+	50.0th: 29
+	75.0th: 39
+	90.0th: 49
+	95.0th: 59
+	*99.0th: 13104
+	99.5th: 14672
+	99.9th: 15824
+	min=0, max=17993
+
+With-patch:
+Latency percentiles (usec)
+	50.0th: 29
+	75.0th: 40
+	90.0th: 50
+	95.0th: 61
+	*99.0th: 13648
+	99.5th: 14768
+	99.9th: 15664
+	min=0, max=29812
+
+Gautham R. Shenoy (3):
+  cpuidle-pseries: Set the latency-hint before entering CEDE
+  cpuidle-pseries: Add function to parse extended CEDE records
+  cpuidle-pseries : Fixup exit latency for CEDE(0)
+
+ drivers/cpuidle/cpuidle-pseries.c | 167 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 165 insertions(+), 2 deletions(-)
+
+-- 
+1.9.4
+
