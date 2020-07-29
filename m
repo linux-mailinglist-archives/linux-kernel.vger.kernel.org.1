@@ -2,593 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F622317ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354F2231815
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731205AbgG2DCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 23:02:36 -0400
-Received: from mga01.intel.com ([192.55.52.88]:18920 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728401AbgG2DCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 23:02:35 -0400
-IronPort-SDR: FcnsaFVPk4kzYaLB0DkBg3SozuYCsyh2j5tGL+6955wQBIXv+WeVMQ1JciDfh5mIsF3Ipofcg1
- 2tY+bBWQikFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="169468581"
-X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
-   d="scan'208";a="169468581"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 20:02:33 -0700
-IronPort-SDR: d1XWzYmBlujawiw+bZSG0GuCvZH7j6LgHMdcuBWwJ++JKMZIipBhA39hx8IZf/2KW+2fvAxrAe
- 6vWfJkmyc42g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
-   d="scan'208";a="330266755"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga007.jf.intel.com with ESMTP; 28 Jul 2020 20:02:32 -0700
-Date:   Tue, 28 Jul 2020 20:02:32 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC] x86/bus_lock: Enable bus lock detection
-Message-ID: <20200729030232.GE5583@linux.intel.com>
-References: <1595021700-68460-1-git-send-email-fenghua.yu@intel.com>
+        id S1726862AbgG2D1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 23:27:00 -0400
+Received: from smtpout.cincibell.syn-alias.com ([64.8.71.14]:29708 "EHLO
+        smtp.fuse.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726820AbgG2D07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 23:26:59 -0400
+X-Greylist: delayed 1201 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Jul 2020 23:26:58 EDT
+X_CMAE_Category: , ,
+X-CNFS-Analysis: v=2.3 cv=auTM9hRV c=1 sm=1 tr=0 a=DpjRPou7YFguvYe1QozIfA==:117 a=DpjRPou7YFguvYe1QozIfA==:17 a=KGjhK52YXX0A:10 a=_RQrkK6FrEwA:10 a=bLztB8koN2gA:10 a=D8kloWStAAAA:8 a=JpqZlOa9nmrr5y5q09YA:9 a=lToRegeunbQ_6iXc:21 a=GPCyfixGGpL8Pf8g:21 a=o-EAUcH4Qu12IBblF9Ex:22
+X-CM-Score: 0
+X-Scanned-by: Cloudmark Authority Engine
+X-Authed-Username: Y2thbmVAY29sZW1hbmthbmUub3Jn
+X_CMAE_Category: , ,
+X-CNFS-Analysis: 
+X-CM-Score: 
+X-Scanned-by: Cloudmark Authority Engine
+Received: from [216.196.174.247] ([216.196.174.247:18901] helo=mail.colemankane.org)
+        by smtpout.cincibell.syn-alias.com (envelope-from <ckane@colemankane.org>)
+        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
+        id 52/25-30032-0D7E02F5; Tue, 28 Jul 2020 23:06:57 -0400
+Received: by mail.colemankane.org (Postfix, from userid 58)
+        id B0A2C135; Tue, 28 Jul 2020 23:06:56 -0400 (EDT)
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on vine.colemankane.org
+X-Spam-Level: *
+X-Spam-Status: No, score=1.8 required=10.1 tests=ALL_TRUSTED,BAYES_50,
+        IMPRONONCABLE_2,NO_RDNS autolearn=no autolearn_force=no version=3.4.4
+Received: from localhost (unknown [172.20.1.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.colemankane.org (Postfix) with ESMTPSA id 65704133;
+        Tue, 28 Jul 2020 23:06:53 -0400 (EDT)
+From:   Coleman Kane <ckane@colemankane.org>
+To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Cc:     linux-kernel@vger.kernel.org, Coleman Kane <ckane@colemankane.org>
+Subject: [PATCH] fat: Add newline after declarations
+Date:   Tue, 28 Jul 2020 23:05:14 -0400
+Message-Id: <20200729030514.269070-1-ckane@colemankane.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1595021700-68460-1-git-send-email-fenghua.yu@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 02:35:00PM -0700, Fenghua Yu wrote:
-> A bus lock [1] is acquired either through split locked access to writeback (WB)
-> memory or by using locks to uncacheable (UC) memory (e.g. direct device
+Add a newline after declarations in muliple places within the fat driver
+where checkpatch.pl identified this problem.
 
-Does SLD not detect the lock to UC memory?
+Signed-off-by: Coleman Kane <ckane@colemankane.org>
+---
+ fs/fat/cache.c       |  1 +
+ fs/fat/dir.c         |  6 ++++++
+ fs/fat/fatent.c      |  8 ++++++++
+ fs/fat/file.c        |  2 ++
+ fs/fat/inode.c       | 14 ++++++++++++++
+ fs/fat/misc.c        |  2 ++
+ fs/fat/namei_msdos.c |  1 +
+ fs/fat/namei_vfat.c  |  4 ++++
+ fs/fat/nfs.c         |  3 +++
+ 9 files changed, 41 insertions(+)
 
-> assignment). This is typically >1000 cycles slower than an atomic operation
-> within a cache line. It also disrupts performance on other cores.
-> 
-> Although split lock can be detected by #AC trap, the trap is triggered
-> before the instruction acquires bus lock. This makes it difficult to
-> mitigate bus lock (e.g. throttle the user application).
+diff --git a/fs/fat/cache.c b/fs/fat/cache.c
+index 738e427e2d21..8031e5ca15d1 100644
+--- a/fs/fat/cache.c
++++ b/fs/fat/cache.c
+@@ -167,6 +167,7 @@ static void fat_cache_add(struct inode *inode, struct fat_cache_id *new)
+ 			cache = tmp;
+ 		} else {
+ 			struct list_head *p = MSDOS_I(inode)->cache_lru.prev;
++
+ 			cache = list_entry(p, struct fat_cache, cache_list);
+ 		}
+ 		cache->fcluster = new->fcluster;
+diff --git a/fs/fat/dir.c b/fs/fat/dir.c
+index b4ddf48fa444..50b8b88d68c7 100644
+--- a/fs/fat/dir.c
++++ b/fs/fat/dir.c
+@@ -182,6 +182,7 @@ static inline int fat_uni_to_x8(struct super_block *sb, const wchar_t *uni,
+ 				unsigned char *buf, int size)
+ {
+ 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
++
+ 	if (sbi->options.utf8)
+ 		return utf16s_to_utf8s(uni, FAT_MAX_UNI_CHARS,
+ 				UTF16_HOST_ENDIAN, buf, size);
+@@ -431,6 +432,7 @@ static int fat_parse_short(struct super_block *sb,
+ 			uni_len = j;
+ 			if (isvfat) {
+ 				int offset = min(chl, MSDOS_NAME-k);
++
+ 				k += offset;
+ 				i += offset;
+ 			} else {
+@@ -669,6 +671,7 @@ static int __fat_readdir(struct inode *inode, struct file *file,
+ 		unsigned long inum;
+ 		loff_t i_pos = fat_make_i_pos(sb, bh, de);
+ 		struct inode *tmp = fat_iget(sb, i_pos);
++
+ 		if (tmp) {
+ 			inum = tmp->i_ino;
+ 			iput(tmp);
+@@ -1343,6 +1346,7 @@ int fat_add_entries(struct inode *dir, void *slots, int nr_slots,
+ 		/* Fill the long name slots. */
+ 		for (i = 0; i < long_bhs; i++) {
+ 			int copy = min_t(int, sb->s_blocksize - offset, size);
++
+ 			memcpy(bhs[i]->b_data + offset, slots, copy);
+ 			mark_buffer_dirty_inode(bhs[i], dir);
+ 			offset = 0;
+@@ -1353,7 +1357,9 @@ int fat_add_entries(struct inode *dir, void *slots, int nr_slots,
+ 			err = fat_sync_bhs(bhs, long_bhs);
+ 		if (!err && i < nr_bhs) {
+ 			/* Fill the short name slot. */
++
+ 			int copy = min_t(int, sb->s_blocksize - offset, size);
++
+ 			memcpy(bhs[i]->b_data + offset, slots, copy);
+ 			mark_buffer_dirty_inode(bhs[i], dir);
+ 			if (IS_DIRSYNC(dir))
+diff --git a/fs/fat/fatent.c b/fs/fat/fatent.c
+index bbfe18c07417..872550ffbc9b 100644
+--- a/fs/fat/fatent.c
++++ b/fs/fat/fatent.c
+@@ -24,6 +24,7 @@ static void fat12_ent_blocknr(struct super_block *sb, int entry,
+ {
+ 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
+ 	int bytes = entry + (entry >> 1);
++
+ 	WARN_ON(!fat_valid_entry(sbi, entry));
+ 	*offset = bytes & (sb->s_blocksize - 1);
+ 	*blocknr = sbi->fat_start + (bytes >> sb->s_blocksize_bits);
+@@ -34,6 +35,7 @@ static void fat_ent_blocknr(struct super_block *sb, int entry,
+ {
+ 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
+ 	int bytes = (entry << sbi->fatent_shift);
++
+ 	WARN_ON(!fat_valid_entry(sbi, entry));
+ 	*offset = bytes & (sb->s_blocksize - 1);
+ 	*blocknr = sbi->fat_start + (bytes >> sb->s_blocksize_bits);
+@@ -42,6 +44,7 @@ static void fat_ent_blocknr(struct super_block *sb, int entry,
+ static void fat12_ent_set_ptr(struct fat_entry *fatent, int offset)
+ {
+ 	struct buffer_head **bhs = fatent->bhs;
++
+ 	if (fatent->nr_bhs == 1) {
+ 		WARN_ON(offset >= (bhs[0]->b_size - 1));
+ 		fatent->u.ent12_p[0] = bhs[0]->b_data + offset;
+@@ -136,6 +139,7 @@ static int fat12_ent_get(struct fat_entry *fatent)
+ static int fat16_ent_get(struct fat_entry *fatent)
+ {
+ 	int next = le16_to_cpu(*fatent->u.ent16_p);
++
+ 	WARN_ON((unsigned long)fatent->u.ent16_p & (2 - 1));
+ 	if (next >= BAD_FAT16)
+ 		next = FAT_ENT_EOF;
+@@ -145,6 +149,7 @@ static int fat16_ent_get(struct fat_entry *fatent)
+ static int fat32_ent_get(struct fat_entry *fatent)
+ {
+ 	int next = le32_to_cpu(*fatent->u.ent32_p) & 0x0fffffff;
++
+ 	WARN_ON((unsigned long)fatent->u.ent32_p & (4 - 1));
+ 	if (next >= BAD_FAT32)
+ 		next = FAT_ENT_EOF;
+@@ -226,6 +231,7 @@ static int fat12_ent_next(struct fat_entry *fatent)
+ static int fat16_ent_next(struct fat_entry *fatent)
+ {
+ 	const struct buffer_head *bh = fatent->bhs[0];
++
+ 	fatent->entry++;
+ 	if (fatent->u.ent16_p < (__le16 *)(bh->b_data + (bh->b_size - 2))) {
+ 		fatent->u.ent16_p++;
+@@ -238,6 +244,7 @@ static int fat16_ent_next(struct fat_entry *fatent)
+ static int fat32_ent_next(struct fat_entry *fatent)
+ {
+ 	const struct buffer_head *bh = fatent->bhs[0];
++
+ 	fatent->entry++;
+ 	if (fatent->u.ent32_p < (__le32 *)(bh->b_data + (bh->b_size - 4))) {
+ 		fatent->u.ent32_p++;
+@@ -750,6 +757,7 @@ int fat_count_free_clusters(struct super_block *sb)
+ static int fat_trim_clusters(struct super_block *sb, u32 clus, u32 nr_clus)
+ {
+ 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
++
+ 	return sb_issue_discard(sb, fat_clus_to_blknr(sbi, clus),
+ 				nr_clus * sbi->sec_per_clus, GFP_NOFS, 0);
+ }
+diff --git a/fs/fat/file.c b/fs/fat/file.c
+index 42134c58c87e..a78da5fa5732 100644
+--- a/fs/fat/file.c
++++ b/fs/fat/file.c
+@@ -119,6 +119,7 @@ static int fat_ioctl_set_attributes(struct file *file, u32 __user *user_attr)
+ static int fat_ioctl_get_volume_id(struct inode *inode, u32 __user *user_attr)
+ {
+ 	struct msdos_sb_info *sbi = MSDOS_SB(inode->i_sb);
++
+ 	return put_user(sbi->vol_id, user_attr);
+ }
+ 
+@@ -398,6 +399,7 @@ int fat_getattr(const struct path *path, struct kstat *stat,
+ 		u32 request_mask, unsigned int flags)
+ {
+ 	struct inode *inode = d_inode(path->dentry);
++
+ 	generic_fillattr(inode, stat);
+ 	stat->blksize = MSDOS_SB(inode->i_sb)->cluster_size;
+ 
+diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+index a0cf99debb1e..4202944a1bc0 100644
+--- a/fs/fat/inode.c
++++ b/fs/fat/inode.c
+@@ -246,6 +246,7 @@ static int fat_write_end(struct file *file, struct address_space *mapping,
+ {
+ 	struct inode *inode = mapping->host;
+ 	int err;
++
+ 	err = generic_write_end(file, mapping, pos, len, copied, pagep, fsdata);
+ 	if (err < len)
+ 		fat_write_failed(mapping, pos + len);
+@@ -277,6 +278,7 @@ static ssize_t fat_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+ 		 * Return 0, and fallback to normal buffered write.
+ 		 */
+ 		loff_t size = offset + count;
++
+ 		if (MSDOS_I(inode)->mmu_private < size)
+ 			return 0;
+ 	}
+@@ -421,6 +423,7 @@ void fat_attach(struct inode *inode, loff_t i_pos)
+ 	 */
+ 	if (S_ISDIR(inode->i_mode) && sbi->options.nfs) {
+ 		struct hlist_head *d_head = sbi->dir_hashtable;
++
+ 		d_head += fat_dir_hash(MSDOS_I(inode)->i_logstart);
+ 
+ 		spin_lock(&sbi->dir_hash_lock);
+@@ -433,6 +436,7 @@ EXPORT_SYMBOL_GPL(fat_attach);
+ void fat_detach(struct inode *inode)
+ {
+ 	struct msdos_sb_info *sbi = MSDOS_SB(inode->i_sb);
++
+ 	spin_lock(&sbi->inode_hash_lock);
+ 	MSDOS_I(inode)->i_pos = 0;
+ 	hlist_del_init(&MSDOS_I(inode)->i_fat_hash);
+@@ -721,6 +725,7 @@ static void fat_reset_iocharset(struct fat_mount_options *opts)
+ static void delayed_free(struct rcu_head *p)
+ {
+ 	struct msdos_sb_info *sbi = container_of(p, struct msdos_sb_info, rcu);
++
+ 	unload_nls(sbi->nls_disk);
+ 	unload_nls(sbi->nls_io);
+ 	fat_reset_iocharset(&sbi->options);
+@@ -744,6 +749,7 @@ static struct kmem_cache *fat_inode_cachep;
+ static struct inode *fat_alloc_inode(struct super_block *sb)
+ {
+ 	struct msdos_inode_info *ei;
++
+ 	ei = kmem_cache_alloc(fat_inode_cachep, GFP_NOFS);
+ 	if (!ei)
+ 		return NULL;
+@@ -803,6 +809,7 @@ static int fat_remount(struct super_block *sb, int *flags, char *data)
+ {
+ 	bool new_rdonly;
+ 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
++
+ 	*flags |= SB_NODIRATIME | (sbi->options.isvfat ? 0 : SB_NOATIME);
+ 
+ 	sync_filesystem(sb);
+@@ -827,6 +834,7 @@ static int fat_statfs(struct dentry *dentry, struct kstatfs *buf)
+ 	/* If the count of free cluster is still unknown, counts it here. */
+ 	if (sbi->free_clusters == -1 || !sbi->free_clus_valid) {
+ 		int err = fat_count_free_clusters(dentry->d_sb);
++
+ 		if (err)
+ 			return err;
+ 	}
+@@ -887,6 +895,7 @@ static int __fat_write_inode(struct inode *inode, int wait)
+ 			  &raw_entry->date, NULL);
+ 	if (sbi->options.isvfat) {
+ 		__le16 atime;
++
+ 		fat_time_unix2fat(sbi, &inode->i_ctime, &raw_entry->ctime,
+ 				  &raw_entry->cdate, &raw_entry->ctime_cs);
+ 		fat_time_unix2fat(sbi, &inode->i_atime, &atime,
+@@ -1164,6 +1173,7 @@ static int parse_options(struct super_block *sb, char *options, int is_vfat,
+ 
+ 	while ((p = strsep(&options, ",")) != NULL) {
+ 		int token;
++
+ 		if (!*p)
+ 			continue;
+ 
+@@ -1422,6 +1432,7 @@ static unsigned long calc_fat_clusters(struct super_block *sb)
+ 	/* Divide first to avoid overflow */
+ 	if (!is_fat12(sbi)) {
+ 		unsigned long ent_per_sec = sb->s_blocksize * 8 / sbi->fat_bits;
++
+ 		return ent_per_sec * sbi->fat_length;
+ 	}
+ 
+@@ -1876,6 +1887,7 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
+ 
+ 	if (sbi->options.discard) {
+ 		struct request_queue *q = bdev_get_queue(sb->s_bdev);
++
+ 		if (!blk_queue_discard(q))
+ 			fat_msg(sb, KERN_WARNING,
+ 					"mounting with \"discard\" option, but "
+@@ -1937,6 +1949,7 @@ static int writeback_inode(struct inode *inode)
+ int fat_flush_inodes(struct super_block *sb, struct inode *i1, struct inode *i2)
+ {
+ 	int ret = 0;
++
+ 	if (!MSDOS_SB(sb)->options.flush)
+ 		return 0;
+ 	if (i1)
+@@ -1945,6 +1958,7 @@ int fat_flush_inodes(struct super_block *sb, struct inode *i1, struct inode *i2)
+ 		ret = writeback_inode(i2);
+ 	if (!ret) {
+ 		struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
++
+ 		ret = filemap_flush(mapping);
+ 	}
+ 	return ret;
+diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+index f1b2a1fc2a6a..8fa964bcca55 100644
+--- a/fs/fat/misc.c
++++ b/fs/fat/misc.c
+@@ -127,6 +127,7 @@ int fat_chain_add(struct inode *inode, int new_dclus, int nr_cluster)
+ 		ret = fat_ent_read(inode, &fatent, last);
+ 		if (ret >= 0) {
+ 			int wait = inode_needs_sync(inode);
++
+ 			ret = fat_ent_write(inode, &fatent, new_dclus, wait);
+ 			fatent_brelse(&fatent);
+ 		}
+@@ -235,6 +236,7 @@ void fat_time_unix2fat(struct msdos_sb_info *sbi, struct timespec64 *ts,
+ 		       __le16 *time, __le16 *date, u8 *time_cs)
+ {
+ 	struct tm tm;
++
+ 	time64_to_tm(ts->tv_sec, -fat_tz_offset(sbi), &tm);
+ 
+ 	/*  FAT can only support year between 1980 to 2107 */
+diff --git a/fs/fat/namei_msdos.c b/fs/fat/namei_msdos.c
+index 9d062886fbc1..90c1d4fbe57c 100644
+--- a/fs/fat/namei_msdos.c
++++ b/fs/fat/namei_msdos.c
+@@ -580,6 +580,7 @@ static int do_msdos_rename(struct inode *old_dir, unsigned char *old_name,
+ 		 * shouldn't be serious corruption.
+ 		 */
+ 		int err2 = fat_remove_entries(new_dir, &sinfo);
++
+ 		if (corrupt)
+ 			corrupt |= err2;
+ 		sinfo.bh = NULL;
+diff --git a/fs/fat/namei_vfat.c b/fs/fat/namei_vfat.c
+index 0cdd0fb9f742..9c315b3acff7 100644
+--- a/fs/fat/namei_vfat.c
++++ b/fs/fat/namei_vfat.c
+@@ -46,6 +46,7 @@ static inline void vfat_d_version_set(struct dentry *dentry,
+ static int vfat_revalidate_shortname(struct dentry *dentry)
+ {
+ 	int ret = 1;
++
+ 	spin_lock(&dentry->d_lock);
+ 	if (!inode_eq_iversion(d_inode(dentry->d_parent), vfat_d_version(dentry)))
+ 		ret = 0;
+@@ -237,6 +238,7 @@ static int vfat_find_form(struct inode *dir, unsigned char *name)
+ {
+ 	struct fat_slot_info sinfo;
+ 	int err = fat_scan(dir, name, &sinfo);
++
+ 	if (err)
+ 		return -ENOENT;
+ 	brelse(sinfo.bh);
+@@ -693,6 +695,7 @@ static int vfat_find(struct inode *dir, const struct qstr *qname,
+ 		     struct fat_slot_info *sinfo)
+ {
+ 	unsigned int len = vfat_striptail_len(qname);
++
+ 	if (len == 0)
+ 		return -ENOENT;
+ 	return fat_search_long(dir, qname->name, len, sinfo);
+@@ -1012,6 +1015,7 @@ static int vfat_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		 * shouldn't be serious corruption.
+ 		 */
+ 		int err2 = fat_remove_entries(new_dir, &sinfo);
++
+ 		if (corrupt)
+ 			corrupt |= err2;
+ 		sinfo.bh = NULL;
+diff --git a/fs/fat/nfs.c b/fs/fat/nfs.c
+index af191371c352..ed1288849dc8 100644
+--- a/fs/fat/nfs.c
++++ b/fs/fat/nfs.c
+@@ -67,6 +67,7 @@ static struct inode *__fat_nfs_get_inode(struct super_block *sb,
+ 		struct msdos_dir_entry *de ;
+ 		sector_t blocknr;
+ 		int offset;
++
+ 		fat_get_blknr_offset(MSDOS_SB(sb), i_pos, &blocknr, &offset);
+ 		bh = sb_bread(sb, blocknr);
+ 		if (!bh) {
+@@ -221,6 +222,7 @@ struct inode *fat_rebuild_parent(struct super_block *sb, int parent_logstart)
+ 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
+ 	sector_t blknr = fat_clus_to_blknr(sbi, parent_logstart);
+ 	struct buffer_head *parent_bh = sb_bread(sb, blknr);
++
+ 	if (!parent_bh) {
+ 		fat_msg(sb, KERN_ERR,
+ 			"unable to read cluster of parent directory");
+@@ -269,6 +271,7 @@ static struct dentry *fat_get_parent(struct dentry *child_dir)
+ 
+ 	if (!fat_get_dotdot_entry(d_inode(child_dir), &bh, &de)) {
+ 		int parent_logstart = fat_get_start(sbi, de);
++
+ 		parent_inode = fat_dget(sb, parent_logstart);
+ 		if (!parent_inode && sbi->options.nfs == FAT_NFS_NOSTALE_RO)
+ 			parent_inode = fat_rebuild_parent(sb, parent_logstart);
+-- 
+2.27.0
 
-Mitigate _in a non-fatal way_.  The #AC makes it very easy to mitigate split
-locks, it just has the side effect of SIGBUGS or killing the KVM guest.
-
-> Some CPUs have ability to notify the kernel by an #DB trap after the
-> instruction acquires a bus lock and is executed. This allows the kernel
-> to enforce user application throttling or mitigations and also provides
-> a better environment to debug kernel split lock issues since the kernel
-> can continue instead of crashing.
-> 
-> #DB for bus lock detect fixes all issues in #AC for split lock detect:
-
-Fixes "all" issues... and creates some new ones, e.g. there are use cases
-where preventing the split lock from happening in the first place is
-strongly desired.  It's why that train wreck exists.
-
-> 1) It's architectural ... just need to look at one CPUID bit to know it
->    exists
-> 2) The IA32_DEBUGCTL MSR, which reports bus lock in #DB, is per-thread.
->    So each process or guest can have different behavior.
-> 3) It has support for VMM/guests (new VMEXIT codes, etc).
-> 
-> Use the existing kernel command line option "split_lock_detect=" to handle
-> #DB for bus lock:
-
-Are SLD and BLD mutually exclusive?  Can we even guarantee that given the
-track record of SLD?  If not, we'll likely want to allow the user to choose
-between SDL and BLD via split_lock_detect.
-
-> split_lock_detect=
-> 		#AC for split lock		#DB for bus lock
-> 
-> off		Do nothing			Do nothing
-> 
-> warn		Kernel OOPs			Kernel warns rate limited
-> 		Warn once per task and		and continues to run.
-> 		disable future checking 	Warn once per task and
-> 						and continue to run.
-> 						When both features are
-> 						supported, warn in #DB
-> 
-> fatal		Kernel OOPs			Kernel warn rate limited
-
-Unless the lock to UC #DB is new behavior, why would we revert to allowing
-split locks in the kernel?
-
-> 		Send SIGBUS to user		Send SIGBUS to user
-> 		When both features are
-> 		supported, fatal in #AC.
-> 
-> ratelimit:N	Do nothing			Kernel warns rate limited
-
-This should be more than "Do nothing" for #AC, e.g. fall back to warn or
-at least print a loud error.
-
-> 						and continue to run.
-> 						Limit bus lock rate to
-> 						N per second in the
-> 						current non root user.
-> 
-> On systems that support #DB for bus lock detection the default is "warn".
-> 
-> [1] Chapter 8 https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
-> 
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> ---
->  .../admin-guide/kernel-parameters.txt         |  48 +++++-
->  arch/x86/include/asm/cpu.h                    |  16 +-
->  arch/x86/include/asm/cpufeatures.h            |   1 +
->  arch/x86/include/asm/msr-index.h              |   1 +
->  arch/x86/include/uapi/asm/debugreg.h          |   3 +-
->  arch/x86/kernel/cpu/common.c                  |   2 +-
->  arch/x86/kernel/cpu/intel.c                   | 156 +++++++++++++++---
->  arch/x86/kernel/traps.c                       |  10 ++
->  include/linux/sched/user.h                    |   4 +-
->  kernel/user.c                                 |   7 +
->  10 files changed, 214 insertions(+), 34 deletions(-)
-
-Maybe it's just me, but it'd be nice to break this into multiple patches
-so that the SLD refactoring is separate from the introduction of BLD.  As
-is, I find it hard to review as I can't easily distinguish refactoring from
-new functionality.
-
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index fb95fad81c79..7a1cb6fe8b8e 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4816,27 +4816,59 @@
->  	spia_peddr=
->  
->  	split_lock_detect=
-> -			[X86] Enable split lock detection
-> +			[X86] Enable split lock detection or bus lock detection
->  
->  			When enabled (and if hardware support is present), atomic
->  			instructions that access data across cache line
-> -			boundaries will result in an alignment check exception.
-> +			boundaries will result in an alignment check exception
-> +			for split lock detection or an debug exception for
-> +			bus lock detection.
->  
->  			off	- not enabled
->  
-> -			warn	- the kernel will emit rate limited warnings
-> -				  about applications triggering the #AC
-> -				  exception. This mode is the default on CPUs
-> -				  that supports split lock detection.
-> +			warn	- Default mode.
->  
-> -			fatal	- the kernel will send SIGBUS to applications
-> -				  that trigger the #AC exception.
-> +				  If split lock detection is enabled in
-> +				  hardware, the kernel will emit rate limited
-> +				  warnings about applications triggering the #AC
-> +				  exception.
-> +
-> +				  If bus lock detection is enabled in hardware,
-> +				  the kernel will emit rate limited warnings
-> +				  about applications triggering the #D
-
-s/#D/#DB
-
-> +				  exception.
-> +
-> +				  Default behavior is from bus lock detection
-> +				  if both features are enabled in hardware.
-> +
-> +			fatal	- If split lock detection is enabled in
-> +				  hardware, the kernel will send SIGBUS to
-> +				  applications that trigger the #AC exception.
-> +
-> +				  If bus lock detection is enabled in hardware,
-> +				  the kernel will send SIGBUS to application
-> +				  that trigger the #DB exception.
-> +
-> +				  Default behavior is from split lock detection
-> +				  if both are enabled in hardware.
-> +
-> +			ratelimit:N
-> +				  Set rate limit to N bus locks per second
-> +				  for bus lock detection. 0 < N <= HZ/2 and
-> +				  N is approximate. Not applied to root user
-> +				  and the kernel. Only applied to non root user.
-> +
-> +				  N/A for split lock detection.
->  
->  			If an #AC exception is hit in the kernel or in
->  			firmware (i.e. not while executing in user mode)
->  			the kernel will oops in either "warn" or "fatal"
->  			mode.
->  
-> +			If an #DB exception is hit in the kernel or in
-> +			firmware, the kernel will warn in either "warn" or
-> +			"fatal" mode.
-> +
->  	srbds=		[X86,INTEL]
->  			Control the Special Register Buffer Data Sampling
->  			(SRBDS) mitigation.
-
-...
-
-> diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-> index 0ab48f1cdf84..f498472990af 100644
-> --- a/arch/x86/kernel/cpu/intel.c
-> +++ b/arch/x86/kernel/cpu/intel.c
-> @@ -10,6 +10,9 @@
->  #include <linux/thread_info.h>
->  #include <linux/init.h>
->  #include <linux/uaccess.h>
-> +#include <linux/cred.h>
-> +#include <linux/delay.h>
-> +#include <linux/sched/user.h>
->  
->  #include <asm/cpufeature.h>
->  #include <asm/msr.h>
-> @@ -39,15 +42,20 @@ enum split_lock_detect_state {
->  	sld_off = 0,
->  	sld_warn,
->  	sld_fatal,
-> +	sld_ratelimit,
->  };
->  
->  /*
->   * Default to sld_off because most systems do not support split lock detection
-> - * split_lock_setup() will switch this to sld_warn on systems that support
-> - * split lock detect, unless there is a command line override.
-> + * sld_state_setup() will switch this to sld_warn on systems that support
-> + * split lock/bus lock detect, unless there is a command line override.
->   */
->  static enum split_lock_detect_state sld_state __ro_after_init = sld_off;
->  static u64 msr_test_ctrl_cache __ro_after_init;
-> +/* Split lock detection is enabled if it's true. */
-> +static bool sld;
-> +/* Bus lock detection is enabled if it's true. */
-> +static bool bld;
-
-Why can't these be tracked/reflected in X86_FEATURE_*?
-
->  /*
->   * With a name like MSR_TEST_CTL it should go without saying, but don't touch
-> @@ -601,6 +609,7 @@ static void init_intel_misc_features(struct cpuinfo_x86 *c)
->  }
->  
->  static void split_lock_init(void);
-> +static void bus_lock_init(void);
->  
->  static void init_intel(struct cpuinfo_x86 *c)
->  {
-> @@ -717,6 +726,7 @@ static void init_intel(struct cpuinfo_x86 *c)
->  	if (tsx_ctrl_state == TSX_CTRL_DISABLE)
->  		tsx_disable();
->  
-> +	bus_lock_init();
->  	split_lock_init();
->  }
->  
-> @@ -991,13 +1001,25 @@ static const struct {
->  	{ "off",	sld_off   },
->  	{ "warn",	sld_warn  },
->  	{ "fatal",	sld_fatal },
-> +	{ "ratelimit:", sld_ratelimit },
->  };
->  
->  static inline bool match_option(const char *arg, int arglen, const char *opt)
->  {
-> -	int len = strlen(opt);
->  
-> -	return len == arglen && !strncmp(arg, opt, len);
-> +	int len = strlen(opt), ratelimit;
-> +
-> +	if (strncmp(arg, opt, len))
-> +		return false;
-> +
-> +	if (sscanf(arg, "ratelimit:%d", &ratelimit) == 1 && ratelimit > 0 &&
-> +	    ratelimit_bl <= HZ / 2) {
-> +		ratelimit_bl = ratelimit;
-> +
-> +		return true;
-> +	}
-> +
-> +	return len == arglen;
->  }
->  
->  static bool split_lock_verify_msr(bool on)
-> @@ -1016,16 +1038,15 @@ static bool split_lock_verify_msr(bool on)
->  	return ctrl == tmp;
->  }
->  
-> -static void __init split_lock_setup(void)
-> +static void __init sld_state_setup(void)
->  {
->  	enum split_lock_detect_state state = sld_warn;
->  	char arg[20];
->  	int i, ret;
->  
-> -	if (!split_lock_verify_msr(false)) {
-> -		pr_info("MSR access failed: Disabled\n");
-> +	if (!static_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT) &&
-> +	    !static_cpu_has(X86_FEATURE_BUS_LOCK_DETECT))
-
-Pretty sure static_cpu_has() in an __init function is a waste.
-
->  		return;
-> -	}
->  
->  	ret = cmdline_find_option(boot_command_line, "split_lock_detect",
->  				  arg, sizeof(arg));
-> @@ -1037,17 +1058,14 @@ static void __init split_lock_setup(void)
->  			}
->  		}
->  	}
-> +	sld_state = state;
-> +}
->  
-> -	switch (state) {
-> -	case sld_off:
-> -		pr_info("disabled\n");
-> +static void __init _split_lock_setup(void)
-> +{
-> +	if (!split_lock_verify_msr(false)) {
-> +		pr_info("MSR access failed: Disabled\n");
->  		return;
-> -	case sld_warn:
-> -		pr_info("warning about user-space split_locks\n");
-> -		break;
-> -	case sld_fatal:
-> -		pr_info("sending SIGBUS on user-space split_locks\n");
-> -		break;
->  	}
->  
->  	rdmsrl(MSR_TEST_CTRL, msr_test_ctrl_cache);
-> @@ -1057,8 +1075,11 @@ static void __init split_lock_setup(void)
->  		return;
->  	}
->  
-> -	sld_state = state;
-> +	/* Restore the MSR to its cached value. */
-> +	wrmsrl(MSR_TEST_CTRL, msr_test_ctrl_cache);
-> +
->  	setup_force_cpu_cap(X86_FEATURE_SPLIT_LOCK_DETECT);
-> +	sld = true;
->  }
->  
->  /*
-> @@ -1078,6 +1099,10 @@ static void sld_update_msr(bool on)
->  
->  static void split_lock_init(void)
->  {
-> +	/* If supported, #DB for bus lock will handle warn and ratelimit. */
-> +	if (bld && (sld_state == sld_warn || sld_state == sld_ratelimit))
-> +		return;
-> +
->  	if (cpu_model_supports_sld)
->  		split_lock_verify_msr(sld_state != sld_off);
->  }
-> @@ -1114,14 +1139,58 @@ bool handle_guest_split_lock(unsigned long ip)
->  }
->  EXPORT_SYMBOL_GPL(handle_guest_split_lock);
->  
-> +static void bus_lock_init(void)
-> +{
-> +	u64 val;
-> +
-> +	if (!bld)
-> +		return;
-> +
-> +	/* If supported, #AC for split lock will handle fatal. */
-> +	if (sld && sld_state == sld_fatal)
-> +		return;
-> +
-> +	rdmsrl(MSR_IA32_DEBUGCTLMSR, val);
-> +	val |= DEBUGCTLMSR_BUS_LOCK_DETECT;
-
-Uh, doesn't this enable BLD even if sld_state == sld_off?
-
-> +	wrmsrl(MSR_IA32_DEBUGCTLMSR, val);
-> +}
-> +
->  bool handle_user_split_lock(struct pt_regs *regs, long error_code)
->  {
-> -	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
-> +	if ((regs->flags & X86_EFLAGS_AC) || !sld || sld_state == sld_fatal ||
-> +	    sld_state == sld_ratelimit)
->  		return false;
->  	split_lock_warn(regs->ip);
->  	return true;
->  }
->  
-> +bool handle_user_bus_lock(struct pt_regs *regs)
-> +{
-> +	if (!bld)
-> +		return false;
-> +
-> +	pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address: 0x%lx\n",
-> +			    current->comm, current->pid, regs->ip);
-> +
-> +	if (sld_state == sld_ratelimit) {
-> +		while (!__ratelimit(&get_current_user()->ratelimit_bl))
-> +			msleep(1000 / ratelimit_bl);
-> +	}
-> +
-> +	return true;
-> +}
-> +
-> +bool handle_kernel_bus_lock(struct pt_regs *regs)
-> +{
-> +	if (!bld)
-> +		return false;
-> +
-> +	pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address: 0x%lx\n",
-> +			    current->comm, current->pid, regs->ip);
-> +
-> +	return true;
-> +}
-> +
->  /*
->   * This function is called only when switching between tasks with
->   * different split-lock detection modes. It sets the MSR for the
-> @@ -1159,7 +1228,7 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
->  	{}
->  };
->  
-> -void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
-> +static void __init split_lock_setup(struct cpuinfo_x86 *c)
->  {
->  	const struct x86_cpu_id *m;
->  	u64 ia32_core_caps;
-> @@ -1186,5 +1255,50 @@ void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
->  	}
->  
->  	cpu_model_supports_sld = true;
-> -	split_lock_setup();
-> +	_split_lock_setup();
-> +}
-> +
-> +static void sld_state_show(void)
-> +{
-> +	if (!bld && !sld)
-> +		return;
-> +
-> +	switch (sld_state) {
-> +	case sld_off:
-> +		pr_info("disabled\n");
-> +		break;
-> +
-> +	case sld_warn:
-> +		if (bld)
-> +			pr_info("#DB: warning about kernel and user-space bus_locks\n");
-> +		else
-> +			pr_info("#AC: crashing the kernel about kernel split_locks and warning about user-space split_locks\n");
-> +		break;
-> +
-> +	case sld_fatal:
-> +		if (sld)
-> +			pr_info("#AC: crashing the kernel on kernel split_locks and sending SIGBUS on user-space split_locks\n");
-> +		else
-> +			pr_info("#DB: warning about kernel bus_locks and sending SIGBUS on user-space bus_locks\n");
-> +		break;
-> +
-> +	case sld_ratelimit:
-> +		if (bld)
-> +			pr_info("#DB: warning about kernel bus_locks and setting silent rate limit to %d/sec per user on non root user-space bus_locks\n", ratelimit_bl);
-> +		break;
-> +	}
-> +}
-> +
-> +static void __init bus_lock_setup(void)
-> +{
-> +	if (static_cpu_has(X86_FEATURE_BUS_LOCK_DETECT) && sld_state != sld_off)
-
-More overkill.
-
-> +		bld = true;
-> +}
-> +
-> +void __init sld_setup(struct cpuinfo_x86 *c)
-
-This wrapper probably should call out that it configures both sld and bld.
-
-> +{
-> +	sld_state_setup();
-> +	split_lock_setup(c);
-> +	bus_lock_setup();
-> +	sld_state_show();
->  }
-> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> index b038695f36c5..58725567da39 100644
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -812,6 +812,16 @@ static void handle_debug(struct pt_regs *regs, unsigned long dr6, bool user)
->  	if (!user && !dr6)
->  		return;
->  
-> +	/* Handle bus lock. */
-> +	if (!(dr6 & DR_BUS_LOCK)) {
-> +		cond_local_irq_enable(regs);
-> +		if (user)
-> +			handle_user_bus_lock(regs);
-> +		else
-> +			handle_kernel_bus_lock(regs);
-> +		goto out;
-> +	}
-> +
->  	/*
->  	 * If dr6 has no reason to give us about the origin of this trap,
->  	 * then it's very likely the result of an icebp/int01 trap.
-> diff --git a/include/linux/sched/user.h b/include/linux/sched/user.h
-> index 917d88edb7b9..fc757ec6c19f 100644
-> --- a/include/linux/sched/user.h
-> +++ b/include/linux/sched/user.h
-> @@ -37,8 +37,9 @@ struct user_struct {
->  	atomic_long_t locked_vm;
->  #endif
->  
-> -	/* Miscellaneous per-user rate limit */
-> +	/* Miscellaneous per-user rate limits */
->  	struct ratelimit_state ratelimit;
-> +	struct ratelimit_state ratelimit_bl;
-
-Why not spell out ratelimit_bus_lock?  There's no way someone looking at
-this code in isolation is going to have any clue what "bl" means.
-
->  };
->  
->  extern int uids_sysfs_init(void);
-> @@ -48,6 +49,7 @@ extern struct user_struct *find_user(kuid_t);
->  extern struct user_struct root_user;
->  #define INIT_USER (&root_user)
->  
-> +extern int ratelimit_bl;
->  
->  /* per-UID process charging. */
->  extern struct user_struct * alloc_uid(kuid_t);
-> diff --git a/kernel/user.c b/kernel/user.c
-> index b1635d94a1f2..023dad617625 100644
-> --- a/kernel/user.c
-> +++ b/kernel/user.c
-> @@ -103,6 +103,7 @@ struct user_struct root_user = {
->  	.locked_shm     = 0,
->  	.uid		= GLOBAL_ROOT_UID,
->  	.ratelimit	= RATELIMIT_STATE_INIT(root_user.ratelimit, 0, 0),
-> +	.ratelimit_bl	= RATELIMIT_STATE_INIT(root_user.ratelimit_bl, 0, 0),
->  };
->  
->  /*
-> @@ -172,6 +173,9 @@ void free_uid(struct user_struct *up)
->  		free_user(up, flags);
->  }
->  
-> +/* Architectures (e.g. X86) may set this for rate limited bus locks. */
-> +int ratelimit_bl;
-> +
->  struct user_struct *alloc_uid(kuid_t uid)
->  {
->  	struct hlist_head *hashent = uidhashentry(uid);
-> @@ -190,6 +194,9 @@ struct user_struct *alloc_uid(kuid_t uid)
->  		refcount_set(&new->__count, 1);
->  		ratelimit_state_init(&new->ratelimit, HZ, 100);
->  		ratelimit_set_flags(&new->ratelimit, RATELIMIT_MSG_ON_RELEASE);
-> +		ratelimit_state_init(&new->ratelimit_bl, HZ, ratelimit_bl);
-> +		ratelimit_set_flags(&new->ratelimit_bl,
-> +				    RATELIMIT_MSG_ON_RELEASE);
->  
->  		/*
->  		 * Before adding this, check whether we raced
-> -- 
-> 2.19.1
-> 
