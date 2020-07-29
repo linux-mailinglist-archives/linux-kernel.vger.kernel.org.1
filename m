@@ -2,99 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E21D231AB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7042231AB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgG2H7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 03:59:55 -0400
-Received: from fallback13.mail.ru ([94.100.179.30]:58808 "EHLO
-        fallback13.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727059AbgG2H7x (ORCPT
+        id S1727977AbgG2H7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 03:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727059AbgG2H7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 03:59:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=3fa8RFKjs5/eLABjYBvhcRWbXI9ViB/wI2i1z+xTyGY=;
-        b=mZf+zAvKB8KeTCda+dX91NAKUZT4kFyHHrPScRngvBXBdbSRJC3DbsxHYtoLdCdpNeSuWpsf8pCEqVu+uSUqCrP7Jk0NvK9GregV9tJOCbhcVHjPdfDwf313Tidqrnvu1Maq0m/k1iF9R1+euEOQ30oTwZhc5juxWD00rCPGxW8=;
-Received: from [10.161.25.37] (port=33762 helo=smtp60.i.mail.ru)
-        by fallback13.m.smailru.net with esmtp (envelope-from <fido_max@inbox.ru>)
-        id 1k0h08-0000xU-P8; Wed, 29 Jul 2020 10:59:49 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=3fa8RFKjs5/eLABjYBvhcRWbXI9ViB/wI2i1z+xTyGY=;
-        b=mZf+zAvKB8KeTCda+dX91NAKUZT4kFyHHrPScRngvBXBdbSRJC3DbsxHYtoLdCdpNeSuWpsf8pCEqVu+uSUqCrP7Jk0NvK9GregV9tJOCbhcVHjPdfDwf313Tidqrnvu1Maq0m/k1iF9R1+euEOQ30oTwZhc5juxWD00rCPGxW8=;
-Received: by smtp60.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
-        id 1k0gzz-0006Kh-6v; Wed, 29 Jul 2020 10:59:39 +0300
-From:   Maxim Kochetkov <fido_max@inbox.ru>
-Cc:     bigunclemax@gmail.com, Maxim Kochetkov <fido_max@inbox.ru>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: adc: ti-ads1015: fix conversion when CONFIG_PM is not set
-Date:   Wed, 29 Jul 2020 10:59:07 +0300
-Message-Id: <20200729075908.10463-1-fido_max@inbox.ru>
-X-Mailer: git-send-email 2.27.0
+        Wed, 29 Jul 2020 03:59:48 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9A0C061794;
+        Wed, 29 Jul 2020 00:59:48 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z18so17113999wrm.12;
+        Wed, 29 Jul 2020 00:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Z5da3dx2SAn+bVOvyHxQOVatBrN8Ykye0kzHE6DAqV0=;
+        b=NfyQpnB9G7M/mRumGDa4PyxncFONzIQPe4J7blxFyH+Ryj3ihh197KaeLo2Y13CHai
+         II013x6AH4Qcod8ylw9wYU3Ni/7ZX1nLS9McnJX5VSkDwait471nEyHD0MmjTw7XM57/
+         pgPzc6Ir7A/rYPtPEkJANVVCB2hxCVX6fU9GpaRGuTU0ycD+9iO6ufFJ7JBSU0iJH5ip
+         en4ZpzG5Pt5bRmW95dZklfUg4vQpjHPnrIWVT1vebuCcYv7+l6WkWbL/sBH+GZH7X+7C
+         WujIRwi1JrAyz4IpHL5SP56lNX9sZDzuQgS/hAlaYmUACjMrguj/HOy+3SxMUdDZfwY4
+         sl/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z5da3dx2SAn+bVOvyHxQOVatBrN8Ykye0kzHE6DAqV0=;
+        b=nn8aMwy8YLAoMywsAC6Gs5Je7vxlH87cK2X22QUVNsYizpXryen/RW5ekh8mXe1Ih0
+         8fAbYym6AbQExEhBPIvgJFt3bgCTgYi5veUyLNlG0MewwcITyl4Nli5ILJXVdArZvFwH
+         ixNCIto3LWPAwYrQDq9w7PIrC4JuXnsY06yQ7Mxv8gJXv6oA9cENVdTXPPmQvBMewowr
+         Ab48dmceCpoNKABYbulavCyPp2avz7fTehws5YdyUSrJ2pYDOQA8GezLqDVxHQW07Ce1
+         LJtBlxU1PIMKlKb0uOSIY7m71beT/S1DYQuaAj1wA7ZQXuBzFnacKV+iHX/qhqT48Ixi
+         craQ==
+X-Gm-Message-State: AOAM532QdiEL0YtD3jZdZvAxNkaYxGFn8F5X4FcComC90PpQbmYBFfy2
+        37onyoAq18tPLe1fDtuQL/M=
+X-Google-Smtp-Source: ABdhPJwGStf0UKkkT0IHuZkO3DIghNUfUWpgTVBI4oN+HOrXJy1ffPv96tWb7B+ddXIu3I6Ov4OccQ==
+X-Received: by 2002:a5d:526d:: with SMTP id l13mr26968687wrc.279.1596009587006;
+        Wed, 29 Jul 2020 00:59:47 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.122.158])
+        by smtp.gmail.com with ESMTPSA id w14sm3418220wrt.55.2020.07.29.00.59.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Jul 2020 00:59:46 -0700 (PDT)
+Subject: Re: [PATCH v2 2/4] i2c: mediatek: Add access to more than 8GB dram in
+ i2c driver
+To:     Qii Wang <qii.wang@mediatek.com>, wsa@the-dreams.de
+Cc:     qiangming.xia@mediatek.com, devicetree@vger.kernel.org,
+        srv_heupstream@mediatek.com, leilk.liu@mediatek.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-mediatek@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <1595939446-5484-1-git-send-email-qii.wang@mediatek.com>
+ <1595939446-5484-3-git-send-email-qii.wang@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <25ff4899-5e7d-f6e5-599c-4bf368a731e1@gmail.com>
+Date:   Wed, 29 Jul 2020 09:59:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD90521F83352E4771D993A5AF778ACCB6BD626CC7DA16DF88C182A05F53808504029DC496DEEEB89501932489FB8A54D596D0B58E080D7C80BF2A5A0F2AACCC7CB
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7978947DCA0D4215FEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006371895637A5F0B45FF8638F802B75D45FF5571747095F342E8C7A0BC55FA0FE5FC1ECBB32B1B289FC7BA662DC30B7A2373D3D44096FD8F85F2389733CBF5DBD5E913377AFFFEAFD269176DF2183F8FC7C0A3E989B1926288338941B15DA834481FCF19DD082D7633A0E7DDDDC251EA7DABA471835C12D1D977725E5C173C3A84C3CF36E64A7E3F8E58117882F4460429728AD0CFFFB425014E09623437467D3AE276E601842F6C81A19E625A9149C048EE7B96B19DC4093321F206494F22AA87D6D8FC6C240DEA76429449624AB7ADAF37B2D370F7B14D4BC40A6AB1C7CE11FEE3FD04FE2AD1523FDB9735652A29929C6CC4224003CC8364767A15B7713DBEF166A7F4EDE966BC389F9E8FC8737B5C2249BDB2DFE734BD6C7C089D37D7C0E48F6CCF19DD082D7633A0E7DDDDC251EA7DABAAAE862A0553A39223F8577A6DFFEA7CE31A2885C41F97C443847C11F186F3C5E7DDDDC251EA7DABCC89B49CDF41148FA8EF81845B15A4842623479134186CDE6BA297DBC24807EABDAD6C7F3747799A
-X-C8649E89: EBB7AE862102F8157F69ED8697A74C3F65EFCD698A4D0A16881DBFC9FC99910044CD825B82ED7068
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojbl0bm2lVv3IuJKNyOiYHdg==
-X-Mailru-Sender: 11C2EC085EDE56FA9C10FA2967F5AB24BD2D83D0D925C654C403DFFB4822EE44AC90A8F9D9BFD8A8EE9242D420CFEBFD3DDE9B364B0DF2891A624F84B2C74EDA4239CF2AF0A6D4F80DA7A0AF5A3A8387
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B43A7801844A72E373BDE407F6AFEC0A433A29991C6D1240E4049FFFDB7839CE9EB969E7E82AF4D4E2A040CA83889AFC6C6916E1F39D14DC337D1E73DB6B2E3940
-X-7FA49CB5: 0D63561A33F958A560901FAB13B8EA56A8927752ED17BC0FED3ADAC3660D3CA88941B15DA834481FA18204E546F3947C0A6B3CD6EB70C818117882F4460429724CE54428C33FAD30A8DF7F3B2552694A4A5EC4583E1CDF108941B15DA834481F8AA50765F7900637F924B32C592EA89F389733CBF5DBD5E9B5C8C57E37DE458BB4E76B3161857BFDD32BA5DBAC0009BE9E8FC8737B5C22496CA36251E56197FE76E601842F6C81A12EF20D2F80756B5FDA63EEEA5E5E9D65089D37D7C0E48F6CA18204E546F3947C29C2079CDE5AC98057739F23D657EF2BC8A9BA7A39EFB7666BA297DBC24807EA089D37D7C0E48F6C8AA50765F7900637AD0424077D726551EFF80C71ABB335746BA297DBC24807EA27F269C8F02392CD20465B3A5AADEC6827F269C8F02392CD5571747095F342E88FB05168BE4CE3AF
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojbl0bm2lVv3L3S8xTD+SNEQ==
-X-Mailru-MI: 800
-X-Mailru-Sender: A5480F10D64C9005631A4012884FA1630C4A2E81BE2FD80F9A84FF1F07161318E1934491450442A6C099ADC76E806A99D50E20E2BC48EF5A30D242760C51EA9CEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <1595939446-5484-3-git-send-email-qii.wang@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To stop conversion ads1015_set_power_state function use unimplemented
-function pm_runtime_put_autosuspend if CONFIG_PM is not set.
-If CONFIG_PM is disabled, there is no need to start/stop conversion.
-Fix it by adding return 0 function variant if CONFIG_PM is not set.
 
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
----
- drivers/iio/adc/ti-ads1015.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/iio/adc/ti-ads1015.c b/drivers/iio/adc/ti-ads1015.c
-index 5ea4f45d6bad..64fe3b2a6ec6 100644
---- a/drivers/iio/adc/ti-ads1015.c
-+++ b/drivers/iio/adc/ti-ads1015.c
-@@ -316,6 +316,7 @@ static const struct iio_chan_spec ads1115_channels[] = {
- 	IIO_CHAN_SOFT_TIMESTAMP(ADS1015_TIMESTAMP),
- };
- 
-+#ifdef CONFIG_PM
- static int ads1015_set_power_state(struct ads1015_data *data, bool on)
- {
- 	int ret;
-@@ -333,6 +334,15 @@ static int ads1015_set_power_state(struct ads1015_data *data, bool on)
- 	return ret < 0 ? ret : 0;
- }
- 
-+#else /* !CONFIG_PM */
-+
-+static int ads1015_set_power_state(struct ads1015_data *data, bool on)
-+{
-+	return 0;
-+}
-+
-+#endif /* !CONFIG_PM */
-+
- static
- int ads1015_get_adc_result(struct ads1015_data *data, int chan, int *val)
- {
--- 
-2.27.0
+On 28/07/2020 14:30, Qii Wang wrote:
+> Newer MTK chip support more than 8GB of dram. Replace support_33bits
+> with more general dma_max_support and remove mtk_i2c_set_4g_mode.
+> 
+> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+> ---
+>   drivers/i2c/busses/i2c-mt65xx.c | 38 +++++++++++++++++---------------------
+>   1 file changed, 17 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+> index e6b984a..49777a6 100644
+> --- a/drivers/i2c/busses/i2c-mt65xx.c
+> +++ b/drivers/i2c/busses/i2c-mt65xx.c
+> @@ -204,11 +204,11 @@ struct mtk_i2c_compatible {
+>   	unsigned char dcm: 1;
+>   	unsigned char auto_restart: 1;
+>   	unsigned char aux_len_reg: 1;
+> -	unsigned char support_33bits: 1;
+>   	unsigned char timing_adjust: 1;
+>   	unsigned char dma_sync: 1;
+>   	unsigned char ltiming_adjust: 1;
+>   	unsigned char apdma_sync: 1;
+> +	unsigned char max_dma_support;
+>   };
+>   
+>   struct mtk_i2c_ac_timing {
+> @@ -311,11 +311,11 @@ struct i2c_spec_values {
+>   	.dcm = 1,
+>   	.auto_restart = 1,
+>   	.aux_len_reg = 1,
+> -	.support_33bits = 1,
+>   	.timing_adjust = 1,
+>   	.dma_sync = 0,
+>   	.ltiming_adjust = 0,
+>   	.apdma_sync = 0,
+> +	.max_dma_support = 33,
+>   };
+>   
+>   static const struct mtk_i2c_compatible mt6577_compat = {
+> @@ -325,11 +325,11 @@ struct i2c_spec_values {
+>   	.dcm = 1,
+>   	.auto_restart = 0,
+>   	.aux_len_reg = 0,
+> -	.support_33bits = 0,
+>   	.timing_adjust = 0,
+>   	.dma_sync = 0,
+>   	.ltiming_adjust = 0,
+>   	.apdma_sync = 0,
+> +	.max_dma_support = 32,
+>   };
+>   
+>   static const struct mtk_i2c_compatible mt6589_compat = {
+> @@ -339,11 +339,11 @@ struct i2c_spec_values {
+>   	.dcm = 0,
+>   	.auto_restart = 0,
+>   	.aux_len_reg = 0,
+> -	.support_33bits = 0,
+>   	.timing_adjust = 0,
+>   	.dma_sync = 0,
+>   	.ltiming_adjust = 0,
+>   	.apdma_sync = 0,
+> +	.max_dma_support = 32,
+>   };
+>   
+>   static const struct mtk_i2c_compatible mt7622_compat = {
+> @@ -353,11 +353,11 @@ struct i2c_spec_values {
+>   	.dcm = 1,
+>   	.auto_restart = 1,
+>   	.aux_len_reg = 1,
+> -	.support_33bits = 0,
+>   	.timing_adjust = 0,
+>   	.dma_sync = 0,
+>   	.ltiming_adjust = 0,
+>   	.apdma_sync = 0,
+> +	.max_dma_support = 32,
+>   };
+>   
+>   static const struct mtk_i2c_compatible mt8173_compat = {
+> @@ -366,11 +366,11 @@ struct i2c_spec_values {
+>   	.dcm = 1,
+>   	.auto_restart = 1,
+>   	.aux_len_reg = 1,
+> -	.support_33bits = 1,
+>   	.timing_adjust = 0,
+>   	.dma_sync = 0,
+>   	.ltiming_adjust = 0,
+>   	.apdma_sync = 0,
+> +	.max_dma_support = 33,
+>   };
+>   
+>   static const struct mtk_i2c_compatible mt8183_compat = {
+> @@ -380,11 +380,11 @@ struct i2c_spec_values {
+>   	.dcm = 0,
+>   	.auto_restart = 1,
+>   	.aux_len_reg = 1,
+> -	.support_33bits = 1,
+>   	.timing_adjust = 1,
+>   	.dma_sync = 1,
+>   	.ltiming_adjust = 1,
+>   	.apdma_sync = 0,
+> +	.max_dma_support = 33,
+>   };
+>   
+>   static const struct of_device_id mtk_i2c_of_match[] = {
+> @@ -796,11 +796,6 @@ static int mtk_i2c_set_speed(struct mtk_i2c *i2c, unsigned int parent_clk)
+>   	return 0;
+>   }
+>   
+> -static inline u32 mtk_i2c_set_4g_mode(dma_addr_t addr)
+> -{
+> -	return (addr & BIT_ULL(32)) ? I2C_DMA_4G_MODE : I2C_DMA_CLR_FLAG;
 
+I think you missed my comment in the last version:
+I2C_DMA_4G_MODE is no longer needed, you can delete it.
+
+Regards,
+Matthias
+
+> -}
+> -
+>   static int mtk_i2c_do_transfer(struct mtk_i2c *i2c, struct i2c_msg *msgs,
+>   			       int num, int left_num)
+>   {
+> @@ -885,8 +880,8 @@ static int mtk_i2c_do_transfer(struct mtk_i2c *i2c, struct i2c_msg *msgs,
+>   			return -ENOMEM;
+>   		}
+>   
+> -		if (i2c->dev_comp->support_33bits) {
+> -			reg_4g_mode = mtk_i2c_set_4g_mode(rpaddr);
+> +		if (i2c->dev_comp->max_dma_support > 32) {
+> +			reg_4g_mode = upper_32_bits(rpaddr);
+>   			writel(reg_4g_mode, i2c->pdmabase + OFFSET_RX_4G_MODE);
+>   		}
+>   
+> @@ -908,8 +903,8 @@ static int mtk_i2c_do_transfer(struct mtk_i2c *i2c, struct i2c_msg *msgs,
+>   			return -ENOMEM;
+>   		}
+>   
+> -		if (i2c->dev_comp->support_33bits) {
+> -			reg_4g_mode = mtk_i2c_set_4g_mode(wpaddr);
+> +		if (i2c->dev_comp->max_dma_support > 32) {
+> +			reg_4g_mode = upper_32_bits(wpaddr);
+>   			writel(reg_4g_mode, i2c->pdmabase + OFFSET_TX_4G_MODE);
+>   		}
+>   
+> @@ -954,11 +949,11 @@ static int mtk_i2c_do_transfer(struct mtk_i2c *i2c, struct i2c_msg *msgs,
+>   			return -ENOMEM;
+>   		}
+>   
+> -		if (i2c->dev_comp->support_33bits) {
+> -			reg_4g_mode = mtk_i2c_set_4g_mode(wpaddr);
+> +		if (i2c->dev_comp->max_dma_support > 32) {
+> +			reg_4g_mode = upper_32_bits(wpaddr);
+>   			writel(reg_4g_mode, i2c->pdmabase + OFFSET_TX_4G_MODE);
+>   
+> -			reg_4g_mode = mtk_i2c_set_4g_mode(rpaddr);
+> +			reg_4g_mode = upper_32_bits(rpaddr);
+>   			writel(reg_4g_mode, i2c->pdmabase + OFFSET_RX_4G_MODE);
+>   		}
+>   
+> @@ -1232,8 +1227,9 @@ static int mtk_i2c_probe(struct platform_device *pdev)
+>   		return -EINVAL;
+>   	}
+>   
+> -	if (i2c->dev_comp->support_33bits) {
+> -		ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(33));
+> +	if (i2c->dev_comp->max_dma_support > 32) {
+> +		ret = dma_set_mask(&pdev->dev,
+> +				DMA_BIT_MASK(i2c->dev_comp->max_dma_support));
+>   		if (ret) {
+>   			dev_err(&pdev->dev, "dma_set_mask return error.\n");
+>   			return ret;
+> 
