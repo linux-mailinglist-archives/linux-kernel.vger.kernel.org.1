@@ -2,641 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49396232469
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 20:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAED232483
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 20:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgG2SKY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Jul 2020 14:10:24 -0400
-Received: from mga17.intel.com ([192.55.52.151]:33155 "EHLO mga17.intel.com"
+        id S1726891AbgG2SP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 14:15:57 -0400
+Received: from smtp.infotech.no ([82.134.31.41]:40318 "EHLO smtp.infotech.no"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726606AbgG2SKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 14:10:23 -0400
-IronPort-SDR: FXaenvEJSCtXpsV08QG4GCVFQdtauQCbbHVaqK6/C4u6hfl8qr+npu1SxlE+8l+kidUFZxUMHl
- clpLR4MEVM+w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="131540319"
-X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
-   d="scan'208";a="131540319"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 11:09:17 -0700
-IronPort-SDR: OpmlO1OVkJPAqQw3Y4JaXrJPtABQqG4HKh6bDy/psvqTDirFxbp5PQMjVj6CpguNFulyoaT35K
- vVkZ2FSUfHsg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
-   d="scan'208";a="322636793"
-Received: from orsmsx107.amr.corp.intel.com ([10.22.240.5])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jul 2020 11:09:16 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX107.amr.corp.intel.com (10.22.240.5) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 29 Jul 2020 11:09:16 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 29 Jul 2020 11:09:16 -0700
-Received: from orsmsx611.amr.corp.intel.com ([10.22.229.24]) by
- ORSMSX611.amr.corp.intel.com ([10.22.229.24]) with mapi id 15.01.1713.004;
- Wed, 29 Jul 2020 11:09:16 -0700
-From:   "Yu, Fenghua" <fenghua.yu@intel.com>
-To:     "Christopherson, Sean J" <sean.j.christopherson@intel.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Shanbhogue, Vedvyas" <vedvyas.shanbhogue@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Li, Xiaoyao" <xiaoyao.li@intel.com>, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH RFC] x86/bus_lock: Enable bus lock detection
-Thread-Topic: [PATCH RFC] x86/bus_lock: Enable bus lock detection
-Thread-Index: AQHWXIIovO5qSKPNzkiCcXLJQu1V7akeZbsAgACAFfA=
-Date:   Wed, 29 Jul 2020 18:09:16 +0000
-Message-ID: <e23b04a2adc54a5dbca48271987de822@intel.com>
-References: <1595021700-68460-1-git-send-email-fenghua.yu@intel.com>
- <20200729030232.GE5583@linux.intel.com>
-In-Reply-To: <20200729030232.GE5583@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726365AbgG2SP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 14:15:57 -0400
+X-Greylist: delayed 340 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 14:15:56 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by smtp.infotech.no (Postfix) with ESMTP id B4EC320418F;
+        Wed, 29 Jul 2020 20:10:14 +0200 (CEST)
+X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
+Received: from smtp.infotech.no ([127.0.0.1])
+        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DvU0RtaqVit3; Wed, 29 Jul 2020 20:10:07 +0200 (CEST)
+Received: from [192.168.48.23] (host-45-78-251-166.dyn.295.ca [45.78.251.166])
+        by smtp.infotech.no (Postfix) with ESMTPA id 67F42204158;
+        Wed, 29 Jul 2020 20:10:06 +0200 (CEST)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     Bart Van Assche <bvanassche@acm.org>, jejb@linux.ibm.com,
+        Can Guo <cang@codeaurora.org>, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm
+References: <20200706164135.GE704149@rowland.harvard.edu>
+ <d0ed766b-88b0-5ad5-9c10-a4c3b2f994e3@puri.sm>
+ <20200728200243.GA1511887@rowland.harvard.edu>
+ <f3958758-afce-8add-1692-2a3bbcc49f73@puri.sm>
+ <20200729143213.GC1530967@rowland.harvard.edu>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <31f1ec62-7047-a34b-fdcb-5ea2a2104292@interlog.com>
+Date:   Wed, 29 Jul 2020 14:10:04 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200729143213.GC1530967@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Sean,
-
-> > A bus lock [1] is acquired either through split locked access to
-> > writeback (WB) memory or by using locks to uncacheable (UC) memory
-> > (e.g. direct device
+On 2020-07-29 10:32 a.m., Alan Stern wrote:
+> On Wed, Jul 29, 2020 at 04:12:22PM +0200, Martin Kepplinger wrote:
+>> On 28.07.20 22:02, Alan Stern wrote:
+>>> On Tue, Jul 28, 2020 at 09:02:44AM +0200, Martin Kepplinger wrote:
+>>>> Hi Alan,
+>>>>
+>>>> Any API cleanup is of course welcome. I just wanted to remind you that
+>>>> the underlying problem: broken block device runtime pm. Your initial
+>>>> proposed fix "almost" did it and mounting works but during file access,
+>>>> it still just looks like a runtime_resume is missing somewhere.
+>>>
+>>> Well, I have tested that proposed fix several times, and on my system
+>>> it's working perfectly.  When I stop accessing a drive it autosuspends,
+>>> and when I access it again it gets resumed and works -- as you would
+>>> expect.
+>>
+>> that's weird. when I mount, everything looks good, "sda1". But as soon
+>> as I cd to the mountpoint and do "ls" (on another SD card "ls" works but
+>> actual file reading leads to the exact same errors), I get:
+>>
+>> [   77.474632] sd 0:0:0:0: [sda] tag#0 UNKNOWN(0x2003) Result:
+>> hostbyte=0x00 driverbyte=0x08 cmd_age=0s
+>> [   77.474647] sd 0:0:0:0: [sda] tag#0 Sense Key : 0x6 [current]
+>> [   77.474655] sd 0:0:0:0: [sda] tag#0 ASC=0x28 ASCQ=0x0
+>> [   77.474667] sd 0:0:0:0: [sda] tag#0 CDB: opcode=0x28 28 00 00 00 60
+>> 40 00 00 01 00
 > 
-> Does SLD not detect the lock to UC memory?
+> This error report comes from the SCSI layer, not the block layer.
 
-The statement might not be accurate. Split Lock Detection doesn't detect bus
-lock to non-WB memory (including UC memory).
+SCSI's first 11 byte command! I'm guessing the first byte is being
+repeated and it's actually:
+     28 00 00 00 60 40 00 00 01 00  [READ(10)]
 
+That should be fixed. It should be something like: "...CDB in hex: 28 00 ...".
+
+Doug Gilbert
+
+>> [   77.474678] blk_update_request: I/O error, dev sda, sector 24640 op
+>> 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+>> [   77.485836] sd 0:0:0:0: [sda] tag#0 device offline or changed
+>> [   77.491628] blk_update_request: I/O error, dev sda, sector 24641 op
+>> 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+>> [   77.502275] sd 0:0:0:0: [sda] tag#0 device offline or changed
+>> [   77.508051] blk_update_request: I/O error, dev sda, sector 24642 op
+>> 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+>> [   77.518651] sd 0:0:0:0: [sda] tag#0 device offline or changed
+>> (...)
+>> [   77.947653] sd 0:0:0:0: [sda] tag#0 device offline or changed
+>> [   77.953434] FAT-fs (sda1): Directory bread(block 16448) failed
+>> [   77.959333] sd 0:0:0:0: [sda] tag#0 device offline or changed
+>> [   77.965118] FAT-fs (sda1): Directory bread(block 16449) failed
+>> [   77.971014] sd 0:0:0:0: [sda] tag#0 device offline or changed
+>> [   77.976802] FAT-fs (sda1): Directory bread(block 16450) failed
+>> [   77.982698] sd 0:0:0:0: [sda] tag#0 device offline or changed
+>> (...)
+>> [   78.384929] FAT-fs (sda1): Filesystem has been set read-only
+>> [  103.070973] sd 0:0:0:0: [sda] tag#0 device offline or changed
+>> [  103.076751] print_req_error: 118 callbacks suppressed
+>> [  103.076760] blk_update_request: I/O error, dev sda, sector 9748 op
+>> 0x1:(WRITE) flags 0x100000 phys_seg 1 prio class 0
+>> [  103.087428] Buffer I/O error on dev sda1, logical block 1556, lost
+>> async page write
+>> [  103.095309] sd 0:0:0:0: [sda] tag#0 device offline or changed
+>> [  103.101123] blk_update_request: I/O error, dev sda, sector 17162 op
+>> 0x1:(WRITE) flags 0x100000 phys_seg 1 prio class 0
+>> [  103.111883] Buffer I/O error on dev sda1, logical block 8970, lost
+>> async page write
 > 
-> > assignment). This is typically >1000 cycles slower than an atomic
-> > operation within a cache line. It also disrupts performance on other cores.
-> >
-> > Although split lock can be detected by #AC trap, the trap is triggered
-> > before the instruction acquires bus lock. This makes it difficult to
-> > mitigate bus lock (e.g. throttle the user application).
+> I can't tell why you're getting that error.  In one of my tests the
+> device returned the same kind of error status (Sense Key = 6, ASC =
+> 0x28) but the operation was then retried successfully.  Perhaps the
+> problem lies in the device you are testing.
 > 
-> Mitigate _in a non-fatal way_.  The #AC makes it very easy to mitigate split
-> locks, it just has the side effect of SIGBUGS or killing the KVM guest.
-
-Adding "in a non-fatal way" is more better. Will fix it.
-
+>>>> As we need to have that working at some point, I might look into it, but
+>>>> someone who has experience in the block layer can surely do it more
+>>>> efficiently.
+>>>
+>>> I suspect that any problems you still face are caused by something else.
+>>>
+>>
+>> I then formatted sda1 to ext2 (on the runtime suspend system testing
+>> your patch) and that seems to have worked!
+>>
+>> Again accessing the mountpoint then yield the very same "device offline
+>> or changed" errors.
+>>
+>> What kind of device are you testing? You should be easily able to
+>> reproduce this using an "sd" device.
 > 
-> > Some CPUs have ability to notify the kernel by an #DB trap after the
-> > instruction acquires a bus lock and is executed. This allows the
-> > kernel to enforce user application throttling or mitigations and also
-> > provides a better environment to debug kernel split lock issues since
-> > the kernel can continue instead of crashing.
-> >
-> > #DB for bus lock detect fixes all issues in #AC for split lock detect:
+> I tested two devices: a SanDisk Cruzer USB flash drive and a
+> g-mass-storage gadget running under dummy-hcd.  They each showed up as
+> /dev/sdb on my system.
 > 
-> Fixes "all" issues... and creates some new ones, e.g. there are use cases
-> where preventing the split lock from happening in the first place is strongly
-> desired.  It's why that train wreck exists.
-
-Bus Lock Detection doesn't replace Split Lock Detection. If both features
-are enabled, default behavior is warning from bus lock, fatal behavior is
-still from split lock. See the behavior table as follows.
-
+> I haven't tried testing with an SD card.  If you have any specific
+> sequence of commands you would like me to run, let me know.
 > 
-> > 1) It's architectural ... just need to look at one CPUID bit to know it
-> >    exists
-> > 2) The IA32_DEBUGCTL MSR, which reports bus lock in #DB, is per-thread.
-> >    So each process or guest can have different behavior.
-> > 3) It has support for VMM/guests (new VMEXIT codes, etc).
-> >
-> > Use the existing kernel command line option "split_lock_detect=" to
-> > handle #DB for bus lock:
+>> The problems must lie in the different other drivers we use I guess.
 > 
-> Are SLD and BLD mutually exclusive?  Can we even guarantee that given the
-> track record of SLD?  If not, we'll likely want to allow the user to choose
-> between SDL and BLD via split_lock_detect.
-
-The two hardware features can be enabled on the same platform.
-But they are mutually exclusive in the kernel because #AC from SLD happens
-before the instruction is executed and #DB happens after the instruction is
-executed.
-
-Right now, if both of them are enabled, "warn" behavior goes to
-bus lock and "fatal" behavior goes to split lock.
-
-Do you want the user to override the behaviors by something like this?
-
-split_lock_detect=warn[,sld]: if given "sld" while both features are enabled,
-warn behavior is from split lock instead of bus lock detection.
-
-split_lock_detect=fatal[,bld]: if given "bld" while both features are enabled,
-fatal behavior is from bus lock detection.
-
+> Or the devices.  Have you tried testing with a USB flash drive?
 > 
-> > split_lock_detect=
-> > 		#AC for split lock		#DB for bus lock
-> >
-> > off		Do nothing			Do nothing
-> >
-> > warn		Kernel OOPs			Kernel warns rate limited
-> > 		Warn once per task and		and continues to run.
-> > 		disable future checking 	Warn once per task and
-> > 						and continue to run.
-> > 						When both features are
-> > 						supported, warn in #DB
-> >
-> > fatal		Kernel OOPs			Kernel warn rate limited
+> Alan Stern
 > 
-> Unless the lock to UC #DB is new behavior, why would we revert to allowing
-> split locks in the kernel?
 
-SLD cannot detect lock to non-WB memory (including UC). BLD can detect
-both bus locks from both split lock and lock to non-WB.
-
-> 
-> > 		Send SIGBUS to user		Send SIGBUS to user
-> > 		When both features are
-> > 		supported, fatal in #AC.
-> >
-> > ratelimit:N	Do nothing			Kernel warns rate limited
-> 
-> This should be more than "Do nothing" for #AC, e.g. fall back to warn or at
-> least print a loud error.
-
-Ok. Will fall back to warn.
-
-> 
-> > 						and continue to run.
-> > 						Limit bus lock rate to
-> > 						N per second in the
-> > 						current non root user.
-> >
-> > On systems that support #DB for bus lock detection the default is "warn".
-> >
-> > [1] Chapter 8
-> > https://software.intel.com/sites/default/files/managed/c5/15/architect
-> > ure-instruction-set-extensions-programming-reference.pdf
-> >
-> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> > Reviewed-by: Tony Luck <tony.luck@intel.com>
-> > ---
-> >  .../admin-guide/kernel-parameters.txt         |  48 +++++-
-> >  arch/x86/include/asm/cpu.h                    |  16 +-
-> >  arch/x86/include/asm/cpufeatures.h            |   1 +
-> >  arch/x86/include/asm/msr-index.h              |   1 +
-> >  arch/x86/include/uapi/asm/debugreg.h          |   3 +-
-> >  arch/x86/kernel/cpu/common.c                  |   2 +-
-> >  arch/x86/kernel/cpu/intel.c                   | 156 +++++++++++++++---
-> >  arch/x86/kernel/traps.c                       |  10 ++
-> >  include/linux/sched/user.h                    |   4 +-
-> >  kernel/user.c                                 |   7 +
-> >  10 files changed, 214 insertions(+), 34 deletions(-)
-> 
-> Maybe it's just me, but it'd be nice to break this into multiple patches so that
-> the SLD refactoring is separate from the introduction of BLD.  As is, I find it
-> hard to review as I can't easily distinguish refactoring from new functionality.
-
-OK. Will split the patch into multiple patches.
-
-> 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt
-> > b/Documentation/admin-guide/kernel-parameters.txt
-> > index fb95fad81c79..7a1cb6fe8b8e 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -4816,27 +4816,59 @@
-> >  	spia_peddr=
-> >
-> >  	split_lock_detect=
-> > -			[X86] Enable split lock detection
-> > +			[X86] Enable split lock detection or bus lock detection
-> >
-> >  			When enabled (and if hardware support is present),
-> atomic
-> >  			instructions that access data across cache line
-> > -			boundaries will result in an alignment check
-> exception.
-> > +			boundaries will result in an alignment check
-> exception
-> > +			for split lock detection or an debug exception for
-> > +			bus lock detection.
-> >
-> >  			off	- not enabled
-> >
-> > -			warn	- the kernel will emit rate limited warnings
-> > -				  about applications triggering the #AC
-> > -				  exception. This mode is the default on CPUs
-> > -				  that supports split lock detection.
-> > +			warn	- Default mode.
-> >
-> > -			fatal	- the kernel will send SIGBUS to applications
-> > -				  that trigger the #AC exception.
-> > +				  If split lock detection is enabled in
-> > +				  hardware, the kernel will emit rate limited
-> > +				  warnings about applications triggering the
-> #AC
-> > +				  exception.
-> > +
-> > +				  If bus lock detection is enabled in hardware,
-> > +				  the kernel will emit rate limited warnings
-> > +				  about applications triggering the #D
-> 
-> s/#D/#DB
-> 
-> > +				  exception.
-> > +
-> > +				  Default behavior is from bus lock detection
-> > +				  if both features are enabled in hardware.
-> > +
-> > +			fatal	- If split lock detection is enabled in
-> > +				  hardware, the kernel will send SIGBUS to
-> > +				  applications that trigger the #AC exception.
-> > +
-> > +				  If bus lock detection is enabled in hardware,
-> > +				  the kernel will send SIGBUS to application
-> > +				  that trigger the #DB exception.
-> > +
-> > +				  Default behavior is from split lock detection
-> > +				  if both are enabled in hardware.
-> > +
-> > +			ratelimit:N
-> > +				  Set rate limit to N bus locks per second
-> > +				  for bus lock detection. 0 < N <= HZ/2 and
-> > +				  N is approximate. Not applied to root user
-> > +				  and the kernel. Only applied to non root
-> user.
-> > +
-> > +				  N/A for split lock detection.
-> >
-> >  			If an #AC exception is hit in the kernel or in
-> >  			firmware (i.e. not while executing in user mode)
-> >  			the kernel will oops in either "warn" or "fatal"
-> >  			mode.
-> >
-> > +			If an #DB exception is hit in the kernel or in
-> > +			firmware, the kernel will warn in either "warn" or
-> > +			"fatal" mode.
-> > +
-> >  	srbds=		[X86,INTEL]
-> >  			Control the Special Register Buffer Data Sampling
-> >  			(SRBDS) mitigation.
-> 
-> ...
-> 
-> > diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-> > index 0ab48f1cdf84..f498472990af 100644
-> > --- a/arch/x86/kernel/cpu/intel.c
-> > +++ b/arch/x86/kernel/cpu/intel.c
-> > @@ -10,6 +10,9 @@
-> >  #include <linux/thread_info.h>
-> >  #include <linux/init.h>
-> >  #include <linux/uaccess.h>
-> > +#include <linux/cred.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/sched/user.h>
-> >
-> >  #include <asm/cpufeature.h>
-> >  #include <asm/msr.h>
-> > @@ -39,15 +42,20 @@ enum split_lock_detect_state {
-> >  	sld_off = 0,
-> >  	sld_warn,
-> >  	sld_fatal,
-> > +	sld_ratelimit,
-> >  };
-> >
-> >  /*
-> >   * Default to sld_off because most systems do not support split lock
-> > detection
-> > - * split_lock_setup() will switch this to sld_warn on systems that
-> > support
-> > - * split lock detect, unless there is a command line override.
-> > + * sld_state_setup() will switch this to sld_warn on systems that
-> > + support
-> > + * split lock/bus lock detect, unless there is a command line override.
-> >   */
-> >  static enum split_lock_detect_state sld_state __ro_after_init =
-> > sld_off;  static u64 msr_test_ctrl_cache __ro_after_init;
-> > +/* Split lock detection is enabled if it's true. */ static bool sld;
-> > +/* Bus lock detection is enabled if it's true. */ static bool bld;
-> 
-> Why can't these be tracked/reflected in X86_FEATURE_*?
-
-sld and bld are enabled depending on kernel parameter "split_lock_detect=".
-They are not static and cannot be tracked by static X86_FEATURE_*.
-
-> 
-> >  /*
-> >   * With a name like MSR_TEST_CTL it should go without saying, but
-> > don't touch @@ -601,6 +609,7 @@ static void
-> > init_intel_misc_features(struct cpuinfo_x86 *c)  }
-> >
-> >  static void split_lock_init(void);
-> > +static void bus_lock_init(void);
-> >
-> >  static void init_intel(struct cpuinfo_x86 *c)  { @@ -717,6 +726,7 @@
-> > static void init_intel(struct cpuinfo_x86 *c)
-> >  	if (tsx_ctrl_state == TSX_CTRL_DISABLE)
-> >  		tsx_disable();
-> >
-> > +	bus_lock_init();
-> >  	split_lock_init();
-> >  }
-> >
-> > @@ -991,13 +1001,25 @@ static const struct {
-> >  	{ "off",	sld_off   },
-> >  	{ "warn",	sld_warn  },
-> >  	{ "fatal",	sld_fatal },
-> > +	{ "ratelimit:", sld_ratelimit },
-> >  };
-> >
-> >  static inline bool match_option(const char *arg, int arglen, const
-> > char *opt)  {
-> > -	int len = strlen(opt);
-> >
-> > -	return len == arglen && !strncmp(arg, opt, len);
-> > +	int len = strlen(opt), ratelimit;
-> > +
-> > +	if (strncmp(arg, opt, len))
-> > +		return false;
-> > +
-> > +	if (sscanf(arg, "ratelimit:%d", &ratelimit) == 1 && ratelimit > 0 &&
-> > +	    ratelimit_bl <= HZ / 2) {
-> > +		ratelimit_bl = ratelimit;
-> > +
-> > +		return true;
-> > +	}
-> > +
-> > +	return len == arglen;
-> >  }
-> >
-> >  static bool split_lock_verify_msr(bool on) @@ -1016,16 +1038,15 @@
-> > static bool split_lock_verify_msr(bool on)
-> >  	return ctrl == tmp;
-> >  }
-> >
-> > -static void __init split_lock_setup(void)
-> > +static void __init sld_state_setup(void)
-> >  {
-> >  	enum split_lock_detect_state state = sld_warn;
-> >  	char arg[20];
-> >  	int i, ret;
-> >
-> > -	if (!split_lock_verify_msr(false)) {
-> > -		pr_info("MSR access failed: Disabled\n");
-> > +	if (!static_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT) &&
-> > +	    !static_cpu_has(X86_FEATURE_BUS_LOCK_DETECT))
-> 
-> Pretty sure static_cpu_has() in an __init function is a waste.
-
-Sure. Will change it.
-
-> 
-> >  		return;
-> > -	}
-> >
-> >  	ret = cmdline_find_option(boot_command_line, "split_lock_detect",
-> >  				  arg, sizeof(arg));
-> > @@ -1037,17 +1058,14 @@ static void __init split_lock_setup(void)
-> >  			}
-> >  		}
-> >  	}
-> > +	sld_state = state;
-> > +}
-> >
-> > -	switch (state) {
-> > -	case sld_off:
-> > -		pr_info("disabled\n");
-> > +static void __init _split_lock_setup(void) {
-> > +	if (!split_lock_verify_msr(false)) {
-> > +		pr_info("MSR access failed: Disabled\n");
-> >  		return;
-> > -	case sld_warn:
-> > -		pr_info("warning about user-space split_locks\n");
-> > -		break;
-> > -	case sld_fatal:
-> > -		pr_info("sending SIGBUS on user-space split_locks\n");
-> > -		break;
-> >  	}
-> >
-> >  	rdmsrl(MSR_TEST_CTRL, msr_test_ctrl_cache); @@ -1057,8 +1075,11
-> @@
-> > static void __init split_lock_setup(void)
-> >  		return;
-> >  	}
-> >
-> > -	sld_state = state;
-> > +	/* Restore the MSR to its cached value. */
-> > +	wrmsrl(MSR_TEST_CTRL, msr_test_ctrl_cache);
-> > +
-> >  	setup_force_cpu_cap(X86_FEATURE_SPLIT_LOCK_DETECT);
-> > +	sld = true;
-> >  }
-> >
-> >  /*
-> > @@ -1078,6 +1099,10 @@ static void sld_update_msr(bool on)
-> >
-> >  static void split_lock_init(void)
-> >  {
-> > +	/* If supported, #DB for bus lock will handle warn and ratelimit. */
-> > +	if (bld && (sld_state == sld_warn || sld_state == sld_ratelimit))
-> > +		return;
-> > +
-> >  	if (cpu_model_supports_sld)
-> >  		split_lock_verify_msr(sld_state != sld_off);  } @@ -1114,14
-> > +1139,58 @@ bool handle_guest_split_lock(unsigned long ip)  }
-> > EXPORT_SYMBOL_GPL(handle_guest_split_lock);
-> >
-> > +static void bus_lock_init(void)
-> > +{
-> > +	u64 val;
-> > +
-> > +	if (!bld)
-> > +		return;
-> > +
-> > +	/* If supported, #AC for split lock will handle fatal. */
-> > +	if (sld && sld_state == sld_fatal)
-> > +		return;
-> > +
-> > +	rdmsrl(MSR_IA32_DEBUGCTLMSR, val);
-> > +	val |= DEBUGCTLMSR_BUS_LOCK_DETECT;
-> 
-> Uh, doesn't this enable BLD even if sld_state == sld_off?
-
-If sld_state == sld_off, bld is 0 as well.
-Then "if (!bld) return" will disable BLD.
-
-> 
-> > +	wrmsrl(MSR_IA32_DEBUGCTLMSR, val);
-> > +}
-> > +
-> >  bool handle_user_split_lock(struct pt_regs *regs, long error_code)  {
-> > -	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
-> > +	if ((regs->flags & X86_EFLAGS_AC) || !sld || sld_state == sld_fatal ||
-> > +	    sld_state == sld_ratelimit)
-> >  		return false;
-> >  	split_lock_warn(regs->ip);
-> >  	return true;
-> >  }
-> >
-> > +bool handle_user_bus_lock(struct pt_regs *regs) {
-> > +	if (!bld)
-> > +		return false;
-> > +
-> > +	pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address:
-> 0x%lx\n",
-> > +			    current->comm, current->pid, regs->ip);
-> > +
-> > +	if (sld_state == sld_ratelimit) {
-> > +		while (!__ratelimit(&get_current_user()->ratelimit_bl))
-> > +			msleep(1000 / ratelimit_bl);
-> > +	}
-> > +
-> > +	return true;
-> > +}
-> > +
-> > +bool handle_kernel_bus_lock(struct pt_regs *regs) {
-> > +	if (!bld)
-> > +		return false;
-> > +
-> > +	pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address:
-> 0x%lx\n",
-> > +			    current->comm, current->pid, regs->ip);
-> > +
-> > +	return true;
-> > +}
-> > +
-> >  /*
-> >   * This function is called only when switching between tasks with
-> >   * different split-lock detection modes. It sets the MSR for the @@
-> > -1159,7 +1228,7 @@ static const struct x86_cpu_id split_lock_cpu_ids[]
-> __initconst = {
-> >  	{}
-> >  };
-> >
-> > -void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
-> > +static void __init split_lock_setup(struct cpuinfo_x86 *c)
-> >  {
-> >  	const struct x86_cpu_id *m;
-> >  	u64 ia32_core_caps;
-> > @@ -1186,5 +1255,50 @@ void __init cpu_set_core_cap_bits(struct
-> cpuinfo_x86 *c)
-> >  	}
-> >
-> >  	cpu_model_supports_sld = true;
-> > -	split_lock_setup();
-> > +	_split_lock_setup();
-> > +}
-> > +
-> > +static void sld_state_show(void)
-> > +{
-> > +	if (!bld && !sld)
-> > +		return;
-> > +
-> > +	switch (sld_state) {
-> > +	case sld_off:
-> > +		pr_info("disabled\n");
-> > +		break;
-> > +
-> > +	case sld_warn:
-> > +		if (bld)
-> > +			pr_info("#DB: warning about kernel and user-space
-> bus_locks\n");
-> > +		else
-> > +			pr_info("#AC: crashing the kernel about kernel
-> split_locks and warning about user-space split_locks\n");
-> > +		break;
-> > +
-> > +	case sld_fatal:
-> > +		if (sld)
-> > +			pr_info("#AC: crashing the kernel on kernel
-> split_locks and sending SIGBUS on user-space split_locks\n");
-> > +		else
-> > +			pr_info("#DB: warning about kernel bus_locks and
-> sending SIGBUS on user-space bus_locks\n");
-> > +		break;
-> > +
-> > +	case sld_ratelimit:
-> > +		if (bld)
-> > +			pr_info("#DB: warning about kernel bus_locks and
-> setting silent rate limit to %d/sec per user on non root user-space
-> bus_locks\n", ratelimit_bl);
-> > +		break;
-> > +	}
-> > +}
-> > +
-> > +static void __init bus_lock_setup(void) {
-> > +	if (static_cpu_has(X86_FEATURE_BUS_LOCK_DETECT) && sld_state !=
-> > +sld_off)
-> 
-> More overkill.
-> 
-> > +		bld = true;
-> > +}
-> > +
-> > +void __init sld_setup(struct cpuinfo_x86 *c)
-> 
-> This wrapper probably should call out that it configures both sld and bld.
-
-Will fix it.
-
-> 
-> > +{
-> > +	sld_state_setup();
-> > +	split_lock_setup(c);
-> > +	bus_lock_setup();
-> > +	sld_state_show();
-> >  }
-> > diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c index
-> > b038695f36c5..58725567da39 100644
-> > --- a/arch/x86/kernel/traps.c
-> > +++ b/arch/x86/kernel/traps.c
-> > @@ -812,6 +812,16 @@ static void handle_debug(struct pt_regs *regs,
-> unsigned long dr6, bool user)
-> >  	if (!user && !dr6)
-> >  		return;
-> >
-> > +	/* Handle bus lock. */
-> > +	if (!(dr6 & DR_BUS_LOCK)) {
-> > +		cond_local_irq_enable(regs);
-> > +		if (user)
-> > +			handle_user_bus_lock(regs);
-> > +		else
-> > +			handle_kernel_bus_lock(regs);
-> > +		goto out;
-> > +	}
-> > +
-> >  	/*
-> >  	 * If dr6 has no reason to give us about the origin of this trap,
-> >  	 * then it's very likely the result of an icebp/int01 trap.
-> > diff --git a/include/linux/sched/user.h b/include/linux/sched/user.h
-> > index 917d88edb7b9..fc757ec6c19f 100644
-> > --- a/include/linux/sched/user.h
-> > +++ b/include/linux/sched/user.h
-> > @@ -37,8 +37,9 @@ struct user_struct {
-> >  	atomic_long_t locked_vm;
-> >  #endif
-> >
-> > -	/* Miscellaneous per-user rate limit */
-> > +	/* Miscellaneous per-user rate limits */
-> >  	struct ratelimit_state ratelimit;
-> > +	struct ratelimit_state ratelimit_bl;
-> 
-> Why not spell out ratelimit_bus_lock?  There's no way someone looking at
-> this code in isolation is going to have any clue what "bl" means.
-
-Sure. Will fix it.
-
-Thank you very much for your review!
-
--Fenghua
