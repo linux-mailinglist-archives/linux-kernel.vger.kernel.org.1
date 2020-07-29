@@ -2,89 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D60D23178C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 04:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6753623179B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 04:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731026AbgG2COz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 22:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728401AbgG2COy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 22:14:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85363C061794;
-        Tue, 28 Jul 2020 19:14:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=1u/cfoScfk1XVAU6hS/7yiR8e3+dFZhylfwJt1KFn1s=; b=BUJ/wa/S/lOBuQvHgI3H+W6K6m
-        paDdu6QwBxIb7AXbnae7nhinRbGMqv5Vu9wCsdr3bNcZaTnLTXyY/e2kA4ykVYNBJ+2gqcP2zIJaI
-        EQEUsOGPDwRu08jULNCfkUTkMoR4U3zRxyz1qLKld8+zLtgFAk4u0eu4KPdJGHKGTPETPcAGT9YNG
-        2j9D/80XpoqGXNMEfkUEh1B8BXMT+Td+uqSS+B7mrUgvAzjq0pWBgg1r+ZlfXGXDgwpJzqxkzad5F
-        FzsT/f9cxVm8ckAe9svcghtGp2rwG5aIxXAnjd7KKvaCTPKcvcG3HEUAEAoaL5i5I9pbTCt3phDNk
-        U/23RGHw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k0bcK-0001ev-7q; Wed, 29 Jul 2020 02:14:52 +0000
-Subject: Re: [PATCH] doc: remove stray HTML entity in '<slash>'
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200729021120.35901-1-luc.vanoostenryck@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1faef34e-053a-121f-1dc5-333c6b6539cc@infradead.org>
-Date:   Tue, 28 Jul 2020 19:14:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200729021120.35901-1-luc.vanoostenryck@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1731111AbgG2CYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 22:24:49 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:47326 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730901AbgG2CYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 22:24:47 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DAA71200100;
+        Wed, 29 Jul 2020 04:24:44 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 90D1E200D82;
+        Wed, 29 Jul 2020 04:24:40 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 3B70B402DF;
+        Wed, 29 Jul 2020 04:24:35 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     wim@linux-watchdog.org, linux@roeck-us.net, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 1/2] watchdog: imx7ulp: Strictly follow the sequence for wdog operations
+Date:   Wed, 29 Jul 2020 10:20:26 +0800
+Message-Id: <1595989227-24700-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/20 7:11 PM, Luc Van Oostenryck wrote:
-> An excerpt from POSIX contains three occurrences of '<slash>' but
-> the first two are spelled starting with an HTML entity: '&lt;slash>'
-> 
-> Fix this by replacing the stray HTML entity by a '<'.
-> 
-> Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+According to reference manual, the i.MX7ULP WDOG's operations should
+follow below sequence:
 
-Hi Luc,
-One day late.
-Fixed and merged yesterday.
+1. disable global interrupts;
+2. unlock the wdog and wait unlock bit set;
+3. reconfigure the wdog and wait for reconfiguration bit set;
+4. enabel global interrupts.
 
-https://lore.kernel.org/linux-doc/20200727114527.23944-1-vegard.nossum@oracle.com/
+Strictly follow the recommended sequence can make it more robust.
 
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V1:
+	- use readl_poll_timeout_atomic() instead of usleep_ranges() since IRQ is disabled.
+---
+ drivers/watchdog/imx7ulp_wdt.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-> ---
->  Documentation/filesystems/path-lookup.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/filesystems/path-lookup.rst
-> index e2ba15146365..d46688d6770d 100644
-> --- a/Documentation/filesystems/path-lookup.rst
-> +++ b/Documentation/filesystems/path-lookup.rst
-> @@ -78,8 +78,8 @@ particular, ``mkdir()`` and ``rmdir()`` each create or remove a directory named
->  by the final component, and they are required to work with pathnames
->  ending in "``/``".  According to POSIX_
->  
-> -  A pathname that contains at least one non- &lt;slash> character and
-> -  that ends with one or more trailing &lt;slash> characters shall not
-> +  A pathname that contains at least one non-<slash> character and
-> +  that ends with one or more trailing <slash> characters shall not
->    be resolved successfully unless the last pathname component before
->    the trailing <slash> characters names an existing directory or a
->    directory entry that is to be created for a directory immediately
-> 
-
-cheers.
+diff --git a/drivers/watchdog/imx7ulp_wdt.c b/drivers/watchdog/imx7ulp_wdt.c
+index 7993c8c..7d2b12e 100644
+--- a/drivers/watchdog/imx7ulp_wdt.c
++++ b/drivers/watchdog/imx7ulp_wdt.c
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+@@ -36,6 +37,7 @@
+ #define DEFAULT_TIMEOUT	60
+ #define MAX_TIMEOUT	128
+ #define WDOG_CLOCK_RATE	1000
++#define WDOG_WAIT_TIMEOUT	10000
+ 
+ static bool nowayout = WATCHDOG_NOWAYOUT;
+ module_param(nowayout, bool, 0000);
+@@ -48,17 +50,31 @@ struct imx7ulp_wdt_device {
+ 	struct clk *clk;
+ };
+ 
++static inline void imx7ulp_wdt_wait(void __iomem *base, u32 mask)
++{
++	u32 val = readl(base + WDOG_CS);
++
++	if (!(val & mask))
++		WARN_ON(readl_poll_timeout_atomic(base + WDOG_CS, val,
++						  val & mask, 0,
++						  WDOG_WAIT_TIMEOUT));
++}
++
+ static void imx7ulp_wdt_enable(struct watchdog_device *wdog, bool enable)
+ {
+ 	struct imx7ulp_wdt_device *wdt = watchdog_get_drvdata(wdog);
+ 
+ 	u32 val = readl(wdt->base + WDOG_CS);
+ 
++	local_irq_disable();
+ 	writel(UNLOCK, wdt->base + WDOG_CNT);
++	imx7ulp_wdt_wait(wdt->base, WDOG_CS_ULK);
+ 	if (enable)
+ 		writel(val | WDOG_CS_EN, wdt->base + WDOG_CS);
+ 	else
+ 		writel(val & ~WDOG_CS_EN, wdt->base + WDOG_CS);
++	imx7ulp_wdt_wait(wdt->base, WDOG_CS_RCS);
++	local_irq_enable();
+ }
+ 
+ static bool imx7ulp_wdt_is_enabled(void __iomem *base)
+@@ -72,7 +88,12 @@ static int imx7ulp_wdt_ping(struct watchdog_device *wdog)
+ {
+ 	struct imx7ulp_wdt_device *wdt = watchdog_get_drvdata(wdog);
+ 
++	local_irq_disable();
++	writel(UNLOCK, wdt->base + WDOG_CNT);
++	imx7ulp_wdt_wait(wdt->base, WDOG_CS_ULK);
+ 	writel(REFRESH, wdt->base + WDOG_CNT);
++	imx7ulp_wdt_wait(wdt->base, WDOG_CS_RCS);
++	local_irq_enable();
+ 
+ 	return 0;
+ }
+@@ -98,8 +119,12 @@ static int imx7ulp_wdt_set_timeout(struct watchdog_device *wdog,
+ 	struct imx7ulp_wdt_device *wdt = watchdog_get_drvdata(wdog);
+ 	u32 val = WDOG_CLOCK_RATE * timeout;
+ 
++	local_irq_disable();
+ 	writel(UNLOCK, wdt->base + WDOG_CNT);
++	imx7ulp_wdt_wait(wdt->base, WDOG_CS_ULK);
+ 	writel(val, wdt->base + WDOG_TOVAL);
++	imx7ulp_wdt_wait(wdt->base, WDOG_CS_RCS);
++	local_irq_enable();
+ 
+ 	wdog->timeout = timeout;
+ 
+@@ -140,15 +165,19 @@ static void imx7ulp_wdt_init(void __iomem *base, unsigned int timeout)
+ {
+ 	u32 val;
+ 
++	local_irq_disable();
+ 	/* unlock the wdog for reconfiguration */
+ 	writel_relaxed(UNLOCK_SEQ0, base + WDOG_CNT);
+ 	writel_relaxed(UNLOCK_SEQ1, base + WDOG_CNT);
++	imx7ulp_wdt_wait(base, WDOG_CS_ULK);
+ 
+ 	/* set an initial timeout value in TOVAL */
+ 	writel(timeout, base + WDOG_TOVAL);
+ 	/* enable 32bit command sequence and reconfigure */
+ 	val = WDOG_CS_CMD32EN | WDOG_CS_CLK | WDOG_CS_UPDATE;
+ 	writel(val, base + WDOG_CS);
++	imx7ulp_wdt_wait(base, WDOG_CS_RCS);
++	local_irq_enable();
+ }
+ 
+ static void imx7ulp_wdt_action(void *data)
 -- 
-~Randy
+2.7.4
 
