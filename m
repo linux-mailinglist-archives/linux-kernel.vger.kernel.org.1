@@ -2,114 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519A4231806
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482BD231819
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgG2DU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 23:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgG2DU6 (ORCPT
+        id S1726813AbgG2D2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 23:28:55 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:38198 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726290AbgG2D2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 23:20:58 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD50C061794;
-        Tue, 28 Jul 2020 20:20:58 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BGf2F2DGWz9sSd;
-        Wed, 29 Jul 2020 13:20:53 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595992855;
-        bh=FQfpmxCdFZ8cS6nJ/IIH9W5dOQ4bTbHg21bsMtTdKQU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kNKkuZCSB/1cjnGKIvUbpELOPWY91GQC01onRDI72UXmjECLOx1xHBTC/r0Gt7w+w
-         g+OX4Xf1hzVKS6IsOh92BWB6BBDI7QEJC5n02UGzHfOQmkz67029v4fBCzXK1HN4gS
-         Ck3QppYN8ixBOz5HXwYZREZfPRGeGIoa54EAWoQrlbUnIK2/UZvO2UJ5ARTSqEyJDF
-         vqC1y+JWefdIfcHxRgsJwCYx0tvT5TW0X5qePGNItmvYqmq4Jef9Qz44C87Uqhsku3
-         W2ybIp9w7euAl4hbqdB8b7KERKAmb2kCsojUMkDFEPgwR2pidsxBlaQg2LTVXZ+VJa
-         bHXvwFZacJEeA==
-Date:   Wed, 29 Jul 2020 13:20:50 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>
-Subject: linux-next: manual merge of the net-next tree with the risc-v tree
-Message-ID: <20200729132050.10527ff1@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rKGAqN4rJ0Sxexkd60vKQYf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Tue, 28 Jul 2020 23:28:54 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U46nKku_1595993330;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U46nKku_1595993330)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 29 Jul 2020 11:28:50 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     axboe@kernel.dk
+Cc:     ming.lei@redhat.com, hch@lst.de, baolin.wang@linux.alibaba.com,
+        baolin.wang7@gmail.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] Some clean-ups for bio merge
+Date:   Wed, 29 Jul 2020 11:28:32 +0800
+Message-Id: <cover.1595987955.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rKGAqN4rJ0Sxexkd60vKQYf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+There are some duplicated code when trying to merge bio from pluged list
+and software queue, thus this patch set did some clean-ups when merging
+a bio. Any comments are welcome. Thanks.
 
-Today's linux-next merge of the net-next tree got a conflict in:
+Baolin Wang (5):
+  block: Move bio merge related functions into blk-merge.c
+  block: Remove redundant blk_mq_sched_allow_merge() validation
+  block: Add a new helper to attempt to merge a bio
+  block: Remove blk_mq_attempt_merge() function
+  block: Remove __blk_mq_sched_bio_merge() helper
 
-  lib/Kconfig
+ block/blk-core.c     | 156 -----------------------------------------------
+ block/blk-merge.c    | 168 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ block/blk-mq-sched.c |  64 ++++++--------------
+ block/blk-mq-sched.h |  13 +---
+ block/blk.h          |   9 +++
+ 5 files changed, 197 insertions(+), 213 deletions(-)
 
-between commit:
+-- 
+1.8.3.1
 
-  1a479f783857 ("lib: Add a generic version of devmem_is_allowed()")
-
-from the risc-v tree and commit:
-
-  b8265621f488 ("Add pldmfw library for PLDM firmware update")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc lib/Kconfig
-index 610c16ecbb7c,3ffbca6998e5..000000000000
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@@ -677,5 -677,6 +677,9 @@@ config GENERIC_LIB_CMPDI
-  config GENERIC_LIB_UCMPDI2
-  	bool
- =20
- +config GENERIC_LIB_DEVMEM_IS_ALLOWED
- +	bool
-++
-+ config PLDMFW
-+ 	bool
-+ 	default n
-
---Sig_/rKGAqN4rJ0Sxexkd60vKQYf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8g6xIACgkQAVBC80lX
-0GwumwgAgaM1oRM4ovApS9tbdCpmmk2laMWFWvSV2XbYF4B78o8pUdMRNkFwh/eA
-1KHu//ycq1O56W1APnv4XeQGoH+qdB43aJSddvCerdpEFLrCgkhPdaoq5s9ROkop
-s/hWBVw8oqV1xtYdnK4vg0j6++uhHSpoPYMGqqxi++yP+jih1c3cE3kj+hXEGc8s
-OiLAqUM9g+L0ZQnRahWiqHjNwNhy8ESWdH3LKmOD2inIoYoInF4a6oOUU+H/t/gE
-9YvtqSgRQc3ugmKjeJGmVc5aRhYH47TPwaB2b13TS2ZbXSFsK88IznQIl5tSxZrG
-9Md6SnDc1uXL4yO2fDNG3tlQfW0izg==
-=bvmC
------END PGP SIGNATURE-----
-
---Sig_/rKGAqN4rJ0Sxexkd60vKQYf--
