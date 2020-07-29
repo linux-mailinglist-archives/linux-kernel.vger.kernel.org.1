@@ -2,119 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240B6232681
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DF023268D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 23:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgG2Uz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 16:55:27 -0400
-Received: from mga01.intel.com ([192.55.52.88]:12727 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726476AbgG2Uz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:55:26 -0400
-IronPort-SDR: BCC29Ox9ECEanjRvhMD+lhLPar9UyTKfVnH0vzkMifuTkjsByjWlPdnz8jYPabwL8eCcgATERx
- rb75R4P6Aa7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="169620987"
-X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
-   d="scan'208";a="169620987"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 13:55:26 -0700
-IronPort-SDR: 0DKM30f/id2JQ/CzHqYbno4kUOprMvG1Qm70P/dUa79Jylsb1npgZ7A6/qw2aMjACkNgSg4bLv
- J2FwDP+m5iDQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
-   d="scan'208";a="304347308"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga002.jf.intel.com with ESMTP; 29 Jul 2020 13:55:26 -0700
-Date:   Wed, 29 Jul 2020 14:02:15 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Jonathan Corbet" <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v6 1/6] docs: IOMMU user API
-Message-ID: <20200729140215.0f8c4aca@jacob-builder>
-In-Reply-To: <MWHPR11MB1645BA0C8436C3280DBDC5468C700@MWHPR11MB1645.namprd11.prod.outlook.com>
-References: <1595525140-23899-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1595525140-23899-2-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20200728131950.2aff140d@x1.home>
-        <MWHPR11MB1645BA0C8436C3280DBDC5468C700@MWHPR11MB1645.namprd11.prod.outlook.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1726814AbgG2VBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 17:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbgG2VBI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 17:01:08 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA09C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 14:01:08 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id w2so15086390pgg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 14:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=r3+nIP5K10EGXnlaC/cqwtCDvvVytsxi4lBzhWC758s=;
+        b=NPqIAKW0dtRBd55t7S5JASfi7g9Qq+lP1OQ2dWFq8ixWGO+AWw8PvU/BiXcokWwtiD
+         MGxBu2srEBQwuCHG1ZyEtB+NpCIxsdDnxC3/CXSwOvy+xGCGVm0wgnnVSM5Bo/NvrQ+e
+         bX5E/ILgo6brXqZqOgxPdDEsymwGUphFnB7L0f6nl7eyvsDwC0CHDEmcbUVBSkmKiogG
+         B4NcgM4d6pCgkOB7BeYNbDySlgV1QpfhOL+YgeVOworCdaIO46WTdcvVEYtKrScSw0Fu
+         FGOiu1Oyku3nf1zrFnmdin8V6e/hCpVdCjwVVGvbzB6UZV7v9cfXLFqdf+vnPVb/KkX0
+         grlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r3+nIP5K10EGXnlaC/cqwtCDvvVytsxi4lBzhWC758s=;
+        b=tu6gPUk3Sd6DsrC5dJo87NIH6zaoyMe0/hPU2loS6BcXklQXDn2KBVwCKmfL8H4uKr
+         tHnR8WxpTrR1wfbRdFZaqpabDOW9+uIPgbCjwvyJQnSqMt9PNi853H4+xjlRh24ia5+I
+         oeDmDwTrVOZRhGHkDPfd15vdOUKKwhmdIcsh/1VDdtc8X8PwcYfqtVA4vNlAX4downmf
+         WP3bn4Tdh5iq1AO41acL1uFfGBzUJJApkY9596A0TVAkWf2DYQjRggYoQoTWBDXjl750
+         gwbI3weoiMom2j/TcSc5Qc5SZ8su1uf5F1mLLdKFecnOWIizIBkGPZUOi32HqTPC6dfq
+         SyeQ==
+X-Gm-Message-State: AOAM5331bb2IDtVPsNWDZYzhBN6+xj0Ba4C4PK6heR1upD91SImjMtRT
+        z2A7vUlElBL47XsGzawWd6NMO45aAMg=
+X-Google-Smtp-Source: ABdhPJx7qhJ7u7WquA86mm1b5sQ2oV6GH/poPkjKxkBaEb6ET0/P0b8LDb75yivjqHqjp59pkDr/RQ==
+X-Received: by 2002:a63:5a1a:: with SMTP id o26mr30504745pgb.420.1596056468110;
+        Wed, 29 Jul 2020 14:01:08 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id i1sm3448625pfo.212.2020.07.29.14.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 14:01:07 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 15:01:05 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mike.leach@linaro.org, coresight@lists.linaro.org
+Subject: Re: [RFC PATCH 03/14] coresight: tpiu: Use coresight device access
+ abstraction
+Message-ID: <20200729210105.GC3073178@xps15>
+References: <20200722172040.1299289-1-suzuki.poulose@arm.com>
+ <20200722172040.1299289-4-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722172040.1299289-4-suzuki.poulose@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Jul 2020 01:18:04 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
+On Wed, Jul 22, 2020 at 06:20:29PM +0100, Suzuki K Poulose wrote:
+> TPIU driver access the device before the coresight device
+> is registered. In other words, before the drvdata->csdev
+> is valid. Thus, we need to make sure that the csdev_access
+> is valid for both the invocations. Switch to using the
+> csdev_access directly instead of relying on availability
+> of drvdata->csdev.
 
-> > From: Alex Williamson <alex.williamson@redhat.com>
-> > Sent: Wednesday, July 29, 2020 3:20 AM
-> >   
-> [...]
-> > > +
-> > > +For example, IOTLB invalidations should always succeed. There is
-> > > no +architectural way to report back to the vIOMMU if the UAPI
-> > > data is +incompatible. If that happens, in order to guarantee
-> > > IOMMU iosolation,  
-> > 
-> > isolation
-> >   
-> > > +we have to resort to not giving completion status in vIOMMU.
-> > > This may +result in VM hang.
-> > > +
-> > > +For this reason the following IOMMU UAPIs cannot fail without
-> > > +catastrophic effect:
-> > > +
-> > > +1. Free PASID
-> > > +2. Unbind guest PASID
-> > > +3. Unbind guest PASID table (SMMU)
-> > > +4. Cache invalidate  
-> > 
-> > I'm not entirely sure what we're trying to assert here.  Clearly
-> > cache invalidation can fail and patch 5/6 goes on to add over a
-> > dozen checks of the user provided data that return an -errno.  Any
-> > user ioctl can fail if the user botches the parameters.  So are we
-> > just trying to explain the feature checking that should allow the
-> > user to know supported combinations and if they adhere to them,
-> > these should not fail?  It's not quite worded to that effect.
-> > Thanks, 
+I'm not sure all of the above is needed and based on the wording I could easily
+see this patch being selected for stable backport, which would be a mistak. 
+
+The gist of this patch is that we are moving to the access abstraction and the
+changelog should reflect that.
+
 > 
-> I guess the above wording is messed by what a UAPI should
-> behave and whether the vIOMMU reports associated errors.
-> UAPI can always fail, as you pointed out. vIOMMU may not
-> have a matching error code though, e.g. on Intel VT-d there is no
-> error reporting mechanism for cache invalidation. However,
-> it is not wise to assert UAPI behavior according to vIOMMU
-> definition. An error is an error. vIOMMU should just react to
-> UAPI errors according to its architecture definition (e.g. ignore,
-> forward to guest, hang, etc.). From this matter I feel above
-> section could better be removed.
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-tpiu.c | 30 +++++++++-----------
+>  1 file changed, 13 insertions(+), 17 deletions(-)
 > 
-Yes, I agreed, the scope is not drawn clearly. This section is kind of
-the relic of a previous version where responsibility of feature
-checking lies with IOMMU UAPI instead of VFIO.
+> diff --git a/drivers/hwtracing/coresight/coresight-tpiu.c b/drivers/hwtracing/coresight/coresight-tpiu.c
+> index 7ef7649f48ad..84ff4bf5d3b8 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpiu.c
+> +++ b/drivers/hwtracing/coresight/coresight-tpiu.c
+> @@ -60,49 +60,45 @@ struct tpiu_drvdata {
+>  	struct coresight_device	*csdev;
+>  };
+>  
+> -static void tpiu_enable_hw(struct tpiu_drvdata *drvdata)
+> +static void tpiu_enable_hw(struct csdev_access *csa)
+>  {
+> -	CS_UNLOCK(drvdata->base);
+> +	CS_UNLOCK(csa->base);
+>  
+>  	/* TODO: fill this up */
+>  
+> -	CS_LOCK(drvdata->base);
+> +	CS_LOCK(csa->base);
+>  }
+>  
+>  static int tpiu_enable(struct coresight_device *csdev, u32 mode, void *__unused)
+>  {
+> -	struct tpiu_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+> -
+> -	tpiu_enable_hw(drvdata);
+> +	tpiu_enable_hw(&csdev->access);
+>  	atomic_inc(csdev->refcnt);
+>  	dev_dbg(&csdev->dev, "TPIU enabled\n");
+>  	return 0;
+>  }
+>  
+> -static void tpiu_disable_hw(struct tpiu_drvdata *drvdata)
+> +static void tpiu_disable_hw(struct csdev_access *csa)
+>  {
+> -	CS_UNLOCK(drvdata->base);
+> +	CS_UNLOCK(csa->base);
+>  
+>  	/* Clear formatter and stop on flush */
+> -	writel_relaxed(FFCR_STOP_FI, drvdata->base + TPIU_FFCR);
+> +	csdev_access_relaxed_write32(csa, FFCR_STOP_FI, TPIU_FFCR);
+>  	/* Generate manual flush */
+> -	writel_relaxed(FFCR_STOP_FI | FFCR_FON_MAN, drvdata->base + TPIU_FFCR);
+> +	csdev_access_relaxed_write32(csa, FFCR_STOP_FI | FFCR_FON_MAN, TPIU_FFCR);
+>  	/* Wait for flush to complete */
+> -	coresight_timeout(drvdata->base, TPIU_FFCR, FFCR_FON_MAN_BIT, 0);
+> +	coresight_timeout(csa->base, TPIU_FFCR, FFCR_FON_MAN_BIT, 0);
+>  	/* Wait for formatter to stop */
+> -	coresight_timeout(drvdata->base, TPIU_FFSR, FFSR_FT_STOPPED_BIT, 1);
+> +	coresight_timeout(csa->base, TPIU_FFSR, FFSR_FT_STOPPED_BIT, 1);
+>  
+> -	CS_LOCK(drvdata->base);
+> +	CS_LOCK(csa->base);
+>  }
+>  
+>  static int tpiu_disable(struct coresight_device *csdev)
+>  {
+> -	struct tpiu_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+> -
+>  	if (atomic_dec_return(csdev->refcnt))
+>  		return -EBUSY;
+>  
+> -	tpiu_disable_hw(drvdata);
+> +	tpiu_disable_hw(&csdev->access);
+>  
+>  	dev_dbg(&csdev->dev, "TPIU disabled\n");
+>  	return 0;
+> @@ -152,7 +148,7 @@ static int tpiu_probe(struct amba_device *adev, const struct amba_id *id)
+>  	desc.access.base = base;
 
-How about just briefly mention that upfront feature checking is
-encouraged to avoid complex and catastrophic error at runtime?
+Any reason for introducing the above in patch 02?  I would have done that as
+part of this patch...  Also part of this patch I would remove drvdata::base
+since it is no longer needed.
 
-I will remove the rest.
+I'm out of time for today - I will continue tomorrow.
 
-> Thanks
-> Kevin
+Regards,
+Mathieu
 
-[Jacob Pan]
+>  
+>  	/* Disable tpiu to support older devices */
+> -	tpiu_disable_hw(drvdata);
+> +	tpiu_disable_hw(&desc.access);
+>  
+>  	pdata = coresight_get_platform_data(dev);
+>  	if (IS_ERR(pdata))
+> -- 
+> 2.24.1
+> 
