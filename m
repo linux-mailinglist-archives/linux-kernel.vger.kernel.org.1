@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675E5231765
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 03:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9C3231766
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 03:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730573AbgG2Br3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 21:47:29 -0400
-Received: from mga06.intel.com ([134.134.136.31]:14295 "EHLO mga06.intel.com"
+        id S1730670AbgG2Brc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 21:47:32 -0400
+Received: from mga03.intel.com ([134.134.136.65]:30261 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730346AbgG2Br3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 21:47:29 -0400
-IronPort-SDR: xeT2OGKp2Np2pzm3jI15VeJvj4ZrlO44ppfwX8kzr2NlQUT2ENbU8UgDjVTmW7LJs8cpZUzbWN
- Iz7AYqeYSSBQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="212877710"
+        id S1730346AbgG2Brb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 21:47:31 -0400
+IronPort-SDR: D/XYOS2B35gEdIqen0AFylxLApDPeP+fz01l/hzY3VgJk22o+LgHMyrAbTaZ4K7dzeOeldejBh
+ GOwnXXsmw3yA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="151326225"
 X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
-   d="scan'208";a="212877710"
+   d="scan'208";a="151326225"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 18:47:28 -0700
-IronPort-SDR: /rCdNMUqNQ81fGH02gngD1f27CubhZsvxzf9y4E0b45+TFR1kt/yJkXOnJzG90PMBwhUg28oGi
- VhRsMQV4as0Q==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 18:47:29 -0700
+IronPort-SDR: buweFr5FXr4/wTlV5YC7qLAkiGV9FFRoWmrr2Zj2m8xiK0wIq4Jp90yg5jDZ3MfVW3CESDyZyn
+ 9NEDaro4wMXQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
-   d="scan'208";a="304069473"
+   d="scan'208";a="364702365"
 Received: from lkp-server01.sh.intel.com (HELO d27eb53fc52b) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 28 Jul 2020 18:47:27 -0700
+  by orsmga001.jf.intel.com with ESMTP; 28 Jul 2020 18:47:28 -0700
 Received: from kbuild by d27eb53fc52b with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1k0bBm-0001A3-7v; Wed, 29 Jul 2020 01:47:26 +0000
-Date:   Wed, 29 Jul 2020 09:47:05 +0800
+        id 1k0bBn-0001A6-IU; Wed, 29 Jul 2020 01:47:27 +0000
+Date:   Wed, 29 Jul 2020 09:47:06 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/core] BUILD SUCCESS
- d903b6d029d66e6478562d75ea18d89098f7b7e8
-Message-ID: <5f20d519.akjNTzCXo5cLkGqV%lkp@intel.com>
+Subject: [tip:sched/core] BUILD SUCCESS
+ 21a6ee14a8f277766618ef07154432b46528113e
+Message-ID: <5f20d51a.xjfwIJj4SuCWbefb%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -46,8 +46,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/core
-branch HEAD: d903b6d029d66e6478562d75ea18d89098f7b7e8  perf/x86/rapl: Add Hygon Fam18h RAPL support
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  sched/core
+branch HEAD: 21a6ee14a8f277766618ef07154432b46528113e  sched: Remove duplicated tick_nohz_full_enabled() check
 
 elapsed time: 724m
 
@@ -101,10 +101,10 @@ sparc                               defconfig
 i386                                defconfig
 mips                             allyesconfig
 mips                             allmodconfig
-powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
+powerpc                             defconfig
 i386                 randconfig-a003-20200728
 i386                 randconfig-a004-20200728
 i386                 randconfig-a005-20200728
