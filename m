@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E004232101
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 16:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC77C232104
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 16:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgG2OxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 10:53:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726909AbgG2OxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 10:53:19 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1727042AbgG2Oxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 10:53:55 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:34296 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726476AbgG2Oxz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 10:53:55 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 705CC8EE207;
+        Wed, 29 Jul 2020 07:53:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1596034434;
+        bh=52QMwb7Jds0gQp46DIWjlg4uzDKqmp0+MN9kfbsWbYw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=KaxddRhcrEATgtc3+DrhSJ4n0NFDWD+jQycTwDg09AbWbe/mSXbaq8HlO1hL4TQYm
+         j8w03aVpW523vOV84ICUC+NZOgQV30n9x3L90GaIc52gNGLdqlPwddRqMGEeIPwX4K
+         dw5s6o3o+2E3141yBGgNBZfVMHMkNxcOJaEnVwCk=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id oXOLaPWPO5AT; Wed, 29 Jul 2020 07:53:54 -0700 (PDT)
+Received: from [153.66.254.194] (unknown [50.35.76.230])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A29121744;
-        Wed, 29 Jul 2020 14:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596034399;
-        bh=fp2UmJ60nahw5GDWRN0Aw65GthA1YO0B+AQzyViir4U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UBUvVV1R89Ln+j78ufGotq8p+n7KvD1YVJ6LxenHh/ilGpPs6Yb/uV+v+mTZ424aG
-         KnA2dbpF0QwLxV/NYoYPAjeU0uaOI0lbYVQB7MO43C4c0yEkbBuypsETuRVcG1PMsB
-         8y8MscqKKOtrXTt1lKOBxzm507dEdnSfuCz5d3hk=
-Date:   Wed, 29 Jul 2020 16:53:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] usb: typec: tcpm: Migrate workqueue to RT priority
- for processing events
-Message-ID: <20200729145309.GA3490882@kroah.com>
-References: <20200724020551.2737376-1-badhri@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200724020551.2737376-1-badhri@google.com>
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id C87708EE100;
+        Wed, 29 Jul 2020 07:53:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1596034434;
+        bh=52QMwb7Jds0gQp46DIWjlg4uzDKqmp0+MN9kfbsWbYw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=KaxddRhcrEATgtc3+DrhSJ4n0NFDWD+jQycTwDg09AbWbe/mSXbaq8HlO1hL4TQYm
+         j8w03aVpW523vOV84ICUC+NZOgQV30n9x3L90GaIc52gNGLdqlPwddRqMGEeIPwX4K
+         dw5s6o3o+2E3141yBGgNBZfVMHMkNxcOJaEnVwCk=
+Message-ID: <1596034432.4356.19.camel@HansenPartnership.com>
+Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Can Guo <cang@codeaurora.org>, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm
+Date:   Wed, 29 Jul 2020 07:53:52 -0700
+In-Reply-To: <1596033995.4356.15.camel@linux.ibm.com>
+References: <20200706164135.GE704149@rowland.harvard.edu>
+         <d0ed766b-88b0-5ad5-9c10-a4c3b2f994e3@puri.sm>
+         <20200728200243.GA1511887@rowland.harvard.edu>
+         <f3958758-afce-8add-1692-2a3bbcc49f73@puri.sm>
+         <20200729143213.GC1530967@rowland.harvard.edu>
+         <1596033995.4356.15.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 07:05:51PM -0700, Badhri Jagan Sridharan wrote:
-> "tReceiverResponse 15 ms Section 6.6.2
-> The receiver of a Message requiring a response Shall respond
-> within tReceiverResponse in order to ensure that the
-> sender’s SenderResponseTimer does not expire."
+On Wed, 2020-07-29 at 07:46 -0700, James Bottomley wrote:
+> On Wed, 2020-07-29 at 10:32 -0400, Alan Stern wrote:
+> > On Wed, Jul 29, 2020 at 04:12:22PM +0200, Martin Kepplinger wrote:
+> > > On 28.07.20 22:02, Alan Stern wrote:
+> > > > On Tue, Jul 28, 2020 at 09:02:44AM +0200, Martin Kepplinger
+> > > > wrote:
+> > > > > Hi Alan,
+> > > > > 
+> > > > > Any API cleanup is of course welcome. I just wanted to remind
+> > > > > you that the underlying problem: broken block device runtime
+> > > > > pm. Your initial proposed fix "almost" did it and mounting
+> > > > > works but during file access, it still just looks like a
+> > > > > runtime_resume is missing somewhere.
+> > > > 
+> > > > Well, I have tested that proposed fix several times, and on my
+> > > > system it's working perfectly.  When I stop accessing a drive
+> > > > it autosuspends, and when I access it again it gets resumed and
+> > > > works -- as you would expect.
+> > > 
+> > > that's weird. when I mount, everything looks good, "sda1". But as
+> > > soon as I cd to the mountpoint and do "ls" (on another SD card
+> > > "ls" works but actual file reading leads to the exact same
+> > > errors), I get:
+> > > 
+> > > [   77.474632] sd 0:0:0:0: [sda] tag#0 UNKNOWN(0x2003) Result:
+> > > hostbyte=0x00 driverbyte=0x08 cmd_age=0s
+> > > [   77.474647] sd 0:0:0:0: [sda] tag#0 Sense Key : 0x6 [current]
+> > > [   77.474655] sd 0:0:0:0: [sda] tag#0 ASC=0x28 ASCQ=0x0
+> > > [   77.474667] sd 0:0:0:0: [sda] tag#0 CDB: opcode=0x28 28 00 00
+> > > 00 60 40 00 00 01 00
+> > 
+> > This error report comes from the SCSI layer, not the block layer.
 > 
-> When the cpu complex is busy running other lower priority
-> work items, TCPM's work queue sometimes does not get scheduled
-> on time to meet the above requirement from the spec.
-> Moving to kthread_work apis to run with real time priority.
-> Just lower than the default threaded irq priority,
-> MAX_USER_RT_PRIO/2 + 1. (Higher number implies lower priority).
+> That sense code means "NOT READY TO READY CHANGE, MEDIUM MAY HAVE
+> CHANGED" so it sounds like it something we should be
+> ignoring.  Usually this signals a problem, like you changed the
+> medium manually (ejected the CD).  But in this case you can tell us
+> to expect this by setting
 > 
-> Further, as observed in 1ff688209e2e, moving to hrtimers to
-> overcome scheduling latency while scheduling the delayed work.
+> sdev->expecting_cc_ua
 > 
-> TCPM has three work streams:
-> 1. tcpm_state_machine
-> 2. vdm_state_machine
-> 3. event_work
-> 
-> tcpm_state_machine and vdm_state_machine both schedule work in
-> future i.e. delayed. Hence each of them have a corresponding
-> hrtimer, tcpm_state_machine_timer & vdm_state_machine_timer.
-> 
-> When work is queued right away kthread_queue_work is used.
-> Else, the relevant timer is programmed and made to queue
-> the kthread_work upon timer expiry.
-> 
-> kthread_create_worker only creates one kthread worker thread,
-> hence single threadedness of workqueue is retained.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> And we'll retry.  I think you need to set this on all resumed
+> devices.
 
-This doesn't apply against my usb-next branch at all.
+Actually, it's not quite that easy, we filter out this ASC/ASCQ
+combination from the check because we should never ignore medium might
+have changed events on running devices.  We could ignore it if we had a
+flag to say the power has been yanked (perhaps an additional sdev flag
+you set on resume) but we would still miss the case where you really
+had powered off the drive and then changed the media ... if you can
+regard this as the user's problem, then we might have a solution.
 
-Can you rebase and resend?
-
-Remember to collect the reviewed-by tags as well when you do so.
-
-thanks,
-
-greg k-h
+James
+ 
