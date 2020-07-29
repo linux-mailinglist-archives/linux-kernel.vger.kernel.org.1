@@ -2,63 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84288231BB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37717231BB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727871AbgG2I5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:57:41 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35510 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726476AbgG2I5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:57:41 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id DEB747C83FEAD6812F18;
-        Wed, 29 Jul 2020 16:57:37 +0800 (CST)
-Received: from huawei.com (10.175.104.57) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 29 Jul 2020
- 16:57:36 +0800
-From:   Li Heng <liheng40@huawei.com>
-To:     <ericvh@gmail.com>, <lucho@ionkov.net>, <asmadeus@codewreck.org>
-CC:     <v9fs-developer@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] 9p: Remove unneeded cast from memory allocation
-Date:   Wed, 29 Jul 2020 16:59:00 +0800
-Message-ID: <1596013140-49744-1-git-send-email-liheng40@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728028AbgG2I7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 04:59:06 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:55551 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727006AbgG2I7G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 04:59:06 -0400
+Received: by mail-il1-f198.google.com with SMTP id i78so10970035ill.22
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:59:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=gFBRlRWNk92oL6Fz7e42YwVu/c/ZEOEHHkd5Zj/UqNY=;
+        b=n1mIxVNiWkjKUstD0bhdznYwFcdAadz+1Ux0/gEVNY6AX2jyMhmljNeIkslcNrzGTX
+         U7itDKUlmshK9d9Za+WVJppvCJy2frN/W691EPWTzLVzbj//CS4iWo75StD80wBJs1CK
+         uxkzOxLro8vHl/yiE5GpXoa+ST1irvokY2ir24oyp+nR0x/V4zQWM1jOhub+PS3Lr68N
+         NBDrYIovLaFj5NYKr0GjV2VjkHqkJkTPag/kMtuOdnSNGez0QF9hcq51j4mnUHcrkKmI
+         Loz4Ax4gKbvrqPuHS0jSqSPtcBtrZSdLFhPWZx2qobKOCv97uNgtkHyPCovClMoW9wYc
+         RlhQ==
+X-Gm-Message-State: AOAM531UMWH1+MO8DfXrC/9GFUMBRbv3hVoo2BquApyfKTsvKE/a42H9
+        ORhfAOjutWmRxAVAZes3eTEBFp4T/R3o069VqD7F699FnGBa
+X-Google-Smtp-Source: ABdhPJyvyX5E1smDObksgtmqLLMrzGTwPv5XpW2cLAchMk5lOO3bPvgvMcHEpqBPYAXEd1vldHGiYB5nuAwSxaE5cK9yKPxGFxaw
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.104.57]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a92:48dd:: with SMTP id j90mr27158851ilg.75.1596013145206;
+ Wed, 29 Jul 2020 01:59:05 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 01:59:05 -0700
+In-Reply-To: <00000000000099052605aafb5923@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000093b5dc05ab90c468@google.com>
+Subject: Re: general protection fault in vsock_poll
+From:   syzbot <syzbot+a61bac2fcc1a7c6623fe@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, decui@microsoft.com, jhansen@vmware.com,
+        kuba@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, sgarzare@redhat.com, stefanha@redhat.com,
+        syzkaller-bugs@googlegroups.com,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove casting the values returned by memory allocation function.
+syzbot has bisected this issue to:
 
-Coccinelle emits WARNING:
+commit 408624af4c89989117bb2c6517bd50b7708a2fcd
+Author: Stefano Garzarella <sgarzare@redhat.com>
+Date:   Tue Dec 10 10:43:06 2019 +0000
 
-./fs/9p/vfs_inode.c:226:12-29: WARNING: casting value returned by memory allocation function to (struct v9fs_inode *) is useless.
+    vsock: use local transport when it is loaded
 
-Signed-off-by: Li Heng <liheng40@huawei.com>
----
- fs/9p/vfs_inode.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17e6489b100000
+start commit:   92ed3019 Linux 5.8-rc7
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1416489b100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1016489b100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=84f076779e989e69
+dashboard link: https://syzkaller.appspot.com/bug?extid=a61bac2fcc1a7c6623fe
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15930b64900000
 
-diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
-index 0fd5bf2..ae0c38a 100644
---- a/fs/9p/vfs_inode.c
-+++ b/fs/9p/vfs_inode.c
-@@ -223,8 +223,7 @@ v9fs_blank_wstat(struct p9_wstat *wstat)
- struct inode *v9fs_alloc_inode(struct super_block *sb)
- {
- 	struct v9fs_inode *v9inode;
--	v9inode = (struct v9fs_inode *)kmem_cache_alloc(v9fs_inode_cache,
--							GFP_KERNEL);
-+	v9inode = kmem_cache_alloc(v9fs_inode_cache, GFP_KERNEL);
- 	if (!v9inode)
- 		return NULL;
- #ifdef CONFIG_9P_FSCACHE
--- 
-2.7.4
+Reported-by: syzbot+a61bac2fcc1a7c6623fe@syzkaller.appspotmail.com
+Fixes: 408624af4c89 ("vsock: use local transport when it is loaded")
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
