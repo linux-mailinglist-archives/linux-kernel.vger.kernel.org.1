@@ -2,135 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BA5232363
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 19:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62306232361
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 19:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgG2Rd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 13:33:26 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:52770 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgG2Rd0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 13:33:26 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06THWq3N173710;
-        Wed, 29 Jul 2020 17:33:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=JJUNuxTpEfKxSphfXOUQrWBFW3Caubzknw2AmT6q9+8=;
- b=wAJv0XWR5J39m0gNC3gKShv9vJ/fEL2t1jm5SSuK3kcvA1GtwU8qxz3eybXFgQ3V31QX
- sjwSVCrg2+cEcDrAD7HbHI1JALxD/77QW1grGqwXPvW0cbCQm9EOWEMwd3+AAde2qY0J
- wVIVHgtSQcm3MDVnMYoTGaVErR4/iC9/+NEj1p+xor6PYzgyb+ns5hSQcnEzF8s6lL77
- Qbwnzjl7XlGIg7FZTLHMfsvkOZGDnp5Pn1nZKWZ2FTVTyJjssik+Gv1Mu2iiDWSnwZL7
- mGcg/wMqhLGXkNVGgWhdjN2f2ehrxG5zNQL92i3in9VDG9qgxFY3pBTMfKI3WsMSd+Iy mQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 32hu1jf1qa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 29 Jul 2020 17:33:14 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06THMUM7127756;
-        Wed, 29 Jul 2020 17:31:13 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 32hu5xhqmq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Jul 2020 17:31:13 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06THVBD6015116;
-        Wed, 29 Jul 2020 17:31:11 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 29 Jul 2020 10:31:07 -0700
-Subject: Re: [PATCH v1 2/6] mm/page_isolation: don't dump_page(NULL) in
- set_migratetype_isolate()
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Michael S.Tsirkin" <mst@redhat.com>
-References: <20200630142639.22770-1-david@redhat.com>
- <20200630142639.22770-3-david@redhat.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <6a05470a-75be-e895-dff6-ed494af8d6d9@oracle.com>
-Date:   Wed, 29 Jul 2020 10:31:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726857AbgG2RcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 13:32:11 -0400
+Received: from mga03.intel.com ([134.134.136.65]:2012 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726476AbgG2RcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 13:32:10 -0400
+IronPort-SDR: ZeOyQJoPO9fx5Vi8or/0qc9w+Q/jXVbq8Wt/85VgznmKKs7z/YwLhQaCenwwou6OMgbB9B4OPe
+ 3ACfPaGqNB6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="151445502"
+X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
+   d="scan'208";a="151445502"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 10:32:10 -0700
+IronPort-SDR: hx1rMLW2533idCRWSHOH7b6sOv2j1/aK6b3RBNbjzcsH8nh1t8+vZK84f80g2gU2QHiVcOXZ6U
+ 0GEcN8mINOJg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
+   d="scan'208";a="490363474"
+Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
+  by fmsmga006.fm.intel.com with ESMTP; 29 Jul 2020 10:32:08 -0700
+From:   Tomas Winkler <tomas.winkler@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Subject: [char-misc-next] mei: hdcp: fix mei_hdcp_verify_mprime() input paramter
+Date:   Wed, 29 Jul 2020 20:32:04 +0300
+Message-Id: <20200729173204.3251582-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <20200630142639.22770-3-david@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9697 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007290119
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9697 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
- malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007290120
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/30/20 7:26 AM, David Hildenbrand wrote:
-> Right now, if we have two isolations racing, we might trigger the
-> WARN_ON_ONCE() and to dump_page(NULL), dereferencing NULL. Let's just
-> return directly.
+wired_cmd_repeater_auth_stream_req_in has a variable
+length array at the end. we use struct_size() overflow
+macro to determine the size for the allocation and sending
+size.
 
-Just curious, what call path has the WARN_ON_ONCE()/dump_page(NULL)?
+Fixes: c56967d674e3 (mei: hdcp: Replace one-element array with flexible-array member)
+Cc: Ramalingam C <ramalingam.c@intel.com>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+---
+ drivers/misc/mei/hdcp/mei_hdcp.c | 38 ++++++++++++++++++--------------
+ 1 file changed, 22 insertions(+), 16 deletions(-)
 
-> 
-> In the future, we might want to report -EAGAIN to the caller instead, as
-> this could indicate a temporary isolation failure only.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Michael S. Tsirkin <mst@redhat.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-
-Hi David,
-
-That 'return -EAGAIN' was added as a sort of synchronization mechanism.
-See commit message for 2c7452a075d4d.  Before adding the 'return -EAGAIN',
-I could create races which would abandon isolated pageblocks.  Repeating
-those races over and over would result in a good chunk of system memory
-being isolated and unusable.
-
-Admittedly, these races are rare and I had to work really hard to produce
-them.  I'll try to find my testing mechanism.  My concern is reintroducing
-this abandoning of pageblocks.  I have not looked further in your series
-to see if this potentially addressed later.  If not, then we should not
-remove the return code.
-
+diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
+index d1d3e025ca0e..0e8f12e38494 100644
+--- a/drivers/misc/mei/hdcp/mei_hdcp.c
++++ b/drivers/misc/mei/hdcp/mei_hdcp.c
+@@ -546,38 +546,44 @@ static int mei_hdcp_verify_mprime(struct device *dev,
+ 				  struct hdcp_port_data *data,
+ 				  struct hdcp2_rep_stream_ready *stream_ready)
+ {
+-	struct wired_cmd_repeater_auth_stream_req_in
+-					verify_mprime_in = { { 0 } };
++	struct wired_cmd_repeater_auth_stream_req_in *verify_mprime_in;
+ 	struct wired_cmd_repeater_auth_stream_req_out
+ 					verify_mprime_out = { { 0 } };
+ 	struct mei_cl_device *cldev;
+ 	ssize_t byte;
++	size_t cmd_size;
+ 
+ 	if (!dev || !stream_ready || !data)
+ 		return -EINVAL;
+ 
+ 	cldev = to_mei_cl_device(dev);
+ 
+-	verify_mprime_in.header.api_version = HDCP_API_VERSION;
+-	verify_mprime_in.header.command_id = WIRED_REPEATER_AUTH_STREAM_REQ;
+-	verify_mprime_in.header.status = ME_HDCP_STATUS_SUCCESS;
+-	verify_mprime_in.header.buffer_len =
++	cmd_size = struct_size(verify_mprime_in, streams, data->k);
++	if (cmd_size == SIZE_MAX)
++		return -EINVAL;
++
++	verify_mprime_in = kzalloc(cmd_size, GFP_KERNEL);
++
++	verify_mprime_in->header.api_version = HDCP_API_VERSION;
++	verify_mprime_in->header.command_id = WIRED_REPEATER_AUTH_STREAM_REQ;
++	verify_mprime_in->header.status = ME_HDCP_STATUS_SUCCESS;
++	verify_mprime_in->header.buffer_len =
+ 			WIRED_CMD_BUF_LEN_REPEATER_AUTH_STREAM_REQ_MIN_IN;
+ 
+-	verify_mprime_in.port.integrated_port_type = data->port_type;
+-	verify_mprime_in.port.physical_port = (u8)data->fw_ddi;
+-	verify_mprime_in.port.attached_transcoder = (u8)data->fw_tc;
++	verify_mprime_in->port.integrated_port_type = data->port_type;
++	verify_mprime_in->port.physical_port = (u8)data->fw_ddi;
++	verify_mprime_in->port.attached_transcoder = (u8)data->fw_tc;
++
++	memcpy(verify_mprime_in->m_prime, stream_ready->m_prime, HDCP_2_2_MPRIME_LEN);
++	drm_hdcp_cpu_to_be24(verify_mprime_in->seq_num_m, data->seq_num_m);
+ 
+-	memcpy(verify_mprime_in.m_prime, stream_ready->m_prime,
+-	       HDCP_2_2_MPRIME_LEN);
+-	drm_hdcp_cpu_to_be24(verify_mprime_in.seq_num_m, data->seq_num_m);
+-	memcpy(verify_mprime_in.streams, data->streams,
++	memcpy(verify_mprime_in->streams, data->streams,
+ 	       array_size(data->k, sizeof(*data->streams)));
+ 
+-	verify_mprime_in.k = cpu_to_be16(data->k);
++	verify_mprime_in->k = cpu_to_be16(data->k);
+ 
+-	byte = mei_cldev_send(cldev, (u8 *)&verify_mprime_in,
+-			      sizeof(verify_mprime_in));
++	byte = mei_cldev_send(cldev, (u8 *)&verify_mprime_in, cmd_size);
++	kfree(verify_mprime_in);
+ 	if (byte < 0) {
+ 		dev_dbg(dev, "mei_cldev_send failed. %zd\n", byte);
+ 		return byte;
 -- 
-Mike Kravetz
+2.25.4
 
-> ---
->  mm/page_isolation.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-> index f6d07c5f0d34d..553b49a34cf71 100644
-> --- a/mm/page_isolation.c
-> +++ b/mm/page_isolation.c
-> @@ -29,10 +29,12 @@ static int set_migratetype_isolate(struct page *page, int migratetype, int isol_
->  	/*
->  	 * We assume the caller intended to SET migrate type to isolate.
->  	 * If it is already set, then someone else must have raced and
-> -	 * set it before us.  Return -EBUSY
-> +	 * set it before us.
->  	 */
-> -	if (is_migrate_isolate_page(page))
-> -		goto out;
-> +	if (is_migrate_isolate_page(page)) {
-> +		spin_unlock_irqrestore(&zone->lock, flags);
-> +		return -EBUSY;
-> +	}
->  
->  	/*
->  	 * FIXME: Now, memory hotplug doesn't call shrink_slab() by itself.
-> 
