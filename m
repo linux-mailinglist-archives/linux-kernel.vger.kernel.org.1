@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA8B231AF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC37231B05
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgG2IPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:15:51 -0400
-Received: from mout.gmx.net ([212.227.17.20]:34621 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726476AbgG2IPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:15:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1596010525;
-        bh=SEqiVovF7XeGtohoS2GMeFwDMUmZ9pW/KT58etbzx3I=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=XCZiliPRjvI4fnxBMHTK8ktxBj8sm8c/suvC2q8k3NejMEYSicFhklCixPYr8jL/q
-         p1s0lmomB8VJWQ3JsjfhEHquqim7j0pwfdIs7m46HB5x6m66dlD40RnA59WugB/3i0
-         yUz3c1y3zCJnzX1w5V7FO4NHoO2sDc7T7nuYWa4U=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([185.75.74.240]) by mail.gmx.com
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1M9Fnj-1k6SfS2l1j-006QTq; Wed, 29 Jul 2020 10:15:25 +0200
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Landen Chao <landen.chao@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Andrew Lunn <andrew@lunn.ch>
-Subject: [PATCH v4] net: ethernet: mtk_eth_soc: fix MTU warnings
-Date:   Wed, 29 Jul 2020 10:15:17 +0200
-Message-Id: <20200729081517.4026-1-frank-w@public-files.de>
-X-Mailer: git-send-email 2.25.1
+        id S1728023AbgG2ISR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 04:18:17 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:18683 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726336AbgG2ISQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 04:18:16 -0400
+X-UUID: 92742cb7d6034be5bd4cd683b13ac811-20200729
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=zqAS3nqWwaOf1gLGTu7eXkZFRUc9KnRMoBc8x/BNB/Q=;
+        b=hw9t9DIJBI+WRbeCFfS7aeTceU1YYHlEiVQeo4BSahSyIaI7Q9s7eQ+EunQi6R5cEmKfNEMZHlimgn7Vp98MAfQlDBNsXzUG87BWNfKMqszR9Vx32pWhRtZkEUzV+BGJFTvX6FH8iThKSKEgFu5+NEJ2cVvbuQW6LZW0kVJhiiQ=;
+X-UUID: 92742cb7d6034be5bd4cd683b13ac811-20200729
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1222048983; Wed, 29 Jul 2020 16:18:13 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 29 Jul 2020 16:18:10 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 29 Jul 2020 16:18:10 +0800
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Neal Liu <neal.liu@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Subject: [PATCH v4] Add MediaTek MT6779 devapc driver
+Date:   Wed, 29 Jul 2020 16:18:08 +0800
+Message-ID: <1596010690-13178-1-git-send-email-neal.liu@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SIqtPyJoGFptjlcPcxyQb71WF05R8NP7BOYsxZfVn4TevUka2hv
- 16bkgQRk2SbtWS26redKg5T9xwqZyS6LYPZc4nlqNtdOfjc06O3Jrl08QXrr6YDL/rstb1f
- l0xWrYmKz/JACy8a9r7NVqZ4c8VThH2ylroN+QjDMqc0cPtmCd+236ZK1kPKzt1RGF4+1GM
- 8VtrTh/CFp4NgsEdY2c9Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3EloKpSUWt8=:iY6EPOZWtHi/ZM6E34hZlR
- 2xSfHxvGFSXGxamCo079Z4sANGXK3lUhCJ+AQLOA9MkvmzRmwvhwHYa7aQwcfH0e9CIEipuBg
- GEngknl+qZuHctfDasmRn3F2KTtOywyAwgqVpmHaqQfpl5hH5ScWJSuxH/cLBr8Ek9Oa7q1Dr
- +zf0UEgCupZML5LpvsCnOoOS5GSFr6DtYMprSc+h3M2lT3OS+72eOCUmao/yDIUQGjabX38VJ
- NLuOCcsgyrjfRQHaRWxp6vOx1DKzclBdHJWpY7XZiEGE+c9Fpv0MiuLikJGvI2TQkQ/pgKwTW
- 6DsrbaD2vLZ4r/Bs7W5mJos+RF4gR1F3tEgzP60BLcw5NNO8wFuEg/MCjmgOoZSC9znRa4Td7
- hmGscGs/I/zKN8rz5vrjX5gr8oPuusM7Q4NMgafAHuKYjTwu6XhW9wmIM5158VqhhCV8hfpBJ
- tpFhnqmxS1iwilu+3w6Z2VIQzH2Q/7imS5JXTkEQLngvCpl9LKNYC5kFWYuGfBr5bRjB627Ll
- ICSqqxd3qGMKuehRy9DSFFdZjI8oc1xeMc5fY9f96LVZw1vtTfdtgppss78XeH+8wOJatIhBY
- EyhaWfZPkul6GRtgs6sSmQvRmUNyb6bCF7itUbEXGKV7H6NZ2UhBW5JJIeuKqeHNk9QjAHPV3
- zJPE6xvXUJa3W2HGC0FEuxte//wjUamhgd2gRS92xZn84VuZikNhhROrNKL7f88usifF1aOZQ
- mjpxid9UwrvBoiODjCQ0iS222hls0dpLDKsTJnPUpJrX84Qgg+pWYZ7KYRyyhQOGfjkzyt9SW
- mr0nubXYx1GCyzDcmz/XvpVoMwNqgl26092wYHvAYFXXD5ROUMeL31JX06S3XrEM7jhrmdwuB
- H6E+PBlxWLeu7UWwsvhbLz8sOKJbB2G5VwJhoN6sltjIJPCN/LkRaLQOndWiWMNR629HM6TlS
- AU+MtZYQvBOD03K5ggKTDgJl7HDa5jaldAJV4oa5mkW2W0Yy/GfPcLhdHLNloMQvQ+7fDrNGy
- 2PseCo4ehl+PUHN9WgUxctTxE5LDbbn75IfpasO2/Hz7jQ3T9dY9rolYKNKvZGhqSfPPzEQSp
- bUer4W27aVniiQtPAXaJmXN+BrgcHsTAnhHcaaXXHfXvMYy1OKLDW32vU6UnX7bYWbGrv0guT
- uKiqi35C9tqTAJypDlFi3T86ksHJAnRFK2rH/CUWZkvaYr1HmyeLb7NvO8aukyh6iXXVcK7UY
- wMicRZde5dkHaP+DpmOHh5gjVFF86/SJeFQ6cqA==
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 573D8C7EE0780E84BDFC8EEBE19C98008274176CD6A0AF13C469C2C807706FB52000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Landen Chao <landen.chao@mediatek.com>
-
-in recent kernel versions there are warnings about incorrect MTU size
-like these:
-
-eth0: mtu greater than device maximum
-mtk_soc_eth 1b100000.ethernet eth0: error -22 setting MTU to include DSA o=
-verhead
-
-Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-Fixes: 72579e14a1d3 ("net: dsa: don't fail to probe if we couldn't set the=
- MTU")
-Fixes: 7a4c53bee332 ("net: report invalid mtu value via netlink extack")
-Signed-off-by: Landen Chao <landen.chao@mediatek.com>
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-=2D--
-v3->v4
-  - fix commit-message (hyphernations,capitalisation) as suggested by Russ=
-ell
-  - add Signed-off-by Landen
-  - dropped wrong signed-off from rene (because previous v1/2 was from him=
-)
-=2D--
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/eth=
-ernet/mediatek/mtk_eth_soc.c
-index 85735d32ecb0..a1c45b39a230 100644
-=2D-- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -2891,6 +2891,8 @@ static int mtk_add_mac(struct mtk_eth *eth, struct d=
-evice_node *np)
- 	eth->netdev[id]->irq =3D eth->irq[0];
- 	eth->netdev[id]->dev.of_node =3D np;
-
-+	eth->netdev[id]->max_mtu =3D MTK_MAX_RX_LENGTH - MTK_RX_ETH_HLEN;
-+
- 	return 0;
-
- free_netdev:
-=2D-
-2.25.1
+VGhlc2UgcGF0Y2ggc2VyaWVzIGludHJvZHVjZSBhIE1lZGlhVGVrIE1UNjc3OSBkZXZhcGMgZHJp
+dmVyLg0KDQpNZWRpYVRlayBidXMgZmFicmljIHByb3ZpZGVzIFRydXN0Wm9uZSBzZWN1cml0eSBz
+dXBwb3J0IGFuZCBkYXRhIHByb3RlY3Rpb24gdG8gcHJldmVudCBzbGF2ZXMgZnJvbSBiZWluZyBh
+Y2Nlc3NlZCBieSB1bmV4cGVjdGVkIG1hc3RlcnMuDQpUaGUgc2VjdXJpdHkgdmlvbGF0aW9uIGlz
+IGxvZ2dlZCBhbmQgc2VudCB0byB0aGUgcHJvY2Vzc29yIGZvciBmdXJ0aGVyIGFuYWx5c2lzIG9y
+IGNvdW50ZXJtZWFzdXJlcy4NCg0KQW55IG9jY3VycmVuY2Ugb2Ygc2VjdXJpdHkgdmlvbGF0aW9u
+IHdvdWxkIHJhaXNlIGFuIGludGVycnVwdCwgYW5kIGl0IHdpbGwgYmUgaGFuZGxlZCBieSBtdGst
+ZGV2YXBjIGRyaXZlci4NClRoZSB2aW9sYXRpb24gaW5mb3JtYXRpb24gaXMgcHJpbnRlZCBpbiBv
+cmRlciB0byBmaW5kIHRoZSBtdXJkZXJlci4NCg0KY2hhbmdlcyBzaW5jZSB2MzoNCi0gcmV2aXNl
+IHZpb2xhdGlvbiBoYW5kbGluZyBmbG93IHRvIG1ha2UgaXQgbW9yZSBlYXNpbHkgdG8gdW5kZXJz
+dGFuZA0KICBoYXJkd2FyZSBiZWhhdmlvci4NCi0gYWRkIG1vcmUgY29tbWVudHMgdG8gdW5kZXJz
+dGFuZCBob3cgaGFyZHdhcmUgd29ya3MuDQoNCmNoYW5nZXMgc2luY2UgdjI6DQotIHBhc3MgcGxh
+dGZvcm0gaW5mbyB0aHJvdWdoIERUIGRhdGEuDQotIHJlbW92ZSB1bm5lY2Vzc2FyeSBmdW5jdGlv
+bi4NCi0gcmVtb3ZlIHNsYXZlX3R5cGUgYmVjYXVzZSBpdCBhbHdheXMgZXF1YWxzIHRvIDEgaW4g
+Y3VycmVudCBzdXBwb3J0IFNvQy4NCi0gdXNlIHZpb19pZHhfbnVtIGluc3RyZWFkIG9mIGxpc3Qg
+YWxsIGRldmljZXMnIGluZGV4Lg0KLSBhZGQgbW9yZSBjb21tZW50cyB0byBkZXNjcmliZSBoYXJk
+d2FyZSBiZWhhdmlvci4NCg0KY2hhbmdlcyBzaW5jZSB2MToNCi0gbW92ZSBTb0Mgc3BlY2lmaWMg
+cGFydCB0byBEVCBkYXRhLg0KLSByZW1vdmUgdW5uZWNlc3NhcnkgYm91bmRhcnkgY2hlY2suDQot
+IHJlbW92ZSB1bm5lY2Vzc2FyeSBkYXRhIHR5cGUgZGVjbGFyYXRpb24uDQotIHVzZSByZWFkX3Bv
+bGxfdGltZW91dCgpIGluc3RyZWFkIG9mIGZvciBsb29wIHBvbGxpbmcuDQotIHJldmlzZSBjb2Rp
+bmcgc3R5bGUgZWxlZ2FudGx5Lg0KDQoNCioqKiBCTFVSQiBIRVJFICoqKg0KDQpOZWFsIExpdSAo
+Mik6DQogIGR0LWJpbmRpbmdzOiBkZXZhcGM6IGFkZCBiaW5kaW5ncyBmb3IgbXRrLWRldmFwYw0K
+ICBzb2M6IG1lZGlhdGVrOiBhZGQgbXRrLWRldmFwYyBkcml2ZXINCg0KIC4uLi9iaW5kaW5ncy9z
+b2MvbWVkaWF0ZWsvZGV2YXBjLnlhbWwgICAgICAgICB8ICA1OCArKysrDQogZHJpdmVycy9zb2Mv
+bWVkaWF0ZWsvS2NvbmZpZyAgICAgICAgICAgICAgICAgIHwgICA5ICsNCiBkcml2ZXJzL3NvYy9t
+ZWRpYXRlay9NYWtlZmlsZSAgICAgICAgICAgICAgICAgfCAgIDEgKw0KIGRyaXZlcnMvc29jL21l
+ZGlhdGVrL210ay1kZXZhcGMuYyAgICAgICAgICAgICB8IDMyMyArKysrKysrKysrKysrKysrKysN
+CiBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstZGV2YXBjLmggICAgICAgICAgICAgfCAgNTQgKysr
+DQogNSBmaWxlcyBjaGFuZ2VkLCA0NDUgaW5zZXJ0aW9ucygrKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVrL2RldmFwYy55
+YW1sDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1kZXZhcGMu
+Yw0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstZGV2YXBjLmgN
+Cg0KLS0gDQoyLjE4LjANCg==
 
