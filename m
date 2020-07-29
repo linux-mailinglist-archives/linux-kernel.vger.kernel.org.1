@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBFE232674
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C01232676
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgG2UuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 16:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
+        id S1726987AbgG2Uuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 16:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726606AbgG2Ut7 (ORCPT
+        with ESMTP id S1726476AbgG2Uuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:49:59 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E33C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:49:58 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id z6so26052096iow.6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R5Zsab5WHMd96BIHQuVzitAMA+epsJ+V0jZwHn8dA5o=;
-        b=vsK2k62dcrIC+j7NuJu5tFJVZZLCoEipXlUeyWrPqMetWdM/dFYlyFTItrpCVRRYvD
-         VY2eDaigclW15J9jys61hsDYpfO+2v6patqdTlqUT4UHlVYyKYBSlZLrT+XIhhTPe0Pc
-         js1yGKwHzPyk4A/guwrvprqdz+dTRmbYFs5oN59ESFzWQ0nmF2QmBmWhuDumN+oB55+h
-         ATMY+qovO2foOZjlHo0kUVUGq/OuuEcWVQsJF6AtYWJkx9FgbMN+MuqSz7Oo/zI9MIYc
-         B0K4fzcPEB0ai4a7YBsC3cUHABzrUFqmsTJum9AEl+asWvNQv1tFVhjCig9wDD1M94I8
-         pfeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R5Zsab5WHMd96BIHQuVzitAMA+epsJ+V0jZwHn8dA5o=;
-        b=kLli2EbF6Jgayhe7vIvLLSO/7xKbgocx7OEoRTkHxFK6XBU+y5w8c7oQzpMP4SRT/t
-         fHW4Pf2awttzL2UmlsJCllVCN7ccsgmtzeF9RrDF9jBTRrwnVhfN51n+g/WHC08IQ0tN
-         vSEwEfOlfVYWupOMTnTR7kdPIMFK0VC9PcEat+pQHOAUo0+tGwGEDSnrbm/RBJTRKRQz
-         Uz5GoIdXYWmVm1pkXCfDef/cDpSnk+1400oMt+fpY9BHpF6LKdi9ZvwafZqJ0Td4G+fa
-         be0mTH/MnVlvf8InigGFK3CNoUYwdkqyAZg8mwBK7d8L6rB7s7HDkizkDImj5zSlax0l
-         xdPQ==
-X-Gm-Message-State: AOAM5326XUZuurFJ1swHmkJ80gId+iWfei4CGvR/2pYUkUAgR2wtlbde
-        nwIq0DLl/0SO7M237OLnPDJy4grM3XJ9Uv6S08M9Bw==
-X-Google-Smtp-Source: ABdhPJykP3cigdlHoKqG9HXBVHxb00S2uMk0Rd0zeejwEgCfL36RmUxUIv9NVpE6v49yEqEYKi29HijrG8opdjzLfc0=
-X-Received: by 2002:a5e:8611:: with SMTP id z17mr18066051ioj.177.1596055797247;
- Wed, 29 Jul 2020 13:49:57 -0700 (PDT)
+        Wed, 29 Jul 2020 16:50:50 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB0DC061794;
+        Wed, 29 Jul 2020 13:50:50 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k0t24-005CZh-9W; Wed, 29 Jul 2020 20:50:36 +0000
+Date:   Wed, 29 Jul 2020 21:50:36 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 08/23] fs: don't change the address limit for
+ ->write_iter in __kernel_write
+Message-ID: <20200729205036.GA1236929@ZenIV.linux.org.uk>
+References: <20200707174801.4162712-1-hch@lst.de>
+ <20200707174801.4162712-9-hch@lst.de>
 MIME-Version: 1.0
-References: <20200728004446.932-1-graf@amazon.com> <87d04gm4ws.fsf@vitty.brq.redhat.com>
- <a1f30fc8-09f5-fe2f-39e2-136b881ed15a@amazon.com> <CALMp9eQ3OxhQZYiHPiebX=KyvjWQgxQEO-owjSoxgPKsOMRvjw@mail.gmail.com>
- <14035057-ea80-603b-0466-bb50767f9f7e@amazon.com> <CALMp9eSxWDPcu2=K4NHbx_ZcYjA_jmnoD7gXbUp=cnEbiU0jLA@mail.gmail.com>
- <69d8c4cd-0d36-0135-d1fc-0af7d81ce062@amazon.com> <CALMp9eSD=_soihVJD_8QVKkgGAieeaBcRcNf2gKBzKE7gU1Tjg@mail.gmail.com>
- <13877428-be3a-85a8-bcdc-3a21872ba0e6@amazon.com>
-In-Reply-To: <13877428-be3a-85a8-bcdc-3a21872ba0e6@amazon.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 29 Jul 2020 13:49:45 -0700
-Message-ID: <CALMp9eRiWCRT7fXbVgE52E=KH9m8nz-OQxoexTUocP8hX-fHVA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Deflect unknown MSR accesses to user space
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        "Raslan, KarimAllah" <karahmed@amazon.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707174801.4162712-9-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 1:46 PM Alexander Graf <graf@amazon.com> wrote:
+On Tue, Jul 07, 2020 at 07:47:46PM +0200, Christoph Hellwig wrote:
+> If we write to a file that implements ->write_iter there is no need
+> to change the address limit if we send a kvec down.  Implement that
+> case, and prefer it over using plain ->write with a changed address
+> limit if available.
 
-> Do you have a rough ETA for Aaron's patch set yet? :)
+	You are flipping the priorities of ->write and ->write_iter
+for kernel_write().  Now, there are 4 instances of file_operations
+where we have both.  null_fops and zero_fops are fine either way -
+->write() and ->write_iter() do the same thing there (and arguably
+removing ->write might be the right thing; the only reason I hesistate
+is that writing to /dev/null *is* critical for many things, including
+the proper mail delivery ;-)
 
-Rough ETA: Friday (31 July 2020).
+However, the other two (infinibarf and pcm) are different; there we
+really have different semantics.  I don't believe anything writes into
+either under KERNEL_DS, but having kernel_write() and vfs_write() with
+subtly different semantics is asking for trouble down the road.
+
+How about we remove ->write in null_fops/zero_fops and fail loudly if
+*both* ->write() and ->write_iter() are present (in kernel_write(),
+that is)?
+
+There's a similar situation on the read side - there we have /dev/null
+with both ->read() and ->read_iter() (and there "remove ->read" is
+obviously the right thing to do) *and* we have pcm crap, with different
+semantics for ->read() and ->read_iter().
