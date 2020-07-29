@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF21231A7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD7A231A80
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbgG2Hnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 03:43:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57376 "EHLO mail.kernel.org"
+        id S1727904AbgG2Hny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 03:43:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727006AbgG2Hnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 03:43:31 -0400
+        id S1727006AbgG2Hny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 03:43:54 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.213])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE86B207F5;
-        Wed, 29 Jul 2020 07:43:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC66920838;
+        Wed, 29 Jul 2020 07:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596008611;
-        bh=ace2NZT8XNdUD7ge/5nLTjgszpNwFb2jWR8Ly0WU/14=;
-        h=From:To:Subject:Date:From;
-        b=uFCeLKuGo4eMf754vt4BXTZuuRtovXjTiVvSK5uwCUEzE04sNC+tULxtf1QkKS7Vn
-         SmdS+E+p69zLDvqMy4WThdcu4f84qDoPi/76IgiGJKKnM7LT1CXcNVyjP2M4QMD8QQ
-         T825aY/WEMBO20PTqC+88Rw2r30U51+6lxQAxjaQ=
+        s=default; t=1596008634;
+        bh=Wg9pd3gugixREFFJWJ59cuDFGcbYxjerHh5c6rdj/iw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=yGsgbS/gHEgi+9i7K7ejRFxeAHqcsxSjEhq/lGmXEPHEYScVsvpjuKLti/mXGDI2y
+         i3tsrvyoPsMaTnisjDJQpdnVwfIVEIV1/g1KAs1lPiIGNGGZr0reL1E4lITTFZS7fo
+         /GEnQYdJSSMddQBlaB+Kao9ex0irWyBUSBu31kBg=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: samsung: Fix kerneldoc of s3c_pm_do_restore_core()
-Date:   Wed, 29 Jul 2020 09:43:25 +0200
-Message-Id: <20200729074325.28241-1-krzk@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/2] power: supply: cpcap-battery: Fix kerneldoc of cpcap_battery_read_accumulated()
+Date:   Wed, 29 Jul 2020 09:43:47 +0200
+Message-Id: <20200729074348.28317-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -40,27 +38,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix W=1 compile warnings (invalid kerneldoc):
 
-    arch/arm/plat-samsung/pm-common.c:68: warning: Function parameter or member 'ptr' not described in 's3c_pm_do_restore_core'
-    arch/arm/plat-samsung/pm-common.c:68: warning: Function parameter or member 'count' not described in 's3c_pm_do_restore_core'
+    drivers/power/supply/cpcap-battery.c:292: warning: Function parameter or member 'ccd' not described in 'cpcap_battery_read_accumulated'
+    drivers/power/supply/cpcap-battery.c:292: warning: Excess function parameter 'regs' description in 'cpcap_battery_read_accumulated'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/plat-samsung/pm-common.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/power/supply/cpcap-battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/plat-samsung/pm-common.c b/arch/arm/plat-samsung/pm-common.c
-index 59a10c6dcba1..2da0d352441f 100644
---- a/arch/arm/plat-samsung/pm-common.c
-+++ b/arch/arm/plat-samsung/pm-common.c
-@@ -55,6 +55,8 @@ void s3c_pm_do_restore(const struct sleep_save *ptr, int count)
- 
+diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/cpcap-battery.c
+index 6e9392901b0a..90eba364664b 100644
+--- a/drivers/power/supply/cpcap-battery.c
++++ b/drivers/power/supply/cpcap-battery.c
+@@ -274,7 +274,7 @@ static int cpcap_battery_cc_to_ua(struct cpcap_battery_ddata *ddata,
  /**
-  * s3c_pm_do_restore_core() - early restore register values from save list.
-+ * @ptr: Pointer to an array of registers.
-+ * @count: Size of the ptr array.
+  * cpcap_battery_read_accumulated - reads cpcap coulomb counter
+  * @ddata: device driver data
+- * @regs: coulomb counter values
++ * @ccd: coulomb counter values
   *
-  * This is similar to s3c_pm_do_restore() except we try and minimise the
-  * side effects of the function in case registers that hardware might need
+  * Based on Motorola mapphone kernel function data_read_regs().
+  * Looking at the registers, the coulomb counter seems similar to
 -- 
 2.17.1
 
