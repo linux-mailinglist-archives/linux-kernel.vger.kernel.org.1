@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6A6231755
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 03:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AEB23175C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 03:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730755AbgG2Bmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 21:42:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
+        id S1730932AbgG2Bmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 21:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730599AbgG2Bml (ORCPT
+        with ESMTP id S1730670AbgG2Bmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 21:42:41 -0400
+        Tue, 28 Jul 2020 21:42:42 -0400
 Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32FFC0619D4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 18:42:40 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id d4so13380125pgk.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 18:42:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A88AC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 18:42:42 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id e8so13365780pgc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 18:42:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eSNl5guPVSTVFb6xmLUiPtvBabfXpb7A/lKPqGtlYVE=;
-        b=Z1OP5tnvZFehixnm5/zklBzayLRLEJOr/wpWZHZdO9CCj3RzpX4aCf8laptB3LXr7m
-         mMxRRhYsJ9NYel6WVmcmi2xleu2s/YC3hcavNYO2HFM3zX68h7M2aB3KB289JeVoCtd2
-         RT8YAS/tfcxMD+qySCgNPwM64IvQtPQo3uvdA=
+        bh=nBfnuzv8V/FS7CoKVmoMtrjti5jBBE6yafdUJVDo5Po=;
+        b=XAIKwqvY7po1TDCttQKQqO/e8Ma4OJJxW1T7PIH7joYSz1wRad0wSNfTy589TpD044
+         Y/YZjJnATRIfGlCUGLFIT6eh/4FfuiICRwEPHELE/uCuNCoonPbraCn+Uta4RZKvu/Lp
+         eXHEnZkEU2hePZ5Tn8pUOcG4eaydYHRI0kR/o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eSNl5guPVSTVFb6xmLUiPtvBabfXpb7A/lKPqGtlYVE=;
-        b=iKNUI62sEWfFKIf8nQh50IlvOjFI7MZE+Z6oZgy/fhlaZSAtWlhcb13qSJNGPn+yxm
-         1Z0BBAthskgJHSIOaLtZlVtojtS4MLbC3lhcveQIg35bDiRAc43N9ia6i5gvtFCiYqe5
-         EWkwuePQhZi2Nmm2s6Q3QhvnyCWl303LV9iilebJQ9tGC/IqwNBGEdbKxn8LAyxudzb9
-         bgT1Xsv7MHRLnGSrPTbZB3qw2eFwQYHdi19j1g5VDfrdyUKJobfm1a02WQI1lPD/bApw
-         rrBJQBrW3+iKsqi4v+XflWrAhCALggKq9BMbXow1DRV2Ol1ST/C3ijX9XPB7637+Y2SD
-         qh3w==
-X-Gm-Message-State: AOAM530eUifem/Po0Bapc9lrBXsE6gNn7mt0ZVmcIW3LRNvplkUaTOLt
-        7042S22kKUosiF5G+mjZIt+9XA==
-X-Google-Smtp-Source: ABdhPJxmMzqdfhSy+5r+Shhpe9Koc5HP/8a+PhUzDBJ2QPDK9IcuRsnWyLnvvshaymFwOpCL7O2t1g==
-X-Received: by 2002:a63:454d:: with SMTP id u13mr5805629pgk.309.1595986960385;
-        Tue, 28 Jul 2020 18:42:40 -0700 (PDT)
+        bh=nBfnuzv8V/FS7CoKVmoMtrjti5jBBE6yafdUJVDo5Po=;
+        b=OXTI2XijRpnqvTtPt+pYnS9gabDTt4k/63bwM5I7BmtkFLq284NiSuNOeyp/K6lyif
+         QNU7weBFu4fXPDJnMz/BjiYL6bK0prb2x5Z99SuEbQfM8pC6HaeLOn1d+66mSq+tUEjE
+         cg8RDGcjb/QmSqM1Y2Dt4fJsS9HSQrQX4nWZkw1Ov76+yf3j9RaoBT0Rs2dsGGpKjz4u
+         mEk1x7OAj4A1N48viAsfZUp3Ps6Pduq7h/kx5SB8ZMm0BSsHsgCiaiCAgJ0Ntn8jlxOb
+         eBsaP5yp/GknGQ5C2eEt2DjSmDolJLqkCqSvYa2jdt86M5Fa58VnEt5LNQHHT6WFhnve
+         K79Q==
+X-Gm-Message-State: AOAM532/y3/06jtKhdaMba6SfUiZssMI0Yl1K8iwfuQxLUavt5BvGf2o
+        lR0SER6pzJSkDy/8EWPb3q+JW81GV0c=
+X-Google-Smtp-Source: ABdhPJxYRdtAaml7y8yAJ+rrQl2TGi33yo+vrV97Qz+dt2ids7LCidVHdRJ93RKUkmsFGZ3RSn/e6Q==
+X-Received: by 2002:a63:2482:: with SMTP id k124mr6002008pgk.332.1595986961855;
+        Tue, 28 Jul 2020 18:42:41 -0700 (PDT)
 Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
-        by smtp.gmail.com with ESMTPSA id e124sm280678pfe.176.2020.07.28.18.42.39
+        by smtp.gmail.com with ESMTPSA id e124sm280678pfe.176.2020.07.28.18.42.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 18:42:39 -0700 (PDT)
+        Tue, 28 Jul 2020 18:42:41 -0700 (PDT)
 From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 To:     marcel@holtmann.org, luiz.dentz@gmail.com
 Cc:     chromeos-bluetooth-upstreaming@chromium.org,
@@ -56,9 +56,9 @@ Cc:     chromeos-bluetooth-upstreaming@chromium.org,
         Johan Hedberg <johan.hedberg@gmail.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 1/3] Bluetooth: Add mgmt suspend and resume events
-Date:   Tue, 28 Jul 2020 18:42:23 -0700
-Message-Id: <20200728184205.1.I1b721ef9da5c79d8515018d806801da4eacaf563@changeid>
+Subject: [PATCH 2/3] Bluetooth: Add suspend reason for device disconnect
+Date:   Tue, 28 Jul 2020 18:42:24 -0700
+Message-Id: <20200728184205.2.Ib9bb75b65362d32104df86ffad479761680bb2cb@changeid>
 X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
 In-Reply-To: <20200729014225.1842177-1-abhishekpandit@chromium.org>
 References: <20200729014225.1842177-1-abhishekpandit@chromium.org>
@@ -69,88 +69,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the controller suspend and resume events, which will signal when
-Bluetooth has completed preparing for suspend and when it's ready for
-resume.
+Update device disconnect event with reason 0x5 to indicate that device
+disconnected because the controller is suspending.
 
 Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
 ---
 
- include/net/bluetooth/hci_core.h |  3 +++
- include/net/bluetooth/mgmt.h     | 11 +++++++++++
- net/bluetooth/mgmt.c             | 24 ++++++++++++++++++++++++
- 3 files changed, 38 insertions(+)
+ include/net/bluetooth/mgmt.h | 1 +
+ net/bluetooth/mgmt.c         | 4 ++++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index bee1b4778ccc96..1b336e6ebe66aa 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -1747,6 +1747,9 @@ void mgmt_device_found(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
- void mgmt_remote_name(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
- 		      u8 addr_type, s8 rssi, u8 *name, u8 name_len);
- void mgmt_discovering(struct hci_dev *hdev, u8 discovering);
-+void mgmt_suspending(struct hci_dev *hdev, u8 state);
-+void mgmt_resuming(struct hci_dev *hdev, u8 reason, bdaddr_t *bdaddr,
-+		   u8 addr_type);
- bool mgmt_powering_down(struct hci_dev *hdev);
- void mgmt_new_ltk(struct hci_dev *hdev, struct smp_ltk *key, bool persistent);
- void mgmt_new_irk(struct hci_dev *hdev, struct smp_irk *irk, bool persistent);
 diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
-index beae5c3980f03b..d9a88cab379555 100644
+index d9a88cab379555..1a98f836aad126 100644
 --- a/include/net/bluetooth/mgmt.h
 +++ b/include/net/bluetooth/mgmt.h
-@@ -1028,3 +1028,14 @@ struct mgmt_ev_adv_monitor_added {
- struct mgmt_ev_adv_monitor_removed {
- 	__le16 monitor_handle;
- }  __packed;
-+
-+#define MGMT_EV_CONTROLLER_SUSPEND		0x002d
-+struct mgmt_ev_controller_suspend {
-+	__u8	suspend_state;
-+} __packed;
-+
-+#define MGMT_EV_CONTROLLER_RESUME		0x002e
-+struct mgmt_ev_controller_resume {
-+	__u8	wake_reason;
-+	struct mgmt_addr_info addr;
-+} __packed;
+@@ -840,6 +840,7 @@ struct mgmt_ev_device_connected {
+ #define MGMT_DEV_DISCONN_LOCAL_HOST	0x02
+ #define MGMT_DEV_DISCONN_REMOTE		0x03
+ #define MGMT_DEV_DISCONN_AUTH_FAILURE	0x04
++#define MGMT_DEV_DISCONN_LOCAL_HOST_SUSPEND	0x05
+ 
+ #define MGMT_EV_DEVICE_DISCONNECTED	0x000C
+ struct mgmt_ev_device_disconnected {
 diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index f45105d2de7722..1c89ae819207ac 100644
+index 1c89ae819207ac..fcda479134c756 100644
 --- a/net/bluetooth/mgmt.c
 +++ b/net/bluetooth/mgmt.c
-@@ -8730,6 +8730,30 @@ void mgmt_discovering(struct hci_dev *hdev, u8 discovering)
- 	mgmt_event(MGMT_EV_DISCOVERING, hdev, &ev, sizeof(ev), NULL);
- }
+@@ -8124,6 +8124,10 @@ void mgmt_device_disconnected(struct hci_dev *hdev, bdaddr_t *bdaddr,
+ 	ev.addr.type = link_to_bdaddr(link_type, addr_type);
+ 	ev.reason = reason;
  
-+void mgmt_suspending(struct hci_dev *hdev, u8 state)
-+{
-+	struct mgmt_ev_controller_suspend ev;
++	/* Report disconnects due to suspend */
++	if (hdev->suspended)
++		ev.reason = MGMT_DEV_DISCONN_LOCAL_HOST_SUSPEND;
 +
-+	ev.suspend_state = state;
-+	mgmt_event(MGMT_EV_CONTROLLER_SUSPEND, hdev, &ev, sizeof(ev), NULL);
-+}
-+
-+void mgmt_resuming(struct hci_dev *hdev, u8 reason, bdaddr_t *bdaddr,
-+		   u8 addr_type)
-+{
-+	struct mgmt_ev_controller_resume ev;
-+
-+	ev.wake_reason = reason;
-+	if (bdaddr) {
-+		bacpy(&ev.addr.bdaddr, bdaddr);
-+		ev.addr.type = addr_type;
-+	} else {
-+		memset(&ev.addr, 0, sizeof(ev.addr));
-+	}
-+
-+	mgmt_event(MGMT_EV_CONTROLLER_RESUME, hdev, &ev, sizeof(ev), NULL);
-+}
-+
- static struct hci_mgmt_chan chan = {
- 	.channel	= HCI_CHANNEL_CONTROL,
- 	.handler_count	= ARRAY_SIZE(mgmt_handlers),
+ 	mgmt_event(MGMT_EV_DEVICE_DISCONNECTED, hdev, &ev, sizeof(ev), sk);
+ 
+ 	if (sk)
 -- 
 2.28.0.rc0.142.g3c755180ce-goog
 
