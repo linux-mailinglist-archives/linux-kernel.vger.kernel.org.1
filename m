@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75CB231692
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 02:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FAB231690
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 02:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730548AbgG2ADv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 20:03:51 -0400
-Received: from mga02.intel.com ([134.134.136.20]:12906 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730203AbgG2ADu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 20:03:50 -0400
-IronPort-SDR: UjBXySBTkyKvwXXqEyL9+3Bu1SL1TwoVn2vjdcmo2ElQI5ORoEz22WTHkLAPef5s0wTVcOZRJf
- CT8hPjFnLBFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="139355499"
-X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
-   d="scan'208";a="139355499"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 17:03:50 -0700
-IronPort-SDR: HWByhIL8dhsYC9YtywZwN6Xjz/9Jegnru3PAqqACxrwnjWR7GB9EHHB/PdeQTqszECTRTtUdv3
- WK1OyxomiY9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
-   d="scan'208";a="273722248"
-Received: from lkp-server01.sh.intel.com (HELO d27eb53fc52b) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 28 Jul 2020 17:03:46 -0700
-Received: from kbuild by d27eb53fc52b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k0ZZS-00018e-0S; Wed, 29 Jul 2020 00:03:46 +0000
-Date:   Wed, 29 Jul 2020 08:03:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Omer Shpigelman <oshpigelman@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Moti Haimovski <mhaimovski@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>,
-        Ben Segal <bpsegal20@gmail.com>,
-        Christine Gharzuzi <cgharzuzi@habana.ai>,
-        Pawel Piskorski <ppiskorski@habana.ai>
-Subject: [RFC PATCH] habanalabs: goya_ctx_init() can be static
-Message-ID: <20200729000313.GA14680@e442e3f624c4>
-References: <20200728171851.55842-1-gregkh@linuxfoundation.org>
+        id S1730527AbgG2ADf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 20:03:35 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:44821 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730203AbgG2ADf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 20:03:35 -0400
+Received: by mail-io1-f65.google.com with SMTP id v6so7452298iow.11;
+        Tue, 28 Jul 2020 17:03:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IXFD10Rv0JjmKa9mG+dTSJx3WQvF526rNjwfbt0NjXM=;
+        b=ANDpmPiTaSs5jNscq58ZL65K393RdyRbCs9EBeDZzf16wocbx+Y/XBabj/zE67JZRq
+         UVQbGVGUJTEmrI+V227ge1oi7cjVGtpSohrF2axYjH0GCUwC1SXC0g+GRLHrBkv25gBr
+         aDECyVWRS8Z+gC2MJ97XIphpDNz+AifkrPMe8fqx0y7FstXVrYrb9uxuHbdZey/aHnb1
+         ohmMV3iMgsgzaH5MgQzvWXyTlzu4t72Ld5xyeAgWWx96ZME8i2g7DxFXzbIJwBMbf4EH
+         PBI/nPHv8NGhH04KdJQUGDxUJfVYnfliaVth29uCa24FpXex0BwcD3IUHWX9Q3u7ubSD
+         eGFg==
+X-Gm-Message-State: AOAM531YlaIOAgVLAXIFq9PAUqm5hM/Q12LJV0z6wYRD4QDR/SVJGWwi
+        B8ge8jsTz7AuCze7m0BpB1c=
+X-Google-Smtp-Source: ABdhPJyq/gYnInd7DJmO9UKPCgu93jZ8qEVsvuBCvut/ojTyuY6YfLYQG5pz5kGlUv8BXEFqcuvKmw==
+X-Received: by 2002:a05:6602:160b:: with SMTP id x11mr24882338iow.52.1595981014221;
+        Tue, 28 Jul 2020 17:03:34 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id 4sm218492ilt.6.2020.07.28.17.03.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 17:03:33 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 5796340945; Wed, 29 Jul 2020 00:03:32 +0000 (UTC)
+Date:   Wed, 29 Jul 2020 00:03:32 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Julius Hemanth Pitti <jpitti@cisco.com>, mingo@elte.hu,
+        akpm@linux-foundation.org, yzaikin@google.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, xe-linux-external@cisco.com,
+        jannh@google.com
+Subject: Re: [PATCH] proc/sysctl: make protected_* world readable
+Message-ID: <20200729000332.GJ4332@42.do-not-panic.com>
+References: <20200709235115.56954-1-jpitti@cisco.com>
+ <202007092122.782EE053@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200728171851.55842-1-gregkh@linuxfoundation.org>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <202007092122.782EE053@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 09, 2020 at 09:31:37PM -0700, Kees Cook wrote:
+> On Thu, Jul 09, 2020 at 04:51:15PM -0700, Julius Hemanth Pitti wrote:
+> > protected_* files have 600 permissions which prevents
+> > non-superuser from reading them.
+> > 
+> > Container like "AWS greengrass" refuse to launch unless
+> > protected_hardlinks and protected_symlinks are set. When
+> > containers like these run with "userns-remap" or "--user"
+> > mapping container's root to non-superuser on host, they
+> > fail to run due to denied read access to these files.
+> > 
+> > As these protections are hardly a secret, and do not
+> > possess any security risk, making them world readable.
+> > 
+> > Though above greengrass usecase needs read access to
+> > only protected_hardlinks and protected_symlinks files,
+> > setting all other protected_* files to 644 to keep
+> > consistency.
+> > 
+> > Fixes: 800179c9b8a1 ("fs: add link restrictions")
+> > Signed-off-by: Julius Hemanth Pitti <jpitti@cisco.com>
+> 
+> Acked-by: Kees Cook <keescook@chromium.org>
+> 
+> I had originally proposed it as 0644, but Ingo asked that it have
+> a more conservative default value[1]. I figured that given the settings
+> can be discovered easily, it's not worth much. And if there are legit
+> cases where things are improved, I don't have a problem switching this
+> back.
 
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- gaudi/gaudi.c |    2 +-
- goya/goya.c   |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+If we're going to to do this, can we please document why these are
+"protected" then?
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index d4b3b995f69d8..00a0a7238d814 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -6272,7 +6272,7 @@ static enum hl_device_hw_state gaudi_get_hw_state(struct hl_device *hdev)
- 	return RREG32(mmHW_STATE);
- }
- 
--int gaudi_ctx_init(struct hl_ctx *ctx)
-+static int gaudi_ctx_init(struct hl_ctx *ctx)
- {
- 	return 0;
- }
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index dedcd2211fb73..85030759b2afe 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -5225,7 +5225,7 @@ static enum hl_device_hw_state goya_get_hw_state(struct hl_device *hdev)
- 	return RREG32(mmHW_STATE);
- }
- 
--int goya_ctx_init(struct hl_ctx *ctx)
-+static int goya_ctx_init(struct hl_ctx *ctx)
- {
- 	return 0;
- }
+  Luis
+
+> 
+> Ingo, any thoughts on this now, 8 years later in the age of containers?
+> :)
+> 
+> (One devil's advocate question: as a workaround, you are able to just
+> change those files to 0644 after mounting /proc, yes? But regardless,
+> why get in people's way for no justifiable reason.)
+> 
+> -Kees
+> 
+> [1] https://lore.kernel.org/lkml/20120105091704.GB3249@elte.hu/
+> 
+> -- 
+> Kees Cook
