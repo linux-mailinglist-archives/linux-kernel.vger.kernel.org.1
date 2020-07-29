@@ -2,182 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B53E231EE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 15:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5846231EED
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 15:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgG2NCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 09:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726772AbgG2NCX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 09:02:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C315EC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 06:02:22 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596027741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ISg0/WArn12noaQmrr46IGgWshWP/iaAXMHUeAAHF4U=;
-        b=4BtqCav83IxKHOF5OuHBXDNPxXmA1MKiNVJZFKGS73HUdSYrUsax3Jm8GPZ6nuA7PnH/w9
-        G7GFrNWL48jeSLOfIqeZhKPMwNsJTUvabXeCQwMWTFHRpXzSxpUnw/iFF1j+gAycS6vnki
-        xGhW+xOK2CrzZqEjgGLgV9B53LGg4Hk7GPN8DPUSssg44bbvXidTNzDmCLoRbtGmh/nvEL
-        iPl3HEtwo5oF2mw8umxFlA6q8I0R1LP7qHz80aZV1NnGf2F6HPDTHHubq93JOcWCLp2kXb
-        nrlcUUy4uJ1k4vK2SiEbsChPmryUXmhZI3vhvXZb2pfKAAdxLBFVIVF6pCmsWQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596027741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ISg0/WArn12noaQmrr46IGgWshWP/iaAXMHUeAAHF4U=;
-        b=DOKFv728My1t2n9oT14oCmpA1rDI1NsmD92tbTt0Mhfw6esQlSSTu64E0pDmCqVbe+bT57
-        brxZA12YUaUnRzDQ==
-To:     Freddy Hsin <freddy.hsin@mediatek.com>,
-        linux-mediatek@lists.infradead.or,
-        linux-arm-kernel@lists.infradead.org,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        "Ben Dooks \(Codethink\)" <ben.dooks@codethink.co.uk>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        linux-kernel@vger.kernel.org, chang-an.chen@mediatek.com,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        wsd_upstream@mediatek.com, kuohong.wang@mediatek.com,
-        stanley.chu@mediatek.com, Freddy Hsin <freddy.hsin@mediatek.com>
-Subject: Re: [PATCH v1 2/2] timer: mt6873: porting Mediatek timer driver to loadable module
-In-Reply-To: <1595931377-21627-3-git-send-email-freddy.hsin@mediatek.com>
-References: <1595931377-21627-1-git-send-email-freddy.hsin@mediatek.com> <1595931377-21627-3-git-send-email-freddy.hsin@mediatek.com>
-Date:   Wed, 29 Jul 2020 15:02:20 +0200
-Message-ID: <87mu3ia2zn.fsf@nanos.tec.linutronix.de>
+        id S1727044AbgG2NDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 09:03:42 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:39759 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726998AbgG2NDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 09:03:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596027821; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Z/CQ/FqDlwwW+m2QFj2+c7Hf8xIIhoH/WH49OMnQboM=;
+ b=p/lgZmoX6CdlZp7rTuDS6+OG7UCy9g6TNCQ7BqLuu56rJaOPqS7d2qcqP7h1v5jSi0m2TubN
+ UJbA9WZifpFkG4mDkKPakPn9IlF/iByX4Lzm3sinfjTNMuVfNslWv9GM3PUj8J1DsGFVP3RH
+ u1cfW6fE5uik0w8Y1kTS9yq3ULw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5f21737236e6de324e9a1945 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Jul 2020 13:02:42
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 81BB4C433B1; Wed, 29 Jul 2020 13:02:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5C52FC433C9;
+        Wed, 29 Jul 2020 13:02:40 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 29 Jul 2020 21:02:40 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Cc:     nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        rnayak@codeaurora.org, sh425.lee@samsung.com,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 7/8] scsi: ufs: Move dumps in IRQ handler to error
+ handler
+In-Reply-To: <7e5e942d-449b-bd52-32da-7f5beed116b7@codeaurora.org>
+References: <1595912460-8860-1-git-send-email-cang@codeaurora.org>
+ <1595912460-8860-8-git-send-email-cang@codeaurora.org>
+ <7e5e942d-449b-bd52-32da-7f5beed116b7@codeaurora.org>
+Message-ID: <dff9541177ebf68950ca13d2f13d88ba@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Freddy,
+Hi Asutosh,
 
-Freddy Hsin <freddy.hsin@mediatek.com> writes:
+On 2020-07-29 02:06, Asutosh Das (asd) wrote:
+> On 7/27/2020 10:00 PM, Can Guo wrote:
+>> Sometime dumps in IRQ handler are heavy enough to cause system 
+>> stability
+>> issues, move them to error handler.
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>>   drivers/scsi/ufs/ufshcd.c | 31 +++++++++++++++----------------
+>>   1 file changed, 15 insertions(+), 16 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index c480823..b2bafa3 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -5682,6 +5682,21 @@ static void ufshcd_err_handler(struct 
+>> work_struct *work)
+>>   				    UFSHCD_UIC_DL_TCx_REPLAY_ERROR))))
+>>   		needs_reset = true;
+>>   +	if (hba->saved_err & (INT_FATAL_ERRORS | UIC_ERROR |
+>> +			      UFSHCD_UIC_HIBERN8_MASK)) {
+>> +		bool pr_prdt = !!(hba->saved_err & SYSTEM_BUS_FATAL_ERROR);
+>> +
+>> +		dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
+>> +				__func__, hba->saved_err, hba->saved_uic_err);
+>> +		spin_unlock_irqrestore(hba->host->host_lock, flags);
+>> +		ufshcd_print_host_state(hba);
+>> +		ufshcd_print_pwr_info(hba);
+>> +		ufshcd_print_host_regs(hba);
+>> +		ufshcd_print_tmrs(hba, hba->outstanding_tasks);
+>> +		ufshcd_print_trs(hba, hba->outstanding_reqs, pr_prdt);
+>> +		spin_lock_irqsave(hba->host->host_lock, flags);
+>> +	}
+>> +
+>>   	/*
+>>   	 * if host reset is required then skip clearing the pending
+>>   	 * transfers forcefully because they will get cleared during
+>> @@ -5900,22 +5915,6 @@ static irqreturn_t ufshcd_check_errors(struct 
+>> ufs_hba *hba)
+>>     		/* block commands from scsi mid-layer */
+>>   		ufshcd_scsi_block_requests(hba);
+>> -
+>> -		/* dump controller state before resetting */
+>> -		if (hba->saved_err & (INT_FATAL_ERRORS | UIC_ERROR)) {
+>> -			bool pr_prdt = !!(hba->saved_err &
+>> -					SYSTEM_BUS_FATAL_ERROR);
+>> -
+>> -			dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
+>> -					__func__, hba->saved_err,
+>> -					hba->saved_uic_err);
+>> -
+>> -			ufshcd_print_host_regs(hba);
+>> -			ufshcd_print_pwr_info(hba);
+> How about keep the above prints and move the tmrs and trs to eh?
+> Sometimes in system instability, the eh may not get a chance to run
+> even. Still the above prints would provide some clues.
 
-again, please be more careful with subject lines. git log $FILE will
-give you a hint. 
+Here is the IRQ handler, ufshcd_print_host_regs() is sometime heavy
+enough to cause stability issues during my fault injection test, since
+it prints host regs, reg's history, crypto debug infos plus prints
+from vops_dump.
 
-> porting Mediatek timer driver to loadable module
-
-Repeating the sentence in the subject line is not giving any
-information. Also changelogs want to tell the WHY and not the WHAT. This
-also lacks any information why this is actually safe when booting such a
-system w/o this particular driver built in. What is early boot - up to
-module load - using as clocksource and timer?
-
-> diff --git a/drivers/clocksource/mmio.c b/drivers/clocksource/mmio.c
-> index 9de7515..5504569 100644
-> --- a/drivers/clocksource/mmio.c
-> +++ b/drivers/clocksource/mmio.c
-> @@ -21,6 +21,7 @@ u64 clocksource_mmio_readl_up(struct clocksource *c)
->  {
->  	return (u64)readl_relaxed(to_mmio_clksrc(c)->reg);
->  }
-> +EXPORT_SYMBOL(clocksource_mmio_readl_up);
-
-Again EXPORT_SYMBOL_GPL() and this wants to be a seperate patch. It has
-absolutely no business with the mediatek timer changes. 
-  
->  u64 clocksource_mmio_readl_down(struct clocksource *c)
->  {
-> @@ -46,7 +47,7 @@ u64 clocksource_mmio_readw_down(struct clocksource *c)
->   * @bits:	Number of valid bits
->   * @read:	One of clocksource_mmio_read*() above
->   */
-> -int __init clocksource_mmio_init(void __iomem *base, const char *name,
-> +int clocksource_mmio_init(void __iomem *base, const char *name,
->
->  	unsigned long hz, int rating, unsigned bits,
->  	u64 (*read)(struct clocksource *))
->  {
-> @@ -68,3 +69,4 @@ int __init clocksource_mmio_init(void __iomem *base, const char *name,
->  
->  	return clocksource_register_hz(&cs->clksrc, hz);
->  }
-> +EXPORT_SYMBOL(clocksource_mmio_init);
-
-See above.
-
-> diff --git a/drivers/clocksource/timer-mediatek.c b/drivers/clocksource/timer-mediatek.c
-> index 9318edc..5c89b6b 100644
-> --- a/drivers/clocksource/timer-mediatek.c
-> +++ b/drivers/clocksource/timer-mediatek.c
-> @@ -13,6 +13,9 @@
->  #include <linux/clocksource.h>
->  #include <linux/interrupt.h>
->  #include <linux/irqreturn.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
->  #include <linux/sched_clock.h>
->  #include <linux/slab.h>
->  #include "timer-of.h"
-> @@ -309,5 +312,41 @@ static int __init mtk_gpt_init(struct device_node *node)
->  
->  	return 0;
->  }
-> +
-> +#ifdef MODULE
-> +static int mtk_timer_probe(struct platform_device *pdev)
-> +{
-> +	int (*timer_init)(struct device_node *node);
-> +	struct device_node *np = pdev->dev.of_node;
-> +
-> +	timer_init = of_device_get_match_data(&pdev->dev);
-> +	return timer_init(np);
-> +}
-> +
-> +static const struct of_device_id mtk_timer_match_table[] = {
-> +	{
-> +		.compatible = "mediatek,mt6577-timer",
-> +		.data = mtk_gpt_init,
-> +	},
-> +	{
-> +		.compatible = "mediatek,mt6765-timer",
-> +		.data = mtk_syst_init,
-> +	},
-> +	{}
-> +};
-> +
-> +static struct platform_driver mtk_timer_driver = {
-> +	.probe = mtk_timer_probe,
-> +	.driver = {
-> +		.name = "mtk-timer",
-> +		.of_match_table = mtk_timer_match_table,
-> +	},
-> +};
-> +MODULE_DESCRIPTION("MEDIATEK Module timer driver");
-> +MODULE_LICENSE("GPL v2");
-> +
-> +module_platform_driver(mtk_timer_driver);
-> +#else
->  TIMER_OF_DECLARE(mtk_mt6577, "mediatek,mt6577-timer", mtk_gpt_init);
->  TIMER_OF_DECLARE(mtk_mt6765, "mediatek,mt6765-timer", mtk_syst_init);
-> +#endif
-
-Sorry no. This is not going to happen.
-
-The above probe, match table and platform driver structs plus the module*
-thingies are going to be repeated in every single driver which is going
-to support module build. Tons of boilerplate copied over and over
-again.
-
-We had exactly the same before TIMER_OF_DECLARE() came around, so pretty
-please this want's to be some smart macro which handles all of this
-automatically.
+How about just printing host regs and reg history here? Most time, these
+infos are enough.
 
 Thanks,
 
-        tglx
+Can Guo.
 
-
+>> -			ufshcd_print_tmrs(hba, hba->outstanding_tasks);
+>> -			ufshcd_print_trs(hba, hba->outstanding_reqs,
+>> -					pr_prdt);
+>> -		}
+>>   		ufshcd_schedule_eh_work(hba);
+>>   		retval |= IRQ_HANDLED;
+>>   	}
+>> 
