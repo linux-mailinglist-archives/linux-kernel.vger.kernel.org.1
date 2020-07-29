@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F18E231B0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0DE231B0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbgG2ITP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:19:15 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:20847 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727044AbgG2ITO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:19:14 -0400
-X-UUID: 927e91cfe5d544b59e07ef633784d0fd-20200729
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=UNLqnEsdKNmSGXuBOvN1uBWFDDUciwsnHV7r4PQfRiM=;
-        b=YOHx7014d6+Zce3cWaK/zSTv5Kyqu1y0/pVmyCGKwWmVm331EC+tqZusLxn8AcHOB+SQu2v1ip+cRnzf5oJvCkGPSg/YFk+9aS7BQ+hmh6eAJJTkJeXcvW5fzaeLMgp6Aj5MCAmnqNsdlxbshDJJRgf79azNozhivxSAQXcOR1A=;
-X-UUID: 927e91cfe5d544b59e07ef633784d0fd-20200729
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <crystal.guo@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 2009448367; Wed, 29 Jul 2020 16:19:10 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs07n1.mediatek.inc
- (172.21.101.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 29 Jul
- 2020 16:19:08 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 29 Jul 2020 16:19:07 +0800
-Message-ID: <1596010724.11360.6.camel@mhfsdcap03>
-Subject: Re: [PATCH 2/2] arm64: dts: mt8192: add infracfg_rst node
-From:   Crystal Guo <crystal.guo@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Seiya Wang =?UTF-8?Q?=28=E7=8E=8B=E8=BF=BA=E5=90=9B=29?= 
-        <seiya.wang@mediatek.com>
-Date:   Wed, 29 Jul 2020 16:18:44 +0800
-In-Reply-To: <b81f1936-caf0-e843-9556-14e3024d6d6f@gmail.com>
-References: <1596008357-11213-1-git-send-email-crystal.guo@mediatek.com>
-         <1596008357-11213-3-git-send-email-crystal.guo@mediatek.com>
-         <b81f1936-caf0-e843-9556-14e3024d6d6f@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1728057AbgG2ITG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 04:19:06 -0400
+Received: from nsfocus.com ([221.122.62.131]:47378 "HELO nsfocus.com"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with SMTP
+        id S1727044AbgG2ITF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 04:19:05 -0400
+Received: (qmail 8939 invoked from network); 29 Jul 2020 08:17:41 -0000
+Received: from unknown (HELO ?192.168.7.10?) (221.122.62.131)
+  by nsfocus.com with SMTP; 29 Jul 2020 08:17:41 -0000
+Subject: Re: [PATCH] vgacon: fix out of bounds write to the scrollback buffer
+To:     Jiri Slaby <jirislaby@kernel.org>, b.zolnierkie@samsung.com
+Cc:     linux-kernel@vger.kernel.org,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Kyungtae Kim <kt0755@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg KH <greg@kroah.com>, Solar Designer <solar@openwall.com>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Security Officers <security@kernel.org>,
+        linux-distros@vs.openwall.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+References: <c1f267aa-dfb3-91fa-3111-30c1676f1a91@kernel.org>
+From:   =?UTF-8?B?5byg5LqR5rW3?= <zhangyunhai@nsfocus.com>
+Autocrypt: addr=zhangyunhai@nsfocus.com; keydata=
+ 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
+Message-ID: <c5a73038-f441-602b-584b-3d84622b1fb1@nsfocus.com>
+Date:   Wed, 29 Jul 2020 16:19:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <c1f267aa-dfb3-91fa-3111-30c1676f1a91@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA3LTI5IGF0IDE1OjQ1ICswODAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
-Og0KPiANCj4gT24gMjkvMDcvMjAyMCAwOTozOSwgQ3J5c3RhbCBHdW8gd3JvdGU6DQo+ID4gYWRk
-IGluZnJhY2ZnX3JzdCBub2RlIHdoaWNoIGlzIGZvciBNVDgxOTIgcGxhdGZvcm0NCj4gPiANCj4g
-PiBTaWduZWQtb2ZmLWJ5OiBDcnlzdGFsIEd1byA8Y3J5c3RhbC5ndW9AbWVkaWF0ZWsuY29tPg0K
-PiA+IC0tLQ0KPiA+ICAgYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRzaSB8
-IDEwICsrKysrKysrKy0NCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDEg
-ZGVsZXRpb24oLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9t
-ZWRpYXRlay9tdDgxOTIuZHRzaSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTky
-LmR0c2kNCj4gPiBpbmRleCBiMTZkYmJkLi5hZGM2MjM5IDEwMDY0NA0KPiA+IC0tLSBhL2FyY2gv
-YXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kNCj4gPiArKysgYi9hcmNoL2FybTY0
-L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpDQo+ID4gQEAgLTIxNyw5ICsyMTcsMTcgQEAN
-Cj4gPiAgIAkJfTsNCj4gPiAgIA0KPiA+ICAgCQlpbmZyYWNmZzogaW5mcmFjZmdAMTAwMDEwMDAg
-ew0KPiA+IC0JCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi1pbmZyYWNmZyIsICJzeXNj
-b24iOw0KPiA+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi1pbmZyYWNmZyIsICJz
-eXNjb24iLCAic2ltcGxlLW1mZCI7DQo+ID4gICAJCQlyZWcgPSA8MCAweDEwMDAxMDAwIDAgMHgx
-MDAwPjsNCj4gPiAgIAkJCSNjbG9jay1jZWxscyA9IDwxPjsNCj4gPiArDQo+ID4gKwkJCWluZnJh
-Y2ZnX3JzdDogcmVzZXQtY29udHJvbGxlciB7DQo+ID4gKwkJCQljb21wYXRpYmxlID0gInRpLHN5
-c2Nvbi1yZXNldCI7DQo+ID4gKwkJCQkjcmVzZXQtY2VsbHMgPSA8MT47DQo+ID4gKwkJCQl0aSxy
-ZXNldC1iaXRzID0gPA0KPiA+ICsJCQkJCTB4MTQwIDE1IDB4MTQ0IDE1IDAgMCAoQVNTRVJUX1NF
-VCB8IERFQVNTRVJUX1NFVCB8IFNUQVRVU19OT05FKSAvKiAwOiBwY2llICovDQo+IA0KPiBZb3Ug
-aGF2ZSBUZXhhcyBJbnN0cnVtZW50cyBoYXJkd2FyZSBpbnNpZGUgaW5mcmFjZmc/IEFyZSB5b3Ug
-c3VyZT8NCj4gDQpUSSByZXNldC1jb250cm9sbGVyIGRyaXZlciBpcyBhIGNvbW1vbiBkcml2ZXIs
-IE1USyBTT0MgaGFzIHRoZSBzaW1pbGFyDQpjb250cm9sIGZsb3csIHRodXMgY2FuIHJldXNlIGl0
-Lg0KDQo+ID4gKwkJCQk+Ow0KPiA+ICsJCQl9Ow0KPiA+ICAgCQl9Ow0KPiA+ICAgDQo+ID4gICAJ
-CXBlcmljZmc6IHBlcmljZmdAMTAwMDMwMDAgew0KPiA+IA0KDQo=
+On 2020/7/29 16:11, Jiri Slaby wrote:
+> But the loop checks for the overflow:
+>   if (vgacon_scrollback_cur->tail >= vgacon_scrollback_cur->size)
+>         vgacon_scrollback_cur->tail = 0;
+> 
+> So the first 2 iterations would write to the end of the buffer and this
+> 3rd one should have zeroed ->tail.
+
+In the 2nd  iteration before the check:
+vgacon_scrollback_cur->tail is 65360 which is still less then
+vgacon_scrollback_cur->size(65440), so the ->tail won't be zeroed.
+
+Then it gose to the 3rd  iteration, overflow occurs.
+
+Regards,
+Yunhai Zhang / NSFOCUS Security Team
+
+
+
 
