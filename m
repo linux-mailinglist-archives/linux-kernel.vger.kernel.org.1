@@ -2,248 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF47231C00
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C8A231BE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728377AbgG2JUl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Jul 2020 05:20:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31732 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728362AbgG2JUk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 05:20:40 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-46-u5k39R8sNDqRtvbOzjUigQ-1; Wed, 29 Jul 2020 05:20:35 -0400
-X-MC-Unique: u5k39R8sNDqRtvbOzjUigQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 834DE107ACCA;
-        Wed, 29 Jul 2020 09:20:33 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.193.247])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1243A6931E;
-        Wed, 29 Jul 2020 09:20:27 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Kajol Jain <kjain@linux.ibm.com>, Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Paul Clarke <pc@us.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>
-Subject: [PATCH 19/19] perf metric: Rename group_list to metric_list
-Date:   Wed, 29 Jul 2020 11:19:08 +0200
-Message-Id: <20200729091908.1378911-20-jolsa@kernel.org>
-In-Reply-To: <20200729091908.1378911-1-jolsa@kernel.org>
-References: <20200729091908.1378911-1-jolsa@kernel.org>
+        id S1728078AbgG2JR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 05:17:56 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8850 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727914AbgG2JRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 05:17:55 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D9CD7C6CDDC368B2FDA7;
+        Wed, 29 Jul 2020 17:17:52 +0800 (CST)
+Received: from huawei.com (10.175.104.57) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 29 Jul 2020
+ 17:17:51 +0800
+From:   Li Heng <liheng40@huawei.com>
+To:     <sathya.prakash@broadcom.com>, <sreekanth.reddy@broadcom.com>,
+        <suganath-prabu.subramani@broadcom.com>
+CC:     <MPT-FusionLinux.pdl@broadcom.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] scsi: Remove unneeded cast from memory allocation
+Date:   Wed, 29 Jul 2020 17:19:14 +0800
+Message-ID: <1596014354-59935-1-git-send-email-liheng40@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.175.104.57]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following the previous change that rename egroup to metric, there's no
-reason to call the list 'group_list' anymore, renaming it to
-metric_list.
+Remove casting the values returned by memory allocation function.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Reviewed-by: Kajol Jain <kjain@linux.ibm.com>
-Acked-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Michael Petlan <mpetlan@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Paul Clarke <pc@us.ibm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20200719181320.785305-20-jolsa@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Coccinelle emits WARNING:
+
+./drivers/message/fusion/mptfc.c:766:17-30: WARNING: casting value returned by memory allocation function to (FCPortPage0_t *) is useless.
+./drivers/message/fusion/mptfc.c:907:17-30: WARNING: casting value returned by memory allocation function to (FCPortPage1_t *) is useless.
+
+Signed-off-by: Li Heng <liheng40@huawei.com>
 ---
- tools/perf/util/metricgroup.c | 42 +++++++++++++++++------------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+ drivers/message/fusion/mptfc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 2bbe1b800696..283b5e432559 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -639,7 +639,7 @@ int __weak arch_get_runtimeparam(void)
- 	return 1;
- }
+diff --git a/drivers/message/fusion/mptfc.c b/drivers/message/fusion/mptfc.c
+index 4314a33..34ca9af 100644
+--- a/drivers/message/fusion/mptfc.c
++++ b/drivers/message/fusion/mptfc.c
+@@ -763,7 +763,7 @@ mptfc_GetFcPortPage0(MPT_ADAPTER *ioc, int portnum)
  
--static int __add_metric(struct list_head *group_list,
-+static int __add_metric(struct list_head *metric_list,
- 			struct pmu_event *pe,
- 			bool metric_no_group,
- 			int runtime,
-@@ -726,13 +726,13 @@ static int __add_metric(struct list_head *group_list,
- 	if (m->metric_refs_cnt)
- 		return 0;
+ 	data_sz = hdr.PageLength * 4;
+ 	rc = -ENOMEM;
+-	ppage0_alloc = (FCPortPage0_t *) pci_alloc_consistent(ioc->pcidev, data_sz, &page0_dma);
++	ppage0_alloc = pci_alloc_consistent(ioc->pcidev, data_sz, &page0_dma);
+ 	if (ppage0_alloc) {
  
--	if (list_empty(group_list))
--		list_add(&m->nd, group_list);
-+	if (list_empty(metric_list))
-+		list_add(&m->nd, metric_list);
- 	else {
- 		struct list_head *pos;
+  try_again:
+@@ -904,7 +904,7 @@ mptfc_GetFcPortPage1(MPT_ADAPTER *ioc, int portnum)
+ 		if (data_sz < sizeof(FCPortPage1_t))
+ 			data_sz = sizeof(FCPortPage1_t);
  
- 		/* Place the largest groups at the front. */
--		list_for_each_prev(pos, group_list) {
-+		list_for_each_prev(pos, metric_list) {
- 			struct metric *old = list_entry(pos, struct metric, nd);
- 
- 			if (hashmap__size(&m->pctx.ids) <=
-@@ -813,7 +813,7 @@ static int recursion_check(struct metric *m, const char *id, struct expr_id **pa
- 	return p->id ? 0 : -ENOMEM;
- }
- 
--static int add_metric(struct list_head *group_list,
-+static int add_metric(struct list_head *metric_list,
- 		      struct pmu_event *pe,
- 		      bool metric_no_group,
- 		      struct metric **mp,
-@@ -822,7 +822,7 @@ static int add_metric(struct list_head *group_list,
- 
- static int resolve_metric(struct metric *m,
- 			  bool metric_no_group,
--			  struct list_head *group_list,
-+			  struct list_head *metric_list,
- 			  struct pmu_events_map *map,
- 			  struct expr_ids *ids)
- {
-@@ -854,7 +854,7 @@ static int resolve_metric(struct metric *m,
- 			expr__del_id(&m->pctx, cur->key);
- 
- 			/* ... and it gets resolved to the parent context. */
--			ret = add_metric(group_list, pe, metric_no_group, &m, parent, ids);
-+			ret = add_metric(metric_list, pe, metric_no_group, &m, parent, ids);
- 			if (ret)
- 				return ret;
- 
-@@ -869,7 +869,7 @@ static int resolve_metric(struct metric *m,
- 	return 0;
- }
- 
--static int add_metric(struct list_head *group_list,
-+static int add_metric(struct list_head *metric_list,
- 		      struct pmu_event *pe,
- 		      bool metric_no_group,
- 		      struct metric **m,
-@@ -881,7 +881,7 @@ static int add_metric(struct list_head *group_list,
- 	pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
- 
- 	if (!strstr(pe->metric_expr, "?")) {
--		ret = __add_metric(group_list, pe, metric_no_group, 1, m, parent, ids);
-+		ret = __add_metric(metric_list, pe, metric_no_group, 1, m, parent, ids);
- 	} else {
- 		int j, count;
- 
-@@ -889,11 +889,11 @@ static int add_metric(struct list_head *group_list,
- 
- 		/* This loop is added to create multiple
- 		 * events depend on count value and add
--		 * those events to group_list.
-+		 * those events to metric_list.
- 		 */
- 
- 		for (j = 0; j < count && !ret; j++) {
--			ret = __add_metric(group_list, pe, metric_no_group, j, m, parent, ids);
-+			ret = __add_metric(metric_list, pe, metric_no_group, j, m, parent, ids);
- 		}
- 	}
- 
-@@ -902,7 +902,7 @@ static int add_metric(struct list_head *group_list,
- 
- static int metricgroup__add_metric(const char *metric, bool metric_no_group,
- 				   struct strbuf *events,
--				   struct list_head *group_list,
-+				   struct list_head *metric_list,
- 				   struct pmu_events_map *map)
- 
- {
-@@ -948,14 +948,14 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
- 		}
- 	}
- 
--	list_splice(&list, group_list);
-+	list_splice(&list, metric_list);
- 	expr_ids__exit(&ids);
- 	return 0;
- }
- 
- static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
- 					struct strbuf *events,
--					struct list_head *group_list,
-+					struct list_head *metric_list,
- 					struct pmu_events_map *map)
- {
- 	char *llist, *nlist, *p;
-@@ -971,7 +971,7 @@ static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
- 
- 	while ((p = strsep(&llist, ",")) != NULL) {
- 		ret = metricgroup__add_metric(p, metric_no_group, events,
--					      group_list, map);
-+					      metric_list, map);
- 		if (ret == -EINVAL) {
- 			fprintf(stderr, "Cannot find metric or group `%s'\n",
- 					p);
-@@ -996,11 +996,11 @@ static void metric__free_refs(struct metric *metric)
- 	}
- }
- 
--static void metricgroup__free_metrics(struct list_head *group_list)
-+static void metricgroup__free_metrics(struct list_head *metric_list)
- {
- 	struct metric *m, *tmp;
- 
--	list_for_each_entry_safe (m, tmp, group_list, nd) {
-+	list_for_each_entry_safe (m, tmp, metric_list, nd) {
- 		metric__free_refs(m);
- 		expr__ctx_clear(&m->pctx);
- 		list_del_init(&m->nd);
-@@ -1017,13 +1017,13 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
- {
- 	struct parse_events_error parse_error;
- 	struct strbuf extra_events;
--	LIST_HEAD(group_list);
-+	LIST_HEAD(metric_list);
- 	int ret;
- 
- 	if (metric_events->nr_entries == 0)
- 		metricgroup__rblist_init(metric_events);
- 	ret = metricgroup__add_metric_list(str, metric_no_group,
--					   &extra_events, &group_list, map);
-+					   &extra_events, &metric_list, map);
- 	if (ret)
- 		return ret;
- 	pr_debug("adding %s\n", extra_events.buf);
-@@ -1034,10 +1034,10 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
- 		goto out;
- 	}
- 	strbuf_release(&extra_events);
--	ret = metricgroup__setup_events(&group_list, metric_no_merge,
-+	ret = metricgroup__setup_events(&metric_list, metric_no_merge,
- 					perf_evlist, metric_events);
- out:
--	metricgroup__free_metrics(&group_list);
-+	metricgroup__free_metrics(&metric_list);
- 	return ret;
- }
- 
+-		page1_alloc = (FCPortPage1_t *) pci_alloc_consistent(ioc->pcidev,
++		page1_alloc = pci_alloc_consistent(ioc->pcidev,
+ 						data_sz,
+ 						&page1_dma);
+ 		if (!page1_alloc)
 -- 
-2.25.4
+2.7.4
 
