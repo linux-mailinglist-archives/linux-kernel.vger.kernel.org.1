@@ -2,95 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F890231730
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 03:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB650231737
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 03:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730340AbgG2BXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 21:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728364AbgG2BXp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 21:23:45 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3BE9C061794;
-        Tue, 28 Jul 2020 18:23:44 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id k27so13365806pgm.2;
-        Tue, 28 Jul 2020 18:23:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=39Fa9ZWtwvl7NbKoGzRfKnzpxN8mlG9ibr8kyfnWLig=;
-        b=nXwe4SMQObUre653mpr+8/vgQq0+w/Buw5OH9WA6GWzqGygo5VX6XTsF0xACpUUpWZ
-         3Q58bRXvyZT9gN4ebmV4V/gjo8HIov/HPt4mPA5hIisnkU0ezs69PaxS1ZK7fKaWBEVN
-         hwJwBtorrFl4wce0opgoNLJXXK5U8WKEEcBs80ItyVLWKxG3OfPhLNdUoj7IBAY1Y49B
-         BE/Ske5XIYDUjnWuCS4lf3se9tMqTy2oH8rNQj94DOSKDsUmKKnsmoKd0LhcDUc5dwl2
-         QhLJv7gl+bSFyZjCUkAeqzMkk0Yo04JBD6i3NtBR5LpaIBPeW1drQVrd+apVzF+hSxJT
-         w3eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=39Fa9ZWtwvl7NbKoGzRfKnzpxN8mlG9ibr8kyfnWLig=;
-        b=Sw0BWvizvmcxhiDLl7mNEV6zGYOZCl7v0oKw9+gIRFB6V90yLuhpRW1z1b4hRH/do9
-         a3YJFqCXea6mnDbcfUNhwP6LRMkuLVJAfHVAeuST8dXlvdGDDN+Mb9FBimK5Ue6QS2Nm
-         AP3JDaNaicWZUWqSMa7EfWdPZ2BTVuUAvzGboGxQ53vqoMFHBBBQ9gmTSw9brTQzW35T
-         FHI7+wdWsIBSywB/KLCSUY/ruDg3nD2OweSgpu3l0A8CaVVQfF9+hmnzJPRVzMEORWWB
-         D4N22HzwQ1wkPKSuNquie15ZePK9Z9a7Jv2s4yiD2fcIlIAYaWTatl1dGglDF1nb6cA2
-         +bLA==
-X-Gm-Message-State: AOAM530wq6fBGaM41M8byzvb2y7BYDko8YWSdbR1ZCf4d6emwhKboC2z
-        DqzjdEtf1JdV8iuF+o8Y1zs=
-X-Google-Smtp-Source: ABdhPJzSmPN1CuhBlK64vxmgtlEOgYy5sVjI3onVqCYmbXIzpiJVMUCSV5lSchdS6OSHaXP+yPe4vw==
-X-Received: by 2002:a63:1406:: with SMTP id u6mr26395140pgl.108.1595985824127;
-        Tue, 28 Jul 2020 18:23:44 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id f3sm299250pju.54.2020.07.28.18.23.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 18:23:43 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 18:23:41 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-input@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trivial@kernel.org
-Subject: Re: [PATCH] Input: fix typo in function name documentation
-Message-ID: <20200729012341.GW1665100@dtor-ws>
-References: <20200724084025.GB31930@amd>
- <20200727163208.4e956816@lwn.net>
+        id S1730358AbgG2BZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 21:25:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728364AbgG2BZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 21:25:37 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D38A2076E;
+        Wed, 29 Jul 2020 01:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595985937;
+        bh=atZ9AkzW3Qv3jxfEDY51j0RiPv1nKHAC31IX+cq2vWI=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=ndTn7GILon9rsTm77a8cOy64DLBd0YU5FtGXMoqNzxdHulhh8sXXJeroo6GsuiSzV
+         1T7BTWInoyG7d+R/wjPRWb0Jp2NMruWbIz6O6acT0f8W518vE1/Leo/enM7pdN6svS
+         MaDktGTdVG+ALixpd6V0qqolW5ZFHFKp6xUfX5v4=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727163208.4e956816@lwn.net>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200728082857.10829-3-akshu.agrawal@amd.com>
+References: <20200728082857.10829-1-akshu.agrawal@amd.com> <20200728082857.10829-3-akshu.agrawal@amd.com>
+Subject: Re: [v2 2/4] clk: x86: Change name from ST to FCH
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     rafael@kernel.org, Michael Turquette <mturquette@baylibre.com>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     akshu.agrawal@amd.com
+Date:   Tue, 28 Jul 2020 18:25:35 -0700
+Message-ID: <159598593596.1360974.1741408050799159465@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 04:32:08PM -0600, Jonathan Corbet wrote:
-> On Fri, 24 Jul 2020 10:40:25 +0200
-> Pavel Machek <pavel@ucw.cz> wrote:
-> 
-> > Fix non-existing constant in documentation.
-> > 
-> > Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> > 
-> > diff --git a/Documentation/input/uinput.rst b/Documentation/input/uinput.rst
-> > index b8e90b6a126c..10c62e62a0a6 100644
-> > --- a/Documentation/input/uinput.rst
-> > +++ b/Documentation/input/uinput.rst
-> > @@ -99,7 +99,7 @@ the sake of simplicity.
-> >  
-> >        /*
-> >         * Give userspace some time to read the events before we destroy the
-> > -       * device with UI_DEV_DESTOY.
-> > +       * device with UI_DEV_DESTROY.
-> >         */
-> >        sleep(1);
-> 
-> Seems good...Dmitry, do you want this, or would you rather I picked it up?
+Quoting Akshu Agrawal (2020-07-28 01:28:54)
+> AMD SoC general pupose clk is present in new platforms with
+> minor differences. We can reuse the same clk driver for other
+> platforms. Hence, changing name from ST(SoC) to FCH(IP)
+>=20
+> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+> ---
 
-I picked it up, thank you.
-
--- 
-Dmitry
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
