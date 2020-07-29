@@ -2,115 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC439232610
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B69232609
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgG2URN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 16:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726799AbgG2URN (ORCPT
+        id S1726819AbgG2UQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 16:16:42 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:41033 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbgG2UQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:17:13 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E90DC0619D2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:17:13 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id 133so13216384ybu.7
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=massaru-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jsAi/yM0dYoTsEAduerPAEeoeBRABFVM36ZfoeomatY=;
-        b=Sdzx2SqpXH3YztrrLNOADE5QjX5DPMw9qzcr7aHGCh/zp+I48O4kqqRZpqulQK7b2A
-         C0RuSwWADNheZUXSP4rEN1wGIvAHpzoqMuGaY9bfPEyvF7S943eq2s4cUgghOcvSf/gF
-         pgSXR0NUIxtUVLHek5C2iWFuwwFK1cYRX3ViHbez65SiI4fPMcJckFrPEMykGyiQCS78
-         qAbpP8IMzkK2emxhZ0eXkv50SN/md9uBSLITI1PlvPb8m7/drlC3Ebg9l9hlt1cSmd1U
-         zk+/6KjyjmyFpbWHSa1K7nCrIHFc4aSgPROhI0PTheyPL6km/Re6ghueTxNzyrTKrFW1
-         WtBA==
+        Wed, 29 Jul 2020 16:16:42 -0400
+Received: by mail-ej1-f67.google.com with SMTP id w9so25622030ejc.8;
+        Wed, 29 Jul 2020 13:16:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jsAi/yM0dYoTsEAduerPAEeoeBRABFVM36ZfoeomatY=;
-        b=ofGV9s/FddqKB32S8n1WDEq4YEXV4NO31f+S2ajKGuutyAAcr2wp1qAgWaUXydjVAJ
-         pk99b0RufFYlTQODyI+0qvr2X6gtpwMG3wVdqTjIvgfutuLVanBcu+PSHW4N/nd+5YnP
-         IH0D1qzx5E1C8en5d473eRpL2oZIqZpGsfASv6Qqtbw8DZW9RQrsGUgqRpA2FRCfVGSY
-         thbt+vdnhEWB7hT3I7z3IAhJ04jI1XUBJ4bS1Hz49CKgtufYiNyHdA8lN0ZMv/aWE+hv
-         m8HzDuYqTC34j6njLRKX8XEZgFsszNcffu4SgojWWbACP4OewbQw4rQh8LMXWIDMLWNX
-         gm7Q==
-X-Gm-Message-State: AOAM532YMrokaO9j7YBlkzVIIiwd4IFn/ZmZM0lPaG1Qi/IwdLIoS8A6
-        POkP0AjwoLDskedPuxfcogwHLcm3uDZm5gYdqCFTXA==
-X-Google-Smtp-Source: ABdhPJyPk3kjiGNYFFk4yzHPEbfFcoZIfz0gAfhNJ3Fsk1YWxiMbGPNT80Yqs2GsCLymQyrnK2dqTUc8spmJdwVOFPE=
-X-Received: by 2002:a25:bb0d:: with SMTP id z13mr229226ybg.488.1596053832271;
- Wed, 29 Jul 2020 13:17:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=G9J40aLhPUBHarAksyHrJM+WbtR3gRhMvbXXJTyIEsw=;
+        b=k2GVsKVFsPbSoZjpQ3yHGuN2nXG3JuzUeQS7q3rJbgD8wQ3i4YS9KDvXh493xZ1163
+         PCH/5gcPzeFR8WzXsUt6l2320LsIG14JQeSuv3dLC+gdwrZBomBsKhFXVyPc/sdfxJSL
+         jxVpsVBjPuSFkybl+r+EkcU+pPgKfe4Hu9EwkzghJQGdIr7uPwaaBkJuAXOAu9xgcobS
+         FzBsSUyUacvrAsYzhgfS06VdcRIBY1CTNMSelLQNy5sMDBcsbE750/GjICDAIzztoRDy
+         rvITvxUzH7lerEzbP78/kaBtzXszVmFzn7kQdiSA2e+6pLgrJnoC+QqMWC9xGsbBINi8
+         MX/Q==
+X-Gm-Message-State: AOAM531HQspdPQmKdwXRXrtihdzC1rOoTyjQmb6u41EbhI48M8ZFFVaK
+        Z0EvW5gM2LuP/3wUtw/aU/k=
+X-Google-Smtp-Source: ABdhPJz8NSZ1YgCRCp5BY64q7jD+PPCB1uyy1HQKw9M5f39sg32SzCcRfdGo1BmuaDhYo5fGcHeBew==
+X-Received: by 2002:a17:906:78e:: with SMTP id l14mr80328ejc.67.1596053799753;
+        Wed, 29 Jul 2020 13:16:39 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.213])
+        by smtp.googlemail.com with ESMTPSA id a23sm2669500eju.68.2020.07.29.13.16.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 29 Jul 2020 13:16:39 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 22:16:35 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Simtec Linux Team <linux@simtec.co.uk>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Vincent Sanders <vince@simtec.co.uk>,
+        Will Deacon <will@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-watchdog@vger.kernel.org, patches@opensource.cirrus.com,
+        Sergio Prado <sergio.prado@e-labworks.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Cedric Roux <sed@free.fr>, Lihua Yao <ylhuajnu@outlook.com>
+Subject: Re: [PATCH 1/7] clk: samsung: s3c64xx: Declare s3c64xx_clk_init() in
+ shared header
+Message-ID: <20200729201635.GB26917@kozik-lap>
+References: <20200729160942.28867-1-krzk@kernel.org>
+ <20200729160942.28867-2-krzk@kernel.org>
+ <159605176358.1360974.7715120460121088439@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-References: <20200729191151.476368-1-vitor@massaru.org> <20200729191948.GZ3703480@smile.fi.intel.com>
-In-Reply-To: <20200729191948.GZ3703480@smile.fi.intel.com>
-From:   Vitor Massaru Iha <vitor@massaru.org>
-Date:   Wed, 29 Jul 2020 17:16:29 -0300
-Message-ID: <CADQ6JjU1wg_mrhuGkgiNWmJLCvNcOVwS0Hysda+OXuDcCj8y=Q@mail.gmail.com>
-Subject: Re: [PATCH v2] lib: kunit: Convert test_sort to KUnit test
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        tglx@linutronix.de, fkostenzer@live.at, geert@linux-m68k.org,
-        paul.gortmaker@windriver.com, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <159605176358.1360974.7715120460121088439@swboyd.mtv.corp.google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 4:19 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Jul 29, 2020 at 04:11:51PM -0300, Vitor Massaru Iha wrote:
-> > This adds the conversion of the test_sort.c to KUnit test.
-> >
-> > Please apply this commit first (linux-kselftest/kunit-fixes):
-> > 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
->
-> Looks like you mixed up commit message and changelog / comments.
->
-> > Code Style Documentation: [0]
-> >
-> > Fix these warnings Reported-by lkp@intel.com
-> >
-> > WARNING: modpost: vmlinux.o(.data+0x4fc70): Section mismatch in reference from the variable sort_test_cases to the variable .init.text:sort_test
-> >    The variable sort_test_cases references
-> >    the variable __init sort_test
-> >    If the reference is valid then annotate the
-> >    variable with or __refdata (see linux/init.h) or name the variable
-> >
-> > WARNING: modpost: lib/sort_kunit.o(.data+0x11c): Section mismatch in reference from the variable sort_test_cases to the function .init.text:sort_test()
-> >    The variable sort_test_cases references
-> >    the function __init sort_test()
->
-> > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Link: [0] https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/T/#u
->
-> This should be in different order: Link, Reported-by, SoB.
-> Also [0] is unnecessary
+On Wed, Jul 29, 2020 at 12:42:43PM -0700, Stephen Boyd wrote:
+> Quoting Krzysztof Kozlowski (2020-07-29 09:09:36)
+> > diff --git a/include/linux/clk/samsung.h b/include/linux/clk/samsung.h
+> > new file mode 100644
+> > index 000000000000..b6b253c46c22
+> > --- /dev/null
+> > +++ b/include/linux/clk/samsung.h
+> > @@ -0,0 +1,21 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (c) 2020 Krzysztof Kozlowski <krzk@kernel.org>
+> > + */
+> > +
+> > +#ifndef __LINUX_CLK_SAMSUNG_H_
+> > +#define __LINUX_CLK_SAMSUNG_H_
+> > +
+> > +#ifdef CONFIG_ARCH_S3C64XX
+> > +void __init s3c64xx_clk_init(struct device_node *np, unsigned long xtal_f,
+> 
+> Don't use __init in header files. It doesn't do anything.
+> 
+> > +                            unsigned long xusbxti_f, bool s3c6400,
+> > +                            void __iomem *base);
+> > +#else
+> > +static inline void __init s3c64xx_clk_init(struct device_node *np,
+> 
+> Forward declare struct device_node;
+> 
+> > +                                          unsigned long xtal_f,
+> > +                                          unsigned long xusbxti_f,
+> > +                                          bool s3c6400,
+> > +                                          void __iomem *base) { }
+> 
+> Include <linux/compiler.h> (or compiler_types.h) for __iomem define
+> please.
 
-Sure, thanks!
+Thanks for the feedback. I'll send v2.
 
->
-> >  lib/{test_sort.c => sort_kunit.c} | 31 +++++++++++++++----------------
->
-> Still opened question why kunit is a suffix? Can't we leave same name? Can't we
-> do it rather prefix?
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Best regards,
+Krzysztof
+
