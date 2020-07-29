@@ -2,92 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D39231835
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925DB231841
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgG2DgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 23:36:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:44702 "EHLO foss.arm.com"
+        id S1726871AbgG2Dq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 23:46:26 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:36562 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726245AbgG2DgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 23:36:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14AB831B;
-        Tue, 28 Jul 2020 20:36:00 -0700 (PDT)
-Received: from localhost.localdomain (entos-thunderx2-02.shanghai.arm.com [10.169.212.213])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8D9883F66E;
-        Tue, 28 Jul 2020 20:35:52 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steve Capper <steve.capper@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        Wei Yang <richardw.yang@linux.intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Ira Weiny <ira.weiny@intel.com>, Kaly Xin <Kaly.Xin@arm.com>,
-        Jia He <justin.he@arm.com>
-Subject: [RFC PATCH 6/6] arm64: fall back to vmemmap_populate_basepages if not aligned  with PMD_SIZE
-Date:   Wed, 29 Jul 2020 11:34:24 +0800
-Message-Id: <20200729033424.2629-7-justin.he@arm.com>
+        id S1726245AbgG2Dq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 23:46:26 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1183A200E2A;
+        Wed, 29 Jul 2020 05:46:25 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F1494200E1C;
+        Wed, 29 Jul 2020 05:46:20 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 014644031D;
+        Wed, 29 Jul 2020 05:46:14 +0200 (CEST)
+From:   Alison Wang <alison.wang@nxp.com>
+To:     catalin.marinas@arm.com, will@kernel.org,
+        kurt.kanzenbach@linutronix.de, paulmck@kernel.org, mw@semihalf.com,
+        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     alison.wang@nxp.com
+Subject: [RFC PATCH] arm64: defconfig: Disable fine-grained task level IRQ time accounting
+Date:   Wed, 29 Jul 2020 11:39:34 +0800
+Message-Id: <20200729033934.22349-1-alison.wang@nxp.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200729033424.2629-1-justin.he@arm.com>
-References: <20200729033424.2629-1-justin.he@arm.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In dax pmem kmem (dax pmem used as RAM device) case, the start address
-might not be aligned with PMD_SIZE
-e.g.
-240000000-33fdfffff : Persistent Memory
-  240000000-2421fffff : namespace0.0
-  242400000-2bfffffff : dax0.0
-    242400000-2bfffffff : System RAM (kmem)
-pfn_to_page(0x242400000) is fffffe0007e90000.
+In the current arm64 defconfig, CONFIG_IRQ_TIME_ACCOUNTING is enabled as
+default. According to my tests on NXP's LayerScape and i.MX platforms,
+the system hangs when running the command "stress-ng --hrtimers 1" with
+CONFIG_IRQ_TIME_ACCOUNTING enabled. Disabling this option, the issue
+disappears. CONFIG_IRQ_TIME_ACCOUNTING causes serious performance impact
+when running hrtimer stress test at the same time.
 
-Without this patch, vmemmap_populate(fffffe0007e90000, ...) will incorrectly
-create a pmd mapping [fffffe0007e00000, fffffe0008000000] which contains
-fffffe0007e90000.
-
-This adds the check and then falls back to vmemmap_populate_basepages()
-
-Signed-off-by: Jia He <justin.he@arm.com>
+Signed-off-by: Alison Wang <alison.wang@nxp.com>
 ---
- arch/arm64/mm/mmu.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm64/configs/defconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index d69feb2cfb84..3b21bd47e801 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1102,6 +1102,10 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
- 
- 	do {
- 		next = pmd_addr_end(addr, end);
-+		if (next - addr < PMD_SIZE) {
-+			vmemmap_populate_basepages(start, next, node, altmap);
-+			continue;
-+		}
- 
- 		pgdp = vmemmap_pgd_populate(addr, node);
- 		if (!pgdp)
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index e0f33826819f..ff1c11d8b10b 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -4,7 +4,6 @@ CONFIG_AUDIT=y
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_PREEMPT=y
+-CONFIG_IRQ_TIME_ACCOUNTING=y
+ CONFIG_BSD_PROCESS_ACCT=y
+ CONFIG_BSD_PROCESS_ACCT_V3=y
+ CONFIG_TASK_XACCT=y
 -- 
 2.17.1
 
