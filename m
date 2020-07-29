@@ -2,247 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A22C231EEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 15:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E978231EF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 15:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgG2NDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 09:03:21 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:25597 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726353AbgG2NDU (ORCPT
+        id S1727047AbgG2NFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 09:05:37 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:57606 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726449AbgG2NFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 09:03:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596027798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ehYWEdiPCInDna3ZEshNEs9eA6ojK3scxoagbYtds0c=;
-        b=hI5qtVWgg2NDeOS+R+DMxZFplPiYctUKefxRb99mEw7MwK30nfFq+NM5lW84enmYYHeWye
-        D8UyqfzxLffcv1/qB3I+N2aSzbEYY6nL3HSwRJKa7f03TUxPyr00x0bQlAvB6cM6tuMXC2
-        23HJjYMUFQYrtzsGK+EqFtC8wXjl4gk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-zfIkg4DEPruShdJQz36tMw-1; Wed, 29 Jul 2020 09:03:14 -0400
-X-MC-Unique: zfIkg4DEPruShdJQz36tMw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 285C6102C7ED;
-        Wed, 29 Jul 2020 13:03:11 +0000 (UTC)
-Received: from [10.36.113.153] (ovpn-113-153.ams2.redhat.com [10.36.113.153])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 348341001B2C;
-        Wed, 29 Jul 2020 13:03:05 +0000 (UTC)
-Subject: Re: [RFC PATCH 0/6] decrease unnecessary gap due to pmem kmem
- alignment
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Justin He <Justin.He@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steve Capper <Steve.Capper@arm.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Anshuman Khandual <Anshuman.Khandual@arm.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Wei Yang <richardw.yang@linux.intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Ira Weiny <ira.weiny@intel.com>, Kaly Xin <Kaly.Xin@arm.com>
-References: <20200729033424.2629-1-justin.he@arm.com>
- <D1981D47-61F1-42E9-A426-6FEF0EC310C8@redhat.com>
- <AM6PR08MB40690714A2E77A7128B2B2ADF7700@AM6PR08MB4069.eurprd08.prod.outlook.com>
- <20200729093150.GC3672596@linux.ibm.com>
- <e128f304-7d1d-c1eb-2def-fee7d105424f@redhat.com>
- <20200729130025.GD3672596@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <170d7861-4df8-ecaf-dbdd-9e9a4a832f8f@redhat.com>
-Date:   Wed, 29 Jul 2020 15:03:04 +0200
+        Wed, 29 Jul 2020 09:05:36 -0400
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BFA7A31F;
+        Wed, 29 Jul 2020 15:05:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1596027933;
+        bh=AzLKO77KWbr/8y6g0CVaDvlAnWmIwekxQCD79bHXYZ8=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=OeVYuntPWPi1SVFEoOo2RZgSjA73mgmnQnFdX8aUCMkqsoNR+NPO5WT6V6/eWVEnX
+         JOgMN5jZSaVWHf+zLh5/hWGbVUVMTd3M3K1jAx7ZEwxqLxTEQj+tvl1vBlXRuJPGmm
+         JI8AwEsY9QVADsQE7cq+Bm/3XUEJV+xb+hM5We/8=
+Reply-To: kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 0/3] media: vimc: Allow multiple capture devices to use
+ the same sensor
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Kaaira Gupta <kgupta@es.iitr.ac.in>,
+        Helen Koike <helen.koike@collabora.com>
+Cc:     =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+References: <20200724120213.17119-1-kgupta@es.iitr.ac.in>
+ <20200724121521.GA2705690@oden.dyn.berto.se>
+ <20200724122104.GA18482@kaaira-HP-Pavilion-Notebook>
+ <a6f4eabf-6cd5-950b-f2e3-853370c77629@ideasonboard.com>
+ <2a6cb067-283d-ca65-2698-1fae66a17d02@collabora.com>
+ <20200728113959.GA6350@kaaira-HP-Pavilion-Notebook>
+ <3a9ac970-77b8-1bc5-536a-5b4f2bd60745@collabora.com>
+ <b5fd3811-2f0e-7563-13fa-bb1e32189814@collabora.com>
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Autocrypt: addr=kieran.bingham@ideasonboard.com; keydata=
+ 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
+ WZw01QYHU/GUV/zHJSFk
+Organization: Ideas on Board
+Message-ID: <f2fc6d81-16a6-206b-6bb2-fb99d5a84f65@ideasonboard.com>
+Date:   Wed, 29 Jul 2020 14:05:29 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200729130025.GD3672596@linux.ibm.com>
+In-Reply-To: <b5fd3811-2f0e-7563-13fa-bb1e32189814@collabora.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.07.20 15:00, Mike Rapoport wrote:
-> On Wed, Jul 29, 2020 at 11:35:20AM +0200, David Hildenbrand wrote:
->> On 29.07.20 11:31, Mike Rapoport wrote:
->>> Hi Justin,
->>>
->>> On Wed, Jul 29, 2020 at 08:27:58AM +0000, Justin He wrote:
->>>> Hi David
->>>>>>
->>>>>> Without this series, if qemu creates a 4G bytes nvdimm device, we can
->>>>> only
->>>>>> use 2G bytes for dax pmem(kmem) in the worst case.
->>>>>> e.g.
->>>>>> 240000000-33fdfffff : Persistent Memory
->>>>>> We can only use the memblock between [240000000, 2ffffffff] due to the
->>>>> hard
->>>>>> limitation. It wastes too much memory space.
->>>>>>
->>>>>> Decreasing the SECTION_SIZE_BITS on arm64 might be an alternative, but
->>>>> there
->>>>>> are too many concerns from other constraints, e.g. PAGE_SIZE, hugetlb,
->>>>>> SPARSEMEM_VMEMMAP, page bits in struct page ...
->>>>>>
->>>>>> Beside decreasing the SECTION_SIZE_BITS, we can also relax the kmem
->>>>> alignment
->>>>>> with memory_block_size_bytes().
->>>>>>
->>>>>> Tested on arm64 guest and x86 guest, qemu creates a 4G pmem device. dax
->>>>> pmem
->>>>>> can be used as ram with smaller gap. Also the kmem hotplug add/remove
->>>>> are both
->>>>>> tested on arm64/x86 guest.
->>>>>>
->>>>>
->>>>> Hi,
->>>>>
->>>>> I am not convinced this use case is worth such hacks (that’s what it is)
->>>>> for now. On real machines pmem is big - your example (losing 50% is
->>>>> extreme).
->>>>>
->>>>> I would much rather want to see the section size on arm64 reduced. I
->>>>> remember there were patches and that at least with a base page size of 4k
->>>>> it can be reduced drastically (64k base pages are more problematic due to
->>>>> the ridiculous THP size of 512M). But could be a section size of 512 is
->>>>> possible on all configs right now.
->>>>
->>>> Yes, I once investigated how to reduce section size on arm64 thoughtfully:
->>>> There are many constraints for reducing SECTION_SIZE_BITS
->>>> 1. Given page->flags bits is limited, SECTION_SIZE_BITS can't be reduced too
->>>>    much.
->>>> 2. Once CONFIG_SPARSEMEM_VMEMMAP is enabled, section id will not be counted
->>>>    into page->flags.
->>>> 3. MAX_ORDER depends on SECTION_SIZE_BITS 
->>>>  - 3.1 mmzone.h
->>>> #if (MAX_ORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS
->>>> #error Allocator MAX_ORDER exceeds SECTION_SIZE
->>>> #endif
->>>>  - 3.2 hugepage_init()
->>>> MAYBE_BUILD_BUG_ON(HPAGE_PMD_ORDER >= MAX_ORDER);
->>>>
->>>> Hence when ARM64_4K_PAGES && CONFIG_SPARSEMEM_VMEMMAP are enabled,
->>>> SECTION_SIZE_BITS can be reduced to 27.
->>>> But when ARM64_64K_PAGES, given 3.2, MAX_ORDER > 29-16 = 13.
->>>> Given 3.1 SECTION_SIZE_BITS >= MAX_ORDER+15 > 28. So SECTION_SIZE_BITS can not
->>>> be reduced to 27.
->>>>
->>>> In one word, if we considered to reduce SECTION_SIZE_BITS on arm64, the Kconfig
->>>> might be very complicated,e.g. we still need to consider the case for
->>>> ARM64_16K_PAGES.
->>>
->>> It is not necessary to pollute Kconfig with that.
->>> arch/arm64/include/asm/sparesemem.h can have something like
->>>
->>> #ifdef CONFIG_ARM64_64K_PAGES
->>> #define SPARSE_SECTION_SIZE 29
->>> #elif defined(CONFIG_ARM16K_PAGES)
->>> #define SPARSE_SECTION_SIZE 28
->>> #elif defined(CONFIG_ARM4K_PAGES)
->>> #define SPARSE_SECTION_SIZE 27
->>> #else
->>> #error
->>> #endif
->>
->> ack
->>
->>>  
->>> There is still large gap with ARM64_64K_PAGES, though.
->>>
->>> As for SPARSEMEM without VMEMMAP, are there actual benefits to use it?
->>
->> I was asking myself the same question a while ago and didn't really find
->> a compelling one.
+Hi Dafna,
+
+On 28/07/2020 15:00, Dafna Hirschfeld wrote:
 > 
-> Memory overhead for VMEMMAP is larger, especially for arm64 that knows
-> how to free empty parts of the memory map with "classic" SPARSEMEM.
-
-You mean the hole punching within section memmap? (which is why their
-pfn_valid() implementation is special)
-
-(I do wonder why that shouldn't work with VMEMMAP, or is it simply not
-implemented?)
-
->  
->> I think it's always enabled as default (SPARSEMEM_VMEMMAP_ENABLE) and
->> would require config tweaks to even disable it.
 > 
-> Nope, it's right there in menuconfig,
+> On 28.07.20 14:07, Dafna Hirschfeld wrote:
+>> Hi
+>>
+>> On 28.07.20 13:39, Kaaira Gupta wrote:
+>>> On Mon, Jul 27, 2020 at 02:54:30PM -0300, Helen Koike wrote:
+>>>> Hi,
+>>>>
+>>>> On 7/27/20 11:31 AM, Kieran Bingham wrote:
+>>>>> Hi all,
+>>>>>
+>>>>> +Dafna for the thread discussion, as she's missed from the to/cc list.
+>>>>>
+>>>>>
+>>>>> On 24/07/2020 13:21, Kaaira Gupta wrote:
+>>>>>> On Fri, Jul 24, 2020 at 02:15:21PM +0200, Niklas Söderlund wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>>> Hi Kaaira,
+>>>>>>>
+>>>>>>> Thanks for your work.
+>>>>>>
+>>>>>> Thanks for yours :D
+>>>>>>
+>>>>>>>
+>>>>>>> On 2020-07-24 17:32:10 +0530, Kaaira Gupta wrote:
+>>>>>>>> This is version 2 of the patch series posted by Niklas for allowing
+>>>>>>>> multiple streams in VIMC.
+>>>>>>>> The original series can be found here:
+>>>>>>>> https://patchwork.kernel.org/cover/10948831/
+>>>>>>>>
+>>>>>>>> This series adds support for two (or more) capture devices to be
+>>>>>>>> connected to the same sensors and run simultaneously. Each
+>>>>>>>> capture device
+>>>>>>>> can be started and stopped independent of each other.
+>>>>>>>>
+>>>>>>>> Patch 1/3 and 2/3 deals with solving the issues that arises once
+>>>>>>>> two
+>>>>>>>> capture devices can be part of the same pipeline. While 3/3
+>>>>>>>> allows for
+>>>>>>>> two capture devices to be part of the same pipeline and thus
+>>>>>>>> allows for
+>>>>>>>> simultaneously use.
+>>
+>> I wonder if these two patches are enough, since each vimc entity also
+>> have
+>> a 'process_frame' callback, but only one allocated frame. That means
+>> that the 'process_frame' can be called concurrently by two different
+>> streams
+>> on the same frame and cause corruption.
+>>
 > 
-> "Memory Management options" -> "Sparse Memory virtual memmap"
+> I think we should somehow change the vimc-stream.c code so that we have
+> only
+> one stream process per pipe. So if one capture is already streaming,
+> then the new
+> capture that wants to stream uses the same thread so we don't have two
+> threads
+> both calling 'process_frame'.
 
-Ah, good to know.
 
+Yes, I think it looks and sounds like there are two threads running when
+there are two streams.
+
+so in effect, although they 'share a pipe', aren't they in effect just
+sending two separate buffers through their stream-path?
+
+If that's the case, then I don't think there's any frame corruption,
+because they would both have grabbed their own frame separately.
+
+
+I don't think that's a good example of the hardware though, as that
+doesn't reflect what 'should' happen where the TPG runs once to generate
+a frame at the sensor, which is then read by both the debayer entity and
+the RAW capture device when there are two streams...
+
+
+So I suspect trying to move to a single thread is desirable, but that
+might be a fair bit of work also.
+
+--
+Kieran
+
+
+
+> The second capture that wants to stream should iterate the topology
+> downwards until
+> reaching an entity that already belong to the stream path of the other
+> streaming capture
+> and tell the streamer it wants to read the frames this entity
+> produces.
+> 
+> Thanks,
+> Dafna
+> 
+>> Thanks,
+>> Dafna
+>>
+>>>>>>>
+>>>>>>> I'm just curious if you are aware of this series? It would
+>>>>>>> replace the
+>>>>>>> need for 1/3 and 2/3 of this series right?
+>>>>>>
+>>>>>> v3 of this series replaces the need for 1/3, but not the current
+>>>>>> version
+>>>>>> (ie v4). v4 of patch 2/5 removes the stream_counter that is needed to
+>>>>>> keep count of the calls to s_stream. Hence 1/3 becomes relevant
+>>>>>> again.
+>>>>>
+>>>>> So the question really is, how do we best make use of the two current
+>>>>> series, to achieve our goal of supporting multiple streams.
+>>>>>
+>>>>> Having not parsed Dafna's series yet, do we need to combine
+>>>>> elements of
+>>>>> both ? Or should we work towards starting with this series and get
+>>>>> dafna's patches built on top ?
+>>>>>
+>>>>> Or should patch 1/3 and 3/3 of this series be on top of Dafna's v4 ?
+>>>>>
+>>>>> (It might be noteworthy to say that Kaaira has reported successful
+>>>>> multiple stream operation from /this/ series and her development
+>>>>> branch
+>>>>> on libcamera).
+>>>>
+>>>> Dafna's patch seems still under discussion, but I don't want to
+>>>> block progress in Vimc either.
+>>>>
+>>>> So I was wondering if we can move forward with Vimc support for
+>>>> multistreaming,
+>>>> without considering Dafna's patchset, and we can do the clean up
+>>>> later once we solve that.
+>>>>
+>>>> What do you think?
+>>>
+>>> I agree with supporting multiple streams with VIMC with this patchset,
+>>> and then we can refactor the counters for s_stream in VIMC later (over
+>>> this series) if dafna includes them in subsequent version of her
+>>> patchset.
+>>>
+>>
+>> I also think that adding support in the code will take much longer and
+>> should not
+>> stop us from supporting vimc independently.
+>>
+>> Thanks,
+>> Dafna
+>>
+>>>>
+>>>> Regards,
+>>>> Helen
+>>>>
+>>>>>
+>>>>>
+>>>>>>> 1. 
+>>>>>>> https://lore.kernel.org/linux-media/20200522075522.6190-1-dafna.hirschfeld@collabora.com/
+>>>>>>>
+>>>>>>>
+>>>>>>>>
+>>>>>>>> Changes since v1:
+>>>>>>>>     - All three patches rebased on latest media-tree.
+>>>>>>>>     Patch 3:
+>>>>>>>>     - Search for an entity with a non-NULL pipe instead of
+>>>>>>>> searching
+>>>>>>>>       for sensor. This terminates the search at output itself.
+>>>>>>>>
+>>>>>>>> Kaaira Gupta (3):
+>>>>>>>>    media: vimc: Add usage count to subdevices
+>>>>>>>>    media: vimc: Serialize vimc_streamer_s_stream()
+>>>>>>>>    media: vimc: Join pipeline if one already exists
+>>>>>>>>
+>>>>>>>>   .../media/test-drivers/vimc/vimc-capture.c    | 35
+>>>>>>>> ++++++++++++++++++-
+>>>>>>>>   .../media/test-drivers/vimc/vimc-debayer.c    |  8 +++++
+>>>>>>>>   drivers/media/test-drivers/vimc/vimc-scaler.c |  8 +++++
+>>>>>>>>   drivers/media/test-drivers/vimc/vimc-sensor.c |  9 ++++-
+>>>>>>>>   .../media/test-drivers/vimc/vimc-streamer.c   | 23 +++++++-----
+>>>>>>>>   5 files changed, 73 insertions(+), 10 deletions(-)
+>>>>>>>>
+>>>>>>>> -- 
+>>>>>>>> 2.17.1
+>>>>>>>>
+>>>>>>>
+>>>>>>> -- 
+>>>>>>> Regards,
+>>>>>>> Niklas Söderlund
+>>>>>
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Regards
+--
+Kieran
