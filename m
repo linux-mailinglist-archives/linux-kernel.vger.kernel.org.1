@@ -2,135 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30FB2322B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 18:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF7C2322D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 18:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgG2Q3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 12:29:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21962 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726581AbgG2Q3u (ORCPT
+        id S1726772AbgG2QoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 12:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgG2QoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 12:29:50 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06TG3DoH045938;
-        Wed, 29 Jul 2020 12:29:45 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32k72bkbmc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 12:29:44 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06TGMpQV031485;
-        Wed, 29 Jul 2020 16:29:43 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 32gcqgn91e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 16:29:43 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06TGTel324510758
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Jul 2020 16:29:40 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D26A5A4040;
-        Wed, 29 Jul 2020 16:29:40 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 75176A4051;
-        Wed, 29 Jul 2020 16:29:37 +0000 (GMT)
-Received: from sig-9-65-244-68.ibm.com (unknown [9.65.244.68])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 29 Jul 2020 16:29:37 +0000 (GMT)
-Message-ID: <e5ed8876b9907315c2a906ab248639ea8c6d2cd5.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 12/19] firmware_loader: Use security_post_load_data()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
-        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 29 Jul 2020 12:29:36 -0400
-In-Reply-To: <202007281242.B6016AE4B@keescook>
-References: <20200724213640.389191-1-keescook@chromium.org>
-         <20200724213640.389191-13-keescook@chromium.org>
-         <1595847465.4841.63.camel@kernel.org> <202007281242.B6016AE4B@keescook>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
+        Wed, 29 Jul 2020 12:44:01 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B62C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 09:44:01 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h12so3172732pgf.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 09:44:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dynamicaims-com.20150623.gappssmtp.com; s=20150623;
+        h=to:subject:from:message-id:disposition-notification-to:date
+         :user-agent:mime-version:content-transfer-encoding:content-language;
+        bh=iw9YBEqn6SiuMz3RoRL2TK68UdSA9OieFntlL99NIlQ=;
+        b=ovlAKkHof3Umse9Y2jHw4bx+CyxnINV7PMCEbHpAZQKDf06U2zIe9yMW+svaK90Mau
+         HCUzs1GlSiZZex1Mhud6Q5FyDbfW5Ws+HbIfXrWzs/4trxrGyrWO3/fxxN40ELXpK+j8
+         OxUSvWso8BziQ3SDWZ0EuOSCUgwAaNq6mfwcAT9HPfCE6Qy3MHcXjCmj1elMvgGYGYT1
+         o08mpqi8lgUzDg1hhJ/F2hD7Lexl14HQuKUwiSSA4mBGM/51dmN6WLTrEdpxEEWi/nTW
+         IF3dQvs2fUfzTPjTlSXDcENMHF4coL5jSDnWPRHhkQtvzC4tfqMF4OOXou7Gjg2YxdlD
+         YHzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:subject:from:message-id
+         :disposition-notification-to:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=iw9YBEqn6SiuMz3RoRL2TK68UdSA9OieFntlL99NIlQ=;
+        b=HhrQhBv/MjyIPSq4Ff1haNJnkBUW24L6ZDPKOOth1a99a5vbgxgaKjYwnMp0aGf/4g
+         ml03IkW203+cxK10kODI8DVjOAPn8F6Di0O1xBknwc+yqcLAgfc446biguqcEd4b7Uyt
+         UuyXFUGYOGD30D9yu/qa81Nkd5Eg5YY4apk9IXXUXeTDVAC/1DC++ZJ9Acmf8V6sLRgK
+         QVIx5oFYgT+7EZsdhB++lJA0OPEDnXxBfJ7uMZUiHP5FOWw/PjYV98Nk6Ng8dBKC1OHy
+         D1SxFAnQVc9sHr6iniWo5NWFRXA1j4FWqhZyGRwfEP9eBD1J8WEs9B8dn1w0jFOteK9V
+         pQ6A==
+X-Gm-Message-State: AOAM530mqKJoRRRUP8bX8sdVC7y1uLuk6LOaaxDtFnWDHkHkYcriW82A
+        VQgswHkozu5JESQwrRkYMFruyBKp5SQ=
+X-Google-Smtp-Source: ABdhPJwN+UdZMIw6vMEnILNn60MfPEb+v3CHCZvPkmTki/5KAKZj08tqgp7NKMNMkNAtCT7bHtSz/Q==
+X-Received: by 2002:a63:225d:: with SMTP id t29mr24492437pgm.374.1596041040091;
+        Wed, 29 Jul 2020 09:44:00 -0700 (PDT)
+Received: from [192.168.0.3] ([103.16.71.223])
+        by smtp.gmail.com with ESMTPSA id b82sm3040051pfb.215.2020.07.29.09.43.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 29 Jul 2020 09:43:59 -0700 (PDT)
+To:     linux-kernel@vger.kernel.org
+Subject: Wine List
+From:   Meggan Berg <megganb@dynamicaims.com>
+Message-ID: <1272faca-4495-06ff-df4a-233980a7d51b@dynamicaims.com>
+Date:   Wed, 29 Jul 2020 11:34:13 -0400
+User-Agent: Mozilla/5.0 (Windows NT 6.3; rv:52.0) Gecko/20100101
+ Thunderbird/52.4.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-29_10:2020-07-29,2020-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 suspectscore=3 impostorscore=0
- phishscore=0 adultscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007290105
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-28 at 12:43 -0700, Kees Cook wrote:
-> On Mon, Jul 27, 2020 at 06:57:45AM -0400, Mimi Zohar wrote:
-> > On Fri, 2020-07-24 at 14:36 -0700, Kees Cook wrote:
-> > > Now that security_post_load_data() is wired up, use it instead
-> > > of the NULL file argument style of security_post_read_file(),
-> > > and update the security_kernel_load_data() call to indicate that a
-> > > security_kernel_post_load_data() call is expected.
-> > > 
-> > > Wire up the IMA check to match earlier logic. Perhaps a generalized
-> > > change to ima_post_load_data() might look something like this:
-> > > 
-> > >     return process_buffer_measurement(buf, size,
-> > >                                       kernel_load_data_id_str(load_id),
-> > >                                       read_idmap[load_id] ?: FILE_CHECK,
-> > >                                       0, NULL);
-> > > 
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > 
-> > process_measurement() measures, verifies a file signature -  both
-> > signatures stored as an xattr and as an appended buffer signature -
-> > and augments audit records with the file hash. (Support for measuring,
-> > augmenting audit records, and/or verifying fs-verity signatures has
-> > yet to be added.)
-> > 
-> > As explained in my response to 11/19, the file descriptor provides the
-> > file pathname associated with the buffer data.  In addition, IMA
-> > policy rules may be defined in terms of other file descriptor info -
-> > uid, euid, uuid, etc.
-> > 
-> > Recently support was added for measuring the kexec boot command line,
-> > certificates being loaded onto a keyring, and blacklisted file hashes
-> > (limited to appended signatures).  None of these buffers are signed.
-> >  process_buffer_measurement() was added for this reason and as a
-> > result is limited to just measuring the buffer data.
-> > 
-> > Whether process_measurement() or process_buffer_measurement() should
-> > be modified, needs to be determined.  In either case to support the
-> > init_module syscall, would at minimum require the associated file
-> > pathname.
-> 
-> Right -- I don't intend to make changes to the init_module() syscall
-> since it's deprecated, so this hook is more of a "fuller LSM coverage
-> for old syscalls" addition.
-> 
-> IMA can happily continue to ignore it, which is what I have here, but I
-> thought I'd at least show what it *might* look like. Perhaps BPF LSM is
-> a better example.
-> 
-> Does anything need to change for this patch?
 
-I wasn't aware that init_syscall was deprecated.  From your original comments,
-it sounded like you wanted a new LSM for verifying kernel module signatures, as
-they're currently supported via init_module().
+Hello,
 
-I was mistaken.  Without a file descriptor, security_post_load_data() will
-measure the firmware, as Scott confirmed, but won't be able to verify the
-signature, whether he signed it using evmctl or not.
+Would you be interested in acquiring an email list of "Wine Enthusiasts List" from USA?
 
-Mimi
+We also have data for Beer Enthusiasts List, Liquor Enthusiasts List, Beverage Enthusiasts List and many more.
 
+Each record in the list contains Contact Name (First, Middle and Last Name), Mailing Address, List type and Opt-in email address.
+
+All the contacts are opt-in verified, 100% permission based and can be used for unlimited multi-channel marketing.
+
+Please let me know your thoughts towards procuring the Wine Enthusiasts List.
+
+Best Regards,
+Meggan Berg
+Research Analyst
+
+We respect your privacy, if you do not wish to receive any further emails from our end, please reply with a subject "Remove".
 
