@@ -2,171 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0225923196F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB55E231958
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726916AbgG2GVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 02:21:02 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6700 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726367AbgG2GVB (ORCPT
+        id S1726853AbgG2GPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 02:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726286AbgG2GPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 02:21:01 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06T62BJk021360;
-        Wed, 29 Jul 2020 02:20:43 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32jp1me30v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 02:20:42 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06T629Hs021130;
-        Wed, 29 Jul 2020 02:20:42 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32jp1me302-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 02:20:42 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06T69pK2007761;
-        Wed, 29 Jul 2020 06:14:00 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 32gcpx4p8x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 06:14:00 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06T6CXTA56754548
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Jul 2020 06:12:33 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A6FC4AE051;
-        Wed, 29 Jul 2020 06:13:58 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5EBF6AE04D;
-        Wed, 29 Jul 2020 06:13:56 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 29 Jul 2020 06:13:56 +0000 (GMT)
-Date:   Wed, 29 Jul 2020 11:43:55 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jordan Niethe <jniethe5@gmail.com>
-Subject: Re: [PATCH v4 09/10] Powerpc/smp: Create coregroup domain
-Message-ID: <20200729061355.GA14603@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com>
- <20200727053230.19753-10-srikar@linux.vnet.ibm.com>
- <jhjr1sviswg.mognet@arm.com>
+        Wed, 29 Jul 2020 02:15:08 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06BEC061794;
+        Tue, 28 Jul 2020 23:15:07 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id 31395C01F; Wed, 29 Jul 2020 08:15:04 +0200 (CEST)
+Date:   Wed, 29 Jul 2020 08:14:49 +0200
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Greg Kurz <groug@kaod.org>
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        v9fs-developer@lists.sourceforge.net,
+        Latchesar Ionkov <lucho@ionkov.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [V9fs-developer] [PATCH kernel] 9p/trans_fd: Check file mode at
+ opening
+Message-ID: <20200729061449.GA19682@nautica>
+References: <20200728124129.130856-1-aik@ozlabs.ru>
+ <20200728194235.52660c08@bahia.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <jhjr1sviswg.mognet@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-29_02:2020-07-28,2020-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
- priorityscore=1501 phishscore=0 mlxlogscore=999 bulkscore=0
- impostorscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007290038
+In-Reply-To: <20200728194235.52660c08@bahia.lan>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Valentin Schneider <valentin.schneider@arm.com> [2020-07-28 16:03:11]:
+Greg Kurz wrote on Tue, Jul 28, 2020:
+> > The "fd" transport layer uses 2 file descriptors passed externally
+> > and calls kernel_write()/kernel_read() on these. If files were opened
+> > without FMODE_WRITE/FMODE_READ, WARN_ON_ONCE() will fire.
 
-Hi Valentin,
+There already is a fix in linux-next as a39c46067c84 ("net/9p: validate
+fds in p9_fd_open")
 
-Thanks for looking into the patches.
-
-> On 27/07/20 06:32, Srikar Dronamraju wrote:
-> > Add percpu coregroup maps and masks to create coregroup domain.
-> > If a coregroup doesn't exist, the coregroup domain will be degenerated
-> > in favour of SMT/CACHE domain.
-> >
+> > This adds file mode checking in p9_fd_open; this returns -EBADF to
+> > preserve the original behavior.
 > 
-> So there's at least one arm64 platform out there with the same "pairs of
-> cores share L2" thing (Ampere eMAG), and that lives quite happily with the
-> default scheduler topology (SMT/MC/DIE). Each pair of core gets its MC
-> domain, and the whole system is covered by DIE.
-> 
-> Now arguably it's not a perfect representation; DIE doesn't have
-> SD_SHARE_PKG_RESOURCES so the highest level sd_llc can point to is MC. That
-> will impact all callsites using cpus_share_cache(): in the eMAG case, only
-> pairs of cores will be seen as sharing cache, even though *all* cores share
-> the same L3.
-> 
+> So this would cause open() to fail with EBADF, which might look a bit
+> weird to userspace since it didn't pass an fd... Is this to have a
+> different error than -EIO that is returned when either rfd or wfd
+> doesn't point to an open file descriptor ? If yes, why do we care ?
 
-Okay, Its good to know that we have a chip which is similar to P9 in
-topology.
+FWIW the solution taken just returns EIO as it would if an invalid fd
+was given, but since it did pass an fd EBADF actually makes sense to me?
 
-> I'm trying to paint a picture of what the P9 topology looks like (the one
-> you showcase in your cover letter) to see if there are any similarities;
-> from what I gather in [1], wikichips and your cover letter, with P9 you can
-> have something like this in a single DIE (somewhat unsure about L3 setup;
-> it looks to be distributed?)
-> 
->      +---------------------------------------------------------------------+
->      |                                  L3                                 |
->      +---------------+-+---------------+-+---------------+-+---------------+
->      |       L2      | |       L2      | |       L2      | |       L2      |
->      +------+-+------+ +------+-+------+ +------+-+------+ +------+-+------+
->      |  L1  | |  L1  | |  L1  | |  L1  | |  L1  | |  L1  | |  L1  | |  L1  |
->      +------+ +------+ +------+ +------+ +------+ +------+ +------+ +------+
->      |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs|
->      +------+ +------+ +------+ +------+ +------+ +------+ +------+ +------+
-> 
-> Which would lead to (ignoring the whole SMT CPU numbering shenanigans)
-> 
-> NUMA     [                                                   ...
-> DIE      [                                             ]
-> MC       [         ] [         ] [         ] [         ]
-> BIGCORE  [         ] [         ] [         ] [         ]
-> SMT      [   ] [   ] [   ] [   ] [   ] [   ] [   ] [   ]
->          00-03 04-07 08-11 12-15 16-19 20-23 24-27 28-31  <other node here>
-> 
+However to the second question I'm not sure I care :)
 
-What you have summed up is perfectly what a P9 topology looks like. I dont
-think I could have explained it better than this.
+> > Found by syzkaller.
 
-> This however has MC == BIGCORE; what makes it you can have different spans
-> for these two domains? If it's not too much to ask, I'd love to have a P9
-> topology diagram.
-> 
-> [1]: 20200722081822.GG9290@linux.vnet.ibm.com
-
-At this time the current topology would be good enough i.e BIGCORE would
-always be equal to a MC. However in future we could have chips that can have
-lesser/larger number of CPUs in llc than in a BIGCORE or we could have
-granular or split L3 caches within a DIE. In such a case BIGCORE != MC.
-
-Also in the current P9 itself, two neighbouring core-pairs form a quad.
-Cache latency within a quad is better than a latency to a distant core-pair.
-Cache latency within a core pair is way better than latency within a quad.
-So if we have only 4 threads running on a DIE all of them accessing the same
-cache-lines, then we could probably benefit if all the tasks were to run
-within the quad aka MC/Coregroup.
-
-I have found some benchmarks which are latency sensitive to benefit by
-having a grouping a quad level (using kernel hacks and not backed by
-firmware changes). Gautham also found similar results in his experiments
-but he only used binding within the stock kernel.
-
-I am not setting SD_SHARE_PKG_RESOURCES in MC/Coregroup sd_flags as in MC
-domain need not be LLC domain for Power.
+I'm starting to understand where David comment came from the other day,
+I guess it's still time to change my mind and submit to linus now I've
+had time to test it...
 
 -- 
-Thanks and Regards
-Srikar Dronamraju
+Dominique
