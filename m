@@ -2,99 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E982319D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074882319A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgG2Gz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 02:55:27 -0400
-Received: from 4.mo179.mail-out.ovh.net ([46.105.36.149]:42408 "EHLO
-        4.mo179.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgG2Gz0 (ORCPT
+        id S1726718AbgG2GlZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Jul 2020 02:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbgG2GlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 02:55:26 -0400
-Received: from player711.ha.ovh.net (unknown [10.108.42.75])
-        by mo179.mail-out.ovh.net (Postfix) with ESMTP id 694B4173B78
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:38:32 +0200 (CEST)
-Received: from kaod.org (lns-bzn-46-82-253-208-248.adsl.proxad.net [82.253.208.248])
-        (Authenticated sender: groug@kaod.org)
-        by player711.ha.ovh.net (Postfix) with ESMTPSA id AB08514A1AD8F;
-        Wed, 29 Jul 2020 06:38:23 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-105G006896df29f-f4f3-493b-ab9a-d0c6f23d8bcf,
-                    A40F6FE0CFFE28C23AB4AFBB3D5D665E11D39731) smtp.auth=groug@kaod.org
-Date:   Wed, 29 Jul 2020 08:38:22 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        v9fs-developer@lists.sourceforge.net,
-        Latchesar Ionkov <lucho@ionkov.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [V9fs-developer] [PATCH kernel] 9p/trans_fd: Check file mode at
- opening
-Message-ID: <20200729083822.66e165ed@bahia.lan>
-In-Reply-To: <20200729061449.GA19682@nautica>
-References: <20200728124129.130856-1-aik@ozlabs.ru>
-        <20200728194235.52660c08@bahia.lan>
-        <20200729061449.GA19682@nautica>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 29 Jul 2020 02:41:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2FDC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 23:41:25 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1k0fmD-0007tn-T3; Wed, 29 Jul 2020 08:41:21 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1k0fmD-0003Ai-G8; Wed, 29 Jul 2020 08:41:21 +0200
+Message-ID: <dd98ed496cedfceec3d41064e95f05b8d3adcca1.camel@pengutronix.de>
+Subject: Re: [PATCH] reset: Fix and extend kerneldoc
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Krzysztof Kozlowski <krzk@kernel.org>, linux-kernel@vger.kernel.org
+Date:   Wed, 29 Jul 2020 08:41:21 +0200
+In-Reply-To: <20200728171011.28412-1-krzk@kernel.org>
+References: <20200728171011.28412-1-krzk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 1830713248816142592
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrieefgddutdelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtgfesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepveehieetvdettdfhiefhueetheekheejgfdtvddthfffuefgueduvefgveeijeegnecuffhomhgrihhnpehophgvnhhgrhhouhhprdhorhhgnecukfhppedtrddtrddtrddtpdekvddrvdehfedrvddtkedrvdegkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejuddurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Jul 2020 08:14:49 +0200
-Dominique Martinet <asmadeus@codewreck.org> wrote:
+Hi Krzysztof,
 
-> Greg Kurz wrote on Tue, Jul 28, 2020:
-> > > The "fd" transport layer uses 2 file descriptors passed externally
-> > > and calls kernel_write()/kernel_read() on these. If files were opened
-> > > without FMODE_WRITE/FMODE_READ, WARN_ON_ONCE() will fire.
+On Tue, 2020-07-28 at 19:10 +0200, Krzysztof Kozlowski wrote:
+> Fix W=1 compile warnings (invalid kerneldoc):
 > 
-> There already is a fix in linux-next as a39c46067c84 ("net/9p: validate
-> fds in p9_fd_open")
+>     drivers/reset/core.c:50: warning: Function parameter or member 'array' not described in 'reset_control'
+>     drivers/reset/core.c:50: warning: Function parameter or member 'deassert_count' not described in 'reset_control'
 > 
-> > > This adds file mode checking in p9_fd_open; this returns -EBADF to
-> > > preserve the original behavior.
-> > 
-> > So this would cause open() to fail with EBADF, which might look a bit
-
-Oops... this seems to rather end up in mount(). :)
-
-> > weird to userspace since it didn't pass an fd... Is this to have a
-> > different error than -EIO that is returned when either rfd or wfd
-> > doesn't point to an open file descriptor ? If yes, why do we care ?
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/reset/core.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> FWIW the solution taken just returns EIO as it would if an invalid fd
-> was given, but since it did pass an fd EBADF actually makes sense to me?
-> 
+> diff --git a/drivers/reset/core.c b/drivers/reset/core.c
+> index 01c0c7aa835c..a2df88e90011 100644
+> --- a/drivers/reset/core.c
+> +++ b/drivers/reset/core.c
+> @@ -32,7 +32,8 @@ static LIST_HEAD(reset_lookup_list);
+>   * @refcnt: Number of gets of this reset_control
+>   * @acquired: Only one reset_control may be acquired for a given rcdev and id.
+>   * @shared: Is this a shared (1), or an exclusive (0) reset_control?
+> - * @deassert_cnt: Number of times this reset line has been deasserted
+> + * @array: Is this an array of reset controls (1)?
+> + * @deassert_count: Number of times this reset line has been deasserted
+>   * @triggered_count: Number of times this reset line has been reset. Currently
+>   *                   only used for shared resets, which means that the value
+>   *                   will be either 0 or 1.
 
-POSIX says:
+Thank you for the fix, applied to reset/next.
 
-https://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html
-
-[EBADF]
-Bad file descriptor. A file descriptor argument is out of range, refers to
-no open file, or a read (write) request is made to a file that is only open
-for writing (reading).
-
-It seems that EBADF would be appropriate for both the existing and the
-new error path.
-
-> However to the second question I'm not sure I care :)
-> 
-> > > Found by syzkaller.
-> 
-> I'm starting to understand where David comment came from the other day,
-> I guess it's still time to change my mind and submit to linus now I've
-> had time to test it...
-> 
-
+regards
+Philipp
