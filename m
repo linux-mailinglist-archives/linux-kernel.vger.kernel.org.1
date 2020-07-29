@@ -2,256 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7E4231F1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 15:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114EC231F31
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 15:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgG2NQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 09:16:54 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39254 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgG2NQy (ORCPT
+        id S1727823AbgG2NW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 09:22:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727121AbgG2NWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 09:16:54 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id DAB6B297C0B
-Subject: Re: [PATCH v2 0/3] media: vimc: Allow multiple capture devices to use
- the same sensor
-To:     kieran.bingham@ideasonboard.com,
-        Kaaira Gupta <kgupta@es.iitr.ac.in>,
-        Helen Koike <helen.koike@collabora.com>
-Cc:     =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-References: <20200724120213.17119-1-kgupta@es.iitr.ac.in>
- <20200724121521.GA2705690@oden.dyn.berto.se>
- <20200724122104.GA18482@kaaira-HP-Pavilion-Notebook>
- <a6f4eabf-6cd5-950b-f2e3-853370c77629@ideasonboard.com>
- <2a6cb067-283d-ca65-2698-1fae66a17d02@collabora.com>
- <20200728113959.GA6350@kaaira-HP-Pavilion-Notebook>
- <3a9ac970-77b8-1bc5-536a-5b4f2bd60745@collabora.com>
- <b5fd3811-2f0e-7563-13fa-bb1e32189814@collabora.com>
- <f2fc6d81-16a6-206b-6bb2-fb99d5a84f65@ideasonboard.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <cd1d18ef-d4ff-8240-e9dd-2d9f9c7c5a45@collabora.com>
-Date:   Wed, 29 Jul 2020 15:16:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 29 Jul 2020 09:22:50 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB0DC061794;
+        Wed, 29 Jul 2020 06:22:49 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id k4so11777109pld.12;
+        Wed, 29 Jul 2020 06:22:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dZVkEmQto56AmO9M+KODR9+FXiNg4THi2B1DDl0qH74=;
+        b=RWKI0VB42RHJGqcMkvesW4CLvXoeicTe46yk22J3WanwTaBUL4YtE8IKorU9KiKCNN
+         vJyYbYPBBOokZboD5Trd8uT2uAFLLebivVHhMI9pdWYgfa/ZNExmBQZqLPT/MZhfm2eX
+         8uRX8wOQqTPALEFZ1e2rCkbcL5HlR3XEGfJC+BVImp39oPZkbPhABKXht8aaOH93iTdB
+         zxgjEKDcTx9bV2MXWc0cwek+1catpwycUsTk1AUN294kBGM46lfAgtCYe9ejGQYyVLR6
+         ZvCx6XwQehErsZMxDhgDmCECRU4V/QF5yEC8ncrzKpweoK5P/HtJDd8MXfrMiTzUytpC
+         Bm5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dZVkEmQto56AmO9M+KODR9+FXiNg4THi2B1DDl0qH74=;
+        b=lg7Q2cVXIeM3tCEWyRfN3nj+5Y5z1LQCYCaR6k5GfRiSQ6ncb4BqnQCa045wmlfcM6
+         wEtU14h37RJgcyAOn1xO2CfTmsn26tJ1TLpUruTYwFxkDPhsveM/+GG7lr+Rg42iekIa
+         s18lNYSbB7plfL8LKVsSnSgsgEpBfZg4TemCEI7J2P8WfONLWVYr6Sh9610SjrsNNZqN
+         VFUYKzYcc2fR7RyXSZbOaDiP37bADT+jXBqUrobwGmncJKK87t0Js6Ln7LY68dDHNX1W
+         OuhxmENCGIGvRZslN27eCHjQhVHgvsjcqjKNa+0TXz/+f/VQqoJGG0c4Y4kAEQDAY0MW
+         dC1A==
+X-Gm-Message-State: AOAM533uC64hEO7t2ABLZN+4N7CUIy+YH19fywOMjKzYwNRznM2PXbGu
+        FM+PTyu4MNmBUtflPUZtYmM=
+X-Google-Smtp-Source: ABdhPJxn+Kx8ezIh3hRWCXBEAP2NSusIhx5YhewG4epzxBfAUTrNmzqbreB9W9/ynlMFo9omo1skgQ==
+X-Received: by 2002:a17:902:b20a:: with SMTP id t10mr26885947plr.185.1596028969400;
+        Wed, 29 Jul 2020 06:22:49 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id r25sm2244428pgv.88.2020.07.29.06.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 06:22:48 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 18:51:10 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kevin Curtis <kevin.curtis@farsite.co.uk>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v1] farsync: use generic power management
+Message-ID: <20200729132110.GA605@gmail.com>
+References: <20200729101730.GA215923@gmail.com>
+ <20200729122954.GA1920458@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <f2fc6d81-16a6-206b-6bb2-fb99d5a84f65@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200729122954.GA1920458@bjorn-Precision-5520>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 29, 2020 at 07:29:54AM -0500, Bjorn Helgaas wrote:
+> On Wed, Jul 29, 2020 at 03:47:30PM +0530, Vaibhav Gupta wrote:
+> >
+> > Agreed. Actually, as their presence only causes PCI core to call
+> > pci_legacy_suspend/resume() for them, I thought that after removing
+> > the binding from "struct pci_driver", this driver qualifies to be
+> > grouped under genric framework, so used "use generic power
+> > management" for the heading.
+> > 
+> > I should have written "remove legacy bindning".
+> 
+> This removed the *mention* of fst_driver.suspend and fst_driver.resume,
+> which is important because we want to eventually remove those members
+> completely from struct pci_driver.
+> 
+> But fst_driver.suspend and fst_driver.resume *exist* before and after
+> this patch, and they're initialized to zero before and after this
+> patch.
+> 
+> Since they were zero before, and they're still zero after this patch,
+> the PCI core doesn't call pci_legacy_suspend/resume().  This patch
+> doesn't change that at all.
+>
+Got it. Thanks :) 
+> > But David has applied the patch, should I send a v2 or fix to update
+> > message?
+> 
+> No, I don't think David updates patches after he's applied them.  But
+> if the situation comes up again, you'll know how to describe it :)
+> 
+Thanks a lot. :D
 
-
-On 29.07.20 15:05, Kieran Bingham wrote:
-> Hi Dafna,
-> 
-> On 28/07/2020 15:00, Dafna Hirschfeld wrote:
->>
->>
->> On 28.07.20 14:07, Dafna Hirschfeld wrote:
->>> Hi
->>>
->>> On 28.07.20 13:39, Kaaira Gupta wrote:
->>>> On Mon, Jul 27, 2020 at 02:54:30PM -0300, Helen Koike wrote:
->>>>> Hi,
->>>>>
->>>>> On 7/27/20 11:31 AM, Kieran Bingham wrote:
->>>>>> Hi all,
->>>>>>
->>>>>> +Dafna for the thread discussion, as she's missed from the to/cc list.
->>>>>>
->>>>>>
->>>>>> On 24/07/2020 13:21, Kaaira Gupta wrote:
->>>>>>> On Fri, Jul 24, 2020 at 02:15:21PM +0200, Niklas Söderlund wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>>> Hi Kaaira,
->>>>>>>>
->>>>>>>> Thanks for your work.
->>>>>>>
->>>>>>> Thanks for yours :D
->>>>>>>
->>>>>>>>
->>>>>>>> On 2020-07-24 17:32:10 +0530, Kaaira Gupta wrote:
->>>>>>>>> This is version 2 of the patch series posted by Niklas for allowing
->>>>>>>>> multiple streams in VIMC.
->>>>>>>>> The original series can be found here:
->>>>>>>>> https://patchwork.kernel.org/cover/10948831/
->>>>>>>>>
->>>>>>>>> This series adds support for two (or more) capture devices to be
->>>>>>>>> connected to the same sensors and run simultaneously. Each
->>>>>>>>> capture device
->>>>>>>>> can be started and stopped independent of each other.
->>>>>>>>>
->>>>>>>>> Patch 1/3 and 2/3 deals with solving the issues that arises once
->>>>>>>>> two
->>>>>>>>> capture devices can be part of the same pipeline. While 3/3
->>>>>>>>> allows for
->>>>>>>>> two capture devices to be part of the same pipeline and thus
->>>>>>>>> allows for
->>>>>>>>> simultaneously use.
->>>
->>> I wonder if these two patches are enough, since each vimc entity also
->>> have
->>> a 'process_frame' callback, but only one allocated frame. That means
->>> that the 'process_frame' can be called concurrently by two different
->>> streams
->>> on the same frame and cause corruption.
->>>
->>
->> I think we should somehow change the vimc-stream.c code so that we have
->> only
->> one stream process per pipe. So if one capture is already streaming,
->> then the new
->> capture that wants to stream uses the same thread so we don't have two
->> threads
->> both calling 'process_frame'.
-> 
-> 
-> Yes, I think it looks and sounds like there are two threads running when
-> there are two streams.
-> 
-> so in effect, although they 'share a pipe', aren't they in effect just
-> sending two separate buffers through their stream-path?
-> 
-> If that's the case, then I don't think there's any frame corruption,
-> because they would both have grabbed their own frame separately.
-
-But each entity allocates just one buffer. So the same buffer is used for
-both stream.
-What for example can happen is that the debayer of one stream can read the
-sensor's buffer while the sensor itself writes to the buffer for the other
-stream.
-
-Thanks,
-Dafna
-
-> 
-> 
-> I don't think that's a good example of the hardware though, as that
-> doesn't reflect what 'should' happen where the TPG runs once to generate
-> a frame at the sensor, which is then read by both the debayer entity and
-> the RAW capture device when there are two streams...
-> 
-> 
-> So I suspect trying to move to a single thread is desirable, but that
-> might be a fair bit of work also.
-> 
-> --
-> Kieran
-> 
-> 
-> 
->> The second capture that wants to stream should iterate the topology
->> downwards until
->> reaching an entity that already belong to the stream path of the other
->> streaming capture
->> and tell the streamer it wants to read the frames this entity
->> produces.
->>
->> Thanks,
->> Dafna
->>
->>> Thanks,
->>> Dafna
->>>
->>>>>>>>
->>>>>>>> I'm just curious if you are aware of this series? It would
->>>>>>>> replace the
->>>>>>>> need for 1/3 and 2/3 of this series right?
->>>>>>>
->>>>>>> v3 of this series replaces the need for 1/3, but not the current
->>>>>>> version
->>>>>>> (ie v4). v4 of patch 2/5 removes the stream_counter that is needed to
->>>>>>> keep count of the calls to s_stream. Hence 1/3 becomes relevant
->>>>>>> again.
->>>>>>
->>>>>> So the question really is, how do we best make use of the two current
->>>>>> series, to achieve our goal of supporting multiple streams.
->>>>>>
->>>>>> Having not parsed Dafna's series yet, do we need to combine
->>>>>> elements of
->>>>>> both ? Or should we work towards starting with this series and get
->>>>>> dafna's patches built on top ?
->>>>>>
->>>>>> Or should patch 1/3 and 3/3 of this series be on top of Dafna's v4 ?
->>>>>>
->>>>>> (It might be noteworthy to say that Kaaira has reported successful
->>>>>> multiple stream operation from /this/ series and her development
->>>>>> branch
->>>>>> on libcamera).
->>>>>
->>>>> Dafna's patch seems still under discussion, but I don't want to
->>>>> block progress in Vimc either.
->>>>>
->>>>> So I was wondering if we can move forward with Vimc support for
->>>>> multistreaming,
->>>>> without considering Dafna's patchset, and we can do the clean up
->>>>> later once we solve that.
->>>>>
->>>>> What do you think?
->>>>
->>>> I agree with supporting multiple streams with VIMC with this patchset,
->>>> and then we can refactor the counters for s_stream in VIMC later (over
->>>> this series) if dafna includes them in subsequent version of her
->>>> patchset.
->>>>
->>>
->>> I also think that adding support in the code will take much longer and
->>> should not
->>> stop us from supporting vimc independently.
->>>
->>> Thanks,
->>> Dafna
->>>
->>>>>
->>>>> Regards,
->>>>> Helen
->>>>>
->>>>>>
->>>>>>
->>>>>>>> 1.
->>>>>>>> https://lore.kernel.org/linux-media/20200522075522.6190-1-dafna.hirschfeld@collabora.com/
->>>>>>>>
->>>>>>>>
->>>>>>>>>
->>>>>>>>> Changes since v1:
->>>>>>>>>      - All three patches rebased on latest media-tree.
->>>>>>>>>      Patch 3:
->>>>>>>>>      - Search for an entity with a non-NULL pipe instead of
->>>>>>>>> searching
->>>>>>>>>        for sensor. This terminates the search at output itself.
->>>>>>>>>
->>>>>>>>> Kaaira Gupta (3):
->>>>>>>>>     media: vimc: Add usage count to subdevices
->>>>>>>>>     media: vimc: Serialize vimc_streamer_s_stream()
->>>>>>>>>     media: vimc: Join pipeline if one already exists
->>>>>>>>>
->>>>>>>>>    .../media/test-drivers/vimc/vimc-capture.c    | 35
->>>>>>>>> ++++++++++++++++++-
->>>>>>>>>    .../media/test-drivers/vimc/vimc-debayer.c    |  8 +++++
->>>>>>>>>    drivers/media/test-drivers/vimc/vimc-scaler.c |  8 +++++
->>>>>>>>>    drivers/media/test-drivers/vimc/vimc-sensor.c |  9 ++++-
->>>>>>>>>    .../media/test-drivers/vimc/vimc-streamer.c   | 23 +++++++-----
->>>>>>>>>    5 files changed, 73 insertions(+), 10 deletions(-)
->>>>>>>>>
->>>>>>>>> -- 
->>>>>>>>> 2.17.1
->>>>>>>>>
->>>>>>>>
->>>>>>>> -- 
->>>>>>>> Regards,
->>>>>>>> Niklas Söderlund
->>>>>>
-> 
+Vaibhav Gupta
+> Bjorn
