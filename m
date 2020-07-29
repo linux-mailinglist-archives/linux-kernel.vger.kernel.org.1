@@ -2,105 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532DD2324CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 20:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD1E2324D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 20:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726857AbgG2Slx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 14:41:53 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:57163 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgG2Slw (ORCPT
+        id S1727066AbgG2SnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 14:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726365AbgG2SnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 14:41:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596048111;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2wnKx9MtANd6DxtgBYTEmqFSG4Uhuf/WkKPgtmoDTCE=;
-        b=ORIXSWnCozCzJXZFcNrZQb28rOVIIEJ/THYNhK6fxHpS+eNtGAZnJ3eafNoNaxjDxvDXGZ
-        pXPpfGMQ50LN9NfnCYfrSSpGc+j1TBlV62MBztyY5iu7b3kVVcMWHbpC3llIPAXkUYXTZP
-        BZF26elbKg8lbUn6AagWbR+FazWQkAA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16--8aINfVjOZ64eSH74sWDJg-1; Wed, 29 Jul 2020 14:41:49 -0400
-X-MC-Unique: -8aINfVjOZ64eSH74sWDJg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 941EA1923761;
-        Wed, 29 Jul 2020 18:41:47 +0000 (UTC)
-Received: from Liberator.local (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 67AAE1C6;
-        Wed, 29 Jul 2020 18:41:46 +0000 (UTC)
-Subject: Re: Inverted mount options completely broken (iversion,relatime)
-To:     Josef Bacik <josef@toxicpanda.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>
-References: <0b154b9b-728f-7d57-d4c5-ec25fc9dfdf3@toxicpanda.com>
-From:   Eric Sandeen <sandeen@redhat.com>
-Message-ID: <1f56432b-a245-a010-51fd-814a9cf4e2b1@redhat.com>
-Date:   Wed, 29 Jul 2020 11:41:45 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        Wed, 29 Jul 2020 14:43:21 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05514C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 11:43:21 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id w2so14767873pgg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 11:43:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ao3gYRdt2ElCy6wrMHMRO1zFYSatQRmO8ChzZFiBXu0=;
+        b=kb2uKX8jci49yKGrJqerR1tAzw6UdMCFhr1zS8wUJbaeFIKjlwlGzh9I9VPZAmJHNs
+         wYckm9k4g0DXmWL6Zmvu+oYGCgluqwEqbyn7nhPsRWazncYsHyJa/bKAEvvwV1q1ywbg
+         10B6jsiTZgXyNQvkh8QBaBEiKSMjW6nMonBPiYxQT91bpEXcNEK3w5ljDtk8DJ9JZdJp
+         o4H0Kpop1S4NtKa1Yu2r5Joml1Xz0Od6eTusmKltssklNwe9pU9PlVckpCxMGJxhiD6s
+         +26kWKEIwNcfRp07Eop1rUka2pOK65p31hQsylfNTp7S1VZcC3cCT0oFW1eg8F3S2FBO
+         KG+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ao3gYRdt2ElCy6wrMHMRO1zFYSatQRmO8ChzZFiBXu0=;
+        b=JL+VZcAoaYYWoGlTCbvtjIb5PWwwXbiz5LEIrmSE1LC+JRu2t6YyJLEEM4f5OmplKz
+         DtvcFNv7axvwj8vbxATquipb3VnDFmSekHObRGN1ZoTKVxijc/CPQYczJO8cuIjkvds1
+         httyJxm97syQAymsb1NyiXXSOVEyyqornPTfuB/BhN2zSywdPbL3A35H5KQwt46DmO+i
+         KoBU7WohN5OhYxXZPayR++a1XzUyHlUbBgBUYx86acUyP9F9++bib3iXCyJCfcyHmzKI
+         ElGDPtc372lXnSpXZNg6w068hFaP7NqsiwuQPze9ymFE3VZzifkv+Z9B4lW/AHNnJIa4
+         vRWQ==
+X-Gm-Message-State: AOAM533Unb56H+xeNhDu+sqDCZF7giDbr/90Ybi25np6x1n+JxB36Fh3
+        U/kCU4vtpl1Jj163ojAUKqjhIiqPi8tn7pgmyP5voQ==
+X-Google-Smtp-Source: ABdhPJydQJstyS2jHvJH7t4WgZZRBvCF1P6diedEry+ckqxnTiJn2hwIXK4nzpfzHb0iJoHMphMp3zAIw3Kz6XVzzm8=
+X-Received: by 2002:aa7:9f1b:: with SMTP id g27mr13283742pfr.215.1596048200179;
+ Wed, 29 Jul 2020 11:43:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0b154b9b-728f-7d57-d4c5-ec25fc9dfdf3@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <1595931377-21627-1-git-send-email-freddy.hsin@mediatek.com>
+ <1595931377-21627-3-git-send-email-freddy.hsin@mediatek.com> <87mu3ia2zn.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87mu3ia2zn.fsf@nanos.tec.linutronix.de>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 29 Jul 2020 11:42:44 -0700
+Message-ID: <CAGETcx-Aooz+BLpqHMwsJn+FiV9pgYz58gQxOw=TeWq3UWFsYg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] timer: mt6873: porting Mediatek timer driver to
+ loadable module
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Freddy Hsin <freddy.hsin@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.or>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>, chang-an.chen@mediatek.com,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        wsd_upstream@mediatek.com, kuohong.wang@mediatek.com,
+        stanley.chu@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/20 11:32 AM, Josef Bacik wrote:
-> Hello,
-> 
-> Eric reported a problem to me where we were clearing SB_I_VERSION on remount of a btrfs file system.  After digging through I discovered it's because we expect the proper flags that we want to be passed in via the mount() syscall, and because we didn't have "iversion" in our show_options entry the mount binary (form util-linux) wasn't setting MS_I_VERSION for the remount, and thus the VFS was clearing SB_I_VERSION from our s_flags.
-> 
-> No big deal, I'll fix show_mount.  Except Eric then noticed that mount -o noiversion didn't do anything, we still get iversion set.  That's because btrfs just defaults to having SB_I_VERSION set.  Furthermore -o noiversion doesn't get sent into mount, it's handled by the mount binary itself, and it does this by not having MS_I_VERSION set in the mount flags.
+On Wed, Jul 29, 2020 at 6:02 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Freddy,
+>
+> Freddy Hsin <freddy.hsin@mediatek.com> writes:
+>
+> again, please be more careful with subject lines. git log $FILE will
+> give you a hint.
+>
+> > porting Mediatek timer driver to loadable module
+>
+> Repeating the sentence in the subject line is not giving any
+> information. Also changelogs want to tell the WHY and not the WHAT. This
+> also lacks any information why this is actually safe when booting such a
+> system w/o this particular driver built in. What is early boot - up to
+> module load - using as clocksource and timer?
+>
+> > diff --git a/drivers/clocksource/mmio.c b/drivers/clocksource/mmio.c
+> > index 9de7515..5504569 100644
+> > --- a/drivers/clocksource/mmio.c
+> > +++ b/drivers/clocksource/mmio.c
+> > @@ -21,6 +21,7 @@ u64 clocksource_mmio_readl_up(struct clocksource *c)
+> >  {
+> >       return (u64)readl_relaxed(to_mmio_clksrc(c)->reg);
+> >  }
+> > +EXPORT_SYMBOL(clocksource_mmio_readl_up);
+>
+> Again EXPORT_SYMBOL_GPL() and this wants to be a seperate patch. It has
+> absolutely no business with the mediatek timer changes.
+>
+> >  u64 clocksource_mmio_readl_down(struct clocksource *c)
+> >  {
+> > @@ -46,7 +47,7 @@ u64 clocksource_mmio_readw_down(struct clocksource *c)
+> >   * @bits:    Number of valid bits
+> >   * @read:    One of clocksource_mmio_read*() above
+> >   */
+> > -int __init clocksource_mmio_init(void __iomem *base, const char *name,
+> > +int clocksource_mmio_init(void __iomem *base, const char *name,
+> >
+> >       unsigned long hz, int rating, unsigned bits,
+> >       u64 (*read)(struct clocksource *))
+> >  {
+> > @@ -68,3 +69,4 @@ int __init clocksource_mmio_init(void __iomem *base, const char *name,
+> >
+> >       return clocksource_register_hz(&cs->clksrc, hz);
+> >  }
+> > +EXPORT_SYMBOL(clocksource_mmio_init);
+>
+> See above.
+>
+> > diff --git a/drivers/clocksource/timer-mediatek.c b/drivers/clocksource/timer-mediatek.c
+> > index 9318edc..5c89b6b 100644
+> > --- a/drivers/clocksource/timer-mediatek.c
+> > +++ b/drivers/clocksource/timer-mediatek.c
+> > @@ -13,6 +13,9 @@
+> >  #include <linux/clocksource.h>
+> >  #include <linux/interrupt.h>
+> >  #include <linux/irqreturn.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/platform_device.h>
+> >  #include <linux/sched_clock.h>
+> >  #include <linux/slab.h>
+> >  #include "timer-of.h"
+> > @@ -309,5 +312,41 @@ static int __init mtk_gpt_init(struct device_node *node)
+> >
+> >       return 0;
+> >  }
+> > +
+> > +#ifdef MODULE
+> > +static int mtk_timer_probe(struct platform_device *pdev)
+> > +{
+> > +     int (*timer_init)(struct device_node *node);
+> > +     struct device_node *np = pdev->dev.of_node;
+> > +
+> > +     timer_init = of_device_get_match_data(&pdev->dev);
+> > +     return timer_init(np);
+> > +}
+> > +
+> > +static const struct of_device_id mtk_timer_match_table[] = {
+> > +     {
+> > +             .compatible = "mediatek,mt6577-timer",
+> > +             .data = mtk_gpt_init,
+> > +     },
+> > +     {
+> > +             .compatible = "mediatek,mt6765-timer",
+> > +             .data = mtk_syst_init,
+> > +     },
+> > +     {}
+> > +};
+> > +
+> > +static struct platform_driver mtk_timer_driver = {
+> > +     .probe = mtk_timer_probe,
+> > +     .driver = {
+> > +             .name = "mtk-timer",
+> > +             .of_match_table = mtk_timer_match_table,
+> > +     },
+> > +};
+> > +MODULE_DESCRIPTION("MEDIATEK Module timer driver");
+> > +MODULE_LICENSE("GPL v2");
+> > +
+> > +module_platform_driver(mtk_timer_driver);
+> > +#else
+> >  TIMER_OF_DECLARE(mtk_mt6577, "mediatek,mt6577-timer", mtk_gpt_init);
+> >  TIMER_OF_DECLARE(mtk_mt6765, "mediatek,mt6765-timer", mtk_syst_init);
+> > +#endif
+>
+> Sorry no. This is not going to happen.
+>
+> The above probe, match table and platform driver structs plus the module*
+> thingies are going to be repeated in every single driver which is going
+> to support module build. Tons of boilerplate copied over and over
+> again.
+>
+> We had exactly the same before TIMER_OF_DECLARE() came around, so pretty
+> please this want's to be some smart macro which handles all of this
+> automatically.
 
-This was beaten^Wdiscussed to death in an earlier thread,
-[PATCH] fs: i_version mntopt gets visible through /proc/mounts
+Probably something like what I did for IRQCHIP?
+https://lore.kernel.org/lkml/20200718000637.3632841-1-saravanak@google.com/
 
-https://lore.kernel.org/linux-fsdevel/20200616202123.12656-1-msys.mizuma@gmail.com/
+Also, one point that came up with IRQCHIP is that if these drivers can
+be platform drivers, then they should stay that way even when it's
+built in. I'm not sure if that has any other special implications for
+timer code, but raising it in case you'd prefer that here too.
 
-tl;dr: hch doesn't think [no]iversion should be exposed as an option /at all/
-so exposing it in /proc/mounts in show_mnt_opts for mount(8)'s benefit was
-nacked.
 
-> This happens as well for -o relatime, it's the default and so if you do mount -o norelatime it won't do anything, you still get relatime behavior.
-
-I think that's a different issue.
-
-> The only time this changes is if you do mount -o remount,norelatime.
-
-Hm, not on xfs:
-
-# mount -o loop,norelatime xfsfile  mnt
-# grep loop /proc/mounts
-/dev/loop0 /tmp/mnt xfs rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota 0 0
-
-# mount -o remount,norelatime mnt
-# grep loop /proc/mounts
-/dev/loop0 /tmp/mnt xfs rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota 0 0
-
-Here, "norelatime" only makes the mount binary omit the MS_RELATIME flag.
-The only way to override relatime behavior is mount -o strictatime, AFAICT.
-
-IOWS "norelatime" and "strictatime" are the same (right?); perhaps
-mount -o norelatime should set the MS_STRICTATIME flag.
-
-> So my question is, what do we do here?  I know Christoph has the strong opinion that we just don't expose I_VERSION at all, which frankly I'm ok with.  However more what I'm asking is what do we do with these weird inverted flags that we all just kind of ignore on mount?  The current setup is just broken if we want to allow overriding the defaults at mount time.  Are we ok with it just being broken?  Are we ok with things like mount -o noiversion not working because the file system has decided that I_VERSION (or relatime) is the default, and we're going to ignore what the user asks for unless we're remounting?  Thanks,
-
-Are there other oddities besides iversion and relatime?
-
--Eric
-
+-Saravana
