@@ -2,67 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323C0232751
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 00:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384A8232752
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 00:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727808AbgG2WGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 18:06:33 -0400
-Received: from sonic305-21.consmr.mail.sg3.yahoo.com ([106.10.241.84]:43592
-        "EHLO sonic305-21.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726628AbgG2WGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 18:06:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596060388; bh=fWjln6K44Eskt5xJ54p36XH05v6HgNA/YUSUPVdtmXQ=; h=Date:From:Reply-To:Subject:References:From:Subject; b=drXx6Pui6u79iFHerEJS5yFeD6ckeNCbPelfMxpBWczyAzfR1BS4OlshYOk5EWbVSELmOpkSBVhOiTSneU/KChc7/XrraTlLn2olPh7t1w6T/izGWPYRlioOOoAQNCc9EYKmX43e/dzLZvU2BFQnDUHgvGeU5X5e0QBFNYAg+Bx/LiC0Rgi/AF4aeCOrxFaETGnZ063ym8ot3/xy9UNyN9rvGEbffYchJcDTGrSBuX4+O2CETs7whnOoCmFRSju6XIVCVeIFEkeKueT8/Z54Hdz31u3mx/4wIRCTt8J4rTUxFc0aIMknZSL2L1rxEpe1J518NnZk7RDE7CA3zRXCpA==
-X-YMail-OSG: C9KlBWkVM1kDjaVQZdecNuQmeZvQNHMMF_ciACBI4tTqBksOxnGGobLSMCqY4_e
- CjskP6C0eidnYqQSposLRSLQmtwxLwe4Zm.Wc.id0BWXwXD6Sv1bQ7RTo7YaaHnXuKOT3Nh9PGM_
- f7qFfQsVOVTqxqV_qpnnSWVa6kq555A1po2Sa1CCh7FwNFRcUAER.BH504iHmmSkxENB47g7Endd
- GcF5KElFGGja21XZgtlO1dN.aaBjKP9pwnuIKTLB0Yd_vEbPQKUCtIKe6SKvRgOQEAE0zFZVmQuy
- y2IkRWT4fTlGIYEpw6qfiiQ7OZJxl85YiVXRGW80RvK.UVgCI16UWO1_c1qGtNCSp.lbyi4z9LtM
- pjpP.sYYVAdR0Hq86uJyXUCojTxb.ncOWrJqJ.Fy38JWSWhwnJuyUAz1Hw0I6DDN33nwCcgT8dzV
- 4DrRRxp_SwLzYUWrHEeL.1RNgME3.Xbck4FVxSTLFriKjVWZV4z7q8pqzUSXJFx5WMsJ1COpwJ1f
- aA82jk.jLw4RMa7_NOpKOVACe9xjdmB3wm0ZGq9ompCyeKB1mYcDAqyYOm0V6xNIgSzF_lyGJ3Mk
- XLP.dHmlVK2s2vqZwXM_Oq.voZnva066gKhbWNaapU4Nugrc.pRPsxzqalDJk294GNzXhs16ijnQ
- tgqrh2e5NLdUWkyVqBarFOl8Zf.ER2McMeb9L3MxDJRLEdWczLLR.pr1gaQzP_Xee.4EllI8J9xR
- DIj8L3AiHDjOQc0UeKcMSP8lts1Kt9TYLGNv4xJqVHsPzHKuFwSbvQOQeepzAoaQP734itIpHUwA
- kpI.xK0RW2ZmAbg3DUBuUG8g8j5a5pn3MMAseCFajgFMWDFMRfEV2S94.1weQPJrunB4p84Bzrpp
- 4V1NHfq.aMTEbrpptoUuT5IiOzDD.fYE7tfU0z8w.CLsX_wRjgyKqGI99wESbp8SX5ulJhg1c1XG
- Zt..5mUABG5fbAw.G5Ez2BxRF31QcixJU1E0T1vccovHErUzemuwsHY0Sm20HlOfnnzJgLG5Od4X
- QXQ7FtnyyfobFkp5bXgsv5r0I13FLJ1od_YrQ8UrYC12U0dLl7glCkbdDSd07AcQ6OdrkAF8y5P3
- krJuElwcwFIT.Wzq4AztBQDvnVxvSeEesPQ0msbweYJwc1xVTNGxR2XyfVNH7hVCHsgnlQ7vpjf0
- Q5WQeK1DBd3KUHrP0CJUHRgywoaEbK5lJfmZru9umYOW7cUcIveRPjobaqaRDMydCF3WeO8YvMN.
- kGtJlTOz.bFM1hJ0hzbVYpq535mf1WjiG0jyluQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.sg3.yahoo.com with HTTP; Wed, 29 Jul 2020 22:06:28 +0000
-Date:   Wed, 29 Jul 2020 22:06:24 +0000 (UTC)
-From:   Celine Marchand <official017892@uymail.com>
-Reply-To: celine88492@gmail.com
-Message-ID: <1117425258.7485600.1596060384026@mail.yahoo.com>
-Subject: 
+        id S1727837AbgG2WHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 18:07:13 -0400
+Received: from mga07.intel.com ([134.134.136.100]:56214 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726628AbgG2WHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 18:07:13 -0400
+IronPort-SDR: 6wCsUYW4D+KQDPN/nc8EoC8uZuUsgOePZg8PBAlzYtJKCyWu3R0Vlgnnm+hhc3k6+pGQibo8fQ
+ 18J0/ZJ5/73A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="215992564"
+X-IronPort-AV: E=Sophos;i="5.75,412,1589266800"; 
+   d="scan'208";a="215992564"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 15:07:11 -0700
+IronPort-SDR: l7uLFWhAyNIIaNuytBhKLQL2Fl0tUcKcY08CMTa8QXzAWxluOxBFLnCEd0e4027kn0ef/jFqX9
+ Qr7kS2sgjH/Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,412,1589266800"; 
+   d="scan'208";a="304362819"
+Received: from lkp-server02.sh.intel.com (HELO 1bde1f275adc) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 29 Jul 2020 15:07:09 -0700
+Received: from kbuild by 1bde1f275adc with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k0uE9-0000Em-5M; Wed, 29 Jul 2020 22:07:09 +0000
+Date:   Thu, 30 Jul 2020 06:07:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/fifo] BUILD REGRESSION
+ 4fd5750af02ab7bba7c58a073060cc1da8a69173
+Message-ID: <5f21f309.rWbpyDU6e2WAKOrB%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1117425258.7485600.1596060384026.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  sched/fifo
+branch HEAD: 4fd5750af02ab7bba7c58a073060cc1da8a69173  sched,tracing: Convert to sched_set_fifo()
 
+Error/Warning in current branch:
 
-Urgent attention please
-Dearest, how are you? I am sorry for intruding your mailbox, but I need to =
-talk to you. I got your email address in my dream and i wonder if it is cor=
-rect because i emailed you earlier without any response. You should know th=
-at my contact to you is by the special grace of God. I am in urgent need of=
- a reliable and reputable person and i believe you are a person of fine rep=
-ute, hence the revelation of your email to me in the dream.
-I am Mrs. Celine Marchand a citizen of France (French). But reside in Burki=
-na Faso for business purposes. I need your collaboration to execute some pr=
-ojects worth =E2=82=AC 2.800.000 Euro and it is very urgent as am presently=
- in very critical condition.
-Please reply through this email address ( celine88492@gmail.com ) with your=
- full contact information for more private and confidential communication.
+drivers/pinctrl/core.c:1356: error: Cannot parse struct or union!
 
-Thank you as i wait for your reply.
-Mrs. Celine Marchand
+Error/Warning ids grouped by kconfigs:
+
+recent_errors
+|-- alpha-allmodconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- alpha-allyesconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- alpha-randconfig-r002-20200729
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- arc-allyesconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- arc-randconfig-r005-20200729
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- arc-randconfig-r021-20200728
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- c6x-allyesconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- ia64-allmodconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- ia64-randconfig-r035-20200729
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- mips-allmodconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- mips-allyesconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- nds32-allyesconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- nios2-allyesconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- nios2-randconfig-r031-20200729
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- parisc-allyesconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- parisc-randconfig-c004-20200729
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- s390-allyesconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- sh-allmodconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- sparc-allyesconfig
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- sparc-randconfig-r025-20200728
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+|-- sparc64-randconfig-r001-20200729
+|   `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+`-- xtensa-allyesconfig
+    `-- drivers-pinctrl-core.c:error:Cannot-parse-struct-or-union
+
+elapsed time: 721m
+
+configs tested: 66
+configs skipped: 1
+
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20200729
+i386                 randconfig-a004-20200729
+i386                 randconfig-a005-20200729
+i386                 randconfig-a002-20200729
+i386                 randconfig-a006-20200729
+i386                 randconfig-a001-20200729
+i386                 randconfig-a016-20200729
+i386                 randconfig-a012-20200729
+i386                 randconfig-a013-20200729
+i386                 randconfig-a014-20200729
+i386                 randconfig-a011-20200729
+i386                 randconfig-a015-20200729
+x86_64               randconfig-a004-20200729
+x86_64               randconfig-a005-20200729
+x86_64               randconfig-a002-20200729
+x86_64               randconfig-a006-20200729
+x86_64               randconfig-a003-20200729
+x86_64               randconfig-a001-20200729
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
