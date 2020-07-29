@@ -2,64 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0B5231E4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E52231E50
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgG2MOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 08:14:06 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:64859 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726385AbgG2MOG (ORCPT
+        id S1726756AbgG2MPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 08:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgG2MPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 08:14:06 -0400
-X-UUID: b37d913ab00a40ac96e0fe0e8144ee48-20200729
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=yPbxH/LAift8thSoquf90ycyKk8MtgpBzntIYtyOZaM=;
-        b=SCG9bOTnIGMuWIaS+z5rkbYD60D+I2U0wolxRaTXO87gMUTAq7vKG6FJuyJsoDTgYqCXOar5vMdhvAE7tZmlvu5Sor1KBz9ZuPWOF2qyeaZViLEiebo0Ug787ZtgoYEWoejiG1RCtk1kGeayiLRrdhHVbn9Cqe+MUv6RDNci2B8=;
-X-UUID: b37d913ab00a40ac96e0fe0e8144ee48-20200729
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <lh.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1869565521; Wed, 29 Jul 2020 20:14:03 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 29 Jul 2020 20:14:00 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 29 Jul 2020 20:14:00 +0800
-From:   lh lin <lh.lin@mediatek.com>
-To:     Sebastian Reichel <sre@kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     YJ Chiang <yj.chiang@mediatek.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        LH Lin <lh.lin@mediatek.com>
-Subject: [PATCH] test_power: Fix battery_current initial value
-Date:   Wed, 29 Jul 2020 20:14:00 +0800
-Message-ID: <20200729121400.20960-1-lh.lin@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Wed, 29 Jul 2020 08:15:14 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF49AC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 05:15:14 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id y18so10739372ilp.10
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 05:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sFs8HR0J1hVN4rEPAJYUN8DJiN6sjaEnKfPmViSq2uk=;
+        b=MeHUKee9BDzkM/xLCyLYVR/+wuj1bJ7X7td3l8Fhl1cuidmJv3z+ZQCcKd2pK4/yO+
+         Fzp4/ZSJfh6qMEDlBjrzCa4UWC4vNECNyJ04ahIia3lP8g6OUZ2rbgwgieZrD6kRha4l
+         jF7af35/XauxtwMoYoLmhPZFJjDAdzMPDlCfheHk0YAMO8/VgL1oXbg3JwVR/Dr+ZwBU
+         SBINj4cYKPxvQbrIPp56sjOBwzPqd0ZvQ4E+cAUS9De5OV7im5A29qm7zc9CHAtEBdc/
+         TNRsd5SH3K1maue1ZOlTlKs88xUKjp448ZKIqjrrqdCNTgk7IqZc5l6qutFvteh9yFPo
+         A6BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sFs8HR0J1hVN4rEPAJYUN8DJiN6sjaEnKfPmViSq2uk=;
+        b=Oco8JP0v8cSslOTP2tyIgo5XRtIq2mtkOFoXGn8hLOk2zE3OwePSnE4VZBlDVuBh+H
+         DYHbnXpfobNziZd3N+SkV3K0uxtu1pRFPNgOC4OMHctwh9dee82UybhgIIxOOKA4Tc2Q
+         g6PksK9y82ciGbH0vF28HUrCYJbgW4ijd5TtEfIQM3D56feNLkuO02Xln3IUD+e55cJX
+         ORfNtpRvIclg8GWm3AUjrkR5PuWKLZyfNgCySxifMAX1KgTXnhQVOPUikiz1ZCuhkRuh
+         eaz3HsgWfNuzYCLnHZwpVFLIE/99MU/ZIz13yKLnn5EQs/1QNRarFFKMfm6Qi3hlSiSn
+         zNow==
+X-Gm-Message-State: AOAM532f2vC9fWilxMiAAAJjzl0JBhAWNBVQk2ocABa56EZpiB10Mxxa
+        9D23fVXbHNHMCivsLEwduT/2gw==
+X-Google-Smtp-Source: ABdhPJzdzheryXPZ+Sa1SygI0cxlfTOp2dsaG84lZthNBJb6U+958LM5hysWS8nOEftmxfEY4JdnXw==
+X-Received: by 2002:a92:1b12:: with SMTP id b18mr23978290ilb.42.1596024913984;
+        Wed, 29 Jul 2020 05:15:13 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id v87sm451611ilk.33.2020.07.29.05.15.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Jul 2020 05:15:13 -0700 (PDT)
+Subject: Re: [greybus-dev] [PATCH][next] greybus: Use fallthrough
+ pseudo-keyword
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Alex Elder <elder@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
+        Johan Hovold <johan@kernel.org>
+References: <20200727183258.GA28571@embeddedor>
+ <63871608-e076-26b0-85df-cff11699c3a3@ieee.org>
+ <20200729105157.6acksxuzjdno5omq@vireshk-mac-ubuntu>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <e45f807e-dc35-b335-fca0-424d56e05f09@linaro.org>
+Date:   Wed, 29 Jul 2020 07:15:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200729105157.6acksxuzjdno5omq@vireshk-mac-ubuntu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTEggTGluIDxsaC5saW5AbWVkaWF0ZWsuY29tPg0KDQpTaW5jZSBkZWZhdWx0IGJhdHRl
-cnlfc3RhdHVzIGlzIFBPV0VSX1NVUFBMWV9TVEFUVVNfRElTQ0hBUkdJTkcsDQp3ZSBzaG91bGQg
-Y2hhbmdlIGRlZmF1bHQgYmF0dGVyeV9jdXJyZW50IHRvIGEgbmVnYXRpdmUgdmFsdWUuDQoNClNp
-Z25lZC1vZmYtYnk6IExIIExpbiA8bGgubGluQG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMv
-cG93ZXIvc3VwcGx5L3Rlc3RfcG93ZXIuYyB8IDIgKy0NCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
-cnRpb24oKyksIDEgZGVsZXRpb24oLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcG93ZXIvc3Vw
-cGx5L3Rlc3RfcG93ZXIuYyBiL2RyaXZlcnMvcG93ZXIvc3VwcGx5L3Rlc3RfcG93ZXIuYw0KaW5k
-ZXggNjVjMjNlZjY0MDhkLi40ZjI5ZjBmMDk2ZjUgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3Bvd2Vy
-L3N1cHBseS90ZXN0X3Bvd2VyLmMNCisrKyBiL2RyaXZlcnMvcG93ZXIvc3VwcGx5L3Rlc3RfcG93
-ZXIuYw0KQEAgLTM0LDcgKzM0LDcgQEAgc3RhdGljIGludCBiYXR0ZXJ5X3RlY2hub2xvZ3kJCT0g
-UE9XRVJfU1VQUExZX1RFQ0hOT0xPR1lfTElPTjsNCiBzdGF0aWMgaW50IGJhdHRlcnlfY2FwYWNp
-dHkJCT0gNTA7DQogc3RhdGljIGludCBiYXR0ZXJ5X3ZvbHRhZ2UJCT0gMzMwMDsNCiBzdGF0aWMg
-aW50IGJhdHRlcnlfY2hhcmdlX2NvdW50ZXIJPSAtMTAwMDsNCi1zdGF0aWMgaW50IGJhdHRlcnlf
-Y3VycmVudAkJPSAxNjAwOw0KK3N0YXRpYyBpbnQgYmF0dGVyeV9jdXJyZW50CQk9IC0xNjAwOw0K
-IA0KIHN0YXRpYyBib29sIG1vZHVsZV9pbml0aWFsaXplZDsNCiANCi0tIA0KMi4xOC4wDQo=
+On 7/29/20 5:51 AM, Viresh Kumar wrote:
+> On 28-07-20, 17:37, Alex Elder wrote:
+>> On 7/27/20 1:32 PM, Gustavo A. R. Silva wrote:
+>>> Replace the existing /* fall through */ comments and its variants with
+>>> the new pseudo-keyword macro fallthrough[1].
+>>>
+>>> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+>>
+>> Thanks for the patch.  It looks good, but it raises
+>> another question I'd like discussion on.
+>>
+>> It seems that Johan likes default (or final) cases in
+>> switch statements without a "break" statement.  Viresh
+>> and Bryan appear to be fond of this too.
+>>
+>> It's pedantic, but I don't like that.  Am I wrong?
+>>   --> Johan/Viresh/Bryan would you please comment?
+> 
+> I am not fond of them as they aren't required for the working of the code. It is
+> a bit like using an empty return statement for a routine with void return type,
+> though it surely adds some consistency to the switch case.
+
+I understand this perspective, and it's exactly why I wanted
+to have a conversation about it (rather than just saying it
+should be fixed).  As similar example, I don't like unnecessary
+parentheses, but sometimes it's a good idea to have them.
+
+Thanks.
+
+					-Alex
+
+> But if people really feel it must be there, then its fine :)
+> 
 
