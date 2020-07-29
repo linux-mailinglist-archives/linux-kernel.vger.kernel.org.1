@@ -2,93 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E96323225A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 18:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7418423222E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 18:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgG2QLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 12:11:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726341AbgG2QLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 12:11:41 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.213])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41E2122B48;
-        Wed, 29 Jul 2020 16:11:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596039101;
-        bh=sgnxQDxNFJhXCnpuKyxV9bhtCuQWJwff+93nPoham8s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cM4dVIXwR8DqzyQLOawNX1BOBHmqXQoHA6UO6xnb+fl+HSkQZRKq+0wevYNyuMDZ+
-         Z3x3sGobVRCFxBs/1KHgpWBmeAGDp9fNHImoMNRcr8xD2XwZgK3VtM3fLR9Tuy2Wxj
-         m91TTXpMH7UsVNy/mMdeuvUGo7i6UCtRbFIp8OZk=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Vincent Sanders <vince@simtec.co.uk>,
-        Simtec Linux Team <linux@simtec.co.uk>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        patches@opensource.cirrus.com, linux-clk@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Cc:     Sergio Prado <sergio.prado@e-labworks.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Cedric Roux <sed@free.fr>, Lihua Yao <ylhuajnu@outlook.com>,
-        stable@vger.kernel.org
-Subject: [PATCH 7/7] ARM: s3c24xx: Fix missing system reset
-Date:   Wed, 29 Jul 2020 18:09:42 +0200
-Message-Id: <20200729160942.28867-8-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200729160942.28867-1-krzk@kernel.org>
-References: <20200729160942.28867-1-krzk@kernel.org>
+        id S1726774AbgG2QK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 12:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgG2QK2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 12:10:28 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90A0C061794;
+        Wed, 29 Jul 2020 09:10:27 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id t6so14494190pgq.1;
+        Wed, 29 Jul 2020 09:10:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3KszJd66+FR9j6KwsFqF55Ai/n2YjvAK1QdFNRfzzsA=;
+        b=slW7M1Gb00VsPVVBQAXgmEOHzjruf7qnHOBgBbHPltSz19hyM7YxDO+dZBz0jAjDny
+         PhFchOZBPjFVNqrntXDMshOadjo8arB9xFkXbx+IB+4exq8p/QG5XjZnnPt5/2IRKh34
+         Hhe4gKskNtSlICOYctBYdHqH2SuCLtYy1tsPbcyqa2h4Zj4UKRApvrtD7LRkWfLePGgE
+         IGSs/3DJzMv6QzqohzZiZur6HmFMCunuICFTjwTcultYjwtGBD6mTFiQ/5QRgYL2OxAP
+         WtE8YejzUx0vEInoKNa2SpV+R2HC4ABPK/+SRmNvoWGiqibCgdOdSvQnLbSuqvmNcC10
+         GCKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3KszJd66+FR9j6KwsFqF55Ai/n2YjvAK1QdFNRfzzsA=;
+        b=S3mlG2163DEgUOs1dixjz2KxUV4JdJoBXmc5VfS4s8elEn+K4fC10OiitXCLyN6SaR
+         6kn5l9Sb4fxSjYhrzexHvBUs4BiL9w9009x4dWRdvj+HGDnBVa5SO9GywtFesgOxMBT5
+         UxsZkSOW2HS7kdCAhPuWyUjY71/UHPyHrqXltwf3khIbe41x3Hdf/SuEQrXXyK4gszBp
+         OEHNDVtDflKULt949d7EirlDNV0gjm3B0Fwj86GryG0VOJoyI/cc0cHRqL5i+HysimXY
+         E3vpg8dCXVrSLtxAez6I67373wEhq3RMVS9ggvnxDtlpCtkOh58pPN1wuag1+ei2EfL9
+         RPuQ==
+X-Gm-Message-State: AOAM531owTT2NS8qWubxaGkRsWaRcbub3G9n06nMxGNFS7pxm3Wqyi+n
+        D7V1ReYpBseGqhCw5VXNEq71ReF1qkFMnqN6x1U=
+X-Google-Smtp-Source: ABdhPJxk4Ccq49N7j3ka7r2c7b2liLe9RQp6QwM+jJpcIj4duAtmnA3Vabbse/9sQCu8c3oSvMd5A4YSIn+dfmrIxCg=
+X-Received: by 2002:a63:711e:: with SMTP id m30mr8171759pgc.40.1596039027236;
+ Wed, 29 Jul 2020 09:10:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200728204417.23912-1-lkmlabelt@gmail.com> <BN6PR21MB08361CE726C8D3541E657054CC730@BN6PR21MB0836.namprd21.prod.outlook.com>
+In-Reply-To: <BN6PR21MB08361CE726C8D3541E657054CC730@BN6PR21MB0836.namprd21.prod.outlook.com>
+From:   Andres Beltran <lkmlabelt@gmail.com>
+Date:   Wed, 29 Jul 2020 12:10:17 -0400
+Message-ID: <CAGpZZ6un6VT2ZVje0tVXbZkvH_HH+pn2Du6WPa5qeJDOz7rUmg@mail.gmail.com>
+Subject: Re: [PATCH] hv_utils: Add validation for untrusted Hyper-V values
+To:     Stephen Hemminger <sthemmin@microsoft.com>
+Cc:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Saruhan Karademir <skarade@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f6361c6b3880 ("ARM: S3C24XX: remove separate restart code")
-removed usage of the watchdog reset platform code in favor of the
-Samsung SoC watchdog driver.  However the latter was not selected thus
-S3C24xx platforms lost reset abilities.
+On Tue, Jul 28, 2020 at 5:04 PM Stephen Hemminger
+<sthemmin@microsoft.com> wrote:
+>
+> You may want to use one of the macros that prints this once only.
+> This is a "should never happen" type error, so if something goes wrong it might happens so much that journal/syslog would get overloaded.
 
-Cc: <stable@vger.kernel.org>
-Fixes: f6361c6b3880 ("ARM: S3C24XX: remove separate restart code")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index fe95777af653..063018c387be 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -506,8 +506,10 @@ config ARCH_S3C24XX
- 	select HAVE_S3C2410_I2C if I2C
- 	select HAVE_S3C_RTC if RTC_CLASS
- 	select NEED_MACH_IO_H
-+	select S3C2410_WATCHDOG
- 	select SAMSUNG_ATAGS
- 	select USE_OF
-+	select WATCHDOG
- 	help
- 	  Samsung S3C2410, S3C2412, S3C2413, S3C2416, S3C2440, S3C2442, S3C2443
- 	  and S3C2450 SoCs based systems, such as the Simtec Electronics BAST
--- 
-2.17.1
-
+Certainly, printing error messages once would be ideal if we were only
+dealing with Linux kernel bugs. But under the assumption that Hyper-V
+can send bogus values at any time, I think it would be better to print
+error messages every time so that we are aware of malicious/erroneous
+data sent by the host.
