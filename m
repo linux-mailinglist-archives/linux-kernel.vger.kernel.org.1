@@ -2,143 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF952321DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD14D2321E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgG2PsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 11:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
+        id S1727037AbgG2Ps1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Jul 2020 11:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgG2PsG (ORCPT
+        with ESMTP id S1726987AbgG2PsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 11:48:06 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B9AC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:48:06 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id b6so22099634wrs.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=36JMClzoi7h93LvxaQw3joeoIat/KioNOebe1PCxRfY=;
-        b=n+OxTPRilig3haxEVJ5AhEQGmEPmRUF1YiywGsBdl5Z+XrM+gmIBqBlJw6szHy+r2A
-         wuuM3o0C5jxjVER9hXK/E9j+AWnICQXWRAVe3M0VfvHE45ZgFE8ixPDfuLGsZgmaQziM
-         Sqir7xV7BPs1bG13tLiBw1wwQOG8oGgoP7IejuwPWVa2zKp7+qgGxcYFzmDHye5Obg/K
-         Bgsq6xYOiRMDuPU5bBPYXtaUpByB0ilY0FtTffIUubB7vuRRwNe5jFtEwjt8691LkdEz
-         bfkADdUcJyZ24AizWb9313N2o3wNGuuLzOnY4T2WdPx3Dd23zfy4uxlH7EvBNYvL/lqB
-         znTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=36JMClzoi7h93LvxaQw3joeoIat/KioNOebe1PCxRfY=;
-        b=hfuNS3f8oG6Bs+rVLu+D9L7iJdbR1JHU3v+8oRtEGonsx2+jKi2RPmR8jD39l5SmcP
-         fvNR0SY5pjA+YA4ZV09/5oO7ZTuXwGkGlyPJ/i8dlT+I1r27Zgl9sl5w2m8jp9WPVMLl
-         2+GEPNV0Ks9c1iEbFE1wXp1ZrZvyTlK97kGB2RJFxXB+dmco7IvMcTTfYQ5YoKc8WzPl
-         L6lxZ/Kn04eV7AEVbc04gXF6sn+eX3XYpk3nJkChOAr+we8Dp69f2Ie2V/0JABYYkrqR
-         si55h82SBQogMWI12LPhuKSIGXAOEn4/0YD3414gYby7NL+RM6JJ5M9vbG7BenZjxidV
-         MgmQ==
-X-Gm-Message-State: AOAM5327zydfVSbFENVGrEYEdl9Ng9OlqJSPYQf4e8whtTlcd1XObRkc
-        dxOjvCBjrdJnFZpWBBYV0Fz9VOAakcpLrw==
-X-Google-Smtp-Source: ABdhPJyrcNry8P8JgzRYvpG5FsopA4iFS5SUa/WXhOO/PIw8l2gzCtCcunQ+sUCAiMde/GxaIvpDdg==
-X-Received: by 2002:a5d:5486:: with SMTP id h6mr28823589wrv.136.1596037684667;
-        Wed, 29 Jul 2020 08:48:04 -0700 (PDT)
-Received: from starbuck.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id t2sm6224808wmb.28.2020.07.29.08.48.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 08:48:04 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        Kevin Hilman <khilman@baylibre.com>, zhangn1985@outlook.com,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: core: restore dpcm flags semantics
-Date:   Wed, 29 Jul 2020 17:46:39 +0200
-Message-Id: <20200729154639.1983854-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
-References: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
+        Wed, 29 Jul 2020 11:48:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1FB3C0619D2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:48:24 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1k0oJB-0001wi-1O; Wed, 29 Jul 2020 17:47:57 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1k0oJ5-0005Bq-Cr; Wed, 29 Jul 2020 17:47:51 +0200
+Message-ID: <0cdecff564215de6711ca04e063fa696a160fad9.camel@pengutronix.de>
+Subject: Re: [PATCH V3 3/3] pci: imx: Select RESET_IMX7 by default
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Rob Herring <robh@kernel.org>, Anson Huang <Anson.Huang@nxp.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Yang-Leo Li <leoyang.li@nxp.com>, Vinod <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Thierry Reding <treding@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Jonathan Chocron <jonnyc@amazon.com>,
+        Dilip Kota <eswara.kota@linux.intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        NXP Linux Team <Linux-imx@nxp.com>
+Date:   Wed, 29 Jul 2020 17:47:51 +0200
+In-Reply-To: <CAL_JsqLXGduym51-Ej8Td4yOyP-UfGP-WCh2xeP_V90Yabm4XA@mail.gmail.com>
+References: <1595254921-26050-1-git-send-email-Anson.Huang@nxp.com>
+         <1595254921-26050-3-git-send-email-Anson.Huang@nxp.com>
+         <CAL_JsqLXGduym51-Ej8Td4yOyP-UfGP-WCh2xeP_V90Yabm4XA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
-changed dpcm_playback and dpcm_capture semantic by throwing an error if
-these flags are not aligned with DAIs capabilities on the link.
+On Wed, 2020-07-29 at 09:26 -0600, Rob Herring wrote:
+> On Mon, Jul 20, 2020 at 8:26 AM Anson Huang <Anson.Huang@nxp.com> wrote:
+> > i.MX7 reset driver now supports module build and it is no longer
+> > built in by default, so i.MX PCI driver needs to select it explicitly
+> > due to it is NOT supporting loadable module currently.
+> > 
+> > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> > ---
+> > No change.
+> > ---
+> >  drivers/pci/controller/dwc/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+> > index 044a376..bcf63ce 100644
+> > --- a/drivers/pci/controller/dwc/Kconfig
+> > +++ b/drivers/pci/controller/dwc/Kconfig
+> > @@ -90,6 +90,7 @@ config PCI_EXYNOS
+> > 
+> >  config PCI_IMX6
+> >         bool "Freescale i.MX6/7/8 PCIe controller"
+> > +       select RESET_IMX7
+> 
+> This will break as select will not cause all of RESET_IMX7's
+> dependencies to be met. It also doesn't scale. Are you going to do the
+> same thing for clocks, pinctrl, gpio, etc.?
+> 
+> You should make the PCI driver work as a module.
 
-The former semantic did not force the flags and DAI caps to be aligned.
-The flag previously allowed card drivers to disable a stream direction on
-a link (whether or not such feature is deemed useful).
+Oh, also PCI_IMX6 is used on (surprise) i.MX6, which doesn't need
+RESET_IMX7 at all.
 
-With change ('ASoC: core: use less strict tests for dailink capabilities')
-an error is thrown if the flags and and the DAI caps are not aligned. Those
-parameters were not meant to aligned initially. No technical reason was
-given about why cards should now be considered "broken" in such condition
-is not met, or why it should be considered to be an improvement to enforce
-that.
+How about hiding the RESET_IMX7 option and setting it default y if
+PCI_IMX6 is enabled, as an interim solution?
 
-Forcing the flags to be aligned with DAI caps just make the information
-the flag carry redundant with DAI caps, breaking a few cards along the way.
-
-This change drops the added error conditions and restore the initial flag
-semantics.
-
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
-
- Hi Mark,
-
- Because b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
- introduced more than one problem, the change
- "ASoC: core: use less strict tests for dailink capabilities" [0] is still
- necessary but the change of semantic remains a problem with it.
-
- This patch applies on top of it.
-
- sound/soc/soc-pcm.c | 14 --------------
- 1 file changed, 14 deletions(-)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 00ac1cbf6f88..2e205b738eae 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2749,13 +2749,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 					break;
- 				}
- 			}
--
--			if (!playback) {
--				dev_err(rtd->card->dev,
--					"No CPU DAIs support playback for stream %s\n",
--					rtd->dai_link->stream_name);
--				return -EINVAL;
--			}
- 		}
- 		if (rtd->dai_link->dpcm_capture) {
- 			stream = SNDRV_PCM_STREAM_CAPTURE;
-@@ -2766,13 +2759,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 					break;
- 				}
- 			}
--
--			if (!capture) {
--				dev_err(rtd->card->dev,
--					"No CPU DAIs support capture for stream %s\n",
--					rtd->dai_link->stream_name);
--				return -EINVAL;
--			}
- 		}
- 	} else {
- 		/* Adapt stream for codec2codec links */
--- 
-2.25.4
-
+regards
+Philipp
