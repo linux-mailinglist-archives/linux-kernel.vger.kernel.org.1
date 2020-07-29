@@ -2,167 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D082317A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 04:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC192317A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 04:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731114AbgG2C0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 22:26:40 -0400
-Received: from mail-db8eur05on2042.outbound.protection.outlook.com ([40.107.20.42]:52704
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728401AbgG2C0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 22:26:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bQdc5c7ZylctSMDsHCguuN7Bp5VQM5tBEV9LRo7NPGYwzcFPFq4a9t3GhjjB8mD1lC7dvTDf4QCuyVrYMemNg2uxgA64f+nuU6bs3LpGjiZKifBou+E3TaISM21OA9oFsrVQNfyrCka3GI9R07OWYNQGTQq3vQ0ypnNcf/vAiRJ4Wab/rpTa8Q520+uFYdanl8P908Ri/U9IHx3fsVVxbsvAwrGutH3auK0QGVB94kB63ePWWHNxqAc23cV9kdDnRk2dOd5Q5UrfXZtl6+3pgzImFm3I8o6q9qfyfxXQct0pCaN148X0R6792p5jzATyuuWt5M1JO/O0LRJ4IZLNJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YONlEwMA6CnCGfLpk0tRPQecJeVfXgQV3PfGkmU5HFk=;
- b=Xcl4EaUMYdhbA4X1/xi4Lyk7hqsAO/CVKsyqfW0n9AxSZN8cQxZOWb/k3RH7qS4rHgkdq8ccOTwd2dXwKAN9IDrf2f0HlYwYcHvdGjVWfOs2x0diG0NorDV3cxC4XN41BC7tWbIEQeOZYvD6D98QspK2QAC9Fk2+JHRLOlRhrvdK8Ryn/YH3hNvGarioZVvKMlKG9I3GlSFLvphv4Iw1it8lNGe/NZYT87Z929TxXi4SOmlysB3ZVAn6KgbLG4gDkmNB/trTkC3SLygW6rpbjxDPo49KKdO/XDADOKJvG4G+Dk3MIYfzDA54wpjBdQBuq8DfrovaNMtGtaE3+MGwqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YONlEwMA6CnCGfLpk0tRPQecJeVfXgQV3PfGkmU5HFk=;
- b=F8T9JCySUxMOmdMscLQfpgHH399FDm0blVYDOoeQkU7MfGWFYiqW+4cHBeeC1QCQ/rgk97SkYF3alyPefqNchCqbdbs0KvXOn0ZzPJludhvnN0ntjwDCC809M6mjOh8gHGvJJq/aAzyh2C1gF7KDEa179ar+tnqfY9xgGxB+RhU=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB6PR0401MB2536.eurprd04.prod.outlook.com (2603:10a6:4:36::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.26; Wed, 29 Jul
- 2020 02:26:33 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::49f8:20ce:cf20:80b3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::49f8:20ce:cf20:80b3%6]) with mapi id 15.20.3216.034; Wed, 29 Jul 2020
- 02:26:33 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH 1/2] watchdog: imx7ulp: Strictly follow the sequence for
- wdog operations
-Thread-Topic: [PATCH 1/2] watchdog: imx7ulp: Strictly follow the sequence for
- wdog operations
-Thread-Index: AQHWZKrocghDMpUaBEu/lC3XXGngDakdDvaAgACUUzCAADIzYA==
-Date:   Wed, 29 Jul 2020 02:26:33 +0000
-Message-ID: <DB3PR0402MB39169A9F5E5D2D90A64AAF3DF5700@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1595918567-2017-1-git-send-email-Anson.Huang@nxp.com>
- <566adde7-c397-72f1-145d-fbca9de77cd7@roeck-us.net>
- <DB3PR0402MB3916744794CDCCE7BC332147F5730@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB3916744794CDCCE7BC332147F5730@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: roeck-us.net; dkim=none (message not signed)
- header.d=none;roeck-us.net; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 33e89742-b3f0-4c1d-39f1-08d83366cf88
-x-ms-traffictypediagnostic: DB6PR0401MB2536:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB6PR0401MB25367E4D02F658CCDBE08A0BF5700@DB6PR0401MB2536.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2jsD4j9XrEGFo9kFA0xIAGCmGqs99+qoSXkQlAgdYSB4eiIy7bj3Ed+HUEraw0wgQI1Xfab1lOt1bgL5+si573EyE4t21mXmdSuTtA2SQqJWlg4stP3qjnBhzMUqTxwiuCbq+eLmzdYw8sdy6yqlSNC6J+I7pMZO9roi53BLKZ3/2xhqkOk4wWetbkVTR/WiRj4DJc1seIMY9t5SIDx708iQFojUABJHVbs6ze4BlJycPibdAgcaxjNp1ldPMcmqDSRVbQDtwPQrm+bo7JJVzlIFgSPRklEGRo5st/w6WAoNwbzLNK1IY8qPlozMb2BF6Uooxt8gs4Y2wgXA36tihQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(136003)(396003)(366004)(39860400002)(33656002)(86362001)(110136005)(5660300002)(71200400001)(4326008)(2906002)(316002)(478600001)(52536014)(83380400001)(186003)(66946007)(64756008)(76116006)(7696005)(9686003)(8936002)(66446008)(26005)(55016002)(44832011)(66476007)(66556008)(8676002)(6506007)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Bl/JkE3Je4qclvkYpM6xyvqCghHLFmD7bUPO9pO9N4ujWiYprwVQWzhWyrlyv2ZfNUFMkTkavLKnTJDdBoij/zS+lQiJyiuG6Qo+s3VDgGST9SludkdKvY9oAspjTIc0jSGLHZpuFsz3iujQxvUD8uxoi+3H0iiceiotNYGJzuyARJraX9/+1Plkea/jmTcfFf9+t0ZLxnu5xJtjDEYELNQfBMY0NR5O/sdhFWkCqaUvLbMOz1ZTyifA7/imM8yN71MO3QpTyFWbfwwkzmk7l9HBb+WA+SgrSdhPK5j/ZSV38p+VOeFArR6EJ1vddORux5fSZkEyhiQStsawrMRGkUuEGx1lU2DcTlvjmBgpgehB4Vj5B7hn3x0vdozqIY7X5cDgRrie32TS6NTx1UkbWcPDPN541w4mgY/WJJvemR27W5JGO/k5TWO1TIsuwNUMBO+FVEtXDmMbf6GeF8bAjuqQUCtNCvD7WQpL87nxtY4=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1731129AbgG2C2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 22:28:05 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:48626 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731062AbgG2C2D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 22:28:03 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U46lJml_1595989668;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U46lJml_1595989668)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 29 Jul 2020 10:27:49 +0800
+Subject: Re: [PATCH v17 17/21] mm/lru: replace pgdat lru_lock with lruvec lock
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1595681998-19193-18-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0UdaW4Rf43yULhQBuP07vQgmoPbaWHGKv1Z7fEPP6jH83w@mail.gmail.com>
+ <ccd01046-451c-463d-7c5d-9c32794f4b1e@linux.alibaba.com>
+ <CAKgT0UdrQpa9OSusi=TZoj4RgC63-BNiF1GmeTG=rS47r7rGvQ@mail.gmail.com>
+ <09aeced7-cc36-0c9a-d40b-451db9dc54cc@linux.alibaba.com>
+ <CAKgT0UfCv9u3UaJnzh7CYu_nCggV8yesZNu4oxMGn4+mJYiFUw@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <0590862b-0705-fb9b-be1b-ed0745ca1b76@linux.alibaba.com>
+Date:   Wed, 29 Jul 2020 10:27:34 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3916.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33e89742-b3f0-4c1d-39f1-08d83366cf88
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2020 02:26:33.3148
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5FLpL+ov3AWd0EvidSW5IO67a253hpTEaMgHxSkQLDzXFbskXM/eK8TWKyGrwOsuJmh3mmN0iXMKJbH8SFpDeQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2536
+In-Reply-To: <CAKgT0UfCv9u3UaJnzh7CYu_nCggV8yesZNu4oxMGn4+mJYiFUw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEd1ZW50ZXINCg0KDQo+IFN1YmplY3Q6IFJFOiBbUEFUQ0ggMS8yXSB3YXRjaGRvZzogaW14
-N3VscDogU3RyaWN0bHkgZm9sbG93IHRoZSBzZXF1ZW5jZSBmb3INCj4gd2RvZyBvcGVyYXRpb25z
-DQo+IA0KPiBIaSwgR3VlbnRlcg0KPiANCj4gDQo+ID4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzJd
-IHdhdGNoZG9nOiBpbXg3dWxwOiBTdHJpY3RseSBmb2xsb3cgdGhlDQo+ID4gc2VxdWVuY2UgZm9y
-IHdkb2cgb3BlcmF0aW9ucw0KPiA+DQo+ID4gT24gNy8yNy8yMCAxMTo0MiBQTSwgQW5zb24gSHVh
-bmcgd3JvdGU6DQo+ID4gPiBBY2NvcmRpbmcgdG8gcmVmZXJlbmNlIG1hbnVhbCwgdGhlIGkuTVg3
-VUxQIFdET0cncyBvcGVyYXRpb25zIHNob3VsZA0KPiA+ID4gZm9sbG93IGJlbG93IHNlcXVlbmNl
-Og0KPiA+ID4NCj4gPiA+IDEuIGRpc2FibGUgZ2xvYmFsIGludGVycnVwdHM7DQo+ID4gPiAyLiB1
-bmxvY2sgdGhlIHdkb2cgYW5kIHdhaXQgdW5sb2NrIGJpdCBzZXQ7IDMuIHJlY29uZmlndXJlIHRo
-ZSB3ZG9nDQo+ID4gPiBhbmQgd2FpdCBmb3IgcmVjb25maWd1cmF0aW9uIGJpdCBzZXQ7IDQuIGVu
-YWJlbCBnbG9iYWwgaW50ZXJydXB0cy4NCj4gPiA+DQo+ID4gPiBTdHJpY3RseSBmb2xsb3cgdGhl
-IHJlY29tbWVuZGVkIHNlcXVlbmNlIGNhbiBtYWtlIGl0IG1vcmUgcm9idXN0Lg0KPiA+ID4NCj4g
-PiA+IFNpZ25lZC1vZmYtYnk6IEFuc29uIEh1YW5nIDxBbnNvbi5IdWFuZ0BueHAuY29tPg0KPiA+
-ID4gLS0tDQo+ID4gPiAgZHJpdmVycy93YXRjaGRvZy9pbXg3dWxwX3dkdC5jIHwgMjkgKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysNCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMjkgaW5zZXJ0
-aW9ucygrKQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3dhdGNoZG9nL2lteDd1
-bHBfd2R0LmMNCj4gPiA+IGIvZHJpdmVycy93YXRjaGRvZy9pbXg3dWxwX3dkdC5jIGluZGV4IDc5
-OTNjOGMuLmI0MTRlY2YgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL3dhdGNoZG9nL2lteDd1
-bHBfd2R0LmMNCj4gPiA+ICsrKyBiL2RyaXZlcnMvd2F0Y2hkb2cvaW14N3VscF93ZHQuYw0KPiA+
-ID4gQEAgLTQsNiArNCw3IEBADQo+ID4gPiAgICovDQo+ID4gPg0KPiA+ID4gICNpbmNsdWRlIDxs
-aW51eC9jbGsuaD4NCj4gPiA+ICsjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4NCj4gPiA+ICAjaW5j
-bHVkZSA8bGludXgvaW8uaD4NCj4gPiA+ICAjaW5jbHVkZSA8bGludXgva2VybmVsLmg+DQo+ID4g
-PiAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KPiA+ID4gQEAgLTQ4LDE3ICs0OSwzMiBAQCBz
-dHJ1Y3QgaW14N3VscF93ZHRfZGV2aWNlIHsNCj4gPiA+ICAJc3RydWN0IGNsayAqY2xrOw0KPiA+
-ID4gIH07DQo+ID4gPg0KPiA+ID4gK3N0YXRpYyBpbmxpbmUgdm9pZCBpbXg3dWxwX3dkdF93YWl0
-KHZvaWQgX19pb21lbSAqYmFzZSwgdTMyIG1hc2spIHsNCj4gPiA+ICsJaW50IHJldHJpZXMgPSAx
-MDA7DQo+ID4gPiArDQo+ID4gPiArCWRvIHsNCj4gPiA+ICsJCWlmIChyZWFkbF9yZWxheGVkKGJh
-c2UgKyBXRE9HX0NTKSAmIG1hc2spDQo+ID4gPiArCQkJcmV0dXJuOw0KPiA+ID4gKwkJdXNsZWVw
-X3JhbmdlKDIwMCwgMTAwMCk7DQo+ID4gPiArCX0gd2hpbGUgKHJldHJpZXMtLSk7DQo+ID4NCj4g
-PiBTbGVlcCB3aXRoIGludGVycnVwdHMgZGlzYWJsZWQgPyBJIGNhbiBub3QgaW1hZ2luZSB0aGF0
-IHRoaXMgd29ya3MNCj4gPiB3ZWxsIGluIGEgc2luZ2xlIENQVSBzeXN0ZW0uIE9uIHRvcCBvZiB0
-aGF0LCBpdCBzZWVtcyBxdWl0ZSBwb2ludGxlc3MuDQo+ID4gRWl0aGVyIHlvdSBkb24ndCB3YW50
-IHRvIGJlIGludGVycnVwdGVkIG9yIHlvdSBkbywgYnV0IHNsZWVwaW5nIHdpdGgNCj4gPiBpbnRl
-cnJ1cHRzIGRpc2FibGVkIHJlYWxseSBkb2Vzbid0IG1ha2Ugc2Vuc2UuIEFuZCBkb2VzIGl0IHJl
-YWxseSB0YWtlDQo+ID4gMjAwLTEwMDAgdVMgZm9yIHRoZSB3YXRjaGRvZyBzdWJzeXN0ZW0gdG8g
-cmVhY3QsIGFuZCBzb21ldGltZXMgdXAgdG8NCj4gPiAyMDAgKiAxMDAgPSAyMCBtUyA/IFRoYXQg
-c2VlbXMgaGlnaGx5IHVubGlrZWx5LiBJZiBzdWNoIGEgZGVsYXkgbG9vcA0KPiA+IGlzIGluZGVl
-ZCBuZWVkZWQsIGl0IHNob3VsZCBiZSBsaW1pdGVkIGJ5IGEgdGltZSwgbm90IGJ5IG51bWJlciBv
-Zg0KPiByZXBldGl0aW9ucy4NCj4gPg0KPiA+IFVubGVzcyB0aGVyZSBpcyBldmlkZW5jZSB0aGF0
-IHRoZXJlIGlzIGEgcHJvYmxlbSB0aGF0IG5lZWRzIHRvIGJlDQo+ID4gc29sdmVkLCBJIGFtIG5v
-dCBnb2luZyB0byBhY2NlcHQgdGhpcyBjb2RlLg0KPiA+DQo+IA0KPiBPb3BzLCB0aGlzIGlzIGEg
-bWlzdGFrZSBvZiB1c2luZyBzbGVlcCB3aXRoIGludGVycnVwdCBkaXNhYmxlZCwgc29ycnkgZm9y
-IHRoYXQuDQo+IFRoZSBiZXN0IG9wdGlvbiBpcyB0byB1c2UgcmVhZGxfcmVsYXhlZF9wb2xsX3Rp
-bWVvdXRfYXRvbWljKCkgdG8gcG9sbCB0aGUNCj4gc3RhdHVzIGJpdCwgaG93ZXZlciwgdGhlIGku
-TVg3VUxQIHdhdGNoZG9nIGlzIHZlcnkgc3BlY2lhbCB0aGF0IHRoZSB1bmxvY2sNCj4gd2luZG93
-IE9OTFkgb3BlbiBmb3Igc2V2ZXJhbCBjeWNsZXMsIHRoYXQgbWVhbnMgdGhlIHVubG9jayBzdGF0
-dXMgYml0IHdpbGwgYmUNCj4gc2V0IGFuZCB0aGVuIGNsZWFyIGF1dG9tYXRpY2FsbHkgYWZ0ZXIg
-dGhvc2UgY3ljbGVzLCB1c2luZw0KPiByZWFkbF9yZWxheGVkX3BvbGxfdGltZW91dF9hdG9taWMo
-KSB3aWxsIGZhaWwgc2luY2UgdGhlcmUgYXJlIG1hbnkgdGltZW91dA0KPiBoYW5kbGUgY29kZSBp
-biBpdCBhbmQgdGhlIHVubG9jayB3aW5kb3cgaXMgb3BlbiBhbmQgY2xvc2UgZHVyaW5nIHRoaXMg
-dGltZW91dA0KPiBoYW5kbGUgaW50ZXJ2YWwsIHNvIGl0IGZhaWwgdG8gY2F0Y2ggdGhlIHVubG9j
-ayBiaXQuDQo+IA0KPiBUaGUgaWRlYWwgb3B0aW9uIGlzIHVzaW5nIGF0b21pYyBwb2xsaW5nIHdp
-dGhvdXQgYW55IG90aGVyIHRpbWVvdXQgY2hlY2sgdG8NCj4gbWFrZSBzdXJlIHRoZSB1bmxvY2sg
-d2luZG93IGlzIE5PVCBtaXNzZWQsIGJ1dCBJIHRoaW5rIExpbnV4IGtlcm5lbCB3aWxsIE5PVA0K
-PiBhY2NlcHQgYSB3aGlsZSBsb29wIHdpdGhvdXQgdGltZW91dCwgYW5kIHRoYXQgaXMgd2h5IEkg
-dHJpZWQgdG8gdXNlDQo+IHVzbGVlcF9yYW5nZXMoKSwgYnV0IG9idmlvdXNseSBJIG1hZGUgYSBt
-aXN0YWtlIG9mIHVzaW5nIGl0IHdpdGggSVJRIGRpc2FibGVkLg0KPiANCj4gRG8geW91IGhhdmUg
-YW55IHN1Z2dlc3Rpb24gb2YgaG93IHRvIGhhbmRsZSBzdWNoIGNhc2U/IElmIHRoZSBoYXJkd2Fy
-ZSBPTkxZDQo+IHVubG9jayB0aGUgcmVnaXN0ZXIgZm9yIGEgc21hbGwgd2luZG93LCBob3cgdG8g
-cG9sbCB0aGUgc3RhdHVzIGJpdCB3aXRoIHRpbWVvdXQNCj4gaGFuZGxlIGFuZCBhbHNvIG1ha2Ug
-c3VyZSB0aGUgdGltZW91dCBoYW5kbGUgY29kZSBhcyBxdWljayBhcyBwb3NzaWJsZSB0bw0KPiBO
-T1QgbWlzcyB0aGUgd2luZG93Pw0KPiANCg0KSSBkaWQgbW9yZSBleHBlcmltZW50IGFuZCBmb3Vu
-ZCB0aGF0IGJlbG93IHJlYWRsX3BvbGxfdGltZW91dF9hdG9taWMoKSBpcyBhY3R1YWxseQ0Kd29y
-a2luZywgc28gSSBzZW50IGEgVjIgd2l0aCBpdCwgcGxlYXNlIGhlbHAgcmV2aWV3LCB0aGFuayB5
-b3UuDQoNCg0KKyAgICAgICB1MzIgdmFsID0gcmVhZGwoYmFzZSArIFdET0dfQ1MpOw0KKw0KKyAg
-ICAgICBpZiAoISh2YWwgJiBtYXNrKSkNCisgICAgICAgICAgICAgICBXQVJOX09OKHJlYWRsX3Bv
-bGxfdGltZW91dF9hdG9taWMoYmFzZSArIFdET0dfQ1MsIHZhbCwNCisgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFsICYgbWFzaywgMCwNCisgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgV0RPR19XQUlUX1RJTUVP
-VVQpKTsNCg0KVGhhbmtzLA0KQW5zb24NCiANCg0K
+
+
+在 2020/7/29 上午9:27, Alexander Duyck 写道:
+> On Tue, Jul 28, 2020 at 6:00 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>>
+>>
+>>
+>> 在 2020/7/28 下午10:54, Alexander Duyck 写道:
+>>> On Tue, Jul 28, 2020 at 4:20 AM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> 在 2020/7/28 上午7:34, Alexander Duyck 写道:
+>>>>>> @@ -1876,6 +1876,12 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+>>>>>>                  *                                        list_add(&page->lru,)
+>>>>>>                  *     list_add(&page->lru,) //corrupt
+>>>>>>                  */
+>>>>>> +               new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+>>>>>> +               if (new_lruvec != lruvec) {
+>>>>>> +                       if (lruvec)
+>>>>>> +                               spin_unlock_irq(&lruvec->lru_lock);
+>>>>>> +                       lruvec = lock_page_lruvec_irq(page);
+>>>>>> +               }
+>>>>>>                 SetPageLRU(page);
+>>>>>>
+>>>>>>                 if (unlikely(put_page_testzero(page))) {
+>>>>> I was going through the code of the entire patch set and I noticed
+>>>>> these changes in move_pages_to_lru. What is the reason for adding the
+>>>>> new_lruvec logic? My understanding is that we are moving the pages to
+>>>>> the lruvec provided are we not?If so why do we need to add code to get
+>>>>> a new lruvec? The code itself seems to stand out from the rest of the
+>>>>> patch as it is introducing new code instead of replacing existing
+>>>>> locking code, and it doesn't match up with the description of what
+>>>>> this function is supposed to do since it changes the lruvec.
+>>>>
+>>>> this new_lruvec is the replacement of removed line, as following code:
+>>>>>> -               lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>>>> This recheck is for the page move the root memcg, otherwise it cause the bug:
+>>>
+>>> Okay, now I see where the issue is. You moved this code so now it has
+>>> a different effect than it did before. You are relocking things before
+>>> you needed to. Don't forget that when you came into this function you
+>>> already had the lock. In addition the patch is broken as it currently
+>>> stands as you aren't using similar logic in the code just above this
+>>> addition if you encounter an evictable page. As a result this is
+>>> really difficult to review as there are subtle bugs here.
+>>
+>> Why you think its a bug? the relock only happens if locked lruvec is different.
+>> and unlock the old one.
+> 
+> The section I am talking about with the bug is this section here:
+>        while (!list_empty(list)) {
+> +               struct lruvec *new_lruvec = NULL;
+> +
+>                 page = lru_to_page(list);
+>                 VM_BUG_ON_PAGE(PageLRU(page), page);
+>                 list_del(&page->lru);
+>                 if (unlikely(!page_evictable(page))) {
+> -                       spin_unlock_irq(&pgdat->lru_lock);
+> +                       spin_unlock_irq(&lruvec->lru_lock);
+>                         putback_lru_page(page);
+> -                       spin_lock_irq(&pgdat->lru_lock);
+> +                       spin_lock_irq(&lruvec->lru_lock);
+
+It would be still fine. The lruvec->lru_lock will be checked again before
+we take and use it. 
+And this lock will optimized in patch 19th which did by Hugh Dickins.
+
+>                         continue;
+>                 }
+> 
+> Basically it probably is not advisable to be retaking the
+> lruvec->lru_lock directly as the lruvec may have changed so it
+> wouldn't be correct for the next page. It would make more sense to be
+> using your API and calling unlock_page_lruvec_irq and
+> lock_page_lruvec_irq instead of using the lock directly.
+> 
+>>>
+>>> I suppose the correct fix is to get rid of this line, but  it should
+>>> be placed everywhere the original function was calling
+>>> spin_lock_irq().
+>>>
+>>> In addition I would consider changing the arguments/documentation for
+>>> move_pages_to_lru. You aren't moving the pages to lruvec, so there is
+>>> probably no need to pass that as an argument. Instead I would pass
+>>> pgdat since that isn't going to be moving and is the only thing you
+>>> actually derive based on the original lruvec.
+>>
+>> yes, The comments should be changed with the line was introduced from long ago. :)
+>> Anyway, I am wondering if it worth a v18 version resend?
+> 
+> So I have been looking over the function itself and I wonder if it
+> isn't worth looking at rewriting this to optimize the locking behavior
+> to minimize the number of times we have to take the LRU lock. I have
+> some code I am working on that I plan to submit as an RFC in the next
+> day or so after I can get it smoke tested. The basic idea would be to
+> defer returning the evictiable pages or freeing the compound pages
+> until after we have processed the pages that can be moved while still
+> holding the lock. I would think it should reduce the lock contention
+> significantly while improving the throughput.
+> 
+
+I had tried once, but the freeing page cross onto release_pages which hard to deal with.
+I am very glad to wait your patch, and hope it could be resovled. :)
+
+Thanks
+Alex
