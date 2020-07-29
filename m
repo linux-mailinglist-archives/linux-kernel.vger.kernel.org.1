@@ -2,141 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95BF4231DF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C1C231DC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgG2MC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 08:02:28 -0400
-Received: from 18.mo3.mail-out.ovh.net ([87.98.172.162]:52848 "EHLO
-        18.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgG2MC2 (ORCPT
+        id S1726751AbgG2MBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 08:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgG2MBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 08:02:28 -0400
-X-Greylist: delayed 4206 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 08:02:27 EDT
-Received: from player731.ha.ovh.net (unknown [10.108.42.83])
-        by mo3.mail-out.ovh.net (Postfix) with ESMTP id 909DD25AACE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:06:42 +0200 (CEST)
-Received: from kaod.org (lns-bzn-46-82-253-208-248.adsl.proxad.net [82.253.208.248])
-        (Authenticated sender: groug@kaod.org)
-        by player731.ha.ovh.net (Postfix) with ESMTPSA id A82B81493DA7D;
-        Wed, 29 Jul 2020 06:06:31 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-103G0054b49c4c4-d057-4c56-8bb1-1a67c11c2913,A40F6FE0CFFE28C23AB4AFBB3D5D665E11D39731) smtp.auth=groug@kaod.org
-Date:   Wed, 29 Jul 2020 08:06:30 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     v9fs-developer@lists.sourceforge.net,
-        Latchesar Ionkov <lucho@ionkov.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: Re: [V9fs-developer] [PATCH kernel] 9p/trans_fd: Check file mode at
- opening
-Message-ID: <20200729080630.2741f2e5@bahia.lan>
-In-Reply-To: <ceaa4de6-e4df-e6b0-8085-7020240c57b4@ozlabs.ru>
-References: <20200728124129.130856-1-aik@ozlabs.ru>
-        <20200728194235.52660c08@bahia.lan>
-        <ceaa4de6-e4df-e6b0-8085-7020240c57b4@ozlabs.ru>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 29 Jul 2020 08:01:03 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA0CC061794;
+        Wed, 29 Jul 2020 05:01:03 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id c80so2492931wme.0;
+        Wed, 29 Jul 2020 05:01:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jx6EqieUkHWaZH6NLlTYAUYl2Z+H5sinZlTBkzIivcs=;
+        b=b8KXiqAYMzlvrZyjvf2etXAe9K3k4YUMyKbHaRjdFLU5MU5AG4svh0q3saMUMIzujo
+         mR5h2AXKWKN5jZEnP9/WLSSnSv1JABXPHU1eZ7SnmnwqW+hf/320FJ50nEYGRYgUzqRd
+         wTG9cjypzAxx4OyQ4zp/jG7Jbk+lczx2V2FcUKomzW82PMDHkIB3AQyMxNXBlGky9nM3
+         OP2i9gBziZs/2cW8KBmtzMi9ADNgqOF/TagmkztW3PYUP6aEldQ1HcHgk4iJ6wUwpVwC
+         lEz0x7JG7erSL38d9AeBXJNHVohytBqei01VJ1tzS6PgsXDrOiHal2ts6IteBbWBbPDP
+         rnlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jx6EqieUkHWaZH6NLlTYAUYl2Z+H5sinZlTBkzIivcs=;
+        b=FesBfpYrzLGqtBJuetLZcC2meIZ7WkKhAubyruXPMv0LaPXnIKa5a+1ZHluGXKWEVr
+         +lUitNSvZ2E/vF1y04Z0oDYBsLkRso0NxusHJ4lekb8hNlCaToz3D7csB4jNKtbBcKCe
+         omYPRXFv6x5dDjvjetUtWsltaZRU4bxup9qpjtsF97WLEki+7ktbd8yKh+k93d30tDXu
+         dU5Toq6T0OifI7XTjqwrXeFdINEYOpe2FPR6Syo4d8osoclkaMxHnbXSTL8XXYUygmKF
+         fbQ/d3M3fp1MuxknfzIHPeteC5wj7El/dPTD07vpHcZIyY8OfZcy+6+LCkIORwZTX14Q
+         iw3A==
+X-Gm-Message-State: AOAM532yJKq6BOkg+L9Zk4WYVtGhDATBuab6FxFNfzwhcYTNZS1D4Eyv
+        7dkpLYxiZElnSRCS3uewu5s=
+X-Google-Smtp-Source: ABdhPJxN+rnZl0ZoT8siI0yvIAflJTa/7+a8wG3re4zKe/jyTEKmwakBjX7TkB4qNUvdRkak6LQbzg==
+X-Received: by 2002:a7b:cd09:: with SMTP id f9mr7951248wmj.184.1596024062002;
+        Wed, 29 Jul 2020 05:01:02 -0700 (PDT)
+Received: from localhost.localdomain (abad207.neoplus.adsl.tpnet.pl. [83.6.167.207])
+        by smtp.googlemail.com with ESMTPSA id l67sm5426000wml.13.2020.07.29.05.01.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 05:01:01 -0700 (PDT)
+From:   Konrad Dybcio <konradybcio@gmail.com>
+To:     konradybcio@gmail.com
+Cc:     lauren.kelly@msn.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH v2 00/10] msm8992/4 updates
+Date:   Wed, 29 Jul 2020 14:00:46 +0200
+Message-Id: <20200729120057.35079-1-konradybcio@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 1293096043977742837
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrieefgddutdefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtgfesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepheekhfdtheegheehjeeludefkefhvdelfedvieehhfekhfdufffhueeuvdfftdfhnecukfhppedtrddtrddtrddtpdekvddrvdehfedrvddtkedrvdegkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejfedurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Jul 2020 09:50:21 +1000
-Alexey Kardashevskiy <aik@ozlabs.ru> wrote:
+This series brings support for:
 
-> 
-> 
-> On 29/07/2020 03:42, Greg Kurz wrote:
-> > Hi Alexey,
-> > 
-> > Working on 9p now ?!? ;-)
-> 
-> No, I am running syzkaller and seeing things :)
-> 
+* sdhci2 on 8992/4
+* BLSP_I2C1 (a seemingly WP-exclusive i2c bus) for 8992
+* Synaptics RMI4 touchscreen for Sony Kitakami and MSFT L950
+* DWC3 USB for msm8992/4 (doesn't work on Lumias, they use custom
+circuitry)
+* Missing clocks for 8994 GCC needed for USB
 
-:)
+And also cleans up the clock driver
 
-> 
-> > Cc'ing Dominique Martinet who appears to be the person who takes care of 9p
-> > these days.
-> > 
-> > On Tue, 28 Jul 2020 22:41:29 +1000
-> > Alexey Kardashevskiy <aik@ozlabs.ru> wrote:
-> > 
-> >> The "fd" transport layer uses 2 file descriptors passed externally
-> >> and calls kernel_write()/kernel_read() on these. If files were opened
-> >> without FMODE_WRITE/FMODE_READ, WARN_ON_ONCE() will fire.
-> >>
-> >> This adds file mode checking in p9_fd_open; this returns -EBADF to
-> >> preserve the original behavior.
-> >>
-> > 
-> > So this would cause open() to fail with EBADF, which might look a bit
-> > weird to userspace since it didn't pass an fd... Is this to have a
-> > different error than -EIO that is returned when either rfd or wfd
-> > doesn't point to an open file descriptor ?
-> 
-> This is only to preserve the existing behavior.
-> 
-> > If yes, why do we care ?
-> 
-> 
-> Without the patch, p9_fd_open() produces a kernel warning which is not
-> great by itself and becomes crash with panic_on_warn.
-> 
+changes since v1:
+- switch clocks to use parent_data instead of parent_names
+- add missing reset for modem
+- clean up gcc-msm8994 probe and remove predefined "xo"
+- remove peripheral_noc_clk_src from SDHCI AHB clocks which was added by mistake
 
-I don't question the patch, just the errno. Why not returning -EIO ?
+Konrad Dybcio (10):
+  arm64: dts: qcom: msm8992: Add support for SDHCI2
+  arm64: dts: qcom: msm8992: Add BLSP_I2C1 support
+  arm64: dts: qcom: talkman: Add Synaptics RMI4 touchscreen
+  arm64: dts: qcom: msm8994: Add USB support
+  arm64: dts: qcom: msm8992: Add USB support
+  arm64: dts: qcom: kitakami: Add Synaptics touchscreen
+  arm64: dts: qcom: msm8994: Add SDHCI2 node
+  arm64: dts: qcom: kitakami: Enable SDHCI2
+  clk: qcom: gcc-msm8994: Fix up the driver and modernize it
+  arm64: dts: qcom: msm8992/4: Add clocks property to gcc node
 
-> 
-> 
-> > 
-> >> Found by syzkaller.
-> >>
-> >> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> >> ---
-> >>  net/9p/trans_fd.c | 7 ++++++-
-> >>  1 file changed, 6 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
-> >> index 13cd683a658a..62cdfbd01f0a 100644
-> >> --- a/net/9p/trans_fd.c
-> >> +++ b/net/9p/trans_fd.c
-> >> @@ -797,6 +797,7 @@ static int parse_opts(char *params, struct p9_fd_opts *opts)
-> >>  
-> >>  static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
-> >>  {
-> >> +	bool perm;
-> >>  	struct p9_trans_fd *ts = kzalloc(sizeof(struct p9_trans_fd),
-> >>  					   GFP_KERNEL);
-> >>  	if (!ts)
-> >> @@ -804,12 +805,16 @@ static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
-> >>  
-> >>  	ts->rd = fget(rfd);
-> >>  	ts->wr = fget(wfd);
-> >> -	if (!ts->rd || !ts->wr) {
-> >> +	perm = ts->rd && (ts->rd->f_mode & FMODE_READ) &&
-> >> +	       ts->wr && (ts->wr->f_mode & FMODE_WRITE);
-> >> +	if (!ts->rd || !ts->wr || !perm) {
-> >>  		if (ts->rd)
-> >>  			fput(ts->rd);
-> >>  		if (ts->wr)
-> >>  			fput(ts->wr);
-> >>  		kfree(ts);
-> >> +		if (!perm)
-> >> +			return -EBADF;
-> >>  		return -EIO;
-> >>  	}
-> >>  
-> > 
-> 
+ .../dts/qcom/msm8992-msft-lumia-talkman.dts   |  28 +
+ arch/arm64/boot/dts/qcom/msm8992.dtsi         | 126 +++
+ .../qcom/msm8994-sony-xperia-kitakami.dtsi    |  49 +-
+ arch/arm64/boot/dts/qcom/msm8994.dtsi         |  91 ++
+ drivers/clk/qcom/gcc-msm8994.c                | 800 +++++++++++++-----
+ include/dt-bindings/clock/qcom,gcc-msm8994.h  |  37 +
+ 6 files changed, 915 insertions(+), 216 deletions(-)
+
+-- 
+2.27.0
 
