@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA22232D47
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D15232D1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729630AbgG3IIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:08:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47034 "EHLO mail.kernel.org"
+        id S1728597AbgG3IGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:06:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729213AbgG3IIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:08:43 -0400
+        id S1729268AbgG3IGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:06:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 312512074B;
-        Thu, 30 Jul 2020 08:08:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F09820672;
+        Thu, 30 Jul 2020 08:06:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096522;
-        bh=w4AlBxMKEaOC2MohMrQHWmkC3cIbr3PwOl7vPZnUk8M=;
+        s=default; t=1596096409;
+        bh=K5aBS55JE6VtwoSOv+SygI2MN+/rTkdczaXYheTbwsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=psZUyY327rcCdixXfz5RCNKlSkGPX27xC8yiCsPO52JkDTYNXUucYtCAbnJs6XBeT
-         7DuYGHLDJtOHBa/wL0rrBQ1hWzY+azw3a8slOtLsyGX+86lcC/EVuWuaNBthxhu+II
-         A06WzGi7+zzVKruUxBuECOfG749gU0Trc2VwwxfE=
+        b=TvNJOqWqQ+/uCSOVJgoKt0tMFqZFZodnaqopX7SKFEQUygsSjgCAsoTlOIpkHSj/K
+         agpnfYjK9bl1bW+Z0vwlW10tieQ8KJMig9tGy5GLUE9Cxyry4BgosiPHAlcst8fMaG
+         INwCwSFmQxY/fb0/WYZymVbmj3uOpmYtKhk1SAFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 08/61] drm/nouveau/i2c/g94-: increase NV_PMGR_DP_AUXCTL_TRANSACTREQ timeout
-Date:   Thu, 30 Jul 2020 10:04:26 +0200
-Message-Id: <20200730074421.222794578@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+c82752228ed975b0a623@syzkaller.appspotmail.com,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 01/17] AX.25: Fix out-of-bounds read in ax25_connect()
+Date:   Thu, 30 Jul 2020 10:04:27 +0200
+Message-Id: <20200730074420.528010553@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
-References: <20200730074420.811058810@linuxfoundation.org>
+In-Reply-To: <20200730074420.449233408@linuxfoundation.org>
+References: <20200730074420.449233408@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,56 +47,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-[ Upstream commit 0156e76d388310a490aeb0f2fbb5b284ded3aecc ]
+[ Upstream commit 2f2a7ffad5c6cbf3d438e813cfdc88230e185ba6 ]
 
-Tegra TRM says worst-case reply time is 1216us, and this should fix some
-spurious timeouts that have been popping up.
+Checks on `addr_len` and `fsa->fsa_ax25.sax25_ndigis` are insufficient.
+ax25_connect() can go out of bounds when `fsa->fsa_ax25.sax25_ndigis`
+equals to 7 or 8. Fix it.
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This issue has been reported as a KMSAN uninit-value bug, because in such
+a case, ax25_connect() reaches into the uninitialized portion of the
+`struct sockaddr_storage` statically allocated in __sys_connect().
+
+It is safe to remove `fsa->fsa_ax25.sax25_ndigis > AX25_MAX_DIGIS` because
+`addr_len` is guaranteed to be less than or equal to
+`sizeof(struct full_sockaddr_ax25)`.
+
+Reported-by: syzbot+c82752228ed975b0a623@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?id=55ef9d629f3b3d7d70b69558015b63b48d01af66
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c   | 4 ++--
- drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ net/ax25/af_ax25.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c
-index 954f5b76bfcf7..d44965f805fe9 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c
-@@ -118,10 +118,10 @@ g94_i2c_aux_xfer(struct nvkm_i2c_aux *obj, bool retry,
- 		if (retries)
- 			udelay(400);
- 
--		/* transaction request, wait up to 1ms for it to complete */
-+		/* transaction request, wait up to 2ms for it to complete */
- 		nvkm_wr32(device, 0x00e4e4 + base, 0x00010000 | ctrl);
- 
--		timeout = 1000;
-+		timeout = 2000;
- 		do {
- 			ctrl = nvkm_rd32(device, 0x00e4e4 + base);
- 			udelay(1);
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
-index 61d729b82c69b..a5783f4d972e3 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
-@@ -118,10 +118,10 @@ gm200_i2c_aux_xfer(struct nvkm_i2c_aux *obj, bool retry,
- 		if (retries)
- 			udelay(400);
- 
--		/* transaction request, wait up to 1ms for it to complete */
-+		/* transaction request, wait up to 2ms for it to complete */
- 		nvkm_wr32(device, 0x00d954 + base, 0x00010000 | ctrl);
- 
--		timeout = 1000;
-+		timeout = 2000;
- 		do {
- 			ctrl = nvkm_rd32(device, 0x00d954 + base);
- 			udelay(1);
--- 
-2.25.1
-
+--- a/net/ax25/af_ax25.c
++++ b/net/ax25/af_ax25.c
+@@ -1190,7 +1190,9 @@ static int __must_check ax25_connect(str
+ 	if (addr_len > sizeof(struct sockaddr_ax25) &&
+ 	    fsa->fsa_ax25.sax25_ndigis != 0) {
+ 		/* Valid number of digipeaters ? */
+-		if (fsa->fsa_ax25.sax25_ndigis < 1 || fsa->fsa_ax25.sax25_ndigis > AX25_MAX_DIGIS) {
++		if (fsa->fsa_ax25.sax25_ndigis < 1 ||
++		    addr_len < sizeof(struct sockaddr_ax25) +
++		    sizeof(ax25_address) * fsa->fsa_ax25.sax25_ndigis) {
+ 			err = -EINVAL;
+ 			goto out_release;
+ 		}
 
 
