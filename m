@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0EC232A0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 04:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF21232A08
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 04:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbgG3CbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 22:31:01 -0400
-Received: from namei.org ([65.99.196.166]:56468 "EHLO namei.org"
+        id S1728389AbgG3Ca4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 22:30:56 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:39150 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726519AbgG3CbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 22:31:00 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by namei.org (8.14.4/8.14.4) with ESMTP id 06U2QGu7004321;
-        Thu, 30 Jul 2020 02:26:16 GMT
-Date:   Thu, 30 Jul 2020 12:26:16 +1000 (AEST)
-From:   James Morris <jmorris@namei.org>
-To:     Kees Cook <keescook@chromium.org>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Takashi Iwai <tiwai@suse.de>, Jessica Yu <jeyu@kernel.org>,
-        SeongJae Park <sjpark@amazon.de>,
-        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 08/17] fs/kernel_read_file: Add file_size output
- argument
-In-Reply-To: <20200729175845.1745471-9-keescook@chromium.org>
-Message-ID: <alpine.LRH.2.21.2007301226060.3625@namei.org>
-References: <20200729175845.1745471-1-keescook@chromium.org> <20200729175845.1745471-9-keescook@chromium.org>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1726519AbgG3Ca4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 22:30:56 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 06U2Ui4w007702;
+        Thu, 30 Jul 2020 04:30:44 +0200
+Date:   Thu, 30 Jul 2020 04:30:44 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Emese Revfy <re.emese@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the origin tree
+Message-ID: <20200730023044.GA7518@1wt.eu>
+References: <20200730090828.2349e159@canb.auug.org.au>
+ <CAHk-=wjK8+12i8iDC41LXfZBcMjGsF+WyW_+ncPFmrexRT0yxw@mail.gmail.com>
+ <CAHk-=whA7d4ug8-=TQWq_uR04+MqbfZemz+meFhfu_bCyGzvpw@mail.gmail.com>
+ <CAHk-=wiFLA=TeG903JHPvRHSoMd=mE=7EC0OMajs+bo014A4Lw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiFLA=TeG903JHPvRHSoMd=mE=7EC0OMajs+bo014A4Lw@mail.gmail.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Jul 2020, Kees Cook wrote:
-
-> In preparation for adding partial read support, add an optional output
-> argument to kernel_read_file*() that reports the file size so callers
-> can reason more easily about their reading progress.
+On Wed, Jul 29, 2020 at 07:12:58PM -0700, Linus Torvalds wrote:
+> On Wed, Jul 29, 2020 at 5:09 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Removing the __latent_entropy marker obviously fixes things.
 > 
-> Acked-by: Scott Branden <scott.branden@broadcom.com>
-> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Ok, I did that for now. I spent a few minutes looking at the gcc
+> plugin in case I'd be hit by some sudden stroke of genius, but that
+> didn't happen, so let's avoid the issue until somebody who knows the
+> gcc plugins better can come up with what the right solution is.
 
+I've looked if we couldn't we work around this by declaring another
+static variable with __latent_entropy and use it to initialize
+net_rand_state early, for example in prandom_init(), but there we
+already fill net_rand_state with randoms so I'm wondering if that
+__latent_entropy is used before prandom_init() or if its sole purpose
+is to provide extra initial entropy to be combined with the one
+prandom_init() will add.
 
-Reviewed-by: James Morris <jamorris@linux.microsoft.com>
-
-
--- 
-James Morris
-<jmorris@namei.org>
-
+Willy
