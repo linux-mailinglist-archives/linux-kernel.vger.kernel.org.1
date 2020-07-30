@@ -2,59 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01637232C35
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 09:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F5A232C3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 09:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728857AbgG3HDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 03:03:32 -0400
-Received: from verein.lst.de ([213.95.11.211]:54769 "EHLO verein.lst.de"
+        id S1728706AbgG3HIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 03:08:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726133AbgG3HDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 03:03:32 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9FD0D68AFE; Thu, 30 Jul 2020 09:03:29 +0200 (CEST)
-Date:   Thu, 30 Jul 2020 09:03:29 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 22/23] fs: default to generic_file_splice_read for
- files having ->read_iter
-Message-ID: <20200730070329.GB18653@lst.de>
-References: <20200707174801.4162712-1-hch@lst.de> <20200707174801.4162712-23-hch@lst.de> <20200730000544.GC1236929@ZenIV.linux.org.uk>
+        id S1725892AbgG3HIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 03:08:48 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77BD22070B;
+        Thu, 30 Jul 2020 07:08:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596092927;
+        bh=is7ibpZH5c70+mTBOL4OZ9tChpg2BoECoi0RvbkELCo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p3bI5Qr8nSWppsBGUyYc1IHmaJVLyUGRCyfBHjVt9vBRMD3uOFGyNhAR1/sCOa32/
+         uyHFHa5S/MXa1WZ5JvTOYiUfALz9KH9txWxxBmYHLmF7o6ULmCZN7MMRACEhtkKQ4B
+         ZgmtTV0uZP00mZRuvrSCxGhM9FsnlO1cD7be/oqU=
+Date:   Thu, 30 Jul 2020 09:08:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        andy.shevchenko@gmail.com, Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v9 0/4] driver core: add probe error check helper
+Message-ID: <20200730070832.GA4045592@kroah.com>
+References: <CGME20200713144331eucas1p25911c4ffa9315f632d8f6dd833588981@eucas1p2.samsung.com>
+ <20200713144324.23654-1-a.hajda@samsung.com>
+ <e55a23bf-59bb-43c6-f7d7-467c282b8648@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200730000544.GC1236929@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <e55a23bf-59bb-43c6-f7d7-467c282b8648@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 01:05:44AM +0100, Al Viro wrote:
-> On Tue, Jul 07, 2020 at 07:48:00PM +0200, Christoph Hellwig wrote:
-> > If a file implements the ->read_iter method, the iter based splice read
-> > works and is always preferred over the ->read based one.  Use it by
-> > default in do_splice_to and remove all the direct assignment of
-> > generic_file_splice_read to file_operations.
+On Tue, Jul 28, 2020 at 05:05:03PM +0200, Andrzej Hajda wrote:
+> Hi Greg,
 > 
-> The worst problem here is the assumption that all ->read_iter() instances
-> will take pipe-backed destination; that's _not_ automatically true.
-> In particular, it's almost certainly false for tap_read_iter() (as
-> well as tun_chr_read_iter() in IFF_VNET_HDR case).
+> Apparently the patchset has no more comments.
 > 
-> Other potentially interesting cases: cuse and hugetlbfs.
-> 
-> But in any case, that blind assertion ("iter based splice read works")
-> really needs to be backed by something.
+> Could you take the patches to your tree? At least 1st and 2nd.
 
-I think we need to fix that in the instances, as we really expect
-->splice_read to just work instead of the caller knowing what could
-work and what might not.
+All now queued up, thanks!
+
+greg k-h
