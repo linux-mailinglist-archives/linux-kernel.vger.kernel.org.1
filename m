@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780EC232BB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 08:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A93232BBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 08:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728692AbgG3GKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 02:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
+        id S1728789AbgG3GLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 02:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgG3GKh (ORCPT
+        with ESMTP id S1726261AbgG3GKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 02:10:37 -0400
+        Thu, 30 Jul 2020 02:10:38 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA241C061794
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C18D5C0619D2
         for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 23:10:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=EJ/xSr4Slr9PDG/RHcGFIsz8YPKBZNCUcGfQ1BXp/oA=; b=iqxFPnhPx40Z+lwdPlVwACPnma
-        Fj1IdmHiSCKC62LI3/tPhOSvmAO1h3Dwr+Y5bbFgka7B+e1C8dco6xUOybS/zvwQPgbezrez8wU8v
-        NQMlGU4Kj65zYtALJ0BGcAY1KCgydO6J7IpXvneIZBantP34URoQ7ueOtSu2REGdRw/LJ/UAqD7N1
-        Yiyv4EpqhTooDwLQoSn98ACisd1I1TwwLTcaLHGsFt9NSFhRZPxBZ6j81J+f1kO4Kz7HSeChEQkAh
-        Fs6sH7xTrq34Bi85pyFhNy+XMXoBhjxMUjucvhnWhXkWhx5i6C6PqXPngqVJ6jFau1vvy2KyhjDye
-        YUrCnIpw==;
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=kyDnkIZfiYc5HdpHKygOWGKf//8LSrRaf0oSdcv2LvI=; b=gxdZvpKd/lKAvmXRruzM9/nq6i
+        WQSWgWC1Y03n1F38oxAGewQpNuk8uvmETqa24NmmumvPaVZCKzO6eG+8JkImSVu3JyWTZZIuGSqHW
+        9bFR7ldCXzQ0EW4s2bDaoOn6KuGRADZP82u8orVOJ3SvBdorfmeKAlPmwIa+OR7D1V86b+dNti8Ws
+        upJyxcjwxCVqwb5g/cinEzdsCNa3lwxpaFr0824RrNou5YG/eqtY3jqkZZhdMCkGcEfH4jkuE25Nl
+        zy+H7/KH7xu0NMkQpB4CoVec86qk/CNAbCN7+Ur3aQITdHgv0PLW2UwN7A/1bwYPqyI6yPTyHYs6t
+        +22QCOGA==;
 Received: from 138.57.168.109.cust.ip.kpnqwest.it ([109.168.57.138] helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k11ls-0007U6-Je; Thu, 30 Jul 2020 06:10:32 +0000
+        id 1k11lx-0007UG-5D; Thu, 30 Jul 2020 06:10:33 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jessica Yu <jeyu@kernel.org>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org (open list)
-Subject: inherit TAINT_PROPRIETARY_MODULE v2
-Date:   Thu, 30 Jul 2020 08:10:19 +0200
-Message-Id: <20200730061027.29472-1-hch@lst.de>
+Subject: [PATCH 1/8] modules: mark ref_module static
+Date:   Thu, 30 Jul 2020 08:10:20 +0200
+Message-Id: <20200730061027.29472-2-hch@lst.de>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200730061027.29472-1-hch@lst.de>
+References: <20200730061027.29472-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -44,22 +46,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jessica,
+ref_module isn't used anywhere outside of module.c.
 
-we've had a bug in our resolution of _GPL modules since day one, that
-is a module can claim to be GPL licensed and use _GPL exports, while
-it also depends on symbols from non-GPL modules.  This is used as a
-circumvention of the _GPL exports by using a small shim module using
-the _GPL exports and the other functionality.  A recent example can
-be found here:
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ include/linux/module.h | 1 -
+ kernel/module.c        | 6 ++----
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-    https://lore.kernel.org/netdev/6376CA34-BC6F-45DE-9FFD-7E32664C7569@fb.com/T/#md514322fdfa212afe9f1d3eb4e5f7eaefece36eb
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 2e6670860d275f..f1fdbeef2153a8 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -657,7 +657,6 @@ static inline void __module_get(struct module *module)
+ #define symbol_put_addr(p) do { } while (0)
+ 
+ #endif /* CONFIG_MODULE_UNLOAD */
+-int ref_module(struct module *a, struct module *b);
+ 
+ /* This is a #define so the string doesn't get put in every .o file */
+ #define module_name(mod)			\
+diff --git a/kernel/module.c b/kernel/module.c
+index aa183c9ac0a256..17d64dae756c80 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -869,7 +869,7 @@ static int add_module_usage(struct module *a, struct module *b)
+ }
+ 
+ /* Module a uses b: caller needs module_mutex() */
+-int ref_module(struct module *a, struct module *b)
++static int ref_module(struct module *a, struct module *b)
+ {
+ 	int err;
+ 
+@@ -888,7 +888,6 @@ int ref_module(struct module *a, struct module *b)
+ 	}
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(ref_module);
+ 
+ /* Clear the unload stuff of the module. */
+ static void module_unload_free(struct module *mod)
+@@ -1169,11 +1168,10 @@ static inline void module_unload_free(struct module *mod)
+ {
+ }
+ 
+-int ref_module(struct module *a, struct module *b)
++static int ref_module(struct module *a, struct module *b)
+ {
+ 	return strong_try_module_get(b);
+ }
+-EXPORT_SYMBOL_GPL(ref_module);
+ 
+ static inline int module_unload_init(struct module *mod)
+ {
+-- 
+2.27.0
 
-Changes since v1:
- - standardize on one spelling of "license"
- - fix a commit message type
-
-Diffstat:
- include/linux/module.h |   26 +++-----------------------
- kernel/module.c        |   46 +++++++++++++++++++++++++++++-----------------
- 2 files changed, 32 insertions(+), 40 deletions(-)
