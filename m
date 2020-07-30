@@ -2,139 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22C723332F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889BD233336
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728342AbgG3NiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:38:13 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:41706 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbgG3NiM (ORCPT
+        id S1729022AbgG3Nj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:39:27 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:15632 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726535AbgG3Nj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:38:12 -0400
-Received: by mail-ed1-f66.google.com with SMTP id c2so14112099edx.8;
-        Thu, 30 Jul 2020 06:38:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Sb67XdiMNKw4kLYECvn8kVzTIpC9oxQwoKlyPT/fqdw=;
-        b=Hb3lvN3MLyOGqptNLzji7LcsAMALRAw0xeZKkzkSCaBbtczJHJkXqD9d9y7JEK1uGD
-         RLhk8EUw53U5xBkYEpvLSNstf06S7fg4SOr1QqpNpG9bLyStPu6PRidL1kscdcXWp8mM
-         oTXyJDTOkGlAFXy+PgBcsKBwOKEqjv4NLSliBlccyMJjfTeNGWNdKj7Lxhf7mgsfqUDH
-         i6b+/hZ4JKqwlsenl0WFI0gpT4SUGMAVbnS7qA7qFd+VUdemyPecni9/6gyk8ebuikj+
-         MArTGpgXi7GCjjljjHfVb/vDd8JjgDiiQLg5J3Z5wRtyMO81qABDZvXG/CEiaYhCRRO0
-         TQCA==
-X-Gm-Message-State: AOAM532J6tZ3PIcprdXVEZn4RHjLr8ub/D9se0qtfQBT3gvr/1O1FF28
-        V52siDH3fcK00Jmcw5PavNo=
-X-Google-Smtp-Source: ABdhPJyDNlt4vhhufMGcGCRB1ChSoyT2AlgoK32HQNBg6TqRjcXaQWvxk2/Mqe03QNCpFJZG0Sml5Q==
-X-Received: by 2002:a50:da05:: with SMTP id z5mr2585340edj.207.1596116288537;
-        Thu, 30 Jul 2020 06:38:08 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id qk30sm4393503ejb.125.2020.07.30.06.38.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jul 2020 06:38:07 -0700 (PDT)
-Subject: Re: [PATCH] vgacon: Fix an out-of-bounds in
- vgacon_scrollback_update()
-To:     Yang Yingliang <yangyingliang@huawei.com>, b.zolnierkie@samsung.com
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?5byg5LqR5rW3?= <zhangyunhai@nsfocus.com>
-References: <20200713105730.550334-1-yangyingliang@huawei.com>
- <220220f1-48f7-46f6-952f-ab41fa57d6a1@kernel.org>
- <c3714d73-d5fe-c77a-e554-bb1ff4fd6980@huawei.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <9aecd7ac-5060-6b8d-61f8-393431eb243f@kernel.org>
-Date:   Thu, 30 Jul 2020 15:38:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <c3714d73-d5fe-c77a-e554-bb1ff4fd6980@huawei.com>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Thu, 30 Jul 2020 09:39:27 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 30 Jul 2020 06:39:26 -0700
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 Jul 2020 06:39:24 -0700
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 30 Jul 2020 19:09:00 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id 5F78B4AFD; Thu, 30 Jul 2020 19:08:59 +0530 (IST)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        travitej@codeaurora.org, nganji@codeaurora.org
+Subject: [v1] drm/msm/dpu: Fix scale params in plane validation
+Date:   Thu, 30 Jul 2020 19:08:56 +0530
+Message-Id: <1596116336-23147-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30. 07. 20, 15:24, Yang Yingliang wrote:
-> 
-> On 2020/7/30 19:04, Jiri Slaby wrote:
->> On 13. 07. 20, 12:57, Yang Yingliang wrote:
->>> I got a slab-out-of-bounds report when I doing fuzz test.
->>>
->>> [  334.989515]
->>> ==================================================================
->>> [  334.989577] BUG: KASAN: slab-out-of-bounds in
->>> vgacon_scroll+0x57a/0x8ed
->>> [  334.989588] Write of size 1766 at addr ffff8883de69ff3e by task
->>> test/2658
->>> [  334.989593]
->>> [  334.989608] CPU: 3 PID: 2658 Comm: test Not tainted
->>> 5.7.0-rc5-00005-g152036d1379f #789
->>> [  334.989617] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
->>> BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
->>> [  334.989624] Call Trace:
->>> [  334.989646]  dump_stack+0xe4/0x14e
->>> [  334.989676]  print_address_description.constprop.5+0x3f/0x60
->>> [  334.989699]  ? vgacon_scroll+0x57a/0x8ed
->>> [  334.989710]  __kasan_report.cold.8+0x92/0xaf
->>> [  334.989735]  ? vgacon_scroll+0x57a/0x8ed
->>> [  334.989761]  kasan_report+0x37/0x50
->>> [  334.989789]  check_memory_region+0x1c1/0x1e0
->>> [  334.989806]  memcpy+0x38/0x60
->>> [  334.989824]  vgacon_scroll+0x57a/0x8ed
->>> [  334.989876]  con_scroll+0x4ef/0x5e0
->> ...
->>> Because vgacon_scrollback_cur->tail plus memcpy size is greater than
->>> vgacon_scrollback_cur->size. Fix this by checking the memcpy size.
->>>
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
->>> ---
->>>   drivers/video/console/vgacon.c | 11 ++++++++---
->>>   1 file changed, 8 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/video/console/vgacon.c
->>> b/drivers/video/console/vgacon.c
->>> index 998b0de1812f..b51ffb9a208d 100644
->>> --- a/drivers/video/console/vgacon.c
->>> +++ b/drivers/video/console/vgacon.c
->>> @@ -243,6 +243,7 @@ static void vgacon_scrollback_startup(void)
->>>   static void vgacon_scrollback_update(struct vc_data *c, int t, int
->>> count)
->>>   {
->>>       void *p;
->>> +    int size;
->>>         if (!vgacon_scrollback_cur->data ||
->>> !vgacon_scrollback_cur->size ||
->>>           c->vc_num != fg_console)
->>> @@ -251,13 +252,17 @@ static void vgacon_scrollback_update(struct
->>> vc_data *c, int t, int count)
->>>       p = (void *) (c->vc_origin + t * c->vc_size_row);
->>>         while (count--) {
->>> +        size = vgacon_scrollback_cur->size -
->>> vgacon_scrollback_cur->tail;
->>> +        if (size > c->vc_size_row)
->>> +            size = c->vc_size_row;
->>> +
->>>           scr_memcpyw(vgacon_scrollback_cur->data +
->>>                   vgacon_scrollback_cur->tail,
->>> -                p, c->vc_size_row);
->>> +                p, size);
->> Are you sure the consumer can handle split lines? As vgacon_scrolldelta
->> (soff in particular) looks to me like it doesn't.
->>
->> Have you tested you patch? I mean with soft scrollback on the vga
->> console?
-> 
-> I only test the patch with the reproduce program.
+Plane validation uses an API drm_calc_scale which will
+return src/dst value as a scale ratio.
 
-Out of curiosity, what is it doing? Resize and then scroll by \n (line
-feed)? Can you share it?
+when viewing the range on a scale the values should fall in as
 
-thanks,
+Upscale ratio < Unity scale < Downscale ratio for src/dst formula
+
+Fix the min and max scale ratios to suit the API accordingly.
+
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+index 6379fe1..e46dcb9 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+@@ -946,9 +946,9 @@ static int dpu_plane_atomic_check(struct drm_plane *plane,
+ 		crtc_state = drm_atomic_get_new_crtc_state(state->state,
+ 							   state->crtc);
+ 
+-	min_scale = FRAC_16_16(1, pdpu->pipe_sblk->maxdwnscale);
++	min_scale = FRAC_16_16(1, pdpu->pipe_sblk->maxupscale);
+ 	ret = drm_atomic_helper_check_plane_state(state, crtc_state, min_scale,
+-					  pdpu->pipe_sblk->maxupscale << 16,
++					  pdpu->pipe_sblk->maxdwnscale << 16,
+ 					  true, true);
+ 	if (ret) {
+ 		DPU_DEBUG_PLANE(pdpu, "Check plane state failed (%d)\n", ret);
 -- 
-js
+1.9.1
+
