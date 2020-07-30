@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695F0233B9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 00:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D09C233BA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 01:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730564AbgG3W7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 18:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgG3W7X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 18:59:23 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279DEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 15:59:23 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id w17so15578930ply.11
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 15:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1tCgxzZFgBmN5BP/Gtd6Qog3rehlHJS7ze5ylUHdc1Y=;
-        b=N1IV89Qms8KPVjsZz44hlQRN5Tgf3vxJBHeNKOfZpH2aHlYzXqMHGaSvFRVvbQ3Swl
-         JCJ8IzVXYQHetCQPZU0guumKE9xWI/8z23YXxm0VjAh97TXEw74fpzA7BeKfy3Hr12vh
-         h3Pq9LZj+vSWzog2S9mzQIASEhI+sx/gWdTHk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1tCgxzZFgBmN5BP/Gtd6Qog3rehlHJS7ze5ylUHdc1Y=;
-        b=UYw+ng+I9QBSxVV3PYwR8FNH3C8Zb1Khupn5hA8a4RffdTMNnSAvOLZXbpQRWRAJyP
-         8OzEU0lRCI/k3KAgI0OF0Zz6nWdnXIPNI/o8ZVWHZ+RBC+GBWQw/0gK15BgWAUfdGpVQ
-         SB7Pud73vLUGgy3UTa3LlXy3nK2hW0P8UV42ynjHIZAfXNXJvqXqOUn24mvvFQJ9VGJn
-         v1VAfimQigeS0KdPQrcLoX+P5qGk0Nvxax75JJHqf7Xv6/w1L2fR+p9M5X9UoZa9R771
-         edVw0sVUlzBdk01ooc+OZxTFufFtm9Zj21uTkbtykiqUJgg4gaiDs9CIrrmjbvzrCddR
-         fMeQ==
-X-Gm-Message-State: AOAM533KBdOqm2GwTNasx++QilupOSh5OgILpdEjyzuavr5uBkIfo25o
-        5BateNctIHqTTn7IFclt365ReA==
-X-Google-Smtp-Source: ABdhPJxQYdudZr0u5Ior4Wwl11nPhAEG5OZyk58r6rJ0DsP9/VfKp0EejMb76y4UlAbhN/KOZA/Teg==
-X-Received: by 2002:a62:5443:: with SMTP id i64mr1032634pfb.313.1596149962517;
-        Thu, 30 Jul 2020 15:59:22 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id c134sm7415152pfc.115.2020.07.30.15.59.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 15:59:22 -0700 (PDT)
-Date:   Thu, 30 Jul 2020 15:59:21 -0700
-From:   Prashant Malani <pmalani@chromium.org>
-To:     Azhar Shaikh <azhar.shaikh@intel.com>
-Cc:     bleung@chromium.org, enric.balletbo@collabora.com,
-        groeck@chromium.org, linux-kernel@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, utkarsh.h.patel@intel.com,
-        casey.g.bowman@intel.com, rajmohan.mani@intel.com
-Subject: Re: [PATCH v2 1/2] platform/chrome: cros_ec_typec: Send enum values
- to usb_role_switch_set_role()
-Message-ID: <20200730225921.GC3145664@google.com>
-References: <20200730225609.7395-1-azhar.shaikh@intel.com>
- <20200730225609.7395-2-azhar.shaikh@intel.com>
+        id S1730670AbgG3XBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 19:01:44 -0400
+Received: from mail-co1nam11olkn2083.outbound.protection.outlook.com ([40.92.18.83]:35942
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730610AbgG3XBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 19:01:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dD+0iIbgh1eYQpHJX3mzdzvZAx7DwArgubVwZFRJHLSoFZ4cKJR0lVaya+47VuaonsEsbonq8E22EFozDnifDbQMW/dlg58/Zk15zGRE/zgJYOkzbQlzdv26d+Padk4iHbqysGsmecw7VBG4RJGwi2rQ8ck6aEHEkWcHiZp57S/mk8BOle1vc/FpyHZDAVw5vGaJKoaER9etuhEBqLMu3IigdsdW9BnTg+yZekfrxvQ6vfx25UVRw9iblFaqIA3zFgfmTkNGr6TOPRs27jP4PEJw3ml1FOOv36Ord8U6aVaayKXhsaXYp5ekWemrpTiajNt5UEKnxt5LxWMs0uoIYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CYmyJfbB4VF03PXNJyvPQAahA08y1lJrt+63k1cFpHs=;
+ b=k26D0l/32cPepE5AZJGY09b+yBbZucseylGeLBfCAJlRWSqCJ6iahkLT4uKiAw2wK1AkpkMk/8e8gUW4/eT9z98xmCOZTNZxoBfwHRyHJf9hHrFcEj+BjrBPXZcZfb+re2gQiKQzUtCGAOLCKirC5s4EUG/RPTqM54gwocF4jVdfch3bgkHnxe3G2iL5JKgKLF9i4Si0OP1O+X0AUcUjdF9WraojWmqB1ZT7O+qCqoVnecNQDQiDXwP/BnhhF95MwFxCfVWgYgfES6A+/tRV4tSzLIt9WibesfpZvmX/Zq7IREbNRe0w5okhyRQ0puraVrSoBSF2pgveW2eIYqf5FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from CO1NAM11FT027.eop-nam11.prod.protection.outlook.com
+ (2a01:111:e400:3861::45) by
+ CO1NAM11HT062.eop-nam11.prod.protection.outlook.com (2a01:111:e400:3861::166)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.20; Thu, 30 Jul
+ 2020 23:01:40 +0000
+Received: from BN6PR04MB0660.namprd04.prod.outlook.com
+ (2a01:111:e400:3861::4a) by CO1NAM11FT027.mail.protection.outlook.com
+ (2a01:111:e400:3861::224) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.20 via Frontend
+ Transport; Thu, 30 Jul 2020 23:01:40 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:171F1716801CAD2D10A28976D4A85B9EC71DD0B5F9A54245637D9526E1032E47;UpperCasedChecksum:3D125C7109105836F605C852441C33ED7782E6CAB6AAABA84BDB5F66E3B7072D;SizeAsReceived:7773;Count:47
+Received: from BN6PR04MB0660.namprd04.prod.outlook.com
+ ([fe80::b9c3:9bff:541d:f383]) by BN6PR04MB0660.namprd04.prod.outlook.com
+ ([fe80::b9c3:9bff:541d:f383%9]) with mapi id 15.20.3239.020; Thu, 30 Jul 2020
+ 23:01:40 +0000
+From:   Jonathan Bakker <xc-racer2@live.ca>
+To:     kyungmin.park@samsung.com, s.nawrocki@samsung.com,
+        mchehab@kernel.org, kgene@kernel.org, krzk@kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org,
+        Jonathan Bakker <xc-racer2@live.ca>
+Subject: [PATCH v2 00/11] media: exynos4-is: Improve support for s5pv210 and parallel ports
+Date:   Thu, 30 Jul 2020 16:01:03 -0700
+Message-ID: <BN6PR04MB06603B2CD7F2C56B322AF882A3710@BN6PR04MB0660.namprd04.prod.outlook.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MWHPR07CA0002.namprd07.prod.outlook.com
+ (2603:10b6:300:116::12) To BN6PR04MB0660.namprd04.prod.outlook.com
+ (2603:10b6:404:d9::21)
+X-Microsoft-Original-Message-ID: <20200730230114.8572-1-xc-racer2@live.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730225609.7395-2-azhar.shaikh@intel.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from jon-hp-6570b.telus (2001:569:fb68:9c00:8067:f823:1e15:7520) by MWHPR07CA0002.namprd07.prod.outlook.com (2603:10b6:300:116::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16 via Frontend Transport; Thu, 30 Jul 2020 23:01:37 +0000
+X-Mailer: git-send-email 2.20.1
+X-Microsoft-Original-Message-ID: <20200730230114.8572-1-xc-racer2@live.ca>
+X-TMN:  [pailsOlHjt+Hg0FBEYXdHMlKY58wxOVDSA0IDVEN5Pz5r4PiRio0uMr/hS/GLZuR]
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 47
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: 025a4cd9-072d-4f5a-92bf-08d834dc8486
+X-MS-TrafficTypeDiagnostic: CO1NAM11HT062:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UBs2JE/DEStf6gE5/lPYdIZI4S15Y/9tnvtdotskIN8ijbsgEV2na5cNeIOap08qnmfo+UiO+TOsaQL+cT5/0sMs1wHih1jpP9DcIm3s0laEyyXudF8DAYKwHCc6zZiU9C655d0YC2nfQkGYG5jBoE0sn3OkD+qhS+NKqjaIhSwRaWdHrsT70BV5QI58+4DQkSKjGBwhAJ+euOjRHigyAA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR04MB0660.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
+X-MS-Exchange-AntiSpam-MessageData: N/Kmrb0PLdShRTv8w9JoluVgMeCP67+41T/Ys1aTiIzjWBQ5o6Ca10SJpCpjMsfMKBLob5wVwRrCBaE122vhpAxNYpg1k6uMKHjpYA2pVCLf2neqm+EcE0k7I69WGuVfqTxirc8Uzo/koTvUFl2NKzhfeusmldyCyb0eJ9fD+WMuU61lsKru8tLuVbN2qb0OuFQkCVgNOy2wm/hV35EZBw==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 025a4cd9-072d-4f5a-92bf-08d834dc8486
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2020 23:01:39.9654
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT027.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1NAM11HT062
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Azhar,
+This patchset improves support in the exynos4-is driver for s5pv210
+platforms as well as for sensors connected to the parallel ports
+and not using the CSIS device.
 
-On Thu, Jul 30, 2020 at 03:56:08PM -0700, Azhar Shaikh wrote:
-> usb_role_switch_set_role() has the second argument as enum for usb_role.
-> Currently depending upon the data role i.e. UFP(0) or DFP(1) is sent.
-> This eventually translates to USB_ROLE_NONE in case of UFP and
-> USB_ROLE_DEVICE in case of DFP. Correct this by sending correct enum
-> values as USB_ROLE_DEVICE in case of UFP and USB_ROLE_HOST in case of
-> DFP.
-> 
-> Fixes: 7e7def15fa4b ("platform/chrome: cros_ec_typec: Add USB mux control")
-> 
-> Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
-> Cc: Prashant Malani <pmalani@chromium.org>
-> Reviewed-by: Prashant Malani <pmalani@chromium.org>
-> ---
+Fixes range from nullptr exceptions to probe fixes to JPEG fixes.  The
+binding doc is changed to match what is implemented in the driver and
+in the Goni DTS (the only in-tree user).
 
-Please add the list of changes in each version after the "---" line.
+Some patches cleaning up non-DT support are also included.
 
->  drivers/platform/chrome/cros_ec_typec.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index 3eae01f4c9f7..eb4713b7ae14 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -590,7 +590,8 @@ static int cros_typec_port_update(struct cros_typec_data *typec, int port_num)
->  		dev_warn(typec->dev, "Configure muxes failed, err = %d\n", ret);
->  
->  	return usb_role_switch_set_role(typec->ports[port_num]->role_sw,
-> -					!!(resp.role & PD_CTRL_RESP_ROLE_DATA));
-> +				       resp.role & PD_CTRL_RESP_ROLE_DATA
-> +				       ? USB_ROLE_HOST : USB_ROLE_DEVICE);
->  }
->  
->  static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
-> -- 
-> 2.17.1
-> 
+The patches have been tested on a first-gen Galaxy S GT-i900M device based
+on S5PV210.  Two sensors (CE147 and S5KA3DFX, both with non-mainline
+drivers), both attached to port A, were succesfully used.
+
+Changes from v1:
+- Added R-b tags
+- Changed entity function initialization to not remove any
+- Cleaned up some commit messages
+- Added patch cleaning up the counting of sensors
+- Separated parsing of multiple sensors into a separate func
+- Match DT documentation to driver rather than modifying driver
+
+Jonathan Bakker (10):
+  media: exynos4-is: Remove static driver data for S5PV210 FIMC variants
+  media: exynos4-is: Fix nullptr when no CSIS device present
+  media: exynos4-is: Correct missing entity function initialization
+  media: exynos4-is: Properly set JPEG options for parallel ports
+  media: exynos4-is: Use global num_sensors rather than local index
+  media: exynos4-is: Add support for multiple sensors on one port
+  media: exynos4-is: Remove inh_sensor_ctrls
+  media: exynos4-is: Remove unused struct member input_index
+  media: exynos4-is: Handle duplicate calls to vidioc_streamoff
+  dt-bindings: media: Correct samsung-fimc parallel port numbering
+
+Tomasz Figa (1):
+  media: exynos4-is: Request syscon only if ISP writeback is present
+
+ .../bindings/media/samsung-fimc.txt           |  6 +-
+ .../media/platform/exynos4-is/fimc-capture.c  | 21 ++----
+ drivers/media/platform/exynos4-is/fimc-core.c | 67 ++-----------------
+ drivers/media/platform/exynos4-is/fimc-core.h |  5 --
+ drivers/media/platform/exynos4-is/fimc-reg.c  |  7 ++
+ drivers/media/platform/exynos4-is/media-dev.c | 54 ++++++++++-----
+ 6 files changed, 60 insertions(+), 100 deletions(-)
+
+-- 
+2.20.1
+
