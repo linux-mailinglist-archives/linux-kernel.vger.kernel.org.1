@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDFD23388B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 20:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B245523388E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 20:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728596AbgG3Spi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 14:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726495AbgG3Sph (ORCPT
+        id S1730240AbgG3Srj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 14:47:39 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40162 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726495AbgG3Srg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 14:45:37 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512B6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 11:45:37 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id l1so29257202ioh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 11:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1M+mQosS53rR8rnqJ+wOq1od8dF70GSvNLfqjFKtb+w=;
-        b=dnn2ECJVDMO+WGWX3kTgDJexFtgoLfprxeNovVCxUtS7jXjzesDr+4uAhaLiU2Ve3U
-         Vq0wUFZU8UxDAxoZbCpPs+PAU39psgwwzYlKI1ZYmBSqh3XOywQ3Ddit8RJqOUfsom+S
-         DGOPtMLSRb5w2Hd5iEFWqomAwX0q4aoCrnIo2r1w0kTmypujBaHXvKnAOQcdePIPdOjS
-         vbP4saDH69ElaTRcJ+xWTL/KnMMtIyPaGNXTS7OVdN4a8Va83V6uwkMbs7DoJvaeJsbR
-         N0oTZ0JeyM/ndJWcOS4JEpbaTLhC9b0dccIuTnIwbd3J/CF/n84n+V3P3ENpXirb9I/N
-         RWFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1M+mQosS53rR8rnqJ+wOq1od8dF70GSvNLfqjFKtb+w=;
-        b=SgdMvgiVGhS91IG1Y695YUD5wdKBCTHbtaedxwTAbOqYgQ+1Nd0XZq/cJrzWvKbm0J
-         tjSi+65xByyRHGajEn5P0FViK829Xz6+vU8jt4OzwFW6w/XT6o03fpQlwqw5/Ytvn1Oo
-         i6MWonPxvUi078JcT6Gy+ATyGJ4dlcwRlunjy/QKYhQHKxhkOzdx1Nx7y5gysH7UbnPt
-         y+FFjUxN74BrInBjrDV86pW1h0gwk3bF9JsZuHqylkHb5LQv/ABVofRDUea17emmzT/h
-         in/Z9sygZswW1C+WbBL/41Zq0FXZPQ3ETQdWFkOwuSAd8kkD9ybLXI9I9mMkRvccLEw8
-         Xwfg==
-X-Gm-Message-State: AOAM5308SURg7H3i8YBXu6iort2S0YhorOr/gZMv3qVP0vMG5wI/FO95
-        lVG3Gv62891NpOS/av4yTsSa029rGKOPhkUTAH0=
-X-Google-Smtp-Source: ABdhPJyePUmV86fwPoIT2w0lFQuKXuE+2i6wYo+AAjl0IXq3XELDfg7qMjjDf6BiJmMlAYOVZXaDgNcncxLDT9NlbG8=
-X-Received: by 2002:a05:6638:2601:: with SMTP id m1mr620541jat.141.1596134736322;
- Thu, 30 Jul 2020 11:45:36 -0700 (PDT)
+        Thu, 30 Jul 2020 14:47:36 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06UIkqiD047674;
+        Thu, 30 Jul 2020 13:46:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596134812;
+        bh=H97hSMtUi6Ldll477vreOznYuaxJYnCs6xCyk6sD7Yw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=oCplm4YJYcRRf5fEC+1+IK3OfieoZpU6D+38ioxFbhnhm9BULIugn4rNd1DvH4Biu
+         WjdmPzzWIFsrN4Taq9Gp1+NBVd0cY2JcFlBkPggRyhseqp8GC5TNs2+8xAQ8goenr+
+         s8qifO8vG3xlNkAjeEQA/Tjkixd4In9gZiJEJpEM=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06UIkqHO056432;
+        Thu, 30 Jul 2020 13:46:52 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 30
+ Jul 2020 13:46:52 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 30 Jul 2020 13:46:52 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06UIklXf119658;
+        Thu, 30 Jul 2020 13:46:48 -0500
+Subject: =?UTF-8?B?UmU6IGFybTY0OiBwb2ludGVyX2F1dGguaDo0MDozOiBlcnJvcjogaW1w?=
+ =?UTF-8?Q?licit_declaration_of_function_=e2=80=98get=5frandom=5fbytes?=
+ =?UTF-8?B?4oCZOyBkaWQgeW91IG1lYW4g4oCYZ2V0X3JhbmRvbV9vbmNl4oCZPw==?=
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        <richard.henderson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        <lkft-triage@lists.linaro.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        <re.emese@gmail.com>, <hsinyi@chromium.org>,
+        Will Deacon <will@kernel.org>, <w@1wt.eu>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <CA+G9fYvSyXnfGmK1FLRtraWWre7QjUoGE_qiwM8XPUBXjnudWA@mail.gmail.com>
+ <20200730211522.1ea3561f@canb.auug.org.au>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <d23eba90-ee2c-efe0-0cb6-88e99fb22e54@ti.com>
+Date:   Thu, 30 Jul 2020 21:46:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <CGME20200713144331eucas1p25911c4ffa9315f632d8f6dd833588981@eucas1p2.samsung.com>
- <20200713144324.23654-1-a.hajda@samsung.com> <e55a23bf-59bb-43c6-f7d7-467c282b8648@samsung.com>
- <20200730070832.GA4045592@kroah.com> <CAKdAkRTKjHg2y8yTFgxr4yY98M8D2noutDBfB1mh7wwLLQrYbw@mail.gmail.com>
- <20200730164845.GE5055@sirena.org.uk> <CAKdAkRS+QooavPaKMcsaUQdRJGky_6JYq1EiUbyT_gcU3ZYeJw@mail.gmail.com>
- <20200730181639.GG5055@sirena.org.uk>
-In-Reply-To: <20200730181639.GG5055@sirena.org.uk>
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Date:   Thu, 30 Jul 2020 11:45:25 -0700
-Message-ID: <CAKdAkRSaF3q1MJ7mteD-4C4O58LL4FP6xpTovVOdu0v2VD=sAQ@mail.gmail.com>
-Subject: Re: [PATCH v9 0/4] driver core: add probe error check helper
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200730211522.1ea3561f@canb.auug.org.au>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 11:16 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Jul 30, 2020 at 10:46:31AM -0700, Dmitry Torokhov wrote:
-> > On Thu, Jul 30, 2020 at 9:49 AM Mark Brown <broonie@kernel.org> wrote:
->
-> > > The error messages are frequently in the caller rather than the
-> > > frameworks, it's often helpful for the comprehensibility of the error
-> > > messages especially in cases where things may be legitimately absent.
->
-> > Not for deferral. All you need to know in this case is:
->
-> > "device A is attempting to request resource B which is not ready yet"
->
-> > There is nothing to handle on the caller part except to float the error up.
->
-> You can sometimes do a better job of explaining what the resource you
-> were looking for was,
 
-I think it is true for very esoteric cases. I.e. your driver uses 2
-interrupt lines, or something like that. For GPIO, regulators, and
-clocks we normally have a name/connection ID that provides enough of
-context. We need to remember, the error messages really only make
-total sense to a person familiar with the driver to begin with, not
-for a random person looking at the log.
 
-> and of course you still need diagnostics in the
-> non-deferral case.  Whatever happens we'll need a lot of per-driver
-> churn, either removing existing diagnostics that get factored into cores
-> or updating to use this new API.
+On 30/07/2020 14:15, Stephen Rothwell wrote:
+> Hi Naresh,
+> 
+> On Thu, 30 Jul 2020 16:25:49 +0530 Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>>
+>> Linus master branch failed to build the arm64 architecture due to
+>> below error and warnings.
+> 
+> Thanks for the report.
+> 
+> Please see https://lore.kernel.org/lkml/202007292007.D87DBD34B@keescook/
 
-The point is if you push it into core you'll get the benefit of
-notifying about the deferral (and can "attach" deferral reason to a
-device) without changing drivers at all. You can clean them up later
-if you want, or decide that additional logging in error paths does not
-hurt. This new API does not do you any good unless you convert
-drivers, and you need to convert the majority of them to be able to
-rely on the deferral diagnostic that is being added.
+I'd like to note that below set of patches:
+1c9df907da83 random: fix circular include dependency on arm64 after addition of percpu.h
+83bdc7275e62 random32: remove net_rand_state from the latent entropy gcc plugin
+f227e3ec3b5c random32: update the net random state on interrupt and activity
 
-Thanks.
+also break ARM build for the case:
+#if defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
+
+config: keystone_defconfig
+
+   CC      arch/arm/kernel/signal.o
+In file included from ../include/linux/random.h:14,
+                  from ../arch/arm/kernel/signal.c:8:
+../arch/arm/include/asm/percpu.h: In function ‘__my_cpu_offset’:
+../arch/arm/include/asm/percpu.h:29:34: error: ‘current_stack_pointer’ undeclared (first use in this function); did you mean ‘user_stack_pointer’?
+    : "Q" (*(const unsigned long *)current_stack_pointer));
+                                   ^~~~~~~~~~~~~~~~~~~~~
+                                   user_stack_pointer
+../arch/arm/include/asm/percpu.h:29:34: note: each undeclared identifier is reported only once for each function it appears in
+../scripts/Makefile.build:280: recipe for target 'arch/arm/kernel/signal.o' failed
+make[2]: *** [arch/arm/kernel/signal.o] Error 1
+/home/grygorii/kernel.org/linux-master/linux/Makefile:1756: recipe for target 'arch/arm/kernel' failed
+make[1]: *** [arch/arm/kernel] Error 2
+
+
 
 -- 
-Dmitry
+Best regards,
+grygorii
