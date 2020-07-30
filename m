@@ -2,89 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B66232892
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F242328B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbgG3AKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 20:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728052AbgG3AKS (ORCPT
+        id S1728231AbgG3A21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 20:28:27 -0400
+Received: from gateway20.websitewelcome.com ([192.185.54.2]:31082 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728053AbgG3A21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 20:10:18 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B837CC0619D2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 17:10:17 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id v4so17293771ljd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 17:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5uaGB2xOYWa+jACqPIzmH4++Yk2MzFSBiFLA11OUW2E=;
-        b=hEZFWlE7wFcKYKOakFk0ARR5rq45yVm7myS+H/aFfLygPk2/HtvTay9IOs8X986Au0
-         ysId+nihcBhqm06rqs/so9xUnDDA9GxF8oz88kgI3tVsdQf2m5jR8R6WiMH0ND1+jRFf
-         q0p1S8kKPPF01m/AsRNu6iCyH2Apvz8S+SYjo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5uaGB2xOYWa+jACqPIzmH4++Yk2MzFSBiFLA11OUW2E=;
-        b=dve4/0JGOMKt2ItdOHse4hqr35fJez0es7RoCQW0lYD/lpejmqjEzM+9HuZ0ElgU/a
-         b+ZfxPImsGzTVcMIuI6DkAPja3aNJdpy4FG28YqGPIZJRR+n/fWYPlmEaaYoCe8Ppipu
-         eny/DyJPwM+xhww8Fu+dMQ3YsHFFmESA52yUMjpE4WJRgKAcA2n5oEr/V9/8EduO3lME
-         MHu9aKGQpfwYN2mXEKrWqM1Nlm0mQcIdVbNQBbkEDtdUJpuOyriKjIgovN8wos7SZkgt
-         ol7p7JhXNbL9p885LxIlagYXoiJiFKRGSYaq3vrLGzFmtv5IY+NhuVXV6jVtRwZLqMnw
-         GnhA==
-X-Gm-Message-State: AOAM532EBWcL+3sLDXBZLIwWw7fK5675HO7lIBsNhBEZuJK/BWAKXxFd
-        kpGZA0Wz3IOiO3Dm/7rRSCPFVPdcFQE=
-X-Google-Smtp-Source: ABdhPJy94Btv8IURsQzzGPRu2rd9MXMqMVXz3+vjB1l+7SSu9IBrXmSohBJvbIMXXIFYxuryQIFN7g==
-X-Received: by 2002:a2e:b0f0:: with SMTP id h16mr172148ljl.167.1596067815813;
-        Wed, 29 Jul 2020 17:10:15 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id l15sm674706ljh.94.2020.07.29.17.10.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Jul 2020 17:10:14 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id j22so8105698lfm.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 17:10:14 -0700 (PDT)
-X-Received: by 2002:a05:6512:3b7:: with SMTP id v23mr238005lfp.10.1596067814139;
- Wed, 29 Jul 2020 17:10:14 -0700 (PDT)
+        Wed, 29 Jul 2020 20:28:27 -0400
+X-Greylist: delayed 1245 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 20:28:26 EDT
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id 3AAAB40515241
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 17:44:15 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 0w5fkCwuSRQIV0w5fkeyFv; Wed, 29 Jul 2020 19:06:31 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=O9pd5wZFyMlo2KIw2w7Jr68x5gB033RYBnB9J5fYDs8=; b=gd3/GZhDMc/bVV0PV5dtEt3bWR
+        EMH5E0gwCIB5xwWmdRUGdRutDmV5ckeKvscXTN6jlaVrfbzSTLtnVdo0O7dbeNVCDfkjydN5ktvvw
+        lcl982UJNymyU2OKDizVuZwZCcveNsgCLq+c5XytdvZxnx6CeHVD2VgOyJkg0bBCvCTYvzA4GsaaA
+        WoiPJS3LD+K3NC58oCl8EYiTuFxkTv9Ea7loz+9F36IcZyqr8PBouVL4IaE1GQ8aL7xF60WTVNa/H
+        l1u9u+wEd/NCPQ704rbRxP8I8+EvLELU0r8JHKSVo1DgKixKUgMo0etiJscBj+CrbL7fjqJ97PT5v
+        78BmJkuQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:51790 helo=[192.168.15.3])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1k0w5f-0031yi-A5; Wed, 29 Jul 2020 19:06:31 -0500
+To:     Qianli Zhao <zhaoqianligood@gmail.com>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, zhaoqianli@xiaomi.com
+References: <1596034214-15010-1-git-send-email-zhaoqianligood@gmail.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Subject: Re: [PATCH] mm: slab: Avoid the use of one-element array and use
+ struct_size() helper
+Message-ID: <90b2c9f3-cc2b-b2e6-51ef-998d2f79123a@embeddedor.com>
+Date:   Wed, 29 Jul 2020 19:12:31 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200730090828.2349e159@canb.auug.org.au> <CAHk-=wjK8+12i8iDC41LXfZBcMjGsF+WyW_+ncPFmrexRT0yxw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjK8+12i8iDC41LXfZBcMjGsF+WyW_+ncPFmrexRT0yxw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 29 Jul 2020 17:09:57 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whA7d4ug8-=TQWq_uR04+MqbfZemz+meFhfu_bCyGzvpw@mail.gmail.com>
-Message-ID: <CAHk-=whA7d4ug8-=TQWq_uR04+MqbfZemz+meFhfu_bCyGzvpw@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the origin tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Emese Revfy <re.emese@gmail.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1596034214-15010-1-git-send-email-zhaoqianligood@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1k0w5f-0031yi-A5
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.3]) [187.162.31.110]:51790
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 8
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 4:43 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Ok, this shows a limitation of my allmodconfig testing (and all my
-> normal builds) - no plugins. So that problem wasn't as obvious as it
-> should have been.
+Hi,
 
-Ok, that was easy to install and get the coverage, and now I see the error.
+If you are going to copy/paste this, please at least CC the people
+that is originally working on these changes, in this case _me_. One
+needs to be very careful when doing these transformations. This
+code doesn't even exist in linux-next.
 
-Except I still don't know the gcc plugins well enough to fix it at the
-plugin level. And the gcc docs only talk about TREE_STATIC() for
-functions, not for variables. Apparently variables should use
-DECL_THIS_EXTERN or DECL_THIS_STATIC according to the docs I find, but
-..
+If you want to land your first kernel patch, I encourage you to start
+in drivers/staging/, while you get the hang of the kernel development
+process and you know how to work with linux-next. :)
 
-Removing the __latent_entropy marker obviously fixes things.
+Thanks
+--
+Gustavo
 
-               Linus
+On 7/29/20 09:50, Qianli Zhao wrote:
+> From: Qianli Zhao <zhaoqianli@xiaomi.com>
+> 
+> There is a regular need in the kernel to provide a way to declare having a
+> dynamically sized set of trailing elements in a structure. Kernel code should
+> always use “flexible array members”[1] for these cases. The older style of
+> one-element or zero-length arrays should no longer be used[2].
+> 
+> Make use of the struct_size() helper instead of an open-coded version
+> in order to avoid any potential type mistakes.
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://github.com/KSPP/linux/issues/21
+> 
+> Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
+> ---
+>  mm/slab.h        | 2 +-
+>  mm/slab_common.c | 7 ++-----
+>  2 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 74f7e09..c12fb65 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -34,7 +34,7 @@ struct kmem_cache {
+>  
+>  struct memcg_cache_array {
+>  	struct rcu_head rcu;
+> -	struct kmem_cache *entries[0];
+> +	struct kmem_cache *entries[];
+>  };
+>  
+>  /*
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index fe8b684..56f4818 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -166,9 +166,7 @@ static int init_memcg_params(struct kmem_cache *s,
+>  	if (!memcg_nr_cache_ids)
+>  		return 0;
+>  
+> -	arr = kvzalloc(sizeof(struct memcg_cache_array) +
+> -		       memcg_nr_cache_ids * sizeof(void *),
+> -		       GFP_KERNEL);
+> +	arr = kvzalloc(struct_size(arr, entries, memcg_nr_cache_ids), GFP_KERNEL);
+>  	if (!arr)
+>  		return -ENOMEM;
+>  
+> @@ -199,8 +197,7 @@ static int update_memcg_params(struct kmem_cache *s, int new_array_size)
+>  {
+>  	struct memcg_cache_array *old, *new;
+>  
+> -	new = kvzalloc(sizeof(struct memcg_cache_array) +
+> -		       new_array_size * sizeof(void *), GFP_KERNEL);
+> +	new = kvzalloc(struct_size(new, entries, new_array_size), GFP_KERNEL);
+>  	if (!new)
+>  		return -ENOMEM;
+>  
+> 
