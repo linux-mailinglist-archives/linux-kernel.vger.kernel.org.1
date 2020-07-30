@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D455623303C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 12:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7994233048
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 12:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729288AbgG3KWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 06:22:42 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:13093 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729143AbgG3KW2 (ORCPT
+        id S1729337AbgG3KX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 06:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726883AbgG3KX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 06:22:28 -0400
-X-UUID: ed3745d291e7428c98bf4b7c5c9ee8a1-20200730
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=BJIvEQojTWHUoFsviCh26y09bDiTiAOtQb+FKP21A8g=;
-        b=gVq6JnDkmSgSZxAfQGIX3deUFGl7oiAdzmefVcE0P9ZNeTUsVotCQjmaevAF14/+bb+mIAi0IHWvTzIhGo5A+sGMYXQKc2gc8Hbp0DDP4C9c5VVidoTCsmkHKgWvJmWyC70nJJNCG4Nq8TlDRZjBB6N5RuDw1jwqAMZxADm9Xuw=;
-X-UUID: ed3745d291e7428c98bf4b7c5c9ee8a1-20200730
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <crystal.guo@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1062283760; Thu, 30 Jul 2020 18:22:24 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 30 Jul 2020 18:22:20 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 30 Jul 2020 18:22:20 +0800
-From:   Crystal Guo <crystal.guo@mediatek.com>
-To:     <linux@roeck-us.net>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <seiya.wang@mediatek.com>, Crystal Guo <crystal.guo@mediatek.com>
-Subject: [v3,5/5] watchdog: mt8192: add wdt support
-Date:   Thu, 30 Jul 2020 18:21:50 +0800
-Message-ID: <1596104510-11113-6-git-send-email-crystal.guo@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1596104510-11113-1-git-send-email-crystal.guo@mediatek.com>
-References: <1596104510-11113-1-git-send-email-crystal.guo@mediatek.com>
+        Thu, 30 Jul 2020 06:23:27 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D974C061794;
+        Thu, 30 Jul 2020 03:23:27 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id lx9so4087556pjb.2;
+        Thu, 30 Jul 2020 03:23:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1TfTR8Lp7hRKQ+lCxjn1lE5hq4Qzl/G7eGSS/NXpthA=;
+        b=SgqlNcWCpJUaLfLBwM02ixJFhCj4xCMvydh2bBlK+bU/6gsSrxVBlDeQqW3sdpjcpS
+         ql2RfXZF+/z5wYVZ/ajCmbuaaYFwlDRoMtZsfGOq3ojCNjBipuSwC7sM6Sj3sCmgibUy
+         6BA1LRisHrKgr+FDYaXgEvwAWX/59rj6nrI4DMNiJUwnbpIkbnwIUuhGUy1YWZOSTkbS
+         FOEeO5IMRy4z9Hlf2JoxUR9CVT+A55JjHX/Oyc33st0X9JSzbbb6+JGByea1m2/gSgm7
+         GEdwEooCZDqwu105hUNFFh5ZydPXtdoPyVxaHrr8C+PY5wnMAxmbX09kBmVoO7Edp0oa
+         fH9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1TfTR8Lp7hRKQ+lCxjn1lE5hq4Qzl/G7eGSS/NXpthA=;
+        b=bl4T4JIGxc8FFddlToWFW85vudh+QQeQN4poMPwo09PZjUKXY3rE2mo6wEEHUDkOVi
+         mIst3Gfm2UYzA4UAVcehh3+Qs25yE6wUyIm4R58RgalMnpNsHpzi0xBKaaK5TWFlnG9N
+         /6buocrWjp6rimlYHvLSntGvsGI6+SgdY7AHRZBu17mxOsKPrPV8F+0dXJyZNwdj/Idv
+         1T5ZdDpcm2FUpAviqOmvtXh3rkT5mu8GLszGCn7VSvONewmpW0IdeDINQx+VLd9NBc7u
+         RwAtVQ5M94yy6vCXupOvCnGPqX7ymc8YvBX1ao3eLQbCMp2ZDaCqKkC6I5FWsmGoGxZL
+         kXKg==
+X-Gm-Message-State: AOAM530xTT1ygyhLjiutS9N9RR48LPFZC1hBNyI2elKLHOpVadd0hwTc
+        qQOzursp/VBEPMYFZxguGJA=
+X-Google-Smtp-Source: ABdhPJwtUE3R0FEcG2no1f+PaKbEvfyDitIH4cyALH9m+3bRtaBL1KTwLLao4m/kkUElXedWB7iaRQ==
+X-Received: by 2002:aa7:91cd:: with SMTP id z13mr2664104pfa.133.1596104605709;
+        Thu, 30 Jul 2020 03:23:25 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id t28sm2507739pgn.81.2020.07.30.03.23.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 03:23:25 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 15:51:59 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v2] scsi: stex: use generic power management
+Message-ID: <20200730102159.GA595053@gmail.com>
+References: <20200730101658.576205-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200730101658.576205-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIHN1cHBvcnQgZm9yIHdhdGNoZG9nIGRldmljZSBmb3VuZCBpbiBNVDgxOTIgU29DDQoNClNp
-Z25lZC1vZmYtYnk6IENyeXN0YWwgR3VvIDxjcnlzdGFsLmd1b0BtZWRpYXRlay5jb20+DQpSZXZp
-ZXdlZC1ieTogTWF0dGhpYXMgQnJ1Z2dlciA8bWF0dGhpYXMuYmdnQGdtYWlsLmNvbT4NCi0tLQ0K
-IGRyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jIHwgNiArKysrKysNCiAxIGZpbGUgY2hhbmdlZCwg
-NiBpbnNlcnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3dhdGNoZG9nL210a193ZHQu
-YyBiL2RyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jDQppbmRleCBkNmE2MzkzLi5hZWYwYzJkIDEw
-MDY0NA0KLS0tIGEvZHJpdmVycy93YXRjaGRvZy9tdGtfd2R0LmMNCisrKyBiL2RyaXZlcnMvd2F0
-Y2hkb2cvbXRrX3dkdC5jDQpAQCAtMTEsNiArMTEsNyBAQA0KIA0KICNpbmNsdWRlIDxkdC1iaW5k
-aW5ncy9yZXNldC1jb250cm9sbGVyL210MjcxMi1yZXNldHMuaD4NCiAjaW5jbHVkZSA8ZHQtYmlu
-ZGluZ3MvcmVzZXQtY29udHJvbGxlci9tdDgxODMtcmVzZXRzLmg+DQorI2luY2x1ZGUgPGR0LWJp
-bmRpbmdzL3Jlc2V0LWNvbnRyb2xsZXIvbXQ4MTkyLXJlc2V0cy5oPg0KICNpbmNsdWRlIDxsaW51
-eC9kZWxheS5oPg0KICNpbmNsdWRlIDxsaW51eC9lcnIuaD4NCiAjaW5jbHVkZSA8bGludXgvaW5p
-dC5oPg0KQEAgLTc2LDYgKzc3LDEwIEBAIHN0cnVjdCBtdGtfd2R0X2RhdGEgew0KIAkudG9wcmd1
-X3N3X3JzdF9udW0gPSBNVDgxODNfVE9QUkdVX1NXX1JTVF9OVU0sDQogfTsNCiANCitzdGF0aWMg
-Y29uc3Qgc3RydWN0IG10a193ZHRfZGF0YSBtdDgxOTJfZGF0YSA9IHsNCisJLnRvcHJndV9zd19y
-c3RfbnVtID0gTVQ4MTkyX1RPUFJHVV9TV19SU1RfTlVNLA0KK307DQorDQogc3RhdGljIGludCB0
-b3ByZ3VfcmVzZXRfdXBkYXRlKHN0cnVjdCByZXNldF9jb250cm9sbGVyX2RldiAqcmNkZXYsDQog
-CQkJICAgICAgIHVuc2lnbmVkIGxvbmcgaWQsIGJvb2wgYXNzZXJ0KQ0KIHsNCkBAIC0zMjIsNiAr
-MzI3LDcgQEAgc3RhdGljIGludCBtdGtfd2R0X3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQog
-CXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQyNzEyLXdkdCIsIC5kYXRhID0gJm10MjcxMl9k
-YXRhIH0sDQogCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2NTg5LXdkdCIgfSwNCiAJeyAu
-Y29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtd2R0IiwgLmRhdGEgPSAmbXQ4MTgzX2RhdGEg
-fSwNCisJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItd2R0IiwgLmRhdGEgPSAmbXQ4
-MTkyX2RhdGEgfSwNCiAJeyAvKiBzZW50aW5lbCAqLyB9DQogfTsNCiBNT0RVTEVfREVWSUNFX1RB
-QkxFKG9mLCBtdGtfd2R0X2R0X2lkcyk7DQotLSANCjEuOC4xLjEuZGlydHkNCg==
+The patch is compile-tested only.
 
+Thanks
+Vaibhav Gupta
