@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D48B232F88
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222C6232F90
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729382AbgG3Jer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 05:34:47 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:31283 "EHLO
+        id S1729437AbgG3Je4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 05:34:56 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:50401 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729362AbgG3Jeq (ORCPT
+        by vger.kernel.org with ESMTP id S1729389AbgG3Jeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 05:34:46 -0400
+        Thu, 30 Jul 2020 05:34:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596101684;
+        s=mimecast20190719; t=1596101689;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=94kv3iM7voNuc/GuCMOJeaJASAgCqOV3S0igLlKUpuI=;
-        b=dXLX4YjQNpvvJedn7pAEJOcR3GWiNoByNPvE5myBGUlKP2c+RbZYmWugnr56gRW/toxfSU
-        SteQxtFEJFQDkIdJtWrgYCALzK2kiui5Y4GCldOQ3hmnY4xIjSG5LONutiKF+y7srDuest
-        I1eXDEWDbw6dElIFepmIjrLmqAzS3ys=
+        bh=Lt1g0htUa/bc8OboHGsnEp9sr/LuEltQUA5QpsfHh1k=;
+        b=VMvV/kdBjG35uTcJ0MJfQT+Q4pqsWodjUnkR6Kwvi1e202CEb65qxpqz7V4VwI5FZ/HgpY
+        JFYo/maP3a+oNb2qIyKBpNh0fD668D54g3raPTakyKclGfun/9lg6vjqbUfXjOftKh/X9I
+        hhrZHoix/IJ8DUppHPTD36gcNkAfBSo=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-260-2H-Ycm88OFC9QgFeOjH7fw-1; Thu, 30 Jul 2020 05:34:40 -0400
-X-MC-Unique: 2H-Ycm88OFC9QgFeOjH7fw-1
+ us-mta-58-np1QuLGtNa--F5CHcmUTlA-1; Thu, 30 Jul 2020 05:34:45 -0400
+X-MC-Unique: np1QuLGtNa--F5CHcmUTlA-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E10FF106B24A;
-        Thu, 30 Jul 2020 09:34:24 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 330898DFFC8;
+        Thu, 30 Jul 2020 09:34:27 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-113-185.ams2.redhat.com [10.36.113.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DF9BD6179D;
-        Thu, 30 Jul 2020 09:34:22 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3AEE05FC31;
+        Thu, 30 Jul 2020 09:34:25 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
@@ -44,9 +44,9 @@ Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
         "Michael S . Tsirkin" <mst@redhat.com>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Subject: [PATCH v2 2/6] mm/page_alloc: tweak comments in has_unmovable_pages()
-Date:   Thu, 30 Jul 2020 11:34:12 +0200
-Message-Id: <20200730093416.36210-3-david@redhat.com>
+Subject: [PATCH v2 3/6] mm/page_isolation: drop WARN_ON_ONCE() in set_migratetype_isolate()
+Date:   Thu, 30 Jul 2020 11:34:13 +0200
+Message-Id: <20200730093416.36210-4-david@redhat.com>
 In-Reply-To: <20200730093416.36210-1-david@redhat.com>
 References: <20200730093416.36210-1-david@redhat.com>
 MIME-Version: 1.0
@@ -57,9 +57,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's move the split comment regarding bootmem allocations and memory
-holes, especially in the context of ZONE_MOVABLE, to the PageReserved()
-check.
+Inside has_unmovable_pages(), we have a comment describing how unmovable
+data could end up in ZONE_MOVABLE - via "movable_core". Also, besides
+checking if the first page in the pageblock is reserved, we don't
+perform any further checks in case of ZONE_MOVABLE.
+
+In case of memory offlining, we set REPORT_FAILURE, properly
+dump_page() the page and handle the error gracefully.
+alloc_contig_pages() users currently never allocate from ZONE_MOVABLE.
+E.g., hugetlb uses alloc_contig_pages() for the allocation of gigantic
+pages only, which will never end up on the MOVABLE zone
+(see htlb_alloc_mask()).
 
 Reviewed-by: Baoquan He <bhe@redhat.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
@@ -69,56 +77,35 @@ Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/page_alloc.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+ mm/page_isolation.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index e028b87ce2942..042ba09d70c5d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8207,14 +8207,6 @@ struct page *has_unmovable_pages(struct zone *zone, struct page *page,
- 	unsigned long iter = 0;
- 	unsigned long pfn = page_to_pfn(page);
- 
--	/*
--	 * TODO we could make this much more efficient by not checking every
--	 * page in the range if we know all of them are in MOVABLE_ZONE and
--	 * that the movable zone guarantees that pages are migratable but
--	 * the later is not the case right now unfortunatelly. E.g. movablecore
--	 * can still lead to having bootmem allocations in zone_movable.
--	 */
+diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+index 7d7d263ce7f4b..d099aac479601 100644
+--- a/mm/page_isolation.c
++++ b/mm/page_isolation.c
+@@ -57,15 +57,12 @@ static int set_migratetype_isolate(struct page *page, int migratetype, int isol_
+ 	spin_unlock_irqrestore(&zone->lock, flags);
+ 	if (!ret) {
+ 		drain_all_pages(zone);
+-	} else {
+-		WARN_ON_ONCE(zone_idx(zone) == ZONE_MOVABLE);
 -
- 	if (is_migrate_cma_page(page)) {
- 		/*
- 		 * CMA allocations (alloc_contig_range) really need to mark
-@@ -8233,6 +8225,12 @@ struct page *has_unmovable_pages(struct zone *zone, struct page *page,
- 
- 		page = pfn_to_page(pfn + iter);
- 
+-		if ((isol_flags & REPORT_FAILURE) && unmovable)
+-			/*
+-			 * printk() with zone->lock held will likely trigger a
+-			 * lockdep splat, so defer it here.
+-			 */
+-			dump_page(unmovable, "unmovable page");
++	} else if ((isol_flags & REPORT_FAILURE) && unmovable) {
 +		/*
-+		 * Both, bootmem allocations and memory holes are marked
-+		 * PG_reserved and are unmovable. We can even have unmovable
-+		 * allocations inside ZONE_MOVABLE, for example when
-+		 * specifying "movablecore".
++		 * printk() with zone->lock held will likely trigger a
++		 * lockdep splat, so defer it here.
 +		 */
- 		if (PageReserved(page))
- 			return page;
- 
-@@ -8306,14 +8304,6 @@ struct page *has_unmovable_pages(struct zone *zone, struct page *page,
- 		 * it.  But now, memory offline itself doesn't call
- 		 * shrink_node_slabs() and it still to be fixed.
- 		 */
--		/*
--		 * If the page is not RAM, page_count()should be 0.
--		 * we don't need more check. This is an _used_ not-movable page.
--		 *
--		 * The problematic thing here is PG_reserved pages. PG_reserved
--		 * is set to both of a memory hole page and a _used_ kernel
--		 * page at boot.
--		 */
- 		return page;
++		dump_page(unmovable, "unmovable page");
  	}
- 	return NULL;
+ 
+ 	return ret;
 -- 
 2.26.2
 
