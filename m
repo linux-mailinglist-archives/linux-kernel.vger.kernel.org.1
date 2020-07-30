@@ -2,124 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEEC232893
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E5123289D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgG3AN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 20:13:28 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:24877 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727072AbgG3AN2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 20:13:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1596068007; x=1627604007;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=sI99ASFOpAizx/017vNG8t+8unNbilMwdFtd7ktWwNI=;
-  b=CjZeOFaeNhlBHlJUuOFp1qZa7770KIFw2XjNLzf69rfxgH6sEShOo9/1
-   TycdtgKKRGidwFxh+xn9Lu0k75r3/EznyTyyR4xnx9Erk5kLXCW4RHEZM
-   7M/l0HLSBShbZ43oThXT45HQmXq4chMTt2uPTX0W9h2LWNkbRuS0q+ic2
-   c=;
-IronPort-SDR: YB+60HzVqX3P8qq7WfcqIW5Cpu+lDqk7BquDe8xVzzb5joWUr+VOxyep7nZ4qTlbXSIGZ7+/F/
- WrTq24b9csMA==
-X-IronPort-AV: E=Sophos;i="5.75,412,1589241600"; 
-   d="scan'208";a="55915251"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-62350142.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 30 Jul 2020 00:13:18 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-62350142.us-east-1.amazon.com (Postfix) with ESMTPS id 3DB1AA25C4;
-        Thu, 30 Jul 2020 00:13:13 +0000 (UTC)
-Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 30 Jul 2020 00:13:13 +0000
-Received: from f8ffc2228008.ant.amazon.com (10.43.161.203) by
- EX13d01UWA002.ant.amazon.com (10.43.160.74) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 30 Jul 2020 00:13:10 +0000
-Subject: Re: [PATCH v2 4/5] prctl: Hook L1D flushing in via prctl
-To:     Tom Lendacky <thomas.lendacky@amd.com>, <tglx@linutronix.de>,
-        <linux-kernel@vger.kernel.org>
-CC:     <jpoimboe@redhat.com>, <tony.luck@intel.com>,
-        <keescook@chromium.org>, <benh@kernel.crashing.org>,
-        <x86@kernel.org>, <dave.hansen@intel.com>,
-        <torvalds@linux-foundation.org>, <mingo@kernel.org>
-References: <20200729001103.6450-1-sblbir@amazon.com>
- <20200729001103.6450-5-sblbir@amazon.com>
- <982c1d40-aac1-df0c-c3b7-2699dc0b9b6f@amd.com>
-From:   "Singh, Balbir" <sblbir@amazon.com>
-Message-ID: <33b99d83-f2de-6984-c3d6-a44960aac828@amazon.com>
-Date:   Thu, 30 Jul 2020 10:13:09 +1000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.0.1
-MIME-Version: 1.0
-In-Reply-To: <982c1d40-aac1-df0c-c3b7-2699dc0b9b6f@amd.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.203]
-X-ClientProxiedBy: EX13D40UWA003.ant.amazon.com (10.43.160.29) To
- EX13d01UWA002.ant.amazon.com (10.43.160.74)
+        id S1728193AbgG3AOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 20:14:21 -0400
+Received: from mga09.intel.com ([134.134.136.24]:33261 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727072AbgG3AOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 20:14:21 -0400
+IronPort-SDR: aOxqKlTQ0wjsQYVL/HvSPGgxFK83OlAaQRgB6TqNKEZ7HtUAake+I1gLRZvrxvzTREOvblWEmq
+ DHiiTRmU18/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="152748850"
+X-IronPort-AV: E=Sophos;i="5.75,412,1589266800"; 
+   d="scan'208";a="152748850"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 17:14:20 -0700
+IronPort-SDR: lLkOeERMcTSW7/4jwMcGETbRO9EUC/CNYsRMxF40HDqvyH7dLXyFbRq2EfRfCQxCAp4u4T2bJR
+ wyiZ7N4lql5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,412,1589266800"; 
+   d="scan'208";a="286680241"
+Received: from jacob-builder.jf.intel.com ([10.7.199.155])
+  by orsmga003.jf.intel.com with ESMTP; 29 Jul 2020 17:14:19 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     "Lu Baolu" <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v7 0/7] IOMMU user API enhancement
+Date:   Wed, 29 Jul 2020 17:21:00 -0700
+Message-Id: <1596068467-49322-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/7/20 11:14 pm, Tom Lendacky wrote:
-> 
-> 
-> On 7/28/20 7:11 PM, Balbir Singh wrote:
->> Use the existing PR_GET/SET_SPECULATION_CTRL API to expose the L1D
->> flush capability. For L1D flushing PR_SPEC_FORCE_DISABLE and
->> PR_SPEC_DISABLE_NOEXEC are not supported.
->>
->> There is also no seccomp integration for the feature.
->>
->> Signed-off-by: Balbir Singh <sblbir@amazon.com>
->> ---
->>  arch/x86/kernel/cpu/bugs.c | 54 ++++++++++++++++++++++++++++++++++++++
->>  arch/x86/mm/tlb.c          | 25 +++++++++++++++++-
->>  include/uapi/linux/prctl.h |  1 +
->>  3 files changed, 79 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
->> index 0b71970d2d3d..935ea88313ab 100644
->> --- a/arch/x86/kernel/cpu/bugs.c
->> +++ b/arch/x86/kernel/cpu/bugs.c
->> @@ -295,6 +295,13 @@ enum taa_mitigations {
->>       TAA_MITIGATION_TSX_DISABLED,
->>  };
->>
->> +enum l1d_flush_out_mitigations {
->> +     L1D_FLUSH_OUT_OFF,
->> +     L1D_FLUSH_OUT_ON,
->> +};
->> +
->> +static enum l1d_flush_out_mitigations l1d_flush_out_mitigation __ro_after_init = L1D_FLUSH_OUT_ON;
->> +
->>  /* Default mitigation for TAA-affected CPUs */
->>  static enum taa_mitigations taa_mitigation __ro_after_init = TAA_MITIGATION_VERW;
->>  static bool taa_nosmt __ro_after_init;
->> @@ -378,6 +385,18 @@ static void __init taa_select_mitigation(void)
->>       pr_info("%s\n", taa_strings[taa_mitigation]);
->>  }
->>
->> +static int __init l1d_flush_out_parse_cmdline(char *str)
->> +{
->> +     if (!boot_cpu_has_bug(X86_BUG_L1TF))
->> +             return 0;
-> 
-> Shouldn't this set the l1d_flush_out_mitigation to L1D_FLUSH_OUT_OFF since
-> it is set to L1D_FLUSH_OUT_ON by default? Or does it not matter because
-> the enable_l1d_flush_for_task() will return -EINVAL if the cpu doesn't
-> have the L1TF bug?
->
-> I guess it depends on what you want l1d_flush_out_prctl_set() and
-> l1d_flush_out_prctl_get() to return in this case.
-> 
+IOMMU user API header was introduced to support nested DMA translation and
+related fault handling. The current UAPI data structures consist of three
+areas that cover the interactions between host kernel and guest:
+ - fault handling
+ - cache invalidation
+ - bind guest page tables, i.e. guest PASID
 
-Exactly! We want to differentiate between force disabled and not applicable.
+Future extensions are likely to support more architectures and vIOMMU features.
+
+In the previous discussion, using user-filled data size and feature flags is
+made a preferred approach over a unified version number.
+https://lkml.org/lkml/2020/1/29/45
+
+In addition to introduce argsz field to data structures, this patchset is also
+trying to document the UAPI design, usage, and extension rules. VT-d driver
+changes to utilize the new argsz field is included, VFIO usage is to follow.
+
+This set is available at:
+https://github.com/jacobpan/linux.git vsva_v5.8_uapi_v7
+
+Thanks,
+
+Jacob
 
 
-Thanks for the review,
-Balbir Singh.
+Changeog:
+v7
+	- Added PASID data format enum for range checking
+	- Tidy up based on reviews from Alex W.
+	- Removed doc section for vIOMMU fault handling
+v6
+	- Renamed all UAPI functions with iommu_uapi_ prefix
+	- Replaced argsz maxsz checking with flag specific size checks
+	- Documentation improvements based on suggestions by Eric Auger
+	  Replaced example code with a pointer to the actual code
+	- Added more checks for illegal flags combinations
+	- Added doc file to MAINTAINERS
+v5
+	- Addjusted paddings in UAPI data to be 8 byte aligned
+	- Do not clobber argsz in IOMMU core before passing on to vendor driver
+	- Removed pr_warn_ for invalid UAPI data check, just return -EINVAL
+	- Clarified VFIO responsibility in UAPI data handling
+	- Use iommu_uapi prefix to differentiate APIs has in-kernel caller
+	- Added comment for unchecked flags of invalidation granularity
+	- Added example in doc to show vendor data checking
+
+v4
+	- Added checks of UAPI data for reserved fields, version, and flags.
+	- Removed version check from vendor driver (vt-d)
+	- Relaxed argsz check to match the UAPI struct size instead of variable
+	  union size
+	- Updated documentation
+
+v3:
+	- Rewrote backward compatibility rule to support existing code
+	  re-compiled with newer kernel UAPI header that runs on older
+	  kernel. Based on review comment from Alex W.
+	  https://lore.kernel.org/linux-iommu/20200611094741.6d118fa8@w520.home/
+	- Take user pointer directly in UAPI functions. Perform argsz check
+	  and copy_from_user() in IOMMU driver. Eliminate the need for
+	  VFIO or other upper layer to parse IOMMU data.
+	- Create wrapper function for in-kernel users of UAPI functions
+v2:
+	- Removed unified API version and helper
+	- Introduced argsz for each UAPI data
+	- Introduced UAPI doc
+
+
+Jacob Pan (7):
+  docs: IOMMU user API
+  iommu/uapi: Add argsz for user filled data
+  iommu/uapi: Introduce enum type for PASID data format
+  iommu/uapi: Use named union for user data
+  iommu/uapi: Rename uapi functions
+  iommu/uapi: Handle data and argsz filled by users
+  iommu/vt-d: Check UAPI data processed by IOMMU core
+
+ Documentation/userspace-api/iommu.rst | 212 ++++++++++++++++++++++++++++++++++
+ MAINTAINERS                           |   1 +
+ drivers/iommu/intel/iommu.c           |  25 ++--
+ drivers/iommu/intel/svm.c             |   9 +-
+ drivers/iommu/iommu.c                 | 205 ++++++++++++++++++++++++++++++--
+ include/linux/iommu.h                 |  35 ++++--
+ include/uapi/linux/iommu.h            |  24 ++--
+ 7 files changed, 466 insertions(+), 45 deletions(-)
+ create mode 100644 Documentation/userspace-api/iommu.rst
+
+-- 
+2.7.4
+
