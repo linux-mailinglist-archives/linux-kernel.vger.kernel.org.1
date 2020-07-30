@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA94B232FC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAEF232FCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729451AbgG3JrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 05:47:16 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:55349 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728739AbgG3JrH (ORCPT
+        id S1729481AbgG3JrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 05:47:20 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47564 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726707AbgG3JrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 05:47:07 -0400
+        Thu, 30 Jul 2020 05:47:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596102425;
+        s=mimecast20190719; t=1596102428;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IyszSINmUuWIze0BnbavP6pqqJ9qAHJ6c6Qsw22nt4E=;
-        b=MqczXSswaZmAtb+7fIfr+05fRUH7LK85h1vPHbwDqtulWBnkrJriQrbEHeT7KoLuHENVIU
-        XfJp90IOpnaWGnSzIwbxkNwKp57SJy1LjubfpPhB1I7++yAd6kfLx8OpButYG1gf7vrumg
-        qD+aG/vHU6Mea6Ozu6Yue5/xdRMxJ8o=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-eLspCjMBNgyxs3kURoGa3A-1; Thu, 30 Jul 2020 05:47:03 -0400
-X-MC-Unique: eLspCjMBNgyxs3kURoGa3A-1
-Received: by mail-wr1-f71.google.com with SMTP id j16so7757942wrw.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 02:47:03 -0700 (PDT)
+        bh=2aTdzCDbiXFr0HYcp8bd3qhNqo1ct8dfhVxx+T1oMlk=;
+        b=jFAjm2LeGs6+hVcjdBD4nFt0pcntXKZPg9+vryLbPr59MfFiWI0Y9ZfqhqhAeXwzMGgbMB
+        mWtIeAlwg0rkb0U7on6/HkMnZzM1ZLaYfThJz2g3+9pxC2lR3Tdy/3TnYyo31myCjyyHPk
+        t0gSqvKRtSZHr453kvmO4hsobbbNy+U=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-1k8fF2c0PJGMVI3F4pOrng-1; Thu, 30 Jul 2020 05:47:05 -0400
+X-MC-Unique: 1k8fF2c0PJGMVI3F4pOrng-1
+Received: by mail-wr1-f70.google.com with SMTP id w1so5718263wro.4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 02:47:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IyszSINmUuWIze0BnbavP6pqqJ9qAHJ6c6Qsw22nt4E=;
-        b=tcNj9aQlb+INECUl+Gxgff2z0IYCYtDRvLTPYwfdysOYbYGu+GtN/UHQ5mKcpjjO3I
-         VJHGyMFxvWzkGhgHUivyCib0enlDO9ATFO5Iy9M01m1r4oX6/Y1JRwU4u+HPk559lnUP
-         RobhToF61by7Ecpuo2pKowCIH7U7tfnAFzbAHId+xxNKdXKL6OcoZfk72UiUimdhttsO
-         CCCvjThZOqTD29oxBr5E42K+VduVI+IbuhTujUOrH4ASuN8+xm+QYNr6DJfL+MBU5s/c
-         Xd6D6xj3cSTALMlgf10IT0z4cvhPUIRF33d8IxApUu5yD8vDy0k5+iB7dekFXodmey4E
-         iAtg==
-X-Gm-Message-State: AOAM531HXRgyn+6pvlkwRGRHuvkIw82J4ytZYe9baTmdR1dhdB9XJgz+
-        Gaoobx4uKeADSBphHXzXtJVhnIPZvAKHm1ffl2LdcAFjwpSi1xHP1eo1L8NoQU8SdOefa3ezPNI
-        aYds8J/HfPKBWdEGeCvC3MqfV
-X-Received: by 2002:a1c:18e:: with SMTP id 136mr12364018wmb.93.1596102422036;
-        Thu, 30 Jul 2020 02:47:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxeCvv9QIx3gUBDdMdGQ7ordtkh4NFfHe5C/Ru33YoKDiX4jELw1pNcq2XN0X7BPxUe7P8Oxg==
-X-Received: by 2002:a1c:18e:: with SMTP id 136mr12363995wmb.93.1596102421764;
-        Thu, 30 Jul 2020 02:47:01 -0700 (PDT)
+        bh=2aTdzCDbiXFr0HYcp8bd3qhNqo1ct8dfhVxx+T1oMlk=;
+        b=fJ5e3Gzlreyz30fubWuybpLUO9J3SaS5XpfGhK1ZCT9tiNQVFDmhOqTWLREYGt2ZH/
+         NgC55agOVlEqkM3YsNTpTQ0tjzGJBNH1Q0FzFlZqU3fLMyCXXuJBNdFm+pqmWngRNEwI
+         FLxFVGuIsGp/wtCf31eAhr68zFzOprtWS+c39B6pUgbjkazBI9H/AK0QSKUPsPfu7Kbo
+         QdUaT+9QuGcfh1J0MEdMYHEmi6EWQqPSYtAfayYDzYkIdnf9kclqvYa+uVy/o6ApWnP4
+         zn+OubMQQDAJy7kVtjsu3Tu3298awpCBq97PP58xKk9XyX7aP2yumHMvWS2gYvER8QUV
+         wKbw==
+X-Gm-Message-State: AOAM530EGDfJrw1LJHOkvK+qyMdEZz1Q2LU/2YaFZATvju6RbEfPWRKb
+        aLIQ20me0lO/iJDzTRrDEI7DYcbvY1hy159gBTls3eKYciweHKqrEsHRbf5LavUyIES2bZi9kxQ
+        ExkYmAC5v0927hMO4FD599SuR
+X-Received: by 2002:adf:eb05:: with SMTP id s5mr2196714wrn.0.1596102423393;
+        Thu, 30 Jul 2020 02:47:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwncdINiym4n+hbLSDB2gZq2NxeQiTFdmkEAPerytnB5txVcLK/3O3JLoSIHqHl2ev9RVvYPw==
+X-Received: by 2002:adf:eb05:: with SMTP id s5mr2196679wrn.0.1596102423007;
+        Thu, 30 Jul 2020 02:47:03 -0700 (PDT)
 Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id j6sm9009645wro.25.2020.07.30.02.47.00
+        by smtp.gmail.com with ESMTPSA id j6sm9009645wro.25.2020.07.30.02.47.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 02:47:01 -0700 (PDT)
+        Thu, 30 Jul 2020 02:47:02 -0700 (PDT)
 From:   Julien Thierry <jthierry@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
         raphael.gault@arm.com, benh@kernel.crashing.org,
         Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH v2 5/9] objtool: Make relocation in alternative handling arch dependent
-Date:   Thu, 30 Jul 2020 10:46:48 +0100
-Message-Id: <20200730094652.28297-6-jthierry@redhat.com>
+Subject: [PATCH v2 6/9] objtool: Refactor switch-tables code to support other architectures
+Date:   Thu, 30 Jul 2020 10:46:49 +0100
+Message-Id: <20200730094652.28297-7-jthierry@redhat.com>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20200730094652.28297-1-jthierry@redhat.com>
 References: <20200730094652.28297-1-jthierry@redhat.com>
@@ -69,124 +69,289 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As pointed out by the comment in handle_group_alt(), support of
-relocation for instructions in an alternative group depends on whether
-arch specific kernel code handles it.
+From: Raphael Gault <raphael.gault@arm.com>
 
-So, let objtool arch specific code decide whether a relocation for
-the alternative section should be accepted.
+The way to identify switch-tables and retrieves all the data necessary
+to handle the different execution branches is not the same on all
+architecture. In order to be able to add other architecture support,
+define an arch-dependent function to process jump-tables.
 
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Raphael Gault <raphael.gault@arm.com>
+[J.T.: Move arm64 bits out of this patch,
+       Have only one function to find the start of the jump table,
+       for now assume that the jump table format will be the same as
+       x86]
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 ---
- tools/objtool/arch/x86/arch_special.c | 13 +++++++++++++
- tools/objtool/check.c                 | 19 ++++++-------------
- tools/objtool/check.h                 |  6 ++++++
- tools/objtool/special.h               |  4 ++++
- 4 files changed, 29 insertions(+), 13 deletions(-)
+ tools/objtool/arch/x86/arch_special.c | 95 +++++++++++++++++++++++++++
+ tools/objtool/check.c                 | 88 +------------------------
+ tools/objtool/check.h                 |  1 -
+ tools/objtool/special.h               |  4 ++
+ 4 files changed, 102 insertions(+), 86 deletions(-)
 
 diff --git a/tools/objtool/arch/x86/arch_special.c b/tools/objtool/arch/x86/arch_special.c
-index 823561e4015c..34e0e162e6fd 100644
+index 34e0e162e6fd..fd4af88c0ea5 100644
 --- a/tools/objtool/arch/x86/arch_special.c
 +++ b/tools/objtool/arch/x86/arch_special.c
-@@ -35,3 +35,16 @@ void arch_handle_alternative(unsigned short feature, struct special_alt *alt)
- 		break;
- 	}
+@@ -1,4 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
++#include <string.h>
++
+ #include "../../special.h"
+ #include "../../builtin.h"
+ 
+@@ -48,3 +50,96 @@ bool arch_support_alt_relocation(struct special_alt *special_alt,
+ 	return insn->offset == special_alt->new_off &&
+ 	       (insn->type == INSN_CALL || is_static_jump(insn));
  }
 +
-+bool arch_support_alt_relocation(struct special_alt *special_alt,
-+				 struct instruction *insn,
-+				 struct reloc *reloc)
++/*
++ * There are 3 basic jump table patterns:
++ *
++ * 1. jmpq *[rodata addr](,%reg,8)
++ *
++ *    This is the most common case by far.  It jumps to an address in a simple
++ *    jump table which is stored in .rodata.
++ *
++ * 2. jmpq *[rodata addr](%rip)
++ *
++ *    This is caused by a rare GCC quirk, currently only seen in three driver
++ *    functions in the kernel, only with certain obscure non-distro configs.
++ *
++ *    As part of an optimization, GCC makes a copy of an existing switch jump
++ *    table, modifies it, and then hard-codes the jump (albeit with an indirect
++ *    jump) to use a single entry in the table.  The rest of the jump table and
++ *    some of its jump targets remain as dead code.
++ *
++ *    In such a case we can just crudely ignore all unreachable instruction
++ *    warnings for the entire object file.  Ideally we would just ignore them
++ *    for the function, but that would require redesigning the code quite a
++ *    bit.  And honestly that's just not worth doing: unreachable instruction
++ *    warnings are of questionable value anyway, and this is such a rare issue.
++ *
++ * 3. mov [rodata addr],%reg1
++ *    ... some instructions ...
++ *    jmpq *(%reg1,%reg2,8)
++ *
++ *    This is a fairly uncommon pattern which is new for GCC 6.  As of this
++ *    writing, there are 11 occurrences of it in the allmodconfig kernel.
++ *
++ *    As of GCC 7 there are quite a few more of these and the 'in between' code
++ *    is significant. Esp. with KASAN enabled some of the code between the mov
++ *    and jmpq uses .rodata itself, which can confuse things.
++ *
++ *    TODO: Once we have DWARF CFI and smarter instruction decoding logic,
++ *    ensure the same register is used in the mov and jump instructions.
++ *
++ *    NOTE: RETPOLINE made it harder still to decode dynamic jumps.
++ */
++struct reloc *arch_find_switch_table(struct objtool_file *file,
++				    struct instruction *insn)
 +{
++	struct reloc  *text_reloc, *rodata_reloc;
++	struct section *table_sec;
++	unsigned long table_offset;
++
++	/* look for a relocation which references .rodata */
++	text_reloc = find_reloc_by_dest_range(file->elf, insn->sec,
++					      insn->offset, insn->len);
++	if (!text_reloc || text_reloc->sym->type != STT_SECTION ||
++	    !text_reloc->sym->sec->rodata)
++		return NULL;
++
++	table_offset = text_reloc->addend;
++	table_sec = text_reloc->sym->sec;
++
++	if (text_reloc->type == R_X86_64_PC32)
++		table_offset += 4;
++
 +	/*
-+	 * The x86 alternatives code adjusts the offsets only when it
-+	 * encounters a branch instruction at the very beginning of the
-+	 * replacement group.
++	 * Make sure the .rodata address isn't associated with a
++	 * symbol.  GCC jump tables are anonymous data.
++	 *
++	 * Also support C jump tables which are in the same format as
++	 * switch jump tables.  For objtool to recognize them, they
++	 * need to be placed in the C_JUMP_TABLE_SECTION section.  They
++	 * have symbols associated with them.
 +	 */
-+	return insn->offset == special_alt->new_off &&
-+	       (insn->type == INSN_CALL || is_static_jump(insn));
++	if (find_symbol_containing(table_sec, table_offset) &&
++	    strcmp(table_sec->name, C_JUMP_TABLE_SECTION))
++		return NULL;
++
++	/*
++	 * Each table entry has a rela associated with it.  The rela
++	 * should reference text in the same function as the original
++	 * instruction.
++	 */
++	rodata_reloc = find_reloc_by_dest(file->elf, table_sec, table_offset);
++	if (!rodata_reloc)
++		return NULL;
++
++	/*
++	 * Use of RIP-relative switch jumps is quite rare, and
++	 * indicates a rare GCC quirk/bug which can leave dead
++	 * code behind.
++	 */
++	if (text_reloc->type == R_X86_64_PC32)
++		file->ignore_unreachables = true;
++
++	return rodata_reloc;
 +}
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index bb19e4c79e46..18ef9c64719f 100644
+index 18ef9c64719f..60f5be2accf6 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -109,12 +109,6 @@ static struct instruction *prev_insn_same_sym(struct objtool_file *file,
- 	for (insn = next_insn_same_sec(file, insn); insn;		\
- 	     insn = next_insn_same_sec(file, insn))
+@@ -19,8 +19,6 @@
  
--static bool is_static_jump(struct instruction *insn)
--{
--	return insn->type == INSN_JUMP_CONDITIONAL ||
--	       insn->type == INSN_JUMP_UNCONDITIONAL;
--}
+ #define FAKE_JUMP_OFFSET -1
+ 
+-#define C_JUMP_TABLE_SECTION ".rodata..c_jump_table"
 -
- static bool is_sibling_call(struct instruction *insn)
+ struct alternative {
+ 	struct list_head list;
+ 	struct instruction *insn;
+@@ -1085,55 +1083,14 @@ static int add_jump_table(struct objtool_file *file, struct instruction *insn,
+ 
+ /*
+  * find_jump_table() - Given a dynamic jump, find the switch jump table in
+- * .rodata associated with it.
+- *
+- * There are 3 basic patterns:
+- *
+- * 1. jmpq *[rodata addr](,%reg,8)
+- *
+- *    This is the most common case by far.  It jumps to an address in a simple
+- *    jump table which is stored in .rodata.
+- *
+- * 2. jmpq *[rodata addr](%rip)
+- *
+- *    This is caused by a rare GCC quirk, currently only seen in three driver
+- *    functions in the kernel, only with certain obscure non-distro configs.
+- *
+- *    As part of an optimization, GCC makes a copy of an existing switch jump
+- *    table, modifies it, and then hard-codes the jump (albeit with an indirect
+- *    jump) to use a single entry in the table.  The rest of the jump table and
+- *    some of its jump targets remain as dead code.
+- *
+- *    In such a case we can just crudely ignore all unreachable instruction
+- *    warnings for the entire object file.  Ideally we would just ignore them
+- *    for the function, but that would require redesigning the code quite a
+- *    bit.  And honestly that's just not worth doing: unreachable instruction
+- *    warnings are of questionable value anyway, and this is such a rare issue.
+- *
+- * 3. mov [rodata addr],%reg1
+- *    ... some instructions ...
+- *    jmpq *(%reg1,%reg2,8)
+- *
+- *    This is a fairly uncommon pattern which is new for GCC 6.  As of this
+- *    writing, there are 11 occurrences of it in the allmodconfig kernel.
+- *
+- *    As of GCC 7 there are quite a few more of these and the 'in between' code
+- *    is significant. Esp. with KASAN enabled some of the code between the mov
+- *    and jmpq uses .rodata itself, which can confuse things.
+- *
+- *    TODO: Once we have DWARF CFI and smarter instruction decoding logic,
+- *    ensure the same register is used in the mov and jump instructions.
+- *
+- *    NOTE: RETPOLINE made it harder still to decode dynamic jumps.
++ * associated with it.
+  */
+ static struct reloc *find_jump_table(struct objtool_file *file,
+ 				      struct symbol *func,
+ 				      struct instruction *insn)
  {
- 	/* An indirect jump is either a sibling call or a jump to a table. */
-@@ -866,6 +860,8 @@ static int handle_group_alt(struct objtool_file *file,
- 	alt_group = alt_group_next_index++;
- 	insn = *new_insn;
- 	sec_for_each_insn_from(file, insn) {
-+		struct reloc *alt_reloc;
-+
- 		if (insn->offset >= special_alt->new_off + special_alt->new_len)
- 			break;
+-	struct reloc *text_reloc, *table_reloc;
++	struct reloc *table_reloc;
+ 	struct instruction *dest_insn, *orig_insn = insn;
+-	struct section *table_sec;
+-	unsigned long table_offset;
  
-@@ -882,14 +878,11 @@ static int handle_group_alt(struct objtool_file *file,
- 		 * .altinstr_replacement section, unless the arch's
- 		 * alternatives code can adjust the relative offsets
- 		 * accordingly.
+ 	/*
+ 	 * Backward search using the @first_jump_src links, these help avoid
+@@ -1154,52 +1111,13 @@ static struct reloc *find_jump_table(struct objtool_file *file,
+ 		     insn->jump_dest->offset > orig_insn->offset))
+ 		    break;
+ 
+-		/* look for a relocation which references .rodata */
+-		text_reloc = find_reloc_by_dest_range(file->elf, insn->sec,
+-						    insn->offset, insn->len);
+-		if (!text_reloc || text_reloc->sym->type != STT_SECTION ||
+-		    !text_reloc->sym->sec->rodata)
+-			continue;
+-
+-		table_offset = text_reloc->addend;
+-		table_sec = text_reloc->sym->sec;
+-
+-		if (text_reloc->type == R_X86_64_PC32)
+-			table_offset += 4;
+-
+-		/*
+-		 * Make sure the .rodata address isn't associated with a
+-		 * symbol.  GCC jump tables are anonymous data.
 -		 *
--		 * The x86 alternatives code adjusts the offsets only when it
--		 * encounters a branch instruction at the very beginning of the
--		 * replacement group.
- 		 */
--		if ((insn->offset != special_alt->new_off ||
--		    (insn->type != INSN_CALL && !is_static_jump(insn))) &&
--		    find_reloc_by_dest_range(file->elf, insn->sec, insn->offset, insn->len)) {
-+		alt_reloc = find_reloc_by_dest_range(file->elf, insn->sec,
-+						   insn->offset, insn->len);
-+		if (alt_reloc &&
-+		    !arch_support_alt_relocation(special_alt, insn, alt_reloc)) {
+-		 * Also support C jump tables which are in the same format as
+-		 * switch jump tables.  For objtool to recognize them, they
+-		 * need to be placed in the C_JUMP_TABLE_SECTION section.  They
+-		 * have symbols associated with them.
+-		 */
+-		if (find_symbol_containing(table_sec, table_offset) &&
+-		    strcmp(table_sec->name, C_JUMP_TABLE_SECTION))
+-			continue;
+-
+-		/*
+-		 * Each table entry has a reloc associated with it.  The reloc
+-		 * should reference text in the same function as the original
+-		 * instruction.
+-		 */
+-		table_reloc = find_reloc_by_dest(file->elf, table_sec, table_offset);
++		table_reloc = arch_find_switch_table(file, insn);
+ 		if (!table_reloc)
+ 			continue;
+ 		dest_insn = find_insn(file, table_reloc->sym->sec, table_reloc->addend);
+ 		if (!dest_insn || !dest_insn->func || dest_insn->func->pfunc != func)
+ 			continue;
  
- 			WARN_FUNC("unsupported relocation in alternatives section",
- 				  insn->sec, insn->offset);
+-		/*
+-		 * Use of RIP-relative switch jumps is quite rare, and
+-		 * indicates a rare GCC quirk/bug which can leave dead code
+-		 * behind.
+-		 */
+-		if (text_reloc->type == R_X86_64_PC32)
+-			file->ignore_unreachables = true;
+-
+ 		return table_reloc;
+ 	}
+ 
 diff --git a/tools/objtool/check.h b/tools/objtool/check.h
-index 059c43bfeb18..c08ca6cd9a89 100644
+index c08ca6cd9a89..8a1a49407cac 100644
 --- a/tools/objtool/check.h
 +++ b/tools/objtool/check.h
-@@ -44,6 +44,12 @@ struct instruction {
- 	struct cfi_state cfi;
- };
+@@ -62,5 +62,4 @@ struct instruction *find_insn(struct objtool_file *file,
+ 			insn->sec == sec;				\
+ 	     insn = list_next_entry(insn, list))
  
-+static inline bool is_static_jump(struct instruction *insn)
-+{
-+	return insn->type == INSN_JUMP_CONDITIONAL ||
-+	       insn->type == INSN_JUMP_UNCONDITIONAL;
-+}
-+
- struct instruction *find_insn(struct objtool_file *file,
- 			      struct section *sec, unsigned long offset);
- 
+-
+ #endif /* _CHECK_H */
 diff --git a/tools/objtool/special.h b/tools/objtool/special.h
-index 44da89afeda2..1dc1bb3e74c6 100644
+index 1dc1bb3e74c6..abddf38ef334 100644
 --- a/tools/objtool/special.h
 +++ b/tools/objtool/special.h
-@@ -7,6 +7,7 @@
- #define _SPECIAL_H
- 
- #include <stdbool.h>
-+#include "check.h"
+@@ -10,6 +10,8 @@
+ #include "check.h"
  #include "elf.h"
  
++#define C_JUMP_TABLE_SECTION ".rodata..c_jump_table"
++
  struct special_alt {
-@@ -30,4 +31,7 @@ int special_get_alts(struct elf *elf, struct list_head *alts);
+ 	struct list_head list;
  
- void arch_handle_alternative(unsigned short feature, struct special_alt *alt);
- 
-+bool arch_support_alt_relocation(struct special_alt *special_alt,
-+				 struct instruction *insn,
-+				 struct reloc *reloc);
+@@ -34,4 +36,6 @@ void arch_handle_alternative(unsigned short feature, struct special_alt *alt);
+ bool arch_support_alt_relocation(struct special_alt *special_alt,
+ 				 struct instruction *insn,
+ 				 struct reloc *reloc);
++struct reloc *arch_find_switch_table(struct objtool_file *file,
++				    struct instruction *insn);
  #endif /* _SPECIAL_H */
 -- 
 2.21.3
