@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05BD2334A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521692334A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729579AbgG3Okm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 10:40:42 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:49634 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbgG3Okl (ORCPT
+        id S1729599AbgG3OmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 10:42:16 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:39490 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728462AbgG3OmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 10:40:41 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06UEVjnh041154;
-        Thu, 30 Jul 2020 14:40:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=omQ+KSFeNr5QzVD54DbuGF3jbgJUnhNVpnQ3/r7WG9Y=;
- b=DXJe+AjnLLOo+GuhAKz2j/wROv2iZtMBMELdPuW+tQvaOEpXsgR5WT2koCt/bc/41Eng
- iCK6T7ejntLXxEISPEQbTrAdJgHp+JFBAT2zXBfVO9bUdTQinJ2IYE8KSq+EfiMrWOdG
- dbfDH2Xw+8oTtkHCXQ5ZDJcSsCam5ms0wqhb//fX3Dz46g6TOlmuWxAg33EoLCSrV2Gr
- FwcjHf9bJc8mdYa1Ob+Mfuw9mp8Bz7+4NZJH7y1MUR86J9ucAdKBrM9Ar8r5XYMi7GKR
- Cgv9qMeSigmCSb5bL3bXForwMqT6/XlbXggoglc+eRIVFhNxhBBDFU7WiifkcV7TTNOL Xg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 32hu1jv3dw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 30 Jul 2020 14:40:35 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06UEcps2170441;
-        Thu, 30 Jul 2020 14:40:35 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 32hu5xg0ve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Jul 2020 14:40:35 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06UEeXOS013061;
-        Thu, 30 Jul 2020 14:40:33 GMT
-Received: from dhcp-10-154-135-99.vpn.oracle.com (/10.154.135.99)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Jul 2020 07:40:33 -0700
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.5\))
-Subject: Re: (resend) [PATCH [linux-4.14.y]] dm cache: submit writethrough
- writes in parallel to origin and cache
-From:   John Donnelly <john.p.donnelly@oracle.com>
-In-Reply-To: <20200730052127.GA3860556@kroah.com>
-Date:   Thu, 30 Jul 2020 09:40:32 -0500
-Cc:     Mike Snitzer <snitzer@redhat.com>, stable@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8481B1B9-C9CF-442A-87BE-4A01499CF26D@oracle.com>
-References: <37c5a615-655d-c106-afd0-54e03f3c0eef@oracle.com>
- <20200727150014.GA27472@redhat.com> <20200729115119.GB2674635@kroah.com>
- <20200729115557.GA2799681@kroah.com> <20200729141607.GA7215@redhat.com>
- <851f749a-5c92-dcb1-f8e4-95b4434a1ec4@oracle.com>
- <20200730052127.GA3860556@kroah.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3445.9.5)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9697 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
- mlxscore=0 adultscore=0 spamscore=0 phishscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007300108
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9697 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 impostorscore=0 priorityscore=1501 spamscore=0 phishscore=0
- suspectscore=3 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007300107
+        Thu, 30 Jul 2020 10:42:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596120134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kMSPwb1etFyzoIcdbAVB17SQWsfWen8ZJAVvIL55HPY=;
+        b=PEa1sYo+F2QLLCZQTMSTpklAfgYyZzzrajI3lKYK4a5BdQorruOW0g0R3hKzYg4W3VcgAS
+        J3JFKAV4vGxeDvDMfrBiYEPsmcF7xPM0wP04Od9d/WndoHJLtJ8hX4KnlIrOogjc8cS+HS
+        HMVXOUhtkKTuxtp6+qjjTQWXJ4Zxu0A=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-82-bVNqYHHOP8-mp1Ku_y86zQ-1; Thu, 30 Jul 2020 10:42:12 -0400
+X-MC-Unique: bVNqYHHOP8-mp1Ku_y86zQ-1
+Received: by mail-wr1-f72.google.com with SMTP id t3so6985219wrr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 07:42:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kMSPwb1etFyzoIcdbAVB17SQWsfWen8ZJAVvIL55HPY=;
+        b=KYPJBlpYy0vQ0HQCNtV19JKGASvvg/f/bS0xmY050ONQ9hraUxHP9GXx5diOSdNC2b
+         U/kcatZ+5DEgyFfP8VOo3kxM/T9b+dZ9h8QBE+kRIhLr1m3CUQCOHxDjTzf7Y5ITVUSZ
+         Dh7Jy+DNgbthHVf+NLT7KRh3Hcob//itr/DNwg48ONLbaHRtpFVQE4fe9DMe9Raiz+Cd
+         FA3UpdbUKBw3TokWeQt0qy9JXpDemztWZuy9jUkECaRYbAKIB2FfPMqFRMRCYmUzJx7X
+         yiv7PcwfCNGfVOhFkVLeQ8WJIiHdy+mVJHQ9jl37ZsTFQeWdYNaUYp6DizyHdhV4m93r
+         ygZg==
+X-Gm-Message-State: AOAM53153TDKRw4Trk+bm+5MbIS2eGZVVHpyUFow7hUug5/MXiaPF5ai
+        xZ/qXmy24UttoA0NQsrYTbFoCUNLJ956xoFOo1+AsAjLkW5gYtIfszhO23pZ5QWU5LMDFLyCDyG
+        C/hDXb022c5JitQT6kqspMICZ
+X-Received: by 2002:a5d:51c3:: with SMTP id n3mr3172352wrv.104.1596120131352;
+        Thu, 30 Jul 2020 07:42:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwYtVkLYNSwnOVhiVSEhOm66tDC6ymDuzh1WKYyGYOJyFk3NZUUIlqMiwi/QARFoKvOHrwfOA==
+X-Received: by 2002:a5d:51c3:: with SMTP id n3mr3172312wrv.104.1596120130776;
+        Thu, 30 Jul 2020 07:42:10 -0700 (PDT)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id h7sm6561387wmf.43.2020.07.30.07.42.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Jul 2020 07:42:10 -0700 (PDT)
+Subject: Re: [PATCH v3 0/4] Remove dependency of check subcmd upon orc
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mhelsley@vmware.com, mbenes@suse.cz
+References: <20200730094143.27494-1-jthierry@redhat.com>
+ <20200730140623.5aw7lm57j7qof5pm@treble>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <f63f8472-8b05-7457-f9ea-2a9f34e5d486@redhat.com>
+Date:   Thu, 30 Jul 2020 15:42:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <20200730140623.5aw7lm57j7qof5pm@treble>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -78,71 +75,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On Jul 30, 2020, at 12:21 AM, Greg KH <gregkh@linuxfoundation.org> =
-wrote:
->=20
-> On Wed, Jul 29, 2020 at 06:45:46PM -0500, John Donnelly wrote:
->>=20
->>=20
->> On 7/29/20 9:16 AM, Mike Snitzer wrote:
->>> On Wed, Jul 29 2020 at  7:55am -0400,
->>> Greg KH <gregkh@linuxfoundation.org> wrote:
->>>=20
->>>> On Wed, Jul 29, 2020 at 01:51:19PM +0200, Greg KH wrote:
->>>>> On Mon, Jul 27, 2020 at 11:00:14AM -0400, Mike Snitzer wrote:
->>>>>> This mail needs to be saent to stable@vger.kernel.org (now cc'd).
->>>>>>=20
->>>>>> Greg et al: please backport =
-2df3bae9a6543e90042291707b8db0cbfbae9ee9
->>>>>=20
->>>>> Now backported, thanks.
->>>>=20
->>>> Nope, it broke the build, I need something that actually works :)
->>>>=20
->>>=20
->>> OK, I'll defer to John Donnelly to get back with you (and rest of
->>> stable@).  He is more invested due to SUSE also having this issue.  =
-I
->>> can put focus to it if John cannot sort this out.
->>>=20
->>> Mike
->>>=20
->>=20
->>=20
->> Hi.
->>=20
->>=20
->> Thank you for reaching out.
->>=20
->> What specifically is broken? . If it that applying
->> 2df3bae9a6543e90042291707b8db0cbfbae9ee9 to 4.14.y is failing?
->=20
-> yes, try it yourself and see!
+On 7/30/20 3:06 PM, Josh Poimboeuf wrote:
+> On Thu, Jul 30, 2020 at 10:41:39AM +0100, Julien Thierry wrote:
+>> Hi,
+>>
+>> Matt Helsley's change[1] provided a base framework to opt-in/out
+>> objtool subcommands at compile time. This makes it easier for
+>> architectures to port objtool, one subcommand at a time.
+>>
+>> Orc generation relies on the check operation implementation. However,
+>> the way this is done causes the check implementation to depend on the
+>> implementation of orc generation functions to call if orc generation is
+>> requested. This means that in order to implement check subcmd, orc
+>> subcmd also need to be implemented.
+>>
+>> These patches aim at removing that dependency, having orc subcmd
+>> being built on top of the check subcmd.
+>>
+>>
+>> Changes since v2 [2]:
+>> - Rebased on recent tip/objtool/core
+> 
+> tip/objtool/core is slightly outdated, I got a conflict with patch 1.
+> 
+> I guess linus/master would be best.
 
- Hi .=20
+It looks like linus/master is missing the rela -> reloc rework that is 
+present in tip/objtool/core, which will conflict with other patches from 
+this series.
 
- Yes . =20
+How shall I proceed?
 
-  2df3bae9a6543e90042291707b8db0cbfbae9ee9
-
- Needs refactored to work in 4.14.y (now .190) as there is a conflict in =
-arguments as noted in my original submittal ;-) .=20
- I also noticed there are warning to functions " defined but not used =
-[-Wunused-function] =E2=80=9C  too.
-
- Do you want another PATCH v2 message  in a new email thread,  or can I  =
-append it to this this thread ?
-
-Please advice.
-
-Thanks.
-JD.
-
-
-
-
-
-=20
-
-
+-- 
+Julien Thierry
 
