@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032C9232D55
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2441C232DFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729684AbgG3IJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:09:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47652 "EHLO mail.kernel.org"
+        id S1729922AbgG3IQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:16:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729190AbgG3IJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:09:13 -0400
+        id S1729908AbgG3ILB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:11:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 746842074B;
-        Thu, 30 Jul 2020 08:09:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 325372070B;
+        Thu, 30 Jul 2020 08:11:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096553;
-        bh=V8sb+Ce93XA3sEtC6iO9cXOEDjRQ0Cy2PahiyiBhHLk=;
+        s=default; t=1596096660;
+        bh=N9rfu8Rm9dG6SIRtmK83SO4PfCqaxsXzeswlY0y/zTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=siWena3bu/bMBI3e8pq91f5GEBeHZmJSAdmkQ8MEZqc6r5XVNhsRNWyOqKtNs0oI3
-         SuOgv4OAYwCpfNDz1hL4wtoOy6WR4a6WUvncaYzmTCu54TKzNSYRQO4JJXAHJEP72d
-         ww3jbjbxPxU6w5KSq+tp6vNdKPgdH2XP0r8k/+cY=
+        b=kAeX0+yiVxLJ2prMBOjdkFiqTeAw2LkImyZLH0Lsehrx2psnF4zA3QLAfFrYW2XYr
+         GVUFk1/m1VdZYkxYLR3ysJ/p7asnLk1nsTTeSqGjJe6kDhXYT0yzvTHRKxMqaR4IGp
+         0GnqY1pNoxJK7PccqI/XZ2kQaP0Zx9aKm+7VZCpc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 32/61] staging: wlan-ng: properly check endpoint types
-Date:   Thu, 30 Jul 2020 10:04:50 +0200
-Message-Id: <20200730074422.395105316@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+e42d0746c3c3699b6061@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 12/54] ALSA: info: Drop WARN_ON() from buffer NULL sanity check
+Date:   Thu, 30 Jul 2020 10:04:51 +0200
+Message-Id: <20200730074421.806017336@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
-References: <20200730074420.811058810@linuxfoundation.org>
+In-Reply-To: <20200730074421.203879987@linuxfoundation.org>
+References: <20200730074421.203879987@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit faaff9765664009c1c7c65551d32e9ed3b1dda8f upstream.
+commit 60379ba08532eca861e933b389526a4dc89e0c42 upstream.
 
-As syzkaller detected, wlan-ng driver does not do sanity check of
-endpoints in prism2sta_probe_usb(), add check for xfer direction and type
+snd_info_get_line() has a sanity check of NULL buffer -- both buffer
+itself being NULL and buffer->buffer being NULL.  Basically both
+checks are valid and necessary, but the problem is that it's with
+snd_BUG_ON() macro that triggers WARN_ON().  The latter condition
+(NULL buffer->buffer) can be met arbitrarily by user since the buffer
+is allocated at the first write, so it means that user can trigger
+WARN_ON() at will.
 
-Reported-and-tested-by: syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=c2a1fa67c02faa0de723
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200722161052.999754-1-rkovhaev@gmail.com
+This patch addresses it by simply moving buffer->buffer NULL check out
+of snd_BUG_ON() so that spurious WARNING is no longer triggered.
+
+Reported-by: syzbot+e42d0746c3c3699b6061@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200717084023.5928-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/wlan-ng/prism2usb.c |   16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ sound/core/info.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/staging/wlan-ng/prism2usb.c
-+++ b/drivers/staging/wlan-ng/prism2usb.c
-@@ -60,11 +60,25 @@ static int prism2sta_probe_usb(struct us
- 			       const struct usb_device_id *id)
+--- a/sound/core/info.c
++++ b/sound/core/info.c
+@@ -634,7 +634,9 @@ int snd_info_get_line(struct snd_info_bu
  {
- 	struct usb_device *dev;
--
-+	const struct usb_endpoint_descriptor *epd;
-+	const struct usb_host_interface *iface_desc = interface->cur_altsetting;
- 	struct wlandevice *wlandev = NULL;
- 	struct hfa384x *hw = NULL;
- 	int result = 0;
+ 	int c = -1;
  
-+	if (iface_desc->desc.bNumEndpoints != 2) {
-+		result = -ENODEV;
-+		goto failed;
-+	}
-+
-+	result = -EINVAL;
-+	epd = &iface_desc->endpoint[1].desc;
-+	if (!usb_endpoint_is_bulk_in(epd))
-+		goto failed;
-+	epd = &iface_desc->endpoint[2].desc;
-+	if (!usb_endpoint_is_bulk_out(epd))
-+		goto failed;
-+
- 	dev = interface_to_usbdev(interface);
- 	wlandev = create_wlan();
- 	if (!wlandev) {
+-	if (snd_BUG_ON(!buffer || !buffer->buffer))
++	if (snd_BUG_ON(!buffer))
++		return 1;
++	if (!buffer->buffer)
+ 		return 1;
+ 	if (len <= 0 || buffer->stop || buffer->error)
+ 		return 1;
 
 
