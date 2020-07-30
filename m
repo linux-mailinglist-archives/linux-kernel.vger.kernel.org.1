@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D69232E78
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1BF232D57
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730372AbgG3IUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:20:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
+        id S1729341AbgG3IJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:09:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729407AbgG3IHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:07:13 -0400
+        id S1729624AbgG3IJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:09:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A17720672;
-        Thu, 30 Jul 2020 08:07:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 700DD2083B;
+        Thu, 30 Jul 2020 08:09:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096432;
-        bh=0ioCQzJuIh4SZTx9jd4csrdZrxwG7MVYguD9O9348JI=;
+        s=default; t=1596096558;
+        bh=HnEd8weyY2cJzcGqCvbfCZvAam8vR6OcAgYPFgX54Gw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ce/85UGTYXUHmyrqAeAgJVcEs2kfUYW7LA6HkqzTb6RZXSLqKlpDtyRk2VIIxBdsv
-         J/SHoJAmZlDqPp7RnxJH2nDoc45kK8P1tJg0ubMrj4sT7bsrpopn7NpUyL24qHS7YP
-         Fb0egRzQ6dkLdrdKS5d+fEKJDPyae+xGKiWV4/TA=
+        b=HPV4iGnWTpsP65JdjHW4mCRSMAp1HSpW2cBqTgPEG+U0nQVFgv6sPa+0y9Rc8SXZH
+         kgjmJxDJ1+3w2Rp1Yu9T6lqT03nGbCbd3lrq+iiAfHTCTrnPUWtj+PmeOv2Fczjb3O
+         /bcmj5Duhdu1oWY8SEUAPy2WhXq+VIne7HEIQu58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 07/17] net: udp: Fix wrong clean up for IS_UDPLITE macro
-Date:   Thu, 30 Jul 2020 10:04:33 +0200
-Message-Id: <20200730074420.821498441@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 16/61] hippi: Fix a size used in a pci_free_consistent() in an error handling path
+Date:   Thu, 30 Jul 2020 10:04:34 +0200
+Message-Id: <20200730074421.617717391@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200730074420.449233408@linuxfoundation.org>
-References: <20200730074420.449233408@linuxfoundation.org>
+In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
+References: <20200730074420.811058810@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit b0a422772fec29811e293c7c0e6f991c0fd9241d ]
+[ Upstream commit 3195c4706b00106aa82c73acd28340fa8fc2bfc1 ]
 
-We can't use IS_UDPLITE to replace udp_sk->pcflag when UDPLITE_RECV_CC is
-checked.
+The size used when calling 'pci_alloc_consistent()' and
+'pci_free_consistent()' should match.
 
-Fixes: b2bf1e2659b1 ("[UDP]: Clean up for IS_UDPLITE macro")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Fix it and have it consistent with the corresponding call in 'rr_close()'.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/udp.c |    2 +-
- net/ipv6/udp.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/hippi/rrunner.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -1986,7 +1986,7 @@ static int udp_queue_rcv_skb(struct sock
- 	/*
- 	 * 	UDP-Lite specific tests, ignored on UDP sockets
- 	 */
--	if ((is_udplite & UDPLITE_RECV_CC)  &&  UDP_SKB_CB(skb)->partial_cov) {
-+	if ((up->pcflag & UDPLITE_RECV_CC)  &&  UDP_SKB_CB(skb)->partial_cov) {
- 
- 		/*
- 		 * MIB statistics other than incrementing the error count are
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -606,7 +606,7 @@ static int udpv6_queue_rcv_skb(struct so
- 	/*
- 	 * UDP-Lite specific tests, ignored on UDP sockets (see net/ipv4/udp.c).
- 	 */
--	if ((is_udplite & UDPLITE_RECV_CC)  &&  UDP_SKB_CB(skb)->partial_cov) {
-+	if ((up->pcflag & UDPLITE_RECV_CC)  &&  UDP_SKB_CB(skb)->partial_cov) {
- 
- 		if (up->pcrlen == 0) {          /* full coverage was set  */
- 			net_dbg_ratelimited("UDPLITE6: partial coverage %d while full coverage %d requested\n",
+diff --git a/drivers/net/hippi/rrunner.c b/drivers/net/hippi/rrunner.c
+index 313e006f74feb..6f3519123eb66 100644
+--- a/drivers/net/hippi/rrunner.c
++++ b/drivers/net/hippi/rrunner.c
+@@ -1250,7 +1250,7 @@ static int rr_open(struct net_device *dev)
+ 		rrpriv->info = NULL;
+ 	}
+ 	if (rrpriv->rx_ctrl) {
+-		pci_free_consistent(pdev, sizeof(struct ring_ctrl),
++		pci_free_consistent(pdev, 256 * sizeof(struct ring_ctrl),
+ 				    rrpriv->rx_ctrl, rrpriv->rx_ctrl_dma);
+ 		rrpriv->rx_ctrl = NULL;
+ 	}
+-- 
+2.25.1
+
 
 
