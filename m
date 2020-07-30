@@ -2,70 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF093232A42
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 05:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC25232A46
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 05:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgG3DKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 23:10:24 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:14858 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726519AbgG3DKY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 23:10:24 -0400
-X-UUID: 4aa88a62df55454295d747cab3951cc1-20200730
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=X5/k5uISNAhPP8r+KLgwOAhdsHCqej1bMnApxEJk9xc=;
-        b=Ibj1sb1uR41YNd1EEujUCtMqmQkK3hELgpPLi3ZaVS1t8Gb6HkAaDLUvIgKLxIK0CeW6UMXX3xkffk5s7VnNCNP6+s21V/AWTNwQ5NxsSMpEIHzuFXRqn2/RjWBAtxBNnQ1HjiXJm/oyBRfkAHYd/g211OCeh67TZ3b3c1sfPW0=;
-X-UUID: 4aa88a62df55454295d747cab3951cc1-20200730
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <neal.liu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 774553420; Thu, 30 Jul 2020 11:10:21 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 30 Jul 2020 11:10:17 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 30 Jul 2020 11:10:17 +0800
-Message-ID: <1596078619.23705.0.camel@mtkswgap22>
-Subject: Re: linux-next: build warning after merge of the pm tree
-From:   Neal Liu <neal.liu@mediatek.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 30 Jul 2020 11:10:19 +0800
-In-Reply-To: <20200730125500.0947e1dd@canb.auug.org.au>
-References: <20200730125500.0947e1dd@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1728489AbgG3DNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 23:13:16 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8854 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726367AbgG3DNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 23:13:15 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 0D9F3ACDF479E1EF6CB6;
+        Thu, 30 Jul 2020 11:13:13 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.103) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Thu, 30 Jul 2020
+ 11:13:03 +0800
+Subject: Re: [RFC PATCH] iomap: add support to track dirty state of sub pages
+To:     Gao Xiang <hsiangkao@redhat.com>
+CC:     <hch@infradead.org>, <darrick.wong@oracle.com>,
+        <linux-xfs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20200730011901.2840886-1-yukuai3@huawei.com>
+ <20200730022736.GA23366@xiangao.remote.csb>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <7a5923ce-812f-f372-d751-b59f69d9544f@huawei.com>
+Date:   Thu, 30 Jul 2020 11:13:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200730022736.GA23366@xiangao.remote.csb>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.103]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyB3YXJuaW5nIHNob3VsZCBiZSBmaXhlZCBhbHNvLg0KU2hvdWxkIEkgc2VuZCBhbm90aGVy
-IHBhdGNoPw0KDQpUaGFua3MgIQ0KDQpPbiBUaHUsIDIwMjAtMDctMzAgYXQgMTI6NTUgKzEwMDAs
-IFN0ZXBoZW4gUm90aHdlbGwgd3JvdGU6DQo+IEhpIGFsbCwNCj4gDQo+IEFmdGVyIG1lcmdpbmcg
-dGhlIHBtIHRyZWUsIHRvZGF5J3MgbGludXgtbmV4dCBidWlsZCAoeDg2XzY0IGFsbG1vZGNvbmZp
-ZykNCj4gcHJvZHVjZWQgdGhpcyB3YXJuaW5nOg0KPiANCj4gZHJpdmVycy9hY3BpL3Byb2Nlc3Nv
-cl9pZGxlLmM6IEluIGZ1bmN0aW9uICdhY3BpX2lkbGVfZW50ZXJfczJpZGxlJzoNCj4gZHJpdmVy
-cy9hY3BpL3Byb2Nlc3Nvcl9pZGxlLmM6NjY2OjQ6IHdhcm5pbmc6ICdyZXR1cm4nIHdpdGggbm8g
-dmFsdWUsIGluIGZ1bmN0aW9uIHJldHVybmluZyBub24tdm9pZCBbLVdyZXR1cm4tdHlwZV0NCj4g
-ICA2NjYgfCAgICByZXR1cm47DQo+ICAgICAgIHwgICAgXn5+fn5+DQo+IGRyaXZlcnMvYWNwaS9w
-cm9jZXNzb3JfaWRsZS5jOjY1NzoxMjogbm90ZTogZGVjbGFyZWQgaGVyZQ0KPiAgIDY1NyB8IHN0
-YXRpYyBpbnQgYWNwaV9pZGxlX2VudGVyX3MyaWRsZShzdHJ1Y3QgY3B1aWRsZV9kZXZpY2UgKmRl
-diwNCj4gICAgICAgfCAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4gZHJpdmVy
-cy9hY3BpL3Byb2Nlc3Nvcl9pZGxlLmM6NjcwOjQ6IHdhcm5pbmc6ICdyZXR1cm4nIHdpdGggbm8g
-dmFsdWUsIGluIGZ1bmN0aW9uIHJldHVybmluZyBub24tdm9pZCBbLVdyZXR1cm4tdHlwZV0NCj4g
-ICA2NzAgfCAgICByZXR1cm47DQo+ICAgICAgIHwgICAgXn5+fn5+DQo+IGRyaXZlcnMvYWNwaS9w
-cm9jZXNzb3JfaWRsZS5jOjY1NzoxMjogbm90ZTogZGVjbGFyZWQgaGVyZQ0KPiAgIDY1NyB8IHN0
-YXRpYyBpbnQgYWNwaV9pZGxlX2VudGVyX3MyaWRsZShzdHJ1Y3QgY3B1aWRsZV9kZXZpY2UgKmRl
-diwNCj4gICAgICAgfCAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4gDQo+IElu
-dHJvZHVjZWQgYnkgY29tbWl0DQo+IA0KPiAgIGVmZTk3MTEyMTRlNiAoImNwdWlkbGU6IGNoYW5n
-ZSBlbnRlcl9zMmlkbGUoKSBwcm90b3R5cGUiKQ0KPiANCg0K
+On 2020/7/30 10:27, Gao Xiang wrote:
+> Hi Kuai,
+> 
+> On Thu, Jul 30, 2020 at 09:19:01AM +0800, Yu Kuai wrote:
+>> commit 9dc55f1389f9 ("iomap: add support for sub-pagesize buffered I/O
+>> without buffer heads") replace the per-block structure buffer_head with
+>> the per-page structure iomap_page. However, iomap_page can't track the
+>> dirty state of sub pages, which will cause performance issue since sub
+>> pages will be writeback even if they are not dirty.
+>>
+>> For example, if block size is 4k and page size is 64k:
+>>
+>> dd if=/dev/zero of=testfile bs=4k count=16 oflag=sync
+>>
+>> With buffer_head implementation, the above dd cmd will writeback 4k in
+>> each round. However, with iomap_page implementation, the range of
+>> writeback in each round is from the start of the page to the end offset
+>> we just wrote.
+>>
+>> Thus add support to track dirty state for sub pages in iomap_page.
+> 
+> AFAIK, the current focus is also on the numbers in the original
+> discussion thread, so it'd be better to show some numbers with
+> large PAGE_SIZE on this with some workloads as well.
+> 
+> https://lore.kernel.org/r/20200729230503.GA2005@dread.disaster.area
+> 
+
+Hi, Xiang!
+
+The problem was found by iozone to test 4k sequintail write in my
+case, thanks for pointing out the discussion thread. I'll test it if
+this patch have any effect on that situation.
+
+Thanks,
+Yu Kuai
+
+> e.g. My guess is if the dirty blocks in the page are highly fragmented, maybe
+> it'd be better to writeback the whole page in an IO rather than individual blocks.
+> 
+> At a very quick glance, the approach looks good to me.
+> 
+> Thanks,
+> Gao Xiang
+> 
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   fs/iomap/buffered-io.c | 51 +++++++++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 50 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+>> index bcfc288dba3f..ac2676146b98 100644
+>> --- a/fs/iomap/buffered-io.c
+>> +++ b/fs/iomap/buffered-io.c
+>> @@ -29,7 +29,9 @@ struct iomap_page {
+>>   	atomic_t		read_count;
+>>   	atomic_t		write_count;
+>>   	spinlock_t		uptodate_lock;
+>> +	spinlock_t		dirty_lock;
+>>   	DECLARE_BITMAP(uptodate, PAGE_SIZE / 512);
+>> +	DECLARE_BITMAP(dirty, PAGE_SIZE / 512);
+>>   };
+>>   
+>>   static inline struct iomap_page *to_iomap_page(struct page *page)
+>> @@ -53,7 +55,9 @@ iomap_page_create(struct inode *inode, struct page *page)
+>>   	atomic_set(&iop->read_count, 0);
+>>   	atomic_set(&iop->write_count, 0);
+>>   	spin_lock_init(&iop->uptodate_lock);
+>> +	spin_lock_init(&iop->dirty_lock);
+>>   	bitmap_zero(iop->uptodate, PAGE_SIZE / SECTOR_SIZE);
+>> +	bitmap_zero(iop->dirty, PAGE_SIZE / SECTOR_SIZE);
+>>   
+>>   	/*
+>>   	 * migrate_page_move_mapping() assumes that pages with private data have
+>> @@ -135,6 +139,44 @@ iomap_adjust_read_range(struct inode *inode, struct iomap_page *iop,
+>>   	*lenp = plen;
+>>   }
+>>   
+>> +static void
+>> +iomap_iop_set_or_clear_range_dirty(
+>> +	struct page *page,
+>> +	unsigned int off,
+>> +	unsigned int len,
+>> +	bool is_set)
+>> +{
+>> +	struct iomap_page *iop = to_iomap_page(page);
+>> +	struct inode *inode = page->mapping->host;
+>> +	unsigned int first = off >> inode->i_blkbits;
+>> +	unsigned int last = (off + len - 1) >> inode->i_blkbits;
+>> +	unsigned long flags;
+>> +	unsigned int i;
+>> +
+>> +	spin_lock_irqsave(&iop->dirty_lock, flags);
+>> +	for (i = first; i <= last; i++)
+>> +		if (is_set)
+>> +			set_bit(i, iop->dirty);
+>> +		else
+>> +			clear_bit(i, iop->dirty);
+>> +	spin_unlock_irqrestore(&iop->dirty_lock, flags);
+>> +}
+>> +
+>> +static void
+>> +iomap_set_or_clear_range_dirty(
+>> +	struct page *page,
+>> +	unsigned int off,
+>> +	unsigned int len,
+>> +	bool is_set)
+>> +{
+>> +	if (PageError(page))
+>> +		return;
+>> +
+>> +	if (page_has_private(page))
+>> +		iomap_iop_set_or_clear_range_dirty(
+>> +			page, off, len, is_set);
+> 3> +}
+>> +
+>>   static void
+>>   iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
+>>   {
+>> @@ -705,6 +747,8 @@ __iomap_write_end(struct inode *inode, loff_t pos, unsigned len,
+>>   	if (unlikely(copied < len && !PageUptodate(page)))
+>>   		return 0;
+>>   	iomap_set_range_uptodate(page, offset_in_page(pos), len);
+>> +	iomap_set_or_clear_range_dirty(
+>> +		page, offset_in_page(pos), len, true);
+>>   	iomap_set_page_dirty(page);
+>>   	return copied;
+>>   }
+>> @@ -1030,6 +1074,8 @@ iomap_page_mkwrite_actor(struct inode *inode, loff_t pos, loff_t length,
+>>   		WARN_ON_ONCE(!PageUptodate(page));
+>>   		iomap_page_create(inode, page);
+>>   		set_page_dirty(page);
+>> +		iomap_set_or_clear_range_dirty(
+>> +			page, offset_in_page(pos), length, true);
+>>   	}
+>>   
+>>   	return length;
+>> @@ -1386,7 +1432,8 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+>>   	for (i = 0, file_offset = page_offset(page);
+>>   	     i < (PAGE_SIZE >> inode->i_blkbits) && file_offset < end_offset;
+>>   	     i++, file_offset += len) {
+>> -		if (iop && !test_bit(i, iop->uptodate))
+>> +		if (iop && (!test_bit(i, iop->uptodate) ||
+>> +		    !test_bit(i, iop->dirty)))
+>>   			continue;
+>>   
+>>   		error = wpc->ops->map_blocks(wpc, inode, file_offset);
+>> @@ -1435,6 +1482,8 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+>>   		 */
+>>   		set_page_writeback_keepwrite(page);
+>>   	} else {
+>> +		iomap_set_or_clear_range_dirty(
+>> +			page, 0, end_offset - page_offset(page) + 1, false);
+>>   		clear_page_dirty_for_io(page);
+>>   		set_page_writeback(page);
+>>   	}
+>> -- 
+>> 2.25.4
+>>
+> 
+> 
+> .
+> 
 
