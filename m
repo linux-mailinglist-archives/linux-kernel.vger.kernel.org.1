@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1786233908
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 21:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC55023390F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 21:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730460AbgG3T31 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Jul 2020 15:29:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726581AbgG3T30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 15:29:26 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BC522083B;
-        Thu, 30 Jul 2020 19:29:25 +0000 (UTC)
-Date:   Thu, 30 Jul 2020 15:29:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     peter enderborg <peter.enderborg@sony.com>
-Cc:     =?UTF-8?B?VGhpw6liYXVk?= Weksteen <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Nick Kralevich <nnk@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <selinux@vger.kernel.org>
-Subject: Re: [PATCH] RFC: selinux avc trace
-Message-ID: <20200730152923.5101346c@oasis.local.home>
-In-Reply-To: <38053623-2cc0-882d-8578-977ff3f43908@sony.com>
-References: <20200724091520.880211-1-tweek@google.com>
-        <20200724095232.5f9d3f17@oasis.local.home>
-        <80a23580-5067-93b0-53fa-3bd53253c056@sony.com>
-        <20200730110459.5bf0b0df@oasis.local.home>
-        <6f1262fc-21ad-f872-5460-e78d4685c9c4@sony.com>
-        <20200730120200.1367e1cd@oasis.local.home>
-        <15fcdc87-5e9b-8144-5a6b-34594d1e52ef@sony.com>
-        <20200730131659.7f1d21e8@oasis.local.home>
-        <38053623-2cc0-882d-8578-977ff3f43908@sony.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730557AbgG3TaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 15:30:15 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:53710 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730497AbgG3TaO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 15:30:14 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06UJR3XR008264;
+        Thu, 30 Jul 2020 19:30:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=MYB52dScwZ/YBoMJOfRh65nbt7ONDs6/VLbB0Qsq0fc=;
+ b=XLRFex85LtNCdTDAA7zB9spn+lHdz8yywS6/YV+AjFb+6CrgVPg02x0RTerQJrzla9lS
+ YSXIlriNxsjKlhe7G0qtfRHMpDROWqBnI3Z/wk3r6RBWlq06lFB3LuB0/Jk19gOXTOhO
+ AwMi+mshxlbtbJjDtSasSEDGGVseGyInn7v2M2HnegKS9hk1IBUX9uOpUxCFDu8RARe6
+ IeyAcq1c4WV6LXPhmjg1pTMiJn2JFAdv73pY1CnrRolipzJv8wNWZJfAPlSY6oGV4xZc
+ 87aJxUk3H0eIN77JwJustCdPW1YHRdW4dH/F/LuFuKjvJ21C+92oV56WUejcvD+vuQLt Pw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 32hu1jnkuy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 30 Jul 2020 19:30:04 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06UJSgGP119594;
+        Thu, 30 Jul 2020 19:30:03 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 32hu5xbn6c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 30 Jul 2020 19:30:03 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06UJSh0p119640;
+        Thu, 30 Jul 2020 19:30:03 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 32hu5xbmyp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Jul 2020 19:30:03 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06UJU19s023130;
+        Thu, 30 Jul 2020 19:30:01 GMT
+Received: from dhcp-10-159-232-234.vpn.oracle.com (/10.159.232.234)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 30 Jul 2020 12:30:01 -0700
+Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
+ in rds_notify_queue_get()
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
+From:   "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <2b21c0e4-2783-74f6-313b-9f6cb17c545a@oracle.com>
+Date:   Thu, 30 Jul 2020 12:29:58 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200730192026.110246-1-yepeilin.cs@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9698 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
+ malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007300134
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Jul 2020 21:12:39 +0200
-peter enderborg <peter.enderborg@sony.com> wrote:
-
-> >> avc:  denied  { find } for interface=vendor.qti.hardware.perf::IPerf sid=u:r:permissioncontroller_app:s0:c230,c256,c512,c768 pid=9164 scontext=u:r:permissioncontroller_app:s0:c230,c256,c512,c768 tcontext=u:object_r:vendor_hal_perf_hwservice:s0 tclass=hwservice_manager permissive=0
-> >>  avc:  denied  { execute } for  pid=13914 comm="ScionFrontendAp" path="/data/user_de/0/com.google.android.gms/app_chimera/m/00000002/oat/arm64/DynamiteLoader.odex" dev="sda77" ino=204967 scontext=u:r:platform_app:s0:c512,c768 tcontext=u:object_r:privapp_data_file:s0:c512,c768 tclass=file permissive=0 ppid=788 pcomm="main" pgid=13914 pgcomm="on.updatecenter"
-> >>
-> >> It omit the fields that are not used. Some parts are common some are not. So a correct format specification for trace will be problematic if there is no "optional" field indicator.  
-> > That's all quite noisy. What is the object of these changes? What
-> > exactly are you trying to trace and why?  
+On 7/30/20 12:20 PM, Peilin Ye wrote:
+> rds_notify_queue_get() is potentially copying uninitialized kernel stack
+> memory to userspace since the compiler may leave a 4-byte hole at the end
+> of `cmsg`.
 > 
-> It is noisy, and it have to be. it covers a lot of different areas.  One common problem is
-> to debug userspace applications regarding violations. You get the violation from the logs
-> and try to figure out what you did to cause it. With a trace point you can do much better
-> when combine with other traces. Having a the userspace stack is a very good way,
-> unfortunately  it does not work on that many architectures within trace.
+> In 2016 we tried to fix this issue by doing `= { 0 };` on `cmsg`, which
+> unfortunately does not always initialize that 4-byte hole. Fix it by using
+> memset() instead.
 > 
-> What exactly are you doing with any trace? You collect data to analyse what's
-> going on. This is not different. Selinux do a specific thing, but is has lots of parameters.
-
-Have you thought of adding multiple trace events with if statements
-around them to decode each specific type of event?
-
-Note, you can have a generic event that gets enabled by all the other
-events via the "reg" and "unreg" part of TRACE_EVENT_FN(). Say its
-called trace_avc, make a dummy trace_avc() call hat doesn't even need
-to be called anywhere, it just needs to exist to get to the other trace
-events.
-
-Then have:
-
-	if (trace_avc_enabled()) {
-		if (event1)
-			trace_avc_req_event1();
-		if (event2)
-			trace_avc_req_event2();
-		[..]
-	}
-
-The reason for the trace_avc_enabled() is because that's a static
-branch, which is a nop when not enabled. When enabled, it is a jump to
-the out of band if condition block that has all the other trace events.
-
--- Steve
+> Cc: stable@vger.kernel.org
+> Fixes: f037590fff30 ("rds: fix a leak of kernel memory")
+> Fixes: bdbe6fbc6a2f ("RDS: recv.c")
+> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> ---
+> Note: the "real" copy_to_user() happens in put_cmsg(), where
+> `cmlen - sizeof(*cm)` equals to `sizeof(cmsg)`.
+> 
+> Reference: https://lwn.net/Articles/417989/
+> 
+> $ pahole -C "rds_rdma_notify" net/rds/recv.o
+> struct rds_rdma_notify {
+> 	__u64                      user_token;           /*     0     8 */
+> 	__s32                      status;               /*     8     4 */
+> 
+> 	/* size: 16, cachelines: 1, members: 2 */
+> 	/* padding: 4 */
+> 	/* last cacheline: 16 bytes */
+> };
+> 
+>   net/rds/recv.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+Looks good.
+FWIW,
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
