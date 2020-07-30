@@ -2,168 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8033F2334CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B402334DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbgG3OyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 10:54:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:40918 "EHLO foss.arm.com"
+        id S1729600AbgG3PBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 11:01:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726275AbgG3OyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 10:54:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF1841FB;
-        Thu, 30 Jul 2020 07:54:04 -0700 (PDT)
-Received: from [10.37.12.83] (unknown [10.37.12.83])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 339BF3F66E;
-        Thu, 30 Jul 2020 07:54:03 -0700 (PDT)
-Subject: Re: [RFC PATCH 02/14] coresight: Introduce device access abstraction
-To:     mathieu.poirier@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mike.leach@linaro.org, coresight@lists.linaro.org
-References: <20200722172040.1299289-1-suzuki.poulose@arm.com>
- <20200722172040.1299289-3-suzuki.poulose@arm.com>
- <20200729195617.GB3073178@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <a841f0a4-e371-b5ba-c451-ec49d9f6e10b@arm.com>
-Date:   Thu, 30 Jul 2020 15:58:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726275AbgG3PBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 11:01:02 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFD832070B;
+        Thu, 30 Jul 2020 15:00:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596121261;
+        bh=vrT0L42uxKpirJmQf04CjGJseDo6AeA6oDr8HXNg8Vs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J2AGaFsP3cCdxOYRg2TlT/S6yMwsJgah7u7grimwcOQdZL6EaFs/5bFUbboX8sXAW
+         dHs1inYA/qcBuTef/BAmWX5GTgUor/PoRZs+lkVwHU3LcCTeRpCbmwZdpD5ZsjHuw+
+         zqksTEoCJqMZm2C4kp9xeJhfbBGyuWWdqILwkzBA=
+Date:   Thu, 30 Jul 2020 16:00:56 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@misterjones.org>, Willy Tarreau <w@1wt.eu>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Emese Revfy <re.emese@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Subject: Re: linux-next: build failure after merge of the origin tree
+Message-ID: <20200730150056.GA24716@willie-the-truck>
+References: <20200730090828.2349e159@canb.auug.org.au>
+ <CAHk-=wjK8+12i8iDC41LXfZBcMjGsF+WyW_+ncPFmrexRT0yxw@mail.gmail.com>
+ <202007292007.D87DBD34B@keescook>
+ <20200730032250.GB7790@1wt.eu>
+ <20200730061407.GA7941@1wt.eu>
+ <102fc7a6fa4c2767879a6f911a9a16d5@misterjones.org>
+ <20200730100923.GE25149@gaia>
 MIME-Version: 1.0
-In-Reply-To: <20200729195617.GB3073178@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200730100923.GE25149@gaia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/29/2020 08:56 PM, Mathieu Poirier wrote:
-> On Wed, Jul 22, 2020 at 06:20:28PM +0100, Suzuki K Poulose wrote:
->> We are about to introduce support for sysreg access to ETMv4.4+
->> component. Since there are generic routines that access the
->> registers (e.g, CS_LOCK/UNLOCK , claim/disclaim operations, timeout)
->> and in order to preserve the logic of these operations at a single place
->> we introduce an abstraction layer for the accesses to a given device.
->> This will also be helpful in consolidating the sysfs.attribute helpers,
->> that we define per driver.
+On Thu, Jul 30, 2020 at 11:09:23AM +0100, Catalin Marinas wrote:
+> On Thu, Jul 30, 2020 at 10:59:09AM +0100, Marc Zyngier wrote:
+> > From 33d819f4efa0a4474b5dc2e4bcaef1b886ca30c3 Mon Sep 17 00:00:00 2001
+> > From: Marc Zyngier <maz@kernel.org>
+> > Date: Thu, 30 Jul 2020 10:53:05 +0100
+> > Subject: [PATCH] arm64: Drop unnecessary include from asm/smp.h
+> > 
+> > asm/pointer_auth.h is not needed anymore in asm/smp.h, as 62a679cb2825
+> > ("arm64: simplify ptrauth initialization") removed the keys from the
+> > secondary_data structure.
+> > 
+> > This also cures a compilation issue introduced by f227e3ec3b5c
+> > ("random32: update the net random state on interrupt and activity").
+> > 
+> > Fixes: 62a679cb2825 ("arm64: simplify ptrauth initialization")
+> > Fixes: f227e3ec3b5c ("random32: update the net random state on interrupt and
+> > activity")
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  arch/arm64/include/asm/smp.h | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
+> > index ea268d88b6f7..a0c8a0b65259 100644
+> > --- a/arch/arm64/include/asm/smp.h
+> > +++ b/arch/arm64/include/asm/smp.h
+> > @@ -30,7 +30,6 @@
+> >  #include <linux/threads.h>
+> >  #include <linux/cpumask.h>
+> >  #include <linux/thread_info.h>
+> > -#include <asm/pointer_auth.h>
+> > 
+> >  DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
 > 
-> Please drop the last sentence, it doesn't add to the current patch.
+> I think this arm64 patch makes sense irrespective of any other generic
+> fixes. If Will wants to take it as a fix:
 > 
-
-Sure.
-
->> diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight.c
->> index e9c90f2de34a..38e9c03ab754 100644
->> --- a/drivers/hwtracing/coresight/coresight.c
->> +++ b/drivers/hwtracing/coresight/coresight.c
->> @@ -1387,6 +1387,54 @@ static int __init coresight_init(void)
->>   }
-
-...
-
->>    * coresight_release_platform_data: Release references to the devices connected
->>    * to the output port of this device.
->> @@ -1451,6 +1499,7 @@ struct coresight_device *coresight_register(struct coresight_desc *desc)
->>   	csdev->type = desc->type;
->>   	csdev->subtype = desc->subtype;
->>   	csdev->ops = desc->ops;
->> +	csdev->access = desc->access;
->>   	csdev->orphan = false;
->>   
->>   	csdev->dev.type = &coresight_dev_type[desc->type];
->> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
->> index 58fffdecdbfd..81ac708689f8 100644
->> --- a/include/linux/coresight.h
->> +++ b/include/linux/coresight.h
->> @@ -7,6 +7,7 @@
->>   #define _LINUX_CORESIGHT_H
->>   
->>   #include <linux/device.h>
->> +#include <linux/io.h>
->>   #include <linux/perf_event.h>
->>   #include <linux/sched.h>
->>   
->> @@ -114,6 +115,32 @@ struct coresight_platform_data {
->>   	struct coresight_connection *conns;
->>   };
->>   
->> +/**
->> + * struct csdev_access - Abstraction of a CoreSight device access.
->> + *
->> + * @no_iomem	: True if the device doesn't have iomem access.
->> + * @base	: When no_iomem == false, base address of the component
->> + * @read	: Read from the given "offset" of the given instance.
->> + * @write	: Write "val" to the given "offset".
->> + */
->> +struct csdev_access {
->> +	bool no_iomem;
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 > 
-> I find the no_iomen to be difficult to understand, especially when prefixed with
-> '!'.  Using "has_iomem" would be a lot more intuitive and would avoid extra
-> mental gymnastics.
+> (otherwise I'll queue it for 5.9)
 
+Cheers, I'll pick this up asap.
 
-I agree. That was a bit of laziness in part, to limit the changes to the
-existing drivers, where almost everyone, except the ETM would need to
-simply use the MMIO approach. So, in order to keep those changes to
-minimum, i.e, simply initialize the base, I used the inverted logic.
-I will fix it.
-
-
-
->> +u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset);
->> +u32 coresight_read32(struct coresight_device *csdev, u32 offset);
->> +void coresight_write32(struct coresight_device *csdev, u32 val, u32 offset);
->> +void coresight_relaxed_write32(struct coresight_device *csdev,
->> +			       u32 val,
->> +			       u32 offset);
->> +
-> 
-> Why are the 64 bit version outside of the #ifdef and the 32 bit within?
-
-Mistake ;-). I will address all of the comments above in my next version.
-
-...
-
-
->> +static inline u64 coresight_read64(struct coresight_device *csdev, u32 offset)
->> +{
->> +	WARN_ON_ONCE(1);
-> 
-> Not sure about the motivation behind using WARN_ON_ONCE(), and only in the read
-> functions.  I would simply return 0 here.  After all if CONFIG_CORESIGHT is not
-> defined they won't make it very far.
-> 
-
-If someone is reading the values, they might do something with the
-value, i.e, make a decision when they shouldn't. This is just to prevent
-such cases.
-
->> +	return 0;
->> +}
->> +
->> +static inline void coresight_relaxed_write64(struct coresight_device *csdev,
->> +					     u64 val,
->> +					     u32 offset)
->> +{
->> +}
->> +
->> +static inline void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset)
->> +{
->> +}
->> +
->>   #endif
-> 
-> I will likely come back to this patch once I have reviewed the rest of the set.
-> 
-
-Sure. I am looking for thoughts on the proposed API (not ABI) changes,
-as they are quite significant and invasive changes in the code, without
-much functionality changes.
-
-
-Thank you for the review !
-
-Suzuki
+Will
