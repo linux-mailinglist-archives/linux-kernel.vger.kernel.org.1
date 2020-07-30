@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0295D232DA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4B2232D74
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730092AbgG3INl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:13:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52644 "EHLO mail.kernel.org"
+        id S1729878AbgG3IKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:10:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730114AbgG3INQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:13:16 -0400
+        id S1729306AbgG3IKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:10:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F138B21883;
-        Thu, 30 Jul 2020 08:13:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02D202083B;
+        Thu, 30 Jul 2020 08:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096794;
-        bh=pBNKik9CfN3KP4PD85GKjACxbLFUYWDevkMDVvDtMQs=;
+        s=default; t=1596096646;
+        bh=09YYAdhW1lRLAFI0+BOT3wBKBQth+gwbblPsn+lSVbI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nedeJ97pUQBLMyySW08n1MeNnuAKbdkxLyqxeybhYPeZTedCp/aYRYFi4F+xDTYEr
-         l4MEgWfhs+Q5DiYmMEVE8S8K2ZgcKJeqdcq3y4ZzPPepK13fHg4XyvGnyVzot3WpRo
-         4SOp1D5CqO0lZr/BKDLQgPgsOlzHLjh7OQ+x81dc=
+        b=0h7noC3CnEdwP4cVBs60W4xzTgv9TNWBtOrbY14hKjZ23G1GVZpeCY5soF63ewpx8
+         dZsPnzCZXxS1HAtVupm9c7DqWNn1AQEnhqSIxLULHUCHw4IzbZCVb9H+Pi3MH4wBsn
+         n+NXLJofkpaUWygyplGodtDrJTTceicthQGvrrHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Winkler <danielwinkler@google.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Claire Chang <tientzu@chromium.org>
-Subject: [PATCH 4.4 33/54] serial: 8250_mtk: Fix high-speed baud rates clamping
-Date:   Thu, 30 Jul 2020 10:05:12 +0200
-Message-Id: <20200730074422.798025996@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 55/61] drivers/net/wan/x25_asy: Fix to make it work
+Date:   Thu, 30 Jul 2020 10:05:13 +0200
+Message-Id: <20200730074423.504703191@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200730074421.203879987@linuxfoundation.org>
-References: <20200730074421.203879987@linuxfoundation.org>
+In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
+References: <20200730074420.811058810@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,94 +45,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Xie He <xie.he.0141@gmail.com>
 
-commit 551e553f0d4ab623e2a6f424ab5834f9c7b5229c upstream.
+[ Upstream commit 8fdcabeac39824fe67480fd9508d80161c541854 ]
 
-Commit 7b668c064ec3 ("serial: 8250: Fix max baud limit in generic 8250
-port") fixed limits of a baud rate setting for a generic 8250 port.
-In other words since that commit the baud rate has been permitted to be
-within [uartclk / 16 / UART_DIV_MAX; uartclk / 16], which is absolutely
-normal for a standard 8250 UART port. But there are custom 8250 ports,
-which provide extended baud rate limits. In particular the Mediatek 8250
-port can work with baud rates up to "uartclk" speed.
+This driver is not working because of problems of its receiving code.
+This patch fixes it to make it work.
 
-Normally that and any other peculiarity is supposed to be handled in a
-custom set_termios() callback implemented in the vendor-specific
-8250-port glue-driver. Currently that is how it's done for the most of
-the vendor-specific 8250 ports, but for some reason for Mediatek a
-solution has been spread out to both the glue-driver and to the generic
-8250-port code. Due to that a bug has been introduced, which permitted the
-extended baud rate limit for all even for standard 8250-ports. The bug
-has been fixed by the commit 7b668c064ec3 ("serial: 8250: Fix max baud
-limit in generic 8250 port") by narrowing the baud rates limit back down to
-the normal bounds. Unfortunately by doing so we also broke the
-Mediatek-specific extended bauds feature.
+When the driver receives an LAPB frame, it should first pass the frame
+to the LAPB module to process. After processing, the LAPB module passes
+the data (the packet) back to the driver, the driver should then add a
+one-byte pseudo header and pass the data to upper layers.
 
-A fix of the problem described above is twofold. First since we can't get
-back the extended baud rate limits feature to the generic set_termios()
-function and that method supports only a standard baud rates range, the
-requested baud rate must be locally stored before calling it and then
-restored back to the new termios structure after the generic set_termios()
-finished its magic business. By doing so we still use the
-serial8250_do_set_termios() method to set the LCR/MCR/FCR/etc. registers,
-while the extended baud rate setting procedure will be performed later in
-the custom Mediatek-specific set_termios() callback. Second since a true
-baud rate is now fully calculated in the custom set_termios() method we
-need to locally update the port timeout by calling the
-uart_update_timeout() function. After the fixes described above are
-implemented in the 8250_mtk.c driver, the Mediatek 8250-port should
-get back to normally working with extended baud rates.
+The changes to the "x25_asy_bump" function and the
+"x25_asy_data_indication" function are to correctly implement this
+procedure.
 
-Link: https://lore.kernel.org/linux-serial/20200701211337.3027448-1-danielwinkler@google.com
+Also, the "x25_asy_unesc" function ignores any frame that is shorter
+than 3 bytes. However the shortest frames are 2-byte long. So we need
+to change it to allow 2-byte frames to pass.
 
-Fixes: 7b668c064ec3 ("serial: 8250: Fix max baud limit in generic 8250 port")
-Reported-by: Daniel Winkler <danielwinkler@google.com>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: stable <stable@vger.kernel.org>
-Tested-by: Claire Chang <tientzu@chromium.org>
-Link: https://lore.kernel.org/r/20200714124113.20918-1-Sergey.Semin@baikalelectronics.ru
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Reviewed-by: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/tty/serial/8250/8250_mtk.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/net/wan/x25_asy.c |   21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
---- a/drivers/tty/serial/8250/8250_mtk.c
-+++ b/drivers/tty/serial/8250/8250_mtk.c
-@@ -47,8 +47,21 @@ mtk8250_set_termios(struct uart_port *po
- 	struct uart_8250_port *up =
- 		container_of(port, struct uart_8250_port, port);
+--- a/drivers/net/wan/x25_asy.c
++++ b/drivers/net/wan/x25_asy.c
+@@ -186,7 +186,7 @@ static inline void x25_asy_unlock(struct
+ 	netif_wake_queue(sl->dev);
+ }
  
-+	/*
-+	 * Store the requested baud rate before calling the generic 8250
-+	 * set_termios method. Standard 8250 port expects bauds to be
-+	 * no higher than (uartclk / 16) so the baud will be clamped if it
-+	 * gets out of that bound. Mediatek 8250 port supports speed
-+	 * higher than that, therefore we'll get original baud rate back
-+	 * after calling the generic set_termios method and recalculate
-+	 * the speed later in this method.
-+	 */
-+	baud = tty_termios_baud_rate(termios);
-+
- 	serial8250_do_set_termios(port, termios, old);
+-/* Send one completely decapsulated IP datagram to the IP layer. */
++/* Send an LAPB frame to the LAPB module to process. */
  
-+	tty_termios_encode_baud_rate(termios, baud, baud);
-+
- 	/*
- 	 * Mediatek UARTs use an extra highspeed register (UART_MTK_HIGHS)
- 	 *
-@@ -91,6 +104,11 @@ mtk8250_set_termios(struct uart_port *po
- 	 */
- 	spin_lock_irqsave(&port->lock, flags);
+ static void x25_asy_bump(struct x25_asy *sl)
+ {
+@@ -198,13 +198,12 @@ static void x25_asy_bump(struct x25_asy
+ 	count = sl->rcount;
+ 	dev->stats.rx_bytes += count;
  
-+	/*
-+	 * Update the per-port timeout.
-+	 */
-+	uart_update_timeout(port, termios->c_cflag, baud);
+-	skb = dev_alloc_skb(count+1);
++	skb = dev_alloc_skb(count);
+ 	if (skb == NULL) {
+ 		netdev_warn(sl->dev, "memory squeeze, dropping packet\n");
+ 		dev->stats.rx_dropped++;
+ 		return;
+ 	}
+-	skb_push(skb, 1);	/* LAPB internal control */
+ 	memcpy(skb_put(skb, count), sl->rbuff, count);
+ 	skb->protocol = x25_type_trans(skb, sl->dev);
+ 	err = lapb_data_received(skb->dev, skb);
+@@ -212,7 +211,6 @@ static void x25_asy_bump(struct x25_asy
+ 		kfree_skb(skb);
+ 		printk(KERN_DEBUG "x25_asy: data received err - %d\n", err);
+ 	} else {
+-		netif_rx(skb);
+ 		dev->stats.rx_packets++;
+ 	}
+ }
+@@ -358,12 +356,21 @@ static netdev_tx_t x25_asy_xmit(struct s
+  */
+ 
+ /*
+- *	Called when I frame data arrives. We did the work above - throw it
+- *	at the net layer.
++ *	Called when I frame data arrive. We add a pseudo header for upper
++ *	layers and pass it to upper layers.
+  */
+ 
+ static int x25_asy_data_indication(struct net_device *dev, struct sk_buff *skb)
+ {
++	if (skb_cow(skb, 1)) {
++		kfree_skb(skb);
++		return NET_RX_DROP;
++	}
++	skb_push(skb, 1);
++	skb->data[0] = X25_IFACE_DATA;
 +
- 	/* set DLAB we have cval saved in up->lcr from the call to the core */
- 	serial_port_out(port, UART_LCR, up->lcr | UART_LCR_DLAB);
- 	serial_dl_write(up, quot);
++	skb->protocol = x25_type_trans(skb, dev);
++
+ 	return netif_rx(skb);
+ }
+ 
+@@ -659,7 +666,7 @@ static void x25_asy_unesc(struct x25_asy
+ 	switch (s) {
+ 	case X25_END:
+ 		if (!test_and_clear_bit(SLF_ERROR, &sl->flags) &&
+-		    sl->rcount > 2)
++		    sl->rcount >= 2)
+ 			x25_asy_bump(sl);
+ 		clear_bit(SLF_ESCAPE, &sl->flags);
+ 		sl->rcount = 0;
 
 
