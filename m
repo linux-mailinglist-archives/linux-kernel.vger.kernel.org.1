@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D412328A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F212328B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbgG3AOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 20:14:37 -0400
-Received: from mga09.intel.com ([134.134.136.24]:33272 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728225AbgG3AOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 20:14:24 -0400
-IronPort-SDR: lEqg5LnYcX5iTzxui68tohMnh2MnhWQ3Gb89UkMzoJtYfz94Q9KB7xAO4iRggG+fCKkg2TkjXI
- EaLWdL2z4pfg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="152748851"
-X-IronPort-AV: E=Sophos;i="5.75,412,1589266800"; 
-   d="scan'208";a="152748851"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 17:14:20 -0700
-IronPort-SDR: 0ILJmDgohE/d9exFAy37m6A2IdOQjA+z1isX7wk15sn2vyRYV54jkNNKPkBxSC88ZZujMVw9ve
- 2t0Mo+/4oOJg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,412,1589266800"; 
-   d="scan'208";a="286680262"
-Received: from jacob-builder.jf.intel.com ([10.7.199.155])
-  by orsmga003.jf.intel.com with ESMTP; 29 Jul 2020 17:14:19 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Lu Baolu" <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v7 7/7] iommu/vt-d: Check UAPI data processed by IOMMU core
-Date:   Wed, 29 Jul 2020 17:21:07 -0700
-Message-Id: <1596068467-49322-8-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596068467-49322-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1596068467-49322-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S1728183AbgG3AZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 20:25:41 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:33201 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727862AbgG3AZk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 20:25:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1596068739; x=1627604739;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eZTfMgiK2vEeMZsD5lwwoP2zVvgB9NQ0c2HdLF8qwXA=;
+  b=MtDwwZN6u54Yd6TZyAesj3nKzWmd37fDiXby6gvMrCxmFZOECwB/s1Tj
+   qeBiGwxRyPSY/fWXgy2wt5u5pZHQo80OfWiubuQNoniZjvU5efEXJlclZ
+   Yg6eruHy6NRmMqRAYXbuL/gAd1vR0a1ZtjdmSea6z5TACi6QO745s7Ucj
+   eVkQhzqXnBy8DLjtMCDwCwJTYCQHKo2JZwAKcg8a7Iye/6ADpNfFdI77d
+   8bzmzb+WlmtFD5USejezAEk1DTZNyN97Qfy7bObAjh1fmUdcRctKPEpBq
+   GHZtvwtJuqA9MzV0r9Ug3KXxhe4l5fEW2yXkBaysKA405gWyCpOZUEJ1Y
+   w==;
+IronPort-SDR: LRjIRlPiDUXVZavr6SS0YbT2Ll9/TQnMq2TSZoWyndF1OV/qX2DDDl1sh29PCRZ6WW082HMBjg
+ Kz4QkkhHoYBPTdJqnRuvu7Zdd0mokur51okc8K4HWp+04jYzFaQSVPshkN990Jb8CivUOd/D1e
+ eZRSxUOaHHyFUh1ql+NxkQvyjQgrPWx4kpUFgyY2kZdZPsUlan56sGIx32LWtDYfmwLxiqzPYS
+ BMxr41pEvhaCOaIVX3HGRFl+Rn0CxpPhPb59M3ODYE6k3ddmXOtQgHibBCci1Hl8+PyX7ExgbQ
+ Ues=
+X-IronPort-AV: E=Sophos;i="5.75,412,1589212800"; 
+   d="scan'208";a="253040609"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Jul 2020 08:25:39 +0800
+IronPort-SDR: 2kmw3pgLDyOZaUJhD5yBfLPod9DCOGcdEkWCNZW0yk7HkEI95YNdJKr9fJ/kNEpNxJYAKM/QDy
+ HphhY6hBr3OnXyxP67dCiPPn5teYb+qm4=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 17:13:09 -0700
+IronPort-SDR: 6UJWOZcUcSr7TfQqXrqD26zZiC1kzKQxJVo8FI0jW1AO2FT4vnNLnamB+KCsFFg/X6LmkZwDOT
+ CyVema/uVjpw==
+WDCIronportException: Internal
+Received: from jpf009043.ad.shared (HELO jedi-01.hgst.com) ([10.86.58.210])
+  by uls-op-cesaip02.wdc.com with ESMTP; 29 Jul 2020 17:25:40 -0700
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: [PATCH] RISC-V: Fix build warning for smpboot.c
+Date:   Wed, 29 Jul 2020 17:25:35 -0700
+Message-Id: <20200730002535.17335-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.24.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOMMU generic layer already does sanity checks UAPI data for version
-match and argsz range under generic information.
-Remove the redundant version check from VT-d driver and check for vendor
-specific data size.
+The following warnings are reported by kbuild with W=1.
 
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+>> arch/riscv/kernel/smpboot.c:109:5: warning: no previous prototype for
+'start_secondary_cpu' [-Wmissing-prototypes]
+     109 | int start_secondary_cpu(int cpu, struct task_struct *tidle)
+         |     ^~~~~~~~~~~~~~~~~~~
+   arch/riscv/kernel/smpboot.c:146:34: warning: no previous prototype for
+'smp_callin' [-Wmissing-prototypes]
+     146 | asmlinkage __visible void __init smp_callin(void)
+         |                                  ^~~~~~~~~~
+
+Fix the warnings by marking the local functions static and adding the prototype
+for the global function.
+
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
 ---
- drivers/iommu/intel/iommu.c | 3 +--
- drivers/iommu/intel/svm.c   | 7 +++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ arch/riscv/include/asm/smp.h | 3 +++
+ arch/riscv/kernel/smpboot.c  | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 021f62078f52..7e03cca31a0e 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -5391,8 +5391,7 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
- 	int ret = 0;
- 	u64 size = 0;
+diff --git a/arch/riscv/include/asm/smp.h b/arch/riscv/include/asm/smp.h
+index 40bb1c15a731..6dfd2a1446d5 100644
+--- a/arch/riscv/include/asm/smp.h
++++ b/arch/riscv/include/asm/smp.h
+@@ -40,6 +40,9 @@ void arch_send_call_function_single_ipi(int cpu);
+ int riscv_hartid_to_cpuid(int hartid);
+ void riscv_cpuid_to_hartid_mask(const struct cpumask *in, struct cpumask *out);
  
--	if (!inv_info || !dmar_domain ||
--	    inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
-+	if (!inv_info || !dmar_domain)
- 		return -EINVAL;
- 
- 	if (!dev || !dev_is_pci(dev))
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 713b3a218483..55ea11e9c0f5 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -240,8 +240,11 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 	if (WARN_ON(!iommu) || !data)
- 		return -EINVAL;
- 
--	if (data->version != IOMMU_GPASID_BIND_VERSION_1 ||
--	    data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-+	if (data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-+		return -EINVAL;
++/* Secondary hart entry */
++asmlinkage void smp_callin(void);
 +
-+	/* IOMMU core ensures argsz is more than the start of the union */
-+	if (data->argsz < offsetofend(struct iommu_gpasid_bind_data, vendor.vtd))
- 		return -EINVAL;
+ /*
+  * Obtains the hart ID of the currently executing task.  This relies on
+  * THREAD_INFO_IN_TASK, but we define that unconditionally.
+diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+index 4e9922790f6e..c09fbdf924b1 100644
+--- a/arch/riscv/kernel/smpboot.c
++++ b/arch/riscv/kernel/smpboot.c
+@@ -106,7 +106,7 @@ void __init setup_smp(void)
+ 	}
+ }
  
- 	if (!dev_is_pci(dev))
+-int start_secondary_cpu(int cpu, struct task_struct *tidle)
++static int start_secondary_cpu(int cpu, struct task_struct *tidle)
+ {
+ 	if (cpu_ops[cpu]->cpu_start)
+ 		return cpu_ops[cpu]->cpu_start(cpu, tidle);
 -- 
-2.7.4
+2.24.0
 
