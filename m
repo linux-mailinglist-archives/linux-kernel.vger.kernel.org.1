@@ -2,45 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32022232D33
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7667232E23
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729528AbgG3IH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:07:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45812 "EHLO mail.kernel.org"
+        id S1730288AbgG3IRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:17:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729506AbgG3IHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:07:44 -0400
+        id S1729691AbgG3IJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:09:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC444206C0;
-        Thu, 30 Jul 2020 08:07:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 516A62070B;
+        Thu, 30 Jul 2020 08:09:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096464;
-        bh=8je/VXTUbTj7wWw5DJkWCZC8gN/APZOy2RV5kYfjlFU=;
+        s=default; t=1596096567;
+        bh=Gr1ttFmcGcW6vsbr1TCLtB8kyrh6XvrBWd4L1iyWfok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W6Powl9hDvJuEb74tVNG2E8tmR/z+VIalQ1Gy9zjFpeTXEO0R/S5IZJRql9iFEqiY
-         xAxpI4FCfwwFapvQGsLHnSS1ZbBkM57KKyNzK93iJoF3XsNFIbBGFcZjDIbqVUD+71
-         n+J814+njhoBLeaDeTFYW1LvrsgKgoYmqQFAwFnY=
+        b=N7An69F06M4hN2z21NWZIhF4raca2eed4ECUUPMEkc/zjlL4vcVNq49vLs/dhrzpD
+         pkPve9guaciA8TDT9wLYaRNmXukviL/0JfJrplhV6ljSwNylz4F6ARvaaKq7nXDhfd
+         2JyNAIqSSMLmJPOT1dDgJLLnhc5cy3L4L2sktPwE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Oscar Salvador <osalvador@techadventures.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Ayush Mittal <ayush.m@samsung.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH 4.14 12/14] mm/page_owner.c: remove drain_all_pages from init_early_allocated_pages
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>
+Subject: [PATCH 4.9 37/61] serial: 8250: fix null-ptr-deref in serial8250_start_tx()
 Date:   Thu, 30 Jul 2020 10:04:55 +0200
-Message-Id: <20200730074419.503737903@linuxfoundation.org>
+Message-Id: <20200730074422.627820232@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200730074418.882736401@linuxfoundation.org>
-References: <20200730074418.882736401@linuxfoundation.org>
+In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
+References: <20200730074420.811058810@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,53 +42,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oscar Salvador <osalvador@techadventures.net>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit 6bec6ad77fac3d29aed0d8e0b7526daedc964970 upstream.
+commit f4c23a140d80ef5e6d3d1f8f57007649014b60fa upstream.
 
-When setting page_owner = on, the following warning can be seen in the
-boot log:
+I got null-ptr-deref in serial8250_start_tx():
 
-  WARNING: CPU: 0 PID: 0 at mm/page_alloc.c:2537 drain_all_pages+0x171/0x1a0
-  Modules linked in:
-  CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.15.0-rc7-next-20180109-1-default+ #7
-  Hardware name: Dell Inc. Latitude E7470/0T6HHJ, BIOS 1.11.3 11/09/2016
-  RIP: 0010:drain_all_pages+0x171/0x1a0
-  Call Trace:
-    init_page_owner+0x4e/0x260
-    start_kernel+0x3e6/0x4a6
-    ? set_init_arg+0x55/0x55
-    secondary_startup_64+0xa5/0xb0
-  Code: c5 ed ff 89 df 48 c7 c6 20 3b 71 82 e8 f9 4b 52 00 3b 05 d7 0b f8 00 89 c3 72 d5 5b 5d 41 5
+[   78.114630] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+[   78.123778] Mem abort info:
+[   78.126560]   ESR = 0x86000007
+[   78.129603]   EC = 0x21: IABT (current EL), IL = 32 bits
+[   78.134891]   SET = 0, FnV = 0
+[   78.137933]   EA = 0, S1PTW = 0
+[   78.141064] user pgtable: 64k pages, 48-bit VAs, pgdp=00000027d41a8600
+[   78.147562] [0000000000000000] pgd=00000027893f0003, p4d=00000027893f0003, pud=00000027893f0003, pmd=00000027c9a20003, pte=0000000000000000
+[   78.160029] Internal error: Oops: 86000007 [#1] SMP
+[   78.164886] Modules linked in: sunrpc vfat fat aes_ce_blk crypto_simd cryptd aes_ce_cipher crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce ses enclosure sg sbsa_gwdt ipmi_ssif spi_dw_mmio sch_fq_codel vhost_net tun vhost vhost_iotlb tap ip_tables ext4 mbcache jbd2 ahci hisi_sas_v3_hw libahci hisi_sas_main libsas hns3 scsi_transport_sas hclge libata megaraid_sas ipmi_si hnae3 ipmi_devintf ipmi_msghandler br_netfilter bridge stp llc nvme nvme_core xt_sctp sctp libcrc32c dm_mod nbd
+[   78.207383] CPU: 11 PID: 23258 Comm: null-ptr Not tainted 5.8.0-rc6+ #48
+[   78.214056] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 CS V3.B210.01 03/12/2020
+[   78.222888] pstate: 80400089 (Nzcv daIf +PAN -UAO BTYPE=--)
+[   78.228435] pc : 0x0
+[   78.230618] lr : serial8250_start_tx+0x160/0x260
+[   78.235215] sp : ffff800062eefb80
+[   78.238517] x29: ffff800062eefb80 x28: 0000000000000fff
+[   78.243807] x27: ffff800062eefd80 x26: ffff202fd83b3000
+[   78.249098] x25: ffff800062eefd80 x24: ffff202fd83b3000
+[   78.254388] x23: ffff002fc5e50be8 x22: 0000000000000002
+[   78.259679] x21: 0000000000000001 x20: 0000000000000000
+[   78.264969] x19: ffffa688827eecc8 x18: 0000000000000000
+[   78.270259] x17: 0000000000000000 x16: 0000000000000000
+[   78.275550] x15: ffffa68881bc67a8 x14: 00000000000002e6
+[   78.280841] x13: ffffa68881bc67a8 x12: 000000000000c539
+[   78.286131] x11: d37a6f4de9bd37a7 x10: ffffa68881cccff0
+[   78.291421] x9 : ffffa68881bc6000 x8 : ffffa688819daa88
+[   78.296711] x7 : ffffa688822a0f20 x6 : ffffa688819e0000
+[   78.302002] x5 : ffff800062eef9d0 x4 : ffffa68881e707a8
+[   78.307292] x3 : 0000000000000000 x2 : 0000000000000002
+[   78.312582] x1 : 0000000000000001 x0 : ffffa688827eecc8
+[   78.317873] Call trace:
+[   78.320312]  0x0
+[   78.322147]  __uart_start.isra.9+0x64/0x78
+[   78.326229]  uart_start+0xb8/0x1c8
+[   78.329620]  uart_flush_chars+0x24/0x30
+[   78.333442]  n_tty_receive_buf_common+0x7b0/0xc30
+[   78.338128]  n_tty_receive_buf+0x44/0x2c8
+[   78.342122]  tty_ioctl+0x348/0x11f8
+[   78.345599]  ksys_ioctl+0xd8/0xf8
+[   78.348903]  __arm64_sys_ioctl+0x2c/0xc8
+[   78.352812]  el0_svc_common.constprop.2+0x88/0x1b0
+[   78.357583]  do_el0_svc+0x44/0xd0
+[   78.360887]  el0_sync_handler+0x14c/0x1d0
+[   78.364880]  el0_sync+0x140/0x180
+[   78.368185] Code: bad PC value
 
-This warning is shown because we are calling drain_all_pages() in
-init_early_allocated_pages(), but mm_percpu_wq is not up yet, it is being
-set up later on in kernel_init_freeable() -> init_mm_internals().
+SERIAL_PORT_DFNS is not defined on each arch, if it's not defined,
+serial8250_set_defaults() won't be called in serial8250_isa_init_ports(),
+so the p->serial_in pointer won't be initialized, and it leads a null-ptr-deref.
+Fix this problem by calling serial8250_set_defaults() after init uart port.
 
-Link: http://lkml.kernel.org/r/20180109153921.GA13070@techadventures.net
-Signed-off-by: Oscar Salvador <osalvador@techadventures.net>
-Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Ayush Mittal <ayush.m@samsung.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200721143852.4058352-1-yangyingliang@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/page_owner.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/tty/serial/8250/8250_core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -617,7 +617,6 @@ static void init_early_allocated_pages(v
- {
- 	pg_data_t *pgdat;
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -529,6 +529,7 @@ static void __init serial8250_isa_init_p
+ 		 */
+ 		up->mcr_mask = ~ALPHA_KLUDGE_MCR;
+ 		up->mcr_force = ALPHA_KLUDGE_MCR;
++		serial8250_set_defaults(up);
+ 	}
  
--	drain_all_pages(NULL);
- 	for_each_online_pgdat(pgdat)
- 		init_zones_in_node(pgdat);
- }
+ 	/* chain base port ops to support Remote Supervisor Adapter */
+@@ -552,7 +553,6 @@ static void __init serial8250_isa_init_p
+ 		port->membase  = old_serial_port[i].iomem_base;
+ 		port->iotype   = old_serial_port[i].io_type;
+ 		port->regshift = old_serial_port[i].iomem_reg_shift;
+-		serial8250_set_defaults(up);
+ 
+ 		port->irqflags |= irqflag;
+ 		if (serial8250_isa_config != NULL)
 
 
