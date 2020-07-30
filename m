@@ -2,49 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D645232DF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AECB232D56
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729402AbgG3ILS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:11:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50332 "EHLO mail.kernel.org"
+        id S1729705AbgG3IJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:09:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729927AbgG3ILJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:11:09 -0400
+        id S1729683AbgG3IJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:09:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B62532075F;
-        Thu, 30 Jul 2020 08:11:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF9DA20838;
+        Thu, 30 Jul 2020 08:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096668;
-        bh=4PIK3txsItU6RK1rxjj0QPH/Qr9nof33HTpuGYpGiww=;
+        s=default; t=1596096565;
+        bh=2N5Wm++7+eoqHG8fsn7/XL8Q1oSa/XmTbUdG1O2wd7U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f4qL2SeVrrQjgqrobKIx2L6PkMDNXFHn1nejXdAy2JlGWMFUhyvPvOdb9loS6/Bh1
-         nyZRHGEQMza2G21/o47R0VrQQJJ7fjxo+gOMb1E9JeT2syu2FfOwZrzFaWl9UGTodO
-         Dj89ZBrHOJMiEANmXA6dmxN5iHRy5sYZgmVljLzU=
+        b=ZdZkEKvLneekmyiFGi2VwnRtxqF16qsg+6rfBY3Bvkm/ifpZdmpZWQAbpIkLKyaI8
+         HuLvM1qAvxzdWxWSGqdJATgLSKz6rPeB4xA1JBbw11B0P01PPT5hKAWlSiQDtPdih9
+         BsvQsFNIWJllrn28xBeNLE8PDSMFI1K7us5Hn6BE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        kvm ML <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
-        Rik van Riel <riel@surriel.com>, x86-ml <x86@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 15/54] x86/fpu: Disable bottom halves while loading FPU registers
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.9 36/61] staging: comedi: addi_apci_1564: check INSN_CONFIG_DIGITAL_TRIG shift
 Date:   Thu, 30 Jul 2020 10:04:54 +0200
-Message-Id: <20200730074421.942105266@linuxfoundation.org>
+Message-Id: <20200730074422.579044866@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200730074421.203879987@linuxfoundation.org>
-References: <20200730074421.203879987@linuxfoundation.org>
+In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
+References: <20200730074420.811058810@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,85 +42,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-[ Upstream commit 68239654acafe6aad5a3c1dc7237e60accfebc03 ]
+commit 926234f1b8434c4409aa4c53637aa3362ca07cea upstream.
 
-The sequence
+The `INSN_CONFIG` comedi instruction with sub-instruction code
+`INSN_CONFIG_DIGITAL_TRIG` includes a base channel in `data[3]`. This is
+used as a right shift amount for other bitmask values without being
+checked.  Shift amounts greater than or equal to 32 will result in
+undefined behavior.  Add code to deal with this.
 
-  fpu->initialized = 1;		/* step A */
-  preempt_disable();		/* step B */
-  fpu__restore(fpu);
-  preempt_enable();
+Fixes: 1e15687ea472 ("staging: comedi: addi_apci_1564: add Change-of-State interrupt subdevice and required functions")
+Cc: <stable@vger.kernel.org> #3.17+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20200717145257.112660-4-abbotti@mev.co.uk
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-in __fpu__restore_sig() is racy in regard to a context switch.
-
-For 32bit frames, __fpu__restore_sig() prepares the FPU state within
-fpu->state. To ensure that a context switch (switch_fpu_prepare() in
-particular) does not modify fpu->state it uses fpu__drop() which sets
-fpu->initialized to 0.
-
-After fpu->initialized is cleared, the CPU's FPU state is not saved
-to fpu->state during a context switch. The new state is loaded via
-fpu__restore(). It gets loaded into fpu->state from userland and
-ensured it is sane. fpu->initialized is then set to 1 in order to avoid
-fpu__initialize() doing anything (overwrite the new state) which is part
-of fpu__restore().
-
-A context switch between step A and B above would save CPU's current FPU
-registers to fpu->state and overwrite the newly prepared state. This
-looks like a tiny race window but the Kernel Test Robot reported this
-back in 2016 while we had lazy FPU support. Borislav Petkov made the
-link between that report and another patch that has been posted. Since
-the removal of the lazy FPU support, this race goes unnoticed because
-the warning has been removed.
-
-Disable bottom halves around the restore sequence to avoid the race. BH
-need to be disabled because BH is allowed to run (even with preemption
-disabled) and might invoke kernel_fpu_begin() by doing IPsec.
-
- [ bp: massage commit message a bit. ]
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: kvm ML <kvm@vger.kernel.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Radim Krčmář <rkrcmar@redhat.com>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: stable@vger.kernel.org
-Cc: x86-ml <x86@kernel.org>
-Link: http://lkml.kernel.org/r/20181120102635.ddv3fvavxajjlfqk@linutronix.de
-Link: https://lkml.kernel.org/r/20160226074940.GA28911@pd.tnic
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/fpu/signal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/comedi/drivers/addi_apci_1564.c |   20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 31fad2cbd734b..8fc842dae3b39 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -317,10 +317,10 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 			sanitize_restored_xstate(tsk, &env, xfeatures, fx_only);
- 		}
+--- a/drivers/staging/comedi/drivers/addi_apci_1564.c
++++ b/drivers/staging/comedi/drivers/addi_apci_1564.c
+@@ -340,14 +340,22 @@ static int apci1564_cos_insn_config(stru
+ 				    unsigned int *data)
+ {
+ 	struct apci1564_private *devpriv = dev->private;
+-	unsigned int shift, oldmask;
++	unsigned int shift, oldmask, himask, lomask;
  
-+		local_bh_disable();
- 		fpu->fpstate_active = 1;
--		preempt_disable();
- 		fpu__restore(fpu);
--		preempt_enable();
-+		local_bh_enable();
- 
- 		return err;
- 	} else {
--- 
-2.25.1
-
+ 	switch (data[0]) {
+ 	case INSN_CONFIG_DIGITAL_TRIG:
+ 		if (data[1] != 0)
+ 			return -EINVAL;
+ 		shift = data[3];
+-		oldmask = (1U << shift) - 1;
++		if (shift < 32) {
++			oldmask = (1U << shift) - 1;
++			himask = data[4] << shift;
++			lomask = data[5] << shift;
++		} else {
++			oldmask = 0xffffffffu;
++			himask = 0;
++			lomask = 0;
++		}
+ 		switch (data[2]) {
+ 		case COMEDI_DIGITAL_TRIG_DISABLE:
+ 			devpriv->ctrl = 0;
+@@ -371,8 +379,8 @@ static int apci1564_cos_insn_config(stru
+ 				devpriv->mode2 &= oldmask;
+ 			}
+ 			/* configure specified channels */
+-			devpriv->mode1 |= data[4] << shift;
+-			devpriv->mode2 |= data[5] << shift;
++			devpriv->mode1 |= himask;
++			devpriv->mode2 |= lomask;
+ 			break;
+ 		case COMEDI_DIGITAL_TRIG_ENABLE_LEVELS:
+ 			if (devpriv->ctrl != (APCI1564_DI_IRQ_ENA |
+@@ -389,8 +397,8 @@ static int apci1564_cos_insn_config(stru
+ 				devpriv->mode2 &= oldmask;
+ 			}
+ 			/* configure specified channels */
+-			devpriv->mode1 |= data[4] << shift;
+-			devpriv->mode2 |= data[5] << shift;
++			devpriv->mode1 |= himask;
++			devpriv->mode2 |= lomask;
+ 			break;
+ 		default:
+ 			return -EINVAL;
 
 
