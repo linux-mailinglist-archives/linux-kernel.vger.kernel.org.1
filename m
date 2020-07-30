@@ -2,351 +2,574 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC750233AF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 23:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438DE233AF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 23:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730683AbgG3Vk4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Jul 2020 17:40:56 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32836 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728849AbgG3Vky (ORCPT
+        id S1730763AbgG3VlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 17:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730635AbgG3VlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 17:40:54 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-efpjDBcEPqqiPgJmU9Salg-1; Thu, 30 Jul 2020 17:40:48 -0400
-X-MC-Unique: efpjDBcEPqqiPgJmU9Salg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CAD2100A8D0;
-        Thu, 30 Jul 2020 21:40:42 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.194.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A64BB87B0A;
-        Thu, 30 Jul 2020 21:40:39 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     David Ahern <dsahern@gmail.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        =?UTF-8?q?Genevi=C3=A8ve=20Bastien?= <gbastien@versatic.net>,
-        Wang Nan <wangnan0@huawei.com>,
-        Jeremie Galarneau <jgalar@efficios.com>
-Subject: [PATCH 6/6] perf script: Add tod field to display time of day
-Date:   Thu, 30 Jul 2020 23:39:50 +0200
-Message-Id: <20200730213950.1503773-7-jolsa@kernel.org>
-In-Reply-To: <20200730213950.1503773-1-jolsa@kernel.org>
-References: <20200730213950.1503773-1-jolsa@kernel.org>
+        Thu, 30 Jul 2020 17:41:14 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3EAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 14:41:14 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id bh1so2311420plb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 14:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ocydU7RBdM931wAuOmouhOZF/llilb2u8cyvM4WgXKA=;
+        b=H/orq+8bAOhHRPyGVO4tjyn5z1eaRpmfdUtYljbMQUuZANTmU4UqYLW7UmEPEw2beN
+         zOCKCt+Vi5GB5HkyJYqgG6CJQL064gYX9zX6mvXtp/9RaYbQ+Q6wBYZVS2j4Oj+5qPCM
+         VmobqIMhmPIEBMBoP3WBwRd39jEd8popO2t/EmZHYPSfr7odgu8aYAOuX7pkkGLJJik+
+         nqw2Qgr6Q1nSCQds7Nq02S5angyFUwwb9oIAuoT4SIViYdHPg+4hZ7L2fhcUPnWPi5bD
+         PBaEiavqZfyLcyqlL2ejr3K2pq0Yf1t1yr+VVTbbaIkwhSbuhShC3dz04r+iPvHjpcVk
+         0VIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ocydU7RBdM931wAuOmouhOZF/llilb2u8cyvM4WgXKA=;
+        b=cqtin+KTrvq4XxFxFXJN2ls6ZCTpkceljhQs736V8I3hJXTmcDFUvN+U6cdSmaD2WK
+         fmwmdK4jP+Cdr0YHKEQF+PEsuWrx1xIkLucFou/IdAJ+zhjCil0wLSM/yC4+sz63tuh8
+         jS+xYUryUq9ml/Cd4NHnykqcDmccjjfi24eZiOBIbC2V/2GV3px6FHipUIZ4YpIte4mW
+         NKP9crbH/uu/C6iQPz8urx+j5f/ygRt8cKvITPr31L22T5AT8xsqcq6Qw4G/G4HQXHn2
+         g1l7RIv67BxHWd6FzyC6HAI7H+6rOtmEeb37K6tmShKRinoqkrNRdw9g+EsP9ngBA8ad
+         woqg==
+X-Gm-Message-State: AOAM533pZ/9xJBsOOCUgB0dLjXnTioZN04BML642QbfNcPZGW4klQ0Zm
+        LuOdEA1oSW1TLDy3w7pOpcz45wAhSZE=
+X-Google-Smtp-Source: ABdhPJw21ukEAQiWgnde2YMK5K4btFCJIGSbK2abPlqIfA7bB+OrOH6CWxxwKfxHa+4BM0apFMmvpw==
+X-Received: by 2002:a17:90a:cc:: with SMTP id v12mr984410pjd.96.1596145273527;
+        Thu, 30 Jul 2020 14:41:13 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id c17sm2549549pfp.214.2020.07.30.14.41.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 14:41:12 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 15:41:10 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mike.leach@linaro.org, coresight@lists.linaro.org
+Subject: Re: [RFC PATCH 09/14] coresight: etm4x: Add sysreg access helpers
+Message-ID: <20200730214110.GF3155687@xps15>
+References: <20200722172040.1299289-1-suzuki.poulose@arm.com>
+ <20200722172040.1299289-10-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722172040.1299289-10-suzuki.poulose@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding tod field to display time of day column with
-time of date (wallclock) time.
+On Wed, Jul 22, 2020 at 06:20:35PM +0100, Suzuki K Poulose wrote:
+> ETMv4.4 architecture defines the system instructions for accessing
+> ETM via register accesses. Add basic support for accessing a given
+> register via system instructions.
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-etm4x.c |  39 ++
+>  drivers/hwtracing/coresight/coresight-etm4x.h | 379 ++++++++++++++++--
+>  2 files changed, 394 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
+> index b901c91d3ee4..e37aababa4c9 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
+> @@ -57,6 +57,45 @@ static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
+>  
+>  static enum cpuhp_state hp_online;
+>  
+> +u64 etm4x_sysreg_read(struct csdev_access *csa,
+> +		      u32 offset,
+> +		      bool _relaxed,
+> +		      bool _64bit)
+> +{
+> +	u64 res = 0;
+> +
+> +	if (!_relaxed)
+> +		mb();	/* Imitate the !relaxed I/O helpers */
+> +
+> +	switch (offset) {
+> +	ETM4x_READ_CASES(res)
+> +	default :
+> +		WARN_ONCE(1, "etm4x: trying to read unsupported register @%x\n",
+> +			 offset);
+> +	}
+> +
+> +	return res;
+> +}
+> +
+> +void etm4x_sysreg_write(struct csdev_access *csa,
+> +			u64 val,
+> +			u32 offset,
+> +			bool _relaxed,
+> +			bool _64bit)
+> +{
+> +	if (!_relaxed)
+> +		mb();	/* Imitate the !relaxed I/O helpers */
+> +	if (!_64bit)
+> +		val &= GENMASK(31, 0);
+> +
+> +	switch (offset) {
+> +	ETM4x_WRITE_CASES(val)
+> +	default :
+> +		WARN_ONCE(1, "etm4x: trying to write to unsupported register @%x\n",
+> +			offset);
+> +	}
+> +}
+> +
+>  static void etm4_os_unlock_csa(struct etmv4_drvdata *drvdata, struct csdev_access *csa)
+>  {
+>  	/* Writing 0 to TRCOSLAR unlocks the trace registers */
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+> index 2b51d03ab6d7..f5d708206339 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+> @@ -44,13 +44,13 @@
+>  #define TRCVDSACCTLR			0x0A4
+>  #define TRCVDARCCTLR			0x0A8
+>  /* Derived resources registers */
+> -#define TRCSEQEVRn(n)			(0x100 + (n * 4))
+> +#define TRCSEQEVRn(n)			(0x100 + (n * 4)) /* n = 0-2 */
+>  #define TRCSEQRSTEVR			0x118
+>  #define TRCSEQSTR			0x11C
+>  #define TRCEXTINSELR			0x120
+> -#define TRCCNTRLDVRn(n)			(0x140 + (n * 4))
+> -#define TRCCNTCTLRn(n)			(0x150 + (n * 4))
+> -#define TRCCNTVRn(n)			(0x160 + (n * 4))
+> +#define TRCCNTRLDVRn(n)			(0x140 + (n * 4)) /* n = 0-3 */
+> +#define TRCCNTCTLRn(n)			(0x150 + (n * 4)) /* n = 0-3 */
+> +#define TRCCNTVRn(n)			(0x160 + (n * 4)) /* n = 0-3 */
+>  /* ID registers */
+>  #define TRCIDR8				0x180
+>  #define TRCIDR9				0x184
+> @@ -59,7 +59,7 @@
+>  #define TRCIDR12			0x190
+>  #define TRCIDR13			0x194
+>  #define TRCIMSPEC0			0x1C0
+> -#define TRCIMSPECn(n)			(0x1C0 + (n * 4))
+> +#define TRCIMSPECn(n)			(0x1C0 + (n * 4)) /* n = 1-7 */
+>  #define TRCIDR0				0x1E0
+>  #define TRCIDR1				0x1E4
+>  #define TRCIDR2				0x1E8
+> @@ -68,9 +68,12 @@
+>  #define TRCIDR5				0x1F4
+>  #define TRCIDR6				0x1F8
+>  #define TRCIDR7				0x1FC
+> -/* Resource selection registers */
+> +/*
+> + * Resource selection registers, n = 2-31.
+> + * First pair (regs 0, 1) is always present and is reserved.
+> + */
+>  #define TRCRSCTLRn(n)			(0x200 + (n * 4))
+> -/* Single-shot comparator registers */
+> +/* Single-shot comparator registers, n = 0-7 */
+>  #define TRCSSCCRn(n)			(0x280 + (n * 4))
+>  #define TRCSSCSRn(n)			(0x2A0 + (n * 4))
+>  #define TRCSSPCICRn(n)			(0x2C0 + (n * 4))
+> @@ -80,11 +83,13 @@
+>  #define TRCPDCR				0x310
+>  #define TRCPDSR				0x314
+>  /* Trace registers (0x318-0xEFC) */
+> -/* Comparator registers */
+> +/* Address Comparator registers n = 0-15 */
+>  #define TRCACVRn(n)			(0x400 + (n * 8))
+>  #define TRCACATRn(n)			(0x480 + (n * 8))
+> +/* Data Value Comparator Value registers, n = 0-7 */
+>  #define TRCDVCVRn(n)			(0x500 + (n * 16))
+>  #define TRCDVCMRn(n)			(0x580 + (n * 16))
+> +/* ContextID/Virtual ContextID comparators, n = 0-7 */
 
-  # perf record -k CLOCK_MONOTONIC kill
-  kill: not enough arguments
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.033 MB perf.data (8 samples) ]
+Extra documentation is good but it has to be in a separate patch.
 
-  # perf script
-            perf 261340 152919.481538:          1 cycles:  ffffffff8106d104 ...
-            perf 261340 152919.481543:          1 cycles:  ffffffff8106d104 ...
-            perf 261340 152919.481545:          7 cycles:  ffffffff8106d104 ...
-  ...
-
-  # perf script --ns
-            perf 261340 152919.481538922:          1 cycles:  ffffffff8106d ...
-            perf 261340 152919.481543286:          1 cycles:  ffffffff8106d ...
-            perf 261340 152919.481545397:          7 cycles:  ffffffff8106d ...
-  ...
-
-  # perf script -F+tod
-            perf 261340 2020-07-13 18:26:55.620971 152919.481538:           ...
-            perf 261340 2020-07-13 18:26:55.620975 152919.481543:           ...
-            perf 261340 2020-07-13 18:26:55.620978 152919.481545:           ...
-  ...
-
-  # perf script -F+tod --ns
-            perf 261340 2020-07-13 18:26:55.620971621 152919.481538922:     ...
-            perf 261340 2020-07-13 18:26:55.620975985 152919.481543286:     ...
-            perf 261340 2020-07-13 18:26:55.620978096 152919.481545397:     ...
-  ...
-
-It's available only for recording with clockid specified,
-because it's the only case where we can get reference time
-to wallclock time. It's can't do that with perf clock yet.
-
-Error is display if you want to use --tod on data without
-clockid specified:
-
-  # perf script -F+tod
-  Can't provide 'tod' time, missing clock data. Please record with -k/--clockid option.
-
-Original-patch-by: David Ahern <dsahern@gmail.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/builtin-script.c | 131 +++++++++++++++++++++++++++---------
- 1 file changed, 98 insertions(+), 33 deletions(-)
-
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index eb45f678dc2f..484ce6067d23 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -114,6 +114,32 @@ enum perf_output_field {
- 	PERF_OUTPUT_MISC            = 1ULL << 29,
- 	PERF_OUTPUT_SRCCODE	    = 1ULL << 30,
- 	PERF_OUTPUT_IPC             = 1ULL << 31,
-+	PERF_OUTPUT_TOD             = 1ULL << 32,
-+};
-+
-+struct perf_script {
-+	struct perf_tool	tool;
-+	struct perf_session	*session;
-+	bool			show_task_events;
-+	bool			show_mmap_events;
-+	bool			show_switch_events;
-+	bool			show_namespace_events;
-+	bool			show_lost_events;
-+	bool			show_round_events;
-+	bool			show_bpf_events;
-+	bool			show_cgroup_events;
-+	bool			show_text_poke_events;
-+	bool			allocated;
-+	bool			per_event_dump;
-+	bool			stitch_lbr;
-+	struct evswitch		evswitch;
-+	struct perf_cpu_map	*cpus;
-+	struct perf_thread_map *threads;
-+	int			name_width;
-+	const char              *time_str;
-+	struct perf_time_interval *ptime_range;
-+	int			range_size;
-+	int			range_num;
- };
- 
- struct output_option {
-@@ -152,6 +178,7 @@ struct output_option {
- 	{.str = "misc", .field = PERF_OUTPUT_MISC},
- 	{.str = "srccode", .field = PERF_OUTPUT_SRCCODE},
- 	{.str = "ipc", .field = PERF_OUTPUT_IPC},
-+	{.str = "tod", .field = PERF_OUTPUT_TOD},
- };
- 
- enum {
-@@ -502,6 +529,7 @@ static void set_print_ip_opts(struct perf_event_attr *attr)
-  */
- static int perf_session__check_output_opt(struct perf_session *session)
- {
-+	bool tod = false;
- 	unsigned int j;
- 	struct evsel *evsel;
- 
-@@ -528,6 +556,7 @@ static int perf_session__check_output_opt(struct perf_session *session)
- 			continue;
- 
- 		set_print_ip_opts(&evsel->core.attr);
-+		tod |= output[j].fields & PERF_OUTPUT_TOD;
- 	}
- 
- 	if (!no_callchain) {
-@@ -568,13 +597,17 @@ static int perf_session__check_output_opt(struct perf_session *session)
- 		}
- 	}
- 
-+	if (tod && !session->header.env.clock.enabled) {
-+		pr_err("Can't provide 'tod' time, missing clock data. "
-+		       "Please record with -k/--clockid option.\n");
-+		return -1;
-+	}
- out:
- 	return 0;
- }
- 
- static int perf_sample__fprintf_regs(struct regs_dump *regs, uint64_t mask,
--				     FILE *fp
--)
-+				     FILE *fp)
- {
- 	unsigned i = 0, r;
- 	int printed = 0;
-@@ -592,6 +625,56 @@ static int perf_sample__fprintf_regs(struct regs_dump *regs, uint64_t mask,
- 	return printed;
- }
- 
-+#define DEFAULT_TOD_FMT "%F %H:%M:%S"
-+
-+static char*
-+tod_scnprintf(struct perf_script *script, char *buf, int buflen,
-+	     u64 timestamp)
-+{
-+	u64 tod_ns, clockid_ns;
-+	struct perf_env *env;
-+	unsigned long nsec;
-+	struct tm ltime;
-+	char date[64];
-+	time_t sec;
-+
-+	buf[0] = '\0';
-+	if (buflen < 64 || !script)
-+		return buf;
-+
-+	env = &script->session->header.env;
-+	if (!env->clock.enabled) {
-+		scnprintf(buf, buflen, "disabled");
-+		return buf;
-+	}
-+
-+	clockid_ns = env->clock.clockid_ns;
-+	tod_ns     = env->clock.tod_ns;
-+
-+	if (timestamp > clockid_ns)
-+		tod_ns += timestamp - clockid_ns;
-+	else
-+		tod_ns -= clockid_ns - timestamp;
-+
-+	sec  = (time_t) (tod_ns / NSEC_PER_SEC);
-+	nsec = tod_ns - sec * NSEC_PER_SEC;
-+
-+	if (localtime_r(&sec, &ltime) == NULL) {
-+		scnprintf(buf, buflen, "failed");
-+	} else {
-+		strftime(date, sizeof(date), DEFAULT_TOD_FMT, &ltime);
-+
-+		if (symbol_conf.nanosecs) {
-+			snprintf(buf, buflen, "%s.%09lu", date, nsec);
-+		} else {
-+			snprintf(buf, buflen, "%s.%06lu",
-+				 date, nsec / NSEC_PER_USEC);
-+		}
-+	}
-+
-+	return buf;
-+}
-+
- static int perf_sample__fprintf_iregs(struct perf_sample *sample,
- 				      struct perf_event_attr *attr, FILE *fp)
- {
-@@ -606,7 +689,8 @@ static int perf_sample__fprintf_uregs(struct perf_sample *sample,
- 					 attr->sample_regs_user, fp);
- }
- 
--static int perf_sample__fprintf_start(struct perf_sample *sample,
-+static int perf_sample__fprintf_start(struct perf_script *script,
-+				      struct perf_sample *sample,
- 				      struct thread *thread,
- 				      struct evsel *evsel,
- 				      u32 type, FILE *fp)
-@@ -615,6 +699,7 @@ static int perf_sample__fprintf_start(struct perf_sample *sample,
- 	unsigned long secs;
- 	unsigned long long nsecs;
- 	int printed = 0;
-+	char tstr[128];
- 
- 	if (PRINT_FIELD(COMM)) {
- 		if (latency_format)
-@@ -683,6 +768,11 @@ static int perf_sample__fprintf_start(struct perf_sample *sample,
- 		printed += ret;
- 	}
- 
-+	if (PRINT_FIELD(TOD)) {
-+		tod_scnprintf(script, tstr, sizeof(tstr), sample->time);
-+		printed += fprintf(fp, "%s ", tstr);
-+	}
-+
- 	if (PRINT_FIELD(TIME)) {
- 		u64 t = sample->time;
- 		if (reltime) {
-@@ -1667,31 +1757,6 @@ static int perf_sample__fprintf_synth(struct perf_sample *sample,
- 	return 0;
- }
- 
--struct perf_script {
--	struct perf_tool	tool;
--	struct perf_session	*session;
--	bool			show_task_events;
--	bool			show_mmap_events;
--	bool			show_switch_events;
--	bool			show_namespace_events;
--	bool			show_lost_events;
--	bool			show_round_events;
--	bool			show_bpf_events;
--	bool			show_cgroup_events;
--	bool			show_text_poke_events;
--	bool			allocated;
--	bool			per_event_dump;
--	bool			stitch_lbr;
--	struct evswitch		evswitch;
--	struct perf_cpu_map	*cpus;
--	struct perf_thread_map *threads;
--	int			name_width;
--	const char              *time_str;
--	struct perf_time_interval *ptime_range;
--	int			range_size;
--	int			range_num;
--};
--
- static int evlist__max_name_len(struct evlist *evlist)
- {
- 	struct evsel *evsel;
-@@ -1739,7 +1804,7 @@ static void script_print_metric(struct perf_stat_config *config __maybe_unused,
- 
- 	if (!fmt)
- 		return;
--	perf_sample__fprintf_start(mctx->sample, mctx->thread, mctx->evsel,
-+	perf_sample__fprintf_start(NULL, mctx->sample, mctx->thread, mctx->evsel,
- 				   PERF_RECORD_SAMPLE, mctx->fp);
- 	fputs("\tmetric: ", mctx->fp);
- 	if (color)
-@@ -1754,7 +1819,7 @@ static void script_new_line(struct perf_stat_config *config __maybe_unused,
- {
- 	struct metric_ctx *mctx = ctx;
- 
--	perf_sample__fprintf_start(mctx->sample, mctx->thread, mctx->evsel,
-+	perf_sample__fprintf_start(NULL, mctx->sample, mctx->thread, mctx->evsel,
- 				   PERF_RECORD_SAMPLE, mctx->fp);
- 	fputs("\tmetric: ", mctx->fp);
- }
-@@ -1865,7 +1930,7 @@ static void process_event(struct perf_script *script,
- 
- 	++es->samples;
- 
--	perf_sample__fprintf_start(sample, thread, evsel,
-+	perf_sample__fprintf_start(script, sample, thread, evsel,
- 				   PERF_RECORD_SAMPLE, fp);
- 
- 	if (PRINT_FIELD(PERIOD))
-@@ -2174,7 +2239,7 @@ static int print_event_with_time(struct perf_tool *tool,
- 		thread = machine__findnew_thread(machine, pid, tid);
- 
- 	if (thread && evsel) {
--		perf_sample__fprintf_start(sample, thread, evsel,
-+		perf_sample__fprintf_start(script, sample, thread, evsel,
- 					   event->header.type, stdout);
- 	}
- 
-@@ -3439,7 +3504,7 @@ int cmd_script(int argc, const char **argv)
- 		     "Fields: comm,tid,pid,time,cpu,event,trace,ip,sym,dso,"
- 		     "addr,symoff,srcline,period,iregs,uregs,brstack,"
- 		     "brstacksym,flags,bpf-output,brstackinsn,brstackoff,"
--		     "callindent,insn,insnlen,synth,phys_addr,metric,misc,ipc",
-+		     "callindent,insn,insnlen,synth,phys_addr,metric,misc,ipc,tod",
- 		     parse_output_fields),
- 	OPT_BOOLEAN('a', "all-cpus", &system_wide,
- 		    "system-wide collection from all CPUs"),
--- 
-2.25.4
-
+>  #define TRCCIDCVRn(n)			(0x600 + (n * 8))
+>  #define TRCVMIDCVRn(n)			(0x640 + (n * 8))
+>  #define TRCCIDCCTLR0			0x680
+> @@ -120,29 +125,345 @@
+>  #define TRCCIDR2			0xFF8
+>  #define TRCCIDR3			0xFFC
+>  
+> -#define etm4x_relaxed_read32(csa, offset)		\
+> -	readl_relaxed((csa)->base + (offset))
+> +/*
+> + * System instructions to access ETM registers.
+> + * See ETMv4.4 spec ARM IHI0064F section 4.3.6 System instructions
+> + */
+> +#define ETM4x_OFFSET_TO_REG(x)		((x) >> 2)
+> +
+> +#if defined(CONFIG_ARM64)
+> +
+> +#define ETM4x_CRn(n)			(((n) >> 7) & 0x7)
+> +#define ETM4x_Op2(n)			(((n) >> 4) & 0x7)
+> +#define ETM4x_CRm(n)			((n) & 0xf)
+> +
+> +#include <asm/sysreg.h>
+> +#define ETM4x_REG_NUM_TO_SYSREG(n)				\
+> +	sys_reg(2, 1, ETM4x_CRn(n), ETM4x_CRm(n), ETM4x_Op2(n))
+> +
+> +#define READ_ETM4x_REG(reg)					\
+> +	read_sysreg_s(ETM4x_REG_NUM_TO_SYSREG((reg)))
+> +#define WRITE_ETM4x_REG(val, reg)				\
+> +	write_sysreg_s(val, ETM4x_REG_NUM_TO_SYSREG((reg)))
+>  
+> -#define etm4x_read32(csa, offset)			\
+> -	readl((csa)->base + (offset))
+> +#define read_etm4x_sysreg_const_offset(offset)			\
+> +	READ_ETM4x_REG(ETM4x_OFFSET_TO_REG(offset))
+>  
+> -#define etm4x_relaxed_write32(csa, val, offset)		\
+> -	writel_relaxed((val), (csa)->base + (offset))
+> +#define write_etm4x_sysreg_const_offset(val, offset)		\
+> +	WRITE_ETM4x_REG(val, ETM4x_OFFSET_TO_REG(offset))
+>  
+> -#define etm4x_write32(csa, val, offset)			\
+> -	writel((val), (csa)->base + (offset))
+> +#elif defined(CONFIG_ARM)
+>  
+> -#define etm4x_relaxed_read64(csa, offset)		\
+> -	readq_relaxed((csa)->base + (offset))
+> +#include <asm/hardware/cp14.h>
+>  
+> -#define etm4x_read64(csa, offset)			\
+> -	readq((csa)->base + (offset))
+> +#define etm4x_cp14_CRn(n)		__stringify(ETM4x_CRn(n))
+> +#define etm4x_cp14_CRm(n)		__stringify(ETM4x_CRm(n))
+> +#define etm4x_cp14_Op2(n)		__stringify(ETM4x_Op2(n))
+>  
+> -#define etm4x_relaxed_write64(csa, val, offset)		\
+> -	writeq_relaxed((val), (csa)->base + (offset))
+> +#define READ_ETM4x_REG(reg)				\
+> +	MRC14(1, ETM4x_CRn(reg), ETM4x_CRm(reg), ETM4x_Op2(reg))
+> +
+> +#define read_etm4x_sysreg_const_offset(offset)				\
+> +	READ_ETM4x_REG(ETM4x_OFFSET_TO_REG(offset))
+> +
+> +#define WRITE_ETM4x_REG(val, reg)		\
+> +	MCR14((val), 1, ETM4x_CRn((reg)), ETM4x_CRm((reg)), ETM4x_Op2((reg)))
+> +
+> +#define write_etm4x_sysreg_const_offset(val, offset)		\
+> +	WRITE_ETM4x_REG(val, ETM4x_OFFSET_TO_REG(offset))
+> +
+> +#endif
+> +
+> +#define CASE_READ(res, x)					\
+> +	case (x): { (res) = read_etm4x_sysreg_const_offset((x)); break; }
+> +
+> +#define CASE_WRITE(val, x)					\
+> +	case (x): { write_etm4x_sysreg_const_offset((val), (x)); break; }
+> +
+> +#define CASE_LIST(op, val)			\
+> +	CASE_##op((val), TRCPRGCTLR)		\
+> +	CASE_##op((val), TRCPROCSELR)		\
+> +	CASE_##op((val), TRCSTATR)		\
+> +	CASE_##op((val), TRCCONFIGR)		\
+> +	CASE_##op((val), TRCAUXCTLR)		\
+> +	CASE_##op((val), TRCEVENTCTL0R)		\
+> +	CASE_##op((val), TRCEVENTCTL1R)		\
+> +	CASE_##op((val), TRCSTALLCTLR)		\
+> +	CASE_##op((val), TRCTSCTLR)		\
+> +	CASE_##op((val), TRCSYNCPR)		\
+> +	CASE_##op((val), TRCCCCTLR)		\
+> +	CASE_##op((val), TRCBBCTLR)		\
+> +	CASE_##op((val), TRCTRACEIDR)		\
+> +	CASE_##op((val), TRCQCTLR)		\
+> +	CASE_##op((val), TRCVICTLR)		\
+> +	CASE_##op((val), TRCVIIECTLR)		\
+> +	CASE_##op((val), TRCVISSCTLR)		\
+> +	CASE_##op((val), TRCVIPCSSCTLR)		\
+> +	CASE_##op((val), TRCVDCTLR)		\
+> +	CASE_##op((val), TRCVDSACCTLR)		\
+> +	CASE_##op((val), TRCVDARCCTLR)		\
+> +	CASE_##op((val), TRCSEQEVRn(0))		\
+> +	CASE_##op((val), TRCSEQEVRn(1))		\
+> +	CASE_##op((val), TRCSEQEVRn(2))		\
+> +	CASE_##op((val), TRCSEQRSTEVR)		\
+> +	CASE_##op((val), TRCSEQSTR)		\
+> +	CASE_##op((val), TRCEXTINSELR)		\
+> +	CASE_##op((val), TRCCNTRLDVRn(0))	\
+> +	CASE_##op((val), TRCCNTRLDVRn(1))	\
+> +	CASE_##op((val), TRCCNTRLDVRn(2))	\
+> +	CASE_##op((val), TRCCNTRLDVRn(3))	\
+> +	CASE_##op((val), TRCCNTCTLRn(0))	\
+> +	CASE_##op((val), TRCCNTCTLRn(1))	\
+> +	CASE_##op((val), TRCCNTCTLRn(2))	\
+> +	CASE_##op((val), TRCCNTCTLRn(3))	\
+> +	CASE_##op((val), TRCCNTVRn(0))		\
+> +	CASE_##op((val), TRCCNTVRn(1))		\
+> +	CASE_##op((val), TRCCNTVRn(2))		\
+> +	CASE_##op((val), TRCCNTVRn(3))		\
+> +	CASE_##op((val), TRCIDR8)		\
+> +	CASE_##op((val), TRCIDR9)		\
+> +	CASE_##op((val), TRCIDR10)		\
+> +	CASE_##op((val), TRCIDR11)		\
+> +	CASE_##op((val), TRCIDR12)		\
+> +	CASE_##op((val), TRCIDR13)		\
+> +	CASE_##op((val), TRCIMSPECn(0))		\
+> +	CASE_##op((val), TRCIMSPECn(1))		\
+> +	CASE_##op((val), TRCIMSPECn(2))		\
+> +	CASE_##op((val), TRCIMSPECn(3))		\
+> +	CASE_##op((val), TRCIMSPECn(4))		\
+> +	CASE_##op((val), TRCIMSPECn(5))		\
+> +	CASE_##op((val), TRCIMSPECn(6))		\
+> +	CASE_##op((val), TRCIMSPECn(7))		\
+> +	CASE_##op((val), TRCIDR0)		\
+> +	CASE_##op((val), TRCIDR1)		\
+> +	CASE_##op((val), TRCIDR2)		\
+> +	CASE_##op((val), TRCIDR3)		\
+> +	CASE_##op((val), TRCIDR4)		\
+> +	CASE_##op((val), TRCIDR5)		\
+> +	CASE_##op((val), TRCIDR6)		\
+> +	CASE_##op((val), TRCIDR7)		\
+> +	CASE_##op((val), TRCRSCTLRn(2))		\
+> +	CASE_##op((val), TRCRSCTLRn(3))		\
+> +	CASE_##op((val), TRCRSCTLRn(4))		\
+> +	CASE_##op((val), TRCRSCTLRn(5))		\
+> +	CASE_##op((val), TRCRSCTLRn(6))		\
+> +	CASE_##op((val), TRCRSCTLRn(7))		\
+> +	CASE_##op((val), TRCRSCTLRn(8))		\
+> +	CASE_##op((val), TRCRSCTLRn(9))		\
+> +	CASE_##op((val), TRCRSCTLRn(10))	\
+> +	CASE_##op((val), TRCRSCTLRn(11))	\
+> +	CASE_##op((val), TRCRSCTLRn(12))	\
+> +	CASE_##op((val), TRCRSCTLRn(13))	\
+> +	CASE_##op((val), TRCRSCTLRn(14))	\
+> +	CASE_##op((val), TRCRSCTLRn(15))	\
+> +	CASE_##op((val), TRCRSCTLRn(16))	\
+> +	CASE_##op((val), TRCRSCTLRn(17))	\
+> +	CASE_##op((val), TRCRSCTLRn(18))	\
+> +	CASE_##op((val), TRCRSCTLRn(19))	\
+> +	CASE_##op((val), TRCRSCTLRn(20))	\
+> +	CASE_##op((val), TRCRSCTLRn(21))	\
+> +	CASE_##op((val), TRCRSCTLRn(22))	\
+> +	CASE_##op((val), TRCRSCTLRn(23))	\
+> +	CASE_##op((val), TRCRSCTLRn(24))	\
+> +	CASE_##op((val), TRCRSCTLRn(25))	\
+> +	CASE_##op((val), TRCRSCTLRn(26))	\
+> +	CASE_##op((val), TRCRSCTLRn(27))	\
+> +	CASE_##op((val), TRCRSCTLRn(28))	\
+> +	CASE_##op((val), TRCRSCTLRn(29))	\
+> +	CASE_##op((val), TRCRSCTLRn(30))	\
+> +	CASE_##op((val), TRCRSCTLRn(31))	\
+> +	CASE_##op((val), TRCSSCCRn(0))		\
+> +	CASE_##op((val), TRCSSCCRn(1))		\
+> +	CASE_##op((val), TRCSSCCRn(2))		\
+> +	CASE_##op((val), TRCSSCCRn(3))		\
+> +	CASE_##op((val), TRCSSCCRn(4))		\
+> +	CASE_##op((val), TRCSSCCRn(5))		\
+> +	CASE_##op((val), TRCSSCCRn(6))		\
+> +	CASE_##op((val), TRCSSCCRn(7))		\
+> +	CASE_##op((val), TRCSSCSRn(0))		\
+> +	CASE_##op((val), TRCSSCSRn(1))		\
+> +	CASE_##op((val), TRCSSCSRn(2))		\
+> +	CASE_##op((val), TRCSSCSRn(3))		\
+> +	CASE_##op((val), TRCSSCSRn(4))		\
+> +	CASE_##op((val), TRCSSCSRn(5))		\
+> +	CASE_##op((val), TRCSSCSRn(6))		\
+> +	CASE_##op((val), TRCSSCSRn(7))		\
+> +	CASE_##op((val), TRCSSPCICRn(0))	\
+> +	CASE_##op((val), TRCSSPCICRn(1))	\
+> +	CASE_##op((val), TRCSSPCICRn(2))	\
+> +	CASE_##op((val), TRCSSPCICRn(3))	\
+> +	CASE_##op((val), TRCSSPCICRn(4))	\
+> +	CASE_##op((val), TRCSSPCICRn(5))	\
+> +	CASE_##op((val), TRCSSPCICRn(6))	\
+> +	CASE_##op((val), TRCSSPCICRn(7))	\
+> +	CASE_##op((val), TRCOSLAR)		\
+> +	CASE_##op((val), TRCOSLSR)		\
+> +	CASE_##op((val), TRCPDCR)		\
+> +	CASE_##op((val), TRCPDSR)		\
+> +	CASE_##op((val), TRCACVRn(0))		\
+> +	CASE_##op((val), TRCACVRn(1))		\
+> +	CASE_##op((val), TRCACVRn(2))		\
+> +	CASE_##op((val), TRCACVRn(3))		\
+> +	CASE_##op((val), TRCACVRn(4))		\
+> +	CASE_##op((val), TRCACVRn(5))		\
+> +	CASE_##op((val), TRCACVRn(6))		\
+> +	CASE_##op((val), TRCACVRn(7))		\
+> +	CASE_##op((val), TRCACVRn(8))		\
+> +	CASE_##op((val), TRCACVRn(9))		\
+> +	CASE_##op((val), TRCACVRn(10))		\
+> +	CASE_##op((val), TRCACVRn(11))		\
+> +	CASE_##op((val), TRCACVRn(12))		\
+> +	CASE_##op((val), TRCACVRn(13))		\
+> +	CASE_##op((val), TRCACVRn(14))		\
+> +	CASE_##op((val), TRCACVRn(15))		\
+> +	CASE_##op((val), TRCACATRn(0))		\
+> +	CASE_##op((val), TRCACATRn(1))		\
+> +	CASE_##op((val), TRCACATRn(2))		\
+> +	CASE_##op((val), TRCACATRn(3))		\
+> +	CASE_##op((val), TRCACATRn(4))		\
+> +	CASE_##op((val), TRCACATRn(5))		\
+> +	CASE_##op((val), TRCACATRn(6))		\
+> +	CASE_##op((val), TRCACATRn(7))		\
+> +	CASE_##op((val), TRCACATRn(8))		\
+> +	CASE_##op((val), TRCACATRn(9))		\
+> +	CASE_##op((val), TRCACATRn(10))		\
+> +	CASE_##op((val), TRCACATRn(11))		\
+> +	CASE_##op((val), TRCACATRn(12))		\
+> +	CASE_##op((val), TRCACATRn(13))		\
+> +	CASE_##op((val), TRCACATRn(14))		\
+> +	CASE_##op((val), TRCACATRn(15))		\
+> +	CASE_##op((val), TRCDVCVRn(0))		\
+> +	CASE_##op((val), TRCDVCVRn(1))		\
+> +	CASE_##op((val), TRCDVCVRn(2))		\
+> +	CASE_##op((val), TRCDVCVRn(3))		\
+> +	CASE_##op((val), TRCDVCVRn(4))		\
+> +	CASE_##op((val), TRCDVCVRn(5))		\
+> +	CASE_##op((val), TRCDVCVRn(6))		\
+> +	CASE_##op((val), TRCDVCVRn(7))		\
+> +	CASE_##op((val), TRCDVCMRn(0))		\
+> +	CASE_##op((val), TRCDVCMRn(1))		\
+> +	CASE_##op((val), TRCDVCMRn(2))		\
+> +	CASE_##op((val), TRCDVCMRn(3))		\
+> +	CASE_##op((val), TRCDVCMRn(4))		\
+> +	CASE_##op((val), TRCDVCMRn(5))		\
+> +	CASE_##op((val), TRCDVCMRn(6))		\
+> +	CASE_##op((val), TRCDVCMRn(7))		\
+> +	CASE_##op((val), TRCCIDCVRn(0))		\
+> +	CASE_##op((val), TRCCIDCVRn(1))		\
+> +	CASE_##op((val), TRCCIDCVRn(2))		\
+> +	CASE_##op((val), TRCCIDCVRn(3))		\
+> +	CASE_##op((val), TRCCIDCVRn(4))		\
+> +	CASE_##op((val), TRCCIDCVRn(5))		\
+> +	CASE_##op((val), TRCCIDCVRn(6))		\
+> +	CASE_##op((val), TRCCIDCVRn(7))		\
+> +	CASE_##op((val), TRCVMIDCVRn(0))	\
+> +	CASE_##op((val), TRCVMIDCVRn(1))	\
+> +	CASE_##op((val), TRCVMIDCVRn(2))	\
+> +	CASE_##op((val), TRCVMIDCVRn(3))	\
+> +	CASE_##op((val), TRCVMIDCVRn(4))	\
+> +	CASE_##op((val), TRCVMIDCVRn(5))	\
+> +	CASE_##op((val), TRCVMIDCVRn(6))	\
+> +	CASE_##op((val), TRCVMIDCVRn(7))	\
+> +	CASE_##op((val), TRCCIDCCTLR0)		\
+> +	CASE_##op((val), TRCCIDCCTLR1)		\
+> +	CASE_##op((val), TRCVMIDCCTLR0)		\
+> +	CASE_##op((val), TRCVMIDCCTLR1)		\
+> +	CASE_##op((val), TRCITCTRL)		\
+> +	CASE_##op((val), TRCCLAIMSET)		\
+> +	CASE_##op((val), TRCCLAIMCLR)		\
+> +	CASE_##op((val), TRCDEVAFF0)		\
+> +	CASE_##op((val), TRCDEVAFF1)		\
+> +	CASE_##op((val), TRCLAR)		\
+> +	CASE_##op((val), TRCLSR)		\
+> +	CASE_##op((val), TRCAUTHSTATUS)		\
+> +	CASE_##op((val), TRCDEVARCH)		\
+> +	CASE_##op((val), TRCDEVID)		\
+> +	CASE_##op((val), TRCDEVTYPE)		\
+> +	CASE_##op((val), TRCPIDR4)		\
+> +	CASE_##op((val), TRCPIDR5)		\
+> +	CASE_##op((val), TRCPIDR6)		\
+> +	CASE_##op((val), TRCPIDR7)		\
+> +	CASE_##op((val), TRCPIDR0)		\
+> +	CASE_##op((val), TRCPIDR1)		\
+> +	CASE_##op((val), TRCPIDR2)		\
+> +	CASE_##op((val), TRCPIDR3)
+> +
+> +#define ETM4x_READ_CASES(res)	CASE_LIST(READ, (res))
+> +#define ETM4x_WRITE_CASES(val)	CASE_LIST(WRITE, (val))
+> +
+> +#define __read_etm4x_sysreg_offset(csa, offset, _64bit)				\
+> +	({									\
+> +		u64 __val;							\
+> +										\
+> +		if (__builtin_constant_p((offset)))				\
+> +			__val = read_etm4x_sysreg_const_offset((offset));	\
+> +		else								\
+> +			__val = etm4x_sysreg_read((csa), (offset),		\
+> +						  true, _64bit);		\
+> +		__val;								\
+> +	 })
+> +
+> +#define __write_etm4x_sysreg_offset(csa, val, offset, _64bit)		\
+> +	do {								\
+> +		if (__builtin_constant_p((offset)))			\
+> +			write_etm4x_sysreg_const_offset((val),		\
+> +							(offset));	\
+> +		else							\
+> +			etm4x_sysreg_write((csa), (val), (offset),	\
+> +						true, _64bit);		\
+> +	} while (0)
+> +
+> +
+> +#define etm4x_relaxed_read32(csa, offset)				\
+> +	(u32)(!(csa)->no_iomem ?					\
+> +		 readl_relaxed((csa)->base + (offset)) :		\
+> +		 __read_etm4x_sysreg_offset((csa), (offset), false))
+> +#define etm4x_relaxed_read64(csa, offset)				\
+> +	(u64)(!(csa)->no_iomem ?					\
+> +		 readq_relaxed((csa)->base + (offset)) :		\
+> +		 __read_etm4x_sysreg_offset((csa), (offset), true))
+> +#define etm4x_read32(csa, offset)					\
+> +	({								\
+> +		mb(); /* enforce order */				\
+> +		etm4x_relaxed_read32((csa), (offset));			\
+> +	 })
+> +
+> +#define etm4x_read64(csa, offset)					\
+> +	({								\
+> +		mb(); /* enforce order */				\
+> +		etm4x_relaxed_read64((csa), (offset));			\
+> +	 })
+> +
+> +#define etm4x_relaxed_write32(csa, val, offset)				\
+> +	do {								\
+> +		if (!(csa)->no_iomem)					\
+> +			writel_relaxed((val), (csa)->base + (offset));	\
+> +		else							\
+> +			__write_etm4x_sysreg_offset((csa), (val),	\
+> +						    (offset), false);	\
+> +	} while (0)
+> +
+> +#define etm4x_relaxed_write64(csa, val, offset)				\
+> +	do {								\
+> +		if (!(csa)->no_iomem)					\
+> +			writeq_relaxed((val), (csa)->base + (offset));	\
+> +		else							\
+> +			__write_etm4x_sysreg_offset((csa), (val),	\
+> +						    (offset), true);	\
+> +	} while (0)
+> +
+> +#define etm4x_write32(csa, val, offset)					\
+> +	do {								\
+> +		mb(); /* enforce order */				\
+> +		etm4x_relaxed_write32((csa), (val), (offset));		\
+> +	} while (0)
+> +
+> +#define etm4x_write64(csa, val, offset)					\
+> +	do {								\
+> +		mb(); /* enforce order */				\
+> +		etm4x_relaxed_write64((csa), (val), (offset));		\
+> +	} while (0)
+>  
+> -#define etm4x_write64(csa, val, offset)			\
+> -	writeq((val), (csa)->base + (offset))
+>  
+>  /* ETMv4 resources */
+>  #define ETM_MAX_NR_PE			8
+> @@ -501,4 +822,14 @@ enum etm_addr_ctxtype {
+>  
+>  extern const struct attribute_group *coresight_etmv4_groups[];
+>  void etm4_config_trace_mode(struct etmv4_config *config);
+> +
+> +u64 etm4x_sysreg_read(struct csdev_access *csa,
+> +		      u32 offset,
+> +		      bool _relaxed,
+> +		      bool _64bit);
+> +void etm4x_sysreg_write(struct csdev_access *csa,
+> +			u64 val,
+> +			u32 offset,
+> +			bool _relaxed,
+> +			bool _64bit);
+>  #endif
+> -- 
+> 2.24.1
+> 
