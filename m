@@ -2,60 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEAF23329E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5D92332B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgG3NH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbgG3NH6 (ORCPT
+        id S1729083AbgG3NJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:09:45 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:36879 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726794AbgG3NJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:07:58 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764C4C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:07:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bit-cube.eu
-        ; s=ds20207; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=nKkAEooQrPys4F+nqNLeHSrWDl9KkcYV1ChHlGSjIVg=; b=lQq+aah791RxA/tWYsTMzIAl/n
-        MvCDZT1o4h8HgcHyI468+GA3Sm57BNjiCSGuqyHxkoDa5Iltqo3xIXOtYUaM9ZySEwyT0uhyBmsaN
-        0bKKvhk+oh4Lv+kB67yBVXGEGEvdwQw5wWptIYshZ1jtchkLq+16oKE7FfsVOif6p3315elDxLknG
-        ZeYYkTWEHm7JwPFHzZDuiVKduJtGW9amya1zvs89pNNwf96BjB7A6nIvNTvqBnWzes7MyHQ3wC+fN
-        zNFwqjOQR72HeqyioxleLeeC+Wbt2J4Ux1LrQSGGenqx6vemNHIjeX30IZsFDjExVHpHh+2VZDlN/
-        Jy36Ju9A==;
-Received: from [2a02:fe0:c700:2:8ac:86d7:cb55:d6b9] (port=50789)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <y_car@bit-cube.eu>)
-        id 1k18Hr-0007DN-P2
-        for linux-kernel@vger.kernel.org; Thu, 30 Jul 2020 15:07:55 +0200
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <y_car@bit-cube.eu>
-Subject: sdX - Another fun fact.
-Message-ID: <26cdca4c-44ad-a7ff-43e3-e2ee34e4e584@bit-cube.eu>
-Date:   Thu, 30 Jul 2020 15:07:44 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 30 Jul 2020 09:09:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596114582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gWaKeY39EULxcPQEMCGaeW0bHOFmCjPvx3LSrbbV7xY=;
+        b=M/ATWDm1ZMQyyM8rbXMc1S9AuUUukpm5HPu+H6RRKA3Km7cUNXVjRIpw6Ciw32Z7h6Ss46
+        C+I/8RoCvlMpA5YgZKj4uivccyNqBS3tMUWApkebe9VuPhEDq7DL/4b+hrfnatJdjBN+xm
+        tRZwUSFonptmvHdrdbfuCj7HBM1r6ww=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-rPz_Q_iZNX6UE0RZCZjreg-1; Thu, 30 Jul 2020 09:08:35 -0400
+X-MC-Unique: rPz_Q_iZNX6UE0RZCZjreg-1
+Received: by mail-qv1-f69.google.com with SMTP id f1so7333448qvx.13
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:08:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=gWaKeY39EULxcPQEMCGaeW0bHOFmCjPvx3LSrbbV7xY=;
+        b=S3Z/TySlR2PMQIAGKwnohQHBUu8ReCspcMB5DraoWQjtixKm2QqEt8LJ3kn03djDPV
+         sfZSaGB1GUE9bT7QtHPhQIt+qFahQYHlxhjKQSU6he49OoWIAAhvoB32TpRxzpVnbCqU
+         kr+yoz4L1n6sdybbBC7zqpnJ3RMG3QNxktjq2usrTsOrEAUnTP/OqcyLW3dvSUDTy3PA
+         xVeVtaNPnQC2sKOiEbmrLPl5F7uIsLt7SkhtGwwl0obTUa8PeWpIAHC5h2/EFpVoqIAn
+         KgCtEUsRPA3vKfp5ze3hgKbsxNx8DyTvohhrF/hzBfLkaTBpTISs2OEzbX/AyxCMLjK1
+         DIGA==
+X-Gm-Message-State: AOAM532KpYS2BxhL+sVLuwCuDyS4HnPUUx6nXLdtALvbMfSVb2e98Nb+
+        8xURbY122V7Fer9/Rpsd9D55KQFg50LV2XK/sIv1V107sWOwY+nOvbKtBGiSqsZPPzEf3jhuYbm
+        Bd6dwnBz/WVgKOIds/jOjtajO
+X-Received: by 2002:ac8:454f:: with SMTP id z15mr2627664qtn.351.1596114514351;
+        Thu, 30 Jul 2020 06:08:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzE3m4VK7ilMGfBwsUtRjmSKljYtJpn8E03df8J9j67dNo1Fgsoe+A7NDnW7aFB+gXKH74gBg==
+X-Received: by 2002:ac8:454f:: with SMTP id z15mr2627612qtn.351.1596114513855;
+        Thu, 30 Jul 2020 06:08:33 -0700 (PDT)
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
+        by smtp.gmail.com with ESMTPSA id 8sm4314260qkh.77.2020.07.30.06.08.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 06:08:33 -0700 (PDT)
+Message-ID: <2db05b3eb59bfb59688e7cb435c1b5f2096b8f8a.camel@redhat.com>
+Subject: Re: Upcoming: fscache rewrite
+From:   Jeff Layton <jlayton@redhat.com>
+To:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 30 Jul 2020 09:08:32 -0400
+In-Reply-To: <447452.1596109876@warthog.procyon.org.uk>
+References: <447452.1596109876@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4 (3.36.4-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The name Unix seems to go back to a Scanza (pre-christian name of 
-Norway) tribe, also.
+On Thu, 2020-07-30 at 12:51 +0100, David Howells wrote:
+> Hi Linus, Trond/Anna, Steve, Eric,
+> 
+> I have an fscache rewrite that I'm tempted to put in for the next merge
+> window:
+> 
+> 	https://lore.kernel.org/linux-fsdevel/159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk/
+> 
+> It improves the code by:
+> 
+>  (*) Ripping out the stuff that uses page cache snooping and kernel_write()
+>      and using kiocb instead.  This gives multiple wins: uses async DIO rather
+>      than snooping for updated pages and then copying them, less VM overhead.
+> 
+>  (*) Object management is also simplified, getting rid of the state machine
+>      that was managing things and using a much simplified thread pool instead.
+> 
+>  (*) Object invalidation creates a tmpfile and diverts new activity to that so
+>      that it doesn't have to synchronise in-flight ADIO.
+> 
+>  (*) Using a bitmap stored in an xattr rather than using bmap to find out if
+>      a block is present in the cache.  Probing the backing filesystem's
+>      metadata to find out is not reliable in modern extent-based filesystems
+>      as them may insert or remove blocks of zeros.  Even SEEK_HOLE/SEEK_DATA
+>      are problematic since they don't distinguish transparently inserted
+>      bridging.
+> 
+> I've provided a read helper that handles ->readpage, ->readpages, and
+> preparatory writes in ->write_begin.  Willy is looking at using this as a way
+> to roll his new ->readahead op out into filesystems.  A good chunk of this
+> will move into MM code.
+> 
+> The code is simpler, and this is nice too:
+> 
+>  67 files changed, 5947 insertions(+), 8294 deletions(-)
+> 
+> not including documentation changes, which I need to convert to rst format
+> yet.  That removes a whole bunch more lines.
+> 
+> But there are reasons you might not want to take it yet:
+> 
+>  (1) It starts off by disabling fscache support in all the filesystems that
+>      use it: afs, nfs, cifs, ceph and 9p.  I've taken care of afs, Dave
+>      Wysochanski has patches for nfs:
+> 
+> 	https://lore.kernel.org/linux-nfs/1596031949-26793-1-git-send-email-dwysocha@redhat.com/
+> 
+>      but they haven't been reviewed by Trond or Anna yet, and Jeff Layton has
+>      patches for ceph:
+> 
+> 	https://marc.info/?l=ceph-devel&m=159541538914631&w=2
+> 
+>      and I've briefly discussed cifs with Steve, but nothing has started there
+>      yet.  9p I've not looked at yet.
+> 
+>      Now, if we're okay for going a kernel release with 4/5 filesystems with
+>      caching disabled and then pushing the changes for individual filesystems
+>      through their respective trees, it might be easier.
+> 
+>      Unfortunately, I wasn't able to get together with Trond and Anna at LSF
+>      to discuss this.
+> 
+>  (2) The patched afs fs passed xfstests -g quick (unlike the upstream code
+>      that oopses pretty quickly with caching enabled).  Dave and Jeff's nfs
+>      and ceph code is getting close, but not quite there yet.
 
-We earlier discussed the Sami Tor idol, and this is where it seems to go.
 
-These facts also make the name sdX fit perfectly, again a supply and 
-demand principle based OS.
+That was my experience on cephfs+fscache too -- it often crashed down in
+the fscache code. I'd support the approach in (1) above -- put this in
+soon and disable the caches in the filesystems. Then push the changes to
+reenable it via fs-specific trees.
 
-Serenity!
-Ywe Cærlyn
-https://www.youtube.com/channel/UCR3gmLVjHS5A702wo4bol_Q
+The ceph patch series is more or less ready. It passes all of the
+xfstest "quick" group run (aside from a few expected failures on
+cephfs).
+
+The only real exception is generic/531, which seems to trigger OOM kills
+in my testing. The test tries to create a ton of files and leak the file
+descriptors. I tend to think that workload is pretty unusual, and given
+that fscache was terribly unstable and crashed before, this is still a
+marked improvement.
+
+>  (3) Al has objections to the ITER_MAPPING iov_iter type that I added
+> 
+> 	https://lore.kernel.org/linux-fsdevel/20200719014436.GG2786714@ZenIV.linux.org.uk/
+> 
+>      but note that iov_iter_for_each_range() is not actually used by anything.
+> 
+>      However, Willy likes it and would prefer to make it ITER_XARRAY instead
+>      as he might be able to use it in other places, though there's an issue
+>      where I'm calling find_get_pages_contig() which takes a mapping (though
+>      all it does is then get the xarray out of it).
+> 
+>      Instead I would have to use ITER_BVEC, which has quite a high overhead,
+>      though it would mean that the RCU read lock wouldn't be necessary.  This
+>      would require 1K of memory for every 256K block the cache wants to read;
+>      for any read >1M, I'd have to use vmalloc() instead.
+> 
+>      I'd also prefer not to use ITER_BVEC because the offset and length are
+>      superfluous here.  If ITER_MAPPING is not good, would it be possible to
+>      have an ITER_PAGEARRAY that just takes a page array instead?  Or, even,
+>      create a transient xarray?
+> 
+>  (4) The way object culling is managed needs overhauling too, but that's a
+>      whole 'nother patchset.  We could wait till that's done too, but its lack
+>      doesn't prevent what we have now being used.
+> 
+> Thoughts?
+> 
+> David
+> 
+
+-- 
+Jeff Layton <jlayton@redhat.com>
+
