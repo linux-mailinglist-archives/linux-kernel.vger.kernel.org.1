@@ -2,104 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3235F233047
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 12:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25315233025
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 12:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729319AbgG3KXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 06:23:09 -0400
-Received: from uho.ysoft.cz ([81.19.3.130]:60268 "EHLO uho.ysoft.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729139AbgG3KXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 06:23:08 -0400
-X-Greylist: delayed 555 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Jul 2020 06:23:07 EDT
-Received: from iota-build.ysoft.local (unknown [10.1.5.151])
-        by uho.ysoft.cz (Postfix) with ESMTP id 5CE4BA0828;
-        Thu, 30 Jul 2020 12:13:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
-        s=20160406-ysoft-com; t=1596104030;
-        bh=zRbadOeZ+63tn6S8alO37yU2ZdtL1Il1uzwgccWCVMM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jvFCiK6RExGzZxG/NIMSTloiTeKF0BdkrvgzWwKqNZshZEDxIMy3g6IaD7Q2ZQOlD
-         OmIwaI9kwG5JbHCM2iIWny04zvSau3DiF24LAUJ6apDiVefefKe6uDVMWRUK4q6YMI
-         jvURNHhg/dI42T9EALGbkdF6GjQkdFIDuIJSS55E=
-From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-Subject: [PATCH] ARM: dts: imx6dl-yapp4: Add ethernet aliases
-Date:   Thu, 30 Jul 2020 12:13:46 +0200
-Message-Id: <1596104026-21091-1-git-send-email-michal.vokac@ysoft.com>
-X-Mailer: git-send-email 2.1.4
+        id S1728739AbgG3KSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 06:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgG3KSp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 06:18:45 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D15FC061794;
+        Thu, 30 Jul 2020 03:18:44 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id m16so13644793pls.5;
+        Thu, 30 Jul 2020 03:18:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wfvGgVXPE//hQYiCJ3Y28E2/v0p7YSlsyuVMVmFQhXI=;
+        b=P1090J5lZ/jfkYaE5ZKSv1PwN+iPKcSAuV3/SGSLcuTP1BtTfqjBuaHOTWCCt9PyAb
+         gqZJGBwC/RUbq8fiAvrXge70fnhp76kNeWXJnus0Zds2LPPusFp/P1Wv14MwcVgQP7OV
+         uhRoSZpMQa0gQtWtVCjPWngBfeja1LipkB5cEVyWrmlqlc145r1jP/JeUp6wpoSR1ad9
+         V+fzMsM5pZWxFcmAKQ0KSlKgkItZ2evK5XLi51NVZQcu7RdjzxnZY0gH+DhsLu27Gtrz
+         KjIJ/6ho83UYIE7Uy0mafzuXLGBwKDv2IHngxTnQWVbflS4NOVxZchYoO55wiYG8iRKX
+         J6OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wfvGgVXPE//hQYiCJ3Y28E2/v0p7YSlsyuVMVmFQhXI=;
+        b=IafWsnJR3zI/AgGf6/Zhv2mkA/WhKNiTOGZxqvcOc1OxOJKaxJN7WLGBLmnoxv3nON
+         LKTSAgWNpS4s+kYqDckm/GH46m66OBCydl3NZu/E1pOi/VCYyiVFZomjozzjjWT2r+uw
+         uWW6TOhmEjfwcd/EQGlLnNusfRCGPMsHvpEh/Qe2gkuyUyKjfP+oi7eiR3+X2aibQutK
+         HN5QaBSzMyqRLl9SwSXDJYV4uqJYXaTy6WNqDGmM7aahZSswfEs0/P55Zl7F5tcWOfWe
+         2IY0HJYKHJVuf9vkx3E8VOAOMRkmtHbwSTbFx9sZPCbiNzAEdHTh57HlYMAnjkro5RVq
+         YA5w==
+X-Gm-Message-State: AOAM532qJib7tK9LH4CrYY3Cvovz7snu8rP+X8AMxgPPV6XW3cqn27Q3
+        uiVcJO/IfFky169hWoIouKU=
+X-Google-Smtp-Source: ABdhPJxpg6lp4/yuJVJsGNsNy/UKwch0Tz803qNvlZsB90/Bhx8andlF4XkhRn8gU3mnFkWx0P+i1Q==
+X-Received: by 2002:a17:902:8491:: with SMTP id c17mr31587981plo.262.1596104323577;
+        Thu, 30 Jul 2020 03:18:43 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id p5sm5456870pgi.83.2020.07.30.03.18.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 03:18:42 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v2] scsi: stex: use generic power management
+Date:   Thu, 30 Jul 2020 15:46:58 +0530
+Message-Id: <20200730101658.576205-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add aliases for ethernet switch ports to allow bootloader to fix
-MAC addresses to the ones stored in onboard configuration EEPROM.
+Drivers using legacy power management .suspen()/.resume() callbacks
+have to manage PCI states and device's PM states themselves. They also
+need to take care of standard configuration registers.
 
-Ursa has only one ethernet port populated (eth2) so alias for
-the first port has to be removed on this board.
+Switch to generic power management framework using a single
+"struct dev_pm_ops" variable to take the unnecessary load from the driver.
+This also avoids the need for the driver to directly call most of the PCI
+helper functions and device power state control functions, as through
+the generic framework PCI Core takes care of the necessary operations,
+and drivers are required to do only device-specific jobs.
 
-Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 ---
- arch/arm/boot/dts/imx6dl-yapp4-common.dtsi | 9 +++++++--
- arch/arm/boot/dts/imx6dl-yapp4-ursa.dts    | 4 ++++
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ drivers/scsi/stex.c | 37 +++++++++++++++++++++++++++++++------
+ 1 file changed, 31 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-index 999be02d1c03..508ee6adaff8 100644
---- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-+++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-@@ -8,6 +8,11 @@
- #include <dt-bindings/pwm/pwm.h>
+diff --git a/drivers/scsi/stex.c b/drivers/scsi/stex.c
+index d4f10c0d813c..5ef6f3cbac11 100644
+--- a/drivers/scsi/stex.c
++++ b/drivers/scsi/stex.c
+@@ -1972,9 +1972,9 @@ static int stex_choice_sleep_mic(struct st_hba *hba, pm_message_t state)
+ 	}
+ }
  
- / {
-+	aliases: aliases {
-+		ethernet1 = &eth1;
-+		ethernet2 = &eth2;
-+	};
+-static int stex_suspend(struct pci_dev *pdev, pm_message_t state)
++static int stex_suspend_late(struct device *dev, pm_message_t state)
+ {
+-	struct st_hba *hba = pci_get_drvdata(pdev);
++	struct st_hba *hba = dev_get_drvdata(dev);
+ 
+ 	if ((hba->cardtype == st_yel || hba->cardtype == st_P3)
+ 		&& hba->supports_pm == 1)
+@@ -1984,9 +1984,24 @@ static int stex_suspend(struct pci_dev *pdev, pm_message_t state)
+ 	return 0;
+ }
+ 
+-static int stex_resume(struct pci_dev *pdev)
++static int __maybe_unused stex_suspend(struct device *dev)
+ {
+-	struct st_hba *hba = pci_get_drvdata(pdev);
++	return stex_suspend_late(dev, PMSG_SUSPEND);
++}
 +
- 	backlight: backlight {
- 		compatible = "pwm-backlight";
- 		pwms = <&pwm1 0 500000 PWM_POLARITY_INVERTED>;
-@@ -151,13 +156,13 @@
- 					};
- 				};
++static int __maybe_unused stex_hibernate(struct device *dev)
++{
++	return stex_suspend_late(dev, PMSG_HIBERNATE);
++}
++
++static int __maybe_unused stex_freeze(struct device *dev)
++{
++	return stex_suspend_late(dev, PMSG_FREEZE);
++}
++
++static int __maybe_unused stex_resume(struct device *dev)
++{
++	struct st_hba *hba = dev_get_drvdata(dev);
  
--				port@2 {
-+				eth2: port@2 {
- 					reg = <2>;
- 					label = "eth2";
- 					phy-handle = <&phy_port2>;
- 				};
+ 	hba->mu_status = MU_STATE_STARTING;
+ 	stex_handshake(hba);
+@@ -2000,14 +2015,24 @@ static int stex_halt(struct notifier_block *nb, unsigned long event, void *buf)
+ }
+ MODULE_DEVICE_TABLE(pci, stex_pci_tbl);
  
--				port@3 {
-+				eth1: port@3 {
- 					reg = <3>;
- 					label = "eth1";
- 					phy-handle = <&phy_port3>;
-diff --git a/arch/arm/boot/dts/imx6dl-yapp4-ursa.dts b/arch/arm/boot/dts/imx6dl-yapp4-ursa.dts
-index a1173bf5bff5..f6ae24efd4aa 100644
---- a/arch/arm/boot/dts/imx6dl-yapp4-ursa.dts
-+++ b/arch/arm/boot/dts/imx6dl-yapp4-ursa.dts
-@@ -17,6 +17,10 @@
- 	};
- };
- 
-+&aliases {
-+	/delete-property/ ethernet1;
++static const struct dev_pm_ops stex_pm_ops = {
++#ifdef CONFIG_PM_SLEEP
++	.suspend	= stex_suspend,
++	.resume		= stex_resume,
++	.freeze		= stex_freeze,
++	.thaw		= stex_resume,
++	.poweroff	= stex_hibernate,
++	.restore	= stex_resume,
++#endif
 +};
 +
- &backlight {
- 	status = "okay";
+ static struct pci_driver stex_pci_driver = {
+ 	.name		= DRV_NAME,
+ 	.id_table	= stex_pci_tbl,
+ 	.probe		= stex_probe,
+ 	.remove		= stex_remove,
+ 	.shutdown	= stex_shutdown,
+-	.suspend	= stex_suspend,
+-	.resume		= stex_resume,
++	.driver.pm	= &stex_pm_ops,
  };
+ 
+ static int __init stex_init(void)
 -- 
-2.1.4
+2.27.0
 
