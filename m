@@ -2,140 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC67D233952
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 21:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228CB233958
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 21:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730593AbgG3Tum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 15:50:42 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46824 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726857AbgG3Tui (ORCPT
+        id S1730614AbgG3Tu4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Jul 2020 15:50:56 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:14318 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730377AbgG3Tu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 15:50:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596138636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=WMx7rPC6Q+HnvqrAYe3ZZeavv1fx9j7NHfsvFzSl1ik=;
-        b=KKv1U083QraWsYeGNgC7y1kzIH74SRlb3Q7pDB1Pag8NtYRsbkbtzGHCYR+OtCdpq70AdK
-        TaFF5kAGEI/hKrqxFJzVRwV6cygoFRnf/3zmxTW5PVwCxP+EEdsrNo8h/XhFgjzscMeHkh
-        CVb2v+rArr+WqgXn4FeELjdbk2Znnhc=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-zvzfjPoqNTShaojMDsuBZw-1; Thu, 30 Jul 2020 15:50:34 -0400
-X-MC-Unique: zvzfjPoqNTShaojMDsuBZw-1
-Received: by mail-qt1-f199.google.com with SMTP id n12so1377477qtr.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 12:50:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WMx7rPC6Q+HnvqrAYe3ZZeavv1fx9j7NHfsvFzSl1ik=;
-        b=izfetlIh0dxUxFSusKqs796ejOhLLdpa8ypMO5pnGEIivaC4BLkskcy4/WlWy8vJsy
-         k1Z/5DMwPmIFZRri5qB2u987QKyvYng6vzXPMzWBkcxLJ+vMFyKIr8z8+GqNd41k+kGL
-         A4OPNHJrWSs7NtbkJM825c6tr/T5E4N1fLVTfctEYT3Pb/JM55qt37mw9237elfwE03v
-         YjtQLIUY+nT0xcaCD9o1eqaYnQpxFTo9+LvFUZEB23LOABj8Vui1btDU9fsAGE5+K7pD
-         USYSzL+6jLzFiUwzwoebM2VQ4gJOUPBCO15St/M6jfolQdoyiYsi2Ey5VFCF5IY+DHHH
-         EleQ==
-X-Gm-Message-State: AOAM53188t4ylNu4cEc5sgS4kJ+v5gbvmY0KsJYBWS4HKIqY0GoClJcU
-        rt8zPskbrZ5etijN1jULjEQd82vqZ32FXH6VzJmz4DUSOgiXUGfq7l+VzLZa0LU5YBoRxomxgf0
-        KG/BYXlWBnp2T25/e7UUOg/XD
-X-Received: by 2002:a05:620a:573:: with SMTP id p19mr829848qkp.197.1596138634205;
-        Thu, 30 Jul 2020 12:50:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyes+QHXjYkXCVg4jtAK40KsI6a3DwfH2MyEjQS3M3oruwBTsCvIRuU+0/MvlglvFpChKuocA==
-X-Received: by 2002:a05:620a:573:: with SMTP id p19mr829825qkp.197.1596138633915;
-        Thu, 30 Jul 2020 12:50:33 -0700 (PDT)
-Received: from xz-x1.redhat.com ([2607:9880:19c8:6f::1f4f])
-        by smtp.gmail.com with ESMTPSA id b131sm5024856qkc.121.2020.07.30.12.50.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 12:50:32 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     peterx@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH] mm/hugetlb: Fix calculation of adjust_range_if_pmd_sharing_possible
-Date:   Thu, 30 Jul 2020 15:50:30 -0400
-Message-Id: <20200730195030.60616-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 30 Jul 2020 15:50:56 -0400
+Subject: Re: [PATCH] RFC: selinux avc trace
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Nick Kralevich <nnk@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <selinux@vger.kernel.org>
+References: <20200724091520.880211-1-tweek@google.com>
+ <20200724095232.5f9d3f17@oasis.local.home>
+ <80a23580-5067-93b0-53fa-3bd53253c056@sony.com>
+ <20200730110459.5bf0b0df@oasis.local.home>
+ <6f1262fc-21ad-f872-5460-e78d4685c9c4@sony.com>
+ <20200730120200.1367e1cd@oasis.local.home>
+ <15fcdc87-5e9b-8144-5a6b-34594d1e52ef@sony.com>
+ <20200730131659.7f1d21e8@oasis.local.home>
+ <38053623-2cc0-882d-8578-977ff3f43908@sony.com>
+ <20200730152923.5101346c@oasis.local.home>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <79e9971c-2a51-c180-d938-72932bd4d67d@sony.com>
+Date:   Thu, 30 Jul 2020 21:50:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200730152923.5101346c@oasis.local.home>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=DrAoB13+ c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=_RQrkK6FrEwA:10 a=z6gsHLkEAAAA:8 a=dadijopU3UlrZyO6t4sA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is found by code observation only.
+On 7/30/20 9:29 PM, Steven Rostedt wrote:
+> On Thu, 30 Jul 2020 21:12:39 +0200
+> peter enderborg <peter.enderborg@sony.com> wrote:
+>
+>>>> avc:  denied  { find } for interface=vendor.qti.hardware.perf::IPerf sid=u:r:permissioncontroller_app:s0:c230,c256,c512,c768 pid=9164 scontext=u:r:permissioncontroller_app:s0:c230,c256,c512,c768 tcontext=u:object_r:vendor_hal_perf_hwservice:s0 tclass=hwservice_manager permissive=0
+>>>>  avc:  denied  { execute } for  pid=13914 comm="ScionFrontendAp" path="/data/user_de/0/com.google.android.gms/app_chimera/m/00000002/oat/arm64/DynamiteLoader.odex" dev="sda77" ino=204967 scontext=u:r:platform_app:s0:c512,c768 tcontext=u:object_r:privapp_data_file:s0:c512,c768 tclass=file permissive=0 ppid=788 pcomm="main" pgid=13914 pgcomm="on.updatecenter"
+>>>>
+>>>> It omit the fields that are not used. Some parts are common some are not. So a correct format specification for trace will be problematic if there is no "optional" field indicator.  
+>>> That's all quite noisy. What is the object of these changes? What
+>>> exactly are you trying to trace and why?  
+>> It is noisy, and it have to be. it covers a lot of different areas.  One common problem is
+>> to debug userspace applications regarding violations. You get the violation from the logs
+>> and try to figure out what you did to cause it. With a trace point you can do much better
+>> when combine with other traces. Having a the userspace stack is a very good way,
+>> unfortunately  it does not work on that many architectures within trace.
+>>
+>> What exactly are you doing with any trace? You collect data to analyse what's
+>> going on. This is not different. Selinux do a specific thing, but is has lots of parameters.
+> Have you thought of adding multiple trace events with if statements
+> around them to decode each specific type of event?
 
-Firstly, the worst case scenario should assume the whole range was covered by
-pmd sharing.  The old algorithm might not work as expected for ranges
-like (1g-2m, 1g+2m), where the adjusted range should be (0, 1g+2m) but the
-expected range should be (0, 2g).
+Yes. And I think class is good split point. But I think it will require
+a few layers, but a is mostly data driven so I think it might be hard
+to do it compile time.  I think a hybrid might be possible,
+but it then we need some ugly part with a other separator than =,
+or some escape seq to separate.
 
-Since at it, remove the loop since it should not be required.  With that, the
-new code should be faster too when the invalidating range is huge.
+sort of "generc1=X generic2=Y variable1^x variable2^y" or
 
-CC: Andrea Arcangeli <aarcange@redhat.com>
-CC: Mike Kravetz <mike.kravetz@oracle.com>
-CC: Andrew Morton <akpm@linux-foundation.org>
-CC: linux-mm@kvack.org
-CC: linux-kernel@vger.kernel.org
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/hugetlb.c | 27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+"generc1=X generic2=Y leftover=[variable1=x variable2=y]"
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 4645f1441d32..0e5a0512c13c 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -43,6 +43,9 @@
- #include <linux/page_owner.h>
- #include "internal.h"
- 
-+#define MAX(a,b)  (((a)>(b))?(a):(b))
-+#define MIN(a,b)  (((a)<(b))?(a):(b))
-+
- int hugetlb_max_hstate __read_mostly;
- unsigned int default_hstate_idx;
- struct hstate hstates[HUGE_MAX_HSTATE];
-@@ -5321,25 +5324,21 @@ static bool vma_shareable(struct vm_area_struct *vma, unsigned long addr)
- void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
- 				unsigned long *start, unsigned long *end)
- {
--	unsigned long check_addr;
-+	unsigned long a_start, a_end;
- 
- 	if (!(vma->vm_flags & VM_MAYSHARE))
- 		return;
- 
--	for (check_addr = *start; check_addr < *end; check_addr += PUD_SIZE) {
--		unsigned long a_start = check_addr & PUD_MASK;
--		unsigned long a_end = a_start + PUD_SIZE;
-+	/* Extend the range to be PUD aligned for a worst case scenario */
-+	a_start = ALIGN_DOWN(*start, PUD_SIZE);
-+	a_end = ALIGN(*end, PUD_SIZE);
- 
--		/*
--		 * If sharing is possible, adjust start/end if necessary.
--		 */
--		if (range_in_vma(vma, a_start, a_end)) {
--			if (a_start < *start)
--				*start = a_start;
--			if (a_end > *end)
--				*end = a_end;
--		}
--	}
-+	/*
-+	 * Intersect the range with the vma range, since pmd sharing won't be
-+	 * across vma after all
-+	 */
-+	*start = MAX(vma->vm_start, a_start);
-+	*end = MIN(vma->vm_end, a_end);
- }
- 
- /*
--- 
-2.26.2
+If there was a formal parameter tree we could maybe do some
+generated printer. I don't think there are one, maybe Paul Moore or Stephen Smalley
+can verify that.
+
+ 
+
+> Note, you can have a generic event that gets enabled by all the other
+> events via the "reg" and "unreg" part of TRACE_EVENT_FN(). Say its
+> called trace_avc, make a dummy trace_avc() call hat doesn't even need
+> to be called anywhere, it just needs to exist to get to the other trace
+> events.
+>
+> Then have:
+>
+> 	if (trace_avc_enabled()) {
+> 		if (event1)
+> 			trace_avc_req_event1();
+> 		if (event2)
+> 			trace_avc_req_event2();
+> 		[..]
+> 	}
+>
+> The reason for the trace_avc_enabled() is because that's a static
+> branch, which is a nop when not enabled. When enabled, it is a jump to
+> the out of band if condition block that has all the other trace events.
+>
+> -- Steve
+
 
