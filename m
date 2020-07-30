@@ -2,60 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CC3232A22
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 04:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4D2232A28
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 04:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgG3CjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 22:39:08 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:5665 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726480AbgG3CjH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 22:39:07 -0400
-X-UUID: e070296f14b240c499589d9ae9d2ee97-20200730
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=X1UadCFz90FbPm5aWCk0xfL4ZtGAfS8oTL2vDHMeIS4=;
-        b=YsY0oMaqZSq5i4rn32G2cf4decDUejbZSjAhbUAOXagl0JeTkPOTr/itiGphda6KzixNFkqg8IY1bWR2omXdxeYGlYyJ5Ro1y6pxPm8Te8HUZ2B5kODghh3HiY2OHAoGUuVjVzVjRmXeKO2vC9QmUWW4RZdla3P/Z76Ska9pv4Y=;
-X-UUID: e070296f14b240c499589d9ae9d2ee97-20200730
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <yingjoe.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 755538541; Thu, 30 Jul 2020 10:39:02 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 30 Jul 2020 10:39:00 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 30 Jul 2020 10:39:00 +0800
-Message-ID: <1596076741.11024.4.camel@mtksdaap41>
-Subject: Re: [PATCH v2 2/4] i2c: mediatek: Add access to more than 8GB dram
- in i2c driver
-From:   Yingjoe Chen <yingjoe.chen@mediatek.com>
-To:     Qii Wang <qii.wang@mediatek.com>
-CC:     <wsa@the-dreams.de>, <qiangming.xia@mediatek.com>,
-        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <leilk.liu@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-i2c@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 30 Jul 2020 10:39:01 +0800
-In-Reply-To: <1595939446-5484-3-git-send-email-qii.wang@mediatek.com>
-References: <1595939446-5484-1-git-send-email-qii.wang@mediatek.com>
-         <1595939446-5484-3-git-send-email-qii.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1728306AbgG3Cqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 22:46:31 -0400
+Received: from mga06.intel.com ([134.134.136.31]:41718 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726319AbgG3Cqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 22:46:31 -0400
+IronPort-SDR: oAB8JHGA3wWyT+VPQxsR3nu6HH7gaD2NYzrJMTh6GgKF847aJQYRV/ERCBvb80juJA6gBzB2R2
+ a3Uq49UW7mlQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="213064114"
+X-IronPort-AV: E=Sophos;i="5.75,412,1589266800"; 
+   d="scan'208";a="213064114"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 19:46:30 -0700
+IronPort-SDR: 0iJ7hBD9wyNkQ0O5ISSl6IT4NwwZIo8wpg/gAFopSKoJ5cAqj8JDZihqnOYhqnpMw7UrdG+sE+
+ qJaypzmRJj9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,412,1589266800"; 
+   d="scan'208";a="394841270"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Jul 2020 19:46:27 -0700
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] vfio/type1: Use iommu_aux_at(de)tach_group() APIs
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <20200714055703.5510-1-baolu.lu@linux.intel.com>
+ <20200714055703.5510-5-baolu.lu@linux.intel.com>
+ <20200729143258.22533170@x1.home>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <af6c95a7-3238-1cbd-8656-014c12498587@linux.intel.com>
+Date:   Thu, 30 Jul 2020 10:41:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200729143258.22533170@x1.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA3LTI4IGF0IDIwOjMwICswODAwLCBRaWkgV2FuZyB3cm90ZToNCj4gTmV3
-ZXIgTVRLIGNoaXAgc3VwcG9ydCBtb3JlIHRoYW4gOEdCIG9mIGRyYW0uIFJlcGxhY2Ugc3VwcG9y
-dF8zM2JpdHMNCj4gd2l0aCBtb3JlIGdlbmVyYWwgZG1hX21heF9zdXBwb3J0IGFuZCByZW1vdmUg
-bXRrX2kyY19zZXRfNGdfbW9kZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFFpaSBXYW5nIDxxaWku
-d2FuZ0BtZWRpYXRlay5jb20+DQoNClFpaSwNCg0KQWZ0ZXIgeW91IHJlbW92ZSBJMkNfRE1BXzRH
-X01PREUgTWF0dGhpYXMgbWVudGlvbmVkLCB5b3UgY2FuIGhhdmU6DQoNClJldmlld2VkLWJ5OiBZ
-aW5nam9lIENoZW4gPHlpbmdqb2UuY2hlbkBtZWRpYXRlay5jb20+DQoNCkpvZS5DDQoNCg==
+Hi Alex,
 
+On 7/30/20 4:32 AM, Alex Williamson wrote:
+> On Tue, 14 Jul 2020 13:57:03 +0800
+> Lu Baolu <baolu.lu@linux.intel.com> wrote:
+> 
+>> Replace iommu_aux_at(de)tach_device() with iommu_aux_at(de)tach_group().
+>> It also saves the IOMMU_DEV_FEAT_AUX-capable physcail device in the
+>> vfio_group data structure so that it could be reused in other places.
+>>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/vfio/vfio_iommu_type1.c | 44 ++++++---------------------------
+>>   1 file changed, 7 insertions(+), 37 deletions(-)
+>>
+>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>> index 5e556ac9102a..f8812e68de77 100644
+>> --- a/drivers/vfio/vfio_iommu_type1.c
+>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>> @@ -100,6 +100,7 @@ struct vfio_dma {
+>>   struct vfio_group {
+>>   	struct iommu_group	*iommu_group;
+>>   	struct list_head	next;
+>> +	struct device		*iommu_device;
+>>   	bool			mdev_group;	/* An mdev group */
+>>   	bool			pinned_page_dirty_scope;
+>>   };
+>> @@ -1627,45 +1628,13 @@ static struct device *vfio_mdev_get_iommu_device(struct device *dev)
+>>   	return NULL;
+>>   }
+>>   
+>> -static int vfio_mdev_attach_domain(struct device *dev, void *data)
+>> -{
+>> -	struct iommu_domain *domain = data;
+>> -	struct device *iommu_device;
+>> -
+>> -	iommu_device = vfio_mdev_get_iommu_device(dev);
+>> -	if (iommu_device) {
+>> -		if (iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX))
+>> -			return iommu_aux_attach_device(domain, iommu_device);
+>> -		else
+>> -			return iommu_attach_device(domain, iommu_device);
+>> -	}
+>> -
+>> -	return -EINVAL;
+>> -}
+>> -
+>> -static int vfio_mdev_detach_domain(struct device *dev, void *data)
+>> -{
+>> -	struct iommu_domain *domain = data;
+>> -	struct device *iommu_device;
+>> -
+>> -	iommu_device = vfio_mdev_get_iommu_device(dev);
+>> -	if (iommu_device) {
+>> -		if (iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX))
+>> -			iommu_aux_detach_device(domain, iommu_device);
+>> -		else
+>> -			iommu_detach_device(domain, iommu_device);
+>> -	}
+>> -
+>> -	return 0;
+>> -}
+>> -
+>>   static int vfio_iommu_attach_group(struct vfio_domain *domain,
+>>   				   struct vfio_group *group)
+>>   {
+>>   	if (group->mdev_group)
+>> -		return iommu_group_for_each_dev(group->iommu_group,
+>> -						domain->domain,
+>> -						vfio_mdev_attach_domain);
+>> +		return iommu_aux_attach_group(domain->domain,
+>> +					      group->iommu_group,
+>> +					      group->iommu_device);
+> 
+> No, we previously iterated all devices in the group and used the aux
+> interface only when we have an iommu_device supporting aux.  If we
+> simply assume an mdev group only uses an aux domain we break existing
+> users, ex. SR-IOV VF backed mdevs.  Thanks,
+
+Oh, yes. Sorry! I didn't consider the physical device backed mdevs
+cases.
+
+Looked into this part of code, it seems that there's a lock issue here.
+The group->mutex is held in iommu_group_for_each_dev() and will be
+acquired again in iommu_attach_device().
+
+How about making it like:
+
+static int vfio_iommu_attach_group(struct vfio_domain *domain,
+                                    struct vfio_group *group)
+{
+         if (group->mdev_group) {
+                 struct device *iommu_device = group->iommu_device;
+
+                 if (WARN_ON(!iommu_device))
+                         return -EINVAL;
+
+                 if (iommu_dev_feature_enabled(iommu_device, 
+IOMMU_DEV_FEAT_AUX))
+                         return iommu_aux_attach_device(domain->domain, 
+iommu_device);
+                 else
+                         return iommu_attach_device(domain->domain, 
+iommu_device);
+         } else {
+                 return iommu_attach_group(domain->domain, 
+group->iommu_group);
+         }
+}
+
+The caller (vfio_iommu_type1_attach_group) has guaranteed that all mdevs
+in an iommu group should be derived from a same physical device.
+
+Any thoughts?
+
+> 
+> Alex
+
+Best regards,
+baolu
+
+> 
+> 
+>>   	else
+>>   		return iommu_attach_group(domain->domain, group->iommu_group);
+>>   }
+>> @@ -1674,8 +1643,8 @@ static void vfio_iommu_detach_group(struct vfio_domain *domain,
+>>   				    struct vfio_group *group)
+>>   {
+>>   	if (group->mdev_group)
+>> -		iommu_group_for_each_dev(group->iommu_group, domain->domain,
+>> -					 vfio_mdev_detach_domain);
+>> +		iommu_aux_detach_group(domain->domain, group->iommu_group,
+>> +				       group->iommu_device);
+>>   	else
+>>   		iommu_detach_group(domain->domain, group->iommu_group);
+>>   }
+>> @@ -2007,6 +1976,7 @@ static int vfio_iommu_type1_attach_group(void *iommu_data,
+>>   			return 0;
+>>   		}
+>>   
+>> +		group->iommu_device = iommu_device;
+>>   		bus = iommu_device->bus;
+>>   	}
+>>   
+> 
