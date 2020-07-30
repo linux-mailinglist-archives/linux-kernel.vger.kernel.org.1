@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC331233B28
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 00:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B4B233B2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 00:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728503AbgG3WOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 18:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727110AbgG3WOu (ORCPT
+        id S1730128AbgG3WSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 18:18:34 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:41307 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728543AbgG3WSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 18:14:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D369DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 15:14:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EI0QIOCzp+qWnYU0toMUiNBAwFGSW7ZQP3YlT17aTx0=; b=N0qyCgPZ4uHeSXaFAMovbTcsJZ
-        xcBBMCrKD2z4afVmltk83O97iovOHfwlMA4Sh8L4L5yq7DWyxDZPtcjReTDvAO2hgkvz8VKWMrpSU
-        VTdLW8ilYZ3sRG/B9OBHVhLIqwZUy4xCOsuwPM5UwUJzOQAwTZNLmFQbcwT6z9lylQXnXe/Ce2XDi
-        MudA/MqFefBKMqL1njXsxqDCjb+ZPHYDbO2QWo6cDIA1USju2/CF1q7TxlA6mtHcKog7d6Mo0uqb7
-        LOCNHZxL15oSBx+N11hBlWlYOG7rIvyVUWOq7F08NDdevZZzanyWqofFzJW2mf3O1xkb22ig5foyG
-        2q4i5UWw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k1Gol-0005WK-LV; Thu, 30 Jul 2020 22:14:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 62BB030066E;
-        Fri, 31 Jul 2020 00:14:23 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D83CE235CA5D4; Fri, 31 Jul 2020 00:14:23 +0200 (CEST)
-Date:   Fri, 31 Jul 2020 00:14:23 +0200
-From:   peterz@infradead.org
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        =?iso-8859-1?Q?Genevi=E8ve?= Bastien <gbastien@versatic.net>,
-        Wang Nan <wangnan0@huawei.com>,
-        Jeremie Galarneau <jgalar@efficios.com>
-Subject: Re: [PATCH 0/6] perf tools: Add wallclock time conversion support
-Message-ID: <20200730221423.GH2638@hirez.programming.kicks-ass.net>
-References: <20200730213950.1503773-1-jolsa@kernel.org>
+        Thu, 30 Jul 2020 18:18:34 -0400
+Received: from localhost.localdomain (unknown [46.106.42.139])
+        (Authenticated sender: cengiz@kernel.wtf)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 2AB1D100003;
+        Thu, 30 Jul 2020 22:18:26 +0000 (UTC)
+From:   Cengiz Can <cengiz@kernel.wtf>
+To:     dan.carpenter@oracle.com, andy.shevchenko@gmail.com
+Cc:     andriy.shevchenko@linux.intel.com, cengiz@kernel.wtf,
+        devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        mchehab@kernel.org, sakari.ailus@linux.intel.com
+Subject: [PATCH v2] staging: atomisp: move null check to earlier point
+Date:   Fri, 31 Jul 2020 01:17:38 +0300
+Message-Id: <20200730221737.51569-1-cengiz@kernel.wtf>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200730084545.GB1793@kadam>
+References: <20200730084545.GB1793@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730213950.1503773-1-jolsa@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 11:39:44PM +0200, Jiri Olsa wrote:
+`find_gmin_subdev` function that returns a pointer to `struct
+gmin_subdev` can return NULL.
 
-> The patchset is adding the ability to display TOD/wallclock timestamp
-> in 'perf script' output and in 'perf data convert --to-ctf' subcommand,
-> so the converted CTF data contain TOD/wallclock timestamps.
+In `gmin_v2p8_ctrl` there's a call to this function but the possibility
+of a NULL was not checked before its being dereferenced. ie:
 
-But why? Wallclock is a horrible piece of crap. Why would you want to do
-this?
+```
+/* Acquired here --------v */
+struct gmin_subdev *gs = find_gmin_subdev(subdev);
+
+/*  v------Dereferenced here */
+if (gs->v2p8_gpio >= 0) {
+    ...
+}
+```
+
+To avoid the issue, null check has been moved to an earlier point
+and return semantics has been changed to reflect this exception.
+
+Please do note that this change introduces a new return value to
+`gmin_v2p8_ctrl`.
+
+[NEW] - raise a WARN and return -ENODEV if there are no subdevices.
+      - return result of `gpio_request` or `gpio_direction_output`.
+      - return 0 if GPIO is ON.
+      - return results of `regulator_enable` or `regulator_disable`.
+      - according to PMIC type, return result of `axp_regulator_set`
+        or `gmin_i2c_write`.
+      - return -EINVAL if unknown PMIC type.
+
+Caught-by: Coverity Static Analyzer CID 1465536
+Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
+---
+ drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
+index 0df46a1af5f0..1ad0246764a6 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
+@@ -871,6 +871,9 @@ static int gmin_v2p8_ctrl(struct v4l2_subdev *subdev, int on)
+ 	int ret;
+ 	int value;
+ 
++	if (WARN_ON(!gs))
++		return -ENODEV;
++
+ 	if (gs->v2p8_gpio >= 0) {
+ 		pr_info("atomisp_gmin_platform: 2.8v power on GPIO %d\n",
+ 			gs->v2p8_gpio);
+@@ -881,7 +884,7 @@ static int gmin_v2p8_ctrl(struct v4l2_subdev *subdev, int on)
+ 			pr_err("V2P8 GPIO initialization failed\n");
+ 	}
+ 
+-	if (!gs || gs->v2p8_on == on)
++	if (gs->v2p8_on == on)
+ 		return 0;
+ 	gs->v2p8_on = on;
+ 
+-- 
+2.27.0
+
