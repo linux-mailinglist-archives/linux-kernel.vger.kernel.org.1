@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD93233B82
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 00:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0A1233B88
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 00:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730562AbgG3Wpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 18:45:35 -0400
-Received: from www62.your-server.de ([213.133.104.62]:35206 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730416AbgG3Wpe (ORCPT
+        id S1730621AbgG3WqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 18:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730270AbgG3WqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 18:45:34 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k1HIo-0008Dp-IE; Fri, 31 Jul 2020 00:45:30 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k1HIo-0003Zs-7C; Fri, 31 Jul 2020 00:45:30 +0200
-Subject: Re: [PATCH bpf-next 1/1] arm64: bpf: Add BPF exception tables
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Qian Cai <cai@lca.pw>, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org, songliubraving@fb.com, andriin@fb.com,
-        catalin.marinas@arm.com, john.fastabend@gmail.com, ast@kernel.org,
-        zlim.lnx@gmail.com, kpsingh@chromium.org, yhs@fb.com,
-        will@kernel.org, kafai@fb.com, sfr@canb.auug.org.au,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200728152122.1292756-1-jean-philippe@linaro.org>
- <20200728152122.1292756-2-jean-philippe@linaro.org>
- <20200730122855.GA3773@lca.pw> <20200730142213.GB1529030@myrica>
- <f2f05f41-ccf9-e693-85bf-59ebbf8dadfe@iogearbox.net>
- <20200730211453.GA79372@lophozonia>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <74433d9e-012d-a20f-129f-ce934e8090aa@iogearbox.net>
-Date:   Fri, 31 Jul 2020 00:45:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20200730211453.GA79372@lophozonia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25889/Thu Jul 30 17:03:53 2020)
+        Thu, 30 Jul 2020 18:46:11 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EDFC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 15:46:10 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id p4so19362181pls.16
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 15:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=KdqtOivFw0hOYBvN6JG/eE86OTCksnrTLbBlBCKnAW0=;
+        b=Clq9pCyrD4jp/Sj5+lm69DMDICi41yD/lsu2/6hRwTN/5OuS0NgJZMNR/ztFwYhEW3
+         ji/1O6m0hjUMyc/5iSC5twth0au8JCORRS527jsKZCSmmMWh/t5YBkYkeTASu5tkLbqL
+         b+cRGHNlXxaypFSLGAJoNXOfkSyIocDnT8TjDydDMHIuCzUnbtWz6EjpQrucxM1JzF01
+         yxlvCcfhj9yY8wSbdM3yQPu/ZYStWFNNYzQ1hn1+ylMiueiiVJ4+se9n0bGmH7gcb+M+
+         1yQQQeTgVme52gJyJRnEwvNmZVA0yi5NmrdBG1BMeDLS/Uo4JTV/IGaxP70skLq0PSPy
+         HC/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=KdqtOivFw0hOYBvN6JG/eE86OTCksnrTLbBlBCKnAW0=;
+        b=UzgSCV4TqshZENdNrRvR3jaXI8gm3ivlr1C3FN3WimtOhy9bJuq7KS3syoFWeq6mRo
+         0RLTzyqVRWMxUCOOWeOkNMryaC8OVzgYkQoc3PdUE7S4fvqPsr2GCg/vQ9VIQ9pactLT
+         Ho6T7AGkpawKge9hfW3GKUIVrwOJRoCCjhivCdsCE2vkZY91nq9Fg9X/8Zbw7ZW70qig
+         UcYh7HQBkqz62OsNIWgffU+uQnOZUjNIBjQJ2wSGz0AmQsqfe8em6jLme2ajeUDouTqy
+         2NfkBSkj4ofUF7PbSxwwm/Qme0rcvKaY3UEIorTenCceSHPhYwfPblTNbpgCwZfQpf3M
+         GKwg==
+X-Gm-Message-State: AOAM532XqAXQ1tUCkUK3MzM76zEukf6EeArDwIj+WW0r0y4vLRvFGRJz
+        A40OYlenT1t0PhaY6QoIgAIhcPnxEfkDgP1TBmg=
+X-Google-Smtp-Source: ABdhPJx40HpCHnedOlhvE3oA2+UUEC/fD+fec58mHLry9tzk8bl7UVUCXFp4Ia0CNWBrYVF5RS9nJPx1JYQYN/snPyI=
+X-Received: by 2002:a17:90a:784c:: with SMTP id y12mr1196857pjl.16.1596149170366;
+ Thu, 30 Jul 2020 15:46:10 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 15:45:53 -0700
+Message-Id: <20200730224555.2142154-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
+Subject: [PATCH v2 0/2] tracepoint bugfix and cleanup
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/20 11:14 PM, Jean-Philippe Brucker wrote:
-> On Thu, Jul 30, 2020 at 09:47:39PM +0200, Daniel Borkmann wrote:
->> On 7/30/20 4:22 PM, Jean-Philippe Brucker wrote:
->>> On Thu, Jul 30, 2020 at 08:28:56AM -0400, Qian Cai wrote:
->>>> On Tue, Jul 28, 2020 at 05:21:26PM +0200, Jean-Philippe Brucker wrote:
->>>>> When a tracing BPF program attempts to read memory without using the
->>>>> bpf_probe_read() helper, the verifier marks the load instruction with
->>>>> the BPF_PROBE_MEM flag. Since the arm64 JIT does not currently recognize
->>>>> this flag it falls back to the interpreter.
->>>>>
->>>>> Add support for BPF_PROBE_MEM, by appending an exception table to the
->>>>> BPF program. If the load instruction causes a data abort, the fixup
->>>>> infrastructure finds the exception table and fixes up the fault, by
->>>>> clearing the destination register and jumping over the faulting
->>>>> instruction.
->>>>>
->>>>> To keep the compact exception table entry format, inspect the pc in
->>>>> fixup_exception(). A more generic solution would add a "handler" field
->>>>> to the table entry, like on x86 and s390.
->>>>>
->>>>> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
->>>>
->>>> This will fail to compile on arm64,
->>>>
->>>> https://gitlab.com/cailca/linux-mm/-/blob/master/arm64.config
->>>>
->>>> arch/arm64/mm/extable.o: In function `fixup_exception':
->>>> arch/arm64/mm/extable.c:19: undefined reference to `arm64_bpf_fixup_exception'
->>>
->>> Thanks for the report, I attached a fix. Daniel, can I squash it and
->>> resend as v2 or is it too late?
->>
->> If you want I can squash your attached snippet into the original patch of
->> yours. If you want to send a v2 that is fine as well of course. Let me know.
-> 
-> Yes please squash it into the original patch, sorry for the mess
+The first patch fixes a reported bug in iterating the
+tracing/printk_formats sysfs node, and is tagged for stable.
 
-Done, thanks!
+The second patch is a small cleanup and is less important than the
+first.
+
+Resending since I messed up the list of cc's on the cover letter last
+week; picked up Miguel's Ack on 0002.
+
+Nick Desaulniers (2):
+  tracepoint: mark __tracepoint_string's __used
+  tracepoint: used attribute definitions from compiler_attributes.h
+
+ include/linux/tracepoint.h | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+-- 
+2.28.0.163.g6104cc2f0b6-goog
+
