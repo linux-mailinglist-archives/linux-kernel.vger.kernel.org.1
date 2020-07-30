@@ -2,141 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A612523338D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7AD12333A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729392AbgG3N4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:56:11 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:56574 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729090AbgG3Nzx (ORCPT
+        id S1729518AbgG3N5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728286AbgG3N5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:55:53 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id B881E8040A7E;
-        Thu, 30 Jul 2020 13:55:47 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4JKM5HhNRWZ7; Thu, 30 Jul 2020 16:55:47 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Hoan Tran <hoan@os.amperecomputing.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Serge Semin <fancer.lancer@gmail.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Rob Herring <robh+dt@kernel.org>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 10/10] gpio: dwapb: Use resource managed GPIO-chip add data method
-Date:   Thu, 30 Jul 2020 16:55:36 +0300
-Message-ID: <20200730135536.19747-11-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200730135536.19747-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200730135536.19747-1-Sergey.Semin@baikalelectronics.ru>
+        Thu, 30 Jul 2020 09:57:45 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC54C061574;
+        Thu, 30 Jul 2020 06:57:45 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.93)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1k192s-00DYvR-Pl; Thu, 30 Jul 2020 15:56:30 +0200
+Message-ID: <943c5eaf12bc9e92e817fb9818ebd65038f5fb54.camel@sipsolutions.net>
+Subject: Re: [RFC 1/2] devlink: add simple fw crash helpers
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, derosier@gmail.com,
+        greearb@candelatech.com, jeyu@kernel.org,
+        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
+        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
+        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
+        gpiccoli@canonical.com, pmladek@suse.com, tiwai@suse.de,
+        schlad@suse.de, andriy.shevchenko@linux.intel.com,
+        keescook@chromium.org, daniel.vetter@ffwll.ch, will@kernel.org,
+        mchehab+samsung@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        ath10k@lists.infradead.org, jiri@resnulli.us,
+        briannorris@chromium.org
+Date:   Thu, 30 Jul 2020 15:56:25 +0200
+In-Reply-To: <20200525135746.45e764de@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+References: <20200519010530.GS11244@42.do-not-panic.com>
+         <20200519211531.3702593-1-kuba@kernel.org>
+         <20200522052046.GY11244@42.do-not-panic.com>
+         <20200522101738.1495f4cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <2e5199edb433c217c7974ef7408ff8c7253145b6.camel@sipsolutions.net>
+         <20200525135746.45e764de@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4 (3.36.4-1.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the resource managed version of gpiochip_add_data() will handle the
-GPIO-chip data automated cleanup we can freely remove the DW APB GPIO
-driver code responsible for that. After doing so the DW APB GPIO driver
-removal callback can be also fully discarded since there is nothing left
-to be done for it. All the cleanups are now performed by means of the
-device managed framework.
+Hi,
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/gpio/gpio-dwapb.c | 37 ++-----------------------------------
- 1 file changed, 2 insertions(+), 35 deletions(-)
+Sorry ... long delay.
 
-diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-index 9b3065812de2..d3d555b3d492 100644
---- a/drivers/gpio/gpio-dwapb.c
-+++ b/drivers/gpio/gpio-dwapb.c
-@@ -87,7 +87,6 @@ struct dwapb_gpio_port {
- 	unsigned int		nr_irqs;
- 	unsigned int		irq[DWAPB_MAX_GPIOS];
- 	struct irq_chip		irqchip;
--	bool			is_registered;
- 	struct dwapb_gpio	*gpio;
- #ifdef CONFIG_PM_SLEEP
- 	struct dwapb_context	*ctx;
-@@ -505,32 +504,16 @@ static int dwapb_gpio_add_port(struct dwapb_gpio *gpio,
- 	if (pp->idx == 0)
- 		dwapb_configure_irqs(gpio, port, pp);
- 
--	err = gpiochip_add_data(&port->gc, port);
-+	err = devm_gpiochip_add_data(gpio->dev, &port->gc, port);
- 	if (err) {
- 		dev_err(gpio->dev, "failed to register gpiochip for port%d\n",
- 			port->idx);
- 		return err;
- 	}
- 
--	port->is_registered = true;
--
- 	return 0;
- }
- 
--static void dwapb_gpio_unregister(struct dwapb_gpio *gpio)
--{
--	unsigned int m;
--
--	for (m = 0; m < gpio->nr_ports; ++m) {
--		struct dwapb_gpio_port *port = &gpio->ports[m];
--
--		if (!port->is_registered)
--			continue;
--
--		gpiochip_remove(&port->gc);
--	}
--}
--
- static void dwapb_get_irq(struct device *dev, struct fwnode_handle *fwnode,
- 			  struct dwapb_port_property *pp)
- {
-@@ -724,23 +707,8 @@ static int dwapb_gpio_probe(struct platform_device *pdev)
- 	for (i = 0; i < gpio->nr_ports; i++) {
- 		err = dwapb_gpio_add_port(gpio, &pdata->properties[i], i);
- 		if (err)
--			goto out_unregister;
-+			return err;
- 	}
--	platform_set_drvdata(pdev, gpio);
--
--	return 0;
--
--out_unregister:
--	dwapb_gpio_unregister(gpio);
--
--	return err;
--}
--
--static int dwapb_gpio_remove(struct platform_device *pdev)
--{
--	struct dwapb_gpio *gpio = platform_get_drvdata(pdev);
--
--	dwapb_gpio_unregister(gpio);
- 
- 	return 0;
- }
-@@ -844,7 +812,6 @@ static struct platform_driver dwapb_gpio_driver = {
- 		.acpi_match_table = dwapb_acpi_match,
- 	},
- 	.probe		= dwapb_gpio_probe,
--	.remove		= dwapb_gpio_remove,
- };
- 
- module_platform_driver(dwapb_gpio_driver);
--- 
-2.27.0
+> > The reason I'm asking is that it's starting to sound like we really
+> > ought to be implementing devlink, but we've got a bunch of
+> > infrastructure that uses the devcoredump, and it'll take time
+> > (significantly so) to change all that...
+> 
+> In devlink world pure FW core dumps are exposed by devlink regions.
+> An API allowing reading device memory, registers, etc., but also 
+> creating dumps of memory regions when things go wrong. It should be
+> a fairly straightforward migration.
+
+Right. We also have regions (various memory pieces, registers, ...).
+
+One issue might be that for devlink we wouldn't want to expose these as
+a single blob, I guess, but for devcoredump we already have a custom
+format to glue all the things together. Since it seems unlikely that
+anyone else would want to use the *iwlwifi* format to glue things
+together, we'd have to do something there.
+
+But perhaps that could be a matter of providing a "glue things into a
+devcoredump" function that would have a reasonable default but could be
+overridden by the driver for those migration cases.
+
+> Devlink health is more targeted, the dump is supposed to contain only
+> relevant information, selected and formatted by the driver. When device
+> misbehaves driver reads the relevant registers and FW state and creates
+> a formatted state dump. I believe each element of the dump must fit
+> into a netlink message (but there may be multiple elements, see
+> devlink_fmsg_prepare_skb()).
+
+That wouldn't help for our big memory dumps, but OK.
+
+> We should be able to convert dl-regions dumps and dl-health dumps into
+> devcoredumps, but since health reporters are supposed to be more
+> targeted there's usually multiple of them per device.
+
+Right.
+
+> Conversely devcoredumps can be trivially exposed as dl-region dumps,
+> but I believe dl-health would require driver changes to format the
+> information appropriately.
+
+Agree.
+
+Anyway, thanks. I'll put it on my list of things to look at ... not too
+hopeful that will be soon, given how long it even took me to get back to
+this email :)
+
+johannes
 
