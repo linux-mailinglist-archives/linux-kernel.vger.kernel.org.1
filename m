@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E63F232B60
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 07:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA30232B61
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 07:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728605AbgG3FbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 01:31:05 -0400
-Received: from mga18.intel.com ([134.134.136.126]:39691 "EHLO mga18.intel.com"
+        id S1728615AbgG3FbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 01:31:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbgG3FbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 01:31:04 -0400
-IronPort-SDR: hTralc1MB6XmwS6/8sobgfRaCxFbKiiTFaYz9l9RhH1JdPo5Mv8hkwCLxOd7lzWbVgJG3bD3vS
- eKT/VHXeGdOg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="139075713"
-X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
-   d="scan'208";a="139075713"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 22:31:03 -0700
-IronPort-SDR: PsF4xgceipV6YKH4VRgqhX29jjJkM/lY2ZLTHtK440pBbuNUj/0DZTlybVA4GQef05s1cNUlo/
- +n7GobLc/jMQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
-   d="scan'208";a="330632759"
-Received: from lkp-server01.sh.intel.com (HELO aff35d61a1e5) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 29 Jul 2020 22:31:02 -0700
-Received: from kbuild by aff35d61a1e5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k119h-00005s-PV; Thu, 30 Jul 2020 05:31:01 +0000
-Date:   Thu, 30 Jul 2020 13:30:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: drivers/rtc/rtc-pcf85063.c:292:40: warning: Clarify calculation
- precedence for '&' and
-Message-ID: <202007301329.vj66ufFB%lkp@intel.com>
+        id S1726287AbgG3FbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 01:31:19 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 750DB20842;
+        Thu, 30 Jul 2020 05:31:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596087079;
+        bh=Dvo2/mKtVKTG0GN4Ptkmba8k3YXSZeccrO2bOD3DvS4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VpV2wkx35kvXQjleYoNCJcsBGjTxjZ5HYiB+hNWmiqiK671/+WrR5JYbDKTda0Ofe
+         iJ2LMYGqOXjIwTDvGjHSf7jefTImzSy1nmFR/UX5WXw1aifCej7tQlxaK4nZGW+MhU
+         W9NJrpkDjBfmT5UOj2a/UE8guQgDRF6qPj9UbvVE=
+Date:   Thu, 30 Jul 2020 07:31:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel Gutson <daniel@eclypsium.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alex Bazhaniuk <alex@eclypsium.com>,
+        Richard Hughes <hughsient@gmail.com>
+Subject: Re: [PATCH] Module argument to control whether intel-spi-pci
+ attempts to turn the SPI flash chip writeable
+Message-ID: <20200730053108.GA3861609@kroah.com>
+References: <20200724212853.11601-1-daniel.gutson@eclypsium.com>
+ <20200725055649.GA1047853@kroah.com>
+ <CAFmMkTE_dT9+WJYyb19uQ_HmgJWZSARBy6PveheQJk++NuGbkQ@mail.gmail.com>
+ <20200726071723.GB441916@kroah.com>
+ <CAFmMkTFzGfFDrJrdgHztzLK2K-zBWy6T2Tv+G4-rrbVpbahkgg@mail.gmail.com>
+ <CAK8P3a1nA7K15Cxz84Q8Grw3tKfgkUmsfURcytJEWb_0Wjqm5w@mail.gmail.com>
+ <CAFmMkTExBY3V_Ghej7Bzjatg+vFtWq3UZmKzjAiEoR9EqnFN9Q@mail.gmail.com>
+ <CAFmMkTEO7VNKJeYz2uoHsS-yN_aY8UuiQ2GcCq9NyAD5481ZGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFmMkTEO7VNKJeYz2uoHsS-yN_aY8UuiQ2GcCq9NyAD5481ZGA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   d3590ebf6f91350192737dd1d1b219c05277f067
-commit: f86dc5bde18e540743eaef20529d9f2b67283abd rtc: pcf85063: return meaningful value for RTC_VL_READ
-date:   8 months ago
-compiler: or1k-linux-gcc (GCC) 9.3.0
+On Wed, Jul 29, 2020 at 05:54:35PM -0300, Daniel Gutson wrote:
+> On Mon, Jul 27, 2020 at 12:31 PM Daniel Gutson <daniel@eclypsium.com> wrote:
+> >
+> > On Mon, Jul 27, 2020 at 12:15 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > >
+> > > On Mon, Jul 27, 2020 at 5:05 PM Daniel Gutson <daniel@eclypsium.com> wrote:
+> > > > On Sun, Jul 26, 2020 at 4:17 AM Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > > >>
+> > > >> On Sat, Jul 25, 2020 at 02:20:03PM -0300, Daniel Gutson wrote:
+> > > >> > El sáb., 25 jul. 2020 2:56 a. m., Greg Kroah-Hartman <
+> > > >> > gregkh@linuxfoundation.org> escribió:
+> > > >> >
+> > > >> >
+> > > >> > 1) I just did the same that intel-spi.c does.
+> > > >>
+> > > >> No need to copy bad examples :)
+> > > >
+> > > >
+> > > > Didn't know it was a bad example. What's is the current modern mechanism that replaces initialization-time configuration?
+> > >
+> > > I'd say you'd generally want this to be a per-instance setting, which
+> > > could be a sysfs attribute of the physical device, or an ioctl for an
+> > > existing user space abstraction.
+> >
+> > But still, they are not equivalent. The initial configuration remains
+> > constant for the rest of the life of the driver, whereas the
+> > sysfs attribute is set after the initialization and can be re-set over
+> > time. I'm not asking module parameters "to come back" if
+> > they are now considered obsolete, I'm just trying to understand.
+> >
+> > >
+> > > In the changelog, you should also explain what this is used for. Do
+> > > you actually want to write to a device that is marked read-only, or
+> > > are you just trying to make the interface more consistent between the
+> > > two drivers?
+> >
+> > The device can either be locked or unlocked. If it is unlocked, it can
+> > be set writable depending on the module
+> > argument in intel-spi, or straight writable in intel-spi-pci. Which is
+> > dangerous.
+> > I wanted to make, as you say, the interface consistent.
+> > Exposing an interface to the user (via a sysfs attribute) to try to
+> > make the driver writable is definitively a bad idea.
+> > I'd rather do nothing (no module arg) rather than open that
+> > here-be-dragons door.
+> 
+> ping.
+> This is a real existing problem that I'm trying to address.
+> There's currently no way to prevent the kernel to try to turn
+> the SPI flash chip writable for the device IDs handled by
+> intel-spi-pci. And allowing userspace to switch it between
+> writable/non-writable is not an option.
+> What other mechanism can I use other than the module parameter,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Again, module parameters are working on a per-chunk-of-code basis, while
+you want to work on a per-device basis, which is why you should not use
+a module parameter.
 
+good luck!
 
-cppcheck warnings: (new ones prefixed by >>)
-
->> drivers/rtc/rtc-pcf85063.c:292:40: warning: Clarify calculation precedence for '&' and '?'. [clarifyCalculation]
-     status = status & PCF85063_REG_SC_OS ? RTC_VL_DATA_INVALID : 0;
-                                          ^
-
-vim +292 drivers/rtc/rtc-pcf85063.c
-
-   279	
-   280	static int pcf85063_ioctl(struct device *dev, unsigned int cmd,
-   281				  unsigned long arg)
-   282	{
-   283		struct pcf85063 *pcf85063 = dev_get_drvdata(dev);
-   284		int status, ret = 0;
-   285	
-   286		switch (cmd) {
-   287		case RTC_VL_READ:
-   288			ret = regmap_read(pcf85063->regmap, PCF85063_REG_SC, &status);
-   289			if (ret < 0)
-   290				return ret;
-   291	
- > 292			status = status & PCF85063_REG_SC_OS ? RTC_VL_DATA_INVALID : 0;
-   293	
-   294			return put_user(status, (unsigned int __user *)arg);
-   295	
-   296		default:
-   297			return -ENOIOCTLCMD;
-   298		}
-   299	}
-   300	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+greg k-h
