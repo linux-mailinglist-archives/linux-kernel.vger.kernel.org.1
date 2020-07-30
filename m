@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFE6232FC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2436B232FC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbgG3JrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 05:47:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53525 "EHLO
+        id S1729470AbgG3JrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 05:47:18 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35734 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726707AbgG3JrD (ORCPT
+        with ESMTP id S1727044AbgG3JrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 05:47:03 -0400
+        Thu, 30 Jul 2020 05:47:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596102422;
+        s=mimecast20190719; t=1596102423;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uEUXNi8FuTHtKTWiuRiwhCN+81e6ShR67jAab4C3cSM=;
-        b=Tx465ux6e9JiGUNxMMEGhj1d6yw2ib8jTVHK8MLxINQt+ZElucs323CanTDYI6f8VmGHDr
-        HyupkLIi6hOsvXKvflkhPJ9MP8cv9ZBc9ZfrfYQma65zm3v5ZJMIts0SmC2T/nffV8Sl38
-        YRGqCFtXVuCgXwps2NSOK+CYtB81INE=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-435-TdNjdUwmM42I9sEqk_OaIg-1; Thu, 30 Jul 2020 05:47:00 -0400
-X-MC-Unique: TdNjdUwmM42I9sEqk_OaIg-1
-Received: by mail-wr1-f69.google.com with SMTP id w7so7743715wrt.9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 02:47:00 -0700 (PDT)
+        bh=xU8TftOeC0Fuep7MfzZLrg+PX+L/jbLYfVc8Z+rENd8=;
+        b=FGVqSSUXOnaoXZkb8C5GoVwxRjamzNmTOcEG0dzvTq8Rmj8SNQb1q7UR4r4ZlGO/QTYRfq
+        tegVqmomI3cALNRrQeksX4eK2+m2bvTub/z7CXQNrfA/fOHTOApl/pUuGIflSYk/JLtUGb
+        GDrP77TU4UFPFAEp22Xos+lDsOpBeHg=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-ilxiemabPymlk7ofbpsWgA-1; Thu, 30 Jul 2020 05:47:01 -0400
+X-MC-Unique: ilxiemabPymlk7ofbpsWgA-1
+Received: by mail-wm1-f70.google.com with SMTP id u14so1222352wml.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 02:47:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uEUXNi8FuTHtKTWiuRiwhCN+81e6ShR67jAab4C3cSM=;
-        b=Ty8OmcN0PfTqKypNhJczd+T0Iftce0i/+gthUyIHDMV4q0Pj0qIYQYdqV5F0qjfajW
-         eCEZEDJJQgAJWk6oSk7RRsrm+UmRNUFjqVG4Rv1NsSJypObWkrQj9JXh6uOw1WacxeUy
-         e6t7GMNLv0WID9ogTD+brn1zkKOHEPp+fA6OL6mHiOWu1KhYMtYM288jC7i41ILJ4YXl
-         D2ZBkkYyqrt5P+jnhOfDPCwgClYcRlXqT3r0wWoxEfdlGnETl41usR98u3VW4eij2OO6
-         Nl50Ly5tvOB11hR+kUNwsGqgd0dZGLRx3G0zhPbXKkS1L5L6oFz3tIA1gGEoG9ofJvsj
-         ZXwQ==
-X-Gm-Message-State: AOAM532LgZyqjrhswUJPvkufPQ1MDUtrifydaRuDkSg0dVz3Pzff7S/p
-        QA8g0JLaUC136aAZTlOUFQ9mWoI6YV90A8YeYSjhres4rmRYJkzlnIQgj/E8mBcVkIaAhPnEC4Q
-        nE1M4SU7q56oemCwzVzP4kMOh
-X-Received: by 2002:a1c:2485:: with SMTP id k127mr12230499wmk.138.1596102418673;
-        Thu, 30 Jul 2020 02:46:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzeEI3246HUP3tv3Z2NH8Xk0MgRWEizY4u51RgxaIoGvoVdiFD2Iwc75kIudLbeRli/nAHUog==
-X-Received: by 2002:a1c:2485:: with SMTP id k127mr12230479wmk.138.1596102418465;
-        Thu, 30 Jul 2020 02:46:58 -0700 (PDT)
+        bh=xU8TftOeC0Fuep7MfzZLrg+PX+L/jbLYfVc8Z+rENd8=;
+        b=ec9Uq4AjdE/KaWeP4w5Jb8aSB8W0JhxAjFcWBPnNlH3HsEmbJnlcddglMSkgWvlAEE
+         gM2a20Ea/7VhMQ/KB82e13UXw1iJPg2mZBlaH+a2ZhMC3ywXkM+CCejfXKh8kECYIGHF
+         myXI6GiDzezyEKS+vfYgBBQjKXL309zJqhKjdtYWKKzj+coFHRUHk8NQOvlF0DPeFtbh
+         cFAdUZ7DbnmOPEZsmo8wevGCsNA8tYpH53Unc7GQKMSjoxBdCS8j1nW3tlYWns6nlMdX
+         Du91ZjHIlgjFweiuY0aS6CHpj/bio0VVQOQ/YGqWqgEgXPZQ9MO2S4LEmrbhhSAD96iM
+         q+vQ==
+X-Gm-Message-State: AOAM530FuEeBB9/O2aZ9EVqhaHPisnR3yusRSg2wGk8ElhUbfYM4/N5t
+        sBHa9VBS9ReGNnDtZCQBUdZl4TpHjzlR85X783rxGyEjvqP51jUOkyQ40F1v8a6ITdLTpbmZnlV
+        fjRS/j9KPml7kq5hoseHPQ0Tz
+X-Received: by 2002:adf:ab46:: with SMTP id r6mr2004031wrc.260.1596102419834;
+        Thu, 30 Jul 2020 02:46:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwdHbyeNnJIRUYYo5/dU7riJI6VVzynOunLMio/TEU1suwAh6H/6QIg80xmBhS6SAo9UacQJw==
+X-Received: by 2002:adf:ab46:: with SMTP id r6mr2004022wrc.260.1596102419685;
+        Thu, 30 Jul 2020 02:46:59 -0700 (PDT)
 Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id j6sm9009645wro.25.2020.07.30.02.46.57
+        by smtp.gmail.com with ESMTPSA id j6sm9009645wro.25.2020.07.30.02.46.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 02:46:57 -0700 (PDT)
+        Thu, 30 Jul 2020 02:46:59 -0700 (PDT)
 From:   Julien Thierry <jthierry@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
         raphael.gault@arm.com, benh@kernel.crashing.org,
         Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH v2 2/9] objtool: Make sync-check consider the target architecture
-Date:   Thu, 30 Jul 2020 10:46:45 +0100
-Message-Id: <20200730094652.28297-3-jthierry@redhat.com>
+Subject: [PATCH v2 3/9] objtool: Move macros describing structures to arch-dependent code
+Date:   Thu, 30 Jul 2020 10:46:46 +0100
+Message-Id: <20200730094652.28297-4-jthierry@redhat.com>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20200730094652.28297-1-jthierry@redhat.com>
 References: <20200730094652.28297-1-jthierry@redhat.com>
@@ -69,51 +69,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not take into account outdated headers unrelated to the build of the
-current architecture.
+Some macros are defined to describe the size and layout of structures
+exception_table_entry, jump_entry and alt_instr. These values can vary
+from one architecture to another.
 
+Have the values be defined by arch specific code.
+
+Suggested-by: Raphael Gault <raphael.gault@arm.com>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 ---
- tools/objtool/Makefile      | 2 +-
- tools/objtool/sync-check.sh | 4 ++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ tools/objtool/arch/x86/include/arch_special.h | 20 +++++++++++++++++++
+ tools/objtool/special.c                       | 16 +--------------
+ 2 files changed, 21 insertions(+), 15 deletions(-)
+ create mode 100644 tools/objtool/arch/x86/include/arch_special.h
 
-diff --git a/tools/objtool/Makefile b/tools/objtool/Makefile
-index 7770edcda3a0..614b87278260 100644
---- a/tools/objtool/Makefile
-+++ b/tools/objtool/Makefile
-@@ -60,7 +60,7 @@ export srctree OUTPUT CFLAGS SRCARCH AWK
- include $(srctree)/tools/build/Makefile.include
- 
- $(OBJTOOL_IN): fixdep FORCE
--	@$(CONFIG_SHELL) ./sync-check.sh
-+	@$(CONFIG_SHELL) ./sync-check.sh $(SRCARCH)
- 	@$(MAKE) $(build)=objtool
- 
- $(OBJTOOL): $(LIBSUBCMD) $(OBJTOOL_IN)
-diff --git a/tools/objtool/sync-check.sh b/tools/objtool/sync-check.sh
-index 13e4fca28015..f01b5a4d12ac 100755
---- a/tools/objtool/sync-check.sh
-+++ b/tools/objtool/sync-check.sh
-@@ -1,6 +1,9 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
- 
-+TARGET_ARCH=$1
+diff --git a/tools/objtool/arch/x86/include/arch_special.h b/tools/objtool/arch/x86/include/arch_special.h
+new file mode 100644
+index 000000000000..d818b2bffa02
+--- /dev/null
++++ b/tools/objtool/arch/x86/include/arch_special.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef _X86_ARCH_SPECIAL_H
++#define _X86_ARCH_SPECIAL_H
 +
-+if [ "$TARGET_ARCH" == "x86" ]; then
- FILES="
- arch/x86/include/asm/inat_types.h
- arch/x86/include/asm/orc_types.h
-@@ -12,6 +15,7 @@ arch/x86/include/asm/insn.h     -I '^#include [\"<]\(asm/\)*inat.h[\">]'
- arch/x86/lib/inat.c             -I '^#include [\"<]\(../include/\)*asm/insn.h[\">]'
- arch/x86/lib/insn.c             -I '^#include [\"<]\(../include/\)*asm/in\(at\|sn\).h[\">]' -I '^#include [\"<]\(../include/\)*asm/emulate_prefix.h[\">]'
- "
-+fi
++#define EX_ENTRY_SIZE		12
++#define EX_ORIG_OFFSET		0
++#define EX_NEW_OFFSET		4
++
++#define JUMP_ENTRY_SIZE		16
++#define JUMP_ORIG_OFFSET	0
++#define JUMP_NEW_OFFSET		4
++
++#define ALT_ENTRY_SIZE		13
++#define ALT_ORIG_OFFSET		0
++#define ALT_NEW_OFFSET		4
++#define ALT_FEATURE_OFFSET	8
++#define ALT_ORIG_LEN_OFFSET	10
++#define ALT_NEW_LEN_OFFSET	11
++
++#endif /* _X86_ARCH_SPECIAL_H */
+diff --git a/tools/objtool/special.c b/tools/objtool/special.c
+index e893f1e48e44..b04f395de5de 100644
+--- a/tools/objtool/special.c
++++ b/tools/objtool/special.c
+@@ -14,21 +14,7 @@
+ #include "builtin.h"
+ #include "special.h"
+ #include "warn.h"
+-
+-#define EX_ENTRY_SIZE		12
+-#define EX_ORIG_OFFSET		0
+-#define EX_NEW_OFFSET		4
+-
+-#define JUMP_ENTRY_SIZE		16
+-#define JUMP_ORIG_OFFSET	0
+-#define JUMP_NEW_OFFSET		4
+-
+-#define ALT_ENTRY_SIZE		13
+-#define ALT_ORIG_OFFSET		0
+-#define ALT_NEW_OFFSET		4
+-#define ALT_FEATURE_OFFSET	8
+-#define ALT_ORIG_LEN_OFFSET	10
+-#define ALT_NEW_LEN_OFFSET	11
++#include "arch_special.h"
  
- check_2 () {
-   file1=$1
+ #define X86_FEATURE_POPCNT (4*32+23)
+ #define X86_FEATURE_SMAP   (9*32+20)
 -- 
 2.21.3
 
