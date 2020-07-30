@@ -2,131 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDB6232B69
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 07:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C82232B91
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 07:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728662AbgG3Fdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 01:33:45 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:42636 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgG3Fdp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 01:33:45 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id BA75D804E5;
-        Thu, 30 Jul 2020 07:33:41 +0200 (CEST)
-Date:   Thu, 30 Jul 2020 07:33:40 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        od@zcrc.me, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] drm/ingenic: ipu: Only enable clock when needed
-Message-ID: <20200730053340.GC1429781@ravnborg.org>
-References: <20200730014626.83895-1-paul@crapouillou.net>
- <20200730014626.83895-4-paul@crapouillou.net>
+        id S1728596AbgG3Fx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 01:53:26 -0400
+Received: from mga18.intel.com ([134.134.136.126]:41627 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725892AbgG3FxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 01:53:24 -0400
+IronPort-SDR: AHeDwTAylFJsiyGxNYgwM3lvi/vglBwtyk7bIZVb7APewc4y8c3eq1LHboksAPOhV30nTJ1bjk
+ tB9kAtsbRBFg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="139077538"
+X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
+   d="scan'208";a="139077538"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 22:53:23 -0700
+IronPort-SDR: PRC3j8OG+6j/rSu44XNIo0mtp1yNF+6pddSgd4gjyjX5CMceKE9CKxhJAI1YDXcSOmYXOH6B8y
+ u/L4/uY8QRZg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
+   d="scan'208";a="330637364"
+Received: from lkp-server01.sh.intel.com (HELO aff35d61a1e5) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 29 Jul 2020 22:53:22 -0700
+Received: from kbuild by aff35d61a1e5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k11VJ-00006S-UA; Thu, 30 Jul 2020 05:53:21 +0000
+Date:   Thu, 30 Jul 2020 13:53:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:WIP.x86/kaslr] BUILD SUCCESS
+ 4b23103abfba11df3daf26ca006489a467da5b65
+Message-ID: <5f22603c.vUV8r+MXmRJx49Zd%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730014626.83895-4-paul@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=ER_8r6IbAAAA:8
-        a=aZ_HzrPzBHF4GxD21xUA:9 a=THfZoiQRlKttx8i7:21 a=zS6DgMrn1oIVMBE9:21
-        a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22 a=9LHmKk7ezEChjTCyhBa9:22
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 03:46:26AM +0200, Paul Cercueil wrote:
-> Instead of keeping the IPU clock enabled constantly, enable and disable
-> it on demand, when the IPU plane is used.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  WIP.x86/kaslr
+branch HEAD: 4b23103abfba11df3daf26ca006489a467da5b65  x86/kaslr: Add a check that the random address is in range
 
-This explains what the patch does - but fails to mention why.
-Could you please add the why part too.
+elapsed time: 720m
 
-With the chagelog updated:
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+configs tested: 66
+configs skipped: 46
 
-	Sam
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/gpu/drm/ingenic/ingenic-ipu.c | 23 ++++++++++++++++++++---
->  1 file changed, 20 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-> index f4f0abcd6692..17e682cf1eba 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-> @@ -49,6 +49,7 @@ struct ingenic_ipu {
->  	struct regmap *map;
->  	struct clk *clk;
->  	const struct soc_info *soc_info;
-> +	bool clk_enabled;
->  
->  	unsigned int num_w, num_h, denom_w, denom_h;
->  
-> @@ -288,12 +289,23 @@ static void ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
->  	const struct drm_format_info *finfo;
->  	u32 ctrl, stride = 0, coef_index = 0, format = 0;
->  	bool needs_modeset, upscaling_w, upscaling_h;
-> +	int err;
->  
->  	if (!state || !state->fb)
->  		return;
->  
->  	finfo = drm_format_info(state->fb->format->format);
->  
-> +	if (!ipu->clk_enabled) {
-> +		err = clk_enable(ipu->clk);
-> +		if (err) {
-> +			dev_err(ipu->dev, "Unable to enable clock: %d\n", err);
-> +			return;
-> +		}
-> +
-> +		ipu->clk_enabled = true;
-> +	}
-> +
->  	/* Reset all the registers if needed */
->  	needs_modeset = drm_atomic_crtc_needs_modeset(state->crtc->state);
->  	if (needs_modeset) {
-> @@ -578,6 +590,11 @@ static void ingenic_ipu_plane_atomic_disable(struct drm_plane *plane,
->  	regmap_clear_bits(ipu->map, JZ_REG_IPU_CTRL, JZ_IPU_CTRL_CHIP_EN);
->  
->  	ingenic_drm_plane_disable(ipu->master, plane);
-> +
-> +	if (ipu->clk_enabled) {
-> +		clk_disable(ipu->clk);
-> +		ipu->clk_enabled = false;
-> +	}
->  }
->  
->  static const struct drm_plane_helper_funcs ingenic_ipu_plane_helper_funcs = {
-> @@ -761,9 +778,9 @@ static int ingenic_ipu_bind(struct device *dev, struct device *master, void *d)
->  	drm_object_attach_property(&plane->base, ipu->sharpness_prop,
->  				   ipu->sharpness);
->  
-> -	err = clk_prepare_enable(ipu->clk);
-> +	err = clk_prepare(ipu->clk);
->  	if (err) {
-> -		dev_err(dev, "Unable to enable clock\n");
-> +		dev_err(dev, "Unable to prepare clock\n");
->  		return err;
->  	}
->  
-> @@ -775,7 +792,7 @@ static void ingenic_ipu_unbind(struct device *dev,
->  {
->  	struct ingenic_ipu *ipu = dev_get_drvdata(dev);
->  
-> -	clk_disable_unprepare(ipu->clk);
-> +	clk_unprepare(ipu->clk);
->  }
->  
->  static const struct component_ops ingenic_ipu_ops = {
-> -- 
-> 2.27.0
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+i386                             allyesconfig
+i386                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20200729
+x86_64               randconfig-a005-20200729
+x86_64               randconfig-a002-20200729
+x86_64               randconfig-a006-20200729
+x86_64               randconfig-a003-20200729
+x86_64               randconfig-a001-20200729
+i386                 randconfig-a003-20200729
+i386                 randconfig-a004-20200729
+i386                 randconfig-a005-20200729
+i386                 randconfig-a002-20200729
+i386                 randconfig-a006-20200729
+i386                 randconfig-a001-20200729
+i386                 randconfig-a016-20200729
+i386                 randconfig-a012-20200729
+i386                 randconfig-a013-20200729
+i386                 randconfig-a014-20200729
+i386                 randconfig-a011-20200729
+i386                 randconfig-a015-20200729
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
