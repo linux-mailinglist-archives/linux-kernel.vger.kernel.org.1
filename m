@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE13A2333F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40528233402
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729478AbgG3OJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 10:09:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:37742 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727776AbgG3OJp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 10:09:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596118184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6WINITRrttu57H5Ow4z7uhB5cozF06t59zUSHHbIkJc=;
-        b=bgHF5Mq7oppZWu8k7EZ+2oaf9bcMuMgWorlfJ68sdo0be5e1NwszUR/8uop3BKP/V3Cpxc
-        nWXxGp3ZB8KNq84zEHb6Yl1IugflVmhZPl84V3R7s//indNmeup/xfdykzoEl2b0EoN8Vj
-        BCmm8f3MRT7ASwoUYglPRecDk6KiAaA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-288-59XMCS6XOra8IvyfMPGEGg-1; Thu, 30 Jul 2020 10:09:40 -0400
-X-MC-Unique: 59XMCS6XOra8IvyfMPGEGg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 98C71106F8C4;
-        Thu, 30 Jul 2020 14:09:39 +0000 (UTC)
-Received: from treble (ovpn-119-23.rdu2.redhat.com [10.10.119.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D2B6C8A181;
-        Thu, 30 Jul 2020 14:09:38 +0000 (UTC)
-Date:   Thu, 30 Jul 2020 09:09:36 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Julien Thierry <jthierry@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mhelsley@vmware.com, mbenes@suse.cz
-Subject: Re: [PATCH v3 1/4] objtool: Move object file loading out of check
-Message-ID: <20200730140936.uvw73r655356lhtm@treble>
-References: <20200730094143.27494-1-jthierry@redhat.com>
- <20200730094143.27494-2-jthierry@redhat.com>
+        id S1729389AbgG3OMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 10:12:14 -0400
+Received: from relay.sw.ru ([185.231.240.75]:33850 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728092AbgG3OMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 10:12:13 -0400
+Received: from [192.168.15.64]
+        by relay3.sw.ru with esmtp (Exim 4.93)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1k19Hn-0004AI-BI; Thu, 30 Jul 2020 17:11:55 +0300
+Subject: Re: [PATCH 09/23] ns: Introduce ns_idr to be able to iterate all
+ allocated namespaces in the system
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
+        ebiederm@xmission.com, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, areber@redhat.com, serge@hallyn.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <159611007271.535980.15362304262237658692.stgit@localhost.localdomain>
+ <159611040870.535980.13460189038999722608.stgit@localhost.localdomain>
+ <20200730122319.GC23808@casper.infradead.org>
+ <485c01e6-a4ee-5076-878e-6303e6d8d5f3@virtuozzo.com>
+ <20200730135640.GE23808@casper.infradead.org>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <1e41ae9d-9c3d-1c4a-d49e-b7f660ce99f7@virtuozzo.com>
+Date:   Thu, 30 Jul 2020 17:12:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200730135640.GE23808@casper.infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200730094143.27494-2-jthierry@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 10:41:40AM +0100, Julien Thierry wrote:
-> +struct objtool_file *objtool_setup_file(const char *_objname)
-> +{
-> +	if (objname) {
-> +		if (strcmp(objname, _objname)) {
-> +			WARN("won't handle more than one file at a time");
-> +			return NULL;
-> +		}
-> +		return &file;
-> +	}
-> +	objname = _objname;
-> +
-> +	file.elf = elf_open_read(objname, O_RDWR);
-> +	if (!file.elf)
-> +		return NULL;
-> +
-> +	INIT_LIST_HEAD(&file.insn_list);
-> +	hash_init(file.insn_hash);
-> +	file.c_file = find_section_by_name(file.elf, ".comment");
-> +	file.ignore_unreachables = no_unreachable;
-> +	file.hints = false;
-> +
-> +	return &file;
-> +}
+On 30.07.2020 16:56, Matthew Wilcox wrote:
+> On Thu, Jul 30, 2020 at 04:32:22PM +0300, Kirill Tkhai wrote:
+>> On 30.07.2020 15:23, Matthew Wilcox wrote:
+>>> xa_erase_irqsave();
+>>
+>> static inline void *xa_erase_irqsave(struct xarray *xa, unsigned long index)
+>> {
+>> 	unsigned long flags;
+>>         void *entry;
+>>
+>>         xa_lock_irqsave(xa, flags);
+>>         entry = __xa_erase(xa, index);
+>>         xa_unlock_irqrestore(xa, flags);
+>>
+>>         return entry;
+>> }
+> 
+> was there a question here?
 
-How about calling it objtool_open_read()?  It's (sort of) a wrapper
-around elf_open_read().
-
--- 
-Josh
-
+No, I just I will add this in separate patch.
+ 
+>>>> +struct ns_common *ns_get_next(unsigned int *id)
+>>>> +{
+>>>> +	struct ns_common *ns;
+>>>> +
+>>>> +	if (*id < PROC_NS_MIN_INO - 1)
+>>>> +		*id = PROC_NS_MIN_INO - 1;
+>>>> +
+>>>> +	*id += 1;
+>>>> +	*id -= PROC_NS_MIN_INO;
+>>>> +
+>>>> +	rcu_read_lock();
+>>>> +	do {
+>>>> +		ns = idr_get_next(&ns_idr, id);
+>>>> +		if (!ns)
+>>>> +			break;
+>>>
+>>> xa_find_after();
+>>>
+>>> You'll want a temporary unsigned long to work with ...
+>>>
+>>>> +		if (!refcount_inc_not_zero(&ns->count)) {
+>>>> +			ns = NULL;
+>>>> +			*id += 1;
+>>>
+>>> you won't need this increment.
+>>
+>> Why? I don't see a way xarray allows to avoid this.
+> 
+> It's embedded in xa_find_after().
+ 
+How is it embedded to check ns->count that it knows nothing?
