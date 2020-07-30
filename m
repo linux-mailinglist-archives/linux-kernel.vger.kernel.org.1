@@ -2,110 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265AA2333A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 046F52333AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729383AbgG3N6p convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Jul 2020 09:58:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727966AbgG3N6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:58:44 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90C062074B;
-        Thu, 30 Jul 2020 13:58:43 +0000 (UTC)
-Date:   Thu, 30 Jul 2020 09:58:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, chunyan.zhang@unisoc.com,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] trace : use kvmalloc instead of kmalloc
-Message-ID: <20200730095842.3e438960@oasis.local.home>
-In-Reply-To: <1596107052-25682-1-git-send-email-zhaoyang.huang@unisoc.com>
-References: <1596107052-25682-1-git-send-email-zhaoyang.huang@unisoc.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729532AbgG3N6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729478AbgG3N6q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 09:58:46 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93F9C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:58:45 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id l64so18824128qkb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:58:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=QcYaplpioI9MLsAnqd4iIIXoRVUu0Gh7RceGnF833lA=;
+        b=N4Z4RakBM2wV4gC7nQk0xwWWVeN3klc8op0Mk2CW0asWsybhcYjcqG9tXF5CAp34+C
+         /48qr3maDPv/t630d0nk8A9IC9nLLSt3V9v/4EwGV7gmnDsCOjHc4+wE6u+uH7D42skO
+         JViIBTEm+Kn39mD4B4EE60RBY8x1IhEU/ALZ4XHQpuLrT58O4vSu9i000u87K9I7xafn
+         6Nm7wuoCSz7ugstbB8mXdHoesEC21V5gMIJfqBtpjIQfTucJ8Q0mY+wh8227ElItbQ1+
+         UYObLJKFLeQw0iFto8QqK9nwOrdMAPSDoJE7eCmJu0RaBTjqB/0Mvi2KeHL8Cat3pgA/
+         Q1QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=QcYaplpioI9MLsAnqd4iIIXoRVUu0Gh7RceGnF833lA=;
+        b=Y0mtlqFZmoKe0bGPGEQaQQcg9qO34ecooIMqYI8Q4v2boZx5pi50taOKjvoJk/ByUg
+         x3VJ2mz8lctbV189l3C0F/mC2kl5J5fsffckKAopITgZzpEkalrYncJMTmZRvCUdeV0M
+         eMzLebwUMnp98FUKOL3uCaAnUYcxgP9FAjILkmTYXNNUK02MPB49syk6QycOiaU8uXsq
+         Fn1UqN/xK8IAFoBkia5JvdD9nA1Frr1ZVzUzYwG6eT8PYtGmcLX3SieXk70YmCTulIpI
+         szcsjOqtq0UGI8gdr3oBb4AA1tBqLAGeZe8EIQflY9nxGJdBkGaoeTn4uQp8jnab6uQs
+         zldQ==
+X-Gm-Message-State: AOAM531c5MurKf0LJx+qeSJK/THiA847/zorr8n9HPM+2LRT4uewKkyP
+        aPAOIy4CTEhnGtmMoyb4f9TSIaRMrOC3CldNzfY=
+X-Google-Smtp-Source: ABdhPJxXRtIkxPR5QyGlU6RL+jTImtmyLwSd5A22K8DCRm4H/4H0zglJszZ1qXhvAGqYCVC8G0WMAskSvM4A8JHJWDw=
+X-Received: by 2002:a37:e315:: with SMTP id y21mr4173746qki.129.1596117525129;
+ Thu, 30 Jul 2020 06:58:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Received: by 2002:aed:24ba:0:0:0:0:0 with HTTP; Thu, 30 Jul 2020 06:58:44
+ -0700 (PDT)
+Reply-To: godardchambers1@yandex.com
+From:   "Luis F. Godard" <veronicadeerow@gmail.com>
+Date:   Thu, 30 Jul 2020 15:58:44 +0200
+Message-ID: <CAOXWAkNbNaLQRf3=+tJ-wVuQxCuLfwS+PkyxihhBK01tbCStbA@mail.gmail.com>
+Subject: =?UTF-8?B?SmUgdG8gbmFsw6loYXbDoSB6cHLDoXZhLA==?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Jul 2020 19:04:12 +0800
-Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
-
-> High order memory stuff within trace could introduce OOM, use kvmalloc instead.
-> 
-> Please find the bellowing for the call stack we run across in an android system. The scenario happens when traced_probes is woken up to get a large quantity of trace even if free memory is even higher than watermark_low. 
-
-Please limit your column width in the description of patches to 76
-characters.
-
-> 
-> traced_probes invoked oom-killer: gfp_mask=0x140c0c0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null),  order=2, oom_score_adj=-1
-> 
-
-What does this traced_probes thing do?
-
-> traced_probes cpuset=system-background mems_allowed=0
-> CPU: 3 PID: 588 Comm: traced_probes Tainted: G        W  O    4.14.181 #1
-> Hardware name: Generic DT based system
-> (unwind_backtrace) from [<c010d824>] (show_stack+0x20/0x24)
-> (show_stack) from [<c0b2e174>] (dump_stack+0xa8/0xec)
-> (dump_stack) from [<c027d584>] (dump_header+0x9c/0x220)
-> (dump_header) from [<c027cfe4>] (oom_kill_process+0xc0/0x5c4)
-> (oom_kill_process) from [<c027cb94>] (out_of_memory+0x220/0x310)
-> (out_of_memory) from [<c02816bc>] (__alloc_pages_nodemask+0xff8/0x13a4)
-> (__alloc_pages_nodemask) from [<c02a6a1c>] (kmalloc_order+0x30/0x48)
-> (kmalloc_order) from [<c02a6a64>] (kmalloc_order_trace+0x30/0x118)
-> (kmalloc_order_trace) from [<c0223d7c>] (tracing_buffers_open+0x50/0xfc)
-> (tracing_buffers_open) from [<c02e6f58>] (do_dentry_open+0x278/0x34c)
-> (do_dentry_open) from [<c02e70d0>] (vfs_open+0x50/0x70)
-> (vfs_open) from [<c02f7c24>] (path_openat+0x5fc/0x169c)
-> (path_openat) from [<c02f75c4>] (do_filp_open+0x94/0xf8)
-> (do_filp_open) from [<c02e7650>] (do_sys_open+0x168/0x26c)
-> (do_sys_open) from [<c02e77bc>] (SyS_openat+0x34/0x38)
-> (SyS_openat) from [<c0108bc0>] (ret_fast_syscall+0x0/0x28)
-> 
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> ---
-> changes since v1: change kfree to kvfree
-> ---
->  kernel/trace/trace.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index ca1ee65..8d70c79 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -6891,7 +6891,7 @@ static int tracing_buffers_open(struct inode *inode, struct file *filp)
->  	if (trace_array_get(tr) < 0)
->  		return -ENODEV;
->  
-> -	info = kzalloc(sizeof(*info), GFP_KERNEL);
-> +	info = kvmalloc(sizeof(*info), GFP_KERNEL);
-
-The above is a bug. It converts kzalloc() to kvmalloc() instead of
-kvzalloc().
-
--- Steve
-
-
-
->  	if (!info) {
->  		trace_array_put(tr);
->  		return -ENOMEM;
-> @@ -7017,7 +7017,7 @@ static int tracing_buffers_release(struct inode *inode, struct file *file)
->  	if (info->spare)
->  		ring_buffer_free_read_page(iter->trace_buffer->buffer,
->  					   info->spare_cpu, info->spare);
-> -	kfree(info);
-> +	kvfree(info);
->  
->  	mutex_unlock(&trace_types_lock);
->  
-
+SmUgdG8gbmFsw6loYXbDoSB6cHLDoXZhLA0KDQpKYWsgb2JlY27Emz8gRG91ZsOhbSwgxb5lIHNl
+IHRhdG8genByw6F2YSBzIHbDoW1pIGRvYsWZZSBzZXRrw6F2w6EuDQpOZXphcG9tZcWIdGUgcHJv
+c8OtbSB0dXRvIHpwcsOhdnUgbmEgcm96ZMOtbCBvZCBkxZnDrXbEm2rFocOtY2gsIHByb3Rvxb5l
+IHbDocWhDQpkxJtkaWNrw70gZm9uZCB2ZSB2w73FoWkgOSwyIG1pbGlvbnUgVVNEIG55bsOtIG9k
+aGFsdWplIHZhxaFpIG9rYW3Fvml0b3UNCnBveml0aXZuw60gb2Rwb3bEm8SPLiBWeXrDvXbDoW0g
+dsOhcyB2xaFhaywgYWJ5c3RlIGxhc2thdsSbIHDFmWVkYWxpIHN2w6kgY2Vsw6kNCmptw6lubzog
+WmVtxJs6IEFkcmVzYTogUG92b2zDoW7DrTogUm9kaW5uw70gc3RhdjogUG9obGF2w606IFbEm2s6
+IFNvdWtyb23DqQ0KxI3DrXNsbzoga29uZcSNbsSbLCBQbGF0bsOhIGtvcGllIGlkZW50aXR5Og0K
+DQpTIMO6Y3RvdSBWw6HFoS4NCkJhcnJpc3RlciBMdWlzIEZlcm7DoW5kZXogR29kYXJkIChFc3Ep
+DQo=
