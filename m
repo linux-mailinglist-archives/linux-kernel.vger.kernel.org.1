@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78269232DB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140E4232DB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgG3IN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:13:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52494 "EHLO mail.kernel.org"
+        id S1729841AbgG3INx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:13:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730108AbgG3INE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:13:04 -0400
+        id S1730111AbgG3ING (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:13:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A6122070B;
-        Thu, 30 Jul 2020 08:13:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B82082075F;
+        Thu, 30 Jul 2020 08:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096783;
-        bh=4BqZ/RhG1SD/WQbc4OLwfRvW43zToqd/adGssxo8Ef4=;
+        s=default; t=1596096786;
+        bh=QNGev99s991GqAfc2daKbH6No1tFEbQshVRdVMqfTR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qAY20vQwinxZcskcVtIa8NjAb/BRw5V2kEKkXcz9NHkTf3ZHMUcWRsrXS//DWNmpg
-         ABxcOi/0KvlzvZNf0RKpTnFcR+qVxNtLWnT2oa65pbA2ZSOr9ZtfXcRGpxumuyKNVt
-         X8LFXZnCdq2Y2QvuLty6XA/PCEh6DtTP7ks5MVTc=
+        b=cbDvRw596dce5mbP55Zl17/tdipX080EAKgdw/rE/VhAlXKXX5HzboiI2CZMk2/NO
+         Dq4vxhUuT8qiSl/wZR4o66oY6B97EmnRDx87HZyJksiLoUx7Z7SAVAW4BX+KRGjpac
+         yCRJgOKNixU/mauQ7Vv51Mv56YWPq1xewop9F2NQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
+        stable@vger.kernel.org, Xiongfeng Wang <wangxiongfeng2@huawei.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 39/54] AX.25: Prevent out-of-bounds read in ax25_sendmsg()
-Date:   Thu, 30 Jul 2020 10:05:18 +0200
-Message-Id: <20200730074423.084112225@linuxfoundation.org>
+Subject: [PATCH 4.4 40/54] net-sysfs: add a newline when printing tx_timeout by sysfs
+Date:   Thu, 30 Jul 2020 10:05:19 +0200
+Message-Id: <20200730074423.132754236@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200730074421.203879987@linuxfoundation.org>
 References: <20200730074421.203879987@linuxfoundation.org>
@@ -43,36 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 
-[ Upstream commit 8885bb0621f01a6c82be60a91e5fc0f6e2f71186 ]
+[ Upstream commit 9bb5fbea59f36a589ef886292549ca4052fe676c ]
 
-Checks on `addr_len` and `usax->sax25_ndigis` are insufficient.
-ax25_sendmsg() can go out of bounds when `usax->sax25_ndigis` equals to 7
-or 8. Fix it.
+When I cat 'tx_timeout' by sysfs, it displays as follows. It's better to
+add a newline for easy reading.
 
-It is safe to remove `usax->sax25_ndigis > AX25_MAX_DIGIS`, since
-`addr_len` is guaranteed to be less than or equal to
-`sizeof(struct full_sockaddr_ax25)`
+root@syzkaller:~# cat /sys/devices/virtual/net/lo/queues/tx-0/tx_timeout
+0root@syzkaller:~#
 
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ax25/af_ax25.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/core/net-sysfs.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ax25/af_ax25.c
-+++ b/net/ax25/af_ax25.c
-@@ -1512,7 +1512,8 @@ static int ax25_sendmsg(struct socket *s
- 			struct full_sockaddr_ax25 *fsa = (struct full_sockaddr_ax25 *)usax;
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -999,7 +999,7 @@ static ssize_t show_trans_timeout(struct
+ 	trans_timeout = queue->trans_timeout;
+ 	spin_unlock_irq(&queue->_xmit_lock);
  
- 			/* Valid number of digipeaters ? */
--			if (usax->sax25_ndigis < 1 || usax->sax25_ndigis > AX25_MAX_DIGIS) {
-+			if (usax->sax25_ndigis < 1 || addr_len < sizeof(struct sockaddr_ax25) +
-+			    sizeof(ax25_address) * usax->sax25_ndigis) {
- 				err = -EINVAL;
- 				goto out;
- 			}
+-	return sprintf(buf, "%lu", trans_timeout);
++	return sprintf(buf, fmt_ulong, trans_timeout);
+ }
+ 
+ #ifdef CONFIG_XPS
 
 
