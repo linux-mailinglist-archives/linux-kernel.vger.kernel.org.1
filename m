@@ -2,151 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA12232939
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A49C23293C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgG3A4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 20:56:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726858AbgG3A4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 20:56:44 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B2162075D;
-        Thu, 30 Jul 2020 00:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596070603;
-        bh=JT6jtDG0iOddtAjTvbt4c86jgkq7+Vw0sGLnvvm3bH0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LjiVwMrqcBtHTh37YREBH3CKLQbwfeudi2Efui6/HeeVMCfjeB14SAFmJF9m22Uw3
-         EdGTwYGHWKO608B33x5ey+vQQhlnjsKvWROGJWy3A3n3t0a3utx35iKGGfGnXyDfmV
-         1rJ80XNm+yS0guiGtS2rCzEod8wCSm4ht+egTKAY=
-Date:   Thu, 30 Jul 2020 09:56:39 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Alistair Delva <adelva@google.com>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] bootconfig: Add value override operator
-Message-Id: <20200730095639.71ce61e7826ad72ace675791@kernel.org>
-In-Reply-To: <20200716102703.33435594dbf192157cf9655f@kernel.org>
-References: <159482882056.126704.15508672095852220119.stgit@devnote2>
-        <20200715164504.3400efc5@oasis.local.home>
-        <20200716073843.e7b1921aae962da9e5714fe0@kernel.org>
-        <20200715200212.0db61d5a@oasis.local.home>
-        <20200716102703.33435594dbf192157cf9655f@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728318AbgG3A45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 20:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726709AbgG3A4y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 20:56:54 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AFEC061794;
+        Wed, 29 Jul 2020 17:56:54 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id q9so3234449oth.5;
+        Wed, 29 Jul 2020 17:56:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7VwGC5we8NqM1/WqIBKe+R0LI4Ddr3r8VHSb3CITwzE=;
+        b=PScGXoErZ4EY/dcMyDRi4iDpWGOSewRjuyIKMrlTalG7wtmT091Lt9/sAWUYDwAizb
+         BCOVQ8mNemL3Xyeq/DL0Oha973Qxmg1xvXizNdO1Q2bw1pMM0sMP0VfrNCIIyG3fFjlj
+         y5jC8WjPtdtMl8LMTatvMHsxq1HzCqbs5rowcQkmCCrxSlZOIsF/82ZWjTjYQhzzcj2R
+         VndzvkAxX6kQgpBWfryaNugjJ0Uy0ywd8oXn/hMzLCPY2BrEF4AOJnk74hETT94AEifl
+         LGOwFVLh18IEZmN2S6EG08P5b9qvD77e+941IBd7wqM5eWR6N1Gt2/7/QpOCEEGvirGG
+         +0FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7VwGC5we8NqM1/WqIBKe+R0LI4Ddr3r8VHSb3CITwzE=;
+        b=nmgwpyN1lZYD+bHpj8uA6IfaeDdnusgvLZKoVTRuUuzxgDqqrcMMFELl1UEpfmSjhi
+         lZTecH7bC1PMVXys5+sfqx5N7oe9us8uv/fkr8Tqqv3jVOkPIMNlIuQIgipBtD17Adfm
+         d4pYM8VW5nuejskmcfL+qRHuPbXBuLFiPAzRn9o+FQaZsUukvwHftsY5vUqT2XRZna0y
+         v7JAGBvfi0a7Xb03DrP5jNPpXmkykqW25qMjN4jGn5PGApMGFGg3pIRfyjnmukXJZ2F2
+         c5S93q8S25NQjrimosZbDJB/Px0cm1PYB0zi3rgtyRkwaWBPmm26XlcAZ2F4vSZltHzO
+         +mDA==
+X-Gm-Message-State: AOAM531n6XJ15ZkgBoq2yFbuKlsHUirrhCCOYVEU3mY77XlFR5j8YDvZ
+        hjxKvMySL7C9uELB/JpLZmSBCoZJyv/x9u+WDlU=
+X-Google-Smtp-Source: ABdhPJwkeeToi1bvgT2kK6So+NXMvcn8/ncDmL7dxNfHdEFMqAvWNpDMhVRqWyDmzoB1x0j8YMM+kmd3gX/NsczQwVg=
+X-Received: by 2002:a9d:37f5:: with SMTP id x108mr414581otb.254.1596070614099;
+ Wed, 29 Jul 2020 17:56:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <1595929506-9203-1-git-send-email-wanpengli@tencent.com>
+ <1595929506-9203-3-git-send-email-wanpengli@tencent.com> <87k0ymldg9.fsf@vitty.brq.redhat.com>
+In-Reply-To: <87k0ymldg9.fsf@vitty.brq.redhat.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Thu, 30 Jul 2020 08:56:42 +0800
+Message-ID: <CANRm+Cx-VM=QGcDNG0oRq7YX+2wmmw8yDjESrJGxTeEWkUUv0A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] KVM: SVM: Fix disable pause loop exit/pause
+ filtering capability on SVM
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+On Wed, 29 Jul 2020 at 20:21, Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>
+> Wanpeng Li <kernellwp@gmail.com> writes:
+>
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > Commit 8566ac8b (KVM: SVM: Implement pause loop exit logic in SVM) drops
+> > disable pause loop exit/pause filtering capability completely, I guess it
+> > is a merge fault by Radim since disable vmexits capabilities and pause
+> > loop exit for SVM patchsets are merged at the same time. This patch
+> > reintroduces the disable pause loop exit/pause filtering capability
+> > support.
+> >
+> > We can observe 2.9% hackbench improvement for a 92 vCPUs guest on AMD
+> > Rome Server.
+> >
+> > Reported-by: Haiwei Li <lihaiwei@tencent.com>
+> > Tested-by: Haiwei Li <lihaiwei@tencent.com>
+> > Fixes: 8566ac8b (KVM: SVM: Implement pause loop exit logic in SVM)
+> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> > ---
+> >  arch/x86/kvm/svm/svm.c | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index c0da4dd..c20f127 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -1090,7 +1090,7 @@ static void init_vmcb(struct vcpu_svm *svm)
+> >       svm->nested.vmcb = 0;
+> >       svm->vcpu.arch.hflags = 0;
+> >
+> > -     if (pause_filter_count) {
+> > +     if (pause_filter_count && !kvm_pause_in_guest(svm->vcpu.kvm)) {
+> >               control->pause_filter_count = pause_filter_count;
+> >               if (pause_filter_thresh)
+> >                       control->pause_filter_thresh = pause_filter_thresh;
+> > @@ -2693,7 +2693,7 @@ static int pause_interception(struct vcpu_svm *svm)
+> >       struct kvm_vcpu *vcpu = &svm->vcpu;
+> >       bool in_kernel = (svm_get_cpl(vcpu) == 0);
+> >
+> > -     if (pause_filter_thresh)
+> > +     if (!kvm_pause_in_guest(vcpu->kvm))
+> >               grow_ple_window(vcpu);
+> >
+> >       kvm_vcpu_on_spin(vcpu, in_kernel);
+> > @@ -3780,7 +3780,7 @@ static void svm_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+> >
+> >  static void svm_sched_in(struct kvm_vcpu *vcpu, int cpu)
+> >  {
+> > -     if (pause_filter_thresh)
+> > +     if (!kvm_pause_in_guest(vcpu->kvm))
+> >               shrink_ple_window(vcpu);
+> >  }
+> >
+> > @@ -3958,6 +3958,9 @@ static void svm_vm_destroy(struct kvm *kvm)
+> >
+> >  static int svm_vm_init(struct kvm *kvm)
+> >  {
+> > +     if (!pause_filter_thresh)
+> > +             kvm->arch.pause_in_guest = true;
+>
+> Would it make sense to do
+>
+>         if (!pause_filter_count || !pause_filter_thresh)
+>                 kvm->arch.pause_in_guest = true;
+>
+> here and simplify the condition in init_vmcb()?
 
-On Thu, 16 Jul 2020 10:27:03 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+kvm->arch.pause_in_guest can also be true when userspace sets the
+KVM_CAP_X86_DISABLE_EXITS capability, so we can't simplify the
+condition in init_vmcb().
 
-> Hi Steve,
-> 
-> On Wed, 15 Jul 2020 20:02:12 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > On Thu, 16 Jul 2020 07:38:43 +0900
-> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > 
-> > 
-> > > > So the end of the initrd would have:
-> > > > 
-> > > >  [data][size/checksum/magic][more-data][size/checksum/magic]
-> > > > 
-> > > > 
-> > > > And the kernel could do the following:
-> > > > 
-> > > >  1. read the end of the initrd for bootconfig
-> > > >  2. If found parse the bootconfig data.
-> > > >  3. look at the content before the bootconfig
-> > > >  4. if another bootconfig exists, goto 2.
-> > > >   
-> > > 
-> > > Yeah, that is possible. But since the total size of the bootconfig
-> > > is limited to 32KB (this means data + 1st footer + more-data),
-> > > I would like to give a chance of sanity check to the bootloader.
-> > 
-> > 
-> > That's a limit of the size field, right?
-> 
-> If you mean the size field in the footer, no, it is u32.
-> 
-> To be honest, the size limitation came from the xbc_node data
-> structure. To minimize the memory footprint, I decided to
-> pack the data structure into 64bits with 4 fields.
-> Each field has 16bits, and the data field needs 1 bit flag
-> to distinguish the value and the key.
-> Thus the maximum number of nodes can be expanded to 64K
-> (but it is not feasible, maybe less than 8K will be a real
-> size), but the data field (the offset from the bootconfig
-> start address) is 15bits = 32KB long.
-> Of course we can use the bitfield to tune it, but maybe current
-> balance ( 512 node / 32KB ) is enough.
-> 
-> Note that if we expand the number of nodes, we need to pre-allocate
-> the node data structure as a static data (in .bss) because parsing
-> will be done before initializing memory management. 512 nodes means
-> 4096B is already allocated. 8K node needs 64KB, and that will be
-> not filled in most cases.
-> 
-> > The bootloader (and all tools including the kernel) could check for
-> > multiple instances, and that would even increase the size of what can
-> > be added. As each section would be 32KB max size, but there's no limit
-> > to how many you have. All tools, bootconfig, the bootloader, and the
-> > kernel can perform the checksum.
-> 
-> In fact, I previously considered the multi-section, but came to the
-> conclusion that it wasn't much benefit for both Linux and the
-> bootloaders.
-> 
-> If we support multi-section, we have to mix the section nodes on
-> a single tree for overriding values, this means the data field must
-> have a section number (and per-section starting address pointers),
-> or an offset from the 1st section address.
-> 
-> And I think it is easy for the bootloader to just concatenate the
-> data as below, because the data is already on memory.
-> 
-> [data][more-data][size/checksum/magic]
-> 
-> To support multiple-section, the bootloader will do
-> 
-> 0. load the bootconfig with the initrd from media
-> 1. prepare the data
-> 2. calculate the size and checksum of the data
-> 3. append the data and footer right after the last footer
-> 
-> and to support single section,
-> 
-> 0. load the bootconfig with the initrd from media
-> 1. prepare the data
-> 2. calculate the size and checksum of the data
-> 3. increment the size and the checksum 
->    (note that the size and checksum is already on memory)
-> 4. append the data and footer right after the last data
-> 
-> Thus, I think there is no much benefit to support multiple sections.
-
-What would you think?
-
-I guess if we have other types of data appended to the initrd
-as similar to the bootconfig, I think we should add the multiple
-section support. But only for the bootconfig, we can just update
-the bootconfig data as I suggested, since it keeps the code simple.
-It might be a chiken-egg problem...
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+    Wanpeng
