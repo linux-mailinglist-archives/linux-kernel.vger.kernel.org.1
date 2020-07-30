@@ -2,122 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DA4233254
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 14:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D45E233257
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 14:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgG3Miq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 08:38:46 -0400
-Received: from mga03.intel.com ([134.134.136.65]:47697 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726535AbgG3Mip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 08:38:45 -0400
-IronPort-SDR: dG0YZNoUPyhbTqHDicRvmtzmhP5bRQtHqmpzqFmdx0lw0Xo1FO2DgzMt/keLIaPqWdJx55x8/G
- Ca+pBuqHfXjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="151563279"
-X-IronPort-AV: E=Sophos;i="5.75,414,1589266800"; 
-   d="scan'208";a="151563279"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 05:38:44 -0700
-IronPort-SDR: LxO0L/Emc8Xug75DJZakcEv19XEKGrJHX6uCYvlVDCTvKhkN7JSOY0AstIR+Xmaz8YtuHRrVBn
- ihw9h2toY9WQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,414,1589266800"; 
-   d="scan'208";a="321060269"
-Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by orsmga008.jf.intel.com with ESMTP; 30 Jul 2020 05:38:44 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH] perf/x86: Reset the counter to prevent the leak for a RDPMC task
-Date:   Thu, 30 Jul 2020 05:38:15 -0700
-Message-Id: <20200730123815.18518-1-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728228AbgG3MjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 08:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726846AbgG3Mi7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 08:38:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48411C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 05:38:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rtBCsPrEsVh8rA1lJq/04e41kh42/hAxdrTwyG0IX2k=; b=dw+MzClgW/9WsOcOO/xqUGSIEO
+        LJysEImn/wx0nddU4E9yw4TXtlEYjP/MS4bJamJ8ujMutGD3bABtEdG6UMip9K4p0jSAZTpDcP1uY
+        WQu5XvvkTmpht3AVQ32gES2Vy0scZfRdVuIIZsZtlXBAvDwugoAepGtiUepcomAgMzbyga3vU2Ac6
+        P8kE9O5FLk510zevBjK1/sd6YU0T9y86SLU5gzN1p3KqFC9W3Xqsd9BNRUra1KckaRcW8psVNQu0t
+        wmJtOYPnXCtaDNpk9i5T1fviPdKeu3Tz+Md8nem3bCVNZO1teiUfZEnniEZVHRtAAlxR3K+E8yfiu
+        HrOyG4Ug==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k17pj-0004mh-Jr; Thu, 30 Jul 2020 12:38:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3EA2230411F;
+        Thu, 30 Jul 2020 14:38:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2BC42203D5619; Thu, 30 Jul 2020 14:38:50 +0200 (CEST)
+Date:   Thu, 30 Jul 2020 14:38:50 +0200
+From:   peterz@infradead.org
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com, mbenes@suse.cz,
+        raphael.gault@arm.com, benh@kernel.crashing.org
+Subject: Re: [PATCH v2 0/9] Make check implementation arch agnostic
+Message-ID: <20200730123850.GK2655@hirez.programming.kicks-ass.net>
+References: <20200730094652.28297-1-jthierry@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200730094652.28297-1-jthierry@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Thu, Jul 30, 2020 at 10:46:43AM +0100, Julien Thierry wrote:
 
-The counter value of a perf task may leak to another RDPMC task.
-For example, a perf stat task as below is running on CPU 0.
+> Julien Thierry (8):
+>   objtool: Group headers to check in a single list
+>   objtool: Make sync-check consider the target architecture
+>   objtool: Move macros describing structures to arch-dependent code
+>   objtool: Abstract alternative special case handling
+>   objtool: Make relocation in alternative handling arch dependent
+>   frame: Only include valid definitions depending on source file type
+>   frame: Make unwind hints definitions available to other architectures
+>   objtool: Abstract unwind hint reading
+> 
+> Raphael Gault (1):
+>   objtool: Refactor switch-tables code to support other architectures
 
-    perf stat -e 'branches,cycles' -- taskset -c 0 ./workload
-
-In the meantime, an RDPMC task, which is also running on CPU 0, may read
-the GP counters periodically. (The RDPMC task creates a fixed event,
-but read four GP counters.)
-
-    $ taskset -c 0 ./rdpmc_read_all_counters
-    index 0x0 value 0x8001e5970f99
-    index 0x1 value 0x8005d750edb6
-    index 0x2 value 0x0
-    index 0x3 value 0x0
-
-    index 0x0 value 0x8002358e48a5
-    index 0x1 value 0x8006bd1e3bc9
-    index 0x2 value 0x0
-    index 0x3 value 0x0
-
-The counter value of the perf stat task leaks to the RDPMC task because
-perf never clears the counter when it's stopped.
-
-A counter/event stops for the following cases:
-- Schedule the monitored task, e.g., context switch or task exit;
-- Adjust the event period, e.g., Throttle, in frequency mode;
-- Update the event's address range filters.
-
-For the first case, following tasks may reuse the counter. To
-prevent the leak, the counter has to be reset, when the event is
-scheduled out. The del() is eventually invoked for the schedule out.
-The counter should be reset in x86_pmu_del().
-
-For the rest of the cases, the counter/event is temporarily stopped and
-will be restarted soon. Other tasks don't have a chance to reuse the
-counter. Reset the counter is not necessary.
-
-The RDPMC instruction is only available for the X86 platform. Only apply
-the fix for the X86 platform.
-
-After applying the patch,
-
-    $ taskset -c 0 ./rdpmc_read_all_counters
-    index 0x0 value 0x0
-    index 0x1 value 0x0
-    index 0x2 value 0x0
-    index 0x3 value 0x0
-
-    index 0x0 value 0x0
-    index 0x1 value 0x0
-    index 0x2 value 0x0
-    index 0x3 value 0x0
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 01ba5fec5765..72b2c7e1bb20 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -1499,6 +1499,13 @@ static void x86_pmu_del(struct perf_event *event, int flags)
- 	 */
- 	x86_pmu_stop(event, PERF_EF_UPDATE);
- 
-+	/*
-+	 * The counter value may leak to an RDPMC task.
-+	 * Clear the counter if the userspace RDPMC usage is enabled.
-+	 */
-+	if (READ_ONCE(x86_pmu.attr_rdpmc))
-+		wrmsrl(event->hw.event_base, 0);
-+
- 	for (i = 0; i < cpuc->n_events; i++) {
- 		if (event == cpuc->event_list[i])
- 			break;
--- 
-2.17.1
-
+These look OK to me, Josh?
