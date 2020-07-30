@@ -2,108 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DDF232A1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 04:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CC3232A22
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 04:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728406AbgG3Cik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 22:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726319AbgG3Cik (ORCPT
+        id S1728463AbgG3CjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 22:39:08 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:5665 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726480AbgG3CjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 22:38:40 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA916C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 19:38:39 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b186so3896734pfb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 19:38:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tcmPGs7MKumNVJXJtJmYK47UvkeMX0T9PRyhLwXMI88=;
-        b=EOzMxx4mk1fL6jFk1/nn5K/RtZI0yinkK78ylqvwfC7Ypi8Le/WWw3YxDq2c7npuv/
-         QfPlw7OrkFSA6OYqrDG8t5vrxqIVSW6rknofmrVemTKmoK6Oy8kaPxLAwQ34V31qpY5S
-         AemXndca2ZTPHAcswYlTW2mCUDxkeDyxOs5FY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tcmPGs7MKumNVJXJtJmYK47UvkeMX0T9PRyhLwXMI88=;
-        b=krg1aYaHH+hUwk7pQ0B+2bJ+Q0XSVdn9VdfhQfUyJlpqYDbBpQRTcNDCYCsXfQO8v8
-         JNOr1RFGfAnh8GolShIT2yiYvOclwiaXGhV5fRcoaMsdiCvuKoNzR7+xKu7VEh+IXZfG
-         Vsjn56AXz+YhSBxmgPGIbF0NH/hqu494pGFM2XNqdepPy2XZu4v7thCgxROQp+3K97Nm
-         eGVZIyRkYRNpemFZChfV5Oo1/hEOmXfFjNpTyLONX61T+Yvj9Hp5g431hBdsDkC0AsKs
-         VU5swhH7ZQIui8qO7JtXiVjq9xFudqROfsJbynKbqBPDwcZ4xNCg3NN0AGIBeCsQWPd5
-         MSbg==
-X-Gm-Message-State: AOAM533bvJhxTdBs6eRfReINgEjuUkkiP+c9/yeq+OjvhMpBTo9qUILa
-        oGcxdjzYXJ0hgpghLz/3v3LFGw==
-X-Google-Smtp-Source: ABdhPJytumzeyOwK2ZCiIGiEj8lLEigjjPaLQcc8sIy6eRu2zl14fh+bsI9WjvxqplRX5h/DiYL35A==
-X-Received: by 2002:a63:165c:: with SMTP id 28mr2409576pgw.453.1596076719167;
-        Wed, 29 Jul 2020 19:38:39 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r7sm2164264pfl.186.2020.07.29.19.38.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 19:38:38 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 19:38:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH-next v5 0/7] x86/boot: Remove run-time relocations from
- compressed kernel
-Message-ID: <202007291937.061A4FE76@keescook>
-References: <CAKwvOdnTbatx8VB-rJSzyFPwfYnkMYK28yLBn1G+hUu8dyfYRA@mail.gmail.com>
- <20200717201801.3661843-1-nivedita@alum.mit.edu>
- <202007291502.18DC4C0F@keescook>
- <20200729222341.GA684483@rani.riverdale.lan>
+        Wed, 29 Jul 2020 22:39:07 -0400
+X-UUID: e070296f14b240c499589d9ae9d2ee97-20200730
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=X1UadCFz90FbPm5aWCk0xfL4ZtGAfS8oTL2vDHMeIS4=;
+        b=YsY0oMaqZSq5i4rn32G2cf4decDUejbZSjAhbUAOXagl0JeTkPOTr/itiGphda6KzixNFkqg8IY1bWR2omXdxeYGlYyJ5Ro1y6pxPm8Te8HUZ2B5kODghh3HiY2OHAoGUuVjVzVjRmXeKO2vC9QmUWW4RZdla3P/Z76Ska9pv4Y=;
+X-UUID: e070296f14b240c499589d9ae9d2ee97-20200730
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <yingjoe.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 755538541; Thu, 30 Jul 2020 10:39:02 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 30 Jul 2020 10:39:00 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 30 Jul 2020 10:39:00 +0800
+Message-ID: <1596076741.11024.4.camel@mtksdaap41>
+Subject: Re: [PATCH v2 2/4] i2c: mediatek: Add access to more than 8GB dram
+ in i2c driver
+From:   Yingjoe Chen <yingjoe.chen@mediatek.com>
+To:     Qii Wang <qii.wang@mediatek.com>
+CC:     <wsa@the-dreams.de>, <qiangming.xia@mediatek.com>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <leilk.liu@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-i2c@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 30 Jul 2020 10:39:01 +0800
+In-Reply-To: <1595939446-5484-3-git-send-email-qii.wang@mediatek.com>
+References: <1595939446-5484-1-git-send-email-qii.wang@mediatek.com>
+         <1595939446-5484-3-git-send-email-qii.wang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729222341.GA684483@rani.riverdale.lan>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 06:23:41PM -0400, Arvind Sankar wrote:
-> On Wed, Jul 29, 2020 at 03:04:43PM -0700, Kees Cook wrote:
-> > On Fri, Jul 17, 2020 at 04:17:54PM -0400, Arvind Sankar wrote:
-> > > Same as v5 previously posted, but rebased onto next-20200717.
-> > > 
-> > > v5: https://lore.kernel.org/lkml/20200715004133.1430068-1-nivedita@alum.mit.edu/
-> > 
-> > BTW, some bits of feedback on process:
-> > 
-> > - please don't re-use version numbers, this is confusing :)
-> 
-> This was a special case as there were no actual changes in this version.
+T24gVHVlLCAyMDIwLTA3LTI4IGF0IDIwOjMwICswODAwLCBRaWkgV2FuZyB3cm90ZToNCj4gTmV3
+ZXIgTVRLIGNoaXAgc3VwcG9ydCBtb3JlIHRoYW4gOEdCIG9mIGRyYW0uIFJlcGxhY2Ugc3VwcG9y
+dF8zM2JpdHMNCj4gd2l0aCBtb3JlIGdlbmVyYWwgZG1hX21heF9zdXBwb3J0IGFuZCByZW1vdmUg
+bXRrX2kyY19zZXRfNGdfbW9kZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFFpaSBXYW5nIDxxaWku
+d2FuZ0BtZWRpYXRlay5jb20+DQoNClFpaSwNCg0KQWZ0ZXIgeW91IHJlbW92ZSBJMkNfRE1BXzRH
+X01PREUgTWF0dGhpYXMgbWVudGlvbmVkLCB5b3UgY2FuIGhhdmU6DQoNClJldmlld2VkLWJ5OiBZ
+aW5nam9lIENoZW4gPHlpbmdqb2UuY2hlbkBtZWRpYXRlay5jb20+DQoNCkpvZS5DDQoNCg==
 
-It ended up missing some review tags, etc.
-
-> > - please fix whatever is happening with the "In-Reply-To:" headers, the
-> >   threading is extremely hard to understand (each patch isn't a reply to
-> >   the cover letter, and everything is a reply to a single earlier email)
-> 
-> I think this is because I'm passing --in-reply-to to format-patch.
-> Seems like I should specify that in send-email instead, hopefully that
-> will fix the threading.
-
-Ah yes, I think would do it -- it overrides the normal threading that
-send-email does. Usually --in-reply-to is for a single email.
-
-Thanks for checking!
-
--- 
-Kees Cook
