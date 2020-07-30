@@ -2,182 +2,442 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7B92332A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64262332C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728671AbgG3NIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:08:04 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.115]:24008 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726535AbgG3NID (ORCPT
+        id S1728675AbgG3NN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgG3NNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:08:03 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id 0F841EEDE
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 08:07:32 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 18GWkM1J8RQIV18GWknV3i; Thu, 30 Jul 2020 08:06:32 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=0p2Wo7L4ooW+9Ky8FHANq9urEHVpRIv4/Heqml0lU6k=; b=JF8CA1C/TqyZK+tGxOF6BF8iht
-        1c//5Ei6DDMU8CsCMlV0GhMObxUCkb42UTX+Zqp4GNWqOslf8ZFm3IoWlqwXHjBwWXqTCee2kFqfu
-        N6G5LBqK4iI4Kz5TOssLjfuauef2qj1qTkaShIHfZLVjF3wEj6EA5+fHakazhE030W9UrLP/aAAjU
-        TvSjVvxny4Mf7nfSg7EfbfCh+YQjHKt+JK1DkI8G9SL+vOEeeqrTiXaZYLHRLavpWdJmglYWRLNam
-        CXPPewiN146qtLaXZjpfltEy+vk/BjF+04tYLkhgGJuk1zW5bRWIOzN4zF6eWMZcaTRO1MqPQqvjD
-        beCO/IZg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:33846 helo=[192.168.15.3])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1k18GW-003RPp-2W; Thu, 30 Jul 2020 08:06:32 -0500
-To:     Takashi Iwai <tiwai@suse.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20200729221829.GA10623@embeddedor> <s5h1rkte6ni.wl-tiwai@suse.de>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Subject: Re: [PATCH][next] ALSA: vmaster: Use flex_array_size() helper in
- memcpy()
-Message-ID: <96ea053c-f4c9-56dd-0d44-b627b067405f@embeddedor.com>
-Date:   Thu, 30 Jul 2020 08:12:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <s5h1rkte6ni.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1k18GW-003RPp-2W
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.3]) [187.162.31.110]:33846
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+        Thu, 30 Jul 2020 09:13:54 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B27EC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:13:53 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 9so5654277wmj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3twg8qNumU6xY39yavEF5Rto7AHkFOMf7Ew+2X8FCTc=;
+        b=ExW8LkuSrFzVOTjKoZBCP/dkbkjZWbBRU45TByvtbQ4tH1adBccqYyKZL2mlhVcuzw
+         b55JGcpvmZXuNvr2oiEvS739C8xY8J0eeG2epc2d/T0XkVhalvPB4WzWzQ/NRmvFlygq
+         CpwIJe/5EWDJkfOjMKvjbh8SAgu+8cY722jzBd2r2o1vbtJr7QVtGReRI58cJsOv9GYc
+         gJ0PgUBmSnVWZnYI9RgbnFgUZ6OxE/W0KuRtD3rFxBCQPMe+4uCMI3/b9dfAcUVAR1Wn
+         5DSIQR1wGoQCkS7Em6g0XluRYX2KVZNXXVZhY4Z8mrpdjL3D2e5uw+37pbaiWMZj60IK
+         qLRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3twg8qNumU6xY39yavEF5Rto7AHkFOMf7Ew+2X8FCTc=;
+        b=Y7bLrjwCSaUrluF+ck4kzsJQ+iNUgHWNkfnv3N4PZVDCgWEOAYQxn9atPezLEgnbnZ
+         4/c1iWVy5P6Qfv6TPMo0VjRqTdYfiEhNgI3hBK5T6nv6DODeNKUAmosxEsvvYGW902AT
+         v4txyDlqnP+AniPD0XOrkl0Q8oSWABHt0xi9c79OzxrPqcijCGKhccNRr31RFmiH9/0D
+         hB1zy9YCV/dqB8H07Mfb2V5+99+J692RagmCoK7ov2RfZxwe/ZcVr1TeuB7DYnmRBrY1
+         +qocrvAYc9OQrWp9D3KkE60cJJMQdGRRZRqOqRD60itTpjeMRSgdeNAUPn7Zvi8JhCp/
+         71Bg==
+X-Gm-Message-State: AOAM532wK5bCkaHVmvyoj7czayy7ysDHIMaC0YT+SoYUZXSkBatey6hH
+        k+MF9nLUKiPjktwSFzn0Rr0g9bIp
+X-Google-Smtp-Source: ABdhPJw0KSneUsGiEWQaqhaDwzu5kgElPEdDDD4gMHZduphH+gOdvc6Xmi9zsMysZC3EaRJIfNcy5g==
+X-Received: by 2002:a1c:2e07:: with SMTP id u7mr14232083wmu.52.1596114831568;
+        Thu, 30 Jul 2020 06:13:51 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id y11sm9975394wrs.80.2020.07.30.06.13.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 06:13:50 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
+Cc:     Ofir Bitton <obitton@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 1/2] habanalabs: Replace dma-fence mechanism with completions
+Date:   Thu, 30 Jul 2020 16:13:46 +0300
+Message-Id: <20200730131347.30261-1-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Ofir Bitton <obitton@habana.ai>
 
+habanalabs driver uses dma-fence mechanism for synchronization.
+dma-fence mechanism was designed solely for GPUs, hence we purpose
+a simpler mechanism based on completions to replace current
+dma-fence objects.
 
-On 7/30/20 03:41, Takashi Iwai wrote:
-> On Thu, 30 Jul 2020 00:18:29 +0200,
-> Gustavo A. R. Silva wrote:
->>
->> Make use of the flex_array_size() helper to calculate the size of a
->> flexible array member within an enclosing structure.
->>
->> This helper offers defense-in-depth against potential integer overflows
->> and makes it explicitly clear that we are dealing with a flexible array
->> member.
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>  sound/core/vmaster.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/core/vmaster.c b/sound/core/vmaster.c
->> index ab36f9898711..21ce4082cb5f 100644
->> --- a/sound/core/vmaster.c
->> +++ b/sound/core/vmaster.c
->> @@ -262,7 +262,8 @@ int _snd_ctl_add_follower(struct snd_kcontrol *master,
->>  		return -ENOMEM;
->>  	srec->kctl = follower;
->>  	srec->follower = *follower;
->> -	memcpy(srec->follower.vd, follower->vd, follower->count * sizeof(*follower->vd));
->> +	memcpy(srec->follower.vd, follower->vd, flex_array_size(srec, follower.vd,
->> +								srec->follower.count));
-> 
-> Changing from follower->count to srec->follower.count isn't obvious,
-> so it should have been mentioned in the log; other than that, the code
-> change looks good.
-> 
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ .../habanalabs/common/command_submission.c    | 93 +++++++++----------
+ drivers/misc/habanalabs/common/context.c      | 13 +--
+ drivers/misc/habanalabs/common/habanalabs.h   | 32 +++++--
+ drivers/misc/habanalabs/common/hw_queue.c     |  2 +-
+ 4 files changed, 78 insertions(+), 62 deletions(-)
 
-Yeah; you're right. I'll include that in the changelog text.
-
-> But since the API isn't in Linus tree yet, I'll postpone the merge
-> until the API reaches to upstream.  Maybe I can merge this during RC1
-> merge window, as those are trivial.
-> 
-
-The API is already in mainline, see:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/overflow.h#n320
-
-> 
-> BTW, looking at those patterns, I wonder whether it'd make sense to
-> make the whole memset() call as a macro like
-> 
-> 	safe_copy_array(srec->follower.vd, follower->vd, follower->count);
-> 
-> ?
-> 
-
-Yep; I was actually thinking about that, yesterday. I might implement it
-for the next development cycle. :)
-
-Thanks for the feedback.
---
-Gustavo
-
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index b9840e368eb5..d19ac641b171 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -38,26 +38,10 @@ void hl_sob_reset_error(struct kref *ref)
+ 			hw_sob->q_idx, hw_sob->sob_id);
+ }
+ 
+-static const char *hl_fence_get_driver_name(struct dma_fence *fence)
+-{
+-	return "HabanaLabs";
+-}
+-
+-static const char *hl_fence_get_timeline_name(struct dma_fence *fence)
+-{
+-	struct hl_cs_compl *hl_cs_compl =
+-		container_of(fence, struct hl_cs_compl, base_fence);
+-
+-	return dev_name(hl_cs_compl->hdev->dev);
+-}
+-
+-static bool hl_fence_enable_signaling(struct dma_fence *fence)
+-{
+-	return true;
+-}
+-
+-static void hl_fence_release(struct dma_fence *fence)
++void hl_fence_release(struct kref *kref)
+ {
++	struct hl_fence *fence =
++		container_of(kref, struct hl_fence, refcount);
+ 	struct hl_cs_compl *hl_cs_cmpl =
+ 		container_of(fence, struct hl_cs_compl, base_fence);
+ 	struct hl_device *hdev = hl_cs_cmpl->hdev;
+@@ -102,12 +86,24 @@ static void hl_fence_release(struct dma_fence *fence)
+ 	kfree_rcu(hl_cs_cmpl, base_fence.rcu);
+ }
+ 
+-static const struct dma_fence_ops hl_fence_ops = {
+-	.get_driver_name = hl_fence_get_driver_name,
+-	.get_timeline_name = hl_fence_get_timeline_name,
+-	.enable_signaling = hl_fence_enable_signaling,
+-	.release = hl_fence_release
+-};
++void hl_fence_put(struct hl_fence *fence)
++{
++	if (fence)
++		kref_put(&fence->refcount, hl_fence_release);
++}
++
++void hl_fence_get(struct hl_fence *fence)
++{
++	if (fence)
++		kref_get(&fence->refcount);
++}
++
++void hl_fence_init(struct hl_fence *fence)
++{
++	kref_init(&fence->refcount);
++	fence->error = 0;
++	init_completion(&fence->completion);
++}
+ 
+ static void cs_get(struct hl_cs *cs)
+ {
+@@ -336,7 +332,7 @@ static void cs_do_release(struct kref *ref)
+ 		 * In case the wait for signal CS was submitted, the put occurs
+ 		 * in init_signal_wait_cs() right before hanging on the PQ.
+ 		 */
+-		dma_fence_put(cs->signal_fence);
++		hl_fence_put(cs->signal_fence);
+ 	}
+ 
+ 	/*
+@@ -348,19 +344,18 @@ static void cs_do_release(struct kref *ref)
+ 	hl_ctx_put(cs->ctx);
+ 
+ 	/* We need to mark an error for not submitted because in that case
+-	 * the dma fence release flow is different. Mainly, we don't need
++	 * the hl fence release flow is different. Mainly, we don't need
+ 	 * to handle hw_sob for signal/wait
+ 	 */
+ 	if (cs->timedout)
+-		dma_fence_set_error(cs->fence, -ETIMEDOUT);
++		cs->fence->error = -ETIMEDOUT;
+ 	else if (cs->aborted)
+-		dma_fence_set_error(cs->fence, -EIO);
++		cs->fence->error = -EIO;
+ 	else if (!cs->submitted)
+-		dma_fence_set_error(cs->fence, -EBUSY);
+-
+-	dma_fence_signal(cs->fence);
+-	dma_fence_put(cs->fence);
++		cs->fence->error = -EBUSY;
+ 
++	complete_all(&cs->fence->completion);
++	hl_fence_put(cs->fence);
+ 	cs_counters_aggregate(hdev, cs->ctx);
+ 
+ 	kfree(cs->jobs_in_queue_cnt);
+@@ -401,7 +396,7 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 			enum hl_cs_type cs_type, struct hl_cs **cs_new)
+ {
+ 	struct hl_cs_compl *cs_cmpl;
+-	struct dma_fence *other = NULL;
++	struct hl_fence *other = NULL;
+ 	struct hl_cs *cs;
+ 	int rc;
+ 
+@@ -434,7 +429,8 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	cs_cmpl->cs_seq = ctx->cs_sequence;
+ 	other = ctx->cs_pending[cs_cmpl->cs_seq &
+ 				(hdev->asic_prop.max_pending_cs - 1)];
+-	if ((other) && (!dma_fence_is_signaled(other))) {
++
++	if (other && !completion_done(&other->completion)) {
+ 		dev_dbg(hdev->dev,
+ 			"Rejecting CS because of too many in-flights CS\n");
+ 		rc = -EAGAIN;
+@@ -448,8 +444,8 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		goto free_fence;
+ 	}
+ 
+-	dma_fence_init(&cs_cmpl->base_fence, &hl_fence_ops, &cs_cmpl->lock,
+-			ctx->asid, ctx->cs_sequence);
++	/* init hl_fence */
++	hl_fence_init(&cs_cmpl->base_fence);
+ 
+ 	cs->sequence = cs_cmpl->cs_seq;
+ 
+@@ -458,9 +454,9 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 							&cs_cmpl->base_fence;
+ 	ctx->cs_sequence++;
+ 
+-	dma_fence_get(&cs_cmpl->base_fence);
++	hl_fence_get(&cs_cmpl->base_fence);
+ 
+-	dma_fence_put(other);
++	hl_fence_put(other);
+ 
+ 	spin_unlock(&ctx->cs_lock);
+ 
+@@ -773,7 +769,7 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 	struct hl_ctx *ctx = hpriv->ctx;
+ 	struct hl_cs_chunk *cs_chunk_array, *chunk;
+ 	struct hw_queue_properties *hw_queue_prop;
+-	struct dma_fence *sig_fence = NULL;
++	struct hl_fence *sig_fence = NULL;
+ 	struct hl_cs_job *job;
+ 	struct hl_cs *cs;
+ 	struct hl_cb *cb;
+@@ -875,14 +871,14 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 			dev_err(hdev->dev,
+ 				"CS seq 0x%llx is not of a signal CS\n",
+ 				signal_seq);
+-			dma_fence_put(sig_fence);
++			hl_fence_put(sig_fence);
+ 			rc = -EINVAL;
+ 			goto free_signal_seq_array;
+ 		}
+ 
+-		if (dma_fence_is_signaled(sig_fence)) {
++		if (completion_done(&sig_fence->completion)) {
+ 			/* signal CS already finished */
+-			dma_fence_put(sig_fence);
++			hl_fence_put(sig_fence);
+ 			rc = 0;
+ 			goto free_signal_seq_array;
+ 		}
+@@ -894,7 +890,7 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 	rc = allocate_cs(hdev, ctx, cs_type, &cs);
+ 	if (rc) {
+ 		if (cs_type == CS_TYPE_WAIT)
+-			dma_fence_put(sig_fence);
++			hl_fence_put(sig_fence);
+ 		hl_ctx_put(ctx);
+ 		goto free_signal_seq_array;
+ 	}
+@@ -1154,7 +1150,7 @@ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
+ static long _hl_cs_wait_ioctl(struct hl_device *hdev,
+ 		struct hl_ctx *ctx, u64 timeout_us, u64 seq)
+ {
+-	struct dma_fence *fence;
++	struct hl_fence *fence;
+ 	unsigned long timeout;
+ 	long rc;
+ 
+@@ -1173,12 +1169,15 @@ static long _hl_cs_wait_ioctl(struct hl_device *hdev,
+ 				"Can't wait on CS %llu because current CS is at seq %llu\n",
+ 				seq, ctx->cs_sequence);
+ 	} else if (fence) {
+-		rc = dma_fence_wait_timeout(fence, true, timeout);
++		rc = wait_for_completion_interruptible_timeout(
++				&fence->completion, timeout);
++
+ 		if (fence->error == -ETIMEDOUT)
+ 			rc = -ETIMEDOUT;
+ 		else if (fence->error == -EIO)
+ 			rc = -EIO;
+-		dma_fence_put(fence);
++
++		hl_fence_put(fence);
+ 	} else {
+ 		dev_dbg(hdev->dev,
+ 			"Can't wait on seq %llu because current CS is at seq %llu (Fence is gone)\n",
+diff --git a/drivers/misc/habanalabs/common/context.c b/drivers/misc/habanalabs/common/context.c
+index 3e375958e73b..b168a9fce817 100644
+--- a/drivers/misc/habanalabs/common/context.c
++++ b/drivers/misc/habanalabs/common/context.c
+@@ -23,7 +23,7 @@ static void hl_ctx_fini(struct hl_ctx *ctx)
+ 	 */
+ 
+ 	for (i = 0 ; i < hdev->asic_prop.max_pending_cs ; i++)
+-		dma_fence_put(ctx->cs_pending[i]);
++		hl_fence_put(ctx->cs_pending[i]);
+ 
+ 	kfree(ctx->cs_pending);
+ 
+@@ -128,7 +128,7 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx)
+ 	atomic_set(&ctx->thread_ctx_switch_token, 1);
+ 	ctx->thread_ctx_switch_wait_token = 0;
+ 	ctx->cs_pending = kcalloc(hdev->asic_prop.max_pending_cs,
+-				sizeof(struct dma_fence *),
++				sizeof(struct hl_fence *),
+ 				GFP_KERNEL);
+ 	if (!ctx->cs_pending)
+ 		return -ENOMEM;
+@@ -184,10 +184,10 @@ int hl_ctx_put(struct hl_ctx *ctx)
+ 	return kref_put(&ctx->refcount, hl_ctx_do_release);
+ }
+ 
+-struct dma_fence *hl_ctx_get_fence(struct hl_ctx *ctx, u64 seq)
++struct hl_fence *hl_ctx_get_fence(struct hl_ctx *ctx, u64 seq)
+ {
+ 	struct asic_fixed_properties *asic_prop = &ctx->hdev->asic_prop;
+-	struct dma_fence *fence;
++	struct hl_fence *fence;
+ 
+ 	spin_lock(&ctx->cs_lock);
+ 
+@@ -201,8 +201,9 @@ struct dma_fence *hl_ctx_get_fence(struct hl_ctx *ctx, u64 seq)
+ 		return NULL;
+ 	}
+ 
+-	fence = dma_fence_get(
+-			ctx->cs_pending[seq & (asic_prop->max_pending_cs - 1)]);
++	fence = ctx->cs_pending[seq & (asic_prop->max_pending_cs - 1)];
++	hl_fence_get(fence);
++
+ 	spin_unlock(&ctx->cs_lock);
+ 
+ 	return fence;
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 018d9d67e8e6..30a399337675 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -15,7 +15,6 @@
+ #include <linux/cdev.h>
+ #include <linux/iopoll.h>
+ #include <linux/irqreturn.h>
+-#include <linux/dma-fence.h>
+ #include <linux/dma-direction.h>
+ #include <linux/scatterlist.h>
+ #include <linux/hashtable.h>
+@@ -342,9 +341,24 @@ struct asic_fixed_properties {
+ 	u8				completion_queues_count;
+ };
+ 
++/**
++ * struct hl_fence - software synchronization primitive
++ * @completion: fence is implemented using completion
++ * @refcount: refcount for this fence
++ * @rcu: used for releasing fence with kfree_rcu
++ * @error: mark this fence with error
++ *
++ */
++struct hl_fence {
++	struct completion	completion;
++	struct kref		refcount;
++	struct rcu_head		rcu;
++	int			error;
++};
++
+ /**
+  * struct hl_cs_compl - command submission completion object.
+- * @base_fence: kernel fence object.
++ * @base_fence: hl fence object.
+  * @lock: spinlock to protect fence.
+  * @hdev: habanalabs device structure.
+  * @hw_sob: the H/W SOB used in this signal/wait CS.
+@@ -353,7 +367,7 @@ struct asic_fixed_properties {
+  * @sob_val: the SOB value that is used in this signal/wait CS.
+  */
+ struct hl_cs_compl {
+-	struct dma_fence	base_fence;
++	struct hl_fence		base_fence;
+ 	spinlock_t		lock;
+ 	struct hl_device	*hdev;
+ 	struct hl_hw_sob	*hw_sob;
+@@ -800,7 +814,7 @@ struct hl_va_range {
+  * @hdev: pointer to the device structure.
+  * @refcount: reference counter for the context. Context is released only when
+  *		this hits 0l. It is incremented on CS and CS_WAIT.
+- * @cs_pending: array of DMA fence objects representing pending CS.
++ * @cs_pending: array of hl fence objects representing pending CS.
+  * @host_va_range: holds available virtual addresses for host mappings.
+  * @host_huge_va_range: holds available virtual addresses for host mappings
+  *                      with huge pages.
+@@ -832,7 +846,7 @@ struct hl_ctx {
+ 	struct hl_fpriv		*hpriv;
+ 	struct hl_device	*hdev;
+ 	struct kref		refcount;
+-	struct dma_fence	**cs_pending;
++	struct hl_fence		**cs_pending;
+ 	struct hl_va_range	*host_va_range;
+ 	struct hl_va_range	*host_huge_va_range;
+ 	struct hl_va_range	*dram_va_range;
+@@ -919,8 +933,8 @@ struct hl_cs {
+ 	struct list_head	job_list;
+ 	spinlock_t		job_lock;
+ 	struct kref		refcount;
+-	struct dma_fence	*fence;
+-	struct dma_fence	*signal_fence;
++	struct hl_fence		*fence;
++	struct hl_fence		*signal_fence;
+ 	struct work_struct	finish_work;
+ 	struct delayed_work	work_tdr;
+ 	struct list_head	mirror_node;
+@@ -1736,7 +1750,7 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx);
+ void hl_ctx_do_release(struct kref *ref);
+ void hl_ctx_get(struct hl_device *hdev,	struct hl_ctx *ctx);
+ int hl_ctx_put(struct hl_ctx *ctx);
+-struct dma_fence *hl_ctx_get_fence(struct hl_ctx *ctx, u64 seq);
++struct hl_fence *hl_ctx_get_fence(struct hl_ctx *ctx, u64 seq);
+ void hl_ctx_mgr_init(struct hl_ctx_mgr *mgr);
+ void hl_ctx_mgr_fini(struct hl_device *hdev, struct hl_ctx_mgr *mgr);
+ 
+@@ -1778,6 +1792,8 @@ void hl_cs_rollback_all(struct hl_device *hdev);
+ struct hl_cs_job *hl_cs_allocate_job(struct hl_device *hdev,
+ 		enum hl_queue_type queue_type, bool is_kernel_allocated_cb);
+ void hl_sob_reset_error(struct kref *ref);
++void hl_fence_put(struct hl_fence *fence);
++void hl_fence_get(struct hl_fence *fence);
+ 
+ void goya_set_asic_funcs(struct hl_device *hdev);
+ void gaudi_set_asic_funcs(struct hl_device *hdev);
+diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
+index 287681646071..65b9aa69a83e 100644
+--- a/drivers/misc/habanalabs/common/hw_queue.c
++++ b/drivers/misc/habanalabs/common/hw_queue.c
+@@ -474,7 +474,7 @@ static void init_signal_wait_cs(struct hl_cs *cs)
+ 		 * wait CS was submitted.
+ 		 */
+ 		mb();
+-		dma_fence_put(cs->signal_fence);
++		hl_fence_put(cs->signal_fence);
+ 		cs->signal_fence = NULL;
+ 	}
+ }
+-- 
+2.17.1
 
