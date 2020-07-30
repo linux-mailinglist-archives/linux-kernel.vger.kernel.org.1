@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7117E233391
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16309233397
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729416AbgG3N4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:56:18 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:56564 "EHLO
+        id S1729445AbgG3N4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:56:24 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:56568 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbgG3Nzv (ORCPT
+        with ESMTP id S1728462AbgG3Nzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:55:51 -0400
+        Thu, 30 Jul 2020 09:55:50 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 490C68040A7C;
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id B0C4C8040A6B;
         Thu, 30 Jul 2020 13:55:45 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xmJFDaShvY46; Thu, 30 Jul 2020 16:55:44 +0300 (MSK)
+        with ESMTP id GZldgJ5dsnYw; Thu, 30 Jul 2020 16:55:45 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Hoan Tran <hoan@os.amperecomputing.com>,
         Linus Walleij <linus.walleij@linaro.org>,
@@ -31,9 +31,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
         Rob Herring <robh+dt@kernel.org>, <linux-gpio@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 06/10] gpio: dwapb: Discard GPIO-to-IRQ mapping function
-Date:   Thu, 30 Jul 2020 16:55:32 +0300
-Message-ID: <20200730135536.19747-7-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v2 07/10] gpio: dwapb: Discard ACPI GPIO-chip IRQs request
+Date:   Thu, 30 Jul 2020 16:55:33 +0300
+Message-ID: <20200730135536.19747-8-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200730135536.19747-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200730135536.19747-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -45,10 +45,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since GPIOlib-based IRQ-chip interface is now utilized there is no need in
-setting up a custom GPIO-to-IRQ mapping method. GPIO-lib defines the
-standard mapping method - gpiochip_to_irq(), which will be used anyway no
-matter whether the custom to_irq callback is specified or not.
+Since GPIOlib-based IRQ-chip interface is now utilized there is no need
+in calling the methods acpi_gpiochip_{request,free}_interrupts() here.
+They will be called from gpiochip_add_irqchip()/gpiochip_irqchip_remove()
+anyway.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 
@@ -58,37 +58,31 @@ Changelog v2:
 - This is a new patch detached from commit
   "gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip".
 ---
- drivers/gpio/gpio-dwapb.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/gpio/gpio-dwapb.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-index 327333fbc750..f7acc5abbf5c 100644
+index f7acc5abbf5c..226d9c2d9493 100644
 --- a/drivers/gpio/gpio-dwapb.c
 +++ b/drivers/gpio/gpio-dwapb.c
-@@ -150,14 +150,6 @@ static inline void dwapb_write(struct dwapb_gpio *gpio, unsigned int offset,
- 	gc->write_reg(reg_base + gpio_reg_convert(gpio, offset), val);
- }
- 
--static int dwapb_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
--{
--	struct dwapb_gpio_port *port = gpiochip_get_data(gc);
--	struct dwapb_gpio *gpio = port->gpio;
--
--	return irq_find_mapping(gpio->domain, offset);
--}
--
- static struct dwapb_gpio_port *dwapb_offs_to_port(struct dwapb_gpio *gpio, unsigned int offs)
- {
- 	struct dwapb_gpio_port *port;
-@@ -466,8 +458,6 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
+@@ -512,9 +512,6 @@ static int dwapb_gpio_add_port(struct dwapb_gpio *gpio,
+ 		return err;
  	}
  
- 	girq->chip = &port->irqchip;
+-	/* Add GPIO-signaled ACPI event support */
+-	acpi_gpiochip_request_interrupts(&port->gc);
 -
--	port->gc.to_irq = dwapb_gpio_to_irq;
- }
+ 	port->is_registered = true;
  
- static int dwapb_gpio_add_port(struct dwapb_gpio *gpio,
+ 	return 0;
+@@ -530,7 +527,6 @@ static void dwapb_gpio_unregister(struct dwapb_gpio *gpio)
+ 		if (!port->is_registered)
+ 			continue;
+ 
+-		acpi_gpiochip_free_interrupts(&port->gc);
+ 		gpiochip_remove(&port->gc);
+ 	}
+ }
 -- 
 2.27.0
 
