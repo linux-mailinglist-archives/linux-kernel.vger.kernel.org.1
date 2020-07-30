@@ -2,146 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABB4232F62
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB09232F69
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729119AbgG3JSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 05:18:17 -0400
-Received: from vps.xff.cz ([195.181.215.36]:51866 "EHLO vps.xff.cz"
+        id S1729224AbgG3JVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 05:21:14 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:35637 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726819AbgG3JSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 05:18:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1596100692; bh=HOOQYK09295xgAy28jQQY6G9ActTahF44D4teInPcZc=;
-        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
-        b=AL5BskQRTKQ2jtUjuXN5AlYRTEEoD9Yu79BpEqCpouulQKMRA9mLiMf2M11wyBQHx
-         VO2AnkKvpaCVGtLMT5+sLy0cxbcQPLXiMwuT00skkrIJ8UGZ9Ig02gK+stqpF4/ZYK
-         fxWKL7fR7MlXKcjEwTLEFa155Ph5W4PSBUtOQQDE=
-Date:   Thu, 30 Jul 2020 11:18:12 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Luca Weiss <luca@z3ntu.xyz>,
-        Tomas Novotny <tomas@novotny.cz>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 2/4] input: gpio-vibra: Allow to use vcc-supply alone
- to control the vibrator
-Message-ID: <20200730091812.7sia7w3waz2jj62a@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Luca Weiss <luca@z3ntu.xyz>, Tomas Novotny <tomas@novotny.cz>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20200714102303.3007896-1-megous@megous.com>
- <20200714102303.3007896-3-megous@megous.com>
- <20200730061939.GF1665100@dtor-ws>
+        id S1726819AbgG3JVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 05:21:14 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BHPzW4lDHz9sRW;
+        Thu, 30 Jul 2020 19:21:11 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1596100872;
+        bh=HymJxLyhuj6x4wWusnqF1TWQRVPeZEbCZQaN4ytnQRE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tSakvzJ0vZFZqTMJnDEfJFB6Mj88ql+OdAd+T8L2CmNVSH7h8E/lhTY78dalcjNGG
+         PfgMoTfxCqSLcc+3acpq7X5diQIJ5nJqJfzrI/2HcU0fGlYoBGecMS1f0fVNySrY9y
+         LjQKuD1qWFLlyeVl6/IRNNE0DVGJn9Zt5z/2JqfIkVVdX+VguVGKoHfJ28WnH5/81N
+         u+EshReNPkzq6d4p5Jo6reVYVEq5CAB5wIfhKzx0MaewDIqkEDM5Ad20h06B0tIg7o
+         XdCeVdrMGfpbCQHfA1+LW1bwnWejSRLHfSEGXTViWjU2pajxKH8kwpug0C8BlM+4mJ
+         FvRNHMV+cU2yw==
+Date:   Thu, 30 Jul 2020 19:21:10 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Gunthorpe <jgg@mellanox.com>, Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: linux-next: manual merge of the hmm tree with the drm tree
+Message-ID: <20200730192110.1466e63e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730061939.GF1665100@dtor-ws>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
+Content-Type: multipart/signed; boundary="Sig_/=asMPzKFIyvS5tUFx9ohdsS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dmitry,
+--Sig_/=asMPzKFIyvS5tUFx9ohdsS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-thanks for looking into the patch. :)
+Hi all,
 
-On Wed, Jul 29, 2020 at 11:19:39PM -0700, Dmitry Torokhov wrote:
-> Hi Ondrej,
-> 
-> On Tue, Jul 14, 2020 at 12:23:01PM +0200, Ondrej Jirman wrote:
-> > Make enable-gpio optional to allow using this driver with boards that
-> > have vibrator connected to a power supply without intermediate gpio
-> > based enable circuitry.
-> > 
-> > Also avoid a case where neither regulator nor enable gpio is specified,
-> > and bail out in probe in such a case.
-> > 
-> > Signed-off-by: Ondrej Jirman <megous@megous.com>
-> > ---
-> >  drivers/input/misc/gpio-vibra.c | 14 ++++++++++----
-> >  1 file changed, 10 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/input/misc/gpio-vibra.c b/drivers/input/misc/gpio-vibra.c
-> > index f79f75595dd7..b3bb7e61ed1d 100644
-> > --- a/drivers/input/misc/gpio-vibra.c
-> > +++ b/drivers/input/misc/gpio-vibra.c
-> > @@ -39,7 +39,7 @@ static int gpio_vibrator_start(struct gpio_vibrator *vibrator)
-> >  	struct device *pdev = vibrator->input->dev.parent;
-> >  	int err;
-> >  
-> > -	if (!vibrator->vcc_on) {
-> > +	if (vibrator->vcc && !vibrator->vcc_on) {
-> >  		err = regulator_enable(vibrator->vcc);
-> >  		if (err) {
-> >  			dev_err(pdev, "failed to enable regulator: %d\n", err);
-> > @@ -57,7 +57,7 @@ static void gpio_vibrator_stop(struct gpio_vibrator *vibrator)
-> >  {
-> >  	gpiod_set_value_cansleep(vibrator->gpio, 0);
-> >  
-> > -	if (vibrator->vcc_on) {
-> > +	if (vibrator->vcc && vibrator->vcc_on) {
-> >  		regulator_disable(vibrator->vcc);
-> >  		vibrator->vcc_on = false;
-> >  	}
-> > @@ -112,7 +112,7 @@ static int gpio_vibrator_probe(struct platform_device *pdev)
-> >  	if (!vibrator->input)
-> >  		return -ENOMEM;
-> >  
-> > -	vibrator->vcc = devm_regulator_get(&pdev->dev, "vcc");
-> > +	vibrator->vcc = devm_regulator_get_optional(&pdev->dev, "vcc");
-> 
-> I know it is very surprising, but regulator_get_optional does not return
-> NULL when regulator is not present, but rather ERR_PTR(-ENODEV). You
-> need to replace it with NULL in the branch below, or change conditions
-> to !IS_ERR(virbrator->vcc) (and still handle -ENODEV in the branch
-> below).
+Today's linux-next merge of the hmm tree got a conflict in:
 
-Oops, I'll fix that in the next revision.
+  drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c
 
-regards,
-	o.
+between commit:
 
-> >  	err = PTR_ERR_OR_ZERO(vibrator->vcc);
-> >  	if (err) {
-> >  		if (err != -EPROBE_DEFER)
-> > @@ -121,7 +121,8 @@ static int gpio_vibrator_probe(struct platform_device *pdev)
-> >  		return err;
-> >  	}
-> >  
-> > -	vibrator->gpio = devm_gpiod_get(&pdev->dev, "enable", GPIOD_OUT_LOW);
-> > +	vibrator->gpio = devm_gpiod_get_optional(&pdev->dev, "enable",
-> > +						 GPIOD_OUT_LOW);
-> >  	err = PTR_ERR_OR_ZERO(vibrator->gpio);
-> >  	if (err) {
-> >  		if (err != -EPROBE_DEFER)
-> > @@ -130,6 +131,11 @@ static int gpio_vibrator_probe(struct platform_device *pdev)
-> >  		return err;
-> >  	}
-> >  
-> > +	if (!vibrator->vcc && !vibrator->gpio) {
-> > +		dev_err(&pdev->dev, "Neither gpio nor regulator provided\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> >  	INIT_WORK(&vibrator->play_work, gpio_vibrator_play_work);
-> >  
-> >  	vibrator->input->name = "gpio-vibrator";
-> > -- 
-> > 2.27.0
-> > 
-> 
-> Thanks.
-> 
-> -- 
-> Dmitry
+  7763d24f3ba0 ("drm/nouveau/vmm/gp100-: fix mapping 2MB sysmem pages")
+
+from the drm tree and commits:
+
+  4725c6b82a48 ("nouveau: fix mapping 2MB sysmem pages")
+  1a77decd0cae ("nouveau: fix storing invalid ptes")
+
+from the hmm tree.
+
+7763d24f3ba0 and 4725c6b82a48 are exactly the same patch.
+
+I fixed it up (I just used the latter version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=asMPzKFIyvS5tUFx9ohdsS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8ikQYACgkQAVBC80lX
+0GwLHAf/fhu5r/e8oR5ESD2bSd0s7oiMyg/40Hav5nfrbBLCAkfvqZnnFyKQplUp
+wFmOMgXwnXgmomuQ2Ab3lQcyiZFlwFyskRKj7/PaUojnq2omoRf8cXXk0cu7M7uE
+vhe6uszwc+KDaaCDzfu30FsYUno3U6iYV4G92Td57KQCvacIezUPCm6YA+7ThV4+
+MTJJKMb8zygb8dXUEx+FHPRQciLTuyjmAz2h1hUHrYJpx2BHgafrCr0jRcHbfUA+
+l83tTi31lnW70YdUw9vuKgcHGnLd6ZriuZrGzoPRBmD2OWWXEoe/uDbxvOS+KYoY
+DyCKIaW0rBemCmTzMu5ryErWF+DX9g==
+=4fl9
+-----END PGP SIGNATURE-----
+
+--Sig_/=asMPzKFIyvS5tUFx9ohdsS--
