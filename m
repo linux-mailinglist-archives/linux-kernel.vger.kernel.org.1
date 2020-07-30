@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B25C2333A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468E22333A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729476AbgG3N5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728286AbgG3N5g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:57:36 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D73C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:57:36 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id l64so18820139qkb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=swB4gM5/Sd34+RuLXe4ebGLoqKKPMlJrxzDtJ86OY8o=;
-        b=ElJmz2ZYVZwbLk/3G64W4s/3aJGLxePkXOtMUKp0atmEd4+v8cnbJbC3GS1fxeMKXb
-         RO0SxPF8d2cy2PqimJ+cI0MM4Umk4mHoHUyzINy/3fhrqK5ikEv/4MxDWTEBeowS6ROl
-         b6CfyD/bZkLZnpUIkqED3RJwQC5vkGSJin0RctcQFE57iW8XDlgQlVbNt1mJ9AABAlI2
-         AT0Ac4QBita8mYG51kmHbZXIe3UUOvZKvPQk4gBTcy+Jc2jmvrw06dXQPX3aMeIv8ZiH
-         b4yxobYO9/y9T1BUjqEz9HoEB9tPYD/+2CNStQpALXdf3lWzNV8X+ON5KqFx3czETx+M
-         5LMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=swB4gM5/Sd34+RuLXe4ebGLoqKKPMlJrxzDtJ86OY8o=;
-        b=AoyLB8ieuWThyuvjnjACinUromQzEElrOyTU4yTe+sDj20n5aX9toxQfiZC1GuTnvN
-         qv8fDnbmxUzuBSNW0fJEwZs0wWZuuRu4/H0xnuqhmTiabSb/vo75EVyZCzOimSq051yM
-         aXjDnS5CHonm+xFYoCDob2zbqH6tYVeVUrOBiN9oBFkK/TohkPxMglXg3vp4lSKrUmZK
-         Rqe1Q+fNI4TN6VDXzT3Dopv3u2Rs+SOwj+B+8jRewF3IiqWWyVC0G/lqBRT4ZTzNLlXK
-         pWbT6R1i9Za0cZzXD2rzTuNCDabNtd5mzXdOvzcvVh/RTczRdtTB1R9uhUjQl8xGbfnB
-         +zeQ==
-X-Gm-Message-State: AOAM530YVPoGj223NSE10ARt8abKGMwcfVGN/K0OLJNQaPcMfqNqCHya
-        s7peTdMrvmNgIDJV7Ar0EiJ7eg==
-X-Google-Smtp-Source: ABdhPJzPkHLNJBZVdH8dOzQCTNrpkJEAuR+3sHOQnsQ2ETHZ0yd/YXNBy4jXja0jaOUk3UBJBgCKDQ==
-X-Received: by 2002:a37:6644:: with SMTP id a65mr37224452qkc.4.1596117455468;
-        Thu, 30 Jul 2020 06:57:35 -0700 (PDT)
-Received: from skullcanyon ([192.222.193.21])
-        by smtp.gmail.com with ESMTPSA id x29sm4824919qtx.74.2020.07.30.06.57.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 06:57:34 -0700 (PDT)
-Message-ID: <8d287abcc4e2e86b5eaeca5a97b57004be8f6669.camel@ndufresne.ca>
-Subject: Re: [PATCH v2 0/6] Add new controls for CQ and Frame-skip
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Kamil Debski <kamil@wypas.org>,
-        Jeongtae Park <jtp.park@samsung.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Maheshwar Ajja <majja@codeaurora.org>
-Date:   Thu, 30 Jul 2020 09:57:33 -0400
-In-Reply-To: <20200721074538.505-1-stanimir.varbanov@linaro.org>
-References: <20200721074538.505-1-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        id S1729371AbgG3N6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:58:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36580 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727966AbgG3N6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 09:58:04 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 368962074B;
+        Thu, 30 Jul 2020 13:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596117484;
+        bh=I4VtO+RvTl5dHcnmis2rhMN15keqAvYuB5FZEdImv3A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bm9nVVGjGZ7XYNnFoyAkAmwjyW5kA9q1IsWKYLKaXwYx5CxsIH156XdZeWk+HBeOn
+         nkjkN6aIgkq/OSSDn08riSiwgRXr2P9h+M3dHPFJmZk2HRzvSiuVcc3IOnBZLRq4lG
+         bbcdjhffeKKlT7hQJnfY11YZKzgeDrmUju2alRl8=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k194M-00GH3a-Mo; Thu, 30 Jul 2020 14:58:02 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alexander Graf <graf@amazon.com>, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        linux-kernel@vger.kernel.org,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        kvmarm@lists.cs.columbia.edu,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH] KVM: arm: Add trace name for ARM_NISV
+Date:   Thu, 30 Jul 2020 14:57:56 +0100
+Message-Id: <159611742543.1691243.7923791390001583960.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200730094441.18231-1-graf@amazon.com>
+References: <20200730094441.18231-1-graf@amazon.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: graf@amazon.com, kvm@vger.kernel.org, pbonzini@redhat.com, xypron.glpk@gmx.de, linux-kernel@vger.kernel.org, christoffer.dall@arm.com, kvmarm@lists.cs.columbia.edu, vkuznets@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mardi 21 juillet 2020 à 10:45 +0300, Stanimir Varbanov a écrit :
-> Hello,
+On Thu, 30 Jul 2020 11:44:41 +0200, Alexander Graf wrote:
+> Commit c726200dd106d ("KVM: arm/arm64: Allow reporting non-ISV data aborts
+> to userspace") introduced a mechanism to deflect MMIO traffic the kernel
+> can not handle to user space. For that, it introduced a new exit reason.
 > 
-> Here is v2 with following changes:
+> However, it did not update the trace point array that gives human readable
+> names to these exit reasons inside the trace log.
 > 
->  * 3/6 Added references for VBV size and h264 CPB size - requested by Nicolas
+> [...]
 
-Thanks for this enhancement. No more comments on the doc from me.
+Applied to kvm-arm64/misc-5.9, thanks!
 
->  * 4/6 Fixed compile warning
-> 
-> Previous version can be found at [1].
-> 
-> regards,
-> Stan
-> 
-> [1] https://lkml.org/lkml/2020/7/20/619
-> 
-> Maheshwar Ajja (1):
->   media: v4l2-ctrls: Add encoder constant quality control
-> 
-> Stanimir Varbanov (5):
->   venus: venc: Add support for constant quality control
->   media: v4l2-ctrl: Add frame-skip std encoder control
->   venus: venc: Add support for frame-skip mode v4l2 control
->   media: s5p-mfc: Use standard frame skip mode control
->   media: docs: Deprecate mfc frame skip control
-> 
->  .../media/v4l/ext-ctrls-codec.rst             | 53 +++++++++++++++++++
->  drivers/media/platform/qcom/venus/core.h      |  2 +
->  drivers/media/platform/qcom/venus/hfi_cmds.c  | 37 ++++++++++++-
->  .../media/platform/qcom/venus/hfi_helper.h    | 10 +++-
->  drivers/media/platform/qcom/venus/venc.c      | 20 +++++--
->  .../media/platform/qcom/venus/venc_ctrls.c    | 18 ++++++-
->  drivers/media/platform/s5p-mfc/s5p_mfc_enc.c  |  6 +++
->  drivers/media/v4l2-core/v4l2-ctrls.c          | 12 +++++
->  include/uapi/linux/v4l2-controls.h            |  8 +++
->  9 files changed, 160 insertions(+), 6 deletions(-)
-> 
+[1/1] KVM: arm: Add trace name for ARM_NISV
+      commit: 1ccf2fe35c30f79102ad129c5aa71059daaaed7f
+
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
 
