@@ -2,51 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A89233303
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FFC233325
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729265AbgG3N0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:26:09 -0400
-Received: from gateway36.websitewelcome.com ([192.185.186.5]:26480 "EHLO
+        id S1728726AbgG3Ndd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:33:33 -0400
+Received: from gateway36.websitewelcome.com ([192.185.186.5]:41571 "EHLO
         gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726535AbgG3N0J (ORCPT
+        by vger.kernel.org with ESMTP id S1728342AbgG3Ndc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:26:09 -0400
-X-Greylist: delayed 1062 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Jul 2020 09:26:08 EDT
+        Thu, 30 Jul 2020 09:33:32 -0400
 Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id 5D1364013CD88
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 07:47:47 -0500 (CDT)
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id 98FF940100B8D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 07:09:32 -0500 (CDT)
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with SMTP
-        id 18XjkJSZZBb5d18XjkwQTi; Thu, 30 Jul 2020 08:24:19 -0500
+        id 17wikIclwBb5d17wikve30; Thu, 30 Jul 2020 07:46:04 -0500
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=PILysAc0l8w2gVhnmRWQ95ExWl1QPAfFkwXzogc9snk=; b=VwLIsuZl6k4aNgXGv7sLTjRKDt
-        IhCTY1bXwbZu/V3uksM4IYd9M01ZFEYUS4vmPGbpZC6n4y9DGFDjJwvsnmwlcVptsenqchgbbkkB0
-        ONyoyYlhJ6w97HyTnPwHloVbS/r20+U4XDVjLTFKyTy4rRHnY2POmlPlAQ3s9xtWCen0WBKitjXuu
-        dMqKJgmPz/81fcGdgD1PlauWGCSMdc9UFQjiDCQjHFuzYrxyxm9eZmtycI63fQmcICaIo6ZOE7w/6
-        xOmMRMQWNi9D6htajgmIWpmj6dGMtTIfhQz9ohS3r0ytKi69vRakK2BMkFmYVzrDS1M/CmqFzjaLt
-        SJF/XU6Q==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:34674 helo=[192.168.15.3])
+        bh=Z5uXuRI+aXgtQ1zcBbtoxXuoEsy13FiXL+bA4Jtl5F0=; b=f4yrzksuUtPBASWfmvqtozvNdn
+        dRW2EJksROcq9wnNrRcbM8R4CAVlzb9w7qIz7fGhSD7+DjDGsv8sQQmaY+qucBGyPsPD0gqE0gO39
+        CoxKszK6UhgiQE9oySp1G7h+aFoVJ+O0ud8BpIJYmyEwXZj+TGWR1iIBZ9Sj7Bt1W6BiJ66EFzefV
+        BbxbBWYTwIgDarNw2M0iXKAl5iQ3TnJuuiSZLAIVoMgm/0uIo/Gmlt+Q2KNhYSTlMDShrY1V+gKC7
+        Mn0YBvTnYPUkRmABWZfggfSYutSXTRUMiUAfAheTWv6iXUCYXdT+hRqPgcPqGfk3h6Bo6dBoS56am
+        qC+bSFpQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:33390 helo=[192.168.15.3])
         by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1k18Xi-003fG7-Rb; Thu, 30 Jul 2020 08:24:18 -0500
-Subject: Re: [PATCH][next] mlxsw: spectrum_cnt: Use flex_array_size() helper
- in memcpy()
-To:     Ido Schimmel <idosch@idosch.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jiri Pirko <jiri@mellanox.com>, Ido Schimmel <idosch@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200729225803.GA15866@embeddedor>
- <20200730092153.GA2182419@shredder>
+        id 1k17wf-00394J-On; Thu, 30 Jul 2020 07:46:01 -0500
+To:     Qianli Zhao <zhaoqianligood@gmail.com>, stefanr@s5r6.in-berlin.de,
+        linux1394-devel@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
+References: <1596079620-20023-1-git-send-email-zhaoqianligood@gmail.com>
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Autocrypt: addr=gustavo@embeddedor.com; keydata=
  xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
@@ -92,15 +85,17 @@ Autocrypt: addr=gustavo@embeddedor.com; keydata=
  6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9ehGZEO3+gCDFmK
  rjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrSVtSixD1uOgyt
  AP7RWS474w==
-Message-ID: <2a37db2e-3e58-efd8-ffbd-0f318927e59e@embeddedor.com>
-Date:   Thu, 30 Jul 2020 08:30:20 -0500
+Subject: Re: [PATCH] firewire: firewire-cdev.h: Avoid the use of one-element
+ array
+Message-ID: <d7d33292-99a3-cddf-629b-a71acd1a7bee@embeddedor.com>
+Date:   Thu, 30 Jul 2020 07:52:03 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200730092153.GA2182419@shredder>
+In-Reply-To: <1596079620-20023-1-git-send-email-zhaoqianligood@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
 X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
 X-AntiAbuse: Original Domain - vger.kernel.org
@@ -109,13 +104,13 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 187.162.31.110
 X-Source-L: No
-X-Exim-ID: 1k18Xi-003fG7-Rb
+X-Exim-ID: 1k17wf-00394J-On
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.3]) [187.162.31.110]:34674
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.3]) [187.162.31.110]:33390
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 14
+X-Email-Count: 4
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
@@ -124,25 +119,93 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+NACK!
 
-On 7/30/20 04:21, Ido Schimmel wrote:
-> On Wed, Jul 29, 2020 at 05:58:03PM -0500, Gustavo A. R. Silva wrote:
->> Make use of the flex_array_size() helper to calculate the size of a
->> flexible array member within an enclosing structure.
->>
->> This helper offers defense-in-depth against potential integer
->> overflows, while at the same time makes it explicitly clear that
->> we are dealing witha flexible array member.
->>
->> Also, remove unnecessary pointer identifier sub_pool.
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> Reviewed-by: Ido Schimmel <idosch@mellanox.com>
-> Tested-by: Ido Schimmel <idosch@mellanox.com>
-> 
+Please, stop doing this. You clearly don't know what you're doing.
+You're just blindly copying/pasting all this. The subject line
+has nothing to do with what the patch does and we don't want
+any of these transformations in UAPI for now.
 
-Thanks, Ido.
+As I already said here:
+https://lore.kernel.org/lkml/90b2c9f3-cc2b-b2e6-51ef-998d2f79123a@embeddedor.com/
+
+start with drivers/staging/ and get hang of the kernel development
+process, first. This is a great source, I encourage you to read it
+thoroughly:
+https://kernelnewbies.org/Outreachyfirstpatch
+
+If you want to land your first kernel patch, blindly copying/pasting
+stuff without actually paying attention to what you're doing, is
+certainly not the best strategy and you won't start with the right
+foot in terms of your reputation. Stop this and do things right from
+the beginning.
 
 --
 Gustavo
+
+On 7/29/20 22:27, Qianli Zhao wrote:
+> From: Qianli Zhao <zhaoqianli@xiaomi.com>
+> 
+> There is a regular need in the kernel to provide a way to declare having a
+> dynamically sized set of trailing elements in a structure. Kernel code should
+> always use “flexible array members”[1] for these cases. The older style of
+> one-element or zero-length arrays should no longer be used[2].
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://github.com/KSPP/linux/issues/21
+> 
+> Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
+> ---
+>  include/uapi/linux/firewire-cdev.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/uapi/linux/firewire-cdev.h b/include/uapi/linux/firewire-cdev.h
+> index 7e5b5c1..487de87f 100644
+> --- a/include/uapi/linux/firewire-cdev.h
+> +++ b/include/uapi/linux/firewire-cdev.h
+> @@ -118,7 +118,7 @@ struct fw_cdev_event_response {
+>  	__u32 type;
+>  	__u32 rcode;
+>  	__u32 length;
+> -	__u32 data[0];
+> +	__u32 data[];
+>  };
+>  
+>  /**
+> @@ -142,7 +142,7 @@ struct fw_cdev_event_request {
+>  	__u64 offset;
+>  	__u32 handle;
+>  	__u32 length;
+> -	__u32 data[0];
+> +	__u32 data[];
+>  };
+>  
+>  /**
+> @@ -205,7 +205,7 @@ struct fw_cdev_event_request2 {
+>  	__u32 generation;
+>  	__u32 handle;
+>  	__u32 length;
+> -	__u32 data[0];
+> +	__u32 data[];
+>  };
+>  
+>  /**
+> @@ -344,7 +344,7 @@ struct fw_cdev_event_iso_resource {
+>   * @data:	Incoming data
+>   *
+>   * If @type is %FW_CDEV_EVENT_PHY_PACKET_SENT, @length is 0 and @data empty,
+> - * except in case of a ping packet:  Then, @length is 4, and @data[0] is the
+> + * except in case of a ping packet:  Then, @length is 4, and @data[] is the
+>   * ping time in 49.152MHz clocks if @rcode is %RCODE_COMPLETE.
+>   *
+>   * If @type is %FW_CDEV_EVENT_PHY_PACKET_RECEIVED, @length is 8 and @data
+> @@ -355,7 +355,7 @@ struct fw_cdev_event_phy_packet {
+>  	__u32 type;
+>  	__u32 rcode;
+>  	__u32 length;
+> -	__u32 data[0];
+> +	__u32 data[];
+>  };
+>  
+>  /**
+> 
