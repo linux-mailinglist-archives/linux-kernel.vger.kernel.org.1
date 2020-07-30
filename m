@@ -2,126 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43DD2330A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 12:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406AD2330AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 13:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729129AbgG3K4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 06:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726774AbgG3K4D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 06:56:03 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BD6C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 03:56:02 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id e20so1267144uav.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 03:56:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=Pz+XF4LuMpD4SOnO7P3982Wzu2NRanctqI7j+4Bsl5s=;
-        b=qh11zXigfHiMLpASvjCp25S6/H8+X3aXYvsrtDgw222WdukwHtmIcbp6MViEMmesRG
-         zv4Sc18lHyLkFvt8u0voUU4PeKnynpo6sApmiVCDzIqy5cGquXcAOn6DSiDsyV9m74SA
-         dGSpy6RThO3BxgVmNUfC1vorqy8iB5/eYab5fDGZdpftvG4Y259FwBqY+9yqpSJLbzY2
-         8pVOklekTuKdH9N5a1fkjpzACOxYSLgAZlAYhZWP+TmUjwkMUCw2AHdnV1fg00aHv4HG
-         OFHZ3is81r0rJpybsE2MtiR3p5c64GhS3p+SPvYspeRoV7sWGr8ds0kEN3Dal0pc+10C
-         oTSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=Pz+XF4LuMpD4SOnO7P3982Wzu2NRanctqI7j+4Bsl5s=;
-        b=o+F2fS5OcEMVeg6wDowWG6tV9KSL8jZX/WF7JH4V85P73xKv2BYoCls4+Drp0+IOj+
-         uu5hDxrnkV+AmZt9LBrXncSwV8r1Ejg0IwxN/W+3eZGMC8UpIzojPCsIZGHAZ5Pnl/z1
-         MRLvayDrSejdtMihio3PTM17eQvNKPGHHC5lRzi++CwRhbBf0Evu+qbWh3mNXm1fk8M9
-         LQROoxL/3DJplWEcAYdbc6kG7ytBdqwAyxKd2Tj9Kbi7S3xL9BUTI+dKX6SUA/lXiKMY
-         wSRerqRewENAL+WRv7GbRd1yrv6E/rSgox8xnKRQl89+jPWyKIbtufxDyKUKcJ2he/OI
-         ggkg==
-X-Gm-Message-State: AOAM530XNpyONKQ2DnaY0jePWZUNwnU8CNhlHkKh/ZwvXa5noZwtKMlL
-        WlYNx5509nfhVZcIc6Nb0kmkwS8ekdFNHVT784/nyw==
-X-Google-Smtp-Source: ABdhPJyeLsc1i+441toO3uBkjnCjITzWEjCldgRhmqdu/EZlq5DRSBSxqrme7lD/zrFdJNtMnzzTA+yLPiAWHb4M0Ts=
-X-Received: by 2002:ab0:53d8:: with SMTP id l24mr1631482uaa.14.1596106561431;
- Thu, 30 Jul 2020 03:56:01 -0700 (PDT)
+        id S1729192AbgG3LAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 07:00:10 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8303 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726631AbgG3LAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 07:00:09 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id AAF5379B622294EE9634;
+        Thu, 30 Jul 2020 19:00:06 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 30 Jul 2020
+ 18:59:58 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <jiri@mellanox.com>,
+        <edumazet@google.com>, <ap420073@gmail.com>,
+        <xiyou.wangcong@gmail.com>, <lukas@wunner.de>,
+        <maximmi@mellanox.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] net: Pass NULL to skb_network_protocol() when we don't care about vlan depth
+Date:   Thu, 30 Jul 2020 19:02:36 +0800
+Message-ID: <1596106956-22054-1-git-send-email-linmiaohe@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 30 Jul 2020 16:25:49 +0530
-Message-ID: <CA+G9fYvSyXnfGmK1FLRtraWWre7QjUoGE_qiwM8XPUBXjnudWA@mail.gmail.com>
-Subject: =?UTF-8?B?YXJtNjQ6IHBvaW50ZXJfYXV0aC5oOjQwOjM6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdA==?=
-        =?UTF-8?B?aW9uIG9mIGZ1bmN0aW9uIOKAmGdldF9yYW5kb21fYnl0ZXPigJk7IGRpZCB5b3UgbWVhbiDigJhnZXRf?=
-        =?UTF-8?B?cmFuZG9tX29uY2XigJk/?=
-To:     linux-arm-kernel@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, re.emese@gmail.com,
-        Kees Cook <keescook@chromium.org>, w@1wt.eu,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, hsinyi@chromium.org,
-        "Theodore Ts'o" <tytso@mit.edu>, richard.henderson@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus master branch failed to build the arm64 architecture due to
-below error and warnings.
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-kernel config:
-https://builds.tuxbuild.com/Dp3s1p4uYnGpImQwCvhzEw/kernel.config
+When we don't care about vlan depth, we could pass NULL instead of the
+address of a unused local variable to skb_network_protocol() as a param.
 
-git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t
-target_arch: arm64
-toolchain: gcc-9
-git_short_log:
-83bdc7275e62 (\random32: remove net_rand_state from the latent entropy
-gcc plugin\)
-git_describe: v5.8-rc7-40-g83bdc7275e62
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ net/core/dev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm64
-CROSS_COMPILE=3Daarch64-linux-gnu- HOSTCC=3Dgcc CC=3D"sccache
-aarch64-linux-gnu-gcc" O=3Dbuild Image
-#
-In file included from ../arch/arm64/include/asm/smp.h:33,
-                 from ../include/linux/smp.h:82,
-                 from ../include/linux/percpu.h:7,
-                 from ../include/linux/random.h:14,
-                 from ../arch/arm64/kernel/pointer_auth.c:5:
-../arch/arm64/include/asm/pointer_auth.h: In function =E2=80=98ptrauth_keys=
-_init_user=E2=80=99:
-../arch/arm64/include/asm/pointer_auth.h:40:3: error: implicit
-declaration of function =E2=80=98get_random_bytes=E2=80=99; did you mean
-=E2=80=98get_random_once=E2=80=99? [-Werror=3Dimplicit-function-declaration=
-]
-   40 |   get_random_bytes(&keys->apia, sizeof(keys->apia));
-      |   ^~~~~~~~~~~~~~~~
-      |   get_random_once
-In file included from ../arch/arm64/kernel/pointer_auth.c:5:
-../include/linux/random.h: At top level:
-../include/linux/random.h:41:13: warning: conflicting types for
-=E2=80=98get_random_bytes=E2=80=99
-   41 | extern void get_random_bytes(void *buf, int nbytes);
-      |             ^~~~~~~~~~~~~~~~
-In file included from ../arch/arm64/include/asm/smp.h:33,
-                 from ../include/linux/smp.h:82,
-                 from ../include/linux/percpu.h:7,
-                 from ../include/linux/random.h:14,
-                 from ../arch/arm64/kernel/pointer_auth.c:5:
-../arch/arm64/include/asm/pointer_auth.h:40:3: note: previous implicit
-declaration of =E2=80=98get_random_bytes=E2=80=99 was here
-   40 |   get_random_bytes(&keys->apia, sizeof(keys->apia));
-      |   ^~~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 7a774ebf64e2..474da11d18c9 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3448,10 +3448,9 @@ static netdev_features_t net_mpls_features(struct sk_buff *skb,
+ static netdev_features_t harmonize_features(struct sk_buff *skb,
+ 	netdev_features_t features)
+ {
+-	int tmp;
+ 	__be16 type;
+ 
+-	type = skb_network_protocol(skb, &tmp);
++	type = skb_network_protocol(skb, NULL);
+ 	features = net_mpls_features(skb, features, type);
+ 
+ 	if (skb->ip_summed != CHECKSUM_NONE &&
+-- 
+2.19.1
 
-build log link,
-https://gitlab.com/Linaro/lkft/kernel-runs/-/jobs/662908458
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
