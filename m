@@ -2,71 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046F52333AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419EF2333E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729532AbgG3N6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
+        id S1729568AbgG3OIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 10:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729478AbgG3N6q (ORCPT
+        with ESMTP id S1728639AbgG3OH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:58:46 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93F9C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:58:45 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id l64so18824128qkb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:58:45 -0700 (PDT)
+        Thu, 30 Jul 2020 10:07:58 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3A1C061574;
+        Thu, 30 Jul 2020 07:07:57 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d1so14224148plr.8;
+        Thu, 30 Jul 2020 07:07:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=QcYaplpioI9MLsAnqd4iIIXoRVUu0Gh7RceGnF833lA=;
-        b=N4Z4RakBM2wV4gC7nQk0xwWWVeN3klc8op0Mk2CW0asWsybhcYjcqG9tXF5CAp34+C
-         /48qr3maDPv/t630d0nk8A9IC9nLLSt3V9v/4EwGV7gmnDsCOjHc4+wE6u+uH7D42skO
-         JViIBTEm+Kn39mD4B4EE60RBY8x1IhEU/ALZ4XHQpuLrT58O4vSu9i000u87K9I7xafn
-         6Nm7wuoCSz7ugstbB8mXdHoesEC21V5gMIJfqBtpjIQfTucJ8Q0mY+wh8227ElItbQ1+
-         UYObLJKFLeQw0iFto8QqK9nwOrdMAPSDoJE7eCmJu0RaBTjqB/0Mvi2KeHL8Cat3pgA/
-         Q1QA==
+        bh=ZvBujrZbpHTyFtf4aDyQcSP+scQySwGgnJgI3//5ECY=;
+        b=Z1WD+vmRUTNVztgbMjp2ehhOi3ixY+RUkMPLYgxVngJTaX+/d8F8KS8ZV9C0VuN3lw
+         Bq/BBCJG0wb5rKMSuI+d98nZg5ku3/NG16GZnkXwNrQfkzOFxCzTS6DMriXXSKRcGRkf
+         Fdfol1Ay48UxOgEOW6jWWlVwEmwNA5ZrrTOLbSw4NSAMAJ7XZGdUPgRTDupgqu7ZMDFC
+         oQ4Yx0aV4uI3gadiUDXJMYwhuZcEhEJfCzoL9FpjMByaq5a0Nczw8aEYcZvwpS+sZtC/
+         /A5POXMfpcb3wLIRWEH8+8vNcF1xwT7cBuCyndHTRS09Kof/u0qLSQIBZP7OOnzWAxl7
+         2PnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=QcYaplpioI9MLsAnqd4iIIXoRVUu0Gh7RceGnF833lA=;
-        b=Y0mtlqFZmoKe0bGPGEQaQQcg9qO34ecooIMqYI8Q4v2boZx5pi50taOKjvoJk/ByUg
-         x3VJ2mz8lctbV189l3C0F/mC2kl5J5fsffckKAopITgZzpEkalrYncJMTmZRvCUdeV0M
-         eMzLebwUMnp98FUKOL3uCaAnUYcxgP9FAjILkmTYXNNUK02MPB49syk6QycOiaU8uXsq
-         Fn1UqN/xK8IAFoBkia5JvdD9nA1Frr1ZVzUzYwG6eT8PYtGmcLX3SieXk70YmCTulIpI
-         szcsjOqtq0UGI8gdr3oBb4AA1tBqLAGeZe8EIQflY9nxGJdBkGaoeTn4uQp8jnab6uQs
-         zldQ==
-X-Gm-Message-State: AOAM531c5MurKf0LJx+qeSJK/THiA847/zorr8n9HPM+2LRT4uewKkyP
-        aPAOIy4CTEhnGtmMoyb4f9TSIaRMrOC3CldNzfY=
-X-Google-Smtp-Source: ABdhPJxXRtIkxPR5QyGlU6RL+jTImtmyLwSd5A22K8DCRm4H/4H0zglJszZ1qXhvAGqYCVC8G0WMAskSvM4A8JHJWDw=
-X-Received: by 2002:a37:e315:: with SMTP id y21mr4173746qki.129.1596117525129;
- Thu, 30 Jul 2020 06:58:45 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZvBujrZbpHTyFtf4aDyQcSP+scQySwGgnJgI3//5ECY=;
+        b=smSC8dmKM3EEGL/Q2Skg6/WmkPfqwVVI8mtqc3XcyTIa7Ik29Hwp7bwiRDCAQKmKes
+         +MSErU15TBe5np/MOTKa2BvevHFxPZpxWf0BPWr28MKNHhCAd70XI+V8uyKRfPfd/WY/
+         YTtsmVbOeC37IryRWhMWTFmg5EOyj40piAP5LFg0gC4j9j8YOi1eNNRkQbWgXaVcksOV
+         T8Tgruu64O5HMe/MVCxtt5hVwKPIIk6IgVY6eCPPdbb5Y4tYIti5b7I4aXJKDIX7rTNQ
+         zyAWnGJ4/ZG5B8uNjWZLyTQaNzV1otE7e6Z5EvHaSXoR8SIO3T61TNUAWqrL0ZWuIXKZ
+         LUyQ==
+X-Gm-Message-State: AOAM532zzYICO+inWzH2ItggZMRaCSCQA5bddwPGzl+y/qB78Ofq2Q17
+        ISWbnmMKp3j8ZPk2VLTJQOwayKadSzCLLQ==
+X-Google-Smtp-Source: ABdhPJwmoDlh7vnJf/uBuu29Ec5+DQgH2UXB080ZHlB6VeyOQuaxQY51BY+zrbaJEe2ZTSYNq5asSA==
+X-Received: by 2002:a63:4a0e:: with SMTP id x14mr36113319pga.271.1596116273386;
+        Thu, 30 Jul 2020 06:37:53 -0700 (PDT)
+Received: from yangdongdo-OptiPlex-9010.mioffice.cn ([209.9.72.214])
+        by smtp.gmail.com with ESMTPSA id c139sm5987441pfb.65.2020.07.30.06.37.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Jul 2020 06:37:52 -0700 (PDT)
+From:   Dongdong Yang <contribute.kernel@gmail.com>
+To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-pm@vger.kernel.org, yangdongdong@xiaomi.com,
+        tanggeliang@xiaomi.com, taojun@xiaomi.com, huangqiwu@xiaomi.com,
+        rocking@linux.alibaba.com, fengwei@xiaomi.com,
+        zhangguoquan@xiaomi.com, gulinghua@xiaomi.com, duhui@xiaomi.com
+Subject: [PATCH] sched: Provide USF for the portable equipment.
+Date:   Thu, 30 Jul 2020 21:35:42 +0800
+Message-Id: <cover.1596101307.git.yangdongdong@xiaomi.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Received: by 2002:aed:24ba:0:0:0:0:0 with HTTP; Thu, 30 Jul 2020 06:58:44
- -0700 (PDT)
-Reply-To: godardchambers1@yandex.com
-From:   "Luis F. Godard" <veronicadeerow@gmail.com>
-Date:   Thu, 30 Jul 2020 15:58:44 +0200
-Message-ID: <CAOXWAkNbNaLQRf3=+tJ-wVuQxCuLfwS+PkyxihhBK01tbCStbA@mail.gmail.com>
-Subject: =?UTF-8?B?SmUgdG8gbmFsw6loYXbDoSB6cHLDoXZhLA==?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SmUgdG8gbmFsw6loYXbDoSB6cHLDoXZhLA0KDQpKYWsgb2JlY27Emz8gRG91ZsOhbSwgxb5lIHNl
-IHRhdG8genByw6F2YSBzIHbDoW1pIGRvYsWZZSBzZXRrw6F2w6EuDQpOZXphcG9tZcWIdGUgcHJv
-c8OtbSB0dXRvIHpwcsOhdnUgbmEgcm96ZMOtbCBvZCBkxZnDrXbEm2rFocOtY2gsIHByb3Rvxb5l
-IHbDocWhDQpkxJtkaWNrw70gZm9uZCB2ZSB2w73FoWkgOSwyIG1pbGlvbnUgVVNEIG55bsOtIG9k
-aGFsdWplIHZhxaFpIG9rYW3Fvml0b3UNCnBveml0aXZuw60gb2Rwb3bEm8SPLiBWeXrDvXbDoW0g
-dsOhcyB2xaFhaywgYWJ5c3RlIGxhc2thdsSbIHDFmWVkYWxpIHN2w6kgY2Vsw6kNCmptw6lubzog
-WmVtxJs6IEFkcmVzYTogUG92b2zDoW7DrTogUm9kaW5uw70gc3RhdjogUG9obGF2w606IFbEm2s6
-IFNvdWtyb23DqQ0KxI3DrXNsbzoga29uZcSNbsSbLCBQbGF0bsOhIGtvcGllIGlkZW50aXR5Og0K
-DQpTIMO6Y3RvdSBWw6HFoS4NCkJhcnJpc3RlciBMdWlzIEZlcm7DoW5kZXogR29kYXJkIChFc3Ep
-DQo=
+From: Dongdong Yang <yangdongdong@xiaomi.com>
+
+This patch provides USF(User Sensitive Feedback factor)
+auxiliary cpufreq governor to support high level layer
+sysfs inodes setting for utils adjustment purpose from
+the identified scenario on portable equipment.
+Because the power consumption and UI response are more
+cared for by portable equipment users. And the "screen
+off" status stands for no request from the user, however,
+the kernel is still expected to notify the user in time
+on modem, network or powerkey events occur. USF provides
+"sched_usf_non_ux_r" sysfs inode to cut down the utils
+from user space tasks according to high level scenario.
+In addition, it usually hints more cpufreq demand that
+the preemptive counts of the tasks on the cpu burst and
+over the user expecting completed time such as the ratio
+sysctl_sched_latency to sysctl_sched_min_granularity
+on "screen on" status, which more likely with more UI.
+The sysfs inodes "sched_usf_up_l0_r" and "sched_usf_down_r"
+have been provided to adjust the utils according to high
+level identified scenario to alloc the cpufreq in time.
+
+Dongdong Yang (1):
+  sched: Provide USF for portable equipment.
+
+ drivers/staging/Kconfig          |   2 +
+ drivers/staging/Makefile         |   1 +
+ drivers/staging/fbsched/Kconfig  |  10 ++
+ drivers/staging/fbsched/Makefile |   2 +
+ drivers/staging/fbsched/usf.c    | 351 +++++++++++++++++++++++++++++++++++++++
+ kernel/sched/cpufreq_schedutil.c |  11 +-
+ 6 files changed, 376 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/staging/fbsched/Kconfig
+ create mode 100644 drivers/staging/fbsched/Makefile
+ create mode 100644 drivers/staging/fbsched/usf.c
+
+-- 
+2.7.4
+
