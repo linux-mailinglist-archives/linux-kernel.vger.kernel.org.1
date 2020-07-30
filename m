@@ -2,77 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB0A233626
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE6623361D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729867AbgG3P7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 11:59:30 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55811 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729762AbgG3P73 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 11:59:29 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k1Axi-0000b3-Dz; Thu, 30 Jul 2020 15:59:18 +0000
-Date:   Thu, 30 Jul 2020 17:59:17 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        adobriyan@gmail.com, davem@davemloft.net, ebiederm@xmission.com,
-        areber@redhat.com, serge@hallyn.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 01/23] ns: Add common refcount into ns_common add use it
- as counter for net_ns
-Message-ID: <20200730155917.r3cirkffznwssesa@wittgenstein>
-References: <159611007271.535980.15362304262237658692.stgit@localhost.localdomain>
- <159611036589.535980.1765795847221907147.stgit@localhost.localdomain>
- <20200730133526.4lhkmlamgxjdssip@wittgenstein>
- <7d30f8ec-d0b7-3bae-942f-49e2f8f233e9@virtuozzo.com>
+        id S1729854AbgG3P5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 11:57:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726581AbgG3P5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 11:57:14 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38DA6206F5;
+        Thu, 30 Jul 2020 15:57:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596124634;
+        bh=a+XRZzS6rrMIkr38wJB/EC5C4sRmUQfanFozeAfX0vQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=H/kxHh48WGg0FTSyL74IiufzWRc2eQVqkfa9aRIoobLrzByN3fIANjHmz161II4iy
+         AvK5CKDkTjjqvarD/VG2YIBzzyzUznAJf1RaSRinVAxU7tAvQyvbsoNggRUz5UlFEM
+         SYbflYo5UqgXPmd9m1lo5blK6HcYX44BKjEVVvxA=
+Date:   Thu, 30 Jul 2020 11:03:14 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] net/sched: cls_u32: Use struct_size() helper
+Message-ID: <20200730160314.GA30990@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7d30f8ec-d0b7-3bae-942f-49e2f8f233e9@virtuozzo.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 05:07:05PM +0300, Kirill Tkhai wrote:
-> On 30.07.2020 16:35, Christian Brauner wrote:
-> > On Thu, Jul 30, 2020 at 02:59:25PM +0300, Kirill Tkhai wrote:
-> >> Currently, every type of namespaces has its own counter,
-> >> which is stored in ns-specific part. Say, @net has
-> >> struct net::count, @pid has struct pid_namespace::kref, etc.
-> >>
-> >> This patchset introduces unified counter for all types
-> >> of namespaces, and converts net namespace to use it first.
-> >>
-> >> Signed-off-by: Kirill Tkhai <ktkhai@virtuozzo.com>
-> >> ---
-> > 
-> > Any reason the refcount changes need to be tied to the procfs changes?
-> > Seems that should be a separate cleanup patchset which we can take
-> > independent of procfs changes.
-> 
-> Yes, patches [1-8] are cleanup, it may go separately. 
-> 
-> For me there is no a problem to resend them also as a separate patchset,
-> say at v2, or if there is a change in 1-8, but I'm afraid to bomb mailboxes.
-> 
-> If there is no a request for rework in 1-8, can they be picked directly from here?
+Make use of the struct_size() helper, in multiple places, instead
+of an open-coded version in order to avoid any potential type
+mistakes and protect against potential integer overflows.
 
-Apart from the missing include that might be an issue in ns_common.h
-this looks fine to me and seems like a good cleanup overall. Afaict it
-even loses more code than it adds.
+Also, remove unnecessary object identifier size.
 
-I think resending this part separately is worth it given that we're not
-sure whether this series will be part of procfs or a spearate thing.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ net/sched/cls_u32.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
-This won't make it for the merge window of course but unless there are
-technical issues with this conversion I'd pick this up for later.
+diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
+index 771b068f8254..7b69ab1993ba 100644
+--- a/net/sched/cls_u32.c
++++ b/net/sched/cls_u32.c
+@@ -852,9 +852,6 @@ static int u32_change(struct net *net, struct sk_buff *in_skb,
+ 	u32 htid, flags = 0;
+ 	size_t sel_size;
+ 	int err;
+-#ifdef CONFIG_CLS_U32_PERF
+-	size_t size;
+-#endif
+ 
+ 	if (!opt) {
+ 		if (handle) {
+@@ -1022,15 +1019,15 @@ static int u32_change(struct net *net, struct sk_buff *in_skb,
+ 		goto erridr;
+ 	}
+ 
+-	n = kzalloc(offsetof(typeof(*n), sel) + sel_size, GFP_KERNEL);
++	n = kzalloc(struct_size(n, sel.keys, s->nkeys), GFP_KERNEL);
+ 	if (n == NULL) {
+ 		err = -ENOBUFS;
+ 		goto erridr;
+ 	}
+ 
+ #ifdef CONFIG_CLS_U32_PERF
+-	size = sizeof(struct tc_u32_pcnt) + s->nkeys * sizeof(u64);
+-	n->pf = __alloc_percpu(size, __alignof__(struct tc_u32_pcnt));
++	n->pf = __alloc_percpu(struct_size(n->pf, kcnts, s->nkeys),
++			       __alignof__(struct tc_u32_pcnt));
+ 	if (!n->pf) {
+ 		err = -ENOBUFS;
+ 		goto errfree;
+@@ -1294,8 +1291,7 @@ static int u32_dump(struct net *net, struct tcf_proto *tp, void *fh,
+ 		int cpu;
+ #endif
+ 
+-		if (nla_put(skb, TCA_U32_SEL,
+-			    sizeof(n->sel) + n->sel.nkeys*sizeof(struct tc_u32_key),
++		if (nla_put(skb, TCA_U32_SEL, struct_size(&n->sel, keys, n->sel.nkeys),
+ 			    &n->sel))
+ 			goto nla_put_failure;
+ 
+@@ -1345,9 +1341,7 @@ static int u32_dump(struct net *net, struct tcf_proto *tp, void *fh,
+ 				goto nla_put_failure;
+ 		}
+ #ifdef CONFIG_CLS_U32_PERF
+-		gpf = kzalloc(sizeof(struct tc_u32_pcnt) +
+-			      n->sel.nkeys * sizeof(u64),
+-			      GFP_KERNEL);
++		gpf = kzalloc(struct_size(gpf, kcnts, n->sel.nkeys), GFP_KERNEL);
+ 		if (!gpf)
+ 			goto nla_put_failure;
+ 
+@@ -1361,9 +1355,7 @@ static int u32_dump(struct net *net, struct tcf_proto *tp, void *fh,
+ 				gpf->kcnts[i] += pf->kcnts[i];
+ 		}
+ 
+-		if (nla_put_64bit(skb, TCA_U32_PCNT,
+-				  sizeof(struct tc_u32_pcnt) +
+-				  n->sel.nkeys * sizeof(u64),
++		if (nla_put_64bit(skb, TCA_U32_PCNT, struct_size(gpf, kcnts, n->sel.nkeys),
+ 				  gpf, TCA_U32_PAD)) {
+ 			kfree(gpf);
+ 			goto nla_put_failure;
+-- 
+2.27.0
 
-Thanks!
-Christian
