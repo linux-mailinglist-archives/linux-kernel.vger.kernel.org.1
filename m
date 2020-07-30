@@ -2,102 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D201E233BDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 01:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DBA233BEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 01:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730873AbgG3XCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 19:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730490AbgG3XCk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 19:02:40 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7569BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 16:02:40 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id k1so5531723pjt.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 16:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t9jU7MuX4adB1Ml6Zb+VWg0mbwqZhtdikGa8sw5Pn1I=;
-        b=O1X9eS8BbahmnjH+4oO3ugldb0eDFwjbp6tvfyrhF3/SjXk+JjK23sNdg88AOCbpkW
-         eCYCXTICIQrhLA+43RlNZuOPKSySOvU3qc9RG7Wt50J29NtGt3zBU0ni91qTjRN3YHB6
-         DLhl/DGMV+dliUuvkObptZqIESVjkqBPbEWbk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t9jU7MuX4adB1Ml6Zb+VWg0mbwqZhtdikGa8sw5Pn1I=;
-        b=YfuX1saEhMCaxNEVJDPq//sSrDLVSppJ1Pu3/FV10MBoarpxESzXEpsRIYJWxZLfTu
-         OTPGKv6Kyf5HgiwqjfhhtVpArfNT74QKNrLHn2+OjYCfomcPAeIxYXla97P7Dwi9IIEU
-         y6lVBW4E3gHzM4V8feP9HGeuhSHLZxlSG+OWmIat940aoKZOd66sfS8hfpiGkR/wujuC
-         vr5NdNDvAu7N/bg7o1Ydfn8/S9JQM7goqsIkR2cqFK9eaH7ObxkpSqTTYiqxXdPwyo9Q
-         8eKGt8nSJb0s2FEToJUtVPNqJzRdMCcuCXguHdpunH4SAeJd77RsMDBCpx8YvMVqDsYd
-         srwQ==
-X-Gm-Message-State: AOAM530nbPfPd8tDMU3zi8bdrWy6WWKdXpww9HDjb9/4HJOPr7XkLKJ3
-        Tr3anPJDaOe2JrTzT9siLHTNRQ==
-X-Google-Smtp-Source: ABdhPJysynISxwBHGwE+taUYOzluALgdGlTi5dReU5a+mLMNu+iZ7y4ARsNxkHOpzCWplvNTQ07LIw==
-X-Received: by 2002:a17:902:8206:: with SMTP id x6mr1331809pln.328.1596150159917;
-        Thu, 30 Jul 2020 16:02:39 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id s23sm6948699pjs.47.2020.07.30.16.02.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 16:02:39 -0700 (PDT)
-Date:   Thu, 30 Jul 2020 16:02:38 -0700
-From:   Prashant Malani <pmalani@chromium.org>
-To:     Azhar Shaikh <azhar.shaikh@intel.com>
-Cc:     bleung@chromium.org, enric.balletbo@collabora.com,
-        groeck@chromium.org, linux-kernel@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, utkarsh.h.patel@intel.com,
-        casey.g.bowman@intel.com, rajmohan.mani@intel.com
-Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Avoid setting usb
- role during disconnect
-Message-ID: <20200730230238.GD3145664@google.com>
-References: <20200730225609.7395-1-azhar.shaikh@intel.com>
- <20200730225609.7395-3-azhar.shaikh@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730225609.7395-3-azhar.shaikh@intel.com>
+        id S1730756AbgG3XIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 19:08:21 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:42714 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729995AbgG3XIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 19:08:20 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 19C2E1A0605;
+        Fri, 31 Jul 2020 01:08:05 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AE8491A1498;
+        Fri, 31 Jul 2020 01:08:00 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 351A040310;
+        Fri, 31 Jul 2020 01:07:55 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     wim@linux-watchdog.org, linux@roeck-us.net, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V4 1/2] watchdog: imx7ulp: Strictly follow the sequence for wdog operations
+Date:   Fri, 31 Jul 2020 07:03:32 +0800
+Message-Id: <1596150213-31638-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Azhar,
+According to reference manual, the i.MX7ULP WDOG's operations except
+refresh should follow below sequence:
 
-On Thu, Jul 30, 2020 at 03:56:09PM -0700, Azhar Shaikh wrote:
-> On disconnect port partner is removed and usb role is set to NONE.
-> But then in cros_typec_port_update() the role is set again.
-> Avoid this by moving usb_role_switch_set_role() to
-> cros_typec_configure_mux().
-> 
-> Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
-> Suggested-by: Prashant Malani <pmalani@chromium.org>
-> ---
->  drivers/platform/chrome/cros_ec_typec.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index eb4713b7ae14..df97431b2275 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -515,6 +515,12 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
->  	if (ret)
->  		return ret;
->  
-> +	ret = usb_role_switch_set_role(typec->ports[port_num]->role_sw,
-> +				       pd_ctrl->role & PD_CTRL_RESP_ROLE_DATA
-> +				       ? USB_ROLE_HOST : USB_ROLE_DEVICE);
-> +	if (ret)
-> +		return ret;
+1. disable global interrupts;
+2. unlock the wdog and wait unlock bit set;
+3. reconfigure the wdog and wait for reconfiguration bit set;
+4. enabel global interrupts.
 
-Since this was the last switch being configured, please maintain the
-same order and add this at the end of the function, after the if-else if
-block.
+Strictly follow the recommended sequence can make it more robust.
 
-Best regards,
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+changes since V3:
+	- wdog timeout should NOT update when setting timeout register failed.
+---
+ drivers/watchdog/imx7ulp_wdt.c | 74 ++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 61 insertions(+), 13 deletions(-)
 
--Prashant
+diff --git a/drivers/watchdog/imx7ulp_wdt.c b/drivers/watchdog/imx7ulp_wdt.c
+index 7993c8c..badfc0b 100644
+--- a/drivers/watchdog/imx7ulp_wdt.c
++++ b/drivers/watchdog/imx7ulp_wdt.c
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+@@ -36,6 +37,7 @@
+ #define DEFAULT_TIMEOUT	60
+ #define MAX_TIMEOUT	128
+ #define WDOG_CLOCK_RATE	1000
++#define WDOG_WAIT_TIMEOUT	20
+ 
+ static bool nowayout = WATCHDOG_NOWAYOUT;
+ module_param(nowayout, bool, 0000);
+@@ -48,17 +50,40 @@ struct imx7ulp_wdt_device {
+ 	struct clk *clk;
+ };
+ 
+-static void imx7ulp_wdt_enable(struct watchdog_device *wdog, bool enable)
++static int imx7ulp_wdt_wait(void __iomem *base, u32 mask)
++{
++	u32 val = readl(base + WDOG_CS);
++
++	if (!(val & mask) && readl_poll_timeout_atomic(base + WDOG_CS, val,
++						       val & mask, 0,
++						       WDOG_WAIT_TIMEOUT))
++		return -ETIMEDOUT;
++
++	return 0;
++}
++
++static int imx7ulp_wdt_enable(struct watchdog_device *wdog, bool enable)
+ {
+ 	struct imx7ulp_wdt_device *wdt = watchdog_get_drvdata(wdog);
+ 
+ 	u32 val = readl(wdt->base + WDOG_CS);
++	int ret;
+ 
++	local_irq_disable();
+ 	writel(UNLOCK, wdt->base + WDOG_CNT);
++	ret = imx7ulp_wdt_wait(wdt->base, WDOG_CS_ULK);
++	if (ret)
++		goto enable_out;
+ 	if (enable)
+ 		writel(val | WDOG_CS_EN, wdt->base + WDOG_CS);
+ 	else
+ 		writel(val & ~WDOG_CS_EN, wdt->base + WDOG_CS);
++	imx7ulp_wdt_wait(wdt->base, WDOG_CS_RCS);
++
++enable_out:
++	local_irq_enable();
++
++	return ret;
+ }
+ 
+ static bool imx7ulp_wdt_is_enabled(void __iomem *base)
+@@ -79,17 +104,12 @@ static int imx7ulp_wdt_ping(struct watchdog_device *wdog)
+ 
+ static int imx7ulp_wdt_start(struct watchdog_device *wdog)
+ {
+-
+-	imx7ulp_wdt_enable(wdog, true);
+-
+-	return 0;
++	return imx7ulp_wdt_enable(wdog, true);
+ }
+ 
+ static int imx7ulp_wdt_stop(struct watchdog_device *wdog)
+ {
+-	imx7ulp_wdt_enable(wdog, false);
+-
+-	return 0;
++	return imx7ulp_wdt_enable(wdog, false);
+ }
+ 
+ static int imx7ulp_wdt_set_timeout(struct watchdog_device *wdog,
+@@ -97,22 +117,37 @@ static int imx7ulp_wdt_set_timeout(struct watchdog_device *wdog,
+ {
+ 	struct imx7ulp_wdt_device *wdt = watchdog_get_drvdata(wdog);
+ 	u32 val = WDOG_CLOCK_RATE * timeout;
++	int ret;
+ 
++	local_irq_disable();
+ 	writel(UNLOCK, wdt->base + WDOG_CNT);
++	ret = imx7ulp_wdt_wait(wdt->base, WDOG_CS_ULK);
++	if (ret)
++		goto timeout_out;
+ 	writel(val, wdt->base + WDOG_TOVAL);
++	imx7ulp_wdt_wait(wdt->base, WDOG_CS_RCS);
+ 
+ 	wdog->timeout = timeout;
+ 
+-	return 0;
++timeout_out:
++	local_irq_enable();
++
++	return ret;
+ }
+ 
+ static int imx7ulp_wdt_restart(struct watchdog_device *wdog,
+ 			       unsigned long action, void *data)
+ {
+ 	struct imx7ulp_wdt_device *wdt = watchdog_get_drvdata(wdog);
++	int ret;
++
++	ret = imx7ulp_wdt_enable(wdog, true);
++	if (ret)
++		return ret;
+ 
+-	imx7ulp_wdt_enable(wdog, true);
+-	imx7ulp_wdt_set_timeout(&wdt->wdd, 1);
++	ret = imx7ulp_wdt_set_timeout(&wdt->wdd, 1);
++	if (ret)
++		return ret;
+ 
+ 	/* wait for wdog to fire */
+ 	while (true)
+@@ -136,19 +171,30 @@ static const struct watchdog_info imx7ulp_wdt_info = {
+ 		    WDIOF_MAGICCLOSE,
+ };
+ 
+-static void imx7ulp_wdt_init(void __iomem *base, unsigned int timeout)
++static int imx7ulp_wdt_init(void __iomem *base, unsigned int timeout)
+ {
+ 	u32 val;
++	int ret;
+ 
++	local_irq_disable();
+ 	/* unlock the wdog for reconfiguration */
+ 	writel_relaxed(UNLOCK_SEQ0, base + WDOG_CNT);
+ 	writel_relaxed(UNLOCK_SEQ1, base + WDOG_CNT);
++	ret = imx7ulp_wdt_wait(base, WDOG_CS_ULK);
++	if (ret)
++		goto init_out;
+ 
+ 	/* set an initial timeout value in TOVAL */
+ 	writel(timeout, base + WDOG_TOVAL);
+ 	/* enable 32bit command sequence and reconfigure */
+ 	val = WDOG_CS_CMD32EN | WDOG_CS_CLK | WDOG_CS_UPDATE;
+ 	writel(val, base + WDOG_CS);
++	imx7ulp_wdt_wait(base, WDOG_CS_RCS);
++
++init_out:
++	local_irq_enable();
++
++	return ret;
+ }
+ 
+ static void imx7ulp_wdt_action(void *data)
+@@ -199,7 +245,9 @@ static int imx7ulp_wdt_probe(struct platform_device *pdev)
+ 	watchdog_stop_on_reboot(wdog);
+ 	watchdog_stop_on_unregister(wdog);
+ 	watchdog_set_drvdata(wdog, imx7ulp_wdt);
+-	imx7ulp_wdt_init(imx7ulp_wdt->base, wdog->timeout * WDOG_CLOCK_RATE);
++	ret = imx7ulp_wdt_init(imx7ulp_wdt->base, wdog->timeout * WDOG_CLOCK_RATE);
++	if (ret)
++		return ret;
+ 
+ 	return devm_watchdog_register_device(dev, wdog);
+ }
+-- 
+2.7.4
+
