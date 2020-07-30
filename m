@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224AA232E1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BDD232D2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730273AbgG3IRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48730 "EHLO mail.kernel.org"
+        id S1729488AbgG3IHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:07:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729761AbgG3IJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:09:59 -0400
+        id S1729067AbgG3IH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:07:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE03E2070B;
-        Thu, 30 Jul 2020 08:09:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52AFF2070B;
+        Thu, 30 Jul 2020 08:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096599;
-        bh=5gNHqO+GCSod2CKxpuKdHoXKiG22bORog2a1CSBJxns=;
+        s=default; t=1596096446;
+        bh=c/jtR4n24784r3R7B3U99OHrP95Dli3S/2u5imxz9vU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bk3pL+7i1GEcBvnU2j0RrisSrjlQhecYNPNi307g/lHbDFD3Y/0Y0cQHQZgElYvyK
-         rBOs1EtRTqAAlPUWopH7MLJRkBj/vVd/ifpXCMWpqQat3SI+ISvb3kXOyJKwRmPc+6
-         kVgZa8HdgMKcasgdKNAgieX5CskPPAJS6sEEFhqs=
+        b=on4N1UpeIZTPv79opa8UF9arSaG6anFM0bUaIWBLVKoCgEqD35M2R0BatzzDv+Iyv
+         QkMtftEilveeXGfpaO5Id4ZD9grGucRMN8TV+S/aVBv1VEqeno9oJBLuQPAuxhqMhj
+         GcCC30bZgrlDWv3LhMDh00EXWWotdfRPdLHZfxP4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 19/61] net: smc91x: Fix possible memory leak in smc_drv_probe()
-Date:   Thu, 30 Jul 2020 10:04:37 +0200
-Message-Id: <20200730074421.779574780@linuxfoundation.org>
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 12/17] sctp: shrink stream outq only when new outcnt < old outcnt
+Date:   Thu, 30 Jul 2020 10:04:38 +0200
+Message-Id: <20200730074421.060144516@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
-References: <20200730074420.811058810@linuxfoundation.org>
+In-Reply-To: <20200730074420.449233408@linuxfoundation.org>
+References: <20200730074420.449233408@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit bca9749b1aa23d964d3ab930938af66dbf887f15 ]
+[ Upstream commit 8f13399db22f909a35735bf8ae2f932e0c8f0e30 ]
 
-If try_toggle_control_gpio() failed in smc_drv_probe(), free_netdev(ndev)
-should be called to free the ndev created earlier. Otherwise, a memleak
-will occur.
+It's not necessary to go list_for_each for outq->out_chunk_list
+when new outcnt >= old outcnt, as no chunk with higher sid than
+new (outcnt - 1) exists in the outqueue.
 
-Fixes: 7d2911c43815 ("net: smc91x: Fix gpios for device tree based booting")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+While at it, also move the list_for_each code in a new function
+sctp_stream_shrink_out(), which will be used in the next patch.
+
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/smsc/smc91x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/sctp/stream.c |   21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
-index b0c72167badec..3c221ca2cc125 100644
---- a/drivers/net/ethernet/smsc/smc91x.c
-+++ b/drivers/net/ethernet/smsc/smc91x.c
-@@ -2294,7 +2294,7 @@ static int smc_drv_probe(struct platform_device *pdev)
- 		ret = try_toggle_control_gpio(&pdev->dev, &lp->power_gpio,
- 					      "power", 0, 0, 100);
- 		if (ret)
--			return ret;
-+			goto out_free_netdev;
+--- a/net/sctp/stream.c
++++ b/net/sctp/stream.c
+@@ -97,17 +97,11 @@ static size_t fa_index(struct flex_array
+ 	return index;
+ }
  
- 		/*
- 		 * Optional reset GPIO configured? Minimum 100 ns reset needed
-@@ -2303,7 +2303,7 @@ static int smc_drv_probe(struct platform_device *pdev)
- 		ret = try_toggle_control_gpio(&pdev->dev, &lp->reset_gpio,
- 					      "reset", 0, 0, 100);
- 		if (ret)
--			return ret;
-+			goto out_free_netdev;
+-/* Migrates chunks from stream queues to new stream queues if needed,
+- * but not across associations. Also, removes those chunks to streams
+- * higher than the new max.
+- */
+-static void sctp_stream_outq_migrate(struct sctp_stream *stream,
+-				     struct sctp_stream *new, __u16 outcnt)
++static void sctp_stream_shrink_out(struct sctp_stream *stream, __u16 outcnt)
+ {
+ 	struct sctp_association *asoc;
+ 	struct sctp_chunk *ch, *temp;
+ 	struct sctp_outq *outq;
+-	int i;
  
- 		/*
- 		 * Need to wait for optional EEPROM to load, max 750 us according
--- 
-2.25.1
-
+ 	asoc = container_of(stream, struct sctp_association, stream);
+ 	outq = &asoc->outqueue;
+@@ -131,6 +125,19 @@ static void sctp_stream_outq_migrate(str
+ 
+ 		sctp_chunk_free(ch);
+ 	}
++}
++
++/* Migrates chunks from stream queues to new stream queues if needed,
++ * but not across associations. Also, removes those chunks to streams
++ * higher than the new max.
++ */
++static void sctp_stream_outq_migrate(struct sctp_stream *stream,
++				     struct sctp_stream *new, __u16 outcnt)
++{
++	int i;
++
++	if (stream->outcnt > outcnt)
++		sctp_stream_shrink_out(stream, outcnt);
+ 
+ 	if (new) {
+ 		/* Here we actually move the old ext stuff into the new
 
 
