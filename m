@@ -2,213 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FBC233A16
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 22:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E669E2339FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 22:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730453AbgG3UyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 16:54:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728809AbgG3UyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 16:54:19 -0400
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D90121883
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 20:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596142458;
-        bh=kjsUMa7W/2716/E66O9BRcoDTvK1hMoraL3jFZhSbhQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o9dMLI7V7xLay/4FEvc5ZBCLpWIPaCqr6MXAhd3v41abR8skQqLAzbrq08+887reU
-         wRySApjBQKeQ5VZq/RrsOM5e6cbno9eOfSVO8kC1+jgM4mvZwzHMUrYvd4E6R5+giP
-         WaOsgZjN1HyUHoKP9cFT3MNatWBEDqakktTzyWTE=
-Received: by mail-wr1-f50.google.com with SMTP id 88so26091751wrh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 13:54:18 -0700 (PDT)
-X-Gm-Message-State: AOAM532Ue1X/9i5/UrBH8JSpMDQnQuYB7pYmssqrX910wCgGgfPhp3kM
-        uOb47jQBynFl9SZAUv17ss/8AJa1FvSB0H3IEfihBg==
-X-Google-Smtp-Source: ABdhPJzKLFb8fOLe7ajuISL9Za2Aj4/QcGOi3NXA9PDpcRSYfLFS4b/xrq0MWMJYlHADmhXcVVN9ubUqp0AHIqmO1Bk=
-X-Received: by 2002:adf:fa85:: with SMTP id h5mr509001wrr.18.1596142456738;
- Thu, 30 Jul 2020 13:54:16 -0700 (PDT)
+        id S1728750AbgG3Us5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 16:48:57 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50208 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbgG3Us4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 16:48:56 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06UKgHEh101584;
+        Thu, 30 Jul 2020 20:48:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Cqjec/JmJLo7a5VR/JGr2Y+AIOuHwIGHZrb6qGXqEIw=;
+ b=ciwC00u6FHi2+R0x/txxaIzTO2qoFcexcEIhCYoUaE/+dwmKZdvBI8hyBxuqGxFLWpxp
+ 9ntMbAL6HK55vNU5fyrXeSiPBc5Z5XRVRZ4J3PvdQ9GDsDTOp69bs/Msh9MD/wnS/0+K
+ SGyNfYKtS5dI62EOL8+iI8aPeQJ44dkmIALCgWQoAhHqoqUe6Iog/iVYS+Fu02Tb8VJZ
+ MG9m3TE/uK32EfoqICucDUORK10MfudmTHDmfp/oiSrtdUcjHp7SWXfh+ew0rzh8ugGA
+ tMB5OmKwfsmJqfK9w4APUIXHw26fmr3CK2835ENRlFNPAwJJhJMVLY21BUqOdgE+IeGI CQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 32hu1jwwf8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 30 Jul 2020 20:48:26 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06UKhSH7161581;
+        Thu, 30 Jul 2020 20:48:26 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 32hu5xcnst-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Jul 2020 20:48:26 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06UKmGi1032069;
+        Thu, 30 Jul 2020 20:48:21 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 30 Jul 2020 13:48:15 -0700
+Date:   Thu, 30 Jul 2020 16:57:05 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Pengfei Li <fly@kernel.page>, akpm@linux-foundation.org,
+        bmt@zurich.ibm.com, dledford@redhat.com, willy@infradead.org,
+        vbabka@suse.cz, kirill.shutemov@linux.intel.com, jgg@ziepe.ca,
+        alex.williamson@redhat.com, cohuck@redhat.com,
+        daniel.m.jordan@oracle.com, dbueso@suse.de, jglisse@redhat.com,
+        jhubbard@nvidia.com, ldufour@linux.ibm.com,
+        Liam.Howlett@oracle.com, peterz@infradead.org, cl@linux.com,
+        jack@suse.cz, rientjes@google.com, walken@google.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 2/2] mm, util: account_locked_vm() does not hold mmap_lock
+Message-ID: <20200730205705.ityqlyeswzo5dkow@ca-dmjordan1.us.oracle.com>
+References: <20200726080224.205470-1-fly@kernel.page>
+ <20200726080224.205470-2-fly@kernel.page>
+ <alpine.LSU.2.11.2007291121280.4649@eggly.anvils>
 MIME-Version: 1.0
-References: <20200728131050.24443-1-madvenka@linux.microsoft.com>
- <CALCETrVy5OMuUx04-wWk9FJbSxkrT2vMfN_kANinudrDwC4Cig@mail.gmail.com> <6540b4b7-3f70-adbf-c922-43886599713a@linux.microsoft.com>
-In-Reply-To: <6540b4b7-3f70-adbf-c922-43886599713a@linux.microsoft.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 30 Jul 2020 13:54:03 -0700
-X-Gmail-Original-Message-ID: <CALCETrWnNR5v3ZCLfBVQGYK8M0jAvQMaAc9uuO05kfZuh-4d6w@mail.gmail.com>
-Message-ID: <CALCETrWnNR5v3ZCLfBVQGYK8M0jAvQMaAc9uuO05kfZuh-4d6w@mail.gmail.com>
-Subject: Re: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2007291121280.4649@eggly.anvils>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9698 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007300145
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9698 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 mlxlogscore=999
+ malwarescore=0 impostorscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007300145
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 7:24 AM Madhavan T. Venkataraman
-<madvenka@linux.microsoft.com> wrote:
+On Wed, Jul 29, 2020 at 12:21:11PM -0700, Hugh Dickins wrote:
+> On Sun, 26 Jul 2020, Pengfei Li wrote:
+> 
+> > Since mm->locked_vm is already an atomic counter, account_locked_vm()
+> > does not need to hold mmap_lock.
+> 
+> I am worried that this patch, already added to mmotm, along with its
+> 1/2 making locked_vm an atomic64, might be rushed into v5.9 with just
+> that two-line commit description, and no discussion at all.
+> 
+> locked_vm belongs fundamentally to mm/mlock.c, and the lock to guard
+> it is mmap_lock; and mlock() has some complicated stuff to do under
+> that lock while it decides how to adjust locked_vm.
 >
-> Sorry for the delay. I just wanted to think about this a little.
-> In this email, I will respond to your first suggestion. I will
-> respond to the rest in separate emails if that is alright with
-> you.
->
-> On 7/28/20 12:31 PM, Andy Lutomirski wrote:
->
-> On Jul 28, 2020, at 6:11 AM, madvenka@linux.microsoft.com wrote:
->
-> =EF=BB=BFFrom: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->
-> The kernel creates the trampoline mapping without any permissions. When
-> the trampoline is executed by user code, a page fault happens and the
-> kernel gets control. The kernel recognizes that this is a trampoline
-> invocation. It sets up the user registers based on the specified
-> register context, and/or pushes values on the user stack based on the
-> specified stack context, and sets the user PC to the requested target
-> PC. When the kernel returns, execution continues at the target PC.
-> So, the kernel does the work of the trampoline on behalf of the
-> application.
->
-> This is quite clever, but now I=E2=80=99m wondering just how much kernel =
-help
-> is really needed. In your series, the trampoline is an non-executable
-> page.  I can think of at least two alternative approaches, and I'd
-> like to know the pros and cons.
->
-> 1. Entirely userspace: a return trampoline would be something like:
->
-> 1:
-> pushq %rax
-> pushq %rbc
-> pushq %rcx
-> ...
-> pushq %r15
-> movq %rsp, %rdi # pointer to saved regs
-> leaq 1b(%rip), %rsi # pointer to the trampoline itself
-> callq trampoline_handler # see below
->
-> You would fill a page with a bunch of these, possibly compacted to get
-> more per page, and then you would remap as many copies as needed.  The
-> 'callq trampoline_handler' part would need to be a bit clever to make
-> it continue to work despite this remapping.  This will be *much*
-> faster than trampfd. How much of your use case would it cover?  For
-> the inverse, it's not too hard to write a bit of asm to set all
-> registers and jump somewhere.
->
-> Let me state what I have understood about this suggestion. Correct me if
-> I get anything wrong. If you don't mind, I will also take the liberty
-> of generalizing and paraphrasing your suggestion.
->
-> The goal is to create two page mappings that are adjacent to each other:
->
-> - a code page that contains template code for a trampoline. Since the
->  template code would tend to be small in size, pack as many of them
->  as possible within a page to conserve memory. In other words, create
->  an array of the template code fragments. Each element in the array
->  would be used for one trampoline instance.
->
-> - a data page that contains an array of data elements. Corresponding
->  to each code element in the code page, there would be a data element
->  in the data page that would contain data that is specific to a
->  trampoline instance.
->
-> - Code will access data using PC-relative addressing.
->
-> The management of the code pages and allocation for each trampoline
-> instance would all be done in user space.
->
-> Is this the general idea?
+> It is very easy to convert an unsigned long to an atomic64_t, but
+> "atomic read, check limit and do stuff, atomic add" does not give
+> the same guarantee as holding the right lock around it all.
 
-Yes.
+Yes, this is why I withdrew my attempt to do something similar last year, I
+didn't want to make the accounting racy.  Stack and heap growing and mremap
+would be affected in addition to mlock.
 
->
-> Creating a code page
-> --------------------
->
-> We can do this in one of the following ways:
->
-> - Allocate a writable page at run time, write the template code into
->   the page and have execute permissions on the page.
->
-> - Allocate a writable page at run time, write the template code into
->   the page and remap the page with just execute permissions.
->
-> - Allocate a writable page at run time, write the template code into
->   the page, write the page into a temporary file and map the file with
->   execute permissions.
->
-> - Include the template code in a code page at build time itself and
->   just remap the code page each time you need a code page.
+It'd help to hear more about the motivation for this.
 
-This latter part shouldn't need any special permissions as far as I know.
-
->
-> Pros and Cons
-> -------------
->
-> As long as the OS provides the functionality to do this and the security
-> subsystem in the OS allows the actions, this is totally feasible. If not,
-> we need something like trampfd.
->
-> As Floren mentioned, libffi does implement something like this for MACH.
->
-> In fact, in my libffi changes, I use trampfd only after all the other met=
-hods
-> have failed because of security settings.
->
-> But the above approach only solves the problem for this simple type of
-> trampoline. It does not provide a framework for addressing more complex t=
-ypes
-> or even other forms of dynamic code.
->
-> Also, each application would need to implement this solution for itself
-> as opposed to relying on one implementation provided by the kernel.
-
-I would argue this is a benefit.  If the whole implementation is in
-userspace, there is no ABI compatibility issue.  The user program
-contains the trampoline code and the code that uses it.
-
->
-> Trampfd-based solution
-> ----------------------
->
-> I outlined an enhancement to trampfd in a response to David Laight. In th=
-is
-> enhancement, the kernel is the one that would set up the code page.
->
-> The kernel would call an arch-specific support function to generate the
-> code required to load registers, push values on the stack and jump to a P=
-C
-> for a trampoline instance based on its current context. The trampoline
-> instance data could be baked into the code.
->
-> My initial idea was to only have one trampoline instance per page. But I
-> think I can implement multiple instances per page. I just have to manage
-> the trampfd file private data and VMA private data accordingly to map an
-> element in a code page to its trampoline object.
->
-> The two approaches are similar except for the detail about who sets up
-> and manages the trampoline pages. In both approaches, the performance pro=
-blem
-> is addressed. But trampfd can be used even when security settings are
-> restrictive.
->
-> Is my solution acceptable?
-
-Perhaps.  In general, before adding a new ABI to the kernel, it's nice
-to understand how it's better than doing the same thing in userspace.
-Saying that it's easier for user code to work with if it's in the
-kernel isn't necessarily an adequate justification.
-
-Why would remapping two pages of actual application text ever fail?
+Daniel
