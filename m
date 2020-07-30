@@ -2,67 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6E4232E80
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3521F232E96
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730381AbgG3IUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:20:30 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42752 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730010AbgG3IU0 (ORCPT
+        id S1729146AbgG3IWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726194AbgG3IWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:20:26 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1k13nb-0003Fu-6q; Thu, 30 Jul 2020 08:20:23 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Oded Gabbay <oded.gabbay@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Omer Shpigelman <oshpigelman@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] habanalabs: fix incorrect check on failed workqueue create
-Date:   Thu, 30 Jul 2020 09:20:22 +0100
-Message-Id: <20200730082022.5557-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 30 Jul 2020 04:22:32 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347EAC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 01:22:32 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id c15so9641061edj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 01:22:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P5tO026HCWhunpPtUraf4hK8sVUtc5cHl/ZsmE/rYmg=;
+        b=U9NLMWn24gZt8WtxgpL5aoU3QKrTkHkD6/dcKdC4LphBD4cX3BQGCLeuyfX+75BWAp
+         oqmNE3yIYkcCRPpODyKk+EaQ2hBT+t0Qe4YmIMMEwbJn9lTonhzBwA/xe9xYTydOfYSK
+         HA1PpxohUeLcNPINlNAKk4SvZ6hLfDaa9E0dhHIP4akiH8tF2bh3FZoRYtpRhp+Nx6UC
+         1PYaVfzDygnlZ1Uc9IkJRDKBXmM43Cfw8BMqnCjjpyeKIfSWZRV17ug4/S/amlstz+td
+         2VWsuOyw5uPhwFiREY/DqcBiUTXuo/N+Cyo5k7e2zuOQ+N/GH5dvcSOu28Foo4wY8B2w
+         L0yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P5tO026HCWhunpPtUraf4hK8sVUtc5cHl/ZsmE/rYmg=;
+        b=FM4w8zgvLJZe+6/LaMVrad9kcyEcKALQODoXQS5GZBN9YV/NDZaCRmoQGFaYqBY+XT
+         kMj7yuXH/S5qBhJ2OdAhSpB53mTM/DdjUgSrjOCByis+bnmyq+c8zTosCdXNzmvCvzlk
+         lEQB8G4fIm6zEMYsWxKNXwWKtBEUyZU7yKkxGbrTDmmTNuXwxzhntnSdB7CzIaoIKiYc
+         TyElXT7eFOF+5J5xaZONM6n3AY/8i3JQNMHotUNrgo/FpfnhY3cE9QSL81kt9+XmLcZZ
+         GgbCtZ9rzghfksityLP+8l0HkaFGbZ0YGuyczLFxFfrgzr/cX/CFHsCUXAPlfodPu23x
+         96Og==
+X-Gm-Message-State: AOAM5315AVhtNfsmG8ikhOWa7KGJXPYfhn7bKSa/utL4535sfeeo/pSG
+        D60E8wHr2IDPxdeokQeyt8U=
+X-Google-Smtp-Source: ABdhPJz6I16zjQSU3JvaPfMdjbrDhwnziZ8PJqlqVpoGsGVBZPF4lHPfeb/btve/9CoadU16h9iMfg==
+X-Received: by 2002:a05:6402:13d0:: with SMTP id a16mr1491655edx.269.1596097350964;
+        Thu, 30 Jul 2020 01:22:30 -0700 (PDT)
+Received: from skbuf ([188.26.57.97])
+        by smtp.gmail.com with ESMTPSA id b18sm4847551ejc.41.2020.07.30.01.22.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 01:22:30 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 11:22:28 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
+Cc:     Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
+        will@kernel.org, paulmck@kernel.org, mw@semihalf.com,
+        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>
+Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level
+ IRQ time accounting
+Message-ID: <20200730082228.r24zgdeiofvwxijm@skbuf>
+References: <20200729033934.22349-1-alison.wang@nxp.com>
+ <877dumbtoi.fsf@kurt>
+ <20200729094943.lsmhsqlnl7rlnl6f@skbuf>
+ <87mu3ho48v.fsf@kurt>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mu3ho48v.fsf@kurt>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Jul 30, 2020 at 09:23:44AM +0200, Kurt Kanzenbach wrote:
+> Hi Vladimir,
+> 
+> On Wed Jul 29 2020, Vladimir Oltean wrote:
+> > For more context, here is my original report of the issue:
+> > https://lkml.org/lkml/2020/6/4/1062
+> >
+> > Just like you, I could not reproduce the RCU stalls and system hang on a
+> > 5.6-rt kernel, just on mainline and derivatives, using the plain
+> > defconfig.
+> >
+> > The issue is not specific to Layerscape or i.MX8, but rather I was able
+> > to see the same behavior on Marvell Armada 37xx as well as Qualcomm
+> > MSM8976.
+> >
+> > So, while of course I agree that disabling IRQ time accounting for arm64
+> > isn't a real solution, it isn't by far an exaggerated proposal either.
+> > Nonetheless, the patch is just a RFC and should be treated as such. We
+> > are at a loss when it comes to debugging this any further and we would
+> > appreciate some pointers.
+> 
+> Yeah, sure. I'll try to reproduce this issue first. So it triggers with:
+> 
+>  * arm64
+>  * mainline, not -rt kernel
+>  * opened serial console
+>  * irq accounting enabled
+> 
+> Anything else?
+> 
+> Thanks,
+> Kurt
 
-The null check on a failed workqueue create is currently null checking
-hdev->cq_wq rather than the pointer hdev->cq_wq[i] and so the test
-will never be true on a failed workqueue create. Fix this by checking
-hdev->cq_wq[i].
+Thanks for giving a helping hand, Kurt. The defconfig should be enough.
+In the interest of full disclosure, the only arm64 device on which we
+didn't reproduce this was the 16-core LX2160A. But we did reproduce on
+that with maxcpus=1 though. And also on msm8976 with all 8 cores booted.
+Just mentioning this in case you're testing on a 16-core system, you
+might want to reduce the number a bit.
 
-Addresses-Coverity: ("Dereference before null check")
-Fixes: 5574cb2194b1 ("habanalabs: Assign each CQ with its own work queue")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/misc/habanalabs/common/device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index be16b75bdfdb..35214a186913 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -288,7 +288,7 @@ static int device_early_init(struct hl_device *hdev)
- 	for (i = 0 ; i < hdev->asic_prop.completion_queues_count ; i++) {
- 		snprintf(workq_name, 32, "hl-free-jobs-%u", i);
- 		hdev->cq_wq[i] = create_singlethread_workqueue(workq_name);
--		if (hdev->cq_wq == NULL) {
-+		if (hdev->cq_wq[i] == NULL) {
- 			dev_err(hdev->dev, "Failed to allocate CQ workqueue\n");
- 			rc = -ENOMEM;
- 			goto free_cq_wq;
--- 
-2.27.0
-
+Thanks,
+-Vladimir
