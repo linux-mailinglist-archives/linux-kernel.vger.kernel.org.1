@@ -2,528 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53DC23316C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 14:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BA72331C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 14:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgG3MAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 08:00:30 -0400
-Received: from relay.sw.ru ([185.231.240.75]:56774 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728112AbgG3MAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 08:00:24 -0400
-Received: from [192.168.15.64] (helo=localhost.localdomain)
-        by relay3.sw.ru with esmtp (Exim 4.93)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1k17ED-0002xr-BS; Thu, 30 Jul 2020 15:00:05 +0300
-Subject: [PATCH 11/23] fs: Add /proc/namespaces/ directory
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-To:     viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
-        ebiederm@xmission.com, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, areber@redhat.com, serge@hallyn.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        ktkhai@virtuozzo.com
-Date:   Thu, 30 Jul 2020 15:00:19 +0300
-Message-ID: <159611041929.535980.14513096920129728440.stgit@localhost.localdomain>
-In-Reply-To: <159611007271.535980.15362304262237658692.stgit@localhost.localdomain>
-References: <159611007271.535980.15362304262237658692.stgit@localhost.localdomain>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S1727971AbgG3MOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 08:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727837AbgG3MOs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 08:14:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B456C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 05:14:48 -0700 (PDT)
+Message-Id: <20200730101404.956367860@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1596111286;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
+        bh=D0Liopx+HkCwUDJQOjOlS1OaTwAKKymChyHeiBxXa2E=;
+        b=xNpjJZVKV+sQQI0BHHnY8OiaadYJFiP/3ZE3CrC8lfVkPNnMcS9h1trTpcg10qz3HEF4D7
+        Xa5HICJ0JYZvKYKhk+lx/+2FRy66oCALYk4EFXSN7eArMowbOpH5CYNRhVdd8+HPJh+G/8
+        Tl+sCcAKLEMgcHh/OG0e90wzDgDXCWeNKcW0gfK2D1SPcnDQDhEoUKWmPjSWi8VWbdkQ46
+        CdPSMvCYGbPfugb+CHnUz3Wbw+WdbfrwElkSoKvZ352gXtri8sqD7eQ2YgB5yQ1+bAcKmU
+        DA8UpWlQBSgcy7+pSxljoV+S5cWm2ivsvBxGmRC0/7ANNHN/4ydG9uFp/uwiFA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1596111286;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
+        bh=D0Liopx+HkCwUDJQOjOlS1OaTwAKKymChyHeiBxXa2E=;
+        b=XC80Y8uzoi63ZbFiDmwbJHpwXJLJVLJS1uD9XnUj2BzDLIsk14C0W3z7xfKz9NeWPw8wsq
+        iw6zOQPEwoIc/DAQ==
+Date:   Thu, 30 Jul 2020 12:14:04 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [patch V3 0/3] posix-cpu-timers: Move expiry into task work context
+Content-transfer-encoding: 8-bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a new directory to show all namespaces, which can be
-accessed from this /proc tasks credentials.
+This is the 3rd installment of the series to move posix timer expiry heavy
+lifting out of hard interrupt context.
 
-Every /proc is related to a pid_namespace, and the pid_namespace
-is related to a user_namespace. The items, we show in this
-/proc/namespaces/ directory, are the namespaces,
-whose user_namespaces are the same as /proc's user_namespace,
-or their descendants.
+Running posix CPU timers in hard interrupt context has a few downsides:
 
-Say, /proc has pid_ns->user_ns, so in /proc/namespace we show
-only a ns, which is in_userns(pid_ns->user_ns, ns->user_ns).
+ - For PREEMPT_RT it cannot work as the expiry code needs to take
+   sighand lock, which is a 'sleeping spinlock' in RT. The original RT
+   approach of offloading the posix CPU timer handling into a high
+   priority thread was clumsy and provided no real benefit in general.
 
-The final result is like below:
+ - For fine grained accounting it's just wrong to run this in context of
+   the timer interrupt because that way a process specific cpu time is
+   accounted to the timer interrupt.
 
-# ls /proc/namespaces/ -l
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'cgroup:[4026531835]' -> 'cgroup:[4026531835]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'ipc:[4026531839]' -> 'ipc:[4026531839]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026531840]' -> 'mnt:[4026531840]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026531861]' -> 'mnt:[4026531861]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026532133]' -> 'mnt:[4026532133]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026532134]' -> 'mnt:[4026532134]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026532135]' -> 'mnt:[4026532135]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026532136]' -> 'mnt:[4026532136]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'net:[4026531993]' -> 'net:[4026531993]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'pid:[4026531836]' -> 'pid:[4026531836]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'time:[4026531834]' -> 'time:[4026531834]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'user:[4026531837]' -> 'user:[4026531837]'
-lrwxrwxrwx 1 root root 0 Jul 29 16:50 'uts:[4026531838]' -> 'uts:[4026531838]'
+ - Long running timer interrupts caused by a large amount of expiring
+   timers which can be created and armed by unpriviledged user space.
 
-Every namespace may be open like ordinary file in /proc/[pid]/ns.
+There is no hard requirement to expire them in interrupt context.
 
-Signed-off-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+If the signal is targeted at the task itself then it won't be delivered
+before the task returns to user space anyway. If the signal is targeted at
+a supervisor process then it might be slightly delayed, but posix CPU
+timers are inaccurate anyway due to the fact that they are tied to the
+tick.
+
+This series has no code dependency on the entry/KVM work, but a functional
+dependency vs. KVM handling task work before going into guest mode exists.
+It applies on mainline and passes all tests - except when KVM is active and
+timers are armed on the KVM threads. This particular issue is solved when
+the entry changes are applied as well. See below.
+
+The previous version can be found here:
+
+    https://lore.kernel.org/r/20200716201923.228696399@linutronix.de
+
+The changes versus V2 are:
+
+    - Address the ordering issues vs. RT (Peter)
+    - Move task work head into task struct (Oleg)
+    - Drop the last patch which is an optimization and needs more thought
+      now with the reworked state handling.
+
+The series is standalone except for the fact that KVM does not handle task
+work before entering a guest. The necessary changes for this are in
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/entry
+
+and the whole lot (entry + posix CPU timers) is available from:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git timers/posixtimer
+
+Thanks,
+
+	tglx
+
 ---
- fs/nsfs.c               |    2 
- fs/proc/Makefile        |    1 
- fs/proc/internal.h      |   16 ++
- fs/proc/namespaces.c    |  314 +++++++++++++++++++++++++++++++++++++++++++++++
- fs/proc/root.c          |   17 ++-
- include/linux/proc_fs.h |    1 
- 6 files changed, 345 insertions(+), 6 deletions(-)
- create mode 100644 fs/proc/namespaces.c
-
-diff --git a/fs/nsfs.c b/fs/nsfs.c
-index ee4be67d3a0b..61b789d2089c 100644
---- a/fs/nsfs.c
-+++ b/fs/nsfs.c
-@@ -58,7 +58,7 @@ static void nsfs_evict(struct inode *inode)
- 	ns->ops->put(ns);
- }
- 
--static int __ns_get_path(struct path *path, struct ns_common *ns)
-+int __ns_get_path(struct path *path, struct ns_common *ns)
- {
- 	struct vfsmount *mnt = nsfs_mnt;
- 	struct dentry *dentry;
-diff --git a/fs/proc/Makefile b/fs/proc/Makefile
-index dc2d51f42905..34ff671c6d59 100644
---- a/fs/proc/Makefile
-+++ b/fs/proc/Makefile
-@@ -25,6 +25,7 @@ proc-y	+= util.o
- proc-y	+= version.o
- proc-y	+= softirqs.o
- proc-y	+= task_namespaces.o
-+proc-y	+= namespaces.o
- proc-y	+= self.o
- proc-y	+= thread_self.o
- proc-$(CONFIG_PROC_SYSCTL)	+= proc_sysctl.o
-diff --git a/fs/proc/internal.h b/fs/proc/internal.h
-index 572757ff97be..d19fe5574799 100644
---- a/fs/proc/internal.h
-+++ b/fs/proc/internal.h
-@@ -134,10 +134,11 @@ void task_dump_owner(struct task_struct *task, umode_t mode,
- 		     kuid_t *ruid, kgid_t *rgid);
- 
- unsigned name_to_int(const struct qstr *qstr);
--/*
-- * Offset of the first process in the /proc root directory..
-- */
--#define FIRST_PROCESS_ENTRY 256
-+
-+/* Offset of "namespaces" entry in /proc root directory */
-+#define NAMESPACES_ENTRY 256
-+/* Offset of the first process in the /proc root directory */
-+#define FIRST_PROCESS_ENTRY (NAMESPACES_ENTRY + 1)
- 
- /* Worst case buffer size needed for holding an integer. */
- #define PROC_NUMBUF 13
-@@ -168,6 +169,7 @@ extern void proc_pid_evict_inode(struct proc_inode *);
- extern struct inode *proc_pid_make_inode(struct super_block *, struct task_struct *, umode_t);
- extern void pid_update_inode(struct task_struct *, struct inode *);
- extern int pid_delete_dentry(const struct dentry *);
-+extern int proc_emit_namespaces(struct file *, struct dir_context *);
- extern int proc_pid_readdir(struct file *, struct dir_context *);
- struct dentry *proc_pid_lookup(struct dentry *, unsigned int);
- extern loff_t mem_lseek(struct file *, loff_t, int);
-@@ -222,6 +224,12 @@ void set_proc_pid_nlink(void);
- extern struct inode *proc_get_inode(struct super_block *, struct proc_dir_entry *);
- extern void proc_entry_rundown(struct proc_dir_entry *);
- 
-+/*
-+ * namespaces.c
-+ */
-+extern int proc_setup_namespaces(struct super_block *);
-+extern void proc_namespaces_init(void);
-+
- /*
-  * task_namespaces.c
-  */
-diff --git a/fs/proc/namespaces.c b/fs/proc/namespaces.c
-new file mode 100644
-index 000000000000..ab47e1555619
---- /dev/null
-+++ b/fs/proc/namespaces.c
-@@ -0,0 +1,314 @@
-+#include <linux/pid_namespace.h>
-+#include <linux/user_namespace.h>
-+#include <linux/namei.h>
-+#include "internal.h"
-+
-+static unsigned namespaces_inum __ro_after_init;
-+
-+int proc_emit_namespaces(struct file *file, struct dir_context *ctx)
-+{
-+	struct proc_fs_info *fs_info = proc_sb_info(file_inode(file)->i_sb);
-+	struct inode *inode = d_inode(fs_info->proc_namespaces);
-+
-+	return dir_emit(ctx, "namespaces", 10, inode->i_ino, DT_DIR);
-+}
-+
-+static int parse_namespace_dentry_name(const struct dentry *dentry,
-+		const char **type, unsigned int *type_len, unsigned int *inum)
-+{
-+	const char *p, *name;
-+	int count;
-+
-+	*type = name = dentry->d_name.name;
-+	p = strchr(name, ':');
-+	*type_len = p - name;
-+	if (!p || p == name)
-+		return -ENOENT;
-+
-+	p += 1;
-+	if (sscanf(p, "[%u]%n", inum, &count) != 1 || *(p + count) != '\0' ||
-+	    *inum < PROC_NS_MIN_INO)
-+		return -ENOENT;
-+
-+	return 0;
-+}
-+
-+static struct ns_common *get_namespace_by_dentry(struct pid_namespace *pid_ns,
-+						 const struct dentry *dentry)
-+{
-+	unsigned int type_len, inum, p_inum;
-+	struct user_namespace *user_ns;
-+	struct ns_common *ns;
-+	const char *type;
-+
-+	if (parse_namespace_dentry_name(dentry, &type, &type_len, &inum) < 0)
-+		return NULL;
-+
-+	p_inum = inum - 1;
-+	ns = ns_get_next(&p_inum);
-+	if (!ns)
-+		return NULL;
-+
-+	if (ns->inum != inum || strncmp(type, ns->ops->name, type_len) != 0 ||
-+	    ns->ops->name[type_len] != '\0') {
-+		ns->ops->put(ns);
-+		return NULL;
-+	}
-+
-+	if (ns->ops != &userns_operations)
-+		user_ns = ns->ops->owner(ns);
-+	else
-+		user_ns = container_of(ns, struct user_namespace, ns);
-+
-+	if (!in_userns(pid_ns->user_ns, user_ns)) {
-+		ns->ops->put(ns);
-+		return NULL;
-+	}
-+
-+	return ns;
-+}
-+
-+static struct dentry *proc_namespace_instantiate(struct dentry *dentry,
-+		struct task_struct *task, const void *ptr);
-+
-+static struct dentry *proc_namespaces_lookup(struct inode *dir, struct dentry *dentry,
-+					     unsigned int flags)
-+{
-+	struct pid_namespace *pid_ns = proc_pid_ns(dir->i_sb);
-+	struct task_struct *task;
-+	struct ns_common *ns;
-+
-+	ns = get_namespace_by_dentry(pid_ns, dentry);
-+	if (!ns)
-+		return ERR_PTR(-ENOENT);
-+
-+	read_lock(&tasklist_lock);
-+	task = get_task_struct(pid_ns->child_reaper);
-+	read_unlock(&tasklist_lock);
-+
-+	dentry = proc_namespace_instantiate(dentry, task, ns);
-+	put_task_struct(task);
-+	ns->ops->put(ns);
-+
-+	return dentry;
-+}
-+
-+static int proc_namespaces_permission(struct inode *inode, int mask)
-+{
-+	if ((mask & MAY_EXEC) && S_ISLNK(inode->i_mode))
-+		return -EACCES;
-+
-+	return 0;
-+}
-+
-+static int proc_namespaces_getattr(const struct path *path, struct kstat *stat,
-+				   u32 request_mask, unsigned int query_flags)
-+{
-+	struct inode *inode = d_inode(path->dentry);
-+
-+	generic_fillattr(inode, stat);
-+	return 0;
-+}
-+
-+static const struct inode_operations proc_namespaces_inode_operations = {
-+	.lookup		= proc_namespaces_lookup,
-+	.permission	= proc_namespaces_permission,
-+	.getattr	= proc_namespaces_getattr,
-+};
-+
-+static int proc_namespaces_readlink(struct dentry *dentry, char __user *buffer, int buflen)
-+{
-+	struct inode *dir = dentry->d_parent->d_inode;
-+	struct pid_namespace *pid_ns = proc_pid_ns(dir->i_sb);
-+	struct ns_common *ns;
-+
-+	ns = get_namespace_by_dentry(pid_ns, dentry);
-+	if (!ns)
-+		return -ENOENT;
-+	ns->ops->put(ns);
-+
-+	/* proc_namespaces_readdir() creates dentry names in namespace format */
-+	return readlink_copy(buffer, buflen, dentry->d_iname);
-+}
-+
-+int __ns_get_path(struct path *path, struct ns_common *ns);
-+
-+static const char *proc_namespaces_getlink(struct dentry *dentry,
-+				struct inode *inode, struct delayed_call *done)
-+{
-+	struct pid_namespace *pid_ns = proc_pid_ns(inode->i_sb);
-+	struct ns_common *ns;
-+	struct path path;
-+	int ret;
-+
-+	if (!dentry)
-+		return ERR_PTR(-ECHILD);
-+
-+	while (1) {
-+		ret = -ENOENT;
-+		ns = get_namespace_by_dentry(pid_ns, dentry);
-+		if (!ns)
-+			goto out;
-+
-+		ret = __ns_get_path(&path, ns);
-+		if (ret == -EAGAIN)
-+			continue;
-+		if (ret)
-+			goto out;
-+		break;
-+	}
-+
-+	ret = nd_jump_link(&path);
-+out:
-+	return ERR_PTR(ret);
-+}
-+
-+static const struct inode_operations proc_namespaces_link_inode_operations = {
-+	.readlink	= proc_namespaces_readlink,
-+	.get_link	= proc_namespaces_getlink,
-+};
-+
-+static int namespace_delete_dentry(const struct dentry *dentry)
-+{
-+	struct inode *dir = dentry->d_parent->d_inode;
-+	struct pid_namespace *pid_ns = proc_pid_ns(dir->i_sb);
-+	struct ns_common *ns;
-+
-+	ns = get_namespace_by_dentry(pid_ns, dentry);
-+	if (!ns)
-+		return 1;
-+
-+	ns->ops->put(ns);
-+	return 0;
-+}
-+
-+const struct dentry_operations namespaces_dentry_operations = {
-+	.d_delete	= namespace_delete_dentry,
-+};
-+
-+static void namespace_update_inode(struct inode *inode)
-+{
-+	struct user_namespace *user_ns = proc_pid_ns(inode->i_sb)->user_ns;
-+
-+	inode->i_uid = make_kuid(user_ns, 0);
-+	if (!uid_valid(inode->i_uid))
-+		inode->i_uid = GLOBAL_ROOT_UID;
-+
-+	inode->i_gid = make_kgid(user_ns, 0);
-+	if (!gid_valid(inode->i_gid))
-+		inode->i_gid = GLOBAL_ROOT_GID;
-+}
-+
-+static struct dentry *proc_namespace_instantiate(struct dentry *dentry,
-+	struct task_struct *task, const void *ptr)
-+{
-+	const struct ns_common *ns = ptr;
-+	struct inode *inode;
-+	struct proc_inode *ei;
-+
-+	/*
-+	 * Create inode with credentials of @task, and add it to @task's
-+	 * quick removal list.
-+	 */
-+	inode = proc_pid_make_inode(dentry->d_sb, task, S_IFLNK | S_IRWXUGO);
-+	if (!inode)
-+		return ERR_PTR(-ENOENT);
-+
-+	ei = PROC_I(inode);
-+	inode->i_op = &proc_namespaces_link_inode_operations;
-+	ei->ns_ops = ns->ops;
-+	namespace_update_inode(inode);
-+
-+	d_set_d_op(dentry, &namespaces_dentry_operations);
-+	return d_splice_alias(inode, dentry);
-+}
-+
-+static int proc_namespaces_readdir(struct file *file, struct dir_context *ctx)
-+{
-+	struct pid_namespace *pid_ns = proc_pid_ns(file_inode(file)->i_sb);
-+	struct user_namespace *user_ns;
-+	struct task_struct *task;
-+	struct ns_common *ns;
-+	unsigned int inum;
-+
-+	read_lock(&tasklist_lock);
-+	task = get_task_struct(pid_ns->child_reaper);
-+	read_unlock(&tasklist_lock);
-+
-+	if (!dir_emit_dots(file, ctx))
-+		goto out;
-+
-+	inum = ctx->pos - 2;
-+	while ((ns = ns_get_next(&inum)) != NULL) {
-+		unsigned int len;
-+		char name[32];
-+
-+		if (ns->ops != &userns_operations)
-+			user_ns = ns->ops->owner(ns);
-+		else
-+			user_ns = container_of(ns, struct user_namespace, ns);
-+
-+		if (!in_userns(pid_ns->user_ns, user_ns))
-+			goto next;
-+
-+		len = snprintf(name, sizeof(name), "%s:[%u]", ns->ops->name, inum);
-+
-+		if (!proc_fill_cache(file, ctx, name, len,
-+			proc_namespace_instantiate, task, ns)) {
-+			ns->ops->put(ns);
-+			break;
-+		}
-+next:
-+		ns->ops->put(ns);
-+		ctx->pos = inum + 2;
-+	}
-+out:
-+	put_task_struct(task);
-+	return 0;
-+}
-+
-+static const struct file_operations proc_namespaces_file_operations = {
-+	.read		= generic_read_dir,
-+	.iterate_shared	= proc_namespaces_readdir,
-+	.llseek		= generic_file_llseek,
-+};
-+
-+int proc_setup_namespaces(struct super_block *s)
-+{
-+	struct proc_fs_info *fs_info = proc_sb_info(s);
-+	struct inode *root_inode = d_inode(s->s_root);
-+	struct dentry *namespaces;
-+	int ret = -ENOMEM;
-+
-+	inode_lock(root_inode);
-+	namespaces = d_alloc_name(s->s_root, "namespaces");
-+	if (namespaces) {
-+		struct inode *inode = new_inode_pseudo(s);
-+		if (inode) {
-+			inode->i_ino = namespaces_inum;
-+			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
-+			inode->i_mode = S_IFDIR | S_IRUGO | S_IXUGO;
-+			inode->i_uid = GLOBAL_ROOT_UID;
-+			inode->i_gid = GLOBAL_ROOT_GID;
-+			inode->i_op = &proc_namespaces_inode_operations;
-+			inode->i_fop = &proc_namespaces_file_operations;
-+			d_add(namespaces, inode);
-+			ret = 0;
-+		} else {
-+			dput(namespaces);
-+		}
-+	}
-+	inode_unlock(root_inode);
-+
-+	if (ret)
-+		pr_err("proc_setup_namespaces: can't allocate /proc/namespaces\n");
-+	else
-+		fs_info->proc_namespaces = namespaces;
-+
-+	return ret;
-+}
-+
-+void __init proc_namespaces_init(void)
-+{
-+	proc_alloc_inum(&namespaces_inum);
-+}
-diff --git a/fs/proc/root.c b/fs/proc/root.c
-index 5e444d4f9717..e4e4f90fca3d 100644
---- a/fs/proc/root.c
-+++ b/fs/proc/root.c
-@@ -206,6 +206,10 @@ static int proc_fill_super(struct super_block *s, struct fs_context *fc)
- 		return -ENOMEM;
- 	}
- 
-+	ret = proc_setup_namespaces(s);
-+	if (ret)
-+		return ret;
-+
- 	ret = proc_setup_self(s);
- 	if (ret) {
- 		return ret;
-@@ -272,6 +276,9 @@ static void proc_kill_sb(struct super_block *sb)
- 	dput(fs_info->proc_self);
- 	dput(fs_info->proc_thread_self);
- 
-+	if (fs_info->proc_namespaces)
-+		dput(fs_info->proc_namespaces);
-+
- 	kill_anon_super(sb);
- 	put_pid_ns(fs_info->pid_ns);
- 	kfree(fs_info);
-@@ -289,6 +296,7 @@ void __init proc_root_init(void)
- {
- 	proc_init_kmemcache();
- 	set_proc_pid_nlink();
-+	proc_namespaces_init();
- 	proc_self_init();
- 	proc_thread_self_init();
- 	proc_symlink("mounts", NULL, "self/mounts");
-@@ -326,8 +334,15 @@ static struct dentry *proc_root_lookup(struct inode * dir, struct dentry * dentr
- 
- static int proc_root_readdir(struct file *file, struct dir_context *ctx)
- {
--	if (ctx->pos < FIRST_PROCESS_ENTRY) {
-+	if (ctx->pos < NAMESPACES_ENTRY) {
- 		int error = proc_readdir(file, ctx);
-+		if (unlikely(error <= 0))
-+			return error;
-+		ctx->pos = NAMESPACES_ENTRY;
-+	}
-+
-+	if (ctx->pos == NAMESPACES_ENTRY) {
-+		int error = proc_emit_namespaces(file, ctx);
- 		if (unlikely(error <= 0))
- 			return error;
- 		ctx->pos = FIRST_PROCESS_ENTRY;
-diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
-index 97b3f5f06db9..8b0002a6cacf 100644
---- a/include/linux/proc_fs.h
-+++ b/include/linux/proc_fs.h
-@@ -61,6 +61,7 @@ struct proc_fs_info {
- 	struct pid_namespace *pid_ns;
- 	struct dentry *proc_self;        /* For /proc/self */
- 	struct dentry *proc_thread_self; /* For /proc/thread-self */
-+	struct dentry *proc_namespaces;	 /* For /proc/namespaces */
- 	kgid_t pid_gid;
- 	enum proc_hidepid hide_pid;
- 	enum proc_pidonly pidonly;
-
-
+ arch/x86/Kconfig               |    1 
+ include/linux/posix-timers.h   |   17 +++
+ include/linux/sched.h          |    4 
+ include/linux/seccomp.h        |    3 
+ kernel/entry/common.c          |    4 
+ kernel/time/Kconfig            |    9 +
+ kernel/time/posix-cpu-timers.c |  216 ++++++++++++++++++++++++++++++++++++-----
+ kernel/time/timer.c            |    1 
+ 8 files changed, 227 insertions(+), 28 deletions(-)
