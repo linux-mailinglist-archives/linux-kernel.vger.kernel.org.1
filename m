@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7AD12333A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71FC23339E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729518AbgG3N5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:57:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50334 "EHLO
+        id S1729393AbgG3N5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728286AbgG3N5p (ORCPT
+        with ESMTP id S1726535AbgG3N5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:57:45 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC54C061574;
-        Thu, 30 Jul 2020 06:57:45 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.93)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1k192s-00DYvR-Pl; Thu, 30 Jul 2020 15:56:30 +0200
-Message-ID: <943c5eaf12bc9e92e817fb9818ebd65038f5fb54.camel@sipsolutions.net>
-Subject: Re: [RFC 1/2] devlink: add simple fw crash helpers
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, derosier@gmail.com,
-        greearb@candelatech.com, jeyu@kernel.org,
-        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
-        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
-        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        gpiccoli@canonical.com, pmladek@suse.com, tiwai@suse.de,
-        schlad@suse.de, andriy.shevchenko@linux.intel.com,
-        keescook@chromium.org, daniel.vetter@ffwll.ch, will@kernel.org,
-        mchehab+samsung@kernel.org, kvalo@codeaurora.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        ath10k@lists.infradead.org, jiri@resnulli.us,
-        briannorris@chromium.org
-Date:   Thu, 30 Jul 2020 15:56:25 +0200
-In-Reply-To: <20200525135746.45e764de@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-References: <20200519010530.GS11244@42.do-not-panic.com>
-         <20200519211531.3702593-1-kuba@kernel.org>
-         <20200522052046.GY11244@42.do-not-panic.com>
-         <20200522101738.1495f4cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <2e5199edb433c217c7974ef7408ff8c7253145b6.camel@sipsolutions.net>
-         <20200525135746.45e764de@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4 (3.36.4-1.fc32) 
+        Thu, 30 Jul 2020 09:57:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD8FC061574;
+        Thu, 30 Jul 2020 06:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BVQM2Vt73FbBfNFVutAzFvp59bkr4TTzTQ9kL/uqdWc=; b=F2j5z2wEA9fJ8hpxfszJXZ+x8N
+        +pSD7Tv6zzCfq0SRbAlDTKbJLK16YlxQDIKKcuruKPYJ5fqWFSS1LxkaJMu5VkDAu/rSdzFo+90K1
+        28YmbJI4Gflfera43TO3ClFGEJNk9wH00CheEEJWWFZ7Ar+dksV8jmS2Vr1JllwnyTr6OAs3cdwoi
+        fSCzxy8h4nlAt3E6atigytaUFt/txRQuss4+s2KRMv4imZ1NW8bwLqfaQKMEJ63ugVmgaweGlEXjy
+        YbNU3FgbvJ9d5tMmkKP5I1pE44nh1av0KnnhV/PpB26tumRBfX8ZhmdEGBYftv51iOvxSN1Oq/prE
+        O3S2Ziqw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k1932-00013u-QS; Thu, 30 Jul 2020 13:56:40 +0000
+Date:   Thu, 30 Jul 2020 14:56:40 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
+        ebiederm@xmission.com, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, areber@redhat.com, serge@hallyn.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 09/23] ns: Introduce ns_idr to be able to iterate all
+ allocated namespaces in the system
+Message-ID: <20200730135640.GE23808@casper.infradead.org>
+References: <159611007271.535980.15362304262237658692.stgit@localhost.localdomain>
+ <159611040870.535980.13460189038999722608.stgit@localhost.localdomain>
+ <20200730122319.GC23808@casper.infradead.org>
+ <485c01e6-a4ee-5076-878e-6303e6d8d5f3@virtuozzo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <485c01e6-a4ee-5076-878e-6303e6d8d5f3@virtuozzo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Sorry ... long delay.
-
-> > The reason I'm asking is that it's starting to sound like we really
-> > ought to be implementing devlink, but we've got a bunch of
-> > infrastructure that uses the devcoredump, and it'll take time
-> > (significantly so) to change all that...
+On Thu, Jul 30, 2020 at 04:32:22PM +0300, Kirill Tkhai wrote:
+> On 30.07.2020 15:23, Matthew Wilcox wrote:
+> > xa_erase_irqsave();
 > 
-> In devlink world pure FW core dumps are exposed by devlink regions.
-> An API allowing reading device memory, registers, etc., but also 
-> creating dumps of memory regions when things go wrong. It should be
-> a fairly straightforward migration.
+> static inline void *xa_erase_irqsave(struct xarray *xa, unsigned long index)
+> {
+> 	unsigned long flags;
+>         void *entry;
+> 
+>         xa_lock_irqsave(xa, flags);
+>         entry = __xa_erase(xa, index);
+>         xa_unlock_irqrestore(xa, flags);
+> 
+>         return entry;
+> }
 
-Right. We also have regions (various memory pieces, registers, ...).
+was there a question here?
 
-One issue might be that for devlink we wouldn't want to expose these as
-a single blob, I guess, but for devcoredump we already have a custom
-format to glue all the things together. Since it seems unlikely that
-anyone else would want to use the *iwlwifi* format to glue things
-together, we'd have to do something there.
+> >> +struct ns_common *ns_get_next(unsigned int *id)
+> >> +{
+> >> +	struct ns_common *ns;
+> >> +
+> >> +	if (*id < PROC_NS_MIN_INO - 1)
+> >> +		*id = PROC_NS_MIN_INO - 1;
+> >> +
+> >> +	*id += 1;
+> >> +	*id -= PROC_NS_MIN_INO;
+> >> +
+> >> +	rcu_read_lock();
+> >> +	do {
+> >> +		ns = idr_get_next(&ns_idr, id);
+> >> +		if (!ns)
+> >> +			break;
+> > 
+> > xa_find_after();
+> > 
+> > You'll want a temporary unsigned long to work with ...
+> > 
+> >> +		if (!refcount_inc_not_zero(&ns->count)) {
+> >> +			ns = NULL;
+> >> +			*id += 1;
+> > 
+> > you won't need this increment.
+> 
+> Why? I don't see a way xarray allows to avoid this.
 
-But perhaps that could be a matter of providing a "glue things into a
-devcoredump" function that would have a reasonable default but could be
-overridden by the driver for those migration cases.
-
-> Devlink health is more targeted, the dump is supposed to contain only
-> relevant information, selected and formatted by the driver. When device
-> misbehaves driver reads the relevant registers and FW state and creates
-> a formatted state dump. I believe each element of the dump must fit
-> into a netlink message (but there may be multiple elements, see
-> devlink_fmsg_prepare_skb()).
-
-That wouldn't help for our big memory dumps, but OK.
-
-> We should be able to convert dl-regions dumps and dl-health dumps into
-> devcoredumps, but since health reporters are supposed to be more
-> targeted there's usually multiple of them per device.
-
-Right.
-
-> Conversely devcoredumps can be trivially exposed as dl-region dumps,
-> but I believe dl-health would require driver changes to format the
-> information appropriately.
-
-Agree.
-
-Anyway, thanks. I'll put it on my list of things to look at ... not too
-hopeful that will be soon, given how long it even took me to get back to
-this email :)
-
-johannes
-
+It's embedded in xa_find_after().
