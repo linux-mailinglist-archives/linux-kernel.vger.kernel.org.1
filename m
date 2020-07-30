@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90010232D0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A26232E3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729336AbgG3IGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:06:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43900 "EHLO mail.kernel.org"
+        id S1730257AbgG3ISn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:18:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729306AbgG3IGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:06:20 -0400
+        id S1729188AbgG3IIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:08:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D904206C0;
-        Thu, 30 Jul 2020 08:06:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 672FB20838;
+        Thu, 30 Jul 2020 08:08:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096379;
-        bh=hMdj6p1RegJOk6WhykDM+3eQpY8+Us26o9pQeZnzf1M=;
+        s=default; t=1596096511;
+        bh=4UDb7Ao8BAv6BbrlbobXgiF4d3R3K3FUqdy1c8fpSGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FL2SRMW7AHShU+T6lWYRS/7YMUlno99ZHqVQeufMBeo5CwCwUIUy2CftVBV8LXf3C
-         yiqjhHnAfjnOgcEz9rSN85AhHwr4kvzYrnpv0FLEr3MYwWu0ShI5jvlGLQamyMRd7B
-         Vrd9rrskyse1pzsfxpog2cV+JqsqdsP19zrTi3kc=
+        b=M0E/pIhkKbLkHiIurii+TjYPC/1Hs1rQ5y3K8JEXkrsPuW8IXFDZWlRvZ9rq1kK9V
+         3fbkZjTU/jB6hww5jo10KYPctgKRXBEM48N5AZTTeOI5uaCLBv9CxEKriZPGrcvzba
+         jEwFNciYSjOokupYHwstN7093JtzHaNemsyH1GIY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Joakim Tjernlund <joakim.tjernlund@infinera.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: [PATCH 5.4 19/19] Revert "dpaa_eth: fix usage as DSA master, try 3"
-Date:   Thu, 30 Jul 2020 10:04:21 +0200
-Message-Id: <20200730074421.448421335@linuxfoundation.org>
+        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 04/61] xtensa: fix __sync_fetch_and_{and,or}_4 declarations
+Date:   Thu, 30 Jul 2020 10:04:22 +0200
+Message-Id: <20200730074421.020429541@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200730074420.502923740@linuxfoundation.org>
-References: <20200730074420.502923740@linuxfoundation.org>
+In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
+References: <20200730074420.811058810@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+[ Upstream commit 73f9941306d5ce030f3ffc7db425c7b2a798cf8e ]
 
-This reverts commit 40a904b1c2e57b22dd002dfce73688871cb0bac8.
+Building xtensa kernel with gcc-10 produces the following warnings:
+  arch/xtensa/kernel/xtensa_ksyms.c:90:15: warning: conflicting types
+    for built-in function ‘__sync_fetch_and_and_4’;
+    expected ‘unsigned int(volatile void *, unsigned int)’
+    [-Wbuiltin-declaration-mismatch]
+  arch/xtensa/kernel/xtensa_ksyms.c:96:15: warning: conflicting types
+    for built-in function ‘__sync_fetch_and_or_4’;
+    expected ‘unsigned int(volatile void *, unsigned int)’
+    [-Wbuiltin-declaration-mismatch]
 
-The patch is not wrong, but the Fixes: tag is. It should have been:
+Fix declarations of these functions to avoid the warning.
 
-	Fixes: 060ad66f9795 ("dpaa_eth: change DMA device")
-
-which means that it's fixing a commit which was introduced in:
-
-git tag --contains 060ad66f97954
-v5.5
-
-which then means it should have not been backported to linux-5.4.y,
-where things _were_ working and now they're not.
-
-Reported-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-Changes in v1:
-Adjusted the commit message from linux-4.19.y to linux-5.4.y
+ arch/xtensa/kernel/xtensa_ksyms.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Changes in v2:
-Fixed the sha1sum of the reverted commit.
-
- drivers/net/ethernet/freescale/dpaa/dpaa_eth.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-@@ -2802,7 +2802,7 @@ static int dpaa_eth_probe(struct platfor
- 	}
+diff --git a/arch/xtensa/kernel/xtensa_ksyms.c b/arch/xtensa/kernel/xtensa_ksyms.c
+index 9210b9cc4ec96..455c6ec4086c2 100644
+--- a/arch/xtensa/kernel/xtensa_ksyms.c
++++ b/arch/xtensa/kernel/xtensa_ksyms.c
+@@ -82,13 +82,13 @@ void __xtensa_libgcc_window_spill(void)
+ }
+ EXPORT_SYMBOL(__xtensa_libgcc_window_spill);
  
- 	/* Do this here, so we can be verbose early */
--	SET_NETDEV_DEV(net_dev, dev->parent);
-+	SET_NETDEV_DEV(net_dev, dev);
- 	dev_set_drvdata(dev, net_dev);
+-unsigned long __sync_fetch_and_and_4(unsigned long *p, unsigned long v)
++unsigned int __sync_fetch_and_and_4(volatile void *p, unsigned int v)
+ {
+ 	BUG();
+ }
+ EXPORT_SYMBOL(__sync_fetch_and_and_4);
  
- 	priv = netdev_priv(net_dev);
+-unsigned long __sync_fetch_and_or_4(unsigned long *p, unsigned long v)
++unsigned int __sync_fetch_and_or_4(volatile void *p, unsigned int v)
+ {
+ 	BUG();
+ }
+-- 
+2.25.1
+
 
 
