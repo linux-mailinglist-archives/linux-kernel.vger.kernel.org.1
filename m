@@ -2,175 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C21233353
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E578E233355
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgG3Nri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:47:38 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57660 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgG3Nrh (ORCPT
+        id S1728426AbgG3NsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbgG3NsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:47:37 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06UDlWqd095379;
-        Thu, 30 Jul 2020 08:47:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1596116852;
-        bh=SnY4IJzNmWOwcsTU47tujhAkaOUygDAfU16TsRF244A=;
-        h=Subject:From:To:References:Date:In-Reply-To;
-        b=k2Gwrb1BzOmGlF4j1mc2j36539ewCLeXvz/4yV9VMmhHJWX8Y5gQtcGhF3aIVnPRG
-         KmwR4hXzxJ2VYa4eNP0/opo/TWdKRoaW1O1WAbXVugXGh6YHfrFER/qa+AcIpYs6N8
-         zl3B38CKCkt4LMqDPmr7A00YwEyyaSeWpsd0eEOI=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06UDlWNq073880
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 30 Jul 2020 08:47:32 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 30
- Jul 2020 08:47:31 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 30 Jul 2020 08:47:31 -0500
-Received: from [10.250.53.226] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06UDlVrl055436;
-        Thu, 30 Jul 2020 08:47:31 -0500
-Subject: Re: [net-next iproute2 PATCH v3 1/2] iplink: hsr: add support for
- creating PRP device similar to HSR
-From:   Murali Karicheri <m-karicheri2@ti.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <nsekhar@ti.com>, <grygorii.strashko@ti.com>,
-        <vinicius.gomes@intel.com>
-References: <20200717152205.826-1-m-karicheri2@ti.com>
-Message-ID: <75fb8843-0b93-0755-0350-c2c91dfc4f91@ti.com>
-Date:   Thu, 30 Jul 2020 09:47:31 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 30 Jul 2020 09:48:07 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86646C061574;
+        Thu, 30 Jul 2020 06:48:07 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: nicolas)
+        with ESMTPSA id 652012948B5
+Message-ID: <74dbf137d8838967c6e1433463b2af708be4da03.camel@collabora.com>
+Subject: Re: [PATCH 03/10] media: uapi: h264: Split prediction weight
+ parameters
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Reply-To: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Date:   Thu, 30 Jul 2020 09:48:01 -0400
+In-Reply-To: <CAPBb6MVJ+baQshWRJJrwKJ6bKss_KqHoC1xP9kvGtDqC0iFZWw@mail.gmail.com>
+References: <20200715202233.185680-1-ezequiel@collabora.com>
+         <20200715202233.185680-4-ezequiel@collabora.com>
+         <CAPBb6MVJ+baQshWRJJrwKJ6bKss_KqHoC1xP9kvGtDqC0iFZWw@mail.gmail.com>
+Organization: Collabora
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+        boundary="=-wiNEtf151ipqvNyTRQIL"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20200717152205.826-1-m-karicheri2@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
 
-On 7/17/20 11:22 AM, Murali Karicheri wrote:
-> This patch enhances the iplink command to add a proto parameters to
-> create PRP device/interface similar to HSR. Both protocols are
-> quite similar and requires a pair of Ethernet interfaces. So re-use
-> the existing HSR iplink command to create PRP device/interface as
-> well. Use proto parameter to differentiate the two protocols.
-> 
-> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
-> ---
->   dependent on the series "[net-next PATCH v3 0/7] Add PRP driver"
->   include/uapi/linux/if_link.h | 12 +++++++++++-
->   ip/iplink_hsr.c              | 19 +++++++++++++++++--
->   2 files changed, 28 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-> index a8901a39a345..fa2e3f642deb 100644
-> --- a/include/uapi/linux/if_link.h
-> +++ b/include/uapi/linux/if_link.h
-> @@ -904,7 +904,14 @@ enum {
->   #define IFLA_IPOIB_MAX (__IFLA_IPOIB_MAX - 1)
->   
->   
-> -/* HSR section */
-> +/* HSR/PRP section, both uses same interface */
-> +
-> +/* Different redundancy protocols for hsr device */
-> +enum {
-> +	HSR_PROTOCOL_HSR,
-> +	HSR_PROTOCOL_PRP,
-> +	HSR_PROTOCOL_MAX,
-> +};
->   
->   enum {
->   	IFLA_HSR_UNSPEC,
-> @@ -914,6 +921,9 @@ enum {
->   	IFLA_HSR_SUPERVISION_ADDR,	/* Supervision frame multicast addr */
->   	IFLA_HSR_SEQ_NR,
->   	IFLA_HSR_VERSION,		/* HSR version */
-> +	IFLA_HSR_PROTOCOL,		/* Indicate different protocol than
-> +					 * HSR. For example PRP.
-> +					 */
->   	__IFLA_HSR_MAX,
->   };
->   
-> diff --git a/ip/iplink_hsr.c b/ip/iplink_hsr.c
-> index 7d9167d4e6a3..6ea138a23cbc 100644
-> --- a/ip/iplink_hsr.c
-> +++ b/ip/iplink_hsr.c
-> @@ -25,7 +25,7 @@ static void print_usage(FILE *f)
->   {
->   	fprintf(f,
->   		"Usage:\tip link add name NAME type hsr slave1 SLAVE1-IF slave2 SLAVE2-IF\n"
-> -		"\t[ supervision ADDR-BYTE ] [version VERSION]\n"
-> +		"\t[ supervision ADDR-BYTE ] [version VERSION] [proto PROTOCOL]\n"
->   		"\n"
->   		"NAME\n"
->   		"	name of new hsr device (e.g. hsr0)\n"
-> @@ -35,7 +35,9 @@ static void print_usage(FILE *f)
->   		"	0-255; the last byte of the multicast address used for HSR supervision\n"
->   		"	frames (default = 0)\n"
->   		"VERSION\n"
-> -		"	0,1; the protocol version to be used. (default = 0)\n");
-> +		"	0,1; the protocol version to be used. (default = 0)\n"
-> +		"PROTOCOL\n"
-> +		"	0 - HSR, 1 - PRP. (default = 0 - HSR)\n");
->   }
->   
->   static void usage(void)
-> @@ -49,6 +51,7 @@ static int hsr_parse_opt(struct link_util *lu, int argc, char **argv,
->   	int ifindex;
->   	unsigned char multicast_spec;
->   	unsigned char protocol_version;
-> +	unsigned char protocol = HSR_PROTOCOL_HSR;
->   
->   	while (argc > 0) {
->   		if (matches(*argv, "supervision") == 0) {
-> @@ -64,6 +67,13 @@ static int hsr_parse_opt(struct link_util *lu, int argc, char **argv,
->   				invarg("version is invalid", *argv);
->   			addattr_l(n, 1024, IFLA_HSR_VERSION,
->   				  &protocol_version, 1);
-> +		} else if (matches(*argv, "proto") == 0) {
-> +			NEXT_ARG();
-> +			if (!(get_u8(&protocol, *argv, 0) == HSR_PROTOCOL_HSR ||
-> +			      get_u8(&protocol, *argv, 0) == HSR_PROTOCOL_PRP))
-> +				invarg("protocol is invalid", *argv);
-> +			addattr_l(n, 1024, IFLA_HSR_PROTOCOL,
-> +				  &protocol, 1);
->   		} else if (matches(*argv, "slave1") == 0) {
->   			NEXT_ARG();
->   			ifindex = ll_name_to_index(*argv);
-> @@ -140,6 +150,11 @@ static void hsr_print_opt(struct link_util *lu, FILE *f, struct rtattr *tb[])
->   					 RTA_PAYLOAD(tb[IFLA_HSR_SUPERVISION_ADDR]),
->   					 ARPHRD_VOID,
->   					 b1, sizeof(b1)));
-> +	if (tb[IFLA_HSR_PROTOCOL])
-> +		print_int(PRINT_ANY,
-> +			  "proto",
-> +			  "proto %d ",
-> +			  rta_getattr_u8(tb[IFLA_HSR_PROTOCOL]));
->   }
->   
->   static void hsr_print_help(struct link_util *lu, int argc, char **argv,
-> 
-Just wondering who will merge this now that PRP support series below
-is applied to net-next. These iproute2 patches have to go along with 
-that to have full PRP support working.
+--=-wiNEtf151ipqvNyTRQIL
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-https://lkml.org/lkml/2020/7/22/638
+Le samedi 25 juillet 2020 =C3=A0 22:30 +0900, Alexandre Courbot a =C3=A9cri=
+t :
+> On Thu, Jul 16, 2020 at 5:23 AM Ezequiel Garcia <ezequiel@collabora.com> =
+wrote:
+> > The prediction weight parameters are only required under
+> > certain conditions, which depend on slice header parameters.
+> >=20
+> > The slice header syntax specifies that the prediction
+> > weight table is present if:
+> >=20
+> > ((weighted_pred_flag && (slice_type =3D=3D P || slice_type =3D=3D SP)) =
+|| \
+> > (weighted_bipred_idc =3D=3D 1 && slice_type =3D=3D B))
+>=20
+> This is a pretty important bit - how about mentioning in the documentatio=
+n when
+> this new control is expected to be present, so both drivers and
+> userspace submit it
+> or omit it in a consistent manner?
 
--- 
-Murali Karicheri
-Texas Instruments
+This is copy paste from the spec. We can add a reference to the syntax
+chapter in the spec that express exactly this if condition (syntax is
+express in pseudo code). The bitstream works exactly the same. Note
+that it's not a fault to provide the control even if not needed,
+drivers will kindly ignore it.
+
+Reference: 7.3.3 Slice header syntax
+
+Nicolas
+
+--=-wiNEtf151ipqvNyTRQIL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSScpfJiL+hb5vvd45xUwItrAaoHAUCXyLPkQAKCRBxUwItrAao
+HDL8AKCtSvcMrSUmQXK5ljp++0GzWttLYwCfclTwQk9ZR4oVP+PZbA3QNpTHNOA=
+=K+qX
+-----END PGP SIGNATURE-----
+
+--=-wiNEtf151ipqvNyTRQIL--
+
