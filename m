@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF8B232FC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA94B232FC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbgG3JrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 05:47:10 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57769 "EHLO
+        id S1729451AbgG3JrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 05:47:16 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:55349 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725892AbgG3JrF (ORCPT
+        by vger.kernel.org with ESMTP id S1728739AbgG3JrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 05:47:05 -0400
+        Thu, 30 Jul 2020 05:47:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596102423;
+        s=mimecast20190719; t=1596102425;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wi8mm7gHwd6vIQMzZEoFyCS7pwa2saGRLGk8mEsioFE=;
-        b=XdtxqKKZfO1Bwa6uEEZzt4PWQmim0kJ34Zzuj/fbKg6LS+GnHWRIo44mmalf63K8Wp7rZU
-        SqLgumPu4pEQCv0ZeKlxb8GldWmhVKV+Gq2VN1nqlpf/CIwKHw5Zh2ZcAlTe55SBIUCB84
-        l6FSEWYap5Jut6Ogdo4rdoHUf7ELwQk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-3iLfaSOyPhyM-MGgj31FqQ-1; Thu, 30 Jul 2020 05:47:02 -0400
-X-MC-Unique: 3iLfaSOyPhyM-MGgj31FqQ-1
-Received: by mail-wr1-f70.google.com with SMTP id e14so4264414wrr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 02:47:02 -0700 (PDT)
+        bh=IyszSINmUuWIze0BnbavP6pqqJ9qAHJ6c6Qsw22nt4E=;
+        b=MqczXSswaZmAtb+7fIfr+05fRUH7LK85h1vPHbwDqtulWBnkrJriQrbEHeT7KoLuHENVIU
+        XfJp90IOpnaWGnSzIwbxkNwKp57SJy1LjubfpPhB1I7++yAd6kfLx8OpButYG1gf7vrumg
+        qD+aG/vHU6Mea6Ozu6Yue5/xdRMxJ8o=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-eLspCjMBNgyxs3kURoGa3A-1; Thu, 30 Jul 2020 05:47:03 -0400
+X-MC-Unique: eLspCjMBNgyxs3kURoGa3A-1
+Received: by mail-wr1-f71.google.com with SMTP id j16so7757942wrw.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 02:47:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wi8mm7gHwd6vIQMzZEoFyCS7pwa2saGRLGk8mEsioFE=;
-        b=WtKNlGXSqu83zhT0q0XJ0FwLGoVgo4P35wdQ08jbuCp+PSUBqCuEYGM7CIwz/kySnG
-         FK9MVDNU/Zgg551XEgjnJNYJ89u4nZ6Km3d0QMQ3n4YX6/cl+HekPuOAGNG9lT3KrCDu
-         InBgdECd3LHgrnzFpCEDc7kO3kiYfsQGIkR+uLSCG/Kgi91FigDzSCAs3R3LNs//lZsA
-         sAgNVIf1UPYOX7IkbTM+qxBvUYXAwYZsCb1R8dCx08HK5Oqlxq5j4qbrqlDS8mUZz8Cu
-         uiJ+RvDtJiXTouGdtUB+s2aPfbeQw8gVQt9p6kvLcycCDY+7U5bgRuAP/42YPcvsdxQX
-         mxnw==
-X-Gm-Message-State: AOAM531DZ6DeC9EbVqDqLr+U8G1Rxipabbo3aUvLSa99rUx0TUAxRu01
-        LAVn1d5IS0Ysx9x46KzqfRKIVd8UesVEdDPef7+nWQWTOjMdoVFyoOQ0tkyKwILRzU/dPomb/+R
-        SpKoYZnmM0D4rsjA1LGzQToGo
-X-Received: by 2002:adf:f785:: with SMTP id q5mr2030712wrp.298.1596102420879;
-        Thu, 30 Jul 2020 02:47:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx+YJ2bh7Sc5tNgal10W4is8YYs6UmHJwjekbGeVeGUKG+wn7vp4t1fdKUC7gO+J8QX3MU1+w==
-X-Received: by 2002:adf:f785:: with SMTP id q5mr2030693wrp.298.1596102420618;
-        Thu, 30 Jul 2020 02:47:00 -0700 (PDT)
+        bh=IyszSINmUuWIze0BnbavP6pqqJ9qAHJ6c6Qsw22nt4E=;
+        b=tcNj9aQlb+INECUl+Gxgff2z0IYCYtDRvLTPYwfdysOYbYGu+GtN/UHQ5mKcpjjO3I
+         VJHGyMFxvWzkGhgHUivyCib0enlDO9ATFO5Iy9M01m1r4oX6/Y1JRwU4u+HPk559lnUP
+         RobhToF61by7Ecpuo2pKowCIH7U7tfnAFzbAHId+xxNKdXKL6OcoZfk72UiUimdhttsO
+         CCCvjThZOqTD29oxBr5E42K+VduVI+IbuhTujUOrH4ASuN8+xm+QYNr6DJfL+MBU5s/c
+         Xd6D6xj3cSTALMlgf10IT0z4cvhPUIRF33d8IxApUu5yD8vDy0k5+iB7dekFXodmey4E
+         iAtg==
+X-Gm-Message-State: AOAM531HXRgyn+6pvlkwRGRHuvkIw82J4ytZYe9baTmdR1dhdB9XJgz+
+        Gaoobx4uKeADSBphHXzXtJVhnIPZvAKHm1ffl2LdcAFjwpSi1xHP1eo1L8NoQU8SdOefa3ezPNI
+        aYds8J/HfPKBWdEGeCvC3MqfV
+X-Received: by 2002:a1c:18e:: with SMTP id 136mr12364018wmb.93.1596102422036;
+        Thu, 30 Jul 2020 02:47:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxeCvv9QIx3gUBDdMdGQ7ordtkh4NFfHe5C/Ru33YoKDiX4jELw1pNcq2XN0X7BPxUe7P8Oxg==
+X-Received: by 2002:a1c:18e:: with SMTP id 136mr12363995wmb.93.1596102421764;
+        Thu, 30 Jul 2020 02:47:01 -0700 (PDT)
 Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id j6sm9009645wro.25.2020.07.30.02.46.59
+        by smtp.gmail.com with ESMTPSA id j6sm9009645wro.25.2020.07.30.02.47.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 02:47:00 -0700 (PDT)
+        Thu, 30 Jul 2020 02:47:01 -0700 (PDT)
 From:   Julien Thierry <jthierry@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
         raphael.gault@arm.com, benh@kernel.crashing.org,
         Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH v2 4/9] objtool: Abstract alternative special case handling
-Date:   Thu, 30 Jul 2020 10:46:47 +0100
-Message-Id: <20200730094652.28297-5-jthierry@redhat.com>
+Subject: [PATCH v2 5/9] objtool: Make relocation in alternative handling arch dependent
+Date:   Thu, 30 Jul 2020 10:46:48 +0100
+Message-Id: <20200730094652.28297-6-jthierry@redhat.com>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20200730094652.28297-1-jthierry@redhat.com>
 References: <20200730094652.28297-1-jthierry@redhat.com>
@@ -69,169 +69,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some alternatives associated with a specific feature need to be treated
-in a special way. Since the features and how to treat them vary from one
-architecture to another, move the special case handling to arch specific
-code.
+As pointed out by the comment in handle_group_alt(), support of
+relocation for instructions in an alternative group depends on whether
+arch specific kernel code handles it.
+
+So, let objtool arch specific code decide whether a relocation for
+the alternative section should be accepted.
 
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 ---
- tools/objtool/arch/x86/Build          |  1 +
- tools/objtool/arch/x86/arch_special.c | 37 +++++++++++++++++++++++++++
- tools/objtool/objtool.h               |  2 ++
- tools/objtool/special.c               | 32 ++++-------------------
- tools/objtool/special.h               |  2 ++
- tools/objtool/weak.c                  |  2 --
- 6 files changed, 47 insertions(+), 29 deletions(-)
- create mode 100644 tools/objtool/arch/x86/arch_special.c
+ tools/objtool/arch/x86/arch_special.c | 13 +++++++++++++
+ tools/objtool/check.c                 | 19 ++++++-------------
+ tools/objtool/check.h                 |  6 ++++++
+ tools/objtool/special.h               |  4 ++++
+ 4 files changed, 29 insertions(+), 13 deletions(-)
 
-diff --git a/tools/objtool/arch/x86/Build b/tools/objtool/arch/x86/Build
-index 7c5004008e97..2c3ac13cfa8b 100644
---- a/tools/objtool/arch/x86/Build
-+++ b/tools/objtool/arch/x86/Build
-@@ -1,3 +1,4 @@
-+objtool-y += arch_special.o
- objtool-y += decode.o
- 
- inat_tables_script = ../arch/x86/tools/gen-insn-attr-x86.awk
 diff --git a/tools/objtool/arch/x86/arch_special.c b/tools/objtool/arch/x86/arch_special.c
-new file mode 100644
-index 000000000000..823561e4015c
---- /dev/null
+index 823561e4015c..34e0e162e6fd 100644
+--- a/tools/objtool/arch/x86/arch_special.c
 +++ b/tools/objtool/arch/x86/arch_special.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+#include "../../special.h"
-+#include "../../builtin.h"
+@@ -35,3 +35,16 @@ void arch_handle_alternative(unsigned short feature, struct special_alt *alt)
+ 		break;
+ 	}
+ }
 +
-+#define X86_FEATURE_POPCNT (4 * 32 + 23)
-+#define X86_FEATURE_SMAP   (9 * 32 + 20)
-+
-+void arch_handle_alternative(unsigned short feature, struct special_alt *alt)
++bool arch_support_alt_relocation(struct special_alt *special_alt,
++				 struct instruction *insn,
++				 struct reloc *reloc)
 +{
-+	switch (feature) {
-+	case X86_FEATURE_SMAP:
-+		/*
-+		 * If UACCESS validation is enabled; force that alternative;
-+		 * otherwise force it the other way.
-+		 *
-+		 * What we want to avoid is having both the original and the
-+		 * alternative code flow at the same time, in that case we can
-+		 * find paths that see the STAC but take the NOP instead of
-+		 * CLAC and the other way around.
-+		 */
-+		if (uaccess)
-+			alt->skip_orig = true;
-+		else
-+			alt->skip_alt = true;
-+		break;
-+	case X86_FEATURE_POPCNT:
-+		/*
-+		 * It has been requested that we don't validate the !POPCNT
-+		 * feature path which is a "very very small percentage of
-+		 * machines".
-+		 */
-+		alt->skip_orig = true;
-+		break;
-+	default:
-+		break;
-+	}
++	/*
++	 * The x86 alternatives code adjusts the offsets only when it
++	 * encounters a branch instruction at the very beginning of the
++	 * replacement group.
++	 */
++	return insn->offset == special_alt->new_off &&
++	       (insn->type == INSN_CALL || is_static_jump(insn));
 +}
-diff --git a/tools/objtool/objtool.h b/tools/objtool/objtool.h
-index e61b486d4c05..1f85409a57f9 100644
---- a/tools/objtool/objtool.h
-+++ b/tools/objtool/objtool.h
-@@ -12,6 +12,8 @@
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index bb19e4c79e46..18ef9c64719f 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -109,12 +109,6 @@ static struct instruction *prev_insn_same_sym(struct objtool_file *file,
+ 	for (insn = next_insn_same_sec(file, insn); insn;		\
+ 	     insn = next_insn_same_sec(file, insn))
  
- #include "elf.h"
- 
-+#define __weak __attribute__((weak))
-+
- struct objtool_file {
- 	struct elf *elf;
- 	struct list_head insn_list;
-diff --git a/tools/objtool/special.c b/tools/objtool/special.c
-index b04f395de5de..1a2420febd08 100644
---- a/tools/objtool/special.c
-+++ b/tools/objtool/special.c
-@@ -16,9 +16,6 @@
- #include "warn.h"
- #include "arch_special.h"
- 
--#define X86_FEATURE_POPCNT (4*32+23)
--#define X86_FEATURE_SMAP   (9*32+20)
+-static bool is_static_jump(struct instruction *insn)
+-{
+-	return insn->type == INSN_JUMP_CONDITIONAL ||
+-	       insn->type == INSN_JUMP_UNCONDITIONAL;
+-}
 -
- struct special_entry {
- 	const char *sec;
- 	bool group, jump_or_nop;
-@@ -54,6 +51,10 @@ struct special_entry entries[] = {
- 	{},
+ static bool is_sibling_call(struct instruction *insn)
+ {
+ 	/* An indirect jump is either a sibling call or a jump to a table. */
+@@ -866,6 +860,8 @@ static int handle_group_alt(struct objtool_file *file,
+ 	alt_group = alt_group_next_index++;
+ 	insn = *new_insn;
+ 	sec_for_each_insn_from(file, insn) {
++		struct reloc *alt_reloc;
++
+ 		if (insn->offset >= special_alt->new_off + special_alt->new_len)
+ 			break;
+ 
+@@ -882,14 +878,11 @@ static int handle_group_alt(struct objtool_file *file,
+ 		 * .altinstr_replacement section, unless the arch's
+ 		 * alternatives code can adjust the relative offsets
+ 		 * accordingly.
+-		 *
+-		 * The x86 alternatives code adjusts the offsets only when it
+-		 * encounters a branch instruction at the very beginning of the
+-		 * replacement group.
+ 		 */
+-		if ((insn->offset != special_alt->new_off ||
+-		    (insn->type != INSN_CALL && !is_static_jump(insn))) &&
+-		    find_reloc_by_dest_range(file->elf, insn->sec, insn->offset, insn->len)) {
++		alt_reloc = find_reloc_by_dest_range(file->elf, insn->sec,
++						   insn->offset, insn->len);
++		if (alt_reloc &&
++		    !arch_support_alt_relocation(special_alt, insn, alt_reloc)) {
+ 
+ 			WARN_FUNC("unsupported relocation in alternatives section",
+ 				  insn->sec, insn->offset);
+diff --git a/tools/objtool/check.h b/tools/objtool/check.h
+index 059c43bfeb18..c08ca6cd9a89 100644
+--- a/tools/objtool/check.h
++++ b/tools/objtool/check.h
+@@ -44,6 +44,12 @@ struct instruction {
+ 	struct cfi_state cfi;
  };
  
-+void __weak arch_handle_alternative(unsigned short feature, struct special_alt *alt)
++static inline bool is_static_jump(struct instruction *insn)
 +{
++	return insn->type == INSN_JUMP_CONDITIONAL ||
++	       insn->type == INSN_JUMP_UNCONDITIONAL;
 +}
 +
- static int get_alt_entry(struct elf *elf, struct special_entry *entry,
- 			 struct section *sec, int idx,
- 			 struct special_alt *alt)
-@@ -78,30 +79,7 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
+ struct instruction *find_insn(struct objtool_file *file,
+ 			      struct section *sec, unsigned long offset);
  
- 		feature = *(unsigned short *)(sec->data->d_buf + offset +
- 					      entry->feature);
--
--		/*
--		 * It has been requested that we don't validate the !POPCNT
--		 * feature path which is a "very very small percentage of
--		 * machines".
--		 */
--		if (feature == X86_FEATURE_POPCNT)
--			alt->skip_orig = true;
--
--		/*
--		 * If UACCESS validation is enabled; force that alternative;
--		 * otherwise force it the other way.
--		 *
--		 * What we want to avoid is having both the original and the
--		 * alternative code flow at the same time, in that case we can
--		 * find paths that see the STAC but take the NOP instead of
--		 * CLAC and the other way around.
--		 */
--		if (feature == X86_FEATURE_SMAP) {
--			if (uaccess)
--				alt->skip_orig = true;
--			else
--				alt->skip_alt = true;
--		}
-+		arch_handle_alternative(feature, alt);
- 	}
- 
- 	orig_reloc = find_reloc_by_dest(elf, sec, offset + entry->orig);
 diff --git a/tools/objtool/special.h b/tools/objtool/special.h
-index 35061530e46e..44da89afeda2 100644
+index 44da89afeda2..1dc1bb3e74c6 100644
 --- a/tools/objtool/special.h
 +++ b/tools/objtool/special.h
-@@ -28,4 +28,6 @@ struct special_alt {
+@@ -7,6 +7,7 @@
+ #define _SPECIAL_H
  
- int special_get_alts(struct elf *elf, struct list_head *alts);
+ #include <stdbool.h>
++#include "check.h"
+ #include "elf.h"
  
-+void arch_handle_alternative(unsigned short feature, struct special_alt *alt);
-+
+ struct special_alt {
+@@ -30,4 +31,7 @@ int special_get_alts(struct elf *elf, struct list_head *alts);
+ 
+ void arch_handle_alternative(unsigned short feature, struct special_alt *alt);
+ 
++bool arch_support_alt_relocation(struct special_alt *special_alt,
++				 struct instruction *insn,
++				 struct reloc *reloc);
  #endif /* _SPECIAL_H */
-diff --git a/tools/objtool/weak.c b/tools/objtool/weak.c
-index 29180d599b08..7843e9a7a72f 100644
---- a/tools/objtool/weak.c
-+++ b/tools/objtool/weak.c
-@@ -9,8 +9,6 @@
- #include <errno.h>
- #include "objtool.h"
- 
--#define __weak __attribute__((weak))
--
- #define UNSUPPORTED(name)						\
- ({									\
- 	fprintf(stderr, "error: objtool: " name " not implemented\n");	\
 -- 
 2.21.3
 
