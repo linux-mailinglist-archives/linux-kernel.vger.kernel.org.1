@@ -2,136 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263CB232AC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 06:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A67232ABB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 06:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbgG3ERz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 00:17:55 -0400
-Received: from esa2.mentor.iphmx.com ([68.232.141.98]:17855 "EHLO
-        esa2.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726519AbgG3ERy (ORCPT
+        id S1727056AbgG3ENj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 00:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgG3ENi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 00:17:54 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Jul 2020 00:17:51 EDT
-IronPort-SDR: 9RkskvAB+kmOMTzUUrB64G94GReK7PVV/xTEmOO9zTNZlEqjwzEq0SxaOO1XPrtiy7NG3oxFp0
- gh/nopnq5JsZA+8WhLQdrP2r23TOeEWRvnnOR0k8IfgxmXmYVbHJmTAuy3QwOib7iXUrkkHu7x
- z1gZjMM63+ppga4PGoac5V8swoCyWv9Rk+twgbE3II2eQtbpZiJGPAqNU+k84tGRlwcov0URqz
- dVnQulXmfYELIc/pqAmLD9UnrUd8f1BLO9LTfTw8xlXqARTL7aX1BC27IoJ0jg891AGsh/L3cw
- ieU=
-X-IronPort-AV: E=Sophos;i="5.75,413,1589270400"; 
-   d="scan'208";a="51442063"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa2.mentor.iphmx.com with ESMTP; 29 Jul 2020 20:10:47 -0800
-IronPort-SDR: bn2vMB281lyjinmdybJm5jGUzYfE01QrphUEyh+X1wmn8Sdo/v2NHC3LYdOcCBoMjeJOhYYC8a
- 6HyWqFJbrbbgDMvWbO5Jds4vz5Rqi10etKx15xuoMMqOMrFbxm30qOtazB77iuHQFV9lKSbixP
- R6vV+hIj8zviIjeR9OCbZ/G54ruOJw5mG4Ch3ld8KSyp69Hgqb2dqOflGg27D5sGYqK58QkRiL
- 1mUQjNJ3F04BcOt7gq3DQbfe6RnE2X65qYt4NiIRDv4zoTS9qXmJxKjgdXY2N35KXRNvDySYeZ
- ROE=
-From:   Jiada Wang <jiada_wang@mentor.com>
-To:     <nick@shmanahar.org>, <dmitry.torokhov@gmail.com>
-CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>, <Andrew_Gabbasov@mentor.com>,
-        <digetx@gmail.com>, <jiada_wang@mentor.com>
-Subject: [PATCH 2/2] Input: atmel_mxt_ts - output status from T42 Touch Suppression
-Date:   Thu, 30 Jul 2020 13:10:39 +0900
-Message-ID: <20200730041039.7646-2-jiada_wang@mentor.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200730041039.7646-1-jiada_wang@mentor.com>
-References: <20200730041039.7646-1-jiada_wang@mentor.com>
+        Thu, 30 Jul 2020 00:13:38 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98409C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 21:13:38 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 74so6034073pfx.13
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 21:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=oNLK7uM4PfoxFTg5k9G9c/AFUYqdGbH3MtTXOTQJaMA=;
+        b=k9ofiJ5HPC2c49FkjkRDv2WrdWzMLcrlR6JVb5UEy1jRB1F2doEKibWHmYB96YHfO1
+         +xmyBCak32xRg5E30RrmUepIYmCfiHM8qzHx6Pf0gPPFWbfPtbbR+7U6gwEmoWX5jhzd
+         JcZwE7oWCFIvx3B7sY1UBBgW72St1Hkj7dvReZCDIVqSAFj/A2ie8eCwDcx6oEx2u1Kk
+         orizXhIJ2UOtsj0mTBVQVrr/JnWEfbZUazhyrSySiL5lYbK+ac15UnGKTPSOw95lT2Ua
+         /Wqt1Xle+UOxdGBAK3e4v1iEyTpxlPUFpRQmgyCtN0IHPE+rRLrNLXpoPrQP6ONPZfr4
+         a2eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=oNLK7uM4PfoxFTg5k9G9c/AFUYqdGbH3MtTXOTQJaMA=;
+        b=PlR6Utg1pXaCpXbSh0kWZiStxP1wT/6HBqO9ll4OkK/oyhfkc96H7XjpdbnD+/Zd9b
+         AnSyWymgxGKtoz58Pl8YP8Bmtc6J6f5Fhd5QBDa+LiIDw1G09ZkDst3jVTgZOcy7fkVj
+         fFkIIL3iZdxjxeBJp57bbgXKeNGxNyZ5fhSn2zRsiHwOCkTtfB++ifVg7ztZYsviMwhw
+         Tag7cdnGiNiO765rXc1SoZpt1QFFXhhdIwWilV6SxFcX9bvpAl7SavtgJDrrzaynR/mU
+         ZLdwsCbaXFHX1doa2vHGxnr680xjMIj1ZG38/KVP765RBbrP4aQNzlHDIwhIvmUmEB0E
+         kwEQ==
+X-Gm-Message-State: AOAM531JF6digCFyxp/Ebe+NfMOQ1OczMNLXBLjITFCnHe8CpaQWyFfh
+        1t8gSsrBdgT2CWgbQsBjDX8bVA==
+X-Google-Smtp-Source: ABdhPJwPnH7KizZyrysK8KyR0jonI6jqQMT/juFfmsTEABa51D5nnau5TsXaq9+lQm+B6VwOhO5Wdg==
+X-Received: by 2002:a65:4549:: with SMTP id x9mr31737542pgr.415.1596082418039;
+        Wed, 29 Jul 2020 21:13:38 -0700 (PDT)
+Received: from localhost ([106.201.14.19])
+        by smtp.gmail.com with ESMTPSA id w9sm3769942pja.39.2020.07.29.21.13.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 29 Jul 2020 21:13:37 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 09:43:34 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     rjw@rjwysocki.net, dietmar.eggemann@arm.com,
+        catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
+        linux@armlinux.org.uk, mingo@redhat.com, peterz@infradead.org,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] cpufreq: set invariance scale factor on
+ transition end
+Message-ID: <20200730041334.cjg5mc5xpopd2lst@vireshk-mac-ubuntu>
+References: <20200722093732.14297-1-ionela.voinescu@arm.com>
+ <20200722093732.14297-3-ionela.voinescu@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722093732.14297-3-ionela.voinescu@arm.com>
+User-Agent: NeoMutt/20170609 (1.8.3)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Dyer <nick.dyer@itdev.co.uk>
+On 22-07-20, 10:37, Ionela Voinescu wrote:
+> While the move of the invariance setter calls (arch_set_freq_scale())
+> from cpufreq drivers to cpufreq core maintained the previous
+> functionality for existing drivers that use target_index() and
+> fast_switch() for frequency switching, it also gives the possibility
+> of adding support for users of the target() callback, which is exploited
+> here.
+> 
+> To be noted that the target() callback has been flagged as deprecated
+> since:
+> 
+> commit 9c0ebcf78fde ("cpufreq: Implement light weight ->target_index() routine")
+> 
+> It also doesn't have that many users:
+> 
+>   cpufreq-nforce2.c:371:2:      .target = nforce2_target,
+>   cppc_cpufreq.c:416:2:         .target = cppc_cpufreq_set_target,
+>   gx-suspmod.c:439:2:           .target = cpufreq_gx_target,
+>   pcc-cpufreq.c:573:2:          .target = pcc_cpufreq_target,
+> 
+> Similarly to the path taken for target_index() calls in the cpufreq core
+> during a frequency change, all of the drivers above will mark the end of a
+> frequency change by a call to cpufreq_freq_transition_end().
+> 
+> Therefore, cpufreq_freq_transition_end() can be used as the location for
+> the arch_set_freq_scale() call to potentially inform the scheduler of the
+> frequency change.
+> 
+> This change maintains the previous functionality for the drivers that
+> implement the target_index() callback, while also adding support for the
+> few drivers that implement the deprecated target() callback.
+> 
+> Two notes are worthwhile here:
+>  - In __target_index(), cpufreq_freq_transition_end() is called only for
+>    drivers that have synchronous notifications enabled. There is only one
+>    driver that disables them,
+> 
+>    drivers/cpufreq/powernow-k8.c:1142: .flags = CPUFREQ_ASYNC_NOTIFICATION,
+> 
+>    which is deprecated.
 
-This patch outputs status from T42 touch suppression
+I don't think this is deprecated.
 
-Signed-off-by: Nick Dyer <nick.dyer@itdev.co.uk>
-Acked-by: Benson Leung <bleung@chromium.org>
-Acked-by: Yufeng Shen <miletus@chromium.org>
-(cherry picked from ndyer/linux/for-upstream commit ab95b5a309999d2c098daaa9f88d9fcfae7eb516)
-Signed-off-by: George G. Davis <george_davis@mentor.com>
-[jiada: Replace dev_info() with dev_dbg(),
-	Move logical continuation to previous line to address checkpatch CHECK]
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
----
- drivers/input/touchscreen/atmel_mxt_ts.c | 25 ++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
-index 729c8dcb9cd1..b260f8c70c11 100644
---- a/drivers/input/touchscreen/atmel_mxt_ts.c
-+++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-@@ -160,6 +160,9 @@ struct t37_debug {
- #define MXT_T48_MSG_NOISESUP_STATCHG	BIT(4)
- #define MXT_T48_MSG_NOISESUP_NLVLCHG	BIT(5)
- 
-+/* Define for MXT_PROCI_TOUCHSUPPRESSION_T42 */
-+#define MXT_T42_MSG_TCHSUP	BIT(0)
-+
- /* T100 Multiple Touch Touchscreen */
- #define MXT_T100_CTRL		0
- #define MXT_T100_CFG1		1
-@@ -326,6 +329,8 @@ struct mxt_data {
- 	u8 T9_reportid_min;
- 	u8 T9_reportid_max;
- 	u8 T19_reportid;
-+	u8 T42_reportid_min;
-+	u8 T42_reportid_max;
- 	u16 T44_address;
- 	u8 T48_reportid;
- 	u8 T100_reportid_min;
-@@ -960,6 +965,17 @@ static void mxt_proc_t100_message(struct mxt_data *data, u8 *message)
- 	data->update_input = true;
- }
- 
-+static void mxt_proc_t42_messages(struct mxt_data *data, u8 *msg)
-+{
-+	struct device *dev = &data->client->dev;
-+	u8 status = msg[1];
-+
-+	if (status & MXT_T42_MSG_TCHSUP)
-+		dev_dbg(dev, "T42 suppress\n");
-+	else
-+		dev_dbg(dev, "T42 normal\n");
-+}
-+
- static int mxt_proc_t48_messages(struct mxt_data *data, u8 *msg)
- {
- 	struct device *dev = &data->client->dev;
-@@ -987,6 +1003,9 @@ static int mxt_proc_message(struct mxt_data *data, u8 *message)
- 
- 	if (report_id == data->T6_reportid) {
- 		mxt_proc_t6_messages(data, message);
-+	} else if (report_id >= data->T42_reportid_min &&
-+		   report_id <= data->T42_reportid_max) {
-+		mxt_proc_t42_messages(data, message);
- 	} else if (report_id == data->T48_reportid) {
- 		mxt_proc_t48_messages(data, message);
- 	} else if (!data->input_dev) {
-@@ -1633,6 +1652,8 @@ static void mxt_free_object_table(struct mxt_data *data)
- 	data->T9_reportid_min = 0;
- 	data->T9_reportid_max = 0;
- 	data->T19_reportid = 0;
-+	data->T42_reportid_min = 0;
-+	data->T42_reportid_max = 0;
- 	data->T44_address = 0;
- 	data->T48_reportid = 0;
- 	data->T100_reportid_min = 0;
-@@ -1707,6 +1728,10 @@ static int mxt_parse_object_table(struct mxt_data *data,
- 						object->num_report_ids - 1;
- 			data->num_touchids = object->num_report_ids;
- 			break;
-+		case MXT_PROCI_TOUCHSUPPRESSION_T42:
-+			data->T42_reportid_min = min_id;
-+			data->T42_reportid_max = max_id;
-+			break;
- 		case MXT_SPT_MESSAGECOUNT_T44:
- 			data->T44_address = object->start_address;
- 			break;
 -- 
-2.17.1
-
+viresh
