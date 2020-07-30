@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76D5232D38
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7B5232D34
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729563AbgG3IIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:08:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46322 "EHLO mail.kernel.org"
+        id S1729535AbgG3IIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:08:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729004AbgG3IIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:08:10 -0400
+        id S1729493AbgG3IHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:07:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 878392083B;
-        Thu, 30 Jul 2020 08:08:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0AB9206C0;
+        Thu, 30 Jul 2020 08:07:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096490;
-        bh=P8LzsDBqZ3Fx8Hlz6wYr3MAHfWr7DplBUg0vGJCGgrg=;
+        s=default; t=1596096459;
+        bh=xs7LQ2LBAeYJBzB+0vFKPqcnN/L4y7IAK++oRk+kDb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KfYZnT8SB4zmlEKECixq50uPhTm6SIaFhr1fgdlXpaJrVy11NokCLQr7CFr6/NK3k
-         EJ8vw2FdGk7eZUH48V9hGvnYottZnhAJxLZpotRLgIuqHiFyIq68ey4CGofxpLodj3
-         56Kca16pN70B76WED3ygFyzwKfXtXY440iZqxAic=
+        b=iiSifVCfMtMGkzg3ZFp1fAPCqp3ML5cb8McpCjwyec3gyMC8gAmXUp6KRPJB2pQ8x
+         zCBYPAd+4SqPoHLNj17eSS9ucz99g1q/PvoFXkGKpwN3aRQsu6pZ567i1AKoRNLaXh
+         C0IDzp9wzTJlX93v7JDG5kDWebxXuw5wA/RKnGqw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Eric Dumazet <edumazet@google.com>,
+        Weilong Chen <chenweilong@huawei.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 09/14] ip6_gre: fix null-ptr-deref in ip6gre_init_net()
-Date:   Thu, 30 Jul 2020 10:04:52 +0200
-Message-Id: <20200730074419.359661406@linuxfoundation.org>
+Subject: [PATCH 4.14 10/14] rtnetlink: Fix memory(net_device) leak when ->newlink fails
+Date:   Thu, 30 Jul 2020 10:04:53 +0200
+Message-Id: <20200730074419.408134183@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200730074418.882736401@linuxfoundation.org>
 References: <20200730074418.882736401@linuxfoundation.org>
@@ -45,81 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Weilong Chen <chenweilong@huawei.com>
 
-[ Upstream commit 46ef5b89ec0ecf290d74c4aee844f063933c4da4 ]
+[ Upstream commit cebb69754f37d68e1355a5e726fdac317bcda302 ]
 
-KASAN report null-ptr-deref error when register_netdev() failed:
+When vlan_newlink call register_vlan_dev fails, it might return error
+with dev->reg_state = NETREG_UNREGISTERED. The rtnl_newlink should
+free the memory. But currently rtnl_newlink only free the memory which
+state is NETREG_UNINITIALIZED.
 
-KASAN: null-ptr-deref in range [0x00000000000003c0-0x00000000000003c7]
-CPU: 2 PID: 422 Comm: ip Not tainted 5.8.0-rc4+ #12
-Call Trace:
- ip6gre_init_net+0x4ab/0x580
- ? ip6gre_tunnel_uninit+0x3f0/0x3f0
- ops_init+0xa8/0x3c0
- setup_net+0x2de/0x7e0
- ? rcu_read_lock_bh_held+0xb0/0xb0
- ? ops_init+0x3c0/0x3c0
- ? kasan_unpoison_shadow+0x33/0x40
- ? __kasan_kmalloc.constprop.0+0xc2/0xd0
- copy_net_ns+0x27d/0x530
- create_new_namespaces+0x382/0xa30
- unshare_nsproxy_namespaces+0xa1/0x1d0
- ksys_unshare+0x39c/0x780
- ? walk_process_tree+0x2a0/0x2a0
- ? trace_hardirqs_on+0x4a/0x1b0
- ? _raw_spin_unlock_irq+0x1f/0x30
- ? syscall_trace_enter+0x1a7/0x330
- ? do_syscall_64+0x1c/0xa0
- __x64_sys_unshare+0x2d/0x40
- do_syscall_64+0x56/0xa0
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+BUG: memory leak
+unreferenced object 0xffff8881051de000 (size 4096):
+  comm "syz-executor139", pid 560, jiffies 4294745346 (age 32.445s)
+  hex dump (first 32 bytes):
+    76 6c 61 6e 32 00 00 00 00 00 00 00 00 00 00 00  vlan2...........
+    00 45 28 03 81 88 ff ff 00 00 00 00 00 00 00 00  .E(.............
+  backtrace:
+    [<0000000047527e31>] kmalloc_node include/linux/slab.h:578 [inline]
+    [<0000000047527e31>] kvmalloc_node+0x33/0xd0 mm/util.c:574
+    [<000000002b59e3bc>] kvmalloc include/linux/mm.h:753 [inline]
+    [<000000002b59e3bc>] kvzalloc include/linux/mm.h:761 [inline]
+    [<000000002b59e3bc>] alloc_netdev_mqs+0x83/0xd90 net/core/dev.c:9929
+    [<000000006076752a>] rtnl_create_link+0x2c0/0xa20 net/core/rtnetlink.c:3067
+    [<00000000572b3be5>] __rtnl_newlink+0xc9c/0x1330 net/core/rtnetlink.c:3329
+    [<00000000e84ea553>] rtnl_newlink+0x66/0x90 net/core/rtnetlink.c:3397
+    [<0000000052c7c0a9>] rtnetlink_rcv_msg+0x540/0x990 net/core/rtnetlink.c:5460
+    [<000000004b5cb379>] netlink_rcv_skb+0x12b/0x3a0 net/netlink/af_netlink.c:2469
+    [<00000000c71c20d3>] netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+    [<00000000c71c20d3>] netlink_unicast+0x4c6/0x690 net/netlink/af_netlink.c:1329
+    [<00000000cca72fa9>] netlink_sendmsg+0x735/0xcc0 net/netlink/af_netlink.c:1918
+    [<000000009221ebf7>] sock_sendmsg_nosec net/socket.c:652 [inline]
+    [<000000009221ebf7>] sock_sendmsg+0x109/0x140 net/socket.c:672
+    [<000000001c30ffe4>] ____sys_sendmsg+0x5f5/0x780 net/socket.c:2352
+    [<00000000b71ca6f3>] ___sys_sendmsg+0x11d/0x1a0 net/socket.c:2406
+    [<0000000007297384>] __sys_sendmsg+0xeb/0x1b0 net/socket.c:2439
+    [<000000000eb29b11>] do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
+    [<000000006839b4d0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-ip6gre_tunnel_uninit() has set 'ign->fb_tunnel_dev' to NULL, later
-access to ign->fb_tunnel_dev cause null-ptr-deref. Fix it by saving
-'ign->fb_tunnel_dev' to local variable ndev.
-
-Fixes: dafabb6590cb ("ip6_gre: fix use-after-free in ip6gre_tunnel_lookup()")
+Fixes: cb626bf566eb ("net-sysfs: Fix reference count leak")
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Weilong Chen <chenweilong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/ip6_gre.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ net/core/rtnetlink.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/ipv6/ip6_gre.c
-+++ b/net/ipv6/ip6_gre.c
-@@ -1169,15 +1169,16 @@ static void ip6gre_destroy_tunnels(struc
- static int __net_init ip6gre_init_net(struct net *net)
- {
- 	struct ip6gre_net *ign = net_generic(net, ip6gre_net_id);
-+	struct net_device *ndev;
- 	int err;
- 
--	ign->fb_tunnel_dev = alloc_netdev(sizeof(struct ip6_tnl), "ip6gre0",
--					  NET_NAME_UNKNOWN,
--					  ip6gre_tunnel_setup);
--	if (!ign->fb_tunnel_dev) {
-+	ndev = alloc_netdev(sizeof(struct ip6_tnl), "ip6gre0",
-+			    NET_NAME_UNKNOWN, ip6gre_tunnel_setup);
-+	if (!ndev) {
- 		err = -ENOMEM;
- 		goto err_alloc_dev;
- 	}
-+	ign->fb_tunnel_dev = ndev;
- 	dev_net_set(ign->fb_tunnel_dev, net);
- 	/* FB netdevice is special: we have one, and only one per netns.
- 	 * Allowing to move it to another netns is clearly unsafe.
-@@ -1197,7 +1198,7 @@ static int __net_init ip6gre_init_net(st
- 	return 0;
- 
- err_reg_dev:
--	free_netdev(ign->fb_tunnel_dev);
-+	free_netdev(ndev);
- err_alloc_dev:
- 	return err;
- }
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -2733,7 +2733,8 @@ replay:
+ 			 */
+ 			if (err < 0) {
+ 				/* If device is not registered at all, free it now */
+-				if (dev->reg_state == NETREG_UNINITIALIZED)
++				if (dev->reg_state == NETREG_UNINITIALIZED ||
++				    dev->reg_state == NETREG_UNREGISTERED)
+ 					free_netdev(dev);
+ 				goto out;
+ 			}
 
 
