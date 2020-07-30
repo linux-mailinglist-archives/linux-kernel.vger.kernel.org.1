@@ -2,136 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6132D232920
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349E823293B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728265AbgG3Ase (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 20:48:34 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3711 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgG3Ase (ORCPT
+        id S1728303AbgG3A4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 20:56:52 -0400
+Received: from relay5.mymailcheap.com ([159.100.248.207]:34265 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726709AbgG3A4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 20:48:34 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f2218b40000>; Wed, 29 Jul 2020 17:47:48 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 29 Jul 2020 17:48:34 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 29 Jul 2020 17:48:34 -0700
-Received: from [10.2.160.194] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Jul
- 2020 00:48:32 +0000
-Subject: Re: [RFC PATCH v5 13/14] media: tegra-video: Add CSI MIPI pads
- calibration
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>
-References: <1595883452-17343-1-git-send-email-skomatineni@nvidia.com>
- <1595883452-17343-14-git-send-email-skomatineni@nvidia.com>
- <c3d40261-9d77-3634-3e04-f20efad9d3d8@gmail.com>
- <01ee0805-3d57-d857-48e3-5c2245cd4500@nvidia.com>
- <2ec535c9-55e8-8834-6002-36c75aeb097c@gmail.com>
- <021707b9-5f72-6f8b-d125-43627ef64a6d@nvidia.com>
- <de2d6117-b1e5-14c0-52ca-ff46b444c866@nvidia.com>
- <ca18b93e-1f1c-50ae-e0c1-11758935ee89@gmail.com>
- <42f25a49-ad2b-4e52-fd99-cb0f52037988@nvidia.com>
-Message-ID: <f5440f57-3653-7cf0-9efe-e9a0c276f7cf@nvidia.com>
-Date:   Wed, 29 Jul 2020 17:55:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 29 Jul 2020 20:56:52 -0400
+Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.80.156])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 08A0126376
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 00:56:49 +0000 (UTC)
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id 0D8623F1D0;
+        Thu, 30 Jul 2020 02:56:43 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id CFB272A90C;
+        Thu, 30 Jul 2020 02:56:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1596070602;
+        bh=jt6CXPuxRRHbhS3TXLRcgmZiibXtcKZSRTlrq/14zrI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XuFHDQuc7IOKosfSbNDfcFpAYVGDt6SZ7AXF4ZehRR2PdlXArIB4tURpRgFSoRRpZ
+         G/H//0mBDXsaDzn7lSIp/4CwkaeN+PKgms6wHoLRSdo1TVtZoE251STz9NULqwMMyh
+         JV0YpW+ueIAHLbb92P28c/RepKGIMG8jDUrw26HQ=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ip1L72fUqe0v; Thu, 30 Jul 2020 02:56:40 +0200 (CEST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Thu, 30 Jul 2020 02:56:40 +0200 (CEST)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 3948840143;
+        Thu, 30 Jul 2020 00:56:39 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="WG0PFiVD";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from localhost.localdomain (unknown [123.157.159.172])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id C3B0F40143;
+        Thu, 30 Jul 2020 00:56:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1596070592;
+        bh=jt6CXPuxRRHbhS3TXLRcgmZiibXtcKZSRTlrq/14zrI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WG0PFiVDsOWJMFzQBYlGYI2nKEUfBmaOnG2heQdBJtbF9nxGw2RPx2DBGSFcXvexd
+         +kEJtszEREXGdPLzif45B5dePQIGSGGcJcQkVZx9oqzuqvvvJxmsWXFKXgAGsCEe7k
+         0f4oVDQfxU5otEOe6w1ZIygtPPmwaotsAJPTvT4Q=
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     robh@kernel.org, linux-kernel@vger.kernel.org,
+        tsbogend@alpha.franken.de, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH] of_address: Guard of_bus_pci_get_flags with CONFIG_PCI
+Date:   Thu, 30 Jul 2020 08:56:14 +0800
+Message-Id: <20200730005614.32302-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <42f25a49-ad2b-4e52-fd99-cb0f52037988@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596070068; bh=0B8OKLEcLbPcdelMmV/5zmb0K63KthRXZnJxCSQVz3c=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=jJdFFerufxuJNZYaOn/R/58bR9z5n33YZvGgyCxVvQfFZAId0jL8NHg4nMdGqTVXB
-         Mgg1Nhi49hNUr1gHjebnSdU9y2Gb6xOafnRsAOThNK5QBzHHGb9TWjr7h7oC2nA3FB
-         37Ud46fw7XE3kmXE8DIZm+uiHRRl/CSyjY6DhkvkbenWxgIHy6jFeG0tiFrPVo7pCH
-         3YtXktzvxfP2DxEMa2knzOIuK1Vfr7Ho+uM9NT3Y/8JQ2dI/vdB52x7vVkT2wIBfwC
-         CMotzYdwhw48NF7PmZtG79n2LNm838GgtfB/HwIZwbNyGsvEoXNXZXbq1qUQmdxT7t
-         xEK7L0GjR5xcQ==
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 3948840143
+X-Spamd-Result: default: False [4.90 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[123.157.159.172:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         RCPT_COUNT_FIVE(0.00)[6];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         MID_CONTAINS_FROM(1.00)[];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After 2f96593ecc37 ("of_address: Add bus type match for pci ranges parser"),
+the last user of of_bus_pci_get_flags when CONFIG_PCI is disabled had gone.
 
-On 7/29/20 5:52 PM, Sowjanya Komatineni wrote:
->
-> On 7/29/20 5:43 PM, Dmitry Osipenko wrote:
->> 30.07.2020 03:27, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> ...
->>>>> Secondly, perhaps a failed calibration isn't a very critical error?
->>>>> Hence just printing a warning message should be enough.
->>>> Using dev_err to report calibration failure. Are you suggesting to use
->>>> dev_warn instead of dev_err?
->> I meant that failing s_stream might be unnecessary.
->>
->> The dev_warn should be more appropriate for a non-critical errors.
->>
->>>>> Could you please make a patch that factors all ON/OFF code paths=20
->>>>> into a
->>>>> separate functions? It's a bit difficult to follow the combined code,
->>>>> especially partial changes in the patches. Thanks in advance!
->>>> what do you mean by partial changes in patches?
->>>>
->>>> Can you please be more clear?
->>> Also please specify what ON/OFF code paths you are referring to when=20
->>> you
->>> say to move into separate functions?
->> I meant to change all the code like this:
->>
->> set(on) {
->> =C2=A0=C2=A0=C2=A0=C2=A0 if (on) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
->> =C2=A0=C2=A0=C2=A0=C2=A0 }
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0 if (!on)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0 return;
->> }
->>
->> to somewhat like this:
->>
->> set(on) {
->> =C2=A0=C2=A0=C2=A0=C2=A0 if (on)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D enable();
->> =C2=A0=C2=A0=C2=A0=C2=A0 else
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D disable();
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> }
->
-> You mean to change tegra_channel_set_stream() ?
-changing tegra_channel_set_stream() to have like below will have=20
-redundant calls as most of the code b/w enable and disable is same=20
-except calling them in reverse order based on on/off and doing MIPI=20
-calibration only during ON
+This caused unused function warning when compiling without CONFIG_PCI.
+Fix by guarding it with CONFIG_PCI.
 
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 2f96593ecc37 ("of_address: Add bus type match for pci ranges parser")
+---
+ drivers/of/address.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-if (on)
- =C2=A0=C2=A0=C2=A0 ret =3D enable()
-else
- =C2=A0=C2=A0=C2=A0 ret =3D disable()
-return ret;
-
->
->
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index 813936d419ad..157dc7e06077 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -101,6 +101,7 @@ static unsigned int of_bus_default_get_flags(const __be32 *addr)
+ 	return IORESOURCE_MEM;
+ }
+ 
++#ifdef CONFIG_PCI
+ static unsigned int of_bus_pci_get_flags(const __be32 *addr)
+ {
+ 	unsigned int flags = 0;
+@@ -123,7 +124,6 @@ static unsigned int of_bus_pci_get_flags(const __be32 *addr)
+ 	return flags;
+ }
+ 
+-#ifdef CONFIG_PCI
+ /*
+  * PCI bus specific translator
+  */
+-- 
+2.27.0
