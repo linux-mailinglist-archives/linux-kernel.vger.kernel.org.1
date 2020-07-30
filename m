@@ -2,79 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F2B2330C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 13:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6982330C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 13:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbgG3LNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 07:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
+        id S1727051AbgG3LLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 07:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgG3LNB (ORCPT
+        with ESMTP id S1726367AbgG3LLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 07:13:01 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BE9C061794;
-        Thu, 30 Jul 2020 04:13:01 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id g19so1205174plq.0;
-        Thu, 30 Jul 2020 04:13:01 -0700 (PDT)
+        Thu, 30 Jul 2020 07:11:38 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24199C061794;
+        Thu, 30 Jul 2020 04:11:37 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z18so20945418wrm.12;
+        Thu, 30 Jul 2020 04:11:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1RXnzFUlUte9x0aeJ24tzi69Ln5Qow4Xgrtr1s2D2+Y=;
-        b=bGqPRCfwJh32n0ixyAQlu/+W8RkMxXAMkLIbTqG7XWvHkybwKzU3zATxpYQpWS3q3t
-         Jefpph3Mq216BB65Xyap1Uo9SWnnJVGSLledPKNBq4gdgB4bk5cpe7drQttmZc7+E3aI
-         5Kq+D2cRfqbq9EKzL4tLMf5bBPtZrd4dqr9PeHOLlZxWCyyIldCF6REaXnTLH6Mk/7IA
-         fIXqCKEAR88vDcTG7rgCa6FPHSVO5vsM4ohbC0sTX27JFHd+3hhYz28rmuO9ZN6tsDmT
-         4q4osJT2gdkmu8XaYtbe7hCv5lxinWWlWTxcKvMl3e3g37zlhkZgMcQEQUJwkeNLSwO2
-         YTGg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+0iowu5xEfPH7yjXvVBsR1zC3LFBJmoKMH8nuby/sFI=;
+        b=GnWpPtrtvLFQrIvPWKQ3x+hLmZQOnsGb2mOxnHtZf+3PKUEyAfUB5sGJImtjtbm6zr
+         6U7vMKvKE8VRMhaUPT21A8bglTvJzmBmah7MqtoF++11LRRhCoBBb5x34ABeYLAMKzZ/
+         OigG88mHCVRGTHXayDVGS9o/pj9cJ2lAIwo07rR5IKKqA4VngkOVFIF10/p8Cqacdqkr
+         IpPvHvvn9RQw5Tsa9iWA4HmvopcWpjmM78H1r6/YC4xXCoz81udYkQez3cJyW71F/2Cs
+         JsS9s+UcdTmDDXnmvtlDzykh+mw+4DO06ELW/mExH6HTUqulWglC73UdJvjMY+ui9Hfn
+         nsUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1RXnzFUlUte9x0aeJ24tzi69Ln5Qow4Xgrtr1s2D2+Y=;
-        b=m6sWEMtN7cMt70xZ48RZp3EEujTtaqJLw2KNkMqAMYmlMRtxwrxhB+7N1GGk3SotaU
-         GmBI/X+OB09UJu824fKex1Th3u+2xJpUfOKmjcHO1SHQ9CmOBZjGScC5bRyMvEeirlcw
-         Cfrzjb+5vbnBaLAHcqGcUZ3mgRkoqAU7eHwuZ0kNbR239pvoSJNbZ97corSZzoExCCfh
-         +v5aOCMZU0gXBEXOirRArD2/Uiqniku6qHyH03VCM8NzNe+4gg3oHZU9zMAQN+iuKbNx
-         Hyb6AQWaK8w/hBEfBIYVt7zXQb+PsqjlA+I+x/NEn5pYjD8oAVTZun51v+Sr84Oba+kF
-         MD2Q==
-X-Gm-Message-State: AOAM531D+7oaGfbqqbpadC/Gal3QQuD4BAZKpQnjrFqiqX+hpXil9j2A
-        oeSt9B4a51BXA14cuOWW5v0=
-X-Google-Smtp-Source: ABdhPJw7ZezaIvMMg31YdupCrrfa8QNNWsgbqtE4ABRHJ28thJ5mdhBmLm8+vddePpaUrATms/nDjg==
-X-Received: by 2002:aa7:9468:: with SMTP id t8mr1634918pfq.182.1596107580795;
-        Thu, 30 Jul 2020 04:13:00 -0700 (PDT)
-Received: from gmail.com ([103.105.152.86])
-        by smtp.gmail.com with ESMTPSA id n25sm5812460pff.51.2020.07.30.04.12.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 04:13:00 -0700 (PDT)
-Date:   Thu, 30 Jul 2020 16:41:19 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Don Brace <don.brace@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v2] scsi: smartpqi: use generic power management
-Message-ID: <20200730111119.GA664614@gmail.com>
-References: <20200730070233.221488-1-vaibhavgupta40@gmail.com>
- <20200730110930.664486-1-vaibhavgupta40@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+0iowu5xEfPH7yjXvVBsR1zC3LFBJmoKMH8nuby/sFI=;
+        b=bZP5aJzltBooiok9oT4jsa0MU1vfIef0j6ZNTeSSEWEBnr0QSiT31iQPXutxe61MTP
+         TXNDVDaGJUtF8visFEpMJH23xPT+dXUnB7Mpt5aJgeXuRUKjUWN3UyJjT698+jFI05fb
+         iJ6cdAKs/zG+61stiDiNeDEfVdo5zcooj+tJJzXp1AXJ49k9D9CGF7ecytumPd7NAHvB
+         2a0QU6M5uy3w158kytzESN0+JS5KyD7PtL//S+ld2ZQANKj97/mcHLQU4bpBS+XqtXsb
+         /TbcDIXAJojlsXHnJlgtxa2HEBNahwFaLtkMSMYRc7m7sWImodcQV75DVeKiQ8kKdi19
+         uXcg==
+X-Gm-Message-State: AOAM5324gLfKY+aAQlkh+5nF3kGe3SjoMwNaDlrCtLgyphCdLDYeDfwi
+        PUBS8+XHmMaOgVoxxJDeIaBcb6/FoHw=
+X-Google-Smtp-Source: ABdhPJyzrCbW0TufxlUf4YkPb0Dtc3clPloAllLT6W6ASv6ufOJZ4JIRJvQHLXGZ3Q5JjOxz3dalBg==
+X-Received: by 2002:a5d:48c8:: with SMTP id p8mr2265618wrs.84.1596107495864;
+        Thu, 30 Jul 2020 04:11:35 -0700 (PDT)
+Received: from ziggy.stardust (81.172.57.81.dyn.user.ono.com. [81.172.57.81])
+        by smtp.gmail.com with ESMTPSA id z8sm8387862wmf.42.2020.07.30.04.11.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Jul 2020 04:11:35 -0700 (PDT)
+Subject: Re: [v3,1/5] dt-binding: mediatek: watchdog: fix the description of
+ compatible
+To:     Crystal Guo <crystal.guo@mediatek.com>, linux@roeck-us.net,
+        robh+dt@kernel.org
+Cc:     srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, seiya.wang@mediatek.com
+References: <1596104510-11113-1-git-send-email-crystal.guo@mediatek.com>
+ <1596104510-11113-2-git-send-email-crystal.guo@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <2fca091d-4889-2564-0fe0-927093929f10@gmail.com>
+Date:   Thu, 30 Jul 2020 13:11:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200730110930.664486-1-vaibhavgupta40@gmail.com>
+In-Reply-To: <1596104510-11113-2-git-send-email-crystal.guo@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is compile tested only.
 
-Thanks
-Vaibhav Gupta
+
+On 30/07/2020 12:21, Crystal Guo wrote:
+> Besides watchdog, mt2712 and nt8183 also provide sub-system software
+> reset features. But mt6589 not support this feature
+> 
+> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
+
+My proposal for the commit message:
+
+"The watchdog driver for MT2712 and MT8183 relies on DT data, so the fallback 
+compatible MT6589 won't work."
+
+With that or anything like that:
+
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+> ---
+>   Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+> index 4dd36bd..45eedc2 100644
+> --- a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+> +++ b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+> @@ -4,13 +4,13 @@ Required properties:
+>   
+>   - compatible should contain:
+>   	"mediatek,mt2701-wdt", "mediatek,mt6589-wdt": for MT2701
+> -	"mediatek,mt2712-wdt", "mediatek,mt6589-wdt": for MT2712
+> +	"mediatek,mt2712-wdt": for MT2712
+>   	"mediatek,mt6589-wdt": for MT6589
+>   	"mediatek,mt6797-wdt", "mediatek,mt6589-wdt": for MT6797
+>   	"mediatek,mt7622-wdt", "mediatek,mt6589-wdt": for MT7622
+>   	"mediatek,mt7623-wdt", "mediatek,mt6589-wdt": for MT7623
+>   	"mediatek,mt7629-wdt", "mediatek,mt6589-wdt": for MT7629
+> -	"mediatek,mt8183-wdt", "mediatek,mt6589-wdt": for MT8183
+> +	"mediatek,mt8183-wdt": for MT8183
+>   	"mediatek,mt8516-wdt", "mediatek,mt6589-wdt": for MT8516
+>   
+>   - reg : Specifies base physical address and size of the registers.
+> 
