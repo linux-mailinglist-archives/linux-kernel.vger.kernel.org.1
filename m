@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C11E232D63
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25295232D2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729787AbgG3IKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:10:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48802 "EHLO mail.kernel.org"
+        id S1729475AbgG3IHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:07:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729773AbgG3IKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:10:03 -0400
+        id S1729461AbgG3IHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:07:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82D1020838;
-        Thu, 30 Jul 2020 08:10:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1B192074B;
+        Thu, 30 Jul 2020 08:07:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096602;
-        bh=w60tyvXLW9cNr4285M8aqInRux1P5nqyWnXgRzOAkmA=;
+        s=default; t=1596096449;
+        bh=jwBMaRCMCmIwWAsHBxvq7ha/QAOrmwnZ1+/LfzauMcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ayvAM2qxowx+oeUdvA89vMiOQcG9RpczYz7ew1XYuHRXcm+jF7ljkcjBIc+YhFj7i
-         NjljycYUwJ6tICAJO2KmP9zEqMPEkTZu7nmjVCrue4oIKboDuIF5zH2Pjsfl6jpX2R
-         +UylJY4X4KakcRhsgGfBLiq1mHViBorvrZxrtXWg=
+        b=stdrkrZqFpAZd8OeqRusNAhujMjmUKaNbb+mHj8PWNjDDL2M5eJOTx1bmdl+ENU5T
+         kg6mQARqYfj/Z2Ras31U9tk5A8XnNmxbgP9GBeTMTnkg2Mq8JpRQaAecxPKTEc13Lw
+         DjDvtpdJNszxkLQnrS/6nk8f8qokbvok3CaTNJPg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pi-Hsun Shih <pihsun@chromium.org>,
-        Shik Chen <shik@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 20/61] scripts/decode_stacktrace: strip basepath from all paths
-Date:   Thu, 30 Jul 2020 10:04:38 +0200
-Message-Id: <20200730074421.829350002@linuxfoundation.org>
+        stable@vger.kernel.org, Ying Xu <yinxu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 13/17] sctp: shrink stream outq when fails to do addstream reconf
+Date:   Thu, 30 Jul 2020 10:04:39 +0200
+Message-Id: <20200730074421.111265800@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
-References: <20200730074420.811058810@linuxfoundation.org>
+In-Reply-To: <20200730074420.449233408@linuxfoundation.org>
+References: <20200730074420.449233408@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,49 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pi-Hsun Shih <pihsun@chromium.org>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit d178770d8d21489abf5bafefcbb6d5243b482e9a ]
+[ Upstream commit 3ecdda3e9ad837cf9cb41b6faa11b1af3a5abc0c ]
 
-Currently the basepath is removed only from the beginning of the string.
-When the symbol is inlined and there's multiple line outputs of
-addr2line, only the first line would have basepath removed.
+When adding a stream with stream reconf, the new stream firstly is in
+CLOSED state but new out chunks can still be enqueued. Then once gets
+the confirmation from the peer, the state will change to OPEN.
 
-Change to remove the basepath prefix from all lines.
+However, if the peer denies, it needs to roll back the stream. But when
+doing that, it only sets the stream outcnt back, and the chunks already
+in the new stream don't get purged. It caused these chunks can still be
+dequeued in sctp_outq_dequeue_data().
 
-Fixes: 31013836a71e ("scripts/decode_stacktrace: match basepath using shell prefix operator, not regex")
-Co-developed-by: Shik Chen <shik@chromium.org>
-Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
-Signed-off-by: Shik Chen <shik@chromium.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Cc: Nicolas Boichat <drinkcat@chromium.org>
-Cc: Jiri Slaby <jslaby@suse.cz>
-Link: http://lkml.kernel.org/r/20200720082709.252805-1-pihsun@chromium.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+As its stream is still in CLOSE, the chunk will be enqueued to the head
+again by sctp_outq_head_data(). This chunk will never be sent out, and
+the chunks after it can never be dequeued. The assoc will be 'hung' in
+a dead loop of sending this chunk.
+
+To fix it, this patch is to purge these chunks already in the new
+stream by calling sctp_stream_shrink_out() when failing to do the
+addstream reconf.
+
+Fixes: 11ae76e67a17 ("sctp: implement receiver-side procedures for the Reconf Response Parameter")
+Reported-by: Ying Xu <yinxu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- scripts/decode_stacktrace.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/sctp/stream.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
-index 98cf6343afcd7..61564e56e3aa3 100755
---- a/scripts/decode_stacktrace.sh
-+++ b/scripts/decode_stacktrace.sh
-@@ -76,8 +76,8 @@ parse_symbol() {
- 		return
- 	fi
+--- a/net/sctp/stream.c
++++ b/net/sctp/stream.c
+@@ -1143,11 +1143,13 @@ struct sctp_chunk *sctp_process_strreset
+ 		nums = ntohs(addstrm->number_of_streams);
+ 		number = stream->outcnt - nums;
  
--	# Strip out the base of the path
--	code=${code#$basepath/}
-+	# Strip out the base of the path on each line
-+	code=$(while read -r line; do echo "${line#$basepath/}"; done <<< "$code")
+-		if (result == SCTP_STRRESET_PERFORMED)
++		if (result == SCTP_STRRESET_PERFORMED) {
+ 			for (i = number; i < stream->outcnt; i++)
+ 				SCTP_SO(stream, i)->state = SCTP_STREAM_OPEN;
+-		else
++		} else {
++			sctp_stream_shrink_out(stream, number);
+ 			stream->outcnt = number;
++		}
  
- 	# In the case of inlines, move everything to same line
- 	code=${code//$'\n'/' '}
--- 
-2.25.1
-
+ 		*evp = sctp_ulpevent_make_stream_change_event(asoc, flags,
+ 			0, nums, GFP_ATOMIC);
 
 
