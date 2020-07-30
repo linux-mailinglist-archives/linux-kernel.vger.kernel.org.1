@@ -2,161 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAB2233009
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 12:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B0523300B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 12:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728791AbgG3KHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 06:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726273AbgG3KHJ (ORCPT
+        id S1728976AbgG3KIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 06:08:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49462 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726814AbgG3KI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 06:07:09 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D76C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 03:07:07 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id p25so10308020oto.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 03:07:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
-        bh=K1KeR4D4Cxr6B4E3uVwjEh93DRQqIOh/GgbC/7cyyaA=;
-        b=oUu4IYhlER2voSG0IDa0ssQAiKm1SxB+GsAtXLX1HEacoQg30fXFyu45kI219HcSRy
-         4B0BNLsGNa7cMsL/eblAZ8l1bJu1o6//rDqNeEIvJ9oCFNWvQOhbRaEMdNGfN08Zuj+N
-         BEV934DtGapCWpH1AjBhOvdaK3ZAPAfltklfB1SB9xgxB//Kdf2RVstSDo/nBUB5wCgU
-         wSxIov0jcHzBb6jlwLESRBxMThgdnd6+opiqEIYF01N1IKdrd4jxlZ3W733TYt+6WNMz
-         hvKumlKouGQp/e/7OSMpxQcqEao13+ajZ4luYpeYC2nzfEdj+cGrMGf4igUt6GO+H5WH
-         EYqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=K1KeR4D4Cxr6B4E3uVwjEh93DRQqIOh/GgbC/7cyyaA=;
-        b=EsHD4fHwqD5zuLgs14dmBc3DITHGXwIbT57HIxWJd03d5WMN2aHToqyy0ZXaLxEhO9
-         Sgn4SSBj5Y6D1PE44W6KRvGFVbTzZNMAEniFkb42HIXjieCkbqMjlt9wf3iZpRhdNrA/
-         6RY/e4zSiDnhPa6nwRXHR+HrWt6cz5wQhkov8ONDqCwX9dsBHngT4UPfiC/zT14wSO3t
-         GoxngwTWZG9JADgV11ZmxKj1hgyPrYNSWfXVF3/ONOqpl0kWVzXD7js8q04eH6H6eoPr
-         0YfVspgtNlMUtGfTTBotvBidv7tHWrhY1PyAKJsyDFIRz6CLNjBUB8xMQ4//TbD08cWU
-         g0ag==
-X-Gm-Message-State: AOAM533O7IpCjf85MjaqJjjK33m3qP1ajgggGl8BB3YFG1QzsriDNH3D
-        0OLOcSzRGikqsLS+PraLRxgm4OqIeGJjV2iDOc0=
-X-Google-Smtp-Source: ABdhPJzHFmMNoo3Zw6OznnTP9qoFuJG+FqDsEcSDl4GFkzVrZsUGn1SIe+dTpbnUKQ7oQadDtJP5rrPYVlPoHxJaadk=
-X-Received: by 2002:a9d:5e9a:: with SMTP id f26mr1565839otl.109.1596103627030;
- Thu, 30 Jul 2020 03:07:07 -0700 (PDT)
+        Thu, 30 Jul 2020 06:08:28 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1596103706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=icuGs7gjwEzJJOhYixOZSnol7c85JJb/wOCOTTI7rqU=;
+        b=eO1ZpbimFr4/VZU8Xu1Jm7BTN6rAZkCeMIFOqmYVNGjkxlrG/diOZF3bAOO/ImZgtjQOzz
+        8D8s1WFC04ITXjEhSjTXEz72UYGwPdPnixayykqXDGWkrEjx0cbnN8FQTRRXpZS0kl30mY
+        aQEzLaEyxnNzXRpCp4wjEB8r3yppITClnLcI2OHderc1R+ig373JG4+Tv1mc5kdsCGZ7oT
+        HGRJugykK9QNlO0fOVS1PV+bnPkQEWcUHGFbk4ic2ScPFesdmGCuQD4U/MExHZRnbBnSLR
+        5kQp8gIbrDWmp4my1T+kihxDQw/Z8ZmwQuZ0mtAZO5RsShevUsWredvuUUnSVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1596103706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=icuGs7gjwEzJJOhYixOZSnol7c85JJb/wOCOTTI7rqU=;
+        b=uQUKCyF9Oe/6KX6UhyWkQD6yQX4GNL5ZsWnPYMWxA1+vs3CNTcslgY87M7qxDLIL9prarx
+        OeE/FuDi/D8iHVCQ==
+To:     peterz@infradead.org, Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Tony Luck <tony.luck@intel.com>, H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC] x86/bus_lock: Enable bus lock detection
+In-Reply-To: <20200729210935.GE2655@hirez.programming.kicks-ass.net>
+Date:   Thu, 30 Jul 2020 12:08:26 +0200
+Message-ID: <87r1stmi1x.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 30 Jul 2020 12:06:55 +0200
-Message-ID: <CA+icZUXiz52bk+8bbLTuYCDLqoF9zLiV6NEjzPRgodu3FzCFLg@mail.gmail.com>
-Subject: [perf] Explicitly use python[3]-[config]
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+peterz@infradead.org writes:
+> On Wed, Jul 29, 2020 at 08:40:57PM +0000, Fenghua Yu wrote:
+>> Can we disable Bus Lock Detection before handle it and re-enable it
+>> after handle it? Will that resolve the recursion issue?
+>
+> Because WRMSR is cheap, right?
+>
+> You have to unconditionally {dis,en}able it on #DB entry/exit. Not only
+> when it's a DR_BUS_LOCK, _always_. Then maybe. I'm too tired to think
+> through the IST mess.
+>
+> IST's suck, they're horrible crap.
+>
+> Suppose we get a #DB, then we get an NMI right before it does WRMSR, so
+> BUS_LOCK is still on, then the NMI does a dodgy LOCK op, we die.
+>
+> So that means, you get to disable it on every NMI-like exception too,
+> but we happen to care about performance for those, you loose.
+>
+> Also, what happens if you have a hardware watchpoint on the instruction
+> that causes DR_BUS_LOCK? Does that work as expected?
 
-I wanted to have some detailed numbers for building a Linux-kernel
-with GNU-eco-system means GNU/gcc-10 and GNU/binutils-2,35 VS.
-LLVM/Clang with its utils version 11.0.0-rc1.
+Q: Why on earth are Intel hardware folks cramming this into #DB?
+A: Just because there was a bit left in DR6 to indicate it, right?
 
-Arnd recommended me to use "perf stat make ...".
+Q: Why can't hardware folks talk to us _before_ they make the x86 exception
+   trainwreck even worse?
+A: Just because they know that we'd tell them to go back to the drawing
+   board.
 
-First, I tried to build it out of tools/perf from linux.git:
+Q: Is that going to be supported by the kernel?
+A: No, go back to the drawing board and talk to us _before_ coming back
+   with the next half thought out tinkerware cast in silicon.
 
-MAKE_OPTS="HOSTCC=clang-11 HOSTCXX=clang++-11 HOSTLD=ld.lld-11
-HOSTAR=llvm-ar-11 CC=clang-11 LD=ld.lld-11 AR=llvm-ar-11 NM=llvm-nm-11
-OBJCOPY=llvm-objcopy-11 OBJDUMP=llvm-objdump-11 OBJSIZE=llvm-size-11
-READELF=llvm-readelf-11 STRIP=llvm-strip-11 LLVM_IAS=1"
+I'm really tired of wasting time dealing with such misfeatures which create
+more problems than they solve.
 
-LC_ALL=C make V=1 $MAKE_OPTS -C tools/ perf 2>&1 | tee ../build-perf.txt
+Thanks,
 
-That showed me - it is building against libpython2.
+        Thomas
 
-As python3 is now default for Debian/unstable (and AFAICS
-Debian/testing) I wanted to build explicitly against libpython3 at its
-python3-config.
 
-This needs some hacks like (furthermore I do not want CID in my version-string):
-
-$ cat ~/src/linux-kernel/perf.diff
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 513633809c81..b4da50754b19 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -225,12 +225,13 @@ endif
- # python[2][-config] in weird combinations but always preferring
- # python2 and python2-config as per pep-0394. If we catch a
- # python[-config] in version 3, the version check will kill it.
--PYTHON2 := $(if $(call get-executable,python2),python2,python)
--override PYTHON := $(call get-executable-or-default,PYTHON,$(PYTHON2))
--PYTHON2_CONFIG := \
-+# XXX: Explicitly use python3[-config]. -dileks
-+PYTHON3 := $(if $(call get-executable,python3),python3,python)
-+override PYTHON := $(call get-executable-or-default,PYTHON,$(PYTHON3))
-+PYTHON3_CONFIG := \
-   $(if $(call get-executable,$(PYTHON)-config),$(PYTHON)-config,python-config)
- override PYTHON_CONFIG := \
--  $(call get-executable-or-default,PYTHON_CONFIG,$(PYTHON2_CONFIG))
-+  $(call get-executable-or-default,PYTHON_CONFIG,$(PYTHON3_CONFIG))
-
- grep-libs  = $(filter -l%,$(1))
- strip-libs  = $(filter-out -l%,$(1))
-diff --git a/tools/perf/util/PERF-VERSION-GEN b/tools/perf/util/PERF-VERSION-GEN
-index 59241ff342be..eed9be9a13de 100755
---- a/tools/perf/util/PERF-VERSION-GEN
-+++ b/tools/perf/util/PERF-VERSION-GEN
-@@ -28,6 +28,8 @@ if test -z "$TAG"
- then
-        TAG=$(MAKEFLAGS= make -sC ../.. kernelversion)
- fi
-+# XXX: Do not use Git Commit-ID (CID) in version string. -dileks
-+CID=
- VN="$TAG$CID"
- if test -n "$CID"
- then
-
-In Debian/unstable libpython-dev:amd64 is version 2.7.17-2 and thus
-ships appropriate python[2]-config.
-
-What are your recommendations to build explicitly against python3 and
-its python3-config (here: Debian ships python3 version 3.8.5)?
-
-I can send you my build-perf.txt if needed (approx. 830kiB).
-
-Thanks.
-
-Regards,
-- Sedat -
-
-[1] https://github.com/ClangBuiltLinux/linux/issues/1086#issuecomment-665540053
-
-P.S.: Uninstall all python2 dev packages and replace them via python3
-dev packages.
-
-# diff -uprN packages_0518.txt packages_0519.txt | egrep '^[+|-]ii'
--ii libpython-dev:amd64 2.7.17-2
--ii libpython2-dev:amd64 2.7.17-2
--ii libpython2.7-dev:amd64 2.7.18-1
-+ii libpython3-dev:amd64 3.8.2-3
-+ii libpython3.8-dev:amd64 3.8.5-1
-+ii libunwind-dev:amd64 1.2.1-11
-+ii libzstd-dev:amd64 1.4.5+dfsg-3
-+ii lz4 1.9.2-2
--ii python-dev 2.7.17-2
--ii python2-dev 2.7.17-2
--ii python2.7-dev 2.7.18-1
-+ii python3-dev 3.8.2-3
-+ii python3.8-dev 3.8.5-1
-+ii systemtap-sdt-dev 4.3-1
-
-- EOT -
