@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BA72331C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 14:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BD82331CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 14:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgG3MOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 08:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727837AbgG3MOs (ORCPT
+        id S1728079AbgG3MOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 08:14:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50158 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727794AbgG3MOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Jul 2020 08:14:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B456C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 05:14:48 -0700 (PDT)
-Message-Id: <20200730101404.956367860@linutronix.de>
+Message-Id: <20200730102337.677439437@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1596111286;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
-        bh=D0Liopx+HkCwUDJQOjOlS1OaTwAKKymChyHeiBxXa2E=;
-        b=xNpjJZVKV+sQQI0BHHnY8OiaadYJFiP/3ZE3CrC8lfVkPNnMcS9h1trTpcg10qz3HEF4D7
-        Xa5HICJ0JYZvKYKhk+lx/+2FRy66oCALYk4EFXSN7eArMowbOpH5CYNRhVdd8+HPJh+G/8
-        Tl+sCcAKLEMgcHh/OG0e90wzDgDXCWeNKcW0gfK2D1SPcnDQDhEoUKWmPjSWi8VWbdkQ46
-        CdPSMvCYGbPfugb+CHnUz3Wbw+WdbfrwElkSoKvZ352gXtri8sqD7eQ2YgB5yQ1+bAcKmU
-        DA8UpWlQBSgcy7+pSxljoV+S5cWm2ivsvBxGmRC0/7ANNHN/4ydG9uFp/uwiFA==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=l7zyJ8Ln9pzawKOhu4NmKsQ1c6Rtw7AKrBiE4i8Mwck=;
+        b=qu2GqeHD1PT5SZ0lv/sZIVMLWbM/ayoo9pzoVGrIQ3sE1RRhpVhXbutMtvamjzawLyZBVP
+        omBjCyv27Cruk1uf1/erf4guxie5igMRcboxuBbVIHSRWiWuBNi/F/zB2ji5ppLWkFoWM8
+        yHBfjt2KpVYTHZRLjWMxF3keeCmodhuer1I6iuOShq6L8NLNvqZrDKwq1TKPUfrPlUedw/
+        EgXLxtFhbj4E7b3fDCzZxRVKZowNz1e0wl7xJUfiV8ftWEh045ksyddH9WJEmHil2n6lXi
+        Dv0Mrmbq4J9auC99naat1VeAu8BfvqqmCNlx3LK6KDNClM9qgdtQ3+TcvYx66g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1596111286;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
-        bh=D0Liopx+HkCwUDJQOjOlS1OaTwAKKymChyHeiBxXa2E=;
-        b=XC80Y8uzoi63ZbFiDmwbJHpwXJLJVLJS1uD9XnUj2BzDLIsk14C0W3z7xfKz9NeWPw8wsq
-        iw6zOQPEwoIc/DAQ==
-Date:   Thu, 30 Jul 2020 12:14:04 +0200
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=l7zyJ8Ln9pzawKOhu4NmKsQ1c6Rtw7AKrBiE4i8Mwck=;
+        b=xq0vDzXCVNdhbpPXyjWNkOL/z5NC99HaQpbX4SqbrboyBdrJSSOUkq4U2/EiQUhKVJFFO4
+        zkF4GqJL8gwhAjDA==
+Date:   Thu, 30 Jul 2020 12:14:05 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Oleg Nesterov <oleg@redhat.com>,
@@ -41,75 +40,91 @@ Cc:     x86@kernel.org, Oleg Nesterov <oleg@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         John Stultz <john.stultz@linaro.org>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [patch V3 0/3] posix-cpu-timers: Move expiry into task work context
+Subject: [patch V3 1/3] posix-cpu-timers: Split run_posix_cpu_timers()
+References: <20200730101404.956367860@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the 3rd installment of the series to move posix timer expiry heavy
-lifting out of hard interrupt context.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Running posix CPU timers in hard interrupt context has a few downsides:
+Split it up as a preparatory step to move the heavy lifting out of
+interrupt context.
 
- - For PREEMPT_RT it cannot work as the expiry code needs to take
-   sighand lock, which is a 'sleeping spinlock' in RT. The original RT
-   approach of offloading the posix CPU timer handling into a high
-   priority thread was clumsy and provided no real benefit in general.
-
- - For fine grained accounting it's just wrong to run this in context of
-   the timer interrupt because that way a process specific cpu time is
-   accounted to the timer interrupt.
-
- - Long running timer interrupts caused by a large amount of expiring
-   timers which can be created and armed by unpriviledged user space.
-
-There is no hard requirement to expire them in interrupt context.
-
-If the signal is targeted at the task itself then it won't be delivered
-before the task returns to user space anyway. If the signal is targeted at
-a supervisor process then it might be slightly delayed, but posix CPU
-timers are inaccurate anyway due to the fact that they are tied to the
-tick.
-
-This series has no code dependency on the entry/KVM work, but a functional
-dependency vs. KVM handling task work before going into guest mode exists.
-It applies on mainline and passes all tests - except when KVM is active and
-timers are armed on the KVM threads. This particular issue is solved when
-the entry changes are applied as well. See below.
-
-The previous version can be found here:
-
-    https://lore.kernel.org/r/20200716201923.228696399@linutronix.de
-
-The changes versus V2 are:
-
-    - Address the ordering issues vs. RT (Peter)
-    - Move task work head into task struct (Oleg)
-    - Drop the last patch which is an optimization and needs more thought
-      now with the reworked state handling.
-
-The series is standalone except for the fact that KVM does not handle task
-work before entering a guest. The necessary changes for this are in
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/entry
-
-and the whole lot (entry + posix CPU timers) is available from:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git timers/posixtimer
-
-Thanks,
-
-	tglx
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 ---
- arch/x86/Kconfig               |    1 
- include/linux/posix-timers.h   |   17 +++
- include/linux/sched.h          |    4 
- include/linux/seccomp.h        |    3 
- kernel/entry/common.c          |    4 
- kernel/time/Kconfig            |    9 +
- kernel/time/posix-cpu-timers.c |  216 ++++++++++++++++++++++++++++++++++++-----
- kernel/time/timer.c            |    1 
- 8 files changed, 227 insertions(+), 28 deletions(-)
+ kernel/time/posix-cpu-timers.c |   43 ++++++++++++++++++++++-------------------
+ 1 file changed, 24 insertions(+), 19 deletions(-)
+
+--- a/kernel/time/posix-cpu-timers.c
++++ b/kernel/time/posix-cpu-timers.c
+@@ -1080,32 +1080,15 @@ static inline bool fastpath_timer_check(
+ 	return false;
+ }
+ 
+-/*
+- * This is called from the timer interrupt handler.  The irq handler has
+- * already updated our counts.  We need to check if any timers fire now.
+- * Interrupts are disabled.
+- */
+-void run_posix_cpu_timers(void)
++static void __run_posix_cpu_timers(struct task_struct *tsk)
+ {
+-	struct task_struct *tsk = current;
+ 	struct k_itimer *timer, *next;
+ 	unsigned long flags;
+ 	LIST_HEAD(firing);
+ 
+-	lockdep_assert_irqs_disabled();
+-
+-	/*
+-	 * The fast path checks that there are no expired thread or thread
+-	 * group timers.  If that's so, just return.
+-	 */
+-	if (!fastpath_timer_check(tsk))
++	if (!lock_task_sighand(tsk, &flags))
+ 		return;
+ 
+-	lockdep_posixtimer_enter();
+-	if (!lock_task_sighand(tsk, &flags)) {
+-		lockdep_posixtimer_exit();
+-		return;
+-	}
+ 	/*
+ 	 * Here we take off tsk->signal->cpu_timers[N] and
+ 	 * tsk->cpu_timers[N] all the timers that are firing, and
+@@ -1147,6 +1130,28 @@ void run_posix_cpu_timers(void)
+ 			cpu_timer_fire(timer);
+ 		spin_unlock(&timer->it_lock);
+ 	}
++}
++
++/*
++ * This is called from the timer interrupt handler.  The irq handler has
++ * already updated our counts.  We need to check if any timers fire now.
++ * Interrupts are disabled.
++ */
++void run_posix_cpu_timers(void)
++{
++	struct task_struct *tsk = current;
++
++	lockdep_assert_irqs_disabled();
++
++	/*
++	 * The fast path checks that there are no expired thread or thread
++	 * group timers.  If that's so, just return.
++	 */
++	if (!fastpath_timer_check(tsk))
++		return;
++
++	lockdep_posixtimer_enter();
++	__run_posix_cpu_timers(tsk);
+ 	lockdep_posixtimer_exit();
+ }
+ 
+
