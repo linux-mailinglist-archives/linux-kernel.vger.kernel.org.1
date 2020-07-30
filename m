@@ -2,281 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05483232C1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 08:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86455232C22
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 08:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728846AbgG3Gxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 02:53:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbgG3Gxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 02:53:38 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C93F920656;
-        Thu, 30 Jul 2020 06:53:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596092017;
-        bh=jJ2zGNm9Mz0iBXPz2Bwy/IAy2AbQ9YF5w1q7r/XsS24=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=slpugKOhiAO8MvtspWD2IuZZEzOHjwHeQKvSsxgsWlVNauuta2aNIf7HtR0zxA5EX
-         yrUbk/TTYumvyNHBW5FUQifoSbfHPniodycc4d2CiO2/4/Cuk8Tbj4VQvEuD3QhpSm
-         rPIjhnpZ68Xc95qPqSqrKCC3ELC4KxCh1mQr0B08=
-Date:   Thu, 30 Jul 2020 08:53:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH 2/3] driver core: Use rwsem for kill_device()
- serialization
-Message-ID: <20200730065326.GA3950394@kroah.com>
-References: <cover.1594214103.git.lukas@wunner.de>
- <bf185285172a7b127424ac22fa42811eb2081cd4.1594214103.git.lukas@wunner.de>
+        id S1728879AbgG3GzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 02:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726133AbgG3GzW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 02:55:22 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD09C061794;
+        Wed, 29 Jul 2020 23:55:22 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id k18so7249138pfp.7;
+        Wed, 29 Jul 2020 23:55:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T0Z6YHYdP/kQD0cMS+cNQldOhqY6T8q1pjXPvT/YgO4=;
+        b=sJHQjWFeZapA7zrwZIxIE8REiDhJKS03BGHy+fv+exmhsouiDjKNP6pB4JPX6oJZ2N
+         9LRNoYnHYkWEMol453LnXg0cnizulm7UuBl5vdtL6/HD+Klx4JeEi1yWxGWXJy5mFZJ8
+         oCmq4EV6O6hPuAIYlZ7sxo68dimM0sR6v5oNO2f3HyoJn4H4Sy89qV1c0suyEOcjJnaX
+         GpJxiHwT3BKx4yDEWe4MpSnKGCUDQACea8cjQspPoM1U5EIPd2MP0B1iSxR2R8BLTUTV
+         pu5HckTjI36WcWzG0jjeVa3ScxQhgex7oAoTZ5yypcd4DV/OOrcr5RK8LVkTwtRN6nRk
+         VQ9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T0Z6YHYdP/kQD0cMS+cNQldOhqY6T8q1pjXPvT/YgO4=;
+        b=qew/DCATdJQw38r8Ayqu+sK9OmN1SKrwMlvLn5u15szbHQC/N8QoZJeEKonBzEfI0r
+         pkzGx1cItTINwYqQrzti5gnq5TDlvZqKkhpax51YDjD2VEueNvY89gV6GMfHMI+4hMA6
+         udJ+nwPP/IKvz8gKmJyUBUqAM2Rz5ihqS9KEyeGtMXGoUXQpDGaDd8IPYL1sj+Lt1czP
+         W5FswfVZ4fO8y4omX8N79XwdY84XstjgVmFZ5xs8ZbY6TcDxs9TzJZB1eeRBpePOHohY
+         VTIBmWeVbZ6d+ovRTL4jODFj6qxGoAyctL8efgkTOlvKMHeIzyXxUZvdGJoEoFI6jN0n
+         vwGg==
+X-Gm-Message-State: AOAM531oVwkhFi+9XGppHRF5ahzYpEluCrf3fqpeGKj1tYeYpSx36Ymo
+        lojKZ1MCPws5GzyGgKkpfSU=
+X-Google-Smtp-Source: ABdhPJyW4LPZe2cOetF8buGl87aOKuA3qtxG5q99ovH3JqxYH92fEEjJEt3HYNlIotq5+HrbpuIEcA==
+X-Received: by 2002:a63:a06b:: with SMTP id u43mr33043681pgn.294.1596092122063;
+        Wed, 29 Jul 2020 23:55:22 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id v2sm4232299pje.19.2020.07.29.23.55.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 23:55:21 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniele Venzano <venza@brownhat.org>,
+        Samuel Chessman <chessman@tux.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v1 0/3] net: ethernet: use generic power management
+Date:   Thu, 30 Jul 2020 12:23:33 +0530
+Message-Id: <20200730065336.198315-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf185285172a7b127424ac22fa42811eb2081cd4.1594214103.git.lukas@wunner.de>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 03:27:02PM +0200, Lukas Wunner wrote:
-> kill_device() is currently serialized with driver probing by way of the
-> device_lock().  We're about to serialize it with device_add() as well
-> to prevent addition of children below a device which is going away.
+Linux Kernel Mentee: Remove Legacy Power Management.
 
-Why?  Who does this?  Shouldn't the bus that is trying to do this know
-this is happening?
+The purpose of this patch series is to upgrade power management in net ethernet
+drivers. This has been done by upgrading .suspend() and .resume() callbacks.
 
-> However the parent's device_lock() cannot be taken by device_add()
-> lest deadlocks occur:  Addition of the parent may result in addition
-> of children (as is the case with SPI controllers) and device_add()
-> already takes the device_lock through the call to bus_probe_device() ->
-> device_initial_probe() -> __device_attach().
-> 
-> Avoid such deadlocks by introducing an rw_semaphore whose specific
-> purpose is to serialize kill_device() with other parts of the kernel.
+The upgrade makes sure that the involvement of PCI Core does not change the
+order of operations executed in a driver. Thus, does not change its behavior.
 
-Ugh, another lock, really?  :(
+In general, drivers with legacy PM, .suspend() and .resume() make use of PCI
+helper functions like pci_enable/disable_device_mem(), pci_set_power_state(),
+pci_save/restore_state(), pci_enable/disable_device(), etc. to complete
+their job.
 
-> Use an rw_semaphore instead of a mutex because the latter would preclude
-> concurrent driver probing of multiple children below the same parent.
-> The semaphore is acquired for writing when declaring a device dead and
-> otherwise only acquired for reading.  It is private to the driver core,
-> obviating the need to acquire a lock when calling kill_device(), as is
-> currently done in nvdimm's nd_device_unregister() and device_del().
-> 
-> An alternative approach would be to convert the device_lock() itself to
-> an rw_semaphore (instead of a mutex).
-> 
-> Signed-off-by: Lukas Wunner <lukas@wunner.de>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
-> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> ---
->  drivers/base/base.h  |  2 ++
->  drivers/base/core.c  | 33 +++++++++++++++++++--------------
->  drivers/base/dd.c    |  8 ++++++++
->  drivers/nvdimm/bus.c |  8 +-------
->  4 files changed, 30 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/base/base.h b/drivers/base/base.h
-> index 95c22c0f90360..7e71a1d262ef6 100644
-> --- a/drivers/base/base.h
-> +++ b/drivers/base/base.h
-> @@ -79,6 +79,7 @@ struct driver_private {
->   * @async_driver - pointer to device driver awaiting probe via async_probe
->   * @device - pointer back to the struct device that this structure is
->   * associated with.
-> + * @dead_sem - semaphore taken when declaring the device @dead.
->   * @dead - This device is currently either in the process of or has been
->   *	removed from the system. Any asynchronous events scheduled for this
->   *	device should exit without taking any action.
-> @@ -94,6 +95,7 @@ struct device_private {
->  	struct list_head deferred_probe;
->  	struct device_driver *async_driver;
->  	struct device *device;
-> +	struct rw_semaphore dead_sem;
->  	u8 dead:1;
->  };
->  #define to_device_private_parent(obj)	\
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 67d39a90b45c7..057da42b1a660 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -2526,6 +2526,7 @@ static int device_private_init(struct device *dev)
->  	klist_init(&dev->p->klist_children, klist_children_get,
->  		   klist_children_put);
->  	INIT_LIST_HEAD(&dev->p->deferred_probe);
-> +	init_rwsem(&dev->p->dead_sem);
->  	return 0;
->  }
->  
-> @@ -2780,21 +2781,27 @@ void put_device(struct device *dev)
->  }
->  EXPORT_SYMBOL_GPL(put_device);
->  
-> +/**
-> + * kill_device - declare device dead
-> + * @dev: device in question
-> + *
-> + * Declare @dev dead to prevent it from binding to a driver.
-> + * Return true if it was killed or false if it was already dead.
-> + */
->  bool kill_device(struct device *dev)
->  {
-> -	/*
-> -	 * Require the device lock and set the "dead" flag to guarantee that
-> -	 * the update behavior is consistent with the other bitfields near
-> -	 * it and that we cannot have an asynchronous probe routine trying
-> -	 * to run while we are tearing out the bus/class/sysfs from
-> -	 * underneath the device.
-> -	 */
-> -	lockdep_assert_held(&dev->mutex);
-> +	bool killed;
->  
-> -	if (dev->p->dead)
-> -		return false;
-> -	dev->p->dead = true;
-> -	return true;
-> +	down_write(&dev->p->dead_sem);
-> +	if (dev->p->dead) {
-> +		killed = false;
-> +	} else {
-> +		dev->p->dead = true;
-> +		killed = true;
-> +	}
-> +	up_write(&dev->p->dead_sem);
-> +
-> +	return killed;
->  }
->  EXPORT_SYMBOL_GPL(kill_device);
+The conversion requires the removal of those function calls, change the
+callbacks' definition accordingly and make use of dev_pm_ops structure.
 
-meta-comment, this should have been device_kill() :(
+All patches are compile-tested only.
 
->  
-> @@ -2817,9 +2824,7 @@ void device_del(struct device *dev)
->  	struct kobject *glue_dir = NULL;
->  	struct class_interface *class_intf;
->  
-> -	device_lock(dev);
->  	kill_device(dev);
-> -	device_unlock(dev);
->  
->  	if (dev->fwnode && dev->fwnode->dev == dev)
->  		dev->fwnode->dev = NULL;
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 31c668651e824..9353d811cce83 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -817,6 +817,7 @@ static void __device_attach_async_helper(void *_dev, async_cookie_t cookie)
->  	};
->  
->  	device_lock(dev);
-> +	down_read(&dev->p->dead_sem);
->  
->  	/*
->  	 * Check if device has already been removed or claimed. This may
-> @@ -838,6 +839,7 @@ static void __device_attach_async_helper(void *_dev, async_cookie_t cookie)
->  	if (dev->parent)
->  		pm_runtime_put(dev->parent);
->  out_unlock:
-> +	up_read(&dev->p->dead_sem);
->  	device_unlock(dev);
->  
->  	put_device(dev);
-> @@ -848,6 +850,7 @@ static int __device_attach(struct device *dev, bool allow_async)
->  	int ret = 0;
->  
->  	device_lock(dev);
-> +	down_read(&dev->p->dead_sem);
+Test tools:
+    - Compiler: gcc (GCC) 10.1.0
+    - allmodconfig build: make -j$(nproc) W=1 all
 
-Ick, see, now two locks for the same device structure?  I really don't
-like that as the complexity involved is now double.
+Vaibhav Gupta (3):
+  sc92031: use generic power management
+  sis900: use generic power management
+  tlan: use generic power management
 
+ drivers/net/ethernet/silan/sc92031.c | 26 ++++++++---------------
+ drivers/net/ethernet/sis/sis900.c    | 23 +++++++--------------
+ drivers/net/ethernet/ti/tlan.c       | 31 ++++++----------------------
+ 3 files changed, 22 insertions(+), 58 deletions(-)
 
->  	if (dev->p->dead) {
->  		goto out_unlock;
->  	} else if (dev->driver) {
-> @@ -893,6 +896,7 @@ static int __device_attach(struct device *dev, bool allow_async)
->  			pm_runtime_put(dev->parent);
->  	}
->  out_unlock:
-> +	up_read(&dev->p->dead_sem);
->  	device_unlock(dev);
->  	return ret;
->  }
-> @@ -967,6 +971,7 @@ int device_driver_attach(struct device_driver *drv, struct device *dev)
->  	int ret = 0;
->  
->  	__device_driver_lock(dev, dev->parent);
-> +	down_read(&dev->p->dead_sem);
->  
->  	/*
->  	 * If device has been removed or someone has already successfully
-> @@ -975,6 +980,7 @@ int device_driver_attach(struct device_driver *drv, struct device *dev)
->  	if (!dev->p->dead && !dev->driver)
->  		ret = driver_probe_device(drv, dev);
->  
-> +	up_read(&dev->p->dead_sem);
->  	__device_driver_unlock(dev, dev->parent);
->  
->  	return ret;
-> @@ -987,6 +993,7 @@ static void __driver_attach_async_helper(void *_dev, async_cookie_t cookie)
->  	int ret = 0;
->  
->  	__device_driver_lock(dev, dev->parent);
-> +	down_read(&dev->p->dead_sem);
->  
->  	drv = dev->p->async_driver;
->  
-> @@ -997,6 +1004,7 @@ static void __driver_attach_async_helper(void *_dev, async_cookie_t cookie)
->  	if (!dev->p->dead && !dev->driver)
->  		ret = driver_probe_device(drv, dev);
->  
-> +	up_read(&dev->p->dead_sem);
->  	__device_driver_unlock(dev, dev->parent);
->  
->  	dev_dbg(dev, "driver %s async attach completed: %d\n", drv->name, ret);
-> diff --git a/drivers/nvdimm/bus.c b/drivers/nvdimm/bus.c
-> index 09087c38fabdc..35e069c69386a 100644
-> --- a/drivers/nvdimm/bus.c
-> +++ b/drivers/nvdimm/bus.c
-> @@ -559,8 +559,6 @@ EXPORT_SYMBOL(nd_device_register);
->  
->  void nd_device_unregister(struct device *dev, enum nd_async_mode mode)
->  {
-> -	bool killed;
-> -
->  	switch (mode) {
->  	case ND_ASYNC:
->  		/*
-> @@ -584,11 +582,7 @@ void nd_device_unregister(struct device *dev, enum nd_async_mode mode)
->  		 * or otherwise let the async path handle it if the
->  		 * unregistration was already queued.
->  		 */
-> -		nd_device_lock(dev);
-> -		killed = kill_device(dev);
-> -		nd_device_unlock(dev);
-> -
-> -		if (!killed)
-> +		if (!kill_device(dev))
+-- 
+2.27.0
 
-So, why are you pushing this down into the driver core, can't this be
-done in whatever crazy bus wants to do this, like is done here?
-
-That will save us the extra lock complexity in the driver core.
-
-What bus wants/needs this now?
-
-thanks,
-
-greg k-h
