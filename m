@@ -2,150 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA13233693
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 18:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B75233698
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 18:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728485AbgG3QVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 12:21:17 -0400
-Received: from crapouillou.net ([89.234.176.41]:53504 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728368AbgG3QVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 12:21:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1596126074; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GLywFInFbZpsDWDDgkVCtHSQx1nOq8RfSg1sbqqGqrc=;
-        b=lcmdvNQVbj+DlLOZwcGS+JUlh+v7lQJ4ZPJYFbLEiFzficmHr7lqicyHxRIoYnw1sxvJnG
-        8C89/bQKHAB5fus62ESfN6xAf3mB0oYeUC3qHMlnspX5TE5/2d2pwZiX5gSLtoLHdz+B/D
-        ayrjUH08OFO7gTXOYbfdHFP1v4cbv7U=
-Date:   Thu, 30 Jul 2020 18:21:05 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 3/3] drm/ingenic: ipu: Only enable clock when needed
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        od@zcrc.me, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <6RIAEQ.2KRLCE1YRKKB1@crapouillou.net>
-In-Reply-To: <20200730152958.GB1474381@ravnborg.org>
-References: <20200730144830.10479-1-paul@crapouillou.net>
-        <20200730144830.10479-4-paul@crapouillou.net>
-        <20200730152958.GB1474381@ravnborg.org>
+        id S1729459AbgG3QWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 12:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728452AbgG3QWC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 12:22:02 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08D6C061574;
+        Thu, 30 Jul 2020 09:22:01 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id o1so14620726plk.1;
+        Thu, 30 Jul 2020 09:22:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=aX2Eg5Gk0V/jRI/X4rim3dxz+h5U/hgYWDFRrQixu1U=;
+        b=kH+mNkGKtbV/we4VOn77a1cfLYJbSy7IRU65jsULUtkVMY7LlT5ldcjVPsnDU57jx4
+         D1oYQDmo3t5hfCS8dbeE2W/3H3oDbI+aIg9EM9F0ByrcB/SEA7NKaVT41yywWG70SfGS
+         jwS2O/TqFGvMTeNI72GmWKgIj3vl9IAAxbhQLOzX3p9RZ14hRNe5g76KZ+gCNsyiDPsH
+         /qcHXigYTba+XBCscKt1v9tr7V9Lgq4swhdNqaTSos8l7xEXJ+yNDxtxMNu5CFCFK7TK
+         j68MhNBxGwfgGkuwesvt/BKxUZkHN4VcXQc1yDt4Kl6s+9VvdUkgeyCuqHUmWX7huZpj
+         wroA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=aX2Eg5Gk0V/jRI/X4rim3dxz+h5U/hgYWDFRrQixu1U=;
+        b=Vee8uAZFEjvShJ4V72QiT0asLtgY2qxHCesdwezsTgbz6MH1SdlN7/gFMIyh/k2lE0
+         pEB5NcuY8b9/rbVnClw0v3s+3L1zeFldzu2wqByoSvXnGXp6qsXV878jIdIyVeHMwvTR
+         qTULNqAAPemgTFvQmCm0uEqKzk3xlciNg+qxYbmz3RomLjChULqA6QKqhdaQcXurk0gX
+         pz9tVONclnWnPdAhSX+200VJxB95MRYUmXX0LQ3bzHEoDXF61qo1Z8qeAkki3ifPGHud
+         YNlyays5cXeTWD1+60tN6uJ7E9FoCQTcMP3UpfAkQvCmHqeWeher6PmgZus9ro01Rr3A
+         ugVw==
+X-Gm-Message-State: AOAM533t2GpEuyXxR6XTqSQqPt+vbRs53quEkSdYhBmudogX9EMcaxGV
+        xM6+exmlwHSq0Cw/u/JBlMQ=
+X-Google-Smtp-Source: ABdhPJxsbtys0VGyQSLoeP/4r5EtvTBYw9ZHBb7MqZSwGRi95+8bm14rpD50tN+X5FlubnPm8tBVTA==
+X-Received: by 2002:a63:475c:: with SMTP id w28mr36536961pgk.222.1596126121197;
+        Thu, 30 Jul 2020 09:22:01 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id s8sm6548365pfc.122.2020.07.30.09.21.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 09:22:00 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 09:21:57 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Roy Im <roy.im.opensource@diasemi.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Brian Masney <masneyb@onstation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, Luca Weiss <luca@z3ntu.xyz>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Pascal PAILLET-LME <p.paillet@st.com>,
+        Rob Herring <robh@kernel.org>,
+        Samuel Ortiz <sameo@linux.intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Support Opensource <support.opensource@diasemi.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v18 3/3] Input: new da7280 haptic driver
+Message-ID: <20200730162157.GI1665100@dtor-ws>
+References: <cover.1595991580.git.Roy.Im@diasemi.com>
+ <23b3470401ec5cf525add8e1227cb67586b9f294.1595991580.git.Roy.Im@diasemi.com>
+ <20200729063638.GY1665100@dtor-ws>
+ <20200729072145.ifzoe656sjpxdior@pengutronix.de>
+ <20200730050653.GA1665100@dtor-ws>
+ <20200730061631.y4r4s6v3xepktj54@pengutronix.de>
+ <20200730083058.GC3703480@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200730083058.GC3703480@smile.fi.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 30, 2020 at 11:30:58AM +0300, Andy Shevchenko wrote:
+> On Thu, Jul 30, 2020 at 08:16:31AM +0200, Uwe Kleine-König wrote:
+> > On Wed, Jul 29, 2020 at 10:06:53PM -0700, Dmitry Torokhov wrote:
+> > > On Wed, Jul 29, 2020 at 09:21:45AM +0200, Uwe Kleine-König wrote:
+> > > > On Tue, Jul 28, 2020 at 11:36:38PM -0700, Dmitry Torokhov wrote:
+> 
+> ...
+> 
+> > > Maybe we should introduce something like '%de' for the integer error
+> > > case?
+> > 
+> > I suggested that some time ago with limited success, see
+> > https://lore.kernel.org/lkml/20200129115516.zsvxu56e6h7gheiw@pathway.suse.cz/
+> 
+> Oh, please, no need for that really. We have now dev_err_probe() on its way to
+> upstream (now in Greg's tree) which hides all this behind.
+> 
+> Just switch to dev_err_probe() and forget about what is under the hood.
 
+Awesome, we just need to make sure there is never an error condition
+outside of probe path, and we will be set ;) Easy peasy ;)
 
-Le jeu. 30 juil. 2020 =E0 17:29, Sam Ravnborg <sam@ravnborg.org> a=20
-=E9crit :
-> On Thu, Jul 30, 2020 at 04:48:30PM +0200, Paul Cercueil wrote:
->>  Instead of keeping the IPU clock enabled constantly, enable and=20
->> disable
->>  it on demand, when the IPU plane is used. That way, we won't use any
->>  extra power when the IPU is not used.
->>=20
->>  v2: Explain the reason of this patch
->>=20
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
->=20
-> And thanks for the quick update!
+Thanks.
 
-Pushed to drm-misc-next. Thanks!
-
-Cheers,
--Paul
-
->=20
-> 	Sam
->=20
->>  ---
->>   drivers/gpu/drm/ingenic/ingenic-ipu.c | 23 ++++++++++++++++++++---
->>   1 file changed, 20 insertions(+), 3 deletions(-)
->>=20
->>  diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c=20
->> b/drivers/gpu/drm/ingenic/ingenic-ipu.c
->>  index 7dd2a6ae4994..fc8c6e970ee3 100644
->>  --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
->>  +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
->>  @@ -49,6 +49,7 @@ struct ingenic_ipu {
->>   	struct regmap *map;
->>   	struct clk *clk;
->>   	const struct soc_info *soc_info;
->>  +	bool clk_enabled;
->>=20
->>   	unsigned int num_w, num_h, denom_w, denom_h;
->>=20
->>  @@ -288,12 +289,23 @@ static void=20
->> ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
->>   	const struct drm_format_info *finfo;
->>   	u32 ctrl, stride =3D 0, coef_index =3D 0, format =3D 0;
->>   	bool needs_modeset, upscaling_w, upscaling_h;
->>  +	int err;
->>=20
->>   	if (!state || !state->fb)
->>   		return;
->>=20
->>   	finfo =3D drm_format_info(state->fb->format->format);
->>=20
->>  +	if (!ipu->clk_enabled) {
->>  +		err =3D clk_enable(ipu->clk);
->>  +		if (err) {
->>  +			dev_err(ipu->dev, "Unable to enable clock: %d\n", err);
->>  +			return;
->>  +		}
->>  +
->>  +		ipu->clk_enabled =3D true;
->>  +	}
->>  +
->>   	/* Reset all the registers if needed */
->>   	needs_modeset =3D drm_atomic_crtc_needs_modeset(state->crtc->state);
->>   	if (needs_modeset) {
->>  @@ -578,6 +590,11 @@ static void=20
->> ingenic_ipu_plane_atomic_disable(struct drm_plane *plane,
->>   	regmap_clear_bits(ipu->map, JZ_REG_IPU_CTRL, JZ_IPU_CTRL_CHIP_EN);
->>=20
->>   	ingenic_drm_plane_disable(ipu->master, plane);
->>  +
->>  +	if (ipu->clk_enabled) {
->>  +		clk_disable(ipu->clk);
->>  +		ipu->clk_enabled =3D false;
->>  +	}
->>   }
->>=20
->>   static const struct drm_plane_helper_funcs=20
->> ingenic_ipu_plane_helper_funcs =3D {
->>  @@ -761,9 +778,9 @@ static int ingenic_ipu_bind(struct device *dev,=20
->> struct device *master, void *d)
->>   	drm_object_attach_property(&plane->base, ipu->sharpness_prop,
->>   				   ipu->sharpness);
->>=20
->>  -	err =3D clk_prepare_enable(ipu->clk);
->>  +	err =3D clk_prepare(ipu->clk);
->>   	if (err) {
->>  -		dev_err(dev, "Unable to enable clock\n");
->>  +		dev_err(dev, "Unable to prepare clock\n");
->>   		return err;
->>   	}
->>=20
->>  @@ -775,7 +792,7 @@ static void ingenic_ipu_unbind(struct device=20
->> *dev,
->>   {
->>   	struct ingenic_ipu *ipu =3D dev_get_drvdata(dev);
->>=20
->>  -	clk_disable_unprepare(ipu->clk);
->>  +	clk_unprepare(ipu->clk);
->>   }
->>=20
->>   static const struct component_ops ingenic_ipu_ops =3D {
->>  --
->>  2.27.0
-
-
+-- 
+Dmitry
