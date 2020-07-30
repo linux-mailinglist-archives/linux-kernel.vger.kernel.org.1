@@ -2,204 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3052332A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1719F233293
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728832AbgG3NIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:08:31 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:49026 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728192AbgG3NI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:08:29 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D2BB31A0415;
-        Thu, 30 Jul 2020 15:08:27 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E6E541A043C;
-        Thu, 30 Jul 2020 15:08:23 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 049F1402BF;
-        Thu, 30 Jul 2020 15:08:18 +0200 (CEST)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 2/2] ARM: dts: imx: Change gpmi nand node name to nand-controller
-Date:   Thu, 30 Jul 2020 21:04:06 +0800
-Message-Id: <1596114246-26579-2-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596114246-26579-1-git-send-email-Anson.Huang@nxp.com>
-References: <1596114246-26579-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728654AbgG3NEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:04:40 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:29846 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726535AbgG3NEk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 09:04:40 -0400
+X-UUID: 61cb2150daa84d339ee08bb8227ef686-20200730
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=9B9LPQrlX3PAUh89jHh+tGfGpsTtq5UlUz9JBjl2JHw=;
+        b=PgrmgBWT3WZWVdd2oqwCC3x5FsNAodG5pA/++tE9xAYO/H0xDjSLafreanQQnY/OxZVmSrlHyOqpoh5RVt+opiVxr+SJffo2jLrCARkjTDAYAXg+b7k2XvPrEuorltJ63VKrkl/0KOz5QEcRgTUVyk7jjEqxT6RGEq5XJERYiTo=;
+X-UUID: 61cb2150daa84d339ee08bb8227ef686-20200730
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <hanks.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 615329586; Thu, 30 Jul 2020 21:04:34 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 30 Jul 2020 21:04:29 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 30 Jul 2020 21:04:29 +0800
+Message-ID: <1596114272.18804.1.camel@mtkswgap22>
+Subject: Re: [PATCH v2 0/2] Remove MT6779 UART3 clock support
+From:   Hanks Chen <hanks.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        mtk01761 <wendell.lin@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Date:   Thu, 30 Jul 2020 21:04:32 +0800
+In-Reply-To: <252ba954-ae8f-18a3-55a3-9dd844a4d5b6@gmail.com>
+References: <1595387397-13110-1-git-send-email-hanks.chen@mediatek.com>
+         <54e4d0b9-e62c-a3cb-7f74-af2891664cf1@gmail.com>
+         <1595416581.5511.6.camel@mtkswgap22>
+         <252ba954-ae8f-18a3-55a3-9dd844a4d5b6@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: FF05D014242A87BF7E5C8EAA45B129EDA2912E3E23F1213959CA97F6E6AE6AD42000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change i.MX SoCs nand node name from "gpmi-nand" to "nand-controller" to
-be compliant with yaml schema, it requires the nodename to be
-"nand-controller".
-
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- arch/arm/boot/dts/imx23-evk.dts        | 2 +-
- arch/arm/boot/dts/imx23.dtsi           | 2 +-
- arch/arm/boot/dts/imx28-apf28.dts      | 2 +-
- arch/arm/boot/dts/imx28-apx4devkit.dts | 2 +-
- arch/arm/boot/dts/imx28-evk.dts        | 2 +-
- arch/arm/boot/dts/imx28-m28cu3.dts     | 2 +-
- arch/arm/boot/dts/imx28.dtsi           | 2 +-
- arch/arm/boot/dts/imx6qdl.dtsi         | 2 +-
- arch/arm/boot/dts/imx6sx.dtsi          | 2 +-
- arch/arm/boot/dts/imx6ul.dtsi          | 2 +-
- arch/arm/boot/dts/imx7s.dtsi           | 2 +-
- 11 files changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/arch/arm/boot/dts/imx23-evk.dts b/arch/arm/boot/dts/imx23-evk.dts
-index 0b2701c..8cbaf1c81 100644
---- a/arch/arm/boot/dts/imx23-evk.dts
-+++ b/arch/arm/boot/dts/imx23-evk.dts
-@@ -53,7 +53,7 @@
- 
- 	apb@80000000 {
- 		apbh@80000000 {
--			gpmi-nand@8000c000 {
-+			nand-controller@8000c000 {
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&gpmi_pins_a &gpmi_pins_fixup>;
- 				status = "okay";
-diff --git a/arch/arm/boot/dts/imx23.dtsi b/arch/arm/boot/dts/imx23.dtsi
-index 18289f6..7f4c602 100644
---- a/arch/arm/boot/dts/imx23.dtsi
-+++ b/arch/arm/boot/dts/imx23.dtsi
-@@ -76,7 +76,7 @@
- 				status = "disabled";
- 			};
- 
--			gpmi-nand@8000c000 {
-+			nand-controller@8000c000 {
- 				compatible = "fsl,imx23-gpmi-nand";
- 				#address-cells = <1>;
- 				#size-cells = <1>;
-diff --git a/arch/arm/boot/dts/imx28-apf28.dts b/arch/arm/boot/dts/imx28-apf28.dts
-index 3ed2b32..14a92fe 100644
---- a/arch/arm/boot/dts/imx28-apf28.dts
-+++ b/arch/arm/boot/dts/imx28-apf28.dts
-@@ -17,7 +17,7 @@
- 
- 	apb@80000000 {
- 		apbh@80000000 {
--			gpmi-nand@8000c000 {
-+			nand-controller@8000c000 {
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&gpmi_pins_a &gpmi_status_cfg>;
- 				status = "okay";
-diff --git a/arch/arm/boot/dts/imx28-apx4devkit.dts b/arch/arm/boot/dts/imx28-apx4devkit.dts
-index c5acc19..b86be32 100644
---- a/arch/arm/boot/dts/imx28-apx4devkit.dts
-+++ b/arch/arm/boot/dts/imx28-apx4devkit.dts
-@@ -13,7 +13,7 @@
- 
- 	apb@80000000 {
- 		apbh@80000000 {
--			gpmi-nand@8000c000 {
-+			nand-controller@8000c000 {
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&gpmi_pins_a &gpmi_status_cfg>;
- 				status = "okay";
-diff --git a/arch/arm/boot/dts/imx28-evk.dts b/arch/arm/boot/dts/imx28-evk.dts
-index 96c1d10..7e2b0f1 100644
---- a/arch/arm/boot/dts/imx28-evk.dts
-+++ b/arch/arm/boot/dts/imx28-evk.dts
-@@ -97,7 +97,7 @@
- 
- 	apb@80000000 {
- 		apbh@80000000 {
--			gpmi-nand@8000c000 {
-+			nand-controller@8000c000 {
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&gpmi_pins_a &gpmi_status_cfg
- 					     &gpmi_pins_evk>;
-diff --git a/arch/arm/boot/dts/imx28-m28cu3.dts b/arch/arm/boot/dts/imx28-m28cu3.dts
-index 91bd6de..865ac3d 100644
---- a/arch/arm/boot/dts/imx28-m28cu3.dts
-+++ b/arch/arm/boot/dts/imx28-m28cu3.dts
-@@ -17,7 +17,7 @@
- 
- 	apb@80000000 {
- 		apbh@80000000 {
--			gpmi-nand@8000c000 {
-+			nand-controller@8000c000 {
- 				#address-cells = <1>;
- 				#size-cells = <1>;
- 				pinctrl-names = "default";
-diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
-index a2b799c..94dfbf5 100644
---- a/arch/arm/boot/dts/imx28.dtsi
-+++ b/arch/arm/boot/dts/imx28.dtsi
-@@ -100,7 +100,7 @@
- 				status = "disabled";
- 			};
- 
--			gpmi: gpmi-nand@8000c000 {
-+			gpmi: nand-controller@8000c000 {
- 				compatible = "fsl,imx28-gpmi-nand";
- 				#address-cells = <1>;
- 				#size-cells = <1>;
-diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-index 43edbf1..de6daa7 100644
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -159,7 +159,7 @@
- 			clocks = <&clks IMX6QDL_CLK_APBH_DMA>;
- 		};
- 
--		gpmi: gpmi-nand@112000 {
-+		gpmi: nand-controller@112000 {
- 			compatible = "fsl,imx6q-gpmi-nand";
- 			reg = <0x00112000 0x2000>, <0x00114000 0x2000>;
- 			reg-names = "gpmi-nand", "bch";
-diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
-index b480dfa..dfdca18 100644
---- a/arch/arm/boot/dts/imx6sx.dtsi
-+++ b/arch/arm/boot/dts/imx6sx.dtsi
-@@ -213,7 +213,7 @@
- 			clocks = <&clks IMX6SX_CLK_APBH_DMA>;
- 		};
- 
--		gpmi: gpmi-nand@1806000{
-+		gpmi: nand-controller@1806000{
- 			compatible = "fsl,imx6sx-gpmi-nand";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-diff --git a/arch/arm/boot/dts/imx6ul.dtsi b/arch/arm/boot/dts/imx6ul.dtsi
-index 2b088f2..d7d9f3e 100644
---- a/arch/arm/boot/dts/imx6ul.dtsi
-+++ b/arch/arm/boot/dts/imx6ul.dtsi
-@@ -174,7 +174,7 @@
- 			clocks = <&clks IMX6UL_CLK_APBHDMA>;
- 		};
- 
--		gpmi: gpmi-nand@1806000 {
-+		gpmi: nand-controller@1806000 {
- 			compatible = "fsl,imx6q-gpmi-nand";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
-index 1cfaf41..2d23779 100644
---- a/arch/arm/boot/dts/imx7s.dtsi
-+++ b/arch/arm/boot/dts/imx7s.dtsi
-@@ -1208,7 +1208,7 @@
- 			clocks = <&clks IMX7D_NAND_USDHC_BUS_RAWNAND_CLK>;
- 		};
- 
--		gpmi: gpmi-nand@33002000{
-+		gpmi: nand-controller@33002000{
- 			compatible = "fsl,imx7d-gpmi-nand";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
--- 
-2.7.4
+SGkgYWxsLA0KDQpHZW50bGUgcGluZyBvbiB0aGlzIHBhdGNoLg0KDQpUaGFua3MhDQoNCkhhbmtz
+IENoZW4NCg0KDQpPbiBXZWQsIDIwMjAtMDctMjIgYXQgMTc6MjEgKzAyMDAsIE1hdHRoaWFzIEJy
+dWdnZXIgd3JvdGU6DQo+IA0KPiBPbiAyMi8wNy8yMDIwIDEzOjE2LCBIYW5rcyBDaGVuIHdyb3Rl
+Og0KPiA+IE9uIFdlZCwgMjAyMC0wNy0yMiBhdCAxMDo0MyArMDIwMCwgTWF0dGhpYXMgQnJ1Z2dl
+ciB3cm90ZToNCj4gPj4NCj4gPj4gT24gMjIvMDcvMjAyMCAwNTowOSwgSGFua3MgQ2hlbiB3cm90
+ZToNCj4gPj4+IHJlbW92ZSB0aGUgcmVkdW5kYW50IGNsayBpbnRlcmZhY2Ugb2YgdWFydC4NCj4g
+Pj4+IENMS19JTkZSQV9VQVJUMyBpcyBhIGR1bW15IGNsayBpbnRlcmZhY2UsDQo+ID4+PiBpdCBo
+YXMgbm8gZWZmZWN0IG9uIHRoZSBvcGVyYXRpb24gb2YgdGhlIHJlYWQvd3JpdGUgaW5zdHJ1Y3Rp
+b24uDQo+ID4+Pg0KPiA+Pj4gQ2hhbmdlIHNpbmNlIHYyOg0KPiA+Pj4gQ29tbWl0ICJkdC1iaW5k
+aW5nczogY2xvY2s6IHJlbW92ZSBVQVJUMyBjbG9jayBzdXBwb3J0Ig0KPiA+Pg0KPiA+PiBTb3Jy
+eSBqdXN0IGFub3RoZXIgY29tbWVudC4gSSB0aGluayB3ZSBjYW4gbWFrZSB0aGlzIG9uZSBwYXRj
+aCBkZWxldGluZyBldmVyeXRoaW5nLg0KPiA+Pg0KPiA+IFNvcnJ5LCBJIGRvbid0IHVuZGVyc3Rh
+bmQgdGhlIGNvbW1lbnQuIERvIEkgbmVlZCB0byBtZXJnZSB0aGVtIGludG8gb25lDQo+ID4gYmln
+IHBhdGNoPw0KPiA+IEJ0dywgaWYgSSB1c2Ugb25lIHBhdGNoLCBJIHdvdWxkIGdldCBjaGVjayBw
+YXRjaCBmYWlsLg0KPiA+IC0tLQ0KPiA+IFsyMDIwLTA3LTIyIDE5OjEyOjQ5LDA0NiBFUlJPUl0g
+UnVuIGNoZWNrIHBhdGNoIHJlc3VsdHM6DQo+ID4gV0FSTklORzpEVF9TUExJVF9CSU5ESU5HX1BB
+VENIOiBEVCBiaW5kaW5nIGRvY3MgYW5kIGluY2x1ZGVzIHNob3VsZCBiZSBhDQo+ID4gc2VwYXJh
+dGUgcGF0Y2guIFNlZToNCj4gPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3Vi
+bWl0dGluZy1wYXRjaGVzLnJzdA0KPiA+IC0tLQ0KPiANCj4gSG0sIEkgdGhpbmsgdGhhdCdzIGEg
+ZGViYXRhYmxlIGVycm9yIG1lc3NhZ2UgZnJvbSBjaGVja3BhdGNoLCBidXQgbGV0J3MgbGVhdmUg
+aXQgDQo+IGFzIGl0IGlzLg0KPiANCj4gUmVnYXJkcywNCj4gTWF0dGhpYXMNCj4gDQo+IA0KPiA+
+IA0KPiA+IEhhbmtzDQo+ID4gDQo+ID4+PiAtLSByZW1vdmUgRml4ZXMgdGFnDQo+ID4+PiBDb21t
+aXQgImNsazogbWVkaWF0ZWs6IHJlbW92ZSBVQVJUMyBjbG9jayBzdXBwb3J0Ig0KPiA+Pj4gLS0g
+cmVtb3ZlIEZpeGVzIHRhZw0KPiA+Pj4NCj4gPj4+IEhhbmtzIENoZW4gKDIpOg0KPiA+Pj4gICAg
+IGR0LWJpbmRpbmdzOiBjbG9jazogcmVtb3ZlIFVBUlQzIGNsb2NrIHN1cHBvcnQNCj4gPj4+ICAg
+ICBjbGs6IG1lZGlhdGVrOiByZW1vdmUgVUFSVDMgY2xvY2sgc3VwcG9ydA0KPiA+Pj4NCj4gPj4+
+ICAgIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDY3NzkuYyAgICAgIHwgMiAtLQ0KPiA+Pj4g
+ICAgaW5jbHVkZS9kdC1iaW5kaW5ncy9jbG9jay9tdDY3NzktY2xrLmggfCAxIC0NCj4gPj4+ICAg
+IDIgZmlsZXMgY2hhbmdlZCwgMyBkZWxldGlvbnMoLSkNCj4gPj4+DQo+ID4gDQoNCg==
 
