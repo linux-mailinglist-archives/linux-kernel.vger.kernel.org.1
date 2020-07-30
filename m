@@ -2,228 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E25233475
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8DE323347B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729580AbgG3ObA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 10:31:00 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52933 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgG3ObA (ORCPT
+        id S1729626AbgG3Obd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 10:31:33 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35914 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729448AbgG3Oba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 10:31:00 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k19a5-0000ac-Tq; Thu, 30 Jul 2020 14:30:50 +0000
-Date:   Thu, 30 Jul 2020 16:30:49 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
-        ebiederm@xmission.com, akpm@linux-foundation.org,
-        areber@redhat.com, serge@hallyn.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 01/23] ns: Add common refcount into ns_common add use it
- as counter for net_ns
-Message-ID: <20200730143049.m3isrpwrktxnh7pz@wittgenstein>
-References: <159611007271.535980.15362304262237658692.stgit@localhost.localdomain>
- <159611036589.535980.1765795847221907147.stgit@localhost.localdomain>
+        Thu, 30 Jul 2020 10:31:30 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06UEVT0C108946;
+        Thu, 30 Jul 2020 09:31:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596119489;
+        bh=pPJ6p0ZJS+oKBcH5exACrkQEeimRt+3aawEGkIsNGXU=;
+        h=From:To:CC:Subject:Date;
+        b=BTuZ53ROd5r1zj3jvHoWsTViaCZjhbzVj4qg+oa/rBWi0pKjM4IpJPH4OgwQMBNaf
+         TSuPQy+ElTUPqmPA3dv8qOFQWTIndYqtgJBcXxDuWd75v2iqSSE99TJrLkNyXlZKKZ
+         oqTcunxK7o8J18kyzlKMgKioRBDpwQXJ4N3imh30=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06UEVTWL088250
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 30 Jul 2020 09:31:29 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 30
+ Jul 2020 09:31:28 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 30 Jul 2020 09:31:28 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06UEVSdw010625;
+        Thu, 30 Jul 2020 09:31:28 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <sre@kernel.org>, <afd@ti.com>, <pali@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH 1/2] power: bq27xxx: Update to SPDX licensing
+Date:   Thu, 30 Jul 2020 09:31:21 -0500
+Message-ID: <20200730143122.28519-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <159611036589.535980.1765795847221907147.stgit@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 02:59:25PM +0300, Kirill Tkhai wrote:
-> Currently, every type of namespaces has its own counter,
-> which is stored in ns-specific part. Say, @net has
-> struct net::count, @pid has struct pid_namespace::kref, etc.
-> 
-> This patchset introduces unified counter for all types
-> of namespaces, and converts net namespace to use it first.
-> 
-> Signed-off-by: Kirill Tkhai <ktkhai@virtuozzo.com>
-> ---
->  include/linux/ns_common.h     |    1 +
->  include/net/net_namespace.h   |   11 ++++-------
->  net/core/net-sysfs.c          |    6 +++---
->  net/core/net_namespace.c      |    6 +++---
->  net/ipv4/inet_timewait_sock.c |    4 ++--
->  net/ipv4/tcp_metrics.c        |    2 +-
->  6 files changed, 14 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/ns_common.h b/include/linux/ns_common.h
-> index 5fbc4000358f..27db02ebdf36 100644
-> --- a/include/linux/ns_common.h
-> +++ b/include/linux/ns_common.h
-> @@ -8,6 +8,7 @@ struct ns_common {
->  	atomic_long_t stashed;
->  	const struct proc_ns_operations *ops;
->  	unsigned int inum;
-> +	refcount_t count;
+Update the license to the SPDX licensing format.
 
-Hm, I wonder whether it's worth to have this addition be in a separate
-patch but probably not and even if there'd be no need to resend.
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ drivers/power/supply/bq27xxx_battery.c     |  9 +--------
+ drivers/power/supply/bq27xxx_battery_hdq.c |  9 +--------
+ drivers/power/supply/bq27xxx_battery_i2c.c | 10 +---------
+ 3 files changed, 3 insertions(+), 25 deletions(-)
 
-Though I wonder, isn't this missing an include for refcount_t or is
-there some header-magic we're doing during pre-processing?
+diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
+index a123f6e21f08..8b112449ace8 100644
+--- a/drivers/power/supply/bq27xxx_battery.c
++++ b/drivers/power/supply/bq27xxx_battery.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * BQ27xxx battery driver
+  *
+@@ -9,14 +10,6 @@
+  *
+  * Based on a previous work by Copyright (C) 2008 Texas Instruments, Inc.
+  *
+- * This package is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- * THIS PACKAGE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+- * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+- *
+  * Datasheets:
+  * https://www.ti.com/product/bq27000
+  * https://www.ti.com/product/bq27200
+diff --git a/drivers/power/supply/bq27xxx_battery_hdq.c b/drivers/power/supply/bq27xxx_battery_hdq.c
+index 29771967df2e..12b10dad77d3 100644
+--- a/drivers/power/supply/bq27xxx_battery_hdq.c
++++ b/drivers/power/supply/bq27xxx_battery_hdq.c
+@@ -1,16 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * BQ27xxx battery monitor HDQ/1-wire driver
+  *
+  * Copyright (C) 2007-2017 Texas Instruments Incorporated - https://www.ti.com/
+  *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+- * kind, whether express or implied; without even the implied warranty
+- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+  */
+ 
+ #include <linux/kernel.h>
+diff --git a/drivers/power/supply/bq27xxx_battery_i2c.c b/drivers/power/supply/bq27xxx_battery_i2c.c
+index ab02456d69e5..765873dfc495 100644
+--- a/drivers/power/supply/bq27xxx_battery_i2c.c
++++ b/drivers/power/supply/bq27xxx_battery_i2c.c
+@@ -1,17 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * BQ27xxx battery monitor I2C driver
+  *
+  * Copyright (C) 2015 Texas Instruments Incorporated - https://www.ti.com/
+  *	Andrew F. Davis <afd@ti.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+- * kind, whether express or implied; without even the implied warranty
+- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+  */
+ 
+ #include <linux/i2c.h>
+-- 
+2.28.0
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-
-Thanks!
-Christian
-
->  };
->  
->  #endif
-> diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
-> index 2ee5901bec7a..cb4b33d7834b 100644
-> --- a/include/net/net_namespace.h
-> +++ b/include/net/net_namespace.h
-> @@ -60,9 +60,6 @@ struct net {
->  	refcount_t		passive;	/* To decide when the network
->  						 * namespace should be freed.
->  						 */
-> -	refcount_t		count;		/* To decided when the network
-> -						 *  namespace should be shut down.
-> -						 */
->  	spinlock_t		rules_mod_lock;
->  
->  	unsigned int		dev_unreg_count;
-> @@ -245,7 +242,7 @@ void __put_net(struct net *net);
->  
->  static inline struct net *get_net(struct net *net)
->  {
-> -	refcount_inc(&net->count);
-> +	refcount_inc(&net->ns.count);
->  	return net;
->  }
->  
-> @@ -256,14 +253,14 @@ static inline struct net *maybe_get_net(struct net *net)
->  	 * exists.  If the reference count is zero this
->  	 * function fails and returns NULL.
->  	 */
-> -	if (!refcount_inc_not_zero(&net->count))
-> +	if (!refcount_inc_not_zero(&net->ns.count))
->  		net = NULL;
->  	return net;
->  }
->  
->  static inline void put_net(struct net *net)
->  {
-> -	if (refcount_dec_and_test(&net->count))
-> +	if (refcount_dec_and_test(&net->ns.count))
->  		__put_net(net);
->  }
->  
-> @@ -275,7 +272,7 @@ int net_eq(const struct net *net1, const struct net *net2)
->  
->  static inline int check_net(const struct net *net)
->  {
-> -	return refcount_read(&net->count) != 0;
-> +	return refcount_read(&net->ns.count) != 0;
->  }
->  
->  void net_drop_ns(void *);
-> diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
-> index 9de33b594ff2..655a88b0071c 100644
-> --- a/net/core/net-sysfs.c
-> +++ b/net/core/net-sysfs.c
-> @@ -1025,7 +1025,7 @@ net_rx_queue_update_kobjects(struct net_device *dev, int old_num, int new_num)
->  	while (--i >= new_num) {
->  		struct kobject *kobj = &dev->_rx[i].kobj;
->  
-> -		if (!refcount_read(&dev_net(dev)->count))
-> +		if (!refcount_read(&dev_net(dev)->ns.count))
->  			kobj->uevent_suppress = 1;
->  		if (dev->sysfs_rx_queue_group)
->  			sysfs_remove_group(kobj, dev->sysfs_rx_queue_group);
-> @@ -1603,7 +1603,7 @@ netdev_queue_update_kobjects(struct net_device *dev, int old_num, int new_num)
->  	while (--i >= new_num) {
->  		struct netdev_queue *queue = dev->_tx + i;
->  
-> -		if (!refcount_read(&dev_net(dev)->count))
-> +		if (!refcount_read(&dev_net(dev)->ns.count))
->  			queue->kobj.uevent_suppress = 1;
->  #ifdef CONFIG_BQL
->  		sysfs_remove_group(&queue->kobj, &dql_group);
-> @@ -1850,7 +1850,7 @@ void netdev_unregister_kobject(struct net_device *ndev)
->  {
->  	struct device *dev = &ndev->dev;
->  
-> -	if (!refcount_read(&dev_net(ndev)->count))
-> +	if (!refcount_read(&dev_net(ndev)->ns.count))
->  		dev_set_uevent_suppress(dev, 1);
->  
->  	kobject_get(&dev->kobj);
-> diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
-> index dcd61aca343e..5f658cbedd34 100644
-> --- a/net/core/net_namespace.c
-> +++ b/net/core/net_namespace.c
-> @@ -44,7 +44,7 @@ static struct key_tag init_net_key_domain = { .usage = REFCOUNT_INIT(1) };
->  #endif
->  
->  struct net init_net = {
-> -	.count		= REFCOUNT_INIT(1),
-> +	.ns.count	= REFCOUNT_INIT(1),
->  	.dev_base_head	= LIST_HEAD_INIT(init_net.dev_base_head),
->  #ifdef CONFIG_KEYS
->  	.key_domain	= &init_net_key_domain,
-> @@ -248,7 +248,7 @@ int peernet2id_alloc(struct net *net, struct net *peer, gfp_t gfp)
->  {
->  	int id;
->  
-> -	if (refcount_read(&net->count) == 0)
-> +	if (refcount_read(&net->ns.count) == 0)
->  		return NETNSA_NSID_NOT_ASSIGNED;
->  
->  	spin_lock(&net->nsid_lock);
-> @@ -328,7 +328,7 @@ static __net_init int setup_net(struct net *net, struct user_namespace *user_ns)
->  	int error = 0;
->  	LIST_HEAD(net_exit_list);
->  
-> -	refcount_set(&net->count, 1);
-> +	refcount_set(&net->ns.count, 1);
->  	refcount_set(&net->passive, 1);
->  	get_random_bytes(&net->hash_mix, sizeof(u32));
->  	net->dev_base_seq = 1;
-> diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
-> index c411c87ae865..437afe392e66 100644
-> --- a/net/ipv4/inet_timewait_sock.c
-> +++ b/net/ipv4/inet_timewait_sock.c
-> @@ -272,14 +272,14 @@ void inet_twsk_purge(struct inet_hashinfo *hashinfo, int family)
->  				continue;
->  			tw = inet_twsk(sk);
->  			if ((tw->tw_family != family) ||
-> -				refcount_read(&twsk_net(tw)->count))
-> +				refcount_read(&twsk_net(tw)->ns.count))
->  				continue;
->  
->  			if (unlikely(!refcount_inc_not_zero(&tw->tw_refcnt)))
->  				continue;
->  
->  			if (unlikely((tw->tw_family != family) ||
-> -				     refcount_read(&twsk_net(tw)->count))) {
-> +				     refcount_read(&twsk_net(tw)->ns.count))) {
->  				inet_twsk_put(tw);
->  				goto restart;
->  			}
-> diff --git a/net/ipv4/tcp_metrics.c b/net/ipv4/tcp_metrics.c
-> index 279db8822439..39710c417565 100644
-> --- a/net/ipv4/tcp_metrics.c
-> +++ b/net/ipv4/tcp_metrics.c
-> @@ -887,7 +887,7 @@ static void tcp_metrics_flush_all(struct net *net)
->  		pp = &hb->chain;
->  		for (tm = deref_locked(*pp); tm; tm = deref_locked(*pp)) {
->  			match = net ? net_eq(tm_net(tm), net) :
-> -				!refcount_read(&tm_net(tm)->count);
-> +				!refcount_read(&tm_net(tm)->ns.count);
->  			if (match) {
->  				*pp = tm->tcpm_next;
->  				kfree_rcu(tm, rcu_head);
-> 
-> 
