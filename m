@@ -2,86 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55776232CD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8ED232E86
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgG3IDq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Jul 2020 04:03:46 -0400
-Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:17539 "EHLO
-        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725892AbgG3IDp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:03:45 -0400
-Subject: Re: [PATCH] selinux: add tracepoint on denials
-To:     =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Nick Kralevich <nnk@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>
-References: <20200724091520.880211-1-tweek@google.com>
- <CAEjxPJ45ij3obT37ywn_edb9xb89z-SdwzejfN6+jrvAtghXfA@mail.gmail.com>
- <CAHC9VhS4aXD8kcXnQ2MsYvjc--xXSUpsM1xtgq3X5DBT59ohhw@mail.gmail.com>
- <CA+zpnLfczC=9HQA8s1oBGKGQO+OkuydF85o89dhSxdOyKBHMgg@mail.gmail.com>
- <CAHC9VhT1sGSpfCKojbKR+O2Hf_h+wnKnBwwSo09CbFaCYLcOHA@mail.gmail.com>
- <CA+zpnLecz_gvXYnrwNGW8SLaJsu==M_n9MuJgjqX9nPJtuTZBg@mail.gmail.com>
-From:   peter enderborg <peter.enderborg@sony.com>
-Message-ID: <def030b4-91c3-4aa1-e8ad-e3797688d18d@sony.com>
-Date:   Thu, 30 Jul 2020 10:03:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730017AbgG3IU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:20:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726774AbgG3IFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:05:32 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C5A320672;
+        Thu, 30 Jul 2020 08:05:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596096331;
+        bh=qlYDvpfhOP1bAGHT2gNFafdZfJvOMDt+QdoEypLlfig=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qcPlj8DzCWHSXO1jI+j6MpK2Z+AqEjvWHLmScUGT4jYTbZQISdumcMg7W7BIGGoCB
+         DajysooR9UbwPsrEEoElhdjqoeZ63bTBplyKIZDZWg+zgZ+HZ2tpue0cLmWIQRE5zc
+         uhwg87aCxIziD1buCMWmqV8BfItXywUoWQKbd9Mo=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: [PATCH 5.7 00/20] 5.7.12-rc1 review
+Date:   Thu, 30 Jul 2020 10:03:50 +0200
+Message-Id: <20200730074420.533211699@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <CA+zpnLecz_gvXYnrwNGW8SLaJsu==M_n9MuJgjqX9nPJtuTZBg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-GB
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=DrAoB13+ c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=_RQrkK6FrEwA:10 a=xVhDTqbCAAAA:8 a=kSkFpLqy8y9c_-cfnwsA:9 a=QEXdDO2ut3YA:10 a=GrmWmAYt4dzCMttCBZOh:22
-X-SEG-SpamProfiler-Score: 0
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.7.12-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.7.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.7.12-rc1
+X-KernelTest-Deadline: 2020-08-01T07:44+00:00
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/20 6:02 PM, Thiébaud Weksteen wrote:
-> On Tue, Jul 28, 2020 at 5:12 PM Paul Moore <paul@paul-moore.com> wrote:
->> Perhaps it would be helpful if you provided an example of how one
->> would be expected to use this new tracepoint?  That would help put
->> things in the proper perspective.
-> The best example is the one I provided in the commit message, that is
-> using perf (or a perf equivalent), to hook onto that tracepoint.
->
->> Well, to be honest, the very nature of this tracepoint is duplicating
->> the AVC audit record with a focus on using perf to establish a full
->> backtrace at the expense of reduced information.  At least that is how
->> it appears to me.
-> I see both methods as complementary. By default, the kernel itself can
-> do some reporting (i.e avc message) on which process triggered the
-> denial, what was the context, etc. This is useful even in production
-> and doesn't require any extra tooling.
-> The case for adding this tracepoint can be seen as advanced debugging.
-> That is, once an avc denial has been confirmed, a developer can use
-> this tracepoint to surface the userland stacktrace. It requires more
-> userland tools and symbols on the userland binaries.
+This is the start of the stable review cycle for the 5.7.12 release.
+There are 20 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-I think from development view you would like to have a better
-way to trap this events in userspace. One idea that I have is
-is to have more outcomes from a rule. We have today allow,
-dontaudit, auditallow i think it would be good to have signal sent too.
-"signal-xxx-allow" for some set of signals. SIGBUS, SIGSEGV, SIGABRT maybe.
+Responses should be made by Sat, 01 Aug 2020 07:44:05 +0000.
+Anything received after that time might be too late.
 
-That will be a good way to pickup the problem with a debugger or generate a
-a core file.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.12-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
+and the diffstat can be found below.
 
-I have also done some selinux trace functions. I think they collide with this set,
-but I think I can rebase them upon yours and see if they give some more functionality.
+thanks,
 
-I see this functionality very much needed in some form.
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.7.12-rc1
+
+Peng Fan <peng.fan@nxp.com>
+    regmap: debugfs: check count when read regmap file
+
+Jens Axboe <axboe@kernel.dk>
+    io_uring: ensure double poll additions work with both request types
+
+Tung Nguyen <tung.q.nguyen@dektech.com.au>
+    tipc: allow to build NACK message in link timeout function
+
+Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+    udp: Improve load balancing for SO_REUSEPORT.
+
+Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+    udp: Copy has_conns in reuseport_grow().
+
+Xin Long <lucien.xin@gmail.com>
+    sctp: shrink stream outq when fails to do addstream reconf
+
+Xin Long <lucien.xin@gmail.com>
+    sctp: shrink stream outq only when new outcnt < old outcnt
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    AX.25: Prevent integer overflows in connect and sendmsg
+
+Yuchung Cheng <ycheng@google.com>
+    tcp: allow at most one TLP probe per flight
+
+David Howells <dhowells@redhat.com>
+    rxrpc: Fix sendmsg() returning EPIPE due to recvmsg() returning ENODATA
+
+Weilong Chen <chenweilong@huawei.com>
+    rtnetlink: Fix memory(net_device) leak when ->newlink fails
+
+Cong Wang <xiyou.wangcong@gmail.com>
+    qrtr: orphan socket in qrtr_release()
+
+Miaohe Lin <linmiaohe@huawei.com>
+    net: udp: Fix wrong clean up for IS_UDPLITE macro
+
+Xiongfeng Wang <wangxiongfeng2@huawei.com>
+    net-sysfs: add a newline when printing 'tx_timeout' by sysfs
+
+wenxu <wenxu@ucloud.cn>
+    net/sched: act_ct: fix restore the qdisc_skb_cb after defrag
+
+Wei Yongjun <weiyongjun1@huawei.com>
+    ip6_gre: fix null-ptr-deref in ip6gre_init_net()
+
+Xie He <xie.he.0141@gmail.com>
+    drivers/net/wan/x25_asy: Fix to make it work
+
+Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+    dev: Defer free of skbs in flush_backlog
+
+Peilin Ye <yepeilin.cs@gmail.com>
+    AX.25: Prevent out-of-bounds read in ax25_sendmsg()
+
+Peilin Ye <yepeilin.cs@gmail.com>
+    AX.25: Fix out-of-bounds read in ax25_connect()
+
+
+-------------
+
+Diffstat:
+
+ Makefile                             |  4 +--
+ drivers/base/regmap/regmap-debugfs.c |  6 +++++
+ drivers/net/wan/x25_asy.c            | 21 ++++++++++------
+ fs/io_uring.c                        | 47 ++++++++++++++++++++----------------
+ include/linux/tcp.h                  |  4 ++-
+ net/ax25/af_ax25.c                   | 10 ++++++--
+ net/core/dev.c                       |  2 +-
+ net/core/net-sysfs.c                 |  2 +-
+ net/core/rtnetlink.c                 |  3 ++-
+ net/core/sock_reuseport.c            |  1 +
+ net/ipv4/tcp_input.c                 | 11 +++++----
+ net/ipv4/tcp_output.c                | 13 ++++++----
+ net/ipv4/udp.c                       | 17 +++++++------
+ net/ipv6/ip6_gre.c                   | 11 +++++----
+ net/ipv6/udp.c                       | 17 +++++++------
+ net/qrtr/qrtr.c                      |  1 +
+ net/rxrpc/recvmsg.c                  |  2 +-
+ net/rxrpc/sendmsg.c                  |  2 +-
+ net/sched/act_ct.c                   | 16 ++++++++++--
+ net/sctp/stream.c                    | 27 ++++++++++++++-------
+ net/tipc/link.c                      |  2 +-
+ 21 files changed, 140 insertions(+), 79 deletions(-)
 
 
