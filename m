@@ -2,104 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3D1232C82
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 09:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364DE232C8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 09:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728943AbgG3HZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 03:25:52 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:37009 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728891AbgG3HZw (ORCPT
+        id S1728891AbgG3H3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 03:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728645AbgG3H3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 03:25:52 -0400
-Received: from mail-qv1-f53.google.com ([209.85.219.53]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MD9Kp-1jsUE31pDt-00959j; Thu, 30 Jul 2020 09:25:50 +0200
-Received: by mail-qv1-f53.google.com with SMTP id a19so6086533qvy.3;
-        Thu, 30 Jul 2020 00:25:50 -0700 (PDT)
-X-Gm-Message-State: AOAM533aIqEn2mpnxT+wj8g9dJqz/zbFTaNhs+MKrKoOFGaRPIAYkQk3
-        Xg6PLah6aeoYg5L0pCIF2JiKMRGs8E8KFXeLOz0=
-X-Google-Smtp-Source: ABdhPJxo0B56G4g8c9U5UEFN/6NIHD+B8GlCDLd3ue8LWoLl/ZDumtskrygHT6FtHJpCZOT2NM8BwvtBIs7ABsj/erQ=
-X-Received: by 2002:a0c:b5c2:: with SMTP id o2mr1540145qvf.210.1596093949221;
- Thu, 30 Jul 2020 00:25:49 -0700 (PDT)
+        Thu, 30 Jul 2020 03:29:01 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E40C0619D2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 00:29:00 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id t187so5959749vke.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 00:29:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=at4PSvarONNx8uF/kP+5DqEXcjDZRY1qZ0MmYqMIcvc=;
+        b=ohIiyLDPwOZD415DV/CkBJASHfDCAFARESlU4Ht6RlB1yXp2wjcF5ajMnVRhM/qpDA
+         1sW8UBsjHg9JDdCLvBCsGbLLzqawnfJ47wHGLuS74VMLWtHykra2lhbC90z1ZiFs9xcB
+         j5LfvBRkl/ey8bYEJPIPGyEHZg/dHzs62T+jDwFhqzBazxnReEEO22SLphkNLFHjIsua
+         Ox+0vrjg0rNSoklSPCs1fgf5wL2osGqJHk6fw14qhK6/e2DuvuO00pmee2FOKJ5912pr
+         XcdvuGjIff/0G4tsj0OFdHCRSwQHVsnMvFXfGSrAu+fLxEUY52nGyAwCVh/oQP6TF0ag
+         Q+Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=at4PSvarONNx8uF/kP+5DqEXcjDZRY1qZ0MmYqMIcvc=;
+        b=X4WB7bqGaZ3Bfo1UlhL2Jio60wUSQPUcW7MGtgzxPWMNMSqm4WefO/pgS/ctJica5m
+         ATT6flrotExXsqKujdBHV2zAO/t5RcWleYqldi4aIyLEG1Q2QAO88KG4k9DrmEeU7Riu
+         +gLROTADBgEvw7drhYPwrr89pb5a28md76wi+T+t4nBmeZZQpD48EPqHlbdzTesaa/RX
+         O21DUfPzjXK95oz56PgkMp4gNJ0LFQXFRn5f7ewLMlC6hBqLQKnObyH/w+WSWcgaKOzX
+         XnnIL/7ZISEu1EZED0tfSRl0tar5W9ftTvZVfN7wnf9+7AiMzOhnW+48whLZaYx4cvAp
+         ne9A==
+X-Gm-Message-State: AOAM532WWJwUhLypnc98oUtpVtzMAKumuVDBCVrb7d1PR4Q6YlBr+gbH
+        V4VX+U7k0bkiWG3tWpKm3nZKSQiI3tt+oqbQvDWZLBmUiq4=
+X-Google-Smtp-Source: ABdhPJxmB23YSiQSrVg7/e8gsqnxK1aKwwwI9lUsVP4buoJsxCXlCyf65dRhEHdVBPrsrRt1oXk5iERlt42q4A/z0mA=
+X-Received: by 2002:a1f:ae51:: with SMTP id x78mr899092vke.49.1596094139532;
+ Thu, 30 Jul 2020 00:28:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <1596034117-24246-1-git-send-email-Anson.Huang@nxp.com>
- <1596034117-24246-2-git-send-email-Anson.Huang@nxp.com> <86ae1d4e-27c9-07e4-73be-37d490cb0063@infradead.org>
- <DB3PR0402MB3916559F7E1908D76B47FE66F5700@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <34161e5c-0e83-97de-3cb6-1040d8abdc71@infradead.org> <DB3PR0402MB3916E18C8B36010D60086EA2F5710@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB3916E18C8B36010D60086EA2F5710@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 30 Jul 2020 09:25:32 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0nOWHFr42K0maoXVxsLnasuYXGy0z68JoCbEzADOC6kA@mail.gmail.com>
-Message-ID: <CAK8P3a0nOWHFr42K0maoXVxsLnasuYXGy0z68JoCbEzADOC6kA@mail.gmail.com>
-Subject: Re: [PATCH V7 1/6] clk: imx6sl: Use BIT(x) to avoid shifting signed
- 32-bit value by 31 bits
-To:     Anson Huang <anson.huang@nxp.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
-        Andy Duan <fugang.duan@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        dl-linux-imx <linux-imx@nxp.com>
+References: <20200730022457.3021112-1-badhri@google.com> <20200730064356.GA3910237@kroah.com>
+In-Reply-To: <20200730064356.GA3910237@kroah.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Thu, 30 Jul 2020 00:28:23 -0700
+Message-ID: <CAPTae5LBfYni0m2+drcXfTtgbZZCzdEWb_r-XtkhhQ-8tP60EQ@mail.gmail.com>
+Subject: Re: [PATCH v3] usb: typec: tcpm: Migrate workqueue to RT priority for
+ processing events
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:TAaq4YmSI4FU3F8/B28S4g5SJrjn2jR1x/gJRJCjQinhufa2MP4
- cWSxat9Td7fm9KccJrxej8NrNXWcStCmgtJx7GyS0ubbJEVIH8CtEjjm/Cj2zpYbxsaHHL5
- PaFpwlXgX0U2udf8VBzIOet+4ffsRrm/59BuT6dBasFF1CqJwsgMsYskEshkKvQifWddoCs
- inYM16nfVTQsBZgXz5Lag==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2HoLvJI1isM=:WRrah1Zx0obHqCk092nmim
- mNmU1GU4Vimj0N2pXtF/jl5lYr45PwQjF/MRsOmB1ZW9OsnF3Ty59uNHJFRaaYyYoQwb8PieQ
- JQzaDhJNFZqOrdLIHQ3T7eu8ndcuWiSbfsk8NIOJAbwmPwC/CLczDdXu6h3zfqAcrTmvQ1ddX
- T63bo6gN/O01Wa3rRib594DDmNVdtN4TQFeSTVvpYamtcXFTm4DzD5/x/jlTnFx8ckrW0rIRN
- 5uVqF5TrCMGsimBnjUTMaUK9PN7wFeN+fHof0eCCDluzegxmNm6duTbpyfegIBP0lblV3Llx2
- QfstSMemJoJ2oK41lE9lBrVE6cnxK8Lz20lwxl4P633ghC9Wc9WVEZaBduLaQ5mAnL1W7x5r4
- n0aUhTHPBUej8N5on/Q06OrwUDoodhhoyUN5KMouJ+Sw4pYY0kAG1w+lKAwexNxlAoBoRrXzx
- AUUKHVyiia+TiEJTzV7HxqfYrddkEvHM/JNNQi0JPk/S5X1khFlNto7FdbiGuQF8Ubt0UitXU
- 8jEhxyrIgEkG1iuHpn2wRJsbE061soFMPvkxfZkkEI1ehYxlYcKZ8CuaKUeEK1WBXkfQibFEy
- 9dj3S9zWelr9icMANdfsGTYGnnOGjmdLi9chsWH78SmLoAJ9s+wqaeQIRXQKFtWRiABeVHg0L
- tiqGfxsiavrWrdS4tQ8CZEDzTezyE/jkB5pMpUUBE10R97FW3gcgsmGbYIetG6fvUilUerUGN
- l+Jfx/ruyDgrTCrXoztW4vfGkbWfL8/sqMFl4DB5j5N+5EoUve1smlu1XYHNdbE/Ih9GfPhFU
- aeUHwE0QxpBGbLkXMN+nTVvYIsQFPLOt7FPLLcHsVY4wPTGOBPNGWX4TRI220ufPZuBL7m/4O
- Yq1iywJ/qJ2jwY9BMdw/miruyiA71HUrxAsJNeLL6qDe858i7sChf4RrdSL2wS03hDiTkBIM/
- R22JQEG1G6GFRJ5nKrWL8RUTAVRXOgY94M7X4KXGSQTLglVsAxlv3
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 3:14 AM Anson Huang <anson.huang@nxp.com> wrote:
-> > Subject: Re: [PATCH V7 1/6] clk: imx6sl: Use BIT(x) to avoid shifting signed
-> > 32-bit value by 31 bits
+Hi Greg,
 
-> > or you could read Documentation/process/submit-checklist.rst,
-> > where rule #1 says:
+Yes Guenter's suspicion is right. Mine was conflicting with Han's
+following patch:
+commit 5f2b8d87bca528616e04344d1fc4032dc5ec0f3d
+Author: Hans de Goede <hdegoede@redhat.com>
+Date:   Fri Jul 24 19:46:57 2020 +0200
+
+    usb: typec: tcpm: Move mod_delayed_work(&port->vdm_state_machine)
+call into tcpm_queue_vdm()
+
+    All callers of tcpm_queue_vdm() immediately follow the tcpm_queue_vdm()
+    vdm call with a:
+
+            mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+
+    Call, fold this into tcpm_queue_vdm() itself.
+
+    Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+    Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+    Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+    Link: https://lore.kernel.org/r/20200724174702.61754-1-hdegoede@redhat.=
+com
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Fixed merged conflicts and sent out the v4 version of the patch.
+Added hdegoede@redhat.com to CC as well.
+
+Thanks,
+Badhri
+
+On Wed, Jul 29, 2020 at 11:44 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jul 29, 2020 at 07:24:57PM -0700, Badhri Jagan Sridharan wrote:
+> > "tReceiverResponse 15 ms Section 6.6.2
+> > The receiver of a Message requiring a response Shall respond
+> > within tReceiverResponse in order to ensure that the
+> > sender=E2=80=99s SenderResponseTimer does not expire."
 > >
-> > 1) If you use a facility then #include the file that defines/declares
-> >    that facility.  Don't depend on other header files pulling in ones
-> >    that you use.
+> > When the cpu complex is busy running other lower priority
+> > work items, TCPM's work queue sometimes does not get scheduled
+> > on time to meet the above requirement from the spec.
+> > Moving to kthread_work apis to run with real time priority.
+> > Just lower than the default threaded irq priority,
+> > MAX_USER_RT_PRIO/2 + 1. (Higher number implies lower priority).
+> >
+> > Further, as observed in 1ff688209e2e, moving to hrtimers to
+> > overcome scheduling latency while scheduling the delayed work.
+> >
+> > TCPM has three work streams:
+> > 1. tcpm_state_machine
+> > 2. vdm_state_machine
+> > 3. event_work
+> >
+> > tcpm_state_machine and vdm_state_machine both schedule work in
+> > future i.e. delayed. Hence each of them have a corresponding
+> > hrtimer, tcpm_state_machine_timer & vdm_state_machine_timer.
+> >
+> > When work is queued right away kthread_queue_work is used.
+> > Else, the relevant timer is programmed and made to queue
+> > the kthread_work upon timer expiry.
+> >
+> > kthread_create_worker only creates one kthread worker thread,
+> > hence single threadedness of workqueue is retained.
+> >
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > ---
+> > Changes since v1:(Guenter's suggestions)
+> > - Remove redundant call to hrtimer_cancel while calling
+> >   hrtimer_start.
+> >
+> > Changes since v2:(Greg KH's suggestions)
+> > - Rebase usb-next TOT.
+> >   633198cd2945b7 (HEAD -> usb-next-1) usb: typec: tcpm: Migrate workque=
+ue to RT priority for processing events
+> >   fa56dd9152ef95 (origin/usb-next) Merge tag 'usb-serial-5.9-rc1' of ht=
+tps://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-nex=
+t
+> >   25252919a1050e xhci: dbgtty: Make some functions static
+> >   b0e02550346e67 xhci: dbc: Make function xhci_dbc_ring_alloc() static
+> >   ca6377900974c3 Revert "usb: dwc2: override PHY input signals with usb=
+ role switch support"
+> >   09df709cb5aeb2 Revert "usb: dwc2: don't use ID/Vbus detection if usb-=
+role-switch on STM32MP15 SoCs"
+> >   17a82716587e9d USB: iowarrior: fix up report size handling for some d=
+evices
+> >   e98ba8cc3f8a89 Merge tag 'usb-for-v5.9' of git://git.kernel.org/pub/s=
+cm/linux/kernel/git/balbi/usb into usb-next
+> >   c97793089b11f7 Merge 5.8-rc7 into usb-next
+> >   92ed301919932f (tag: v5.8-rc7, origin/usb-linus, origin/main) Linux 5=
+.8-rc7
+> >
 >
-> Understood, while I search "BIT()" in clk driver, most of the drivers does NOT include
-> linux/bits.h even they use it.
+> Hm, still does not apply.  I think it has something to do with other
+> patches that landed before yours, can you rebase again?
 >
-> But OK, I will send V9 to include it.
-
-Ok, good.
-
-I have a patch series that adds it to a lot of files. Note that linux/bitops.h
-itself is a fairly big header with everything else that it includes, and it
-is included almost everywhere indirectly.  When we change the other
-headers to not require linux/bitops.h any more, everything that uses BIT()
-needs to include linux/bits.h.
-
-     Arnd
+> thanks,
+>
+> greg k-h
