@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E54232E26
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E504232D7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbgG3IRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:17:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47838 "EHLO mail.kernel.org"
+        id S1729924AbgG3ILF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:11:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729051AbgG3IJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:09:21 -0400
+        id S1729918AbgG3ILD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:11:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8A0F2074B;
-        Thu, 30 Jul 2020 08:09:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95E5F2070B;
+        Thu, 30 Jul 2020 08:11:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096560;
-        bh=Ox1LBgxq2BbH8C3xaLYweJKjWUPcht9asvvNmBpt6Ls=;
+        s=default; t=1596096663;
+        bh=391sbRHYpWgc8awcde+J3xrFm3+48hwdU8hDC9WLgas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kNr8h1CZmVxa9jqH/K34QAZye3myXEywTzgtMmASK72SZf9Dfp6K1uGudYQUISmyw
-         0lLSTiv0orjqcuqzdqbkRvIRXwJBB0Hvxk1DaDLWsJLay3dr0aCyHSV0INvR+5glGv
-         9FFA3GwC4WHN6tO522lIBJ7uYdVFKZ3w6HyZa3+g=
+        b=A8xwgMCA1WEzkUWybYfQNwfcKn96drZRO9Y7twwbmt5x5pNyBgKOkjTSCtdt02i/1
+         8kWYK+IKPtMyFSuarXRTKPYFcn98HigGFQGMk75mxH74IwhRqCja/nMFE6p3TelHVn
+         C1ZleGW+DPI2+9cMFkxB0xdA3GdUcUuUHQ/IdZCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 4.9 34/61] staging: comedi: ni_6527: fix INSN_CONFIG_DIGITAL_TRIG support
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.4 13/54] ASoC: rt5670: Correct RT5670_LDO_SEL_MASK
 Date:   Thu, 30 Jul 2020 10:04:52 +0200
-Message-Id: <20200730074422.489438843@linuxfoundation.org>
+Message-Id: <20200730074421.852863350@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
-References: <20200730074420.811058810@linuxfoundation.org>
+In-Reply-To: <20200730074421.203879987@linuxfoundation.org>
+References: <20200730074421.203879987@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit f07804ec77d77f8a9dcf570a24154e17747bc82f upstream.
+commit 5cacc6f5764e94fa753b2c1f5f7f1f3f74286e82 upstream.
 
-`ni6527_intr_insn_config()` processes `INSN_CONFIG` comedi instructions
-for the "interrupt" subdevice.  When `data[0]` is
-`INSN_CONFIG_DIGITAL_TRIG` it is configuring the digital trigger.  When
-`data[2]` is `COMEDI_DIGITAL_TRIG_ENABLE_EDGES` it is configuring rising
-and falling edge detection for the digital trigger, using a base channel
-number (or shift amount) in `data[3]`, a rising edge bitmask in
-`data[4]` and falling edge bitmask in `data[5]`.
+The RT5670_PWR_ANLG1 register has 3 bits to select the LDO voltage,
+so the correct mask is 0x7 not 0x3.
 
-If the base channel number (shift amount) is greater than or equal to
-the number of channels (24) of the digital input subdevice, there are no
-changes to the rising and falling edges, so the mask of channels to be
-changed can be set to 0, otherwise the mask of channels to be changed,
-and the rising and falling edge bitmasks are shifted by the base channel
-number before calling `ni6527_set_edge_detection()` to change the
-appropriate registers.  Unfortunately, the code is comparing the base
-channel (shift amount) to the interrupt subdevice's number of channels
-(1) instead of the digital input subdevice's number of channels (24).
-Fix it by comparing to 32 because all shift amounts for an `unsigned
-int` must be less than that and everything from bit 24 upwards is
-ignored by `ni6527_set_edge_detection()` anyway.
+Because of this wrong mask we were programming the ldo bits
+to a setting of binary 001 (0x05 & 0x03) instead of binary 101
+when moving to SND_SOC_BIAS_PREPARE.
 
-Fixes: 110f9e687c1a8 ("staging: comedi: ni_6527: support INSN_CONFIG_DIGITAL_TRIG")
-Cc: <stable@vger.kernel.org> # 3.17+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20200717145257.112660-2-abbotti@mev.co.uk
+According to the datasheet 001 is a reserved value, so no idea
+what it did, since the driver was working fine before I guess we
+got lucky and it does something which is ok.
+
+Fixes: 5e8351de740d ("ASoC: add RT5670 CODEC driver")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200628155231.71089-3-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/comedi/drivers/ni_6527.c |    2 +-
+ sound/soc/codecs/rt5670.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/drivers/ni_6527.c
-+++ b/drivers/staging/comedi/drivers/ni_6527.c
-@@ -341,7 +341,7 @@ static int ni6527_intr_insn_config(struc
- 		case COMEDI_DIGITAL_TRIG_ENABLE_EDGES:
- 			/* check shift amount */
- 			shift = data[3];
--			if (shift >= s->n_chan) {
-+			if (shift >= 32) {
- 				mask = 0;
- 				rising = 0;
- 				falling = 0;
+--- a/sound/soc/codecs/rt5670.h
++++ b/sound/soc/codecs/rt5670.h
+@@ -760,7 +760,7 @@
+ #define RT5670_PWR_VREF2_BIT			4
+ #define RT5670_PWR_FV2				(0x1 << 3)
+ #define RT5670_PWR_FV2_BIT			3
+-#define RT5670_LDO_SEL_MASK			(0x3)
++#define RT5670_LDO_SEL_MASK			(0x7)
+ #define RT5670_LDO_SEL_SFT			0
+ 
+ /* Power Management for Analog 2 (0x64) */
 
 
