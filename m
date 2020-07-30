@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5848232CEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55776232CD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729125AbgG3IFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:05:16 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2550 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729089AbgG3IFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:05:04 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 961CDC224F8CC23ECA8D;
-        Thu, 30 Jul 2020 09:05:02 +0100 (IST)
-Received: from [127.0.0.1] (10.210.165.183) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 30 Jul
- 2020 09:05:02 +0100
-Subject: Re: [PATCH] MAINTAINERS: Include drivers subdirs for ARM PMU
- PROFILING AND DEBUGGING entry
-To:     <will@kernel.org>, <mark.rutland@arm.com>
-CC:     <zhangshaokun@hisilicon.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1592392648-128331-1-git-send-email-john.garry@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <20a647e7-a6ab-7cf1-743d-a3173cafe45f@huawei.com>
-Date:   Thu, 30 Jul 2020 09:03:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1728997AbgG3IDq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Jul 2020 04:03:46 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:17539 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725892AbgG3IDp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:03:45 -0400
+Subject: Re: [PATCH] selinux: add tracepoint on denials
+To:     =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>
+CC:     Steven Rostedt <rostedt@goodmis.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Nick Kralevich <nnk@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+References: <20200724091520.880211-1-tweek@google.com>
+ <CAEjxPJ45ij3obT37ywn_edb9xb89z-SdwzejfN6+jrvAtghXfA@mail.gmail.com>
+ <CAHC9VhS4aXD8kcXnQ2MsYvjc--xXSUpsM1xtgq3X5DBT59ohhw@mail.gmail.com>
+ <CA+zpnLfczC=9HQA8s1oBGKGQO+OkuydF85o89dhSxdOyKBHMgg@mail.gmail.com>
+ <CAHC9VhT1sGSpfCKojbKR+O2Hf_h+wnKnBwwSo09CbFaCYLcOHA@mail.gmail.com>
+ <CA+zpnLecz_gvXYnrwNGW8SLaJsu==M_n9MuJgjqX9nPJtuTZBg@mail.gmail.com>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <def030b4-91c3-4aa1-e8ad-e3797688d18d@sony.com>
+Date:   Thu, 30 Jul 2020 10:03:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1592392648-128331-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.165.183]
-X-ClientProxiedBy: lhreml735-chm.china.huawei.com (10.201.108.86) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+In-Reply-To: <CA+zpnLecz_gvXYnrwNGW8SLaJsu==M_n9MuJgjqX9nPJtuTZBg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=DrAoB13+ c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=_RQrkK6FrEwA:10 a=xVhDTqbCAAAA:8 a=kSkFpLqy8y9c_-cfnwsA:9 a=QEXdDO2ut3YA:10 a=GrmWmAYt4dzCMttCBZOh:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/06/2020 12:17, John Garry wrote:
-> Ensure that the ARM PMU PROFILING AND DEBUGGING maintainers are included
-> for the HiSilicon PMU driver.
+On 7/28/20 6:02 PM, Thiébaud Weksteen wrote:
+> On Tue, Jul 28, 2020 at 5:12 PM Paul Moore <paul@paul-moore.com> wrote:
+>> Perhaps it would be helpful if you provided an example of how one
+>> would be expected to use this new tracepoint?  That would help put
+>> things in the proper perspective.
+> The best example is the one I provided in the commit message, that is
+> using perf (or a perf equivalent), to hook onto that tracepoint.
+>
+>> Well, to be honest, the very nature of this tracepoint is duplicating
+>> the AVC audit record with a focus on using perf to establish a full
+>> backtrace at the expense of reduced information.  At least that is how
+>> it appears to me.
+> I see both methods as complementary. By default, the kernel itself can
+> do some reporting (i.e avc message) on which process triggered the
+> denial, what was the context, etc. This is useful even in production
+> and doesn't require any extra tooling.
+> The case for adding this tracepoint can be seen as advanced debugging.
+> That is, once an avc denial has been confirmed, a developer can use
+> this tracepoint to surface the userland stacktrace. It requires more
+> userland tools and symbols on the userland binaries.
 
-Just a reminder in case this minor patch was missed...
+I think from development view you would like to have a better
+way to trap this events in userspace. One idea that I have is
+is to have more outcomes from a rule. We have today allow,
+dontaudit, auditallow i think it would be good to have signal sent too.
+"signal-xxx-allow" for some set of signals. SIGBUS, SIGSEGV, SIGABRT maybe.
 
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 68f21d46614c..24f377f1d76c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1425,7 +1425,7 @@ F:	arch/arm*/include/asm/perf_event.h
->   F:	arch/arm*/kernel/hw_breakpoint.c
->   F:	arch/arm*/kernel/perf_*
->   F:	arch/arm/oprofile/common.c
-> -F:	drivers/perf/*
-> +F:	drivers/perf/
->   F:	include/linux/perf/arm_pmu.h
->   
->   ARM PORT
-> 
+That will be a good way to pickup the problem with a debugger or generate a
+a core file.
+
+I have also done some selinux trace functions. I think they collide with this set,
+but I think I can rebase them upon yours and see if they give some more functionality.
+
+I see this functionality very much needed in some form.
+
 
