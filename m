@@ -2,69 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27DA232C3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 09:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55331232C33
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 09:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728882AbgG3HE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 03:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgG3HE2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 03:04:28 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CBBC061794;
-        Thu, 30 Jul 2020 00:04:28 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id e4so165165pjd.0;
-        Thu, 30 Jul 2020 00:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mXvBexhmXWwdwGXIqWzN36mFt5YrbAZ23OVzzeYCCbA=;
-        b=aOQQzFOuBQkutQhTqQ79Iwu1RXheX6ZuqcsJnCS6vrOmPX6PvVXjrXQjbMDwoq72ne
-         4SfmjEmptCIN4Oqw5zySWPOZKQn5URCC7rKBT+ACNAFoJvU/MaM2x9htHBXq+paDpgmh
-         i72IfYp2rUw103zaUOo9bQDrtRQP1MN4yb+vs3frRlGbAt7LYnyQ3p0a/bO1UOinYXv2
-         9KB0kY5im8yWPevyvfN2Yf6xpJ6RJJgplZOIsSo0wPJBa7Ck0dEmAmMY8JqK88iSiwgQ
-         GeLDzGdwok/4shoHl5jjwS/EiE0PjutDl3KX9MsoAHHR7f+qN+3yp8t6Hd92eV0DC3Ws
-         pkBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mXvBexhmXWwdwGXIqWzN36mFt5YrbAZ23OVzzeYCCbA=;
-        b=nvQsep4ks91ZdlFaTZM+WUf/xD9N6QHloUQErqT68aVRvS0rVTQTWBw5LHWFYO9yag
-         DKX897FqdthCk0HDoTpX2Y/M9rCZ5ku/TII6MPN0crKMGiD5Hj+qKNuEoVX8RAfleIgN
-         FfCeixebmdLnV1/kPKpcaZ5qqRGkrrsDVYdXdEatSOgu3II5EBdht1klxXc5+BczZEFF
-         IRUBV7ak0TqOGWLD4qbM6l+jo8EYjc8tCueISmgFLFksHO6qiyCVBhLRsUkByMJg89zy
-         CXVDLrJA3nsKDgejMaOSkSt6iRXjgTXyekrB+c0eRJHIZqFyxWbkbfyM54Q0Aa4crNUG
-         U1OA==
-X-Gm-Message-State: AOAM531f/kIVVMVeqCY6mjmKo0gIKWct2ijF3jmJdR6AysvQgPpMORBh
-        dXImGyqU5jDcgj1wiKDGTrk=
-X-Google-Smtp-Source: ABdhPJxPsl1UWzGA/JG6VYkYQ955TOzxmbZLj5555QtTnN9rXz+bnwHX2xxFKfHIZyqcNLl2R39P8Q==
-X-Received: by 2002:a17:90a:ef17:: with SMTP id k23mr1635169pjz.45.1596092667438;
-        Thu, 30 Jul 2020 00:04:27 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.152.86])
-        by smtp.gmail.com with ESMTPSA id s89sm4327476pjj.28.2020.07.30.00.04.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 00:04:26 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Don Brace <don.brace@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
+        id S1728801AbgG3HDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 03:03:06 -0400
+Received: from mga11.intel.com ([192.55.52.93]:28434 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726133AbgG3HDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 03:03:06 -0400
+IronPort-SDR: n3mLsN/tnYJ3UmFnfFYjoJs8q3+Z2Rr3Bym5StZHbj3Z0Etim8SEgJxaH+pzO7i2ExYeurK+nN
+ pYiEocs0rYyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="149384481"
+X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
+   d="scan'208";a="149384481"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 00:03:05 -0700
+IronPort-SDR: +45noUNCgkqDce/jRQFGXSClpd1TRTAvJEj73vKXwJ14/Kf09x1BT+l8pu7oqblrtErneLC6Gk
+ 90YN/XAyij3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
+   d="scan'208";a="320984312"
+Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
+  by orsmga008.jf.intel.com with ESMTP; 30 Jul 2020 00:03:02 -0700
+From:   Tomas Winkler <tomas.winkler@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
         linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v1] scsi: smartpqi: use generic power management
-Date:   Thu, 30 Jul 2020 12:32:33 +0530
-Message-Id: <20200730070233.221488-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Subject: [char-misc-next V2] mei: hdcp: fix mei_hdcp_verify_mprime() input paramter
+Date:   Thu, 30 Jul 2020 10:02:58 +0300
+Message-Id: <20200730070258.3361503-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -72,115 +45,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers using legacy power management .suspen()/.resume() callbacks
-have to manage PCI states and device's PM states themselves. They also
-need to take care of standard configuration registers.
+wired_cmd_repeater_auth_stream_req_in has a variable
+length array at the end. we use struct_size() overflow
+macro to determine the size for the allocation and sending
+size.
 
-Switch to generic power management framework using a single
-"struct dev_pm_ops" variable to take the unnecessary load from the driver.
-This also avoids the need for the driver to directly call most of the PCI
-helper functions and device power state control functions, as through
-the generic framework PCI Core takes care of the necessary operations,
-and drivers are required to do only device-specific jobs.
-
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Fixes: c56967d674e3 (mei: hdcp: Replace one-element array with flexible-array member)
+Fixes: c56967d674e3 (mei: hdcp: Replace one-element array with flexible-array member)
+Cc: Ramalingam C <ramalingam.c@intel.com>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
- drivers/scsi/smartpqi/smartpqi_init.c | 42 ++++++++++++++++++---------
- 1 file changed, 29 insertions(+), 13 deletions(-)
+V2: Check for allocation failure.
+ drivers/misc/mei/hdcp/mei_hdcp.c | 40 +++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
-index cd157f11eb22..dc8567236a23 100644
---- a/drivers/scsi/smartpqi/smartpqi_init.c
-+++ b/drivers/scsi/smartpqi/smartpqi_init.c
-@@ -8059,11 +8059,11 @@ static void pqi_process_module_params(void)
- 	pqi_process_lockup_action_param();
- }
- 
--static __maybe_unused int pqi_suspend(struct pci_dev *pci_dev, pm_message_t state)
-+static __maybe_unused int pqi_suspend_late(struct device *dev, pm_message_t state)
+diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
+index d1d3e025ca0e..f1205e0060db 100644
+--- a/drivers/misc/mei/hdcp/mei_hdcp.c
++++ b/drivers/misc/mei/hdcp/mei_hdcp.c
+@@ -546,38 +546,46 @@ static int mei_hdcp_verify_mprime(struct device *dev,
+ 				  struct hdcp_port_data *data,
+ 				  struct hdcp2_rep_stream_ready *stream_ready)
  {
- 	struct pqi_ctrl_info *ctrl_info;
+-	struct wired_cmd_repeater_auth_stream_req_in
+-					verify_mprime_in = { { 0 } };
++	struct wired_cmd_repeater_auth_stream_req_in *verify_mprime_in;
+ 	struct wired_cmd_repeater_auth_stream_req_out
+ 					verify_mprime_out = { { 0 } };
+ 	struct mei_cl_device *cldev;
+ 	ssize_t byte;
++	size_t cmd_size;
  
--	ctrl_info = pci_get_drvdata(pci_dev);
-+	ctrl_info = dev_get_drvdata(dev);
+ 	if (!dev || !stream_ready || !data)
+ 		return -EINVAL;
  
- 	pqi_disable_events(ctrl_info);
- 	pqi_cancel_update_time_worker(ctrl_info);
-@@ -8081,20 +8081,33 @@ static __maybe_unused int pqi_suspend(struct pci_dev *pci_dev, pm_message_t stat
- 	if (state.event == PM_EVENT_FREEZE)
- 		return 0;
+ 	cldev = to_mei_cl_device(dev);
  
--	pci_save_state(pci_dev);
--	pci_set_power_state(pci_dev, pci_choose_state(pci_dev, state));
--
- 	ctrl_info->controller_online = false;
- 	ctrl_info->pqi_mode_enabled = false;
- 
- 	return 0;
- }
- 
--static __maybe_unused int pqi_resume(struct pci_dev *pci_dev)
-+static __maybe_unused int pqi_suspend(struct device *dev)
-+{
-+	return pqi_suspend_late(dev, PMSG_SUSPEND);
-+}
+-	verify_mprime_in.header.api_version = HDCP_API_VERSION;
+-	verify_mprime_in.header.command_id = WIRED_REPEATER_AUTH_STREAM_REQ;
+-	verify_mprime_in.header.status = ME_HDCP_STATUS_SUCCESS;
+-	verify_mprime_in.header.buffer_len =
++	cmd_size = struct_size(verify_mprime_in, streams, data->k);
++	if (cmd_size == SIZE_MAX)
++		return -EINVAL;
 +
-+static __maybe_unused int pqi_hibernate(struct device *dev)
-+{
-+	return pqi_suspend_late(dev, PMSG_HIBERNATE);
-+}
++	verify_mprime_in = kzalloc(cmd_size, GFP_KERNEL);
++	if (!verify_mprime_in)
++		return -ENOMEM;
 +
-+static __maybe_unused int pqi_freeze(struct device *dev)
-+{
-+	return pqi_suspend_late(dev, PMSG_FREEZE);
-+}
++	verify_mprime_in->header.api_version = HDCP_API_VERSION;
++	verify_mprime_in->header.command_id = WIRED_REPEATER_AUTH_STREAM_REQ;
++	verify_mprime_in->header.status = ME_HDCP_STATUS_SUCCESS;
++	verify_mprime_in->header.buffer_len =
+ 			WIRED_CMD_BUF_LEN_REPEATER_AUTH_STREAM_REQ_MIN_IN;
+ 
+-	verify_mprime_in.port.integrated_port_type = data->port_type;
+-	verify_mprime_in.port.physical_port = (u8)data->fw_ddi;
+-	verify_mprime_in.port.attached_transcoder = (u8)data->fw_tc;
++	verify_mprime_in->port.integrated_port_type = data->port_type;
++	verify_mprime_in->port.physical_port = (u8)data->fw_ddi;
++	verify_mprime_in->port.attached_transcoder = (u8)data->fw_tc;
 +
-+static __maybe_unused int pqi_resume(struct device *dev)
- {
- 	int rc;
- 	struct pqi_ctrl_info *ctrl_info;
++	memcpy(verify_mprime_in->m_prime, stream_ready->m_prime, HDCP_2_2_MPRIME_LEN);
++	drm_hdcp_cpu_to_be24(verify_mprime_in->seq_num_m, data->seq_num_m);
  
-+	struct pci_dev *pci_dev = to_pci_dev(dev);
- 	ctrl_info = pci_get_drvdata(pci_dev);
+-	memcpy(verify_mprime_in.m_prime, stream_ready->m_prime,
+-	       HDCP_2_2_MPRIME_LEN);
+-	drm_hdcp_cpu_to_be24(verify_mprime_in.seq_num_m, data->seq_num_m);
+-	memcpy(verify_mprime_in.streams, data->streams,
++	memcpy(verify_mprime_in->streams, data->streams,
+ 	       array_size(data->k, sizeof(*data->streams)));
  
- 	if (pci_dev->current_state != PCI_D0) {
-@@ -8115,9 +8128,6 @@ static __maybe_unused int pqi_resume(struct pci_dev *pci_dev)
- 		return 0;
- 	}
+-	verify_mprime_in.k = cpu_to_be16(data->k);
++	verify_mprime_in->k = cpu_to_be16(data->k);
  
--	pci_set_power_state(pci_dev, PCI_D0);
--	pci_restore_state(pci_dev);
--
- 	return pqi_ctrl_init_resume(ctrl_info);
- }
- 
-@@ -8480,16 +8490,22 @@ static const struct pci_device_id pqi_pci_id_table[] = {
- 
- MODULE_DEVICE_TABLE(pci, pqi_pci_id_table);
- 
-+static const struct dev_pm_ops pqi_pm_ops = {
-+	.suspend = pqi_suspend,
-+	.resume = pqi_resume,
-+	.freeze = pqi_freeze,
-+	.thaw = pqi_resume,
-+	.poweroff = pqi_hibernate,
-+	.restore = pqi_resume,
-+};
-+
- static struct pci_driver pqi_pci_driver = {
- 	.name = DRIVER_NAME_SHORT,
- 	.id_table = pqi_pci_id_table,
- 	.probe = pqi_pci_probe,
- 	.remove = pqi_pci_remove,
- 	.shutdown = pqi_shutdown,
--#if defined(CONFIG_PM)
--	.suspend = pqi_suspend,
--	.resume = pqi_resume,
--#endif
-+	.driver.pm = &pqi_pm_ops
- };
- 
- static int __init pqi_init(void)
+-	byte = mei_cldev_send(cldev, (u8 *)&verify_mprime_in,
+-			      sizeof(verify_mprime_in));
++	byte = mei_cldev_send(cldev, (u8 *)&verify_mprime_in, cmd_size);
++	kfree(verify_mprime_in);
+ 	if (byte < 0) {
+ 		dev_dbg(dev, "mei_cldev_send failed. %zd\n", byte);
+ 		return byte;
 -- 
-2.27.0
+2.25.4
 
