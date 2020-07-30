@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB26B23354A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAEA233558
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729756AbgG3P1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 11:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgG3P1A (ORCPT
+        id S1729825AbgG3P2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 11:28:17 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57092 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgG3P2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 11:27:00 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00980C061574;
-        Thu, 30 Jul 2020 08:26:59 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id jp10so1812127ejb.0;
-        Thu, 30 Jul 2020 08:26:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sRBXteCx3iMxzf+5YFGiaHOZbhEeLZMnPLZMpPhN9j0=;
-        b=mxpwHgVNXl7Gw3UA+uuDLTz10xKua5fw6rE++7C7vRni0IIjZ6gS+ZeYIhLWXHy3y/
-         vPMbGrVFEnb64IJ7Ca3gFuoT/t+e55dj9KYyxPjvaL0dq/2g+9XJh2GnXlC0ov5WrW4r
-         Rvqv8Y35vB6EitcbM5ZUZxtNCnPnSsi+YFVcw1HHySKymFPJWeEa6sPbPdpt7WQI5ntw
-         79LeYQnXgJfuNWyhCcD0m8x5aI8aNo5PdMzhFVVC72vY5I6n+escxqqLBEbmJDJjhOQO
-         3MkVcanyh+4vYCe59GpVScPWSVS9yuFf0SgzR6ow2vry8MEcMN6ZbpjL2kclDSMFNJnZ
-         Is8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sRBXteCx3iMxzf+5YFGiaHOZbhEeLZMnPLZMpPhN9j0=;
-        b=AYYsYbelojyUQDED24MDNwkXIN4YnMHTTvHCGvYsHMekhgzoqT0PqPi24whMce8oNq
-         vnN4OpWriADP/l6USfCQpXuXra7Nc+3GjNFPc2Ja3WM8BdzDXWWc0tpBE/MkZZ1dTBxm
-         WNoUprDq2f5tHzk4msrpeE/t9BtlqiJMP7X2FrgDMb4O1oiv3wH1iOJ5IU6hbVLFAhG/
-         hnB9zP0WyJoHNjYOjBacq1fc17QnhrARjSCt9GF5f7D1I4D9zr8ERDKjStQdzSyGQoSk
-         pv1qkG+NsSQY+j1RrNpvpZoPZuBvkY6Ec6PWnNx40z9tKMb7w3M2+1yPRuYNjLFR8R0e
-         K9EA==
-X-Gm-Message-State: AOAM530wMvYd0rKRstQutmn40ZbsjlTz5jpYZPYuE3SMihPOhSTQwDP9
-        kTgnPbD5Rgyi5VVDwW9X6Jj8v7snL002dFiYaQc=
-X-Google-Smtp-Source: ABdhPJyj/3mUFNZJ5e36idWlRRi684to1k7BBbmv7VGuv0mgty12MhPpHISg9EXy+G3LWVfB29zmAAC02OJYJvXOXxw=
-X-Received: by 2002:a17:906:328d:: with SMTP id 13mr3192634ejw.71.1596122818624;
- Thu, 30 Jul 2020 08:26:58 -0700 (PDT)
+        Thu, 30 Jul 2020 11:28:15 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 1950180045E5;
+        Thu, 30 Jul 2020 15:28:13 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 6wK_MbMx2Zd5; Thu, 30 Jul 2020 18:28:11 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 00/10] gpio: dwapb: Refactor GPIO resources initialization
+Date:   Thu, 30 Jul 2020 18:27:57 +0300
+Message-ID: <20200730152808.2955-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <1594644106-22449-1-git-send-email-akhilpo@codeaurora.org>
- <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com>
- <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu> <CAF6AEGurrsd3nrbB=ktZjWfKTNbKwPHYwTFiZdD-NOW1T7gePQ@mail.gmail.com>
- <20200721032442.hv7l4q6633vnmnfe@vireshk-mac-ubuntu> <CAF6AEGuhQcRskGhrFvmCf5T3EcZ9S+3LRdZBiaDYqF34yZjd+A@mail.gmail.com>
- <20200722053023.vwaoj5oqh4cazzzz@vireshk-mac-ubuntu> <20200730051045.jejrtkor3b32l2qe@vireshk-mac-ubuntu>
-In-Reply-To: <20200730051045.jejrtkor3b32l2qe@vireshk-mac-ubuntu>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 30 Jul 2020 08:27:39 -0700
-Message-ID: <CAF6AEGuzff9+Wy4EHx0aDx1gBzSEGh--yqT5rnwLHp=U6amnyA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] Add support for GPU DDR BW scaling
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@freedesktop.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
-        saravanak@google.com, Sibi Sankar <sibis@codeaurora.org>,
-        Jonathan <jonathan@marek.ca>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dave Airlie <airlied@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 10:10 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 22-07-20, 11:00, Viresh Kumar wrote:
-> > On 21-07-20, 07:28, Rob Clark wrote:
-> > > With your ack, I can add the patch the dev_pm_opp_set_bw patch to my
-> > > tree and merge it via msm-next -> drm-next -> linus
-> >
-> > I wanted to send it via my tree, but its okay. Pick this patch from
-> > linux-next and add my Ack, I will drop it after that.
-> >
-> > a8351c12c6c7 OPP: Add and export helper to set bandwidth
->
-> Oops, sorry for the trouble but this needs to go via my tree only :(
->
-> I maintain two different branches, one for OPP and another one for
-> cpufreq. There was no dependency within the OPP branch and so I
-> dropped it that day and asked you to take it.
->
-> But when I tried to send a pull request today I realised that one of
-> the qcom patches in the cpufreq branch is dependent on it and I need
-> to keep this patch in my tree.
+This series is about the DW APB GPIO device initialization procedure
+cleaning up. First of all it has been discovered that having a
+vendor-specific "snps,nr-gpios" property isn't only redundant but also
+might be dangerous (see the commit log for details). Instead we suggest to
+use the generic "ngpios" property to define a number of GPIOs each DW APB
+GPIO controller port supports. Secondly seeing a tendency of the other
+GPIO drivers getting converted to using the GPIO-lib-based IRQ-chip
+interface this series provides a patch, which replaces the DW APB GPIO
+driver Generic IRQ-chip implementation with the GPIO-lib IRQ-chip one.
+Finally the DW APB GPIO device probe procedure is simplified by
+converting the code to be using the device managed resources for the
+reference clocks initialization, reset control assertion/de-assertion
+and GPIO-chip registration.
 
-Hmm, I've already sent my pull request to Dave, dropping the patch
-would require force-push and sending a new PR.  Which I can do if Dave
-prefers.  OTOH I guess it isn't the end of the world if the patch is
-merged via two different trees.
+Some additional cleanups like replacing a number of GPIOs literal with a
+corresponding macro and grouping the IRQ handlers up in a single place of
+the driver are also introduced in this patchset.
 
-BR,
--R
+Link: https://lore.kernel.org/linux-gpio/20200723013858.10766-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v2:
+- Replace gc->to_irq() with irq_find_mapping() method.
+- Refactor dwapb_irq_set_type() method to directly set IRQ flow handler
+  instead of using a temporary variable.
+- Initialize GPIOlib IRQ-chip settings before calling request_irq()
+  method.
+- Add a notice regarding regression of commit 6a2f4b7dadd5 ("gpio:
+  dwapb: use a second irq chip").
+- Move the acpi_gpiochip_{request,free}_interrupts() methods invocation
+  removal to a dedicated patch.
+- Move GPIO-chip to_irq callback removal to a dedicated patch.
+- Add a patch which replaces a max number of GPIO literals with a macro.
+- Introduce dwapb_convert_irqs() method to convert the sparse parental
+  IRQs array into an array of linearly distributed IRQs correctly
+  perceived by GPIO-lib.
+
+Link: https://lore.kernel.org/linux-gpio/20200730135536.19747-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Fix patches SoB's.
+- Add Andy' Suggested-by to the patch: "gpio: dwapb: Add max GPIOs macro"
+- Add blank lines to the IRQ-chip conversion commit message to make it
+  more readable.
+- Dynamically allocate memory for the IRQ-chip-related data.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-gpio@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (10):
+  dt-bindings: gpio: dwapb: Add ngpios property support
+  gpio: dwapb: Add ngpios DT-property support
+  gpio: dwapb: Move MFD-specific IRQ handler
+  gpio: dwapb: Add max GPIOs macro
+  gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip
+  gpio: dwapb: Discard GPIO-to-IRQ mapping function
+  gpio: dwapb: Discard ACPI GPIO-chip IRQs request
+  gpio: dwapb: Get reset control by means of resource managed interface
+  gpio: dwapb: Get clocks by means of resource managed interface
+  gpio: dwapb: Use resource managed GPIO-chip add data method
+
+ .../bindings/gpio/snps,dw-apb-gpio.yaml       |   6 +
+ drivers/gpio/Kconfig                          |   2 +-
+ drivers/gpio/gpio-dwapb.c                     | 352 +++++++++---------
+ include/linux/platform_data/gpio-dwapb.h      |   4 +-
+ 4 files changed, 191 insertions(+), 173 deletions(-)
+
+-- 
+2.27.0
+
