@@ -2,68 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744B123392D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 21:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF72233934
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 21:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730558AbgG3TkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 15:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgG3TkV (ORCPT
+        id S1730533AbgG3Toa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 15:44:30 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46936 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726581AbgG3To3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 15:40:21 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A41C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 12:40:21 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id b25so30126815ljp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 12:40:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nwS1WXlHYD8R7/Po5RR2AJ9MqxwjuerbxqTJ3KWqi4g=;
-        b=V5HqAGApydfFG9KiW7z3vCiPLD8rE8XqYUXS1HXfpOfZWnJn3j1tkp7hydkQzKzw3c
-         M98ta58iJWqnVhE6opCk1WORmqCfMrFl0Z8nS++AqzhCcKFa5utSxZtqVv6bkIhW6bkK
-         5OwGpW5yjEt+7rTvLWK9+MrUWWPuWjwael5mQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nwS1WXlHYD8R7/Po5RR2AJ9MqxwjuerbxqTJ3KWqi4g=;
-        b=jbyO9ToW2seQi4ol7kZxAjNfvElzi1Ic/pVlZxAuBuLsYAFwvBx5WAKE6l2iEuVO2n
-         lVBOaW1zGwvC6aZu/ohq1ZCV7XDQZzbU8KNpVuyaiaLZ9jteMo0OpTovrI01YaIXm5vi
-         u/yPShkPFuH8KbYtFAEkpMJJGhy2cb3x/kytLEv/VJwWAf6SPlrpf6PvAiTH3tja94qw
-         s4iigPLpPZR/L89RlKLOisAjxClik2qD3WfUEZZ1CRnFuBDtAcxrPMP6nJONYq5iZlFo
-         vs4CDHXnwXl05dlSaP/F7qwBbx6dnFizBaz1Z6WkX2vql2lzvQp64ae3Cuy2G121DKRq
-         2k/Q==
-X-Gm-Message-State: AOAM531j+5eNnk843LjlQLL19Dv47qxYdXobq7UYlNr5Bz16/5zgoAil
-        dq8/B/p1HumoZEA1gjqLrQK20rbynVc=
-X-Google-Smtp-Source: ABdhPJy+UNjPLHmJJKunBatvyK6+BnHM1pGAb0KNtY27U5eTXqDFD6NLC/kusy1nvZFgLQzSfDBoHw==
-X-Received: by 2002:a2e:3311:: with SMTP id d17mr363653ljc.13.1596138019378;
-        Thu, 30 Jul 2020 12:40:19 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id s1sm1225233ljj.96.2020.07.30.12.40.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jul 2020 12:40:18 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id w14so281163ljj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 12:40:17 -0700 (PDT)
-X-Received: by 2002:a2e:991:: with SMTP id 139mr311332ljj.314.1596138017250;
- Thu, 30 Jul 2020 12:40:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYvSyXnfGmK1FLRtraWWre7QjUoGE_qiwM8XPUBXjnudWA@mail.gmail.com>
- <20200730211522.1ea3561f@canb.auug.org.au> <d23eba90-ee2c-efe0-0cb6-88e99fb22e54@ti.com>
- <CAHk-=whn8OB-QbxpffK=Lhh6Mhj+Y2ALFZ1asCgtnQOnmQgWUw@mail.gmail.com> <7b0c0f44-f56d-5e71-cf86-dbdea190267a@ti.com>
-In-Reply-To: <7b0c0f44-f56d-5e71-cf86-dbdea190267a@ti.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 30 Jul 2020 12:40:01 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whX7gPBn+jthX8bbfz9kU+0CbYwTxbASwPRCZ1bhVqrOw@mail.gmail.com>
-Message-ID: <CAHk-=whX7gPBn+jthX8bbfz9kU+0CbYwTxbASwPRCZ1bhVqrOw@mail.gmail.com>
-Subject: =?UTF-8?B?UmU6IGFybTY0OiBwb2ludGVyX2F1dGguaDo0MDozOiBlcnJvcjogaW1wbGljaXQgZGVjbA==?=
-        =?UTF-8?B?YXJhdGlvbiBvZiBmdW5jdGlvbiDigJhnZXRfcmFuZG9tX2J5dGVz4oCZOyBkaWQgeW91IG1lYW4g4oCY?=
-        =?UTF-8?B?Z2V0X3JhbmRvbV9vbmNl4oCZPw==?=
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thu, 30 Jul 2020 15:44:29 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06UJhnu1062283;
+        Thu, 30 Jul 2020 14:43:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596138229;
+        bh=z+5GPowId3gZU8tjl7B+lOU9DcG/hQmnbMLkZY6+rOk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=jMB6xbY0hDtmKI75YlExWCbXxkOWbgQSNFV1RxjyXUsDPzj5BxYU1pUMomFkS70OM
+         0jgfZ50d5LkpJuxlaF3qpFFX3ZiHNcyQPVJWwoh9Bl8v3d9PYkY0PemVslZuD7LJ8M
+         dk8220LxvVazqmdlWbAUzGfX2tEWbhhSXH6UTPfk=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06UJhn4x020159
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 30 Jul 2020 14:43:49 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 30
+ Jul 2020 14:43:49 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 30 Jul 2020 14:43:49 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06UJhgKh042768;
+        Thu, 30 Jul 2020 14:43:44 -0500
+Subject: =?UTF-8?B?UmU6IGFybTY0OiBwb2ludGVyX2F1dGguaDo0MDozOiBlcnJvcjogaW1w?=
+ =?UTF-8?Q?licit_declaration_of_function_=e2=80=98get=5frandom=5fbytes?=
+ =?UTF-8?B?4oCZOyBkaWQgeW91IG1lYW4g4oCYZ2V0X3JhbmRvbV9vbmNl4oCZPw==?=
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
         Naresh Kamboju <naresh.kamboju@linaro.org>,
         Mark Rutland <mark.rutland@arm.com>,
         "Theodore Ts'o" <tytso@mit.edu>, Kees Cook <keescook@chromium.org>,
@@ -72,26 +50,93 @@ Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
         Mark Brown <broonie@kernel.org>,
         Richard Henderson <richard.henderson@linaro.org>,
         open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Emese Revfy <re.emese@gmail.com>,
-        hsinyi@chromium.org, Will Deacon <will@kernel.org>,
+        <lkft-triage@lists.linaro.org>, Emese Revfy <re.emese@gmail.com>,
+        <hsinyi@chromium.org>, Will Deacon <will@kernel.org>,
         Willy Tarreau <w@1wt.eu>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <CA+G9fYvSyXnfGmK1FLRtraWWre7QjUoGE_qiwM8XPUBXjnudWA@mail.gmail.com>
+ <20200730211522.1ea3561f@canb.auug.org.au>
+ <d23eba90-ee2c-efe0-0cb6-88e99fb22e54@ti.com>
+ <CAHk-=whn8OB-QbxpffK=Lhh6Mhj+Y2ALFZ1asCgtnQOnmQgWUw@mail.gmail.com>
+ <7b0c0f44-f56d-5e71-cf86-dbdea190267a@ti.com>
+ <CAHk-=whX7gPBn+jthX8bbfz9kU+0CbYwTxbASwPRCZ1bhVqrOw@mail.gmail.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <f6cd5c6a-8779-e17d-2827-cbf531c969e2@ti.com>
+Date:   Thu, 30 Jul 2020 22:43:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=whX7gPBn+jthX8bbfz9kU+0CbYwTxbASwPRCZ1bhVqrOw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 12:05 PM Grygorii Strashko
-<grygorii.strashko@ti.com> wrote:
->
-> FYI. Below diff seems fixes build:
 
-Thanks, I'll do that instead, it looks like the right thing to do regardless.
 
-Mind sending me a sign-off for it (and commit message would be lovely
-too, but I can make something up)? Yeah, it's just a one-liner, but
-let's do this right.
+On 30/07/2020 22:40, Linus Torvalds wrote:
+> On Thu, Jul 30, 2020 at 12:05 PM Grygorii Strashko
+> <grygorii.strashko@ti.com> wrote:
+>>
+>> FYI. Below diff seems fixes build:
+> 
+> Thanks, I'll do that instead, it looks like the right thing to do regardless.
+> 
+> Mind sending me a sign-off for it (and commit message would be lovely
+> too, but I can make something up)? Yeah, it's just a one-liner, but
+> let's do this right.
 
-Thanks,
-            Linus
+I've also boot-tested it on Keystone 2 platforms.
+
+Best regards,
+grygorii
+
+---
+ From fa1238a8e4b7c603fcc0fb5f6169c212035aef4f Mon Sep 17 00:00:00 2001
+From: Grygorii Strashko <grygorii.strashko@ti.com>
+Date: Thu, 30 Jul 2020 22:05:01 +0300
+Subject: [PATCH] ARM: percpu.h: fix build error
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fix build error for the case:
+  defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
+
+config: keystone_defconfig
+
+CC      arch/arm/kernel/signal.o
+In file included from ../include/linux/random.h:14,
+                  from ../arch/arm/kernel/signal.c:8:
+../arch/arm/include/asm/percpu.h: In function ‘__my_cpu_offset’:
+../arch/arm/include/asm/percpu.h:29:34: error: ‘current_stack_pointer’ undeclared (first use in this function); did you mean ‘user_stack_pointer’?
+    : "Q" (*(const unsigned long *)current_stack_pointer));
+                                   ^~~~~~~~~~~~~~~~~~~~~
+                                   user_stack_pointer
+
+Fixes: f227e3ec3b5c ("random32: update the net random state on interrupt and activity")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+  arch/arm/include/asm/percpu.h | 2 ++
+  1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/include/asm/percpu.h b/arch/arm/include/asm/percpu.h
+index f44f448537f2..1a3eedbac4a2 100644
+--- a/arch/arm/include/asm/percpu.h
++++ b/arch/arm/include/asm/percpu.h
+@@ -5,6 +5,8 @@
+  #ifndef _ASM_ARM_PERCPU_H_
+  #define _ASM_ARM_PERCPU_H_
+  
++#include <asm/thread_info.h>
++
+  /*
+   * Same as asm-generic/percpu.h, except that we store the per cpu offset
+   * in the TPIDRPRW. TPIDRPRW only exists on V6K and V7
+-- 
+2.17.1
+
