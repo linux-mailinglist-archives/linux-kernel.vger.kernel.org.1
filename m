@@ -2,305 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E256F2333DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A152333D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729520AbgG3OHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 10:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729422AbgG3OHb (ORCPT
+        id S1729471AbgG3OHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 10:07:34 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:56712 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729325AbgG3OH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 10:07:31 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C999BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 07:07:30 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id t14so1156153wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 07:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3o2drjGs8KWa5U1nYnfJRdICZ+APkdBEsWAGMN3vBaI=;
-        b=oCIMcOaCXgljXkIq3UZd+qMwBlC2a5je+tRAg7l3/mMd4qXbQGbuEuyZCei+qnzZ6h
-         8OUxj5VC7xk2ER3HjsPM3+DUZNgXTZCVtC9sg8HUHftexoBjUztSLmWj6MmV2ivSlReA
-         auAVTjERMC7tDtl6Ac7PSDg2h2pdLNf83YKxs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3o2drjGs8KWa5U1nYnfJRdICZ+APkdBEsWAGMN3vBaI=;
-        b=YjRQZnIdfU3SFp10PpmjbWbTlUaW4O3FcLVLvP4TE5y+cfl2BKNRYRGkI/1Gpzh0up
-         KHFFgAnvf7wnGn5KXZMbveFI4GVDBSkAziyavBmux2sqxo80d3UQlxAm1m+9DNFdwBoG
-         SArCECjlO81Cty1N7esoSXrKLJSua3mNO6CgAol/4iTDubOjj9AK6+x1kEbzBL7tuK+f
-         0owI1VPptwOyBYr1lH3CIJipWl2p1/5ioM5FnJdYrE2tnW9pCfoDqL+ScH9M3IZaMxrV
-         zPQfE0jV+K+Z0CxKtlvqpuAGbVpxrbLKsWgVPi7H+j9P8ImyruvTxGX5wQ1rxLd2+fdt
-         YHrQ==
-X-Gm-Message-State: AOAM533STO4NUqYc39QnipGQVjma5UkbzZohhxhtDy6ObuFcfV3+XsJG
-        iQ25FtdjchOZQUm8z/8xiqlMnhgRHwFWHQ==
-X-Google-Smtp-Source: ABdhPJwem7leiv9tYoRcXMVJU1GZ/JkI5US0P9YwhXBG6WeV9HZ5muVlQV3+Na3fN0osf8zObnunow==
-X-Received: by 2002:a1c:14e:: with SMTP id 75mr14373274wmb.151.1596118049243;
-        Thu, 30 Jul 2020 07:07:29 -0700 (PDT)
-Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id a10sm19088599wmd.3.2020.07.30.07.07.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 07:07:28 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v7 7/7] bpf: Add selftests for local_storage
-Date:   Thu, 30 Jul 2020 16:07:16 +0200
-Message-Id: <20200730140716.404558-8-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
-In-Reply-To: <20200730140716.404558-1-kpsingh@chromium.org>
-References: <20200730140716.404558-1-kpsingh@chromium.org>
+        Thu, 30 Jul 2020 10:07:28 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 7E2FC803202F;
+        Thu, 30 Jul 2020 14:07:26 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id OD6TdfAHwz6E; Thu, 30 Jul 2020 17:07:25 +0300 (MSK)
+Date:   Thu, 30 Jul 2020 17:07:25 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 04/10] gpio: dwapb: Add max GPIOs macro
+Message-ID: <20200730140725.nl4xdbfzqobgo4gy@mobilestation>
+References: <20200730135536.19747-1-Sergey.Semin@baikalelectronics.ru>
+ <20200730135536.19747-5-Sergey.Semin@baikalelectronics.ru>
+ <20200730140526.GL3703480@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200730140526.GL3703480@smile.fi.intel.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Thu, Jul 30, 2020 at 05:05:26PM +0300, Andy Shevchenko wrote:
+> On Thu, Jul 30, 2020 at 04:55:30PM +0300, Serge Semin wrote:
+> > Add a new macro DWAPB_MAX_GPIOS which defines the maximum possible number
+> > of GPIO lines corresponding to the maximum DW APB GPIO controller port
+> > width. Use the new macro instead of number literal 32 where it's
+> > applicable.
+> 
 
-inode_local_storage:
+> Since it's a modified version of what I sent earlier, perhaps Suggested-by?
 
-* Hook to the file_open and inode_unlink LSM hooks.
-* Create and unlink a temporary file.
-* Store some information in the inode's bpf_local_storage during
-  file_open.
-* Verify that this information exists when the file is unlinked.
+Could you point out to the message with that change? I must have missed that...(
 
-sk_local_storage:
+-Sergey
 
-* Hook to the socket_post_create and socket_bind LSM hooks.
-* Open and bind a socket and set the sk_storage in the
-  socket_post_create hook using the start_server helper.
-* Verify if the information is set in the socket_bind hook.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
- .../selftests/bpf/progs/local_storage.c       | 136 ++++++++++++++++++
- 2 files changed, 196 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
- create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-new file mode 100644
-index 000000000000..d4ba89195c43
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2020 Google LLC.
-+ */
-+
-+#include <test_progs.h>
-+#include <linux/limits.h>
-+
-+#include "local_storage.skel.h"
-+#include "network_helpers.h"
-+
-+int create_and_unlink_file(void)
-+{
-+	char fname[PATH_MAX] = "/tmp/fileXXXXXX";
-+	int fd;
-+
-+	fd = mkstemp(fname);
-+	if (fd < 0)
-+		return fd;
-+
-+	close(fd);
-+	unlink(fname);
-+	return 0;
-+}
-+
-+void test_test_local_storage(void)
-+{
-+	struct local_storage *skel = NULL;
-+	int err, duration = 0, serv_sk = -1;
-+
-+	skel = local_storage__open_and_load();
-+	if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
-+		goto close_prog;
-+
-+	err = local_storage__attach(skel);
-+	if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
-+		goto close_prog;
-+
-+	skel->bss->monitored_pid = getpid();
-+
-+	err = create_and_unlink_file();
-+	if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
-+		goto close_prog;
-+
-+	CHECK(!skel->bss->inode_storage_result, "inode_storage_result",
-+	      "inode_local_storage not set");
-+
-+	serv_sk = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
-+	if (CHECK(serv_sk < 0, "start_server", "failed to start server\n"))
-+		goto close_prog;
-+
-+	CHECK(!skel->bss->sk_storage_result, "sk_storage_result",
-+	      "sk_local_storage not set");
-+
-+	close(serv_sk);
-+
-+close_prog:
-+	local_storage__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
-new file mode 100644
-index 000000000000..cb608b7b90f0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/local_storage.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <errno.h>
-+#include <linux/bpf.h>
-+#include <stdbool.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define DUMMY_STORAGE_VALUE 0xdeadbeef
-+
-+int monitored_pid = 0;
-+bool inode_storage_result = false;
-+bool sk_storage_result = false;
-+
-+struct dummy_storage {
-+	__u32 value;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct dummy_storage);
-+} inode_storage_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
-+	__type(key, int);
-+	__type(value, struct dummy_storage);
-+} sk_storage_map SEC(".maps");
-+
-+/* TODO Use vmlinux.h once BTF pruning for embedded types is fixed.
-+ */
-+struct sock {} __attribute__((preserve_access_index));
-+struct sockaddr {} __attribute__((preserve_access_index));
-+struct socket {
-+	struct sock *sk;
-+} __attribute__((preserve_access_index));
-+
-+struct inode {} __attribute__((preserve_access_index));
-+struct dentry {
-+	struct inode *d_inode;
-+} __attribute__((preserve_access_index));
-+struct file {
-+	struct inode *f_inode;
-+} __attribute__((preserve_access_index));
-+
-+
-+SEC("lsm/inode_unlink")
-+int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_inode_storage_get(&inode_storage_map, victim->d_inode, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		inode_storage_result = true;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/socket_bind")
-+int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
-+	     int addrlen)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		sk_storage_result = true;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/socket_post_create")
-+int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
-+	     int protocol, int kern)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	storage->value = DUMMY_STORAGE_VALUE;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/file_open")
-+int BPF_PROG(test_int_hook, struct file *file)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	if (!file->f_inode)
-+		return 0;
-+
-+	storage = bpf_inode_storage_get(&inode_storage_map, file->f_inode, 0,
-+				     BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	storage->value = DUMMY_STORAGE_VALUE;
-+	return 0;
-+}
--- 
-2.28.0.rc0.142.g3c755180ce-goog
-
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
