@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E0E232C93
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 09:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC3B232C9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 09:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728940AbgG3HaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 03:30:07 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:37426 "EHLO inva021.nxp.com"
+        id S1728984AbgG3HaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 03:30:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726194AbgG3HaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 03:30:07 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3885D2011E0;
-        Thu, 30 Jul 2020 09:30:05 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2BA3420021B;
-        Thu, 30 Jul 2020 09:30:05 +0200 (CEST)
-Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 0A41D20341;
-        Thu, 30 Jul 2020 09:30:04 +0200 (CEST)
-Date:   Thu, 30 Jul 2020 10:30:04 +0300
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Anson Huang <anson.huang@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 10/17] Documentation: bindings: clk: Add bindings for
- i.MX BLK_CTRL
-Message-ID: <20200730073004.r2d2prwlocqclpz3@fsr-ub1664-175>
-References: <1596024483-21482-1-git-send-email-abel.vesa@nxp.com>
- <1596024483-21482-11-git-send-email-abel.vesa@nxp.com>
- <159605218106.1360974.17212937588367161697@swboyd.mtv.corp.google.com>
+        id S1726194AbgG3HaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 03:30:24 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 920F12070B;
+        Thu, 30 Jul 2020 07:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596094224;
+        bh=obI1cW5B2vkgbR1FTfLccdeC3SAat3jW9yYsILJxDWg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=orK/glA1/hvlkXbeRL/ErCXplRTG2IdEYTZIOuVeFybdLjUDj+ooPomqVXeg43nNx
+         KUv7nvvrlhzi9y8Gv4OlkglG+/K/2Ahej8yLlhBLQBriVuIocrEIT5rGr70LaYanAU
+         Vpzlk51SlSihnn6OD4YaDjfQGoXhb9AAHTM+tzuk=
+Date:   Thu, 30 Jul 2020 09:30:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     stable@vger.kernel.org, netdev@vger.kernel.org,
+        madalin.bucur@oss.nxp.com, camelia.groza@nxp.com,
+        joakim.tjernlund@infinera.com, fido_max@inbox.ru,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 stable-5.4.y] Revert "dpaa_eth: fix usage as DSA
+ master, try 3"
+Message-ID: <20200730073013.GC4045776@kroah.com>
+References: <20200624124517.3212326-1-olteanv@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <159605218106.1360974.17212937588367161697@swboyd.mtv.corp.google.com>
-User-Agent: NeoMutt/20180622
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <20200624124517.3212326-1-olteanv@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-07-29 12:49:41, Stephen Boyd wrote:
-> Quoting Abel Vesa (2020-07-29 05:07:56)
-> > diff --git a/Documentation/devicetree/bindings/clock/fsl,imx-blk-ctrl.yaml b/Documentation/devicetree/bindings/clock/fsl,imx-blk-ctrl.yaml
-> > new file mode 100644
-> > index 00000000..036d3d3
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/clock/fsl,imx-blk-ctrl.yaml
-> > @@ -0,0 +1,55 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only)
-> > +%YAML 1.2
-> > +---
-> > +$id: https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fdevicetree.org%2Fschemas%2Fclock%2Ffsl%2Cimx-blk-ctrl.yaml%23&amp;data=02%7C01%7Cabel.vesa%40nxp.com%7C30d7fec624c44b4f85e108d833f88a5e%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637316489861505079&amp;sdata=63jhxp1rw%2BMYPlc%2BhwSjOwBvN%2Fikf5PXUKGjEXD5agM%3D&amp;reserved=0
-> > +$schema: https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fdevicetree.org%2Fmeta-schemas%2Fcore.yaml%23&amp;data=02%7C01%7Cabel.vesa%40nxp.com%7C30d7fec624c44b4f85e108d833f88a5e%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637316489861505079&amp;sdata=9%2FLcFRkMHXx1%2FHsEfFyhNmI73hDC2GUu2s%2BE9EQTUSE%3D&amp;reserved=0
-> [...]
-> > +
-> > +examples:
-> > +  - |
-> > +    audio-blk-ctrl: blk-ctrl@30e20000 {
+On Wed, Jun 24, 2020 at 03:45:17PM +0300, Vladimir Oltean wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
 > 
-> clock-controller@30e20000 {
-
-Will change in the new version.
-
+> This reverts commit 40a904b1c2e57b22dd002dfce73688871cb0bac8.
 > 
-> > +       compatible = "fsl,imx8mp-blk-ctrl", "syscon";
-> > +       reg = <0x30e20000 0x10000>;
-> > +       power-domains = <&audiomix_pd>;
-> > +
-> > +       #clock-cells = <1>;
-> > +       #reset-cells = <1>;
-> > +    };
+> The patch is not wrong, but the Fixes: tag is. It should have been:
+> 
+> 	Fixes: 060ad66f9795 ("dpaa_eth: change DMA device")
+> 
+> which means that it's fixing a commit which was introduced in:
+> 
+> git tag --contains 060ad66f97954
+> v5.5
+> 
+> which then means it should have not been backported to linux-5.4.y,
+> where things _were_ working and now they're not.
+> 
+> Reported-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
+> Changes in v1:
+> Adjusted the commit message from linux-4.19.y to linux-5.4.y
+> 
+> Changes in v2:
+> Fixed the sha1sum of the reverted commit.
+> 
+>  drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+> index 6683409fbd4a..4b21ae27a9fd 100644
+> --- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+> +++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+> @@ -2796,7 +2796,7 @@ static int dpaa_eth_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	/* Do this here, so we can be verbose early */
+> -	SET_NETDEV_DEV(net_dev, dev->parent);
+> +	SET_NETDEV_DEV(net_dev, dev);
+>  	dev_set_drvdata(dev, net_dev);
+>  
+>  	priv = netdev_priv(net_dev);
+> -- 
+> 2.25.1
+> 
+
+Now queued up, thanks.
+
+greg k-h
