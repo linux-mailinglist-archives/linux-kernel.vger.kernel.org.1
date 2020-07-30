@@ -2,99 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B3F233B93
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 00:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A186233B86
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 00:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730609AbgG3Wto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 18:49:44 -0400
-Received: from vern.gendns.com ([98.142.107.122]:48900 "EHLO vern.gendns.com"
+        id S1730592AbgG3WqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 18:46:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730457AbgG3Wtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 18:49:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=zIBbAfaKyv0a8khPFENs9bkRVRW75g282kFb88ll0RE=; b=yMlsUfviYgQGqrsCcQwvQ+E9+4
-        n4HKPHVxV3jzQ0oWcZAvtI+PY5km7eQGTZuzRA+5HkyL3yRKEHfiB66jyo5qY/YRP4HQzz/bszsyx
-        Vts7C81XDbxzeLVlXwom6UzAcjLyuwI9G5Ea6LNcZflptu7rpAUOzeSl0Icuz7PcsMCBpDF+sKey6
-        Jr8XysA3pCKftO59vuP+H+1BDP4xx8gYeJDPC7/sJkSX2YPRW/S5umktLVAvBDGdw+QXbLUfWr0WX
-        MDFEQBcVcSTqMtPZ/ING/CB1LVxJPdlHg/SvDtc6eOCZ+yeL+Ghku7zua54tD4t+znNRxeX8OgtmW
-        8b2McVaQ==;
-Received: from [2600:1700:4830:165f::19e] (port=45352)
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1k1HMq-0000Lv-I2; Thu, 30 Jul 2020 18:49:40 -0400
-Subject: Re: [PATCH v4 3/5] counter: Add character device interface
-From:   David Lechner <david@lechnology.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
-Cc:     kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        id S1730036AbgG3WqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 18:46:10 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19A0520838;
+        Thu, 30 Jul 2020 22:46:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596149169;
+        bh=MdiKqZtkKcfBkgB2ny4nl/l0vVvGSKyEuahiF0CPnl8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lZetdtpCN4pomhfZdJIstWjRbatO5WXmy94YhE3NzZPm6NjKW6CxwHrhz4mV+K4AY
+         JVUIsEmzhXqmaNr+dRS0SuzeiD+mb0WFPKVDSkQuBvm7IANbq391PKnanuYe40WuA+
+         voa3zL/KU7q/0C3rryCg6i5drnJT214pk1czmVtY=
+Date:   Thu, 30 Jul 2020 17:52:10 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Tomas Winkler <tomas.winkler@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
         linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-References: <cover.1595358237.git.vilhelm.gray@gmail.com>
- <08b3ac7349a59ba7fa5cd438bbe78360842ccd11.1595358237.git.vilhelm.gray@gmail.com>
- <415ee9ad-255e-cee7-22a6-ffa977999691@lechnology.com>
-Message-ID: <a287770b-c263-f1db-bcc4-d901d3ff3c7c@lechnology.com>
-Date:   Thu, 30 Jul 2020 17:49:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Ramalingam C <ramalingam.c@intel.com>, stable@vger.kernel.org
+Subject: Re: [char-misc-next V4] mei: hdcp: fix mei_hdcp_verify_mprime()
+ input parameter
+Message-ID: <20200730225210.GA1726@embeddedor>
+References: <20200730220139.3642424-1-tomas.winkler@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <415ee9ad-255e-cee7-22a6-ffa977999691@lechnology.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200730220139.3642424-1-tomas.winkler@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/20 7:20 PM, David Lechner wrote:
-> On 7/21/20 2:35 PM, William Breathitt Gray wrote:
->> This patch introduces a character device interface for the Counter
->> subsystem. Device data is exposed through standard character device read
->> operations. Device data is gathered when a Counter event is pushed by
->> the respective Counter device driver. Configuration is handled via ioctl
->> operations on the respective Counter character device node.
+On Fri, Jul 31, 2020 at 01:01:39AM +0300, Tomas Winkler wrote:
+> wired_cmd_repeater_auth_stream_req_in has a variable
+> length array at the end. we use struct_size() overflow
+> macro to determine the size for the allocation and sending
+> size.
+> This also fixes bug in case number of streams is > 0 in the original
+> submission. This bug was not triggered as the number of streams is
+> always one.
 > 
-> This sounds similar to triggers and buffers in the iio subsystem. And
-> I can see how it might be useful in some cases. But I think it would not
-> give the desired results when performance is important.
+> Fixes: c56967d674e3 (mei: hdcp: Replace one-element array with flexible-array member)
+> Fixes: commit 0a1af1b5c18d ("misc/mei/hdcp: Verify M_prime")
+          ^^^^
+I think the _commit_ word above is unnecessary.
+
+> Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+> Cc: Ramalingam C <ramalingam.c@intel.com>
+> Cc: <stable@vger.kernel.org> v5.1+
+
+Greg,
+
+Notice that this patch is fine as is for -next, only. This becomes suitable
+for -stable as long as commit c56967d674e3 (mei: hdcp: Replace one-element array with flexible-array member)
+is applied to -stable, too. Otherwise, a separate patch that leaves the
+one-element array in struct wired_cmd_repeater_auth_stream_req_in in place
+needs to be crafted. With this taken into account, here is my
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks for the changes, Tomas.
+--
+Gustavo
+
+> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+> ---
+> V4:
+> 1. Fix typo in the subject. (Gustavo)
+> 2. Fix dereferencing pointer in send. (Gustavo)
+> V3:
+> 1. Fix commit message with more info and another patch it fixes (Gustavo)
+> 2. Target stable. (Gustavo)
+> V2: Check for allocation failure.
 > 
-
-By the way, I really appreciate the work you have done here. When reviewing
-code, it is easy to point out what is wrong or we don't like and to not
-mention all the parts that are good. And there is a lot of really good work
-here already.
-
-I've been working on this all week to try out some of my suggestions and
-I'm not getting very far. This is a very difficult problem to solve!
-
-I just wanted to mention this since I responded to this patch series
-already but I am still learning and trying things. So I may have more/
-different feedback in the future and I may decide some of my suggestions
-are not so good. :-)
-
-And one more thing, there was a nice talk at the Embedded Linux
-Conference last month about lessons learned from designing a userspace
-API for the GPIO subsystem [1]. Unfortunately, there is no video yet,
-but the slides might have some helpful ideas about mistakes to avoid.
-
-[1]: https://elinux.org/ELC_2020_Presentations
-
+>  drivers/misc/mei/hdcp/mei_hdcp.c | 40 +++++++++++++++++++-------------
+>  1 file changed, 24 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
+> index d1d3e025ca0e..9ae9669e46ea 100644
+> --- a/drivers/misc/mei/hdcp/mei_hdcp.c
+> +++ b/drivers/misc/mei/hdcp/mei_hdcp.c
+> @@ -546,38 +546,46 @@ static int mei_hdcp_verify_mprime(struct device *dev,
+>  				  struct hdcp_port_data *data,
+>  				  struct hdcp2_rep_stream_ready *stream_ready)
+>  {
+> -	struct wired_cmd_repeater_auth_stream_req_in
+> -					verify_mprime_in = { { 0 } };
+> +	struct wired_cmd_repeater_auth_stream_req_in *verify_mprime_in;
+>  	struct wired_cmd_repeater_auth_stream_req_out
+>  					verify_mprime_out = { { 0 } };
+>  	struct mei_cl_device *cldev;
+>  	ssize_t byte;
+> +	size_t cmd_size;
+>  
+>  	if (!dev || !stream_ready || !data)
+>  		return -EINVAL;
+>  
+>  	cldev = to_mei_cl_device(dev);
+>  
+> -	verify_mprime_in.header.api_version = HDCP_API_VERSION;
+> -	verify_mprime_in.header.command_id = WIRED_REPEATER_AUTH_STREAM_REQ;
+> -	verify_mprime_in.header.status = ME_HDCP_STATUS_SUCCESS;
+> -	verify_mprime_in.header.buffer_len =
+> +	cmd_size = struct_size(verify_mprime_in, streams, data->k);
+> +	if (cmd_size == SIZE_MAX)
+> +		return -EINVAL;
+> +
+> +	verify_mprime_in = kzalloc(cmd_size, GFP_KERNEL);
+> +	if (!verify_mprime_in)
+> +		return -ENOMEM;
+> +
+> +	verify_mprime_in->header.api_version = HDCP_API_VERSION;
+> +	verify_mprime_in->header.command_id = WIRED_REPEATER_AUTH_STREAM_REQ;
+> +	verify_mprime_in->header.status = ME_HDCP_STATUS_SUCCESS;
+> +	verify_mprime_in->header.buffer_len =
+>  			WIRED_CMD_BUF_LEN_REPEATER_AUTH_STREAM_REQ_MIN_IN;
+>  
+> -	verify_mprime_in.port.integrated_port_type = data->port_type;
+> -	verify_mprime_in.port.physical_port = (u8)data->fw_ddi;
+> -	verify_mprime_in.port.attached_transcoder = (u8)data->fw_tc;
+> +	verify_mprime_in->port.integrated_port_type = data->port_type;
+> +	verify_mprime_in->port.physical_port = (u8)data->fw_ddi;
+> +	verify_mprime_in->port.attached_transcoder = (u8)data->fw_tc;
+> +
+> +	memcpy(verify_mprime_in->m_prime, stream_ready->m_prime, HDCP_2_2_MPRIME_LEN);
+> +	drm_hdcp_cpu_to_be24(verify_mprime_in->seq_num_m, data->seq_num_m);
+>  
+> -	memcpy(verify_mprime_in.m_prime, stream_ready->m_prime,
+> -	       HDCP_2_2_MPRIME_LEN);
+> -	drm_hdcp_cpu_to_be24(verify_mprime_in.seq_num_m, data->seq_num_m);
+> -	memcpy(verify_mprime_in.streams, data->streams,
+> +	memcpy(verify_mprime_in->streams, data->streams,
+>  	       array_size(data->k, sizeof(*data->streams)));
+>  
+> -	verify_mprime_in.k = cpu_to_be16(data->k);
+> +	verify_mprime_in->k = cpu_to_be16(data->k);
+>  
+> -	byte = mei_cldev_send(cldev, (u8 *)&verify_mprime_in,
+> -			      sizeof(verify_mprime_in));
+> +	byte = mei_cldev_send(cldev, (u8 *)verify_mprime_in, cmd_size);
+> +	kfree(verify_mprime_in);
+>  	if (byte < 0) {
+>  		dev_dbg(dev, "mei_cldev_send failed. %zd\n", byte);
+>  		return byte;
+> -- 
+> 2.25.4
+> 
