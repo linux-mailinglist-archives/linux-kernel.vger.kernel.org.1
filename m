@@ -2,112 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEE6233158
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 13:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AD9233155
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 13:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgG3L7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 07:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727072AbgG3L7n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 07:59:43 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6524FC061794;
-        Thu, 30 Jul 2020 04:59:43 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0408A9B1;
-        Thu, 30 Jul 2020 13:59:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1596110362;
-        bh=zT8lcQuX4zUHQxbmkWxc2aN81+OzFVRMs861l8v28Qw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QjsUtwJkDecBgHFGWNCQ6miqWtK4y1jqlYCCv1/gNviJB3D2+t6UCU+odNwVjjj6A
-         o8+jAnC6kRgWayW56NA4ofS7wubYkvMhEhwJbhEYB+fwHBrQoCfUFCPNdF7uxIG8eR
-         IZHZcN+/4mxZ/qNjdPugJJ2bH2Ikw8+Bl4zhY+j0=
-Date:   Thu, 30 Jul 2020 14:59:10 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: uvcvideo: Replace HTTP links with HTTPS ones
-Message-ID: <20200730115910.GA6107@pendragon.ideasonboard.com>
-References: <20200713162246.35758-1-grandmaster@al2klimov.de>
+        id S1727955AbgG3L7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 07:59:38 -0400
+Received: from relay.sw.ru ([185.231.240.75]:56340 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726794AbgG3L7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 07:59:31 -0400
+Received: from [192.168.15.64] (helo=localhost.localdomain)
+        by relay3.sw.ru with esmtp (Exim 4.93)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1k17DG-0002up-Iy; Thu, 30 Jul 2020 14:59:06 +0300
+Subject: [PATCH 00/23] proc: Introduce /proc/namespaces/ directory to expose
+ namespaces lineary
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+To:     viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
+        ebiederm@xmission.com, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, areber@redhat.com, serge@hallyn.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        ktkhai@virtuozzo.com
+Date:   Thu, 30 Jul 2020 14:59:20 +0300
+Message-ID: <159611007271.535980.15362304262237658692.stgit@localhost.localdomain>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200713162246.35758-1-grandmaster@al2klimov.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+Currently, there is no a way to list or iterate all or subset of namespaces
+in the system. Some namespaces are exposed in /proc/[pid]/ns/ directories,
+but some also may be as open files, which are not attached to a process.
+When a namespace open fd is sent over unix socket and then closed, it is
+impossible to know whether the namespace exists or not.
 
-Thank you for the patch.
+Also, even if namespace is exposed as attached to a process or as open file,
+iteration over /proc/*/ns/* or /proc/*/fd/* namespaces is not fast, because
+this multiplies at tasks and fds number.
 
-On Mon, Jul 13, 2020 at 06:22:46PM +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
-> 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+This patchset introduces a new /proc/namespaces/ directory, which exposes
+subset of permitted namespaces in linear view:
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+# ls /proc/namespaces/ -l
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'cgroup:[4026531835]' -> 'cgroup:[4026531835]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'ipc:[4026531839]' -> 'ipc:[4026531839]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026531840]' -> 'mnt:[4026531840]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026531861]' -> 'mnt:[4026531861]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026532133]' -> 'mnt:[4026532133]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026532134]' -> 'mnt:[4026532134]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026532135]' -> 'mnt:[4026532135]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'mnt:[4026532136]' -> 'mnt:[4026532136]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'net:[4026531993]' -> 'net:[4026531993]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'pid:[4026531836]' -> 'pid:[4026531836]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'time:[4026531834]' -> 'time:[4026531834]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'user:[4026531837]' -> 'user:[4026531837]'
+lrwxrwxrwx 1 root root 0 Jul 29 16:50 'uts:[4026531838]' -> 'uts:[4026531838]'
 
-and applied to my tree, for v5.10.
+Namespace ns is exposed, in case of its user_ns is permitted from /proc's pid_ns.
+I.e., /proc is related to pid_ns, so in /proc/namespace we show only a ns, which is
 
-> ---
->  Continuing my work started at 93431e0607e5.
->  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
->  (Actually letting a shell for loop submit all this stuff for me.)
-> 
->  If there are any URLs to be removed completely or at least not just HTTPSified:
->  Just clearly say so and I'll *undo my change*.
->  See also: https://lkml.org/lkml/2020/6/27/64
-> 
->  If there are any valid, but yet not changed URLs:
->  See: https://lkml.org/lkml/2020/6/26/837
-> 
->  If you apply the patch, please let me know.
-> 
->  Sorry again to all maintainers who complained about subject lines.
->  Now I realized that you want an actually perfect prefixes,
->  not just subsystem ones.
->  I tried my best...
->  And yes, *I could* (at least half-)automate it.
->  Impossible is nothing! :)
-> 
-> 
->  drivers/media/usb/uvc/uvc_driver.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 431d86e1c94b..5676dc7bc319 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -284,7 +284,7 @@ void uvc_simplify_fraction(u32 *numerator, u32 *denominator,
->  		return;
->  
->  	/* Convert the fraction to a simple continued fraction. See
-> -	 * http://mathforum.org/dr.math/faq/faq.fractions.html
-> +	 * https://mathforum.org/dr.math/faq/faq.fractions.html
->  	 * Stop if the current term is bigger than or equal to the given
->  	 * threshold.
->  	 */
+	in_userns(pid_ns->user_ns, ns->user_ns).
 
--- 
-Regards,
+In case of ns is a user_ns:
 
-Laurent Pinchart
+	in_userns(pid_ns->user_ns, ns).
+
+The patchset follows this steps:
+
+1)A generic counter in ns_common is introduced instead of separate
+  counters for every ns type (net::count, uts_namespace::kref,
+  user_namespace::count, etc). Patches [1-8];
+2)Patch [9] introduces IDR to link and iterate alive namespaces;
+3)Patch [10] is refactoring;
+4)Patch [11] actually adds /proc/namespace directory and fs methods;
+5)Patches [12-23] make every namespace to use the added methods
+  and to appear in /proc/namespace directory.
+
+This may be usefull to write effective debug utils (say, fast build
+of networks topology) and checkpoint/restore software.
+---
+
+Kirill Tkhai (23):
+      ns: Add common refcount into ns_common add use it as counter for net_ns
+      uts: Use generic ns_common::count
+      ipc: Use generic ns_common::count
+      pid: Use generic ns_common::count
+      user: Use generic ns_common::count
+      mnt: Use generic ns_common::count
+      cgroup: Use generic ns_common::count
+      time: Use generic ns_common::count
+      ns: Introduce ns_idr to be able to iterate all allocated namespaces in the system
+      fs: Rename fs/proc/namespaces.c into fs/proc/task_namespaces.c
+      fs: Add /proc/namespaces/ directory
+      user: Free user_ns one RCU grace period after final counter put
+      user: Add user namespaces into ns_idr
+      net: Add net namespaces into ns_idr
+      pid: Eextract child_reaper check from pidns_for_children_get()
+      proc_ns_operations: Add can_get method
+      pid: Add pid namespaces into ns_idr
+      uts: Free uts namespace one RCU grace period after final counter put
+      uts: Add uts namespaces into ns_idr
+      ipc: Add ipc namespaces into ns_idr
+      mnt: Add mount namespaces into ns_idr
+      cgroup: Add cgroup namespaces into ns_idr
+      time: Add time namespaces into ns_idr
+
+
+ fs/mount.h                     |    4 
+ fs/namespace.c                 |   14 +
+ fs/nsfs.c                      |   78 ++++++++
+ fs/proc/Makefile               |    1 
+ fs/proc/internal.h             |   18 +-
+ fs/proc/namespaces.c           |  382 +++++++++++++++++++++++++++-------------
+ fs/proc/root.c                 |   17 ++
+ fs/proc/task_namespaces.c      |  183 +++++++++++++++++++
+ include/linux/cgroup.h         |    6 -
+ include/linux/ipc_namespace.h  |    3 
+ include/linux/ns_common.h      |   11 +
+ include/linux/pid_namespace.h  |    4 
+ include/linux/proc_fs.h        |    1 
+ include/linux/proc_ns.h        |   12 +
+ include/linux/time_namespace.h |   10 +
+ include/linux/user_namespace.h |   10 +
+ include/linux/utsname.h        |   10 +
+ include/net/net_namespace.h    |   11 -
+ init/version.c                 |    2 
+ ipc/msgutil.c                  |    2 
+ ipc/namespace.c                |   17 +-
+ ipc/shm.c                      |    1 
+ kernel/cgroup/cgroup.c         |    2 
+ kernel/cgroup/namespace.c      |   25 ++-
+ kernel/pid.c                   |    2 
+ kernel/pid_namespace.c         |   46 +++--
+ kernel/time/namespace.c        |   20 +-
+ kernel/user.c                  |    2 
+ kernel/user_namespace.c        |   23 ++
+ kernel/utsname.c               |   23 ++
+ net/core/net-sysfs.c           |    6 -
+ net/core/net_namespace.c       |   18 +-
+ net/ipv4/inet_timewait_sock.c  |    4 
+ net/ipv4/tcp_metrics.c         |    2 
+ 34 files changed, 746 insertions(+), 224 deletions(-)
+ create mode 100644 fs/proc/task_namespaces.c
+
+--
+Signed-off-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+
