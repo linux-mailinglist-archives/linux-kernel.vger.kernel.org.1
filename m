@@ -2,86 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4076323299D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 03:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9209B2329A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 03:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728286AbgG3Bk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 21:40:29 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42101 "EHLO ozlabs.org"
+        id S1726509AbgG3Bqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 21:46:36 -0400
+Received: from crapouillou.net ([89.234.176.41]:45620 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbgG3Bk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 21:40:29 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BHCls1YL9z9sR4;
-        Thu, 30 Jul 2020 11:40:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1596073227;
-        bh=3FAJYP8wbDsbOcsB2wzeQOd6jlQCaTaAEm8z6wj5YmE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LNiAWve/U4Xd7easNqvRvo7sLi6uSZK1qk7hpr/vDDPwD072+CtF6lQUA25fzvfsB
-         botj2xNEhc67kKcu7IKW9JbVGP/R++N7hU2UacoTwfgDo0TdnNSDdcPMpwifqKTgeO
-         A6X6HfLQKlNgz+LYFeNSU5znTpByGYSD2DaJGQSazGtCA8/uUfTut7sOFJBiTd0GBT
-         vcm3lPUB4MVhT5nFXObgb4ARZhwb/YTV3JApbtsR9P7UUB2hZ8UYDwSzlt67/gVcL0
-         pJyZCty1xoQlXYOdOHAPAUZ9+ybuPx9tk89EqeUVjrGXLUua0dwCBgZlEdZjfMqFph
-         UAzCz4+NzBfpg==
-Date:   Thu, 30 Jul 2020 11:40:23 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: linux-next: build warning after merge of the mips tree
-Message-ID: <20200730114023.60317d30@canb.auug.org.au>
-In-Reply-To: <f2a9f50d-5299-04f8-146b-e09df8943367@flygoat.com>
-References: <20200729203142.18248463@canb.auug.org.au>
-        <f2a9f50d-5299-04f8-146b-e09df8943367@flygoat.com>
+        id S1726287AbgG3Bqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 21:46:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1596073593; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=Nkzm7+SJ8S0uEbvir2Ri0RhcYGlcBnAXNM+14mPSXL4=;
+        b=anZX3nB5q5L6g50HathDLjTJiZbwhJK3gileOtgVQag/sofblzgPv/nmyQzVwaMjE8O6tN
+        +DDSbOrRyAe5/uobD41naAIW5QU7xFz6u+AAaZMvLakumbkD5jzAj4B6JTU+z96WANmdSW
+        gmvYh5toPPH6on/mMuh/Sy2gnUzXJNI=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+Cc:     od@zcrc.me, Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 0/3] More ingenic-drm IPU cleanups
+Date:   Thu, 30 Jul 2020 03:46:23 +0200
+Message-Id: <20200730014626.83895-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XkTmWDJSI8kKcAk5PVnvlXV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/XkTmWDJSI8kKcAk5PVnvlXV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi Jiaxun,
+A few more patches to the ingenic-drm IPU driver.
 
-On Thu, 30 Jul 2020 09:04:40 +0800 Jiaxun Yang <jiaxun.yang@flygoat.com> wr=
-ote:
->
-> Btw: Neither James nor Ralf is still active at Linux-MIPS.
+Patch [1/3] fixes the behaviour on newer SoCs at high resolutions /
+framerates.
 
-Interesting.  I have just them listed as my contacts for MIPS.  Should
-I change to just Thomes (Thomas Bogendoerfer
-<tsbogend@alpha.franken.de>)?
+Patch [2/3] drops YUV 4:2:2 support on the JZ4725B SoC because of what I
+think is a hardware bug.
 
---=20
+Patch [3/3] makes the IPU clock enabled/disabled when needed.
+
 Cheers,
-Stephen Rothwell
+-Paul
 
---Sig_/XkTmWDJSI8kKcAk5PVnvlXV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Paul Cercueil (3):
+  drm/ingenic: ipu: Only restart manually on older SoCs
+  drm/ingenic: ipu: Remove YUV422 from supported formats on JZ4725B
+  drm/ingenic: ipu: Only enable clock when needed
 
------BEGIN PGP SIGNATURE-----
+ drivers/gpu/drm/ingenic/ingenic-ipu.c | 38 +++++++++++++++++++++++----
+ 1 file changed, 33 insertions(+), 5 deletions(-)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8iJQcACgkQAVBC80lX
-0GyDZQf/WZHicMPS6TXI2rOzw7dPh9cYfnzJ5GIAhhSdPLaILysrjFwNVDEhQZMJ
-dGOenAPl8bex+9YHY8rhLksCDWsuPlo7XzAy28fG40r7/3I0ykYDfGKqPk1VfINL
-W8UqzUZsL5oUcIiKhtqrtdkFN3IbpitxWL2yzc0Grl80fzqoZUYxFI39XGEtNXJF
-o49ve4abzaOCA81sQmMWIsG61fz1RQjbpEDT3OseqJoui83vOSXYmcUy2ta3MRmz
-7kYSNoEszRv9MPK/vhTlf+ldfWA/q8IKV+GGhOfmiZ1XYP/nHdsagXrzOICRX3Jk
-FsYD9yYGnNinEB0erIykCoKMbTBSvw==
-=LnTa
------END PGP SIGNATURE-----
+-- 
+2.27.0
 
---Sig_/XkTmWDJSI8kKcAk5PVnvlXV--
