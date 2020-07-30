@@ -2,100 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1C2233ABC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 23:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F76F233ADD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 23:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730986AbgG3VZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 17:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730711AbgG3VZ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 17:25:28 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D80C061574;
-        Thu, 30 Jul 2020 14:25:28 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id di22so13822020edb.12;
-        Thu, 30 Jul 2020 14:25:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wawmnCkVtSyffuOwOyR8jlmGJuUCenrTBxUUEtQt514=;
-        b=EBuP8Sph1VcJ11/DEK8U8Vw5lkys5pkoPHdRkZ4qSn04EMNMYTDwn/188gwovds3b0
-         OxdeWFiNycKygBIF6EbR439Ba0O/evJ4dO/OFAOCDCXGWdnWyuTEaEQ8pxWkgDQsDT49
-         ixEd1m7vu0YdVDd23vJduP196itvUII6BXff9dn2zs9UWBlMCs1DExy4Lg6ONdto1EAN
-         xJAHxGd85yfCUYW4BRAtUxIHQjFb/fYkR1sMz+pqTluqvHpLxXQjuP6uqQWzj/TQv2iK
-         TWOlPm33HCVveFBueimXJMG8cza2wAsC2GHxv1npabeVJskgo2cNIa+B/RqtY2jKX2l+
-         ZY5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wawmnCkVtSyffuOwOyR8jlmGJuUCenrTBxUUEtQt514=;
-        b=j1yam8CvRgypQq7LgrOZ5mCuIp14uHLRBA+fC5lZjQI2UDBib/AuITE72wVs1EXSar
-         UEAwNhUge7q+BsgZyjo0ifXs4nOIdFtiyIBzrqoxcbdC9r3kp+nygx/nlB4dhi22t9hM
-         i4mkXBdaYP+AMoyjw3u/bADzW1IwBROu3nt59eHk/a5jshKbOkec8fJJkwDEiCm9QGel
-         MA7gxctDTSUUf/q8ZPfTFcVQlMSSfTLz99mRe5Qd2RrRHSpwSc7MjuLE75FzUXimqCXM
-         3aa8+OapYhVs8QA8A86NIDG5yMQSnFegA6TmNfYv7E0VrekPQ36Q+l0Ruf6h3hmoP4u6
-         YBhg==
-X-Gm-Message-State: AOAM5327asKtEiVE6aQjAEEhn37QxnkSH33FCzaQYGycgUla46SQzpud
-        NhuIaVMNOx76kFGYdeBxri34WBKg/Ufe3sOT9qs=
-X-Google-Smtp-Source: ABdhPJy1pelESLieAiXYCo+JBitUpkLV1nPOYhvQ2AwIzIy7aygRU3kvbY5RKU7cSN8I5DNmYQdtC1A9nfBZJYuxf0o=
-X-Received: by 2002:a50:fd19:: with SMTP id i25mr976597eds.101.1596144326878;
- Thu, 30 Jul 2020 14:25:26 -0700 (PDT)
+        id S1730705AbgG3V2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 17:28:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730595AbgG3V2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 17:28:46 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 584D320829;
+        Thu, 30 Jul 2020 21:28:45 +0000 (UTC)
+Date:   Thu, 30 Jul 2020 17:28:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Philippe Duplessis-Guindon <pduplessis@efficios.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH] tools lib traceevent: Fix memory leak in
+ process_dynamic_array_len
+Message-ID: <20200730172843.653cd9f4@oasis.local.home>
+In-Reply-To: <20200730150236.5392-1-pduplessis@efficios.com>
+References: <20200730150236.5392-1-pduplessis@efficios.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1594644106-22449-1-git-send-email-akhilpo@codeaurora.org>
- <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com>
- <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu> <CAF6AEGurrsd3nrbB=ktZjWfKTNbKwPHYwTFiZdD-NOW1T7gePQ@mail.gmail.com>
- <20200721032442.hv7l4q6633vnmnfe@vireshk-mac-ubuntu> <CAF6AEGuhQcRskGhrFvmCf5T3EcZ9S+3LRdZBiaDYqF34yZjd+A@mail.gmail.com>
- <20200722053023.vwaoj5oqh4cazzzz@vireshk-mac-ubuntu> <20200730051045.jejrtkor3b32l2qe@vireshk-mac-ubuntu>
- <CAF6AEGuzff9+Wy4EHx0aDx1gBzSEGh--yqT5rnwLHp=U6amnyA@mail.gmail.com> <20200730153722.cnpg6n6tnmvjtuso@vireshk-mac-ubuntu>
-In-Reply-To: <20200730153722.cnpg6n6tnmvjtuso@vireshk-mac-ubuntu>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 30 Jul 2020 14:26:08 -0700
-Message-ID: <CAF6AEGv-e5KdbcDcst=y+h-uhDa4sKKEMoGuA88bvZ_1i46RLQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] Add support for GPU DDR BW scaling
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Dave Airlie <airlied@gmail.com>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@freedesktop.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
-        saravanak@google.com, Sibi Sankar <sibis@codeaurora.org>,
-        Jonathan <jonathan@marek.ca>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 8:37 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 30-07-20, 08:27, Rob Clark wrote:
-> > Hmm, I've already sent my pull request to Dave, dropping the patch
-> > would require force-push and sending a new PR.  Which I can do if Dave
-> > prefers.  OTOH I guess it isn't the end of the world if the patch is
-> > merged via two different trees.
->
-> I don't think a patch can go via two trees, as that would have two sha
-> keys for the same code.
->
-> Though it is fine for a patch to go via two different trees if we make
-> sure the same sha key is used for both.
->
-> Will it be possible for you to provide a branch/tag of your branch
-> that I can base stuff of ?
->
 
-Ok, I sent a v2 pull req that dropped the OPP patch.  Both are tagged
-so Dave can use either version, so I guess you two can coordinate this
+Arnaldo,
 
-BR,
--R
+Can you pull this into your tree under urgent?
+
+ https://lore.kernel.org/linux-trace-devel/20200730150236.5392-1-pduplessis@efficios.com/
+
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
+
+
+On Thu, 30 Jul 2020 11:02:36 -0400
+Philippe Duplessis-Guindon <pduplessis@efficios.com> wrote:
+
+> I compiled with AddressSanitizer and I had these memory leaks while I
+> was using the tep_parse_format function:
+> 
+>     Direct leak of 28 byte(s) in 4 object(s) allocated from:
+>         #0 0x7fb07db49ffe in __interceptor_realloc (/lib/x86_64-linux-gnu/libasan.so.5+0x10dffe)
+>         #1 0x7fb07a724228 in extend_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:985
+>         #2 0x7fb07a724c21 in __read_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1140
+>         #3 0x7fb07a724f78 in read_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1206
+>         #4 0x7fb07a725191 in __read_expect_type /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1291
+>         #5 0x7fb07a7251df in read_expect_type /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1299
+>         #6 0x7fb07a72e6c8 in process_dynamic_array_len /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:2849
+>         #7 0x7fb07a7304b8 in process_function /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3161
+>         #8 0x7fb07a730900 in process_arg_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3207
+>         #9 0x7fb07a727c0b in process_arg /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1786
+>         #10 0x7fb07a731080 in event_read_print_args /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3285
+>         #11 0x7fb07a731722 in event_read_print /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3369
+>         #12 0x7fb07a740054 in __tep_parse_format /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6335
+>         #13 0x7fb07a74047a in __parse_event /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6389
+>         #14 0x7fb07a740536 in tep_parse_format /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6431
+>         #15 0x7fb07a785acf in parse_event ../../../src/fs-src/fs.c:251
+>         #16 0x7fb07a785ccd in parse_systems ../../../src/fs-src/fs.c:284
+>         #17 0x7fb07a786fb3 in read_metadata ../../../src/fs-src/fs.c:593
+>         #18 0x7fb07a78760e in ftrace_fs_source_init ../../../src/fs-src/fs.c:727
+>         #19 0x7fb07d90c19c in add_component_with_init_method_data ../../../../src/lib/graph/graph.c:1048
+>         #20 0x7fb07d90c87b in add_source_component_with_initialize_method_data ../../../../src/lib/graph/graph.c:1127
+>         #21 0x7fb07d90c92a in bt_graph_add_source_component ../../../../src/lib/graph/graph.c:1152
+>         #22 0x55db11aa632e in cmd_run_ctx_create_components_from_config_components ../../../src/cli/babeltrace2.c:2252
+>         #23 0x55db11aa6fda in cmd_run_ctx_create_components ../../../src/cli/babeltrace2.c:2347
+>         #24 0x55db11aa780c in cmd_run ../../../src/cli/babeltrace2.c:2461
+>         #25 0x55db11aa8a7d in main ../../../src/cli/babeltrace2.c:2673
+>         #26 0x7fb07d5460b2 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x270b2)
+> 
+> The token variable in the process_dynamic_array_len function is
+> allocated in the read_expect_type function, but is not freed before
+> calling the read_token function.
+> 
+> Free the token variable before calling read_token in order to plug the
+> leak.
+> 
+> Signed-off-by: Philippe Duplessis-Guindon <pduplessis@efficios.com>
+> ---
+>  tools/lib/traceevent/event-parse.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+> index 5b36c589a029..ba4f33804af1 100644
+> --- a/tools/lib/traceevent/event-parse.c
+> +++ b/tools/lib/traceevent/event-parse.c
+> @@ -2861,6 +2861,7 @@ process_dynamic_array_len(struct tep_event *event, struct tep_print_arg *arg,
+>  	if (read_expected(TEP_EVENT_DELIM, ")") < 0)
+>  		goto out_err;
+>  
+> +	free_token(token);
+>  	type = read_token(&token);
+>  	*tok = token;
+>  
+
