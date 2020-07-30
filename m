@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D7B232FF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 12:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22FA232FFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 12:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729191AbgG3KBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 06:01:45 -0400
-Received: from mga09.intel.com ([134.134.136.24]:23981 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726847AbgG3KBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 06:01:45 -0400
-IronPort-SDR: YzqaBCgw1jHuAFTwgi/qkrFvRW30fswu+FkkV6deAQpg+GyBmdjpKX+/4/pz2c6HPboNZ3b3rB
- 4zdut0YHVqcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="152793530"
-X-IronPort-AV: E=Sophos;i="5.75,414,1589266800"; 
-   d="scan'208";a="152793530"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 03:01:44 -0700
-IronPort-SDR: FxOU6+iY7ETDuMxgw4aZbQTi9R5349YtyQI6Lj+IQzLyKJCjINKdfS/nhOcJImk9LkCqR/ZCZT
- jxfSG/2OyU6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,414,1589266800"; 
-   d="scan'208";a="313360870"
-Received: from sgsxdev003.isng.intel.com (HELO localhost) ([10.226.88.14])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Jul 2020 03:01:41 -0700
-From:   Dilip Kota <eswara.kota@linux.intel.com>
-To:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        hpa@zytor.com, rahul.tanwar@linux.intel.com
-Cc:     hdegoede@redhat.com, linux-kernel@vger.kernel.org,
-        andy@infradead.org, cheol.yong.kim@intel.com,
-        chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com,
-        Dilip Kota <eswara.kota@linux.intel.com>
-Subject: [PATCH v2 1/1] x86/tsr: Fix tsc frequency enumeration failure on Lightning Mountain SoC
-Date:   Thu, 30 Jul 2020 18:01:07 +0800
-Message-Id: <8b64c9f9e54351d841daea663f0579de3c103f15.1596103176.git.eswara.kota@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
+        id S1728962AbgG3KDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 06:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727001AbgG3KDJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 06:03:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D91C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 03:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BgjZFLVZ+P18ybLwjgbK/HQlkTCOq0tI5B4QJDlfbao=; b=QA7XOjB+9uGf/ab1zj9pLVYUOO
+        m7QDuUN/jNsny1ngsxEWggQHwO+SI+zclGHU2eEG2jrxsnhIZ/ReEm4mmJxA9d/s+CzMuUBQpi1ry
+        /ecbZfN4MtIrBcalkGXqcOm+RGuUM4XelfmHeWijKlwAfeDV+Vndkg80OIEleq6szc6PaBSaPrSkK
+        cmV3ZCLAxpfgtStHlOpWH4b7sqi2JOcoDUCVryO8n9+W7ydaLay/dai6McwmEmPzby1lDzxT5BD6m
+        MBlCvla+UsexkrAMQ8o46cIwMDAdc/1DMFYWdjqSsV4gE/fFJ0PgcIPtULNVhbwxexaPXTDyKer8U
+        FKmZl5vw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k15Oz-0003t6-HV; Thu, 30 Jul 2020 10:03:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 941E53056DE;
+        Thu, 30 Jul 2020 12:03:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7D1E6210ECD0D; Thu, 30 Jul 2020 12:03:04 +0200 (CEST)
+Date:   Thu, 30 Jul 2020 12:03:04 +0200
+From:   peterz@infradead.org
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        mhelsley@vmware.com, mbenes@suse.cz
+Subject: Re: [PATCH v3 4/4] objtool: orc_gen: Move orc_entry out of
+ instruction structure
+Message-ID: <20200730100304.GI2655@hirez.programming.kicks-ass.net>
+References: <20200730094143.27494-1-jthierry@redhat.com>
+ <20200730094143.27494-5-jthierry@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200730094143.27494-5-jthierry@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Frequency descriptor of Lightning Mountain SoC doesn't have all the
-frequency entries so resulting in the below failure causing kernel hang.
+On Thu, Jul 30, 2020 at 10:41:43AM +0100, Julien Thierry wrote:
+> One orc_entry is associated with each instruction in the object file,
+> but having the orc_entry contained by the instruction structure forces
+> architectures not implementing the orc subcommands to provide a dummy
+> definition of the orc_entry.
+> 
+> Avoid that by having orc_entries in a separate list, part of the
+> objtool_file.
+> 
 
-[    0.000000] Error MSR_FSB_FREQ index 15 is unknown
-[    0.000000] tsc: Fast TSC calibration failed
+> diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
+> index 66fd56c33303..00f1efd05653 100644
+> --- a/tools/objtool/orc_gen.c
+> +++ b/tools/objtool/orc_gen.c
+> @@ -9,18 +9,33 @@
+>  #include "check.h"
+>  #include "warn.h"
+>  
+> +struct orc_data {
+> +	struct list_head list;
+> +	struct instruction *insn;
+> +	struct orc_entry orc;
+> +};
+> +
+>  int create_orc(struct objtool_file *file)
+>  {
+>  	struct instruction *insn;
+>  
+>  	for_each_insn(file, insn) {
+> -		struct orc_entry *orc = &insn->orc;
+>  		struct cfi_reg *cfa = &insn->cfi.cfa;
+>  		struct cfi_reg *bp = &insn->cfi.regs[CFI_BP];
+> +		struct orc_entry *orc;
+> +		struct orc_data *od;
+>  
+>  		if (!insn->sec->text)
+>  			continue;
+>  
+> +		od = calloc(1, sizeof(*od));
+> +		if (!od)
+> +			return -1;
+> +		od->insn = insn;
+> +		list_add_tail(&od->list, &file->orc_data_list);
+> +
+> +		orc = &od->orc;
+> +
+>  		orc->end = insn->cfi.end;
+>  
+>  		if (cfa->base == CFI_UNDEFINED) {
 
-So, add all the frequency entries in the Lightning Mountain SoC frequency
-descriptor.
-
-Fixes: 0cc5359d8fd45 ("x86/cpu: Update init data for new Airmont CPU model")
-Fixes: 812c2d7506fd ("x86/tsc_msr: Use named struct initializers")
-Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
----
-Changes on v2:
-  Add description in the comments explaining about frequency entries.
-
- arch/x86/kernel/tsc_msr.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/tsc_msr.c b/arch/x86/kernel/tsc_msr.c
-index 4fec6f3a1858b2..83b54c65aad2f3 100644
---- a/arch/x86/kernel/tsc_msr.c
-+++ b/arch/x86/kernel/tsc_msr.c
-@@ -133,10 +133,15 @@ static const struct freq_desc freq_desc_ann = {
- 	.mask = 0x0f,
- };
- 
--/* 24 MHz crystal? : 24 * 13 / 4 = 78 MHz */
-+/*
-+ * 24 MHz crystal? : 24 * 13 / 4 = 78 MHz
-+ * Frequency step for Lightning Mountain SoC is fixed to 78 MHz,
-+ * so all the frequency entries are 78000.
-+ */
- static const struct freq_desc freq_desc_lgm = {
- 	.use_msr_plat = true,
--	.freqs = { 78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000 },
-+	.freqs = { 78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000,
-+		   78000, 78000, 78000, 78000, 78000, 78000, 78000 },
- 	.mask = 0x0f,
- };
- 
--- 
-2.11.0
-
+This will dramatically increase the amount of allocation calls, what, if
+anything, does this do for the performance of objtool?
