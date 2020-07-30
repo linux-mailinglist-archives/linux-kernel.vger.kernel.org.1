@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7412335DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19702335FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729926AbgG3Ppi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 11:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728452AbgG3Pph (ORCPT
+        id S1729844AbgG3PrZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Jul 2020 11:47:25 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:9285 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729091AbgG3PrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 11:45:37 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1194AC061574;
-        Thu, 30 Jul 2020 08:45:37 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id n2so20294894edr.5;
-        Thu, 30 Jul 2020 08:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e1J01Oczhd220RAym1LfngVA7OUijoix/GTLOnOq0wQ=;
-        b=mYI2K30rokgxWE0w7UBhOkOYryaDcfDKVw60BHk8x3vYQ//HRCVaVYL2FU1hFijMfT
-         8rwLHSUgRg6/W4AvbrMRanJPGCBILdYCXc9SWKUFPRFJy2DEbfn3agkQJvTbPEzwd5hq
-         Z7xb4bbxbDLahiPDYZ4URSuz3MQj++4zVmHqM/tXhleHuX4XwfDzWsqa7a3ASLmbqdNw
-         PQtvqxQ6Qv1RyiW63qtuPBNmZF21uFplD/0Yigy4RjgHLEr3/XZIdkL6GA62Vw7iCzbH
-         ocQCE4wQEl0soppOd8kGhR6nr5YcIrnu8VKQ6oc7usO2cTRWz0ICuZi+gHH8fMD59RgR
-         HGRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e1J01Oczhd220RAym1LfngVA7OUijoix/GTLOnOq0wQ=;
-        b=sXlybJHqzcOrGf0G1i8J882oE/PXqPuQGnJ0kxpsvyZA1gJcZX/25K8gNEN7hfjkZt
-         oiQa55JDQfxg+qZHwD9vYLtx/CfdSYpysTTBWOeTtfXyf+QBHkjAA1tOSegoclfMM1pU
-         KJF2TMrC5JkGvwZ2tJmSJqsTivzhLvszKjFWU3OTzxycd5hftKnX5X3/VXT3/4PT7w6n
-         +NWog3J0NLrLo0OYhrwaur5ImoIwBg6NL427uX0WDFyjNmWZaz4t3Up2rxgD9Zms7ud4
-         8qi2oBJD6guqPX4mbwwqyqMa3N7nuo40zFqKmLMhGrpJ+q7Zb9RrL6+ijzwl/5zo4W7w
-         GFGQ==
-X-Gm-Message-State: AOAM533w3hX8+0Gt5hFlrZ2jNicNPnyOrrdfW9c3Pqvf8O40Fq+tuZcT
-        83o5tEcGcbGn0mM/noWnqvGA7Hk0XeQA6qcz2Ww=
-X-Google-Smtp-Source: ABdhPJxJBzb6IrbCKjuOC0BujTWS0dRylwUyeXRe0DDUCUbkZVlP/EuIVuplkgjxRZfoLFnUlWJiDAFypFhpWjX6r1E=
-X-Received: by 2002:a05:6402:1c10:: with SMTP id ck16mr3213692edb.151.1596123935735;
- Thu, 30 Jul 2020 08:45:35 -0700 (PDT)
+        Thu, 30 Jul 2020 11:47:24 -0400
+Subject: Re: [PATCH] RFC: selinux avc trace
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+CC:     Steven Rostedt <rostedt@goodmis.org>,
+        =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Nick Kralevich <nnk@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+References: <20200724091520.880211-1-tweek@google.com>
+ <20200724095232.5f9d3f17@oasis.local.home>
+ <80a23580-5067-93b0-53fa-3bd53253c056@sony.com>
+ <CAEjxPJ5tu=R20snbetzv+CCZMd-yD+obbkbf6MYVqQx3oZLkqA@mail.gmail.com>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <b2bde77e-98cf-2c62-79ed-ca7d58b10bca@sony.com>
+Date:   Thu, 30 Jul 2020 17:47:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1594644106-22449-1-git-send-email-akhilpo@codeaurora.org>
- <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com>
- <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu> <CAF6AEGurrsd3nrbB=ktZjWfKTNbKwPHYwTFiZdD-NOW1T7gePQ@mail.gmail.com>
- <20200721032442.hv7l4q6633vnmnfe@vireshk-mac-ubuntu> <CAF6AEGuhQcRskGhrFvmCf5T3EcZ9S+3LRdZBiaDYqF34yZjd+A@mail.gmail.com>
- <20200722053023.vwaoj5oqh4cazzzz@vireshk-mac-ubuntu> <20200730051045.jejrtkor3b32l2qe@vireshk-mac-ubuntu>
- <CAF6AEGuzff9+Wy4EHx0aDx1gBzSEGh--yqT5rnwLHp=U6amnyA@mail.gmail.com> <20200730153722.cnpg6n6tnmvjtuso@vireshk-mac-ubuntu>
-In-Reply-To: <20200730153722.cnpg6n6tnmvjtuso@vireshk-mac-ubuntu>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 30 Jul 2020 08:46:16 -0700
-Message-ID: <CAF6AEGs9=-0YBJpONaXf1wavU5ZpxhAQ19vfOn4JHby1zgPwpg@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] Add support for GPU DDR BW scaling
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@freedesktop.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
-        saravanak@google.com, Sibi Sankar <sibis@codeaurora.org>,
-        Jonathan <jonathan@marek.ca>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dave Airlie <airlied@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEjxPJ5tu=R20snbetzv+CCZMd-yD+obbkbf6MYVqQx3oZLkqA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=DrAoB13+ c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=_RQrkK6FrEwA:10 a=z6gsHLkEAAAA:8 a=t2xpVXhOPp6f4VaANuYA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 8:37 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 30-07-20, 08:27, Rob Clark wrote:
-> > Hmm, I've already sent my pull request to Dave, dropping the patch
-> > would require force-push and sending a new PR.  Which I can do if Dave
-> > prefers.  OTOH I guess it isn't the end of the world if the patch is
-> > merged via two different trees.
->
-> I don't think a patch can go via two trees, as that would have two sha
-> keys for the same code.
+On 7/30/20 4:50 PM, Stephen Smalley wrote:
+> On Thu, Jul 30, 2020 at 10:29 AM peter enderborg
+> <peter.enderborg@sony.com> wrote:
+>> I did manage to rebase it but this is about my approach.
+>>
+>> Compared to Thiébaud Weksteen patch this adds:
+>>
+>> 1 Filtering. Types goes to trace so we can put up a filter for contexts or type etc.
+>>
+>> 2 It tries also to cover non denies.  And upon that you should be able to do coverage tools.
+>> I think many systems have a lot more rules that what is needed, but there is good way
+>> to find out what.  A other way us to make a stat page for the rules, but this way connect to
+>> userspace and can be used for test cases.
+>>
+>> This code need a lot more work, but it shows how the filter should work (extra info is not right)
+>> and there are  memory leaks, extra debug info and nonsense variable etc.
+> Perhaps the two of you could work together to come up with a common
+> tracepoint that addresses both needs.
 
-it looks weird in the history, but other than that I think it is
-fine.. at least I see it happen somewhat regularly with fixes in drm
+Sounds good to me.
 
-> Though it is fine for a patch to go via two different trees if we make
-> sure the same sha key is used for both.
->
-> Will it be possible for you to provide a branch/tag of your branch
-> that I can base stuff of ?
+> On the one hand, we don't need/want to duplicate the avc message
+> itself; we just need enough to be able to correlate them.
+> With respect to non-denials, SELinux auditallow statements can be used
+> to generate avc: granted messages that can be used to support coverage
+> tools although you can easily flood the logs that way.  One other
 
-You could use https://gitlab.freedesktop.org/drm/msm/-/commits/msm-next/
-(or the tag drm-msm-next-2020-07-29), which already has the OPP patch.
-I've been trying to avoid force-pushing that because downstream trees
-are already pulling from that.
+That is one reason to use trace. I can be used for things that
+generate a lot of data. Like memory allocations and scheduler etc,
+and it is a developer tool so you should not have to worry about DOS etc.
 
-BR,
--R
+Both netlink and android logging are too happy to throw away data for
+developers to be happy.
+
+> limitation of the other patch is that it doesn't support generating
+> trace information for denials silenced by dontaudit rules, which might
+> be challenging to debug especially on Android where you can't just run
+> semodule -DB to strip all dontaudits.
+
+I think that only work for rooted devices. Many application developers
+run on commercial devices that are locked, but they do have access
+to trace. But I have no idea if they (google) have intended the selinux traces to
+available there.
+
