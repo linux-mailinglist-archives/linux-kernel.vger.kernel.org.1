@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B702335D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9175D2335E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729919AbgG3Poy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 11:44:54 -0400
-Received: from mga01.intel.com ([192.55.52.88]:64857 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729484AbgG3Pox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 11:44:53 -0400
-IronPort-SDR: TIR6l2DGrofJF3PaleNR+Vt77Ae4qR4Cdp4TlpZruvf2aPV75wDaAgQoHvBoAr5eXt5bWYm4a2
- uV6cgeXNVPQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="169741992"
-X-IronPort-AV: E=Sophos;i="5.75,414,1589266800"; 
-   d="scan'208";a="169741992"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 08:44:52 -0700
-IronPort-SDR: BaDDVqq1GqCh5P3//G0SQJkoDZ+wJwOxaBVXR86DpT6KgejRLnM2kmkD5ysie2SG0I1YNg4Dog
- CTWy6xxIrUcw==
-X-IronPort-AV: E=Sophos;i="5.75,414,1589266800"; 
-   d="scan'208";a="465284728"
-Received: from jrwang2-mobl.amr.corp.intel.com (HELO [10.212.82.25]) ([10.212.82.25])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 08:44:49 -0700
-Subject: Re: [PATCH 2/2] ASoC: Intel: Add period size constraint on strago
- board
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To:     "Lu, Brent" <brent.lu@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Sam McNally <sammc@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Daniel Stuart <daniel.stuart14@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        Damian van Soelen <dj.vsoelen@gmail.com>
-References: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
- <1596020585-11517-3-git-send-email-brent.lu@intel.com>
- <4fe97f63-e552-3b2f-803c-53894b196bfd@linux.intel.com>
- <DM6PR11MB36421D9A808D401416B72D2D97710@DM6PR11MB3642.namprd11.prod.outlook.com>
- <f1386a05-8866-9251-c751-21c9109aa35f@linux.intel.com>
-Message-ID: <c00c47ad-abd7-d6e7-e3c5-a25a6a4f7f68@linux.intel.com>
-Date:   Thu, 30 Jul 2020 10:44:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729992AbgG3Pp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 11:45:59 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57340 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729945AbgG3Ppz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 11:45:55 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id F04418040A69;
+        Thu, 30 Jul 2020 15:45:52 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id KJ0HO7bzAbyZ; Thu, 30 Jul 2020 18:45:51 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <dmaengine@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/5] dmaengine: dw: Introduce non-mem peripherals optimizations
+Date:   Thu, 30 Jul 2020 18:45:40 +0300
+Message-ID: <20200730154545.3965-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <f1386a05-8866-9251-c751-21c9109aa35f@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After a lot of tests and thorough DW DMAC databook studying we've
+discovered that the driver can be optimized especially when it comes to
+working with non-memory peripherals.
 
+First of all we've found out that since each DW DMAC channel can
+be synthesized with different parameters, then even when two of them
+are configured to perform the same DMA transactions they may execute them
+with different performance. Since some DMA client devices might be
+sensitive to such important parameter as performance, then it is a good
+idea to let them request only suitable DMA channels. In this patchset we
+introduce a functionality, which makes it possible by passing the DMA
+channels mask either over the "dmas" DT property or in the dw_dma_slave
+platform data descriptor.
 
-On 7/30/20 10:27 AM, Pierre-Louis Bossart wrote:
-> 
-> 
->>> Is this patch required if you've already constrained the period sizes 
->>> for the
->>> platform driver in patch1?
->>
->> Yes or alsa will select 320 as default period size for it.
-> 
-> ok, then that's a miss in your patch1. 320 samples is a multiple of 1ms 
+Secondly FIFO-mode of the "FIFO readiness" criterion is more suitable for
+the pure memory DMA transfers, since it minimizes the system bus
+utilization, but causes some performance drop. When it comes to working with
+non-memory peripherals the DMA engine performance comes to the first
+place. Since normally DMA client devices keep data in internal FIFOs, any
+latency at some critical moment may cause a FIFO being overflown and
+consequently losing data. So in order to minimize a chance of the DW DMAC
+internal FIFO being a bottle neck during the DMA transfers to and from
+non-memory peripherals we propose not to use FIFO-mode for them.
 
-typo: is NOT
+Thirdly it has been discovered that using a DMA transaction length is
+redundant when calculating the destination transfer width for the
+dev-to-mem DMA communications. That shall increase performance of the DMA
+transfers with unaligned data length.
 
-> for 48kHz rates. I think it was valid only for the 16kHz VoIP paths used 
-> in some versions of Android, but that we don't support in the upstream 
-> code.
-> 
-> To build on Takashi's answer, the real ask here is to require that the 
-> period be a multiple of 1ms, because that's the fundamental 
-> design/limitation of firmware. It doesn't matter if it's 48, 96, 192, 
-> 240, 480, 960 samples.
+Finally there is a small optimization in the burst length setting. In
+particular we've found out, that according to the DW DMAC databoot it's
+pointless to set one for the memory peripherals since they don't have
+handshaking interface connected to the DMA controller. So we suggest to
+just ignore the burst length config when it comes to setting the memory
+peripherals up.
+
+Note this patchset is supposed to be applied on top of the series:
+Link: https://lore.kernel.org/dmaengine/20200723005848.31907-1-Sergey.Semin@baikalelectronics.ru
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: dmaengine@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (5):
+  dt-bindings: dma: dw: Add optional DMA-channels mask cell support
+  dmaengine: dw: Activate FIFO-mode for memory peripherals only
+  dmaengine: dw: Discard dlen from the dev-to-mem xfer width calculation
+  dmaengine: dw: Ignore burst setting for memory peripherals
+  dmaengine: dw: Add DMA-channels mask cell support
+
+ .../devicetree/bindings/dma/snps,dma-spear1340.yaml        | 7 +++++--
+ drivers/dma/dw/core.c                                      | 6 +++++-
+ drivers/dma/dw/dw.c                                        | 7 +++----
+ drivers/dma/dw/idma32.c                                    | 5 ++---
+ drivers/dma/dw/of.c                                        | 7 +++++--
+ include/linux/platform_data/dma-dw.h                       | 3 +++
+ 6 files changed, 23 insertions(+), 12 deletions(-)
+
+-- 
+2.27.0
+
