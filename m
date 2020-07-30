@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5A9232F22
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22FE9232F26
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728920AbgG3JDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 05:03:34 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:54833 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbgG3JDc (ORCPT
+        id S1729173AbgG3JDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 05:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728732AbgG3JDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 05:03:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1596099811; x=1627635811;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=wG0qc9Qe3PmllwLgrljUElhepPvWWpfYNaS3kbDUyic=;
-  b=lI6HSdOsCb9fPW3NAwFhwI1/ga6hveAcvjMeWTtTo26KeaFBQY8lTUOA
-   jgH5GUDBWedrT07anJegr7pBnxpGprCBjWY0lPoFbHqwLzoBMQ0otMsP7
-   PUMeYJj0JyWRu4DAjcYMqZVlu96Azhbl4fi8Hll3gII8EI3hl50VKw+Kw
-   EpCNoQZbKP5RoYUzG6ORex9Owbql9mX+tltXmiqrpo4fHVNt6jHQqX667
-   Hw+QMr2Uy6CZWRcjvEHSwBJeKgj7qmzK4dCtAPJ5h6/lF1J2EQSNFbF/s
-   bjGSJDIDHb1Fem7QD2o+tXed61NuzLJdRx/Z9nl6s3bZbLHLP+uOFfhyP
-   w==;
-IronPort-SDR: /LnkmD0fcoQxRE5257n9DoPutsYPD8XlBWm6digJP66ACvdxM74XPMzlytKlYpjnMrRA93ypUC
- JXRwfIqabsQ7nb+HaVxXrEZ/+CM+xOvpE+063JYq9StAxiWt1/hRHNFIplY0trc1nqKpxEiXgx
- jlxMjL+PW+7HipneCPkmp5mBhtHtsDV1AvtHkxWSf76i1dQFUW0Utd30PCFJ85u3GJKv38hRvO
- FvVn9LJT9bVlLqHKeEAdHqUp14VcCWViGm4zWDhD4xgfaA/fW0NhTE3eQBs8XEaazqwhEXwt9X
- ixA=
-X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
-   d="scan'208";a="21081936"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Jul 2020 02:03:30 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 30 Jul 2020 02:03:30 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 30 Jul 2020 02:03:27 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <mturquette@linaro.org>,
-        <bbrezillon@kernel.org>
-CC:     <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH] clk: at91: clk-main: update key before writing AT91_CKGR_MOR
-Date:   Thu, 30 Jul 2020 12:03:23 +0300
-Message-ID: <1596099803-1393-1-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 30 Jul 2020 05:03:53 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E253C061794;
+        Thu, 30 Jul 2020 02:03:53 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a5so14165101wrm.6;
+        Thu, 30 Jul 2020 02:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SeUArJS4+sD39HCLlt6g8IUuT8R2pEK+lwZA6XLSsz4=;
+        b=eMBhXmWkxmg8kJQm8Jm9Azy2o1rj87qKzFIlGdv9S9zFeAlc+PZZhZuPt1FnsQFru/
+         E2NRbjGpXGR9NcmWb4OLqypJt0ZbroKgEGQw8UF9xj4Of/s3ETwrrmxCy9AOA2dvtqof
+         gNzCAtV78LdThaKzcdJrTCokF54I4gNnAdsCE3Q1RR5OZU3GyBaJopRogyMJOQAx2UiD
+         ss4m4HR2iasI4N7xAF4x1wdZlk68e5toSHV2R4mCUKfJdqcpzPuqRjDUmBMIslxwrJWu
+         aDmkSysxYGlfNR1UTdCEvGfMHzXJHwawlbhLPdyhrqHcVt/+9b+K2uAwzDVtIvpfOz4u
+         lMGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SeUArJS4+sD39HCLlt6g8IUuT8R2pEK+lwZA6XLSsz4=;
+        b=tYp7oCveWSVqooE/eMe/bct6+k5eeAA0H4bjbvaxuqTxG61CKsTcqmkGb6okgz4M7U
+         xSFK3WaxOBEXOj+HKD03ZjFYg9rcrRFrbKAgXpXBQjV8oOLaOpevQby/t1vWO9z0NlFk
+         0WiqVyS40x3DYLD9Rx9Ex/0zMTmS3ZwaqMQ9azWIPhf2Dl7a5sjtg+hMajhhpoYP1s8H
+         LWLuVZC5IsScnm3SE0ssYhQUyoC+POT1sKvEQQisUZ6hPFAXjmMY9TL1jeX/TgARS7zQ
+         ikmge6f2BHZb/Ha1g47lFrOFac02yt+tMQ1stWv5vdiOQqYfW7OPLo5Dj+WV+sD0kWwx
+         iPhQ==
+X-Gm-Message-State: AOAM532QwBSglRCU8nUJjlaBZjpAukr8mMjWZJ5k+256gpKCU7UQk5N5
+        En3hnnR+NabFBLDXCsbbeGo=
+X-Google-Smtp-Source: ABdhPJyNZYwhrS5KA21KNWl/AE51BzMY88ZO62K3HW+2iKld2AGa6p8xpTllJBX2+vh0jRQBiaLgvw==
+X-Received: by 2002:adf:8bd3:: with SMTP id w19mr32760613wra.167.1596099831847;
+        Thu, 30 Jul 2020 02:03:51 -0700 (PDT)
+Received: from ziggy.stardust (81.172.57.81.dyn.user.ono.com. [81.172.57.81])
+        by smtp.gmail.com with ESMTPSA id f12sm8492015wrj.48.2020.07.30.02.03.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Jul 2020 02:03:50 -0700 (PDT)
+Subject: Re: [v2,3/3] watchdog: mt8192: add wdt support
+To:     Crystal Guo <crystal.guo@mediatek.com>, linux@roeck-us.net,
+        robh+dt@kernel.org
+Cc:     srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, seiya.wang@mediatek.com,
+        erin.lo@mediatek.com
+References: <1596016922-13184-1-git-send-email-crystal.guo@mediatek.com>
+ <1596016922-13184-4-git-send-email-crystal.guo@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <8774e948-502d-8a83-6e7c-5459497c52a4@gmail.com>
+Date:   Thu, 30 Jul 2020 11:03:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1596016922-13184-4-git-send-email-crystal.guo@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SAMA5D2 datasheet specifies on chapter 33.22.8 (PMC Clock Generator
-Main Oscillator Register) that writing any value other than
-0x37 on KEY field aborts the write operation. Use the key when
-selecting main clock parent.
 
-Fixes: 27cb1c2083373 ("clk: at91: rework main clk implementation")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/clk/at91/clk-main.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/at91/clk-main.c b/drivers/clk/at91/clk-main.c
-index 5c83e899084f..cfae2f59df66 100644
---- a/drivers/clk/at91/clk-main.c
-+++ b/drivers/clk/at91/clk-main.c
-@@ -437,12 +437,17 @@ static int clk_sam9x5_main_set_parent(struct clk_hw *hw, u8 index)
- 		return -EINVAL;
- 
- 	regmap_read(regmap, AT91_CKGR_MOR, &tmp);
--	tmp &= ~MOR_KEY_MASK;
- 
- 	if (index && !(tmp & AT91_PMC_MOSCSEL))
--		regmap_write(regmap, AT91_CKGR_MOR, tmp | AT91_PMC_MOSCSEL);
-+		tmp = AT91_PMC_MOSCSEL;
- 	else if (!index && (tmp & AT91_PMC_MOSCSEL))
--		regmap_write(regmap, AT91_CKGR_MOR, tmp & ~AT91_PMC_MOSCSEL);
-+		tmp = 0;
-+	else
-+		return 0;
-+
-+	regmap_update_bits(regmap, AT91_CKGR_MOR,
-+			   AT91_PMC_MOSCSEL | MOR_KEY_MASK,
-+			   tmp | AT91_PMC_KEY);
- 
- 	while (!clk_sam9x5_main_ready(regmap))
- 		cpu_relax();
--- 
-2.7.4
+On 29/07/2020 12:02, Crystal Guo wrote:
+> add driver setting to support mt8192 wdt
 
+Commit message could be better:
+
+"Add support for watchdog device found in MT8192 SoC." for example.
+
+> 
+> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
+
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+> ---
+>   drivers/watchdog/mtk_wdt.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+> index d6a6393..aef0c2d 100644
+> --- a/drivers/watchdog/mtk_wdt.c
+> +++ b/drivers/watchdog/mtk_wdt.c
+> @@ -11,6 +11,7 @@
+>   
+>   #include <dt-bindings/reset-controller/mt2712-resets.h>
+>   #include <dt-bindings/reset-controller/mt8183-resets.h>
+> +#include <dt-bindings/reset-controller/mt8192-resets.h>
+>   #include <linux/delay.h>
+>   #include <linux/err.h>
+>   #include <linux/init.h>
+> @@ -76,6 +77,10 @@ struct mtk_wdt_data {
+>   	.toprgu_sw_rst_num = MT8183_TOPRGU_SW_RST_NUM,
+>   };
+>   
+> +static const struct mtk_wdt_data mt8192_data = {
+> +	.toprgu_sw_rst_num = MT8192_TOPRGU_SW_RST_NUM,
+> +};
+> +
+>   static int toprgu_reset_update(struct reset_controller_dev *rcdev,
+>   			       unsigned long id, bool assert)
+>   {
+> @@ -322,6 +327,7 @@ static int mtk_wdt_resume(struct device *dev)
+>   	{ .compatible = "mediatek,mt2712-wdt", .data = &mt2712_data },
+>   	{ .compatible = "mediatek,mt6589-wdt" },
+>   	{ .compatible = "mediatek,mt8183-wdt", .data = &mt8183_data },
+> +	{ .compatible = "mediatek,mt8192-wdt", .data = &mt8192_data },
+>   	{ /* sentinel */ }
+>   };
+>   MODULE_DEVICE_TABLE(of, mtk_wdt_dt_ids);
+> 
