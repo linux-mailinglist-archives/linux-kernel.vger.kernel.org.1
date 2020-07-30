@@ -2,137 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC79232ABE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 06:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24384232AC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 06:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbgG3EPC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Jul 2020 00:15:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59809 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgG3EPB (ORCPT
+        id S1728070AbgG3EVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 00:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbgG3EVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 00:15:01 -0400
-Received: from mail-pg1-f197.google.com ([209.85.215.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1k0zy6-0003Ud-F2
-        for linux-kernel@vger.kernel.org; Thu, 30 Jul 2020 04:14:58 +0000
-Received: by mail-pg1-f197.google.com with SMTP id e3so16766269pgs.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 21:14:58 -0700 (PDT)
+        Thu, 30 Jul 2020 00:21:45 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400FFC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 21:21:45 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id k23so26872278iom.10
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 21:21:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6xpfl3EgxCfkX2czZsyELOLTTm2Qpx8o0HHjudwK3iQ=;
+        b=PZg3x3E96FLpVfIP4mXsw6BJZa4kPE724pl4xDKJ762RhlwGzZDB/XJH0kA7tI9NJk
+         0ueTo6zqLNzsEUaORTov6c7u0Uq/ToqZ8Yea7HoEB9fpHbs/5BM2hiimDiS/9POw6Kf6
+         oFw7JsCzJJjkwiLmiwwtgXzBOmuELSmpECDPP/7dipETJB4Wg58tR6d2cJU+uCEFRDQ5
+         WG/zSQGPATkSf89kIXWxTZPldDV3JuLOJ5SrLl53a//S0Fp3w35L6VmWkMFf0mnQJQtz
+         +CL/hxthboihNtBZXjHk4nzk4xKqvGnGejHab4KdvUR9nom+ka59A8bDCT6GuoLdEo/+
+         PVWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=5cMoLJ8ubMqndVw9m4PPR4lyGXii7QUn7MzeOw06kcg=;
-        b=Klr1zBhfa6oSfozoA/Do2Q7aryCoS8wL0mXmWFwd+O2va8LAv0x8FUiFfePClO2EWK
-         xMoxo4D1eLaWxy/hMLnwXL6I6SMt6hS7iCHEkxYL9iAKgsI0ch8gJrmnop8UbAF+MQ3P
-         0Izagdnkba3LRxy+ukF95mRkv1rVcaFvN3IQwFwgCg4GUJ8PzkSIECTmKLgZna2QEb7Y
-         hqyHPjYIVT2mWmmsFyy0YXnqp41vW76v8UpclFPzoPg6KysAKRmC2uWxJxy4TKY//L01
-         i7DfACXMX9xCSFhhYFpP5fWngsazM8tM3gdBu52Tr/hfLK5CAyLnS2pZ5EPlJ9mP01Pr
-         +SsQ==
-X-Gm-Message-State: AOAM531svr4K0mb3MTsTe0Jyhgyocf4rwR4BQiavWpKWhmbbmh4IRm4A
-        2O2DY22IHOHOzrB2RuxidekTFLSaYg0zF6o5UhN9sls6wNQugVzH34NXK8NGAS4ihYedcuDTDzT
-        3IE1k+Jzlqu/wu+v5y2x3VqUA79iTt9pg/uqze4Oobw==
-X-Received: by 2002:a17:90b:1b08:: with SMTP id nu8mr1251784pjb.190.1596082497057;
-        Wed, 29 Jul 2020 21:14:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHqxgRcJVzZxTqIEzl11Z+pJEA4N4b+XBeqOzZNX+oq5PUFsnaJHeYA005ToKEdz5KDXYSDA==
-X-Received: by 2002:a17:90b:1b08:: with SMTP id nu8mr1251748pjb.190.1596082496693;
-        Wed, 29 Jul 2020 21:14:56 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id b12sm4257122pga.87.2020.07.29.21.14.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 29 Jul 2020 21:14:45 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] Revert "Bluetooth: btusb: Disable runtime suspend on
- Realtek devices"
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20200729161740.1.Ib03d0827c8e48fc3df887fec698f79fa335c9274@changeid>
-Date:   Thu, 30 Jul 2020 12:14:42 +0800
-Cc:     marcel@holtmann.org, chromeos-bluetooth-upstreaming@chromium.org,
-        linux-bluetooth@vger.kernel.org, Alex Lu <alex_lu@realsil.com.cn>,
-        linux-pm@vger.kernel.org, Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <8DFB5D1A-AA7E-4960-9937-4FD00827937B@canonical.com>
-References: <20200729161740.1.Ib03d0827c8e48fc3df887fec698f79fa335c9274@changeid>
-To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6xpfl3EgxCfkX2czZsyELOLTTm2Qpx8o0HHjudwK3iQ=;
+        b=Lkk7+C6sUGvhLGIjb0t/vlR9x542xbcjE5xfPhC2R3ZtdF/VWu73uArUpGSdCk5Xcr
+         4hrlxg6km+c6V83/ZlmD01Fj3WSk2cNOQJnAP8crXG+6+J9KaSpvBYVD7rHJoDCoVqES
+         8yXpUIKwv83+hO/8qrB/APfpNDR+ueG3XisbBzDYZaoAW2rwGCIMAIQJJVnRij4XUVxA
+         O7ZlhwBInUgmizfU8CFP6KYZRqnQdpt65+0T30Vio53dtbdjikOfjsvdINZ+e/WkUtfC
+         nViMdnAEiO+HYLrTbNyNruMM2iaZ9kME0B6aHe5YigTIz6JIGCtcNAcPQCAdULkD4M5A
+         Mp+A==
+X-Gm-Message-State: AOAM533mb+HzqwmgV63rDj91I96q/GdUDcqSEPCSkQvUPlI/e6HVP9on
+        t7q3W7BDKiKFET0er4N79acgi1i6Y96qC7ZkA05v3olEftY=
+X-Google-Smtp-Source: ABdhPJykIKJCHIXweVbFX5NqFGgm+dgBMuMyqp12O5YWh5nSx5UmBH6/j6/5tCLa+7uUqLnQcmkw5jGVyHRRpBmNCtw=
+X-Received: by 2002:a02:6066:: with SMTP id d38mr1479683jaf.105.1596082904664;
+ Wed, 29 Jul 2020 21:21:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200630142639.22770-1-david@redhat.com> <20200630142639.22770-3-david@redhat.com>
+In-Reply-To: <20200630142639.22770-3-david@redhat.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Thu, 30 Jul 2020 06:21:33 +0200
+Message-ID: <CAM9Jb+gGhg9umBKZRbkCDAAgqi+4VqMzN0BZ5v0hVPoR7gdhvA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/6] mm/page_isolation: don't dump_page(NULL) in set_migratetype_isolate()
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abhishek,
-
-> On Jul 30, 2020, at 07:17, Abhishek Pandit-Subedi <abhishekpandit@chromium.org> wrote:
-> 
-> This reverts commit 7ecacafc240638148567742cca41aa7144b4fe1e.
-> 
-> Testing this change on a board with RTL8822CE, I found that enabling
-> autosuspend has no effect on the stability of the system. The board
-> continued working after autosuspend, suspend and reboot.
-
-The original issue was found on 8723DE. Do you have one to test with?
-The rtw88 codebase has changed a lot and maybe it's already fixed in mainline.
-Let me do some test and I'll report back.
-
-> 
-> The original commit makes it impossible to enable autosuspend on working
-> systems so it should be reverted. Disabling autosuspend should be done
-> via module param or udev in userspace instead.
-> 
-> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> Right now, if we have two isolations racing, we might trigger the
+> WARN_ON_ONCE() and to dump_page(NULL), dereferencing NULL. Let's just
+> return directly.
+>
+> In the future, we might want to report -EAGAIN to the caller instead, as
+> this could indicate a temporary isolation failure only.
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
-> We have a few Chromebooks using the RTL 8822CE part over USB and they
-> are running without problems with autosuspend enabled. While bringing up
-> a new board, I found some power regressions that I was able to narrow
-> down to this change so I'm requesting a revert.
-> 
-> I tested this on Hp Chromebook 14a (running 4.14 kernel and 5.4 kernel)
-> with this revert:
-> * Enabled autosuspend, used it normally with a HID device
-> * Suspended the Chromebook and verified it worked normally on resume
-> * Rebooted the Chromebook and verified Bluetooth was working on next
->  boot
-> 
-> I didn't see the issue that was originally reported with this fix. For
-> the original reporter, if you're still seeing this issue, there are
-> other ways to disable autosuspend for your device:
-> * set module param: enable_autosuspend=0
-> * change your kconfig so BT_HCIBTUSB_AUTOSUSPEND=n
-> * use a udev rule to disable autosuspend for specific vid:pid
-> 
-> Keeping this change in the kernel makes it impossible to enable
-> autosuspend so it should be reverted.
+>  mm/page_isolation.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+> index f6d07c5f0d34d..553b49a34cf71 100644
+> --- a/mm/page_isolation.c
+> +++ b/mm/page_isolation.c
+> @@ -29,10 +29,12 @@ static int set_migratetype_isolate(struct page *page, int migratetype, int isol_
+>         /*
+>          * We assume the caller intended to SET migrate type to isolate.
+>          * If it is already set, then someone else must have raced and
+> -        * set it before us.  Return -EBUSY
+> +        * set it before us.
+>          */
+> -       if (is_migrate_isolate_page(page))
+> -               goto out;
+> +       if (is_migrate_isolate_page(page)) {
+> +               spin_unlock_irqrestore(&zone->lock, flags);
+> +               return -EBUSY;
+> +       }
+>
+>         /*
+>          * FIXME: Now, memory hotplug doesn't call shrink_slab() by itself.
+> --
 
-It's apparently a driver/firmware/hardware issue, so the fix should keep inside the kernel.
-However, the fix can be more precise and target only 8723DE.
+Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 
-Kai-Heng
-
-> 
-> drivers/bluetooth/btusb.c | 4 ----
-> 1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 1f51494f581812..8d2608ddfd0875 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -4086,10 +4086,6 @@ static int btusb_probe(struct usb_interface *intf,
-> 			set_bit(BTUSB_USE_ALT1_FOR_WBS, &data->flags);
-> 		else
-> 			bt_dev_err(hdev, "Device does not support ALT setting 1");
-> -
-> -		err = usb_autopm_get_interface(intf);
-> -		if (err < 0)
-> -			goto out_free_dev;
-> 	}
-> 
-> 	if (!reset)
-> -- 
-> 2.28.0.rc0.142.g3c755180ce-goog
-> 
-
+> 2.26.2
+>
+>
