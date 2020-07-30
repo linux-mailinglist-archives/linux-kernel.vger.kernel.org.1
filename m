@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDC5232E40
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEB4232EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729503AbgG3ISr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:18:47 -0400
-Received: from mga05.intel.com ([192.55.52.43]:20059 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729811AbgG3ISn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:18:43 -0400
-IronPort-SDR: B1etKWDcpeaKtSExcsu6koGiIJtr4/CCePNTsRNXrLVUNgIqLhpJTIvPAHApXEaf1GsDgguif2
- M4apBEynD8Jg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="236423480"
-X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
-   d="scan'208";a="236423480"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 01:18:42 -0700
-IronPort-SDR: jT1YwYmjCO6/8hTme+5T0L3vRl94aFnGf3RgGPCm+PguQT6V7guNehPyrRwKo3NF0ZwE8lBKaz
- S0V1eJl1hpYw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
-   d="scan'208";a="491051305"
-Received: from unknown (HELO linuxpc.iind.intel.com) ([10.223.107.108])
-  by fmsmga005.fm.intel.com with ESMTP; 30 Jul 2020 01:18:40 -0700
-From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-To:     rui.zhang@intel.com, srinivas.pandruvada@linux.intel.com,
-        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
+        id S1729103AbgG3IZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726273AbgG3IZN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:25:13 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEDEC061794;
+        Thu, 30 Jul 2020 01:25:13 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id df16so2971025edb.9;
+        Thu, 30 Jul 2020 01:25:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DJxfTFvC3hUmMu3XHLkhRUumg4gnQJ/KBa/k8zUvYyI=;
+        b=UnCTJLAzGnQ/m1ceoQ5nR6nP9lJGdGB8cVstYbJAaJZjpkRKlkaYm9ttsVyJy/cD1m
+         KWcpbpUXhv7JySWBjC+qQZJy+MAfWFSlVEmqaAbBjn9Xt+eJ+i0ZndaWnVJyLHZFxMp9
+         DT7e8ptOJDC/Hsl0VxRHXSxdJxJpVFRM9jjb1sx4g9F03CQ/+5og/r7bDHF9QOCNrT8E
+         HUAW1QPduCfgNtWpLLhdzBC3zPHax5jvCtPj6WtFmiJ+eGfOD0dwD0nMVOX1GPqvuvYT
+         p1jn7a41TxmTfwYELhkF4hqCXkLvu8kgSlsNM8wBZC6FPsrjWNiswbSQkI5y/VOKkrNT
+         mcnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DJxfTFvC3hUmMu3XHLkhRUumg4gnQJ/KBa/k8zUvYyI=;
+        b=TZY9EJPbp0E0OFz+u/FOt7oy5xcN2MC5cY0dS6XQPfXCdiGr8L+9QhLCmGskeXspTi
+         ULahG/Cc3OOi/Uz1uc0yulCkLzdSYSfYLT1WdLGy2hXM4sSH9Lgl+gNcLBQKt7I7N60O
+         cbJpKFJ7LBHLn7Flv+iCNIxZOq9k5drK5R4wOqjec8konUWtmOxY21ezocuAWqYlxAgS
+         vgY1cWZ9C5XJ1+TkS2qPd+bPjV1XBg8WdPQOA2HirOh8JU3mLa0qQJPpEDF4FXmpXerR
+         iUxI5eAWMWXuwq4i+TXbAp3H3NvOfM/hR/9RZ64NnRu63lfJHnogRlC1HY4zQ7YD8DTx
+         8//w==
+X-Gm-Message-State: AOAM533GOAZYMNzBTCj+JDPRRdSzZ66Z/anLIdd3ECi/J1Wt1nn7nY4I
+        aDAw3eJ0HmiqRAlddUa8dm71uyKh
+X-Google-Smtp-Source: ABdhPJx5E9kBhC7ffMIfFvxTok1TBdg/8bFbTDJhlHOumSB+EQkYDF93CC7J7lSg/YqzZYoYTi79tQ==
+X-Received: by 2002:aa7:d6c7:: with SMTP id x7mr1543213edr.167.1596097511859;
+        Thu, 30 Jul 2020 01:25:11 -0700 (PDT)
+Received: from skbuf ([188.26.57.97])
+        by smtp.gmail.com with ESMTPSA id k18sm4863078ejp.81.2020.07.30.01.25.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 01:25:11 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 11:25:09 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, netdev@vger.kernel.org,
+        madalin.bucur@oss.nxp.com, camelia.groza@nxp.com,
+        joakim.tjernlund@infinera.com, fido_max@inbox.ru,
         linux-kernel@vger.kernel.org
-Cc:     Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-Subject: [PATCH] thermal: intel: intel_pch_thermal: Add Cannon Lake Low Power PCH support
-Date:   Thu, 30 Jul 2020 13:55:03 +0530
-Message-Id: <1596097503-27924-1-git-send-email-sumeet.r.pawnikar@intel.com>
-X-Mailer: git-send-email 1.7.9.5
+Subject: Re: [PATCH v2 stable-5.4.y] Revert "dpaa_eth: fix usage as DSA
+ master, try 3"
+Message-ID: <20200730082509.4543oou7lozdmbjz@skbuf>
+References: <20200624124517.3212326-1-olteanv@gmail.com>
+ <20200730073013.GC4045776@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200730073013.GC4045776@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add LP (Low Power) PCH id for Cannon Lake (CNL) based platforms.
+On Thu, Jul 30, 2020 at 09:30:13AM +0200, Greg KH wrote:
+> 
+> Now queued up, thanks.
+> 
+> greg k-h
 
-Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
----
- drivers/thermal/intel/intel_pch_thermal.c |    3 +++
- 1 file changed, 3 insertions(+)
+Thanks Greg, I was wondering whether I should be reminding you or not.
 
-diff --git a/drivers/thermal/intel/intel_pch_thermal.c b/drivers/thermal/intel/intel_pch_thermal.c
-index 56401fd4708d..7ed66927d822 100644
---- a/drivers/thermal/intel/intel_pch_thermal.c
-+++ b/drivers/thermal/intel/intel_pch_thermal.c
-@@ -24,6 +24,7 @@
- #define PCH_THERMAL_DID_SKL_H	0xA131 /* Skylake PCH 100 series */
- #define PCH_THERMAL_DID_CNL	0x9Df9 /* CNL PCH */
- #define PCH_THERMAL_DID_CNL_H	0xA379 /* CNL-H PCH */
-+#define PCH_THERMAL_DID_CNL_LP	0x02F9 /* CNL-LP PCH */
- #define PCH_THERMAL_DID_CML_H	0X06F9 /* CML-H PCH */
- 
- /* Wildcat Point-LP  PCH Thermal registers */
-@@ -405,6 +406,8 @@ static int intel_pch_thermal_resume(struct device *device)
- 		.driver_data = board_cnl, },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCH_THERMAL_DID_CNL_H),
- 		.driver_data = board_cnl, },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCH_THERMAL_DID_CNL_LP),
-+		.driver_data = board_cnl, },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCH_THERMAL_DID_CML_H),
- 		.driver_data = board_cml, },
- 	{ 0, },
--- 
-1.7.9.5
-
+-Vladimir
