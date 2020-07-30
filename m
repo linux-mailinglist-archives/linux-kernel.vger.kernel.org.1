@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48730233377
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EF9233381
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 15:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbgG3Nyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 09:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbgG3Nyf (ORCPT
+        id S1729330AbgG3Nz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 09:55:56 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:56392 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728440AbgG3Nzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 09:54:35 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C82BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:54:35 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a9so4265617pjd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 06:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Tge8OIdcAuImjNZAecVhmu6eMDpyDyeIqIaLKa/p9WI=;
-        b=MrrjsvcDuYwum8bwYmttmdNXOPwfYqaqZysQTAmgNzhGr97eP6mSDfGsE7yYAxxR95
-         o0YK0Oj71dKbaOkgVd7etX4M/xzTgpzq4j3h/GilTxAr/KzrhP9o23/3vPyPkUASXkf7
-         ed1a5S9U91jXZSJ2/NJh26AFTh5Bh3J6GAnN/rb/0fCIAjSDsC/ztmvQI/vQmiV4BSkc
-         xiZIFou7wG7lbVQg2XJV5sQbcehBV/12c8r/J/50p6GXo6xPJhRvBS/SSgD27m/RxL8q
-         GyBUtC1lpd4rgliincSyJ0hXLzNSby23DsK/SKFAmkbEpqFNI5K1lahgh3e0rKjkI7pN
-         3F9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Tge8OIdcAuImjNZAecVhmu6eMDpyDyeIqIaLKa/p9WI=;
-        b=aXkmhkhCktsLoRcMtJUsUaVbMNM3IZytBt/qLE5jurVqsk+IV9cVS77L5V/K0mBQqt
-         L9sO790UX97wjA47EJ5TH36qg+vmFFyGJ7VkHTbXgpq11b647eBUaltbRROWi0Bqlodo
-         1h7Yc/LXlvKZ7cIC1iLyN53wi1cxGiRyWbrpFnPBWEKhZoEhAT/AnF0g0DTPIJ6Jq/20
-         8QomU81PNgdzKiRuL3RXuRdORCNxvuSjZOlZ9P1a8sVcr8SIIRvclduHZaPbFuMBBZo5
-         atnGBaSzeUdaK7sjQaem1pMBHG8Dp4doBhBkjvkqrSogBolbUeK7SXfyg2l/XNCr7M6S
-         VJcQ==
-X-Gm-Message-State: AOAM530qUOJXRIlbPjiDibcWW0vmCljeMcoDeev9lJY3TFyq6NjF3uci
-        aNuJlUIdx/4PaVVIrXjwDW5cWmEAUQo=
-X-Google-Smtp-Source: ABdhPJxayk8ENK9zCuGUMgiZ61LJsyc3uHFeJEXTbMbb02XV7Bwvui+l2Nb1JAY4hwLLIMQTJJFO3A==
-X-Received: by 2002:a63:db18:: with SMTP id e24mr32961497pgg.192.1596117275006;
-        Thu, 30 Jul 2020 06:54:35 -0700 (PDT)
-Received: from localhost.localdomain ([101.32.41.8])
-        by smtp.gmail.com with ESMTPSA id p10sm6347113pgn.6.2020.07.30.06.54.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 06:54:34 -0700 (PDT)
-From:   Qi Zheng <arch0.zheng@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de
-Cc:     linux-kernel@vger.kernel.org, Qi Zheng <arch0.zheng@gmail.com>
-Subject: [PATCH] sched/core: add unlikely in group_has_capacity()
-Date:   Thu, 30 Jul 2020 21:54:23 +0800
-Message-Id: <20200730135423.232776-1-arch0.zheng@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 30 Jul 2020 09:55:52 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id B97C8803202F;
+        Thu, 30 Jul 2020 13:55:42 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id bdRglwaZNYp3; Thu, 30 Jul 2020 16:55:41 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 00/10] gpio: dwapb: Refactor GPIO resources initialization
+Date:   Thu, 30 Jul 2020 16:55:26 +0300
+Message-ID: <20200730135536.19747-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. The group_has_capacity() function is only called in
-   group_classify().
-2. Before calling the group_has_capacity() function,
-   group_is_overloaded() will first judge the following
-   formula, if it holds, the group_classify() will directly
-   return the group_overloaded.
+This series is about the DW APB GPIO device initialization procedure
+cleaning up. First of all it has been discovered that having a
+vendor-specific "snps,nr-gpios" property isn't only redundant but also
+might be dangerous (see the commit log for details). Instead we suggest to
+use the generic "ngpios" property to define a number of GPIOs each DW APB
+GPIO controller port supports. Secondly seeing a tendency of the other
+GPIO drivers getting converted to using the GPIO-lib-based IRQ-chip
+interface this series provides a patch, which replaces the DW APB GPIO
+driver Generic IRQ-chip implementation with the GPIO-lib IRQ-chip one.
+Finally the DW APB GPIO device probe procedure is simplified by
+converting the code to be using the device managed resources for the
+reference clocks initialization, reset control assertion/de-assertion
+and GPIO-chip registration.
 
-	(sgs->group_capacity * imbalance_pct) <
-                        (sgs->group_runnable * 100)
+Some additional cleanups like replacing a number of GPIOs literal with a
+corresponding macro and grouping the IRQ handlers up in a single place of
+the driver are also introduced in this patchset.
 
-Therefore, when the group_has_capacity() is called, the
-probability that the above formalu holds is very small. Hint
-compilers about that.
+Link: https://lore.kernel.org/linux-gpio/20200723013858.10766-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v2:
+- Replace gc->to_irq() with irq_find_mapping() method.
+- Refactor dwapb_irq_set_type() method to directly set IRQ flow handler
+  instead of using a temporary variable.
+- Initialize GPIOlib IRQ-chip settings before calling request_irq()
+  method.
+- Add a notice regarding regression of commit 6a2f4b7dadd5 ("gpio:
+  dwapb: use a second irq chip").
+- Move the acpi_gpiochip_{request,free}_interrupts() methods invocation
+  removal to a dedicated patch.
+- Move GPIO-chip to_irq callback removal to a dedicated patch.
+- Add a patch which replaces a max number of GPIO literals with a macro.
+- Introduce dwapb_convert_irqs() method to convert the sparse parental
+  IRQs array into an array of linearly distributed IRQs correctly
+  perceived by GPIO-lib.
 
-Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
----
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-gpio@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 2ba8f230feb9..9074fd5e23b2 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8234,8 +8234,8 @@ group_has_capacity(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
- 	if (sgs->sum_nr_running < sgs->group_weight)
- 		return true;
- 
--	if ((sgs->group_capacity * imbalance_pct) <
--			(sgs->group_runnable * 100))
-+	if (unlikely((sgs->group_capacity * imbalance_pct) <
-+			(sgs->group_runnable * 100)))
- 		return false;
- 
- 	if ((sgs->group_capacity * 100) >
+Serge Semin (10):
+  dt-bindings: gpio: dwapb: Add ngpios property support
+  gpio: dwapb: Add ngpios DT-property support
+  gpio: dwapb: Move MFD-specific IRQ handler
+  gpio: dwapb: Add max GPIOs macro
+  gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip
+  gpio: dwapb: Discard GPIO-to-IRQ mapping function
+  gpio: dwapb: Discard ACPI GPIO-chip IRQs request
+  gpio: dwapb: Get reset control by means of resource managed interface
+  gpio: dwapb: Get clocks by means of resource managed interface
+  gpio: dwapb: Use resource managed GPIO-chip add data method
+
+ .../bindings/gpio/snps,dw-apb-gpio.yaml       |   6 +
+ drivers/gpio/Kconfig                          |   2 +-
+ drivers/gpio/gpio-dwapb.c                     | 340 +++++++++---------
+ include/linux/platform_data/gpio-dwapb.h      |   4 +-
+ 4 files changed, 178 insertions(+), 174 deletions(-)
+
 -- 
-2.25.1
+2.27.0
 
