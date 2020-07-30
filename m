@@ -2,307 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB0F2333E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7EC2333F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729558AbgG3OIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 10:08:01 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:38039 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726772AbgG3OH4 (ORCPT
+        id S1729362AbgG3OJ2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Jul 2020 10:09:28 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:35721 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728286AbgG3OJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 10:07:56 -0400
-Received: by mail-lj1-f195.google.com with SMTP id x9so29039574ljc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 07:07:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=E4GjGtlMybVSB0ZL/vAbrz8hzmPOHmkRXNFAvsQ5qlU=;
-        b=eVQgvh3B7QET6VPrJQTjFKUkuwTPZ8BwBIwlnbUz6A1azikrL73YKh2Xxrj3r6/gte
-         iWI+hVhbTg46NIId2JoTSAPHpW/LzKeIuVfhj+t29fLo444XQx5qQlvtbpXydVvYctdF
-         YTxWu6XrYJhYC3vsgI0HLGD+Vv5L1h9A9DFDcFP2g/W9/XEekCd6KAK9Uj1RF35qlNPW
-         LP0tUV7isgMpg83Cr3asLE7urpV1MTOITchHTZlVcPMJT8+QDkIToed9mVwaxGqS6qvB
-         JJIkpkcN5fTrQp4iMAaAoT9lPaAQNCekU7nr3AWF9bavVQrDt5QCHWluvUip2QhzYQ4i
-         6CUg==
-X-Gm-Message-State: AOAM533SrE+4ICEERjVpZ4Ye1XPbW8UL9JB6Mil43PZqpjrG36IsAXJZ
-        YOWmBEDbIBXSrrAnCk526g4=
-X-Google-Smtp-Source: ABdhPJyhRu/IQKvo9ytF6XuktRAfzXw8siuI3vjm4JdOJJjHdhFyhv4PUQimM/cRdydYrV0xa31o/Q==
-X-Received: by 2002:a2e:a583:: with SMTP id m3mr1544125ljp.135.1596118073614;
-        Thu, 30 Jul 2020 07:07:53 -0700 (PDT)
-Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
-        by smtp.googlemail.com with ESMTPSA id b16sm1063559ljp.124.2020.07.30.07.07.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 07:07:52 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] coccinelle: api: add kvfree script
-Date:   Thu, 30 Jul 2020 17:07:51 +0300
-Message-Id: <20200730140751.8635-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200605204237.85055-1-efremov@linux.com>
-References: <20200605204237.85055-1-efremov@linux.com>
+        Thu, 30 Jul 2020 10:09:27 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MNfgZ-1kOzvB0q2F-00P9Oj for <linux-kernel@vger.kernel.org>; Thu, 30 Jul
+ 2020 16:09:26 +0200
+Received: by mail-qt1-f176.google.com with SMTP id c12so11374418qtn.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 07:09:26 -0700 (PDT)
+X-Gm-Message-State: AOAM532plOoj1RHSzksI5I7LItHRQkUfSnE0HRFaUKRHuFwep8knlCt/
+        KcCPbl1PxSMJzvtr2t6RFW9s5a/6mOcKheoEvsk=
+X-Google-Smtp-Source: ABdhPJyi9kI9tH2eVgfgqkCmMA+l204uFszK+oAlVJwFl1iWmPPCUPIZeVt8CBeEBpdFXQKzYRq+C/Bcofig8C3dcDg=
+X-Received: by 2002:ac8:688e:: with SMTP id m14mr3126506qtq.7.1596118164881;
+ Thu, 30 Jul 2020 07:09:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200724212853.11601-1-daniel.gutson@eclypsium.com>
+ <20200725055649.GA1047853@kroah.com> <CAFmMkTE_dT9+WJYyb19uQ_HmgJWZSARBy6PveheQJk++NuGbkQ@mail.gmail.com>
+ <20200726071723.GB441916@kroah.com> <CAFmMkTFzGfFDrJrdgHztzLK2K-zBWy6T2Tv+G4-rrbVpbahkgg@mail.gmail.com>
+ <CAK8P3a1nA7K15Cxz84Q8Grw3tKfgkUmsfURcytJEWb_0Wjqm5w@mail.gmail.com>
+ <CAFmMkTExBY3V_Ghej7Bzjatg+vFtWq3UZmKzjAiEoR9EqnFN9Q@mail.gmail.com>
+ <CAFmMkTEO7VNKJeYz2uoHsS-yN_aY8UuiQ2GcCq9NyAD5481ZGA@mail.gmail.com>
+ <20200730053108.GA3861609@kroah.com> <CAFmMkTHXjfG7zMr0i_h65PvjAe4opPgvzdABH8W1EUGOmcA4Zg@mail.gmail.com>
+In-Reply-To: <CAFmMkTHXjfG7zMr0i_h65PvjAe4opPgvzdABH8W1EUGOmcA4Zg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 30 Jul 2020 16:09:08 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2SN3pdXV8=0jXfrsz8L64yV46fEM4zrSXfA25QK0GNuA@mail.gmail.com>
+Message-ID: <CAK8P3a2SN3pdXV8=0jXfrsz8L64yV46fEM4zrSXfA25QK0GNuA@mail.gmail.com>
+Subject: Re: [PATCH] Module argument to control whether intel-spi-pci attempts
+ to turn the SPI flash chip writeable
+To:     Daniel Gutson <daniel@eclypsium.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alex Bazhaniuk <alex@eclypsium.com>,
+        Richard Hughes <hughsient@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:PaZdRPgyOTwoxdG5QIOY7aerP3XsVhhp5X0+6VM6UA7ZFmCzaCk
+ YB09U/TzuHD0nCwWmohmroDO7KIUC1jSaiQ0mJm7oNxMsg6CtfvSSb7Nk874cAX5Eyl7S82
+ HOnIyh3g4QMTTef3y8X+UzZZd8lTJGeBxL/fzPJfzhhY/jD9KeheTu8LF++0BUrwooVB116
+ Pob7dfMIyW2XAUuIEdtlw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mMUbIM3C6O4=:6eIgjwfPJutJOq76l6dOuN
+ +lU7EAUFi/V6wHWvnAfqFE/ZA6qyGEValzD7OPsGv5grEBxCLwe41EKblkX7LMkj6Enbcm5WW
+ mkOlsIIsE7CY74HtWS8U9li+i2qF9yeLxdiOPk2wcB9zemVayyRwZAFPKKhF7wYv81LBBEyEb
+ ShCAl3lsCYQU8HR7RQNpoB1hOVkoC5lxYmDdSK6Qx5iLj20QMTUEnn61QXKIdGImIgCCqjXXH
+ aNGO+a+lr3scGZuF3YOB8j/Kc+1umq/Mwwm6RfV3up5j27aycfa4fN9nuOxzKAK7WJEmezo1W
+ Evdh9dHkTDgSiZTXbNhHaPL3Ue/jQzJ0ScNar44AgMUz7O1jYjYKbmPJoMJKzwWb+Bhm7zgIS
+ BOh8Sv6j8LuuYm1OwCpDeXxPMzhxp8EJ5dnOop8S2MCSOyVV0l1MtI+OHVPKHsPmVLHcFTqyb
+ pepJ4+4zaeSDLvo+BKezPeFYbNjXtu/i0elkEWtp7gAdPdULUh1GeqJc6czqqdA9mQcF5b7IA
+ 7otPioTr6ZFBJDAwv0NrQ4xWA/vxoDoXqJUcz01h9ALDbt/ElYNFJbREaXhTymqCStOIba0LP
+ fp4lv5EphqrL/IF3NJZjmgCUDHhNQA/4he6PhEGgPokDN4rliJOdxdyzgTp8rLZnyZn2kkBHB
+ tuyR9mPmxJDZI8pS4NT7+aeVDNQ/RrreTlrm8h2YPEZ6TXYSTgK0sa6wYTQQtPhR+H9fZrASI
+ 5pxsrexs6hIe+j3wWuBpHQS2s/pM3jIZ/91UN/ijH3kFeHeweIx1TciU9POROmVA+qlkE4XtZ
+ gefK9f0wONY0Aw0Ib2tV35cv9dBassyil9/DKgYH6mWJ4sgoBM7lub4QLnXS2nf2u8bw3oQiT
+ c7s3qldOYkIcWHm78v39klgAaFCnM7RqoZ0KWF0fbG/O8Hy9cw6h5G3v26OkBSW6P+FPeUn9c
+ Hu1qEZlPFR3V+uECTTrQ7XnLCjmdyYbT+s1LINCH5YQpqqGWL7xSK
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check that alloc and free types of functions match each other.
+On Thu, Jul 30, 2020 at 2:21 PM Daniel Gutson <daniel@eclypsium.com> wrote:
+> El jue., 30 jul. 2020 2:31 a. m., Greg Kroah-Hartman <gregkh@linuxfoundation.org> escribió:
+>>
+>> Again, module parameters are working on a per-chunk-of-code basis, while
+>> you want to work on a per-device basis,
+>
+>
+> I think there is a misunderstanding.  What I want is to control (turn on or off) is a very specific code snippet that provides the "functionality" of trying to turn the chip writable. The rest of the device driver is fine.
+> I assume that the one that doesn't understand is me.
+>
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
-Changes in v2:
- - Lines are limited to 80 characters where possible
- - Confidence changed from High to Medium because of 
-   fs/btrfs/send.c:1119 false-positive
- - __vmalloc_area_node() explicitly excluded from analysis
-   instead of !(file in "mm/vmalloc.c") condition
-Changes in v3:
- - prints style in org && report modes changed for python2
-Changes in v4:
- - missing msg argument to print_todo fixed
+I looked at the source code again and found that the existing module
+parameter applies to both the platform and pci device front-ends, both
+of which go through
 
- scripts/coccinelle/api/kvfree.cocci | 227 ++++++++++++++++++++++++++++
- 1 file changed, 227 insertions(+)
- create mode 100644 scripts/coccinelle/api/kvfree.cocci
+        /* Prevent writes if not explicitly enabled */
+        if (!ispi->writeable || !writeable)
+                ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
 
-diff --git a/scripts/coccinelle/api/kvfree.cocci b/scripts/coccinelle/api/kvfree.cocci
-new file mode 100644
-index 000000000000..d73578c5549c
---- /dev/null
-+++ b/scripts/coccinelle/api/kvfree.cocci
-@@ -0,0 +1,227 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+///
-+/// Check that kvmalloc'ed memory is freed by kfree functions,
-+/// vmalloc'ed by vfree functions and kvmalloc'ed by kvfree
-+/// functions.
-+///
-+// Confidence: Medium
-+// Copyright: (C) 2020 Denis Efremov ISPRAS
-+// Options: --no-includes --include-headers
-+//
-+
-+virtual patch
-+virtual report
-+virtual org
-+virtual context
-+
-+@initialize:python@
-+@@
-+# low-level memory api
-+filter = frozenset(['__vmalloc_area_node'])
-+
-+def relevant(p):
-+    return not (filter & {el.current_element for el in p})
-+
-+@choice@
-+expression E, E1;
-+position kok, vok;
-+@@
-+
-+(
-+  if (...) {
-+    ...
-+    E = \(kmalloc@kok\|kzalloc@kok\|krealloc@kok\|kcalloc@kok\|
-+          kmalloc_node@kok\|kzalloc_node@kok\|kmalloc_array@kok\|
-+          kmalloc_array_node@kok\|kcalloc_node@kok\)(...)
-+    ...
-+  } else {
-+    ...
-+    E = \(vmalloc@vok\|vzalloc@vok\|vmalloc_user@vok\|vmalloc_node@vok\|
-+          vzalloc_node@vok\|vmalloc_exec@vok\|vmalloc_32@vok\|
-+          vmalloc_32_user@vok\|__vmalloc@vok\|__vmalloc_node_range@vok\|
-+          __vmalloc_node@vok\)(...)
-+    ...
-+  }
-+|
-+  E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|kmalloc_node\|kzalloc_node\|
-+        kmalloc_array\|kmalloc_array_node\|kcalloc_node\)(...)
-+  ... when != E = E1
-+      when any
-+  if (\(!E\|E == NULL\)) {
-+    ...
-+    E = \(vmalloc@vok\|vzalloc@vok\|vmalloc_user@vok\|vmalloc_node@vok\|
-+          vzalloc_node@vok\|vmalloc_exec@vok\|vmalloc_32@vok\|
-+          vmalloc_32_user@vok\|__vmalloc@vok\|__vmalloc_node_range@vok\|
-+          __vmalloc_node@vok\)(...)
-+    ...
-+  }
-+)
-+
-+@opportunity depends on !patch@
-+expression E, E1, size;
-+position p : script:python() { relevant(p) };
-+@@
-+
-+(
-+* if (\(size <= E1\|size < E1\|size = E1\|size > E1\) || ...)@p {
-+    ...
-+    E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|kmalloc_node\|kzalloc_node\|
-+          kmalloc_array\|kmalloc_array_node\|kcalloc_node\)(..., size, ...)
-+    ...
-+  } else {
-+    ...
-+    E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|
-+          vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|
-+          __vmalloc_node_range\|__vmalloc_node\)(..., size, ...)
-+    ...
-+  }
-+|
-+  E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|kmalloc_node\|kzalloc_node\|
-+        kmalloc_array\|kmalloc_array_node\|kcalloc_node\)(..., size, ...)
-+  ... when != E = E1
-+      when != size = E1
-+      when any
-+* if (\(!E\|E == NULL\))@p {
-+    ...
-+    E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|
-+          vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|
-+          __vmalloc_node_range\|__vmalloc_node\)(..., size, ...)
-+    ...
-+  }
-+)
-+
-+@vfree depends on !patch@
-+expression E;
-+position k != choice.kok;
-+position p;
-+@@
-+
-+* E = \(kmalloc@k\|kzalloc@k\|krealloc@k\|kcalloc@k\|kmalloc_node@k\|
-+        kzalloc_node@k\|kmalloc_array@k\|kmalloc_array_node@k\|
-+        kcalloc_node@k\)(...)
-+  ... when != if (...) { ... E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|__vmalloc_node_range\|__vmalloc_node\)(...); ... }
-+      when != is_vmalloc_addr(E)
-+      when any
-+* \(vfree\|vfree_atomic\|kvfree\)(E)@p
-+
-+@pvfree depends on patch exists@
-+expression E;
-+position k != choice.kok;
-+@@
-+
-+  E = \(kmalloc@k\|kzalloc@k\|krealloc@k\|kcalloc@k\|kmalloc_node@k\|
-+        kzalloc_node@k\|kmalloc_array@k\|kmalloc_array_node@k\|
-+        kcalloc_node@k\)(...)
-+  ... when != if (...) { ... E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|__vmalloc_node_range\|__vmalloc_node\)(...); ... }
-+      when != is_vmalloc_addr(E)
-+      when any
-+- \(vfree\|vfree_atomic\|kvfree\)(E)
-++ kfree(E)
-+
-+@kfree depends on !patch@
-+expression E;
-+position v != choice.vok;
-+position p;
-+@@
-+
-+* E = \(vmalloc@v\|vzalloc@v\|vmalloc_user@v\|vmalloc_node@v\|vzalloc_node@v\|
-+        vmalloc_exec@v\|vmalloc_32@v\|vmalloc_32_user@v\|__vmalloc@v\|
-+        __vmalloc_node_range@v\|__vmalloc_node@v\)(...)
-+  ... when != !is_vmalloc_addr(E)
-+      when any
-+* \(kfree\|kzfree\|kvfree\)(E)
-+
-+@pkfree depends on patch exists@
-+expression E;
-+position v != choice.vok;
-+@@
-+
-+  E = \(vmalloc@v\|vzalloc@v\|vmalloc_user@v\|vmalloc_node@v\|vzalloc_node@v\|
-+        vmalloc_exec@v\|vmalloc_32@v\|vmalloc_32_user@v\|__vmalloc@v\|
-+        __vmalloc_node_range@v\|__vmalloc_node@v\)(...)
-+  ... when != !is_vmalloc_addr(E)
-+      when any
-+- \(kfree\|kvfree\)(E)
-++ vfree(E)
-+
-+@kvfree depends on !patch@
-+expression E;
-+position p, k;
-+@@
-+
-+* E = \(kvmalloc\|kvzalloc\|kvcalloc\|kvzalloc_node\|kvmalloc_node\|
-+        kvmalloc_array\)(...)@k
-+  ... when != is_vmalloc_addr(E)
-+      when any
-+* \(kfree\|kzfree\|vfree\|vfree_atomic\)(E)@p
-+
-+@pkvfree depends on patch exists@
-+expression E;
-+@@
-+
-+  E = \(kvmalloc\|kvzalloc\|kvcalloc\|kvzalloc_node\|kvmalloc_node\|
-+        kvmalloc_array\)(...)
-+  ... when != is_vmalloc_addr(E)
-+      when any
-+- \(kfree\|vfree\)(E)
-++ kvfree(E)
-+
-+@script: python depends on report@
-+k << vfree.k;
-+p << vfree.p;
-+@@
-+
-+msg = "WARNING: kmalloc is used to allocate this memory at line %s" % (k[0].line)
-+coccilib.report.print_report(p[0], msg)
-+
-+@script: python depends on org@
-+k << vfree.k;
-+p << vfree.p;
-+@@
-+
-+msg = "WARNING: kmalloc is used to allocate this memory at line %s" % (k[0].line)
-+coccilib.org.print_todo(p[0], msg)
-+
-+@script: python depends on report@
-+v << kfree.v;
-+p << kfree.p;
-+@@
-+
-+msg = "WARNING: vmalloc is used to allocate this memory at line %s" % (v[0].line)
-+coccilib.report.print_report(p[0], msg)
-+
-+@script: python depends on org@
-+v << kfree.v;
-+p << kfree.p;
-+@@
-+
-+msg = "WARNING: vmalloc is used to allocate this memory at line %s" % (v[0].line)
-+coccilib.org.print_todo(p[0], msg)
-+
-+@script: python depends on report@
-+k << kvfree.k;
-+p << kvfree.p;
-+@@
-+
-+msg = "WARNING: kvmalloc is used to allocate this memory at line %s" % (k[0].line)
-+coccilib.report.print_report(p[0], msg)
-+
-+@script: python depends on org@
-+k << kvfree.k;
-+p << kvfree.p;
-+@@
-+
-+msg = "WARNING: kvmalloc is used to allocate this memory at line %s" % (k[0].line)
-+coccilib.org.print_todo(p[0], msg)
-+
-+@script: python depends on report@
-+p << opportunity.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING: opportunity for kvmalloc")
-+
-+@script: python depends on org@
-+p << opportunity.p;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING: opportunity for kvmalloc")
--- 
-2.26.2
+Setting the PCI device writable in hardware makes it possible to
+actually write to it *only* if the module parameter is also set to '1'.
+One might disagree with that design, but I don't think your patch
+would make it any better, it just means one would have to set
+two module parameters instead of one.
 
+     Arnd
