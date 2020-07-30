@@ -2,131 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A512023294A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 03:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C9C232942
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728323AbgG3BAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 21:00:12 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4279 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgG3BAL (ORCPT
+        id S1728322AbgG3A7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 20:59:25 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2609 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726859AbgG3A7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 21:00:11 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f221b6d0000>; Wed, 29 Jul 2020 17:59:26 -0700
+        Wed, 29 Jul 2020 20:59:25 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f221b100000>; Wed, 29 Jul 2020 17:57:52 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 29 Jul 2020 18:00:11 -0700
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 29 Jul 2020 17:59:24 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 29 Jul 2020 18:00:11 -0700
-Received: from [10.2.54.252] (10.124.1.5) by HQMAIL107.nvidia.com
+        by hqpgpgate102.nvidia.com on Wed, 29 Jul 2020 17:59:24 -0700
+Received: from [10.2.160.194] (10.124.1.5) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Jul
- 2020 01:00:10 +0000
-Subject: Re: [PATCH v2] drivers/virt/fsl_hypervisor: Correcting error handling
- path
-To:     Souptick Joarder <jrdr.linux@gmail.com>,
-        <akpm@linux-foundation.org>
-CC:     <jgg@ziepe.ca>, <dan.j.williams@intel.com>,
-        <gregkh@linuxfoundation.org>, <mchehab+samsung@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dan.carpenter@oracle.com>
-References: <1596049269-14950-1-git-send-email-jrdr.linux@gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <692e6a9b-6caa-7c60-d685-6cc951ee9483@nvidia.com>
-Date:   Wed, 29 Jul 2020 18:00:10 -0700
+ 2020 00:59:24 +0000
+Subject: Re: [RFC PATCH v5 13/14] media: tegra-video: Add CSI MIPI pads
+ calibration
+To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
+        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
+        <helen.koike@collabora.com>
+CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>
+References: <1595883452-17343-1-git-send-email-skomatineni@nvidia.com>
+ <1595883452-17343-14-git-send-email-skomatineni@nvidia.com>
+ <c3d40261-9d77-3634-3e04-f20efad9d3d8@gmail.com>
+ <01ee0805-3d57-d857-48e3-5c2245cd4500@nvidia.com>
+ <2ec535c9-55e8-8834-6002-36c75aeb097c@gmail.com>
+ <021707b9-5f72-6f8b-d125-43627ef64a6d@nvidia.com>
+ <de2d6117-b1e5-14c0-52ca-ff46b444c866@nvidia.com>
+ <ca18b93e-1f1c-50ae-e0c1-11758935ee89@gmail.com>
+ <42f25a49-ad2b-4e52-fd99-cb0f52037988@nvidia.com>
+ <f5440f57-3653-7cf0-9efe-e9a0c276f7cf@nvidia.com>
+ <6ae07f82-53f7-33fc-5892-340b0d9f12cf@gmail.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <887d51fb-4292-c251-6568-32b884e8db67@nvidia.com>
+Date:   Wed, 29 Jul 2020 18:06:40 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1596049269-14950-1-git-send-email-jrdr.linux@gmail.com>
+In-Reply-To: <6ae07f82-53f7-33fc-5892-340b0d9f12cf@gmail.com>
 X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
  HQMAIL107.nvidia.com (172.20.187.13)
 Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596070766; bh=xf06fm8gUfOPKwbhKrIi//8iK9C11cakFrO0HCloz2Q=;
+        t=1596070672; bh=F9EN8UAgMwigtLNy+JI+iiitzedOW3ZVlLVEoOqUjG0=;
         h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
          User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=gEILaMtsYMRkmmzOYkBKoUCW7ORe8sHzQ8Z17ZgXXwwz0S76K7qDAtKdRxv4gVJ4T
-         JkIX7lu9uE7lMqJXFV/SRAWAtkubxpQAI3mIQxanlUVPQ0R2cfbW2QHDxyAZLbJcGd
-         QNrHuAl3p/V9zn2+Phib2hwDJdq7/T4N5kvGIZqvVPcgiyczHaesiVwhm8PxYHRNgP
-         k9NTWViRX3Ts7xm8jDWmBdKzRhyOCHBSYjCnlnMpXN/FTG6zi0PtOZlxXuzOXF8reS
-         WnwLka1cjwXx98OgOx1QoDi7Efmmmiy1QL2siEwC3R3g8vGgq+87Yys5OzYyTsqnzD
-         LluOq8d8kVNbQ==
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=d8sFH9K6xPDZyiCkaFZriGF4SjXdoqKjDomj3H/TvH+AWqvSXuZ5txhqXm2EO9wv9
+         0DZDOyw7w0ktujUnVaEqJxN2wHi8n7z4KupEJEGvkfN+l42AQuGuzZyXjVFBv2OjB6
+         NJiAZs1Sbs2Q1gpx161WutaEGbz55QcsZqzO5FizQ91kKuSwrEb+u5kKq7GETg4M9x
+         3FjbZssns/DFAzToQTw+c8qQC2sttJ3Ypdzg65RnT8P56tRKNoJXhUxifwSVzbAaq8
+         L52YKTuaQG/ES1v0ksxsAi76uPku5ZjlAMTA/5YdLQ8+wZcpCRZfzXMbhtobpmLxRZ
+         4kXfbiE2e05jQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/20 12:01 PM, Souptick Joarder wrote:
-> First, when memory allocation for sg_list_unaligned failed, there
-> is no point of calling put_pages() as we haven't pinned any pages.
-> 
-> Second, if get_user_pages_fast() failed we should unpinned num_pinned
-> pages, no point of checking till num_pages.
 
-Hi Souptick,
+On 7/29/20 5:53 PM, Dmitry Osipenko wrote:
+> 30.07.2020 03:55, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> On 7/29/20 5:52 PM, Sowjanya Komatineni wrote:
+>>> On 7/29/20 5:43 PM, Dmitry Osipenko wrote:
+>>>> 30.07.2020 03:27, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>> ...
+>>>>>>> Secondly, perhaps a failed calibration isn't a very critical error?
+>>>>>>> Hence just printing a warning message should be enough.
+>>>>>> Using dev_err to report calibration failure. Are you suggesting to u=
+se
+>>>>>> dev_warn instead of dev_err?
+>>>> I meant that failing s_stream might be unnecessary.
+>>>>
+>>>> The dev_warn should be more appropriate for a non-critical errors.
+>>>>
+>>>>>>> Could you please make a patch that factors all ON/OFF code paths
+>>>>>>> into a
+>>>>>>> separate functions? It's a bit difficult to follow the combined cod=
+e,
+>>>>>>> especially partial changes in the patches. Thanks in advance!
+>>>>>> what do you mean by partial changes in patches?
+>>>>>>
+>>>>>> Can you please be more clear?
+>>>>> Also please specify what ON/OFF code paths you are referring to when
+>>>>> you
+>>>>> say to move into separate functions?
+>>>> I meant to change all the code like this:
+>>>>
+>>>> set(on) {
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0 if (on) {
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0 if (!on)
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+>>>>
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0 return;
+>>>> }
+>>>>
+>>>> to somewhat like this:
+>>>>
+>>>> set(on) {
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0 if (on)
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D enable();
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0 else
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D disable();
+>>>>
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>>> }
+>>> You mean to change tegra_channel_set_stream() ?
+> Yes, and tegra_csi_s_stream().
+>
+>> changing tegra_channel_set_stream() to have like below will have
+>> redundant calls as most of the code b/w enable and disable is same
+>> except calling them in reverse order based on on/off and doing MIPI
+>> calibration only during ON
+>>
+>>
+>> if (on)
+>>  =C2=A0=C2=A0=C2=A0 ret =3D enable()
+>> else
+>>  =C2=A0=C2=A0=C2=A0 ret =3D disable()
+>> return ret;
+> Readability should be more important than number of lines.
 
-For both of the above, the wording "no point" is so overly gentle as
-to be misleading. That's because calling put_page() on any pages beyond
-num_pinned is a *bug*.
+Will have v6 and add additional patch at the end to do enable/disable=20
+separately.
 
-So let's reword that. And let's change the patch subject from "Correcting" to
-"fix".
+Separating this out with additional patch before adding sensor support=20
+patch requires all patches to be updated.
 
-And probably good to add a Fixes: tag, too.
+So I am ok either ways. Please let me know if adding additional patch at=20
+the end to split tegra_channel_set_stream() and tegra_csi_s_stream()=20
+separately is ok?
 
-More:
-
-> 
-> This will address both.
-> 
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> ---
-> v2:
-> 	Added review tag.
-> 
->   drivers/virt/fsl_hypervisor.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/virt/fsl_hypervisor.c b/drivers/virt/fsl_hypervisor.c
-> index 1b0b11b..ea344d7 100644
-> --- a/drivers/virt/fsl_hypervisor.c
-> +++ b/drivers/virt/fsl_hypervisor.c
-> @@ -157,7 +157,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
->   
->   	unsigned int i;
->   	long ret = 0;
-> -	int num_pinned; /* return value from get_user_pages() */
-> +	int num_pinned = 0; /* return value from get_user_pages() */
->   	phys_addr_t remote_paddr; /* The next address in the remote buffer */
->   	uint32_t count; /* The number of bytes left to copy */
->   
-> @@ -293,7 +293,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
->   
->   exit:
->   	if (pages) {
-> -		for (i = 0; i < num_pages; i++)
-> +		for (i = 0; i < num_pinned; i++)
->   			if (pages[i])
-
-I suspect that this "if" is unnecessary now.
-
-Either way, the diff itself looks good to me, so with the wording changes to
-the commit description, you can add:
-
-     Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
->   				put_page(pages[i]);
->   	}
-> 
 
