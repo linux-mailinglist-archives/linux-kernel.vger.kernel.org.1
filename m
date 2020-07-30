@@ -2,142 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA171233B0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 00:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C81233B13
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 00:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728473AbgG3WBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 18:01:45 -0400
-Received: from mga17.intel.com ([192.55.52.151]:20825 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726544AbgG3WBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 18:01:45 -0400
-IronPort-SDR: Hd97d/qInC5mZ4tR8ELyazbVyDYT4FrYtUK15QmQKweRuw2ziMrLstkDHrzsHrZDG2DbyZ6KHZ
- Buzb68Iu7uuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="131770557"
-X-IronPort-AV: E=Sophos;i="5.75,415,1589266800"; 
-   d="scan'208";a="131770557"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 15:01:44 -0700
-IronPort-SDR: KG5bBtfQ5NYIWnkLXakYe6lEqlSfkszqGP5+7vR7xaJytouSRsMjPtn/ldEsmk8DZk308UE7/U
- eZBSZV2tMA4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,415,1589266800"; 
-   d="scan'208";a="435205691"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by orsmga004.jf.intel.com with ESMTP; 30 Jul 2020 15:01:41 -0700
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Ramalingam C <ramalingam.c@intel.com>, stable@vger.kernel.org
-Subject: [char-misc-next V4] mei: hdcp: fix mei_hdcp_verify_mprime() input parameter
-Date:   Fri, 31 Jul 2020 01:01:39 +0300
-Message-Id: <20200730220139.3642424-1-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.25.4
+        id S1728774AbgG3WDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 18:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726544AbgG3WDa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 18:03:30 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23510C061574;
+        Thu, 30 Jul 2020 15:03:30 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id l4so29415243ejd.13;
+        Thu, 30 Jul 2020 15:03:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uTBgSMorW9kQ268YynJPUFn8co9EOR+IzjBYlohDvN4=;
+        b=IUqAJLGY0Er1QGP6TV95J67XWrwiYPjN7V5GkT8+Y018ZWFiL84EX2MDgPTMHNqXAA
+         mXALh3ruJ9HVWYX8LYKLazT5YoEGaiKJKNohF120Is1+bUgUwusprQNa2mdePR9euxS3
+         wpsem//MmqSl+fp5PkW0ANL6dGe3AYZoTjLPC+5z3PK0JB5aFWRjbLIfTyU4AwGwWT0K
+         vvy4ndSkCWaeYXLRjiItCcAuh02amoQcnSh8VbjLEuZFaX+br7CdGHIqLTEkStXLbAb9
+         cyQrAB0T1SlMfqbtDz4jAxORUZspvXeBWnVouu8L/sdfetGCqx8Y+M3LelBy1/jIrHlD
+         vhrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=uTBgSMorW9kQ268YynJPUFn8co9EOR+IzjBYlohDvN4=;
+        b=MVI5uwzPq612kNVbviGSbioT2T5GmG1XyjMvOvJs1Fgi1Wv2RrIh74MaASNHOq3a33
+         qIkTy9ZT6XuCkx01cPy/VQfruXeA9vvTurKV3/jOLq3BrftwpHZfpODGitzWgaGFFSN/
+         Tk6p99KwmoGHjRo2Y1wUWH2OuUJsF8yln95/BzZDu52aszsmz+UpuDtCbW/rt5H2Ec/h
+         7f6KRQDkhzMwhD1w61pZtx4px5KAiBfZhf+KUE94T6uDH0W/4yx8VaLQMgewSsA9kDyr
+         YGU8iYaqdzfH26fivEReMg9llQPYFrm6hJ5FM5/QuFbPwGdgL35a/3X9CcgfPGJ5fGOa
+         026A==
+X-Gm-Message-State: AOAM531KL/ACeYwFxqryUBk2QxqIEwYPV8FRnRboI3XY3LmB0HH7/mz7
+        ZAqPY3JuzNGfkgbzKPyiefB+StTg
+X-Google-Smtp-Source: ABdhPJxg93Ma54VFSdySfsO+JU8QQRy6Q5gt8nu75a9m7AI3QkHQ7ivTmtYMfHss37Oz7Mekj+0ClQ==
+X-Received: by 2002:a17:906:2e51:: with SMTP id r17mr1159552eji.308.1596146608545;
+        Thu, 30 Jul 2020 15:03:28 -0700 (PDT)
+Received: from [10.67.50.75] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id bi2sm7735490edb.27.2020.07.30.15.03.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Jul 2020 15:03:28 -0700 (PDT)
+Subject: Re: [PATCH net] tcp: Export tcp_write_queue_purge()
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200730210728.2051-1-f.fainelli@gmail.com>
+ <CANn89iJETzud8PK7eTj=rXMSCjBtnmcSq1y0qF7EVK8b5M_vXA@mail.gmail.com>
+ <2347a342-f0b0-903c-ebb6-6e95eb664864@gmail.com>
+ <CANn89iJ=x8eYs9+cGYuyScMo7AD3JZqr6Jp1oZfJg41fHej8JQ@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ G10n8gCguORqNGMsVRxrlLs7/himep7MrCc=
+Message-ID: <be7ed9b0-e23d-e12b-4e6b-108853ec4776@gmail.com>
+Date:   Thu, 30 Jul 2020 15:03:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANn89iJ=x8eYs9+cGYuyScMo7AD3JZqr6Jp1oZfJg41fHej8JQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wired_cmd_repeater_auth_stream_req_in has a variable
-length array at the end. we use struct_size() overflow
-macro to determine the size for the allocation and sending
-size.
-This also fixes bug in case number of streams is > 0 in the original
-submission. This bug was not triggered as the number of streams is
-always one.
+On 7/30/20 2:32 PM, Eric Dumazet wrote:
+> On Thu, Jul 30, 2020 at 2:24 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>
+>> On 7/30/20 2:16 PM, Eric Dumazet wrote:
+>>> On Thu, Jul 30, 2020 at 2:07 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>>>
+>>>> After tcp_write_queue_purge() got uninlined with commit ac3f09ba3e49
+>>>> ("tcp: uninline tcp_write_queue_purge()"), it became no longer possible
+>>>> to reference this symbol from kernel modules.
+>>>>
+>>>> Fixes: ac3f09ba3e49 ("tcp: uninline tcp_write_queue_purge()")
+>>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+>>>> ---
+>>>>  net/ipv4/tcp.c | 1 +
+>>>>  1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+>>>> index 6f0caf9a866d..ea9d296a8380 100644
+>>>> --- a/net/ipv4/tcp.c
+>>>> +++ b/net/ipv4/tcp.c
+>>>> @@ -2626,6 +2626,7 @@ void tcp_write_queue_purge(struct sock *sk)
+>>>>         tcp_sk(sk)->packets_out = 0;
+>>>>         inet_csk(sk)->icsk_backoff = 0;
+>>>>  }
+>>>> +EXPORT_SYMBOL(tcp_write_queue_purge);
+>>>>
+>>>>  int tcp_disconnect(struct sock *sk, int flags)
+>>>>  {
+>>>> --
+>>>> 2.17.1
+>>>>
+>>>
+>>> Hmmm.... which module would need this exactly ?
+>>
+>> None in tree unfortunately, and I doubt it would be published one day.
+>> For consistency one could argue that given it used to be accessible, and
+>> other symbols within net/ipv4/tcp.c are also exported, so this should
+>> one be. Not going to hold that line of argumentation more than in this
+>> email, if you object to it, that would be completely fine with me.
+> 
+> :)
+> 
+>>
+>>>
+>>> How come it took 3 years to discover this issue ?
+>>
+>> We just upgraded our downstream kernel from 4.9 to 5.4 and this is why
+>> it took so long.
+> 
+> It is not because TCP used an inline function in the past that it
+> means we have to keep
+> the equivalent function available for all possible out-of-tree modules.
+> 
+> Sorry, we can not accept that out-of-tree modules use TCP stack like that.
+> 
+> You will have to carry this change locally. Or even better get rid of it.
 
-Fixes: c56967d674e3 (mei: hdcp: Replace one-element array with flexible-array member)
-Fixes: commit 0a1af1b5c18d ("misc/mei/hdcp: Verify M_prime")
-Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Ramalingam C <ramalingam.c@intel.com>
-Cc: <stable@vger.kernel.org> v5.1+
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
----
-V4:
-1. Fix typo in the subject. (Gustavo)
-2. Fix dereferencing pointer in send. (Gustavo)
-V3:
-1. Fix commit message with more info and another patch it fixes (Gustavo)
-2. Target stable. (Gustavo)
-V2: Check for allocation failure.
-
- drivers/misc/mei/hdcp/mei_hdcp.c | 40 +++++++++++++++++++-------------
- 1 file changed, 24 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
-index d1d3e025ca0e..9ae9669e46ea 100644
---- a/drivers/misc/mei/hdcp/mei_hdcp.c
-+++ b/drivers/misc/mei/hdcp/mei_hdcp.c
-@@ -546,38 +546,46 @@ static int mei_hdcp_verify_mprime(struct device *dev,
- 				  struct hdcp_port_data *data,
- 				  struct hdcp2_rep_stream_ready *stream_ready)
- {
--	struct wired_cmd_repeater_auth_stream_req_in
--					verify_mprime_in = { { 0 } };
-+	struct wired_cmd_repeater_auth_stream_req_in *verify_mprime_in;
- 	struct wired_cmd_repeater_auth_stream_req_out
- 					verify_mprime_out = { { 0 } };
- 	struct mei_cl_device *cldev;
- 	ssize_t byte;
-+	size_t cmd_size;
- 
- 	if (!dev || !stream_ready || !data)
- 		return -EINVAL;
- 
- 	cldev = to_mei_cl_device(dev);
- 
--	verify_mprime_in.header.api_version = HDCP_API_VERSION;
--	verify_mprime_in.header.command_id = WIRED_REPEATER_AUTH_STREAM_REQ;
--	verify_mprime_in.header.status = ME_HDCP_STATUS_SUCCESS;
--	verify_mprime_in.header.buffer_len =
-+	cmd_size = struct_size(verify_mprime_in, streams, data->k);
-+	if (cmd_size == SIZE_MAX)
-+		return -EINVAL;
-+
-+	verify_mprime_in = kzalloc(cmd_size, GFP_KERNEL);
-+	if (!verify_mprime_in)
-+		return -ENOMEM;
-+
-+	verify_mprime_in->header.api_version = HDCP_API_VERSION;
-+	verify_mprime_in->header.command_id = WIRED_REPEATER_AUTH_STREAM_REQ;
-+	verify_mprime_in->header.status = ME_HDCP_STATUS_SUCCESS;
-+	verify_mprime_in->header.buffer_len =
- 			WIRED_CMD_BUF_LEN_REPEATER_AUTH_STREAM_REQ_MIN_IN;
- 
--	verify_mprime_in.port.integrated_port_type = data->port_type;
--	verify_mprime_in.port.physical_port = (u8)data->fw_ddi;
--	verify_mprime_in.port.attached_transcoder = (u8)data->fw_tc;
-+	verify_mprime_in->port.integrated_port_type = data->port_type;
-+	verify_mprime_in->port.physical_port = (u8)data->fw_ddi;
-+	verify_mprime_in->port.attached_transcoder = (u8)data->fw_tc;
-+
-+	memcpy(verify_mprime_in->m_prime, stream_ready->m_prime, HDCP_2_2_MPRIME_LEN);
-+	drm_hdcp_cpu_to_be24(verify_mprime_in->seq_num_m, data->seq_num_m);
- 
--	memcpy(verify_mprime_in.m_prime, stream_ready->m_prime,
--	       HDCP_2_2_MPRIME_LEN);
--	drm_hdcp_cpu_to_be24(verify_mprime_in.seq_num_m, data->seq_num_m);
--	memcpy(verify_mprime_in.streams, data->streams,
-+	memcpy(verify_mprime_in->streams, data->streams,
- 	       array_size(data->k, sizeof(*data->streams)));
- 
--	verify_mprime_in.k = cpu_to_be16(data->k);
-+	verify_mprime_in->k = cpu_to_be16(data->k);
- 
--	byte = mei_cldev_send(cldev, (u8 *)&verify_mprime_in,
--			      sizeof(verify_mprime_in));
-+	byte = mei_cldev_send(cldev, (u8 *)verify_mprime_in, cmd_size);
-+	kfree(verify_mprime_in);
- 	if (byte < 0) {
- 		dev_dbg(dev, "mei_cldev_send failed. %zd\n", byte);
- 		return byte;
+Sure, that is completely fair, I had to try though :)
 -- 
-2.25.4
-
+Florian
