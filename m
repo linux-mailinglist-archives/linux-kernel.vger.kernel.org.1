@@ -2,152 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C9C232942
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 02:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D65B23294E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 03:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728322AbgG3A7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 20:59:25 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2609 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726859AbgG3A7Z (ORCPT
+        id S1726942AbgG3BFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 21:05:32 -0400
+Received: from relay5.mymailcheap.com ([159.100.248.207]:34278 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgG3BFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 20:59:25 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f221b100000>; Wed, 29 Jul 2020 17:57:52 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 29 Jul 2020 17:59:24 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 29 Jul 2020 17:59:24 -0700
-Received: from [10.2.160.194] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Jul
- 2020 00:59:24 +0000
-Subject: Re: [RFC PATCH v5 13/14] media: tegra-video: Add CSI MIPI pads
- calibration
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>
-References: <1595883452-17343-1-git-send-email-skomatineni@nvidia.com>
- <1595883452-17343-14-git-send-email-skomatineni@nvidia.com>
- <c3d40261-9d77-3634-3e04-f20efad9d3d8@gmail.com>
- <01ee0805-3d57-d857-48e3-5c2245cd4500@nvidia.com>
- <2ec535c9-55e8-8834-6002-36c75aeb097c@gmail.com>
- <021707b9-5f72-6f8b-d125-43627ef64a6d@nvidia.com>
- <de2d6117-b1e5-14c0-52ca-ff46b444c866@nvidia.com>
- <ca18b93e-1f1c-50ae-e0c1-11758935ee89@gmail.com>
- <42f25a49-ad2b-4e52-fd99-cb0f52037988@nvidia.com>
- <f5440f57-3653-7cf0-9efe-e9a0c276f7cf@nvidia.com>
- <6ae07f82-53f7-33fc-5892-340b0d9f12cf@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <887d51fb-4292-c251-6568-32b884e8db67@nvidia.com>
-Date:   Wed, 29 Jul 2020 18:06:40 -0700
+        Wed, 29 Jul 2020 21:05:32 -0400
+Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.199.117])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 7E0422636A;
+        Thu, 30 Jul 2020 01:05:29 +0000 (UTC)
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id 321EC3F162;
+        Thu, 30 Jul 2020 03:05:28 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id E021F2A905;
+        Thu, 30 Jul 2020 03:05:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1596071127;
+        bh=qdsRPhmO+L5hjef8bRPCdPBKjPsHQKVEGVkqtl+9ymo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=xqEW10RONSzyVDklzuoNTQD4U8w52vIfVzSXDLZUny9Vz4hSXK8bC4wnohWf7wy/O
+         2C4TP/FNfw5AyBYORaU3t8MPCm+gKp+llC9UOMZbYsKulLduOqb5jCy+E7P+EARk4L
+         Qr4+hxBwbRxliG/a6uY4czmkPY89M/nwECKY5eoc=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id wRMZEMqT6eDq; Thu, 30 Jul 2020 03:05:26 +0200 (CEST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Thu, 30 Jul 2020 03:05:26 +0200 (CEST)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id EBDE440EE0;
+        Thu, 30 Jul 2020 01:05:24 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="PE+nHAN4";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (n11212042148.netvigator.com [112.120.42.148])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id CA36740143;
+        Thu, 30 Jul 2020 01:04:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1596071089;
+        bh=qdsRPhmO+L5hjef8bRPCdPBKjPsHQKVEGVkqtl+9ymo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PE+nHAN4aM3BVNNwKeOBHDkkc7Rl4WvadeBclNiZsydlWZr3Uk7MbvGjuUP7ZYcjK
+         4Pq0clTAVxOinQ3qu2l8CX77c3mANCqjRqavnA13aSA7RtrkBGhRMieLnU8UYpq8th
+         O40Oyj9l/KWEoItwhx5nHiz9N3Qv79IjIMBCuVyQ=
+Subject: Re: linux-next: build warning after merge of the mips tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        James Hogan <jhogan@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh@kernel.org>
+References: <20200729203142.18248463@canb.auug.org.au>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <f2a9f50d-5299-04f8-146b-e09df8943367@flygoat.com>
+Date:   Thu, 30 Jul 2020 09:04:40 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <6ae07f82-53f7-33fc-5892-340b0d9f12cf@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200729203142.18248463@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596070672; bh=F9EN8UAgMwigtLNy+JI+iiitzedOW3ZVlLVEoOqUjG0=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=d8sFH9K6xPDZyiCkaFZriGF4SjXdoqKjDomj3H/TvH+AWqvSXuZ5txhqXm2EO9wv9
-         0DZDOyw7w0ktujUnVaEqJxN2wHi8n7z4KupEJEGvkfN+l42AQuGuzZyXjVFBv2OjB6
-         NJiAZs1Sbs2Q1gpx161WutaEGbz55QcsZqzO5FizQ91kKuSwrEb+u5kKq7GETg4M9x
-         3FjbZssns/DFAzToQTw+c8qQC2sttJ3Ypdzg65RnT8P56tRKNoJXhUxifwSVzbAaq8
-         L52YKTuaQG/ES1v0ksxsAi76uPku5ZjlAMTA/5YdLQ8+wZcpCRZfzXMbhtobpmLxRZ
-         4kXfbiE2e05jQ==
+X-Rspamd-Queue-Id: EBDE440EE0
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         TO_DN_ALL(0.00)[];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         RCVD_IN_DNSWL_NONE(0.00)[213.133.102.83:from];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/29/20 5:53 PM, Dmitry Osipenko wrote:
-> 30.07.2020 03:55, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> On 7/29/20 5:52 PM, Sowjanya Komatineni wrote:
->>> On 7/29/20 5:43 PM, Dmitry Osipenko wrote:
->>>> 30.07.2020 03:27, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>> ...
->>>>>>> Secondly, perhaps a failed calibration isn't a very critical error?
->>>>>>> Hence just printing a warning message should be enough.
->>>>>> Using dev_err to report calibration failure. Are you suggesting to u=
-se
->>>>>> dev_warn instead of dev_err?
->>>> I meant that failing s_stream might be unnecessary.
->>>>
->>>> The dev_warn should be more appropriate for a non-critical errors.
->>>>
->>>>>>> Could you please make a patch that factors all ON/OFF code paths
->>>>>>> into a
->>>>>>> separate functions? It's a bit difficult to follow the combined cod=
-e,
->>>>>>> especially partial changes in the patches. Thanks in advance!
->>>>>> what do you mean by partial changes in patches?
->>>>>>
->>>>>> Can you please be more clear?
->>>>> Also please specify what ON/OFF code paths you are referring to when
->>>>> you
->>>>> say to move into separate functions?
->>>> I meant to change all the code like this:
->>>>
->>>> set(on) {
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0 if (on) {
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0 if (!on)
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->>>>
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0 return;
->>>> }
->>>>
->>>> to somewhat like this:
->>>>
->>>> set(on) {
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0 if (on)
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D enable();
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0 else
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D disable();
->>>>
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->>>> }
->>> You mean to change tegra_channel_set_stream() ?
-> Yes, and tegra_csi_s_stream().
+
+在 2020/7/29 下午6:31, Stephen Rothwell 写道:
+> Hi all,
 >
->> changing tegra_channel_set_stream() to have like below will have
->> redundant calls as most of the code b/w enable and disable is same
->> except calling them in reverse order based on on/off and doing MIPI
->> calibration only during ON
->>
->>
->> if (on)
->>  =C2=A0=C2=A0=C2=A0 ret =3D enable()
->> else
->>  =C2=A0=C2=A0=C2=A0 ret =3D disable()
->> return ret;
-> Readability should be more important than number of lines.
+> After merging the mips tree, today's linux-next build (powerpc
+> allnoconfig) produced this warning:
+>
+> drivers/of/address.c:104:21: warning: 'of_bus_pci_get_flags' defined but not used [-Wunused-function]
+>    104 | static unsigned int of_bus_pci_get_flags(const __be32 *addr)
+>        |                     ^~~~~~~~~~~~~~~~~~~~
+>
+> Introduced by commit
+>
+>    2f96593ecc37 ("of_address: Add bus type match for pci ranges parser")
 
-Will have v6 and add additional patch at the end to do enable/disable=20
-separately.
+Thanks for catching that!
+Fix patch sent.
 
-Separating this out with additional patch before adding sensor support=20
-patch requires all patches to be updated.
+Btw: Neither James nor Ralf is still active at Linux-MIPS.
 
-So I am ok either ways. Please let me know if adding additional patch at=20
-the end to split tegra_channel_set_stream() and tegra_csi_s_stream()=20
-separately is ok?
+- Jiaxun
 
-
+>
