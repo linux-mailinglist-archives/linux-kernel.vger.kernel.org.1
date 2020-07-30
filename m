@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAEB4232EA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CFC232EA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729103AbgG3IZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
+        id S1729158AbgG3I1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726273AbgG3IZN (ORCPT
+        with ESMTP id S1729002AbgG3I1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:25:13 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEDEC061794;
-        Thu, 30 Jul 2020 01:25:13 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id df16so2971025edb.9;
-        Thu, 30 Jul 2020 01:25:12 -0700 (PDT)
+        Thu, 30 Jul 2020 04:27:08 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A64BC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 01:27:08 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id o1so13394032plk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 01:27:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DJxfTFvC3hUmMu3XHLkhRUumg4gnQJ/KBa/k8zUvYyI=;
-        b=UnCTJLAzGnQ/m1ceoQ5nR6nP9lJGdGB8cVstYbJAaJZjpkRKlkaYm9ttsVyJy/cD1m
-         KWcpbpUXhv7JySWBjC+qQZJy+MAfWFSlVEmqaAbBjn9Xt+eJ+i0ZndaWnVJyLHZFxMp9
-         DT7e8ptOJDC/Hsl0VxRHXSxdJxJpVFRM9jjb1sx4g9F03CQ/+5og/r7bDHF9QOCNrT8E
-         HUAW1QPduCfgNtWpLLhdzBC3zPHax5jvCtPj6WtFmiJ+eGfOD0dwD0nMVOX1GPqvuvYT
-         p1jn7a41TxmTfwYELhkF4hqCXkLvu8kgSlsNM8wBZC6FPsrjWNiswbSQkI5y/VOKkrNT
-         mcnA==
+        h=from:to:cc:subject:date:message-id;
+        bh=ytlVe9sZxGP/GyzK5t16szL2Z6Kr4xJ+2Bn7kTuz0dI=;
+        b=aklJhmrDNqJpPXrQLz8erspyzDFRr2txAah3NT49bYgkhhMKzFYO4EgfbucHmSCpBC
+         mtjfmDBYhWH+iQdDCvVpUtqEyvhoc0RbAjNrQsRIScUNNMHZfATUyrre1xu138gkgugo
+         OKuXf5+yjRiD4Q0C/QL0U809NjxV0XjEjUhKvkUoe4jn7iTOxbsKyugN5edwqa4OcWy7
+         aFfyVbfXnDO8sRm32RYEOJyvaFcD7g72TTzncvS1+mdZVRxaKYoLA6psYuYFGU7d129N
+         lSF2L2gqxLf+SnwRtPSjr8rp5MOyAAHRFbCVL5FLNsqUJeO0sFQM/vOP71me795CPOJh
+         opAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DJxfTFvC3hUmMu3XHLkhRUumg4gnQJ/KBa/k8zUvYyI=;
-        b=TZY9EJPbp0E0OFz+u/FOt7oy5xcN2MC5cY0dS6XQPfXCdiGr8L+9QhLCmGskeXspTi
-         ULahG/Cc3OOi/Uz1uc0yulCkLzdSYSfYLT1WdLGy2hXM4sSH9Lgl+gNcLBQKt7I7N60O
-         cbJpKFJ7LBHLn7Flv+iCNIxZOq9k5drK5R4wOqjec8konUWtmOxY21ezocuAWqYlxAgS
-         vgY1cWZ9C5XJ1+TkS2qPd+bPjV1XBg8WdPQOA2HirOh8JU3mLa0qQJPpEDF4FXmpXerR
-         iUxI5eAWMWXuwq4i+TXbAp3H3NvOfM/hR/9RZ64NnRu63lfJHnogRlC1HY4zQ7YD8DTx
-         8//w==
-X-Gm-Message-State: AOAM533GOAZYMNzBTCj+JDPRRdSzZ66Z/anLIdd3ECi/J1Wt1nn7nY4I
-        aDAw3eJ0HmiqRAlddUa8dm71uyKh
-X-Google-Smtp-Source: ABdhPJx5E9kBhC7ffMIfFvxTok1TBdg/8bFbTDJhlHOumSB+EQkYDF93CC7J7lSg/YqzZYoYTi79tQ==
-X-Received: by 2002:aa7:d6c7:: with SMTP id x7mr1543213edr.167.1596097511859;
-        Thu, 30 Jul 2020 01:25:11 -0700 (PDT)
-Received: from skbuf ([188.26.57.97])
-        by smtp.gmail.com with ESMTPSA id k18sm4863078ejp.81.2020.07.30.01.25.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 01:25:11 -0700 (PDT)
-Date:   Thu, 30 Jul 2020 11:25:09 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, netdev@vger.kernel.org,
-        madalin.bucur@oss.nxp.com, camelia.groza@nxp.com,
-        joakim.tjernlund@infinera.com, fido_max@inbox.ru,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 stable-5.4.y] Revert "dpaa_eth: fix usage as DSA
- master, try 3"
-Message-ID: <20200730082509.4543oou7lozdmbjz@skbuf>
-References: <20200624124517.3212326-1-olteanv@gmail.com>
- <20200730073013.GC4045776@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730073013.GC4045776@kroah.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ytlVe9sZxGP/GyzK5t16szL2Z6Kr4xJ+2Bn7kTuz0dI=;
+        b=UiK0a7f7PdKiDQ8i9ll00qJjLdyGCUyQWTPMbhgYk7QoNVd3SW/y+Nb4R8tWFjTdmk
+         0qNRnHXdxlrtzvWBg0kKbwDJBibmmSqo0vKXJB4NP+5FkEZqkIQQ8Vlk0E+WA5zDNc2P
+         2UHL+mCLtj2TCD/IV3Cmmwqezlk/ODAkh87pXu/MFzX5lf6iYtFZLXKcngW4raq0vdoF
+         +7b050LBM4HMqkG4ly41S8xQlnrs44sTv/oW/ThofXWuJIWTXdM5V8LUe9+UEXScf5++
+         eegARsQI/Il37bWDlRoqZmtuZaJbJ4uh1g1h3g9D5y7FkKp/ujg4Imn0onHHJ9SzAS1O
+         LHHw==
+X-Gm-Message-State: AOAM532QAYaPbrKHbF2cY7K1m3FEnScaZBcyZcjsUI+nYppvShphuaci
+        RyLWglTDcr+1prGa6cQ3CA==
+X-Google-Smtp-Source: ABdhPJzg5uAiw9WYZREfbGe8Nmyc2zBfrzmvxoqDPF9+YWCQGN0vN+Xf5KblGrBnPnDfvwCtM+EPPg==
+X-Received: by 2002:a17:90b:f09:: with SMTP id br9mr9916108pjb.11.1596097627997;
+        Thu, 30 Jul 2020 01:27:07 -0700 (PDT)
+Received: from mylaptop.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id h15sm5104315pjc.14.2020.07.30.01.27.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Jul 2020 01:27:07 -0700 (PDT)
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     x86@kernel.org
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Steve Wahl <steve.wahl@hpe.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/purgatory: strip debug info
+Date:   Thu, 30 Jul 2020 16:26:49 +0800
+Message-Id: <1596097609-14118-1-git-send-email-kernelfans@gmail.com>
+X-Mailer: git-send-email 2.7.5
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 09:30:13AM +0200, Greg KH wrote:
-> 
-> Now queued up, thanks.
-> 
-> greg k-h
+It is useless to keep debug info in purgatory. And discarding them saves
+about 200K space.
 
-Thanks Greg, I was wondering whether I should be reminding you or not.
+Original:
+  259080  kexec-purgatory.o
+Stripped:
+   29152  kexec-purgatory.o
 
--Vladimir
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: Steve Wahl <steve.wahl@hpe.com>
+Cc: linux-kernel@vger.kernel.org
+To: x86@kernel.org
+---
+ arch/x86/purgatory/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+index 088bd76..4340ae6 100644
+--- a/arch/x86/purgatory/Makefile
++++ b/arch/x86/purgatory/Makefile
+@@ -16,7 +16,7 @@ CFLAGS_sha256.o := -D__DISABLE_EXPORTS
+ 
+ # When linking purgatory.ro with -r unresolved symbols are not checked,
+ # also link a purgatory.chk binary without -r to check for unresolved symbols.
+-PURGATORY_LDFLAGS := -e purgatory_start -nostdlib -z nodefaultlib
++PURGATORY_LDFLAGS := -e purgatory_start -nostdlib -z nodefaultlib -S
+ LDFLAGS_purgatory.ro := -r $(PURGATORY_LDFLAGS)
+ LDFLAGS_purgatory.chk := $(PURGATORY_LDFLAGS)
+ targets += purgatory.ro purgatory.chk
+-- 
+2.7.5
+
