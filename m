@@ -2,106 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749CC232B33
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 07:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC82C232B50
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 07:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgG3FKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 01:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54000 "EHLO
+        id S1728650AbgG3FTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 01:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgG3FKu (ORCPT
+        with ESMTP id S1727838AbgG3FTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 01:10:50 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90486C0619D4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 22:10:49 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id r4so2504139pls.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 22:10:49 -0700 (PDT)
+        Thu, 30 Jul 2020 01:19:39 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC975C061794;
+        Wed, 29 Jul 2020 22:19:39 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id u10so3655203plr.7;
+        Wed, 29 Jul 2020 22:19:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mA4BZd4kK85fl/B02dB2FxAX7zWjXLAMtkaKMXRlAl8=;
-        b=QeC5Z4o9gUSaBccsjgXcHVRkllpZndKpz8SQFNaDHEdHlyoajM6S2rNTljlpc+BiJI
-         2w8OfDJUIEXOCuHqrkxDWsVhZ/eoKbd4rbVFTbaxqaK3yaXeMKbO/PmumOF+niR8ZAVN
-         ecVd7mu0QqOi75ElRfD3aSjjbnrDoATXhJ/yypmCBqgAlGcdYpnC/v8VTSISK4ZAU49s
-         hxXK0kmzbG37NsT5PKEdGRMnWARtYMD0WI85tppgoe6x6zkWImbL5A8948ZXJ+s0oIAE
-         Em+uNLDw4H7ULrU3hgS4xndgpLkVbM21ntKMONJmJBRjnExddwEPXMLvxRIsyOYz3BPJ
-         LqRw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EnGXeNbQwuYNZ4/SgA8a2g0/K9Xn2zkd8XxAO1wpPBE=;
+        b=CNYeSPa5UHoQU/zAXoMxTvIy8LM9ZnpBrUa+u5uUMyQdzorRKQusWkM0WWRphxi5ru
+         p/FmoF5qPGgJNNY0+EDETyed1MxEEDnBRCn9/qFltha0m+8igcWmCh9nFCRh3mRLf5qE
+         oXYFuLxMrynBJjPTQ7xkCv/VoWYHHQ2CxG1MYDb+mDbsqpKjABOqr2615HF+D0k0Y0bq
+         hwvXDejkhM7UM6Kq06SzRnTtf4aB1nJ4vOVO7tFo3BKYD0PajnvSPrWUBK29IIfPQCAQ
+         blSwhF47KNibbIJ0e+vT7gwNsoX4dZds4/os/tKEW05Jbq9BhC9BWwcZUM8GY/o0iiOY
+         5Fpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mA4BZd4kK85fl/B02dB2FxAX7zWjXLAMtkaKMXRlAl8=;
-        b=Nx5vHmMYbyvZIDNsA2o0a6q8YguZnEBw6iX0vUt3HlznLXh4G7uMju7hRBKURTJwTY
-         p+dXoH7GpZeLVW7FI/DFNmeGjvFxgI1hy242U1gkYMnx3lL/U2WmARQ8FZRsceEv3v98
-         oyRlgPJSvUubitdxJsv+OaR3vqXfoZvcdVi/voy4Y1wqtJZExBU5QFAIIhYZ+72P1cSq
-         Zva8F97PvA4yQ8WFrPP23wcG2LD/9Z9Igaal1GVOa60uaTCYQ89k2mVDNR6x8Wc6JVQF
-         4VYVfkvTpFxga2DhqEK/s4COd2K0m3WizXtQXBUqXst+P14+TVDNZVB9TUcykQVll6H2
-         pj+w==
-X-Gm-Message-State: AOAM5326tkH6fEorboGwcF/bNh2YX9rm0auTadJYrFb0HtAEeh27/Vii
-        GB/97fnjMuQH4kQqgV8jlxHpgg==
-X-Google-Smtp-Source: ABdhPJwj9HWHtqAFAKHBCLQOJIrgpN7lsfFwNhMzvnaPW201rcxJCVo3jVRneNq0kLb0y1yqbbw/yw==
-X-Received: by 2002:a17:90b:94f:: with SMTP id dw15mr1393733pjb.209.1596085848986;
-        Wed, 29 Jul 2020 22:10:48 -0700 (PDT)
-Received: from localhost ([106.201.14.19])
-        by smtp.gmail.com with ESMTPSA id g18sm4341705pfi.141.2020.07.29.22.10.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 Jul 2020 22:10:48 -0700 (PDT)
-Date:   Thu, 30 Jul 2020 10:40:45 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@freedesktop.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
-        saravanak@google.com, Sibi Sankar <sibis@codeaurora.org>,
-        Jonathan <jonathan@marek.ca>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dave Airlie <airlied@gmail.com>
-Subject: Re: [PATCH v5 0/6] Add support for GPU DDR BW scaling
-Message-ID: <20200730051045.jejrtkor3b32l2qe@vireshk-mac-ubuntu>
-References: <1594644106-22449-1-git-send-email-akhilpo@codeaurora.org>
- <CAF6AEGtAEwZbWxLb4MxaWNswvtrFbLK+N0Fez2XYr7odKZffWA@mail.gmail.com>
- <20200720100131.6ux4zumbwqpa42ye@vireshk-mac-ubuntu>
- <CAF6AEGurrsd3nrbB=ktZjWfKTNbKwPHYwTFiZdD-NOW1T7gePQ@mail.gmail.com>
- <20200721032442.hv7l4q6633vnmnfe@vireshk-mac-ubuntu>
- <CAF6AEGuhQcRskGhrFvmCf5T3EcZ9S+3LRdZBiaDYqF34yZjd+A@mail.gmail.com>
- <20200722053023.vwaoj5oqh4cazzzz@vireshk-mac-ubuntu>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EnGXeNbQwuYNZ4/SgA8a2g0/K9Xn2zkd8XxAO1wpPBE=;
+        b=ZpvvJcx1L6B6EVe5tw0dnjBR5DrHJlZZrXLfE7E/t8FhC1ixH4/O4ECQ70BxzuF8z1
+         oUCQ6lEitwFG9xR9wFBlenq8V0iVcHCLw5k3sO6uLdj0q16um5Isx6VPHqmh8R2PyTPL
+         Jos1Gc//WtjkpbOJaBleR4ROf+YVF2O+OUIulCnNEy4wNn4YNldfaM4c1HyzSm++oc9j
+         NeV7/WyJPHlNWdm8cMYQcjyMH2GD1pSsCxj1S7aMc2oqSpG+3N+6dBaYJC7TCM8zNnSV
+         w38UOojlPlzFl95beAFYXZJOkmd8R7gGasap+CQ2zsUUrk8e6xS/wC206+xe6PXcDik6
+         m2kQ==
+X-Gm-Message-State: AOAM5323x6vWTIReWcWarTVeRKGubv1IC3brQBmDrVegkYNqtwI3vmtm
+        mYkLh0/8Xr69ATGg6k7hPeY=
+X-Google-Smtp-Source: ABdhPJwjUlYjYmMWc8AL8fvrnaAOvzZZqXAtYVN5Q/5zg1fY1zOc8Bo7eLrzwvyLF10mdRA/NCC5WA==
+X-Received: by 2002:a17:902:103:: with SMTP id 3mr31556502plb.195.1596086379202;
+        Wed, 29 Jul 2020 22:19:39 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id 9sm4224025pfx.131.2020.07.29.22.19.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 22:19:38 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v1] scsi: stex: use generic power management
+Date:   Thu, 30 Jul 2020 10:47:33 +0530
+Message-Id: <20200730051733.113652-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722053023.vwaoj5oqh4cazzzz@vireshk-mac-ubuntu>
-User-Agent: NeoMutt/20170609 (1.8.3)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-07-20, 11:00, Viresh Kumar wrote:
-> On 21-07-20, 07:28, Rob Clark wrote:
-> > With your ack, I can add the patch the dev_pm_opp_set_bw patch to my
-> > tree and merge it via msm-next -> drm-next -> linus
-> 
-> I wanted to send it via my tree, but its okay. Pick this patch from
-> linux-next and add my Ack, I will drop it after that.
-> 
-> a8351c12c6c7 OPP: Add and export helper to set bandwidth
+Drivers using legacy power management .suspen()/.resume() callbacks
+have to manage PCI states and device's PM states themselves. They also
+need to take care of standard configuration registers.
 
-Oops, sorry for the trouble but this needs to go via my tree only :(
+Switch to generic power management framework using a single
+"struct dev_pm_ops" variable to take the unnecessary load from the driver.
+This also avoids the need for the driver to directly call most of the PCI
+helper functions and device power state control functions, as through
+the generic framework PCI Core takes care of the necessary operations,
+and drivers are required to do only device-specific jobs.
 
-I maintain two different branches, one for OPP and another one for
-cpufreq. There was no dependency within the OPP branch and so I
-dropped it that day and asked you to take it.
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/scsi/stex.c | 35 +++++++++++++++++++++++++++++------
+ 1 file changed, 29 insertions(+), 6 deletions(-)
 
-But when I tried to send a pull request today I realised that one of
-the qcom patches in the cpufreq branch is dependent on it and I need
-to keep this patch in my tree.
-
+diff --git a/drivers/scsi/stex.c b/drivers/scsi/stex.c
+index d4f10c0d813c..9500666b521a 100644
+--- a/drivers/scsi/stex.c
++++ b/drivers/scsi/stex.c
+@@ -1972,9 +1972,9 @@ static int stex_choice_sleep_mic(struct st_hba *hba, pm_message_t state)
+ 	}
+ }
+ 
+-static int stex_suspend(struct pci_dev *pdev, pm_message_t state)
++static int stex_suspend_late(struct device *dev, pm_message_t state)
+ {
+-	struct st_hba *hba = pci_get_drvdata(pdev);
++	struct st_hba *hba = dev_get_drvdata(dev);
+ 
+ 	if ((hba->cardtype == st_yel || hba->cardtype == st_P3)
+ 		&& hba->supports_pm == 1)
+@@ -1984,9 +1984,24 @@ static int stex_suspend(struct pci_dev *pdev, pm_message_t state)
+ 	return 0;
+ }
+ 
+-static int stex_resume(struct pci_dev *pdev)
++static int stex_suspend(struct device *dev)
+ {
+-	struct st_hba *hba = pci_get_drvdata(pdev);
++	return stex_suspend_late(dev, PMSG_SUSPEND);
++}
++
++static int stex_hibernate(struct device *dev)
++{
++	return stex_suspend_late(dev, PMSG_HIBERNATE);
++}
++
++static int stex_freeze(struct device *dev)
++{
++	return stex_suspend_late(dev, PMSG_FREEZE);
++}
++
++static int stex_resume(struct device *dev)
++{
++	struct st_hba *hba = dev_get_drvdata(dev);
+ 
+ 	hba->mu_status = MU_STATE_STARTING;
+ 	stex_handshake(hba);
+@@ -2000,14 +2015,22 @@ static int stex_halt(struct notifier_block *nb, unsigned long event, void *buf)
+ }
+ MODULE_DEVICE_TABLE(pci, stex_pci_tbl);
+ 
++static const struct dev_pm_ops stex_pm_ops = {
++	.suspend	= stex_suspend,
++	.resume		= stex_resume,
++	.freeze		= stex_freeze,
++	.thaw		= stex_resume,
++	.poweroff	= stex_hibernate,
++	.restore	= stex_resume,
++};
++
+ static struct pci_driver stex_pci_driver = {
+ 	.name		= DRV_NAME,
+ 	.id_table	= stex_pci_tbl,
+ 	.probe		= stex_probe,
+ 	.remove		= stex_remove,
+ 	.shutdown	= stex_shutdown,
+-	.suspend	= stex_suspend,
+-	.resume		= stex_resume,
++	.driver.pm	= &stex_pm_ops,
+ };
+ 
+ static int __init stex_init(void)
 -- 
-viresh
+2.27.0
+
