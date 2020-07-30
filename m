@@ -2,122 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA43232C7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 09:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F136232C84
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 09:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbgG3HYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 03:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgG3HX7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 03:23:59 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4463C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 00:23:58 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id s23so19616517qtq.12
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 00:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UONcGtH87E3a5kjHLIWiuODkuzooKxlCqVfEhVFntOs=;
-        b=HXYQQMgfzlVEj3WUkqkBrSxkEmTJohgn7cWeafHTC4o/k0JKSoPBxzLQZWVlUdWtSb
-         /nP2n5lgXaR5sD9xSWYxzj4aw05lcL0G8vj1vYgxB5qViOBgNbPKMdj7Jfg+/recddQE
-         xCgbYFo3KRM/t5/hPKE5YXNb3NYWa4OVLfs+HJ2WWSOyU8m1y4rXbZLUUruYm0QY6pd3
-         shQtNvR2f9mvm8rok3XR5Aoj2nzJaqEIYlSXhjZX4d2Tnz1pDr2AKkBwHAANzATN5iDs
-         TQFsqc3+O/EmhKFxilWouZ5mFNL2M9Vcib5o7lGLIeDAP4uCBujIJXoJwzXkIGVd7ehd
-         xl5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UONcGtH87E3a5kjHLIWiuODkuzooKxlCqVfEhVFntOs=;
-        b=iNYdTeWHoAl0dOj4OOb2pEXEsTx24COMLFGJPHBvs5YgNuvV+fRFVLPvy8AIr4gjj8
-         U0q5rZuwNmscBRWX1Rh04sUxTwRYybnd7m6Z8cEiRuNzD4ZcrDpHcTKil4RtftdnVPR6
-         2cxoxZUlOjONh7wytJ+71iojf+Y0vnHKUcybQxk6vSMLCQ6UlhfqEMtiPm6G3XA/4req
-         oMne2FySTjPqZfG+BXOT1iIDrMhEmZtm2AxYvCag9VO/D1rtdgYiC/plJ6O4LwNhB3Zh
-         cfDTmwYm6tOhTEhcBSvwi/2YttMnYJrABYiFlpsR8lNULotJaOGUg1lQs/CGdY084F0X
-         UsdA==
-X-Gm-Message-State: AOAM532SncqLH8NkucT0wSWGgO0msqGBjWObsv8Epm5UPPS+uAhCAhTr
-        9ZbGlBV+FIvTq3qePXTMNjbsaXgJA40l9iBY9iE=
-X-Google-Smtp-Source: ABdhPJwyTxUPfHh/W6tv9g29pHFtPJF1Ko5E5uzGhYAwkdfNZ3VBu0oUQIo+AE2x1GxX7qRobBU900hB2OKzukb53L4=
-X-Received: by 2002:ac8:6d0f:: with SMTP id o15mr1543191qtt.121.1596093838176;
- Thu, 30 Jul 2020 00:23:58 -0700 (PDT)
+        id S1728958AbgG3H0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 03:26:17 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35796 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728724AbgG3H0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 03:26:17 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 080F7833B26E44A6B96B;
+        Thu, 30 Jul 2020 15:26:12 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 30 Jul 2020
+ 15:26:01 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <michal.simek@xilinx.com>, <esben@geanix.com>, <timur@kernel.org>,
+        <f.fainelli@gmail.com>, <weiyongjun1@huawei.com>,
+        <hkallweit1@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] net: ll_temac: Use devm_platform_ioremap_resource_byname()
+Date:   Thu, 30 Jul 2020 15:24:19 +0800
+Message-ID: <20200730072419.57030-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <1595762417-2190-1-git-send-email-shengjiu.wang@nxp.com> <20200727005558.GA30124@Asurada-Nvidia>
-In-Reply-To: <20200727005558.GA30124@Asurada-Nvidia>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Thu, 30 Jul 2020 15:23:47 +0800
-Message-ID: <CAA+D8AMiarV+FovE8ZTTe8zagSz8-XDcck7Z4W2TfbOvzgrLpw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: Remove fsl_asoc_card_set_bias_level function
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 8:58 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> On Sun, Jul 26, 2020 at 07:20:17PM +0800, Shengjiu Wang wrote:
-> > With this case:
-> > aplay -Dhw:x 16khz.wav 24khz.wav
-> > There is sound distortion for 24khz.wav. The reason is that setting
-> > PLL of WM8962 with set_bias_level function, the bias level is not
-> > changed when 24khz.wav is played, then the PLL won't be reset, the
-> > clock is not correct, so distortion happens.
-> >
-> > The resolution of this issue is to remove fsl_asoc_card_set_bias_level.
-> > Move PLL configuration to hw_params and hw_free.
->
-> Hmm...using set_bias_level() instead of hw_params/hw_free() was
-> strongly suggested by Mark when I got imx-wm8962 machine driver
-> upstream. So we will need his input here, although I personally
-> don't have a problem with it...
->
-> > After removing fsl_asoc_card_set_bias_level, also test WM8960 case,
-> > it can work.
-> >
-> > Fixes: 708b4351f08c ("ASoC: fsl: Add Freescale Generic ASoC Sound Card with ASRC support")
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> >  sound/soc/fsl/fsl-asoc-card.c | 149 +++++++++++++++-------------------
-> >  1 file changed, 66 insertions(+), 83 deletions(-)
-> >
-> > diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-> > index 4848ba61d083..0517dbb3e908 100644
-> > --- a/sound/soc/fsl/fsl-asoc-card.c
-> > +++ b/sound/soc/fsl/fsl-asoc-card.c
-> > @@ -73,6 +73,7 @@ struct cpu_priv {
-> >   * @codec_priv: CODEC private data
-> >   * @cpu_priv: CPU private data
-> >   * @card: ASoC card structure
-> > + * @is_stream_in_use: flags for release resource in hw_free
->
-> Would love to see something shorter... Could we reuse similar
-> one below, borrowing from fsl_ssi driver?
->
->  * @streams: Mask of current active streams: BIT(TX) and BIT(RX)
->
+platform_get_resource() may fail and return NULL, so we had better
+check its return value to avoid a NULL pointer dereference a bit later
+in the code. Fix it to use devm_platform_ioremap_resource_byname()
+instead of calling platform_get_resource_byname() and devm_ioremap().
 
-will send v2 for this change.
+Fixes: 8425c41d1ef7 ("net: ll_temac: Extend support to non-device-tree platforms")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/net/ethernet/xilinx/ll_temac_main.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> >  static int fsl_asoc_card_audmux_init(struct device_node *np,
-> >                                    struct fsl_asoc_card_priv *priv)
-> >  {
-> > @@ -611,7 +600,6 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
-> >       /* Diversify the card configurations */
-> >       if (of_device_is_compatible(np, "fsl,imx-audio-cs42888")) {
-> >               codec_dai_name = "cs42888";
-> > -             priv->card.set_bias_level = NULL;
->
-> Can check if set_bias_level is still being used with this change.
+diff --git a/drivers/net/ethernet/xilinx/ll_temac_main.c b/drivers/net/ethernet/xilinx/ll_temac_main.c
+index 929244064abd..9a15f14daa47 100644
+--- a/drivers/net/ethernet/xilinx/ll_temac_main.c
++++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
+@@ -1407,10 +1407,8 @@ static int temac_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* map device registers */
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	lp->regs = devm_ioremap(&pdev->dev, res->start,
+-					resource_size(res));
+-	if (!lp->regs) {
++	lp->regs = devm_platform_ioremap_resource_byname(pdev, 0);
++	if (IS_ERR(lp->regs)) {
+ 		dev_err(&pdev->dev, "could not map TEMAC registers\n");
+ 		return -ENOMEM;
+ 	}
+-- 
+2.17.1
+
