@@ -2,121 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D332335A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5422335B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 17:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729820AbgG3Pfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 11:35:32 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49412 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgG3Pfa (ORCPT
+        id S1729816AbgG3PhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 11:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729484AbgG3PhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 11:35:30 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06UFZS8p120419;
-        Thu, 30 Jul 2020 10:35:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1596123328;
-        bh=qkK7AaYs5uCK3KrZbGZUjO5KrOQalLQCVGuPGcFJNZE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=V+Wky63GNPKNXB/PwPyItMCJ+zq9RA7chWLxsZ3uIFhDJkK0DjPEr+ulTAR9j9R9a
-         ZCwv9OWVEptt8a0I/4RbCIRCl5zjkViI+2rqv8lbY9+XBmrexB0XQOeVKYFFHvPfDN
-         UdkzpUPgKuv6WCYPcmaffAUKM4xRHy9DfJFSGnLU=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06UFZSFo041942;
-        Thu, 30 Jul 2020 10:35:28 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 30
- Jul 2020 10:35:27 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 30 Jul 2020 10:35:27 -0500
-Received: from [10.250.33.191] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06UFZRe2032994;
-        Thu, 30 Jul 2020 10:35:27 -0500
-Subject: Re: [PATCH 2/2] power: bq27xxx: Fix spacing style and white space
- issues
-To:     "Andrew F. Davis" <afd@ti.com>, <sre@kernel.org>, <pali@kernel.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200730143122.28519-1-dmurphy@ti.com>
- <20200730143122.28519-2-dmurphy@ti.com>
- <99e39cd9-3c7f-908b-263f-42c78575bb29@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <309330ca-d528-e77d-7dab-4bd741426ea1@ti.com>
-Date:   Thu, 30 Jul 2020 10:35:27 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <99e39cd9-3c7f-908b-263f-42c78575bb29@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Thu, 30 Jul 2020 11:37:07 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7391C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 08:37:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id b127so16846707ybh.21
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 08:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=IxpQl+U4Cci+VujQeEVAy+X3aO84K4nWxe4WSDjauTc=;
+        b=IUuZ4yIPiNNKD7wzRr7z//0o/R3OjV7yHYGXQWvGy2iAQ4BWK9M1eVKaxEhD403+KF
+         M3ALR70+4KVyqznMOqnXQ8yMz9bDv2IF4FSy123jSwWcMJR1hqBK3ZpJVbtEMxKJR4yz
+         GnoQLLpEYsQX0DGTZ7DBIRXk2bmdxalvVu2gziRivHLe4cdoDRRoKNz8N+Oil7ikHLKT
+         TFsGtcOAG3aAHcLsZnYmMrq2GNSkj2Xx2hGy0fOIxWulD6SgV3nWv+KyZph5ieTAfCLL
+         JlLrmEWHVaqDbaepEr+nEd0U4rH6dcVN/4oAQ7kGiCc+PoV7X/09SduIWIEb+XazTiqu
+         tYmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=IxpQl+U4Cci+VujQeEVAy+X3aO84K4nWxe4WSDjauTc=;
+        b=CJrFwyv4OTZfzxf2cS6dfVZENcnh1qYQGEdTWSqbyuJPlSoTVtL4dmOVi0E8YapGx0
+         ZjqgLFrZIWqpwSUZGeIGDATmeevAfa8tDzlxJrIkgI3n1BV7otbh+AkysU7fD48bRJsq
+         jjzJ0eqJqHANeJyijiB/JkzwF3PMUKfRiiuDV5KeHYAQUJUzDph+MN9h/oHeAUKW/aFY
+         iWK5oemD5CJhc5tNOpTquvkMQ8Wm7aMZZh3Cv/WVurlRLQfhUfIjzzDM+4ytryGUA/hl
+         N5JNYRjr4a29pDPw4R2GxsWgJN4EOCoz/YdVsb6frie2H8dWNHd0CL0poTJ8KVVYIOPI
+         yA4w==
+X-Gm-Message-State: AOAM533fad2/oRtOkpbiA3q8PyuAnXlkl5zUEeDNhQjXkx18Na2nkXSo
+        YJG36yb5Z7ZLfpBAapyjajCoL0Hbq5Oo1bKpYNo=
+X-Google-Smtp-Source: ABdhPJzcj+/fyYup62Pb5vBi5uJFCfbTGtxNScJYQNvFrcTXPq8Z0QUD4AnWOU0P6pOttuZ1A2TSbvaltVZkQHUu5WA=
+X-Received: by 2002:a25:d785:: with SMTP id o127mr5444399ybg.378.1596123426342;
+ Thu, 30 Jul 2020 08:37:06 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 08:37:01 -0700
+In-Reply-To: <20200729215152.662225-1-samitolvanen@google.com>
+Message-Id: <20200730153701.3892953-1-samitolvanen@google.com>
+Mime-Version: 1.0
+References: <20200729215152.662225-1-samitolvanen@google.com>
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
+Subject: [PATCH v2] arm64/alternatives: move length validation inside the subsection
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
+Commit f7b93d42945c ("arm64/alternatives: use subsections for replacement
+sequences") breaks LLVM's integrated assembler, because due to its
+one-pass design, it cannot compute instruction sequence lengths before the
+layout for the subsection has been finalized. This change fixes the build
+by moving the .org directives inside the subsection, so they are processed
+after the subsection layout is known.
 
-On 7/30/20 10:25 AM, Andrew F. Davis wrote:
-> On 7/30/20 10:31 AM, Dan Murphy wrote:
->> Fix spacing style issues with the chip data array.  As well as fix
->> missing new line after variable declaration.
->>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>   drivers/power/supply/bq27xxx_battery.c | 63 ++++++++++++++------------
->>   1 file changed, 33 insertions(+), 30 deletions(-)
->>
->> diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
->> index 8b112449ace8..e58039db8e64 100644
->> --- a/drivers/power/supply/bq27xxx_battery.c
->> +++ b/drivers/power/supply/bq27xxx_battery.c
->> @@ -871,35 +871,35 @@ static struct {
->>   	enum power_supply_property *props;
->>   	size_t props_size;
->>   } bq27xxx_chip_data[] = {
->> -	[BQ27000]   = BQ27XXX_DATA(bq27000,   0         , BQ27XXX_O_ZERO),
->> -	[BQ27010]   = BQ27XXX_DATA(bq27010,   0         , BQ27XXX_O_ZERO),
->> -	[BQ2750X]   = BQ27XXX_DATA(bq2750x,   0         , BQ27XXX_O_OTDC),
->> -	[BQ2751X]   = BQ27XXX_DATA(bq2751x,   0         , BQ27XXX_O_OTDC),
->> -	[BQ2752X]   = BQ27XXX_DATA(bq2752x,   0         , BQ27XXX_O_OTDC),
->> -	[BQ27500]   = BQ27XXX_DATA(bq27500,   0x04143672, BQ27XXX_O_OTDC),
->> -	[BQ27510G1] = BQ27XXX_DATA(bq27510g1, 0         , BQ27XXX_O_OTDC),
->> -	[BQ27510G2] = BQ27XXX_DATA(bq27510g2, 0         , BQ27XXX_O_OTDC),
->> -	[BQ27510G3] = BQ27XXX_DATA(bq27510g3, 0         , BQ27XXX_O_OTDC),
->> -	[BQ27520G1] = BQ27XXX_DATA(bq27520g1, 0         , BQ27XXX_O_OTDC),
->> -	[BQ27520G2] = BQ27XXX_DATA(bq27520g2, 0         , BQ27XXX_O_OTDC),
->> -	[BQ27520G3] = BQ27XXX_DATA(bq27520g3, 0         , BQ27XXX_O_OTDC),
->> -	[BQ27520G4] = BQ27XXX_DATA(bq27520g4, 0         , BQ27XXX_O_OTDC),
->> -	[BQ27521]   = BQ27XXX_DATA(bq27521,   0         , 0),
->> -	[BQ27530]   = BQ27XXX_DATA(bq27530,   0         , BQ27XXX_O_UTOT),
->> -	[BQ27531]   = BQ27XXX_DATA(bq27531,   0         , BQ27XXX_O_UTOT),
->> -	[BQ27541]   = BQ27XXX_DATA(bq27541,   0         , BQ27XXX_O_OTDC),
->> -	[BQ27542]   = BQ27XXX_DATA(bq27542,   0         , BQ27XXX_O_OTDC),
->> -	[BQ27546]   = BQ27XXX_DATA(bq27546,   0         , BQ27XXX_O_OTDC),
->> -	[BQ27742]   = BQ27XXX_DATA(bq27742,   0         , BQ27XXX_O_OTDC),
->> -	[BQ27545]   = BQ27XXX_DATA(bq27545,   0x04143672, BQ27XXX_O_OTDC),
->> -	[BQ27411]   = BQ27XXX_DATA(bq27411,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
->> -	[BQ27421]   = BQ27XXX_DATA(bq27421,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
->> -	[BQ27425]   = BQ27XXX_DATA(bq27425,   0x04143672, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP),
->> -	[BQ27426]   = BQ27XXX_DATA(bq27426,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
->> -	[BQ27441]   = BQ27XXX_DATA(bq27441,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
->> -	[BQ27621]   = BQ27XXX_DATA(bq27621,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
->> -	[BQ27Z561]  = BQ27XXX_DATA(bq27z561,  0         , BQ27Z561_O_BITS),
->> -	[BQ28Z610]  = BQ27XXX_DATA(bq28z610,  0         , BQ27Z561_O_BITS),
->> +	[BQ27000]   = BQ27XXX_DATA(bq27000, 0, BQ27XXX_O_ZERO),
->
-> The spacing before improved readability.
+Link: https://github.com/ClangBuiltLinux/linux/issues/1078
+Fixes: f7b93d42945c ("arm64/alternatives: use subsections for replacement sequences")
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+---
+v1 -> v2:
+- Added the missing Fixes tag and dropped CC: stable@.
 
-In my opinon reordering this would improve readability or #defining the 
-magic numbers to keep the alignment.
+---
+ arch/arm64/include/asm/alternative.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Otherwise checkpatch produces 19 errors on this alone.
+diff --git a/arch/arm64/include/asm/alternative.h b/arch/arm64/include/asm/alternative.h
+index 12f0eb56a1cc..619db9b4c9d5 100644
+--- a/arch/arm64/include/asm/alternative.h
++++ b/arch/arm64/include/asm/alternative.h
+@@ -77,9 +77,9 @@ static inline void apply_alternatives_module(void *start, size_t length) { }
+ 	"663:\n\t"							\
+ 	newinstr "\n"							\
+ 	"664:\n\t"							\
+-	".previous\n\t"							\
+ 	".org	. - (664b-663b) + (662b-661b)\n\t"			\
+-	".org	. - (662b-661b) + (664b-663b)\n"			\
++	".org	. - (662b-661b) + (664b-663b)\n\t"			\
++	".previous\n"							\
+ 	".endif\n"
+ 
+ #define __ALTERNATIVE_CFG_CB(oldinstr, feature, cfg_enabled, cb)	\
 
-Dan
-
+base-commit: 83bdc7275e6206f560d247be856bceba3e1ed8f2
+-- 
+2.28.0.163.g6104cc2f0b6-goog
 
