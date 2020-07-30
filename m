@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707BD2330C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 13:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 687D42330CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 13:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgG3LME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 07:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52990 "EHLO
+        id S1726819AbgG3LP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 07:15:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgG3LMC (ORCPT
+        with ESMTP id S1726496AbgG3LP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 07:12:02 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3F1C061794;
-        Thu, 30 Jul 2020 04:12:01 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id k20so5804496wmi.5;
-        Thu, 30 Jul 2020 04:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ypTDchxzwbMJAsETKZdjxAeDtU6POm0sHHrOZVadiRk=;
-        b=Qqy5ZKoteb2C55iM5DEQ+Nap7nCqIRbSH5jXdUAXF2bih6o7RNFkKfeVb3qt0wugaZ
-         p5EYYmvGMKKdXY9031NbpEB1xhBKQdJz2ip4i6BjFIaiCNl5ykCxTUi2MFEyCc5WrSSd
-         yFFhbWwX7gSd8p1YhXL2iXKvAUe+eEt/cula8qsW1bxwGzchkQfgKv5kyPA74RuBQlZB
-         IdHIwJJsWSAvP0SQ9ihzs7vjr3RLt699FQQRpylUuQLH01Iqlmaf0rWuLw7X2NqvgY1W
-         rVnDDzPEbD2PyWalepqqWb6ywoiV3WszujdId2PnOg1lGR3HxKuHN6MuA4cY3hLt7l/H
-         qn3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ypTDchxzwbMJAsETKZdjxAeDtU6POm0sHHrOZVadiRk=;
-        b=SNz57nBLiIzrqLa1naKn2eMgg/qRHrGdI5lhaUlkQvFybR0XAwGva7kkM6rPJtEKdQ
-         h1ENYd1A/vLMxzKoT4wbryWyPquMOerpu+QSoKpotDsxyUojVxTwiiFyGYe2lohI4j5E
-         lTufLAks9278WYAhVZmuQ1nRe/vpUYMHED9VK0FWcTToR4J2GALmWL+AtHu2oXHsep/5
-         k6zHnw89bAMgPFYEFzo73kZQ2EWmTeSPQlHAAmOjdZpCv1I2rKUAv9oa0mMWAi7o/kkH
-         0VAZt3gNI/YKoxn9LEL7D0yFqYSH7IgbHuv0Rx3g5a2yWzHrMejf0p3iX0aS2TI9+q+s
-         Uuwg==
-X-Gm-Message-State: AOAM5336PsgwvLtgySxrsPHWs8BkoRF0BJp1+RJ+KNAWFobBSs2DQ6Y1
-        VLHqgFP4jPloGf+U/yRYtkY=
-X-Google-Smtp-Source: ABdhPJwDv5C04Qwfcy3UO08Fd+s1PAlDltCqZnOGlIVFNo5Coe5SeW7/nBhVtBcWXjPT4cZaz39/Zw==
-X-Received: by 2002:a7b:ca57:: with SMTP id m23mr12580815wml.35.1596107519556;
-        Thu, 30 Jul 2020 04:11:59 -0700 (PDT)
-Received: from ziggy.stardust (81.172.57.81.dyn.user.ono.com. [81.172.57.81])
-        by smtp.gmail.com with ESMTPSA id p22sm7854592wmc.38.2020.07.30.04.11.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jul 2020 04:11:58 -0700 (PDT)
-Subject: Re: [v3,2/5] arm64: dts: mt8183: update watchdog device node
-To:     Crystal Guo <crystal.guo@mediatek.com>, linux@roeck-us.net,
-        robh+dt@kernel.org
-Cc:     srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, seiya.wang@mediatek.com
-References: <1596104510-11113-1-git-send-email-crystal.guo@mediatek.com>
- <1596104510-11113-3-git-send-email-crystal.guo@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <ace85d53-28a3-a277-b390-bbda9c4c0738@gmail.com>
-Date:   Thu, 30 Jul 2020 13:11:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 30 Jul 2020 07:15:28 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26F2C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 04:15:27 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BHSWG6sjxz9sR4;
+        Thu, 30 Jul 2020 21:15:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1596107724;
+        bh=SZTIjXiffI1HVrd0DN5lE7xLsaof/MbgIRVfIXV15o0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Eki0+EB8zA3AcxXO0Q7yIldE0cGruHJk4LbVRQGZZx2E+zpt7COogL+fUAVaXJLJB
+         l89X4Nfb1EWBa+UtppIu1j/EzHFWc5PW8WLFkIpOswMAQ9lgc33aX0JsPhr++B4qQO
+         jO4PDDrCxjIGQVGIVo1Jm8syzWBStJx/DCE1aNtGbYehglhiziNag9pEpTI3aHHCth
+         bqBRTm8TTnjmXotXKbVD1dyOlO6p9rfCA14F5rIRAO7t87Vyd5gsCATIE/QWRt16+O
+         Z/lmIIC+DtERZ67NYR6fLHi24Q3pSc3z8qQCMx9vJgDTU2S4MJPjaKDlCO61eIT4Sp
+         fpSItUe4YKl7A==
+Date:   Thu, 30 Jul 2020 21:15:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        re.emese@gmail.com, Kees Cook <keescook@chromium.org>, w@1wt.eu,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, hsinyi@chromium.org,
+        "Theodore Ts'o" <tytso@mit.edu>, richard.henderson@linaro.org
+Subject: Re: arm64: pointer_auth.h:40:3: error: implicit declaration of
+ function =?UTF-8?B?4oCYZ2V0X3JhbmRvbV9ieXRlc+KAmTs=?= did you mean
+ =?UTF-8?B?4oCYZ2V0X3JhbmRvbV9vbmNl4oCZPw==?=
+Message-ID: <20200730211522.1ea3561f@canb.auug.org.au>
+In-Reply-To: <CA+G9fYvSyXnfGmK1FLRtraWWre7QjUoGE_qiwM8XPUBXjnudWA@mail.gmail.com>
+References: <CA+G9fYvSyXnfGmK1FLRtraWWre7QjUoGE_qiwM8XPUBXjnudWA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1596104510-11113-3-git-send-email-crystal.guo@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/os0Su/w9QRKsjvVjuQA=g8C";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/os0Su/w9QRKsjvVjuQA=g8C
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi Naresh,
 
-On 30/07/2020 12:21, Crystal Guo wrote:
-> update watchdog device node for MT8183
+On Thu, 30 Jul 2020 16:25:49 +0530 Naresh Kamboju <naresh.kamboju@linaro.or=
+g> wrote:
+>
+> Linus master branch failed to build the arm64 architecture due to
+> below error and warnings.
 
-Explain why you update it.
+Thanks for the report.
 
-> 
-> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
-> ---
->   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index 1e03c84..f8d8357 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -310,8 +310,7 @@
->   		};
->   
->   		watchdog: watchdog@10007000 {
-> -			compatible = "mediatek,mt8183-wdt",
-> -				     "mediatek,mt6589-wdt";
-> +			compatible = "mediatek,mt8183-wdt";
->   			reg = <0 0x10007000 0 0x100>;
->   			#reset-cells = <1>;
->   		};
-> 
+Please see https://lore.kernel.org/lkml/202007292007.D87DBD34B@keescook/
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/os0Su/w9QRKsjvVjuQA=g8C
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8iq8oACgkQAVBC80lX
+0Gx/uAf/eDoIWkfM+LtYiHmGQ6ufky2yy+lfcuEjQT2zOc6JbKXNpUPObtUtYw5N
+xaliQg8OvKqTL+0ENLVSknlASEzgNIkdYvgREDiErp8DYGNOjTsmDB6M54E6dvnc
+vHYfUR9i5clTf0TCZaRvdlgeo+lMCtd9//qR7h5awpw/Cx4k27Ddav5tb+ZUwKL7
+re5zX2+rgwg/hnCK04RMi/GDc4fjU2fC84BvwubITDqjEzbQFRVYjOscGWlcuKgq
+3PYidzH1qppDtUIIrie+sMvtcYTUytrB3B9YZNjZCy/KsszvzgnZKIU3s6JPF0et
+W5R6u6huphE4g7+w81uDGsBOv2gBqQ==
+=BnqQ
+-----END PGP SIGNATURE-----
+
+--Sig_/os0Su/w9QRKsjvVjuQA=g8C--
