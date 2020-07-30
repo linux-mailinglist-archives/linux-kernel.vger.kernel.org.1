@@ -2,129 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9674233262
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 14:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D3F233276
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 14:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgG3Mru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 08:47:50 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:54318 "EHLO inva020.nxp.com"
+        id S1728062AbgG3M4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 08:56:34 -0400
+Received: from mx1.emlix.com ([188.40.240.192]:55920 "EHLO mx1.emlix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726794AbgG3Mrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 08:47:49 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D94FE1A1327;
-        Thu, 30 Jul 2020 14:47:47 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C19031A0ED6;
-        Thu, 30 Jul 2020 14:47:43 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0F8BF402BF;
-        Thu, 30 Jul 2020 14:47:37 +0200 (CEST)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org, han.xu@nxp.com, u.kleine-koenig@pengutronix.de,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 2/2] dt-bindings: mtd: Convert imx nand to json-schema
-Date:   Thu, 30 Jul 2020 20:43:24 +0800
-Message-Id: <1596113004-15548-2-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596113004-15548-1-git-send-email-Anson.Huang@nxp.com>
-References: <1596113004-15548-1-git-send-email-Anson.Huang@nxp.com>
+        id S1726535AbgG3M4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 08:56:34 -0400
+X-Greylist: delayed 405 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Jul 2020 08:56:33 EDT
+Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.emlix.com (Postfix) with ESMTPS id EF6E75FF99;
+        Thu, 30 Jul 2020 14:49:46 +0200 (CEST)
+From:   Rolf Eike Beer <eb@emlix.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org
+Subject: Re: [PATCH v4] scripts: use pkg-config to locate libcrypto
+Date:   Thu, 30 Jul 2020 14:49:41 +0200
+Message-ID: <1825784.enSSdDGVcg@devpool35>
+Organization: emlix GmbH
+In-Reply-To: <2278760.8Yd83Mgoko@devpool35>
+References: <20538915.Wj2CyUsUYa@devpool35> <2278760.8Yd83Mgoko@devpool35>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: multipart/signed; boundary="nextPart9679229.JMKxYvS3ME"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX nand controller binding to DT schema format
-using json-schema.
+--nextPart9679229.JMKxYvS3ME
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- Documentation/devicetree/bindings/mtd/mxc-nand.txt | 19 ----------
- .../devicetree/bindings/mtd/mxc-nand.yaml          | 42 ++++++++++++++++++++++
- 2 files changed, 42 insertions(+), 19 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/mxc-nand.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/mxc-nand.yaml
+Am Montag, 27. April 2020, 10:11:28 CEST schrieb Rolf Eike Beer:
+> From 082ba542ca4c710dcf592a6f9233603b9275d05d Mon Sep 17 00:00:00 2001
+> From: Rolf Eike Beer <eb@emlix.com>
+> Date: Thu, 22 Nov 2018 16:40:49 +0100
+> Subject: [PATCH 1/2] scripts: use pkg-config to locate libcrypto
+>=20
+> Otherwise build fails if the headers are not in the default location. Whi=
+le
+> at it also ask pkg-config for the libs, with fallback to the existing
+> value.
 
-diff --git a/Documentation/devicetree/bindings/mtd/mxc-nand.txt b/Documentation/devicetree/bindings/mtd/mxc-nand.txt
-deleted file mode 100644
-index 2857c62..0000000
---- a/Documentation/devicetree/bindings/mtd/mxc-nand.txt
-+++ /dev/null
-@@ -1,19 +0,0 @@
--* Freescale's mxc_nand
--
--Required properties:
--- compatible: "fsl,imxXX-nand"
--- reg: address range of the nfc block
--- interrupts: irq to be used
--- nand-bus-width: see nand-controller.yaml
--- nand-ecc-mode: see nand-controller.yaml
--- nand-on-flash-bbt: see nand-controller.yaml
--
--Example:
--
--	nand@d8000000 {
--		compatible = "fsl,imx27-nand";
--		reg = <0xd8000000 0x1000>;
--		interrupts = <29>;
--		nand-bus-width = <8>;
--		nand-ecc-mode = "hw";
--	};
-diff --git a/Documentation/devicetree/bindings/mtd/mxc-nand.yaml b/Documentation/devicetree/bindings/mtd/mxc-nand.yaml
-new file mode 100644
-index 0000000..ee4d1d0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/mxc-nand.yaml
-@@ -0,0 +1,42 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/mxc-nand.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title:  Freescale's mxc_nand binding
-+
-+maintainers:
-+  - Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-+
-+allOf:
-+  - $ref: "nand-controller.yaml"
-+
-+properties:
-+  compatible:
-+    const: fsl,imx27-nand
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    nand-controller@d8000000 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        compatible = "fsl,imx27-nand";
-+        reg = <0xd8000000 0x1000>;
-+        interrupts = <29>;
-+        nand-bus-width = <8>;
-+        nand-ecc-mode = "hw";
-+    };
--- 
-2.7.4
+Close to 2 years since the original patch=E2=80=A6 can this please be appli=
+ed? It=20
+get's annoying to patch every new kernel version the same way again.
+
+Thx
+
+Eike
+=2D-=20
+Rolf Eike Beer, emlix GmbH, http://www.emlix.com
+=46on +49 551 30664-0, Fax +49 551 30664-11
+Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
+Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
+Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
+=2E: DE 205 198 055
+
+emlix - smart embedded open source
+
+--nextPart9679229.JMKxYvS3ME
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCXyLB5gAKCRCr5FH7Xu2t
+/OfFBADHZ2FrSoVi6DAf2H7CaJx74tezgvQax1e0nMjCGpnAgonXf4+y3bjHjNBI
+mHCzvvybwqFG7hC3nVzw4mpptyc/nSv5kJGZZkxFvvJ3+YDWfhbtrovpAxKqBR9y
+D/1YIQ8cR/WoONrRs0BGUf6lDN9BspoABK6gPoXztzT8mz+ODA==
+=tpgR
+-----END PGP SIGNATURE-----
+
+--nextPart9679229.JMKxYvS3ME--
+
+
 
