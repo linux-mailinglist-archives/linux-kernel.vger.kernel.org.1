@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA49E232D0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECC8232D11
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729327AbgG3IG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:06:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43974 "EHLO mail.kernel.org"
+        id S1729346AbgG3IGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:06:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729310AbgG3IGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:06:23 -0400
+        id S1729279AbgG3IGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:06:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF9B920656;
-        Thu, 30 Jul 2020 08:06:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C25E920656;
+        Thu, 30 Jul 2020 08:06:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096382;
-        bh=Q1kEsNcIpPtKeGTJYNNx/pkXlTyPb2hsO2eQo91rRRs=;
+        s=default; t=1596096372;
+        bh=hmR68HHAxwJGc9KMOu2OPGMn7a+StS9X8sZSVsjPbws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WIfIOlK97ES7YiY4RvWB2YlkwZDhhI6kS1XJPlnjiRAPYE2OBYx6JTLjU8YqvTzzM
-         BGgutHejmoNqzY1PE4mvndZTyABuull2o6f7DUDHeHiH72rPiVLJ3pk2YiBq1LSuAx
-         FQbCekOBzFi/Ef7YIcFfPjaAxsCEAMXkA1I5gFFo=
+        b=crlIvxhaka63oLYOcBaPmh3kJh+8yrvOEPE392vIrKP2oA6f/zw8DA2P5L/nfMJhM
+         0qwYX8I2nw93vFaYQKPSdTjzF29pnQcxqtXAazkJLzt3Be5SX4WIibyLZu/qrQQxRY
+         F+OgJHSXVIfGpDfqrR0fKTTYtfmAxGWRT3U9t1WI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Benjamin Herrenschmidt <benh@amazon.com>,
         Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 15/19] udp: Copy has_conns in reuseport_grow().
-Date:   Thu, 30 Jul 2020 10:04:17 +0200
-Message-Id: <20200730074421.262050101@linuxfoundation.org>
+Subject: [PATCH 5.4 16/19] udp: Improve load balancing for SO_REUSEPORT.
+Date:   Thu, 30 Jul 2020 10:04:18 +0200
+Message-Id: <20200730074421.306947214@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200730074420.502923740@linuxfoundation.org>
 References: <20200730074420.502923740@linuxfoundation.org>
@@ -47,19 +47,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
 
-[ Upstream commit f2b2c55e512879a05456eaf5de4d1ed2f7757509 ]
+[ Upstream commit efc6b6f6c3113e8b203b9debfb72d81e0f3dcace ]
 
-If an unconnected socket in a UDP reuseport group connect()s, has_conns is
-set to 1. Then, when a packet is received, udp[46]_lib_lookup2() scans all
-sockets in udp_hslot looking for the connected socket with the highest
-score.
+Currently, SO_REUSEPORT does not work well if connected sockets are in a
+UDP reuseport group.
 
-However, when the number of sockets bound to the port exceeds max_socks,
-reuseport_grow() resets has_conns to 0. It can cause udp[46]_lib_lookup2()
-to return without scanning all sockets, resulting in that packets sent to
-connected sockets may be distributed to unconnected sockets.
+Then reuseport_has_conns() returns true and the result of
+reuseport_select_sock() is discarded. Also, unconnected sockets have the
+same score, hence only does the first unconnected socket in udp_hslot
+always receive all packets sent to unconnected sockets.
 
-Therefore, reuseport_grow() should copy has_conns.
+So, the result of reuseport_select_sock() should be used for load
+balancing.
+
+The noteworthy point is that the unconnected sockets placed after
+connected sockets in sock_reuseport.socks will receive more packets than
+others because of the algorithm in reuseport_select_sock().
+
+    index | connected | reciprocal_scale | result
+    ---------------------------------------------
+    0     | no        | 20%              | 40%
+    1     | no        | 20%              | 20%
+    2     | yes       | 20%              | 0%
+    3     | no        | 20%              | 40%
+    4     | yes       | 20%              | 0%
+
+If most of the sockets are connected, this can be a problem, but it still
+works better than now.
 
 Fixes: acdcecc61285 ("udp: correct reuseport selection with connected sockets")
 CC: Willem de Bruijn <willemb@google.com>
@@ -69,18 +83,83 @@ Acked-by: Willem de Bruijn <willemb@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/sock_reuseport.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/ipv4/udp.c |   15 +++++++++------
+ net/ipv6/udp.c |   15 +++++++++------
+ 2 files changed, 18 insertions(+), 12 deletions(-)
 
---- a/net/core/sock_reuseport.c
-+++ b/net/core/sock_reuseport.c
-@@ -112,6 +112,7 @@ static struct sock_reuseport *reuseport_
- 	more_reuse->prog = reuse->prog;
- 	more_reuse->reuseport_id = reuse->reuseport_id;
- 	more_reuse->bind_inany = reuse->bind_inany;
-+	more_reuse->has_conns = reuse->has_conns;
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -413,7 +413,7 @@ static struct sock *udp4_lib_lookup2(str
+ 				     struct udp_hslot *hslot2,
+ 				     struct sk_buff *skb)
+ {
+-	struct sock *sk, *result;
++	struct sock *sk, *result, *reuseport_result;
+ 	int score, badness;
+ 	u32 hash = 0;
  
- 	memcpy(more_reuse->socks, reuse->socks,
- 	       reuse->num_socks * sizeof(struct sock *));
+@@ -423,17 +423,20 @@ static struct sock *udp4_lib_lookup2(str
+ 		score = compute_score(sk, net, saddr, sport,
+ 				      daddr, hnum, dif, sdif);
+ 		if (score > badness) {
++			reuseport_result = NULL;
++
+ 			if (sk->sk_reuseport &&
+ 			    sk->sk_state != TCP_ESTABLISHED) {
+ 				hash = udp_ehashfn(net, daddr, hnum,
+ 						   saddr, sport);
+-				result = reuseport_select_sock(sk, hash, skb,
+-							sizeof(struct udphdr));
+-				if (result && !reuseport_has_conns(sk, false))
+-					return result;
++				reuseport_result = reuseport_select_sock(sk, hash, skb,
++									 sizeof(struct udphdr));
++				if (reuseport_result && !reuseport_has_conns(sk, false))
++					return reuseport_result;
+ 			}
++
++			result = reuseport_result ? : sk;
+ 			badness = score;
+-			result = sk;
+ 		}
+ 	}
+ 	return result;
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -148,7 +148,7 @@ static struct sock *udp6_lib_lookup2(str
+ 		int dif, int sdif, struct udp_hslot *hslot2,
+ 		struct sk_buff *skb)
+ {
+-	struct sock *sk, *result;
++	struct sock *sk, *result, *reuseport_result;
+ 	int score, badness;
+ 	u32 hash = 0;
+ 
+@@ -158,17 +158,20 @@ static struct sock *udp6_lib_lookup2(str
+ 		score = compute_score(sk, net, saddr, sport,
+ 				      daddr, hnum, dif, sdif);
+ 		if (score > badness) {
++			reuseport_result = NULL;
++
+ 			if (sk->sk_reuseport &&
+ 			    sk->sk_state != TCP_ESTABLISHED) {
+ 				hash = udp6_ehashfn(net, daddr, hnum,
+ 						    saddr, sport);
+ 
+-				result = reuseport_select_sock(sk, hash, skb,
+-							sizeof(struct udphdr));
+-				if (result && !reuseport_has_conns(sk, false))
+-					return result;
++				reuseport_result = reuseport_select_sock(sk, hash, skb,
++									 sizeof(struct udphdr));
++				if (reuseport_result && !reuseport_has_conns(sk, false))
++					return reuseport_result;
+ 			}
+-			result = sk;
++
++			result = reuseport_result ? : sk;
+ 			badness = score;
+ 		}
+ 	}
 
 
