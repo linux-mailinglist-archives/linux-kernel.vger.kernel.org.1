@@ -2,327 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9B7232FCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2589C232FD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729493AbgG3Jr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 05:47:27 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:56849 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729398AbgG3JrM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 05:47:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596102430;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MEMshKDz7PmQLTP16K44wpvX1yUrPsSc5Pu5IrKoXsg=;
-        b=INa19P5NiXF91IE0acWakf6cJJyaTkj7iJtx7wzhCiyx8SL9SCXHKs+9nuCiuh58aKEqCZ
-        7wkGve846wpBYYRkzx+ir0mqdWbxCfJX1CMpGwrNEghczdv0Pt3IAmKtReLv6XXs9bE2MW
-        XugCpK0T0RsdFarVt775laCqWx6hqEY=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-110-HlJmp2tUPLShyuUn4_7ylQ-1; Thu, 30 Jul 2020 05:47:08 -0400
-X-MC-Unique: HlJmp2tUPLShyuUn4_7ylQ-1
-Received: by mail-wr1-f71.google.com with SMTP id r29so3384550wrr.10
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 02:47:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MEMshKDz7PmQLTP16K44wpvX1yUrPsSc5Pu5IrKoXsg=;
-        b=rQRqCRO5rrnM2Z4oRSOaPDtgiUChdfTLNRwdw3F1mvIN43E69F2PP6ib8W3/pqC20O
-         nleEvw6gvV9IfN5Jxza8r94hB3YAK/U9fYf4Ez5ShnJHAPgx94FKoILI+G3+Hfh08FfY
-         fNMk6fnWejoXBEN+7amLyLxF7lWUqWO1uc2mFWycIorr4g4QXS9l7rpSGZ7mFaXud+au
-         BDAs7BTiInuBwrWbJK7RmvWMj8NLjuIgThGLxSYkZY0l9XPtU+Auitp/Mobes2juGZeF
-         W9IFucMeXJm+ybM/OYB2TwYHm+90QDlR0ZN0Q7OUc4Echk0RcBC39+wNouzhVetElJCA
-         mvPg==
-X-Gm-Message-State: AOAM53160xRJiUihS4Mci5kUiSYXf8bdvmmeW5b9N2ss+wvZriNof7Fu
-        3xy286353K3rgIWzC1Fv6ThzZgg60erEKggciVzE/7IMdl2enB4a0IeikycKm1ToFOKGQW48XbB
-        1fYNPA5WSeRzLyH9t4y75dHph
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr2141660wrq.210.1596102426496;
-        Thu, 30 Jul 2020 02:47:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxASD9ieU19Eh9lLkKSGjIeLEiY3ewp273oAe/P6DOy00F7yRwZb3tkLo8bXZTJsXK2fWN5rg==
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr2141632wrq.210.1596102426206;
-        Thu, 30 Jul 2020 02:47:06 -0700 (PDT)
-Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id j6sm9009645wro.25.2020.07.30.02.47.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 02:47:05 -0700 (PDT)
-From:   Julien Thierry <jthierry@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
-        raphael.gault@arm.com, benh@kernel.crashing.org,
-        Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH v2 9/9] objtool: Abstract unwind hint reading
-Date:   Thu, 30 Jul 2020 10:46:52 +0100
-Message-Id: <20200730094652.28297-10-jthierry@redhat.com>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200730094652.28297-1-jthierry@redhat.com>
-References: <20200730094652.28297-1-jthierry@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729320AbgG3Jv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 05:51:29 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:51394 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726883AbgG3Jv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 05:51:28 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F3FD01A03AA;
+        Thu, 30 Jul 2020 11:51:26 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5BEF61A04C3;
+        Thu, 30 Jul 2020 11:51:22 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8FD26402AA;
+        Thu, 30 Jul 2020 11:51:16 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ASoC: fsl-asoc-card: Remove fsl_asoc_card_set_bias_level function
+Date:   Thu, 30 Jul 2020 17:47:02 +0800
+Message-Id: <1596102422-14010-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The type of unwind hints and the semantics associated with them depend
-on the architecture. Let arch specific code convert unwind hints into
-objtool stack state descriptions.
+With this case:
+aplay -Dhw:x 16khz.wav 24khz.wav
+There is sound distortion for 24khz.wav. The reason is that setting
+PLL of WM8962 with set_bias_level function, the bias level is not
+changed when 24khz.wav is played, then the PLL won't be reset, the
+clock is not correct, so distortion happens.
 
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
+The resolution of this issue is to remove fsl_asoc_card_set_bias_level.
+Move PLL configuration to hw_params and hw_free.
+
+After removing fsl_asoc_card_set_bias_level, also test WM8960 case,
+it can work.
+
+Fixes: 708b4351f08c ("ASoC: fsl: Add Freescale Generic ASoC Sound Card with ASRC support")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- tools/objtool/arch.h            |  5 +--
- tools/objtool/arch/x86/decode.c | 54 ++++++++++++++++++++++++++++++
- tools/objtool/cfi.h             |  3 +-
- tools/objtool/check.c           | 58 +++++----------------------------
- tools/objtool/orc_gen.c         |  4 ++-
- 5 files changed, 71 insertions(+), 53 deletions(-)
+changes in v2
+- replace is_stream_in_use with streams
+- add "out" error handler in hw_params()
 
-diff --git a/tools/objtool/arch.h b/tools/objtool/arch.h
-index 2e2ce089b0e9..44107e9aab71 100644
---- a/tools/objtool/arch.h
-+++ b/tools/objtool/arch.h
-@@ -7,12 +7,11 @@
- #define _ARCH_H
+ sound/soc/fsl/fsl-asoc-card.c | 155 ++++++++++++++++------------------
+ 1 file changed, 71 insertions(+), 84 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 4848ba61d083..b6a2a527dc04 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -73,6 +73,7 @@ struct cpu_priv {
+  * @codec_priv: CODEC private data
+  * @cpu_priv: CPU private data
+  * @card: ASoC card structure
++ * @streams: Mask of current active streams
+  * @sample_rate: Current sample rate
+  * @sample_format: Current sample format
+  * @asrc_rate: ASRC sample rate used by Back-Ends
+@@ -89,6 +90,7 @@ struct fsl_asoc_card_priv {
+ 	struct codec_priv codec_priv;
+ 	struct cpu_priv cpu_priv;
+ 	struct snd_soc_card card;
++	u8 streams;
+ 	u32 sample_rate;
+ 	snd_pcm_format_t sample_format;
+ 	u32 asrc_rate;
+@@ -151,21 +153,17 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct fsl_asoc_card_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	struct codec_priv *codec_priv = &priv->codec_priv;
+ 	struct cpu_priv *cpu_priv = &priv->cpu_priv;
+ 	struct device *dev = rtd->card->dev;
++	unsigned int pll_out;
+ 	int ret;
  
- #include <stdbool.h>
-+#include <linux/frame.h>
- #include <linux/list.h>
- #include "objtool.h"
- #include "cfi.h"
+ 	priv->sample_rate = params_rate(params);
+ 	priv->sample_format = params_format(params);
++	priv->streams |= BIT(substream->stream);
  
--#include <asm/orc_types.h>
--
- enum insn_type {
- 	INSN_JUMP_CONDITIONAL,
- 	INSN_JUMP_UNCONDITIONAL,
-@@ -86,4 +85,6 @@ unsigned long arch_dest_reloc_offset(int addend);
+-	/*
+-	 * If codec-dai is DAI Master and all configurations are already in the
+-	 * set_bias_level(), bypass the remaining settings in hw_params().
+-	 * Note: (dai_fmt & CBM_CFM) includes CBM_CFM and CBM_CFS.
+-	 */
+-	if ((priv->card.set_bias_level &&
+-	     priv->dai_fmt & SND_SOC_DAIFMT_CBM_CFM) ||
+-	    fsl_asoc_card_is_ac97(priv))
++	if (fsl_asoc_card_is_ac97(priv))
+ 		return 0;
  
- const char *arch_nop_insn(int len);
+ 	/* Specific configurations of DAIs starts from here */
+@@ -174,7 +172,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 				     cpu_priv->sysclk_dir[tx]);
+ 	if (ret && ret != -ENOTSUPP) {
+ 		dev_err(dev, "failed to set sysclk for cpu dai\n");
+-		return ret;
++		goto out;
+ 	}
  
-+int arch_decode_insn_hint(struct instruction *insn, struct unwind_hint *hint);
-+
- #endif /* _ARCH_H */
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index 1967370440b3..2099809925af 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -6,6 +6,8 @@
- #include <stdio.h>
- #include <stdlib.h>
- 
-+#include <linux/frame.h>
-+
- #define unlikely(cond) (cond)
- #include <asm/insn.h>
- #include "../../../arch/x86/lib/inat.c"
-@@ -15,6 +17,7 @@
- #include "../../elf.h"
- #include "../../arch.h"
- #include "../../warn.h"
-+#include <asm/orc_types.h>
- 
- static unsigned char op_to_cfi_reg[][2] = {
- 	{CFI_AX, CFI_R8},
-@@ -583,3 +586,54 @@ const char *arch_nop_insn(int len)
- 
- 	return nops[len-1];
- }
-+
-+int arch_decode_insn_hint(struct instruction *insn, struct unwind_hint *hint)
-+{
-+	struct cfi_reg *cfa = &insn->cfi.cfa;
-+
-+	if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
-+		insn->ret_offset = hint->sp_offset;
-+		return 0;
+ 	if (cpu_priv->slot_width) {
+@@ -182,6 +180,69 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 					       cpu_priv->slot_width);
+ 		if (ret && ret != -ENOTSUPP) {
+ 			dev_err(dev, "failed to set TDM slot for cpu dai\n");
++			goto out;
++		}
 +	}
 +
-+	insn->hint = true;
++	/* Specific configuration for PLL */
++	if (codec_priv->pll_id && codec_priv->fll_id) {
++		if (priv->sample_format == SNDRV_PCM_FORMAT_S24_LE)
++			pll_out = priv->sample_rate * 384;
++		else
++			pll_out = priv->sample_rate * 256;
 +
-+	switch (hint->sp_reg) {
-+	case ORC_REG_UNDEFINED:
-+		cfa->base = CFI_UNDEFINED;
-+		break;
-+	case ORC_REG_SP:
-+		cfa->base = CFI_SP;
-+		break;
-+	case ORC_REG_BP:
-+		cfa->base = CFI_BP;
-+		break;
-+	case ORC_REG_SP_INDIRECT:
-+		cfa->base = CFI_SP_INDIRECT;
-+		break;
-+	case ORC_REG_R10:
-+		cfa->base = CFI_R10;
-+		break;
-+	case ORC_REG_R13:
-+		cfa->base = CFI_R13;
-+		break;
-+	case ORC_REG_DI:
-+		cfa->base = CFI_DI;
-+		break;
-+	case ORC_REG_DX:
-+		cfa->base = CFI_DX;
-+		break;
-+	default:
-+		WARN_FUNC("unsupported unwind_hint sp base reg %d",
-+			  insn->sec, insn->offset, hint->sp_reg);
-+		return -1;
++		ret = snd_soc_dai_set_pll(asoc_rtd_to_codec(rtd, 0),
++					  codec_priv->pll_id,
++					  codec_priv->mclk_id,
++					  codec_priv->mclk_freq, pll_out);
++		if (ret) {
++			dev_err(dev, "failed to start FLL: %d\n", ret);
++			goto out;
++		}
++
++		ret = snd_soc_dai_set_sysclk(asoc_rtd_to_codec(rtd, 0),
++					     codec_priv->fll_id,
++					     pll_out, SND_SOC_CLOCK_IN);
++
++		if (ret && ret != -ENOTSUPP) {
++			dev_err(dev, "failed to set SYSCLK: %d\n", ret);
++			goto out;
++		}
 +	}
-+
-+	cfa->offset = hint->sp_offset;
-+	insn->cfi.hint_type = hint->type;
-+	insn->cfi.end = hint->end;
-+
-+	insn->cfi.sp_only = hint->type == ORC_TYPE_REGS || hint->type == ORC_TYPE_REGS_IRET;
 +
 +	return 0;
++
++out:
++	priv->streams &= ~BIT(substream->stream);
++	return ret;
 +}
-diff --git a/tools/objtool/cfi.h b/tools/objtool/cfi.h
-index c7c59c6a44ee..f5aeca023133 100644
---- a/tools/objtool/cfi.h
-+++ b/tools/objtool/cfi.h
-@@ -29,10 +29,11 @@ struct cfi_state {
- 	struct cfi_reg cfa;
- 	int stack_size;
- 	int drap_reg, drap_offset;
--	unsigned char type;
-+	unsigned char hint_type;
- 	bool bp_scratch;
- 	bool drap;
- 	bool end;
-+	bool sp_only;
++
++static int fsl_asoc_card_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct fsl_asoc_card_priv *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct codec_priv *codec_priv = &priv->codec_priv;
++	struct device *dev = rtd->card->dev;
++	int ret;
++
++	priv->streams &= ~BIT(substream->stream);
++
++	if (!priv->streams && codec_priv->pll_id &&
++	    codec_priv->fll_id) {
++		/* Force freq to be 0 to avoid error message in codec */
++		ret = snd_soc_dai_set_sysclk(asoc_rtd_to_codec(rtd, 0),
++					     codec_priv->mclk_id,
++					     0,
++					     SND_SOC_CLOCK_IN);
++		if (ret) {
++			dev_err(dev, "failed to switch away from FLL: %d\n", ret);
++			return ret;
++		}
++
++		ret = snd_soc_dai_set_pll(asoc_rtd_to_codec(rtd, 0),
++					  codec_priv->pll_id, 0, 0, 0);
++		if (ret && ret != -ENOTSUPP) {
++			dev_err(dev, "failed to stop FLL: %d\n", ret);
+ 			return ret;
+ 		}
+ 	}
+@@ -191,6 +252,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 
+ static const struct snd_soc_ops fsl_asoc_card_ops = {
+ 	.hw_params = fsl_asoc_card_hw_params,
++	.hw_free = fsl_asoc_card_hw_free,
  };
  
- #endif /* _OBJTOOL_CFI_H */
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index d6731e88259d..d856580369dd 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1217,7 +1217,6 @@ static int read_unwind_hints(struct objtool_file *file)
- 	struct reloc *reloc;
- 	struct unwind_hint *hint;
- 	struct instruction *insn;
--	struct cfi_reg *cfa;
- 	int i;
+ static int be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+@@ -254,75 +316,6 @@ static struct snd_soc_dai_link fsl_asoc_card_dai[] = {
+ 	},
+ };
  
- 	sec = find_section_by_name(file->elf, ".discard.unwind_hints");
-@@ -1252,49 +1251,10 @@ static int read_unwind_hints(struct objtool_file *file)
- 			return -1;
- 		}
- 
--		cfa = &insn->cfi.cfa;
+-static int fsl_asoc_card_set_bias_level(struct snd_soc_card *card,
+-					struct snd_soc_dapm_context *dapm,
+-					enum snd_soc_bias_level level)
+-{
+-	struct fsl_asoc_card_priv *priv = snd_soc_card_get_drvdata(card);
+-	struct snd_soc_pcm_runtime *rtd;
+-	struct snd_soc_dai *codec_dai;
+-	struct codec_priv *codec_priv = &priv->codec_priv;
+-	struct device *dev = card->dev;
+-	unsigned int pll_out;
+-	int ret;
 -
--		if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
--			insn->ret_offset = hint->sp_offset;
--			continue;
+-	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+-	codec_dai = asoc_rtd_to_codec(rtd, 0);
+-	if (dapm->dev != codec_dai->dev)
+-		return 0;
+-
+-	switch (level) {
+-	case SND_SOC_BIAS_PREPARE:
+-		if (dapm->bias_level != SND_SOC_BIAS_STANDBY)
+-			break;
+-
+-		if (priv->sample_format == SNDRV_PCM_FORMAT_S24_LE)
+-			pll_out = priv->sample_rate * 384;
+-		else
+-			pll_out = priv->sample_rate * 256;
+-
+-		ret = snd_soc_dai_set_pll(codec_dai, codec_priv->pll_id,
+-					  codec_priv->mclk_id,
+-					  codec_priv->mclk_freq, pll_out);
+-		if (ret) {
+-			dev_err(dev, "failed to start FLL: %d\n", ret);
+-			return ret;
 -		}
 -
--		insn->hint = true;
+-		ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->fll_id,
+-					     pll_out, SND_SOC_CLOCK_IN);
+-		if (ret && ret != -ENOTSUPP) {
+-			dev_err(dev, "failed to set SYSCLK: %d\n", ret);
+-			return ret;
+-		}
+-		break;
 -
--		switch (hint->sp_reg) {
--		case ORC_REG_UNDEFINED:
--			cfa->base = CFI_UNDEFINED;
+-	case SND_SOC_BIAS_STANDBY:
+-		if (dapm->bias_level != SND_SOC_BIAS_PREPARE)
 -			break;
--		case ORC_REG_SP:
--			cfa->base = CFI_SP;
--			break;
--		case ORC_REG_BP:
--			cfa->base = CFI_BP;
--			break;
--		case ORC_REG_SP_INDIRECT:
--			cfa->base = CFI_SP_INDIRECT;
--			break;
--		case ORC_REG_R10:
--			cfa->base = CFI_R10;
--			break;
--		case ORC_REG_R13:
--			cfa->base = CFI_R13;
--			break;
--		case ORC_REG_DI:
--			cfa->base = CFI_DI;
--			break;
--		case ORC_REG_DX:
--			cfa->base = CFI_DX;
--			break;
--		default:
--			WARN_FUNC("unsupported unwind_hint sp base reg %d",
--				  insn->sec, insn->offset, hint->sp_reg);
-+		if (arch_decode_insn_hint(insn, hint)) {
-+			WARN_FUNC("Bad unwind hint", insn->sec, insn->offset);
- 			return -1;
- 		}
 -
--		cfa->offset = hint->sp_offset;
--		insn->cfi.type = hint->type;
--		insn->cfi.end = hint->end;
- 	}
- 
- 	return 0;
-@@ -1571,9 +1531,9 @@ static bool has_valid_stack_frame(struct insn_state *state)
- 	return false;
- }
- 
--static int update_cfi_state_regs(struct instruction *insn,
--				  struct cfi_state *cfi,
--				  struct stack_op *op)
-+static int update_sp_only_cfi_state(struct instruction *insn,
-+				    struct cfi_state *cfi,
-+				    struct stack_op *op)
+-		ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->mclk_id,
+-					     codec_priv->mclk_freq,
+-					     SND_SOC_CLOCK_IN);
+-		if (ret && ret != -ENOTSUPP) {
+-			dev_err(dev, "failed to switch away from FLL: %d\n", ret);
+-			return ret;
+-		}
+-
+-		ret = snd_soc_dai_set_pll(codec_dai, codec_priv->pll_id, 0, 0, 0);
+-		if (ret) {
+-			dev_err(dev, "failed to stop FLL: %d\n", ret);
+-			return ret;
+-		}
+-		break;
+-
+-	default:
+-		break;
+-	}
+-
+-	return 0;
+-}
+-
+ static int fsl_asoc_card_audmux_init(struct device_node *np,
+ 				     struct fsl_asoc_card_priv *priv)
  {
- 	struct cfi_reg *cfa = &cfi->cfa;
- 
-@@ -1679,8 +1639,8 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
- 		return 0;
- 	}
- 
--	if (cfi->type == ORC_TYPE_REGS || cfi->type == ORC_TYPE_REGS_IRET)
--		return update_cfi_state_regs(insn, cfi, op);
-+	if (cfi->sp_only)
-+		return update_sp_only_cfi_state(insn, cfi, op);
- 
- 	switch (op->dest.type) {
- 
-@@ -2084,10 +2044,10 @@ static bool insn_cfi_match(struct instruction *insn, struct cfi_state *cfi2)
- 			break;
- 		}
- 
--	} else if (cfi1->type != cfi2->type) {
-+	} else if (cfi1->hint_type != cfi2->hint_type) {
- 
- 		WARN_FUNC("stack state mismatch: type1=%d type2=%d",
--			  insn->sec, insn->offset, cfi1->type, cfi2->type);
-+			  insn->sec, insn->offset, cfi1->hint_type, cfi2->hint_type);
- 
- 	} else if (cfi1->drap != cfi2->drap ||
- 		   (cfi1->drap && cfi1->drap_reg != cfi2->drap_reg) ||
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index 00f1efd05653..a36aee98bed0 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -9,6 +9,8 @@
- #include "check.h"
- #include "warn.h"
- 
-+#include <asm/orc_types.h>
-+
- struct orc_data {
- 	struct list_head list;
- 	struct instruction *insn;
-@@ -92,7 +94,7 @@ int create_orc(struct objtool_file *file)
- 
- 		orc->sp_offset = cfa->offset;
- 		orc->bp_offset = bp->offset;
--		orc->type = insn->cfi.type;
-+		orc->type = insn->cfi.hint_type;
- 	}
- 
- 	return 0;
+@@ -611,7 +604,6 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	/* Diversify the card configurations */
+ 	if (of_device_is_compatible(np, "fsl,imx-audio-cs42888")) {
+ 		codec_dai_name = "cs42888";
+-		priv->card.set_bias_level = NULL;
+ 		priv->cpu_priv.sysclk_freq[TX] = priv->codec_priv.mclk_freq;
+ 		priv->cpu_priv.sysclk_freq[RX] = priv->codec_priv.mclk_freq;
+ 		priv->cpu_priv.sysclk_dir[TX] = SND_SOC_CLOCK_OUT;
+@@ -628,26 +620,22 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+ 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8962")) {
+ 		codec_dai_name = "wm8962";
+-		priv->card.set_bias_level = fsl_asoc_card_set_bias_level;
+ 		priv->codec_priv.mclk_id = WM8962_SYSCLK_MCLK;
+ 		priv->codec_priv.fll_id = WM8962_SYSCLK_FLL;
+ 		priv->codec_priv.pll_id = WM8962_FLL;
+ 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+ 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8960")) {
+ 		codec_dai_name = "wm8960-hifi";
+-		priv->card.set_bias_level = fsl_asoc_card_set_bias_level;
+ 		priv->codec_priv.fll_id = WM8960_SYSCLK_AUTO;
+ 		priv->codec_priv.pll_id = WM8960_SYSCLK_AUTO;
+ 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+ 	} else if (of_device_is_compatible(np, "fsl,imx-audio-ac97")) {
+ 		codec_dai_name = "ac97-hifi";
+-		priv->card.set_bias_level = NULL;
+ 		priv->dai_fmt = SND_SOC_DAIFMT_AC97;
+ 		priv->card.dapm_routes = audio_map_ac97;
+ 		priv->card.num_dapm_routes = ARRAY_SIZE(audio_map_ac97);
+ 	} else if (of_device_is_compatible(np, "fsl,imx-audio-mqs")) {
+ 		codec_dai_name = "fsl-mqs-dai";
+-		priv->card.set_bias_level = NULL;
+ 		priv->dai_fmt = SND_SOC_DAIFMT_LEFT_J |
+ 				SND_SOC_DAIFMT_CBS_CFS |
+ 				SND_SOC_DAIFMT_NB_NF;
+@@ -657,7 +645,6 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->card.num_dapm_routes = ARRAY_SIZE(audio_map_tx);
+ 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8524")) {
+ 		codec_dai_name = "wm8524-hifi";
+-		priv->card.set_bias_level = NULL;
+ 		priv->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
+ 		priv->dai_link[1].dpcm_capture = 0;
+ 		priv->dai_link[2].dpcm_capture = 0;
 -- 
-2.21.3
+2.27.0
 
