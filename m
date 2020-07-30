@@ -2,104 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DC0232FC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322F6232FC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 11:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgG3Jo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 05:44:57 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:5555 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgG3Jo4 (ORCPT
+        id S1729434AbgG3JrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 05:47:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55588 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726631AbgG3JrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 05:44:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1596102296; x=1627638296;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=yS8mB8k1qRFT2l/VsyZ2ew82E3uftJGYIBk/EhMUB+U=;
-  b=qMGyJ0vMT1pMpR4Aus87w65xlILIcKOgwm/4CZzPsjafTFk0HkGcAVGb
-   7lTP/JHssJAKD8/Y0mQ33c6dpjSgUgwD6zIm1y0UGCgk6vIjUCCiFnDEn
-   Kxh3mutWD2TNLLOFAO59FLTxTcmaajlwW0ScF132SQEgk54VRD8ENvXRH
-   k=;
-IronPort-SDR: CNk0xcG7ruz5shy5cGY4vfa2ZvAScrDvqnMExmPxQqHBcsX6Cy4H74gs+egxCgIkZa0eG1uVKb
- JMObEUP2Y+fA==
-X-IronPort-AV: E=Sophos;i="5.75,414,1589241600"; 
-   d="scan'208";a="45130693"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-62350142.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 30 Jul 2020 09:44:54 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-62350142.us-east-1.amazon.com (Postfix) with ESMTPS id D50C8A25A6;
-        Thu, 30 Jul 2020 09:44:51 +0000 (UTC)
-Received: from EX13D20UWC002.ant.amazon.com (10.43.162.163) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 30 Jul 2020 09:44:51 +0000
-Received: from u79c5a0a55de558.ant.amazon.com (10.43.162.85) by
- EX13D20UWC002.ant.amazon.com (10.43.162.163) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 30 Jul 2020 09:44:49 +0000
-From:   Alexander Graf <graf@amazon.com>
-To:     <kvm@vger.kernel.org>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        "Christoffer Dall" <christoffer.dall@arm.com>,
-        Marc Zyngier <maz@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] KVM: arm: Add trace name for ARM_NISV
-Date:   Thu, 30 Jul 2020 11:44:41 +0200
-Message-ID: <20200730094441.18231-1-graf@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 30 Jul 2020 05:47:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596102422;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hizMY7VP9LzcQ3FeVpCv/BY7A7ybnk2yUmR7sBLJoHo=;
+        b=CgPBOOEBwfL3NZsfLmGHCUOf3Tn0Jy2D57PslMo8ZwAKj8ii19u4bgLiPbEO3o18YeAOrj
+        e/nNmltGfJRv+cvjUXe7V1jAgowR1FAFEG62uvwRMHN4Lk7TFKOz9zJRKziMZR6a3D+/+X
+        Cy/DtLkCRF/Y/1dOHfW9G6wHDuf0WvE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-w0zGnyc_NxK-LOJbsNMcpQ-1; Thu, 30 Jul 2020 05:46:57 -0400
+X-MC-Unique: w0zGnyc_NxK-LOJbsNMcpQ-1
+Received: by mail-wm1-f70.google.com with SMTP id p23so1299297wmc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 02:46:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hizMY7VP9LzcQ3FeVpCv/BY7A7ybnk2yUmR7sBLJoHo=;
+        b=iLyXxRoEOKuQ+HlYFJAXbEpa/wX5LaQu1HvBneyynIwMH9FO2lAphucSDSmU9HByFR
+         db/PyxV/76oi+oC+Rc+aYuaEvpYZfO6iJumbUDkn8BAErJByZaPTiz2VaEyezEiVBUdo
+         MrF5QaB1k8jnC8fVOG+X8HB3dv+ZEk7yX6jW+SeoavUd3j3J73LQc7TsrDZEUAURgGQs
+         fBMxo+0cW2XbQ4CiKa2BIyljnucwGgJQXp7flLND0fG22pfoUt5XICfGmgtd/k9PW7St
+         Q6kGIN9Qwf4pzCTYVENjsu2Rbv8i27WJ2zjv4dBOsyRIbGrfRpGI1ygM9fQKUULTZUlC
+         mjhg==
+X-Gm-Message-State: AOAM533UsKRe3t+ErYjUCDlGBWfjy669hncrt4DZ7OGoD92H43T/adPm
+        6rd44HPoe0mGhu42CoEEpXqoMyvZObunARO7BVOfJsRYM7TfYlsIxSJ0VxW2stxEyde4S3JivX4
+        5dO59kwvRusiMyxpTBiE8NV23
+X-Received: by 2002:a1c:40b:: with SMTP id 11mr6191401wme.116.1596102416245;
+        Thu, 30 Jul 2020 02:46:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwLA4IiNsCakNSZ/6egZvPhSMF38dQXYQsdbPz3arIBz4wC6wCYiO+IZQQ+rkBwI2plyW2//A==
+X-Received: by 2002:a1c:40b:: with SMTP id 11mr6191386wme.116.1596102416012;
+        Thu, 30 Jul 2020 02:46:56 -0700 (PDT)
+Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id j6sm9009645wro.25.2020.07.30.02.46.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 02:46:55 -0700 (PDT)
+From:   Julien Thierry <jthierry@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
+        raphael.gault@arm.com, benh@kernel.crashing.org,
+        Julien Thierry <jthierry@redhat.com>
+Subject: [PATCH v2 0/9] Make check implementation arch agnostic
+Date:   Thu, 30 Jul 2020 10:46:43 +0100
+Message-Id: <20200730094652.28297-1-jthierry@redhat.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.85]
-X-ClientProxiedBy: EX13D22UWB004.ant.amazon.com (10.43.161.165) To
- EX13D20UWC002.ant.amazon.com (10.43.162.163)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c726200dd106d ("KVM: arm/arm64: Allow reporting non-ISV data aborts
-to userspace") introduced a mechanism to deflect MMIO traffic the kernel
-can not handle to user space. For that, it introduced a new exit reason.
+Hi,
 
-However, it did not update the trace point array that gives human readable
-names to these exit reasons inside the trace log.
+The current implementation of the check subcommand has various x86 bits
+here and there. In order to prepare objtool to provide check for other
+architectures, add some abstraction over the x86 specific bits, relying
+on objtool arch specific code to provide some necessary operations.
 
-Let's fix that up after the fact, so that trace logs are pretty even when
-we get user space MMIO traps on ARM.
+This is part of the effort to implement check for arm64, initiated [1]
+by Raphael. The series is based on top of the separation of check & orc
+subcommands series[2].
 
-Fixes: c726200dd106d ("KVM: arm/arm64: Allow reporting non-ISV data aborts to userspace")
-Signed-off-by: Alexander Graf <graf@amazon.com>
----
- include/trace/events/kvm.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've push both series base on top of tip/objtool/core at [3].
 
-diff --git a/include/trace/events/kvm.h b/include/trace/events/kvm.h
-index 2c735a3e6613..9417a34aad08 100644
---- a/include/trace/events/kvm.h
-+++ b/include/trace/events/kvm.h
-@@ -17,7 +17,7 @@
- 	ERSN(NMI), ERSN(INTERNAL_ERROR), ERSN(OSI), ERSN(PAPR_HCALL),	\
- 	ERSN(S390_UCONTROL), ERSN(WATCHDOG), ERSN(S390_TSCH), ERSN(EPR),\
- 	ERSN(SYSTEM_EVENT), ERSN(S390_STSI), ERSN(IOAPIC_EOI),          \
--	ERSN(HYPERV)
-+	ERSN(HYPERV), ERSN(ARM_NISV)
- 
- TRACE_EVENT(kvm_userspace_exit,
- 	    TP_PROTO(__u32 reason, int errno),
--- 
-2.16.4
+- The first two patches make it simpler for new arches to provide their
+list of kernel headers, without worrying about modifications in the x86
+headers.
+- Patch 3 Moves arch specific macros to more suitable location
+- Patches 4 and 5 add abstraction to handle alternatives
+- Patch 6 adds abstraction to handle jump table
+- Patches 7-9 abstracts the use of unwind hints, so some definitions
+  can be shared across architectures while keeping arch specific
+  semantics
 
+Changes since v1 [4]:
+- Rebased on recent tip/objtool/core
+- Split the unwind hint rework into multiple patches as suggested by
+  Miroslav
 
+[1] https://lkml.org/lkml/2019/8/16/400
+[2] https://lkml.org/lkml/2020/7/30/415
+[3] https://github.com/julien-thierry/linux/tree/arch-independent-check
+[4] https://lkml.org/lkml/2020/6/8/535
 
+Cheers,
 
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
+Julien
 
+-->
 
+Julien Thierry (8):
+  objtool: Group headers to check in a single list
+  objtool: Make sync-check consider the target architecture
+  objtool: Move macros describing structures to arch-dependent code
+  objtool: Abstract alternative special case handling
+  objtool: Make relocation in alternative handling arch dependent
+  frame: Only include valid definitions depending on source file type
+  frame: Make unwind hints definitions available to other architectures
+  objtool: Abstract unwind hint reading
+
+Raphael Gault (1):
+  objtool: Refactor switch-tables code to support other architectures
+
+ arch/x86/include/asm/orc_types.h              |  13 --
+ arch/x86/include/asm/unwind_hints.h           |  44 +----
+ include/linux/frame.h                         |  78 ++++++++
+ tools/arch/x86/include/asm/orc_types.h        |  13 --
+ tools/include/linux/frame.h                   | 113 ++++++++++++
+ tools/objtool/Makefile                        |   2 +-
+ tools/objtool/arch.h                          |   5 +-
+ tools/objtool/arch/x86/Build                  |   1 +
+ tools/objtool/arch/x86/arch_special.c         | 145 +++++++++++++++
+ tools/objtool/arch/x86/decode.c               |  54 ++++++
+ tools/objtool/arch/x86/include/arch_special.h |  20 +++
+ tools/objtool/cfi.h                           |   3 +-
+ tools/objtool/check.c                         | 166 ++----------------
+ tools/objtool/check.h                         |   7 +-
+ tools/objtool/objtool.h                       |   2 +
+ tools/objtool/orc_gen.c                       |   4 +-
+ tools/objtool/special.c                       |  48 +----
+ tools/objtool/special.h                       |  10 ++
+ tools/objtool/sync-check.sh                   |  27 ++-
+ tools/objtool/weak.c                          |   2 -
+ 20 files changed, 486 insertions(+), 271 deletions(-)
+ create mode 100644 tools/include/linux/frame.h
+ create mode 100644 tools/objtool/arch/x86/arch_special.c
+ create mode 100644 tools/objtool/arch/x86/include/arch_special.h
+
+--
+2.21.3
 
