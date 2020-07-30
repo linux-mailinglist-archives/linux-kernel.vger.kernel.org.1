@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD802334AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C922334B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 16:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729683AbgG3OnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 10:43:02 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33426 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729387AbgG3OnB (ORCPT
+        id S1728463AbgG3OoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 10:44:24 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40319 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726275AbgG3OoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 10:43:01 -0400
+        Thu, 30 Jul 2020 10:44:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596120180;
+        s=mimecast20190719; t=1596120261;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=whEyUcY+ZzprUC9AdTz54JwJP2QolK0F7VwewK1gE8M=;
-        b=UKhoViOXz0j/L3IYS27aQzODnVKLMATPHW9vWgDE1Ui8OFHftewezRpMAyWsbgFSpCQbTA
-        jqIvhjupVvfAJgkHCDAAXMJu57bD7tvu/Z588sfeigkzZdeaptg26920hVCJGucOwj0iUc
-        1oxKVmBS9IqZI/g9Z/mDFJ6IZiOLQfE=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-79-5HbZ5gVxMum6Si9jUlejew-1; Thu, 30 Jul 2020 10:42:58 -0400
-X-MC-Unique: 5HbZ5gVxMum6Si9jUlejew-1
-Received: by mail-wr1-f70.google.com with SMTP id v4so8074356wrb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 07:42:57 -0700 (PDT)
+        bh=dsId+rhdX5PqVP541hzQk5NPr2OWjjymtpyXFAnC+IY=;
+        b=H2cdWY/F0e73tuE9bPZ1jw444q71yElpftlSYli6g7mokDCE+sef9XVig8J3OuZdKrJI+/
+        oiwWAwA+uBQUlQm6TwxRGwZ6hZSHUyoWQgNM65z/LsAXt9dIFpu3ahn9WE7QVwuIgtnjr/
+        B64WiBY6lyVxiDn6j3I1BsRwDPMt26c=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-Yad0818VOFa-Zy-ZgYrTCw-1; Thu, 30 Jul 2020 10:44:18 -0400
+X-MC-Unique: Yad0818VOFa-Zy-ZgYrTCw-1
+Received: by mail-wr1-f71.google.com with SMTP id z7so7490588wrw.21
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 07:44:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=whEyUcY+ZzprUC9AdTz54JwJP2QolK0F7VwewK1gE8M=;
-        b=QrdZZy2dzpJsOXZ0o8uVSsVkySn28LCoGl56S1TRCsS20Qd6ZrGpIdgL/7sdAaDTLS
-         9NMgIbWHxy8sF1xIjyTIpHwf0hfhwjTfnp2vOXNKUuYdjbuwscK2YH0O9L7OCA56ziG/
-         n4bNucLNWWJx+BAHwnqSm9HBQ2LVxIR8Gyghb80GsqnkGHT1onFgZGGL7Jr5pvDpDfjA
-         36JkUqqajrxIrYrFImrSPAwanjcRG+mkr9e+KZhZzj/Wb+OOk9PjHOpqcfUmF2i2xaOE
-         YIa0NpgA1IxDl/BJw/lLBshW8OzIpTCvKqqXa4/v4rqOw6gm5MLbbeTXmP8GbVLCd6ev
-         r9eQ==
-X-Gm-Message-State: AOAM531Nb4koU/0artwpXcbOXvpNIaQQ+Wm9vDMjw9cM7M6bmcclasuE
-        TA1dh9ND5+g7j09zrvuRh89p3JLxyMLYAJVF4SCjypYS1K3LX6qRbh35a7aANMm0USmrkU5Sv3V
-        W0MZpWmd45xg1lb19l703mnvl
-X-Received: by 2002:a7b:c84f:: with SMTP id c15mr7299016wml.133.1596120176696;
-        Thu, 30 Jul 2020 07:42:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxlsyRAN9CQ3YKN7kgXOyI70ATEpeUOq7YqsJCVOWsQ4DXL/BY9zqB+0SSwpysdnIkVlm6Cjw==
-X-Received: by 2002:a7b:c84f:: with SMTP id c15mr7299001wml.133.1596120176479;
-        Thu, 30 Jul 2020 07:42:56 -0700 (PDT)
+        bh=dsId+rhdX5PqVP541hzQk5NPr2OWjjymtpyXFAnC+IY=;
+        b=uEpygcknm0yPlygDCYraKXdv8Hzcd+BrYPFiaEoOUg1W7+cHAATqqWyS0dk0obn50Y
+         L2eS36ylccBpEEvHB4OEfatpPNkchl693rNyp6ntkT4D5D0lrTQJYuLqj6s2QoJEQnAf
+         LSFeklGu8oZ1Owiqiw1lbECYHusAhNVed7klnicVEObFZd91rDuM8o9Cg+2lbZ+SSYJy
+         juhoPv6Nj/J6s23yCBmGg+wcpM5fU4ypWYHJiRbp2flMEhdmYb5IcAbef3xnNN3Px5HN
+         Od1ieqdGhK2WftCaZEkRtXxsj7JlgQSReVq2Cau7+/7W6qBoJH7sdvHUpmRWl9Wo1gU0
+         AiUQ==
+X-Gm-Message-State: AOAM531iPi340yWkEgmMz0NKIII0mh+P1eszNea3bhqVQfES4VW3QR6I
+        joP5H2lYhRe2Vs1iKQ8fL+W2vFcBFksIaqptDc8OYgmRDXKAVjwFODi66BMn5Z/tBaPx0qj69Jw
+        NvGf/Z6PM5n1lVa8hiGrXcz20
+X-Received: by 2002:adf:f486:: with SMTP id l6mr30125492wro.265.1596120257909;
+        Thu, 30 Jul 2020 07:44:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwsRebcqtb2r3HVBYpqFGPr7WRNjDET5HjTMzOb5f4QSejj6Gg+McR8fz7pgNh7OIZu/Pq74A==
+X-Received: by 2002:adf:f486:: with SMTP id l6mr30125480wro.265.1596120257713;
+        Thu, 30 Jul 2020 07:44:17 -0700 (PDT)
 Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id l1sm11128047wrb.12.2020.07.30.07.42.55
+        by smtp.gmail.com with ESMTPSA id u6sm2457529wrn.95.2020.07.30.07.44.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jul 2020 07:42:55 -0700 (PDT)
-Subject: Re: [PATCH v3 1/4] objtool: Move object file loading out of check
+        Thu, 30 Jul 2020 07:44:17 -0700 (PDT)
+Subject: Re: [PATCH v3 2/4] objtool: Move orc outside of check
 To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mhelsley@vmware.com, mbenes@suse.cz
+Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org, mbenes@suse.cz
 References: <20200730094143.27494-1-jthierry@redhat.com>
- <20200730094143.27494-2-jthierry@redhat.com>
- <20200730140936.uvw73r655356lhtm@treble>
+ <20200730094143.27494-3-jthierry@redhat.com>
+ <20200730095759.GH2655@hirez.programming.kicks-ass.net>
+ <dfe69c8f-db70-8366-5601-2592409ce7a0@redhat.com>
+ <20200730132237.GM2655@hirez.programming.kicks-ass.net>
+ <3af41a3b-a4b9-8120-3ac0-c9ce13770628@redhat.com>
+ <20200730141526.lr33zv4ffa3rdygp@treble>
 From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <f0b948c8-c824-4d8e-6a0b-20cde05444d7@redhat.com>
-Date:   Thu, 30 Jul 2020 15:42:55 +0100
+Message-ID: <7f7a7196-8b28-cd55-0685-799766bb6d4c@redhat.com>
+Date:   Thu, 30 Jul 2020 15:44:16 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200730140936.uvw73r655356lhtm@treble>
+In-Reply-To: <20200730141526.lr33zv4ffa3rdygp@treble>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -76,39 +79,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/30/20 3:09 PM, Josh Poimboeuf wrote:
-> On Thu, Jul 30, 2020 at 10:41:40AM +0100, Julien Thierry wrote:
->> +struct objtool_file *objtool_setup_file(const char *_objname)
->> +{
->> +	if (objname) {
->> +		if (strcmp(objname, _objname)) {
->> +			WARN("won't handle more than one file at a time");
->> +			return NULL;
->> +		}
->> +		return &file;
->> +	}
->> +	objname = _objname;
->> +
->> +	file.elf = elf_open_read(objname, O_RDWR);
->> +	if (!file.elf)
->> +		return NULL;
->> +
->> +	INIT_LIST_HEAD(&file.insn_list);
->> +	hash_init(file.insn_hash);
->> +	file.c_file = find_section_by_name(file.elf, ".comment");
->> +	file.ignore_unreachables = no_unreachable;
->> +	file.hints = false;
->> +
->> +	return &file;
->> +}
+On 7/30/20 3:15 PM, Josh Poimboeuf wrote:
+> On Thu, Jul 30, 2020 at 02:29:20PM +0100, Julien Thierry wrote:
+>>
+>>
+>> On 7/30/20 2:22 PM, peterz@infradead.org wrote:
+>>> On Thu, Jul 30, 2020 at 01:40:42PM +0100, Julien Thierry wrote:
+>>>>
+>>>>
+>>>> On 7/30/20 10:57 AM, peterz@infradead.org wrote:
+>>>>> On Thu, Jul 30, 2020 at 10:41:41AM +0100, Julien Thierry wrote:
+>>>>>> +		if (file->elf->changed)
+>>>>>> +			return elf_write(file->elf);
+>>>>>> +		else
+>>>>>> +			return 0;
+>>>>>>     	}
+>>>>>
+>>>>> I think we can do without that else :-)
+>>>>>
+>>>>
+>>>> I did wonder and was not 100% confident about it, but the orc gen will
+>>>> always change the file, correct?
+>>>
+>>> Not if it already has orc, iirc.
+>>>
+>>> But what I was trying to say is that:
+>>>
+>>> 	if (file->elf->changed)
+>>> 		return elf_write(file->elf)
+>>>
+>>> 	return 0;
+>>>
+>>> is identical code and, IMO, easier to read.
+>>>
+>>
+>> Much easier yes, I'll change it.
 > 
-> How about calling it objtool_open_read()?  It's (sort of) a wrapper
-> around elf_open_read().
+> But I think file->elf->changed can be assumed at this point anyway, so
+> it could just be an unconditional
+> 
+> 	return elf_write(file->elf);
 > 
 
-Sure, I'll update that.
-
-Thanks,
+I'll triple check whether that's the case and remove the if if possible.
 
 -- 
 Julien Thierry
