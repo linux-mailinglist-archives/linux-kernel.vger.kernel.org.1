@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CD3232DD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F64232DCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 10:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729738AbgG3IPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 04:15:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51436 "EHLO mail.kernel.org"
+        id S1730201AbgG3IOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 04:14:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730009AbgG3IMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 04:12:12 -0400
+        id S1730018AbgG3IMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:12:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E7752070B;
-        Thu, 30 Jul 2020 08:12:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E54FA2074B;
+        Thu, 30 Jul 2020 08:12:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596096731;
-        bh=l8iMUhDmxL56ZQClu7OIK41mMOrQdimwaf8E9fVcrz8=;
+        s=default; t=1596096734;
+        bh=9jSKnwb5J2kIImd7yWfrg6dzxqQM5NM1qOYnGlEp0yw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wd4QK8R8mNKVx+ukILqmOq6x8glnCTsQdgbvccDkeO+7wup7peOCYUL5o1YoRkr98
-         ZgXARNtiDlYbF/jEh3I2hVMlDUPFC8ZdlLO01dZAAivbWOc9h2MHrJEnbEmdn8BSE0
-         tFF9SolaBa0RZJj6oobSII4TwXD/Q9CE2K8EKSe0=
+        b=bcZhBxvyPXiHZ0bkkZHyrKWnq49J+Wci2APRK+Bs483tnTVhdr07vw9trY57PvqE9
+         NPUU5uAgL/uDhBxjPvos3t84JaksYFfPq2sL4Qq4hiRTrYHKpn8XNJKoi2wBzeT2Q4
+         pRh+MlLmgOhoIhpv0IzdT8GeP0ZXWAeyL2raqcrs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 08/54] drm/nouveau/i2c/g94-: increase NV_PMGR_DP_AUXCTL_TRANSACTREQ timeout
-Date:   Thu, 30 Jul 2020 10:04:47 +0200
-Message-Id: <20200730074421.619600114@linuxfoundation.org>
+        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>
+Subject: [PATCH 4.4 09/54] SUNRPC reverting d03727b248d0 ("NFSv4 fix CLOSE not waiting for direct IO compeletion")
+Date:   Thu, 30 Jul 2020 10:04:48 +0200
+Message-Id: <20200730074421.663908528@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200730074421.203879987@linuxfoundation.org>
 References: <20200730074421.203879987@linuxfoundation.org>
@@ -43,56 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+From: Olga Kornievskaia <kolga@netapp.com>
 
-[ Upstream commit 0156e76d388310a490aeb0f2fbb5b284ded3aecc ]
+commit 65caafd0d2145d1dd02072c4ced540624daeab40 upstream.
 
-Tegra TRM says worst-case reply time is 1216us, and this should fix some
-spurious timeouts that have been popping up.
+Reverting commit d03727b248d0 "NFSv4 fix CLOSE not waiting for
+direct IO compeletion". This patch made it so that fput() by calling
+inode_dio_done() in nfs_file_release() would wait uninterruptably
+for any outstanding directIO to the file (but that wait on IO should
+be killable).
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The problem the patch was also trying to address was REMOVE returning
+ERR_ACCESS because the file is still opened, is supposed to be resolved
+by server returning ERR_FILE_OPEN and not ERR_ACCESS.
+
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c   | 4 ++--
- drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm204.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ fs/nfs/direct.c |   13 ++++---------
+ fs/nfs/file.c   |    1 -
+ 2 files changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c
-index 954f5b76bfcf7..d44965f805fe9 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c
-@@ -118,10 +118,10 @@ g94_i2c_aux_xfer(struct nvkm_i2c_aux *obj, bool retry,
- 		if (retries)
- 			udelay(400);
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -385,6 +385,8 @@ static void nfs_direct_complete(struct n
+ 	if (write)
+ 		nfs_zap_mapping(inode, inode->i_mapping);
  
--		/* transaction request, wait up to 1ms for it to complete */
-+		/* transaction request, wait up to 2ms for it to complete */
- 		nvkm_wr32(device, 0x00e4e4 + base, 0x00010000 | ctrl);
++	inode_dio_end(inode);
++
+ 	if (dreq->iocb) {
+ 		long res = (long) dreq->error;
+ 		if (!res)
+@@ -394,10 +396,7 @@ static void nfs_direct_complete(struct n
  
--		timeout = 1000;
-+		timeout = 2000;
- 		do {
- 			ctrl = nvkm_rd32(device, 0x00e4e4 + base);
- 			udelay(1);
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm204.c b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm204.c
-index bed231b56dbd2..7cac8fe372b6b 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm204.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm204.c
-@@ -118,10 +118,10 @@ gm204_i2c_aux_xfer(struct nvkm_i2c_aux *obj, bool retry,
- 		if (retries)
- 			udelay(400);
+ 	complete_all(&dreq->completion);
  
--		/* transaction request, wait up to 1ms for it to complete */
-+		/* transaction request, wait up to 2ms for it to complete */
- 		nvkm_wr32(device, 0x00d954 + base, 0x00010000 | ctrl);
+-	igrab(inode);
+ 	nfs_direct_req_release(dreq);
+-	inode_dio_end(inode);
+-	iput(inode);
+ }
  
--		timeout = 1000;
-+		timeout = 2000;
- 		do {
- 			ctrl = nvkm_rd32(device, 0x00d954 + base);
- 			udelay(1);
--- 
-2.25.1
-
+ static void nfs_direct_readpage_release(struct nfs_page *req)
+@@ -538,10 +537,8 @@ static ssize_t nfs_direct_read_schedule_
+ 	 * generic layer handle the completion.
+ 	 */
+ 	if (requested_bytes == 0) {
+-		igrab(inode);
+-		nfs_direct_req_release(dreq);
+ 		inode_dio_end(inode);
+-		iput(inode);
++		nfs_direct_req_release(dreq);
+ 		return result < 0 ? result : -EIO;
+ 	}
+ 
+@@ -942,10 +939,8 @@ static ssize_t nfs_direct_write_schedule
+ 	 * generic layer handle the completion.
+ 	 */
+ 	if (requested_bytes == 0) {
+-		igrab(inode);
+-		nfs_direct_req_release(dreq);
+ 		inode_dio_end(inode);
+-		iput(inode);
++		nfs_direct_req_release(dreq);
+ 		return result < 0 ? result : -EIO;
+ 	}
+ 
+--- a/fs/nfs/file.c
++++ b/fs/nfs/file.c
+@@ -82,7 +82,6 @@ nfs_file_release(struct inode *inode, st
+ 	dprintk("NFS: release(%pD2)\n", filp);
+ 
+ 	nfs_inc_stats(inode, NFSIOS_VFSRELEASE);
+-	inode_dio_wait(inode);
+ 	nfs_file_clear_open_context(filp);
+ 	return 0;
+ }
 
 
