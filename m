@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6574B232A24
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 04:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CE4232A2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 04:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbgG3ClA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 22:41:00 -0400
-Received: from mail.windriver.com ([147.11.1.11]:61721 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726319AbgG3ClA (ORCPT
+        id S1727008AbgG3CzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 22:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726319AbgG3CzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 22:41:00 -0400
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
-        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 06U2efi2012132
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Wed, 29 Jul 2020 19:40:41 -0700 (PDT)
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 29 Jul 2020 19:40:40 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <cl@linux.com>, <penberg@kernel.org>, <rientjes@google.com>,
-        <iamjoonsoo.kim@lge.com>, <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] mm/slab.c: add node spinlock protect in __cache_free_alien
-Date:   Thu, 30 Jul 2020 10:52:26 +0800
-Message-ID: <20200730025226.10350-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 29 Jul 2020 22:55:07 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49786C061794;
+        Wed, 29 Jul 2020 19:55:07 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BHFPx5z7vz9sR4;
+        Thu, 30 Jul 2020 12:55:01 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1596077703;
+        bh=KeMsUgTTRQJUB2ALeA/VNpxNjkkQHAcqAD41AHy8QFA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=k2isr9KVTnTwNMTNwyKuK67O+quMJv4e32jfXdyEDlVy7ylhA4yHagA2H5kNYgIH2
+         ga9/j0CJTGLlhxJJPrcyWDI+uVPmGTilnvENj7F4idMQ2/hftGlVxkIFIU+Out5U8V
+         0895d2w2Jj6C1WC/UzH61duJcn7v8GQOYEiv6pXb17+uJ4LW9e9r8+3ADL9P/MLkNk
+         NaEvUaUy5fN8tmqUMUbSu+2VWYrTFy+XZCialTIVta+Oho2w+SxAPWhwpCJBS4jB7t
+         F1KpzrohVkTNrBq4qKw/APramRsi/bEd6GMST30qDw25ZmQ9rjoILsgQcCzbi/MhsH
+         a9cyExu4OnVYg==
+Date:   Thu, 30 Jul 2020 12:55:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Neal Liu <neal.liu@mediatek.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: linux-next: build warning after merge of the pm tree
+Message-ID: <20200730125500.0947e1dd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: multipart/signed; boundary="Sig_/A+5Dkh0co2cLrus.5Zan56l";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+--Sig_/A+5Dkh0co2cLrus.5Zan56l
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Due to cpu hotplug, the "cpuup_canceled" func be called, it's currently
-manipulating the alien cache for the canceled cpu's node and this node
-may be the same as the node which node's alien cache being operated in
-the "__cache_free_alien" func, so we should add a protect for node's alien
-cache in "__cache_free_alien" func.
+Hi all,
 
-Fixes: 6731d4f12315 ("slab: Convert to hotplug state machine")
-Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
----
- v1->v2:
- change submission information and fixes tags.
+After merging the pm tree, today's linux-next build (x86_64 allmodconfig)
+produced this warning:
 
- mm/slab.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+drivers/acpi/processor_idle.c: In function 'acpi_idle_enter_s2idle':
+drivers/acpi/processor_idle.c:666:4: warning: 'return' with no value, in fu=
+nction returning non-void [-Wreturn-type]
+  666 |    return;
+      |    ^~~~~~
+drivers/acpi/processor_idle.c:657:12: note: declared here
+  657 | static int acpi_idle_enter_s2idle(struct cpuidle_device *dev,
+      |            ^~~~~~~~~~~~~~~~~~~~~~
+drivers/acpi/processor_idle.c:670:4: warning: 'return' with no value, in fu=
+nction returning non-void [-Wreturn-type]
+  670 |    return;
+      |    ^~~~~~
+drivers/acpi/processor_idle.c:657:12: note: declared here
+  657 | static int acpi_idle_enter_s2idle(struct cpuidle_device *dev,
+      |            ^~~~~~~~~~~~~~~~~~~~~~
 
-diff --git a/mm/slab.c b/mm/slab.c
-index a89633603b2d..290523c90b4e 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -759,8 +759,10 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
- 
- 	n = get_node(cachep, node);
- 	STATS_INC_NODEFREES(cachep);
-+	spin_lock(&n->list_lock);
- 	if (n->alien && n->alien[page_node]) {
- 		alien = n->alien[page_node];
-+		spin_unlock(&n->list_lock);
- 		ac = &alien->ac;
- 		spin_lock(&alien->lock);
- 		if (unlikely(ac->avail == ac->limit)) {
-@@ -769,14 +771,15 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
- 		}
- 		ac->entry[ac->avail++] = objp;
- 		spin_unlock(&alien->lock);
--		slabs_destroy(cachep, &list);
- 	} else {
-+		spin_unlock(&n->list_lock);
- 		n = get_node(cachep, page_node);
- 		spin_lock(&n->list_lock);
- 		free_block(cachep, &objp, 1, page_node, &list);
- 		spin_unlock(&n->list_lock);
--		slabs_destroy(cachep, &list);
- 	}
-+
-+	slabs_destroy(cachep, &list);
- 	return 1;
- }
- 
--- 
-2.26.2
+Introduced by commit
 
+  efe9711214e6 ("cpuidle: change enter_s2idle() prototype")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/A+5Dkh0co2cLrus.5Zan56l
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8iNoQACgkQAVBC80lX
+0Gw2vgf8D04zaNBUbkQJ3cFJ7Sx+BwSWJLsrs9iyIMlgVHw+rcMZEAxJEkD2WVCh
+0tp/JmsK385QFdXVObKNgGAlz8V5pFx+pLUO7tEY6pCok7JKaY7FyJz0Wa+mvDnV
+yOcv0YB/mct8EWsnupB9cKm0gcHKyUOcCEdNV/IQvXpjhwZWMQIyQfWNR7BP6bqP
+GHcZxjY2Aeghln+GIQNDFDJYAqKHtAHkFDgStPa6OfawwpWUWGnuDDqVCyTIXffY
+dmnfyIX9ASpEyFotmUNmukbMhJQ2Z0dL/LRd1Itk3+SwNVpp/5v1BEMOzqiOMTb5
+xjgIDLm7fWtSsCKWYEwSqa9vJGjm3w==
+=HtkD
+-----END PGP SIGNATURE-----
+
+--Sig_/A+5Dkh0co2cLrus.5Zan56l--
