@@ -2,138 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789A72331F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 14:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45286233228
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 14:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbgG3MXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 08:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726631AbgG3MXr (ORCPT
+        id S1728350AbgG3M2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 08:28:48 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:26713 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728234AbgG3M2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 08:23:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A600FC061794;
-        Thu, 30 Jul 2020 05:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IT3v0Hh8vnx5zaKRHtOH95ARGWeTEDbEFgcfcKeku4Y=; b=o1Z+YuKKUhGP2mMcZG3HwQ1XDy
-        +g0pF/YGFnpA5Ik90W5jj8n0UfvoB2rQCfKsHtmFCuhVTTILtbQZA4P57BVJJbTB16Wto5krB2G+m
-        AOXUgzisnmWPRIQV3t88b9j3QCKkherCng35P6EslkIqnUJryw+SfoUs3pOTNw3koaw4giJonUQ/6
-        fgcDNMGdWZeLJ+9OG1l3isRH9QrXD9+iCDbiAxuIsvCrl8CS5Up02idOVJ+YWdNAzfu7RNrH7JhmN
-        n/oBpDtvfnFHISXfG6SpoaSPoUXJS/8wfxiMOsv/buoV7hY3RwsMjiLj5Ykgsyy2LQL8khawvWd7T
-        A9trhPYA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k17ah-0003nb-UL; Thu, 30 Jul 2020 12:23:20 +0000
-Date:   Thu, 30 Jul 2020 13:23:19 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
-        ebiederm@xmission.com, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, areber@redhat.com, serge@hallyn.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 09/23] ns: Introduce ns_idr to be able to iterate all
- allocated namespaces in the system
-Message-ID: <20200730122319.GC23808@casper.infradead.org>
-References: <159611007271.535980.15362304262237658692.stgit@localhost.localdomain>
- <159611040870.535980.13460189038999722608.stgit@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159611040870.535980.13460189038999722608.stgit@localhost.localdomain>
+        Thu, 30 Jul 2020 08:28:44 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 30 Jul 2020 05:28:44 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 Jul 2020 05:28:42 -0700
+Received: from gokulsri-linux.qualcomm.com ([10.201.2.207])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 30 Jul 2020 17:58:08 +0530
+Received: by gokulsri-linux.qualcomm.com (Postfix, from userid 432570)
+        id BCBFE218A1; Thu, 30 Jul 2020 17:58:06 +0530 (IST)
+From:   Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+To:     gokulsri@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, david.brown@linaro.org,
+        devicetree@vger.kernel.org, jassisinghbrar@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        mark.rutland@arm.com, mturquette@baylibre.com,
+        nprakash@codeaurora.org, ohad@wizery.com, robh+dt@kernel.org,
+        sboyd@kernel.org, sricharan@codeaurora.org
+Subject: [PATCH v7 0/9] remoteproc: qcom: q6v5-wcss: Add support for secure pil
+Date:   Thu, 30 Jul 2020 17:56:34 +0530
+Message-Id: <1596112003-31663-1-git-send-email-gokulsri@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 03:00:08PM +0300, Kirill Tkhai wrote:
-> This patch introduces a new IDR and functions to add/remove and iterate
-> registered namespaces in the system. It will be used to list namespaces
-> in /proc/namespaces/... in next patches.
+IPQ8074 needs support for secure pil as well.
+Also, currently only unified firmware is supported.
+IPQ8074 supports split firmware for q6 and m3, so
+adding support for that.
 
-Looks like you could use an XArray for this and it would be fewer lines of
-code.
+This series is based on Govind's
+"[v8] Add non PAS wcss Q6 support for QCS404"
 
->  
->  static struct vfsmount *nsfs_mnt;
-> +static DEFINE_SPINLOCK(ns_lock);
-> +static DEFINE_IDR(ns_idr);
+changes since v6:
+ - Rebased on top of the above mentioned dependant patch series
 
-XArray includes its own spinlock.
+changes since v5:
+ - Rebased on top of linux-5.8-rc3
 
-> +/*
-> + * Add a newly created ns to ns_idr. The ns must be fully
-> + * initialized since it becomes available for ns_get_next()
-> + * right after we exit this function.
-> + */
-> +int ns_idr_register(struct ns_common *ns)
-> +{
-> +	int ret, id = ns->inum - PROC_NS_MIN_INO;
-> +
-> +	if (WARN_ON(id < 0))
-> +		return -EINVAL;
-> +
-> +	idr_preload(GFP_KERNEL);
-> +	spin_lock_irq(&ns_lock);
-> +	ret = idr_alloc(&ns_idr, ns, id, id + 1, GFP_ATOMIC);
-> +	spin_unlock_irq(&ns_lock);
-> +	idr_preload_end();
-> +	return ret < 0 ? ret : 0;
+changes since v4:
+ - Rebased patch 8
 
-This would simply be return xa_insert_irq(...);
+changes since v3:
+ - In patch 10, Added release_firmware to free up
+   memory requested for m3 firmware.
 
-> +}
-> +
-> +/*
-> + * Remove a dead ns from ns_idr. Note, that ns memory must
-> + * be freed not earlier then one RCU grace period after
-> + * this function, since ns_get_next() uses RCU to iterate the IDR.
-> + */
-> +void ns_idr_unregister(struct ns_common *ns)
-> +{
-> +	int id = ns->inum - PROC_NS_MIN_INO;
-> +	unsigned long flags;
-> +
-> +	if (WARN_ON(id < 0))
-> +		return;
-> +
-> +	spin_lock_irqsave(&ns_lock, flags);
-> +	idr_remove(&ns_idr, id);
-> +	spin_unlock_irqrestore(&ns_lock, flags);
-> +}
+changes since v2:
+ - In patch 5, Added a driver data 'bcr_reset_required'
+   to select if bcr reset is required
+ - In patch 10, Removed syscon implementation and moved
+   to mailbox framework to access APCS IPC
 
-xa_erase_irqsave();
+changes since v1:
+ - In patch 10, Addressed minor review comments.
 
-> +
-> +/*
-> + * This returns ns with inum greater than @id or NULL.
-> + * @id is updated to refer the ns inum.
-> + */
-> +struct ns_common *ns_get_next(unsigned int *id)
-> +{
-> +	struct ns_common *ns;
-> +
-> +	if (*id < PROC_NS_MIN_INO - 1)
-> +		*id = PROC_NS_MIN_INO - 1;
-> +
-> +	*id += 1;
-> +	*id -= PROC_NS_MIN_INO;
-> +
-> +	rcu_read_lock();
-> +	do {
-> +		ns = idr_get_next(&ns_idr, id);
-> +		if (!ns)
-> +			break;
+Gokul Sriram Palanisamy (9):
+  remoteproc: qcom: Add PRNG proxy clock
+  remoteproc: qcom: Add secure PIL support
+  remoteproc: qcom: Add support for split q6 + m3 wlan firmware
+  remoteproc: qcom: Add ssr subdevice identifier
+  remoteproc: qcom: Update regmap offsets for halt register
+  dt-bindings: clock: qcom: Add reset for WCSSAON
+  clk: qcom: Add WCSSAON reset
+  arm64: dts: Add support for scm on IPQ8074 SoCs
+  arm64: dts: qcom: Enable Q6v5 WCSS for ipq8074 SoC
 
-xa_find_after();
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi        | 127 +++++++++++++++++++++
+ drivers/clk/qcom/gcc-ipq8074.c               |   1 +
+ drivers/remoteproc/qcom_q6v5_wcss.c          | 162 +++++++++++++++++++++------
+ include/dt-bindings/clock/qcom,gcc-ipq8074.h |   1 +
+ 4 files changed, 259 insertions(+), 32 deletions(-)
 
-You'll want a temporary unsigned long to work with ...
-
-> +		if (!refcount_inc_not_zero(&ns->count)) {
-> +			ns = NULL;
-> +			*id += 1;
-
-you won't need this increment.
+-- 
+2.7.4
 
