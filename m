@@ -2,172 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19165232B90
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 07:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B964232B93
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 07:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728195AbgG3FxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 01:53:23 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:45416 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgG3FxW (ORCPT
+        id S1728612AbgG3Fy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 01:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgG3Fy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 01:53:22 -0400
-Received: by mail-il1-f200.google.com with SMTP id c1so18235035ilk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 22:53:21 -0700 (PDT)
+        Thu, 30 Jul 2020 01:54:57 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A48C061794;
+        Wed, 29 Jul 2020 22:54:57 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id w2so15907542pgg.10;
+        Wed, 29 Jul 2020 22:54:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=E2EytgWa9qS3s3TGjba78LOYjqPjnfrso56HtBNJ3vs=;
+        b=dMGBNNheZT94oRg069QeKz0G83l/o/KAqpKdDXLqbA/25gDCJwUPmLDp0gJug7n2oB
+         Cs+Sv6DDRNPNcByfncSp6OXBJDlg+q8XLJgLltBfADo31Bx3p2+KeC4mJMgkDbtW/MgU
+         dBf6e8JdSo1ZE7peNriXIFno4LJlbTTaY+4EJusw0mWsLXZBS4RRN8Zzc2t2D7PBPhsX
+         wwIyhlPhd9GuJoZ81XwQQ2mB0aUcbdu7L1S5I1qGe2H29+TQ+sNGEw5NUu+yNPhRuOfM
+         1QF+eZyVct01KIQToQrSqXSMkp7A6YMTyCLkEe58EGNpJRbT7KTTk9M7clk22yNuz0fo
+         J3Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cZqveESVb4dxGAsDKYcIwEFOolAR61lbQIGOuYt5eyM=;
-        b=DrbEPJVtgbkOd49QtSQ6kg5m4am4dIaSU9Zojw71pw0AmewL2H7nrK68Q83A+taCU3
-         sbM4K0xW36HjMXXOqZWAOrt59JavW5zZZ2bijK5aZ8v+SiDU7lIOc6D++4s9MIUuUxsO
-         fyuRhfOH43CqlAi1VahtTQYXi42HXwEiO44//kJs6NV/83FDmUtmQTTCtOIcxEcNAhqw
-         +k1fZDM5JejjqiZWLIOatA5h0yf0uOaCplw9ZwEXoR/2zrJeLFl0oIe3ZE5uo4q6WSYb
-         YHmLrLD0dKfPP53OTn4Ym+6Hq7yud8vZaoZ+aCnPAurdbU2pXuWsN0pZ9vgczC4vywNQ
-         FOpA==
-X-Gm-Message-State: AOAM531aYaEy1eQA8AIoPUtvtahYM+ADwebQX9anDTKMIJB4VYU/FGHs
-        jCnHxO/P4I/1ungE45pibpIngwdTnaGVx+8IRll9C5Hi4Sn/
-X-Google-Smtp-Source: ABdhPJyW4uvls/pU6LN4B4s6Ah6NWPBPFO/nl8CuC7y9z1wq6FDvrEEOJ2OZJoqUqbbz58GaCWptrEh0rzbsQZmjpn4spUkbwUA6
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E2EytgWa9qS3s3TGjba78LOYjqPjnfrso56HtBNJ3vs=;
+        b=X0TvukvM0CvdPAJ4kyJdnyE1Vxjtlq42mUtfnlSyQKmQopDjUYucpn74Tj1AnwVaHL
+         /78zsx1HLrSg/YttrAY26wQqZOyIbXSJ/3eCSuXXaKR/soo+Sj4fwEGr3hM+AqdyAC6l
+         irwNnyxXvBFR72L5C+2g1NAJkYMWD6+F9l8S58aUUBkNVgKfk87yLf+P6WVxaZxDidTr
+         bpxu3N1pINrt78OPsP+vfrNmzlzJKWBebShipyRy66ZVcPSSAZgB7R5C/eyfuzF0/mjn
+         mmm1wWGtmfUdxF6DVouIN4xMOrduHI3+LVG2QWs0WoNSnNzJOQ4vXjA6Bqd92KQUlpzq
+         y9BA==
+X-Gm-Message-State: AOAM533AZGtjyQSd/4iVvvXCsIzSlvaWv0JlP1zb26YED2H124TywCJ5
+        AeP6h3fvVnGAn7AdEbRPSW0mQGCPIAI=
+X-Google-Smtp-Source: ABdhPJy254U51wdr6zJE2fW77WYleMshzMMhW/c8Tk9JqOI24a32XSE9O0QVy3cKHoNgwpWQXwS0KA==
+X-Received: by 2002:a63:c049:: with SMTP id z9mr31858702pgi.353.1596088496550;
+        Wed, 29 Jul 2020 22:54:56 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id f73sm3143925pfa.19.2020.07.29.22.54.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 22:54:55 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 22:54:53 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jiada Wang <jiada_wang@mentor.com>
+Cc:     nick@shmanahar.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, erosca@de.adit-jv.com,
+        Andrew_Gabbasov@mentor.com, digetx@gmail.com
+Subject: Re: [PATCH 1/1] Input: atmel_mxt_ts: split large i2c transfers into
+ blocks
+Message-ID: <20200730055453.GC1665100@dtor-ws>
+References: <20200729092252.6394-1-jiada_wang@mentor.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:9687:: with SMTP id g129mr18004529ilh.219.1596088401058;
- Wed, 29 Jul 2020 22:53:21 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 22:53:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002ce2fc05aba24a7e@google.com>
-Subject: KASAN: invalid-free in snd_seq_port_disconnect
-From:   syzbot <syzbot+9d2abfef257f3e2d4713@syzkaller.appspotmail.com>
-To:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200729092252.6394-1-jiada_wang@mentor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Jiada,
 
-syzbot found the following issue on:
+On Wed, Jul 29, 2020 at 06:22:52PM +0900, Jiada Wang wrote:
+> From: Jiada wang <jiada_wang@mentor.com>
+> 
+> Some I2C controllers constrain maximum transferred data in an I2C
+> transaction by set max_[read|write]_len of i2c_adapter_quirk.
+> Large i2c transfer transaction beyond this limitation may fail to complete,
+> cause I2C controller driver aborts the transaction and returns failure.
+> 
+> Therefore this patch was created to split large i2c transaction into
+> smaller chunks which can complete within max_[read|write]_len defined
+> by I2C controller driver.
 
-HEAD commit:    d3590ebf Merge tag 'audit-pr-20200729' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1797d388900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=812bbfcb6ae2cd60
-dashboard link: https://syzkaller.appspot.com/bug?extid=9d2abfef257f3e2d4713
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14761be4900000
+Can we consider implementing this chunking logic in i2c core? Otherwise
+we will need to adjust pretty much every driver to do this.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9d2abfef257f3e2d4713@syzkaller.appspotmail.com
+Thanks.
 
-==================================================================
-BUG: KASAN: double-free or invalid-free in snd_seq_port_disconnect+0x570/0x610 sound/core/seq/seq_ports.c:614
-
-CPU: 1 PID: 7530 Comm: syz-executor.0 Not tainted 5.8.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1f0/0x31e lib/dump_stack.c:118
- print_address_description+0x66/0x5a0 mm/kasan/report.c:383
- kasan_report_invalid_free+0x54/0xd0 mm/kasan/report.c:477
- __kasan_slab_free+0xae/0x170 mm/kasan/common.c:443
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x10a/0x220 mm/slab.c:3757
- snd_seq_port_disconnect+0x570/0x610 sound/core/seq/seq_ports.c:614
- snd_seq_ioctl_unsubscribe_port+0x349/0x6c0 sound/core/seq/seq_clientmgr.c:1525
- snd_seq_oss_midi_close+0x397/0x620 sound/core/seq/oss/seq_oss_midi.c:405
- snd_seq_oss_synth_reset+0x335/0x8b0 sound/core/seq/oss/seq_oss_synth.c:406
- snd_seq_oss_reset+0x5b/0x250 sound/core/seq/oss/seq_oss_init.c:435
- snd_seq_oss_ioctl+0x5c2/0x1090 sound/core/seq/oss/seq_oss_ioctl.c:93
- odev_ioctl+0x51/0x70 sound/core/seq/oss/seq_oss.c:174
- vfs_ioctl fs/ioctl.c:48 [inline]
- ksys_ioctl fs/ioctl.c:753 [inline]
- __do_sys_ioctl fs/ioctl.c:762 [inline]
- __se_sys_ioctl+0xf9/0x160 fs/ioctl.c:760
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45c429
-Code: 8d b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f25d0cb3c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000000154c0 RCX: 000000000045c429
-RDX: 0000000000000000 RSI: 0000000000005100 RDI: 0000000000000003
-RBP: 000000000078bfd8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078bfac
-R13: 00007ffe03b9f5df R14: 00007f25d0cb49c0 R15: 000000000078bfac
-
-Allocated by task 7529:
- save_stack mm/kasan/common.c:48 [inline]
- set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc+0x103/0x140 mm/kasan/common.c:494
- kmem_cache_alloc_trace+0x234/0x300 mm/slab.c:3551
- kmalloc include/linux/slab.h:555 [inline]
- kzalloc include/linux/slab.h:669 [inline]
- snd_seq_port_connect+0x66/0x460 sound/core/seq/seq_ports.c:553
- snd_seq_ioctl_subscribe_port+0x349/0x6c0 sound/core/seq/seq_clientmgr.c:1484
- snd_seq_oss_midi_open+0x4db/0x830 sound/core/seq/oss/seq_oss_midi.c:364
- snd_seq_oss_synth_setup_midi+0x108/0x510 sound/core/seq/oss/seq_oss_synth.c:269
- snd_seq_oss_open+0x899/0xe90 sound/core/seq/oss/seq_oss_init.c:261
- odev_open+0x5e/0x90 sound/core/seq/oss/seq_oss.c:125
- chrdev_open+0x498/0x580 fs/char_dev.c:414
- do_dentry_open+0x813/0x1070 fs/open.c:828
- do_open fs/namei.c:3243 [inline]
- path_openat+0x278d/0x37f0 fs/namei.c:3360
- do_filp_open+0x191/0x3a0 fs/namei.c:3387
- do_sys_openat2+0x463/0x770 fs/open.c:1179
- do_sys_open fs/open.c:1195 [inline]
- __do_sys_openat fs/open.c:1209 [inline]
- __se_sys_openat fs/open.c:1204 [inline]
- __x64_sys_openat+0x1c8/0x1f0 fs/open.c:1204
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 7529:
- save_stack mm/kasan/common.c:48 [inline]
- set_track mm/kasan/common.c:56 [inline]
- kasan_set_free_info mm/kasan/common.c:316 [inline]
- __kasan_slab_free+0x114/0x170 mm/kasan/common.c:455
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x10a/0x220 mm/slab.c:3757
- snd_seq_port_disconnect+0x570/0x610 sound/core/seq/seq_ports.c:614
- snd_seq_ioctl_unsubscribe_port+0x349/0x6c0 sound/core/seq/seq_clientmgr.c:1525
- snd_seq_oss_midi_close+0x397/0x620 sound/core/seq/oss/seq_oss_midi.c:405
- snd_seq_oss_synth_reset+0x335/0x8b0 sound/core/seq/oss/seq_oss_synth.c:406
- snd_seq_oss_reset+0x5b/0x250 sound/core/seq/oss/seq_oss_init.c:435
- snd_seq_oss_ioctl+0x5c2/0x1090 sound/core/seq/oss/seq_oss_ioctl.c:93
- odev_ioctl+0x51/0x70 sound/core/seq/oss/seq_oss.c:174
- vfs_ioctl fs/ioctl.c:48 [inline]
- ksys_ioctl fs/ioctl.c:753 [inline]
- __do_sys_ioctl fs/ioctl.c:762 [inline]
- __se_sys_ioctl+0xf9/0x160 fs/ioctl.c:760
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff8880a3acdd00
- which belongs to the cache kmalloc-128 of size 128
-The buggy address is located 0 bytes inside of
- 128-byte region [ffff8880a3acdd00, ffff8880a3acdd80)
-The buggy address belongs to the page:
-page:ffffea00028eb340 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea00025c5208 ffffea0002a371c8 ffff8880aa400700
-raw: 0000000000000000 ffff8880a3acd000 0000000100000010 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880a3acdc00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff8880a3acdc80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff8880a3acdd00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff8880a3acdd80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8880a3acde00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-- 
+Dmitry
