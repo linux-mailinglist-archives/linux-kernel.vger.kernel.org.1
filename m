@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D682337DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 19:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A069F2337DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Jul 2020 19:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbgG3RqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 13:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
+        id S1730298AbgG3RqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 13:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726544AbgG3RqC (ORCPT
+        with ESMTP id S1730242AbgG3RqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 13:46:02 -0400
+        Thu, 30 Jul 2020 13:46:11 -0400
 Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F705C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 10:46:02 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id l17so12975390ilq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 10:46:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B915C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 10:46:11 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id j9so19801980ilc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 10:46:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=Mjw46l0WiX2cgOgOB9HnUvadVnuzoTI29vrJPNcSYdE=;
-        b=tO79DpjBf7dyEFJtFiuMv7DYl6NYwoM4SslJJRQr2CELhHlLvy1t0mj6zr0HNPy80a
-         MEnLhW4EDL5MCV2lUcMEZBcNXPSuTL9BaA3Ix0Aoa/+ooD6lm0gVXYvW02BnmWTRKcU/
-         0Plq72094GIXK6XFS14k1u1uzqAl6vhuX2vy4dsipM7KOO+rRwdlEmgiVSoL0BW0skfk
-         hzHZ/QFxYz9HltfzvI6ZjG4cFQ19VCjoqyw67fIIHZk1sA5JMscy3+WEpIhM/j9Yut3j
-         DYtWYatt/I/VbG/cpIjB83+29/KwM61PK8T8x2udZGQLMsAc0+aJopQ//FLWB92fd5ja
-         ePtg==
+        bh=+f4IFhG2djRuvcFmGTRHAajQFcXsrndVO/SZzro2eAA=;
+        b=y1dQnjMrml1hBY4Kv3uFmAwTo87V4ZcHn7dGg1OGK83xtxFt2KkcP6mlMLQ8SqKdm3
+         Uy+vNaCc2F6aq2ziGAGvrCIL38jCyTF5E7QRWj30Eo9JNTxRO8Wv7FgO/VMUsMg0rN1K
+         0v9ZqseDGo/crxXVGgsHrJGVIYJGie74DTWp5eUJOzJrwqESXPX4yMReRjcGXXMp/2q2
+         Wrt66jiTAGXKPBxeWiZoDAgp9LoHMTkHFJIEl8GCUHP3xRZJOHKhKmg/xuM2LE7b4HPq
+         ru0GKZrbq03aG96IhLOLVHTwzwO0w8limcZgHGwRtEmGRWUShqF7O9DxinDxI7eqqGX5
+         8pLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Mjw46l0WiX2cgOgOB9HnUvadVnuzoTI29vrJPNcSYdE=;
-        b=Ie3LrosumCh0aXuAljsYLj5KBZptNv17RWHEXRgTi/ga/YOzFMb4XvkoB7l6Tlwcod
-         f6ByriM8O6JGj69az7JFY42N30Y4JRxS7uO395rPtnb5BmxAOu7A8K1cXFoAjlDP+Qxk
-         K3LR7vBRfTaAsy+FjCPbaJ6RbmK64loPyOmPtGlsaFP4OEwX/K9BYWXNPTVjFiC5Bpwr
-         qtMGJNTOl09vuS4x4fYV8ZfM5ZrBJzNIcYiDreifvawlOeXUZNq5Lt8kGX2tQNqDhsIz
-         GaGrW/isPv2QM+LVV9A3N0SOc9P7GdcXZve2kywp6F/DDe5L/BSs4/+qS/5/b1W1KG3w
-         eXGQ==
-X-Gm-Message-State: AOAM532nSAwl9o6r7fCOj5GdybQ61268kYidvCKe704kXV7IgN6Fc8Wb
-        7mhYfhLjHmziSTYXut/cp+PXn8XTN3g=
-X-Google-Smtp-Source: ABdhPJx36xWyE9IPUbIQe9q8bmMvshCLd0FNQ2JLoprKgzDBA8xzmDzIpKa+MAm4X6576CTI4BYjtw==
-X-Received: by 2002:a92:46:: with SMTP id 67mr34706426ila.113.1596131161540;
-        Thu, 30 Jul 2020 10:46:01 -0700 (PDT)
+        bh=+f4IFhG2djRuvcFmGTRHAajQFcXsrndVO/SZzro2eAA=;
+        b=cvzJqNKMatsxhGz1TTW5f+OyUVXDaKjuYsCBuRLHSLa2lvvWqcNk7Gvg2GdaejfJgd
+         oytfix0y56bAEnUsCQFc6icnwuqNkNoooljq5F/ceytlCx4zKhTq/Erc50QHCzq7st7f
+         vbROKl7jdyS/jyd4zyJ5FVY6E7uyVbSbEVflIIIvMGEyYZuiSD5OGaxgQZI0fEHHmOZH
+         eyI5FaHr6bvuG267kYTWhVmeKsmyz6PnjrQKOXz9L1Oal+NDRQB/cX0xBKbw0mhgaB8f
+         Af5/+5f+j8Ceew/z1vK6FQOtesgXQpgP7vTQgca54r2Do9kVbIaQvrthWgZgFJrtYH36
+         t4lg==
+X-Gm-Message-State: AOAM531Ytr8FBCHJtPxWUct5AjZjw5NmXKZCl7MpaArL1c7ARw+Jk1Bl
+        iND6BiATIqoKBUinln4XAXRo0jrZBIo=
+X-Google-Smtp-Source: ABdhPJxDuoNCh35y3vT7UN88lZ2Q+eWloT15kJ9Q0oWYn8dsptnKDYt5tUny0O6nQHJcdf21BQxyvw==
+X-Received: by 2002:a92:6008:: with SMTP id u8mr40065711ilb.196.1596131170673;
+        Thu, 30 Jul 2020 10:46:10 -0700 (PDT)
 Received: from [192.168.1.58] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id r2sm3278374ilc.58.2020.07.30.10.46.00
+        by smtp.gmail.com with ESMTPSA id s8sm3058335iow.11.2020.07.30.10.46.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jul 2020 10:46:01 -0700 (PDT)
-Subject: Re: [PATCH] iocost: Fix check condition of iocg abs_vdebt
+        Thu, 30 Jul 2020 10:46:10 -0700 (PDT)
+Subject: Re: [PATCH] iocost_monitor: start from the oldest usage index
 To:     Chengming Zhou <zhouchengming@bytedance.com>, tj@kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200730090321.38781-1-zhouchengming@bytedance.com>
+        linux-kernel@vger.kernel.org
+References: <20200730123104.27023-1-zhouchengming@bytedance.com>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a52ee19a-0d04-4085-7eca-0678bcf16311@kernel.dk>
-Date:   Thu, 30 Jul 2020 11:46:00 -0600
+Message-ID: <4c68a4aa-c301-feba-8ded-62e6de81db4b@kernel.dk>
+Date:   Thu, 30 Jul 2020 11:46:09 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200730090321.38781-1-zhouchengming@bytedance.com>
+In-Reply-To: <20200730123104.27023-1-zhouchengming@bytedance.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,15 +68,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/20 3:03 AM, Chengming Zhou wrote:
-> We shouldn't skip iocg when its abs_vdebt is not zero.
+On 7/30/20 6:31 AM, Chengming Zhou wrote:
+> iocg usage_idx is the latest usage index, we should start from the
+> oldest usage index to show the consecutive NR_USAGE_SLOTS usages.
 
 Applied, thanks.
-
-> Fixes: 0b80f9866e6b ("iocost: protect iocg->abs_vdebt with
-> iocg->waitq.lock")
-
-Minor note, and I fixed this up, but these should be one line.
 
 -- 
 Jens Axboe
