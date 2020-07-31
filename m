@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AD4234E5E
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 01:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1CE234E65
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 01:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgGaXSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 19:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
+        id S1727884AbgGaXST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 19:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726977AbgGaXSM (ORCPT
+        with ESMTP id S1726977AbgGaXSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 19:18:12 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C6AC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:18:12 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id r11so7287755pfl.11
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:18:12 -0700 (PDT)
+        Fri, 31 Jul 2020 19:18:13 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C570BC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:18:13 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id t15so8525657pjq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:18:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GYWiGkzrodMZw8E6moJnKNf+2pJurSr6gU0bXIJriLs=;
-        b=XLAgtFMgltivYzdrmr7mPeCf/STVStGznvQ9AetuyotpG77ihapGJPSOw6e/9bGeJC
-         hnPfgK4hvRPSwIXsU3jsGjxizKoPAk/GU0DAj6GDqHdxtQmLultetRDJHUsYBQ5wLmRe
-         GyZCYcSM9scCXDQH2r7rsPLe7prnm0EXpd4kU=
+        bh=DcAsy2Kya2vQqvsN7ZPWA8EbcQkwVEcJexXEETLKJik=;
+        b=Acdhtx1taL3cJ0UonSyJvk6bfFnzMNMb/OtYeoW8WVgIkiBmz9TPNPTuYBMmsdYmlO
+         sAcW9XztYuDymTfimZLg8+HmpaYdTmmT8tF/BpBGfhsLUyvDHTtHASScwa7qJiTP1nko
+         Qv/5rrTmKuRHOM+nwd77xCgRKODhxuUNBL7Ro=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GYWiGkzrodMZw8E6moJnKNf+2pJurSr6gU0bXIJriLs=;
-        b=GQs+tHlDS94KDMAop/7JwgqXgbVtIBHcgk9nUn8aAN0pyskebqVlRgUa8d/c020Om6
-         nxsj7eakTMpy03XCwnRvu7vK7IP1gzLI9124cVmk21V0LztiqX6eLNoMXbqtmmRSFEAk
-         hAuzFsOPWjzLKNhmAv8D4y/gIw08uWQWgHEI+LrgYQCxNUu8XVAWKR39viIoOptfb4so
-         ErUVwRgwnwI+/y92IX4HzCfbTB9wnLMhmCFEdn3ftACPJz0a+1GgD/2LgpkvCtbDaTfj
-         09LbQwF9XA+T+n7aaxVhffcqynQBAhbW4NoXTJn2SoSXddNdH2fFlLJszS5ZJA2yaD2C
-         +SEQ==
-X-Gm-Message-State: AOAM5311CGLk4+y+9sTzJnyGyQkI3Q1guHLApc8rEasOvhwmySSZDgSh
-        x9eGtYfhbxtOA9V03c07wAgUkA==
-X-Google-Smtp-Source: ABdhPJwz7lNV75l53ANINXJYmgu5YglRuap1WdUm9GJ6Hh16kc46QlK2SQ2/0EKz7ozsRQIWIWRvRg==
-X-Received: by 2002:a62:1c8b:: with SMTP id c133mr5904939pfc.134.1596237492142;
-        Fri, 31 Jul 2020 16:18:12 -0700 (PDT)
+        bh=DcAsy2Kya2vQqvsN7ZPWA8EbcQkwVEcJexXEETLKJik=;
+        b=C2oGAcYoRSIHWwVETdtRSsPMkxv/PES6NFAp4+BNSSanKShV9Ww3HOrSJ26E69kGv7
+         UTJ7r5TI6SoyDnNzCDFRgqhxnJk0KwWq+nHDk21n0PUfrRxtmiHde0TT2nntVuv6Jiez
+         wxO4406ZcMnKQsR+6EQUvbofX7iC+R8eqc/oJ/Gtdso8jFJg54YNO8IsxHp7fN+OFLpe
+         M1VlzQN9m6dqmYcqljrPFKtoaXrjPgswnhqHXHpySwoYLTNVFNwndz2xUtA9BuNly1uz
+         0piGbrFAQfngWDRWtRVuqMqh7T+V/Wmg8Rr6379HPmiQUA9uBA/91cbg2oa23yaaAnaz
+         Rb4g==
+X-Gm-Message-State: AOAM532CJoVW/X12If9OsFpQBojHxSvVdgWWYporLHf9SxGmmdYEbnke
+        Jle3F/IAq8CyBPpCctfVcfMK/Q==
+X-Google-Smtp-Source: ABdhPJyzzUS6jU3nY40Z2QdxjoOaZJ0MXEzHC7GLhL52i5IAnjsxzb7V9wPgftjtuphwT5Pu7c20Lw==
+X-Received: by 2002:a17:90a:8d06:: with SMTP id c6mr6370143pjo.137.1596237493405;
+        Fri, 31 Jul 2020 16:18:13 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q7sm6300502pfl.156.2020.07.31.16.18.11
+        by smtp.gmail.com with ESMTPSA id b21sm11163353pfp.172.2020.07.31.16.18.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 31 Jul 2020 16:18:11 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -63,9 +63,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
         linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 28/36] x86/asm: Avoid generating unused kprobe sections
-Date:   Fri, 31 Jul 2020 16:08:12 -0700
-Message-Id: <20200731230820.1742553-29-keescook@chromium.org>
+Subject: [PATCH v5 29/36] x86/build: Enforce an empty .got.plt section
+Date:   Fri, 31 Jul 2020 16:08:13 -0700
+Message-Id: <20200731230820.1742553-30-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200731230820.1742553-1-keescook@chromium.org>
 References: <20200731230820.1742553-1-keescook@chromium.org>
@@ -76,35 +76,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When !CONFIG_KPROBES, do not generate kprobe sections. This makes
-sure there are no unexpected sections encountered by the linker scripts.
+The .got.plt section should always be zero (or filled only with the
+linker-generated lazy dispatch entry). Enforce this with an assert and
+mark the section as NOLOAD. This is more sensitive than just blindly
+discarding the section.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/x86/include/asm/asm.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/kernel/vmlinux.lds.S | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
-index 0f63585edf5f..92feec0f0a12 100644
---- a/arch/x86/include/asm/asm.h
-+++ b/arch/x86/include/asm/asm.h
-@@ -138,11 +138,15 @@
- # define _ASM_EXTABLE_FAULT(from, to)				\
- 	_ASM_EXTABLE_HANDLE(from, to, ex_handler_fault)
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 0cc035cb15f1..7faffe7414d6 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -414,8 +414,20 @@ SECTIONS
+ 	ELF_DETAILS
  
--# define _ASM_NOKPROBE(entry)					\
-+# ifdef CONFIG_KPROBES
-+#  define _ASM_NOKPROBE(entry)					\
- 	.pushsection "_kprobe_blacklist","aw" ;			\
- 	_ASM_ALIGN ;						\
- 	_ASM_PTR (entry);					\
- 	.popsection
-+# else
-+#  define _ASM_NOKPROBE(entry)
-+# endif
+ 	DISCARDS
+-}
  
- #else
- # define _EXPAND_EXTABLE_HANDLE(x) #x
++	/*
++	 * Make sure that the .got.plt is either completely empty or it
++	 * contains only the lazy dispatch entries.
++	 */
++	.got.plt (NOLOAD) : { *(.got.plt) }
++	ASSERT(SIZEOF(.got.plt) == 0 ||
++#ifdef CONFIG_X86_64
++	       SIZEOF(.got.plt) == 0x18,
++#else
++	       SIZEOF(.got.plt) == 0xc,
++#endif
++	       "Unexpected GOT/PLT entries detected!")
++}
+ 
+ #ifdef CONFIG_X86_32
+ /*
 -- 
 2.25.1
 
