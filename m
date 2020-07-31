@@ -2,64 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D09234134
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C62E234138
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730444AbgGaI2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 04:28:19 -0400
-Received: from comms.puri.sm ([159.203.221.185]:46106 "EHLO comms.puri.sm"
+        id S1731579AbgGaI2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 04:28:47 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:39996 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728412AbgGaI2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 04:28:19 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id D614ADF997;
-        Fri, 31 Jul 2020 01:28:18 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id atMXhl-dNTow; Fri, 31 Jul 2020 01:28:18 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     robh@kernel.org, kernel@puri.sm, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, mchehab@kernel.org, Anson.Huang@nxp.com,
-        agx@sigxcpu.org, angus@akkea.ca, broonie@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH v5 3/3] dt-bindings: arm: fsl: Add the librem 5 phone
-Date:   Fri, 31 Jul 2020 10:27:25 +0200
-Message-Id: <20200731082725.21878-3-martin.kepplinger@puri.sm>
-In-Reply-To: <20200731082725.21878-1-martin.kepplinger@puri.sm>
-References: <20200731082725.21878-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+        id S1730934AbgGaI2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 04:28:47 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1k1QPA-0002bE-7M; Fri, 31 Jul 2020 18:28:41 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 31 Jul 2020 18:28:40 +1000
+Date:   Fri, 31 Jul 2020 18:28:40 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Yang Shen <shenyang39@huawei.com>
+Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
+        wangzhou1@hisilicon.com
+Subject: Re: [PATCH 0/4] crypto: hisilicon/zip - misc bugfix
+Message-ID: <20200731082840.GA32511@gondor.apana.org.au>
+References: <1595657210-3964-1-git-send-email-shenyang39@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595657210-3964-1-git-send-email-shenyang39@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries for the imx8mq based Librem 5 phone. The "Birch" and
-"Chestnut" hardware revisions are supported by r2. The "Dogwood"
-revision by r3.
-See https://puri.sm/products/librem-5/ and https://developer.puri.sm/Librem5/
-for the schematics and more information.
+On Sat, Jul 25, 2020 at 02:06:46PM +0800, Yang Shen wrote:
+> This patchset fix some bug:
+> patch 1:clear the debug registers when remove driver
+> patch 2:intercept invalid input when using decompress
+> patch 3:replace the return value '-EBUSY' with '-EAGAIN' when
+>     device is busy
+> patch 4:initialize the 'curr_qm_qp_num' when probe device
+> 
+> This patchset depends on:
+> https://patchwork.kernel.org/cover/11684785/
+> 
+> Hao Fang (1):
+>   crypto: hisilicon/zip - fix the uncleared debug registers
+> 
+> Sihang Chen (1):
+>   crypto: hisilicon/zip - fix the uninitalized 'curr_qm_qp_num'
+> 
+> Yang Shen (1):
+>   crypto: hisilicon/zip - fix the return value when device is busy
+> 
+> Zhou Wang (1):
+>   crypto: hisilicon/zip - fix zero length input in GZIP decompress
+> 
+>  drivers/crypto/hisilicon/zip/zip_crypto.c | 25 +++++++++++++++++++------
+>  drivers/crypto/hisilicon/zip/zip_main.c   | 19 +++++++++++++++++++
+>  2 files changed, 38 insertions(+), 6 deletions(-)
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+This patch series doesn't apply against cryptodev.
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index f63895c8ce2d..1cce4ff58ff8 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -365,6 +365,8 @@ properties:
-               - fsl,imx8mq-evk            # i.MX8MQ EVK Board
-               - google,imx8mq-phanbell    # Google Coral Edge TPU
-               - purism,librem5-devkit     # Purism Librem5 devkit
-+              - purism,librem5r2          # Purism Librem5 phone "Chestnut"
-+              - purism,librem5r3          # Purism Librem5 phone "Dogwood"
-               - solidrun,hummingboard-pulse # SolidRun Hummingboard Pulse
-               - technexion,pico-pi-imx8m  # TechNexion PICO-PI-8M evk
-           - const: fsl,imx8mq
+Cheers,
 -- 
-2.20.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
