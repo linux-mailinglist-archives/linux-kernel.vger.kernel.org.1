@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0618E2349B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 18:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FB22349C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 18:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733164AbgGaQyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 12:54:23 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:40859 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732912AbgGaQyW (ORCPT
+        id S1732542AbgGaQ4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 12:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729944AbgGaQ4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 12:54:22 -0400
-Received: by mail-io1-f69.google.com with SMTP id t22so12144949iob.7
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 09:54:21 -0700 (PDT)
+        Fri, 31 Jul 2020 12:56:52 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28BBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 09:56:51 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id g26so29437404qka.3
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 09:56:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Oxr5YTGpl3qCmnQ7jzJ1mzURsOCkDMcn0o5yKiLVjHk=;
+        b=gIRjHM+pqqI3fhGfhHetDCeS8wl+rUrVsc+3J0YFUBcz20bHIPwgLmOQY4NF2aH9r+
+         w29TYsuxRB8kX1umvuRt8rgqgg+zLqbG0T5mn7qENr3b9j9L/3gou6LceoOVF2sJrr5g
+         3cm8eJoDDyzXkAscEulakGjBhHgEyuCHQUHJbED5fbGyAMJ/Apcuv1UvzxpjL+krWgWk
+         ecEppJXJ2FCKKi10ZOuySLhYaW23mxakZAkKdRqA6zovDr0sCMIMJIJtrK5//XBLInj6
+         8/b80D3rcP4xfOyT82ZZ6OGyIq5yD3dNJG+dHFnEFFjDH3e8HxkAQ6d8ByfXja3H4fzq
+         a5Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=eBgrKQgetDK1Zn56OoxluDo5PjxwfEKYs/QHbyKlBBU=;
-        b=i7HRU1JaXS4I43ZiclnImc3FHsQOf8bor5usCojCf/ymIHT5RuvbYs0sW0DUVNpKo+
-         3fMJmZr0ocTGLfpk8qj95QqYNxn5qaKsJbXipXnRbDdFePN6dQo7ZnKJgq/1OmSgH0NM
-         hzdFDKhqCMhU4oa6jy9nC4XYWzDlWPRmtK5+4eB238zM2vcZpoCDbCe1i3PtW9yxzIJo
-         V0LRxgmL6AIepxeLKWB0dciuthrbFTcj1WONfxpcLJWYqekc2MKdfMv59Jb726sIrRsi
-         UP+UySIqMloB+nrXc4Xm7pAT3T9rfDsxSkOI1fxKeWL1vfjQ9ZWsAsnVxCkc5eNLatUy
-         YhxQ==
-X-Gm-Message-State: AOAM531GBYCoZ6n6fH+bRCdcj4X6SjvWBg9d8Rz2PS4vbXONH5u7tCK2
-        IG3nMABpb4NblqedHo8rjGPoINznPW1637wI64pZ4CxAXlJx
-X-Google-Smtp-Source: ABdhPJzaSTz1SnrId/zd7MDfvEa0UoNTFZIqjC7NL6DP4uHj4qPo6tHc/AEzuVgOLgtWDRneKBwcdzLIwXNrIx4b6bAPYqH4N/qD
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Oxr5YTGpl3qCmnQ7jzJ1mzURsOCkDMcn0o5yKiLVjHk=;
+        b=YrCa2bkisBONrqbBjuz1bADTTZZBcMySmxM3H1A0quFQea/8M2u01VtcPprHPXRnWK
+         o7/p16Qr1kJo9MU9Of36jKmM9Z+Jc7HofNBh4DYIr9Tz37ejfYcLiWNjvXT2CHPrGJcV
+         ze95yWHx/gdYMUX1Oeu9bwxFG1m2BBYfjUTvu+284UGxFs2Z1GvwYISxRgRwmGG34nOx
+         F4e2wNAzmeyrLWqCVBnJalBZ2Ddr7UvTv6eC3xtcR1DqdVVUZJoqQyLiq+C+XU0TGPb0
+         VOKpBbm9WKcqSrEtBDEqZXZFYK/4+xf27wArcJUVeHbnDm5qMH+wMVpKuRx+gG9MsdTe
+         csyg==
+X-Gm-Message-State: AOAM530VX7BINc2T6hEtLK9VfRgSWIqqaPErQzFjyrmBfGfoUVadQedW
+        omccHEJ+bTbQzro7GLWaTYoysw==
+X-Google-Smtp-Source: ABdhPJwp4q4H+n2t8EwsSAIeoGxof5jqJr4YurxgVxQhOgcYX02rAHX3VKDNoNbEMZAJ+ao9mDe6Bg==
+X-Received: by 2002:a37:de15:: with SMTP id h21mr4809113qkj.77.1596214611012;
+        Fri, 31 Jul 2020 09:56:51 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id j16sm8994078qke.87.2020.07.31.09.56.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 09:56:50 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1k1YKv-0027Bk-Hr; Fri, 31 Jul 2020 13:56:49 -0300
+Date:   Fri, 31 Jul 2020 13:56:49 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Steven Sistare <steven.sistare@oracle.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org, mhocko@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        arnd@arndb.de, keescook@chromium.org, gerg@linux-m68k.org,
+        ktkhai@virtuozzo.com, christian.brauner@ubuntu.com,
+        peterz@infradead.org, esyr@redhat.com, christian@kellner.me,
+        areber@redhat.com, cyphar@cyphar.com
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+Message-ID: <20200731165649.GG24045@ziepe.ca>
+References: <20200730152250.GG23808@casper.infradead.org>
+ <db3bdbae-eb0f-1ae3-94dd-045e37bc94ba@oracle.com>
+ <20200730171251.GI23808@casper.infradead.org>
+ <63a7404c-e4f6-a82e-257b-217585b0277f@oracle.com>
+ <20200730174956.GK23808@casper.infradead.org>
+ <ab7a25bf-3321-77c8-9bc3-28a223a14032@oracle.com>
+ <87y2n03brx.fsf@x220.int.ebiederm.org>
+ <689d6348-6029-5396-8de7-a26bc3c017e5@oracle.com>
+ <20200731152736.GP23808@casper.infradead.org>
+ <9ba26063-0098-e796-9431-8c1d0c076ffc@oracle.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:874a:: with SMTP id d10mr4688320ilm.273.1596214461567;
- Fri, 31 Jul 2020 09:54:21 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 09:54:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f796a105abbfa33d@google.com>
-Subject: INFO: trying to register non-static key in skb_queue_purge
-From:   syzbot <syzbot+99efc1c133eff186721a@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ba26063-0098-e796-9431-8c1d0c076ffc@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Jul 31, 2020 at 12:11:52PM -0400, Steven Sistare wrote:
+> > Your preservation-across-exec use-case might or might not need the
+> > VMA to be mapped at the same address.  
+> 
+> It does.  qemu registers memory with vfio which remembers the va's in kernel
+> metadata for the device.
 
-syzbot found the following issue on:
+Once the memory is registered with vfio the VA doesn't matter, vfio
+will keep the iommu pointing at the same physical pages no matter
+where they are mapped.
 
-HEAD commit:    83bdc727 random32: remove net_rand_state from the latent e..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11088204900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e59ee776d5aa8d55
-dashboard link: https://syzkaller.appspot.com/bug?extid=99efc1c133eff186721a
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12429014900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12dbc404900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+99efc1c133eff186721a@syzkaller.appspotmail.com
-
-IPVS: ftp: loaded support on port[0] = 21
-INFO: trying to register non-static key.
-the code is fine but needs lockdep annotation.
-turning off the locking correctness validator.
-CPU: 0 PID: 6819 Comm: syz-executor370 Not tainted 5.8.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1f0/0x31e lib/dump_stack.c:118
- register_lock_class+0xf06/0x1520 kernel/locking/lockdep.c:893
- __lock_acquire+0x102/0x2c30 kernel/locking/lockdep.c:4259
- lock_acquire+0x160/0x720 kernel/locking/lockdep.c:4959
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x9e/0xc0 kernel/locking/spinlock.c:159
- skb_dequeue net/core/skbuff.c:3038 [inline]
- skb_queue_purge+0x2e/0x1c0 net/core/skbuff.c:3076
- l2cap_conn_del+0x3de/0x650 net/bluetooth/l2cap_core.c:1890
- hci_disconn_cfm include/net/bluetooth/hci_core.h:1355 [inline]
- hci_conn_hash_flush+0x127/0x200 net/bluetooth/hci_conn.c:1536
- hci_dev_do_close+0xb7b/0x1040 net/bluetooth/hci_core.c:1761
- hci_unregister_dev+0x16d/0x1590 net/bluetooth/hci_core.c:3606
- vhci_release+0x73/0xc0 drivers/bluetooth/hci_vhci.c:340
- __fput+0x2f0/0x750 fs/file_table.c:281
- task_work_run+0x137/0x1c0 kernel/task_work.c:135
- exit_task_work include/linux/task_work.h:25 [inline]
- do_exit+0x601/0x1f80 kernel/exit.c:805
- do_group_exit+0x161/0x2d0 kernel/exit.c:903
- __do_sys_exit_group+0x13/0x20 kernel/exit.c:914
- __se_sys_exit_group+0x10/0x10 kernel/exit.c:912
- __x64_sys_exit_group+0x37/0x40 kernel/exit.c:912
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x444fe8
-Code: Bad RIP value.
-RSP: 002b:00007ffe95cf39a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000444fe8
-RDX: 0000000000000001 RSI: 000000000000003c RDI: 0000000000000001
-RBP: 00000000004cce10 R08: 00000000000000e7 R09: ffffffffffffffd0
-R10: 00007fa6b64e3700 R11: 0000000000000246 R12: 0000000000000001
-R13: 00000000006e0200 R14: 00000000011eb850 R15: 0000000000000001
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Jason
