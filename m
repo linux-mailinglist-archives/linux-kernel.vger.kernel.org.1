@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFAF23423A
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36C723424A
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732119AbgGaJSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732037AbgGaJSD (ORCPT
+        id S1732130AbgGaJSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:18:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48506 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732014AbgGaJSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:18:03 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897D5C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 02:18:03 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id t15so22099584iob.3
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 02:18:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MBYKW+6zfDB2a54T6hWqLG1CXD8Xv9gEE8YRBupknoc=;
-        b=Q4dxRilWRBgR7d7mMciRIspoaJm1fKMtrrxqGop4MRWMLfDc2D9yEkmq7lanCl9IDe
-         r7Ipz4IWXCJMfmE8gERtTCXqU0PCd2yaU25HbqQAmtQQfmbt9kxpDNN2AVYcf2lFK1pC
-         cwqvXq69UceGzBHTSrTnvMYRIvHZl+qJ4u17vqcges3uTIgsNJpdkSZKEYBAdS6e1jjj
-         qwjFZv61E1DWla4RqmgLOTPcf169N+7qeHI86xyeTQ+kuv1LDlJTZGttIqTSER1GnIn6
-         R01XGra1AUEkoKQGTvP1e29NBtDPetvcV9hgYInxlth9Nfx8/iX5yND0vqQLmGYSWbhj
-         /bCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MBYKW+6zfDB2a54T6hWqLG1CXD8Xv9gEE8YRBupknoc=;
-        b=Gwmx21b0IQByWfQ0RDXcn6vhN6Ywbt5GXx+TbpX0uydJFnS+Ggj22GmNjiO2xvrVQq
-         AzG7yvvi6BOHhYEC3BbiA+RAkj3++jYKlHgKnVnDEtu7OS4+ECTVK+iBGWMYgfTSc1Wx
-         QRDyS3z/y1gqrGDR6M/2mbsgUojPhB7PuwrJUnLh+ECvFQ6FJQNPJeVq9krA2Ql5M/Ij
-         4K43X1rJYrzqLcATCFtyJCWSNnVPwQGvb239S7IS70Mv0HZdhX35ejzuyhEoemGS1iZX
-         6xwrpwEhJmnCA9+QidUM+NMNZATXpPAzwpl577wmF1qXfC3hEkVGBPMnucor7IV30wGv
-         50MQ==
-X-Gm-Message-State: AOAM532ZTbVvY2E1HGnERWDqbfRsVe+xpk0iLpCHVOjUL91fHZKvSZqS
-        SGg4F7sQkEzRVV0XPKWIMwdu2hiPZj4620ltAPVLbw==
-X-Google-Smtp-Source: ABdhPJx+ufc4R00ufDto7B+hLq2EDngnNSkTrnF9favAezBqDM2gxaTBrSA3LHvhe9NZwN3t9yBnkD6e7zjqycRcULE=
-X-Received: by 2002:a5d:9b05:: with SMTP id y5mr2682909ion.59.1596187081282;
- Fri, 31 Jul 2020 02:18:01 -0700 (PDT)
+        Fri, 31 Jul 2020 05:18:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596187134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7KJjJxh3LrCrOmiVZX7zoQLv4kMydPtkCS0ZPjF2DUk=;
+        b=YRAc7jZAndJHzfvcACv97DJeo2rFUQwS1c0JV3aHgHUCRN2D5quQzwXbCozUdHxOAaYAC3
+        dYjRg3RCvTGoc6TRnYfFbu2eCD1Nei29sdWTuG535vgOHmL5fdT8Jq7AbrUgfDu8+c5RSd
+        LX1BIHXcLj0pV2cTdjX9IuuWKcydwTE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-70-SolxhgZkNXO5E6nSxUQ3oA-1; Fri, 31 Jul 2020 05:18:49 -0400
+X-MC-Unique: SolxhgZkNXO5E6nSxUQ3oA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07FF759;
+        Fri, 31 Jul 2020 09:18:47 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-22.ams2.redhat.com [10.36.113.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BC0631A835;
+        Fri, 31 Jul 2020 09:18:39 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>,
+        Kees Cook <keescook@chromium.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Michal Hocko <mhocko@suse.com>,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wei Liu <wei.liu@kernel.org>,
+        Wei Yang <richardw.yang@linux.intel.com>
+Subject: [PATCH RFCv1 0/5] mm/memory_hotplug: selective merging of memory resources
+Date:   Fri, 31 Jul 2020 11:18:33 +0200
+Message-Id: <20200731091838.7490-1-david@redhat.com>
 MIME-Version: 1.0
-References: <20200731084023.2678931-1-cychiang@chromium.org> <20200731084023.2678931-3-cychiang@chromium.org>
-In-Reply-To: <20200731084023.2678931-3-cychiang@chromium.org>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 31 Jul 2020 17:17:50 +0800
-Message-ID: <CA+Px+wXL6-zM6vBZj9_6MhxQz7Dy_Z4J7+RUYEViVkWYv2zX=g@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] ASoC: qcom: sc7180: Add machine driver for sound
- card registration
-To:     Cheng-Yi Chiang <cychiang@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Douglas Anderson <dianders@chromium.org>, dgreid@chromium.org,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        ALSA development <alsa-devel@alsa-project.org>,
-        Ajit Pandey <ajitp@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 4:41 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
->
-> From: Ajit Pandey <ajitp@codeaurora.org>
->
-> Add new driver to register sound card on sc7180 trogdor board and
-> do the required configuration for lpass cpu dai and external codecs
-> connected over MI2S interfaces.
->
-> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
-> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+Some add_memory*() users add memory in small, contiguous memory blocks.
+Examples include virtio-mem, hyper-v balloon, and the XEN balloon.
 
-LGTM.
+This can quickly result in a lot of memory resources, whereby the actual
+resource boundaries are not of interest (e.g., it might be relevant for
+DIMMs, exposed via /proc/iomem to user space). We really want to merge
+added resources in this scenario where possible.
+
+Resources are effectively stored in a list-based tree. Having a lot of
+resources not only wastes memory, it also makes traversing that tree more
+expensive, and makes /proc/iomem explode in size (e.g., requiring
+kexec-tools to manually merge resources when creating a kdump header. The
+current kexec-tools resource count limit does not allow more than ~100GB
+of memory with a memory block size of 128MB on x86-64).
+
+Let's allow to selectively merge resources, speciyfing a parent node and
+a resource idendifier string. The memory unplug path will properly split
+up merged resources again.
+
+Patch #3 contains a /proc/iomem example. Only tested with virtio-mem.
+
+Note: This gets the job done and is comparably simple. More complicated
+approaches would require introducing IORESOURCE_MERGEABLE and extending our
+add_memory*() interfaces with a flag, specifying that merging after adding
+succeeded is acceptable. I'd like to avoid that complexity and code churn
+for now.
+
+David Hildenbrand (5):
+  kernel/resource: make release_mem_region_adjustable() never fail
+  kernel/resource: merge_child_mem_resources() to merge memory resources
+    after adding succeeded
+  virtio-mem: try to merge "System RAM (virtio_mem)" resources
+  xen/balloon: try to merge "System RAM" resources
+  hv_balloon:: try to merge "System RAM" resources
+
+ drivers/hv/hv_balloon.c     |   3 ++
+ drivers/virtio/virtio_mem.c |  14 ++++-
+ drivers/xen/balloon.c       |   4 ++
+ include/linux/ioport.h      |   7 ++-
+ kernel/resource.c           | 105 ++++++++++++++++++++++++++++--------
+ mm/memory_hotplug.c         |  22 +-------
+ 6 files changed, 109 insertions(+), 46 deletions(-)
+
+-- 
+2.26.2
+
