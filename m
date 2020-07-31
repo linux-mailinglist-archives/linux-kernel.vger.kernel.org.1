@@ -2,42 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9686F23423C
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41466234254
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732122AbgGaJSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:18:41 -0400
-Received: from verein.lst.de ([213.95.11.211]:58677 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732014AbgGaJSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:18:40 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A78B768BFE; Fri, 31 Jul 2020 11:18:38 +0200 (CEST)
+        id S1732190AbgGaJTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:19:16 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41715 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732044AbgGaJTO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 05:19:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596187153;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1ITjza8QZs334kZDawRKP4E/FGkviB+rOAxL++W/FFU=;
+        b=LuI5jSDKoYG2ceuG/8cX3Bpl8fpMbkP36OpYrEogcLTPvqVMD/ynM6PS1EASQYMJ9Fusup
+        B9a+qTj9PQbWlcbOs9msUihLUF50NxWr1oQwiuxL/O+ylkzgQjLVHtbfE9DsqJf43p3OV5
+        6pxdYLnFjX+mKaU0Tf3HRrH8Uj66JGQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-w-XOsNLgPyeml39HbUP41A-1; Fri, 31 Jul 2020 05:19:06 -0400
+X-MC-Unique: w-XOsNLgPyeml39HbUP41A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F36F801504;
+        Fri, 31 Jul 2020 09:19:05 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-22.ams2.redhat.com [10.36.113.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 035EC1A835;
+        Fri, 31 Jul 2020 09:18:59 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [PATCH RFCv1 5/5] hv_balloon:: try to merge "System RAM" resources
 Date:   Fri, 31 Jul 2020 11:18:38 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: linux-next: Tree for Jul 30 [build failure on arm64]
-Message-ID: <20200731091838.GA14327@lst.de>
-References: <20200730214659.0fbfdfc4@canb.auug.org.au> <72b073ba-ee41-1a1c-ce6c-ffd8b5936b09@hisilicon.com> <20200731140842.46abe589@canb.auug.org.au>
+Message-Id: <20200731091838.7490-6-david@redhat.com>
+In-Reply-To: <20200731091838.7490-1-david@redhat.com>
+References: <20200731091838.7490-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200731140842.46abe589@canb.auug.org.au>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ok, looks like my baseline had arm64 defconfig fail due to a missing
-include already, so the script didn't see a regression due to the
-existing failure in ptrauth_keys_init_user.
+Let's reuse the new mechanism to merge "System RAM" resources below the
+root. We are the only one hotplugging "System RAM" and DIMMs don't apply,
+so this is safe to use.
 
-Looks like moving the definіtion to asm-generic/compat.h is a better
-idea better anyway.
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Stephen Hemminger <sthemmin@microsoft.com>
+Cc: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ drivers/hv/hv_balloon.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
+index 32e3bc0aa665a..0745f7cc1727b 100644
+--- a/drivers/hv/hv_balloon.c
++++ b/drivers/hv/hv_balloon.c
+@@ -745,6 +745,9 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+ 			has->covered_end_pfn -=  processed_pfn;
+ 			spin_unlock_irqrestore(&dm_device.ha_lock, flags);
+ 			break;
++		} else {
++			/* Try to reduce the number of "System RAM" resources. */
++			merge_child_mem_resources(&iomem_resource, "System RAM");
+ 		}
+ 
+ 		/*
+-- 
+2.26.2
+
