@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4556E2345D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A8E2345DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733247AbgGaMbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:31:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
+        id S1733272AbgGaMbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:31:49 -0400
+Received: from mga04.intel.com ([192.55.52.120]:39232 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733237AbgGaMbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:31:10 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D14A4206FA;
-        Fri, 31 Jul 2020 12:31:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596198669;
-        bh=Y+uzvw6La8cpDyqZxCJoUnVBzBginAmYSHNOecgvji4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nTBWdNVUo3KHaVJT+yHTWbJdo0gaFtFkILm9N9DT60KOENe3krIbNlX3xenn3jlTF
-         mvXl++gsTEYGVYgK+yrR6Xhvw832LG9tcJtYpgJXSHuE19ux0XWhWRMV2Bd6J2oUDH
-         y1BpkT2jRA/fQx1DeWi3p8ZadDJg2nlQm+4pf5dg=
-Date:   Fri, 31 Jul 2020 13:31:05 +0100
-From:   Will Deacon <will@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, kernel-team@android.com
-Subject: [GIT PULL] arm64 fixes for -rc8/final
-Message-ID: <20200731123105.GB26817@willie-the-truck>
+        id S1733191AbgGaMbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 08:31:48 -0400
+IronPort-SDR: rny3sesX7x4RlY6JqDiQhjTxhZ6pCuPctK9SJn5EZOgiA0MiQstair0TnNA31rMq1HnuncX8bS
+ GM75qSoJ78Hg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="149232209"
+X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; 
+   d="scan'208";a="149232209"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 05:31:48 -0700
+IronPort-SDR: ilotydtmrA2FcfLQtAIzb1+hTTKJCnvEFrJsJsC114Irw6V+ifcCUa2bpMBN4lbUgNteGwqaGZ
+ OEcOqFlO5Juw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; 
+   d="scan'208";a="329233931"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 31 Jul 2020 05:31:47 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 3B1DA21D; Fri, 31 Jul 2020 15:31:45 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/3] lib/vsprintf: Replace hidden BUILD_BUG_ON() with static_assert()
+Date:   Fri, 31 Jul 2020 15:31:43 +0300
+Message-Id: <20200731123145.22357-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+First of all, there is no compile time check for the SMALL
+to be ' ' (0x20, i.e. space). Second, for ZEROPAD the check
+is hidden in the code.
 
-Please pull these arm64 fixes for -rc8/final. The main one is to fix the
-build after Willy's per-cpu entropy changes this week. Although that was
-already resolved elsewhere, the arm64 fix here is useful cleanup anyway.
-Other than that, we've got a fix for building with Clang's integrated
-assembler and a fix to make our IPv4 checksumming robust against invalid
-header lengths (this only seems to be triggerable by injected errors).
+For better maintenance replace BUILD_BUG_ON() with static_assert()
+for ZEROPAD and move it closer to the definition. While at it,
+introduce check for SMALL.
 
-Cheers,
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ lib/vsprintf.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Will
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 31a674dd2674..8a8ac7ce0289 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -381,6 +381,9 @@ int num_to_str(char *buf, int size, unsigned long long num, unsigned int width)
+ #define SMALL	32		/* use lowercase in hex (must be 32 == 0x20) */
+ #define SPECIAL	64		/* prefix hex with "0x", octal with "0" */
+ 
++static_assert(ZEROPAD + ' ' == '0');
++static_assert(SMALL == ' ');
++
+ enum format_type {
+ 	FORMAT_TYPE_NONE, /* Just a string part */
+ 	FORMAT_TYPE_WIDTH,
+@@ -507,7 +510,7 @@ char *number(char *buf, char *end, unsigned long long num,
+ 	/* zero or space padding */
+ 	if (!(spec.flags & LEFT)) {
+ 		char c = ' ' + (spec.flags & ZEROPAD);
+-		BUILD_BUG_ON(' ' + ZEROPAD != '0');
++
+ 		while (--field_width >= 0) {
+ 			if (buf < end)
+ 				*buf = c;
+-- 
+2.27.0
 
---->8
-
-The following changes since commit 7b7891c7bdfd61fc9ed6747a0a05efe2394dddc6:
-
-  arm64: vdso32: Fix '--prefix=' value for newer versions of clang (2020-07-23 10:57:32 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
-
-for you to fetch changes up to 6a7389f0312f01bb6641d37b395548a2922a057c:
-
-  MAINTAINERS: Include drivers subdirs for ARM PMU PROFILING AND DEBUGGING entry (2020-07-30 17:05:34 +0100)
-
-----------------------------------------------------------------
-arm64 fixes for -rc8
-
-- Fix build breakage due to circular headers
-
-- Fix build regression when using Clang's integrated assembler
-
-- Fix IPv4 header checksum code to deal with invalid length field
-
-- Fix broken path for Arm PMU entry in MAINTAINERS
-
-----------------------------------------------------------------
-John Garry (1):
-      MAINTAINERS: Include drivers subdirs for ARM PMU PROFILING AND DEBUGGING entry
-
-Marc Zyngier (1):
-      arm64: Drop unnecessary include from asm/smp.h
-
-Robin Murphy (1):
-      arm64: csum: Fix handling of bad packets
-
-Sami Tolvanen (1):
-      arm64/alternatives: move length validation inside the subsection
-
- MAINTAINERS                          | 2 +-
- arch/arm64/include/asm/alternative.h | 4 ++--
- arch/arm64/include/asm/checksum.h    | 5 +++--
- arch/arm64/include/asm/smp.h         | 1 -
- 4 files changed, 6 insertions(+), 6 deletions(-)
