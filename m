@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFCA2344AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 13:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7793F2344BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 13:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732709AbgGaLmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 07:42:35 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:57761 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732104AbgGaLme (ORCPT
+        id S1732782AbgGaLrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 07:47:46 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:34120 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732244AbgGaLrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 07:42:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1596195753; x=1627731753;
-  h=to:cc:references:from:message-id:date:mime-version:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=K3AiM2F/clmnqut2Znxq+qWVgeBAAqvTi2Syfi39/mc=;
-  b=haQKNtVfFf/YQk+GfU0r0g1LgmT4zGoF9mpmDbnnNnCjFTpN9yGtvbAf
-   4QiFaenwp7BGhgZ2NbRfZpc78Q5yrvDa7hv69l+39lmZq7RjAV1oYHfXK
-   FSFZ0SUy8En6RwK6KmPNlryEy83BiLSLabGypXa8epX3/kvo2SjEA0ZvH
-   w=;
-IronPort-SDR: LC8zCw1EdTzbrGurmmeoqTUHqPnnCNOnTYTVsS/5NQhpGOFuhOowz3TYeExDKBsBSb7ISZT/KS
- 6CSRvBNR49Tg==
-X-IronPort-AV: E=Sophos;i="5.75,418,1589241600"; 
-   d="scan'208";a="46683797"
-Subject: Re: [PATCH v2 1/3] KVM: x86: Deflect unknown MSR accesses to user space
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 31 Jul 2020 11:42:32 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id 19CCB241D46;
-        Fri, 31 Jul 2020 11:42:28 +0000 (UTC)
-Received: from EX13D20UWC002.ant.amazon.com (10.43.162.163) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 31 Jul 2020 11:42:28 +0000
-Received: from 38f9d3867b82.ant.amazon.com (10.43.161.34) by
- EX13D20UWC002.ant.amazon.com (10.43.162.163) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 31 Jul 2020 11:42:25 +0000
-To:     Jim Mattson <jmattson@google.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        KarimAllah Raslan <karahmed@amazon.de>,
-        kvm list <kvm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>
-References: <20200729235929.379-1-graf@amazon.com>
- <20200729235929.379-2-graf@amazon.com>
- <CALMp9eRq3QUG64BwSGLbehFr8k-OLSM3phcw7mhuZ9hVk_N2-A@mail.gmail.com>
- <e7cbf218-fb01-2f30-6c5c-a4b6e441b5e4@amazon.com>
- <CALMp9eRQRaw7raxeH1nOTGr0rBk5bqbmoxUo7txGyQfaBs0=4g@mail.gmail.com>
- <CALMp9eSSKra+Vic0U9kDeiT1y+Jfq6Vmrqsw+S8jqD0_oqH9zA@mail.gmail.com>
-From:   Alexander Graf <graf@amazon.com>
-Message-ID: <8d0bae24-c83d-df89-01cb-e52cddd8ba92@amazon.com>
-Date:   Fri, 31 Jul 2020 13:42:22 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        Fri, 31 Jul 2020 07:47:45 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06VBaYq8031435;
+        Fri, 31 Jul 2020 13:47:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=XwUX+1Y6zwoUw9ojrP+epdZ01TEQ51665ZcqVjIVZrc=;
+ b=ogyDXSxTFP1b3/TpTPcCGcLRYHp0qjgIOz1A7a/SC17vZnFt4Z2G8syXylcJHcxxRvFi
+ NYBpzI3rccMbIcg6fsSwCV4Ykh85EJGmXqpE5VqV0EWJKmfNvS1O5MMEb+0GOz+i0vuR
+ DK2Yxl3eGAkGpe0eL15Bfd9973+Isji7pH6XUzi2MqQtPG9CB8frDdwYZ2fBBh3Z6ccZ
+ 5TvG+ranqChxarlpZjLq5FKv08raB6+IS43x8Qpx0x7aXz5NqUfAZGgbb1b5CZSDBhhF
+ F1P1atq8zXuOXN1B4kTIf+pumUZj2pjrvN5l74ubiiA38udmhjxDNz/HjE+lCv8KdUFe 4Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32gbmgp665-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 31 Jul 2020 13:47:40 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2AC9B10002A;
+        Fri, 31 Jul 2020 13:47:40 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1AF47221061;
+        Fri, 31 Jul 2020 13:47:40 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG3NODE1.st.com (10.75.127.7)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 31 Jul 2020 13:47:39
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <arnaud.pouliquen@st.com>
+Subject: [PATCH 0/9] introduce name service announcement rpmsg driver
+Date:   Fri, 31 Jul 2020 13:47:23 +0200
+Message-ID: <20200731114732.12815-1-arnaud.pouliquen@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CALMp9eSSKra+Vic0U9kDeiT1y+Jfq6Vmrqsw+S8jqD0_oqH9zA@mail.gmail.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.161.34]
-X-ClientProxiedBy: EX13D04UWB001.ant.amazon.com (10.43.161.46) To
- EX13D20UWC002.ant.amazon.com (10.43.162.163)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-31_04:2020-07-31,2020-07-31 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAzMS4wNy4yMCAwNToyMCwgSmltIE1hdHRzb24gd3JvdGU6Cj4gQ0FVVElPTjogVGhpcyBl
-bWFpbCBvcmlnaW5hdGVkIGZyb20gb3V0c2lkZSBvZiB0aGUgb3JnYW5pemF0aW9uLiBEbyBub3Qg
-Y2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGNhbiBjb25maXJtIHRo
-ZSBzZW5kZXIgYW5kIGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZS4KPiAKPiAKPiAKPiBPbiBUaHUs
-IEp1bCAzMCwgMjAyMCBhdCA0OjUzIFBNIEppbSBNYXR0c29uIDxqbWF0dHNvbkBnb29nbGUuY29t
-PiB3cm90ZToKPj4KPj4gT24gVGh1LCBKdWwgMzAsIDIwMjAgYXQgNDowOCBQTSBBbGV4YW5kZXIg
-R3JhZiA8Z3JhZkBhbWF6b24uY29tPiB3cm90ZToKPj4+IERvIHlvdSBoYXZlIGEgcGFydGljdWxh
-ciBzaXR1YXRpb24gaW4gbWluZCB3aGVyZSB0aGF0IHdvdWxkIG5vdCBiZSB0aGUKPj4+IGNhc2Ug
-YW5kIHdoZXJlIHdlIHdvdWxkIHN0aWxsIHdhbnQgdG8gYWN0dWFsbHkgY29tcGxldGUgYW4gTVNS
-IG9wZXJhdGlvbgo+Pj4gYWZ0ZXIgdGhlIGVudmlyb25tZW50IGNoYW5nZWQ/Cj4+Cj4+IEFzIGZh
-ciBhcyB1c2Vyc3BhY2UgaXMgY29uY2VybmVkLCBpZiBpdCBoYXMgcmVwbGllZCB3aXRoIGVycm9y
-PTAsIHRoZQo+PiBpbnN0cnVjdGlvbiBoYXMgY29tcGxldGVkIGFuZCByZXRpcmVkLiBJZiB0aGUg
-a2VybmVsIGV4ZWN1dGVzIGEKPj4gZGlmZmVyZW50IGluc3RydWN0aW9uIGF0IENTOlJJUCwgdGhl
-IHN0YXRlIGlzIGNlcnRhaW5seSBpbmNvbnNpc3RlbnQKPj4gZm9yIFdSTVNSIGV4aXRzLiBJdCB3
-b3VsZCBhbHNvIGJlIGluY29uc2lzdGVudCBmb3IgUkRNU1IgZXhpdHMgaWYgdGhlCj4+IFJETVNS
-IGVtdWxhdGlvbiBvbiB0aGUgdXNlcnNwYWNlIHNpZGUgaGFkIGFueSBzaWRlLWVmZmVjdHMuCj4g
-Cj4gQWN0dWFsbHksIEkgdGhpbmsgdGhlcmUncyBhIHBvdGVudGlhbCBwcm9ibGVtIHdpdGggaW50
-ZXJydXB0IGRlbGl2ZXJ5Cj4gZXZlbiBpZiB0aGUgaW5zdHJ1Y3Rpb24gYnl0ZXMgYXJlIHRoZSBz
-YW1lLiBPbiB0aGUgc2Vjb25kIHBhc3MsIGFuCj4gaW50ZXJydXB0IGNvdWxkIGJlIGRlbGl2ZXJl
-ZCBvbiB0aGUgQ1M6SVAgb2YgYSBXUk1TUiwgZXZlbiB0aG91Z2gKPiB1c2Vyc3BhY2UgaGFzIGFs
-cmVhZHkgZW11bGF0ZWQgdGhlIFdSTVNSIGluc3RydWN0aW9uLiBUaGlzIGNvdWxkIGJlCj4gcGFy
-dGljdWxhcmx5IGF3a3dhcmQgaWYgdGhlIFdSTVNSIHdhcyB0byB0aGUgeDJBUElDIFRQUiByZWdp
-c3RlciwgYW5kCj4gaW4gZmFjdCBsb3dlcmVkIHRoZSBUUFIgc3VmZmljaWVudGx5IHRvIGFsbG93
-IGEgcGVuZGluZyBpbnRlcnJ1cHQgdG8KPiBiZSBkZWxpdmVyZWQuCgpPaywgeW91IGdvdCBtZSBj
-b252aW5jZWQgaGVyZSA6KS4gVGhlIGZvbGxvd2luZyBmbG93IGJyZWFrcyB3aXRoIG15IG1vZGVs
-OgoKICAgKiByZG1zciBvbiAweDEyMywgdHJhcHMgdG8gdXNlciBzcGFjZQogICAqIHVzZXIgc3Bh
-Y2UgaGFuZGxlcyBpdCwgd3JpdGVzIGRhdGEgaW50byBydW4tPm1zcgogICAqIGtlcm5lbCBpbmpl
-Y3RzIHBlbmRpbmcgSVJRCiAgICogSVJRIGhhbmRsZXIgZG9lcyByZG1zciBvbiAweDEyNCwgd2hp
-Y2ggd291bGQgYmUgaGFuZGxlZCBieSB1c2VyIHNwYWNlCiAgICoga2VybmVsIHJldHVybnMgdmFs
-dWUgZm9yIDB4MTIzIHRvIHRoZSByZWFkCgpTbyB5ZXMsIEkgYWdyZWUsIHdlIGhhdmUgdG8gZmlu
-aXNoIHRoZSBpbnN0cnVjdGlvbiBoYW5kbGluZyBiZWZvcmUgd2UgCmNhbiBnbyBiYWNrIGludG8g
-bm9ybWFsIG9wZXJhdGlvbiBmbG93LgoKCkFsZXgKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRl
-ciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4gMzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVo
-cnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0g
-QW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxp
-bgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
+The NS announcement is implemented by several backends, but could be
+considered as part the RPMsg protocol. 
+In this case it should be managed as a reserved rpmsg service and so
+implemented on top of the rpmsg protocol.
+
+This series introduces the rpmsg_ns driver that handles the name service
+announcement. The virtio backend is updated in consequence to use this
+service.
+
+Applies cleanly on Bjorn rpmsg-next branch (ddd1930d6e3e)
+
+Arnaud Pouliquen (9):
+  rpmsg: virtio: rename rpmsg_create_channel
+  rpmsg: core: add channel creation internal API
+  rpmsg: virtio: add rpmsg channel device ops
+  rpmsg: define the name service announcement as reserved address
+  rpmsg: introduce reserved rpmsg driver for ns announcement
+  rpmsg: virtio: use rpmsg ns device for the ns announcement
+  rpmsg: ns: add name service announcement service
+  rpmsg: virtio: use rpmsg_ns driver to manage ns announcement
+  rpmsg: ns: name service announcement endianness
+
+ drivers/rpmsg/Kconfig            |   9 ++
+ drivers/rpmsg/Makefile           |   1 +
+ drivers/rpmsg/rpmsg_core.c       |  37 ++++++
+ drivers/rpmsg/rpmsg_internal.h   |  32 +++++
+ drivers/rpmsg/rpmsg_ns.c         | 175 +++++++++++++++++++++++++
+ drivers/rpmsg/virtio_rpmsg_bus.c | 213 +++++++++----------------------
+ include/linux/rpmsg.h            |   9 ++
+ 7 files changed, 325 insertions(+), 151 deletions(-)
+ create mode 100644 drivers/rpmsg/rpmsg_ns.c
+
+-- 
+2.17.1
 
