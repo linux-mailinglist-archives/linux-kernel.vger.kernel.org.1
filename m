@@ -2,179 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4D6234077
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC295234084
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731805AbgGaHsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 03:48:38 -0400
-Received: from mail-eopbgr80044.outbound.protection.outlook.com ([40.107.8.44]:17294
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731738AbgGaHsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 03:48:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TMg6t9qjcH5EC3gU9ZFg8azk6+jrAs+KqlmYPGcyhaS3XGrxFQlkmdYdmz5cuNl0qlmUrnQk01ew8SNhHaBz3D8LgsA9gZ+9IZBa0MvdFkbElyLvpPrOmFfOMl4md1K237L112gxUoHIMUbSy1Muvj0RxTdqhLqPcHE08DYE5iAxfMcpcP9yx1SekpyJvFKOM6G1YP75mOot5oIVPPbQO303/7scNGYXnwLR1NTfgwbHN8UjapeW1ziLdc+VH8AV61KfTwwxaHHOSPArhavLC1GwBMRp3kbtsaMqhxBhvnpiCpLOXOHRYphQMqlW4WNxq/76ezdwl2Jcmv3iCcFlDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wXj41I+kmhEnQ3DTOTzgfkE0ubI+vrYEo+gJ+M87KKg=;
- b=OJuls1kmN4u4KxiiRKMaAG4iq2clVOuebDaz5Ua7OfEC/TkhTwZxf+VqlcMIS4T2l1242DV8XrU+qNhJjKkv09CS+Xuuf3J9Hupj6X8b+MfTSC57YXLkGzKIc0VpBDWDIFDySKvE3sXkJk652mImoK//96pvo2AZsplNGaib8s+Ctbh/UKo6sGchO3G7+NMCJqdxnngDQQgCTQB93vDEeGOofNbTeAwSZnrvOy1tds4eDSljj4UD8o6Wv3ulyQ/OPfo7Tdhcocal6CyQ59s/wcWCn15g6G6BeHkAK02eaY6E/dr+3Wb87DbBDsCrBG9el14VuPLN3dyLJBhpNMmHYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wXj41I+kmhEnQ3DTOTzgfkE0ubI+vrYEo+gJ+M87KKg=;
- b=OUGn9+lOu3usjVPoJ9XyPEOb6xVhKjPs6UjHwKQsUWRLo7Nr53MADm4opiLZ+Sh6Csk0wUqSRd+uOFQA1biu37C0GrxbDBXY1lo+xz+fkFzs1BAm8oQ/OfyzBQYzpHsg3RA/cZQOjSZxm7fJ/bYHrOqKE59aPMBkk8DIldxJLF4=
-Received: from AM6PR04MB3976.eurprd04.prod.outlook.com (2603:10a6:209:3f::17)
- by AM6PR04MB5080.eurprd04.prod.outlook.com (2603:10a6:20b:2::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24; Fri, 31 Jul
- 2020 07:48:34 +0000
-Received: from AM6PR04MB3976.eurprd04.prod.outlook.com
- ([fe80::f5cb:bc18:1991:c31f]) by AM6PR04MB3976.eurprd04.prod.outlook.com
- ([fe80::f5cb:bc18:1991:c31f%2]) with mapi id 15.20.3239.020; Fri, 31 Jul 2020
- 07:48:34 +0000
-From:   Madalin Bucur <madalin.bucur@nxp.com>
-To:     Florinel Iordache <florinel.iordache@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net 4/5] fsl/fman: check dereferencing null pointer
-Thread-Topic: [PATCH net 4/5] fsl/fman: check dereferencing null pointer
-Thread-Index: AQHWZwZeOzBzxxS0S0aifMgnGj4ms6khT8LA
-Date:   Fri, 31 Jul 2020 07:48:34 +0000
-Message-ID: <AM6PR04MB397680E5084359739F2FC08EEC4E0@AM6PR04MB3976.eurprd04.prod.outlook.com>
-References: <1596177969-27645-1-git-send-email-florinel.iordache@nxp.com>
- <1596177969-27645-5-git-send-email-florinel.iordache@nxp.com>
-In-Reply-To: <1596177969-27645-5-git-send-email-florinel.iordache@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [82.76.227.152]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: ce190a7f-285f-480c-d21e-08d8352620a2
-x-ms-traffictypediagnostic: AM6PR04MB5080:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB50804514DE2A99D1DF47F6E1EC4E0@AM6PR04MB5080.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2803;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JDzaa6yVKfqlHbXtZIpW3Yh6q7kKvyhryEpBFzqPxZKRM76MZm6vBfrlTPUdz7Cod4J5yncyWxs58jm94bsBAJkCPO/1Tw5LIEL0Hoi2T7ah6/+uBO2aHtk3tcnIDItfyI86I8bM/Lp+z3dscRxRgjiNSqsDluPrg0lwXzEHxXixh31OeYBvgcbA+Q5JXUmEGnSlbGwZBKksANgsC5Myyd702ABw27yQOCrMAjK4p+HxC9EoGKzCeVl/ebdpNUNXi1m4c8Zoc3vf08K4o3+6PoZR7+mvnXjGWl7EbvQLJmluWvdSWzFes/+Sgr2RwGxfqAroXjxRoX99hD/Kl2oLqw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB3976.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(346002)(366004)(136003)(39860400002)(7696005)(66946007)(8676002)(316002)(186003)(76116006)(26005)(52536014)(66446008)(478600001)(6506007)(53546011)(66476007)(110136005)(64756008)(71200400001)(66556008)(4326008)(8936002)(55016002)(9686003)(5660300002)(2906002)(83380400001)(33656002)(44832011)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: YkywNaQwSpu3pF38lsrk/9o2JTXaZCpMcGSMprudV2vlP88Vi1pQ3t1WC1+Xii1JElGO2gkhZ/U+ihNP3e+gPGRrEIAwjXFirqe4MFmIpf8ofKRsH/Yr/7lVBvhkSzamtHlWjmBTEc1BszRg21VUA4ceeze74VSz1trFPF5qHkSwXVuc3MUkLISuuWWicMnLdmS6ahhBnw1Aw+LUKwh1cT1mxrlAXTw9TurwjelJths/O0AAwVPUs+vl+FDUZNKvfKXCgKdyXMFwb0bZwm0vuTqZ6/Mi11Mad4hIuoE85kcjM6RG2oFOc8DIShBdCrIYAd/cnRAasgSXpiswnUqbhJ8LiAKZAAG9QAhXhN4d06eJHZdKsjPtRkk3mZRQz9cwFRmLhvyAMrurtjY9HvP6rh/k8M3EQ4GCV65B6VPn/Trr8pQVuubdLSrfICeCdC57JBBLyRaqFoPrL0Y4IQAHOl3WqxDnW48RUqioc2hjZ8c=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1731762AbgGaHwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 03:52:01 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13718 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731644AbgGaHwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 03:52:01 -0400
+IronPort-SDR: 6F57SUpNbWNTm40CXnJtdn1M05WFAUOtrSL0Ul1g4cvc2uwA5hJXTwr3MBxhEMHHmJs5+1FrVM
+ scSaeswrG8fA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="131814521"
+X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
+   d="scan'208";a="131814521"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 00:52:01 -0700
+IronPort-SDR: M8ti5At6xlNbOSGTKMfP8IK/cxxE22unkj68z36ICBUkGC8VCRBD0WThjuxVIbb1ml6gDxvL8k
+ 1zdznFCc+EMA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
+   d="scan'208";a="490942058"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga006.fm.intel.com with ESMTP; 31 Jul 2020 00:51:59 -0700
+Date:   Fri, 31 Jul 2020 15:48:37 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lgoncalv@redhat.com
+Subject: Re: [PATCH v2 1/4] fpga: dfl: change data type of feature id to u16
+Message-ID: <20200731074837.GE1781@yilunxu-OptiPlex-7050>
+References: <1595556555-9903-1-git-send-email-yilun.xu@intel.com>
+ <1595556555-9903-2-git-send-email-yilun.xu@intel.com>
+ <316f86d4-7bba-f0c7-3dde-794df80d32e7@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB3976.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce190a7f-285f-480c-d21e-08d8352620a2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2020 07:48:34.4746
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TQ8PUiomkzl/1zrnuUINiPEyYi2AGHYgi5dgQ9f6fV9cppVpKUEo6iMP6YNG6bA0uLZQsrXDtlqRXCJhW/eU5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5080
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <316f86d4-7bba-f0c7-3dde-794df80d32e7@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Florinel Iordache <florinel.iordache@nxp.com>
-> Sent: 31 July 2020 09:46
-> To: Madalin Bucur <madalin.bucur@nxp.com>; davem@davemloft.net;
-> kuba@kernel.org; netdev@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org; Florinel Iordache
-> <florinel.iordache@nxp.com>
-> Subject: [PATCH net 4/5] fsl/fman: check dereferencing null pointer
->=20
-> Add a safe check to avoid dereferencing null pointer
->=20
-> Fixes: 57ba4c9b ("fsl/fman: Add FMan MAC support")
->=20
-> Signed-off-by: Florinel Iordache <florinel.iordache@nxp.com>
-> ---
->  drivers/net/ethernet/freescale/fman/fman_dtsec.c | 4 ++--
->  drivers/net/ethernet/freescale/fman/fman_memac.c | 3 ++-
->  drivers/net/ethernet/freescale/fman/fman_tgec.c  | 2 +-
->  3 files changed, 5 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/freescale/fman/fman_dtsec.c
-> b/drivers/net/ethernet/freescale/fman/fman_dtsec.c
-> index 004c266..bce3c93 100644
-> --- a/drivers/net/ethernet/freescale/fman/fman_dtsec.c
-> +++ b/drivers/net/ethernet/freescale/fman/fman_dtsec.c
-> @@ -1200,7 +1200,7 @@ int dtsec_del_hash_mac_address(struct fman_mac
-> *dtsec, enet_addr_t *eth_addr)
->  		list_for_each(pos,
->  			      &dtsec->multicast_addr_hash->lsts[bucket]) {
->  			hash_entry =3D ETH_HASH_ENTRY_OBJ(pos);
-> -			if (hash_entry->addr =3D=3D addr) {
-> +			if (hash_entry && hash_entry->addr =3D=3D addr) {
->  				list_del_init(&hash_entry->node);
->  				kfree(hash_entry);
->  				break;
-> @@ -1213,7 +1213,7 @@ int dtsec_del_hash_mac_address(struct fman_mac
-> *dtsec, enet_addr_t *eth_addr)
->  		list_for_each(pos,
->  			      &dtsec->unicast_addr_hash->lsts[bucket]) {
->  			hash_entry =3D ETH_HASH_ENTRY_OBJ(pos);
-> -			if (hash_entry->addr =3D=3D addr) {
-> +			if (hash_entry && hash_entry->addr =3D=3D addr) {
->  				list_del_init(&hash_entry->node);
->  				kfree(hash_entry);
->  				break;
-> diff --git a/drivers/net/ethernet/freescale/fman/fman_memac.c
-> b/drivers/net/ethernet/freescale/fman/fman_memac.c
-> index bb02b37..52ee982 100644
-> --- a/drivers/net/ethernet/freescale/fman/fman_memac.c
-> +++ b/drivers/net/ethernet/freescale/fman/fman_memac.c
-> @@ -852,6 +852,7 @@ int memac_set_tx_pause_frames(struct fman_mac *memac,
-> u8 priority,
->=20
->  	tmp =3D ioread32be(&regs->command_config);
->  	tmp &=3D ~CMD_CFG_PFC_MODE;
-> +	priority =3D 0;
+On Sat, Jul 25, 2020 at 06:29:53AM -0700, Tom Rix wrote:
+> It would be good if the variable or element for the feature id had a consistent name.
+> 
+> 
+> > @@ -197,7 +197,7 @@ int dfl_fpga_check_port_id(struct platform_device *pdev, void *pport_id);
+> >   * @id: unique dfl private feature id.
+> >   */
+> >  struct dfl_feature_id {
+> > -	u64 id;
+> > +	u16 id;
+> >  };
+> 
+> Is this structure needed ?
+> 
+> Here is how it could be changed to 
+> 
+> struct dfl_feature_driver {
+> 
+> -    const dfl_feature_id *
+> 
+> +    const u16 *id_table;
 
-This line seems to be added by mistake.
+This structure is to represent an id type, which is used to match
+fme/port owned features. It could be extended if some feature drivers
+needs driver_data.
 
->=20
->  	iowrite32be(tmp, &regs->command_config);
->=20
-> @@ -981,7 +982,7 @@ int memac_del_hash_mac_address(struct fman_mac *memac=
-,
-> enet_addr_t *eth_addr)
->=20
->  	list_for_each(pos, &memac->multicast_addr_hash->lsts[hash]) {
->  		hash_entry =3D ETH_HASH_ENTRY_OBJ(pos);
-> -		if (hash_entry->addr =3D=3D addr) {
-> +		if (hash_entry && hash_entry->addr =3D=3D addr) {
->  			list_del_init(&hash_entry->node);
->  			kfree(hash_entry);
->  			break;
-> diff --git a/drivers/net/ethernet/freescale/fman/fman_tgec.c
-> b/drivers/net/ethernet/freescale/fman/fman_tgec.c
-> index 8c7eb87..41946b1 100644
-> --- a/drivers/net/ethernet/freescale/fman/fman_tgec.c
-> +++ b/drivers/net/ethernet/freescale/fman/fman_tgec.c
-> @@ -626,7 +626,7 @@ int tgec_del_hash_mac_address(struct fman_mac *tgec,
-> enet_addr_t *eth_addr)
->=20
->  	list_for_each(pos, &tgec->multicast_addr_hash->lsts[hash]) {
->  		hash_entry =3D ETH_HASH_ENTRY_OBJ(pos);
-> -		if (hash_entry->addr =3D=3D addr) {
-> +		if (hash_entry && hash_entry->addr =3D=3D addr) {
->  			list_del_init(&hash_entry->node);
->  			kfree(hash_entry);
->  			break;
-> --
-> 1.9.1
+Actually I see some example of device_ids with similar structure, like:
 
+  struct mips_cdmm_device_id {
+  	__u8	type;
+  };
+
+  struct tee_client_device_id {
+	uuid_t uuid;
+  };
+
+
+Thanks,
+Yilun.
+
+> 
+> ...
+> 
+> Tom
+> 
+> 
+> >  
+> >  /**
+> > @@ -240,7 +240,7 @@ struct dfl_feature_irq_ctx {
+> >   */
+> >  struct dfl_feature {
+> >  	struct platform_device *dev;
+> > -	u64 id;
+> > +	u16 id;
+> >  	int resource_index;
+> >  	void __iomem *ioaddr;
+> >  	struct dfl_feature_irq_ctx *irq_ctx;
+> > @@ -371,7 +371,7 @@ struct platform_device *dfl_fpga_inode_to_feature_dev(struct inode *inode)
+> >  	   (feature) < (pdata)->features + (pdata)->num; (feature)++)
+> >  
+> >  static inline
+> > -struct dfl_feature *dfl_get_feature_by_id(struct device *dev, u64 id)
+> > +struct dfl_feature *dfl_get_feature_by_id(struct device *dev, u16 id)
+> >  {
+> >  	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
+> >  	struct dfl_feature *feature;
+> > @@ -384,7 +384,7 @@ struct dfl_feature *dfl_get_feature_by_id(struct device *dev, u64 id)
+> >  }
+> >  
+> >  static inline
+> > -void __iomem *dfl_get_feature_ioaddr_by_id(struct device *dev, u64 id)
+> > +void __iomem *dfl_get_feature_ioaddr_by_id(struct device *dev, u16 id)
+> >  {
+> >  	struct dfl_feature *feature = dfl_get_feature_by_id(dev, id);
+> >  
+> > @@ -395,7 +395,7 @@ void __iomem *dfl_get_feature_ioaddr_by_id(struct device *dev, u64 id)
+> >  	return NULL;
+> >  }
+> >  
+> > -static inline bool is_dfl_feature_present(struct device *dev, u64 id)
+> > +static inline bool is_dfl_feature_present(struct device *dev, u16 id)
+> >  {
+> >  	return !!dfl_get_feature_ioaddr_by_id(dev, id);
+> >  }
