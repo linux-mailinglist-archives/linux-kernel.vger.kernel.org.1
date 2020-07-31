@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE60B234290
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7BD2342A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732591AbgGaJX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:23:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56476 "EHLO
+        id S1732605AbgGaJYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:24:05 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56642 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732449AbgGaJX1 (ORCPT
+        with ESMTP id S1732462AbgGaJX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:23:27 -0400
-Date:   Fri, 31 Jul 2020 09:23:24 -0000
+        Fri, 31 Jul 2020 05:23:28 -0400
+Date:   Fri, 31 Jul 2020 09:23:25 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187405;
+        s=2020; t=1596187406;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=KsAZycgPezfNRIeiMKGtosOWxLCFlRjPZ4iysNbNOjQ=;
-        b=H72/ntHoNuyRTeYH6WPStkySgLwTec2aw58eDZxtqeG0wHO3cwQkvtnr5ijLj1mgYhPDuA
-        q0KYV69GrA/QcLfXzR2kmkIjgSyexJwMKGeq7yEKPOhgDuvvkeLJdS3igbbin4UHovSQFc
-        kFgvqcv0SdGtBLlX8VQJsZJbrw2Z+89gFyKcgELVU3bs1xTcK+j0H+XWv3I+dnnPxLT++f
-        oXf9OJxPtNRHa1599XsKkpLVUrUkqaiZxZrTVK6Yk5JdwtU4llVDU5TIiH+gD3jvPV5lwN
-        akqrREoVqWpuvCtNnkEywLsaw7xj6AG/jmgt6gjDFp41LTh3o1QK2m4pryPVQw==
+        bh=wh07SNZK+hnbCLhWZHGo/6vgz0mLEcluCAUAusAzyFo=;
+        b=p6RlI+cKSamvCEvLUPvAHBIavSDT0HDEGUAaVibwBgq6Dv7BsMovTgjw0aylLj0lSGIBd0
+        7yrp+cdsUnaVu1gEMaJsSfo2G+2RUfVlxiUkUKB3X9xCvd6sM/eu1u7Wh6g6qq7pLuwTvZ
+        vDGVnPaBAAHK4cAkMtMc3v8KSaGZHUXyWvHmepyeXg4f85VMt9AtqYbE3TovR7/UJr6IpB
+        nETKu7w8phiIF4YFHTmvw4sYvAoSTHjZMJ7HwDPqzAVypKOWKODLD4aTSFc9N2DOmPQuYC
+        UjdBOUk8qddiNyptlgHFtc89SO0ix5/QBTvfFEf504MgJzPdVMskX3tTYJR2Vw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187405;
+        s=2020e; t=1596187406;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=KsAZycgPezfNRIeiMKGtosOWxLCFlRjPZ4iysNbNOjQ=;
-        b=eVOhcCdX6n7UczxJs5l4UKX3VuVA4p1nQaLUHRELsV8qDxTBJnEJFK5GAxkkdMlcP/MkPl
-        3o+ArqV5C2eNnGBg==
-From:   "tip-bot2 for Joel Fernandes (Google)" <tip-bot2@linutronix.de>
+        bh=wh07SNZK+hnbCLhWZHGo/6vgz0mLEcluCAUAusAzyFo=;
+        b=VW5OfBVFKUsF42MKvOz9IezMBIB4fRm+oZU6FIOErtcYvXBypGStC2IyPJcLlFEx4KhiGx
+        MeMNHsuNuUhAH3CQ==
+From:   "tip-bot2 for Mauro Carvalho Chehab" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu/tree: Keep kfree_rcu() awake during lock contention
-Cc:     bigeasy@linutronix.de, Uladzislau Rezki <urezki@gmail.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+Subject: [tip: core/rcu] rcu: Fix some kernel-doc warnings
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159618740452.4006.17350103925229393968.tip-bot2@tip-bot2>
+Message-ID: <159618740589.4006.12331724973116805599.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -53,150 +52,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     8ac88f7177c75bf9b7b8c29a8054115e1c712baf
-Gitweb:        https://git.kernel.org/tip/8ac88f7177c75bf9b7b8c29a8054115e1c712baf
-Author:        Joel Fernandes (Google) <joel@joelfernandes.org>
-AuthorDate:    Mon, 25 May 2020 23:47:45 +02:00
+Commit-ID:     24692fa22c30cb8fcfcabdc07a3c82964475b639
+Gitweb:        https://git.kernel.org/tip/24692fa22c30cb8fcfcabdc07a3c82964475b639
+Author:        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+AuthorDate:    Mon, 15 Jun 2020 08:46:49 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 29 Jun 2020 11:59:25 -07:00
+CommitterDate: Mon, 29 Jun 2020 11:58:51 -07:00
 
-rcu/tree: Keep kfree_rcu() awake during lock contention
+rcu: Fix some kernel-doc warnings
 
-On PREEMPT_RT kernels, the krcp spinlock gets converted to an rt-mutex
-and causes kfree_rcu() callers to sleep. This makes it unusable for
-callers in purely atomic sections such as non-threaded IRQ handlers and
-raw spinlock sections. Fix it by converting the spinlock to a raw
-spinlock.
+The current code provokes some kernel-doc warnings:
 
-Vetting all code paths, there is no reason to believe that the raw
-spinlock will hurt RT latencies as it is not held for a long time.
+	./kernel/rcu/tree.c:2915: warning: Function parameter or member 'count' not described in 'kfree_rcu_cpu'
+	./include/linux/rculist.h:517: warning: bad line:                           [@right ][node2 ... ]
+	./include/linux/rculist.h:2: WARNING: Unexpected indentation.
 
-Cc: bigeasy@linutronix.de
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+This commit therefore moves the comment for "count" to the kernel-doc
+markup and adds a missing "*" on one kernel-doc continuation line.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ include/linux/rculist.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ba4c477..c5de5ad 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3016,7 +3016,7 @@ struct kfree_rcu_cpu {
- 	struct kfree_rcu_bulk_data *bhead;
- 	struct kfree_rcu_bulk_data *bcached;
- 	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
--	spinlock_t lock;
-+	raw_spinlock_t lock;
- 	struct delayed_work monitor_work;
- 	bool monitor_todo;
- 	bool initialized;
-@@ -3049,12 +3049,12 @@ static void kfree_rcu_work(struct work_struct *work)
- 	krwp = container_of(to_rcu_work(work),
- 			    struct kfree_rcu_cpu_work, rcu_work);
- 	krcp = krwp->krcp;
--	spin_lock_irqsave(&krcp->lock, flags);
-+	raw_spin_lock_irqsave(&krcp->lock, flags);
- 	head = krwp->head_free;
- 	krwp->head_free = NULL;
- 	bhead = krwp->bhead_free;
- 	krwp->bhead_free = NULL;
--	spin_unlock_irqrestore(&krcp->lock, flags);
-+	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
- 	/* "bhead" is now private, so traverse locklessly. */
- 	for (; bhead; bhead = bnext) {
-@@ -3157,14 +3157,14 @@ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
- 	krcp->monitor_todo = false;
- 	if (queue_kfree_rcu_work(krcp)) {
- 		// Success! Our job is done here.
--		spin_unlock_irqrestore(&krcp->lock, flags);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 		return;
- 	}
- 
- 	// Previous RCU batch still in progress, try again later.
- 	krcp->monitor_todo = true;
- 	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
--	spin_unlock_irqrestore(&krcp->lock, flags);
-+	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
- 
- /*
-@@ -3177,11 +3177,11 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 	struct kfree_rcu_cpu *krcp = container_of(work, struct kfree_rcu_cpu,
- 						 monitor_work.work);
- 
--	spin_lock_irqsave(&krcp->lock, flags);
-+	raw_spin_lock_irqsave(&krcp->lock, flags);
- 	if (krcp->monitor_todo)
- 		kfree_rcu_drain_unlock(krcp, flags);
- 	else
--		spin_unlock_irqrestore(&krcp->lock, flags);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
- 
- static inline bool
-@@ -3252,7 +3252,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	local_irq_save(flags);	// For safely calling this_cpu_ptr().
- 	krcp = this_cpu_ptr(&krc);
- 	if (krcp->initialized)
--		spin_lock(&krcp->lock);
-+		raw_spin_lock(&krcp->lock);
- 
- 	// Queue the object but don't yet schedule the batch.
- 	if (debug_rcu_head_queue(head)) {
-@@ -3283,7 +3283,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 
- unlock_return:
- 	if (krcp->initialized)
--		spin_unlock(&krcp->lock);
-+		raw_spin_unlock(&krcp->lock);
- 	local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(kfree_call_rcu);
-@@ -3315,11 +3315,11 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		count = krcp->count;
--		spin_lock_irqsave(&krcp->lock, flags);
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (krcp->monitor_todo)
- 			kfree_rcu_drain_unlock(krcp, flags);
- 		else
--			spin_unlock_irqrestore(&krcp->lock, flags);
-+			raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
- 		sc->nr_to_scan -= count;
- 		freed += count;
-@@ -3346,15 +3346,15 @@ void __init kfree_rcu_scheduler_running(void)
- 	for_each_online_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
--		spin_lock_irqsave(&krcp->lock, flags);
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (!krcp->head || krcp->monitor_todo) {
--			spin_unlock_irqrestore(&krcp->lock, flags);
-+			raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 			continue;
- 		}
- 		krcp->monitor_todo = true;
- 		schedule_delayed_work_on(cpu, &krcp->monitor_work,
- 					 KFREE_DRAIN_JIFFIES);
--		spin_unlock_irqrestore(&krcp->lock, flags);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 	}
- }
- 
-@@ -4250,7 +4250,7 @@ static void __init kfree_rcu_batch_init(void)
- 	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
--		spin_lock_init(&krcp->lock);
-+		raw_spin_lock_init(&krcp->lock);
- 		for (i = 0; i < KFREE_N_BATCHES; i++) {
- 			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
- 			krcp->krw_arr[i].krcp = krcp;
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index df587d1..7eed65b 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -512,7 +512,7 @@ static inline void hlist_replace_rcu(struct hlist_node *old,
+  * @right: The hlist head on the right
+  *
+  * The lists start out as [@left  ][node1 ... ] and
+-                          [@right ][node2 ... ]
++ *                        [@right ][node2 ... ]
+  * The lists end up as    [@left  ][node2 ... ]
+  *                        [@right ][node1 ... ]
+  */
