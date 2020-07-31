@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4108A234523
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816DF234534
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733067AbgGaMCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733045AbgGaMC2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:02:28 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C15C06174A;
-        Fri, 31 Jul 2020 05:02:28 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id q4so18972215edv.13;
-        Fri, 31 Jul 2020 05:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=iuQy8w3jTC6B7f+e5+v+su2hWV/K85XhH+2elaMKuus=;
-        b=mX+NGt0GAao51iB7oaEfO5+Btfka8TE/iCN9cnpXnNXnPfsggcBwStFE9SJ7n5EFNY
-         jdMFPXe/UGbl0eBCTUV/gPshZTOV/RtMC0+K0sWnHYgY8gJr334m9IIIelnNoSDq6RAm
-         PPvOdXtA4osZ4abuOYMB1Irc9HnBU7cxU0kwk0eejbhv9hq6X3XyYT4inmGtiS53gIgR
-         ZiZb/sRX3OSs5GpMMr80sJDOqSQ8YpXdt51eHE3GJ5JtzQOMS1cw+lx/A6r33aMSGKLo
-         Q/lJ4lkI9ut0SlODtbMP5L4nvqXTGYkyAPQ/6BgtdlGRVhRdb2rl8Cp163guf8Cg6IdL
-         Uw7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=iuQy8w3jTC6B7f+e5+v+su2hWV/K85XhH+2elaMKuus=;
-        b=rZLLBlUgaa8jQyxbwhIT2jYYDu0jxAa89iNxPebzv8Jxf3Uoopms+cvUayua2VLBrE
-         2PoLM7FPx1u/Y+LuqkaCj7xL+kYeLulIN499lHw4z4jNDfNzh8mjVjZGTnYQ8MslPa3H
-         HC0ksFxwobEkg5xBSugL9yFdqVIHpB2uDILoTSQRzb8NvLS9J6ANgfdna46r0rdGySXU
-         Lqsz/sY6fI4MbGRUabW2ovzszzaqmadq2cL0AtPurmQ/eqPTjwkPp1iD3LQKSRer3smf
-         VKZmZ6anf6+gnD7XjBFTeQI7wurd45O2JU/ghOEP8o2aGruZ2n0ckUOJ2oCy6KqqHejY
-         1/bA==
-X-Gm-Message-State: AOAM533QiQly+xk4eDI06s3OaZIqR6kz0NXaEGjVZqqDfAKLjw4V2o1n
-        hESwG0mYYbpUrLtMZhK1tKDytSLBAICrMQ==
-X-Google-Smtp-Source: ABdhPJzSf08P3jMuQU718EQhoumM6CT4AGAq2dZFlEfSRpdPJLSq+0WSaj54UAXLkHWN8FeZq8vKKg==
-X-Received: by 2002:aa7:ce91:: with SMTP id y17mr3587091edv.105.1596196946844;
-        Fri, 31 Jul 2020 05:02:26 -0700 (PDT)
-Received: from net.saheed (95C84E0A.dsl.pool.telekom.hu. [149.200.78.10])
-        by smtp.gmail.com with ESMTPSA id j5sm9091734ejk.87.2020.07.31.05.02.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 05:02:26 -0700 (PDT)
-From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-To:     helgaas@kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        bjorn@helgaas.com, skhan@linuxfoundation.org,
-        linux-pci@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: [PATCH v4 07/12] PCI/ACPI: Check if pcie_capability_read_*() reads ~0
-Date:   Fri, 31 Jul 2020 13:02:35 +0200
-Message-Id: <20200731110240.98326-8-refactormyself@gmail.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20200731110240.98326-1-refactormyself@gmail.com>
-References: <20200731110240.98326-1-refactormyself@gmail.com>
+        id S1732940AbgGaMFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:05:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:56156 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732669AbgGaMFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 08:05:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF3D91FB;
+        Fri, 31 Jul 2020 05:05:03 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C538F3F71F;
+        Fri, 31 Jul 2020 05:05:02 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, morten.rasmussen@arm.com,
+        Quentin Perret <qperret@google.com>
+Subject: [PATCH v4 00/10] sched: Instrument sched domain flags
+Date:   Fri, 31 Jul 2020 12:54:52 +0100
+Message-Id: <20200731115502.12954-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On failure pcie_capability_read_*() sets it's last parameter, val
-to 0. However, with Patch 12/12, it is possible that val is set
-to ~0 on failure. This would introduces a bug because
-(x & x) == (~0 & x).
+Hi,
 
-Since ~0 is an invalid value in here,
+I've repeatedly stared at an SD flag and asked myself "how should that be
+set up in the domain hierarchy anyway?". I figured that if we formalize our
+flags zoology a bit, we could also do some runtime assertions on them -
+this is what this series is all about.
 
-Add extra check for ~0 in the if condition to ensure success or
-failure.
+Patches
+=======
 
-Suggested-by: Bjorn Helgaas <bjorn@helgaas.com>
-Signed-off-by: Saheed O. Bolarinwa <refactormyself@gmail.com>
----
- drivers/pci/pci-acpi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The idea is to associate the flags with metaflags that describes how they
+should be set in a sched domain hierarchy ("if this SD has it, all its {parents,
+children} have it") or how they behave wrt degeneration - details are in the
+comments and commit logs. 
 
-diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-index 7224b1e5f2a8..873b005947e4 100644
---- a/drivers/pci/pci-acpi.c
-+++ b/drivers/pci/pci-acpi.c
-@@ -253,7 +253,7 @@ static bool pcie_root_rcb_set(struct pci_dev *dev)
- 		return false;
- 
- 	pcie_capability_read_word(rp, PCI_EXP_LNKCTL, &lnkctl);
--	if (lnkctl & PCI_EXP_LNKCTL_RCB)
-+	if ((lnkctl != (u16)~0) && (lnkctl & PCI_EXP_LNKCTL_RCB))
- 		return true;
- 
- 	return false;
-@@ -797,7 +797,7 @@ bool pciehp_is_native(struct pci_dev *bridge)
- 		return false;
- 
- 	pcie_capability_read_dword(bridge, PCI_EXP_SLTCAP, &slot_cap);
--	if (!(slot_cap & PCI_EXP_SLTCAP_HPC))
-+	if ((slot_cap == (u32)~0) || !(slot_cap & PCI_EXP_SLTCAP_HPC))
- 		return false;
- 
- 	if (pcie_ports_native)
--- 
-2.18.4
+The good thing is that the debugging bits go away when CONFIG_SCHED_DEBUG isn't
+set. The bad thing is that this replaces SD_* flags definitions with some
+unsavoury macros. This is mainly because I wanted to avoid having to duplicate
+work between declaring the flags and declaring their metaflags.
+
+o Patches 1-3 are topology cleanups / fixes
+o Patches 4-6 instrument SD flags and add assertions
+o Patches 7-10 leverage the instrumentation to factorize domain degeneration
+
+Revisions
+=========
+
+v3 -> v4
+--------
+
+o Reordered the series to have fixes / cleanups first
+
+o Added SD_ASYM_CPUCAPACITY propagation (Quentin)
+o Made ARM revert back to the default sched topology (Dietmar)
+o Removed SD_SERIALIZE degeneration special case (Peter)
+
+o Made SD_NUMA and SD_SERIALIZE have SDF_NEEDS_GROUPS
+
+  As discussed on v3, I thought this wasn't required, but thinking some more
+  about it there can be cases where that changes the current behaviour. For
+  instance, in the following wacky triangle:
+
+      0\ 30
+      | \
+  20  |  2
+      | /
+      1/ 30
+
+  there are two unique distances thus two NUMA topology levels, however the
+  first one for node 2 would have the same span as its child domain and thus
+  should be degenerated. If we don't give SD_NUMA and SD_SERIALIZE
+  SDF_NEEDS_GROUPS, this domain wouldn't be denegerated since its child
+  *doesn't* have either SD_NUMA or SD_SERIALIZE (it's the first NUMA domain),
+  and we'd have this weird NUMA domain lingering with a single group.
+
+v2 -> v3
+--------
+
+o Reworded comment for SD_OVERLAP (it's about the groups, not the domains)
+
+o Added more flags to the SD degeneration mask
+o Added generation of an SD flag mask for the degeneration functions (Peter)
+
+RFC -> v2
+---------
+
+o Rebased on top of tip/sched/core
+o Aligned wording of comments between flags
+o Rectified some flag descriptions (Morten)
+o Added removal of SD_SHARE_POWERDOMAIN (Morten)
+
+Valentin Schneider (10):
+  ARM, sched/topology: Remove SD_SHARE_POWERDOMAIN
+  ARM: Revert back to default scheduler topology.
+  sched/topology: Propagate SD_ASYM_CPUCAPACITY upwards
+  sched/topology: Split out SD_* flags declaration to its own file
+  sched/topology: Define and assign sched_domain flag metadata
+  sched/topology: Verify SD_* flags setup when sched_debug is on
+  sched/topology: Add more flags to the SD degeneration mask
+  sched/topology: Remove SD_SERIALIZE degeneration special case
+  sched/topology: Introduce SD metaflag for flags needing > 1 groups
+  sched/topology: Use prebuilt SD flag degeneration mask
+
+ arch/arm/kernel/topology.c     |  26 ------
+ include/linux/sched/sd_flags.h | 156 +++++++++++++++++++++++++++++++++
+ include/linux/sched/topology.h |  36 +++++---
+ kernel/sched/topology.c        |  54 ++++++------
+ 4 files changed, 204 insertions(+), 68 deletions(-)
+ create mode 100644 include/linux/sched/sd_flags.h
+
+--
+2.27.0
 
