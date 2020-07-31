@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67932343D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7072343DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 12:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732492AbgGaJ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:59:53 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:41685 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732318AbgGaJ7w (ORCPT
+        id S1732325AbgGaKCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 06:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732080AbgGaKCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:59:52 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200731095951euoutp01787e71ebcb777f68ca6adca3d1499784~mzfnn422t1976819768euoutp01e
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 09:59:51 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200731095951euoutp01787e71ebcb777f68ca6adca3d1499784~mzfnn422t1976819768euoutp01e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1596189591;
-        bh=/UTyw2WVp/qW81MDBjWkfGq6wWaWgdQ5KcsoHv0rets=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=OUwQa1/V/gYNXbWyToJqDSpAQiUW4mF4Qr42tTcb4BTpb1vtcSxrvBBEeuwCBmkwz
-         5t+Qzpmc2wYsb3EPTT3kbY0bGpo1jYMDObf+s3aJWtIwDR+6OpUZQ5adfwBXlTrxDL
-         /QqLUhE4G37RYKcBAF8KJ2kNvygojG6Zz0ja86uc=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200731095950eucas1p2119893fda0e9692ba35e8a48bb74f6ec~mzfnY70E_2084920849eucas1p22;
-        Fri, 31 Jul 2020 09:59:50 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 34.44.05997.69BE32F5; Fri, 31
-        Jul 2020 10:59:50 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200731095950eucas1p14f135c91930e8ab6a2fe40086fd846d0~mzfnDVqed3203832038eucas1p1E;
-        Fri, 31 Jul 2020 09:59:50 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200731095950eusmtrp28e1d8db7dd7ad625add3a6a537998e19~mzfnCelsK1695216952eusmtrp2U;
-        Fri, 31 Jul 2020 09:59:50 +0000 (GMT)
-X-AuditID: cbfec7f4-677ff7000000176d-0c-5f23eb960b7a
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id EA.98.06314.69BE32F5; Fri, 31
-        Jul 2020 10:59:50 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200731095949eusmtip1f3c1f903267bd22e85bb137adad7dfef~mzfmD46WJ0043800438eusmtip1x;
-        Fri, 31 Jul 2020 09:59:49 +0000 (GMT)
-Subject: Re: [PATCH v2 11/11] dt-bindings: media: Correct samsung-fimc
- parallel port numbering
-To:     Jonathan Bakker <xc-racer2@live.ca>
-Cc:     kyungmin.park@samsung.com, mchehab@kernel.org, kgene@kernel.org,
-        krzk@kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <7313c052-5bfb-3958-06a8-aa96f6950f36@samsung.com>
-Date:   Fri, 31 Jul 2020 11:59:48 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.11.0
+        Fri, 31 Jul 2020 06:02:47 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CE6C061574;
+        Fri, 31 Jul 2020 03:02:47 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id k1so6913559pjt.5;
+        Fri, 31 Jul 2020 03:02:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YU2YU11NcpqAnb5BnC0Bw1oS+Y3NACnLXP9l9d7nU8o=;
+        b=GzhGLmt9WCFC+8A67PIckUK/e+i3LY4XZqkhzFjXVGTEo2vHV87lte/KN81O63v/dc
+         NsnUHhYx4eC041lzXmkd1Ok9Wo3iMdVDEAcG8l/qzRLHwuBASmpBkF4b7S4RdeAs2Lk4
+         Ztlg7Ns8qaX1mXakicU0V5QUjrYtsxGevZNSPRi+nj6zgT1Ln4XtgEOLmeOwpQ7qWC4V
+         IogmK6oqwsTZfwtiXFgoOK7TPLNy+ZlzU/ZzLGktlAgJF7TjBENklHq1F1P+NgLqqqLK
+         onOjsCsGbosS1eh1tuvZ+MPRBHFzq1WgfHF88Vs80eG4zcyHXMo7UUzUj6LV3kWf0Xpc
+         rLNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YU2YU11NcpqAnb5BnC0Bw1oS+Y3NACnLXP9l9d7nU8o=;
+        b=oIlsAjms0d4duiNl2M044CZCYHwpLS4r0Tb67gX4Z7y4pci+fRYFPAuzQrlIvGxWES
+         yIK8xCynBeZQ02LfOXDm0ptkGgV8pbwd697VBeovBu2YHZRyjp8vfEamI0WKbavmOI8y
+         xN021SzlpVlySF7CDNJVTi1FEQM/kYlBgiNJonJ7AN5hbvYxBIWpzFou4pja3BgSijsR
+         4Ie8mFxi55tbaVwwCBeFwsD85XbQX67qZIVWaXD2pk2QLnXOkNZYuEIoHGzONnUVqoKH
+         iWD0fQfAahyzEFVOgWNE/hRoPWkaHDrVm0QJjyeIgIL8b3VPWp++xidRlPwmJ+H2BUde
+         E2kQ==
+X-Gm-Message-State: AOAM530VH/CQ810sWC5EdmzNMh88ZJh5Oc14pE7vjDN2LK9wC/YQrmk8
+        W5QfObH8ESe7weaM4PfTtptxf38DjfYxJw==
+X-Google-Smtp-Source: ABdhPJwLQyaxvLsQABdV5E9Y7urq4jyaMU3+KOb6FiTJ4OR/0Daa00b9QChobxuBLLHVvnqs+Tvssg==
+X-Received: by 2002:a63:fc52:: with SMTP id r18mr3090503pgk.334.1596189766470;
+        Fri, 31 Jul 2020 03:02:46 -0700 (PDT)
+Received: from [192.168.86.81] ([49.206.12.123])
+        by smtp.gmail.com with ESMTPSA id u14sm9247222pgf.51.2020.07.31.03.02.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 31 Jul 2020 03:02:45 -0700 (PDT)
+Subject: Re: [PATCH] lib: Convert test_uuid.c to KUnit
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20200730121656.45302-1-98.arpi@gmail.com>
+ <CAFd5g46wpYxF1=bs3LvXeVg6mPHrT6Ggp=QxScaf87O=yqcpBA@mail.gmail.com>
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+Message-ID: <3aae0ade-1a61-5d28-94ee-6b0eee7c7be6@gmail.com>
+Date:   Fri, 31 Jul 2020 15:32:40 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <BN6PR04MB0660B938349CA15DE7BCC5BBA3710@BN6PR04MB0660.namprd04.prod.outlook.com>
+In-Reply-To: <CAFd5g46wpYxF1=bs3LvXeVg6mPHrT6Ggp=QxScaf87O=yqcpBA@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHKsWRmVeSWpSXmKPExsWy7djPc7rTXivHG0y6bWwx/8g5Vov+x6+Z
-        Lc6f38BucbbpDbvFpsfXWC0u75rDZtGzYSurxYzz+5gslm36w2TRuvcIu8XFiXdZHLg9Nq3q
-        ZPPYvKTeY9HNHywefVtWMXp83iQXwBrFZZOSmpNZllqkb5fAlfHzww7Ggt/MFQcWPGdpYJzK
-        3MXIySEhYCJxePJnti5GLg4hgRWMEj8urGeEcL4wSqyc85oJwvnMKHFmeicbTMvEZ4+YIRLL
-        GSU2vz3ADuF8ZJR48nc9O0iVsECCxOKutSxdjBwcIgLqEtef8oHUMAv0MUksfdHPCFLDJmAo
-        0Xu0D8zmFbCTWHnpIFgvi4CqxJ7rjWAHigrESWw9fpUJokZQ4uTMJywgNqdArMThXe2sIDaz
-        gLjErSfzmSBseYntb+eAXSchcIldYubpzywQZ7tIzNswEeoFYYlXx7ewQ9gyEv93zmeCaGhm
-        lOjZfZsdwpnAKHH/+AJGiCpriTvnfrGBvMMsoCmxfpc+iCkh4Chx6qklhMknceOtIMQNfBKT
-        tk1nhgjzSnS0CUHMUJH4vWo6E4QtJdH95D/LBEalWUg+m4Xkm1lIvpmFsHYBI8sqRvHU0uLc
-        9NRio7zUcr3ixNzi0rx0veT83E2MwFR1+t/xLzsYd/1JOsQowMGoxMObcEkpXog1say4MvcQ
-        owQHs5IIr9PZ03FCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeY0XvYwVEkhPLEnNTk0tSC2CyTJx
-        cEo1MNq519f6LlyguLg6rU5Lflb/wiMtX18FVf701Fw2TebFP/cS8w/rq71LSrU95VPjYtq+
-        /bu5RW3q73uaybkr56/L+r+p6bt95NyALSWFQVHGEaVZypJrqm59iph2dHa6xbX/WlUVi2pM
-        nC87uR+JiTwfu7tLW6D2dqhT/blMj4L9Qmw/n06pVWIpzkg01GIuKk4EAHxYlV1RAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPIsWRmVeSWpSXmKPExsVy+t/xu7rTXivHG8zrlraYf+Qcq0X/49fM
-        FufPb2C3ONv0ht1i0+NrrBaXd81hs+jZsJXVYsb5fUwWyzb9YbJo3XuE3eLixLssDtwem1Z1
-        snlsXlLvsejmDxaPvi2rGD0+b5ILYI3SsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaP
-        tTIyVdK3s0lJzcksSy3St0vQy/j5YQdjwW/migMLnrM0ME5l7mLk5JAQMJGY+OwRmC0ksJRR
-        4tCR4i5GDqC4lMT8FiWIEmGJP9e62LoYuYBK3jNKLDqwkhUkISyQILG4ay0LSL2IgLrE9ad8
-        IDXMAn1MEsfn32WBaLjDKPF99m9GkAY2AUOJ3qN9YDavgJ3EyksH2UFsFgFViT3XG8GOEBWI
-        k3jc+58ZokZQ4uTMJywgNqdArMThXe1gi5mBlv2Zd4kZwhaXuPVkPhOELS+x/e0c5gmMQrOQ
-        tM9C0jILScssJC0LGFlWMYqklhbnpucWG+oVJ+YWl+al6yXn525iBEbmtmM/N+9gvLQx+BCj
-        AAejEg9vwiWleCHWxLLiytxDjBIczEoivE5nT8cJ8aYkVlalFuXHF5XmpBYfYjQFem4is5Ro
-        cj4waeSVxBuaGppbWBqaG5sbm1koifN2CByMERJITyxJzU5NLUgtgulj4uCUamCUZqll1ntz
-        8P7xqf+CPv/t1fTuCfnfue/EIyHDhSqJr5OLnku/SzLh4e1cdsXXV9/qzeTPM46uMP3mEeN5
-        57h162TfC3Mq7th9fh/REcHUm8rYl/XqXWVaxG/JGy6/y41u2j8TWjtzWd77CMfUT7ICy5fa
-        nba6uOk4b0LfrKV5u57Xz2l6Z7dZiaU4I9FQi7moOBEAY+3oB+ICAAA=
-X-CMS-MailID: 20200731095950eucas1p14f135c91930e8ab6a2fe40086fd846d0
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200730230226eucas1p289b3086e47eb52bcdfc02ef660abd0b9
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200730230226eucas1p289b3086e47eb52bcdfc02ef660abd0b9
-References: <20200730230114.8572-1-xc-racer2@live.ca>
-        <CGME20200730230226eucas1p289b3086e47eb52bcdfc02ef660abd0b9@eucas1p2.samsung.com>
-        <BN6PR04MB0660B938349CA15DE7BCC5BBA3710@BN6PR04MB0660.namprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.07.2020 01:01, Jonathan Bakker wrote:
-> The parallel port nodes should be numbered 1 and 2, not 0 and 1
-> for A and B respectively.  The driver has always implemented 1
-> and 2 and the in-tree Goni DTS uses 1 as port A as well.  Update
-> the documentation to match this behaviour.
+On 31/07/20 11:20 am, Brendan Higgins wrote:
+> On Thu, Jul 30, 2020 at 5:18 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>>
+>> Converts test lib/test_uuid.c to KUnit
 > 
-> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
+> Can you add some more detail to the commit message? Maybe link to
+> KUnit and say something about why this change is beneficial.
+> 
+Sure, I will make this change.
+>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> 
+> Change mostly looks good to me.
+> Thank you for the review.
 
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-
-Thanks for all those improvements, whole series looks good to me.
-
--- 
-Regards,
-Sylwester
+On failure, the original test calls another function which prints a detailed error. I removed it when converting to KUnit. Is this required?
