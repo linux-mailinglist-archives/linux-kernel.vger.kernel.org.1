@@ -2,197 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E6C234B32
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 20:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BBD234B39
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 20:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387834AbgGaShy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 14:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730040AbgGaShv (ORCPT
+        id S2387888AbgGaSiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 14:38:25 -0400
+Received: from mail2.candelatech.com ([208.74.158.173]:51824 "EHLO
+        mail3.candelatech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387676AbgGaSiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 14:37:51 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9881C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 11:37:50 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id k142so21390367qke.7
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 11:37:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=5v86mhTzM4SZYwpUDzMMNrk+SN/FmVXE8SoMYa53F6Y=;
-        b=kSNBHuhvWiu3Edhc80EshTZNiBJwW7/jgs6V28cgkNyxmuvHy7vqFAFbcpT5BtWxoh
-         gZ0IV7fMZlyWMviQSeHw/mWYkqtXLjPVr1Umbt5L3Mk+43Msb33WT/fLBgwpDyV4ZX2w
-         rInWxFkHHL9er683V4RC0fWxdftbZ4D5mGsLGvW0aYLQ5TOBI9MvQym9To7xht1lLt6F
-         4839tMbjgQBpMh5PHT/P/cnss4XwATs5lqiRn+TyG219C6xvydjpIVAllNALhq+uolGP
-         8WAM3y3vsmxQKxw0gUpzOrYB497D+jxud8jvp1LlhWLmTXfbnlkWn/B+iju5MmT5p3su
-         d/3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=5v86mhTzM4SZYwpUDzMMNrk+SN/FmVXE8SoMYa53F6Y=;
-        b=Qw5Hp5bpxtrFIH0dldB8hoVFs5Yan7oRy0l1/SlBkEhFsAsmcdTp07V5DbB0BcYxMC
-         uxvZIGawhcqzDiXss+2twWYaPWNb/3py85ceiGSfDBA6m/vVwt+jHiICZHPVJzNriW5/
-         pNwlGsicgRTa479ajCJDhQF+nic2aMmmooXXkWy2oeFFeXOd4r6sfxhED4sWQcNIbEVs
-         iRjIq3jBqF+0cewp6NS4nLc/DPuU/P/nLj/nPkiT5fnlRt3nMd8F1m0VJmXccJkD+pnR
-         0qwiKqK5uI2DFsiUwhX5Xjk2t9Xl/549oX9/J1hCBmztX53rK2bURQ+akN3SKDpSYdyy
-         xm+g==
-X-Gm-Message-State: AOAM532QeAbUHbLiw+JEX9yZFzCEAD9iU3e5IDtEK5YCaPZs5jHncSBr
-        2DA1DlU5SXYaG+x0KINw+e67PO4PmP27d1s=
-X-Google-Smtp-Source: ABdhPJwjzJJL2kQeuj1qJzZxqRaRImKtWaLo5X70m4f+HV9AozHw6bI9+HYOgUTiJdz2IxZ3sUVEDtCfABQ2Xls=
-X-Received: by 2002:a0c:ec86:: with SMTP id u6mr5351729qvo.58.1596220669859;
- Fri, 31 Jul 2020 11:37:49 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 14:37:44 -0400
-In-Reply-To: <20200731183745.1669355-1-ckennelly@google.com>
-Message-Id: <20200731183745.1669355-3-ckennelly@google.com>
-Mime-Version: 1.0
-References: <20200731183745.1669355-1-ckennelly@google.com>
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH 2/2 v2] Add self-test for verifying load alignment.
-From:   Chris Kennelly <ckennelly@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Song Liu <songliubraving@fb.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Hugh Dickens <hughd@google.com>,
-        Andrew Morton <akpm@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chris Kennelly <ckennelly@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 31 Jul 2020 14:38:25 -0400
+Received: from [192.168.254.5] (unknown [50.34.202.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail3.candelatech.com (Postfix) with ESMTPSA id 342EA13C2B0;
+        Fri, 31 Jul 2020 11:38:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 342EA13C2B0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
+        s=default; t=1596220697;
+        bh=0qBeodkViCQFY2Awt7MbLc4IcFIEjXjXkHdae8WCSKk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=gjjMMDfFSkJOOhylBkDoMIfCzbfbfpAX9P0rDoC31s+cixVaU4ey+C/m1s0B+iVxV
+         zRrhGAcxHXt78sgZ4N4nF05ULZDGfxKZvHPab2slUyif46aYgewq0s2NCVPhb/Mq4N
+         u2kNicYnNEDoIAglakCzMsT5HnlpGsdAQQReHYJs=
+Subject: Re: [PATCH v2 1/3] ath10k: Add history for tracking certain events
+To:     Rakesh Pillai <pillair@codeaurora.org>, ath10k@lists.infradead.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org
+References: <1596220042-2778-1-git-send-email-pillair@codeaurora.org>
+ <1596220042-2778-2-git-send-email-pillair@codeaurora.org>
+From:   Ben Greear <greearb@candelatech.com>
+Organization: Candela Technologies
+Message-ID: <bedc5fe0-1904-d045-4a84-0869ee1b0b2e@candelatech.com>
+Date:   Fri, 31 Jul 2020 11:38:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <1596220042-2778-2-git-send-email-pillair@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-MW
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This produces a PIE binary with a variety of p_align requirements,
-suitable for verifying that the load address meets that alignment
-requirement.
+On 7/31/20 11:27 AM, Rakesh Pillai wrote:
+> Add history for tracking the below events
+> - register read
+> - register write
+> - IRQ trigger
+> - NAPI poll
+> - CE service
+> - WMI cmd
+> - WMI event
+> - WMI tx completion
+> 
+> This will help in debugging any crash or any
+> improper behaviour.
+> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+>   drivers/net/wireless/ath/ath10k/ce.c      |   1 +
+>   drivers/net/wireless/ath/ath10k/core.h    |  74 +++++++++++++++++
+>   drivers/net/wireless/ath/ath10k/debug.c   | 133 ++++++++++++++++++++++++++++++
+>   drivers/net/wireless/ath/ath10k/debug.h   |  74 +++++++++++++++++
+>   drivers/net/wireless/ath/ath10k/snoc.c    |  15 +++-
+>   drivers/net/wireless/ath/ath10k/wmi-tlv.c |   1 +
+>   drivers/net/wireless/ath/ath10k/wmi.c     |  10 +++
+>   7 files changed, 307 insertions(+), 1 deletion(-)
+> 
 
-Signed-off-by: Chris Kennelly <ckennelly@google.com>
----
- tools/testing/selftests/exec/.gitignore     |  1 +
- tools/testing/selftests/exec/Makefile       |  9 ++-
- tools/testing/selftests/exec/load_address.c | 68 +++++++++++++++++++++
- 3 files changed, 76 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/exec/load_address.c
+> +void ath10k_record_wmi_event(struct ath10k *ar, enum ath10k_wmi_type type,
+> +			     u32 id, unsigned char *data)
+> +{
+> +	struct ath10k_wmi_event_entry *entry;
+> +	u32 idx;
+> +
+> +	if (type == ATH10K_WMI_EVENT) {
+> +		if (!ar->wmi_event_history.record)
+> +			return;
 
-diff --git a/tools/testing/selftests/exec/.gitignore b/tools/testing/selftests/exec/.gitignore
-index 94b02a18f230b..80f57881e9146 100644
---- a/tools/testing/selftests/exec/.gitignore
-+++ b/tools/testing/selftests/exec/.gitignore
-@@ -7,6 +7,7 @@ execveat.moved
- execveat.path.ephemeral
- execveat.ephemeral
- execveat.denatured
-+/load_address_*
- /recursion-depth
- xxxxxxxx*
- pipe
-diff --git a/tools/testing/selftests/exec/Makefile b/tools/testing/selftests/exec/Makefile
-index 4453b8f8def37..81cd5d9860629 100644
---- a/tools/testing/selftests/exec/Makefile
-+++ b/tools/testing/selftests/exec/Makefile
-@@ -4,7 +4,7 @@ CFLAGS += -Wno-nonnull
- CFLAGS += -D_GNU_SOURCE
- 
- TEST_PROGS := binfmt_script
--TEST_GEN_PROGS := execveat
-+TEST_GEN_PROGS := execveat load_address_4096 load_address_2097152 load_address_16777216
- TEST_GEN_FILES := execveat.symlink execveat.denatured script subdir pipe
- # Makefile is a run-time dependency, since it's accessed by the execveat test
- TEST_FILES := Makefile
-@@ -26,4 +26,9 @@ $(OUTPUT)/execveat.symlink: $(OUTPUT)/execveat
- $(OUTPUT)/execveat.denatured: $(OUTPUT)/execveat
- 	cp $< $@
- 	chmod -x $@
--
-+$(OUTPUT)/load_address_4096: load_address.c
-+	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x1000 -pie $< -o $@
-+$(OUTPUT)/load_address_2097152: load_address.c
-+	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x200000 -pie $< -o $@
-+$(OUTPUT)/load_address_16777216: load_address.c
-+	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x1000000 -pie $< -o $@
-diff --git a/tools/testing/selftests/exec/load_address.c b/tools/testing/selftests/exec/load_address.c
-new file mode 100644
-index 0000000000000..d487c2f6a6150
---- /dev/null
-+++ b/tools/testing/selftests/exec/load_address.c
-@@ -0,0 +1,68 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#ifndef _GNU_SOURCE
-+#define _GNU_SOURCE
-+#endif
-+#include <link.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+struct Statistics {
-+	unsigned long long load_address;
-+	unsigned long long alignment;
-+};
-+
-+int ExtractStatistics(struct dl_phdr_info *info, size_t size, void *data)
-+{
-+	struct Statistics *stats = (struct Statistics *) data;
-+	int i;
-+
-+	if (info->dlpi_name != NULL && info->dlpi_name[0] != '\0') {
-+		// Ignore headers from other than the executable.
-+		return 2;
-+	}
-+
-+	stats->load_address = (unsigned long long) info->dlpi_addr;
-+	stats->alignment = 0;
-+
-+	for (i = 0; i < info->dlpi_phnum; i++) {
-+		if (info->dlpi_phdr[i].p_type != PT_LOAD)
-+			continue;
-+
-+		if (info->dlpi_phdr[i].p_align > stats->alignment)
-+			stats->alignment = info->dlpi_phdr[i].p_align;
-+	}
-+
-+	return 1;  // Terminate dl_iterate_phdr.
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct Statistics extracted;
-+	unsigned long long misalign;
-+	int ret;
-+
-+	ret = dl_iterate_phdr(ExtractStatistics, &extracted);
-+	if (ret != 1) {
-+		fprintf(stderr, "FAILED\n");
-+		return 1;
-+	}
-+
-+	if (extracted.alignment == 0) {
-+		fprintf(stderr, "No alignment found\n");
-+		return 1;
-+	} else if (extracted.alignment & (extracted.alignment - 1)) {
-+		fprintf(stderr, "Alignment is not a power of 2\n");
-+		return 1;
-+	}
-+
-+	misalign = extracted.load_address & (extracted.alignment - 1);
-+	if (misalign) {
-+		printf("alignment = %llu, load_address = %llu\n",
-+			extracted.alignment, extracted.load_address);
-+		fprintf(stderr, "FAILED\n");
-+		return 1;
-+	}
-+
-+	fprintf(stderr, "PASS\n");
-+	return 0;
-+}
+This check above is duplicated below, add it once at top of the method
+instead.
+
+> +
+> +		spin_lock_bh(&ar->wmi_event_history.hist_lock);
+> +		idx = ath10k_core_get_next_idx(&ar->reg_access_history.index,
+> +					       ar->wmi_event_history.max_entries);
+> +		spin_unlock_bh(&ar->wmi_event_history.hist_lock);
+> +		entry = &ar->wmi_event_history.record[idx];
+> +	} else {
+> +		if (!ar->wmi_cmd_history.record)
+> +			return;
+> +
+> +		spin_lock_bh(&ar->wmi_cmd_history.hist_lock);
+> +		idx = ath10k_core_get_next_idx(&ar->reg_access_history.index,
+> +					       ar->wmi_cmd_history.max_entries);
+> +		spin_unlock_bh(&ar->wmi_cmd_history.hist_lock);
+> +		entry = &ar->wmi_cmd_history.record[idx];
+> +	}
+> +
+> +	entry->timestamp = ath10k_core_get_timestamp();
+> +	entry->cpu_id = smp_processor_id();
+> +	entry->type = type;
+> +	entry->id = id;
+> +	memcpy(&entry->data, data + 4, ATH10K_WMI_DATA_LEN);
+> +}
+> +EXPORT_SYMBOL(ath10k_record_wmi_event);
+
+> @@ -1660,6 +1668,11 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+>   	ar->ce_priv = &ar_snoc->ce;
+>   	msa_size = drv_data->msa_size;
+>   
+> +	ath10k_core_reg_access_history_init(ar, ATH10K_REG_ACCESS_HISTORY_MAX);
+> +	ath10k_core_wmi_event_history_init(ar, ATH10K_WMI_EVENT_HISTORY_MAX);
+> +	ath10k_core_wmi_cmd_history_init(ar, ATH10K_WMI_CMD_HISTORY_MAX);
+> +	ath10k_core_ce_event_history_init(ar, ATH10K_CE_EVENT_HISTORY_MAX);
+
+Maybe only enable this once user turns it on?  It sucks up a bit of memory?
+
+> +
+>   	ath10k_snoc_quirks_init(ar);
+>   
+>   	ret = ath10k_snoc_resource_init(ar);
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> index 932266d..9df5748 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> @@ -627,6 +627,7 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
+>   	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
+>   		goto out;
+>   
+> +	ath10k_record_wmi_event(ar, ATH10K_WMI_EVENT, id, skb->data);
+>   	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
+>   
+>   	consumed = ath10k_tm_event_wmi(ar, id, skb);
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index a81a1ab..8ebd05c 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -1802,6 +1802,15 @@ struct sk_buff *ath10k_wmi_alloc_skb(struct ath10k *ar, u32 len)
+>   
+>   static void ath10k_wmi_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
+>   {
+> +	struct wmi_cmd_hdr *cmd_hdr;
+> +	enum wmi_tlv_event_id id;
+> +
+> +	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
+> +	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
+> +
+> +	ath10k_record_wmi_event(ar, ATH10K_WMI_TX_COMPL, id,
+> +				skb->data + sizeof(struct wmi_cmd_hdr));
+> +
+>   	dev_kfree_skb(skb);
+>   }
+
+I think guard the above new code with if (unlikely(ar->ce_event_history.record)) { ... }
+
+All in all, I think I'd want to compile this out (while leaving other debug compiled
+in) since it seems this stuff would be rarely used and it adds method calls to hot
+paths.
+
+That is a decision for Kalle though, so see what he says...
+
+Thanks,
+Ben
+
+
 -- 
-2.28.0.163.g6104cc2f0b6-goog
-
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
