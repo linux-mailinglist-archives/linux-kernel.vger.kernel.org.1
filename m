@@ -2,168 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31615234AA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 20:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E5E234AAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 20:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387726AbgGaSIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 14:08:40 -0400
-Received: from mga12.intel.com ([192.55.52.136]:9821 "EHLO mga12.intel.com"
+        id S2387742AbgGaSKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 14:10:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:35830 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730040AbgGaSIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 14:08:39 -0400
-IronPort-SDR: mQgeWOw847zrXApQy7nDEuDmN7VgCF8EOVxyMnCrwGccP/zKCpo7VtULfR5+haxmuuLhlvHGqd
- +KlE4uqsPKyg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="131415340"
-X-IronPort-AV: E=Sophos;i="5.75,419,1589266800"; 
-   d="scan'208";a="131415340"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 11:08:38 -0700
-IronPort-SDR: qfjmM3S7zYwEkQ1lAntFZ8K5yBnB5hcnKkxu6nHgSMFPyu9GEFogDo+QyptTUp5YfIaZ+e77Fo
- T7iVU93o9TsQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,419,1589266800"; 
-   d="scan'208";a="287249965"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 31 Jul 2020 11:08:38 -0700
-Received: from [10.251.2.62] (kliang2-mobl.ccr.corp.intel.com [10.251.2.62])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 2474F58027C;
-        Fri, 31 Jul 2020 11:08:38 -0700 (PDT)
-Subject: Re: [PATCH] perf/x86: Reset the counter to prevent the leak for a
- RDPMC task
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@amacapital.net>
-References: <20200730123815.18518-1-kan.liang@linux.intel.com>
- <20200730125817.GL2655@hirez.programming.kicks-ass.net>
- <cd65635b-d226-3089-cb4a-8f60ae408db5@linux.intel.com>
- <20200730164425.GO2655@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <5810ec13-7b40-b97f-c52b-31d1510c57c9@linux.intel.com>
-Date:   Fri, 31 Jul 2020 14:08:36 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1730040AbgGaSKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 14:10:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC48631B;
+        Fri, 31 Jul 2020 11:10:00 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.4.61])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD9B03F71F;
+        Fri, 31 Jul 2020 11:09:58 -0700 (PDT)
+Date:   Fri, 31 Jul 2020 19:09:55 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     madvenka@linux.microsoft.com
+Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org
+Subject: Re: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
+Message-ID: <20200731180955.GC67415@C02TD0UTHF1T.local>
+References: <aefc85852ea518982e74b233e11e16d2e707bc32>
+ <20200728131050.24443-1-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20200730164425.GO2655@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728131050.24443-1-madvenka@linux.microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On Tue, Jul 28, 2020 at 08:10:46AM -0500, madvenka@linux.microsoft.com wrote:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+> Trampoline code is placed either in a data page or in a stack page. In
+> order to execute a trampoline, the page it resides in needs to be mapped
+> with execute permissions. Writable pages with execute permissions provide
+> an attack surface for hackers. Attackers can use this to inject malicious
+> code, modify existing code or do other harm.
 
-On 7/30/2020 12:44 PM, peterz@infradead.org wrote:
-> On Thu, Jul 30, 2020 at 11:54:35AM -0400, Liang, Kan wrote:
->> On 7/30/2020 8:58 AM, peterz@infradead.org wrote:
->>> On Thu, Jul 30, 2020 at 05:38:15AM -0700, kan.liang@linux.intel.com wrote:
->>>> From: Kan Liang <kan.liang@linux.intel.com>
->>>>
->>>> The counter value of a perf task may leak to another RDPMC task.
->>>
->>> Sure, but nowhere did you explain why that is a problem.
->>>
->>>> The RDPMC instruction is only available for the X86 platform. Only apply
->>>> the fix for the X86 platform.
->>>
->>> ARM64 can also do it, although I'm not sure what the current state of
->>> things is here.
->>>
->>>> After applying the patch,
->>>>
->>>>       $ taskset -c 0 ./rdpmc_read_all_counters
->>>>       index 0x0 value 0x0
->>>>       index 0x1 value 0x0
->>>>       index 0x2 value 0x0
->>>>       index 0x3 value 0x0
->>>>
->>>>       index 0x0 value 0x0
->>>>       index 0x1 value 0x0
->>>>       index 0x2 value 0x0
->>>>       index 0x3 value 0x0
->>>
->>> You forgot about:
->>>
->>>    - telling us why it's a problem,
->>
->> The non-privileged RDPMC user can get the counter information from other
->> perf users. It is a security issue. I will add it in the next version.
+For the purpose of below, IIUC this assumes the adversary has an
+arbitrary write.
+
+> To mitigate this, LSMs such as SELinux may not allow pages to have both
+> write and execute permissions. This prevents trampolines from executing
+> and blocks applications that use trampolines. To allow genuine applications
+> to run, exceptions have to be made for them (by setting execmem, etc).
+> In this case, the attack surface is just the pages of such applications.
 > 
-> You don't know what it counted and you don't know the offset, what can
-> you do with it?
+> An application that is not allowed to have writable executable pages
+> may try to load trampoline code into a file and map the file with execute
+> permissions. In this case, the attack surface is just the buffer that
+> contains trampoline code. However, a successful exploit may provide the
+> hacker with means to load his own code in a file, map it and execute it.
 
-We cannot guarantee that an attacker doesn't know what the other thread 
-is doing. Once they know the event name, they may take advantage of the 
-perfmon counters to attack on a cryptosystem.
+It's not clear to me what power the adversary is assumed to have here,
+and consequently it's not clear to me how the proposal mitigates this.
 
-Here is one paper I googled. https://dl.acm.org/doi/pdf/10.1145/3156015
-It mentioned that some events, e.g., cache misses and branch miss, can 
-be used as a side channel to attack on cryptosystems.
+For example, if the attack can control the arguments to syscalls, and
+has an arbitrary write as above, what prevents them from creating a
+trampfd of their own?
 
-There are potential security issues.
-> 
->>>    - telling us how badly it affects performance.
->>
->> I once did performance test on a HSX machine. There is no notable slow down
->> with the patch. I will add the performance data in the next version.
-> 
-> It's still up to [4..8]+[3,4] extra WRMSRs per context switch, that's pretty naf.
+[...]
 
-I will do more performance test on a ICL with full GP counters and fixed 
-counters enabled.
+> GCC has traditionally used trampolines for implementing nested
+> functions. The trampoline is placed on the user stack. So, the stack
+> needs to be executable.
 
-> 
->>> I would feel much better if we only did this on context switches to
->>> tasks that have RDPMC enabled.
->>
->> AFAIK, at least for X86, we can only enable/disable RDPMC globally.
->> How can we know if a specific task that have RDPMC enabled/disabled?
-> 
-> It has mm->context.pref_rdpmc_allowed non-zero, go read x86_pmu_event_{,un}mapped().
-> Without that CR4.PCE is 0 and RDPMC won't work, which is most of the
-> actual tasks.
-> 
+IIUC generally nested functions are avoided these days, specifically to
+prevent the creation of gadgets on the stack. So I don't think those are
+relevant as a cased to care about. Applications using them should move
+to not using them, and would be more secure generally for doing so.
 
-Thanks for pointing it out.
+[...]
 
-I think I can use event->mmap_count and PERF_X86_EVENT_RDPMC_ALLOWED to 
-check whether the events of the task have RDPMC enabled.
+> Trampoline File Descriptor (trampfd)
+> --------------------------
+> 
+> I am proposing a kernel API using anonymous file descriptors that
+> can be used to create and execute trampolines with the help of the
+> kernel. In this solution also, the kernel does the work of the trampoline.
 
-> Arguably we should have perf_mmap_open() check if 'event->hw.target ==
-> current', because without that RDPMC is still pointless. >
->>> So on del() mark the counter dirty (if we don't already have state that
->>> implies this), but don't WRMSR. And then on
->>> __perf_event_task_sched_in(), _after_ programming the new tasks'
->>> counters, check for inactive dirty counters and wipe those -- IFF RDPMC
->>> is on for that task.
->>>
->>
->> The generic code doesn't have counters' information. It looks like we need
->> to add a new callback to cleanup the dirty counters as below.
->>
->> In the specific implementation of pmu_cleanup(), we can check and wipe all
->> inactive dirty counters.
-> 
-> What about pmu::sched_task(), can't we rejig that a little?
-> 
-> The way I'm reading it now, it's like we iterate the task context for
-> calling perf_event_context_sched_*(), and then iterate a cpuctx list to
-> find cpuctx->task_ctx, which would be the exact same contexts we've just
-> iterated.
-> 
-> So can't we pull the pmu::sched_task() call into
-> perf_event_context_sched_*() ? That would save a round of
-> pmu_disable/enable() too afaict.
-> 
+What's the rationale for the kernel emulating the trampoline here?
 
-I think it's doable. I will do more test.
+In ther case of EMUTRAMP this was necessary to work with existing
+application binaries and kernel ABIs which placed instructions onto the
+stack, and the stack needed to remain RW for other reasons. That
+restriction doesn't apply here.
+
+Assuming trampfd creation is somehow authenticated, the code could be
+placed in a r-x page (which the kernel could refuse to add write
+permission), in order to prevent modification. If that's sufficient,
+it's not much of a leap to allow userspace to generate the code.
+
+> The kernel creates the trampoline mapping without any permissions. When
+> the trampoline is executed by user code, a page fault happens and the
+> kernel gets control. The kernel recognizes that this is a trampoline
+> invocation. It sets up the user registers based on the specified
+> register context, and/or pushes values on the user stack based on the
+> specified stack context, and sets the user PC to the requested target
+> PC. When the kernel returns, execution continues at the target PC.
+> So, the kernel does the work of the trampoline on behalf of the
+> application.
+> 
+> In this case, the attack surface is the context buffer. A hacker may
+> attack an application with a vulnerability and may be able to modify the
+> context buffer. So, when the register or stack context is set for
+> a trampoline, the values may have been tampered with. From an attack
+> surface perspective, this is similar to Trampoline Emulation. But
+> with trampfd, user code can retrieve a trampoline's context from the
+> kernel and add defensive checks to see if the context has been
+> tampered with.
+
+Can you elaborate on this: what sort of checks would be applied, and
+how?
+
+Why is this not possible in a r-x user page?
+
+[...]
+
+> - trampfd provides a basic framework. In the future, new trampoline types
+>   can be implemented, new contexts can be defined, and additional rules
+>   can be implemented for security purposes.
+
+From a kernel developer perspective, this reads as "this ABI will become
+more complex", which I think is worrisome.
+
+I'm also worried that this is liable to have nasty interaction with HW
+CFI mechanisms (e.g. PAC+BTI on arm64) either now or in future, and that
+we bake incompatibility into ABI.
+
+> - For instance, trampfd defines an "Allowed PCs" context in this initial
+>   work. As an example, libffi can create a read-only array of all ABI
+>   handlers for an architecture at build time. This array can be used to
+>   set the list of allowed PCs for a trampoline. This will mean that a hacker
+>   cannot hack the PC part of the register context and make it point to
+>   arbitrary locations.
+
+I'm not exactly sure what's meant here. Do you mean that this prevents
+userspace from branching into the middle of a trampoline, or that the
+trampfd code prevents where the trampoline itself can branch to?
+
+Both x86 and arm64 have upcoming HW CFI (CET and BTI) to deal with the
+former, and I believe the latter can also be implemented in userspace
+with defensive checks in the trampolines, provided that they are
+protected read-only.
+
+> - An SELinux setting called "exectramp" can be implemented along the
+>   lines of "execmem", "execstack" and "execheap" to selectively allow the
+>   use of trampolines on a per application basis.
+> 
+> - User code can add defensive checks in the code before invoking a
+>   trampoline to make sure that a hacker has not modified the context data.
+>   It can do this by getting the trampoline context from the kernel and
+>   double checking it.
+
+As above, without examples it's not clear to me what sort of chacks are
+possible nor where they wouild need to be made. So it's difficult to see
+whether that's actually possible or subject to TOCTTOU races and
+similar.
+
+> - In the future, if the kernel can be enhanced to use a safe code
+>   generation component, that code can be placed in the trampoline mapping
+>   pages. Then, the trampoline invocation does not have to incur a trip
+>   into the kernel.
+> 
+> - Also, if the kernel can be enhanced to use a safe code generation
+>   component, other forms of dynamic code such as JIT code can be
+>   addressed by the trampfd framework.
+
+I don't see why it's necessary for the kernel to generate code at all.
+If the trampfd creation requests can be trusted, what prevents trusting
+a sealed set of instructions generated in userspace?
+
+> - Trampolines can be shared across processes which can give rise to
+>   interesting uses in the future.
+
+This sounds like the use-case of a sealed memfd. Is a sealed executable
+memfd not sufficient?
 
 Thanks,
-Kan
-
+Mark.
