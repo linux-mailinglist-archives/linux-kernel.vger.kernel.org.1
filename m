@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588332343B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1291323438A
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732422AbgGaJun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732080AbgGaJum (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:50:42 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95938C061574;
-        Fri, 31 Jul 2020 02:50:42 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id i26so18632504edv.4;
-        Fri, 31 Jul 2020 02:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lN+Mx9aay7XP6owIiPIJdXITUl7rrQzYabhazGVQjB0=;
-        b=ERbE6A9+P9+sSZ5wog7WqOft6HDRUa1ZhGf4ZRjvaukvzVMRiUG28jyK2OCATqS6vK
-         NynZHCEDk2WZfmgXg+9UODifR4aNWeRzWSETatwKFKbTvGZGAhJpJJvBmB+eWDS4XSvv
-         4m2TrTKavdk1bEoKtgXC4+gJN67nnzpMvYYD8nfxNeBOhgPin0ioekSH+iNhWHQwET7p
-         gEWMqY03497GbhJoll3sZPdOKdDJ6MHRcQgR/UYC89VH471VKCcwhOqsAPUG97UUCVNk
-         /CMqfajIFl17v4iLIuppw/hYL4DGSJqDUq0jHBHflk1ew6KvfARh+Hv2ug5LcXuDSSL3
-         MdNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=lN+Mx9aay7XP6owIiPIJdXITUl7rrQzYabhazGVQjB0=;
-        b=FBR0V0HhLG/vVwItl8ztq5iIi0O7zLHv699mCaZWSF/BlEICCz9eJc1VDMYIOfn1Xw
-         ABzGxw5lxfM8/hqfeh7xbNai4Ngro05SvwRhkSNLt4776olNu1chaiMZEilcyDBBTSKM
-         k+21hqP+IYrIaG83LRx7MQYR39Exp07aBcyhkInrfVZxzevEcnwnNkvV8KzmykCD0QQd
-         lbbUhfnVxYT5o49E9SV9r8TosGZK3SGE0URIvGQKjskzsSJbr3bh9ufCr0q1lx376s51
-         aIUAPbHAzNdilyEMNhcenFpfXaEpE+xPvQTxSZrh0eXjrvtIFVYq17pN0lIbf1lhzF+n
-         2Hag==
-X-Gm-Message-State: AOAM53317dZE4nzdH2SqLruQ8neOaGAe/LUL0feo6BCXUk8umayFZMlI
-        kgZp64wAf8m66O71+2DvW9LSnCCp
-X-Google-Smtp-Source: ABdhPJwmCNypLp/cJmGlfSoNI0jIRCvhxWxBZSth46gRORVwLKzhFrx+wasLhUi3axTtV6zM6AeCyw==
-X-Received: by 2002:a05:6402:1057:: with SMTP id e23mr3052058edu.11.1596189041336;
-        Fri, 31 Jul 2020 02:50:41 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id ov32sm1100890ejb.102.2020.07.31.02.50.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 02:50:40 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 11:50:38 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Nick Terrell <nickrterrell@gmail.com>,
-        Adam Borowski <kilobyte@angband.pl>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        linux-kbuild@vger.kernel.org, x86@kernel.org,
-        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
-        Kees Cook <keescook@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
-        Patrick Williams <patrick@stwcx.xyz>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Norbert Lange <nolange79@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Xu <alex_y_xu@yahoo.ca>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Terrell <terrelln@fb.com>
-Subject: Re: [PATCH v10 7/8] .gitignore: add ZSTD-compressed files
-Message-ID: <20200731095038.GA15126@gmail.com>
-References: <20200730190841.2071656-1-nickrterrell@gmail.com>
- <20200730190841.2071656-8-nickrterrell@gmail.com>
+        id S1732258AbgGaJqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:46:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:54028 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731922AbgGaJqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 05:46:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40F7E31B;
+        Fri, 31 Jul 2020 02:46:23 -0700 (PDT)
+Received: from [10.37.12.83] (unknown [10.37.12.83])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EECEE3F718;
+        Fri, 31 Jul 2020 02:46:21 -0700 (PDT)
+Subject: Re: [RFC PATCH 09/14] coresight: etm4x: Add sysreg access helpers
+To:     mathieu.poirier@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mike.leach@linaro.org, coresight@lists.linaro.org
+References: <20200722172040.1299289-1-suzuki.poulose@arm.com>
+ <20200722172040.1299289-10-suzuki.poulose@arm.com>
+ <20200730214110.GF3155687@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <f1d869e2-73bc-aebc-d4ce-79c324a7a36c@arm.com>
+Date:   Fri, 31 Jul 2020 10:51:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730190841.2071656-8-nickrterrell@gmail.com>
+In-Reply-To: <20200730214110.GF3155687@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07/30/2020 10:41 PM, Mathieu Poirier wrote:
+> On Wed, Jul 22, 2020 at 06:20:35PM +0100, Suzuki K Poulose wrote:
+>> ETMv4.4 architecture defines the system instructions for accessing
+>> ETM via register accesses. Add basic support for accessing a given
+>> register via system instructions.
+>>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-etm4x.c |  39 ++
+>>   drivers/hwtracing/coresight/coresight-etm4x.h | 379 ++++++++++++++++--
+>>   2 files changed, 394 insertions(+), 24 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
 
-* Nick Terrell <nickrterrell@gmail.com> wrote:
 
-> From: Adam Borowski <kilobyte@angband.pl>
+>>   static void etm4_os_unlock_csa(struct etmv4_drvdata *drvdata, struct csdev_access *csa)
+>>   {
+>>   	/* Writing 0 to TRCOSLAR unlocks the trace registers */
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+>> index 2b51d03ab6d7..f5d708206339 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+
+		0x1FC
+>> -/* Resource selection registers */
+>> +/*
+>> + * Resource selection registers, n = 2-31.
+>> + * First pair (regs 0, 1) is always present and is reserved.
+>> + */
+>>   #define TRCRSCTLRn(n)			(0x200 + (n * 4))
+>> -/* Single-shot comparator registers */
+>> +/* Single-shot comparator registers, n = 0-7 */
+>>   #define TRCSSCCRn(n)			(0x280 + (n * 4))
+>>   #define TRCSSCSRn(n)			(0x2A0 + (n * 4))
+>>   #define TRCSSPCICRn(n)			(0x2C0 + (n * 4))
+>> @@ -80,11 +83,13 @@
+>>   #define TRCPDCR				0x310
+>>   #define TRCPDSR				0x314
+>>   /* Trace registers (0x318-0xEFC) */
+>> -/* Comparator registers */
+>> +/* Address Comparator registers n = 0-15 */
+>>   #define TRCACVRn(n)			(0x400 + (n * 8))
+>>   #define TRCACATRn(n)			(0x480 + (n * 8))
+>> +/* Data Value Comparator Value registers, n = 0-7 */
+>>   #define TRCDVCVRn(n)			(0x500 + (n * 16))
+>>   #define TRCDVCMRn(n)			(0x580 + (n * 16))
+>> +/* ContextID/Virtual ContextID comparators, n = 0-7 */
 > 
-> For now, that's arch/x86/boot/compressed/vmlinux.bin.zst but probably more
-> will come, thus let's be consistent with all other compressors.
+> Extra documentation is good but it has to be in a separate patch.
 > 
-> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Nick Terrell <terrelln@fb.com>
-> Signed-off-by: Adam Borowski <kilobyte@angband.pl>
 
-I presume Adam Borowski's Signed-off-by was intended to be added as 
-the first entry of the SOB chain?
+Sure, will split this. It was partly for making sure that I don't
+miss a case for a register in the list.
 
-I've added it, please let me know if that's not OK.
+Cheers
+Suzuki
 
-Thanks,
-
-	Ingo
