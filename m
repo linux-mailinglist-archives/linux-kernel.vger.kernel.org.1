@@ -2,136 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4707A234A28
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 19:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B54234A2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 19:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733301AbgGaRTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 13:19:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732817AbgGaRTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 13:19:38 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S2387499AbgGaRU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 13:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729944AbgGaRU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 13:20:27 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EEEC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 10:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6BEQZGFz2zyuCgyEWRRLllezcZ3YAqzZtIi2etzzWTQ=; b=LrZ1HXS6ViVyE0DVAAxdJiejyl
+        cW+KEbW1oIx22XnqVTnPeI5ujto/D4SotYTJ6deM5ly0wsy55hWHeXGOq3wlh317U3TIYyJCvJquB
+        kcnvrgcR6JFdj3OASMJWcFdPRKP3Q3flMKHMdkUP8j7TU0c1m4I4PE7qZZnrpRCch/mz1lFAPT55m
+        543U9IBFMMuMlcYF7hiTt2jK0PULpqTghGr0lnBIAaBeGIIbSHGSyO3GZ7fLXvzlWgEW5IricnjSq
+        Vus25K8dz3GJ/6egXFsoaC584e/iOEGdxqbrW/enwZc1ouS6erSc6Yc0LLaNm71/7mrBri9R+IaQJ
+        /kd48RzQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k1YhV-0005y4-Ne; Fri, 31 Jul 2020 17:20:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6645C2074B;
-        Fri, 31 Jul 2020 17:19:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596215978;
-        bh=yxLFBtERe8UngePE6Ae91aGE2Ev7MNPNAO2x8RUFAKY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FJM6T0vbEgq2PNNmTnnc65DNz/A50UbgHexnPy4ZP95gE8ClTSvPshL0drR9tvoqC
-         Luj0SVJLc7CMxudDRUS2o57mBQ75nNh6SFidxxegIkiPaZrRJZtpzWaTW8Rc+03Jfz
-         XCdf00Knp7UBGQTGQpqSCFA9Dz+RfqVPF4vs9i0M=
-Date:   Fri, 31 Jul 2020 19:19:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
- in rds_notify_queue_get()
-Message-ID: <20200731171924.GA2014207@kroah.com>
-References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
- <20200731045301.GI75549@unreal>
- <20200731053306.GA466103@kroah.com>
- <20200731053333.GB466103@kroah.com>
- <20200731140452.GE24045@ziepe.ca>
- <20200731142148.GA1718799@kroah.com>
- <20200731143604.GF24045@ziepe.ca>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4A1993050F0;
+        Fri, 31 Jul 2020 19:20:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 15627203C0A49; Fri, 31 Jul 2020 19:20:06 +0200 (CEST)
+Date:   Fri, 31 Jul 2020 19:20:06 +0200
+From:   peterz@infradead.org
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        =?iso-8859-1?Q?Genevi=E8ve?= Bastien <gbastien@versatic.net>,
+        Wang Nan <wangnan0@huawei.com>,
+        Jeremie Galarneau <jgalar@efficios.com>
+Subject: Re: [PATCH 0/6] perf tools: Add wallclock time conversion support
+Message-ID: <20200731172006.GJ2638@hirez.programming.kicks-ass.net>
+References: <20200730213950.1503773-1-jolsa@kernel.org>
+ <20200730221423.GH2638@hirez.programming.kicks-ass.net>
+ <a59b833f-bcb7-3d1b-6e0c-8758b47b93a3@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200731143604.GF24045@ziepe.ca>
+In-Reply-To: <a59b833f-bcb7-3d1b-6e0c-8758b47b93a3@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 11:36:04AM -0300, Jason Gunthorpe wrote:
-> On Fri, Jul 31, 2020 at 04:21:48PM +0200, Greg Kroah-Hartman wrote:
-> 
-> > > The spec was updated in C11 to require zero'ing padding when doing
-> > > partial initialization of aggregates (eg = {})
-> > > 
-> > > """if it is an aggregate, every member is initialized (recursively)
-> > > according to these rules, and any padding is initialized to zero
-> > > bits;"""
+On Thu, Jul 30, 2020 at 07:21:54PM -0600, David Ahern wrote:
+> On 7/30/20 4:14 PM, peterz@infradead.org wrote:
+> > On Thu, Jul 30, 2020 at 11:39:44PM +0200, Jiri Olsa wrote:
 > > 
-> > But then why does the compilers not do this?
-> 
-> Do you have an example?
-
-At the moment, no, but we have had them in the past due to security
-issues we have had to fix for this.
-
-> > > Considering we have thousands of aggregate initializers it
-> > > seems likely to me Linux also requires a compiler with this C11
-> > > behavior to operate correctly.
+> >> The patchset is adding the ability to display TOD/wallclock timestamp
+> >> in 'perf script' output and in 'perf data convert --to-ctf' subcommand,
+> >> so the converted CTF data contain TOD/wallclock timestamps.
 > > 
-> > Note that this is not an "operate correctly" thing, it is a "zero out
-> > stale data in structure paddings so that data will not leak to
-> > userspace" thing.
-> 
-> Yes, not being insecure is "operate correctly", IMHO :)
->  
-> > > Does this patch actually fix anything? My compiler generates identical
-> > > assembly code in either case.
+> > But why? Wallclock is a horrible piece of crap. Why would you want to do
+> > this?
 > > 
-> > What compiler version?
 > 
-> I tried clang 10 and gcc 9.3 for x86-64.
-> 
-> #include <string.h>
-> 
-> void test(void *out)
-> {
-> 	struct rds_rdma_notify {
-> 		unsigned long user_token;
-> 		unsigned int status;
-> 	} foo = {};
-> 	memcpy(out, &foo, sizeof(foo));
-> }
-> 
-> $ gcc -mno-sse2 -O2 -Wall -std=c99 t.c -S
-> 
-> test:
-> 	endbr64
-> 	movq	$0, (%rdi)
-> 	movq	$0, 8(%rdi)
-> 	ret
-> 
-> Just did this same test with gcc 4.4 and it also gave the same output..
-> 
-> Made it more complex with this:
-> 
-> 	struct rds_rdma_notify {
-> 		unsigned long user_token;
-> 		unsigned char status;
-> 		unsigned long user_token1;
-> 		unsigned char status1;
-> 		unsigned long user_token2;
-> 		unsigned char status2;
-> 		unsigned long user_token3;
-> 		unsigned char status3;
-> 		unsigned long user_token4;
-> 		unsigned char status4;
-> 	} foo;
-> 
-> And still got the same assembly vs memset on gcc 4.4.
-> 
-> I tried for a bit and didn't find a way to get even old gcc 4.4 to not
-> initialize the holes.
+> Same reason I brought this up 9+ years ago: userspace lives on
+> time-of-day, and troubleshooting is based on correlating timestamps from
+> multiple sources. To correlate a perf event to syslog or an application
+> log, we need time-of-day.
 
-Odd, so it is just the "= {0};" that does not zero out the holes?
+You need a sync'ed CLOCK_MONOTONIC for that, CLOCK_REALTIME 'aka'
+wallclock is a trainwreck, you don't ever want that.
 
-thanks,
 
-greg k-h
+
