@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442632345A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE3B2345A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733163AbgGaMVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        id S1733193AbgGaMVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733132AbgGaMV1 (ORCPT
+        with ESMTP id S1733152AbgGaMVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:21:27 -0400
+        Fri, 31 Jul 2020 08:21:30 -0400
 Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14AFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:27 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a9so7212754pjd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2A8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:30 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id k1so7201785pjt.5
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=FBTrDXNWXY7ZPAJHB1q2pmYieIRphOe/mMSwCtpIV18=;
-        b=eFV6haNpyacgxwgVMRx4A+6Q956GlMW1U7F59KBLih3bqhXIVzlFiu9zd1ngBoGn59
-         FSpJTBx5of8gNKg2jeXzJCOtk5fm0JBehKhs58Jfb0ype651tpwQlSGA+C+j3VPxEX6H
-         9+HhzQCApEnKlT6j/BmGlVKIcdRpGvhbFtU/YrujMN1TfXd5OvHdQecRR7MbafIYFb8w
-         MxNXuHq/cPqfbUkfPACMgoduQ57Xk/G3pVmHfM3NS+8BnybIdFXcNxBTFZEeJAPy9zab
-         G/qVJic/jILbU7XE4GTRIxU/4Hzfsm5zgJpeW85LHyQRRixTGOes/5NCN+lzIYb8sy+Y
-         BJZA==
+        bh=C20rXtIxVYuV8kAt9ziq5r9X3XGDWqg/fkrphmJjKRQ=;
+        b=mL8mwKWQzTvtX66d+UAyvZYdeQfelYFSjj9rVpvye6Z3Z69SI59FpRf6OxSdCEUyh0
+         1uV7DKEXrssFQAvdcBXZ3OPVVqRYmOyac7+wTTDLdr+Qz6hVv7vV6bwx9Cuyl0x+58ya
+         Yog37R4NlqRmNjaj4HUv7O+CqxVQpBjIrkrNahCOWRl5Bkw+6rLYCG1SSEn4T8gmHLi2
+         T8tRatkzoVK9YvK4I4N2iskRZEB1mJN4IYFco0Zb6M/bc6/XrJ4TGATj2GeX2HykwvaI
+         f1aIXZJ82amxGxC9ysOXv/8IUR4OArtjUM6WoKZayh72LgryYTd30z7JqrPLZcpm4X1J
+         5Fjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=FBTrDXNWXY7ZPAJHB1q2pmYieIRphOe/mMSwCtpIV18=;
-        b=k87BqIh/W6KAHgKUFgHbbwKRqwAh1aVT6bF6rnWMFJiCaWUFiRREfzRiK+LYZrXG3l
-         ClEzdQakQK+KVi08nOb1tmLHnxKZ4cPHtBM0gqup/y3K4hOKU8okckpO/WfmzfznDCH6
-         9E3KVWzdCrFl8fFEJ5uhkQ8B/+wbp9gDSKd8OXwjfsjTX700xv6dU00JhqygQtd1gKU1
-         b2TDZ9WPnmJ9m0rERlG3PQEcWku2JPY7quT6n4xYDbFOji1t5K5NDwJNMUYHGaZucfnF
-         ApW1F5Vr64MPiAZwzXQHcuEG4GJzO8Z55kLQZjN/RAcTU/okbE4wA480i4QRLjFhssAA
-         0NNg==
-X-Gm-Message-State: AOAM532b8anmipj1p70IP/xt2k3DgO0g0Na6NPN2hA2vxnqXHFg7tA13
-        AFVicuGmpBa1TipzdBqGvQ==
-X-Google-Smtp-Source: ABdhPJzOymvP0Ol7udGQa66VemBG2AZqN8jo517Qfd/xao9LvV1ecByGIMNpoi/Bw6kcQS5Ee35p4w==
-X-Received: by 2002:a17:90a:c295:: with SMTP id f21mr3813202pjt.208.1596198087313;
-        Fri, 31 Jul 2020 05:21:27 -0700 (PDT)
+        bh=C20rXtIxVYuV8kAt9ziq5r9X3XGDWqg/fkrphmJjKRQ=;
+        b=hrRlSMYUCKO2V89oQFNch8VKlIvGkxq4aNDa+DKHLlR9Qvy2YdOFcyhXkBRaEpEv6W
+         XTX7axNE3izpw0wUIQ+ZA0udiQyhzUJTOlu1jEaLDLiArUJC60qXhLmA1Zk0EhsnqmOn
+         ph5V2glv4FaO0/i6XcgZXHdZYkPfLzrOv9uvObX50sL7wujh9XBwse6f7o8P5zjVXOCH
+         Vl7g0ml0y/cza+Myu7B75B3bkj1sNeqr+xvXTyMExWChzrL7NEP3Equ1TZLSaaQAQZ85
+         XcXYXuDHi9KSfC+rKMXKtDXXlOpJdMo/qwee2TvkkxT+KTJ3WQdrAt2mKgKURiCOyRps
+         29/w==
+X-Gm-Message-State: AOAM530GmP3rHHCn+VziJTyjF+AQLvPhpF8grVylLV658yDQ3p8hjmet
+        dBgmcu3pCnIdjuq3v3LDIA==
+X-Google-Smtp-Source: ABdhPJxBtp9vGmxG4kThIlaUgtwdMwKwb0g68uZr44relMDFK6s7Qp5rP4w+/RX5BF4lCvffoiwKlA==
+X-Received: by 2002:a63:3d06:: with SMTP id k6mr3577330pga.316.1596198090375;
+        Fri, 31 Jul 2020 05:21:30 -0700 (PDT)
 Received: from ip-172-31-41-194.ap-northeast-1.compute.internal (ec2-52-199-21-241.ap-northeast-1.compute.amazonaws.com. [52.199.21.241])
-        by smtp.gmail.com with ESMTPSA id m19sm3675692pjv.34.2020.07.31.05.21.24
+        by smtp.gmail.com with ESMTPSA id m19sm3675692pjv.34.2020.07.31.05.21.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 05:21:26 -0700 (PDT)
+        Fri, 31 Jul 2020 05:21:29 -0700 (PDT)
 From:   nao.horiguchi@gmail.com
 To:     linux-mm@kvack.org
 Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
@@ -54,9 +54,9 @@ Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
         david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
         zeil@yandex-team.ru, cai@lca.pw, naoya.horiguchi@nec.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 03/16] mm,madvise: call soft_offline_page() without MF_COUNT_INCREASED
-Date:   Fri, 31 Jul 2020 12:20:59 +0000
-Message-Id: <20200731122112.11263-4-nao.horiguchi@gmail.com>
+Subject: [PATCH v5 04/16] mm,madvise: Refactor madvise_inject_error
+Date:   Fri, 31 Jul 2020 12:21:00 +0000
+Message-Id: <20200731122112.11263-5-nao.horiguchi@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200731122112.11263-1-nao.horiguchi@gmail.com>
 References: <20200731122112.11263-1-nao.horiguchi@gmail.com>
@@ -65,70 +65,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+From: Oscar Salvador <osalvador@suse.de>
 
-The call to get_user_pages_fast is only to get the pointer to a struct
-page of a given address, pinning it is memory-poisoning handler's job,
-so drop the refcount grabbed by get_user_pages_fast().
+Make a proper if-else condition for {hard,soft}-offline.
 
-Note that the target page is still pinned after this put_page() because
-the current process should have refcount from mapping.
-
+Signed-off-by: Oscar Salvador <osalvador@suse.com>
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- mm/madvise.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ mm/madvise.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
 diff --git v5.8-rc7-mmotm-2020-07-27-18-18/mm/madvise.c v5.8-rc7-mmotm-2020-07-27-18-18_patched/mm/madvise.c
-index a16dba21cdf6..1fe89a5b8d33 100644
+index 1fe89a5b8d33..2c50c2c5673b 100644
 --- v5.8-rc7-mmotm-2020-07-27-18-18/mm/madvise.c
 +++ v5.8-rc7-mmotm-2020-07-27-18-18_patched/mm/madvise.c
-@@ -910,16 +910,24 @@ static int madvise_inject_error(int behavior,
- 		 */
- 		size = page_size(compound_head(page));
+@@ -886,16 +886,15 @@ static long madvise_remove(struct vm_area_struct *vma,
+ static int madvise_inject_error(int behavior,
+ 		unsigned long start, unsigned long end)
+ {
+-	struct page *page;
+ 	struct zone *zone;
+ 	unsigned long size;
  
--		if (PageHWPoison(page)) {
--			put_page(page);
-+		/*
-+		 * The get_user_pages_fast() is just to get the pfn of the
-+		 * given address, and the refcount has nothing to do with
-+		 * what we try to test, so it should be released immediately.
-+		 * This is racy but it's intended because the real hardware
-+		 * errors could happen at any moment and memory error handlers
-+		 * must properly handle the race.
-+		 */
-+		put_page(page);
-+
-+		if (PageHWPoison(page))
- 			continue;
--		}
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+-
+ 	for (; start < end; start += size) {
+ 		unsigned long pfn;
++		struct page *page;
+ 		int ret;
+ 
+ 		ret = get_user_pages_fast(start, 1, 0, &page);
+@@ -925,17 +924,14 @@ static int madvise_inject_error(int behavior,
  
  		if (behavior == MADV_SOFT_OFFLINE) {
  			pr_info("Soft offlining pfn %#lx at process virtual address %#lx\n",
- 					pfn, start);
- 
--			ret = soft_offline_page(pfn, MF_COUNT_INCREASED);
-+			ret = soft_offline_page(pfn, 0);
- 			if (ret)
- 				return ret;
- 			continue;
-@@ -927,14 +935,6 @@ static int madvise_inject_error(int behavior,
- 
- 		pr_info("Injecting memory failure for pfn %#lx at process virtual address %#lx\n",
- 				pfn, start);
+-					pfn, start);
 -
--		/*
--		 * Drop the page reference taken by get_user_pages_fast(). In
--		 * the absence of MF_COUNT_INCREASED the memory_failure()
--		 * routine is responsible for pinning the page to prevent it
--		 * from being released back to the page allocator.
--		 */
--		put_page(page);
- 		ret = memory_failure(pfn, 0);
++				pfn, start);
+ 			ret = soft_offline_page(pfn, 0);
+-			if (ret)
+-				return ret;
+-			continue;
++		} else {
++			pr_info("Injecting memory failure for pfn %#lx at process virtual address %#lx\n",
++				pfn, start);
++			ret = memory_failure(pfn, 0);
+ 		}
+ 
+-		pr_info("Injecting memory failure for pfn %#lx at process virtual address %#lx\n",
+-				pfn, start);
+-		ret = memory_failure(pfn, 0);
  		if (ret)
  			return ret;
+ 	}
 -- 
 2.17.1
 
