@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25CB234626
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACCD23463D
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733077AbgGaMvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
+        id S2387412AbgGaMvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgGaMvP (ORCPT
+        with ESMTP id S1730743AbgGaMvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:51:15 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C177C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:51:15 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b30so16780139lfj.12
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:51:15 -0700 (PDT)
+        Fri, 31 Jul 2020 08:51:17 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E0FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:51:17 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id h19so32295460ljg.13
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:51:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=P8zgpF044pgTW1uK5Q8AXrv/7bel3rEWKcAtjS7WDeo=;
-        b=WgUyGPBfwmJ9bTlFZ1iykzmaC+/eyxO2mETTCyh0EN7DEuu6cfihmRQOfjN0UX17KJ
-         1XK/aClkr4jouIfR2Uq33SHtLP56E4y8DgZ87NMJDRnE/5HMKnL0qQRmTaRqEurFsoxI
-         D/R3+eHgdIAl42+OdJRKAhPJheLy6IATe2ljDZKS9Ir/9TnHfgeT9ND6Q078g/e5NeAs
-         I2W7ZBR4JYFb7XWCyVQlSdl0Ydv93Ytn/B8SI+DrRwYKxIF7FMjE6FYcroqJuyHyrA1S
-         e7Z785IPUZkU0urptiMhDbgonuN0KgLkpcNKcT+5pvixgh0YZDlTJ29FOCn97utl+t8+
-         hahQ==
+        bh=hf2m1CaACgkl3i0FS0MjmjyDubimZdTD8G//CB5QIMY=;
+        b=WpFdItwLmE1h/jcPKXj3mRmyaF+TKN3FWkbAvN9i01/b/GBnQQrfqTYPD3KkCl+HER
+         4a3yBnoP8xZ1+beeiIJ9vfMIpoL/Uq0aKjRgj9n3gDAB35PWSD+52cvI8qsbw9MMxnde
+         Ogk+jE2mX/g7LFVkGpGWoSr7sD8Yog+cmIHDyOr5lEBZFzgPS2kU4Fuv8LCiEtAMJi4Y
+         V/MPagzOAVhsCHI/ruYoFU5NgrrL0yQ5Bln8moUVlTyOMw3rTQ7cCkra3lYcATWDogf/
+         jBRFwFf8eSKHB5WoChdB5jL9GonvtcReyID4iSV0w2pPa3lh5NAPcP/9Jan5UaU8YB8u
+         zvVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=P8zgpF044pgTW1uK5Q8AXrv/7bel3rEWKcAtjS7WDeo=;
-        b=H894F2bk6Yn3Pq7QQU/bYRpdyu80j9P+EnobJTaoV+HY+HCG9fudD4gHUoXVBqs+OR
-         DQMFUK54ZoUMQ4bPsiKIdjn/rYoNi3l5K1fA3RqCXgyN05XdGPRtS7oIs1/ri7+TH2T/
-         C0q60GfgOlVSq5Ue/3NU2qSZ1DrqPXVxzWoLzFan7QzBEKXZIqn2Ya6qasrm+yvrGH12
-         MnX8M1qomR/o1jnaVSggDQTGYwMZRJ1mrLV6Sti/neVtp7RePzFuts/M8VmU6+DGoPxz
-         lNYYIkpencfCoJSy7c6CT3e30FudLhZWW8SwU1jZaI/Ig4VW6v5IR6YPooKW0IolvVej
-         8rhQ==
-X-Gm-Message-State: AOAM533x82gWZrORc9cKdtVqlykSfBjZr+7LUPoK06Es1Kf9HY0WnHve
-        IIaaR0V8kOkJF/b4rlt1S4E=
-X-Google-Smtp-Source: ABdhPJzATe0fCD2sbhssHSnUfNXc6kWFAY41kSspFrVQTiQcz0U9VH0isUKE3+W9ohrCIfVkdQXBSg==
-X-Received: by 2002:ac2:5683:: with SMTP id 3mr1948307lfr.69.1596199873919;
-        Fri, 31 Jul 2020 05:51:13 -0700 (PDT)
+        bh=hf2m1CaACgkl3i0FS0MjmjyDubimZdTD8G//CB5QIMY=;
+        b=SWK7tQ/XLO+rxbst2xx0TIa6jEH0AytNg73OcifyZ/EqhzwqJ5jh8PlUqtQ2jHvr2b
+         S1jv+Aixyy/wNQ8dDATZ14tWK8uwXYuysssxgn/87U/612qfYwouKPRza5tUJlhRU1r0
+         JwF3hVNNYuE2EOh74pyU+R6yKGBvUdss1fDNysY77caKzZ2iAT7VbXiEq0POHVB1Yxvq
+         Aup4Hf0Ppns7Vqna8ViwzfXd9/u0Gx9Ue+NM1TnlqjN6WTHUYWpzDHDJw7tB59Bgojn6
+         WpR237wzjKPMGG6+gDgqbiaxLGcHbLHDggk9+YXGCjn125TsM8w24CBvg0Cy4sgcX1K5
+         HxnQ==
+X-Gm-Message-State: AOAM533QvwNR5yESyN9I3WE63VQzyl05U1Q090PCY7SJgew0B3qJ9IMJ
+        nG3PhXmh63TLgEqlhHVkq8c=
+X-Google-Smtp-Source: ABdhPJyAr3EgNy6m0bxN5SP4DJ54ompCgY6CBLlI16M8yY4FlCVLhiNPKf3qPH+txZ2PmAgUTW2prA==
+X-Received: by 2002:a2e:9e43:: with SMTP id g3mr1932560ljk.309.1596199875447;
+        Fri, 31 Jul 2020 05:51:15 -0700 (PDT)
 Received: from a2klaptop.localdomain ([185.199.97.5])
-        by smtp.gmail.com with ESMTPSA id s2sm1923362lfs.4.2020.07.31.05.51.12
+        by smtp.gmail.com with ESMTPSA id s2sm1923362lfs.4.2020.07.31.05.51.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 05:51:13 -0700 (PDT)
+        Fri, 31 Jul 2020 05:51:14 -0700 (PDT)
 From:   Oleksandr Andrushchenko <andr2000@gmail.com>
 To:     xen-devel@lists.xenproject.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, boris.ostrovsky@oracle.com,
@@ -54,9 +54,9 @@ To:     xen-devel@lists.xenproject.org, dri-devel@lists.freedesktop.org,
 Cc:     sstabellini@kernel.org, dan.carpenter@oracle.com,
         intel-gfx@lists.freedesktop.org,
         Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Subject: [PATCH 1/6] xen/gntdev: Fix dmabuf import with non-zero sgt offset
-Date:   Fri, 31 Jul 2020 15:51:04 +0300
-Message-Id: <20200731125109.18666-2-andr2000@gmail.com>
+Subject: [PATCH 2/6] drm/xen-front: Fix misused IS_ERR_OR_NULL checks
+Date:   Fri, 31 Jul 2020 15:51:05 +0300
+Message-Id: <20200731125109.18666-3-andr2000@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200731125109.18666-1-andr2000@gmail.com>
 References: <20200731125109.18666-1-andr2000@gmail.com>
@@ -67,36 +67,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-It is possible that the scatter-gather table during dmabuf import has
-non-zero offset of the data, but user-space doesn't expect that.
-Fix this by failing the import, so user-space doesn't access wrong data.
+The patch c575b7eeb89f: "drm/xen-front: Add support for Xen PV
+display frontend" from Apr 3, 2018, leads to the following static
+checker warning:
 
-Fixes: 37ccb44d0b00 ("xen/gntdev: Implement dma-buf import functionality")
+	drivers/gpu/drm/xen/xen_drm_front_gem.c:140 xen_drm_front_gem_create()
+	warn: passing zero to 'ERR_CAST'
+
+drivers/gpu/drm/xen/xen_drm_front_gem.c
+   133  struct drm_gem_object *xen_drm_front_gem_create(struct drm_device *dev,
+   134                                                  size_t size)
+   135  {
+   136          struct xen_gem_object *xen_obj;
+   137
+   138          xen_obj = gem_create(dev, size);
+   139          if (IS_ERR_OR_NULL(xen_obj))
+   140                  return ERR_CAST(xen_obj);
+
+Fix this and the rest of misused places with IS_ERR_OR_NULL in the
+driver.
+
+Fixes:  c575b7eeb89f: "drm/xen-front: Add support for Xen PV display frontend"
 
 Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/xen/gntdev-dmabuf.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/gpu/drm/xen/xen_drm_front.c     | 4 ++--
+ drivers/gpu/drm/xen/xen_drm_front_gem.c | 8 ++++----
+ drivers/gpu/drm/xen/xen_drm_front_kms.c | 2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/xen/gntdev-dmabuf.c b/drivers/xen/gntdev-dmabuf.c
-index 75d3bb948bf3..b1b6eebafd5d 100644
---- a/drivers/xen/gntdev-dmabuf.c
-+++ b/drivers/xen/gntdev-dmabuf.c
-@@ -613,6 +613,14 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_priv *priv, struct device *dev,
- 		goto fail_detach;
+diff --git a/drivers/gpu/drm/xen/xen_drm_front.c b/drivers/gpu/drm/xen/xen_drm_front.c
+index 3e660fb111b3..88db2726e8ce 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front.c
++++ b/drivers/gpu/drm/xen/xen_drm_front.c
+@@ -400,8 +400,8 @@ static int xen_drm_drv_dumb_create(struct drm_file *filp,
+ 	args->size = args->pitch * args->height;
+ 
+ 	obj = xen_drm_front_gem_create(dev, args->size);
+-	if (IS_ERR_OR_NULL(obj)) {
+-		ret = PTR_ERR_OR_ZERO(obj);
++	if (IS_ERR(obj)) {
++		ret = PTR_ERR(obj);
+ 		goto fail;
  	}
  
-+	/* Check that we have zero offset. */
-+	if (sgt->sgl->offset) {
-+		ret = ERR_PTR(-EINVAL);
-+		pr_debug("DMA buffer has %d bytes offset, user-space expects 0\n",
-+			 sgt->sgl->offset);
-+		goto fail_unmap;
-+	}
-+
- 	/* Check number of pages that imported buffer has. */
- 	if (attach->dmabuf->size != gntdev_dmabuf->nr_pages << PAGE_SHIFT) {
- 		ret = ERR_PTR(-EINVAL);
+diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+index f0b85e094111..4ec8a49241e1 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
++++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+@@ -83,7 +83,7 @@ static struct xen_gem_object *gem_create(struct drm_device *dev, size_t size)
+ 
+ 	size = round_up(size, PAGE_SIZE);
+ 	xen_obj = gem_create_obj(dev, size);
+-	if (IS_ERR_OR_NULL(xen_obj))
++	if (IS_ERR(xen_obj))
+ 		return xen_obj;
+ 
+ 	if (drm_info->front_info->cfg.be_alloc) {
+@@ -117,7 +117,7 @@ static struct xen_gem_object *gem_create(struct drm_device *dev, size_t size)
+ 	 */
+ 	xen_obj->num_pages = DIV_ROUND_UP(size, PAGE_SIZE);
+ 	xen_obj->pages = drm_gem_get_pages(&xen_obj->base);
+-	if (IS_ERR_OR_NULL(xen_obj->pages)) {
++	if (IS_ERR(xen_obj->pages)) {
+ 		ret = PTR_ERR(xen_obj->pages);
+ 		xen_obj->pages = NULL;
+ 		goto fail;
+@@ -136,7 +136,7 @@ struct drm_gem_object *xen_drm_front_gem_create(struct drm_device *dev,
+ 	struct xen_gem_object *xen_obj;
+ 
+ 	xen_obj = gem_create(dev, size);
+-	if (IS_ERR_OR_NULL(xen_obj))
++	if (IS_ERR(xen_obj))
+ 		return ERR_CAST(xen_obj);
+ 
+ 	return &xen_obj->base;
+@@ -194,7 +194,7 @@ xen_drm_front_gem_import_sg_table(struct drm_device *dev,
+ 
+ 	size = attach->dmabuf->size;
+ 	xen_obj = gem_create_obj(dev, size);
+-	if (IS_ERR_OR_NULL(xen_obj))
++	if (IS_ERR(xen_obj))
+ 		return ERR_CAST(xen_obj);
+ 
+ 	ret = gem_alloc_pages_array(xen_obj, size);
+diff --git a/drivers/gpu/drm/xen/xen_drm_front_kms.c b/drivers/gpu/drm/xen/xen_drm_front_kms.c
+index 78096bbcd226..ef11b1e4de39 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front_kms.c
++++ b/drivers/gpu/drm/xen/xen_drm_front_kms.c
+@@ -60,7 +60,7 @@ fb_create(struct drm_device *dev, struct drm_file *filp,
+ 	int ret;
+ 
+ 	fb = drm_gem_fb_create_with_funcs(dev, filp, mode_cmd, &fb_funcs);
+-	if (IS_ERR_OR_NULL(fb))
++	if (IS_ERR(fb))
+ 		return fb;
+ 
+ 	gem_obj = fb->obj[0];
 -- 
 2.17.1
 
