@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514F423432A
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF63623426E
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732095AbgGaJWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:22:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56350 "EHLO
+        id S1732187AbgGaJWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:22:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56338 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732203AbgGaJWp (ORCPT
+        with ESMTP id S1732215AbgGaJWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 31 Jul 2020 05:22:45 -0400
-Date:   Fri, 31 Jul 2020 09:22:42 -0000
+Date:   Fri, 31 Jul 2020 09:22:43 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187362;
+        s=2020; t=1596187364;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=VeHuDFMynotDWeSNuN4YXwHrCoEpYwVTPw8qWP0mkCs=;
-        b=S1WwOmV27+eydDN/IJNJx69oHSBLMZMh0Qj03wsG+Y4NX6MCX++250EJFZ1L9eOES4SZf2
-        sxTIVNcVpwDqIi+Jqft1m5BxHps6qD2W2m8kClUHx1oljXu6nCqLLpj6G4Ii8yA0d35gou
-        PUE90exyCnLHKIbuemldYFP78MzsQynJTXSeKqx+Vx/ZstlmRaLJQlvcd2T2K1Rt5STZNc
-        0vBUtYyhL/U1OSKvOqAvOpgt4RhUxgqgXWyleV5/OBGD5GoWbjLCDVaOJAoPky5gX5zjAz
-        47NjC6SjcwJAPa+Q1aBZ+EtqvueOCCxgZ/SAHfn9fkbYoGRfR8PlfXg+BRj/Og==
+        bh=cFvb2E1m9hyFpHcx4Th5l18ErPw+dtKZaurVKoaHL4I=;
+        b=wd8rwp8Q6sr6z79TekwG9eo9N0w+YWUu52P+1WCmZ2jhR2Ireh2k6hBkqTEGTCPBRNVNCp
+        i5seNKiwcsVoWvYd0FzzrI69HHGyAvKliBM3jqtbNd6E6+ncwRGeMuMMGCb6AEloPWMYsY
+        Uc5j/tLtTvCC+KNJl+MMkJIUZU7V0m0+JfYplCYsaymIRsVYfSzzVTZ4tL4wthWh0ii/ye
+        H2wyxD46DMe6fbBcfdLZQljYTuVANxqyTSIxcHkKKCksK4hgpQrFqWbVPyJ6dB2lCLEkx0
+        UWWsAoMvSlIFC9TtXX82aeofBz0z8UFaKOetfhrCqhhPmdcJ7R+JhX1zkPGQvQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187362;
+        s=2020e; t=1596187364;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=VeHuDFMynotDWeSNuN4YXwHrCoEpYwVTPw8qWP0mkCs=;
-        b=AgPVrEo/ay8xHAi9lAGktnIlyXjP0JbuB2LxIOjCtR7LvhW1gUHlzhH7fn7KOQ+SCRk9oU
-        4J26SuKA6y6WzGBQ==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+        bh=cFvb2E1m9hyFpHcx4Th5l18ErPw+dtKZaurVKoaHL4I=;
+        b=Tc1SDubZTVIVvyM1bK10FJ6tesGarfoFsIHVeSoXn5fsJPYODtcYWRKiVhwZZBJ74NNO0H
+        T8mfMb8bimpzUKBw==
+From:   "tip-bot2 for Jules Irenge" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Add a stop-run capability
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] rcu/rcutorture: Replace 0 with false
+Cc:     Jules Irenge <jbi.octave@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159618736213.4006.10051552224753843943.tip-bot2@tip-bot2>
+Message-ID: <159618736339.4006.7962884624104179721.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,114 +52,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     6387ecbc94bf5ac07239104b84d2304da6e79b51
-Gitweb:        https://git.kernel.org/tip/6387ecbc94bf5ac07239104b84d2304da6e79b51
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Tue, 09 Jun 2020 17:58:30 -07:00
+Commit-ID:     8f43d5911b38f00dfa46169dcb1feb1e101dd906
+Gitweb:        https://git.kernel.org/tip/8f43d5911b38f00dfa46169dcb1feb1e101dd906
+Author:        Jules Irenge <jbi.octave@gmail.com>
+AuthorDate:    Mon, 01 Jun 2020 19:45:48 +01:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 29 Jun 2020 12:01:44 -07:00
 
-torture: Add a stop-run capability
+rcu/rcutorture: Replace 0 with false
 
-When bisecting RCU issues, it is often the case that the first error in
-an unsuccessful run will happen quickly, but that a successful run must
-go on for some time in order to obtain a sufficiently low false-negative
-error rate.  In many cases, a bisection requires multiple concurrent
-runs, in which case the first failure in any run indicates failure,
-pure and simple.  In such cases, it would speed things up greatly if
-the first failure terminated all runs.
+Coccinelle reports a warning
 
-This commit therefore adds scripting that checks for a file named "STOP"
-in the top-level results directory, terminating the run when it appears.
-Note that in-progress builds will continue until completion, but future
-builds and all runs will be cut short.
+WARNING: Assignment of 0/1 to bool variable
 
+The root cause is that the variable lastphase is a bool, but is
+initialised with integer 0.  This commit therefore replaces the 0 with
+a false.
+
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/jitter.sh         |  6 +++-
- tools/testing/selftests/rcutorture/bin/kvm-build.sh      |  6 +++-
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 13 +++++--
- tools/testing/selftests/rcutorture/bin/kvm.sh            |  2 +-
- 4 files changed, 25 insertions(+), 2 deletions(-)
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
-index 30cb5b2..188b864 100755
---- a/tools/testing/selftests/rcutorture/bin/jitter.sh
-+++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
-@@ -46,6 +46,12 @@ do
- 		exit 0;
- 	fi
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 5911207..37455a1 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2185,7 +2185,7 @@ static void rcu_torture_barrier1cb(void *rcu_void)
+ static int rcu_torture_barrier_cbs(void *arg)
+ {
+ 	long myid = (long)arg;
+-	bool lastphase = 0;
++	bool lastphase = false;
+ 	bool newphase;
+ 	struct rcu_head rcu;
  
-+	# Check for stop request.
-+	if test -f "$TORTURE_STOPFILE"
-+	then
-+		exit 1;
-+	fi
-+
- 	# Set affinity to randomly selected online CPU
- 	if cpus=`grep 1 /sys/devices/system/cpu/*/online 2>&1 |
- 		 sed -e 's,/[^/]*$,,' -e 's/^[^0-9]*//'`
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-build.sh b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-index 18d6518..115e182 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-@@ -9,6 +9,12 @@
- #
- # Authors: Paul E. McKenney <paulmck@linux.ibm.com>
- 
-+if test -f "$TORTURE_STOPFILE"
-+then
-+	echo "kvm-build.sh early exit due to run STOP request"
-+	exit 1
-+fi
-+
- config_template=${1}
- if test -z "$config_template" -o ! -f "$config_template" -o ! -r "$config_template"
- then
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index 064dd73..5ec095d 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -182,7 +182,7 @@ do
- 	kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
- 	if test -z "$qemu_pid" || kill -0 "$qemu_pid" > /dev/null 2>&1
- 	then
--		if test $kruntime -ge $seconds
-+		if test $kruntime -ge $seconds -o -f "$TORTURE_STOPFILE"
- 		then
- 			break;
- 		fi
-@@ -211,10 +211,19 @@ then
- fi
- if test $commandcompleted -eq 0 -a -n "$qemu_pid"
- then
--	echo Grace period for qemu job at pid $qemu_pid
-+	if ! test -f "$TORTURE_STOPFILE"
-+	then
-+		echo Grace period for qemu job at pid $qemu_pid
-+	fi
- 	oldline="`tail $resdir/console.log`"
- 	while :
- 	do
-+		if test -f "$TORTURE_STOPFILE"
-+		then
-+			echo "PID $qemu_pid killed due to run STOP request" >> $resdir/Warnings 2>&1
-+			kill -KILL $qemu_pid
-+			break
-+		fi
- 		kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
- 		if kill -0 $qemu_pid > /dev/null 2>&1
- 		then
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 7dbce7a..3578c85 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -337,6 +337,8 @@ then
- 	mkdir -p "$resdir" || :
- fi
- mkdir $resdir/$ds
-+TORTURE_RESDIR="$resdir/$ds"; export TORTURE_RESDIR
-+TORTURE_STOPFILE="$resdir/$ds/STOP"; export TORTURE_STOPFILE
- echo Results directory: $resdir/$ds
- echo $scriptname $args
- touch $resdir/$ds/log
