@@ -2,128 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB4C234896
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 17:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A706E2348D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 18:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387500AbgGaPol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 11:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726502AbgGaPok (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 11:44:40 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6760DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 08:44:40 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k8so9662612wma.2
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 08:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=1NYpUqU0m8gseMafnU6ZZ9hI2VDqh8nRMV7j1ON+eBM=;
-        b=q9wLsEV1Rk86emsF/ZMka41GeXSH8p2UuNxu72NK83TrraoBOj3KbElFDqyWMg1Y2g
-         j8+WWomQ3hG03JaVGL7Bhmm0jpbWFfAhnVv5wr9afd9LWsDuoy57zt2jtf7n4HCFenNG
-         S85eCT7lkHJhQztLKwwXArDfMi2EmCLZ36ZFzeSG1qK63Tnq3BN7uA/TbDS06o4PpFvl
-         pQ1h9esrDazcp3tURnh1t+RofCZAjt149XtCdfM2+xT+XZ3rFt1MU9/vF5i7q1/lc7vd
-         JqD9po/Kd3CQQhRU7oPS2q3PBy4eMa/ZE625Ijs+kfu6j+QvY1FeO5AOInX4b2YoBeWo
-         pVLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
-        bh=1NYpUqU0m8gseMafnU6ZZ9hI2VDqh8nRMV7j1ON+eBM=;
-        b=lUwJIbj+Btw0ShB9pm4YMCBpzVrvNyUr5S+SoZ2KkVaAfplBEIe/vt9c5SHBLWRZHo
-         pDeS58EHmf9m/y5frQ2lCsvAIJMWHlBtpVt7PSxzudHnTki+H+PZ1wQd58p2Qrvv3NdG
-         VZb7qq4GA4tHIlIjPYOLA/FdZXcGoL+2sDqJ6JCXnAqJGWx+Tzb3bQYOXQ33ZAt7zNl6
-         peYSz3zYemR6Io1fvQV2leWKJaaeNrG7QdersGiACXBPCLwcocdAgQOylI+qpus+CVm8
-         YiabYRVq0FIgvhtzoZvt0grra4z+26UK+yfg6v3apgpY18s6yylOSTm+zjl4yaFKI3cf
-         vkKg==
-X-Gm-Message-State: AOAM532fDpDhuwrPp57z/jtMVC1UGNNZSnIR5ms6DczmbCkajOvFVgks
-        kGR9ARi5WsxN9jOLobLJjx9NCDiux6o=
-X-Google-Smtp-Source: ABdhPJwhf6SCj36hK7ZvgS64rGdD6hgF4XvKN/y4k6M39iiUOCVksDr6o5wKsJmPgR7W23rm4JetFQ==
-X-Received: by 2002:a7b:c5c5:: with SMTP id n5mr4404346wmk.103.1596210278258;
-        Fri, 31 Jul 2020 08:44:38 -0700 (PDT)
-Received: from zen.linaroharston ([51.148.130.216])
-        by smtp.gmail.com with ESMTPSA id w64sm12242643wmb.26.2020.07.31.08.44.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 08:44:37 -0700 (PDT)
-Received: from zen (localhost [127.0.0.1])
-        by zen.linaroharston (Postfix) with ESMTP id 2DCB81FF7E;
-        Fri, 31 Jul 2020 16:44:36 +0100 (BST)
-References: <DM6PR11MB4331B490586462DE7353E0B8F9710@DM6PR11MB4331.namprd11.prod.outlook.com>
-User-agent: mu4e 1.5.5; emacs 28.0.50
-From:   Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>
-To:     "Pincus, Josh" <Josh.Pincus@windriver.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "zhabin@linux.alibaba.com" <zhabin@linux.alibaba.com>,
-        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
-        qemu-devel@nongnu.org
-Subject: Re: [PATCH v2 0/5] virtio mmio specification enhancement
-In-reply-to: <DM6PR11MB4331B490586462DE7353E0B8F9710@DM6PR11MB4331.namprd11.prod.outlook.com>
-Date:   Fri, 31 Jul 2020 16:44:36 +0100
-Message-ID: <87ft973d0b.fsf@linaro.org>
+        id S2387624AbgGaP6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 11:58:20 -0400
+Received: from elvis.franken.de ([193.175.24.41]:56730 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387504AbgGaP6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 11:58:19 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k1XQH-0000Ng-00; Fri, 31 Jul 2020 17:58:17 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 900BEC0B21; Fri, 31 Jul 2020 17:45:39 +0200 (CEST)
+Date:   Fri, 31 Jul 2020 17:45:39 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] of_address: Guard of_bus_pci_get_flags with CONFIG_PCI
+Message-ID: <20200731154539.GA16683@alpha.franken.de>
+References: <20200730005614.32302-1-jiaxun.yang@flygoat.com>
+ <CAL_JsqKPO155zVMqvWbGd84e1Ypk1SJDySU8YCRRA+uy7wtcHA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqKPO155zVMqvWbGd84e1Ypk1SJDySU8YCRRA+uy7wtcHA@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 31, 2020 at 08:27:55AM -0600, Rob Herring wrote:
+> On Wed, Jul 29, 2020 at 7:04 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> >
+> > After 2f96593ecc37 ("of_address: Add bus type match for pci ranges parser"),
+> > the last user of of_bus_pci_get_flags when CONFIG_PCI is disabled had gone.
+> >
+> > This caused unused function warning when compiling without CONFIG_PCI.
+> > Fix by guarding it with CONFIG_PCI.
+> >
+> > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Fixes: 2f96593ecc37 ("of_address: Add bus type match for pci ranges parser")
+> > ---
+> >  drivers/of/address.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Pincus, Josh <Josh.Pincus@windriver.com> writes:
+applied to mips-next.
 
-> Hi,
->
->=20=20
->
-> We were looking into a similar enhancement for the Virt I/O MMIO transpor=
-t and came across this project.
->
-> This enhancement would be perfect for us.
+Thomas.
 
-So there is certainly an interest in optimising MMIO based virtio and
-the current read/ack cycle adds additional round trip time for any trap
-and emulate hypervisor. However I think there is some resistance to
-making MMIO a re-implementation of what PCI already gives us for "free".
-
-I believe the current questions that need to be addressed are:
-
-  - Clear definitions in the spec on doorbells/notifications
-
-    The current virtio spec uses different terms in some places so it
-    would be nice to clarify the language and formalise what the
-    standard expects from transports w.r.t the capabilities of
-    notifications and doorbells.
-
-  - Quantifying the memory foot-print difference between PCI/MMIO
-
-    PCI gives a lot for free including a discovery and IRQ model already
-    designed to handle MSI/MSI-X. There is a claim that this brings in a
-    lot of bloat but I think there was some debate around the numbers.
-    My rough initial experiment with a PCI and non-PCI build with
-    otherwise identical VIRTIO configs results in the following:
-
-    16:40:15 c.282% [alex@zen:~/l/l/builds] review/rpmb|=E2=80=A6 + ls -l a=
-rm64/vmlinux arm64.nopci/vmlinux
-    -rwxr-xr-x 1 alex alex 83914728 Jul 31 16:39 arm64.nopci/vmlinux*
-    -rwxr-xr-x 1 alex alex 86368080 Jul 31 16:33 arm64/vmlinux*
-
-    which certainly implies there could be a fair amount of headroom for
-    an MMIO version to implement some features. However I don't know if
-    it's fully apples to apples as there maybe unneeded PCI bloat that a
-    virtio-only kernel doesn't need.
-
-
-What are the features you are most interested in?
-
-> Has there been any progress since Feb, 2020?  It looks like the effort
-> might have stalled?
-
-I can't speak to the OP's but there is certainly interest from others
-that are not the original posters.
-
-
---=20
-Alex Benn=C3=A9e
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
