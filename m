@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091182349E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 19:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76CB2349DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 19:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733150AbgGaRJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 13:09:34 -0400
-Received: from ms.lwn.net ([45.79.88.28]:55948 "EHLO ms.lwn.net"
+        id S1733107AbgGaRGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 13:06:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729269AbgGaRJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 13:09:34 -0400
-Received: from lwn.net (localhost [127.0.0.1])
+        id S1729944AbgGaRGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 13:06:04 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 2DFFE6D9;
-        Fri, 31 Jul 2020 17:09:34 +0000 (UTC)
-Date:   Fri, 31 Jul 2020 11:09:33 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     Tony Luck <tony.luck@intel.com>, kernel-janitors@vger.kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: ia64: correct typo
-Message-ID: <20200731110933.4edfc99c@lwn.net>
-In-Reply-To: <1596104250-32673-1-git-send-email-Julia.Lawall@inria.fr>
-References: <1596104250-32673-1-git-send-email-Julia.Lawall@inria.fr>
-Organization: LWN.net
+        by mail.kernel.org (Postfix) with ESMTPSA id A966D2074B;
+        Fri, 31 Jul 2020 17:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596215164;
+        bh=pLbeAibfw5n2vkRG3FD5oxVwpEDd8hei+OHLkZgRQvw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Hjwd8hIOq2+YnSWgcfAaNT3mNNczNPK0tA7gx9oFNc8GF8v0yf3VaLACd2KhJjoA4
+         SIBdIPBq9kLq+UFq5caZc18jgsGVVHJAAN4S4KuZl0bk1v34gwmAQXYRpLaaKeVLNu
+         6C9M00qHahqAzb6E2MjmIm1ZUkDnfk6pTmD+ahFE=
+Date:   Fri, 31 Jul 2020 12:12:07 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 0/2][next] Use flexible_array_size() helper in memcpy()
+Message-ID: <cover.1596214831.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Jul 2020 12:17:30 +0200
-Julia Lawall <Julia.Lawall@inria.fr> wrote:
+Hi,
 
-> Replace RTC_WKLAM_RD with RTC_WKALM_RD.
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> 
-> ---
->  Documentation/ia64/efirtc.rst |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/ia64/efirtc.rst b/Documentation/ia64/efirtc.rst
-> index 2f7ff50..fd83284 100644
-> --- a/Documentation/ia64/efirtc.rst
-> +++ b/Documentation/ia64/efirtc.rst
-> @@ -113,7 +113,7 @@ We have added 2 new ioctl()s that are specific to the EFI driver:
->  
->  	Read the current state of the alarm::
->  
-> -		ioctl(d, RTC_WKLAM_RD, &wkt)
-> +		ioctl(d, RTC_WKALM_RD, &wkt)
+This small series aims to:
 
-Applied to the docs tree, thanks.
+1. Make use of the flexible_array_size() helper in a call to memcpy()
+2. While there, use the preferred form for passing the size of a structure type
 
-jon
+Thanks
+
+Gustavo A. R. Silva (2):
+  mm: memcontrol: Use flex_array_size() helper in memcpy()
+  mm: memcontrol: Use the preferred form for passing the size of a
+    structure type
+
+ mm/memcontrol.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+-- 
+2.27.0
+
