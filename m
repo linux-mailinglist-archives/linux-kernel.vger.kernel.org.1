@@ -2,149 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C722342B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884412342E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732728AbgGaJZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:25:18 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:59301 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732711AbgGaJZO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:25:14 -0400
-X-IronPort-AV: E=Sophos;i="5.75,417,1589209200"; 
-   d="scan'208";a="53330059"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 31 Jul 2020 18:25:13 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id D0B9E400C9E4;
-        Fri, 31 Jul 2020 18:25:10 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 2/2] media: i2c: ov5640: Add support for BT656 mode
-Date:   Fri, 31 Jul 2020 10:24:47 +0100
-Message-Id: <1596187487-31403-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596187487-31403-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1596187487-31403-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1732355AbgGaJ0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:26:38 -0400
+Received: from mga01.intel.com ([192.55.52.88]:45104 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732483AbgGaJ0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 05:26:16 -0400
+IronPort-SDR: 9XHWa6z2a29eh0PHreyP7rparXJGKKFdxHjI3vYjdih9N4N38qmmZeUmDilr/aTYaKqkW4odoR
+ zUurRCRsJeaQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="169864034"
+X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
+   d="scan'208";a="169864034"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 02:26:15 -0700
+IronPort-SDR: dMJKnG4gLf/ZvU6NfIhQQ3ls1mZ/QxQ4ba4hOlulrJ69hK9n591LKrQsaYtUiue30/TDck/16Y
+ iIjLqG5nFPcA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
+   d="scan'208";a="331014832"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga007.jf.intel.com with ESMTP; 31 Jul 2020 02:26:12 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1k1RIq-005HOZ-Di; Fri, 31 Jul 2020 12:26:12 +0300
+Date:   Fri, 31 Jul 2020 12:26:12 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Feng Tang <feng.tang@intel.com>, Vinod Koul <vkoul@kernel.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] spi: dw-dma: Add max SG entries burst capability
+ support
+Message-ID: <20200731092612.GK3703480@smile.fi.intel.com>
+References: <20200731075953.14416-1-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731075953.14416-1-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable support for BT656 mode.
+On Fri, Jul 31, 2020 at 10:59:45AM +0300, Serge Semin wrote:
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/media/i2c/ov5640.c | 48 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 33 insertions(+), 15 deletions(-)
+...
 
-diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-index ac305a5..2b23988 100644
---- a/drivers/media/i2c/ov5640.c
-+++ b/drivers/media/i2c/ov5640.c
-@@ -82,6 +82,7 @@
- #define OV5640_REG_VFIFO_HSIZE		0x4602
- #define OV5640_REG_VFIFO_VSIZE		0x4604
- #define OV5640_REG_JPG_MODE_SELECT	0x4713
-+#define OV5640_REG_CCIR656_CTRL00	0x4730
- #define OV5640_REG_POLARITY_CTRL00	0x4740
- #define OV5640_REG_MIPI_CTRL00		0x4800
- #define OV5640_REG_DEBUG_MODE		0x4814
-@@ -1213,6 +1214,17 @@ static int ov5640_set_stream_dvp(struct ov5640_dev *sensor, bool on)
- 	return ov5640_write_reg(sensor, OV5640_REG_SYS_CTRL0, on ? 0x2 : 0x42);
- }
- 
-+static int ov5640_set_stream_bt656(struct ov5640_dev *sensor, bool on)
-+{
-+	int ret;
-+
-+	ret = ov5640_write_reg(sensor, OV5640_REG_CCIR656_CTRL00, on ? 0x1 : 0x00);
-+	if (ret)
-+		return ret;
-+
-+	return ov5640_write_reg(sensor, OV5640_REG_SYS_CTRL0, on ? 0x2 : 0x42);
-+}
-+
- static int ov5640_set_stream_mipi(struct ov5640_dev *sensor, bool on)
- {
- 	int ret;
-@@ -1998,18 +2010,21 @@ static int ov5640_set_power(struct ov5640_dev *sensor, bool on)
- 			 *		datasheet and hardware, 0 is active high
- 			 *		and 1 is active low...)
- 			 */
--			if (flags & V4L2_MBUS_PCLK_SAMPLE_RISING)
--				pclk_pol = 1;
--			if (flags & V4L2_MBUS_HSYNC_ACTIVE_HIGH)
--				hsync_pol = 1;
--			if (flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
--				vsync_pol = 1;
--
--			ret = ov5640_write_reg(sensor, OV5640_REG_POLARITY_CTRL00,
--					       (pclk_pol << 5) | (hsync_pol << 1) | vsync_pol);
--
--			if (ret)
--				goto power_off;
-+			if (sensor->ep.bus_type == V4L2_MBUS_PARALLEL) {
-+				if (flags & V4L2_MBUS_PCLK_SAMPLE_RISING)
-+					pclk_pol = 1;
-+				if (flags & V4L2_MBUS_HSYNC_ACTIVE_HIGH)
-+					hsync_pol = 1;
-+				if (flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
-+					vsync_pol = 1;
-+
-+				ret = ov5640_write_reg(sensor, OV5640_REG_POLARITY_CTRL00,
-+						       (pclk_pol << 5) | (hsync_pol << 1) |
-+						       vsync_pol);
-+
-+				if (ret)
-+					goto power_off;
-+			}
- 
- 			/*
- 			 * powerdown MIPI TX/RX PHY & disable MIPI
-@@ -2033,7 +2048,9 @@ static int ov5640_set_power(struct ov5640_dev *sensor, bool on)
- 			 * - 4:		PCLK output enable
- 			 * - [3:0]:	D[9:6] output enable
- 			 */
--			ret = ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT_ENABLE01, 0x7f);
-+			ret = ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT_ENABLE01,
-+					       sensor->ep.bus_type == V4L2_MBUS_PARALLEL ?
-+					       0x7f : 0x1f);
- 			if (ret)
- 				goto power_off;
- 
-@@ -2047,7 +2064,6 @@ static int ov5640_set_power(struct ov5640_dev *sensor, bool on)
- 			if (ret)
- 				goto power_off;
- 		}
--
- 	} else {
- 		if (sensor->ep.bus_type == V4L2_MBUS_CSI2_DPHY) {
- 			/* Reset MIPI bus settings to their default values. */
-@@ -2875,8 +2891,10 @@ static int ov5640_s_stream(struct v4l2_subdev *sd, int enable)
- 
- 		if (sensor->ep.bus_type == V4L2_MBUS_CSI2_DPHY)
- 			ret = ov5640_set_stream_mipi(sensor, enable);
--		else
-+		else if (sensor->ep.bus_type == V4L2_MBUS_PARALLEL)
- 			ret = ov5640_set_stream_dvp(sensor, enable);
-+		else
-+			ret = ov5640_set_stream_bt656(sensor, enable);
- 
- 		if (!ret)
- 			sensor->streaming = enable;
+> Note since the DMA-engine subsystem in kernel 5.8-rcX doesn't have the
+> max_sg_burst capability supported, this series is intended to be applied
+> only after the "next"-branch of the DMA-engine repository is merged into
+> the mainline repo. Alternatively the series could be merged in through the
+> DMA-engine repo.
+
+This needs to be thought through...
+
+I gave some simple comments (and on top just try not to modify the same lines
+inside one series two or more times, e.g. ret = func() -> return func() -> ret
+= func() in one case).
+
 -- 
-2.7.4
+With Best Regards,
+Andy Shevchenko
+
 
