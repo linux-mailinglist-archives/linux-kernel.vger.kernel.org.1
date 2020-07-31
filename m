@@ -2,106 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477AD2345C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFE02345CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387446AbgGaMWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:22:38 -0400
-Received: from ozlabs.org ([203.11.71.1]:45813 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387441AbgGaMWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:22:36 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BJ5yK6H3Dz9sTj;
-        Fri, 31 Jul 2020 22:22:33 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1596198154;
-        bh=Prtm3ZkafGqoaiQ6lU5j4Sn7hFJGfCqYKtzN6e75H/U=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=KbZpEbke43+mqF8Wrlu3oo7mQEHpU414hdIdx+DUlPlL6Kp3bT3j8rxM15zP+FV0A
-         +cAW3Fg9FIQKplR0VN++e/ezGqL0lJ5JCRpoMiZBi7FXiaAHnRNGRb1KLrw7uNC/rB
-         BDHId0/yzLGFbZj6qbVhsuBpJ1mlRrootLlQBhWtBXCrAb/CcpPEcf92UyzeIcvDbK
-         hBa1e5yT6WZR4kY3u54KU8Fe2Csf/AzNYZhbXAS7eTCnwpG34leJeS57G4qDd8dEtB
-         pavyyUd8Y+BtEivfjjmXio/Em3P7fb/h5bfC6/J0amjIIOUbTHvZ3wbDwlM4bkzeny
-         A1rgxfFm4dRFQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jordan Niethe <jniethe5@gmail.com>
-Subject: Re: [PATCH v4 06/10] powerpc/smp: Generalize 2nd sched domain
-In-Reply-To: <20200731092901.GH14603@linux.vnet.ibm.com>
-References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com> <20200727053230.19753-7-srikar@linux.vnet.ibm.com> <875za45dr2.fsf@mpe.ellerman.id.au> <20200731092901.GH14603@linux.vnet.ibm.com>
-Date:   Fri, 31 Jul 2020 22:22:32 +1000
-Message-ID: <87lfiz50xj.fsf@mpe.ellerman.id.au>
+        id S1733075AbgGaM2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:28:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732916AbgGaM2Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 08:28:16 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109F2C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:28:16 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id h21so16358572qtp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:28:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GpNuJXQqlOCS5GDhX83vpT+wKOWnehhWp+8dfJ9ixf8=;
+        b=cXZ/EyzfeupDWbipTBUjVJZ+y8cP5jdycblY7Z44CJzHSeRA1+/URHNLmNEBG6BcOM
+         stbguOeWoSqquxN/JWuE1EJG24866Y9gW6yGcPv1DjBmzHnHPnYiGSPTgEi2gsemJ0J4
+         NwSvx+gXc0G4R2oNG5ktox1/YbsRpUYDKMtgMbLW6ktjs6pgCzdFaNHmT5i8GLfar8rX
+         LmIX/euaj/XZnevGsKwtZrOLf3ZUdikX/ARBBD8q1Bcn9QSW91AywUdm3OVBnsaMsjoS
+         cdR0EiIR/Oq/XzEOgxoNyYat+O/9QHuikFCr7b7kYlRE9bfJ5uupbOprsNTY2RGNNx2d
+         ++1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GpNuJXQqlOCS5GDhX83vpT+wKOWnehhWp+8dfJ9ixf8=;
+        b=F5yP2ZEPgR6hDNXs5f6/37VtKNLDpRl/EPfz7DAsAx3GtH9DwhtYegpyQDEFbWlK1A
+         lWglLBna0mp5oCjktUg6I0mD48xSwVfK+Jbf8R1dxK0/+4qOKiExg9i772RdOSaTjRYN
+         94Sia9WFro+nm6kkPZWE++YQCJrXk7+8zOCLF2Vc6aNT/NlRrp4/tc9AHBekKLEy0b1D
+         HyeE5CGgxKgX0L+ScHx2gVT78Pc3MMKdYw8+cCH1I3fmZ0GiLH+LdkLwXg4siPT/ZOMU
+         ykkN8lJP85jyQBCn3BQ9WIpx8Z0DGbW4GRs3tds/exQQaWx7lYN6xbhOWd66g9AMHEup
+         QYtQ==
+X-Gm-Message-State: AOAM5336LqRQACN+rqtkBLKvsYhLfR64RRgP6Er53rFEhL8r9Tw7KkCu
+        TK0CCeax9ZrSOm6cfFXfs4IGZKl838WsLTDy4zB7Aw==
+X-Google-Smtp-Source: ABdhPJyC4PI0MMIp9wDUvN+USBI9m1uGvSm0aAlyJ4syTr+1+ju/bY8i/k2DL7z40LWm81Mb4WmTN/wEXFNd6QSuv7g=
+X-Received: by 2002:aed:22cb:: with SMTP id q11mr1035394qtc.200.1596198495028;
+ Fri, 31 Jul 2020 05:28:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1595927918-19845-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+ <1595927918-19845-5-git-send-email-grzegorz.jaszczyk@linaro.org> <f65c6b32-7754-9880-1912-3b0b30a3d6d4@lechnology.com>
+In-Reply-To: <f65c6b32-7754-9880-1912-3b0b30a3d6d4@lechnology.com>
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Date:   Fri, 31 Jul 2020 14:28:04 +0200
+Message-ID: <CAMxfBF4--kP=tt-1LqMB=W8B6gHYu1vFFMtnLPgc-akeLiK-Yw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] irqchip/irq-pruss-intc: Implement
+ irq_{get,set}_irqchip_state ops
+To:     David Lechner <david@lechnology.com>, Marc Zyngier <maz@kernel.org>
+Cc:     tglx@linutronix.de, jason@lakedaemon.net,
+        "Anna, Suman" <s-anna@ti.com>, robh+dt@kernel.org,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "Mills, William" <wmills@ti.com>,
+        "Bajjuri, Praneeth" <praneeth@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> * Michael Ellerman <mpe@ellerman.id.au> [2020-07-31 17:45:37]:
+On Wed, 29 Jul 2020 at 21:23, David Lechner <david@lechnology.com> wrote:
 >
->> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
->> > Currently "CACHE" domain happens to be the 2nd sched domain as per
->> > powerpc_topology. This domain will collapse if cpumask of l2-cache is
->> > same as SMT domain. However we could generalize this domain such that it
->> > could mean either be a "CACHE" domain or a "BIGCORE" domain.
->> >
->> > While setting up the "CACHE" domain, check if shared_cache is already
->> > set.
->> 
->> PeterZ asked for some overview of what you're doing and why, you
->> responded to his mail, but I was expecting to see that text incorporated
->> here somewhere.
->> 
+> On 7/28/20 4:18 AM, Grzegorz Jaszczyk wrote:
+> > From: David Lechner <david@lechnology.com>
+> >
+> > This implements the irq_get_irqchip_state and irq_set_irqchip_state
+> > callbacks for the TI PRUSS INTC driver. The set callback can be used
+> > by drivers to "kick" a PRU by injecting a PRU system event.
+> >
+> > Example:
 >
-> Okay, do you want that as part of the code or documentation dir or the
-> changelog?
-
-I guess a comment is best, as that's most likely to be seen by people
-looking at the code in future.
-
-A little bit of overview in the change log is also good.
-
->> He also asked for some comments, which I would also like to see.
->> 
->> 
->> I'm also not clear why we want to rename it to "bigcore", that's not a
->> commonly understood term, I don't think it's clear to new readers what
->> it means.
->> 
->> Leaving it as the shared cache domain, and having a comment mentioning
->> that "bigcores" share a cache, would be clearer I think.
->> 
+> We could improve this example by showing a device tree node of a
+> firmware-defined device implemented in the PRU:
 >
-> Today, Shared cache is equal to Big Core. However in not too distant future,
-> Shared cache domain and Big Core may not be the same. For example lets
-> assume that L2 cache were to Shrink per small core with the firmware
-> exposing the core as a bigcore. Then with the current design, we have a SMT
-> == SHARED CACHE, and a DIE. We would not have any domain at the publicised 8
-> thread level. Keeping the Bigcore as a domain and mapping the shared
-> cache, (I am resetting the domain name as CACHE if BIGCORE==SHARED_CACHE),
-> helps us in this scenario.
+>         /* Software-defined UART in PRU */
+>         pru_uart: serial@XXXX {
+>                 compatible = "ti,pru-uart";
+>                 ...
+>                 interrupt-parent = <&pruss_intc>;
+>                 /* PRU system event 31, channel 0, host event 0 */
+>                 interrupts = <31 0 0>, ...;
+>                 interrupt-names = "kick", ...;
+>                 ...
+>         },
+>
+> Then driver would request the IRQ during probe:
+>
+>         data->kick_irq = of_irq_get_byname(dev, "kick");
+>         if (data->kick_irq < 0)
+>                 ...
+>
+>
+> And later the driver would use the IRQ to kick the PRU:
+>
+>         irq_set_irqchip_state(data->kick_irq, IRQCHIP_STATE_PENDING, true);
+>
+>
 
-Yeah OK.
+We could but I am not sure if this kind of complex example should land
+in the commit log.
+Marc could you please comment how you want to see this?
 
-In that scenario it's not really clear what the 8 thread level domain
-expresses, if the two "halves" of the bigcore have separate L2s. But
-presumably there is still some benefit to exposing it.
-
-cheers
+Thank you,
+Grzegorz
