@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA4E2345A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8362345A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733208AbgGaMVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        id S1733220AbgGaMVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733200AbgGaMVk (ORCPT
+        with ESMTP id S1733210AbgGaMVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:21:40 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CEC3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:40 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id c6so7213112pje.1
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:40 -0700 (PDT)
+        Fri, 31 Jul 2020 08:21:43 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FB5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:43 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id w17so17217254ply.11
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=OHzHoMnONnHgmQ6oS0LXj3evSeIK3rt+KuGRMSo863I=;
-        b=RHNMfYZ7INmvkYdK1PdCI83KRYWH7DdU877VsMEzOud/rM+KMNB3vlyrgAbZ47hy9O
-         LC9If1zMOiN7LX+uDhik8mYzZuJZePDM7vEdxrjzrkdsa010IKdYKoY8TdLW6K22l9+w
-         MEc4nA5npneen3+FBqq0bFjnsF0SPCLBeHc22GwMp6nrvw39+Jad3UGOgAFsKULfXfnM
-         EsWYACTOAhNQoXalpeK25eyYGlJDRLTlpQvLWYv0+6JjbkIlHJcnBpuDKdQlVe+9XC0p
-         Sfdt8nfotLAOuyPujBdsjpHBTNekqBqqH6nV1gBDgyKmAbi2qqlw28pXQ7tIjBgVopII
-         f//g==
+        bh=LNtUR/zVIQaYBxFfor/p8rzccCbsJTTUqM4Vi3aweCQ=;
+        b=sbKje5uIs6vCbwISQGSsY7ywCySYHLZXwGfBBzrrDlpKgZEwgXpkNnojXjn7XLjGP/
+         LCVVujswgi1kcKfAHve7pLUcRsbbTqELSBhvEYUW/53GDHRah+nKmDcVdOyNptggcte0
+         V3SW4VKwwje/98Hpyg8fTcf8q1o93Sg4eMBrrazVM2rqH79v8HW8x7qrDmwCC+ngDeSS
+         ch8A6lSwj//OBO1B2xpREwfP/rmOxj82xg8rBvQQjx7geQJvQS5ZxCFkLL6dW/FCi506
+         m/rDix44wr2xoGqudd1ZNDA06C+fNSIJMkkHKMloNYydDjMPuZc2u+LIp64Yuur2h1pA
+         RJ7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=OHzHoMnONnHgmQ6oS0LXj3evSeIK3rt+KuGRMSo863I=;
-        b=mA8PdACQsjp0ZLuWpO6YlKrcLtXIk2P0mkJc5vZpHakrJEdJYfJY9YCAOaqbRjcv3D
-         5b59/QtpkdTNmIcr/WIi1pNCtzSNATa08F7PSEqMadHUm5qCsdXvlB4nF6tNgV3UT1DJ
-         Swemwnjxqs7QzecOKEnBJevdsG++SU2MMYbG8mpVQUvaq8pgXPKuApZhquGqIP2rCG92
-         lgxGthEbd5IzwHmadFKyaEVkCTax1NfasMKvJi7+bjU53kBvrg///W6beJSGri7npqnx
-         iyE3KpWYkVgALWLajd2Y7aQtyHhXlL8zVXGItDI9vy+H7EcyfoTZqeLmI4tdYQEx6B6R
-         jANA==
-X-Gm-Message-State: AOAM532sOV6y54If6S6HHWkUEZjKU7wneCXnZtmt3wqmC4t7b/FisKZY
-        i2UQDb5qk+COg6wBnZ9h1A==
-X-Google-Smtp-Source: ABdhPJwYRz5kod3XCHjDVlzL6HDrI8a37sXmIaPl37+kb2V1Wyjx3zKLSM3wYhzIoZfP/orj4c6xXg==
-X-Received: by 2002:a63:531e:: with SMTP id h30mr3328177pgb.165.1596198099672;
-        Fri, 31 Jul 2020 05:21:39 -0700 (PDT)
+        bh=LNtUR/zVIQaYBxFfor/p8rzccCbsJTTUqM4Vi3aweCQ=;
+        b=sZMFykm1kwSlB/+WYtALHidwhjxQB/gN+NecpX7G7xn3wcpugZzoCbHUiwIPt74aj1
+         symhIDlALvT0ex14X+U79FxsxVgfmTmN3K74AGNQy1dTyaTZkBrcfJEyOtsCo3TSc/5e
+         pUaJ+61BRv9FDo8gHxkgz/YtKGvj/U0c0sVI2zvpwFQJCfpj7WyUTqdiBTqcq00EE6pk
+         zBkKh/y7iWJRe1p4Z1nTQQFf1OLettHx0PLXNw4AupoYAFNTQ2ymJMR8z3cqCkFQNYIm
+         tOSixlW4YZJSuxtQxQ3jAPj+AixV2+I1hCMsMUuXG7BWoZvNQqZPtQxAUpgOFnkFl525
+         S01Q==
+X-Gm-Message-State: AOAM530xXqRF2w1xRrL+QMw8L2nMPt1oOAUgBpwE/f8C4DDExZoA1stb
+        Py0lrOaX4Bh3h8h/4XxaHQ==
+X-Google-Smtp-Source: ABdhPJxYEpIrkMi6DnA+PXFhpdicTO+XfTlrSG7PPUPUyCZCiyePLqhVJJpOvhq2DRtPaUJItgn1AQ==
+X-Received: by 2002:a65:5c43:: with SMTP id v3mr3378625pgr.214.1596198102753;
+        Fri, 31 Jul 2020 05:21:42 -0700 (PDT)
 Received: from ip-172-31-41-194.ap-northeast-1.compute.internal (ec2-52-199-21-241.ap-northeast-1.compute.amazonaws.com. [52.199.21.241])
-        by smtp.gmail.com with ESMTPSA id m19sm3675692pjv.34.2020.07.31.05.21.36
+        by smtp.gmail.com with ESMTPSA id m19sm3675692pjv.34.2020.07.31.05.21.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 05:21:39 -0700 (PDT)
+        Fri, 31 Jul 2020 05:21:42 -0700 (PDT)
 From:   nao.horiguchi@gmail.com
 To:     linux-mm@kvack.org
 Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
@@ -54,9 +54,9 @@ Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
         david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
         zeil@yandex-team.ru, cai@lca.pw, naoya.horiguchi@nec.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 07/16] mm,hwpoison: Kill put_hwpoison_page
-Date:   Fri, 31 Jul 2020 12:21:03 +0000
-Message-Id: <20200731122112.11263-8-nao.horiguchi@gmail.com>
+Subject: [PATCH v5 08/16] mm,hwpoison: remove MF_COUNT_INCREASED
+Date:   Fri, 31 Jul 2020 12:21:04 +0000
+Message-Id: <20200731122112.11263-9-nao.horiguchi@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200731122112.11263-1-nao.horiguchi@gmail.com>
 References: <20200731122112.11263-1-nao.horiguchi@gmail.com>
@@ -65,160 +65,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oscar Salvador <osalvador@suse.de>
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-After commit 4e41a30c6d50 ("mm: hwpoison: adjust for new thp refcounting"),
-put_hwpoison_page got reduced to a put_page.
-Let us just use put_page instead.
+Now there's no user of MF_COUNT_INCREASED, so we can safely remove
+it from all calling points.
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
 ---
- include/linux/mm.h  |  1 -
- mm/memory-failure.c | 30 +++++++++++++++---------------
- 2 files changed, 15 insertions(+), 16 deletions(-)
+ include/linux/mm.h  |  7 +++----
+ mm/memory-failure.c | 14 +++-----------
+ 2 files changed, 6 insertions(+), 15 deletions(-)
 
 diff --git v5.8-rc7-mmotm-2020-07-27-18-18/include/linux/mm.h v5.8-rc7-mmotm-2020-07-27-18-18_patched/include/linux/mm.h
-index 8f742373a46a..371970dfffc4 100644
+index 371970dfffc4..c09111e8eac8 100644
 --- v5.8-rc7-mmotm-2020-07-27-18-18/include/linux/mm.h
 +++ v5.8-rc7-mmotm-2020-07-27-18-18_patched/include/linux/mm.h
-@@ -2985,7 +2985,6 @@ extern int memory_failure(unsigned long pfn, int flags);
+@@ -2976,10 +2976,9 @@ void register_page_bootmem_memmap(unsigned long section_nr, struct page *map,
+ 				  unsigned long nr_pages);
+ 
+ enum mf_flags {
+-	MF_COUNT_INCREASED = 1 << 0,
+-	MF_ACTION_REQUIRED = 1 << 1,
+-	MF_MUST_KILL = 1 << 2,
+-	MF_SOFT_OFFLINE = 1 << 3,
++	MF_ACTION_REQUIRED = 1 << 0,
++	MF_MUST_KILL = 1 << 1,
++	MF_SOFT_OFFLINE = 1 << 2,
+ };
+ extern int memory_failure(unsigned long pfn, int flags);
  extern void memory_failure_queue(unsigned long pfn, int flags);
- extern void memory_failure_queue_kick(int cpu);
- extern int unpoison_memory(unsigned long pfn);
--#define put_hwpoison_page(page)	put_page(page)
- extern int sysctl_memory_failure_early_kill;
- extern int sysctl_memory_failure_recovery;
- extern void shake_page(struct page *p, int access);
 diff --git v5.8-rc7-mmotm-2020-07-27-18-18/mm/memory-failure.c v5.8-rc7-mmotm-2020-07-27-18-18_patched/mm/memory-failure.c
-index 405c9bef6ffb..6853bf3a253d 100644
+index 6853bf3a253d..9768ab5f51ef 100644
 --- v5.8-rc7-mmotm-2020-07-27-18-18/mm/memory-failure.c
 +++ v5.8-rc7-mmotm-2020-07-27-18-18_patched/mm/memory-failure.c
-@@ -1144,7 +1144,7 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
- 		pr_err("Memory failure: %#lx: just unpoisoned\n", pfn);
- 		num_poisoned_pages_dec();
- 		unlock_page(head);
--		put_hwpoison_page(head);
-+		put_page(head);
- 		return 0;
- 	}
+@@ -1118,7 +1118,7 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
  
-@@ -1336,7 +1336,7 @@ int memory_failure(unsigned long pfn, int flags)
- 					pfn);
- 			if (TestClearPageHWPoison(p))
- 				num_poisoned_pages_dec();
--			put_hwpoison_page(p);
-+			put_page(p);
- 			return -EBUSY;
- 		}
- 		unlock_page(p);
-@@ -1389,14 +1389,14 @@ int memory_failure(unsigned long pfn, int flags)
- 		pr_err("Memory failure: %#lx: just unpoisoned\n", pfn);
- 		num_poisoned_pages_dec();
- 		unlock_page(p);
--		put_hwpoison_page(p);
-+		put_page(p);
- 		return 0;
- 	}
- 	if (hwpoison_filter(p)) {
- 		if (TestClearPageHWPoison(p))
- 			num_poisoned_pages_dec();
- 		unlock_page(p);
--		put_hwpoison_page(p);
-+		put_page(p);
- 		return 0;
- 	}
+ 	num_poisoned_pages_inc();
  
-@@ -1630,9 +1630,9 @@ int unpoison_memory(unsigned long pfn)
- 	}
- 	unlock_page(page);
- 
--	put_hwpoison_page(page);
-+	put_page(page);
- 	if (freeit && !(pfn == my_zero_pfn(0) && page_count(p) == 1))
--		put_hwpoison_page(page);
-+		put_page(page);
- 
- 	return 0;
- }
-@@ -1683,7 +1683,7 @@ static int get_any_page(struct page *page, unsigned long pfn, int flags)
+-	if (!(flags & MF_COUNT_INCREASED) && !get_hwpoison_page(p)) {
++	if (!get_hwpoison_page(p)) {
  		/*
- 		 * Try to free it.
+ 		 * Check "filter hit" and "race with other subpage."
  		 */
--		put_hwpoison_page(page);
-+		put_page(page);
- 		shake_page(page, 1);
+@@ -1314,7 +1314,7 @@ int memory_failure(unsigned long pfn, int flags)
+ 	 * In fact it's dangerous to directly bump up page count from 0,
+ 	 * that may make page_ref_freeze()/page_ref_unfreeze() mismatch.
+ 	 */
+-	if (!(flags & MF_COUNT_INCREASED) && !get_hwpoison_page(p)) {
++	if (!get_hwpoison_page(p)) {
+ 		if (is_free_buddy_page(p)) {
+ 			action_result(pfn, MF_MSG_BUDDY, MF_DELAYED);
+ 			return 0;
+@@ -1354,10 +1354,7 @@ int memory_failure(unsigned long pfn, int flags)
+ 	shake_page(p, 0);
+ 	/* shake_page could have turned it free. */
+ 	if (!PageLRU(p) && is_free_buddy_page(p)) {
+-		if (flags & MF_COUNT_INCREASED)
+-			action_result(pfn, MF_MSG_BUDDY, MF_DELAYED);
+-		else
+-			action_result(pfn, MF_MSG_BUDDY_2ND, MF_DELAYED);
++		action_result(pfn, MF_MSG_BUDDY_2ND, MF_DELAYED);
+ 		return 0;
+ 	}
  
- 		/*
-@@ -1692,7 +1692,7 @@ static int get_any_page(struct page *page, unsigned long pfn, int flags)
- 		ret = __get_any_page(page, pfn, 0);
- 		if (ret == 1 && !PageLRU(page)) {
- 			/* Drop page reference which is from __get_any_page() */
--			put_hwpoison_page(page);
-+			put_page(page);
- 			pr_info("soft_offline: %#lx: unknown non LRU page type %lx (%pGp)\n",
- 				pfn, page->flags, &page->flags);
- 			return -EIO;
-@@ -1715,7 +1715,7 @@ static int soft_offline_huge_page(struct page *page, int flags)
- 	lock_page(hpage);
- 	if (PageHWPoison(hpage)) {
- 		unlock_page(hpage);
--		put_hwpoison_page(hpage);
-+		put_page(hpage);
- 		pr_info("soft offline: %#lx hugepage already poisoned\n", pfn);
- 		return -EBUSY;
- 	}
-@@ -1726,7 +1726,7 @@ static int soft_offline_huge_page(struct page *page, int flags)
- 	 * get_any_page() and isolate_huge_page() takes a refcount each,
- 	 * so need to drop one here.
- 	 */
--	put_hwpoison_page(hpage);
-+	put_page(hpage);
- 	if (!ret) {
- 		pr_info("soft offline: %#lx hugepage failed to isolate\n", pfn);
- 		return -EBUSY;
-@@ -1779,7 +1779,7 @@ static int __soft_offline_page(struct page *page, int flags)
- 	wait_on_page_writeback(page);
- 	if (PageHWPoison(page)) {
- 		unlock_page(page);
--		put_hwpoison_page(page);
-+		put_page(page);
- 		pr_info("soft offline: %#lx page already poisoned\n", pfn);
- 		return -EBUSY;
- 	}
-@@ -1794,7 +1794,7 @@ static int __soft_offline_page(struct page *page, int flags)
- 	 * would need to fix isolation locking first.
- 	 */
- 	if (ret == 1) {
--		put_hwpoison_page(page);
-+		put_page(page);
- 		pr_info("soft_offline: %#lx: invalidated\n", pfn);
- 		SetPageHWPoison(page);
- 		num_poisoned_pages_inc();
-@@ -1814,7 +1814,7 @@ static int __soft_offline_page(struct page *page, int flags)
- 	 * Drop page reference which is came from get_any_page()
- 	 * successful isolate_lru_page() already took another one.
- 	 */
--	put_hwpoison_page(page);
-+	put_page(page);
- 	if (!ret) {
- 		LIST_HEAD(pagelist);
- 		/*
-@@ -1858,7 +1858,7 @@ static int soft_offline_in_use_page(struct page *page, int flags)
- 				pr_info("soft offline: %#lx: non anonymous thp\n", page_to_pfn(page));
- 			else
- 				pr_info("soft offline: %#lx: thp split failed\n", page_to_pfn(page));
--			put_hwpoison_page(page);
-+			put_page(page);
- 			return -EBUSY;
- 		}
- 		unlock_page(page);
-@@ -1931,7 +1931,7 @@ int soft_offline_page(unsigned long pfn, int flags)
+@@ -1648,9 +1645,6 @@ static int __get_any_page(struct page *p, unsigned long pfn, int flags)
+ {
+ 	int ret;
+ 
+-	if (flags & MF_COUNT_INCREASED)
+-		return 1;
+-
+ 	/*
+ 	 * When the target page is a free hugepage, just remove it
+ 	 * from free hugepage list.
+@@ -1930,8 +1924,6 @@ int soft_offline_page(unsigned long pfn, int flags)
+ 
  	if (PageHWPoison(page)) {
  		pr_info("soft offline: %#lx page already poisoned\n", pfn);
- 		if (flags & MF_COUNT_INCREASED)
--			put_hwpoison_page(page);
-+			put_page(page);
+-		if (flags & MF_COUNT_INCREASED)
+-			put_page(page);
  		return -EBUSY;
  	}
  
