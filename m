@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35068234320
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3366723432E
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732278AbgGaJWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732222AbgGaJWq (ORCPT
+        id S1732933AbgGaJ2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:28:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56350 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732223AbgGaJWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:22:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38358C061574;
-        Fri, 31 Jul 2020 02:22:46 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 09:22:44 -0000
+        Fri, 31 Jul 2020 05:22:47 -0400
+Date:   Fri, 31 Jul 2020 09:22:45 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187364;
+        s=2020; t=1596187366;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=T7ukGN4bM+gflCLO43W24GiEXTL1gig4f058wloVrgQ=;
-        b=C4fVIQ4qqcQ7KjisFmH7KE85z3arTWgtadWl4qSek48cIqKPuRT2rciEPDz7n9meeVDtEE
-        /dIaW1jICKxs5+rm5LrMTkKxtMR8lfnO9jlMYY54CYZXmZxbVVM2XrNGi5YM22HJ36Jqbf
-        OI0+N3pMk/kttENoGTGMqprVtPEXFT0obRjJpc9UNoC/ZeAArmY/JDeiqPZySTD9BXhGvr
-        QmCAC2N517acpiYf0Oqb1vwdbsuPRlvsu0Drmdh9SyRozY3MXYNgbx4DLofU1EW/sNVym0
-        O2Zi6yyM009iaBfEieJYfhO8LqC03uBqniUBL6vdPSRVtPO0tNRrEEu6K8XDeQ==
+        bh=BeyC/p7pZv5CR8pQNojnRUIhBZ+uh4RVMO24o7/VibI=;
+        b=AQTYsXM07z26ilzm112/0KhhPbx6taAYP+c05psQIxTKLVC/QEiD2ahVUj1Ugpy+SHnCP1
+        YpxOtvIKSJNl4/J2+CDBSbKq1Fi++pDjklH1PxsdaFwL0algUUGYi5PRr5ekmZDCCYr1Ji
+        6yrpv5oXMQOQFdEbTHrtJFxEBm+Fcr2vrMIi3QovzezmT6UcUouRG59w1i3W1oc186I8Ta
+        /OxYlSFPqc8oFBV8FeSCH9irGFeQKLWZuxa9tfMC3Ui87T0AWqVpleM8v7qoAolaC5So/m
+        3u2fWe1AKNgXynk0e1Q2BJ2k/1WJhfJ+PR9IoiHkw3O82WOhk2Kdf89b65FiAQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187364;
+        s=2020e; t=1596187366;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=T7ukGN4bM+gflCLO43W24GiEXTL1gig4f058wloVrgQ=;
-        b=9dgheEA8S9H9LZMLCa9UU2nStCggbDAd7FXbthSmcdBUgQQNmQ/qx4ZnNPurMhz4wkizD/
-        rd3YYQR0d8AFWvDA==
+        bh=BeyC/p7pZv5CR8pQNojnRUIhBZ+uh4RVMO24o7/VibI=;
+        b=hYbyDe6xVkTZuHTx0yWggKJqtcR5ELxJkVrf8rp8rGDafynYFPvvehPWoo3UPpn8o3ljOM
+        kufZKBTDvB36AFDw==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Add --allcpus argument to the kvm.sh script
+Subject: [tip: core/rcu] rcutorture: NULL rcu_torture_current earlier in cleanup code
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159618736410.4006.3706383349129713648.tip-bot2@tip-bot2>
+Message-ID: <159618736537.4006.12539331813320292478.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,38 +51,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     a3ba4972f2ef8408dcc8a2a3d433621d6c990594
-Gitweb:        https://git.kernel.org/tip/a3ba4972f2ef8408dcc8a2a3d433621d6c990594
+Commit-ID:     cae7cc6ba5bad320c2055ac54f73affd051e76ca
+Gitweb:        https://git.kernel.org/tip/cae7cc6ba5bad320c2055ac54f73affd051e76ca
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Mon, 04 May 2020 16:41:53 -07:00
+AuthorDate:    Sun, 26 Apr 2020 19:20:37 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 29 Jun 2020 12:01:44 -07:00
 
-torture: Add --allcpus argument to the kvm.sh script
+rcutorture: NULL rcu_torture_current earlier in cleanup code
 
-Leaving off the kvm.sh script's --cpus argument results in the script
-testing the scenarios sequentially, which can be quite slow.  However,
-having to specify the actual number of CPUs can be error-prone.
-This commit therefore adds a --allcpus argument that causes kvm.sh to
-use all available CPUs.
+Currently, the rcu_torture_current variable remains non-NULL until after
+all readers have stopped.  During this time, rcu_torture_stats_print()
+will think that the test is still ongoing, which can result in confusing
+dmesg output.  This commit therefore NULLs rcu_torture_current immediately
+after the rcu_torture_writer() kthread has decided to stop, thus informing
+rcu_torture_stats_print() much sooner.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index c279cf9..7dbce7a 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -73,6 +73,10 @@ usage () {
- while test $# -gt 0
- do
- 	case "$1" in
-+	--allcpus)
-+		cpus=$TORTURE_ALLOTED_CPUS
-+		max_cpus=$TORTURE_ALLOTED_CPUS
-+		;;
- 	--bootargs|--bootarg)
- 		checkarg --bootargs "(list of kernel boot arguments)" "$#" "$2" '.*' '^--'
- 		TORTURE_BOOTARGS="$2"
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 2621a33..5911207 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1172,6 +1172,7 @@ rcu_torture_writer(void *arg)
+ 					WARN(1, "%s: rtort_pipe_count: %d\n", __func__, rcu_tortures[i].rtort_pipe_count);
+ 				}
+ 	} while (!torture_must_stop());
++	rcu_torture_current = NULL;  // Let stats task know that we are done.
+ 	/* Reset expediting back to unexpedited. */
+ 	if (expediting > 0)
+ 		expediting = -expediting;
+@@ -2473,7 +2474,6 @@ rcu_torture_cleanup(void)
+ 					     reader_tasks[i]);
+ 		kfree(reader_tasks);
+ 	}
+-	rcu_torture_current = NULL;
+ 
+ 	if (fakewriter_tasks) {
+ 		for (i = 0; i < nfakewriters; i++) {
