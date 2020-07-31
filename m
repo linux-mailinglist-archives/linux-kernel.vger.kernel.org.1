@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03847234E80
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 01:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15D3234E05
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 01:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbgGaXSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 19:18:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
+        id S1726615AbgGaXIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 19:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgGaXSN (ORCPT
+        with ESMTP id S1727906AbgGaXIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 19:18:13 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102CCC06179E
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:18:13 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id lx9so8528820pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:18:13 -0700 (PDT)
+        Fri, 31 Jul 2020 19:08:47 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619C9C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:08:47 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id w19so5117087plq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:08:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OztuNRy+U3SEjaM8AjX3NHKuvNzCSaFSb4g4nlKxjN8=;
-        b=mhl2cYQ2YEfGFzqu0lUm7PTEdf3xYEpybnJ2cfLPuY6LR4v/YBY5dJ0ivTK2K5UAQM
-         0k9arXuQB4cv1bpNG0r3VncPs3HFypojskLqEB3mHI/LVxckqJONf2cBzIIP4It97oIL
-         ccOz8l1eiz5ARWhIbuGZYnApCYc1UDxK86u0k=
+        bh=fvfmv1pkeySd5rhFrbyIXZ4JfyCoyCYJFNM80B3DKYE=;
+        b=aAYyzLqRht0RjACUdgP4u4orVtT1N+9rM+6wDYOhAO8J3OrIgLuULyOqBdQF2jB9u9
+         3UO2dmOZtBDJjKgmNGFBoyyWmY1ZZ+KzUszzWaodH4ILF4Yam9LnrhKqQtFufR2rFdXK
+         mwdnqkVbzqxdoZYqTw/yCO05qmIRW7P9N7lvs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OztuNRy+U3SEjaM8AjX3NHKuvNzCSaFSb4g4nlKxjN8=;
-        b=SGRieyauZMQonZVl+C1HBQoykkE6gINAmRMse0oz6gb0ZE8Q0+Hn7sEjxLgYWMD6f2
-         67iShsjRmnkef2AEVJfUQqdRdTOXbx1LOW40y1ntUJ40XKwrBK7EBW5Ruy8tBKGTkI8G
-         fqo5INkfOV0JwIDs2kBqvkc7jkvBCeONf3/kb11SEauP42628z8sA7wH6CIhNIyjrG6D
-         3Jbt1cqlgKN+aL60Lic5NNBj5jD2SvuTTyISIYfcPQHsKvZ9TEWOXVkxGSaL6MtVVwyu
-         r/12F6EDHAyEQEPfVn3OJ8V9wDP6SMD7tdDDQL8+qODLAebsUW7IBh6vmhB9V/tjSWw6
-         6spQ==
-X-Gm-Message-State: AOAM531NeoIRskH4g4T4MRkN+DUDOGhaBaAaPaoCdhFJEtg60ZTZt9Rn
-        dMMAvjKx/uT8TxuuJfyQ0MSqMw==
-X-Google-Smtp-Source: ABdhPJy7boJ2rVpqxGdhrmjmUcJo5jNiV0bmJoTaMG0L5+Tg8lheY4n/pMplx9rYVCtqWI1ZntGMZg==
-X-Received: by 2002:a17:90a:6c97:: with SMTP id y23mr6284010pjj.28.1596237492647;
-        Fri, 31 Jul 2020 16:18:12 -0700 (PDT)
+        bh=fvfmv1pkeySd5rhFrbyIXZ4JfyCoyCYJFNM80B3DKYE=;
+        b=TU2ymUmvxbZ/w/Iwf/KHgW9rdOTAVW+Rr29Z6F5OAk0JMfpV+nP6w8HX7DhdS8X89V
+         lB1tbrqcYFmRyBLpeC6bZJ3ISLpDUputMT5NnB8R1PjgoUPLas2x+kQE6r29aEY1WHeq
+         lHXM6xXMoJlqL4B1qOvFWeAsYef/0vuaocak6cqFcG8GXbhtiThatvNsdBHXsggQSKsI
+         D5HiE0AS0wJ+u13cNLcdA/ZpRQRV3RhRLbsxLvRdi9okMO0D/g8RGzUFuLJ2E9XoFaBY
+         DEkKL3+MX67JmDyKget+nykpQpgktNNtMxCLRObGErZUO7PEJPIoK/9JbVpXaOdrHJWA
+         pQxw==
+X-Gm-Message-State: AOAM533sv/U2fqkDqTSPS0s2gIy/vMJWl0z/Mz7fUKEYpRggi7zJg3xS
+        bMTZK8B5ePvoV29do8utSXE/HA==
+X-Google-Smtp-Source: ABdhPJyTbjxU6udMes1jYiYIIX7MKKjWY1Mw3PPzC4UzPfsmw/m6MU0LN/hYrEpFJNIw2rm417Cx7g==
+X-Received: by 2002:a17:90a:e96:: with SMTP id 22mr6250841pjx.135.1596236926893;
+        Fri, 31 Jul 2020 16:08:46 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z9sm11932082pgh.94.2020.07.31.16.18.11
+        by smtp.gmail.com with ESMTPSA id f89sm10357189pje.11.2020.07.31.16.08.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 16:18:11 -0700 (PDT)
+        Fri, 31 Jul 2020 16:08:44 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>
 Cc:     Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
         Peter Collingbourne <pcc@google.com>,
         James Morse <james.morse@arm.com>,
         Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
@@ -63,9 +63,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
         linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 19/36] arm64/build: Add missing DWARF sections
-Date:   Fri, 31 Jul 2020 16:08:03 -0700
-Message-Id: <20200731230820.1742553-20-keescook@chromium.org>
+Subject: [PATCH v5 20/36] arm64/build: Assert for unwanted sections
+Date:   Fri, 31 Jul 2020 16:08:04 -0700
+Message-Id: <20200731230820.1742553-21-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200731230820.1742553-1-keescook@chromium.org>
 References: <20200731230820.1742553-1-keescook@chromium.org>
@@ -76,25 +76,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explicitly include DWARF sections when they're present in the build.
+In preparation for warning on orphan sections, discard
+unwanted non-zero-sized generated sections, and enforce other
+expected-to-be-zero-sized sections (since discarding them might hide
+problems with them suddenly gaining unexpected entries).
 
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/arm64/kernel/vmlinux.lds.S | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/kernel/vmlinux.lds.S | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 5c1960406b08..4cf825301c3a 100644
+index 4cf825301c3a..01485941ed35 100644
 --- a/arch/arm64/kernel/vmlinux.lds.S
 +++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -240,6 +240,7 @@ SECTIONS
- 	_end = .;
+@@ -122,6 +122,14 @@ SECTIONS
+ 		*(.got)			/* Global offset table		*/
+ 	}
  
- 	STABS_DEBUG
-+	DWARF_DEBUG
++	/*
++	 * Make sure that the .got.plt is either completely empty or it
++	 * contains only the lazy dispatch entries.
++	 */
++	.got.plt : { *(.got.plt) }
++	ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18,
++	       "Unexpected GOT/PLT entries detected!")
++
+ 	. = ALIGN(SEGMENT_ALIGN);
+ 	_etext = .;			/* End of text section */
+ 
+@@ -244,6 +252,18 @@ SECTIONS
  	ELF_DETAILS
  
  	HEAD_SYMBOLS
++
++	/*
++	 * Sections that should stay zero sized, which is safer to
++	 * explicitly check instead of blindly discarding.
++	 */
++	.plt (NOLOAD) : {
++		*(.plt) *(.plt.*) *(.iplt) *(.igot)
++	}
++	ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure linkages detected!")
++
++	.data.rel.ro (NOLOAD) : { *(.data.rel.ro) }
++	ASSERT(SIZEOF(.data.rel.ro) == 0, "Unexpected RELRO detected!")
+ }
+ 
+ #include "image-vars.h"
 -- 
 2.25.1
 
