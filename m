@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F154B234490
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 13:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42591234495
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 13:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732760AbgGaLbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 07:31:17 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:46921 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732104AbgGaLbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 07:31:16 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BJ4q64xhRz9sTM;
-        Fri, 31 Jul 2020 21:31:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1596195074;
-        bh=sEHXx5GmyjktVn/nBfOnSByax6uQ2hzqiMlXONEK7HE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=j9+9K8UJvsoOJPGC52wJJ8GBd4ZXcwaQdD4S6QXKl+SpP33BYz+OKTOgncwB/iZtu
-         0LNW01IfHgVvOx+w8gEc6alSQjNJ5V5TxgzBAznm57vQ2SkKu0SdfqxriJ2r6l/JV4
-         C2a0u0/P78Yn3f9bp7/4RhsG52eLOQDoizTdx5BoZCHMFMnYtjm4zlMS0KLiyi11tn
-         Fsqcr3rpPQE1YFPQoTrFzcAyG/y5MJ9G25Zn0KyOVtXuMuCtmi9pOxTPWWqaDvosMo
-         sipNLZxyMiDxo4S6hkVJai1hutnkrmhOsz6PK2WIQU/IOjYcMkB8+ZFmkYPoWQoR5v
-         oW5m3k+uPQs9A==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jordan Niethe <jniethe5@gmail.com>
-Subject: Re: [PATCH v4 07/10] Powerpc/numa: Detect support for coregroup
-In-Reply-To: <20200731091859.GG14603@linux.vnet.ibm.com>
-References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com> <20200727053230.19753-8-srikar@linux.vnet.ibm.com> <8736585djw.fsf@mpe.ellerman.id.au> <20200731091859.GG14603@linux.vnet.ibm.com>
-Date:   Fri, 31 Jul 2020 21:31:13 +1000
-Message-ID: <87r1sr53b2.fsf@mpe.ellerman.id.au>
+        id S1732746AbgGaLdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 07:33:39 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:40075 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732104AbgGaLdi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 07:33:38 -0400
+Received: by mail-oi1-f195.google.com with SMTP id u24so16553690oiv.7;
+        Fri, 31 Jul 2020 04:33:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mpZwL9ptFKxq7FoZCH1xjumTWQNcssejfeTwP6RoxpQ=;
+        b=diuHMLwFGE03iB6FycWL3gzVKV7vJzuDP40K9hGRPOQcLzQIi9LpAbE+bb+iu1Zva7
+         b7hj6RtcnDvzlg7h3eYbSZvJLmYlNeNiRCKL900jpKHwv5KXYbY7L3g/VaYc1GjEyoJz
+         EE8UibbNHAQ2xvP8l3MH4L5l0FT4XlCfQzCJza6pD2tBjS5oTSksRX8gkBKX5BTHbyAj
+         SNrwrRNcYA3QhnfE9ylEFohlC84WnJz2erwTT4CWf6vKCMDutiNwj6fk+z3+F0SBtbNO
+         EugJdjKvoeNHJYWBqakqrimVl0NheHFYPhWy6JR2X2uYm3YS8xkhOyZaGfRIrMZeD5Ah
+         eHbA==
+X-Gm-Message-State: AOAM530dUNDrNfQUhFqddHrZ4wxeJDT4smiaX9qYbSJjy0kPyRTht2Sh
+        oStEZMDE27hETN8WPbTTQSjTqHdUHemGtOqXmik=
+X-Google-Smtp-Source: ABdhPJwjnTZ4vCcK+PJMw9f0cgXjEhaXp88nRbYUPJxc2xho6yL2W9vIsfi0PJ+loYFbKG0KfjHoOo6H/h7XzI4Nqoc=
+X-Received: by 2002:aca:a88e:: with SMTP id r136mr2704600oie.110.1596195217368;
+ Fri, 31 Jul 2020 04:33:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1596166744-2954-1-git-send-email-neal.liu@mediatek.com> <1596166744-2954-2-git-send-email-neal.liu@mediatek.com>
+In-Reply-To: <1596166744-2954-2-git-send-email-neal.liu@mediatek.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 31 Jul 2020 13:33:24 +0200
+Message-ID: <CAJZ5v0gk9a-PVr4+zerNWdBORyC563K8XgUdgxENAQ+Y5-85tg@mail.gmail.com>
+Subject: Re: [PATCH] acpi: fix 'return' with no value build warning
+To:     Neal Liu <neal.liu@mediatek.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> * Michael Ellerman <mpe@ellerman.id.au> [2020-07-31 17:49:55]:
+On Fri, Jul 31, 2020 at 5:39 AM Neal Liu <neal.liu@mediatek.com> wrote:
 >
->> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
->> > Add support for grouping cores based on the device-tree classification.
->> > - The last domain in the associativity domains always refers to the
->> > core.
->> > - If primary reference domain happens to be the penultimate domain in
->> > the associativity domains device-tree property, then there are no
->> > coregroups. However if its not a penultimate domain, then there are
->> > coregroups. There can be more than one coregroup. For now we would be
->> > interested in the last or the smallest coregroups.
->> 
->> This still doesn't tell me what a coregroup actually represents.
->> 
->> I get that it's a grouping of cores, and that the device tree specifies
->> it for us, but grouping based on what?
+> Fixing CFI issue which introduced by commit efe9711214e6 is
+> incomplete.
+> Add return value to fix return-type build warning.
 >
-> We have just abstracted the fact that we are creating a sub-group of cores
-> within a DIE. We are limiting to one sub-group per core. However this would
-> allow the firmware the flexibility to vary the grouping. Once the firmware
-> starts using this group, we could add more code to detect the type of
-> grouping and adjust the sd domain flags accordingly.
+> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
 
-OK. That's good info to have in the change log.
+Applied with edited subject and changelog, but ->
 
->> I think the answer is we aren't being told by firmware, it's just a
->> grouping based on some opaque performance characteristic and we just
->> have to take that as given.
->> 
+> ---
+>  drivers/acpi/processor_idle.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> This is partially true. At this time, we dont have firmwares that can
-> exploit this code. Once the firmwares start using this grouping, we could
-> add more code to align the grouping to the scheduler topology.
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index 6ffb6c9..6870020 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -664,11 +664,11 @@ static int acpi_idle_enter_s2idle(struct cpuidle_device *dev,
+>                 struct acpi_processor *pr = __this_cpu_read(processors);
 >
->> But please explain that clearly in the change log and the code comments.
->> 
->
-> Okay, I will do the needful.
+>                 if (unlikely(!pr))
+> -                       return;
+> +                       return -EFAULT;
 
-Thanks.
+-> there is no point returning an error code here, so I've made it
+just return 0.
 
-cheers
+>
+>                 if (pr->flags.bm_check) {
+>                         acpi_idle_enter_bm(pr, cx, false);
+> -                       return;
+> +                       return 0;
+>                 } else {
+>                         ACPI_FLUSH_CPU_CACHE();
+>                 }
+> --
