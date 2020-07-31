@@ -2,50 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80766234277
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851772342F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732341AbgGaJXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:23:04 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56338 "EHLO
+        id S1732367AbgGaJXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:23:09 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56350 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732256AbgGaJWw (ORCPT
+        with ESMTP id S1732261AbgGaJWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 31 Jul 2020 05:22:52 -0400
-Date:   Fri, 31 Jul 2020 09:22:49 -0000
+Date:   Fri, 31 Jul 2020 09:22:50 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187370;
+        s=2020; t=1596187371;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=UGkgy8EkFUcjQ59lSdow0rWO1m7pYZnRW4/sMFesy3Y=;
-        b=1gVhv+plLvT4F5geACUb6xGWGM3J2JWc9uJ1wM70XokN/0nH2bnOZE6ZQodi1475iXHm0M
-        HYZETuJ4ymAaR71ahjG28+wwkfaR65It2BN6l8Map/b3xZNfAC2C99Cung7aG5ydVY3pCl
-        ONx+o+q6JH8OGT8Y7dlxHzgGdNsHYXju22DpW8ngApaIe3H4+luDb4wstl6BRaUlvbrHxq
-        117DWu8g4UNiU8vaLvPLQECG9duoSeGBI1tr/kJiPn8kTkTNHX4h/vIJAe6S5Dye6POpid
-        IyAOa3qnu/JTycqZufezg4CsDxSK+3oV5Frk4Y0D2awuRtE5m/yd/ottAhOwMQ==
+        bh=fYSCTLOskcFaf1QqHBSI9+EiG25nPncE/g+OlbowEWs=;
+        b=4mq2pjV9GKJCPTuPoHvLPviXSUYcLWo8qrdhba+GoD0arBJwhlQqQ+8KOdGCyZlzdzmgTb
+        27d1PMBTBRwt3y4rqlN4mZaXv8p3SdP3nmmV5VNBifLcHxf4D2ZcDtMrYfE4/VFCBLMtGu
+        aVvPV95uB8FcF/uo1lBAsn/A1flsNhQoOc0W2Q6TU87mcL4zfTD8Uv5Q0WIjoxl6w0/98A
+        DP6saxQFh4Tr97gpvn4Mj/4rdLui7ZKGukCHn9rTsgi4yJjzm+rcQxu0JW0u0S0ojK6lzr
+        5nuqW4dLYcAWqr0iEfCYDNrIb7MfmKG6nKQbC7Aq3Kl4+S+0ThZ1v20G5LOY5Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187370;
+        s=2020e; t=1596187371;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=UGkgy8EkFUcjQ59lSdow0rWO1m7pYZnRW4/sMFesy3Y=;
-        b=34Ft422SM590bnpB3OhmsGVF5cTdSCOOLQC8OdGuaKTRTpuO4Mj9JV8aGLNiV+Ivq/npvR
-        xxszKeLlLv48ppAg==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+        bh=fYSCTLOskcFaf1QqHBSI9+EiG25nPncE/g+OlbowEWs=;
+        b=xxbaIFoV86Ibum1bqagqwuwbIQWzyriybPZoeSxWGLzvtsz9cmMie+d+RavVDjX2lFSES4
+        fzwhBcqxPX6MH5CQ==
+From:   "tip-bot2 for Ethon Paul" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] srcu: Avoid local_irq_save() before acquiring spinlock_t
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+Subject: [tip: core/rcu] srcu: Fix a typo in comment "amoritized"->"amortized"
+Cc:     Ethon Paul <ethp@qq.com>, "Paul E. McKenney" <paulmck@kernel.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159618736995.4006.14996866225655949863.tip-bot2@tip-bot2>
+Message-ID: <159618737065.4006.9118760174636133381.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,79 +51,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     bde50d8ff83e4ce9e576f7c5ba1edb48a3610a5b
-Gitweb:        https://git.kernel.org/tip/bde50d8ff83e4ce9e576f7c5ba1edb48a3610a5b
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Tue, 26 May 2020 15:41:34 +02:00
+Commit-ID:     7fef6cff8f2814bf8eb632e2bb8f0a987ffd9ece
+Gitweb:        https://git.kernel.org/tip/7fef6cff8f2814bf8eb632e2bb8f0a987ffd9ece
+Author:        Ethon Paul <ethp@qq.com>
+AuthorDate:    Sat, 18 Apr 2020 19:46:47 +08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 29 Jun 2020 12:01:22 -07:00
 
-srcu: Avoid local_irq_save() before acquiring spinlock_t
+srcu: Fix a typo in comment "amoritized"->"amortized"
 
-SRCU disables interrupts to get a stable per-CPU pointer and then
-acquires the spinlock which is in the per-CPU data structure. The
-release uses spin_unlock_irqrestore(). While this is correct on a non-RT
-kernel, this conflicts with the RT semantics because the spinlock is
-converted to a 'sleeping' spinlock. Sleeping locks can obviously not be
-acquired with interrupts disabled.
+This commit fixes a typo in a comment.
 
-Acquire the per-CPU pointer `ssp->sda' without disabling preemption and
-then acquire the spinlock_t of the per-CPU data structure. The lock will
-ensure that the data is consistent.
-
-The added call to check_init_srcu_struct() is now needed because a
-statically defined srcu_struct may remain uninitialized until this
-point and the newly introduced locking operation requires an initialized
-spinlock_t.
-
-This change was tested for four hours with 8*SRCU-N and 8*SRCU-P without
-causing any warnings.
-
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: rcu@vger.kernel.org
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Ethon Paul <ethp@qq.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutree.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ kernel/rcu/srcutree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 8ff71e5..c100acf 100644
+index 6d3ef70..8ff71e5 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -777,14 +777,15 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
- 	unsigned long t;
- 	unsigned long tlast;
- 
-+	check_init_srcu_struct(ssp);
- 	/* If the local srcu_data structure has callbacks, not idle.  */
--	local_irq_save(flags);
--	sdp = this_cpu_ptr(ssp->sda);
-+	sdp = raw_cpu_ptr(ssp->sda);
-+	spin_lock_irqsave_rcu_node(sdp, flags);
- 	if (rcu_segcblist_pend_cbs(&sdp->srcu_cblist)) {
--		local_irq_restore(flags);
-+		spin_unlock_irqrestore_rcu_node(sdp, flags);
- 		return false; /* Callbacks already present, so not idle. */
- 	}
--	local_irq_restore(flags);
-+	spin_unlock_irqrestore_rcu_node(sdp, flags);
- 
- 	/*
- 	 * No local callbacks, so probabalistically probe global state.
-@@ -864,9 +865,8 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 	}
- 	rhp->func = func;
- 	idx = srcu_read_lock(ssp);
--	local_irq_save(flags);
--	sdp = this_cpu_ptr(ssp->sda);
--	spin_lock_rcu_node(sdp);
-+	sdp = raw_cpu_ptr(ssp->sda);
-+	spin_lock_irqsave_rcu_node(sdp, flags);
- 	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
- 	rcu_segcblist_advance(&sdp->srcu_cblist,
- 			      rcu_seq_current(&ssp->srcu_gp_seq));
+@@ -766,7 +766,7 @@ static void srcu_flip(struct srcu_struct *ssp)
+  * it, if this function was preempted for enough time for the counters
+  * to wrap, it really doesn't matter whether or not we expedite the grace
+  * period.  The extra overhead of a needlessly expedited grace period is
+- * negligible when amoritized over that time period, and the extra latency
++ * negligible when amortized over that time period, and the extra latency
+  * of a needlessly non-expedited grace period is similarly negligible.
+  */
+ static bool srcu_might_be_idle(struct srcu_struct *ssp)
