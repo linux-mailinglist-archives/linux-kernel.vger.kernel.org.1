@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7D62342FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A3B234311
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732876AbgGaJ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:27:34 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:65091 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732094AbgGaJ1b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:27:31 -0400
-X-UUID: cbbaf8822e424bddb1c75be84ac7d6c7-20200731
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=au+qktezYgw+jt5L5XG7E4RAshRFGuWcZYnfoHyoQQY=;
-        b=DiYFsj2lfgst5j049P5VVFhtWVduxXYty6PAgtWFTp6+TIsF148sD43WcmGOEEXpltYvZgfkhhzNZ512aPm/Wigt+2oAo7Aiig8YALHB37x7oVtsa/+o4k7/8TH6BuSBM3KoH2T6cSUH/4H5Kc/WK9v3wfZm5VoiSxGe0cqFaro=;
-X-UUID: cbbaf8822e424bddb1c75be84ac7d6c7-20200731
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 367703745; Fri, 31 Jul 2020 17:27:25 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 31 Jul 2020 17:27:21 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 31 Jul 2020 17:27:22 +0800
-Message-ID: <1596187643.17247.62.camel@mtkswgap22>
-Subject: Re: [PATCH v4] scsi: ufs: Quiesce all scsi devices before shutdown
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <bvanassche@acm.org>, <beanhuo@micron.com>,
-        <asutoshd@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Kuohong Wang =?UTF-8?Q?=28=E7=8E=8B=E5=9C=8B=E9=B4=BB=29?= 
-        <kuohong.wang@mediatek.com>,
-        Peter Wang =?UTF-8?Q?=28=E7=8E=8B=E4=BF=A1=E5=8F=8B=29?= 
-        <peter.wang@mediatek.com>,
-        Chun-Hung Wu =?UTF-8?Q?=28=E5=B7=AB=E9=A7=BF=E5=AE=8F=29?= 
-        <Chun-hung.Wu@mediatek.com>,
-        "Andy Teng ( =?ISO-8859-1?Q?=1B$B{}G!9(=1B?= (B)" 
-        <Andy.Teng@mediatek.com>,
-        Chaotian Jing =?UTF-8?Q?=28=E4=BA=95=E6=9C=9D=E5=A4=A9=29?= 
-        <Chaotian.Jing@mediatek.com>,
-        CC Chou =?UTF-8?Q?=28=E5=91=A8=E5=BF=97=E6=9D=B0=29?= 
-        <cc.chou@mediatek.com>
-Date:   Fri, 31 Jul 2020 17:27:23 +0800
-In-Reply-To: <1d74498da71ba54e23cd82ee6400dbd4@codeaurora.org>
-References: <20200724140140.18186-1-stanley.chu@mediatek.com>
-         <84510fc12ada0de8284e6a689b7a2358@codeaurora.org>
-         <1596183773.17247.60.camel@mtkswgap22>
-         <1d74498da71ba54e23cd82ee6400dbd4@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1732898AbgGaJ2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:28:00 -0400
+Received: from mga18.intel.com ([134.134.136.126]:29986 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732894AbgGaJ15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 05:27:57 -0400
+IronPort-SDR: Kq1THVboy2ZTq3BzuGWffR7QnSC9BBpTVxZWlitxDxmLkH91EPbPi2v4SFVj3nA9SxT+GQY8Th
+ TpO7MNs7TN3A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="139313870"
+X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
+   d="scan'208";a="139313870"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 02:27:56 -0700
+IronPort-SDR: HiRETURUYAFFCi4ERosfDa9BkOJ6cbb0yEB4vjxGi37lUxFz5NW70sBex5Io8ipFIFsn4mYvix
+ GgSnCZX17l7g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
+   d="scan'208";a="274466351"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008.fm.intel.com with ESMTP; 31 Jul 2020 02:27:53 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1k1RKT-005HPB-He; Fri, 31 Jul 2020 12:27:53 +0300
+Date:   Fri, 31 Jul 2020 12:27:53 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Pu Wen <puwen@hygon.cn>
+Cc:     rjw@rjwysocki.net, lenb@kernel.org, jarkko.nikula@linux.intel.com,
+        mika.westerberg@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH] i2c: designware: Add device HID for Hygon I2C controller
+Message-ID: <20200731092753.GL3703480@smile.fi.intel.com>
+References: <20200731084845.24459-1-puwen@hygon.cn>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731084845.24459-1-puwen@hygon.cn>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2FuLA0KDQpPbiBGcmksIDIwMjAtMDctMzEgYXQgMTY6NTggKzA4MDAsIENhbiBHdW8gd3Jv
-dGU6DQo+IEhpIFN0YW5sZXksDQo+IA0KPiBPbiAyMDIwLTA3LTMxIDE2OjIyLCBTdGFubGV5IENo
-dSB3cm90ZToNCj4gPiBIaSBDYW4sDQo+ID4gDQo+ID4gT24gTW9uLCAyMDIwLTA3LTI3IGF0IDE1
-OjMwICswODAwLCBDYW4gR3VvIHdyb3RlOg0KPiA+PiBIaSBTdGFubGV5LA0KPiA+PiANCj4gPj4g
-T24gMjAyMC0wNy0yNCAyMjowMSwgU3RhbmxleSBDaHUgd3JvdGU6DQo+ID4+ID4gQ3VycmVudGx5
-IEkvTyByZXF1ZXN0IGNvdWxkIGJlIHN0aWxsIHN1Ym1pdHRlZCB0byBVRlMgZGV2aWNlIHdoaWxl
-DQo+ID4+ID4gVUZTIGlzIHdvcmtpbmcgb24gc2h1dGRvd24gZmxvdy4gVGhpcyBtYXkgbGVhZCB0
-byByYWNpbmcgYXMgYmVsb3cNCj4gPj4gPiBzY2VuYXJpb3MgYW5kIGZpbmFsbHkgc3lzdGVtIG1h
-eSBjcmFzaCBkdWUgdG8gdW5jbG9ja2VkIHJlZ2lzdGVyDQo+ID4+ID4gYWNjZXNzZXMuDQo+ID4+
-ID4NCj4gPj4gPiBUbyBmaXggdGhpcyBraW5kIG9mIGlzc3Vlcywgc3BlY2lmaWNhbGx5IHF1aWVz
-Y2UgYWxsIFNDU0kgZGV2aWNlcw0KPiA+PiA+IGJlZm9yZSBVRlMgc2h1dGRvd24gdG8gYmxvY2sg
-YWxsIEkvTyByZXF1ZXN0IHNlbmRpbmcgZnJvbSBibG9jaw0KPiA+PiA+IGxheWVyLg0KPiA+PiA+
-DQo+ID4+ID4gRXhhbXBsZSBvZiByYWNpbmcgc2NlbmFyaW86IFdoaWxlIFVGUyBkZXZpY2UgaXMg
-cnVudGltZS1zdXNwZW5kZWQNCj4gPj4gPg0KPiA+PiA+IFRocmVhZCAjMTogRXhlY3V0aW5nIFVG
-UyBzaHV0ZG93biBmbG93LCBlLmcuLA0KPiA+PiA+ICAgICAgICAgICAgdWZzaGNkX3N1c3BlbmQo
-VUZTX1NIVVRET1dOX1BNKQ0KPiA+PiA+IFRocmVhZCAjMjogRXhlY3V0aW5nIHJ1bnRpbWUgcmVz
-dW1lIGZsb3cgdHJpZ2dlcmVkIGJ5IEkvTyByZXF1ZXN0LA0KPiA+PiA+ICAgICAgICAgICAgZS5n
-LiwgdWZzaGNkX3Jlc3VtZShVRlNfUlVOVElNRV9QTSkNCj4gPj4gPg0KPiA+PiANCj4gPj4gSSBk
-b24ndCBxdWl0ZSBnZXQgaXQsIGhvdyBjYW4geW91IHByZXZlbnQgYmxvY2sgbGF5ZXIgUE0gZnJv
-bSBpbmlhdGluZw0KPiA+PiBoYmEgcnVudGltZSByZXN1bWUgYnkgcXVpZXNjaW5nIHRoZSBzY3Np
-IGRldmljZXM/IEJsb2NrIGxheWVyIFBNDQo+ID4+IGluaWF0ZXMgaGJhIGFzeW5jIHJ1bnRpbWUg
-cmVzdW1lIGluIGJsa19xdWV1ZV9lbnRlcigpLiBCdXQgcXVpZXNjaW5nDQo+ID4+IHRoZSBzY3Np
-IGRldmljZXMgY2FuIG9ubHkgcHJldmVudCBnZW5lcmFsIEkvTyByZXF1ZXN0cyBmcm9tIHBhc3Np
-bmcNCj4gPj4gdGhyb3VnaCBzY3NpX3F1ZXVlX3JxKCkgY2FsbGJhY2suDQo+ID4+IA0KPiA+PiBT
-YXkgaGJhIGlzIHJ1bnRpbWUgc3VzcGVuZGVkLCBpZiBhbiBJL08gcmVxdWVzdCB0byBzZGEgaXMg
-c2VudCBmcm9tDQo+ID4+IGJsb2NrIGxheWVyIChzZGEgbXVzdCBiZSBydW50aW1lIHN1c3BlbmRl
-ZCBhcyB3ZWxsIGF0IHRoaXMgdGltZSksDQo+ID4+IGJsa19xdWV1ZV9lbnRlcigpIGluaXRpYXRl
-cyBhc3luYyBydW50aW1lIHJlc3VtZSBmb3Igc2RhLiBCdXQgc2luY2UNCj4gPj4gc2RhJ3MgcGFy
-ZW50cyBhcmUgYWxzbyBydW50aW1lIHN1c3BlbmRlZCwgdGhlIFJQTSBmcmFtZXdvcmsgc2hhbGwg
-ZG8NCj4gPj4gcnVudGltZSByZXN1bWUgdG8gdGhlIGRldmljZXMgaW4gdGhlIHNlcXVlbmNlIGhi
-YS0+aG9zdC0+dGFyZ2V0LT5zZGEuDQo+ID4+IEluIHRoaXMgY2FzZSwgdWZzaGNkX3Jlc3VtZSgp
-IHN0aWxsIHJ1bnMgY29uY3VycmVudGx5LCBubz8NCj4gPj4gDQo+ID4gDQo+ID4gWW91IGFyZSBy
-aWdodC4gVGhpcyBwYXRjaCBjYW4gbm90IGZpeCB0aGUgY2FzZSB5b3UgbWVudGlvbmVkLiBJdCBq
-dXN0DQo+ID4gcHJldmVudHMgImdlbmVyYWwgSS9PIHJlcXVlc3RzIi4NCj4gPiANCj4gPiBTbyBw
-ZXJoYXBzIHdlIGFsc28gbmVlZCBiZWxvdyBwYXRjaD8NCj4gPiANCj4gPiAjMiBzY3NpOiB1ZnM6
-IFVzZSBwbV9ydW50aW1lX2dldF9zeW5jIGluIHNodXRkb3duIGZsb3cNCj4gPiBodHRwczovL3Bh
-dGNod29yay5rZXJuZWwub3JnL3BhdGNoLzEwOTY0MDk3Lw0KPiANCj4gVGhhdCBpcyB3aGF0IEkg
-YW0gdGFsa2luZyBhYm91dCwgd2UgZGVmaW5pdGVseSBuZWVkIHRoaXMuIFNpbmNlDQo+IHlvdSBh
-cmUgYWxyZWFkeSB3b3JraW5nIG9uIHRoZSBmaXhlcyB0byB0aGUgc2h1dGRvd24gcGF0aCwgSSB3
-aWxsDQo+IG5vdCB1cGxvYWQgbXkgZml4ZXMgKGJhc2ljYWxseSBsb29rIHNhbWUgd2l0aCB5b3Vy
-cykuIEhvd2V2ZXIsIGFzDQo+IHJlZ2FyZCBmb3IgdGhlIG5ldyBjaGFuZ2UsIGlmIHBtX3J1bnRp
-bWVfZ2V0X3N5bmMoaGJhLT5kZXYpIDwgMCwNCj4gaGJhIGNhbiBzdGlsbCBiZSBydW50aW1lIEFD
-VElWRSwgd2h5IGRpcmVjdGx5IGdvdG8gb3V0IHdpdGhvdXQgYQ0KPiBjaGVjayBvZiBoYmEncyBy
-dW50aW1lIHN0YXR1cz8NCj4gDQoNClRoYW5rcyBmb3IgcmVtaW5kaW5nIHRoaXMuIFRoZW4gSSB3
-aWxsIGZpeCBpdCBhbmQgcmVzZW5kIGJvdGggcGF0Y2hlcyBhcw0KYSBuZXcgc2VyaWVzIHRvIGZp
-eCB0aGUgc2h1dGRvd24gcGF0aC4NCg0KVGhhbmtzIHNvIG11Y2gsDQpTdGFubGV5IENodQ0KDQoN
-Cg==
+On Fri, Jul 31, 2020 at 04:48:45PM +0800, Pu Wen wrote:
+> Add device HID HYGO0010 to match the Hygon ACPI Vendor ID (HYGO) that
+> was registered in http://www.uefi.org/acpi_id_list, and the I2C
+> controller on Hygon paltform will use the HID.
+
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+> Signed-off-by: Pu Wen <puwen@hygon.cn>
+> ---
+>  drivers/acpi/acpi_apd.c                     | 1 +
+>  drivers/i2c/busses/i2c-designware-platdrv.c | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
+> index ba2612e9a0eb..f24f6d3f1fa5 100644
+> --- a/drivers/acpi/acpi_apd.c
+> +++ b/drivers/acpi/acpi_apd.c
+> @@ -240,6 +240,7 @@ static const struct acpi_device_id acpi_apd_device_ids[] = {
+>  	{ "AMDI0020", APD_ADDR(cz_uart_desc) },
+>  	{ "AMD0030", },
+>  	{ "AMD0040", APD_ADDR(st_misc_desc)},
+> +	{ "HYGO0010", APD_ADDR(wt_i2c_desc) },
+>  #endif
+>  #ifdef CONFIG_ARM64
+>  	{ "APMC0D0F", APD_ADDR(xgene_i2c_desc) },
+> diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
+> index a71bc58fc03c..0dfeb2d11603 100644
+> --- a/drivers/i2c/busses/i2c-designware-platdrv.c
+> +++ b/drivers/i2c/busses/i2c-designware-platdrv.c
+> @@ -55,6 +55,7 @@ static const struct acpi_device_id dw_i2c_acpi_match[] = {
+>  	{ "HISI02A1", 0 },
+>  	{ "HISI02A2", 0 },
+>  	{ "HISI02A3", 0 },
+> +	{ "HYGO0010", ACCESS_INTR_MASK },
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(acpi, dw_i2c_acpi_match);
+> -- 
+> 2.23.0
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
