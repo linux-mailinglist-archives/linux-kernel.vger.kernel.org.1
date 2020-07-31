@@ -2,55 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB70B2340BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3B02340C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731746AbgGaIC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 04:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
+        id S1731573AbgGaIGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 04:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731479AbgGaIC0 (ORCPT
+        with ESMTP id S1731436AbgGaIGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 04:02:26 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C36C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 01:02:25 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BJ0B64wr3z9sTM;
-        Fri, 31 Jul 2020 18:02:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1596182544;
-        bh=VIvlFmLeEbazI6X4NrR2A4yECMiZVAa1vCybgh1Mduk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=pPeyl5/NlC4K+MRg9yrpan6haPOfQboM84UFywQ+27jiRB4Must46goJhWYfneqsu
-         1XXxWssioctiie7J4pqqq0j82L9DowqWmz/t5CPrb04JcnDIB8+MYnCSISCaX21r7k
-         u0f8C5XhEMU79kJe5jmL2nHyQhxBumAeP01uS22XlMe6bvgDDHBgUidQhfXSV/KSPF
-         9Wy8MWamdDLnJ6rQ0ioFp+OyTSVYKlmmCtUaliXRwX4vX35GGhe904HqzGmXuYeTSZ
-         LIsPpgbPzfc+9O6W5OdjiOM5lL8D++64sV6bPTGp3qeOYvcGW/o4f01d+qd4iZlNQw
-         lA8SX9b6z+spw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jordan Niethe <jniethe5@gmail.com>
-Subject: Re: [PATCH v4 10/10] powerpc/smp: Implement cpu_to_coregroup_id
-In-Reply-To: <20200727053230.19753-11-srikar@linux.vnet.ibm.com>
-References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com> <20200727053230.19753-11-srikar@linux.vnet.ibm.com>
-Date:   Fri, 31 Jul 2020 18:02:21 +1000
-Message-ID: <87wo2k3yeq.fsf@mpe.ellerman.id.au>
+        Fri, 31 Jul 2020 04:06:06 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDCFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 01:06:06 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id 88so27113662wrh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 01:06:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=fucMGEr5CXFfOMcRe7EoTEOJr1Kr4QCI6uUDYVzs0gU=;
+        b=paELUECntKBbuSCyCcBVLOaExS6IKoAliKkoF5FO2Vx4ae1xzSit3j2MPx+WVR+MVK
+         zaZ97aVOzr+rKYKirG+gD6cR0v04FzDc6B5ygXWb1JXdKTzDsq1s8YL+kMqlPzHx+uYq
+         bDPB70KKa6GlMjDvyz/4JdTWKHxlYVXB9+w7f4k3yTX722eL5WLL+5uMHaCXA9zx6Ujk
+         E543xx2Kq/QfbljQhO9bln/Proogp8rAe1XWwfjZ3x9S3wHfY0u+gXUN8JSoUfrC1ORK
+         wdXqXbDwIpZ6MS3sThUTAa6zbDEMedNXGowA0RrhSgs4Sd1aQcEIGXCkT3k7ztrH1PH8
+         7B7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=fucMGEr5CXFfOMcRe7EoTEOJr1Kr4QCI6uUDYVzs0gU=;
+        b=XF4AM5aSj45eLFsjlldt3o8b+7qHebEEk59sZ8jSZSQClA10H7pxlmvrN7sKGBs95e
+         Eul9c9Q25qihPo2XUBfv53bPZb8sJ2jnNWM5yjxQiXD5HOZuTWw0k+mbQaezZfO82ssA
+         BI3Mio68FovH8sYkQ4KP5ZzJaeYemGwwV14D2AinDzEx9pixxKMVkLCpFrMomTQ9CckA
+         SR5kznh/urHJqvr/lIeHgB6622ZAyl4SSsPJEAZuPSNoygPaawNT/4lFLBxqLV8J8m4O
+         sPT/Xetbz4rsMpOrQPorRujDnTFl+mPZ/sN4n7nNjtaviPiHksuoqz/1oOIABx58bZiQ
+         YVmQ==
+X-Gm-Message-State: AOAM532fm27UdQARsu3V6SgbXKRHeU++epAFUN/TDehbnbapipYSacCH
+        o5PwQacqfb7N5HQOKLotn5ypqkVbWszYnA==
+X-Google-Smtp-Source: ABdhPJzz8HoujDESE97UeMx7i6gLDYDp1lPxuV8yNkRjvFTZsrr0L0KA7Q2WsV9AlEgH/0FFtZL4Pw==
+X-Received: by 2002:adf:9e90:: with SMTP id a16mr2541831wrf.40.1596182764941;
+        Fri, 31 Jul 2020 01:06:04 -0700 (PDT)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id z63sm13311387wmb.2.2020.07.31.01.06.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 01:06:04 -0700 (PDT)
+References: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com> <20200729154639.1983854-1-jbrunet@baylibre.com> <2ad13f95-434d-376a-bc38-b209623b461e@linux.intel.com> <1jft998jbe.fsf@starbuckisacylon.baylibre.com> <936d6e37-0ad0-b0d7-814a-1ace12087746@linux.intel.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-kernel@vger.kernel.org, zhangn1985@outlook.com,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH] ASoC: core: restore dpcm flags semantics
+In-reply-to: <936d6e37-0ad0-b0d7-814a-1ace12087746@linux.intel.com>
+Date:   Fri, 31 Jul 2020 10:06:03 +0200
+Message-ID: <1ja6zg85xw.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -58,82 +69,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> Lookup the coregroup id from the associativity array.
 
-It's slightly strange that this is called in patch 9, but only properly
-implemented here in patch 10.
+On Thu 30 Jul 2020 at 18:06, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
 
-I'm not saying you have to squash them together, but it would be good if
-the change log for patch 9 mentioned that a subsequent commit will
-complete the implementation and how that affects the behaviour.
+> On 7/30/20 4:04 AM, Jerome Brunet wrote:
+>>
+>> On Wed 29 Jul 2020 at 17:56, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
+>>
+>>> On 7/29/20 10:46 AM, Jerome Brunet wrote:
+>>>> commit b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
+>>>> changed dpcm_playback and dpcm_capture semantic by throwing an error if
+>>>> these flags are not aligned with DAIs capabilities on the link.
+>>>>
+>>>> The former semantic did not force the flags and DAI caps to be aligned.
+>>>> The flag previously allowed card drivers to disable a stream direction on
+>>>> a link (whether or not such feature is deemed useful).
+>>>>
+>>>> With change ('ASoC: core: use less strict tests for dailink capabilities')
+>>>> an error is thrown if the flags and and the DAI caps are not aligned. Those
+>>>> parameters were not meant to aligned initially. No technical reason was
+>>>> given about why cards should now be considered "broken" in such condition
+>>>> is not met, or why it should be considered to be an improvement to enforce
+>>>> that.
+>>>>
+>>>> Forcing the flags to be aligned with DAI caps just make the information
+>>>> the flag carry redundant with DAI caps, breaking a few cards along the way.
+>>>>
+>>>> This change drops the added error conditions and restore the initial flag
+>>>> semantics.
+>>>
+>>> or rather lack thereof.
+>>
+>> Again, why ? All there is so far is your personal preference. no facts.
+>
+> What would be the meaning/purpose of a dailink with .dpcm_capture set, with
+> only dais that support playback only?
+>
+> What would be the meaning/purpose of a dailink with .capture_only set, but
+> with a dai that supports playback?
 
-cheers
+You get to throw an error in those case
 
-> If unable to detect the coregroup id, fallback on the core id.
-> This way, ensure sched_domain degenerates and an extra sched domain is
-> not created.
 >
-> Ideally this function should have been implemented in
-> arch/powerpc/kernel/smp.c. However if its implemented in mm/numa.c, we
-> don't need to find the primary domain again.
+> What happens if none of these flags are set?
+
+I think I already suggested to throw an error in the initial review of
+your patch
+
 >
-> If the device-tree mentions more than one coregroup, then kernel
-> implements only the last or the smallest coregroup, which currently
-> corresponds to the penultimate domain in the device-tree.
+> What happens when all these flags are set?
+
+I don't see the problem here
+
 >
-> Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-> Cc: LKML <linux-kernel@vger.kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Anton Blanchard <anton@ozlabs.org>
-> Cc: Oliver O'Halloran <oohall@gmail.com>
-> Cc: Nathan Lynch <nathanl@linux.ibm.com>
-> Cc: Michael Neuling <mikey@neuling.org>
-> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> Cc: Jordan Niethe <jniethe5@gmail.com>
-> Reviewed-by : Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> ---
-> Changelog v1 -> v2:
-> 	Move coregroup_enabled before getting associativity (Gautham)
+> No one seems to know, so my suggestion is to align first on consistent
+> configurations, then see what can be removed.
 >
->  arch/powerpc/mm/numa.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+>>   * What we had gave capabilities to the link, independent of the DAI
+>>     components. ASoC just computes the intersection of all that to
+>>     determine which direction needs to be enabled. Seems rather simple
+>>     and straight forward.
 >
-> diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-> index 0d57779e7942..8b3b3ec7fcc4 100644
-> --- a/arch/powerpc/mm/numa.c
-> +++ b/arch/powerpc/mm/numa.c
-> @@ -1218,6 +1218,26 @@ int find_and_online_cpu_nid(int cpu)
->  
->  int cpu_to_coregroup_id(int cpu)
->  {
-> +	__be32 associativity[VPHN_ASSOC_BUFSIZE] = {0};
-> +	int index;
-> +
-> +	if (cpu < 0 || cpu > nr_cpu_ids)
-> +		return -1;
-> +
-> +	if (!coregroup_enabled)
-> +		goto out;
-> +
-> +	if (!firmware_has_feature(FW_FEATURE_VPHN))
-> +		goto out;
-> +
-> +	if (vphn_get_associativity(cpu, associativity))
-> +		goto out;
-> +
-> +	index = of_read_number(associativity, 1);
-> +	if (index > min_common_depth + 1)
-> +		return of_read_number(&associativity[index - 1], 1);
-> +
-> +out:
->  	return cpu_to_core_id(cpu);
->  }
->  
-> -- 
-> 2.17.1
+> that's what my last patch did, and when there is no intersection it
+> complains. Please clarify what you expect when there is no overlap between
+> dai and dailink capabilities. Keep in mind that we have a mix of hard-codec
+> configuration and DT-created ones, your case is not the general one.
+>
+>>   * It worked for every user of DPCM so a far.
+>
+> Not completely true, when Morimoto-san added snd_soc_dai_stream_valid() it
+> exposed tons of cases where the information on direction was not provided
+> in a reliable at the DAI level. I will assert that we are still finding out
+> cases with broken DAI configurations, and as a result we will also find
+> broken dailink configurations. Your picture of DPCM as a perfectly
+> functional system that I broke is a distortion of reality.
+
+If it was not working, it was certainly not clear in the changelog.
+What's clear is the regression it caused
+
+>
+> The reality is that we have to work in steps, first make sure all DAIs are
+> properly described, then work on the dailinks and optimize at a later
+> point. we will need warnings to find out what the problem cases are, and
+> move slowly.
+
+Sure, have it your way
