@@ -2,63 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1A12349F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 19:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FCD234A0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 19:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733226AbgGaRPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 13:15:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732710AbgGaRPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 13:15:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B8102074B;
-        Fri, 31 Jul 2020 17:15:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596215716;
-        bh=cWx1hbEGaUUwS1JJFnOe3X+vRj6dABujYkU2GC/oakE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z8Batu5lPaUADFtk2YKU0dGwnmNAwaJlBCPAHopU4fD4FFJvbU2/tsIgH2XxtdR3X
-         GSV9g73r7DSHzcHssgFtV+ZVm9wvUx9dmnDFO1UbwCP2zVaZ/VslUMZi6q1jaWfuaZ
-         z1zBwgDg8FHfI/LzqcI2WeqaVg6l/F+qoJWF+sUc=
-Date:   Fri, 31 Jul 2020 19:15:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.7 00/20] 5.7.12-rc1 review
-Message-ID: <20200731171503.GA2012979@kroah.com>
-References: <20200730074420.533211699@linuxfoundation.org>
- <20200730164823.GF57647@roeck-us.net>
+        id S2387612AbgGaRQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 13:16:36 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:59464 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387580AbgGaRQb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 13:16:31 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06VHBvmu156609;
+        Fri, 31 Jul 2020 17:15:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=QLP5yum5fU8UgsIzhvQlNIqfGdJsDfckQfn3DAzacW8=;
+ b=mmal8FRzyoj+O8X9csReBhlK93p5+cMh/ETJ0OUmlvwnyInxLy+PDCUxfNp7SWT751Lz
+ wPFJZcEJb3ERLInaZIpcUlN3mgHrEILwqs8rAPYpjJLcAlq4bh9+OW6LOwIk4zNMEB84
+ hEofFiwTosRxp1RQZJV0f+9lAddx2h3vS6a4SlKHw5oum+g/sh5/KedgUE0YrS3/GXf0
+ Suhh4XB77kYufFl/+ZFn8CGMPkV3XqrkpTKaRMPdMYp4doN88E862Ka1ATMXw20FKtV/
+ +cog0eAkaVh1d9pc3uk56Akc7KQavBGp0fBcuauoBxwrK3pRyujlNJq62QmDEptEqyYm 3g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 32mf702hp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 31 Jul 2020 17:15:50 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06VHCsS3048730;
+        Fri, 31 Jul 2020 17:15:50 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 32hu6064n3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 31 Jul 2020 17:15:49 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06VHFc2P019306;
+        Fri, 31 Jul 2020 17:15:38 GMT
+Received: from [10.39.235.87] (/10.39.235.87)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 31 Jul 2020 10:15:38 -0700
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org, mhocko@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        arnd@arndb.de, keescook@chromium.org, gerg@linux-m68k.org,
+        ktkhai@virtuozzo.com, christian.brauner@ubuntu.com,
+        peterz@infradead.org, esyr@redhat.com, christian@kellner.me,
+        areber@redhat.com, cyphar@cyphar.com
+References: <20200730152250.GG23808@casper.infradead.org>
+ <db3bdbae-eb0f-1ae3-94dd-045e37bc94ba@oracle.com>
+ <20200730171251.GI23808@casper.infradead.org>
+ <63a7404c-e4f6-a82e-257b-217585b0277f@oracle.com>
+ <20200730174956.GK23808@casper.infradead.org>
+ <ab7a25bf-3321-77c8-9bc3-28a223a14032@oracle.com>
+ <87y2n03brx.fsf@x220.int.ebiederm.org>
+ <689d6348-6029-5396-8de7-a26bc3c017e5@oracle.com>
+ <20200731152736.GP23808@casper.infradead.org>
+ <9ba26063-0098-e796-9431-8c1d0c076ffc@oracle.com>
+ <20200731165649.GG24045@ziepe.ca>
+From:   Steven Sistare <steven.sistare@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <71ddd3c1-bb59-3e63-e137-99b88ace454d@oracle.com>
+Date:   Fri, 31 Jul 2020 13:15:34 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730164823.GF57647@roeck-us.net>
+In-Reply-To: <20200731165649.GG24045@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9699 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007310129
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9699 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
+ spamscore=0 impostorscore=0 clxscore=1015 phishscore=0 priorityscore=1501
+ adultscore=0 mlxlogscore=999 malwarescore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007310129
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 09:48:23AM -0700, Guenter Roeck wrote:
-> On Thu, Jul 30, 2020 at 10:03:50AM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.7.12 release.
-> > There are 20 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Sat, 01 Aug 2020 07:44:05 +0000.
-> > Anything received after that time might be too late.
-> > 
+On 7/31/2020 12:56 PM, Jason Gunthorpe wrote:
+> On Fri, Jul 31, 2020 at 12:11:52PM -0400, Steven Sistare wrote:
+>>> Your preservation-across-exec use-case might or might not need the
+>>> VMA to be mapped at the same address.  
+>>
+>> It does.  qemu registers memory with vfio which remembers the va's in kernel
+>> metadata for the device.
 > 
-> Build results:
-> 	total: 155 pass: 155 fail: 0
-> Qemu test results:
-> 	total: 431 pass: 431 fail: 0
+> Once the memory is registered with vfio the VA doesn't matter, vfio
+> will keep the iommu pointing at the same physical pages no matter
+> where they are mapped.
 
-Thanks for testing all of these and letting me know.
+Yes, but there are other code paths that compute and use offsets between va and the
+base va.  Mapping at a different va in the new process breaks vfio; I have tried it.
 
-greg k-h
+- Steve
