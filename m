@@ -2,99 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEC52346C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 15:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65852346C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 15:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733306AbgGaNV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 09:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730752AbgGaNVz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 09:21:55 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A744C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 06:21:55 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id j9so21909890ilc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 06:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=PVBzqO5V0lczT9KKCKlsJFN0ogUwFA0i7lX6j3d1IjsHKYDH6/jKMvXDIzuPghbdiu
-         6FsW3dPbwm3wa+UWUTV03Y8wE4eeUkxuzab27EdZg/T6CKKuji9Z/h8UinvtuBFm/dif
-         ukK9ctbFeMR8/YMSC71tpjMRKx8c+Iu2/a0waKMb5uHZs/jgFsyKHIpsfeUrHHTS3NeW
-         qsORbvy7E5lkWjG22VO6mm0zTzj2Kn0vGRzKvbzH2pVV2UalaQNodUGlRiHMl0bBHE7P
-         cDn4ZNqs89a+2mqAgpeehd+q0HkReJOqmXYmCuTSbvbDlct/JXo0aQmnhKvlzxCT4NkG
-         oUGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=SbkRgDS5X+2CVPe3tL5dS5+pzYBSp0ke5ZJBFPnDf2QaS/zviAch5vxUgT5Ttcj7zS
-         4XviJicCoaf1hW9dI9zGfocM8Y80lq0dDYvlc1df5rUc+3yBAS7tg3PiQCKOILCQsZy9
-         TufAL4yjH+KjPOzKXn7FoSWM2cUWKqRwMUIGJIONlCrMkWQwBZkdmJjMAw1XZ4mrP7LX
-         TOZQij6ZMleZJzSweErJSJybTXbbqVJb4pnng/XquYSoN6oZduGwZ1o1Q5lUUQd6WRqp
-         NjzBEcCdNQA5CeOf2yALw7OP3PAjgBqVnPQ9d1L9u8U47TSHdB/ZCmjbULJ6EZIWBCAI
-         zeXg==
-X-Gm-Message-State: AOAM532CtfEWKP8ZB5Oer3If55kwKTunTLQKpKbx5LrFkX3omK2FXniV
-        kqOMF/vwI0f4WKUZM3e/x8aSifSTTnudYJt6QMw=
-X-Google-Smtp-Source: ABdhPJw+Gmzd0kvjH80OwHfW4300Stjz6nIX8gSzEXwZL+m8lTOqegw3MZSE6jxno7hDDowNDehv+wf6ISDF//X0788=
-X-Received: by 2002:a92:8946:: with SMTP id n67mr3886538ild.168.1596201714689;
- Fri, 31 Jul 2020 06:21:54 -0700 (PDT)
+        id S2387433AbgGaNWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 09:22:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387419AbgGaNWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 09:22:20 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A496E21744;
+        Fri, 31 Jul 2020 13:22:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596201740;
+        bh=fSZT8j8Q56S+X8wVCP0FfOqs/yNJDKaYWLtqjNf+5kM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Le2hBFz8FZfk929djZVF90YdpLUaDO2LYKHKDoNNYI38z2Isfu3EXpllQ9gDpAEef
+         LmIBmoHq9LxlDex2+0hsMssnIUcexmDjeTutM+V+DsxCQCdgLpAPRwosPHcj9jJPDz
+         GtBwC47XzO6fXUT9A1v0EoltNY0QdDPWZpRLwkck=
+Date:   Fri, 31 Jul 2020 15:22:07 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dongdong Yang <contribute.kernel@gmail.com>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-pm@vger.kernel.org, yangdongdong@xiaomi.com,
+        tanggeliang@xiaomi.com, taojun@xiaomi.com, huangqiwu@xiaomi.com,
+        rocking@linux.alibaba.com, fengwei@xiaomi.com,
+        zhangguoquan@xiaomi.com, gulinghua@xiaomi.com, duhui@xiaomi.com
+Subject: Re: [PATCH v2] sched: Provide USF for the portable equipment.
+Message-ID: <20200731132207.GB1712190@kroah.com>
+References: <cover.1596196060.git.yangdongdong@xiaomi.com>
+ <e992fea6ad249694e615640862a28346936f8844.1596196062.git.yangdongdong@xiaomi.com>
 MIME-Version: 1.0
-Received: by 2002:a6b:7508:0:0:0:0:0 with HTTP; Fri, 31 Jul 2020 06:21:54
- -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <mahasaliou99999@gmail.com>
-Date:   Fri, 31 Jul 2020 06:21:54 -0700
-Message-ID: <CAMugOs8q3wO3hYFUDuXpGihSrGLKc9rvevgFcbjivRQF7Qmi4A@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e992fea6ad249694e615640862a28346936f8844.1596196062.git.yangdongdong@xiaomi.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+On Fri, Jul 31, 2020 at 08:46:30PM +0800, Dongdong Yang wrote:
+> --- /dev/null
+> +++ b/drivers/staging/fbsched/usf.c
+> @@ -0,0 +1,346 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 XiaoMi Inc.
+> + * Author: Yang Dongdong <yangdongdong@xiaomi.com>
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + * See http://www.gnu.org/licenses/gpl-2.0.html for more details.
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+Please remove the license "boilerplate" text as you have the SPDX line
+on top.
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/init.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/kthread.h>
+> +#include <linux/cpu.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/kthread.h>
+> +#include <linux/kobject.h>
+> +#include <linux/module.h>
+> +#include <linux/kernel.h>
+> +#include <linux/init.h>
+> +#include <linux/kallsyms.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/fb.h>
+> +#include <linux/notifier.h>
+> +
+> +#define BOOST_MIN_V -100
+> +#define BOOST_MAX_V 100
+> +#define LEVEL_TOP 3
+> +
+> +#define USF_TAG	"[usf_sched]"
+> +
+> +DEFINE_PER_CPU(unsigned long[PID_MAX_LIMIT], task_hist_nivcsw);
+> +
+> +static struct {
+> +	bool is_sched_usf_enabled;
+> +	int enable_debug;
+> +	int is_screen_on;
+> +	struct kobject *kobj;
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+A raw kobject?  For a driver?  are you _SURE_???
 
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
+> +	struct dentry *debugfs_entry;
 
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
+Why do you need this?
 
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
+> +	usf_vdev.enable_debug = 0;
+> +	usf_vdev.debugfs_entry = debugfs_create_file("usf_dbg",
+> +						     0660, NULL, NULL,
+> +						     &usf_dbg_fops);
+> +	if (!usf_vdev.debugfs_entry)
+> +		pr_err("Failed to create usf_dbg!\n");
+
+How can that value be NULL?
+
+There is no need to check debugfs functions for error values.
+
+But in this case, why are you writing a single file to the root of
+debugfs?  Why not put it in a directory instead?  That would be much
+nicer, don't you think?
+
+thanks,
+
+greg k-h
