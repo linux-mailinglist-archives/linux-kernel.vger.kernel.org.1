@@ -2,120 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBD4233D86
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 04:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAB2233D89
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 04:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731243AbgGaC5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 22:57:42 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:50260 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731162AbgGaC5l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 22:57:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0U4Gz1EO_1596164257;
-Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U4Gz1EO_1596164257)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 31 Jul 2020 10:57:38 +0800
-Reply-To: xlpang@linux.alibaba.com
-Subject: Re: [PATCH 1/2] mm/slub: Introduce two counters for the partial
- objects
-To:     Pekka Enberg <penberg@gmail.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <1593678728-128358-1-git-send-email-xlpang@linux.alibaba.com>
- <CAOJsxLErUqY=eBEaj0G3iRAY-YuyyLnxOnBLTP6SkCjhq1On2g@mail.gmail.com>
- <7374a9fd-460b-1a51-1ab4-25170337e5f2@linux.alibaba.com>
- <CAOJsxLFnY=4v6UQigyiZKTMTQXKakVOKf6KA+bCkMe-XVY6sqA@mail.gmail.com>
-From:   xunlei <xlpang@linux.alibaba.com>
-Message-ID: <5eeb5c3d-1a34-ad96-9010-4d8a5ac32241@linux.alibaba.com>
-Date:   Fri, 31 Jul 2020 10:57:38 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        id S1731274AbgGaC6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 22:58:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731244AbgGaC57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 22:57:59 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5868C21775;
+        Fri, 31 Jul 2020 02:57:58 +0000 (UTC)
+Date:   Thu, 30 Jul 2020 22:57:56 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        "Mel Gorman" <mgorman@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] sched/uclamp: kill unnecessary mutex_init()
+Message-ID: <20200730225756.11283799@oasis.local.home>
+In-Reply-To: <20200725085629.98292-1-miaoqinglang@huawei.com>
+References: <20200725085629.98292-1-miaoqinglang@huawei.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAOJsxLFnY=4v6UQigyiZKTMTQXKakVOKf6KA+bCkMe-XVY6sqA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/7 下午11:23, Pekka Enberg wrote:
-> Hi!
+On Sat, 25 Jul 2020 16:56:29 +0800
+Qinglang Miao <miaoqinglang@huawei.com> wrote:
+
+> The mutex uclamp_mutex is initialized statically. It is
+> unnecessary to initialize by mutex_init().
 > 
-> (Sorry for the delay, I missed your response.)
+
+Seems reasonable.
+
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
+
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  kernel/sched/core.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> On Fri, Jul 3, 2020 at 12:38 PM xunlei <xlpang@linux.alibaba.com> wrote:
->>
->> On 2020/7/2 PM 7:59, Pekka Enberg wrote:
->>> On Thu, Jul 2, 2020 at 11:32 AM Xunlei Pang <xlpang@linux.alibaba.com> wrote:
->>>> The node list_lock in count_partial() spend long time iterating
->>>> in case of large amount of partial page lists, which can cause
->>>> thunder herd effect to the list_lock contention, e.g. it cause
->>>> business response-time jitters when accessing "/proc/slabinfo"
->>>> in our production environments.
->>>
->>> Would you have any numbers to share to quantify this jitter? I have no
->>
->> We have HSF RT(High-speed Service Framework Response-Time) monitors, the
->> RT figures fluctuated randomly, then we deployed a tool detecting "irq
->> off" and "preempt off" to dump the culprit's calltrace, capturing the
->> list_lock cost up to 100ms with irq off issued by "ss", this also caused
->> network timeouts.
-> 
-> Thanks for the follow up. This sounds like a good enough motivation
-> for this patch, but please include it in the changelog.
-> 
->>> objections to this approach, but I think the original design
->>> deliberately made reading "/proc/slabinfo" more expensive to avoid
->>> atomic operations in the allocation/deallocation paths. It would be
->>> good to understand what is the gain of this approach before we switch
->>> to it. Maybe even run some slab-related benchmark (not sure if there's
->>> something better than hackbench these days) to see if the overhead of
->>> this approach shows up.
->>
->> I thought that before, but most atomic operations are serialized by the
->> list_lock. Another possible way is to hold list_lock in __slab_free(),
->> then these two counters can be changed from atomic to long.
->>
->> I also have no idea what's the standard SLUB benchmark for the
->> regression test, any specific suggestion?
-> 
-> I don't know what people use these days. When I did benchmarking in
-> the past, hackbench and netperf were known to be slab-allocation
-> intensive macro-benchmarks. Christoph also had some SLUB
-> micro-benchmarks, but I don't think we ever merged them into the tree.
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 29d557c1f..9a8b7ed3a 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1331,8 +1331,6 @@ static void __init init_uclamp(void)
+>  	enum uclamp_id clamp_id;
+>  	int cpu;
+>  
+> -	mutex_init(&uclamp_mutex);
+> -
+>  	for_each_possible_cpu(cpu)
+>  		init_uclamp_rq(cpu_rq(cpu));
+>  
 
-I tested hackbench on 24-CPU machine, here are the results:
-
-"hackbench 20 thread 1000"
-
-== orignal(without any patch)
-Time: 53.793
-Time: 54.305
-Time: 54.073
-
-== with my patch1~2
-Time: 54.036
-Time: 53.840
-Time: 54.066
-Time: 53.449
-
-== with my patch1~2, plus using a percpu partial free objects counter
-Time: 53.303
-Time: 52.994
-Time: 53.218
-Time: 53.268
-Time: 53.739
-Time: 53.072
-
-The results show no performance regression, it's strange that the
-figures even get a little better when using percpu counter.
-
-Thanks,
-Xunlei
