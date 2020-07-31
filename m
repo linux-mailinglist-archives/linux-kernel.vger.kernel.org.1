@@ -2,115 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C4F233DC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 05:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB39233DCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 05:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731344AbgGaDkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 23:40:14 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:57460 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731317AbgGaDkN (ORCPT
+        id S1731306AbgGaDpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 23:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731199AbgGaDpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 23:40:13 -0400
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 24583891B0;
-        Fri, 31 Jul 2020 15:40:10 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1596166810;
-        bh=QyXhMPzrP1ywAXT26zbyvUCAWusApigo/oSgJG0v9js=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=sJieyIcuSWEYih5V68ENnpm4Chl+d0iygWUWLe+S5LlAg6iKxRrA7r81ZKASRWDrM
-         P8whcraJ/uuN/G0hamgmHhHI4wY4eImTxvSu5Fd3aVf9V2jz1msOl3Rr2xgBjkHOWN
-         7sSLMis8pbZydqFtM5F1QagwPrb1C67paRq73roApiRgdVPDvOQQBbjORbHjPA1PLC
-         Aoo2WOM3PDdRSPlJrD/8BDnE10p+CsH04/4AoQf08CzWZbxryho1SaCaivaaWO68Tp
-         l6VBvaz0uQws+MGySqSAJAcf4p1KvV7v0+cO7c60cf6OVqqzVE99cu3o6dW3RlK4SV
-         a+KTZO70DJUcg==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5f23929a0001>; Fri, 31 Jul 2020 15:40:10 +1200
-Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
-        by smtp (Postfix) with ESMTP id 3386013EEFA;
-        Fri, 31 Jul 2020 15:40:09 +1200 (NZST)
-Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
-        id DB97433ECD0; Fri, 31 Jul 2020 15:40:09 +1200 (NZST)
-From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-To:     ray.jui@broadcom.com, helgaas@kernel.org, sbranden@broadcom.com,
-        f.fainelli@gmail.com, lorenzo.pieralisi@arm.com, robh@kernel.org
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Subject: [PATCH v2 2/2] PCI: Reduce warnings on possible RW1C corruption
-Date:   Fri, 31 Jul 2020 15:39:56 +1200
-Message-Id: <20200731033956.6058-2-mark.tomlinson@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200731033956.6058-1-mark.tomlinson@alliedtelesis.co.nz>
-References: <20200731033956.6058-1-mark.tomlinson@alliedtelesis.co.nz>
+        Thu, 30 Jul 2020 23:45:07 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1998C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 20:45:06 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a26so4259472ejc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 20:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=cds3H26Qt4Xbf0pS+HwjsX5vOPZPhiV8iFrKf+Od2OY=;
+        b=QonvG/kmsgdHkQkoy6d5Y1Y9u7ufcN0uWQQXWtKsyiiznQfg5qV5MUERJVPrgbdhHB
+         1LumXGZhWuzti5sxoiZ18zM3f95u1A7NEh1ERyt8ScM4jEL6UrM6MP3VHDZx2AssLqap
+         bTWReYZWU0oC9uxOiU6jgsRbkyRDEriNJ1JeZld+/08TkPvnbG1081YK5sTYqlUqFQfW
+         VY22PpZbts4FHK21VDe3I4mdB2h/U5xT0LriaazkF8+A64Ure+znvkJx8/Y4OuLwnwbL
+         ImpQR0KXAEDJ4Mbn2ubokoHQm+yRWbuQTdLYZXf7uFDadW2YmTxq3qDB40lKfgVFtMTl
+         4thg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=cds3H26Qt4Xbf0pS+HwjsX5vOPZPhiV8iFrKf+Od2OY=;
+        b=ASa/DP+w3zpFyMJKCTp3vf8TAiDszxEaD8XovzkwXYW5Zs5rcEriCBFV+N8IOBiMZT
+         KJLNa0IEL36qRhSPRMQ3ehB7pHGN2+xo7yg213M4CZLRTkPQJh4q86mNxlX76l3uXcJh
+         49B7Q43wwkDFjRID2G8Zhh233ypQDIOqP5ZRnMBRvMqfzyveDzUyM3nQFaYAAHmXowW0
+         EhBiX0FEZjfGbj+6elqTJ+67SVpARC2bTwcaLr8W30m4p44hyYEXO0grTk+05tsb33rK
+         SNx9EgKu3/nob/4WMP1BhSmYsNJXNHldYtzVNoyT73/a3188sWPAFwC2BbUCjwVDxegT
+         W0XA==
+X-Gm-Message-State: AOAM532AA1V88EBNEgVVFRr4VTR/hpqsaRUn/WTjbh5bg45ZyiF1AxZ3
+        pFnAQP+O2kzqgrIEQQ8oLQLUZUfELSMH20gFk6xjEqhi
+X-Google-Smtp-Source: ABdhPJzTNEq4SD3AtnBWlloSxhhMF2bQmcFBfou2WUgUWR9i7Rx29UEBZLM2ZOBesPlynB54igS1I1jC3ZlDSLKMJ4s=
+X-Received: by 2002:a17:906:b6c3:: with SMTP id ec3mr2078395ejb.101.1596167105043;
+ Thu, 30 Jul 2020 20:45:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-x-atlnz-ls: pat
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 31 Jul 2020 13:44:54 +1000
+Message-ID: <CAPM=9twq8wVE888GW3cQ12Fw=FEwtD-1tXWgMcrrnjdk3NJZfg@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.8-rc8 (part 2)
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For hardware that only supports 32-bit writes to PCI there is the
-possibility of clearing RW1C (write-one-to-clear) bits. A rate-limited
-messages was introduced by fb2659230120, but rate-limiting is not the
-best choice here. Some devices may not show the warnings they should if
-another device has just produced a bunch of warnings. Also, the number
-of messages can be a nuisance on devices which are otherwise working
-fine.
+Hi Linus,
 
-This patch changes the ratelimit to a single warning per bus. This
-ensures no bus is 'starved' of emitting a warning and also that there
-isn't a continuous stream of warnings. It would be preferable to have a
-warning per device, but the pci_dev structure is not available here, and
-a lookup from devfn would be far too slow.
+As mentioned previously this contains the nouveau regression fix,
+amdgpu had 3 fixes outstanding as well, one revert, an info leak and
+use after free. The use after free is a bit trickier than I'd like,
+and I've personally gone over it to confirm I'm happy that it is doing
+what it says.
 
-Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
-Fixes: fb2659230120 ("PCI: Warn on possible RW1C corruption for sub-32 bi=
-t config writes")
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
----
- drivers/pci/access.c | 9 ++++++---
- include/linux/pci.h  | 1 +
- 2 files changed, 7 insertions(+), 3 deletions(-)
+Let me know if any issues with any, happy to respin if necessary.
+Dave.
 
-diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-index 79c4a2ef269a..ab85cb7df9b6 100644
---- a/drivers/pci/access.c
-+++ b/drivers/pci/access.c
-@@ -160,9 +160,12 @@ int pci_generic_config_write32(struct pci_bus *bus, =
-unsigned int devfn,
- 	 * write happen to have any RW1C (write-one-to-clear) bits set, we
- 	 * just inadvertently cleared something we shouldn't have.
- 	 */
--	dev_warn_ratelimited(&bus->dev, "%d-byte config write to %04x:%02x:%02x=
-.%d offset %#x may corrupt adjacent RW1C bits\n",
--			     size, pci_domain_nr(bus), bus->number,
--			     PCI_SLOT(devfn), PCI_FUNC(devfn), where);
-+	if (!bus->unsafe_warn) {
-+		dev_warn(&bus->dev, "%d-byte config write to %04x:%02x:%02x.%d offset =
-%#x may corrupt adjacent RW1C bits\n",
-+			 size, pci_domain_nr(bus), bus->number,
-+			 PCI_SLOT(devfn), PCI_FUNC(devfn), where);
-+		bus->unsafe_warn =3D true;
-+	}
-=20
- 	mask =3D ~(((1 << (size * 8)) - 1) << ((where & 0x3) * 8));
- 	tmp =3D readl(addr) & mask;
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 34c1c4f45288..5b6ab593ae09 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -613,6 +613,7 @@ struct pci_bus {
- 	unsigned char	primary;	/* Number of primary bridge */
- 	unsigned char	max_bus_speed;	/* enum pci_bus_speed */
- 	unsigned char	cur_bus_speed;	/* enum pci_bus_speed */
-+	bool		unsafe_warn;	/* warned about RW1C config write */
- #ifdef CONFIG_PCI_DOMAINS_GENERIC
- 	int		domain_nr;
- #endif
---=20
-2.28.0
+drm-fixes-2020-07-31:
+drm fixes for 5.8-rc8 (part 2)
 
+nouveau:
+- final modifiers regression fix
+
+amdgpu:
+- Revert a fix which caused other regressions
+- Fix potential kernel info leak
+- Fix a use-after-free bug that was uncovered by another change in 5.7
+The following changes since commit a4a2739beb8933a19281bca077fdb852598803ed:
+
+  Merge tag 'drm-misc-fixes-2020-07-28' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes (2020-07-29
+12:46:58 +1000)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-07-31
+
+for you to fetch changes up to 887c909dd5d557c203a233ebbe238c18438a680a:
+
+  Merge tag 'amd-drm-fixes-5.8-2020-07-30' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes (2020-07-31
+13:04:00 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.8-rc8 (part 2)
+
+nouveau:
+- final modifiers regression fix
+
+amdgpu:
+- Revert a fix which caused other regressions
+- Fix potential kernel info leak
+- Fix a use-after-free bug that was uncovered by another change in 5.7
+
+----------------------------------------------------------------
+Alex Deucher (1):
+      Revert "drm/amdgpu: Fix NULL dereference in dpm sysfs handlers"
+
+Dave Airlie (1):
+      Merge tag 'amd-drm-fixes-5.8-2020-07-30' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes
+
+James Jones (1):
+      drm/nouveau: Accept 'legacy' format modifiers
+
+Mazin Rezk (1):
+      drm/amd/display: Clear dm_state for fast updates
+
+Peilin Ye (1):
+      drm/amdgpu: Prevent kernel-infoleak in amdgpu_info_ioctl()
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c           |  3 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c            |  9 ++++--
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 36 +++++++++++++++++------
+ drivers/gpu/drm/nouveau/nouveau_display.c         | 27 +++++++++++++++--
+ 4 files changed, 60 insertions(+), 15 deletions(-)
