@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE3B2345A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175F42345A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733193AbgGaMVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
+        id S1733173AbgGaMVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733152AbgGaMVa (ORCPT
+        with ESMTP id S1732985AbgGaMVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:21:30 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2A8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:30 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id k1so7201785pjt.5
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:30 -0700 (PDT)
+        Fri, 31 Jul 2020 08:21:33 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0C3C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:33 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id b9so17222225plx.6
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:21:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=C20rXtIxVYuV8kAt9ziq5r9X3XGDWqg/fkrphmJjKRQ=;
-        b=mL8mwKWQzTvtX66d+UAyvZYdeQfelYFSjj9rVpvye6Z3Z69SI59FpRf6OxSdCEUyh0
-         1uV7DKEXrssFQAvdcBXZ3OPVVqRYmOyac7+wTTDLdr+Qz6hVv7vV6bwx9Cuyl0x+58ya
-         Yog37R4NlqRmNjaj4HUv7O+CqxVQpBjIrkrNahCOWRl5Bkw+6rLYCG1SSEn4T8gmHLi2
-         T8tRatkzoVK9YvK4I4N2iskRZEB1mJN4IYFco0Zb6M/bc6/XrJ4TGATj2GeX2HykwvaI
-         f1aIXZJ82amxGxC9ysOXv/8IUR4OArtjUM6WoKZayh72LgryYTd30z7JqrPLZcpm4X1J
-         5Fjw==
+        bh=D4Ndr3lMfGWryT8BpcCBWbkT9Sd7Lw+5S6mzuxOjqm0=;
+        b=Ox0RjpA12PJQHDITrdph5pOPcuN2GYXZFDP64O1Jg7Q9hHYJqG0b6qkA1DyLT1HCYA
+         yAIAN9doa8ZzugIrAzEWwuyFfOELJ5kmOooR2FsMap3TbEF94piK1e/wcwC4z7k40eXD
+         clWp0mC2ZCqtXIDvB1CzQ0PHfEixXvYcXb39QIxCU0XAIWo9nRhM6b8rAVWVSt4pdr1p
+         CCpQPW7LRf5H85Yp258fUIC3WPDfZKKHL5AXw/yegUQzvD/xA1eFx09vK7HleoosgXCo
+         DNp1KFajA6j0Re9O7hiQ0JAZ2xSIezel7P48RxdqtF86SMVg/VzFTdJLd/KqtpLARV4y
+         RM5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=C20rXtIxVYuV8kAt9ziq5r9X3XGDWqg/fkrphmJjKRQ=;
-        b=hrRlSMYUCKO2V89oQFNch8VKlIvGkxq4aNDa+DKHLlR9Qvy2YdOFcyhXkBRaEpEv6W
-         XTX7axNE3izpw0wUIQ+ZA0udiQyhzUJTOlu1jEaLDLiArUJC60qXhLmA1Zk0EhsnqmOn
-         ph5V2glv4FaO0/i6XcgZXHdZYkPfLzrOv9uvObX50sL7wujh9XBwse6f7o8P5zjVXOCH
-         Vl7g0ml0y/cza+Myu7B75B3bkj1sNeqr+xvXTyMExWChzrL7NEP3Equ1TZLSaaQAQZ85
-         XcXYXuDHi9KSfC+rKMXKtDXXlOpJdMo/qwee2TvkkxT+KTJ3WQdrAt2mKgKURiCOyRps
-         29/w==
-X-Gm-Message-State: AOAM530GmP3rHHCn+VziJTyjF+AQLvPhpF8grVylLV658yDQ3p8hjmet
-        dBgmcu3pCnIdjuq3v3LDIA==
-X-Google-Smtp-Source: ABdhPJxBtp9vGmxG4kThIlaUgtwdMwKwb0g68uZr44relMDFK6s7Qp5rP4w+/RX5BF4lCvffoiwKlA==
-X-Received: by 2002:a63:3d06:: with SMTP id k6mr3577330pga.316.1596198090375;
-        Fri, 31 Jul 2020 05:21:30 -0700 (PDT)
+        bh=D4Ndr3lMfGWryT8BpcCBWbkT9Sd7Lw+5S6mzuxOjqm0=;
+        b=lhlXENb0XMsLFLDHxEGI6QD8MhYfrvLaqWMDWlZTE1WwO5Sem4fVqh4ivjCvWwsC8d
+         srir6g1LRAV6KDanfBrIfCo5r5cwrI70EXMBTsfFwJgeKnaGatNxu3DOW3Owv9wedu3v
+         jUoSi6YNm8Teyo3mKAXaaWdWR1e8h45uGTmVlpMffNYjOoGpdTMEe2CMbjjfM7rCZphw
+         1a/xOYgbTUWw95FWu1uRuamrU4ggv4LUDPTtuTcdQqxM3rgFAP3CX/VX/e8SsovfMMv5
+         CHmCo4V2ZvEts45mDWqmCBrvkveh066VdBTCVGC1ejEteQOqBOzm+l0ckv/juvxNh5sB
+         Z+oA==
+X-Gm-Message-State: AOAM531TyXmJ290/FrnKG3iKa3V1CUXorjqIdXwtVoOjg9Dga7PYxDjs
+        +dzUp5B872LCFSr9PpuoUA==
+X-Google-Smtp-Source: ABdhPJxsym233zotubkKtsT7WOGGC9czTkxCbghBK6umjx1A55M6pXrzAXib/Mcqh7ouG2Jv74/uoQ==
+X-Received: by 2002:a63:df03:: with SMTP id u3mr3359540pgg.84.1596198093503;
+        Fri, 31 Jul 2020 05:21:33 -0700 (PDT)
 Received: from ip-172-31-41-194.ap-northeast-1.compute.internal (ec2-52-199-21-241.ap-northeast-1.compute.amazonaws.com. [52.199.21.241])
-        by smtp.gmail.com with ESMTPSA id m19sm3675692pjv.34.2020.07.31.05.21.27
+        by smtp.gmail.com with ESMTPSA id m19sm3675692pjv.34.2020.07.31.05.21.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 05:21:29 -0700 (PDT)
+        Fri, 31 Jul 2020 05:21:33 -0700 (PDT)
 From:   nao.horiguchi@gmail.com
 To:     linux-mm@kvack.org
 Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
@@ -54,9 +54,9 @@ Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
         david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
         zeil@yandex-team.ru, cai@lca.pw, naoya.horiguchi@nec.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 04/16] mm,madvise: Refactor madvise_inject_error
-Date:   Fri, 31 Jul 2020 12:21:00 +0000
-Message-Id: <20200731122112.11263-5-nao.horiguchi@gmail.com>
+Subject: [PATCH v5 05/16] mm,hwpoison-inject: don't pin for hwpoison_filter
+Date:   Fri, 31 Jul 2020 12:21:01 +0000
+Message-Id: <20200731122112.11263-6-nao.horiguchi@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200731122112.11263-1-nao.horiguchi@gmail.com>
 References: <20200731122112.11263-1-nao.horiguchi@gmail.com>
@@ -65,61 +65,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oscar Salvador <osalvador@suse.de>
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-Make a proper if-else condition for {hard,soft}-offline.
+Another memory error injection interface debugfs:hwpoison/corrupt-pfn
+also takes bogus refcount for hwpoison_filter(). It's justified
+because this does a coarse filter, expecting that memory_failure()
+redoes the check for sure.
 
-Signed-off-by: Oscar Salvador <osalvador@suse.com>
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Oscar Salvador <osalvador@suse.com>
 ---
- mm/madvise.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ mm/hwpoison-inject.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-diff --git v5.8-rc7-mmotm-2020-07-27-18-18/mm/madvise.c v5.8-rc7-mmotm-2020-07-27-18-18_patched/mm/madvise.c
-index 1fe89a5b8d33..2c50c2c5673b 100644
---- v5.8-rc7-mmotm-2020-07-27-18-18/mm/madvise.c
-+++ v5.8-rc7-mmotm-2020-07-27-18-18_patched/mm/madvise.c
-@@ -886,16 +886,15 @@ static long madvise_remove(struct vm_area_struct *vma,
- static int madvise_inject_error(int behavior,
- 		unsigned long start, unsigned long end)
- {
--	struct page *page;
- 	struct zone *zone;
- 	unsigned long size;
+diff --git v5.8-rc7-mmotm-2020-07-27-18-18/mm/hwpoison-inject.c v5.8-rc7-mmotm-2020-07-27-18-18_patched/mm/hwpoison-inject.c
+index e488876b168a..1ae1ebc2b9b1 100644
+--- v5.8-rc7-mmotm-2020-07-27-18-18/mm/hwpoison-inject.c
++++ v5.8-rc7-mmotm-2020-07-27-18-18_patched/mm/hwpoison-inject.c
+@@ -26,11 +26,6 @@ static int hwpoison_inject(void *data, u64 val)
  
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
+ 	p = pfn_to_page(pfn);
+ 	hpage = compound_head(p);
+-	/*
+-	 * This implies unable to support free buddy pages.
+-	 */
+-	if (!get_hwpoison_page(p))
+-		return 0;
  
--
- 	for (; start < end; start += size) {
- 		unsigned long pfn;
-+		struct page *page;
- 		int ret;
+ 	if (!hwpoison_filter_enable)
+ 		goto inject;
+@@ -40,23 +35,20 @@ static int hwpoison_inject(void *data, u64 val)
+ 	 * This implies unable to support non-LRU pages.
+ 	 */
+ 	if (!PageLRU(hpage) && !PageHuge(p))
+-		goto put_out;
++		return 0;
  
- 		ret = get_user_pages_fast(start, 1, 0, &page);
-@@ -925,17 +924,14 @@ static int madvise_inject_error(int behavior,
+ 	/*
+-	 * do a racy check with elevated page count, to make sure PG_hwpoison
+-	 * will only be set for the targeted owner (or on a free page).
++	 * do a racy check to make sure PG_hwpoison will only be set for
++	 * the targeted owner (or on a free page).
+ 	 * memory_failure() will redo the check reliably inside page lock.
+ 	 */
+ 	err = hwpoison_filter(hpage);
+ 	if (err)
+-		goto put_out;
++		return 0;
  
- 		if (behavior == MADV_SOFT_OFFLINE) {
- 			pr_info("Soft offlining pfn %#lx at process virtual address %#lx\n",
--					pfn, start);
--
-+				pfn, start);
- 			ret = soft_offline_page(pfn, 0);
--			if (ret)
--				return ret;
--			continue;
-+		} else {
-+			pr_info("Injecting memory failure for pfn %#lx at process virtual address %#lx\n",
-+				pfn, start);
-+			ret = memory_failure(pfn, 0);
- 		}
+ inject:
+ 	pr_info("Injecting memory failure at pfn %#lx\n", pfn);
+-	return memory_failure(pfn, MF_COUNT_INCREASED);
+-put_out:
+-	put_hwpoison_page(p);
+-	return 0;
++	return memory_failure(pfn, 0);
+ }
  
--		pr_info("Injecting memory failure for pfn %#lx at process virtual address %#lx\n",
--				pfn, start);
--		ret = memory_failure(pfn, 0);
- 		if (ret)
- 			return ret;
- 	}
+ static int hwpoison_unpoison(void *data, u64 val)
 -- 
 2.17.1
 
