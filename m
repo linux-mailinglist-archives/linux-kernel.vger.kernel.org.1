@@ -2,166 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9557233CE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 03:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F889233CF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 03:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731070AbgGaBh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 21:37:58 -0400
-Received: from mga05.intel.com ([192.55.52.43]:2302 "EHLO mga05.intel.com"
+        id S1731158AbgGaBnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 21:43:07 -0400
+Received: from mga05.intel.com ([192.55.52.43]:2827 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728080AbgGaBh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 21:37:57 -0400
-IronPort-SDR: /nrDOpw+TTPOgMZDd7QyeWooSXv5Sy7NY72a0i++oQq6BcQ5++7WDYe8GV3Vl8FX/qJm53y72Q
- YLQGmXk3hM6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="236583572"
+        id S1731117AbgGaBmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 21:42:52 -0400
+IronPort-SDR: SxvUoYKdax5X9AfLlU1H9b5hghdhW8kJrW14XIOu7JnNws3+9gtq2UGmPMe/bRtvITDflEd4WN
+ y3FSCSFhsckQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="236583891"
 X-IronPort-AV: E=Sophos;i="5.75,416,1589266800"; 
-   d="scan'208";a="236583572"
+   d="scan'208";a="236583891"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 18:37:55 -0700
-IronPort-SDR: C4nlYMd2RtUa+DJQ4qoS2N44MujtHUJ9kxKI/jBVJHKVtFJeFAVhfFnLdOtn97p1AbzrtlsNXo
- 37JHSkdU4Eug==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 18:42:51 -0700
+IronPort-SDR: baMEzDWRkgxeQuoFC0ybDsUEFaxwWr9nxeCh/3VHi+mgCilOH1oafwKyMbMVumsNmjAqaPVQ+l
+ EHJVYFGGSXFw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,416,1589266800"; 
-   d="scan'208";a="365369710"
-Received: from lkp-server02.sh.intel.com (HELO d4d86dd808e0) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 30 Jul 2020 18:37:53 -0700
-Received: from kbuild by d4d86dd808e0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k1Jzc-0000N0-7G; Fri, 31 Jul 2020 01:37:52 +0000
-Date:   Fri, 31 Jul 2020 09:36:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Torsten Duwe <duwe@suse.de>
-Subject: arch/parisc/kernel/module.c:965:8: warning: Uninitialized variable:
- err
-Message-ID: <202007310943.xN5qRKad%lkp@intel.com>
+   d="scan'208";a="395179041"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 30 Jul 2020 18:42:48 -0700
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] vfio/type1: Use iommu_aux_at(de)tach_group() APIs
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <20200714055703.5510-1-baolu.lu@linux.intel.com>
+ <20200714055703.5510-5-baolu.lu@linux.intel.com>
+ <20200729143258.22533170@x1.home>
+ <af6c95a7-3238-1cbd-8656-014c12498587@linux.intel.com>
+ <20200730151703.5daf8ad4@x1.home>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <7caa6533-b980-8135-6dba-2aac5b0bb23f@linux.intel.com>
+Date:   Fri, 31 Jul 2020 09:37:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200730151703.5daf8ad4@x1.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e2c46b5762c616c249201688d3b9846627f78d2c
-commit: a1326b17ac03a9012cb3d01e434aacb4d67a416c module/ftrace: handle patchable-function-entry
-date:   9 months ago
-compiler: hppa-linux-gcc (GCC) 9.3.0
+Hi Alex,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+On 7/31/20 5:17 AM, Alex Williamson wrote:
+> On Thu, 30 Jul 2020 10:41:32 +0800
+> Lu Baolu <baolu.lu@linux.intel.com> wrote:
+> 
+>> Hi Alex,
+>>
+>> On 7/30/20 4:32 AM, Alex Williamson wrote:
+>>> On Tue, 14 Jul 2020 13:57:03 +0800
+>>> Lu Baolu <baolu.lu@linux.intel.com> wrote:
+>>>    
+>>>> Replace iommu_aux_at(de)tach_device() with iommu_aux_at(de)tach_group().
+>>>> It also saves the IOMMU_DEV_FEAT_AUX-capable physcail device in the
+>>>> vfio_group data structure so that it could be reused in other places.
+>>>>
+>>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>>>> ---
+>>>>    drivers/vfio/vfio_iommu_type1.c | 44 ++++++---------------------------
+>>>>    1 file changed, 7 insertions(+), 37 deletions(-)
+>>>>
+>>>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>>>> index 5e556ac9102a..f8812e68de77 100644
+>>>> --- a/drivers/vfio/vfio_iommu_type1.c
+>>>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>>>> @@ -100,6 +100,7 @@ struct vfio_dma {
+>>>>    struct vfio_group {
+>>>>    	struct iommu_group	*iommu_group;
+>>>>    	struct list_head	next;
+>>>> +	struct device		*iommu_device;
+>>>>    	bool			mdev_group;	/* An mdev group */
+>>>>    	bool			pinned_page_dirty_scope;
+>>>>    };
+>>>> @@ -1627,45 +1628,13 @@ static struct device *vfio_mdev_get_iommu_device(struct device *dev)
+>>>>    	return NULL;
+>>>>    }
+>>>>    
+>>>> -static int vfio_mdev_attach_domain(struct device *dev, void *data)
+>>>> -{
+>>>> -	struct iommu_domain *domain = data;
+>>>> -	struct device *iommu_device;
+>>>> -
+>>>> -	iommu_device = vfio_mdev_get_iommu_device(dev);
+>>>> -	if (iommu_device) {
+>>>> -		if (iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX))
+>>>> -			return iommu_aux_attach_device(domain, iommu_device);
+>>>> -		else
+>>>> -			return iommu_attach_device(domain, iommu_device);
+>>>> -	}
+>>>> -
+>>>> -	return -EINVAL;
+>>>> -}
+>>>> -
+>>>> -static int vfio_mdev_detach_domain(struct device *dev, void *data)
+>>>> -{
+>>>> -	struct iommu_domain *domain = data;
+>>>> -	struct device *iommu_device;
+>>>> -
+>>>> -	iommu_device = vfio_mdev_get_iommu_device(dev);
+>>>> -	if (iommu_device) {
+>>>> -		if (iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX))
+>>>> -			iommu_aux_detach_device(domain, iommu_device);
+>>>> -		else
+>>>> -			iommu_detach_device(domain, iommu_device);
+>>>> -	}
+>>>> -
+>>>> -	return 0;
+>>>> -}
+>>>> -
+>>>>    static int vfio_iommu_attach_group(struct vfio_domain *domain,
+>>>>    				   struct vfio_group *group)
+>>>>    {
+>>>>    	if (group->mdev_group)
+>>>> -		return iommu_group_for_each_dev(group->iommu_group,
+>>>> -						domain->domain,
+>>>> -						vfio_mdev_attach_domain);
+>>>> +		return iommu_aux_attach_group(domain->domain,
+>>>> +					      group->iommu_group,
+>>>> +					      group->iommu_device);
+>>>
+>>> No, we previously iterated all devices in the group and used the aux
+>>> interface only when we have an iommu_device supporting aux.  If we
+>>> simply assume an mdev group only uses an aux domain we break existing
+>>> users, ex. SR-IOV VF backed mdevs.  Thanks,
+>>
+>> Oh, yes. Sorry! I didn't consider the physical device backed mdevs
+>> cases.
+>>
+>> Looked into this part of code, it seems that there's a lock issue here.
+>> The group->mutex is held in iommu_group_for_each_dev() and will be
+>> acquired again in iommu_attach_device().
+> 
+> These are two different groups.  We walk the devices in the mdev's
+> group with iommu_group_for_each_dev(), holding the mdev's group lock,
+> but we call iommu_attach_device() with iommu_device, which results in
+> acquiring the lock for the iommu_device's group.
 
+You are right. Sorry for the noise. Please ignore it.
 
-cppcheck warnings: (new ones prefixed by >>)
+> 
+>> How about making it like:
+>>
+>> static int vfio_iommu_attach_group(struct vfio_domain *domain,
+>>                                      struct vfio_group *group)
+>> {
+>>           if (group->mdev_group) {
+>>                   struct device *iommu_device = group->iommu_device;
+>>
+>>                   if (WARN_ON(!iommu_device))
+>>                           return -EINVAL;
+>>
+>>                   if (iommu_dev_feature_enabled(iommu_device,
+>> IOMMU_DEV_FEAT_AUX))
+>>                           return iommu_aux_attach_device(domain->domain,
+>> iommu_device);
+>>                   else
+>>                           return iommu_attach_device(domain->domain,
+>> iommu_device);
+>>           } else {
+>>                   return iommu_attach_group(domain->domain,
+>> group->iommu_group);
+>>           }
+>> }
+>>
+>> The caller (vfio_iommu_type1_attach_group) has guaranteed that all mdevs
+>> in an iommu group should be derived from a same physical device.
+> 
+> Have we?
 
->> arch/parisc/kernel/module.c:965:8: warning: Uninitialized variable: err [uninitvar]
-      if (err)
-          ^
+We have done this with below.
 
-vim +965 arch/parisc/kernel/module.c
+static int vfio_mdev_iommu_device(struct device *dev, void *data)
+{
+         struct device **old = data, *new;
 
-^1da177e4c3f41 Linus Torvalds 2005-04-16  884  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  885  	register_unwind_table(me, sechdrs);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  886  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  887  	/* haven't filled in me->symtab yet, so have to find it
-^1da177e4c3f41 Linus Torvalds 2005-04-16  888  	 * ourselves */
-^1da177e4c3f41 Linus Torvalds 2005-04-16  889  	for (i = 1; i < hdr->e_shnum; i++) {
-^1da177e4c3f41 Linus Torvalds 2005-04-16  890  		if(sechdrs[i].sh_type == SHT_SYMTAB
-fe579c69c6d437 Julia Lawall   2009-08-04  891  		   && (sechdrs[i].sh_flags & SHF_ALLOC)) {
-^1da177e4c3f41 Linus Torvalds 2005-04-16  892  			int strindex = sechdrs[i].sh_link;
-6ca6366220ed28 Sven Schnelle  2019-06-05  893  			symindex = i;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  894  			/* FIXME: AWFUL HACK
-^1da177e4c3f41 Linus Torvalds 2005-04-16  895  			 * The cast is to drop the const from
-^1da177e4c3f41 Linus Torvalds 2005-04-16  896  			 * the sechdrs pointer */
-^1da177e4c3f41 Linus Torvalds 2005-04-16  897  			symhdr = (Elf_Shdr *)&sechdrs[i];
-^1da177e4c3f41 Linus Torvalds 2005-04-16  898  			strtab = (char *)sechdrs[strindex].sh_addr;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  899  			break;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  900  		}
-^1da177e4c3f41 Linus Torvalds 2005-04-16  901  	}
-^1da177e4c3f41 Linus Torvalds 2005-04-16  902  
-6183d68b8b01e3 Sven Schnelle  2019-06-05  903  	pr_debug("module %s: strtab %p, symhdr %p\n",
-^1da177e4c3f41 Linus Torvalds 2005-04-16  904  	       me->name, strtab, symhdr);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  905  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  906  	if(me->arch.got_count > MAX_GOTS) {
-f8fc18a1323c3f Helge Deller   2006-10-18  907  		printk(KERN_ERR "%s: Global Offset Table overflow (used %ld, allowed %d)\n",
-f8fc18a1323c3f Helge Deller   2006-10-18  908  				me->name, me->arch.got_count, MAX_GOTS);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  909  		return -EINVAL;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  910  	}
-^1da177e4c3f41 Linus Torvalds 2005-04-16  911  
-c298be74492bec Helge Deller   2009-01-01  912  	kfree(me->arch.section);
-c298be74492bec Helge Deller   2009-01-01  913  	me->arch.section = NULL;
-c298be74492bec Helge Deller   2009-01-01  914  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  915  	/* no symbol table */
-^1da177e4c3f41 Linus Torvalds 2005-04-16  916  	if(symhdr == NULL)
-^1da177e4c3f41 Linus Torvalds 2005-04-16  917  		return 0;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  918  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  919  	oldptr = (void *)symhdr->sh_addr;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  920  	newptr = oldptr + 1;	/* we start counting at 1 */
-^1da177e4c3f41 Linus Torvalds 2005-04-16  921  	nsyms = symhdr->sh_size / sizeof(Elf_Sym);
-6183d68b8b01e3 Sven Schnelle  2019-06-05  922  	pr_debug("OLD num_symtab %lu\n", nsyms);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  923  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  924  	for (i = 1; i < nsyms; i++) {
-^1da177e4c3f41 Linus Torvalds 2005-04-16  925  		oldptr++;	/* note, count starts at 1 so preincrement */
-^1da177e4c3f41 Linus Torvalds 2005-04-16  926  		if(strncmp(strtab + oldptr->st_name,
-^1da177e4c3f41 Linus Torvalds 2005-04-16  927  			      ".L", 2) == 0)
-^1da177e4c3f41 Linus Torvalds 2005-04-16  928  			continue;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  929  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  930  		if(newptr != oldptr)
-^1da177e4c3f41 Linus Torvalds 2005-04-16  931  			*newptr++ = *oldptr;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  932  		else
-^1da177e4c3f41 Linus Torvalds 2005-04-16  933  			newptr++;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  934  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  935  	}
-^1da177e4c3f41 Linus Torvalds 2005-04-16  936  	nsyms = newptr - (Elf_Sym *)symhdr->sh_addr;
-6183d68b8b01e3 Sven Schnelle  2019-06-05  937  	pr_debug("NEW num_symtab %lu\n", nsyms);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  938  	symhdr->sh_size = nsyms * sizeof(Elf_Sym);
-8cc28269b95741 Helge Deller   2018-11-10  939  
-8cc28269b95741 Helge Deller   2018-11-10  940  	/* find .altinstructions section */
-8cc28269b95741 Helge Deller   2018-11-10  941  	secstrings = (void *)hdr + sechdrs[hdr->e_shstrndx].sh_offset;
-8cc28269b95741 Helge Deller   2018-11-10  942  	for (s = sechdrs; s < sechdrs + hdr->e_shnum; s++) {
-8cc28269b95741 Helge Deller   2018-11-10  943  		void *aseg = (void *) s->sh_addr;
-8cc28269b95741 Helge Deller   2018-11-10  944  		char *secname = secstrings + s->sh_name;
-8cc28269b95741 Helge Deller   2018-11-10  945  
-8cc28269b95741 Helge Deller   2018-11-10  946  		if (!strcmp(".altinstructions", secname))
-8cc28269b95741 Helge Deller   2018-11-10  947  			/* patch .altinstructions */
-8cc28269b95741 Helge Deller   2018-11-10  948  			apply_alternatives(aseg, aseg + s->sh_size, me->name);
-8cc28269b95741 Helge Deller   2018-11-10  949  
-a1326b17ac03a9 Mark Rutland   2019-10-16  950  #ifdef CONFIG_DYNAMIC_FTRACE
-6ca6366220ed28 Sven Schnelle  2019-06-05  951  		/* For 32 bit kernels we're compiling modules with
-6ca6366220ed28 Sven Schnelle  2019-06-05  952  		 * -ffunction-sections so we must relocate the addresses in the
-a1326b17ac03a9 Mark Rutland   2019-10-16  953  		 *  ftrace callsite section.
-6ca6366220ed28 Sven Schnelle  2019-06-05  954  		 */
-a1326b17ac03a9 Mark Rutland   2019-10-16  955  		if (symindex != -1 && !strcmp(secname, FTRACE_CALLSITE_SECTION)) {
-a1326b17ac03a9 Mark Rutland   2019-10-16  956  			int err;
-6ca6366220ed28 Sven Schnelle  2019-06-05  957  			if (s->sh_type == SHT_REL)
-6ca6366220ed28 Sven Schnelle  2019-06-05  958  				err = apply_relocate((Elf_Shdr *)sechdrs,
-6ca6366220ed28 Sven Schnelle  2019-06-05  959  							strtab, symindex,
-6ca6366220ed28 Sven Schnelle  2019-06-05  960  							s - sechdrs, me);
-6ca6366220ed28 Sven Schnelle  2019-06-05  961  			else if (s->sh_type == SHT_RELA)
-6ca6366220ed28 Sven Schnelle  2019-06-05  962  				err = apply_relocate_add((Elf_Shdr *)sechdrs,
-6ca6366220ed28 Sven Schnelle  2019-06-05  963  							strtab, symindex,
-6ca6366220ed28 Sven Schnelle  2019-06-05  964  							s - sechdrs, me);
-6ca6366220ed28 Sven Schnelle  2019-06-05 @965  			if (err)
-6ca6366220ed28 Sven Schnelle  2019-06-05  966  				return err;
-6ca6366220ed28 Sven Schnelle  2019-06-05  967  		}
-a1326b17ac03a9 Mark Rutland   2019-10-16  968  #endif
-6ca6366220ed28 Sven Schnelle  2019-06-05  969  	}
-5336377d622595 Linus Torvalds 2010-10-05  970  	return 0;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  971  }
-^1da177e4c3f41 Linus Torvalds 2005-04-16  972  
+         new = vfio_mdev_get_iommu_device(dev);
+         if (!new || (*old && *old != new))
+                 return -EINVAL;
 
-:::::: The code at line 965 was first introduced by commit
-:::::: 6ca6366220ed285e29ee22f4cf5c68a0397cb005 parisc: add dynamic ftrace
+         *old = new;
 
-:::::: TO: Sven Schnelle <svens@stackframe.org>
-:::::: CC: Helge Deller <deller@gmx.de>
+         return 0;
+}
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+But I agree that as a generic iommu aux-domain api, we shouldn't put
+this limited assumption in it.
+
+> iommu_attach_device() will fail if the group is not
+> singleton, but that's just encouraging us to use the _attach_group()
+> interface where the _attach_device() interface is relegated to special
+> cases.  Ideally we'd get out of those special cases and create an
+> _attach_group() for aux that doesn't further promote these notions.
+
+Yes. Fair enough.
+
+> 
+>> Any thoughts?
+> 
+> See my reply to Kevin, I'm thinking we need to provide a callback that
+> can enlighten the IOMMU layer to be able to do _attach_group() with
+> aux or separate IOMMU backed devices.
+
+Thanks for the guide. I will check your reply.
+
+Best regards,
+baolu
