@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E98023418C
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381C1234180
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731973AbgGaIvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 04:51:36 -0400
-Received: from spam01.hygon.cn ([110.188.70.11]:8833 "EHLO spam2.hygon.cn"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728437AbgGaIve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 04:51:34 -0400
-Received: from MK-FE.hygon.cn ([172.23.18.61])
-        by spam2.hygon.cn with ESMTP id 06V8o1L9093186;
-        Fri, 31 Jul 2020 16:50:01 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from cncheex01.Hygon.cn ([172.23.18.10])
-        by MK-FE.hygon.cn with ESMTP id 06V8nuSH093255;
-        Fri, 31 Jul 2020 16:49:56 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from ubuntu1604-2.higon.com (172.23.18.44) by cncheex01.Hygon.cn
- (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Fri, 31 Jul
- 2020 16:49:41 +0800
-From:   Pu Wen <puwen@hygon.cn>
-To:     <rjw@rjwysocki.net>, <lenb@kernel.org>,
-        <jarkko.nikula@linux.intel.com>,
-        <andriy.shevchenko@linux.intel.com>,
-        <mika.westerberg@linux.intel.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, Pu Wen <puwen@hygon.cn>
-Subject: [PATCH] i2c: designware: Add device HID for Hygon I2C controller
-Date:   Fri, 31 Jul 2020 16:48:45 +0800
-Message-ID: <20200731084845.24459-1-puwen@hygon.cn>
-X-Mailer: git-send-email 2.23.0
+        id S1731960AbgGaIt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 04:49:26 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:45892 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728437AbgGaIt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 04:49:26 -0400
+Received: from [10.130.0.69] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT9772iNfkvECAA--.45S3;
+        Fri, 31 Jul 2020 16:49:00 +0800 (CST)
+Subject: Re: [RFC] ALSA: hda: Add workaround to adapt to Loongson 7A1000
+ controller
+To:     Takashi Iwai <tiwai@suse.de>
+References: <1596163314-21808-1-git-send-email-likaige@loongson.cn>
+ <s5hlfj0b3jk.wl-tiwai@suse.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Keyon Jie <yang.jie@linux.intel.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Mohan Kumar <mkumard@nvidia.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+From:   Kaige Li <likaige@loongson.cn>
+Message-ID: <15648946-3b87-69db-914c-354dce1abcac@loongson.cn>
+Date:   Fri, 31 Jul 2020 16:48:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.23.18.44]
-X-ClientProxiedBy: cncheex01.Hygon.cn (172.23.18.10) To cncheex01.Hygon.cn
- (172.23.18.10)
-X-MAIL: spam2.hygon.cn 06V8o1L9093186
-X-DNSRBL: 
+In-Reply-To: <s5hlfj0b3jk.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxT9772iNfkvECAA--.45S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFW7Kr1DXw47JFW5CF4xCrg_yoW8XF1UpF
+        n3CayUCF4Dtr1jkFsru3y5KayFg3yfGF45KryFvw1DAw1qk343X3WvvrWjkF9Y9wsY9r4Y
+        kFy7ta4kGFW5ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr4
+        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+        wI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUmYL9UUUUU=
+X-CM-SenderInfo: 5olntxtjh6z05rqj20fqof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device HID HYGO0010 to match the Hygon ACPI Vendor ID (HYGO) that
-was registered in http://www.uefi.org/acpi_id_list, and the I2C
-controller on Hygon paltform will use the HID.
+On 07/31/2020 02:29 PM, Takashi Iwai wrote:
 
-Signed-off-by: Pu Wen <puwen@hygon.cn>
----
- drivers/acpi/acpi_apd.c                     | 1 +
- drivers/i2c/busses/i2c-designware-platdrv.c | 1 +
- 2 files changed, 2 insertions(+)
+> On Fri, 31 Jul 2020 04:41:54 +0200,
+> Kaige Li wrote:
+>> There's some issues that cause palyback without a sound on Loongson
+>> platform (3A3000 + 7A1000) with a Realtek ALC269 codec. After lengthy
+>> debugging sessions, we solved it by adding workaround.
+>>
+>> Signed-off-by: Kaige Li <likaige@loongson.cn>
+> Thanks for the patch.  But this can't be taken as is due to the design
+> problem.  Namely...
+>
+>> --- a/sound/hda/hdac_controller.c
+>> +++ b/sound/hda/hdac_controller.c
+>> @@ -9,6 +9,7 @@
+>>   #include <sound/core.h>
+>>   #include <sound/hdaudio.h>
+>>   #include <sound/hda_register.h>
+>> +#include "../pci/hda/hda_controller.h"
+> ... here already suspicious, and ...
+>
+>>   #include "local.h"
+>>   
+>>   /* clear CORB read pointer properly */
+>> @@ -42,6 +43,8 @@ static void azx_clear_corbrp(struct hdac_bus *bus)
+>>    */
+>>   void snd_hdac_bus_init_cmd_io(struct hdac_bus *bus)
+>>   {
+>> +	struct azx *chip = bus_to_azx(bus);
+> ... here you cast the hdac_bus object to its child class.  This is
+> disallowed, as it's a layer violation and would break if another child
+> class like ASoC driver is used with this patch.
+>
+> IOW, inside the code in sound/hda/*, you must not use the contents in
+> sound/pci/hda/* and include/sound/hda_codec.h.
+>
+> If any new workaround is needed, introduce a new flag in struct
+> hdac_bus.
 
-diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
-index ba2612e9a0eb..f24f6d3f1fa5 100644
---- a/drivers/acpi/acpi_apd.c
-+++ b/drivers/acpi/acpi_apd.c
-@@ -240,6 +240,7 @@ static const struct acpi_device_id acpi_apd_device_ids[] = {
- 	{ "AMDI0020", APD_ADDR(cz_uart_desc) },
- 	{ "AMD0030", },
- 	{ "AMD0040", APD_ADDR(st_misc_desc)},
-+	{ "HYGO0010", APD_ADDR(wt_i2c_desc) },
- #endif
- #ifdef CONFIG_ARM64
- 	{ "APMC0D0F", APD_ADDR(xgene_i2c_desc) },
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index a71bc58fc03c..0dfeb2d11603 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -55,6 +55,7 @@ static const struct acpi_device_id dw_i2c_acpi_match[] = {
- 	{ "HISI02A1", 0 },
- 	{ "HISI02A2", 0 },
- 	{ "HISI02A3", 0 },
-+	{ "HYGO0010", ACCESS_INTR_MASK },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, dw_i2c_acpi_match);
--- 
-2.23.0
+Thank you for your reply and suggestions. I will review it, and see how 
+hdac_bus works.
+
+Thanks,
+Kaige
+> thanks,
+>
+> Takashi
 
