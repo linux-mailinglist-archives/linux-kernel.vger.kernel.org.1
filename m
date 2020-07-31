@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEE5233FF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3131233FD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731623AbgGaHYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 03:24:35 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:51651 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731419AbgGaHYf (ORCPT
+        id S1731626AbgGaHRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 03:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731419AbgGaHRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 03:24:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596180274;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Axelt2RY002V96X/6od/cNKhxMrCAxFb0qQJIDFr3Wc=;
-        b=VvRt/wlOUe9wHLhC2FrF9mjZAqzW/oI14cJ+YUwJg4q2fdWi2BMvvQ/unvD5w6N+4qWhGF
-        YwiDG8npWmreBRJ6QA/AXTX1phJJKZrSFa6xxkORTPvmWflEQ7TzOTz8j2Dgi5XS4mMpXA
-        5nHofAOQeBCfYTTCUlffyHh7lIvdYCw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-318-rDPsPRtROJKtdZebIe-WMw-1; Fri, 31 Jul 2020 03:24:31 -0400
-X-MC-Unique: rDPsPRtROJKtdZebIe-WMw-1
-Received: by mail-wm1-f72.google.com with SMTP id h6so1879695wml.8
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 00:24:31 -0700 (PDT)
+        Fri, 31 Jul 2020 03:17:04 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CFAC061574;
+        Fri, 31 Jul 2020 00:17:04 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 184so8304939wmb.0;
+        Fri, 31 Jul 2020 00:17:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E+tw2VAROExVGHLJNmJ9/Lq7zWPSq7S6kqBOfS0IpPs=;
+        b=CNNbMOaZdUSCoO+D9Utq8Gp4hQ62Gyez7Y80sarcNTZsdqkKumqIea6371xjdWRfqD
+         Yl8+1vUjxO1ZJS/NBcejCBvoQk8TDxVhEaKkauKBIS+JmAzPKrLxfQE7bmHfYJCqYoa3
+         q/V5HhH8YzlnzHG2wuqpb8mlixAJqs4juppg0oXfhnMobiMxxscMJ3L0Twd9aZ6b8i8p
+         xoX8uNhC5sTX9XTYz/kkQ1UAvTnEuCudw/3LxNVvSsfAZ/o/+jzlTCLPytNQ/B9v076j
+         ZX5Uvi76z5GY1rU0Dxx9jdsTl5EYJCF/v0MbDOJG7zcIhd+fLfMXTCyVp/ZdyiaQ83ge
+         itjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Axelt2RY002V96X/6od/cNKhxMrCAxFb0qQJIDFr3Wc=;
-        b=iF9uNLObBcW/1Mo5cMmN2okmKzyisDTQfHYN1zEPutSUSlPu0irVYzqxKHuFZ2yL79
-         MiAoU6eBjx58zu6DhWBxcuU4WBmN3Q7SvOrNQIRqO5tad8d1+CaSMaNiJC/aEAIZM7XP
-         c02Hndl2ATFgahvFOHz+XK6id63VpdpNjGmHpGeHTjgTnT0rz6t3vqi1HWzEO/scXOnt
-         H2OFQ7Ji21ABLSJ14d9Np+9VbGLIL+LXj7sse6yAshT0mKbg5HQRv2BanMTmkRQElSOT
-         P0oghtrVJjvOM278iePfBQUoD6+HIs1vmxhSg8akxxo95jhE5iOEAO16UjzL+WMAS76f
-         IIIw==
-X-Gm-Message-State: AOAM533FTBLS3Qady1eY9rBCIBBcQTvoikEQy+8V0B5QLU4oZBflViVL
-        wdtR+m7b/ydFlCfrlWNcSre4gSOFxQLbagYTol1hzzDnUiktwjC7XFXMUH8BsEXYV6LyAigoY1f
-        i8gwAGCAo7jDUt6cpiU6Ji3l+
-X-Received: by 2002:a05:600c:202:: with SMTP id 2mr2557515wmi.139.1596180270311;
-        Fri, 31 Jul 2020 00:24:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzuUf4LZZEWzUNzddGf4m3XSjMPOhUMgt/Pblcm5cFiDmLTzeqQjTr9Ai30ee7oPgHoMtk9Mw==
-X-Received: by 2002:a05:600c:202:: with SMTP id 2mr2557498wmi.139.1596180270115;
-        Fri, 31 Jul 2020 00:24:30 -0700 (PDT)
-Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id a3sm12130042wme.34.2020.07.31.00.24.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 31 Jul 2020 00:24:29 -0700 (PDT)
-Subject: Re: [PATCH v2 5/9] objtool: Make relocation in alternative handling
- arch dependent
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
-        raphael.gault@arm.com, benh@kernel.crashing.org
-References: <20200730094652.28297-1-jthierry@redhat.com>
- <20200730094652.28297-6-jthierry@redhat.com>
- <20200730144213.fcitzo4uydshjhxh@treble>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <a4e74e30-1117-fe1f-785b-386a06d3c0ba@redhat.com>
-Date:   Fri, 31 Jul 2020 08:24:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E+tw2VAROExVGHLJNmJ9/Lq7zWPSq7S6kqBOfS0IpPs=;
+        b=HEYmgCoG6Igodix0SE3wnhojV2gvbo3+EElLD6xMaQpRA3CVnBg2inBfifeayE8j1e
+         dwCqpwZ9cKT5yPsczprZAw+zf7oHiYZUtzp10X4Ch95scRbuSPWbLQii2KuF+eHV8Va3
+         QxJ6LIoSEcqzUVCBwbZW8v0H3+0Tyxw9Q//BJOukhAydVWvzgIutaQxIFmN2kqIzaSME
+         LXX25RUjH+ZRixy9LHXlvUgur6BddKuCaR2OpRnRB5raQ44MO4ZvNhWr6ot82CN8e8bY
+         tu1X/MZCNLSsU/5bFhkc6UWXGuccL6KZ6AsR3kwpZ387kwsPEDC4CTEutcam9JdZ2dk1
+         05ZQ==
+X-Gm-Message-State: AOAM530al4p4scPgSVqqCnuVVMs+cbv6xR8qIHxCqOlA3TpnFMm6key4
+        rPMpzrvNwnFXj9ugH5/Bt74tB4BIvQT5Dmmu1Qg=
+X-Google-Smtp-Source: ABdhPJwo9EuO2/yVoxRxwlf9LsVN2UI7WLueZMkZmvA+8GS3BX71QFSw/oSkGbLHOB+Zb97AEGyOWAKL3KCx9mVHz5c=
+X-Received: by 2002:a1c:cc0c:: with SMTP id h12mr2529357wmb.111.1596179822962;
+ Fri, 31 Jul 2020 00:17:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200730144213.fcitzo4uydshjhxh@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200731064952.36900-1-yuehaibing@huawei.com>
+In-Reply-To: <20200731064952.36900-1-yuehaibing@huawei.com>
+From:   Xin Long <lucien.xin@gmail.com>
+Date:   Fri, 31 Jul 2020 15:28:26 +0800
+Message-ID: <CADvbK_c8LtT1Jfbf4h1HrAC4p9wGproDgDieSV-roSWEEN=M0A@mail.gmail.com>
+Subject: Re: [PATCH net-next] ip_vti: Fix unused variable warning
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>, kuznet <kuznet@ms2.inr.ac.ru>,
+        yoshfuji <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 31, 2020 at 2:50 PM YueHaibing <yuehaibing@huawei.com> wrote:
+>
+> If CONFIG_INET_XFRM_TUNNEL is set but CONFIG_IPV6 is n,
+>
+> net/ipv4/ip_vti.c:493:27: warning: 'vti_ipip6_handler' defined but not used [-Wunused-variable]
+>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Fixes: 55a48c7ec75a ("ip_vti: not register vti_ipip_handler twice")
+Acked-by: Xin Long <lucien.xin@gmail.com>
 
-
-On 7/30/20 3:42 PM, Josh Poimboeuf wrote:
-> On Thu, Jul 30, 2020 at 10:46:48AM +0100, Julien Thierry wrote:
->> As pointed out by the comment in handle_group_alt(), support of
->> relocation for instructions in an alternative group depends on whether
->> arch specific kernel code handles it.
->>
->> So, let objtool arch specific code decide whether a relocation for
->> the alternative section should be accepted.
->>
->> Reviewed-by: Miroslav Benes <mbenes@suse.cz>
->> Signed-off-by: Julien Thierry <jthierry@redhat.com>
->> ---
->>   tools/objtool/arch/x86/arch_special.c | 13 +++++++++++++
-> 
-> The "arch" in "arch_special.c" is redundant, how about special.c?
-> 
-
-Yes, that makes sense.
-
--- 
-Julien Thierry
-
+> ---
+>  net/ipv4/ip_vti.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/net/ipv4/ip_vti.c b/net/ipv4/ip_vti.c
+> index 49daaed89764..f687abb069fa 100644
+> --- a/net/ipv4/ip_vti.c
+> +++ b/net/ipv4/ip_vti.c
+> @@ -490,6 +490,7 @@ static struct xfrm_tunnel vti_ipip_handler __read_mostly = {
+>         .priority       =       0,
+>  };
+>
+> +#if IS_ENABLED(CONFIG_IPV6)
+>  static struct xfrm_tunnel vti_ipip6_handler __read_mostly = {
+>         .handler        =       vti_rcv_tunnel,
+>         .cb_handler     =       vti_rcv_cb,
+> @@ -497,6 +498,7 @@ static struct xfrm_tunnel vti_ipip6_handler __read_mostly = {
+>         .priority       =       0,
+>  };
+>  #endif
+> +#endif
+>
+>  static int __net_init vti_init_net(struct net *net)
+>  {
+> --
+> 2.17.1
+>
+>
