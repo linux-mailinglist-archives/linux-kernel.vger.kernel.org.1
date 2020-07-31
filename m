@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8923023453B
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A958234542
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733087AbgGaMFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:05:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:56238 "EHLO foss.arm.com"
+        id S1733129AbgGaMFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:05:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:56250 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732965AbgGaMFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:05:13 -0400
+        id S1732909AbgGaMFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 08:05:15 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39A66106F;
-        Fri, 31 Jul 2020 05:05:13 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9356B1FB;
+        Fri, 31 Jul 2020 05:05:14 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 173113F71F;
-        Fri, 31 Jul 2020 05:05:11 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6EEA33F71F;
+        Fri, 31 Jul 2020 05:05:13 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, morten.rasmussen@arm.com,
-        Quentin Perret <qperret@google.com>
-Subject: [PATCH v4 07/10] sched/topology: Add more flags to the SD degeneration mask
-Date:   Fri, 31 Jul 2020 12:54:59 +0100
-Message-Id: <20200731115502.12954-8-valentin.schneider@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
+Subject: [PATCH v4 08/10] sched/topology: Remove SD_SERIALIZE degeneration special case
+Date:   Fri, 31 Jul 2020 12:55:00 +0100
+Message-Id: <20200731115502.12954-9-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200731115502.12954-1-valentin.schneider@arm.com>
 References: <20200731115502.12954-1-valentin.schneider@arm.com>
@@ -35,62 +35,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I don't think it is going to change much in practice, but we were missing
-those:
+If there is only a single NUMA node in the system, the only NUMA topology
+level that will be generated will be NODE (identity distance), which
+doesn't have SD_SERIALIZE.
 
-o SD_BALANCE_WAKE: Used just like the other SD_BALANCE_* flags, so also
-  needs > 1 group.
-o SD_ASYM_PACKING: Hinges on load balancing (periodic / wakeup), thus needs
-  > 1 group to happen
-o SD_OVERLAP: Describes domains with overlapping groups; can't have
-  overlaps with a single group.
+This means we don't need this special case in sd_parent_degenerate(), as
+having the NODE level "naturally" covers it. Thus, remove it.
 
-SD_PREFER_SIBLING is as always the odd one out: we currently consider it
-in sd_parent_degenerate() but not in sd_degenerate(). It too hinges on load
-balancing, and thus won't have any effect when set on a domain with a
-single group. Add it to the sd_degenerate() groups mask.
-
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- kernel/sched/topology.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ kernel/sched/topology.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index cda02507aebf..93a7ff52335b 100644
+index 93a7ff52335b..c6ecc395c76c 100644
 --- a/kernel/sched/topology.c
 +++ b/kernel/sched/topology.c
-@@ -161,11 +161,15 @@ static int sd_degenerate(struct sched_domain *sd)
- 
- 	/* Following flags need at least 2 groups */
- 	if (sd->flags & (SD_BALANCE_NEWIDLE |
-+			 SD_BALANCE_WAKE |
- 			 SD_BALANCE_FORK |
- 			 SD_BALANCE_EXEC |
-+			 SD_ASYM_PACKING |
- 			 SD_SHARE_CPUCAPACITY |
- 			 SD_ASYM_CPUCAPACITY |
--			 SD_SHARE_PKG_RESOURCES)) {
-+			 SD_SHARE_PKG_RESOURCES |
-+			 SD_OVERLAP |
-+			 SD_PREFER_SIBLING)) {
- 		if (sd->groups != sd->groups->next)
- 			return 0;
- 	}
-@@ -191,11 +195,14 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
- 	/* Flags needing groups don't count if only 1 group in parent */
- 	if (parent->groups == parent->groups->next) {
- 		pflags &= ~(SD_BALANCE_NEWIDLE |
-+			    SD_BALANCE_WAKE |
- 			    SD_BALANCE_FORK |
- 			    SD_BALANCE_EXEC |
-+			    SD_ASYM_PACKING |
- 			    SD_ASYM_CPUCAPACITY |
- 			    SD_SHARE_CPUCAPACITY |
+@@ -204,8 +204,6 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
  			    SD_SHARE_PKG_RESOURCES |
-+			    SD_OVERLAP |
+ 			    SD_OVERLAP |
  			    SD_PREFER_SIBLING);
- 		if (nr_node_ids == 1)
- 			pflags &= ~SD_SERIALIZE;
+-		if (nr_node_ids == 1)
+-			pflags &= ~SD_SERIALIZE;
+ 	}
+ 	if (~cflags & pflags)
+ 		return 0;
 -- 
 2.27.0
 
