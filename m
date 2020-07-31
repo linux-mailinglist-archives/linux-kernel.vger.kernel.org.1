@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E782349E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 19:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E462349F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 19:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733210AbgGaRHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 13:07:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732684AbgGaRHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 13:07:11 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71EF02245C;
-        Fri, 31 Jul 2020 17:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596215231;
-        bh=I2tAEedcO9VAKEGuMTWWvln8PBMTfYVGS0os66wMkfY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rzpsvNgAslere3S82DjTwvt4tab3CYMOiNpoXLvhLB8lRZAaKKuwE2gd8Q2Unnar1
-         rW1L8jrg1lAmdNP/L2KZmVwkriP+iGB19V1d1to8r3JHHDA18dKAAHbVnGngJCOSpT
-         dNeRXn56qc4/r9Sn4I182ZDXqOKV8N9MDsxH77W8=
-Date:   Fri, 31 Jul 2020 12:13:14 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 2/2][next] mm: memcontrol: Use the preferred form for passing
- the size of a structure type
-Message-ID: <773e013ff2f07fe2a0b47153f14dea054c0c04f1.1596214831.git.gustavoars@kernel.org>
-References: <cover.1596214831.git.gustavoars@kernel.org>
+        id S1733007AbgGaRNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 13:13:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39314 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730924AbgGaRNx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 13:13:53 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k1YbH-0006cL-66; Fri, 31 Jul 2020 17:13:43 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Steve French <sfrench@samba.org>, Aurelien Aptel <aaptel@suse.com>,
+        Paulo Alcantara <pc@cjr.nz>, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] cifs: fix double free error on share and prefix
+Date:   Fri, 31 Jul 2020 18:13:42 +0100
+Message-Id: <20200731171342.36636-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1596214831.git.gustavoars@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the preferred form for passing the size of a structure type. The
-alternative form where the structure type is spelled out hurts
-readability and introduces an opportunity for a bug when the object
-type is changed but the corresponding object identifier to which the
-sizeof operator is applied is not.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Currently if the call dfs_cache_get_tgt_share fails we cannot
+fully guarantee that share and prefix are set to NULL and the
+next iteration of the loop can end up potentially double freeing
+these pointers. Since the semantics of dfs_cache_get_tgt_share
+are ambiguous for failure cases with the setting of share and
+prefix (currently now and the possibly the future), it seems
+prudent to set the pointers to NULL when the objects are
+free'd to avoid any double frees.
+
+Addresses-Coverity: ("Double free")
+Fixes: 96296c946a2a ("cifs: handle RESP_GET_DFS_REFERRAL.PathConsumed in reconnect")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- mm/memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/cifs/connect.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index bd7f972ceea4..bd0f56785841 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -4255,7 +4255,7 @@ static int __mem_cgroup_usage_register_event(struct mem_cgroup *memcg,
- 	new->entries[size - 1].threshold = threshold;
+diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
+index 3c4dd4e1b9eb..4b2f5f5b3a8e 100644
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -5574,6 +5574,8 @@ int cifs_tree_connect(const unsigned int xid, struct cifs_tcon *tcon, const stru
  
- 	/* Sort thresholds. Registering of new threshold isn't time-critical */
--	sort(new->entries, size, sizeof(struct mem_cgroup_threshold),
-+	sort(new->entries, size, sizeof(*new->entries),
- 			compare_thresholds, NULL);
+ 		kfree(share);
+ 		kfree(prefix);
++		share = NULL;
++		prefix = NULL;
  
- 	/* Find current threshold */
+ 		rc = dfs_cache_get_tgt_share(tcon->dfs_path + 1, it, &share, &prefix);
+ 		if (rc) {
 -- 
 2.27.0
 
