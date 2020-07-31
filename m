@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7793F2344BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 13:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2C62344CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 13:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732782AbgGaLrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 07:47:46 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:34120 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732244AbgGaLrp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732763AbgGaLrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 31 Jul 2020 07:47:45 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06VBaYq8031435;
-        Fri, 31 Jul 2020 13:47:40 +0200
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:15010 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732104AbgGaLro (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 07:47:44 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06VBbakM031318;
+        Fri, 31 Jul 2020 13:47:42 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=XwUX+1Y6zwoUw9ojrP+epdZ01TEQ51665ZcqVjIVZrc=;
- b=ogyDXSxTFP1b3/TpTPcCGcLRYHp0qjgIOz1A7a/SC17vZnFt4Z2G8syXylcJHcxxRvFi
- NYBpzI3rccMbIcg6fsSwCV4Ykh85EJGmXqpE5VqV0EWJKmfNvS1O5MMEb+0GOz+i0vuR
- DK2Yxl3eGAkGpe0eL15Bfd9973+Isji7pH6XUzi2MqQtPG9CB8frDdwYZ2fBBh3Z6ccZ
- 5TvG+ranqChxarlpZjLq5FKv08raB6+IS43x8Qpx0x7aXz5NqUfAZGgbb1b5CZSDBhhF
- F1P1atq8zXuOXN1B4kTIf+pumUZj2pjrvN5l74ubiiA38udmhjxDNz/HjE+lCv8KdUFe 4Q== 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=STMicroelectronics;
+ bh=PWq2Fd9CmuFDcof5DhJA8swylSAL/EhvY4+9u/ySbmQ=;
+ b=POYwCXb8D+MWQpLE9R/g3Dcac6M1OhhuZGG136fn9lgRp1LREP3ELThPrMALLaf9EGQv
+ VCwe8p4xXAj3FIDhbUcnetIfrdrEKwjK1ANcuy01Q+XyRnHWoiB5FJAYIKB6/Vo7XY4d
+ A0sonuHJEuBT1JoUTUpEz7P4rqeWHpxpvDRrqxXswatzEISzKtEYvuNO6JZf5kvlEn40
+ xPUwtv+hTmMXMhccUty8BDKGlfVApSZxYb86hX4apZWCXbDc2BPuwPtAsobvabB0kbTa
+ bYnJWdtkfkEfsN2TYp3aZGw0xO7dZhzXXS39JpO5Ne2eVX3+jfmffxK2FiG2mxgVp3mi Tg== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 32gbmgp665-1
+        by mx07-00178001.pphosted.com with ESMTP id 32g9v9xgrr-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 31 Jul 2020 13:47:40 +0200
+        Fri, 31 Jul 2020 13:47:41 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2AC9B10002A;
-        Fri, 31 Jul 2020 13:47:40 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7EF7110002A;
+        Fri, 31 Jul 2020 13:47:41 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1AF47221061;
-        Fri, 31 Jul 2020 13:47:40 +0200 (CEST)
-Received: from localhost (10.75.127.46) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 31 Jul 2020 13:47:39
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 70EA5221061;
+        Fri, 31 Jul 2020 13:47:41 +0200 (CEST)
+Received: from localhost (10.75.127.44) by SFHDAG3NODE1.st.com (10.75.127.7)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 31 Jul 2020 13:47:40
  +0200
 From:   Arnaud Pouliquen <arnaud.pouliquen@st.com>
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -43,14 +44,16 @@ To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
 CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <arnaud.pouliquen@st.com>
-Subject: [PATCH 0/9] introduce name service announcement rpmsg driver
-Date:   Fri, 31 Jul 2020 13:47:23 +0200
-Message-ID: <20200731114732.12815-1-arnaud.pouliquen@st.com>
+Subject: [PATCH 1/9] rpmsg: virtio: rename rpmsg_create_channel
+Date:   Fri, 31 Jul 2020 13:47:24 +0200
+Message-ID: <20200731114732.12815-2-arnaud.pouliquen@st.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200731114732.12815-1-arnaud.pouliquen@st.com>
+References: <20200731114732.12815-1-arnaud.pouliquen@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG3NODE1.st.com
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE1.st.com
  (10.75.127.7)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-31_04:2020-07-31,2020-07-31 signatures=0
@@ -59,38 +62,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The NS announcement is implemented by several backends, but could be
-considered as part the RPMsg protocol. 
-In this case it should be managed as a reserved rpmsg service and so
-implemented on top of the rpmsg protocol.
+Rename the internal function as it is internal, and as
+the name will be used in rpmsg_core.
 
-This series introduces the rpmsg_ns driver that handles the name service
-announcement. The virtio backend is updated in consequence to use this
-service.
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ drivers/rpmsg/virtio_rpmsg_bus.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Applies cleanly on Bjorn rpmsg-next branch (ddd1930d6e3e)
-
-Arnaud Pouliquen (9):
-  rpmsg: virtio: rename rpmsg_create_channel
-  rpmsg: core: add channel creation internal API
-  rpmsg: virtio: add rpmsg channel device ops
-  rpmsg: define the name service announcement as reserved address
-  rpmsg: introduce reserved rpmsg driver for ns announcement
-  rpmsg: virtio: use rpmsg ns device for the ns announcement
-  rpmsg: ns: add name service announcement service
-  rpmsg: virtio: use rpmsg_ns driver to manage ns announcement
-  rpmsg: ns: name service announcement endianness
-
- drivers/rpmsg/Kconfig            |   9 ++
- drivers/rpmsg/Makefile           |   1 +
- drivers/rpmsg/rpmsg_core.c       |  37 ++++++
- drivers/rpmsg/rpmsg_internal.h   |  32 +++++
- drivers/rpmsg/rpmsg_ns.c         | 175 +++++++++++++++++++++++++
- drivers/rpmsg/virtio_rpmsg_bus.c | 213 +++++++++----------------------
- include/linux/rpmsg.h            |   9 ++
- 7 files changed, 325 insertions(+), 151 deletions(-)
- create mode 100644 drivers/rpmsg/rpmsg_ns.c
-
+diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+index 9006fc7f73d0..736bc7b9dea8 100644
+--- a/drivers/rpmsg/virtio_rpmsg_bus.c
++++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+@@ -390,8 +390,9 @@ static void virtio_rpmsg_release_device(struct device *dev)
+  * this function will be used to create both static and dynamic
+  * channels.
+  */
+-static struct rpmsg_device *rpmsg_create_channel(struct virtproc_info *vrp,
+-						 struct rpmsg_channel_info *chinfo)
++static struct rpmsg_device *
++__rpmsg_create_channel(struct virtproc_info *vrp,
++		       struct rpmsg_channel_info *chinfo)
+ {
+ 	struct virtio_rpmsg_channel *vch;
+ 	struct rpmsg_device *rpdev;
+@@ -864,7 +865,7 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
+ 		if (ret)
+ 			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
+ 	} else {
+-		newch = rpmsg_create_channel(vrp, &chinfo);
++		newch = __rpmsg_create_channel(vrp, &chinfo);
+ 		if (!newch)
+ 			dev_err(dev, "rpmsg_create_channel failed\n");
+ 	}
 -- 
 2.17.1
 
