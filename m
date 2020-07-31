@@ -2,57 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FF6233E99
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 07:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E65B233E9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 07:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730163AbgGaFIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 01:08:43 -0400
-Received: from mail.adapt-ip.com ([173.164.178.19]:56170 "EHLO
-        web.adapt-ip.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726435AbgGaFIn (ORCPT
+        id S1730817AbgGaFJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 01:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726435AbgGaFI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 01:08:43 -0400
-X-Greylist: delayed 566 seconds by postgrey-1.27 at vger.kernel.org; Fri, 31 Jul 2020 01:08:42 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by web.adapt-ip.com (Postfix) with ESMTP id E37204E7D77;
-        Fri, 31 Jul 2020 04:59:15 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at web.adapt-ip.com
-Received: from web.adapt-ip.com ([127.0.0.1])
-        by localhost (web.adapt-ip.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id bAK_w9LxqUUj; Fri, 31 Jul 2020 04:59:13 +0000 (UTC)
-Received: from mail.ibsgaard.io (c-73-202-5-52.hsd1.ca.comcast.net [73.202.5.52])
-        (Authenticated sender: thomas@adapt-ip.com)
-        by web.adapt-ip.com (Postfix) with ESMTPSA id 262DF4E7C36;
-        Fri, 31 Jul 2020 04:59:12 +0000 (UTC)
+        Fri, 31 Jul 2020 01:08:59 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085E9C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 22:08:58 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ha11so6694727pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 22:08:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JHjIJTBJBTgUWoslHF7PITJJr5gm4KM0Yh2llRAmHQU=;
+        b=SROeIPRYWuOnttEmX05+rUyOwgaBjAo/4WwbGvMOPdK9En4nNdSbjr7Aj7OYhpiByS
+         +tne3VyOxlKLzhTu9d7x3C+PxsmmscHTGn4byZX/vrjmt3sni6L81/0keQmIM2LtI/m+
+         IeqsOOSzWmI0pCrnM9djRCVez04i42STL8jcGUhis4CkvhGND4sk+6M6trR2mUsm6knB
+         MawipyNHqeN+/dYHSQfA7EMptSfKqgSZVkGR1X4JYrHDCjkboQ7oMWb+75jg9S16H8Es
+         V4vYJGvbKsXWyB8TUkJ6jvWdEUFuFag28As6LS5CmDbHWunVopjADRG4uk3qSt8HiFaL
+         zJxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JHjIJTBJBTgUWoslHF7PITJJr5gm4KM0Yh2llRAmHQU=;
+        b=ir6Ob0PMsUvPVnNLtb/c5XJzZ5rDH8M9YRxUSNg0fsnQkERQVjUzhaLWajzIUpkPE+
+         tPH1dNBwhIKsKibcu9lcB4fShYcEaU7Gsi63RRrPYgP1eb3mj6LmRRn1xpwU0SUza8us
+         qbevleHkduLtCFyyZsyGHJ+44l3QMv9DiJQ9exNLlYLGfJL6gqE4y+TG6K6/YTV2kaKd
+         X4rFtUuPfmDtZuQoU7kjezL7NGgYADz542qhW17M+b6bAwbQumzLUIFPJbaz5tLu5tOr
+         EwLhHJxUcBjyMt8jtig2BPOM7U2d6yeYUu8RiZLmKnHM/WkjsdehlVKYovbxiEbbiMos
+         naeQ==
+X-Gm-Message-State: AOAM532SW6Xa7iN3y4bIRGs4dTzrGJmXZZK/wNGgbNnwj0Tv4XDX7y2j
+        ce8h7WQs39A9hitOUwIV9V4=
+X-Google-Smtp-Source: ABdhPJy7Oz3Df3DzUKcdAS+mro7JR56UBRqdXPWb3W3RXItZnZmuX3YFJA1+9iWxhbH/q3+TlAsvhg==
+X-Received: by 2002:a63:3681:: with SMTP id d123mr2155531pga.317.1596172138333;
+        Thu, 30 Jul 2020 22:08:58 -0700 (PDT)
+Received: from gmail.com ([192.55.55.41])
+        by smtp.gmail.com with ESMTPSA id r4sm7227679pji.37.2020.07.30.22.08.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Jul 2020 22:08:57 -0700 (PDT)
+Date:   Fri, 31 Jul 2020 10:38:52 +0530
+From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        greybus-dev@lists.linaro.org,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: issue with uninitialized value used in a comparison in
+ gbcodec_mixer_dapm_ctl_put
+Message-ID: <20200731050850.GA25458@gmail.com>
+References: <7da6363c-9423-2b9f-029a-395cc8a932d7@canonical.com>
 MIME-Version: 1.0
-Date:   Thu, 30 Jul 2020 21:59:12 -0700
-From:   Thomas Pedersen <thomas@adapt-ip.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Wireless <linux-wireless@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the mac80211-next tree
-In-Reply-To: <20200731132830.75d7a905@canb.auug.org.au>
-References: <20200731132830.75d7a905@canb.auug.org.au>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <451863e31438ded0dc46b84b968a1d2c@adapt-ip.com>
-X-Sender: thomas@adapt-ip.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7da6363c-9423-2b9f-029a-395cc8a932d7@canonical.com>
+User-Agent: Mutt/1.10.1+3 (f9293d646485) (2018-09-22)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-30 20:28, Stephen Rothwell wrote:
-> Hi all,
+On Thu, Jul 30, 2020 at 05:02:22PM +0100, Colin Ian King wrote:
+> Hi,
 > 
-> After merging the mac80211-next tree, today's linux-next build (x86_64
-> allmodconfig) produced these warnings:
+> Static analysis with Coverity has detected an uninitialized value being
+> used in a comparison.  The error was detected on a recent change to
+> drivers/staging/greybus/audio_topology.c however the issue actually
+> dates back to the original commit:
 
-Thanks Stephen. I'll send a fix against mac80211-next to linux-wireless.
+Thanks Colin for reporting the issue. I'll fix the same and share a 
+patch soon.
 
--- 
-thomas
+--
+Regards,
+Vaibhav
