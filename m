@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50222340E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6472340EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731800AbgGaIMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 04:12:35 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:39954 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731510AbgGaIMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 04:12:35 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k1Q9T-0002Aq-DQ; Fri, 31 Jul 2020 18:12:28 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 31 Jul 2020 18:12:27 +1000
-Date:   Fri, 31 Jul 2020 18:12:27 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Yang Shen <shenyang39@huawei.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH 03/10] crypto: hisilicon/zip - modify debugfs interface
- parameters
-Message-ID: <20200731081227.GA20741@gondor.apana.org.au>
-References: <1595648683-50590-1-git-send-email-shenyang39@huawei.com>
- <1595648683-50590-4-git-send-email-shenyang39@huawei.com>
+        id S1731830AbgGaINH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 04:13:07 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:58065 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731811AbgGaING (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 04:13:06 -0400
+X-Originating-IP: 90.66.108.79
+Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id AC5E71BF206;
+        Fri, 31 Jul 2020 08:13:02 +0000 (UTC)
+Date:   Fri, 31 Jul 2020 10:13:02 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+Subject: Re: [PATCH v4 3/5] counter: Add character device interface
+Message-ID: <20200731081302.GB462779@piout.net>
+References: <cover.1595358237.git.vilhelm.gray@gmail.com>
+ <08b3ac7349a59ba7fa5cd438bbe78360842ccd11.1595358237.git.vilhelm.gray@gmail.com>
+ <415ee9ad-255e-cee7-22a6-ffa977999691@lechnology.com>
+ <a287770b-c263-f1db-bcc4-d901d3ff3c7c@lechnology.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1595648683-50590-4-git-send-email-shenyang39@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <a287770b-c263-f1db-bcc4-d901d3ff3c7c@lechnology.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 25, 2020 at 11:44:36AM +0800, Yang Shen wrote:
-> From: Shukun Tan <tanshukun1@huawei.com>
+On 30/07/2020 17:49:37-0500, David Lechner wrote:
+> And one more thing, there was a nice talk at the Embedded Linux
+> Conference last month about lessons learned from designing a userspace
+> API for the GPIO subsystem [1]. Unfortunately, there is no video yet,
+> but the slides might have some helpful ideas about mistakes to avoid.
 > 
-> Update debugfs interface parameters
+> [1]: https://elinux.org/ELC_2020_Presentations
 > 
-> Signed-off-by: Shukun Tan <tanshukun1@huawei.com>
-> Signed-off-by: Yang Shen <shenyang39@huawei.com>
-> Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
-> ---
->  drivers/crypto/hisilicon/zip/zip_main.c | 55 ++++++++++++++-------------------
->  1 file changed, 24 insertions(+), 31 deletions(-)
 
-This patch doesn't apply against cryptodev.
+The video is available on the original conference platform for one year
+after the event, then it will be made available on youtube.
 
-Plesae stop sending patch series that depend on others.
 
-Thanks,
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
