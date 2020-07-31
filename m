@@ -2,126 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19A5234A3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 19:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812A7234A49
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 19:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733262AbgGaRbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 13:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
+        id S2387468AbgGaRfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 13:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732970AbgGaRbZ (ORCPT
+        with ESMTP id S1732970AbgGaRft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 13:31:25 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAEFC061574;
-        Fri, 31 Jul 2020 10:31:24 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 3so9935732wmi.1;
-        Fri, 31 Jul 2020 10:31:24 -0700 (PDT)
+        Fri, 31 Jul 2020 13:35:49 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824C5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 10:35:49 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id k13so9953464plk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 10:35:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wO4f9oVxrsweCzVrPEPTiBn0n29w9yIsNMekGB68JeI=;
-        b=obajWK+2pCFiEKV/2eMDwzcf7coFlPTQCpnzhLsxXlijhZ8oEvL0eeF1bczkYNKwYU
-         w4N48fL1HDLI50n+/dzVLCSEmzp+sdXX6DmIOPEfoHwIZHgMR8R7bmrEhbtZjzHmYOYD
-         THVj8cb1vUBrmNs9413xDV/JE3xLqw9UNZlOJ52XoEj32enO6PeLN2CogJoYZ9iA/lpO
-         xrN259lT630oT20Z2V8QDzcMPLGQy2PGapeyURfyOW7w3rlUCtOcbpPiZS+SW1COX+qV
-         MINBxQ/ymFo6hLbb0jpuGQ7We+UA2CKQqMw/pJ4RxT1pZj6NJ85+H4wVTLoDCAMSJbc9
-         kbdg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VcO97KiNQ57vQLDytlgFQo02u8DyBACQIA2jsBc3GOY=;
+        b=AScF1t99iyqzlHsSSNHl6NgK4CUk9FOl2bLkUT34rlkXHPyhsulWMSfAwgMbXTTpL1
+         fTSY78+pJKT9XovDMqONCcLnk1/D14sqJ3GT//hhWqFNKCirnVhSMVaNAf0HQLhX4VDi
+         YAbwXSqTGMxhPz+d6KimWBmdv1/OELdO0sb0yv9YGK+9LsTTOYFSKLyQKcUv/Tpin+Re
+         tA9ZlYExz1ppt3UK/zuBRPL9RpVEsUHAzXKtFqFnBCzSFA/QryTOoOJtZlmczFvGi4qa
+         EI/4wV1BGm7gFUs/bZgkYuquWcyzc8zJV5PUoYngbmRW+EQ19ijqmjd1/G2CoNrrib3z
+         aHpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wO4f9oVxrsweCzVrPEPTiBn0n29w9yIsNMekGB68JeI=;
-        b=lNEFH64dmBedByZvHrFkmlY9/XNksxoS9CC2AekNwIB0wzKd7zazyJw0BqM8vWwiPC
-         boSTOztZF2mUiqefjWD4XgTLrA/kGmuVzruUWhwzGlkqK+jpv0XGsxfa28LvuxRsfc+x
-         zRXlD7/HddbjbXHnjzlZWdbQJOPGjwqB65xLaRNkE8V9Dhz5gi2pREZvzSbfxo0l66Lc
-         AGJLFnfwsMPy2fg6NIs8JB3PqDA0nwz8E1SASAatVXrNTcBQawGrlyvkuAQ4LrZwOovj
-         eDRMrPHI9XCrp8O4jBgiDhAEgRSOnvWVKFqr6JLhVE1PWd1lVKRltuLWg64PVu/oQdQc
-         j9Rg==
-X-Gm-Message-State: AOAM532FkHvbO6tnLBHVyyyX03UNXyVzN89Rfw5V1p64sy03R2wFIige
-        hPDO3PkVb8OqvrchopAAwZiYzPqh
-X-Google-Smtp-Source: ABdhPJzHHTpsN9YodTgSjp2Xan9EQZ1qXY9klsnJ1b5gK4zP6O8x4+C+bkc5hEx2fssF9sPExQ5Ijw==
-X-Received: by 2002:a1c:6007:: with SMTP id u7mr4926216wmb.32.1596216683216;
-        Fri, 31 Jul 2020 10:31:23 -0700 (PDT)
-Received: from [10.55.3.148] ([173.38.220.51])
-        by smtp.gmail.com with ESMTPSA id h23sm12591375wmb.3.2020.07.31.10.31.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 31 Jul 2020 10:31:22 -0700 (PDT)
-Subject: Re: [net-next] seg6: using DSCP of inner IPv4 packets
-To:     David Miller <davem@davemloft.net>
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        andrea.mayer@uniroma2.it
-References: <20200728122044.1900-1-ahabdels@gmail.com>
- <20200730.164424.85007408369570229.davem@davemloft.net>
-From:   Ahmed Abdelsalam <ahabdels@gmail.com>
-Message-ID: <64f8d98d-3195-9bb0-858f-18a9625ccf8e@gmail.com>
-Date:   Fri, 31 Jul 2020 19:31:20 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VcO97KiNQ57vQLDytlgFQo02u8DyBACQIA2jsBc3GOY=;
+        b=D6xvB8kYsLhxYV98NVXUgqtxNUXldckFtAE1wp7CxyXSo/UMNKXn5Ikqi6UJfzDK37
+         lKknfsw7cPflNT2SK5CBox5H2RmT/iAwut9RdJAyJMSTQDQAy0sKq7bBNbs/btkurQfl
+         N3YK7lYf7qJbjayRuIU5oAvbstq59p9AAViCL/9N9JRlJTMFg1ndImwWcVbMyEkGkNv1
+         KWm4SL62DIrv4k8nQUIW5unAqS47frJ4XUrD9NP4X0VKgpme3Vqj1ojOkrA0XDoC7T5n
+         QZ+9tzJTmjvix7Zb6j+tOJp2bxWAAuRrcLQ8V8TS0KJ5fHu5GLlSWIZQHWq+Th8/1/94
+         vuDw==
+X-Gm-Message-State: AOAM532kuEvHEURuIY4vaASe2+c1dq5Dbv0I+uvv6U2iebIDZ4G2sldG
+        TQZbqHkdWrit2UZE+JKJ8ew=
+X-Google-Smtp-Source: ABdhPJzl+vM0VT1edrfjKKLtwrmx7aowWI5RLQTaewg9lltoLt7+l+E3mX0zSJzD0r4OWUNPxkzinA==
+X-Received: by 2002:a17:902:d715:: with SMTP id w21mr4399388ply.140.1596216949033;
+        Fri, 31 Jul 2020 10:35:49 -0700 (PDT)
+Received: from mail.google.com ([149.248.10.52])
+        by smtp.gmail.com with ESMTPSA id u14sm10422774pgf.51.2020.07.31.10.35.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 10:35:48 -0700 (PDT)
+Date:   Sat, 1 Aug 2020 01:35:20 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 00/18] perf: ftrace enhancement
+Message-ID: <20200731173520.x3edhuk73zt7tyuo@mail.google.com>
+References: <20200718064826.9865-1-changbin.du@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200730.164424.85007408369570229.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200718064826.9865-1-changbin.du@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I will refactor the code of this function and submit a new patch.
-Ahmed
+Hi Arnaldo,
+Are we ready to merge this serias now? Thanks. :)
 
-On 31/07/2020 01:44, David Miller wrote:
-> From: Ahmed Abdelsalam <ahabdels@gmail.com>
-> Date: Tue, 28 Jul 2020 12:20:44 +0000
+On Sat, Jul 18, 2020 at 02:48:08PM +0800, Changbin Du wrote:
+> The perf has basic kernel ftrace support but lack support of most tracing
+> options. This serias is target to enhance the perf ftrace functionality so
+> that we can make full use of kernel ftrace with perf.
 > 
->> This patch allows copying the DSCP from inner IPv4 header to the
->> outer IPv6 header, when doing SRv6 Encapsulation.
->>
->> This allows forwarding packet across the SRv6 fabric based on their
->> original traffic class.
->>
->> Signed-off-by: Ahmed Abdelsalam <ahabdels@gmail.com>
+> In general, this serias be cataloged into two main changes:
+>   1) Improve usability of existing functions. For example, we don't need to type
+>      extra option to select the tracer.
+>   2) Add new options to support all other ftrace functions.
 > 
-> The conditionals in this function are now a mess.
+> Here is a glance of all ftrace functions with this serias:
 > 
->> -	inner_hdr = ipv6_hdr(skb);
->> +	if (skb->protocol == htons(ETH_P_IPV6))
->> +		inner_hdr = ipv6_hdr(skb);
->> +	else
->> +		inner_ipv4_hdr = ip_hdr(skb);
->> +
+> $ sudo perf ftrace -h
 > 
-> You assume that if skb->protocol is not ipv6 then it is ipv4.
+>  Usage: perf ftrace [<options>] [<command>]
+>     or: perf ftrace [<options>] -- <command> [<options>]
 > 
->> @@ -138,6 +143,10 @@ int seg6_do_srh_encap(struct sk_buff *skb, struct ipv6_sr_hdr *osrh, int proto)
->>   		ip6_flow_hdr(hdr, ip6_tclass(ip6_flowinfo(inner_hdr)),
->>   			     flowlabel);
->>   		hdr->hop_limit = inner_hdr->hop_limit;
->> +	} else if (skb->protocol == htons(ETH_P_IP)) {
->> +		ip6_flow_hdr(hdr, inner_ipv4_hdr->tos, flowlabel);
->> +		hdr->hop_limit = inner_ipv4_hdr->ttl;
->> +		memset(IP6CB(skb), 0, sizeof(*IP6CB(skb)));
->>   	} else {
->>   		ip6_flow_hdr(hdr, 0, flowlabel);
->>   		hdr->hop_limit = ip6_dst_hoplimit(skb_dst(skb));
+>     -a, --all-cpus        system-wide collection from all CPUs
+>     -C, --cpu <cpu>       list of cpus to monitor
+>     -D, --delay <n>       ms to wait before starting tracing after program start
+>     -F, --funcs           Show available functions to filter
+>     -G, --graph-funcs <func>
+>                           trace given functions using function_graph tracer
+>     -g, --nograph-funcs <func>
+>                           Set nograph filter on given functions
+>     -m, --buffer-size <size>
+>                           size of per cpu buffer
+>     -N, --notrace-funcs <func>
+>                           do not trace given functions
+>     -p, --pid <pid>       trace on existing process id
+>     -T, --trace-funcs <func>
+>                           trace given functions using function tracer
+>     -t, --tracer <tracer>
+>                           tracer to use: function or function_graph (This option is deprecated)
+>     -v, --verbose         be more verbose
+>         --func-opts <options>
+>                           function tracer options, available options: call-graph,irq-info
+>         --graph-opts <options>
+>                           graph tracer options, available options: nosleep-time,noirqs,verbose,thresh=<n>,depth=<n>
+>         --inherit         trace children processes
+>         --tid <tid>       trace on existing thread id (exclusive to --pid)
 > 
-> But this code did not make that assumption at all.
+> v7:
+>   o add back '--tid <tid>'.
+> v6:
+>   o fix return value of read_tracing_file_to_stdout().
+>   o make __cmd_ftrace() shorter.
+>   o remove option '-t, --tid <tid>'.
+> v5:
+>   o trivial fixes.
+> v4:
+>   o add util/parse-sublevel-options.c
+>   O remove -D/--graph-depth
+> v3:
+>   o add --func-opts and --graph-opts to set tracer specific options.
+>   o support units as a suffix for option '-m/--buffer-size'.
+> v2:
+>   o patches for option '-u/--userstacktrace' and '--no-pager' are dropped.
+>   o update all related perf documentation.
+>   o rename some options. Now all funcgraph tracer options are prefixed with
+>     '--graph-', while all function tracer options are prefixed with '--func-'.
+>   o mark old options deprecated instead of removing them.
 > 
-> Only one of the two can be correct.
 > 
-> The conditional assignment is also very ugly, you have two pointers
-> conditionally initialized.  The compiler is going to have a hard time
-> figuring out that each pointer is only used in the code path where it
-> is guaranteed to be initialiazed.
+> Changbin Du (18):
+>   perf ftrace: select function/function_graph tracer automatically
+>   perf ftrace: add option '-F/--funcs' to list available functions
+>   perf ftrace: factor out function write_tracing_file_int()
+>   perf ftrace: add option '-m/--buffer-size' to set per-cpu buffer size
+>   perf ftrace: show trace column header
+>   perf ftrace: add option '--inherit' to trace children processes
+>   perf: util: add general function to parse sublevel options
+>   perf ftrace: add support for tracing option 'func_stack_trace'
+>   perf ftrace: add support for trace option sleep-time
+>   perf ftrace: add support for trace option funcgraph-irqs
+>   perf ftrace: add support for tracing option 'irq-info'
+>   perf ftrace: add option 'verbose' to show more info for graph tracer
+>   perf ftrace: add support for trace option tracing_thresh
+>   perf: ftrace: allow set graph depth by '--graph-opts'
+>   perf ftrace: add option -D/--delay to delay tracing
+>   perf ftrace: add option --tid to filter by thread id
+>   perf: ftrace: Add set_tracing_options() to set all trace options
+>   perf ftrace: add change log
 > 
-> And it can't do that, as far as the compiler knows, skb->protocol can
-> change between those two locations.  It MUST assume that can happen if
-> there are any functions calls whatsoever between these two code points.
+>  tools/perf/Documentation/perf-config.txt |   5 -
+>  tools/perf/Documentation/perf-ftrace.txt |  36 +-
+>  tools/perf/builtin-ftrace.c              | 415 +++++++++++++++++++++--
+>  tools/perf/util/Build                    |   1 +
+>  tools/perf/util/debug.c                  |  61 +---
+>  tools/perf/util/parse-sublevel-options.c |  70 ++++
+>  tools/perf/util/parse-sublevel-options.h |  11 +
+>  7 files changed, 513 insertions(+), 86 deletions(-)
+>  create mode 100644 tools/perf/util/parse-sublevel-options.c
+>  create mode 100644 tools/perf/util/parse-sublevel-options.h
 > 
-> This function has to be sanitized, with better handling of access to
-> the inner protocol header values, before I am willing to apply this.
+> -- 
+> 2.25.1
 > 
+
+-- 
+Cheers,
+Changbin Du
