@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD59234086
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6CD234098
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731799AbgGaHwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 03:52:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53434 "EHLO mail.kernel.org"
+        id S1731739AbgGaH4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 03:56:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43628 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731644AbgGaHwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 03:52:42 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3E44207F5;
-        Fri, 31 Jul 2020 07:52:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596181961;
-        bh=VPyM/T80Mh0zNQ3oSHPpEAvM2H048J59i73NLEzJ1tg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ba/c3jRnjiXhFqcyN2O051ci5/zcLDA8kN1GqbTLTYfxuJfNv6mYpI3Hg/SturvYF
-         c1oGpxEF+1zgyMk0udHoRxjFRXcJWwwXLBm9gklXU+s0AT0qKduaOoS46HtwEY1L3X
-         YK/iByno+m0HEuoFg6TNWARy7MpAxjz5Vsa0qWck=
-Date:   Fri, 31 Jul 2020 08:52:35 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Emese Revfy <re.emese@gmail.com>,
-        hsinyi@chromium.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: arm64: pointer_auth.h:40:3: error: implicit declaration of
- function 'get_random_bytes'; did you mean 'get_random_once'?
-Message-ID: <20200731075234.GA26018@willie-the-truck>
-References: <CA+G9fYvSyXnfGmK1FLRtraWWre7QjUoGE_qiwM8XPUBXjnudWA@mail.gmail.com>
- <20200730211522.1ea3561f@canb.auug.org.au>
- <d23eba90-ee2c-efe0-0cb6-88e99fb22e54@ti.com>
- <CAHk-=whn8OB-QbxpffK=Lhh6Mhj+Y2ALFZ1asCgtnQOnmQgWUw@mail.gmail.com>
- <7b0c0f44-f56d-5e71-cf86-dbdea190267a@ti.com>
- <CAHk-=whX7gPBn+jthX8bbfz9kU+0CbYwTxbASwPRCZ1bhVqrOw@mail.gmail.com>
- <20200731021631.GA8247@1wt.eu>
- <CAHk-=wgPPibftjeuvi+s=RSeZij3PEWDOxb05UH4yRJWeDMzFw@mail.gmail.com>
+        id S1731684AbgGaH4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 03:56:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 88BCFACDF;
+        Fri, 31 Jul 2020 07:56:55 +0000 (UTC)
+Date:   Fri, 31 Jul 2020 09:56:42 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Julien Thierry <jthierry@redhat.com>
+cc:     Josh Poimboeuf <jpoimboe@redhat.com>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] objtool: Move orc outside of check
+In-Reply-To: <7f7a7196-8b28-cd55-0685-799766bb6d4c@redhat.com>
+Message-ID: <alpine.LSU.2.21.2007310949020.19678@pobox.suse.cz>
+References: <20200730094143.27494-1-jthierry@redhat.com> <20200730094143.27494-3-jthierry@redhat.com> <20200730095759.GH2655@hirez.programming.kicks-ass.net> <dfe69c8f-db70-8366-5601-2592409ce7a0@redhat.com> <20200730132237.GM2655@hirez.programming.kicks-ass.net>
+ <3af41a3b-a4b9-8120-3ac0-c9ce13770628@redhat.com> <20200730141526.lr33zv4ffa3rdygp@treble> <7f7a7196-8b28-cd55-0685-799766bb6d4c@redhat.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgPPibftjeuvi+s=RSeZij3PEWDOxb05UH4yRJWeDMzFw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 10:25:41PM -0700, Linus Torvalds wrote:
-> On Thu, Jul 30, 2020 at 7:16 PM Willy Tarreau <w@1wt.eu> wrote:
-> >
-> > Don't you want to take Mark's patch anyway in addition to all this ? In
-> > case anyone meets yet another build issue, they'd have more luck trying
-> > to revert any other patch. Right now if they revert one, it breaks the
-> > build in a different way and doesn't help much.
+On Thu, 30 Jul 2020, Julien Thierry wrote:
+
 > 
-> I think Will picked up Mark's patch into the arm64 tree, so I felt I
-> should let it come in eventually that way.
+> 
+> On 7/30/20 3:15 PM, Josh Poimboeuf wrote:
+> > On Thu, Jul 30, 2020 at 02:29:20PM +0100, Julien Thierry wrote:
+> >>
+> >>
+> >> On 7/30/20 2:22 PM, peterz@infradead.org wrote:
+> >>> On Thu, Jul 30, 2020 at 01:40:42PM +0100, Julien Thierry wrote:
+> >>>>
+> >>>>
+> >>>> On 7/30/20 10:57 AM, peterz@infradead.org wrote:
+> >>>>> On Thu, Jul 30, 2020 at 10:41:41AM +0100, Julien Thierry wrote:
+> >>>>>> +		if (file->elf->changed)
+> >>>>>> +			return elf_write(file->elf);
+> >>>>>> +		else
+> >>>>>> +			return 0;
+> >>>>>>      }
+> >>>>>
+> >>>>> I think we can do without that else :-)
+> >>>>>
+> >>>>
+> >>>> I did wonder and was not 100% confident about it, but the orc gen will
+> >>>> always change the file, correct?
+> >>>
+> >>> Not if it already has orc, iirc.
+> >>>
+> >>> But what I was trying to say is that:
+> >>>
+> >>>  if (file->elf->changed)
+> >>>   return elf_write(file->elf)
+> >>>
+> >>>  return 0;
+> >>>
+> >>> is identical code and, IMO, easier to read.
+> >>>
+> >>
+> >> Much easier yes, I'll change it.
+> > 
+> > But I think file->elf->changed can be assumed at this point anyway, so
+> > it could just be an unconditional
+> > 
+> >  return elf_write(file->elf);
+> > 
+> 
+> I'll triple check whether that's the case and remove the if if possible.
 
-Yup, you'll get it later today with a few other fixes that have trickled
-in.
+I think it is the case. And even if not, it would only cause a pointless 
+call to elf_update() in the end and that should not do any harm anyway if 
+I am not mistaken.
 
-Cheers,
+However, I think there is a problem with the rebase on top of the current 
+code. The patch moves elf_write() call to orc_gen.c which was ok before 
+Peterz introduced elf_write_insn() et al. We need to keep elf_write() in 
+check.c for this case too.
 
-Will
+Miroslav
