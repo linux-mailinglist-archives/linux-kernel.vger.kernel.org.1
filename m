@@ -2,121 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D422347BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 16:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF1C234818
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 16:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729354AbgGaO3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 10:29:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:32900 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728697AbgGaO3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 10:29:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D1A831B;
-        Fri, 31 Jul 2020 07:29:20 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.4.61])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C2B863F66E;
-        Fri, 31 Jul 2020 07:29:13 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 15:29:05 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v2 3/7] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <20200731142905.GA67415@C02TD0UTHF1T.local>
-References: <20200727162935.31714-1-rppt@kernel.org>
- <20200727162935.31714-4-rppt@kernel.org>
- <20200730162209.GB3128@gaia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730162209.GB3128@gaia>
+        id S1730570AbgGaO72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 10:59:28 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:55216 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728713AbgGaO71 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 10:59:27 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200731145926epoutp0112fdffa7ca94b4f1d1797009d1e22767~m3lMIaw9x1746317463epoutp01C
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 14:59:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200731145926epoutp0112fdffa7ca94b4f1d1797009d1e22767~m3lMIaw9x1746317463epoutp01C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1596207566;
+        bh=sLpkHF+HbDloaJa2ddUi7D2t35e//APwH4BKjk+HIRE=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=I4XH/ZtwtP8PeoIK385cZ6hyIsdzB0krZrhehubzIS/iBaE9CDKDkXnP9y07h/F3O
+         BtRvU2SiROeTbQr0Jwo8eZAwO0L+IQdihg8hS/l/+jzm8gXfC3JzmPBVP8iopcULYX
+         93HYQZFla8IrL4nD99KAY4HxUGyaou7qfiZWAP+4=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20200731145925epcas5p456b95bd3e90f65d7afa4b3ecc784f737~m3lLTeH-P2676826768epcas5p4I;
+        Fri, 31 Jul 2020 14:59:25 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        06.D7.40333.DC1342F5; Fri, 31 Jul 2020 23:59:25 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200731121259epcas5p11248853c0578f2e426ab828310c9e855~m1T3k9ZqS0430504305epcas5p1l;
+        Fri, 31 Jul 2020 12:12:59 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200731121259epsmtrp24bcae872f75ce10d653fd8fbe609b410~m1T3kL2qN0293402934epsmtrp2_;
+        Fri, 31 Jul 2020 12:12:59 +0000 (GMT)
+X-AuditID: b6c32a4a-991ff70000019d8d-20-5f2431cd8851
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        51.DC.08382.BCA042F5; Fri, 31 Jul 2020 21:12:59 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.108.92.210]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200731121257epsmtip2b42fe9ba3335d636d8d1a656337a260d~m1T1UQ1Im3086430864epsmtip2X;
+        Fri, 31 Jul 2020 12:12:57 +0000 (GMT)
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+        james.morse@arm.com, akpm@linux-foundation.org
+Cc:     Dave.Martin@arm.com, 0x7f454c46@gmail.com, peterz@infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        a.sahrawat@samsung.com, v.narang@samsung.com,
+        Maninder Singh <maninder1.s@samsung.com>
+Subject: [PATCH 1/1] arm64: use IRQ_STACK_SIZE instead of THREAD_SIZE for
+ irq stack
+Date:   Fri, 31 Jul 2020 17:19:50 +0530
+Message-Id: <1596196190-14141-1-git-send-email-maninder1.s@samsung.com>
+X-Mailer: git-send-email 1.9.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmleLIzCtJLcpLzFFi42LZdlhTS/esoUq8waLlHBYTpr1gsbi4O9Vi
+        zvo1bBbvl/UwWjTN3cNocX/fciaLTY+vsVpc3jWHzeLw/DYWi6XXLzJZHO89wGRx6ORcRouW
+        O6YOvB5r5q1h9Ng56y67x+YVWh6bVnWyeZyY8ZvFY/OSeo++LasYPT5vkgvgiOKySUnNySxL
+        LdK3S+DKOHr5IEvBFPaK7Yc+sDYw/mHtYuTkkBAwkfhz8y5jFyMXh5DAbkaJ9/9mskM4nxgl
+        Pu++yALhfGOU+PLgP5DDAday/2kERHwvo8TLPS1QRV8YJTa8uMMMMpdNQE9i1a49LCC2iECJ
+        xI41U9hAipgFnjJKLPqyDaxIWCBUYvLtdjYQm0VAVaJz7gmwOK+Au8TO37tZIA6Ukzh5bDIr
+        SLOEwEd2iYWdm6Aud5G4tXEKO4QtLPHq+BYoW0ri87u9bBANzYwSn/atZYRwpjBKLL34Earb
+        XuJ1cwMTyEPMApoS63fpQ4RlJaaeWscEYjML8En0/n7CBBHnldgxD8ZWlWi5uQFqjLTE548f
+        oeHiIbHvpixIWEggVuLA86PMExhlZyEsWMDIuIpRMrWgODc9tdi0wCgvtVyvODG3uDQvXS85
+        P3cTIzidaHntYHz44IPeIUYmDsZDjBIczEoivH//KccL8aYkVlalFuXHF5XmpBYfYpTmYFES
+        51X6cSZOSCA9sSQ1OzW1ILUIJsvEwSnVwCS6Lz+Y7c6uam5nV1+pl62Pgrjr+WOZtig1y4nv
+        81v3r/vLl4Mv5guos/5jT+q75KMTkCl6LL7A5orQ0ynvJ2qv/Mgnayfm9nbdhzcH/0stl/vU
+        mBnh/2D/vJeR2z21Hiy7uya07I2iq8jfnSdtJRgUf+epn9nhrBHq1Gly/GGabFX2F2ndjZ5P
+        BD3Lf86ZXN0wX3XxVq3ZSid23Ji3o097eYhxW+TR47dX+tSdTZHTjC7g4eo6eC9qWwjzU0GJ
+        wqi1P1ZYFrRFvtd3mTPlYpxkx7Sw58+u/mC7v6JP6N2F2dZia+ZeOnru7jWdjdwr+z+56Ct1
+        P9R6dvLVH4YND/9meaS9SfGVnqO5ZOr11GAlluKMREMt5qLiRACgauBZlgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBLMWRmVeSWpSXmKPExsWy7bCSvO5pLpV4g3Mr1S0mTHvBYnFxd6rF
+        nPVr2CzeL+thtGiau4fR4v6+5UwWmx5fY7W4vGsOm8Xh+W0sFkuvX2SyON57gMni0Mm5jBYt
+        d0wdeD3WzFvD6LFz1l12j80rtDw2repk8zgx4zeLx+Yl9R59W1YxenzeJBfAEcVlk5Kak1mW
+        WqRvl8CVcfTyQZaCKewV2w99YG1g/MPaxcjBISFgIrH/aUQXIxeHkMBuRond3TeYuhg5geLS
+        Ej//vWeBsIUlVv57zg5R9IlRYtKbt2wgCTYBPYlVu/aAFYkIVEk8XXeDEaSIWeAto8TcOS/B
+        JgkLBEusudHNCGKzCKhKdM49wQxi8wq4S+z8vRtqg5zEyWOTWScw8ixgZFjFKJlaUJybnlts
+        WGCYl1quV5yYW1yal66XnJ+7iREcmFqaOxi3r/qgd4iRiYPxEKMEB7OSCO/ff8rxQrwpiZVV
+        qUX58UWlOanFhxilOViUxHlvFC6MExJITyxJzU5NLUgtgskycXBKNTCZnN8WIPBY8dbvecyZ
+        pVMCLqyw3PR5n2zT6uraCZvT3Wx1v9u9jKn5x+me8cTZuvaWKJPVd2m+x/s0dmz7s2y91wfF
+        sl1G8yon/7E9z7DI6MLSjMsxZ398D/BOSQiJnDLnR96rw5c7u/NbqqcdWDdnhnzQK4Hk20Xf
+        Dky6PifT0CpU6+E0ne+1519/ke1bVm/7YY0WD8fyXZyM5RePcwVeZG3PZCn22r3iBTP/v3M6
+        jgxni4onClrd5pVrL/5UzORg+kPqxcEp3VxbTL8tyPe3P7DS/uvB+Reet+2efXndWyFmpi89
+        KbzvZJa6BqjrMjuZPl3+b3/V1rb/H5odHPOEF0Sadl2/oSx+gqUoxsNHiaU4I9FQi7moOBEA
+        P1tU4bsCAAA=
+X-CMS-MailID: 20200731121259epcas5p11248853c0578f2e426ab828310c9e855
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200731121259epcas5p11248853c0578f2e426ab828310c9e855
+References: <CGME20200731121259epcas5p11248853c0578f2e426ab828310c9e855@epcas5p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 05:22:10PM +0100, Catalin Marinas wrote:
-> On Mon, Jul 27, 2020 at 07:29:31PM +0300, Mike Rapoport wrote:
+IRQ_STACK_SIZE can be made different from THREAD_SIZE,
+and as IRQ_STACK_SIZE is used while irq stack allocation,
+same define should be used while printing information of irq stack.
 
-> > +static int secretmem_mmap(struct file *file, struct vm_area_struct *vma)
-> > +{
-> > +	struct secretmem_ctx *ctx = file->private_data;
-> > +	unsigned long mode = ctx->mode;
-> > +	unsigned long len = vma->vm_end - vma->vm_start;
-> > +
-> > +	if (!mode)
-> > +		return -EINVAL;
-> > +
-> > +	if ((vma->vm_flags & (VM_SHARED | VM_MAYSHARE)) == 0)
-> > +		return -EINVAL;
-> > +
-> > +	if (mlock_future_check(vma->vm_mm, vma->vm_flags | VM_LOCKED, len))
-> > +		return -EAGAIN;
-> > +
-> > +	switch (mode) {
-> > +	case SECRETMEM_UNCACHED:
-> > +		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> > +		fallthrough;
-> > +	case SECRETMEM_EXCLUSIVE:
-> > +		vma->vm_ops = &secretmem_vm_ops;
-> > +		break;
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	vma->vm_flags |= VM_LOCKED;
-> > +
-> > +	return 0;
-> > +}
-> 
-> I think the uncached mapping is not the right thing for arm/arm64. First
-> of all, pgprot_noncached() gives us Strongly Ordered (Device memory)
-> semantics together with not allowing unaligned accesses. I suspect the
-> semantics are different on x86.
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+---
+ arch/arm64/kernel/traps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> The second, more serious problem, is that I can't find any place where
-> the caches are flushed for the page mapped on fault. When a page is
-> allocated, assuming GFP_ZERO, only the caches are guaranteed to be
-> zeroed. Exposing this subsequently to user space as uncached would allow
-> the user to read stale data prior to zeroing. The arm64
-> set_direct_map_default_noflush() doesn't do any cache maintenance.
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 47f651d..13ebd5c 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -855,7 +855,7 @@ asmlinkage void handle_bad_stack(struct pt_regs *regs)
+ 	pr_emerg("Task stack:     [0x%016lx..0x%016lx]\n",
+ 		 tsk_stk, tsk_stk + THREAD_SIZE);
+ 	pr_emerg("IRQ stack:      [0x%016lx..0x%016lx]\n",
+-		 irq_stk, irq_stk + THREAD_SIZE);
++		 irq_stk, irq_stk + IRQ_STACK_SIZE);
+ 	pr_emerg("Overflow stack: [0x%016lx..0x%016lx]\n",
+ 		 ovf_stk, ovf_stk + OVERFLOW_STACK_SIZE);
+ 
+-- 
+1.9.1
 
-It's also worth noting that in a virtual machine this is liable to be
-either broken (with a potential loss of coherency if the host has a
-cacheable alias as existing KVM hosts have), or pointless (if the host
-uses S2FWB to upgrade Stage-1 attribues to cacheable as existing KVM
-hosts also have).
-
-I think that trying to avoid the data caches creates many more problems
-than it solves, and I don't think there's a strong justification for
-trying to support that on arm64 to begin with, so I'd rather entirely
-opt-out on supporting SECRETMEM_UNCACHED.
-
-Thanks,
-Mark.
