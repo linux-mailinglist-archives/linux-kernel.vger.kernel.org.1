@@ -2,237 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCF2234AF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 20:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B76234AE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 20:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387816AbgGaS1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 14:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387805AbgGaS1T (ORCPT
+        id S2387778AbgGaS0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 14:26:53 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:44487 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387652AbgGaS0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 14:27:19 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E77C061574;
-        Fri, 31 Jul 2020 11:27:18 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: bbeckett)
-        with ESMTPSA id 47790299373
-From:   Robert Beckett <bob.beckett@collabora.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Beckett <bob.beckett@collabora.com>
-Subject: [PATCH] drm/msm: Add vblank timestamp support for dpu1
-Date:   Fri, 31 Jul 2020 19:25:49 +0100
-Message-Id: <20200731182639.10949-1-bob.beckett@collabora.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 31 Jul 2020 14:26:53 -0400
+Received: by mail-io1-f66.google.com with SMTP id v6so17324394iow.11;
+        Fri, 31 Jul 2020 11:26:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KuRbjLAdk2qF/sclDpIueUjPnM2F0YR1YcWElNzgbpU=;
+        b=t6cwFtKE6N8y6jrpzbOq+VAzwZht9JT2wKANhmal7xL7kl8InN3Nhe6EXTvVPCKdLW
+         /LYXLUWu1rAKhhCeNiU2Vm+4019ELQP8BcAF+ogu3wHqzuMyUzxqIfzksT/+Gl4NWGNg
+         6XGR6k/AxeZMhup8AnT07P9zHxcS1d6+9Oxd2Rss+dxK68eqxmUwTzHCFreqI+SqygqV
+         BniSVwtdXhiHq1SzUKqvwlJL0FfjTXnaCRkenLqjfJLRjb33Gz+mtU1iqXta771EaRDA
+         oI30RWQv0X/VSkXqVSiGM/FSumX/1wkMKnZ6NRvyVumBkh1fO8dx9Yq8us/3HhbZhV0p
+         7LHQ==
+X-Gm-Message-State: AOAM531C8iV0SZiIrs0nqHOO0f0ydCnDhw7m7v/OAQo2fsGVGXetDts7
+        L53CTEcaPgteB7ayzYUO3A==
+X-Google-Smtp-Source: ABdhPJyQ+8uvOFgjmwMbjdzK/nhCeKXR4ECMzLtnQXdzQAe67dqY7s5ndxY9dXDf+RshQZN4g44q9A==
+X-Received: by 2002:a05:6602:150:: with SMTP id v16mr4742498iot.80.1596220012124;
+        Fri, 31 Jul 2020 11:26:52 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id t17sm2378512ilq.69.2020.07.31.11.26.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 11:26:51 -0700 (PDT)
+Received: (nullmailer pid 531147 invoked by uid 1000);
+        Fri, 31 Jul 2020 18:26:50 -0000
+Date:   Fri, 31 Jul 2020 12:26:50 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hanks Chen <hanks.chen@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Loda Chou <loda.chou@mediatek.com>,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        mtk01761 <wendell.lin@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        CC Hwang <cc.hwang@mediatek.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        Andy Teng <andy.teng@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH v10 1/3] dt-bindings: pinctrl: add bindings for MediaTek
+ MT6779 SoC
+Message-ID: <20200731182650.GA531094@bogus>
+References: <1596115816-11758-1-git-send-email-hanks.chen@mediatek.com>
+ <1596115816-11758-2-git-send-email-hanks.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1596115816-11758-2-git-send-email-hanks.chen@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add vblank timestamp support via drm helpers
+On Thu, 30 Jul 2020 21:30:14 +0800, Hanks Chen wrote:
+> From: Andy Teng <andy.teng@mediatek.com>
+> 
+> Add devicetree bindings for MediaTek MT6779 pinctrl driver.
+> 
+> Signed-off-by: Andy Teng <andy.teng@mediatek.com>
+> Signed-off-by: Hanks Chen <hanks.chen@mediatek.com>
+> ---
+>  .../pinctrl/mediatek,mt6779-pinctrl.yaml      | 202 ++++++++++++++++++
+>  1 file changed, 202 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
+> 
 
-Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c    | 71 ++++++++++++++++++++-
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c |  7 ++
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h |  5 ++
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c     | 10 ++-
- drivers/gpu/drm/msm/msm_drv.c               |  1 +
- 5 files changed, 92 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-index f272a8d0f95b..b62552cad135 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-@@ -297,8 +297,8 @@ void dpu_crtc_vblank_callback(struct drm_crtc *crtc)
- 		dpu_crtc->vblank_cb_time = ktime_get();
- 	else
- 		dpu_crtc->vblank_cb_count++;
--	_dpu_crtc_complete_flip(crtc);
- 	drm_crtc_handle_vblank(crtc);
-+	_dpu_crtc_complete_flip(crtc);
- 	trace_dpu_crtc_vblank_cb(DRMID(crtc));
- }
- 
-@@ -1320,6 +1320,73 @@ static void dpu_crtc_early_unregister(struct drm_crtc *crtc)
- 	debugfs_remove_recursive(dpu_crtc->debugfs_root);
- }
- 
-+static struct drm_encoder *get_encoder_from_crtc(struct drm_crtc *crtc)
-+{
-+	struct drm_device *dev = crtc->dev;
-+	struct drm_encoder *encoder;
-+
-+	drm_for_each_encoder(encoder, dev)
-+		if (encoder->crtc == crtc)
-+			return encoder;
-+
-+	return NULL;
-+}
-+
-+static bool dpu_crtc_get_scanout_position(struct drm_crtc *crtc,
-+					   bool in_vblank_irq,
-+					   int *vpos, int *hpos,
-+					   ktime_t *stime, ktime_t *etime,
-+					   const struct drm_display_mode *mode)
-+{
-+	unsigned int pipe = crtc->index;
-+	struct drm_encoder *encoder;
-+	int line, vsw, vbp, vactive_start, vactive_end, vfp_end;
-+
-+
-+	encoder = get_encoder_from_crtc(crtc);
-+	if (!encoder) {
-+		DRM_ERROR("no encoder found for crtc %d\n", pipe);
-+		return false;
-+	}
-+
-+	vsw = mode->crtc_vsync_end - mode->crtc_vsync_start;
-+	vbp = mode->crtc_vtotal - mode->crtc_vsync_end;
-+
-+	/*
-+	 * the line counter is 1 at the start of the VSYNC pulse and VTOTAL at
-+	 * the end of VFP. Translate the porch values relative to the line
-+	 * counter positions.
-+	 */
-+
-+	vactive_start = vsw + vbp + 1;
-+
-+	vactive_end = vactive_start + mode->crtc_vdisplay;
-+
-+	/* last scan line before VSYNC */
-+	vfp_end = mode->crtc_vtotal;
-+
-+	if (stime)
-+		*stime = ktime_get();
-+
-+	line = dpu_encoder_get_linecount(encoder);
-+
-+	if (line < vactive_start)
-+		line -= vactive_start;
-+	else if (line > vactive_end)
-+		line = line - vfp_end - vactive_start;
-+	else
-+		line -= vactive_start;
-+
-+	*vpos = line;
-+	*hpos = 0;
-+
-+	if (etime)
-+		*etime = ktime_get();
-+
-+	return true;
-+}
-+
-+
- static const struct drm_crtc_funcs dpu_crtc_funcs = {
- 	.set_config = drm_atomic_helper_set_config,
- 	.destroy = dpu_crtc_destroy,
-@@ -1331,6 +1398,7 @@ static const struct drm_crtc_funcs dpu_crtc_funcs = {
- 	.early_unregister = dpu_crtc_early_unregister,
- 	.enable_vblank  = msm_crtc_enable_vblank,
- 	.disable_vblank = msm_crtc_disable_vblank,
-+	.get_vblank_timestamp = drm_crtc_vblank_helper_get_vblank_timestamp,
- };
- 
- static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
-@@ -1339,6 +1407,7 @@ static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
- 	.atomic_check = dpu_crtc_atomic_check,
- 	.atomic_begin = dpu_crtc_atomic_begin,
- 	.atomic_flush = dpu_crtc_atomic_flush,
-+	.get_scanout_position = dpu_crtc_get_scanout_position,
- };
- 
- /* initialize crtc */
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index a97f6d2e5a08..1d7d676355ee 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -1659,6 +1659,13 @@ static u32 _dpu_encoder_calculate_linetime(struct dpu_encoder_virt *dpu_enc,
- 	return line_time;
- }
- 
-+int dpu_encoder_get_linecount(struct drm_encoder *encoder)
-+{
-+	struct dpu_encoder_virt *dpu_enc = to_dpu_encoder_virt(encoder);
-+
-+	return dpu_enc->cur_master->ops.get_line_count(dpu_enc->cur_master);
-+}
-+
- int dpu_encoder_vsync_time(struct drm_encoder *drm_enc, ktime_t *wakeup_time)
- {
- 	struct drm_display_mode *mode;
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
-index b4913465e602..f492ef0a2b2b 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
-@@ -85,6 +85,11 @@ void dpu_encoder_trigger_kickoff_pending(struct drm_encoder *encoder);
-  */
- void dpu_encoder_kickoff(struct drm_encoder *encoder);
- 
-+/**
-+ * dpu_encoder_get_linecount - get the current scanline count for this encoder
-+ */
-+int dpu_encoder_get_linecount(struct drm_encoder *encoder);
-+
- /**
-  * dpu_encoder_wakeup_time - get the time of the next vsync
-  */
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index c0a4d4e16d82..db8a461a1786 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -14,6 +14,7 @@
- 
- #include <drm/drm_crtc.h>
- #include <drm/drm_file.h>
-+#include <drm/drm_vblank.h>
- 
- #include "msm_drv.h"
- #include "msm_mmu.h"
-@@ -337,6 +338,11 @@ static void dpu_kms_prepare_commit(struct msm_kms *kms,
- 	if (!kms)
- 		return;
- 
-+	for_each_new_crtc_in_state(state, crtc, crtc_state, i) {
-+		if (crtc_state->mode.crtc_clock)
-+			drm_crtc_vblank_get(crtc);
-+	}
-+
- 	/* Call prepare_commit for all affected encoders */
- 	for_each_new_crtc_in_state(state, crtc, crtc_state, i) {
- 		drm_for_each_encoder_mask(encoder, crtc->dev,
-@@ -389,8 +395,10 @@ static void dpu_kms_complete_commit(struct msm_kms *kms, unsigned crtc_mask)
- 
- 	DPU_ATRACE_BEGIN("kms_complete_commit");
- 
--	for_each_crtc_mask(dpu_kms->dev, crtc, crtc_mask)
-+	for_each_crtc_mask(dpu_kms->dev, crtc, crtc_mask) {
- 		dpu_crtc_complete_commit(crtc);
-+		drm_crtc_vblank_put(crtc);
-+	}
- 
- 	DPU_ATRACE_END("kms_complete_commit");
- }
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 36d98d4116ca..01734191cd31 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -687,6 +687,7 @@ int msm_crtc_enable_vblank(struct drm_crtc *crtc)
- 	struct msm_kms *kms = priv->kms;
- 	if (!kms)
- 		return -ENXIO;
-+	drm_calc_timestamping_constants(crtc, &crtc->state->adjusted_mode);
- 	DBG("dev=%p, crtc=%u", dev, pipe);
- 	return vblank_ctrl_queue_work(priv, pipe, true);
- }
--- 
-2.20.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
