@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D7D234354
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4423723436C
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732161AbgGaJea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:34:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:53780 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727096AbgGaJe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:34:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D21DE31B;
-        Fri, 31 Jul 2020 02:34:28 -0700 (PDT)
-Received: from [10.37.12.83] (unknown [10.37.12.83])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7773F3F66E;
-        Fri, 31 Jul 2020 02:34:27 -0700 (PDT)
-Subject: Re: [RFC PATCH 04/14] coresight: etm4x: Free up argument of
- etm4_init_arch_data
-To:     mathieu.poirier@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mike.leach@linaro.org, coresight@lists.linaro.org
-References: <20200722172040.1299289-1-suzuki.poulose@arm.com>
- <20200722172040.1299289-5-suzuki.poulose@arm.com>
- <20200730173131.GA3155687@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <d732bde3-43b2-e49c-15c7-b48bf1108133@arm.com>
-Date:   Fri, 31 Jul 2020 10:39:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1732247AbgGaJlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732080AbgGaJlX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 05:41:23 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD3BC061574;
+        Fri, 31 Jul 2020 02:41:23 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id bh1so3791750plb.12;
+        Fri, 31 Jul 2020 02:41:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=60oA9rNnse/fDL09mT4gNyvwtlkjkgn68ejSkWL01U4=;
+        b=jFUk/3lgMKRsuw2kqebmjsqO3kZlYUfWJDtyz7dnP7klnelndxxizX1YTwf1x6TM2R
+         O1lgLRyPxdNgntgUQJexNMdBjlD+BqsqKwpT9VelCtT40egjJ4ldVWBfu8Nhw9R65JJ0
+         LVY09ZubTy0a09ES38ILxS6WZg/nkZr1DQicrZdzpHDvTrdA2oMqwr/NDkD7em1lra5Y
+         CF6HjTo7QB6XxCpWfZEA1UU/XuxbvrE9lDmlqtCLC33e2Oi8+1N/Jtzixb7fhiwaYJMp
+         +Bv7tociKsr2tF6b3fa3I/8aPu5hShX37foP6lyH37KpNsGRzzpMOTlnkx8CmODYL0iH
+         Dpdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=60oA9rNnse/fDL09mT4gNyvwtlkjkgn68ejSkWL01U4=;
+        b=CiZ0vmpJl8BYck6ljAIGvcF0bJCPqPxs6Uz0I8CtIR5tRG4YUkEzi9gF65S4P6P0KV
+         2jIekKnTJo3M9meX7l0VEdHhlXszx4fevhifXYGBjaWRTrpNCyMlqAXmfxb+4K6cGC6c
+         /sD41gE9Di/FVx/eEwJiU7KaQ3bpmWsuO29HfLG4emyswjE0Ehp7JpyHsz0uWrEt6LZE
+         NnIOy2CuJS2bDvkysZHRBLEdeqRaI04TmC7kBSLfFNCC4islQQDnlpFCXRYxupeyig0d
+         JL3vclfMy2OyjhVeIl4IMyGoCBVIPE2NTmAv4JjUeMWgAtUjCgwr1Y3ZMBME9HGHC1WG
+         VhEA==
+X-Gm-Message-State: AOAM530wJQcfWPlHz3TxNt3zr5qHUtrijTtcZF5hxQjU5wLNBltlOwFi
+        Ttu1r1rccPFU77FOAEIDEZI6hdR2OfCpMel/1FwQMBjw
+X-Google-Smtp-Source: ABdhPJxcqKLMLWULglf9HaGDtkBv3V/+Irpwu3izGZjgy3swW/REesBO3cHyi7PIGB2vTTxtdDvdfyXPkcJBDeX5wTM=
+X-Received: by 2002:a63:ce41:: with SMTP id r1mr2998288pgi.203.1596188482768;
+ Fri, 31 Jul 2020 02:41:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200730173131.GA3155687@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200730193510.578309-1-jusual@redhat.com> <CAHp75VcyRjAr3ugmAWYcKMrAeea6ioQOPfJnj-Srntdg_W8ScQ@mail.gmail.com>
+ <873658kpj2.fsf@vitty.brq.redhat.com>
+In-Reply-To: <873658kpj2.fsf@vitty.brq.redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 31 Jul 2020 12:41:06 +0300
+Message-ID: <CAHp75Vfp8aabZo_NW78kM-OLLKDgK1CwvLZNwmPZyQgaw6bXtQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Use MMCONFIG for all PCI config space accesses
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Julia Suvorova <jusual@redhat.com>,
+        "open list:VFIO DRIVER" <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/30/2020 06:31 PM, Mathieu Poirier wrote:
-> On Wed, Jul 22, 2020 at 06:20:30PM +0100, Suzuki K Poulose wrote:
->> etm4_init_arch_data is called early during the device probe,
->> even before the coresight_device is registered. Since we are
->> about to replace the direct access via abstraction layer, we
->> need a way to pass in the csdev_access for the given device.
->> Towards this free up the argument, which is already available
->> via etmdrvdata[smp_processor_id()].
->>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-etm4x.c | 15 +++++++++++----
->>   1 file changed, 11 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
->> index 7bb74c659c4f..67deb4a4e618 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
->> @@ -614,7 +614,8 @@ static const struct coresight_ops etm4_cs_ops = {
->>   	.source_ops	= &etm4_source_ops,
->>   };
->>   
->> -static void etm4_init_arch_data(void *info)
->> +
->> +static void etm4_init_arch_data(void *__unused)
->>   {
->>   	u32 etmidr0;
->>   	u32 etmidr1;
->> @@ -622,8 +623,14 @@ static void etm4_init_arch_data(void *info)
->>   	u32 etmidr3;
->>   	u32 etmidr4;
->>   	u32 etmidr5;
->> -	struct etmv4_drvdata *drvdata = info;
->> -	int i;
->> +	struct etmv4_drvdata *drvdata;
->> +	int i, cpu;
->> +
->> +	cpu = raw_smp_processor_id();
-> 
-> Can you provide details on the motivation to use the raw_ version over the regular
-> one?  As far as I can see in linux/smp.h there is no difference between them
-> unless DEBUB_PREEMPT is enabled.  Even then the debug version won't complain
-> since the task is CPU affined.
-> 
+On Fri, Jul 31, 2020 at 12:22 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+> > On Thu, Jul 30, 2020 at 10:37 PM Julia Suvorova <jusual@redhat.com> wrote:
 
-Right, it is partly my misunderstanding. debug_smp_processor_id() is to
-detect cases where smp_processor_id() is called in pre-emptible
-contexts. This is not the case here. So it is fine to use the
-smp_processor_id(). I will switch to that in the next version.
+...
 
-Thanks
-Suzuki
+> >> +static int __init kvm_pci_arch_init(void)
+> >> +{
+> >> +       if (raw_pci_ext_ops &&
+
+> >> +               return 0;
+> >> +       }
+> >
+> >> +       return 1;
+> >
+> > Hmm... I don't remember what positive codes means there. Perhaps you
+> > need to return a rather error code?
+>
+> If I'm reading the code correctly,
+>
+> pci_arch_init() has the following:
+>
+>         if (x86_init.pci.arch_init && !x86_init.pci.arch_init())
+>                 return 0;
+>
+>
+> so returning '1' here means 'continue' and this seems to be
+> correct. (E.g. Hyper-V's hv_pci_init() does the same). What I'm not sure
+> about is 'return 0' above as this will result in skipping the rest of
+> pci_arch_init(). Was this desired or should we return '1' in both cases?
+
+I think it depends what you want. In complex cases we recognize three
+possibilities
+
+-ERRNO: function failed, we have to stop and bailout with error from callee
+0: function OK, stop and return 0
+1: function OK, continue the rest in callee
+
+Do we have needs in this or is the current enough for all (exist) callees?
+
+-- 
+With Best Regards,
+Andy Shevchenko
