@@ -2,112 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691D1234DB2
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 00:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9D3234D92
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 00:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgGaWnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 18:43:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54720 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726099AbgGaWnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 18:43:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C2701AB7D;
-        Fri, 31 Jul 2020 22:43:56 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 63166604C2; Sat,  1 Aug 2020 00:43:42 +0200 (CEST)
-Date:   Fri, 31 Jul 2020 15:54:56 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Gaurav Singh <gaurav1086@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Aya Levin <ayal@mellanox.com>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] [net/ethtool] ethnl_set_linkmodes: remove redundant null
- check
-Message-ID: <20200731135456.gbzznq6x2f5pznx6@carpenter.suse.cz>
-References: <20200731045908.32466-1-gaurav1086@gmail.com>
+        id S1726947AbgGaWaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 18:30:39 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:35114 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbgGaWaj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 18:30:39 -0400
+Received: by mail-io1-f68.google.com with SMTP id s189so25940404iod.2;
+        Fri, 31 Jul 2020 15:30:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=45H1JgCHHdhQApbjvQq9Pb4Y3l2t3RueYD94Macm5D8=;
+        b=PfmdjgzIQr1Z1JXO3DdSLNrshnDhac2bqHxk0tAW+rybFQxvCXxN1k1gA3o2huU+eq
+         wfBBNaUscmmrcNKgNIb21JgNxmWP7Lb1y4SYYZdg/MUKGBvhY1ppttO67XhR45q2iptu
+         lm7Egh0jaFebdw1oV3x45+YbRCTqqEuZ5yak7+iimlpPnVnfhjnZV/SSefFB+sl8+N0j
+         PwuhsMYZfRabAXnuloh0DknMmkDAyT3msC0Mizdfj+obyOfh22RRZO4hEf4IT7tlsTw/
+         y1zn8M8CUdQkoxieFlYMs9lb9loDSdlPVXM2j/ti4nqToGF/qJNHgltTOw5VJoFbcDc8
+         z/ag==
+X-Gm-Message-State: AOAM531Vr2Q+luieS1PGL5gUrSk2uKPremFkESIl7UJZAu2nF6VdLboP
+        gDPHpIyk5VP51XsBypbjnw==
+X-Google-Smtp-Source: ABdhPJzZAaX6MlFfNyrl50UMUoKtOe2pALDSo+xUOpiSIJ57RHBGhOQHylD+u3088MEWzsbuB1YUyQ==
+X-Received: by 2002:a5e:d80e:: with SMTP id l14mr5802006iok.65.1596234638546;
+        Fri, 31 Jul 2020 15:30:38 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id f132sm5171450ioa.45.2020.07.31.15.30.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 15:30:38 -0700 (PDT)
+Received: (nullmailer pid 923415 invoked by uid 1000);
+        Fri, 31 Jul 2020 22:30:35 -0000
+Date:   Fri, 31 Jul 2020 16:30:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     linux-mtd@lists.infradead.org, Linux-imx@nxp.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, han.xu@nxp.com,
+        richard@nod.at, vigneshr@ti.com, linux-kernel@vger.kernel.org,
+        miquel.raynal@bootlin.com, u.kleine-koenig@pengutronix.de
+Subject: Re: [PATCH 2/2] dt-bindings: mtd: Convert imx nand to json-schema
+Message-ID: <20200731223035.GA923337@bogus>
+References: <1596113004-15548-1-git-send-email-Anson.Huang@nxp.com>
+ <1596113004-15548-2-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ltnqnoysjs5z4x72"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200731045908.32466-1-gaurav1086@gmail.com>
-Lines:  66
+In-Reply-To: <1596113004-15548-2-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ltnqnoysjs5z4x72
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jul 31, 2020 at 12:58:44AM -0400, Gaurav Singh wrote:
-> info cannot be NULL here since its being accessed earlier
-> in the function: nlmsg_parse(info->nlhdr...). Remove this
-> redundant NULL check.
-
-This is what the static checker tells you but it could still mean the
-other place is missing the check. The actual reason why this check is
-superfluous is that the function is only used as ->doit() handler which
-is never called with null info.
-
-> Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
-
-The subject should rather start with "ethtool: " (instead of "[net/ethtool]=
- ").
-
-For the change itself:
-
-Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
-
-Michal
-
+On Thu, 30 Jul 2020 20:43:24 +0800, Anson Huang wrote:
+> Convert the i.MX nand controller binding to DT schema format
+> using json-schema.
+> 
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 > ---
->  net/ethtool/linkmodes.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/net/ethtool/linkmodes.c b/net/ethtool/linkmodes.c
-> index fd4f3e58c6f6..b595d87fa880 100644
-> --- a/net/ethtool/linkmodes.c
-> +++ b/net/ethtool/linkmodes.c
-> @@ -406,8 +406,7 @@ int ethnl_set_linkmodes(struct sk_buff *skb, struct g=
-enl_info *info)
-> =20
->  	ret =3D __ethtool_get_link_ksettings(dev, &ksettings);
->  	if (ret < 0) {
-> -		if (info)
-> -			GENL_SET_ERR_MSG(info, "failed to retrieve link settings");
-> +		GENL_SET_ERR_MSG(info, "failed to retrieve link settings");
->  		goto out_ops;
->  	}
-> =20
-> --=20
-> 2.17.1
->=20
+>  Documentation/devicetree/bindings/mtd/mxc-nand.txt | 19 ----------
+>  .../devicetree/bindings/mtd/mxc-nand.yaml          | 42 ++++++++++++++++++++++
+>  2 files changed, 42 insertions(+), 19 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/mxc-nand.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/mxc-nand.yaml
+> 
 
---ltnqnoysjs5z4x72
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAl8kIqYACgkQ538sG/LR
-dpVuQwf/ZIW2LoV7UbsdkhDsyo2zBbjP+Ae033JR/gd0DPSYClAtBvdQIPAPKST1
-5Tz2kJO1peojJcp0G3lr1EDvWzlxeCqkpq3JzN4823O1j/C2GBfRnbQx7fMO5Jj4
-Ejujz+Pxkg/MVs7wgvUCuJswSuOKH9V756ClMo1BqeHwQj7vcEovdOxRQ3g+GPRc
-fnKh+9DO38uWU2B0CSkrwGYeRE2K5toPj0Q2+chdNQGwJJONVUhpB9fxPNPvt3fk
-A/rQrJFLv1VgNdVrw2DhV4/c1Ar9w6rlsKTDuRJg4AUUTfKjsUqW51DIZtgiMFA3
-EA47sXhsxbjb/DCoFkj/101gby8VGQ==
-=NBhY
------END PGP SIGNATURE-----
-
---ltnqnoysjs5z4x72--
-
+Applied, thanks!
