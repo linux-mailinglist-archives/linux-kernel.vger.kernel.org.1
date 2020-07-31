@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFAC233D17
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 04:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF61D233D1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 04:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731106AbgGaCF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 22:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730904AbgGaCF5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 22:05:57 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA624C061574;
-        Thu, 30 Jul 2020 19:05:56 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id 2so23435040qkf.10;
-        Thu, 30 Jul 2020 19:05:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i1QyVPNifl3QjxH5nvaDLQ3b4H6Y0SRuASS7QiD7pvY=;
-        b=jBa+2bimj10N2QUadnPQoQbL5Xkp1Fa+6vvOGfuCTrl/RJMXjx449rzMWAsrlnNv8T
-         3f7Gj8FroRaQPjBYT2Vito0ySIHeYaHPKRKH2XYRsv2aGLa5PWC87iCR35zjxyEWmWEi
-         FQrZ4vko9kA6cBRxFXbZf31TirTtrhO1rdw3pyWs8AhmrnGvul+BKDP/YCEaur4l5M7x
-         dT1xRMV2toaYPDn7TWMqsPa2Vt5rHDH1ERBIqBegE48K0dyZK9WrTKGPt+p5juKNcpsH
-         /LlN5il62Oiafmjcrl2NuUbWIVAPA5cfMBG2gjUqtjvdnGOjEjXhJwvmVqgPE3Ia/wos
-         Jr6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i1QyVPNifl3QjxH5nvaDLQ3b4H6Y0SRuASS7QiD7pvY=;
-        b=Aj2pD9u22x5XpglN23GS5c/Wro6eNPn7l0b9KnEMLRiP9mQUJPOL8KIiAcHpo0eJDN
-         qRmCDD1r19BEglqKUtLMs7ilchT4T7sPrCvGEFzsMFQQsFCgAUkavdOsTYlpegxVbj7Z
-         eNv9D/hROBMBSt0kcvbRg4SnzoFZFjKPEo5y1F0SEKhwMUKgNYeMpp72BGIHUXy+x4YD
-         7U2aDaL9zDhP5ITsHzQ9wUAcAdoHWo5BzU5H8ffnkc/p+Z2dX5pjjazP0RcQonZDzMNh
-         2LODzPPEJO19fD4u/2TelKXumAmbdcwrrVOz7SxeICiaER1rUo6M/As3MMhAbEmtTOmA
-         KhRg==
-X-Gm-Message-State: AOAM5307SEhX5iVbdSq7VfUNZFQkNNmRvFZPYDU3EaNk2qRsNsudRs1X
-        4HHHF8svXgr7YZ5vRCZrTfU=
-X-Google-Smtp-Source: ABdhPJzCS1HwBM6mrSflCoyKkTQvL/yTVNmELH1OWT+K+PGcqI3ub3AmSpE7BPNqrmqHX17HiUYIYQ==
-X-Received: by 2002:a37:aa56:: with SMTP id t83mr1993883qke.150.1596161155820;
-        Thu, 30 Jul 2020 19:05:55 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id c5sm3349233qtp.62.2020.07.30.19.05.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 19:05:55 -0700 (PDT)
-Date:   Thu, 30 Jul 2020 19:05:53 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Eric Anholt <eric@anholt.net>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Matthias Brugger <mbrugger@suse.com>, pbrobinson@gmail.com,
-        kernel-list@raspberrypi.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] clk: bcm2835: Do not use prediv with bcm2711's PLLs
-Message-ID: <20200731020553.GA3762310@ubuntu-n2-xlarge-x86>
-References: <20200730182619.23246-1-nsaenzjulienne@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730182619.23246-1-nsaenzjulienne@suse.de>
+        id S1731133AbgGaCKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 22:10:47 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:51292 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731057AbgGaCKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 22:10:47 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D3C4A2013B1;
+        Fri, 31 Jul 2020 04:10:43 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7103120034F;
+        Fri, 31 Jul 2020 04:10:41 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 20AAF402C1;
+        Fri, 31 Jul 2020 04:10:38 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     krzk@kernel.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] dt-bindings: memory-controllers: Convert mmdc to json-schema
+Date:   Fri, 31 Jul 2020 10:06:24 +0800
+Message-Id: <1596161184-24266-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 08:26:19PM +0200, Nicolas Saenz Julienne wrote:
-> Contrary to previous SoCs, bcm2711 doesn't have a prescaler in the PLL
-> feedback loop. Bypass it by zeroing fb_prediv_mask when running on
-> bcm2711.
-> 
-> Note that, since the prediv configuration bits were re-purposed, this
-> was triggering miscalculations on all clocks hanging from the VPU clock,
-> notably the aux UART, making its output unintelligible.
-> 
-> Fixes: 42de9ad400af ("clk: bcm2835: Add BCM2711_CLOCK_EMMC2 support")
-> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Convert the MMDC memory controller binding to DT schema format using
+json-schema.
 
-I updated to the latest version of the firmware
-(668419cb9876474053574b2b1dc20ca996e14cc8) and my serial console
-works :) thank you for the quick fix!
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../bindings/memory-controllers/fsl/mmdc.txt       | 35 ----------------
+ .../bindings/memory-controllers/fsl/mmdc.yaml      | 49 ++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 35 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/mmdc.txt
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/mmdc.yaml
 
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/mmdc.txt b/Documentation/devicetree/bindings/memory-controllers/fsl/mmdc.txt
+deleted file mode 100644
+index bcc36c5..0000000
+--- a/Documentation/devicetree/bindings/memory-controllers/fsl/mmdc.txt
++++ /dev/null
+@@ -1,35 +0,0 @@
+-Freescale Multi Mode DDR controller (MMDC)
+-
+-Required properties :
+-- compatible : should be one of following:
+-	for i.MX6Q/i.MX6DL:
+-	- "fsl,imx6q-mmdc";
+-	for i.MX6QP:
+-	- "fsl,imx6qp-mmdc", "fsl,imx6q-mmdc";
+-	for i.MX6SL:
+-	- "fsl,imx6sl-mmdc", "fsl,imx6q-mmdc";
+-	for i.MX6SLL:
+-	- "fsl,imx6sll-mmdc", "fsl,imx6q-mmdc";
+-	for i.MX6SX:
+-	- "fsl,imx6sx-mmdc", "fsl,imx6q-mmdc";
+-	for i.MX6UL/i.MX6ULL/i.MX6ULZ:
+-	- "fsl,imx6ul-mmdc", "fsl,imx6q-mmdc";
+-	for i.MX7ULP:
+-	- "fsl,imx7ulp-mmdc", "fsl,imx6q-mmdc";
+-- reg : address and size of MMDC DDR controller registers
+-
+-Optional properties :
+-- clocks : the clock provided by the SoC to access the MMDC registers
+-
+-Example :
+-	mmdc0: memory-controller@21b0000 { /* MMDC0 */
+-		compatible = "fsl,imx6q-mmdc";
+-		reg = <0x021b0000 0x4000>;
+-		clocks = <&clks IMX6QDL_CLK_MMDC_P0_IPG>;
+-	};
+-
+-	mmdc1: memory-controller@21b4000 { /* MMDC1 */
+-		compatible = "fsl,imx6q-mmdc";
+-		reg = <0x021b4000 0x4000>;
+-		status = "disabled";
+-	};
+diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/mmdc.yaml b/Documentation/devicetree/bindings/memory-controllers/fsl/mmdc.yaml
+new file mode 100644
+index 0000000..dee5131
+--- /dev/null
++++ b/Documentation/devicetree/bindings/memory-controllers/fsl/mmdc.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/memory-controllers/fsl/mmdc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale Multi Mode DDR controller (MMDC)
++
++maintainers:
++  - Anson Huang <Anson.Huang@nxp.com>
++
++properties:
++  compatible:
++    oneOf:
++      - const: fsl,imx6q-mmdc
++      - items:
++          - enum:
++            - fsl,imx6qp-mmdc
++            - fsl,imx6sl-mmdc
++            - fsl,imx6sll-mmdc
++            - fsl,imx6sx-mmdc
++            - fsl,imx6ul-mmdc
++            - fsl,imx7ulp-mmdc
++          - const: fsl,imx6q-mmdc
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx6qdl-clock.h>
++
++    memory-controller@21b0000 {
++        compatible = "fsl,imx6q-mmdc";
++        reg = <0x021b0000 0x4000>;
++        clocks = <&clks IMX6QDL_CLK_MMDC_P0_IPG>;
++    };
++
++    memory-controller@21b4000 {
++        compatible = "fsl,imx6q-mmdc";
++        reg = <0x021b4000 0x4000>;
++    };
+-- 
+2.7.4
+
