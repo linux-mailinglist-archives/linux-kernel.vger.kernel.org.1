@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F365234E7E
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 01:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03847234E80
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 01:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgGaXSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 19:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
+        id S1728213AbgGaXSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 19:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbgGaXSQ (ORCPT
+        with ESMTP id S1727050AbgGaXSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 19:18:16 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1E0C06179F
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:18:14 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id c6so8085936pje.1
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:18:14 -0700 (PDT)
+        Fri, 31 Jul 2020 19:18:13 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102CCC06179E
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:18:13 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id lx9so8528820pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:18:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rx9BNhtOHihN4cC/yR211OAq+faeKI6Zes69oCeQM6w=;
-        b=d74fEfH+AJT4QLl/pweek9M8JQU04VeKWDA6U2gixgr/mciheG5Ezlv7MgN6Rb1HWY
-         2OBg7xnc3sUVIMCFnR1Y+igiUqbxr8jaR2zt1f0TV1ldOv8LhbyjysXpqao6LAEOouE3
-         Rwi1z6MIeG7fXDb29GK8Dc5L/EDvqKHqNhytQ=
+        bh=OztuNRy+U3SEjaM8AjX3NHKuvNzCSaFSb4g4nlKxjN8=;
+        b=mhl2cYQ2YEfGFzqu0lUm7PTEdf3xYEpybnJ2cfLPuY6LR4v/YBY5dJ0ivTK2K5UAQM
+         0k9arXuQB4cv1bpNG0r3VncPs3HFypojskLqEB3mHI/LVxckqJONf2cBzIIP4It97oIL
+         ccOz8l1eiz5ARWhIbuGZYnApCYc1UDxK86u0k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rx9BNhtOHihN4cC/yR211OAq+faeKI6Zes69oCeQM6w=;
-        b=lOgO7cYODi/RlmbouGSn2rBO6mg9n8fSS3+nlJ8GwgPLKTHADmVRifthWz899PiRSa
-         zJKYw6CsXP1E0rfxZzPLq/r+lsU3jd4wYKYGJT2w+M7grjaWWyybJ43RXcwXqY/be4G8
-         XZB6N1DrGQRXeVweoyEDAOPoORyeFcqsVz2eqM/xRATB0kkoKmjky6mckegzMgAcrjXZ
-         D71aYvcI4sd0CDImkk+J2sLzQV4r8UhF4pn41sDnl5i7wHSGZp1/mqcyyoCARZ2jJd+H
-         AYOhgeT+jWJw6MbgWFLabV3lMWk03iVv3PtMcbX2Sxsuvhd/2STwOScBCDA2LlkAh8Od
-         t9vQ==
-X-Gm-Message-State: AOAM5313ptXLuuIK3G4IsWb4Kqh/PCx5F2dk7Oj69UkLD5t2RirkOfYb
-        S6MLKDNjIK8YJSEIBSeGQ/MRdw==
-X-Google-Smtp-Source: ABdhPJy/UWkqz0kX/iI9reViU3q1mzpCLU62ykzIRw2Fvekz5tfwEf5puBHtXUakR6EdYyybPNSt/w==
-X-Received: by 2002:a17:902:b101:: with SMTP id q1mr5482552plr.136.1596237494096;
-        Fri, 31 Jul 2020 16:18:14 -0700 (PDT)
+        bh=OztuNRy+U3SEjaM8AjX3NHKuvNzCSaFSb4g4nlKxjN8=;
+        b=SGRieyauZMQonZVl+C1HBQoykkE6gINAmRMse0oz6gb0ZE8Q0+Hn7sEjxLgYWMD6f2
+         67iShsjRmnkef2AEVJfUQqdRdTOXbx1LOW40y1ntUJ40XKwrBK7EBW5Ruy8tBKGTkI8G
+         fqo5INkfOV0JwIDs2kBqvkc7jkvBCeONf3/kb11SEauP42628z8sA7wH6CIhNIyjrG6D
+         3Jbt1cqlgKN+aL60Lic5NNBj5jD2SvuTTyISIYfcPQHsKvZ9TEWOXVkxGSaL6MtVVwyu
+         r/12F6EDHAyEQEPfVn3OJ8V9wDP6SMD7tdDDQL8+qODLAebsUW7IBh6vmhB9V/tjSWw6
+         6spQ==
+X-Gm-Message-State: AOAM531NeoIRskH4g4T4MRkN+DUDOGhaBaAaPaoCdhFJEtg60ZTZt9Rn
+        dMMAvjKx/uT8TxuuJfyQ0MSqMw==
+X-Google-Smtp-Source: ABdhPJy7boJ2rVpqxGdhrmjmUcJo5jNiV0bmJoTaMG0L5+Tg8lheY4n/pMplx9rYVCtqWI1ZntGMZg==
+X-Received: by 2002:a17:90a:6c97:: with SMTP id y23mr6284010pjj.28.1596237492647;
+        Fri, 31 Jul 2020 16:18:12 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z19sm11621350pfa.9.2020.07.31.16.18.11
+        by smtp.gmail.com with ESMTPSA id z9sm11932082pgh.94.2020.07.31.16.18.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 31 Jul 2020 16:18:11 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -63,9 +63,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
         linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 18/36] arm64/build: Use common DISCARDS in linker script
-Date:   Fri, 31 Jul 2020 16:08:02 -0700
-Message-Id: <20200731230820.1742553-19-keescook@chromium.org>
+Subject: [PATCH v5 19/36] arm64/build: Add missing DWARF sections
+Date:   Fri, 31 Jul 2020 16:08:03 -0700
+Message-Id: <20200731230820.1742553-20-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200731230820.1742553-1-keescook@chromium.org>
 References: <20200731230820.1742553-1-keescook@chromium.org>
@@ -76,40 +76,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the common DISCARDS rule for the linker script in an effort to
-regularize the linker script to prepare for warning on orphaned
-sections. Additionally clean up left-over no-op macros.
+Explicitly include DWARF sections when they're present in the build.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
-Acked-by: Will Deacon <will@kernel.org>
 ---
- arch/arm64/kernel/vmlinux.lds.S | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/arm64/kernel/vmlinux.lds.S | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index b29081d16a70..5c1960406b08 100644
+index 5c1960406b08..4cf825301c3a 100644
 --- a/arch/arm64/kernel/vmlinux.lds.S
 +++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -6,6 +6,7 @@
-  */
+@@ -240,6 +240,7 @@ SECTIONS
+ 	_end = .;
  
- #define RO_EXCEPTION_TABLE_ALIGN	8
-+#define RUNTIME_DISCARD_EXIT
+ 	STABS_DEBUG
++	DWARF_DEBUG
+ 	ELF_DETAILS
  
- #include <asm-generic/vmlinux.lds.h>
- #include <asm/cache.h>
-@@ -89,10 +90,8 @@ SECTIONS
- 	 * matching the same input section name.  There is no documented
- 	 * order of matching.
- 	 */
-+	DISCARDS
- 	/DISCARD/ : {
--		EXIT_CALL
--		*(.discard)
--		*(.discard.*)
- 		*(.interp .dynamic)
- 		*(.dynsym .dynstr .hash .gnu.hash)
- 	}
+ 	HEAD_SYMBOLS
 -- 
 2.25.1
 
