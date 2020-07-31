@@ -2,53 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87ABC2342A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87463234294
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732625AbgGaJYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:24:12 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56476 "EHLO
+        id S1732634AbgGaJYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:24:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56726 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732482AbgGaJXd (ORCPT
+        with ESMTP id S1732485AbgGaJXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:23:33 -0400
-Date:   Fri, 31 Jul 2020 09:23:30 -0000
+        Fri, 31 Jul 2020 05:23:34 -0400
+Date:   Fri, 31 Jul 2020 09:23:31 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187411;
+        s=2020; t=1596187412;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0KgVErvS4zYfMOo0kghBf5qhs87t54iZnK/iBrfC4MM=;
-        b=DqgG4WzyNSO8UibuI+V9uzWXIo3EQAXF4BMxYEACjM421IRUfE75w1NdxsdHhkKcfaSo8F
-        kC9D2BSBWtelKzieVGfSI1bXYJDtUwzVg8VLEjnockSQ+BQaDfoCVvDbo8GhGw3wdPW1J+
-        Cxa1gq/89ZIdXtyzaPqm+6rfjlRudmXC8/fmZ733JYcwyYWXmPKaAdbuox34ubPFJ2glUN
-        /vPI9AwPn0mdvU50Z4FCloYDW9rgIhX2ttvhbqkdGwDT6bo9PNV41cLEIy0/QOgbbMntDb
-        jlscY6YYPLMh4YwRylDpZiK/hBODkhjw96z+BZXmRvrZwv211axUt3GaycoHUg==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=mUksT33pqB+R7Vr7YerOjQVjEV190xZ07l5dim+3jYY=;
+        b=ceBodAjb+KpfijO5dEDCouJ4nr9J/42GfTbykannJXEHG0ylZ46FutP+8qFQEF3DvudYCq
+        nLC1KbIVoTdpjakkmZBx0h8dMs0CT18oPiPoXwFCd4zvgwoCZLkDpoB0rFxoBzxMRPydNH
+        gwegcV1QlvaXnRuFqP6yioapNNpZz0nbK544JPHPm441eUUZH9oGdRf3/FNhTR0N5r3gru
+        rJ0fD8A8WOy18yYRqnh6TsHSa2B9kZTeUJcUQfe9ES3a3yW8rggqKBuK1Z5mX8gaE9OUBE
+        2GdjpME1j8yTxD3vA7MUzwGC8c7Palg9Cer/RQbO+g3HYTEX0yhJen2kniTqJQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187411;
+        s=2020e; t=1596187412;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0KgVErvS4zYfMOo0kghBf5qhs87t54iZnK/iBrfC4MM=;
-        b=gTvfxXCGLXWCswwUYatvquvpQRsNFKTc5GifxeRTrUcqsOdSwK118ZUSwMMPn+LLarDdGJ
-        IXaYny69D6g1TxDA==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=mUksT33pqB+R7Vr7YerOjQVjEV190xZ07l5dim+3jYY=;
+        b=TX/yq26JwQfxVKXBOa4roTOygYT6fRTEZ8OvqLYs8SewqbriL4GBntTvL0P5ENc1jhWOou
+        qKfLK32q7hKsjuBw==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] lockdep: Complain only once about RCU in extended
- quiescent state
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+Subject: [tip: core/rcu] rcu: Mark rcu_nmi_enter() call to
+ rcu_cleanup_after_idle() noinstr
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <87wo4wnpzb.fsf@nanos.tec.linutronix.de>
-References: <87wo4wnpzb.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Message-ID: <159618741060.4006.12964143796256427824.tip-bot2@tip-bot2>
+Message-ID: <159618741127.4006.3810336460676158748.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,47 +53,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     d29e0b26b020422cc51b5b51733cc50fcf443965
-Gitweb:        https://git.kernel.org/tip/d29e0b26b020422cc51b5b51733cc50fcf443965
+Commit-ID:     04b25a495bd68c1dad07263fb91e8b5a31c00a9e
+Gitweb:        https://git.kernel.org/tip/04b25a495bd68c1dad07263fb91e8b5a31c00a9e
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 28 May 2020 08:49:29 -07:00
+AuthorDate:    Tue, 19 May 2020 17:00:54 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 29 Jun 2020 11:58:51 -07:00
+CommitterDate: Mon, 29 Jun 2020 11:58:50 -07:00
 
-lockdep: Complain only once about RCU in extended quiescent state
+rcu: Mark rcu_nmi_enter() call to rcu_cleanup_after_idle() noinstr
 
-Currently, lockdep_rcu_suspicious() complains twice about RCU read-side
-critical sections being invoked from within extended quiescent states,
-for example:
+The objtool complains about the call to rcu_cleanup_after_idle() from
+rcu_nmi_enter(), so this commit adds instrumentation_begin() before that
+call and instrumentation_end() after it.
 
-	RCU used illegally from idle CPU!
-	rcu_scheduler_active = 2, debug_locks = 1
-	RCU used illegally from extended quiescent state!
-
-This commit therefore saves a couple lines of code and one line of
-console-log output by eliminating the first of these two complaints.
-
-Link: https://lore.kernel.org/lkml/87wo4wnpzb.fsf@nanos.tec.linutronix.de
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Will Deacon <will@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/locking/lockdep.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/rcu/tree.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 29a8de4..0a7549d 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5851,9 +5851,7 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
- 	pr_warn("\n%srcu_scheduler_active = %d, debug_locks = %d\n",
- 	       !rcu_lockdep_current_cpu_online()
- 			? "RCU used illegally from offline CPU!\n"
--			: !rcu_is_watching()
--				? "RCU used illegally from idle CPU!\n"
--				: "",
-+			: "",
- 	       rcu_scheduler_active, debug_locks);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index feb31c2..d17e5a0 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -990,8 +990,11 @@ noinstr void rcu_nmi_enter(void)
+ 		rcu_dynticks_eqs_exit();
+ 		// ... but is watching here.
  
- 	/*
+-		if (!in_nmi())
++		if (!in_nmi()) {
++			instrumentation_begin();
+ 			rcu_cleanup_after_idle();
++			instrumentation_end();
++		}
+ 
+ 		instrumentation_begin();
+ 		// instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
