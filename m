@@ -2,212 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4445123405F
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D641D234070
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731727AbgGaHpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 03:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731678AbgGaHpp (ORCPT
+        id S1731782AbgGaHri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 03:47:38 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41698 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727851AbgGaHri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 03:45:45 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D91DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 00:45:45 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Fri, 31 Jul 2020 03:47:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596181657;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ixNb2EBybLzWSoNGo2fASCaOj4fWf5R3chGaBD35os=;
+        b=f5S1EOnyn3bNWpbd6J2jdtEOib6n3fSoG6LLKQR0LAxDrHPHfDQ/H3IrGeS37LRrJkApTs
+        WBP8RQvO8BJXPXE+E3GMOdGIp48cAU1Kuox4PUz1+y9xWTax7XRqP45gkb2Kuq+rmxvXXQ
+        qN0pUJZSvLvUkNV/Ez0/wremNAbNAoE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-422-WL5PGebtPXuGD9vBIZq2qQ-1; Fri, 31 Jul 2020 03:47:34 -0400
+X-MC-Unique: WL5PGebtPXuGD9vBIZq2qQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BHzpt30HJz9sTC;
-        Fri, 31 Jul 2020 17:45:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1596181543;
-        bh=VEuy/KiA5hGn+AVseo5tlQxiC2CSqodE1h2fmmQal3M=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=jJvACsDTmDI9lVdq3hJFB2iU9IFVxWVFgw7BvuU8CKcAl1HiqJY6XSB2q2N4KwkX3
-         BmQ7CR+Wuo3qFlwQWdKoxvzZkaeEm1C6V4+nf7G0UQH3087jEoxn2FZr7aAvch6PfX
-         Q4OWRPk8cm0Bc2JNsybKxjRngWB8cqymCEhk+ZOhSnq2arAhxgAAZmmDIaFcyvJXXn
-         oKk7qJ3LyrZLM0gFTWhQU3urH8lAgorABFxQ0v0XlVGpXmzyp9mWoHKEoMsGm3iBq5
-         qtOUXpEKj6TIQacq174O4O+EGAsnk0/SYTc4BHO3SDEXKoyo6vNPJXyzLn4WNhiF5Z
-         FYuF2MkMJPdvA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D89191005504;
+        Fri, 31 Jul 2020 07:47:31 +0000 (UTC)
+Received: from krava (unknown [10.40.194.13])
+        by smtp.corp.redhat.com (Postfix) with SMTP id D3A2F7C0E0;
+        Fri, 31 Jul 2020 07:47:27 +0000 (UTC)
+Date:   Fri, 31 Jul 2020 09:47:26 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     peterz@infradead.org, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jordan Niethe <jniethe5@gmail.com>
-Subject: Re: [PATCH v4 06/10] powerpc/smp: Generalize 2nd sched domain
-In-Reply-To: <20200727053230.19753-7-srikar@linux.vnet.ibm.com>
-References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com> <20200727053230.19753-7-srikar@linux.vnet.ibm.com>
-Date:   Fri, 31 Jul 2020 17:45:37 +1000
-Message-ID: <875za45dr2.fsf@mpe.ellerman.id.au>
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        =?iso-8859-1?Q?Genevi=E8ve?= Bastien <gbastien@versatic.net>,
+        Wang Nan <wangnan0@huawei.com>,
+        Jeremie Galarneau <jgalar@efficios.com>
+Subject: Re: [PATCH 0/6] perf tools: Add wallclock time conversion support
+Message-ID: <20200731074726.GA1485940@krava>
+References: <20200730213950.1503773-1-jolsa@kernel.org>
+ <20200730221423.GH2638@hirez.programming.kicks-ass.net>
+ <a59b833f-bcb7-3d1b-6e0c-8758b47b93a3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a59b833f-bcb7-3d1b-6e0c-8758b47b93a3@gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> Currently "CACHE" domain happens to be the 2nd sched domain as per
-> powerpc_topology. This domain will collapse if cpumask of l2-cache is
-> same as SMT domain. However we could generalize this domain such that it
-> could mean either be a "CACHE" domain or a "BIGCORE" domain.
->
-> While setting up the "CACHE" domain, check if shared_cache is already
-> set.
+On Thu, Jul 30, 2020 at 07:21:54PM -0600, David Ahern wrote:
+> On 7/30/20 4:14 PM, peterz@infradead.org wrote:
+> > On Thu, Jul 30, 2020 at 11:39:44PM +0200, Jiri Olsa wrote:
+> > 
+> >> The patchset is adding the ability to display TOD/wallclock timestamp
+> >> in 'perf script' output and in 'perf data convert --to-ctf' subcommand,
+> >> so the converted CTF data contain TOD/wallclock timestamps.
+> > 
+> > But why? Wallclock is a horrible piece of crap. Why would you want to do
+> > this?
+> > 
+> 
+> Same reason I brought this up 9+ years ago: userspace lives on
+> time-of-day, and troubleshooting is based on correlating timestamps from
+> multiple sources. To correlate a perf event to syslog or an application
+> log, we need time-of-day.
 
-PeterZ asked for some overview of what you're doing and why, you
-responded to his mail, but I was expecting to see that text incorporated
-here somewhere.
+yep, we have a customer that needs to compare data from multiple servers
 
-He also asked for some comments, which I would also like to see.
+jirka
 
-
-I'm also not clear why we want to rename it to "bigcore", that's not a
-commonly understood term, I don't think it's clear to new readers what
-it means.
-
-Leaving it as the shared cache domain, and having a comment mentioning
-that "bigcores" share a cache, would be clearer I think.
-
-cheers
-
-
-> Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-> Cc: LKML <linux-kernel@vger.kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Anton Blanchard <anton@ozlabs.org>
-> Cc: Oliver O'Halloran <oohall@gmail.com>
-> Cc: Nathan Lynch <nathanl@linux.ibm.com>
-> Cc: Michael Neuling <mikey@neuling.org>
-> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> Cc: Jordan Niethe <jniethe5@gmail.com>
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> ---
-> Changelog v1 -> v2:
-> 	Moved shared_cache topology fixup to fixup_topology (Gautham)
->
->  arch/powerpc/kernel/smp.c | 48 +++++++++++++++++++++++++++------------
->  1 file changed, 34 insertions(+), 14 deletions(-)
->
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index d997c7411664..3c5ccf6d2b1c 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -85,6 +85,14 @@ EXPORT_PER_CPU_SYMBOL(cpu_l2_cache_map);
->  EXPORT_PER_CPU_SYMBOL(cpu_core_map);
->  EXPORT_SYMBOL_GPL(has_big_cores);
->  
-> +enum {
-> +#ifdef CONFIG_SCHED_SMT
-> +	smt_idx,
-> +#endif
-> +	bigcore_idx,
-> +	die_idx,
-> +};
-> +
->  #define MAX_THREAD_LIST_SIZE	8
->  #define THREAD_GROUP_SHARE_L1   1
->  struct thread_groups {
-> @@ -851,13 +859,7 @@ static int powerpc_shared_cache_flags(void)
->   */
->  static const struct cpumask *shared_cache_mask(int cpu)
->  {
-> -	if (shared_caches)
-> -		return cpu_l2_cache_mask(cpu);
-> -
-> -	if (has_big_cores)
-> -		return cpu_smallcore_mask(cpu);
-> -
-> -	return per_cpu(cpu_sibling_map, cpu);
-> +	return per_cpu(cpu_l2_cache_map, cpu);
->  }
->  
->  #ifdef CONFIG_SCHED_SMT
-> @@ -867,11 +869,16 @@ static const struct cpumask *smallcore_smt_mask(int cpu)
->  }
->  #endif
->  
-> +static const struct cpumask *cpu_bigcore_mask(int cpu)
-> +{
-> +	return per_cpu(cpu_sibling_map, cpu);
-> +}
-> +
->  static struct sched_domain_topology_level powerpc_topology[] = {
->  #ifdef CONFIG_SCHED_SMT
->  	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
->  #endif
-> -	{ shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE) },
-> +	{ cpu_bigcore_mask, SD_INIT_NAME(BIGCORE) },
->  	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
->  	{ NULL, },
->  };
-> @@ -1311,7 +1318,6 @@ static void add_cpu_to_masks(int cpu)
->  void start_secondary(void *unused)
->  {
->  	unsigned int cpu = smp_processor_id();
-> -	struct cpumask *(*sibling_mask)(int) = cpu_sibling_mask;
->  
->  	mmgrab(&init_mm);
->  	current->active_mm = &init_mm;
-> @@ -1337,14 +1343,20 @@ void start_secondary(void *unused)
->  	/* Update topology CPU masks */
->  	add_cpu_to_masks(cpu);
->  
-> -	if (has_big_cores)
-> -		sibling_mask = cpu_smallcore_mask;
->  	/*
->  	 * Check for any shared caches. Note that this must be done on a
->  	 * per-core basis because one core in the pair might be disabled.
->  	 */
-> -	if (!cpumask_equal(cpu_l2_cache_mask(cpu), sibling_mask(cpu)))
-> -		shared_caches = true;
-> +	if (!shared_caches) {
-> +		struct cpumask *(*sibling_mask)(int) = cpu_sibling_mask;
-> +		struct cpumask *mask = cpu_l2_cache_mask(cpu);
-> +
-> +		if (has_big_cores)
-> +			sibling_mask = cpu_smallcore_mask;
-> +
-> +		if (cpumask_weight(mask) > cpumask_weight(sibling_mask(cpu)))
-> +			shared_caches = true;
-> +	}
->  
->  	set_numa_node(numa_cpu_lookup_table[cpu]);
->  	set_numa_mem(local_memory_node(numa_cpu_lookup_table[cpu]));
-> @@ -1375,9 +1387,17 @@ static void fixup_topology(void)
->  #ifdef CONFIG_SCHED_SMT
->  	if (has_big_cores) {
->  		pr_info("Big cores detected but using small core scheduling\n");
-> -		powerpc_topology[0].mask = smallcore_smt_mask;
-> +		powerpc_topology[smt_idx].mask = smallcore_smt_mask;
->  	}
->  #endif
-> +	if (shared_caches) {
-> +		pr_info("Using shared cache scheduler topology\n");
-> +		powerpc_topology[bigcore_idx].mask = shared_cache_mask;
-> +		powerpc_topology[bigcore_idx].sd_flags = powerpc_shared_cache_flags;
-> +#ifdef CONFIG_SCHED_DEBUG
-> +		powerpc_topology[bigcore_idx].name = "CACHE";
-> +#endif
-> +	}
->  }
->  
->  void __init smp_cpus_done(unsigned int max_cpus)
-> -- 
-> 2.17.1
