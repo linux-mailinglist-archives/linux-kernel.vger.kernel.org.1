@@ -2,157 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3399E233CC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 03:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A94233CD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 03:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731090AbgGaBKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 21:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41058 "EHLO
+        id S1730871AbgGaBVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 21:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731079AbgGaBKH (ORCPT
+        with ESMTP id S1728262AbgGaBVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 21:10:07 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C982C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 18:10:07 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id j187so27410783qke.11
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 18:10:07 -0700 (PDT)
+        Thu, 30 Jul 2020 21:21:54 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8802EC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 18:21:54 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id x69so27518573qkb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 18:21:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D6NBoB2E2UORS0vxwFp8hCbO3jjocLGEsRaBZ4a3Cu4=;
-        b=nqDshH4ZBAcngsPAU2XSpK4c1TSV88FwXn5DlgyeDI8nu7ey04jFVxwnFLkRdjwSXG
-         toTR9/WFPA8rxWJzaYI9B3unVGHta9RBT2AMp/Ey5yhPZ8JYEs18saczm2dQE5mYOVM8
-         lCqlHDGjmLKaaORk8aO94HGwStmn0pEWkQymZxIKriGc0pUJjdW4jwNve8RUvmH+QKD8
-         DnzxDW3/N49NftucOXHqEehPHiDbmFIcNX7kQJpRCxrXpDjbu5gIA23lFumCYJNL19QI
-         hv56EMoKJ5rnzG1HGjKk+QRG0KnOS+4VxqcEy4I+i9TjVnoOiaoRSFULBf4y6mz3kAV2
-         F0YQ==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=/j2YojXjp6X9HLdlD/RvksyoFdPKZnneEIBr33XwXdQ=;
+        b=qLa9jk/LSBAvtEZZ5ZFL3KjRk4IqwMmj8j5WFyD9NQvzOVnN80qOAqYJrwRSGdXYGJ
+         iD9OvBJPDPm/N9jCEBA5TISOSVkyaq0uuAmbv+sCkyz3RqTcCPDaBKcv3CbB7+TfHLEx
+         eksCtwPX2Z/g48Mkun69SquxbyaQ1dRyLIBFQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D6NBoB2E2UORS0vxwFp8hCbO3jjocLGEsRaBZ4a3Cu4=;
-        b=QYFijOL3CI5PFRsug+cobGxGZZ4ZscjZZ/FUJ9JcP0d3OZ8n+/7j3kP8/CT434D1jz
-         z190mffb0mluLdINAy+7Nr9v6ZMHDuN3D+41x+U1m9D6q2/3WKYm5p2DlqSIv0BZF9EW
-         PKhu21A275t5yeWvBgDiWchBE3mXQHo2XZyvRDleH4Uivj9Mq/7w+qFcxK5e2oUBaQl/
-         H3arRMsmQEN4F1RLe+kTwk0Ia6+cVSMQ3YvK6pK/+h/8gFOKDfA3eVjDm2HEvJbjbiqp
-         k8PFjB/OWCuftJMSzaMrGIrVRA8SefKw6ik480POZ+angNcCekKPjmZ/nlpUR31V1dsY
-         FKnA==
-X-Gm-Message-State: AOAM531imfXzNFoQPJvzG/PmmLA9xxAZvNmABPV5M4DkCiofTPiQJUvL
-        sGerAkCkiknNDUYIcCvUrnE=
-X-Google-Smtp-Source: ABdhPJwN6gFxZXDSUFRTCXi75SujGs/2puXt91yJ2XyQrWshXyFhR/atb9neFueWVXKBE85TvpPxeA==
-X-Received: by 2002:a37:54a:: with SMTP id 71mr1818899qkf.193.1596157806411;
-        Thu, 30 Jul 2020 18:10:06 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id c205sm6137184qkg.98.2020.07.30.18.10.05
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=/j2YojXjp6X9HLdlD/RvksyoFdPKZnneEIBr33XwXdQ=;
+        b=j1CAWixwB6Z2ajt63nX97pClw0sZGlVikoDKIfm6A1LIaU+4RFC5JY4zDyr9b8c0zV
+         Yxe8TkY4O/N8Fk+kepMpedLJTTLlaE7Kam8JBtAGwzGdESHfvrOXjSM4Y7xqsvPrwPlx
+         vLYw39fBdFcDKhu1nmCXkk2uNuhE0onei/X/DKYUMzLBSdh81L5zVsiXyjTCqOaDSNZo
+         j7BcsQvKmdduSSFtIRfiOw0ZFecQc2Pd8kjvOHbfFoXQfyAMd5rnqJFtq4xVDYgIgxCv
+         XVsEcJjVeQBV7ldnjv1JKgrUKdokdzyh0OUjcvi1M5YUDZvvFjnSnJLzMrYffCa96588
+         irbA==
+X-Gm-Message-State: AOAM530Eaq8e0zvMn/JXj4t2fOyGqKJjl8g10CgGRn+oCP+wiOQo1qnh
+        3GcN0fCvdOVp85av1xM9COJvEg==
+X-Google-Smtp-Source: ABdhPJzXAOl5o5JKy9CXp5X9KRwQBuWNKdlmJVlK56I52I4hu9SLT/emhyFHw3enEGMNBnCOj5xA7A==
+X-Received: by 2002:a05:620a:1292:: with SMTP id w18mr1813493qki.158.1596158513533;
+        Thu, 30 Jul 2020 18:21:53 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id x29sm6277053qtv.80.2020.07.30.18.21.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 18:10:05 -0700 (PDT)
-Date:   Thu, 30 Jul 2020 18:10:04 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Amit Pundir <amit.pundir@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Rientjes <rientjes@google.com>,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [PATCH] dma-pool: Do not allocate pool memory from CMA
-Message-ID: <20200731011004.GA729998@ubuntu-n2-xlarge-x86>
-References: <CAMi1Hd3C6kh5E49EgytBAQ_2AE_jvnp+eSNsxBYaux+exSvdbg@mail.gmail.com>
- <6db722947546221ed99d3f473f78e1a6de65d7d6.camel@suse.de>
- <CAMi1Hd0Xz6kOJFpA5PEpi6RDDGOcz0RmQ7tTOkuXq4QneOO_vQ@mail.gmail.com>
- <0dc1e922bf87fa73790e7471b3974528dd261486.camel@suse.de>
- <CAMi1Hd3O2HHBsnt=sac7FdcW0-3=4S3g_F9f__2h5gTsudfirA@mail.gmail.com>
- <20200724134114.GA3152@lst.de>
- <a9b811a84ac21c13693e6ffefd2914b911542e18.camel@suse.de>
- <20200728091335.GA23744@lst.de>
- <e39e8f87ed5b4e9da2f08a0651801954e61f4b4e.camel@suse.de>
- <20200728100918.GA26364@lst.de>
+        Thu, 30 Jul 2020 18:21:52 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 21:21:52 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/2] rcu/tree: Clarify comments about FQS loop reporting
+ quiescent states
+Message-ID: <20200731012152.GC2336096@google.com>
+References: <20200730030221.705255-1-joel@joelfernandes.org>
+ <20200730030221.705255-2-joel@joelfernandes.org>
+ <CAEXW_YSbad9Cium_9f1eA1RfZ2Me9JcX2S-KMe-jRQo8W6AaBg@mail.gmail.com>
+ <20200730163520.GA9247@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200728100918.GA26364@lst.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200730163520.GA9247@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 12:09:18PM +0200, Christoph Hellwig wrote:
-> Ok, I found a slight bug that wasn't intended.  I wanted to make sure
-> we can always fall back to a lower pool, but got that wrong.  Should be
-> fixed in the next version.
+On Thu, Jul 30, 2020 at 09:35:20AM -0700, Paul E. McKenney wrote:
+> On Wed, Jul 29, 2020 at 11:25:19PM -0400, Joel Fernandes wrote:
+> > On Wed, Jul 29, 2020 at 11:02 PM Joel Fernandes (Google)
+> > <joel@joelfernandes.org> wrote:
+> > >
+> > > At least since v4.19, the FQS loop no longer reports quiescent states
+> > 
+> > I meant here, "FQS loop no longer reports quiescent states for offline CPUs."
+> > 
+> > Sorry,
+> 
+> You did have me going there for a bit.  ;-)
+> 
+> No period (".") at the end though, unless you fix up the following
+> to start a new sentence.
 
-Hi Christoph and Nicolas,
+Ok.
 
-Did a version of that series ever get send out? I am coming into the
-conversation late but I am running into an issue with the Raspberry Pi 4
-not booting on linux-next, which appears to be due to this patch now in
-mainline as commit d9765e41d8e9 ("dma-pool: do not allocate pool memory
-from CMA") combined with
-https://lore.kernel.org/lkml/20200725014529.1143208-2-jiaxun.yang@flygoat.com/
-in -next:
+> > > unless it is a dire situation where an offlined CPU failed to report
+> > > a quiescent state. Let us clarify the comment in rcu_gp_init() inorder
+> > > to keep the comment current.
+> 
+> How about the following for this last sentence?
+> 
+> "This commit therefore fixes the comment in rcu_gp_init() to match
+> the current code."
 
-[    1.423163] raspberrypi-firmware soc:firmware: Request 0x00000001 returned status 0x00000000
-[    1.431883] raspberrypi-firmware soc:firmware: Request 0x00030046 returned status 0x00000000
-[    1.443888] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.452527] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 0 config (-22 80)
-[    1.460836] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.469445] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 1 config (-22 81)
-[    1.477735] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.486350] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 2 config (-22 82)
-[    1.494639] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.503246] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 3 config (-22 83)
-[    1.511529] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.520131] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 4 config (-22 84)
-[    1.528414] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.537017] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 5 config (-22 85)
-[    1.545299] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.553903] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 6 config (-22 86)
-[    1.562184] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.570787] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 7 config (-22 87)
-[    1.579897] raspberrypi-firmware soc:firmware: Request 0x00030030 returned status 0x00000000
-[    1.589419] raspberrypi-firmware soc:firmware: Request 0x00028001 returned status 0x00000000
-[    1.599391] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.608018] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 1 config (-22 81)
-[    1.616313] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.624932] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 1 config (-22 81)
-[    1.633195] pwrseq_simple: probe of wifi-pwrseq failed with error -22
-[    1.643904] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.652544] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 2 config (-22 82)
-[    1.660839] raspberrypi-firmware soc:firmware: Request 0x00030041 returned status 0x00000000
-[    1.669446] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 2 state (-22 82)
-[    1.677727] leds-gpio: probe of leds failed with error -22
-[    1.683735] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.692346] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 6 config (-22 86)
-[    1.700636] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.709240] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 6 config (-22 86)
-[    1.717496] reg-fixed-voltage: probe of sd_vcc_reg failed with error -22
-[    1.725546] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.734176] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 4 config (-22 84)
-[    1.742465] raspberrypi-firmware soc:firmware: Request 0x00030043 returned status 0x00000000
-[    1.751072] raspberrypi-exp-gpio soc:firmware:gpio: Failed to get GPIO 4 config (-22 84)
-[    1.759332] gpio-regulator: probe of sd_io_1v8_reg failed with error -22
-[    1.768042] raspberrypi-firmware soc:firmware: Request 0x00028001 returned status 0x00000000
-[    1.780871] ALSA device list:
-[    1.783960]   No soundcards found.
-[    1.787633] Waiting for root device PARTUUID=45a8dd8a-02...
+As per:
+https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html
 
-I am unsure if it is related to the issue that Amit is having or
-if that makes sense at all but I can reliably reproduce it.
+It says:
+Describe your changes in imperative mood, e.g. “make xyzzy do frotz” instead
+of “[This patch] makes xyzzy do frotz” or “[I] changed xyzzy to do frotz”, as
+if you are giving orders to the codebase to change its behaviour.
 
-v5.8-rc1: OK
-v5.8-rc1 + d9765e41d8e9e: OK
-v5.8-rc1 + "of_address: Add bus type match for pci ranges parser": OK
-v5.8-rc1 + both: BROKEN
+May be I should make it "Fix the comment in rcu_gp_init() to match the
+current code"?
 
-I wanted to test the series to see if this fixes anything. If you would
-prefer a different thread for this or further information, please let
-me know.
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > ---
+> > >  kernel/rcu/tree.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index 1e51962b565b..929568ff5989 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -1701,8 +1701,8 @@ static bool rcu_gp_init(void)
+> > >
+> > >         /*
+> > >          * Apply per-leaf buffered online and offline operations to the
+> > > -        * rcu_node tree.  Note that this new grace period need not wait
+> > > -        * for subsequent online CPUs, and that quiescent-state forcing
+> > > +        * rcu_node tree.  Note that this new grace period need not wait for
+> > > +        * subsequent online CPUs, and that RCU hooks in CPU offlining path
+> > >          * will handle subsequent offline CPUs.
+> 
+> How about something like this?
+> 
+> 	...  Note that this new grace period ned not wait for subsequent
+> 	online CPUs, and that RCU hooks in the CPU offlining path, when
+> 	combined with checks in this function, will handle CPUs that
+> 	are currently going offline and that go offline later.
 
-Cheers,
-Nathan
+Sounds good to me. I think s/and that go/or that go/ though.
+
+I will make these changes and send v3, let me know though if you object.
+
+thanks,
+
+ - Joel
+
+
+> 						Thanx, Paul
+> 
+> > >          */
+> > >         rcu_state.gp_state = RCU_GP_ONOFF;
+> > > --
+> > > 2.28.0.rc0.142.g3c755180ce-goog
+> > >
