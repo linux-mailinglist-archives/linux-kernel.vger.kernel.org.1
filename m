@@ -2,75 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884DB2345ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5F523460C
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733171AbgGaMjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:39:22 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:55608 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733093AbgGaMjV (ORCPT
+        id S2387461AbgGaMnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733026AbgGaMng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:39:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596199160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uNeA04+1XYPzyOhWw2oc2hqG+CGv2cApApUzSqaPtB8=;
-        b=VZDali6vwAbbQJ1/Np6mAcq9KLbxC4TuJIBqJfGWprQyWZiI5Z2a/xNaR8FtsO5ITsYBwr
-        331qIwtC4GGX6k4F3hT30HPAFfUrcJP/GUuQNamFZi/rdonz7jPxT4IRj6PNci9m4CNJdZ
-        muUE8xfNprEWk6558FS5N1HtaMg3ILU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-463-6PsxlUCyO-qEuopFkCWz6w-1; Fri, 31 Jul 2020 08:39:18 -0400
-X-MC-Unique: 6PsxlUCyO-qEuopFkCWz6w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49CE0801A03;
-        Fri, 31 Jul 2020 12:39:17 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.196])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 7059719C58;
-        Fri, 31 Jul 2020 12:39:14 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 31 Jul 2020 14:39:16 +0200 (CEST)
-Date:   Fri, 31 Jul 2020 14:39:13 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [patch V3 0/3] posix-cpu-timers: Move expiry into task work
- context
-Message-ID: <20200731123912.GA13775@redhat.com>
-References: <20200730101404.956367860@linutronix.de>
+        Fri, 31 Jul 2020 08:43:36 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719A4C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:43:36 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id 125so1629807vsg.2
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ptzHG9zuPWMQjc5H6HXuWxoVOZ3lKq9oK6uYzGg8CWE=;
+        b=OyGuLvWYglrPqj1bn2UfJK3DPkvax9NvfZpJhSfaZ8c2XlMVqv1IxIQg+++id8xno6
+         dN9wySfrTxHGwo+xAdZJiURwdC/o8pdR/vUSpSjFObuChrBeEPXTaqdAXwnhGLXKVvIh
+         we+iUV7F52h6slJu716ntxoyV6S/Kbl6mljo8WEAHysQLTFXPDPmAvUI1TmQU2ImZ9+e
+         AvPPSYjNdehiEGB/pDog6v2MAJucjF1EG05MFmxPJk9naKibwDdi9RqsfZG4KbFlC4Jv
+         1JRpR2xl9y2CQ+908teHQnxyCd6qWS6P7vQVppOSlJzBnRT1M9iTJtqwl85GQxydqO5i
+         WpEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ptzHG9zuPWMQjc5H6HXuWxoVOZ3lKq9oK6uYzGg8CWE=;
+        b=JvwOYuRRH9zIKeVfOysCBOlcUKnK4RPxuiQlOrF0XKJondV+9KYN1uqwp1JtFBJJWu
+         iuKzLuKJzBQt/rGq1FYzs6WckOcVmPBUtL/mmlEd0LDvKxT+5DZwjfPNxQjcZBUXlWLw
+         gZvmzPHAfBGj28jJdIuljflKSy2eki8BUL4se+NSlSgmyITdGnWZAaQjX4LsGo+Y3ej2
+         TCaeOHfkEVAhQYQmhCb4r/YqLrM//S3UAI3ATVsRfQQOJWxBWR7pIPIqDlidABDZbcWG
+         19E44JVeeX6P2SxjUp7nJM9OsQmGSXKKZkKPceLjr9Cp4Zfmz+YJ9KhWePlp1i8v/PeZ
+         H20Q==
+X-Gm-Message-State: AOAM531RU9eZNCws2qqJ6vYw6wknnZc5JpyzcZFbx/0gJGs8YRGaEdfO
+        qDZ1tFWjnMNB7zbQNESXQITdnFXMxahR58rJ7kqXxw==
+X-Google-Smtp-Source: ABdhPJzV5MEWdAdciXvU/+naYoHN+ac+cipTAxRsRkZlp7sFwnJg1s0JE26Ep+6vF6jKCO1j1FAh+PCmUjp3nLitDUY=
+X-Received: by 2002:a67:504:: with SMTP id 4mr2937994vsf.22.1596199415578;
+ Fri, 31 Jul 2020 05:43:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730101404.956367860@linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20200730074420.811058810@linuxfoundation.org>
+In-Reply-To: <20200730074420.811058810@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 31 Jul 2020 18:13:24 +0530
+Message-ID: <CA+G9fYtUAseOUsQyf=iH7kTSGYUeo875_hhdCD1ayhddNn0PaA@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/61] 4.9.232-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/30, Thomas Gleixner wrote:
+On Thu, 30 Jul 2020 at 13:40, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
->  arch/x86/Kconfig               |    1 
->  include/linux/posix-timers.h   |   17 +++
->  include/linux/sched.h          |    4 
->  include/linux/seccomp.h        |    3 
->  kernel/entry/common.c          |    4 
->  kernel/time/Kconfig            |    9 +
->  kernel/time/posix-cpu-timers.c |  216 ++++++++++++++++++++++++++++++++++++-----
->  kernel/time/timer.c            |    1 
->  8 files changed, 227 insertions(+), 28 deletions(-)
+> This is the start of the stable review cycle for the 4.9.232 release.
+> There are 61 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 01 Aug 2020 07:44:05 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.232-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-FWIW,
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Summary
+------------------------------------------------------------------------
 
+kernel: 4.9.232-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: 3c1be84608a0c22e5b574396a51ed93a7f3206ba
+git describe: v4.9.231-62-g3c1be84608a0
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/bui=
+ld/v4.9.231-62-g3c1be84608a0
+
+No regressions (compared to build v4.9.231)
+
+No fixes (compared to build v4.9.231)
+
+Ran 34650 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kselftest/net
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
