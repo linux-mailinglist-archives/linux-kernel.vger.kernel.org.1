@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439CB234535
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0469B234537
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732972AbgGaMFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:05:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:56168 "EHLO foss.arm.com"
+        id S1733044AbgGaMFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:05:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:56178 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732669AbgGaMFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:05:06 -0400
+        id S1732965AbgGaMFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 08:05:07 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39C5E101E;
-        Fri, 31 Jul 2020 05:05:05 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89A07106F;
+        Fri, 31 Jul 2020 05:05:06 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1FFDE3F71F;
-        Fri, 31 Jul 2020 05:05:04 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6FD0E3F71F;
+        Fri, 31 Jul 2020 05:05:05 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Morten Rasmussen <morten.rasmussen@arm.com>, mingo@kernel.org,
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>, mingo@kernel.org,
         peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, Quentin Perret <qperret@google.com>
-Subject: [PATCH v4 01/10] ARM, sched/topology: Remove SD_SHARE_POWERDOMAIN
-Date:   Fri, 31 Jul 2020 12:54:53 +0100
-Message-Id: <20200731115502.12954-2-valentin.schneider@arm.com>
+        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
+Subject: [PATCH v4 02/10] ARM: Revert back to default scheduler topology.
+Date:   Fri, 31 Jul 2020 12:54:54 +0100
+Message-Id: <20200731115502.12954-3-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200731115502.12954-1-valentin.schneider@arm.com>
 References: <20200731115502.12954-1-valentin.schneider@arm.com>
@@ -35,103 +35,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This flag was introduced in 2014 by commit
+The ARM-specific GMC level is meant to be built using the thread sibling
+mask, but no devicetree in arch/arm/boot/dts uses the 'thread' cpu-map
+binding. With SD_SHARE_POWERDOMAIN gone, this topology level can be
+removed, at which point ARM no longer benefits from having a custom defined
+topology table.
 
-  d77b3ed5c9f8 ("sched: Add a new SD_SHARE_POWERDOMAIN for sched_domain")
+Delete the GMC topology level by making ARM use the default scheduler
+topology table. This essentially reverts commit
 
-but AFAIA it was never leveraged by the scheduler. The closest thing I can
-think of is EAS caring about frequency domains, and it does that by
-leveraging performance domains.
+  fb2aa85564f4 ("sched, ARM: Create a dedicated scheduler topology table")
 
-Remove the flag.
-
-Suggested-by: Morten Rasmussen <morten.rasmussen@arm.com>
+Suggested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- arch/arm/kernel/topology.c     |  2 +-
- include/linux/sched/topology.h | 13 ++++++-------
- kernel/sched/topology.c        | 10 +++-------
- 3 files changed, 10 insertions(+), 15 deletions(-)
+ arch/arm/kernel/topology.c | 26 --------------------------
+ 1 file changed, 26 deletions(-)
 
 diff --git a/arch/arm/kernel/topology.c b/arch/arm/kernel/topology.c
-index b5adaf744630..353f3ee660e4 100644
+index 353f3ee660e4..ef0058de432b 100644
 --- a/arch/arm/kernel/topology.c
 +++ b/arch/arm/kernel/topology.c
-@@ -243,7 +243,7 @@ void store_cpu_topology(unsigned int cpuid)
+@@ -177,15 +177,6 @@ static inline void parse_dt_topology(void) {}
+ static inline void update_cpu_capacity(unsigned int cpuid) {}
+ #endif
  
- static inline int cpu_corepower_flags(void)
- {
--	return SD_SHARE_PKG_RESOURCES  | SD_SHARE_POWERDOMAIN;
-+	return SD_SHARE_PKG_RESOURCES;
+-/*
+- * The current assumption is that we can power gate each core independently.
+- * This will be superseded by DT binding once available.
+- */
+-const struct cpumask *cpu_corepower_mask(int cpu)
+-{
+-	return &cpu_topology[cpu].thread_sibling;
+-}
+-
+ /*
+  * store_cpu_topology is called at boot when only one cpu is running
+  * and with the mutex cpu_hotplug.lock locked, when several cpus have booted,
+@@ -241,20 +232,6 @@ void store_cpu_topology(unsigned int cpuid)
+ 	update_siblings_masks(cpuid);
  }
  
- static struct sched_domain_topology_level arm_topology[] = {
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 764222d637b7..c88249bed095 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -18,13 +18,12 @@
- #define SD_WAKE_AFFINE		0x0010	/* Wake task to waking CPU */
- #define SD_ASYM_CPUCAPACITY	0x0020  /* Domain members have different CPU capacities */
- #define SD_SHARE_CPUCAPACITY	0x0040	/* Domain members share CPU capacity */
--#define SD_SHARE_POWERDOMAIN	0x0080	/* Domain members share power domain */
--#define SD_SHARE_PKG_RESOURCES	0x0100	/* Domain members share CPU pkg resources */
--#define SD_SERIALIZE		0x0200	/* Only a single load balancing instance */
--#define SD_ASYM_PACKING		0x0400  /* Place busy groups earlier in the domain */
--#define SD_PREFER_SIBLING	0x0800	/* Prefer to place tasks in a sibling domain */
--#define SD_OVERLAP		0x1000	/* sched_domains of this level overlap */
--#define SD_NUMA			0x2000	/* cross-node balancing */
-+#define SD_SHARE_PKG_RESOURCES	0x0080	/* Domain members share CPU pkg resources */
-+#define SD_SERIALIZE		0x0100	/* Only a single load balancing instance */
-+#define SD_ASYM_PACKING		0x0200  /* Place busy groups earlier in the domain */
-+#define SD_PREFER_SIBLING	0x0400	/* Prefer to place tasks in a sibling domain */
-+#define SD_OVERLAP		0x0800	/* sched_domains of this level overlap */
-+#define SD_NUMA			0x1000	/* cross-node balancing */
+-static inline int cpu_corepower_flags(void)
+-{
+-	return SD_SHARE_PKG_RESOURCES;
+-}
+-
+-static struct sched_domain_topology_level arm_topology[] = {
+-#ifdef CONFIG_SCHED_MC
+-	{ cpu_corepower_mask, cpu_corepower_flags, SD_INIT_NAME(GMC) },
+-	{ cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
+-#endif
+-	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
+-	{ NULL, },
+-};
+-
+ /*
+  * init_cpu_topology is called at boot when only one cpu is running
+  * which prevent simultaneous write access to cpu_topology array
+@@ -265,7 +242,4 @@ void __init init_cpu_topology(void)
+ 	smp_wmb();
  
- #ifdef CONFIG_SCHED_SMT
- static inline int cpu_smt_flags(void)
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 9079d865a935..865fff3ef20a 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -148,8 +148,7 @@ static int sd_degenerate(struct sched_domain *sd)
- 			 SD_BALANCE_EXEC |
- 			 SD_SHARE_CPUCAPACITY |
- 			 SD_ASYM_CPUCAPACITY |
--			 SD_SHARE_PKG_RESOURCES |
--			 SD_SHARE_POWERDOMAIN)) {
-+			 SD_SHARE_PKG_RESOURCES)) {
- 		if (sd->groups != sd->groups->next)
- 			return 0;
- 	}
-@@ -180,8 +179,7 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
- 			    SD_ASYM_CPUCAPACITY |
- 			    SD_SHARE_CPUCAPACITY |
- 			    SD_SHARE_PKG_RESOURCES |
--			    SD_PREFER_SIBLING |
--			    SD_SHARE_POWERDOMAIN);
-+			    SD_PREFER_SIBLING);
- 		if (nr_node_ids == 1)
- 			pflags &= ~SD_SERIALIZE;
- 	}
-@@ -1292,7 +1290,6 @@ int __read_mostly		node_reclaim_distance = RECLAIM_DISTANCE;
-  *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
-  *   SD_SHARE_PKG_RESOURCES - describes shared caches
-  *   SD_NUMA                - describes NUMA topologies
-- *   SD_SHARE_POWERDOMAIN   - describes shared power domain
-  *
-  * Odd one out, which beside describing the topology has a quirk also
-  * prescribes the desired behaviour that goes along with it:
-@@ -1303,8 +1300,7 @@ int __read_mostly		node_reclaim_distance = RECLAIM_DISTANCE;
- 	(SD_SHARE_CPUCAPACITY	|	\
- 	 SD_SHARE_PKG_RESOURCES |	\
- 	 SD_NUMA		|	\
--	 SD_ASYM_PACKING	|	\
--	 SD_SHARE_POWERDOMAIN)
-+	 SD_ASYM_PACKING)
- 
- static struct sched_domain *
- sd_init(struct sched_domain_topology_level *tl,
+ 	parse_dt_topology();
+-
+-	/* Set scheduler topology descriptor */
+-	set_sched_topology(arm_topology);
+ }
 -- 
 2.27.0
 
