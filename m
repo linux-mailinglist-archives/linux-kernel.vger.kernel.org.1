@@ -2,277 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD6A234CDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 23:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D164E234CEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 23:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgGaVVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 17:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgGaVVs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 17:21:48 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BEFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 14:21:48 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id z5so24115825ybo.9
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 14:21:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=i/6g5tBqm9jtVTxFQ6mjEF5i7ODAQOG9RPxhHc38Q0E=;
-        b=TmMFppo2f1ne0ZzxJly6nu9N02OmXEp4mNiqT8vVmBm3+NL56+GQxl+mihbz32wP1W
-         hwZ66L2+AkvTw885iJV/T7c3p7ISQjXJLRBrthFYoJ9KHHb4XitBkBy2NANucPIZ+/na
-         FhwLvGi/1i2Lie7kOBBxhPlFxKNZLO6our/44LegiGL/cBQWG4SKIacgwKvJEhu5vouG
-         zpo0TSWGsEUFILnGXI1LVyj+R0Ru+LLziZnkxMZx8Sb8+hsZSVl+Zan0GMey9MRCYzlZ
-         YvqTae4paQL2l8JfAhHGjqyWBppnsVE26rTt2jqG4MMFoFa32rYRXPjyYu9/vFPNZMhz
-         7fcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=i/6g5tBqm9jtVTxFQ6mjEF5i7ODAQOG9RPxhHc38Q0E=;
-        b=aVjrvNQIPaddamAdErtw5h3rgh2pfQ/2qwipMeHBCOxkEdE37xNcYzmyCEGCsxIxF3
-         9i+NSMF2zXiX/z2d1hji/ucrD/q8zsBqzZG4tuYRCxDLIDu4incVYC/h1hOfTGi37nIS
-         43pg4Veza6or8KejhAP0P7im0N+MHwSAuHNIKU2Biu4UgxTVghYaZzk9DaKu9i+iwUXG
-         l4uWpRrDLPCOwTSf+vTZhb7dacRgyfqIvhKLaOxjODe1W9S+M/T8gLfq0RWZqM+sTVEg
-         I1Zx600gqsuu7cJIysBbDLQmY/LzTNrfgC62WJpXtqWBKOj9pSy+Dxs5SoHafqbbHzwq
-         lpBg==
-X-Gm-Message-State: AOAM533Nw2MR7/LC/j9WxCcNwE+SHdhs5bm9I3AVMefo8tZdwxQ7OlX3
-        2XRgYR9DNAtVQl60aVRazEXEHCiENlM=
-X-Google-Smtp-Source: ABdhPJx7zFycBHKJrxQB+dPPxG/GmiWi6UbVG3U9EML9Q2umJYC8G0EXw3Xat+QoFEe0ux9LGWq1pV8p7EE=
-X-Received: by 2002:a25:3c4:: with SMTP id 187mr9454202ybd.246.1596230507957;
- Fri, 31 Jul 2020 14:21:47 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 14:21:41 -0700
-Message-Id: <20200731212141.3709716-1-peskal@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH] gen_compile_commands: Add support for separate kbuild output directory
-From:   Peter Kalauskas <peskal@google.com>
-To:     tmroeder@google.com
-Cc:     linux-kernel@vger.kernel.org, mka@chromium.org,
-        Peter Kalauskas <peskal@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728614AbgGaVX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 17:23:27 -0400
+Received: from mga14.intel.com ([192.55.52.115]:50224 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728027AbgGaVX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 17:23:27 -0400
+IronPort-SDR: ZBz6V6WaNrLKHT/hmbuXgNaSK7/2VwSs/i68D9Wjyyg0HIZA7nv/YKfhEM3PlbdXDmixlQJ2Cb
+ mF7NAMcfHcBg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9699"; a="151075125"
+X-IronPort-AV: E=Sophos;i="5.75,419,1589266800"; 
+   d="scan'208";a="151075125"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 14:23:26 -0700
+IronPort-SDR: FQX8kvUq1WMuEMWxYH69vvjsYSSY8E6ZU5NQ1EKCGQbaqITJBedMOoRgSTlM9BFkp6HK/5790Z
+ +s+XfyFzG7bg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,419,1589266800"; 
+   d="scan'208";a="331191293"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by orsmga007.jf.intel.com with ESMTP; 31 Jul 2020 14:23:26 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        eric van tassell <Eric.VanTassell@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [RFC PATCH 0/8] KVM: x86/mmu: Introduce pinned SPTEs framework
+Date:   Fri, 31 Jul 2020 14:23:15 -0700
+Message-Id: <20200731212323.21746-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for builds that use an output directory different than the
-kernel source tree (e.g. make O=/tmp/kernel-obj). This also introduces
-support for .cmd files that use absolute paths.
+SEV currently needs to pin guest memory as it doesn't support migrating
+encrypted pages.  Introduce a framework in KVM's MMU to support pinning
+pages on demand without requiring additional memory allocations, and with
+(somewhat hazy) line of sight toward supporting more advanced features for
+encrypted guest memory, e.g. host page migration.
 
-Previously, gen_compile_commands.py only supported builds where the
-kernel source tree and the output directory were the same:
- $ make defconfig
- $ make -j32
- $ ./scripts/gen_compile_commands.py
+The idea is to use a software available bit in the SPTE to track that a
+page has been pinned.  The decision to pin a page and the actual pinning
+managment is handled by vendor code via kvm_x86_ops hooks.  There are
+intentionally two hooks (zap and unzap) introduced that are not needed for
+SEV.  I included them to again show how the flag (probably renamed?) could
+be used for more than just pin/unpin.
 
-gen_compile_commands.py had flags to support out of tree use, but the
-generated compile_commands.json file still assumed that the source tree
-and kbuild output directory were the same.
+Bugs in the core implementation are pretty much guaranteed.  The basic
+concept has been tested, but in a fairly different incarnation.  Most
+notably, tagging PRESENT SPTEs as PINNED has not been tested, although
+using the PINNED flag to track zapped (and known to be pinned) SPTEs has
+been tested.  I cobbled this variation together fairly quickly to get the
+code out there for discussion.
 
-Now, the following cases are supported as well:
+The last patch to pin SEV pages during sev_launch_update_data() is
+incomplete; it's there to show how we might leverage MMU-based pinning to
+support pinning pages before the guest is live.
 
- - Absolute output path:
-   $ mkdir /tmp/kernel-obj
-   $ make O=/tmp/kernel-obj defconfig
-   $ make O=/tmp/kernel-obj -j32
-   $ ./scripts/gen_compile_commands.py -k /tmp/kernel-obj
+Sean Christopherson (8):
+  KVM: x86/mmu: Return old SPTE from mmu_spte_clear_track_bits()
+  KVM: x86/mmu: Use bits 2:0 to check for present SPTEs
+  KVM: x86/mmu: Refactor handling of not-present SPTEs in mmu_set_spte()
+  KVM: x86/mmu: Add infrastructure for pinning PFNs on demand
+  KVM: SVM: Use the KVM MMU SPTE pinning hooks to pin pages on demand
+  KVM: x86/mmu: Move 'pfn' variable to caller of direct_page_fault()
+  KVM: x86/mmu: Introduce kvm_mmu_map_tdp_page() for use by SEV
+  KVM: SVM: Pin SEV pages in MMU during sev_launch_update_data()
 
- - Relative output path:
-   $ mkdir kernel-obj
-   $ make O=kernel-obj/ defconfig
-   $ make O=kernel-obj/ -j32
-   $ ./scripts/gen_compile_commands.py -k kernel-obj
+ arch/x86/include/asm/kvm_host.h |   7 ++
+ arch/x86/kvm/mmu.h              |   3 +
+ arch/x86/kvm/mmu/mmu.c          | 186 +++++++++++++++++++++++++-------
+ arch/x86/kvm/mmu/paging_tmpl.h  |   3 +-
+ arch/x86/kvm/svm/sev.c          | 141 +++++++++++++++++++++++-
+ arch/x86/kvm/svm/svm.c          |   3 +
+ arch/x86/kvm/svm/svm.h          |   3 +
+ 7 files changed, 302 insertions(+), 44 deletions(-)
 
-The new argument, -k, is introduced in a way that makes the script
-backward compatible with how -d was previously used.
-
-Signed-off-by: Peter Kalauskas <peskal@google.com>
----
- scripts/gen_compile_commands.py | 112 ++++++++++++++++++++++----------
- 1 file changed, 77 insertions(+), 35 deletions(-)
-
-diff --git scripts/gen_compile_commands.py scripts/gen_compile_commands.py
-index c458696ef3a7..cd3b80bd1942 100755
---- scripts/gen_compile_commands.py
-+++ scripts/gen_compile_commands.py
-@@ -31,16 +31,24 @@ def parse_arguments():
- 
-     Returns:
-         log_level: A logging level to filter log output.
--        directory: The directory to search for .cmd files.
-+        source_directory: The directory of the kernel source tree.
-+        kbuild_output_directory: The directory to search for .cmd files.
-         output: Where to write the compile-commands JSON file.
-     """
-     usage = 'Creates a compile_commands.json database from kernel .cmd files'
-     parser = argparse.ArgumentParser(description=usage)
- 
--    directory_help = ('Path to the kernel source directory to search '
-+    directory_help = ('Path to the kernel source directory '
-                       '(defaults to the working directory)')
-     parser.add_argument('-d', '--directory', type=str, help=directory_help)
- 
-+    kbuild_output_directory_help = (
-+        'Path to the kernel output directory to search for .cmd files '
-+        '(defaults to match --directory)')
-+    parser.add_argument(
-+        '-k', '--kbuild-output-directory', type=str,
-+        help=kbuild_output_directory_help)
-+
-     output_help = ('The location to write compile_commands.json (defaults to '
-                    'compile_commands.json in the search directory)')
-     parser.add_argument('-o', '--output', type=str, help=output_help)
-@@ -58,58 +66,91 @@ def parse_arguments():
-     if log_level not in _VALID_LOG_LEVELS:
-         raise ValueError('%s is not a valid log level' % log_level)
- 
--    directory = args.directory or os.getcwd()
--    output = args.output or os.path.join(directory, _DEFAULT_OUTPUT)
--    directory = os.path.abspath(directory)
-+    source_directory = args.directory or os.getcwd()
-+    kbuild_output_directory = args.kbuild_output_directory or source_directory
-+    output = args.output or os.path.join(source_directory, _DEFAULT_OUTPUT)
-+    source_directory = os.path.abspath(source_directory)
-+    kbuild_output_directory = os.path.abspath(kbuild_output_directory)
- 
--    return log_level, directory, output
-+    return log_level, source_directory, kbuild_output_directory, output
- 
- 
--def process_line(root_directory, file_directory, command_prefix, relative_path):
-+def process_line(src_dir, kbuild_out_dir, file_dir, cmd_prefix, file_path):
-     """Extracts information from a .cmd line and creates an entry from it.
- 
-     Args:
--        root_directory: The directory that was searched for .cmd files. Usually
-+        src_dir: The directory of the kernel source tree.
-+        kbuild_out_dir: The directory that was searched for .cmd files. Usually
-             used directly in the "directory" entry in compile_commands.json.
--        file_directory: The path to the directory the .cmd file was found in.
--        command_prefix: The extracted command line, up to the last element.
--        relative_path: The .c file from the end of the extracted command.
--            Usually relative to root_directory, but sometimes relative to
--            file_directory and sometimes neither.
-+        file_dir: The path to the directory the .cmd file was found in.
-+        cmd_prefix: The extracted command line, up to the last element.
-+        file_path: The .c file from the end of the extracted command.
-+            Usually relative to kbuild_out_dir, but sometimes relative to
-+            src_dir and sometimes neither.
- 
-     Returns:
-         An entry to append to compile_commands.
- 
-     Raises:
--        ValueError: Could not find the extracted file based on relative_path and
--            root_directory or file_directory.
-+        ValueError: Could not find the extracted file.
-     """
-     # The .cmd files are intended to be included directly by Make, so they
-     # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
--    # kernel version). The compile_commands.json file is not interepreted
-+    # kernel version). The compile_commands.json file is not interpreted
-     # by Make, so this code replaces the escaped version with '#'.
--    prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
--
--    cur_dir = root_directory
--    expected_path = os.path.join(cur_dir, relative_path)
--    if not os.path.exists(expected_path):
--        # Try using file_directory instead. Some of the tools have a different
--        # style of .cmd file than the kernel.
--        cur_dir = file_directory
--        expected_path = os.path.join(cur_dir, relative_path)
-+    prefix = cmd_prefix.replace('\#', '#').replace('$(pound)', '#')
-+
-+    # Compile commands are usually run in the top level of the kbuild output
-+    # directory
-+    working_dir = kbuild_out_dir
-+
-+    if os.path.isabs(file_path):
-+        # This is the most common case when the kbuild output directory is
-+        # outside the kernel source tree (e.g. cd src/linux;
-+        # make O=/tmp/kernel-obj). In this case, the command is run in
-+        # kbuild_out_dir, and file_path is an absolute path to the file being
-+        # compiled.
-+        if not os.path.exists(file_path):
-+            raise ValueError('File %s does not exist' % file_path)
-+    else:
-+        # Otherwise, try to locate the file using its relative path.
-+        #
-+        # First, check for the file relative to kbuild_out_dir. This is the most
-+        # common case when output directory is the same as the kernel source
-+        # directory, or if the output directory is specified using a relative
-+        # path (e.g. make, or make O=kernel-obj/)
-+        expected_path = os.path.join(kbuild_out_dir, file_path)
-+
-         if not os.path.exists(expected_path):
--            raise ValueError('File %s not in %s or %s' %
--                             (relative_path, root_directory, file_directory))
-+            # Try using file_dir instead. Some of the tools have a different
-+            # style of .cmd file than the kernel. In this case, the command is
-+            # run in a subdirectory of the kernel source tree. The subdirectory
-+            # will match the directory the cmd file was found in (e.g.
-+            # /tmp/kernel-obj/tools/objtool/.weak.o.cmd contains a command
-+            # that's run in src/linux/tools/objtool/)
-+
-+            # Translate file_dir to a relative path, and use the relative path
-+            # to locate where in the kernel source tree the command may have
-+            # been executed.
-+            relative_file_dir = os.path.relpath(file_dir, kbuild_out_dir)
-+            working_dir = os.path.join(src_dir, relative_file_dir)
-+            expected_path = os.path.join(working_dir, file_path)
-+
-+            if not os.path.exists(expected_path):
-+                # At this point, failures are often from tools/objtool/
-+                # and tools/lib/subcmd/
-+                raise ValueError('File %s not in %s or %s' %
-+                                 (file_path, kbuild_out_dir, file_dir))
-     return {
--        'directory': cur_dir,
--        'file': relative_path,
--        'command': prefix + relative_path,
-+        'directory': working_dir,
-+        'file': file_path,
-+        'command': prefix + file_path,
-     }
- 
- 
- def main():
-     """Walks through the directory and finds and parses .cmd files."""
--    log_level, directory, output = parse_arguments()
-+    log_level, src_dir, kbuild_out_dir, out_file = parse_arguments()
- 
-     level = getattr(logging, log_level)
-     logging.basicConfig(format='%(levelname)s: %(message)s', level=level)
-@@ -118,7 +159,7 @@ def main():
-     line_matcher = re.compile(_LINE_PATTERN)
- 
-     compile_commands = []
--    for dirpath, _, filenames in os.walk(directory):
-+    for dirpath, _, filenames in os.walk(kbuild_out_dir):
-         for filename in filenames:
-             if not filename_matcher.match(filename):
-                 continue
-@@ -131,14 +172,15 @@ def main():
-                         continue
- 
-                     try:
--                        entry = process_line(directory, dirpath,
--                                             result.group(1), result.group(2))
-+                        entry = process_line(src_dir, kbuild_out_dir,
-+                                             dirpath, result.group(1),
-+                                             result.group(2))
-                         compile_commands.append(entry)
-                     except ValueError as err:
-                         logging.info('Could not add line from %s: %s',
-                                      filepath, err)
- 
--    with open(output, 'wt') as f:
-+    with open(out_file, 'wt') as f:
-         json.dump(compile_commands, f, indent=2, sort_keys=True)
- 
-     count = len(compile_commands)
 -- 
-2.28.0.163.g6104cc2f0b6-goog
+2.28.0
 
