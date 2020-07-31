@@ -2,127 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE63233C8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 02:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2E9233C8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 02:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730942AbgGaA0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 20:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
+        id S1730916AbgGaA1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 20:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730915AbgGaA0Q (ORCPT
+        with ESMTP id S1730834AbgGaA1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 20:26:16 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A96BC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 17:26:16 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id p1so15764831pls.4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 17:26:16 -0700 (PDT)
+        Thu, 30 Jul 2020 20:27:53 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A66C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 17:27:53 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id i92so4141911pje.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 17:27:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z3Lm1sGkWQwPe3NkE6iARE36RcrQ0xDQdl/rL+tDjI0=;
-        b=sOOQDS6l29PwJncVTdlZkzs7X7QSPkZPgnQAmSIwmUOgSvyL2/q0N7p90FYdSW2s8j
-         7CUVCSO8S+NAKPz3nxM6HhwyGHv+sbArXQoh5HbHlu8QYOGJbIQnOYENg9nXxXSjqXmE
-         b/NXnhhTJcnAncLg5glbJ16Gmu7U9R7QCPUgEmu8abMsBqnftD0pBFG9svq8rL0X1x/+
-         8QDgT9u9tf81CyG+A5/tzVxH58yQi4pFayRE1lwYeGvyydlZNXXPSUdjYJIU9bOJ2Y5Q
-         Duxb7LFSRiGHX9usLWXOtYqk0aAF6bIjq1IUM4JvYDAPcBT2UjU0aKEK9VPxeKVm1Hx4
-         PkFA==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/x33MxEGssqW5/BKpRXT03KlDE/YqWV5krAcZe2pDIk=;
+        b=eYiRmWCH4wBcatIzXXCsoF769A8liQQ6C0gLJXIM46ANq1pkOYfyyPuqaXAs0sByRD
+         a1NPxY7k56q22aQuh2U9z4XMge9i32A2IKaO/63WbxT3n8Sj5snqZcxiqNy/oBnFWCRo
+         h3uTpidM1B2HVoJq83QGNPNzTD9RfH83SVWdalJqjrrVmpjV+K3TRHH6Vr59mhIgNC2D
+         YMeUGsdxJhAYwUhkpg6Qu5TJDHz/uI46L6CApgpCtUYFdDEXFALkvulkl9O7eCKtHCtc
+         JXQhbBTu5AplCWlUnjU538VkGxZS8LRC3FEpr9PQJfnUAMnTomxdD4NoEmf732xycoLQ
+         TP1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z3Lm1sGkWQwPe3NkE6iARE36RcrQ0xDQdl/rL+tDjI0=;
-        b=fyVcMM0baUhXTI7jTfijMFB5AQpre3KZ/WzapWtis0McoTDEZmeVCUgcUBWYZGoNG5
-         D0aqbqQnJbYjVwKx+nQ+mVfKFnRlxKK+J1SSLJsTTKsepVJHDa28VSBOZPPWlpcfRpyg
-         s22XXJFMIkYfqTDNKu44zt/GSsl8WMZmyOVcdNLzWKpxESg+Q89LnabCmtAPQOWpKscN
-         u9TVAgxFjdm8JDyp/bdyCYVDNA+LMfVIv7osSusJsZBZR0Oc44fXw4ota2hLvea7XWqR
-         uQNLTY4lYtqHfH5c9B1zyqpXXT5qVgtwLuUQo8Mi1atYdl2iDzNp+dKO8qCGMp17I0x4
-         cpdA==
-X-Gm-Message-State: AOAM531TdPJbDnDIelLjtD15OYIn+9m42Y7NQqjXCH4BirVv9Hq0FPiL
-        c+h5IVyCl5luIath8+1s3IR1yA==
-X-Google-Smtp-Source: ABdhPJwcr954AG1gqEdKpM5QuRqbV3+wB5pscU2NtJ0l5WoRi0tIaQ0FwOD7I+WVx/5rp3y/anJJGw==
-X-Received: by 2002:a63:8c5d:: with SMTP id q29mr1238398pgn.249.1596155175408;
-        Thu, 30 Jul 2020 17:26:15 -0700 (PDT)
-Received: from google.com (56.4.82.34.bc.googleusercontent.com. [34.82.4.56])
-        by smtp.gmail.com with ESMTPSA id p19sm7867698pgj.74.2020.07.30.17.26.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 17:26:14 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 00:26:11 +0000
-From:   William Mcvicker <willmcvicker@google.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     security@kernel.org, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH 1/1] netfilter: nat: add range checks for access to
- nf_nat_l[34]protos[]
-Message-ID: <20200731002611.GA1035680@google.com>
-References: <20200727175720.4022402-1-willmcvicker@google.com>
- <20200727175720.4022402-2-willmcvicker@google.com>
- <20200729214607.GA30831@salvia>
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/x33MxEGssqW5/BKpRXT03KlDE/YqWV5krAcZe2pDIk=;
+        b=tA3DQm6hntqpZUfcJhCigIH1AMrztxW5DUEns+8fptptfx/2LBCdE1M3Vp4Y6c0GeQ
+         40Ox1Z1SVfa+F7AyNrAFS44OsHqNsqYkNg6faiFBuu4/VhOBJIk/OrL5d3ReQIewF5XV
+         x5FycMYfZE8IbNHIlewlVBucfBqpLYAAuG48bSujbxpxg3UquklKYiQnsoIgqkWcC8Lf
+         MF0e8zdJjirtsw2UzhQtka6sD9j6mvCOnMQG06LyQSi6VC7hrp1e51B2Ius0U6r8jeGI
+         DBFVI2YXUgB7cOJCEZ88bzCgNPEKiBcD8ib/nQnM9t4lPs4oxdD88mYCFM9sm09NbsuE
+         +M/w==
+X-Gm-Message-State: AOAM533/ZrdiL+8qtPp6fSmLbex1fzdc0J557xOjsawmvmAz325jjiXC
+        Lx/K/6kMZdLlYcHqRWmpuKsbWLUOfK4=
+X-Google-Smtp-Source: ABdhPJzu60l479KqwVygWaTuAhVWeBTepYNLGQr7RyBP6p6Q92JxnGKBwYWopOixVGCZRsNS2rPLiw==
+X-Received: by 2002:a65:4484:: with SMTP id l4mr1305372pgq.96.1596155273235;
+        Thu, 30 Jul 2020 17:27:53 -0700 (PDT)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id 196sm7981911pgd.16.2020.07.30.17.27.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Jul 2020 17:27:52 -0700 (PDT)
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+X-Google-Original-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, chunyan.zhang@unisoc.com,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] trace : use kvzalloc instead of kzalloc
+Date:   Fri, 31 Jul 2020 08:27:45 +0800
+Message-Id: <1596155265-32365-1-git-send-email-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729214607.GA30831@salvia>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pablo,
+High order memory stuff within trace could introduce OOM, use kvzalloc instead.
 
-Yes, I believe this oops is only triggered by userspace when the user
-specifically passes in an invalid nf_nat_l3protos index. I'm happy to re-work
-the patch to check for this in ctnetlink_create_conntrack().
+Please find the bellowing for the call stack we run across in an android system.
+The scenario happens when traced_probes is woken up to get a large quantity of
+trace even if free memory is even higher than watermark_low. 
 
-> BTW, do you have a Fixes: tag for this? This will be useful for
-> -stable maintainer to pick up this fix.
+traced_probes invoked oom-killer: gfp_mask=0x140c0c0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null),  order=2, oom_score_adj=-1
 
-Regarding the Fixes: tag, I don't have one offhand since this bug was reported
-to me, but I can search through the code history to find the commit that
-exposed this vulnerability.
+traced_probes cpuset=system-background mems_allowed=0
+CPU: 3 PID: 588 Comm: traced_probes Tainted: G        W  O    4.14.181 #1
+Hardware name: Generic DT based system
+(unwind_backtrace) from [<c010d824>] (show_stack+0x20/0x24)
+(show_stack) from [<c0b2e174>] (dump_stack+0xa8/0xec)
+(dump_stack) from [<c027d584>] (dump_header+0x9c/0x220)
+(dump_header) from [<c027cfe4>] (oom_kill_process+0xc0/0x5c4)
+(oom_kill_process) from [<c027cb94>] (out_of_memory+0x220/0x310)
+(out_of_memory) from [<c02816bc>] (__alloc_pages_nodemask+0xff8/0x13a4)
+(__alloc_pages_nodemask) from [<c02a6a1c>] (kmalloc_order+0x30/0x48)
+(kmalloc_order) from [<c02a6a64>] (kmalloc_order_trace+0x30/0x118)
+(kmalloc_order_trace) from [<c0223d7c>] (tracing_buffers_open+0x50/0xfc)
+(tracing_buffers_open) from [<c02e6f58>] (do_dentry_open+0x278/0x34c)
+(do_dentry_open) from [<c02e70d0>] (vfs_open+0x50/0x70)
+(vfs_open) from [<c02f7c24>] (path_openat+0x5fc/0x169c)
+(path_openat) from [<c02f75c4>] (do_filp_open+0x94/0xf8)
+(do_filp_open) from [<c02e7650>] (do_sys_open+0x168/0x26c)
+(do_sys_open) from [<c02e77bc>] (SyS_openat+0x34/0x38)
+(SyS_openat) from [<c0108bc0>] (ret_fast_syscall+0x0/0x28)
 
-Thanks,
-Will
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ kernel/trace/trace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On 07/29/2020, Pablo Neira Ayuso wrote:
-> Hi Will,
-> 
-> On Mon, Jul 27, 2020 at 05:57:20PM +0000, Will McVicker wrote:
-> > The indexes to the nf_nat_l[34]protos arrays come from userspace. So we
-> > need to make sure that before indexing the arrays, we verify the index
-> > is within the array bounds in order to prevent an OOB memory access.
-> > Here is an example kernel panic on 4.14.180 when userspace passes in an
-> > index greater than NFPROTO_NUMPROTO.
-> > 
-> > Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-> > Modules linked in:...
-> > Process poc (pid: 5614, stack limit = 0x00000000a3933121)
-> > CPU: 4 PID: 5614 Comm: poc Tainted: G S      W  O    4.14.180-g051355490483
-> > Hardware name: Qualcomm Technologies, Inc. SM8150 V2 PM8150 Google Inc. MSM
-> > task: 000000002a3dfffe task.stack: 00000000a3933121
-> > pc : __cfi_check_fail+0x1c/0x24
-> > lr : __cfi_check_fail+0x1c/0x24
-> > ...
-> > Call trace:
-> > __cfi_check_fail+0x1c/0x24
-> > name_to_dev_t+0x0/0x468
-> > nfnetlink_parse_nat_setup+0x234/0x258
-> 
-> If this oops is only triggerable from userspace, I think a sanity
-> check in nfnetlink_parse_nat_setup should suffice to reject
-> unsupported layer 3 and layer 4 protocols.
-> 
-> I mean, in this patch I see more chunks in the packet path, such as
-> nf_nat_l3proto_ipv4 that should never happen. I would just fix the
-> userspace ctnetlink path.
-> 
-> BTW, do you have a Fixes: tag for this? This will be useful for
-> -stable maintainer to pick up this fix.
-> 
-> Thanks.
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index ca1ee65..1a038a2 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -6891,7 +6891,7 @@ static int tracing_buffers_open(struct inode *inode, struct file *filp)
+ 	if (trace_array_get(tr) < 0)
+ 		return -ENODEV;
+ 
+-	info = kzalloc(sizeof(*info), GFP_KERNEL);
++	info = kvzalloc(sizeof(*info), GFP_KERNEL);
+ 	if (!info) {
+ 		trace_array_put(tr);
+ 		return -ENOMEM;
+@@ -7017,7 +7017,7 @@ static int tracing_buffers_release(struct inode *inode, struct file *file)
+ 	if (info->spare)
+ 		ring_buffer_free_read_page(iter->trace_buffer->buffer,
+ 					   info->spare_cpu, info->spare);
+-	kfree(info);
++	kvfree(info);
+ 
+ 	mutex_unlock(&trace_types_lock);
+ 
+-- 
+1.9.1
+
