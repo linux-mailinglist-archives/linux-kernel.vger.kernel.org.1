@@ -2,124 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E12234587
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD5523458F
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733053AbgGaMOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
+        id S1733003AbgGaMPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732784AbgGaMOR (ORCPT
+        with ESMTP id S1732842AbgGaMPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:14:17 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3216FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:14:17 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BJ5ml2LN3z9s1x;
-        Fri, 31 Jul 2020 22:14:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1596197655;
-        bh=zl7Kp+BGNFfBts1EjllIogLiwRs96Vwctn66ZH8tpps=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=PiZsXOsYAL7n272reYQOMNJhDNwWpssZqR1XrI9PcXNOm9miwoQzY7vkbAczMA2mR
-         veL4hHCGhckOA1fppwEAIThEN3r5XfV4NKi5jqtuCxcXEIxIe9pvKsKKxYq5TQe8Xv
-         gjklhM/2lahd6X83wJ+VLZPJYw8K5WkT4DUqsLFY8YYoTtVt7Vp/g/8EIRDb09/oxS
-         ACMesE+gaswVgRyyeOEGG4wYa7xYeQ0gMtl6v+ciaHNN2k1GHilVClzDvKlJDScYOF
-         0HiZvfLU7BLTB2wHqH5Pt1uGqRFGNrlMbYn7gLYoIVJdrwm3ZVZxuqh5H53tWqjmQz
-         hvqP6f482dgkQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jordan Niethe <jniethe5@gmail.com>
-Subject: Re: [PATCH v4 08/10] powerpc/smp: Allocate cpumask only after searching thread group
-In-Reply-To: <20200731094938.GA18776@linux.vnet.ibm.com>
-References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com> <20200727053230.19753-9-srikar@linux.vnet.ibm.com> <87zh7g3yvk.fsf@mpe.ellerman.id.au> <20200731094938.GA18776@linux.vnet.ibm.com>
-Date:   Fri, 31 Jul 2020 22:14:11 +1000
-Message-ID: <87o8nv51bg.fsf@mpe.ellerman.id.au>
+        Fri, 31 Jul 2020 08:15:44 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29618C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:15:44 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id 4so9444275vsf.11
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1gowMH0CRwwMnTHOVHU5jY/2lEG6qeP7P342f23hLe8=;
+        b=Uy3fPRUd0/4F2GahA2w1QyYu+RiazzcsITzsOpRGCrz//KczrF1IFtYoww4zguNEI6
+         ndyjHmV+yXgrT69dIDVKbiqx/hvpAKv1JUMz3M2lzgtl3DG2OHP6ZS7nWEEQcWqO9JQj
+         XsfrMjTS0xZYOeXT8QcCBJC0N6io339/+cdmOyUfARxXVyW8vuPInnkcX0TX73rVSzju
+         jI2nZVD/os+rJjrz+tnuuEUqTZY53UOXszbavlZ+dpPNJPZLJhreW+oMYVxYALvWJPWn
+         bwwTeQKpDwBYy57drWjXNVF+Tb/p7FS5/QDPxdSGFbolZ+l1flT79HfryLOHhLxICPEz
+         6bTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1gowMH0CRwwMnTHOVHU5jY/2lEG6qeP7P342f23hLe8=;
+        b=UlQVfX81J+GEZUlThqUVcVNKlpxlcDBcIfRbeK+XMEWzSgbr2zTXUvy17V3noOlEQL
+         KJ59PkEoPlv1J7C38DpqThzD5cmXdIui/Ad/+Stl54fx1gM4CgQyDihStG9WH/c7Focw
+         wpH2ptiwPOnUjxbX2yuUqZRuv05l68t477BJ0upVXwykN7AWiC8NKI6IvWkWxggOIMLd
+         QJ59kKh5Tw5CxQw0CNWXUmkyKTTYk3N3UBZlJVU3xnsvoaICZDLrUGyyKZqNsTRLfC6Q
+         q36b/DP6XDUG/ujbgRNCqht7XjNXChfDmwR8s21Vr/o8SNAQ0A1oUfCYUFpcD0GJXrdg
+         EKpg==
+X-Gm-Message-State: AOAM533stYiYV9irNridv0QBk74oOCZEXTWx+/s8ReG3opeAhDJgZrZ8
+        mG37eg7EYIL0IGjaJUrsJg+AeAOeNf098tMihlIM1g==
+X-Google-Smtp-Source: ABdhPJwqa3AabQ8T7tGM5gvXPn/waAtUx7Bx6tpvelDIEjRtH3c5BSOGnIJ7IJCjmtRRgG9WBTERlbBA78mRy1LKeEs=
+X-Received: by 2002:a67:e412:: with SMTP id d18mr2862509vsf.41.1596197743258;
+ Fri, 31 Jul 2020 05:15:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200730074418.882736401@linuxfoundation.org>
+In-Reply-To: <20200730074418.882736401@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 31 Jul 2020 17:45:31 +0530
+Message-ID: <CA+G9fYvKSWvopcjec-+eczak44XUsKf3Qb00uMOE9-iFfq_xVw@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/14] 4.14.191-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> * Michael Ellerman <mpe@ellerman.id.au> [2020-07-31 17:52:15]:
+On Thu, 30 Jul 2020 at 13:38, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
->> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
->> > If allocated earlier and the search fails, then cpumask need to be
->> > freed. However cpu_l1_cache_map can be allocated after we search thread
->> > group.
->> 
->> It's not freed anywhere AFAICS?
+> This is the start of the stable review cycle for the 4.14.191 release.
+> There are 14 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Yes, its never freed. Infact we are never checking if
-> zalloc_cpumask_var_node fails. Its not just this cpumask, but historically
-> all the other existing cpumasks in arch/powerpc/kernel/smp.c are never
-> freed/checked. I did dig into this a bit and it appears that ..
-> (Please do correct me if I am wrong!! )
-
-That's correct.
-
-> Powerpc using cpumask_var_t for all of the percpu variables. And it dont seem
-> to enable CONFIG_CPUMASK_OFFSTACK even from the MAXSMP config.
-
-I remember Rusty adding that code, but I don't know if we ever
-considered enabling CPUMASK_OFFSTACK.
-
-Probably we meant to but never got around to doing it.
-
-> So from include/linux/cpumask.h
+> Responses should be made by Sat, 01 Aug 2020 07:44:05 +0000.
+> Anything received after that time might be too late.
 >
-> typedef struct cpumask cpumask_var_t[1];
-> and
-> zalloc_cpumask_var_node ends up being cpumask_clear
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.191-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
 >
-> So I think we are historically we seem to assume we are always
-> !CPUMASK_OFFSTACK and hence we dont need to check for return as well as
-> free..
+> thanks,
+>
+> greg k-h
 
-Right.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> I would look forward to your comments on how we should handle this going
-> forward. But I would keep this the same for this patchset.
+Summary
+------------------------------------------------------------------------
 
-Agreed, just clarify in the change log that it's not freed at the moment
-because of CPU_MASK_OFFSTACK=n
+kernel: 4.14.191-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: f743b8ea46fbaa440f9ccf7a4da9fa4a874941b0
+git describe: v4.14.190-15-gf743b8ea46fb
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/bu=
+ild/v4.14.190-15-gf743b8ea46fb
 
-> One of the questions that I have is if we most likely are to be in
-> !CONFIG_CPUMASK_OFFSTACK, then should be migrate to cpumask_t for percpu
-> variables. 
+No regressions (compared to build v4.14.189-80-gf743b8ea46fb)
 
-I don't think so, cpumask_t is semi-deprecated AIUI.
-  
-> The reason being we end up using NR_CPU cpumask for each percpu cpumask
-> variable instead of using NR_CPU cpumask_t pointer.
+No fixes (compared to build v4.14.189-80-gf743b8ea46fb)
 
-Our current defconfigs have NR_CPUS=2048, which is probably just small
-enough to continue using OFFSTACK=n.
+Ran 34716 total tests in the following environments and test suites.
 
-But we allow configuring NR_CPUS up to 8192, which surely would need
-OFFSTACK=y in order to work.
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
 
-So I think we need to stick with cpumask_var_t, but we should test with
-OFFSTACK=y, and should probably be a bit more careful with checking the
-allocations succeed.
+Test Suites
+-----------
+* build
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-mm-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+* ssuite
 
-And then we should select OFFSTACK=y for NR_CPUS above some threshold.
-
-cheers
+--=20
+Linaro LKFT
+https://lkft.linaro.org
