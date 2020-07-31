@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE380233DAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 05:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29404233DB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 05:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731318AbgGaDUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 23:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731262AbgGaDUS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 23:20:18 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C6CC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 20:20:18 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id l1so30373519ioh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 20:20:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9ENQWuwdn/hvmQ301dN3tmkkB+LAcEklgYZq8xuTSYw=;
-        b=TIDl8Ys7hSbhzPM2mHauS/ReeI+JqpSYdopU1RM4jHqMdHyOREE8Vlve22yEcLgG1g
-         507Ue8awfbRghdJ6vHS7inQajFgR44+iuLum18eYJ4hfDSN1S6KUduhnIMPL3ZmQXMEe
-         bXbTAT0L5i4kFIvbXtqJChwmEeU9jKVIXrzpt1k7cmweAl/VN+NibANBQewidfEf++u7
-         8dqcdFbcBpaTDSykn8SNEj0wY0IWGltFTuCoa05AD2Lo27I8s5PDEVm65Svb2mQs8Vpc
-         ircCbnkbzNISgoVFgfVWIh7282qoaV0k1q6yMjGZrfK+R9xL0dFRLf9mqvTL+amTzxpe
-         iRZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9ENQWuwdn/hvmQ301dN3tmkkB+LAcEklgYZq8xuTSYw=;
-        b=Dz2QeKWDqAA0ECPTOytx9Hp6stq+VquxRo9e/2O6oc4uNDHTRdP1iMIC/FsOqTeE5o
-         FMiMYIiklx+qswr6bgSAUF1iqjamUTt9OMrwzEONIPbgCW7OdqTpKCGiuQgpSWVGCSnw
-         oJkZPpMy97YROOw57xCH2AZ2rj8+YrMZy485hx/q0PZisvQWc1YFg3UqoSLGisx+b+94
-         Rk1vwbUEcBhyoNlPe/867Z3aVPNZMfcN8CIesx6l4DeuL0YHrkLOIQzRyGQkBBXtYqZb
-         QKu4ym7cwj95f1vN1YhG+GK3OALHOXaHK9pT8HJFrGWzWr6Y3diFU8pUmtp9IMwlEqHS
-         cXfg==
-X-Gm-Message-State: AOAM532CF43DRknSkUDgD09VfuUsP6gYR7Z0DQA1w9ILNCOFA7oDSySz
-        wIKFc2vvyRO2h+O87wTYOq0CHnbMvzJr3XoBOldJzA==
-X-Google-Smtp-Source: ABdhPJz/t0Yu4F9Ndzp7QqxU21H3Aj0mRN+wMLbRFcabvVIIRE+bNPKaV47Hq6jCYL1LWhHyBhWTpfdfzh06hlBM+sI=
-X-Received: by 2002:a6b:c3cf:: with SMTP id t198mr1674974iof.164.1596165617501;
- Thu, 30 Jul 2020 20:20:17 -0700 (PDT)
+        id S1731286AbgGaD2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 23:28:37 -0400
+Received: from ozlabs.org ([203.11.71.1]:38525 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731175AbgGaD2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Jul 2020 23:28:37 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BHt6B2tGfz9sTC;
+        Fri, 31 Jul 2020 13:28:33 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1596166114;
+        bh=Bexc+EUBRFfOwFY1RGCD8ItRDD2/Qns19CwYnGfgcmY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BlWGLNcHdSrUe6xDCkWUe5H07xCTIN0wclnRWYBANERZVN6U2GJgHZuJ+2eLW5IQb
+         dPyWeN+7mnzwKkk3z+qcfb4O8soEXyaiQXqEB+KeONCcH8Q5UaIr+o5p60BDI+by1l
+         k9NX+qs2t9TZd+9/2rql0TXdsiqxnWv8F84AAxMkXHth/n1tTbie3wi2yNxNytBEaE
+         3RQZKKU9DWsYR5wrXpzWdPnisMpF4AUhjsNuZFC2AKW29LObscV5B+InFVqKQCFR0D
+         G1J+JKmPacb4kkJKeMFfEdQBPvgoSGthScxJiob6LBqo8VcR/YFzqaG68/xpizQ40g
+         naiYngtxxfEXQ==
+Date:   Fri, 31 Jul 2020 13:28:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Wireless <linux-wireless@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Pedersen <thomas@adapt-ip.com>
+Subject: linux-next: build warnings after merge of the mac80211-next tree
+Message-ID: <20200731132830.75d7a905@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200729235929.379-1-graf@amazon.com> <20200729235929.379-2-graf@amazon.com>
- <CALMp9eRq3QUG64BwSGLbehFr8k-OLSM3phcw7mhuZ9hVk_N2-A@mail.gmail.com>
- <e7cbf218-fb01-2f30-6c5c-a4b6e441b5e4@amazon.com> <CALMp9eRQRaw7raxeH1nOTGr0rBk5bqbmoxUo7txGyQfaBs0=4g@mail.gmail.com>
-In-Reply-To: <CALMp9eRQRaw7raxeH1nOTGr0rBk5bqbmoxUo7txGyQfaBs0=4g@mail.gmail.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 30 Jul 2020 20:20:06 -0700
-Message-ID: <CALMp9eSSKra+Vic0U9kDeiT1y+Jfq6Vmrqsw+S8jqD0_oqH9zA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86: Deflect unknown MSR accesses to user space
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        KarimAllah Raslan <karahmed@amazon.de>,
-        kvm list <kvm@vger.kernel.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/.B7c2JVw=ftB8qCCNoqRfTd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 4:53 PM Jim Mattson <jmattson@google.com> wrote:
->
-> On Thu, Jul 30, 2020 at 4:08 PM Alexander Graf <graf@amazon.com> wrote:
-> > Do you have a particular situation in mind where that would not be the
-> > case and where we would still want to actually complete an MSR operation
-> > after the environment changed?
->
-> As far as userspace is concerned, if it has replied with error=0, the
-> instruction has completed and retired. If the kernel executes a
-> different instruction at CS:RIP, the state is certainly inconsistent
-> for WRMSR exits. It would also be inconsistent for RDMSR exits if the
-> RDMSR emulation on the userspace side had any side-effects.
+--Sig_/.B7c2JVw=ftB8qCCNoqRfTd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Actually, I think there's a potential problem with interrupt delivery
-even if the instruction bytes are the same. On the second pass, an
-interrupt could be delivered on the CS:IP of a WRMSR, even though
-userspace has already emulated the WRMSR instruction. This could be
-particularly awkward if the WRMSR was to the x2APIC TPR register, and
-in fact lowered the TPR sufficiently to allow a pending interrupt to
-be delivered.
+Hi all,
+
+After merging the mac80211-next tree, today's linux-next build (x86_64
+allmodconfig) produced these warnings:
+
+drivers/net/wireless/ath/ath10k/mac.c: In function 'chan_to_phymode':
+drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL=
+80211_CHAN_WIDTH_1' not handled in switch [-Wswitch]
+  558 |   switch (chandef->width) {
+      |   ^~~~~~
+drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL=
+80211_CHAN_WIDTH_2' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL=
+80211_CHAN_WIDTH_4' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL=
+80211_CHAN_WIDTH_8' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:558:3: warning: enumeration value 'NL=
+80211_CHAN_WIDTH_16' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL=
+80211_CHAN_WIDTH_1' not handled in switch [-Wswitch]
+  581 |   switch (chandef->width) {
+      |   ^~~~~~
+drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL=
+80211_CHAN_WIDTH_2' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL=
+80211_CHAN_WIDTH_4' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL=
+80211_CHAN_WIDTH_8' not handled in switch [-Wswitch]
+drivers/net/wireless/ath/ath10k/mac.c:581:3: warning: enumeration value 'NL=
+80211_CHAN_WIDTH_16' not handled in switch [-Wswitch]
+
+Introduced by commit
+
+  e5cb3d34a66d ("nl80211: S1G band and channel definitions")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/.B7c2JVw=ftB8qCCNoqRfTd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8jj94ACgkQAVBC80lX
+0GwpQggAlIYc8PA64dXCF3vyS5ERU+iiVRgxymcQNPRfd9M3VRLR9OimA4vHqkwC
+uQW8rxdQItirDyV1J/2UDhRwbNZxErRrH0dNcbSgHCtL9CAnnEgsveZqL1IM4jk6
+qdy2nmtU5oPCVVbWNU7+KFbwlQqt3WzL5DnKLfdNlKbaZhfCTxZ5SXpzmJ6NMwHa
+4URX+xvemqvO4+JrzBKwn7MoZ1b80ahs3dYtvi3cCRLhwQkPVvD9iOChAOqFXCbB
+u73yPXhAk34rljH7A3LNtImrqA6UBS2z2QpP8QBEUfx0BCDeMe3esoIclfXnyzke
+rDqp8ixDyOhzg4HaaTMfc7tln5NgsA==
+=G8SA
+-----END PGP SIGNATURE-----
+
+--Sig_/.B7c2JVw=ftB8qCCNoqRfTd--
