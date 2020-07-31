@@ -2,117 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F6323431C
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3A7234345
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732922AbgGaJ2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732339AbgGaJ2Q (ORCPT
+        id S1732963AbgGaJ32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:29:28 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61450 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732168AbgGaJ30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:28:16 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AFAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 02:28:16 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id l2so16797514wrc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 02:28:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z+0/zjHSuK4YpkaJOtgZNG0mGoncCgYB5r2C7+VJ3D4=;
-        b=R4eDvdiyjZiAS2M0ScI5ZgcMF2tJ0yokw3apO8UqhsoNlAdBSFkzqPNOIw8Dvrr2Yc
-         wkKkHQFTK73G30dhhTnlZmx5u0RV5cVW6DSgBvmw6PTYQLyxf2dGVEyPKsehu4QW0ifI
-         QQkcZ0RtsuPJQ70TR3ADt+mbAAgIDlzU2ytSY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=z+0/zjHSuK4YpkaJOtgZNG0mGoncCgYB5r2C7+VJ3D4=;
-        b=syjTg7BVBjjyoWxYRKIyuHTTUMIaAnEtapDH4QCJfTZZMU6RT2GVnfw2Di0fDKk8I4
-         DTOYuhpCElGHNf1grp3ZUZK68c2kOeToDAHugUoYJ0OyhDSfocxkikRSQTICJayI9kXu
-         wwjfl2tE1uHqJqbzkIrPRD8OkBDHwkICuVCYFKK7O0Yn1S4IEp6gRiQKW/c7znU+Dvwh
-         x/C7kYOSnvQxRwqXFIIJx2WIDs1AIHNcz3NFLtt/Ca2WEvMJZ3c5RHPnhKmNGfZSMR1J
-         Xn8gYtta5QEa/48jXVg4j+EOGoO8+oZAXALSzdrkDdRTZysI4lIsnHJ0Zf3DCgcI92Uq
-         OVBA==
-X-Gm-Message-State: AOAM532WHdllXOTvB9srlS3bXlnTDhjf9zCaIoOk7Nn5QaGnRIXMDxfR
-        RfXs1lk1WvTpd8FN8GX9QnE38w==
-X-Google-Smtp-Source: ABdhPJwT64W6SQNoeOQa1Euw8GGqxxmHPhkx0/MtFqznd2l1BYwFVsr8TCLtYQNzfpRxEdkGA4k+IA==
-X-Received: by 2002:a5d:4907:: with SMTP id x7mr2890544wrq.166.1596187695348;
-        Fri, 31 Jul 2020 02:28:15 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z8sm11660814wmf.42.2020.07.31.02.28.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 02:28:14 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 11:28:12 +0200
-From:   daniel@ffwll.ch
-Cc:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        twoerner@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-usp@googlegroups.com
-Subject: Re: [PATCH] drm/vkms: fix xrgb on compute crc
-Message-ID: <20200731092812.GY6419@phenom.ffwll.local>
-Mail-Followup-To: Melissa Wen <melissa.srw@gmail.com>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, twoerner@gmail.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-usp@googlegroups.com
-References: <20200730202524.5upzuh4irboru7my@smtp.gmail.com>
+        Fri, 31 Jul 2020 05:29:26 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06V92i4g129877;
+        Fri, 31 Jul 2020 05:29:10 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32md5bdnmt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 31 Jul 2020 05:29:10 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06V9CM0f156530;
+        Fri, 31 Jul 2020 05:29:09 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32md5bdnkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 31 Jul 2020 05:29:09 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06V9Kru6007361;
+        Fri, 31 Jul 2020 09:29:07 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 32gcq0vc0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 31 Jul 2020 09:29:06 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06V9T4ta58130526
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 31 Jul 2020 09:29:04 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B4AFAA4040;
+        Fri, 31 Jul 2020 09:29:04 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 768DBA404D;
+        Fri, 31 Jul 2020 09:29:02 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 31 Jul 2020 09:29:02 +0000 (GMT)
+Date:   Fri, 31 Jul 2020 14:59:01 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Jordan Niethe <jniethe5@gmail.com>
+Subject: Re: [PATCH v4 06/10] powerpc/smp: Generalize 2nd sched domain
+Message-ID: <20200731092901.GH14603@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com>
+ <20200727053230.19753-7-srikar@linux.vnet.ibm.com>
+ <875za45dr2.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200730202524.5upzuh4irboru7my@smtp.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <875za45dr2.fsf@mpe.ellerman.id.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-31_02:2020-07-31,2020-07-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ suspectscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007310068
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 05:25:24PM -0300, Melissa Wen wrote:
-> The previous memset operation was not correctly zeroing the alpha
-> channel to compute the crc, and as a result, the IGT subtest
-> kms_cursor_crc/pipe-A-cursor-alpha-transparent fails.
+* Michael Ellerman <mpe@ellerman.id.au> [2020-07-31 17:45:37]:
+
+> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+> > Currently "CACHE" domain happens to be the 2nd sched domain as per
+> > powerpc_topology. This domain will collapse if cpumask of l2-cache is
+> > same as SMT domain. However we could generalize this domain such that it
+> > could mean either be a "CACHE" domain or a "BIGCORE" domain.
+> >
+> > While setting up the "CACHE" domain, check if shared_cache is already
+> > set.
 > 
-> Fixes: db7f419c06d7c ("drm/vkms: Compute CRC with Cursor Plane")
+> PeterZ asked for some overview of what you're doing and why, you
+> responded to his mail, but I was expecting to see that text incorporated
+> here somewhere.
 > 
-> Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
 
-Applied to drm-misc-next, thanks for your patch.
+Okay, do you want that as part of the code or documentation dir or the
+changelog?
 
-> ---
->  drivers/gpu/drm/vkms/vkms_composer.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> He also asked for some comments, which I would also like to see.
 > 
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-> index 4af2f19480f4..b8b060354667 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -33,7 +33,7 @@ static uint32_t compute_crc(void *vaddr_out, struct vkms_composer *composer)
->  				     + (i * composer->pitch)
->  				     + (j * composer->cpp);
->  			/* XRGB format ignores Alpha channel */
-> -			memset(vaddr_out + src_offset + 24, 0,  8);
-> +			bitmap_clear(vaddr_out + src_offset, 24, 8);
+> 
+> I'm also not clear why we want to rename it to "bigcore", that's not a
+> commonly understood term, I don't think it's clear to new readers what
+> it means.
+> 
+> Leaving it as the shared cache domain, and having a comment mentioning
+> that "bigcores" share a cache, would be clearer I think.
+> 
 
-Yeah that's a pretty good "oops" oversight on review, nice catch!
+Today, Shared cache is equal to Big Core. However in not too distant future,
+Shared cache domain and Big Core may not be the same. For example lets
+assume that L2 cache were to Shrink per small core with the firmware
+exposing the core as a bigcore. Then with the current design, we have a SMT
+== SHARED CACHE, and a DIE. We would not have any domain at the publicised 8
+thread level. Keeping the Bigcore as a domain and mapping the shared
+cache, (I am resetting the domain name as CACHE if BIGCORE==SHARED_CACHE),
+helps us in this scenario.
 
-Cheers, Daniel
->  			crc = crc32_le(crc, vaddr_out + src_offset,
->  				       sizeof(u32));
->  		}
-> -- 
-> 2.27.0
+> cheers
 > 
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks and Regards
+Srikar Dronamraju
