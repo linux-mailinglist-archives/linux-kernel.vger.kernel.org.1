@@ -2,150 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D207C234198
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E12523419D
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731985AbgGaIzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 04:55:32 -0400
-Received: from mga01.intel.com ([192.55.52.88]:41906 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731442AbgGaIzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 04:55:31 -0400
-IronPort-SDR: BBBlt642vWrM5ZPobpU6T6fIq0qDLMaiNDsYo4eVI3RYeSZUO2kwYx45qIxbfYA+QH0z3ewrFM
- 7Zgo3gkwlYog==
-X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="169859896"
-X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
-   d="scan'208";a="169859896"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 01:55:30 -0700
-IronPort-SDR: nmb+XMoh02PUfQprcyXyK12f7cs2TJZ1rnJC+wHXlxz0GZKdWy7TrE/C5yDmNNPxGzzrkwFHxR
- YzCCCsT7x3hQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
-   d="scan'208";a="304882293"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002.jf.intel.com with ESMTP; 31 Jul 2020 01:55:28 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1k1Qp5-005H7g-ML; Fri, 31 Jul 2020 11:55:27 +0300
-Date:   Fri, 31 Jul 2020 11:55:27 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Kars Mulder <kerneldev@karsmulder.nl>
-Cc:     linux-kernel@vger.kernel.org, Eldad Zack <eldad@fogrefinery.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mans Rullgard <mans@mansr.com>, Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 2/2] kstrto*: do not describe simple_strto*() as
- obsolete/replaced
-Message-ID: <20200731085527.GH3703480@smile.fi.intel.com>
-References: <1ee1-5f234c00-f3-165a6440@234394593>
- <29b9-5f234c80-13-4e3aa200@244003027>
+        id S1732007AbgGaI4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 04:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730268AbgGaI4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 04:56:00 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4F3C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 01:56:00 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y3so27272303wrl.4
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 01:56:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QBHE4fKMCp+5Jv6t916ly0w3GcK657wBATaaYaxh1gY=;
+        b=TNhS5V4Kk+yxheLlhpcZnfBkwhlgx8+ZAZxw2Ih5ksJHBysM9Oij6StSM1aFYAzFOe
+         cisWFjkl4ypUTsEeonVS7nzrpNEbLIGOMP9+XwwD8NPry9WIVl8zYX8Vd5EuQpHJ8om0
+         Dw23aX8K/tEr0biihIumiS/L2j+u0k7/qtbO4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QBHE4fKMCp+5Jv6t916ly0w3GcK657wBATaaYaxh1gY=;
+        b=ifLkP1/5LGn4Pt6W1MpfCTmaOdHyGapX8hETOHdK8HR/sNAlUvL7G0C3XJhauUR3cW
+         7Rf22keik3cM1pgD4YO/zXfRVH3dV4eoFwTzQBFQyEOZes8e7aECcBX/mzcDyiJZ6Pzi
+         ioHXc6M7aztszO4dq3NlPLlfjpNkPugLcy00yPSnRyenZLu2XzPIcuVBfcVMHtPANxZX
+         fgaptjsnqmBPuIWk0DiiUmeeLxZxiT+Xq0570lG879m0uqfC1aUFqiLIMf/rGXyXCRG/
+         iENsY+EZYZz6VDywivO3WgJU8syLU+n2OZzedep6Yi+9b5Z+IMQxMTszEjhivuQNOxel
+         qgew==
+X-Gm-Message-State: AOAM532CNc2U1OZjVqt8v1BlJcmRDrksSh2ehnzkA9qwFa+UyqzVt/Y8
+        DeUbylDNhZOIb++2wa9j0cZM4+bYmCZHb/0fSP0+8A==
+X-Google-Smtp-Source: ABdhPJyGTqAhhgmPxuFWPKILcG7b7cETS/CyJEmEASBTALmXAIDy5oozTL7G+AC8j8/n4iSVyuth8NixAQgLERsxAkY=
+X-Received: by 2002:a5d:5588:: with SMTP id i8mr2530132wrv.177.1596185758972;
+ Fri, 31 Jul 2020 01:55:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29b9-5f234c80-13-4e3aa200@244003027>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200721104422.369368-1-cychiang@chromium.org>
+ <20200721104422.369368-3-cychiang@chromium.org> <CA+Px+wUEQqe0dOeHBFxOEFG5QctTipj6egu94OD+LvYmSunaTQ@mail.gmail.com>
+In-Reply-To: <CA+Px+wUEQqe0dOeHBFxOEFG5QctTipj6egu94OD+LvYmSunaTQ@mail.gmail.com>
+From:   Cheng-yi Chiang <cychiang@chromium.org>
+Date:   Fri, 31 Jul 2020 16:55:31 +0800
+Message-ID: <CAFv8Nw+HYUc5fHkJUe+Exsufyvve9ZHTxbzG0EukwiA7ugJwag@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ASoC: qcom: sc7180: Add machine driver for sound
+ card registration
+To:     Tzung-Bi Shih <tzungbi@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        Ajit Pandey <ajitp@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 12:40:29AM +0200, Kars Mulder wrote:
-> The documentation of the kstrto*() functions describes kstrto*() as
-> "replacements" of the "obsolete" simple_strto*() functions. Both of
-> these terms are inaccurate: they're not replacements because they have
-> different behaviour, and the simple_strto*() are not obsolete because
-> there are cases where they have benefits over kstrto*().
-> 
-> Remove usage of the terms "replacement" and "obsolete" in reference
-> to simple_strto*(), and instead use the term "preferred over".
+On Wed, Jul 22, 2020 at 11:15 AM Tzung-Bi Shih <tzungbi@google.com> wrote:
+>
+> On Tue, Jul 21, 2020 at 6:44 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
+> > diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
+> > new file mode 100644
+> > index 000000000000..3beb2b129d01
+> > --- /dev/null
+> > +++ b/sound/soc/qcom/sc7180.c
+> > @@ -0,0 +1,380 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +//
+> > +//Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> > +//
+> > +//sc7180.c -- ALSA SoC Machine driver for SC7180
+> Insert an extra space between // and text to make it look better.
+>
+Fixed in v3.
+> > +static int sc7180_headset_init(struct snd_soc_component *component);
+> > +
+> > +static struct snd_soc_aux_dev sc7180_headset_dev = {
+> > +       .dlc = COMP_EMPTY(),
+> > +       .init = sc7180_headset_init,
+> > +};
+> Move definition of sc7180_headset_dev after sc7180_headset_init( ) so
+> that you don't need forward declaration of sc7180_headset_init( ).
+>
+Fixed in v3.
+> > +static unsigned int primary_dai_fmt = SND_SOC_DAIFMT_CBS_CFS |
+> > +                                     SND_SOC_DAIFMT_NB_NF |
+> > +                                     SND_SOC_DAIFMT_I2S;
+> > +
+> > +static int sc7180_snd_startup(struct snd_pcm_substream *substream)
+> > +{
+> > +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> > +       struct snd_soc_card *card = rtd->card;
+> > +       struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
+> > +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+> > +       struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+> > +       int ret;
+> > +
+> > +       switch (cpu_dai->id) {
+> > +       case MI2S_PRIMARY:
+> > +               if (++data->pri_mi2s_clk_count == 1) {
+> > +                       snd_soc_dai_set_sysclk(cpu_dai,
+> > +                                              LPASS_MCLK0,
+> > +                                              DEFAULT_MCLK_RATE,
+> > +                                              SNDRV_PCM_STREAM_PLAYBACK);
+> > +               }
+> > +               snd_soc_dai_set_fmt(codec_dai, primary_dai_fmt);
+> My comment on the previous thread may mislead.  My original intent:
+> move the DAIFMT setting to DAI link->dai_fmt in sc7180_parse_of( ).
+>
+> If you need to keep it as is: inline the SND_SOC_DAIFMT_* into
+> snd_soc_dai_set_fmt( ) (i.e. eliminate primary_dai_fmt).
+>
+Fixed in v3. Since in v3 I am reusing parse function in common.c, I
+will keep the format setting in startup.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > +static int sc7180_parse_of(struct snd_soc_card *card)
+> > +{
+> > +       struct device_node *np;
+> > +       struct device_node *codec = NULL;
+> > +       struct device_node *platform = NULL;
+> The function doesn't use platform.
+>
 
-> Fixes: 4c925d6031f71 ("kstrto*: add documentation")
-> Fixes: 885e68e8b7b13 ("kernel.h: update comment about simple_strto<foo>() functions")
-> Signed-off-by: Kars Mulder <kerneldev@karsmulder.nl>
-> 
-> ---
->  include/linux/kernel.h |  4 ++--
->  lib/kstrtox.c          | 12 ++++--------
->  2 files changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> index 2d6050f12c64..35fd7e0e3f04 100644
-> --- a/include/linux/kernel.h
-> +++ b/include/linux/kernel.h
-> @@ -346,7 +346,7 @@ int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
->   * @res: Where to write the result of the conversion on success.
->   *
->   * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-> - * Used as a replacement for the simple_strtoul(). Return code must be checked.
-> + * Preferred over simple_strtoul(). Return code must be checked.
->  */
->  static inline int __must_check kstrtoul(const char *s, unsigned int base, unsigned long *res)
->  {
-> @@ -374,7 +374,7 @@ static inline int __must_check kstrtoul(const char *s, unsigned int base, unsign
->   * @res: Where to write the result of the conversion on success.
->   *
->   * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-> - * Used as a replacement for the simple_strtol(). Return code must be checked.
-> + * Preferred over simple_strtol(). Return code must be checked.
->   */
->  static inline int __must_check kstrtol(const char *s, unsigned int base, long *res)
->  {
-> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
-> index 252ac414ba9a..a14ccf905055 100644
-> --- a/lib/kstrtox.c
-> +++ b/lib/kstrtox.c
-> @@ -115,8 +115,7 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
->   * @res: Where to write the result of the conversion on success.
->   *
->   * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-> - * Used as a replacement for the obsolete simple_strtoull(). Return code must
-> - * be checked.
-> + * Preferred over simple_strtoull(). Return code must be checked.
->   */
->  int kstrtoull(const char *s, unsigned int base, unsigned long long *res)
->  {
-> @@ -139,8 +138,7 @@ EXPORT_SYMBOL(kstrtoull);
->   * @res: Where to write the result of the conversion on success.
->   *
->   * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-> - * Used as a replacement for the obsolete simple_strtoll(). Return code must
-> - * be checked.
-> + * Preferred over simple_strtoll(). Return code must be checked.
->   */
->  int kstrtoll(const char *s, unsigned int base, long long *res)
->  {
-> @@ -211,8 +209,7 @@ EXPORT_SYMBOL(_kstrtol);
->   * @res: Where to write the result of the conversion on success.
->   *
->   * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-> - * Used as a replacement for the obsolete simple_strtoul(). Return code must
-> - * be checked.
-> + * Preferred over simple_strtoul(). Return code must be checked.
->   */
->  int kstrtouint(const char *s, unsigned int base, unsigned int *res)
->  {
-> @@ -242,8 +239,7 @@ EXPORT_SYMBOL(kstrtouint);
->   * @res: Where to write the result of the conversion on success.
->   *
->   * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-> - * Used as a replacement for the obsolete simple_strtol(). Return code must
-> - * be checked.
-> + * Preferred over simple_strtol(). Return code must be checked.
->   */
->  int kstrtoint(const char *s, unsigned int base, int *res)
->  {
-> --
-> 2.28.0
-> 
+sc7180_parse_of is removed in v3.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> > +       struct device_node *cpu = NULL;
+> > +       struct device *dev = card->dev;
+> > +       struct snd_soc_dai_link *link;
+> > +       struct of_phandle_args args;
+> > +       struct snd_soc_dai_link_component *dlc;
+> > +       int ret, num_links;
+> > +
+> > +       ret = snd_soc_of_parse_card_name(card, "model");
+> > +       if (ret) {
+> > +               dev_err(dev, "Error parsing card name: %d\n", ret);
+> > +               return ret;
+> > +       }
+> > +
+> > +       /* DAPM routes */
+> > +       if (of_property_read_bool(dev->of_node, "audio-routing")) {
+> > +               ret = snd_soc_of_parse_audio_routing(card,
+> > +                                                    "audio-routing");
+> > +               if (ret)
+> > +                       return ret;
+> > +       }
+> > +
+> > +       /* headset aux dev. */
+> > +       sc7180_headset_dev.dlc.of_node = of_parse_phandle(
+> > +                       dev->of_node, "aux-dev", 0);
+> > +       if (!sc7180_headset_dev.dlc.of_node) {
+> > +               dev_err(dev,
+> > +                       "Property 'aux-dev' missing/invalid\n");
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       /* Populate links */
+> > +       num_links = of_get_child_count(dev->of_node);
+> Eliminate num_links but use card->num_links directly.
+>
+> > +
+> > +       /* Allocate the DAI link array */
+> > +       card->dai_link = devm_kcalloc(dev, num_links, sizeof(*link),
+> > +                                     GFP_KERNEL);
+> > +       if (!card->dai_link)
+> > +               return -ENOMEM;
+> > +
+> > +       card->num_links = num_links;
+> Ditto, eliminate it.
+>
+> > +       link = card->dai_link;
+> > +
+> Eliminate the blank line to make "link = card->dai_link" and the
+> following for-loop "a whole thing".
+>
+> > +       for_each_child_of_node(dev->of_node, np) {
+> > +               dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
+> > +               if (!dlc)
+> > +                       return -ENOMEM;
+> > +
+> > +               link->cpus      = &dlc[0];
+> > +               link->platforms = &dlc[1];
+> > +
+> > +               link->num_cpus          = 1;
+> > +               link->num_platforms     = 1;
+> > +
+> > +               ret = of_property_read_string(np, "link-name", &link->name);
+> > +               if (ret) {
+> > +                       dev_err(card->dev,
+> > +                               "error getting codec dai_link name\n");
+> > +                       goto err;
+> > +               }
+> > +
+> > +               link->playback_only = of_property_read_bool(np,
+> > +                                                           "playback_only");
+> > +               link->capture_only = of_property_read_bool(np,
+> > +                                                          "capture_only");
+> > +
+> > +               if (link->playback_only && link->capture_only) {
+> > +                       dev_err(card->dev,
+> > +                               "getting both playback and capture only\n");
+> ret = -EINVAL;
+>
+> > +                       goto err;
+> > +               }
+> > +
+> > +               cpu = of_get_child_by_name(np, "cpu");
+> > +               codec = of_get_child_by_name(np, "codec");
+> Move to below.
+>
+> > +
+> > +               if (!cpu) {
+> > +                       dev_err(dev, "%s: Can't find cpu DT node\n",
+> > +                               link->name);
+> > +                       ret = -EINVAL;
+> > +                       goto err;
+> > +               }
+> > +
+> > +               ret = of_parse_phandle_with_args(cpu, "sound-dai",
+> > +                                                "#sound-dai-cells", 0, &args);
+> I may overlook it but I failed to find "#sound-dai-cells" in the
+> dt-binding example.  I think it should be in DTS?
+>
+> > +               if (ret) {
+> > +                       dev_err(card->dev, "%s: error getting cpu phandle\n",
+> > +                               link->name);
+> > +                       goto err;
+> > +               }
+> > +               link->cpus->of_node = args.np;
+> > +               link->id = args.args[0];
+> I am not quite sure what it will be.  I guess one of the following
+> comes from DTS node name.
+> #define MI2S_PRIMARY 0
+> #define MI2S_SECONDARY 1
+>
+> > +
+> > +               ret = snd_soc_of_get_dai_name(cpu, &link->cpus->dai_name);
+> > +               if (ret) {
+> > +                       dev_err(card->dev, "%s: error getting cpu dai name\n",
+> > +                               link->name);
+> > +                       goto err;
+> > +               }
+> > +
+>
+> Move "codec = of_get_child_by_name(np, "codec");" to here.
+> > +               if (codec) {
+> > +                       ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
+> > +                       if (ret < 0) {
+> > +                               dev_err(card->dev, "%s: codec dai not found\n",
+> > +                                       link->name);
+> > +                               goto err;
+> > +                       }
+> > +               } else {
+> > +                       dlc = devm_kzalloc(dev, sizeof(*dlc), GFP_KERNEL);
+> > +                       if (!dlc)
+> > +                               return -ENOMEM;
+> > +
+> > +                       link->codecs     = dlc;
+> > +                       link->num_codecs = 1;
+> > +
+> > +                       link->codecs->dai_name = "snd-soc-dummy-dai";
+> > +                       link->codecs->name = "snd-soc-dummy";
+> > +               }
+> > +
+> > +               link->platforms->of_node = link->cpus->of_node;
+> > +               link->stream_name = link->name;
+> > +               link->ops = &sc7180_ops;
+> > +               link++;
+> > +
+> > +               of_node_put(cpu);
+> > +               of_node_put(codec);
+> cpu = NULL;
+> codec = NULL;
+> In case of double of_node_put( ).
+>
+> > +       }
+> > +
+> > +       return 0;
+> > +err:
+> > +       of_node_put(np);
+> I guess you don't need this.
+>
+> > +       of_node_put(cpu);
+> > +       of_node_put(codec);
+> > +       of_node_put(platform);
+> Eliminate it, not used.
+>
+> > +static int sc7180_snd_platform_probe(struct platform_device *pdev)
+> > +{
+> > +       struct snd_soc_card *card;
+> > +       struct sc7180_snd_data *data;
+> > +       struct device *dev = &pdev->dev;
+> > +       int ret;
+> > +
+> > +       card = &sc7180_card;
+> In this case, inline the initialization while declaration.
+>
+Fixed in v3.
+> > +
+> > +       /* Allocate the private data */
+> > +       data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> > +       if (!data)
+> > +               return -ENOMEM;
+> > +
+> > +       card->dapm_widgets = sc7180_snd_widgets;
+> > +       card->num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets);
+> Remove them.
+>
+Fixed in v3.
+> > +       card->dev = dev;
+> > +       dev_set_drvdata(dev, card);
+> I guess you don't need this if using devm_snd_soc_register_card(...).
+>
+> Insert a blank line.
 
+Fixed in v3.
+> > +       ret = sc7180_parse_of(card);
+> > +       if (ret) {
+> > +               dev_err(dev, "Error parsing OF data\n");
+> > +               return ret;
+> > +       }
+> > +
+> > +       data->card = card;
+> Looks like data->card is not used.
+>
+Removed in v3.
+> > +       snd_soc_card_set_drvdata(card, data);
+> > +
+> > +       ret = snd_soc_register_card(card);
+> > +       if (ret) {
+> > +               dev_err(dev, "Sound card registration failed\n");
+> > +               return ret;
+> > +       }
+> > +       return ret;
+> Just return devm_snd_soc_register_card(...);
+>
+Fixed in v3.
+> > +static int sc7180_snd_platform_remove(struct platform_device *pdev)
+> > +{
+> > +       struct snd_soc_card *card = dev_get_drvdata(&pdev->dev);
+> > +
+> > +       snd_soc_unregister_card(card);
+> > +       return 0;
+> > +}
+> Can be removed if using devm_snd_soc_register_card( ).
+>
+>
+Removed in v3.
+> I didn't go through all the cases.  But it would be better if all "if
+> (ret < 0)" can be replaced to "if (ret)".
+Fixed in v3.
 
+Thanks for the review!
