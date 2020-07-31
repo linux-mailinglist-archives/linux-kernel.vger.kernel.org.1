@@ -2,45 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038302342C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87ABC2342A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732745AbgGaJZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:25:46 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56642 "EHLO
+        id S1732625AbgGaJYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:24:12 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56476 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732478AbgGaJXc (ORCPT
+        with ESMTP id S1732482AbgGaJXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:23:32 -0400
-Date:   Fri, 31 Jul 2020 09:23:29 -0000
+        Fri, 31 Jul 2020 05:23:33 -0400
+Date:   Fri, 31 Jul 2020 09:23:30 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187410;
+        s=2020; t=1596187411;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JhrRTNkblEy9fiHS7mHtK3ngxNeRI3mHZi3tvKBu/ug=;
-        b=Y5Cx8OjaEuSbY26cUG/gaXXF78WJmSSkKUk37E4dfFvQDLyMASK+APa9LxIk4n31NEmpLb
-        L0q3Md3TDp5hlFy3RWtWiOgdjhpewbPS5trV4xv6VDqD5KTsyRMAkzThfu4AUFzp2ZRJdI
-        MLJpKP1NupArXeuNAxZYVqs93NmKoeBjHXRo7INK1mYXLWWzazssro6G7dTMDJGNBlrIJ2
-        cKoGuXMhY0NPFz1P6XH1GhPsI7sSyaM1p/4eAH8aTjtMSCzeLO7vOuTm00KITw/fvWEWAf
-        Etw3LaCHXmbYU/WTR0xZyiVIF2vldcPqjn5gbarV22G0odyHyRLKG9pzSRr2hg==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0KgVErvS4zYfMOo0kghBf5qhs87t54iZnK/iBrfC4MM=;
+        b=DqgG4WzyNSO8UibuI+V9uzWXIo3EQAXF4BMxYEACjM421IRUfE75w1NdxsdHhkKcfaSo8F
+        kC9D2BSBWtelKzieVGfSI1bXYJDtUwzVg8VLEjnockSQ+BQaDfoCVvDbo8GhGw3wdPW1J+
+        Cxa1gq/89ZIdXtyzaPqm+6rfjlRudmXC8/fmZ733JYcwyYWXmPKaAdbuox34ubPFJ2glUN
+        /vPI9AwPn0mdvU50Z4FCloYDW9rgIhX2ttvhbqkdGwDT6bo9PNV41cLEIy0/QOgbbMntDb
+        jlscY6YYPLMh4YwRylDpZiK/hBODkhjw96z+BZXmRvrZwv211axUt3GaycoHUg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187410;
+        s=2020e; t=1596187411;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JhrRTNkblEy9fiHS7mHtK3ngxNeRI3mHZi3tvKBu/ug=;
-        b=u4/fa/CwmJSxDNi/p7q4dsqsScnr3YNuDIpmtPbZO2OvgIDjXjVn9eAUKbVqF0+xbRiCW3
-        HGDDn7vAqX6/TPAg==
-From:   "tip-bot2 for Jules Irenge" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0KgVErvS4zYfMOo0kghBf5qhs87t54iZnK/iBrfC4MM=;
+        b=gTvfxXCGLXWCswwUYatvquvpQRsNFKTc5GifxeRTrUcqsOdSwK118ZUSwMMPn+LLarDdGJ
+        IXaYny69D6g1TxDA==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu: Replace 1 with true
-Cc:     Jules Irenge <jbi.octave@gmail.com>,
+Subject: [tip: core/rcu] lockdep: Complain only once about RCU in extended
+ quiescent state
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <87wo4wnpzb.fsf@nanos.tec.linutronix.de>
+References: <87wo4wnpzb.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Message-ID: <159618740988.4006.10146199172578291285.tip-bot2@tip-bot2>
+Message-ID: <159618741060.4006.12964143796256427824.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -52,39 +60,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     e40bb921119814c6f746891af9cd37eccda616a4
-Gitweb:        https://git.kernel.org/tip/e40bb921119814c6f746891af9cd37eccda616a4
-Author:        Jules Irenge <jbi.octave@gmail.com>
-AuthorDate:    Mon, 01 Jun 2020 19:45:49 +01:00
+Commit-ID:     d29e0b26b020422cc51b5b51733cc50fcf443965
+Gitweb:        https://git.kernel.org/tip/d29e0b26b020422cc51b5b51733cc50fcf443965
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Thu, 28 May 2020 08:49:29 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 29 Jun 2020 11:58:51 -07:00
 
-rcu: Replace 1 with true
+lockdep: Complain only once about RCU in extended quiescent state
 
-Coccinelle reports a warning
+Currently, lockdep_rcu_suspicious() complains twice about RCU read-side
+critical sections being invoked from within extended quiescent states,
+for example:
 
-WARNING: Assignment of 0/1 to bool variable
+	RCU used illegally from idle CPU!
+	rcu_scheduler_active = 2, debug_locks = 1
+	RCU used illegally from extended quiescent state!
 
-The root cause is that the variable lastphase is a bool, but is
-initialised with integer 1.  This commit therefore replaces the 1 with
-a true.
+This commit therefore saves a couple lines of code and one line of
+console-log output by eliminating the first of these two complaints.
 
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+Link: https://lore.kernel.org/lkml/87wo4wnpzb.fsf@nanos.tec.linutronix.de
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/update.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/locking/lockdep.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index ca17b77..a0ba885 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -207,7 +207,7 @@ void rcu_end_inkernel_boot(void)
- 	rcu_unexpedite_gp();
- 	if (rcu_normal_after_boot)
- 		WRITE_ONCE(rcu_normal, 1);
--	rcu_boot_ended = 1;
-+	rcu_boot_ended = true;
- }
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 29a8de4..0a7549d 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5851,9 +5851,7 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
+ 	pr_warn("\n%srcu_scheduler_active = %d, debug_locks = %d\n",
+ 	       !rcu_lockdep_current_cpu_online()
+ 			? "RCU used illegally from offline CPU!\n"
+-			: !rcu_is_watching()
+-				? "RCU used illegally from idle CPU!\n"
+-				: "",
++			: "",
+ 	       rcu_scheduler_active, debug_locks);
  
- /*
+ 	/*
