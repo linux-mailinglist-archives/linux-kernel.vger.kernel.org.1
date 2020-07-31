@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C21234334
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8079234268
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732225AbgGaJWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732167AbgGaJWk (ORCPT
+        id S1732212AbgGaJWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:22:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56338 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732083AbgGaJWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 31 Jul 2020 05:22:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329F2C06174A;
-        Fri, 31 Jul 2020 02:22:40 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 09:22:37 -0000
+Date:   Fri, 31 Jul 2020 09:22:38 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1596187358;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=XFOpBXf1QINttH+m9MtjYamLhfIhx4ZawLItFUfuuQg=;
-        b=bw2p74NcEe7Bvk+Ii6+UIPaMa6IfFR0SzfrC85U44eRgzAZgNaR4wE4tqz8TJGIGJK4GnK
-        ehLCaCR+adslJi2krncJ2qxAI3KMFDA9XHDMksFuUCJlnIeppiMRX9mhl8GNu27k7p4VJb
-        PTF4Og+j66RyHzLUOmzHn8Asdsi2Bu4VDumAMKqIeT/JWSE6VjDR0fX9fyg44cUshtJnOX
-        iy3H4o+Duzfw0QwRcypIqgnz95XqJmLIf6q3mu2NJatdhQyS+koRRMSBhowSsqOy+yRoAC
-        lMa1RbVxxTCtud6BF6Gr8h1+E0F1+XTSjOibs4EOZH0qfQdvJgPYEymiOz7Fdg==
+        bh=NNCeDoN6ksX+5EL8iE2AHqZrfS7RJ3bRGy9oCrYKoRU=;
+        b=Le+u6q1IsV23jGfw8DxtZ7xVuFB8mflZNQmwwFiUEjeOCclcgFoahck8OuvjOwFGSBdL82
+        IbG/Rut7TYVdMsu19PGYcDbZAZvfv5otoHtr0/ZD+LZUxhrEBFehqmP9U4mKBxPLTp2h/J
+        HRyvPlbldk+l0DGjruPL8Ijdki0FdYoQmT7fjGEahAeRCl9zvaVYsTiQ9zTQO4zEP92isU
+        hceHVlOYvMhQfPlQo3PJn0owWKNt3aQlrtKozLD8f1CXseS3/sG9f/ENbn8iGvCLwXZij6
+        UstEu1rFLPLhUSRqut0CpRPb51tVA1BlfKvftFNIWm35HNccQbEmepOP1ch/aA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1596187358;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=XFOpBXf1QINttH+m9MtjYamLhfIhx4ZawLItFUfuuQg=;
-        b=OJn0c4f8VpBiQ4A71XLzo++7JJeH65uv7uXu9N1gS97hUuPazLDcAImSZ3mzfGZb0rfZp5
-        DEqkzLp75Lbt3YCw==
+        bh=NNCeDoN6ksX+5EL8iE2AHqZrfS7RJ3bRGy9oCrYKoRU=;
+        b=Uag0zI9x5g7GhBDSrvy9FyA4h1Y71R1YHVZpJMwHLMrIsD+68RJ/6yq68icdu6zLxBzbui
+        ENPHv92JGSOeaaDQ==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Add kvm-tranform.sh script for qemu-cmd files
+Subject: [tip: core/rcu] torture: Add more tracing crib notes to kvm.sh
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159618735749.4006.11953520228982739185.tip-bot2@tip-bot2>
+Message-ID: <159618735818.4006.13892640783693161073.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,81 +51,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     06efa9b4b27f926eeb8c935f430f8557eb8b106e
-Gitweb:        https://git.kernel.org/tip/06efa9b4b27f926eeb8c935f430f8557eb8b106e
+Commit-ID:     9ccba350bd824ecacbfd8965f4f3ac980b96f951
+Gitweb:        https://git.kernel.org/tip/9ccba350bd824ecacbfd8965f4f3ac980b96f951
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Tue, 16 Jun 2020 14:14:09 -07:00
+AuthorDate:    Tue, 16 Jun 2020 11:16:18 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 29 Jun 2020 12:01:45 -07:00
 
-torture: Add kvm-tranform.sh script for qemu-cmd files
+torture: Add more tracing crib notes to kvm.sh
 
-This commit adds a script that transforms qemu-cmd files to allow them
-and the corresponding kernels to be run in contexts other than the one
-that they were created for, including on systems other than the one that
-they were built on.  For example, this allows the build products from a
---buildonly run to be transformed to allow distributed rcutorture testing.
+This commit adds a few more hints about how to use tracing as comments
+at the end of kvm.sh.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-transform.sh | 51 ++++++++-
- 1 file changed, 51 insertions(+)
- create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-transform.sh
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-transform.sh b/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
-new file mode 100755
-index 0000000..c45a953
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
-@@ -0,0 +1,51 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# Transform a qemu-cmd file to allow reuse.
-+#
-+# Usage: kvm-transform.sh bzImage console.log < qemu-cmd-in > qemu-cmd-out
-+#
-+#	bzImage: Kernel and initrd from the same prior kvm.sh run.
-+#	console.log: File into which to place console output.
-+#
-+# The original qemu-cmd file is provided on standard input.
-+# The transformed qemu-cmd file is on standard output.
-+# The transformation assumes that the qemu command is confined to a
-+# single line.  It also assumes no whitespace in filenames.
-+#
-+# Copyright (C) 2020 Facebook, Inc.
-+#
-+# Authors: Paul E. McKenney <paulmck@kernel.org>
-+
-+image="$1"
-+if test -z "$image"
-+then
-+	echo Need kernel image file.
-+	exit 1
-+fi
-+consolelog="$2"
-+if test -z "$consolelog"
-+then
-+	echo "Need console log file name."
-+	exit 1
-+fi
-+
-+awk -v image="$image" -v consolelog="$consolelog" '
-+{
-+	line = "";
-+	for (i = 1; i <= NF; i++) {
-+		if (line == "")
-+			line = $i;
-+		else
-+			line = line " " $i;
-+		if ($i == "-serial") {
-+			i++;
-+			line = line " file:" consolelog;
-+		}
-+		if ($i == "-kernel") {
-+			i++;
-+			line = line " " image;
-+		}
-+	}
-+	print line;
-+}'
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index 3578c85..bdfa0c0 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -503,3 +503,7 @@ fi
+ # Tracing: trace_event=rcu:rcu_grace_period,rcu:rcu_future_grace_period,rcu:rcu_grace_period_init,rcu:rcu_nocb_wake,rcu:rcu_preempt_task,rcu:rcu_unlock_preempted_task,rcu:rcu_quiescent_state_report,rcu:rcu_fqs,rcu:rcu_callback,rcu:rcu_kfree_callback,rcu:rcu_batch_start,rcu:rcu_invoke_callback,rcu:rcu_invoke_kfree_callback,rcu:rcu_batch_end,rcu:rcu_torture_read,rcu:rcu_barrier
+ # Function-graph tracing: ftrace=function_graph ftrace_graph_filter=sched_setaffinity,migration_cpu_stop
+ # Also --kconfig "CONFIG_FUNCTION_TRACER=y CONFIG_FUNCTION_GRAPH_TRACER=y"
++# Control buffer size: --bootargs trace_buf_size=3k
++# Get trace-buffer dumps on all oopses: --bootargs ftrace_dump_on_oops
++# Ditto, but dump only the oopsing CPU: --bootargs ftrace_dump_on_oops=orig_cpu
++# Heavy-handed way to also dump on warnings: --bootargs panic_on_warn
