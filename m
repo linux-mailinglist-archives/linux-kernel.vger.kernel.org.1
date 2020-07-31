@@ -2,93 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E00234110
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2522340C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731955AbgGaITZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 04:19:25 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:24226 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731875AbgGaITY (ORCPT
+        id S1731788AbgGaICn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 04:02:43 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:59141 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731616AbgGaICm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 04:19:24 -0400
-X-Greylist: delayed 1816 seconds by postgrey-1.27 at vger.kernel.org; Fri, 31 Jul 2020 04:19:23 EDT
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06V7md51021645;
-        Fri, 31 Jul 2020 09:49:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=1+U+fnjITJVBDho/9pxc8EjH2jCC5Fv7LCPjvJFXy28=;
- b=XQrP/KIhunJR/9sCAfCl9PFOop+aF7KNHlAxGcyhNritGL+2sWt3a0PlCN8PR3tPVBuX
- r6TPGvDaRmSTtLWXuS1R4KhUjvbAPohuS9q4rUr6y69MmDOL2mm1CQLTcm9sDtlLLC7q
- QnmC5z/nTR5vvH9Z45kFOUY86HGMoqET6cT9WpbLeEP2BWO6VIZYploVU/qSOuX3lsI0
- RFl9j9z5motnwkrJufIcjmAPYbyY9Lzhe/PWAwpx2rgsPn9odpSExJfWoGaephT0oC2w
- 6MYKQIk4JUhEnYHLDt/2Vr2pFKsMkQKtTJ+wbLEhtJAcocOB4eZRDzrzYRcY0EtMXLEX Qg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 32ga72cag9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 31 Jul 2020 09:49:04 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A09B910002A;
-        Fri, 31 Jul 2020 09:49:03 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8DD4622108B;
-        Fri, 31 Jul 2020 09:49:03 +0200 (CEST)
-Received: from localhost (10.75.127.46) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 31 Jul 2020 09:49:02
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <arnaud.pouliquen@st.com>
-Subject: [PATCH] rpmsg: virtio: fix compilation warning for virtio_rpmsg_channel description
-Date:   Fri, 31 Jul 2020 09:48:50 +0200
-Message-ID: <20200731074850.3262-1-arnaud.pouliquen@st.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 31 Jul 2020 04:02:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596182561; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=MKSQY5RVrXIwpdJw6RKFSgNCGEE7ar+hIe83C8B0HxA=;
+ b=wxS4YMU2VfrNUJH58mNK1eVaQzRZ84zP2Zh7wGtU7ZWvlbTf6MghF+oUUGpQXV2nCpfga1lK
+ hhETzrEq3ozmCC46rB4A1az5S4Gp21jemOomhpSddpFZBmnSo48jtlFsBDaAWQjJaqtaQyyf
+ rqMKIKb3BTi9fbEB4h+wCE0L7AM=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5f23cfa014acd1952be8fde7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 31 Jul 2020 08:00:32
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DF499C433A1; Fri, 31 Jul 2020 08:00:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 881C9C4339C;
+        Fri, 31 Jul 2020 08:00:28 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-31_02:2020-07-31,2020-07-31 signatures=0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 31 Jul 2020 16:00:28 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Stanley Chu <stanley.chu@mediatek.com>,
+        Avri Altman <Avri.Altman@wdc.com>, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, alim.akhtar@samsung.com,
+        jejb@linux.ibm.com, beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com
+Subject: Re: [PATCH v4] scsi: ufs: Cleanup completed request without interrupt
+ notification
+In-Reply-To: <97f1dfb0-41b6-0249-3e82-cae480b0efb6@acm.org>
+References: <20200724140246.19434-1-stanley.chu@mediatek.com>
+ <SN6PR04MB4640B5FC06968244DDACB8BEFC720@SN6PR04MB4640.namprd04.prod.outlook.com>
+ <1596159018.17247.53.camel@mtkswgap22>
+ <97f1dfb0-41b6-0249-3e82-cae480b0efb6@acm.org>
+Message-ID: <8b0a158a7c3ee2165e09290996521ffc@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Complete the virtio_rpmsg_channel structure description to fix a
-compilation warning with W=1 option:
+Hi Bart,
 
-drivers/rpmsg/virtio_rpmsg_bus.c:95: warning: Cannot understand
- * @vrp: the remote processor this channel belongs to
+On 2020-07-31 12:06, Bart Van Assche wrote:
+> On 2020-07-30 18:30, Stanley Chu wrote:
+>> On Mon, 2020-07-27 at 11:18 +0000, Avri Altman wrote:
+>>> Looks good to me.
+>>> But better wait and see if Bart have any further reservations.
+>> 
+>> Would you have any further suggestions?
+> 
+> Today is the first time that I took a look at ufshcd_abort(). The
+> approach of that function looks wrong to me. This is how I think that a
+> SCSI LLD abort handler should work:
+> (1) Serialize against the completion path
+> (__ufshcd_transfer_req_compl()) such that it cannot happen that the
+> abort handler and the regular completion path both call
+> cmd->scsi_done(cmd) at the same time. I'm not sure whether an existing
+> synchronization object can be used for this purpose or whether a new
+> synchronization object has to be introduced to serialize scsi_done()
+> calls from __ufshcd_transfer_req_compl() and ufshcd_abort().
+> (2) While holding that synchronization object, check whether the SCSI
+> command is still outstanding. If so, submit a SCSI abort TMR to the 
+> device.
+> (3) If the command has been aborted, call scsi_done() and return
+> SUCCESS. If aborting failed and the command is still in progress, 
+> return
+> FAILED.
+> 
+> An example is available in srp_abort() in
+> drivers/infiniband/ulp/srp/ib_srp.c.
+> 
+> Bart.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- drivers/rpmsg/virtio_rpmsg_bus.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-index 9006fc7f73d0..7d7ed4e5cce7 100644
---- a/drivers/rpmsg/virtio_rpmsg_bus.c
-+++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-@@ -123,7 +123,12 @@ enum rpmsg_ns_flags {
- };
- 
- /**
-- * @vrp: the remote processor this channel belongs to
-+ * struct virtio_rpmsg_channel - rpmsg channel descriptor
-+ * @rpdev: the rpmsg channel device
-+ * @vrp: the virtio remote processor device this channel belongs to
-+ *
-+ * This structure stores the channel that links the rpmsg device to the virtio
-+ * remote processor device.
-  */
- struct virtio_rpmsg_channel {
- 	struct rpmsg_device rpdev;
--- 
-2.17.1
+AFAIK, sychronization of scsi_done is not a problem here, because scsi 
+layer
+use the atomic state, namely SCMD_STATE_COMPLETE, of a scsi cmd to 
+prevent
+the concurrency of abort and real completion of it.
 
+Check func scsi_times_out(), hope it helps.
+
+enum blk_eh_timer_return scsi_times_out(struct request *req)
+{
+...
+         if (rtn == BLK_EH_DONE) {
+                 /*
+                  * Set the command to complete first in order to prevent 
+a real
+                  * completion from releasing the command while error 
+handling
+                  * is using it. If the command was already completed, 
+then the
+                  * lower level driver beat the timeout handler, and it 
+is safe
+                  * to return without escalating error recovery.
+                  *
+                  * If timeout handling lost the race to a real 
+completion, the
+                  * block layer may ignore that due to a fake timeout 
+injection,
+                  * so return RESET_TIMER to allow error handling another 
+shot
+                  * at this command.
+                  */
+                 if (test_and_set_bit(SCMD_STATE_COMPLETE, &scmd->state))
+                         return BLK_EH_RESET_TIMER;
+                 if (scsi_abort_command(scmd) != SUCCESS) {
+                         set_host_byte(scmd, DID_TIME_OUT);
+                         scsi_eh_scmd_add(scmd);
+                 }
+         }
+}
+
+Thanks,
+
+Can Guo.
