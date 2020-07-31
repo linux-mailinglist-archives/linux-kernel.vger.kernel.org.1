@@ -2,103 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24F6234541
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4520A2344FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733124AbgGaMFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:05:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:56274 "EHLO foss.arm.com"
+        id S1732977AbgGaMAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:00:41 -0400
+Received: from uho.ysoft.cz ([81.19.3.130]:47922 "EHLO uho.ysoft.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733089AbgGaMFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:05:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DA7F1FB;
-        Fri, 31 Jul 2020 05:05:17 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 23DF83F71F;
-        Fri, 31 Jul 2020 05:05:16 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
-Subject: [PATCH v4 10/10] sched/topology: Use prebuilt SD flag degeneration mask
-Date:   Fri, 31 Jul 2020 12:55:02 +0100
-Message-Id: <20200731115502.12954-11-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200731115502.12954-1-valentin.schneider@arm.com>
-References: <20200731115502.12954-1-valentin.schneider@arm.com>
+        id S1732771AbgGaMAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 08:00:35 -0400
+Received: from iota-build.ysoft.local (unknown [10.1.5.151])
+        by uho.ysoft.cz (Postfix) with ESMTP id B87AAA3721;
+        Fri, 31 Jul 2020 14:00:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
+        s=20160406-ysoft-com; t=1596196832;
+        bh=C3An1wwqG0nWOOSDbQp59NJiranQJz7PFMVstRqtbGE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=OvOJK3nMlvhylcphoj8ekMTMUACveJCOSH3mOEmJEu5S1AhPkXeBpz320EmnNRZHI
+         Mmq2jzLeZa1cvMAA+qZ9Ts0KbaJJF47oBMj11RcuVgwt+WnLeIp/pCfX4P84dpGDqs
+         tw31KaGY7qZuLSjpHy/8JSCpMBZyr8B2zDb360xs=
+From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+Subject: [PATCH 3/3] ARM: dts: imx6dl-yapp4: Add support for OLED based on different controller
+Date:   Fri, 31 Jul 2020 14:00:08 +0200
+Message-Id: <1596196808-5067-3-git-send-email-michal.vokac@ysoft.com>
+X-Mailer: git-send-email 2.1.4
+In-Reply-To: <1596196808-5067-1-git-send-email-michal.vokac@ysoft.com>
+References: <1596196808-5067-1-git-send-email-michal.vokac@ysoft.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leverage SD_DEGENERATE_GROUPS_MASK in sd_degenerate() and
-sd_parent_degenerate(). The negation of SD_DEGENERATE_GROUPS_MASK is used
-as the mask of flags not requiring groups, which is equivalent to
-SD_WAKE_AFFINE, IOW is the same as what we have now.
+OLED display consist of an OLED panel and a display controller.
+The displays that were used on yapp4 platform were based on a SSD1305
+controller. These displays are now discontinued and we need to add
+support for a replacement.
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+The new display is based on SSD1309 controller and requires slightly
+different configuration (mirror + segment offset).  We want to support
+both display types so it does no matter which one was used on the assembly
+line. Hence the displays are placed at different I2C addresses.
+
+Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
 ---
- kernel/sched/topology.c | 33 +++++++--------------------------
- 1 file changed, 7 insertions(+), 26 deletions(-)
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi | 15 ++++++++++++++-
+ arch/arm/boot/dts/imx6dl-yapp4-hydra.dts   |  6 +++++-
+ arch/arm/boot/dts/imx6dl-yapp4-orion.dts   |  6 +++++-
+ 3 files changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index c6ecc395c76c..0cc5ce5cd034 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -160,22 +160,12 @@ static int sd_degenerate(struct sched_domain *sd)
- 		return 1;
+diff --git a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+index c4a235d212b6..e626bef768bf 100644
+--- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
++++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+@@ -311,7 +311,20 @@
+ 	pinctrl-0 = <&pinctrl_i2c3>;
+ 	status = "okay";
  
- 	/* Following flags need at least 2 groups */
--	if (sd->flags & (SD_BALANCE_NEWIDLE |
--			 SD_BALANCE_WAKE |
--			 SD_BALANCE_FORK |
--			 SD_BALANCE_EXEC |
--			 SD_ASYM_PACKING |
--			 SD_SHARE_CPUCAPACITY |
--			 SD_ASYM_CPUCAPACITY |
--			 SD_SHARE_PKG_RESOURCES |
--			 SD_OVERLAP |
--			 SD_PREFER_SIBLING)) {
--		if (sd->groups != sd->groups->next)
--			return 0;
--	}
-+	if ((sd->flags & SD_DEGENERATE_GROUPS_MASK) &&
-+	    (sd->groups != sd->groups->next))
-+		return 0;
- 
- 	/* Following flags don't use groups */
--	if (sd->flags & (SD_WAKE_AFFINE))
-+	if (sd->flags & ~SD_DEGENERATE_GROUPS_MASK)
- 		return 0;
- 
- 	return 1;
-@@ -193,18 +183,9 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
- 		return 0;
- 
- 	/* Flags needing groups don't count if only 1 group in parent */
--	if (parent->groups == parent->groups->next) {
--		pflags &= ~(SD_BALANCE_NEWIDLE |
--			    SD_BALANCE_WAKE |
--			    SD_BALANCE_FORK |
--			    SD_BALANCE_EXEC |
--			    SD_ASYM_PACKING |
--			    SD_ASYM_CPUCAPACITY |
--			    SD_SHARE_CPUCAPACITY |
--			    SD_SHARE_PKG_RESOURCES |
--			    SD_OVERLAP |
--			    SD_PREFER_SIBLING);
--	}
-+	if (parent->groups == parent->groups->next)
-+		pflags &= ~SD_DEGENERATE_GROUPS_MASK;
+-	oled: oled@3d {
++	oled_1309: oled@3c {
++		compatible = "solomon,ssd1309fb-i2c";
++		reg = <0x3c>;
++		solomon,height = <64>;
++		solomon,width = <128>;
++		solomon,page-offset = <0>;
++		solomon,segment-no-remap;
++		solomon,prechargep2 = <15>;
++		reset-gpios = <&gpio_oled 1 GPIO_ACTIVE_LOW>;
++		vbat-supply = <&sw2_reg>;
++		status = "disabled";
++	};
 +
- 	if (~cflags & pflags)
- 		return 0;
++	oled_1305: oled@3d {
+ 		compatible = "solomon,ssd1305fb-i2c";
+ 		reg = <0x3d>;
+ 		solomon,height = <64>;
+diff --git a/arch/arm/boot/dts/imx6dl-yapp4-hydra.dts b/arch/arm/boot/dts/imx6dl-yapp4-hydra.dts
+index 6010d3d872ab..a19609c7c7c0 100644
+--- a/arch/arm/boot/dts/imx6dl-yapp4-hydra.dts
++++ b/arch/arm/boot/dts/imx6dl-yapp4-hydra.dts
+@@ -29,7 +29,11 @@
+ 	status = "okay";
+ };
+ 
+-&oled {
++&oled_1305 {
++	status = "okay";
++};
++
++&oled_1309 {
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm/boot/dts/imx6dl-yapp4-orion.dts b/arch/arm/boot/dts/imx6dl-yapp4-orion.dts
+index 0428720417ef..884b236746bb 100644
+--- a/arch/arm/boot/dts/imx6dl-yapp4-orion.dts
++++ b/arch/arm/boot/dts/imx6dl-yapp4-orion.dts
+@@ -25,7 +25,11 @@
+ 	status = "okay";
+ };
+ 
+-&oled {
++&oled_1305 {
++	status = "okay";
++};
++
++&oled_1309 {
+ 	status = "okay";
+ };
  
 -- 
-2.27.0
+2.1.4
 
