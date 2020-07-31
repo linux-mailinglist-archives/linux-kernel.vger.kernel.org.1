@@ -2,73 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F69233DBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 05:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC29233DC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 05:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731314AbgGaDjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 23:39:11 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:20282 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731199AbgGaDjJ (ORCPT
+        id S1731354AbgGaDkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 23:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731317AbgGaDkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 23:39:09 -0400
-X-UUID: 900d5a9cec694ea3b38005d46e34a007-20200731
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=1ERRm3aXwOnbFAuF3CGICnm9rLGKEtIUDiGMxxFg0OM=;
-        b=YM3g9zUhNE4RO4twTYyzLRvTU/yLXrKX82OY6uk5FyK3tNtzp0YKC5b9c4KEOEsTMQj6J2gsRsRjyf2ZWL0S1onBr08e1UN5VtOTBGn0aGpXvFhsD7iCFWsk/E58zse21Sssboaj2JHdLJdyJ8XuIB5WKn4TqRdkU6vWV2Fzlwk=;
-X-UUID: 900d5a9cec694ea3b38005d46e34a007-20200731
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <neal.liu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1071401226; Fri, 31 Jul 2020 11:39:06 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 31 Jul 2020 11:39:04 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 31 Jul 2020 11:39:06 +0800
-From:   Neal Liu <neal.liu@mediatek.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-CC:     Neal Liu <neal.liu@mediatek.com>, <linux-acpi@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
-Subject: [PATCH] acpi: fix 'return' with no value build warning
-Date:   Fri, 31 Jul 2020 11:39:04 +0800
-Message-ID: <1596166744-2954-2-git-send-email-neal.liu@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1596166744-2954-1-git-send-email-neal.liu@mediatek.com>
-References: <1596166744-2954-1-git-send-email-neal.liu@mediatek.com>
+        Thu, 30 Jul 2020 23:40:17 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C0EC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 20:40:16 -0700 (PDT)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 1C375891AD;
+        Fri, 31 Jul 2020 15:40:10 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1596166810;
+        bh=c3Mb1DFTef2VM1YjD4w1WXqceQCGAk0yf6N673Ih9A8=;
+        h=From:To:Cc:Subject:Date;
+        b=mAWv57ldWaW48EWrAMTR4vWHTBrzmVBRnSTLQgW6CQZHVCyZ3V1fqVrAh89dY1ys7
+         mSk7O/z9ikVKXxlpD3BJtGuKE7N/h1OH30QKn5mDJlbJ0Ciuj0GABHlkdI62zuIINe
+         yQ9ZiBU1/+UP7pYCFPIrsGyYkI5XgvpVszqs8YEz6aiSOG628ilmHz5xzYiAj0R81k
+         pQGFWIMmWARnCL6h8Y0lRgizmlSIZIume6p0zbNsYvdi9tYwTCBvPcs5RpRi11Cvcz
+         UP9cbIpkRceVJqKvjxkiGUc6bUaKgEJUt9WXUtanWxUMBL/Brg3inhuTlf9e0fhL7j
+         tlfC33cGKtVAA==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f23929a0000>; Fri, 31 Jul 2020 15:40:10 +1200
+Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
+        by smtp (Postfix) with ESMTP id 3296E13EEA1;
+        Fri, 31 Jul 2020 15:40:09 +1200 (NZST)
+Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
+        id D9315341110; Fri, 31 Jul 2020 15:40:09 +1200 (NZST)
+From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+To:     ray.jui@broadcom.com, helgaas@kernel.org, sbranden@broadcom.com,
+        f.fainelli@gmail.com, lorenzo.pieralisi@arm.com, robh@kernel.org
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Subject: [PATCH v2 1/2] PCI: iproc: Set affinity mask on MSI interrupts
+Date:   Fri, 31 Jul 2020 15:39:55 +1200
+Message-Id: <20200731033956.6058-1-mark.tomlinson@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4aW5nIENGSSBpc3N1ZSB3aGljaCBpbnRyb2R1Y2VkIGJ5IGNvbW1pdCBlZmU5NzExMjE0ZTYg
-aXMNCmluY29tcGxldGUuDQpBZGQgcmV0dXJuIHZhbHVlIHRvIGZpeCByZXR1cm4tdHlwZSBidWls
-ZCB3YXJuaW5nLg0KDQpTaWduZWQtb2ZmLWJ5OiBOZWFsIExpdSA8bmVhbC5saXVAbWVkaWF0ZWsu
-Y29tPg0KLS0tDQogZHJpdmVycy9hY3BpL3Byb2Nlc3Nvcl9pZGxlLmMgfCAgICA0ICsrLS0NCiAx
-IGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9hY3BpL3Byb2Nlc3Nvcl9pZGxlLmMgYi9kcml2ZXJzL2FjcGkvcHJvY2Vz
-c29yX2lkbGUuYw0KaW5kZXggNmZmYjZjOS4uNjg3MDAyMCAxMDA2NDQNCi0tLSBhL2RyaXZlcnMv
-YWNwaS9wcm9jZXNzb3JfaWRsZS5jDQorKysgYi9kcml2ZXJzL2FjcGkvcHJvY2Vzc29yX2lkbGUu
-Yw0KQEAgLTY2NCwxMSArNjY0LDExIEBAIHN0YXRpYyBpbnQgYWNwaV9pZGxlX2VudGVyX3MyaWRs
-ZShzdHJ1Y3QgY3B1aWRsZV9kZXZpY2UgKmRldiwNCiAJCXN0cnVjdCBhY3BpX3Byb2Nlc3NvciAq
-cHIgPSBfX3RoaXNfY3B1X3JlYWQocHJvY2Vzc29ycyk7DQogDQogCQlpZiAodW5saWtlbHkoIXBy
-KSkNCi0JCQlyZXR1cm47DQorCQkJcmV0dXJuIC1FRkFVTFQ7DQogDQogCQlpZiAocHItPmZsYWdz
-LmJtX2NoZWNrKSB7DQogCQkJYWNwaV9pZGxlX2VudGVyX2JtKHByLCBjeCwgZmFsc2UpOw0KLQkJ
-CXJldHVybjsNCisJCQlyZXR1cm4gMDsNCiAJCX0gZWxzZSB7DQogCQkJQUNQSV9GTFVTSF9DUFVf
-Q0FDSEUoKTsNCiAJCX0NCi0tIA0KMS43LjkuNQ0K
+The core interrupt code expects the irq_set_affinity call to update the
+effective affinity for the interrupt. This was not being done, so update
+iproc_msi_irq_set_affinity() to do so.
+
+Fixes: 3bc2b2348835 ("PCI: iproc: Add iProc PCIe MSI support")
+Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+---
+changes in v2:
+ - Patch 1/2 Added Fixes tag
+ - Patch 2/2 Replace original change with change suggested by Bjorn
+   Helgaas.
+
+ drivers/pci/controller/pcie-iproc-msi.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/contro=
+ller/pcie-iproc-msi.c
+index 3176ad3ab0e5..908475d27e0e 100644
+--- a/drivers/pci/controller/pcie-iproc-msi.c
++++ b/drivers/pci/controller/pcie-iproc-msi.c
+@@ -209,15 +209,20 @@ static int iproc_msi_irq_set_affinity(struct irq_da=
+ta *data,
+ 	struct iproc_msi *msi =3D irq_data_get_irq_chip_data(data);
+ 	int target_cpu =3D cpumask_first(mask);
+ 	int curr_cpu;
++	int ret;
+=20
+ 	curr_cpu =3D hwirq_to_cpu(msi, data->hwirq);
+ 	if (curr_cpu =3D=3D target_cpu)
+-		return IRQ_SET_MASK_OK_DONE;
++		ret =3D IRQ_SET_MASK_OK_DONE;
++	else {
++		/* steer MSI to the target CPU */
++		data->hwirq =3D hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cp=
+u;
++		ret =3D IRQ_SET_MASK_OK;
++	}
+=20
+-	/* steer MSI to the target CPU */
+-	data->hwirq =3D hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu=
+;
++	irq_data_update_effective_affinity(data, cpumask_of(target_cpu));
+=20
+-	return IRQ_SET_MASK_OK;
++	return ret;
+ }
+=20
+ static void iproc_msi_irq_compose_msi_msg(struct irq_data *data,
+--=20
+2.28.0
 
