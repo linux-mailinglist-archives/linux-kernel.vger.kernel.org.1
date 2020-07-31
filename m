@@ -2,149 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B48234777
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 16:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5CE23477F
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 16:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387478AbgGaOLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 10:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47970 "EHLO
+        id S1728891AbgGaONG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 10:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728206AbgGaOLm (ORCPT
+        with ESMTP id S1728830AbgGaONF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 10:11:42 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3569DC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 07:11:42 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id o22so22751137qtt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 07:11:42 -0700 (PDT)
+        Fri, 31 Jul 2020 10:13:05 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7021C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 07:13:05 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id t23so19876762qto.3
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 07:13:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zXpZPwG3QbgNXE97/2cLGjIf1FCzQ19LC9h/m/WwwVs=;
-        b=DIbX+0nIyTNIDs1WHA8a4ipIxsqC7PW2mFt1JElyKYD6wSvmpQQTdzFJ5TQLeAWFin
-         Wc4xWl1vAewfC9Mt2ZGKPcAo8yISkbT6r1OIiLdrekXbkOMECjodVIejniTqfoz4qqJr
-         JxcjZvvoLn3sd2u5RI44glIsSUQPX9pVpc+fHAuXjUfLHMvDo9hVe74z0aaOO7uyALya
-         SEx1SGQNbDiqr5kgZ4TWJDSJkbmmsJUp98fDdgNcAA0U0whTsJhSYzt/alALC1ZrU9P3
-         qpItJysOvjdmMfygPOEgjphd2YjRabPfYOb3Bs+kZu7CxdCej/+jK+1hPXYkjyya/bCu
-         F0aA==
+        bh=M2GP4/P8BNSu+od4wsMwtfP/yDFgc8ZIVwv55ct9zSQ=;
+        b=IEmGQ/HdZENzGYgPx1CJ2uC963/arPCJHc5WnW7wDJCYiNwQ7cFHQDoHiFCHjQyznp
+         4OYuiAfGIrcd+PUleNOx+jKcNmXa9nbxxktypwKG8p4Jf3UbT9NdQp8LN4NfMiwAE61P
+         nCbX03sBdClB4Of/hOeF0DZ1BCTvsUVTB4sNYXGPl6Uk6fypqJDJXUIvt79WKkeu/o70
+         y4SKrNexWp18qy0TJPTWUZJcTVd+cNp71J4Yw0hWF4g7WvvKB/2GJPK5aTCiceEfaLYc
+         wfurlLqlnN9CKzXM5qtaYoBNSYoq5g5x9RNmExxG/W05iRAPREToBw7v2QmELjmcBsVi
+         j6QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zXpZPwG3QbgNXE97/2cLGjIf1FCzQ19LC9h/m/WwwVs=;
-        b=V6JfEphsVEl1qJtD9d0Z5SOTo2TRo8OLVn+sgiWyLDfVBYMIOvqYapRUPVVFrY/GQc
-         XF7ThKOAOah4Y68n4AXlBDJOwmUTnC2QMMhEc5BrqIjuM205WwL5QcoAL8J+Kw/BA6F5
-         p4p+nZbhGw3G+xvWyn6HPY4pcCVfDD8iSZXYITKDEhBvgcTRRI0LL3bvIFHBiHlpJpoe
-         3PZlhYPOg6NBAGIlOuzQMylK1OZelXaf//543m4JejngRsfLxOkCbAe0qUijM4xBjxP5
-         tK03cpUG9KZOrYCtgQ5/4NtY+RPPUUbA55k+6bTWcSQjyDKdGjJc7Rrx/L+W+MOBy2KZ
-         4n8A==
-X-Gm-Message-State: AOAM530iHkAYZLNzuEl9m2d3i4PH6xccREaE6M1UzZeRPKJwyP/Tj0gc
-        2FZFAvAB+O1jBjIXbglmi5D+pnANZD2a7v/V9kURU4j4
-X-Google-Smtp-Source: ABdhPJwnmQyoXfzFX+W8K45D31R9RbniOEVvLK4NDZCe/SS88TfcmX7MQjEuWl25D353CCsRvk63E7rRxCErB9u6Sr4=
-X-Received: by 2002:ac8:6713:: with SMTP id e19mr3833232qtp.88.1596204701220;
- Fri, 31 Jul 2020 07:11:41 -0700 (PDT)
+        bh=M2GP4/P8BNSu+od4wsMwtfP/yDFgc8ZIVwv55ct9zSQ=;
+        b=HVYX2rHSgVo7RhsO6oNMEDBD/AbzuMTnIBomHlwzk2zCR7lsVbxX4c+Bzwo2nySBW8
+         nSK/So3QIgSaA9VUGBIlgTvF4GMdQZs+JID4q2IqcXNzLDrrJ4oDTMRHBf0lHGpA3ZV1
+         bxcSijn9rOL2/Wr6FOvFI/np9kfINh0eoIhj0o6V4rtqcoVuegXnj0v6L0NOxHhLFHB+
+         ZWHWgQgt0v6glZ7pRigvMfIBdnlGWMAXUxB+BOHweUr83almlZD5l2eqp4u/IC8WHCVk
+         6J/Tj222nXNEPElGRglCQzlF/3KgQro4Svy2SWGZy5u0Ss9UuiuBfee4feEJbdGiZdLI
+         KPxw==
+X-Gm-Message-State: AOAM533WrjXLQfEWNf5BCJuQxFJXYoSOJmBAgemGSem6wmK1kOvkVHcb
+        oKdlT/x2F1SXa1CWt1UdAL/R9us2
+X-Google-Smtp-Source: ABdhPJybyb/fa/jjHlizzbSDFdyfOzE8+aNO6VJ9H+/6dZegWMQK//sPqlYaVWrSYxdtR0BUFFYpiw==
+X-Received: by 2002:aed:3b0e:: with SMTP id p14mr3893591qte.149.1596204784305;
+        Fri, 31 Jul 2020 07:13:04 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id e2sm5163969qki.22.2020.07.31.07.13.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 31 Jul 2020 07:13:03 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id m200so12143618ybf.10
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 07:13:03 -0700 (PDT)
+X-Received: by 2002:a25:6d87:: with SMTP id i129mr6392592ybc.315.1596204782541;
+ Fri, 31 Jul 2020 07:13:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <1595927918-19845-1-git-send-email-grzegorz.jaszczyk@linaro.org>
- <1595927918-19845-4-git-send-email-grzegorz.jaszczyk@linaro.org> <c2695e63-dd4f-9eb9-afbc-fa52d7e88a86@lechnology.com>
-In-Reply-To: <c2695e63-dd4f-9eb9-afbc-fa52d7e88a86@lechnology.com>
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Date:   Fri, 31 Jul 2020 16:11:30 +0200
-Message-ID: <CAMxfBF5aQVE2YMKyBcSRaP-=NWHowSfzLz11WzEi=7ZeJDQLBw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] irqchip/irq-pruss-intc: Add logic for handling
- reserved interrupts
-To:     David Lechner <david@lechnology.com>
-Cc:     tglx@linutronix.de, jason@lakedaemon.net,
-        Marc Zyngier <maz@kernel.org>, "Anna, Suman" <s-anna@ti.com>,
-        robh+dt@kernel.org, Lee Jones <lee.jones@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "Mills, William" <wmills@ti.com>,
-        "Bajjuri, Praneeth" <praneeth@ti.com>
+References: <20200730073702.16887-1-xie.he.0141@gmail.com> <CAJht_ENjHRExBEHx--xmqnOy1MXY_6F5XZ_exinSfa6xU_XDJg@mail.gmail.com>
+In-Reply-To: <CAJht_ENjHRExBEHx--xmqnOy1MXY_6F5XZ_exinSfa6xU_XDJg@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 31 Jul 2020 10:12:26 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSf_nuiah6rFy-KC1Taw+Wc4z0G7LzkAm-+Ms4FzYmTPEw@mail.gmail.com>
+Message-ID: <CA+FuTSf_nuiah6rFy-KC1Taw+Wc4z0G7LzkAm-+Ms4FzYmTPEw@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/net/wan/lapbether: Use needed_headroom instead
+ of hard_header_len
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>, briannorris@chromium.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Jul 2020 at 20:48, David Lechner <david@lechnology.com> wrote:
+On Thu, Jul 30, 2020 at 9:36 PM Xie He <xie.he.0141@gmail.com> wrote:
 >
-> On 7/28/20 4:18 AM, Grzegorz Jaszczyk wrote:
-> > From: Suman Anna <s-anna@ti.com>
-> >
-> > The PRUSS INTC has a fixed number of output interrupt lines that are
-> > connected to a number of processors or other PRUSS instances or other
-> > devices (like DMA) on the SoC. The output interrupt lines 2 through 9
-> > are usually connected to the main Arm host processor and are referred
-> > to as host interrupts 0 through 7 from ARM/MPU perspective.
-> >
-> > All of these 8 host interrupts are not always exclusively connected
-> > to the Arm interrupt controller. Some SoCs have some interrupt lines
-> > not connected to the Arm interrupt controller at all, while a few others
-> > have the interrupt lines connected to multiple processors in which they
-> > need to be partitioned as per SoC integration needs. For example, AM437x
-> > and 66AK2G SoCs have 2 PRUSS instances each and have the host interrupt 5
-> > connected to the other PRUSS, while AM335x has host interrupt 0 shared
-> > between MPU and TSC_ADC and host interrupts 6 & 7 shared between MPU and
-> > a DMA controller.
-> >
-> > Add logic to the PRUSS INTC driver to ignore both these shared and
-> > invalid interrupts.
+> I'm really sorry to have re-sent the patch when the patch is still in
+> review. I don't intend to be disrespectful to anyone. And I apologize
+> for any disrespectfulness this might appear. Sorry.
 >
-> If a person wanted to use DMA with a PRU what will handle the mapping
-> of a PRU event to host interrupt 6 or 7 if they are being ignored here?
-
-Mapping can be handled independently: even if a given host interrupt
-is on irqs-reserved list, the mapping description for it can be
-provided (e.g. similar to the resource table case passed through rproc
-subsystem) and nothing prevents this driver from actually routing it.
-
+> I'm also sorry for not having sent the patch with the proper subject
+> prefixed with "net" or "net-next". If anyone requests I can re-send
+> this patch with the proper subject "PATCH net".
 >
-> >
-> > Signed-off-by: Suman Anna <s-anna@ti.com>
-> > Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > ---
-> > v3->v4:
-> > - Due to changes in DT bindings which converts irqs-reserved
-> >    property from uint8-array to bitmask requested by Rob introduce
-> >    relevant changes in the driver.
-> > - Merge the irqs-reserved and irqs-shared to one property since they
-> >    can be handled by one logic (relevant change was introduced to DT
-> >    binding).
-> > - Update commit message.
-> > v2->v3:
-> > - Extra checks for (intc->irqs[i]) in error/remove path was moved from
-> >    "irqchip/irq-pruss-intc: Add a PRUSS irqchip driver for PRUSS
-> >    interrupts" to this patch
-> > v1->v2:
-> > - https://patchwork.kernel.org/patch/11069757/
-> > ---
-> >   drivers/irqchip/irq-pruss-intc.c | 29 ++++++++++++++++++++++++-----
-> >   1 file changed, 24 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/irqchip/irq-pruss-intc.c b/drivers/irqchip/irq-pruss-intc.c
-> > index 45b966a..cf9a59b 100644
-> > --- a/drivers/irqchip/irq-pruss-intc.c
-> > +++ b/drivers/irqchip/irq-pruss-intc.c
-> > @@ -474,7 +474,7 @@ static int pruss_intc_probe(struct platform_device *pdev)
-> >       struct pruss_intc *intc;
-> >       struct pruss_host_irq_data *host_data[MAX_NUM_HOST_IRQS] = { NULL };
-> >       int i, irq, ret;
-> > -     u8 max_system_events;
-> > +     u8 max_system_events, invalid_intr = 0;
-> >
-> >       data = of_device_get_match_data(dev);
-> >       if (!data)
-> > @@ -496,6 +496,16 @@ static int pruss_intc_probe(struct platform_device *pdev)
-> >               return PTR_ERR(intc->base);
-> >       }
-> >
-> > +     ret = of_property_read_u8(dev->of_node, "ti,irqs-reserved",
-> > +                               &invalid_intr);
+> This patch actually fixes a kernel panic when this driver is used with
+> a AF_PACKET/RAW socket. This driver runs on top of Ethernet
+> interfaces. So I created a pair of virtual Ethernet (veth) interfaces,
+> loaded this driver to create a pair of X.25 interfaces on top of them,
+> and wrote C programs to use AF_PACKET sockets to send/receive data
+> through them.
 >
-> Why not make the variable name match the property name?
+> At first I used AF_PACKET/DGRAM sockets. I prepared packet data
+> according to the requirements of X.25 drivers. I first sent an
+> one-byte packet ("\x01") to instruct the driver to connect, then I
+> sent data prefixed with an one-byte pseudo header ("\x00") to instruct
+> the driver to send the data, and then I sent another one-byte packet
+> ("\x02") to instruct the driver to disconnect.
+>
+> This works fine with AF_PACKET/DGRAM sockets. However, when I change
+> it to AF_PACKET/RAW sockets, kernel panic occurs. The stack trace is
+> as follows. We can see the kernel panicked because of insufficient
+> header space when pushing the Ethernet header.
+>
+> [  168.399197] skbuff: skb_under_panic: text:ffffffff819d95fb len:20
+> put:14 head:ffff8882704c0a00 data:ffff8882704c09fd tail:0x11 end:0xc0
+> dev:veth0
+> ...
+> [  168.399255] Call Trace:
+> [  168.399259]  skb_push.cold+0x14/0x24
+> [  168.399262]  eth_header+0x2b/0xc0
+> [  168.399267]  lapbeth_data_transmit+0x9a/0xb0 [lapbether]
+> [  168.399275]  lapb_data_transmit+0x22/0x2c [lapb]
+> [  168.399277]  lapb_transmit_buffer+0x71/0xb0 [lapb]
+> [  168.399279]  lapb_kick+0xe3/0x1c0 [lapb]
+> [  168.399281]  lapb_data_request+0x76/0xc0 [lapb]
+> [  168.399283]  lapbeth_xmit+0x56/0x90 [lapbether]
+> [  168.399286]  dev_hard_start_xmit+0x91/0x1f0
+> [  168.399289]  ? irq_init_percpu_irqstack+0xc0/0x100
+> [  168.399291]  __dev_queue_xmit+0x721/0x8e0
+> [  168.399295]  ? packet_parse_headers.isra.0+0xd2/0x110
+> [  168.399297]  dev_queue_xmit+0x10/0x20
+> [  168.399298]  packet_sendmsg+0xbf0/0x19b0
+> ......
+>
+> After applying this patch, the kernel panic no longer appears, and
+> AF_PACKET/RAW sockets would then behave the same as AF_PACKET/DGRAM
+> sockets.
 
-Sure, I will rename this variable.
+Thanks for fixing a kernel panic. The existing line was added recently
+in commit 9dc829a135fb ("drivers/net/wan/lapbether: Fixed the value of
+hard_header_len"). I assume a kernel with that commit reverted also
+panics? It does looks like it would.
 
-Thank you for your review,
-Grzegorz
+If this driver submits a modified packet to an underlying eth device,
+it is akin to tunnel drivers. The hard_header_len vs needed_headroom
+discussion also came up there recently [1]. That discussion points to
+commit c95b819ad75b ("gre: Use needed_headroom"). So the general
+approach in this patch is fine. Do note the point about mtu
+calculations -- but this device just hardcodes a 1000 byte dev->mtu
+irrespective of underlying ethernet device mtu, so I guess it has
+bigger issues on that point.
+
+But, packet sockets with SOCK_RAW have to pass a fully formed packet
+with all the headers the ndo_start_xmit expects, i.e., it should be
+safe for the device to just pull that many bytes. X25 requires the
+peculiar one byte pseudo header you mention: lapbeth_xmit
+unconditionally reads skb->data[0] and then calls skb_pull(skb, 1).
+This could be considered the device hard header len.
+
+[1] https://lore.kernel.org/netdev/86c71cc0-462c-2365-00ea-7f9e79c204b7@6wind.com/
