@@ -2,138 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E713823406C
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4445123405F
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731862AbgGaHq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 03:46:27 -0400
-Received: from mga11.intel.com ([192.55.52.93]:55479 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731847AbgGaHqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 03:46:24 -0400
-IronPort-SDR: /dg0grk4nntUPv7mguLk2fvQ7aLsMSo+GXSXJVpRMTzRrdkSiV3C0oIzKSXyTCh3Iw8fqRIK0W
- ApCloWeW1PlA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="149570546"
-X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
-   d="scan'208";a="149570546"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 00:46:23 -0700
-IronPort-SDR: mTjKe2EyTrpcOAEWUYf7cP83Dco3zl414hR8QtrWi17ZOTT5X1fQZ5WtppiF9tmQlwf1kOTTSq
- RqnTgoZ4APRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
-   d="scan'208";a="323160625"
-Received: from sqa-gate.sh.intel.com (HELO clx-ap-likexu.tsp.org) ([10.239.48.212])
-  by fmsmga002.fm.intel.com with ESMTP; 31 Jul 2020 00:46:21 -0700
-From:   Like Xu <like.xu@linux.intel.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
-        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
-Subject: [PATCH 6/6] KVM: x86: Expose Architectural LBR CPUID and its XSAVES bit
-Date:   Fri, 31 Jul 2020 15:44:02 +0800
-Message-Id: <20200731074402.8879-7-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200731074402.8879-1-like.xu@linux.intel.com>
-References: <20200731074402.8879-1-like.xu@linux.intel.com>
+        id S1731727AbgGaHpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 03:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731678AbgGaHpp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 03:45:45 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D91DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 00:45:45 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BHzpt30HJz9sTC;
+        Fri, 31 Jul 2020 17:45:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1596181543;
+        bh=VEuy/KiA5hGn+AVseo5tlQxiC2CSqodE1h2fmmQal3M=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=jJvACsDTmDI9lVdq3hJFB2iU9IFVxWVFgw7BvuU8CKcAl1HiqJY6XSB2q2N4KwkX3
+         BmQ7CR+Wuo3qFlwQWdKoxvzZkaeEm1C6V4+nf7G0UQH3087jEoxn2FZr7aAvch6PfX
+         Q4OWRPk8cm0Bc2JNsybKxjRngWB8cqymCEhk+ZOhSnq2arAhxgAAZmmDIaFcyvJXXn
+         oKk7qJ3LyrZLM0gFTWhQU3urH8lAgorABFxQ0v0XlVGpXmzyp9mWoHKEoMsGm3iBq5
+         qtOUXpEKj6TIQacq174O4O+EGAsnk0/SYTc4BHO3SDEXKoyo6vNPJXyzLn4WNhiF5Z
+         FYuF2MkMJPdvA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Jordan Niethe <jniethe5@gmail.com>
+Subject: Re: [PATCH v4 06/10] powerpc/smp: Generalize 2nd sched domain
+In-Reply-To: <20200727053230.19753-7-srikar@linux.vnet.ibm.com>
+References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com> <20200727053230.19753-7-srikar@linux.vnet.ibm.com>
+Date:   Fri, 31 Jul 2020 17:45:37 +1000
+Message-ID: <875za45dr2.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CPUID.(EAX=07H, ECX=0):EDX[19] is exposed to 1, the KVM supports Arch
-LBRs and CPUID leaf 01CH indicates details of the Arch LBRs capabilities.
-As the first step, KVM only exposes the current LBR depth on the host for
-guest, which is likely to be the maximum supported value on the host.
+Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+> Currently "CACHE" domain happens to be the 2nd sched domain as per
+> powerpc_topology. This domain will collapse if cpumask of l2-cache is
+> same as SMT domain. However we could generalize this domain such that it
+> could mean either be a "CACHE" domain or a "BIGCORE" domain.
+>
+> While setting up the "CACHE" domain, check if shared_cache is already
+> set.
 
-If KVM supports XSAVES, the CPUID.(EAX=0DH, ECX=1):EDX:ECX[bit 15]
-is also exposed to 1, which means the availability of support for Arch
-LBR configuration state save and restore. When available, guest software
-operating at CPL=0 can use XSAVES/XRSTORS manage supervisor state
-component Arch LBR for own purposes once IA32_XSS [bit 15] is set.
-XSAVE support for Arch LBRs is enumerated in CPUID.(EAX=0DH, ECX=0FH).
+PeterZ asked for some overview of what you're doing and why, you
+responded to his mail, but I was expecting to see that text incorporated
+here somewhere.
 
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- arch/x86/kvm/cpuid.c   | 19 +++++++++++++++++++
- arch/x86/kvm/vmx/vmx.c |  2 ++
- arch/x86/kvm/x86.c     |  6 ++++++
- 3 files changed, 27 insertions(+)
+He also asked for some comments, which I would also like to see.
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 7d92854082a1..578ef0719182 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -713,6 +713,25 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 			entry->edx = 0;
- 		}
- 		break;
-+	/* Architectural LBR */
-+	case 0x1c:
-+	{
-+		u64 lbr_depth_mask = 0;
-+
-+		if (!kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR)) {
-+			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
-+			break;
-+		}
-+
-+		lbr_depth_mask = 1UL << fls(entry->eax & 0xff);
-+		/*
-+		 * KVM only exposes the maximum supported depth,
-+		 * which is also the value used by the host Arch LBR driver.
-+		 */
-+		entry->eax &= ~0xff;
-+		entry->eax |= lbr_depth_mask;
-+		break;
-+	}
- 	/* Intel PT */
- 	case 0x14:
- 		if (!kvm_cpu_cap_has(X86_FEATURE_INTEL_PT)) {
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 3843aebf4efb..98bad0dbfdf1 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7409,6 +7409,8 @@ static __init void vmx_set_cpu_caps(void)
- 		kvm_cpu_cap_check_and_set(X86_FEATURE_INVPCID);
- 	if (vmx_pt_mode_is_host_guest())
- 		kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
-+	if (cpu_has_vmx_arch_lbr())
-+		kvm_cpu_cap_check_and_set(X86_FEATURE_ARCH_LBR);
- 
- 	if (vmx_umip_emulated())
- 		kvm_cpu_cap_set(X86_FEATURE_UMIP);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 8a58d0355a99..4da3f9ee96a6 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -184,6 +184,8 @@ static struct kvm_shared_msrs __percpu *shared_msrs;
- 				| XFEATURE_MASK_BNDCSR | XFEATURE_MASK_AVX512 \
- 				| XFEATURE_MASK_PKRU)
- 
-+#define KVM_SUPPORTED_XSS_ARCH_LBR  (1ULL << 15)
-+
- u64 __read_mostly host_efer;
- EXPORT_SYMBOL_GPL(host_efer);
- 
-@@ -9803,6 +9805,10 @@ int kvm_arch_hardware_setup(void *opaque)
- 
- 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
- 		supported_xss = 0;
-+	else {
-+		if (kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
-+			supported_xss |= KVM_SUPPORTED_XSS_ARCH_LBR;
-+	}
- 
- #define __kvm_cpu_cap_has(UNUSED_, f) kvm_cpu_cap_has(f)
- 	cr4_reserved_bits = __cr4_reserved_bits(__kvm_cpu_cap_has, UNUSED_);
--- 
-2.21.3
 
+I'm also not clear why we want to rename it to "bigcore", that's not a
+commonly understood term, I don't think it's clear to new readers what
+it means.
+
+Leaving it as the shared cache domain, and having a comment mentioning
+that "bigcores" share a cache, would be clearer I think.
+
+cheers
+
+
+> Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Anton Blanchard <anton@ozlabs.org>
+> Cc: Oliver O'Halloran <oohall@gmail.com>
+> Cc: Nathan Lynch <nathanl@linux.ibm.com>
+> Cc: Michael Neuling <mikey@neuling.org>
+> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Jordan Niethe <jniethe5@gmail.com>
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> ---
+> Changelog v1 -> v2:
+> 	Moved shared_cache topology fixup to fixup_topology (Gautham)
+>
+>  arch/powerpc/kernel/smp.c | 48 +++++++++++++++++++++++++++------------
+>  1 file changed, 34 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+> index d997c7411664..3c5ccf6d2b1c 100644
+> --- a/arch/powerpc/kernel/smp.c
+> +++ b/arch/powerpc/kernel/smp.c
+> @@ -85,6 +85,14 @@ EXPORT_PER_CPU_SYMBOL(cpu_l2_cache_map);
+>  EXPORT_PER_CPU_SYMBOL(cpu_core_map);
+>  EXPORT_SYMBOL_GPL(has_big_cores);
+>  
+> +enum {
+> +#ifdef CONFIG_SCHED_SMT
+> +	smt_idx,
+> +#endif
+> +	bigcore_idx,
+> +	die_idx,
+> +};
+> +
+>  #define MAX_THREAD_LIST_SIZE	8
+>  #define THREAD_GROUP_SHARE_L1   1
+>  struct thread_groups {
+> @@ -851,13 +859,7 @@ static int powerpc_shared_cache_flags(void)
+>   */
+>  static const struct cpumask *shared_cache_mask(int cpu)
+>  {
+> -	if (shared_caches)
+> -		return cpu_l2_cache_mask(cpu);
+> -
+> -	if (has_big_cores)
+> -		return cpu_smallcore_mask(cpu);
+> -
+> -	return per_cpu(cpu_sibling_map, cpu);
+> +	return per_cpu(cpu_l2_cache_map, cpu);
+>  }
+>  
+>  #ifdef CONFIG_SCHED_SMT
+> @@ -867,11 +869,16 @@ static const struct cpumask *smallcore_smt_mask(int cpu)
+>  }
+>  #endif
+>  
+> +static const struct cpumask *cpu_bigcore_mask(int cpu)
+> +{
+> +	return per_cpu(cpu_sibling_map, cpu);
+> +}
+> +
+>  static struct sched_domain_topology_level powerpc_topology[] = {
+>  #ifdef CONFIG_SCHED_SMT
+>  	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
+>  #endif
+> -	{ shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE) },
+> +	{ cpu_bigcore_mask, SD_INIT_NAME(BIGCORE) },
+>  	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
+>  	{ NULL, },
+>  };
+> @@ -1311,7 +1318,6 @@ static void add_cpu_to_masks(int cpu)
+>  void start_secondary(void *unused)
+>  {
+>  	unsigned int cpu = smp_processor_id();
+> -	struct cpumask *(*sibling_mask)(int) = cpu_sibling_mask;
+>  
+>  	mmgrab(&init_mm);
+>  	current->active_mm = &init_mm;
+> @@ -1337,14 +1343,20 @@ void start_secondary(void *unused)
+>  	/* Update topology CPU masks */
+>  	add_cpu_to_masks(cpu);
+>  
+> -	if (has_big_cores)
+> -		sibling_mask = cpu_smallcore_mask;
+>  	/*
+>  	 * Check for any shared caches. Note that this must be done on a
+>  	 * per-core basis because one core in the pair might be disabled.
+>  	 */
+> -	if (!cpumask_equal(cpu_l2_cache_mask(cpu), sibling_mask(cpu)))
+> -		shared_caches = true;
+> +	if (!shared_caches) {
+> +		struct cpumask *(*sibling_mask)(int) = cpu_sibling_mask;
+> +		struct cpumask *mask = cpu_l2_cache_mask(cpu);
+> +
+> +		if (has_big_cores)
+> +			sibling_mask = cpu_smallcore_mask;
+> +
+> +		if (cpumask_weight(mask) > cpumask_weight(sibling_mask(cpu)))
+> +			shared_caches = true;
+> +	}
+>  
+>  	set_numa_node(numa_cpu_lookup_table[cpu]);
+>  	set_numa_mem(local_memory_node(numa_cpu_lookup_table[cpu]));
+> @@ -1375,9 +1387,17 @@ static void fixup_topology(void)
+>  #ifdef CONFIG_SCHED_SMT
+>  	if (has_big_cores) {
+>  		pr_info("Big cores detected but using small core scheduling\n");
+> -		powerpc_topology[0].mask = smallcore_smt_mask;
+> +		powerpc_topology[smt_idx].mask = smallcore_smt_mask;
+>  	}
+>  #endif
+> +	if (shared_caches) {
+> +		pr_info("Using shared cache scheduler topology\n");
+> +		powerpc_topology[bigcore_idx].mask = shared_cache_mask;
+> +		powerpc_topology[bigcore_idx].sd_flags = powerpc_shared_cache_flags;
+> +#ifdef CONFIG_SCHED_DEBUG
+> +		powerpc_topology[bigcore_idx].name = "CACHE";
+> +#endif
+> +	}
+>  }
+>  
+>  void __init smp_cpus_done(unsigned int max_cpus)
+> -- 
+> 2.17.1
