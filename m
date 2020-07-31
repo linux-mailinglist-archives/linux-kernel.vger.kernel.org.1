@@ -2,95 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AFB2342A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C482342B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731964AbgGaJYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:24:44 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56726 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732360AbgGaJXn (ORCPT
+        id S1732706AbgGaJZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:25:12 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:59301 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732511AbgGaJZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:23:43 -0400
-Date:   Fri, 31 Jul 2020 09:23:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187422;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=K/zzpju3P8JA/mFEV8jhp5vPSWQASn1A1A1+l8sxQGk=;
-        b=fiyb06cZCntlwl+GDjvXRv76sDPWHqQCOaD9lM41Zz2QlCkPEUC86RPE3fDscn3B+N2XqT
-        pw/vnYhFgLrrxePyG45c1i7FCvCE/dBpX7Fy9ksRPwc429QMJu3q+IAueljhsLJ/27ESlG
-        Vv1dyGgKIYNeVi1P0JOgX84PmY1vajfHZireNCGq9jVTrTL168b4hc/M7U4UDAXXOsoY9O
-        9JY5HQaQpNHbcZjQHZTOWJCXGiGlcT0lUPFDuJNc4uElqncGbVHn2545KCayurz+HmBKqn
-        p5Rds4BwAJhWv//v543u6RZWsYgYnoFn+eoPngMrC64yIvYdEpa/fHIIPPQx+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187422;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=K/zzpju3P8JA/mFEV8jhp5vPSWQASn1A1A1+l8sxQGk=;
-        b=ua03okQbO0HpQGskHb0jgtodJdT9puiDawB+ppkLol5Gu1ja/tsdWVrwhqkN2uYgj6ju2C
-        AogVQF+TfuwdkMDQ==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] doc: Tasks RCU must protect instructions before trampoline
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-MIME-Version: 1.0
-Message-ID: <159618742135.4006.12338361732283890463.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Fri, 31 Jul 2020 05:25:09 -0400
+X-IronPort-AV: E=Sophos;i="5.75,417,1589209200"; 
+   d="scan'208";a="53330048"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 31 Jul 2020 18:25:07 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id A7B70400C9E4;
+        Fri, 31 Jul 2020 18:25:04 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Jacopo Mondi <jacopo@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 0/2] media: ov5640 feature enhancement and fixes
+Date:   Fri, 31 Jul 2020 10:24:45 +0100
+Message-Id: <1596187487-31403-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/rcu branch of tip:
+Hi All,
 
-Commit-ID:     d93d97cbe0d4369153fb04954f1481a9f42aa5b6
-Gitweb:        https://git.kernel.org/tip/d93d97cbe0d4369153fb04954f1481a9f42aa5b6
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Mon, 11 May 2020 19:52:34 -07:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 29 Jun 2020 11:58:11 -07:00
+This patch series fixes DVP support and enables BT656 mode in
+the driver.
 
-doc: Tasks RCU must protect instructions before trampoline
+Cheers,
+Prabhakar
 
-Protecting the code in a trampoline can also require protecting a
-number of instructions prior to actually entering the trampoline.
-For example, these earlier instructions might be computing the address
-of the trampoline.  This commit therefore updates RCU's requirements to
-record this for posterity.
+Lad Prabhakar (2):
+  media: i2c: ov5640: Enable data pins on startup for DVP mode
+  media: i2c: ov5640: Add support for BT656 mode
 
-Link: https://lore.kernel.org/lkml/20200511154824.09a18c46@gandalf.local.home/
-Reported-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Reported-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- Documentation/RCU/Design/Requirements/Requirements.rst | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/media/i2c/ov5640.c | 263 +++++++++++++++++++++++----------------------
+ 1 file changed, 134 insertions(+), 129 deletions(-)
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index 75b8ca0..a69b5c4 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -2583,7 +2583,12 @@ not work to have these markers in the trampoline itself, because there
- would need to be instructions following ``rcu_read_unlock()``. Although
- ``synchronize_rcu()`` would guarantee that execution reached the
- ``rcu_read_unlock()``, it would not be able to guarantee that execution
--had completely left the trampoline.
-+had completely left the trampoline. Worse yet, in some situations
-+the trampoline's protection must extend a few instructions *prior* to
-+execution reaching the trampoline.  For example, these few instructions
-+might calculate the address of the trampoline, so that entering the
-+trampoline would be pre-ordained a surprisingly long time before execution
-+actually reached the trampoline itself.
- 
- The solution, in the form of `Tasks
- RCU <https://lwn.net/Articles/607117/>`__, is to have implicit read-side
+-- 
+2.7.4
+
