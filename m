@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBA8234D80
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 00:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EBC234D83
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 00:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgGaWYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 18:24:20 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:40395 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgGaWYT (ORCPT
+        id S1726861AbgGaWYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 18:24:36 -0400
+Received: from smtprelay0078.hostedemail.com ([216.40.44.78]:50538 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725767AbgGaWYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 18:24:19 -0400
-Received: by mail-il1-f195.google.com with SMTP id x1so6281763ilp.7;
-        Fri, 31 Jul 2020 15:24:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VAnICWWmHSZyQ/n2FRhx+9FJGWpFXq+PYL2a2PlHGUI=;
-        b=jycLPAkCDbNJ4nUkNKxW89bYzPa06CamYvOZ9+V/xqgesPMVkAYnWnyV4H123CAk7L
-         hSidyLLM911Kj2WDj12tHtdvID9GcL+rN2tfUrw2yjgLcwfyxQ5eownYTU2Y3VGwNeBD
-         z65EvnMeJUxGJ5yExaPKUdN2tFqQ4byF8Env0vwZi48ewtCWl+aKo5lgJBAVKouiz8Fw
-         Se2TfFf4u/o/rUFB1/q9BycKnHAp/G/aZcIHDAUiGwhSZaN0UT9gdxlP+rFgczVdGoqL
-         gEVummtsoyioOIxhcxQh2qbmWAN3gksi9rkiFbc70l8iNc70npVm3vF0REZW7RqFLKEN
-         KMRg==
-X-Gm-Message-State: AOAM532rImezdVZdYVoxDkaNwH8qwz+eg5nHJct+Q5U1XUDxkIAm0sG7
-        GtyhbZbjLvD1Xf+CYKUzDhjjPPFInQ==
-X-Google-Smtp-Source: ABdhPJzNNKwOyFQ6RSiwe5OSJfrjJmwW/9c5cKyL5rJw4Hyu75ZQcI5qmCEHkE7DS7cCCOIQtFoRgQ==
-X-Received: by 2002:a92:c9ca:: with SMTP id k10mr5914173ilq.41.1596234258633;
-        Fri, 31 Jul 2020 15:24:18 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id f19sm5813243ilf.15.2020.07.31.15.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 15:24:18 -0700 (PDT)
-Received: (nullmailer pid 912829 invoked by uid 1000);
-        Fri, 31 Jul 2020 22:24:16 -0000
-Date:   Fri, 31 Jul 2020 16:24:16 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Shawn Guo <shawnguo@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>, linux-clk@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH 07/17] dt-bindings: reset: imx8mp: Add hdmi blk_ctrl
- reset IDs
-Message-ID: <20200731222416.GA912729@bogus>
-References: <1596024483-21482-1-git-send-email-abel.vesa@nxp.com>
- <1596024483-21482-8-git-send-email-abel.vesa@nxp.com>
+        Fri, 31 Jul 2020 18:24:36 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 4789A837F24A;
+        Fri, 31 Jul 2020 22:24:35 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:967:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4385:5007:8660:9025:10004:10400:10848:11026:11232:11233:11658:11914:12043:12296:12297:12438:12740:12760:12895:13069:13148:13230:13311:13357:13439:14181:14659:14721:21080:21451:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bike70_390312226f87
+X-Filterd-Recvd-Size: 2079
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 31 Jul 2020 22:24:34 +0000 (UTC)
+Message-ID: <8638183f559c0f8f8d377bd0a6c91903b2c588df.camel@perches.com>
+Subject: Re: [PATCH] scsi: libcxgbi: use kvzalloc instead of opencoded
+ kzalloc/vzalloc
+From:   Joe Perches <joe@perches.com>
+To:     Denis Efremov <efremov@linux.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 31 Jul 2020 15:24:33 -0700
+In-Reply-To: <70fb8220-2102-adb5-bbe6-9c2ea74a0623@linux.com>
+References: <20200731215524.14295-1-efremov@linux.com>
+         <33d943d2b83f17371df09b5962c856ea2d894954.camel@perches.com>
+         <70fb8220-2102-adb5-bbe6-9c2ea74a0623@linux.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596024483-21482-8-git-send-email-abel.vesa@nxp.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Jul 2020 15:07:53 +0300, Abel Vesa wrote:
-> These will be used imx8mp for blk-ctrl driver.
+On Sat, 2020-08-01 at 01:10 +0300, Denis Efremov wrote:
 > 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->  include/dt-bindings/reset/imx8mp-reset.h | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+> On 8/1/20 12:58 AM, Joe Perches wrote:
+> > On Sat, 2020-08-01 at 00:55 +0300, Denis Efremov wrote:
+> > > Remove cxgbi_alloc_big_mem(), cxgbi_free_big_mem() functions
+> > > and use kvzalloc/kvfree instead.
+> > 
+> > Sensible, thanks.
+> > 
+> > > diff --git a/drivers/scsi/cxgbi/libcxgbi.c b/drivers/scsi/cxgbi/libcxgbi.c
+> > []
+> > > @@ -77,9 +77,9 @@ int cxgbi_device_portmap_create(struct cxgbi_device *cdev, unsigned int base,
+> > >  {
+> > >  	struct cxgbi_ports_map *pmap = &cdev->pmap;
+> > >  
+> > > -	pmap->port_csk = cxgbi_alloc_big_mem(max_conn *
+> > > -					     sizeof(struct cxgbi_sock *),
+> > > -					     GFP_KERNEL);
+> > > +	pmap->port_csk = kvzalloc(array_size(max_conn,
+> > > +					     sizeof(struct cxgbi_sock *)),
+> > > +				  GFP_KERNEL);
+> > 
+> > missing __GFP_NOWARN
+> > 
 > 
+> kvmalloc_node adds __GFP_NOWARN internally to kmalloc call
+> https://elixir.bootlin.com/linux/v5.8-rc4/source/mm/util.c#L568
 
-Acked-by: Rob Herring <robh@kernel.org>
+Only when there's a fallback, and the fallback does not.
+
+
