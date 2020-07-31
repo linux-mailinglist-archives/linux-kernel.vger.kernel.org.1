@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8A723453D
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24F6234541
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733106AbgGaMFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:05:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:56264 "EHLO foss.arm.com"
+        id S1733124AbgGaMFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:05:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:56274 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733073AbgGaMFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:05:16 -0400
+        id S1733089AbgGaMFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 08:05:17 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E29BE101E;
-        Fri, 31 Jul 2020 05:05:15 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DA7F1FB;
+        Fri, 31 Jul 2020 05:05:17 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C90BD3F71F;
-        Fri, 31 Jul 2020 05:05:14 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 23DF83F71F;
+        Fri, 31 Jul 2020 05:05:16 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
         vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
         morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
-Subject: [PATCH v4 09/10] sched/topology: Introduce SD metaflag for flags needing > 1 groups
-Date:   Fri, 31 Jul 2020 12:55:01 +0100
-Message-Id: <20200731115502.12954-10-valentin.schneider@arm.com>
+Subject: [PATCH v4 10/10] sched/topology: Use prebuilt SD flag degeneration mask
+Date:   Fri, 31 Jul 2020 12:55:02 +0100
+Message-Id: <20200731115502.12954-11-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200731115502.12954-1-valentin.schneider@arm.com>
 References: <20200731115502.12954-1-valentin.schneider@arm.com>
@@ -35,194 +35,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation of cleaning up the sd_degenerate*() functions, mark flags
-that are only relevant when their associated domain has more than a single
-group. With this, build a compile-time mask of those SD flags.
+Leverage SD_DEGENERATE_GROUPS_MASK in sd_degenerate() and
+sd_parent_degenerate(). The negation of SD_DEGENERATE_GROUPS_MASK is used
+as the mask of flags not requiring groups, which is equivalent to
+SD_WAKE_AFFINE, IOW is the same as what we have now.
 
 Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- include/linux/sched/sd_flags.h | 69 ++++++++++++++++++++++------------
- include/linux/sched/topology.h |  7 ++++
- 2 files changed, 53 insertions(+), 23 deletions(-)
+ kernel/sched/topology.c | 33 +++++++--------------------------
+ 1 file changed, 7 insertions(+), 26 deletions(-)
 
-diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
-index 9d0fb8924181..6c70af066995 100644
---- a/include/linux/sched/sd_flags.h
-+++ b/include/linux/sched/sd_flags.h
-@@ -8,7 +8,7 @@
- #endif
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index c6ecc395c76c..0cc5ce5cd034 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -160,22 +160,12 @@ static int sd_degenerate(struct sched_domain *sd)
+ 		return 1;
  
- /*
-- * Expected flag uses
-+ * Hierarchical metaflags
-  *
-  * SHARED_CHILD: These flags are meant to be set from the base domain upwards.
-  * If a domain has this flag set, all of its children should have it set. This
-@@ -29,36 +29,50 @@
-  * certain level (e.g. domain starts spanning CPUs outside of the base CPU's
-  * socket).
-  */
--#define SDF_SHARED_CHILD 0x1
--#define SDF_SHARED_PARENT 0x2
-+#define SDF_SHARED_CHILD       0x1
-+#define SDF_SHARED_PARENT      0x2
+ 	/* Following flags need at least 2 groups */
+-	if (sd->flags & (SD_BALANCE_NEWIDLE |
+-			 SD_BALANCE_WAKE |
+-			 SD_BALANCE_FORK |
+-			 SD_BALANCE_EXEC |
+-			 SD_ASYM_PACKING |
+-			 SD_SHARE_CPUCAPACITY |
+-			 SD_ASYM_CPUCAPACITY |
+-			 SD_SHARE_PKG_RESOURCES |
+-			 SD_OVERLAP |
+-			 SD_PREFER_SIBLING)) {
+-		if (sd->groups != sd->groups->next)
+-			return 0;
+-	}
++	if ((sd->flags & SD_DEGENERATE_GROUPS_MASK) &&
++	    (sd->groups != sd->groups->next))
++		return 0;
+ 
+ 	/* Following flags don't use groups */
+-	if (sd->flags & (SD_WAKE_AFFINE))
++	if (sd->flags & ~SD_DEGENERATE_GROUPS_MASK)
+ 		return 0;
+ 
+ 	return 1;
+@@ -193,18 +183,9 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
+ 		return 0;
+ 
+ 	/* Flags needing groups don't count if only 1 group in parent */
+-	if (parent->groups == parent->groups->next) {
+-		pflags &= ~(SD_BALANCE_NEWIDLE |
+-			    SD_BALANCE_WAKE |
+-			    SD_BALANCE_FORK |
+-			    SD_BALANCE_EXEC |
+-			    SD_ASYM_PACKING |
+-			    SD_ASYM_CPUCAPACITY |
+-			    SD_SHARE_CPUCAPACITY |
+-			    SD_SHARE_PKG_RESOURCES |
+-			    SD_OVERLAP |
+-			    SD_PREFER_SIBLING);
+-	}
++	if (parent->groups == parent->groups->next)
++		pflags &= ~SD_DEGENERATE_GROUPS_MASK;
 +
-+/*
-+ * Behavioural metaflags
-+ *
-+ * NEEDS_GROUPS: These flags are only relevant if the domain they are set on has
-+ * more than one group. This is usually for balancing flags (load balancing
-+ * involves equalizing a metric between groups), or for flags describing some
-+ * shared resource (which would be shared between groups).
-+ */
-+#define SDF_NEEDS_GROUPS       0x4
+ 	if (~cflags & pflags)
+ 		return 0;
  
- /*
-  * Balance when about to become idle
-  *
-  * SHARED_CHILD: Set from the base domain up to cpuset.sched_relax_domain_level.
-+ * NEEDS_GROUPS: Load balancing flag.
-  */
--SD_FLAG(SD_BALANCE_NEWIDLE,     0, SDF_SHARED_CHILD)
-+SD_FLAG(SD_BALANCE_NEWIDLE,     0, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
- 
- /*
-  * Balance on exec
-  *
-  * SHARED_CHILD: Set from the base domain up to the NUMA reclaim level.
-+ * NEEDS_GROUPS: Load balancing flag.
-  */
--SD_FLAG(SD_BALANCE_EXEC,        1, SDF_SHARED_CHILD)
-+SD_FLAG(SD_BALANCE_EXEC,        1, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
- 
- /*
-  * Balance on fork, clone
-  *
-  * SHARED_CHILD: Set from the base domain up to the NUMA reclaim level.
-+ * NEEDS_GROUPS: Load balancing flag.
-  */
--SD_FLAG(SD_BALANCE_FORK,        2, SDF_SHARED_CHILD)
-+SD_FLAG(SD_BALANCE_FORK,        2, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
- 
- /*
-  * Balance on wakeup
-  *
-  * SHARED_CHILD: Set from the base domain up to cpuset.sched_relax_domain_level.
-+ * NEEDS_GROUPS: Load balancing flag.
-  */
--SD_FLAG(SD_BALANCE_WAKE,        3, SDF_SHARED_CHILD)
-+SD_FLAG(SD_BALANCE_WAKE,        3, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
- 
- /*
-  * Consider waking task on waking CPU.
-@@ -71,63 +85,72 @@ SD_FLAG(SD_WAKE_AFFINE,         4, SDF_SHARED_CHILD)
-  * Domain members have different CPU capacities
-  *
-  * SHARED_PARENT: Set from the topmost domain down to the first domain where
-- * asymmetry is detected.
-+ *                asymmetry is detected.
-+ * NEEDS_GROUPS: Per-CPU capacity is asymmetric between groups.
-  */
--SD_FLAG(SD_ASYM_CPUCAPACITY,    5, SDF_SHARED_PARENT)
-+SD_FLAG(SD_ASYM_CPUCAPACITY,    5, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
- 
- /*
-  * Domain members share CPU capacity (i.e. SMT)
-  *
-  * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
-- * CPU capacity.
-+ *               CPU capacity.
-+ * NEEDS_GROUPS: Capacity is shared between groups.
-  */
--SD_FLAG(SD_SHARE_CPUCAPACITY,   6, SDF_SHARED_CHILD)
-+SD_FLAG(SD_SHARE_CPUCAPACITY,   6, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
- 
- /*
-  * Domain members share CPU package resources (i.e. caches)
-  *
-  * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
-- * the same cache(s).
-+ *               the same cache(s).
-+ * NEEDS_GROUPS: Caches are shared between groups.
-  */
--SD_FLAG(SD_SHARE_PKG_RESOURCES, 7, SDF_SHARED_CHILD)
-+SD_FLAG(SD_SHARE_PKG_RESOURCES, 7, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
- 
- /*
-  * Only a single load balancing instance
-  *
-  * SHARED_PARENT: Set for all NUMA levels above NODE. Could be set from a
-- * different level upwards, but it doesn't change that if a domain has this flag
-- * set, then all of its parents need to have it too (otherwise the serialization
-- * doesn't make sense).
-+ *                different level upwards, but it doesn't change that if a
-+ *                domain has this flag set, then all of its parents need to have
-+ *                it too (otherwise the serialization doesn't make sense).
-+ * NEEDS_GROUPS: No point in preserving domain if it has a single group.
-  */
--SD_FLAG(SD_SERIALIZE,           8, SDF_SHARED_PARENT)
-+SD_FLAG(SD_SERIALIZE,           8, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
- 
- /*
-  * Place busy tasks earlier in the domain
-  *
-  * SHARED_CHILD: Usually set on the SMT level. Technically could be set further
-- * up, but currently assumed to be set from the base domain upwards (see
-- * update_top_cache_domain()).
-+ *               up, but currently assumed to be set from the base domain
-+ *               upwards (see update_top_cache_domain()).
-+ * NEEDS_GROUPS: Load balancing flag.
-  */
--SD_FLAG(SD_ASYM_PACKING,        9, SDF_SHARED_CHILD)
-+SD_FLAG(SD_ASYM_PACKING,        9, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
- 
- /*
-  * Prefer to place tasks in a sibling domain
-  *
-  * Set up until domains start spanning NUMA nodes. Close to being a SHARED_CHILD
-  * flag, but cleared below domains with SD_ASYM_CPUCAPACITY.
-+ *
-+ * NEEDS_GROUPS: Load balancing flag.
-  */
--SD_FLAG(SD_PREFER_SIBLING,      10, 0)
-+SD_FLAG(SD_PREFER_SIBLING,      10, SDF_NEEDS_GROUPS)
- 
- /*
-  * sched_groups of this level overlap
-  *
-  * SHARED_PARENT: Set for all NUMA levels above NODE.
-+ * NEEDS_GROUPS: Overlaps can only exist with more than one group.
-  */
--SD_FLAG(SD_OVERLAP,             11, SDF_SHARED_PARENT)
-+SD_FLAG(SD_OVERLAP,             11, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
- 
- /*
-  * cross-node balancing
-  *
-  * SHARED_PARENT: Set for all NUMA levels above NODE.
-+ * NEEDS_GROUPS: No point in preserving domain if it has a single group.
-  */
--SD_FLAG(SD_NUMA,                12, SDF_SHARED_PARENT)
-+SD_FLAG(SD_NUMA,                12, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 99b16d4c03f2..74e6ec32a413 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -16,6 +16,13 @@
- #include <linux/sched/sd_flags.h>
- #undef SD_FLAG
- 
-+/* Generate a mask of SD flags with the SDF_NEEDS_GROUPS metaflag */
-+#define SD_FLAG(name, idx, mflags) (BIT(idx) * !!((mflags) & SDF_NEEDS_GROUPS)) |
-+static const unsigned int SD_DEGENERATE_GROUPS_MASK =
-+#include <linux/sched/sd_flags.h>
-+0;
-+#undef SD_FLAG
-+
- #ifdef CONFIG_SCHED_DEBUG
- #define SD_FLAG(_name, idx, mflags) [idx] = {.meta_flags = mflags, .name = #_name},
- static const struct {
 -- 
 2.27.0
 
