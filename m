@@ -2,80 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A058234AA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 20:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31615234AA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 20:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387697AbgGaSI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 14:08:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:9984 "EHLO mga04.intel.com"
+        id S2387726AbgGaSIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 14:08:40 -0400
+Received: from mga12.intel.com ([192.55.52.136]:9821 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387447AbgGaSI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 14:08:29 -0400
-IronPort-SDR: /HH3Ud5u9C/4qiUAg+SHr2m280Aah0aMfuldRQeOyn48wEolRuV8B4GX43bNF43qAPQHNIXIJy
- /iPyleKZfjzA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="149302911"
+        id S1730040AbgGaSIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 14:08:39 -0400
+IronPort-SDR: mQgeWOw847zrXApQy7nDEuDmN7VgCF8EOVxyMnCrwGccP/zKCpo7VtULfR5+haxmuuLhlvHGqd
+ +KlE4uqsPKyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="131415340"
 X-IronPort-AV: E=Sophos;i="5.75,419,1589266800"; 
-   d="scan'208";a="149302911"
+   d="scan'208";a="131415340"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 11:08:28 -0700
-IronPort-SDR: nWzQAVkG6AlxweHrEsSxaiB+Kvmvid+a67xDfrjm2R1Xi+VMJO6Q0x6jLz8ts+VgFBDkh5HLBB
- XfU7PIuZi2dA==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 11:08:38 -0700
+IronPort-SDR: qfjmM3S7zYwEkQ1lAntFZ8K5yBnB5hcnKkxu6nHgSMFPyu9GEFogDo+QyptTUp5YfIaZ+e77Fo
+ T7iVU93o9TsQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,419,1589266800"; 
-   d="scan'208";a="321467014"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 31 Jul 2020 11:08:27 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 2710A21D; Fri, 31 Jul 2020 21:08:26 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v2 3/3] lib/vsprintf: Force type of flags value for gfp_t
-Date:   Fri, 31 Jul 2020 21:08:24 +0300
-Message-Id: <20200731180825.30575-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200731180825.30575-1-andriy.shevchenko@linux.intel.com>
-References: <20200731180825.30575-1-andriy.shevchenko@linux.intel.com>
+   d="scan'208";a="287249965"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP; 31 Jul 2020 11:08:38 -0700
+Received: from [10.251.2.62] (kliang2-mobl.ccr.corp.intel.com [10.251.2.62])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 2474F58027C;
+        Fri, 31 Jul 2020 11:08:38 -0700 (PDT)
+Subject: Re: [PATCH] perf/x86: Reset the counter to prevent the leak for a
+ RDPMC task
+To:     peterz@infradead.org
+Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@amacapital.net>
+References: <20200730123815.18518-1-kan.liang@linux.intel.com>
+ <20200730125817.GL2655@hirez.programming.kicks-ass.net>
+ <cd65635b-d226-3089-cb4a-8f60ae408db5@linux.intel.com>
+ <20200730164425.GO2655@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <5810ec13-7b40-b97f-c52b-31d1510c57c9@linux.intel.com>
+Date:   Fri, 31 Jul 2020 14:08:36 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200730164425.GO2655@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse is not happy about restricted type being assigned:
-  lib/vsprintf.c:1940:23: warning: incorrect type in assignment (different base types)
-  lib/vsprintf.c:1940:23:    expected unsigned long [assigned] flags
-  lib/vsprintf.c:1940:23:    got restricted gfp_t [usertype]
 
-Force type of flags value to make sparse happy.
 
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: used explicit type to be forced to (Steven)
- lib/vsprintf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 7/30/2020 12:44 PM, peterz@infradead.org wrote:
+> On Thu, Jul 30, 2020 at 11:54:35AM -0400, Liang, Kan wrote:
+>> On 7/30/2020 8:58 AM, peterz@infradead.org wrote:
+>>> On Thu, Jul 30, 2020 at 05:38:15AM -0700, kan.liang@linux.intel.com wrote:
+>>>> From: Kan Liang <kan.liang@linux.intel.com>
+>>>>
+>>>> The counter value of a perf task may leak to another RDPMC task.
+>>>
+>>> Sure, but nowhere did you explain why that is a problem.
+>>>
+>>>> The RDPMC instruction is only available for the X86 platform. Only apply
+>>>> the fix for the X86 platform.
+>>>
+>>> ARM64 can also do it, although I'm not sure what the current state of
+>>> things is here.
+>>>
+>>>> After applying the patch,
+>>>>
+>>>>       $ taskset -c 0 ./rdpmc_read_all_counters
+>>>>       index 0x0 value 0x0
+>>>>       index 0x1 value 0x0
+>>>>       index 0x2 value 0x0
+>>>>       index 0x3 value 0x0
+>>>>
+>>>>       index 0x0 value 0x0
+>>>>       index 0x1 value 0x0
+>>>>       index 0x2 value 0x0
+>>>>       index 0x3 value 0x0
+>>>
+>>> You forgot about:
+>>>
+>>>    - telling us why it's a problem,
+>>
+>> The non-privileged RDPMC user can get the counter information from other
+>> perf users. It is a security issue. I will add it in the next version.
+> 
+> You don't know what it counted and you don't know the offset, what can
+> you do with it?
 
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index 182a3e2e1629..c155769559ab 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -1937,7 +1937,7 @@ char *flags_string(char *buf, char *end, void *flags_ptr,
- 		names = vmaflag_names;
- 		break;
- 	case 'g':
--		flags = *(gfp_t *)flags_ptr;
-+		flags = (__force unsigned long)(*(gfp_t *)flags_ptr);
- 		names = gfpflag_names;
- 		break;
- 	default:
--- 
-2.27.0
+We cannot guarantee that an attacker doesn't know what the other thread 
+is doing. Once they know the event name, they may take advantage of the 
+perfmon counters to attack on a cryptosystem.
+
+Here is one paper I googled. https://dl.acm.org/doi/pdf/10.1145/3156015
+It mentioned that some events, e.g., cache misses and branch miss, can 
+be used as a side channel to attack on cryptosystems.
+
+There are potential security issues.
+> 
+>>>    - telling us how badly it affects performance.
+>>
+>> I once did performance test on a HSX machine. There is no notable slow down
+>> with the patch. I will add the performance data in the next version.
+> 
+> It's still up to [4..8]+[3,4] extra WRMSRs per context switch, that's pretty naf.
+
+I will do more performance test on a ICL with full GP counters and fixed 
+counters enabled.
+
+> 
+>>> I would feel much better if we only did this on context switches to
+>>> tasks that have RDPMC enabled.
+>>
+>> AFAIK, at least for X86, we can only enable/disable RDPMC globally.
+>> How can we know if a specific task that have RDPMC enabled/disabled?
+> 
+> It has mm->context.pref_rdpmc_allowed non-zero, go read x86_pmu_event_{,un}mapped().
+> Without that CR4.PCE is 0 and RDPMC won't work, which is most of the
+> actual tasks.
+> 
+
+Thanks for pointing it out.
+
+I think I can use event->mmap_count and PERF_X86_EVENT_RDPMC_ALLOWED to 
+check whether the events of the task have RDPMC enabled.
+
+> Arguably we should have perf_mmap_open() check if 'event->hw.target ==
+> current', because without that RDPMC is still pointless. >
+>>> So on del() mark the counter dirty (if we don't already have state that
+>>> implies this), but don't WRMSR. And then on
+>>> __perf_event_task_sched_in(), _after_ programming the new tasks'
+>>> counters, check for inactive dirty counters and wipe those -- IFF RDPMC
+>>> is on for that task.
+>>>
+>>
+>> The generic code doesn't have counters' information. It looks like we need
+>> to add a new callback to cleanup the dirty counters as below.
+>>
+>> In the specific implementation of pmu_cleanup(), we can check and wipe all
+>> inactive dirty counters.
+> 
+> What about pmu::sched_task(), can't we rejig that a little?
+> 
+> The way I'm reading it now, it's like we iterate the task context for
+> calling perf_event_context_sched_*(), and then iterate a cpuctx list to
+> find cpuctx->task_ctx, which would be the exact same contexts we've just
+> iterated.
+> 
+> So can't we pull the pmu::sched_task() call into
+> perf_event_context_sched_*() ? That would save a round of
+> pmu_disable/enable() too afaict.
+> 
+
+I think it's doable. I will do more test.
+
+Thanks,
+Kan
 
