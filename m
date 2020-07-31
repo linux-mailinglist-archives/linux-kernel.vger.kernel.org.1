@@ -2,138 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A65234AD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 20:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCF2234AF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 20:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387783AbgGaSXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 14:23:54 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:26709 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730040AbgGaSXx (ORCPT
+        id S2387816AbgGaS1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 14:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387805AbgGaS1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 14:23:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596219832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FNpcdsYn9B2kxIJXPQv8FKNGYI77IPCjCGNgFBGg9TU=;
-        b=Od6GA2GaEp5hqASKk4nL2N5EgdeCQxp67P0vp/BUlLuAPwEFX0T4rtfDksN8Q9GpaZ86DM
-        s9QMNNyy7y455eH0roUII7iJS69uLNEOeUMbEuYbgrhdYR/aSqQOlbxK0d+klWZ+Irb2et
-        +R+30nhocq9v27OHG0MlRmJdzbpY9qM=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-b8WkqDzhPyCYOdVodpMmfw-1; Fri, 31 Jul 2020 14:23:50 -0400
-X-MC-Unique: b8WkqDzhPyCYOdVodpMmfw-1
-Received: by mail-lf1-f72.google.com with SMTP id u26so5756001lfk.7
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 11:23:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FNpcdsYn9B2kxIJXPQv8FKNGYI77IPCjCGNgFBGg9TU=;
-        b=rTPw3CDF2M5tGDE7oliWqRMx1WcidcX5HxVf8WnbQsbQwim0tP7L0h4S/rWQ1uPJaE
-         ehnJdhleNgHAyP0oUhszsTUIMC96czK/r8DCcFm/YBsBV9xDDMv07Gjmanz9argZFgCf
-         Z/EqKUH+hYEEPw2Z1YMnowZoHJRMR8nnet4a78wk0Uxi7FJCZTKKj0CYos1kvAcjBeao
-         V0S0iUo/Ae35ndwsM7ltOb9ZhTly12kHBovkYjWOV7KPLo0I80Y+CZHX/7Tgf9J4K3+O
-         FK8yze8/95dZwfi6PB7ZQ8SH4MTwauTT2AxLViOkLkBUp8eVpnTZRW4SChP8zDOAJXNN
-         CLEg==
-X-Gm-Message-State: AOAM533254mn3+KE9Evy6zavKX8HEjwmtaJgEW5eEbVqcGiq90yj5S0l
-        sBxaDsQdxNsFBg5EyrbL1+VjUxNmeA7CUdzk/biXP7uTzhy7oyyU4McK7Nsq0ow4fZEmU7tEznH
-        Qb9n0bBUy659W1sKw+MDg80Q1qU8LpjTCz48fgj/a
-X-Received: by 2002:a2e:9b92:: with SMTP id z18mr2632601lji.364.1596219828876;
-        Fri, 31 Jul 2020 11:23:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4Ant7fRiaPouV8KSdgTTmMLlIjwSIMUXrC6ApBECDS2mEDf33c4K66gE4HFkxWsG1WUkVTH6tWl9p/Sj0yXU=
-X-Received: by 2002:a2e:9b92:: with SMTP id z18mr2632592lji.364.1596219828575;
- Fri, 31 Jul 2020 11:23:48 -0700 (PDT)
+        Fri, 31 Jul 2020 14:27:19 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E77C061574;
+        Fri, 31 Jul 2020 11:27:18 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: bbeckett)
+        with ESMTPSA id 47790299373
+From:   Robert Beckett <bob.beckett@collabora.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Beckett <bob.beckett@collabora.com>
+Subject: [PATCH] drm/msm: Add vblank timestamp support for dpu1
+Date:   Fri, 31 Jul 2020 19:25:49 +0100
+Message-Id: <20200731182639.10949-1-bob.beckett@collabora.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200730193510.578309-1-jusual@redhat.com> <CAHp75VcyRjAr3ugmAWYcKMrAeea6ioQOPfJnj-Srntdg_W8ScQ@mail.gmail.com>
- <873658kpj2.fsf@vitty.brq.redhat.com>
-In-Reply-To: <873658kpj2.fsf@vitty.brq.redhat.com>
-From:   Julia Suvorova <jusual@redhat.com>
-Date:   Fri, 31 Jul 2020 20:23:37 +0200
-Message-ID: <CAMDeoFUO7UqDx05dK3fJBCfWMDCmEJ+K=nVAvvnPZiTz2+gSTg@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Use MMCONFIG for all PCI config space accesses
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:VFIO DRIVER" <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 11:22 AM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
->
-> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
->
-> > On Thu, Jul 30, 2020 at 10:37 PM Julia Suvorova <jusual@redhat.com> wrote:
-> >>
-> >> Using MMCONFIG instead of I/O ports cuts the number of config space
-> >> accesses in half, which is faster on KVM and opens the door for
-> >> additional optimizations such as Vitaly's "[PATCH 0/3] KVM: x86: KVM
-> >> MEM_PCI_HOLE memory":
-> >
-> >> https://lore.kernel.org/kvm/20200728143741.2718593-1-vkuznets@redhat.com
-> >
-> > You may use Link: tag for this.
-> >
-> >> However, this change will not bring significant performance improvement
-> >> unless it is running on x86 within a hypervisor. Moreover, allowing
-> >> MMCONFIG access for addresses < 256 can be dangerous for some devices:
-> >> see commit a0ca99096094 ("PCI x86: always use conf1 to access config
-> >> space below 256 bytes"). That is why a special feature flag is needed.
-> >>
-> >> Introduce KVM_FEATURE_PCI_GO_MMCONFIG, which can be enabled when the
-> >> configuration is known to be safe (e.g. in QEMU).
-> >
-> > ...
-> >
-> >> +static int __init kvm_pci_arch_init(void)
-> >> +{
-> >> +       if (raw_pci_ext_ops &&
-> >> +           kvm_para_has_feature(KVM_FEATURE_PCI_GO_MMCONFIG)) {
-> >
-> > Better to use traditional pattern, i.e.
-> >   if (not_supported)
-> >     return bail_out;
-> >
-> >   ...do useful things...
-> >   return 0;
-> >
-> >> +               pr_info("PCI: Using MMCONFIG for base access\n");
-> >> +               raw_pci_ops = raw_pci_ext_ops;
-> >> +               return 0;
-> >> +       }
-> >
-> >> +       return 1;
-> >
-> > Hmm... I don't remember what positive codes means there. Perhaps you
-> > need to return a rather error code?
->
-> If I'm reading the code correctly,
->
-> pci_arch_init() has the following:
->
->         if (x86_init.pci.arch_init && !x86_init.pci.arch_init())
->                 return 0;
->
->
-> so returning '1' here means 'continue' and this seems to be
-> correct. (E.g. Hyper-V's hv_pci_init() does the same). What I'm not sure
-> about is 'return 0' above as this will result in skipping the rest of
-> pci_arch_init(). Was this desired or should we return '1' in both cases?
+add vblank timestamp support via drm helpers
 
-This is intentional because pci_direct_init() is about to overwrite
-raw_pci_ops. And since QEMU doesn't have anything in
-pciprobe_dmi_table, it is safe to skip it.
+Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c    | 71 ++++++++++++++++++++-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c |  7 ++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h |  5 ++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c     | 10 ++-
+ drivers/gpu/drm/msm/msm_drv.c               |  1 +
+ 5 files changed, 92 insertions(+), 2 deletions(-)
 
-Best regards, Julia Suvorova.
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+index f272a8d0f95b..b62552cad135 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+@@ -297,8 +297,8 @@ void dpu_crtc_vblank_callback(struct drm_crtc *crtc)
+ 		dpu_crtc->vblank_cb_time = ktime_get();
+ 	else
+ 		dpu_crtc->vblank_cb_count++;
+-	_dpu_crtc_complete_flip(crtc);
+ 	drm_crtc_handle_vblank(crtc);
++	_dpu_crtc_complete_flip(crtc);
+ 	trace_dpu_crtc_vblank_cb(DRMID(crtc));
+ }
+ 
+@@ -1320,6 +1320,73 @@ static void dpu_crtc_early_unregister(struct drm_crtc *crtc)
+ 	debugfs_remove_recursive(dpu_crtc->debugfs_root);
+ }
+ 
++static struct drm_encoder *get_encoder_from_crtc(struct drm_crtc *crtc)
++{
++	struct drm_device *dev = crtc->dev;
++	struct drm_encoder *encoder;
++
++	drm_for_each_encoder(encoder, dev)
++		if (encoder->crtc == crtc)
++			return encoder;
++
++	return NULL;
++}
++
++static bool dpu_crtc_get_scanout_position(struct drm_crtc *crtc,
++					   bool in_vblank_irq,
++					   int *vpos, int *hpos,
++					   ktime_t *stime, ktime_t *etime,
++					   const struct drm_display_mode *mode)
++{
++	unsigned int pipe = crtc->index;
++	struct drm_encoder *encoder;
++	int line, vsw, vbp, vactive_start, vactive_end, vfp_end;
++
++
++	encoder = get_encoder_from_crtc(crtc);
++	if (!encoder) {
++		DRM_ERROR("no encoder found for crtc %d\n", pipe);
++		return false;
++	}
++
++	vsw = mode->crtc_vsync_end - mode->crtc_vsync_start;
++	vbp = mode->crtc_vtotal - mode->crtc_vsync_end;
++
++	/*
++	 * the line counter is 1 at the start of the VSYNC pulse and VTOTAL at
++	 * the end of VFP. Translate the porch values relative to the line
++	 * counter positions.
++	 */
++
++	vactive_start = vsw + vbp + 1;
++
++	vactive_end = vactive_start + mode->crtc_vdisplay;
++
++	/* last scan line before VSYNC */
++	vfp_end = mode->crtc_vtotal;
++
++	if (stime)
++		*stime = ktime_get();
++
++	line = dpu_encoder_get_linecount(encoder);
++
++	if (line < vactive_start)
++		line -= vactive_start;
++	else if (line > vactive_end)
++		line = line - vfp_end - vactive_start;
++	else
++		line -= vactive_start;
++
++	*vpos = line;
++	*hpos = 0;
++
++	if (etime)
++		*etime = ktime_get();
++
++	return true;
++}
++
++
+ static const struct drm_crtc_funcs dpu_crtc_funcs = {
+ 	.set_config = drm_atomic_helper_set_config,
+ 	.destroy = dpu_crtc_destroy,
+@@ -1331,6 +1398,7 @@ static const struct drm_crtc_funcs dpu_crtc_funcs = {
+ 	.early_unregister = dpu_crtc_early_unregister,
+ 	.enable_vblank  = msm_crtc_enable_vblank,
+ 	.disable_vblank = msm_crtc_disable_vblank,
++	.get_vblank_timestamp = drm_crtc_vblank_helper_get_vblank_timestamp,
+ };
+ 
+ static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
+@@ -1339,6 +1407,7 @@ static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
+ 	.atomic_check = dpu_crtc_atomic_check,
+ 	.atomic_begin = dpu_crtc_atomic_begin,
+ 	.atomic_flush = dpu_crtc_atomic_flush,
++	.get_scanout_position = dpu_crtc_get_scanout_position,
+ };
+ 
+ /* initialize crtc */
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index a97f6d2e5a08..1d7d676355ee 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -1659,6 +1659,13 @@ static u32 _dpu_encoder_calculate_linetime(struct dpu_encoder_virt *dpu_enc,
+ 	return line_time;
+ }
+ 
++int dpu_encoder_get_linecount(struct drm_encoder *encoder)
++{
++	struct dpu_encoder_virt *dpu_enc = to_dpu_encoder_virt(encoder);
++
++	return dpu_enc->cur_master->ops.get_line_count(dpu_enc->cur_master);
++}
++
+ int dpu_encoder_vsync_time(struct drm_encoder *drm_enc, ktime_t *wakeup_time)
+ {
+ 	struct drm_display_mode *mode;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
+index b4913465e602..f492ef0a2b2b 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
+@@ -85,6 +85,11 @@ void dpu_encoder_trigger_kickoff_pending(struct drm_encoder *encoder);
+  */
+ void dpu_encoder_kickoff(struct drm_encoder *encoder);
+ 
++/**
++ * dpu_encoder_get_linecount - get the current scanline count for this encoder
++ */
++int dpu_encoder_get_linecount(struct drm_encoder *encoder);
++
+ /**
+  * dpu_encoder_wakeup_time - get the time of the next vsync
+  */
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index c0a4d4e16d82..db8a461a1786 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -14,6 +14,7 @@
+ 
+ #include <drm/drm_crtc.h>
+ #include <drm/drm_file.h>
++#include <drm/drm_vblank.h>
+ 
+ #include "msm_drv.h"
+ #include "msm_mmu.h"
+@@ -337,6 +338,11 @@ static void dpu_kms_prepare_commit(struct msm_kms *kms,
+ 	if (!kms)
+ 		return;
+ 
++	for_each_new_crtc_in_state(state, crtc, crtc_state, i) {
++		if (crtc_state->mode.crtc_clock)
++			drm_crtc_vblank_get(crtc);
++	}
++
+ 	/* Call prepare_commit for all affected encoders */
+ 	for_each_new_crtc_in_state(state, crtc, crtc_state, i) {
+ 		drm_for_each_encoder_mask(encoder, crtc->dev,
+@@ -389,8 +395,10 @@ static void dpu_kms_complete_commit(struct msm_kms *kms, unsigned crtc_mask)
+ 
+ 	DPU_ATRACE_BEGIN("kms_complete_commit");
+ 
+-	for_each_crtc_mask(dpu_kms->dev, crtc, crtc_mask)
++	for_each_crtc_mask(dpu_kms->dev, crtc, crtc_mask) {
+ 		dpu_crtc_complete_commit(crtc);
++		drm_crtc_vblank_put(crtc);
++	}
+ 
+ 	DPU_ATRACE_END("kms_complete_commit");
+ }
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 36d98d4116ca..01734191cd31 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -687,6 +687,7 @@ int msm_crtc_enable_vblank(struct drm_crtc *crtc)
+ 	struct msm_kms *kms = priv->kms;
+ 	if (!kms)
+ 		return -ENXIO;
++	drm_calc_timestamping_constants(crtc, &crtc->state->adjusted_mode);
+ 	DBG("dev=%p, crtc=%u", dev, pipe);
+ 	return vblank_ctrl_queue_work(priv, pipe, true);
+ }
+-- 
+2.20.1
 
