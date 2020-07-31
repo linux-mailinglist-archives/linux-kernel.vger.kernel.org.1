@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A3B234311
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F6323431C
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732898AbgGaJ2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:28:00 -0400
-Received: from mga18.intel.com ([134.134.136.126]:29986 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732894AbgGaJ15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:27:57 -0400
-IronPort-SDR: Kq1THVboy2ZTq3BzuGWffR7QnSC9BBpTVxZWlitxDxmLkH91EPbPi2v4SFVj3nA9SxT+GQY8Th
- TpO7MNs7TN3A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="139313870"
-X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
-   d="scan'208";a="139313870"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 02:27:56 -0700
-IronPort-SDR: HiRETURUYAFFCi4ERosfDa9BkOJ6cbb0yEB4vjxGi37lUxFz5NW70sBex5Io8ipFIFsn4mYvix
- GgSnCZX17l7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
-   d="scan'208";a="274466351"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008.fm.intel.com with ESMTP; 31 Jul 2020 02:27:53 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1k1RKT-005HPB-He; Fri, 31 Jul 2020 12:27:53 +0300
-Date:   Fri, 31 Jul 2020 12:27:53 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Pu Wen <puwen@hygon.cn>
-Cc:     rjw@rjwysocki.net, lenb@kernel.org, jarkko.nikula@linux.intel.com,
-        mika.westerberg@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH] i2c: designware: Add device HID for Hygon I2C controller
-Message-ID: <20200731092753.GL3703480@smile.fi.intel.com>
-References: <20200731084845.24459-1-puwen@hygon.cn>
+        id S1732922AbgGaJ2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732339AbgGaJ2Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 05:28:16 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AFAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 02:28:16 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id l2so16797514wrc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 02:28:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z+0/zjHSuK4YpkaJOtgZNG0mGoncCgYB5r2C7+VJ3D4=;
+        b=R4eDvdiyjZiAS2M0ScI5ZgcMF2tJ0yokw3apO8UqhsoNlAdBSFkzqPNOIw8Dvrr2Yc
+         wkKkHQFTK73G30dhhTnlZmx5u0RV5cVW6DSgBvmw6PTYQLyxf2dGVEyPKsehu4QW0ifI
+         QQkcZ0RtsuPJQ70TR3ADt+mbAAgIDlzU2ytSY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=z+0/zjHSuK4YpkaJOtgZNG0mGoncCgYB5r2C7+VJ3D4=;
+        b=syjTg7BVBjjyoWxYRKIyuHTTUMIaAnEtapDH4QCJfTZZMU6RT2GVnfw2Di0fDKk8I4
+         DTOYuhpCElGHNf1grp3ZUZK68c2kOeToDAHugUoYJ0OyhDSfocxkikRSQTICJayI9kXu
+         wwjfl2tE1uHqJqbzkIrPRD8OkBDHwkICuVCYFKK7O0Yn1S4IEp6gRiQKW/c7znU+Dvwh
+         x/C7kYOSnvQxRwqXFIIJx2WIDs1AIHNcz3NFLtt/Ca2WEvMJZ3c5RHPnhKmNGfZSMR1J
+         Xn8gYtta5QEa/48jXVg4j+EOGoO8+oZAXALSzdrkDdRTZysI4lIsnHJ0Zf3DCgcI92Uq
+         OVBA==
+X-Gm-Message-State: AOAM532WHdllXOTvB9srlS3bXlnTDhjf9zCaIoOk7Nn5QaGnRIXMDxfR
+        RfXs1lk1WvTpd8FN8GX9QnE38w==
+X-Google-Smtp-Source: ABdhPJwT64W6SQNoeOQa1Euw8GGqxxmHPhkx0/MtFqznd2l1BYwFVsr8TCLtYQNzfpRxEdkGA4k+IA==
+X-Received: by 2002:a5d:4907:: with SMTP id x7mr2890544wrq.166.1596187695348;
+        Fri, 31 Jul 2020 02:28:15 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z8sm11660814wmf.42.2020.07.31.02.28.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 02:28:14 -0700 (PDT)
+Date:   Fri, 31 Jul 2020 11:28:12 +0200
+From:   daniel@ffwll.ch
+Cc:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        twoerner@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-usp@googlegroups.com
+Subject: Re: [PATCH] drm/vkms: fix xrgb on compute crc
+Message-ID: <20200731092812.GY6419@phenom.ffwll.local>
+Mail-Followup-To: Melissa Wen <melissa.srw@gmail.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, twoerner@gmail.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-usp@googlegroups.com
+References: <20200730202524.5upzuh4irboru7my@smtp.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200731084845.24459-1-puwen@hygon.cn>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200730202524.5upzuh4irboru7my@smtp.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 04:48:45PM +0800, Pu Wen wrote:
-> Add device HID HYGO0010 to match the Hygon ACPI Vendor ID (HYGO) that
-> was registered in http://www.uefi.org/acpi_id_list, and the I2C
-> controller on Hygon paltform will use the HID.
-
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Pu Wen <puwen@hygon.cn>
-> ---
->  drivers/acpi/acpi_apd.c                     | 1 +
->  drivers/i2c/busses/i2c-designware-platdrv.c | 1 +
->  2 files changed, 2 insertions(+)
+On Thu, Jul 30, 2020 at 05:25:24PM -0300, Melissa Wen wrote:
+> The previous memset operation was not correctly zeroing the alpha
+> channel to compute the crc, and as a result, the IGT subtest
+> kms_cursor_crc/pipe-A-cursor-alpha-transparent fails.
 > 
-> diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
-> index ba2612e9a0eb..f24f6d3f1fa5 100644
-> --- a/drivers/acpi/acpi_apd.c
-> +++ b/drivers/acpi/acpi_apd.c
-> @@ -240,6 +240,7 @@ static const struct acpi_device_id acpi_apd_device_ids[] = {
->  	{ "AMDI0020", APD_ADDR(cz_uart_desc) },
->  	{ "AMD0030", },
->  	{ "AMD0040", APD_ADDR(st_misc_desc)},
-> +	{ "HYGO0010", APD_ADDR(wt_i2c_desc) },
->  #endif
->  #ifdef CONFIG_ARM64
->  	{ "APMC0D0F", APD_ADDR(xgene_i2c_desc) },
-> diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-> index a71bc58fc03c..0dfeb2d11603 100644
-> --- a/drivers/i2c/busses/i2c-designware-platdrv.c
-> +++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-> @@ -55,6 +55,7 @@ static const struct acpi_device_id dw_i2c_acpi_match[] = {
->  	{ "HISI02A1", 0 },
->  	{ "HISI02A2", 0 },
->  	{ "HISI02A3", 0 },
-> +	{ "HYGO0010", ACCESS_INTR_MASK },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(acpi, dw_i2c_acpi_match);
+> Fixes: db7f419c06d7c ("drm/vkms: Compute CRC with Cursor Plane")
+> 
+> Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
+
+Applied to drm-misc-next, thanks for your patch.
+
+> ---
+>  drivers/gpu/drm/vkms/vkms_composer.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
+> index 4af2f19480f4..b8b060354667 100644
+> --- a/drivers/gpu/drm/vkms/vkms_composer.c
+> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+> @@ -33,7 +33,7 @@ static uint32_t compute_crc(void *vaddr_out, struct vkms_composer *composer)
+>  				     + (i * composer->pitch)
+>  				     + (j * composer->cpp);
+>  			/* XRGB format ignores Alpha channel */
+> -			memset(vaddr_out + src_offset + 24, 0,  8);
+> +			bitmap_clear(vaddr_out + src_offset, 24, 8);
+
+Yeah that's a pretty good "oops" oversight on review, nice catch!
+
+Cheers, Daniel
+>  			crc = crc32_le(crc, vaddr_out + src_offset,
+>  				       sizeof(u32));
+>  		}
 > -- 
-> 2.23.0
+> 2.27.0
 > 
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
