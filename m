@@ -2,124 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFC92340A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF722340AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731833AbgGaH6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 03:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731684AbgGaH6w (ORCPT
+        id S1731718AbgGaIAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 04:00:05 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:59648 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731384AbgGaIAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 03:58:52 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B01BC061574;
-        Fri, 31 Jul 2020 00:58:52 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g8so7782904wmk.3;
-        Fri, 31 Jul 2020 00:58:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cTyazyYhJvUjN7a2Z4vhY4OPwuV7RiSwhqqKSl6uwS4=;
-        b=cqcr9/BGTVGV5eLNZYxJLpiQ9zQ9uUBx0U9phhALKfBmj3H1Ly5IjBDuCR8W6fB43t
-         Z/+OylPZCJR+MuNTHsIH2hggC/RuHaGQ6B0nlf/ZI0AcnhG1twITAS4fET/myTe8HQ9c
-         l33p4GTO7epKW9P+rpzY85naKonMEwkUBVbxsuQ4TQVmlJaGYBj3cjymi5aglGlEPS4Q
-         6scVBWiakVdV5WPNCQ8JNjoiQQFRRTfxiIyP/1DmUnZn4f93aE0oR8gSLGC5s79KaOYD
-         s1aXsGM6/VUA6w8NHWBfjIjWPFWhxFPsIq5yNMQqlyXoH/cmzyoPY1mKaOlwAzpuXNAN
-         BXZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cTyazyYhJvUjN7a2Z4vhY4OPwuV7RiSwhqqKSl6uwS4=;
-        b=rosesuFqrodKRlgvhlzq4nhl8nWOnv+CQYPAaflh7RWZWLCgCs3L3IyAeYKlCKVq6z
-         RSZR7jLjsJ8tiABwovNJOTX/wWM7n66DGZrZDhxo9xlSeS8Ni6iqy8zX46MG4s3yyfLE
-         LkXKSG9qg7gq8Pfr4Dr72E/JsB7aBQ3lbBRm5QLh3QF/zAPhAKikOZJ3wWoaFyEvhczX
-         LzRAW12y/LzS7freXEOl0YPwaei2nN7lRMB/dKCkC+AakWGu/9xAxpZQTNAjy8pVS6z9
-         Tior3FCvb1+RpCIV6JI5KBrCqoGGfVASSkdQWRzeLzaojhfuWI1ttE0k7n+5IdduhLvX
-         eI/w==
-X-Gm-Message-State: AOAM533sIU6CM9qFHWx/jshyL7IyyNqvYFqi62+Xovv3iy49rf4xmrVu
-        NJeDLAu0a6ILRzC633d1CtEXSJT1g2im+T9WWpA=
-X-Google-Smtp-Source: ABdhPJxNw7Svuw5TllltfhvwrWmcKb/9/XdA7oHnRTAloSkB3rov2jCYV3IjcA5AbRGDfz1qzi3lBfppauTNKt8MG64=
-X-Received: by 2002:a05:600c:21cd:: with SMTP id x13mr2898582wmj.155.1596182331066;
- Fri, 31 Jul 2020 00:58:51 -0700 (PDT)
+        Fri, 31 Jul 2020 04:00:03 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 348BA8030866;
+        Fri, 31 Jul 2020 07:59:58 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id T9BwIsQNMf_F; Fri, 31 Jul 2020 10:59:57 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>, Vinod Koul <vkoul@kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/8] spi: dw-dma: Add max SG entries burst capability support
+Date:   Fri, 31 Jul 2020 10:59:45 +0300
+Message-ID: <20200731075953.14416-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <b0b7159d-ed10-08ad-b6c7-b85d45f60d16@kernel.dk>
- <e871eef2-8a93-fdbc-b762-2923526a2db4@gmail.com> <80d27717-080a-1ced-50d5-a3a06cf06cd3@kernel.dk>
- <da4baa8c-76b0-7255-365c-d8b58e322fd0@gmail.com> <65a7e9a6-aede-31ce-705c-b7f94f079112@kernel.dk>
- <d4f9a5d3-1df2-1060-94fa-f77441a89299@gmail.com> <CA+1E3rJ3SoLU9aYcugAQgJnSPnJtcCwjZdMREXS3FTmXgy3yow@mail.gmail.com>
- <f030a338-cd52-2e83-e1da-bdbca910d49e@kernel.dk> <CA+1E3rKxZk2CatTuPcQq5d14vXL9_9LVb2_+AfR2m9xn2WTZdg@mail.gmail.com>
- <MWHPR04MB3758DC08EA17780E498E9EC0E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731064526.GA25674@infradead.org> <MWHPR04MB37581344328A42EA7F5ED13EE74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
-In-Reply-To: <MWHPR04MB37581344328A42EA7F5ED13EE74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
-From:   Kanchan Joshi <joshiiitr@gmail.com>
-Date:   Fri, 31 Jul 2020 13:28:24 +0530
-Message-ID: <CA+1E3rLM4G4SwzD6RWsK6Ssp7NmhiPedZDjrqN3kORQr9fxCtw@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] io_uring: add support for zone-append
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     "hch@infradead.org" <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "bcrl@kvack.org" <bcrl@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        SelvaKumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 12:29 PM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
->
-> On 2020/07/31 15:45, hch@infradead.org wrote:
-> > On Fri, Jul 31, 2020 at 06:42:10AM +0000, Damien Le Moal wrote:
-> >>> - We may not be able to use RWF_APPEND, and need exposing a new
-> >>> type/flag (RWF_INDIRECT_OFFSET etc.) user-space. Not sure if this
-> >>> sounds outrageous, but is it OK to have uring-only flag which can be
-> >>> combined with RWF_APPEND?
-> >>
-> >> Why ? Where is the problem ? O_APPEND/RWF_APPEND is currently meaningless for
-> >> raw block device accesses. We could certainly define a meaning for these in the
-> >> context of zoned block devices.
-> >
-> > We can't just add a meaning for O_APPEND on block devices now,
-> > as it was previously silently ignored.  I also really don't think any
-> > of these semantics even fit the block device to start with.  If you
-> > want to work on raw zones use zonefs, that's what is exists for.
->
-> Which is fine with me. Just trying to say that I think this is exactly the
-> discussion we need to start with. What interface do we implement...
->
-> Allowing zone append only through zonefs as the raw block device equivalent, all
-> the O_APPEND/RWF_APPEND semantic is defined and the "return written offset"
-> implementation in VFS would be common for all file systems, including regular
-> ones. Beside that, there is I think the question of short writes... Not sure if
-> short writes can currently happen with async RWF_APPEND writes to regular files.
-> I think not but that may depend on the FS.
+Mainly this series is about fixing a very nasty problem discovered in the
+DW APB SSI driver working in a couple with DW DMAC, which doesn't have
+multi-block capability support (a.k.a. accelerated SG list entries
+traversal/burst, or automatic LLP entries reload, etc.).
 
-generic_write_check_limits (called by generic_write_checks, used by
-most FS) may make it short, and AFAIK it does not depend on
-async/sync.
-This was one of the reason why we chose to isolate the operation by a
-different IOCB flag and not by IOCB_APPEND alone.
+DW DMA IP-core and its DMA channel on the synthesize stage can be tuned by
+setting a vast number of the model parameters, some of which are provided
+to create a more optimized/performant controller. In particular two of
+those parameters are DMAH_CHx_MULTI_BLK_EN and DMAH_CHx_HC_LLP. If at
+least one of them is set to zero (false) then the target DMA controller
+will be smaller and faster but will lack of the DMA blocks chaining
+support. In the kernel notation it means that the controller won't be able
+to automatically reload a next SG-list entry, when a current one is
+finished. Since Linux kernel DMA subsystem interface requires to have the
+SG-lists execution supported, the DW DMA engine driver is developed in a
+way so to resubmit each SG-list entry one-by-one by software means: each
+SG-list entry execution finish is tracked by the DW DMA controller
+interrupt, which handler executes a tasklet, which then re-charges a DW
+DMA channel with a next SG-list entry if one is available.  Such
+implementation is a normal design and works well for the most of the DW
+DMAC client devices. But it may cause problems for devices, which send and
+receive data by means of internal FIFOs. That requires having several DMA
+channels working synchronously in order to prevent the FIFOs overflow.
 
-For block-device these checks are not done, but there is another place
-when it receives writes spanning beyond EOF and iov_iter_truncate()
-adjusts it before sending it down.
-And we return failure for that case in V4-  "Ref: [PATCH v4 3/6] uio:
-return status with iov truncation"
+A bright example of such device is the DW APB SSI controller. It has Tx
+and Rx FIFOs, which first need to be filled in with data before data
+sending out or receiving in. But those FIFOs are inter-dependent because
+of the SPI nature and its shift-register design. So each sent over Tx FIFO
+byte immediately causes getting a byte from the SPI bus into the Rx FIFO.
+It makes a strategy of working with the SPI controller a bit tricky. The
+more data we push into the Tx FIFO and the faster the SPI bus is, the more
+careful we have to be in pulling data from Rx FIFO since if software or
+DMA engine misses a moment when Rx FIFO is full, for instance, due to
+being busy with some other activity or due to being blocked if system bus
+is busy with doing something else or just due to being too slow to keep up
+with incoming data, then Rx FIFO will be overflown, which consequently
+causes data loss. Needless to say that such situation is fatal and mustn't
+be tolerated for a bus like SPI.
 
+In application to the DW APB SSI driver the problem above may happen when
+DW DMAC is synthesized with no multi-block capability support and it's
+enabled to be working with DW APB SSI for full-duplex transfers. DW APB
+SSI driver allocates two DW DMAC channels to perform Tx and Rx SPI
+transfers, initializes them, submits Tx and Rx SG-lists for execution and
+then waits until the DMA transfers are finished. The issue happens when Rx
+SG-list consists of more than one entry. Since the multi-block capability
+is unsupported the DW DMAC driver will use the software-based SG-list
+entries traverse implementation, which by design may cause
+non-deterministic latency during the Rx SG-list entries re-charge. During
+the entries re-charge procedure the DMA Tx channel will keep pushing data
+into the SPI Tx FIFO. DW APB SSI controller in its turn will keep pushing
+data out from the Tx FIFO to the SPI bus, and will immediately fill in the
+Rx FIFO. So if the latency is big enough, then we'll eventually end up
+with Rx FIFO overflow.
+
+One of the possible solution of the problem denoted above is to feed the
+DMA engine with the Tx and Rx SG-list entries one-by-one. This series
+provides an implementation of that approach. First it moves the requested
+DMA channels configuration into the dma_setup() callback, which should
+have been there in the first place. Then it's better to move the DMA
+transfers submission into the DMA-preparation methods to collect all the
+setups in a single method. After that the current implementation of a
+straightforward SG-lists DMA transfer should be unpinned into a dedicated
+method dw_spi_dma_transfer_all() since we are about to introduce an
+alternative DMA-based SPI transfer approach. Since DMA-transfers finish is
+now locally detected we can simplify the driver code a bit and move the
+DMAC register cleanup to a single place in the dw_spi_dma_transfer_all()
+method. In order to re-use the DMA-{wait, submit Tx, submit Rx} methods we
+have to alter their prototypes, so they would accept SG-lists instead of
+the SPI-transfer structure. Finally we introduce a new DMA-based
+SPI-transfer method, which traverses the SG-list entries in a loop and
+synchronously submits each of then to the Tx and Rx DMA channels in a way
+so the DMA engine wouldn't need to activate the prone to errors in our
+case SG-list entries re-charge implementation. That new method is utilized
+only for the DMA controllers, which can't handle all Tx and Rx SPI
+transfer SG-lists in a single DMA transaction without software
+intervention, and for the full-duplex SPI-transfers.
+
+Note since the DMA-engine subsystem in kernel 5.8-rcX doesn't have the
+max_sg_burst capability supported, this series is intended to be applied
+only after the "next"-branch of the DMA-engine repository is merged into
+the mainline repo. Alternatively the series could be merged in through the
+DMA-engine repo.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: linux-spi@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (8):
+  spi: dw-dma: Set DMA Level registers on init
+  spi: dw-dma: Fail DMA-based transfer if no Tx-buffer specified
+  spi: dw-dma: Configure the DMA channels in dma_setup
+  spi: dw-dma: Move DMA transfers submission to the channels prep
+    methods
+  spi: dw-dma: Detach DMA transfer into a dedicated method
+  spi: dw-dma: Move DMAC register cleanup to DMA transfer method
+  spi: dw-dma: Pass exact data to the DMA submit and wait methods
+  spi: dw-dma: Add one-by-one SG list entries transfer
+
+ drivers/spi/spi-dw-dma.c | 309 ++++++++++++++++++++++++++++++---------
+ drivers/spi/spi-dw.h     |   1 +
+ 2 files changed, 238 insertions(+), 72 deletions(-)
 
 -- 
-Joshi
+2.27.0
+
