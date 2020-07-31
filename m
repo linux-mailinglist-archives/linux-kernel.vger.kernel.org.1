@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6DE2345AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D4C2345B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733277AbgGaMWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59272 "EHLO
+        id S1733300AbgGaMWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733266AbgGaMWE (ORCPT
+        with ESMTP id S1733266AbgGaMWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:22:04 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6CFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:22:04 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id q17so17210727pls.9
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:22:04 -0700 (PDT)
+        Fri, 31 Jul 2020 08:22:07 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0906C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:22:07 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id lx9so7654524pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:22:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DeQp8qeoPbySHXWwwb0orjOK+38VoyYyRVxT40RVsgA=;
-        b=JH0YS43kMG6lFBe3wbbXVA15iWByJHoFD+/phhTMfrNmROe8y/ANMlG9BW6mVewofq
-         19uCSvVxVUC1JOxMvD6nCVqHq/J0GeqfsQ0jTvtv2mBHRmck4fseevfjtTnBn2OTVqi2
-         jehg04UOdaFl7OBA8YPi0UadKkF112L0v/p6TypyL4MG+P9928qmJxa1t+wbs5iWZP8K
-         DuXNuvXkG0pwHYtkhD6kak4x8nsBXiS3ly9eX1E2r5gZmI4i28R0hSOmjkB6wTRZkl7i
-         6lBgPKg+a53bdGyt0FmFZ7ZTHzDpkYIgZwEfx2dTqJxgqFDFVjsb9K3rFEe9pZEclSRt
-         F2Nw==
+        bh=FxsDgzNEqcc+GXlTBcfp5pXxxLZ1MIauOw9FRAHNDPk=;
+        b=j+cx1OBS8E2bvt6ejm6GtzbVnuEmdrBXlXUDGDyHS3BN14d+J8qglCNA8P5dyscdbE
+         rhejc2/0Tv6FSxi3a/KiNIknFxgHibNSBa7BstR1B4aTgDmtMwDvpFjTrHrgQiV2Io4n
+         87litnwpe3vNHIVjCOHjje2lKf9c1C5TVWEFzHZZ9m9xj9jIAqOfWvVQ8RhPS30KKPdC
+         hu/De093jGTRJlfZ33ye+FvGa9Y8IsXm7OSUv9jTYCPqIp7RPzo1LVbYwK9SBIMZhC4X
+         ZV/NQmbTRf7uXrYGvEK81AEqwsVkAFqUfj8WjxMGmm/Jb998vCq0Exbcfie0jdmxPt4x
+         k01w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=DeQp8qeoPbySHXWwwb0orjOK+38VoyYyRVxT40RVsgA=;
-        b=ZG92VocHYnLOoBmrxzWRnO9h8sp4uZ95xtJRKt5nAFYV2Vp8owzBsFhd9v6B9WySXK
-         J9OqUqBvGQzCDN2uNWEBqlXDv9RKXMawObBYrABKz5r1jSsTbxP7Vqq4QlF0N+iLso+f
-         8f5YUadKB9GzvoO3mZwSWLoJzkNh9LYLRjV1lZoKAltHDMG44gR2GXJDSJ4L75WcWimu
-         nmtnvkR3eEbYgV1OyWzg5pXE8wDSju0T9cR62EoMggv0VD4ejZQjiCDmxeJSDKGlOhbV
-         idOUhsyrnEY4pr8dgUL5/C3m594Ke50Xe5SPIUGrJgGtbCQcI9Rz1cpmIhXjXdNnSZ9Y
-         jTyQ==
-X-Gm-Message-State: AOAM531Euh+SJHtsuPZ1xq1nMafH5XpkeDil7/oDZOFzjCy/5gw4buQX
-        CvW7gAmeYEYx/qyINBm9Bg==
-X-Google-Smtp-Source: ABdhPJxCuhOPlrzcVhXzPFCZw2q0er+jAX8DvkrMnB02bNmSP9JC8tnUAqk7NPyCj/LrVkCYpYd0VQ==
-X-Received: by 2002:a17:90a:3fc7:: with SMTP id u7mr3784062pjm.231.1596198124242;
-        Fri, 31 Jul 2020 05:22:04 -0700 (PDT)
+        bh=FxsDgzNEqcc+GXlTBcfp5pXxxLZ1MIauOw9FRAHNDPk=;
+        b=OZdRiijunaI7qomH9klwewMPmBgllvCKVT3AF0lbix5Njuxnw4UWcyfIHks7X4zhMC
+         qE3vm1gWGNrxpfXDk5xB3mt2upvL0dX1OhDv8Box0ArxBqtUlAurmRM69ZkIBT3NvKeH
+         4g3He7+PD4V0iM1gJzs1kubEa1TX+s7bD9HtqNupnqRUqh7HcCKEiDbZOZTVQO6owclz
+         ZR7xPZDN47DFndOO5BMv52FXvtE/N+Tc8M7MxaPZY20Tf1BQ7pI9vuOTN8HdoKwoFBpG
+         zbIFcHwwv6Vnsd+um0dAEY7qomNuBfVdkwgZCsPXvyj5L0L0f4BPA11FD0Q3z+7dhhy9
+         FTbQ==
+X-Gm-Message-State: AOAM530eCqrEQOiWkxm6Lfddmw/+xv2jA5/fz6M67ew4fMiMugI0i2Zb
+        lEX8Shw4YB9JzR1Mb57zDw==
+X-Google-Smtp-Source: ABdhPJzUP0XlaaSdllhCQvfkKWyXnPWpkRM/rubUSS361NwIYKwTyjoKlfCaqKjl2tjfdfAQMWg12w==
+X-Received: by 2002:a17:90a:ef17:: with SMTP id k23mr3484135pjz.45.1596198127344;
+        Fri, 31 Jul 2020 05:22:07 -0700 (PDT)
 Received: from ip-172-31-41-194.ap-northeast-1.compute.internal (ec2-52-199-21-241.ap-northeast-1.compute.amazonaws.com. [52.199.21.241])
-        by smtp.gmail.com with ESMTPSA id m19sm3675692pjv.34.2020.07.31.05.22.01
+        by smtp.gmail.com with ESMTPSA id m19sm3675692pjv.34.2020.07.31.05.22.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 05:22:03 -0700 (PDT)
+        Fri, 31 Jul 2020 05:22:06 -0700 (PDT)
 From:   nao.horiguchi@gmail.com
 To:     linux-mm@kvack.org
 Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
@@ -54,9 +54,9 @@ Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
         david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
         zeil@yandex-team.ru, cai@lca.pw, naoya.horiguchi@nec.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 15/16] mm,hwpoison: introduce MF_MSG_UNSPLIT_THP
-Date:   Fri, 31 Jul 2020 12:21:11 +0000
-Message-Id: <20200731122112.11263-16-nao.horiguchi@gmail.com>
+Subject: [PATCH v5 16/16] mm,hwpoison: double-check page count in __get_any_page()
+Date:   Fri, 31 Jul 2020 12:21:12 +0000
+Message-Id: <20200731122112.11263-17-nao.horiguchi@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200731122112.11263-1-nao.horiguchi@gmail.com>
 References: <20200731122112.11263-1-nao.horiguchi@gmail.com>
@@ -67,77 +67,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-memory_failure() is supposed to call action_result() when it handles
-a memory error event, but there's one missing case. So let's add it.
+Soft offlining could fail with EIO due to the race condition with
+hugepage migration. This issuse became visible due to the change by
+previous patch that makes soft offline handler take page refcount
+by its own.  We have no way to directly pin zero refcount page, and
+the page considered as a zero refcount page could be allocated just
+after the first check.
 
-I find that include/ras/ras_event.h has some other MF_MSG_* undefined,
-so this patch also adds them.
+This patch adds the second check to find the race and gives us
+chance to handle it more reliably.
 
+Reported-by: Qian Cai <cai@lca.pw>
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Signed-off-by: Oscar Salvador <osalvador@suse.com>
 ---
- include/linux/mm.h      | 1 +
- include/ras/ras_event.h | 3 +++
- mm/memory-failure.c     | 5 ++++-
- 3 files changed, 8 insertions(+), 1 deletion(-)
+ mm/memory-failure.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git v5.8-rc7-mmotm-2020-07-27-18-18/include/linux/mm.h v5.8-rc7-mmotm-2020-07-27-18-18_patched/include/linux/mm.h
-index ecb3c7191fb7..4f12b2465e80 100644
---- v5.8-rc7-mmotm-2020-07-27-18-18/include/linux/mm.h
-+++ v5.8-rc7-mmotm-2020-07-27-18-18_patched/include/linux/mm.h
-@@ -3023,6 +3023,7 @@ enum mf_action_page_type {
- 	MF_MSG_BUDDY,
- 	MF_MSG_BUDDY_2ND,
- 	MF_MSG_DAX,
-+	MF_MSG_UNSPLIT_THP,
- 	MF_MSG_UNKNOWN,
- };
- 
-diff --git v5.8-rc7-mmotm-2020-07-27-18-18/include/ras/ras_event.h v5.8-rc7-mmotm-2020-07-27-18-18_patched/include/ras/ras_event.h
-index 36c5c5e38c1d..0bdbc0d17d2f 100644
---- v5.8-rc7-mmotm-2020-07-27-18-18/include/ras/ras_event.h
-+++ v5.8-rc7-mmotm-2020-07-27-18-18_patched/include/ras/ras_event.h
-@@ -361,6 +361,7 @@ TRACE_EVENT(aer_event,
- 	EM ( MF_MSG_POISONED_HUGE, "huge page already hardware poisoned" )	\
- 	EM ( MF_MSG_HUGE, "huge page" )					\
- 	EM ( MF_MSG_FREE_HUGE, "free huge page" )			\
-+	EM ( MF_MSG_NON_PMD_HUGE, "non-pmd-sized huge page" )		\
- 	EM ( MF_MSG_UNMAP_FAILED, "unmapping failed page" )		\
- 	EM ( MF_MSG_DIRTY_SWAPCACHE, "dirty swapcache page" )		\
- 	EM ( MF_MSG_CLEAN_SWAPCACHE, "clean swapcache page" )		\
-@@ -373,6 +374,8 @@ TRACE_EVENT(aer_event,
- 	EM ( MF_MSG_TRUNCATED_LRU, "already truncated LRU page" )	\
- 	EM ( MF_MSG_BUDDY, "free buddy page" )				\
- 	EM ( MF_MSG_BUDDY_2ND, "free buddy page (2nd try)" )		\
-+	EM ( MF_MSG_DAX, "dax page" )					\
-+	EM ( MF_MSG_UNSPLIT_THP, "unsplit thp" )			\
- 	EMe ( MF_MSG_UNKNOWN, "unknown page" )
- 
- /*
 diff --git v5.8-rc7-mmotm-2020-07-27-18-18/mm/memory-failure.c v5.8-rc7-mmotm-2020-07-27-18-18_patched/mm/memory-failure.c
-index bd63f1f2e44e..6f242a194c64 100644
+index 6f242a194c64..b2753ce2b85b 100644
 --- v5.8-rc7-mmotm-2020-07-27-18-18/mm/memory-failure.c
 +++ v5.8-rc7-mmotm-2020-07-27-18-18_patched/mm/memory-failure.c
-@@ -583,6 +583,7 @@ static const char * const action_page_types[] = {
- 	[MF_MSG_BUDDY]			= "free buddy page",
- 	[MF_MSG_BUDDY_2ND]		= "free buddy page (2nd try)",
- 	[MF_MSG_DAX]			= "dax page",
-+	[MF_MSG_UNSPLIT_THP]		= "unsplit thp",
- 	[MF_MSG_UNKNOWN]		= "unknown page",
- };
+@@ -1694,6 +1694,9 @@ static int __get_any_page(struct page *p, unsigned long pfn)
+ 		} else if (is_free_buddy_page(p)) {
+ 			pr_info("%s: %#lx free buddy page\n", __func__, pfn);
+ 			ret = 0;
++		} else if (page_count(p)) {
++			/* raced with allocation */
++			ret = -EBUSY;
+ 		} else {
+ 			pr_info("%s: %#lx: unknown zero refcount page type %lx\n",
+ 				__func__, pfn, p->flags);
+@@ -1710,6 +1713,9 @@ static int get_any_page(struct page *page, unsigned long pfn)
+ {
+ 	int ret = __get_any_page(page, pfn);
  
-@@ -1373,8 +1374,10 @@ int memory_failure(unsigned long pfn, int flags)
- 	}
- 
- 	if (PageTransHuge(hpage)) {
--		if (try_to_split_thp_page(p, "Memory Failure") < 0)
-+		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
-+			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
- 			return -EBUSY;
-+		}
- 		VM_BUG_ON_PAGE(!page_count(p), p);
- 	}
- 
++	if (ret == -EBUSY)
++		ret = __get_any_page(page, pfn);
++
+ 	if (ret == 1 && !PageHuge(page) &&
+ 	    !PageLRU(page) && !__PageMovable(page)) {
+ 		/*
 -- 
 2.17.1
 
