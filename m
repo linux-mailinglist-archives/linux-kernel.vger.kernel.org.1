@@ -2,76 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87E3233EC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 07:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41FED233ECC
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 07:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731283AbgGaFuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 01:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730644AbgGaFuu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 01:50:50 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE76C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 22:50:50 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id e22so6777719pjt.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 22:50:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lPQTMMuUie6XJgopmwRnDGUbsFO8oXkWbGOWjLGiBQo=;
-        b=Os677kuuNvMKQYx2pXT/cjvVadrtcqtx9pUBxd76a5AQsJuD7IXHqglgWnx4ml0RuS
-         mgynRnZcACLF6szDB3raYg3Bga416fU/r90Q4NnJlRsPGANHjc7gpdqh+vtxHijU8u0B
-         3lTwGRJxqoUfBi7kLAyQ/Z45PXxBCNrQGWu3seGH30CeW5/d7rIqqRprhJAWsqVPbyeq
-         zFcT9ljJbdXFRy12xu2ssJYeVyi/1z12UcaN4xszgG4oR3ynQFQkQ8iodBfsQi8mc52Z
-         goRLFkCzZQS4w/B8K8n+L8P8k/xtjz9D9p97VQHCHjSrBfDCr3s3IWGyi/O8jADOgVdv
-         AjQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lPQTMMuUie6XJgopmwRnDGUbsFO8oXkWbGOWjLGiBQo=;
-        b=NiFjJ0eMginZVfXxyuHKBGI41JbMF1y43ZqG+t3x/Umjbz6b/wRlYuuEfrzAXQCvmS
-         kttQU4A0HlLZyf5rbSumKuzNvKOKSibarN9mjrgXg1DRhoCMHEWvKd3KDeLr7PT9NVyq
-         B/3Q1heFTpcclF2JDs/P7+ZOm4DHFJVpN3lo7BHEAcDQQYgicYAV2Tc6xAyOfcqxEqYi
-         LYi8ikB8u989SZr8LzK6Io6CZm88xjBBq3Ei5JQ9vU2JAnlIJ44E0XOEmucuGhH7Ypi3
-         uKkwcmaPZPBabjZ43ZMbZabQgUPN65edJZS9FZM+84v2F5Qc9QMVAjA1xsK8aZg2qUWY
-         j4yA==
-X-Gm-Message-State: AOAM532LeVcfcpy2D1vTqDw8nn34ZrfCNR+SAQvo2szAha9B6wPOH/h4
-        qgvzgSqDwCECDPGb3zbKLxv66JcjXbUQmEI50LjR2g==
-X-Google-Smtp-Source: ABdhPJxKv2g8sKZeB55V/Np8ZzNtHyGySCg0eNp27a92WFk7ob3lUVGsyrtY2NRfNBuyj2fhT8mxdMZAjDxcjKfw5VU=
-X-Received: by 2002:a63:d501:: with SMTP id c1mr2185919pgg.159.1596174649335;
- Thu, 30 Jul 2020 22:50:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200730121656.45302-1-98.arpi@gmail.com>
-In-Reply-To: <20200730121656.45302-1-98.arpi@gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 30 Jul 2020 22:50:38 -0700
-Message-ID: <CAFd5g46wpYxF1=bs3LvXeVg6mPHrT6Ggp=QxScaf87O=yqcpBA@mail.gmail.com>
-Subject: Re: [PATCH] lib: Convert test_uuid.c to KUnit
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
+        id S1731299AbgGaFxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 01:53:13 -0400
+Received: from ozlabs.org ([203.11.71.1]:54127 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730170AbgGaFxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 01:53:12 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BHxJz3Z41z9sT6;
+        Fri, 31 Jul 2020 15:53:06 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1596174789;
+        bh=pGGWHKfJtL+KMXjTL1ISgluxe8SpdKWugmuEWvZtynA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=p0Emrj/vu5vPMkzXOSsZIPoNM3xHMDOVWWsKo/OaXQenIiRUeEwsHS+7xs8iRif64
+         zo1ODSQ/V9bCZll6PZt/vdOpW4W6RtCxRogz1vnnXfbBH6iU+EtHTLpJVyUrVqAorO
+         WfXV2jfQo36o1YOCydoWPwbvierkZivJq8B77IRN7qdl9lRRepR3cVXAz7WfK5IZLR
+         oXhOCbDX0T0ud2ZV2kf9xd7NrjOpcii+Xx8pfYcs8CJLW/jWu70zdyxJ+pD6qIkTAR
+         Fgo4mfdRUWIZypAYC3f2+NYTddCVTU6eRH24HXRLyuxPVPEhtsMn56ljZqsY6MH2lF
+         wRQzBVdAutBBQ==
+Date:   Fri, 31 Jul 2020 15:53:04 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: linux-next: build failure after merge of the tip tree
+Message-ID: <20200731155304.06c67b0c@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/TzJyvr.CQ.dHYVGgaA=aARk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 5:18 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->
-> Converts test lib/test_uuid.c to KUnit
+--Sig_/TzJyvr.CQ.dHYVGgaA=aARk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Can you add some more detail to the commit message? Maybe link to
-KUnit and say something about why this change is beneficial.
+Hi all,
 
-> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+After merging the tip tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-Change mostly looks good to me.
+In file included from include/asm-generic/getorder.h:8,
+                 from arch/arm/include/asm/page.h:166,
+                 from arch/arm/include/asm/thread_info.h:14,
+                 from arch/arm/include/asm/percpu.h:16,
+                 from include/linux/irqflags.h:17,
+                 from arch/arm/include/asm/bitops.h:28,
+                 from include/linux/bitops.h:29,
+                 from include/linux/kernel.h:12,
+                 from include/asm-generic/bug.h:20,
+                 from arch/arm/include/asm/bug.h:60,
+                 from include/linux/bug.h:5,
+                 from include/linux/page-flags.h:10,
+                 from kernel/bounds.c:10:
+include/linux/log2.h: In function '__ilog2_u32':
+include/linux/log2.h:24:9: error: implicit declaration of function 'fls' [-=
+Werror=3Dimplicit-function-declaration]
+   24 |  return fls(n) - 1;
+      |         ^~~
+
+And so on ...
+
+Caused by commit
+
+  a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-cpu var=
+iables")
+
+interacting with commit
+
+  00a30a5c9e6b ("arm: include asm/thread_info.h in asm/percpu.h")
+
+(which was a fix of mine but now the equivalent is in Linus' tree as commit
+
+  aa54ea903abb ("ARM: percpu.h: fix build error")
+)
+
+I have reverted 00a30a5c9e6b since commit
+
+  a6342915881a ("arm: Break cyclic percpu include")
+
+(which precedes a21ee6055c30) acomplishes the same thing differently.
+Something will be required when this is merged with Linus' tree, though.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/TzJyvr.CQ.dHYVGgaA=aARk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8jscAACgkQAVBC80lX
+0Gy+kgf9EDGqQV7aphtZZtiWJBwQR1Y8XGTY5JLUbZfQN3WvcCKSuEdTi9tZ6U2i
+ITjVoHPHrYc9VBrXtYt6FF+Mt59aL6OWtuTVr2+EA/yM871awqzU01XdJM/dZP57
+pF8StLRbggMm8esbOC8eLLgXSj39hUadrWNSUE6x9DGSQkz96EFbOgTzfNh3pIms
++S6xC1Cfacn+oeimBXpWULnyCVtvNkCqZQbsVpy9Qv4UvnYSrZ27tjHaVROKO878
+9lmJRSWp8eQBSAMKY+0JjMstVRnyvongMLXXEMMdrni7vm41l7YkH9sYo0mHV9sB
+xg3i+FJqC/jZW3aBivEY81zM9P8yeQ==
+=T7kK
+-----END PGP SIGNATURE-----
+
+--Sig_/TzJyvr.CQ.dHYVGgaA=aARk--
