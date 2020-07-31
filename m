@@ -2,118 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0DD2348FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 18:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2027723490B
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 18:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732137AbgGaQOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 12:14:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728882AbgGaQOk (ORCPT
+        id S1731517AbgGaQPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 12:15:33 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:30391 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728779AbgGaQPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 12:14:40 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BA6C061574;
-        Fri, 31 Jul 2020 09:14:40 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id q4so33003760lji.2;
-        Fri, 31 Jul 2020 09:14:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YqMA8MeVxar9xICWh2YYRA4Gnd/k8GNWBNgCmBw99tA=;
-        b=tqEyFacWSDK3UrI52boiLHw2n1BPJ4Srrxm/v0jx+fGs5nP2OSvk0dVD+/+Lq4ZxYw
-         d/kAoS9TIkdBlGTisSTgAXxUPyur69lj5f/hO9wj0GHnTqijJS4TFYvqXgK557sg64vV
-         EMysJSc4lAVqrYcCItYj7CtgM4wfIqmIfdobgVKlDa1rqZ7KsCaKhHRXH0Xrv0ePnHSv
-         d93T8X8TxMS1JZALSQHKPdGP85yDiPDHWSNOgmjVj9JPmmBHEL/2bXYwvCMqiqb2C0YA
-         O0TtFnAvU8+Z6N/mYVVNMP+e35TZoAjJyBh/zIs+X7PCttETymTC0R4vSf/yTshHio1o
-         xM8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YqMA8MeVxar9xICWh2YYRA4Gnd/k8GNWBNgCmBw99tA=;
-        b=gd6rDG1Z0QlzXjPrSIyvWY/iWEGmhvHc+vjQRmQwqGPiUYOHW4Jt/l25hIgne1pNlx
-         l1Yhgfkp7YbTE9IeiXV9UelNSGeMfuo2fu3U+plLhL/Vxk2cZlc597oD9zMWpl+bhri+
-         saHhZfp1zrRxJr4IFw+BgpuWWCzkNf+1MpB5wwz3qw4yYr+ZlV9n78ZToD1blyjKf9vo
-         nIalX12xuDDIVNUv5FCwMUEONMuwVBAU/mDoHKHk11MzpHRRA26/Um9BqhbxM/Pa0ZkN
-         9buzDM69JsayDS3GKn2FL8ma1BGNZ5C2A14pW31WRuzpaEMhO1zzRO+BnRj1B53pNR3l
-         O1SQ==
-X-Gm-Message-State: AOAM530bSQ4PDq3GjpsbH5vdCuepwEyZ99/9GbyNn+UdY2QXIqsND4HX
-        iYMOpZodGDv9/F82rcS4YNP9T5SE
-X-Google-Smtp-Source: ABdhPJw0T9d6zBh79kx3CAECrhIJjV4ghrzyu1L0Z953EnYBevf+69nMTDav1jQp8wWhyH+MgaARCA==
-X-Received: by 2002:a2e:b4b8:: with SMTP id q24mr2283271ljm.125.1596212078182;
-        Fri, 31 Jul 2020 09:14:38 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
-        by smtp.googlemail.com with ESMTPSA id d26sm2038703lfq.73.2020.07.31.09.14.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 31 Jul 2020 09:14:37 -0700 (PDT)
-Subject: Re: [RFC PATCH v6 09/10] media: tegra-video: Add CSI MIPI pads
- calibration
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, robh+dt@kernel.org,
-        helen.koike@collabora.com
-Cc:     sboyd@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-References: <1596186169-18729-1-git-send-email-skomatineni@nvidia.com>
- <1596186169-18729-10-git-send-email-skomatineni@nvidia.com>
- <3ac158c4-7df7-e3c1-f0e1-33e7ef017762@gmail.com>
- <f483329d-b5fe-fda5-e235-b8edb5fce440@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a08af0e8-80d8-0bd0-87a3-adfc8e70a92a@gmail.com>
-Date:   Fri, 31 Jul 2020 19:14:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 31 Jul 2020 12:15:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596212130;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0OblQAb8zJLLzk+oGwOoJ6OELXYf9Y5L/lBSvmC1zhI=;
+        b=YdbRCHncT+8H20b4VaGEOM2BNN6cRMB+3hhHksxg6XCpX9LSO6XC3SDBq8bbba5YuvhylP
+        Eeb1q1Md20oFwYQaVmDp2M5C+FhWxrtZvMkb3Rh7NANFVP27prWPonfXuEyzeBV015UqM3
+        yuM6ykDEQwLTOsn9SuDHlEb/bjJoiJE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-lQGbkDLYOZm-Vu0SnXfsew-1; Fri, 31 Jul 2020 12:15:26 -0400
+X-MC-Unique: lQGbkDLYOZm-Vu0SnXfsew-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C3C61005510;
+        Fri, 31 Jul 2020 16:15:23 +0000 (UTC)
+Received: from krava (unknown [10.40.192.26])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 27F1C10013D9;
+        Fri, 31 Jul 2020 16:15:19 +0000 (UTC)
+Date:   Fri, 31 Jul 2020 18:15:19 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        David Ahern <dsahern@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        =?iso-8859-1?Q?Genevi=E8ve?= Bastien <gbastien@versatic.net>,
+        Wang Nan <wangnan0@huawei.com>,
+        Jeremie Galarneau <jgalar@efficios.com>
+Subject: Re: [PATCH 2/6] perf tools: Store clock references for -k/--clockid
+ option
+Message-ID: <20200731161519.GB4296@krava>
+References: <20200730213950.1503773-1-jolsa@kernel.org>
+ <20200730213950.1503773-3-jolsa@kernel.org>
+ <9be7eb7b-4f73-84cc-95e9-e65101b30819@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <f483329d-b5fe-fda5-e235-b8edb5fce440@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9be7eb7b-4f73-84cc-95e9-e65101b30819@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-31.07.2020 18:46, Sowjanya Komatineni пишет:
+On Fri, Jul 31, 2020 at 06:52:36PM +0300, Alexey Budankov wrote:
 > 
-> On 7/31/20 4:39 AM, Dmitry Osipenko wrote:
->> 31.07.2020 12:02, Sowjanya Komatineni пишет:
->> ...
->>> @@ -249,13 +249,47 @@ static int tegra_csi_enable_stream(struct
->>> v4l2_subdev *subdev)
->>>           return ret;
->>>       }
->>>   +    if (csi_chan->mipi) {
->>> +        ret = tegra_mipi_enable(csi_chan->mipi);
->>> +        if (ret < 0) {
->>> +            dev_err(csi->dev,
->>> +                "failed to enable MIPI pads: %d\n", ret);
->>> +            goto rpm_put;
->>> +        }
->>> +
->>> +        /*
->>> +         * CSI MIPI pads PULLUP, PULLDN and TERM impedances need to
->>> +         * be calibrated after power on.
->>> +         * So, trigger the calibration start here and results will
->>> +         * be latched and applied to the pads when link is in LP11
->>> +         * state during start of sensor streaming.
->>> +         */
->>> +        ret = tegra_mipi_start_calibration(csi_chan->mipi);
->>> +        if (ret < 0) {
->>> +            dev_err(csi->dev,
->>> +                "failed to start MIPI calibration: %d\n", ret);
->>> +            goto disable_mipi;
->>> +        }
->> What would happen if CSI stream is enabled and then immediately disabled
->> without enabling camera sensor?
+> On 31.07.2020 0:39, Jiri Olsa wrote:
+> > Adding new CLOCK_DATA feature that stores reference times
+> > when -k/--clockid option is specified.
+> > 
+> > It contains clock id and its reference time together with
+> > wall clock time taken at the 'same time', both values are
+> > in nanoseconds.
+> > 
+> > The format of data is as below:
+> > 
+> >   struct {
+> >        u32 version;  /* version = 1 */
+> >        u32 clockid;
+> >        u64 clockid_time_ns;
+> >        u64 wall_clock_ns;
+> >   };
+> > 
+> > This clock reference times will be used in following changes
+> > to display wall clock for perf events.
+> > 
+> > It's available only for recording with clockid specified,
+> > because it's the only case where we can get reference time
+> > to wallclock time. It's can't do that with perf clock yet.
+> > 
+> > Original-patch-by: David Ahern <dsahern@gmail.com>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  .../Documentation/perf.data-file-format.txt   |  13 ++
+> >  tools/perf/builtin-record.c                   |  41 +++++++
+> >  tools/perf/util/env.h                         |  12 ++
+> >  tools/perf/util/header.c                      | 112 ++++++++++++++++++
+> >  tools/perf/util/header.h                      |   1 +
+> >  5 files changed, 179 insertions(+)
+> > 
+> > diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/perf/Documentation/perf.data-file-format.txt
+> > index b6472e463284..c484e81987c7 100644
+> > --- a/tools/perf/Documentation/perf.data-file-format.txt
+> > +++ b/tools/perf/Documentation/perf.data-file-format.txt
+> > @@ -389,6 +389,19 @@ struct {
+> >  Example:
+> >   cpu pmu capabilities: branches=32, max_precise=3, pmu_name=icelake
+> >  
+> > +	HEADER_CLOCK_DATA = 29,
+> > +
+> > +	Contains clock id and its reference time together with wall clock
+> > +	time taken at the 'same time', both values are in nanoseconds.
+> > +	The format of data is as below.
+> > +
+> > +struct {
+> > +	u32 version;  /* version = 1 */
+> > +	u32 clockid;
+> > +	u64 clockid_time_ns;
+> > +	u64 wall_clock_ns;
+> > +};
+> > +
+> >  	other bits are reserved and should ignored for now
+> >  	HEADER_FEAT_BITS	= 256,
+> >  
+> > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> > index 468c669519a6..f8280e721e1a 100644
+> > --- a/tools/perf/builtin-record.c
+> > +++ b/tools/perf/builtin-record.c
+> > @@ -70,6 +70,7 @@
+> >  #include <linux/time64.h>
+> >  #include <linux/zalloc.h>
+> >  #include <linux/bitmap.h>
+> > +#include <sys/time.h>
+> >  
+> >  struct switch_output {
+> >  	bool		 enabled;
+> > @@ -1203,6 +1204,9 @@ static void record__init_features(struct record *rec)
+> >  	if (!(rec->opts.use_clockid && rec->opts.clockid_res_ns))
+> >  		perf_header__clear_feat(&session->header, HEADER_CLOCKID);
+> >  
+> > +	if (!rec->opts.use_clockid)
+> > +		perf_header__clear_feat(&session->header, HEADER_CLOCK_DATA);
+> > +
+> >  	perf_header__clear_feat(&session->header, HEADER_DIR_FORMAT);
+> >  	if (!record__comp_enabled(rec))
+> >  		perf_header__clear_feat(&session->header, HEADER_COMPRESSED);
+> > @@ -1551,6 +1555,40 @@ static int record__setup_sb_evlist(struct record *rec)
+> >  	return 0;
+> >  }
+> >  
+> > +static int record__init_clock(struct record *rec)
+> > +{
+> > +	struct perf_session *session = rec->session;
+> > +	struct timespec ref_clockid;
+> > +	struct timeval ref_tod;
+> > +	u64 ref;
+> > +
+> > +	if (!rec->opts.use_clockid)
+> > +		return 0;
+> > +
+> > +	session->header.env.clock.clockid = rec->opts.clockid;
+> > +
+> > +	if (gettimeofday(&ref_tod, NULL) != 0) {
+> > +		pr_err("gettimeofday failed, cannot set reference time.\n");
+> > +		return -1;
+> > +	}
+> > +
+> > +	if (clock_gettime(rec->opts.clockid, &ref_clockid)) {
+> > +		pr_err("clock_gettime failed, cannot set reference time.\n");
+> > +		return -1;
+> > +	}
 > 
-> Nothing will happen as during stream enable csi receiver is kept ready.
-> 
-> But actual capture will not happen during that point.
+> It might also want to be implemented in a loop and iteration with minimal
+> time delta is chosen to improve synchronization accuracy and also mitigate
+> possible context switches between gettimeofday() and clock_gettime() calls.
 
-Could you please show how the full call chain looks like? It's not clear
-to me what keeps CSI stream "ready".
+right, we could make this more accurate.. I'll post some follow up
+change with that
+
+thanks,
+jirka
+
