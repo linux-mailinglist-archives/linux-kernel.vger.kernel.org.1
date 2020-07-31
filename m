@@ -2,52 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB302346F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 15:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908122346F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 15:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731521AbgGaNcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 09:32:50 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:40618 "EHLO fornost.hmeau.com"
+        id S1732349AbgGaNd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 09:33:29 -0400
+Received: from mga09.intel.com ([134.134.136.24]:55894 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729995AbgGaNcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 09:32:50 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k1V9C-0001C9-5I; Fri, 31 Jul 2020 23:32:31 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 31 Jul 2020 23:32:30 +1000
-Date:   Fri, 31 Jul 2020 23:32:30 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Keerthy <j-keerthy@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] crypto: sa2ul - Fix inconsistent IS_ERR and PTR_ERR
-Message-ID: <20200731133230.GH14360@gondor.apana.org.au>
-References: <20200724165027.GA18496@embeddedor>
+        id S1729995AbgGaNd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 09:33:29 -0400
+IronPort-SDR: f5pd6pWLlTqyYFWvLZAgQ47jtIkQg9qKYrMRtJQdolJWD7MP/4gqtCE75z3qRytGqPpxxZKaYB
+ BakdjDqAekRg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="152982012"
+X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; 
+   d="scan'208";a="152982012"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 06:33:28 -0700
+IronPort-SDR: 2nXL8SupauE/0M+unYjSdPQW9WQCxn0XFWcj1uHnd6RuRMuogD6ibB4ub91xYNeC7XYXe919Vu
+ SAW1mmOuf2ZA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; 
+   d="scan'208";a="395306863"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 31 Jul 2020 06:33:25 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 31 Jul 2020 16:33:25 +0300
+Date:   Fri, 31 Jul 2020 16:33:24 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Azhar Shaikh <azhar.shaikh@intel.com>
+Cc:     bleung@chromium.org, enric.balletbo@collabora.com,
+        groeck@chromium.org, pmalani@chromium.org,
+        linux-kernel@vger.kernel.org, utkarsh.h.patel@intel.com,
+        casey.g.bowman@intel.com, rajmohan.mani@intel.com
+Subject: Re: [PATCH v2 1/2] platform/chrome: cros_ec_typec: Send enum values
+ to usb_role_switch_set_role()
+Message-ID: <20200731133324.GQ883641@kuha.fi.intel.com>
+References: <20200730225257.7208-1-azhar.shaikh@intel.com>
+ <20200730225257.7208-2-azhar.shaikh@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200724165027.GA18496@embeddedor>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200730225257.7208-2-azhar.shaikh@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 11:50:27AM -0500, Gustavo A. R. Silva wrote:
-> Fix inconsistent IS_ERR and PTR_ERR in sa_dma_init(). The proper pointer
-> to be passed as argument to PTR_ERR() is dd->dma_tx.
+On Thu, Jul 30, 2020 at 03:52:56PM -0700, Azhar Shaikh wrote:
+> usb_role_switch_set_role() has the second argument as enum for usb_role.
+> Currently depending upon the data role i.e. UFP(0) or DFP(1) is sent.
+> This eventually translates to USB_ROLE_NONE in case of UFP and
+> USB_ROLE_DEVICE in case of DFP. Correct this by sending correct enum
+> values as USB_ROLE_DEVICE in case of UFP and USB_ROLE_HOST in case of
+> DFP.
 > 
-> This bug was detected with the help of Coccinelle.
+> Fixes: 7e7def15fa4b ("platform/chrome: cros_ec_typec: Add USB mux control")
 > 
-> Fixes: 7694b6ca649f ("crypto: sa2ul - Add crypto driver")
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/crypto/sa2ul.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
+> Cc: Prashant Malani <pmalani@chromium.org>
+> Reviewed-by: Prashant Malani <pmalani@chromium.org>
 
-Patch applied.  Thanks.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+>  drivers/platform/chrome/cros_ec_typec.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index 3eae01f4c9f7..eb4713b7ae14 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -590,7 +590,8 @@ static int cros_typec_port_update(struct cros_typec_data *typec, int port_num)
+>  		dev_warn(typec->dev, "Configure muxes failed, err = %d\n", ret);
+>  
+>  	return usb_role_switch_set_role(typec->ports[port_num]->role_sw,
+> -					!!(resp.role & PD_CTRL_RESP_ROLE_DATA));
+> +				       resp.role & PD_CTRL_RESP_ROLE_DATA
+> +				       ? USB_ROLE_HOST : USB_ROLE_DEVICE);
+>  }
+>  
+>  static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+> -- 
+> 2.17.1
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+heikki
