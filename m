@@ -2,183 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA39B234500
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C03523453F
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732987AbgGaMAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732971AbgGaMAr (ORCPT
+        id S1733116AbgGaMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:05:27 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:49014 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733108AbgGaMFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:00:47 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0568C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:00:46 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id y8so9320272vsq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 05:00:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kNFpZ5tz0kbxFO/B7KbevfpvofQcxfQQW09ZNgbiZJM=;
-        b=W9E2eYN3ZhtNTy+5a5OtCcZ6EA95cpLsSyLthUyZqJmNKEzzsnH6xZ+hlPqzu03m/N
-         lvt8zu1gAbNoVDtQDz9M6C8QWD6OATfbb/k/1o/ZzHNw5Up3Dn9SlrNhYQVeyyLc0SP3
-         PVQtFlbpAnNqlTcCXZ6VUhEWLaEey8dcQRXTj+6WbY5nZXlJ0xAaMk8NihvFjxNF5wR/
-         Z7H30xPs4YmZVQYkmJkeu/p7KHG51S6Sl8IZTAuXaSfmTzN27C6UFWRooSC1dQKq3Bhj
-         Z2NKflujhn3nvUiwmNxRm41gLsJhA3yz+OZoWOL8/3VG3rTcmaFTXj/r5Ua/retL9tSi
-         Sxnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kNFpZ5tz0kbxFO/B7KbevfpvofQcxfQQW09ZNgbiZJM=;
-        b=URH3VYvyzbyKK40Xhzol8io9UU45Y6lE48MS80tI2TXS44bIBlPaK/CUs0tdBcjqvC
-         QrYSk0iz7S8uNS/tvk87/q6kyep1jXM3AoQ6jCrW+J/z6MfjoxQO3GBEtOqoIyQT9kKX
-         3XiqWHplbUNPRnmxpsir9RGJPfYNhq5rJZnm/cz0UdSdH+ntyJZF1lguRJSnO/eyD0fE
-         yUSMIEbBeFOeqr4u8rtxnt8yC7agLmVfUOKv3a8YTgvRgG6f8du45+RHmPBopu7MKioE
-         Xw5Q3Waeb/RbnDSysDtYZaeBBu6+VC1ZI0qdhtJXbCZ/5PRQUOFp2oFWGAHLlq9Iphx9
-         K7yw==
-X-Gm-Message-State: AOAM530aDF2oRS5k1ShC1Lf+eMlju5RfdLSRhDID1m0NBbXVQnl//GYR
-        1Uxfd8ivhrrFCf6CrIC6bFbkWRwMNQ2lcmGKlRYrnA==
-X-Google-Smtp-Source: ABdhPJwwpd17+j0Pu4qHHsMnovOKvdYX5SqOPJq/cw0Lr89plEbJckQqs92ETPUQUV1Lj2+QKIvGDFBZ1/tDn+YKsKc=
-X-Received: by 2002:a67:504:: with SMTP id 4mr2774823vsf.22.1596196846003;
- Fri, 31 Jul 2020 05:00:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200730074420.449233408@linuxfoundation.org>
-In-Reply-To: <20200730074420.449233408@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 31 Jul 2020 17:30:34 +0530
-Message-ID: <CA+G9fYt4M0ZwcE4gZ82mGrGN0wtT0=-+kT764vpJLx-AGZBv9Q@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/17] 4.19.136-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 31 Jul 2020 08:05:24 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06VC2wKA036678;
+        Fri, 31 Jul 2020 12:05:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=wQSjVYBw/TnpmeaVef5NuD3Sb07fZXefhlktIO+86VE=;
+ b=iZX7AyqlTaeG0sax9PxX4B4ZcMa2vT0UZ7l/Y+qmA1wZlGMKLak5Bs9GINU76b0lfvYm
+ ey6lmKPyGj3kt6rI2z71n217FQ72/y7ayy7rFtbD7yEjPFW5ph4B+/DwvW4S1WNvK0EJ
+ 87xTp9jGelyP01Vqr2pJIJww6jcOHz8AU/g/VLB4NRxrrmkHCyMmGvBqXiOJun+04Q6z
+ JyQNhQ3VhAIoSRf1E2CbKlUGYo0+/ayHFWK8VIFxcPoqV+v1WMPN8fdwF+K/p3KbpHT1
+ k7K+7KOHh8FFAn6Jzq+mfTB8y5hdo9Qzvx/v+HfwZKpsv5Zt8R13N8ZzegxlMOu051qn WA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 32hu1jrqca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 31 Jul 2020 12:05:13 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06VC2bSk150843;
+        Fri, 31 Jul 2020 12:03:13 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 32hu63wuxt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 31 Jul 2020 12:03:13 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06VC3Cr1152622;
+        Fri, 31 Jul 2020 12:03:12 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 32hu63wuv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 31 Jul 2020 12:03:12 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06VC3Anq029674;
+        Fri, 31 Jul 2020 12:03:10 GMT
+Received: from dhcp-10-175-172-80.vpn.oracle.com (/10.175.172.80)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 31 Jul 2020 05:03:10 -0700
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
+ in rds_notify_queue_get()
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <20200731115909.GA1649637@kroah.com>
+Date:   Fri, 31 Jul 2020 14:03:06 +0200
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <866B1B5B-0156-4EED-9599-51BEF5661DA9@oracle.com>
+References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
+ <20200731045301.GI75549@unreal> <20200731095943.GI5493@kadam>
+ <81B40AF5-EBCA-4628-8CF6-687C12134552@oracle.com>
+ <20200731115909.GA1649637@kroah.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9698 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1015
+ malwarescore=0 spamscore=0 suspectscore=3 bulkscore=0 priorityscore=1501
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007310090
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Jul 2020 at 13:38, Greg Kroah-Hartman
+
+
+> On 31 Jul 2020, at 13:59, Greg Kroah-Hartman =
 <gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.136 release.
-> There are 17 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 01 Aug 2020 07:44:05 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.136-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+>=20
+> On Fri, Jul 31, 2020 at 01:14:09PM +0200, H=C3=A5kon Bugge wrote:
+>>=20
+>>=20
+>>> On 31 Jul 2020, at 11:59, Dan Carpenter <dan.carpenter@oracle.com> =
+wrote:
+>>>=20
+>>> On Fri, Jul 31, 2020 at 07:53:01AM +0300, Leon Romanovsky wrote:
+>>>> On Thu, Jul 30, 2020 at 03:20:26PM -0400, Peilin Ye wrote:
+>>>>> rds_notify_queue_get() is potentially copying uninitialized kernel =
+stack
+>>>>> memory to userspace since the compiler may leave a 4-byte hole at =
+the end
+>>>>> of `cmsg`.
+>>>>>=20
+>>>>> In 2016 we tried to fix this issue by doing `=3D { 0 };` on =
+`cmsg`, which
+>>>>> unfortunately does not always initialize that 4-byte hole. Fix it =
+by using
+>>>>> memset() instead.
+>>>>=20
+>>>> Of course, this is the difference between "{ 0 }" and "{}" =
+initializations.
+>>>>=20
+>>>=20
+>>> No, there is no difference.  Even struct assignments like:
+>>>=20
+>>> 	foo =3D *bar;
+>>>=20
+>>> can leave struct holes uninitialized.  Depending on the compiler the
+>>> assignment can be implemented as a memset() or as a series of struct
+>>> member assignments.
+>>=20
+>> What about:
+>>=20
+>> struct rds_rdma_notify {
+>> 	__u64                      user_token;
+>> 	__s32                      status;
+>> } __attribute__((packed));
+>=20
+> Why is this still a discussion at all?
+>=20
+> Try it and see, run pahole and see if there are holes in this =
+structure
+> (odds are no), you don't need us to say what is happening here...
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+An older posting had this:
 
-Summary
-------------------------------------------------------------------------
+$ pahole -C "rds_rdma_notify" net/rds/recv.o
+struct rds_rdma_notify {
+	__u64                      user_token;           /*     0     8 =
+*/
+	__s32                      status;               /*     8     4 =
+*/
 
-kernel: 4.19.136-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: 62c048b85133b227b3af4b3d3c52853b2ea1f1d5
-git describe: v4.19.135-18-g62c048b85133
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/bu=
-ild/v4.19.135-18-g62c048b85133
+	/* size: 16, cachelines: 1, members: 2 */
+	/* padding: 4 */
+	/* last cacheline: 16 bytes */
+};
 
 
-No regressions (compared to build v4.19.134-87-ga2eeabffd1f3)
+Thxs, H=C3=A5kon
 
-No fixes (compared to build v4.19.134-87-ga2eeabffd1f3)
-
-Ran 36200 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* network-basic-tests
-* kselftest/net
-* ltp-open-posix-tests
-* ssuite
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
