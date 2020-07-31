@@ -2,131 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39422344FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF7E234513
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732958AbgGaMAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:00:35 -0400
-Received: from uho.ysoft.cz ([81.19.3.130]:47910 "EHLO uho.ysoft.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732512AbgGaMAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:00:35 -0400
-Received: from iota-build.ysoft.local (unknown [10.1.5.151])
-        by uho.ysoft.cz (Postfix) with ESMTP id 911A3A371F;
-        Fri, 31 Jul 2020 14:00:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
-        s=20160406-ysoft-com; t=1596196832;
-        bh=JT9Xuochy69py6PoMl9VMEW5YN2VhH6Fy4LmrO6dsWs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PVmE6lXKVGZRIuxqTEHS2uOhpFqCCydAiElvsSjM5ZuZZeNyX0NQJTYYiJL0NEf9c
-         GhVshAeKhxA6HV+/XDpcPa/oshM31J1azDoNnc/XqgJ6UXRhB5X5fQTJxO8yTDcdF3
-         wCVcEIUMDw/4AnAz89GXVII9HI9jVwPqYvGDe+qo=
-From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-Subject: [PATCH 2/3] =?UTF-8?q?ARM:=20dts:=20imx6dl-yapp4:=20Add=20Y=20Sof?= =?UTF-8?q?t=20IOTA=C2=A0Orion=20board?=
-Date:   Fri, 31 Jul 2020 14:00:07 +0200
-Message-Id: <1596196808-5067-2-git-send-email-michal.vokac@ysoft.com>
-X-Mailer: git-send-email 2.1.4
-In-Reply-To: <1596196808-5067-1-git-send-email-michal.vokac@ysoft.com>
-References: <1596196808-5067-1-git-send-email-michal.vokac@ysoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1732996AbgGaMCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:02:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732699AbgGaMCS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 08:02:18 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F592C061574;
+        Fri, 31 Jul 2020 05:02:18 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id bo3so8536250ejb.11;
+        Fri, 31 Jul 2020 05:02:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZPoeO3tTC7ewTWnbFijLfWrL4pIpzl5ZB76dv/p6S+8=;
+        b=IV77SFHdlJClAFDI4KSZtVJdC2DAtGrxQmIzbw7GOFGworBySBIYMfm9Yv26Y/SKyP
+         rJ/5xlxCVrVFPq8kGTy8sYSnl8lJJRNSCrGsHmSuT/Q/6f6ZNhMo+IUMump4oyHXnbT4
+         zdg6GnXC6I2EnnmIO+QWUt/QBdgUQDiMTBzZ1MF6LcHzPH6p6WiuMJRqgKLwdVXr0w6T
+         A41vxNL3Pbxy7zwarGyvn0JkT7Sx1d9otfI42XD75uRhNvxzHSotK52Z7UcRx/7L0KoB
+         ev5oiKfqKrPihVeHMlZvAQD8DrotfvZAdy9sCn3f87cYflYMriFMzeKWHMdJMTvHmefD
+         7wSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZPoeO3tTC7ewTWnbFijLfWrL4pIpzl5ZB76dv/p6S+8=;
+        b=BsQ1TTmSRZiL4D5NH9xf1aEOOZBBt3vZfd4bEA4JHu9OWhAtNu+3FV56Db1NJ1FAeQ
+         lpquwahRKHUW6130T5Vjg0oncoVqWjlWDg8zvui4GvHH2W2fk4/+eWLgovZQCaUQ55X8
+         Me4TuiWUCfi2deewwUJZ9aRKkbIsMMQJHpDMMUigmc4lQk5lplU29nr1Mx+Ba3nDYe2S
+         I4y/Y3vs/QztHBQtfW4x53UBA9h2COZbyHvaE6KASClOXTpQph+ENV2lnPpFFnJzw6LP
+         JSN+xvc5G6WSWIyEnLgjJRsSCuHjZrCEu5xzKslUf3dcAcJLUlzYxGwdbkhl1t80Y4rm
+         J+3w==
+X-Gm-Message-State: AOAM530eMoGsMzeW6I7P3ZOQ9J7SJ0np+8an32G8XaTnZawo1nPjK848
+        VzYuOP1H4DFt1v57gniiBMiWw9y6/hcxOQ==
+X-Google-Smtp-Source: ABdhPJzjoTcnAvyDzlAqwJiXlviIPrdknthesuHRXw6Drk1Mxsa9h9E21KaWBpHYtCNmp+wuQyAJqg==
+X-Received: by 2002:a17:906:d7b1:: with SMTP id pk17mr3684852ejb.554.1596196936900;
+        Fri, 31 Jul 2020 05:02:16 -0700 (PDT)
+Received: from net.saheed (95C84E0A.dsl.pool.telekom.hu. [149.200.78.10])
+        by smtp.gmail.com with ESMTPSA id j5sm9091734ejk.87.2020.07.31.05.02.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 05:02:16 -0700 (PDT)
+From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+To:     helgaas@kernel.org, Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Russell Currey <ruscur@russell.cc>,
+        Sam Bobroff <sbobroff@linux.ibm.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>
+Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        bjorn@helgaas.com, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v4 00/12] PCI: Remove '*val = 0' from pcie_capability_read_*()
+Date:   Fri, 31 Jul 2020 13:02:28 +0200
+Message-Id: <20200731110240.98326-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree for new variant of the Y Soft IOT appliance.
-The board is based on Hydra with the following changes:
+v4 CHANGES:
+- Drop uses of pcie_capability_read_*() return value. This related to
+  [1] which is pointing towards making the accessors return void.
+- Remove patches found to be unnecessary
+- Reword some commit messages
 
- - faster SoC (1GHz), 4GB RAM and 64GB eMMC
- - removed miniPCIe
- - removed Audio jack
- - removed uSD slot
- - removed RJ10 serial
- - HDMI replaced by USB host
+v3 CHANGES:
+- Split previous PATCH 6/13 into two : PATCH 6/14 and PATCH 7/14
+- Fix commit message of PATCH 5/14
+- Update Patch numbering and Commit messages
+- Add 'Acked by Greg KH' to PATCH 2/14
+- Add PATCH version
 
-Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
----
- arch/arm/boot/dts/Makefile               |  1 +
- arch/arm/boot/dts/imx6dl-yapp4-orion.dts | 50 ++++++++++++++++++++++++++++++++
- 2 files changed, 51 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6dl-yapp4-orion.dts
+v2 CHANGES:
+- Fix missing comma, causing the email cc error
+- Fix typos and numbering errors in commit messages
+- Add commit message to 13/13
+- Add two more patches: PATCH 3/13 and PATCH 4/13
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 4572db3fa5ae..eec0d61874a4 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -482,6 +482,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6dl-wandboard-revd1.dtb \
- 	imx6dl-yapp4-draco.dtb \
- 	imx6dl-yapp4-hydra.dtb \
-+	imx6dl-yapp4-orion.dtb \
- 	imx6dl-yapp4-ursa.dtb \
- 	imx6q-apalis-eval.dtb \
- 	imx6q-apalis-ixora.dtb \
-diff --git a/arch/arm/boot/dts/imx6dl-yapp4-orion.dts b/arch/arm/boot/dts/imx6dl-yapp4-orion.dts
-new file mode 100644
-index 000000000000..0428720417ef
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-yapp4-orion.dts
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Copyright (C) 2020 Y Soft Corporation, a.s.
-+
-+/dts-v1/;
-+
-+#include "imx6dl.dtsi"
-+#include "imx6dl-yapp4-common.dtsi"
-+
-+/ {
-+	model = "Y Soft IOTA Orion i.MX6DualLite board";
-+	compatible = "ysoft,imx6dl-yapp4-orion", "fsl,imx6dl";
-+
-+	memory@10000000 {
-+		device_type = "memory";
-+		reg = <0x10000000 0xf0000000>;
-+	};
-+};
-+
-+&gpio_oled {
-+	status = "okay";
-+};
-+
-+&leds {
-+	status = "okay";
-+};
-+
-+&oled {
-+	status = "okay";
-+};
-+
-+&reg_usb_h1_vbus {
-+	status = "okay";
-+};
-+
-+&touchkeys {
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "disabled";
-+};
-+
-+&usbh1 {
-+	status = "okay";
-+};
-+
-+&usbphy2 {
-+	status = "okay";
-+};
+MERGING:
+- Patch 6/12 depends on Patch 5/12. However Patch 5/12 has no dependency.
+  Please, merge PATCH 6/12 only after Patch 5/12.
+- Patch 12/12 depends on all preceding patches. Please merge Patch 12/12
+  only after other patches in this series have been merged.
+- All other patches have no dependencies besides those mentioned above and
+  can be merge individually.
+
+PATCH 5/12:
+Set the default case in the switch-statement to set status
+to "Power On".
+
+PATCH 1/12 to 11/12:
+Use the value read by pcie_capability_read_*() to determine success or
+failure. This is done by checking if it is ~0, while maintaining the
+functions' behaviour. This ensures that the changes in PATCH 12/12 does
+not introduce any bug.
+
+PATCH 12/12:
+There are several reasons why a PCI capability read may fail whether the
+device is present or not. If this happens, pcie_capability_read_*() will
+return -EINVAL/PCIBIOS_BAD_REGISTER_NUMBER or PCIBIOS_DEVICE_NOT_FOUND
+and *val is set to 0.
+
+This behaviour if further ensured by this code inside
+pcie_capability_read_*()
+
+ ret = pci_read_config_dword(dev, pci_pcie_cap(dev) + pos, val);
+ /*
+  * Reset *val to 0 if pci_read_config_dword() fails, it may
+  * have been written as 0xFFFFFFFF if hardware error happens
+  * during pci_read_config_dword().
+  */
+ if (ret)
+	 *val = 0;
+ return ret;
+
+a) Since all pci_generic_config_read() does is read a register value,
+it may return success after reading a ~0 which *may* have been fabricated
+by the PCI host bridge due to a read timeout. Hence pci_read_config_*() 
+will return success with a fabricated ~0 in *val, indicating a problem.
+In this case, the assumed behaviour of  pcie_capability_read_*() will be
+wrong. To avoid error slipping through, more checks are necessary.
+
+b) pci_read_config_*() will return PCIBIOS_DEVICE_NOT_FOUND only if 
+dev->error_state = pci_channel_io_perm_failure (i.e. 
+pci_dev_is_disconnected()) or if pci_generic_config_read() can't find the
+device. In both cases *val is initially set to ~0 but as shown in the code
+above pcie_capability_read_*() resets it back to 0. Even with this effort,
+drivers still have to perform validation checks more so if 0 is a valid
+value.
+
+Most drivers only consider the case (b) and in some cases, there is the 
+expectation that on timeout *val has a fabricated value of ~0, which *may*
+not always be true as explained in (a).
+
+In any case, checks need to be done to validate the value read and maybe
+confirm which error has occurred. It is better left to the drivers to do.
+
+Check the return value of pcie_capability_read_dword() to ensure success
+and avoid bug as a result of Patch 14/14.
+Remove the reset of *val to 0 when pci_read_config_*() fails.
+
+[1] https://lore.kernel.org/linux-pci/20200714234625.GA428442@bjorn-Precision-5520/
+
+
+Saheed O. Bolarinwa (12):
+  IB/hfi1: Check if pcie_capability_read_*() reads ~0
+  misc: rtsx: Check if pcie_capability_read_*() reads ~0
+  ath9k: Check if pcie_capability_read_*() reads ~0
+  iwlegacy: Check if pcie_capability_read_*() reads ~0
+  PCI: pciehp: Set "Power On" as the default get_power_status
+  PCI: pciehp: Check if pcie_capability_read_*() reads ~0
+  PCI/ACPI: Check if pcie_capability_read_*() reads ~0
+  PCI: Check if pcie_capability_read_*() reads ~0
+  PCI/PM: Check if pcie_capability_read_*() reads ~0
+  PCI/AER: Check if pcie_capability_read_*() reads ~0
+  PCI/ASPM: Check if pcie_capability_read_*() reads ~0
+  PCI: Remove '*val = 0' from pcie_capability_read_*()
+
+ drivers/infiniband/hw/hfi1/aspm.c            |  6 ++--
+ drivers/misc/cardreader/rts5227.c            |  2 +-
+ drivers/misc/cardreader/rts5249.c            |  2 +-
+ drivers/misc/cardreader/rts5260.c            |  2 +-
+ drivers/misc/cardreader/rts5261.c            |  2 +-
+ drivers/net/wireless/ath/ath9k/pci.c         |  3 +-
+ drivers/net/wireless/intel/iwlegacy/common.c |  2 +-
+ drivers/pci/access.c                         | 14 --------
+ drivers/pci/hotplug/pciehp_hpc.c             | 13 +++++---
+ drivers/pci/pci-acpi.c                       |  4 +--
+ drivers/pci/pci.c                            | 34 ++++++++++++++------
+ drivers/pci/pcie/aer.c                       |  2 +-
+ drivers/pci/pcie/aspm.c                      | 10 +++---
+ drivers/pci/probe.c                          | 12 +++----
+ 14 files changed, 56 insertions(+), 52 deletions(-)
+
 -- 
-2.1.4
+2.18.4
 
