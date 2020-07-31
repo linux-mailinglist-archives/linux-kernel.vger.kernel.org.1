@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E60233D42
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 04:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A0D233D4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 04:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731247AbgGaCjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 22:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731229AbgGaCjp (ORCPT
+        id S1731254AbgGaClK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 22:41:10 -0400
+Received: from sonic309-22.consmr.mail.gq1.yahoo.com ([98.137.65.148]:41509
+        "EHLO sonic309-22.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730820AbgGaClK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 22:39:45 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1ADEC061574;
-        Thu, 30 Jul 2020 19:39:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=wAw0MJ1X4tOEhdrjFhUXv4X8d8xnWtmux1JkPQoh9qo=; b=HVbBFRLBQJg74jfxzistx4SGuJ
-        klH/YMvYhpaJvPBtlUgtwv/soO0s7CRfd4GvFg+2Apq8MRBSIweEP7cyYvMnZqRZbtQDCo3vhrImb
-        GO8lWZ/Uk5SbdJfjyeasZj7WyyLnOzm29VuaGSpSO6GsvQNwE2k/r/gBN09zfkE/37nF1131b87If
-        Ers4KVO4X5EjVWlcZ59uOoiRwoNAUr+4KIwPScy/DeTB/TGQ9vtse20KFbDbLqY7vYTfr2Iulxrfc
-        0C7klEZjPREoxD+BzCyOVgM5MRN/ItMFFaGvyuX3C7h+fekPi3LcC6huYjCE8N4YX1bVRiPVNlo7z
-        FiIAKl2Q==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k1KxS-0001o3-KC; Fri, 31 Jul 2020 02:39:43 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 6/6] crypto: tcrypt: delete duplicated words in messages
-Date:   Thu, 30 Jul 2020 19:39:24 -0700
-Message-Id: <20200731023924.8829-7-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200731023924.8829-1-rdunlap@infradead.org>
-References: <20200731023924.8829-1-rdunlap@infradead.org>
+        Thu, 30 Jul 2020 22:41:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1596163269; bh=DD91Y+8hLQEWUJa1HsJ2lWsRkBMbpRbQsE0hFQtmbLc=; h=From:To:Cc:Subject:Date:References:From:Subject; b=VmIDRVFyBlAXv4h/wj0to2Y5NvQsQCC1NkpWNImyjBSxIScGyqit8kStor21AWhNMhZXiU0mmtnb7Z4DVpykNmFyVT0jRunbUjJeavCZa5Dzy+y/nuyzJzzKivNWIVCbUq4Nr/xO6Wd22pIWU1BcsWXfl1qE1Mp/suemCVfbYHKIPKb8EPHPG+7Meb87P01AJsb+KE/iqwPoDQmv0zJhALDqbW8cRxppSc41cBFWv2eVMmOs8lDwi3cfKCnGvsaCuLpXtLathSCjmtQpqXOhYkLmqBl5FPRKjAV5UcqZsva8CYukjDIeSaOERpMOIzVt3ee6KQ9Fz5yQ2Tpv/95lhw==
+X-YMail-OSG: 0MYneP0VM1kbyZvS9MjCj3h4zIa7Ff1gyM4zgfqAjRrzKcm0.t4ltJ4tOu4QHAD
+ v5c6w7ykcLqfjrjCGnuS49oBw6O0oY3wfCyj8RGh2hAdyfOe1eH9BweR7e0uGAksjS2FTPEvzgWX
+ zgvtGEW45kl2ZvqQjf3v_bDa20mxNXLeUCYo5EwwRuWfau9XrrxVRakZUTHbyFLTph1MdZGdMCK6
+ IxTtmOBvghl0.WgIJFexVpzuaWCpEL_oPc3.aRIHx7MGMOWtfAcEx19zaNG9fFKObciFSYpli4dz
+ CQZzgfz3ROrfj8vldt14hG29AMq7YPOWWj7msB9KkuJ1fBi687Z9Un3rzIQ4CL1Piyibvn9iTHt.
+ R1jqlgZcOWqHBFBCDxmrlp6N.rjbSH1BWhNM2FlbkbLpoApbkcBXOrwed6AELeuoYEIkF.DvprXG
+ l_qTxcR6WnkLM2FquOr.UhyJtVNAjAoNiwvM53dSDzqmKEuXxC4FR1BKnExquf5J5z1J1xf9zLsp
+ Ii_uFrZ8F3aQ4ht4wYelC2rNX8y8DSreiOFbXkhpB6tekh.6sjHpy7XQ0Q2HyLt3jca.Hg7BbyS1
+ KOGUZewQ3w_v_GntTirMu3a75LSDy.cu_aQhBYyQ85WbqB3FuJyySj4n_q2rKfxHst2IEDCcLfQe
+ nmeNNGErZNJ32K1MFeEePF8zgxvbmaXYKWgYmPrC.U4TfAJkvZd2pDbQabA9OVAplK6xqAGB4UvL
+ JyBGCVVGUsLtS399tUD_buICu7955NHTU5iAfeDNA4p5ejmC.WaG2.0Upb6x1MILqmaYmLDd.VwX
+ Hxac0mtGfdwYFswohqxMzMCMuLBdoIqkxj0o5rrhXuPeA1JnhTsW8zlzBdwih3E7M8oDCrZWSv12
+ oY7uS7qPvhUo_1d7Z4GVb1mAPA3QBdvXAzKMIlDIT.DHwFB93xed8Lg1g.NpRmuyA1jYnLYR.gxP
+ UNUGtfA9SNacVR0Be.H_IS6bTTqC5T3a7WtpqkuCPLQwio0CBINnB_WUmySv1.rWEkFHkHShS6Ng
+ on4nlefh2b06tPoWuPVi6T8KzUCA9G0pYNuvh0KSzuFlHdlBPzpGr.cqnhp.HiL3PI4AksYKQBKq
+ Opb.2c8FgrjxHM45oK3MLHb17LGEjaGUuVDLg8XXCWAzuKx3JyakLXwlTpSCEMWBwpbKyQEQVpTR
+ j9Z4.iFaRBtlWj6bjl0tGlvoWsfEj8hEDsUZzdT9PKw6nivX46VCY4s2EA2fd_theyLBpPo3Rsn3
+ yONYNBWRujEa8CwRisiA_EpYfZT5vpb2B1naxPbHNCNjIwRqHze2TJ6Iqe.MFc_fbEfbrOUHqtN.
+ 0gYG81w0ddmvrlUxEB4_RROAiHd_JoxE15QvDR.Owhzwx1pVsERPm9BjtuqKq5g9zdVgr
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.gq1.yahoo.com with HTTP; Fri, 31 Jul 2020 02:41:09 +0000
+Received: by smtp432.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID b10174ed125d8e8034f121a89cf92327;
+          Fri, 31 Jul 2020 02:41:04 +0000 (UTC)
+From:   Gao Xiang <hsiangkao@aol.com>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@redhat.com>,
+        Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
+Subject: [PATCH] erofs: remove WQ_CPU_INTENSIVE flag from unbound wq's
+Date:   Fri, 31 Jul 2020 10:40:49 +0800
+Message-Id: <20200731024049.16495-1-hsiangkao@aol.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+References: <20200731024049.16495-1-hsiangkao.ref@aol.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the doubled word "failed" in pr_err() messages.
+From: Gao Xiang <hsiangkao@redhat.com>
 
+The documentation [1] says that WQ_CPU_INTENSIVE is "meaningless" for
+unbound wq. I remove this flag from places where unbound queue is
+allocated. This is supposed to improve code readability.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
+[1] https://www.kernel.org/doc/html/latest/core-api/workqueue.html#flags
+Signed-off-by: Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
+[Gao Xiang: since the original treewide patch [2] hasn't been merged
+            yet, handling the EROFS part only for the next cycle. ]
+[2] https://lore.kernel.org/r/20200213141823.2174236-1-mplaneta@os.inf.tu-dresden.de
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
 ---
- crypto/tcrypt.c |    4 ++--
+ fs/erofs/zdata.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
---- linux-next-20200730.orig/crypto/tcrypt.c
-+++ linux-next-20200730/crypto/tcrypt.c
-@@ -398,7 +398,7 @@ static void test_mb_aead_speed(const cha
- 					ret = do_one_aead_op(cur->req, ret);
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 80bf09c4de09..9ac2723c11bf 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -43,13 +43,13 @@ void z_erofs_exit_zip_subsystem(void)
+ static inline int z_erofs_init_workqueue(void)
+ {
+ 	const unsigned int onlinecpus = num_possible_cpus();
+-	const unsigned int flags = WQ_UNBOUND | WQ_HIGHPRI | WQ_CPU_INTENSIVE;
  
- 					if (ret) {
--						pr_err("calculating auth failed failed (%d)\n",
-+						pr_err("calculating auth failed (%d)\n",
- 						       ret);
- 						break;
- 					}
-@@ -648,7 +648,7 @@ static void test_aead_speed(const char *
- 						     crypto_aead_encrypt(req));
- 
- 				if (ret) {
--					pr_err("calculating auth failed failed (%d)\n",
-+					pr_err("calculating auth failed (%d)\n",
- 					       ret);
- 					break;
- 				}
+ 	/*
+ 	 * no need to spawn too many threads, limiting threads could minimum
+ 	 * scheduling overhead, perhaps per-CPU threads should be better?
+ 	 */
+-	z_erofs_workqueue = alloc_workqueue("erofs_unzipd", flags,
++	z_erofs_workqueue = alloc_workqueue("erofs_unzipd",
++					    WQ_UNBOUND | WQ_HIGHPRI,
+ 					    onlinecpus + onlinecpus / 4);
+ 	return z_erofs_workqueue ? 0 : -ENOMEM;
+ }
+-- 
+2.24.0
+
