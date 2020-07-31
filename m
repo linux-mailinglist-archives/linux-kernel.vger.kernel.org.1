@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E61234B8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 21:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB22234B92
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 21:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730201AbgGaTVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 15:21:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:36352 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730133AbgGaTU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 15:20:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EDC3D106F;
-        Fri, 31 Jul 2020 12:20:55 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9CD4A3F71F;
-        Fri, 31 Jul 2020 12:20:54 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, morten.rasmussen@arm.com,
-        Quentin Perret <qperret@google.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 3/3] sched/doc: Factorize bits between sched-energy.rst & sched-capacity.rst
-Date:   Fri, 31 Jul 2020 20:20:16 +0100
-Message-Id: <20200731192016.7484-4-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200731192016.7484-1-valentin.schneider@arm.com>
-References: <20200731192016.7484-1-valentin.schneider@arm.com>
+        id S1730169AbgGaTWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 15:22:07 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:40059 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726726AbgGaTWH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 15:22:07 -0400
+Received: from mail-qt1-f170.google.com ([209.85.160.170]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MbBQU-1kd7HJ2768-00bYsV; Fri, 31 Jul 2020 21:22:05 +0200
+Received: by mail-qt1-f170.google.com with SMTP id e5so9772810qth.5;
+        Fri, 31 Jul 2020 12:22:05 -0700 (PDT)
+X-Gm-Message-State: AOAM531U25yWP4IVhLVN1bcjMmajZSEUKmxxvRC6V995dF/Viybm+BjO
+        Tl//jFAOY8NSjmskQabFwQQwwsiZ99VR9lUAUeM=
+X-Google-Smtp-Source: ABdhPJyuFPh2OD+eEy9S9KdQ+GPvofr/sZPZjrogQb73cQsUrsGw9ikC9N+ACXw8zufq6uO/bUNQzszNvuarP8lRTiQ=
+X-Received: by 2002:ac8:5195:: with SMTP id c21mr5280181qtn.304.1596223324287;
+ Fri, 31 Jul 2020 12:22:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200729150748.1945589-1-daniel@0x0f.com> <20200729150748.1945589-3-daniel@0x0f.com>
+In-Reply-To: <20200729150748.1945589-3-daniel@0x0f.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 31 Jul 2020 21:21:48 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2DY8kNMzZs6vpcsvpU1CaEQy6yCiHq40txEgUBn8d=wA@mail.gmail.com>
+Message-ID: <CAK8P3a2DY8kNMzZs6vpcsvpU1CaEQy6yCiHq40txEgUBn8d=wA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt-bindings: arm: mstar: remove the binding
+ description for mstar,pmsleep
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     SoC Team <soc@kernel.org>, DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:vCQI2QiFOYMtBPokBrSUEZMR/u8y4jbMb9lQouPzNxGteUJlz1G
+ YGFMWgAaZymszT3NLMx5fMmEWVi0NfLFj41mIlAIraa9fE89XPV2JYgi1HEMSZYSqHk5Ssa
+ 2f+9FdPN7RQ3W5zzLu33ew+S/XwIUZ+7i+xYD1jDQonqQZv95KWZi6ma4VyUYn98TNZETA9
+ ioyxenYCkWN6R7iPSSXcw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jK3/XfaA6jY=:PyE+mVFUEXkthDhZHk7O32
+ +cc5cfvliY+GSAYbO8KPweQew6UUMhKI0v+Du++YBPfc3vj7vkvdRTWg7zap5PR0JWqcYFFK5
+ dEXOPhUi2FWM6tuoiD2i3M3SGyNmDDkIbChLR8brqycqKH7b2or4Cjc935JrCrhrlFv+JGkvo
+ be6AZiEKWwmb1W0Bq2GYyIM5GfabONVJo06mRKLXrgfbehKqx1I5QiYGLHLm9tsuYhBlx1N3w
+ OPsyy0VJ6gsqFNAy4pt/4iRQrLIcnXEYPOF8SJ3SL/7CKlQZkADBpBDBmMcUfXK5rV2/3ZE++
+ bZHHuB0jR4bcF2//XKuivN4JG8zYGNPBvlpp5BiADC0Jr6sD3vAGJWNOg4p8SdBnUnd7GHLAf
+ SfXTr2CviWApqGQFHb0D5+5TOb2BDWGcPeJWkE6IXGBPXVkKr5yQ63Si7qgE0XxlGTsevLDxW
+ SjHMBRlJGohD2i1LK/nOez07ispOOr6WNuO9uq0ZU8OmQfW9P7WXS57Bq4ozPol2CBkAkCRlk
+ XUqegd+VwNNhqw/GG1eiCgD/8UWWSJWvjaeorvlvLR6WCMHMyGlpy1bXHwMHLKN0OovSm/Wej
+ QDQs5crLTLsv0pjJ1GcU0H+/OZJyJRaLWZ7u7zWSGjQWa1MMcKvihqVjZqtlM7K4BYF5RDTFp
+ GMSpIcBYyvev6AFsrM2AjOMWJD8Jboki6FagIZPt3iTV4hLOW8dI3im/cbYRvzpRVih4SxvDp
+ VsiyJl6YjIeVlu5pGluE0JcGH7F69YLpLJyP6X76gfohHvkoEaPV194srno63RvpnTagHhdic
+ Xerf++YMtxlRQzgsRWjoWI5TsA6pZ1TtA19nPrgef61fU4lRPn6t6I/6e1/AOFQc44voQdc
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation/scheduler/sched-capacity.rst ought to be the canonical place
-to blabber about SD_ASYM_CPUCAPACITY, so remove its explanation from
-sched-energy.rst and point to sched-capacity.rst instead.
+On Wed, Jul 29, 2020 at 5:08 PM Daniel Palmer <daniel@0x0f.com> wrote:
+>
+> Remove the unneeded binding description.
+> Compatible string is in mfd/syscon.yaml now.
+>
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- Documentation/scheduler/sched-energy.rst | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+This patch for some reason did not apply, so I ended up removing the
+file manually and using your changelog.
 
-diff --git a/Documentation/scheduler/sched-energy.rst b/Documentation/scheduler/sched-energy.rst
-index 9580c57a52bc..78f850778982 100644
---- a/Documentation/scheduler/sched-energy.rst
-+++ b/Documentation/scheduler/sched-energy.rst
-@@ -331,16 +331,8 @@ asymmetric CPU topologies for now. This requirement is checked at run-time by
- looking for the presence of the SD_ASYM_CPUCAPACITY flag when the scheduling
- domains are built.
- 
--The flag is set/cleared automatically by the scheduler topology code whenever
--there are CPUs with different capacities in a root domain. The capacities of
--CPUs are provided by arch-specific code through the arch_scale_cpu_capacity()
--callback. As an example, arm and arm64 share an implementation of this callback
--which uses a combination of CPUFreq data and device-tree bindings to compute the
--capacity of CPUs (see drivers/base/arch_topology.c for more details).
--
--So, in order to use EAS on your platform your architecture must implement the
--arch_scale_cpu_capacity() callback, and some of the CPUs must have a lower
--capacity than others.
-+See Documentation/sched/sched-capacity.rst for requirements to be met for this
-+flag to be set in the sched_domain hierarchy.
- 
- Please note that EAS is not fundamentally incompatible with SMP, but no
- significant savings on SMP platforms have been observed yet. This restriction
--- 
-2.27.0
-
+      Arnd
