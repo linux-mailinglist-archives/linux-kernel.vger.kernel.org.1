@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA79C234D65
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 00:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FFE234D67
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 00:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgGaV6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 17:58:40 -0400
-Received: from smtprelay0210.hostedemail.com ([216.40.44.210]:40068 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726391AbgGaV6j (ORCPT
+        id S1726502AbgGaWCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 18:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgGaWCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 17:58:39 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 9E9D8180A7FEE;
-        Fri, 31 Jul 2020 21:58:38 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:968:988:989:1260:1277:1311:1313:1314:1345:1359:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3868:4321:4385:5007:6119:7903:8603:10004:10400:10848:11026:11232:11233:11658:11914:12043:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:5,LUA_SUMMARY:none
-X-HE-Tag: chalk56_561320126f87
-X-Filterd-Recvd-Size: 1949
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 31 Jul 2020 21:58:37 +0000 (UTC)
-Message-ID: <33d943d2b83f17371df09b5962c856ea2d894954.camel@perches.com>
-Subject: Re: [PATCH] scsi: libcxgbi: use kvzalloc instead of opencoded
- kzalloc/vzalloc
-From:   Joe Perches <joe@perches.com>
-To:     Denis Efremov <efremov@linux.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 31 Jul 2020 14:58:36 -0700
-In-Reply-To: <20200731215524.14295-1-efremov@linux.com>
-References: <20200731215524.14295-1-efremov@linux.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Fri, 31 Jul 2020 18:02:33 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9FCC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 15:02:32 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t10so12710527plz.10
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 15:02:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+oZo/9yW6Oqd3XkygyTtSo/s5WeOAvnnWz6QWKpx224=;
+        b=N3yiD5UX+cR8QG4jts4p8h7nRXkfrAJtBC0xtfsVUV82LwaqCgMsXSBhUCwDJcJzbs
+         mdahkoCEgT1sDyvHx9Y5FbWfXPDrIz13exeN+T1lkU1vAkeIA0lFp3l5iwgZjcqqHrl/
+         PNH02FY7/0pKPEKzsXmiuWhLaGzNca95VHWwE30dAZS3a9FPmFnWI/VZopd3K6amWRj1
+         vy6DazkMnzG6LR3qsz9x86pKa/WGzpTTXOjH3gs389randleAtOgHKrTf1OW8Y0DS98q
+         YohnolyZJAxVW4w13084HdqFr+oEnqDHSWKur7Pvm8zMukTISaPPp9EyWHw330MCtEgp
+         e9HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+oZo/9yW6Oqd3XkygyTtSo/s5WeOAvnnWz6QWKpx224=;
+        b=sWneJKKUYsL6buSEorVAf1zzCDRKf1aV+Xcy/iLAMcNa+WIaw7COVeCLfXiMjUCjy6
+         AV/IJQ716i6Tw5DVjEqq5hNbqfWvAolxZfWyi0Pa5HGO0E9p8iNy4eLfm6aoCqxBS2Pp
+         P85fftiMWkwWtWE/VDqbD/wwry6Pj3Sc5fcVI8n17Dq2uNvu3vNWWUPMKOrmcsnuhsQS
+         AsrftXGZ8x7ChK93tg9ky3hwuQUN0wHPX4BfLi3UIVhOQqLltvziL08a6ivjqG3+CRzL
+         kK8bVC1ylQArMBCDUfFMPQAK3mLFMDC29sNTcj9bEuSi7xTyV/P+lcLHSMiRO6GXRGx5
+         R/Dg==
+X-Gm-Message-State: AOAM530DhCqJbnrOBQubBYYvZMwtE27DoykR7/4UAAaKffEKLi65gxTc
+        iGU7rZyvP6jXTOvESkh/e3+w0tElvS664O5cJtYbQQ==
+X-Google-Smtp-Source: ABdhPJxb+RpjHPrJNGDZfqqztRJW/O3fXdm2dXBzLYFHBMbAPCDbg8ExMB3zSjKygRyZPsE3Jd6zAnVmTf8B72/3F5s=
+X-Received: by 2002:a17:90a:33d1:: with SMTP id n75mr5066872pjb.217.1596232951079;
+ Fri, 31 Jul 2020 15:02:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200702071416.1780522-1-davidgow@google.com>
+In-Reply-To: <20200702071416.1780522-1-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 31 Jul 2020 15:02:20 -0700
+Message-ID: <CAFd5g45-UmaxBoNa9pY7LwOrDsRXN46uCO9JvK_CHNhfYdwS4g@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kunit: Add naming guidelines
+To:     David Gow <davidgow@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Randy Dunlap <rd.dunlab@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Tim Bird <Tim.Bird@sony.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-08-01 at 00:55 +0300, Denis Efremov wrote:
-> Remove cxgbi_alloc_big_mem(), cxgbi_free_big_mem() functions
-> and use kvzalloc/kvfree instead.
+On Thu, Jul 2, 2020 at 12:14 AM David Gow <davidgow@google.com> wrote:
+>
+> As discussed in [1], KUnit tests have hitherto not had a particularly
+> consistent naming scheme. This adds documentation outlining how tests
+> and test suites should be named, including how those names should be
+> used in Kconfig entries and filenames.
+>
+> [1]:
+> https://lore.kernel.org/linux-kselftest/202006141005.BA19A9D3@keescook/t/#u
+>
+> Signed-off-by: David Gow <davidgow@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Sensible, thanks.
+Sorry for taking so long on this; nevertheless, looks great!
 
-> diff --git a/drivers/scsi/cxgbi/libcxgbi.c b/drivers/scsi/cxgbi/libcxgbi.c
-[]
-> @@ -77,9 +77,9 @@ int cxgbi_device_portmap_create(struct cxgbi_device *cdev, unsigned int base,
->  {
->  	struct cxgbi_ports_map *pmap = &cdev->pmap;
->  
-> -	pmap->port_csk = cxgbi_alloc_big_mem(max_conn *
-> -					     sizeof(struct cxgbi_sock *),
-> -					     GFP_KERNEL);
-> +	pmap->port_csk = kvzalloc(array_size(max_conn,
-> +					     sizeof(struct cxgbi_sock *)),
-> +				  GFP_KERNEL);
-
-missing __GFP_NOWARN
-
-> diff --git a/drivers/scsi/cxgbi/libcxgbi.h b/drivers/scsi/cxgbi/libcxgbi.h
-[]
-> @@ -537,22 +537,6 @@ struct cxgbi_task_data {
->  #define iscsi_task_cxgbi_data(task) \
->  	((task)->dd_data + sizeof(struct iscsi_tcp_task))
->  
-> -static inline void *cxgbi_alloc_big_mem(unsigned int size,
-> -					gfp_t gfp)
-> -{
-> -	void *p = kzalloc(size, gfp | __GFP_NOWARN);
-
-
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
