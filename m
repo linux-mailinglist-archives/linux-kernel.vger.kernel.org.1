@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0216B2349B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 18:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDFB2349BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 18:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733038AbgGaQw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 12:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728958AbgGaQw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 12:52:59 -0400
-Received: from localhost (unknown [122.171.202.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A427D206D8;
-        Fri, 31 Jul 2020 16:52:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596214378;
-        bh=L2qrI+ML+8DHJLapKkmYpEvFk+FqKeakceZasJgipGI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pzYUCz8oKpoDfmVQDz1V1Pj2WgVpB4dg2Yujspi895pJrKMGswHOC06ethn+T9Gf4
-         MViR5SKuoPJbjLhqLIaIJ5zlbkEkEPRyMqi8zLtPuEphIavznYQ9Wnf8s6P6M6M5xt
-         A5R47k5VUaLDtWIfWU0OcVl99D3SWsxEXfvu7x0M=
-Date:   Fri, 31 Jul 2020 22:22:54 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] dmaengine: dw: Activate FIFO-mode for memory
- peripherals only
-Message-ID: <20200731165254.GG12965@vkoul-mobl>
-References: <20200730154545.3965-1-Sergey.Semin@baikalelectronics.ru>
- <20200730154545.3965-3-Sergey.Semin@baikalelectronics.ru>
- <20200730162428.GU3703480@smile.fi.intel.com>
- <20200730163154.qqrlas4zrybvocno@mobilestation>
- <20200730164703.GY3703480@smile.fi.intel.com>
- <20200730171358.7yxnqavmszahlzfr@mobilestation>
+        id S1732892AbgGaQyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 12:54:31 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:54344 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732881AbgGaQyW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 12:54:22 -0400
+Received: by mail-io1-f69.google.com with SMTP id z25so13618873ioh.21
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 09:54:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ARDRp3KNxJ0Mur5k39eF0BHl1nLpOy5JRf/QHvN6dFk=;
+        b=CqqGtOZKX4KhlXxKhnTn+NCIbNHj/S0G8gCU/J87EDuKEwhV6zv/RTjj2u4L/mpgHF
+         HDSXSDwqmyfN4Tn7pjz8v735cfFiTzZor6PP6NgCApyrpe95+n29wnJb/IgkGo4jmacV
+         7/e+3zbHOPWRi9jt1AtqnpeViVfweTfPxg+0QAJFgfK/d2isE14WruDYAG0A/bY6IGwk
+         JzdmzKVDoQOirtH4daJxZ5fYd2RW2IVJQWwXkVvpkrDmfSJp/TDvyEBx+Za8QPAMstOV
+         yu3MBG3v+wSHgJLuQrb/9iW9pBnkrsWFvKErzDl/QHKuhR37aheFjaubo1fstthvPI5c
+         hypA==
+X-Gm-Message-State: AOAM531exGJZSnT18McXr3Pn1XFAiyRXZw96HkP6M3iS+FOab+Il839E
+        wQF+Yn031XS/1tO6kODp6bXLI0xFWSHace8vy0M1PeIOn758
+X-Google-Smtp-Source: ABdhPJxP2PbBB8deYKj2Tc4M1SS2BCEM0juaeT3FHB8Zzq3MURwrPnYltjduqem2f6JiZYRpGP2INyzeumkyJnqkAJRd8iw1hVjt
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730171358.7yxnqavmszahlzfr@mobilestation>
+X-Received: by 2002:a6b:4407:: with SMTP id r7mr4409152ioa.77.1596214461310;
+ Fri, 31 Jul 2020 09:54:21 -0700 (PDT)
+Date:   Fri, 31 Jul 2020 09:54:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f3b11a05abbfa345@google.com>
+Subject: INFO: trying to register non-static key in skb_dequeue
+From:   syzbot <syzbot+fadfba6a911f6bf71842@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-07-20, 20:13, Serge Semin wrote:
-> On Thu, Jul 30, 2020 at 07:47:03PM +0300, Andy Shevchenko wrote:
-> > On Thu, Jul 30, 2020 at 07:31:54PM +0300, Serge Semin wrote:
-> > > On Thu, Jul 30, 2020 at 07:24:28PM +0300, Andy Shevchenko wrote:
-> > > > On Thu, Jul 30, 2020 at 06:45:42PM +0300, Serge Semin wrote:
-> > 
-> > ...
-> > 
-> > > > > Thanks to the commit ???????????? ("dmaengine: dw: Initialize channel
-> > 
-> > ...
-> > 
-> > > > > Note the DMA-engine repository git.infradead.org/users/vkoul/slave-dma.git
-> > > > > isn't accessible. So I couldn't find out the Andy' commit hash to use it in
-> > > > > the log.
+Hello,
 
-Yeah I moved tree to k.org after disk issue with infradead, change patch
-was on dmaengine ML
+syzbot found the following issue on:
 
-> > > > It's dmaengine.git on git.kernel.org.
-> > > 
-> > > Ah, thanks! I've just found out that the repo address has been changed. But I've
-> > > also scanned the "next" branch of the repo:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git
-> > > 
-> > > Your commit isn't there. Am I missing something?
-> > 
-> 
-> > It's a fix. It went to upstream branch (don't remember its name by heart in
-> > Vinod's repo).
+HEAD commit:    83bdc727 random32: remove net_rand_state from the latent e..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=119bc404900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c0cfcf935bcc94d2
+dashboard link: https://syzkaller.appspot.com/bug?extid=fadfba6a911f6bf71842
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16ce9270900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1485c092900000
 
-Yes it is Linus's tree now and in dmaengine you can find in fixes branch
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fadfba6a911f6bf71842@syzkaller.appspotmail.com
 
-https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git/commit/?h=fixes&id=99ba8b9b0d9780e9937eb1d488d120e9e5c2533d
+IPVS: ftp: loaded support on port[0] = 21
+INFO: trying to register non-static key.
+the code is fine but needs lockdep annotation.
+turning off the locking correctness validator.
+CPU: 1 PID: 6833 Comm: syz-executor596 Not tainted 5.8.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ assign_lock_key kernel/locking/lockdep.c:894 [inline]
+ register_lock_class+0x157d/0x1630 kernel/locking/lockdep.c:1206
+ __lock_acquire+0xfa/0x56e0 kernel/locking/lockdep.c:4259
+ lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:4959
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x8c/0xc0 kernel/locking/spinlock.c:159
+ skb_dequeue+0x1c/0x180 net/core/skbuff.c:3038
+ skb_queue_purge+0x21/0x30 net/core/skbuff.c:3076
+ l2cap_chan_del+0x61d/0x1300 net/bluetooth/l2cap_core.c:657
+ l2cap_conn_del+0x46a/0x9e0 net/bluetooth/l2cap_core.c:1890
+ l2cap_disconn_cfm net/bluetooth/l2cap_core.c:8159 [inline]
+ l2cap_disconn_cfm+0x85/0xa0 net/bluetooth/l2cap_core.c:8152
+ hci_disconn_cfm include/net/bluetooth/hci_core.h:1355 [inline]
+ hci_conn_hash_flush+0x114/0x220 net/bluetooth/hci_conn.c:1536
+ hci_dev_do_close+0x5c6/0x1080 net/bluetooth/hci_core.c:1761
+ hci_unregister_dev+0x1a3/0xe20 net/bluetooth/hci_core.c:3606
+ vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
+ __fput+0x33c/0x880 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:135
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb72/0x2a40 kernel/exit.c:805
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ __do_sys_exit_group kernel/exit.c:914 [inline]
+ __se_sys_exit_group kernel/exit.c:912 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x444fe8
+Code: Bad RIP value.
+RSP: 002b:00007ffde50eda98 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000444fe8
+RDX: 0000000000000001 RSI: 000000000000003c RDI: 0000000000000001
+RBP: 00000000004cce10 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 00007f0c43ebb700 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006e0200 R14: 0000000001898850 R15: 0000000000000001
 
-> 
-> Right. Found it. Thanks.
-> 
-> -Sergey
-> 
-> > 
-> > -- 
-> > With Best Regards,
-> > Andy Shevchenko
-> > 
-> > 
 
--- 
-~Vinod
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
