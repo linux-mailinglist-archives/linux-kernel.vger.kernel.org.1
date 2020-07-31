@@ -2,165 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF6523460A
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C7D2345D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387451AbgGaMnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733294AbgGaMnQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:43:16 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39046C061574;
-        Fri, 31 Jul 2020 05:43:16 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id a26so5480429ejc.2;
-        Fri, 31 Jul 2020 05:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Z7WaVDyC31Xqp9aG4vaiaHbvwp6b775oA7lj7CzrKBo=;
-        b=Boub8lNC8OOZzaDP7HakRmCigQ9s+TmAZKT/FvTXISovow+eY1+3iv9s7tVr5dADQb
-         tIF5zqqI08ULoL0yyrXmhoapYfXxmRW0lyX2RCJXcewDU1EB9xdyPBrZABXn08aJJ28c
-         Ix6TlonWfWSChmEA3cZnWfApy3SwFu1s8TocFkM7yBDwtH78cBXTAF1xTDgYs+VIg8UE
-         kcTAWODekL0CEEpa/XJHHc7Z1xM6Zm5QjgRxMYhQQz3mO4eSz2plfe9QNw1SAJHLLj1J
-         ZA6BNEbFTnFQK6vaB1h+hfyveE/uv2QDJ4RmDfBaoT3ERtSvXRg9SGL9BruBwod71w3x
-         jyzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Z7WaVDyC31Xqp9aG4vaiaHbvwp6b775oA7lj7CzrKBo=;
-        b=odC0C2Z8qjc/R3Sxg0m4I69+a65FMfT2PdfWwCtNsIWoRrbgPdA+xt0zGud2eEx0/5
-         ngabfGy3s7C4W9vCCQ0o1gmzVhzDwrJHa+wrLnWQIZayyjumBn8lNQRm3lYMXBMtA584
-         LBXgkCEGQh2jyKGcN9NghACKAH4M7awzVYg1VpZs3kayTb10Qn+5lo/f00IJ9C41ipul
-         jiZdEfgvwsirvdJvFev6GW5oGPl5s3uN+oJbhsoXzVbvVl5nWXJL4eBGM0NZvzTv44zI
-         FPZvuIULjyCzNbGLSbnhZq93NPV4mixtQKviRH9hWBdcgs9bLaB4sAdkYnqQYEs/cU9h
-         8+Vg==
-X-Gm-Message-State: AOAM532XKTpbopjI5UTUXS/eMRcU41K8ehA6w8GKqZdSMzL3D1mGOAqk
-        tM+vhD+Xftju+LX5tijJ6sc=
-X-Google-Smtp-Source: ABdhPJz2I4wMlXEMP6P1KRM4mmo8+jpv64fXNEUIP720yCcVBp2o7uTyVYR6ab20bRx5VLVhSw6mFA==
-X-Received: by 2002:a17:906:3281:: with SMTP id 1mr3932259ejw.132.1596199394967;
-        Fri, 31 Jul 2020 05:43:14 -0700 (PDT)
-Received: from net.saheed (95C84E0A.dsl.pool.telekom.hu. [149.200.78.10])
-        by smtp.gmail.com with ESMTPSA id g23sm8668514ejb.24.2020.07.31.05.43.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 05:43:14 -0700 (PDT)
-From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-To:     helgaas@kernel.org
-Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        bjorn@helgaas.com, skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Russell Currey <ruscur@russell.cc>,
-        Sam Bobroff <sbobroff@linux.ibm.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>
-Subject: [PATCH v4 12/12] PCI: Remove '*val = 0' from pcie_capability_read_*()
-Date:   Fri, 31 Jul 2020 13:43:29 +0200
-Message-Id: <20200731114329.100848-5-refactormyself@gmail.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20200731114329.100848-1-refactormyself@gmail.com>
-References: <20200731114329.100848-1-refactormyself@gmail.com>
+        id S1733186AbgGaMaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:30:39 -0400
+Received: from mga02.intel.com ([134.134.136.20]:51623 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733165AbgGaMah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 08:30:37 -0400
+IronPort-SDR: zMWc68lAhgkivuW1x/1CycdK9MwoMUC8GdsGjUE3FufrDKA7sV86lZOlFjO3pAgoEUeugBRp55
+ v+k9w2d0P+0Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="139748502"
+X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; 
+   d="scan'208";a="139748502"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 05:30:37 -0700
+IronPort-SDR: sX08mrnWSa8zWJRRR0sQWabTwfdl6QPDe7BNgwczv9dgtKx8nIawNWaHg0kD/HBT4Vaauwirv1
+ p2sElXqEMG8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,418,1589266800"; 
+   d="scan'208";a="365483154"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+  by orsmga001.jf.intel.com with ESMTP; 31 Jul 2020 05:30:33 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Brent Lu <brent.lu@intel.com>, linux-kernel@vger.kernel.org,
+        Daniel Stuart <daniel.stuart14@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Sam McNally <sammc@chromium.org>,
+        Damian van Soelen <dj.vsoelen@gmail.com>
+Subject: [PATCH v3 0/2] Add period size constraint for Atom Chromebook
+Date:   Fri, 31 Jul 2020 20:26:03 +0800
+Message-Id: <1596198365-10105-1-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
+References: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several reasons why a PCI capability read may fail whether the
-device is present or not. If this happens, pcie_capability_read_*() will
-return -EINVAL/PCIBIOS_BAD_REGISTER_NUMBER or PCIBIOS_DEVICE_NOT_FOUND
-and *val is set to 0.
+Two different constraints are implemented: one is in platform's CPU
+DAI to enforce the period to be multiple of 1ms to align with firmware
+design. The other is in Atom Chromebook's machine driver to use 240 as
+period size which is selected by google.
 
-This behaviour if further ensured by this code inside
-pcie_capability_read_*()
 
- ret = pci_read_config_dword(dev, pci_pcie_cap(dev) + pos, val);
- /*
-  * Reset *val to 0 if pci_read_config_dword() fails, it may
-  * have been written as 0xFFFFFFFF if hardware error happens
-  * during pci_read_config_dword().
-  */
- if (ret)
-	 *val = 0;
- return ret;
+Changes since v1:
+-Add comma at the end of media_period_size array declaration.
 
-a) Since all pci_generic_config_read() does is read a register value,
-it may return success after reading a ~0 which *may* have been fabricated
-by the PCI host bridge due to a read timeout. Hence pci_read_config_*()
-will return success with a fabricated ~0 in *val, indicating a problem.
-In this case, the assumed behaviour of  pcie_capability_read_*() will be
-wrong. To avoid error slipping through, more checks are necessary.
+Changes since v2:
+-Use snd_pcm_hw_constraint_step to enforce the 1ms period.
 
-b) pci_read_config_*() will return PCIBIOS_DEVICE_NOT_FOUND only if
-dev->error_state = pci_channel_io_perm_failure (i.e.
-pci_dev_is_disconnected()) or if pci_generic_config_read() can't find the
-device. In both cases *val is initially set to ~0 but as shown in the code
-above pcie_capability_read_*() resets it back to 0. Even with this effort,
-drivers still have to perform validation checks more so if 0 is a valid
-value.
 
-Most drivers only consider the case (b) and in some cases, there is the
-expectation that on timeout *val has a fabricated value of ~0, which *may*
-not always be true as explained in (a).
+Brent Lu (1):
+  ASoC: intel: atom: Add period size constraint
 
-In any case, checks need to be done to validate the value read and maybe
-confirm which error has occurred. It is better left to the drivers to do.
+Yu-Hsuan Hsu (1):
+  ASoC: Intel: Add period size constraint on strago board
 
-Remove the reset of *val to 0 when pci_read_config_*() fails.
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 11 +++++++++++
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 14 +++++++++++++-
+ sound/soc/intel/boards/cht_bsw_rt5645.c      | 14 +++++++++++++-
+ 3 files changed, 37 insertions(+), 2 deletions(-)
 
-Suggested-by: Bjorn Helgaas <bjorn@helgaas.com>
-Signed-off-by: Saheed O. Bolarinwa <refactormyself@gmail.com>
----
- drivers/pci/access.c | 14 --------------
- 1 file changed, 14 deletions(-)
-
-diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-index 79c4a2ef269a..ec95edbb1ac8 100644
---- a/drivers/pci/access.c
-+++ b/drivers/pci/access.c
-@@ -413,13 +413,6 @@ int pcie_capability_read_word(struct pci_dev *dev, int pos, u16 *val)
- 
- 	if (pcie_capability_reg_implemented(dev, pos)) {
- 		ret = pci_read_config_word(dev, pci_pcie_cap(dev) + pos, val);
--		/*
--		 * Reset *val to 0 if pci_read_config_word() fails, it may
--		 * have been written as 0xFFFF if hardware error happens
--		 * during pci_read_config_word().
--		 */
--		if (ret)
--			*val = 0;
- 		return ret;
- 	}
- 
-@@ -448,13 +441,6 @@ int pcie_capability_read_dword(struct pci_dev *dev, int pos, u32 *val)
- 
- 	if (pcie_capability_reg_implemented(dev, pos)) {
- 		ret = pci_read_config_dword(dev, pci_pcie_cap(dev) + pos, val);
--		/*
--		 * Reset *val to 0 if pci_read_config_dword() fails, it may
--		 * have been written as 0xFFFFFFFF if hardware error happens
--		 * during pci_read_config_dword().
--		 */
--		if (ret)
--			*val = 0;
- 		return ret;
- 	}
- 
 -- 
-2.18.4
+2.7.4
 
