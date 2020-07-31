@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E68234945
+	by mail.lfdr.de (Postfix) with ESMTP id E0A99234946
 	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 18:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732603AbgGaQft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 12:35:49 -0400
-Received: from smtprelay0101.hostedemail.com ([216.40.44.101]:36684 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728898AbgGaQfq (ORCPT
+        id S1732657AbgGaQf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 12:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731565AbgGaQf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 12:35:46 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id E9B06180A7FDA;
-        Fri, 31 Jul 2020 16:35:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 87,8,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:247:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2693:2828:2902:3138:3139:3140:3141:3142:3353:3450:3622:3865:3867:3868:3870:3871:3872:4321:4605:5007:6119:6691:7903:8957:10004:10400:10848:11232:11658:11914:12294:12297:12555:12740:12760:12895:13069:13146:13184:13229:13230:13311:13357:13439:14181:14659:14721:21080:21433:21451:21627:21939:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: dogs56_551834026f85
-X-Filterd-Recvd-Size: 2396
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 31 Jul 2020 16:35:44 +0000 (UTC)
-Message-ID: <4e30e2df7bec0fedf1a29f7825fbb4c12593eac9.camel@perches.com>
-Subject: Re: [PATCH] vim: linux-kernel: Increase columns highlighting to 100+
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Fri, 31 Jul 2020 09:35:42 -0700
-In-Reply-To: <20200731163301.GA8004@embeddedor>
-References: <20200731163301.GA8004@embeddedor>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Fri, 31 Jul 2020 12:35:57 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0D7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 09:35:57 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id k18so23357111qtm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 09:35:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=43NN3FBqwXjvMFcKJYOHgJ5BfI9wVCiL7/PeDGV1ITI=;
+        b=hYH33ig4F61VhNRJo93K0iV18Je3rxozZKCKaxxQid7dvrdF277R5BRMc7c3OcqLYb
+         8V+5HR4SCFRGSbszr4hWsXoKKJA0ZhAPznQUWv5mx051zzqZzAEdMfJKTdUbnHeI6sPs
+         3jrSzoYWfsyhYHJYmGhpvtD3LRPF9tbtF0ZCQJP8hFVA7qLmNZFHM3LRgyaApSRqZ1It
+         D218Ujnyt6RqsGuBFju2hHAEJWlJuXQ4Wq/nC1apupU9ZVd17Tj+d21Qc0eFrX2KNj3a
+         c0dyO8xDhLSilcmQnPm8453LCA7P+Q9W4dhC6G4O81MAE+q200n2PK5oiu0Mw6KOxC82
+         Z+yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=43NN3FBqwXjvMFcKJYOHgJ5BfI9wVCiL7/PeDGV1ITI=;
+        b=afGVyPkO/FOxoGEfEEAs+TgJexVfkCv+T0vtgw2zunADEDmFdgpevRXZ+mKHNJLeVg
+         xZkc6xkT8u8pB5RRhJmBgivZp2ItDx6JnF+MTEiRytu+Kekzfvj9F4HLtMFqLD0e2hWE
+         g+1eyVcVnf/IjsmXNRlJwcGBCh90CUMAVcXP4TfEQGfM4VGoPNpUxkk8pPb8Je3JZIdD
+         jQ2b+yaQdKkcLWaRHNwIpKPWIQPolPEN5dcDNDpxmus1wqRgg7q3ATX7CTDR8XPvCRvv
+         OBHArW5kCHbJVeoEAOmuWTBz8TQu41GnB5ZlTO2Suf5wFn4Oay0fMVjAkHHL5OKYeSA3
+         9Ccw==
+X-Gm-Message-State: AOAM532rIhpLhrIZw1u8/wA5ZG98mKUfAvK6ZjbQbTSxMn1y9H6QUHUO
+        8q6Mf6gvbGLSTyUp1Uyy0DI=
+X-Google-Smtp-Source: ABdhPJxB3j64JWyYaiUV+mG//osTqVkbPJxdVL9pwPZVYtdEe9wU2BTlg1csDg6BuyeMn0qHzpZFOQ==
+X-Received: by 2002:ac8:306a:: with SMTP id g39mr4520427qte.259.1596213356949;
+        Fri, 31 Jul 2020 09:35:56 -0700 (PDT)
+Received: from ?IPv6:2601:284:8202:10b0:c147:b41e:be5e:8b7a? ([2601:284:8202:10b0:c147:b41e:be5e:8b7a])
+        by smtp.googlemail.com with ESMTPSA id x198sm9954334qka.37.2020.07.31.09.35.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 31 Jul 2020 09:35:56 -0700 (PDT)
+Subject: Re: [PATCH 2/6] perf tools: Store clock references for -k/--clockid
+ option
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        =?UTF-8?Q?Genevi=c3=a8ve_Bastien?= <gbastien@versatic.net>,
+        Wang Nan <wangnan0@huawei.com>,
+        Jeremie Galarneau <jgalar@efficios.com>
+References: <20200730213950.1503773-1-jolsa@kernel.org>
+ <20200730213950.1503773-3-jolsa@kernel.org>
+ <9be7eb7b-4f73-84cc-95e9-e65101b30819@linux.intel.com>
+ <20200731161519.GB4296@krava>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <f24e38b0-3000-1306-7058-cc440557e733@gmail.com>
+Date:   Fri, 31 Jul 2020 10:35:54 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <20200731161519.GB4296@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-07-31 at 11:33 -0500, Gustavo A. R. Silva wrote:
-> Increase columns highlighting to 100+ once the 80-column warning has
-> been deprecated in the Linux kernel[1].
-> 
-> [1] commit bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column warning")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  plugin/linuxsty.vim | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/plugin/linuxsty.vim b/plugin/linuxsty.vim
-> index 6f7e331..c42ce72 100644
-> --- a/plugin/linuxsty.vim
-> +++ b/plugin/linuxsty.vim
-> @@ -62,7 +62,7 @@ function s:LinuxFormatting()
->      setlocal tabstop=8
->      setlocal shiftwidth=8
->      setlocal softtabstop=8
-> -    setlocal textwidth=80
-> +    setlocal textwidth=100
+On 7/31/20 10:15 AM, Jiri Olsa wrote:
+>> It might also want to be implemented in a loop and iteration with minimal
+>> time delta is chosen to improve synchronization accuracy and also mitigate
+>> possible context switches between gettimeofday() and clock_gettime() calls.
+> right, we could make this more accurate.. I'll post some follow up
+> change with that
 
-This is not a good change.
-80 columns is still _preferred_.
-
-It's just checkpatch will not emit a warning
-for lines longer than 80 columns but will
-for lines longer than 100 columns.
-
-checkpatch will also not emit a warning on
-file checking at all.
-
-
->      setlocal noexpandtab
->  
->      setlocal cindent
-> @@ -80,7 +80,7 @@ function s:LinuxHighlighting()
->      highlight default link LinuxError ErrorMsg
->  
->      syn match LinuxError / \+\ze\t/     " spaces before tab
-> -    syn match LinuxError /\%>80v[^()\{\}\[\]<>]\+/ " virtual column 81 and more
-> +    syn match LinuxError /\%>100v[^()\{\}\[\]<>]\+/ " virtual column 101 and more
->  
->      " Highlight trailing whitespace, unless we're in insert mode and the
->      " cursor's placed right after the whitespace. This prevents us from having
-
+If it is handled through vdso (e.g., x86) both calls should be very fast
+with no context switches and the margin of error is well less than the
+usec resolution in the output.
