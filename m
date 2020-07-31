@@ -2,200 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C66234845
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 17:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BA223483A
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 17:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbgGaPRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 11:17:11 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:29935 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726764AbgGaPRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 11:17:10 -0400
-Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f2435f30000>; Fri, 31 Jul 2020 23:17:07 +0800
-Received: from HKMAIL103.nvidia.com ([10.18.16.12])
-  by hkpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 31 Jul 2020 08:17:07 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate101.nvidia.com on Fri, 31 Jul 2020 08:17:07 -0700
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 31 Jul
- 2020 15:17:06 +0000
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.55) by
- HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 31 Jul 2020 15:17:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HSGiefaJqtNTmHhGe+WV8EE95bc47dmC4Ip10rS5iIaoTgLrwiwlCMTZ7Z7y7iHegIVXyiIeN/oM7ystzOPVk7C9DqMXJmv85vRmej2ko1aZChfT0i5KZSkLa3xmo1Z0tI8mNPUE2SjEIKpaH1018vT+GnG9zYZApnnKJ/qbTvjCj5TnzFHrf9qFuychH0FVNRY9TXFjWo2Jsq7CBiG2DLYPWv6p83Tidbo0csXyNJt0lekJ/1kRWxRfDbAWa6QG19ZJQ890mxCayeRirhAzN8yGUvgYjUJa38RUcIMd1gBt9ocVvystxrCdjfBXMv3O9yOO7fDi8enxu9E0kvQc1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r9uhR1ZM2v/WSrrZwf71Ot3niNays4xcPe+uJo87CNA=;
- b=VedDMdMBWikJMCrCdsLraSM1RtPtTM3Kttq6uQ3dNV+Jt31+3jTl2XOEFK81bDIrsEVBxYIUXSJWFn+DoqdsbuYeE+AHB11AerGX0IddjcjlgSAfY1Ir0bFUX1Nz+Rtswsi8TQcRi1yozNLcHYJhP9eCJAlNKQ9+47vrrJ6vwjawVf64CXgvhOLLcYWEGF5cKk52c3l2FjynCf1C+c0aSg12YQCAcwmyg8fubBv/YVEO5b5ZJ5UnVVA7kKF9kMPflGJi4LR+iEy3Cx95dq1Fs6WOT84BPb9WGNQJP4EnrKBS/EynaqXmI8NKKdIWMG9RA0n9a39BhsYSYXxHSkRmog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0107.namprd12.prod.outlook.com (2603:10b6:4:55::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Fri, 31 Jul
- 2020 15:17:04 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3239.020; Fri, 31 Jul 2020
- 15:17:04 +0000
-Date:   Fri, 31 Jul 2020 12:17:02 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] Please pull RDMA subsystem changes
-Message-ID: <20200731151702.GA498584@nvidia.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="M9NhX3UHpAaciwkO"
-Content-Disposition: inline
-X-ClientProxiedBy: MN2PR22CA0019.namprd22.prod.outlook.com
- (2603:10b6:208:238::24) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1732438AbgGaPLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 11:11:08 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.210]:41509 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728697AbgGaPLI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 11:11:08 -0400
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id 949A740239367
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 10:11:05 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 1WgbkTiCiBD8b1Wgbk93F9; Fri, 31 Jul 2020 10:11:05 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=NtOOaU2IOh+DFdzRm6zE6ndbzjGQDjTonq0CzMwCsrg=; b=clMU7IKyGeVlDqeof9YkLc+WBU
+        fO3spgD3qKAEKoTtNGjGWkT3ZJeQ7gtH5IHk2yLJw2mNmW+SDQckn9VHta/2EOQdG0+UVlRjK4GEW
+        5DVVcnN5q5BlqDgvFjghUmdASARHUeRCXlms6Ac2mMTK9xFOJa3n72mnVYVVawr/r6UPxaV62tgP5
+        x3fqi2Xyd8pyTl5luUAIw9LrNkIbsMEqGBTAhfac0ztQje+qHrSPe7yVj2cfyII+4tahXN5oBMp4c
+        favQRQyKVBfnrFn3GURZ4WgyrJfWa3OTVjMhYbY7Vfh5U5mTRv//pBDoqgu//8Ov2d1YXJSiZirSd
+        h/tftMLg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:43084 helo=[192.168.15.3])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1k1Wgb-000gic-4a; Fri, 31 Jul 2020 10:11:05 -0500
+Subject: Re: [PATCH][next] crypto: sa2ul - Fix inconsistent IS_ERR and PTR_ERR
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Keerthy <j-keerthy@ti.com>, Tero Kristo <t-kristo@ti.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200724165027.GA18496@embeddedor>
+ <20200731133230.GH14360@gondor.apana.org.au>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <3c20515b-73e2-dc75-6e4e-f912aee9a252@embeddedor.com>
+Date:   Fri, 31 Jul 2020 10:17:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR22CA0019.namprd22.prod.outlook.com (2603:10b6:208:238::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16 via Frontend Transport; Fri, 31 Jul 2020 15:17:03 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1k1WmM-0025jJ-Iq; Fri, 31 Jul 2020 12:17:02 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 91ee9e12-5847-4bb7-998c-08d83564c7bd
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0107:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB0107DDD05AFF68317A53FECBC24E0@DM5PR1201MB0107.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1060;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6suBuhIG5FVAkh3vP/IxY+Z+8HzxWXr1AMk70E1CV/zP2DKEkqkrAomb2+S/FUp7j4uDTYrZlE+gkad5NwZ9dpgs+JcaNGIMiLy5RMRIVVD9CxLNH2TT85/hBWrQhaZbvxOAAspp0JXQJVO9GB1G0HmGb0qADjUU1M5WkbL9AeJZqoouxYhf7lZS8If5nlveHLoTFFogLsjZlfkSO7+MhYL2ufI+wkihdYbo3OoHiD/rKs/efQTlonHY3gZfSEIl/RSXBAOlawAKf4+U+pHoDW1FrqpPpfN2OWwY7Z4lDrIMVs1ihXiOq8yG2en1pBqgBLmnPyXAF0GrYzNStKeO7wUFaXuatrR+2zMsVX2PIDF6goXv+EVCmJaC+rvQlr295tSSiOpn3pwRWHAhxvhTFg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(39860400002)(396003)(366004)(136003)(9786002)(9746002)(36756003)(186003)(4326008)(2906002)(26005)(83380400001)(316002)(33656002)(426003)(110136005)(478600001)(44144004)(5660300002)(66946007)(66556008)(21480400003)(1076003)(8936002)(2616005)(66476007)(86362001)(8676002)(27376004)(2700100001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 1TaxzhtU2zs1KxyqAH6y8opqmwpbFbar9ovNoNlMr/DfBbGJy4ENo5RL0g/Mhh0NqGHv6p52But1MwWKth9gNfb1DNmWtmba5eu4i+o0ysSIpNmGJL9s+HmBj46NorEs++9ysgdyNciPdVscpDP0vmp/Bi9o9iceU4UP3TRFjR06/HJI0jvjNYlsU1w1DwSLYDuqKDeEFCzySx43w6qMNx0TdMqS90+G2q50RWvwQkPcuQ3zzswiScGXv2Wb5qd45zjXUrmCdlDaBXoiksWZoswblwuKucyYFMCDAqE69cwTPVrkszhljvYTTEQIDRAW2VblY7CkDlqFmeqoTmAqGGWGLOI/i7hJO+g4pmPoBb4x6X7yS6uImcXZTbOvP3riX7W6Bg3+gXt2E2kSo/wX4DsIilAGgO5+LuDnKso76v36YvVXhD4sChcMccViBT0Kg8Lmba+WSQxxaK5PAcmxnk+UP6Q/loUDiZ16q0viUsw=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91ee9e12-5847-4bb7-998c-08d83564c7bd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2020 15:17:03.9117
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Eys7Qzgs6HsjwNJI3AM+2vEPNm6tPzYy53gUFMwXhFn2uVELzyQKomqeasXUha1E
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0107
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596208627; bh=r9uhR1ZM2v/WSrrZwf71Ot3niNays4xcPe+uJo87CNA=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:Content-Type:Content-Disposition:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=cJ5D4Ub0MS9iau0pzEVFtCPzTRNGsykKwtqS8oAeJlERFFwQUJb0m4cPVndS7TwkR
-         94UEDITH5txuvgtHYvq+IcqXoPpO1zzzlOSmCYLTqwvOOI+qHI5IUj3i8ak2qSazCi
-         IyTUBoxCCxl6wNgfklPrjX/OR9ai0+E2LEGfnB+vo9rSzW0dNsgN8DPH/EAW/0bQXQ
-         VokXGq3vnOIAoUl8taLI/rw/Ibiv9+NmwdpleRXY/7aGzMJUGYmA1p3S7vhZ6KLXVU
-         ixLt8EJJTrArrDMlEO9lSrUP7Ic2lqSK7MVr5zcYx0vuV0GfYE+VDbuGCsksxdbfVI
-         K7t1NVoQm1yeQ==
+In-Reply-To: <20200731133230.GH14360@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1k1Wgb-000gic-4a
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.3]) [187.162.31.110]:43084
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 7
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---M9NhX3UHpAaciwkO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-Hi Linus,
 
-Still a few regressions from the merge window and the usual collection of
-fixes.
+On 7/31/20 08:32, Herbert Xu wrote:
+> On Fri, Jul 24, 2020 at 11:50:27AM -0500, Gustavo A. R. Silva wrote:
+>> Fix inconsistent IS_ERR and PTR_ERR in sa_dma_init(). The proper pointer
+>> to be passed as argument to PTR_ERR() is dd->dma_tx.
+>>
+>> This bug was detected with the help of Coccinelle.
+>>
+>> Fixes: 7694b6ca649f ("crypto: sa2ul - Add crypto driver")
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>  drivers/crypto/sa2ul.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Patch applied.  Thanks.
+> 
 
-The following changes since commit 92ed301919932f777713b9172e525674157e983d:
+Awesome. :)
 
-  Linux 5.8-rc7 (2020-07-26 14:14:06 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-
-for you to fetch changes up to fb448ce87a4a9482b084e67faf804aec79ed9b43:
-
-  RDMA/core: Free DIM memory in error unwind (2020-07-30 11:03:33 -0300)
-
-----------------------------------------------------------------
-RDMA fourth 5.8 rc pull request
-
-Two more merge window regressions, a corruption bug in hfi1 and a few
-other small fixes.
-
-- Missing user input validation regression in ucma
-
-- Disallowing a previously allowed user combination regression in mlx5
-
-- ODP prefetch memory leaking triggerable by userspace
-
-- Memory corruption in hf1 due to faulty ring buffer logic
-
-- Missed mutex initialization crash in mlx5
-
-- Two small defects with RDMA DIM
-
-----------------------------------------------------------------
-Jason Gunthorpe (2):
-      RDMA/cm: Add min length checks to user structure copies
-      RDMA/mlx5: Fix prefetch memory leak if get_prefetchable_mr fails
-
-Leon Romanovsky (4):
-      RDMA/mlx5: Allow providing extra scatter CQE QP flag
-      RDMA/mlx5: Initialize QP mutex for the debug kernels
-      RDMA/core: Stop DIM before destroying CQ
-      RDMA/core: Free DIM memory in error unwind
-
-Mike Marciniszyn (1):
-      IB/rdmavt: Fix RQ counting issues causing use of an invalid RWQE
-
- drivers/infiniband/core/cq.c      | 14 +++++++++++---
- drivers/infiniband/core/ucma.c    |  4 ++++
- drivers/infiniband/hw/mlx5/odp.c  |  5 ++---
- drivers/infiniband/hw/mlx5/qp.c   | 29 ++++++++++++++++-------------
- drivers/infiniband/sw/rdmavt/qp.c | 33 ++++-----------------------------
- drivers/infiniband/sw/rdmavt/rc.c |  4 +---
- include/rdma/rdmavt_qp.h          | 19 +++++++++++++++++++
- 7 files changed, 57 insertions(+), 51 deletions(-)
-
---M9NhX3UHpAaciwkO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAl8kNewACgkQOG33FX4g
-mxoP+g/8Dn7gXjy6A+5sCdgeqa0xJt2fFCNkWcdxls1/RzbXg8WLLKmE7MKzLWPd
-QgK7Bor3/Sawkf92Pn/pUqVZ/+1xQFuDKl/QfBcw3vREbQFHsigO1ZW5jHr4/L+l
-B/hGV+zYl0gXHa40VTmhgF7qXpyh2/UdofX83EP83g0wweadFLyz0+Sqcaan3W2/
-7zSnl1c/0l/sEEbcTK3deyTTcNVhe8crewigSiyVWAmJ2EiY3O3zP/oY+u9RwqKo
-BFhw7cbkS0sNfvhZf/fVtOLmOPV4WoH41hB/NhoxpgV/EczmTJ0NtHsSUfzgS+qA
-BHDw/KIgm+uAUzvYZ8qResZRfL+/D1sRniN6VxsZrsIoMib7CNaKh91iLWnrz1zv
-AW+v9lQ8JH07ThGXCNFrY5HE2r70socqTWpkv7lEhS/VMDlb4WuEWqwrn0efc5qL
-ZBxrS8+w4PPuJF050l+d6V982VNLTAZlOgdGrfaISaQRaN8YFFTL3spR5NuFTznt
-npdcy8lTSAP48uZ8mG7/gY0DfSoAPOX2DVGKqfjhbzBoDCU1DJH2uo7PKIcZKW2g
-nBm3Nq2jj/UMsmZChqM2EZ1CWIS05fuUPgEoBnPT2uUV93hT8bUF00ZBA7IFrTiZ
-aiBDTxCSKECrgcNLrOwcLRu4hfNjrAn6Jacul2ldtreLamKAGNE=
-=YkD9
------END PGP SIGNATURE-----
-
---M9NhX3UHpAaciwkO--
+Thanks
+--
+Gustavo
