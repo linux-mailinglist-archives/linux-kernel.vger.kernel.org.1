@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6139423426B
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3B2234336
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732239AbgGaJWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732211AbgGaJWn (ORCPT
+        id S1732917AbgGaJ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:29:04 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56344 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732208AbgGaJWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:22:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCA0C061574;
-        Fri, 31 Jul 2020 02:22:43 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 09:22:41 -0000
+        Fri, 31 Jul 2020 05:22:44 -0400
+Date:   Fri, 31 Jul 2020 09:22:42 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187362;
+        s=2020; t=1596187363;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=L3ZKqzP4EDmwQ+Z3IDCkj9GRb+lwRh9HrZQGAWXrZGQ=;
-        b=cNgzTS3MW0e/wMQUZrqjQJtCZHcj0weppVRoeGI2AM7frCg0hrBRQ9MySDE0A1mx8baluq
-        WjBPjqa+EnLsry514tPlIFSMcBX3ep+sA/gZi9J0UNCF8sG0yRBI+EzYOK781gb1mlrDwN
-        f68S0TyI5Hu5tiHuBOjIMTROXs4z6CY/BUGIC1pdQZAhLyyVY9+Sz5jfPaeBACot1TjmIS
-        SSsd4PycjjxeHceacPzAHub3plNNtRSFpFdPIeqiWuQ6tCh20F3eCweaw0PzminFHH7ucF
-        pUfqW4/gp/sdcsfvGonVLUHghl7sOCsHQb1RuywrnZz+AtXdwgG202FG72XNoQ==
+        bh=zchGzFR6PDQO1B5dyrq+tXkAXHFNgYJCd29j4UHTOAQ=;
+        b=RTjgaDIP5mGw9r+Gn4fEKzMBKFgTEAtcGmoNlxz3U8Ip4VQfZgz3GodExps73nHiAM9SU6
+        r38Wa+MNZEjkkQFyFBnIp1E2BwphuKdSMJHtMtBsjhe8T8l7SRrTafl6jPwx6RfvHJ1EN4
+        uu1w0uXv+RqvsuAEwruQT1dJUuBpQBuH9Zoxqe5I89z88u+tEsLjhHnFsvrYEvP1N69RN4
+        TfEFK/WX2uiecGFioj7baEhz7fcyO7RPdW+8QmmfMY+O1Q+2ajkDRtKZPEojwoQKybLBvp
+        rQ2YUnJnAwqSMMMR0RW6inv9DFHt2rMqsVAOWxq976fm8+BQVqtL8OyXOwrciA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187362;
+        s=2020e; t=1596187363;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=L3ZKqzP4EDmwQ+Z3IDCkj9GRb+lwRh9HrZQGAWXrZGQ=;
-        b=VjA1SmQirV8RvSwAp8tSiabDE2vpFVxTiDL7+8n2WxAMzw8Fgr5OW9MPiQsnslXQu4GZxV
-        skYmAx8zLJOX9xCg==
+        bh=zchGzFR6PDQO1B5dyrq+tXkAXHFNgYJCd29j4UHTOAQ=;
+        b=ElVASD+rFbtdCOLTyn/H3v8nEWXMrVMTHuJHtDGoje9WWUVtbfwwJVWLVP+SyFKWLkmK45
+        iNF057MVg+k3tDAQ==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Abstract out console-log error detection
+Subject: [tip: core/rcu] torture: Create qemu-cmd in --buildonly runs
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159618736149.4006.2645746856112464460.tip-bot2@tip-bot2>
+Message-ID: <159618736276.4006.3997233712092722365.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,61 +51,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     bc77a72cd188d44881ee1b9d0a9d65ca8108b508
-Gitweb:        https://git.kernel.org/tip/bc77a72cd188d44881ee1b9d0a9d65ca8108b508
+Commit-ID:     3e93a51f191aa710760591961240f8910d952b5b
+Gitweb:        https://git.kernel.org/tip/3e93a51f191aa710760591961240f8910d952b5b
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Wed, 10 Jun 2020 14:08:19 -07:00
+AuthorDate:    Fri, 05 Jun 2020 10:29:28 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 29 Jun 2020 12:01:44 -07:00
 
-torture: Abstract out console-log error detection
+torture: Create qemu-cmd in --buildonly runs
 
-This commit pulls the simple pattern-based error detection from the
-console log into a new console-badness.sh file.  This will enable future
-commits to end a run on the first error.
+One reason to do a --buildonly run is to use the build products elsewhere,
+for example, to do the actual test on some other system.  Part of doing
+the test is the actual qemu command, which is not currently produced
+by --buildonly runs.  This commit therefore causes --buildonly runs to
+create this file.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/console-badness.sh | 16 +++++++-
- tools/testing/selftests/rcutorture/bin/parse-console.sh   |  5 +--
- 2 files changed, 17 insertions(+), 4 deletions(-)
- create mode 100755 tools/testing/selftests/rcutorture/bin/console-badness.sh
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh b/tools/testing/selftests/rcutorture/bin/console-badness.sh
-new file mode 100755
-index 0000000..0e4c0b2
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
-@@ -0,0 +1,16 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# Scan standard input for error messages, dumping any found to standard
-+# output.
-+#
-+# Usage: console-badness.sh
-+#
-+# Copyright (C) 2020 Facebook, Inc.
-+#
-+# Authors: Paul E. McKenney <paulmck@kernel.org>
-+
-+egrep 'Badness|WARNING:|Warn|BUG|===========|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
-+grep -v 'ODEBUG: ' |
-+grep -v 'This means that this is a DEBUG kernel and it is' |
-+grep -v 'Warning: unable to open an initial console'
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index 1c64ca8..98478e1 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -116,10 +116,7 @@ then
- 	fi
- fi | tee -a $file.diags
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index 1b9aebd..064dd73 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -153,6 +153,7 @@ qemu_append="`identify_qemu_append "$QEMU"`"
+ boot_args="`configfrag_boot_params "$boot_args" "$config_template"`"
+ # Generate kernel-version-specific boot parameters
+ boot_args="`per_version_boot_params "$boot_args" $resdir/.config $seconds`"
++echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_append $boot_args\" > $resdir/qemu-cmd
  
--egrep 'Badness|WARNING:|Warn|BUG|===========|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for' < $file |
--grep -v 'ODEBUG: ' |
--grep -v 'This means that this is a DEBUG kernel and it is' |
--grep -v 'Warning: unable to open an initial console' > $T.diags
-+console-badness.sh < $file > $T.diags
- if test -s $T.diags
+ if test -n "$TORTURE_BUILDONLY"
  then
- 	print_warning "Assertion failure in $file $title"
+@@ -161,7 +162,6 @@ then
+ 	exit 0
+ fi
+ echo "NOTE: $QEMU either did not run or was interactive" > $resdir/console.log
+-echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_append $boot_args\" > $resdir/qemu-cmd
+ ( $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append "$qemu_append $boot_args" > $resdir/qemu-output 2>&1 & echo $! > $resdir/qemu_pid; wait `cat  $resdir/qemu_pid`; echo $? > $resdir/qemu-retval ) &
+ commandcompleted=0
+ sleep 10 # Give qemu's pid a chance to reach the file
