@@ -2,158 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC08234DDB
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 01:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DA1234E3F
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 01:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgGaXDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 19:03:48 -0400
-Received: from mail-co1nam11on2056.outbound.protection.outlook.com ([40.107.220.56]:10369
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726215AbgGaXDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 19:03:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gKZhBwgKRACXJSXsygdiwBfB1RMUQ9/wc9PTSn3cRkYK9CDh/RW8nM/TtlBrxJ8gqmv0j6UuS3r07g2HZ8vDWVgQiBh8JnAb/w/unY8GjyOvYpcsuf2Qa1y+4YotcS1LszUOGvvC9udnOgYmTjnk2QR8WGg835tnX6IiTL6jhv0qnYWmAnuXJsyaFY83Kuto1DAoQKpUM8ndVm1BEqSSJtFUR3OMnbTbd3eO4pIIAHONxcFYBOpO7jhYH0A67K5LPIrdLGkiUzinGpNYpvgWYtB5pdtE+H99qL+ccmZmFU6GWH1s4DKlEyziK+3NBcYpBvpLsYKwB/h6B6JYl4OiDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=alQ8S84XnD7wvc1d1fVM8KAP83Iy0kZJR2Zpg7Dq75I=;
- b=mexvUkwkBZ/1vbWy1c1zppVCrHW26aqlPNSil5HF2XkwK0EHJcy9rAwUC2/uzcSR+uZtx24eokA8UaNJvLa+jy/st1Yb8br/6oiOpeAZzoIzSykf8ZfH2oJ1HEy2Y+zr3h1TRGpFp9LI2jc23NB2QlOym8s3ZPWS9SHHmLdn55rPptBUkvHKOzk+WuxeE9xQd9d3HQkM/7bnXKtwOQ3G7FX+a3I3Nc3qja4eMWoApFgCrNxa0dKVWaiYk3jIQyEcykNrThXeAfQEL59MkvqYpV9HwsSDpt00LHh+tt16M82egKHBPIRW4W85InrGdDw8TrNCce09aDkJPlNbpp1iGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S1728344AbgGaXKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 19:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726980AbgGaXIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 19:08:34 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C700C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:08:34 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id q17so18085570pls.9
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 16:08:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=alQ8S84XnD7wvc1d1fVM8KAP83Iy0kZJR2Zpg7Dq75I=;
- b=kWBlJYhjVa0g/Sjf2zi2qJnpKhoj6iFX0vcXEslsZTSd3albn3hYX9+SiJAs/dfQMO7cRnLEpBftbyiMG/BugxM0wbb8ILpy67SlRvt832Q0mih063MkSCHnThaJZ8LlzHAhTuX3yuHUhE269i3/lCYk7rpn1FUH5Jae1kejr80=
-Received: from DM5PR21CA0011.namprd21.prod.outlook.com (2603:10b6:3:ac::21) by
- BYAPR02MB4822.namprd02.prod.outlook.com (2603:10b6:a03:48::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3216.21; Fri, 31 Jul 2020 23:03:44 +0000
-Received: from CY1NAM02FT031.eop-nam02.prod.protection.outlook.com
- (2603:10b6:3:ac:cafe::f8) by DM5PR21CA0011.outlook.office365.com
- (2603:10b6:3:ac::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.3 via Frontend
- Transport; Fri, 31 Jul 2020 23:03:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- CY1NAM02FT031.mail.protection.outlook.com (10.152.75.180) with Microsoft SMTP
- Server id 15.20.3239.17 via Frontend Transport; Fri, 31 Jul 2020 23:03:43
- +0000
-Received: from [149.199.38.66] (port=37155 helo=smtp.xilinx.com)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <stefano.stabellini@xilinx.com>)
-        id 1k1e1x-0000TN-I9; Fri, 31 Jul 2020 16:01:37 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by xsj-pvapsmtp01 with smtp (Exim 4.63)
-        (envelope-from <stefano.stabellini@xilinx.com>)
-        id 1k1e3z-0000Xe-HT; Fri, 31 Jul 2020 16:03:43 -0700
-Received: from [10.23.121.225] (helo=localhost)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <stefanos@xilinx.com>)
-        id 1k1e3u-0000VV-4n; Fri, 31 Jul 2020 16:03:38 -0700
-Date:   Fri, 31 Jul 2020 16:03:37 -0700 (PDT)
-From:   Stefano Stabellini <stefano.stabellini@xilinx.com>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-cc:     Ben Levinsky <ben.levinsky@xilinx.com>, ohad@wizery.com,
-        bjorn.andersson@linaro.org, michals@xilinx.com, JOLLYS@xilinx.com,
-        RAJANV@xilinx.com, robh+dt@kernel.org, mark.rutland@arm.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernell@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jliang@xilinx.com,
-        stefanos@xilinx.com, Wendy Liang <wendy.liang@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Ed Mooring <ed.mooring@xilinx.com>, Jason Wu <j.wu@xilinx.com>
-Subject: Re: [PATCH v6 5/5] remoteproc: Add initial zynqmp R5 remoteproc
- driver
-In-Reply-To: <20200728210002.GA2413713@xps15>
-Message-ID: <alpine.DEB.2.21.2007311104400.1767@sstabellini-ThinkPad-T480s>
-References: <20200715153317.25643-1-ben.levinsky@xilinx.com> <20200715153317.25643-6-ben.levinsky@xilinx.com> <20200728210002.GA2413713@xps15>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gOuHhkP4k6lGlo9NwRnrjymhpQ+iLTcLVy67EHO0tLQ=;
+        b=NzZUDe7iAm67VQMOKpyD0BT7sJZoGjYuUhmzenDozFom2d1F/HRnlG/ZBJY5eawEvc
+         E0n37aArltq+4l4myD951tS6uvqRjvAXeMfP7eCStHMi5YUZaE/adhsWqgj43zn0ixh9
+         LahBtGMifU+Qbp9+BTdqhw8Sr92IcNsyJaTqo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gOuHhkP4k6lGlo9NwRnrjymhpQ+iLTcLVy67EHO0tLQ=;
+        b=SP3+nt2mmmkLoGf0EWHzabwiBp+tr/Bf4rOaYBHxYZsZrYZi44cRDN1CMkszc9yHb9
+         bGpJAQ+TplNmBjag1UEzzXXzSujAsqFoFcmGZnMHRiXTZOm2uvuqhQN8n48V5tZ2vHTt
+         PwZo9hoe5XaCa7500pS8vc0h3mBUHyq6YKGawbYiAqDyPuW58u3yBolSNrkUYm+jJh3n
+         2ydCp0EDWjforo/IDPBjvy1djv2Y9q6DuZDB1bucetG7dHL+65fIBr9wnZBVleO12Wf5
+         CsmacMnOTz0jFehU8xqRm6tCybVjE8wQDIhhDJVSXiBQ30Ch1wwooufZeVeNsQa76yva
+         yI6Q==
+X-Gm-Message-State: AOAM5320TdQAXexfCFekvk7qMONyKDSfWT0uptKo/86JD/fDtXGAO0Vl
+        SbB9WVE0Ij+EN2JTHb9t/hA4Fw==
+X-Google-Smtp-Source: ABdhPJz3fXyytD9EO07YlzPodHLiEZDHHyttLv6MM7s5IQHc8USlFwFYwYDbELejqRupf7YkNtJmug==
+X-Received: by 2002:a17:90a:db53:: with SMTP id u19mr6145819pjx.13.1596236913938;
+        Fri, 31 Jul 2020 16:08:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b22sm9843691pju.26.2020.07.31.16.08.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 16:08:30 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/36] Warn on orphan section placement
+Date:   Fri, 31 Jul 2020 16:07:44 -0700
+Message-Id: <20200731230820.1742553-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 68154215-d20d-4532-309e-08d835a5f919
-X-MS-TrafficTypeDiagnostic: BYAPR02MB4822:
-X-Microsoft-Antispam-PRVS: <BYAPR02MB482247E9027BA7EC2E7486ACA04E0@BYAPR02MB4822.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lkGHS6K758r/Ay/lFLjrc4t9ttMgDZsqbarGaMcPpD56kRCECEsC9FJzAqAClVrBZgVH2aS18moFaS5S3OCiXuRgD/6RTyPLF5Q4QLj+rv/PaZQYlA0RcPqDpouzxFXisb+xnSqg1RPWpDYFoVoim1P2tWCnhV7u0oLLr5hrUOcycrJ/qWqnHompPacLHtivbmPRv2xGtMXuS+FpJBv2ZWm18xyZlfVpyrmVLujBtrKKOVdL5uuGlqnRk5yfcVhpN0oW6+6Om4/bMXyug/6HDItng65xEwInxQMZyNfp80ejoUlp+ge6n58lnbdyo+WCAgvhD83vS8/36QWz9uW3pgerojYmd5ZIVLmwQcLtFaZgn5E9JX8C85Qrx0w8VQ8all0dONnTN4plyXBsLGKgsg==
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(7916004)(39860400002)(376002)(136003)(346002)(396003)(46966005)(47076004)(70206006)(82740400003)(54906003)(316002)(82310400002)(26005)(5660300002)(70586007)(2906002)(4326008)(8936002)(426003)(44832011)(6916009)(107886003)(33716001)(8676002)(9786002)(356005)(83380400001)(186003)(81166007)(9686003)(478600001)(336012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2020 23:03:43.7858
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68154215-d20d-4532-309e-08d835a5f919
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT031.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4822
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Jul 2020, Mathieu Poirier wrote:
-> On Wed, Jul 15, 2020 at 08:33:17AM -0700, Ben Levinsky wrote:
-> > R5 is included in Xilinx Zynq UltraScale MPSoC so by adding this
-> > remotproc driver, we can boot the R5 sub-system in different
-> > configurations.
-> > 
-> > Acked-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> > Acked-by: Ben Levinsky <ben.levinsky@xilinx.com>
-> > Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-> > Signed-off-by: Ben Levinsky <ben.levinsky@xilinx.com>
-> > Signed-off-by: Wendy Liang <wendy.liang@xilinx.com>
-> > Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> > Signed-off-by: Ed Mooring <ed.mooring@xilinx.com>
-> > Signed-off-by: Jason Wu <j.wu@xilinx.com>
-> > Tested-by: Ben Levinsky <ben.levinsky@xilinx.com>
+https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=linker/orphans/warn/v5
 
-[...]
+v5:
+- rebase from -rc2 to -rc7 to avoid build failures on Clang vs binutils
+- include Arvind's GOT fix-up series[3], since it touches many similar areas
+- add PGO/AutoFDO section patch[4]
+- split up x86 and arm changes into more digestable steps
+- move several sections out of DISCARD and into zero-size asserts
+- introduce COMMON_DISCARDS to improve ARM's linker scripts
+v4: https://lore.kernel.org/lkml/20200629061840.4065483-1-keescook@chromium.org/
+v3: https://lore.kernel.org/lkml/20200624014940.1204448-1-keescook@chromium.org/
+v2: https://lore.kernel.org/lkml/20200622205815.2988115-1-keescook@chromium.org/
+v1: https://lore.kernel.org/lkml/20200228002244.15240-1-keescook@chromium.org/
 
-> > +static int zynqmp_r5_remoteproc_probe(struct platform_device *pdev)
-> > +{
-> > +	int ret, i = 0;
-> > +	u32 *lockstep_mode;
-> > +	struct device *dev = &pdev->dev;
-> > +	struct device_node *nc;
-> > +	struct zynqmp_r5_pdata *pdata;
-> > +
-> > +	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
-> > +	lockstep_mode = devm_kzalloc(dev, sizeof(u32 *), GFP_KERNEL);
-> > +	if (!pdata || !lockstep_mode)
-> > +		return -ENOMEM;
-> > +
-> > +	platform_set_drvdata(pdev, pdata);
-> 
-> As far as I can tell the above, along with allocating memory for @pdata, is not
-> needed since zynqmp_r5_remoteproc_remove() uses rpus[].
-> 
-> I have only reviewed the _probe() function and already encountered a fair amount
-> of fundemantal errors.  As such I will stop my review here. I will need to see a
-> reviewed-by tag (on the mailing list) by Stephano or Michal before reviewing the
-> next set. 
+A recent bug[1] was solved for builds linked with ld.lld, and tracking
+it down took way longer than it needed to (a year). Ultimately, it
+boiled down to differences between ld.bfd and ld.lld's handling of
+orphan sections. Similar situation have continued to recur, and it's
+clear the kernel build needs to be much more explicit about linker
+sections. Similarly, the recent FGKASLR series brought up orphan section
+handling too[2]. In all cases, it would have been nice if the linker was
+running with --orphan-handling=warn so that surprise sections wouldn't
+silently get mapped into the kernel image at locations up to the whim
+of the linker's orphan handling logic. Instead, all desired sections
+should be explicitly identified in the linker script (to be either kept,
+discarded, or verified to be zero-sized) with any orphans throwing a
+warning. The powerpc architecture has actually been doing this for some
+time, so this series just extends that coverage to x86, arm, and arm64.
 
-Let me take this opportunity to say that my Acked-by on this version of
-the series was an unintentional miscommunication: I didn't give my
-Acked-by as I haven't even read the patches yet.
+This has gotten sucecssful build testing under the following matrix:
 
-I'll circle back with Michal and we'll make sure for either of us to do
-a round of public reviews on the next version.
+compiler/linker: gcc+ld.bfd, clang+ld.lld
+targets: defconfig, allmodconfig
+architectures: x86, i386, arm64, arm
+versions: v5.8-rc7, next-20200731 (with various build fixes[7][8])
+
+Two known-failure exceptions (unchanged by this series) being:
+- clang+arm/arm64 needs CONFIG_CPU_BIG_ENDIAN=n to pass allmodconfig[5]
+- clang+i386 only builds in -next, which was recently fixed[6]
+
+All three architectures depend on the first several commits to
+vmlinux.lds.h. x86 depends on Arvind's GOT series[3], so I collected it
+into this version of my series, as it hadn't been taken into -tip yet.
+arm64 depends on the efi/libstub patch. As such, I'd like to land this
+series as a whole. Given that two thirds of it is in the arm universe,
+perhaps this can land via the arm64 tree? If x86 -tip is preferred, that
+works too. If I don't hear otherwise, I will just carry this myself in
+-next. In all cases, I would really appreciate reviews/acks/etc. :)
+
+Thanks!
+
+-Kees
+
+[1] https://github.com/ClangBuiltLinux/linux/issues/282
+[2] https://lore.kernel.org/lkml/202002242122.AA4D1B8@keescook/
+[3] https://lore.kernel.org/lkml/20200715004133.1430068-1-nivedita@alum.mit.edu/
+[4] https://lore.kernel.org/lkml/20200625184752.73095-1-ndesaulniers@google.com/
+[5] https://github.com/ClangBuiltLinux/linux/issues/1071
+[6] https://github.com/ClangBuiltLinux/linux/issues/194
+[7] https://lore.kernel.org/lkml/1596166744-2954-2-git-send-email-neal.liu@mediatek.com/
+[8] https://lore.kernel.org/lkml/82f750c4-d423-1ed8-a158-e75153745e07@huawei.com/
+
+
+Ard Biesheuvel (3):
+  x86/boot/compressed: Move .got.plt entries out of the .got section
+  x86/boot/compressed: Force hidden visibility for all symbol references
+  x86/boot/compressed: Get rid of GOT fixup code
+
+Arvind Sankar (4):
+  x86/boot: Add .text.* to setup.ld
+  x86/boot: Remove run-time relocations from .head.text code
+  x86/boot: Remove run-time relocations from head_{32,64}.S
+  x86/boot: Check that there are no run-time relocations
+
+Kees Cook (28):
+  vmlinux.lds.h: Create COMMON_DISCARDS
+  vmlinux.lds.h: Add .gnu.version* to COMMON_DISCARDS
+  vmlinux.lds.h: Avoid KASAN and KCSAN's unwanted sections
+  vmlinux.lds.h: Split ELF_DETAILS from STABS_DEBUG
+  vmlinux.lds.h: Add .symtab, .strtab, and .shstrtab to ELF_DETAILS
+  efi/libstub: Disable -mbranch-protection
+  arm64/mm: Remove needless section quotes
+  arm64/kernel: Remove needless Call Frame Information annotations
+  arm64/build: Remove .eh_frame* sections due to unwind tables
+  arm64/build: Use common DISCARDS in linker script
+  arm64/build: Add missing DWARF sections
+  arm64/build: Assert for unwanted sections
+  arm64/build: Warn on orphan section placement
+  arm/build: Refactor linker script headers
+  arm/build: Explicitly keep .ARM.attributes sections
+  arm/build: Add missing sections
+  arm/build: Warn on orphan section placement
+  arm/boot: Handle all sections explicitly
+  arm/boot: Warn on orphan section placement
+  x86/asm: Avoid generating unused kprobe sections
+  x86/build: Enforce an empty .got.plt section
+  x86/build: Assert for unwanted sections
+  x86/build: Warn on orphan section placement
+  x86/boot/compressed: Reorganize zero-size section asserts
+  x86/boot/compressed: Remove, discard, or assert for unwanted sections
+  x86/boot/compressed: Add missing debugging sections to output
+  x86/boot/compressed: Warn on orphan section placement
+  arm/build: Assert for unwanted sections
+
+Nick Desaulniers (1):
+  vmlinux.lds.h: add PGO and AutoFDO input sections
+
+ arch/alpha/kernel/vmlinux.lds.S               |   1 +
+ arch/arc/kernel/vmlinux.lds.S                 |   1 +
+ arch/arm/Makefile                             |   4 +
+ arch/arm/boot/compressed/Makefile             |   2 +
+ arch/arm/boot/compressed/vmlinux.lds.S        |  20 +--
+ .../arm/{kernel => include/asm}/vmlinux.lds.h |  29 ++-
+ arch/arm/kernel/vmlinux-xip.lds.S             |   8 +-
+ arch/arm/kernel/vmlinux.lds.S                 |   8 +-
+ arch/arm64/Makefile                           |   9 +-
+ arch/arm64/kernel/smccc-call.S                |   2 -
+ arch/arm64/kernel/vmlinux.lds.S               |  28 ++-
+ arch/arm64/mm/mmu.c                           |   2 +-
+ arch/csky/kernel/vmlinux.lds.S                |   1 +
+ arch/hexagon/kernel/vmlinux.lds.S             |   1 +
+ arch/ia64/kernel/vmlinux.lds.S                |   1 +
+ arch/mips/kernel/vmlinux.lds.S                |   1 +
+ arch/nds32/kernel/vmlinux.lds.S               |   1 +
+ arch/nios2/kernel/vmlinux.lds.S               |   1 +
+ arch/openrisc/kernel/vmlinux.lds.S            |   1 +
+ arch/parisc/boot/compressed/vmlinux.lds.S     |   1 +
+ arch/parisc/kernel/vmlinux.lds.S              |   1 +
+ arch/powerpc/kernel/vmlinux.lds.S             |   2 +-
+ arch/riscv/kernel/vmlinux.lds.S               |   1 +
+ arch/s390/kernel/vmlinux.lds.S                |   1 +
+ arch/sh/kernel/vmlinux.lds.S                  |   1 +
+ arch/sparc/kernel/vmlinux.lds.S               |   1 +
+ arch/um/kernel/dyn.lds.S                      |   2 +-
+ arch/um/kernel/uml.lds.S                      |   2 +-
+ arch/unicore32/kernel/vmlinux.lds.S           |   1 +
+ arch/x86/Makefile                             |   4 +
+ arch/x86/boot/compressed/Makefile             |  41 +----
+ arch/x86/boot/compressed/head_32.S            |  99 ++++-------
+ arch/x86/boot/compressed/head_64.S            | 165 +++++++-----------
+ arch/x86/boot/compressed/mkpiggy.c            |   6 +
+ arch/x86/boot/compressed/vmlinux.lds.S        |  48 ++++-
+ arch/x86/boot/setup.ld                        |   2 +-
+ arch/x86/include/asm/asm.h                    |   6 +-
+ arch/x86/kernel/vmlinux.lds.S                 |  39 ++++-
+ drivers/firmware/efi/libstub/Makefile         |  11 +-
+ drivers/firmware/efi/libstub/hidden.h         |   6 -
+ include/asm-generic/vmlinux.lds.h             |  49 +++++-
+ include/linux/hidden.h                        |  19 ++
+ 42 files changed, 377 insertions(+), 252 deletions(-)
+ rename arch/arm/{kernel => include/asm}/vmlinux.lds.h (84%)
+ delete mode 100644 drivers/firmware/efi/libstub/hidden.h
+ create mode 100644 include/linux/hidden.h
+
+-- 
+2.25.1
+
