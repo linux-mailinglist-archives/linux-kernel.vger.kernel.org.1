@@ -2,72 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1438233EB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 07:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE28233EB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 07:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731199AbgGaFdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 01:33:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726972AbgGaFdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 01:33:37 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6D79208E4;
-        Fri, 31 Jul 2020 05:33:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596173616;
-        bh=SrMzJYfTMQLBsXyhVjLLCmvenkRswzPK65sqy1cHK2g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FwnmgM0LtXhYrZbihPSWdfHqpy+DSzZ09TwFtOWT8N9S6rPrAdA2tKlVwkYDVpYI7
-         /WGlgrGBWt6dS8efzXij7J2/2EIt43xsBoMyJbQjG+ff8WnhikCXp0JZMHcr82mxWq
-         +EWy9cKwBRc78VgQG7aPqhbBW+dx32cNhinrGwQk=
-Date:   Fri, 31 Jul 2020 07:33:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
- in rds_notify_queue_get()
-Message-ID: <20200731053333.GB466103@kroah.com>
-References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
- <20200731045301.GI75549@unreal>
- <20200731053306.GA466103@kroah.com>
+        id S1731131AbgGaFmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 01:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730177AbgGaFmC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 01:42:02 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DC8C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 22:42:02 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1k1Nnj-0005xl-HN; Fri, 31 Jul 2020 07:41:51 +0200
+Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1k1Nne-0002Rb-PM; Fri, 31 Jul 2020 07:41:46 +0200
+Date:   Fri, 31 Jul 2020 07:41:46 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Ondrej Jirman <megous@megous.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Luca Weiss <luca@z3ntu.xyz>,
+        Tomas Novotny <tomas@novotny.cz>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 3/4] ARM: dts: sun8i-a83t-tbs-a711: Add support for
+ the vibrator motor
+Message-ID: <20200731054146.3d64tchfvbb6gfwj@pengutronix.de>
+References: <20200730132446.3139980-1-megous@megous.com>
+ <20200730132446.3139980-4-megous@megous.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200731053306.GA466103@kroah.com>
+In-Reply-To: <20200730132446.3139980-4-megous@megous.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 07:40:39 up 258 days, 20:59, 248 users,  load average: 0.14, 0.11,
+ 0.08
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 07:33:06AM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Jul 31, 2020 at 07:53:01AM +0300, Leon Romanovsky wrote:
-> > On Thu, Jul 30, 2020 at 03:20:26PM -0400, Peilin Ye wrote:
-> > > rds_notify_queue_get() is potentially copying uninitialized kernel stack
-> > > memory to userspace since the compiler may leave a 4-byte hole at the end
-> > > of `cmsg`.
-> > >
-> > > In 2016 we tried to fix this issue by doing `= { 0 };` on `cmsg`, which
-> > > unfortunately does not always initialize that 4-byte hole. Fix it by using
-> > > memset() instead.
-> > 
-> > Of course, this is the difference between "{ 0 }" and "{}" initializations.
+Hi Ondrej,
+
+On 20-07-30 15:24, Ondrej Jirman wrote:
+> The board has a vibrator motor. Hook it to the input subsystem.
 > 
-> Really?  Neither will handle structures with holes in it, try it and
-> see.
+> According to the PMIC specification, LDO needs to be enabled (value 0b11)
+> to achieve the specified max driving current of 150mA. We can't drive
+> the motor with just GPIO mode.
+> 
+> In GPIO mode the chip is probably just using the regular CMOS logic
+> output circuitry (typically limited to around 20-35mA, but not specified
+> in this datasheet).
+> 
+> Signed-off-by: Ondrej Jirman <megous@megous.com>
+> ---
+>  arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts b/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
+> index bfc9bb277a49..a278a1e33930 100644
+> --- a/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
+> +++ b/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
+> @@ -99,6 +99,11 @@ panel_input: endpoint {
+>  		};
+>  	};
+>  
+> +	vibrator {
+> +		compatible = "gpio-vibrator";
+> +		vcc-supply = <&reg_ldo_io1>;
+> +	};
 
-And if true, where in the C spec does it say that?
+Please keep the alphabetical order. I also would merge patch 3 and 4
+into one since they are realted changes.
 
-thanks,
+Regards,
+  Marco
 
-greg k-h
+> +
+>  	reg_gps: reg-gps {
+>  		compatible = "regulator-fixed";
+>  		regulator-name = "gps";
