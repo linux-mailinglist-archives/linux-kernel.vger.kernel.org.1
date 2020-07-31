@@ -2,131 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F97233D99
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 05:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D103233D9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 05:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731311AbgGaDMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Jul 2020 23:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731284AbgGaDMn (ORCPT
+        id S1731332AbgGaDNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Jul 2020 23:13:31 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:34558 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731279AbgGaDNY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Jul 2020 23:12:43 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F45C061574;
-        Thu, 30 Jul 2020 20:12:42 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a9so6014623pjd.3;
-        Thu, 30 Jul 2020 20:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=tPJzt6hCr28nMvlRPeU7cuy9KZpdsuKpUl1/2Pv7MJo=;
-        b=mLD+hI5qyhPWZAbK5CjoAHjrxXCA29ORK7oi4ZLY7vihruRs7sX/QL/AUBFIi3I5ka
-         OEjuZC6ss/bbaEe/CHy3N6YC9k3fhFHAZaWBLzRLNE8vZq88+OIhbTuRyXFcolNncZVg
-         5c8JRsgyhNwEaNXvZ9QfGpWMKTYEEhEULmM6mZDNKEqHhgNQYIc6SdPBynbq+NOwRfDQ
-         JFgOMjBEcSWpSESrhjfwdQrYvVCrmf2eRDIftNoZ44SNN/t3b895RhOPR6D5ulDAIkjg
-         rFA34XgkYpbX9Gv6TN4v0YayoF7UzlIj7BZ6xDwyIiwcC+0/9hbIXwHoTc44Vd2lKqXT
-         giTg==
+        Thu, 30 Jul 2020 23:13:24 -0400
+Received: by mail-il1-f199.google.com with SMTP id o1so13336357ilk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 20:13:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=tPJzt6hCr28nMvlRPeU7cuy9KZpdsuKpUl1/2Pv7MJo=;
-        b=LmCO59sp3TjGgA6AyxzQUguCL8Wzt0tCKskRWG+zvirZ6owl8mUsqAeYEQadp26Bv9
-         Mm/4zCqSDTlvQ25jbJrKh7CoP0IgX1WuyA3HEL5FW5tC1eNj+Hij+mIVPORH+yYV6GKo
-         XlN7SVcaAcwt1C336Or7gAkNil96ZxDr45icv7tV/dHNm9bdbfQEDSvmWyMIF7XnMnJq
-         jnYKh+T76HwUURrWJ8GOQgFFoB4eU6EdzQSSn8srBQADJQ4BbJ34f6qD7xt9Q4ZlcqIi
-         9YMwABK7myrojCxUfapCbmI5KLPPonWyX+3z1CdX8wEPxDF1cKEtaLlbs7I1vglwKSBo
-         D47w==
-X-Gm-Message-State: AOAM530VhnfNuL4XNUEed4TSI3Mxq3vgDRa4Mg2OE81zVH0MR7BJgBt0
-        0OD6hvCOgQctxTDHKFJ7s+jnwqTJ
-X-Google-Smtp-Source: ABdhPJz4SqGEyF0fKUXkl4NNUswbWn0leItPQBNpbUyN94kwgKwftMcOg4m9cQxjICJZw7R9qih0Ow==
-X-Received: by 2002:a17:90b:390f:: with SMTP id ob15mr2053196pjb.156.1596165162337;
-        Thu, 30 Jul 2020 20:12:42 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id t19sm8221961pfq.179.2020.07.30.20.12.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Jul 2020 20:12:41 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH v3 3/3] KVM: SVM: Fix disable pause loop exit/pause filtering capability on SVM
-Date:   Fri, 31 Jul 2020 11:12:21 +0800
-Message-Id: <1596165141-28874-3-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596165141-28874-1-git-send-email-wanpengli@tencent.com>
-References: <1596165141-28874-1-git-send-email-wanpengli@tencent.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/pC2jX1hCFTSa0XcmmFAvUUMdwWwZxAez1TyfC9ev/c=;
+        b=VcNFHGUjQUNSK+cD66Gvm/pjd7Q+/lfMjhX/gwAQCXFWI2Udt6VWxQnF3GxeEts33y
+         CXkHqO++fKbFHjFIJOGR3g4f+jSDbyG60gusazySygRBzGq0t5I86FRzSAr6scbX0MMt
+         sajtU04Qc0p9a/wFWFOYqjdao6GFK6K1vWtPbbw9dO1U5EbER5ufA/Myk0bpRMBtZJBl
+         0dtNcDOfVOAs3A0x+7u+Pmw0sqmBzqGHt95vkNnnZw8BQGWJXUT3+r9O8H+phD34nkoX
+         2UqvRkEj5tOVW0UazkkBWzZV1imJ0la+cC5DXWof4adVLtYyoQyxqEPeNt8AgrU0Cdr2
+         tofw==
+X-Gm-Message-State: AOAM532zMiG5VWCuVo1x9C+DQs2aeXkcc+YsXiGsgVP/2SXehnc5dtWf
+        VkqlkYRBuDS8OdMDNw9cj+yjCGc0bnyeYxNDxqfxvC/LNOEM
+X-Google-Smtp-Source: ABdhPJw/Ch8WWG2O2qDM/9Jc5exVf6rgoPHKV5c9rE7Zq499OYcDuWvWDwZhuYN+Oj75uDd9AC4/tt54t2GmMmtveNwvxWia5tHP
+MIME-Version: 1.0
+X-Received: by 2002:a05:6602:381:: with SMTP id f1mr1631261iov.193.1596165203333;
+ Thu, 30 Jul 2020 20:13:23 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 20:13:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f298fc05abb42b70@google.com>
+Subject: WARNING: ODEBUG bug in cancel_delayed_work
+From:   syzbot <syzbot+338f014a98367a08a114@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+Hello,
 
-'Commit 8566ac8b8e7c ("KVM: SVM: Implement pause loop exit logic in SVM")' 
-drops disable pause loop exit/pause filtering capability completely, I 
-guess it is a merge fault by Radim since disable vmexits capabilities and 
-pause loop exit for SVM patchsets are merged at the same time. This patch 
-reintroduces the disable pause loop exit/pause filtering capability support.
+syzbot found the following issue on:
 
-Reported-by: Haiwei Li <lihaiwei@tencent.com>
-Tested-by: Haiwei Li <lihaiwei@tencent.com>
-Fixes: 8566ac8b (KVM: SVM: Implement pause loop exit logic in SVM)
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+HEAD commit:    27a2145d ibmvnic: Fix IRQ mapping disposal in error path
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=14277848900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ca6448d2af2ba351
+dashboard link: https://syzkaller.appspot.com/bug?extid=338f014a98367a08a114
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=168aec04900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11148e5c900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+338f014a98367a08a114@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+ODEBUG: assert_init not available (active state 0) object type: timer_list hint: 0x0
+WARNING: CPU: 0 PID: 6858 at lib/debugobjects.c:485 debug_print_object+0x160/0x250 lib/debugobjects.c:485
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 6858 Comm: syz-executor296 Not tainted 5.8.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:231
+ __warn.cold+0x20/0x45 kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:235
+ exc_invalid_op+0x13/0x40 arch/x86/kernel/traps.c:255
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:540
+RIP: 0010:debug_print_object+0x160/0x250 lib/debugobjects.c:485
+Code: dd a0 9f 93 88 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 bf 00 00 00 48 8b 14 dd a0 9f 93 88 48 c7 c7 00 95 93 88 e8 b2 ae a9 fd <0f> 0b 83 05 db 0b 14 07 01 48 83 c4 20 5b 5d 41 5c 41 5d c3 48 89
+RSP: 0018:ffffc9000168f578 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000000000
+RDX: ffff888096dec4c0 RSI: ffffffff815d4ef7 RDI: fffff520002d1ea1
+RBP: 0000000000000001 R08: 0000000000000001 R09: ffff8880ae620fcb
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffffff89bcc540
+R13: ffffffff81630df0 R14: ffff888095382200 R15: 1ffff920002d1eba
+ debug_object_assert_init lib/debugobjects.c:870 [inline]
+ debug_object_assert_init+0x1f4/0x2e0 lib/debugobjects.c:841
+ debug_timer_assert_init kernel/time/timer.c:736 [inline]
+ debug_assert_init kernel/time/timer.c:781 [inline]
+ del_timer+0x6d/0x110 kernel/time/timer.c:1207
+ try_to_grab_pending kernel/workqueue.c:1249 [inline]
+ __cancel_work kernel/workqueue.c:3221 [inline]
+ cancel_delayed_work+0xe0/0x450 kernel/workqueue.c:3250
+ l2cap_clear_timer include/net/bluetooth/l2cap.h:879 [inline]
+ l2cap_chan_del+0x541/0x1300 net/bluetooth/l2cap_core.c:661
+ l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:824
+ l2cap_sock_shutdown+0x3b8/0xe90 net/bluetooth/l2cap_sock.c:1339
+ l2cap_sock_release+0x63/0x1d0 net/bluetooth/l2cap_sock.c:1382
+ __sock_release+0xcd/0x280 net/socket.c:605
+ sock_close+0x18/0x20 net/socket.c:1278
+ __fput+0x33c/0x880 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:135
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb72/0x2a40 kernel/exit.c:805
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x40b/0x1ee0 kernel/signal.c:2743
+ do_signal+0x82/0x2520 arch/x86/kernel/signal.c:810
+ exit_to_usermode_loop arch/x86/entry/common.c:235 [inline]
+ __prepare_exit_to_usermode+0x156/0x1f0 arch/x86/entry/common.c:269
+ do_syscall_64+0x6c/0xe0 arch/x86/entry/common.c:393
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x446d69
+Code: Bad RIP value.
+RSP: 002b:00007ffc69898b98 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: fffffffffffffffc RBX: 0000000000000003 RCX: 0000000000446d69
+RDX: 000000000000000e RSI: 0000000020000040 RDI: 0000000000000004
+RBP: 00007ffc69898bd0 R08: 0000000000000000 R09: 00000000000000ff
+R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000000004
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
 ---
-v2 -> v3:
- * simplify the condition in init_vmcb() 
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- arch/x86/kvm/svm/svm.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index c0da4dd..bf77f90 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1090,7 +1090,7 @@ static void init_vmcb(struct vcpu_svm *svm)
- 	svm->nested.vmcb = 0;
- 	svm->vcpu.arch.hflags = 0;
- 
--	if (pause_filter_count) {
-+	if (!kvm_pause_in_guest(svm->vcpu.kvm)) {
- 		control->pause_filter_count = pause_filter_count;
- 		if (pause_filter_thresh)
- 			control->pause_filter_thresh = pause_filter_thresh;
-@@ -2693,7 +2693,7 @@ static int pause_interception(struct vcpu_svm *svm)
- 	struct kvm_vcpu *vcpu = &svm->vcpu;
- 	bool in_kernel = (svm_get_cpl(vcpu) == 0);
- 
--	if (pause_filter_thresh)
-+	if (!kvm_pause_in_guest(vcpu->kvm))
- 		grow_ple_window(vcpu);
- 
- 	kvm_vcpu_on_spin(vcpu, in_kernel);
-@@ -3780,7 +3780,7 @@ static void svm_handle_exit_irqoff(struct kvm_vcpu *vcpu)
- 
- static void svm_sched_in(struct kvm_vcpu *vcpu, int cpu)
- {
--	if (pause_filter_thresh)
-+	if (!kvm_pause_in_guest(vcpu->kvm))
- 		shrink_ple_window(vcpu);
- }
- 
-@@ -3958,6 +3958,9 @@ static void svm_vm_destroy(struct kvm *kvm)
- 
- static int svm_vm_init(struct kvm *kvm)
- {
-+	if (!pause_filter_count || !pause_filter_thresh)
-+		kvm->arch.pause_in_guest = true;
-+
- 	if (avic) {
- 		int ret = avic_vm_init(kvm);
- 		if (ret)
--- 
-2.7.4
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
