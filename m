@@ -2,206 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45657234195
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8782C234199
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731983AbgGaIyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 04:54:33 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:58908 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728437AbgGaIyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 04:54:33 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id A3494FB04;
-        Fri, 31 Jul 2020 10:54:31 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 1fj0SNQLDrPP; Fri, 31 Jul 2020 10:54:29 +0200 (CEST)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 5D1244537D; Fri, 31 Jul 2020 10:54:29 +0200 (CEST)
-Date:   Fri, 31 Jul 2020 10:54:29 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lukas@mntmn.com
-Subject: Re: [PATCH v9 0/5] Add support for iMX8MQ Display Controller
- Subsystem
-Message-ID: <20200731085429.GD12560@bogon.m.sigxcpu.org>
-References: <20200731081836.3048-1-laurentiu.palcu@oss.nxp.com>
+        id S1732000AbgGaIzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 04:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731989AbgGaIze (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 04:55:34 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A37C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 01:55:34 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a14so27287638wra.5
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 01:55:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PyioNdq8CYBvYgbkg8UuSG7Wqo4MUTr2xfEMOw9a9rE=;
+        b=gJ1DQMppeYGWIl/xt4mhVBRMBU0vPPeIW+lpH27Uv8zpU3m+ggx5euP9ZtcQhQF/OX
+         E64+yzIOVHvWUNyqhXWsVm5YOOfibgDqUixJyt6FHUGiARBRyr4pilLoh8vKs2cWjOsS
+         w2zgqojCdQtg0rcRAYhI3V6W7ePsunHAc0g9U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PyioNdq8CYBvYgbkg8UuSG7Wqo4MUTr2xfEMOw9a9rE=;
+        b=bH8R048KVIf64PCtbFqUUbRTPFZ1u4vZvN4BaNz6GEkuXazIwYoWx1XCaWYbUW5nvE
+         hj3EcFDui1VFUwbzXw1rpBkWEP2ICYxDDkRUSBYTxhYWDQbK9At3v5NI+7kJKW34XuqI
+         +L3vj4sdF2B+8Qd9VfXF6iqwVo/SMtrR2yZt+bKnA6kxYKUvp64mpP/n//uDVgEyn8lE
+         E09UnxnfX0H+/FTJ7qyIqkUNwHtxurWF5/1ccCmF8fO3L9A6CGiBVFk31G0kGig/6AHr
+         ccL/LLeY2eEMFULmokKZpQsPIsvyWh5Z9/4DyIap+eoYZ3DvPT/HdEfDgVH8dXscFxo0
+         j6Qw==
+X-Gm-Message-State: AOAM531g9ywLe+90PG2YMDpu1EDWvfQFnOFFE4Mmb1XOF1vdpJEwKvvR
+        PYQVSYbLBasp4yyjWW9WTVsnV8DE0pzRuRwiK4m/pg==
+X-Google-Smtp-Source: ABdhPJyRhrXp3l6RU/5xr+rqhFrRNMWDU/mr680vSH+27w5AXxfytNKMGTBpF7RmL2K+p94pKbqb9iePJ20hmgfEMro=
+X-Received: by 2002:a5d:4bc8:: with SMTP id l8mr2466765wrt.159.1596185732557;
+ Fri, 31 Jul 2020 01:55:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200731081836.3048-1-laurentiu.palcu@oss.nxp.com>
+References: <20200721104422.369368-1-cychiang@chromium.org>
+ <20200721104422.369368-2-cychiang@chromium.org> <c270a068-c96b-63ae-a5ca-ec2081924dac@linaro.org>
+In-Reply-To: <c270a068-c96b-63ae-a5ca-ec2081924dac@linaro.org>
+From:   Cheng-yi Chiang <cychiang@chromium.org>
+Date:   Fri, 31 Jul 2020 16:55:04 +0800
+Message-ID: <CAFv8NwJBqndBozdc9DOr2T67VTnJ1LLEwvze2nJD6xNXh1a+gw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Fri, Jul 31, 2020 at 11:18:28AM +0300, Laurentiu Palcu wrote:
-> From: Laurentiu Palcu <laurentiu.palcu@nxp.com>
-> 
-> Hi,
-> 
-> This patchset adds initial DCSS support for iMX8MQ chip. Initial support
-> includes only graphics plane support (no video planes), no HDR10 capabilities,
-> no graphics decompression (only linear, tiled and super-tiled buffers allowed).
-> 
-> Support for the rest of the features will be added incrementally, in subsequent
-> patches.
-> 
-> The patchset was tested with both HDP driver (in the downstream tree) and the upstream
-> MIPI-DSI driver (with a couple of patches on top, to make it work correctly with DCSS).
-> 
-> Thanks,
-> Laurentiu
-> 
-> Changes in v9:
->  * Fixed a compilation issue found by Guido in his setup: 'select
->    VIDEOMODE_HELPERS' was missing from Kconfig;
->  * Use imx8mq-clock.h in the bindings file so one can understand what
->    those clock values mean;
->  * no other changes done. Couldn't address the hang Guido reported as
->    it's not happening in my setup. However, in my tree, there are some
->    extra NWL and ADV patches applied on top of upstream ones... Also,
->    removing them and testing only with upstream, even if there's no
->    image out, does not produce a hang... :/
+On Wed, Jul 22, 2020 at 5:25 PM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+>
+>
+> On 21/07/2020 11:44, Cheng-Yi Chiang wrote:
+> > Add devicetree bindings documentation file for sc7180 sound card.
+> >
+> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> > ---
+> >   .../bindings/sound/qcom,sc7180.yaml           | 130 ++++++++++++++++++
+> >   1 file changed, 130 insertions(+)
+> >   create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+> > new file mode 100644
+> > index 000000000000..82f9483276eb
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+> > @@ -0,0 +1,130 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
+> > +
+> > +maintainers:
+> > +  - Rohit kumar <rohitkr@codeaurora.org>
+> > +  - Cheng-Yi Chiang <cychiang@chromium.org>
+> > +
+> > +description:
+> > +  This binding describes the SC7180 sound card which uses LPASS for audio.
+> > +
+> > +definitions:
+> > +
+> > +  dai:
+> > +    type: object
+> > +    properties:
+> > +      sound-dai:
+> > +        maxItems: 1
+> > +        $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +        description: phandle array of the codec or CPU DAI
+> > +
+> > +    required:
+> > +      - sound-dai
+> > +
+> > +properties:
+> > +  compatible:
+> > +    contains:
+> > +      const: qcom,sc7180-sndcard
+> > +
+> > +  audio-routing:
+> > +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> > +    description:
+> > +      A list of the connections between audio components. Each entry is a
+> > +      pair of strings, the first being the connection's sink, the second
+> > +      being the connection's source.
+> > +
+> > +  model:
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    description: User specified audio sound card name
+> > +
+> > +  aux-dev:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description: phandle of the codec for headset detection
+>
+>
+> Why do we need this? You should be able to set the jack for codec
+> snd_soc_component_set_jack()?
+>
+>
+I put my explanation in the machine driver patch since there is more
+context there.
 
-I don't think this should hold up merging.
-Cheers,
- -- Guido
+> > +
+> > +patternProperties:
+> > +  "^dai-link(@[0-9]+)?$":
+> > +    description:
+> > +      Each subnode represents a dai link. Subnodes of each dai links would be
+> > +      cpu/codec dais.
+> > +
+> > +    type: object
+> > +
+> > +    properties:
+> > +      link-name:
+> > +        description: Indicates dai-link name and PCM stream name.
+> > +        $ref: /schemas/types.yaml#/definitions/string
+> > +        maxItems: 1
+> > +
+> > +      reg:
+> > +        description: dai link address.
+> > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > +        maxItems: 1
+>
+> Why do we need this?? I have not seen the parsing code using this.
+>
+>
+When checking the yaml file using dt_binding_check, I got this warnings:
 
-> 
-> Changes in v8:
->  * Removed 'select RESET_CONTROLLER" from Kconfig as Philipp pointed
->    out. SRC is not used in DCSS driver;
->  * Nothing else changed;
-> 
-> Changes in v7:
->  * Added a patch to initialize the connector using the drm_bridge_connector
->    API as Sam suggested. Tested it using NWL_DSI and ADV7535 with
->    Guido's patch [1] applied and one fix for ADV [2]. Also, some extra
->    patches for ADV and NWL were needed, from our downstream tree, which
->    will be upstreamed soon by their author;
->  * Rest of the patches are untouched;
-> 
-> [1] https://lists.freedesktop.org/archives/dri-devel/2020-July/273025.html
-> [2] https://lists.freedesktop.org/archives/dri-devel/2020-July/273132.html
-> 
-> Changes in v6:
->  * Addressed Rob's comment and added "additionalProperties: false" at
->    the end of the bindings' properties. However, this change surfaced
->    an issue with the assigned-clock* properties not being documented in
->    the properties section. Added the descriptions and the bindings patch
->    will need another review;
->  * Added an entry for DCSS driver in the MAINTAINERS file;
->  * Removed the component framework patch altogether;
-> 
-> Changes in v5:
->  * Rebased to latest;
->  * Took out component framework support and made it a separate patch so
->    that people can still test with HDP driver, which makes use of it.
->    But the idea is to get rid of it once HDP driver's next versions
->    will remove component framework as well;
->  * Slight improvement to modesetting: avoid cutting off the pixel clock
->    if the new mode and the old one are equal. Also, in this case, is
->    not necessary to wait for DTG to shut off. This would allow to switch
->    from 8b RGB to 12b YUV422, for example, with no interruptions (at least
->    from DCSS point of view);
->  * Do not fire off CTXLD when going to suspend, unless it still has
->    entries that need to be committed to DCSS;
->  * Addressed Rob's comments on bindings;
-> 
-> Changes in v4:
->  * Addressed Lucas and Philipp's comments:
->    * Added DRM_KMS_CMA_HELPER dependency in Kconfig;
->    * Removed usage of devm_ functions since I'm already doing all the
->      clean-up in the submodules_deinit();
->    * Moved the drm_crtc_arm_vblank_event() in dcss_crtc_atomic_flush();
->    * Removed en_completion variable from dcss_crtc since this was
->      introduced mainly to avoid vblank timeout warnings which were fixed
->      by arming the vblank event in flush() instead of begin();
->    * Removed clks_on and irq_enabled flags since all the calls to
->      enabling/disabling clocks and interrupts were balanced;
->    * Removed the custom atomic_commit callback and used the DRM core
->      helper and, in the process, got rid of a workqueue that wasn't
->      necessary anymore;
->    * Fixed some minor DT binding issues flagged by Philipp;
->    * Some other minor changes suggested by Lucas;
->  * Removed YUV formats from the supported formats as these cannot work
->    without the HDR10 module CSCs and LUTs. Will add them back when I
->    will add support for video planes;
-> 
-> Changes in v3:
->  * rebased to latest linux-next and made it compile as drmP.h was
->    removed;
->  * removed the patch adding the VIDEO2_PLL clock. It's already applied;
->  * removed an unnecessary 50ms sleep in the dcss_dtg_sync_set();
->  * fixed a a spurious hang reported by Lukas Hartmann and encountered
->    by me several times;
->  * mask DPR and DTG interrupts by default, as they may come enabled from
->    U-boot;
-> 
-> Changes in v2:
->  * Removed '0x' in node's unit-address both in DT and yaml;
->  * Made the address region size lowercase, to be consistent;
->  * Removed some left-over references to P010;
->  * Added a Kconfig dependency of DRM && ARCH_MXC. This will also silence compilation
->    issues reported by kbuild for other architectures;
-> 
-> 
-> Laurentiu Palcu (5):
->   drm/imx: compile imx directory by default
->   drm/imx: Add initial support for DCSS on iMX8MQ
->   drm/imx/dcss: use drm_bridge_connector API
->   MAINTAINERS: Add entry for i.MX 8MQ DCSS driver
->   dt-bindings: display: imx: add bindings for DCSS
-> 
->  .../bindings/display/imx/nxp,imx8mq-dcss.yaml | 108 +++
->  MAINTAINERS                                   |   8 +
->  drivers/gpu/drm/Makefile                      |   2 +-
->  drivers/gpu/drm/imx/Kconfig                   |   2 +
->  drivers/gpu/drm/imx/Makefile                  |   1 +
->  drivers/gpu/drm/imx/dcss/Kconfig              |   9 +
->  drivers/gpu/drm/imx/dcss/Makefile             |   6 +
->  drivers/gpu/drm/imx/dcss/dcss-blkctl.c        |  70 ++
->  drivers/gpu/drm/imx/dcss/dcss-crtc.c          | 219 +++++
->  drivers/gpu/drm/imx/dcss/dcss-ctxld.c         | 424 +++++++++
->  drivers/gpu/drm/imx/dcss/dcss-dev.c           | 325 +++++++
->  drivers/gpu/drm/imx/dcss/dcss-dev.h           | 177 ++++
->  drivers/gpu/drm/imx/dcss/dcss-dpr.c           | 562 ++++++++++++
->  drivers/gpu/drm/imx/dcss/dcss-drv.c           | 138 +++
->  drivers/gpu/drm/imx/dcss/dcss-dtg.c           | 409 +++++++++
->  drivers/gpu/drm/imx/dcss/dcss-kms.c           | 198 +++++
->  drivers/gpu/drm/imx/dcss/dcss-kms.h           |  44 +
->  drivers/gpu/drm/imx/dcss/dcss-plane.c         | 405 +++++++++
->  drivers/gpu/drm/imx/dcss/dcss-scaler.c        | 826 ++++++++++++++++++
->  drivers/gpu/drm/imx/dcss/dcss-ss.c            | 180 ++++
->  20 files changed, 4112 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/display/imx/nxp,imx8mq-dcss.yaml
->  create mode 100644 drivers/gpu/drm/imx/dcss/Kconfig
->  create mode 100644 drivers/gpu/drm/imx/dcss/Makefile
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-blkctl.c
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-crtc.c
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-ctxld.c
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dev.c
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dev.h
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dpr.c
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-drv.c
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dtg.c
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-kms.c
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-kms.h
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-plane.c
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-scaler.c
->  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-ss.c
-> 
-> -- 
-> 2.23.0
-> 
+$  make dt_binding_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+  CHKDT   Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.yaml
+  DTC     Documentation/devicetree/bindings/sound/qcom,sc7180.example.dt.yaml
+Documentation/devicetree/bindings/sound/qcom,sc7180.example.dts:32.24-41.15:
+Warning (unit_address_vs_reg): /example-0/sound/dai-link@0: node has a
+unit name, but no reg or ranges property
+Documentation/devicetree/bindings/sound/qcom,sc7180.example.dts:43.24-52.15:
+Warning (unit_address_vs_reg): /example-0/sound/dai-link@1: node has a
+unit name, but no reg or ranges property
+  CHECK   Documentation/devicetree/bindings/sound/qcom,sc7180.example.dt.yaml
+
+Should I ignore these warnings because reg is not used in the driver ?
+
+> > +
+> > +      playback-only:
+> > +        description: Specify that the dai link is only for playback.
+> > +        $ref: /schemas/types.yaml#/definitions/flag
+> > +
+> > +      capture-only:
+> > +        description: Specify that the dai link is only for capture.
+> > +        $ref: /schemas/types.yaml#/definitions/flag
+> > +
+>
+> Are these because the cpu/codec dais are single directional?
+>
+> If so you can extend snd_soc_dai_link_set_capabilities() and use this
+> function.
+
+I found that this is not needed since soc_new_pcm already takes care
+of checking capture/playback capability in non-dpcm cases.
+
+>
+>
+> --srini
+>
+
+Thanks for reviewing the patch!
+
+
+
+> > +      cpu:
+> > +        $ref: "#/definitions/dai"
+> > +
+> > +      codec:
+> > +        $ref: "#/definitions/dai"
+> > +
+> > +    required:
+> > +      - link-name
+> > +      - reg
+> > +      - cpu
+> > +      - codec
+> > +
+> > +    additionalProperties: false
+> > +
+> > +examples:
+> > +
+> > +  - |
+> > +    sound {
+> > +        compatible = "qcom,sc7180-sndcard";
+> > +        model = "sc7180-snd-card";
+> > +
+> > +        audio-routing =
+> > +                    "Headphone Jack", "HPOL",
+> > +                    "Headphone Jack", "HPOR";
+> > +
+> > +        aux-dev = <&alc5682>;
+> > +
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        dai-link@0 {
+> > +            reg = <0>;
+> > +            link-name = "MultiMedia0";
+> > +            cpu {
+> > +                sound-dai = <&lpass_cpu 0>;
+> > +            };
+> > +
+> > +            codec {
+> > +                sound-dai = <&alc5682 0>;
+> > +            };
+> > +        };
+> > +
+> > +        dai-link@1 {
+> > +            reg = <1>;
+> > +            link-name = "MultiMedia1";
+> > +            playback-only;
+> > +            cpu {
+> > +                sound-dai = <&lpass_cpu 1>;
+> > +            };
+> > +
+> > +            codec {
+> > +                sound-dai = <&max98357a>;
+> > +            };
+> > +        };
+> > +    };
+> >
