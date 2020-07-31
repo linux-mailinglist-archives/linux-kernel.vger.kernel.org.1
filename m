@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0872342EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3B82342E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732609AbgGaJ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732410AbgGaJXQ (ORCPT
+        id S1732828AbgGaJ0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:26:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56564 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732409AbgGaJXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 31 Jul 2020 05:23:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4891C061574;
-        Fri, 31 Jul 2020 02:23:15 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 09:23:13 -0000
+Date:   Fri, 31 Jul 2020 09:23:14 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187394;
+        s=2020; t=1596187395;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=+AhZ83rScIbJ4rlxI2njPEzDwd/0anHUrr5iVxs4/KY=;
-        b=1ou+AwsaJbcr3W3M26D7MmUjeNLyngGcvbbzQBMY4/AzFYgH88zrdulHNqM8VBV/Y1pwJr
-        bNh3/8j/N2NCP74bW0LKNplbMofPmn2G1BSSC+VyUPeCcup5lcKiIuxkkNfMrNzOcTs2Hn
-        K8dE+bTbZOAYLoUpycOJ6B67CfWUQ9p5uW9PuRv7Z9fkL1Fab1xMK3TkxSHoeIYIgAEvrs
-        sjQKtmmPX2fMXuLuTsx7W/YIRa0aMRhdCJabvNOJhotMU+X7nTdLivHg1vgKxg/+DquWUU
-        PN0J6oXB26YtmlBnUBoqQ/TAeICQNaPqTm/pG9g75TZaUhcg4dmSyhgWMIlxIQ==
+        bh=VnaD553HlsVhTidsBlA6RgjwGJCOfCtgC9mDVjsDgUg=;
+        b=IlBqajpxPsLsxixRDLVtNnO5V8SkFDFpeVn7r0R1xOH79dqiTvE6rGXV8LL9Jp5KiObSNN
+        GL5AcSVtlBTmpHFTnaxkgjCGwoOtgcCeXCm2l69xZ503JcK2GrwU+nvwR9+m8TxbgFYNC9
+        ezu9GUqxk648WsE9k9UcKWyKDO90NF1iMijf/rb5Q3N1XO0UPWZz0YEjdLytIA42eoj1XJ
+        0VggFn2PvodbXyoSE8Khs8DKCi5Hrx935P/Xz4sUr8fpoWhwcY0CZym0H+nEz1c8Es2A7T
+        VuStfNkcKNIPg3DEEkyJ6uZHle/pD7MdR86Gxyqf2R6sRQnw+dMmgDLwbI4AYg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187394;
+        s=2020e; t=1596187395;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=+AhZ83rScIbJ4rlxI2njPEzDwd/0anHUrr5iVxs4/KY=;
-        b=ZXtviY9/EiCc5ugkPVTYshYS3DidHASulAETnPiHi0wwjqK/6hZVS2Aka+8UBEl+5KhoCX
-        sWR46RH6V7Flk3Bw==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+        bh=VnaD553HlsVhTidsBlA6RgjwGJCOfCtgC9mDVjsDgUg=;
+        b=OduDJY7gzWe4QYHQQufmOozxIdsgW5lvoXxIYmk2KBGQ4LoWeJEoMO10VPZwUnIaJeHLbY
+        t+HpjLTOPgcaEiBA==
+From:   "tip-bot2 for Uladzislau Rezki (Sony)" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu-tasks: Convert sleeps to idle priority
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] lib/test_vmalloc.c: Add test cases for kvfree_rcu()
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159618739387.4006.1540485796816983638.tip-bot2@tip-bot2>
+Message-ID: <159618739456.4006.7812905871271833589.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,53 +53,162 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     ea6eed9f7d7382c7230202d4c3bf74185f193394
-Gitweb:        https://git.kernel.org/tip/ea6eed9f7d7382c7230202d4c3bf74185f193394
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 07 May 2020 16:47:13 -07:00
+Commit-ID:     da4fc00abb97ce1269b0940abe86e25456e28424
+Gitweb:        https://git.kernel.org/tip/da4fc00abb97ce1269b0940abe86e25456e28424
+Author:        Uladzislau Rezki (Sony) <urezki@gmail.com>
+AuthorDate:    Mon, 25 May 2020 23:48:00 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 29 Jun 2020 12:00:22 -07:00
+CommitterDate: Mon, 29 Jun 2020 11:59:26 -07:00
 
-rcu-tasks: Convert sleeps to idle priority
+lib/test_vmalloc.c: Add test cases for kvfree_rcu()
 
-This commit converts the long-standing schedule_timeout_interruptible()
-and schedule_timeout_uninterruptible() calls used by the various Tasks
-RCU's grace-period kthreads to schedule_timeout_idle().  This conversion
-avoids polluting the load-average with Tasks-RCU-related sleeping.
+Introduce four new test cases for testing the kvfree_rcu()
+interface. Two of them belong to single argument functionality
+and another two for 2-argument functionality.
 
+The aim is to stress and check how kvfree_rcu() behaves under
+different load and memory conditions and analyze its performance
+throughput.
+
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ lib/test_vmalloc.c | 103 ++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 95 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index ce23f6c..91fee81 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -205,7 +205,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 			if (!rtp->cbs_head) {
- 				WARN_ON(signal_pending(current));
- 				set_tasks_gp_state(rtp, RTGS_WAIT_WAIT_CBS);
--				schedule_timeout_interruptible(HZ/10);
-+				schedule_timeout_idle(HZ/10);
- 			}
- 			continue;
- 		}
-@@ -227,7 +227,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 			cond_resched();
- 		}
- 		/* Paranoid sleep to keep this from entering a tight loop */
--		schedule_timeout_uninterruptible(HZ/10);
-+		schedule_timeout_idle(HZ/10);
+diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
+index ddc9685..5cf2fe9 100644
+--- a/lib/test_vmalloc.c
++++ b/lib/test_vmalloc.c
+@@ -15,6 +15,8 @@
+ #include <linux/delay.h>
+ #include <linux/rwsem.h>
+ #include <linux/mm.h>
++#include <linux/rcupdate.h>
++#include <linux/slab.h>
  
- 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
- 	}
-@@ -336,7 +336,7 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ #define __param(type, name, init, msg)		\
+ 	static type name = init;				\
+@@ -35,14 +37,18 @@ __param(int, test_loop_count, 1000000,
  
- 		/* Slowly back off waiting for holdouts */
- 		set_tasks_gp_state(rtp, RTGS_WAIT_SCAN_HOLDOUTS);
--		schedule_timeout_interruptible(HZ/fract);
-+		schedule_timeout_idle(HZ/fract);
+ __param(int, run_test_mask, INT_MAX,
+ 	"Set tests specified in the mask.\n\n"
+-		"\t\tid: 1,   name: fix_size_alloc_test\n"
+-		"\t\tid: 2,   name: full_fit_alloc_test\n"
+-		"\t\tid: 4,   name: long_busy_list_alloc_test\n"
+-		"\t\tid: 8,   name: random_size_alloc_test\n"
+-		"\t\tid: 16,  name: fix_align_alloc_test\n"
+-		"\t\tid: 32,  name: random_size_align_alloc_test\n"
+-		"\t\tid: 64,  name: align_shift_alloc_test\n"
+-		"\t\tid: 128, name: pcpu_alloc_test\n"
++		"\t\tid: 1,    name: fix_size_alloc_test\n"
++		"\t\tid: 2,    name: full_fit_alloc_test\n"
++		"\t\tid: 4,    name: long_busy_list_alloc_test\n"
++		"\t\tid: 8,    name: random_size_alloc_test\n"
++		"\t\tid: 16,   name: fix_align_alloc_test\n"
++		"\t\tid: 32,   name: random_size_align_alloc_test\n"
++		"\t\tid: 64,   name: align_shift_alloc_test\n"
++		"\t\tid: 128,  name: pcpu_alloc_test\n"
++		"\t\tid: 256,  name: kvfree_rcu_1_arg_vmalloc_test\n"
++		"\t\tid: 512,  name: kvfree_rcu_2_arg_vmalloc_test\n"
++		"\t\tid: 1024, name: kvfree_rcu_1_arg_slab_test\n"
++		"\t\tid: 2048, name: kvfree_rcu_2_arg_slab_test\n"
+ 		/* Add a new test case description here. */
+ );
  
- 		if (fract > 1)
- 			fract--;
+@@ -316,6 +322,83 @@ pcpu_alloc_test(void)
+ 	return rv;
+ }
+ 
++struct test_kvfree_rcu {
++	struct rcu_head rcu;
++	unsigned char array[20];
++};
++
++static int
++kvfree_rcu_1_arg_vmalloc_test(void)
++{
++	struct test_kvfree_rcu *p;
++	int i;
++
++	for (i = 0; i < test_loop_count; i++) {
++		p = vmalloc(1 * PAGE_SIZE);
++		if (!p)
++			return -1;
++
++		p->array[0] = 'a';
++		kvfree_rcu(p);
++	}
++
++	return 0;
++}
++
++static int
++kvfree_rcu_2_arg_vmalloc_test(void)
++{
++	struct test_kvfree_rcu *p;
++	int i;
++
++	for (i = 0; i < test_loop_count; i++) {
++		p = vmalloc(1 * PAGE_SIZE);
++		if (!p)
++			return -1;
++
++		p->array[0] = 'a';
++		kvfree_rcu(p, rcu);
++	}
++
++	return 0;
++}
++
++static int
++kvfree_rcu_1_arg_slab_test(void)
++{
++	struct test_kvfree_rcu *p;
++	int i;
++
++	for (i = 0; i < test_loop_count; i++) {
++		p = kmalloc(sizeof(*p), GFP_KERNEL);
++		if (!p)
++			return -1;
++
++		p->array[0] = 'a';
++		kvfree_rcu(p);
++	}
++
++	return 0;
++}
++
++static int
++kvfree_rcu_2_arg_slab_test(void)
++{
++	struct test_kvfree_rcu *p;
++	int i;
++
++	for (i = 0; i < test_loop_count; i++) {
++		p = kmalloc(sizeof(*p), GFP_KERNEL);
++		if (!p)
++			return -1;
++
++		p->array[0] = 'a';
++		kvfree_rcu(p, rcu);
++	}
++
++	return 0;
++}
++
+ struct test_case_desc {
+ 	const char *test_name;
+ 	int (*test_func)(void);
+@@ -330,6 +413,10 @@ static struct test_case_desc test_case_array[] = {
+ 	{ "random_size_align_alloc_test", random_size_align_alloc_test },
+ 	{ "align_shift_alloc_test", align_shift_alloc_test },
+ 	{ "pcpu_alloc_test", pcpu_alloc_test },
++	{ "kvfree_rcu_1_arg_vmalloc_test", kvfree_rcu_1_arg_vmalloc_test },
++	{ "kvfree_rcu_2_arg_vmalloc_test", kvfree_rcu_2_arg_vmalloc_test },
++	{ "kvfree_rcu_1_arg_slab_test", kvfree_rcu_1_arg_slab_test },
++	{ "kvfree_rcu_2_arg_slab_test", kvfree_rcu_2_arg_slab_test },
+ 	/* Add a new test case here. */
+ };
+ 
