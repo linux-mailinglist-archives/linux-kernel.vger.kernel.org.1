@@ -2,117 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5191023437E
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2BD234384
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732226AbgGaJoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:44:32 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:35989 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732124AbgGaJob (ORCPT
+        id S1732348AbgGaJo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732281AbgGaJo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:44:31 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200731094429euoutp0120163719651090fe5c5d8d59114b331a~mzSNgAF4U0643506435euoutp01C
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 09:44:29 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200731094429euoutp0120163719651090fe5c5d8d59114b331a~mzSNgAF4U0643506435euoutp01C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1596188669;
-        bh=+5Joqj7QrRDxPJyzHMJjnbyfdzDpF2c8FTY9byCVINU=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=kmtJXgYuIyfqj7eGgUwPnyN8SDfv8k6Yr11TBXQFzX8k/4EztisyDIc8oIBTThPPU
-         91sW6wOsO1AuYm0W4Sis+8DV0KCOB+iapXHTPKr2MJ05pjXwngEZ6VbnQu6PNI/z2u
-         ofhuP6A84GFE+Pn9aouEwb821mZskMAILdhCmhOc=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200731094429eucas1p1e3370b878522bffd703d4d72322c8941~mzSNKxRdc2573425734eucas1p1y;
-        Fri, 31 Jul 2020 09:44:29 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 23.32.05997.DF7E32F5; Fri, 31
-        Jul 2020 10:44:29 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200731094428eucas1p1b4b54a983777de85c16bad3a1005ca65~mzSMwlScL2573425734eucas1p1x;
-        Fri, 31 Jul 2020 09:44:28 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200731094428eusmtrp2085c2bd09665fd1e19c8e42dccd80db6~mzSMv4JzC0738707387eusmtrp2Y;
-        Fri, 31 Jul 2020 09:44:28 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-ca-5f23e7fd393f
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 4E.79.06017.CF7E32F5; Fri, 31
-        Jul 2020 10:44:28 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200731094427eusmtip2ba9a642a3bcad03c8669a6dda911a984~mzSLwEoRQ0239802398eusmtip2F;
-        Fri, 31 Jul 2020 09:44:27 +0000 (GMT)
-Subject: Re: [PATCH v2 06/11] media: exynos4-is: Use global num_sensors
- rather than local index
-To:     Jonathan Bakker <xc-racer2@live.ca>, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kyungmin.park@samsung.com, mchehab@kernel.org, kgene@kernel.org,
-        krzk@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <2ac8f74a-354e-aa28-fac3-71afa09594f8@samsung.com>
-Date:   Fri, 31 Jul 2020 11:44:26 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.11.0
+        Fri, 31 Jul 2020 05:44:57 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD9BC061574;
+        Fri, 31 Jul 2020 02:44:57 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id a65so13041155otc.8;
+        Fri, 31 Jul 2020 02:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JNG62fy69ZNDxq3ty1WqRJY8LhS3HHaZ7FOcyMliKZM=;
+        b=SVQZMutRleHjpanJu5BLyhMUxWrVl6B4uU9D8HzlgqQvftLkuaf1ZFxkrnfd3GTyIa
+         7qMaYgJMcz1N70WksGO0QX5QEfBzArA7Msr29OOkMygRVRtBW2zr9df7Z0VjxawHcd90
+         7hbViw5+VwaGhAWYmNqFAF7AQvIn2kRzXK08uL/bj3y7LovP6cqtXyqlwM9oLA2hqpXM
+         hjp/B+i7M+WNl4hathfkLJ8JpfCr7IV3jKw9LV+6HCfvdeiMoDgBBi5CxyPDZNVAhIkz
+         Y5P5l9gQHMN0YG51tUfZkow23JVYMIbLQ7cNyFGDSekWsiwp3xcSpskf3f3LHsDR8iBD
+         nYUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JNG62fy69ZNDxq3ty1WqRJY8LhS3HHaZ7FOcyMliKZM=;
+        b=Fl9hNteVGX8T9VSTR/arBj/wWMaZJyZ4sL82pp2EUTljUpJ+dKOnJQQu6rf1XJ9agI
+         WRqnJYZ8p2iTNke5JJGzxOeiTJEexXGPJP+NtryZ5DLCuwI3MVZh+UHUNyg4upTZKJc/
+         epoyXovVOV91ttJHBmVoT//cysE2kAJs/E+w8L40WS81rwt+kNI5ayAMRnJM5SDYYZlC
+         nHErbtk6dMwkWdX0oBSor4LxZ3zCJdiyPCZI+2ocykMyOerJRq2z8DuTGfJcUae5Tvba
+         OdO0W1NMjZwe/D5Qg9hYoFSDrN7UZyGS7JYMwt6yu4d4MDuJafgEA9H89/gDqAOvjUT+
+         Tb0w==
+X-Gm-Message-State: AOAM532lFUaGebOqX/wF3YslUEb7EVPTk7ERUmzMMCHkvZsIEgXBBgL1
+        RzQI8fRmZvhtfUZLm2waPkkaqMHaHLo9TOLsNwA=
+X-Google-Smtp-Source: ABdhPJyk0OiozpueLcIMLCpdph1GFde0a0IXBcDx9lCYtZP5FOhvy+APGIVDBOdPrSkJVtpSG/Fy51YApZ+mPki83X0=
+X-Received: by 2002:a05:6830:23a1:: with SMTP id m1mr2303106ots.185.1596188696574;
+ Fri, 31 Jul 2020 02:44:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <BN6PR04MB066025E2D254EF0E5383B7FCA3710@BN6PR04MB0660.namprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAKsWRmVeSWpSXmKPExsWy7djP87p/nyvHG/xrFLSYf+Qcq0X/49fM
-        FufPb2C3ONv0ht1i0+NrrBaXd81hs+jZsJXVYsb5fUwWyzb9YbJo3XuE3eLixLssDtwem1Z1
-        snlsXlLvsejmDxaPvi2rGD0+b5ILYI3isklJzcksSy3St0vgypi9g7+gm6WioW82WwPjSuYu
-        Rk4OCQETidt3XrN2MXJxCAmsYJS4dKIVyvnCKHHo4QVmCOczo8S+1sWMMC1zn/xhhEgsZ5S4
-        e+E3O4TzkVGi5f1qJpAqYYFEiQWHrzCBJEQE1jNKLJv8AcxhFmhjlJj3t4EdpIpNwFCi92gf
-        2FxeATuJf0vPs4DYLAKqEt/XXwCrERWIk9h6/CoTRI2gxMmZT8BqOAViJW5PP8wGYjMLiEvc
-        ejKfCcKWl9j+dg7Y4RIC19glPvyezgZxuIvEuVUzmSBsYYlXx7ewQ9gyEv93zmeCaGhmlOjZ
-        fZsdwpnAKHH/+AKot60l7pz7BTSJA2iFpsT6XfoQYUeJTT9PMIGEJQT4JG68FYQ4gk9i0rbp
-        zBBhXomONiGIahWJ36umQ50gJdH95D/LBEalWUhem4XknVlI3pmFsHcBI8sqRvHU0uLc9NRi
-        o7zUcr3ixNzi0rx0veT83E2MwHR1+t/xLzsYd/1JOsQowMGoxMObcEkpXog1say4MvcQowQH
-        s5IIr9PZ03FCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeY0XvYwVEkhPLEnNTk0tSC2CyTJxcEo1
-        MHapxSz1YO24qxen+DeM5WmlR/T9tytLNuxNVlLP2rPyn4XInG0rikMNDsZU9z/hq5bT9G8O
-        CqnY2sR4s23ObLeuDS5XT1718BUO2b//lbb2pDnOHl/MI0/fvdYqupvzUM7rLNcpV72XBr4S
-        Od+v4RDcd8P51DcLL6YNb+NeJvjed1Ngudx7SImlOCPRUIu5qDgRALemcUpTAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPIsWRmVeSWpSXmKPExsVy+t/xe7p/nivHG3x/YGox/8g5Vov+x6+Z
-        Lc6f38BucbbpDbvFpsfXWC0u75rDZtGzYSurxYzz+5gslm36w2TRuvcIu8XFiXdZHLg9Nq3q
-        ZPPYvKTeY9HNHywefVtWMXp83iQXwBqlZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdkYqlnaGwe
-        a2VkqqRvZ5OSmpNZllqkb5eglzF7B39BN0tFQ99stgbGlcxdjJwcEgImEnOf/GHsYuTiEBJY
-        yihx+8Q79i5GDqCElMT8FiWIGmGJP9e62CBq3jNKrNv7lgmkRlggUWL35CSQGhGB9YwSB06I
-        gdQwC7QxSkzePIkJouEOo8SpBZdYQKrYBAwleo/2MYLYvAJ2Ev+WngeLswioSnxff4EdxBYV
-        iJN43PufGaJGUOLkzCdgNZwCsRK3px9mA7GZBdQl/sy7xAxhi0vcejKfCcKWl9j+dg7zBEah
-        WUjaZyFpmYWkZRaSlgWMLKsYRVJLi3PTc4uN9IoTc4tL89L1kvNzNzECI3PbsZ9bdjB2vQs+
-        xCjAwajEw5twSSleiDWxrLgy9xCjBAezkgiv09nTcUK8KYmVValF+fFFpTmpxYcYTYGem8gs
-        JZqcD0waeSXxhqaG5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1MLUotg+pg4OKUaGDfI3Dn2
-        59Ikztnv7i66LPfyilr1mY3Tp+62nuoetFFswtkGm1nHbr5I/f/8B6vPbsHN0purz+05ZxBf
-        9DtVMe99OZ/7uurVLaffXWa2OSh0sFF84sa2A4uKPApTlU8GV6X/nekT6PZAL8KqkHO9J1eP
-        bEOErva5KpMbWtPeOP6oPHPXaOPu2MNKLMUZiYZazEXFiQDPXrZh4gIAAA==
-X-CMS-MailID: 20200731094428eucas1p1b4b54a983777de85c16bad3a1005ca65
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200730230239eucas1p2b12c39ca08601b52a54f28c228ae6441
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200730230239eucas1p2b12c39ca08601b52a54f28c228ae6441
-References: <20200730230114.8572-1-xc-racer2@live.ca>
-        <CGME20200730230239eucas1p2b12c39ca08601b52a54f28c228ae6441@eucas1p2.samsung.com>
-        <BN6PR04MB066025E2D254EF0E5383B7FCA3710@BN6PR04MB0660.namprd04.prod.outlook.com>
+References: <1596165141-28874-1-git-send-email-wanpengli@tencent.com>
+ <1596165141-28874-3-git-send-email-wanpengli@tencent.com> <ae8bf85f-00ee-c59c-e543-e0364481526c@redhat.com>
+In-Reply-To: <ae8bf85f-00ee-c59c-e543-e0364481526c@redhat.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Fri, 31 Jul 2020 17:44:45 +0800
+Message-ID: <CANRm+CzgB2G5TqcBYikq3JserkbBkNr5a9Q8Fw8E6s49TtrmvA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] KVM: SVM: Fix disable pause loop exit/pause
+ filtering capability on SVM
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.07.2020 01:01, Jonathan Bakker wrote:
-> Instead of keeping a local copy of how many sensors we've probed
-> (which may not even properly represent the number of sensors
-> probed if we have a port without a sensor), use the global
-> num_sensors counter that has the actual number used.
-> 
-> This will also make it easier to add support for multiple sensors
-> being connected to the same port.
-> 
-> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
+On Fri, 31 Jul 2020 at 15:21, Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 31/07/20 05:12, Wanpeng Li wrote:
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > 'Commit 8566ac8b8e7c ("KVM: SVM: Implement pause loop exit logic in SVM")'
+> > drops disable pause loop exit/pause filtering capability completely, I
+> > guess it is a merge fault by Radim since disable vmexits capabilities and
+> > pause loop exit for SVM patchsets are merged at the same time. This patch
+> > reintroduces the disable pause loop exit/pause filtering capability support.
+> >
+> > Reported-by: Haiwei Li <lihaiwei@tencent.com>
+> > Tested-by: Haiwei Li <lihaiwei@tencent.com>
+> > Fixes: 8566ac8b (KVM: SVM: Implement pause loop exit logic in SVM)
+> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> > ---
+> > v2 -> v3:
+> >  * simplify the condition in init_vmcb()
+> >
+> >  arch/x86/kvm/svm/svm.c | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index c0da4dd..bf77f90 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -1090,7 +1090,7 @@ static void init_vmcb(struct vcpu_svm *svm)
+> >       svm->nested.vmcb = 0;
+> >       svm->vcpu.arch.hflags = 0;
+> >
+> > -     if (pause_filter_count) {
+> > +     if (!kvm_pause_in_guest(svm->vcpu.kvm)) {
+> >               control->pause_filter_count = pause_filter_count;
+> >               if (pause_filter_thresh)
+> >                       control->pause_filter_thresh = pause_filter_thresh;
+> > @@ -2693,7 +2693,7 @@ static int pause_interception(struct vcpu_svm *svm)
+> >       struct kvm_vcpu *vcpu = &svm->vcpu;
+> >       bool in_kernel = (svm_get_cpl(vcpu) == 0);
+> >
+> > -     if (pause_filter_thresh)
+> > +     if (!kvm_pause_in_guest(vcpu->kvm))
+> >               grow_ple_window(vcpu);
+> >
+> >       kvm_vcpu_on_spin(vcpu, in_kernel);
+> > @@ -3780,7 +3780,7 @@ static void svm_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+> >
+> >  static void svm_sched_in(struct kvm_vcpu *vcpu, int cpu)
+> >  {
+> > -     if (pause_filter_thresh)
+> > +     if (!kvm_pause_in_guest(vcpu->kvm))
+> >               shrink_ple_window(vcpu);
+> >  }
+> >
+> > @@ -3958,6 +3958,9 @@ static void svm_vm_destroy(struct kvm *kvm)
+> >
+> >  static int svm_vm_init(struct kvm *kvm)
+> >  {
+> > +     if (!pause_filter_count || !pause_filter_thresh)
+> > +             kvm->arch.pause_in_guest = true;
+> > +
+> >       if (avic) {
+> >               int ret = avic_vm_init(kvm);
+> >               if (ret)
+> >
+>
+> Queued all three, thanks.  Please do send a testcase for patch 1
+> however, I only queued it in order to have it in 5.8.
 
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Thanks, will do in the next week, today is too busy. :)
+
+    Wanpeng
