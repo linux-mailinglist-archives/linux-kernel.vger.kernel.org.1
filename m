@@ -2,110 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381C1234180
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9608A23418B
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 10:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731960AbgGaIt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 04:49:26 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:45892 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728437AbgGaIt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 04:49:26 -0400
-Received: from [10.130.0.69] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT9772iNfkvECAA--.45S3;
-        Fri, 31 Jul 2020 16:49:00 +0800 (CST)
-Subject: Re: [RFC] ALSA: hda: Add workaround to adapt to Loongson 7A1000
- controller
-To:     Takashi Iwai <tiwai@suse.de>
-References: <1596163314-21808-1-git-send-email-likaige@loongson.cn>
- <s5hlfj0b3jk.wl-tiwai@suse.de>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Keyon Jie <yang.jie@linux.intel.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Mohan Kumar <mkumard@nvidia.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-From:   Kaige Li <likaige@loongson.cn>
-Message-ID: <15648946-3b87-69db-914c-354dce1abcac@loongson.cn>
-Date:   Fri, 31 Jul 2020 16:48:59 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1731943AbgGaIvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 04:51:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728412AbgGaIve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 04:51:34 -0400
+Received: from linux-8ccs (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E20220829;
+        Fri, 31 Jul 2020 08:51:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596185493;
+        bh=W3HZW84Ix2MkhDjlv5CUIFUZ5sFHn0QPUE9KC2in2aw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RCUIvmbpt+boXvQcDvfeh/kMJGZBBCu2UPBqxq/7LxsrE0SCQV8WIYyYDT1/cxUXS
+         86Iv8aEbxYxrqLSh8xlbbW8YcFX0kNre2wH8i8LbM60TUfo3imWprglIDVE81Q3NBK
+         J+8AMvkNHfTEb2rCAkFKALfV80/GWYR6SBKv04HQ=
+Date:   Fri, 31 Jul 2020 10:51:30 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 8/8] modules: inherit TAINT_PROPRIETARY_MODULE
+Message-ID: <20200731085129.GA20130@linux-8ccs>
+References: <20200730061027.29472-1-hch@lst.de>
+ <20200730061027.29472-9-hch@lst.de>
+ <20200730141232.GA31539@linux-8ccs>
+ <20200730162957.GA22469@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <s5hlfj0b3jk.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9DxT9772iNfkvECAA--.45S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFW7Kr1DXw47JFW5CF4xCrg_yoW8XF1UpF
-        n3CayUCF4Dtr1jkFsru3y5KayFg3yfGF45KryFvw1DAw1qk343X3WvvrWjkF9Y9wsY9r4Y
-        kFy7ta4kGFW5ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr4
-        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
-        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
-        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
-        wI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUmYL9UUUUU=
-X-CM-SenderInfo: 5olntxtjh6z05rqj20fqof0/
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200730162957.GA22469@lst.de>
+X-OS:   Linux linux-8ccs 5.5.0-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/31/2020 02:29 PM, Takashi Iwai wrote:
-
-> On Fri, 31 Jul 2020 04:41:54 +0200,
-> Kaige Li wrote:
->> There's some issues that cause palyback without a sound on Loongson
->> platform (3A3000 + 7A1000) with a Realtek ALC269 codec. After lengthy
->> debugging sessions, we solved it by adding workaround.
++++ Christoph Hellwig [30/07/20 18:29 +0200]:
+>On Thu, Jul 30, 2020 at 04:12:32PM +0200, Jessica Yu wrote:
+>>> +	if (owner && test_bit(TAINT_PROPRIETARY_MODULE, &owner->taints)) {
+>>> +		if (mod->using_gplonly_symbols) {
+>>> +			sym = NULL;
+>>> +			goto getname;
+>>> +		}
+>>> +		add_taint_module(mod, TAINT_PROPRIETARY_MODULE,
+>>> +				 LOCKDEP_NOW_UNRELIABLE);
+>>> +	}
 >>
->> Signed-off-by: Kaige Li <likaige@loongson.cn>
-> Thanks for the patch.  But this can't be taken as is due to the design
-> problem.  Namely...
+>> Sorry that I didn't think of this yesterday, but I'm wondering if we
+>> should print a warning before add_taint_module(). Maybe something
+>> along the lines of, "%s: module uses symbols from proprietary module
+>> %s, inheriting taint.", with %s being mod->name, owner->name. We can
+>> check mod->taints for TAINT_PROPRIETARY_MODULE and print the warning once.
+>>
+>> Additionally, maybe it's a good idea to print an error before goto
+>> getname (e.g., "%s: module using GPL-only symbols uses symbols from
+>> proprietary module %s."), so one would know why the module load
+>> failed, right now this manifests itself as an unknown symbol error.
+>>
+>> Otherwise, this patchset looks good to me and I agree with it in
+>> principle. Thanks Christoph!
 >
->> --- a/sound/hda/hdac_controller.c
->> +++ b/sound/hda/hdac_controller.c
->> @@ -9,6 +9,7 @@
->>   #include <sound/core.h>
->>   #include <sound/hdaudio.h>
->>   #include <sound/hda_register.h>
->> +#include "../pci/hda/hda_controller.h"
-> ... here already suspicious, and ...
->
->>   #include "local.h"
->>   
->>   /* clear CORB read pointer properly */
->> @@ -42,6 +43,8 @@ static void azx_clear_corbrp(struct hdac_bus *bus)
->>    */
->>   void snd_hdac_bus_init_cmd_io(struct hdac_bus *bus)
->>   {
->> +	struct azx *chip = bus_to_azx(bus);
-> ... here you cast the hdac_bus object to its child class.  This is
-> disallowed, as it's a layer violation and would break if another child
-> class like ASoC driver is used with this patch.
->
-> IOW, inside the code in sound/hda/*, you must not use the contents in
-> sound/pci/hda/* and include/sound/hda_codec.h.
->
-> If any new workaround is needed, introduce a new flag in struct
-> hdac_bus.
+>What about this version?  It also factors the code out into a new
+>helper, and replaces the add_taint_module with a simple set_bit,
+>as the system-wide tain must have been set before by definition:
 
-Thank you for your reply and suggestions. I will review it, and see how 
-hdac_bus works.
+Yep, this version looks much better. See below for nits.
+
+>---
+>From 25e928b6b691911717d30b3449e56fca3e13dba9 Mon Sep 17 00:00:00 2001
+>From: Christoph Hellwig <hch@lst.de>
+>Date: Tue, 28 Jul 2020 23:33:33 +0200
+>Subject: modules: inherit TAINT_PROPRIETARY_MODULE
+>
+>If a TAINT_PROPRIETARY_MODULE exports symbol, inherit the taint flag
+>for all modules importing these symbols, and don't allow loading
+>symbols from TAINT_PROPRIETARY_MODULE modules if the module previously
+>imported gplonly symbols.  Add a anti-circumvention devices so people
+>don't accidentally get themselves into trouble this way.
+>
+>Comment from Greg:
+>  "Ah, the proven-to-be-illegal "GPL Condom" defense :)"
+>
+>Signed-off-by: Christoph Hellwig <hch@lst.de>
+>Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>---
+> include/linux/module.h |  1 +
+> kernel/module.c        | 26 ++++++++++++++++++++++++++
+> 2 files changed, 27 insertions(+)
+>
+>diff --git a/include/linux/module.h b/include/linux/module.h
+>index 30b0f5fcdb3c37..e30ed5fa33a738 100644
+>--- a/include/linux/module.h
+>+++ b/include/linux/module.h
+>@@ -389,6 +389,7 @@ struct module {
+> 	unsigned int num_gpl_syms;
+> 	const struct kernel_symbol *gpl_syms;
+> 	const s32 *gpl_crcs;
+>+	bool using_gplonly_symbols;
+>
+> #ifdef CONFIG_UNUSED_SYMBOLS
+> 	/* unused exported symbols. */
+>diff --git a/kernel/module.c b/kernel/module.c
+>index afb2bfdd5134b3..81d5facce28c14 100644
+>--- a/kernel/module.c
+>+++ b/kernel/module.c
+>@@ -1431,6 +1431,24 @@ static int verify_namespace_is_imported(const struct load_info *info,
+> 	return 0;
+> }
+>
+>+static bool inherit_taint(struct module *mod, struct module *owner)
+>+{
+>+	if (!owner || !test_bit(TAINT_PROPRIETARY_MODULE, &owner->taints))
+>+		return true;
+>+
+>+	if (mod->using_gplonly_symbols) {
+>+		pr_info("%s: module using GPL-only symbols uses symbols from proprietary module %s.\n",
+>+			mod->name, owner->name);
+
+pr_err() maybe?
+
+>+		return false;
+>+	}
+>+
+>+	if (!test_bit(TAINT_PROPRIETARY_MODULE, &mod->taints)) {
+>+		pr_info("%s: module uses symbols from proprietary module %s, inheriting taint.\n",
+>+			mod->name, owner->name);
+
+and pr_warn()? But otherwise this looks much better.
 
 Thanks,
-Kaige
-> thanks,
->
-> Takashi
 
+Jessica
