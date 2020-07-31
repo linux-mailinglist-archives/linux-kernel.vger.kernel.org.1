@@ -2,123 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480F0233F9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 09:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEB2233F8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 08:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731562AbgGaG7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 02:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        id S1731586AbgGaG7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 02:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731545AbgGaG7q (ORCPT
+        with ESMTP id S1731566AbgGaG7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 02:59:46 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED95C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 23:59:45 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id r197so2219478vkf.13
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Jul 2020 23:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1Dzb4qikGnC7PJc3yHKTz13us3kdcfG1rOFTmBMSQwo=;
-        b=Db2WsUckgXvkpgsukQSgRbIsZRyOiXhG1OVbXKRN6hIiui1861e4zH+ggX4jEwHPYF
-         pgoAXPIpvfAzJMRJKP6I40Q9K57Qy3Dium732+ysCRaRsFi2BlHIL8gkvvA0EEh8sQ2f
-         LXpKGuKYosVTw1N3Wxkw1kWP2nvyPFGmDMNAzIEsxfaGRFwsEVvAmU1vS2lHlprw29CC
-         hKg2H7ZRwoRpCVQ/dvIXsKFYwhc/ozuGtWcizhaXRctAzBijm6v80RKksTXWCOlUdAlS
-         lhvwVHyOABtVAdYK/CvtmV5dYzQINqOP9fbA3EuOgEP7ywoqx+IE8hQBoU+y5iy2Ocxt
-         ELYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1Dzb4qikGnC7PJc3yHKTz13us3kdcfG1rOFTmBMSQwo=;
-        b=Yw4RpeyAC9K14shoG4CKPNidkEFU7Uy4a7VQMMG8ub5tav6E80k04icVvcRD1KMpFu
-         1vaBsQuQ9rQdaGPRiGc1YCetbGbMBQ0cexPj91BAZZcP8WsWlzpctHlcbHq5xoSW09/n
-         1nlN5qPvQMpIfl6EQQr6o1pajzzRvlRp0yFAJgCNNdFhOZLIRcxmoPfFFzzUw0SfiPaX
-         TUuoK/WuKkrOzjgu0G9mjciOZA0lg7fT8s/ndhCq3sbZ9sFpoDA3U/FrNnR0iWDLH3DV
-         NKG30QYB+I1TC4DuFhTJ5pcR9sMcCViOMKsk5TCekQedE2H2GD9KWQFmZqQjTaIxHqe/
-         PwYg==
-X-Gm-Message-State: AOAM532v66ahqZ0+nf//cmdooB0OaLhoXnEunYK0EisWWb4eG3SBK8Mv
-        0hQnVzLMqCo4t7oNUQ1tjPpm/MD+pp0LNlq5fT1/Pg==
-X-Google-Smtp-Source: ABdhPJz4xTSNBFzKm8MK/dWshaCLtJsQmyXj9v/1SQl7ouSkIU3MSRKmN2e3pzeqtSiN8SoMdvp33CGLgFgV3pEO9aU=
-X-Received: by 2002:a1f:de81:: with SMTP id v123mr1704997vkg.92.1596178784465;
- Thu, 30 Jul 2020 23:59:44 -0700 (PDT)
+        Fri, 31 Jul 2020 02:59:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692FDC061574;
+        Thu, 30 Jul 2020 23:59:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lDee4pOFLZSB3nuhpAPdiW8K8t8auXkIPj1PU+i4wwU=; b=BRwdExN41fb4azXzQCAyPVCd3Z
+        VH/lhXhua5z5h8iRo7NB5hzFaL8GkfpxDJX8e7kBGZI0c4W80SeT6UG5xRoyUB2ofgf15DjlNmuCL
+        NbwvefmyLXujmYfQabvNDUuR1H3J4DQmaasi32XE6oBdXI9wNe4vDytUMTT1d73RN+QrSZftXoBuT
+        xMEssx6G8IhE3ekT+rTcModhFaKbea8yO7PKeShsvFsObvlf0/V+sWFaN5a2nEFZCYT27M54QJhYV
+        y/5RuM2Oj0rm1M2POeu8DmIfmil1gwC3ErIib1qwZNLE6dK4HUBl4V9bMpsUIJY+l2oKjr+MhJEam
+        7L61Kckw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k1P14-0007p7-31; Fri, 31 Jul 2020 06:59:42 +0000
+Date:   Fri, 31 Jul 2020 07:59:41 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Yu Kuai <yukuai3@huawei.com>, hch@infradead.org,
+        darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [RFC PATCH] iomap: add support to track dirty state of sub pages
+Message-ID: <20200731065941.GD25674@infradead.org>
+References: <20200730011901.2840886-1-yukuai3@huawei.com>
+ <20200730031934.GA23808@casper.infradead.org>
 MIME-Version: 1.0
-References: <20200730072531.3171984-1-badhri@google.com> <20200730123431.GO883641@kuha.fi.intel.com>
- <33bec771-7255-517f-fb5f-9c4e7320837d@roeck-us.net>
-In-Reply-To: <33bec771-7255-517f-fb5f-9c4e7320837d@roeck-us.net>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Thu, 30 Jul 2020 23:59:08 -0700
-Message-ID: <CAPTae5L8UGUqCg4h6BuGRk7_OH1HkXmoirACqzGKRhJfj6ZuHA@mail.gmail.com>
-Subject: Re: [PATCH v4] usb: typec: tcpm: Migrate workqueue to RT priority for
- processing events
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200730031934.GA23808@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for catching that !!
+On Thu, Jul 30, 2020 at 04:19:34AM +0100, Matthew Wilcox wrote:
+> On Thu, Jul 30, 2020 at 09:19:01AM +0800, Yu Kuai wrote:
+> > +++ b/fs/iomap/buffered-io.c
+> > @@ -29,7 +29,9 @@ struct iomap_page {
+> >  	atomic_t		read_count;
+> >  	atomic_t		write_count;
+> >  	spinlock_t		uptodate_lock;
+> > +	spinlock_t		dirty_lock;
+> 
+> No need for a separate spinlock.  Just rename uptodate_lock.  Maybe
+> 'bitmap_lock'.
 
-On Thu, Jul 30, 2020 at 9:05 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 7/30/20 5:34 AM, Heikki Krogerus wrote:
-> > Hi,
-> >
-> > One more nitpick below...
-> >
-> > On Thu, Jul 30, 2020 at 12:25:31AM -0700, Badhri Jagan Sridharan wrote:
-> >> @@ -4786,10 +4807,28 @@ static int devm_tcpm_psy_register(struct tcpm_port *port)
-> >>      return PTR_ERR_OR_ZERO(port->psy);
-> >>  }
-> >>
-> >> +static enum hrtimer_restart state_machine_timer_handler(struct hrtimer *timer)
-> >> +{
-> >> +    struct tcpm_port *port = container_of(timer, struct tcpm_port, state_machine_timer);
-> >> +
-> >> +    kthread_queue_work(port->wq, &port->state_machine);
-> >> +    return HRTIMER_NORESTART;
-> >> +}
-> >> +
-> >> +static enum hrtimer_restart vdm_state_machine_timer_handler(struct hrtimer *timer)
-> >> +{
-> >> +    struct tcpm_port *port = container_of(timer, struct tcpm_port, vdm_state_machine_timer);
-> >> +
-> >> +    kthread_queue_work(port->wq, &port->vdm_state_machine);
-> >> +    return HRTIMER_NORESTART;
-> >> +}
-> >> +
-> >>  struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
-> >>  {
-> >>      struct tcpm_port *port;
-> >>      int err;
-> >> +    /* Priority just lower than default irq thread priority */
-> >> +    struct sched_param param = {.sched_priority = (MAX_USER_RT_PRIO / 2) + 1,};
-> >
-> > Move that outside the function and constify it:
-> >
->
-> Good catch. With this change applied:
->
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
->
-> >         static const struct sched_param param {
-> >                 .shed_priority = (MAX_USER_RT_PRIO / 2) + 1,
->
-> Caution: s/shed/sched/
->
-> >         };
-> >
-> >>      if (!dev || !tcpc ||
-> >>          !tcpc->get_vbus || !tcpc->set_cc || !tcpc->get_cc ||
-> >
-> > thanks,
-> >
->
+Agreed.
+
+> 
+> >  	DECLARE_BITMAP(uptodate, PAGE_SIZE / 512);
+> > +	DECLARE_BITMAP(dirty, PAGE_SIZE / 512);
+> 
+> This is inefficient and poses difficulties for the THP patchset.
+> Maybe let the discussion on removing the ->uptodate array finish
+> before posting another patch for review?
+
+I really don't think we can kill the uptodate bit.   But what we can
+do is have on bitmap array (flex size as in your prep patches) and just
+alternating bits for uptodate and dirty.
