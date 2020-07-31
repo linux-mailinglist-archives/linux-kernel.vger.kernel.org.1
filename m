@@ -2,149 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56286234817
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 16:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B0423481D
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 17:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729622AbgGaO7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 10:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728713AbgGaO7H (ORCPT
+        id S1731428AbgGaPAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 11:00:18 -0400
+Received: from www62.your-server.de ([213.133.104.62]:52184 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728713AbgGaPAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 10:59:07 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CB6C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 07:59:07 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id u24so17055432oiv.7
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 07:59:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=HT0VjPF40Ntd8YWFXRJUxrumgrtjSgN7H3boxsBygfs=;
-        b=LZe66L7qtKUkrlivnJ9bVitlCJU96riM+uLHmUsBpa4vdY+2GPu4MeqdyfZoXADcRl
-         a/SYozykGxYANMZA52S/d5hqDLPYaPxGyazE+UHdeuqzFHmpE/XLk1mKXrT0rELzsLE3
-         CIHQtHgN2hq006n9prpsjRIFa7q/0lpwG4EbJeikpd47ILRijj07kw5jtpmduiqRKo9D
-         EJCu2Hzm+T7jhYZT4MRoJoiUAvr6h0b7N5XsMBwrD6odxy6rj4Y42hUWTecwkhwaPC0d
-         j0C6yBGqh3M74J2kxJPPrnGqF0iRXnm4E64p4ArqnmIewy0yYXpH2kfqzui+EkHmtytg
-         Pq3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=HT0VjPF40Ntd8YWFXRJUxrumgrtjSgN7H3boxsBygfs=;
-        b=eoXSuumaBHG4KEq/mI3I+iPYTg3nq8uc1KkmeGWuoCCiKJ55XcPQaNV3JJCNT0PqFY
-         nUioZoMsDb9rubCJ9R1GIXvvCmQNt8WBCxiNy7mhPTHQ1jV3IZgxwIcypNQv3LlNbXkl
-         hNvcg1K8UjLiL4NjROrYWCwCiBUYdWhx8c0Bu/dHleS7hyeivOk8pIUK73xPoYVFfmFT
-         WaIqE4vFJLtIaUL4J1cVqDz///x/lpU0sO+owSAD9+Kke+cotfqI/wBMXgQFwPSz4q8L
-         EfKutX9c2KWKcCe8xgf9WEq5QHJF5Nq8O5vaZr2/LL/QmZX95xZpkGh8etQ0FS8/+vuo
-         LaQA==
-X-Gm-Message-State: AOAM531yLleTBncTQ8lVhpLY/dR13OPwphEWuFb0rBW39WTZ0Z+mIDvD
-        yVDQKQA56M7WPA6+k2efwLBWr9rv4r3CWTWYyc4=
-X-Google-Smtp-Source: ABdhPJzrV0t++E3bPTqL8ZiTW2PcgYIGkjB+rAt5d/1kruY8j0dPhwd6n1PrIErxy3RJdMCO7XWSeBxhkVed1hyiuiQ=
-X-Received: by 2002:a05:6808:311:: with SMTP id i17mr3409866oie.72.1596207547007;
- Fri, 31 Jul 2020 07:59:07 -0700 (PDT)
+        Fri, 31 Jul 2020 11:00:17 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k1WVy-0003JH-BO; Fri, 31 Jul 2020 17:00:06 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k1WVy-000JZ6-47; Fri, 31 Jul 2020 17:00:06 +0200
+Subject: Re: [PATCH bpf-next] bpf: fix compilation warning of selftests
+To:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org, yhs@fb.com,
+        Song.Zhu@arm.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20200731061600.18344-1-Jianlin.Lv@arm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6f852dcb-abfc-78f8-69b8-3a5b83606793@iogearbox.net>
+Date:   Fri, 31 Jul 2020 17:00:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200714023836.2310569-1-nivedita@alum.mit.edu>
- <20200715004133.1430068-1-nivedita@alum.mit.edu> <20200717134654.GA3187880@rani.riverdale.lan>
- <CAKwvOdnTbatx8VB-rJSzyFPwfYnkMYK28yLBn1G+hUu8dyfYRA@mail.gmail.com>
- <CAMj1kXGeSFXnuO7Y94pyBU9qfSgtsLvMoCZSfDk476BBs2ejcw@mail.gmail.com>
- <202007241624.D59FB48@keescook> <20200731145352.GA2076085@rani.riverdale.lan>
-In-Reply-To: <20200731145352.GA2076085@rani.riverdale.lan>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 31 Jul 2020 16:58:55 +0200
-Message-ID: <CA+icZUV2=hj=+9DtbH47wtdE=GM5AZjS1xTgH7PKE+NxsRa2jw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/7] x86/boot: Remove run-time relocations from
- compressed kernel
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200731061600.18344-1-Jianlin.Lv@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25889/Thu Jul 30 17:03:53 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 4:53 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> On Fri, Jul 24, 2020 at 04:25:20PM -0700, Kees Cook wrote:
-> > On Sat, Jul 18, 2020 at 08:44:50AM +0300, Ard Biesheuvel wrote:
-> > > On Fri, 17 Jul 2020 at 21:17, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > > >
-> > > > On Fri, Jul 17, 2020 at 6:46 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> > > > >
-> > > > > On Tue, Jul 14, 2020 at 08:41:26PM -0400, Arvind Sankar wrote:
-> > > > > > The compressed kernel currently contains bogus run-time relocations in
-> > > > > > the startup code in head_{32,64}.S, which are generated by the linker,
-> > > > > > but must not actually be processed at run-time.
-> > > > > >
-> > > > > > This generates warnings when linking with the BFD linker, and errors
-> > > > > > with LLD, which defaults to erroring on run-time relocations in read-only
-> > > > > > sections. It also requires the -z noreloc-overflow hack for the 64-bit
-> > > > > > kernel, which prevents us from linking it as -pie on an older BFD linker
-> > > > > > (<= 2.26) or on LLD, because the locations that are to be apparently
-> > > > > > relocated are only 32-bits in size and so cannot really have
-> > > > > > R_X86_64_RELATIVE relocations.
-> > > > > >
-> > > > > > This series aims to get rid of these relocations. I've build- and
-> > > > > > boot-tested with combinations of clang/gcc-10 with lld/bfd-2.34, and
-> > > > > > gcc-4.9.0 with bfd-2.24, skipping clang on 32-bit because it currently
-> > > > > > has other issues [0].
-> > > > > >
-> > > > >
-> > > > > Hi Thomas, Ingo, Borislav, would you be able to take a look over this
-> > > > > series in time for 5.9?
-> > > >
-> > > > Hi Arvind, thanks for the series; I'm behind on testing.  When I try
-> > > > to apply this series on top of linux-next, I get a collision in
-> > > > drivers/firmware/efi/libstub/Makefile:27 when applying "0002
-> > > > x86/boot/compressed: Force hidden visibility for all symbol
-> > > > references". Would you mind refreshing the series to avoid that
-> > > > collision?
-> > >
-> > > That is not the right way to deal with conflicts against -next.
-> > >
-> > > This series targets the -tip tree, and applies fine against it. If you
-> > > want to apply it on some other tree and test it, that is fine, and
-> > > highly appreciated, but 'refreshing' the series against -next means it
-> > > no longer applies to -tip, and may be based on unidentified conflict
-> > > resolutions performed by Stephen that the maintainers will have to
-> > > deal with.
-> > >
-> > > Boris, Ingo, Thomas,
-> > >
-> > > Mind taking v5 of this series? (With Nick's Tested-by) I think these
-> > > patches have been simmering long enough. Do note there is a conflict
-> > > against the kbuild tree, but the resolution should be straightforward.
-> >
-> > I would love that; I need to rebase my orphan series on this too...
-> >
-> > --
-> > Kees Cook
->
-> Ping?
+On 7/31/20 8:16 AM, Jianlin Lv wrote:
+> Clang compiler version: 12.0.0
+> The following warning appears during the selftests/bpf compilation:
+> 
+> prog_tests/send_signal.c:51:3: warning: ignoring return value of ‘write’,
+> declared with attribute warn_unused_result [-Wunused-result]
+>     51 |   write(pipe_c2p[1], buf, 1);
+>        |   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> prog_tests/send_signal.c:54:3: warning: ignoring return value of ‘read’,
+> declared with attribute warn_unused_result [-Wunused-result]
+>     54 |   read(pipe_p2c[0], buf, 1);
+>        |   ^~~~~~~~~~~~~~~~~~~~~~~~~
+> ......
+> 
+> prog_tests/stacktrace_build_id_nmi.c:13:2: warning: ignoring return value
+> of ‘fscanf’,declared with attribute warn_unused_result [-Wunused-resul]
+>     13 |  fscanf(f, "%llu", &sample_freq);
+>        |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> test_tcpnotify_user.c:133:2: warning:ignoring return value of ‘system’,
+> declared with attribute warn_unused_result [-Wunused-result]
+>    133 |  system(test_script);
+>        |  ^~~~~~~~~~~~~~~~~~~
+> test_tcpnotify_user.c:138:2: warning:ignoring return value of ‘system’,
+> declared with attribute warn_unused_result [-Wunused-result]
+>    138 |  system(test_script);
+>        |  ^~~~~~~~~~~~~~~~~~~
+> test_tcpnotify_user.c:143:2: warning:ignoring return value of ‘system’,
+> declared with attribute warn_unused_result [-Wunused-result]
+>    143 |  system(test_script);
+>        |  ^~~~~~~~~~~~~~~~~~~
+> 
+> Add code that fix compilation warning about ignoring return value and
+> handles any errors; Check return value of library`s API make the code
+> more secure.
+> 
+> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
 
-I just tested v5 against Linux v5.8-rc7 and the conflict you mention is with:
+Looks good overall, there is one small bug that slipped in, see below:
 
-commit da05b143a308bd6a7a444401f9732678ae63fc70
-x86/boot: Don't add the EFI stub to targets
+[...]
+> diff --git a/tools/testing/selftests/bpf/test_tcpnotify_user.c b/tools/testing/selftests/bpf/test_tcpnotify_user.c
+> index f9765ddf0761..869e28c92d73 100644
+> --- a/tools/testing/selftests/bpf/test_tcpnotify_user.c
+> +++ b/tools/testing/selftests/bpf/test_tcpnotify_user.c
+> @@ -130,17 +130,26 @@ int main(int argc, char **argv)
+>   	sprintf(test_script,
+>   		"iptables -A INPUT -p tcp --dport %d -j DROP",
+>   		TESTPORT);
+> -	system(test_script);
+> +	if (system(test_script)) {
+> +		printf("FAILED: execute command: %s\n", test_script);
+> +		goto err;
+> +	}
+>   
+>   	sprintf(test_script,
+>   		"nc 127.0.0.1 %d < /etc/passwd > /dev/null 2>&1 ",
+>   		TESTPORT);
+> -	system(test_script);
+> +	if (system(test_script)) {
+> +		printf("FAILED: execute command: %s\n", test_script);
+> +		goto err;
+> +	}
 
-If I forgot...
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Did you try to run this test case? With the patch here it will fail:
 
-- Sedat -
+   # ./test_tcpnotify_user
+   FAILED: execute command: nc 127.0.0.1 12877 < /etc/passwd > /dev/null 2>&1
+
+This is because nc returns 1 as exit code and for the test it is actually expected
+to fail given the iptables rule we installed for TESTPORT right above and remove
+again below.
+
+Please adapt this and send a v2, thanks!
+
+>   	sprintf(test_script,
+>   		"iptables -D INPUT -p tcp --dport %d -j DROP",
+>   		TESTPORT);
+> -	system(test_script);
+> +	if (system(test_script)) {
+> +		printf("FAILED: execute command: %s\n", test_script);
+> +		goto err;
+> +	}
+>   
+>   	rv = bpf_map_lookup_elem(bpf_map__fd(global_map), &key, &g);
+>   	if (rv != 0) {
+> 
+
