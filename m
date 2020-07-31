@@ -2,114 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FE8234492
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 13:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AA72344AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 13:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732701AbgGaLcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 07:32:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:55506 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732104AbgGaLcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 07:32:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F6951FB;
-        Fri, 31 Jul 2020 04:32:11 -0700 (PDT)
-Received: from [10.37.12.83] (unknown [10.37.12.83])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33C213F71F;
-        Fri, 31 Jul 2020 04:32:09 -0700 (PDT)
-Subject: Re: [RFC PATCH 03/14] coresight: tpiu: Use coresight device access
- abstraction
-To:     mathieu.poirier@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mike.leach@linaro.org, coresight@lists.linaro.org
-References: <20200722172040.1299289-1-suzuki.poulose@arm.com>
- <20200722172040.1299289-4-suzuki.poulose@arm.com>
- <20200729210105.GC3073178@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <02f28b5f-d3d6-755f-066d-88b90aa35eef@arm.com>
-Date:   Fri, 31 Jul 2020 12:36:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1732725AbgGaLjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 07:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732297AbgGaLjF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 07:39:05 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272D4C061574;
+        Fri, 31 Jul 2020 04:39:05 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id x9so32131332ljc.5;
+        Fri, 31 Jul 2020 04:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=e83eJTcVv/UaeyPlCsr6UUJefX33U2iVn2MgdxsKQTQ=;
+        b=X9V6zA56PqyXwOT0CNOco7VPG50Pkbt7KmbI/ojIgjq+CFYp9qHMCY6bdOTnK3x3QR
+         OE+41YFe8nwh73tpj+YDYVwNBrRap4JePkrUOhKd4jaWk7wSnBWCl7732Jd7H6DaGbnw
+         zYZznHVkJ+wzuPxNavlP1QnUHUl4L/5CnblTm0LKK4baDeLDU7iO0MvH1d5WF49frrNV
+         4s4Z7gSD9t/AK5UjBUcXCUQgwkHXsFpS5YxHjXRkueVpGgFZ19L24ENrdnL2MpZ35z0i
+         bEruw/yDZ7CttkXNOu5ZFif5fmKXTFCMfyO8/YF8ZucVV6ESxnHc5KUMmUtQPSQdUUY2
+         v06A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e83eJTcVv/UaeyPlCsr6UUJefX33U2iVn2MgdxsKQTQ=;
+        b=ej8bhhUdAkEttZUthgtmpb7y7Ex3JCulFPgGQkAJ8paI9kH47mZJIhl0AwJiyOEeuc
+         1HhhJSRxoKT78T6IgcTop0IQeXeJ2+4fu1KihOh9+GxFxnSVW5bRLAfXFVrcLzFurR68
+         AesxLWVL1aMSREzbRMfRaux4SKlulISWSntT4UqIu+ueuT4VXMGuRxpqdMH1ktSmIjfF
+         IC9EF/bh2VvyklGE5kTEmK7CqpNMVy9aBIS41FuB3fnTXLtqyLca+4rWq+xZJYddGdQT
+         NLyXzUqO9jFuTFUL52fqzrhcbWfMrYBf2ag5lJrI8l6VlmmiLwM5GWAtPjbiGXy/KChi
+         S/aA==
+X-Gm-Message-State: AOAM5337xIupLhJ+CJNo/dnKdOtmHk2O+bsHOERXXJQOLbuZrdNsdEwT
+        lswJLbhag41NN5CDcIBqVxAWFztQ
+X-Google-Smtp-Source: ABdhPJyGjMx9FtTEpEohXiAFoq57WavNYhs3eJc0pNbnjhC7LxeGw815xYO7ZEtnLAVlZoq41lXvWQ==
+X-Received: by 2002:a2e:991:: with SMTP id 139mr1647045ljj.314.1596195543293;
+        Fri, 31 Jul 2020 04:39:03 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
+        by smtp.googlemail.com with ESMTPSA id k12sm1870240lfe.68.2020.07.31.04.39.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 31 Jul 2020 04:39:02 -0700 (PDT)
+Subject: Re: [RFC PATCH v6 09/10] media: tegra-video: Add CSI MIPI pads
+ calibration
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, sakari.ailus@iki.fi, robh+dt@kernel.org,
+        helen.koike@collabora.com
+Cc:     sboyd@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+References: <1596186169-18729-1-git-send-email-skomatineni@nvidia.com>
+ <1596186169-18729-10-git-send-email-skomatineni@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <3ac158c4-7df7-e3c1-f0e1-33e7ef017762@gmail.com>
+Date:   Fri, 31 Jul 2020 14:39:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200729210105.GC3073178@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1596186169-18729-10-git-send-email-skomatineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/29/2020 10:01 PM, Mathieu Poirier wrote:
-> On Wed, Jul 22, 2020 at 06:20:29PM +0100, Suzuki K Poulose wrote:
->> TPIU driver access the device before the coresight device
->> is registered. In other words, before the drvdata->csdev
->> is valid. Thus, we need to make sure that the csdev_access
->> is valid for both the invocations. Switch to using the
->> csdev_access directly instead of relying on availability
->> of drvdata->csdev.
+31.07.2020 12:02, Sowjanya Komatineni пишет:
+...
+> @@ -249,13 +249,47 @@ static int tegra_csi_enable_stream(struct v4l2_subdev *subdev)
+>  		return ret;
+>  	}
+>  
+> +	if (csi_chan->mipi) {
+> +		ret = tegra_mipi_enable(csi_chan->mipi);
+> +		if (ret < 0) {
+> +			dev_err(csi->dev,
+> +				"failed to enable MIPI pads: %d\n", ret);
+> +			goto rpm_put;
+> +		}
+> +
+> +		/*
+> +		 * CSI MIPI pads PULLUP, PULLDN and TERM impedances need to
+> +		 * be calibrated after power on.
+> +		 * So, trigger the calibration start here and results will
+> +		 * be latched and applied to the pads when link is in LP11
+> +		 * state during start of sensor streaming.
+> +		 */
+> +		ret = tegra_mipi_start_calibration(csi_chan->mipi);
+> +		if (ret < 0) {
+> +			dev_err(csi->dev,
+> +				"failed to start MIPI calibration: %d\n", ret);
+> +			goto disable_mipi;
+> +		}
+
+What would happen if CSI stream is enabled and then immediately disabled
+without enabling camera sensor?
+
+> +	}
+> +
+...
+>  static int tegra_channel_enable_stream(struct tegra_vi_channel *chan)
+>  {
+>  	struct v4l2_subdev *csi_subdev, *src_subdev;
+> +	struct tegra_csi_channel *csi_chan;
+>  	int ret;
+>  
+>  	/*
+> @@ -206,13 +207,30 @@ static int tegra_channel_enable_stream(struct tegra_vi_channel *chan)
+>  	if (IS_ENABLED(CONFIG_VIDEO_TEGRA_TPG))
+>  		return 0;
+>  
+> +	csi_chan = v4l2_get_subdevdata(csi_subdev);
+> +	/*
+> +	 * TRM has incorrectly documented to wait for done status from
+> +	 * calibration logic after CSI interface power on.
+> +	 * As per the design, calibration results are latched and applied
+> +	 * to the pads only when the link is in LP11 state which will happen
+> +	 * during the sensor stream-on.
+> +	 * CSI subdev stream-on triggers start of MIPI pads calibration.
+> +	 * Wait for calibration to finish here after sensor subdev stream-on
+> +	 * and in case of sensor stream-on failure, cancel the calibration.
+> +	 */
+>  	src_subdev = tegra_channel_get_remote_source_subdev(chan);
+
+Is it possible to move the start_calibration() here?
+
+>  	ret = v4l2_subdev_call(src_subdev, video, s_stream, true);
+>  	if (ret < 0 && ret != -ENOIOCTLCMD) {
+> +		tegra_mipi_cancel_calibration(csi_chan->mipi);
+>  		v4l2_subdev_call(csi_subdev, video, s_stream, false);
+>  		return ret;
+>  	}
+>  
+> +	ret = tegra_mipi_finish_calibration(csi_chan->mipi);
+> +	if (ret < 0)
+> +		dev_warn(csi_chan->csi->dev,
+> +			 "MIPI calibration failed: %d\n", ret);
+> +
+>  	return 0;
+>  }
+>  
 > 
-> I'm not sure all of the above is needed and based on the wording I could easily
-> see this patch being selected for stable backport, which would be a mistak.
-> 
-> The gist of this patch is that we are moving to the access abstraction and the
-> changelog should reflect that.
-
-True, I will make it something like :
-
-"Prepare the TPIU driver to make use of the CoreSight device access
-abstraction layer. The driver touches the device even before the
-coresight device is registered. Thus we could be accessing the
-devices without a csdev. As we are about to use the abstraction
-layer for accessing the device, pass in the access directly
-to avoid having to deal with the un-initialised csdev.
-
-
->>   
->>   static int tpiu_disable(struct coresight_device *csdev)
->>   {
->> -	struct tpiu_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
->> -
->>   	if (atomic_dec_return(csdev->refcnt))
->>   		return -EBUSY;
->>   
->> -	tpiu_disable_hw(drvdata);
->> +	tpiu_disable_hw(&csdev->access);
->>   
->>   	dev_dbg(&csdev->dev, "TPIU disabled\n");
->>   	return 0;
->> @@ -152,7 +148,7 @@ static int tpiu_probe(struct amba_device *adev, const struct amba_id *id)
->>   	desc.access.base = base;
-> 
-> Any reason for introducing the above in patch 02?  I would have done that as
-> part of this patch...  Also part of this patch I would remove drvdata::base
-> since it is no longer needed.
-
-The patch 02 is not touching how the individual drivers access the
-device, yet. It only sets the way by introducing the layer. As per
-the proposed change, this is a preparation of the TPIU driver, so
-that we can convert the generic helper functions ( coresight_timeout())
-more easily and keep the patch 05 easier for review (just like the Patch
-4, which prepares the ETM driver).
-
-Cheers
-Suzuki
-
-
-> 
-> I'm out of time for today - I will continue tomorrow.
-> 
-> Regards,
-> Mathieu
-> 
->>   
->>   	/* Disable tpiu to support older devices */
->> -	tpiu_disable_hw(drvdata);
->> +	tpiu_disable_hw(&desc.access);
->>   
->>   	pdata = coresight_get_platform_data(dev);
->>   	if (IS_ERR(pdata))
->> -- 
->> 2.24.1
->>
 
