@@ -2,51 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFE123431A
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D047823427C
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732908AbgGaJ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60022 "EHLO
+        id S1732404AbgGaJXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732288AbgGaJW4 (ORCPT
+        with ESMTP id S1732299AbgGaJW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:22:56 -0400
+        Fri, 31 Jul 2020 05:22:58 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5097C061575;
-        Fri, 31 Jul 2020 02:22:56 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 09:22:54 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C23BC061575;
+        Fri, 31 Jul 2020 02:22:58 -0700 (PDT)
+Date:   Fri, 31 Jul 2020 09:22:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187375;
+        s=2020; t=1596187376;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=jMKxphsfuVkPBvCEYM3UlEvRxEtBbKtBk4gYcglfmlc=;
-        b=2ABfW7lo+UcRTH8MFwM/jX12oC/sr7UHE835Ze0zSs0mWaX2eR01t3Qvg0UKZkammyAs4u
-        SNk01fupSXOs06MTxaPscJBLlAmm/ofDK0bLZ8ccUmdcwctxue9sIlwq4sitrKo94gkz1a
-        XwBvM3qB0qxH8zNYxbvQr1TaXkqt79J7JKM8PcJlZ8fjFzYHnqZT7joOqdxmkBCC1Eu2bJ
-        uqTTsWMH4mCxdeQBAaaAZCYJRJlbNxuu+aQhqV0kOyBPyuoEtzHdLECMlYTL+7iDdST/fF
-        EbN5v+RJK2W/mYTxgH//byv8eqmUjkmRKQcvmglJTzdahMK91fPRTnOpytvlHg==
+        bh=pJCbdw0apZCnC/JUOExJ817JlivpTmQAsz+sQzoYaV4=;
+        b=lMCI4PZdwWgXUIv5tIKjnOQk+miS0FUtpQJD/YlZcyD6+suislfvNVp8Y0OB2gsZF8FR/a
+        EjuhtEEwAoXjU8CdjavB5ggYLBrcdOXe3N3eeZz1gU+EPRIP1xFkMoAMx5P5kg/DfM10LQ
+        n3FTbmyudtm9dcC+VWvpMng1j42i7LeXJw0Rprbydqnqyb3ZntRwROXiWtzKoLkywZ9IGl
+        wPBqvdRjFn/T6RBMDhz+FjqK/bFHL+sJ9cUslJfDc9iUWqV9Eed7gApkeP/Tav9c1yYgDI
+        Gve2iqFdVT2ZNN9kzhKDpO4UDMwPhSsmzTcmph74wJndkidHDURmujskodpOXg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187375;
+        s=2020e; t=1596187376;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=jMKxphsfuVkPBvCEYM3UlEvRxEtBbKtBk4gYcglfmlc=;
-        b=wxH2T/bUYw2bgAwazfok2yRJTEdq4j94tpELPrPdOyaqHAodSTIudLfnuyoIZTMh7v6GU2
-        lL7kwNRwRQQAO4Bw==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+        bh=pJCbdw0apZCnC/JUOExJ817JlivpTmQAsz+sQzoYaV4=;
+        b=H8UrTeDlfJpNQLG/zjjsnDP8Xz1QdQKr/NbstQTdV3NUwKHlFLql2Zim6ePKxCqC2Q4cX+
+        csFh7nwXMlB/v4CA==
+From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] refperf: Add test for RCU Tasks Trace readers.
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] refperf: Work around 64-bit division
+Cc:     kbuild test robot <lkp@intel.com>, valdis.kletnieks@vt.edu,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159618737459.4006.18036105655591171728.tip-bot2@tip-bot2>
+Message-ID: <159618737593.4006.17865090440810592655.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -54,84 +57,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     72bb749e7048d0a8d7663b59ec1a33bd56c51083
-Gitweb:        https://git.kernel.org/tip/72bb749e7048d0a8d7663b59ec1a33bd56c51083
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Tue, 02 Jun 2020 08:34:41 -07:00
+Commit-ID:     7c944d7c67daee84e3c756bb74ad2f32b28c41cf
+Gitweb:        https://git.kernel.org/tip/7c944d7c67daee84e3c756bb74ad2f32b28=
+c41cf
+Author:        Arnd Bergmann <arnd@arndb.de>
+AuthorDate:    Fri, 29 May 2020 14:36:26 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 29 Jun 2020 12:00:45 -07:00
 
-refperf: Add test for RCU Tasks Trace readers.
+refperf: Work around 64-bit division
 
-This commit adds testing for RCU Tasks Trace readers to the refperf module.
+A 64-bit division was introduced in refperf, breaking compilation
+on all 32-bit architectures:
 
+kernel/rcu/refperf.o: in function `main_func':
+refperf.c:(.text+0x57c): undefined reference to `__aeabi_uldivmod'
+
+Fix this by using div_u64 to mark the expensive operation.
+
+[ paulmck: Update primitive and format per Nathan Chancellor. ]
+Fixes: bd5b16d6c88d ("refperf: Allow decimal nanoseconds")
+Reported-by: kbuild test robot <lkp@intel.com>
+Reported-by: Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.edu>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refperf.c | 33 +++++++++++++++++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
+ kernel/rcu/refperf.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index 49fffb9..da7de9a 100644
+index 063eeb0..80d4490 100644
 --- a/kernel/rcu/refperf.c
 +++ b/kernel/rcu/refperf.c
-@@ -25,6 +25,7 @@
- #include <linux/notifier.h>
- #include <linux/percpu.h>
- #include <linux/rcupdate.h>
-+#include <linux/rcupdate_trace.h>
- #include <linux/reboot.h>
- #include <linux/sched.h>
- #include <linux/spinlock.h>
-@@ -157,7 +158,6 @@ static struct ref_perf_ops rcu_ops = {
- 	.name		= "rcu"
- };
- 
--
- // Definitions for SRCU ref perf testing.
- DEFINE_STATIC_SRCU(srcu_refctl_perf);
- static struct srcu_struct *srcu_ctlp = &srcu_refctl_perf;
-@@ -192,6 +192,35 @@ static struct ref_perf_ops srcu_ops = {
- 	.name		= "srcu"
- };
- 
-+// Definitions for RCU Tasks Trace ref perf testing.
-+static void rcu_trace_ref_perf_read_section(const int nloops)
-+{
-+	int i;
+@@ -478,7 +478,7 @@ static int main_func(void *arg)
+ 		if (torture_must_stop())
+ 			goto end;
+=20
+-		result_avg[exp] =3D 1000 * process_durations(nreaders) / (nreaders * loops=
+);
++		result_avg[exp] =3D div_u64(1000 * process_durations(nreaders), nreaders *=
+ loops);
+ 	}
+=20
+ 	// Print the average of all experiments
+@@ -489,9 +489,13 @@ static int main_func(void *arg)
+ 	strcat(buf, "Runs\tTime(ns)\n");
+=20
+ 	for (exp =3D 0; exp < nruns; exp++) {
++		u64 avg;
++		u32 rem;
 +
-+	for (i = nloops; i >= 0; i--) {
-+		rcu_read_lock_trace();
-+		rcu_read_unlock_trace();
-+	}
-+}
-+
-+static void rcu_trace_ref_perf_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		rcu_read_lock_trace();
-+		un_delay(udl, ndl);
-+		rcu_read_unlock_trace();
-+	}
-+}
-+
-+static struct ref_perf_ops rcu_trace_ops = {
-+	.init		= rcu_sync_perf_init,
-+	.readsection	= rcu_trace_ref_perf_read_section,
-+	.delaysection	= rcu_trace_ref_perf_delay_section,
-+	.name		= "rcu-trace"
-+};
-+
- // Definitions for reference count
- static atomic_t refcnt;
- 
-@@ -584,7 +613,7 @@ ref_perf_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static struct ref_perf_ops *perf_ops[] = {
--		&rcu_ops, &srcu_ops, &refcnt_ops, &rwlock_ops, &rwsem_ops,
-+		&rcu_ops, &srcu_ops, &rcu_trace_ops, &refcnt_ops, &rwlock_ops, &rwsem_ops,
- 	};
- 
- 	if (!torture_init_begin(perf_type, verbose))
+ 		if (errexit)
+ 			break;
+-		sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, result_avg[exp] / 1000, (int)(re=
+sult_avg[exp] % 1000));
++		avg =3D div_u64_rem(result_avg[exp], 1000, &rem);
++		sprintf(buf1, "%d\t%llu.%03u\n", exp + 1, avg, rem);
+ 		strcat(buf, buf1);
+ 	}
+=20
