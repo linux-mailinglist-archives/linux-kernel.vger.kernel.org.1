@@ -2,48 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB03234295
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533962342BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732644AbgGaJYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732495AbgGaJXe (ORCPT
+        id S1732742AbgGaJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:25:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56564 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732494AbgGaJXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:23:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DB7C061574;
-        Fri, 31 Jul 2020 02:23:34 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 09:23:31 -0000
+        Fri, 31 Jul 2020 05:23:35 -0400
+Date:   Fri, 31 Jul 2020 09:23:32 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596187412;
+        s=2020; t=1596187413;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=72nAweuq/43kiAUAzQosSH0gNW7dXBQIkqWdjz7M944=;
-        b=Zl9c6CTpDkD6n60piNa3RvIlmJQvUh2ElD+q0I3dVSBTTG3hUEurG+AM23/cpQuvteyIpC
-        FiophbmetWgJtMOSNOfQdztRMEMH9NXUrw4s7kzy18vq/0MCIkGEOrM32Sixj1+js7qicd
-        xl0FBzz4mSOGmE90e6pcDnuDq/hvTXAYcPKXL/D7M19MnRHkKyShImnDZnJAhsmPh0VVj9
-        tRwQaVpJ8BXiGs2odlmiw+InBI8FxCccMoVfKIfJufBHhaECsrNHHvow/3/zZmCB/uvfhO
-        jZoO3BK3lmya/iZLgscb5NHBgXbojYzl7MC2cVv6vcB7D6l6ta17WCalKz5Ktg==
+        bh=gboqRKAb93jmSdoidRqAOCDhYFMRQ6WuqGYxjzaGUBc=;
+        b=m/r311uIKhv57Vh81sCtACEOPewxz1d7Logn9tiHRignb6EmSzO8a2fgkqAFPYPDzgF0eo
+        IHcWTGh8De8UO/48F/h2D6cKrl+DI2Y/D9ey9mMBIasyiBwm8uAejJHU6oDcezvizwdZFb
+        H9eUkiBs/BygpQmbkQ3B/hj6mNqvlefiBmLOOKCUnq8BdzqGn68vYnrQUxOPFP6HaFsAb8
+        rbYkMSz2ZsvJCMyymLxBB4sLlRzWcjp4up9y30TMmDUeYOtAeJ89dCLv3UQIdPVisqb+VA
+        /FtggTkmJ9qZ+htGFZeZgxo0bO5rIPPa4jM+3wO9j0G6d8InSZ83BJo7eiwv+A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596187412;
+        s=2020e; t=1596187413;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=72nAweuq/43kiAUAzQosSH0gNW7dXBQIkqWdjz7M944=;
-        b=G4YPz63aQyNGYFPY+EZ9jgVcKvlW3ZRSHZ1/hhzpWn/FnyPW+In9Hu5mt4G/QrriYi+v94
-        L6TnGzquihDzcfCQ==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+        bh=gboqRKAb93jmSdoidRqAOCDhYFMRQ6WuqGYxjzaGUBc=;
+        b=ixRn1yl/qzaVSUOnaS4CaRZt3IKriGrFFwyemgHysSpsFjXdRv1aaHZSLwW5x/2j3JHwbC
+        w8mHNeyZttDYhtCQ==
+From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu: Remove initialized but unused rnp from check_slow_task()
-Cc:     kbuild test robot <lkp@intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] tick/nohz: Narrow down noise while setting current
+ task's tick dependency
+Cc:     Matt Fleming <matt@codeblueprint.co.uk>,
+        Frederic Weisbecker <frederic@kernel.org>, stable@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159618741193.4006.6113264412191066133.tip-bot2@tip-bot2>
+Message-ID: <159618741260.4006.6844787797487792202.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,40 +57,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     55fbe86ef303bc8ab040e579fba34a750c08200e
-Gitweb:        https://git.kernel.org/tip/55fbe86ef303bc8ab040e579fba34a750c08200e
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Tue, 19 May 2020 15:02:02 -07:00
+Commit-ID:     3c8920e2dbd1a55f72dc14d656df9d0097cf5c72
+Gitweb:        https://git.kernel.org/tip/3c8920e2dbd1a55f72dc14d656df9d0097cf5c72
+Author:        Frederic Weisbecker <frederic@kernel.org>
+AuthorDate:    Fri, 15 May 2020 02:34:29 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 29 Jun 2020 11:58:50 -07:00
 
-rcu: Remove initialized but unused rnp from check_slow_task()
+tick/nohz: Narrow down noise while setting current task's tick dependency
 
-This commit removes the variable rnp from check_slow_task(), which
-is defined, assigned to, but not otherwise used.
+Setting a tick dependency on any task, including the case where a task
+sets that dependency on itself, triggers an IPI to all CPUs.  That is
+of course suboptimal but it had previously not been an issue because it
+was only used by POSIX CPU timers on nohz_full, which apparently never
+occurs in latency-sensitive workloads in production.  (Or users of such
+systems are suffering in silence on the one hand or venting their ire
+on the wrong people on the other.)
 
-Reported-by: kbuild test robot <lkp@intel.com>
+But RCU now sets a task tick dependency on the current task in order
+to fix stall issues that can occur during RCU callback processing.
+Thus, RCU callback processing triggers frequent system-wide IPIs from
+nohz_full CPUs.  This is quite counter-productive, after all, avoiding
+IPIs is what nohz_full is supposed to be all about.
+
+This commit therefore optimizes tasks' self-setting of a task tick
+dependency by using tick_nohz_full_kick() to avoid the system-wide IPI.
+Instead, only the execution of the one task is disturbed, which is
+acceptable given that this disturbance is well down into the noise
+compared to the degree to which the RCU callback processing itself
+disturbs execution.
+
+Fixes: 6a949b7af82d (rcu: Force on tick when invoking lots of callbacks)
+Reported-by: Matt Fleming <matt@codeblueprint.co.uk>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: stable@kernel.org
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/time/tick-sched.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 2768ce6..d203f82 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -237,14 +237,12 @@ struct rcu_stall_chk_rdr {
-  */
- static bool check_slow_task(struct task_struct *t, void *arg)
- {
--	struct rcu_node *rnp;
- 	struct rcu_stall_chk_rdr *rscrp = arg;
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 3e2dc9b..f0199a4 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -351,16 +351,24 @@ void tick_nohz_dep_clear_cpu(int cpu, enum tick_dep_bits bit)
+ EXPORT_SYMBOL_GPL(tick_nohz_dep_clear_cpu);
  
- 	if (task_curr(t))
- 		return false; // It is running, so decline to inspect it.
- 	rscrp->nesting = t->rcu_read_lock_nesting;
- 	rscrp->rs = t->rcu_read_unlock_special;
--	rnp = t->rcu_blocked_node;
- 	rscrp->on_blkd_list = !list_empty(&t->rcu_node_entry);
- 	return true;
+ /*
+- * Set a per-task tick dependency. Posix CPU timers need this in order to elapse
+- * per task timers.
++ * Set a per-task tick dependency. RCU need this. Also posix CPU timers
++ * in order to elapse per task timers.
+  */
+ void tick_nohz_dep_set_task(struct task_struct *tsk, enum tick_dep_bits bit)
+ {
+-	/*
+-	 * We could optimize this with just kicking the target running the task
+-	 * if that noise matters for nohz full users.
+-	 */
+-	tick_nohz_dep_set_all(&tsk->tick_dep_mask, bit);
++	if (!atomic_fetch_or(BIT(bit), &tsk->tick_dep_mask)) {
++		if (tsk == current) {
++			preempt_disable();
++			tick_nohz_full_kick();
++			preempt_enable();
++		} else {
++			/*
++			 * Some future tick_nohz_full_kick_task()
++			 * should optimize this.
++			 */
++			tick_nohz_full_kick_all();
++		}
++	}
  }
+ EXPORT_SYMBOL_GPL(tick_nohz_dep_set_task);
+ 
