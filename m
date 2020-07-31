@@ -2,76 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5813323433E
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0810234350
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 11:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732957AbgGaJ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 05:29:17 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:38611 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732942AbgGaJ3Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 05:29:16 -0400
-X-IronPort-AV: E=Sophos;i="5.75,417,1589209200"; 
-   d="scan'208";a="53330403"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 31 Jul 2020 18:29:15 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3E990421A8A1;
-        Fri, 31 Jul 2020 18:29:13 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Niklas <niklas.soderlund@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] media: rcar-vin: Update crop and compose settings for every s_fmt call
-Date:   Fri, 31 Jul 2020 10:29:05 +0100
-Message-Id: <1596187745-31596-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
+        id S1732180AbgGaJcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 05:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727096AbgGaJcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 05:32:01 -0400
+Received: from gaia (unknown [95.146.230.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C58BD208E4;
+        Fri, 31 Jul 2020 09:31:58 +0000 (UTC)
+Date:   Fri, 31 Jul 2020 10:31:56 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] arm64/alternatives: move length validation inside the
+ subsection
+Message-ID: <20200731093155.GA29569@gaia>
+References: <20200729215152.662225-1-samitolvanen@google.com>
+ <20200730122201.GM25149@gaia>
+ <CABCJKucS-DXPkHMCPKpbFduZApRdw=1DL4+YhULAsUNn=o-dTA@mail.gmail.com>
+ <20200730152330.GA3128@gaia>
+ <20200731064915.GI1508201@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731064915.GI1508201@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The crop and compose settings for VIN in non mc mode werent updated
-in s_fmt call this resulted in captured images being clipped.
+On Fri, Jul 31, 2020 at 08:49:15AM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Jul 30, 2020 at 04:23:31PM +0100, Catalin Marinas wrote:
+> > On Thu, Jul 30, 2020 at 08:13:05AM -0700, Sami Tolvanen wrote:
+> > > On Thu, Jul 30, 2020 at 5:22 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > >
+> > > > On Wed, Jul 29, 2020 at 02:51:52PM -0700, Sami Tolvanen wrote:
+> > > > > Commit f7b93d42945c ("arm64/alternatives: use subsections for replacement
+> > > > > sequences") breaks LLVM's integrated assembler, because due to its
+> > > > > one-pass design, it cannot compute instruction sequence lengths before the
+> > > > > layout for the subsection has been finalized. This change fixes the build
+> > > > > by moving the .org directives inside the subsection, so they are processed
+> > > > > after the subsection layout is known.
+> > > > >
+> > > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1078
+> > > > > Cc: <stable@vger.kernel.org> # 4.14+
+> > > >
+> > > > Commit f7b93d42945c went in 5.8-rc4. Why is this cc stable from 4.14? If
+> > > > Will picks it up for 5.8, it doesn't even need a cc stable.
+> > > 
+> > > Greg or Sasha can probably answer why, but this patch is in 4.14.189,
+> > > 4.19.134, 5.4.53, and 5.7.10, which ended up breaking some downstream
+> > > Android kernel builds.
+> > 
+> > I see but I don't think we need the explicit cc stable for 4.14. That's
+> > why the Fixes tag is important. If a patch was back-ported, the
+> > subsequent fixes should be picked by the stable maintainers as well.
+> 
+> If you know it ahead of time, the explict "# kernel.version" hint is
+> always nice to have as it ensures I will try to backport it that far,
+> and if I have problems, I will ask for help.
 
-With the below sequence on the third capture where size is set to
-640x480 resulted in clipped image of size 320x240.
+Good to know. Thanks for the clarification.
 
-high(640x480) -> low (320x240) -> high (640x480)
-
-This patch makes sure the VIN crop and compose settings are updated.
-
-Fixes: 104464f573d ("media: rcar-vin: Do not reset the crop and compose rectangles in s_fmt")
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/media/platform/rcar-vin/rcar-v4l2.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-index f421e25..a9b13d9 100644
---- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
-+++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-@@ -319,6 +319,12 @@ static int rvin_s_fmt_vid_cap(struct file *file, void *priv,
- 	fmt_rect.width = vin->format.width;
- 	fmt_rect.height = vin->format.height;
- 
-+	vin->crop.top = 0;
-+	vin->crop.left = 0;
-+	vin->crop.width = vin->format.width;
-+	vin->crop.height = vin->format.height;
-+	vin->compose = vin->crop;
-+
- 	v4l2_rect_map_inside(&vin->crop, &src_rect);
- 	v4l2_rect_map_inside(&vin->compose, &fmt_rect);
- 	vin->src_rect = src_rect;
 -- 
-2.7.4
-
+Catalin
