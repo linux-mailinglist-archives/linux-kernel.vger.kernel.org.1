@@ -2,154 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C03523453F
-	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F179F234531
+	for <lists+linux-kernel@lfdr.de>; Fri, 31 Jul 2020 14:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733116AbgGaMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 08:05:27 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:49014 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733108AbgGaMFY (ORCPT
+        id S1732918AbgGaMES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 08:04:18 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32006 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732774AbgGaMER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:05:24 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06VC2wKA036678;
-        Fri, 31 Jul 2020 12:05:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=wQSjVYBw/TnpmeaVef5NuD3Sb07fZXefhlktIO+86VE=;
- b=iZX7AyqlTaeG0sax9PxX4B4ZcMa2vT0UZ7l/Y+qmA1wZlGMKLak5Bs9GINU76b0lfvYm
- ey6lmKPyGj3kt6rI2z71n217FQ72/y7ayy7rFtbD7yEjPFW5ph4B+/DwvW4S1WNvK0EJ
- 87xTp9jGelyP01Vqr2pJIJww6jcOHz8AU/g/VLB4NRxrrmkHCyMmGvBqXiOJun+04Q6z
- JyQNhQ3VhAIoSRf1E2CbKlUGYo0+/ayHFWK8VIFxcPoqV+v1WMPN8fdwF+K/p3KbpHT1
- k7K+7KOHh8FFAn6Jzq+mfTB8y5hdo9Qzvx/v+HfwZKpsv5Zt8R13N8ZzegxlMOu051qn WA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 32hu1jrqca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 31 Jul 2020 12:05:13 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06VC2bSk150843;
-        Fri, 31 Jul 2020 12:03:13 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 32hu63wuxt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 31 Jul 2020 12:03:13 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06VC3Cr1152622;
-        Fri, 31 Jul 2020 12:03:12 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 32hu63wuv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 31 Jul 2020 12:03:12 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06VC3Anq029674;
-        Fri, 31 Jul 2020 12:03:10 GMT
-Received: from dhcp-10-175-172-80.vpn.oracle.com (/10.175.172.80)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 31 Jul 2020 05:03:10 -0700
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
- in rds_notify_queue_get()
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <20200731115909.GA1649637@kroah.com>
-Date:   Fri, 31 Jul 2020 14:03:06 +0200
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        netdev@vger.kernel.org,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <866B1B5B-0156-4EED-9599-51BEF5661DA9@oracle.com>
-References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
- <20200731045301.GI75549@unreal> <20200731095943.GI5493@kadam>
- <81B40AF5-EBCA-4628-8CF6-687C12134552@oracle.com>
- <20200731115909.GA1649637@kroah.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9698 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1015
- malwarescore=0 spamscore=0 suspectscore=3 bulkscore=0 priorityscore=1501
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007310090
+        Fri, 31 Jul 2020 08:04:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596197055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n6UIik3Jpq1xXTWaX2y8qVUYtIw2s9+k7YboRf56zbc=;
+        b=LE0aKejBA/2mf16u2B3/JCowVQ+15/8YLK91yhyunabrYJi6Gdsr3qTpPKvs8PX9d7aEtQ
+        qlFV0zI1QXoUw2gEYzTSADS86F+2RJIbu70cyFU0nAAxo0wlbp7XuFhQKIe4jH7CYo5Kw1
+        Phgyw9xh9B7qBoZtpNh9cJFJCmdheLY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-975TjRT3OgmhQDUfBRbiCA-1; Fri, 31 Jul 2020 08:04:11 -0400
+X-MC-Unique: 975TjRT3OgmhQDUfBRbiCA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07F9F59;
+        Fri, 31 Jul 2020 12:04:10 +0000 (UTC)
+Received: from sandy.ghostprotocols.net (unknown [10.3.128.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B69695DA81;
+        Fri, 31 Jul 2020 12:04:08 +0000 (UTC)
+Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
+        id 9EBFF202; Fri, 31 Jul 2020 09:04:03 -0300 (BRT)
+Date:   Fri, 31 Jul 2020 09:04:03 -0300
+From:   Arnaldo Carvalho de Melo <acme@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Philippe Duplessis-Guindon <pduplessis@efficios.com>,
+        linux-trace-devel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tools lib traceevent: Fix memory leak in
+ process_dynamic_array_len
+Message-ID: <20200731120403.GA4414@redhat.com>
+References: <20200730150236.5392-1-pduplessis@efficios.com>
+ <20200730172843.653cd9f4@oasis.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200730172843.653cd9f4@oasis.local.home>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Thu, Jul 30, 2020 at 05:28:43PM -0400, Steven Rostedt escreveu:
+> 
+> Arnaldo,
+> 
+> Can you pull this into your tree under urgent?
+> 
+>  https://lore.kernel.org/linux-trace-devel/20200730150236.5392-1-pduplessis@efficios.com/
+> 
+> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
+Sure, will get it and try and send today,
 
-> On 31 Jul 2020, at 13:59, Greg Kroah-Hartman =
-<gregkh@linuxfoundation.org> wrote:
->=20
-> On Fri, Jul 31, 2020 at 01:14:09PM +0200, H=C3=A5kon Bugge wrote:
->>=20
->>=20
->>> On 31 Jul 2020, at 11:59, Dan Carpenter <dan.carpenter@oracle.com> =
-wrote:
->>>=20
->>> On Fri, Jul 31, 2020 at 07:53:01AM +0300, Leon Romanovsky wrote:
->>>> On Thu, Jul 30, 2020 at 03:20:26PM -0400, Peilin Ye wrote:
->>>>> rds_notify_queue_get() is potentially copying uninitialized kernel =
-stack
->>>>> memory to userspace since the compiler may leave a 4-byte hole at =
-the end
->>>>> of `cmsg`.
->>>>>=20
->>>>> In 2016 we tried to fix this issue by doing `=3D { 0 };` on =
-`cmsg`, which
->>>>> unfortunately does not always initialize that 4-byte hole. Fix it =
-by using
->>>>> memset() instead.
->>>>=20
->>>> Of course, this is the difference between "{ 0 }" and "{}" =
-initializations.
->>>>=20
->>>=20
->>> No, there is no difference.  Even struct assignments like:
->>>=20
->>> 	foo =3D *bar;
->>>=20
->>> can leave struct holes uninitialized.  Depending on the compiler the
->>> assignment can be implemented as a memset() or as a series of struct
->>> member assignments.
->>=20
->> What about:
->>=20
->> struct rds_rdma_notify {
->> 	__u64                      user_token;
->> 	__s32                      status;
->> } __attribute__((packed));
->=20
-> Why is this still a discussion at all?
->=20
-> Try it and see, run pahole and see if there are holes in this =
-structure
-> (odds are no), you don't need us to say what is happening here...
-
-An older posting had this:
-
-$ pahole -C "rds_rdma_notify" net/rds/recv.o
-struct rds_rdma_notify {
-	__u64                      user_token;           /*     0     8 =
-*/
-	__s32                      status;               /*     8     4 =
-*/
-
-	/* size: 16, cachelines: 1, members: 2 */
-	/* padding: 4 */
-	/* last cacheline: 16 bytes */
-};
-
-
-Thxs, H=C3=A5kon
+- Arnaldo
+ 
+> -- Steve
+> 
+> 
+> On Thu, 30 Jul 2020 11:02:36 -0400
+> Philippe Duplessis-Guindon <pduplessis@efficios.com> wrote:
+> 
+> > I compiled with AddressSanitizer and I had these memory leaks while I
+> > was using the tep_parse_format function:
+> > 
+> >     Direct leak of 28 byte(s) in 4 object(s) allocated from:
+> >         #0 0x7fb07db49ffe in __interceptor_realloc (/lib/x86_64-linux-gnu/libasan.so.5+0x10dffe)
+> >         #1 0x7fb07a724228 in extend_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:985
+> >         #2 0x7fb07a724c21 in __read_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1140
+> >         #3 0x7fb07a724f78 in read_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1206
+> >         #4 0x7fb07a725191 in __read_expect_type /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1291
+> >         #5 0x7fb07a7251df in read_expect_type /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1299
+> >         #6 0x7fb07a72e6c8 in process_dynamic_array_len /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:2849
+> >         #7 0x7fb07a7304b8 in process_function /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3161
+> >         #8 0x7fb07a730900 in process_arg_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3207
+> >         #9 0x7fb07a727c0b in process_arg /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1786
+> >         #10 0x7fb07a731080 in event_read_print_args /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3285
+> >         #11 0x7fb07a731722 in event_read_print /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3369
+> >         #12 0x7fb07a740054 in __tep_parse_format /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6335
+> >         #13 0x7fb07a74047a in __parse_event /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6389
+> >         #14 0x7fb07a740536 in tep_parse_format /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6431
+> >         #15 0x7fb07a785acf in parse_event ../../../src/fs-src/fs.c:251
+> >         #16 0x7fb07a785ccd in parse_systems ../../../src/fs-src/fs.c:284
+> >         #17 0x7fb07a786fb3 in read_metadata ../../../src/fs-src/fs.c:593
+> >         #18 0x7fb07a78760e in ftrace_fs_source_init ../../../src/fs-src/fs.c:727
+> >         #19 0x7fb07d90c19c in add_component_with_init_method_data ../../../../src/lib/graph/graph.c:1048
+> >         #20 0x7fb07d90c87b in add_source_component_with_initialize_method_data ../../../../src/lib/graph/graph.c:1127
+> >         #21 0x7fb07d90c92a in bt_graph_add_source_component ../../../../src/lib/graph/graph.c:1152
+> >         #22 0x55db11aa632e in cmd_run_ctx_create_components_from_config_components ../../../src/cli/babeltrace2.c:2252
+> >         #23 0x55db11aa6fda in cmd_run_ctx_create_components ../../../src/cli/babeltrace2.c:2347
+> >         #24 0x55db11aa780c in cmd_run ../../../src/cli/babeltrace2.c:2461
+> >         #25 0x55db11aa8a7d in main ../../../src/cli/babeltrace2.c:2673
+> >         #26 0x7fb07d5460b2 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x270b2)
+> > 
+> > The token variable in the process_dynamic_array_len function is
+> > allocated in the read_expect_type function, but is not freed before
+> > calling the read_token function.
+> > 
+> > Free the token variable before calling read_token in order to plug the
+> > leak.
+> > 
+> > Signed-off-by: Philippe Duplessis-Guindon <pduplessis@efficios.com>
+> > ---
+> >  tools/lib/traceevent/event-parse.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+> > index 5b36c589a029..ba4f33804af1 100644
+> > --- a/tools/lib/traceevent/event-parse.c
+> > +++ b/tools/lib/traceevent/event-parse.c
+> > @@ -2861,6 +2861,7 @@ process_dynamic_array_len(struct tep_event *event, struct tep_print_arg *arg,
+> >  	if (read_expected(TEP_EVENT_DELIM, ")") < 0)
+> >  		goto out_err;
+> >  
+> > +	free_token(token);
+> >  	type = read_token(&token);
+> >  	*tok = token;
+> >  
 
