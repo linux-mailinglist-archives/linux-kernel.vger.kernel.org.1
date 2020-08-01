@@ -2,170 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7EC2350BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 08:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CD92350D3
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 08:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgHAGOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 02:14:35 -0400
-Received: from mail5.windriver.com ([192.103.53.11]:53740 "EHLO mail5.wrs.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725833AbgHAGOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 02:14:35 -0400
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
-        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 0716C7Vd028182
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Fri, 31 Jul 2020 23:12:38 -0700
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 31 Jul 2020 23:12:15 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <perex@perex.cz>, <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ALSA: seq: KASAN: use-after-free Read in delete_and_unsubscribe_port
-Date:   Sat, 1 Aug 2020 14:24:03 +0800
-Message-ID: <20200801062403.8005-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726352AbgHAGrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 02:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgHAGr3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 02:47:29 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D01C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 23:47:29 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id 88so29725733wrh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 23:47:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ghZyPFC3vU2L7Bh9FzpIpt3HEBdmfDTKKzPrEZq7vc4=;
+        b=BJ+3uWx1pNZDTKWqdKZ6ZNbZm2uI5xSDRSoDBE07xOJdRAt+bC5d6gueCqtIgH6aJC
+         dBohHuOP6NS8NHwIDgZQrj1qq9R8MupD4ShVnoMNwIaVPOwydkftym2VMVJK3Mf+zlPn
+         zame2nJquED7J28iyjEWIAT3r1XiMkqM0bBBCqfGR4DsMiGbDZ60+uDfCWKpGx5PYmKD
+         PhDP3S3NqvMBmwlteZ/imuqyOhwBV9/7bkbrmZdp/NRu/GpVe1tuZRBOPzF2tvHFlhbx
+         l2X92AVuhKlTdNj/8rMNccqe6b2mYi3Sc4Vs6UrN8eFcD2yJvEg48VoDpkpy3KTm5upM
+         ATCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ghZyPFC3vU2L7Bh9FzpIpt3HEBdmfDTKKzPrEZq7vc4=;
+        b=LwIfiH2ZcHZQ/YnlrRrFOjmdva2t4UJkosdMIl71PF5yPDyU8/5gJNXwzmzULgaWew
+         VDgvIZczFNtHUQFjxOrjM7DJa+0ARASBvNbWh/rZxPv9srteS6RHgys6UAWO7OYQ14Zr
+         TaAUNAKvoMJ+uEZgzKpaqo92yp7vohsbPmYJ8CsY5D5I45cWXm7/UWsiQdjs2QywXwZw
+         VMPV+kCZVwMwtbEjgvosjBElgd7ZOFsy8LGDqEOi1vTXGWKgB9gR7O2C60l558d0z/dp
+         Rm923itqWRfarnSnxe4SpWX6gkxTj/MRqEuEeKbwk/F/jR4vP/2bnwOoItsN2L7qZBsk
+         aEsg==
+X-Gm-Message-State: AOAM530BKnB8b17VgTPjUkfHlaFZvMf8sFcJrzpIab/de+VFM9TnZxlv
+        vhF7aE6j+6yHxFy743/xrUA=
+X-Google-Smtp-Source: ABdhPJwE5jaIJdGYRWYglX+ryNHaBW4BbW+1xg/jEKK/g4bTRIn/9A0HVd6t+fAMdez/vszPQyQIQQ==
+X-Received: by 2002:a5d:664e:: with SMTP id f14mr6333423wrw.6.1596264447678;
+        Fri, 31 Jul 2020 23:47:27 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id 62sm16194105wrq.31.2020.07.31.23.47.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 23:47:26 -0700 (PDT)
+Date:   Sat, 1 Aug 2020 08:47:24 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: sun8i-ce - Fix writel byte-order on big-endian
+Message-ID: <20200801064724.GA11589@Red>
+References: <202007281310.eciiVHmF%lkp@intel.com>
+ <20200728060040.GA15882@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728060040.GA15882@gondor.apana.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+On Tue, Jul 28, 2020 at 04:00:40PM +1000, Herbert Xu wrote:
+> On Tue, Jul 28, 2020 at 01:10:13PM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   92ed301919932f777713b9172e525674157e983d
+> > commit: 93c7f4d357de68f1e3a998b2fc775466d75c4c07 crypto: sun8i-ce - enable working on big endian
+> > date:   8 months ago
+> > config: arm64-randconfig-s031-20200728 (attached as .config)
+> > compiler: aarch64-linux-gcc (GCC) 9.3.0
+> > reproduce:
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # apt-get install sparse
+> >         # sparse version: v0.6.2-94-geb6779f6-dirty
+> >         git checkout 93c7f4d357de68f1e3a998b2fc775466d75c4c07
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=arm64 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> 
+> This looks like a real bug.
+> 
+> ---8<---
+> As writel does endianness swapping by default we need to undo
+> any swapping that we have done before using it.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 93c7f4d357de ("crypto: sun8i-ce - enable working on big...")
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> 
+> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> index 138759dc8190..703a60d4e2f6 100644
+> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> @@ -120,7 +120,7 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
+>  	/* Be sure all data is written before enabling the task */
+>  	wmb();
+>  
+> -	v = 1 | (ce->chanlist[flow].tl->t_common_ctl & 0x7F) << 8;
+> +	v = 1 | (le32_to_cpu(ce->chanlist[flow].tl->t_common_ctl) & 0x7F) << 8;
+>  	writel(v, ce->base + CE_TLR);
+>  	mutex_unlock(&ce->mlock);
+>  
+> -- 
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
-There is a potential race window,when a task acquire "src->list_mutex"
-write sem,traverse the linked list to find "subs" objects through
-parameter "info" in snd_seq_port_disconnect and then release this
-write sem, before this task acquire write sem again,this write sem
-may be acquired by another task, and get the same "subs" object through
-the same "info" before, it could happen "use-after-free" later, so a
-simple solution is to delete the object from the linked list when it
-is found.
-
-BUG: KASAN: use-after-free in list_empty include/linux/list.h:282 [inline]
-BUG: KASAN: use-after-free in delete_and_unsubscribe_port+0x8b/0x450
-sound/core/seq/seq_ports.c:530
-Read of size 8 at addr ffff888098523060 by task syz-executor.0/7202
-
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1f0/0x31e lib/dump_stack.c:118
- print_address_description+0x66/0x5a0 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report+0x132/0x1d0 mm/kasan/report.c:530
- list_empty include/linux/list.h:282 [inline]
- delete_and_unsubscribe_port+0x8b/0x450 sound/core/seq/seq_ports.c:530
- snd_seq_port_disconnect+0x568/0x610 sound/core/seq/seq_ports.c:612
- snd_seq_ioctl_unsubscribe_port+0x349/0x6c0 sound/core/seq/seq_clientmgr.c:1525
- snd_seq_oss_midi_close+0x397/0x620 sound/core/seq/oss/seq_oss_midi.c:405
- snd_seq_oss_synth_reset+0x335/0x8b0 sound/core/seq/oss/seq_oss_synth.c:406
- snd_seq_oss_reset+0x5b/0x250 sound/core/seq/oss/seq_oss_init.c:435
- snd_seq_oss_ioctl+0x5c2/0x1090 sound/core/seq/oss/seq_oss_ioctl.c:93
- odev_ioctl+0x51/0x70 sound/core/seq/oss/seq_oss.c:174
- vfs_ioctl fs/ioctl.c:48 [inline]
- ksys_ioctl fs/ioctl.c:753 [inline]
- __do_sys_ioctl fs/ioctl.c:762 [inline]
- __se_sys_ioctl+0xf9/0x160 fs/ioctl.c:760
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Allocated by task 7202:
- save_stack mm/kasan/common.c:48 [inline]
- set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc+0x103/0x140 mm/kasan/common.c:494
- kmem_cache_alloc_trace+0x234/0x300 mm/slab.c:3551
- kmalloc include/linux/slab.h:555 [inline]
- kzalloc include/linux/slab.h:669 [inline]
- snd_seq_port_connect+0x66/0x460 sound/core/seq/seq_ports.c:553
- snd_seq_ioctl_subscribe_port+0x349/0x6c0 sound/core/seq/seq_clientmgr.c:1484
- snd_seq_oss_midi_open+0x4db/0x830 sound/core/seq/oss/seq_oss_midi.c:364
- snd_seq_oss_synth_setup_midi+0x108/0x510 sound/core/seq/oss/seq_oss_synth.c:269
- snd_seq_oss_open+0x899/0xe90 sound/core/seq/oss/seq_oss_init.c:261
- odev_open+0x5e/0x90 sound/core/seq/oss/seq_oss.c:125
- chrdev_open+0x498/0x580 fs/char_dev.c:414
- do_dentry_open+0x813/0x1070 fs/open.c:828
- do_open fs/namei.c:3243 [inline]
- path_openat+0x278d/0x37f0 fs/namei.c:3360
- do_filp_open+0x191/0x3a0 fs/namei.c:3387
- do_sys_openat2+0x463/0x770 fs/open.c:1179
- do_sys_open fs/open.c:1195 [inline]
- __do_sys_openat fs/open.c:1209 [inline]
- __se_sys_openat fs/open.c:1204 [inline]
- __x64_sys_openat+0x1c8/0x1f0 fs/open.c:1204
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 7203:
- save_stack mm/kasan/common.c:48 [inline]
- set_track mm/kasan/common.c:56 [inline]
- kasan_set_free_info mm/kasan/common.c:316 [inline]
- __kasan_slab_free+0x114/0x170 mm/kasan/common.c:455
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x10a/0x220 mm/slab.c:3757
- snd_seq_port_disconnect+0x570/0x610 sound/core/seq/seq_ports.c:614
- snd_seq_ioctl_unsubscribe_port+0x349/0x6c0 sound/core/seq/seq_clientmgr.c:1525
- snd_seq_oss_midi_close+0x397/0x620 sound/core/seq/oss/seq_oss_midi.c:405
- snd_seq_oss_synth_reset+0x335/0x8b0 sound/core/seq/oss/seq_oss_synth.c:406
- snd_seq_oss_reset+0x5b/0x250 sound/core/seq/oss/seq_oss_init.c:435
- snd_seq_oss_ioctl+0x5c2/0x1090 sound/core/seq/oss/seq_oss_ioctl.c:93
- odev_ioctl+0x51/0x70 sound/core/seq/oss/seq_oss.c:174
- vfs_ioctl fs/ioctl.c:48 [inline]
- ksys_ioctl fs/ioctl.c:753 [inline]
- __do_sys_ioctl fs/ioctl.c:762 [inline]
- __se_sys_ioctl+0xf9/0x160 fs/ioctl.c:760
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888098523000
- which belongs to the cache kmalloc-128 of size 128
-The buggy address is located 96 bytes inside of
- 128-byte region [ffff888098523000, ffff888098523080)
-The buggy address belongs to the page:
-page:ffffea00026148c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002613988 ffffea000262c648 ffff8880aa400700
-raw: 0000000000000000 ffff888098523000 0000000100000010 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888098522f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888098522f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888098523000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                       ^
- ffff888098523080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888098523100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-Reported-by: syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com
-Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
----
- sound/core/seq/seq_ports.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/core/seq/seq_ports.c b/sound/core/seq/seq_ports.c
-index 83be6b982a87..9675d3fc146e 100644
---- a/sound/core/seq/seq_ports.c
-+++ b/sound/core/seq/seq_ports.c
-@@ -533,8 +533,7 @@ static void delete_and_unsubscribe_port(struct snd_seq_client *client,
- 	grp->exclusive = 0;
- 	write_unlock_irq(&grp->list_lock);
- 
--	if (!empty)
--		unsubscribe_port(client, port, grp, &subs->info, ack);
-+	unsubscribe_port(client, port, grp, &subs->info, ack);
- 	up_write(&grp->list_mutex);
- }
- 
-@@ -599,6 +598,7 @@ int snd_seq_port_disconnect(struct snd_seq_client *connector,
- 	list_for_each_entry(subs, &src->list_head, src_list) {
- 		if (match_subs_info(info, &subs->info)) {
- 			atomic_dec(&subs->ref_count); /* mark as not ready */
-+			list_del_init(&subs->src_list);
- 			err = 0;
- 			break;
- 		}
--- 
-2.26.2
-
+This is fixed in my v4 serie and the current driver is unaffected, only hashes/rng could hit a problem and v4 bring them along with the fix.
