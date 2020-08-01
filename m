@@ -2,102 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59AAA2350F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 09:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A331E2350FB
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 09:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728598AbgHAHKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 03:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
+        id S1727987AbgHAHRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 03:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728531AbgHAHKN (ORCPT
+        with ESMTP id S1725283AbgHAHRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 03:10:13 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EF3C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 00:10:13 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id w30so7215665qte.14
-        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 00:10:13 -0700 (PDT)
+        Sat, 1 Aug 2020 03:17:49 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B074C061756
+        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 00:17:49 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id r2so24705119wrs.8
+        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 00:17:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Y00REmw7cW2Ho0KOM1NABcGJpQIr8u0gXHD6A1O7ZXc=;
-        b=p06i0vZEiFlxr5WQl/1QLqnRoDyO1YbD+Mg/9g4eGrZU6RzoiI9EBqN6Ry00dpU1eQ
-         otL3mmtIVomSnP8AcineuZKwvWwP4WxlcRcxnev4l0jIFgWC3fcAlTd/6wgnliHAFdgP
-         sbfrcu8stiyGlhOL7m7HVYtkNB0Xh062PfrgihcUb2C6uM3Xv4RATJcNYdIOvNhy+Y5b
-         453Uy+j0yNSBZshh5hyJ8P07jF16Rn5lFGZ+og4uA5CnOfgyev8i251ygD4lCrRM9xWd
-         E/RjqZ5gNN8vVEgltxW2b78N25513y0JIMIsZTT+vIwLnFFc+JAgyyopGmP6E/392zrd
-         M8KQ==
+        bh=9TWNF9js53PcdlvlEQGLSj775mBS94SUQ30AaksVxoQ=;
+        b=VO0K6ryau/F3M3Dq1GKbT+Ju+3xjYUSKkECGfWdRqLobEciqL0RcUz4/iC4W8lVZ1q
+         QA65GiZKQRJr/myRRsw4n89yDhKQQOONOJwQnTjs+pu3xamfaa5Ztrhg1KJ7WQ6hqxwT
+         HpvI5KkYtiS+X3q/w9LUpob+E8OmwtQpPwY41OJOatDMZ4FJ2ajQnBJeHFXQEI2IBXM7
+         MDUn65w+5blACPpkaQSuWTxoz6eBj+Z525rXmhOva11Ma9iXX49xrtd/jnFAqRdGvaJV
+         bwnx1R+Q4aZqlB/MlC6CMAFZqmfYn0i6aTCn07ZkMzdpUVfq9VE49aHj6u4s5Br5Zexc
+         mwew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Y00REmw7cW2Ho0KOM1NABcGJpQIr8u0gXHD6A1O7ZXc=;
-        b=SBApceki0xO8ggq3dgnTYVrZynIbX/b6ZEIKF7T69/zJBZL7zHlMk23aIvfT1aGFcf
-         2wL0bOuNfSrekJZQTf6KrSSS3bQnemWcwMqgJM9asEcuRxRuQ1swyX1cDbzUyiY3LPWz
-         t1EMXOmbQSdm/jVbY6tG58ztCUhMRldn5BzbY0exWVIBFYcc1XMIU7NQdS8Q6V9x8rZu
-         Bx2qEyhGMvymg5U5sjaTCRUxqYmV5814jGN8tCq7pzF5Byd2sSXxZvW3nim440KytUZe
-         hxJwW9zvSaPEmoMJvjeGUschr5CgBxAK9zFQG/djdcCsZSO63UqeVE+wuoUv8sznMVC4
-         kD8Q==
-X-Gm-Message-State: AOAM533+S8NEAza1hZgu6oumd3VvxcfV+Asd1Ar2aSIctD6q3wH+gqC7
-        m6FpieM3eppQ1o0oca8q8Orw8KteAYB8vA==
-X-Google-Smtp-Source: ABdhPJyAFHaNDP9BQJEEjF9elaKgN1Zd0u0F3MLrDDeUgBuFx2mV6ToMV2z9T84Z4JcIYnQiiOUECmq01lQjZw==
-X-Received: by 2002:ad4:4089:: with SMTP id l9mr7569682qvp.175.1596265812531;
- Sat, 01 Aug 2020 00:10:12 -0700 (PDT)
-Date:   Sat,  1 Aug 2020 00:09:24 -0700
-In-Reply-To: <20200801070924.1786166-1-davidgow@google.com>
-Message-Id: <20200801070924.1786166-6-davidgow@google.com>
-Mime-Version: 1.0
-References: <20200801070924.1786166-1-davidgow@google.com>
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH v10 5/5] mm: kasan: Do not panic if both panic_on_warn and
- kasan_multishot set
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9TWNF9js53PcdlvlEQGLSj775mBS94SUQ30AaksVxoQ=;
+        b=HyZUOsyA3vK7UxX66gSh3MC8EmW2y6zP1huLQbngj+9Yn9tq2b5kM2fLHfXOE+41Ja
+         EJ5Se7eIDx+kCBDgKtG/GWB5iZqIvahN+/Zvo56xzSmkpoLtmUGIJdK1cUX9PVxALE6t
+         V9jZnjR1tVDOxwUtPJWBOqkC9xfEJFUOKIcMukxmjTWIsFluZAwz/9CEk4Mp3ATuH0SI
+         JetwKL/zOgAGrtp772R7wb+vBjpWRdCIKrw5gwzItAk4Ql/kXfe+BBb6lu+xz3UE1KyY
+         +Yh4oo1GwrQulFByxW9si5NysVpCueZL5LiNlXw5LmHvaTts3GQ8uP9ZO8jtDOq/wXzc
+         FAiQ==
+X-Gm-Message-State: AOAM53185dwMivGNqsoGjYSRzePdcPSMtpkp83IeCTOQKeOWgPIPNHan
+        LKizW2TPoSF7NX+Qni5d0N2DzcQtBa0JYR3hDKbzJg==
+X-Google-Smtp-Source: ABdhPJzq/rzZHdZ2pAKBHdqSrbybtRNlexfh0RgiZS1svnsLG/Wioiod4eAFn6JHc7/uJob0VxLcIqfDs+pDzu5POMw=
+X-Received: by 2002:a5d:4e8c:: with SMTP id e12mr6436942wru.19.1596266267633;
+ Sat, 01 Aug 2020 00:17:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200731044242.1323143-1-davidgow@google.com> <CAAeHK+z0wJ-3+dXey9o3zysy9fPOqk-YdFFtVOB5==WcG3B8+Q@mail.gmail.com>
+In-Reply-To: <CAAeHK+z0wJ-3+dXey9o3zysy9fPOqk-YdFFtVOB5==WcG3B8+Q@mail.gmail.com>
 From:   David Gow <davidgow@google.com>
-To:     trishalfonso@google.com, brendanhiggins@google.com,
-        aryabinin@virtuozzo.com, dvyukov@google.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, andreyknvl@google.com, shuah@kernel.org
-Cc:     David Gow <davidgow@google.com>, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org
+Date:   Sat, 1 Aug 2020 15:17:36 +0800
+Message-ID: <CABVgOSnFanyCtBFaFAdrArr+hkXCdNu5vCNmciLP0ftQRgAsXQ@mail.gmail.com>
+Subject: Re: [PATCH v9 0/5] KASAN-KUnit Integration
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Patricia Alfonso <trishalfonso@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN errors will currently trigger a panic when panic_on_warn is set.
-This renders kasan_multishot useless, as further KASAN errors won't be
-reported if the kernel has already paniced. By making kasan_multishot
-disable this behaviour for KASAN errors, we can still have the benefits
-of panic_on_warn for non-KASAN warnings, yet be able to use
-kasan_multishot.
+On Fri, Jul 31, 2020 at 9:25 PM 'Andrey Konovalov' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+>
+> On Fri, Jul 31, 2020 at 6:43 AM David Gow <davidgow@google.com> wrote:
+> >
+> > This patchset contains everything needed to integrate KASAN and KUnit.
+> >
+> > KUnit will be able to:
+> > (1) Fail tests when an unexpected KASAN error occurs
+> > (2) Pass tests when an expected KASAN error occurs
+> >
+> > Convert KASAN tests to KUnit with the exception of copy_user_test
+> > because KUnit is unable to test those.
+> >
+> > Add documentation on how to run the KASAN tests with KUnit and what to
+> > expect when running these tests.
+> >
+> > This patchset depends on:
+> > - "kunit: extend kunit resources API" [1]
+> >  - This is already present in the kselftest/kunit branch
+> >
+> > I'd _really_ like to get this into 5.9 if possible: we also have some
+> > other changes which depend on some things here.
+>
+> Hi David,
+>
+> You'll need to rebase this on top of the mm tree, which currently
+> contains Walter's patch titled "kasan: fix KASAN unit tests for
+> tag-based KASAN".
+>
+> There's also another patch that touches KASAN tests in the series I've
+> just mailed titled "kasan: support stack instrumentation for tag-based
+> mode".
+>
+> Thanks!
+>
 
-This is particularly important when running KASAN tests, which need to
-trigger multiple KASAN errors: previously these would panic the system
-if panic_on_warn was set, now they can run (and will panic the system
-should non-KASAN warnings show up).
+I've rebased this on top of a linux-next (with the pending KUnit
+patches from kselftest/kunit and the "kasan: support stack
+instrumentation for tag-based mode" patchset applied):
+https://lore.kernel.org/linux-kselftest/20200801070924.1786166-1-davidgow@google.com/T/#u
 
-Signed-off-by: David Gow <davidgow@google.com>
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
----
- mm/kasan/report.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Note that the RCU test doesn't seem to be compatible with KUnit's
+KASAN integration at present: I'm no expert on RCU, but it looks like
+the current test context might not be propagated to the callback, so
+expecting the failure doesn't work. Given that KUnit also doesn't look
+for the aux stacks (just that a failure occurred), it seemed best to
+avoid trying to port that one to KUnit, so I've left it in the
+test_kasan_module.c file. It may be possible to port it at a later
+date.
 
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index e2c14b10bc81..00a53f1355ae 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -95,7 +95,7 @@ static void end_report(unsigned long *flags)
- 	pr_err("==================================================================\n");
- 	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
- 	spin_unlock_irqrestore(&report_lock, *flags);
--	if (panic_on_warn) {
-+	if (panic_on_warn && !test_bit(KASAN_BIT_MULTI_SHOT, &kasan_flags)) {
- 		/*
- 		 * This thread may hit another WARN() in the panic path.
- 		 * Resetting this prevents additional WARN() from panicking the
--- 
-2.28.0.163.g6104cc2f0b6-goog
+Note that I don't have an arm64 setup here, so I haven't actually
+tested the tag-based KASAN stuff yet.
 
+Cheers,
+-- David
