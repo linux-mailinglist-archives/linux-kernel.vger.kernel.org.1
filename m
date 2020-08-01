@@ -2,413 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C33E234F7C
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 04:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341CA234F80
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 04:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728395AbgHACtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 22:49:32 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:53266 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727047AbgHACtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 22:49:32 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 045AE5D89F6F5C331DDB;
-        Sat,  1 Aug 2020 10:49:29 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 1 Aug 2020 10:49:22 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
-        <cloud.wangxiaoyun@huawei.com>, <chiqijun@huawei.com>
-Subject: [PATCH net-next v3 2/2] hinic: add check for mailbox msg from VF
-Date:   Sat, 1 Aug 2020 10:49:35 +0800
-Message-ID: <20200801024935.20819-3-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200801024935.20819-1-luobin9@huawei.com>
-References: <20200801024935.20819-1-luobin9@huawei.com>
+        id S1728385AbgHACxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 22:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727047AbgHACxI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 22:53:08 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D47C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 19:53:07 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a5so19560789wrm.6
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 19:53:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xQw/GDvZAdqgK8PngDZUR70WBhENQwa4VO5dO5VMRYQ=;
+        b=fvD9VkcpIpmLGOc0RN16Q3g+MDuB1wAVsNPB1I3qdv6BXascnBQB4/jFZkdPGFNPlb
+         Ic2arZ3utbXNqLm5oNcWE388GCL0ou46KCU6Du0kkjr+1cndmEfqqXaeY24F59LG42u3
+         IgGAnx1zhThprobHe2gfEmlVlaxeA0GpoVsVI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xQw/GDvZAdqgK8PngDZUR70WBhENQwa4VO5dO5VMRYQ=;
+        b=XK5Hg/50zYKWRA2Hx8Ru2RZ2Kfy1iPXZgu5Fi9PPGmdHv6TO2vhx6OZ47Bo/9FjeSi
+         Wexajq79QcV2hjLLkhYK4Jv4m9gu5++vtY6g8j9aXfiO3GdN3zltlg4Tg+rg6zuXyDWl
+         cJaNfuGbAyQ7iXsBiDD8gSt5Ta1SQkOeg1tAD1ULoCQC5qVxH75YZZYTfkzZYlKrQaIX
+         5hJ5iljK+wxTFkiRvsIARcrwzKGiL4e9IaS7qB02bR+Hf4aQSWE4s8oEppiTgmt1a0V9
+         JpmLZHjXvjh/tOFeyDjcfuwQyn+tQrdqD4NV7YyGnYWFPYCr+4llLJg4Z2RwYy+0pffy
+         6TYw==
+X-Gm-Message-State: AOAM5322BeEfmfRc9byxjhgjTztiV9uJxPx1dTnACRieVsUFd6OP2BV9
+        xgKVjkBz1VRbCOu7uyI5BmqgtA/itq112fs71h1kWA==
+X-Google-Smtp-Source: ABdhPJzYPKm/erB6sVI52cjRD9FHiQr2nWVZVyOZjhc+4s1LOvf5ZcI3PFb7AEEsBm6nMUykRgV5fktNAgsesrmbuZs=
+X-Received: by 2002:a5d:6641:: with SMTP id f1mr5731384wrw.307.1596250386460;
+ Fri, 31 Jul 2020 19:53:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+References: <20200729150748.1945589-1-daniel@0x0f.com> <20200729150748.1945589-3-daniel@0x0f.com>
+ <CAK8P3a2DY8kNMzZs6vpcsvpU1CaEQy6yCiHq40txEgUBn8d=wA@mail.gmail.com>
+In-Reply-To: <CAK8P3a2DY8kNMzZs6vpcsvpU1CaEQy6yCiHq40txEgUBn8d=wA@mail.gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Sat, 1 Aug 2020 11:53:10 +0900
+Message-ID: <CAFr9PXmNLMXDXGOF+XDK1dPVY5OO6PfSvy54tLw-Wj-gdb8wBA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt-bindings: arm: mstar: remove the binding
+ description for mstar,pmsleep
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     SoC Team <soc@kernel.org>, DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PF should check whether the cmd from VF is supported and its content
-is right before passing it to hw.
+On Sat, 1 Aug 2020 at 04:22, Arnd Bergmann <arnd@arndb.de> wrote:
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
----
-V1~V2: fix W=1 C=1 warnings
+> This patch for some reason did not apply, so I ended up removing the
+> file manually and using your changelog.
+>
+>       Arnd
 
- .../net/ethernet/huawei/hinic/hinic_hw_cmdq.h |   8 +
- .../net/ethernet/huawei/hinic/hinic_hw_mbox.c | 173 +++++++++++++++++-
- .../net/ethernet/huawei/hinic/hinic_hw_mbox.h |  14 ++
- .../net/ethernet/huawei/hinic/hinic_sriov.c   |  62 ++++++-
- 4 files changed, 255 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.h
-index f40c31e1879f..9c413e963a04 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.h
-@@ -31,6 +31,10 @@
- 			(((u64)(val) & HINIC_CMDQ_CTXT_##member##_MASK) \
- 			 << HINIC_CMDQ_CTXT_##member##_SHIFT)
- 
-+#define HINIC_CMDQ_CTXT_PAGE_INFO_GET(val, member)	\
-+			(((u64)(val) >> HINIC_CMDQ_CTXT_##member##_SHIFT) \
-+			 & HINIC_CMDQ_CTXT_##member##_MASK)
-+
- #define HINIC_CMDQ_CTXT_PAGE_INFO_CLEAR(val, member)    \
- 			((val) & (~((u64)HINIC_CMDQ_CTXT_##member##_MASK \
- 			 << HINIC_CMDQ_CTXT_##member##_SHIFT)))
-@@ -45,6 +49,10 @@
- 			(((u64)(val) & HINIC_CMDQ_CTXT_##member##_MASK) \
- 			 << HINIC_CMDQ_CTXT_##member##_SHIFT)
- 
-+#define HINIC_CMDQ_CTXT_BLOCK_INFO_GET(val, member)	\
-+			(((u64)(val) >> HINIC_CMDQ_CTXT_##member##_SHIFT) \
-+			& HINIC_CMDQ_CTXT_##member##_MASK)
-+
- #define HINIC_CMDQ_CTXT_BLOCK_INFO_CLEAR(val, member)   \
- 			((val) & (~((u64)HINIC_CMDQ_CTXT_##member##_MASK \
- 			 << HINIC_CMDQ_CTXT_##member##_SHIFT)))
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
-index 1e219adc23f6..d69f07d1da91 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
-@@ -153,7 +153,6 @@ enum hinic_mbox_tx_status {
- 			(MBOX_MSG_ID(func_to_func_mbox) + 1) & MBOX_MSG_ID_MASK)
- 
- #define FUNC_ID_OFF_SET_8B		8
--#define FUNC_ID_OFF_SET_10B		10
- 
- /* max message counter wait to process for one function */
- #define HINIC_MAX_MSG_CNT_TO_PROCESS	10
-@@ -189,6 +188,37 @@ enum mbox_aeq_trig_type {
- 	TRIGGER,
- };
- 
-+static bool check_func_id(struct hinic_hwdev *hwdev, u16 src_func_idx,
-+			  const void *buf_in, u16 in_size, u16 offset)
-+{
-+	u16 func_idx;
-+
-+	if (in_size < offset + sizeof(func_idx)) {
-+		dev_warn(&hwdev->hwif->pdev->dev,
-+			 "Receive mailbox msg len: %d less than %d Bytes is invalid\n",
-+			 in_size, offset);
-+		return false;
-+	}
-+
-+	func_idx = *((u16 *)((u8 *)buf_in + offset));
-+
-+	if (src_func_idx != func_idx) {
-+		dev_warn(&hwdev->hwif->pdev->dev,
-+			 "Receive mailbox function id: 0x%x not equal to msg function id: 0x%x\n",
-+			 src_func_idx, func_idx);
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+bool hinic_mbox_check_func_id_8B(struct hinic_hwdev *hwdev, u16 func_idx,
-+				 void *buf_in, u16 in_size)
-+{
-+	return check_func_id(hwdev, func_idx, buf_in, in_size,
-+			     FUNC_ID_OFF_SET_8B);
-+}
-+
- /**
-  * hinic_register_pf_mbox_cb - register mbox callback for pf
-  * @hwdev: the pointer to hw device
-@@ -1205,15 +1235,156 @@ static void free_mbox_wb_status(struct hinic_mbox_func_to_func *func_to_func)
- 			  send_mbox->wb_paddr);
- }
- 
-+bool hinic_mbox_check_cmd_valid(struct hinic_hwdev *hwdev,
-+				struct vf_cmd_check_handle *cmd_handle,
-+				u16 vf_id, u8 cmd, void *buf_in,
-+				u16 in_size, u8 size)
-+{
-+	u16 src_idx = vf_id + hinic_glb_pf_vf_offset(hwdev->hwif);
-+	int i;
-+
-+	for (i = 0; i < size; i++) {
-+		if (cmd == cmd_handle[i].cmd) {
-+			if (cmd_handle[i].check_cmd)
-+				return cmd_handle[i].check_cmd(hwdev, src_idx,
-+							       buf_in, in_size);
-+			else
-+				return true;
-+		}
-+	}
-+
-+	dev_err(&hwdev->hwif->pdev->dev,
-+		"PF Receive VF(%d) unsupported cmd(0x%x)\n",
-+		vf_id + hinic_glb_pf_vf_offset(hwdev->hwif), cmd);
-+
-+	return false;
-+}
-+
-+static bool hinic_cmdq_check_vf_ctxt(struct hinic_hwdev *hwdev,
-+				     struct hinic_cmdq_ctxt *cmdq_ctxt)
-+{
-+	struct hinic_cmdq_ctxt_info *ctxt_info = &cmdq_ctxt->ctxt_info;
-+	u64 curr_pg_pfn, wq_block_pfn;
-+
-+	if (cmdq_ctxt->ppf_idx != HINIC_HWIF_PPF_IDX(hwdev->hwif) ||
-+	    cmdq_ctxt->cmdq_type > HINIC_MAX_CMDQ_TYPES)
-+		return false;
-+
-+	curr_pg_pfn = HINIC_CMDQ_CTXT_PAGE_INFO_GET
-+		(ctxt_info->curr_wqe_page_pfn, CURR_WQE_PAGE_PFN);
-+	wq_block_pfn = HINIC_CMDQ_CTXT_BLOCK_INFO_GET
-+		(ctxt_info->wq_block_pfn, WQ_BLOCK_PFN);
-+	/* VF must use 0-level CLA */
-+	if (curr_pg_pfn != wq_block_pfn)
-+		return false;
-+
-+	return true;
-+}
-+
-+static bool check_cmdq_ctxt(struct hinic_hwdev *hwdev, u16 func_idx,
-+			    void *buf_in, u16 in_size)
-+{
-+	if (!hinic_mbox_check_func_id_8B(hwdev, func_idx, buf_in, in_size))
-+		return false;
-+
-+	return hinic_cmdq_check_vf_ctxt(hwdev, buf_in);
-+}
-+
-+#define HW_CTX_QPS_VALID(hw_ctxt)   \
-+		((hw_ctxt)->rq_depth >= HINIC_QUEUE_MIN_DEPTH &&	\
-+		(hw_ctxt)->rq_depth <= HINIC_QUEUE_MAX_DEPTH &&	\
-+		(hw_ctxt)->sq_depth >= HINIC_QUEUE_MIN_DEPTH &&	\
-+		(hw_ctxt)->sq_depth <= HINIC_QUEUE_MAX_DEPTH &&	\
-+		(hw_ctxt)->rx_buf_sz_idx <= HINIC_MAX_RX_BUFFER_SIZE)
-+
-+static bool hw_ctxt_qps_param_valid(struct hinic_cmd_hw_ioctxt *hw_ctxt)
-+{
-+	if (HW_CTX_QPS_VALID(hw_ctxt))
-+		return true;
-+
-+	if (!hw_ctxt->rq_depth && !hw_ctxt->sq_depth &&
-+	    !hw_ctxt->rx_buf_sz_idx)
-+		return true;
-+
-+	return false;
-+}
-+
-+static bool check_hwctxt(struct hinic_hwdev *hwdev, u16 func_idx,
-+			 void *buf_in, u16 in_size)
-+{
-+	struct hinic_cmd_hw_ioctxt *hw_ctxt = buf_in;
-+
-+	if (!hinic_mbox_check_func_id_8B(hwdev, func_idx, buf_in, in_size))
-+		return false;
-+
-+	if (hw_ctxt->ppf_idx != HINIC_HWIF_PPF_IDX(hwdev->hwif))
-+		return false;
-+
-+	if (hw_ctxt->set_cmdq_depth) {
-+		if (hw_ctxt->cmdq_depth >= HINIC_QUEUE_MIN_DEPTH &&
-+		    hw_ctxt->cmdq_depth <= HINIC_QUEUE_MAX_DEPTH)
-+			return true;
-+
-+		return false;
-+	}
-+
-+	return hw_ctxt_qps_param_valid(hw_ctxt);
-+}
-+
-+static bool check_set_wq_page_size(struct hinic_hwdev *hwdev, u16 func_idx,
-+				   void *buf_in, u16 in_size)
-+{
-+	struct hinic_wq_page_size *page_size_info = buf_in;
-+
-+	if (!hinic_mbox_check_func_id_8B(hwdev, func_idx, buf_in, in_size))
-+		return false;
-+
-+	if (page_size_info->ppf_idx != HINIC_HWIF_PPF_IDX(hwdev->hwif))
-+		return false;
-+
-+	if (((1U << page_size_info->page_size) * SZ_4K) !=
-+	    HINIC_DEFAULT_WQ_PAGE_SIZE)
-+		return false;
-+
-+	return true;
-+}
-+
-+static struct vf_cmd_check_handle hw_cmd_support_vf[] = {
-+	{HINIC_COMM_CMD_START_FLR, hinic_mbox_check_func_id_8B},
-+	{HINIC_COMM_CMD_DMA_ATTR_SET, hinic_mbox_check_func_id_8B},
-+	{HINIC_COMM_CMD_CMDQ_CTXT_SET, check_cmdq_ctxt},
-+	{HINIC_COMM_CMD_CMDQ_CTXT_GET, check_cmdq_ctxt},
-+	{HINIC_COMM_CMD_HWCTXT_SET, check_hwctxt},
-+	{HINIC_COMM_CMD_HWCTXT_GET, check_hwctxt},
-+	{HINIC_COMM_CMD_SQ_HI_CI_SET, hinic_mbox_check_func_id_8B},
-+	{HINIC_COMM_CMD_RES_STATE_SET, hinic_mbox_check_func_id_8B},
-+	{HINIC_COMM_CMD_IO_RES_CLEAR, hinic_mbox_check_func_id_8B},
-+	{HINIC_COMM_CMD_CEQ_CTRL_REG_WR_BY_UP, hinic_mbox_check_func_id_8B},
-+	{HINIC_COMM_CMD_MSI_CTRL_REG_WR_BY_UP, hinic_mbox_check_func_id_8B},
-+	{HINIC_COMM_CMD_MSI_CTRL_REG_RD_BY_UP, hinic_mbox_check_func_id_8B},
-+	{HINIC_COMM_CMD_L2NIC_RESET, hinic_mbox_check_func_id_8B},
-+	{HINIC_COMM_CMD_PAGESIZE_SET, check_set_wq_page_size},
-+};
-+
- static int comm_pf_mbox_handler(void *handle, u16 vf_id, u8 cmd, void *buf_in,
- 				u16 in_size, void *buf_out, u16 *out_size)
- {
-+	u8 size = ARRAY_SIZE(hw_cmd_support_vf);
- 	struct hinic_hwdev *hwdev = handle;
- 	struct hinic_pfhwdev *pfhwdev;
- 	int err = 0;
- 
- 	pfhwdev = container_of(hwdev, struct hinic_pfhwdev, hwdev);
- 
-+	if (!hinic_mbox_check_cmd_valid(handle, hw_cmd_support_vf, vf_id, cmd,
-+					buf_in, in_size, size)) {
-+		dev_err(&hwdev->hwif->pdev->dev,
-+			"PF Receive VF: %d common cmd: 0x%x or mbox len: 0x%x is invalid\n",
-+			vf_id + hinic_glb_pf_vf_offset(hwdev->hwif), cmd,
-+			in_size);
-+		return HINIC_MBOX_VF_CMD_ERROR;
-+	}
-+
- 	if (cmd == HINIC_COMM_CMD_START_FLR) {
- 		*out_size = 0;
- 	} else {
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.h
-index 0618fe515d9c..46953190d29e 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.h
-@@ -24,6 +24,12 @@
- 
- #define MAX_FUNCTION_NUM		512
- 
-+struct vf_cmd_check_handle {
-+	u8 cmd;
-+	bool (*check_cmd)(struct hinic_hwdev *hwdev, u16 src_func_idx,
-+			  void *buf_in, u16 in_size);
-+};
-+
- enum hinic_mbox_ack_type {
- 	MBOX_ACK,
- 	MBOX_NO_ACK,
-@@ -122,6 +128,14 @@ struct vf_cmd_msg_handle {
- 			       void *buf_out, u16 *out_size);
- };
- 
-+bool hinic_mbox_check_func_id_8B(struct hinic_hwdev *hwdev, u16 func_idx,
-+				 void *buf_in, u16 in_size);
-+
-+bool hinic_mbox_check_cmd_valid(struct hinic_hwdev *hwdev,
-+				struct vf_cmd_check_handle *cmd_handle,
-+				u16 vf_id, u8 cmd, void *buf_in,
-+				u16 in_size, u8 size);
-+
- int hinic_register_pf_mbox_cb(struct hinic_hwdev *hwdev,
- 			      enum hinic_mod_type mod,
- 			      hinic_pf_mbox_cb callback);
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-index 1d8a115cb9ec..4d63680f2143 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-@@ -429,6 +429,18 @@ static int hinic_get_vf_link_status_msg_handler(void *hwdev, u16 vf_id,
- 	return 0;
- }
- 
-+static bool check_func_table(struct hinic_hwdev *hwdev, u16 func_idx,
-+			     void *buf_in, u16 in_size)
-+{
-+	struct hinic_cmd_fw_ctxt *function_table = buf_in;
-+
-+	if (!hinic_mbox_check_func_id_8B(hwdev, func_idx, buf_in, in_size) ||
-+	    !function_table->rx_buf_sz)
-+		return false;
-+
-+	return true;
-+}
-+
- static struct vf_cmd_msg_handle nic_vf_cmd_msg_handler[] = {
- 	{HINIC_PORT_CMD_VF_REGISTER, hinic_register_vf_msg_handler},
- 	{HINIC_PORT_CMD_VF_UNREGISTER, hinic_unregister_vf_msg_handler},
-@@ -439,6 +451,45 @@ static struct vf_cmd_msg_handle nic_vf_cmd_msg_handler[] = {
- 	{HINIC_PORT_CMD_GET_LINK_STATE, hinic_get_vf_link_status_msg_handler},
- };
- 
-+static struct vf_cmd_check_handle nic_cmd_support_vf[] = {
-+	{HINIC_PORT_CMD_VF_REGISTER, NULL},
-+	{HINIC_PORT_CMD_VF_UNREGISTER, NULL},
-+	{HINIC_PORT_CMD_CHANGE_MTU, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_ADD_VLAN, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_DEL_VLAN, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_SET_MAC, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_MAC, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_DEL_MAC, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_SET_RX_MODE, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_PAUSE_INFO, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_LINK_STATE, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_SET_LRO, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_SET_RX_CSUM, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_SET_RX_VLAN_OFFLOAD, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_VPORT_STAT, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_CLEAN_VPORT_STAT, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_RSS_TEMPLATE_INDIR_TBL,
-+	 hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_SET_RSS_TEMPLATE_TBL, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_RSS_TEMPLATE_TBL, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_SET_RSS_HASH_ENGINE, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_RSS_HASH_ENGINE, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_RSS_CTX_TBL, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_SET_RSS_CTX_TBL, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_RSS_TEMP_MGR, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_RSS_CFG, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_FWCTXT_INIT, check_func_table},
-+	{HINIC_PORT_CMD_GET_MGMT_VERSION, NULL},
-+	{HINIC_PORT_CMD_SET_FUNC_STATE, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_GLOBAL_QPN, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_SET_TSO, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_SET_RQ_IQ_MAP, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_LINK_STATUS_REPORT, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_UPDATE_MAC, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_CAP, hinic_mbox_check_func_id_8B},
-+	{HINIC_PORT_CMD_GET_LINK_MODE, hinic_mbox_check_func_id_8B},
-+};
-+
- #define CHECK_IPSU_15BIT	0X8000
- 
- static
-@@ -972,6 +1023,7 @@ int hinic_ndo_set_vf_link_state(struct net_device *netdev, int vf_id, int link)
- static int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
- 			       u16 in_size, void *buf_out, u16 *out_size)
- {
-+	u8 size = ARRAY_SIZE(nic_cmd_support_vf);
- 	struct vf_cmd_msg_handle *vf_msg_handle;
- 	struct hinic_hwdev *dev = hwdev;
- 	struct hinic_func_to_io *nic_io;
-@@ -980,7 +1032,15 @@ static int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
- 	u32 i;
- 
- 	if (!hwdev)
--		return -EFAULT;
-+		return -EINVAL;
-+
-+	if (!hinic_mbox_check_cmd_valid(hwdev, nic_cmd_support_vf, vf_id, cmd,
-+					buf_in, in_size, size)) {
-+		dev_err(&dev->hwif->pdev->dev,
-+			"PF Receive VF nic cmd: 0x%x, mbox len: 0x%x is invalid\n",
-+			cmd, in_size);
-+		return HINIC_MBOX_VF_CMD_ERROR;
-+	}
- 
- 	pfhwdev = container_of(dev, struct hinic_pfhwdev, hwdev);
- 	nic_io = &dev->func_to_io;
--- 
-2.17.1
-
+Thanks Arnd.
