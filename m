@@ -2,138 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B34235442
+	by mail.lfdr.de (Postfix) with ESMTP id DF2A0235443
 	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 22:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgHAUZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 16:25:04 -0400
-Received: from mga05.intel.com ([192.55.52.43]:64680 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbgHAUZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 16:25:04 -0400
-IronPort-SDR: jekXsi2FFocTM81AVhylK1BkjHEzGleHqP89XJeWBVwyRXATyhhTmb/aIMmBZHE+olmO8KEAA1
- IU+3iXYu47EA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9700"; a="236824398"
-X-IronPort-AV: E=Sophos;i="5.75,423,1589266800"; 
-   d="scan'208";a="236824398"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2020 13:25:03 -0700
-IronPort-SDR: 62NAZ/W1U7Q49Y+VXsvcwQdezbTP/fbT5w/3iubECJrFH8RFVSy3igWDdgFroC1ZdPgleEAdOs
- ElBR8boKzXTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,423,1589266800"; 
-   d="scan'208";a="435774213"
-Received: from lkp-server01.sh.intel.com (HELO e21119890065) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 01 Aug 2020 13:25:02 -0700
-Received: from kbuild by e21119890065 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k1y3x-0000vR-SX; Sat, 01 Aug 2020 20:25:01 +0000
-Date:   Sun, 02 Aug 2020 04:23:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 949bcb8135a96a6923e676646bd29cbe69e8350f
-Message-ID: <5f25cf41.J9eb8cAtqcKNZJJh%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727817AbgHAU0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 16:26:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgHAU0U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 16:26:20 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B85C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 13:26:20 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id qc22so19975379ejb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 13:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+a0yGWWLvkimp+sCjAPTJ7AG+vTG8fsI+soOkfq3Pko=;
+        b=N5BlGEIXsHi8EpCipphyP8VliOgOo4GRnkefnH7vphNqt0wn2AruvHwtHbKE9jJL4j
+         RUHCkue/PDymY1HlwrUyNlxvqcFs9lyxGzGzOi9NuFt22jMj+nStfWYjvzJBHJlNt8uA
+         KnpvjY+uFyXkC5AAQAIBP8+bGtZMA5VMSl1S638s2NuYX7Kqjdxw7Ks4ZDLe4c7UoCqA
+         IpxFRZ7ZkDybofZLmpYQpaBtoG7+7Kp7dGdEtZzww8WcvE7xujp97imyxMcLDossN6rQ
+         ik+fwFC7l8pat7BwuvJ6fhygzTvDNoxWOfm6mWfVgFFtOF7CeIFIfwdZ6zxDjMslQpaD
+         kYpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+a0yGWWLvkimp+sCjAPTJ7AG+vTG8fsI+soOkfq3Pko=;
+        b=VkGVFwbsxQfLXhYtvymLk5xTqvhol4rIp0oVPJvKMNoeRms+CVYdtgJ1AhmqAz/SUM
+         Sc9ecijOkzwro64CafIuBsbdSHKCED5o0DCrARHTHbrJhOnGO4R6+39v5z3+dfJZu7DY
+         sKMR6LGQAfe6rC6DpDTGa3pfSYV1YEIAtjSY30a10mTINCyJ/ZhyTAetJ4HYZ+JKtI0P
+         /bj+iV9B928K9mI0WzIiBViXfL71jdFHM3DgSR0Hx/OCnRWzi0UzVEXAV2Xms0unSeil
+         7J+ZQndS/m5Q9l6EV2dXs1n0FTBjtiFVBasZrYUfNn1PuQSx7yYL1dutilo9pZXZv7ba
+         tLkQ==
+X-Gm-Message-State: AOAM53099CmH/nQ7Ag+V3lQXrqUQgNZtO4uf1NQXDMcY1rjOFY08XWwV
+        V9YnDbmBCz9P+yUF8GiaL8WfgW6MdXNNL4wjCGTr
+X-Google-Smtp-Source: ABdhPJwXECVTRu8guNz+dzN8J9+xWDM9V6RqekJhlUpEKFQgqXixVlN0WdfX25oXJLL0dVvYiOa0wDOgjmoMLDdqupc=
+X-Received: by 2002:a17:906:7c86:: with SMTP id w6mr9625303ejo.178.1596313578663;
+ Sat, 01 Aug 2020 13:26:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200801184603.310769-1-jbi.octave@gmail.com> <20200801184603.310769-3-jbi.octave@gmail.com>
+ <91c6c45f0d8ec0d031c216711cd8d7f6e9aad7ad.camel@perches.com>
+In-Reply-To: <91c6c45f0d8ec0d031c216711cd8d7f6e9aad7ad.camel@perches.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sat, 1 Aug 2020 16:26:07 -0400
+Message-ID: <CAHC9VhRZ8_ZH_HZxG7coSgXo5O+G-o91wYrCv-UPK8R03OjFxg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] audit: uninitialize global variable audit_sig_sid
+To:     Joe Perches <joe@perches.com>, Jules Irenge <jbi.octave@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Eric Paris <eparis@redhat.com>,
+        "moderated list:AUDIT SUBSYSTEM" <linux-audit@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  sched/core
-branch HEAD: 949bcb8135a96a6923e676646bd29cbe69e8350f  sched/doc: Factorize bits between sched-energy.rst & sched-capacity.rst
+On Sat, Aug 1, 2020 at 2:55 PM Joe Perches <joe@perches.com> wrote:
+> On Sat, 2020-08-01 at 19:46 +0100, Jules Irenge wrote:
+> > Checkpatch tool reports an error at variable audit_sig_sid declaration
+> []
+> > diff --git a/kernel/audit.c b/kernel/audit.c
+> []
+> > @@ -125,7 +125,7 @@ static u32        audit_backlog_wait_time = AUDIT_BACKLOG_WAIT_TIME;
+> >  /* The identity of the user shutting down the audit system. */
+> >  kuid_t               audit_sig_uid = INVALID_UID;
+> >  pid_t                audit_sig_pid = -1;
+> > -u32          audit_sig_sid = 0;
+> > +u32          audit_sig_sid;
+>
+> All of these are unused outside of audit.c and might as
+> well be static and removed from the .h file.
 
-elapsed time: 724m
+There's plenty of time before the merge window closes, doing this
+would definitely make this patch much more useful than the typical
+checkpatch noise.
 
-configs tested: 76
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         cm_x300_defconfig
-sh                          kfr2r09_defconfig
-arm                            pleb_defconfig
-mips                  mips_paravirt_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20200802
-x86_64               randconfig-a001-20200802
-x86_64               randconfig-a004-20200802
-x86_64               randconfig-a003-20200802
-x86_64               randconfig-a002-20200802
-x86_64               randconfig-a005-20200802
-i386                 randconfig-a005-20200731
-i386                 randconfig-a004-20200731
-i386                 randconfig-a006-20200731
-i386                 randconfig-a002-20200731
-i386                 randconfig-a001-20200731
-i386                 randconfig-a003-20200731
-x86_64               randconfig-a015-20200731
-x86_64               randconfig-a014-20200731
-x86_64               randconfig-a016-20200731
-x86_64               randconfig-a012-20200731
-x86_64               randconfig-a013-20200731
-x86_64               randconfig-a011-20200731
-i386                 randconfig-a016-20200731
-i386                 randconfig-a012-20200731
-i386                 randconfig-a014-20200731
-i386                 randconfig-a015-20200731
-i386                 randconfig-a011-20200731
-i386                 randconfig-a013-20200731
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+paul moore
+www.paul-moore.com
