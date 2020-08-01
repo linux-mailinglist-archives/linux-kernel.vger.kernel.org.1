@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209EE23528A
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 15:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4745B235286
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 15:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729103AbgHANGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 09:06:23 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8748 "EHLO huawei.com"
+        id S1729025AbgHANGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 09:06:13 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8747 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728770AbgHANGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 09:06:15 -0400
+        id S1725778AbgHANGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 09:06:12 -0400
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 2F5C34CE450590F118BA;
+        by Forcepoint Email with ESMTP id 2645BE3FBDF526DA0C66;
         Sat,  1 Aug 2020 21:06:10 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 1 Aug 2020 21:05:59 +0800
+ 14.3.487.0; Sat, 1 Aug 2020 21:06:01 +0800
 From:   Chen Zhou <chenzhou10@huawei.com>
 To:     <catalin.marinas@arm.com>, <will@kernel.org>,
         <james.morse@arm.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
@@ -29,9 +29,9 @@ CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
         <linux-doc@vger.kernel.org>, <chenzhou10@huawei.com>,
         <guohanjun@huawei.com>, <xiexiuqi@huawei.com>,
         <huawei.libin@huawei.com>, <wangkefeng.wang@huawei.com>
-Subject: [PATCH v11 3/5] arm64: kdump: reimplement crashkernel=X
-Date:   Sat, 1 Aug 2020 21:08:54 +0800
-Message-ID: <20200801130856.86625-4-chenzhou10@huawei.com>
+Subject: [PATCH v11 4/5] arm64: kdump: add memory for devices by DT property linux,usable-memory-range
+Date:   Sat, 1 Aug 2020 21:08:55 +0800
+Message-ID: <20200801130856.86625-5-chenzhou10@huawei.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200801130856.86625-1-chenzhou10@huawei.com>
 References: <20200801130856.86625-1-chenzhou10@huawei.com>
@@ -45,156 +45,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are following issues in arm64 kdump:
-1. We use crashkernel=X to reserve crashkernel below 4G, which
-will fail when there is no enough low memory.
-2. If reserving crashkernel above 4G, in this case, crash dump
-kernel will boot failure because there is no low memory available
-for allocation.
-3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
-if the memory reserved for crash dump kernel falled in ZONE_DMA32,
-the devices in crash dump kernel need to use ZONE_DMA will alloc
-fail.
+When reserving crashkernel in high memory, some low memory is reserved
+for crash dump kernel devices and never mapped by the first kernel.
+This memory range is advertised to crash dump kernel via DT property
+under /chosen,
+	linux,usable-memory-range = <BASE1 SIZE1 [BASE2 SIZE2]>
 
-To solve these issues, change the behavior of crashkernel=X.
-crashkernel=X tries low allocation in ZONE_DMA, and fall back to
-high allocation if it fails.
+We reused the DT property linux,usable-memory-range and made the low
+memory region as the second range "BASE2 SIZE2", which keeps compatibility
+with existing user-space and older kdump kernels.
 
-If requized size X is too large and leads to very little free memory
-in ZONE_DMA after low allocation, the system may not work normally.
-So add a threshold and go for high allocation directly if the required
-size is too large. The value of threshold is set as the half of
-the low memory.
-
-If crash_base is outside ZONE_DMA, try to allocate at least 256M in
-ZONE_DMA automatically. "crashkernel=Y,low" can be used to allocate
-specified size low memory.
-
-For non-RPi4 platforms, change ZONE_DMA memtioned above to ZONE_DMA32.
-
-Another minor change, there may be two regions reserved for crash
-dump kernel, in order to distinct from the high region and make no
-effect to the use of existing kexec-tools, rename the low region as
-"Crash kernel (low)".
+Crash dump kernel reads this property at boot time and call memblock_add()
+to add the low memory region after memblock_cap_memory_range() has been
+called.
 
 Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
 ---
- arch/arm64/include/asm/kexec.h |  4 +++
- arch/arm64/kernel/setup.c      |  8 +++++-
- arch/arm64/mm/init.c           | 51 ++++++++++++++++++++++++++++++----
- 3 files changed, 57 insertions(+), 6 deletions(-)
+ arch/arm64/mm/init.c | 44 ++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 34 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-index 1a2f27f12794..92ed53d0bf21 100644
---- a/arch/arm64/include/asm/kexec.h
-+++ b/arch/arm64/include/asm/kexec.h
-@@ -28,7 +28,11 @@
- /* 2M alignment for crash kernel regions */
- #define CRASH_ALIGN	SZ_2M
- 
-+#ifdef CONFIG_ZONE_DMA
-+#define CRASH_ADDR_LOW_MAX	arm64_dma_phys_limit
-+#else
- #define CRASH_ADDR_LOW_MAX	arm64_dma32_phys_limit
-+#endif
- 
- #ifndef __ASSEMBLY__
- 
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 93b3844cf442..4dc51a2ac012 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -238,7 +238,13 @@ static void __init request_standard_resources(void)
- 		    kernel_data.end <= res->end)
- 			request_resource(res, &kernel_data);
- #ifdef CONFIG_KEXEC_CORE
--		/* Userspace will find "Crash kernel" region in /proc/iomem. */
-+		/*
-+		 * Userspace will find "Crash kernel" region in /proc/iomem.
-+		 * Note: the low region is renamed as Crash kernel (low).
-+		 */
-+		if (crashk_low_res.end && crashk_low_res.start >= res->start &&
-+				crashk_low_res.end <= res->end)
-+			request_resource(res, &crashk_low_res);
- 		if (crashk_res.end && crashk_res.start >= res->start &&
- 		    crashk_res.end <= res->end)
- 			request_resource(res, &crashk_res);
 diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index a3d0193f6a0a..53c8916fd32f 100644
+index 53c8916fd32f..f385a8281d1b 100644
 --- a/arch/arm64/mm/init.c
 +++ b/arch/arm64/mm/init.c
-@@ -70,6 +70,14 @@ phys_addr_t arm64_dma_phys_limit __ro_after_init;
+@@ -69,6 +69,16 @@ EXPORT_SYMBOL(vmemmap);
+ phys_addr_t arm64_dma_phys_limit __ro_after_init;
  phys_addr_t arm64_dma32_phys_limit __ro_after_init;
  
- #ifdef CONFIG_KEXEC_CORE
-+
 +/*
-+ * Add a threshold for required memory size of crashkernel. If required memory
-+ * size is greater than threshold, just go for high allocation directly. The
-+ * value of threshold is set as half of the total low memory.
++ * The main usage of linux,usable-memory-range is for crash dump kernel.
++ * Originally, the number of usable-memory regions is one. Now there may
++ * be two regions, low region and high region.
++ * To make compatibility with existing user-space and older kdump, the low
++ * region is always the last range of linux,usable-memory-range if exist.
 + */
-+#define REQUIRED_MEMORY_THRESHOLD	(memblock_mem_size(CRASH_ADDR_LOW_MAX >> \
-+			PAGE_SHIFT) >> 1)
++#define MAX_USABLE_RANGES	2
++
++
+ #ifdef CONFIG_KEXEC_CORE
+ 
  /*
-  * reserve_crashkernel() - reserves memory for crash kernel
-  *
-@@ -90,11 +98,22 @@ static void __init reserve_crashkernel(void)
+@@ -286,9 +296,9 @@ early_param("mem", early_mem);
+ static int __init early_init_dt_scan_usablemem(unsigned long node,
+ 		const char *uname, int depth, void *data)
+ {
+-	struct memblock_region *usablemem = data;
+-	const __be32 *reg;
+-	int len;
++	struct memblock_region *usable_rgns = data;
++	const __be32 *reg, *endp;
++	int len, nr = 0;
  
- 	crash_size = PAGE_ALIGN(crash_size);
+ 	if (depth != 1 || strcmp(uname, "chosen") != 0)
+ 		return 0;
+@@ -297,22 +307,36 @@ static int __init early_init_dt_scan_usablemem(unsigned long node,
+ 	if (!reg || (len < (dt_root_addr_cells + dt_root_size_cells)))
+ 		return 1;
  
--	if (crash_base == 0) {
--		/* Current arm64 boot protocol requires 2MB alignment */
--		crash_base = memblock_find_in_range(0, CRASH_ADDR_LOW_MAX,
--				crash_size, CRASH_ALIGN);
--		if (crash_base == 0) {
-+	if (!crash_base) {
-+		/*
-+		 * Current arm64 boot protocol requires 2MB alignment.
-+		 * If required memory size is greater than threshold, just go
-+		 * for high allocation directly.
-+		 * If required memory size is less than or equal to threshold,
-+		 * try low allocation firstly, and then fall back to high allocation
-+		 * if it fails.
-+		 */
-+		if (crash_size <= REQUIRED_MEMORY_THRESHOLD)
-+			crash_base = memblock_find_in_range(0, CRASH_ADDR_LOW_MAX,
-+					crash_size, CRASH_ALIGN);
-+		if (!crash_base)
-+			crash_base = memblock_find_in_range(0, MEMBLOCK_ALLOC_ACCESSIBLE,
-+					crash_size, SZ_2M);
-+		if (!crash_base) {
- 			pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
- 				crash_size);
- 			return;
-@@ -118,6 +137,28 @@ static void __init reserve_crashkernel(void)
- 	}
- 	memblock_reserve(crash_base, crash_size);
- 
-+	if (crash_base >= CRASH_ADDR_LOW_MAX) {
-+		const char *rename = "Crash kernel (low)";
+-	usablemem->base = dt_mem_next_cell(dt_root_addr_cells, &reg);
+-	usablemem->size = dt_mem_next_cell(dt_root_size_cells, &reg);
++	endp = reg + (len / sizeof(__be32));
++	while ((endp - reg) >= (dt_root_addr_cells + dt_root_size_cells)) {
++		usable_rgns[nr].base = dt_mem_next_cell(dt_root_addr_cells, &reg);
++		usable_rgns[nr].size = dt_mem_next_cell(dt_root_size_cells, &reg);
 +
-+		if (reserve_crashkernel_low()) {
-+			memblock_free(crash_base, crash_size);
-+			return;
-+		}
-+
-+		/*
-+		 * In order to distinct from the high region and make no effect
-+		 * to the use of existing kexec-tools, rename the low region as
-+		 * "Crash kernel (low)".
-+		 */
-+		crashk_low_res.name = rename;
-+		/*
-+		 * The low region is intended to be used for crash dump kernel
-+		 * devices, just mark the low region as "nomap" simply.
-+		 */
-+		memblock_mark_nomap(crashk_low_res.start,
-+				    resource_size(&crashk_low_res));
++		if (++nr >= MAX_USABLE_RANGES)
++			break;
 +	}
-+
- 	pr_info("crashkernel reserved: 0x%016llx - 0x%016llx (%lld MB)\n",
- 		crash_base, crash_base + crash_size, crash_size >> 20);
  
+ 	return 1;
+ }
+ 
+ static void __init fdt_enforce_memory_region(void)
+ {
+-	struct memblock_region reg = {
+-		.size = 0,
++	struct memblock_region usable_rgns[MAX_USABLE_RANGES] = {
++		{ .size = 0 },
++		{ .size = 0 }
+ 	};
+ 
+-	of_scan_flat_dt(early_init_dt_scan_usablemem, &reg);
++	of_scan_flat_dt(early_init_dt_scan_usablemem, &usable_rgns);
+ 
+-	if (reg.size)
+-		memblock_cap_memory_range(reg.base, reg.size);
++	/*
++	 * The first range of usable-memory regions is for crash dump
++	 * kernel with only one region or for high region with two regions,
++	 * the second range is dedicated for low region if exist.
++	 */
++	if (usable_rgns[0].size)
++		memblock_cap_memory_range(usable_rgns[0].base, usable_rgns[0].size);
++	if (usable_rgns[1].size)
++		memblock_add(usable_rgns[1].base, usable_rgns[1].size);
+ }
+ 
+ void __init arm64_memblock_init(void)
 -- 
 2.20.1
 
