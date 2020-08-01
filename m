@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A8B235189
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 11:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C68235192
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 11:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728779AbgHAJm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 05:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725931AbgHAJm1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 05:42:27 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F858C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 02:42:27 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id q7so34821799ljm.1
-        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 02:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Geux1n7ky2eH1Y8p9KzQaNhv3N4zS3YhRr+vtlh2v1k=;
-        b=RyBKbaORrd7Ioae/J9LKl0aWf3Te5dKlH704lW5I7OPuFRkCis2LsMYTYPnuieKnPN
-         YktxMvwrjlpTrgj0Uaz+QDKbcYuxuMEzwKbTzt0iTUk5YbKKbMm7o+2vXYS8ItpF1vFm
-         F0chhUDF1xN4ua+hXhf/oTYN0rn75z1h1Fr4xHBGSc7gI6SPw4ffIL21eGEkZ/+ac9q2
-         dzTFH8HvjiscMxOR2s1rGPnqlE3csaLJ0dWuY4yaJcoCFm4OSDT9wXkjkZRIq1Yca81W
-         neJo0bsS+WH7/6yD6bCi5wxlQQ6W/W0xvOlY5N6Gv6djAPqH4qkojjHyFkYDH9Lz6Djm
-         3KIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Geux1n7ky2eH1Y8p9KzQaNhv3N4zS3YhRr+vtlh2v1k=;
-        b=iAGPXU5ypQRUyTAlymlF+KIwsXgOZzbnyW7YmdEHS0LmnnTSZ82uLhXee/80nqhsiZ
-         ufxVblUqUwSnt/D4UfIRT0JrbNh/sTbxz3uOQbNYo35Dtf3ztaRfl1ocgEVQgGZxfLYB
-         0yeytGuEaXq34vnoX1Zddt3Z5FSnArDV41xX0NzagS5KLtualNaOAm+u/BDs5UewwKWa
-         qyi4TjmG26PX/ozT/Q9l08sp7lJ/uBTxTzbaZOO1AZqbUivwaP/wKBmIhMej6hc8w128
-         TvGCcax61hUU0O2s5HqBxRk6TW1dQTLcnnFIhyp+KiOlv+xIpku9eY31Bhbx1yjG6k1/
-         rfHQ==
-X-Gm-Message-State: AOAM530rbbA2jec4ZumKJfRDZoW6CySOMGG7VTzqm0S2hxsNgw14mQNy
-        TGEuGrjewLzfyj0YNRDPHXIjX5lk
-X-Google-Smtp-Source: ABdhPJwdS0XFEcLSlBLi6ME2sayBQ4pLwGM9u5UnUzt5guHcN/wvVR4+5Rm/hBZ2SyTNlBX2lOBclA==
-X-Received: by 2002:a2e:320c:: with SMTP id y12mr3485354ljy.399.1596274945927;
-        Sat, 01 Aug 2020 02:42:25 -0700 (PDT)
-Received: from alpha (10.177.smarthome.spb.ru. [109.71.177.10])
-        by smtp.gmail.com with ESMTPSA id q29sm2573932lfb.94.2020.08.01.02.42.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Aug 2020 02:42:25 -0700 (PDT)
-Received: (nullmailer pid 13495 invoked by uid 1000);
-        Sat, 01 Aug 2020 09:47:20 -0000
-From:   Ivan Safonov <insafonov@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        B K Karthik <bkkarthik@pesu.pes.edu>,
-        Michael Straube <straube.linux@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Ivan Safonov <insafonov@gmail.com>
-Subject: [PATCH] staging: r8188eu: replace rtw_netdev_priv define with inline function
-Date:   Sat,  1 Aug 2020 12:47:07 +0300
-Message-Id: <20200801094707.13449-1-insafonov@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1728663AbgHAJvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 05:51:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725876AbgHAJvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 05:51:24 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15ABB20725;
+        Sat,  1 Aug 2020 09:51:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596275483;
+        bh=v2/+wm7/ZgJPVdDZ5fDV3AVWi0VZF9wUEj4ulC1C+2g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bnyoXCl5yo3Qywrx47QApLP9qsK4JomrJFDjiHlDxLf0G3jbLWDKLA2NHeyaDRBwU
+         B9ANzpmijpStrTK3/juzfa4R7PgOaO//4gxJat2Ts5sP/D6G62eyNm72fbC1v8grkB
+         YcY4vTtmiV3txsSGstN/BdKzjssF6jPp7m8J/PmE=
+Date:   Sat, 1 Aug 2020 11:51:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ivan Safonov <insafonov@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        devel@driverdev.osuosl.org, B K Karthik <bkkarthik@pesu.pes.edu>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: replace rtw_netdev_priv define with
+ inline function
+Message-ID: <20200801095108.GA2840539@kroah.com>
+References: <20200801094707.13449-1-insafonov@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200801094707.13449-1-insafonov@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function guarantees type checking of arguments and return value.
+On Sat, Aug 01, 2020 at 12:47:07PM +0300, Ivan Safonov wrote:
+> The function guarantees type checking of arguments and return value.
+> 
+> Signed-off-by: Ivan Safonov <insafonov@gmail.com>
+> ---
+>  drivers/staging/rtl8188eu/include/osdep_service.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8188eu/include/osdep_service.h b/drivers/staging/rtl8188eu/include/osdep_service.h
+> index 31d897f1d21f..e0ccafdea9cd 100644
+> --- a/drivers/staging/rtl8188eu/include/osdep_service.h
+> +++ b/drivers/staging/rtl8188eu/include/osdep_service.h
+> @@ -71,8 +71,10 @@ struct rtw_netdev_priv_indicator {
+>  };
+>  struct net_device *rtw_alloc_etherdev_with_old_priv(void *old_priv);
+>  
+> -#define rtw_netdev_priv(netdev)					\
+> -	(((struct rtw_netdev_priv_indicator *)netdev_priv(netdev))->priv)
+> +static inline struct adapter *rtw_netdev_priv(struct net_device *dev)
+> +{
+> +	return (((struct rtw_netdev_priv_indicator *)netdev_priv(dev))->priv);
+> +}
+>  void rtw_free_netdev(struct net_device *netdev);
 
-Signed-off-by: Ivan Safonov <insafonov@gmail.com>
----
- drivers/staging/rtl8188eu/include/osdep_service.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Is the cast really needed?
 
-diff --git a/drivers/staging/rtl8188eu/include/osdep_service.h b/drivers/staging/rtl8188eu/include/osdep_service.h
-index 31d897f1d21f..e0ccafdea9cd 100644
---- a/drivers/staging/rtl8188eu/include/osdep_service.h
-+++ b/drivers/staging/rtl8188eu/include/osdep_service.h
-@@ -71,8 +71,10 @@ struct rtw_netdev_priv_indicator {
- };
- struct net_device *rtw_alloc_etherdev_with_old_priv(void *old_priv);
- 
--#define rtw_netdev_priv(netdev)					\
--	(((struct rtw_netdev_priv_indicator *)netdev_priv(netdev))->priv)
-+static inline struct adapter *rtw_netdev_priv(struct net_device *dev)
-+{
-+	return (((struct rtw_netdev_priv_indicator *)netdev_priv(dev))->priv);
-+}
- void rtw_free_netdev(struct net_device *netdev);
- 
- #define FUNC_NDEV_FMT "%s(%s)"
--- 
-2.26.2
+And no blank line before the next function prototype?
 
+And is this really needed?  Type checking is already happening as this
+is a "simple" macro, right?
+
+thanks,
+
+greg k-h
