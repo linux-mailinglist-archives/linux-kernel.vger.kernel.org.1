@@ -2,163 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFE023543D
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 22:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C9C235441
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 22:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgHAUK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 16:10:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42887 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgHAUK2 (ORCPT
+        id S1726907AbgHAUVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 16:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgHAUVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 16:10:28 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k1xpe-00044g-DI; Sat, 01 Aug 2020 20:10:14 +0000
-Date:   Sat, 1 Aug 2020 22:10:13 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Dmitry V. Levin" <ldv@altlinux.org>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-        Elvira Khabirova <lineprinter@altlinux.org>,
-        Eugene Syromyatnikov <evgsyr@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH v3] ptrace: Prevent
- kernel-infoleak in ptrace_get_syscall_info()
-Message-ID: <20200801201013.gjqj4digttp2rtmj@wittgenstein>
-References: <20200801020841.227522-1-yepeilin.cs@gmail.com>
- <20200801152044.230416-1-yepeilin.cs@gmail.com>
- <20200801160818.GB4964@altlinux.org>
+        Sat, 1 Aug 2020 16:21:30 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C54C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 13:21:29 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id i26so21313572edv.4
+        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 13:21:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DpdyXRkNBFG6+sXGVp5popQlf9jPzy3fYXE2HQTaqO8=;
+        b=A+0JKxQ5QCsn8gb7+xJ85umagCwJG/uw+1NzJiFLUjpgcXRR4gjtb5HE4aFnaPwzu1
+         HMjppwxQrBwv5i/v5lo63Hwjufzk5fxMThw+JV19D63g7GccUmHqIwIGmAnQ8+2VlPK0
+         wlC23XmHDRwDfW8thWYWg42PE0sDGTQ9GU2+ZVhQSHA1/ESReQTWSVYpwC3bzdJOansx
+         QVuuXFViM3gppuKL3Ly+bii6ahTj51ywLoc2sWZgUd8ndRaK3an8o4+tZTxO/W4Rc4vn
+         Q/dQ+ycq7cZdxFuoxGiRUVklqJCRKqWT+YiQFJQ61wAc7DKIKX90YQSB2XfED9dnYjnO
+         eXBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DpdyXRkNBFG6+sXGVp5popQlf9jPzy3fYXE2HQTaqO8=;
+        b=p3wIChUAsZ0yji6mPuOx6FAXfScDJCkARbMc1387d6w8LQAheaYHl/fHFrGjjZ/UAt
+         Mw1BX5W6rH5xhhsc0Fkkpj/niBk91IrolQYYdP9z3SFbWqgBmGtFcrRh+nwFZQfzv9bE
+         57yCNOMH5C00Cr1kHTRbUc5Yb2pDwfCBPjp+9tQRn0CbKF/SxpsRTgOTpxDl8CcVuw/3
+         mLcpvAogFLhhtQBg8gjBZU1Ho/OLjFEZ5ASvAuURWeik59BZIpLo+Ym3bkCyeA4iefxv
+         KSmjM7ovfZaDpLcy14oGdtCRL3mmdso0xhtH8E/OjsT2o7h0p4p2Ukzkqq1eppKEAbCl
+         e5KQ==
+X-Gm-Message-State: AOAM531TpGIdSDiBg64oB+5ghw3BJIzteRIHOu2BxHnEDlPPTHrlNZaZ
+        lRcGj8VqbuvC0+/b5JL/Tfyhqz0XS8Fe3oXRe+IC
+X-Google-Smtp-Source: ABdhPJxKvpP7c/4ASnHj27ybqk8nE0dF6fzyqwCvABNvHDQ61gcaXwTR2Q6Q0tBM+zsR0oflrNIPY5GLxaAiHJz9ksg=
+X-Received: by 2002:aa7:db10:: with SMTP id t16mr9125634eds.196.1596313287057;
+ Sat, 01 Aug 2020 13:21:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200801160818.GB4964@altlinux.org>
+References: <20200801184603.310769-1-jbi.octave@gmail.com> <20200801184603.310769-4-jbi.octave@gmail.com>
+In-Reply-To: <20200801184603.310769-4-jbi.octave@gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sat, 1 Aug 2020 16:21:15 -0400
+Message-ID: <CAHC9VhTQTvr2+TTL3rWyweVEDx_=q81YozPJyfhELOpn9zxDqA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] audit: uninitialize static variables
+To:     Jules Irenge <jbi.octave@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Eric Paris <eparis@redhat.com>,
+        "moderated list:AUDIT SUBSYSTEM" <linux-audit@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 01, 2020 at 07:08:19PM +0300, Dmitry V. Levin wrote:
-> On Sat, Aug 01, 2020 at 11:20:44AM -0400, Peilin Ye wrote:
-> > ptrace_get_syscall_info() is potentially copying uninitialized stack
-> > memory to userspace, since the compiler may leave a 3-byte hole near the
-> > beginning of `info`. Fix it by adding a padding field to `struct
-> > ptrace_syscall_info`.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 201766a20e30 ("ptrace: add PTRACE_GET_SYSCALL_INFO request")
-> > Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > ---
-> > Change in v3:
-> >     - Remove unnecessary `__aligned__` attribute. (Suggested by
-> >       Dmitry V. Levin <ldv@altlinux.org>)
-> > 
-> > Change in v2:
-> >     - Add a padding field to `struct ptrace_syscall_info`, instead of
-> >       doing memset() on `info`. (Suggested by Dmitry V. Levin
-> >       <ldv@altlinux.org>)
-> > 
-> > Reference: https://lwn.net/Articles/417989/
-> > 
-> > $ # before:
-> > $ pahole -C "ptrace_syscall_info" kernel/ptrace.o
-> > struct ptrace_syscall_info {
-> > 	__u8                       op;                   /*     0     1 */
-> > 
-> > 	/* XXX 3 bytes hole, try to pack */
-> > 
-> > 	__u32                      arch __attribute__((__aligned__(4))); /*     4     4 */
-> > 	__u64                      instruction_pointer;  /*     8     8 */
-> > 	__u64                      stack_pointer;        /*    16     8 */
-> > 	union {
-> > 		struct {
-> > 			__u64      nr;                   /*    24     8 */
-> > 			__u64      args[6];              /*    32    48 */
-> > 		} entry;                                 /*    24    56 */
-> > 		struct {
-> > 			__s64      rval;                 /*    24     8 */
-> > 			__u8       is_error;             /*    32     1 */
-> > 		} exit;                                  /*    24    16 */
-> > 		struct {
-> > 			__u64      nr;                   /*    24     8 */
-> > 			__u64      args[6];              /*    32    48 */
-> > 			/* --- cacheline 1 boundary (64 bytes) was 16 bytes ago --- */
-> > 			__u32      ret_data;             /*    80     4 */
-> > 		} seccomp;                               /*    24    64 */
-> > 	};                                               /*    24    64 */
-> > 
-> > 	/* size: 88, cachelines: 2, members: 5 */
-> > 	/* sum members: 85, holes: 1, sum holes: 3 */
-> > 	/* forced alignments: 1, forced holes: 1, sum forced holes: 3 */
-> > 	/* last cacheline: 24 bytes */
-> > } __attribute__((__aligned__(8)));
-> > $
-> > $ # after:
-> > $ pahole -C "ptrace_syscall_info" kernel/ptrace.o
-> > struct ptrace_syscall_info {
-> > 	__u8                       op;                   /*     0     1 */
-> > 	__u8                       pad[3];               /*     1     3 */
-> > 	__u32                      arch;                 /*     4     4 */
-> > 	__u64                      instruction_pointer;  /*     8     8 */
-> > 	__u64                      stack_pointer;        /*    16     8 */
-> > 	union {
-> > 		struct {
-> > 			__u64      nr;                   /*    24     8 */
-> > 			__u64      args[6];              /*    32    48 */
-> > 		} entry;                                 /*    24    56 */
-> > 		struct {
-> > 			__s64      rval;                 /*    24     8 */
-> > 			__u8       is_error;             /*    32     1 */
-> > 		} exit;                                  /*    24    16 */
-> > 		struct {
-> > 			__u64      nr;                   /*    24     8 */
-> > 			__u64      args[6];              /*    32    48 */
-> > 			/* --- cacheline 1 boundary (64 bytes) was 16 bytes ago --- */
-> > 			__u32      ret_data;             /*    80     4 */
-> > 		} seccomp;                               /*    24    64 */
-> > 	};                                               /*    24    64 */
-> > 
-> > 	/* size: 88, cachelines: 2, members: 6 */
-> > 	/* last cacheline: 24 bytes */
-> > };
-> > $ _
-> > 
-> >  include/uapi/linux/ptrace.h | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/uapi/linux/ptrace.h b/include/uapi/linux/ptrace.h
-> > index a71b6e3b03eb..83ee45fa634b 100644
-> > --- a/include/uapi/linux/ptrace.h
-> > +++ b/include/uapi/linux/ptrace.h
-> > @@ -81,7 +81,8 @@ struct seccomp_metadata {
-> >  
-> >  struct ptrace_syscall_info {
-> >  	__u8 op;	/* PTRACE_SYSCALL_INFO_* */
-> > -	__u32 arch __attribute__((__aligned__(sizeof(__u32))));
-> > +	__u8 pad[3];
-> > +	__u32 arch;
-> >  	__u64 instruction_pointer;
-> >  	__u64 stack_pointer;
-> >  	union {
-> 
-> Reviewed-by: Dmitry V. Levin <ldv@altlinux.org>
+On Sat, Aug 1, 2020 at 2:46 PM Jules Irenge <jbi.octave@gmail.com> wrote:
+>
+> Checkpatch tool reports an error at variable declaration
+>
+> "ERROR: do not initialise statics to 0"
+>
+> This is due to the fact that these variables are stored in the buffer
+> In the .bss section, one can not set an initial value
+> Here we can trust the compiler to automatically set them to zero.
+> The variable has since been uninitialized.
+>
+> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+> ---
+>  kernel/audit.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+In general this is fine, but it will have to wait until after the
+merge window closes.
 
-Oh fun.
-I'd pick this up and run the ptrace tests that we have for this. If they
-pass I'd apply to my fixes branch and send after the merge window unless
-I hear objections.
+> diff --git a/kernel/audit.c b/kernel/audit.c
+> index 7b1a38a211a9..7d79ecb58b01 100644
+> --- a/kernel/audit.c
+> +++ b/kernel/audit.c
+> @@ -311,8 +311,8 @@ void audit_panic(const char *message)
+>
+>  static inline int audit_rate_check(void)
+>  {
+> -       static unsigned long    last_check = 0;
+> -       static int              messages   = 0;
+> +       static unsigned long    last_check;
+> +       static int              messages;
+>         static DEFINE_SPINLOCK(lock);
+>         unsigned long           flags;
+>         unsigned long           now;
+> @@ -348,7 +348,7 @@ static inline int audit_rate_check(void)
+>  */
+>  void audit_log_lost(const char *message)
+>  {
+> -       static unsigned long    last_msg = 0;
+> +       static unsigned long    last_msg;
+>         static DEFINE_SPINLOCK(lock);
+>         unsigned long           flags;
+>         unsigned long           now;
+> @@ -713,7 +713,7 @@ static int kauditd_send_queue(struct sock *sk, u32 portid,
+>  {
+>         int rc = 0;
+>         struct sk_buff *skb;
+> -       static unsigned int failed = 0;
+> +       static unsigned int failed;
+>
+>         /* NOTE: kauditd_thread takes care of all our locking, we just use
+>          *       the netlink info passed to us (e.g. sk and portid) */
+> --
+> 2.26.2
 
-Fwiw, what was the original reason for using
-__attribute__((__aligned__(sizeof(__u32))))?
-b4 mbox is failing to download the relevant thread(s) for me.
-
-Thanks!
-Christian
+-- 
+paul moore
+www.paul-moore.com
