@@ -2,91 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC8F23527A
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 14:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA48E235285
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 15:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729004AbgHAM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 08:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726471AbgHAM4q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 08:56:46 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666AAC06174A;
-        Sat,  1 Aug 2020 05:56:46 -0700 (PDT)
-Received: from nazgul.tnic (unknown [78.130.214.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B8CAE1EC02FA;
-        Sat,  1 Aug 2020 14:56:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1596286602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=NfmlZOrLaBmBGlzbXE5z6x4RKpqqJJmlzC4+91fmYUA=;
-        b=n/7VNWjNwrVYldmM5JNyqQEVZd3Vp3hpjJSMuFhfSkrW8mQhIHtpfasKy9w1BEromsKKyZ
-        /CdJ8nlcvZTCqyn05aBVgUH+WGtmqEhe61zMEoDcH8PmujGuHYORgBg9sVbSuZSh5qLljK
-        uihuEhdcnAWg6tPbjyrRXoOKhqTEw/0=
-Date:   Sat, 1 Aug 2020 14:56:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Cc:     helgaas@kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Joerg Roedel <joro@8bytes.org>, bjorn@helgaas.com,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-mtd@lists.infradead.org, iommu@lists.linux-foundation.org,
-        linux-rdma@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-gpio@vger.kernel.org, linux-fpga@vger.kernel.org,
-        linux-edac@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net
-Subject: Re: [RFC PATCH 00/17] Drop uses of pci_read_config_*() return value
-Message-ID: <20200801125657.GA25391@nazgul.tnic>
-References: <20200801112446.149549-1-refactormyself@gmail.com>
+        id S1728986AbgHANGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 09:06:11 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:33940 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726461AbgHANGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 09:06:10 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 1A83D297932003EBA04A;
+        Sat,  1 Aug 2020 21:06:05 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 1 Aug 2020 21:05:57 +0800
+From:   Chen Zhou <chenzhou10@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <james.morse@arm.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <dyoung@redhat.com>, <bhe@redhat.com>, <corbet@lwn.net>,
+        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
+        <bhsharma@redhat.com>
+CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <nsaenzjulienne@suse.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <chenzhou10@huawei.com>,
+        <guohanjun@huawei.com>, <xiexiuqi@huawei.com>,
+        <huawei.libin@huawei.com>, <wangkefeng.wang@huawei.com>
+Subject: [PATCH v11 0/5] support reserving crashkernel above 4G on arm64 kdump
+Date:   Sat, 1 Aug 2020 21:08:51 +0800
+Message-ID: <20200801130856.86625-1-chenzhou10@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200801112446.149549-1-refactormyself@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 01, 2020 at 01:24:29PM +0200, Saheed O. Bolarinwa wrote:
-> The return value of pci_read_config_*() may not indicate a device error.
-> However, the value read by these functions is more likely to indicate
-> this kind of error. This presents two overlapping ways of reporting
-> errors and complicates error checking.
+There are following issues in arm64 kdump:
+1. We use crashkernel=X to reserve crashkernel below 4G, which
+will fail when there is no enough low memory.
+2. If reserving crashkernel above 4G, in this case, crash dump
+kernel will boot failure because there is no low memory available
+for allocation.
+3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
+if the memory reserved for crash dump kernel falled in ZONE_DMA32,
+the devices in crash dump kernel need to use ZONE_DMA will alloc
+fail.
 
-So why isn't the *value check done in the pci_read_config_* functions
-instead of touching gazillion callers?
+To solve these issues, change the behavior of crashkernel=X.
+crashkernel=X tries low allocation in ZONE_DMA, and fall back to
+high allocation if it fails.
 
-For example, pci_conf{1,2}_read() could check whether the u32 *value it
-just read depending on the access method, whether that value is ~0 and
-return proper PCIBIOS_ error in that case.
+If requized size X is too large and leads to very little free memory
+in ZONE_DMA after low allocation, the system may not work normally.
+So add a threshold and go for high allocation directly if the required
+size is too large. The value of threshold is set as the half of
+the low memory.
 
-The check you're replicating
+If crash_base is outside ZONE_DMA, try to allocate at least 256M in
+ZONE_DMA automatically. "crashkernel=Y,low" can be used to allocate
+specified size low memory.
+For non-RPi4 platforms, change ZONE_DMA memtioned above to ZONE_DMA32.
 
-	if (val32 == (u32)~0)
+When reserving crashkernel in high memory, some low memory is reserved
+for crash dump kernel devices. So there may be two regions reserved for
+crash dump kernel, one is below 4G, the other is above 4G.
+In order to distinct from the high region and make no effect to the use
+of existing kexec-tools, rename the low region as "Crash kernel (low)",
+and pass the low region by reusing DT property
+"linux,usable-memory-range". We made the low memory region as the last
+range of "linux,usable-memory-range" to keep compatibility with existing
+user-space and older kdump kernels.
 
-everywhere, instead, is just ugly and tests a naked value ~0 which
-doesn't mean anything...
+Besides, we need to modify kexec-tools:
+arm64: support more than one crash kernel regions(see [1])
+
+Another update is document about DT property 'linux,usable-memory-range':
+schemas: update 'linux,usable-memory-range' node schema(see [2])
+
+Changes since [v10]
+- Reimplement crashkernel=X suggested by Catalin, Many thanks to Catalin.
+
+Changes since [v9]
+- Patch 1 add Acked-by from Dave.
+- Update patch 5 according to Dave's comments.
+- Update chosen schema.
+
+Changes since [v8]
+- Reuse DT property "linux,usable-memory-range".
+Suggested by Rob, reuse DT property "linux,usable-memory-range" to pass the low
+memory region.
+- Fix kdump broken with ZONE_DMA reintroduced.
+- Update chosen schema.
+
+Changes since [v7]
+- Move x86 CRASH_ALIGN to 2M
+Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
+- Update Documentation/devicetree/bindings/chosen.txt.
+Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt
+suggested by Arnd.
+- Add Tested-by from Jhon and pk.
+
+Changes since [v6]
+- Fix build errors reported by kbuild test robot.
+
+Changes since [v5]
+- Move reserve_crashkernel_low() into kernel/crash_core.c.
+- Delete crashkernel=X,high.
+- Modify crashkernel=X,low.
+If crashkernel=X,low is specified simultaneously, reserve spcified size low
+memory for crash kdump kernel devices firstly and then reserve memory above 4G.
+In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
+pass to crash dump kernel by DT property "linux,low-memory-range".
+- Update Documentation/admin-guide/kdump/kdump.rst.
+
+Changes since [v4]
+- Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
+
+Changes since [v3]
+- Add memblock_cap_memory_ranges back for multiple ranges.
+- Fix some compiling warnings.
+
+Changes since [v2]
+- Split patch "arm64: kdump: support reserving crashkernel above 4G" as
+two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
+patch.
+
+Changes since [v1]:
+- Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
+- Remove memblock_cap_memory_ranges() i added in v1 and implement that
+in fdt_enforce_memory_region().
+There are at most two crash kernel regions, for two crash kernel regions
+case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
+and then remove the memory range in the middle.
+
+[1]: http://lists.infradead.org/pipermail/kexec/2020-June/020737.html
+[2]: https://github.com/robherring/dt-schema/pull/19 
+[v1]: https://lkml.org/lkml/2019/4/2/1174
+[v2]: https://lkml.org/lkml/2019/4/9/86
+[v3]: https://lkml.org/lkml/2019/4/9/306
+[v4]: https://lkml.org/lkml/2019/4/15/273
+[v5]: https://lkml.org/lkml/2019/5/6/1360
+[v6]: https://lkml.org/lkml/2019/8/30/142
+[v7]: https://lkml.org/lkml/2019/12/23/411
+[v8]: https://lkml.org/lkml/2020/5/21/213
+[v9]: https://lkml.org/lkml/2020/6/28/73
+[v10]: https://lkml.org/lkml/2020/7/2/1443
+
+Chen Zhou (5):
+  arm64: kdump: add macro CRASH_ALIGN and CRASH_ADDR_LOW_MAX
+  x86: kdump: move reserve_crashkernel_low() into crash_core.c
+  arm64: kdump: reimplement crashkernel=X
+  arm64: kdump: add memory for devices by DT property
+    linux,usable-memory-range
+  kdump: update Documentation about crashkernel
+
+ Documentation/admin-guide/kdump/kdump.rst     | 21 +++-
+ .../admin-guide/kernel-parameters.txt         | 11 ++-
+ arch/arm64/include/asm/kexec.h                |  9 ++
+ arch/arm64/include/asm/processor.h            |  1 +
+ arch/arm64/kernel/setup.c                     |  8 +-
+ arch/arm64/mm/init.c                          | 99 +++++++++++++++----
+ arch/x86/include/asm/kexec.h                  | 24 +++++
+ arch/x86/kernel/setup.c                       | 86 ++--------------
+ include/linux/crash_core.h                    |  3 +
+ include/linux/kexec.h                         |  2 -
+ kernel/crash_core.c                           | 74 ++++++++++++++
+ kernel/kexec_core.c                           | 17 ----
+ 12 files changed, 233 insertions(+), 122 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.20.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
