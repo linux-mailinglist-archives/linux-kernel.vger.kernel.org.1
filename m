@@ -2,143 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D96235288
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 15:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244ED235290
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 15:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgHANGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 09:06:18 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8749 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728885AbgHANGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 09:06:13 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 38DDE30E8C6C18A4BF95;
-        Sat,  1 Aug 2020 21:06:10 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 1 Aug 2020 21:06:01 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <james.morse@arm.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
-        <dyoung@redhat.com>, <bhe@redhat.com>, <corbet@lwn.net>,
-        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
-        <bhsharma@redhat.com>
-CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <nsaenzjulienne@suse.de>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <chenzhou10@huawei.com>,
-        <guohanjun@huawei.com>, <xiexiuqi@huawei.com>,
-        <huawei.libin@huawei.com>, <wangkefeng.wang@huawei.com>
-Subject: [PATCH v11 5/5] kdump: update Documentation about crashkernel
-Date:   Sat, 1 Aug 2020 21:08:56 +0800
-Message-ID: <20200801130856.86625-6-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200801130856.86625-1-chenzhou10@huawei.com>
-References: <20200801130856.86625-1-chenzhou10@huawei.com>
+        id S1729127AbgHANGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 09:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729105AbgHANGt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 09:06:49 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5B8C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 06:06:49 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w14so5265349ljj.4
+        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 06:06:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ax/Pwtq3Y2qHbJF4PNVmYOhd6N3XKnpfypY6/+4jDSQ=;
+        b=nL9gNmMxybnQZTmKhmktw6ICgX7KYugtpBE1pauZoZD9eeGW6gkjbvePdNAVQVcgG3
+         g9qZRJwtZ23WuyMGsXNSRD44IexYLcUfhMqszXYfTR5tKOClBIv5dFEvEk0AeMGi9HYy
+         crNOrZmu9cYlA6TUqd4aLbcXbj0snsu3dN0yu9svNqj3MY06jpf959nKDLqQIxjLz84N
+         D9ySzdRAPpJhp7PXyDRd5xBSGep1jjutiBfOsXsNBjwF7ojSxey4/3ZcfZMQLzZKSVeH
+         qa1/V8NwLgh+JuCxQ/3ttqW+4koxZb34hJT6ZSrbN7wHh/JT9YGB4ybXsu+OyhwN3QAS
+         pnWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ax/Pwtq3Y2qHbJF4PNVmYOhd6N3XKnpfypY6/+4jDSQ=;
+        b=YCQaMeMgpBU1DT0EPaI60IIQEtd8sEJAfW7ZhchbCjclYcSBxgl+ouemEHfXBeEVR8
+         xB5vdE204q/DnXIrapb1tDkhcKEvT3NDUTdAj1SWSP2f6mqmtLe+JZReczXosswbpdqm
+         mGOjbOdF7d/QDTa8x4IGsZbtQteIW4QzFB+Xb5NnU8EVMUu2aYDpBTgZq+gZs90LgYiN
+         J8eNKm2OnX91mfBzieVE/LqGDudoKtzk3hJ3raLCvPa9fQNrPtaqs/pK7xRHGeRpzbcH
+         IjVXB7boRkffKnYpBugR3RxfnhM9AtVjZF3Yf1Nv96J11Aaz+haGD6Iq0QNzUoyOsekv
+         NFvQ==
+X-Gm-Message-State: AOAM5329imMGzdH5Fy1Ucn4oYOMooSx+Hu0567wFdEB/ZqmAEjT3El3D
+        QEktYC4vqwYzQoXX81YPpAYsZUBa
+X-Google-Smtp-Source: ABdhPJwkxTq9dQhrA86Zsgn0YMviwS47EPdxu8xVn+mmvAaIcYc+JWEmxqpqj/gaU/UJzqu/RrgBhw==
+X-Received: by 2002:a2e:88d4:: with SMTP id a20mr4006508ljk.326.1596287207222;
+        Sat, 01 Aug 2020 06:06:47 -0700 (PDT)
+Received: from [192.168.0.160] (10.177.smarthome.spb.ru. [109.71.177.10])
+        by smtp.gmail.com with ESMTPSA id u21sm896714ljl.11.2020.08.01.06.06.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 01 Aug 2020 06:06:46 -0700 (PDT)
+Subject: Re: [PATCH] staging: r8188eu: replace rtw_netdev_priv define with
+ inline function
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        devel@driverdev.osuosl.org, B K Karthik <bkkarthik@pesu.pes.edu>,
+        linux-kernel@vger.kernel.org
+References: <20200801094707.13449-1-insafonov@gmail.com>
+ <20200801095108.GA2840539@kroah.com>
+From:   Ivan Safonov <insafonov@gmail.com>
+Message-ID: <968d30fc-4e5f-b495-e986-b18b05e9a895@gmail.com>
+Date:   Sat, 1 Aug 2020 16:11:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200801095108.GA2840539@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now the behavior of crashkernel=X has been changed, which tries low
-allocation in ZONE_DMA, and fall back to high allocation if it fails.
+On 8/1/20 12:51 PM, Greg Kroah-Hartman wrote:
+> On Sat, Aug 01, 2020 at 12:47:07PM +0300, Ivan Safonov wrote:
+>> The function guarantees type checking of arguments and return value.
+>>
+>> Signed-off-by: Ivan Safonov <insafonov@gmail.com>
+>> ---
+>>   drivers/staging/rtl8188eu/include/osdep_service.h | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/staging/rtl8188eu/include/osdep_service.h b/drivers/staging/rtl8188eu/include/osdep_service.h
+>> index 31d897f1d21f..e0ccafdea9cd 100644
+>> --- a/drivers/staging/rtl8188eu/include/osdep_service.h
+>> +++ b/drivers/staging/rtl8188eu/include/osdep_service.h
+>> @@ -71,8 +71,10 @@ struct rtw_netdev_priv_indicator {
+>>   };
+>>   struct net_device *rtw_alloc_etherdev_with_old_priv(void *old_priv);
+>>   
+>> -#define rtw_netdev_priv(netdev)					\
+>> -	(((struct rtw_netdev_priv_indicator *)netdev_priv(netdev))->priv)
+>> +static inline struct adapter *rtw_netdev_priv(struct net_device *dev)
+>> +{
+>> +	return (((struct rtw_netdev_priv_indicator *)netdev_priv(dev))->priv);
+>> +}
+>>   void rtw_free_netdev(struct net_device *netdev);
+> 
+> Is the cast really needed?
 
-If requized size X is too large and leads to very little free memory
-in ZONE_DMA after low allocation, the system may not work well.
-So add a threshold and go for high allocation directly if the required
-size is too large. The threshold is set as the half of low memory.
+(struct rtw_netdev_priv_indicator *) cast needed for access to '->priv'.
 
-If crash_base is outside ZONE_DMA, try to allocate at least 256M in
-ZONE_DMA automatically. "crashkernel=Y,low" can be used to allocate
-specified size low memory. For non-RPi4 platforms, change ZONE_DMA
-memtioned above to ZONE_DMA32.
+The (struct adapter *) return type is a starting point for simplify
+     struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
+constructions.
 
-So update the Documentation.
+> 
+> And no blank line before the next function prototype?
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
----
- Documentation/admin-guide/kdump/kdump.rst     | 21 ++++++++++++++++---
- .../admin-guide/kernel-parameters.txt         | 11 ++++++++--
- 2 files changed, 27 insertions(+), 5 deletions(-)
+In v2.
 
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index 2da65fef2a1c..4b58f97351d5 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -299,7 +299,15 @@ Boot into System Kernel
-    "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
-    starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
- 
--   On x86 and x86_64, use "crashkernel=64M@16M".
-+   On x86 use "crashkernel=64M@16M".
-+
-+   On x86_64, use "crashkernel=X" to select a region under 4G first, and
-+   fall back to reserve region above 4G.
-+   We can also use "crashkernel=X,high" to select a region above 4G, which
-+   also tries to allocate at least 256M below 4G automatically and
-+   "crashkernel=Y,low" can be used to allocate specified size low memory.
-+   Use "crashkernel=Y@X" if you really have to reserve memory from specified
-+   start address X.
- 
-    On ppc64, use "crashkernel=128M@32M".
- 
-@@ -316,8 +324,15 @@ Boot into System Kernel
-    kernel will automatically locate the crash kernel image within the
-    first 512MB of RAM if X is not given.
- 
--   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
--   the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
-+   On arm64, use "crashkernel=X" to try low allocation in ZONE_DMA, and
-+   fall back to high allocation if it fails. And go for high allocation
-+   directly if the required size is too large. If crash_base is outside
-+   ZONE_DMA, try to allocate at least 256M in ZONE_DMA automatically.
-+   "crashkernel=Y,low" can be used to allocate specified size low memory.
-+   For non-RPi4 platforms, change ZONE_DMA memtioned above to ZONE_DMA32.
-+   Use "crashkernel=Y@X" if you really have to reserve memory from
-+   specified start address X. Note that the start address of the kernel,
-+   X if explicitly specified, must be aligned to 2MiB (0x200000).
- 
- Load the Dump-capture Kernel
- ============================
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index fb95fad81c79..d1b6016850d6 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -722,6 +722,10 @@
- 			[KNL, x86_64] select a region under 4G first, and
- 			fall back to reserve region above 4G when '@offset'
- 			hasn't been specified.
-+			[KNL, arm64] Try low allocation in ZONE_DMA, fall back
-+			to high allocation if it fails when '@offset' hasn't been
-+			specified. For non-RPi4 platforms, change ZONE_DMA to
-+			ZONE_DMA32.
- 			See Documentation/admin-guide/kdump/kdump.rst for further details.
- 
- 	crashkernel=range1:size1[,range2:size2,...][@offset]
-@@ -746,13 +750,16 @@
- 			requires at least 64M+32K low memory, also enough extra
- 			low memory is needed to make sure DMA buffers for 32-bit
- 			devices won't run out. Kernel would try to allocate at
--			at least 256M below 4G automatically.
-+			least 256M below 4G automatically.
- 			This one let user to specify own low range under 4G
- 			for second kernel instead.
- 			0: to disable low allocation.
- 			It will be ignored when crashkernel=X,high is not used
- 			or memory reserved is below 4G.
--
-+			[KNL, arm64] range under 4G.
-+			This one let user to specify a low range in ZONE_DMA for
-+			crash dump kernel. For non-RPi4 platforms, change ZONE_DMA
-+			to ZONE_DMA32.
- 	cryptomgr.notests
- 			[KNL] Disable crypto self-tests
- 
--- 
-2.20.1
+> 
+> And is this really needed?  Type checking is already happening as this
+> is a "simple" macro, right?
 
+1. The flexibility of macros is not needed here.
+2. The macro silently assigns ->priv to any pointer, while the function 
+indicates such a compile-time error.
+
+Ivan Safonov.
