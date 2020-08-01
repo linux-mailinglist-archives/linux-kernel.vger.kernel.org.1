@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 425EC2353E2
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 19:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D492353E8
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 19:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgHARvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 13:51:11 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40851 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbgHARvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 13:51:10 -0400
-IronPort-SDR: j9aOGPZoXJA/GlSS3Tnlyjz8AylDIiOtNRPtqlhDL3zR7ckVAdMYuNuklg8lQ1Ju8E3UrdsTRg
- jQyy4PXcRbMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9700"; a="132006354"
-X-IronPort-AV: E=Sophos;i="5.75,423,1589266800"; 
-   d="scan'208";a="132006354"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2020 10:51:10 -0700
-IronPort-SDR: eKzzKAP34nw+zm16F3aePLIEVEsH+akO3pfC7qCweLbc/DwFNOkrWSUKvo7vKrgMyuMn3KZapy
- urhDAh66Rnaw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,423,1589266800"; 
-   d="scan'208";a="491883798"
-Received: from lkp-server01.sh.intel.com (HELO e21119890065) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Aug 2020 10:51:08 -0700
-Received: from kbuild by e21119890065 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k1vf2-0000ZK-48; Sat, 01 Aug 2020 17:51:08 +0000
-Date:   Sun, 2 Aug 2020 01:50:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Oded Gabbay <oded.gabbay@gmail.com>, linux-kernel@vger.kernel.org,
-        SW_Drivers@habana.ai
-Cc:     kbuild-all@lists.01.org, Ofir Bitton <obitton@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [RFC PATCH] habanalabs: hl_fence_release() can be static
-Message-ID: <20200801175057.GA49250@68026f9d7d78>
-References: <20200730131347.30261-1-oded.gabbay@gmail.com>
+        id S1726999AbgHAR5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 13:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgHAR5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 13:57:44 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C2FC06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 10:57:44 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id i10so823860ljn.2
+        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 10:57:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MVROroz657/I/Ih2063QqkFa0hHlRqGYHGpAlZxIDIU=;
+        b=PKiWM1z0wSCVv5xEm41YfLhadbzphe6Czf6TvIm1dVHi8am+D8SmoENHmOuFvTb6Ks
+         2/3JCblBdYCIrzLfhImazWRAG8BMXLnhSJUF9aXJb7Uzn/1veAyCoSG260mRuGfuP4dW
+         mhT9NozcmAB6SZ8zU0OGUpXbQF8ZTIRwhyMJ0d2gm8/CXx6+itzzUXF0xOcPv0XsloYs
+         eRBxIFJmMADC49RR06UN0eBrG4wwgI3Q3NdGc5wRc8o1xiaFI/nKO7RhcdKXMu7trk7O
+         FVN9qIXybwH3eD4I0u5JxxXy5cTirMGObNMBPG6Kudw64AtfBqipU53KTAzmW+lG6ckY
+         Hp9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MVROroz657/I/Ih2063QqkFa0hHlRqGYHGpAlZxIDIU=;
+        b=ec6Sg4ggMUQaNoZ4W7fM92bTcsH9qiNyGRC30hhrwG2jEL30oeoeArgsEOeUoFW3Kr
+         u8Wk98CmAv80k1tTDwZFx9FBnGbhFh4/46HIL++mvuaJwhTw3caneF4fHrKwlLAJDu9i
+         4K+HdrF4KcNfDaqYLGWO758+81vzufEvuypnl4zqdat+j8NIlb1Zzt8b9PZ/4sB+Z7vH
+         OX9gbLWgprhJCzJxgBAMmYQ0KYzoWaqhTxb8BQDxAD+ZWOxyPf3/raNC/IeM8RlSqFHD
+         rRObdGccikzoiSXa+aqSOUHcfqTBKv0VTQvHXy+PKxhV4kBtc1NILpxtgmRW11IAJblN
+         R+BA==
+X-Gm-Message-State: AOAM531zTbDUmjX0u/ZOzWn7+CtF/OqsbGi7n1TXF3AxcuL9FTasJZxE
+        c/9XMzNjaNqEK1xy4IWeKD4=
+X-Google-Smtp-Source: ABdhPJzEQqKL7E5Po5xXjYbD3pkXhwpZpVFJAQc1NLxWnKtXEi969IU4Unxd6/EEZyeXAAXvYQnZVg==
+X-Received: by 2002:a2e:b008:: with SMTP id y8mr3759143ljk.421.1596304661274;
+        Sat, 01 Aug 2020 10:57:41 -0700 (PDT)
+Received: from alpha (10.177.smarthome.spb.ru. [109.71.177.10])
+        by smtp.gmail.com with ESMTPSA id d6sm2480920ljc.23.2020.08.01.10.57.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Aug 2020 10:57:40 -0700 (PDT)
+Received: (nullmailer pid 34162 invoked by uid 1000);
+        Sat, 01 Aug 2020 18:02:52 -0000
+From:   Ivan Safonov <insafonov@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        B K Karthik <bkkarthik@pesu.pes.edu>,
+        Michael Straube <straube.linux@gmail.com>,
+        Joe Perches <joe@perches.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, Ivan Safonov <insafonov@gmail.com>
+Subject: [PATCH v3] staging: r8188eu: replace rtw_netdev_priv define with inline function
+Date:   Sat,  1 Aug 2020 21:02:35 +0300
+Message-Id: <20200801180235.34116-1-insafonov@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730131347.30261-1-oded.gabbay@gmail.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The function guarantees type checking of arguments and return value.
 
-Signed-off-by: kernel test robot <lkp@intel.com>
+Result of rtw_netdev_priv macro can be assigned to pointer
+with incompatible type without warning. The function allow compiler
+to perform this check.
+
+Signed-off-by: Ivan Safonov <insafonov@gmail.com>
 ---
- command_submission.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes in v2:
+  - add blank line after function definition;
+  - improve commit message.
 
-diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
-index d19ac641b1719..e482d8d135602 100644
---- a/drivers/misc/habanalabs/common/command_submission.c
-+++ b/drivers/misc/habanalabs/common/command_submission.c
-@@ -38,7 +38,7 @@ void hl_sob_reset_error(struct kref *ref)
- 			hw_sob->q_idx, hw_sob->sob_id);
- }
+Changes in v3:
+  - use proper argument name;
+  - remove unnecessary parentheses.
+---
+ drivers/staging/rtl8188eu/include/osdep_service.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/rtl8188eu/include/osdep_service.h b/drivers/staging/rtl8188eu/include/osdep_service.h
+index 31d897f1d21f..b44d602e954a 100644
+--- a/drivers/staging/rtl8188eu/include/osdep_service.h
++++ b/drivers/staging/rtl8188eu/include/osdep_service.h
+@@ -71,8 +71,11 @@ struct rtw_netdev_priv_indicator {
+ };
+ struct net_device *rtw_alloc_etherdev_with_old_priv(void *old_priv);
  
--void hl_fence_release(struct kref *kref)
-+static void hl_fence_release(struct kref *kref)
- {
- 	struct hl_fence *fence =
- 		container_of(kref, struct hl_fence, refcount);
-@@ -98,7 +98,7 @@ void hl_fence_get(struct hl_fence *fence)
- 		kref_get(&fence->refcount);
- }
+-#define rtw_netdev_priv(netdev)					\
+-	(((struct rtw_netdev_priv_indicator *)netdev_priv(netdev))->priv)
++static inline struct adapter *rtw_netdev_priv(struct net_device *netdev)
++{
++	return ((struct rtw_netdev_priv_indicator *)netdev_priv(netdev))->priv;
++}
++
+ void rtw_free_netdev(struct net_device *netdev);
  
--void hl_fence_init(struct hl_fence *fence)
-+static void hl_fence_init(struct hl_fence *fence)
- {
- 	kref_init(&fence->refcount);
- 	fence->error = 0;
+ #define FUNC_NDEV_FMT "%s(%s)"
+-- 
+2.26.2
+
