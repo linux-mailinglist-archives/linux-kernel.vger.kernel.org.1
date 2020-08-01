@@ -2,135 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BA52352D9
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 16:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D217E2352E3
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 17:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgHAOwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 10:52:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725804AbgHAOwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 10:52:44 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91FD32071E;
-        Sat,  1 Aug 2020 14:52:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596293564;
-        bh=4S0kIiBlEp7ju38+PP8R+cgjFKqK5pJylWhbCNVeObU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=P6CLjjBtrCsK6bjdoyX69reUFmz2dXUAsQVqqeJtkaW/qvTE4ZBOpOIfSXXJC7orj
-         DcvVq3KcWB6AsLT/kwxh0IiafnL+MuaKUEGPTy8w9mSwYCN7mLypVBgBzTMfDTUWGi
-         B/h5PFEhdtmsc8GWrePbowubqiybkYegqwhPedi4=
-Date:   Sat, 1 Aug 2020 15:52:39 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Daniel Campello <campello@chromium.org>,
-        LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-iio <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH v3 06/15] iio: sx9310: Fixes various memory handling
-Message-ID: <20200801155239.463917db@archlinux>
-In-Reply-To: <CAHp75VeMGtnhCEuMODNO3K6JfFTbm=gLr4yZdZHV-JsBW0eS_A@mail.gmail.com>
-References: <20200731164853.3020946-1-campello@chromium.org>
-        <20200731104555.v3.6.I8accffd77d616cb55b29bc3021cb0f5e1da3b68a@changeid>
-        <CAHp75VeMGtnhCEuMODNO3K6JfFTbm=gLr4yZdZHV-JsBW0eS_A@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726816AbgHAPBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 11:01:54 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:53478 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgHAPBx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 11:01:53 -0400
+Received: from oscar.flets-west.jp (softbank126025067101.bbtec.net [126.25.67.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 071F0q51015446;
+        Sun, 2 Aug 2020 00:00:53 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 071F0q51015446
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1596294053;
+        bh=iB+4Axh/LScTu6iv9y46G7fJslW+Ej8Wjx6mPd1aNvk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c0JKLZBNUX/vFZqw09nlPS+4PAOgo05+nSaDmnRBC+w4C4BBIOPD1P/14Qky4UvOa
+         y1RzB7zGuMTnS39bGaAB1SjW/zO2DrKJ6qcVxOvUd3LJAVMWoYph0ZPUadt+CSyJa/
+         hNSnC3z5Ew5NXQ+zid0xZRDgLm4kpVHTo40YOy6Vu0E89mE+Up1sgKm1jQz6Orz/b7
+         7nAntrZOgykP7Ea4zi2Kf4EgLpri8bOhGzwWZQ29sR5DHylnPsAO0WGctyBR+Gt48R
+         dbj0TrN4vJOjv6+IPYIYFPOZbWeqrFkSFZnlqzBe6yL+BI89hOQXcwux6aFhUXivMz
+         j1GV0bHAKVbeQ==
+X-Nifty-SrcIP: [126.25.67.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        kasan-dev@googlegroups.com
+Subject: [PATCH 1/2] kbuild: include scripts/Makefile.* only when relevant CONFIG is enabled
+Date:   Sun,  2 Aug 2020 00:00:49 +0900
+Message-Id: <20200801150050.767038-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 31 Jul 2020 22:24:47 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+Currently, the top Makefile includes all of scripts/Makefile.<feature>
+even if the associated CONFIG option is disabled.
 
-> On Fri, Jul 31, 2020 at 7:49 PM Daniel Campello <campello@chromium.org> wrote:
-> >
-> > Makes use __aligned(8) to ensure that the timestamp is correctly aligned
-> > when we call io_push_to_buffers_with_timestamp().
-> > Also makes use of sizeof() for regmap_bulk_read instead of static value.  
-> 
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> > Signed-off-by: Daniel Campello <campello@chromium.org>
-> > ---
-> >
-> > Changes in v3:
-> >  - Changed buffer to struct type to align timestamp memory properly.
-> >
-> > Changes in v2:
-> >  - Fixed commit message from "iio: sx9310: Align memory"
-> >
-> >  drivers/iio/proximity/sx9310.c | 13 ++++++++-----
-> >  1 file changed, 8 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-> > index 2ed062d01634bc..c46584b4817b4a 100644
-> > --- a/drivers/iio/proximity/sx9310.c
-> > +++ b/drivers/iio/proximity/sx9310.c
-> > @@ -132,8 +132,11 @@ struct sx9310_data {
-> >          */
-> >         bool prox_stat[SX9310_NUM_CHANNELS];
-> >         bool trigger_enabled;
-> > -       __be16 buffer[SX9310_NUM_CHANNELS +
-> > -                     4]; /* 64-bit data + 64-bit timestamp */
-> > +       /* Ensure correct alignment of timestamp when present. */
-> > +       struct {
-> > +               __be16 channels[SX9310_NUM_CHANNELS];
-> > +               s64 ts __aligned(8);
-> > +       } buffer;
-> >         /* Remember enabled channels and sample rate during suspend. */
-> >         unsigned int suspend_ctrl0;
-> >         struct completion completion;
-> > @@ -346,7 +349,7 @@ static int sx9310_read_prox_data(struct sx9310_data *data,
-> >         if (ret < 0)
-> >                 return ret;
-> >
-> > -       return regmap_bulk_read(data->regmap, chan->address, val, 2);
-> > +       return regmap_bulk_read(data->regmap, chan->address, val, sizeof(*val));
-> >  }
-> >
-> >  /*
-> > @@ -697,10 +700,10 @@ static irqreturn_t sx9310_trigger_handler(int irq, void *private)
-> >                 if (ret < 0)
-> >                         goto out;
-> >
-> > -               data->buffer[i++] = val;
-> > +               data->buffer.channels[i++] = val;
-> >         }
-> >
-> > -       iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-> > +       iio_push_to_buffers_with_timestamp(indio_dev, data->buffer.channels,
+Do not include unneeded Makefiles in order to slightly optimize the
+parse stage.
 
-Whilst it's the same address, it makes more sense to push &data->buffer
-Technically buffer.channels isn't large enough to meant the requirements
-of iio_push_to_buffers_with_timestamp.
+Include $(include-y), and ignore $(include-).
 
-Otherwise, looks good.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Thanks,
+ Makefile               | 16 +++++++++-------
+ scripts/Makefile.kcov  |  4 ----
+ scripts/Makefile.kcsan |  4 ----
+ scripts/Makefile.ubsan |  3 ---
+ 4 files changed, 9 insertions(+), 18 deletions(-)
 
-
-Jonathan
-
-> >                                            pf->timestamp);
-> >
-> >  out:
-> > --
-> > 2.28.0.163.g6104cc2f0b6-goog
-> >  
-> 
-> 
-> --
-> With Best Regards,
-> Andy Shevchenko
+diff --git a/Makefile b/Makefile
+index ebf4d3ce492c..483456d5dd3e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -745,9 +745,6 @@ endif
+ KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-allow-store-data-races)
+ 
+-include scripts/Makefile.kcov
+-include scripts/Makefile.gcc-plugins
+-
+ ifdef CONFIG_READABLE_ASM
+ # Disable optimizations that make assembler listings hard to read.
+ # reorder blocks reorders the control in the function
+@@ -948,10 +945,15 @@ ifdef CONFIG_RETPOLINE
+ KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+ endif
+ 
+-include scripts/Makefile.kasan
+-include scripts/Makefile.extrawarn
+-include scripts/Makefile.ubsan
+-include scripts/Makefile.kcsan
++# include additional Makefiles when needed
++include-y			:= scripts/Makefile.extrawarn
++include-$(CONFIG_KASAN)		+= scripts/Makefile.kasan
++include-$(CONFIG_KCSAN)		+= scripts/Makefile.kcsan
++include-$(CONFIG_UBSAN)		+= scripts/Makefile.ubsan
++include-$(CONFIG_KCOV)		+= scripts/Makefile.kcov
++include-$(CONFIG_GCC_PLUGINS)	+= scripts/Makefile.gcc-plugins
++
++include $(addprefix $(srctree)/, $(include-y))
+ 
+ # Add user supplied CPPFLAGS, AFLAGS and CFLAGS as the last assignments
+ KBUILD_CPPFLAGS += $(KCPPFLAGS)
+diff --git a/scripts/Makefile.kcov b/scripts/Makefile.kcov
+index 52b113302443..67e8cfe3474b 100644
+--- a/scripts/Makefile.kcov
++++ b/scripts/Makefile.kcov
+@@ -1,10 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-ifdef CONFIG_KCOV
+-
+ kcov-flags-$(CONFIG_CC_HAS_SANCOV_TRACE_PC)	+= -fsanitize-coverage=trace-pc
+ kcov-flags-$(CONFIG_KCOV_ENABLE_COMPARISONS)	+= -fsanitize-coverage=trace-cmp
+ kcov-flags-$(CONFIG_GCC_PLUGIN_SANCOV)		+= -fplugin=$(objtree)/scripts/gcc-plugins/sancov_plugin.so
+ 
+ export CFLAGS_KCOV := $(kcov-flags-y)
+-
+-endif
+diff --git a/scripts/Makefile.kcsan b/scripts/Makefile.kcsan
+index bd4da1af5953..2b0743e6566e 100644
+--- a/scripts/Makefile.kcsan
++++ b/scripts/Makefile.kcsan
+@@ -1,6 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+-ifdef CONFIG_KCSAN
+-
+ # GCC and Clang accept backend options differently. Do not wrap in cc-option,
+ # because Clang accepts "--param" even if it is unused.
+ ifdef CONFIG_CC_IS_CLANG
+@@ -15,5 +13,3 @@ CFLAGS_KCSAN := -fsanitize=thread \
+ 	$(call cc-option,$(call cc-param,tsan-instrument-func-entry-exit=0) -fno-optimize-sibling-calls) \
+ 	$(call cc-option,$(call cc-param,tsan-instrument-read-before-write=1)) \
+ 	$(call cc-param,tsan-distinguish-volatile=1)
+-
+-endif # CONFIG_KCSAN
+diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
+index 5b15bc425ec9..27348029b2b8 100644
+--- a/scripts/Makefile.ubsan
++++ b/scripts/Makefile.ubsan
+@@ -1,6 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+-ifdef CONFIG_UBSAN
+-
+ ifdef CONFIG_UBSAN_ALIGNMENT
+       CFLAGS_UBSAN += $(call cc-option, -fsanitize=alignment)
+ endif
+@@ -26,4 +24,3 @@ endif
+       # -fsanitize=* options makes GCC less smart than usual and
+       # increase number of 'maybe-uninitialized false-positives
+       CFLAGS_UBSAN += $(call cc-option, -Wno-maybe-uninitialized)
+-endif
+-- 
+2.25.1
 
