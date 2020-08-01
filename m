@@ -2,168 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00706235017
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 05:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9433C234F9E
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 05:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728941AbgHADn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 23:43:27 -0400
-Received: from mga06.intel.com ([134.134.136.31]:44951 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728853AbgHADn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 23:43:26 -0400
-IronPort-SDR: kQL6HD1pNp0WW7OMWUHJDq2aPRhbvoa7u5QHgQSb13ejdBl/6DgtpJZHABmRWZ1NFMwYge/0aS
- pWyLlEIdn7kQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9699"; a="213438824"
-X-IronPort-AV: E=Sophos;i="5.75,420,1589266800"; 
-   d="scan'208";a="213438824"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 20:43:25 -0700
-IronPort-SDR: 3tc/gl+Ukhwb9k/89dnYCY1jX8bmF0P6xAPx5J16Wse/Ii4OkO5eOj/7spk8hjCUuDHr53hy7+
- 2RDkF1VglSSg==
-X-IronPort-AV: E=Sophos;i="5.75,420,1589266800"; 
-   d="scan'208";a="395520056"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 20:43:24 -0700
-Subject: [PATCH v3 23/23] device-dax: Add a range mapping allocation
- attribute
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     akpm@linux-foundation.org
-Cc:     Joao Martins <joao.m.martins@oracle.com>, peterz@infradead.org,
-        vishal.l.verma@intel.com, dave.hansen@linux.intel.com,
-        ard.biesheuvel@linaro.org, vishal.l.verma@intel.com,
-        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
-        joao.m.martins@oracle.com, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, dri-devel@lists.freedesktop.org
-Date:   Fri, 31 Jul 2020 20:27:06 -0700
-Message-ID: <159625242681.3040297.14551750051856153463.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <159625229779.3040297.11363509688097221416.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <159625229779.3040297.11363509688097221416.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1728500AbgHADch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 23:32:37 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:38478 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728465AbgHADch (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 23:32:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596252756; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=mZoXbg7QKXgsr8QudG8yDWBYbvZd92MunjPxpBzjxNo=; b=XlvZeryHlQmq9aqJrHY/7EFqEtQKqlizQqUHM2XB6YMmiN/xpsCVdUFSTaaTjQNOYMwZ+fzN
+ k5taZme1noS3A55JDOLpLIrYCTJdt0Z8EfebifzUSwRquVoFx9GYQpFVaAx3EkCXDVOv1nqR
+ VqDetKQsWvox9b6dfC1V+TWJQKA=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n19.prod.us-east-1.postgun.com with SMTP id
+ 5f24e24976a940cda8fd2c1f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 01 Aug 2020 03:32:25
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 055D9C43395; Sat,  1 Aug 2020 03:32:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mdtipton-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdtipton)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 29223C433C9;
+        Sat,  1 Aug 2020 03:32:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 29223C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mdtipton@codeaurora.org
+From:   Mike Tipton <mdtipton@codeaurora.org>
+To:     georgi.djakov@linaro.org
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Tipton <mdtipton@codeaurora.org>
+Subject: [PATCH v3 0/6] interconnect: qcom: Misc bcm-voter changes and fixes
+Date:   Fri, 31 Jul 2020 20:32:09 -0700
+Message-Id: <20200801033215.1440-1-mdtipton@codeaurora.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joao Martins <joao.m.martins@oracle.com>
+These changes are mostly unrelated, but there are some dependencies
+between them.
 
-Add a sysfs attribute which denotes a range from the dax region
-to be allocated. It's an write only @mapping sysfs attribute in
-the format of '<start>-<end>' to allocate a range. @start and
-@end use hexadecimal values and the @pgoff is implicitly ordered
-wrt to previous writes to @mapping sysfs e.g. a write of a range
-of length 1G the pgoff is 0..1G(-4K), a second write will use
-@pgoff for 1G+4K..<size>.
+v3:
+- Improve qcom,tcs-wait property description
+- Stop using #define in property `default` doc
 
-This range mapping interface is useful for:
+v2:
+- New patch for generic qcom,icc.h bindings
+- New patch for documenting qcom,tcs-wait property
+- Update bcm_div() 'base' parameter from u64 to u32
 
- 1) Application which want to implement its own allocation logic,
- and thus pick the desired ranges from dax_region.
+Mike Tipton (6):
+  dt-bindings: interconnect: Add generic qcom bindings
+  dt-bindings: interconnect: Add property to set BCM TCS wait behavior
+  interconnect: qcom: Support bcm-voter-specific TCS wait behavior
+  interconnect: qcom: Only wait for completion in AMC/WAKE by default
+  interconnect: qcom: Add support for per-BCM scaling factors
+  interconnect: qcom: Fix small BW votes being truncated to zero
 
- 2) For use cases like VMM fast restart[0] where after kexec we
- want to the same gpa<->phys mappings (as originally created
- before kexec).
+ .../bindings/interconnect/qcom,bcm-voter.yaml | 20 ++++++
+ drivers/interconnect/qcom/bcm-voter.c         | 63 ++++++++++++-------
+ drivers/interconnect/qcom/icc-rpmh.c          |  3 +
+ drivers/interconnect/qcom/icc-rpmh.h          | 20 ++----
+ include/dt-bindings/interconnect/qcom,icc.h   | 26 ++++++++
+ 5 files changed, 95 insertions(+), 37 deletions(-)
+ create mode 100644 include/dt-bindings/interconnect/qcom,icc.h
 
-[0] https://static.sched.com/hosted_files/kvmforum2019/66/VMM-fast-restart_kvmforum2019.pdf
-
-Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-Link: https://lore.kernel.org/r/20200716172913.19658-5-joao.m.martins@oracle.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/dax/bus.c |   64 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
-
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index 7a9439132573..aa67555ba183 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -1040,6 +1040,67 @@ static ssize_t size_store(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_RW(size);
- 
-+static ssize_t range_parse(const char *opt, size_t len, struct range *range)
-+{
-+	unsigned long long addr = 0;
-+	char *start, *end, *str;
-+	ssize_t rc = EINVAL;
-+
-+	str = kstrdup(opt, GFP_KERNEL);
-+	if (!str)
-+		return rc;
-+
-+	end = str;
-+	start = strsep(&end, "-");
-+	if (!start || !end)
-+		goto err;
-+
-+	rc = kstrtoull(start, 16, &addr);
-+	if (rc)
-+		goto err;
-+	range->start = addr;
-+
-+	rc = kstrtoull(end, 16, &addr);
-+	if (rc)
-+		goto err;
-+	range->end = addr;
-+
-+err:
-+	kfree(str);
-+	return rc;
-+}
-+
-+static ssize_t mapping_store(struct device *dev, struct device_attribute *attr,
-+		const char *buf, size_t len)
-+{
-+	struct dev_dax *dev_dax = to_dev_dax(dev);
-+	struct dax_region *dax_region = dev_dax->region;
-+	size_t to_alloc;
-+	struct range r;
-+	ssize_t rc;
-+
-+	rc = range_parse(buf, len, &r);
-+	if (rc)
-+		return rc;
-+
-+	rc = -ENXIO;
-+	device_lock(dax_region->dev);
-+	if (!dax_region->dev->driver) {
-+		device_unlock(dax_region->dev);
-+		return rc;
-+	}
-+	device_lock(dev);
-+
-+	to_alloc = range_len(&r);
-+	if (alloc_is_aligned(dev_dax, to_alloc))
-+		rc = alloc_dev_dax_range(dev_dax, r.start, to_alloc);
-+	device_unlock(dev);
-+	device_unlock(dax_region->dev);
-+
-+	return rc == 0 ? len : rc;
-+}
-+static DEVICE_ATTR_WO(mapping);
-+
- static ssize_t align_show(struct device *dev,
- 		struct device_attribute *attr, char *buf)
- {
-@@ -1181,6 +1242,8 @@ static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
- 		return 0;
- 	if (a == &dev_attr_numa_node.attr && !IS_ENABLED(CONFIG_NUMA))
- 		return 0;
-+	if (a == &dev_attr_mapping.attr && is_static(dax_region))
-+		return 0;
- 	if ((a == &dev_attr_align.attr ||
- 	     a == &dev_attr_size.attr) && is_static(dax_region))
- 		return 0444;
-@@ -1190,6 +1253,7 @@ static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
- static struct attribute *dev_dax_attributes[] = {
- 	&dev_attr_modalias.attr,
- 	&dev_attr_size.attr,
-+	&dev_attr_mapping.attr,
- 	&dev_attr_target_node.attr,
- 	&dev_attr_align.attr,
- 	&dev_attr_resource.attr,
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
