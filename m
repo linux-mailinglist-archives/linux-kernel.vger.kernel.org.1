@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE722235408
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 20:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FCD23540A
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 20:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgHASqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 14:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55932 "EHLO
+        id S1727109AbgHASqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 14:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgHASqc (ORCPT
+        with ESMTP id S1726571AbgHASqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 14:46:32 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D91C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 11:46:31 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id t14so6806613wmi.3
-        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 11:46:31 -0700 (PDT)
+        Sat, 1 Aug 2020 14:46:39 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC40C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 11:46:38 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id c80so11058297wme.0
+        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 11:46:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GCUJ6ZU50QAYMzRKgBS37g6xtsoQFMOMmG/UkZeh8U4=;
-        b=HW9t5tWhZlaY0l10BnGHxHYtvvjRUfudST8+DcXx96jefUu5C++2lZW8FCGcWXw9ZI
-         bngDiTVhV8bswWU9FznHI4uSTFzcU3cgmg0+wP+/ik+YbfH0N23sGLh09sA4JrPUg31a
-         4IMPWnY/+xmfdAalHNFdr6lrEo1Mo9ZsKG8sYFJnMvI4YkG4OJYrT1h/lx2h2yTRLSrz
-         j0YFWYFk6NWViziLkIlWQuPjfw1RdFazI/E7iBiMpSVnXh1B7CkelQVlJhtlN7Rmib0c
-         cwgA3BlYwSEO6IOMq/55QckM7DerlVtduYM/yU1/t3Dw6gHIpsu/CHyAXQLzDOKBngJQ
-         FhOA==
+        bh=lYVftSeKWtv82RkcEjL/lpHSO/4ZGc4ItPGRuKW3M+Y=;
+        b=AFpkgMHNpf9cG8eKjkOX9FQrJ3xcasdHHae9E85xX10FcCoBz5bkJFaq7DrUwY8Wq8
+         qeDjaUnTsTHoqSNHF+nymeQO/40B82plqCMuLF+yCGvsAt1IsHJ/pvm7O5LVGtHvF9K6
+         C90MaPtL4a5Xs2g0kczm1Lni4OFdLi5RDXVU1no3jGVuwUkcKI7/jztGfPvSrTx4jy1Z
+         53oocLuuzjsSZbgxm6musnDL9EqNbn7s65SX50+RWA5+2hHVl++mqfWdRa5hRYH2XVGJ
+         /Nx2jzTwfT8XmeYxxQBsw+8zSwba5IgY8UTEEElJusMhVdptZRI81kIy0sIjCJntWkuQ
+         2wMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GCUJ6ZU50QAYMzRKgBS37g6xtsoQFMOMmG/UkZeh8U4=;
-        b=H5D/UmvHmMaEWOPL5IRiz43T/iAY7L5A4crYxidi4td/tBxGsPE/VXWvXU5XvW7Qly
-         cCGzmp6++5MTh/7GDJNDvMLJMvvjMLtX3O7FpVEU98TslIqlllHEowjU4Iy5A/rpl0Hd
-         ClbXxxnkJWveoJCeB6Y3hvBJlVRGvDPce/eT7XwH8ufpMU7+7uaplUbIW6m5x12gewsp
-         /QT/88kNmnQn6gODTyY6NtR7jgeln2KfHXhd/hY3KhRrzmp7UOZthNtQJ++YymA8lYmY
-         er4Ros/TOT1XPt3aKZMvcC5gshqXyjfXqc059k8wiMXeBbcydKJvVX38Un0etZWKQlHZ
-         2q5w==
-X-Gm-Message-State: AOAM530CdobW6JNf4P5o0sGuGFuI0KJ8IMVp+4eMb3V9YXSOLvLZna/J
-        Rq44x6YP0KUKReV7BT11GmDDSsbAR/R9
-X-Google-Smtp-Source: ABdhPJzucZXpv2jeZIz353bkTKOIpIVlfotjMyrMB8UGgg+1C7CD75Mtxl/ehLkeHfcnV39N4aXoNw==
-X-Received: by 2002:a1c:2985:: with SMTP id p127mr8633929wmp.166.1596307589952;
-        Sat, 01 Aug 2020 11:46:29 -0700 (PDT)
+        bh=lYVftSeKWtv82RkcEjL/lpHSO/4ZGc4ItPGRuKW3M+Y=;
+        b=BR6x+c4nuQekHuKn0gDp4UlCiKbSPvAmx1gdqiQu45IIwX1XzF/8NsoVdriu5Khuzp
+         Il2NzREdibiwPqEKs0iWgT8xBC8IYSg8a2hfgj9vIAgc60+jXWk40mGX+FPkU4WUgLub
+         wMNQW6yCk9oYVTZ1eQOX3MEpcx8iPMJCTrKEpTxRAbi6TMFqAVSk4SNHTmpo9kaxnAo3
+         6OTnHDhMZVbAV90yCtV+OYFATGdkjOGMr4k/m4eCeDkpFxoJvnQVCtaDQucPdrBJfqCQ
+         rf5qPHU2v/9EmZZ96mLM3OOn5eXHezKkiJkCJtPzygxb7RhrIJNCvaWYG9LVnUBlR22q
+         7IYw==
+X-Gm-Message-State: AOAM532ObwE03s4mt1HUcy+iZd4Cjg+rForxDAkELTkEO1wFDsly8Ygj
+        OJ64olLjjikVAKot61MIx1oOxUDc9Ng+
+X-Google-Smtp-Source: ABdhPJyqLEl7sAWrbFV7+FymYo1AuoB+mxNTGNDerUi6jsmnyfuOJGhc28nMo7JVr7tTPsCFOTLp1w==
+X-Received: by 2002:a7b:c219:: with SMTP id x25mr2366699wmi.101.1596307595562;
+        Sat, 01 Aug 2020 11:46:35 -0700 (PDT)
 Received: from localhost.lan (host-92-25-238-49.as13285.net. [92.25.238.49])
-        by smtp.gmail.com with ESMTPSA id g7sm17468447wrv.82.2020.08.01.11.46.28
+        by smtp.gmail.com with ESMTPSA id g7sm17468447wrv.82.2020.08.01.11.46.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Aug 2020 11:46:28 -0700 (PDT)
+        Sat, 01 Aug 2020 11:46:35 -0700 (PDT)
 From:   Jules Irenge <jbi.octave@gmail.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Jules Irenge <jbi.octave@gmail.com>
-Subject: [PATCH 0/4] Checkpatch tool errors clean up
-Date:   Sat,  1 Aug 2020 19:45:59 +0100
-Message-Id: <20200801184603.310769-1-jbi.octave@gmail.com>
+Cc:     Jules Irenge <jbi.octave@gmail.com>,
+        Michel Lespinasse <walken@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 1/4] acct: Add required space between variable and operator
+Date:   Sat,  1 Aug 2020 19:46:00 +0100
+Message-Id: <20200801184603.310769-2-jbi.octave@gmail.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <0/4>
+In-Reply-To: <20200801184603.310769-1-jbi.octave@gmail.com>
 References: <0/4>
+ <20200801184603.310769-1-jbi.octave@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,23 +70,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-I am proposing these 4 patches. 
-I am currently learning the core kernel the hard way. 
-I will appreciate any feedback negative or positive.
-Thanks 
+Checkpatch tool reports an error
 
-Jules Irenge (4):
-  acct: Add required space between variable and operator
-  audit: uninitialize global variable audit_sig_sid
-  audit: uninitialize static variables
-  context_tracking: uninitialize static variables
+"ERROR: spaces required around that == (ctx:VxV)"
 
- kernel/acct.c             |  2 +-
- kernel/audit.c            | 10 +++++-----
- kernel/context_tracking.c |  2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
+To fix this space has been added between the variable,
+the operator and the value.
 
+Add the missing required space.
+
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+---
+ kernel/acct.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/acct.c b/kernel/acct.c
+index b0c5b3a9f5af..d7cc5f917e11 100644
+--- a/kernel/acct.c
++++ b/kernel/acct.c
+@@ -451,7 +451,7 @@ static void fill_ac(acct_t *ac)
+ 	do_div(elapsed, AHZ);
+ 	btime = ktime_get_real_seconds() - elapsed;
+ 	ac->ac_btime = clamp_t(time64_t, btime, 0, U32_MAX);
+-#if ACCT_VERSION==2
++#if ACCT_VERSION == 2
+ 	ac->ac_ahz = AHZ;
+ #endif
+ 
 -- 
 2.26.2
 
