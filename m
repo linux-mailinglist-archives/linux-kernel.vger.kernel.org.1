@@ -2,170 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EA2234F18
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 03:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4226F234F38
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 03:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728407AbgHABPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 21:15:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728375AbgHABPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 21:15:02 -0400
-Received: from localhost.localdomain (unknown [89.208.247.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F195021744;
-        Sat,  1 Aug 2020 01:14:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596244501;
-        bh=G2VNe93BWzqh5NFXOKKw/WKZ4VfWD4d5tZ6KgNKEhes=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vy1xgTXYDXfaMlH4HYJnKX3ZiUZHkUGx3dxyWhEJC+0jhTBiSjW430z17fwjB6gje
-         cxMlHQppU7ZYOUreoLinA0EdVP7/Cyuz/sHfVtLo+seAaS+8sSZe2ShBOedzPz9enT
-         Wdtlra3mBD5xVXwayX9QbWW1SunEDrXKBm6V6k94=
-From:   guoren@kernel.org
-To:     guoren@kernel.org, arnd@arndb.de
-Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-arch@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Greentime Hu <greentime.hu@sifive.com>
-Subject: [PATCH 13/13] csky: Add context tracking support
-Date:   Sat,  1 Aug 2020 01:14:13 +0000
-Message-Id: <1596244453-98575-14-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596244453-98575-1-git-send-email-guoren@kernel.org>
-References: <1596244453-98575-1-git-send-email-guoren@kernel.org>
+        id S1727834AbgHABSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 21:18:41 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58436 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726535AbgHABSk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 21:18:40 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07113Yrg011296;
+        Fri, 31 Jul 2020 18:18:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=cz0TDT3xWmp9vaqAaxhOg54weg57kGnyv9nOrf/jfTA=;
+ b=XeCP1FVSe54Ha1vUfTkbX+qY5wsu7okeu49kEFINzagjQmlvRIpvqnItvKspHcB9icAh
+ Zoh0XILDgFmYYIVusRIp1Y6Ks0RYP6MkGF12dbj8uvO7FPHt9O2biq7f49hdICoJU2/w
+ lG4vuMmTd6IGxGDUhevk16/aEfOWZCG3jFs= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32m01crcc8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 31 Jul 2020 18:18:28 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 31 Jul 2020 18:18:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ql0OYd5wdxLDKJ6s0y4ZdN+9LO9m/n5kzw6UDqxeJnuiusGb7Y+1xvkCdHfNDBPkVlJR/GnqBNQHonymirG0/uHSRKwytl4Bocca/OxBdduc+FKcwmrLYxJvlK4zrpn3HtwYaU64LrjLhfBbrCN7bubIoxDfJ0SLeg/2h+/eop5Inzq2XnmruSDLnvBdUqugtclP0Lqyr6FVhZdV0S6WhQqRhYfnYrfFYcNHSftPVXD3++htRtRm9kLJir2+5SVp5mXHcJ53Muzy8KBm27HqHP8SAl0vEC+9U+csVrPSx//+qBBw0yuPQ4U8EhEb38a/0DuhYaLfoZ5c2cKEpBFnrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cz0TDT3xWmp9vaqAaxhOg54weg57kGnyv9nOrf/jfTA=;
+ b=m9Tgcl1i5Sb2QTPeEwpvyHi7Lw0KdB7EKJycF7KCE0mGDBgOzE8bz+6fQR6svooUbK//IUyA2GZSqMQVa6/s1e66MjgQysi1+G/tYlrXLXuYtHRjbRlK8EULEdaUWIoO3aAqJ/cG5zRMyqcFtD6m9iTREgtHx0RT0HTB1ntRMASFaYWQ1RoKBlSBXMPwGaWcB9SIZ4V9Nko4D5NBVF/qqcDm5wnHj27q0d6PLnOITC5ROb3w99+UKungzSnw0WXypZ0kr18dYaXdtCv27PaWUa8Efyr7oNy5kLvQyZnkr3RptniQGSsltKCuUPfIYxC1G1zvmUMVnxM+GylOG/7bzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cz0TDT3xWmp9vaqAaxhOg54weg57kGnyv9nOrf/jfTA=;
+ b=c/zW+SQ5HlDzIdy9qyNzE/P1MEJwMH/yngGnc5hCzem0boNSEyQzWcPE/fPTzNwMx3VaojLZHW2x7+q3HwDzLpVkm3GTRSzlAo2c6Gln/iADJHzm6lQ0ZqFhf8AWQ/DMbhH78SZzn0jTiTktBeXcdLPliwA5ayVy22/fh8nUzYc=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2936.namprd15.prod.outlook.com (2603:10b6:a03:f9::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.19; Sat, 1 Aug
+ 2020 01:18:24 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3239.017; Sat, 1 Aug 2020
+ 01:18:24 +0000
+Date:   Fri, 31 Jul 2020 18:18:21 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Hugh Dickins <hughd@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mm: vmstat: fix /proc/sys/vm/stat_refresh generating
+ false warnings
+Message-ID: <20200801011821.GA859734@carbon.dhcp.thefacebook.com>
+References: <20200714173920.3319063-1-guro@fb.com>
+ <alpine.LSU.2.11.2007291902340.6363@eggly.anvils>
+ <20200730162348.GA679955@carbon.dhcp.thefacebook.com>
+ <alpine.LSU.2.11.2007302018350.2410@eggly.anvils>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2007302018350.2410@eggly.anvils>
+X-ClientProxiedBy: BY3PR05CA0030.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::35) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:562c) by BY3PR05CA0030.namprd05.prod.outlook.com (2603:10b6:a03:254::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.9 via Frontend Transport; Sat, 1 Aug 2020 01:18:23 +0000
+X-Originating-IP: [2620:10d:c090:400::5:562c]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6d421d02-beca-448a-2418-08d835b8c941
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2936:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB29362FE7E1AD73CE4D1C04EEBE4F0@BYAPR15MB2936.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GtkPtSXgP5zdr6AQD58y2VMKg4t/8cEQeJjDezAh1jgYBTQjtvDvGW9JJP3OsR23cJSPDd4U4UCWiAu5KTvsmGKtZnHerUtsf/5pmdf5G0xyyv+3wLlqoj+5MHbspEtRBOPmeVG5Vq75sfAXnRYF4UhA0u/y+2HRYBfWN749B/P34jD9t62guZ48ZyMIph1EsY0j1dza28mGS3tTE1uIxrryjz+xeiagFJJhAqYRHagpnYwKxuKss6mEe6SaC5qWZZTEfLf1LXnmEF7qPHYbPzpXsVr3PnNuTYvycJaqGEZG1Ba2+ktB/OSIVRtApkJHkePyI0L7oZDSfb/uxU9Niw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(39860400002)(346002)(396003)(376002)(136003)(2906002)(186003)(6506007)(86362001)(66476007)(83380400001)(1076003)(7696005)(16526019)(52116002)(8936002)(66946007)(33656002)(8676002)(4326008)(66556008)(6916009)(9686003)(5660300002)(55016002)(54906003)(478600001)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 4vWe4MxczjAogj4bHhd5NaL/6a7KD4XY7VRe2YT/BiZ+8SSSVte8YazqWloeVE5BTxImJ/J3KSZp8fPQ1DD4oiPj4n2YnrTgZpUG1NU/iziEDtoJj7a1ge5MoA6eq7YxMPaDXfQyYzm5i1Mlalcju89RK88WyBaRDxGTniTShyU2SPNNFrjUhPYKTdN86+QFIRNdzMwUaSizdEvtrVXoUzH16ALCJ9D3ut8bZ6JMk9kxZK290czp8RjHf6EoiDu+/rSfooOC4wRhTRDfxqfssgKPR4gRfDZTd9w5+dhla28lFFhB/040V9GTBDH7wyfCQTU491MiON8P/qW5/Pks42epZZr0aLys+L1u1iN7sf0bsTsc4isPWnnT8aEJ/K3Ka6N99QjaD62U27pkedTis5f+HK7vRObNT8bEgHJxgaaUSAZDz4rS/WFggCjkKSbCpzcvH2EjyGlrdMN3zc78zkT6sZeCY7snd8yQh6DmaTiwsHstDMuIe+mLRxRd4cbwGeV691oqGlPf1+QuNbqbqT/QB3Of+HAZ5N8tvFXbzfzDHBJ4wsqyd1KK9vIvLz1BbVIYvZhmdRgNui7BtQyTBev39L25C8glmW5L8hqJQQM/WiyZaB6jO0wKonMC9Dby/dYmC/6rI9QDbygfNUb3cmf3aDpimYo47Cf9vDFOdJ0=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d421d02-beca-448a-2418-08d835b8c941
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2020 01:18:24.3077
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iOAbYSdbS0vsJcG3prVk/Worb/d/hVFJbYP+AgsLCyhc0yx17JOavrXVcUH8qXag
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2936
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-31_09:2020-07-31,2020-07-31 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ adultscore=0 lowpriorityscore=0 suspectscore=1 mlxlogscore=999
+ phishscore=0 clxscore=1015 impostorscore=0 bulkscore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008010005
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+On Thu, Jul 30, 2020 at 09:06:55PM -0700, Hugh Dickins wrote:
+> On Thu, 30 Jul 2020, Roman Gushchin wrote:
+> > On Wed, Jul 29, 2020 at 08:45:47PM -0700, Hugh Dickins wrote:
+> > > 
+> > > But a better idea is perhaps to redefine the behavior of
+> > > "echo >/proc/sys/vm/stat_refresh".  What if
+> > > "echo someparticularstring >/proc/sys/vm/stat_refresh" were to
+> > > disable or enable the warning (permanently? or just that time?):
+> > > disable would be more "back-compatible", but I think it's okay
+> > > if you prefer enable.  Or "someparticularstring" could actually
+> > > specify the warning threshold you want to use - you might echo
+> > > 125 or 16000, I might echo 0.  We can haggle over the default.
+> > 
+> > May I ask you, what kind of problems you have in your in mind,
+> > which can be revealed by these warnings? Or maybe there is some
+> > history attached?
+> 
+> Yes: 52b6f46bc163 mentions finding a bug of mine in NR_ISOLATED_FILE
+> accounting, but IIRC (though I might be making this up) there was
+> also a bug in the NR_ACTIVE or NR_INACTIVE FILE or ANON accounting.
+> 
+> When one of the stats used for balancing or limiting in vmscan.c
+> trends increasingly negative, it becomes increasingly difficult
+> for those heuristics (adding on to others, comparing with others)
+> to do what they're intended to do: they behave increasingly weirdly.
+> 
+> Now the same (or the opposite) is true if one of those stats trends
+> increasingly positive: but if it leaks positive, it's visible in
+> /proc/vmstat; whereas if it leaks negative, it's presented there as 0.
+> 
+> And most of the time (when unsynchronized) showing 0 is much better
+> than showing a transient negative.  But to help fix bugs, we do need
+> some way of seeing the negatives, and vm/stat_refresh provides an
+> opportunity to do so, when it synchronizes.
+> 
+> I'd be glad not to show the transients if I knew them: set a flag
+> on any that go negative, and only show if negative twice or more
+> in a row?  Perhaps, but I don't relish adding that, and think it
+> would be over-engineering.
+> 
+> It does sound to me like echoing the warning threshold into
+> /proc/sys/vm/stat_refresh is the best way to satisfy us both.
+> 
+> Though another alternative did occur to me overnight: we could
+> scrap the logged warning, and show "nr_whatever -53" as output
+> from /proc/sys/vm/stat_refresh: that too would be acceptable
+> to me, and you redirect to /dev/null.
 
-This patch support context tracking with no hz full.
+It sounds like a good idea to me. Do you want me to prepare a patch?
 
-Here is the test result with dynticks-testing (see tick_stop):
+> 
+> (Why did I choose -53 in my example?  An in-joke: when I looked
+> through our machines for these warnings, on old kernels with my
+> old shmem hugepage implementation, there were a striking number
+> with "nr_shmem_freeholes -53"; but I'm a few years too late to
+> investigate what was going on there.)
 
- cat /sys/kernel/debug/tracing/per_cpu/cpu0/trace
- tracer: nop
+:)
 
- entries-in-buffer/entries-written: 356/356   #P:1
+> 
+> > 
+> > If it's all about some particular counters, which are known to be
+> > strictly positive, maybe we should do the opposite, and check only
+> > those counters? Because in general it's not an indication of a problem.
+> 
+> Yet it's very curious how few stats ever generate such warnings:
+> you're convinced they're just transient noise, and you're probably right;
+> but I am a little suspicious of whether they are accounted correctly.
 
-                              _-----=> irqs-off
-                             / _----=> need-resched
-                            | / _---=> hardirq/softirq
-                            || / _--=> preempt-depth
-                            ||| /     delay
-           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-              | |       |   ||||       |         |
-...
-          sleep-192   [000] d.h.   167.088270: hrtimer_expire_entry: hrtimer=(ptrval) function=tick_sched_timer now=166436355700
-          sleep-192   [000] d.h.   167.092279: hrtimer_expire_entry: hrtimer=(ptrval) function=tick_sched_timer now=166440365700
-         <idle>-0     [000] d.h2   167.096492: hrtimer_expire_entry: hrtimer=(ptrval) function=tick_sched_timer now=166444578400
-         <idle>-0     [000] d..1   167.097876: tick_stop: success=1 dependency=NONE
-                                               ^^^^^^^^^
-         <idle>-0     [000] d.h1   168.818206: hrtimer_expire_entry: hrtimer=(ptrval) function=tick_sched_timer now=168166280900
-   kworker/u2:0-7     [000] ....   168.821760: workqueue_execute_start: work struct (ptrval): function wb_workfn
-   kworker/u2:0-7     [000] d.h1   168.824464: hrtimer_expire_entry: hrtimer=(ptrval) function=tick_sched_timer now=168172547100
-    kworker/0:1-18    [000] ....   168.825053: workqueue_execute_start: work struct (ptrval): function vmstat_update
-    kworker/0:1-18    [000] ....   168.825238: workqueue_execute_start: work struct (ptrval): function vmstat_shepherd
-    kworker/0:1-18    [000] ....   168.825516: workqueue_execute_start: work struct (ptrval): function neigh_periodic_work
-         <idle>-0     [000] d..1   168.826121: tick_stop: success=1 dependency=NONE
-   kworker/u2:0-7     [000] ....   169.377327: workqueue_execute_start: work struct (ptrval): function flush_to_ldisc
-         <idle>-0     [000] d..1   169.379832: tick_stop: success=1 dependency=NONE
-   kworker/u2:0-7     [000] ....   169.607935: workqueue_execute_start: work struct (ptrval): function flush_to_ldisc
-   kworker/u2:0-7     [000] d.h1   169.608148: hrtimer_expire_entry: hrtimer=(ptrval) function=tick_sched_timer now=168956235500
-         <idle>-0     [000] d..1   169.608654: tick_stop: success=1 dependency=NONE
+Yeah, I was initially very suspicious too, but I didn't find any issues
+and still think it's not an indication of a problem.
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Greentime Hu <greentime.hu@sifive.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
----
- arch/csky/Kconfig        |  2 ++
- arch/csky/kernel/entry.S | 23 +++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
-
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index ad98b93..af23873 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -42,6 +42,8 @@ config CSKY
- 	select HAVE_ARCH_MMAP_RND_BITS
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_COPY_THREAD_TLS
-+	select HAVE_CONTEXT_TRACKING
-+	select HAVE_VIRT_CPU_ACCOUNTING_GEN
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
-diff --git a/arch/csky/kernel/entry.S b/arch/csky/kernel/entry.S
-index efd2e69..5936391 100644
---- a/arch/csky/kernel/entry.S
-+++ b/arch/csky/kernel/entry.S
-@@ -23,6 +23,22 @@
- #endif
- .endm
- 
-+.macro	context_tracking
-+	mfcr	a0, epsr
-+	btsti	a0, 31
-+	bt	1f
-+	jbsr	context_tracking_user_exit
-+	ldw	a0, (sp, LSAVE_A0)
-+	ldw	a1, (sp, LSAVE_A1)
-+	ldw	a2, (sp, LSAVE_A2)
-+	ldw	a3, (sp, LSAVE_A3)
-+#if defined(__CSKYABIV1__)
-+	ldw	r6, (sp, LSAVE_A4)
-+	ldw	r7, (sp, LSAVE_A5)
-+#endif
-+1:
-+.endm
-+
- .macro tlbop_begin name, val0, val1, val2
- ENTRY(csky_\name)
- 	mtcr    a3, ss2
-@@ -103,6 +119,7 @@ ENTRY(csky_\name)
- .endm
- .macro tlbop_end is_write
- 	zero_fp
-+	context_tracking
- 	RD_MEH	a2
- 	psrset  ee, ie
- 	mov     a0, sp
-@@ -128,6 +145,7 @@ tlbop_end 1
- ENTRY(csky_systemcall)
- 	SAVE_ALL TRAP0_SIZE
- 	zero_fp
-+	context_tracking
- 	psrset  ee, ie
- 
- 	lrw     r9, __NR_syscalls
-@@ -237,6 +255,9 @@ ret_from_exception:
- 	and	r10, r9
- 	cmpnei	r10, 0
- 	bt	exit_work
-+#ifdef CONFIG_CONTEXT_TRACKING
-+	jbsr	context_tracking_user_enter
-+#endif
- 1:
- #ifdef CONFIG_PREEMPTION
- 	mov	r9, sp
-@@ -277,6 +298,7 @@ work_resched:
- ENTRY(csky_trap)
- 	SAVE_ALL 0
- 	zero_fp
-+	context_tracking
- 	psrset	ee
- 	mov	a0, sp                 /* Push Stack pointer arg */
- 	jbsr	trap_c                 /* Call C-level trap handler */
-@@ -311,6 +333,7 @@ ENTRY(csky_get_tls)
- ENTRY(csky_irq)
- 	SAVE_ALL 0
- 	zero_fp
-+	context_tracking
- 	psrset	ee
- 
- #ifdef CONFIG_TRACE_IRQFLAGS
--- 
-2.7.4
-
+Thank you!
