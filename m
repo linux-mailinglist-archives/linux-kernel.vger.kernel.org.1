@@ -2,130 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE9A235112
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 10:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D46F8235116
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 10:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbgHAIAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 04:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgHAIAF (ORCPT
+        id S1728534AbgHAIA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 04:00:59 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58748 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgHAIA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 04:00:05 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE51C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 01:00:05 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id w19so5452780plq.3
-        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 01:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=i64OqGOKUX2vRbPCdcwPu4hJ7VHYiYruzv3gOuWclhA=;
-        b=CEJxdjnQCINWOcopnZ4Wu5K7tT+eBGOPqTLjCGe07JxfaHDZnQ4FDVxWeQr/je90Mf
-         KYxMbtfrx6Pk8e7SeDv57mGg6JGW/Zv0G1af6LAmKB3EkEYNCfu76G86T9uIQPJ7eFgK
-         0lk4PK/El+KSfNGOYoSpeflHAns3aqDX8cfwxnfv1H9pnwQnjCG0K+KVrbGmf3mFhn+2
-         p6s69ml2dp/5goOx1TBru+VHAwmiAJUHKaw1d3ZP61ofCwm2XiO4mDrY08EUWMU81Fgd
-         avj3VZOBOgTE2APc8mLX3jz+3T/oDph4xsU0bBFu20PGvvxrjp4cb43ZlhSapub8Kd7t
-         oBeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=i64OqGOKUX2vRbPCdcwPu4hJ7VHYiYruzv3gOuWclhA=;
-        b=GM8JgUOAIad0rUq8BpWGhf8I2RQaBSvSfmsS2weKr4VL+F/I6KW7iJFs0BblIm3fLX
-         xDpDceh3oaIawOsSL4yq48UUmuCgjTNUmyPDT4S5MtApabgN0C8PaoqfCNoCs0idb0Le
-         dS2HWFFGlS6SYmzduDNdXZNFOspvaTz0O8bihrdJTAKgTP6Y/OKvvStgNtfCJIllomer
-         j95XZPm2NgC93eznoPNMGvMhxsafGF6L8osv9Z19L3K50I+ImuxQksOkfaVqLTUs7ypq
-         ffitVxVnx3Huaco3DCSK5zwby5aeTbpu3itN8sWl5GHnDj5I29I5DTgTpvGIaOlNY64L
-         koUQ==
-X-Gm-Message-State: AOAM530JRvFXi/OKGS5ukTEUydmONtkcnhztHeG7QtGzNZFg8YLN4n8S
-        eksoqJ6X0AoEMhzYC/cVRvw=
-X-Google-Smtp-Source: ABdhPJyX87jF7+C/BEL9ElATQshMUqsrjaIT8uJiXDwTgR1Lg3kd7vr7cKVtr/cp+/DBXHYU2vE0KA==
-X-Received: by 2002:a17:902:7688:: with SMTP id m8mr6794990pll.12.1596268803816;
-        Sat, 01 Aug 2020 01:00:03 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id f6sm13342385pfa.23.2020.08.01.01.00.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 01 Aug 2020 01:00:03 -0700 (PDT)
-Date:   Sat, 1 Aug 2020 00:59:54 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ASoC: fsl-asoc-card: Remove
- fsl_asoc_card_set_bias_level function
-Message-ID: <20200801075954.GA19629@Asurada-Nvidia>
-References: <1596102422-14010-1-git-send-email-shengjiu.wang@nxp.com>
+        Sat, 1 Aug 2020 04:00:58 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0717wTFw026356;
+        Sat, 1 Aug 2020 08:00:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=JcmYWttSgHbw7qmGDRTSvtOA/0p07IlseUnTuNrFNjc=;
+ b=v/0FkYbVaBTZHtmsPt81t2LxiXsh0E24AS2oPVkso964b5B5DXK85h8T1RZCzpD+qI4x
+ eK9e51amSGeWeddjOl6FYD30GRjrEfH3oyckeRbi/Le+mL7HZOH1vklRd3uE6MPEZJSJ
+ I1Y3dP/wa6iWOT/WEovib+rDatLM37z+SX+vBI1AnY1prLuE95IqNcuZ78qyvw9/0+pZ
+ nBtFb3BJrp5Tq0ZK2nh/QYZsvPKoWo79Wb9N1TOsSpjjOlp4gFM0o6R36cD9GGzbOMhe
+ W2vkOivca/j4VnEy+QUlcMzxX25lLqb4n8/Xo0b01bJKNHepm88iQp43QEsJEpLlZwwg gA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 32n0bkrcrc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 01 Aug 2020 08:00:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0717wlk5023636;
+        Sat, 1 Aug 2020 08:00:43 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 32myqgqq4q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 01 Aug 2020 08:00:43 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07180g11028919;
+        Sat, 1 Aug 2020 08:00:42 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 32myqgqq41-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 01 Aug 2020 08:00:42 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07180c7b019130;
+        Sat, 1 Aug 2020 08:00:38 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 01 Aug 2020 01:00:37 -0700
+Date:   Sat, 1 Aug 2020 11:00:26 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
+ in rds_notify_queue_get()
+Message-ID: <20200801080026.GJ5493@kadam>
+References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
+ <20200731045301.GI75549@unreal>
+ <20200731053306.GA466103@kroah.com>
+ <20200731053333.GB466103@kroah.com>
+ <20200731140452.GE24045@ziepe.ca>
+ <20200731142148.GA1718799@kroah.com>
+ <20200731143604.GF24045@ziepe.ca>
+ <20200731171924.GA2014207@kroah.com>
+ <20200731182712.GI24045@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1596102422-14010-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20200731182712.GI24045@ziepe.ca>
 User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9699 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1011 phishscore=0 impostorscore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008010062
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jul 31, 2020 at 03:27:12PM -0300, Jason Gunthorpe wrote:
+> On Fri, Jul 31, 2020 at 07:19:24PM +0200, Greg Kroah-Hartman wrote:
+> 
+> > > I tried for a bit and didn't find a way to get even old gcc 4.4 to not
+> > > initialize the holes.
+> > 
+> > Odd, so it is just the "= {0};" that does not zero out the holes?
+> 
+> Nope, it seems to work fine too. I tried a number of situations and I
+> could not get the compiler to not zero holes, even back to gcc 4.4
+> 
+> It is not just accidental either, take this:
+> 
+> 	struct rds_rdma_notify {
+> 		unsigned long user_token;
+> 		unsigned char status;
+> 		unsigned long user_token1 __attribute__((aligned(32)));
+> 	} foo = {0};
+> 
+> Which has quite a big hole, clang generates:
+> 
+> 	movq	$0, 56(%rdi)
+> 	movq	$0, 48(%rdi)
+> 	movq	$0, 40(%rdi)
+> 	movq	$0, 32(%rdi)
+> 	movq	$0, 24(%rdi)
+> 	movq	$0, 16(%rdi)
+> 	movq	$0, 8(%rdi)
+> 	movq	$0, (%rdi)
+> 
+> Deliberate extra instructions to fill both holes. gcc 10 does the
+> same, older gcc's do create a rep stosq over the whole thing.
+> 
+> Some fiddling with godbolt shows quite a variety of output, but I
+> didn't see anything that looks like a compiler not filling
+> padding. Even godbolt's gcc 4.1 filled the padding, which is super old.
+> 
+> In several cases it seems the aggregate initializer produced better
+> code than memset, in other cases it didn't
+> 
+> Without an actual example where this doesn't work right it is hard to
+> say anything more..
 
-Having two nits and one question, inline:
+Here is the example that set off the recent patches:
 
-On Thu, Jul 30, 2020 at 05:47:02PM +0800, Shengjiu Wang wrote:
-> @@ -182,6 +180,69 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
->  					       cpu_priv->slot_width);
->  		if (ret && ret != -ENOTSUPP) {
->  			dev_err(dev, "failed to set TDM slot for cpu dai\n");
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	/* Specific configuration for PLL */
-> +	if (codec_priv->pll_id && codec_priv->fll_id) {
-> +		if (priv->sample_format == SNDRV_PCM_FORMAT_S24_LE)
-> +			pll_out = priv->sample_rate * 384;
-> +		else
-> +			pll_out = priv->sample_rate * 256;
-> +
-> +		ret = snd_soc_dai_set_pll(asoc_rtd_to_codec(rtd, 0),
-> +					  codec_priv->pll_id,
-> +					  codec_priv->mclk_id,
-> +					  codec_priv->mclk_freq, pll_out);
-> +		if (ret) {
-> +			dev_err(dev, "failed to start FLL: %d\n", ret);
-> +			goto out;
-> +		}
-> +
-> +		ret = snd_soc_dai_set_sysclk(asoc_rtd_to_codec(rtd, 0),
-> +					     codec_priv->fll_id,
-> +					     pll_out, SND_SOC_CLOCK_IN);
+https://lkml.org/lkml/2020/7/27/199
 
-Just came into my mind: do we need some protection here to prevent
-PLL/SYSCLK reconfiguration if TX/RX end up with different values?
+Another example is commit 5ff223e86f5a ("net: Zeroing the structure
+ethtool_wolinfo in ethtool_get_wol()").  I tested this one with GCC 7.4
+at the time and it was a real life bug.
 
-> +	return 0;
-> +
-> +out:
-> +	priv->streams &= ~BIT(substream->stream);
-> +	return ret;
+The rest of these patches were based on static analysis from Smatch.
+They're all "theoretical" bugs based on the C standard but it's
+impossible to know if and when they'll turn into real life bugs.
 
-Rather than "out:" which doesn't explicitly indicate an error-out,
-"fail:" would be better, following what we used in probe().
+It's not a super long list of code that's affected because we've known
+that the bug was possible for a few years.  It was only last year when
+I saw that it had become a real life bug.
 
-> +static int fsl_asoc_card_hw_free(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct fsl_asoc_card_priv *priv = snd_soc_card_get_drvdata(rtd->card);
-> +	struct codec_priv *codec_priv = &priv->codec_priv;
-> +	struct device *dev = rtd->card->dev;
-> +	int ret;
-> +
-> +	priv->streams &= ~BIT(substream->stream);
-> +
+regards,
+dan carpenter
 
-> +	if (!priv->streams && codec_priv->pll_id &&
-> +	    codec_priv->fll_id) {
-
-This now can fit into single line :)
