@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289F8234F45
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 03:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D98234F5A
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 03:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgHABgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 21:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbgHABgU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 21:36:20 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9058C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 18:36:19 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id e22so8629130pjt.3
-        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 18:36:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pxAEA0+53qgyl4Uc2oHtAITDQ4MZNgAMN6Zdiw4qC64=;
-        b=rmcllhSkSXIh9FjDOoVavm2a5uMqwXBwh9lgR+ZgDbBstm4O/n/JUGAPeHD9ej/EZz
-         0FzRo4C4m93GJ/AnPBELAh8tzkEUPOUOQQfshePlw5KkCDTmhLoHzjMW/2c50umCQNds
-         0J987JYpcEFD8CNZqnCKqtG/12Zzp+MvmQ0s0arTfmNFm71whYVM1HOyIYq+dFsPtyh4
-         0C1awMQRSuD/RbbLnJxuRi2dDdDpAWDcucQMUy92ugySlFOGH1MTDy0JUQHW0Xw7LLeU
-         XPAu+PW8kXIzilxBp6H0rHOOb6KBMbGBm3jbEpU+tHyVCVpL+N1hj8OUP1+RHz6WE5/C
-         1mGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pxAEA0+53qgyl4Uc2oHtAITDQ4MZNgAMN6Zdiw4qC64=;
-        b=WsJuwGIKAx+4AARZfOao+IcJIVzqMo4XDFzNiV9307oOhRSG2H7IzK81l/zfto+e94
-         xaffSY/yxFG0yPgPF8DsaM70e6gD+shX4Oz1cOsk7jPOayOlc6IWDSTpgFvLXEL7fStF
-         buCXDQCXZSVqsQZ4GUaC2Rbz8IBVWZaBT2jHfrsetafcQs6HxmfxagF0rpoE503UZGO1
-         UnQR3yHVx9pUkkIovFHwstT2uuU2xAVq5ynMTxv7xxYSDnhxULO5joqtgCHEIBTCHHSY
-         JGsUNGd54Kdr0mzALFjX6PA96cKDF3VSZAu5m9RuQnwlMmJsoWKzTmlXA2dCw20j4Lt4
-         P9rQ==
-X-Gm-Message-State: AOAM533ZvNxMvtTFD+bSqtKkNYlr71vKvmg+oGtfOuZLmlOZrlMJ/HD3
-        vQS0nTI+Zl6HALi/a/G12Mk=
-X-Google-Smtp-Source: ABdhPJwpY9jEMwUj0VL8KhQZvb6/WF6ddlSjfXgB1LYkhSZiEfmlAR7UPItjzqFM2MIgLateVBS+Lg==
-X-Received: by 2002:a17:90a:d3cf:: with SMTP id d15mr6315034pjw.202.1596245779221;
-        Fri, 31 Jul 2020 18:36:19 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id r185sm12056854pfr.8.2020.07.31.18.36.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 18:36:18 -0700 (PDT)
-Date:   Sat, 1 Aug 2020 10:36:15 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v2 3/3] lib/vsprintf: Force type of flags value for gfp_t
-Message-ID: <20200801013615.GA796@jagdpanzerIV.localdomain>
-References: <20200731180825.30575-1-andriy.shevchenko@linux.intel.com>
- <20200731180825.30575-3-andriy.shevchenko@linux.intel.com>
- <20200731164900.3ece67fb@oasis.local.home>
+        id S1728043AbgHAByp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 21:54:45 -0400
+Received: from mga17.intel.com ([192.55.52.151]:54462 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726794AbgHAByp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 21:54:45 -0400
+IronPort-SDR: MDpn8FcBlzeOSpnnMQpbzhfEe4Y4VVF+6zWDpamX8mSxmhzRQpzMLNCaNaX7BdWP4N/eyLZ59w
+ 9wFXWhBQ9znA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9699"; a="131959841"
+X-IronPort-AV: E=Sophos;i="5.75,420,1589266800"; 
+   d="scan'208";a="131959841"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 18:54:44 -0700
+IronPort-SDR: Tl5QQepecrA3auUMETKGZRd3DePmMCT48Exe5Rrc2ZUX0CUQ7Yt48pWQOyb224ITJeZGB3OiQY
+ rRv+gilspRhQ==
+X-IronPort-AV: E=Sophos;i="5.75,420,1589266800"; 
+   d="scan'208";a="331340904"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 18:54:44 -0700
+Subject: [PATCH] ACPI: NFIT: Fix ARS zero-sized allocation
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     vishal.l.verma@intel.com
+Cc:     Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+Date:   Fri, 31 Jul 2020 18:38:26 -0700
+Message-ID: <159624590643.3037264.14157533719042907758.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200731164900.3ece67fb@oasis.local.home>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/07/31 16:49), Steven Rostedt wrote:
-> On Fri, 31 Jul 2020 21:08:24 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > Sparse is not happy about restricted type being assigned:
-> >   lib/vsprintf.c:1940:23: warning: incorrect type in assignment (different base types)
-> >   lib/vsprintf.c:1940:23:    expected unsigned long [assigned] flags
-> >   lib/vsprintf.c:1940:23:    got restricted gfp_t [usertype]
-> > 
-> > Force type of flags value to make sparse happy.
-> > 
-> > Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> 
-> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Pending commit in -next "devres: handle zero size in devm_kmalloc()"
+triggers a boot regression due to the ARS implementation expecting NULL
+from a zero-sized allocation. Avoid the zero-sized allocation by
+skipping ARS, otherwise crashes with the following signature when
+de-referencing ZERO_SIZE_PTR.
 
-Thanks.
+     BUG: kernel NULL pointer dereference, address: 0000000000000018
+     #PF: supervisor read access in kernel mode
+     #PF: error_code(0x0000) - not-present page
+     RIP: 0010:__acpi_nfit_scrub+0x28a/0x350 [nfit]
+     [..]
+     Call Trace:
+       ? acpi_nfit_query_poison+0x6a/0x180 [nfit]
+       acpi_nfit_scrub+0x36/0xb0 [nfit]
+       process_one_work+0x23c/0x580
+       worker_thread+0x50/0x3b0
 
-> Petr or Sergey,
->
-> Want to take these through the printk tree?
+Otherwise the implementation correctly aborts when NULL is returned from
+devm_kzalloc() in ars_status_alloc().
 
-Can take through the printk-tree.
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+ drivers/acpi/nfit/core.c |   15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-	-ss
+diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+index fb775b967c52..26dd208a0d63 100644
+--- a/drivers/acpi/nfit/core.c
++++ b/drivers/acpi/nfit/core.c
+@@ -3334,7 +3334,7 @@ static void acpi_nfit_init_ars(struct acpi_nfit_desc *acpi_desc,
+ static int acpi_nfit_register_regions(struct acpi_nfit_desc *acpi_desc)
+ {
+ 	struct nfit_spa *nfit_spa;
+-	int rc;
++	int rc, do_sched_ars = 0;
+ 
+ 	set_bit(ARS_VALID, &acpi_desc->scrub_flags);
+ 	list_for_each_entry(nfit_spa, &acpi_desc->spas, list) {
+@@ -3346,7 +3346,7 @@ static int acpi_nfit_register_regions(struct acpi_nfit_desc *acpi_desc)
+ 		}
+ 	}
+ 
+-	list_for_each_entry(nfit_spa, &acpi_desc->spas, list)
++	list_for_each_entry(nfit_spa, &acpi_desc->spas, list) {
+ 		switch (nfit_spa_type(nfit_spa->spa)) {
+ 		case NFIT_SPA_VOLATILE:
+ 		case NFIT_SPA_PM:
+@@ -3354,6 +3354,13 @@ static int acpi_nfit_register_regions(struct acpi_nfit_desc *acpi_desc)
+ 			rc = ars_register(acpi_desc, nfit_spa);
+ 			if (rc)
+ 				return rc;
++
++			/*
++			 * Kick off background ARS if at least one
++			 * region successfully registered ARS
++			 */
++			if (!test_bit(ARS_FAILED, &nfit_spa->ars_state))
++				do_sched_ars++;
+ 			break;
+ 		case NFIT_SPA_BDW:
+ 			/* nothing to register */
+@@ -3372,8 +3379,10 @@ static int acpi_nfit_register_regions(struct acpi_nfit_desc *acpi_desc)
+ 			/* don't register unknown regions */
+ 			break;
+ 		}
++	}
+ 
+-	sched_ars(acpi_desc);
++	if (do_sched_ars)
++		sched_ars(acpi_desc);
+ 	return 0;
+ }
+ 
+
