@@ -2,69 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD3F23514B
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 10:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E183C23514D
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 10:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728595AbgHAI4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 04:56:16 -0400
-Received: from sonic315-15.consmr.mail.bf2.yahoo.com ([74.6.134.125]:45436
-        "EHLO sonic315-15.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726211AbgHAI4Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 04:56:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596272175; bh=OCp2NQ1DG8WDrE2HT9ykXjnTFISlxhUILAf78oJl1As=; h=Date:From:Reply-To:Subject:References:From:Subject; b=cSlUCCiJciEvODhySSssp57hHDayo5jDDCH4Kb/tYDSqR4de7ziIJGuCdq9ywJgO1HgOrPl/z0XitTXm0lON+K21zBRbFz6XGlVjDBDEWVriH+S2pI+AgbvkPv8fhaFDDI3FjONF6eTAFjycY4lzqoftxe9GPYpLu2MWgQfzwk1E7SozMV8G8EDmGsizpNNiVXihkorGDg3AQz5DDh1AgK2NOcbDlw6q6ouyZ7BZyq5eSnujnBm/xOs3T7zDtJ3M/P/i95z5+0v3zTz+TRRMETJ7hrc7Pc9AsrSzkgMs27t5uCfjHrlIQta0JWvrkGf4KNeQXme2LSuMy6vDRGw0dg==
-X-YMail-OSG: mLHwlEsVM1lhVfJ1qYrpoyKNVW6c2ywE.W2Fl7wCneoxc.sBc0NQileND0_6cFK
- .SkONBb4BkxPyNmluGrnmENEhp7SWNboq_RAOcJgaD4HYnpojDRVu5b8FmO2c_qrNjZ8RANo3TTw
- Yw5jdz_S7hH063BlIEcFUia52y2ozw4E4Jcinu7LV9YnQpETB_SzCZdk150wu8z6la5HjPU6AorD
- uNv8VmiPIS8E2zT97p0S4JWRt37aVRSwX4LaG17f862tCT6MsA3E71eeAYXKfDm3kbxckUzxw71f
- savd3p6sGWCT3bGUt3AerT4qh69jc3o.mR0p_mcEnOhUpU.faPrhL2AUoB8uHA2lT7rvyLn4iEcq
- GoYYctWWjgA84JlHBGRoSyzOmpA0qr_a2ZlNZQhs.veCo9GAGiTlUAbL3FjCI4DPLrFvSaPdKUdv
- RfnnRwMmwuxyvkonQQxOgYv2HAXbbPX2it1R8711od5voYhqRc5ttQ4bAAIkC3aNlijQhLUCmXeH
- PO5hG5hW_6BAZnPGlX_IEC5MRI7ogUpiBO5bGT4oAS_lNALesOuhEtJFJLTtlrfSFfPXp3nA_PX_
- m77LA5zkPKfqd7lfRvG_nYa4h2n.sy3EZo8DbiH3U83m3qa9vwoh3mX5OxZ8fQH_YJBO1qlhcEkD
- xOQcbUa05JnYD5GATzco3q4pkEiTLpQ5JQqK08wk0dV_et4uuOL6Kjpgy7ituYhnvbmB4il9ya8f
- 8RDkqkqPPlxaW4QiCEZMUQ9Cbb1vvR5VCQ3qnqDA3JzZvg3RpOiBab1nzqEBzW6og_jotP1bImmd
- QDBRBzE.dgeMC.e7hLC5kcnMn2_3duUTEOg0zs4BLm_sZ4.WKZGLDXFPMtq5M8cTUEdXAwNabaZx
- rs4pATjgiAIMETlEEx.GM228Ow2kH14dcahwE9Ih8W4ARXe_xtPURKqQLgt6DFpLhjxqxeh2TX41
- E9pYpv2qqTcTCrt1d_db6z_spL3IIT9udW.LOG0AhPIYSvXTxfZnmquxiVn7WibsJbTxwlJoa1gj
- mS7ZtdpepjzDk1PQ2bWlM7pzfnl.FjkIGNOO7vgVS9QP5.PIK0okhC545IJ8IjM8US9vWkV8NJdM
- NOFnD43kHGbl5v6du7CTsNy6ABZ8wGKzWNVNidGvgtBNrcamKJ4QcfoswFANX3AGzisHodbiOQsg
- _RR6_aXATA5U07ZGNU7j13Ugm8YRYZ8v08D24Fu0bpmiqIBDHR9r_ZchYQ2OtVntFJ1dxWboJLqz
- 7u6gLeTUS2rAsx.UTDPIF95eiWhp.v9lHaD3UXbGqcBTcj.GmyHID1yxx00lPddH.SD38xL9rPQ-
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Sat, 1 Aug 2020 08:56:15 +0000
-Date:   Sat, 1 Aug 2020 08:56:11 +0000 (UTC)
-From:   Mrs Elodie Antoine <eodieantoine@gmail.com>
-Reply-To: elodieantoin678@yahoo.com
-Message-ID: <1308109300.7302392.1596272171468@mail.yahoo.com>
-Subject: Greetings from Mrs Elodie Antoine,
+        id S1728415AbgHAI6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 04:58:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:48178 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725876AbgHAI6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 04:58:20 -0400
+IronPort-SDR: DiuoB3ZjoPj1We2KVIlMeL8JucjMxPuvvc3nIRvxb+D+23ODPnrgaiiQAIsnpt+ofNxU+nH9r4
+ 4RrzwHWWdQEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9699"; a="131978381"
+X-IronPort-AV: E=Sophos;i="5.75,420,1589266800"; 
+   d="scan'208";a="131978381"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2020 01:58:19 -0700
+IronPort-SDR: Bq/5FFeCtgpkrSiielD72BD16DLr3BiLC6FsHOZ/gUen7bpv0bavhTrz+ZvFx0H5gS2AfTzIwM
+ c1JPLrKZIKiQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,420,1589266800"; 
+   d="scan'208";a="287498247"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by orsmga003.jf.intel.com with ESMTP; 01 Aug 2020 01:58:19 -0700
+Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sat, 1 Aug 2020 01:58:19 -0700
+Received: from orsmsx116.amr.corp.intel.com (10.22.240.14) by
+ orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Sat, 1 Aug 2020 01:58:19 -0700
+Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
+ ORSMSX116.amr.corp.intel.com (10.22.240.14) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Sat, 1 Aug 2020 01:58:18 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Sat, 1 Aug 2020 01:58:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bXRoeiRUM80SdTRAw3OrqhxolcSuOEV5CMZq9l6KoNX8xfff/5Chql/tOw00a5yDbw1sNVCZAbc1h+WvMJ53x/xitpkEWpu7OjjgNX5hWSombLSu1ctWkx7s0aveN3QIVq7w0JMnMphdW8OKNSVW02GAaJSanQNU7H7LYvRBIVgLXRGEP/XfSx0rleF7l4QMhMvCZzK2LK62N5CHtWeLOnt2rBKdjgpZQ7Bgehn9Y0E5vdj8mKBHkXRrKZo42uZLmTnbtckOl7reUBOBjQ5aVS4N4HW1xV390X44pakBxrjdDFwAb1pBsZ5bZxGa4pyN3xqI6bbF/5Xlf+zbs2XZ7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z6lklfolHyhT+cYxuvUaUD1emNRxlZNXvl/I82Ckcyo=;
+ b=MSob27Dh4tU3Bj76ANsOWQ35oMUqaBgsr9piH6sXPIYGq1ntYCJGdcGknsqLse/L1yhSWET3/Hp/bT37cT0pQspcVyDbY72amBGKOzB4k1Jsv0dgX+ijiisUHvqPqjxqozfB/7Bz3qTh2mvQWl9K9rYlt5LCh2PRMCnvLc/+qOER0uHUepQlMp7M1+VPaSR2FIVt1if5EdtWHjkSDBfg6Bg/EPMnUUm2b4dA/hs/p3ymQXqt+oyHti4Gpn/k05lQVbKbo0znwK4nzT/h7C3PPQSH+1Fs5moiasf4qZYMCn5Hf3nDWbC42eXkE+N2s6/BpZxxVlwrohXcgju4waA5dw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z6lklfolHyhT+cYxuvUaUD1emNRxlZNXvl/I82Ckcyo=;
+ b=yw+39nx1Iiymi+otkZAxxO4WjYtc0Y84BSUI7fKiFggZRrdVb3atSUoxbvmB3YQ/HVpoDDpdKm6jGR6h0J5ggwXaO1uZ+b7cMF1IaChCfM1d3BmUqnedYlIV+xKdUJAHPZuoQ/Z0mmUZAzafmJ9+ZvDgrY/kUe+OPjvv40egg+Y=
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com (2603:10b6:5:138::26)
+ by DM6PR11MB2699.namprd11.prod.outlook.com (2603:10b6:5:ce::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16; Sat, 1 Aug
+ 2020 08:58:16 +0000
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::f043:4bdc:ef57:1b41]) by DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::f043:4bdc:ef57:1b41%5]) with mapi id 15.20.3239.019; Sat, 1 Aug 2020
+ 08:58:16 +0000
+From:   "Lu, Brent" <brent.lu@intel.com>
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "Guennadi Liakhovetski" <guennadi.liakhovetski@linux.intel.com>,
+        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Sam McNally <sammc@chromium.org>,
+        "Mark Brown" <broonie@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Daniel Stuart <daniel.stuart14@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Damian van Soelen <dj.vsoelen@gmail.com>
+Subject: RE: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago
+ board
+Thread-Topic: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago
+ board
+Thread-Index: AQHWZzZzIgMFwAI7HkKT1/DPVspAl6khsDgAgAFDasA=
+Date:   Sat, 1 Aug 2020 08:58:16 +0000
+Message-ID: <DM6PR11MB3642AE90DF98956CCEDE6C2F974F0@DM6PR11MB3642.namprd11.prod.outlook.com>
+References: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
+        <1596198365-10105-1-git-send-email-brent.lu@intel.com>
+        <1596198365-10105-3-git-send-email-brent.lu@intel.com>
+ <s5h5za3ajvb.wl-tiwai@suse.de>
+In-Reply-To: <s5h5za3ajvb.wl-tiwai@suse.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: suse.de; dkim=none (message not signed)
+ header.d=none;suse.de; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [36.230.210.226]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fc152a43-5278-409d-c746-08d835f907df
+x-ms-traffictypediagnostic: DM6PR11MB2699:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB269903EA62777B9973744663974F0@DM6PR11MB2699.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Wcrwfa33xbkON1R1JV9TZBl3H35u8O/pX+Ws4fFsr/kSOkJcL1uIjhkpHniR0r1Fv3KRwI+6TRV10NJMnDc3gqyIQIWiQdoSchiyFaguykS327/gp+YB/c0+82k+luq7oSBEDJVBbGjDGpCfya6XVwNqPWjgAfU9dmMB5+oXzZ3piW6xzOD80FAMUiYUCGptz8MS4OsiPSXIT0wKpOMEJZYK9UtUWqrrD0k/RhI+J4q5MZN7aDf37jNfXCjEz4Kog33pXjT/T/Ez6rpbk/ERFx83QMJJTVpvitQfJeUTfWRonthUudsI7SB1t8DObUZ3KiXNtqnUzcqbeGJ8FQW/pw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3642.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(136003)(346002)(396003)(39860400002)(9686003)(316002)(55016002)(7696005)(26005)(71200400001)(54906003)(478600001)(186003)(6506007)(33656002)(4326008)(86362001)(558084003)(76116006)(66946007)(66476007)(66446008)(6916009)(5660300002)(7416002)(8676002)(8936002)(2906002)(66556008)(64756008)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Jbn0exO+KPKfBPRmLwCRWjnabZW50+srIp6c/XkeyVp9SY9jVlcFURni2Hv2/l+6Vk/NdzytdbMfjofsVmLaAiuVjjuWwkxCGFUKedfMJ8ZJJEedOmDrjlRmZ4T5ltnxwg3Ad6Z/+3vdCUpKZAz5cXa1Jo2vw1+MFPchLQlBNbsNV42sGGXww7HZn94PkG4Fwr1mSvB4CWg1G4/rHjwfgS4WpTzTSB0fJhEvIwVJBZG4bcZXQc6vgFZv1XYI2d4Z/KXNJnBrzFrWu4XzTfXHD793X6q3izItfgaM9/yqzfG50uSLN40tmRJJgjSAVIvfAcOLTFRovwXYXdINlcp8d7qp76HF/O4slhx4kxBu+jAXuDCbWGFUy++ioO9p6eQztXy9lCY4QmtGt/fn188qM2p1B8yPGKmIni1SQNU0/b9iAZwNMNllO0sJ6PIZuGrDri3+EaFMKTH02ZpnzsdKwPcF3/8wpAQzEGAvqKgaVeyoFbZr5UEppgfjdxRutilYGKdK4rP1qTtS2OHFkscL5TjXdj0fslUtQh3rasYMCsD/irZhAsGTXvHDqtMh54OQ5S26iD5RTbNY97Mye6U8JZr0tgKR1a3bU+99InS9GTut7Njd/2CBNcjapTpPzqCqKtpVrOfzw4LPbeenMesfdg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1308109300.7302392.1596272171468.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:79.0) Gecko/20100101 Firefox/79.0
-To:     unlisted-recipients:; (no To-header on input)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3642.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc152a43-5278-409d-c746-08d835f907df
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Aug 2020 08:58:16.6940
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6+lQwdVlRhjswY/Bk8my5Rx6JEMjTopD7aZyvx1pzBLIZ9mwebH6PF7yKSgI+8qitLX7EaU0Io/JOEeksybyJw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2699
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>=20
+> Again, is this fixed 240 is a must?  Or is this also an alignment issue?
+Hi Takashi,
 
+I think it's a must for Chromebooks. Google found this value works best
+with their CRAS server running on their BSW products. They offered this
+patch for their own Chromebooks.
 
-Greetings from Mrs Elodie Antoine,
-
-Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS CHRIST the giver of every good thing. Good day,i know this letter will definitely come to you as a huge surprise, but I implore you to take the time to go through it carefully as the decision you make will go off a long way to determine my future and continued existence. I am Mrs Elodie Antoine
-aging widow of 59 years old suffering from long time illness. I have some funds I inherited from my late husband,
-
-The sum of (US$4.5 Million Dollars) and I needed a very honest and God fearing who can withdraw this money then use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR CHARITY WORKS. I found your email address from the internet after honest prayers to the LORD to bring me a helper and i decided to contact you if you may be willing and interested to handle these trust funds in good faith before anything happens to me.
-I accept this decision because I do not have any child who will inherit this money after I die. I want your urgent reply to me so that I will give you the deposit receipt which the COMPANY issued to me as next of kin for immediate transfer of the money to your account in your country, to start the good work of God, I want you to use the 15/percent of the total amount to help yourself in doing the project.
-
-
-I am desperately in keen need of assistance and I have summoned up courage to contact you for this task, you must not fail me and the millions of the poor people in our todays WORLD. This is no stolen money and there are no dangers involved,100% RISK FREE with full legal proof. Please if you would be able to use the funds for the Charity works kindly let me know immediately.I will appreciate your utmost confidentiality and trust in this matter to accomplish my heart desire, as I don't want anything that will jeopardize my last wish. I want you to take 15 percent of the total money for your personal use while 85% of the money will go to charity.I will appreciate your utmost confidentiality and trust in this matter to accomplish my heart desire, as I don't want anything that will jeopardize my last wish.
-
-
-kindly respond for further details.
-
-Thanks and God bless you,
-
-Mrs Elodie Antoine
+>=20
+>=20
+> thanks,
+>=20
+> Takashi
