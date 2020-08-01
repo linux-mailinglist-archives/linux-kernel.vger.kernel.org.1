@@ -2,81 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4B42353CA
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 19:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC422353D6
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 19:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgHAR3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 13:29:03 -0400
-Received: from smtprelay0146.hostedemail.com ([216.40.44.146]:55014 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726534AbgHAR3D (ORCPT
+        id S1727063AbgHARjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 13:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727006AbgHARjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 13:29:03 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 953F718029137;
-        Sat,  1 Aug 2020 17:29:02 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:4321:4385:5007:10004:10400:10848:11026:11232:11657:11658:11914:12043:12296:12297:12438:12740:12760:12895:13019:13069:13255:13311:13357:13439:14659:14721:21080:21451:21627:21990:30029:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: pets72_5b1482626f8e
-X-Filterd-Recvd-Size: 2194
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  1 Aug 2020 17:29:01 +0000 (UTC)
-Message-ID: <8a8d14b2dc7a977fbda6f5f96ffd08f167c085d7.camel@perches.com>
-Subject: Re: [PATCH v2] staging: r8188eu: replace rtw_netdev_priv define
- with inline function
-From:   Joe Perches <joe@perches.com>
-To:     Ivan Safonov <insafonov@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        B K Karthik <bkkarthik@pesu.pes.edu>,
-        Michael Straube <straube.linux@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Sat, 01 Aug 2020 10:29:00 -0700
-In-Reply-To: <20200801165220.29208-1-insafonov@gmail.com>
-References: <20200801165220.29208-1-insafonov@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Sat, 1 Aug 2020 13:39:20 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3560BC061756
+        for <linux-kernel@vger.kernel.org>; Sat,  1 Aug 2020 10:39:20 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id i10so795849ljn.2
+        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 10:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jSMz53TZKQ6sk3S4b6W05ZI4+3GXVw8jD2Gw4lqXtXk=;
+        b=K1nTPli+t7wJ57gIA/1k20l1xjyfXxoXZKinZ0qdkj2q3y2vQec3aGF0Dur6AHEU5/
+         pivQjYNyYfJthJRDoNpzMRNNPRvQk1oKe+Fya2s79I6atkeOXqlXpdpyIMcpgFvAuh9J
+         i9MICiVjdmLnaHL2z5fNku9gi8HwGErLcJEss=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jSMz53TZKQ6sk3S4b6W05ZI4+3GXVw8jD2Gw4lqXtXk=;
+        b=bpw4FtNXMl8RPLNVSDn9eFfysCatM+EPKwYKCCmvDBuy4qmeg6ru+3bRS2Vwta3lY2
+         daGzM1xEKQuQYNgz2vTajEjb8PEwL7AQsdim9Tk/cytTnXUnlgJLru+KPHtkx9YrIQzH
+         1uZrKwPCN5oQz1uhAyHk+prQILPYw5U/1VlcPcAFsfSR6kmUF0afQRvJdXR0ca2iR9g1
+         PzO2PfOOGSJM/HeOZAlBPorYGvB760Ph3/5Sn/SMi/MjwVf2keWuhJkSFoGwqC5apYz9
+         ox3dN7LX5DDlcIYsSZB6SkoMUYCWt2wv+iSW2/gtaNprkRHKW4n6G+ek1l9aMUd15lBy
+         jkag==
+X-Gm-Message-State: AOAM530MNfB3OCL4VTdRI8bYx9SAvo99sxsL7PNPQTqwX4WtnlFNjEgX
+        1Gtt8Qg02jZklxgE3M+aZtyTFHoJpwA=
+X-Google-Smtp-Source: ABdhPJyBlQmQyqVnJjhEGFsNRdTwlnbkuoEP/WsogTtFk6NmAPE2jDtd9JUKpXi2BRJ9c3uXz28+eg==
+X-Received: by 2002:a2e:7e0d:: with SMTP id z13mr3072440ljc.12.1596303558062;
+        Sat, 01 Aug 2020 10:39:18 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id p25sm495328ljn.58.2020.08.01.10.39.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 01 Aug 2020 10:39:16 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id i19so18436824lfj.8
+        for <linux-kernel@vger.kernel.org>; Sat, 01 Aug 2020 10:39:16 -0700 (PDT)
+X-Received: by 2002:a19:c206:: with SMTP id l6mr4698688lfc.152.1596303556090;
+ Sat, 01 Aug 2020 10:39:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <00000000000045b3fe05abcced2f@google.com> <fc097a54-0384-9d21-323f-c3ca52cdb956@I-love.SAKURA.ne.jp>
+In-Reply-To: <fc097a54-0384-9d21-323f-c3ca52cdb956@I-love.SAKURA.ne.jp>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 1 Aug 2020 10:39:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj15SDiHjP2wPiC=Ru-RrUjOuT4AoULj6N_9pVvSXaWiw@mail.gmail.com>
+Message-ID: <CAHk-=wj15SDiHjP2wPiC=Ru-RrUjOuT4AoULj6N_9pVvSXaWiw@mail.gmail.com>
+Subject: Re: INFO: task hung in pipe_read (2)
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Cc:     syzbot <syzbot+96cc7aba7e969b1d305c@syzkaller.appspotmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: multipart/mixed; boundary="0000000000006a4f6205abd462ab"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-08-01 at 19:52 +0300, Ivan Safonov wrote:
-> The function guarantees type checking of arguments and return value.
-> 
-> Result of rtw_netdev_priv macro can be assigned to pointer
-> with incompatible type without warning. The function allow compiler
-> to perform this check.
-[]
-> diff --git a/drivers/staging/rtl8188eu/include/osdep_service.h b/drivers/staging/rtl8188eu/include/osdep_service.h
-[]
-> @@ -71,8 +71,11 @@ struct rtw_netdev_priv_indicator {
->  };
->  struct net_device *rtw_alloc_etherdev_with_old_priv(void *old_priv);
->  
-> -#define rtw_netdev_priv(netdev)					\
-> -	(((struct rtw_netdev_priv_indicator *)netdev_priv(netdev))->priv)
-> +static inline struct adapter *rtw_netdev_priv(struct net_device *dev)
-> +{
-> +	return (((struct rtw_netdev_priv_indicator *)netdev_priv(dev))->priv);
-> +}
+--0000000000006a4f6205abd462ab
+Content-Type: text/plain; charset="UTF-8"
 
-To be similar to existing uses, this variable name should be
-netdev not dev.  There are also unnecessary parentheses.
+On Sat, Aug 1, 2020 at 8:30 AM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> Waiting for response at https://lkml.kernel.org/r/45a9b2c8-d0b7-8f00-5b30-0cfe3e028b28@I-love.SAKURA.ne.jp .
 
->  void rtw_free_netdev(struct net_device *netdev);
+I think handle_userfault() should have a (shortish) timeout, and just
+return VM_FAULT_RETRY.
 
-Better to use netdev like this one.
+The code is overly complex anyway, because it predates the "just return RETRY".
 
----
-static inline struct adapter *rtw_netdev_priv(struct net_device *netdev)
-{
-	return ((struct rtw_netdev_priv_indicator *)netdev_priv(netdev))->priv;
-}
+And because we can't wait forever when the source of the fault is a
+kernel exception, I think we should add some extra logic to just say
+"if this is a retry, we've already done this once, just return an
+error".
 
+This is a TEST PATCH ONLY. I think we'll actually have to do something
+like this, but I think the final version might need to allow a couple
+of retries, rather than just give up after just one second.
 
+But for testing your case, this patch might be enough to at least show
+that "yeah, this kind of approach works".
 
+Andrea? Comments? As mentioned, this is probably much too aggressive,
+but I do think we need to limit the time that the kernel will wait for
+page faults.
+
+Because userfaultfd has become a huge source of security holes as a
+way to time kernel faults or delay them indefinitely.
+
+                     Linus
+
+--0000000000006a4f6205abd462ab
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+Content-ID: <f_kdbxwnv70>
+X-Attachment-Id: f_kdbxwnv70
+
+IGZzL3VzZXJmYXVsdGZkLmMgfCAzNSArKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQogMSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDIzIGRlbGV0aW9ucygtKQoKZGlm
+ZiAtLWdpdCBhL2ZzL3VzZXJmYXVsdGZkLmMgYi9mcy91c2VyZmF1bHRmZC5jCmluZGV4IDUyZGUy
+OTAwMGM3ZS4uYmQ3Mzk0ODhiYjI5IDEwMDY0NAotLS0gYS9mcy91c2VyZmF1bHRmZC5jCisrKyBi
+L2ZzL3VzZXJmYXVsdGZkLmMKQEAgLTQ3Myw2ICs0NzMsMTYgQEAgdm1fZmF1bHRfdCBoYW5kbGVf
+dXNlcmZhdWx0KHN0cnVjdCB2bV9mYXVsdCAqdm1mLCB1bnNpZ25lZCBsb25nIHJlYXNvbikKIAkJ
+Z290byBvdXQ7CiAJfQogCisJLyoKKwkgKiBJZiB0aGlzIGlzIGEga2VybmVsIGZhdWx0LCBhbmQg
+d2UncmUgcmV0cnlpbmcsIGNvbnNpZGVyCisJICogaXQgZmF0YWwuIE90aGVyd2lzZSB3ZSBoYXZl
+IGRlYWRsb2NrcyBhbmQgb3RoZXIgbmFzdHkKKwkgKiBzdHVmZi4KKwkgKi8KKwlpZiAodm1mLT5m
+bGFncyAmIEZBVUxUX0ZMQUdfVFJJRUQpIHsKKwkJaWYgKFdBUk5fT05fT05DRSghKHZtZi0+Zmxh
+Z3MgJiBGQVVMVF9GTEFHX1VTRVIpKSkKKwkJCWdvdG8gb3V0OworCX0KKwogCS8qCiAJICogSGFu
+ZGxlIG5vd2FpdCwgbm90IG11Y2ggdG8gZG8gb3RoZXIgdGhhbiB0ZWxsIGl0IHRvIHJldHJ5CiAJ
+ICogYW5kIHdhaXQuCkBAIC01MTYsMzMgKzUyNiwxMiBAQCB2bV9mYXVsdF90IGhhbmRsZV91c2Vy
+ZmF1bHQoc3RydWN0IHZtX2ZhdWx0ICp2bWYsIHVuc2lnbmVkIGxvbmcgcmVhc29uKQogCQkJCQkJ
+ICAgICAgIHZtZi0+ZmxhZ3MsIHJlYXNvbik7CiAJbW1hcF9yZWFkX3VubG9jayhtbSk7CiAKKwkv
+KiBXZSdsbCB3YWl0IGZvciB1cCB0byBhIHNlY29uZCwgYW5kIHRoZW4gcmV0dXJuIFZNX0ZBVUxU
+X1JFVFJZICovCiAJaWYgKGxpa2VseShtdXN0X3dhaXQgJiYgIVJFQURfT05DRShjdHgtPnJlbGVh
+c2VkKSAmJgogCQkgICAhdXNlcmZhdWx0ZmRfc2lnbmFsX3BlbmRpbmcodm1mLT5mbGFncykpKSB7
+CiAJCXdha2VfdXBfcG9sbCgmY3R4LT5mZF93cWgsIEVQT0xMSU4pOwotCQlzY2hlZHVsZSgpOwor
+CQlzY2hlZHVsZV90aW1lb3V0KEhaKTsKIAkJcmV0IHw9IFZNX0ZBVUxUX01BSk9SOwotCi0JCS8q
+Ci0JCSAqIEZhbHNlIHdha2V1cHMgY2FuIG9yZ2luYXRlIGV2ZW4gZnJvbSByd3NlbSBiZWZvcmUK
+LQkJICogdXBfcmVhZCgpIGhvd2V2ZXIgdXNlcmZhdWx0cyB3aWxsIHdhaXQgZWl0aGVyIGZvciBh
+Ci0JCSAqIHRhcmdldGVkIHdha2V1cCBvbiB0aGUgc3BlY2lmaWMgdXdxIHdhaXRxdWV1ZSBmcm9t
+Ci0JCSAqIHdha2VfdXNlcmZhdWx0KCkgb3IgZm9yIHNpZ25hbHMgb3IgZm9yIHVmZmQKLQkJICog
+cmVsZWFzZS4KLQkJICovCi0JCXdoaWxlICghUkVBRF9PTkNFKHV3cS53YWtlbikpIHsKLQkJCS8q
+Ci0JCQkgKiBUaGlzIG5lZWRzIHRoZSBmdWxsIHNtcF9zdG9yZV9tYigpCi0JCQkgKiBndWFyYW50
+ZWUgYXMgdGhlIHN0YXRlIHdyaXRlIG11c3QgYmUKLQkJCSAqIHZpc2libGUgdG8gb3RoZXIgQ1BV
+cyBiZWZvcmUgcmVhZGluZwotCQkJICogdXdxLndha2VuIGZyb20gb3RoZXIgQ1BVcy4KLQkJCSAq
+LwotCQkJc2V0X2N1cnJlbnRfc3RhdGUoYmxvY2tpbmdfc3RhdGUpOwotCQkJaWYgKFJFQURfT05D
+RSh1d3Eud2FrZW4pIHx8Ci0JCQkgICAgUkVBRF9PTkNFKGN0eC0+cmVsZWFzZWQpIHx8Ci0JCQkg
+ICAgdXNlcmZhdWx0ZmRfc2lnbmFsX3BlbmRpbmcodm1mLT5mbGFncykpCi0JCQkJYnJlYWs7Ci0J
+CQlzY2hlZHVsZSgpOwotCQl9CiAJfQogCiAJX19zZXRfY3VycmVudF9zdGF0ZShUQVNLX1JVTk5J
+TkcpOwo=
+--0000000000006a4f6205abd462ab--
