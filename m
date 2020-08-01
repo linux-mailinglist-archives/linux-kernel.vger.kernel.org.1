@@ -2,120 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D98234F5A
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 03:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D78A234F47
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 03:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgHAByp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 31 Jul 2020 21:54:45 -0400
-Received: from mga17.intel.com ([192.55.52.151]:54462 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726794AbgHAByp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 31 Jul 2020 21:54:45 -0400
-IronPort-SDR: MDpn8FcBlzeOSpnnMQpbzhfEe4Y4VVF+6zWDpamX8mSxmhzRQpzMLNCaNaX7BdWP4N/eyLZ59w
- 9wFXWhBQ9znA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9699"; a="131959841"
-X-IronPort-AV: E=Sophos;i="5.75,420,1589266800"; 
-   d="scan'208";a="131959841"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 18:54:44 -0700
-IronPort-SDR: Tl5QQepecrA3auUMETKGZRd3DePmMCT48Exe5Rrc2ZUX0CUQ7Yt48pWQOyb224ITJeZGB3OiQY
- rRv+gilspRhQ==
-X-IronPort-AV: E=Sophos;i="5.75,420,1589266800"; 
-   d="scan'208";a="331340904"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 18:54:44 -0700
-Subject: [PATCH] ACPI: NFIT: Fix ARS zero-sized allocation
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     vishal.l.verma@intel.com
-Cc:     Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Date:   Fri, 31 Jul 2020 18:38:26 -0700
-Message-ID: <159624590643.3037264.14157533719042907758.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1728087AbgHABje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 31 Jul 2020 21:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgHABjd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 31 Jul 2020 21:39:33 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958B4C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 18:39:33 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id k18so8080747pfp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 31 Jul 2020 18:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0VhPd8rDv3++vd26X40jpsgWmAZAmnnq5yHGsrWcE7E=;
+        b=XW+MdLi1dc2p36sXxUYARFO2yVeTKqRk1GoBDFdp2MS7DtL3DNF9uAFwSVtX7+2+Mu
+         Bd/3T5w0Sq2FJoLoSUfXJdJtZHFVJqi0j8KWF+QHHvlHB1SG1JKWALy7SOx/YEdswWar
+         yTGvtVP6LN9QUOHPqGJz49jy19NkvM7PzeyBUJD4oAGkk4tNmKhB7NPvY3BWHgw25mCT
+         dZQ80s0B/raUzFH2pAtzvRBdptqw4I2ucERK0qcUi4pOIFxeRm3hIMZrIBBaul5u3oLn
+         jR5T+bUpVkrenjtzLNT7utN+mClKWenQoxGuiG/9WpFumahLITYuG5+bMN/llVadoMC2
+         JUtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0VhPd8rDv3++vd26X40jpsgWmAZAmnnq5yHGsrWcE7E=;
+        b=nv4yrQkxciFDyE/13XpLJjn06UGcMirrApR8H/lW04kFqsJ/Ohhf7Jmn0jmC3bx1SV
+         MaZq6XcY+Eyf7e5mM+oIl041dSoAzPO05vDZcLE2sc/+e4Ahpj7UDUk7b3W+O7G6oC/8
+         b1gju0vt0f0Vx3bcvzWUEa3JP+o6NmpcqxLSc4GMbQUMkJTaOH4YXYjXgAeFSAkyBMG6
+         gs4kaXzd8HcmPNLMD64mdG3sC/1SfxzYyyKLVw4p4iouwB/SWFJlIA17xTnoLxeNGFGp
+         Lur30lnyIApiXJvZrm8Pka8FQT4QrYzOkJat5bCguVH3UBuW20KrdPuMa31HgIZUv0TY
+         ev7w==
+X-Gm-Message-State: AOAM533CtK6VvvIiSVjGM/nEfiW2OtTIuBwGXgAXg1/jkrtU29uViUN9
+        kew94BzvrmxMwDKYIdAO7zg=
+X-Google-Smtp-Source: ABdhPJwgvmgH3Bcxkd0vVno/9ycpJ7XegdbDFCTdvKMr3DerT3liFbPy/y+0hTKPhuCxK/E2PoJG+w==
+X-Received: by 2002:a62:19c4:: with SMTP id 187mr6053500pfz.312.1596245973013;
+        Fri, 31 Jul 2020 18:39:33 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id w130sm7249367pfd.104.2020.07.31.18.39.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 18:39:32 -0700 (PDT)
+Date:   Sat, 1 Aug 2020 10:39:29 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2 1/3] lib/vsprintf: Replace hidden BUILD_BUG_ON() with
+ static_assert()
+Message-ID: <20200801013929.GB796@jagdpanzerIV.localdomain>
+References: <20200731180825.30575-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731180825.30575-1-andriy.shevchenko@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pending commit in -next "devres: handle zero size in devm_kmalloc()"
-triggers a boot regression due to the ARS implementation expecting NULL
-from a zero-sized allocation. Avoid the zero-sized allocation by
-skipping ARS, otherwise crashes with the following signature when
-de-referencing ZERO_SIZE_PTR.
+On (20/07/31 21:08), Andy Shevchenko wrote:
+> First of all, there is no compile time check for the SMALL
+> to be ' ' (0x20, i.e. space). Second, for ZEROPAD the check
+> is hidden in the code.
+> 
+> For better maintenance replace BUILD_BUG_ON() with static_assert()
+> for ZEROPAD and move it closer to the definition. While at it,
+> introduce check for SMALL.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-     BUG: kernel NULL pointer dereference, address: 0000000000000018
-     #PF: supervisor read access in kernel mode
-     #PF: error_code(0x0000) - not-present page
-     RIP: 0010:__acpi_nfit_scrub+0x28a/0x350 [nfit]
-     [..]
-     Call Trace:
-       ? acpi_nfit_query_poison+0x6a/0x180 [nfit]
-       acpi_nfit_scrub+0x36/0xb0 [nfit]
-       process_one_work+0x23c/0x580
-       worker_thread+0x50/0x3b0
+Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 
-Otherwise the implementation correctly aborts when NULL is returned from
-devm_kzalloc() in ars_status_alloc().
-
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/acpi/nfit/core.c |   15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-index fb775b967c52..26dd208a0d63 100644
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -3334,7 +3334,7 @@ static void acpi_nfit_init_ars(struct acpi_nfit_desc *acpi_desc,
- static int acpi_nfit_register_regions(struct acpi_nfit_desc *acpi_desc)
- {
- 	struct nfit_spa *nfit_spa;
--	int rc;
-+	int rc, do_sched_ars = 0;
- 
- 	set_bit(ARS_VALID, &acpi_desc->scrub_flags);
- 	list_for_each_entry(nfit_spa, &acpi_desc->spas, list) {
-@@ -3346,7 +3346,7 @@ static int acpi_nfit_register_regions(struct acpi_nfit_desc *acpi_desc)
- 		}
- 	}
- 
--	list_for_each_entry(nfit_spa, &acpi_desc->spas, list)
-+	list_for_each_entry(nfit_spa, &acpi_desc->spas, list) {
- 		switch (nfit_spa_type(nfit_spa->spa)) {
- 		case NFIT_SPA_VOLATILE:
- 		case NFIT_SPA_PM:
-@@ -3354,6 +3354,13 @@ static int acpi_nfit_register_regions(struct acpi_nfit_desc *acpi_desc)
- 			rc = ars_register(acpi_desc, nfit_spa);
- 			if (rc)
- 				return rc;
-+
-+			/*
-+			 * Kick off background ARS if at least one
-+			 * region successfully registered ARS
-+			 */
-+			if (!test_bit(ARS_FAILED, &nfit_spa->ars_state))
-+				do_sched_ars++;
- 			break;
- 		case NFIT_SPA_BDW:
- 			/* nothing to register */
-@@ -3372,8 +3379,10 @@ static int acpi_nfit_register_regions(struct acpi_nfit_desc *acpi_desc)
- 			/* don't register unknown regions */
- 			break;
- 		}
-+	}
- 
--	sched_ars(acpi_desc);
-+	if (do_sched_ars)
-+		sched_ars(acpi_desc);
- 	return 0;
- }
- 
-
+	-ss
