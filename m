@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9DE23516F
-	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 11:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618B023517F
+	for <lists+linux-kernel@lfdr.de>; Sat,  1 Aug 2020 11:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728755AbgHAJ2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 05:28:00 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:42438 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725931AbgHAJ17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 05:27:59 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 261123654803EDEC5C17;
-        Sat,  1 Aug 2020 17:27:57 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Sat, 1 Aug 2020
- 17:27:48 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <fw@strlen.de>,
-        <pshelar@ovn.org>, <martin.varghese@nokia.com>,
-        <pabeni@redhat.com>, <edumazet@google.com>, <dcaratti@redhat.com>,
-        <steffen.klassert@secunet.com>, <shmulik@metanetworks.com>,
-        <kyk.segfault@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] net: Use __skb_pagelen() directly in skb_cow_data()
-Date:   Sat, 1 Aug 2020 17:30:23 +0800
-Message-ID: <1596274223-24555-1-git-send-email-linmiaohe@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+        id S1728861AbgHAJfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 05:35:06 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:28316 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725931AbgHAJfG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 05:35:06 -0400
+X-IronPort-AV: E=Sophos;i="5.75,420,1589234400"; 
+   d="scan'208";a="462118376"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 01 Aug 2020 11:35:04 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Michael Turquette <mturquette@baylibre.com>
+Cc:     kernel-janitors@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: drop unused function __clk_get_flags
+Date:   Sat,  1 Aug 2020 10:53:42 +0200
+Message-Id: <1596272022-14173-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+The function __clk_get_flags has not been used since the April 2019
+commit a348f05361c9 ("ARM: omap2+: hwmod: drop CLK_IS_BASIC
+flag usage").  Other uses were removed in June 2015, eg by
+commit 98d8a60eccee ("clk: Convert __clk_get_flags() to
+clk_hw_get_flags()"), which shows how clk_hw_get_flags can easily
+be used instead.
 
-In fact, skb_pagelen() - skb_headlen() is equal to __skb_pagelen(), use it
-directly to avoid unnecessary skb_headlen() call.
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-Also fix the CHECK note of checkpatch.pl:
-    Comparison to NULL could be written "!__pskb_pull_tail"
-
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- net/core/skbuff.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/clk.c            |    6 ------
+ include/linux/clk-provider.h |    1 -
+ 2 files changed, 7 deletions(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index b8afefe6f6b6..3219c26ddfae 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -4413,7 +4413,7 @@ int skb_cow_data(struct sk_buff *skb, int tailbits, struct sk_buff **trailer)
- 	 * at the moment even if they are anonymous).
- 	 */
- 	if ((skb_cloned(skb) || skb_shinfo(skb)->nr_frags) &&
--	    __pskb_pull_tail(skb, skb_pagelen(skb)-skb_headlen(skb)) == NULL)
-+	    !__pskb_pull_tail(skb, __skb_pagelen(skb)))
- 		return -ENOMEM;
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 8aed0c3ff122..0a9261a099bd 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -500,12 +500,6 @@ static unsigned long clk_core_get_accuracy_no_lock(struct clk_core *core)
+ 	return core->accuracy;
+ }
  
- 	/* Easy case. Most of packets will go this way. */
--- 
-2.19.1
+-unsigned long __clk_get_flags(struct clk *clk)
+-{
+-	return !clk ? 0 : clk->core->flags;
+-}
+-EXPORT_SYMBOL_GPL(__clk_get_flags);
+-
+ unsigned long clk_hw_get_flags(const struct clk_hw *hw)
+ {
+ 	return hw->core->flags;
+diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
+index 6f815be99b77..03a5de5f99f4 100644
+--- a/include/linux/clk-provider.h
++++ b/include/linux/clk-provider.h
+@@ -1096,7 +1096,6 @@ int clk_hw_get_parent_index(struct clk_hw *hw);
+ int clk_hw_set_parent(struct clk_hw *hw, struct clk_hw *new_parent);
+ unsigned int __clk_get_enable_count(struct clk *clk);
+ unsigned long clk_hw_get_rate(const struct clk_hw *hw);
+-unsigned long __clk_get_flags(struct clk *clk);
+ unsigned long clk_hw_get_flags(const struct clk_hw *hw);
+ #define clk_hw_can_set_rate_parent(hw) \
+ 	(clk_hw_get_flags((hw)) & CLK_SET_RATE_PARENT)
 
