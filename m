@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC0D235701
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 15:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8187A235714
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 15:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgHBNOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 09:14:22 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39497 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728043AbgHBNOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 09:14:21 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BKM0z2dLrz9sSG;
-        Sun,  2 Aug 2020 23:14:11 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1596374059;
-        bh=l8Vv313rJGqlK2PcaNCVrGcU8SJlDczW2rNrY770DTs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZE71Wyclmt4MQrTZPs6iY6nA2eek+wB/iYUyHxx7nWlyJbBID58C0vJfORjrDD43E
-         wNND8mtfpDbimWptgmYv4VddxYAmX0rHolg1XVT+G8s2w1bA+8uHwFHNUayBhafmGn
-         U3RDd9O7hEfPsfEFxg1WUJgbZZ35QUi0zip6yzBRdj0KvzX0aIma+XejtIevU686ru
-         HM91WecXmsJTqK1azOcV4OJmJvhTYVRaSfqOgAvj1ip20Yb1FPEAys0j9IKpP3z8BI
-         XGg3VJKFsWHrW1MkBYjbjQi72gF9zJZpWvDX1DLzzpzZpzoVYn1bqH1kWqIhbU7xhV
-         gtswbHEE4eTGQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Stafford Horne <shorne@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        clang-built-linux@googlegroups.com,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
-        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org,
-        Hari Bathini <hbathini@in.ibm.com>
-Subject: Re: [PATCH 06/15] powerpc: fadamp: simplify fadump_reserve_crash_area()
-In-Reply-To: <20200801101854.GD534153@kernel.org>
-References: <20200728051153.1590-1-rppt@kernel.org> <20200728051153.1590-7-rppt@kernel.org> <87d04d5hda.fsf@mpe.ellerman.id.au> <20200801101854.GD534153@kernel.org>
-Date:   Sun, 02 Aug 2020 23:14:10 +1000
-Message-ID: <87o8nt197h.fsf@mpe.ellerman.id.au>
+        id S1728414AbgHBNVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 09:21:53 -0400
+Received: from mail-m127107.qiye.163.com ([115.236.127.107]:27654 "EHLO
+        mail-m127107.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728057AbgHBNVx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 Aug 2020 09:21:53 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Sun, 02 Aug 2020 09:21:44 EDT
+Received: from vivo.com (wm-12.qy.internal [127.0.0.1])
+        by mail-m127107.qiye.163.com (Hmail) with ESMTP id 99F0281725;
+        Sun,  2 Aug 2020 21:14:48 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ADUAnwD8DVByMMSsrG-r3Kri.3.1596374087585.Hmail.wenhu.wang@vivo.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     elder@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        kvalo@codeaurora.org, agross@kernel.org, ohad@wizery.com,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+        ath11k@lists.infradead.org, netdev@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        srinivas.kandagatla@linaro.org, sibis@codeaurora.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gc29jOiBxbWk6IGFsbG93IHVzZXIgdG8gc2V0IGhhbmRsZSB3cSB0byBoaXByaW8=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.226
+In-Reply-To: <20200727204521.GB229995@builder.lan>
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Sun, 2 Aug 2020 21:14:47 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Date:   Sun, 2 Aug 2020 21:14:47 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTR1KTktOSx4aQkpOVkpOQk1ITE9LQ0JLSE5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVKS0tZBg++
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU5MTU1OSEpOS0tJN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Py46FQw*Qz8tOQI2NigICTxWCUgwCRJVSFVKTkJNSExPS0NCQ0lDVTMWGhIXVQweFRMOVQwa
+        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlNWVdZCAFZQU5LS0I3Bg++
+X-HM-Tid: 0a73af4f7bbb986bkuuu99f0281725
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mike Rapoport <rppt@kernel.org> writes:
-> On Thu, Jul 30, 2020 at 10:15:13PM +1000, Michael Ellerman wrote:
->> Mike Rapoport <rppt@kernel.org> writes:
->> > From: Mike Rapoport <rppt@linux.ibm.com>
->> >
->> > fadump_reserve_crash_area() reserves memory from a specified base address
->> > till the end of the RAM.
->> >
->> > Replace iteration through the memblock.memory with a single call to
->> > memblock_reserve() with appropriate  that will take care of proper memory
->>                                      ^
->>                                      parameters?
->> > reservation.
->> >
->> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->> > ---
->> >  arch/powerpc/kernel/fadump.c | 20 +-------------------
->> >  1 file changed, 1 insertion(+), 19 deletions(-)
->> 
->> I think this looks OK to me, but I don't have a setup to test it easily.
->> I've added Hari to Cc who might be able to.
->> 
->> But I'll give you an ack in the hope that it works :)
->
-> Actually, I did some digging in the git log and the traversal was added
-> there on purpose by the commit b71a693d3db3 ("powerpc/fadump: exclude
-> memory holes while reserving memory in second kernel")
-> Presuming this is still reqruired I'm going to drop this patch and will
-> simply replace for_each_memblock() with for_each_mem_range() in v2.
-
-Thanks.
-
-cheers
+Cj4+IEN1cnJlbnRseSB0aGUgcW1pX2hhbmRsZSBpcyBpbml0aWFsaXplZCBzaW5nbGUgdGhyZWFk
+ZWQgYW5kIHN0cmljdGx5Cj4+IG9yZGVyZWQgd2l0aCB0aGUgYWN0aXZlIHNldCB0byAxLiBUaGlz
+IGlzIHByZXR0eSBzaW1wbGUgYW5kIHNhZmUgYnV0Cj4+IHNvbWV0aW1lcyBpbmVmZmVuY3kuIFNv
+IGl0IGlzIGJldHRlciB0byBhbGxvdyB1c2VyIHRvIGRlY2lkZSB3aGV0aGVyCj4+IGEgaGlnaCBw
+cmlvcml0eSB3b3JrcXVldWUgc2hvdWxkIGJlIHVzZWQuCj4KPkNhbiB5b3UgcGxlYXNlIGRlc2Ny
+aWJlIGEgc2NlbmFyaW8gd2hlcmUgdGhpcyBpcyBuZWVkZWQvZGVzaXJlZCBhbmQKPnBlcmhhcHMg
+YWxzbyBjb21tZW50IG9uIHdoeSB0aGlzIGlzIG5vdCBhbHdheXMgZGVzaXJlZD8KPgoKV2VsbCwg
+b25lIHNjZW5hcmlvIGlzIHRoYXQgd2hlbiB0aGUgQVAgd2FudHMgdG8gY2hlY2sgdGhlIHN0YXR1
+cyBvZiB0aGUKc3Vic3lzdGVtcyBhbmQgdGhlIHdob2xlIFFNSSBkYXRhIHBhdGguIEl0IGZpcnN0
+IHNlbmRzIG91dCBhbiBpbmRpY2F0aW9uCndoaWNoIGFza3MgdGhlIHN1YnN5c3RlbXMgdG8gcmVw
+b3J0IHRoZWlyIHN0YXR1cy4gQWZ0ZXIgdGhlIHN1YnN5c3RlbXMgc2VuZApyZXNwb25zZXMgdG8g
+dGhlIEFQLCB0aGUgcmVzcG9uc2VzIHRoZW4gYXJlIHF1ZXVlZCBvbiB0aGUgd29ya3F1ZXVlIG9m
+CnRoZSBRTUkgaGFuZGxlci4gQWN0dWFsbHkgdGhlIEFQIGlzIGNvbmZpZ3VyZWQgdG8gZG8gdGhl
+IGNoZWNrIGluIGEgc3BlY2lmaWMKaW50ZXJ2YWwgcmVndWxhcmx5LiBBbmQgaXQgY2hlY2sgdGhl
+IHJlcG9ydCBjb3VudHMgd2l0aGluIGEgc3BlY2lmaWMgZGVsYXkgYWZ0ZXIKaXQgc2VuZHMgb3V0
+IHRoZSByZWxhdGVkIGluZGljYXRpb24uIFdoZW4gdGhlIEFQIGhhcyBiZWVuIHVuZGVyIGEgaGVh
+dnkKbG9hZCBmb3IgbG9uZywgdGhlIHJlcG9ydHMgYXJlIHF1ZXVlIHRoZWlyIHdpdGhvdXQgQ1BV
+IHJlc291cmNlIHRvIHVwZGF0ZQp0aGUgcmVwb3J0IGNvdW50cyB3aXRoaW4gdGhlIHNwZWNpZmlj
+IGRlbGF5LiBBcyBhIHJlc3VsdCwgdGhlIHRocmVhZCB0aGF0IGNoZWNrcwp0aGUgcmVwb3J0IGNv
+dW50cyB0YWtlcyBpdCBtaXNsZWFkaW5nbHkgdGhhdCB0aGUgUU1JIGRhdGEgcGF0aCBvciB0aGUg
+c3Vic3lzdGVtcwphcmUgY3Jhc2hlZC4KClRoZSBwYXRjaCBjYW4gcmVhbGx5IHJlc29sdmUgdGhl
+IHByb2JsZW0gbWVudGlvbmVkIGFib2x2ZS4KCkZvciBuYXJtYWwgc2l0dWF0aW9ucywgaXQgaXMg
+ZW5vdWdoIHRvIGp1c3QgdXNlIG5vcm1hbCBwcmlvcml0eSBRTUkgd29ya3F1ZXVlLgoKPlJlZ2Fy
+ZHMsCj5Cam9ybgo+Cj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBXYW5nIFdlbmh1IDx3ZW5odS53YW5n
+QHZpdm8uY29tPgo+PiAtLS0KPj4gIGRyaXZlcnMvbmV0L2lwYS9pcGFfcW1pLmMgICAgICAgICAg
+ICAgfCA0ICsrLS0KPj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcW1pLmMgfCAy
+ICstCj4+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTFrL3FtaS5jIHwgMiArLQo+PiAg
+ZHJpdmVycy9yZW1vdGVwcm9jL3Fjb21fc3lzbW9uLmMgICAgICB8IDIgKy0KPj4gIGRyaXZlcnMv
+c2xpbWJ1cy9xY29tLW5nZC1jdHJsLmMgICAgICAgfCA0ICsrLS0KPj4gIGRyaXZlcnMvc29jL3Fj
+b20vcGRyX2ludGVyZmFjZS5jICAgICAgfCA0ICsrLS0KPj4gIGRyaXZlcnMvc29jL3Fjb20vcW1p
+X2ludGVyZmFjZS5jICAgICAgfCA5ICsrKysrKystLQo+PiAgaW5jbHVkZS9saW51eC9zb2MvcWNv
+bS9xbWkuaCAgICAgICAgICB8IDMgKystCj4+ICBzYW1wbGVzL3FtaS9xbWlfc2FtcGxlX2NsaWVu
+dC5jICAgICAgIHwgNCArKy0tCj4+ICA5IGZpbGVzIGNoYW5nZWQsIDIwIGluc2VydGlvbnMoKyks
+IDE0IGRlbGV0aW9ucygtKQ0KDQo=
