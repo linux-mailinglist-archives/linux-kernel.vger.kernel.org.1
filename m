@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1DA2357BE
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 16:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846152357C7
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 16:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726142AbgHBOy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 10:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgHBOy4 (ORCPT
+        id S1726660AbgHBO5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 10:57:07 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:48895 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726345AbgHBO5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 10:54:56 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4973AC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  2 Aug 2020 07:54:56 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id l2so21368936wrc.7
-        for <linux-kernel@vger.kernel.org>; Sun, 02 Aug 2020 07:54:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=GtZTe+zRQJF3kuX+ITlnrw72fV/WhLEabJ1cE7HpuaA=;
-        b=mAH6OwZcfTn1yh3vVPPM1qvCyOVZKbVRx0DNWRRSIP+LZw0kifLqagZc5+m4cwhjDE
-         Andzb+K8iUQnJqs53lugdULyZsNwgINWsoWIB3ewvpm0xtVd4nS3nd6BnBCBZVObsWc1
-         LYtMH1o0j6v9STBL6mAcZm6d8t/Yb4fy6M+CCGYYu3/kBSJhBGfxlsoBWO8mVtID8JBQ
-         j3BTAYhTdGaXz37uucHC07xAq0Wa3xRCc5kSSkQzKR2BZrCh/BMVsSRpj4oAXfWnpZ8l
-         Pp4qEd+j1XKBe9gcLRwj1Jcr7D+1XVEuo0JR0SpfYCpojEdK/g2qtHk/HeucG0h8m/in
-         zmFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=GtZTe+zRQJF3kuX+ITlnrw72fV/WhLEabJ1cE7HpuaA=;
-        b=fSOQQrk2qRQO0KO5IJUY0uPpTC71ryboIEjuF8vNJrY6fxzJNI3/Tdz0dxjCQ105nu
-         jVktw54w4BNrPap9s/Oz1/s4WuqO1qYn/UWMoZgnYALVJtmGPjmMB3EFsB597lHq46k2
-         asdokyNp93cEMsPCi5/4B7OIjmfxlAtE09U+cFPqmHy7zhf0pTmR27kOOEnHddhudRpj
-         B+tyQLce2+Ac3mEFxz1+sUM55z7Y7HW96EBpt7QWeWKdGH/Rzq/Gbr9BCUeoFZLT/0aX
-         t5WMMi9wYKPFim/sXaBbbUl3lTv6DCpeSPZPXI6Cxx5ve4H+1WI0ofXwfrX0gzDCCsNx
-         JjLQ==
-X-Gm-Message-State: AOAM531YMCG3ZXh8LJS/ExoXUFy6Lu1Ob1lDB6oTUa8lN69HQCH8L31h
-        u1VgJn/vucmHUII7vZ713A==
-X-Google-Smtp-Source: ABdhPJw/ElSVRxuxsekh74zCGizzDHbG1OlPtERY3ntq5drV0ig34G5okeWyGN38Z/bHc6TMMXA51w==
-X-Received: by 2002:adf:ec8b:: with SMTP id z11mr11008061wrn.51.1596380094959;
-        Sun, 02 Aug 2020 07:54:54 -0700 (PDT)
-Received: from localhost.localdomain (host-92-25-238-49.as13285.net. [92.25.238.49])
-        by smtp.gmail.com with ESMTPSA id g3sm22770859wrb.59.2020.08.02.07.54.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Aug 2020 07:54:54 -0700 (PDT)
-From:   Jules Irenge <jbi.octave@gmail.com>
-X-Google-Original-From: Jules Irenge <jules@gmail.com>
-Date:   Sun, 2 Aug 2020 15:54:53 +0100 (BST)
-X-X-Sender: jules@localhost
-To:     Joe Perches <joe@perches.com>
-cc:     Jules Irenge <jbi.octave@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] Checkpatch tool errors clean up
-In-Reply-To: <46c11b84dcf83d185ba771f92d2348aa82621dec.camel@perches.com>
-Message-ID: <alpine.LFD.2.23.451.2008021553270.85114@localhost>
-References: <0/4> <20200801184603.310769-1-jbi.octave@gmail.com> <46c11b84dcf83d185ba771f92d2348aa82621dec.camel@perches.com>
+        Sun, 2 Aug 2020 10:57:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596380224; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=FGzGKZ5VVbzebKb6/1zAkWlel4gAZKDM5dA3vVO4/jk=;
+ b=CIrs6chBk0w81OtqhhkQEQJTzX3wiv6nRjeWV2zBw5ll5wC+lYQhlBfHx6zin54o0ANuWDgh
+ u14BAM7aylX7+EHR0tiD4pY2aa9nAZehVEE60BJHr4ZzG/OCrj8M8EwDi18ljp5RwDjSmm3S
+ 2uneEoHnyBFZK0x5npkojk20Uk0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n15.prod.us-west-2.postgun.com with SMTP id
+ 5f26d41aba6d142d1c2cf7a1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 02 Aug 2020 14:56:26
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 353DCC433CA; Sun,  2 Aug 2020 14:56:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 07F30C433C6;
+        Sun,  2 Aug 2020 14:56:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 07F30C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] mwifiex: 11n_rxreorder: Remove unnecessary cast in
+ kfree()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200727020405.8476-1-vulab@iscas.ac.cn>
+References: <20200727020405.8476-1-vulab@iscas.ac.cn>
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     amitkarwar@gmail.com, ganapathi.bhat@nxp.com,
+        huxinming820@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200802145626.353DCC433CA@smtp.codeaurora.org>
+Date:   Sun,  2 Aug 2020 14:56:26 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Xu Wang <vulab@iscas.ac.cn> wrote:
 
-
-On Sat, 1 Aug 2020, Joe Perches wrote:
-
-> On Sat, 2020-08-01 at 19:45 +0100, Jules Irenge wrote:
-> > Hi
-> > I am proposing these 4 patches. 
-> > I am currently learning the core kernel the hard way. 
-> > I will appreciate any feedback negative or positive.
-> > Thanks 
+> Remove unnecassary casts in the argument to kfree.
 > 
-> Generally, whitespace only changes outside of drivers/staging
-> are not encouraged.
-> 
-> > Jules Irenge (4):
-> >   acct: Add required space between variable and operator
-> >   audit: uninitialize global variable audit_sig_sid
-> >   audit: uninitialize static variables
-> >   context_tracking: uninitialize static variables
-> > 
-> >  kernel/acct.c             |  2 +-
-> >  kernel/audit.c            | 10 +++++-----
-> >  kernel/context_tracking.c |  2 +-
-> >  3 files changed, 7 insertions(+), 7 deletions(-)
-> > 
-> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 
-Thanks, I take good note.
+Patch applied to wireless-drivers-next.git, thanks.
 
-Kind regards,
-Jules
+614946480f8f mwifiex: 11n_rxreorder: Remove unnecessary cast in kfree()
+
+-- 
+https://patchwork.kernel.org/patch/11686265/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
