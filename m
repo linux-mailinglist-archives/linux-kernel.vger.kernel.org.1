@@ -2,156 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C557B2355FD
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 10:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B5E235604
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 10:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728038AbgHBIfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 04:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
+        id S1727962AbgHBIn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 04:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728005AbgHBIfH (ORCPT
+        with ESMTP id S1725882AbgHBInz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 04:35:07 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E30EC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  2 Aug 2020 01:35:07 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a5so21496351wrm.6
-        for <linux-kernel@vger.kernel.org>; Sun, 02 Aug 2020 01:35:07 -0700 (PDT)
+        Sun, 2 Aug 2020 04:43:55 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1B3C06174A;
+        Sun,  2 Aug 2020 01:43:54 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id o18so10734735eds.10;
+        Sun, 02 Aug 2020 01:43:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QPQnmI/58kOYJX5JO2+CM6DvjdssZDc2jVBjt8SVn9Y=;
-        b=iO2jRFEx59Eh2m1Om/5bJDJk6/MLr3z2OMyOsrMzSXjHTnYO2Yr0MJFnmUantExUSg
-         Xsex/oX3W+VEglpLLMrC6wpt1jxfdDiWMc7IVzo2zWlxpeVRQgMfwmUv8gVmdGX89YKH
-         /HI1+tYCx7tbOg7CvzYtnATitPyFEf8B41jGH4xE+awMJ0YdnPHpO/OvgIhfwXvExvFp
-         oAU2wb6m44XZoZpVqs87WsGaHIUAfhC/GyOforarHWOxfupdWdDKtNs4usKA04nxmgw8
-         kP6x54XgAV24encfK0kNboTawG1oMc5zlvZ+OQ0RsWbrjip2tQWY9lTkgM5gle6bVUWc
-         Z1/A==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=I2GwtSuZF7wcBG1XXTZ3G3JqTIUbBotfbfQlAqBXUkI=;
+        b=IJEDAUK/KhOOArr4HCI5irqfgClIwiSrAYkfhJ6TUtlHCbxW504a17/nNgQnFgC/lW
+         ggVL575xhpwhfM480HyWmkpAqoYO7pqQRTmpIIYaxfMz+DlF+W9gEBjYfBqX1JLwK2tw
+         C8j4j9oXc3ydNOVH5IfUA9c+ikgwzyrPafH+7m6xhIvwedFKGgjn8DTIgwkoQ9xzOlrt
+         OS0xstsx/WEaBp9DsqRl1pDy6shbiAwE7kdwFcDUYmdCAR1rDBceQeigJXOEnarZsVJl
+         YyWPPmufdr2tLv5kZIg+v7CHuxv5tRg84ZLnA9xQzYinY7bcss6GQY+MTTGZp9hq/iHG
+         2R7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QPQnmI/58kOYJX5JO2+CM6DvjdssZDc2jVBjt8SVn9Y=;
-        b=cxyjyHqSDHhBTzY630quQKtvjytcIfVVeWBGaYDutfetlmo5UhqGysKO1etseNAF9w
-         jAYSe1BYNo/nC1yq2aliRKqc7wbvtfHxFen1+Mf0gLSTTb9ZvNifRMALbtVgeF5wnEey
-         tPIPY3v1KupbGsdjiSx/4LLx9FT064JOo3da6ZaIYgXCMdNfUfb/rk5uGcfhlNQkCEoB
-         Frfy656qDqK4CuPRTMlmyObTQTeKwCiV9k/Jt8P63QT8uipjUt/LFtSb6nK/4yDOiL7r
-         Mndky9CcVhXzlYlGD1bD1EmFNkp2UWjE8Ad3kIAidBbKKMSZsDtWvJk7Xyg26BjqaLlI
-         vdLA==
-X-Gm-Message-State: AOAM53365bL1XiCpB9LPHQw9g4Hx2gIalrGoEmrqCuxt9cE5fTkx/NqS
-        ezEzt2c6jE8QgANWQXzYmroocg==
-X-Google-Smtp-Source: ABdhPJy4rrs4Yd+dSBltlP9MU+WoUAnn2Nr859YwbSPgNkZJwkSvEt7W6+PVPE5XkvK5+KUEjAVJ9g==
-X-Received: by 2002:a5d:6641:: with SMTP id f1mr10312582wrw.307.1596357306003;
-        Sun, 02 Aug 2020 01:35:06 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id d14sm19281466wre.44.2020.08.02.01.35.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Aug 2020 01:35:05 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v6 3/3] iio: adc: xilinx-xadc: use devm_krealloc()
-Date:   Sun,  2 Aug 2020 10:34:58 +0200
-Message-Id: <20200802083458.24323-4-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200802083458.24323-1-brgl@bgdev.pl>
-References: <20200802083458.24323-1-brgl@bgdev.pl>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=I2GwtSuZF7wcBG1XXTZ3G3JqTIUbBotfbfQlAqBXUkI=;
+        b=MVTbRIzj4enl/gs9tyUmrJWph8qqOXt6Pbn4wpUSsikBbZeQly+MqzGcW+fOs3P1DT
+         oj4lRgiXYF1AO7CEf3fZay4UQpnBTOwHcKQiSPBbXh7wJGC+6CqaCPTDDhqkZ1pRXmxN
+         3jtQg1ZvXsoKiD1u/H+gRYyjvA8fTLXnh+Yxuh+HN564hdwUMU3BoT84cYWUWXCkpsAy
+         xiOylAzLWqYqYU3adWCHenchE/CcRC+OB9xd6rDz63CsfOLF2gu/203P9iNgJPArWqO8
+         Q/lgAY/sxf84w4qtjiuzJOwvrFUqGsrHMY6hPz7POmY9SzxVv95JDEjchZxfCrW8wlts
+         JLYg==
+X-Gm-Message-State: AOAM530WIwskOpTs/hCAbLno/gUrO791vkykBnkqyuPyau9QI9hpud+k
+        Th01ryHAsZ0jWcdwZJNC+o2gKgwX
+X-Google-Smtp-Source: ABdhPJxa0Xm2fvc3K5WDqIBiJX0wSUq60Czws/T+eI4/KvP4RgU6kPb8C0BKEdfBNlquylRdfa1Jag==
+X-Received: by 2002:a50:a6d2:: with SMTP id f18mr10736136edc.374.1596357833455;
+        Sun, 02 Aug 2020 01:43:53 -0700 (PDT)
+Received: from [192.168.43.215] ([5.100.193.69])
+        by smtp.gmail.com with ESMTPSA id w22sm12948722ejj.123.2020.08.02.01.43.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 02 Aug 2020 01:43:52 -0700 (PDT)
+Subject: Re: [PATCH] fs: optimise kiocb_set_rw_flags()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <e523f51f59ad6ecdad4ad22c560cb9c913e96e1a.1596277420.git.asml.silence@gmail.com>
+ <20200801153711.GV23808@casper.infradead.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <fae64393-397e-6745-607e-b9a0f517af72@gmail.com>
+Date:   Sun, 2 Aug 2020 11:41:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200801153711.GV23808@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On 01/08/2020 18:37, Matthew Wilcox wrote:
+> On Sat, Aug 01, 2020 at 01:36:33PM +0300, Pavel Begunkov wrote:
+>> Use a local var to collect flags in kiocb_set_rw_flags(). That spares
+>> some memory writes and allows to replace most of the jumps with MOVEcc.
+>>
+>> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> 
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Use the managed variant of krealloc() and shrink the code a bit.
+Thanks for reviewing it
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
- drivers/iio/adc/xilinx-xadc-core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> If you want to improve the codegen here further, I would suggest that
+> renumbering the IOCB flags to match the RWF flags would lead to better
+> codegen (can't do it the other way around; RWF flags are userspace ABI,
+> IOCB flags are not).  iocb_flags() probably doesn't get any worse because
+> the IOCB_ flags don't have the same numbers as the O_ bits (which differ
+> by arch anyway).
+> 
 
-diff --git a/drivers/iio/adc/xilinx-xadc-core.c b/drivers/iio/adc/xilinx-xadc-core.c
-index d0b7ef296afb..f93c34fe5873 100644
---- a/drivers/iio/adc/xilinx-xadc-core.c
-+++ b/drivers/iio/adc/xilinx-xadc-core.c
-@@ -1092,6 +1092,7 @@ MODULE_DEVICE_TABLE(of, xadc_of_match_table);
- static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
- 	unsigned int *conf)
- {
-+	struct device *dev = indio_dev->dev.parent;
- 	struct xadc *xadc = iio_priv(indio_dev);
- 	struct iio_chan_spec *channels, *chan;
- 	struct device_node *chan_node, *child;
-@@ -1136,7 +1137,8 @@ static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
- 		*conf |= XADC_CONF0_MUX | XADC_CONF0_CHAN(ext_mux_chan);
- 	}
- 
--	channels = kmemdup(xadc_channels, sizeof(xadc_channels), GFP_KERNEL);
-+	channels = devm_kmemdup(dev, xadc_channels,
-+				sizeof(xadc_channels), GFP_KERNEL);
- 	if (!channels)
- 		return -ENOMEM;
- 
-@@ -1172,8 +1174,9 @@ static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
- 	of_node_put(chan_node);
- 
- 	indio_dev->num_channels = num_channels;
--	indio_dev->channels = krealloc(channels, sizeof(*channels) *
--					num_channels, GFP_KERNEL);
-+	indio_dev->channels = devm_krealloc(dev, channels,
-+					    sizeof(*channels) * num_channels,
-+					    GFP_KERNEL);
- 	/* If we can't resize the channels array, just use the original */
- 	if (!indio_dev->channels)
- 		indio_dev->channels = channels;
-@@ -1225,14 +1228,14 @@ static int xadc_probe(struct platform_device *pdev)
- 
- 	ret = xadc_parse_dt(indio_dev, pdev->dev.of_node, &conf0);
- 	if (ret)
--		goto err_device_free;
-+		return ret;
- 
- 	if (xadc->ops->flags & XADC_FLAGS_BUFFERED) {
- 		ret = iio_triggered_buffer_setup(indio_dev,
- 			&iio_pollfunc_store_time, &xadc_trigger_handler,
- 			&xadc_buffer_ops);
- 		if (ret)
--			goto err_device_free;
-+			return ret;
- 
- 		xadc->convst_trigger = xadc_alloc_trigger(indio_dev, "convst");
- 		if (IS_ERR(xadc->convst_trigger)) {
-@@ -1350,8 +1353,6 @@ static int xadc_probe(struct platform_device *pdev)
- err_triggered_buffer_cleanup:
- 	if (xadc->ops->flags & XADC_FLAGS_BUFFERED)
- 		iio_triggered_buffer_cleanup(indio_dev);
--err_device_free:
--	kfree(indio_dev->channels);
- 
- 	return ret;
- }
-@@ -1371,7 +1372,6 @@ static int xadc_remove(struct platform_device *pdev)
- 	cancel_delayed_work_sync(&xadc->zynq_unmask_work);
- 	clk_disable_unprepare(xadc->clk);
- 	kfree(xadc->data);
--	kfree(indio_dev->channels);
- 
- 	return 0;
- }
 -- 
-2.26.1
-
+Pavel Begunkov
