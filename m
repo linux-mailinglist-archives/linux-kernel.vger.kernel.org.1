@@ -2,108 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F120235686
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 13:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAA123568C
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 13:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgHBLLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 07:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726416AbgHBLLa (ORCPT
+        id S1728267AbgHBLPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 07:15:44 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:38704 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728192AbgHBLPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 07:11:30 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E566FC06174A;
-        Sun,  2 Aug 2020 04:11:29 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BKJHK4qQPz9sRN;
-        Sun,  2 Aug 2020 21:11:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1596366686;
-        bh=5uCbBvvTxj60H9uD/TN9xyrNZM3pahYzd1cSEffXcpc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aRwD1cp3incqjLgV0BeWoQy0xKJV0WvTkE5ZbXtf0Z3kCapUbQLRL5eJmcH+2VDwC
-         7Oe0qQjFzv6wzkkARQSwqAt1lFjSr+S/itHfmMRYY1B1YSZ3sHt7kQk/3Kkw/NFfPT
-         T3KUq0tkHgyDmYJgoOyaIDN/xhtjI9C35/xvk1c1hse3XL7MIPh2vkQEuN/YFbIUtT
-         ACWQQYv+WvYILdOa4EeVXjwsiJN1rKWs+SLnU/lDrZiFkYbh6oD2EpQoUjnVhxjU0C
-         L0XAFpFOqjFv54SWeHHbQw/WVSwdQH3JEP+j4KDCcMW1Z+tpADVvP72IzzVcW7RFX1
-         x3YKqCkeEF6Lw==
-Date:   Sun, 2 Aug 2020 21:11:24 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: linux-next: Fixes tags need some work in the kvm-fixes tree
-Message-ID: <20200802211124.00311643@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/esB4f=Wx.bHI8+faGsv2avb";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Sun, 2 Aug 2020 07:15:39 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0U4T30CY_1596366926;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U4T30CY_1596366926)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 02 Aug 2020 19:15:26 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     freude@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, ifranzki@linux.ibm.com
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tianjia.zhang@alibaba.com
+Subject: [PATCH] s390/pkey: Remove redundant variable initialization
+Date:   Sun,  2 Aug 2020 19:15:26 +0800
+Message-Id: <20200802111526.4883-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/esB4f=Wx.bHI8+faGsv2avb
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+In the first place, the initialization value of `rc` is wrong.
+It is unnecessary to initialize `rc` variables, so remove their
+initialization operation.
 
-Hi all,
+Fixes: f2bbc96e7cfad ("s390/pkey: add CCA AES cipher key support")
+Cc: Harald Freudenberger <freude@linux.ibm.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+---
+ drivers/s390/crypto/pkey_api.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-In commit
+diff --git a/drivers/s390/crypto/pkey_api.c b/drivers/s390/crypto/pkey_api.c
+index 74e63ec49068..58140506a8e7 100644
+--- a/drivers/s390/crypto/pkey_api.c
++++ b/drivers/s390/crypto/pkey_api.c
+@@ -818,7 +818,7 @@ static int pkey_keyblob2pkey2(const struct pkey_apqn *apqns, size_t nr_apqns,
+ static int pkey_apqns4key(const u8 *key, size_t keylen, u32 flags,
+ 			  struct pkey_apqn *apqns, size_t *nr_apqns)
+ {
+-	int rc = EINVAL;
++	int rc;
+ 	u32 _nr_apqns, *_apqns = NULL;
+ 	struct keytoken_header *hdr = (struct keytoken_header *)key;
+ 
+@@ -886,7 +886,7 @@ static int pkey_apqns4keytype(enum pkey_key_type ktype,
+ 			      u8 cur_mkvp[32], u8 alt_mkvp[32], u32 flags,
+ 			      struct pkey_apqn *apqns, size_t *nr_apqns)
+ {
+-	int rc = -EINVAL;
++	int rc;
+ 	u32 _nr_apqns, *_apqns = NULL;
+ 
+ 	if (ktype == PKEY_TYPE_CCA_DATA || ktype == PKEY_TYPE_CCA_CIPHER) {
+-- 
+2.26.2
 
-  830f01b089b1 ("KVM: SVM: Fix disable pause loop exit/pause filtering capa=
-bility on SVM")
-
-Fixes tag
-
-  Fixes: 8566ac8b ("KVM: SVM: Implement pause loop exit logic in SVM")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
-In commit
-
-  d2286ba7d574 ("KVM: LAPIC: Prevent setting the tscdeadline timer if the l=
-apic is hw disabled")
-
-Fixes tag
-
-  Fixes: bce87cce88 (KVM: x86: consolidate different ways to test for in-ke=
-rnel LAPIC)
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
-Something to remember for next time.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/esB4f=Wx.bHI8+faGsv2avb
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8mn1wACgkQAVBC80lX
-0GznBQf+LttyGsuUjfAwm29XPgV8AcmseDQx2xVX4/1z1jj+4Ehf5oRiqzVxHALE
-VN7+dE1bm1DeK/Q9PiVjnJycLTFtXyX1Q1D+U2mQ3kNj6+gPaoLKNXtANueaan/u
-ys67FMzeJl93Ip/GpA0UAuSPZmkzO8sgoRnk9sp0uxzB62smPcVk0Zr+q12uhPFY
-cF5Xqrp1E6gz+ITGev7I5gGYf8MbXRrgv5fHysMmMaHYmIC194U+ftoj9g9t3Hqq
-u5vIapqZNyXvailDQKqWrfZUsExbV0a9PWJ+h6dFW+Ec62BdWxz3pTFlJSY3L1Q9
-10ExPaa9y1xzIpuFoHB3w8ZYJqn2AQ==
-=nM1V
------END PGP SIGNATURE-----
-
---Sig_/esB4f=Wx.bHI8+faGsv2avb--
