@@ -2,92 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677882354A8
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 01:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B052354AC
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 02:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727928AbgHAXu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 1 Aug 2020 19:50:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57608 "EHLO mail.kernel.org"
+        id S1727988AbgHBAAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 1 Aug 2020 20:00:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbgHAXuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 1 Aug 2020 19:50:55 -0400
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D47C420789;
-        Sat,  1 Aug 2020 23:50:54 +0000 (UTC)
+        id S1727779AbgHBAAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 1 Aug 2020 20:00:05 -0400
+Subject: Re: [GIT PULL] thread fix v5.8-rc8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596325855;
-        bh=/RTX0rVm2iLBMlRdDM24nNOFTPRHcYFdhTxisdSjWDM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GKa0b1n++JBbGlBkW2Q8zcKWc/8G5g2kRJ1hJfSjcl0x25nRnPleix94G6SZQBMQf
-         CQBVbFMYm+Bwo6LXpkuUFdKiPhsXf5MRx+q682XvJ9JLGD6PVliYxMZVYv37rXZsGT
-         SRG9c33TAZhWB2sOk3/rPYxvyyMkSdpNP5xIvKPQ=
-Received: by mail-ed1-f52.google.com with SMTP id i26so21476911edv.4;
-        Sat, 01 Aug 2020 16:50:54 -0700 (PDT)
-X-Gm-Message-State: AOAM533cETGWa34GDD1RTJGvLLnrmUYg7KS0o7sn7TrFzvqkG20r7JTU
-        bCsruVDPh0ln68A13AoUYmCv4f2K1qJYOsCskg==
-X-Google-Smtp-Source: ABdhPJzQmcCCQwR67S6JChR4X8UlBaNrr/6FEYSwtL2uZyPlHYYi1Y8yC31MEt19hcsQnLvDj3qLleKurtzHXUqlyw8=
-X-Received: by 2002:a50:d2c7:: with SMTP id q7mr5358828edg.61.1596325853405;
- Sat, 01 Aug 2020 16:50:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <1596010690-13178-1-git-send-email-neal.liu@mediatek.com> <1596010690-13178-3-git-send-email-neal.liu@mediatek.com>
-In-Reply-To: <1596010690-13178-3-git-send-email-neal.liu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sun, 2 Aug 2020 07:50:41 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-RMT-1+-5aPxqhgLbk74j0MH8U78mibBZppt_OPPQrJA@mail.gmail.com>
-Message-ID: <CAAOTY_-RMT-1+-5aPxqhgLbk74j0MH8U78mibBZppt_OPPQrJA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] soc: mediatek: add mtk-devapc driver
-To:     Neal Liu <neal.liu@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        s=default; t=1596326404;
+        bh=xNqGqF+iaZJIU4SnRlP+np8iqYjmECkKFtXvpaaE7uk=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=mvHFhisJnymNh8wBn6TRX2BmoFsJXMYy+w50zeo/HkrVHWbYhlS58p1XDAQqde2VY
+         mA7MR/V3wSsfy+IfF4mn8FP65xdrdbAeyrAgtDDlyk1ATkRLB6TNwdevfDL0fLNC7m
+         8bMj7AlJte65+WIsybFbkHwgYu0mBRdozA+unJAM=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200801210552.2150271-1-christian.brauner@ubuntu.com>
+References: <20200801210552.2150271-1-christian.brauner@ubuntu.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200801210552.2150271-1-christian.brauner@ubuntu.com>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux
+ tags/for-linus-2020-08-01
+X-PR-Tracked-Commit-Id: 7665a47f70b3f64bf09c233cc7df73fde9e506f1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0ae3495b6502cf93634cbd027cb2f6f9f83a406f
+Message-Id: <159632640482.16599.17647484272408965659.pr-tracker-bot@kernel.org>
+Date:   Sun, 02 Aug 2020 00:00:04 +0000
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Neal:
+The pull request you sent on Sat,  1 Aug 2020 23:05:52 +0200:
 
-Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B47=E6=9C=8829=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:29=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> MediaTek bus fabric provides TrustZone security support and data
-> protection to prevent slaves from being accessed by unexpected
-> masters.
-> The security violation is logged and sent to the processor for
-> further analysis or countermeasures.
->
-> Any occurrence of security violation would raise an interrupt, and
-> it will be handled by mtk-devapc driver. The violation
-> information is printed in order to find the murderer.
->
-> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
-> ---
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/for-linus-2020-08-01
 
-[snip]
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0ae3495b6502cf93634cbd027cb2f6f9f83a406f
 
-> +
-> +struct mtk_devapc_context {
-> +       struct device *dev;
-> +       u32 vio_idx_num;
-> +       void __iomem *devapc_pd_base;
+Thank you!
 
-This is devapc context, so prefix 'devapc' is redundant.
-And, what does 'pd' mean?
-
-Regards,
-Chun-Kuang.
-
-> +       struct mtk_devapc_vio_info *vio_info;
-> +       const struct mtk_devapc_pd_offset *offset;
-> +       const struct mtk_devapc_vio_dbgs *vio_dbgs;
-> +};
-> +
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
