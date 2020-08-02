@@ -2,75 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBE423563B
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 12:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B335123562E
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 12:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgHBKJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 06:09:35 -0400
-Received: from rdslmr.btconnect.com ([62.239.164.79]:1460 "EHLO
-        mail.btconnect.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728032AbgHBKJf (ORCPT
+        id S1728027AbgHBKHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 06:07:52 -0400
+Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:27019 "EHLO
+        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726416AbgHBKHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 06:09:35 -0400
-X-Greylist: delayed 392 seconds by postgrey-1.27 at vger.kernel.org; Sun, 02 Aug 2020 06:09:34 EDT
-Received: from mail.btconnect.com (rd11780omr11.iuser.iroot.adidom.com [10.187.89.172])
-        by rd11780slr11.dci.bt.com (MOS 4.4.8-GA)
-        with ESMTP id ASH29753;
-        Sun, 2 Aug 2020 11:00:35 +0100
-Received: (from localhost [127.0.0.1])
-        by rd11780omr11.dci.bt.com (MOS 4.4.8-GA)
-        id PZJ30664;
-        Sun,  2 Aug 2020 11:00:35 +0100 (BST)
-Received: from x590fefe6.dyn.telefonica.de (EHLO User) ([89.15.239.230])
-        by rd11780omr11.dci.bt.com
-        with ESMTP id PZJ30374 (AUTH package@btconnect.com);
-        Sun, 02 Aug 2020 11:00:33 +0100 (BST)
-Reply-To: <johnwoods272@gmail.com>
-From:   "John Woods" <package@btconnect.com>
-Subject: Proposal
-Date:   Sun, 2 Aug 2020 12:00:32 +0200
+        Sun, 2 Aug 2020 06:07:51 -0400
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
+ (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Sun, 2 Aug 2020
+ 18:07:44 +0800
+Received: from localhost.localdomain (114.242.249.158) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Sun, 2 Aug 2020
+ 18:07:42 +0800
+From:   FelixCuioc <FelixCui-oc@zhaoxin.com>
+To:     Joerg Roedel <joro@8bytes.org>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>
+CC:     <CobeChen@zhaoxin.com>, <RaymondPang@zhaoxin.com>
+Subject: [PATCH] iommu/vt-d:Add support for ACPI device in RMRR
+Date:   Sun, 2 Aug 2020 06:07:35 -0400
+Message-ID: <20200802100735.2722-1-FelixCui-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <202008021000.PZJ30374@rd11780omr11.dci.bt.com>
-X-Mirapoint-IP-Reputation: reputation=Fair-1,
-        source=Queried,
-        refid=tid=0001.0A782F90.5F268EB2.000A,
-        actions=TAG
-X-Junkmail: UCE(52)
-X-Junkmail-Status: score=52/50, host=rd11780omr11.dci.bt.com
-X-Junkmail-Signature-Raw: score=bulk(2),
-        refid=str=0001.0A782F20.5F268D4A.002C,ss=3,sh,re=0.000,recu=0.000,reip=0.000,cl=3,cld=1,fgs=16,
-        ip=89.15.239.230,
-        so=2016-11-06 16:00:04,
-        dmn=2013-03-21 17:37:32,
-        mode=multiengine
-X-Junkmail-IWF: false
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
+X-Originating-IP: [114.242.249.158]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir, Madam,
+Some ACPI devices require access to the specified reserved memory
+region.BIOS report the specified reserved memory region through
+RMRR structures.Add analysis of ACPI device in RMRR and establish
+identity mapping for ACPI device.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: FelixCuioc <FelixCui-oc@zhaoxin.com>
+---
+ drivers/iommu/intel/dmar.c  | 74 ++++++++++++++++++++-----------------
+ drivers/iommu/intel/iommu.c | 46 ++++++++++++++++++++++-
+ drivers/iommu/iommu.c       |  6 +++
+ include/linux/dmar.h        | 12 +++++-
+ include/linux/iommu.h       |  3 ++
+ 5 files changed, 105 insertions(+), 36 deletions(-)
+
+diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+index 93e6345f3414..024ca38dba12 100644
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -215,7 +215,7 @@ static bool dmar_match_pci_path(struct dmar_pci_notify_info *info, int bus,
+ }
  
-
-Proposal
-
+ /* Return: > 0 if match found, 0 if no match found, < 0 if error happens */
+-int dmar_insert_dev_scope(struct dmar_pci_notify_info *info,
++int dmar_pci_insert_dev_scope(struct dmar_pci_notify_info *info,
+ 			  void *start, void*end, u16 segment,
+ 			  struct dmar_dev_scope *devices,
+ 			  int devices_cnt)
+@@ -304,7 +304,7 @@ static int dmar_pci_bus_add_dev(struct dmar_pci_notify_info *info)
  
-I am Mr.John Woods, a Consultant with the Department of Power and Steel here in Spain . I have been contracted by a wealthy individual and serving  government official from somewhere in Africa who is interested in  engaging your services for investment of a large volume of fund (Ten Million Five Hundred Thousand Dollars ) Which he Deposited with a Finance Company here in Spain . You will act as the beneficiary of the fund to carry out the investment of the fund in any business venture you consider lucrative.
+ 		drhd = container_of(dmaru->hdr,
+ 				    struct acpi_dmar_hardware_unit, header);
+-		ret = dmar_insert_dev_scope(info, (void *)(drhd + 1),
++		ret = dmar_pci_insert_dev_scope(info, (void *)(drhd + 1),
+ 				((void *)drhd) + drhd->header.length,
+ 				dmaru->segment,
+ 				dmaru->devices, dmaru->devices_cnt);
+@@ -696,48 +696,56 @@ dmar_find_matched_drhd_unit(struct pci_dev *dev)
+ 
+ 	return dmaru;
+ }
+-
+-static void __init dmar_acpi_insert_dev_scope(u8 device_number,
+-					      struct acpi_device *adev)
++int dmar_acpi_insert_dev_scope(u8 device_number,
++				struct acpi_device *adev,
++				void *start, void *end,
++				struct dmar_dev_scope *devices,
++				int devices_cnt)
+ {
+-	struct dmar_drhd_unit *dmaru;
+-	struct acpi_dmar_hardware_unit *drhd;
+ 	struct acpi_dmar_device_scope *scope;
+ 	struct device *tmp;
+ 	int i;
+ 	struct acpi_dmar_pci_path *path;
+ 
++	for (; start < end; start += scope->length) {
++		scope = start;
++		if (scope->entry_type != ACPI_DMAR_SCOPE_TYPE_NAMESPACE)
++			continue;
++		if (scope->enumeration_id != device_number)
++			continue;
++		path = (void *)(scope + 1);
++		for_each_dev_scope(devices, devices_cnt, i, tmp)
++			if (tmp == NULL) {
++				devices[i].bus = scope->bus;
++				devices[i].devfn = PCI_DEVFN(path->device, path->function);
++				rcu_assign_pointer(devices[i].dev,
++						   get_device(&adev->dev));
++				return 1;
++			}
++		WARN_ON(i >= devices_cnt);
++	}
++	return 0;
++}
++static int dmar_acpi_bus_add_dev(u8 device_number, struct acpi_device *adev)
++{
++	struct dmar_drhd_unit *dmaru;
++	struct acpi_dmar_hardware_unit *drhd;
++	int ret = 0;
++
+ 	for_each_drhd_unit(dmaru) {
+ 		drhd = container_of(dmaru->hdr,
+ 				    struct acpi_dmar_hardware_unit,
+ 				    header);
++		ret = dmar_acpi_insert_dev_scope(device_number, adev, (void *)(drhd+1),
++						((void *)drhd)+drhd->header.length,
++						dmaru->devices, dmaru->devices_cnt);
++		if (ret)
++			break;
++	}
++	ret = dmar_rmrr_add_acpi_dev(device_number, adev);
+ 
+-		for (scope = (void *)(drhd + 1);
+-		     (unsigned long)scope < ((unsigned long)drhd) + drhd->header.length;
+-		     scope = ((void *)scope) + scope->length) {
+-			if (scope->entry_type != ACPI_DMAR_SCOPE_TYPE_NAMESPACE)
+-				continue;
+-			if (scope->enumeration_id != device_number)
+-				continue;
++	return ret;
+ 
+-			path = (void *)(scope + 1);
+-			pr_info("ACPI device \"%s\" under DMAR at %llx as %02x:%02x.%d\n",
+-				dev_name(&adev->dev), dmaru->reg_base_addr,
+-				scope->bus, path->device, path->function);
+-			for_each_dev_scope(dmaru->devices, dmaru->devices_cnt, i, tmp)
+-				if (tmp == NULL) {
+-					dmaru->devices[i].bus = scope->bus;
+-					dmaru->devices[i].devfn = PCI_DEVFN(path->device,
+-									    path->function);
+-					rcu_assign_pointer(dmaru->devices[i].dev,
+-							   get_device(&adev->dev));
+-					return;
+-				}
+-			BUG_ON(i >= dmaru->devices_cnt);
+-		}
+-	}
+-	pr_warn("No IOMMU scope found for ANDD enumeration ID %d (%s)\n",
+-		device_number, dev_name(&adev->dev));
+ }
+ 
+ static int __init dmar_acpi_dev_scope_init(void)
+@@ -766,7 +774,7 @@ static int __init dmar_acpi_dev_scope_init(void)
+ 				       andd->device_name);
+ 				continue;
+ 			}
+-			dmar_acpi_insert_dev_scope(andd->device_number, adev);
++			dmar_acpi_bus_add_dev(andd->device_number, adev);
+ 		}
+ 	}
+ 	return 0;
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index ca557d351518..be1793415326 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -4507,6 +4507,24 @@ int dmar_find_matched_atsr_unit(struct pci_dev *dev)
+ 
+ 	return ret;
+ }
++int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev)
++{
++	int ret;
++	struct dmar_rmrr_unit *rmrru;
++	struct acpi_dmar_reserved_memory *rmrr;
++
++	list_for_each_entry(rmrru, &dmar_rmrr_units, list) {
++		rmrr = container_of(rmrru->hdr,
++				struct acpi_dmar_reserved_memory,
++				header);
++		ret = dmar_acpi_insert_dev_scope(device_number, adev, (void *)(rmrr + 1),
++						((void *)rmrr) + rmrr->header.length,
++						rmrru->devices, rmrru->devices_cnt);
++		if (ret)
++			break;
++	}
++	return 0;
++}
+ 
+ int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
+ {
+@@ -4523,7 +4541,7 @@ int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
+ 		rmrr = container_of(rmrru->hdr,
+ 				    struct acpi_dmar_reserved_memory, header);
+ 		if (info->event == BUS_NOTIFY_ADD_DEVICE) {
+-			ret = dmar_insert_dev_scope(info, (void *)(rmrr + 1),
++			ret = dmar_pci_insert_dev_scope(info, (void *)(rmrr + 1),
+ 				((void *)rmrr) + rmrr->header.length,
+ 				rmrr->segment, rmrru->devices,
+ 				rmrru->devices_cnt);
+@@ -4541,7 +4559,7 @@ int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
+ 
+ 		atsr = container_of(atsru->hdr, struct acpi_dmar_atsr, header);
+ 		if (info->event == BUS_NOTIFY_ADD_DEVICE) {
+-			ret = dmar_insert_dev_scope(info, (void *)(atsr + 1),
++			ret = dmar_pci_insert_dev_scope(info, (void *)(atsr + 1),
+ 					(void *)atsr + atsr->header.length,
+ 					atsr->segment, atsru->devices,
+ 					atsru->devices_cnt);
+@@ -4779,6 +4797,26 @@ static int __init platform_optin_force_iommu(void)
+ 
+ 	return 1;
+ }
++static int acpi_device_create_direct_mappings(struct device *pn_dev, struct device *acpi_device)
++{
++	int ret;
++	struct iommu_group *group;
++
++	if (pn_dev == NULL) {
++		acpi_device->bus->iommu_ops = &intel_iommu_ops;
++		ret = iommu_probe_device(acpi_device);
++		if (ret) {
++			pr_err("acpi_device probe fail! ret:%d\n", ret);
++			return ret;
++		}
++		return 0;
++	}
++	acpi_device->bus->iommu_ops = &intel_iommu_ops;
++	group = iommu_group_get(pn_dev);
++	__acpi_device_create_direct_mappings(group, acpi_device);
++
++	return 0;
++}
+ 
+ static int __init probe_acpi_namespace_devices(void)
+ {
+@@ -4794,6 +4832,7 @@ static int __init probe_acpi_namespace_devices(void)
+ 			struct acpi_device_physical_node *pn;
+ 			struct iommu_group *group;
+ 			struct acpi_device *adev;
++			struct device *pn_dev = NULL;
+ 
+ 			if (dev->bus != &acpi_bus_type)
+ 				continue;
+@@ -4804,6 +4843,7 @@ static int __init probe_acpi_namespace_devices(void)
+ 					    &adev->physical_node_list, node) {
+ 				group = iommu_group_get(pn->dev);
+ 				if (group) {
++					pn_dev = pn->dev;
+ 					iommu_group_put(group);
+ 					continue;
+ 				}
+@@ -4812,7 +4852,9 @@ static int __init probe_acpi_namespace_devices(void)
+ 				ret = iommu_probe_device(pn->dev);
+ 				if (ret)
+ 					break;
++				pn_dev = pn->dev;
+ 			}
++			ret = acpi_device_create_direct_mappings(pn_dev, dev);
+ 			mutex_unlock(&adev->physical_node_lock);
+ 
+ 			if (ret)
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 609bd25bf154..4f714a2d5ef7 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -779,6 +779,12 @@ static bool iommu_is_attach_deferred(struct iommu_domain *domain,
+ 	return false;
+ }
+ 
++void  __acpi_device_create_direct_mappings(struct iommu_group *group, struct device *acpi_device)
++{
++	iommu_create_device_direct_mappings(group, acpi_device);
++}
++EXPORT_SYMBOL_GPL(__acpi_device_create_direct_mappings);
++
+ /**
+  * iommu_group_add_device - add a device to an iommu group
+  * @group: the group into which to add the device (reference should be held)
+diff --git a/include/linux/dmar.h b/include/linux/dmar.h
+index 65565820328a..881ac61a4336 100644
+--- a/include/linux/dmar.h
++++ b/include/linux/dmar.h
+@@ -113,10 +113,14 @@ extern int dmar_parse_dev_scope(void *start, void *end, int *cnt,
+ 				struct dmar_dev_scope **devices, u16 segment);
+ extern void *dmar_alloc_dev_scope(void *start, void *end, int *cnt);
+ extern void dmar_free_dev_scope(struct dmar_dev_scope **devices, int *cnt);
+-extern int dmar_insert_dev_scope(struct dmar_pci_notify_info *info,
++extern int dmar_pci_insert_dev_scope(struct dmar_pci_notify_info *info,
+ 				 void *start, void*end, u16 segment,
+ 				 struct dmar_dev_scope *devices,
+ 				 int devices_cnt);
++extern int dmar_acpi_insert_dev_scope(u8 device_number,
++				struct acpi_device *adev, void *start, void *end,
++				struct dmar_dev_scope *devices, int devices_cnt);
++
+ extern int dmar_remove_dev_scope(struct dmar_pci_notify_info *info,
+ 				 u16 segment, struct dmar_dev_scope *devices,
+ 				 int count);
+@@ -140,6 +144,7 @@ extern int dmar_parse_one_atsr(struct acpi_dmar_header *header, void *arg);
+ extern int dmar_check_one_atsr(struct acpi_dmar_header *hdr, void *arg);
+ extern int dmar_release_one_atsr(struct acpi_dmar_header *hdr, void *arg);
+ extern int dmar_iommu_hotplug(struct dmar_drhd_unit *dmaru, bool insert);
++extern int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev);
+ extern int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info);
+ #else /* !CONFIG_INTEL_IOMMU: */
+ static inline int intel_iommu_init(void) { return -ENODEV; }
+@@ -150,6 +155,11 @@ static inline void intel_iommu_shutdown(void) { }
+ #define	dmar_check_one_atsr		dmar_res_noop
+ #define	dmar_release_one_atsr		dmar_res_noop
+ 
++static inline int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev)
++{
++	return 0;
++}
++
+ static inline int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
+ {
+ 	return 0;
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index fee209efb756..9be134775886 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -514,6 +514,9 @@ extern void iommu_domain_window_disable(struct iommu_domain *domain, u32 wnd_nr)
+ extern int report_iommu_fault(struct iommu_domain *domain, struct device *dev,
+ 			      unsigned long iova, int flags);
+ 
++extern void __acpi_device_create_direct_mappings(struct iommu_group *group,
++						struct device *acpi_device);
++
+ static inline void iommu_flush_tlb_all(struct iommu_domain *domain)
+ {
+ 	if (domain->ops->flush_iotlb_all)
+-- 
+2.17.1
 
-If you are capable of handling any type of investment in your country, Please, get back to me immediately and send your telephone and fax numbers to enable me communicate with you and provide you with further details.
-
-Note that 30% of the fund is your share (Commission) for securing the fund from the security company before the investment of the fund shall be carried out. This is necessary because the investor as a serving government official in his country of origin is eager to transfer ownership of the fund to you because he is not expected in his official capacity to own such huge sum of money.
-
-I will appreciate an urgent response from you.
-
-Yours faithfully,
-
-Mr.John Woods
