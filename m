@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B1C23585E
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 18:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36485235874
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 18:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgHBQSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 12:18:20 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35158 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727033AbgHBQSO (ORCPT
+        id S1726472AbgHBQUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 12:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgHBQUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 12:18:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596385093;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=DC5t+PmpRFhs8Bz6/gHStakurAIrA6SZBjJ4584VI1M=;
-        b=XpjA2ki34xM75zaB4U7iXkHh+pusQh9P1cxUsjRSICmKmpOXvuoyGEzYKlCrfeD7zzJTlr
-        R7wsfwYwvpsO2n1MalNBEgV0eyxHBTsz4VYRYDIX98HGvLigUXAQOEXU36rzOF2lBQam8F
-        0YIteQdsspDbBseW5E6ujIxAB06QFkc=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-KdjbUlAJOa6n7-vsvnG7pw-1; Sun, 02 Aug 2020 12:18:11 -0400
-X-MC-Unique: KdjbUlAJOa6n7-vsvnG7pw-1
-Received: by mail-qt1-f200.google.com with SMTP id b1so17719088qto.17
-        for <linux-kernel@vger.kernel.org>; Sun, 02 Aug 2020 09:18:11 -0700 (PDT)
+        Sun, 2 Aug 2020 12:20:06 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEB3C06174A;
+        Sun,  2 Aug 2020 09:20:06 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id r12so31977402wrj.13;
+        Sun, 02 Aug 2020 09:20:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=4OQ/PelrCaLecz+CfF4+bB2gb2hH8VFrvo4a03w3HA8=;
+        b=uqiEiQcpXcLwPW3xlaLHFgSEZThuQViLLC3MwUBw3F8xtV2m+vIdHRe0/EsHVJjuDI
+         TxJrtjY42u9GL8wL05UVCzSrEwttevPdBZuJsNW1GZ3oPo1e8cNjRmNxTSeQjs8k+UGT
+         RUKUUHhQNg5+U5adjsdeae/2KvGg+1rcRWT1axd5qgv+NhiCPUOApKIdpNl/+D1jpnMy
+         eTR3He5YAkW5vfBFM81+xGc606Lttz435RhAC6sVdSFIlyPUu5X98GZsX+PHreAfET7K
+         DUlq+A67syD5LgOmZSoH/s4mUaNyjqYnEkcWrG+ln+AfWm+GnndHNYWmf9ZGvBr1TU0l
+         W4Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=DC5t+PmpRFhs8Bz6/gHStakurAIrA6SZBjJ4584VI1M=;
-        b=kYYVQovE761fAUGPvKR+2Jnz7D4t2S3pPkKnpY5U/f08lEDOQO29NIokvaldlc1H7e
-         4vttSS/P3zINIGWPPeFUqXp7KS9e1EWozGTRFe80jcZYCE4A5lSy1XgqynD9IDi9xcCe
-         P3JsNBkQl2cAcJ7BwDlhLmHAaOknzLrVWywsSvCtvr83qZPVsTGai+QzjJp5i9kVk4cD
-         hmZIKA6M2qaSU5JnGv9ad5B/zV46D971szoHVXgGwHYHZqjcmFyBpvew0tkrDKhwxHsQ
-         1XPVE28IsWZfC9uQQeKe2t9tRb22tK54Cy/8sWWa+GIkdr0SrPv1Mf7iy/gNbadi18Yr
-         R2tA==
-X-Gm-Message-State: AOAM530W01V2iVrwXG9cozgTanmB+ZUIMuTkJ2vztEJanxC5rf6WjQsG
-        Vy4P7dCFVE+ZOjymyQd9yJ9ZdB9aC/GbR8cI5N6TedxfJSsTWXRHJig9CYEQ5E15ZKghQi22OHP
-        4zJEp9Z+VLF0G/dD+Bn+fmEL2
-X-Received: by 2002:a37:7245:: with SMTP id n66mr1708743qkc.83.1596385090917;
-        Sun, 02 Aug 2020 09:18:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzyJG+khVAE61twpw/2VDMswy7YJJ9z/qUZwBj75oPhJFWqmgB2x/V/ktTRJ09btbojwttjIg==
-X-Received: by 2002:a37:7245:: with SMTP id n66mr1708726qkc.83.1596385090658;
-        Sun, 02 Aug 2020 09:18:10 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id x3sm16790666qkx.3.2020.08.02.09.18.08
+        bh=4OQ/PelrCaLecz+CfF4+bB2gb2hH8VFrvo4a03w3HA8=;
+        b=ChjyWTONU+NzXMnNMhBkszgWi/rCXTZXEVE7r+q4PeBPbX8Al13GC49x2Re60qlU/P
+         bU19B+x2ug/HBe0wN6poVa5J7KP60mTnXtTVJNZYaMHWU8p+emxiTPtFoKPHWDoLLjQO
+         qeA6rvFLpV9oGt6ZX1vXqx4hlsWy0qeKeqTgGJ7LBKKUhsNKWnJsKFhuxKMuUOMwkY1a
+         iU3kHKeKJx2OQWYH/DnIl7uJlU3L7xt1KBD4UC7+eWBje0OnvrOy3/eZo6y9b9VsXvTx
+         Vs23k+debXqXw2pPwnQdmji40mRcAc/GAdxroHOlG2JbqVfCsZqxaiyXZAvAS2dfBdPu
+         ucaA==
+X-Gm-Message-State: AOAM5306tGl6FIJ5afhDYdxz6Qo4UMiGoDRg7wLwtbmvVZ9XEXLzUxbq
+        SLFyNoTzFYc2QY8noo8B0ew=
+X-Google-Smtp-Source: ABdhPJx6nOiOkR1PATijfL1SWXhD/Pp8EJDXAX4J28P0BCrqBzjgJxA9FiyuEpAOzmy3IlFGBYzAZA==
+X-Received: by 2002:a5d:4e81:: with SMTP id e1mr11006779wru.22.1596385205261;
+        Sun, 02 Aug 2020 09:20:05 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2dd3:b900:5cb6:49ea:83a1:88c])
+        by smtp.gmail.com with ESMTPSA id j11sm19417868wrq.69.2020.08.02.09.20.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Aug 2020 09:18:10 -0700 (PDT)
-From:   trix@redhat.com
-To:     arend.vanspriel@broadcom.com, franky.lin@broadcom.com,
-        hante.meuleman@broadcom.com, chi-hsien.lin@cypress.com,
-        wright.feng@cypress.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, rafal@milecki.pl, tklauser@distanz.ch
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] brcmfmac: check ndev pointer
-Date:   Sun,  2 Aug 2020 09:18:04 -0700
-Message-Id: <20200802161804.6126-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Sun, 02 Aug 2020 09:20:04 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     Harry Wei <harryxiyou@gmail.com>, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] doc/zh_CN: resolve undefined label warning in admin-guide index
+Date:   Sun,  2 Aug 2020 18:19:56 +0200
+Message-Id: <20200802161956.18268-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Documentation generation warns:
 
-Clang static analysis reports this error
+  Documentation/translations/zh_CN/admin-guide/index.rst:3:
+  WARNING: undefined label: documentation/admin-guide/index.rst
 
-brcmfmac/core.c:490:4: warning: Dereference of null pointer
-        (*ifp)->ndev->stats.rx_errors++;
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use doc reference for .rst files to resolve the warning.
 
-In this block of code
-
-	if (ret || !(*ifp) || !(*ifp)->ndev) {
-		if (ret != -ENODATA && *ifp)
-			(*ifp)->ndev->stats.rx_errors++;
-		brcmu_pkt_buf_free_skb(skb);
-		return -ENODATA;
-	}
-
-(*ifp)->ndev being NULL is caught as an error
-But then it is used to report the error.
-
-So add a check before using it.
-
-Fixes: 91b632803ee4 ("brcmfmac: Use net_device_stats from struct net_device")
-
-Signed-off-by: Tom Rix <trix@redhat.com>
+Fixes: 37a607cf2318 ("doc/zh_CN: add admin-guide index")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c | 2 +-
+Alex, please ack.
+
+Jonathan, please pick this quick minor warning fix.
+
+applies on your docs-next and next-20200731
+
+ Documentation/translations/zh_CN/admin-guide/index.rst | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
-index f89010a81ffb..aa9ced3c86fb 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
-@@ -486,7 +486,7 @@ static int brcmf_rx_hdrpull(struct brcmf_pub *drvr, struct sk_buff *skb,
- 	ret = brcmf_proto_hdrpull(drvr, true, skb, ifp);
+diff --git a/Documentation/translations/zh_CN/admin-guide/index.rst b/Documentation/translations/zh_CN/admin-guide/index.rst
+index 7d502fa5da64..ed5ab7e37f38 100644
+--- a/Documentation/translations/zh_CN/admin-guide/index.rst
++++ b/Documentation/translations/zh_CN/admin-guide/index.rst
+@@ -1,6 +1,6 @@
+ .. include:: ../disclaimer-zh_CN.rst
  
- 	if (ret || !(*ifp) || !(*ifp)->ndev) {
--		if (ret != -ENODATA && *ifp)
-+		if (ret != -ENODATA && *ifp && (*ifp)->ndev)
- 			(*ifp)->ndev->stats.rx_errors++;
- 		brcmu_pkt_buf_free_skb(skb);
- 		return -ENODATA;
+-:Original: :ref:`Documentation/admin-guide/index.rst`
++:Original: :doc:`../../../admin-guide/index`
+ :Translator: Alex Shi <alex.shi@linux.alibaba.com>
+ 
+ 
 -- 
-2.18.1
+2.17.1
 
