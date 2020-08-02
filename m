@@ -2,62 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9D92357C2
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 16:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2236B2357C8
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 16:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbgHBO46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 10:56:58 -0400
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:55023 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgHBO45 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 10:56:57 -0400
-Received: from localhost.localdomain ([93.22.148.198])
-        by mwinf5d42 with ME
-        id Aewq230024H42jh03ewqx1; Sun, 02 Aug 2020 16:56:55 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 02 Aug 2020 16:56:55 +0200
-X-ME-IP: 93.22.148.198
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        chohnstaedt@innominate.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] crypto: ixp4xx - Fix the size used in a 'dma_free_coherent()' call
-Date:   Sun,  2 Aug 2020 16:56:48 +0200
-Message-Id: <20200802145648.699335-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        id S1726345AbgHBO5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 10:57:47 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:64488 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725820AbgHBO5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 Aug 2020 10:57:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596380266; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=ZOjqGSoWE+lRt82RoqJBfsGT6yPG06YvQ8FfvPleFkI=;
+ b=u5JDMrz680fcvHJNpvZ9+jD6EAw+ySgKudIDLrRsvCXVCGEDRRWOHFZjXC5mTMF8FnF9RsmS
+ 1TK2zW5ioe20QtqltX9irgmcAq88Wu+e/7Xxt4pbuPDwKOWl4OQlydcTru3/1cxoOQ2ZwyR5
+ w2npMN41ykeLLoJXebfsaDaqdVA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n20.prod.us-west-2.postgun.com with SMTP id
+ 5f26d457710a7a29d511c8a2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 02 Aug 2020 14:57:27
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 04FFEC433CA; Sun,  2 Aug 2020 14:57:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 60C37C433C9;
+        Sun,  2 Aug 2020 14:57:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 60C37C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] p54: switch from 'pci_' to 'dma_' API
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200722102707.27486-1-christophe.jaillet@wanadoo.fr>
+References: <20200722102707.27486-1-christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     chunkeey@googlemail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200802145727.04FFEC433CA@smtp.codeaurora.org>
+Date:   Sun,  2 Aug 2020 14:57:27 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the size used in 'dma_free_coherent()' in order to match the one
-used in the corresponding 'dma_alloc_coherent()', in 'setup_crypt_desc()'.
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-Fixes: 81bef0150074 ("crypto: ixp4xx - Hardware crypto support for IXP4xx CPUs")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/crypto/ixp4xx_crypto.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+> 
+> The patch has been generated with the coccinelle script below and has been
+> hand modified to replace GFP_ with a correct flag.
+> It has been compile tested.
+> 
+> When memory is allocated in 'p54p_probe()', GFP_KERNEL can be used because
+> it is the probe function and no spin_lock is taken in the between.
+> 
+> 
+> @@
+> @@
+> -    PCI_DMA_BIDIRECTIONAL
+> +    DMA_BIDIRECTIONAL
+> 
+> @@
+> @@
+> -    PCI_DMA_TODEVICE
+> +    DMA_TO_DEVICE
+> 
+> @@
+> @@
+> -    PCI_DMA_FROMDEVICE
+> +    DMA_FROM_DEVICE
+> 
+> @@
+> @@
+> -    PCI_DMA_NONE
+> +    DMA_NONE
+> 
+> @@
+> expression e1, e2, e3;
+> @@
+> -    pci_alloc_consistent(e1, e2, e3)
+> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> 
+> @@
+> expression e1, e2, e3;
+> @@
+> -    pci_zalloc_consistent(e1, e2, e3)
+> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_free_consistent(e1, e2, e3, e4)
+> +    dma_free_coherent(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_map_single(e1, e2, e3, e4)
+> +    dma_map_single(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_single(e1, e2, e3, e4)
+> +    dma_unmap_single(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4, e5;
+> @@
+> -    pci_map_page(e1, e2, e3, e4, e5)
+> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_page(e1, e2, e3, e4)
+> +    dma_unmap_page(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_map_sg(e1, e2, e3, e4)
+> +    dma_map_sg(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_sg(e1, e2, e3, e4)
+> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
+> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
+> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
+> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
+> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_dma_mapping_error(e1, e2)
+> +    dma_mapping_error(&e1->dev, e2)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_dma_mask(e1, e2)
+> +    dma_set_mask(&e1->dev, e2)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_consistent_dma_mask(e1, e2)
+> +    dma_set_coherent_mask(&e1->dev, e2)
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
-index f478bb0a566a..276012e7c482 100644
---- a/drivers/crypto/ixp4xx_crypto.c
-+++ b/drivers/crypto/ixp4xx_crypto.c
-@@ -528,7 +528,7 @@ static void release_ixp_crypto(struct device *dev)
- 
- 	if (crypt_virt) {
- 		dma_free_coherent(dev,
--			NPE_QLEN_TOTAL * sizeof( struct crypt_ctl),
-+			NPE_QLEN * sizeof(struct crypt_ctl),
- 			crypt_virt, crypt_phys);
- 	}
- }
+Patch applied to wireless-drivers-next.git, thanks.
+
+ba78405ecaac p54: switch from 'pci_' to 'dma_' API
+
 -- 
-2.25.1
+https://patchwork.kernel.org/patch/11678115/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
