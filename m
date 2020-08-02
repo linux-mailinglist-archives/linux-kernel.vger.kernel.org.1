@@ -2,162 +2,574 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F815239C9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 00:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C3E239CB5
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 00:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728062AbgHBWAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 18:00:39 -0400
-Received: from smtp-bc09.mail.infomaniak.ch ([45.157.188.9]:54623 "EHLO
-        smtp-bc09.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728050AbgHBV7e (ORCPT
+        id S1726913AbgHBWDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 18:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726364AbgHBWDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 17:59:34 -0400
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4BKZg729TMzlhPDL;
-        Sun,  2 Aug 2020 23:59:31 +0200 (CEST)
-Received: from localhost (unknown [94.23.54.103])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4BKZg66JZvzlh8TD;
-        Sun,  2 Aug 2020 23:59:30 +0200 (CEST)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v20 06/12] fs,security: Add sb_delete hook
-Date:   Sun,  2 Aug 2020 23:58:57 +0200
-Message-Id: <20200802215903.91936-7-mic@digikod.net>
-X-Mailer: git-send-email 2.28.0.rc2
-In-Reply-To: <20200802215903.91936-1-mic@digikod.net>
-References: <20200802215903.91936-1-mic@digikod.net>
+        Sun, 2 Aug 2020 18:03:01 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FCAC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  2 Aug 2020 15:03:01 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id c10so5713462pjn.1
+        for <linux-kernel@vger.kernel.org>; Sun, 02 Aug 2020 15:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eoSho7y0LW3ELMVOwo9+17ya76gCWqy1heSlGy8UQfg=;
+        b=fXf5MICmvRu4yHv7M9D/vkOrJ4mx0ZEPBODSPg9655ywLjxjPEgLURSTm2ouq8wOsN
+         Uq0LjXgAwxCYkbsgztlFEavYcSpzxeWdwdRgwgBmQqsvyWSzF6EwkJDEuaAR3E/J4FqH
+         Qkjby1cpVKbUezeIWZ9WD2yUCE4+jbxPI6s+BqVWdDB123G/PQUOvMVj7Yd8vWsnhghj
+         j+ICIEyHcPerzpysqm9XMNZ6jo97NV1mwD0egY/oojZeuCOeUqh6WvZ0fG8eNqDigsFN
+         0VN8TzfHotLkFA8VG8Z5oCx6XNbNrC88SRhyPwl9afKYtRxCnHlnhR4YgwHcjSeaDYgq
+         BhbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=eoSho7y0LW3ELMVOwo9+17ya76gCWqy1heSlGy8UQfg=;
+        b=o8HxHwvBSVAujTMpW4IJgU+9sBFnfhqqmNL2ggFjAV+P2VR+CANO1VLxKVn65OKYrm
+         hqMsmwS6hS+HhZuflGCfOX5nGbba6bV/eQWruv5jQKtkHS9l2NzXHP/uSwXfO6YcPSD6
+         nA/A8EpVd3D/mBU4v0vxegBDRdnP+w6y3mtMmEzHx4hKw2JQaA+NJ3NJyBbdat31Exsj
+         IE+rajYUl/mFuwgSIuYJArHUeDWhzP6+BCtiYIHc6oJtUrbbmqMCfCPgh29Y599k6Suk
+         jgdYWMk50lkHXzRt6Q8uWTpGs2XhOnTZ0xjxMAuUzYLfYyZ7ouNYXu2Ti6cBaqm345T3
+         b9bQ==
+X-Gm-Message-State: AOAM532ADgYFjOnHTlHJi7AXnBv6H8LZoyqKOR7T3iSp7lD019ZUB9HP
+        onPpuSrPiECEdLqb2GonpE2rIaS/wkY=
+X-Google-Smtp-Source: ABdhPJw3Vm9t+rVyd3DsGdlrvTbqycLwI75W9LWwfdEvMQSw8aFsCo10i6aWU7ZmC46lLScXDBwSEA==
+X-Received: by 2002:a17:90a:148:: with SMTP id z8mr14932202pje.197.1596405780583;
+        Sun, 02 Aug 2020 15:03:00 -0700 (PDT)
+Received: from Gentoo ([212.102.36.166])
+        by smtp.gmail.com with ESMTPSA id a17sm16332807pgw.60.2020.08.02.15.02.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Aug 2020 15:02:59 -0700 (PDT)
+Date:   Mon, 3 Aug 2020 03:32:43 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.8
+Message-ID: <20200802220243.GA20003@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHk-=wj+mDPbj8hXspXRAksh+1TmPjubc9RNEbu8EVpYyypX=w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj+mDPbj8hXspXRAksh+1TmPjubc9RNEbu8EVpYyypX=w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sb_delete security hook is called when shutting down a superblock,
-which may be useful to release kernel objects tied to the superblock's
-lifetime (e.g. inodes).
 
-This new hook is needed by Landlock to release (ephemerally) tagged
-struct inodes.  This comes from the unprivileged nature of Landlock
-described in the next commit.
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: James Morris <jmorris@namei.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Serge E. Hallyn <serge@hallyn.com>
----
+On 14:50 Sun 02 Aug 2020, Linus Torvalds wrote:
+>So I considered making an rc8 all the way to the last minute, but
+>decided it's not just worth waiting another week when there aren't any
+>big looming worries around.
+>
+>Because despite the merge window having been very large, there really
+>hasn't been anything scary going on in the release candidates. Yeah,
+>we had some annoying noise with header file dependencies this week,
+>but that's not a new annoyance, and it's also not the kind of subtle
+>bug that keeps me up at night worrying about it.
+>
+>It did reinforce how nice it would be if we had some kind of tooling
+>support to break nasty header file dependencies automatically, but if
+>wishes were horses.. Maybe some day we'll have some kind of SAT-solver
+>for symbol dependencies that can handle all our different
+>architectures and configurations, but right now it's just a manual
+>pain that occasionally bites us.
+>
+>Anyway..
+>
+>Aside from silly header file noise, the last week was mostly dominated
+>by the networking pull, which accounts for about half of the changes
+>(mellanox drivers and selftests stand out, but there's other smaller
+>things in there too). Some RCU fixes stand out.
+>
+>Outside of the networking stuff, it's mostly various small driver
+>fixes (gpu, rdma, sound and pinctrl being much of it), and some minor
+>architecture noise (arm, x86, powerpc). But it's all fairly small.
+>
+>So there it is, a shiny new kernel. Give it a whirl before all you
+>people start sending me the pull requests for the merge window, which
+>I'll start handling tomorrow..
+>
+>                 Linus
+>
 
-Changes since v17:
-* Initial patch to replace the direct call to landlock_release_inodes()
-  (requested by James Morris).
-  https://lore.kernel.org/lkml/alpine.LRH.2.21.2005150536440.7929@namei.org/
----
- fs/super.c                    | 1 +
- include/linux/lsm_hook_defs.h | 1 +
- include/linux/lsm_hooks.h     | 2 ++
- include/linux/security.h      | 4 ++++
- security/security.c           | 5 +++++
- 5 files changed, 13 insertions(+)
+Very well then, time to spin it up.
 
-diff --git a/fs/super.c b/fs/super.c
-index 904459b35119..d5517e49ccdf 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -454,6 +454,7 @@ void generic_shutdown_super(struct super_block *sb)
- 		evict_inodes(sb);
- 		/* only nonzero refcount inodes can have marks */
- 		fsnotify_sb_delete(sb);
-+		security_sb_delete(sb);
- 
- 		if (sb->s_dio_done_wq) {
- 			destroy_workqueue(sb->s_dio_done_wq);
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index af998f93d256..2b855d6a299e 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -59,6 +59,7 @@ LSM_HOOK(int, 0, fs_context_dup, struct fs_context *fc,
- LSM_HOOK(int, -ENOPARAM, fs_context_parse_param, struct fs_context *fc,
- 	 struct fs_parameter *param)
- LSM_HOOK(int, 0, sb_alloc_security, struct super_block *sb)
-+LSM_HOOK(void, LSM_RET_VOID, sb_delete, struct super_block *sb)
- LSM_HOOK(void, LSM_RET_VOID, sb_free_security, struct super_block *sb)
- LSM_HOOK(void, LSM_RET_VOID, sb_free_mnt_opts, void *mnt_opts)
- LSM_HOOK(int, 0, sb_eat_lsm_opts, char *orig, void **mnt_opts)
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 80c629d8a2ad..499f19a70a19 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -108,6 +108,8 @@
-  *	allocated.
-  *	@sb contains the super_block structure to be modified.
-  *	Return 0 if operation was successful.
-+ * @sb_delete:
-+ *	Release objects tied to a superblock (e.g. inodes).
-  * @sb_free_security:
-  *	Deallocate and clear the sb->s_security field.
-  *	@sb contains the super_block structure to be modified.
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 0a0a03b36a3b..28b0ee6c7239 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -286,6 +286,7 @@ void security_bprm_committed_creds(struct linux_binprm *bprm);
- int security_fs_context_dup(struct fs_context *fc, struct fs_context *src_fc);
- int security_fs_context_parse_param(struct fs_context *fc, struct fs_parameter *param);
- int security_sb_alloc(struct super_block *sb);
-+void security_sb_delete(struct super_block *sb);
- void security_sb_free(struct super_block *sb);
- void security_free_mnt_opts(void **mnt_opts);
- int security_sb_eat_lsm_opts(char *options, void **mnt_opts);
-@@ -614,6 +615,9 @@ static inline int security_sb_alloc(struct super_block *sb)
- 	return 0;
- }
- 
-+static inline void security_sb_delete(struct super_block *sb)
-+{ }
-+
- static inline void security_sb_free(struct super_block *sb)
- { }
- 
-diff --git a/security/security.c b/security/security.c
-index d60aa835b670..9337b511306c 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -898,6 +898,11 @@ int security_sb_alloc(struct super_block *sb)
- 	return rc;
- }
- 
-+void security_sb_delete(struct super_block *sb)
-+{
-+	call_void_hook(sb_delete, sb);
-+}
-+
- void security_sb_free(struct super_block *sb)
- {
- 	call_void_hook(sb_free_security, sb);
--- 
-2.28.0.rc2
+Bhaskar
 
+>---
+>
+>Aaron Ma (1):
+>      e1000e: continue to init PHY even when failed to disable ULP
+>
+>Akash Asthana (1):
+>      MAINTAINERS: Update GENI I2C maintainers list
+>
+>Al Viro (1):
+>      fix a braino in cmsghdr_from_user_compat_to_kern()
+>
+>Alaa Hleihel (1):
+>      net/mlx5e: Fix kernel crash when setting vf VLANID on a VF dev
+>
+>Alain Michaud (1):
+>      Bluetooth: fix kernel oops in store_pending_adv_report
+>
+>Alex Deucher (1):
+>      Revert "drm/amdgpu: Fix NULL dereference in dpm sysfs handlers"
+>
+>Alexander Duyck (1):
+>      virtio-balloon: Document byte ordering of poison_val
+>
+>Amit Cohen (1):
+>      selftests: ethtool: Fix test when only two speeds are supported
+>
+>Andrii Nakryiko (2):
+>      bpf: Fix map leak in HASH_OF_MAPS map
+>      selftests/bpf: Extend map-in-map selftest to detect memory leaks
+>
+>Ard Biesheuvel (1):
+>      ARM: 8988/1: mmu: fix crash in EFI calls due to p4d typo in
+>create_mapping_late()
+>
+>Armas Spann (2):
+>      ALSA: hda/realtek: enable headset mic of ASUS ROG Zephyrus
+>G15(GA502) series with ALC289
+>      ALSA: hda/realtek: typo_fix: enable headset mic of ASUS ROG
+>Zephyrus G14(GA401) series with ALC289
+>
+>Aya Levin (1):
+>      net/mlx5e: Fix error path of device attach
+>
+>Ben Hutchings (1):
+>      libtraceevent: Fix build with binutils 2.35
+>
+>Ben Skeggs (5):
+>      drm/nouveau/disp/gm200-: fix regression from HDA SOR selection chang=
+es
+>      drm/nouveau/kms/gf100: use correct format modifiers
+>      drm/nouveau/kms/tu102: wait for core update to complete when
+>assigning windows
+>      drm/nouveau/fbcon: fix module unload when fbcon init has failed
+>for some reason
+>      drm/nouveau/fbcon: zero-initialise the mode_cmd2 structure
+>
+>Biju Das (1):
+>      drm: of: Fix double-free bug
+>
+>Christoph Hellwig (3):
+>      net/9p: validate fds in p9_fd_open
+>      nvme: add a Identify Namespace Identification Descriptor list quirk
+>      net/bpfilter: Initialize pos in __bpfilter_process_sockopt
+>
+>Cong Wang (1):
+>      ipv6: fix memory leaks on IPV6_ADDRFORM path
+>
+>David Howells (1):
+>      rxrpc: Fix race between recvmsg and sendmsg on immediate call failure
+>
+>Douglas Anderson (2):
+>      pinctrl: qcom: Handle broken/missing PDC dual edge IRQs on sc7180
+>      drm: panel: simple: Delay HPD checking on boe_nv133fhm_n61 for 15 ms
+>
+>Eran Ben Elisha (3):
+>      net/mlx5: Fix a bug of using ptp channel index as pin index
+>      net/mlx5: Verify Hardware supports requested ptp function on a given=
+ pin
+>      net/mlx5: Query PPS pin operational status before registering it
+>
+>Fabio Estevam (2):
+>      ARM: dts: imx6sx-sdb: Fix the phy-mode on fec2
+>      ARM: dts: imx6sx-sabreauto: Fix the phy-mode on fec2
+>
+>Felix Fietkau (1):
+>      mac80211: remove STA txq pending airtime underflow warning
+>
+>Francesco Ruggeri (1):
+>      igb: reinit_locked() should be called with rtnl_lock
+>
+>Grygorii Strashko (2):
+>      ARM: dts: keystone-k2g-evm: fix rgmii phy-mode for ksz9031 phy
+>      ARM: percpu.h: fix build error
+>
+>Guido G=C3=BCnther (1):
+>      drm/bridge: nwl-dsi: Drop DRM_BRIDGE_ATTACH_NO_CONNECTOR check.
+>
+>Guillaume Nault (1):
+>      bareudp: forbid mixing IP and MPLS in multiproto mode
+>
+>Guojia Liao (2):
+>      net: hns3: fix aRFS FD rules leftover after add a user FD rule
+>      net: hns3: fix for VLAN config when reset failed
+>
+>Hangbin Liu (1):
+>      selftests/bpf: fix netdevsim trap_flow_action_cookie read
+>
+>Herbert Xu (2):
+>      rhashtable: Fix unprotected RCU dereference in __rht_ptr
+>      rhashtable: Restore RCU marking on rhash_lock_head
+>
+>Ido Schimmel (7):
+>      vxlan: Ensure FDB dump is performed under RCU
+>      ipv4: Silence suspicious RCU usage warning
+>      mlxsw: spectrum_router: Allow programming link-local host routes
+>      mlxsw: spectrum: Use different trap group for externally routed pack=
+ets
+>      mlxsw: core: Increase scope of RCU read-side critical section
+>      mlxsw: core: Free EMAD transactions using kfree_rcu()
+>      mlxsw: spectrum_router: Fix use-after-free in router init / de-init
+>
+>Jaedon Shin (1):
+>      ARM: 8987/1: VDSO: Fix incorrect clock_gettime64
+>
+>Jakub Kicinski (2):
+>      mlx4: disable device on shutdown
+>      devlink: ignore -EOPNOTSUPP errors on dumpit
+>
+>James Jones (1):
+>      drm/nouveau: Accept 'legacy' format modifiers
+>
+>Jason Gunthorpe (2):
+>      RDMA/cm: Add min length checks to user structure copies
+>      RDMA/mlx5: Fix prefetch memory leak if get_prefetchable_mr fails
+>
+>Jean-Philippe Brucker (1):
+>      selftests/bpf: Fix cgroup sockopt verifier test
+>
+>Jian Shen (1):
+>      net: hns3: add reset check for VF updating port based VLAN
+>
+>Jianbo Liu (3):
+>      net/mlx5e: CT: Support restore ipv6 tunnel
+>      net/mlx5e: E-Switch, Add misc bit when misc fields changed for mirro=
+ring
+>      net/mlx5e: E-Switch, Specify flow_source for rule with no in_port
+>
+>Jitao Shi (1):
+>      drm/panel: Fix auo, kd101n80-45na horizontal noise on edges of panel
+>
+>Johan Hovold (3):
+>      net: lan78xx: add missing endpoint sanity check
+>      net: lan78xx: fix transfer-buffer memory leak
+>      net: lan78xx: replace bogus endpoint lookup
+>
+>John Garry (1):
+>      MAINTAINERS: Include drivers subdirs for ARM PMU PROFILING AND
+>DEBUGGING entry
+>
+>Joyce Ooi (1):
+>      MAINTAINERS: Replace Thor Thayer as Altera Triple Speed Ethernet
+>maintainer
+>
+>Julian Squires (1):
+>      cfg80211: check vendor command doit pointer before use
+>
+>Kai-Heng Feng (1):
+>      nvme-pci: prevent SK hynix PC400 from using Write Zeroes command
+>
+>Kailang Yang (1):
+>      ALSA: hda/realtek - Fixed HP right speaker no sound
+>
+>Landen Chao (1):
+>      net: ethernet: mtk_eth_soc: fix MTU warnings
+>
+>Laurence Tratt (1):
+>      ALSA: usb-audio: Add implicit feedback quirk for SSL2
+>
+>Laurentiu Palcu (1):
+>      drm/bridge/adv7511: set the bridge type properly
+>
+>Leon Romanovsky (4):
+>      RDMA/mlx5: Allow providing extra scatter CQE QP flag
+>      RDMA/mlx5: Initialize QP mutex for the debug kernels
+>      RDMA/core: Stop DIM before destroying CQ
+>      RDMA/core: Free DIM memory in error unwind
+>
+>Linus Torvalds (2):
+>      random32: remove net_rand_state from the latent entropy gcc plugin
+>      Linux 5.8
+>
+>Linus Walleij (1):
+>      drm/mcde: Fix stability issue
+>
+>Lu Wei (1):
+>      net: nixge: fix potential memory leak in nixge_probe()
+>
+>Maor Dickman (1):
+>      net/mlx5e: Fix missing cleanup of ethtool steering during rep rx cle=
+anup
+>
+>Maor Gottlieb (1):
+>      net/mlx5: Fix forward to next namespace
+>
+>Marc Zyngier (2):
+>      KVM: arm64: Prevent vcpu_has_ptrauth from generating OOL functions
+>      arm64: Drop unnecessary include from asm/smp.h
+>
+>Mark Salyzyn (1):
+>      af_key: pfkey_dump needs parameter validation
+>
+>Martin Varghese (1):
+>      Documentation: bareudp: Corrected description of bareudp module.
+>
+>Masahiro Yamada (8):
+>      kconfig: qconf: use if_changed for qconf.moc rule
+>      kconfig: qconf: compile moc object separately
+>      kconfig: qconf: use delete[] instead of delete to free array
+>      kconfig: qconf: remove "goBack" debug message
+>      Revert "kconfig: qconf: Change title for the item window"
+>      Revert "kconfig: qconf: don't show goback button on splitMode"
+>      kconfig: qconf: remove wrong ConfigList::firstChild()
+>      kbuild: remove redundant FORCE definition in scripts/Makefile.modpost
+>
+>Matthieu Baerts (1):
+>      mptcp: fix joined subflows with unblocking sk
+>
+>Maxime Ripard (2):
+>      ARM: dts sunxi: Relax a bit the CMA pool allocation range
+>      arm64: dts: allwinner: h6: Fix Cedrus IOMMU usage
+>
+>Mazin Rezk (1):
+>      drm/amd/display: Clear dm_state for fast updates
+>
+>Michael Karcher (1):
+>      sh: Fix validation of system call number
+>
+>Michael S. Tsirkin (2):
+>      vhost/scsi: fix up req type endian-ness
+>      virtio_balloon: fix up endian-ness for free cmd id
+>
+>Michael Trimarchi (1):
+>      ARM: dts: imx6qdl-icore: Fix OTG_ID pin and sdcard detect
+>
+>Mike Marciniszyn (1):
+>      IB/rdmavt: Fix RQ counting issues causing use of an invalid RWQE
+>
+>Nicholas Piggin (1):
+>      powerpc/64s/hash: Fix hash_preload running with interrupts enabled
+>
+>Paolo Bonzini (3):
+>      selftests: kvm: do not set guest mode flag
+>      KVM: nVMX: check for required but missing VMCS12 in KVM_SET_NESTED_S=
+TATE
+>      KVM: nVMX: check for invalid hdr.vmx.flags
+>
+>Parav Pandit (2):
+>      net/mlx5: E-switch, Destroy TSAR when fail to enable the mode
+>      net/mlx5: E-switch, Destroy TSAR after reload interface
+>
+>Paul Cercueil (1):
+>      drm/dbi: Fix SPI Type 1 (9-bit) transfer
+>
+>Paul Moore (1):
+>      revert: 1320a4052ea1 ("audit: trigger accompanying records when
+>no rules present")
+>
+>Pavel Begunkov (2):
+>      io_uring: fix ->work corruption with poll_add
+>      io_uring: fix lockup in io_fail_links()
+>
+>Pavel Machek (1):
+>      signal: fix typo in dequeue_synchronous_signal()
+>
+>PeiSen Hou (1):
+>      ALSA: hda/realtek: Fix add a "ultra_low_power" function for
+>intel reference board (alc256)
+>
+>Peilin Ye (3):
+>      bpf: Fix NULL pointer dereference in __btf_resolve_helper_id()
+>      drm/amdgpu: Prevent kernel-infoleak in amdgpu_info_ioctl()
+>      rds: Prevent kernel-infoleak in rds_notify_queue_get()
+>
+>Peter Zijlstra (1):
+>      sh/tlb: Fix PGTABLE_LEVELS > 2
+>
+>Philippe Duplessis-Guindon (1):
+>      tools lib traceevent: Fix memory leak in process_dynamic_array_len
+>
+>Qiushi Wu (1):
+>      firmware: Fix a reference count leak.
+>
+>Raed Salem (1):
+>      net/mlx5e: Fix slab-out-of-bounds in mlx5e_rep_is_lag_netdev
+>
+>Rajkumar Manoharan (1):
+>      mac80211: fix warning in 6 GHz IE addition in mesh mode
+>
+>Ranjani Sridharan (1):
+>      ALSA: hda: fix NULL pointer dereference during suspend
+>
+>Remi Pommarel (2):
+>      mac80211: mesh: Free ie data when leaving mesh
+>      mac80211: mesh: Free pending skb when destroying a mpath
+>
+>Ren=C3=A9 van Dorst (1):
+>      net: ethernet: mtk_eth_soc: Always call mtk_gmac0_rgmii_adjust()
+>for mt7623
+>
+>Robert Hancock (1):
+>      PCI/ASPM: Disable ASPM on ASMedia ASM1083/1085 PCIe-to-PCI bridge
+>
+>Robin Murphy (1):
+>      arm64: csum: Fix handling of bad packets
+>
+>Ron Diskin (1):
+>      net/mlx5e: Modify uplink state on interface up/down
+>
+>Russell King (1):
+>      ARM: dts: armada-38x: fix NETA lockup when repeatedly switching spee=
+ds
+>
+>Rustam Kovhaev (1):
+>      usb: hso: check for return value in hso_serial_common_create()
+>
+>Sabrina Dubroca (7):
+>      xfrm: esp6: fix encapsulation header offset computation
+>      espintcp: support non-blocking sends
+>      espintcp: recv() should return 0 when the peer socket is closed
+>      xfrm: policy: fix IPv6-only espintcp compilation
+>      xfrm: esp6: fix the location of the transport header with encapsulat=
+ion
+>      espintcp: handle short messages instead of breaking the encap socket
+>      espintcp: count packets dropped in espintcp_rcv
+>
+>Sagi Grimberg (1):
+>      nvme-tcp: fix possible hang waiting for icresp response
+>
+>Sam Ravnborg (1):
+>      drm/drm_fb_helper: fix fbdev with sparc64
+>
+>Sami Tolvanen (1):
+>      arm64/alternatives: move length validation inside the subsection
+>
+>Shannon Nelson (1):
+>      ionic: unlock queue mutex in error path
+>
+>Stafford Horne (1):
+>      io: Fix return type of _inb and _inl
+>
+>Steffen Klassert (1):
+>      xfrm: Fix crash when the hold queue is used.
+>
+>Steve Cohen (1):
+>      drm: hold gem reference until object is no longer accessed
+>
+>Subbaraya Sundeep (3):
+>      octeontx2-pf: Fix reset_task bugs
+>      octeontx2-pf: cancel reset_task work
+>      octeontx2-pf: Unregister netdev at driver remove
+>
+>Taehee Yoo (1):
+>      vxlan: fix memleak of fdb
+>
+>Takashi Iwai (2):
+>      ALSA: hda: Workaround for spurious wakeups on some Intel platforms
+>      ALSA: hda/hdmi: Fix keep_power assignment for non-component devices
+>
+>Tanner Love (4):
+>      selftests/net: rxtimestamp: fix clang issues for target arch PowerPC
+>      selftests/net: psock_fanout: fix clang issues for target arch PowerPC
+>      selftests/net: so_txtime: fix clang issues for target arch PowerPC
+>      selftests/net: tcp_mmap: fix clang warning for target arch PowerPC
+>
+>Thomas Falcon (1):
+>      ibmvnic: Fix IRQ mapping disposal in error path
+>
+>Thomas Gleixner (1):
+>      x86/i8259: Use printk_deferred() to prevent deadlock
+>
+>Thomas Richter (1):
+>      perf tests: Fix test 68 zstd compression for s390
+>
+>Vasanthakumar Thiagarajan (1):
+>      mac80211: Fix bug in Tx ack status reporting in 802.3 xmit path
+>
+>Wang Hai (2):
+>      9p/trans_fd: Fix concurrency del of req_list in
+>p9_fd_cancelled/p9_read_work
+>      net: gemini: Fix missing clk_disable_unprepare() in error path
+>of gemini_ethernet_port_probe()
+>
+>Wanpeng Li (2):
+>      KVM: LAPIC: Prevent setting the tscdeadline timer if the lapic
+>is hw disabled
+>      KVM: SVM: Fix disable pause loop exit/pause filtering capability on =
+SVM
+>
+>Wei Li (1):
+>      perf tools: Fix record failure when mixed with ARM SPE event
+>
+>Weilong Chen (1):
+>      virtio-mem: Fix build error due to improper use 'select'
+>
+>Will Deacon (2):
+>      ARM: 8986/1: hw_breakpoint: Don't invoke overflow handler on
+>uaccess watchpoints
+>      KVM: arm64: Don't inherit exec permission across page-table levels
+>
+>Willy Tarreau (2):
+>      random32: update the net random state on interrupt and activity
+>      random: fix circular include dependency on arm64 after addition
+>of percpu.h
+>
+>Wolfram Sang (4):
+>      modpost: explain why we can't use strsep
+>      i2c: also convert placeholder function to return errno
+>      i2c: slave: improve sanity check when registering
+>      i2c: slave: add sanity check when unregistering
+>
+>Xin Long (1):
+>      xfrm: policy: match with both mark and mask on user interfaces
+>
+>Xin Xiong (2):
+>      atm: fix atm_dev refcnt leaks in atmtcp_remove_persistent
+>      net/mlx5e: fix bpf_prog reference count leaks in mlx5e_alloc_rq
+>
+>Xiyu Yang (1):
+>      ipv6: Fix nexthop refcnt leak when creating ipv6 route info
+>
+>Yonglong Liu (1):
+>      net: hns3: fix a TX timeout issue
+>
+>Yunsheng Lin (1):
+>      net: hns3: fix desc filling bug when skb is expanded or lineared
+>
+>laurent brando (1):
+>      net: mscc: ocelot: fix hardware timestamp dequeue logic
+>
+>liujian (1):
+>      net/sched: The error lable position is corrected in ct_init_module
+
+--BOKacYhQ+x31HxR3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl8nOAAACgkQsjqdtxFL
+KRX4pQf+NDc6HerQvYKQEI2x+ekn2zpemL9OFeKcbzYVrv5IL6grwZOfH9nVWNOf
+96JWIdrvX2mHp/QWsUmhuPEgSWMmBn9+lt/gCSzT40WjmWklRpI4SsE8zdba+Q2N
+YyvBW6qJ+NgkP3QfgL6x7i3MsqGUlrLDHstN7q6BRfkeKMD/nrDvOQR4TwzC24ec
+GhSuDgEEKZti2bDGDxiUCpjiwWtWjDLeGhjVeXj44OFzCH9WFY8uTl1iJCk4YU2j
+gOt4Uw5KU7trtQeTn2d9ag/2OzpoA8yEfKgnP+yDaOMr4g0P6Fe8+1HnyoZbUuc6
+57S2E3uWnG2tS9zqOG0LCfIw7iiNWw==
+=NpnM
+-----END PGP SIGNATURE-----
+
+--BOKacYhQ+x31HxR3--
