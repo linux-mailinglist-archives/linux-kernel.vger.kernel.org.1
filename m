@@ -2,178 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C0F235858
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 18:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B1C23585E
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 18:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgHBQSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 12:18:06 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:48902 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726955AbgHBQSF (ORCPT
+        id S1727058AbgHBQSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 12:18:20 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35158 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727033AbgHBQSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 12:18:05 -0400
-Received: from oscar.flets-west.jp (softbank126025067101.bbtec.net [126.25.67.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 072GHOar003720;
-        Mon, 3 Aug 2020 01:17:32 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 072GHOar003720
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1596385052;
-        bh=Fx4RBBuLEX1RyuzYReHJPlRR6nF9JYaZi1x4BFu3SOU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hNYqxS8PG7FKFhnRI/Kw8GHEMux3F6osUkMwyc3WJzFHARMFLeLlH8wD1IHvm52wE
-         qBIeQq1+mwdg21nNmkNotBrcWeoNr5Y6yu6GNSJXjptDvoFWOzOGEsf0GbODvaCefg
-         CKlYdHYdMTjDEGM6lh+C8gOG4eHjEGBngR3vrpKwboZNHNcdGuNy9A8rop+QwFa93F
-         EOaqTCE4QPffT5g1WrGvVgTn9CIg4JYGheYE9goEaLIr3O4S5kvsZcSKAIIr7hA2Sr
-         KkB1RS9qi678jLMDP3Rqorr/uOnV9gYTe6zfwXnIXcPLMX8OQhA6y+08I1wKZQVEK9
-         a4UlDx0TDUZjQ==
-X-Nifty-SrcIP: [126.25.67.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 16/16] kconfig: qconf: refactor icon setups
-Date:   Mon,  3 Aug 2020 01:17:21 +0900
-Message-Id: <20200802161721.921721-16-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200802161721.921721-1-masahiroy@kernel.org>
-References: <20200802161721.921721-1-masahiroy@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 2 Aug 2020 12:18:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596385093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=DC5t+PmpRFhs8Bz6/gHStakurAIrA6SZBjJ4584VI1M=;
+        b=XpjA2ki34xM75zaB4U7iXkHh+pusQh9P1cxUsjRSICmKmpOXvuoyGEzYKlCrfeD7zzJTlr
+        R7wsfwYwvpsO2n1MalNBEgV0eyxHBTsz4VYRYDIX98HGvLigUXAQOEXU36rzOF2lBQam8F
+        0YIteQdsspDbBseW5E6ujIxAB06QFkc=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-KdjbUlAJOa6n7-vsvnG7pw-1; Sun, 02 Aug 2020 12:18:11 -0400
+X-MC-Unique: KdjbUlAJOa6n7-vsvnG7pw-1
+Received: by mail-qt1-f200.google.com with SMTP id b1so17719088qto.17
+        for <linux-kernel@vger.kernel.org>; Sun, 02 Aug 2020 09:18:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=DC5t+PmpRFhs8Bz6/gHStakurAIrA6SZBjJ4584VI1M=;
+        b=kYYVQovE761fAUGPvKR+2Jnz7D4t2S3pPkKnpY5U/f08lEDOQO29NIokvaldlc1H7e
+         4vttSS/P3zINIGWPPeFUqXp7KS9e1EWozGTRFe80jcZYCE4A5lSy1XgqynD9IDi9xcCe
+         P3JsNBkQl2cAcJ7BwDlhLmHAaOknzLrVWywsSvCtvr83qZPVsTGai+QzjJp5i9kVk4cD
+         hmZIKA6M2qaSU5JnGv9ad5B/zV46D971szoHVXgGwHYHZqjcmFyBpvew0tkrDKhwxHsQ
+         1XPVE28IsWZfC9uQQeKe2t9tRb22tK54Cy/8sWWa+GIkdr0SrPv1Mf7iy/gNbadi18Yr
+         R2tA==
+X-Gm-Message-State: AOAM530W01V2iVrwXG9cozgTanmB+ZUIMuTkJ2vztEJanxC5rf6WjQsG
+        Vy4P7dCFVE+ZOjymyQd9yJ9ZdB9aC/GbR8cI5N6TedxfJSsTWXRHJig9CYEQ5E15ZKghQi22OHP
+        4zJEp9Z+VLF0G/dD+Bn+fmEL2
+X-Received: by 2002:a37:7245:: with SMTP id n66mr1708743qkc.83.1596385090917;
+        Sun, 02 Aug 2020 09:18:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzyJG+khVAE61twpw/2VDMswy7YJJ9z/qUZwBj75oPhJFWqmgB2x/V/ktTRJ09btbojwttjIg==
+X-Received: by 2002:a37:7245:: with SMTP id n66mr1708726qkc.83.1596385090658;
+        Sun, 02 Aug 2020 09:18:10 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x3sm16790666qkx.3.2020.08.02.09.18.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Aug 2020 09:18:10 -0700 (PDT)
+From:   trix@redhat.com
+To:     arend.vanspriel@broadcom.com, franky.lin@broadcom.com,
+        hante.meuleman@broadcom.com, chi-hsien.lin@cypress.com,
+        wright.feng@cypress.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, rafal@milecki.pl, tklauser@distanz.ch
+Cc:     linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] brcmfmac: check ndev pointer
+Date:   Sun,  2 Aug 2020 09:18:04 -0700
+Message-Id: <20200802161804.6126-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These icon data are used by ConfigItem, but stored in each instance
-of ConfigView. There is no point to keep the same data in each of 3
-instances ("menu", "config", and "search").
+From: Tom Rix <trix@redhat.com>
 
-Move the icon data to the more relevant ConfigItem class, and make
-them static members.
+Clang static analysis reports this error
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+brcmfmac/core.c:490:4: warning: Dereference of null pointer
+        (*ifp)->ndev->stats.rx_errors++;
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In this block of code
+
+	if (ret || !(*ifp) || !(*ifp)->ndev) {
+		if (ret != -ENODATA && *ifp)
+			(*ifp)->ndev->stats.rx_errors++;
+		brcmu_pkt_buf_free_skb(skb);
+		return -ENODATA;
+	}
+
+(*ifp)->ndev being NULL is caught as an error
+But then it is used to report the error.
+
+So add a check before using it.
+
+Fixes: 91b632803ee4 ("brcmfmac: Use net_device_stats from struct net_device")
+
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- scripts/kconfig/qconf.cc | 33 +++++++++++++++++++++++----------
- scripts/kconfig/qconf.h  |  8 ++++----
- 2 files changed, 27 insertions(+), 14 deletions(-)
-
-diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
-index 00b2f56186c2..1944abe8f028 100644
---- a/scripts/kconfig/qconf.cc
-+++ b/scripts/kconfig/qconf.cc
-@@ -74,6 +74,13 @@ bool ConfigSettings::writeSizes(const QString& key, const QList<int>& value)
- 	return true;
- }
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+index f89010a81ffb..aa9ced3c86fb 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+@@ -486,7 +486,7 @@ static int brcmf_rx_hdrpull(struct brcmf_pub *drvr, struct sk_buff *skb,
+ 	ret = brcmf_proto_hdrpull(drvr, true, skb, ifp);
  
-+QIcon ConfigItem::symbolYesIcon;
-+QIcon ConfigItem::symbolModIcon;
-+QIcon ConfigItem::symbolNoIcon;
-+QIcon ConfigItem::choiceYesIcon;
-+QIcon ConfigItem::choiceNoIcon;
-+QIcon ConfigItem::menuIcon;
-+QIcon ConfigItem::menubackIcon;
- 
- /*
-  * set the new data
-@@ -97,7 +104,7 @@ void ConfigItem::updateMenu(void)
- 
- 	list = listView();
- 	if (goParent) {
--		setIcon(promptColIdx, list->menuBackPix);
-+		setIcon(promptColIdx, menubackIcon);
- 		prompt = "..";
- 		goto set_prompt;
- 	}
-@@ -114,7 +121,7 @@ void ConfigItem::updateMenu(void)
- 			 */
- 			if (sym && list->rootEntry == menu)
- 				break;
--			setIcon(promptColIdx, list->menuPix);
-+			setIcon(promptColIdx, menuIcon);
- 		} else {
- 			if (sym)
- 				break;
-@@ -149,22 +156,22 @@ void ConfigItem::updateMenu(void)
- 		switch (expr) {
- 		case yes:
- 			if (sym_is_choice_value(sym) && type == S_BOOLEAN)
--				setIcon(promptColIdx, list->choiceYesPix);
-+				setIcon(promptColIdx, choiceYesIcon);
- 			else
--				setIcon(promptColIdx, list->symbolYesPix);
-+				setIcon(promptColIdx, symbolYesIcon);
- 			setText(yesColIdx, "Y");
- 			ch = 'Y';
- 			break;
- 		case mod:
--			setIcon(promptColIdx, list->symbolModPix);
-+			setIcon(promptColIdx, symbolModIcon);
- 			setText(modColIdx, "M");
- 			ch = 'M';
- 			break;
- 		default:
- 			if (sym_is_choice_value(sym) && type == S_BOOLEAN)
--				setIcon(promptColIdx, list->choiceNoPix);
-+				setIcon(promptColIdx, choiceNoIcon);
- 			else
--				setIcon(promptColIdx, list->symbolNoPix);
-+				setIcon(promptColIdx, symbolNoIcon);
- 			setText(noColIdx, "N");
- 			ch = 'N';
- 			break;
-@@ -289,9 +296,6 @@ void ConfigLineEdit::keyPressEvent(QKeyEvent* e)
- ConfigList::ConfigList(ConfigView* p, const char *name)
- 	: Parent(p),
- 	  updateAll(false),
--	  symbolYesPix(xpm_symbol_yes), symbolModPix(xpm_symbol_mod), symbolNoPix(xpm_symbol_no),
--	  choiceYesPix(xpm_choice_yes), choiceNoPix(xpm_choice_no),
--	  menuPix(xpm_menu), menuBackPix(xpm_menuback),
- 	  showName(false), showRange(false), showData(false), mode(singleMode), optMode(normalOpt),
- 	  rootEntry(0), headerPopup(0)
- {
-@@ -1395,6 +1399,15 @@ ConfigMainWindow::ConfigMainWindow(void)
- 	if ((x.isValid())&&(y.isValid()))
- 		move(x.toInt(), y.toInt());
- 
-+	// set up icons
-+	ConfigItem::symbolYesIcon = QIcon(QPixmap(xpm_symbol_yes));
-+	ConfigItem::symbolModIcon = QIcon(QPixmap(xpm_symbol_mod));
-+	ConfigItem::symbolNoIcon = QIcon(QPixmap(xpm_symbol_no));
-+	ConfigItem::choiceYesIcon = QIcon(QPixmap(xpm_choice_yes));
-+	ConfigItem::choiceNoIcon = QIcon(QPixmap(xpm_choice_no));
-+	ConfigItem::menubackIcon = QIcon(QPixmap(xpm_menuback));
-+	ConfigItem::menuIcon = QIcon(QPixmap(xpm_menu));
-+
- 	QWidget *widget = new QWidget(this);
- 	QVBoxLayout *layout = new QVBoxLayout(widget);
- 	setCentralWidget(widget);
-diff --git a/scripts/kconfig/qconf.h b/scripts/kconfig/qconf.h
-index c46a79a69001..460b858b0faa 100644
---- a/scripts/kconfig/qconf.h
-+++ b/scripts/kconfig/qconf.h
-@@ -98,10 +98,6 @@ public slots:
- 
- 	bool updateAll;
- 
--	QPixmap symbolYesPix, symbolModPix, symbolNoPix;
--	QPixmap choiceYesPix, choiceNoPix;
--	QPixmap menuPix, menuBackPix;
--
- 	bool showName, showRange, showData;
- 	enum listMode mode;
- 	enum optionMode optMode;
-@@ -162,6 +158,10 @@ class ConfigItem : public QTreeWidgetItem {
- 	struct menu *menu;
- 	bool visible;
- 	bool goParent;
-+
-+	static QIcon symbolYesIcon, symbolModIcon, symbolNoIcon;
-+	static QIcon choiceYesIcon, choiceNoIcon;
-+	static QIcon menuIcon, menubackIcon;
- };
- 
- class ConfigLineEdit : public QLineEdit {
+ 	if (ret || !(*ifp) || !(*ifp)->ndev) {
+-		if (ret != -ENODATA && *ifp)
++		if (ret != -ENODATA && *ifp && (*ifp)->ndev)
+ 			(*ifp)->ndev->stats.rx_errors++;
+ 		brcmu_pkt_buf_free_skb(skb);
+ 		return -ENODATA;
 -- 
-2.25.1
+2.18.1
 
