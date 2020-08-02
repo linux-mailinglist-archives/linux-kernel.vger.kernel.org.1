@@ -2,284 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EB623598E
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 19:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCCCA235989
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 19:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbgHBR4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 13:56:03 -0400
-Received: from mailout09.rmx.de ([94.199.88.74]:38385 "EHLO mailout09.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbgHBR4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 13:56:03 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout09.rmx.de (Postfix) with ESMTPS id 4BKTG439Nszbjjp;
-        Sun,  2 Aug 2020 19:55:56 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4BKTFg5DStz2TRjk;
-        Sun,  2 Aug 2020 19:55:35 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.16) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Sun, 2 Aug
- 2020 19:55:35 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Rob Herring <robh+dt@kernel.org>
-CC:     Christian Eggers <ceggers@arri.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] dt-bindings: at25: convert the binding document to yaml
-Date:   Sun, 2 Aug 2020 19:46:26 +0200
-Message-ID: <20200802174625.91809-1-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <CAL_JsqK+Oj5AMDv5uvtQZZ6YMBzVKBPqvTfAsXEbjWvxqubQnQ@mail.gmail.com>
-References: <CAL_JsqK+Oj5AMDv5uvtQZZ6YMBzVKBPqvTfAsXEbjWvxqubQnQ@mail.gmail.com>
+        id S1727077AbgHBRuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 13:50:18 -0400
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:52271 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726472AbgHBRuR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 Aug 2020 13:50:17 -0400
+Received: from localhost.localdomain ([93.22.148.198])
+        by mwinf5d37 with ME
+        id AhqE2300J4H42jh03hqFTg; Sun, 02 Aug 2020 19:50:15 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 02 Aug 2020 19:50:15 +0200
+X-ME-IP: 93.22.148.198
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     broonie@kernel.org
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] spi: a3700: Remove a useless memset
+Date:   Sun,  2 Aug 2020 19:50:07 +0200
+Message-Id: <20200802175007.703995-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.16]
-X-RMX-ID: 20200802-195535-4BKTFg5DStz2TRjk-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the binding document for at25 EEPROMs from txt to yaml. The
-compatible property doesn't use a regex pattern (as in at24), because
-the 'vendor' and the 'model' are an "infinite" list (even if only 5
-combinations are found in the current dts files). The settings required
-by a driver are given as separate properties.
+Memory allocated by 'spi_alloc_master()' is already zeroed.
+Remove a redundant memset.
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
-On Friday, Jul 31 2020, Rob Herring wrote:
->> On Tue, Jul 28, 2020 at 1:34 AM Christian Eggers <ceggers@arri.de> wrote:
->> When I specify
->>
->>   compatible:
->>     enum:
->>       - atmel,at25
->>
->> I get an error in dt_binding_check:
->> ...
->
-> You can do:
->
-> items:
->   - {}
->   - const: atmel,at25
->
-> But really, the possible compatible strings need to be listed out. See
-> at24.yaml as it had similar issues IIRC.
+ drivers/spi/spi-armada-3700.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I think that at24 is very diffrent from at25 here (at least the linux
-driver). Whilst the at24 driver extracts parameters of the chip from the
-'model' part, at25 gets this information from separate properties.
-
-As there is virtually an infinite list of possible vendors and products
-for such type of hardware, is there any value to use expressions like in
-the at24 binding?
-
-Other question: What is the meaning of the maintainers field in the
-binding? Is it related to the binding itself or the linux driver? I am
-not the maintainer of the driver...
-
-
- .../devicetree/bindings/eeprom/at25.txt       |  46 +------
- .../devicetree/bindings/eeprom/at25.yaml      | 122 ++++++++++++++++++
- 2 files changed, 123 insertions(+), 45 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/eeprom/at25.yaml
-
-diff --git a/Documentation/devicetree/bindings/eeprom/at25.txt b/Documentation/devicetree/bindings/eeprom/at25.txt
-index fe91ecf1f61b..9b1096fb3826 100644
---- a/Documentation/devicetree/bindings/eeprom/at25.txt
-+++ b/Documentation/devicetree/bindings/eeprom/at25.txt
-@@ -1,45 +1 @@
--EEPROMs (SPI) compatible with Atmel at25.
--
--Required properties:
--- compatible : Should be "<vendor>,<type>", and generic value "atmel,at25".
--  Example "<vendor>,<type>" values:
--    "anvo,anv32e61w"
--    "microchip,25lc040"
--    "st,m95m02"
--    "st,m95256"
--
--- reg : chip select number
--- spi-max-frequency : max spi frequency to use
--- pagesize : size of the eeprom page
--- size : total eeprom size in bytes
--- address-width : number of address bits (one of 8, 9, 16, or 24).
--  For 9 bits, the MSB of the address is sent as bit 3 of the instruction
--  byte, before the address byte.
--
--Optional properties:
--- spi-cpha : SPI shifted clock phase, as per spi-bus bindings.
--- spi-cpol : SPI inverse clock polarity, as per spi-bus bindings.
--- read-only : this parameter-less property disables writes to the eeprom
--- wp-gpios : GPIO to which the write-protect pin of the chip is connected
--
--Obsolete legacy properties can be used in place of "size", "pagesize",
--"address-width", and "read-only":
--- at25,byte-len : total eeprom size in bytes
--- at25,addr-mode : addr-mode flags, as defined in include/linux/spi/eeprom.h
--- at25,page-size : size of the eeprom page
--
--Additional compatible properties are also allowed.
--
--Example:
--	eeprom@0 {
--		compatible = "st,m95256", "atmel,at25";
--		reg = <0>;
--		spi-max-frequency = <5000000>;
--		spi-cpha;
--		spi-cpol;
--		wp-gpios = <&gpio1 3 0>;
--
--		pagesize = <64>;
--		size = <32768>;
--		address-width = <16>;
--	};
-+This file has been moved to at25.yaml.
-\ No newline at end of file
-diff --git a/Documentation/devicetree/bindings/eeprom/at25.yaml b/Documentation/devicetree/bindings/eeprom/at25.yaml
-new file mode 100644
-index 000000000000..437a28dab6fd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/eeprom/at25.yaml
-@@ -0,0 +1,122 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/eeprom/at25.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: SPI EEPROMs compatible with Atmel's AT25
-+
-+maintainers:
-+  - Christian Eggers <ceggers@arri.de>
-+
-+properties:
-+  $nodename:
-+    pattern: "^eeprom@[0-9a-f]{1,2}$"
-+
-+  # There are multiple known vendors who manufacture EEPROM chips compatible
-+  # with Atmel's AT25. The compatible string requires two items where the
-+  # 'vendor' and 'model' parts of the first are the actual chip and the second
-+  # item is fixed to "atmel,at25".
-+  compatible:
-+    items:
-+      - {}
-+      - const: atmel,at25
-+    description:
-+      'Should be "<vendor>,<chip>", and generic value "atmel,at25".
-+      Example "<vendor>,<chip>" values:
-+        "anvo,anv32e61w"
-+        "microchip,25lc040"
-+        "st,m95m02"
-+        "st,m95256"'
-+
-+  reg:
-+    description:
-+      Chip select number.
-+
-+  spi-max-frequency:
-+    $ref: /schemas/types.yaml#definitions/uint32
-+    description:
-+      Maximum SPI frequency to use.
-+
-+  pagesize:
-+    $ref: /schemas/types.yaml#definitions/uint32
-+    description:
-+      Size of the eeprom page.
-+
-+  size:
-+    $ref: /schemas/types.yaml#definitions/uint32
-+    description:
-+      Total eeprom size in bytes.
-+
-+  address-width:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [ 8, 9, 16, 24 ]
-+    description:
-+      Number of address bits.
-+      For 9 bits, the MSB of the address is sent as bit 3 of the instruction
-+      byte, before the address byte.
-+
-+  spi-cpha: true
-+
-+  spi-cpol: true
-+
-+  read-only:
-+    description:
-+      Disable writes to the eeprom.
-+    type: boolean
-+
-+  wp-gpios:
-+    maxItems: 1
-+    description:
-+      GPIO to which the write-protect pin of the chip is connected.
-+
-+  # Deprecated: at25,byte-len, at25,addr-mode, at25,page-size
-+  at25,byte-len:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+       Total eeprom size in bytes. Deprecated, use "size" property instead.
-+    deprecated: true
-+
-+  at25,addr-mode:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+       Addr-mode flags, as defined in include/linux/spi/eeprom.h.
-+       Deprecated, use "address-width" property instead.
-+    deprecated: true
-+
-+  at25,page-size:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Size of the eeprom page. Deprecated, use "pagesize" property instead.
-+    deprecated: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - spi-max-frequency
-+  - pagesize
-+  - size
-+  - address-width
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    spi0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        eeprom@0 {
-+            compatible = "st,m95256", "atmel,at25";
-+            reg = <0>;
-+            spi-max-frequency = <5000000>;
-+            spi-cpha;
-+            spi-cpol;
-+            wp-gpios = <&gpio1 3 0>;
-+
-+            pagesize = <64>;
-+            size = <32768>;
-+            address-width = <16>;
-+        };
-+    };
+diff --git a/drivers/spi/spi-armada-3700.c b/drivers/spi/spi-armada-3700.c
+index fcde419e480c..46feafe4e201 100644
+--- a/drivers/spi/spi-armada-3700.c
++++ b/drivers/spi/spi-armada-3700.c
+@@ -848,7 +848,6 @@ static int a3700_spi_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, master);
+ 
+ 	spi = spi_master_get_devdata(master);
+-	memset(spi, 0, sizeof(struct a3700_spi));
+ 
+ 	spi->master = master;
+ 
 -- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+2.25.1
 
