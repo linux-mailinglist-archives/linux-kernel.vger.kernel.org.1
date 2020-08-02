@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88242355DA
-	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 09:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038E22355E1
+	for <lists+linux-kernel@lfdr.de>; Sun,  2 Aug 2020 09:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgHBHt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 03:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgHBHt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 03:49:58 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70A7C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  2 Aug 2020 00:49:57 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k8so12737591wma.2
-        for <linux-kernel@vger.kernel.org>; Sun, 02 Aug 2020 00:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ygrcvr2pVcE4Pssi2xhoGsnrMUWar3eSBDrbKhPdTA4=;
-        b=srhvhHbFtVzZIJgytVDqFouTKqelYJupQGgfXgM8V6ioJvWRHiQikLj5FSN+Ew6QSz
-         KOgPmJd4X7Q1Ms+XCE+HMjMTKDe542oum2EWk1M6bnAroOPRhNrwUCxnxSTzXLVA5U07
-         aE+hU5ox3wKjbu97uB4vaqw9FiBjQsoT0IhmAAlT87QY3JZ+0xLab0Zp6jSCymJVEw5R
-         X26R1t5E1zr19fElUM23kmp6RSoGa+gzInDnXxeUf9Tw6xqVfb6u5pEfQZyXwJodDFAO
-         8mO5wSV9/gcLhaGmb7o+BDcpFyxXqFuyqsM5X1zOvdQt5mVYTnz1KhW3HYQqaUszKzV9
-         Tu2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ygrcvr2pVcE4Pssi2xhoGsnrMUWar3eSBDrbKhPdTA4=;
-        b=Kldu6e/MvWPwzpwinKbp4Y/LzMbM0Gye8uyctvG5FE24GU96Mb44NkLY+9qGkteo6C
-         wFrW0jGVEfMAjBMi50Ug10ekhNB9D2BLS2V5QhSOODbPeOtrnKIQCMmQ868lPIUoYDQg
-         WjNbN/aQHPa4/a+Xw7CD/kS/Wy0f/m9t4Nfh5ZE6MTz0kAKG9lwSmdR9L8J7+IEizH07
-         /3iOtUVpBTt3cJApG0s/wGp1BZVCa3Es/xDK1q3zop9g/UUttQ6SNLc/vKpWZ6wifHq7
-         Baoll9VfpYUwFVdJ9ke1U3bwBZdxwORmpQjDTac+YsDlYhXOXO3yfstYnl/GF8YZnWZS
-         xj+A==
-X-Gm-Message-State: AOAM5325jwja1zNSvYOCScG8VFtTYsT2MXJewzf5TkSLWOU6XWOwApRN
-        9OGh9qw8HVU43z2jVsjNMZBZYA==
-X-Google-Smtp-Source: ABdhPJwlgi2uT9QxGsIte/MTAulpm12MyyQy962GURP3ppmJ4rCnVPT46enfy8Qic81ndW4b/3xePA==
-X-Received: by 2002:a7b:c258:: with SMTP id b24mr10548082wmj.122.1596354596373;
-        Sun, 02 Aug 2020 00:49:56 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id d14sm19175611wre.44.2020.08.02.00.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Aug 2020 00:49:55 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [net-next PATCH] net: phy: mdio-mvusb: select MDIO_DEVRES in Kconfig
-Date:   Sun,  2 Aug 2020 09:49:53 +0200
-Message-Id: <20200802074953.1529-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
+        id S1726827AbgHBH6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 03:58:03 -0400
+Received: from crapouillou.net ([89.234.176.41]:54644 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgHBH6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 Aug 2020 03:58:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1596355079; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LlM/FDSTdbnkN4Hg3fJADY2E37puQzth4o+mF6JcZBI=;
+        b=vO2casJmtUJRuUn4Jm6MSyp4/FO3SNGqgRTZOAH9KJDTdBLQFcBr2glnHB+xEcd+7LArwV
+        osZBfPGQU3KAMKzZ7qItBJkM+nmTeo2vGTL9HluG58jmnX7ml08REP/w5khiXY9UURjJmZ
+        8TZ+bRXwz6HCZ7HQly9exQv+FrqPTms=
+Date:   Sun, 02 Aug 2020 09:57:49 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 1/2] MAINTAINERS: Remove JZ4780 DMA driver entry
+To:     "Maciej W. Rozycki" <macro@wdc.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Maciej W. Rozycki" <macro@linux-mips.org>
+Message-Id: <DGFFEQ.RMDW72DK0U5B1@crapouillou.net>
+In-Reply-To: <alpine.LFD.2.21.2008012327070.24175@redsun52.ssa.fujisawa.hgst.com>
+References: <20200726155559.4650-1-krzk@kernel.org>
+        <alpine.LFD.2.21.2008012327070.24175@redsun52.ssa.fujisawa.hgst.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Hi Maciej,
 
-PHYLIB is not selected by the mvusb driver but it uses mdio devres
-helpers. Explicitly select MDIO_DEVRES in this driver's Kconfig entry.
+Le sam. 1 ao=FBt 2020 =E0 23:30, Maciej W. Rozycki <macro@wdc.com> a=20
+=E9crit :
+> On Sun, 26 Jul 2020, Krzysztof Kozlowski wrote:
+>=20
+>>  diff --git a/MAINTAINERS b/MAINTAINERS
+>>  index cba0ed77775b..362863cae239 100644
+>>  --- a/MAINTAINERS
+>>  +++ b/MAINTAINERS
+>>  @@ -8541,11 +8541,6 @@ F:	include/uapi/rdma/
+>>   F:	samples/bpf/ibumad_kern.c
+>>   F:	samples/bpf/ibumad_user.c
+>>=20
+>>  -INGENIC JZ4780 DMA Driver
+>>  -M:	Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+>>  -S:	Maintained
+>>  -F:	drivers/dma/dma-jz4780.c
+>>  -
+>=20
+>  FYI, the usual approach would be marking the entry "Orphan" rather=20
+> than
+> removing it entirely, so that the mapping remains and makes it easy=20
+> for
+> someone to pick it up.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 1814cff26739 ("net: phy: add a Kconfig option for mdio_devres")
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/net/phy/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+This is OK in this case, as the driver is also listed as part of the=20
+"INGENIC JZ47xx SoCs".
 
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index e351d65533aa..7a756e0374fd 100644
---- a/drivers/net/phy/Kconfig
-+++ b/drivers/net/phy/Kconfig
-@@ -190,6 +190,7 @@ config MDIO_MSCC_MIIM
- config MDIO_MVUSB
- 	tristate "Marvell USB to MDIO Adapter"
- 	depends on USB
-+	select MDIO_DEVRES
- 	help
- 	  A USB to MDIO converter present on development boards for
- 	  Marvell's Link Street family of Ethernet switches.
--- 
-2.26.1
+-Paul
+
 
