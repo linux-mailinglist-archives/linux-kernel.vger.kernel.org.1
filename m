@@ -2,195 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3193F23A3B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 13:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD9E23A3D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgHCL7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 07:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbgHCL7c (ORCPT
+        id S1726787AbgHCMIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:08:25 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:53238 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726394AbgHCMIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 07:59:32 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABCAC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 04:59:32 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f1so33392861wro.2
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 04:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=7E6kNf/GoMf1QvODFmLt/+N8nb2EhZiIcfSmrao2/Wk=;
-        b=ZV7EuoIxpI8grDOo2zv3rxFTMoDUgn9lPs+CePScWlq+xFzLu8BKmOO/gnsAzvwtrG
-         esKX/BUs2N2VLqAb3GAScNqiooJFX4ID1ygZTJd9ez9sKeSvUxa7lRUYCSmC0rAqHxBn
-         gPBIWpk/0yMqtwLcNSN6iLbFa9rGKvzU6ID6Y7yyd/jXJjvMHlByJOAHYD2Wr2X8Aypx
-         jXfarZSbiPwU2MlYqI6kqexyUA1xE9zpUrgsFZv82iJrLji4W5hUbbl7URUJCKWkMUOd
-         u1TXPS7+AMCR54RvaxKkYJsq9d8FTuCAgfaGxUP2G+Skgx3UhMo7nHG/uNkG9H81WoFg
-         4ogQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=7E6kNf/GoMf1QvODFmLt/+N8nb2EhZiIcfSmrao2/Wk=;
-        b=BkORDL/kMrjgwyo+UaJmkP+xA9/0oWeI0JWA90xfolK4yo6NcormGJDDCxnLV4Y4E+
-         P6aHJWDcqfUbFRjkmpS45hBVlkB9EM0FG86ZHqXA4OCmYmgUP4kuGLGmibL9mjP736m7
-         OJPo4TklKG/5Z35kI9pGpR+Dq+RsJGodbyBadFo0OHgmHizXvSyXy/jCDMNTe1iMXB5c
-         tX2ED6WU93R27XBFJNDjF7PH7Ys5mGqvDe5HRehbr996hauxcjJDEm+OVVutT6M5cOZo
-         Wvj3cy/EYSQIwNP7WzLbHrPYKCAbkrOQJpMceycAJSdeMr4m2sPg4JJAIe7XMxPj5FDE
-         /1yg==
-X-Gm-Message-State: AOAM533f8ne0jAfW3RKfQ9wFV9X2/hPn7dnlFwkBroZkZuwk86Nm8Lzn
-        DkQJ1Urjw96KOu9FKuEtjGIGh7p4
-X-Google-Smtp-Source: ABdhPJwJhz9vo6Ic/bWLopIeaSCOXAkcqaT+L0Xlm8ThYW8CHby3wDNtRSNOQfAXbJi7iKbyQ97tuw==
-X-Received: by 2002:adf:f8c7:: with SMTP id f7mr15166884wrq.117.1596455970414;
-        Mon, 03 Aug 2020 04:59:30 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id j24sm26693444wrb.49.2020.08.03.04.59.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 04:59:29 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 2/2] habanalabs: validate packet id during CB parse
-Date:   Mon,  3 Aug 2020 14:59:25 +0300
-Message-Id: <20200803115925.4908-2-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200803115925.4908-1-oded.gabbay@gmail.com>
-References: <20200803115925.4908-1-oded.gabbay@gmail.com>
+        Mon, 3 Aug 2020 08:08:19 -0400
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200803120815epoutp04d4c81d6740e0bd5c8e26c342d135ab10~nwLl04AZY0999609996epoutp04U;
+        Mon,  3 Aug 2020 12:08:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200803120815epoutp04d4c81d6740e0bd5c8e26c342d135ab10~nwLl04AZY0999609996epoutp04U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1596456495;
+        bh=2WBgkLxsDeTPNmtuUxW8D2JTNPrc4cq3+DknlqZ+k0M=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=I4z5p8hIGDOhENavDCg3Lb+U2nwpNCgMJbCcT2Oo9XZJyhdNlIENaBtYYxnLuFbWY
+         52nxjhyn+vBVebz+9ohdY06QPT913KCSdFf9WZV2KoknGVa7SlkfeAFZ6Gmm0VxrG8
+         Jy3UO3nI7/NelfDDmC1J+sl9S7qoQk79KW8woss0=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20200803120814epcas5p46afbcf9a96442d7ed620110adac61d45~nwLk7fkfy1252012520epcas5p4N;
+        Mon,  3 Aug 2020 12:08:14 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5E.4D.09467.E2EF72F5; Mon,  3 Aug 2020 21:08:14 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200802165825epcas5p3a2127be681530fdd785db0f8961eaf96~ngfp0TD2F0804708047epcas5p3y;
+        Sun,  2 Aug 2020 16:58:25 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200802165825epsmtrp223281b42c2c5ee489579389e6073e44b~ngfpy8fOh2950229502epsmtrp2U;
+        Sun,  2 Aug 2020 16:58:25 +0000 (GMT)
+X-AuditID: b6c32a49-a3fff700000024fb-23-5f27fe2ec2f4
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1E.A7.08303.1B0F62F5; Mon,  3 Aug 2020 01:58:25 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.108.92.210]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200802165819epsmtip240ae74d9e1a0130cf77f0e043f0612a6~ngfkZE_zL2814028140epsmtip2e;
+        Sun,  2 Aug 2020 16:58:19 +0000 (GMT)
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     catalin.marinas@arm.com, will@kernel.org, oleg@redhat.com,
+        keescook@chromium.org, arnd@arndb.de, gregkh@linuxfoundation.org,
+        adobriyan@gmail.com, rostedt@goodmis.org, mingo@redhat.com,
+        steve.capper@arm.com, mark.rutland@arm.com,
+        vincenzo.frascino@arm.com, anshuman.khandual@arm.com,
+        ardb@kernel.org, james.morse@arm.com, broonie@kernel.org,
+        maz@kernel.org, kristina.martsenko@arm.com,
+        samitolvanen@google.com, ebiederm@xmission.com,
+        akpm@linux-foundation.org, gladkov.alexey@gmail.com,
+        daniel.m.jordan@oracle.com, walken@google.com,
+        bernd.edlinger@hotmail.de, laoar.shao@gmail.com, avagin@gmail.com,
+        john.johansen@canonical.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, a.sahrawat@samsung.com,
+        Maninder Singh <maninder1.s@samsung.com>,
+        Vaneet narang <v.narang@samsung.com>
+Subject: [PATCH 1/1] arm64: add support for PAGE_SIZE aligned kernel stack
+Date:   Sun,  2 Aug 2020 22:05:15 +0530
+Message-Id: <1596386115-47228-1-git-send-email-maninder1.s@samsung.com>
+X-Mailer: git-send-email 1.9.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA0WSf0xTVxTHva+v7z06qw807gpBRg06mwmaKbt2ottcwtMlizPEJUytjbwh
+        G6VdCxtbMFSpZCAolJ8iImBB1pXVdbVUfhQCWmDCtrIVB5PAAktVnLSUIULErTzM/vuc8/3e
+        7zknuRQvKI8IppJSUllViixZRAhwa9eWV7dGLm6Wbpu3bkTOFhaVnT6AKk1GAtl7TqCnM1MA
+        PdM5SNT3/CEPfVPiwlHJnxMEmqrPA6hitpxEz61aEtVMfYCyrpoINGq/hqGembME6jsnR6Pd
+        2Xx0zX2PRObxQT5qbevF0a/NlQTqupKNo7q7TgzdrOzlo4GOagzdaD8LkP3rMQzVNfzNR7pH
+        Vgx19l4GqG3xKY4WdaeQ9t7Ot0SMscoImIV5HWAqNPkEc0njxJmbFSMko7UPk0y1OY2p/fk2
+        zpgNOQTTU76AM+2XjSTzgz6T8f41jDNTdhfBnLcYAOMzbzgYGC/YncAmJ33OqqL2HBec/K2m
+        jqds25V+32vANaAkKhdQFKR3QMddWS4IoILoFgBrctNzgeA/ngZwtO8xyRU+AGtNrZjf5X9Q
+        PTHA54RmAAvcxmXXDIClVX8suQg6EhqaW3G/sJbO4cO5rGngL3i0E0BvfyfP71pDH4DmC+dJ
+        P+N0BOyoz8H9LKRjoUdTDLh5G2Cvo4jPcUsAzL+TxC3+LnTUCLj2Gviw20JyHAx9j9sI/yxI
+        ZwE4bW8EXFEMYJ3Tuxy0F05maTB/EI/eAk3NUVw7FJb8+N3SBTx6FcxfmFi+WQhtVS84AmqH
+        ri/HhECf14tz+zBwuAH4MYg+CtstGQUgtOL//GoADGA9q1TLE1n1TuX2FPaLSLVMrk5LSYw8
+        oZCbwdKHFe+3gZExT2QnwCjQCSDFE60Ven2bpUHCBNmXX7EqhVSVlsyqO0EIhYteForm+o4F
+        0YmyVPZTllWyqhcqRgUEa7C9gUclAaIHVGljbLxicb7ol9hEOziu1+YR2S9dPLPPt7LyweSZ
+        6d1lq27ZgHj2mG2bp9Q6MAziTePhNteEqzyzTz/5pj6uXxxqictAkzcKDypi9M7GjiPpyXHy
+        Z12HjReOSDT3PU+ioTshbCRjsOBbHraYN/ax6adTr713TrLulrtwzyset52KIYWi28HrC62Z
+        61yP5nZdHJq/o2s8JP2n/skbl1Sri1bQtfj79fqosEOSstOKptWvjzcIAla0bRJ/FN78ydDG
+        qug4Q2Dl7/s/TPU6ZkXFxi7Qf9jV8LZlhyoibN8VW1OGY1Cp/CzmevT34bWlku4maUxIdvvK
+        d7Z2i3D1Sdl2MU+llv0LCqgpFx8EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWRe0xTZxyG951+5yLSeSwkO1pBU6dOMuqYU38mHfEWOV6WQGKyaTJLhWMl
+        0tL0iIrGWGdFLFc7myFyKWBBmqKuE0SE6sALTIRUQTbGzYiiRi04ZmSMYoD435s8T973j5eR
+        yKrxXCZBv08w6jWJCioAVzcq5of/OrRY/ZW3JgS81wX45dhmyL/kosDTFAejIz4E49Y7NLRM
+        vJRAha0Dg+3xAAW+sgwEee9yaZioNtNQ7IuB46WXKOjzlBPQNHKCgpZ0HfTdTSWhfLCbBveT
+        RyTU1TdjeFibT0FjUSoGR6eXgGv5zSQ8uGknoOrGCQSetH4CHBdek2B9VU1AQ3MBgnr/KAa/
+        9QiYu1esUfCuQhfix/6zIj7PlEnx50xezF/L66F5s6eL5u3uZL6k7Tbm3c5TFN+UO4b5GwUu
+        mv/t/FF++GkX5n2eDorPuuJE/D/u0OjZOwJU8UJiwn7BuCwyNmBPe7FDYqhfffD5sBObkG2Z
+        Bc1gOPYbzj7wgLSgAEbG1iDu/kmrZBrIuVG/D0/nIK7CP0hPS28R98hxEU0CilVyzto6PAmC
+        2UqSe9mVPWVJ2E7EtV9sIietIHYz587OoiczZhdxN8tOTdVK2ShuyHQGTU+Ecs13fiZzUKAd
+        feJEcwSDqNPqxAjD13rhgFLU6MRkvVYZl6Rzo6lrw8JqUJ1zSNmACAY1II6RKIKl4/6Fapk0
+        XpNySDAmqY3JiYLYgOQMVnwm/TeveKeM1Wr2CXsFwSAYP1KCmTHXRMwcD+71/fWsYGXp+sx7
+        5rqhH1nrwPPt6Qe+dYZ3RMZGtRZRqaqE5bH4uLXkKKGugifWpMWN2KSa9V3Zpj8N48uhc+Ne
+        2wZq17nOV44LS/qEbcUqri37bzLXlrhrUUZ0oZimVhPtW1ercixyc8YW/dbC98eC+u0/vKgN
+        Dcwyh3yesm53/5wWrxAm15TYj5wfuVd5Rno5LktyWN+zZntar7yHeH367Ek5U/n/RGQFlMtr
+        I/5YNXY5s21Bq1vRK71VfnWL0jP7++7TMjRv28CbLy3apVcWDg6nUJ9qhmPiVz5MT67/vdX1
+        lhBbvvgpUBs9r2qtTl51v88SHlJ6NqZIvSBHgcU9mogwiVHUfABDTntUSQMAAA==
+X-CMS-MailID: 20200802165825epcas5p3a2127be681530fdd785db0f8961eaf96
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200802165825epcas5p3a2127be681530fdd785db0f8961eaf96
+References: <CGME20200802165825epcas5p3a2127be681530fdd785db0f8961eaf96@epcas5p3.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+currently THREAD_SIZE is always in power of 2, which will waste
+memory in cases there is need to increase of stack size.
 
-During command buffer parsing, driver extracts packet id
-from user buffer. Driver must validate this packet id, since it is
-being used in order to extract information from internal structures.
+Thus adding support for PAGE_SIZE(not power of 2) stacks for arm64.
+User can decide any value 12KB, 16KB, 20 KB etc. based on value
+of THREAD_SHIFT. User can set any value which is PAGE_SIZE aligned for
+PAGE_ALIGNED_STACK_SIZE config.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+Value of THREAD_SIZE is defined as 12KB for now, since with irq stacks
+it is enough and it will save 4KB per thread.
+
+IRQ stack size is not changed and alignement of IRQ stack and kernel stack
+is maintained same to catch stack overflow faults as earlier.
+
+THREAD_SIZE masking in common files is changed to THREAD_SIZE_ALIGNED.
+
+Co-developed-by: Vaneet narang <v.narang@samsung.com>
+Signed-off-by: Vaneet narang <v.narang@samsung.com>
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 35 +++++++++++++++++++++++++++
- drivers/misc/habanalabs/goya/goya.c   | 31 ++++++++++++++++++++++++
- 2 files changed, 66 insertions(+)
+ arch/arm64/Kconfig              |  9 +++++++++
+ arch/arm64/include/asm/memory.h | 29 +++++++++++++++++++++++++----
+ arch/arm64/kernel/entry.S       |  4 ++--
+ arch/arm64/kernel/ptrace.c      |  4 ++--
+ drivers/misc/lkdtm/stackleak.c  |  2 +-
+ fs/proc/base.c                  |  4 ++--
+ include/linux/thread_info.h     |  4 ++++
+ kernel/trace/trace_stack.c      |  4 ++--
+ 8 files changed, 47 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 00a0a7238d81..9ed4989b6fd4 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -154,6 +154,29 @@ static const u16 gaudi_packet_sizes[MAX_PACKET_ID] = {
- 	[PACKET_LOAD_AND_EXE]	= sizeof(struct packet_load_and_exe)
- };
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index c970171..301e068 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -977,6 +977,15 @@ config NODES_SHIFT
+ 	  Specify the maximum number of NUMA Nodes available on the target
+ 	  system.  Increases memory reserved to accommodate various tables.
  
-+static inline bool validate_packet_id(enum packet_id id)
-+{
-+	switch (id) {
-+	case PACKET_WREG_32:
-+	case PACKET_WREG_BULK:
-+	case PACKET_MSG_LONG:
-+	case PACKET_MSG_SHORT:
-+	case PACKET_CP_DMA:
-+	case PACKET_REPEAT:
-+	case PACKET_MSG_PROT:
-+	case PACKET_FENCE:
-+	case PACKET_LIN_DMA:
-+	case PACKET_NOP:
-+	case PACKET_STOP:
-+	case PACKET_ARB_POINT:
-+	case PACKET_WAIT:
-+	case PACKET_LOAD_AND_EXE:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
++config	PAGE_ALIGNED_STACK_SIZE
++	int "set per thread stack size (THREAD_SIZE)"
++	default 12288
++	depends on VMAP_STACK && ARM64_4K_PAGES && !KASAN
++	help
++	  Per Thread stack size, value must be PAGE_SIZE aligned.
++	  make sure value should be less than (1 << THREAD_SHIFT),
++	  otherwise increase THREAD_SHIFT also.
 +
- static const char * const
- gaudi_tpc_interrupts_cause[GAUDI_NUM_OF_TPC_INTR_CAUSE] = {
- 	"tpc_address_exceed_slm",
-@@ -3772,6 +3795,12 @@ static int gaudi_validate_cb(struct hl_device *hdev,
- 				PACKET_HEADER_PACKET_ID_MASK) >>
- 					PACKET_HEADER_PACKET_ID_SHIFT);
+ config USE_PERCPU_NUMA_NODE_ID
+ 	def_bool y
+ 	depends on NUMA
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index 5767836..597071e 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -93,6 +93,7 @@
+  */
+ #if defined(CONFIG_VMAP_STACK) && (MIN_THREAD_SHIFT < PAGE_SHIFT)
+ #define THREAD_SHIFT		PAGE_SHIFT
++#define THREAD_SIZE		(UL(1) << THREAD_SHIFT)
+ #else
+ #define THREAD_SHIFT		MIN_THREAD_SHIFT
+ #endif
+@@ -101,7 +102,15 @@
+ #define THREAD_SIZE_ORDER	(THREAD_SHIFT - PAGE_SHIFT)
+ #endif
  
-+		if (!validate_packet_id(pkt_id)) {
-+			dev_err(hdev->dev, "Invalid packet id %u\n", pkt_id);
-+			rc = -EINVAL;
-+			break;
-+		}
+-#define THREAD_SIZE		(UL(1) << THREAD_SHIFT)
++#define THREAD_SIZE_ALIGNED	(UL(1) << THREAD_SHIFT)
 +
- 		pkt_size = gaudi_packet_sizes[pkt_id];
- 		cb_parsed_length += pkt_size;
- 		if (cb_parsed_length > parser->user_cb_size) {
-@@ -3995,6 +4024,12 @@ static int gaudi_patch_cb(struct hl_device *hdev,
- 				PACKET_HEADER_PACKET_ID_MASK) >>
- 					PACKET_HEADER_PACKET_ID_SHIFT);
++#ifndef THREAD_SIZE
++#if defined(CONFIG_VMAP_STACK) && (CONFIG_PAGE_ALIGNED_STACK_SIZE)
++#define THREAD_SIZE		CONFIG_PAGE_ALIGNED_STACK_SIZE
++#else
++#define THREAD_SIZE		THREAD_SIZE_ALIGNED
++#endif
++#endif
  
-+		if (!validate_packet_id(pkt_id)) {
-+			dev_err(hdev->dev, "Invalid packet id %u\n", pkt_id);
-+			rc = -EINVAL;
-+			break;
-+		}
+ /*
+  * By aligning VMAP'd stacks to 2 * THREAD_SIZE, we can detect overflow by
+@@ -109,12 +118,24 @@
+  * assembly.
+  */
+ #ifdef CONFIG_VMAP_STACK
+-#define THREAD_ALIGN		(2 * THREAD_SIZE)
++#define THREAD_ALIGN		(2 * THREAD_SIZE_ALIGNED)
+ #else
+-#define THREAD_ALIGN		THREAD_SIZE
++#define THREAD_ALIGN		THREAD_SIZE_ALIGNED
++#endif
 +
- 		pkt_size = gaudi_packet_sizes[pkt_id];
- 		cb_parsed_length += pkt_size;
- 		if (cb_parsed_length > parser->user_cb_size) {
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 85030759b2af..33cd2ae653d2 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -139,6 +139,25 @@ static u16 goya_packet_sizes[MAX_PACKET_ID] = {
- 	[PACKET_STOP]		= sizeof(struct packet_stop)
- };
++#ifdef CONFIG_PAGE_ALIGNED_STACK_SIZE
++
++#if (THREAD_SIZE_ALIGNED < THREAD_SIZE)
++#error "PAGE_ALIGNED_STACK_SIZE is more than THREAD_SIZE_ALIGNED, increase THREAD_SHIFT"
++#endif
++
++#if (THREAD_SIZE % PAGE_SIZE)
++#error "PAGE_ALIGNED_STACK_SIZE must be PAGE_SIZE align"
++#endif
++
+ #endif
  
-+static inline bool validate_packet_id(enum packet_id id)
-+{
-+	switch (id) {
-+	case PACKET_WREG_32:
-+	case PACKET_WREG_BULK:
-+	case PACKET_MSG_LONG:
-+	case PACKET_MSG_SHORT:
-+	case PACKET_CP_DMA:
-+	case PACKET_MSG_PROT:
-+	case PACKET_FENCE:
-+	case PACKET_LIN_DMA:
-+	case PACKET_NOP:
-+	case PACKET_STOP:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- static u64 goya_mmu_regs[GOYA_MMU_REGS_NUM] = {
- 	mmDMA_QM_0_GLBL_NON_SECURE_PROPS,
- 	mmDMA_QM_1_GLBL_NON_SECURE_PROPS,
-@@ -3455,6 +3474,12 @@ static int goya_validate_cb(struct hl_device *hdev,
- 				PACKET_HEADER_PACKET_ID_MASK) >>
- 					PACKET_HEADER_PACKET_ID_SHIFT);
+-#define IRQ_STACK_SIZE		THREAD_SIZE
++#define IRQ_STACK_SIZE		THREAD_SIZE_ALIGNED
  
-+		if (!validate_packet_id(pkt_id)) {
-+			dev_err(hdev->dev, "Invalid packet id %u\n", pkt_id);
-+			rc = -EINVAL;
-+			break;
-+		}
-+
- 		pkt_size = goya_packet_sizes[pkt_id];
- 		cb_parsed_length += pkt_size;
- 		if (cb_parsed_length > parser->user_cb_size) {
-@@ -3690,6 +3715,12 @@ static int goya_patch_cb(struct hl_device *hdev,
- 				PACKET_HEADER_PACKET_ID_MASK) >>
- 					PACKET_HEADER_PACKET_ID_SHIFT);
+ #define OVERFLOW_STACK_SIZE	SZ_4K
  
-+		if (!validate_packet_id(pkt_id)) {
-+			dev_err(hdev->dev, "Invalid packet id %u\n", pkt_id);
-+			rc = -EINVAL;
-+			break;
-+		}
+diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+index 13458c2..5190573 100644
+--- a/arch/arm64/kernel/entry.S
++++ b/arch/arm64/kernel/entry.S
+@@ -444,12 +444,12 @@ alternative_insn eret, nop, ARM64_UNMAP_KERNEL_AT_EL0
+ 
+ 	/*
+ 	 * Compare sp with the base of the task stack.
+-	 * If the top ~(THREAD_SIZE - 1) bits match, we are on a task stack,
++	 * If the top ~(THREAD_SIZE_ALIGNED - 1) bits match, we are on a task stack,
+ 	 * and should switch to the irq stack.
+ 	 */
+ 	ldr	x25, [tsk, TSK_STACK]
+ 	eor	x25, x25, x19
+-	and	x25, x25, #~(THREAD_SIZE - 1)
++	and	x25, x25, #~(THREAD_SIZE_ALIGNED - 1)
+ 	cbnz	x25, 9998f
+ 
+ 	ldr_this_cpu x25, irq_stack_ptr, x26
+diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+index b82eb50..800bb84 100644
+--- a/arch/arm64/kernel/ptrace.c
++++ b/arch/arm64/kernel/ptrace.c
+@@ -120,8 +120,8 @@ int regs_query_register_offset(const char *name)
+  */
+ static bool regs_within_kernel_stack(struct pt_regs *regs, unsigned long addr)
+ {
+-	return ((addr & ~(THREAD_SIZE - 1))  ==
+-		(kernel_stack_pointer(regs) & ~(THREAD_SIZE - 1))) ||
++	return ((addr & ~(THREAD_SIZE_ALIGNED - 1))  ==
++		(kernel_stack_pointer(regs) & ~(THREAD_SIZE_ALIGNED - 1))) ||
+ 		on_irq_stack(addr, NULL);
+ }
+ 
+diff --git a/drivers/misc/lkdtm/stackleak.c b/drivers/misc/lkdtm/stackleak.c
+index d1a5c07..f4ab60a 100644
+--- a/drivers/misc/lkdtm/stackleak.c
++++ b/drivers/misc/lkdtm/stackleak.c
+@@ -24,7 +24,7 @@ void lkdtm_STACKLEAK_ERASING(void)
+ 	 */
+ 	sp = PTR_ALIGN(&i, sizeof(unsigned long));
+ 
+-	left = ((unsigned long)sp & (THREAD_SIZE - 1)) / sizeof(unsigned long);
++	left = ((unsigned long)sp & (THREAD_SIZE_ALIGNED - 1)) / sizeof(unsigned long);
+ 	sp--;
+ 
+ 	/*
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index f3b6e12..f89e2c5 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3135,9 +3135,9 @@ static int proc_stack_depth(struct seq_file *m, struct pid_namespace *ns,
+ 				struct pid *pid, struct task_struct *task)
+ {
+ 	unsigned long prev_depth = THREAD_SIZE -
+-				(task->prev_lowest_stack & (THREAD_SIZE - 1));
++				(task->prev_lowest_stack & (THREAD_SIZE_ALIGNED - 1));
+ 	unsigned long depth = THREAD_SIZE -
+-				(task->lowest_stack & (THREAD_SIZE - 1));
++				(task->lowest_stack & (THREAD_SIZE_ALIGNED - 1));
+ 
+ 	seq_printf(m, "previous stack depth: %lu\nstack depth: %lu\n",
+ 							prev_depth, depth);
+diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
+index e93e249..35a73b5 100644
+--- a/include/linux/thread_info.h
++++ b/include/linux/thread_info.h
+@@ -43,6 +43,10 @@ enum {
+ #define THREAD_ALIGN	THREAD_SIZE
+ #endif
+ 
++#ifndef THREAD_SIZE_ALIGNED
++#define THREAD_SIZE_ALIGNED	THREAD_SIZE
++#endif
 +
- 		pkt_size = goya_packet_sizes[pkt_id];
- 		cb_parsed_length += pkt_size;
- 		if (cb_parsed_length > parser->user_cb_size) {
+ #define THREADINFO_GFP		(GFP_KERNEL_ACCOUNT | __GFP_ZERO)
+ 
+ /*
+diff --git a/kernel/trace/trace_stack.c b/kernel/trace/trace_stack.c
+index 5810fb8..ef3d442 100644
+--- a/kernel/trace/trace_stack.c
++++ b/kernel/trace/trace_stack.c
+@@ -159,7 +159,7 @@ static void check_stack(unsigned long ip, unsigned long *stack)
+ 	int frame_size = READ_ONCE(tracer_frame);
+ 	int i, x;
+ 
+-	this_size = ((unsigned long)stack) & (THREAD_SIZE-1);
++	this_size = ((unsigned long)stack) & (THREAD_SIZE_ALIGNED - 1);
+ 	this_size = THREAD_SIZE - this_size;
+ 	/* Remove the frame of the tracer */
+ 	this_size -= frame_size;
+@@ -211,7 +211,7 @@ static void check_stack(unsigned long ip, unsigned long *stack)
+ 	x = 0;
+ 	start = stack;
+ 	top = (unsigned long *)
+-		(((unsigned long)start & ~(THREAD_SIZE-1)) + THREAD_SIZE);
++		(((unsigned long)start & ~(THREAD_SIZE_ALIGNED - 1)) + THREAD_SIZE);
+ 
+ 	/*
+ 	 * Loop through all the entries. One of the entries may
 -- 
-2.17.1
+1.9.1
 
