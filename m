@@ -2,108 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D4623B111
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 01:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF5123B130
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 01:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729156AbgHCXmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 19:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33768 "EHLO
+        id S1729309AbgHCXno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 19:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729028AbgHCXmP (ORCPT
+        with ESMTP id S1728941AbgHCXno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 19:42:15 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE546C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 16:42:14 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id g14so2870092iom.0
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 16:42:14 -0700 (PDT)
+        Mon, 3 Aug 2020 19:43:44 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65735C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 16:43:44 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id g19so9283683plq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 16:43:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=riJ3umw0V2+FfFxLjOBTqqOTzlRoPL8VdrC9Npn7RlM=;
-        b=XCvS7meqieMCTnygetGwEK0pJso1pPfTOnD6XIxJZ3Uepl0ffi8YRsw/QlwSYrgHdg
-         xnz7PgLuS2B57e3/UEnOuDehPoctgxNgnzt0F7ph/fyRZWG9cRN5sCO2WaPZfWM12LgA
-         utsMT2ecb+ZKB9bHVVeTo57fv4AA5BnDnCk6w=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wTUV0IlBas5oY3OHR4PGqhPRpHlIYrzKntHQwyyC4pg=;
+        b=JZwkyV/3Eehf9b+PMt5bu/laXByrKXwimmNuxX/xGhhZtg2tbSGS/YWaeMibIfmacK
+         URdiACIdYLA/D54h+t5KqvoiEWtQcmbxfm8jJT1JRADgZD0H9VsIE5deUKlFwT8C+i/k
+         ZodCKD6CU1WqIs12YAbRP2tcheRreCm6H5PaeCKcI5gF0l//JlTaZNm3Muwbgx81uxH2
+         eXW/XmFLc6sT2LgYKuChxNaNQp9JkiuN/dfDvigt5NDHG0hJLDNHcN6mfp2CkyoThb48
+         d4UO/4dNIxh2E+BKVuSBMURBDTC9aRwpgd2KtHdZ1/tbzXLoLwgJ8VqK9N7Q9PsRIvF3
+         QQfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=riJ3umw0V2+FfFxLjOBTqqOTzlRoPL8VdrC9Npn7RlM=;
-        b=EWpqAN32PWfGCBE//U6NeD9wr6IRD+tTAbOINJyCnPIiZ0NH6b5JfRykhbZyj21JfM
-         hbzwk9B167sPgqY8OvnNHFEjHLlPa+9T/dssrEuzMjDIYTWPpXcY0d4gU1NChEu9S8zD
-         /nWx+ymDC7fJoOlCyWDE4hth/tebot9N+Fu9Wx3yZyIFn6HW6aQSHlHNPDhpVNIs79xb
-         7A4vus5nrDOa3sOHTdMBnoDnSilXr1uJ2znBqTgSXPyW0vkIrGmayY7pumcRs7oNMaIL
-         QpNkZvm9i0JMt3HLp3g0w57Hj05go2EcJ0daytJDHl7eNErqggb0MnRJDLVKPDX7Rg2+
-         AJMA==
-X-Gm-Message-State: AOAM530e2yce3U+m8AvOYWlQkExZ7AlWWVRRc/ts2O7zedJm+f8I0jvY
-        PLECTd9fH7zIp5vUiiLZwOdygQ==
-X-Google-Smtp-Source: ABdhPJzZk3yQ+cOxunAhzmGr08Vzc3KwmOscO6pv6ZRnMceZ+QX863JCBZEYJ3pblsOKPp8aAi83ZA==
-X-Received: by 2002:a02:838e:: with SMTP id z14mr2649202jag.84.1596498134252;
-        Mon, 03 Aug 2020 16:42:14 -0700 (PDT)
-Received: from derch.Home (97-122-92-59.hlrn.qwest.net. [97.122.92.59])
-        by smtp.gmail.com with ESMTPSA id g2sm5468435ioe.4.2020.08.03.16.42.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 16:42:13 -0700 (PDT)
-From:   Daniel Campello <campello@chromium.org>
-To:     LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Daniel Campello <campello@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org
-Subject: [PATCH v4 15/15] iio: sx9310: Use irq trigger flags from firmware
-Date:   Mon,  3 Aug 2020 17:41:54 -0600
-Message-Id: <20200803131544.v4.15.I4c344a6793007001bbb3c1c08e96d3acf893b36b@changeid>
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-In-Reply-To: <20200803234154.320400-1-campello@chromium.org>
-References: <20200803234154.320400-1-campello@chromium.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wTUV0IlBas5oY3OHR4PGqhPRpHlIYrzKntHQwyyC4pg=;
+        b=HOFCzUJKQYVbRpaetih9KlVc0NoKJehi+Uz3ngfcg2O1T+kaf2gZqnx0zWFZKirdtp
+         c59+R+JsclVqTj33mypPi1UjiXHt6zBJoAvTyG5lwSoweodBwQsgUicCBfvyk6ndoMTm
+         Voc6dvMK+yGygNNG5RrldkHwUsahwId+rDitJWWZZgcB7EdDRzrYRJCuCNpI5WJ+h41X
+         GxIyTICAP9AMK1IcBX93zSgmm7xLAdf09sDay10MC/c32O3maEs4S47AZr+w3DCP8PyP
+         aDgXidmRM37vgslYLDxmiKRzzUkdncMc6/izLV3XcrCT0uyOBEr50Rtss3fzaVWTUMC2
+         9RxQ==
+X-Gm-Message-State: AOAM530L6EjKkM5WkAQ2mIiEmFqbjRck84Dvso7xBJ8nue+zdolWIC3Y
+        8MZbHkq4SbVs7uCZE+91YeXZaL7EOjM=
+X-Google-Smtp-Source: ABdhPJz4TXBq0r8YZ1GaCInBFqCj9mQJXkGirDbrQ/Gxaf7fypSbh8x+8m4vz5SckNI47yunXJSYTA==
+X-Received: by 2002:a17:902:b40f:: with SMTP id x15mr16327490plr.329.1596498223585;
+        Mon, 03 Aug 2020 16:43:43 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id n13sm536262pjb.20.2020.08.03.16.43.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Aug 2020 16:43:43 -0700 (PDT)
+Subject: Re: [GIT PULL] io_uring changes for 5.9-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <50466810-9148-e245-7c1e-e7435b753582@kernel.dk>
+ <CAHk-=wgaxWMA7DVTQq+KxqaWHPDrXDuScX9orzRgxdi7SBfmoA@mail.gmail.com>
+ <cd478521-e6ec-a1aa-5f93-29ad13d2a8bb@kernel.dk>
+ <56cb11b1-7943-086e-fb31-6564f4d4d089@kernel.dk>
+ <CAHk-=whUiXjy5=LPQzNf2ruT3U6eELtXv7Cp9icN4eB4ByjROQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <cb4b53ff-2e61-ca48-e3fc-517827927e60@kernel.dk>
+Date:   Mon, 3 Aug 2020 17:43:42 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=whUiXjy5=LPQzNf2ruT3U6eELtXv7Cp9icN4eB4ByjROQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+On 8/3/20 5:34 PM, Linus Torvalds wrote:
+> On Mon, Aug 3, 2020 at 4:18 PM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>>
+>> I took a look at the rewrite you queued up, and made a matching change
+>> on the io_uring side:
+> 
+> Oh, no, you made it worse.
+> 
+> Now you're tying your odd wakeup routine to entirely irrelevant things
+> that can't even happen to you.
+> 
+> That io_async_buf_func() will never be called for any entry that isn't
+> your own, so testing
+> 
+>         wait->flags & WQ_FLAG_EXCLUSIVE
+> 
+> is completely pointless, because you never set that flag. And
+> similarly, for you to then do
+> 
+>         wait->flags |= WQ_FLAG_WOKEN;
+> 
+> is equally pointless, because the only thing that cares and looks at
+> that wait entry is you, and you don't care about the WOKEN flag.
+> 
+> So that patch shows a fundamental misunderstanding of how the
+> waitqueues actually work.
+> 
+> Which is kind of my _point_. The io_uring code that hooked into the
+> page wait queues really looks like complete cut-and-paste voodoo
+> programming.
+> 
+> It needs comments. It's hard to follow. Even somebody like me, who
+> actually knows how the page wait queues really work, have a really
+> hard time following how io_uring initializing a wait-queue entry and
+> pointing to it in the io ctx then interacts with the (later) generic
+> file reading path, and how it then calls back at unlock time to the
+> io_uring callback _if_ the page was locked.
+> 
+> And that patch you point to makes me 100% sure you don't quite
+> understand the code either.
+> 
+> So when you do
+> 
+>     /*
+>      * Only test the bit if it's an exclusive wait, as we know the
+>      * bit is cleared for non-exclusive waits. Also see mm/filemap.c
+>      */
+>     if ((wait->flags & WQ_FLAG_EXCLUSIVE) &&
+>         test_and_set_bit(key->bit_nr, &key->page->flags))
+>               return -1;
+> 
+> the first test guarantees that the second test is never done, which is
+> good, because if it *had* been done, you'd have taken the lock and
+> nothing you have actually expects that.
+> 
+> So the fix is to just remove those lines entirely. If somebody
+> unlocked the page you care about, and did a wakeup on that page and
+> bit, then you know you should start the async worker. Noi amount of
+> testing bits matters at all.
+> 
+> And similarly, the
+> 
+>     wait->flags |= WQ_FLAG_WOKEN;
+> 
+> is a no-op because nothing tests that WQ_FLAG_WOKEN bit. That wait
+> entry is _your_ wait entry. It's not the wait entry of some normal
+> page locker - those use wake_page_function().
+> 
+> Now *if* you had workers that actually expected to be woken up with
+> the page lock already held, and owning it, then that kind of
+> WQ_FLAG_EXCLUSIVE and WQ_FLAG_WOKEN logic would be a good idea. But
+> that's not what you have.
 
-We shouldn't need to set default irq trigger flags here as the firmware
-should have properly indicated the trigger type, i.e. level low, in the
-DT or ACPI tables.
+Yes, looks like I was a bit too trigger happy without grokking the whole
+thing, and got it mixed up with the broader more generic waitqueue
+cases. Thanks for clueing me in, I've updated the patch so the use case
+is inline with only what io_uring is doing here.
 
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Daniel Campello <campello@chromium.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
+>> and also queued a documentation patch for the retry logic and the
+>> callback handler:
+>>
+>> https://git.kernel.dk/cgit/linux-block/commit/?h=io_uring-5.9&id=9541a9d4791c2d31ba74b92666edd3f1efd936a8
+> 
+> Better. Although I find the first comment a bit misleading.
+> 
+> You say
+> 
+>     /* Invoked from our "page is now unlocked" handler when someone ..
+> 
+> but that's not really the case. The function gets called by whoever
+> unlocks the page after you've registered that page wait entry through
+> lock_page_async().
+> 
+> So there's no "our handler" anywhere, which I find misleading and
+> confusing in the comment.
 
-Changes in v4: None
-Changes in v3:
- - Added irq trigger flags commit to the series.
+The 'handler' refers to the io_uring waitqueue callback, but I should
+probably spell that out. I'll adjust it.
 
-Changes in v2: None
-
- drivers/iio/proximity/sx9310.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-index a6e345bb9ffe5c..9d1b35eee304ee 100644
---- a/drivers/iio/proximity/sx9310.c
-+++ b/drivers/iio/proximity/sx9310.c
-@@ -947,7 +947,7 @@ static int sx9310_probe(struct i2c_client *client)
- 		ret = devm_request_threaded_irq(dev, client->irq,
- 						sx9310_irq_handler,
- 						sx9310_irq_thread_handler,
--						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
-+						IRQF_ONESHOT,
- 						"sx9310_event", indio_dev);
- 		if (ret)
- 			return ret;
 -- 
-2.28.0.163.g6104cc2f0b6-goog
+Jens Axboe
 
