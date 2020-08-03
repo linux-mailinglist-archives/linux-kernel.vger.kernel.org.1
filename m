@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2C223A597
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5747023A5E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729135AbgHCMjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:39:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33898 "EHLO mail.kernel.org"
+        id S1729052AbgHCMaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:30:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729491AbgHCMdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:33:51 -0400
+        id S1729035AbgHCMaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:30:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA6FF204EC;
-        Mon,  3 Aug 2020 12:33:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EB1E2054F;
+        Mon,  3 Aug 2020 12:30:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596458030;
-        bh=dEa0AWvWOg19CrPOh7m9qvf9OgTA1IIxsH3IV00BKcI=;
+        s=default; t=1596457821;
+        bh=/MYNAPYE/vhRm3KQ1iV5bwTlt3kOQSZhVZGSqqU20N8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CMhwe0y8RrrxAWw92y/zd8fCJwWD8cF/qD6io7v8ZqbMDsNNBsb7NjN6q+yeBeNpb
-         7zdPRIhTvNwHl+j3h3kHv09kxCgFTwJWnwWOj0uoWRr7PlTrLZgOKrXaCw7vXqHHXl
-         9hmzY8V2vsCiQnid8HVqH6mtwr94IttbsgBCTnEI=
+        b=ZYMw0hZ14OGloNhm5KzJyEcGilI16KiDPVrndiHZqc2qPnrDR1PC71lWEIJYu2Sh6
+         NklH4yuRGX60ftLEWrv3zAYdNjLj3MZCp9RtYK4X2ilZ5sG08HVXKoSHAu1sBqEmvP
+         rfO/8hRKyn54Lpc4SSZd8j+VZeruxLxJ9F+QVPkA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 02/51] net: phy: mdio-bcm-unimac: fix potential NULL dereference in unimac_mdio_probe()
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Quentin Perret <qperret@google.com>
+Subject: [PATCH 5.4 85/90] KVM: arm64: Dont inherit exec permission across page-table levels
 Date:   Mon,  3 Aug 2020 14:19:47 +0200
-Message-Id: <20200803121849.606398618@linuxfoundation.org>
+Message-Id: <20200803121901.710117656@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121849.488233135@linuxfoundation.org>
-References: <20200803121849.488233135@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Will Deacon <will@kernel.org>
 
-[ Upstream commit 297a6961ffb8ff4dc66c9fbf53b924bd1dda05d5 ]
+commit b757b47a2fcba584d4a32fd7ee68faca510ab96f upstream.
 
-platform_get_resource() may fail and return NULL, so we should
-better check it's return value to avoid a NULL pointer dereference
-a bit later in the code.
+If a stage-2 page-table contains an executable, read-only mapping at the
+pte level (e.g. due to dirty logging being enabled), a subsequent write
+fault to the same page which tries to install a larger block mapping
+(e.g. due to dirty logging having been disabled) will erroneously inherit
+the exec permission and consequently skip I-cache invalidation for the
+rest of the block.
 
-This is detected by Coccinelle semantic patch.
+Ensure that exec permission is only inherited by write faults when the
+new mapping is of the same size as the existing one. A subsequent
+instruction abort will result in I-cache invalidation for the entire
+block mapping.
 
-@@
-expression pdev, res, n, t, e, e1, e2;
-@@
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Tested-by: Quentin Perret <qperret@google.com>
+Reviewed-by: Quentin Perret <qperret@google.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200723101714.15873-1-will@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-res = platform_get_resource(pdev, t, n);
-+ if (!res)
-+   return -EINVAL;
-... when != res == NULL
-e = devm_ioremap(e1, res->start, e2);
-
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mdio-bcm-unimac.c | 2 ++
- 1 file changed, 2 insertions(+)
+ virt/kvm/arm/mmu.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/phy/mdio-bcm-unimac.c b/drivers/net/phy/mdio-bcm-unimac.c
-index 52703bbd4d666..df75efa96a7d9 100644
---- a/drivers/net/phy/mdio-bcm-unimac.c
-+++ b/drivers/net/phy/mdio-bcm-unimac.c
-@@ -237,6 +237,8 @@ static int unimac_mdio_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+--- a/virt/kvm/arm/mmu.c
++++ b/virt/kvm/arm/mmu.c
+@@ -1199,7 +1199,7 @@ static bool stage2_get_leaf_entry(struct
+ 	return true;
+ }
  
- 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!r)
-+		return -EINVAL;
+-static bool stage2_is_exec(struct kvm *kvm, phys_addr_t addr)
++static bool stage2_is_exec(struct kvm *kvm, phys_addr_t addr, unsigned long sz)
+ {
+ 	pud_t *pudp;
+ 	pmd_t *pmdp;
+@@ -1211,11 +1211,11 @@ static bool stage2_is_exec(struct kvm *k
+ 		return false;
  
- 	/* Just ioremap, as this MDIO block is usually integrated into an
- 	 * Ethernet MAC controller register range
--- 
-2.25.1
-
+ 	if (pudp)
+-		return kvm_s2pud_exec(pudp);
++		return sz <= PUD_SIZE && kvm_s2pud_exec(pudp);
+ 	else if (pmdp)
+-		return kvm_s2pmd_exec(pmdp);
++		return sz <= PMD_SIZE && kvm_s2pmd_exec(pmdp);
+ 	else
+-		return kvm_s2pte_exec(ptep);
++		return sz == PAGE_SIZE && kvm_s2pte_exec(ptep);
+ }
+ 
+ static int stage2_set_pte(struct kvm *kvm, struct kvm_mmu_memory_cache *cache,
+@@ -1805,7 +1805,8 @@ static int user_mem_abort(struct kvm_vcp
+ 	 * execute permissions, and we preserve whatever we have.
+ 	 */
+ 	needs_exec = exec_fault ||
+-		(fault_status == FSC_PERM && stage2_is_exec(kvm, fault_ipa));
++		(fault_status == FSC_PERM &&
++		 stage2_is_exec(kvm, fault_ipa, vma_pagesize));
+ 
+ 	if (vma_pagesize == PUD_SIZE) {
+ 		pud_t new_pud = kvm_pfn_pud(pfn, mem_type);
 
 
