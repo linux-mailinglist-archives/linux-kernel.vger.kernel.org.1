@@ -2,121 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC61C23AFDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F1C23AFDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbgHCV5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 17:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
+        id S1728826AbgHCV6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 17:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgHCV5s (ORCPT
+        with ESMTP id S1726239AbgHCV6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 17:57:48 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0142C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 14:57:48 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id y206so8749771pfb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 14:57:48 -0700 (PDT)
+        Mon, 3 Aug 2020 17:58:02 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE744C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 14:58:02 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id y8so13780324vsq.8
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 14:58:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yuVzOzKa2hJtd7uaE4veinXP3zTwwT8hP9/UMc26Jxo=;
-        b=cWCkXl8L5UI8SuRjQ0cl053tTauIzhi1afwfNgdwh+S/UrqCe7b6aQGPQk0rAl20em
-         Glao1b3gOcesofK02TSpw5cNYZvAFOShat12fYg11KP70iKBxdvyi911W6RX/otsR5Az
-         0dXE+t4tOtG1SRK/Nnab/slKYIK2LQXD2MYu6VeCuOrZfyoRG5DJQZ40VyyaQxIz6T7s
-         R+JiLGDzcw6HtZ5oPnPU68nrEGi66BH+YcGNnATp1qAAhw04FBNX41QxHdpHZru+wqrM
-         bn9qgqzWEjtrWmhNB6yGIaBChRxAwB2CdYQAAEL5M7rEfQvyspMLu4+3pk5mCM45S3cm
-         WKIQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cHgUICdi9xK+5WmgsC8O+1KkScVXRPzwwp8CUGby/X0=;
+        b=ml+4cPKmiKL+peX9skOC2i9Q69Hus93rCzCmmb7P/4Dl8nUjNtTy+US4rB+PzvHc91
+         9MYptvwCJdifuqbfAddJLN62QZvtY/0gcB3JMDimUQccc2zpT2C0+EbDYVABI58h//ea
+         quqkVFAxyHvUn6xjm2GhcyTFbSsMYjbIYt4Jc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yuVzOzKa2hJtd7uaE4veinXP3zTwwT8hP9/UMc26Jxo=;
-        b=ZhlR9RBP8LpnggT8r4GZjWTNE3iW7OqEFto40lSkoMNN0/Z0BJpBVGjMS07vBJecDN
-         HLLFeEfNDpQoWUDKV7IF+TK9JJ8XIQgg1ZzwG3W6w4Gmx9J8UxenHMp4342YoAYJrwt/
-         E1IpMoDw5RQKHGljHP43TTEjqcve14FSLl0NWmh8meNYn/n81SIhjlobNWgc6bNuhAHu
-         L2u/6w6fzvHbqQ69R8RriYzXzqMJ0O7Gad1AziXw6k9/f1F8qaoLU51UMoCS/rAMRsr9
-         rM4Nkx9zWZ5D+n3VCMwAiaVDqF18v+RMRyMFq3CKz/eipYx7uJKtW2aNhd8vOr2qMdxu
-         yiRQ==
-X-Gm-Message-State: AOAM532rXFe+xFw2T6osvMcpMX1QMLwVFCreMqCwtixXLDNwS21DouKr
-        E+ANKrj0oLwSxK5xDrPnyno=
-X-Google-Smtp-Source: ABdhPJygNIzoSP6mtrUmL5aG3TEs5sU+U9sui5b00C7eA2kbujQ2/HiOWRUN0IxJIz03F+8nQCZiWg==
-X-Received: by 2002:a63:c447:: with SMTP id m7mr16425864pgg.118.1596491868043;
-        Mon, 03 Aug 2020 14:57:48 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id lk16sm406515pjb.13.2020.08.03.14.57.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 03 Aug 2020 14:57:47 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 14:57:35 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: Clean code for synchronize mode
-Message-ID: <20200803215735.GA5461@Asurada-Nvidia>
-References: <1596424674-32127-1-git-send-email-shengjiu.wang@nxp.com>
- <20200803054037.GA1056@Asurada-Nvidia>
- <CAA+D8AOGF44UUq=P1S-M5TUwDUaOnqVmHJKPDBM9DAzt1nVzmQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cHgUICdi9xK+5WmgsC8O+1KkScVXRPzwwp8CUGby/X0=;
+        b=H3voaxGOgiY83IMCtkeS2rs02k4NPirKgfavAilIub6qCcICztNAPKR17TgfSXKmX6
+         3OJT0eykWDtLkawFievGkR2busfPuqq3Ly6besM/t+FeC07weZo4O2ARRPxrIaqzyohk
+         Qf4/vdLNdsKvOEDs91GuDmYMiNzHFVgPWwahQdg/MRIUOBkqDmwxbzppV50nRTLBHsq1
+         R87gbwYu5AQ5BIsOsL+nrdCgqOVAvVnAzbqvbjVOPPjaVtYTZxC+pY94OoJK6f/aXNvv
+         iok3GIJqXdquQ5z1UqFQBXgkharDyovPRwV6T5K4PdntDj94BhDcRwiOfjqMh0CVYbg4
+         QwHw==
+X-Gm-Message-State: AOAM532gEDCTZTq4MWK05v7y4Qqp13wt8endQiYQY7eWSywd7c+Dg/iC
+        o6HYZbOYeVEff+L9aUmLE+5JxE0EeDk=
+X-Google-Smtp-Source: ABdhPJyuFnAItE0dMYXFeHMZpmv3Rjzm2Y/JoXSZ5tj1awMNtDtqyn/NOpq9gdEpQ5bl+lXCUTCdwg==
+X-Received: by 2002:a67:e9d6:: with SMTP id q22mr11084201vso.232.1596491881599;
+        Mon, 03 Aug 2020 14:58:01 -0700 (PDT)
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
+        by smtp.gmail.com with ESMTPSA id n20sm950622vsr.6.2020.08.03.14.57.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Aug 2020 14:58:00 -0700 (PDT)
+Received: by mail-ua1-f43.google.com with SMTP id d20so1862653ual.13
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 14:57:59 -0700 (PDT)
+X-Received: by 2002:ab0:44e5:: with SMTP id n92mr12794962uan.121.1596491878639;
+ Mon, 03 Aug 2020 14:57:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA+D8AOGF44UUq=P1S-M5TUwDUaOnqVmHJKPDBM9DAzt1nVzmQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200714080254.v3.1.Ie0d730120b232a86a4eac1e2909bcbec844d1766@changeid>
+ <CANcMJZC-kAc1kqqNhfd9wvFS4ans8t7cpAfNVZbybA4W6x5-KQ@mail.gmail.com>
+In-Reply-To: <CANcMJZC-kAc1kqqNhfd9wvFS4ans8t7cpAfNVZbybA4W6x5-KQ@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 3 Aug 2020 14:57:46 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WNY8vR4ip2w47rf7rnBmtenEXtjXstj8PWNaXjCN3ZXQ@mail.gmail.com>
+Message-ID: <CAD=FV=WNY8vR4ip2w47rf7rnBmtenEXtjXstj8PWNaXjCN3ZXQ@mail.gmail.com>
+Subject: Re: [PATCH v3] pinctrl: qcom: Handle broken/missing PDC dual edge
+ IRQs on sc7180
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Todd Kjos <tkjos@google.com>,
+        Amit Pundir <amit.pundir@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 04:04:23PM +0800, Shengjiu Wang wrote:
+Hi,
 
-> > > clock generation. The TCSR.TE is no need to enabled when only RX
-> > > is enabled.
+On Mon, Aug 3, 2020 at 2:06 PM John Stultz <john.stultz@linaro.org> wrote:
+>
+> On Tue, Jul 14, 2020 at 8:08 AM Douglas Anderson <dianders@chromium.org> wrote:
 > >
-> > You are correct if there's only RX running without TX joining.
-> > However, that's something we can't guarantee. Then we'd enable
-> > TE after RE is enabled, which is against what RM recommends:
+> > Depending on how you look at it, you can either say that:
+> > a) There is a PDC hardware issue (with the specific IP rev that exists
+> >    on sc7180) that causes the PDC not to work properly when configured
+> >    to handle dual edges.
+> > b) The dual edge feature of the PDC hardware was only added in later
+> >    HW revisions and thus isn't in all hardware.
 > >
-> > # From 54.3.3.1 Synchronous mode in IMX6SXRM
-> > # If the receiver bit clock and frame sync are to be used by
-> > # both the transmitter and receiver, it is recommended that
-> > # the receiver is the last enabled and the first disabled.
+> > Regardless of how you look at it, let's work around the lack of dual
+> > edge support by only ever letting our parent see requests for single
+> > edge interrupts on affected hardware.
 > >
-> > I remember I did this "ugly" design by strictly following what
-> > RM says. If hardware team has updated the RM or removed this
-> > limitation, please quote in the commit logs.
-> 
-> There is no change in RM and same recommandation.
-> 
-> My change does not violate the RM. The direction which generates
-> the clock is still last enabled.
-
-Using Tx syncing with Rx clock for example,
-T1: arecord (non-stop) => set RE
-T2: aplay => set TE then RE (but RE is already set at T1)
-
-Anything that I am missing?
-
-> > > +             if (!sai->synchronous[TX] && sai->synchronous[RX] && !tx) {
-> > > +                     regmap_update_bits(sai->regmap, FSL_SAI_xCSR((!tx), ofs),
-> > > +                                        FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
-> > > +             } else if (!sai->synchronous[RX] && sai->synchronous[TX] && tx) {
-> > > +                     regmap_update_bits(sai->regmap, FSL_SAI_xCSR((!tx), ofs),
-> > > +                                        FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
+> > NOTE: it's possible that a driver requesting a dual edge interrupt
+> > might get several edges coalesced into a single IRQ.  For instance if
+> > a line starts low and then goes high and low again, the driver that
+> > requested the IRQ is not guaranteed to be called twice.  However, it
+> > is guaranteed that once the driver's interrupt handler starts running
+> > its first instruction that any new edges coming in will cause the
+> > interrupt to fire again.  This is relatively commonplace for dual-edge
+> > gpio interrupts (many gpio controllers require software to emulate
+> > dual edge with single edge) so client drivers should be setup to
+> > handle it.
 > >
-> > Two identical regmap_update_bits calls -- both on !tx (RX?)
-> The content for regmap_update_bits is the same, but the precondition
-> is different.
-> The first one is for tx=false and enable TCSR.TE. (TX generate clock)
-> The second one is for tx=true and enable RSCR.RE (RX generate clock)
+> > Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>
+> Just as a heads up. I started seeing boot failures (crashes really
+> early before we get serial output) with db845c when testing with the
+> android-mainline tree that pulled v5.8 in.
 
-Why not merge them?
+Even before earlycon?  Ick.  For me earlycon comes up way before
+pinctrl and I thought that, by design, earlycon came up so dang early
+that you could debug almost anything with it.
 
-+		if ((!sai->synchronous[TX] && sai->synchronous[RX] && !tx) ||
-+		   ((!sai->synchronous[RX] && sai->synchronous[TX] && tx) {
+To confirm, I could even drop into earlycon_kgdb (which starts later
+than earlycon), then set a breakpoint on msm_pinctrl_probe() and I'd
+hit my breakpoint.  Enabling earlycon should be super easy these
+days--just add the "earlycon" command line parameter and the kernel
+seems to do the rest of the magic based on the "stdout-path".  I guess
+if your bootloader doesn't cooperate and leave the system in an OK
+state then you'll be in bad shape, but otherwise it should be nice...
+
+NOTE: if you have earlycon and this is still causing crashes before
+earlycon starts, the only things I can think of are side effects of
+this patch.  Could it have made your kernel just a little too big and
+now you're overflowing some hard limit of the bootloader?  Maybe
+you're hitting a ccache bug and using some stale garbage (don't laugh,
+this happened to me the other year)?  Maybe there's a pointer bug and
+this moves addresses just enough to make it cause havoc?
+
+
+> I did some quick bisection and came down to this patch, and sure
+> enough things boot again with this patch reverted.
+>
+> In my testing earlier today with v5.8 (+ just a few patches for db845c
+> support), I didn't see this failure, but the configs in use are
+> different there.
+>
+> I'll try to spend a bit of time to understand exactly what is failing,
+> but if you have any initial suggestions for things to try, I'd
+> appreciate it.
+
+So on SDM845 we aren't setting "wakeirq_dual_edge_errata", right?
+It's possible that you also need it, but I didn't have an SDM845
+device in front of me to test with--I only have remote access to one.
+...but in any case, the fact that SDM845 doesn't have
+"wakeirq_dual_edge_errata" set should eliminate a bunch of code.
+
+Once you eliminate that there's almost nothing left of this patch.
+You could try commenting out:
+
+irq_set_handler_locked(d, handle_fasteoi_irq);
+
+...and see if that helps?
+
+NOTE: I just tried putting kernel 5.8 on my sdm845-cheza device.  It
+booted up without crashing...  I'm probably not using the same config
+you are, but at least it appears that sdm845 isn't totally broken or
+anything...
+
+-Doug
