@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A79C23A4CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F9223A408
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729059AbgHCMab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:30:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57410 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729039AbgHCMaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:30:24 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C46320738;
-        Mon,  3 Aug 2020 12:30:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457823;
-        bh=W+fL/TrifVBAVrzVE/HowuH99DgPJsSTdJHaUKb5KX8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZ3cabdOnheTOtrLSaO72aziKbl0hZGuw0EEF+tCAq/bicvuiDKTWg13eQwTXCX54
-         qPGG1x8tYvrSSh7yscYS0+sdL7bVR6sc9PIf71llhDqPI7sHXa5Hp8y5QaEPDgSWxz
-         vGUyJ2pT5tU1iQUNlni2yt6ZfnppddnBYdoVydQo=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.4 86/90] KVM: LAPIC: Prevent setting the tscdeadline timer if the lapic is hw disabled
-Date:   Mon,  3 Aug 2020 14:19:48 +0200
-Message-Id: <20200803121901.758058491@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1726901AbgHCMWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:22:02 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:46364 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726865AbgHCMV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:21:56 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 38172B92AFF40E07CB31;
+        Mon,  3 Aug 2020 20:21:50 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 3 Aug 2020
+ 20:21:43 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <tjoseph@cadence.com>, <lorenzo.pieralisi@arm.com>,
+        <robh@kernel.org>, <bhelgaas@google.com>, <kishon@ti.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] PCI: cadence: Make cdns_pci_map_bus stub helper inline
+Date:   Mon, 3 Aug 2020 20:21:04 +0800
+Message-ID: <20200803122104.44852-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+If CONFIG_PCIE_CADENCE_HOST is n, gcc warns:
 
-commit d2286ba7d574ba3103a421a2f9ec17cb5b0d87a1 upstream.
+drivers/pci/controller/cadence/pcie-cadence.h:486:22:
+ warning: 'cdns_pci_map_bus' defined but not used [-Wunused-function]
 
-Prevent setting the tscdeadline timer if the lapic is hw disabled.
+Make stub helper inline to fix this.
 
-Fixes: bce87cce88 (KVM: x86: consolidate different ways to test for in-kernel LAPIC)
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-Message-Id: <1596165141-28874-1-git-send-email-wanpengli@tencent.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- arch/x86/kvm/lapic.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/cadence/pcie-cadence.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2085,7 +2085,7 @@ void kvm_set_lapic_tscdeadline_msr(struc
+diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+index 655a6b4d4964..00e44256c3e8 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence.h
++++ b/drivers/pci/controller/cadence/pcie-cadence.h
+@@ -483,8 +483,8 @@ static inline int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+ 	return 0;
+ }
+ 
+-static void __iomem *cdns_pci_map_bus(struct pci_bus *bus, unsigned int devfn,
+-				      int where)
++static inline void __iomem *cdns_pci_map_bus(struct pci_bus *bus, unsigned int devfn,
++					     int where)
  {
- 	struct kvm_lapic *apic = vcpu->arch.apic;
- 
--	if (!lapic_in_kernel(vcpu) || apic_lvtt_oneshot(apic) ||
-+	if (!kvm_apic_present(vcpu) || apic_lvtt_oneshot(apic) ||
- 			apic_lvtt_period(apic))
- 		return;
- 
+ 	return NULL;
+ }
+-- 
+2.17.1
 
 
