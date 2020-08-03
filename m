@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC95923AA12
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 18:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B48323AA1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 18:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgHCQCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 12:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgHCQCO (ORCPT
+        id S1728344AbgHCQDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 12:03:49 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:12424 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726457AbgHCQDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 12:02:14 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3BFC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 09:02:13 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id a21so39174334ejj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 09:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3FW/dpxAfEKZpL0xjWaEKw/4/9pI2Bu081UuCQ4WirE=;
-        b=QPfV4CBkY+p/V39IZokYjfpuwObnv6Fh7idcr2RvXtII1eDyCFv3BUGY9/p50x+1jY
-         Y6sIAXdghfllwIYbh9NrO/iFyKMBpTDfb5bJgw9Mrg1k+MXBMhJJQdsYoZjo20sd+lXZ
-         Mj34J0td2FE8xl45eGVVUNFgQVpXzx7d3IgC6EUbIV9uqpYOXAsCaM/JvwjaKbW8QWzh
-         OMZo46gM5+6K9sA4eEU/WPOP+SIBRyl0ccL2KbFHF6Jf1I6Wvj/+7+kj8rSXkzfAP+mP
-         YfFGE/hL7FgoMaYNeexi4n1hLWcKnGsyjIiUrGUZOF5zUYb869I2yxgnlz1LWEfLllC/
-         YtCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=3FW/dpxAfEKZpL0xjWaEKw/4/9pI2Bu081UuCQ4WirE=;
-        b=YzkCAT2HjvyIVNfOBLOsLsgsNQ+3a18fmNzB9L+rUk21cfRnCncb+lkv9T7vHNQO2c
-         OPDIfleOALXMCXx6dVVowIQqznyLbuHJOmYcZzzF6n+xiTnYVbHSjR/t3tXWWZpuKguf
-         Aotkb2p2L+VtXlFIwYwpIqcmccg18j8BoedcGrR0KEggFuGLHuGra3Vpg2pq9yw7wuOI
-         eK4jxe4PpmKISkhFfNW+956AG0qhycMdfNWlSHd45Loc1nvaunIke0Y2tTHt4Ld017re
-         EouOIr6ziCxkKyFp+3jxs6qsZP2lTJDIRH8cAwNVnAKN3B4JclY/Akb2n47i1DIVJcHp
-         bBSQ==
-X-Gm-Message-State: AOAM533Kmy22Bg0dCpSM7C3jyMnLCxBDknfq9+/wLbrWj6dCnE/ffsbo
-        6VzifpuO/yI/2TRNi73/mqZ+PTlG
-X-Google-Smtp-Source: ABdhPJyMqn0ZdNFbiWuqRbsi8skuD0GUtoQTqpOnh4yfGb23DwPwwNmih7p9e6MGDTrbVPL9vEnd7Q==
-X-Received: by 2002:a17:906:4356:: with SMTP id z22mr17958871ejm.414.1596470532511;
-        Mon, 03 Aug 2020 09:02:12 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id x10sm3318558eds.21.2020.08.03.09.02.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 09:02:11 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 18:02:10 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] x86/asm changes for v5.9
-Message-ID: <20200803160210.GA760622@gmail.com>
+        Mon, 3 Aug 2020 12:03:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596470627; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=3o7Ua/B/jlY2+3cBPDuyOtwpBPiWkJKI/dCE//TXyZ0=; b=GOgxFTHVDvYzqHG+XGnsHnYEB68pOL6rvKSBrLf3URisfecFqf8GLiAvo77M81cY1F7fQa7H
+ nGxehcraORw3y62NfNkIlNH0xYeHkGzbSHbPs9QZRowEgN3y+PrwBB94uwEPB5xYI6ZI+Hr2
+ fjwAnw58AU5DXlw0KOmunPfDiew=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f283510798b10296811bd5d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 Aug 2020 16:02:24
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1C6F7C433A0; Mon,  3 Aug 2020 16:02:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47208C433C9;
+        Mon,  3 Aug 2020 16:02:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 47208C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v9 7/9] scsi: ufs: Move dumps in IRQ handler to error
+ handler
+To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1596445485-19834-1-git-send-email-cang@codeaurora.org>
+ <1596445485-19834-8-git-send-email-cang@codeaurora.org>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <502fb8a9-db80-2d74-3272-52f2d1593451@codeaurora.org>
+Date:   Mon, 3 Aug 2020 09:02:19 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <1596445485-19834-8-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 8/3/2020 2:04 AM, Can Guo wrote:
+> Sometime dumps in IRQ handler are heavy enough to cause system stability
+> issues, move them to error handler and only print basic host regs here.
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Reviewed-by: Bean Huo <beanhuo@micron.com>
+> ---
 
-Please pull the latest x86/asm git tree from:
+Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-asm-2020-08-03
+>   drivers/scsi/ufs/ufshcd.c | 23 +++++++++++++++--------
+>   1 file changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 6a10003..a79fbbd 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -5696,6 +5696,19 @@ static void ufshcd_err_handler(struct work_struct *work)
+>   				    UFSHCD_UIC_DL_TCx_REPLAY_ERROR))))
+>   		needs_reset = true;
+>   
+> +	if (hba->saved_err & (INT_FATAL_ERRORS | UIC_ERROR |
+> +			      UFSHCD_UIC_HIBERN8_MASK)) {
+> +		bool pr_prdt = !!(hba->saved_err & SYSTEM_BUS_FATAL_ERROR);
+> +
+> +		spin_unlock_irqrestore(hba->host->host_lock, flags);
+> +		ufshcd_print_host_state(hba);
+> +		ufshcd_print_pwr_info(hba);
+> +		ufshcd_print_host_regs(hba);
+> +		ufshcd_print_tmrs(hba, hba->outstanding_tasks);
+> +		ufshcd_print_trs(hba, hba->outstanding_reqs, pr_prdt);
+> +		spin_lock_irqsave(hba->host->host_lock, flags);
+> +	}
+> +
+>   	/*
+>   	 * if host reset is required then skip clearing the pending
+>   	 * transfers forcefully because they will get cleared during
+> @@ -5915,18 +5928,12 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
+>   
+>   		/* dump controller state before resetting */
+>   		if (hba->saved_err & (INT_FATAL_ERRORS | UIC_ERROR)) {
+> -			bool pr_prdt = !!(hba->saved_err &
+> -					SYSTEM_BUS_FATAL_ERROR);
+> -
+>   			dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
+>   					__func__, hba->saved_err,
+>   					hba->saved_uic_err);
+> -
+> -			ufshcd_print_host_regs(hba);
+> +			ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE,
+> +					 "host_regs: ");
+>   			ufshcd_print_pwr_info(hba);
+> -			ufshcd_print_tmrs(hba, hba->outstanding_tasks);
+> -			ufshcd_print_trs(hba, hba->outstanding_reqs,
+> -					pr_prdt);
+>   		}
+>   		ufshcd_schedule_eh_work(hba);
+>   		retval |= IRQ_HANDLED;
+> 
 
-   # HEAD: 158807de5822d1079e162a3762956fd743dd483e x86/uaccess: Make __get_user_size() Clang compliant on 32-bit
 
-A couple of changes, concentrated into the percpu code, to enable
-Clang support on i386 kernels too.
-
- Thanks,
-
-	Ingo
-
------------------->
-Brian Gerst (10):
-      x86/percpu: Introduce size abstraction macros
-      x86/percpu: Clean up percpu_to_op()
-      x86/percpu: Clean up percpu_from_op()
-      x86/percpu: Clean up percpu_add_op()
-      x86/percpu: Remove "e" constraint from XADD
-      x86/percpu: Clean up percpu_add_return_op()
-      x86/percpu: Clean up percpu_xchg_op()
-      x86/percpu: Clean up percpu_cmpxchg_op()
-      x86/percpu: Clean up percpu_stable_op()
-      x86/percpu: Remove unused PER_CPU() macro
-
-Nick Desaulniers (1):
-      x86/uaccess: Make __get_user_size() Clang compliant on 32-bit
-
-
- arch/x86/include/asm/percpu.h  | 510 ++++++++++++++---------------------------
- arch/x86/include/asm/uaccess.h |   5 +-
- 2 files changed, 176 insertions(+), 339 deletions(-)
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
