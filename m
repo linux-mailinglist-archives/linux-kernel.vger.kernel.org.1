@@ -2,138 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B48323AA1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 18:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C51323AA15
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 18:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728344AbgHCQDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 12:03:49 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:12424 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726457AbgHCQDs (ORCPT
+        id S1728282AbgHCQDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 12:03:04 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:40157 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726457AbgHCQDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 12:03:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596470627; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=3o7Ua/B/jlY2+3cBPDuyOtwpBPiWkJKI/dCE//TXyZ0=; b=GOgxFTHVDvYzqHG+XGnsHnYEB68pOL6rvKSBrLf3URisfecFqf8GLiAvo77M81cY1F7fQa7H
- nGxehcraORw3y62NfNkIlNH0xYeHkGzbSHbPs9QZRowEgN3y+PrwBB94uwEPB5xYI6ZI+Hr2
- fjwAnw58AU5DXlw0KOmunPfDiew=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f283510798b10296811bd5d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 Aug 2020 16:02:24
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1C6F7C433A0; Mon,  3 Aug 2020 16:02:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47208C433C9;
-        Mon,  3 Aug 2020 16:02:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 47208C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v9 7/9] scsi: ufs: Move dumps in IRQ handler to error
- handler
-To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1596445485-19834-1-git-send-email-cang@codeaurora.org>
- <1596445485-19834-8-git-send-email-cang@codeaurora.org>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <502fb8a9-db80-2d74-3272-52f2d1593451@codeaurora.org>
-Date:   Mon, 3 Aug 2020 09:02:19 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1596445485-19834-8-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 3 Aug 2020 12:03:04 -0400
+X-IronPort-AV: E=Sophos;i="5.75,430,1589209200"; 
+   d="scan'208";a="53754805"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 04 Aug 2020 01:03:02 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2643040062DB;
+        Tue,  4 Aug 2020 01:03:00 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Niklas <niklas.soderlund@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2] media: rcar-vin: Add support to select data pins for YCbCr422-8bit input
+Date:   Mon,  3 Aug 2020 17:02:53 +0100
+Message-Id: <1596470573-15065-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/2020 2:04 AM, Can Guo wrote:
-> Sometime dumps in IRQ handler are heavy enough to cause system stability
-> issues, move them to error handler and only print basic host regs here.
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> Reviewed-by: Bean Huo <beanhuo@micron.com>
-> ---
+Select the data pins for YCbCr422-8bit input format depending on
+bus_width and data_shift passed as part of DT.
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+Changes for v2:
+* Dropped DT binding documentation patch
+* Select the data pins depending on bus-width and data-shift
 
->   drivers/scsi/ufs/ufshcd.c | 23 +++++++++++++++--------
->   1 file changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 6a10003..a79fbbd 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -5696,6 +5696,19 @@ static void ufshcd_err_handler(struct work_struct *work)
->   				    UFSHCD_UIC_DL_TCx_REPLAY_ERROR))))
->   		needs_reset = true;
->   
-> +	if (hba->saved_err & (INT_FATAL_ERRORS | UIC_ERROR |
-> +			      UFSHCD_UIC_HIBERN8_MASK)) {
-> +		bool pr_prdt = !!(hba->saved_err & SYSTEM_BUS_FATAL_ERROR);
-> +
-> +		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> +		ufshcd_print_host_state(hba);
-> +		ufshcd_print_pwr_info(hba);
-> +		ufshcd_print_host_regs(hba);
-> +		ufshcd_print_tmrs(hba, hba->outstanding_tasks);
-> +		ufshcd_print_trs(hba, hba->outstanding_reqs, pr_prdt);
-> +		spin_lock_irqsave(hba->host->host_lock, flags);
-> +	}
-> +
->   	/*
->   	 * if host reset is required then skip clearing the pending
->   	 * transfers forcefully because they will get cleared during
-> @@ -5915,18 +5928,12 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
->   
->   		/* dump controller state before resetting */
->   		if (hba->saved_err & (INT_FATAL_ERRORS | UIC_ERROR)) {
-> -			bool pr_prdt = !!(hba->saved_err &
-> -					SYSTEM_BUS_FATAL_ERROR);
-> -
->   			dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
->   					__func__, hba->saved_err,
->   					hba->saved_uic_err);
-> -
-> -			ufshcd_print_host_regs(hba);
-> +			ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE,
-> +					 "host_regs: ");
->   			ufshcd_print_pwr_info(hba);
-> -			ufshcd_print_tmrs(hba, hba->outstanding_tasks);
-> -			ufshcd_print_trs(hba, hba->outstanding_reqs,
-> -					pr_prdt);
->   		}
->   		ufshcd_schedule_eh_work(hba);
->   		retval |= IRQ_HANDLED;
-> 
+v1 -
+https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=323799
+---
+ drivers/media/platform/rcar-vin/rcar-core.c | 5 +++++
+ drivers/media/platform/rcar-vin/rcar-dma.c  | 7 +++++++
+ drivers/media/platform/rcar-vin/rcar-vin.h  | 5 +++++
+ 3 files changed, 17 insertions(+)
 
-
+diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
+index 7440c8965d27..55005d86928d 100644
+--- a/drivers/media/platform/rcar-vin/rcar-core.c
++++ b/drivers/media/platform/rcar-vin/rcar-core.c
+@@ -624,6 +624,11 @@ static int rvin_parallel_parse_v4l2(struct device *dev,
+ 	vin->parallel = rvpe;
+ 	vin->parallel->mbus_type = vep->bus_type;
+ 
++	/* select VInDATA[15:8] pins for YCbCr422-8bit format */
++	if (vep->bus.parallel.bus_width == BUS_WIDTH_8 &&
++	    vep->bus.parallel.data_shift == DATA_SHIFT_8)
++		vin->parallel->ycbcr_8b_g = true;
++
+ 	switch (vin->parallel->mbus_type) {
+ 	case V4L2_MBUS_PARALLEL:
+ 		vin_dbg(vin, "Found PARALLEL media bus\n");
+diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+index 1a30cd036371..5db483877d65 100644
+--- a/drivers/media/platform/rcar-vin/rcar-dma.c
++++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+@@ -127,6 +127,8 @@
+ #define VNDMR2_FTEV		(1 << 17)
+ #define VNDMR2_VLV(n)		((n & 0xf) << 12)
+ 
++#define VNDMR2_YDS		BIT(22)
++
+ /* Video n CSI2 Interface Mode Register (Gen3) */
+ #define VNCSI_IFMD_DES1		(1 << 26)
+ #define VNCSI_IFMD_DES0		(1 << 25)
+@@ -698,6 +700,11 @@ static int rvin_setup(struct rvin_dev *vin)
+ 		/* Data Enable Polarity Select */
+ 		if (vin->parallel->mbus_flags & V4L2_MBUS_DATA_ENABLE_LOW)
+ 			dmr2 |= VNDMR2_CES;
++
++		if (vin->parallel->ycbcr_8b_g && vin->mbus_code == MEDIA_BUS_FMT_UYVY8_2X8)
++			dmr2 |= VNDMR2_YDS;
++		else
++			dmr2 &= ~VNDMR2_YDS;
+ 	}
+ 
+ 	/*
+diff --git a/drivers/media/platform/rcar-vin/rcar-vin.h b/drivers/media/platform/rcar-vin/rcar-vin.h
+index c19d077ce1cb..3126fee9a89b 100644
+--- a/drivers/media/platform/rcar-vin/rcar-vin.h
++++ b/drivers/media/platform/rcar-vin/rcar-vin.h
+@@ -87,6 +87,9 @@ struct rvin_video_format {
+ 	u8 bpp;
+ };
+ 
++#define BUS_WIDTH_8	8
++#define DATA_SHIFT_8	8
++
+ /**
+  * struct rvin_parallel_entity - Parallel video input endpoint descriptor
+  * @asd:	sub-device descriptor for async framework
+@@ -95,6 +98,7 @@ struct rvin_video_format {
+  * @mbus_flags:	media bus configuration flags
+  * @source_pad:	source pad of remote subdevice
+  * @sink_pad:	sink pad of remote subdevice
++ * @ycbcr_8b_g:	select data pins for YCbCr422-8bit
+  *
+  */
+ struct rvin_parallel_entity {
+@@ -106,6 +110,7 @@ struct rvin_parallel_entity {
+ 
+ 	unsigned int source_pad;
+ 	unsigned int sink_pad;
++	bool ycbcr_8b_g;
+ };
+ 
+ /**
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+2.17.1
+
