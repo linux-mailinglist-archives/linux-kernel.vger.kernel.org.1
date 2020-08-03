@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B7A23A50A
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8180B23A556
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbgHCMcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:32:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60588 "EHLO mail.kernel.org"
+        id S1729387AbgHCMgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:36:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729333AbgHCMcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:32:36 -0400
+        id S1729021AbgHCMfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:35:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5FD6204EC;
-        Mon,  3 Aug 2020 12:32:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 682B82054F;
+        Mon,  3 Aug 2020 12:35:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457955;
-        bh=t2oT0uhxQ0+DVoa3OutONu5D6FifUlSdmQ2IaDTNpbU=;
+        s=default; t=1596458140;
+        bh=ysS3LGq+470SGw6FYTetlB33DoPN5s8hyLYUhLe+03M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YhSl0rV3Zn2voRDxzk4fbdvE/Z+LZxCHjW9+iZxL/O0X6J0peYsSKTRzSo9dYPGjA
-         qAvEqHNXPk0pbneyvRKETX8ybRosFjuZrs4lFlICGEnRnVLjpPRsDHFsapMkw3+6zO
-         KSogFdUbUH7j13hFeGPTqE2QKAGZEeP+r1oR+RA4=
+        b=ORLMjYgyOczMNOt0tibbDrC0DQNNmMZqLp9RiS/MquupTqrolCwjknpi0WqjXQdyL
+         PBhfGWzT9cUpHqMoAcRCsCFjvWCFDU5dHV6gSKUPd7eHbXaDQFBTj462jbIa1DQRCE
+         frq/leXPtrxnixf/jWGDF+lsoSjdsDnZv0C/NDaY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, guodeqing <geffrey.guo@huawei.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 42/56] arm64: csum: Fix handling of bad packets
-Date:   Mon,  3 Aug 2020 14:19:57 +0200
-Message-Id: <20200803121852.370952603@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 13/51] ARM: percpu.h: fix build error
+Date:   Mon,  3 Aug 2020 14:19:58 +0200
+Message-Id: <20200803121850.129534880@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121849.488233135@linuxfoundation.org>
+References: <20200803121849.488233135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Murphy <robin.murphy@arm.com>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit 05fb3dbda187bbd9cc1cd0e97e5d6595af570ac6 ]
+commit aa54ea903abb02303bf55855fb51e3fcee135d70 upstream.
 
-Although iph is expected to point to at least 20 bytes of valid memory,
-ihl may be bogus, for example on reception of a corrupt packet. If it
-happens to be less than 5, we really don't want to run away and
-dereference 16GB worth of memory until it wraps back to exactly zero...
+Fix build error for the case:
+  defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
 
-Fixes: 0e455d8e80aa ("arm64: Implement optimised IP checksum helpers")
-Reported-by: guodeqing <geffrey.guo@huawei.com>
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+config: keystone_defconfig
+
+  CC      arch/arm/kernel/signal.o
+  In file included from ../include/linux/random.h:14,
+                    from ../arch/arm/kernel/signal.c:8:
+  ../arch/arm/include/asm/percpu.h: In function ‘__my_cpu_offset’:
+  ../arch/arm/include/asm/percpu.h:29:34: error: ‘current_stack_pointer’ undeclared (first use in this function); did you mean ‘user_stack_pointer’?
+      : "Q" (*(const unsigned long *)current_stack_pointer));
+                                     ^~~~~~~~~~~~~~~~~~~~~
+                                     user_stack_pointer
+
+Fixes: f227e3ec3b5c ("random32: update the net random state on interrupt and activity")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm64/include/asm/checksum.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/arm/include/asm/percpu.h |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/include/asm/checksum.h b/arch/arm64/include/asm/checksum.h
-index 0b6f5a7d4027c..fd11e0d70e446 100644
---- a/arch/arm64/include/asm/checksum.h
-+++ b/arch/arm64/include/asm/checksum.h
-@@ -30,16 +30,17 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
- {
- 	__uint128_t tmp;
- 	u64 sum;
-+	int n = ihl; /* we want it signed */
+--- a/arch/arm/include/asm/percpu.h
++++ b/arch/arm/include/asm/percpu.h
+@@ -16,6 +16,8 @@
+ #ifndef _ASM_ARM_PERCPU_H_
+ #define _ASM_ARM_PERCPU_H_
  
- 	tmp = *(const __uint128_t *)iph;
- 	iph += 16;
--	ihl -= 4;
-+	n -= 4;
- 	tmp += ((tmp >> 64) | (tmp << 64));
- 	sum = tmp >> 64;
- 	do {
- 		sum += *(const u32 *)iph;
- 		iph += 4;
--	} while (--ihl);
-+	} while (--n > 0);
- 
- 	sum += ((sum >> 32) | (sum << 32));
- 	return csum_fold((__force u32)(sum >> 32));
--- 
-2.25.1
-
++#include <asm/thread_info.h>
++
+ /*
+  * Same as asm-generic/percpu.h, except that we store the per cpu offset
+  * in the TPIDRPRW. TPIDRPRW only exists on V6K and V7
 
 
