@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC9423A557
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B3223A677
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728484AbgHCMgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:36:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729358AbgHCMf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:35:56 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56717204EC;
-        Mon,  3 Aug 2020 12:35:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596458153;
-        bh=++HN40KXXok4Pa/m1B5+Kdb5ESmRpFZqv7jtST+wKf4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cCo1XKuYsi0QkMWsLh0Z0PV44NKUpHxy12Sbk4pyvzK7DS3cXX1pO6r7W+37VroX6
-         4jCKL7fKVZ+eQetWtjaIsb6xqak48RTxI/R80iUidtuK8HbG288RkK0Sp060g0Sump
-         mu5Aq7jsFxC2D/PHFfhrT5iNilbTyOeVkoYJ2ioU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 4.14 51/51] x86/i8259: Use printk_deferred() to prevent deadlock
-Date:   Mon,  3 Aug 2020 14:20:36 +0200
-Message-Id: <20200803121852.063688962@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121849.488233135@linuxfoundation.org>
-References: <20200803121849.488233135@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1729645AbgHCMsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728102AbgHCMYy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:24:54 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06E8C061756;
+        Mon,  3 Aug 2020 05:24:53 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q76so14024466wme.4;
+        Mon, 03 Aug 2020 05:24:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=FTgfPSmSTzWTADmwe07r4VxKyWCszF67jRChwFwa6d0=;
+        b=u6FAoOdhpkSh973rLBFaTKeH8n4xklGOCi0nZUg6UHhhx+n1Nu0+sQslo8i9Kpwwda
+         Qsu1zdEupt8I17pfviRffxQXa5QCySBf74/Ryqthdl20Hjev0jV/QGV0B+QaTn+b83xy
+         TKKk8VBFKZGmRIil01Ph6eO404uiUQVgDi35qrXi7YhPVChWTW1vFQOnbLAU7FjV3w81
+         vSSYOJDdoIqcm0+9r/YQvC1t4NIHMsu76dx7tGcLc6q0P1bTFjSTMPnRX6R4AFjPuf0D
+         zo0u0/eBeYGHppcsrNAH3F3o3FobCOFmuELI+gjj4JkpZo1ayQI/WAEl6WOlaKLUeH+M
+         4TNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FTgfPSmSTzWTADmwe07r4VxKyWCszF67jRChwFwa6d0=;
+        b=R/jA8Npp/e+AafIV+YXAi/O1LpTGF/uDGZCOOTJFHj2pSR5zr6IlJoXQwcST7Y630t
+         PEORYHKt+9Glg5bXLzn7skgwPvaATRRXNFbjpWeX7/uL3ag+zjvwwmRLnA16bCGqb6wW
+         RAFx8Kb/jEtrOJIAEBwrqltn6JdJYNnKZr3oeKld449pIiQW6+Jc94JjaGZP/rY9NXdZ
+         4Iw4ZyFnlhWOEPbSrMZ4GRKw+nC3Ayg1PQhy/qpuprY/0s48gpKJrSqt2Wn3o0DGM1vl
+         v5wJkczUu2GnFzc2UjT4eaqcATlKpz7yYoe2Tblhac3INxYvksMoYdMSDUys7lEjwhyc
+         wD2g==
+X-Gm-Message-State: AOAM533cOi2pgpQDz21ayiquZAwE0rSRsLekVWLtNaMNQWjuR4ym1x8+
+        O31Ob5i1UkB3Atn1H3+zxlA9AX4YAA==
+X-Google-Smtp-Source: ABdhPJzAEMNcSysSnj7Cg5pHOtKwl+m02esoSnz41MtlOdS3tmdgi1rw2q8LAZo2gFiazyGUkdO0Jg==
+X-Received: by 2002:a1c:984d:: with SMTP id a74mr16567619wme.140.1596457492292;
+        Mon, 03 Aug 2020 05:24:52 -0700 (PDT)
+Received: from localhost.lan (host-92-25-238-49.as13285.net. [92.25.238.49])
+        by smtp.gmail.com with ESMTPSA id m1sm6559050wmc.28.2020.08.03.05.24.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 05:24:51 -0700 (PDT)
+From:   Jules Irenge <jbi.octave@gmail.com>
+To:     inux-kernel@vger.kernel.org
+Cc:     Jules Irenge <jbi.octave@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        linux-audit@redhat.com (moderated list:AUDIT SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 2/2] audit: uninitialize variable audit_sig_sid
+Date:   Mon,  3 Aug 2020 13:24:30 +0100
+Message-Id: <20200803122430.82364-3-jbi.octave@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200803122430.82364-1-jbi.octave@gmail.com>
+References: <0/2>
+ <20200803122430.82364-1-jbi.octave@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Checkpatch tool reports
 
-commit bdd65589593edd79b6a12ce86b3b7a7c6dae5208 upstream.
+"ERROR: do not initialise globals/statics to 0"
 
-0day reported a possible circular locking dependency:
+To fix this, audit_sig_sid is uninitialized
+As this is stored in the .bss section,
+the compiler can initialize the variable automatically.
 
-Chain exists of:
-  &irq_desc_lock_class --> console_owner --> &port_lock_key
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&port_lock_key);
-                               lock(console_owner);
-                               lock(&port_lock_key);
-  lock(&irq_desc_lock_class);
-
-The reason for this is a printk() in the i8259 interrupt chip driver
-which is invoked with the irq descriptor lock held, which reverses the
-lock operations vs. printk() from arbitrary contexts.
-
-Switch the printk() to printk_deferred() to avoid that.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87365abt2v.fsf@nanos.tec.linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 ---
- arch/x86/kernel/i8259.c |    2 +-
+ kernel/audit.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kernel/i8259.c
-+++ b/arch/x86/kernel/i8259.c
-@@ -206,7 +206,7 @@ spurious_8259A_irq:
- 		 * lets ACK and report it. [once per IRQ]
- 		 */
- 		if (!(spurious_irq_mask & irqmask)) {
--			printk(KERN_DEBUG
-+			printk_deferred(KERN_DEBUG
- 			       "spurious 8259A interrupt: IRQ%d.\n", irq);
- 			spurious_irq_mask |= irqmask;
- 		}
-
+diff --git a/kernel/audit.c b/kernel/audit.c
+index afd7827cf6e8..1c74d1d788b6 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -125,7 +125,7 @@ static u32	audit_backlog_wait_time = AUDIT_BACKLOG_WAIT_TIME;
+ /* The identity of the user shutting down the audit system. */
+ static kuid_t		audit_sig_uid = INVALID_UID;
+ static pid_t		audit_sig_pid = -1;
+-static u32		audit_sig_sid = 0;
++static u32		audit_sig_sid;
+ 
+ /* Records can be lost in several ways:
+    0) [suppressed in audit_alloc]
+-- 
+2.26.2
 
