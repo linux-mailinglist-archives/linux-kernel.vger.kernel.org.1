@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBDD23A496
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD3623A457
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728797AbgHCM2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:28:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54870 "EHLO mail.kernel.org"
+        id S1728318AbgHCM0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:26:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728754AbgHCM2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:28:40 -0400
+        id S1728298AbgHCMZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:25:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E00B8204EC;
-        Mon,  3 Aug 2020 12:28:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9445C204EC;
+        Mon,  3 Aug 2020 12:25:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457719;
-        bh=1lSb22xJIhaeGJv+HCgH8xtusIhyGxWIAiMO+X1TXrQ=;
+        s=default; t=1596457558;
+        bh=x7YoQtupH7CiYhIjtuOqqsTxqZZSxlDcl4I1Z5TtKrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QkVfI6cccwxhot0dzdYVx5gVbDTRFhw/DZEWHgMvjTCQW0bo4rbXgQ64smb2X2U/t
-         FkrR8bukW//YMe8lr9gLrpTxJpXhPTVdTshF+InqcoRF/yP+0Bd6ITMtfH+CP89QK5
-         EQbJYIFrmQVLMwKVxPDxll2WX77LxUpgzYPqsahI=
+        b=DnOch+yBRZJ507KhBaV1Es4aJTswLnENC3rO9sHCzWPzTiYDtxXZ+OiXdLSwYxglQ
+         SkdxBKdX1mu2cdQR6ewCRxZT1bOpAIfGeoQbkANr5za+2ec8BNcRmlUbmXRoPTpRdr
+         clFb2agKRJ8MSu/6ur+UgOOiDOnAJPxvh2ZWB67g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eran Ben Elisha <eranbe@mellanox.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 49/90] net/mlx5: Verify Hardware supports requested ptp function on a given pin
-Date:   Mon,  3 Aug 2020 14:19:11 +0200
-Message-Id: <20200803121859.997229384@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 094/120] mt76: mt7615: fix lmac queue debugsfs entry
+Date:   Mon,  3 Aug 2020 14:19:12 +0200
+Message-Id: <20200803121907.494879651@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eran Ben Elisha <eranbe@mellanox.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 071995c877a8646209d55ff8edddd2b054e7424c ]
+[ Upstream commit d941f47caa386931c3b598ad1b43d5ddd65869aa ]
 
-Fix a bug where driver did not verify Hardware pin capabilities for
-PTP functions.
+acs and wmm index are swapped in mt7615_queues_acq respect to the hw
+design
 
-Fixes: ee7f12205abc ("net/mlx5e: Implement 1PPS support")
-Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-Reviewed-by: Ariel Levkovich <lariel@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/mellanox/mlx5/core/lib/clock.c   | 23 ++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ drivers/net/wireless/mediatek/mt76/mt7615/debugfs.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-index 43f97601b5000..75fc283cacc36 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-@@ -388,10 +388,31 @@ static int mlx5_ptp_enable(struct ptp_clock_info *ptp,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/debugfs.c b/drivers/net/wireless/mediatek/mt76/mt7615/debugfs.c
+index b4d0795154e3d..a2afd1a3c51ba 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/debugfs.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/debugfs.c
+@@ -206,10 +206,11 @@ mt7615_queues_acq(struct seq_file *s, void *data)
+ 	int i;
+ 
+ 	for (i = 0; i < 16; i++) {
+-		int j, acs = i / 4, index = i % 4;
++		int j, wmm_idx = i % MT7615_MAX_WMM_SETS;
++		int acs = i / MT7615_MAX_WMM_SETS;
+ 		u32 ctrl, val, qlen = 0;
+ 
+-		val = mt76_rr(dev, MT_PLE_AC_QEMPTY(acs, index));
++		val = mt76_rr(dev, MT_PLE_AC_QEMPTY(acs, wmm_idx));
+ 		ctrl = BIT(31) | BIT(15) | (acs << 8);
+ 
+ 		for (j = 0; j < 32; j++) {
+@@ -217,11 +218,11 @@ mt7615_queues_acq(struct seq_file *s, void *data)
+ 				continue;
+ 
+ 			mt76_wr(dev, MT_PLE_FL_Q0_CTRL,
+-				ctrl | (j + (index << 5)));
++				ctrl | (j + (wmm_idx << 5)));
+ 			qlen += mt76_get_field(dev, MT_PLE_FL_Q3_CTRL,
+ 					       GENMASK(11, 0));
+ 		}
+-		seq_printf(s, "AC%d%d: queued=%d\n", acs, index, qlen);
++		seq_printf(s, "AC%d%d: queued=%d\n", wmm_idx, acs, qlen);
+ 	}
+ 
  	return 0;
- }
- 
-+enum {
-+	MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_IN = BIT(0),
-+	MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_OUT = BIT(1),
-+};
-+
- static int mlx5_ptp_verify(struct ptp_clock_info *ptp, unsigned int pin,
- 			   enum ptp_pin_function func, unsigned int chan)
- {
--	return (func == PTP_PF_PHYSYNC) ? -EOPNOTSUPP : 0;
-+	struct mlx5_clock *clock = container_of(ptp, struct mlx5_clock,
-+						ptp_info);
-+
-+	switch (func) {
-+	case PTP_PF_NONE:
-+		return 0;
-+	case PTP_PF_EXTTS:
-+		return !(clock->pps_info.pin_caps[pin] &
-+			 MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_IN);
-+	case PTP_PF_PEROUT:
-+		return !(clock->pps_info.pin_caps[pin] &
-+			 MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_OUT);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return -EOPNOTSUPP;
- }
- 
- static const struct ptp_clock_info mlx5_ptp_clock_info = {
 -- 
 2.25.1
 
