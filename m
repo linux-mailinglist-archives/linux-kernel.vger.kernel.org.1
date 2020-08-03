@@ -2,449 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DD023A6A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6247A23A673
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728986AbgHCMvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:51:55 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2556 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728874AbgHCMvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:51:24 -0400
-Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id DBCFA63D5289ED093272;
-        Mon,  3 Aug 2020 13:49:50 +0100 (IST)
-Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.95.125) by
- lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 3 Aug 2020 13:49:50 +0100
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <rjw@rjwysocki.net>,
-        <helgaas@kernel.org>, <bp@alien8.de>, <james.morse@arm.com>,
-        <lorenzo.pieralisi@arm.com>, <robh@kernel.org>, <lenb@kernel.org>,
-        <tony.luck@intel.com>, <dan.carpenter@oracle.com>,
-        <andriy.shevchenko@linux.intel.com>
-CC:     <linuxarm@huawei.com>, <yangyicong@hisilicon.com>,
-        <jonathan.cameron@huawei.com>, <tanxiaofei@huawei.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v14 2/2] PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
-Date:   Mon, 3 Aug 2020 13:45:06 +0100
-Message-ID: <20200803124506.1260-3-shiju.jose@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200803124506.1260-1-shiju.jose@huawei.com>
-References: <20200803124506.1260-1-shiju.jose@huawei.com>
+        id S1729241AbgHCMr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728352AbgHCMrs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:47:48 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DE5C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 05:47:47 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id i19so20375996lfj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 05:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UiawdBAdSV10MNkMusk6KDvgMU6ZXm8ieLNJpzgLvRs=;
+        b=C97O7R0Rfw2tGoywNIehE83jo0UdSKAdymy6KFtGYRXy2JZmpPFUHEhCPrycDtb8H3
+         98g511+KDLHkvDZ9nubhDukfZAFd6z/Tkd1YMdE6aI9zaMMaPOLEyBfiNr7/o8t7ltdS
+         FWQzBuzXviZRKX+mznI/YbIcG9gjXpDgfd1oI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UiawdBAdSV10MNkMusk6KDvgMU6ZXm8ieLNJpzgLvRs=;
+        b=uP6983KfFgiWSoolOV9ED4uvyzXiC09Z3i333qv5srm3q8rzuz6twlNnGiq2WG2yCW
+         gnxdbJJUVM+ffdyO9TZH57jK9lpSpZnXkyyjoO9k4Zf5hbgRtFNgwYg4c+nU9yv+kYJG
+         7Afy3v0sJWA92uslD1agP9TlfXnTjOar03c+Yqgxtw6XsReZIJS2K92dCVIX021CUK2S
+         s2v1BIvQCT/IUpPs06UV+huz7CNMudQ8rYWuoeYTu3Tjh4PVkGYqpjQJlwfqUyBvD/Q1
+         M6jEIY8jCz2TPeRpjx38td2HGXC3h9IxMJkeHljO4dv1OyrZW97u3Szu7O6VAS7xTxTU
+         RHWA==
+X-Gm-Message-State: AOAM532ZgeZ2LtpbM0eJ2Ejv6UwDZnJD0Ccc1Nn0w3mJi1kx+5j84Nd+
+        lwLOtt1UpdTn/Nwh0CT82auDTnmWTrVXzsI2+amGYw==
+X-Google-Smtp-Source: ABdhPJxgP5BZtDN7U9WwwQIz450Z/zEXWaCSGn8z77dHbVfT6eNTzm4EDkSd3CjmFkYjwO6eTalxMtZBYfqzD1lTC7c=
+X-Received: by 2002:a19:6b0e:: with SMTP id d14mr5741775lfa.103.1596458865734;
+ Mon, 03 Aug 2020 05:47:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.47.95.125]
-X-ClientProxiedBy: lhreml710-chm.china.huawei.com (10.201.108.61) To
- lhreml715-chm.china.huawei.com (10.201.108.66)
-X-CFilter-Loop: Reflected
+References: <1595847753-2234-1-git-send-email-moshe@mellanox.com>
+ <CAACQVJqNXh0B=oe5W7psiMGc6LzNPujNe2sypWi_SvH5sY=F3Q@mail.gmail.com>
+ <a3e20b44-9399-93c1-210f-e3c1172bf60d@intel.com> <CAACQVJo+bAr_k=LjgdTKbOxFEkpbYAsaWbkSDjUepgO7_XQfNA@mail.gmail.com>
+ <7a9c315f-fa29-7bd5-31be-3748b8841b29@mellanox.com>
+In-Reply-To: <7a9c315f-fa29-7bd5-31be-3748b8841b29@mellanox.com>
+From:   Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+Date:   Mon, 3 Aug 2020 18:17:33 +0530
+Message-ID: <CAACQVJpZZPfiWszZ36E0Awuo2Ad1w5=4C1rgG=d4qPiWVP609Q@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC 00/13] Add devlink reload level option
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     Jacob Keller <jacob.e.keller@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
+On Mon, Aug 3, 2020 at 5:47 PM Moshe Shemesh <moshe@mellanox.com> wrote:
+>
+>
+> On 8/3/2020 1:24 PM, Vasundhara Volam wrote:
+> > On Tue, Jul 28, 2020 at 10:13 PM Jacob Keller <jacob.e.keller@intel.com> wrote:
+> >>
+> >>
+> >> On 7/27/2020 10:25 PM, Vasundhara Volam wrote:
+> >>> On Mon, Jul 27, 2020 at 4:36 PM Moshe Shemesh <moshe@mellanox.com> wrote:
+> >>>> Introduce new option on devlink reload API to enable the user to select the
+> >>>> reload level required. Complete support for all levels in mlx5.
+> >>>> The following reload levels are supported:
+> >>>>    driver: Driver entities re-instantiation only.
+> >>>>    fw_reset: Firmware reset and driver entities re-instantiation.
+> >>> The Name is a little confusing. I think it should be renamed to
+> >>> fw_live_reset (in which both firmware and driver entities are
+> >>> re-instantiated).  For only fw_reset, the driver should not undergo
+> >>> reset (it requires a driver reload for firmware to undergo reset).
+> >>>
+> >> So, I think the differentiation here is that "live_patch" doesn't reset
+> >> anything.
+> > This seems similar to flashing the firmware and does not reset anything.
+>
+>
+> The live patch is activating fw change without reset.
+>
+> It is not suitable for any fw change but fw gaps which don't require reset.
+>
+> I can query the fw to check if the pending image change is suitable or
+> require fw reset.
+Okay.
+>
+> >>>>    fw_live_patch: Firmware live patching only.
+> >>> This level is not clear. Is this similar to flashing??
+> >>>
+> >>> Also I have a basic query. The reload command is split into
+> >>> reload_up/reload_down handlers (Please correct me if this behaviour is
+> >>> changed with this patchset). What if the vendor specific driver does
+> >>> not support up/down and needs only a single handler to fire a firmware
+> >>> reset or firmware live reset command?
+> >> In the "reload_down" handler, they would trigger the appropriate reset,
+> >> and quiesce anything that needs to be done. Then on reload up, it would
+> >> restore and bring up anything quiesced in the first stage.
+> > Yes, I got the "reload_down" and "reload_up". Similar to the device
+> > "remove" and "re-probe" respectively.
+> >
+> > But our requirement is a similar "ethtool reset" command, where
+> > ethtool calls a single callback in driver and driver just sends a
+> > firmware command for doing the reset. Once firmware receives the
+> > command, it will initiate the reset of driver and firmware entities
+> > asynchronously.
+>
+>
+> It is similar to mlx5 case here for fw_reset. The driver triggers the fw
+> command to reset and all PFs drivers gets events to handle and do
+> re-initialization.  To fit it to the devlink reload_down and reload_up,
+> I wait for the event handler to complete and it stops at driver unload
+> to have the driver up by devlink reload_up. See patch 8 in this patchset.
+>
+Yes, I see reload_down is triggering the reset. In our driver, after
+triggering the reset through a firmware command, reset is done in
+another context as the driver initiates the reset only after receiving
+an ASYNC event from the firmware.
 
-The HiSilicon HIP PCIe controller is capable of handling errors
-on root port and performing port reset separately at each root port.
-
-Add error handling driver for HIP PCIe controller to log
-and report recoverable errors. Perform root port reset and restore
-link status after the recovery.
-
-Following are some of the PCIe controller's recoverable errors
-1. completion transmission timeout error.
-2. CRS retry counter over the threshold error.
-3. ECC 2 bit errors
-4. AXI bresponse/rresponse errors etc.
-
-The driver placed in the drivers/pci/controller/ because the
-HIP PCIe controller does not use DWC IP.
-
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
---
-drivers/pci/controller/Kconfig           |   8 +
-drivers/pci/controller/Makefile          |   1 +
-drivers/pci/controller/pcie-hisi-error.c | 336 +++++++++++++++++++++++++++++++
-3 files changed, 345 insertions(+)
-create mode 100644 drivers/pci/controller/pcie-hisi-error.c
----
- drivers/pci/controller/Kconfig           |   8 +
- drivers/pci/controller/Makefile          |   1 +
- drivers/pci/controller/pcie-hisi-error.c | 327 +++++++++++++++++++++++
- 3 files changed, 336 insertions(+)
- create mode 100644 drivers/pci/controller/pcie-hisi-error.c
-
-diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-index adddf21fa381..52f0b99cfd20 100644
---- a/drivers/pci/controller/Kconfig
-+++ b/drivers/pci/controller/Kconfig
-@@ -286,6 +286,14 @@ config PCI_LOONGSON
- 	  Say Y here if you want to enable PCI controller support on
- 	  Loongson systems.
- 
-+config PCIE_HISI_ERR
-+	depends on ACPI_APEI_GHES && (ARM64 || COMPILE_TEST)
-+	depends on ACPI
-+	bool "HiSilicon HIP PCIe controller error handling driver"
-+	help
-+	  Say Y here if you want error handling support
-+	  for the PCIe controller's errors on HiSilicon HIP SoCs
-+
- source "drivers/pci/controller/dwc/Kconfig"
- source "drivers/pci/controller/mobiveil/Kconfig"
- source "drivers/pci/controller/cadence/Kconfig"
-diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
-index efd9733ead26..90afd865bf6b 100644
---- a/drivers/pci/controller/Makefile
-+++ b/drivers/pci/controller/Makefile
-@@ -30,6 +30,7 @@ obj-$(CONFIG_PCIE_TANGO_SMP8759) += pcie-tango.o
- obj-$(CONFIG_VMD) += vmd.o
- obj-$(CONFIG_PCIE_BRCMSTB) += pcie-brcmstb.o
- obj-$(CONFIG_PCI_LOONGSON) += pci-loongson.o
-+obj-$(CONFIG_PCIE_HISI_ERR) += pcie-hisi-error.o
- # pcie-hisi.o quirks are needed even without CONFIG_PCIE_DW
- obj-y				+= dwc/
- obj-y				+= mobiveil/
-diff --git a/drivers/pci/controller/pcie-hisi-error.c b/drivers/pci/controller/pcie-hisi-error.c
-new file mode 100644
-index 000000000000..e734ea6009c5
---- /dev/null
-+++ b/drivers/pci/controller/pcie-hisi-error.c
-@@ -0,0 +1,327 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver for handling the PCIe controller errors on
-+ * HiSilicon HIP SoCs.
-+ *
-+ * Copyright (c) 2020 HiSilicon Limited.
-+ */
-+
-+#include <linux/acpi.h>
-+#include <acpi/ghes.h>
-+#include <linux/bitops.h>
-+#include <linux/delay.h>
-+#include <linux/pci.h>
-+#include <linux/platform_device.h>
-+#include <linux/kfifo.h>
-+#include <linux/spinlock.h>
-+
-+/* HISI PCIe controller error definitions */
-+#define HISI_PCIE_ERR_MISC_REGS	33
-+
-+#define HISI_PCIE_LOCAL_VALID_VERSION		BIT(0)
-+#define HISI_PCIE_LOCAL_VALID_SOC_ID		BIT(1)
-+#define HISI_PCIE_LOCAL_VALID_SOCKET_ID		BIT(2)
-+#define HISI_PCIE_LOCAL_VALID_NIMBUS_ID		BIT(3)
-+#define HISI_PCIE_LOCAL_VALID_SUB_MODULE_ID	BIT(4)
-+#define HISI_PCIE_LOCAL_VALID_CORE_ID		BIT(5)
-+#define HISI_PCIE_LOCAL_VALID_PORT_ID		BIT(6)
-+#define HISI_PCIE_LOCAL_VALID_ERR_TYPE		BIT(7)
-+#define HISI_PCIE_LOCAL_VALID_ERR_SEVERITY	BIT(8)
-+#define HISI_PCIE_LOCAL_VALID_ERR_MISC		9
-+
-+static guid_t hisi_pcie_sec_guid =
-+	GUID_INIT(0xB2889FC9, 0xE7D7, 0x4F9D,
-+		  0xA8, 0x67, 0xAF, 0x42, 0xE9, 0x8B, 0xE7, 0x72);
-+
-+/*
-+ * Firmware reports the socket port ID where the error occurred.  These
-+ * macros convert that to the core ID and core port ID required by the
-+ * ACPI reset method.
-+ */
-+#define HISI_PCIE_PORT_ID(core, v)       (((v) >> 1) + ((core) << 3))
-+#define HISI_PCIE_CORE_ID(v)             ((v) >> 3)
-+#define HISI_PCIE_CORE_PORT_ID(v)        (((v) & 7) << 1)
-+
-+struct hisi_pcie_error_data {
-+	u64	val_bits;
-+	u8	version;
-+	u8	soc_id;
-+	u8	socket_id;
-+	u8	nimbus_id;
-+	u8	sub_module_id;
-+	u8	core_id;
-+	u8	port_id;
-+	u8	err_severity;
-+	u16	err_type;
-+	u8	reserv[2];
-+	u32	err_misc[HISI_PCIE_ERR_MISC_REGS];
-+};
-+
-+struct hisi_pcie_error_private {
-+	struct notifier_block	nb;
-+	struct device *dev;
-+};
-+
-+enum hisi_pcie_submodule_id {
-+	HISI_PCIE_SUB_MODULE_ID_AP,
-+	HISI_PCIE_SUB_MODULE_ID_TL,
-+	HISI_PCIE_SUB_MODULE_ID_MAC,
-+	HISI_PCIE_SUB_MODULE_ID_DL,
-+	HISI_PCIE_SUB_MODULE_ID_SDI,
-+};
-+
-+static const char * const hisi_pcie_sub_module[] = {
-+	[HISI_PCIE_SUB_MODULE_ID_AP]	= "AP Layer",
-+	[HISI_PCIE_SUB_MODULE_ID_TL]	= "TL Layer",
-+	[HISI_PCIE_SUB_MODULE_ID_MAC]	= "MAC Layer",
-+	[HISI_PCIE_SUB_MODULE_ID_DL]	= "DL Layer",
-+	[HISI_PCIE_SUB_MODULE_ID_SDI]	= "SDI Layer",
-+};
-+
-+enum hisi_pcie_err_severity {
-+	HISI_PCIE_ERR_SEV_RECOVERABLE,
-+	HISI_PCIE_ERR_SEV_FATAL,
-+	HISI_PCIE_ERR_SEV_CORRECTED,
-+	HISI_PCIE_ERR_SEV_NONE,
-+};
-+
-+static const char * const hisi_pcie_error_sev[] = {
-+	[HISI_PCIE_ERR_SEV_RECOVERABLE]	= "recoverable",
-+	[HISI_PCIE_ERR_SEV_FATAL]	= "fatal",
-+	[HISI_PCIE_ERR_SEV_CORRECTED]	= "corrected",
-+	[HISI_PCIE_ERR_SEV_NONE]	= "none",
-+};
-+
-+static const char *hisi_pcie_get_string(const char * const *array,
-+					size_t n, u32 id)
-+{
-+	u32 index;
-+
-+	for (index = 0; index < n; index++) {
-+		if (index == id && array[index])
-+			return array[index];
-+	}
-+
-+	return "unknown";
-+}
-+
-+static int hisi_pcie_port_reset(struct platform_device *pdev,
-+				u32 chip_id, u32 port_id)
-+{
-+	struct device *dev = &pdev->dev;
-+	acpi_handle handle = ACPI_HANDLE(dev);
-+	union acpi_object arg[3];
-+	struct acpi_object_list arg_list;
-+	acpi_status s;
-+	unsigned long long data = 0;
-+
-+	arg[0].type = ACPI_TYPE_INTEGER;
-+	arg[0].integer.value = chip_id;
-+	arg[1].type = ACPI_TYPE_INTEGER;
-+	arg[1].integer.value = HISI_PCIE_CORE_ID(port_id);
-+	arg[2].type = ACPI_TYPE_INTEGER;
-+	arg[2].integer.value = HISI_PCIE_CORE_PORT_ID(port_id);
-+
-+	arg_list.count = 3;
-+	arg_list.pointer = arg;
-+
-+	s = acpi_evaluate_integer(handle, "RST", &arg_list, &data);
-+	if (ACPI_FAILURE(s)) {
-+		dev_err(dev, "No RST method\n");
-+		return -EIO;
-+	}
-+
-+	if (data) {
-+		dev_err(dev, "Failed to Reset\n");
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static int hisi_pcie_port_do_recovery(struct platform_device *dev,
-+				      u32 chip_id, u32 port_id)
-+{
-+	acpi_status s;
-+	struct device *device = &dev->dev;
-+	acpi_handle root_handle = ACPI_HANDLE(device);
-+	struct acpi_pci_root *pci_root;
-+	struct pci_bus *root_bus;
-+	struct pci_dev *pdev;
-+	u32 domain, busnr, devfn;
-+
-+	s = acpi_get_parent(root_handle, &root_handle);
-+	if (ACPI_FAILURE(s))
-+		return -ENODEV;
-+	pci_root = acpi_pci_find_root(root_handle);
-+	if (!pci_root)
-+		return -ENODEV;
-+	root_bus = pci_root->bus;
-+	domain = pci_root->segment;
-+
-+	busnr = root_bus->number;
-+	devfn = PCI_DEVFN(port_id, 0);
-+	pdev = pci_get_domain_bus_and_slot(domain, busnr, devfn);
-+	if (!pdev) {
-+		dev_info(device, "Fail to get root port %04x:%02x:%02x.%d device\n",
-+			 domain, busnr, PCI_SLOT(devfn), PCI_FUNC(devfn));
-+		return -ENODEV;
-+	}
-+
-+	pci_stop_and_remove_bus_device_locked(pdev);
-+	pci_dev_put(pdev);
-+
-+	if (hisi_pcie_port_reset(dev, chip_id, port_id))
-+		return -EIO;
-+
-+	/*
-+	 * The initialization time of subordinate devices after
-+	 * hot reset is no more than 1s, which is required by
-+	 * the PCI spec v5.0 sec 6.6.1. The time will shorten
-+	 * if Readiness Notifications mechanisms are used. But
-+	 * wait 1s here to adapt any conditions.
-+	 */
-+	ssleep(1UL);
-+
-+	/* add root port and downstream devices */
-+	pci_lock_rescan_remove();
-+	pci_rescan_bus(root_bus);
-+	pci_unlock_rescan_remove();
-+
-+	return 0;
-+}
-+
-+static void hisi_pcie_handle_error(struct platform_device *pdev,
-+				   const struct hisi_pcie_error_data *edata)
-+{
-+	struct device *dev = &pdev->dev;
-+	int idx, rc;
-+	const unsigned long valid_bits[] = {BITMAP_FROM_U64(edata->val_bits)};
-+
-+	if (edata->val_bits == 0) {
-+		dev_warn(dev, "%s: no valid error information\n", __func__);
-+		return;
-+	}
-+
-+	dev_info(dev, "\nHISI : HIP : PCIe controller error\n");
-+	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_SOC_ID)
-+		dev_info(dev, "Table version = %d\n", edata->version);
-+	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_SOCKET_ID)
-+		dev_info(dev, "Socket ID = %d\n", edata->socket_id);
-+	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_NIMBUS_ID)
-+		dev_info(dev, "Nimbus ID = %d\n", edata->nimbus_id);
-+	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_SUB_MODULE_ID)
-+		dev_info(dev, "Sub Module = %s\n",
-+			 hisi_pcie_get_string(hisi_pcie_sub_module,
-+					      ARRAY_SIZE(hisi_pcie_sub_module),
-+					      edata->sub_module_id));
-+	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_CORE_ID)
-+		dev_info(dev, "Core ID = core%d\n", edata->core_id);
-+	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_PORT_ID)
-+		dev_info(dev, "Port ID = port%d\n", edata->port_id);
-+	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_ERR_SEVERITY)
-+		dev_info(dev, "Error severity = %s\n",
-+			 hisi_pcie_get_string(hisi_pcie_error_sev,
-+					      ARRAY_SIZE(hisi_pcie_error_sev),
-+					      edata->err_severity));
-+	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_ERR_TYPE)
-+		dev_info(dev, "Error type = 0x%x\n", edata->err_type);
-+
-+	dev_info(dev, "Reg Dump:\n");
-+	idx = HISI_PCIE_LOCAL_VALID_ERR_MISC;
-+	for_each_set_bit_from(idx, valid_bits,
-+			      HISI_PCIE_LOCAL_VALID_ERR_MISC + HISI_PCIE_ERR_MISC_REGS)
-+		dev_info(dev, "ERR_MISC_%d = 0x%x\n", idx - HISI_PCIE_LOCAL_VALID_ERR_MISC,
-+			 edata->err_misc[idx]);
-+
-+	if (edata->err_severity != HISI_PCIE_ERR_SEV_RECOVERABLE)
-+		return;
-+
-+	/* Recovery for the PCIe controller errors, try reset
-+	 * PCI port for the error recovery
-+	 */
-+	rc = hisi_pcie_port_do_recovery(pdev, edata->socket_id,
-+			HISI_PCIE_PORT_ID(edata->core_id, edata->port_id));
-+	if (rc)
-+		dev_info(dev, "fail to do hisi pcie port reset\n");
-+}
-+
-+static int hisi_pcie_notify_error(struct notifier_block *nb,
-+				  unsigned long event, void *data)
-+{
-+	struct acpi_hest_generic_data *gdata = data;
-+	const struct hisi_pcie_error_data *error_data = acpi_hest_get_payload(gdata);
-+	struct hisi_pcie_error_private *priv;
-+	struct device *dev;
-+	struct platform_device *pdev;
-+	guid_t err_sec_guid;
-+	u8 socket;
-+
-+	import_guid(&err_sec_guid, gdata->section_type);
-+	if (!guid_equal(&err_sec_guid, &hisi_pcie_sec_guid))
-+		return NOTIFY_DONE;
-+
-+	priv = container_of(nb, struct hisi_pcie_error_private, nb);
-+	dev = priv->dev;
-+
-+	if (device_property_read_u8(dev, "socket", &socket))
-+		return NOTIFY_DONE;
-+
-+	if (error_data->socket_id != socket)
-+		return NOTIFY_DONE;
-+
-+	pdev = container_of(dev, struct platform_device, dev);
-+	hisi_pcie_handle_error(pdev, error_data);
-+
-+	return NOTIFY_OK;
-+}
-+
-+static int hisi_pcie_error_handler_probe(struct platform_device *pdev)
-+{
-+	struct hisi_pcie_error_private *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->nb.notifier_call = hisi_pcie_notify_error;
-+	priv->dev = &pdev->dev;
-+	ret = ghes_register_vendor_record_notifier(&priv->nb);
-+	if (ret) {
-+		dev_err(&pdev->dev,
-+			"Failed to register hisi pcie controller error handler with apei\n");
-+		return ret;
-+	}
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	return 0;
-+}
-+
-+static int hisi_pcie_error_handler_remove(struct platform_device *pdev)
-+{
-+	struct hisi_pcie_error_private *priv = platform_get_drvdata(pdev);
-+
-+	ghes_unregister_vendor_record_notifier(&priv->nb);
-+
-+	return 0;
-+}
-+
-+static const struct acpi_device_id hisi_pcie_acpi_match[] = {
-+	{ "HISI0361", 0 },
-+	{ }
-+};
-+
-+static struct platform_driver hisi_pcie_error_handler_driver = {
-+	.driver = {
-+		.name	= "hisi-pcie-error-handler",
-+		.acpi_match_table = hisi_pcie_acpi_match,
-+	},
-+	.probe		= hisi_pcie_error_handler_probe,
-+	.remove		= hisi_pcie_error_handler_remove,
-+};
-+module_platform_driver(hisi_pcie_error_handler_driver);
-+
-+MODULE_DESCRIPTION("HiSilicon HIP PCIe controller error handling driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
-
-
+Probably, we have to use reload_down() to send firmware command to
+trigger reset and do nothing in reload_up. And returning from reload
+does not mean that reset is complete as it is done in another context
+and the driver notifies the health reporter once the reset is
+complete. devlink framework may have to allow drivers to implement
+reload_down only to look more clean or call reload_up only if the
+driver notifies the devlink once reset is completed from another
+context. Please suggest.
