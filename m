@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA725239F68
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 08:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2319B239F69
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 08:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgHCGMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 02:12:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58632 "EHLO mx2.suse.de"
+        id S1728194AbgHCGMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 02:12:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58686 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727813AbgHCGMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 02:12:40 -0400
+        id S1727813AbgHCGMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 02:12:49 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 67953ABE2;
-        Mon,  3 Aug 2020 06:12:54 +0000 (UTC)
-Date:   Mon, 03 Aug 2020 08:12:38 +0200
-Message-ID: <s5hh7tk6yw9.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 2E12DB59E;
+        Mon,  3 Aug 2020 06:13:03 +0000 (UTC)
+Date:   Mon, 03 Aug 2020 08:12:47 +0200
+Message-ID: <s5hft946yw0.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Connor McAdams <conmanx360@gmail.com>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Geoffrey Allott <geoffrey@allott.email>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
         =?UTF-8?B?UGF3ZcWC?= Rekowski <p.rekowski@gmail.com>,
-        =?UTF-8?B?TWljaGE=?= =?UTF-8?B?xYIgTWlyb3PFgmF3?= 
-        <mirq-linux@rere.qmqm.pl>, Geoffrey Allott <geoffrey@allott.email>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] ALSA: hda/ca0132 - Fix ZxR Headphone gain control get value.
-In-Reply-To: <20200803002928.8638-1-conmanx360@gmail.com>
+Subject: Re: [PATCH 2/3] ALSA: hda/ca0132 - Add new quirk ID for Recon3D.
+In-Reply-To: <20200803002928.8638-2-conmanx360@gmail.com>
 References: <20200803002928.8638-1-conmanx360@gmail.com>
+        <20200803002928.8638-2-conmanx360@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -38,12 +40,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 03 Aug 2020 02:29:25 +0200,
+On Mon, 03 Aug 2020 02:29:26 +0200,
 Connor McAdams wrote:
 > 
-> When the ZxR headphone gain control was added, the ca0132_switch_get
-> function was not updated, which meant that the changes to the control
-> state were not saved when entering/exiting alsamixer.
+> Add a new quirk ID for the Recon3D, as tested by me.
 > 
 > Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 
