@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B5C23A6C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B3D23A6DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbgHCMx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:53:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48174 "EHLO mail.kernel.org"
+        id S1728205AbgHCMzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:55:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727842AbgHCMXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:23:55 -0400
+        id S1727101AbgHCMWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:22:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81FEF20775;
-        Mon,  3 Aug 2020 12:23:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CACE204EC;
+        Mon,  3 Aug 2020 12:22:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457434;
-        bh=njF83mSDF3//qVVZKptNPOxS2Qpw7Nd2TLVr7hkNwvM=;
+        s=default; t=1596457364;
+        bh=jszrOfa5nKzHqEo0F+i0vxWlMIXxIz6UnwpnWJDRnB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=modAnCngiGJu0TwodsrYEHPv8PvSfC9iPPudoZQv1VFs5ckBpIPVFfLjdV3lvmmKc
-         d1HVLPuOGUthmFBvfc4OJu+7m9GThV7CqSmK85BTIpJRunl7NRmJ1Vl96QldyNXA+C
-         NwD1+wEoqQVFYnZAWwnbHo6kP+VER7pFcXKDXhjQ=
+        b=BcrcKRDq7ODtj/xHMC5+HC5D6bNQIc9+NLtLc4mOLtzabarlmFVKioieTpvG1KZ0L
+         DQkITFrlqHtHR9GnW6jJ4ZoMlqd/vUtatv5eOhGJCZN0kwZAO/yM6x8IM95StxN1SA
+         bPV5Y0IVHHQ0KyDrqgsZfk6bn4YcpcVbNyo8k8zY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+6db548b615e5aeefdce2@syzkaller.appspotmail.com,
-        YueHaibing <yuehaibing@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 035/120] net/x25: Fix null-ptr-deref in x25_disconnect
-Date:   Mon,  3 Aug 2020 14:18:13 +0200
-Message-Id: <20200803121904.540135498@linuxfoundation.org>
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 041/120] ARM: dts: armada-38x: fix NETA lockup when repeatedly switching speeds
+Date:   Mon,  3 Aug 2020 14:18:19 +0200
+Message-Id: <20200803121904.816816539@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
 References: <20200803121902.860751811@linuxfoundation.org>
@@ -45,66 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-commit 8999dc89497ab1c80d0718828e838c7cd5f6bffe upstream.
+[ Upstream commit 09781ba0395c46b1c844f47e405e3ce7856f5989 ]
 
-We should check null before do x25_neigh_put in x25_disconnect,
-otherwise may cause null-ptr-deref like this:
+To support the change in "phy: armada-38x: fix NETA lockup when
+repeatedly switching speeds" we need to update the DT with the
+additional register.
 
- #include <sys/socket.h>
- #include <linux/x25.h>
-
- int main() {
-    int sck_x25;
-    sck_x25 = socket(AF_X25, SOCK_SEQPACKET, 0);
-    close(sck_x25);
-    return 0;
- }
-
-BUG: kernel NULL pointer dereference, address: 00000000000000d8
-CPU: 0 PID: 4817 Comm: t2 Not tainted 5.7.0-rc3+ #159
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.9.3-
-RIP: 0010:x25_disconnect+0x91/0xe0
-Call Trace:
- x25_release+0x18a/0x1b0
- __sock_release+0x3d/0xc0
- sock_close+0x13/0x20
- __fput+0x107/0x270
- ____fput+0x9/0x10
- task_work_run+0x6d/0xb0
- exit_to_usermode_loop+0x102/0x110
- do_syscall_64+0x23c/0x260
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-Reported-by: syzbot+6db548b615e5aeefdce2@syzkaller.appspotmail.com
-Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 14dc100b4411 ("phy: armada38x: add common phy support")
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/x25/x25_subr.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/armada-38x.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/x25/x25_subr.c
-+++ b/net/x25/x25_subr.c
-@@ -363,10 +363,12 @@ void x25_disconnect(struct sock *sk, int
- 		x25->neighbour = NULL;
- 		read_unlock_bh(&x25_list_lock);
- 	}
--	read_lock_bh(&x25_list_lock);
--	x25_neigh_put(x25->neighbour);
--	x25->neighbour = NULL;
--	read_unlock_bh(&x25_list_lock);
-+	if (x25->neighbour) {
-+		read_lock_bh(&x25_list_lock);
-+		x25_neigh_put(x25->neighbour);
-+		x25->neighbour = NULL;
-+		read_unlock_bh(&x25_list_lock);
-+	}
- }
+diff --git a/arch/arm/boot/dts/armada-38x.dtsi b/arch/arm/boot/dts/armada-38x.dtsi
+index e038abc0c6b40..420ae26e846b6 100644
+--- a/arch/arm/boot/dts/armada-38x.dtsi
++++ b/arch/arm/boot/dts/armada-38x.dtsi
+@@ -344,7 +344,8 @@
  
- /*
+ 			comphy: phy@18300 {
+ 				compatible = "marvell,armada-380-comphy";
+-				reg = <0x18300 0x100>;
++				reg-names = "comphy", "conf";
++				reg = <0x18300 0x100>, <0x18460 4>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 
+-- 
+2.25.1
+
 
 
