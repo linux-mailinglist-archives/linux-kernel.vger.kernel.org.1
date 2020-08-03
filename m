@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0193323A41D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC9223A3F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgHCMW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727118AbgHCMWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:22:51 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726807AbgHCMSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:18:37 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60180 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726130AbgHCMSb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:18:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596457110;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yp+6IvmfkJLq0vw/bDQrRkwBOeDsZaKu4i7gyZaPeYY=;
+        b=WP1SJLyo5bQ7jdilOv0tFebfiw6YpIh2AflTmeglpOGMGYcLLMPrhQQUNk94md+F03G/MY
+        JwLVCvJTKPv/P8/B72Y/pj31kh8Qv73leJM+kOLo6J5dfz7HXGVxvLnnIUIiZLPABVzL2J
+        jRziivnjMuu9qE7ii58GrV7Nhp0KtEo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-mgdDRM8vOwiYSE6W0iD38A-1; Mon, 03 Aug 2020 08:18:23 -0400
+X-MC-Unique: mgdDRM8vOwiYSE6W0iD38A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4531D204EC;
-        Mon,  3 Aug 2020 12:22:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457369;
-        bh=++hyzfACkAa2aUFO1sdFq30B0zlkTRk6qbxeCD0oGdY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=exxE2HbitbVPkzNCDGu2qndrcBAS4WO5aGdah5ryWYaFIEuIEjjgzJkZhOeXZSWU4
-         Fk1rJ8UxLzK16MdFoUCIMYOIzZhKgMD6GRfJaKptXG+W+K7ahf4mjxHNZroi0hP9fU
-         Jl9t2o2DGCwZt506i7BQznWrJvWju9Azlxmf02Gs=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tanner Love <tannerlove@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 043/120] selftests/net: rxtimestamp: fix clang issues for target arch PowerPC
-Date:   Mon,  3 Aug 2020 14:18:21 +0200
-Message-Id: <20200803121904.910976751@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
-References: <20200803121902.860751811@linuxfoundation.org>
-User-Agent: quilt/0.66
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA293805721;
+        Mon,  3 Aug 2020 12:18:22 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9D5195D9F7;
+        Mon,  3 Aug 2020 12:18:22 +0000 (UTC)
+Received: from zmail17.collab.prod.int.phx2.redhat.com (zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 8E7F21809547;
+        Mon,  3 Aug 2020 12:18:22 +0000 (UTC)
+Date:   Mon, 3 Aug 2020 08:18:22 -0400 (EDT)
+From:   Jan Stancek <jstancek@redhat.com>
+To:     broonie@kernel.org, skhan@linuxfoundation.org
+Cc:     ltp@lists.linux.it, linux-kernel@vger.kernel.org
+Message-ID: <1881588710.5797015.1596457102422.JavaMail.zimbra@redhat.com>
+In-Reply-To: <9927ed18c642db002e43afe5e36fb9c18c4f9495.1594811090.git.jstancek@redhat.com>
+References: <9927ed18c642db002e43afe5e36fb9c18c4f9495.1594811090.git.jstancek@redhat.com>
+Subject: Re: [PATCH] selftests: vdso: hash entry size on alpha,s390x is 8
+ bytes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.208.12, 10.4.195.12]
+Thread-Topic: selftests: vdso: hash entry size on alpha,s390x is 8 bytes
+Thread-Index: mzWLwxoVgxh0LzlPvmyKz4MhjG4FnQ==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tanner Love <tannerlove@google.com>
 
-[ Upstream commit 955cbe91bcf782c09afe369c95a20f0a4b6dcc3c ]
+----- Original Message -----
+> parse_vdso.c is crashing on 5.8-rc5 s390x, because it wrongly reads
+> nbucket as 0:
+>   Program received signal SIGFPE, Arithmetic exception.
+>   0x0000000001000f3e in vdso_sym (version=0x1001280 "LINUX_2.6",
+>   name=0x100128a "__vdso_getcpu") at parse_vdso.c:207
+>   207             ELF(Word) chain = vdso_info.bucket[elf_hash(name) %
+>   vdso_info.nbucket];
+>   (gdb) p vdso_info.nbucket
+>   $1 = 0
+> 
+> Per readelf source:
+>   https://sourceware.org/git/?p=binutils-gdb.git;a=blob;f=binutils/readelf.c;h=2406304fe35a832ac53aa7b1a367f3f7afed4264;hb=HEAD#l10027
+> and objdump output hash entries are double size on 64bit s390 and alpha:
+>   0000000000000120 <.hash>:
+>    120:   00 00 00 00             .long   0x00000000
+>    124:   00 00 00 03             .long   0x00000003
+>    128:   00 00 00 00             .long   0x00000000
+>    12c:   00 00 00 07             .long   0x00000007
+>    130:   00 00 00 00             .long   0x00000000
+>    134:   00 00 00 01             .long   0x00000001
+>    138:   00 00 00 00             .long   0x00000000
+>    13c:   00 00 00 05             .long   0x00000005
+>    140:   00 00 00 00             .long   0x00000000
+>    144:   00 00 00 06             .long   0x00000006
+> 	  ...
+>    16c:   00 00 00 02             .long   0x00000002
+>    170:   00 00 00 00             .long   0x00000000
+>    174:   00 00 00 03             .long   0x00000003
+>    178:   00 00 00 00             .long   0x00000000
+>    17c:   00 00 00 04             .long   0x00000004
+> 
+> Do similar check in parse_vdso.c and treat hash entries as double word.
 
-The signedness of char is implementation-dependent. Some systems
-(including PowerPC and ARM) use unsigned char. Clang 9 threw:
-warning: result of comparison of constant -1 with expression of type \
-'char' is always true [-Wtautological-constant-out-of-range-compare]
-                                  &arg_index)) != -1) {
-
-Tested: make -C tools/testing/selftests TARGETS="net" run_tests
-
-Fixes: 16e781224198 ("selftests/net: Add a test to validate behavior of rx timestamps")
-Signed-off-by: Tanner Love <tannerlove@google.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/net/rxtimestamp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/net/rxtimestamp.c b/tools/testing/selftests/net/rxtimestamp.c
-index 422e7761254de..bcb79ba1f2143 100644
---- a/tools/testing/selftests/net/rxtimestamp.c
-+++ b/tools/testing/selftests/net/rxtimestamp.c
-@@ -329,8 +329,7 @@ int main(int argc, char **argv)
- 	bool all_tests = true;
- 	int arg_index = 0;
- 	int failures = 0;
--	int s, t;
--	char opt;
-+	int s, t, opt;
- 
- 	while ((opt = getopt_long(argc, argv, "", long_options,
- 				  &arg_index)) != -1) {
--- 
-2.25.1
-
-
+Ping, any thoughts about the issue or patch?
 
