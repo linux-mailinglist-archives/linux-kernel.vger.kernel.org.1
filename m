@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E482C23A468
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398F423A49D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728418AbgHCM0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:26:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52086 "EHLO mail.kernel.org"
+        id S1728840AbgHCM27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:28:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727873AbgHCM0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:26:36 -0400
+        id S1728218AbgHCM2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:28:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C850E207FB;
-        Mon,  3 Aug 2020 12:26:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25B74204EC;
+        Mon,  3 Aug 2020 12:28:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457595;
-        bh=kbe8WXIGRrAQO4d8dZZB8ZfVPuIxlU9GkwkGd1km1gg=;
+        s=default; t=1596457733;
+        bh=lhv4IwAgqn2rxgBpcw8dPa2pumagXqXev8znU1R0jLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QUIwt69o+UZynoWhXNWOjJ89zGHeFjISYDLyJArIg7XF5TbxuTUY8QhGAvvqN3OoP
-         N9xVxBPQQEBpfxr+7QkcirxUXvntpPGw1ik/qUJsTIGZIEQkFPQWWT3vrEsUnA4HCJ
-         OYYq/j/e80Dw6lMOxWpW4hpU/JDRVjQlRmABZXrY=
+        b=juaav0UmovZhGoVcbI94xhjk2sZUZstNR56UJKBYxYdEOiu0DnnSY7LTFDRyBHAim
+         gim23RnauEkpk96CEW8o56MVMn2xoB8ntqv/9Ee52SVrr/FG7CdRRJQlpdt2uGOcFS
+         PXBmNck3yswjd546xPfC+RNH136XmdRTvT77Uq5s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurence Oberman <loberman@redhat.com>,
+        stable@vger.kernel.org, "Gong, Sishuai" <sishuai@purdue.edu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 098/120] qed: Disable "MFW indication via attention" SPAM every 5 minutes
+Subject: [PATCH 5.4 54/90] rhashtable: Fix unprotected RCU dereference in __rht_ptr
 Date:   Mon,  3 Aug 2020 14:19:16 +0200
-Message-Id: <20200803121907.678159943@linuxfoundation.org>
+Message-Id: <20200803121900.241283758@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
-References: <20200803121902.860751811@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +45,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurence Oberman <loberman@redhat.com>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit 1d61e21852d3161f234b9656797669fe185c251b ]
+[ Upstream commit 1748f6a2cbc4694523f16da1c892b59861045b9d ]
 
-This is likely firmware causing this but its starting to annoy customers.
-Change the message level to verbose to prevent the spam.
-Note that this seems to only show up with ISCSI enabled on the HBA via the
-qedi driver.
+The rcu_dereference call in rht_ptr_rcu is completely bogus because
+we've already dereferenced the value in __rht_ptr and operated on it.
+This causes potential double readings which could be fatal.  The RCU
+dereference must occur prior to the comparison in __rht_ptr.
 
-Signed-off-by: Laurence Oberman <loberman@redhat.com>
+This patch changes the order of RCU dereference so that it is done
+first and the result is then fed to __rht_ptr.  The RCU marking
+changes have been minimised using casts which will be removed in
+a follow-up patch.
+
+Fixes: ba6306e3f648 ("rhashtable: Remove RCU marking from...")
+Reported-by: "Gong, Sishuai" <sishuai@purdue.edu>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_int.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/rhashtable.h | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_int.c b/drivers/net/ethernet/qlogic/qed/qed_int.c
-index 8d106063e9275..666e43748a5f4 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_int.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_int.c
-@@ -1180,7 +1180,8 @@ static int qed_int_attentions(struct qed_hwfn *p_hwfn)
- 			index, attn_bits, attn_acks, asserted_bits,
- 			deasserted_bits, p_sb_attn_sw->known_attn);
- 	} else if (asserted_bits == 0x100) {
--		DP_INFO(p_hwfn, "MFW indication via attention\n");
-+		DP_VERBOSE(p_hwfn, NETIF_MSG_INTR,
-+			   "MFW indication via attention\n");
- 	} else {
- 		DP_VERBOSE(p_hwfn, NETIF_MSG_INTR,
- 			   "MFW indication [deassertion]\n");
+diff --git a/include/linux/rhashtable.h b/include/linux/rhashtable.h
+index beb9a9da16994..c5bf21261bb19 100644
+--- a/include/linux/rhashtable.h
++++ b/include/linux/rhashtable.h
+@@ -349,11 +349,11 @@ static inline void rht_unlock(struct bucket_table *tbl,
+ 	local_bh_enable();
+ }
+ 
+-static inline struct rhash_head __rcu *__rht_ptr(
+-	struct rhash_lock_head *const *bkt)
++static inline struct rhash_head *__rht_ptr(
++	struct rhash_lock_head *p, struct rhash_lock_head __rcu *const *bkt)
+ {
+-	return (struct rhash_head __rcu *)
+-		((unsigned long)*bkt & ~BIT(0) ?:
++	return (struct rhash_head *)
++		((unsigned long)p & ~BIT(0) ?:
+ 		 (unsigned long)RHT_NULLS_MARKER(bkt));
+ }
+ 
+@@ -365,25 +365,26 @@ static inline struct rhash_head __rcu *__rht_ptr(
+  *            access is guaranteed, such as when destroying the table.
+  */
+ static inline struct rhash_head *rht_ptr_rcu(
+-	struct rhash_lock_head *const *bkt)
++	struct rhash_lock_head *const *p)
+ {
+-	struct rhash_head __rcu *p = __rht_ptr(bkt);
+-
+-	return rcu_dereference(p);
++	struct rhash_lock_head __rcu *const *bkt = (void *)p;
++	return __rht_ptr(rcu_dereference(*bkt), bkt);
+ }
+ 
+ static inline struct rhash_head *rht_ptr(
+-	struct rhash_lock_head *const *bkt,
++	struct rhash_lock_head *const *p,
+ 	struct bucket_table *tbl,
+ 	unsigned int hash)
+ {
+-	return rht_dereference_bucket(__rht_ptr(bkt), tbl, hash);
++	struct rhash_lock_head __rcu *const *bkt = (void *)p;
++	return __rht_ptr(rht_dereference_bucket(*bkt, tbl, hash), bkt);
+ }
+ 
+ static inline struct rhash_head *rht_ptr_exclusive(
+-	struct rhash_lock_head *const *bkt)
++	struct rhash_lock_head *const *p)
+ {
+-	return rcu_dereference_protected(__rht_ptr(bkt), 1);
++	struct rhash_lock_head __rcu *const *bkt = (void *)p;
++	return __rht_ptr(rcu_dereference_protected(*bkt, 1), bkt);
+ }
+ 
+ static inline void rht_assign_locked(struct rhash_lock_head **bkt,
 -- 
 2.25.1
 
