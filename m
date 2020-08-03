@@ -2,111 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA6123AB86
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 19:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC63023AB96
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 19:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgHCRTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 13:19:48 -0400
-Received: from mga12.intel.com ([192.55.52.136]:57963 "EHLO mga12.intel.com"
+        id S1728522AbgHCRVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 13:21:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727803AbgHCRTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 13:19:47 -0400
-IronPort-SDR: fY6V27xfypH9r6Az8EPEF+QSxbLloTxwTbDmr6/9g0Jttp3F3btsrWKd9KeYMZ0CNl4zW5kiZy
- ioJTHr8widvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="131727768"
-X-IronPort-AV: E=Sophos;i="5.75,430,1589266800"; 
-   d="scan'208";a="131727768"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 10:19:47 -0700
-IronPort-SDR: KtHv35ANwZ8f7TkVfEpIBacjRUfJCoFDiYIqTEtwVJn0JL3JUXRZ6F9eqNCZZWvhjuk8Saq7H4
- s4Ctke6jmV9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,430,1589266800"; 
-   d="scan'208";a="275358327"
-Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Aug 2020 10:19:47 -0700
-Date:   Mon, 3 Aug 2020 17:19:47 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        H Peter Anvin <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu <iommu@lists.linux-foundation.org>,
-        amd-gfx <amd-gfx@lists.freedesktop.org>
-Subject: Re: [PATCH v6 12/12] x86/traps: Fix up invalid PASID
-Message-ID: <20200803171947.GA329474@otcwcpicx6.sc.intel.com>
-References: <1594684087-61184-1-git-send-email-fenghua.yu@intel.com>
- <1594684087-61184-13-git-send-email-fenghua.yu@intel.com>
- <CALCETrV6yTjFzuTMEP8T9_QfjAXktHZcMXSqionZGJ=Lj0YdFg@mail.gmail.com>
+        id S1727803AbgHCRVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 13:21:06 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D71D220792;
+        Mon,  3 Aug 2020 17:21:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596475265;
+        bh=jGN7xhLfLhvidfL47wcuIKF2cDWQoBJ68JRX9J/3CaI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2cjkusXf5uipTXfA/Efb96S/p2wf7pAsFsMItD6wYfAAJJmSLoo4cdCHrAU079Wjh
+         y6qiyjYKGGuZdAabq3/coHxCq+UPL0UySp+aNGwuH02cS7DDuOoUrkabk/N+2y4N4U
+         rD3yvkQGYDWnYz+xkdRbbW15H/1NHVF8dRFlM5/k=
+Date:   Mon, 3 Aug 2020 10:21:04 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     syzbot <syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com>,
+        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: slab-out-of-bounds Read in hci_le_meta_evt
+Message-ID: <20200803172104.GA1644292@gmail.com>
+References: <000000000000a876b805abfa77e0@google.com>
+ <20200803171232.GR1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrV6yTjFzuTMEP8T9_QfjAXktHZcMXSqionZGJ=Lj0YdFg@mail.gmail.com>
+In-Reply-To: <20200803171232.GR1551@shell.armlinux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Andy,
-
-On Fri, Jul 31, 2020 at 06:28:37PM -0700, Andy Lutomirski wrote:
-> On Mon, Jul 13, 2020 at 4:48 PM Fenghua Yu <fenghua.yu@intel.com> wrote:
-> >
-> > A #GP fault is generated when ENQCMD instruction is executed without
-> > a valid PASID value programmed in the current thread's PASID MSR. The
-> > #GP fault handler will initialize the MSR if a PASID has been allocated
-> > for this process.
+On Mon, Aug 03, 2020 at 06:12:33PM +0100, Russell King - ARM Linux admin wrote:
+> Dear syzbot,
 > 
-> Let's take a step back here.  Why are we trying to avoid IPIs?  If you
-> call munmap(), you IPI other CPUs running tasks in the current mm.  If
-> you do perf_event_open() and thus acquire RDPMC permission, you IPI
-> other CPUs running tasks in the current mm.  If you call modify_ldt(),
-> you IPI other CPUs running tasks in the current mm.  These events can
-> all happen more than once per process.
+> Please explain why you are spamming me with all these reports - four so
+> far.  I don't understand why you think I should be doing anything with
+> these.
 > 
-> Now we have ENQCMD.  An mm can be assigned a PASID *once* in the model
-> that these patches support.  Why not just send an IPI using
-> essentially identical code to the LDT sync or the CR4.PCE sync?
+> Thanks.
 
-ldt (or the other two cases) is different from ENQCMD: the PASID MSR
-is per-task and is supported by xsaves.
+syzbot just uses get_maintainer.pl.
 
-The per-task PASID MSR needs to updated to ALL tasks. That means IPI,
-which only updates running tasks' MSRs, is not enough. All tasks' MSRs
-need to be updated when a PASID is allocated.
-
-This difference increases the complexity of sending IPI to running tasks
-and updating sleeping tasks's MSRs with locking etc.
-
-Of course, it's doable not to update the MSRs in all task when a new PASID
-is allocated to the mm. But that means we need to discard xsaves support
-for the MSR and create our own switch function to load the MSR. That
-increases complexity.
-
-We tried similar IPI way to update the PASID in about 200 lines of code.
-As Dave Hansen pointed, it's too complex. The current lazy updating the MSR
-only takes essential 3 lines of code in #GP.
-
-Does it make sense to still use the current fix up method to update the MSR?
-
-Thanks.
-
--Fenghua
+$ ./scripts/get_maintainer.pl net/bluetooth/hci_event.c
+Marcel Holtmann <marcel@holtmann.org> (maintainer:BLUETOOTH SUBSYSTEM)
+Johan Hedberg <johan.hedberg@gmail.com> (maintainer:BLUETOOTH SUBSYSTEM)
+"David S. Miller" <davem@davemloft.net> (maintainer:NETWORKING [GENERAL])
+Jakub Kicinski <kuba@kernel.org> (maintainer:NETWORKING [GENERAL])
+Russell King <linux@armlinux.org.uk> (maintainer:SFF/SFP/SFP+ MODULE SUPPORT)
+linux-bluetooth@vger.kernel.org (open list:BLUETOOTH SUBSYSTEM)
+netdev@vger.kernel.org (open list:NETWORKING [GENERAL])
+linux-kernel@vger.kernel.org (open list)
