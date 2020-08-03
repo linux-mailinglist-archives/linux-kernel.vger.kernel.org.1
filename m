@@ -2,154 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3591F23B039
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 00:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C752E23B040
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 00:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgHCWg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 18:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51806 "EHLO
+        id S1728307AbgHCWio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 18:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgHCWgz (ORCPT
+        with ESMTP id S1726276AbgHCWio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 18:36:55 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A69C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 15:36:55 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id o36so7596245ooi.11
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 15:36:55 -0700 (PDT)
+        Mon, 3 Aug 2020 18:38:44 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB0FC06174A;
+        Mon,  3 Aug 2020 15:38:44 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id w17so21763957ply.11;
+        Mon, 03 Aug 2020 15:38:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=plK0GqymQ3C+2tzFtVYK3uq+W2cl/h2HrwEp4cvkNz0=;
-        b=HuLhhen2pDFfGpx7/pDu8MlNO84aMsg+zaGc7beck6LLA8p82M5PV/B9ewhKHGLtF8
-         T1m2D316IHgQQKVDmQE+GesG8evh3kRnP4lIPiaaam2fdkHeeTWXSHmowl8LfPcDr4wY
-         u6pXasbCL7IUjQyFmSyFrMeBgYGbPgKsRmumzMyaXPI3Th5pQP7Ku83hV2qqNNdSiVkJ
-         Xgb3eUjKCbyrGboUJ4TLiqdyooAhuztmh4fa7vB5Gxxq7mWEZGWhBFGdH3fzotUqeVbs
-         G8ZzoK7xExYC+gcaejEtLYLPsAj/kPh+fZDBBriMf4lFdOaESlzFSO7rHj3t5JOOLqpU
-         ZkNA==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=AX8P5SKs4RxEU7ZpFU9jN59OucHZg9tzIJ/e/VXbTYw=;
+        b=q2zt9D+SIiYjnYDi0kYbfBNtbDV08MM+29B8yrwIABZRNZy46qWK7SRUjNjjeICZXC
+         TxzJoux6iyzuDEzgWe3xWJRGW2iFO9aup+EbbLUW950/Cw5CcG542YL7xbiLRPNCkgCq
+         EUf/J/bRMmP8d59mRFdvcXpPASfYMfM6I7H/8Q8GtwHrO6ER2DJ2Ik0/f8jgzGe6rs/v
+         n1L4kJPiHhZ8i1RkZA94SklGkcFFPlaZXzJYsNm6+e00QzGDipsRknyW079umhzvGZtf
+         D1MhNBmX3QNG4eso5Au8m4e0S00TSjH1OATUFIEWHEnY3aD0roNLsa/o1gNjXBbKhTUl
+         ptfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=plK0GqymQ3C+2tzFtVYK3uq+W2cl/h2HrwEp4cvkNz0=;
-        b=s03/eQOMDqGFQe2xi/Qfwd5Px2spXWSNROLw01pQiti4ImK1GfRaUwCLq82042Uk0r
-         oTwbsoMmxy/bvUzd+H8H9xUOeJ4B81D4ikMI8RubowbIhKapOhO9lPMDWD7skI7TfA4e
-         MBlj3pvhvtynJVOctJO3BbE/Mgra9xu8mrdQrz4WyYyf9o6cU1qV45x4gv+ZNuWBO2tB
-         bWy/FBGp0vVPGy5zEgCBa73Q12TrsFY3/KX1cOcY8mdpJ1FE5KusB23kf+f3zPM0BI+g
-         VJvJ7t/SxBnzpG9zuAW6R6Q7fjZQqXJj0WJW0QXbPqFJfGWQYrh7EytfQWxZ+uKj9VHa
-         bBeA==
-X-Gm-Message-State: AOAM533OKw2lkULujLMeckT6pBmjGcS82+mK+93MY3XpOy3HuuUmsfJQ
-        ukwdUUlxhG9w+XiQeSfmt8O2TxERjXFZ1l9LvNWBfg==
-X-Google-Smtp-Source: ABdhPJzRdyOIZ6AaODF+3TWMXbK/cmhMhDk54se1B4pktCP1gqBjujYPJDPznkQQURjT7Fdpu3qwxN+CZGs/XGVfqO8=
-X-Received: by 2002:a4a:751a:: with SMTP id j26mr9527841ooc.7.1596494214434;
- Mon, 03 Aug 2020 15:36:54 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AX8P5SKs4RxEU7ZpFU9jN59OucHZg9tzIJ/e/VXbTYw=;
+        b=MqVExEczozpjAqvFyCejM6r+zC8TtK9GX3jsJxpYluKhCUWkCUxVrrqf82zdwPih87
+         Uz8v1N3FFgOdd0Obo58wxP9JJuRoljvBA66+4dY8KxUE2jqdtUsi4unMlZE5GsTDa33w
+         gIw0l3EDz4A8KlQy0fffefuDMOpt9nuMi6GiIPJUQjy/58WPVZ8NUTs1LO1gZhUukjSi
+         XFXPPf8LDCpv/8MDGnzvOdHMHm508FemXRRjXQJKtcrQs5LcSq+fXE1YVom4M/ersHrY
+         46xV77cgoFzI1cNK1JooCJimY36VFK757AoJbLeF7yVax4VV9UKF3X8F4hg50CpBsTEb
+         G8Vg==
+X-Gm-Message-State: AOAM530RtGWzaFEDPDgwfJTB1XP7+4knFHIcMTBU7tuN/EGXE05fkYlf
+        uGyytbZdwrcal1MIHpTqujg=
+X-Google-Smtp-Source: ABdhPJy6PXHcy8CX+mGcA9wwdsuzxLm8TUkLIsXV+Y6np08kQPCJkdfCQTlLNMnaJu4/XfOWs3nhrA==
+X-Received: by 2002:a17:90a:bc45:: with SMTP id t5mr1375382pjv.139.1596494323642;
+        Mon, 03 Aug 2020 15:38:43 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id q12sm22103571pfg.135.2020.08.03.15.38.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Aug 2020 15:38:42 -0700 (PDT)
+Subject: Re: [PATCH v4 1/2] net: dsa: Add protocol support for 802.1AD when
+ adding or deleting vlan for dsa switch port
+To:     hongbo.wang@nxp.com, xiaoliang.yang_1@nxp.com,
+        allan.nielsen@microchip.com, po.liu@nxp.com,
+        claudiu.manoil@nxp.com, alexandru.marginean@nxp.com,
+        vladimir.oltean@nxp.com, leoyang.li@nxp.com, mingkai.hu@nxp.com,
+        andrew@lunn.ch, vivien.didelot@gmail.com, davem@davemloft.net,
+        jiri@resnulli.us, idosch@idosch.org, kuba@kernel.org,
+        vinicius.gomes@intel.com, nikolay@cumulusnetworks.com,
+        roopa@cumulusnetworks.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, horatiu.vultur@microchip.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        ivecera@redhat.com
+References: <20200730102505.27039-1-hongbo.wang@nxp.com>
+ <20200730102505.27039-2-hongbo.wang@nxp.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <effcb1fe-79ed-ed79-ffe3-977ed9aa006e@gmail.com>
+Date:   Mon, 3 Aug 2020 15:38:31 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200728070131.1629670-1-xii@google.com> <20200728103907.GT119549@hirez.programming.kicks-ass.net>
- <CAOBoifg6Cm2P+HUH0mS1tNpVMa1giWDwKbQ6FofWGZoz1tTt5A@mail.gmail.com>
-In-Reply-To: <CAOBoifg6Cm2P+HUH0mS1tNpVMa1giWDwKbQ6FofWGZoz1tTt5A@mail.gmail.com>
-From:   Xi Wang <xii@google.com>
-Date:   Mon, 3 Aug 2020 15:38:18 -0700
-Message-ID: <CAOBoifhX9v-KOP2bt-ppSFfNB2b26vzOHANUYaFx8hESsiQDnQ@mail.gmail.com>
-Subject: Re: [PATCH] sched: Make select_idle_sibling search domain configurable
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, suravee.suthikulpanit@amd.com,
-        thomas.lendacky@amd.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200730102505.27039-2-hongbo.wang@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 10:54 AM Xi Wang <xii@google.com> wrote:
->
-> On Tue, Jul 28, 2020 at 3:39 AM <peterz@infradead.org> wrote:
-> >
-> > On Tue, Jul 28, 2020 at 12:01:31AM -0700, Xi Wang wrote:
-> > > The scope of select_idle_sibling idle cpu search is LLC. This
-> > > becomes a problem for the AMD CCX architecture, as the sd_llc is only
-> > > 4 cores. On a many core machine, the range of search is too small to
-> > > reach a satisfactory level of statistical multiplexing / efficient
-> > > utilization of short idle time slices.
-> > >
-> > > With this patch idle sibling search is detached from LLC and it
-> > > becomes run time configurable. To reduce search and migration
-> > > overheads, a presearch domain is added. The presearch domain will be
-> > > searched first before the "main search" domain, e.g.:
-> > >
-> > > sysctl_sched_wake_idle_domain == 2 ("MC" domain)
-> > > sysctl_sched_wake_idle_presearch_domain == 1 ("DIE" domain)
-> > >
-> > > Presearch will go through 4 cores of a CCX. If no idle cpu is found
-> > > during presearch, full search will go through the remaining cores of
-> > > a cpu socket.
-> >
-> > *groan*, this is horrific :-(
-> >
-> > It is also in direct conflict with people wanting to make it smaller.
-> >
-> > On top of that, a domain number is a terrible terrible interface. They
-> > aren't even available without SCHED_DEBUG on.
-> >
-> > What is the inter-L3 latency? Going by this that had better be awesome.
-> > And if this Infinity Fabric stuff if highly effective in effectively
-> > merging L3s -- analogous to what Intel does with it's cache slices, then
-> > should we not change the AMD topology setup instead of this 'thing'?
-> >
-> > Also, this commit:
-> >
-> >   051f3ca02e46 ("sched/topology: Introduce NUMA identity node sched domain")
-> >
-> > seems to suggest L3 is actually bigger. Suravee, can you please comment?
->
-> I think 051f3ca02e46 was still saying 4 cores sharing an L3 but there
-> is another numa layer which is 8 cores or 2 * 4 core L3 groups. This
-> should be the chiplet layer.
->
-> I don't have precise data but some anecdotes are: The latency
-> difference between inter 4 core group access and inter 8 core group
-> access is not huge. Also my experience from Intel machines was that
-> accessing L3 data across numa domains (also across cpu socket) was not
-> too bad until the link bandwidth was saturated. I am hoping the
-> bandwidth situation is better for AMD as L3 groups are smaller.
-> Another factor is sometimes the trade off is spending 10s of us of
-> sched overhead vs time slicing at ~12.5ms latency.
->
-> What makes the decision trickly is the configuration can depend on
-> applications and the scale of the system. For a system with 8 cores,
-> running it the old way with 2 * 4 core LLCs might be the best
-> decision. For a system with a lot more cores, the number of threads on
-> the machine would also scale up, which means more potential to create
-> a dynamic imbalance. I have another (even more horrific) patch for
-> auto configuring the sysctls, which has (nnext is the size of the next
-> higher sched domain):
->
-> /*
-> * Widen the range of idle core search if llc domain is too small, both in
-> * absolute sense and when compared to the next higher level domain.
-> */
-> if (nllc < min(24, nnext / 4)) {
->         sysctl_sched_wake_idle_domain = next_level;
->         sysctl_sched_wake_idle_presearch_domain = llc_level;
->         /* Also make new idle search domain params more like default llc */
->         sysctl_sched_wake_idle_domain_tune_flags = 1;
-> }
->
-> -Xi
 
 
-Overall I think the current numa defaults should be considered broken
-for large AMD machines due to latency and core utilization problems.
-We need to have some solution for it. Simply Moving up the llc domain
-should work, but we likely also want to avoid some of the obvious
-overheads. Maybe switching to a CCX local first search order inside
-select_idle_core would simplify it? It appears the configuration part
-is still difficult to clean up.
+On 7/30/2020 3:25 AM, hongbo.wang@nxp.com wrote:
+> From: "hongbo.wang" <hongbo.wang@nxp.com>
+> 
+> the following command will be supported:
+> 
+> Set bridge's vlan protocol:
+>     ip link set br0 type bridge vlan_protocol 802.1ad
+> Add VLAN:
+>     ip link add link swp1 name swp1.100 type vlan protocol 802.1ad id 100
+> Delete VLAN:
+>     ip link del link swp1 name swp1.100
+> 
+> Signed-off-by: hongbo.wang <hongbo.wang@nxp.com>
+> ---
+>  include/net/switchdev.h |  1 +
+>  net/dsa/dsa_priv.h      |  4 ++--
+>  net/dsa/port.c          |  6 ++++--
+>  net/dsa/slave.c         | 27 +++++++++++++++++++++------
+>  net/dsa/tag_8021q.c     |  4 ++--
+>  5 files changed, 30 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/net/switchdev.h b/include/net/switchdev.h
+> index ff2246914301..7594ea82879f 100644
+> --- a/include/net/switchdev.h
+> +++ b/include/net/switchdev.h
+> @@ -97,6 +97,7 @@ struct switchdev_obj_port_vlan {
+>  	u16 flags;
+>  	u16 vid_begin;
+>  	u16 vid_end;
+> +	u16 proto;
 
--Xi
+You are adding a new member to the switchdev VLAN object, so you should
+make sure that all call paths creating and parsing that object get
+updated as well, for now, you are doing this solely within DSA which is
+probably reasonable if we assume proto is uninitialized and unused
+elsewhere, there is no change of functionality.
+
+[snip]
+
+> diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+> index 41d60eeefdbd..2a03da92af0a 100644
+> --- a/net/dsa/slave.c
+> +++ b/net/dsa/slave.c
+> @@ -1233,7 +1233,10 @@ static int dsa_slave_vlan_rx_add_vid(struct net_device *dev, __be16 proto,
+>  				     u16 vid)
+>  {
+>  	struct dsa_port *dp = dsa_slave_to_port(dev);
+> +	u16 vlan_proto = ntohs(proto);
+>  	struct bridge_vlan_info info;
+> +	bool change_proto = false;
+> +	u16 br_proto = 0;
+>  	int ret;
+>  
+>  	/* Check for a possible bridge VLAN entry now since there is no
+> @@ -1243,20 +1246,24 @@ static int dsa_slave_vlan_rx_add_vid(struct net_device *dev, __be16 proto,
+>  		if (dsa_port_skip_vlan_configuration(dp))
+>  			return 0;
+>  
+> +		ret = br_vlan_get_proto(dp->bridge_dev, &br_proto);
+> +		if (ret == 0 && br_proto != vlan_proto)
+> +			change_proto = true;
+
+
+This deserves a comment, because the change_proto variable is not really
+explaining what this is about, maybe more like "incompatible_proto" would?
+
+First you query the VLAN protocol currently configured on the bridge
+master device, and if this VLAN protocol is different than the one being
+requested, then you treat this as an error. It might make sense to also
+print a message towards the user that the bridge device protocol should
+be changed, or that the bridge device should be removed and re-created
+accordingly.
+
+Does it not work if we have a bridge currently configured with 802.1ad
+and a 802.1q VLAN programming request comes in? In premise it should,
+right? Likewise, if we had a 802.1ad bridge configured already and we
+want to configure a 802.1Q VLAN on a bridged port, there should be a way
+for this configuration to work.
+
+And both cases, it ought to be possible to configure the switch in
+double tagged mode and just make sure that there is no S-tag being added
+unless requested.
+
+> +
+>  		/* br_vlan_get_info() returns -EINVAL or -ENOENT if the
+>  		 * device, respectively the VID is not found, returning
+>  		 * 0 means success, which is a failure for us here.
+>  		 */
+>  		ret = br_vlan_get_info(dp->bridge_dev, vid, &info);
+> -		if (ret == 0)
+> +		if (ret == 0 && !change_proto)
+>  			return -EBUSY;
+>  	}
+>  
+> -	ret = dsa_port_vid_add(dp, vid, 0);
+> +	ret = dsa_port_vid_add(dp, vid, vlan_proto, 0);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = dsa_port_vid_add(dp->cpu_dp, vid, 0);
+> +	ret = dsa_port_vid_add(dp->cpu_dp, vid, 0, 0);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -1267,7 +1274,10 @@ static int dsa_slave_vlan_rx_kill_vid(struct net_device *dev, __be16 proto,
+>  				      u16 vid)
+>  {
+>  	struct dsa_port *dp = dsa_slave_to_port(dev);
+> +	u16 vlan_proto = ntohs(proto);
+>  	struct bridge_vlan_info info;
+> +	bool change_proto = false;
+> +	u16 br_proto = 0;
+>  	int ret;
+>  
+>  	/* Check for a possible bridge VLAN entry now since there is no
+> @@ -1277,19 +1287,23 @@ static int dsa_slave_vlan_rx_kill_vid(struct net_device *dev, __be16 proto,
+>  		if (dsa_port_skip_vlan_configuration(dp))
+>  			return 0;
+>  
+> +		ret = br_vlan_get_proto(dp->bridge_dev, &br_proto);
+> +		if (ret == 0 && br_proto != vlan_proto)
+> +			change_proto = true;
+> +
+>  		/* br_vlan_get_info() returns -EINVAL or -ENOENT if the
+>  		 * device, respectively the VID is not found, returning
+>  		 * 0 means success, which is a failure for us here.
+>  		 */
+>  		ret = br_vlan_get_info(dp->bridge_dev, vid, &info);
+> -		if (ret == 0)
+> +		if (ret == 0 && !change_proto)
+>  			return -EBUSY;
+
+Since we are copying the same code than in the add_vid path, it might
+make sense to extract this to a helper function eventually.
+
+>  	}
+>  
+>  	/* Do not deprogram the CPU port as it may be shared with other user
+>  	 * ports which can be members of this VLAN as well.
+>  	 */
+> -	return dsa_port_vid_del(dp, vid);
+> +	return dsa_port_vid_del(dp, vid, vlan_proto);
+>  }
+>  
+>  struct dsa_hw_port {
+> @@ -1744,7 +1758,8 @@ int dsa_slave_create(struct dsa_port *port)
+>  
+>  	slave_dev->features = master->vlan_features | NETIF_F_HW_TC;
+>  	if (ds->ops->port_vlan_add && ds->ops->port_vlan_del)
+> -		slave_dev->features |= NETIF_F_HW_VLAN_CTAG_FILTER;
+> +		slave_dev->features |= NETIF_F_HW_VLAN_CTAG_FILTER |
+> +				       NETIF_F_HW_VLAN_STAG_FILTER;
+
+You cannot advertise this netdev feature for *all* DSA switch driver
+unless you have verified that each DSA driver implementing
+port_vlan_add() will work correctly. Please assign this flag from within
+the ocelot driver for now.
+
+>  	slave_dev->hw_features |= NETIF_F_HW_TC;
+>  	slave_dev->features |= NETIF_F_LLTX;
+>  	slave_dev->ethtool_ops = &dsa_slave_ethtool_ops;
+> diff --git a/net/dsa/tag_8021q.c b/net/dsa/tag_8021q.c
+> index 780b2a15ac9b..848f85ed5c0f 100644
+> --- a/net/dsa/tag_8021q.c
+> +++ b/net/dsa/tag_8021q.c
+> @@ -152,9 +152,9 @@ static int dsa_8021q_vid_apply(struct dsa_switch *ds, int port, u16 vid,
+>  	struct dsa_port *dp = dsa_to_port(ds, port);
+>  
+>  	if (enabled)
+> -		return dsa_port_vid_add(dp, vid, flags);
+> +		return dsa_port_vid_add(dp, vid, 0, flags);
+
+Why not pass ETH_P_8021Q here to indicate we want a 802.1Q, not .AD
+configuration request?
+-- 
+Florian
