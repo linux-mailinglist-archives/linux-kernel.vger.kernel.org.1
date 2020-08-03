@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF60623A4DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C17C23A4E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgHCMa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:30:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58154 "EHLO mail.kernel.org"
+        id S1729169AbgHCMbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:31:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729114AbgHCMax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:30:53 -0400
+        id S1727914AbgHCMbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:31:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 764232076B;
-        Mon,  3 Aug 2020 12:30:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B9FE2054F;
+        Mon,  3 Aug 2020 12:31:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457852;
-        bh=1XyuKvmwYbLPHPN4jsoUH2TOc7R4uC09XNDVY4IuVZ4=;
+        s=default; t=1596457874;
+        bh=x4UMX5p252GYrKJ/aCarb85LZB57EhVLYClq7cIfOP0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uEtCJlkPYKrFxZI1mLO6nmRyvM9GbM+8gHlBWdHJfit6Y6DZf2dT6GQDMGCc5BMtp
-         Yw1QucbmJzUaN1hzyE51k4VbdSXm+VTQwbmaYM8gvmhe4vECMLVRLl9/3MQSqNyZq7
-         ymaL4jMwC86reHtu5Uk/Nd1lWi1dN1qWn8mSO668=
+        b=Q7tQ9/OMrZZc+2C6DnNwudVlWueJdnzsTdaJUJ9t52mjwyHs3roGrePL3xSEp59Em
+         xD8g99Bq0VonnGAmnsEKLyGXEzBzt2lj5WwNLKauy94DPeTVzFTLDWhYCov8UU4vaa
+         C9bTNNg6cc50lY1D+g5Z4d8/0lfHz9LLaRq8V800=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 66/90] net: gemini: Fix missing clk_disable_unprepare() in error path of gemini_ethernet_port_probe()
-Date:   Mon,  3 Aug 2020 14:19:28 +0200
-Message-Id: <20200803121900.814408872@linuxfoundation.org>
+        stable@vger.kernel.org, Pi-Hsun Shih <pihsun@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.19 14/56] wireless: Use offsetof instead of custom macro.
+Date:   Mon,  3 Aug 2020 14:19:29 +0200
+Message-Id: <20200803121851.023714217@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
+References: <20200803121850.306734207@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,48 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Pi-Hsun Shih <pihsun@chromium.org>
 
-[ Upstream commit 85496a29224188051b6135eb38da8afd4c584765 ]
+commit 6989310f5d4327e8595664954edd40a7f99ddd0d upstream.
 
-Fix the missing clk_disable_unprepare() before return
-from gemini_ethernet_port_probe() in the error handling case.
+Use offsetof to calculate offset of a field to take advantage of
+compiler built-in version when possible, and avoid UBSAN warning when
+compiling with Clang:
 
-Fixes: 4d5ae32f5e1e ("net: ethernet: Add a driver for Gemini gigabit ethernet")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+==================================================================
+UBSAN: Undefined behaviour in net/wireless/wext-core.c:525:14
+member access within null pointer of type 'struct iw_point'
+CPU: 3 PID: 165 Comm: kworker/u16:3 Tainted: G S      W         4.19.23 #43
+Workqueue: cfg80211 __cfg80211_scan_done [cfg80211]
+Call trace:
+ dump_backtrace+0x0/0x194
+ show_stack+0x20/0x2c
+ __dump_stack+0x20/0x28
+ dump_stack+0x70/0x94
+ ubsan_epilogue+0x14/0x44
+ ubsan_type_mismatch_common+0xf4/0xfc
+ __ubsan_handle_type_mismatch_v1+0x34/0x54
+ wireless_send_event+0x3cc/0x470
+ ___cfg80211_scan_done+0x13c/0x220 [cfg80211]
+ __cfg80211_scan_done+0x28/0x34 [cfg80211]
+ process_one_work+0x170/0x35c
+ worker_thread+0x254/0x380
+ kthread+0x13c/0x158
+ ret_from_fork+0x10/0x18
+===================================================================
+
+Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lore.kernel.org/r/20191204081307.138765-1-pihsun@chromium.org
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/cortina/gemini.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/uapi/linux/wireless.h |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
-index 2814b96751b4f..01ae113f122a0 100644
---- a/drivers/net/ethernet/cortina/gemini.c
-+++ b/drivers/net/ethernet/cortina/gemini.c
-@@ -2445,6 +2445,7 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
- 	port->reset = devm_reset_control_get_exclusive(dev, NULL);
- 	if (IS_ERR(port->reset)) {
- 		dev_err(dev, "no reset\n");
-+		clk_disable_unprepare(port->pclk);
- 		return PTR_ERR(port->reset);
- 	}
- 	reset_control_reset(port->reset);
-@@ -2500,8 +2501,10 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
- 					IRQF_SHARED,
- 					port_names[port->id],
- 					port);
--	if (ret)
-+	if (ret) {
-+		clk_disable_unprepare(port->pclk);
- 		return ret;
-+	}
+--- a/include/uapi/linux/wireless.h
++++ b/include/uapi/linux/wireless.h
+@@ -74,6 +74,8 @@
+ #include <linux/socket.h>		/* for "struct sockaddr" et al	*/
+ #include <linux/if.h>			/* for IFNAMSIZ and co... */
  
- 	ret = register_netdev(netdev);
- 	if (!ret) {
--- 
-2.25.1
-
++#include <stddef.h>                     /* for offsetof */
++
+ /***************************** VERSION *****************************/
+ /*
+  * This constant is used to know the availability of the wireless
+@@ -1090,8 +1092,7 @@ struct iw_event {
+ /* iw_point events are special. First, the payload (extra data) come at
+  * the end of the event, so they are bigger than IW_EV_POINT_LEN. Second,
+  * we omit the pointer, so start at an offset. */
+-#define IW_EV_POINT_OFF (((char *) &(((struct iw_point *) NULL)->length)) - \
+-			  (char *) NULL)
++#define IW_EV_POINT_OFF offsetof(struct iw_point, length)
+ #define IW_EV_POINT_LEN	(IW_EV_LCP_LEN + sizeof(struct iw_point) - \
+ 			 IW_EV_POINT_OFF)
+ 
 
 
