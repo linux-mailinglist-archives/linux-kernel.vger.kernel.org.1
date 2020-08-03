@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3161F23A4AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3673223A481
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728910AbgHCM32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:29:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55848 "EHLO mail.kernel.org"
+        id S1728666AbgHCM16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:27:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728899AbgHCM30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:29:26 -0400
+        id S1728649AbgHCM14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:27:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21068208B3;
-        Mon,  3 Aug 2020 12:29:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DDF7204EC;
+        Mon,  3 Aug 2020 12:27:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457764;
-        bh=58t99HR8+Tax0zKfs6wx22xjkurwynH69JPrye5E+oM=;
+        s=default; t=1596457675;
+        bh=ILED36g7XK7OsIw9mWBl8jjwQQwW/mGNlEfD6N8GLFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=htkg0/YzFIjnqj2cwW/6h3CK/z6zH+F1HaaFyTnOdfw3MmIant6etzruKGlnb32T2
-         Fl8pHkxyn1lO2YdlTwaSIW+v6N+2FleSCkzJ6MuUR235H35VpxFgthC+D3AmNjLYmN
-         KaCrTUa5eG14CNC7ShUqEFqBXrLuoyxvf+aWrhf4=
+        b=ftgA9+R9HzA6OPzjpKJJnpZt9nQRCfSQeAtQu6IWKxq3bOAG7zsdI4dYsCGYraG4B
+         1JyBPrw4vaze2YCU+srzzEwnyS0Q6S56XXcWPIvENV7uff5Th9tVkFmdxFd2ENUl3r
+         j+zSLeDtrMLJU7od3k25px50h4pge+9+i5BuWcbk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Duncan <1i5t5.duncan@cox.net>,
-        Mazin Rezk <mnrzk@protonmail.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 25/90] drm/amd/display: Clear dm_state for fast updates
-Date:   Mon,  3 Aug 2020 14:18:47 +0200
-Message-Id: <20200803121858.844350079@linuxfoundation.org>
+Subject: [PATCH 5.4 26/90] drm/amdgpu: Prevent kernel-infoleak in amdgpu_info_ioctl()
+Date:   Mon,  3 Aug 2020 14:18:48 +0200
+Message-Id: <20200803121858.892244197@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
 References: <20200803121857.546052424@linuxfoundation.org>
@@ -45,101 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mazin Rezk <mnrzk@protonmail.com>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-commit fde9f39ac7f1ffd799a96ffa1e06b2051f0898f1 upstream.
+commit 543e8669ed9bfb30545fd52bc0e047ca4df7fb31 upstream.
 
-This patch fixes a race condition that causes a use-after-free during
-amdgpu_dm_atomic_commit_tail. This can occur when 2 non-blocking commits
-are requested and the second one finishes before the first. Essentially,
-this bug occurs when the following sequence of events happens:
+Compiler leaves a 4-byte hole near the end of `dev_info`, causing
+amdgpu_info_ioctl() to copy uninitialized kernel stack memory to userspace
+when `size` is greater than 356.
 
-1. Non-blocking commit #1 is requested w/ a new dm_state #1 and is
-deferred to the workqueue.
+In 2015 we tried to fix this issue by doing `= {};` on `dev_info`, which
+unfortunately does not initialize that 4-byte hole. Fix it by using
+memset() instead.
 
-2. Non-blocking commit #2 is requested w/ a new dm_state #2 and is
-deferred to the workqueue.
-
-3. Commit #2 starts before commit #1, dm_state #1 is used in the
-commit_tail and commit #2 completes, freeing dm_state #1.
-
-4. Commit #1 starts after commit #2 completes, uses the freed dm_state
-1 and dereferences a freelist pointer while setting the context.
-
-Since this bug has only been spotted with fast commits, this patch fixes
-the bug by clearing the dm_state instead of using the old dc_state for
-fast updates. In addition, since dm_state is only used for its dc_state
-and amdgpu_dm_atomic_commit_tail will retain the dc_state if none is found,
-removing the dm_state should not have any consequences in fast updates.
-
-This use-after-free bug has existed for a while now, but only caused a
-noticeable issue starting from 5.7-rc1 due to 3202fa62f ("slub: relocate
-freelist pointer to middle of object") moving the freelist pointer from
-dm_state->base (which was unused) to dm_state->context (which is
-dereferenced).
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207383
-Fixes: bd200d190f45 ("drm/amd/display: Don't replace the dc_state for fast updates")
-Reported-by: Duncan <1i5t5.duncan@cox.net>
-Signed-off-by: Mazin Rezk <mnrzk@protonmail.com>
-Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
+Fixes: c193fa91b918 ("drm/amdgpu: information leak in amdgpu_info_ioctl()")
+Fixes: d38ceaf99ed0 ("drm/amdgpu: add core driver (v4)")
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   36 ++++++++++++++++------
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -7464,20 +7464,38 @@ static int amdgpu_dm_atomic_check(struct
- 		 * the same resource. If we have a new DC context as part of
- 		 * the DM atomic state from validation we need to free it and
- 		 * retain the existing one instead.
-+		 *
-+		 * Furthermore, since the DM atomic state only contains the DC
-+		 * context and can safely be annulled, we can free the state
-+		 * and clear the associated private object now to free
-+		 * some memory and avoid a possible use-after-free later.
- 		 */
--		struct dm_atomic_state *new_dm_state, *old_dm_state;
- 
--		new_dm_state = dm_atomic_get_new_state(state);
--		old_dm_state = dm_atomic_get_old_state(state);
-+		for (i = 0; i < state->num_private_objs; i++) {
-+			struct drm_private_obj *obj = state->private_objs[i].ptr;
- 
--		if (new_dm_state && old_dm_state) {
--			if (new_dm_state->context)
--				dc_release_state(new_dm_state->context);
-+			if (obj->funcs == adev->dm.atomic_obj.funcs) {
-+				int j = state->num_private_objs-1;
- 
--			new_dm_state->context = old_dm_state->context;
-+				dm_atomic_destroy_state(obj,
-+						state->private_objs[i].state);
- 
--			if (old_dm_state->context)
--				dc_retain_state(old_dm_state->context);
-+				/* If i is not at the end of the array then the
-+				 * last element needs to be moved to where i was
-+				 * before the array can safely be truncated.
-+				 */
-+				if (i != j)
-+					state->private_objs[i] =
-+						state->private_objs[j];
-+
-+				state->private_objs[j].ptr = NULL;
-+				state->private_objs[j].state = NULL;
-+				state->private_objs[j].old_state = NULL;
-+				state->private_objs[j].new_state = NULL;
-+
-+				state->num_private_objs = j;
-+				break;
-+			}
- 		}
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+@@ -667,9 +667,10 @@ static int amdgpu_info_ioctl(struct drm_
+ 		return n ? -EFAULT : 0;
  	}
+ 	case AMDGPU_INFO_DEV_INFO: {
+-		struct drm_amdgpu_info_device dev_info = {};
++		struct drm_amdgpu_info_device dev_info;
+ 		uint64_t vm_size;
  
++		memset(&dev_info, 0, sizeof(dev_info));
+ 		dev_info.device_id = dev->pdev->device;
+ 		dev_info.chip_rev = adev->rev_id;
+ 		dev_info.external_rev = adev->external_rev_id;
 
 
