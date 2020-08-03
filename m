@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE8623AE0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 22:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907E523AE12
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 22:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgHCUUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 16:20:19 -0400
-Received: from pb-smtp20.pobox.com ([173.228.157.52]:64517 "EHLO
-        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgHCUUS (ORCPT
+        id S1727029AbgHCUZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 16:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgHCUZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 16:20:18 -0400
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id 8731CF554D;
-        Mon,  3 Aug 2020 16:20:16 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=PF90wNMuKpjCQ5V/5619nvwTLro=; b=dddKWn
-        C44X0MRBNrallMp/OYIZNUaHHnSOD31wde63SYuclky+jvS7AokK5gpWV4ZpDQp8
-        1YS2JK/IY5WAZcq1jarHa6cRuFYp/jvIy4hyBAXdxB5LRAz+W4kPtznwOMHlWmc0
-        2aUvRMw7tYOPek0quk9K5ioEvcyKfG+qDDKrs=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id 7F25CF554C;
-        Mon,  3 Aug 2020 16:20:16 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=Q9xTu3Q7G6ybCTets5WU0b++RTe3jw3gfIDCaIw+Fog=; b=PLDu4peJV9GFqRgQ/gK3uKs6SclhX6iumGQpARWgslvZ828s41isyydhcY7iIHhe2e64FRi8PUaMlo1CFSRE4HJYWM8Dru0DeXAh61lbYkj3l5iYcA95R9VwQbau3alTvFj1CKrn/zpzhsFyb/bU85/IesAEyZdhQ/WtDqbkfjA=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 6E6C2F554B;
-        Mon,  3 Aug 2020 16:20:13 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 851B62DA0BFC;
-        Mon,  3 Aug 2020 16:20:11 -0400 (EDT)
-Date:   Mon, 3 Aug 2020 16:20:11 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-cc:     Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-i3c@lists.infradead.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Conor Culhane <conor.culhane@silvaco.com>,
-        Rajeev Huralikoppi <rajeev.huralikoppi@silvaco.com>,
-        npitre@baylibre.com
-Subject: Re: [PATCH 3/4] i3c: master: svc: Add Silvaco I3C master driver
-In-Reply-To: <20200709080159.2178-3-miquel.raynal@bootlin.com>
-Message-ID: <nycvar.YSQ.7.77.849.2008031546570.1112668@knanqh.ubzr>
-References: <20200709080159.2178-1-miquel.raynal@bootlin.com> <20200709080159.2178-3-miquel.raynal@bootlin.com>
+        Mon, 3 Aug 2020 16:25:46 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D1DC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 13:25:46 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id o18so39989245eje.7
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 13:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=KrXUGQJ4CRTS+uPce+ywusiHQCHyfc28Y+mQSw1Etg4=;
+        b=QMJb0d7qaPjInmsSaqZALzRdCUQA788voJgk+uHCLY3qyYGe2bg+gk+8T6TuclHZwT
+         Ob2iZtF2HsOXU5mrokoRsQ8fB14pD+Zfo0DTt+h93M79lS832USEii30nda3G1lKdYeR
+         ZSHMA6ZqMYqivXxrGI3BdUX/w3Xlg66stHP/Wggsqd4xQWPmewxztQkjO2npO2QsqMvy
+         gm0WLAbFTI0LBlOe6cFQ247HZz37vmYsFgoqsyG1U0q4NqC3ka+u++p1lSE+9YwnI6sJ
+         YtGvSL9yipjdYMZK/mi1CHaKxja67lHfXtm9F95XTLtQZpg0S7pakmmxa3piOn+e1wB2
+         MrGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=KrXUGQJ4CRTS+uPce+ywusiHQCHyfc28Y+mQSw1Etg4=;
+        b=GuAgmQofIRZWgAgYrJ8o3NDg3ojgKrxkFdGbhyHDTRZeWyeiRFFx039c2V2+9vC4ao
+         MgqSoUqBt9Q3osll3N7G3XAkcV+UtWitOyQbnZbbTG0RZ0ntD8vItZAl91CRYhaJ/i66
+         9UKMpcu/iTAM3KpayVB+5Xk4kFEwxCJg0ctNXjQeHJBaTekqrHG5TlfXQbiwj8WJdoT+
+         /6GFUjlezM/PGsw8uSegCFe4GLT105zKptsdxtqNsdDDpiL3OaLpY6vaYE/f9sWXUV4q
+         BzUdDh/NFaGFs54bGyMT0LcFK72Sze6Fw0+8CNH2AFT+b9BFB0TxhptImdDzharTjS06
+         qHHw==
+X-Gm-Message-State: AOAM530WrJMRxGV5pa8I3pof/sQ0NX/R4efE/GlrfdUsmNykdMOaRz6h
+        LScxY2WWwCnGciVhLtYmtnlZxTHr
+X-Google-Smtp-Source: ABdhPJyL8ZVnhhMSgOhEuT1X6GTGS22wIQ5tTL+RSwDePa8UOM0we5OqB1BFC3ujh1c8nHK3MMLpbA==
+X-Received: by 2002:a17:906:9399:: with SMTP id l25mr18075682ejx.212.1596486344865;
+        Mon, 03 Aug 2020 13:25:44 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id pj19sm16418647ejb.66.2020.08.03.13.25.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 13:25:44 -0700 (PDT)
+Date:   Mon, 3 Aug 2020 22:25:42 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] RAS changes for v5.9
+Message-ID: <20200803202542.GA1474582@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: BCB8755A-D5C6-11EA-B562-F0EA2EB3C613-78420484!pb-smtp20.pobox.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Jul 2020, Miquel Raynal wrote:
+Linus,
 
-> Add support for Silvaco I3C dual-role IP. The master role is supported
-> in SDR mode only. I2C transfers have not been tested but are shared
-> because they are so close to the I3C transfers in terms of registers
-> configuration.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Please pull the latest ras/core git tree from:
 
-I'm worried by constructs like these:
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras-core-2020-08-03
 
-> +static int svc_i3c_master_handle_ibi(struct svc_i3c_master *master,
-> +				     struct i3c_dev_desc *dev)
-> +{
-> +	struct svc_i3c_i2c_dev_data *data = i3c_dev_get_master_data(dev);
-> +	struct i3c_ibi_slot *slot;
-> +	unsigned int count;
-> +	u32 mdatactrl;
-> +	u8 *buf;
-> +	int ret;
-> +	u32 reg;
-> +
-> +	spin_lock(&master->ibi.lock);
-> +
-> +	slot = i3c_generic_ibi_get_free_slot(data->ibi_pool);
-> +	if (!slot) {
-> +		ret = -ENOSPC;
-> +		goto unlock;
-> +	}
-> +
-> +	slot->len = 0;
-> +	buf = slot->data;
-> +
-> +	ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
-> +				 reg & SVC_I3C_MINT_RXPEND, 0, 1000);
+   # HEAD: bb2de0adca217a114ce023489426e24152e4bfcf x86/mce, EDAC/mce_amd: Print PPIN in machine check records
 
-Here you're in atomic context due to the lock, and 
-readl_poll_timeout(() is built using usleep() which may ... sleep.
+Boris is on vacation and he asked us to send you the pending RAS bits:
 
-Also, is it actually possible for execution to reach this point if 
-SVC_I3C_MINT_RXPEND is not set?
+ - Print the PPIN field on CPUs that fill them out
+ - Fix an MCE injection bug
+ - Simplify a kzalloc in dev_mcelog_init_device()
 
-The rest looks reasonable to me.
+ Thanks,
+
+	Ingo
+
+------------------>
+Gustavo A. R. Silva (1):
+      x86/mce/dev-mcelog: Use struct_size() helper in kzalloc()
+
+Smita Koralahalli (1):
+      x86/mce, EDAC/mce_amd: Print PPIN in machine check records
+
+Zhenzhong Duan (1):
+      x86/mce/inject: Fix a wrong assignment of i_mce.status
 
 
-Nicolas
+ arch/x86/kernel/cpu/mce/core.c       | 2 ++
+ arch/x86/kernel/cpu/mce/dev-mcelog.c | 2 +-
+ arch/x86/kernel/cpu/mce/inject.c     | 2 +-
+ drivers/edac/mce_amd.c               | 3 +++
+ 4 files changed, 7 insertions(+), 2 deletions(-)
