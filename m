@@ -2,301 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9CE23A28C
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 12:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B6623A29B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 12:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgHCKKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 06:10:21 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:60454 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgHCKKU (ORCPT
+        id S1726202AbgHCKPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 06:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725951AbgHCKPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 06:10:20 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 073AADxB038247;
-        Mon, 3 Aug 2020 05:10:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1596449413;
-        bh=B66mOnhx3yhx1rjltGKOFsNmizX4+j9rsyYvFJocpKg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=eNpndO1v/QIKWrFEGHEkYqpLclNJmYXZQOGSEio/cmGtk+QxSeJTtdOUJAnyFazyt
-         0dUJMUAAiSTfAVetUVLfQud6w0y7H/dHpJwg+YRuD2073G+3Ea2JCsxW/lJo/XZBZi
-         d7m8bJL4t6h3L6/joxewDlHXQjBI/QtcWfnfOYcQ=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 073AADZv081988
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 3 Aug 2020 05:10:13 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 3 Aug
- 2020 05:10:13 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 3 Aug 2020 05:10:13 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 073AA51H062951;
-        Mon, 3 Aug 2020 05:10:11 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <dan.j.williams@intel.com>,
-        <linux-arm-kernel@lists.infradead.org>, <nm@ti.com>,
-        <grygorii.strashko@ti.com>, <lokeshvutla@ti.com>, <nsekhar@ti.com>,
-        <kishon@ti.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] dmaengine: ti: k3-psil: add map for j7200
-Date:   Mon, 3 Aug 2020 13:11:28 +0300
-Message-ID: <20200803101128.20885-3-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803101128.20885-1-peter.ujfalusi@ti.com>
-References: <20200803101128.20885-1-peter.ujfalusi@ti.com>
+        Mon, 3 Aug 2020 06:15:18 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1566C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 03:15:17 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id jp10so11460048ejb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 03:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jkw2/EmVNCjRVxtadc/w9Al3qslsL1S9Hi4Qs74qTxI=;
+        b=LOEy3o4VZahFXFtZNHaUDERDe9gXJFDuIURw84jtpCz2oCjzqatjdxi85ruUk216Rv
+         v1hJrrxqx8zLrfY9r1ihrTmN4sgTnxd05WcEdMfRaOyKXOp4b1gmudzZ/v+M3UkTRYbw
+         aBOfrlcwOIbQ//4dguLte5uNTppdI99KZ26kA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jkw2/EmVNCjRVxtadc/w9Al3qslsL1S9Hi4Qs74qTxI=;
+        b=KUDuWCK282g4vgnoxKI73hsmP5NWldlFepSmWO7EL/nMT/Ww8J0Ubcp8yfgpfMR1u0
+         7Daz4BYAAWQh5YDcsONOcKuXN7Ob/kEr2Ts4PeFmoCAxgcXYqa0PAjLd9QnZIrh++j0w
+         tJ9UHd18gtVT6vJNn4D5+h0xfjj79TcFaHAZQxx0A1Hyp+BKlFQFk7+YcojoF18sH7YX
+         xWUIGf9eqqOb/Y227jzTqqwH8orNV9gNr8lYPh+UaWwBGImiJhL8WKHA0NdEw7gjoARU
+         MrmojdUcQ49P7FdlVLhd+C0aNjfWLCIApQ4SMnwKnrBFnZnGnjqowH49+XOCVp7ds77t
+         gQyA==
+X-Gm-Message-State: AOAM533SJnZ1iLdMFWxE9dKBruooEN4BwUFMa6AczgYftHz6kIy4mIay
+        5xwpN6/ZK+UIbgDfXl2e/cFRo8qYRRI8OutmP1VOeg==
+X-Google-Smtp-Source: ABdhPJxldC6i2ZnyBDDSZP0XTrPLNJsfOi7DQqJ4v7/Qk9xwwbpA48xl/6f5v/lX2ThB5om64KLM7AUyrmnk4DKrzxU=
+X-Received: by 2002:a17:906:3c59:: with SMTP id i25mr15537030ejg.202.1596449716662;
+ Mon, 03 Aug 2020 03:15:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200723164311.29169-1-andrealmeid@collabora.com>
+In-Reply-To: <20200723164311.29169-1-andrealmeid@collabora.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 3 Aug 2020 12:15:05 +0200
+Message-ID: <CAJfpegtXfEQFhwV4MEOf6zQa3KCPmFzffDgDDMJ5=1n+irV7qA@mail.gmail.com>
+Subject: Re: [PATCH] fuse: Update project homepage
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>,
+        kernel@collabora.com, linux-fsdevel@vger.kernel.org,
+        Nikolaus Rath <nikolaus@rath.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new PSI-L map file for the new TI j7200 SoC.
+On Thu, Jul 23, 2020 at 6:43 PM Andr=C3=A9 Almeida <andrealmeid@collabora.c=
+om> wrote:
+>
+> As stated in https://sourceforge.net/projects/fuse/, "the FUSE project ha=
+s
+> moved to https://github.com/libfuse/" in 22-Dec-2015. Update URLs to
+> reflect this.
+>
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
 
-The DMA hardware in j7200 is the same as in j721e with different
-set of peripherals resulting different PSI-L thread map compered
-to j721e.
+Thanks, applied.
 
-See J7200 Technical Reference Manual (SPRUIU1, June 2020)
-for further details: https://www.ti.com/lit/pdf/spruiu1
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/dma/ti/Makefile        |   5 +-
- drivers/dma/ti/k3-psil-j7200.c | 175 +++++++++++++++++++++++++++++++++
- drivers/dma/ti/k3-psil-priv.h  |   1 +
- drivers/dma/ti/k3-psil.c       |   1 +
- 4 files changed, 181 insertions(+), 1 deletion(-)
- create mode 100644 drivers/dma/ti/k3-psil-j7200.c
-
-diff --git a/drivers/dma/ti/Makefile b/drivers/dma/ti/Makefile
-index 9a29a107e374..0c67254caee6 100644
---- a/drivers/dma/ti/Makefile
-+++ b/drivers/dma/ti/Makefile
-@@ -4,5 +4,8 @@ obj-$(CONFIG_TI_EDMA) += edma.o
- obj-$(CONFIG_DMA_OMAP) += omap-dma.o
- obj-$(CONFIG_TI_K3_UDMA) += k3-udma.o
- obj-$(CONFIG_TI_K3_UDMA_GLUE_LAYER) += k3-udma-glue.o
--obj-$(CONFIG_TI_K3_PSIL) += k3-psil.o k3-psil-am654.o k3-psil-j721e.o
-+obj-$(CONFIG_TI_K3_PSIL) += k3-psil.o \
-+			    k3-psil-am654.o \
-+			    k3-psil-j721e.o \
-+			    k3-psil-j7200.o
- obj-$(CONFIG_TI_DMA_CROSSBAR) += dma-crossbar.o
-diff --git a/drivers/dma/ti/k3-psil-j7200.c b/drivers/dma/ti/k3-psil-j7200.c
-new file mode 100644
-index 000000000000..5ea63ea74822
---- /dev/null
-+++ b/drivers/dma/ti/k3-psil-j7200.c
-@@ -0,0 +1,175 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com
-+ *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
-+ */
-+
-+#include <linux/kernel.h>
-+
-+#include "k3-psil-priv.h"
-+
-+#define PSIL_PDMA_XY_TR(x)				\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_PDMA_XY,	\
-+		},					\
-+	}
-+
-+#define PSIL_PDMA_XY_PKT(x)				\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_PDMA_XY,	\
-+			.pkt_mode = 1,			\
-+		},					\
-+	}
-+
-+#define PSIL_PDMA_MCASP(x)				\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_PDMA_XY,	\
-+			.pdma_acc32 = 1,		\
-+			.pdma_burst = 1,		\
-+		},					\
-+	}
-+
-+#define PSIL_ETHERNET(x)				\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_NATIVE,	\
-+			.pkt_mode = 1,			\
-+			.needs_epib = 1,		\
-+			.psd_size = 16,			\
-+		},					\
-+	}
-+
-+#define PSIL_SA2UL(x, tx)				\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_NATIVE,	\
-+			.pkt_mode = 1,			\
-+			.needs_epib = 1,		\
-+			.psd_size = 64,			\
-+			.notdpkt = tx,			\
-+		},					\
-+	}
-+
-+/* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
-+static struct psil_ep j7200_src_ep_map[] = {
-+	/* PDMA_MCASP - McASP0-2 */
-+	PSIL_PDMA_MCASP(0x4400),
-+	PSIL_PDMA_MCASP(0x4401),
-+	PSIL_PDMA_MCASP(0x4402),
-+	/* PDMA_SPI_G0 - SPI0-3 */
-+	PSIL_PDMA_XY_PKT(0x4600),
-+	PSIL_PDMA_XY_PKT(0x4601),
-+	PSIL_PDMA_XY_PKT(0x4602),
-+	PSIL_PDMA_XY_PKT(0x4603),
-+	PSIL_PDMA_XY_PKT(0x4604),
-+	PSIL_PDMA_XY_PKT(0x4605),
-+	PSIL_PDMA_XY_PKT(0x4606),
-+	PSIL_PDMA_XY_PKT(0x4607),
-+	PSIL_PDMA_XY_PKT(0x4608),
-+	PSIL_PDMA_XY_PKT(0x4609),
-+	PSIL_PDMA_XY_PKT(0x460a),
-+	PSIL_PDMA_XY_PKT(0x460b),
-+	PSIL_PDMA_XY_PKT(0x460c),
-+	PSIL_PDMA_XY_PKT(0x460d),
-+	PSIL_PDMA_XY_PKT(0x460e),
-+	PSIL_PDMA_XY_PKT(0x460f),
-+	/* PDMA_SPI_G1 - SPI4-7 */
-+	PSIL_PDMA_XY_PKT(0x4610),
-+	PSIL_PDMA_XY_PKT(0x4611),
-+	PSIL_PDMA_XY_PKT(0x4612),
-+	PSIL_PDMA_XY_PKT(0x4613),
-+	PSIL_PDMA_XY_PKT(0x4614),
-+	PSIL_PDMA_XY_PKT(0x4615),
-+	PSIL_PDMA_XY_PKT(0x4616),
-+	PSIL_PDMA_XY_PKT(0x4617),
-+	PSIL_PDMA_XY_PKT(0x4618),
-+	PSIL_PDMA_XY_PKT(0x4619),
-+	PSIL_PDMA_XY_PKT(0x461a),
-+	PSIL_PDMA_XY_PKT(0x461b),
-+	PSIL_PDMA_XY_PKT(0x461c),
-+	PSIL_PDMA_XY_PKT(0x461d),
-+	PSIL_PDMA_XY_PKT(0x461e),
-+	PSIL_PDMA_XY_PKT(0x461f),
-+	/* PDMA_USART_G0 - UART0-1 */
-+	PSIL_PDMA_XY_PKT(0x4700),
-+	PSIL_PDMA_XY_PKT(0x4701),
-+	/* PDMA_USART_G1 - UART2-3 */
-+	PSIL_PDMA_XY_PKT(0x4702),
-+	PSIL_PDMA_XY_PKT(0x4703),
-+	/* PDMA_USART_G2 - UART4-9 */
-+	PSIL_PDMA_XY_PKT(0x4704),
-+	PSIL_PDMA_XY_PKT(0x4705),
-+	PSIL_PDMA_XY_PKT(0x4706),
-+	PSIL_PDMA_XY_PKT(0x4707),
-+	PSIL_PDMA_XY_PKT(0x4708),
-+	PSIL_PDMA_XY_PKT(0x4709),
-+	/* CPSW5 */
-+	PSIL_ETHERNET(0x4a00),
-+	/* CPSW0 */
-+	PSIL_ETHERNET(0x7000),
-+	/* MCU_PDMA_MISC_G0 - SPI0 */
-+	PSIL_PDMA_XY_PKT(0x7100),
-+	PSIL_PDMA_XY_PKT(0x7101),
-+	PSIL_PDMA_XY_PKT(0x7102),
-+	PSIL_PDMA_XY_PKT(0x7103),
-+	/* MCU_PDMA_MISC_G1 - SPI1-2 */
-+	PSIL_PDMA_XY_PKT(0x7200),
-+	PSIL_PDMA_XY_PKT(0x7201),
-+	PSIL_PDMA_XY_PKT(0x7202),
-+	PSIL_PDMA_XY_PKT(0x7203),
-+	PSIL_PDMA_XY_PKT(0x7204),
-+	PSIL_PDMA_XY_PKT(0x7205),
-+	PSIL_PDMA_XY_PKT(0x7206),
-+	PSIL_PDMA_XY_PKT(0x7207),
-+	/* MCU_PDMA_MISC_G2 - UART0 */
-+	PSIL_PDMA_XY_PKT(0x7300),
-+	/* MCU_PDMA_ADC - ADC0-1 */
-+	PSIL_PDMA_XY_TR(0x7400),
-+	PSIL_PDMA_XY_TR(0x7401),
-+	/* SA2UL */
-+	PSIL_SA2UL(0x7500, 0),
-+	PSIL_SA2UL(0x7501, 0),
-+	PSIL_SA2UL(0x7502, 0),
-+	PSIL_SA2UL(0x7503, 0),
-+};
-+
-+/* PSI-L destination thread IDs, used for TX (DMA_MEM_TO_DEV) */
-+static struct psil_ep j7200_dst_ep_map[] = {
-+	/* CPSW5 */
-+	PSIL_ETHERNET(0xca00),
-+	PSIL_ETHERNET(0xca01),
-+	PSIL_ETHERNET(0xca02),
-+	PSIL_ETHERNET(0xca03),
-+	PSIL_ETHERNET(0xca04),
-+	PSIL_ETHERNET(0xca05),
-+	PSIL_ETHERNET(0xca06),
-+	PSIL_ETHERNET(0xca07),
-+	/* CPSW0 */
-+	PSIL_ETHERNET(0xf000),
-+	PSIL_ETHERNET(0xf001),
-+	PSIL_ETHERNET(0xf002),
-+	PSIL_ETHERNET(0xf003),
-+	PSIL_ETHERNET(0xf004),
-+	PSIL_ETHERNET(0xf005),
-+	PSIL_ETHERNET(0xf006),
-+	PSIL_ETHERNET(0xf007),
-+	/* SA2UL */
-+	PSIL_SA2UL(0xf500, 1),
-+	PSIL_SA2UL(0xf501, 1),
-+};
-+
-+struct psil_ep_map j7200_ep_map = {
-+	.name = "j7200",
-+	.src = j7200_src_ep_map,
-+	.src_count = ARRAY_SIZE(j7200_src_ep_map),
-+	.dst = j7200_dst_ep_map,
-+	.dst_count = ARRAY_SIZE(j7200_dst_ep_map),
-+};
-diff --git a/drivers/dma/ti/k3-psil-priv.h b/drivers/dma/ti/k3-psil-priv.h
-index a1f389ca371e..b4b0fb359eff 100644
---- a/drivers/dma/ti/k3-psil-priv.h
-+++ b/drivers/dma/ti/k3-psil-priv.h
-@@ -39,5 +39,6 @@ struct psil_endpoint_config *psil_get_ep_config(u32 thread_id);
- /* SoC PSI-L endpoint maps */
- extern struct psil_ep_map am654_ep_map;
- extern struct psil_ep_map j721e_ep_map;
-+extern struct psil_ep_map j7200_ep_map;
- 
- #endif /* K3_PSIL_PRIV_H_ */
-diff --git a/drivers/dma/ti/k3-psil.c b/drivers/dma/ti/k3-psil.c
-index 3ca29aabac93..1fd5377125c8 100644
---- a/drivers/dma/ti/k3-psil.c
-+++ b/drivers/dma/ti/k3-psil.c
-@@ -19,6 +19,7 @@ static const struct psil_ep_map *soc_ep_map;
- static const struct soc_device_attribute k3_soc_devices[] = {
- 	{ .family = "AM65X", .data = &am654_ep_map },
- 	{ .family = "J721E", .data = &j721e_ep_map },
-+	{ .family = "J7200", .data = &j7200_ep_map },
- 	{ /* sentinel */ }
- };
- 
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+Miklos
