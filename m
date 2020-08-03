@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A4123AC8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 20:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B97123AC73
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 20:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728808AbgHCSlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 14:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgHCSlB (ORCPT
+        id S1728748AbgHCSgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 14:36:35 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:34356 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgHCSgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 14:41:01 -0400
-Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E2AA1C06174A;
-        Mon,  3 Aug 2020 11:41:00 -0700 (PDT)
-Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
-        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 073IcuPL033386;
-        Mon, 3 Aug 2020 20:38:56 +0200 (CEST)
-        (envelope-from pisa@cmp.felk.cvut.cz)
-Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
-        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 073Ictfi004171;
-        Mon, 3 Aug 2020 20:38:55 +0200
-Received: (from pisa@localhost)
-        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 073IctFg004169;
-        Mon, 3 Aug 2020 20:38:55 +0200
-From:   pisa@cmp.felk.cvut.cz
-To:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
-        mkl@pengutronix.de, socketcan@hartkopp.net
-Cc:     wg@grandegger.com, davem@davemloft.net, robh+dt@kernel.org,
-        mark.rutland@arm.com, c.emde@osadl.org, armbru@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        martin.jerabek01@gmail.com, ondrej.ille@gmail.com,
-        jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com,
-        Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Subject: [PATCH v4 1/6] dt-bindings: vendor-prefix: add prefix for the Czech Technical University in Prague.
-Date:   Mon,  3 Aug 2020 20:34:49 +0200
-Message-Id: <3b6869aa7a48b61f8a800d141d164b70222e33af.1596408856.git.pisa@cmp.felk.cvut.cz>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
-References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
+        Mon, 3 Aug 2020 14:36:35 -0400
+Received: from [192.168.254.32] (unknown [47.187.206.220])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5A65A20B4908;
+        Mon,  3 Aug 2020 11:36:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5A65A20B4908
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1596479794;
+        bh=k+NMDSjwm5TFPTN2F24vsuQ9bd+RBG4+Qztk9DA9N5w=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=DNQfd/jCHwvRYMF2gK893vUrxekiycxCw0OhCzNbUMcGiKSE03vK/bnQsLmcTSru/
+         CtasfSm4QG8N9N4kZy69f3Os63Oj8jZa3a7vBD8/vw/IvmURd5dLVfTDYQE1RJ5X5C
+         mMYCQph3slcm10L5a4Kvnyc+0DO+POBFk3obO0wY=
+Subject: Re: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, X86 ML <x86@kernel.org>
+References: <20200728131050.24443-1-madvenka@linux.microsoft.com>
+ <CALCETrVy5OMuUx04-wWk9FJbSxkrT2vMfN_kANinudrDwC4Cig@mail.gmail.com>
+ <3b916198-3a98-bd19-9a1c-f2d8d44febe8@linux.microsoft.com>
+ <CALCETrUJ2hBmJujyCtEqx4=pknRvjvi1-Gj9wfRcMMzejjKQsQ@mail.gmail.com>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <dbc3bdcf-170c-4ffd-0efc-69495c8df11e@linux.microsoft.com>
+Date:   Mon, 3 Aug 2020 13:36:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-FELK-MailScanner-Information: 
-X-MailScanner-ID: 073IcuPL033386
-X-FELK-MailScanner: Found to be clean
-X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
-        score=-0.098, required 6, BAYES_00 -0.50, KHOP_HELO_FCRDNS 0.40,
-        SPF_HELO_NONE 0.00, SPF_NONE 0.00)
-X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
-X-FELK-MailScanner-Watermark: 1597084737.56782@nw6tP7bx/TslGXiyZRmK2Q
-X-Spam-Status: No
+In-Reply-To: <CALCETrUJ2hBmJujyCtEqx4=pknRvjvi1-Gj9wfRcMMzejjKQsQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 
-Following text added to make checkpatch happy.
 
-The Czech Technical University in Prague (CTU) is one of
-the biggest and oldest (founded 1707) technical universities
-in Europe. The abbreviation in Czech language is ČVUT according
-to official name in Czech language
+On 8/2/20 3:00 PM, Andy Lutomirski wrote:
+> I feel like trampfd is too poorly defined at this point to evaluate.
 
-  České vysoké učení technické v Praze
+Point taken. It is because I wanted to start with something small
+and specific and expand it in the future. So, I did not really describe the big
+picture - the overall vision, future work, that sort of thing. In retrospect,
+may be, I should have done that.
 
-The English translation
+I will take all of the input I have received so far and all of the responses
+I have given, refine the definition of trampfd and send it out. Please
+review that and let me know if anything is still missing from the
+definition.
 
-  The Czech Technical University in Prague
+Thanks.
 
-The university pages in English
-
-  https://www.cvut.cz/en
-
-Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
----
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 967e78c5ec0a..dedb10f1b250 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -215,6 +215,8 @@ patternProperties:
-     description: Hangzhou C-SKY Microsystems Co., Ltd
-   "^csq,.*":
-     description: Shenzen Chuangsiqi Technology Co.,Ltd.
-+  "^ctu,.*":
-+    description: Czech Technical University in Prague
-   "^cubietech,.*":
-     description: Cubietech, Ltd.
-   "^cypress,.*":
--- 
-2.11.0
+Madhavan
 
