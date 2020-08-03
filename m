@@ -2,191 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDD123ADE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 22:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE1623ADF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 22:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728766AbgHCUBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 16:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727091AbgHCUBG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 16:01:06 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B3BC06174A;
-        Mon,  3 Aug 2020 13:01:06 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id j7so17957449oij.9;
-        Mon, 03 Aug 2020 13:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zP4ncp9vj7JnY4khsRNCiCdbBc6bjRvSCdpaq4/BvzQ=;
-        b=bLoL9bofRI+5WFj9dqLlDqaT7eDcOjGFY5D7e5CSZGKXpALwOyiUuDg0I0lbaxuZgM
-         uHypdAhVhllZ6Avll+IiJa1MhHJ+GwwYphwqajC36MlBo0a/HI253MD5Osa8FblqOpuN
-         oqzRRUBiJJ7xu8exJKnl6tTzCBeUrOBtof1UvPPpt/ZthEANNhiqCUKhfpigWB4XJYF6
-         GDyBuPtZ2re4oUBBdusmmnckLg3SvAt6A+nRHETwFTMP+hZegJuwLA+ZgeoeL7t5Sajz
-         2LFxKNHrGq3AWA+qbU1gBMaGtiOCvPIEVP3CN0TOpQAEKQYtDDflBSW60+3mTCCD+csd
-         IWNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zP4ncp9vj7JnY4khsRNCiCdbBc6bjRvSCdpaq4/BvzQ=;
-        b=lZBIggT0Itt+MfKTrqkv3sK9BPed6bCmflaaRGWLTSzi8VnmUm9TAVSw1UC7bCDnXI
-         5OUWCnQ/VfsVz8+rgCFJO4HN3ZHAMAlNe0myHXJbxykGEcqo3jWy8+Zn5DnfRfFUc6Xz
-         MRbEhuZKtwAlpX+QCcqW8jwxUrm/yhZu6hGHZPC2HasqLFRFu0cHUWLh9S2jcerXQAAT
-         SPXwtSOWTL0yOY3kOBct7iLmkRLJv/BkfPdDz6R9eVbUjMqCI9TDndpVhdGVmeIG1Aar
-         qCQY0RpkKDcG8rBaEcETjGXugVvtqmm+XXTJoVHbtM/azChlKY8c3AgqCfQ3OXSS6Ll/
-         kY1A==
-X-Gm-Message-State: AOAM533j3JCuPVDg+4zxcQxXFMBHvLHW6rqa5JwO9o/RQ+gyvxiIxCMX
-        nC9Lj/o1Z9YsTgsDnxI75lYQDKBawmLuf+efKHI=
-X-Google-Smtp-Source: ABdhPJz013rtE9N9hgX1DuHV1VPgJpyezytKEBb4MeeWb9GWT1rgdugaLTmP/96tLKReIozlrOS9nF/pFY13IxLHFXo=
-X-Received: by 2002:a05:6808:1d9:: with SMTP id x25mr815802oic.92.1596484866057;
- Mon, 03 Aug 2020 13:01:06 -0700 (PDT)
+        id S1726533AbgHCUJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 16:09:55 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:44926 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgHCUJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 16:09:55 -0400
+X-Greylist: delayed 329 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 Aug 2020 16:09:52 EDT
+Received: from localhost.localdomain (unknown [46.188.10.168])
+        by mail.ispras.ru (Postfix) with ESMTPSA id 5060C40A206F;
+        Mon,  3 Aug 2020 20:04:22 +0000 (UTC)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     amd-gfx@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Monakov <amonakov@ispras.ru>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH] drm/amd/display: use correct scale for actual_brightness
+Date:   Mon,  3 Aug 2020 23:02:18 +0300
+Message-Id: <20200803200218.2167-1-amonakov@ispras.ru>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200730034724.3298-1-nramas@linux.microsoft.com>
- <20200730034724.3298-4-nramas@linux.microsoft.com> <dfd6f9c8-d62a-d278-9b0e-6b1f5ad03d3e@gmail.com>
- <6371efa9-5ae6-05ac-c357-3fbe1a5a93d5@linux.microsoft.com>
-In-Reply-To: <6371efa9-5ae6-05ac-c357-3fbe1a5a93d5@linux.microsoft.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Mon, 3 Aug 2020 16:00:55 -0400
-Message-ID: <CAEjxPJ789kmdDwy-6RaL7HuMFxKpQ9Hwxj9J-_-f62XDCNJUiA@mail.gmail.com>
-Subject: Re: [PATCH v5 3/4] LSM: Define SELinux function to measure state and policy
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>, sashal@kernel.org,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 3, 2020 at 12:14 PM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
->
-> On 8/3/20 8:11 AM, Stephen Smalley wrote:
-> >
-> > Possibly I'm missing something but with these patches applied on top of
-> > next-integrity, and the following lines added to /etc/ima/ima-policy:
-> >
-> > measure func=LSM_STATE template=ima-buf
-> > measure func=LSM_POLICY
-> >
-> > I still don't get the selinux-state or selinux-policy-hash entries in
-> > the ascii_runtime_measurements file.  No errors during loading of the
-> > ima policy as far as I can see.
-> >
->
-> Could you please check if the following config is set?
-> CONFIG_IMA_QUEUE_EARLY_BOOT_DATA=y
+Documentation for sysfs backlight level interface requires that
+values in both 'brightness' and 'actual_brightness' files are
+interpreted to be in range from 0 to the value given in the
+'max_brightness' file.
 
-Yes, I have that set.
+With amdgpu, max_brightness gives 255, and values written by the user
+into 'brightness' are internally rescaled to a wider range. However,
+reading from 'actual_brightness' gives the raw register value without
+inverse rescaling. This causes issues for various userspace tools such
+as PowerTop and systemd that expect the value to be in the correct
+range.
 
-> Try changing /sys/fs/selinux/checkreqprot and check
-> ascii_runtime_measurements file again?
+Introduce a helper to retrieve internal backlight range. Extend the
+existing 'convert_brightness' function to handle conversion in both
+directions.
 
-No change.  Likewise for changing enforce or running load_policy again.
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=203905
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1242
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
+---
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 73 ++++++++-----------
+ 1 file changed, 32 insertions(+), 41 deletions(-)
 
-> Also, could you please check if
-> /sys/kernel/security/integrity/ima/policy contains LSM_STATE and
-> LSM_POLICY entries?
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 710edc70e37e..03e21e7b7917 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -2881,51 +2881,42 @@ static int set_backlight_via_aux(struct dc_link *link, uint32_t brightness)
+ 	return rc ? 0 : 1;
+ }
+ 
+-static u32 convert_brightness(const struct amdgpu_dm_backlight_caps *caps,
+-			      const uint32_t user_brightness)
++static int get_brightness_range(const struct amdgpu_dm_backlight_caps *caps,
++				unsigned *min, unsigned *max)
+ {
+-	u32 min, max, conversion_pace;
+-	u32 brightness = user_brightness;
+-
+ 	if (!caps)
+-		goto out;
++		return 0;
+ 
+-	if (!caps->aux_support) {
+-		max = caps->max_input_signal;
+-		min = caps->min_input_signal;
+-		/*
+-		 * The brightness input is in the range 0-255
+-		 * It needs to be rescaled to be between the
+-		 * requested min and max input signal
+-		 * It also needs to be scaled up by 0x101 to
+-		 * match the DC interface which has a range of
+-		 * 0 to 0xffff
+-		 */
+-		conversion_pace = 0x101;
+-		brightness =
+-			user_brightness
+-			* conversion_pace
+-			* (max - min)
+-			/ AMDGPU_MAX_BL_LEVEL
+-			+ min * conversion_pace;
++	if (caps->aux_support) {
++		// Firmware limits are in nits, DC API wants millinits.
++		*max = 1000 * caps->aux_max_input_signal;
++		*min = 1000 * caps->aux_min_input_signal;
+ 	} else {
+-		/* TODO
+-		 * We are doing a linear interpolation here, which is OK but
+-		 * does not provide the optimal result. We probably want
+-		 * something close to the Perceptual Quantizer (PQ) curve.
+-		 */
+-		max = caps->aux_max_input_signal;
+-		min = caps->aux_min_input_signal;
+-
+-		brightness = (AMDGPU_MAX_BL_LEVEL - user_brightness) * min
+-			       + user_brightness * max;
+-		// Multiple the value by 1000 since we use millinits
+-		brightness *= 1000;
+-		brightness = DIV_ROUND_CLOSEST(brightness, AMDGPU_MAX_BL_LEVEL);
++		// Firmware limits are 8-bit, PWM control is 16-bit.
++		*max = 0x101 * caps->max_input_signal;
++		*min = 0x101 * caps->min_input_signal;
+ 	}
++	return 1;
++}
+ 
+-out:
+-	return brightness;
++static u32 convert_brightness(const struct amdgpu_dm_backlight_caps *caps,
++			      const uint32_t brightness, int from_user)
++{
++	unsigned min, max;
++
++	if (!get_brightness_range(caps, &min, &max))
++		return brightness;
++
++	if (from_user)
++		// Rescale 0..255 to min..max
++		return min + DIV_ROUND_CLOSEST((max - min) * brightness,
++					       AMDGPU_MAX_BL_LEVEL);
++
++	if (brightness < min)
++		return 0;
++	// Rescale min..max to 0..255
++	return DIV_ROUND_CLOSEST(AMDGPU_MAX_BL_LEVEL * (brightness - min),
++				 max - min);
+ }
+ 
+ static int amdgpu_dm_backlight_update_status(struct backlight_device *bd)
+@@ -2941,7 +2932,7 @@ static int amdgpu_dm_backlight_update_status(struct backlight_device *bd)
+ 
+ 	link = (struct dc_link *)dm->backlight_link;
+ 
+-	brightness = convert_brightness(&caps, bd->props.brightness);
++	brightness = convert_brightness(&caps, bd->props.brightness, 1);
+ 	// Change brightness based on AUX property
+ 	if (caps.aux_support)
+ 		return set_backlight_via_aux(link, brightness);
+@@ -2958,7 +2949,7 @@ static int amdgpu_dm_backlight_get_brightness(struct backlight_device *bd)
+ 
+ 	if (ret == DC_ERROR_UNEXPECTED)
+ 		return bd->props.brightness;
+-	return ret;
++	return convert_brightness(&dm->backlight_caps, ret, 0);
+ }
+ 
+ static const struct backlight_ops amdgpu_dm_backlight_ops = {
 
-Yes, it does.  However, I noticed that if I reduce the policy to only
-contain those entries and no others and reboot, then I get
-measurements.  Whereas if I append them to an existing policy like the
-one below, they seem to be ignored:
-dont_measure fsmagic=0x9fa0
-dont_measure fsmagic=0x62656572
-dont_measure fsmagic=0x64626720
-dont_measure fsmagic=0x1021994
-dont_measure fsmagic=0x858458f6
-dont_measure fsmagic=0x73636673
-measure func=BPRM_CHECK
-measure func=MMAP_CHECK mask=MAY_EXEC
-measure func=MODULE_CHECK uid=0
-measure func=LSM_STATE template=ima-buf
-measure func=LSM_POLICY
+base-commit: bcf876870b95592b52519ed4aafcf9d95999bc9c
+-- 
+2.26.2
 
-Also, I noticed the following in my dmesg output:
-[   68.870715] ------------[ cut here ]------------
-[   68.870715] WARNING: CPU: 2 PID: 1 at mm/page_alloc.c:4826
-__alloc_pages_nodemask+0x627/0x700
-[   68.870715] Modules linked in: 8139too crct10dif_pclmul
-crc32_pclmul crc32c_intel ghash_clmulni_intel qxl serio_raw
-drm_ttm_helper ttm drm_kms_helper virtio_console cec drm 8139cp
-ata_generic mii pata_acpi floppy qemu_fw_cfg fuse
-[   68.870715] CPU: 2 PID: 1 Comm: systemd Not tainted 5.8.0-rc2+ #44
-[   68.870715] RIP: 0010:__alloc_pages_nodemask+0x627/0x700
-[   68.870715] Code: ff ff 75 6c 48 8b 85 48 ff ff ff 4c 89 c2 44 89
-e6 44 89 ff 41 c6 45 d0 00 49 89 45 b8 e8 41 e2 ff ff 49 89 c6 e9 9d
-fc ff ff <0f> 0b e9 d4 fd ff ff 0f 0b e9 bc fc ff ff 0f 0b e9 f9 fd ff
-ff e8
-[   68.870715] RSP: 0000:ffff8881e82a7a18 EFLAGS: 00010246
-[   68.870715] RAX: ffffed103d054f48 RBX: 1ffff1103d054f48 RCX: 0000000000000000
-[   68.870715] RDX: 0000000000000000 RSI: 000000000000000b RDI: 0000000000000000
-[   68.870715] RBP: ffff8881e82a7ae8 R08: ffffffffaa3fe2d5 R09: 0000000000000001
-[   68.870715] R10: fffffbfff5a88f0f R11: 0000000000000001 R12: 00000000007eef6a
-[   68.870715] R13: 0000000000040cc0 R14: 000000000000000b R15: ffffffffadde766b
-[   68.870715] FS:  00007fdeb168c600(0000) GS:ffff8881e9800000(0000)
-knlGS:0000000000000000
-[   68.870715] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   68.870715] CR2: 00007fdeb17dd1d6 CR3: 00000001cc2d2002 CR4: 00000000003606e0
-[   68.870715] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   68.870715] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   68.870715] Call Trace:
-[   68.870715]  ? sched_clock_cpu+0xf5/0x110
-[   68.870715]  ? __alloc_pages_slowpath.constprop.0+0x17a0/0x17a0
-[   68.870715]  ? match_held_lock+0x2e/0x240
-[   68.870715]  ? policy_nodemask+0x1a/0xa0
-[   68.870715]  ? policy_node+0x56/0x60
-[   68.870715]  kmalloc_order+0x25/0xc0
-[   68.870715]  kmalloc_order_trace+0x1d/0x140
-[   68.870715]  kmemdup+0x1a/0x40
-[   68.870715]  ima_queue_data+0x61/0x370
-[   68.870715]  ima_measure_lsm_data+0x32/0x60
-[   68.870715]  selinux_measure_state+0x2b8/0x2bd
-[   68.870715]  ? selinux_event_name+0xe0/0xe0
-[   68.870715]  ? rcu_is_watching+0x39/0x50
-[   68.870715]  security_load_policy+0x44c/0x8e0
-[   68.870715]  ? mark_lock+0xa6/0xbd0
-[   68.870715]  ? security_change_sid+0x90/0x90
-[   68.870715]  ? mark_held_locks+0x3e/0xa0
-[   68.870715]  ? lockdep_hardirqs_on_prepare+0x100/0x260
-[   68.870715]  ? asm_exc_page_fault+0x1e/0x30
-[   68.870715]  ? lockdep_hardirqs_on+0xc5/0x1b0
-[   68.870715]  ? asm_exc_page_fault+0x1e/0x30
-[   68.870715]  ? copy_user_enhanced_fast_string+0xe/0x30
-[   68.870715]  sel_write_load+0x157/0x260
-[   68.870715]  vfs_write+0x135/0x290
-[   68.870715]  ksys_write+0xb1/0x140
-[   68.870715]  ? __ia32_sys_read+0x50/0x50
-[   68.870715]  ? lockdep_hardirqs_on_prepare+0x100/0x260
-[   68.870715]  ? do_syscall_64+0x12/0xb0
-[   68.870715]  do_syscall_64+0x52/0xb0
-[   68.870715]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   68.870715] RIP: 0033:0x7fdeb2539497
-[   68.870715] Code: Bad RIP value.
-[   68.870715] RSP: 002b:00007fff6352b308 EFLAGS: 00000246 ORIG_RAX:
-0000000000000001
-[   68.870715] RAX: ffffffffffffffda RBX: 0000000000000020 RCX: 00007fdeb2539497
-[   68.870715] RDX: 00000000007eef6a RSI: 00007fdeb0de1000 RDI: 0000000000000004
-[   68.870715] RBP: 0000000000000004 R08: 00007fdeb25d0040 R09: 00007fff6352b1a0
-[   68.870715] R10: 0000000000000000 R11: 0000000000000246 R12: 00007fdeb0de1000
-[   68.870715] R13: 00000000007eef6a R14: 000000000000000f R15: 0000000000000003
-[   68.870715] irq event stamp: 23486085
-[   68.870715] hardirqs last  enabled at (23486085):
-[<ffffffffaa419406>] _raw_spin_unlock_irqrestore+0x46/0x60
-[   68.870715] hardirqs last disabled at (23486084):
-[<ffffffffaa419443>] _raw_spin_lock_irqsave+0x23/0x90
-[   68.870715] softirqs last  enabled at (23486074):
-[<ffffffffaa8004f3>] __do_softirq+0x4f3/0x662
-[   68.870715] softirqs last disabled at (23486067):
-[<ffffffffaa601072>] asm_call_on_stack+0x12/0x20
-[   68.870715] ---[ end trace fb02740ff6f4d0cd ]---
