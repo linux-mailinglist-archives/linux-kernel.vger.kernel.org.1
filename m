@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6E723A5EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E375723A500
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729152AbgHCMnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:43:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57470 "EHLO mail.kernel.org"
+        id S1728855AbgHCMcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:32:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729046AbgHCMa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:30:28 -0400
+        id S1729265AbgHCMcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:32:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DD372054F;
-        Mon,  3 Aug 2020 12:30:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3ADEA2076B;
+        Mon,  3 Aug 2020 12:32:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457826;
-        bh=+3EfgGtmCKrNepVQ0cjyTDgJi1Grs6bidEQ5QqtEGDA=;
+        s=default; t=1596457933;
+        bh=i95n0WsFW8jreM24pKk2d83Mpzoj/NmK0klcShWUGuI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0l9nhzv2n4K6u/KdcZ86E+ePxcrT7vhR+oahdV2DtbGz2xbN36DYK/SMNfkwBbZJO
-         i4+yyH8gadtS4y9rQ3Nh0uoFTCRc2fkmST7BtKBkFyGdvrPLFPhHYsFtwXXQqeaiGo
-         xUluiK8W5I3PKxV0Odrq+tFhKUciNB0aX8lFg+hw=
+        b=nuWEwKBhO7RAsbDZi5XEpf0vgqlHs6dUiM47++I/YtlGk9GZ1+/D3bZ6okK2dnUmF
+         Nea/r+VpKgWPPJTfJ/qyF1dagmqMEMAsQsUTiVrAMEOnQOgKuOchnNH6AOfiKsIJ9R
+         C0rU3o7rP/NziqWXGTRoMcr1yPxba8t5voWxiq1g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 5.4 87/90] x86/i8259: Use printk_deferred() to prevent deadlock
-Date:   Mon,  3 Aug 2020 14:19:49 +0200
-Message-Id: <20200803121901.795797428@linuxfoundation.org>
+        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 35/56] mlxsw: core: Increase scope of RCU read-side critical section
+Date:   Mon,  3 Aug 2020 14:19:50 +0200
+Message-Id: <20200803121852.041985890@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
+References: <20200803121850.306734207@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Ido Schimmel <idosch@mellanox.com>
 
-commit bdd65589593edd79b6a12ce86b3b7a7c6dae5208 upstream.
+[ Upstream commit 7d8e8f3433dc8d1dc87c1aabe73a154978fb4c4d ]
 
-0day reported a possible circular locking dependency:
+The lifetime of the Rx listener item ('rxl_item') is managed using RCU,
+but is dereferenced outside of RCU read-side critical section, which can
+lead to a use-after-free.
 
-Chain exists of:
-  &irq_desc_lock_class --> console_owner --> &port_lock_key
+Fix this by increasing the scope of the RCU read-side critical section.
 
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&port_lock_key);
-                               lock(console_owner);
-                               lock(&port_lock_key);
-  lock(&irq_desc_lock_class);
-
-The reason for this is a printk() in the i8259 interrupt chip driver
-which is invoked with the irq descriptor lock held, which reverses the
-lock operations vs. printk() from arbitrary contexts.
-
-Switch the printk() to printk_deferred() to avoid that.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87365abt2v.fsf@nanos.tec.linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 93c1edb27f9e ("mlxsw: Introduce Mellanox switch driver core")
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/i8259.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlxsw/core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kernel/i8259.c
-+++ b/arch/x86/kernel/i8259.c
-@@ -207,7 +207,7 @@ spurious_8259A_irq:
- 		 * lets ACK and report it. [once per IRQ]
- 		 */
- 		if (!(spurious_irq_mask & irqmask)) {
--			printk(KERN_DEBUG
-+			printk_deferred(KERN_DEBUG
- 			       "spurious 8259A interrupt: IRQ%d.\n", irq);
- 			spurious_irq_mask |= irqmask;
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/core.c b/drivers/net/ethernet/mellanox/mlxsw/core.c
+index e180ec4f1a248..3cebea6f3e6ad 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/core.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
+@@ -1605,11 +1605,13 @@ void mlxsw_core_skb_receive(struct mlxsw_core *mlxsw_core, struct sk_buff *skb,
+ 			break;
  		}
+ 	}
+-	rcu_read_unlock();
+-	if (!found)
++	if (!found) {
++		rcu_read_unlock();
+ 		goto drop;
++	}
+ 
+ 	rxl->func(skb, local_port, rxl_item->priv);
++	rcu_read_unlock();
+ 	return;
+ 
+ drop:
+-- 
+2.25.1
+
 
 
