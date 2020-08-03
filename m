@@ -2,93 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC6723A08D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 09:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0A223A095
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 10:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725958AbgHCH7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 03:59:47 -0400
-Received: from mail.windriver.com ([147.11.1.11]:45602 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgHCH7q (ORCPT
+        id S1726119AbgHCIDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 04:03:31 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:34536 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725806AbgHCIDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 03:59:46 -0400
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 0737xK0d029246
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Mon, 3 Aug 2020 00:59:21 -0700 (PDT)
-Received: from pek-lpggp3.wrs.com (128.224.153.76) by ALA-HCB.corp.ad.wrs.com
- (147.11.189.41) with Microsoft SMTP Server id 14.3.487.0; Mon, 3 Aug 2020
- 00:59:01 -0700
-From:   Liwei Song <liwei.song@windriver.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Gary Hook <gary.hook@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David <davem@davemloft.net>, <linux-crypto@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <liwei.song@windriver.com>
-Subject: [PATCH] crypto: ccp - zero the cmd data after use it
-Date:   Mon, 3 Aug 2020 15:58:58 +0800
-Message-ID: <20200803075858.3561-1-liwei.song@windriver.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 3 Aug 2020 04:03:30 -0400
+X-Greylist: delayed 379 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 Aug 2020 04:03:30 EDT
+Received: from fiber2.protonic.nl (edge2.prtnl [192.168.1.170])
+        by sparta.prtnl (Postfix) with ESMTP id E2AC444A8292;
+        Mon,  3 Aug 2020 09:57:10 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 03 Aug 2020 09:57:10 +0200
+From:   robin <robin@protonic.nl>
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andreas Pretzsch <apr@cn-eng.de>
+Subject: Re: [PATCH] media: i2c: tvp5150: Fix horizontal crop stop boundry
+In-Reply-To: <20200729092901.yfic3vywmnykncod@pengutronix.de>
+References: <20190917071442.24986-1-robin@protonic.nl>
+ <23cbd4c0-b53e-d01f-e6d6-b4d2d689bb59@xs4all.nl>
+ <20200729092901.yfic3vywmnykncod@pengutronix.de>
+Message-ID: <84c46468036e9a1add2249a4e2cfe89e@protonic.nl>
+X-Sender: robin@protonic.nl
+User-Agent: Roundcube Webmail/1.3.6
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-exist the following assignment in ccp(ignore the force
-convert of the struct) by list_del in ccp_dequeue_cmd():
-req->__ctx->cmd->entry->next = LIST_POISON1;
+Marco,
 
-after use the req, kzfree(req) can not zero the entry
-entry->next = LIST_POISON1 of the ccp_cmd(cmd) struct
-when this address available as slub freelist pointer, this will cause
-the following "general protection fault" error if some process meet
-this LIST_POISON1 value address when request memory:
+On 2020-07-29 11:29, Marco Felsch wrote:
+> Hi,
+> 
+> On 20-06-25 13:05, Hans Verkuil wrote:
+>> On 17/09/2019 09:14, Robin van der Gracht wrote:
+>> > The value for AVID stop is relative to the width of the active video area,
+>> > not the maximum register value. Zero means equal and a negative value means
+>> > we're cropping on the right side.
+>> 
+>> While going through old unreviewed patches I came across this one 
+>> (sorry Robin,
+>> your patch fell through the cracks).
+>> 
+>> Can someone verify/test that this is correct? Marco perhaps?
+> 
+> sorry for my long absence on this. I will test it next week if it is 
+> not
+> already to late.
 
-general protection fault: 0000 1 PREEMPT SMP NOPTI
-CPU: 13 PID: 111282 Comm: msgstress03 Not tainted 5.2.45-yocto-standard #1
-Hardware name: AMD Corporation Wallaby/Wallaby, BIOS WWB7713N 07/11/2017
-RIP: 0010:__kmalloc_node+0x106/0x2f0
-RSP: 0018:ffffaa6dd83ffdc8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000033e0cd
-RDX: 000000000033e08d RSI: 000000000033e08d RDI: 000000000002c180
-RBP: ffffaa6dd83ffe00 R08: 00000000000000d4 R09: ffff966c9dc07180
-R10: dead000000000100 R11: 0000000000000000 R12: 0000000000000cc0
-R13: 0000000000000100 R14: 00000000ffffffff R15: ffff966c9dc07180
-FS: 00007f83bb756600(0000) GS:ffff966c9e340000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f83bb6917e0 CR3: 000000080b794000 CR4: 00000000003406e0
-Call Trace:
-? kvmalloc_node+0x7b/0x90
-kvmalloc_node+0x7b/0x90
-newque+0x32/0x1a0
-ipcget+0x27a/0x2c0
-ksys_msgget+0x51/0x70
-__x64_sys_msgget+0x16/0x20
-do_syscall_64+0x4d/0x130
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f83bb6917e7
+Thanks. Let me know if you need more info.
 
-Fix it by zero cmd struct after finished use it.
-
-Signed-off-by: Liwei Song <liwei.song@windriver.com>
----
- drivers/crypto/ccp/ccp-dev.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/crypto/ccp/ccp-dev.c b/drivers/crypto/ccp/ccp-dev.c
-index edefa669153f..75a6418d541d 100644
---- a/drivers/crypto/ccp/ccp-dev.c
-+++ b/drivers/crypto/ccp/ccp-dev.c
-@@ -409,6 +409,7 @@ static void ccp_do_cmd_complete(unsigned long data)
- 	cmd->callback(cmd->data, cmd->ret);
- 
- 	complete(&tdata->completion);
-+	memset(cmd, 0, sizeof(*cmd));
- }
- 
- /**
--- 
-2.17.1
-
+Robin
