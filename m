@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BB923A47B
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286F423A443
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgHCM1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:27:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53112 "EHLO mail.kernel.org"
+        id S1728182AbgHCMZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:25:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728526AbgHCM1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:27:22 -0400
+        id S1728142AbgHCMZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:25:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38CD9204EC;
-        Mon,  3 Aug 2020 12:27:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46449207FB;
+        Mon,  3 Aug 2020 12:25:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457640;
-        bh=n0N1YzP0aiE4E/zJkWQULR+8qmvqaz1DHcmCF3D0kZY=;
+        s=default; t=1596457510;
+        bh=awrWVYP5zeKpfOAYOlqjLLaaTEhgzqBcc08iqFyDZ1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aGv6CRSwEm7Nrd0XNtiDnYkfShB14fXC7ZCRxL5yz6cN01QLfB/VJ3O3tnWVnP6/n
-         qVZOUlzwkTGpaLPVLsWbsLoDiC9r2kWACXJdKIwZNabhzhmVAtMSMpAsEtQDPYXzfY
-         FsO2W+FQNVeVrV+lZUNcx2fayz6JvYdTciRougJY=
+        b=TZBjP9D5rWRdYt18DgwVvmhO64hg+HyHMPo1EMVc4xYlNsrKHmQ4dXoVOgtEvAO18
+         +caJ75+iPz+iRcG86w33x5lpxR8WrHvB54RMZbjz8dD066nlsAYL6FX4Zqw1b7lI9r
+         sj1pTAG20mtOA/bABgdFiEK3D8LcLP6VjeLcUeDU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.4 20/90] ARM: dts: imx6qdl-icore: Fix OTG_ID pin and sdcard detect
+        stable@vger.kernel.org, "Gong, Sishuai" <sishuai@purdue.edu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 064/120] rhashtable: Fix unprotected RCU dereference in __rht_ptr
 Date:   Mon,  3 Aug 2020 14:18:42 +0200
-Message-Id: <20200803121858.596760650@linuxfoundation.org>
+Message-Id: <20200803121905.921667002@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,67 +45,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Trimarchi <michael@amarulasolutions.com>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-commit 4a601da92c2a782e5c022680d476104586b74994 upstream.
+[ Upstream commit 1748f6a2cbc4694523f16da1c892b59861045b9d ]
 
-The current pin muxing scheme muxes GPIO_1 pad for USB_OTG_ID
-because of which when card is inserted, usb otg is enumerated
-and the card is never detected.
+The rcu_dereference call in rht_ptr_rcu is completely bogus because
+we've already dereferenced the value in __rht_ptr and operated on it.
+This causes potential double readings which could be fatal.  The RCU
+dereference must occur prior to the comparison in __rht_ptr.
 
-[   64.492645] cfg80211: failed to load regulatory.db
-[   64.492657] imx-sdma 20ec000.sdma: external firmware not found, using ROM firmware
-[   76.343711] ci_hdrc ci_hdrc.0: EHCI Host Controller
-[   76.349742] ci_hdrc ci_hdrc.0: new USB bus registered, assigned bus number 2
-[   76.388862] ci_hdrc ci_hdrc.0: USB 2.0 started, EHCI 1.00
-[   76.396650] usb usb2: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.08
-[   76.405412] usb usb2: New USB device strings: Mfr=3, Product=2, SerialNumber=1
-[   76.412763] usb usb2: Product: EHCI Host Controller
-[   76.417666] usb usb2: Manufacturer: Linux 5.8.0-rc1-next-20200618 ehci_hcd
-[   76.424623] usb usb2: SerialNumber: ci_hdrc.0
-[   76.431755] hub 2-0:1.0: USB hub found
-[   76.435862] hub 2-0:1.0: 1 port detected
+This patch changes the order of RCU dereference so that it is done
+first and the result is then fed to __rht_ptr.  The RCU marking
+changes have been minimised using casts which will be removed in
+a follow-up patch.
 
-The TRM mentions GPIO_1 pad should be muxed/assigned for card detect
-and ENET_RX_ER pad for USB_OTG_ID for proper operation.
-
-This patch fixes pin muxing as per TRM and is tested on a
-i.Core 1.5 MX6 DL SOM.
-
-[   22.449165] mmc0: host does not support reading read-only switch, assuming write-enable
-[   22.459992] mmc0: new high speed SDHC card at address 0001
-[   22.469725] mmcblk0: mmc0:0001 EB1QT 29.8 GiB
-[   22.478856]  mmcblk0: p1 p2
-
-Fixes: 6df11287f7c9 ("ARM: dts: imx6q: Add Engicam i.CoreM6 Quad/Dual initial support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
-Signed-off-by: Suniel Mahesh <sunil@amarulasolutions.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: ba6306e3f648 ("rhashtable: Remove RCU marking from...")
+Reported-by: "Gong, Sishuai" <sishuai@purdue.edu>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6qdl-icore.dtsi |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/rhashtable.h | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
---- a/arch/arm/boot/dts/imx6qdl-icore.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-icore.dtsi
-@@ -384,7 +384,7 @@
+diff --git a/include/linux/rhashtable.h b/include/linux/rhashtable.h
+index 70ebef866cc82..e3def7bbe9323 100644
+--- a/include/linux/rhashtable.h
++++ b/include/linux/rhashtable.h
+@@ -349,11 +349,11 @@ static inline void rht_unlock(struct bucket_table *tbl,
+ 	local_bh_enable();
+ }
  
- 	pinctrl_usbotg: usbotggrp {
- 		fsl,pins = <
--			MX6QDL_PAD_GPIO_1__USB_OTG_ID 0x17059
-+			MX6QDL_PAD_ENET_RX_ER__USB_OTG_ID 0x17059
- 		>;
- 	};
+-static inline struct rhash_head __rcu *__rht_ptr(
+-	struct rhash_lock_head *const *bkt)
++static inline struct rhash_head *__rht_ptr(
++	struct rhash_lock_head *p, struct rhash_lock_head __rcu *const *bkt)
+ {
+-	return (struct rhash_head __rcu *)
+-		((unsigned long)*bkt & ~BIT(0) ?:
++	return (struct rhash_head *)
++		((unsigned long)p & ~BIT(0) ?:
+ 		 (unsigned long)RHT_NULLS_MARKER(bkt));
+ }
  
-@@ -396,6 +396,7 @@
- 			MX6QDL_PAD_SD1_DAT1__SD1_DATA1 0x17070
- 			MX6QDL_PAD_SD1_DAT2__SD1_DATA2 0x17070
- 			MX6QDL_PAD_SD1_DAT3__SD1_DATA3 0x17070
-+			MX6QDL_PAD_GPIO_1__GPIO1_IO01  0x1b0b0
- 		>;
- 	};
+@@ -365,25 +365,26 @@ static inline struct rhash_head __rcu *__rht_ptr(
+  *            access is guaranteed, such as when destroying the table.
+  */
+ static inline struct rhash_head *rht_ptr_rcu(
+-	struct rhash_lock_head *const *bkt)
++	struct rhash_lock_head *const *p)
+ {
+-	struct rhash_head __rcu *p = __rht_ptr(bkt);
+-
+-	return rcu_dereference(p);
++	struct rhash_lock_head __rcu *const *bkt = (void *)p;
++	return __rht_ptr(rcu_dereference(*bkt), bkt);
+ }
  
+ static inline struct rhash_head *rht_ptr(
+-	struct rhash_lock_head *const *bkt,
++	struct rhash_lock_head *const *p,
+ 	struct bucket_table *tbl,
+ 	unsigned int hash)
+ {
+-	return rht_dereference_bucket(__rht_ptr(bkt), tbl, hash);
++	struct rhash_lock_head __rcu *const *bkt = (void *)p;
++	return __rht_ptr(rht_dereference_bucket(*bkt, tbl, hash), bkt);
+ }
+ 
+ static inline struct rhash_head *rht_ptr_exclusive(
+-	struct rhash_lock_head *const *bkt)
++	struct rhash_lock_head *const *p)
+ {
+-	return rcu_dereference_protected(__rht_ptr(bkt), 1);
++	struct rhash_lock_head __rcu *const *bkt = (void *)p;
++	return __rht_ptr(rcu_dereference_protected(*bkt, 1), bkt);
+ }
+ 
+ static inline void rht_assign_locked(struct rhash_lock_head **bkt,
+-- 
+2.25.1
+
 
 
