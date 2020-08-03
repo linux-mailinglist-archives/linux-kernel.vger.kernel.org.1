@@ -2,187 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14ED239E88
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 07:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2F3239EFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 07:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgHCFDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 01:03:36 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54402 "EHLO m43-7.mailgun.net"
+        id S1728165AbgHCFTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 01:19:42 -0400
+Received: from mga06.intel.com ([134.134.136.31]:41212 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbgHCFDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 01:03:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596431015; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ZEq3dQL1T4rfyaJOBFm/8UoCpiFNlnou1J2+YfKngHo=;
- b=bS+QIwK0a6Gh7x4/kG4K0MKjr3pC09lXiNa+E1muUSEnialacWeTpPOwOK8ohzkKrWlpTlt5
- dc+DnTPj9OfpMMONcVUeY1zB12pZ82P/R2uI2EUo966+PBJ648zjyqZry0RVDQUtlYi9WWqY
- ZGnIsxeNTlAzOLNac4AA1/30k6k=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
- 5f279a96498d6102394b66a2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 Aug 2020 05:03:18
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 733C4C4339C; Mon,  3 Aug 2020 05:03:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 198A3C433C6;
-        Mon,  3 Aug 2020 05:03:16 +0000 (UTC)
+        id S1728032AbgHCFTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 01:19:41 -0400
+IronPort-SDR: g3g25i9hJ+o7+pvkIOoVtz7c/TRq7V++Bjh/lzaQUkLPl9WK5l2/A4Lg/VfWr5T02rLB7qSyIZ
+ 7Kvn4AMeA6yw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9701"; a="213580059"
+X-IronPort-AV: E=Sophos;i="5.75,429,1589266800"; 
+   d="scan'208";a="213580059"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2020 22:19:38 -0700
+IronPort-SDR: WFDsqK1YdlBiBoRRenfPv3zDignsuJm/iea75Lsufl9kEoS5lxblPDNWKBXVyJjprWu4e8qTR3
+ 9/5IyVr4xe7g==
+X-IronPort-AV: E=Sophos;i="5.75,429,1589266800"; 
+   d="scan'208";a="305681151"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2020 22:19:38 -0700
+Subject: [PATCH v4 10/23] device-dax: Make pgmap optional for instance
+ creation
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     akpm@linux-foundation.org
+Cc:     Vishal Verma <vishal.l.verma@intel.com>, peterz@infradead.org,
+        dave.hansen@linux.intel.com, ard.biesheuvel@linaro.org,
+        vishal.l.verma@intel.com, linux-mm@kvack.org,
+        linux-nvdimm@lists.01.org, joao.m.martins@oracle.com,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Date:   Sun, 02 Aug 2020 22:03:19 -0700
+Message-ID: <159643099958.4062302.10379230791041872886.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <159643094279.4062302.17779410714418721328.stgit@dwillia2-desk3.amr.corp.intel.com>
+References: <159643094279.4062302.17779410714418721328.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 03 Aug 2020 13:03:16 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        bvanassche@acm.org, beanhuo@micron.com, asutoshd@codeaurora.org,
-        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com
-Subject: Re: [PATCH v6] scsi: ufs: Quiesce all scsi devices before shutdown
-In-Reply-To: <20200803042514.7111-1-stanley.chu@mediatek.com>
-References: <20200803042514.7111-1-stanley.chu@mediatek.com>
-Message-ID: <d85cdb877bced2d6b0a8ba67670271f2@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stanley,
+The passed in dev_pagemap is only required in the pmem case as the
+libnvdimm core may have reserved a vmem_altmap for dev_memremap_pages()
+to place the memmap in pmem directly. In the hmem case there is no
+agent reserving an altmap so it can all be handled by a core internal
+default.
 
-On 2020-08-03 12:25, Stanley Chu wrote:
-> Currently I/O request could be still submitted to UFS device while
-> UFS is working on shutdown flow. This may lead to racing as below
-> scenarios and finally system may crash due to unclocked register
-> accesses.
-> 
-> To fix this kind of issues, in ufshcd_shutdown(),
-> 
-> 1. Use pm_runtime_get_sync() instead of resuming UFS device by
->    ufshcd_runtime_resume() "internally" to let runtime PM framework
->    manage and prevent concurrent runtime operations by incoming I/O
->    requests.
-> 
-> 2. Specifically quiesce all SCSI devices to block all I/O requests
->    after device is resumed.
-> 
-> Example of racing scenario: While UFS device is runtime-suspended
-> 
-> Thread #1: Executing UFS shutdown flow, e.g.,
->            ufshcd_suspend(UFS_SHUTDOWN_PM)
-> 
-> Thread #2: Executing runtime resume flow triggered by I/O request,
->            e.g., ufshcd_resume(UFS_RUNTIME_PM)
-> 
-> This breaks the assumption that UFS PM flows can not be running
-> concurrently and some unexpected racing behavior may happen.
-> 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> ---
-> Changes:
->   - Since v4: Use pm_runtime_get_sync() instead of resuming UFS device
-> by ufshcd_runtime_resume() "internally".
-> ---
->  drivers/scsi/ufs/ufshcd.c | 39 ++++++++++++++++++++++++++++++++++-----
->  1 file changed, 34 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 307622284239..fc01171d13b1 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -159,6 +159,12 @@ struct ufs_pm_lvl_states ufs_pm_lvl_states[] = {
->  	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE},
->  };
-> 
-> +#define ufshcd_scsi_for_each_sdev(fn) \
-> +	list_for_each_entry(starget, &hba->host->__targets, siblings) { \
-> +		__starget_for_each_device(starget, NULL, \
-> +					  fn); \
-> +	}
-> +
->  static inline enum ufs_dev_pwr_mode
->  ufs_get_pm_lvl_to_dev_pwr_mode(enum ufs_pm_level lvl)
->  {
-> @@ -8629,6 +8635,13 @@ int ufshcd_runtime_idle(struct ufs_hba *hba)
->  }
->  EXPORT_SYMBOL(ufshcd_runtime_idle);
-> 
-> +static void ufshcd_quiesce_sdev(struct scsi_device *sdev, void *data)
-> +{
-> +	/* Suspended devices are already quiesced so can be skipped */
+Pass the resource range via a new @range property of 'struct
+dev_dax_data'.
 
-Why can runtime suspended sdevs be skipped? Block layer can still resume
-them at any time, no?
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+ drivers/dax/bus.c              |   29 +++++++++++++++--------------
+ drivers/dax/bus.h              |    2 ++
+ drivers/dax/dax-private.h      |    9 ++++++++-
+ drivers/dax/device.c           |   28 +++++++++++++++++++---------
+ drivers/dax/hmem/hmem.c        |    8 ++++----
+ drivers/dax/kmem.c             |   12 ++++++------
+ drivers/dax/pmem/core.c        |    4 ++++
+ tools/testing/nvdimm/dax-dev.c |    8 ++++----
+ 8 files changed, 62 insertions(+), 38 deletions(-)
 
-> +	if (!pm_runtime_suspended(&sdev->sdev_gendev))
-> +		scsi_device_quiesce(sdev);
-> +}
-> +
->  /**
->   * ufshcd_shutdown - shutdown routine
->   * @hba: per adapter instance
-> @@ -8640,6 +8653,7 @@ EXPORT_SYMBOL(ufshcd_runtime_idle);
->  int ufshcd_shutdown(struct ufs_hba *hba)
->  {
->  	int ret = 0;
-> +	struct scsi_target *starget;
-> 
->  	if (!hba->is_powered)
->  		goto out;
-> @@ -8647,11 +8661,26 @@ int ufshcd_shutdown(struct ufs_hba *hba)
->  	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
->  		goto out;
-> 
-> -	if (pm_runtime_suspended(hba->dev)) {
-> -		ret = ufshcd_runtime_resume(hba);
-> -		if (ret)
-> -			goto out;
-> -	}
-> +	/*
-> +	 * Let runtime PM framework manage and prevent concurrent runtime
-> +	 * operations with shutdown flow.
-> +	 */
-> +	pm_runtime_get_sync(hba->dev);
-> +
-> +	/*
-> +	 * Quiesce all SCSI devices to prevent any non-PM requests sending
-> +	 * from block layer during and after shutdown.
-> +	 *
-> +	 * Here we can not use blk_cleanup_queue() since PM requests
-> +	 * (with BLK_MQ_REQ_PREEMPT flag) are still required to be sent
-> +	 * through block layer. Therefore SCSI command queued after the
-> +	 * scsi_target_quiesce() call returned will block until
-> +	 * blk_cleanup_queue() is called.
-> +	 *
-> +	 * Besides, scsi_target_"un"quiesce (e.g., scsi_target_resume) can
-> +	 * be ignored since shutdown is one-way flow.
-> +	 */
-> +	ufshcd_scsi_for_each_sdev(ufshcd_quiesce_sdev);
+diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+index dffa4655e128..96bd64ba95a5 100644
+--- a/drivers/dax/bus.c
++++ b/drivers/dax/bus.c
+@@ -271,7 +271,7 @@ static ssize_t size_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+ 	struct dev_dax *dev_dax = to_dev_dax(dev);
+-	unsigned long long size = resource_size(&dev_dax->region->res);
++	unsigned long long size = range_len(&dev_dax->range);
+ 
+ 	return sprintf(buf, "%llu\n", size);
+ }
+@@ -293,19 +293,12 @@ static ssize_t target_node_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RO(target_node);
+ 
+-static unsigned long long dev_dax_resource(struct dev_dax *dev_dax)
+-{
+-	struct dax_region *dax_region = dev_dax->region;
+-
+-	return dax_region->res.start;
+-}
+-
+ static ssize_t resource_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+ 	struct dev_dax *dev_dax = to_dev_dax(dev);
+ 
+-	return sprintf(buf, "%#llx\n", dev_dax_resource(dev_dax));
++	return sprintf(buf, "%#llx\n", dev_dax->range.start);
+ }
+ static DEVICE_ATTR(resource, 0400, resource_show, NULL);
+ 
+@@ -376,6 +369,7 @@ static void dev_dax_release(struct device *dev)
+ 
+ 	dax_region_put(dax_region);
+ 	put_dax(dax_dev);
++	kfree(dev_dax->pgmap);
+ 	kfree(dev_dax);
+ }
+ 
+@@ -412,7 +406,12 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+ 	if (!dev_dax)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	memcpy(&dev_dax->pgmap, data->pgmap, sizeof(struct dev_pagemap));
++	if (data->pgmap) {
++		dev_dax->pgmap = kmemdup(data->pgmap,
++				sizeof(struct dev_pagemap), GFP_KERNEL);
++		if (!dev_dax->pgmap)
++			goto err_pgmap;
++	}
+ 
+ 	/*
+ 	 * No 'host' or dax_operations since there is no access to this
+@@ -421,18 +420,19 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+ 	dax_dev = alloc_dax(dev_dax, NULL, NULL, DAXDEV_F_SYNC);
+ 	if (IS_ERR(dax_dev)) {
+ 		rc = PTR_ERR(dax_dev);
+-		goto err;
++		goto err_alloc_dax;
+ 	}
+ 
+ 	/* a device_dax instance is dead while the driver is not attached */
+ 	kill_dax(dax_dev);
+ 
+-	/* from here on we're committed to teardown via dax_dev_release() */
++	/* from here on we're committed to teardown via dev_dax_release() */
+ 	dev = &dev_dax->dev;
+ 	device_initialize(dev);
+ 
+ 	dev_dax->dax_dev = dax_dev;
+ 	dev_dax->region = dax_region;
++	dev_dax->range = data->range;
+ 	dev_dax->target_node = dax_region->target_node;
+ 	kref_get(&dax_region->kref);
+ 
+@@ -458,8 +458,9 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+ 		return ERR_PTR(rc);
+ 
+ 	return dev_dax;
+-
+- err:
++err_alloc_dax:
++	kfree(dev_dax->pgmap);
++err_pgmap:
+ 	kfree(dev_dax);
+ 
+ 	return ERR_PTR(rc);
+diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
+index 299c2e7fac09..4aeb36da83a4 100644
+--- a/drivers/dax/bus.h
++++ b/drivers/dax/bus.h
+@@ -3,6 +3,7 @@
+ #ifndef __DAX_BUS_H__
+ #define __DAX_BUS_H__
+ #include <linux/device.h>
++#include <linux/range.h>
+ 
+ struct dev_dax;
+ struct resource;
+@@ -21,6 +22,7 @@ struct dev_dax_data {
+ 	struct dax_region *dax_region;
+ 	struct dev_pagemap *pgmap;
+ 	enum dev_dax_subsys subsys;
++	struct range range;
+ 	int id;
+ };
+ 
+diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+index 8a4c40ccd2ef..6779f683671d 100644
+--- a/drivers/dax/dax-private.h
++++ b/drivers/dax/dax-private.h
+@@ -41,6 +41,7 @@ struct dax_region {
+  * @target_node: effective numa node if dev_dax memory range is onlined
+  * @dev - device core
+  * @pgmap - pgmap for memmap setup / lifetime (driver owned)
++ * @range: resource range for the instance
+  * @dax_mem_res: physical address range of hotadded DAX memory
+  * @dax_mem_name: name for hotadded DAX memory via add_memory_driver_managed()
+  */
+@@ -49,10 +50,16 @@ struct dev_dax {
+ 	struct dax_device *dax_dev;
+ 	int target_node;
+ 	struct device dev;
+-	struct dev_pagemap pgmap;
++	struct dev_pagemap *pgmap;
++	struct range range;
+ 	struct resource *dax_kmem_res;
+ };
+ 
++static inline u64 range_len(struct range *range)
++{
++	return range->end - range->start + 1;
++}
++
+ static inline struct dev_dax *to_dev_dax(struct device *dev)
+ {
+ 	return container_of(dev, struct dev_dax, dev);
+diff --git a/drivers/dax/device.c b/drivers/dax/device.c
+index bffef1b21144..a86b2c9788c5 100644
+--- a/drivers/dax/device.c
++++ b/drivers/dax/device.c
+@@ -55,12 +55,12 @@ static int check_vma(struct dev_dax *dev_dax, struct vm_area_struct *vma,
+ __weak phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
+ 		unsigned long size)
+ {
+-	struct resource *res = &dev_dax->region->res;
++	struct range *range = &dev_dax->range;
+ 	phys_addr_t phys;
+ 
+-	phys = pgoff * PAGE_SIZE + res->start;
+-	if (phys >= res->start && phys <= res->end) {
+-		if (phys + size - 1 <= res->end)
++	phys = pgoff * PAGE_SIZE + range->start;
++	if (phys >= range->start && phys <= range->end) {
++		if (phys + size - 1 <= range->end)
+ 			return phys;
+ 	}
+ 
+@@ -396,21 +396,31 @@ int dev_dax_probe(struct device *dev)
+ {
+ 	struct dev_dax *dev_dax = to_dev_dax(dev);
+ 	struct dax_device *dax_dev = dev_dax->dax_dev;
+-	struct resource *res = &dev_dax->region->res;
++	struct range *range = &dev_dax->range;
++	struct dev_pagemap *pgmap;
+ 	struct inode *inode;
+ 	struct cdev *cdev;
+ 	void *addr;
+ 	int rc;
+ 
+ 	/* 1:1 map region resource range to device-dax instance range */
+-	if (!devm_request_mem_region(dev, res->start, resource_size(res),
++	if (!devm_request_mem_region(dev, range->start, range_len(range),
+ 				dev_name(dev))) {
+-		dev_warn(dev, "could not reserve region %pR\n", res);
++		dev_warn(dev, "could not reserve range: %#llx - %#llx\n",
++				range->start, range->end);
+ 		return -EBUSY;
+ 	}
+ 
+-	dev_dax->pgmap.type = MEMORY_DEVICE_DEVDAX;
+-	addr = devm_memremap_pages(dev, &dev_dax->pgmap);
++	pgmap = dev_dax->pgmap;
++	if (!pgmap) {
++		pgmap = devm_kzalloc(dev, sizeof(*pgmap), GFP_KERNEL);
++		if (!pgmap)
++			return -ENOMEM;
++		pgmap->res.start = range->start;
++		pgmap->res.end = range->end;
++	}
++	pgmap->type = MEMORY_DEVICE_DEVDAX;
++	addr = devm_memremap_pages(dev, pgmap);
+ 	if (IS_ERR(addr))
+ 		return PTR_ERR(addr);
+ 
+diff --git a/drivers/dax/hmem/hmem.c b/drivers/dax/hmem/hmem.c
+index b84fe17178d8..af82d6ba820a 100644
+--- a/drivers/dax/hmem/hmem.c
++++ b/drivers/dax/hmem/hmem.c
+@@ -8,7 +8,6 @@
+ static int dax_hmem_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct dev_pagemap pgmap = { };
+ 	struct dax_region *dax_region;
+ 	struct memregion_info *mri;
+ 	struct dev_dax_data data;
+@@ -20,8 +19,6 @@ static int dax_hmem_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	mri = dev->platform_data;
+-	memcpy(&pgmap.res, res, sizeof(*res));
+-
+ 	dax_region = alloc_dax_region(dev, pdev->id, res, mri->target_node,
+ 			PMD_SIZE);
+ 	if (!dax_region)
+@@ -30,7 +27,10 @@ static int dax_hmem_probe(struct platform_device *pdev)
+ 	data = (struct dev_dax_data) {
+ 		.dax_region = dax_region,
+ 		.id = 0,
+-		.pgmap = &pgmap,
++		.range = {
++			.start = res->start,
++			.end = res->end,
++		},
+ 	};
+ 	dev_dax = devm_create_dev_dax(&data);
+ 	if (IS_ERR(dev_dax))
+diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+index 275aa5f87399..5bb133df147d 100644
+--- a/drivers/dax/kmem.c
++++ b/drivers/dax/kmem.c
+@@ -22,7 +22,7 @@ static bool any_hotremove_failed;
+ int dev_dax_kmem_probe(struct device *dev)
+ {
+ 	struct dev_dax *dev_dax = to_dev_dax(dev);
+-	struct resource *res = &dev_dax->region->res;
++	struct range *range = &dev_dax->range;
+ 	resource_size_t kmem_start;
+ 	resource_size_t kmem_size;
+ 	resource_size_t kmem_end;
+@@ -39,17 +39,17 @@ int dev_dax_kmem_probe(struct device *dev)
+ 	 */
+ 	numa_node = dev_dax->target_node;
+ 	if (numa_node < 0) {
+-		dev_warn(dev, "rejecting DAX region %pR with invalid node: %d\n",
+-			 res, numa_node);
++		dev_warn(dev, "rejecting DAX region with invalid node: %d\n",
++				numa_node);
+ 		return -EINVAL;
+ 	}
+ 
+ 	/* Hotplug starting at the beginning of the next block: */
+-	kmem_start = ALIGN(res->start, memory_block_size_bytes());
++	kmem_start = ALIGN(range->start, memory_block_size_bytes());
+ 
+-	kmem_size = resource_size(res);
++	kmem_size = range_len(range);
+ 	/* Adjust the size down to compensate for moving up kmem_start: */
+-	kmem_size -= kmem_start - res->start;
++	kmem_size -= kmem_start - range->start;
+ 	/* Align the size down to cover only complete blocks: */
+ 	kmem_size &= ~(memory_block_size_bytes() - 1);
+ 	kmem_end = kmem_start + kmem_size;
+diff --git a/drivers/dax/pmem/core.c b/drivers/dax/pmem/core.c
+index 08ee5947a49c..4fa81d3d2f65 100644
+--- a/drivers/dax/pmem/core.c
++++ b/drivers/dax/pmem/core.c
+@@ -63,6 +63,10 @@ struct dev_dax *__dax_pmem_probe(struct device *dev, enum dev_dax_subsys subsys)
+ 		.id = id,
+ 		.pgmap = &pgmap,
+ 		.subsys = subsys,
++		.range = {
++			.start = res.start,
++			.end = res.end,
++		},
+ 	};
+ 	dev_dax = devm_create_dev_dax(&data);
+ 
+diff --git a/tools/testing/nvdimm/dax-dev.c b/tools/testing/nvdimm/dax-dev.c
+index 7e5d979e73cb..38d8e55c4a0d 100644
+--- a/tools/testing/nvdimm/dax-dev.c
++++ b/tools/testing/nvdimm/dax-dev.c
+@@ -9,12 +9,12 @@
+ phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
+ 		unsigned long size)
+ {
+-	struct resource *res = &dev_dax->region->res;
++	struct range *range = &dev_dax->range;
+ 	phys_addr_t addr;
+ 
+-	addr = pgoff * PAGE_SIZE + res->start;
+-	if (addr >= res->start && addr <= res->end) {
+-		if (addr + size - 1 <= res->end) {
++	addr = pgoff * PAGE_SIZE + range->start;
++	if (addr >= range->start && addr <= range->end) {
++		if (addr + size - 1 <= range->end) {
+ 			if (get_nfit_res(addr)) {
+ 				struct page *page;
+ 
 
-Any reasons why don't use scsi_target_quiesce() here?
-
-Thanks,
-
-Can Guo.
-
-> 
->  	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
->  out:
