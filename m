@@ -2,65 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0823F23A166
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 11:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFA023A16B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 11:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgHCJC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 05:02:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:55495 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725884AbgHCJC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 05:02:28 -0400
-IronPort-SDR: WseymalQQLn+TCMb+3b4yv89FV552M4gELyqzx881qXVKQGR2c085OCxuYAtCue7fSMbl8rYsw
- wk+cgEFb2hPQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9701"; a="149508927"
+        id S1726332AbgHCJEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 05:04:51 -0400
+Received: from labrats.qualcomm.com ([199.106.110.90]:8658 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725806AbgHCJEv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 05:04:51 -0400
+IronPort-SDR: dajFYW/VqHUFnplPAQ6+aKrMR0HZvwvm685X8F5DC/fWctPM/9JsX8kq3BWkU8uY90lAO0mPQx
+ nX/XlFF4TI9zd5l8fnJ6LlyY4Z6e1Lbf253DcqQFplP3OHX3TeNC0f5OTOyIbNUEFboLr+YbV0
+ bE8ODrWu7SgUzjBLKyJ6qqAGMZ3j/GGTFvNUwSeGzecsW1Vj4Y1zO/4ECpD46yva7VG+NpXc2D
+ Q1DjEEg4Zyo20+TFkx2lXuBekaH7NHFL0VHBETRpfK0CY004TdcvRwC3JGY+BDvpM77Sp4ohp4
+ 9w4=
 X-IronPort-AV: E=Sophos;i="5.75,429,1589266800"; 
-   d="scan'208";a="149508927"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 02:02:27 -0700
-IronPort-SDR: ZbfLsu2QfmPiGD1wH7yl7RZlypZyer5EvXcdO/AikxzA1ibMyuyf65YvMHolALegIR2ItPyTW7
- kALHQhC3/p5Q==
-X-IronPort-AV: E=Sophos;i="5.75,429,1589266800"; 
-   d="scan'208";a="395992611"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 02:02:26 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 0A880206D6; Mon,  3 Aug 2020 12:02:25 +0300 (EEST)
-Date:   Mon, 3 Aug 2020 12:02:24 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PM: runtime: Improve kerneldoc of
- pm_runtime_get_if_active()
-Message-ID: <20200803090224.GW13316@paasikivi.fi.intel.com>
-References: <3777183.7rZhd9hnLu@kreacher>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3777183.7rZhd9hnLu@kreacher>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+   d="scan'208";a="47240952"
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by labrats.qualcomm.com with ESMTP; 03 Aug 2020 02:04:50 -0700
+Received: from stor-presley.qualcomm.com ([192.168.140.85])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 03 Aug 2020 02:04:49 -0700
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 71C3D214E4; Mon,  3 Aug 2020 02:04:49 -0700 (PDT)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH v9 1/9] scsi: ufs: Add checks before setting clk-gating states
+Date:   Mon,  3 Aug 2020 02:04:36 -0700
+Message-Id: <1596445485-19834-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1596445485-19834-1-git-send-email-cang@codeaurora.org>
+References: <1596445485-19834-1-git-send-email-cang@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+Clock gating features can be turned on/off selectively which means its
+state information is only important if it is enabled. This change makes
+sure that we only look at state of clk-gating if it is enabled.
 
-On Fri, Jul 31, 2020 at 07:04:11PM +0200, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> The kerneldoc comment of pm_runtime_get_if_active() doesn't list the
-> second argument of the function properly, so fix that and while at it
-> clarify that comment somewhat and add some markup to it.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Reviewed-by: Hongwu Su <hongwus@codeaurora.org>
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Reviewed-by: Bean Huo <beanhuo@micron.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-Thanks!
-
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 3076222..5acb38c 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1839,6 +1839,8 @@ static void ufshcd_init_clk_gating(struct ufs_hba *hba)
+ 	if (!ufshcd_is_clkgating_allowed(hba))
+ 		return;
+ 
++	hba->clk_gating.state = CLKS_ON;
++
+ 	hba->clk_gating.delay_ms = 150;
+ 	INIT_DELAYED_WORK(&hba->clk_gating.gate_work, ufshcd_gate_work);
+ 	INIT_WORK(&hba->clk_gating.ungate_work, ufshcd_ungate_work);
+@@ -2541,7 +2543,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+ 		err = SCSI_MLQUEUE_HOST_BUSY;
+ 		goto out;
+ 	}
+-	WARN_ON(hba->clk_gating.state != CLKS_ON);
++	WARN_ON(ufshcd_is_clkgating_allowed(hba) &&
++		(hba->clk_gating.state != CLKS_ON));
+ 
+ 	lrbp = &hba->lrb[tag];
+ 
+@@ -8326,8 +8329,11 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		/* If link is active, device ref_clk can't be switched off */
+ 		__ufshcd_setup_clocks(hba, false, true);
+ 
+-	hba->clk_gating.state = CLKS_OFF;
+-	trace_ufshcd_clk_gating(dev_name(hba->dev), hba->clk_gating.state);
++	if (ufshcd_is_clkgating_allowed(hba)) {
++		hba->clk_gating.state = CLKS_OFF;
++		trace_ufshcd_clk_gating(dev_name(hba->dev),
++					hba->clk_gating.state);
++	}
+ 
+ 	/* Put the host controller in low power mode if possible */
+ 	ufshcd_hba_vreg_set_lpm(hba);
+@@ -8467,6 +8473,11 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (hba->clk_scaling.is_allowed)
+ 		ufshcd_suspend_clkscaling(hba);
+ 	ufshcd_setup_clocks(hba, false);
++	if (ufshcd_is_clkgating_allowed(hba)) {
++		hba->clk_gating.state = CLKS_OFF;
++		trace_ufshcd_clk_gating(dev_name(hba->dev),
++					hba->clk_gating.state);
++	}
+ out:
+ 	hba->pm_op_in_progress = 0;
+ 	if (ret)
 -- 
-Sakari Ailus
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
