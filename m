@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA25923A9D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63BD23A9D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727786AbgHCPqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 11:46:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39910 "EHLO mx2.suse.de"
+        id S1727899AbgHCPrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 11:47:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:59264 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726805AbgHCPqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 11:46:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BBB63AF21;
-        Mon,  3 Aug 2020 15:46:39 +0000 (UTC)
-Date:   Mon, 3 Aug 2020 17:46:23 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Charan Teja Reddy <charante@codeaurora.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, vinmenon@codeaurora.org
-Subject: Re: [PATCH] mm, memory_hotplug: update pcp lists everytime onlining
- a memory block
-Message-ID: <20200803154623.GX5174@dhcp22.suse.cz>
-References: <1596372896-15336-1-git-send-email-charante@codeaurora.org>
+        id S1726805AbgHCPrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 11:47:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CA3230E;
+        Mon,  3 Aug 2020 08:47:10 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 948F03F718;
+        Mon,  3 Aug 2020 08:47:08 -0700 (PDT)
+References: <20200729033934.22349-1-alison.wang@nxp.com> <877dumbtoi.fsf@kurt> <20200729094943.lsmhsqlnl7rlnl6f@skbuf> <87mu3ho48v.fsf@kurt> <20200730082228.r24zgdeiofvwxijm@skbuf> <873654m9zi.fsf@kurt> <87lfiwm2bj.fsf@nanos.tec.linutronix.de> <20200803114112.mrcuupz4ir5uqlp6@skbuf> <87d047n4oh.fsf@nanos.tec.linutronix.de>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
+        will@kernel.org, paulmck@kernel.org, mw@semihalf.com,
+        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level IRQ time accounting
+In-reply-to: <87d047n4oh.fsf@nanos.tec.linutronix.de>
+Date:   Mon, 03 Aug 2020 16:47:03 +0100
+Message-ID: <jhjh7tjivew.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596372896-15336-1-git-send-email-charante@codeaurora.org>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 02-08-20 18:24:56, Charan Teja Reddy wrote:
-> When onlining a first memory block in a zone, pcp lists are not updated
-> thus pcp struct will have the default setting of ->high = 0,->batch = 1.
-> This means till the second memory block in a zone(if it have) is onlined
-> the pcp lists of this zone will not contain any pages because pcp's
-> ->count is always greater than ->high thus free_pcppages_bulk() is
-> called to free batch size(=1) pages every time system wants to add a
-> page to the pcp list through free_unref_page(). To put this in a word,
-> system is not using benefits offered by the pcp lists when there is a
-> single onlineable memory block in a zone. Correct this by always
-> updating the pcp lists when memory block is onlined.
 
-Yes this seems like an ancient bug
-Fixes: 1f522509c77a ("mem-hotplug: avoid multiple zones sharing same boot strapping boot_pageset")
+On 03/08/20 16:13, Thomas Gleixner wrote:
+> Vladimir Oltean <olteanv@gmail.com> writes:
+>>>  1) When irq accounting is disabled, RT throttling kicks in as
+>>>     expected.
+>>> 
+>>>  2) With irq accounting the RT throttler does not kick in and the RCU
+>>>     stall/lockups happen.
+>> What is this telling us?
+>
+> It seems that the fine grained irq time accounting affects the runtime
+> accounting in some way which I haven't figured out yet.
+>
 
-Just nobody has noticed because a single block memory zone is really
-rare.
- 
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+With IRQ_TIME_ACCOUNTING, rq_clock_task() will always be incremented by a
+lesser-or-equal value than when not having the option; you start with the
+same delta_exec but slice some for the IRQ accounting, and leave the rest
+for the rq_clock_task() (+paravirt).
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+IIUC this means that if you spend e.g. 10% of the time in IRQ and 90% of
+the time running the stress-ng RT tasks, despite having RT tasks hogging
+the entirety of the "available time" it is still only 90% runtime, which is
+below the 95% default and the throttling doesn't happen.
 
-Thanks
+I don't know if considering IRQ time in some way or another in
+sched_rt_runtime_exceeded() really is a way out here.
 
-> ---
->  mm/memory_hotplug.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index dcdf327..7f62d69 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -854,8 +854,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->  	node_states_set_node(nid, &arg);
->  	if (need_zonelists_rebuild)
->  		build_all_zonelists(NULL);
-> -	else
-> -		zone_pcp_update(zone);
-> +	zone_pcp_update(zone);
->  
->  	init_per_zone_wmark_min();
->  
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member of the Code Aurora Forum, hosted by The Linux Foundation
-> 
+> Thanks,
+>
+>         tglx
 
--- 
-Michal Hocko
-SUSE Labs
