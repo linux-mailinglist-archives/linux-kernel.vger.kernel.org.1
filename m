@@ -2,280 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8C723A547
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF03623A580
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729248AbgHCMfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:35:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:56644 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728767AbgHCMfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:35:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F93931B;
-        Mon,  3 Aug 2020 05:35:00 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.34.133])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 662293F71F;
-        Mon,  3 Aug 2020 05:34:54 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 13:34:47 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Maninder Singh <maninder1.s@samsung.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oleg@redhat.com,
-        keescook@chromium.org, arnd@arndb.de, gregkh@linuxfoundation.org,
-        adobriyan@gmail.com, rostedt@goodmis.org, mingo@redhat.com,
-        steve.capper@arm.com, vincenzo.frascino@arm.com,
-        anshuman.khandual@arm.com, ardb@kernel.org, james.morse@arm.com,
-        broonie@kernel.org, maz@kernel.org, kristina.martsenko@arm.com,
-        samitolvanen@google.com, ebiederm@xmission.com,
-        akpm@linux-foundation.org, gladkov.alexey@gmail.com,
-        daniel.m.jordan@oracle.com, walken@google.com,
-        bernd.edlinger@hotmail.de, laoar.shao@gmail.com, avagin@gmail.com,
-        john.johansen@canonical.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        a.sahrawat@samsung.com, Vaneet narang <v.narang@samsung.com>
-Subject: Re: [PATCH 1/1] arm64: add support for PAGE_SIZE aligned kernel stack
-Message-ID: <20200803123447.GA89825@C02TD0UTHF1T.local>
-References: <CGME20200802165825epcas5p3a2127be681530fdd785db0f8961eaf96@epcas5p3.samsung.com>
- <1596386115-47228-1-git-send-email-maninder1.s@samsung.com>
+        id S1729617AbgHCMhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728370AbgHCMhd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:37:33 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2A5C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 05:37:33 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id qc22so23646857ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 05:37:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=SYFkGFotJhjv8HSUDqLl/g6SWYqewU0n8NYVoK0ozDU=;
+        b=WIwTFj6u6mG0HCLAD2zEll9ZTp4GBGQG/fS6MZWTHARNXNgSs9xVe9TQgusqLMzJ56
+         8ztCfWBozbc2mwEMJEQ8CY21UZTy7pr3FjDNeYPTpHMCnrvC2owerHrJzgUXHrD503oD
+         G5TYQdbM+U/SiI1n+owk9QrHZMxGqhBr5gBnPY4zusYkvEZyuV9eqjOjoNTKobGPJrly
+         wDaDJoknVS/x88eodvZAAmzNNVrNolPkzfHh0RW3JztwbXenLyuDD9UaTWgLN4Z8wN3z
+         zsYWbTzezjb7evWgylGiOjzTdFFPMckUHELZT0nY/6MJ66tNhlW5/IVBwpSbhFEqA7pf
+         wliQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=SYFkGFotJhjv8HSUDqLl/g6SWYqewU0n8NYVoK0ozDU=;
+        b=iuupiV+y+1zxoCHz31wUksUTpTY2iIuU70gV4H6NvcI9/TB0Xag6r2R3EP93YhC/wz
+         6felwfCO4p066SDBnfp0rN5SnEtRYH4WEY0VS1SAkY/5wcXVMtHX7qT3Ly9PlLywwsXl
+         dxVadJWmB1hf0wQUHljkxw+tCvSmF+ojO6pwXBym4ndqvWM/++jroD05kuDAHR/qEI82
+         t7jJ1IpDMY8ELAYU6NWOe3TTNth0xWsbrbde8MDVCseuJjuXWKcBQwpNvn/YWwVNNBCV
+         v+1H3HBntyBDHD1NaCxuj65l2CXh0tGofJk+Xuupq9C+Sa89131F2Vx3CVpJ2f+EDXcg
+         zxgQ==
+X-Gm-Message-State: AOAM530+Lq2sGEgjGZ1R4wD+6RTIDYWtQxsdKAVCUo2lrhzeRWR/L5+f
+        bz+eUqrMPtqJjny1+G1Pqo0=
+X-Google-Smtp-Source: ABdhPJwaCa6exlp1u0baTo/T1cg7xGnn0Rwe9zWCJHEqEaUmtjHVaognzbtGVOPe62k1lxhoCHgs9w==
+X-Received: by 2002:a17:906:1ec3:: with SMTP id m3mr16815476ejj.197.1596458251793;
+        Mon, 03 Aug 2020 05:37:31 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id bc10sm15968725edb.5.2020.08.03.05.37.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 05:37:31 -0700 (PDT)
+Date:   Mon, 3 Aug 2020 14:37:29 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Arnaldo Carvalho de Melo <acme@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] perf events updates for v5.9
+Message-ID: <20200803123729.GA567306@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1596386115-47228-1-git-send-email-maninder1.s@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 02, 2020 at 10:05:15PM +0530, Maninder Singh wrote:
-> currently THREAD_SIZE is always in power of 2, which will waste
-> memory in cases there is need to increase of stack size.
+Linus,
 
-If you are seeing issues with the current stack size, can you please
-explain that in more detail? Where are you seeing problems? Which
-configuration options do you have selected?
+Please pull the latest perf/core git tree from:
 
-I'm not keen on making kernel stack sizes configurable as it's not
-currently possible for the person building the kernel to figure out a
-safe size (and if this were possible, it's be better to handle this
-automatically).
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-core-2020-08-03
 
-If the stack size is too small in some configurations I think we need to
-ensure that it is appropriately sized regardless of whether the person
-building the kernel believes they can identify a reasonable size.
+   # HEAD: d903b6d029d66e6478562d75ea18d89098f7b7e8 perf/x86/rapl: Add Hygon Fam18h RAPL support
 
-> Thus adding support for PAGE_SIZE(not power of 2) stacks for arm64.
-> User can decide any value 12KB, 16KB, 20 KB etc. based on value
-> of THREAD_SHIFT. User can set any value which is PAGE_SIZE aligned for
-> PAGE_ALIGNED_STACK_SIZE config.
-> 
-> Value of THREAD_SIZE is defined as 12KB for now, since with irq stacks
-> it is enough and it will save 4KB per thread.
+- HW support updates:
 
-How are you certain of this?
+   - Add uncore support for Intel Comet Lake
 
-> IRQ stack size is not changed and alignement of IRQ stack and kernel stack
-> is maintained same to catch stack overflow faults as earlier.
-> 
-> THREAD_SIZE masking in common files is changed to THREAD_SIZE_ALIGNED.
+   - Add RAPL support for Hygon Fam18h
 
-This is definitely going to be confused with THREAD_ALIGN, so if we do
-go ahead with this, the naming will need work.
+   - Add Intel "IIO stack to PMON mapping" support on Skylake-SP CPUs,
+     which enumerates per device performance counters via sysfs and enables
+     the perf stat --iiostat functionality
 
-Thanks,
-Mark.
+   - Add support for Intel "Architectural LBRs", which generalized the model
+     specific LBR hardware tracing feature into a model-independent, architected
+     performance monitoring feature. Usage is mostly seamless to tooling, as the
+     pre-existing LBR features are kept, but there's a couple of advantages
+     under the hood, such as faster context-switching, faster LBR reads,
+     cleaner exposure of LBR features to guest kernels, etc.
 
-> 
-> Co-developed-by: Vaneet narang <v.narang@samsung.com>
-> Signed-off-by: Vaneet narang <v.narang@samsung.com>
-> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-> ---
->  arch/arm64/Kconfig              |  9 +++++++++
->  arch/arm64/include/asm/memory.h | 29 +++++++++++++++++++++++++----
->  arch/arm64/kernel/entry.S       |  4 ++--
->  arch/arm64/kernel/ptrace.c      |  4 ++--
->  drivers/misc/lkdtm/stackleak.c  |  2 +-
->  fs/proc/base.c                  |  4 ++--
->  include/linux/thread_info.h     |  4 ++++
->  kernel/trace/trace_stack.c      |  4 ++--
->  8 files changed, 47 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index c970171..301e068 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -977,6 +977,15 @@ config NODES_SHIFT
->  	  Specify the maximum number of NUMA Nodes available on the target
->  	  system.  Increases memory reserved to accommodate various tables.
->  
-> +config	PAGE_ALIGNED_STACK_SIZE
-> +	int "set per thread stack size (THREAD_SIZE)"
-> +	default 12288
-> +	depends on VMAP_STACK && ARM64_4K_PAGES && !KASAN
-> +	help
-> +	  Per Thread stack size, value must be PAGE_SIZE aligned.
-> +	  make sure value should be less than (1 << THREAD_SHIFT),
-> +	  otherwise increase THREAD_SHIFT also.
-> +
->  config USE_PERCPU_NUMA_NODE_ID
->  	def_bool y
->  	depends on NUMA
-> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-> index 5767836..597071e 100644
-> --- a/arch/arm64/include/asm/memory.h
-> +++ b/arch/arm64/include/asm/memory.h
-> @@ -93,6 +93,7 @@
->   */
->  #if defined(CONFIG_VMAP_STACK) && (MIN_THREAD_SHIFT < PAGE_SHIFT)
->  #define THREAD_SHIFT		PAGE_SHIFT
-> +#define THREAD_SIZE		(UL(1) << THREAD_SHIFT)
->  #else
->  #define THREAD_SHIFT		MIN_THREAD_SHIFT
->  #endif
-> @@ -101,7 +102,15 @@
->  #define THREAD_SIZE_ORDER	(THREAD_SHIFT - PAGE_SHIFT)
->  #endif
->  
-> -#define THREAD_SIZE		(UL(1) << THREAD_SHIFT)
-> +#define THREAD_SIZE_ALIGNED	(UL(1) << THREAD_SHIFT)
-> +
-> +#ifndef THREAD_SIZE
-> +#if defined(CONFIG_VMAP_STACK) && (CONFIG_PAGE_ALIGNED_STACK_SIZE)
-> +#define THREAD_SIZE		CONFIG_PAGE_ALIGNED_STACK_SIZE
-> +#else
-> +#define THREAD_SIZE		THREAD_SIZE_ALIGNED
-> +#endif
-> +#endif
->  
->  /*
->   * By aligning VMAP'd stacks to 2 * THREAD_SIZE, we can detect overflow by
-> @@ -109,12 +118,24 @@
->   * assembly.
->   */
->  #ifdef CONFIG_VMAP_STACK
-> -#define THREAD_ALIGN		(2 * THREAD_SIZE)
-> +#define THREAD_ALIGN		(2 * THREAD_SIZE_ALIGNED)
->  #else
-> -#define THREAD_ALIGN		THREAD_SIZE
-> +#define THREAD_ALIGN		THREAD_SIZE_ALIGNED
-> +#endif
-> +
-> +#ifdef CONFIG_PAGE_ALIGNED_STACK_SIZE
-> +
-> +#if (THREAD_SIZE_ALIGNED < THREAD_SIZE)
-> +#error "PAGE_ALIGNED_STACK_SIZE is more than THREAD_SIZE_ALIGNED, increase THREAD_SHIFT"
-> +#endif
-> +
-> +#if (THREAD_SIZE % PAGE_SIZE)
-> +#error "PAGE_ALIGNED_STACK_SIZE must be PAGE_SIZE align"
-> +#endif
-> +
->  #endif
->  
-> -#define IRQ_STACK_SIZE		THREAD_SIZE
-> +#define IRQ_STACK_SIZE		THREAD_SIZE_ALIGNED
->  
->  #define OVERFLOW_STACK_SIZE	SZ_4K
->  
-> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-> index 13458c2..5190573 100644
-> --- a/arch/arm64/kernel/entry.S
-> +++ b/arch/arm64/kernel/entry.S
-> @@ -444,12 +444,12 @@ alternative_insn eret, nop, ARM64_UNMAP_KERNEL_AT_EL0
->  
->  	/*
->  	 * Compare sp with the base of the task stack.
-> -	 * If the top ~(THREAD_SIZE - 1) bits match, we are on a task stack,
-> +	 * If the top ~(THREAD_SIZE_ALIGNED - 1) bits match, we are on a task stack,
->  	 * and should switch to the irq stack.
->  	 */
->  	ldr	x25, [tsk, TSK_STACK]
->  	eor	x25, x25, x19
-> -	and	x25, x25, #~(THREAD_SIZE - 1)
-> +	and	x25, x25, #~(THREAD_SIZE_ALIGNED - 1)
->  	cbnz	x25, 9998f
->  
->  	ldr_this_cpu x25, irq_stack_ptr, x26
-> diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-> index b82eb50..800bb84 100644
-> --- a/arch/arm64/kernel/ptrace.c
-> +++ b/arch/arm64/kernel/ptrace.c
-> @@ -120,8 +120,8 @@ int regs_query_register_offset(const char *name)
->   */
->  static bool regs_within_kernel_stack(struct pt_regs *regs, unsigned long addr)
->  {
-> -	return ((addr & ~(THREAD_SIZE - 1))  ==
-> -		(kernel_stack_pointer(regs) & ~(THREAD_SIZE - 1))) ||
-> +	return ((addr & ~(THREAD_SIZE_ALIGNED - 1))  ==
-> +		(kernel_stack_pointer(regs) & ~(THREAD_SIZE_ALIGNED - 1))) ||
->  		on_irq_stack(addr, NULL);
->  }
->  
-> diff --git a/drivers/misc/lkdtm/stackleak.c b/drivers/misc/lkdtm/stackleak.c
-> index d1a5c07..f4ab60a 100644
-> --- a/drivers/misc/lkdtm/stackleak.c
-> +++ b/drivers/misc/lkdtm/stackleak.c
-> @@ -24,7 +24,7 @@ void lkdtm_STACKLEAK_ERASING(void)
->  	 */
->  	sp = PTR_ALIGN(&i, sizeof(unsigned long));
->  
-> -	left = ((unsigned long)sp & (THREAD_SIZE - 1)) / sizeof(unsigned long);
-> +	left = ((unsigned long)sp & (THREAD_SIZE_ALIGNED - 1)) / sizeof(unsigned long);
->  	sp--;
->  
->  	/*
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index f3b6e12..f89e2c5 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -3135,9 +3135,9 @@ static int proc_stack_depth(struct seq_file *m, struct pid_namespace *ns,
->  				struct pid *pid, struct task_struct *task)
->  {
->  	unsigned long prev_depth = THREAD_SIZE -
-> -				(task->prev_lowest_stack & (THREAD_SIZE - 1));
-> +				(task->prev_lowest_stack & (THREAD_SIZE_ALIGNED - 1));
->  	unsigned long depth = THREAD_SIZE -
-> -				(task->lowest_stack & (THREAD_SIZE - 1));
-> +				(task->lowest_stack & (THREAD_SIZE_ALIGNED - 1));
->  
->  	seq_printf(m, "previous stack depth: %lu\nstack depth: %lu\n",
->  							prev_depth, depth);
-> diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
-> index e93e249..35a73b5 100644
-> --- a/include/linux/thread_info.h
-> +++ b/include/linux/thread_info.h
-> @@ -43,6 +43,10 @@ enum {
->  #define THREAD_ALIGN	THREAD_SIZE
->  #endif
->  
-> +#ifndef THREAD_SIZE_ALIGNED
-> +#define THREAD_SIZE_ALIGNED	THREAD_SIZE
-> +#endif
-> +
->  #define THREADINFO_GFP		(GFP_KERNEL_ACCOUNT | __GFP_ZERO)
->  
->  /*
-> diff --git a/kernel/trace/trace_stack.c b/kernel/trace/trace_stack.c
-> index 5810fb8..ef3d442 100644
-> --- a/kernel/trace/trace_stack.c
-> +++ b/kernel/trace/trace_stack.c
-> @@ -159,7 +159,7 @@ static void check_stack(unsigned long ip, unsigned long *stack)
->  	int frame_size = READ_ONCE(tracer_frame);
->  	int i, x;
->  
-> -	this_size = ((unsigned long)stack) & (THREAD_SIZE-1);
-> +	this_size = ((unsigned long)stack) & (THREAD_SIZE_ALIGNED - 1);
->  	this_size = THREAD_SIZE - this_size;
->  	/* Remove the frame of the tracer */
->  	this_size -= frame_size;
-> @@ -211,7 +211,7 @@ static void check_stack(unsigned long ip, unsigned long *stack)
->  	x = 0;
->  	start = stack;
->  	top = (unsigned long *)
-> -		(((unsigned long)start & ~(THREAD_SIZE-1)) + THREAD_SIZE);
-> +		(((unsigned long)start & ~(THREAD_SIZE_ALIGNED - 1)) + THREAD_SIZE);
->  
->  	/*
->  	 * Loop through all the entries. One of the entries may
-> -- 
-> 1.9.1
-> 
+     ( Since architectural LBRs are supported via XSAVE, there's related
+       changes to the x86 FPU code as well. )
+
+ - ftrace/perf updates: Add support to add a text poke event to record changes
+                        to kernel text (i.e. self-modifying code) in order to
+                        support tracers like Intel PT decoding through
+                        jump labels, kprobes and ftrace trampolines.
+
+ - Misc cleanups, smaller fixes.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Adrian Hunter (8):
+      perf: Add perf text poke event
+      perf/x86: Add support for perf text poke event for text_poke_bp_batch() callers
+      kprobes: Add symbols for kprobe insn pages
+      kprobes: Add perf ksymbol events for kprobe insn pages
+      perf/x86: Add perf text poke events for kprobes
+      ftrace: Add symbols for ftrace trampolines
+      ftrace: Add perf ksymbol events for ftrace trampolines
+      ftrace: Add perf text poke events for ftrace trampolines
+
+Hu Haowen (1):
+      x86/perf: Fix a typo
+
+Kan Liang (27):
+      perf/x86/intel/uncore: Add Comet Lake support
+      perf/x86/intel/uncore: Fix oops when counting IMC uncore events on some TGL
+      perf/x86/intel/uncore: Record the size of mapped area
+      perf/x86/intel/uncore: Validate MMIO address before accessing
+      x86/cpufeatures: Add Architectural LBRs feature bit
+      perf/x86/intel/lbr: Add a function pointer for LBR reset
+      perf/x86/intel/lbr: Add a function pointer for LBR read
+      perf/x86/intel/lbr: Add the function pointers for LBR save and restore
+      perf/x86/intel/lbr: Factor out a new struct for generic optimization
+      perf/x86/intel/lbr: Use dynamic data structure for task_ctx
+      x86/msr-index: Add bunch of MSRs for Arch LBR
+      perf/x86: Expose CPUID enumeration bits for arch LBR
+      perf/x86/intel/lbr: Support LBR_CTL
+      perf/x86/intel/lbr: Unify the stored format of LBR information
+      perf/x86/intel/lbr: Mark the {rd,wr}lbr_{to,from} wrappers __always_inline
+      perf/x86/intel/lbr: Factor out rdlbr_all() and wrlbr_all()
+      perf/x86/intel/lbr: Factor out intel_pmu_store_lbr
+      perf/x86/intel/lbr: Support Architectural LBR
+      perf/core: Factor out functions to allocate/free the task_ctx_data
+      perf/core: Use kmem_cache to allocate the PMU specific data
+      perf/x86/intel/lbr: Create kmem_cache for the LBR context data
+      perf/x86: Remove task_ctx_size
+      x86/fpu: Use proper mask to replace full instruction mask
+      x86/fpu/xstate: Support dynamic supervisor feature for LBR
+      x86/fpu/xstate: Add helpers for LBR dynamic supervisor feature
+      perf/x86/intel/lbr: Support XSAVES/XRSTORS for LBR context switch
+      perf/x86/intel/lbr: Support XSAVES for arch LBR read
+
+Like Xu (4):
+      perf/x86/core: Refactor hw->idx checks and cleanup
+      perf/x86/lbr: Add interface to get LBR information
+      perf/x86: Add constraint to create guest LBR event without hw counter
+      perf/x86: Keep LBR records unchanged in host context for guest usage
+
+Masami Hiramatsu (1):
+      kprobes: Remove unnecessary module_mutex locking from kprobe_optimizer()
+
+Pu Wen (1):
+      perf/x86/rapl: Add Hygon Fam18h RAPL support
+
+Randy Dunlap (1):
+      perf: <linux/perf_event.h>: drop a duplicated word
+
+Roman Sudarikov (3):
+      perf/x86/intel/uncore: Expose an Uncore unit to PMON mapping
+      perf/x86/intel/uncore: Wrap the max dies calculation into an accessor
+      perf/x86/intel/uncore: Expose an Uncore unit to IIO PMON mapping
+
+Wei Wang (1):
+      perf/x86: Fix variable types for LBR registers
+
+
+ Documentation/ABI/testing/sysfs-devices-mapping |  33 ++
+ arch/x86/events/core.c                          |  28 +-
+ arch/x86/events/intel/core.c                    | 127 ++--
+ arch/x86/events/intel/ds.c                      |   6 +-
+ arch/x86/events/intel/lbr.c                     | 733 ++++++++++++++++++++----
+ arch/x86/events/intel/uncore.c                  |  26 +-
+ arch/x86/events/intel/uncore.h                  |  37 ++
+ arch/x86/events/intel/uncore_snb.c              |  80 ++-
+ arch/x86/events/intel/uncore_snbep.c            | 208 ++++++-
+ arch/x86/events/perf_event.h                    | 125 +++-
+ arch/x86/events/rapl.c                          |   3 +-
+ arch/x86/events/zhaoxin/core.c                  |   2 +-
+ arch/x86/include/asm/cpufeatures.h              |   1 +
+ arch/x86/include/asm/fpu/internal.h             |  47 +-
+ arch/x86/include/asm/fpu/types.h                |  27 +
+ arch/x86/include/asm/fpu/xstate.h               |  36 ++
+ arch/x86/include/asm/kprobes.h                  |   2 +
+ arch/x86/include/asm/msr-index.h                |  16 +
+ arch/x86/include/asm/perf_event.h               |  82 ++-
+ arch/x86/kernel/alternative.c                   |  37 +-
+ arch/x86/kernel/fpu/core.c                      |  39 ++
+ arch/x86/kernel/fpu/xstate.c                    |  89 ++-
+ arch/x86/kernel/kprobes/core.c                  |  15 +-
+ arch/x86/kernel/kprobes/opt.c                   |  38 +-
+ include/linux/ftrace.h                          |  12 +-
+ include/linux/kprobes.h                         |  15 +
+ include/linux/perf_event.h                      |  15 +-
+ include/uapi/linux/perf_event.h                 |  26 +-
+ kernel/events/core.c                            | 115 +++-
+ kernel/kallsyms.c                               |  42 +-
+ kernel/kprobes.c                                |  60 +-
+ kernel/trace/ftrace.c                           | 101 +++-
+ 32 files changed, 1943 insertions(+), 280 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-devices-mapping
