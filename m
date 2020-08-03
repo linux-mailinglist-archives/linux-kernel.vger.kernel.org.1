@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F3823A68C
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B5C23A6C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgHCMYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:24:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48128 "EHLO mail.kernel.org"
+        id S1726989AbgHCMx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727941AbgHCMXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:23:52 -0400
+        id S1727842AbgHCMXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:23:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E30E9204EC;
-        Mon,  3 Aug 2020 12:23:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81FEF20775;
+        Mon,  3 Aug 2020 12:23:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457431;
-        bh=2f+qknLEBJ9Scqg4MEihsT/+/GaFehSaxFPzxZeMMnM=;
+        s=default; t=1596457434;
+        bh=njF83mSDF3//qVVZKptNPOxS2Qpw7Nd2TLVr7hkNwvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i/a98lwVbBxgL8/8B7QFq99k9orTFSNwL61VjBUXo/IMQY0A1DiPpfVMjC7UPvztf
-         +skZ8AuXqZg/K5ZfkrW+rIzaPOpMGUJP4l7AagrFLi+xcnLSF1KubsPYjTuPg2f59z
-         1oPz+YlYZgAcc19crXTYGYtA+3yXrMQMtv0KIL2c=
+        b=modAnCngiGJu0TwodsrYEHPv8PvSfC9iPPudoZQv1VFs5ckBpIPVFfLjdV3lvmmKc
+         d1HVLPuOGUthmFBvfc4OJu+7m9GThV7CqSmK85BTIpJRunl7NRmJ1Vl96QldyNXA+C
+         NwD1+wEoqQVFYnZAWwnbHo6kP+VER7pFcXKDXhjQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
+        stable@vger.kernel.org,
+        syzbot+6db548b615e5aeefdce2@syzkaller.appspotmail.com,
+        YueHaibing <yuehaibing@huawei.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 034/120] net/x25: Fix x25_neigh refcnt leak when x25 disconnect
-Date:   Mon,  3 Aug 2020 14:18:12 +0200
-Message-Id: <20200803121904.491450067@linuxfoundation.org>
+Subject: [PATCH 5.7 035/120] net/x25: Fix null-ptr-deref in x25_disconnect
+Date:   Mon,  3 Aug 2020 14:18:13 +0200
+Message-Id: <20200803121904.540135498@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
 References: <20200803121902.860751811@linuxfoundation.org>
@@ -44,43 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: YueHaibing <yuehaibing@huawei.com>
 
-commit 4becb7ee5b3d2829ed7b9261a245a77d5b7de902 upstream.
+commit 8999dc89497ab1c80d0718828e838c7cd5f6bffe upstream.
 
-x25_connect() invokes x25_get_neigh(), which returns a reference of the
-specified x25_neigh object to "x25->neighbour" with increased refcnt.
+We should check null before do x25_neigh_put in x25_disconnect,
+otherwise may cause null-ptr-deref like this:
 
-When x25 connect success and returns, the reference still be hold by
-"x25->neighbour", so the refcount should be decreased in
-x25_disconnect() to keep refcount balanced.
+ #include <sys/socket.h>
+ #include <linux/x25.h>
 
-The reference counting issue happens in x25_disconnect(), which forgets
-to decrease the refcnt increased by x25_get_neigh() in x25_connect(),
-causing a refcnt leak.
+ int main() {
+    int sck_x25;
+    sck_x25 = socket(AF_X25, SOCK_SEQPACKET, 0);
+    close(sck_x25);
+    return 0;
+ }
 
-Fix this issue by calling x25_neigh_put() before x25_disconnect()
-returns.
+BUG: kernel NULL pointer dereference, address: 00000000000000d8
+CPU: 0 PID: 4817 Comm: t2 Not tainted 5.7.0-rc3+ #159
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.9.3-
+RIP: 0010:x25_disconnect+0x91/0xe0
+Call Trace:
+ x25_release+0x18a/0x1b0
+ __sock_release+0x3d/0xc0
+ sock_close+0x13/0x20
+ __fput+0x107/0x270
+ ____fput+0x9/0x10
+ task_work_run+0x6d/0xb0
+ exit_to_usermode_loop+0x102/0x110
+ do_syscall_64+0x23c/0x260
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Reported-by: syzbot+6db548b615e5aeefdce2@syzkaller.appspotmail.com
+Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/x25/x25_subr.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ net/x25/x25_subr.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 --- a/net/x25/x25_subr.c
 +++ b/net/x25/x25_subr.c
-@@ -363,6 +363,10 @@ void x25_disconnect(struct sock *sk, int
+@@ -363,10 +363,12 @@ void x25_disconnect(struct sock *sk, int
  		x25->neighbour = NULL;
  		read_unlock_bh(&x25_list_lock);
  	}
-+	read_lock_bh(&x25_list_lock);
-+	x25_neigh_put(x25->neighbour);
-+	x25->neighbour = NULL;
-+	read_unlock_bh(&x25_list_lock);
+-	read_lock_bh(&x25_list_lock);
+-	x25_neigh_put(x25->neighbour);
+-	x25->neighbour = NULL;
+-	read_unlock_bh(&x25_list_lock);
++	if (x25->neighbour) {
++		read_lock_bh(&x25_list_lock);
++		x25_neigh_put(x25->neighbour);
++		x25->neighbour = NULL;
++		read_unlock_bh(&x25_list_lock);
++	}
  }
  
  /*
