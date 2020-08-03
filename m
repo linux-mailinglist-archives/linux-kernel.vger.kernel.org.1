@@ -2,157 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6CB23AE05
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 22:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE6723AE0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 22:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgHCUP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 16:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgHCUP3 (ORCPT
+        id S1726916AbgHCUXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 16:23:23 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:42854 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgHCUXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 16:15:29 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1FAC06174A;
-        Mon,  3 Aug 2020 13:15:29 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id t23so26123413qto.3;
-        Mon, 03 Aug 2020 13:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wIzAc23M6SmVRHfzbQTJsd5meKdIF3mKB2ogEoSxK28=;
-        b=Mb3JcqW+XFn1zZNLDNtYzvQ7fYRa2tYUzI3gZFDWNUWde5OcP26V0oh+PjD35OCSzB
-         bzMPfV03KjMF0FQBDerQ64AKSYaoszLeYaXvJK0c2834Apz3yejXmA+jjGn9DCQ++cbt
-         PJDN6Oi3rIRwOLAUF4YqK7/UbjnycJ1TK3UGqO2C3liIo2HQiUA03NRBMMQDpvBAQrbC
-         IOL7zWOem7AHl2unr256yMU8jaPwjG4/WPHVtoLmGLQp46VGFMlnLhTIzAgCw3gEtz2/
-         aWgH35uAWnE/OxW9pXO4WeDglTwikPls/ndMJJT+REEG3d7QoMRrRkpbl2QrssGKrPQ2
-         5T7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=wIzAc23M6SmVRHfzbQTJsd5meKdIF3mKB2ogEoSxK28=;
-        b=hKP4Xo/RDag1qtCxG2oVm16XUhsq2E2g+6gw6/Hi+N2RtKE39kuxMlXIv9Evrzp/tF
-         hcPRVnXc8MW4EK9vzFSFuqOL6zmC1mlvquZFyprT+NWJCw7RHjnbeFQaT/g21mi/JZ0M
-         vpOBSnCNkI8T8CpC57EOOzawQc+cZYJNnIVxJZujoUdVeEFMImRwnnscgYcEsVZSN3/l
-         1tfmQsmAnrNjCUzStDxRi/dv+rxn68Tb/mEPK6aUpmfbcEazEodN86tpLHDvBKJ55PXv
-         qYeD1R0NRdIqRHtOFwWoOEuIPXSPzKML3GYQ1MDnXQmlsrvxhchh0TdpJ7YheCTzXq8I
-         p4CQ==
-X-Gm-Message-State: AOAM532EcO/jrNTmxuwxZSAQfWHQ/2HnfkWVhvj7LraC2CBgzu7DVEL6
-        gKLKH0Va0l1vGHMNV1Xt1UQoxLmN3Uc=
-X-Google-Smtp-Source: ABdhPJyE3PI+Fi7IC9HkU//5shrXJxzaX2PctnEZrfdsFCsLRS9ySPu20CHEHgpiFEUf6cFiR/O54w==
-X-Received: by 2002:aed:29a1:: with SMTP id o30mr19112481qtd.249.1596485728209;
-        Mon, 03 Aug 2020 13:15:28 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id w20sm4846226qki.108.2020.08.03.13.15.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 13:15:27 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 3 Aug 2020 16:15:25 -0400
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jian Cai <jiancai@google.com>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Luis Lozano <llozano@google.com>,
-        Manoj Gupta <manojgupta@google.com>, stable@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: Re: [PATCH v5 13/36] vmlinux.lds.h: add PGO and AutoFDO input
- sections
-Message-ID: <20200803201525.GA1351390@rani.riverdale.lan>
-References: <20200731230820.1742553-1-keescook@chromium.org>
- <20200731230820.1742553-14-keescook@chromium.org>
- <20200801035128.GB2800311@rani.riverdale.lan>
- <20200803190506.GE1299820@tassilo.jf.intel.com>
+        Mon, 3 Aug 2020 16:23:23 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k2gzR-009G4h-Hx; Mon, 03 Aug 2020 14:23:21 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k2gzQ-0000R5-O6; Mon, 03 Aug 2020 14:23:21 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     <linux-kernel@vger.kernel.org>
+Date:   Mon, 03 Aug 2020 15:20:07 -0500
+Message-ID: <87k0yfscqw.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200803190506.GE1299820@tassilo.jf.intel.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1k2gzQ-0000R5-O6;;;mid=<87k0yfscqw.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/LdGJgW4IvzqUFH+hlQB3/SA4A6A27UI8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMSubMetaSxObfu_03,XMSubMetaSx_00
+        autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4740]
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: ; sa02 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 416 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.8 (0.9%), b_tie_ro: 2.7 (0.6%), parse: 0.64
+        (0.2%), extract_message_metadata: 3.2 (0.8%), get_uri_detail_list:
+        1.70 (0.4%), tests_pri_-1000: 2.7 (0.7%), tests_pri_-950: 0.95 (0.2%),
+        tests_pri_-900: 0.85 (0.2%), tests_pri_-90: 117 (28.1%), check_bayes:
+        116 (27.8%), b_tokenize: 7 (1.6%), b_tok_get_all: 8 (2.0%),
+        b_comp_prob: 1.96 (0.5%), b_tok_touch_all: 95 (22.9%), b_finish: 0.80
+        (0.2%), tests_pri_0: 273 (65.6%), check_dkim_signature: 0.38 (0.1%),
+        check_dkim_adsp: 2.5 (0.6%), poll_dns_idle: 1.09 (0.3%), tests_pri_10:
+        1.76 (0.4%), tests_pri_500: 6 (1.4%), rewrite_mail: 0.00 (0.0%)
+Subject: [GIT PULL] exec cleanups for v5.9-rc1
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 12:05:06PM -0700, Andi Kleen wrote:
-> > However, the history of their being together comes from
-> > 
-> >   9bebe9e5b0f3 ("kbuild: Fix .text.unlikely placement")
-> > 
-> > which seems to indicate there was some problem with having them separated out,
-> > although I don't quite understand what the issue was from the commit message.
-> 
-> Separating it out is less efficient. Gives worse packing for the hot part
-> if they are not aligned to 64byte boundaries, which they are usually not. 
-> 
-> It also improves packing of the cold part, but that probably doesn't matter.
-> 
-> -Andi
 
-Why is that? Both .text and .text.hot have alignment of 2^4 (default
-function alignment on x86) by default, so it doesn't seem like it should
-matter for packing density.  Avoiding interspersing cold text among
-regular/hot text seems like it should be a net win.
+Please pull the exec-linus branch from the git tree:
 
-That old commit doesn't reference efficiency -- it says there was some
-problem with matching when they were separated out, but there were no
-wildcard section names back then.
+   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-linus
 
-commit 9bebe9e5b0f3109a14000df25308c2971f872605
-Author: Andi Kleen <ak@linux.intel.com>
-Date:   Sun Jul 19 18:01:19 2015 -0700
+   HEAD: 7fce69dff8db30cb93aace0bbebda09972027af7 Implement kernel_execve
 
-    kbuild: Fix .text.unlikely placement
-    
-    When building a kernel with .text.unlikely text the unlikely text for
-    each translation unit was put next to the main .text code in the
-    final vmlinux.
-    
-    The problem is that the linker doesn't allow more specific submatches
-    of a section name in a different linker script statement after the
-    main match.
-    
-    So we need to move them all into one line. With that change
-    .text.unlikely is at the end of everything again.
-    
-    I also moved .text.hot into the same statement though, even though
-    that's not strictly needed.
-    
-    Signed-off-by: Andi Kleen <ak@linux.intel.com>
-    Signed-off-by: Michal Marek <mmarek@suse.com>
+During the development of v5.7 I ran into bugs and quality of
+implementation issues related to exec that could not be easily
+fixed because of the way exec is implemented.  So I have been
+diggin into exec and cleaning up what I can.
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 8bd374d3cf21..1781e54ea6d3 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -412,12 +412,10 @@
-  * during second ld run in second ld pass when generating System.map */
- #define TEXT_TEXT							\
- 		ALIGN_FUNCTION();					\
--		*(.text.hot)						\
--		*(.text .text.fixup)					\
-+		*(.text.hot .text .text.fixup .text.unlikely)		\
- 		*(.ref.text)						\
- 	MEM_KEEP(init.text)						\
- 	MEM_KEEP(exit.text)						\
--		*(.text.unlikely)
- 
- 
- /* sched.text is aling to function alignment to secure we have same
+This cycle I have been looking at different ideas and different
+implementations to see what is possible to improve exec, and cleaning
+the way exec interfaces with in kernel users.  Only cleaning up the
+interfaces of exec with rest of the kernel has managed to stabalize
+and make it through review in time for v5.9-rc1 resulting in 2
+sets of changes this cycle.
+
+      Implement kernel_execve
+      Make the user mode driver code a better citizen
+
+With kernel_execve the code size got a little larger as the copying of
+parameters from userspace and copying of parameters from userspace is
+now separate.  The good news is kernel threads no longer need to play
+games with set_fs to use exec.  Which when combined with the rest of
+Christophs set_fs changes should security bugs with set_fs much more
+difficult.
+
+The first changeset "Make the user mode driver code a better citizen"
+should be both in this tree and in the bpf tree.
+
+This inches the exec code closer to sorting out the long standing issues
+I am aware of.
+
+After 5.9-rc1 is released I am hoping to quickly rebase and get a lot of
+changes posted, reviewed and merged.  I have a lot of additional fixes
+and cleanups that just need a little more attention before they are
+ready to merge.
+
+Eric W. Biederman (25):
+      umh: Capture the pid in umh_pipe_setup
+      umh: Move setting PF_UMH into umh_pipe_setup
+      umh: Rename the user mode driver helpers for clarity
+      umh: Remove call_usermodehelper_setup_file.
+      umh: Separate the user mode driver and the user mode helper support
+      umd: For clarity rename umh_info umd_info
+      umd: Rename umd_info.cmdline umd_info.driver_name
+      umd: Transform fork_usermode_blob into fork_usermode_driver
+      umh: Stop calling do_execve_file
+      exec: Remove do_execve_file
+      bpfilter: Move bpfilter_umh back into init data
+      umd: Track user space drivers with struct pid
+      exit: Factor thread_group_exited out of pidfd_poll
+      bpfilter: Take advantage of the facilities of struct pid
+      umd: Remove exit_umh
+      umd: Stop using split_argv
+      Make the user mode driver code a better citizen
+      exec: Remove unnecessary spaces from binfmts.h
+      exec: Factor out alloc_bprm
+      exec: Move initialization of bprm->filename into alloc_bprm
+      exec: Move bprm_mm_init into alloc_bprm
+      exec: Factor bprm_execve out of do_execve_common
+      exec: Factor bprm_stack_limits out of prepare_arg_pages
+      exec: Implement kernel_execve
+      Implement kernel_execve
+
+ arch/x86/entry/entry_32.S        |   2 +-
+ arch/x86/entry/entry_64.S        |   2 +-
+ arch/x86/kernel/unwind_frame.c   |   2 +-
+ fs/exec.c                        | 307 +++++++++++++++++++++++++--------------
+ include/linux/binfmts.h          |  21 +--
+ include/linux/bpfilter.h         |   7 +-
+ include/linux/sched.h            |   9 --
+ include/linux/sched/signal.h     |   2 +
+ include/linux/umh.h              |  15 --
+ include/linux/usermode_driver.h  |  18 +++
+ init/main.c                      |   4 +-
+ kernel/Makefile                  |   1 +
+ kernel/exit.c                    |  25 +++-
+ kernel/fork.c                    |   6 +-
+ kernel/umh.c                     | 171 +---------------------
+ kernel/usermode_driver.c         | 182 +++++++++++++++++++++++
+ net/bpfilter/bpfilter_kern.c     |  38 ++---
+ net/bpfilter/bpfilter_umh_blob.S |   2 +-
+ net/ipv4/bpfilter/sockopt.c      |  20 +--
+ security/tomoyo/common.h         |   2 +-
+ security/tomoyo/domain.c         |   4 +-
+ security/tomoyo/tomoyo.c         |   4 +-
+ 22 files changed, 480 insertions(+), 364 deletions(-)
+
+Eric
