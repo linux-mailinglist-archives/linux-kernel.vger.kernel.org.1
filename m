@@ -2,116 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24FA23A8AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D2A23A8BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727830AbgHCOlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 10:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34812 "EHLO
+        id S1728170AbgHCOnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 10:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbgHCOlE (ORCPT
+        with ESMTP id S1726789AbgHCOnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 10:41:04 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B21C06174A;
-        Mon,  3 Aug 2020 07:41:04 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 6EA3629A06E
-Subject: Re: [PATCH v4 0/7] Support inhibiting input devices
-To:     Hans de Goede <hdegoede@redhat.com>, linux-pm@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Sylvain Lemieux <slemieux.tyco@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Barry Song <baohua@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Nick Dyer <nick@shmanahar.org>,
-        Ferruh Yigit <fery@cypress.com>,
-        Sangwon Jee <jeesw@melfas.com>,
-        Peter Hutterer <peter.hutterer@redhat.com>,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        kernel@collabora.com
-References: <2336e15d-ff4b-bbb6-c701-dbf3aa110fcd@redhat.com>
- <20200608112211.12125-1-andrzej.p@collabora.com>
- <1821a5b7-cbf3-a739-2203-a93b06f0c6f2@redhat.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <8fc3a97d-94b7-e073-3981-2f146f5f209e@collabora.com>
-Date:   Mon, 3 Aug 2020 16:40:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 3 Aug 2020 10:43:06 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B187C06174A;
+        Mon,  3 Aug 2020 07:43:06 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id b22so7494820oic.8;
+        Mon, 03 Aug 2020 07:43:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SlJ/pfmkJqMXK+j8msF9RyBAJEzwd8det+Lucq2VVo8=;
+        b=hGB2C7ty6ES3zSVyXgGeGFkqbvL2Hx1gVURFpyocYcNmCI3+k44ab9oR6RTbKwx4Lz
+         464iIE/54PPQC8n8TfZTvFjqTO/oDOEdXvyUdT3/T8SzHZuh7HaYwjHSe6WneC1G511s
+         2uFKSdaxVLlAO0d4f2PoKOjWhjleFN3KqEtpnHHy+iPoS8LD6Cg8deQ9IgB61d0qN8WA
+         7E4Ju9e/8pESpOVQJ+N5+g4DDsvob/BFxRC96NkaF+lIq2J/Vl0oWuUq5qXJdewjlT5z
+         VTDdFIsRXVenkFf5Pgp/vF6JIlB/3jpwR+ouhmWvPHWwlQS3n4jHzp8SIY7q4aSDSiS7
+         GmhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SlJ/pfmkJqMXK+j8msF9RyBAJEzwd8det+Lucq2VVo8=;
+        b=JV43rs5knKVrQhPrjQKcG+KPpRu1cqrzqCvzgUCrPoqd1yy4nKqa/UkZtG5+LqBRKZ
+         zt4gNCxN/bwognwQqqApYotzJ/D9OxbHJyOLkFuvioG7XYS9trzO9ACRFClaPTII7VFe
+         7C5biP0cF2a+Y7yIBsQh4NsD8NOcCdyHYLIBomHrKPGHVftwRWbBdRqhYHG78btRjEpw
+         PiGHA7csn31JKPyeLV2uOmks6vEruPusCAxFK/8sI/7uFikGaOGW8/fGWggmSJ2qAv3H
+         fCCnkeET0sDnhjphch/Had0ZrK7LScE6l0HR59CIesp9BJ29kjXrTkVBuxOW6HUWKtsn
+         Kcgg==
+X-Gm-Message-State: AOAM530w3QSZ1gV3/MYvKyEnso3ctoZBIOXOQ0Yx49pbtAr221ngfU4N
+        13zJhEl7lOgJn5TF3cxxfN+O+jTmPiYHOBImX6k=
+X-Google-Smtp-Source: ABdhPJw7dcbZ+tupvYShtZ8DuiVRT6dfJ2foCBZwntEo/a4is2r+4S6ARBjSgKQ2hmEiArQzvvOUMvPqMSQTqGRtcI8=
+X-Received: by 2002:aca:5bc6:: with SMTP id p189mr12438996oib.130.1596465785793;
+ Mon, 03 Aug 2020 07:43:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1821a5b7-cbf3-a739-2203-a93b06f0c6f2@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200803143636.GD346925@mwanda>
+In-Reply-To: <20200803143636.GD346925@mwanda>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Mon, 3 Aug 2020 17:41:06 +0300
+Message-ID: <CAFCwf13LgaFGeg7NSOL6KqMuFoPovbezdCUSjk3S05ZSm=48mA@mail.gmail.com>
+Subject: Re: [PATCH] habanalabs: Fix memory corruption in debugfs
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Moti Haimovski <mhaimovski@habana.ai>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+On Mon, Aug 3, 2020 at 5:36 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> This has to be a long instead of a u32 because we write a long value.
+> On 64 bit systems, this will cause memory corruption.
+>
+> Fixes: c216477363a3 ("habanalabs: add debugfs support")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/misc/habanalabs/common/debugfs.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
+> index 71cfe1b6fafc..ecd37b427480 100644
+> --- a/drivers/misc/habanalabs/common/debugfs.c
+> +++ b/drivers/misc/habanalabs/common/debugfs.c
+> @@ -19,7 +19,7 @@
+>  static struct dentry *hl_debug_root;
+>
+>  static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+> -                               u8 i2c_reg, u32 *val)
+> +                               u8 i2c_reg, long *val)
+>  {
+>         struct armcp_packet pkt;
+>         int rc;
+> @@ -36,7 +36,7 @@ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+>         pkt.i2c_reg = i2c_reg;
+>
+>         rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
+> -                                               0, (long *) val);
+> +                                               0, val);
+>
+>         if (rc)
+>                 dev_err(hdev->dev, "Failed to read from I2C, error %d\n", rc);
+> @@ -827,7 +827,7 @@ static ssize_t hl_i2c_data_read(struct file *f, char __user *buf,
+>         struct hl_dbg_device_entry *entry = file_inode(f)->i_private;
+>         struct hl_device *hdev = entry->hdev;
+>         char tmp_buf[32];
+> -       u32 val;
+> +       long val;
+>         ssize_t rc;
+>
+>         if (*ppos)
+> @@ -842,7 +842,7 @@ static ssize_t hl_i2c_data_read(struct file *f, char __user *buf,
+>                 return rc;
+>         }
+>
+> -       sprintf(tmp_buf, "0x%02x\n", val);
+> +       sprintf(tmp_buf, "0x%02lx\n", val);
+>         rc = simple_read_from_buffer(buf, count, ppos, tmp_buf,
+>                         strlen(tmp_buf));
+>
+> --
+> 2.27.0
+>
 
-W dniu 12.06.2020 o 10:17, Hans de Goede pisze:
-> Hi,
-> 
-> On 6/8/20 1:22 PM, Andrzej Pietrasiewicz wrote:
->> This is a quick respin of v3, with just two small changes, please see
->> the changelog below.
->>
->> Userspace might want to implement a policy to temporarily disregard input
->> from certain devices.
->>
+This patch is:
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
 
-<snip>
-
->> v3..v4:
->> - updated the comment in input_open_device() (Hans)
->> - used more straightforward locking pattern in adc/exynos (Michał)
->>
->> v2..v3:
->> - ignored autorepeat events in input_get_disposition() if a key is not
->> pressed (Hans)
->> - dropped inhibit()/uninhibit() driver callbacks (Hans)
->> - split ACPI button patch into taking the lock and using the helper (Rafael)
->> - dropped the elan_i2c conversion
->> - fixed typos in exynos adc
->>
->> v1..v2:
->> - added input_device_enabled() helper and used it in drivers (Dmitry)
->> - the fact of open() and close() being called in inhibit/uninhibit paths has
->> been emphasized in the commit message of PATCH 6/7 (Dmitry)
-
-<snip>
-
-> 
-> The entire series looks good to me:
-> 
-> Acked-by: Hans de Goede <hdegoede@redhat.com>
-
-What are the prospects of this series being merged?
-
-Regards,
-
-Andrzej
+Applied to -fixes,
+Thanks!
+Oded
