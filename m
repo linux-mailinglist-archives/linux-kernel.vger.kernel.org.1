@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DE123A4CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE2B23A452
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729067AbgHCMac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:30:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57506 "EHLO mail.kernel.org"
+        id S1728274AbgHCMZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:25:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728518AbgHCMab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:30:31 -0400
+        id S1728253AbgHCMZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:25:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0124A2076B;
-        Mon,  3 Aug 2020 12:30:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9145204EC;
+        Mon,  3 Aug 2020 12:25:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457829;
-        bh=NocX8FRNNofFxc9quJy1/gGLORMCIGCJ/kDCDScoBrE=;
+        s=default; t=1596457541;
+        bh=cRKjqNxHua9T76fRL5VIQta7CPlRoJFYlQ27sbGlFXw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tx0MpscVORalkSLKDgEejse/mWWsZAbQV0uh1hIuAW7QTnFGZYXjdAY8yjHt/gOeW
-         Vo2jTp/icdmAq5hZat8lThUIq25saA0unHYKMsQl6m8nsz/7wxA2c6sZPvQU+U/rMd
-         K5Mbl3yY8sPHMPfEOE/clFXQGIV4xra25TxHWiys=
+        b=Ue4DZS7E5+FN/50FJ/Ooa60mkTqqNzTIGO6l6l7bVFRPJbnGEflCUw6UvpGG8mZTJ
+         TEhBM+34oi8wyZ+Jg9GpydNsS6ak8RCV88RtQsHIOAAszrULD3oWITBJo2u3jyzZBF
+         /4vC+AdfCTsfWhAxgkFYweXc/y5oKqT3Ydoo3PmI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Remi Pommarel <repk@triplefau.lt>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Dirk Behme <dirk.behme@de.bosch.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 61/90] mac80211: mesh: Free pending skb when destroying a mpath
-Date:   Mon,  3 Aug 2020 14:19:23 +0200
-Message-Id: <20200803121900.576638446@linuxfoundation.org>
+Subject: [PATCH 5.7 106/120] net: ethernet: ravb: exit if re-initialization fails in tx timeout
+Date:   Mon,  3 Aug 2020 14:19:24 +0200
+Message-Id: <20200803121908.069268931@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,72 +46,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Remi Pommarel <repk@triplefau.lt>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-[ Upstream commit 5e43540c2af0a0c0a18e39579b1ad49541f87506 ]
+[ Upstream commit 015c5d5e6aa3523c758a70eb87b291cece2dbbb4 ]
 
-A mpath object can hold reference on a list of skb that are waiting for
-mpath resolution to be sent. When destroying a mpath this skb list
-should be cleaned up in order to not leak memory.
+According to the report of [1], this driver is possible to cause
+the following error in ravb_tx_timeout_work().
 
-Fixing that kind of leak:
+ravb e6800000.ethernet ethernet: failed to switch device to config mode
 
-unreferenced object 0xffff0000181c9300 (size 1088):
-  comm "openvpn", pid 1782, jiffies 4295071698 (age 80.416s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 f9 80 36 00 00 00 00 00  ..........6.....
-    02 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
-  backtrace:
-    [<000000004bc6a443>] kmem_cache_alloc+0x1a4/0x2f0
-    [<000000002caaef13>] sk_prot_alloc.isra.39+0x34/0x178
-    [<00000000ceeaa916>] sk_alloc+0x34/0x228
-    [<00000000ca1f1d04>] inet_create+0x198/0x518
-    [<0000000035626b1c>] __sock_create+0x134/0x328
-    [<00000000a12b3a87>] __sys_socket+0xb0/0x158
-    [<00000000ff859f23>] __arm64_sys_socket+0x40/0x58
-    [<00000000263486ec>] el0_svc_handler+0xd0/0x1a0
-    [<0000000005b5157d>] el0_svc+0x8/0xc
-unreferenced object 0xffff000012973a40 (size 216):
-  comm "openvpn", pid 1782, jiffies 4295082137 (age 38.660s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 c0 06 16 00 00 ff ff 00 93 1c 18 00 00 ff ff  ................
-  backtrace:
-    [<000000004bc6a443>] kmem_cache_alloc+0x1a4/0x2f0
-    [<0000000023c8c8f9>] __alloc_skb+0xc0/0x2b8
-    [<000000007ad950bb>] alloc_skb_with_frags+0x60/0x320
-    [<00000000ef90023a>] sock_alloc_send_pskb+0x388/0x3c0
-    [<00000000104fb1a3>] sock_alloc_send_skb+0x1c/0x28
-    [<000000006919d2dd>] __ip_append_data+0xba4/0x11f0
-    [<0000000083477587>] ip_make_skb+0x14c/0x1a8
-    [<0000000024f3d592>] udp_sendmsg+0xaf0/0xcf0
-    [<000000005aabe255>] inet_sendmsg+0x5c/0x80
-    [<000000008651ea08>] __sys_sendto+0x15c/0x218
-    [<000000003505c99b>] __arm64_sys_sendto+0x74/0x90
-    [<00000000263486ec>] el0_svc_handler+0xd0/0x1a0
-    [<0000000005b5157d>] el0_svc+0x8/0xc
+This error means that the hardware could not change the state
+from "Operation" to "Configuration" while some tx and/or rx queue
+are operating. After that, ravb_config() in ravb_dmac_init() will fail,
+and then any descriptors will be not allocaled anymore so that NULL
+pointer dereference happens after that on ravb_start_xmit().
 
-Fixes: 2bdaf386f99c (mac80211: mesh: move path tables into if_mesh)
-Signed-off-by: Remi Pommarel <repk@triplefau.lt>
-Link: https://lore.kernel.org/r/20200704135419.27703-1-repk@triplefau.lt
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+To fix the issue, the ravb_tx_timeout_work() should check
+the return values of ravb_stop_dma() and ravb_dmac_init().
+If ravb_stop_dma() fails, ravb_tx_timeout_work() re-enables TX and RX
+and just exits. If ravb_dmac_init() fails, just exits.
+
+[1]
+https://lore.kernel.org/linux-renesas-soc/20200518045452.2390-1-dirk.behme@de.bosch.com/
+
+Reported-by: Dirk Behme <dirk.behme@de.bosch.com>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mesh_pathtbl.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/renesas/ravb_main.c | 26 ++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/net/mac80211/mesh_pathtbl.c b/net/mac80211/mesh_pathtbl.c
-index 117519bf33d65..aca608ae313fe 100644
---- a/net/mac80211/mesh_pathtbl.c
-+++ b/net/mac80211/mesh_pathtbl.c
-@@ -521,6 +521,7 @@ static void mesh_path_free_rcu(struct mesh_table *tbl,
- 	del_timer_sync(&mpath->timer);
- 	atomic_dec(&sdata->u.mesh.mpaths);
- 	atomic_dec(&tbl->entries);
-+	mesh_path_flush_pending(mpath);
- 	kfree_rcu(mpath, rcu);
- }
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index 067ad25553b92..ab335f7dab828 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -1444,6 +1444,7 @@ static void ravb_tx_timeout_work(struct work_struct *work)
+ 	struct ravb_private *priv = container_of(work, struct ravb_private,
+ 						 work);
+ 	struct net_device *ndev = priv->ndev;
++	int error;
  
+ 	netif_tx_stop_all_queues(ndev);
+ 
+@@ -1452,15 +1453,36 @@ static void ravb_tx_timeout_work(struct work_struct *work)
+ 		ravb_ptp_stop(ndev);
+ 
+ 	/* Wait for DMA stopping */
+-	ravb_stop_dma(ndev);
++	if (ravb_stop_dma(ndev)) {
++		/* If ravb_stop_dma() fails, the hardware is still operating
++		 * for TX and/or RX. So, this should not call the following
++		 * functions because ravb_dmac_init() is possible to fail too.
++		 * Also, this should not retry ravb_stop_dma() again and again
++		 * here because it's possible to wait forever. So, this just
++		 * re-enables the TX and RX and skip the following
++		 * re-initialization procedure.
++		 */
++		ravb_rcv_snd_enable(ndev);
++		goto out;
++	}
+ 
+ 	ravb_ring_free(ndev, RAVB_BE);
+ 	ravb_ring_free(ndev, RAVB_NC);
+ 
+ 	/* Device init */
+-	ravb_dmac_init(ndev);
++	error = ravb_dmac_init(ndev);
++	if (error) {
++		/* If ravb_dmac_init() fails, descriptors are freed. So, this
++		 * should return here to avoid re-enabling the TX and RX in
++		 * ravb_emac_init().
++		 */
++		netdev_err(ndev, "%s: ravb_dmac_init() failed, error %d\n",
++			   __func__, error);
++		return;
++	}
+ 	ravb_emac_init(ndev);
+ 
++out:
+ 	/* Initialise PTP Clock driver */
+ 	if (priv->chip_id == RCAR_GEN2)
+ 		ravb_ptp_init(ndev, priv->pdev);
 -- 
 2.25.1
 
