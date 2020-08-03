@@ -2,139 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D540423A268
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 12:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EA523A270
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 12:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgHCKBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 06:01:42 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:46964 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgHCKBl (ORCPT
+        id S1726584AbgHCKCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 06:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726394AbgHCKCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 06:01:41 -0400
-Received: by mail-ot1-f66.google.com with SMTP id v6so16699365ota.13;
-        Mon, 03 Aug 2020 03:01:41 -0700 (PDT)
+        Mon, 3 Aug 2020 06:02:31 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1A7C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 03:02:30 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id o23so10533020ejr.1
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 03:02:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Vsw86Ioh4FX2LjY9IRNgVl3ySN874HqeJp7Mv8isep4=;
+        b=RpfQtFsHlbz8r366bIDazEG7v/rOLrIkoCqHg8rE2DUKq52Z8mwzP137tJ/5s7tPUj
+         VLb1iezTLNPzIJG1c0Pkm89UBzyKPJeX6JGIivqYWsnaSCB6ZaglPy5t0gDZQCPFTCU7
+         8llZA5AlGWWNzDr8tBx5EpJDGB/QTw7bpfPc8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YRL/NSrOTXGW5tVFZP1w9ujyG9ApelIKXaN1/erg484=;
-        b=dhZFlWmSf+Uwo+vFIlvnlPA/fV85bK0xUZDSngLpTNfrQNAuI2SGAky9rt1PX8Js4A
-         UJyMjXx/qGlYhtdgpAu/p4NES2wcCiYw2AkN70TbwUiuMrukzhyrz+zCe7iK/dO5ZcQp
-         sd3rAZvjFQDyPA0a6B1eB/Kic93w0Y/AsRmWTp+x+D6OdreAAre6ugKbUm8S8eoa71yx
-         7Ed/AOo+QKzqUzZVv7UXeWNgkyRGouTnIaZGVZ3qNoK2DqDaTKoFID++oqeYs7TL42O1
-         41jTG+eivjAOMyf7/uFhMHUM04wLVl2waKWpuf/WZXe3fzPzYRXkLn+qPl/YH5wxTjKW
-         9qig==
-X-Gm-Message-State: AOAM530w5nk3Vx6E2T5rmFjf/k2p1eybUYJzdfvkJwAbdWDuIovJJ2QM
-        /uxVGxxjlv5KC/qxn5+gfpaSzOrXskWWVE8QE9WUs98e
-X-Google-Smtp-Source: ABdhPJwlDuinaynFGJMz+BX1NkzN1mj7ncnxIYpvjq4x0l0CyuS1Qg7VFTYWsRmoQKZkLoUyUXV5w5bszIyg49+V37w=
-X-Received: by 2002:a05:6830:1b79:: with SMTP id d25mr12244586ote.107.1596448900646;
- Mon, 03 Aug 2020 03:01:40 -0700 (PDT)
+        bh=Vsw86Ioh4FX2LjY9IRNgVl3ySN874HqeJp7Mv8isep4=;
+        b=ezFpi/7Bs/ksql4CmjQlGMs2kYrkMCS16ZBM0b4u+208fQkwvBPLBczbGnYn5hB7HX
+         pxtqL4Xt7NBb/q+UVNXPOz5BM3mI3SvmpO5nIUluqXIUV9reb0YL5gZb7CxMSy3u+oz4
+         02AYjqJgt6mA/lsJs+R+SbELbTC++Y2fOgzRvIMpgTfg2MZwJvp2/x3ZiA9jLjNC/zOR
+         CDhhZ3435n2AMWe9zTEeQZhf44fN9Ak1XonEwNxfL+gQpdpZujsEZLv/pIVg6qcqXH4P
+         lkYU8LDc8nblGCRYZXgpw3ZJyQ7vHxJfv6tZgk8+c3jVJCrfoDXEUU6ufhmKwzfkGmTg
+         nmrQ==
+X-Gm-Message-State: AOAM532Nnu6+/Q1v4JgFjvoqPsIxUSSSxejk9FaKjqdb0np7O+63FTZF
+        oYf7Nfl5mPwklMF+9JLVv3fZbuRF4KcfG3Ac71y+jQ==
+X-Google-Smtp-Source: ABdhPJyBZEAYQ6WLR1Z0AfPVD+Khagrgtzu1YRtwovnq6WreKbtRGY02vgjzms1nTRrPans2kaPI2wtS5NWP0loHJ+k=
+X-Received: by 2002:a17:906:4c46:: with SMTP id d6mr16814326ejw.14.1596448949388;
+ Mon, 03 Aug 2020 03:02:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <87wob2clos.wl-kuninori.morimoto.gx@renesas.com>
- <20200722023840.GA55317@roeck-us.net> <20200722225239.GX14669@brightrain.aerifal.cx>
- <fa0456c9-cef0-45e7-59d7-ad652734b1d5@roeck-us.net>
-In-Reply-To: <fa0456c9-cef0-45e7-59d7-ad652734b1d5@roeck-us.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 3 Aug 2020 12:01:29 +0200
-Message-ID: <CAMuHMdUvSVs7vQ7GDhHx4Rp-DJZuSU2xtPVtX86+p9GptHfBhQ@mail.gmail.com>
-Subject: Re: [PATCH] sh: add missing EXPORT_SYMBOL() for __delay
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Rich Felker <dalias@libc.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1293241.1595501326@warthog.procyon.org.uk> <CAJfpegspWA6oUtdcYvYF=3fij=Bnq03b8VMbU9RNMKc+zzjbag@mail.gmail.com>
+ <158454378820.2863966.10496767254293183123.stgit@warthog.procyon.org.uk>
+ <158454391302.2863966.1884682840541676280.stgit@warthog.procyon.org.uk>
+ <2003787.1595585999@warthog.procyon.org.uk> <865566fb800a014868a9a7e36a00a14430efb11e.camel@themaw.net>
+ <2023286.1595590563@warthog.procyon.org.uk>
+In-Reply-To: <2023286.1595590563@warthog.procyon.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 3 Aug 2020 12:02:18 +0200
+Message-ID: <CAJfpegsT_3YqHPWCZGX7Lr+sE0NVmczWz5L6cN8CzsVz4YKLCQ@mail.gmail.com>
+Subject: Re: [PATCH 13/17] watch_queue: Implement mount topology and attribute
+ change notifications [ver #5]
+To:     David Howells <dhowells@redhat.com>
+Cc:     Ian Kent <raven@themaw.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>, andres@anarazel.de,
+        Jeff Layton <jlayton@redhat.com>, dray@redhat.com,
+        Karel Zak <kzak@redhat.com>, keyrings@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 1:53 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> On 7/22/20 3:52 PM, Rich Felker wrote:
-> > On Tue, Jul 21, 2020 at 07:38:40PM -0700, Guenter Roeck wrote:
-> >> On Thu, Dec 12, 2019 at 11:38:43AM +0900, Kuninori Morimoto wrote:
-> >>> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> >>>
-> >>> __delay() is used from kernel module.
-> >>> We need EXPORT_SYMBOL(), otherwise we will get compile error.
-> >>>
-> >>> ERROR: "__delay" [drivers/net/phy/mdio-cavium.ko] undefined!
-> >>>
-> >>> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> >>
-> >> I must admit that this patch completely baffles me. __delay was
-> >> already exported, only elsewhere in the file. With this patch
-> >> in place, it is exported twice, and all sh builds in -next fail
-> >> with
-> >>
-> >> In file included from include/linux/linkage.h:7,
-> >>                  from arch/sh/include/asm/bug.h:5,
-> >>                  from include/linux/bug.h:5,
-> >>                  from include/linux/thread_info.h:12,
-> >>                  from include/asm-generic/current.h:5,
-> >>                  from ./arch/sh/include/generated/asm/current.h:1,
-> >>                  from include/linux/sched.h:12,
-> >>                  from arch/sh/lib/delay.c:8:
-> >> include/linux/export.h:67:36: error: redefinition of '__ksymtab___delay'
-> >>
-> >> Guenter
-> >>
-> >>> ---
-> >>>  arch/sh/lib/delay.c | 1 +
-> >>>  1 file changed, 1 insertion(+)
-> >>>
-> >>> diff --git a/arch/sh/lib/delay.c b/arch/sh/lib/delay.c
-> >>> index dad8e6a..540e670 100644
-> >>> --- a/arch/sh/lib/delay.c
-> >>> +++ b/arch/sh/lib/delay.c
-> >>> @@ -29,6 +29,7 @@ void __delay(unsigned long loops)
-> >>>             : "0" (loops)
-> >>>             : "t");
-> >>>  }
-> >>> +EXPORT_SYMBOL(__delay);
-> >>>
-> >>>  inline void __const_udelay(unsigned long xloops)
-> >>>  {
+On Fri, Jul 24, 2020 at 1:36 PM David Howells <dhowells@redhat.com> wrote:
+>
+> Ian Kent <raven@themaw.net> wrote:
+>
+> > I was wondering about id re-use.
 > >
-> > I presently have a revert of this commit in queue for next. If it's
-> > sufficiently breaking (and especially if there are other regressions
-> > that need to be fixed, see the pmd_free thing) I could try to get it
-> > in for 5.8 still but that's getting a bit late.
+> > Assuming that ids that are returned to the idr db are re-used
+> > what would the chance that a recently used id would end up
+> > being used?
 > >
+> > Would that chance increase as ids are consumed and freed over
+> > time?
 >
-> The patch in mainline is ok. It appears that it has been applied
-> again in -next.
+> I've added something to deal with that in the fsinfo branch.  I've given each
+> mount object and superblock a supplementary 64-bit unique ID that's not likely
+> to repeat before we're no longer around to have to worry about it.
 >
-> "git log --oneline v5.7.. arch/sh/lib/delay.c" on top of next-20200721
-> reports:
+> fsinfo() then allows you to retrieve them by path or by mount ID.
+
+Shouldn't the notification interface provide the unique ID?
+
+Thanks,
+Miklos
+
 >
-> ee0e4f15dfd4 (origin/akpm) sh: add missing EXPORT_SYMBOL() for __delay
-> d1f56f318d23 sh: add missing EXPORT_SYMBOL() for __delay
+> So, yes, mnt_id and s_dev are not unique and may be reused very quickly, but
+> I'm also providing uniquifiers that you can check.
 >
-> Maybe it just needs to be dropped from the akpm tree in -next ?
-
-IMHO all of them should be dropped/reverted.
-__delay is an internal implementation detail, not to be used by drivers.
-
-See also include/asm-generic/delay.h:
-
-    /* Undefined functions to get compile-time errors */
-    ...
-    extern void __delay(unsigned long loops);
-
-Cfr. '[PATCH] Revert "sh: add missing EXPORT_SYMBOL() for __delay"'
-https://lore.kernel.org/lkml/20200608080636.27862-1-geert+renesas@glider.be/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> David
+>
