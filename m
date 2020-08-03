@@ -2,246 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867F323A8D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A212C23A8E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbgHCOuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 10:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727844AbgHCOrt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 10:47:49 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33D2C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 07:47:48 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id a130so25410103qkg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 07:47:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=yEtE51ZkZ89myWk79FRCGMzR6DiPPNgcqkWBItHzQ6s=;
-        b=t1rTR3609fZavoZD6hGkSsSWDr9nI1/YkdhLNf0ojphXhpqrjYtn2QmhC+W/gkvimg
-         AMTj6PP4Rr26vC5qnxMVLP8ZXj2mvSyHcLtN7NTD3GvFDmmeReFr0s4F/UMZqW82I1g+
-         Dr2Z/WzdPu1RdbA1YmGLFdz8BghYnww1NBBlSY+6I9r3aq9SpAN2yEXku55avULjgjeR
-         wbdd0+d7Js097V3esnE9Zp3yRqLvLrD/D5lAoObteLNHtFqv+wIpvThQwIPjxSfSQHJA
-         7Nvv9QfJik4hcZHlF/286VGx9pliyj8hQuAw0OzqKiZAgbFEPs15yA8D9Br8GJTj/mTJ
-         PaOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=yEtE51ZkZ89myWk79FRCGMzR6DiPPNgcqkWBItHzQ6s=;
-        b=h5uowH9AgbSSIA1Hr13Zfaihck9vNSvFFJt1tyDoLBBuIJWjYZtlX/M5YIdCQXRfHw
-         vHkcvoFaGc3mPF4DyAuqV5N3m5Qnxg4q4KaNKOL9d/uQGdubq1YXohC2os264jZ9x4dM
-         hyFl/mK8dqygTyLLot4JjlsC+jgtvERkqGafHJO/SEWR70MNg6Q0GlJObUmc0MJmrSPq
-         8PIGdhnBZuMRX1x6Ul84Pi5BYH9iv8RiUaV7qdJ/SiU0sXmM2K4IbxdENafKt8iT8Svj
-         LRhiV0n6wE2qEiKtoyxnC8bQUZJKDPlL8dSH48aqaJvESHlF4/kuw7yYGniJIgRImArr
-         FP+Q==
-X-Gm-Message-State: AOAM5326hH5GnAKVKFMrED6kAWUNxywIEXh+go/v5mG954zwFVR8bR8F
-        qDfbh3TjCBHLqbPiD5/ugJaIb95KUbgEq5wYEg==
-X-Google-Smtp-Source: ABdhPJw9FuulIu0ymOE9kGuQtwFH4SdlEeYnPFzJ+4tzAm9Tdqz+V6p7Q/zMMMduM+pHUwYFb/16WTJ/nRJFAJbl1A==
-X-Received: by 2002:a0c:c3d0:: with SMTP id p16mr17210039qvi.54.1596466068074;
- Mon, 03 Aug 2020 07:47:48 -0700 (PDT)
-Date:   Mon,  3 Aug 2020 14:47:19 +0000
-In-Reply-To: <20200803144719.3184138-1-kaleshsingh@google.com>
-Message-Id: <20200803144719.3184138-3-kaleshsingh@google.com>
+        id S1728205AbgHCOuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 10:50:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726189AbgHCOuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 10:50:50 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74A152076E;
+        Mon,  3 Aug 2020 14:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596466249;
+        bh=hYqtB5D8bWSgMhqH73CrhvUPEYWs3SY+kGQi2srIaeo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q+iSnGP5ZNkXtGQxke2PTU+GyeDD/wYYeOyi+w/42hBZHwEgwWfTWTG6noTc02Lfo
+         qcPdCNpZTW5UcOW0Xfs6iJ4erN+q3x9pHzlt8aWgfzoliUC53iWlbYEX+5MoQV20iD
+         lKE2twHBN05pcyPdii3h1bNPN6r9NIHtyS9sFf3U=
+Date:   Mon, 3 Aug 2020 23:50:42 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Muchun Song <songmuchun@bytedance.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH] kprobes: fix NULL pointer dereference at
+ kprobe_ftrace_handler
+Message-Id: <20200803235042.6bacaf3eb53b7ab831f4edd3@kernel.org>
+In-Reply-To: <CAMZfGtUDmQgDySu7OSBNYv5y2_QJfzDcVeYG2eY6-1xYq+t1Uw@mail.gmail.com>
+References: <20200728064536.24405-1-songmuchun@bytedance.com>
+        <CAMZfGtUDmQgDySu7OSBNYv5y2_QJfzDcVeYG2eY6-1xYq+t1Uw@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-References: <20200803144719.3184138-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH 2/2] dmabuf/tracing: Add dma-buf trace events
-From:   Kalesh Singh <kaleshsingh@google.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Ioannis Ilkos <ilkos@google.com>,
-        John Stultz <john.stultz@linaro.org>, kernel-team@android.com,
-        Kalesh Singh <kaleshsingh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Being able to analyze the per process usage of shared
-dma buffers prodives useful insights in situations where
-the system is experiencing high memory pressure. This would
-allow us to see exactly which processes are holding references
-to the shared buffer.
+On Mon, 3 Aug 2020 13:46:25 +0800
+Muchun Song <songmuchun@bytedance.com> wrote:
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
- drivers/dma-buf/dma-buf.c      | 29 +++++++++++++
- include/trace/events/dma_buf.h | 77 ++++++++++++++++++++++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 include/trace/events/dma_buf.h
+> Ping guys. Any comments or suggestions?
+> 
+> On Tue, Jul 28, 2020 at 2:45 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> >
+> > We found a case of kernel panic on our server. The stack trace is as
+> > follows(omit some irrelevant information):
+> >
+> >   BUG: kernel NULL pointer dereference, address: 0000000000000080
+> >   RIP: 0010:kprobe_ftrace_handler+0x5e/0xe0
+> >   RSP: 0018:ffffb512c6550998 EFLAGS: 00010282
+> >   RAX: 0000000000000000 RBX: ffff8e9d16eea018 RCX: 0000000000000000
+> >   RDX: ffffffffbe1179c0 RSI: ffffffffc0535564 RDI: ffffffffc0534ec0
+> >   RBP: ffffffffc0534ec1 R08: ffff8e9d1bbb0f00 R09: 0000000000000004
+> >   R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> >   R13: ffff8e9d1f797060 R14: 000000000000bacc R15: ffff8e9ce13eca00
+> >   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >   CR2: 0000000000000080 CR3: 00000008453d0005 CR4: 00000000003606e0
+> >   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >   Call Trace:
+> >    <IRQ>
+> >    ftrace_ops_assist_func+0x56/0xe0
+> >    ftrace_call+0x5/0x34
+> >    tcpa_statistic_send+0x5/0x130 [ttcp_engine]
+> >
+> > The tcpa_statistic_send is the function being kprobed. After analysis,
+> > the root cause is that the fourth parameter regs of kprobe_ftrace_handler
+> > is NULL. Why regs is NULL? We use the crash tool to analyze the kdump.
+> >
+> >   crash> dis tcpa_statistic_send -r
+> >          <tcpa_statistic_send>: callq 0xffffffffbd8018c0 <ftrace_caller>
+> >
+> > The tcpa_statistic_send calls ftrace_caller instead of ftrace_regs_caller.
+> > So it is reasonable that the fourth parameter regs of kprobe_ftrace_handler
+> > is NULL. In theory, we should call the ftrace_regs_caller instead of the
+> > ftrace_caller. After in-depth analysis, we found a reproducible path.
+> >
+> >   Writing a simple kernel module which starts a periodic timer. The
+> >   timer's handler is named 'kprobe_test_timer_handler'. The module
+> >   name is kprobe_test.ko.
+> >
+> >   1) insmod kprobe_test.ko
+> >   2) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
+> >   3) echo 0 > /proc/sys/kernel/ftrace_enabled
+> >   4) rmmod kprobe_test
+> >   5) stop step 2) kprobe
+> >   6) insmod kprobe_test.ko
+> >   7) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
+> >
+> > We mark the kprobe as GONE but not disarm the kprobe in the step 4).
+> > The step 5) also do not disarm the kprobe when unregister kprobe. So
+> > we do not remove the ip from the filter. In this case, when the module
+> > loads again in the step 6), we will replace the code to ftrace_caller
+> > via the ftrace_module_enable(). When we register kprobe again, we will
+> > not replace ftrace_caller to ftrace_regs_caller because the ftrace is
+> > disabled in the step 3). So the step 7) will trigger kernel panic. Fix
+> > this problem by disarming the kprobe when the module is going away.
+> >
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 1ca609f66fdf..1729191ac9ca 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -29,6 +29,9 @@
- #include <uapi/linux/dma-buf.h>
- #include <uapi/linux/magic.h>
- 
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/dma_buf.h>
-+
- static inline int is_dma_buf_file(struct file *);
- 
- struct dma_buf_list {
-@@ -110,6 +113,15 @@ static struct file_system_type dma_buf_fs_type = {
- 	.kill_sb = kill_anon_super,
- };
- 
-+static void dma_buf_vma_close(struct vm_area_struct *area)
-+{
-+	trace_dma_buf_map_ref_dec(current, area->vm_file);
-+}
-+
-+static const struct vm_operations_struct dma_buf_vm_ops = {
-+	.close = dma_buf_vma_close,
-+};
-+
- static int dma_buf_mmap_internal(struct file *file, struct vm_area_struct *vma)
- {
- 	struct dma_buf *dmabuf;
-@@ -128,6 +140,9 @@ static int dma_buf_mmap_internal(struct file *file, struct vm_area_struct *vma)
- 	    dmabuf->size >> PAGE_SHIFT)
- 		return -EINVAL;
- 
-+	trace_dma_buf_map_ref_inc(current, file);
-+	vma->vm_ops = &dma_buf_vm_ops;
-+
- 	return dmabuf->ops->mmap(dmabuf, vma);
- }
- 
-@@ -410,6 +425,17 @@ static void dma_buf_show_fdinfo(struct seq_file *m, struct file *file)
- 	spin_unlock(&dmabuf->name_lock);
- }
- 
-+static int dma_buf_flush(struct file *filp, fl_owner_t id)
-+{
-+	trace_dma_buf_fd_ref_dec(current, filp);
-+	return 0;
-+}
-+
-+static void dma_buf_fd_install(int fd, struct file *filp)
-+{
-+	trace_dma_buf_fd_ref_inc(current, filp);
-+}
-+
- static const struct file_operations dma_buf_fops = {
- 	.mmap		= dma_buf_mmap_internal,
- 	.llseek		= dma_buf_llseek,
-@@ -417,6 +443,8 @@ static const struct file_operations dma_buf_fops = {
- 	.unlocked_ioctl	= dma_buf_ioctl,
- 	.compat_ioctl	= compat_ptr_ioctl,
- 	.show_fdinfo	= dma_buf_show_fdinfo,
-+	.fd_install	= dma_buf_fd_install,
-+	.flush		= dma_buf_flush,
- };
- 
- /*
-@@ -1177,6 +1205,7 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
- 		if (oldfile)
- 			fput(oldfile);
- 	}
-+
- 	return ret;
- 
- }
-diff --git a/include/trace/events/dma_buf.h b/include/trace/events/dma_buf.h
-new file mode 100644
-index 000000000000..05af336cd849
---- /dev/null
-+++ b/include/trace/events/dma_buf.h
-@@ -0,0 +1,77 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM dma_buf
-+
-+#if !defined(_TRACE_DMA_BUF_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_DMA_BUF_H
-+
-+#include <linux/dma-buf.h>
-+#include <linux/tracepoint.h>
-+#include <linux/types.h>
-+
-+#define UNKNOWN "<unknown>"
-+
-+#ifdef CREATE_TRACE_POINTS
-+static inline struct dma_buf *dma_buffer(struct file *filp)
-+{
-+	return filp->private_data;
-+}
-+#endif
-+
-+DECLARE_EVENT_CLASS(dma_buf_ref_template,
-+
-+	TP_PROTO(struct task_struct *task, struct file *filp),
-+
-+	TP_ARGS(task,  filp),
-+
-+	TP_STRUCT__entry(
-+		__field(u32, tgid)
-+		__field(u32, pid)
-+		__field(u64, size)
-+		__field(s64, count)
-+		__string(exp_name, dma_buffer(filp)->exp_name)
-+		__string(name, dma_buffer(filp)->name ? dma_buffer(filp)->name : UNKNOWN)
-+		__field(u64, i_ino)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->tgid = task->tgid;
-+		__entry->pid = task->pid;
-+		__entry->size = dma_buffer(filp)->size;
-+		__entry->count = file_count(filp);
-+		__assign_str(exp_name, dma_buffer(filp)->exp_name);
-+		__assign_str(name, dma_buffer(filp)->name ? dma_buffer(filp)->name : UNKNOWN);
-+		__entry->i_ino = filp->f_inode->i_ino;
-+	),
-+
-+	TP_printk("tgid=%u pid=%u size=%llu count=%lld exp_name=%s name=%s i_ino=%llu",
-+		__entry->tgid,
-+		__entry->pid,
-+		__entry->size,
-+		__entry->count,
-+		__get_str(exp_name),
-+		__get_str(name),
-+		__entry->i_ino
-+	)
-+);
-+
-+DEFINE_EVENT(dma_buf_ref_template, dma_buf_fd_ref_inc,
-+	TP_PROTO(struct task_struct *task, struct file *filp),
-+	TP_ARGS(task,  filp));
-+
-+DEFINE_EVENT(dma_buf_ref_template, dma_buf_fd_ref_dec,
-+	TP_PROTO(struct task_struct *task, struct file *filp),
-+	TP_ARGS(task,  filp));
-+
-+DEFINE_EVENT(dma_buf_ref_template, dma_buf_map_ref_inc,
-+	TP_PROTO(struct task_struct *task, struct file *filp),
-+	TP_ARGS(task,  filp));
-+
-+DEFINE_EVENT(dma_buf_ref_template, dma_buf_map_ref_dec,
-+	TP_PROTO(struct task_struct *task, struct file *filp),
-+	TP_ARGS(task,  filp));
-+
-+#endif /* _TRACE_DMA_BUF_H */
-+
-+/* This part must be outside protection */
-+#include <trace/define_trace.h>
+Nice catch!
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
+Cc: stable@vger.kernel.org
+
+Thank you!
+
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> > ---
+> >  kernel/kprobes.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > index 146c648eb943..503add629599 100644
+> > --- a/kernel/kprobes.c
+> > +++ b/kernel/kprobes.c
+> > @@ -2148,6 +2148,13 @@ static void kill_kprobe(struct kprobe *p)
+> >          * the original probed function (which will be freed soon) any more.
+> >          */
+> >         arch_remove_kprobe(p);
+> > +
+> > +       /*
+> > +        * The module is going away. We should disarm the kprobe which
+> > +        * is using ftrace.
+> > +        */
+> > +       if (kprobe_ftrace(p))
+> > +               disarm_kprobe_ftrace(p);
+> >  }
+> >
+> >  /* Disable one kprobe */
+> > --
+> > 2.11.0
+> >
+> 
+> 
+> -- 
+> Yours,
+> Muchun
+
+
 -- 
-2.28.0.163.g6104cc2f0b6-goog
-
+Masami Hiramatsu <mhiramat@kernel.org>
