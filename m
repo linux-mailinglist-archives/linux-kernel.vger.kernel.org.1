@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EEE23A422
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468A823A47F
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgHCMXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:23:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47046 "EHLO mail.kernel.org"
+        id S1728614AbgHCM1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:27:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727809AbgHCMXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:23:08 -0400
+        id S1728574AbgHCM1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:27:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C4E120738;
-        Mon,  3 Aug 2020 12:23:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9684A204EC;
+        Mon,  3 Aug 2020 12:27:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457386;
-        bh=pcjrk+k05ecvavclJwsjuBbQGLr9xVYSL2eKdW2XNzA=;
+        s=default; t=1596457657;
+        bh=6neVmE4RuTPyO1WwkKuIkdjl/sl5fH6UJcth+i9Zpek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0htg38NTUqT4XUqeb/vR4xJr5Kbl0QcJGofcAIvJ9Z00l3M6zXpZXKzhwhP6PD24j
-         uq7oEl3GAvWT38CiihQOd0O94a/komhfQXcgBOS8v8Hi7am283IX07Fh1+H8sM0PjP
-         X2cp4NFlZ2tIbZjuEPEDfrrfKFjTZtzvvRhD3LP0=
+        b=snljmb2yc4bDOubjbEqyslFjeF3rOALKIYOr/hsr/zqbLHBil6GNGvlTM1+AhYvfb
+         QqHRRmvTCPF00SbsfK+25XnwYkPaRrE5/QsTlDOSocUrlNWmcoZ8dwv5zx6LAbp+UP
+         FbBlxHRXiW466Eg/JUEoMDNDgoDUQFJx1hmoPq3o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 048/120] sh: Fix validation of system call number
+        stable@vger.kernel.org, Abhishek Ambure <aambure@codeaurora.org>,
+        Balaji Pothunoori <bpothuno@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sathishkumar Muruganandam <murugana@codeaurora.org>
+Subject: [PATCH 5.4 04/90] ath10k: enable transmit data ack RSSI for QCA9884
 Date:   Mon,  3 Aug 2020 14:18:26 +0200
-Message-Id: <20200803121905.146270575@linuxfoundation.org>
+Message-Id: <20200803121857.760477726@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
-References: <20200803121902.860751811@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+From: Abhishek Ambure <aambure@codeaurora.org>
 
-[ Upstream commit 04a8a3d0a73f51c7c2da84f494db7ec1df230e69 ]
+commit cc78dc3b790619aa05f22a86a9152986bd73698c upstream.
 
-The slow path for traced system call entries accessed a wrong memory
-location to get the number of the maximum allowed system call number.
-Renumber the numbered "local" label for the correct location to avoid
-collisions with actual local labels.
+For all data packets transmitted, host gets htt tx completion event. Some QCA9984
+firmware releases support WMI_SERVICE_TX_DATA_ACK_RSSI, which gives data
+ack rssi values to host through htt event of data tx completion. Data ack rssi
+values are valid if A0 bit is set in HTT rx message. So enable the feature also
+for QCA9884.
 
-Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Fixes: f3a8308864f920d2 ("sh: Add a few missing irqflags tracing markers.")
-Signed-off-by: Rich Felker <dalias@libc.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Tested HW: QCA9984
+Tested FW: 10.4-3.9.0.2-00044
+
+Signed-off-by: Abhishek Ambure <aambure@codeaurora.org>
+Signed-off-by: Balaji Pothunoori <bpothuno@codeaurora.org>
+[kvalo@codeaurora.org: improve commit log]
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/sh/kernel/entry-common.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/hw.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/sh/kernel/entry-common.S b/arch/sh/kernel/entry-common.S
-index 956a7a03b0c83..9bac5bbb67f33 100644
---- a/arch/sh/kernel/entry-common.S
-+++ b/arch/sh/kernel/entry-common.S
-@@ -199,7 +199,7 @@ syscall_trace_entry:
- 	mov.l	@(OFF_R7,r15), r7   ! arg3
- 	mov.l	@(OFF_R3,r15), r3   ! syscall_nr
- 	!
--	mov.l	2f, r10			! Number of syscalls
-+	mov.l	6f, r10			! Number of syscalls
- 	cmp/hs	r10, r3
- 	bf	syscall_call
- 	mov	#-ENOSYS, r0
-@@ -353,7 +353,7 @@ ENTRY(system_call)
- 	tst	r9, r8
- 	bf	syscall_trace_entry
- 	!
--	mov.l	2f, r8			! Number of syscalls
-+	mov.l	6f, r8			! Number of syscalls
- 	cmp/hs	r8, r3
- 	bt	syscall_badsys
- 	!
-@@ -392,7 +392,7 @@ syscall_exit:
- #if !defined(CONFIG_CPU_SH2)
- 1:	.long	TRA
- #endif
--2:	.long	NR_syscalls
-+6:	.long	NR_syscalls
- 3:	.long	sys_call_table
- 7:	.long	do_syscall_trace_enter
- 8:	.long	do_syscall_trace_leave
--- 
-2.25.1
-
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -1145,6 +1145,7 @@ static bool ath10k_qca99x0_rx_desc_msdu_
+ const struct ath10k_hw_ops qca99x0_ops = {
+ 	.rx_desc_get_l3_pad_bytes = ath10k_qca99x0_rx_desc_get_l3_pad_bytes,
+ 	.rx_desc_get_msdu_limit_error = ath10k_qca99x0_rx_desc_msdu_limit_error,
++	.is_rssi_enable = ath10k_htt_tx_rssi_enable,
+ };
+ 
+ const struct ath10k_hw_ops qca6174_ops = {
 
 
