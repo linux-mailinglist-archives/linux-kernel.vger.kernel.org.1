@@ -2,159 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB069239DE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 05:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503E9239DE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 05:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgHCDm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 23:42:57 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:47449 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726707AbgHCDm5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 23:42:57 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id D07565C0106;
-        Sun,  2 Aug 2020 23:42:55 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sun, 02 Aug 2020 23:42:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=N
-        sR/8P0IqNjuSnppL2Zoxnnoe3Icu4h6eNp7eKuYboI=; b=HlTEYtDIhIPcrCas6
-        ygRkU0vagNN1SrtO0K4haGFv02dypgip7XziBpxDJHnvZNexOTHRFPdcf70jl6xP
-        FOp39MfPzu7vHbgJfIQAFD3aUlKf9ytvLw3ODi+mGfWQLRYT4eOyRN6kApj2Tf7u
-        cHVuuZvLapXsdFcgQkB+AUWzBXncyXksopCfAtgI7sd29a04inhWRuGQY7sBbFO+
-        89Uvaa3iCI2zdaDW5p1Xq5yrkrzGa0MiliAuRLnOZh2FNwwzR5JX+/Btx8azIUOA
-        eeSaSTrwgbJeVPEZB33DXeW3iutuI0+LpZP3S2CKhdPWQb7CmRdDFA0pVgg0gpi0
-        vNtoA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=NsR/8P0IqNjuSnppL2Zoxnnoe3Icu4h6eNp7eKuYb
-        oI=; b=KUSmzLArAleV9CEltM1oQ3C5pl2Jt/F3RQrahlO9xp5Uf6m8+uC8zW8+/
-        uz7Nyk2FP2ECOr8Uhks/bPkpDXRIuAYMSPzL0g9g/ZcqD22fICPYz1IwkViID/JK
-        YWk2Qfefp0j0hJZyf3wTwyjIT29wsfnpt0rgqi+CxeveTWRX3kb4lbkQBvTdpAuk
-        eBkr5/hDf1icvRDZEDD4b47/JqBeYFAI9u0ZAFywr4av97HgXi1Imr/+usgwFZOD
-        6WvYFN1O/AImOgQ12V9NNQu7RdRNNydMdvYBFtTYact9apbbJlEmVRx8tyGnQa3s
-        N7Pm2ULTWmHwigEuB0Ts2/+7x7sKA==
-X-ME-Sender: <xms:v4cnXxgiEwXIWR45nuIKMmChEajfIo3bOndcjhqRjM1JFOHV9HtwhQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrjeefgdejvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpefgveffteelheffjeeukedvkedviedtheevgeefkeehueeiieeuteeu
-    gfettdeggeenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
-    ugdrohhrgh
-X-ME-Proxy: <xmx:v4cnX2Aw3d90Cs7SS-gTcBHMJUmaIEUAfY2SFROuFHVKx16nBWG2Ww>
-    <xmx:v4cnXxExhNoFq18c6zQxJlZV7MLWpIDjJopRY1KC9lc5PWVvDl8RDg>
-    <xmx:v4cnX2SW7Qyz49pI0YWpVsARNmKq1S_W_tzTXkz9ZjThbW4dzyrZRw>
-    <xmx:v4cnX5_jZHmde-DYjWPFTjqV4Psux76MRl2fIL8Sxt7dpnenw9dA-A>
-Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0063F30600A6;
-        Sun,  2 Aug 2020 23:42:54 -0400 (EDT)
-Subject: Re: [PATCH v2] scsi: 3w-9xxx: Fix endianness issues found by sparse
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200730220750.18158-1-samuel@sholland.org>
- <CAK8P3a2p7dWhhCqAYF_Zos-X-zBK+id-xO5hPu2fRTbNyPo9Xg@mail.gmail.com>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <29ea8d0f-bcab-9ffd-0e2f-f022911f4bf2@sholland.org>
-Date:   Sun, 2 Aug 2020 22:43:19 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726916AbgHCDqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 23:46:15 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:39311 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725840AbgHCDqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 Aug 2020 23:46:15 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 0733jlX7015511;
+        Mon, 3 Aug 2020 05:45:47 +0200
+Date:   Mon, 3 Aug 2020 05:45:47 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Linux-kernel Mailing List <linux-kernel@vger.kernel.org>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: powerpc: build failures in Linus' tree
+Message-ID: <20200803034547.GA15501@1wt.eu>
+References: <20200802204842.36bca162@canb.auug.org.au>
+ <20200802172019.GB26677@1wt.eu>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2p7dWhhCqAYF_Zos-X-zBK+id-xO5hPu2fRTbNyPo9Xg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="+QahgC5+KEYLbs62"
+Content-Disposition: inline
+In-Reply-To: <20200802172019.GB26677@1wt.eu>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/20 2:29 AM, Arnd Bergmann wrote:
-> On Fri, Jul 31, 2020 at 12:07 AM Samuel Holland <samuel@sholland.org> wrote:
->>
->> The main issue observed was at the call to scsi_set_resid, where the
->> byteswapped parameter would eventually trigger the alignment check at
->> drivers/scsi/sd.c:2009. At that point, the kernel would continuously
->> complain about an "Unaligned partial completion", and no further I/O
->> could occur.
->>
->> This gets the controller working on big endian powerpc64.
->>
->> Signed-off-by: Samuel Holland <samuel@sholland.org>
->> ---
->>
->> Changes since v1:
->>  - Include changes to use __le?? types in command structures
->>  - Use an object literal for the intermediate "schedulertime" value
->>  - Use local "error" variable to avoid repeated byte swapping
->>  - Create a local "length" variable to avoid very long lines
->>  - Move byte swapping to TW_REQ_LUN_IN/TW_LUN_OUT to avoid long lines
->>
-> 
-> Looks much better, thanks for the update. I see one more issue here
->>  /* Command Packet */
->>  typedef struct TW_Command {
->> -       unsigned char opcode__sgloffset;
->> -       unsigned char size;
->> -       unsigned char request_id;
->> -       unsigned char unit__hostid;
->> +       u8      opcode__sgloffset;
->> +       u8      size;
->> +       u8      request_id;
->> +       u8      unit__hostid;
->>         /* Second DWORD */
->> -       unsigned char status;
->> -       unsigned char flags;
->> +       u8      status;
->> +       u8      flags;
->>         union {
->> -               unsigned short block_count;
->> -               unsigned short parameter_count;
->> +               __le16  block_count;
->> +               __le16  parameter_count;
->>         } byte6_offset;
->>         union {
->>                 struct {
->> -                       u32 lba;
->> -                       TW_SG_Entry sgl[TW_ESCALADE_MAX_SGL_LENGTH];
->> -                       dma_addr_t padding;
->> +                       __le32          lba;
->> +                       TW_SG_Entry     sgl[TW_ESCALADE_MAX_SGL_LENGTH];
->> +                       dma_addr_t      padding;
-> 
-> 
-> The use of dma_addr_t here seems odd, since this is neither endian-safe nor
-> fixed-length. I see you replaced the dma_addr_t in TW_SG_Entry with
-> a variable-length fixed-endian word. I guess there is a chance that this is
-> correct, but it is really confusing. On top of that, it seems that there is
-> implied padding in the structure when built with a 64-bit dma_addr_t
-> on most architectures but not on x86-32 (which uses 32-bit alignment for
-> 64-bit integers). I don't know what the hardware definition is for TW_Command,
-> but ideally this would be expressed using only fixed-endian fixed-length
-> members and explicit padding.
 
-All of the command structures are packed, due to the "#pragma pack(1)" earlier
-in the file. So alignment is not an issue. This dma_addr_t member _is_ the
-explicit padding to make sizeof(TW_Command) -
-sizeof(TW_Command.byte8_offset.{io,param}.sgl) equal TW_COMMAND_SIZE * 4. And
-indeed the structure is expected to be a different size depending on
-sizeof(dma_addr_t).
+--+QahgC5+KEYLbs62
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I left the padding member alone to avoid the #ifdef; since it's never accessed,
-the endianness doesn't matter. In fact, since in both cases it's at the end of
-the structure, it could probably be removed entirely. I don't see
-sizeof(TW_Command) being used anywhere, but I'm not 100% certain. The downside
-of removing it would be TW_COMMAND_SIZE becoming a slightly more magic number.
+Hi again Stephen,
 
-Regards,
-Samuel
+On Sun, Aug 02, 2020 at 07:20:19PM +0200, Willy Tarreau wrote:
+> On Sun, Aug 02, 2020 at 08:48:42PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > We are getting build failures in some PowerPC configs for Linus' tree.
+> > See e.g. http://kisskb.ellerman.id.au/kisskb/buildresult/14306515/
+> > 
+> > In file included from /kisskb/src/arch/powerpc/include/asm/paca.h:18,
+> >                  from /kisskb/src/arch/powerpc/include/asm/percpu.h:13,
+> >                  from /kisskb/src/include/linux/random.h:14,
+> >                  from /kisskb/src/include/linux/net.h:18,
+> >                  from /kisskb/src/net/ipv6/ip6_fib.c:20:
+> > /kisskb/src/arch/powerpc/include/asm/mmu.h:139:22: error: unknown type name 'next_tlbcam_idx'
+> >   139 | DECLARE_PER_CPU(int, next_tlbcam_idx);
+> > 
+> > I assume this is caused by commit
+> > 
+> >   1c9df907da83 ("random: fix circular include dependency on arm64 after addition of percpu.h")
+> > 
+> > But I can't see how, sorry.
+> 
+> So there, asm/mmu.h includes asm/percpu.h, which includes asm/paca.h, which
+> includes asm/mmu.h.
+> 
+> I suspect that we can remove asm/paca.h from asm/percpu.h as it *seems*
+> to be only used by the #define __my_cpu_offset but I don't know if anything
+> will break further, especially if this __my_cpu_offset is used anywhere
+> without this paca definition.
+
+I tried this and it fixed 5.8 for me with your config above. I'm appending
+a patch that does just this. I didn't test other configs as I don't know
+which ones to test though. If it fixes the problem for you, maybe it can
+be picked by the PPC maintainers.
+
+Willy
+
+--+QahgC5+KEYLbs62
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="0001-powerpc-fix-circular-dependency-in-percpu.h.patch"
+
+From bcd64a7d0f3445c9a75d3b4dc4837d2ce61660c9 Mon Sep 17 00:00:00 2001
+From: Willy Tarreau <w@1wt.eu>
+Date: Mon, 3 Aug 2020 05:27:57 +0200
+Subject: powerpc: fix circular dependency in percpu.h
+
+After random.h started to include percpu.h (commit f227e3e), several
+archs broke in circular dependencies around percpu.h.
+
+In https://lore.kernel.org/lkml/20200802204842.36bca162@canb.auug.org.au/
+Stephen Rothwell reported breakage for powerpc with CONFIG_PPC_FSL_BOOK3E.
+
+It turns out that asm/percpu.h includes asm/paca.h, which itself
+includes mmu.h, which includes percpu.h when CONFIG_PPC_FSL_BOOK3E=y.
+
+Percpu seems to include asm/paca.h only for local_paca which is used in
+the __my_cpu_offset macro. Removing this include solves the issue for
+this config.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: f227e3e ("random32: update the net random state on interrupt and activity")
+Link: https://lore.kernel.org/lkml/20200802204842.36bca162@canb.auug.org.au/
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+---
+ arch/powerpc/include/asm/percpu.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/percpu.h b/arch/powerpc/include/asm/percpu.h
+index dce863a..cd3f6e5 100644
+--- a/arch/powerpc/include/asm/percpu.h
++++ b/arch/powerpc/include/asm/percpu.h
+@@ -10,8 +10,6 @@
+ 
+ #ifdef CONFIG_SMP
+ 
+-#include <asm/paca.h>
+-
+ #define __my_cpu_offset local_paca->data_offset
+ 
+ #endif /* CONFIG_SMP */
+-- 
+2.9.0
+
+
+--+QahgC5+KEYLbs62--
