@@ -2,140 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EB523A95B
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2FE23A9D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgHCPad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 11:30:33 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:46126 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgHCPad (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 11:30:33 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200803153031euoutp02719fa39ea57a178f7a496ead887972a0~ny8Me9mGG1669216692euoutp02U
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 15:30:31 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200803153031euoutp02719fa39ea57a178f7a496ead887972a0~ny8Me9mGG1669216692euoutp02U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1596468631;
-        bh=Jz6tkQErBLsdV2v0wFX7a95nI5VkFFvWz7rn7bqAy1Q=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=McYstQsFMSxCGWsuBxp96VgG0398sUUSXuhSSKVvBnpi+31HfxiqKq8L07HEnI1WT
-         ihPASdzwhqgd9gtKJbJ+esbc3sCYM+9IoC6Rh9ru8XI5GRZsHcbp5UGd+wusUWC1jM
-         13cxq+1i6bsd3QH8In+Emfl6ZRBDWc5X8UJBH0FI=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200803153031eucas1p15f0cbcfe0ddfb7c18ee4566ce1dc5f00~ny8MHGGJx2152121521eucas1p1E;
-        Mon,  3 Aug 2020 15:30:31 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 5C.78.06318.79D282F5; Mon,  3
-        Aug 2020 16:30:31 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200803153030eucas1p2a28373f5e2cd3d6ae472aacbffb03c4e~ny8Lm2mRg2873728737eucas1p29;
-        Mon,  3 Aug 2020 15:30:30 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200803153030eusmtrp2bd8b688608a971563485cb1ffbe96e19~ny8LmGOdj2559225592eusmtrp2Y;
-        Mon,  3 Aug 2020 15:30:30 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-17-5f282d97bc09
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 05.49.06314.69D282F5; Mon,  3
-        Aug 2020 16:30:30 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200803153030eusmtip22d0b2a8f9579ed8d29f0a1e38f618cf8~ny8K345ai0126701267eusmtip2K;
-        Mon,  3 Aug 2020 15:30:30 +0000 (GMT)
-Subject: Re: [PATCH v2 2/2] memory: samsung: exynos5422-dmc: Add module
- param to control IRQ mode
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Cc:     willy.mh.wolff.ml@gmail.com, k.konieczny@samsung.com,
-        cw00.choi@samsung.com, b.zolnierkie@samsung.com, krzk@kernel.org,
-        chanwoo@kernel.org, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com, s.nawrocki@samsung.com, kgene@kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <db571467-48ec-8f11-de1d-00393d8aa99b@samsung.com>
-Date:   Mon, 3 Aug 2020 17:30:30 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.10.0
+        id S1727837AbgHCPqb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 3 Aug 2020 11:46:31 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:59210 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726805AbgHCPqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 11:46:31 -0400
+X-Greylist: delayed 1682 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 Aug 2020 11:46:30 EDT
+Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam02-ex.h3c.com with ESMTP id 073FIPg7047534
+        for <linux-kernel@vger.kernel.org>; Mon, 3 Aug 2020 23:18:25 +0800 (GMT-8)
+        (envelope-from ning.le@h3c.com)
+Received: from DAG2EX02-BASE.srv.huawei-3com.com ([10.8.0.65])
+        by h3cspam02-ex.h3c.com with ESMTPS id 073FI97Q046708
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 3 Aug 2020 23:18:09 +0800 (GMT-8)
+        (envelope-from ning.le@h3c.com)
+Received: from localhost.localdomain (10.114.40.30) by
+ DAG2EX02-BASE.srv.huawei-3com.com (10.8.0.65) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 3 Aug 2020 23:18:12 +0800
+From:   "ning.le" <ning.le@h3c.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
+CC:     <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>,
+        <linux-kernel@vger.kernel.org>, <he.feng@h3c.com>,
+        "ning.le" <ning.le@h3c.com>
+Subject: [PATCH] sched/cpuacct:Fix previous bugs submitted in history.
+Date:   Mon, 3 Aug 2020 15:14:06 +0000
+Message-ID: <20200803151406.59465-1-ning.le@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200710191122.11029-3-lukasz.luba@arm.com>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOKsWRmVeSWpSXmKPExsWy7djPc7rTdTXiDZ6fEbLYOGM9q8XEG1dY
-        LK5/ec5qseDTDFaL/sevmS3On9/AbnG26Q27xabH11gtLu+aw2bxufcIo8WM8/uYLBY2tbBb
-        3G5cwWZx+E07q8W3E48YHfg91sxbw+ixc9Zddo9NqzrZPDYvqffo27KK0ePzJrkAtigum5TU
-        nMyy1CJ9uwSujGMLrzAVNHBVNO5/z9zAOI2ji5GTQ0LARKL3WA9jFyMXh5DACkaJA3P7oJwv
-        jBINvxazQzifGSW+/XvO1sXIAdYy8XQJRHw5o8TJjXtYQEYJCbxnlLh5Mg/EFhZIlmjd/YIN
-        pEhEYBWjxPf3R1hBHGaQSZM+LGQGqWITMJToetvFBmLzCthJNNz6yg5iswioSLQt+8YIYosK
-        xEmsf7mdCaJGUOLkzCdg2zgFLCWuX1kDVsMsIC/RvHU2M4QtLnHryXwmiOf+skt0rKqCsF0k
-        vj6bBhUXlnh1fAs7hC0j8X8nSD0XkN3MKPHw3Fp2CKeHUeJy0wxGiCpriTvnfoH9zyygKbF+
-        lz5E2FHi1L5lzJBg4ZO48VYQ4gY+iUnbpkOFeSU62oQgqtUkZh1fB7f24IVLzBMYlWYh+WwW
-        km9mIflmFsLeBYwsqxjFU0uLc9NTi43zUsv1ihNzi0vz0vWS83M3MQKT2+l/x7/uYNz3J+kQ
-        owAHoxIP7wJWjXgh1sSy4srcQ4wSHMxKIrxOZ0/HCfGmJFZWpRblxxeV5qQWH2KU5mBREuc1
-        XvQyVkggPbEkNTs1tSC1CCbLxMEp1cAovNLyJ5fZ+1zOo7tnVMesf74kJSLonZOjtMzBw0dv
-        GLbnuLb7NG7XT3E+epA54LpaifFvs9nzw6753RZZoWVb0DGrouYro/+FWZ+m32LxT/bkuvKt
-        7KFdDUP40ZdOatN2nVdp0fW6UbU957r+xbsi+zKzhfWjKmJZG+J3zpSVvRFm2PpLW0mJpTgj
-        0VCLuag4EQAFJUrWagMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNIsWRmVeSWpSXmKPExsVy+t/xe7rTdDXiDb4sNbbYOGM9q8XEG1dY
-        LK5/ec5qseDTDFaL/sevmS3On9/AbnG26Q27xabH11gtLu+aw2bxufcIo8WM8/uYLBY2tbBb
-        3G5cwWZx+E07q8W3E48YHfg91sxbw+ixc9Zddo9NqzrZPDYvqffo27KK0ePzJrkAtig9m6L8
-        0pJUhYz84hJbpWhDCyM9Q0sLPSMTSz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jGMLrzAVNHBV
-        NO5/z9zAOI2ji5GDQ0LARGLi6ZIuRi4OIYGljBK//y5j6WLkBIrLSJyc1sAKYQtL/LnWxQZR
-        9JZR4vLhRUwgCWGBZIk/O06BJUQEVjFK3Lt/gx3EYRb4zCjR/mY/C0TLbkaJKRfns4G0sAkY
-        SnS97QKzeQXsJBpufWUHsVkEVCTaln1jBLFFBeIklm+Zzw5RIyhxcuYTsJs4BSwlrl9ZA1bD
-        LGAmMW/zQ2YIW16ieetsKFtc4taT+UwTGIVmIWmfhaRlFpKWWUhaFjCyrGIUSS0tzk3PLTbU
-        K07MLS7NS9dLzs/dxAiM6G3Hfm7ewXhpY/AhRgEORiUe3gWsGvFCrIllxZW5hxglOJiVRHid
-        zp6OE+JNSaysSi3Kjy8qzUktPsRoCvTcRGYp0eR8YLLJK4k3NDU0t7A0NDc2NzazUBLn7RA4
-        GCMkkJ5YkpqdmlqQWgTTx8TBKdXAaBTa2b7gRztHaOjmh8unzi6aZZP3fk2FyUe1wLkZWzN4
-        d77ZI1u67tBN9YWzHz1tYPjzaUFNddezPRyO/Z8T/qs1LuqbaazvYTzxgvK5lRJfdXdJfhBI
-        rpWfL7a88OvVYsn3DRtn/nqqcpD/45asuxen5r/bZLn+X31T5fTEo6tjzqaHiF0W3a7EUpyR
-        aKjFXFScCAARIuZi/gIAAA==
-X-CMS-MailID: 20200803153030eucas1p2a28373f5e2cd3d6ae472aacbffb03c4e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200710191154eucas1p296561f285ee0730e5040fdfe3fc7e75e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200710191154eucas1p296561f285ee0730e5040fdfe3fc7e75e
-References: <20200710191122.11029-1-lukasz.luba@arm.com>
-        <CGME20200710191154eucas1p296561f285ee0730e5040fdfe3fc7e75e@eucas1p2.samsung.com>
-        <20200710191122.11029-3-lukasz.luba@arm.com>
+Content-Type: text/plain
+X-Originating-IP: [10.114.40.30]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX02-BASE.srv.huawei-3com.com (10.8.0.65)
+Content-Transfer-Encoding: 8BIT
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 073FI97Q046708
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
+Historical submission introduces new issues that When the current cpu
+wakes up the thread which works on other cores,the cpuacct module may
+add the execution time of thread which on the the other core's rq to
+the current core's cpuusage.
 
-On 10.07.2020 21:11, Lukasz Luba wrote:
-> The driver can operate in two modes relaying on devfreq monitoring
-> mechanism which periodically checks the device status or it can use
-> interrupts when they are provided by loaded Device Tree. The newly
-> introduced module parameter can be used to choose between devfreq
-> monitoring and internal interrupts without modifying the Device Tree.
-> It also sets devfreq monitoring as default when the parameter is not set
-> (also the case for default when the driver is not built as a module).
->
-> Reported-by: Willy Wolff <willy.mh.wolff.ml@gmail.com>
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+Signed-off-by: ning.le <ning.le@h3c.com>
+---
+ kernel/sched/cpuacct.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I've got back from my holidays and noticed that in meantime this commit 
-got merged as commit 4fc9a0470d2d. It revealed that there is a race 
-between registering exynos5422-dmc driver and exynos-ppmu driver, which 
-can be observed sometimes as the following message and freeze on Odroid 
-XU3 with multi_v7_defconfig:
+diff --git a/kernel/sched/cpuacct.c b/kernel/sched/cpuacct.c
+index 941c28cf9738..bd38c9cffdd6 100644
+--- a/kernel/sched/cpuacct.c
++++ b/kernel/sched/cpuacct.c
+@@ -341,6 +341,7 @@ void cpuacct_charge(struct task_struct *tsk, u64 cputime)
+        struct cpuacct *ca;
+        int index = CPUACCT_STAT_SYSTEM;
+        struct pt_regs *regs = get_irq_regs() ? : task_pt_regs(tsk);
++ int cpu = task_cpu(tsk);
 
-[聽聽聽 8.767708] exynos5-dmc 10c20000.memory-controller: couldn't probe 
-performance counters
+        if (regs && user_mode(regs))
+                index = CPUACCT_STAT_USER;
+@@ -348,8 +349,7 @@ void cpuacct_charge(struct task_struct *tsk, u64 cputime)
+        rcu_read_lock();
 
-I will check this later why the EPROBE_DEFER error is not properly 
-propagated and why it causes a freeze.
+        for (ca = task_ca(tsk); ca; ca = parent_ca(ca))
+-               __this_cpu_add(ca->cpuusage->usages[index], cputime);
+-
++   per_cpu_ptr(ca->cpuusage, cpu)->usages[index] += cputime;
+        rcu_read_unlock();
+ }
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+--
+2.17.1
 
+-------------------------------------------------------------------------------------------------------------------------------------
+本邮件及其附件含有新华三集团的保密信息，仅限于发送给上面地址中列出
+的个人或群组。禁止任何其他人以任何形式使用（包括但不限于全部或部分地泄露、复制、
+或散发）本邮件中的信息。如果您错收了本邮件，请您立即电话或邮件通知发件人并删除本
+邮件！
+This e-mail and its attachments contain confidential information from New H3C, which is
+intended only for the person or entity whose address is listed above. Any use of the
+information contained herein in any way (including, but not limited to, total or partial
+disclosure, reproduction, or dissemination) by persons other than the intended
+recipient(s) is prohibited. If you receive this e-mail in error, please notify the sender
+by phone or email immediately and delete it!
