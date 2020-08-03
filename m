@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B4423A5E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF11423A64E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729476AbgHCMmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:42:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58316 "EHLO mail.kernel.org"
+        id S1728953AbgHCMqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:46:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729133AbgHCMbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:31:01 -0400
+        id S1728402AbgHCM0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:26:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06FEB2076B;
-        Mon,  3 Aug 2020 12:30:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F8AB207FC;
+        Mon,  3 Aug 2020 12:26:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457860;
-        bh=C8PD6oRY0Isp66vleS6E1szTsB0xCyrvx6x4AqQUzOk=;
+        s=default; t=1596457597;
+        bh=I2dTzUq/9wZciNDjDhbRp5+H1zAaUup4cSjPwG9P8DI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JTyP+dJvcLHvfHis2NYLcKnxMtXjOdgZFm9AKlmgF1QShiAsVHYf7cWzwR8mrwZ/u
-         1mAxP6EnYPL5D+PO7XlnSWOd+bjzBRgjai6wD2dSqreicYzamzk7lEpiNH3ej26s4E
-         NMtDSGYUIyfPVq0HALJ5J0oWPjPKt4ccHt99/ASw=
+        b=wgndIT/Ut4wAxkkQgXJZJUaLL/5iixnne4Ih2w6A9YC92x3Ey92WnKFtsMiT//OgP
+         ReqaovWlxxw4zTmeOUPF9oy8fuSj7HvZQOjOUqOVcQGA2uiynG+V4CNMLY/eezheEo
+         2oLNXO6CqlyugF/nso5FB0/chCb/wO6NBgBBj4+Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Gary R Hook <gary.hook@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Paolo Pisati <paolo.pisati@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 01/56] crypto: ccp - Release all allocated memory if sha type is invalid
-Date:   Mon,  3 Aug 2020 14:19:16 +0200
-Message-Id: <20200803121850.381405558@linuxfoundation.org>
+Subject: [PATCH 5.7 099/120] selftests: net: ip_defrag: modprobe missing nf_defrag_ipv6 support
+Date:   Mon,  3 Aug 2020 14:19:17 +0200
+Message-Id: <20200803121907.728790854@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,39 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Paolo Pisati <paolo.pisati@canonical.com>
 
-[ Upstream commit 128c66429247add5128c03dc1e144ca56f05a4e2 ]
+[ Upstream commit aba69d49fb49c9166596dd78926514173b7f9ab5 ]
 
-Release all allocated memory if sha type is invalid:
-In ccp_run_sha_cmd, if the type of sha is invalid, the allocated
-hmac_buf should be released.
+Fix ip_defrag.sh when CONFIG_NF_DEFRAG_IPV6=m:
 
-v2: fix the goto.
+$ sudo ./ip_defrag.sh
++ set -e
++ mktemp -u XXXXXX
++ readonly NETNS=ns-rGlXcw
++ trap cleanup EXIT
++ setup
++ ip netns add ns-rGlXcw
++ ip -netns ns-rGlXcw link set lo up
++ ip netns exec ns-rGlXcw sysctl -w net.ipv4.ipfrag_high_thresh=9000000
++ ip netns exec ns-rGlXcw sysctl -w net.ipv4.ipfrag_low_thresh=7000000
++ ip netns exec ns-rGlXcw sysctl -w net.ipv4.ipfrag_time=1
++ ip netns exec ns-rGlXcw sysctl -w net.ipv6.ip6frag_high_thresh=9000000
++ ip netns exec ns-rGlXcw sysctl -w net.ipv6.ip6frag_low_thresh=7000000
++ ip netns exec ns-rGlXcw sysctl -w net.ipv6.ip6frag_time=1
++ ip netns exec ns-rGlXcw sysctl -w net.netfilter.nf_conntrack_frag6_high_thresh=9000000
++ cleanup
++ ip netns del ns-rGlXcw
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Acked-by: Gary R Hook <gary.hook@amd.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+$ ls -la /proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh
+ls: cannot access '/proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh': No such file or directory
+
+$ sudo modprobe nf_defrag_ipv6
+$ ls -la /proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh
+-rw-r--r-- 1 root root 0 Jul 14 12:34 /proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh
+
+Signed-off-by: Paolo Pisati <paolo.pisati@canonical.com>
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ccp/ccp-ops.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/testing/selftests/net/ip_defrag.sh | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
-index 330853a2702f0..43b74cf0787e1 100644
---- a/drivers/crypto/ccp/ccp-ops.c
-+++ b/drivers/crypto/ccp/ccp-ops.c
-@@ -1783,8 +1783,9 @@ ccp_run_sha_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
- 			       LSB_ITEM_SIZE);
- 			break;
- 		default:
-+			kfree(hmac_buf);
- 			ret = -EINVAL;
--			goto e_ctx;
-+			goto e_data;
- 		}
+diff --git a/tools/testing/selftests/net/ip_defrag.sh b/tools/testing/selftests/net/ip_defrag.sh
+index 15d3489ecd9ce..ceb7ad4dbd945 100755
+--- a/tools/testing/selftests/net/ip_defrag.sh
++++ b/tools/testing/selftests/net/ip_defrag.sh
+@@ -6,6 +6,8 @@
+ set +x
+ set -e
  
- 		memset(&hmac_cmd, 0, sizeof(hmac_cmd));
++modprobe -q nf_defrag_ipv6
++
+ readonly NETNS="ns-$(mktemp -u XXXXXX)"
+ 
+ setup() {
 -- 
 2.25.1
 
