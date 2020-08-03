@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840ED23A50F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D46A23A560
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729377AbgHCMc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60840 "EHLO mail.kernel.org"
+        id S1729666AbgHCMfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:35:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728756AbgHCMcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:32:51 -0400
+        id S1728954AbgHCMfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:35:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40591204EC;
-        Mon,  3 Aug 2020 12:32:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5804120781;
+        Mon,  3 Aug 2020 12:35:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457970;
-        bh=bTEMXvdIvyE2iqBAS9NC+cQYJQ88tOHYymR7wqxovZk=;
+        s=default; t=1596458130;
+        bh=szKyfdCf1Jf/SkG9ybiPLg0SInDIfcKuTeM+JmnJMz0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cX2kzR9B6OrAvVHDIHboceU4KZ0nRnsgfd5dzStnZrignYEkSgYqf5LgLUZ1GRd4h
-         T220vK56lUyWBH1GCZ25koLngqsPwIAZGbyOGzFOQmlxAv5Lag/BTj/HKLZ2UD1v02
-         mT9RGsREsEIpzcGfpFRPfAWy7qJX1G7GUAgGS7AY=
+        b=Hul9d9Y9EPDgItLQh3RfGNGkKptNc1PPG8bwMwdkenHFAD7XvItdc4Q6lLBVPjv1r
+         CXp8q9cm4UNzeKUUQCaQ+xWzUdwyN42SAPzF2WmBsV7duRpsCXM1KggYOLQgI8PwPJ
+         QIIwPAigrHEpVxgDIGiugUy3/ym763i0QR8APUfM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 48/56] nfc: s3fwrn5: add missing release on skb in s3fwrn5_recv_frame
-Date:   Mon,  3 Aug 2020 14:20:03 +0200
-Message-Id: <20200803121852.668950531@linuxfoundation.org>
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Emese Revfy <re.emese@gmail.com>,
+        Kees Cook <keescook@chromium.org>, Willy Tarreau <w@1wt.eu>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 19/51] random32: remove net_rand_state from the latent entropy gcc plugin
+Date:   Mon,  3 Aug 2020 14:20:04 +0200
+Message-Id: <20200803121850.423049686@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121849.488233135@linuxfoundation.org>
+References: <20200803121849.488233135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,34 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 1e8fd3a97f2d83a7197876ceb4f37b4c2b00a0f3 ]
+commit 83bdc7275e6206f560d247be856bceba3e1ed8f2 upstream.
 
-The implementation of s3fwrn5_recv_frame() is supposed to consume skb on
-all execution paths. Release skb before returning -ENODEV.
+It turns out that the plugin right now ends up being really unhappy
+about the change from 'static' to 'extern' storage that happened in
+commit f227e3ec3b5c ("random32: update the net random state on interrupt
+and activity").
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This is probably a trivial fix for the latent_entropy plugin, but for
+now, just remove net_rand_state from the list of things the plugin
+worries about.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Emese Revfy <re.emese@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/nfc/s3fwrn5/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/random.h |    2 +-
+ lib/random32.c         |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nfc/s3fwrn5/core.c b/drivers/nfc/s3fwrn5/core.c
-index 9d9c8d57a042d..64b58455e620b 100644
---- a/drivers/nfc/s3fwrn5/core.c
-+++ b/drivers/nfc/s3fwrn5/core.c
-@@ -209,6 +209,7 @@ int s3fwrn5_recv_frame(struct nci_dev *ndev, struct sk_buff *skb,
- 	case S3FWRN5_MODE_FW:
- 		return s3fwrn5_fw_recv_frame(ndev, skb);
- 	default:
-+		kfree_skb(skb);
- 		return -ENODEV;
- 	}
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -117,7 +117,7 @@ struct rnd_state {
+ 	__u32 s1, s2, s3, s4;
+ };
+ 
+-DECLARE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++DECLARE_PER_CPU(struct rnd_state, net_rand_state);
+ 
+ u32 prandom_u32_state(struct rnd_state *state);
+ void prandom_bytes_state(struct rnd_state *state, void *buf, size_t nbytes);
+--- a/lib/random32.c
++++ b/lib/random32.c
+@@ -48,7 +48,7 @@ static inline void prandom_state_selftes
  }
--- 
-2.25.1
-
+ #endif
+ 
+-DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++DEFINE_PER_CPU(struct rnd_state, net_rand_state);
+ 
+ /**
+  *	prandom_u32_state - seeded pseudo-random number generator.
 
 
