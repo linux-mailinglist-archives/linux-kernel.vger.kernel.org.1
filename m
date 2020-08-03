@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D0C23A4FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6E723A5EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbgHCMcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:32:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60030 "EHLO mail.kernel.org"
+        id S1729152AbgHCMnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:43:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728268AbgHCMcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:32:12 -0400
+        id S1729046AbgHCMa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:30:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4063B20781;
-        Mon,  3 Aug 2020 12:32:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DD372054F;
+        Mon,  3 Aug 2020 12:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457930;
-        bh=p/dz+IbuPkwaKp2FQ2XQx+DORgDOLu18VaROnkcbRzE=;
+        s=default; t=1596457826;
+        bh=+3EfgGtmCKrNepVQ0cjyTDgJi1Grs6bidEQ5QqtEGDA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=16SaL6C8axa9Ng0hYnR602I/tt9y+5Dtt3P+7el+2DehSpoJ+t2KPfUr0GeYynXJs
-         loJYvaYI7BOaefqgnQoygM7w3cpEX8drr3hhdIluvKFLkK6b5SQNedGeId0jgzolfX
-         sbB4RUmQDiGJr71IYh6Q1dQ5nfpzwCzLckRR9yx4=
+        b=0l9nhzv2n4K6u/KdcZ86E+ePxcrT7vhR+oahdV2DtbGz2xbN36DYK/SMNfkwBbZJO
+         i4+yyH8gadtS4y9rQ3Nh0uoFTCRc2fkmST7BtKBkFyGdvrPLFPhHYsFtwXXQqeaiGo
+         xUluiK8W5I3PKxV0Odrq+tFhKUciNB0aX8lFg+hw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jake Lawrence <lawja@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 34/56] mlx4: disable device on shutdown
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH 5.4 87/90] x86/i8259: Use printk_deferred() to prevent deadlock
 Date:   Mon,  3 Aug 2020 14:19:49 +0200
-Message-Id: <20200803121851.999149414@linuxfoundation.org>
+Message-Id: <20200803121901.795797428@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,74 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 3cab8c65525920f00d8f4997b3e9bb73aecb3a8e ]
+commit bdd65589593edd79b6a12ce86b3b7a7c6dae5208 upstream.
 
-It appears that not disabling a PCI device on .shutdown may lead to
-a Hardware Error with particular (perhaps buggy) BIOS versions:
+0day reported a possible circular locking dependency:
 
-    mlx4_en: eth0: Close port called
-    mlx4_en 0000:04:00.0: removed PHC
-    reboot: Restarting system
-    {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
-    {1}[Hardware Error]: event severity: fatal
-    {1}[Hardware Error]:  Error 0, type: fatal
-    {1}[Hardware Error]:   section_type: PCIe error
-    {1}[Hardware Error]:   port_type: 4, root port
-    {1}[Hardware Error]:   version: 1.16
-    {1}[Hardware Error]:   command: 0x4010, status: 0x0143
-    {1}[Hardware Error]:   device_id: 0000:00:02.2
-    {1}[Hardware Error]:   slot: 0
-    {1}[Hardware Error]:   secondary_bus: 0x04
-    {1}[Hardware Error]:   vendor_id: 0x8086, device_id: 0x2f06
-    {1}[Hardware Error]:   class_code: 000604
-    {1}[Hardware Error]:   bridge: secondary_status: 0x2000, control: 0x0003
-    {1}[Hardware Error]:   aer_uncor_status: 0x00100000, aer_uncor_mask: 0x00000000
-    {1}[Hardware Error]:   aer_uncor_severity: 0x00062030
-    {1}[Hardware Error]:   TLP Header: 40000018 040000ff 791f4080 00000000
-[hw error repeats]
-    Kernel panic - not syncing: Fatal hardware error!
-    CPU: 0 PID: 2189 Comm: reboot Kdump: loaded Not tainted 5.6.x-blabla #1
-    Hardware name: HP ProLiant DL380 Gen9/ProLiant DL380 Gen9, BIOS P89 05/05/2017
+Chain exists of:
+  &irq_desc_lock_class --> console_owner --> &port_lock_key
 
-Fix the mlx4 driver.
+ Possible unsafe locking scenario:
 
-This is a very similar problem to what had been fixed in:
-commit 0d98ba8d70b0 ("scsi: hpsa: disable device during shutdown")
-to address https://bugzilla.kernel.org/show_bug.cgi?id=199779.
+       CPU0                    CPU1
+       ----                    ----
+  lock(&port_lock_key);
+                               lock(console_owner);
+                               lock(&port_lock_key);
+  lock(&irq_desc_lock_class);
 
-Fixes: 2ba5fbd62b25 ("net/mlx4_core: Handle AER flow properly")
-Reported-by: Jake Lawrence <lawja@fb.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The reason for this is a printk() in the i8259 interrupt chip driver
+which is invoked with the irq descriptor lock held, which reverses the
+lock operations vs. printk() from arbitrary contexts.
+
+Switch the printk() to printk_deferred() to avoid that.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/87365abt2v.fsf@nanos.tec.linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/mellanox/mlx4/main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/i8259.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index f7825c7b92fe3..8d7bb9a889677 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -4311,12 +4311,14 @@ end:
- static void mlx4_shutdown(struct pci_dev *pdev)
- {
- 	struct mlx4_dev_persistent *persist = pci_get_drvdata(pdev);
-+	struct mlx4_dev *dev = persist->dev;
- 
- 	mlx4_info(persist->dev, "mlx4_shutdown was called\n");
- 	mutex_lock(&persist->interface_state_mutex);
- 	if (persist->interface_state & MLX4_INTERFACE_STATE_UP)
- 		mlx4_unload_one(pdev);
- 	mutex_unlock(&persist->interface_state_mutex);
-+	mlx4_pci_disable_device(dev);
- }
- 
- static const struct pci_error_handlers mlx4_err_handler = {
--- 
-2.25.1
-
+--- a/arch/x86/kernel/i8259.c
++++ b/arch/x86/kernel/i8259.c
+@@ -207,7 +207,7 @@ spurious_8259A_irq:
+ 		 * lets ACK and report it. [once per IRQ]
+ 		 */
+ 		if (!(spurious_irq_mask & irqmask)) {
+-			printk(KERN_DEBUG
++			printk_deferred(KERN_DEBUG
+ 			       "spurious 8259A interrupt: IRQ%d.\n", irq);
+ 			spurious_irq_mask |= irqmask;
+ 		}
 
 
