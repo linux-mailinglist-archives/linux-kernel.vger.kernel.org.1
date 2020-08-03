@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E74223A686
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3747E23A6F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729088AbgHCMsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:48:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48708 "EHLO mail.kernel.org"
+        id S1729695AbgHCM4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:56:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727996AbgHCMYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:24:25 -0400
+        id S1729349AbgHCMz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:55:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F24720738;
-        Mon,  3 Aug 2020 12:24:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B7BA20678;
+        Mon,  3 Aug 2020 12:55:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457463;
-        bh=CG5oTrDbM26ezVVrh+6VKhc8fQZjKbyO8JMPbOnvVKo=;
+        s=default; t=1596459357;
+        bh=BeTP5E8N4TxHgMJsyoBUItQTsU9Pz7lqhT9OygRn2fQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Om4YTKKnMH7juZuVLVE+mgwzJ9n/ERc7QEdEttClw5fkUgqXLr8kWhymqZxxHBo1w
-         8UHXUwKMz6eLdZzBkwBCiHtCmBjHhUtEqZAIfnRMVQEnBNRw0owEerXmSUnwuNrnRa
-         ewM98D6nXHW6oA4ChR5ZkWKvw7l+4u2VdMCGHVB4=
+        b=Q384vg0KQ0kX8W2mC5CRWdfcQc9pFoT309rijIeIAE4T7X2j6LaR5XYyO1HvF+CH9
+         mWix7Nqi2accfd1CE3Drm42+bj+IZAEQqxbfvWhVH+TcxzsB9497EsOfBfoXnd2mqa
+         ZgX1NnJBOI4Z03NwkAY+9UvpamUxDd3JqqMkr154=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Cagney <cagney@libreswan.org>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 077/120] espintcp: handle short messages instead of breaking the encap socket
-Date:   Mon,  3 Aug 2020 14:18:55 +0200
-Message-Id: <20200803121906.574767719@linuxfoundation.org>
+Subject: [PATCH 5.7 081/120] RDMA/core: Free DIM memory in error unwind
+Date:   Mon,  3 Aug 2020 14:18:59 +0200
+Message-Id: <20200803121906.816057541@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
 References: <20200803121902.860751811@linuxfoundation.org>
@@ -45,75 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sabrina Dubroca <sd@queasysnail.net>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-[ Upstream commit fadd1a63a7b4df295a01fa50b2f4e447542bee59 ]
+[ Upstream commit fb448ce87a4a9482b084e67faf804aec79ed9b43 ]
 
-Currently, short messages (less than 4 bytes after the length header)
-will break the stream of messages. This is unnecessary, since we can
-still parse messages even if they're too short to contain any usable
-data. This is also bogus, as keepalive messages (a single 0xff byte),
-though not needed with TCP encapsulation, should be allowed.
+The memory allocated for the DIM wasn't freed in in error unwind path, fix
+it by calling to rdma_dim_destroy().
 
-This patch changes the stream parser so that short messages are
-accepted and dropped in the kernel. Messages that contain a valid SPI
-or non-ESP header are processed as before.
-
-Fixes: e27cca96cd68 ("xfrm: add espintcp (RFC 8229)")
-Reported-by: Andrew Cagney <cagney@libreswan.org>
-Signed-off-by: Sabrina Dubroca <sd@queasysnail.net>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: da6629793aa6 ("RDMA/core: Provide RDMA DIM support for ULPs")
+Link: https://lore.kernel.org/r/20200730082719.1582397-4-leon@kernel.org
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Reviewed-by: Max Gurtovoy <maxg@mellanox.com <mailto:maxg@mellanox.com>>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/espintcp.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/cq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/xfrm/espintcp.c b/net/xfrm/espintcp.c
-index 024470fb2d856..19396f3655c05 100644
---- a/net/xfrm/espintcp.c
-+++ b/net/xfrm/espintcp.c
-@@ -41,9 +41,32 @@ static void espintcp_rcv(struct strparser *strp, struct sk_buff *skb)
- 	struct espintcp_ctx *ctx = container_of(strp, struct espintcp_ctx,
- 						strp);
- 	struct strp_msg *rxm = strp_msg(skb);
-+	int len = rxm->full_len - 2;
- 	u32 nonesp_marker;
- 	int err;
+diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
+index c259f632f257f..6bb62d04030ac 100644
+--- a/drivers/infiniband/core/cq.c
++++ b/drivers/infiniband/core/cq.c
+@@ -270,6 +270,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
+ 	return cq;
  
-+	/* keepalive packet? */
-+	if (unlikely(len == 1)) {
-+		u8 data;
-+
-+		err = skb_copy_bits(skb, rxm->offset + 2, &data, 1);
-+		if (err < 0) {
-+			kfree_skb(skb);
-+			return;
-+		}
-+
-+		if (data == 0xff) {
-+			kfree_skb(skb);
-+			return;
-+		}
-+	}
-+
-+	/* drop other short messages */
-+	if (unlikely(len <= sizeof(nonesp_marker))) {
-+		kfree_skb(skb);
-+		return;
-+	}
-+
- 	err = skb_copy_bits(skb, rxm->offset + 2, &nonesp_marker,
- 			    sizeof(nonesp_marker));
- 	if (err < 0) {
-@@ -83,7 +106,7 @@ static int espintcp_parse(struct strparser *strp, struct sk_buff *skb)
- 		return err;
- 
- 	len = be16_to_cpu(blen);
--	if (len < 6)
-+	if (len < 2)
- 		return -EINVAL;
- 
- 	return len;
+ out_destroy_cq:
++	rdma_dim_destroy(cq);
+ 	rdma_restrack_del(&cq->res);
+ 	cq->device->ops.destroy_cq(cq, udata);
+ out_free_wc:
 -- 
 2.25.1
 
