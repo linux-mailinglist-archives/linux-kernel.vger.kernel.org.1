@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2286923ADBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 21:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2702A23ADBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 21:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728879AbgHCTqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 15:46:11 -0400
-Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:40364 "EHLO
-        rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728871AbgHCTqJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 15:46:09 -0400
-Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
-        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id 2DBF630C166;
-        Mon,  3 Aug 2020 12:44:41 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com 2DBF630C166
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1596483881;
-        bh=MVKnHofXfl3a/kwmlp3uLEypAC3F0RQCdnCsruku8/A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a5hy2Mc37q6eLLggq1JmKZeoUY4VLFAOLSxDAoRkWC+G16BEE0WdjNWZRNUcd158E
-         E6vgAHPf9RIfyGhsIOLt6VwkLx9BKamE5Svd/kcDHjF3IploAghIWVxl8duSHOJH3U
-         SYmXY/cfUG+X978RvgRzfoXGWjY6QTLRoztWAd6A=
-Received: from stbsrv-and-01.and.broadcom.net (stbsrv-and-01.and.broadcom.net [10.28.16.211])
-        by mail-irv-17.broadcom.com (Postfix) with ESMTP id 4928914008B;
-        Mon,  3 Aug 2020 12:46:06 -0700 (PDT)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v10 11/11] PCI: brcmstb: Add bcm7211, bcm7216, bcm7445, bcm7278 to match list
-Date:   Mon,  3 Aug 2020 15:45:16 -0400
-Message-Id: <20200803194529.32357-12-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200803194529.32357-1-james.quinlan@broadcom.com>
-References: <20200803194529.32357-1-james.quinlan@broadcom.com>
+        id S1728519AbgHCTsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 15:48:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728041AbgHCTsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 15:48:20 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA34E20672;
+        Mon,  3 Aug 2020 19:48:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596484100;
+        bh=TYwSKctwtfyWMcxzfWbRO0/nzXNAk2+dqsadKDSMcW0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Yp26KhrMpYKeBxjbGyLe6bxIrhY2mIFOVxeMNzcpCeGSh+hnHpNtZI/BNhZZTFdge
+         eVBljEhZZQyXRVxdX1i2bYn1aTuR/qTfp/VFi1YZY1tevAv9LaTEGqvs1hzTmdS+rj
+         lAL3J/JWoPR79AUpWvyMTD5IhHhp9vPrYj4SLoE0=
+Date:   Mon, 3 Aug 2020 12:48:17 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ahmed Abdelsalam <ahabdels@gmail.com>
+Cc:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrea.mayer@uniroma2.it
+Subject: Re: [net-next v2] seg6: using DSCP of inner IPv4 packets
+Message-ID: <20200803124817.5068e06d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200803181417.1320-1-ahabdels@gmail.com>
+References: <20200803181417.1320-1-ahabdels@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the support is in place with previous commits, we add several
-chips that use the BrcmSTB driver.
+On Mon,  3 Aug 2020 18:14:17 +0000 Ahmed Abdelsalam wrote:
+> This patch allows copying the DSCP from inner IPv4 header to the
+> outer IPv6 header, when doing SRv6 Encapsulation.
+> 
+> This allows forwarding packet across the SRv6 fabric based on their
+> original traffic class.
+> 
+> Signed-off-by: Ahmed Abdelsalam <ahabdels@gmail.com>
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Please make sure it builds cleanly with W=1 C=1:
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index acde92d595e5..d961794fb5a0 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1187,6 +1187,10 @@ static int brcm_pcie_remove(struct platform_device *pdev)
- 
- static const struct of_device_id brcm_pcie_match[] = {
- 	{ .compatible = "brcm,bcm2711-pcie", .data = &bcm2711_cfg },
-+	{ .compatible = "brcm,bcm7211-pcie", .data = &generic_cfg },
-+	{ .compatible = "brcm,bcm7278-pcie", .data = &bcm7278_cfg },
-+	{ .compatible = "brcm,bcm7216-pcie", .data = &bcm7278_cfg },
-+	{ .compatible = "brcm,bcm7445-pcie", .data = &generic_cfg },
- 	{},
- };
- 
--- 
-2.17.1
-
+net/ipv6/seg6_iptunnel.c:131:21: warning: incorrect type in assignment (different base types)
+net/ipv6/seg6_iptunnel.c:131:21:    expected restricted __be32 [usertype] tos
+net/ipv6/seg6_iptunnel.c:131:21:    got unsigned char
+net/ipv6/seg6_iptunnel.c:133:21: warning: incorrect type in assignment (different base types)
+net/ipv6/seg6_iptunnel.c:133:21:    expected restricted __be32 [usertype] tos
+net/ipv6/seg6_iptunnel.c:133:21:    got unsigned char [usertype] tos
+net/ipv6/seg6_iptunnel.c:144:27: warning: incorrect type in argument 2 (different base types)
+net/ipv6/seg6_iptunnel.c:144:27:    expected unsigned int tclass
+net/ipv6/seg6_iptunnel.c:144:27:    got restricted __be32 [usertype] tos
