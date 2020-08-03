@@ -2,69 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F6523B00D
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 00:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6A923B011
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 00:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728886AbgHCWOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 18:14:07 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:37179 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbgHCWOH (ORCPT
+        id S1728490AbgHCWPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 18:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgHCWPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 18:14:07 -0400
-Received: by mail-io1-f66.google.com with SMTP id w12so26573780iom.4;
-        Mon, 03 Aug 2020 15:14:06 -0700 (PDT)
+        Mon, 3 Aug 2020 18:15:15 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BCFC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 15:15:15 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id j7so18269073oij.9
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 15:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=68OLwltgUQg9vRu6vY0+7ejuVFhq0Gr6CZjdfuZPmtg=;
+        b=dUlaLNfUn8pSCsrSoGlCqiQOJzeiqHDmFXusW7XCapF3lUoJ94SHcoWA2Ht5NReB07
+         GWsS54MTXvSpw52wv0U2oLdjc41LlJrAWom/zf8LcTTiY3dH44EDEqySjwCnwnfm23c8
+         b/cZV0gCY8yR97F3+OcLfKmJd6semh8drm8VAEcuMQeTa2vdWoaaRIbgcKFdXqsjpDYI
+         t7NMyTLIIyc1oJaJ2NXoRqHjSVkCGRq1WJ44f8+9Qk+wfUHk9p51pXA1T9nWmbqdAa+a
+         vu941sh/ofga3/7LCjCJ/PH2SPlsSRdigFheVxmDuZTviDkwZh44cQ0qE3FgTV3qNImg
+         R2mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gQc8TDHPO1L4jx6dYg2XXah3+mAXU/VRekRjI0UZ6XQ=;
-        b=Zgn2RuHiS/nLLHiXorb43sFhBLVZ9aUz7w/mUbitz4FoJWS5eRERovJEcrsKXoKU5W
-         95CJ+ObFxg2Y33im4zaTCJSmEX0RtE/kys4cIjCBwaPmIFkkyqdpoUhRwzyBS65xTyex
-         +oD4zhQfMUnlXOcEt2umfMwB75AQldicq79f/1BAdNeqOBj1oHNaSMdyREBqQZrHNgdV
-         FJbpZIhqubC5YH5FwjgXdAXG0Iee8PovFtokEFI+HZr0vuvP0y6cl8fX0mq8NZ+SuuVc
-         I6RGb35wHftmhuVBiXvFcYNH2/sHHoaMFpVUgYDL6i++uObKCDiK75/Ao3YG1JF+coag
-         rfHA==
-X-Gm-Message-State: AOAM530kMjRFgaRtIQBsVuZBWLrDAYoyjy47h7SICHSpCd0MG+z3QNGV
-        4ZaqOb/eGpfH31XV8acwIKBK8uV6wg==
-X-Google-Smtp-Source: ABdhPJzpznUql9H7bhkLuBBuKVKgrvW8AdA65dU8mJLpwunqwvF1TSdIIz1drDEhsQZn4padD3jvUA==
-X-Received: by 2002:a02:6d5d:: with SMTP id e29mr2054986jaf.139.1596492846294;
-        Mon, 03 Aug 2020 15:14:06 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id k7sm3651363ilq.36.2020.08.03.15.14.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=68OLwltgUQg9vRu6vY0+7ejuVFhq0Gr6CZjdfuZPmtg=;
+        b=bAwlIXg0FNdeig9idq4/+llJzYDOnBHM6xs0u0HNyVGFcIe6WT+tQvyAeO6ghiM8TV
+         ZbUPuKZlirRRngHn0Xf29Xa+Eu1OB/tbJJRNYe/gMFLBfQwWZxjPrfLiHXWxOYYFjPNj
+         yqLaC6Iz3MPReOeGM/dKhFUPn8MMFed/Yd14C3EfGyQdRkHHBk9YKcTJTKFXjRbRIoJY
+         gRTHGIpEVkvsTH8w/LgbCtOuSQB+MtUYlCOnlr+o29X2j/FexsAMsNyFYE5id/LkxP8i
+         2SXZhlWgkmei5a1FQBmavOp58bFvZrnwXIVGKoT6pFrpuGeqw5jiDJSiucQPnMtGYREY
+         DMEA==
+X-Gm-Message-State: AOAM530WzunbkXd/60FAm83SYcXKQlT1aGhFYvvyL/mYY7ieUNoD9O+M
+        1TcZulcjyqOZNbycXtRY2wu70yPgikU=
+X-Google-Smtp-Source: ABdhPJxaFCZHtmnCz6tocBNkOy2cvaG6wwVAISz5l8TnDLYgjwrMBkUvpyeyyX7Mhzcw4DEoRrSHmA==
+X-Received: by 2002:aca:ecd4:: with SMTP id k203mr1189833oih.116.1596492914361;
+        Mon, 03 Aug 2020 15:15:14 -0700 (PDT)
+Received: from posk-x1c.lan (23-118-52-46.lightspeed.sntcca.sbcglobal.net. [23.118.52.46])
+        by smtp.gmail.com with ESMTPSA id m8sm3026624ote.55.2020.08.03.15.15.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 15:14:05 -0700 (PDT)
-Received: (nullmailer pid 3231948 invoked by uid 1000);
-        Mon, 03 Aug 2020 22:14:03 -0000
-Date:   Mon, 3 Aug 2020 16:14:03 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     broonie@kernel.org, yibin.gong@nxp.com, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Linux-imx@nxp.com, robh+dt@kernel.org
-Subject: Re: [PATCH] dt-bindings: regulator: Convert pfuze100 to json-schema
-Message-ID: <20200803221403.GA3231880@bogus>
-References: <1596421439-19591-1-git-send-email-Anson.Huang@nxp.com>
+        Mon, 03 Aug 2020 15:15:13 -0700 (PDT)
+From:   Peter Oskolkov <posk@posk.io>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Oskolkov <posk@google.com>, Andrei Vagin <avagin@google.com>,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Aaron Lu <aaron.lwe@gmail.com>
+Subject: [PATCH for 5.9 v2 0/4] FUTEX_SWAP (tip/locking/core)
+Date:   Mon,  3 Aug 2020 15:15:06 -0700
+Message-Id: <20200803221510.170674-1-posk@posk.io>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596421439-19591-1-git-send-email-Anson.Huang@nxp.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 03 Aug 2020 10:23:59 +0800, Anson Huang wrote:
-> Convert the pfuze100 regulator binding to DT schema format using
-> json-schema.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
->  .../devicetree/bindings/regulator/pfuze100.txt     | 394 ---------------------
->  .../devicetree/bindings/regulator/pfuze100.yaml    | 186 ++++++++++
->  2 files changed, 186 insertions(+), 394 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/regulator/pfuze100.txt
->  create mode 100644 Documentation/devicetree/bindings/regulator/pfuze100.yaml
-> 
+From: Peter Oskolkov <posk@google.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This patchset introduces FUTEX_SWAP operation for fast
+task context switching (aided by futexes). Detailed
+use cases and reasoning are included in the commit message
+of the first patch in the patchset.
+
+v1->v2:
+- split two #defines in futex.h into a small first patch
+- detailed the use cases and reasoning in the commit message
+  of the first patch
+- renamed wake_up_process_prefer_current_cpu into wake_up_swap.
+
+
+Peter Oskolkov (4):
+  futex: introduce FUTEX_SWAP operation
+  futex: implement FUTEX_SWAP as wake+wait.
+  futex/sched: add wake_up_swap, use in FUTEX_SWAP
+  selftests/futex: add futex_swap selftest
+
+ include/linux/sched.h                         |   6 +
+ include/uapi/linux/futex.h                    |   2 +
+ kernel/futex.c                                |  86 +++++--
+ kernel/sched/core.c                           |   5 +
+ kernel/sched/fair.c                           |   3 +
+ kernel/sched/sched.h                          |   1 +
+ .../selftests/futex/functional/.gitignore     |   1 +
+ .../selftests/futex/functional/Makefile       |   1 +
+ .../selftests/futex/functional/futex_swap.c   | 209 ++++++++++++++++++
+ .../selftests/futex/include/futextest.h       |  19 ++
+ 10 files changed, 318 insertions(+), 15 deletions(-)
+ create mode 100644 tools/testing/selftests/futex/functional/futex_swap.c
+
+-- 
+2.25.1
+
