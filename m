@@ -2,60 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BCB23A2CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 12:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F104E23A2D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 12:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgHCKkw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 3 Aug 2020 06:40:52 -0400
-Received: from mail.cmviseu.pt ([62.28.1.73]:25183 "EHLO mail.cmviseu.pt"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgHCKkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 06:40:51 -0400
-Received: from SRVISEU-MBX1.cmviseu.pt (172.16.10.51) by
- SRVISEU-EDGE.cmviseu.pt (172.16.8.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256) id
- 15.1.1913.5; Mon, 3 Aug 2020 11:40:43 +0100
-Received: from SRVISEU-MBX1.cmviseu.pt (172.16.10.51) by
- SRVISEU-MBX1.cmviseu.pt (172.16.10.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256) id
- 15.1.1913.5; Mon, 3 Aug 2020 11:40:44 +0100
-Received: from SRVISEU-MBX1.cmviseu.pt ([fe80::8d6d:98f:4e62:1401]) by
- SRVISEU-MBX1.cmviseu.pt ([fe80::8d6d:98f:4e62:1401%12]) with mapi id
- 15.01.1913.010; Mon, 3 Aug 2020 11:40:44 +0100
-From:   Almerinda Duarte <almerinda.duarte@cmviseu.pt>
-To:     "no-reply@microsoft.net" <no-reply@microsoft.net>
-Subject: =?iso-8859-1?Q?10_Ihrer_neuen_eingehenden_Nachrichten_wurden_f=FCr_die_Ei?=
- =?iso-8859-1?Q?ngabe_in_Ihr_E-Mail-Konto_gesperrt?=
-Thread-Topic: =?iso-8859-1?Q?10_Ihrer_neuen_eingehenden_Nachrichten_wurden_f=FCr_die_Ei?=
- =?iso-8859-1?Q?ngabe_in_Ihr_E-Mail-Konto_gesperrt?=
-Thread-Index: AQHWaYHnvR8aR7DxUUOGCnlTjOn/UA==
-Date:   Mon, 3 Aug 2020 10:40:44 +0000
-Message-ID: <2cdd55a3cb984f959a871ea3bd9001be@cmviseu.pt>
-Accept-Language: pt-PT, en-US
-Content-Language: pt-PT
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.8.62]
-x-c2processedorg: d60859d1-aef5-4b5f-ac92-dcc87e62286a
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S1726478AbgHCKmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 06:42:51 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:56982 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725933AbgHCKmv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 06:42:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596451370;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+bnr20DWse3hnxM4IaXhaBpbW0TWRM0m+ZB+3jgFT9M=;
+        b=Jql41LA/T+7xRkneNAvrYMDAo9fj0IZRyuGNgCdeqAHroUVXyfatCTiWXHnWZID2VD1KHP
+        wodJGdviVl0BcRU2pMzff3jcM6DIy+R2Z051DKZLoyd3PZCr1Qf1cRHPv0zOcydPztesB0
+        SsrzocXpBoHQy4Gy+b7zjYLpn6odheY=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-137-gyyWNzJDNl-WDh8r-pHPjQ-1; Mon, 03 Aug 2020 06:42:46 -0400
+X-MC-Unique: gyyWNzJDNl-WDh8r-pHPjQ-1
+Received: by mail-qv1-f71.google.com with SMTP id q12so18429341qvm.19
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 03:42:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+bnr20DWse3hnxM4IaXhaBpbW0TWRM0m+ZB+3jgFT9M=;
+        b=iGrIsFaZjO8QeME/tq8k9Qj8tuVnBE7IMy3MapVJ0RQFWFYsS4Eg/WUS+WUZoLYbHJ
+         x/T2MsBeHJ8LCqK6asY1lOd/WXQxiG9Kj8r1zgF7YijJDkjT8jVRmB2mX9k4XIpEFu2K
+         eymqn5KIX/+wh784yDHaF+pa2mejH81Xf7TGPKUAxbgiI3j7y3Fql0UooU8WrGTrUxf8
+         v7oh7WglrNoaXc+sIzrQTZv5hCl2eb8PWMVqdleNxwg44Lt6d74K62XWdAkFtxPXhVPx
+         sr6eD8dgM542V8b7R5eB09PztMG49FxrXYVocSPWKcgGNdq/Ey3kKWRA+jCIWK8PrwU/
+         n78Q==
+X-Gm-Message-State: AOAM531Xj/tUDxfGUiu7DtVBloAgcsCxMtM/NLXsNPTlB5D1CVtggjD9
+        Q+v+GUteaLYosPemUO2EGO/66M+NJyA+tVhWWbB+xCWgNxyJ05NvVhNqR7+CbvwIH9eElsdUCXg
+        3NMW7JQhIFYTrH0FTK0JmpRTZa/dMm0FU1dm9/UPV
+X-Received: by 2002:a37:90e:: with SMTP id 14mr15896185qkj.102.1596451365685;
+        Mon, 03 Aug 2020 03:42:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzhxbdP+GWP4eAMFRYsKdTR78UMQm0cR2+UBqbqAyJHGCbvlFNyBXYetm44K0qZipDzP6iTc6iemkg+iwFYP3s=
+X-Received: by 2002:a37:90e:: with SMTP id 14mr15896161qkj.102.1596451365347;
+ Mon, 03 Aug 2020 03:42:45 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200803034827.100685-1-jingxiangfeng@huawei.com>
+In-Reply-To: <20200803034827.100685-1-jingxiangfeng@huawei.com>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Mon, 3 Aug 2020 12:42:34 +0200
+Message-ID: <CACO55tsFuRmHac1_7KdebdrgGk=bAh2_aAUB302PH9rSSxdsjQ@mail.gmail.com>
+Subject: Re: [Nouveau] [PATCH] drm/nouveau/acr: fix a coding style in nvkm_acr_lsfw_load_bl_inst_data_sig()
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MICROSOFT DRINGENDE MITTEILUNG
+Reviewed-by: Karol Herbst <kherbst@redhat.com>
 
-10 Ihrer neuen eingehenden Nachrichten wurden für die Eingabe in Ihr E-Mail-Box-Konto gesperrt, da Ihr E-Mail-Box-Konto seit einigen Monaten nicht mehr überprüft<https://osas14.wixsite.com/mysite> wurde. Überprüfen Sie daher sofort, ob alle Ihre neuen eingehenden Nachrichten jetzt für Sie freigegeben werden können.
-
-
-Danke für Ihr Verständnis.
-
-
-Microsoft Verification Team
-
-
-Microsoft Outlook Copyright © 2020 .Inc. Alle Rechte vorbehalten.
-
+On Mon, Aug 3, 2020 at 5:46 AM Jing Xiangfeng <jingxiangfeng@huawei.com> wrote:
+>
+> This patch performs the following changes:
+> 1. remove a redundant parentheses around the  nvkm_acr_lsfw_add() calls
+> 2. do assignment before this if condition, it is more readable
+>
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> ---
+>  drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c
+> index 07d1830126ab..5f6006418472 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c
+> @@ -191,7 +191,8 @@ nvkm_acr_lsfw_load_bl_inst_data_sig(struct nvkm_subdev *subdev,
+>         u32 *bldata;
+>         int ret;
+>
+> -       if (IS_ERR((lsfw = nvkm_acr_lsfw_add(func, acr, falcon, id))))
+> +       lsfw = nvkm_acr_lsfw_add(func, acr, falcon, id);
+> +       if (IS_ERR(lsfw))
+>                 return PTR_ERR(lsfw);
+>
+>         ret = nvkm_firmware_load_name(subdev, path, "bl", ver, &bl);
+> --
+> 2.17.1
+>
+> _______________________________________________
+> Nouveau mailing list
+> Nouveau@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/nouveau
+>
 
