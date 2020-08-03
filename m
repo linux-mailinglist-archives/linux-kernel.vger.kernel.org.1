@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6AE23A4B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91E923A458
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728940AbgHCM3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:29:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56170 "EHLO mail.kernel.org"
+        id S1727059AbgHCM0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:26:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728929AbgHCM3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:29:34 -0400
+        id S1728312AbgHCM0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:26:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 826A5208B3;
-        Mon,  3 Aug 2020 12:29:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B9F1204EC;
+        Mon,  3 Aug 2020 12:26:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457773;
-        bh=2p0RX5zCSgS9Ba6CF+WarrcyVNe21ABsL3/IG4LdK54=;
+        s=default; t=1596457564;
+        bh=Ezm59BrI2xzB7EIKgvwFqNMC5HrCH6WKJKXNUOGexwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jw4U8oPYnD3qrmBlK2ET7yvxDWlzkVcvnnLENPWaVfVwjMP9WHesGfMYddKrG7pQB
-         BSkb7Ri7j7qYb2qPZBToD4XiTbQiMXfPPfqtAhzUl/E1NWyvrHOMfTxL4NQ1PEZZ5v
-         QGQYLKQF+3aXWzEAR2t+L77tEhwyRC4cei4g3yZ0=
+        b=s5cxgklJW2lW0HBdJMJyDQfpV9IFliGp1T1m9EoGDUL3nojkmWUdPEenO8+2+9W+g
+         xBn/qcJnKvoXW3NAzXvpkiccnPuLown2KWUs1PLqs8nD6dfrXrxXLoRqo+XsZxjtcQ
+         VzUbS6uUJCaUW5lygI7MbFgwmV5db0ULw/h1Fk58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        stable@vger.kernel.org, Andrea Righi <andrea.righi@canonical.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 69/90] vxlan: fix memleak of fdb
+Subject: [PATCH 5.7 113/120] xen-netfront: fix potential deadlock in xennet_remove()
 Date:   Mon,  3 Aug 2020 14:19:31 +0200
-Message-Id: <20200803121900.958223920@linuxfoundation.org>
+Message-Id: <20200803121908.407052413@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,92 +44,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Andrea Righi <andrea.righi@canonical.com>
 
-[ Upstream commit fda2ec62cf1aa7cbee52289dc8059cd3662795da ]
+[ Upstream commit c2c633106453611be07821f53dff9e93a9d1c3f0 ]
 
-When vxlan interface is deleted, all fdbs are deleted by vxlan_flush().
-vxlan_flush() flushes fdbs but it doesn't delete fdb, which contains
-all-zeros-mac because it is deleted by vxlan_uninit().
-But vxlan_uninit() deletes only the fdb, which contains both all-zeros-mac
-and default vni.
-So, the fdb, which contains both all-zeros-mac and non-default vni
-will not be deleted.
+There's a potential race in xennet_remove(); this is what the driver is
+doing upon unregistering a network device:
 
-Test commands:
-    ip link add vxlan0 type vxlan dstport 4789 external
-    ip link set vxlan0 up
-    bridge fdb add to 00:00:00:00:00:00 dst 172.0.0.1 dev vxlan0 via lo \
-	    src_vni 10000 self permanent
-    ip link del vxlan0
+  1. state = read bus state
+  2. if state is not "Closed":
+  3.    request to set state to "Closing"
+  4.    wait for state to be set to "Closing"
+  5.    request to set state to "Closed"
+  6.    wait for state to be set to "Closed"
 
-kmemleak reports as follows:
-unreferenced object 0xffff9486b25ced88 (size 96):
-  comm "bridge", pid 2151, jiffies 4294701712 (age 35506.901s)
-  hex dump (first 32 bytes):
-    02 00 00 00 ac 00 00 01 40 00 09 b1 86 94 ff ff  ........@.......
-    46 02 00 00 00 00 00 00 a7 03 00 00 12 b5 6a 6b  F.............jk
-  backtrace:
-    [<00000000c10cf651>] vxlan_fdb_append.part.51+0x3c/0xf0 [vxlan]
-    [<000000006b31a8d9>] vxlan_fdb_create+0x184/0x1a0 [vxlan]
-    [<0000000049399045>] vxlan_fdb_update+0x12f/0x220 [vxlan]
-    [<0000000090b1ef00>] vxlan_fdb_add+0x12a/0x1b0 [vxlan]
-    [<0000000056633c2c>] rtnl_fdb_add+0x187/0x270
-    [<00000000dd5dfb6b>] rtnetlink_rcv_msg+0x264/0x490
-    [<00000000fc44dd54>] netlink_rcv_skb+0x4a/0x110
-    [<00000000dff433e7>] netlink_unicast+0x18e/0x250
-    [<00000000b87fb421>] netlink_sendmsg+0x2e9/0x400
-    [<000000002ed55153>] ____sys_sendmsg+0x237/0x260
-    [<00000000faa51c66>] ___sys_sendmsg+0x88/0xd0
-    [<000000006c3982f1>] __sys_sendmsg+0x4e/0x80
-    [<00000000a8f875d2>] do_syscall_64+0x56/0xe0
-    [<000000003610eefa>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-unreferenced object 0xffff9486b1c40080 (size 128):
-  comm "bridge", pid 2157, jiffies 4294701754 (age 35506.866s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 f8 dc 42 b2 86 94 ff ff  ..........B.....
-    6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
-  backtrace:
-    [<00000000a2981b60>] vxlan_fdb_create+0x67/0x1a0 [vxlan]
-    [<0000000049399045>] vxlan_fdb_update+0x12f/0x220 [vxlan]
-    [<0000000090b1ef00>] vxlan_fdb_add+0x12a/0x1b0 [vxlan]
-    [<0000000056633c2c>] rtnl_fdb_add+0x187/0x270
-    [<00000000dd5dfb6b>] rtnetlink_rcv_msg+0x264/0x490
-    [<00000000fc44dd54>] netlink_rcv_skb+0x4a/0x110
-    [<00000000dff433e7>] netlink_unicast+0x18e/0x250
-    [<00000000b87fb421>] netlink_sendmsg+0x2e9/0x400
-    [<000000002ed55153>] ____sys_sendmsg+0x237/0x260
-    [<00000000faa51c66>] ___sys_sendmsg+0x88/0xd0
-    [<000000006c3982f1>] __sys_sendmsg+0x4e/0x80
-    [<00000000a8f875d2>] do_syscall_64+0x56/0xe0
-    [<000000003610eefa>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+If the state changes to "Closed" immediately after step 1 we are stuck
+forever in step 4, because the state will never go back from "Closed" to
+"Closing".
 
-Fixes: 3ad7a4b141eb ("vxlan: support fdb and learning in COLLECT_METADATA mode")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
-Acked-by: Roopa Prabhu <roopa@cumulusnetworks.com>
+Make sure to check also for state == "Closed" in step 4 to prevent the
+deadlock.
+
+Also add a 5 sec timeout any time we wait for the bus state to change,
+to avoid getting stuck forever in wait_event().
+
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/vxlan.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/xen-netfront.c | 64 +++++++++++++++++++++++++-------------
+ 1 file changed, 42 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index 03434db36b5c7..b49b6f0cee500 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -2863,8 +2863,10 @@ static void vxlan_flush(struct vxlan_dev *vxlan, bool do_all)
- 			if (!do_all && (f->state & (NUD_PERMANENT | NUD_NOARP)))
- 				continue;
- 			/* the all_zeros_mac entry is deleted at vxlan_uninit */
--			if (!is_zero_ether_addr(f->eth_addr))
--				vxlan_fdb_destroy(vxlan, f, true, true);
-+			if (is_zero_ether_addr(f->eth_addr) &&
-+			    f->vni == vxlan->cfg.vni)
-+				continue;
-+			vxlan_fdb_destroy(vxlan, f, true, true);
- 		}
- 		spin_unlock_bh(&vxlan->hash_lock[h]);
- 	}
+diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
+index 482c6c8b0fb7e..88280057e0321 100644
+--- a/drivers/net/xen-netfront.c
++++ b/drivers/net/xen-netfront.c
+@@ -63,6 +63,8 @@ module_param_named(max_queues, xennet_max_queues, uint, 0644);
+ MODULE_PARM_DESC(max_queues,
+ 		 "Maximum number of queues per virtual interface");
+ 
++#define XENNET_TIMEOUT  (5 * HZ)
++
+ static const struct ethtool_ops xennet_ethtool_ops;
+ 
+ struct netfront_cb {
+@@ -1334,12 +1336,15 @@ static struct net_device *xennet_create_dev(struct xenbus_device *dev)
+ 
+ 	netif_carrier_off(netdev);
+ 
+-	xenbus_switch_state(dev, XenbusStateInitialising);
+-	wait_event(module_wq,
+-		   xenbus_read_driver_state(dev->otherend) !=
+-		   XenbusStateClosed &&
+-		   xenbus_read_driver_state(dev->otherend) !=
+-		   XenbusStateUnknown);
++	do {
++		xenbus_switch_state(dev, XenbusStateInitialising);
++		err = wait_event_timeout(module_wq,
++				 xenbus_read_driver_state(dev->otherend) !=
++				 XenbusStateClosed &&
++				 xenbus_read_driver_state(dev->otherend) !=
++				 XenbusStateUnknown, XENNET_TIMEOUT);
++	} while (!err);
++
+ 	return netdev;
+ 
+  exit:
+@@ -2139,28 +2144,43 @@ static const struct attribute_group xennet_dev_group = {
+ };
+ #endif /* CONFIG_SYSFS */
+ 
+-static int xennet_remove(struct xenbus_device *dev)
++static void xennet_bus_close(struct xenbus_device *dev)
+ {
+-	struct netfront_info *info = dev_get_drvdata(&dev->dev);
+-
+-	dev_dbg(&dev->dev, "%s\n", dev->nodename);
++	int ret;
+ 
+-	if (xenbus_read_driver_state(dev->otherend) != XenbusStateClosed) {
++	if (xenbus_read_driver_state(dev->otherend) == XenbusStateClosed)
++		return;
++	do {
+ 		xenbus_switch_state(dev, XenbusStateClosing);
+-		wait_event(module_wq,
+-			   xenbus_read_driver_state(dev->otherend) ==
+-			   XenbusStateClosing ||
+-			   xenbus_read_driver_state(dev->otherend) ==
+-			   XenbusStateUnknown);
++		ret = wait_event_timeout(module_wq,
++				   xenbus_read_driver_state(dev->otherend) ==
++				   XenbusStateClosing ||
++				   xenbus_read_driver_state(dev->otherend) ==
++				   XenbusStateClosed ||
++				   xenbus_read_driver_state(dev->otherend) ==
++				   XenbusStateUnknown,
++				   XENNET_TIMEOUT);
++	} while (!ret);
++
++	if (xenbus_read_driver_state(dev->otherend) == XenbusStateClosed)
++		return;
+ 
++	do {
+ 		xenbus_switch_state(dev, XenbusStateClosed);
+-		wait_event(module_wq,
+-			   xenbus_read_driver_state(dev->otherend) ==
+-			   XenbusStateClosed ||
+-			   xenbus_read_driver_state(dev->otherend) ==
+-			   XenbusStateUnknown);
+-	}
++		ret = wait_event_timeout(module_wq,
++				   xenbus_read_driver_state(dev->otherend) ==
++				   XenbusStateClosed ||
++				   xenbus_read_driver_state(dev->otherend) ==
++				   XenbusStateUnknown,
++				   XENNET_TIMEOUT);
++	} while (!ret);
++}
++
++static int xennet_remove(struct xenbus_device *dev)
++{
++	struct netfront_info *info = dev_get_drvdata(&dev->dev);
+ 
++	xennet_bus_close(dev);
+ 	xennet_disconnect_backend(info);
+ 
+ 	if (info->netdev->reg_state == NETREG_REGISTERED)
 -- 
 2.25.1
 
