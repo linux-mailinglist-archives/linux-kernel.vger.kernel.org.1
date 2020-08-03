@@ -2,67 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F9223A408
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F50E23A43E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgHCMWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:22:02 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:46364 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726865AbgHCMV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:21:56 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 38172B92AFF40E07CB31;
-        Mon,  3 Aug 2020 20:21:50 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 3 Aug 2020
- 20:21:43 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <tjoseph@cadence.com>, <lorenzo.pieralisi@arm.com>,
-        <robh@kernel.org>, <bhelgaas@google.com>, <kishon@ti.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] PCI: cadence: Make cdns_pci_map_bus stub helper inline
-Date:   Mon, 3 Aug 2020 20:21:04 +0800
-Message-ID: <20200803122104.44852-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1728124AbgHCMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728008AbgHCMYw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:24:52 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72B6C06174A;
+        Mon,  3 Aug 2020 05:24:51 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id x5so14159253wmi.2;
+        Mon, 03 Aug 2020 05:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VR9T7sylAgjDgpJ8EDAbpDnekBXDbki41I/rzJT2SZI=;
+        b=urfgD943beDcrGJbLj2FCNbPb9kgqIFJRgJq5QP52pbmhMztzmOVoYKCfFouBt2b6b
+         +NCi1wbMfTKTy8rN80qHdIUSXR94UhPQf3K/JegAJHPZRvzIfdgun75wYKGZXM0QwTCH
+         ed3Jc4o7OGJS3WIlP3r7St+9w+LAG/nshps+PqAjmBzYVCFER2qM8qfQKuz6BhWOu5HQ
+         sxrrO7TWeX8VXQULLBE0o1bnEIGS3dha/URUx4ozePVVKUIBwrhqcUVJJ9FwfmHPJoN4
+         MD7zuddkVNQ2h4b5hBfQLykntLyFBcEHrUtb08tb0QJrI2GvFyyN1+vHeCMITguafvGt
+         eGNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VR9T7sylAgjDgpJ8EDAbpDnekBXDbki41I/rzJT2SZI=;
+        b=sG+jFulH6GEG74C35AiG0RIbxRZZxg9WdK6IQDRMyuodab/8YSFtLfrrPkDCvbMvVk
+         IYmt6onz21fmVxUKAyWhq9ZCEsNqWciFH5smIN2v01nvYj2UL27Pon96o9LPOxkqx+GE
+         nVelTKPPY9UOP59WGKnvIAXZ2Lr4kmFj9MmUbdv8vlnJNHHxJ2sUytOGOcxwjckynzg/
+         K3oUDvjqOJtUpk3+em9Jf2HxdtjkgPYiqwVsrbpW7Obp+/faSrqrU50a6pdgh9SJqY6C
+         6Hw9DldiLsJIgWV7PrgX3MxHoeNe0A/PnzyETLNWEpjvvmiYV3Iegy/eH9paYR5t9hK6
+         uLAg==
+X-Gm-Message-State: AOAM533u/G7dZzl4m6ScHcJJOZcSVy+MsJbT9+yfv1ShhPF8R4US8NHd
+        Kw/7ArpiASN3y3doz66Lm6ugxutjLQ==
+X-Google-Smtp-Source: ABdhPJxOzWCjQaTB+cJQ7jRVCWIutX9Ay2X699z2X8+4vZZyLeOr0PwCMw7b9/0acSQzT7G/3F9djw==
+X-Received: by 2002:a1c:9e11:: with SMTP id h17mr3110316wme.106.1596457490306;
+        Mon, 03 Aug 2020 05:24:50 -0700 (PDT)
+Received: from localhost.lan (host-92-25-238-49.as13285.net. [92.25.238.49])
+        by smtp.gmail.com with ESMTPSA id m1sm6559050wmc.28.2020.08.03.05.24.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 05:24:49 -0700 (PDT)
+From:   Jules Irenge <jbi.octave@gmail.com>
+To:     inux-kernel@vger.kernel.org
+Cc:     Jules Irenge <jbi.octave@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        linux-audit@redhat.com (moderated list:AUDIT SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] audit: change unnecessary globals into statics
+Date:   Mon,  3 Aug 2020 13:24:29 +0100
+Message-Id: <20200803122430.82364-2-jbi.octave@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200803122430.82364-1-jbi.octave@gmail.com>
+References: <0/2>
+ <20200803122430.82364-1-jbi.octave@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_PCIE_CADENCE_HOST is n, gcc warns:
+Variables sig_pid, audit_sig_uid and audit_sig_sid
+are only used in the audit.c file across the kernel
+Hence it appears no reason for declaring them as globals
+This patch removes their global declarations from the .h file
+and change them into static in the .c file.
 
-drivers/pci/controller/cadence/pcie-cadence.h:486:22:
- warning: 'cdns_pci_map_bus' defined but not used [-Wunused-function]
-
-Make stub helper inline to fix this.
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 ---
- drivers/pci/controller/cadence/pcie-cadence.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/audit.c | 6 +++---
+ kernel/audit.h | 4 ----
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-index 655a6b4d4964..00e44256c3e8 100644
---- a/drivers/pci/controller/cadence/pcie-cadence.h
-+++ b/drivers/pci/controller/cadence/pcie-cadence.h
-@@ -483,8 +483,8 @@ static inline int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
- 	return 0;
- }
+diff --git a/kernel/audit.c b/kernel/audit.c
+index b2301bdc9773..afd7827cf6e8 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -123,9 +123,9 @@ static u32	audit_backlog_limit = 64;
+ static u32	audit_backlog_wait_time = AUDIT_BACKLOG_WAIT_TIME;
  
--static void __iomem *cdns_pci_map_bus(struct pci_bus *bus, unsigned int devfn,
--				      int where)
-+static inline void __iomem *cdns_pci_map_bus(struct pci_bus *bus, unsigned int devfn,
-+					     int where)
- {
- 	return NULL;
- }
+ /* The identity of the user shutting down the audit system. */
+-kuid_t		audit_sig_uid = INVALID_UID;
+-pid_t		audit_sig_pid = -1;
+-u32		audit_sig_sid = 0;
++static kuid_t		audit_sig_uid = INVALID_UID;
++static pid_t		audit_sig_pid = -1;
++static u32		audit_sig_sid = 0;
+ 
+ /* Records can be lost in several ways:
+    0) [suppressed in audit_alloc]
+diff --git a/kernel/audit.h b/kernel/audit.h
+index ddc22878433d..3b9c0945225a 100644
+--- a/kernel/audit.h
++++ b/kernel/audit.h
+@@ -327,10 +327,6 @@ static inline int audit_signal_info_syscall(struct task_struct *t)
+ 
+ extern char *audit_unpack_string(void **bufp, size_t *remain, size_t len);
+ 
+-extern pid_t audit_sig_pid;
+-extern kuid_t audit_sig_uid;
+-extern u32 audit_sig_sid;
+-
+ extern int audit_filter(int msgtype, unsigned int listtype);
+ 
+ extern void audit_ctl_lock(void);
 -- 
-2.17.1
-
+2.26.2
 
