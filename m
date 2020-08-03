@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B501F23A5D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7DB23A643
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729286AbgHCMmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:42:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59352 "EHLO mail.kernel.org"
+        id S1728433AbgHCM0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:26:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728716AbgHCMbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:31:41 -0400
+        id S1728409AbgHCM0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:26:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 945B2207FC;
-        Mon,  3 Aug 2020 12:31:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85CA0207FC;
+        Mon,  3 Aug 2020 12:26:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457900;
-        bh=ntHVsyRurvGjVshNXwBX4PbkBBTnvkshNG9V5gbHCPw=;
+        s=default; t=1596457601;
+        bh=5TXyn/wlwTOopHs0f1sd8GztkJl5GDHmCySOXvXNy5Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l93+9UycmAS4Tj7vpqaPermwA0wdIYmgyCpZ/HiwzzR2keWt084ftnWQQVvlIIVum
-         6bKNiKkR/TJEFr6neRSVhvcd2ONeUJxLVY0lfAHy9exMtbQQFwKegZUfdcoo2VJr2K
-         wf99In2NoxVbAr9JLOa1iVB0Ld+ai6jfFMLn5ArY=
+        b=lA9y2kO4OcwqvtSM7hEet/Z+aluQnAth/WTpXrFducH1gekgCAT/gqLV/p2tP7J85
+         idzL66Kj22wK4529H5MPbL4+3T6qrOt6xqYnyoRGls7vUScBtTq18ctqoYRfpJyOTW
+         fF/LZHGTQfbaf4oT07k00ZaRrqNC8BnBJFu1JZNw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 03/56] iio: imu: adis16400: fix memory leak
+        stable@vger.kernel.org, Daniele Albano <d.albano@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 100/120] io_uring: always allow drain/link/hardlink/async sqe flags
 Date:   Mon,  3 Aug 2020 14:19:18 +0200
-Message-Id: <20200803121850.469452687@linuxfoundation.org>
+Message-Id: <20200803121907.776492818@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,36 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 9c0530e898f384c5d279bfcebd8bb17af1105873 ]
+From: Daniele Albano <d.albano@gmail.com>
 
-In adis_update_scan_mode_burst, if adis->buffer allocation fails release
-the adis->xfer.
+[ Upstream commit 61710e437f2807e26a3402543bdbb7217a9c8620 ]
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+We currently filter these for timeout_remove/async_cancel/files_update,
+but we only should be filtering for fixed file and buffer select. This
+also causes a second read of sqe->flags, which isn't needed.
+
+Just check req->flags for the relevant bits. This then allows these
+commands to be used in links, for example, like everything else.
+
+Signed-off-by: Daniele Albano <d.albano@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/imu/adis16400_buffer.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/io_uring.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iio/imu/adis16400_buffer.c b/drivers/iio/imu/adis16400_buffer.c
-index e70a5339acb19..3fc11aec98b95 100644
---- a/drivers/iio/imu/adis16400_buffer.c
-+++ b/drivers/iio/imu/adis16400_buffer.c
-@@ -38,8 +38,11 @@ int adis16400_update_scan_mode(struct iio_dev *indio_dev,
- 		return -ENOMEM;
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index d0d3efaaa4d4f..4e09af1d5d223 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4808,7 +4808,9 @@ static int io_timeout_remove_prep(struct io_kiocb *req,
+ {
+ 	if (unlikely(req->ctx->flags & IORING_SETUP_IOPOLL))
+ 		return -EINVAL;
+-	if (sqe->flags || sqe->ioprio || sqe->buf_index || sqe->len)
++	if (unlikely(req->flags & (REQ_F_FIXED_FILE | REQ_F_BUFFER_SELECT)))
++		return -EINVAL;
++	if (sqe->ioprio || sqe->buf_index || sqe->len)
+ 		return -EINVAL;
  
- 	adis->buffer = kzalloc(burst_length + sizeof(u16), GFP_KERNEL);
--	if (!adis->buffer)
-+	if (!adis->buffer) {
-+		kfree(adis->xfer);
-+		adis->xfer = NULL;
- 		return -ENOMEM;
-+	}
+ 	req->timeout.addr = READ_ONCE(sqe->addr);
+@@ -5014,8 +5016,9 @@ static int io_async_cancel_prep(struct io_kiocb *req,
+ {
+ 	if (unlikely(req->ctx->flags & IORING_SETUP_IOPOLL))
+ 		return -EINVAL;
+-	if (sqe->flags || sqe->ioprio || sqe->off || sqe->len ||
+-	    sqe->cancel_flags)
++	if (unlikely(req->flags & (REQ_F_FIXED_FILE | REQ_F_BUFFER_SELECT)))
++		return -EINVAL;
++	if (sqe->ioprio || sqe->off || sqe->len || sqe->cancel_flags)
+ 		return -EINVAL;
  
- 	tx = adis->buffer + burst_length;
- 	tx[0] = ADIS_READ_REG(ADIS16400_GLOB_CMD);
+ 	req->cancel.addr = READ_ONCE(sqe->addr);
+@@ -5033,7 +5036,9 @@ static int io_async_cancel(struct io_kiocb *req)
+ static int io_files_update_prep(struct io_kiocb *req,
+ 				const struct io_uring_sqe *sqe)
+ {
+-	if (sqe->flags || sqe->ioprio || sqe->rw_flags)
++	if (unlikely(req->flags & (REQ_F_FIXED_FILE | REQ_F_BUFFER_SELECT)))
++		return -EINVAL;
++	if (sqe->ioprio || sqe->rw_flags)
+ 		return -EINVAL;
+ 
+ 	req->files_update.offset = READ_ONCE(sqe->off);
 -- 
 2.25.1
 
