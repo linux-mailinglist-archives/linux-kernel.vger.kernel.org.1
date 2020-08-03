@@ -2,223 +2,406 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC41239F60
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 08:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFB0239F7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 08:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgHCGBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 02:01:25 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:30568 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726057AbgHCGBZ (ORCPT
+        id S1727792AbgHCGSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 02:18:13 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:28141 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725926AbgHCGSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 02:01:25 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0735ko3M011254;
-        Sun, 2 Aug 2020 23:01:06 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=soj8mlJoHQsabgytAZptfXczgkx/1DcYjmf8q5qys3w=;
- b=BrRazzPa1u3j1t63sY6euVbj1Cksf2gbCIPI0iZuapeO2HXgIAuBezbQ4arYsbuIIK66
- vgB21PI+ynK8lsD1RR/0noOnCTNMZ9VY3Rwv497YezyhHufbENzjThKPo8krm71YLn8V
- zWLwAfUS4d3I0gwgU43zP2CQyYcRXK88Po4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32nr3btyfj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 02 Aug 2020 23:01:06 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 2 Aug 2020 23:01:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XwA5pVYH6MWThBVE7k3gpmbKNGctimlOQEpXpkgobNnWEcE/ja2AseZ0VP9AFhfqDmOKyk0ISAjaadJkyWBaAgqg6HHK7EMOHBA9vowMwUC2JhOJfEkDd870b2a3v8qzAnwXqntU05v2ZYq6Mcve5t7hvoY/N4l9KAkwwjlpzvOYkyVihSI7Mo/3WbN3k2Hewe1Zvtm+kfL2Mxv6YmqG4PmUmxypZMNPd6+X0XQW2HftVXgxF+xkm2J1y0YgXpeiV3mfih5DOndpoAeppzbWm+7CO3jKayP8diJ2AXsMyFKN5lwk6JvPWQkYIgpKSKWSu8HdJ5boNLX7lB2nSdUrmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=soj8mlJoHQsabgytAZptfXczgkx/1DcYjmf8q5qys3w=;
- b=Xy1eknf0IkOMP3M5p/2XbwbL+H+6S6ls5rnqPcVsZUow+FXHC+1i1fJYgwS1+2zQ+y0gyv0Efsi7gwiany+C80UexA99IY9Ne3SMwsSTYS2vvkuL/SN1fGHbqkAg2155cjmQxkRZQ39SyIkJYrYSbeE8A7SwrHMEnPwT1bagdyKlje2T23q9w1rPwko/4bFeunGF+MZItar9rv6jUNT5E/fVa2XiY76AybbwKe9oRtVG8djFZXstx39zfwoYo5YMijE01OrnVVmF2loGKwlPYwskJ+7uiT+5hdvY1Iu1sidP/TXcVYPe5WLUNhR30r5vqILY8sbZ/eHcdEhTI0y30g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=soj8mlJoHQsabgytAZptfXczgkx/1DcYjmf8q5qys3w=;
- b=JW8UrbqWUzkQXv07i9gc82q+CjbZPLli8F7bKRwe1+508hT7a/W44DSkJTZ9IiRWkxE8O9F2cAhoQqvZQbti24KUBLHkxvydytoR+bK/Z8lslAlyyIJav6ZOR58wMndC99LorWTEslgEeL7PkypIdQHVbrZ9/qaPiE1SqED/HuA=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB3464.namprd15.prod.outlook.com (2603:10b6:a03:10a::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.20; Mon, 3 Aug
- 2020 06:01:04 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3239.021; Mon, 3 Aug 2020
- 06:01:03 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [PATCH] kprobes: fix NULL pointer dereference at
- kprobe_ftrace_handler
-Thread-Topic: [PATCH] kprobes: fix NULL pointer dereference at
- kprobe_ftrace_handler
-Thread-Index: AQHWZKq+cwuqZwgf4EmOpIx4quozWqkl7ZqA
-Date:   Mon, 3 Aug 2020 06:01:03 +0000
-Message-ID: <5555B378-4326-451C-9771-714D5A345421@fb.com>
-References: <20200728064536.24405-1-songmuchun@bytedance.com>
-In-Reply-To: <20200728064536.24405-1-songmuchun@bytedance.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:8f7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 634c5544-f906-4799-85cd-08d837729b09
-x-ms-traffictypediagnostic: BYAPR15MB3464:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB3464019A18F546DBA65E1ECDB34D0@BYAPR15MB3464.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5g+C5+vbpLN9UoHHHT07lWqld4BSFJsjiIlWPc8oRAc+d/Ls80meWmr5aeEoHP5l3wZaY3kMC3WIykBy4q1Vk3vLd37PHykTsCjqtcVRU+rOfLcjLVEHyey/aOvN3B81CcWwg7HmItpXmh0f9maLzui8pZIrOgdW092NwaJC5dzwS8d51FC3UFR6EpozhuItxsfbB/WZGwbdr2yBLXVko+hgrRjWceuOkV8GuzvpImcugnfIVpLP2cK7VYJWmyOaBBe2nd5l+tOkom5hZwV5dWp9fMnWdg3VtI4u8hSfRSnAYd6cZYhGT/UdH2js7t6p0uOMj+GgfujL0YKOokA3Qg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(366004)(396003)(346002)(136003)(376002)(33656002)(66476007)(66556008)(64756008)(66946007)(66446008)(6512007)(5660300002)(6486002)(2616005)(83380400001)(4326008)(36756003)(7416002)(6916009)(316002)(76116006)(8936002)(6506007)(53546011)(8676002)(54906003)(2906002)(478600001)(86362001)(71200400001)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: o2zM+pH7HYv4wV5oLV7sHa/xCya8vOgFSNSRqgSE4DMGMLMAtfazzcU4RH19pah9OqgS/pyF+gmmxeM0fxubX4nIJ9ZgddXh4FcrbjwQkzUTaASwJAYDuATscXRJyD/o7x9FPbXxknGYPnfgIGqqRNjUSXqWiXIGiyyw3NIlgMVIVV84PfmH0Nv75f9EagZfRxoQCUAhnsXW8oKFzFHsyniooihft3RRGe6SsfWXTACQXExXdLOKf+vSM2AdtKoN7IdmScalwYwf4J0fxHhcEUHaWpOUL39Qz6P/WBNFui382ooGQco0mil5SZWBdJQ49Hb7sdlaukBOaJeKq9y6z/9/BVjTbCfJji0vL8I7IQbXpuNMGmAZbm0XxkkZYsHyOLrjAeqcG0zs6bFSpXokFBU1hzDP24nsEJeh/Zy9mU90wtT9yFm5eLGuAjhIxO1DvWgfexFZnUJEa/IN1l4nKlxM+4lnzrv8gZfchOz3sPLu0q/d0hCd58bTubWLOD/10T+Qj/ryntmVJHiLSFAfONs5+hJdInGH8aHpjMBo8KJPrPpmiQxAido1QQLb6ZUMwcdUzYJEkBlZWGY6h7FgrG1/bYyWIG0uYnQ5mpfqJNPCpF4XiK/FvIe1Az6n+MJvdF/uHzWhM17z9sFScf1SrRZjyHzFYtIHcdp1x4l5bPE=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <BC74A5F2522D1247BCC8386205B4FA32@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 634c5544-f906-4799-85cd-08d837729b09
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2020 06:01:03.7558
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 79Z+KXGR312KXqBtFlitlwrZTxS/HEvNONXO34Am7pVkN4+BKC4KfVA73wWP35gCgF2gHmkg2KoxHYzVOLXicA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3464
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-03_04:2020-07-31,2020-08-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 impostorscore=0
- mlxscore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxlogscore=999
- clxscore=1011 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008030043
-X-FB-Internal: deliver
+        Mon, 3 Aug 2020 02:18:12 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200803061809epoutp03788f6ee8d9e728c2dcf3952ada485697~nrZ56WbxA1231412314epoutp03i
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 06:18:09 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200803061809epoutp03788f6ee8d9e728c2dcf3952ada485697~nrZ56WbxA1231412314epoutp03i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1596435489;
+        bh=sBQQV1zc+/XN0an+6gyZV8R+R/n2qAGEr6Yhvwyjgc8=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=r9iSe8H90F0YSEFVVNBZ1sVJ4l9XBCiBzxE1ydu5ObFGZJvHnOyzefL/wE5G5Y6Vb
+         rcgGmErAr6nNYwvhBz7xdTNuleugsmbEFG8E6SG4jT1sq44S0eKEvof7TB+c9jDAoA
+         66loxUYfMlPMka+LM/MPSrZGv6jxVCnbk3AszIm8=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20200803061808epcas2p1950fb226fea8ff305417c71570bb7c3e~nrZ5qTUOC1725317253epcas2p1d;
+        Mon,  3 Aug 2020 06:18:08 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.187]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4BKnkQ3xhlzMqYkp; Mon,  3 Aug
+        2020 06:18:06 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        71.FE.18874.D1CA72F5; Mon,  3 Aug 2020 15:18:05 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200803061805epcas2p20faeeff0b31b23d1bc4464972285b561~nrZ2GWhB82259622596epcas2p2c;
+        Mon,  3 Aug 2020 06:18:05 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200803061804epsmtrp144b9cdec6419938030c89441190f526b~nrZ2Fr5yz0137501375epsmtrp1Q;
+        Mon,  3 Aug 2020 06:18:04 +0000 (GMT)
+X-AuditID: b6c32a46-519ff700000049ba-e2-5f27ac1d0b7a
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9B.75.08303.C1CA72F5; Mon,  3 Aug 2020 15:18:04 +0900 (KST)
+Received: from KEI.dsn.sec.samsung.com (unknown [12.36.155.227]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200803061804epsmtip2decaee693c1e6801f5e59bfc92a18a71~nrZ15L-Zs0690806908epsmtip2x;
+        Mon,  3 Aug 2020 06:18:04 +0000 (GMT)
+From:   pullip.cho@samsung.com
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        hyesoo.yu@samsung.com, janghyuck.kim@samsung.com,
+        Cho KyongHo <pullip.cho@samsung.com>
+Subject: [PATCH] mm: sort freelist by rank number
+Date:   Mon,  3 Aug 2020 15:10:31 +0900
+Message-Id: <1596435031-41837-1-git-send-email-pullip.cho@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEKsWRmVeSWpSXmKPExsWy7bCmha7sGvV4g6N95hZz1q9hs/jbeYHV
+        YvOcYovLu+awWdxb85/V4l/vQUYHNo9Nnyaxe5yY8ZvFo2/LKkaPz5vkAliicmwyUhNTUosU
+        UvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgHYrKZQl5pQChQISi4uV
+        9O1sivJLS1IVMvKLS2yVUgtScgoMDQv0ihNzi0vz0vWS83OtDA0MjEyBKhNyMq5vKylYGVRx
+        /s1ZlgbGg85djJwcEgImEku2vGbtYuTiEBLYwSixsP8nO4TziVFi2ffFTBDOZ0aJt03n2GBa
+        lt28zA5iCwnsYpTYc9kVwv7KKPHqqQaIzSYgIzH14UVWEFtEQFZi6t/zLCCDmAX6GCWeTPjH
+        CJIQFjCUeLB4DzOIzSKgKtG5aRFQnIODV8BN4uTTDIhdchI3z3Uyg/RKCCxil5gw8R4rRMJF
+        YvuDNVC2sMSr41vYIWwpiZf9bewQDdMZJd7NPwR19WZGiW+7BSFsY4lZz9rBljELaEqs36UP
+        YkoIKEscucUCUsEswCfRcfgvO0SYV6KjTQiiUUVi59RrLDCb+vbegLI9JNqfdIOVCwnESjyZ
+        nTiBUXYWwvgFjIyrGMVSC4pz01OLjQqMkGNoEyM4MWm57WCc8vaD3iFGJg7GQ4wSHMxKIrx/
+        /ynHC/GmJFZWpRblxxeV5qQWH2I0BYbWRGYp0eR8YGrMK4k3NDUyMzOwNLUwNTOyUBLnrVe8
+        ECckkJ5YkpqdmlqQWgTTx8TBKdXAxBKv9zlFbt7LP7ZiMTK/fAWjpdfzSYo9tvmtf5Xtk8Te
+        y4vUdZh543Z9z285nCvy7dornUWJt0QSS38XFs0wj+ZLzdxg7XnIekJm3Lf7G6cqrA2XS3WZ
+        ueDdbfub0vM852xRuzFtceTej8dXs2y+JdQpa2vEeku1pvrkWxH+p1bBf6Vij+nLVv14MqGQ
+        13Bb4skym4pco+WzA6Zr20dprlvYfVWpLnRJjYT8/f0Xis4/XeN0PP7VH+aFBg0Hd89lmK3V
+        WibuaByxLE138/Erk+zPr65s0+hmYd2zyaY/c4/Yubb3O3pN77iv2WGqwJZd/3GLSij7jC1J
+        HXrLlmfpH0+VndBlfK/ZIkXw9BF+JZbijERDLeai4kQA5mAJWdUDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMJMWRmVeSWpSXmKPExsWy7bCSvK7MGvV4g9tfTS3mrF/DZvG38wKr
+        xeY5xRaXd81hs7i35j+rxb/eg4wObB6bPk1i9zgx4zeLR9+WVYwenzfJBbBEcdmkpOZklqUW
+        6dslcGVc31ZSsDKo4vybsywNjAeduxg5OSQETCSW3bzM3sXIxSEksINR4tj8jawQCSmJed1r
+        mSBsYYn7LUdYIYo+M0psmbUaLMEmICMx9eFFsAYRAVmJqX/Ps4AUMQtMYZRo2f+WBSQhLGAo
+        8WDxHmYQm0VAVaJz0yLGLkYODl4BN4mTTzMgFshJ3DzXyTyBkWcBI8MqRsnUguLc9NxiwwKj
+        vNRyveLE3OLSvHS95PzcTYzgcNHS2sG4Z9UHvUOMTByMhxglOJiVRHj//lOOF+JNSaysSi3K
+        jy8qzUktPsQozcGiJM77ddbCOCGB9MSS1OzU1ILUIpgsEwenVAOT607l/mmTvPJeXas+biew
+        OyB5zanwCXsa1p2Sm6Z2536MHpelOqd8jbWxCCO7SddDD+GvDMtf1J0OOXy51uyknsquzTNT
+        gyouHnwXz7LyR2TQ1tj45RzLXote++PEK+LdkmbC0lS2fz+DcU9mqsz+hBXqEq0/2J+cy3Fv
+        DFTJyW+/lfrx5OGLiouP3r3nze7/xN+j9MkDltQHrTsCJQojpbT7ZpevkVLv82bvjg9bddz4
+        cY3wZoVzyxyif7EcXHEvWl1IxWfRuy/rxZkPM+x5lur6fXk537d5Sxn43FfIfdKVs/bLFbxv
+        u2/FtU18J3ZsE3Hl+zHt3heP2Q53JyeI5JYUXn6je0fg2ZnAo8pKLMUZiYZazEXFiQCiHtj/
+        hgIAAA==
+X-CMS-MailID: 20200803061805epcas2p20faeeff0b31b23d1bc4464972285b561
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200803061805epcas2p20faeeff0b31b23d1bc4464972285b561
+References: <CGME20200803061805epcas2p20faeeff0b31b23d1bc4464972285b561@epcas2p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Cho KyongHo <pullip.cho@samsung.com>
 
+LPDDR5 introduces rank switch delay. If three successive DRAM accesses
+happens and the first and the second ones access one rank and the last
+access happens on the other rank, the latency of the last access will
+be longer than the second one.
+To address this panelty, we can sort the freelist so that a specific
+rank is allocated prior to another rank. We expect the page allocator
+can allocate the pages from the same rank successively with this
+change. It will hopefully improves the proportion of the consecutive
+memory accesses to the same rank.
 
-> On Jul 27, 2020, at 11:45 PM, Muchun Song <songmuchun@bytedance.com> wrot=
-e:
->=20
-> We found a case of kernel panic on our server. The stack trace is as
-> follows(omit some irrelevant information):
->=20
->  BUG: kernel NULL pointer dereference, address: 0000000000000080
->  RIP: 0010:kprobe_ftrace_handler+0x5e/0xe0
->  RSP: 0018:ffffb512c6550998 EFLAGS: 00010282
->  RAX: 0000000000000000 RBX: ffff8e9d16eea018 RCX: 0000000000000000
->  RDX: ffffffffbe1179c0 RSI: ffffffffc0535564 RDI: ffffffffc0534ec0
->  RBP: ffffffffc0534ec1 R08: ffff8e9d1bbb0f00 R09: 0000000000000004
->  R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
->  R13: ffff8e9d1f797060 R14: 000000000000bacc R15: ffff8e9ce13eca00
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 0000000000000080 CR3: 00000008453d0005 CR4: 00000000003606e0
->  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->  Call Trace:
->   <IRQ>
->   ftrace_ops_assist_func+0x56/0xe0
->   ftrace_call+0x5/0x34
->   tcpa_statistic_send+0x5/0x130 [ttcp_engine]
->=20
-> The tcpa_statistic_send is the function being kprobed. After analysis,
-> the root cause is that the fourth parameter regs of kprobe_ftrace_handler
-> is NULL. Why regs is NULL? We use the crash tool to analyze the kdump.
->=20
->  crash> dis tcpa_statistic_send -r
->         <tcpa_statistic_send>: callq 0xffffffffbd8018c0 <ftrace_caller>
->=20
-> The tcpa_statistic_send calls ftrace_caller instead of ftrace_regs_caller=
-.
-> So it is reasonable that the fourth parameter regs of kprobe_ftrace_handl=
-er
-> is NULL. In theory, we should call the ftrace_regs_caller instead of the
-> ftrace_caller. After in-depth analysis, we found a reproducible path.
->=20
->  Writing a simple kernel module which starts a periodic timer. The
->  timer's handler is named 'kprobe_test_timer_handler'. The module
->  name is kprobe_test.ko.
->=20
->  1) insmod kprobe_test.ko
->  2) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
->  3) echo 0 > /proc/sys/kernel/ftrace_enabled
->  4) rmmod kprobe_test
->  5) stop step 2) kprobe
->  6) insmod kprobe_test.ko
->  7) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
->=20
-> We mark the kprobe as GONE but not disarm the kprobe in the step 4).
-> The step 5) also do not disarm the kprobe when unregister kprobe. So
-> we do not remove the ip from the filter. In this case, when the module
-> loads again in the step 6), we will replace the code to ftrace_caller
-> via the ftrace_module_enable(). When we register kprobe again, we will
-> not replace ftrace_caller to ftrace_regs_caller because the ftrace is
-> disabled in the step 3). So the step 7) will trigger kernel panic. Fix
-> this problem by disarming the kprobe when the module is going away.
->=20
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Cho KyongHo <pullip.cho@samsung.com>
+---
+ mm/Kconfig      |  23 +++++++++++
+ mm/compaction.c |   6 +--
+ mm/internal.h   |  11 ++++++
+ mm/page_alloc.c | 119 +++++++++++++++++++++++++++++++++++++++++++++++++-------
+ mm/shuffle.h    |   6 ++-
+ 5 files changed, 144 insertions(+), 21 deletions(-)
 
-Looks good.=20
-
-Acked-by: Song Liu <songliubraving@fb.com>
-
-> ---
-> kernel/kprobes.c | 7 +++++++
-> 1 file changed, 7 insertions(+)
->=20
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 146c648eb943..503add629599 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -2148,6 +2148,13 @@ static void kill_kprobe(struct kprobe *p)
-> 	 * the original probed function (which will be freed soon) any more.
-> 	 */
-> 	arch_remove_kprobe(p);
-> +
-> +	/*
-> +	 * The module is going away. We should disarm the kprobe which
-> +	 * is using ftrace.
-> +	 */
-> +	if (kprobe_ftrace(p))
-> +		disarm_kprobe_ftrace(p);
-> }
->=20
-> /* Disable one kprobe */
-> --=20
-> 2.11.0
->=20
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 6c97488..789c02b 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -868,4 +868,27 @@ config ARCH_HAS_HUGEPD
+ config MAPPING_DIRTY_HELPERS
+         bool
+ 
++config RANK_SORTED_FREELIST
++	bool "Prefer allocating free pages in a half of DRAM ranks"
++
++	help
++	  Rank switch delay in DRAM access become larger in LPDDR5 than before.
++	  If two successive memory accesses happen on different ranks in LPDDR5,
++	  the latency of the second access becomes longer due to the rank switch
++	  overhead. This is a power-performance tradeoff achieved in LPDDR5.
++	  By default, sorting freelist by rank number is disabled even though
++	  RANK_SORTED_FREELIST is set to y. To enable, set "dram_rank_granule"
++	  boot argument to a larger or an equal value to pageblock_nr_pages. The
++	  values should be the exact the rank interleaving granule that your
++	  system is using. The rank interleaving granule is 2^(the lowest CS bit
++	  number). CS stands for Chip Select and is also called SS which stands
++	  for Slave Select.
++	  This is not beneficial to single rank memory system. Also this is not
++	  necessary to quad rank and octal rank memory systems because they are
++	  not in LPDDR5 specifications.
++
++	  This is marked experimental because this disables freelist shuffling
++	  (SHUFFLE_PAGE_ALLOCATOR). Also you should set the correct rank
++	  interleaving granule.
++
+ endmenu
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 061dacf..bee9567 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1218,8 +1218,7 @@ move_freelist_head(struct list_head *freelist, struct page *freepage)
+ 
+ 	if (!list_is_last(freelist, &freepage->lru)) {
+ 		list_cut_before(&sublist, freelist, &freepage->lru);
+-		if (!list_empty(&sublist))
+-			list_splice_tail(&sublist, freelist);
++		freelist_splice_tail(&sublist, freelist);
+ 	}
+ }
+ 
+@@ -1236,8 +1235,7 @@ move_freelist_tail(struct list_head *freelist, struct page *freepage)
+ 
+ 	if (!list_is_first(freelist, &freepage->lru)) {
+ 		list_cut_position(&sublist, freelist, &freepage->lru);
+-		if (!list_empty(&sublist))
+-			list_splice_tail(&sublist, freelist);
++		freelist_splice_tail(&sublist, freelist);
+ 	}
+ }
+ 
+diff --git a/mm/internal.h b/mm/internal.h
+index 10c6776..c945b3d 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -266,6 +266,17 @@ int find_suitable_fallback(struct free_area *area, unsigned int order,
+ 
+ #endif
+ 
++#ifdef CONFIG_RANK_SORTED_FREELIST
++void freelist_splice_tail(struct list_head *sublist, struct list_head *freelist);
++#else
++#include <linux/list.h>
++static inline
++void freelist_splice_tail(struct list_head *sublist, struct list_head *freelist)
++{
++	if (!list_empty(sublist))
++		list_splice_tail(sublist, freelist);
++}
++#endif
+ /*
+  * This function returns the order of a free page in the buddy system. In
+  * general, page_zone(page)->lock must be held by the caller to prevent the
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 2824e116..7823a3b 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -854,6 +854,69 @@ compaction_capture(struct capture_control *capc, struct page *page,
+ }
+ #endif /* CONFIG_COMPACTION */
+ 
++#ifdef CONFIG_RANK_SORTED_FREELIST
++static unsigned long dram_rank_nr_pages __read_mostly;
++
++static inline bool preferred_rank_enabled(void)
++{
++	return dram_rank_nr_pages >= pageblock_nr_pages;
++}
++
++static int __init dram_rank_granule(char *buf)
++{
++	unsigned long val = (unsigned long)(memparse(buf, NULL) / PAGE_SIZE);
++
++	if (val < pageblock_nr_pages) {
++		pr_err("too small rank granule %lu\n", val);
++		return -EINVAL;
++	}
++
++	dram_rank_nr_pages = val;
++
++	return 0;
++}
++
++early_param("dram_rank_granule", dram_rank_granule);
++
++static inline bool __preferred_rank(struct page *page)
++{
++	return !(page_to_pfn(page) & dram_rank_nr_pages);
++}
++
++static inline bool preferred_rank(struct page *page)
++{
++	return !preferred_rank_enabled() || __preferred_rank(page);
++}
++
++void freelist_splice_tail(struct list_head *sublist, struct list_head *freelist)
++{
++	while (!list_empty(sublist)) {
++		struct page *page;
++
++		page = list_first_entry(sublist, struct page, lru);
++		if (!preferred_rank_enabled() || !__preferred_rank(page))
++			list_move_tail(&page->lru, freelist);
++		else
++			list_move(&page->lru, freelist);
++	}
++}
++#else
++static inline bool __preferred_rank(struct page *page)
++{
++	return true;
++}
++
++static inline bool preferred_rank(struct page *page)
++{
++	return true;
++}
++
++static inline bool preferred_rank_enabled(void)
++{
++	return false;
++}
++#endif
++
+ /* Used for pages not on another list */
+ static inline void add_to_free_list(struct page *page, struct zone *zone,
+ 				    unsigned int order, int migratetype)
+@@ -880,7 +943,10 @@ static inline void move_to_free_list(struct page *page, struct zone *zone,
+ {
+ 	struct free_area *area = &zone->free_area[order];
+ 
+-	list_move(&page->lru, &area->free_list[migratetype]);
++	if (preferred_rank(page))
++		list_move(&page->lru, &area->free_list[migratetype]);
++	else
++		list_move_tail(&page->lru, &area->free_list[migratetype]);
+ }
+ 
+ static inline void del_page_from_free_list(struct page *page, struct zone *zone,
+@@ -1029,7 +1095,9 @@ static inline void __free_one_page(struct page *page,
+ done_merging:
+ 	set_page_order(page, order);
+ 
+-	if (is_shuffle_order(order))
++	if (preferred_rank_enabled())
++		to_tail = !__preferred_rank(page);
++	else if (is_shuffle_order(order))
+ 		to_tail = shuffle_pick_tail();
+ 	else
+ 		to_tail = buddy_merge_likely(pfn, buddy_pfn, page, order);
+@@ -2257,20 +2325,29 @@ static __always_inline
+ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
+ 						int migratetype)
+ {
++	int retry = preferred_rank_enabled() ? 2 : 1;
+ 	unsigned int current_order;
+ 	struct free_area *area;
+ 	struct page *page;
+ 
+-	/* Find a page of the appropriate size in the preferred list */
+-	for (current_order = order; current_order < MAX_ORDER; ++current_order) {
+-		area = &(zone->free_area[current_order]);
+-		page = get_page_from_free_area(area, migratetype);
+-		if (!page)
+-			continue;
+-		del_page_from_free_list(page, zone, current_order);
+-		expand(zone, page, order, current_order, migratetype);
+-		set_pcppage_migratetype(page, migratetype);
+-		return page;
++	while (retry-- > 0) {
++		/* Find a page of the appropriate size in the preferred list */
++		for (current_order = order; current_order < MAX_ORDER; ++current_order) {
++			area = &zone->free_area[current_order];
++			page = get_page_from_free_area(area, migratetype);
++			if (!page)
++				continue;
++			/*
++			 * In the first try, search for a page in the preferred
++			 * rank upward even though a free page is found.
++			 */
++			if (retry > 0 && !preferred_rank(page))
++				continue;
++			del_page_from_free_list(page, zone, current_order);
++			expand(zone, page, order, current_order, migratetype);
++			set_pcppage_migratetype(page, migratetype);
++			return page;
++		}
+ 	}
+ 
+ 	return NULL;
+@@ -2851,8 +2928,14 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+ 		 * head, thus also in the physical page order. This is useful
+ 		 * for IO devices that can merge IO requests if the physical
+ 		 * pages are ordered properly.
++		 * However, preferred_rank_enabled() is true, we always sort
++		 * freelists in the buddy and the pcp in the order of rank
++		 * number for the performance reason.
+ 		 */
+-		list_add_tail(&page->lru, list);
++		if (preferred_rank_enabled() && __preferred_rank(page))
++			list_add(&page->lru, list);
++		else
++			list_add_tail(&page->lru, list);
+ 		alloced++;
+ 		if (is_migrate_cma(get_pcppage_migratetype(page)))
+ 			__mod_zone_page_state(zone, NR_FREE_CMA_PAGES,
+@@ -3136,7 +3219,10 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn)
+ 	}
+ 
+ 	pcp = &this_cpu_ptr(zone->pageset)->pcp;
+-	list_add(&page->lru, &pcp->lists[migratetype]);
++	if (preferred_rank(page))
++		list_add(&page->lru, &pcp->lists[migratetype]);
++	else
++		list_add_tail(&page->lru, &pcp->lists[migratetype]);
+ 	pcp->count++;
+ 	if (pcp->count >= pcp->high) {
+ 		unsigned long batch = READ_ONCE(pcp->batch);
+@@ -8813,7 +8899,10 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
+ 			continue;
+ 
+ 		if (current_buddy != target) {
+-			add_to_free_list(current_buddy, zone, high, migratetype);
++			if (preferred_rank(current_buddy))
++				add_to_free_list(current_buddy, zone, high, migratetype);
++			else
++				add_to_free_list_tail(current_buddy, zone, high, migratetype);
+ 			set_page_order(current_buddy, high);
+ 			page = next_page;
+ 		}
+diff --git a/mm/shuffle.h b/mm/shuffle.h
+index 71b784f..59cbfde 100644
+--- a/mm/shuffle.h
++++ b/mm/shuffle.h
+@@ -12,7 +12,8 @@ extern void __shuffle_free_memory(pg_data_t *pgdat);
+ extern bool shuffle_pick_tail(void);
+ static inline void shuffle_free_memory(pg_data_t *pgdat)
+ {
+-	if (!static_branch_unlikely(&page_alloc_shuffle_key))
++	if (!static_branch_unlikely(&page_alloc_shuffle_key) ||
++	    preferred_rank_enabled())
+ 		return;
+ 	__shuffle_free_memory(pgdat);
+ }
+@@ -20,7 +21,8 @@ static inline void shuffle_free_memory(pg_data_t *pgdat)
+ extern void __shuffle_zone(struct zone *z);
+ static inline void shuffle_zone(struct zone *z)
+ {
+-	if (!static_branch_unlikely(&page_alloc_shuffle_key))
++	if (!static_branch_unlikely(&page_alloc_shuffle_key) ||
++	    preferred_rank_enabled())
+ 		return;
+ 	__shuffle_zone(z);
+ }
+-- 
+2.7.4
 
