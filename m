@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206B323AEA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B7023AEA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgHCU6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 16:58:42 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:45635 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727003AbgHCU6m (ORCPT
+        id S1729026AbgHCU6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 16:58:52 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38790 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728605AbgHCU6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 16:58:42 -0400
+        Mon, 3 Aug 2020 16:58:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596488320;
+        s=mimecast20190719; t=1596488328;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=T01zlXdVAdfOQiZawGmFzoRF7DScTQR3FGD2nDiB9KQ=;
-        b=N/FM95nkk3DJdnNZWc0KJfGqAQCFVu5EHFW99jX7Ua7BwRANiJ01qXO9mRhV/h0Ovqq+ud
-        p9w+7dWxhLMT8a7vhH4/79dggf4it5j7XxWbSj8QxLBlNn3YzhnrwLIRdvEoKbzxOSNq+x
-        dTK5NCnGNgSlpE1tl1HatJp5xzWuKY0=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-hLOep-ZNN6SJnvKVeqA9aw-1; Mon, 03 Aug 2020 16:58:38 -0400
-X-MC-Unique: hLOep-ZNN6SJnvKVeqA9aw-1
-Received: by mail-qv1-f70.google.com with SMTP id v18so21747620qvi.8
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 13:58:38 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Gl2dylMgFGi0Gx2NZhfogviRtCkoLcQlgV/aPlSIlQ=;
+        b=B8X/HPr/9fUXW084Q7wnokc7u/FeHrAPETo+t6WJ370nIpn8INp7zSPmF5UvRKPUwgdPa8
+        AcEyMeIdtiXU9oYLMucELQs0p3NtLSiPglSV1HfYo/mVhKDjgVijZZCDv6iRCMmkSIQMbn
+        4zPDNbMqaow0x99gRFbf9ucCwBJmRb8=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-305-6C5xqDbQNoClozyNTuVqww-1; Mon, 03 Aug 2020 16:58:47 -0400
+X-MC-Unique: 6C5xqDbQNoClozyNTuVqww-1
+Received: by mail-qv1-f71.google.com with SMTP id j13so17877736qvi.17
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 13:58:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=T01zlXdVAdfOQiZawGmFzoRF7DScTQR3FGD2nDiB9KQ=;
-        b=B70NgZ6bhKwpYkypRk/oJoc/FesDTzgiJh/wHboXpb7YekTfgZ2zJPNX1ZbZ75sIb+
-         G1rNs9lbkzFGs0G96g2zla9kflP2kQM/uciR2Nn1RYmGe7Gl1TYZdB5URqFZPsLgRQjA
-         x8pnlzor7gSPVtelDLMsNFWfLWILgJVGg4NYKbIlXxZ3ocM8pUYTPDmaptoMmEoPQ4Do
-         0WPfoF21AyOrJaJBzKom0EiHEM3whaDluF3UwPduUVdh1niI8FFGqFH/8GdoBhKsDp9/
-         3TXkUEfmULbVhoPvHnr7pqEncBXdpCbCc57bNm1AF8c1331/YaH6E2DiA2Q42S+rgFx0
-         35OQ==
-X-Gm-Message-State: AOAM532f3IRmm6UMyVZRk/5/89Qhp6G62Wx0wVO7n1P3tSA16B9XjHex
-        CfuZI9YdIkQCi3x9wbhJC7q1Q92s+1a8VCBh2y/18BBsdMXEKs4NL3ElKTeCZSNL2eBahRXFe5f
-        Y5Fo2f01rTN04poYLpZWciseT
-X-Received: by 2002:ac8:7c97:: with SMTP id y23mr18342396qtv.273.1596488317551;
-        Mon, 03 Aug 2020 13:58:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvO+j2uYhARxvEky6htFfOz+rIDCcYIBBFGBoTihj8mAdmwv6DmYgMv6QBYcyxVH2Z+pUung==
-X-Received: by 2002:ac8:7c97:: with SMTP id y23mr18342383qtv.273.1596488317312;
-        Mon, 03 Aug 2020 13:58:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/Gl2dylMgFGi0Gx2NZhfogviRtCkoLcQlgV/aPlSIlQ=;
+        b=GeQRPc2xOgoj1O2tTH0glkCCYtWgnj/3UxItxUav5uMg0P476axDhJiTarb3Czcd14
+         Iul7eP8FKvbETQn/RcYE9xOyARL/LvqxSbFCDeY0Pg5rL4VgyXqkhmJs6mn84YjKjn/R
+         1It59Ou+o8pdX9yZtHmnf+pRVxSR61hpGygVgTeFIdaX2yFl6FU+BRK39HZieyNZddK0
+         nbzQcdNyYFKa+sTRpzkl+fiQhjYMCMTJ/3nsbaEa9BJ+yxWWka/Tn9Fo9uDjcKT6El+x
+         EQ8dl0Sbb4aYa1WOj9znBc16AMmx8kfCTbBwZYTeySYiVyYMr7Lm2LF0THFw2xM28v3O
+         QcnQ==
+X-Gm-Message-State: AOAM530xkIKzkCRGtTXudf8vaDax+4vV3tdS+SwpfSWW1PHyASyBIu8q
+        vlUyu/A9004pgW3TO1B5lwqMKcBzgq8x8XeYeAG/QTW2vzZzRBNwa/7jr+0xSfVI24hPo2tGIcK
+        v5bImK8Avn0jAoH6OB6IzdSi7
+X-Received: by 2002:a05:620a:151:: with SMTP id e17mr18106845qkn.173.1596488321785;
+        Mon, 03 Aug 2020 13:58:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzEzdxjjAwaWwjwF+kSAMNrLrHcU+XPWDiBIGO+tn5kBn2karRqLrbCrl8SKBeGaGBSURQVuw==
+X-Received: by 2002:a05:620a:151:: with SMTP id e17mr18106835qkn.173.1596488321605;
+        Mon, 03 Aug 2020 13:58:41 -0700 (PDT)
 Received: from redhat.com (bzq-79-177-102-128.red.bezeqint.net. [79.177.102.128])
-        by smtp.gmail.com with ESMTPSA id g4sm21056476qtp.89.2020.08.03.13.58.35
+        by smtp.gmail.com with ESMTPSA id x3sm20452087qkx.3.2020.08.03.13.58.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 13:58:36 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 16:58:33 -0400
+        Mon, 03 Aug 2020 13:58:41 -0700 (PDT)
+Date:   Mon, 3 Aug 2020 16:58:38 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     virtualization@lists.linux-foundation.org,
-        Jason Wang <jasowang@redhat.com>
-Subject: [PATCH v2 00/24] virtio: config space endian-ness cleanup
-Message-ID: <20200803205814.540410-1-mst@redhat.com>
+        Jason Wang <jasowang@redhat.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: [PATCH v2 01/24] virtio_balloon: fix sparse warning
+Message-ID: <20200803205814.540410-2-mst@redhat.com>
+References: <20200803205814.540410-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200803205814.540410-1-mst@redhat.com>
 X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
 X-Mutt-Fcc: =sent
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,74 +70,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Config space endian-ness is currently a mess: fields are
-not tagged with the correct endian-ness so it's easy
-to make mistakes like instanciating config space in
-native endian-ness.
+balloon uses virtio32_to_cpu instead of cpu_to_virtio32
+to convert a native endian number to virtio.
+No practical difference but makes sparse warn.
+Fix it up.
 
-The following patches adding sparse tagging are currently in my tree.
-Lightly tested.
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ drivers/virtio/virtio_balloon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-As a follow-up, I plan to add new APIs that handle modern config space
-in a more efficient way (bypassing the version check).
-
-That is still TBD.
-
-I also start with a version using gcc extensions, then switch
-to _Generic. This is helpful for backports to older kernels/older
-distros: _Generic patch can just be skipped.
-
-Michael S. Tsirkin (24):
-  virtio_balloon: fix sparse warning
-  virtio_ring: sparse warning fixup
-  virtio: allow __virtioXX, __leXX in config space
-  virtio_9p: correct tags for config space fields
-  virtio_balloon: correct tags for config space fields
-  virtio_blk: correct tags for config space fields
-  virtio_console: correct tags for config space fields
-  virtio_crypto: correct tags for config space fields
-  virtio_fs: correct tags for config space fields
-  virtio_gpu: correct tags for config space fields
-  virtio_input: correct tags for config space fields
-  virtio_iommu: correct tags for config space fields
-  virtio_mem: correct tags for config space fields
-  virtio_net: correct tags for config space fields
-  virtio_pmem: correct tags for config space fields
-  virtio_scsi: correct tags for config space fields
-  virtio_config: disallow native type fields
-  mlxbf-tmfifo: sparse tags for config access
-  vdpa: make sure set_features in invoked for legacy
-  vhost/vdpa: switch to new helpers
-  virtio_vdpa: legacy features handling
-  vdpa_sim: fix endian-ness of config space
-  virtio_config: cread/write cleanup
-  virtio_config: rewrite using _Generic
-
- drivers/platform/mellanox/mlxbf-tmfifo.c |  13 +-
- drivers/scsi/virtio_scsi.c               |   4 +-
- drivers/vdpa/vdpa.c                      |   1 +
- drivers/vdpa/vdpa_sim/vdpa_sim.c         |  31 ++++-
- drivers/vhost/vdpa.c                     |   8 +-
- drivers/virtio/virtio_balloon.c          |   2 +-
- drivers/virtio/virtio_vdpa.c             |   9 +-
- include/linux/vdpa.h                     |  34 +++++
- include/linux/virtio_config.h            | 159 ++++++++++++++---------
- include/linux/virtio_ring.h              |  19 ++-
- include/uapi/linux/virtio_9p.h           |   4 +-
- include/uapi/linux/virtio_balloon.h      |  10 +-
- include/uapi/linux/virtio_blk.h          |  26 ++--
- include/uapi/linux/virtio_console.h      |   8 +-
- include/uapi/linux/virtio_crypto.h       |  26 ++--
- include/uapi/linux/virtio_fs.h           |   2 +-
- include/uapi/linux/virtio_gpu.h          |   8 +-
- include/uapi/linux/virtio_input.h        |  18 +--
- include/uapi/linux/virtio_iommu.h        |  12 +-
- include/uapi/linux/virtio_mem.h          |  14 +-
- include/uapi/linux/virtio_net.h          |   8 +-
- include/uapi/linux/virtio_pmem.h         |   4 +-
- include/uapi/linux/virtio_scsi.h         |  20 +--
- 23 files changed, 270 insertions(+), 170 deletions(-)
-
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index 54fd989f9353..8bc1704ffdf3 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -600,7 +600,7 @@ static int send_cmd_id_start(struct virtio_balloon *vb)
+ 	while (virtqueue_get_buf(vq, &unused))
+ 		;
+ 
+-	vb->cmd_id_active = virtio32_to_cpu(vb->vdev,
++	vb->cmd_id_active = cpu_to_virtio32(vb->vdev,
+ 					virtio_balloon_cmd_id_received(vb));
+ 	sg_init_one(&sg, &vb->cmd_id_active, sizeof(vb->cmd_id_active));
+ 	err = virtqueue_add_outbuf(vq, &sg, 1, &vb->cmd_id_active, GFP_KERNEL);
 -- 
 MST
 
