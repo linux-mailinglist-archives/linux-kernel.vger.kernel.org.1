@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E146023A39B
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 13:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCA523A38E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 13:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgHCLvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 07:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgHCLv2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 07:51:28 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB0FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 04:51:24 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id q76so13932434wme.4
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 04:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=P7Q1lJHqVkqxaTMb6WTzWQvdXN5W9ErVGDG9hkuSZsA=;
-        b=A+VjpceEPWo7QWRBeMZXJliBlAsTyax8Hb+X1BwjiugZIBxVp3lZMp6vxM6wH0PiHc
-         6soefw5/1LaWmumJ+Zd05Z1XXxGpo5O68B/+ZvIimZPnbznjh9tgmj3nXz+yaFbhWOaF
-         93/AEvcPpdjNAkq/mtGZG99VtuTPST0YnEIJl0P94BiI2sWtkzAEyjJTqL6cDvr+7ArC
-         cbVfd/PvgHWt5hBKioFXNFgy/+lKIOlxVZTKw5p+RPUvQwgzhNe/NtMUEmi5yXhqLPJU
-         FcYJ3Pm2owlbcdf8r3O2VtPHTRml3XMRo1/eQb51rM1x6uqzuxmdd5KQeRJmwENZJGNh
-         sLnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=P7Q1lJHqVkqxaTMb6WTzWQvdXN5W9ErVGDG9hkuSZsA=;
-        b=Ub7NpKFERL7DNYyE+s8YJLSgGNxrS9tAibTAqkFHVn++9ljGmFMpxr7z1Sv4iYmRHK
-         owsHiyz6A+tKVwc8n9N6JT8j3CpE33Rf5do+JEK+0pz12a7epakPaExgI4okojsT+ONj
-         ncAM2bTdJpMhpzpwrygllBvA/A2nVP8myXb8tSGmfYzJVeBbTECWpj6CyEB7MPDHJuVT
-         LU/5QGtp8b+oXhw3ZhnAEnnMCiv8P0+XeIdIdT5gaHIDNDn2jV29s6Nt62N3t0XulxfQ
-         z3z6TSWkrd+/z+z0wcVOY+kntQtUrggvT19FSjicrVxs5d2Qo4KbEKozAEwwGcGWeJoD
-         esvA==
-X-Gm-Message-State: AOAM531JIzbZiJ2T2hzebzSrtajDpnN1P2u7iNqEoQqAp6H/lNOrf06R
-        S5KtcTcrxwbP4+/SqFdb3zMgBHT5
-X-Google-Smtp-Source: ABdhPJwef8MJ3cAwq3uYCx3+hMYQYkVf1rsumONdCkv3M2QV1qPZf/zRGeLd+HrALH3nK9etqn080g==
-X-Received: by 2002:a1c:7e44:: with SMTP id z65mr16525047wmc.13.1596455482074;
-        Mon, 03 Aug 2020 04:51:22 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id x11sm23885869wrl.28.2020.08.03.04.51.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 04:51:20 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Subject: [PATCH] habanalabs: increase length of ASIC name
-Date:   Mon,  3 Aug 2020 14:51:18 +0300
-Message-Id: <20200803115118.31211-1-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726846AbgHCLtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 07:49:02 -0400
+Received: from out1.zte.com.cn ([202.103.147.172]:46234 "EHLO mxct.zte.com.cn"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726536AbgHCLs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 07:48:56 -0400
+Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
+        by Forcepoint Email with ESMTPS id 6D3A3CCBE0C8360DBA6B;
+        Mon,  3 Aug 2020 19:48:47 +0800 (CST)
+Received: from notes_smtp.zte.com.cn (notessmtp.zte.com.cn [10.30.1.239])
+        by mse-fl1.zte.com.cn with ESMTP id 073BmjGR014618;
+        Mon, 3 Aug 2020 19:48:45 +0800 (GMT-8)
+        (envelope-from wang.yi59@zte.com.cn)
+Received: from fox-host8.localdomain ([10.74.120.8])
+          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
+          with ESMTP id 2020080319485078-4487275 ;
+          Mon, 3 Aug 2020 19:48:50 +0800 
+From:   Yi Wang <wang.yi59@zte.com.cn>
+To:     mst@redhat.com
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
+        wang.yi59@zte.com.cn, wang.liang82@zte.com.cn,
+        Liao Pingfang <liao.pingfang@zte.com.cn>
+Subject: [PATCH] virtio_pci_modern: Fix the comment of virtio_pci_find_capability()
+Date:   Mon, 3 Aug 2020 19:52:24 +0800
+Message-Id: <1596455545-43556-1-git-send-email-wang.yi59@zte.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
+ 21, 2013) at 2020-08-03 19:48:50,
+        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
+ 2020-08-03 19:48:46,
+        Serialize complete at 2020-08-03 19:48:46
+X-MAIL: mse-fl1.zte.com.cn 073BmjGR014618
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Future ASIC names are longer than 15 chars so increase the variable length
-to 32 chars.
+From: Liao Pingfang <liao.pingfang@zte.com.cn>
 
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+Fix the comment of virtio_pci_find_capability() by adding missing comment
+for the last parameter: bars.
+
+Fixes: 59a5b0f7bf74 ("virtio-pci: alloc only resources actually used.")
+Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
+Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
 ---
- drivers/misc/habanalabs/common/habanalabs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/virtio/virtio_pci_modern.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 942f7e52f1a2..8b5b4afe42c7 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -1524,7 +1524,7 @@ struct hl_device {
- 	struct device			*dev_ctrl;
- 	struct delayed_work		work_freq;
- 	struct delayed_work		work_heartbeat;
--	char				asic_name[16];
-+	char				asic_name[32];
- 	enum hl_asic_type		asic_type;
- 	struct hl_cq			*completion_queue;
- 	struct workqueue_struct		**cq_wq;
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index db93cedd262f..9bdc6f68221f 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -481,6 +481,7 @@ static const struct virtio_config_ops virtio_pci_config_ops = {
+  * @dev: the pci device
+  * @cfg_type: the VIRTIO_PCI_CAP_* value we seek
+  * @ioresource_types: IORESOURCE_MEM and/or IORESOURCE_IO.
++ * @bars: the bitmask of BARs
+  *
+  * Returns offset of the capability, or 0.
+  */
 -- 
-2.17.1
+2.26.1
 
