@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9654E23A611
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5034B23A675
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729559AbgHCMoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54564 "EHLO mail.kernel.org"
+        id S1728611AbgHCMsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728177AbgHCM2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:28:24 -0400
+        id S1726764AbgHCMZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:25:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13978204EC;
-        Mon,  3 Aug 2020 12:28:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C00F0204EC;
+        Mon,  3 Aug 2020 12:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457702;
-        bh=3mwQymnSuAF7EoIQqtlTrQToDWYmmPfzGvkEd4olq2o=;
+        s=default; t=1596457499;
+        bh=o7PvMwrlk3UBBoMW6c8XhdPCogoApdzwui/Lysd27AY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0AjX0z20UAFbZt+xK3B948GcrEmeaYzdfzqY8Rax5OpVtxHj1o5BszcdzU4g/fCQO
-         GOfzIN9AJJ/9aorRKZSzxvzaR3CpxomB7Jz9bRtq0Ox5mTOdCOknSAufMtzZE7Eq1R
-         jhF/+BDI9uoGJ1KgxudPXIwBinXIn4tbcpbFiu1w=
+        b=L1SzhS1B+gIJMtkQKwAuFSFl2Wt1aE7iSPzvhqQ+wCcxn1/AeGl7cV4AWJKe2niYE
+         nwaaaGZMkg/B8bI4e1/1zk6x0QJ2zzbtpG3wd9R4GQhionaHj5pwkMoGehDFYince+
+         XmJR+J7Mh6raon37OIspdhRbQNMBqCHiyZ3tLT34=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 44/90] sh: Fix validation of system call number
-Date:   Mon,  3 Aug 2020 14:19:06 +0200
-Message-Id: <20200803121859.755761157@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 089/120] net: gemini: Fix missing clk_disable_unprepare() in error path of gemini_ethernet_port_probe()
+Date:   Mon,  3 Aug 2020 14:19:07 +0200
+Message-Id: <20200803121907.196147278@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,55 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 04a8a3d0a73f51c7c2da84f494db7ec1df230e69 ]
+[ Upstream commit 85496a29224188051b6135eb38da8afd4c584765 ]
 
-The slow path for traced system call entries accessed a wrong memory
-location to get the number of the maximum allowed system call number.
-Renumber the numbered "local" label for the correct location to avoid
-collisions with actual local labels.
+Fix the missing clk_disable_unprepare() before return
+from gemini_ethernet_port_probe() in the error handling case.
 
-Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Fixes: f3a8308864f920d2 ("sh: Add a few missing irqflags tracing markers.")
-Signed-off-by: Rich Felker <dalias@libc.org>
+Fixes: 4d5ae32f5e1e ("net: ethernet: Add a driver for Gemini gigabit ethernet")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sh/kernel/entry-common.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/cortina/gemini.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/sh/kernel/entry-common.S b/arch/sh/kernel/entry-common.S
-index d31f66e82ce51..4a8ec9e40cc2a 100644
---- a/arch/sh/kernel/entry-common.S
-+++ b/arch/sh/kernel/entry-common.S
-@@ -199,7 +199,7 @@ syscall_trace_entry:
- 	mov.l	@(OFF_R7,r15), r7   ! arg3
- 	mov.l	@(OFF_R3,r15), r3   ! syscall_nr
- 	!
--	mov.l	2f, r10			! Number of syscalls
-+	mov.l	6f, r10			! Number of syscalls
- 	cmp/hs	r10, r3
- 	bf	syscall_call
- 	mov	#-ENOSYS, r0
-@@ -353,7 +353,7 @@ ENTRY(system_call)
- 	tst	r9, r8
- 	bf	syscall_trace_entry
- 	!
--	mov.l	2f, r8			! Number of syscalls
-+	mov.l	6f, r8			! Number of syscalls
- 	cmp/hs	r8, r3
- 	bt	syscall_badsys
- 	!
-@@ -392,7 +392,7 @@ syscall_exit:
- #if !defined(CONFIG_CPU_SH2)
- 1:	.long	TRA
- #endif
--2:	.long	NR_syscalls
-+6:	.long	NR_syscalls
- 3:	.long	sys_call_table
- 7:	.long	do_syscall_trace_enter
- 8:	.long	do_syscall_trace_leave
+diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
+index 5bff5c2be88b9..5359fb40578db 100644
+--- a/drivers/net/ethernet/cortina/gemini.c
++++ b/drivers/net/ethernet/cortina/gemini.c
+@@ -2445,6 +2445,7 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
+ 	port->reset = devm_reset_control_get_exclusive(dev, NULL);
+ 	if (IS_ERR(port->reset)) {
+ 		dev_err(dev, "no reset\n");
++		clk_disable_unprepare(port->pclk);
+ 		return PTR_ERR(port->reset);
+ 	}
+ 	reset_control_reset(port->reset);
+@@ -2500,8 +2501,10 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
+ 					IRQF_SHARED,
+ 					port_names[port->id],
+ 					port);
+-	if (ret)
++	if (ret) {
++		clk_disable_unprepare(port->pclk);
+ 		return ret;
++	}
+ 
+ 	ret = register_netdev(netdev);
+ 	if (!ret) {
 -- 
 2.25.1
 
