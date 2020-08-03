@@ -2,87 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECEA23A5CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BECF123A534
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729219AbgHCMl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:41:59 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:40476 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729273AbgHCMcD (ORCPT
+        id S1729534AbgHCMeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729518AbgHCMeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:32:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596457922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+FTqyOz+KM8b1l5RbH2zS34D2EqLt9IQI9azf1e1ydg=;
-        b=O2yqvXo0igto70PGbTccw38Nvw+kQKvBUvKy0S/bLEufT+HlS0SCAyJ6cQdvtl6rc3MqFP
-        vHGonZ/MA0O51mYlIihyqjNxA17a9/Z/qbBjuBVW5AD7JczIqHl+HuKwbKP4QgaT0M5V7c
-        a9/LUyfXCO0IzGGyywCGHvR/MNDWdcg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-77-YLQh1wy0P0eZHtUDK-Mg4w-1; Mon, 03 Aug 2020 08:31:58 -0400
-X-MC-Unique: YLQh1wy0P0eZHtUDK-Mg4w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7D55101C8A8;
-        Mon,  3 Aug 2020 12:31:56 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8724E7176A;
-        Mon,  3 Aug 2020 12:31:53 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <303106be4785135446e56cb606138a6e94885887.camel@themaw.net>
-References: <303106be4785135446e56cb606138a6e94885887.camel@themaw.net> <CAJfpeguO8Qwkzx9zfGVT7W+pT5p6fgj-_8oJqJbXX_KQBpLLEQ@mail.gmail.com> <1293241.1595501326@warthog.procyon.org.uk> <CAJfpegspWA6oUtdcYvYF=3fij=Bnq03b8VMbU9RNMKc+zzjbag@mail.gmail.com> <158454378820.2863966.10496767254293183123.stgit@warthog.procyon.org.uk> <158454391302.2863966.1884682840541676280.stgit@warthog.procyon.org.uk> <2003787.1595585999@warthog.procyon.org.uk> <865566fb800a014868a9a7e36a00a14430efb11e.camel@themaw.net> <2023286.1595590563@warthog.procyon.org.uk> <CAJfpegsT_3YqHPWCZGX7Lr+sE0NVmczWz5L6cN8CzsVz4YKLCQ@mail.gmail.com> <1283475.1596449889@warthog.procyon.org.uk> <1576646.1596455376@warthog.procyon.org.uk>
-To:     Ian Kent <raven@themaw.net>
-Cc:     dhowells@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Christian Brauner <christian@brauner.io>, andres@anarazel.de,
-        Jeff Layton <jlayton@redhat.com>, dray@redhat.com,
-        Karel Zak <kzak@redhat.com>, keyrings@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/17] watch_queue: Implement mount topology and attribute change notifications [ver #5]
+        Mon, 3 Aug 2020 08:34:02 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE83BC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 05:34:02 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y206so7739190pfb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 05:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uM2vZnd6apiHVlprtfwpHKfrja9VsUva5BQDdDFeOqI=;
+        b=GZA0wsa4JHDCBaPz1RKHDehOq/1VUdU66+kj/avxY9pSBZ6SwPyRxoTRf5xwNIZIap
+         Ry3e6JKGWp9kAAQF5HcIef+9j0cmFJ06CDwK2r/m0IsFyh7f2ouyt+pN7gdh+y6SH0xo
+         Ko0Vr7zZPTLwXo51JIYczfh6Oy22JldW2lce4JGo2BKa10FR6HcoQ8o/r/rFQ5MJI8qV
+         NaK+vvZ2Dxdo+fEHfONbFc0jAppOuNd4/7toRnGO17uUxUEtvunzAM8N/NvGAZtfO13/
+         kY5EbJIF4hu0u2C9CDsgMd5p4ScqYIdwaplaRue3snb9wtpUtoUiBYljOtaPHQ2smzDQ
+         WQaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uM2vZnd6apiHVlprtfwpHKfrja9VsUva5BQDdDFeOqI=;
+        b=YDc3eciZYB9voWg78JnSmM2l6aO5Ikxwe/w2NRvUjYNMxESJrA2Q6PFBRhEZO1j1Gl
+         8BsCjygkSF4Kc1VhbI1wINdvRCyyAo3JrcHRfK9Przw5ufZIBNgO1Agrx6pIkc/hTggu
+         60LkDrj6yVq9Akb+JlOoTjbERmHyq3rnVdm2KRTfTNjnNmHT8nYO2tRXAiUTZoiheea9
+         T1Eh7vVPQ/auc6UAQnZAaHr0Cp3YdNVnZIvzCjpHiiuBFV36brOZurMk3zi136Iyu1Hv
+         hddSd9AYZOd1B5GbbL+89v6cxlPvsXTpY68r3fcaiqLwX6LeQfnpPpXiB42Lud2fm3Et
+         2mdQ==
+X-Gm-Message-State: AOAM530Uh/3YKDjxumDDS7oEMMOI6RwjEr1cJ3JdnoOgiKtto8egzN3D
+        BbQ1qBW74h22CxemAJov+zbfBhyx
+X-Google-Smtp-Source: ABdhPJyaViM3LU7p5/mxDQhYnuEqgP2PPPQDiqH/iqONh4OFFNM4c3G1wP1TLHilRKlev3rO9g1xUQ==
+X-Received: by 2002:aa7:94b5:: with SMTP id a21mr15523274pfl.237.1596458042235;
+        Mon, 03 Aug 2020 05:34:02 -0700 (PDT)
+Received: from [0.0.0.0] ([101.32.42.91])
+        by smtp.gmail.com with ESMTPSA id r202sm9649046pfc.127.2020.08.03.05.33.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Aug 2020 05:34:01 -0700 (PDT)
+Subject: Re: [PATCH] sched/fair: Fix the logic about active_balance in
+ load_balance()
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de
+Cc:     linux-kernel@vger.kernel.org
+References: <20200802045141.130533-1-arch0.zheng@gmail.com>
+ <c9afe264-d453-1676-77c9-b29db3481107@arm.com>
+From:   Qi Zheng <arch0.zheng@gmail.com>
+Message-ID: <9b584a64-b419-e7ea-249e-6fed9db804c0@gmail.com>
+Date:   Mon, 3 Aug 2020 20:33:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1692825.1596457912.1@warthog.procyon.org.uk>
-Date:   Mon, 03 Aug 2020 13:31:52 +0100
-Message-ID: <1692826.1596457912@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <c9afe264-d453-1676-77c9-b29db3481107@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ian Kent <raven@themaw.net> wrote:
+Hi Dietmar,
 
-> > I'm changing it so that the fields are 64-bit, but initialised with the
-> > existing mount ID in the notifications set.  The fsinfo set changes that
-> > to a unique ID.  I'm tempted to make the unique IDs start at UINT_MAX+1 to
-> > disambiguate them.
+I understand, thank you for your review and very detailed explanation.
+
+Yours,
+Qi Zheng
+
+On 2020/8/3 下午3:36, Dietmar Eggemann wrote:
+> On 02/08/2020 06:51, Qi Zheng wrote:
+>> I think the unbalance scenario here should be that we need to
+>> do active balance but it is not actually done. So fix it.
+>>
+>> Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
+>> ---
+>>   kernel/sched/fair.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 2ba8f230feb9..6d8c53718b67 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -9710,7 +9710,7 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>>   	} else
+>>   		sd->nr_balance_failed = 0;
+>>   
+>> -	if (likely(!active_balance) || voluntary_active_balance(&env)) {
+>> +	if (likely(!active_balance) && voluntary_active_balance(&env)) {
+>>   		/* We were unbalanced, so reset the balancing interval */
+>>   		sd->balance_interval = sd->min_interval;
+>>   	} else {
+>>
 > 
-> Mmm ... so what would I use as a mount id that's not used, like NULL
-> for strings?
-
-Zero is skipped, so you could use that.
-
-> I'm using -1 now but changing this will mean I need something
-> different.
-
-It's 64-bits, so you're not likely to see it reach -1, even if it does start
-at UINT_MAX+1.
-
-David
-
+> Active balance is potentially already been done when we reach this code.
+> 
+> See 'if (need_active_balance(&env))' and 'if (!busiest->active_balance)'
+> further up.
+> 
+> Here we only reset sd->balance_interval in case:
+> (A) the last load balance wasn't an active one
+> (B) the reason for the active load balance was:
+>      (1) asym packing
+>      (2) capacity of src_cpu is reduced compared to the one of dst_cpu
+>      (3) misfit handling
+> 
+> (B) is done to not unnecessarily increase of balance interval, see
+> commit 46a745d90585 ("sched/fair: Fix unnecessary increase of balance
+> interval").
+> 
