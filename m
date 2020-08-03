@@ -2,48 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E389E239F4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 07:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C37F239F52
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 07:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgHCFtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 01:49:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41154 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727015AbgHCFtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 01:49:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 917A9AC20;
-        Mon,  3 Aug 2020 05:50:09 +0000 (UTC)
-Subject: Re: [PATCH] xen: hypercall.h: fix duplicated word
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org
-References: <20200726001731.19540-1-rdunlap@infradead.org>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <2f324614-3fbd-2e66-9ac4-30ed26c07519@suse.com>
-Date:   Mon, 3 Aug 2020 07:49:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200726001731.19540-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1728248AbgHCFvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 01:51:48 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60308 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728142AbgHCFvr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 01:51:47 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0735bAta155429;
+        Mon, 3 Aug 2020 01:51:37 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32pcc30f4p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Aug 2020 01:51:37 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0735nsR9013882;
+        Mon, 3 Aug 2020 05:51:37 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma05wdc.us.ibm.com with ESMTP id 32nxe44gx9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Aug 2020 05:51:37 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0735pWT031457568
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 Aug 2020 05:51:32 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0E06E7805F;
+        Mon,  3 Aug 2020 05:51:36 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 079C67805C;
+        Mon,  3 Aug 2020 05:51:34 +0000 (GMT)
+Received: from [153.66.254.194] (unknown [9.85.201.133])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon,  3 Aug 2020 05:51:34 +0000 (GMT)
+Message-ID: <1596433893.4087.34.camel@linux.ibm.com>
+Subject: Re: [PATCH] scsi: esas2r: fix possible buffer overflow caused by
+ bad DMA value in esas2r_process_fs_ioctl()
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Jia-Ju Bai <baijiaju@tsinghua.edu.cn>, linuxdrivers@attotech.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sun, 02 Aug 2020 22:51:33 -0700
+In-Reply-To: <81351eab-69c0-89dc-4e58-146a005b5929@tsinghua.edu.cn>
+References: <20200802152145.4387-1-baijiaju@tsinghua.edu.cn>
+         <1596383240.4087.8.camel@linux.ibm.com>
+         <81351eab-69c0-89dc-4e58-146a005b5929@tsinghua.edu.cn>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-03_04:2020-07-31,2020-08-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 malwarescore=0 mlxscore=0 phishscore=0 spamscore=0
+ suspectscore=18 lowpriorityscore=0 impostorscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008030041
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.07.20 02:17, Randy Dunlap wrote:
-> Change the repeated word "as" to "as a".
+On Mon, 2020-08-03 at 11:07 +0800, Jia-Ju Bai wrote:
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: xen-devel@lists.xenproject.org
+> On 2020/8/2 23:47, James Bottomley wrote:
+> > On Sun, 2020-08-02 at 23:21 +0800, Jia-Ju Bai wrote:
+> > > Because "fs" is mapped to DMA, its data can be modified at
+> > > anytime by malicious or malfunctioning hardware. In this case,
+> > > the check "if (fsc->command >= cmdcnt)" can be passed, and then
+> > > "fsc->command" can be modified by hardware to cause buffer
+> > > overflow.
+> > 
+> > This threat model seems to be completely bogus.  If the device were
+> > malicious it would have given the mailbox incorrect values a priori
+> > ... it wouldn't give the correct value then update it.  For most
+> > systems we do assume correct operation of the device but if there's
+> > a worry about incorrect operation, the usual approach is to guard
+> > the device with an IOMMU which, again, would make this sort of fix
+> > unnecessary because the IOMMU will have removed access to the
+> > buffer after the command completed.
+> 
+> Thanks for the reply :)
+> 
+> In my opinion, IOMMU is used to prevent the hardware from accessing 
+> arbitrary memory addresses, but it cannot prevent the hardware from 
+> writing a bad value into a valid memory address.
 
-Pushed to: xen/tip.git for-linus-5.9
+I think that's what I said above.  It would give us a bad a priori
+value which copying can't help with.
 
+> For this reason, I think that the hardware can normally access 
+> "fsc->command" and modify it into arbitrary value at any time,
+> because IOMMU considers the address of "fsc->command" is valid for
+> the hardware.
 
-Juergen
+Not if we suspected the device.  I think esas2r does keep the buffer
+mapped, but if we suspected the device we'd only map it for the reply
+then unmap it.
+
+The point I'm making is we have hardware tools at our disposal to
+corral suspect devices if need be, but they're really only used in
+exceptional VM circumstances.  Under ordinary circumstances we simply
+trust the device.  So if you had evidence that esas2r were prone to
+faults, we'd usually force the manufacturer to fix the firmware and as
+a last resort we might consider corralling it with an iommu we wouldn't
+just copy some values.
+
+If you want an example of defensive coding, we had to add a load of
+checks to TPM devices to cope with the bus interposer situation. 
+That's one case where we no longer trust the device to return correct
+information.  However, to do the same for any SCSI device we'd need a
+convincing rationale for why.
+
+James
+
