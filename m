@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208C523AF87
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD2723AF98
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729199AbgHCVO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 17:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729179AbgHCVOy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 17:14:54 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B868C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 14:14:54 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d188so12916025pfd.2
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 14:14:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vFs5N7Aj94X2p4Itvu8tYvN2B3/GsCmBFKnespcHSO0=;
-        b=BIJROpGSryxlCfoh5rldvY+j0NKCC0TMSDj/SFN4RZMbQXx5jWPcy71uC+SEtNDxX7
-         BqHAgLfMCOWFh5CNKROZfxPZ7EGqxWAg93Z6IjH7NzGlBMXrZcz89dtyCQzcWdK51/rc
-         4fcRl1C9vlx4ysv8yE4M/BFzdQHtnm+whqM3MeFrq5DQOznOUiZWtnNMCG0/nmJ4d/7y
-         rB4POQCJpPpNHFNFza1crYxYA9RRemn99Fll6ery5GoKvTgmgHezyhpPaFZuHLcvyRsN
-         GEAKftb1k0JcKY4VpjWXVi9+noA+0KYRnOD0pfyJCTCONpF6xVqUst0vVvw9lVpCHj9e
-         mamA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vFs5N7Aj94X2p4Itvu8tYvN2B3/GsCmBFKnespcHSO0=;
-        b=X8uhJs5bHUHCqYdXCfg9RUBkG0GdEO7lA0J+oEgn0xGG6O1g7NmpAV2dFXJNUqLlle
-         rbFOiLDOBbBdXuQLPHCpHYxSfWA7VyXfjl+NvXvb2Ed5bk53iMO0S4w+YF1sNMnHGjq+
-         QQ9PVyaRgS540GvqyyqOBb7UPFH1eonHP8FLMZzxyi7zNaVqNVyp3Yp1fSgdshXkYxMs
-         4w/60gxLeDjS+Ci3gjbBtXb7/yMHo0F1wsNUGthq3PTpf84Jf5eQG9XQB8aqZMokJ11p
-         x57gp3XNZmdQPiXW6n1X4neOnZDCn8xidqE1pOqvsZiG6IpmsXCKc+p5U5SFeUzgOvwK
-         ZzQg==
-X-Gm-Message-State: AOAM5310PsYqAvxpX6rpn9G80LLoHS+3ABHpsohDqDspn30erelTF0y0
-        aAJefqeBPO2nwdm2ZtqqZWWD+7w0lh7jCiTXsxHWeA==
-X-Google-Smtp-Source: ABdhPJxN74uGPSyFq/sMHzSrAyVNydvv3a1KRtp+ugVWRWUR4XzuGsQSZAk1SzJ3Mge5oZFXZ7/TRU4deckwnTL4Mdg=
-X-Received: by 2002:a62:7b89:: with SMTP id w131mr16526946pfc.284.1596489293882;
- Mon, 03 Aug 2020 14:14:53 -0700 (PDT)
+        id S1729062AbgHCVXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 17:23:09 -0400
+Received: from mga07.intel.com ([134.134.136.100]:14126 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728256AbgHCVXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 17:23:09 -0400
+IronPort-SDR: NBMuFDmnPKx9NebyCT+vQyF5+jpekkC5oorRcrhjy4WI8uajBFLI6tpIj451/8laR59VHQNI9P
+ 86XAiX78JHYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="216609915"
+X-IronPort-AV: E=Sophos;i="5.75,431,1589266800"; 
+   d="scan'208";a="216609915"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 14:23:08 -0700
+IronPort-SDR: hF6njcnE8SnJWNhsZBBlJ4cLXyJa3HDZs8WmMD5zJaubot2BsbrAgt77Fr3PwYgtXgDRFZKxf/
+ VGAEpUe+uj2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,431,1589266800"; 
+   d="scan'208";a="288237306"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga003.jf.intel.com with ESMTP; 03 Aug 2020 14:23:08 -0700
+Date:   Mon, 3 Aug 2020 14:23:08 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Alexander Graf <graf@amazon.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Aaron Lewis <aaronlewis@google.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] KVM: x86: Introduce allow list for MSR emulation
+Message-ID: <20200803212307.GI3151@linux.intel.com>
+References: <20200731214947.16885-1-graf@amazon.com>
+ <20200731214947.16885-3-graf@amazon.com>
+ <87zh7cot7t.fsf@vitty.brq.redhat.com>
+ <2585c6d6-81b0-8375-78ed-862da226ad6c@amazon.com>
 MIME-Version: 1.0
-References: <20200803025939.21106-1-98.arpi@gmail.com>
-In-Reply-To: <20200803025939.21106-1-98.arpi@gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Mon, 3 Aug 2020 14:14:42 -0700
-Message-ID: <CAFd5g47u5u=cVAM_5rBj0mA4YcKjanebb35Po1EN13mNrEH7KA@mail.gmail.com>
-Subject: Re: [PATCH v2] lib: Convert test_uuid.c to KUnit
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2585c6d6-81b0-8375-78ed-862da226ad6c@amazon.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 2, 2020 at 8:00 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->
-> Converts test lib/test_uuid.c to KUnit.
-> More information about KUnit can be found at
-> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
-> This change is beneficial as KUnit provides a common framework for
-> unit tests in the kernel. KUnit is fast as well.
->
-> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+On Mon, Aug 03, 2020 at 10:50:53PM +0200, Alexander Graf wrote:
+> 
+> On 03.08.20 13:37, Vitaly Kuznetsov wrote:
+> >>+static int kvm_vm_ioctl_clear_msr_allowlist(struct kvm *kvm)
+> >>+{
+> >>+     mutex_lock(&kvm->lock);
+> >>+     kvm->arch.msr_allowlist_ranges_count = 0;
+> >>+     mutex_unlock(&kvm->lock);
+> >
+> >Are we also supposed to kfree() bitmaps here?
+> 
+> Phew. Yes, because without the kfree() we're leaking memory. Unfortunately
+> if I just put in a kfree() here, we may allow a concurrently executing vCPU
+> to access already free'd memory.
+> 
+> So I'll also add locking around the range check. Let's hope it won't regress
+> performance too much.
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-
-Thanks!
+What about using KVM's SRCU to protect the list?  The only thing I'm not 100%
+on is whether holding kvm->lock across synchronize_srcu() is safe from a lock
+inversion perspective.  I'm pretty sure KVM doesn't try to acquire kvm->lock
+after grabbing SRCU, but that's hard to audit and there aren't any existing
+flows that invoke synchronize_srcu() while holding kvm->lock.
