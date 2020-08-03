@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C32E23A49B
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA07E23A466
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728822AbgHCM2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:28:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55062 "EHLO mail.kernel.org"
+        id S1728407AbgHCM0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:26:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726394AbgHCM2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:28:49 -0400
+        id S1727867AbgHCM0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:26:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B421207DF;
-        Mon,  3 Aug 2020 12:28:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC341207FB;
+        Mon,  3 Aug 2020 12:26:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457727;
-        bh=9hjkPMxo/mTjurQnQFy89AafOR3M7VRXCspHHGa+u6o=;
+        s=default; t=1596457592;
+        bh=LkmYfpO8CCHqVPPYGJEJrOUiJmWXY43q7bamRMNf8qU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vaU1yhSir3HcwKwy4mpT0IYbym/eMVOQTTpg9lLtiunwtaf58SLznr7r96hTyIs0V
-         7ElniQZQQHDrUVFzPz0nWEhlO53Ww6bFh9kZlBayoArAnCubAUqFFrJwwOUf8Oasmu
-         zjRzsgemh8AlYVsrq8Ujs4Ey1GGU7IQDI9T9VEjw=
+        b=CDajc0Z7NDs01zI2U/xMIjQFMIZqf0IG9mb0Aex8Bh71d8wf5BYIEiw7LP1FdBk+7
+         p1xco8BZwS7stBrXqm2nGlMWqjRwTGQ+vsfv14CqO/AwdDzSHqIxmR7wpcecv+AdQI
+         rKjDPWKKOp6mG9x+J2RzVGuCj/oqnjVspav/gwCE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Woojung.Huh@microchip.com" <Woojung.Huh@microchip.com>,
-        Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org, Paolo Pisati <paolo.pisati@canonical.com>,
+        David Ahern <dsahern@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 52/90] net: lan78xx: add missing endpoint sanity check
-Date:   Mon,  3 Aug 2020 14:19:14 +0200
-Message-Id: <20200803121900.142970363@linuxfoundation.org>
+Subject: [PATCH 5.7 097/120] selftests: fib_nexthop_multiprefix: fix cleanup() netns deletion
+Date:   Mon,  3 Aug 2020 14:19:15 +0200
+Message-Id: <20200803121907.638269762@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,43 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Paolo Pisati <paolo.pisati@canonical.com>
 
-[ Upstream commit 8d8e95fd6d69d774013f51e5f2ee10c6e6d1fc14 ]
+[ Upstream commit 651149f60376758a4759f761767965040f9e4464 ]
 
-Add the missing endpoint sanity check to prevent a NULL-pointer
-dereference should a malicious device lack the expected endpoints.
+During setup():
+...
+        for ns in h0 r1 h1 h2 h3
+        do
+                create_ns ${ns}
+        done
+...
 
-Note that the driver has a broken endpoint-lookup helper,
-lan78xx_get_endpoints(), which can end up accepting interfaces in an
-altsetting without endpoints as long as *some* altsetting has a bulk-in
-and a bulk-out endpoint.
+while in cleanup():
+...
+        for n in h1 r1 h2 h3 h4
+        do
+                ip netns del ${n} 2>/dev/null
+        done
+...
 
-Fixes: 55d7de9de6c3 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
-Cc: Woojung.Huh@microchip.com <Woojung.Huh@microchip.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+and after removing the stderr redirection in cleanup():
+
+$ sudo ./fib_nexthop_multiprefix.sh
+...
+TEST: IPv4: host 0 to host 3, mtu 1400                              [ OK ]
+TEST: IPv6: host 0 to host 3, mtu 1400                              [ OK ]
+Cannot remove namespace file "/run/netns/h4": No such file or directory
+$ echo $?
+1
+
+and a non-zero return code, make kselftests fail (even if the test
+itself is fine):
+
+...
+not ok 34 selftests: net: fib_nexthop_multiprefix.sh # exit=1
+...
+
+Signed-off-by: Paolo Pisati <paolo.pisati@canonical.com>
+Reviewed-by: David Ahern <dsahern@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/lan78xx.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ tools/testing/selftests/net/fib_nexthop_multiprefix.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
-index 0170a441208a7..54ce1ed1ea379 100644
---- a/drivers/net/usb/lan78xx.c
-+++ b/drivers/net/usb/lan78xx.c
-@@ -3767,6 +3767,11 @@ static int lan78xx_probe(struct usb_interface *intf,
- 	netdev->max_mtu = MAX_SINGLE_PACKET_SIZE;
- 	netif_set_gso_max_size(netdev, MAX_SINGLE_PACKET_SIZE - MAX_HEADER);
+diff --git a/tools/testing/selftests/net/fib_nexthop_multiprefix.sh b/tools/testing/selftests/net/fib_nexthop_multiprefix.sh
+index 9dc35a16e4159..51df5e305855a 100755
+--- a/tools/testing/selftests/net/fib_nexthop_multiprefix.sh
++++ b/tools/testing/selftests/net/fib_nexthop_multiprefix.sh
+@@ -144,7 +144,7 @@ setup()
  
-+	if (intf->cur_altsetting->desc.bNumEndpoints < 3) {
-+		ret = -ENODEV;
-+		goto out3;
-+	}
-+
- 	dev->ep_blkin = (intf->cur_altsetting)->endpoint + 0;
- 	dev->ep_blkout = (intf->cur_altsetting)->endpoint + 1;
- 	dev->ep_intr = (intf->cur_altsetting)->endpoint + 2;
+ cleanup()
+ {
+-	for n in h1 r1 h2 h3 h4
++	for n in h0 r1 h1 h2 h3
+ 	do
+ 		ip netns del ${n} 2>/dev/null
+ 	done
 -- 
 2.25.1
 
