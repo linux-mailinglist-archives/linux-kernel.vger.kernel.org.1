@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E6023A6CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D5023A6E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgHCMyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:54:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726610AbgHCMy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:54:26 -0400
-Received: from quaco.ghostprotocols.net (unknown [177.158.178.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 182972076E;
-        Mon,  3 Aug 2020 12:54:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596459265;
-        bh=dihwWGji4Y3Y13Cgm2yhUQVzGNJHEX8GTUBbBPPyhcw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w7TREd4IbYq7l0UxsLtO8kgFlvfhMT8W+tx+WnVzcLNuxp+McskB4AKpd5fJworgn
-         0Mj7uRL9fn+wrAjKQuP2ZpzbdoJPjMzLaW4Ir7eVns/SEAwdi2FKjHpkSmra8Xnw/k
-         vi5s3Mss4pT2FkcD3HysYfHCLIoqp+aZ8LPdLjDc=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D615540C7C; Mon,  3 Aug 2020 09:54:23 -0300 (-03)
-Date:   Mon, 3 Aug 2020 09:54:23 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linuxarm@huawei.com,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] perf pmu: Improve CPU core PMU HW event list
- ordering
-Message-ID: <20200803125423.GA3440834@kernel.org>
-References: <1592384514-119954-1-git-send-email-john.garry@huawei.com>
- <1592384514-119954-3-git-send-email-john.garry@huawei.com>
- <CAM9d7cgqJzQJ7GfL6Q3VgARd1=rrkRYqOqSivZww-LOo+DvKFA@mail.gmail.com>
- <20200617121549.GA31085@kernel.org>
- <74303789-6c06-574d-674b-202cf84a2018@huawei.com>
+        id S1728356AbgHCMzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:55:53 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:52356 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729026AbgHCMze (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:55:34 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 073CtOKY110727;
+        Mon, 3 Aug 2020 07:55:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596459324;
+        bh=WYNukEVRHfZsaR36KvZkUDOLNg6q0B0GBqASCxqL5Uk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=daUCzK1lBs5eUhC5ZhbT3vEBNO9ujIy5fs1Dd5XN26bsggte826Hi9EeASTtzpbOB
+         YsjLLADA5eXmwv5YRxUucnv8hmTs83gtIYQ1+iIQXdZ+Q+rHwhhWTKprBGuhLUtzUW
+         OIBWOe/MGIckgWZ/fWecPtyM0nupC7E+JUQscgPs=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 073CtOI9079018
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 3 Aug 2020 07:55:24 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 3 Aug
+ 2020 07:55:24 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 3 Aug 2020 07:55:24 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 073CtL4R083147;
+        Mon, 3 Aug 2020 07:55:22 -0500
+Subject: Re: [PATCH 1/2] dmaengine: ti: k3-psil: Use soc_device_match to get
+ the psil map
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <dan.j.williams@intel.com>,
+        <linux-arm-kernel@lists.infradead.org>, <nm@ti.com>,
+        <grygorii.strashko@ti.com>, <lokeshvutla@ti.com>, <nsekhar@ti.com>,
+        <kishon@ti.com>, <linux-kernel@vger.kernel.org>
+References: <20200803101128.20885-1-peter.ujfalusi@ti.com>
+ <20200803101128.20885-2-peter.ujfalusi@ti.com>
+ <20200803111436.GN12965@vkoul-mobl>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <5ac0498e-8874-4864-c823-d9648c381411@ti.com>
+Date:   Mon, 3 Aug 2020 15:56:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <74303789-6c06-574d-674b-202cf84a2018@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200803111436.GN12965@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 03, 2020 at 09:00:06AM +0100, John Garry escreveu:
-> On 17/06/2020 13:15, Arnaldo Carvalho de Melo wrote:
-> > Em Wed, Jun 17, 2020 at 08:31:02PM +0900, Namhyung Kim escreveu:
-> > > On Wed, Jun 17, 2020 at 6:06 PM John Garry <john.garry@huawei.com> wrote:
-> > > > For perf list, the CPU core PMU HW event ordering is such that not all
-> > > > events may will be listed adjacent - consider this example:
-> > > >    cstate_pkg/c6-residency/                           [Kernel PMU event]
-> > > >    cstate_pkg/c7-residency/                           [Kernel PMU event]
 
-> > > > Signed-off-by: John Garry <john.garry@huawei.com>
 
-> > > Acked-by: Namhyung Kim <namhyung@kernel.org>
+On 03/08/2020 14.14, Vinod Koul wrote:
+> On 03-08-20, 13:11, Peter Ujfalusi wrote:
+>> Instead of separate of_machine_is_compatible() it is better to use
+>> soc_device_match() and soc_device_attribute struct to get the PSI-L ma=
+p
+>> for the booted device.
+>>
+>> By using soc_device_match() it is easier to add support for new device=
+s.
+>>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> ---
+>>  drivers/dma/ti/k3-psil.c | 19 ++++++++++++++-----
+>>  1 file changed, 14 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/dma/ti/k3-psil.c b/drivers/dma/ti/k3-psil.c
+>> index fb7c8150b0d1..3ca29aabac93 100644
+>> --- a/drivers/dma/ti/k3-psil.c
+>> +++ b/drivers/dma/ti/k3-psil.c
+>> @@ -9,11 +9,18 @@
+>>  #include <linux/init.h>
+>>  #include <linux/mutex.h>
+>>  #include <linux/of.h>
+>> +#include <linux/sys_soc.h>
+>> =20
+>>  #include "k3-psil-priv.h"
+>> =20
+>>  static DEFINE_MUTEX(ep_map_mutex);
+>> -static struct psil_ep_map *soc_ep_map;
+>> +static const struct psil_ep_map *soc_ep_map;
+>> +
+>> +static const struct soc_device_attribute k3_soc_devices[] =3D {
+>> +	{ .family =3D "AM65X", .data =3D &am654_ep_map },
+>> +	{ .family =3D "J721E", .data =3D &j721e_ep_map },
+>> +	{ /* sentinel */ }
+>> +};
+>> =20
+>>  struct psil_endpoint_config *psil_get_ep_config(u32 thread_id)
+>>  {
+>> @@ -21,15 +28,17 @@ struct psil_endpoint_config *psil_get_ep_config(u3=
+2 thread_id)
+>> =20
+>>  	mutex_lock(&ep_map_mutex);
+>>  	if (!soc_ep_map) {
+>> -		if (of_machine_is_compatible("ti,am654")) {
+>> -			soc_ep_map =3D &am654_ep_map;
+>> -		} else if (of_machine_is_compatible("ti,j721e")) {
+>> -			soc_ep_map =3D &j721e_ep_map;
+>> +		const struct soc_device_attribute *soc;
+>> +
+>> +		soc =3D soc_device_match(k3_soc_devices);
+>> +		if (soc) {
+>> +			soc_ep_map =3D soc->data;
+>>  		} else {
+>>  			pr_err("PSIL: No compatible machine found for map\n");
+>>  			mutex_unlock(&ep_map_mutex);
+>>  			return ERR_PTR(-ENOTSUPP);
+>>  		}
+>> +
+>=20
+> not related
 
-> > Thanks a lot, applied.
- 
-> I'm struggling to understand which branch we should base our development on.
-> I don't see these patches in perf/core or linux-next. I saw someone
-> mentioned tmp.perf/core as a baseline, but I can't see that branch in
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-> 
-> Please let me know - it would be useful for any dev during the merge window.
+True, I'll drop it.
 
-So, I'm now pushing things directly to Linus, but just the tooling part,
-the branch to do development on is:
+>=20
+>>  		pr_debug("%s: Using map for %s\n", __func__, soc_ep_map->name);
+>>  	}
+>>  	mutex_unlock(&ep_map_mutex);
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
+Thanks,
+- P=C3=A9ter
 
-At some point I think we'll have a git/perf-tools/perf-tools.git, just
-like tip, but for now, please use the one above.
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-My perf/core in the past was rebaseable, I did changes in it after
-publishing, trying to have solid bisectability, since I process patch by
-patch doing tests on it when we noticed problems, prior to pushing to
-Ingo for tip.
-
-Now I am making perf/core non-rebaseable, I push things there
-periodically, tagging what is there with the test results, see:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tag/?h=perf-tools-tests-2020-07-17
-  https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tag/?h=perf-tools-tests-2020-07-02
-
-I'll try and tag today's state of that tree, which I did tests already
-but since v5.8 was released, I merged it there and will retest and tag
-the test results.
-
-The tmp.perf/core one is an experiment in making what I have in my local
-tree available for more bleeding edge things that are being done, say in
-that metrics effort, etc, but I think I'll stop that, since, as your
-message shows, it is causing confusion.
-
-I did this because these tests take quite some time and sometimes I have
-to fix things and restart it, rinse, repeat.
-
-So please use:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
-
-I'll further automate all this so that we have a more regular cadence of
-updates to perf/core, say every two days or so.
-
-If you have changes that touch both the kernel and userspace, the kernel
-bits need to go via tip, the tooling via the perf tree, that for now
-(well, it has been like that for quite a long time) is my tree.
-
-Arch specific kernel bits have been going via the arch trees for quite a
-while, I think.
-
-- Arnaldo
