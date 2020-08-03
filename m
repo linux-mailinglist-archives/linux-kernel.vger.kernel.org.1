@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480E123A512
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28FB23A552
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728935AbgHCMdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60902 "EHLO mail.kernel.org"
+        id S1729673AbgHCMfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:35:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729364AbgHCMcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:32:55 -0400
+        id S1729221AbgHCMfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:35:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 206E5204EC;
-        Mon,  3 Aug 2020 12:32:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDB8F204EC;
+        Mon,  3 Aug 2020 12:35:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457973;
-        bh=cW0MevAFt8H5njALXBT6v761SRuxFMSBRNmZHnFg2CY=;
+        s=default; t=1596458132;
+        bh=Nr2DZ258aumtJCnTDAvnz2EoPonXjfadvG+fjwqD5Dk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fwtAi0jJ5zfVdXSEdlPwDFwXcjhFuSktHsUcvzLm1Ek2cxtEXQ9TfefIEHFrM0NdM
-         Or/AK9OHxQuE8DyHYrxbZWxOsIRPaOWwWNRcqh9JbAU+Wm+MNaZTgz8nNPD2ya7nWl
-         q3g461MGhqGOITlnkH3l1Q5IhZ46d2wqVDkvcAwA=
+        b=bFpPB/9gNJ7uaBnmzE/HXLpsmgm6V3SSpqa+JdEFdRlgxcTPM1EAEg1RGUR7b0ayW
+         9fiWNaXSaGjDvuj1U5o3+d+JkMRk7DCnGoEiUqkMXEhsONWAH5BrUWg+eSD6ewGQy4
+         j26VE/azFAQ2C8xonhlSG43FjBA17rjMgglQY1oU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Liam Beguin <liambeguin@gmail.com>,
-        Dave Anglin <dave.anglin@bell.net>,
-        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 49/56] parisc: add support for cmpxchg on u8 pointers
-Date:   Mon,  3 Aug 2020 14:20:04 +0200
-Message-Id: <20200803121852.720664294@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Dominique Martinet <dominique.martinet@cea.fr>,
+        syzbot+2222c34dc40b515f30dc@syzkaller.appspotmail.com,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 20/51] 9p/trans_fd: abort p9_read_work if req status changed
+Date:   Mon,  3 Aug 2020 14:20:05 +0200
+Message-Id: <20200803121850.473168725@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121849.488233135@linuxfoundation.org>
+References: <20200803121849.488233135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,72 +47,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <liambeguin@gmail.com>
+From: Dominique Martinet <dominique.martinet@cea.fr>
 
-[ Upstream commit b344d6a83d01c52fddbefa6b3b4764da5b1022a0 ]
+[ Upstream commit e4ca13f7d075e551dc158df6af18fb412a1dba0a ]
 
-The kernel test bot reported[1] that using set_mask_bits on a u8 causes
-the following issue on parisc:
+p9_read_work would try to handle an errored req even if it got put to
+error state by another thread between the lookup (that worked) and the
+time it had been fully read.
+The request itself is safe to use because we hold a ref to it from the
+lookup (for m->rreq, so it was safe to read into the request data buffer
+until this point), but the req_list has been deleted at the same time
+status changed, and client_cb already has been called as well, so we
+should not do either.
 
-	hppa-linux-ld: drivers/phy/ti/phy-tusb1210.o: in function `tusb1210_probe':
-	>> (.text+0x2f4): undefined reference to `__cmpxchg_called_with_bad_pointer'
-	>> hppa-linux-ld: (.text+0x324): undefined reference to `__cmpxchg_called_with_bad_pointer'
-	hppa-linux-ld: (.text+0x354): undefined reference to `__cmpxchg_called_with_bad_pointer'
-
-Add support for cmpxchg on u8 pointers.
-
-[1] https://lore.kernel.org/patchwork/patch/1272617/#1468946
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Liam Beguin <liambeguin@gmail.com>
-Tested-by: Dave Anglin <dave.anglin@bell.net>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Link: http://lkml.kernel.org/r/1539057956-23741-1-git-send-email-asmadeus@codewreck.org
+Signed-off-by: Dominique Martinet <dominique.martinet@cea.fr>
+Reported-by: syzbot+2222c34dc40b515f30dc@syzkaller.appspotmail.com
+Cc: Eric Van Hensbergen <ericvh@gmail.com>
+Cc: Latchesar Ionkov <lucho@ionkov.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/include/asm/cmpxchg.h |  2 ++
- arch/parisc/lib/bitops.c          | 12 ++++++++++++
- 2 files changed, 14 insertions(+)
+ net/9p/trans_fd.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/arch/parisc/include/asm/cmpxchg.h b/arch/parisc/include/asm/cmpxchg.h
-index ab5c215cf46c3..0689585758717 100644
---- a/arch/parisc/include/asm/cmpxchg.h
-+++ b/arch/parisc/include/asm/cmpxchg.h
-@@ -60,6 +60,7 @@ extern void __cmpxchg_called_with_bad_pointer(void);
- extern unsigned long __cmpxchg_u32(volatile unsigned int *m, unsigned int old,
- 				   unsigned int new_);
- extern u64 __cmpxchg_u64(volatile u64 *ptr, u64 old, u64 new_);
-+extern u8 __cmpxchg_u8(volatile u8 *ptr, u8 old, u8 new_);
+diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
+index a9c65f13b7f51..cbd8cfafb7940 100644
+--- a/net/9p/trans_fd.c
++++ b/net/9p/trans_fd.c
+@@ -301,7 +301,6 @@ static void p9_read_work(struct work_struct *work)
+ {
+ 	int n, err;
+ 	struct p9_conn *m;
+-	int status = REQ_STATUS_ERROR;
  
- /* don't worry...optimizer will get rid of most of this */
- static inline unsigned long
-@@ -71,6 +72,7 @@ __cmpxchg(volatile void *ptr, unsigned long old, unsigned long new_, int size)
- #endif
- 	case 4: return __cmpxchg_u32((unsigned int *)ptr,
- 				     (unsigned int)old, (unsigned int)new_);
-+	case 1: return __cmpxchg_u8((u8 *)ptr, (u8)old, (u8)new_);
- 	}
- 	__cmpxchg_called_with_bad_pointer();
- 	return old;
-diff --git a/arch/parisc/lib/bitops.c b/arch/parisc/lib/bitops.c
-index 70ffbcf889b8e..2e4d1f05a9264 100644
---- a/arch/parisc/lib/bitops.c
-+++ b/arch/parisc/lib/bitops.c
-@@ -79,3 +79,15 @@ unsigned long __cmpxchg_u32(volatile unsigned int *ptr, unsigned int old, unsign
- 	_atomic_spin_unlock_irqrestore(ptr, flags);
- 	return (unsigned long)prev;
- }
-+
-+u8 __cmpxchg_u8(volatile u8 *ptr, u8 old, u8 new)
-+{
-+	unsigned long flags;
-+	u8 prev;
-+
-+	_atomic_spin_lock_irqsave(ptr, flags);
-+	if ((prev = *ptr) == old)
-+		*ptr = new;
-+	_atomic_spin_unlock_irqrestore(ptr, flags);
-+	return prev;
-+}
+ 	m = container_of(work, struct p9_conn, rq);
+ 
+@@ -381,11 +380,17 @@ static void p9_read_work(struct work_struct *work)
+ 	if ((m->req) && (m->rc.offset == m->rc.capacity)) {
+ 		p9_debug(P9_DEBUG_TRANS, "got new packet\n");
+ 		spin_lock(&m->client->lock);
+-		if (m->req->status != REQ_STATUS_ERROR)
+-			status = REQ_STATUS_RCVD;
+-		list_del(&m->req->req_list);
+-		/* update req->status while holding client->lock  */
+-		p9_client_cb(m->client, m->req, status);
++		if (m->req->status == REQ_STATUS_SENT) {
++			list_del(&m->req->req_list);
++			p9_client_cb(m->client, m->req, REQ_STATUS_RCVD);
++		} else {
++			spin_unlock(&m->client->lock);
++			p9_debug(P9_DEBUG_ERROR,
++				 "Request tag %d errored out while we were reading the reply\n",
++				 m->rc.tag);
++			err = -EIO;
++			goto error;
++		}
+ 		spin_unlock(&m->client->lock);
+ 		m->rc.sdata = NULL;
+ 		m->rc.offset = 0;
 -- 
 2.25.1
 
