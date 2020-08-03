@@ -2,358 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E617B23A6AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABA223A6B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728046AbgHCMwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:52:33 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:51833 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728212AbgHCMv5 (ORCPT
+        id S1728384AbgHCMxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:53:23 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60346 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727897AbgHCMwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:51:57 -0400
-Received: from localhost (pop.92-184-100-115.mobile.abo.orange.fr [92.184.100.115])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 6E524100004;
-        Mon,  3 Aug 2020 12:51:40 +0000 (UTC)
-Date:   Mon, 3 Aug 2020 14:51:30 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Claudiu.Beznea@microchip.com
-Cc:     Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] ARM: at91: pm: add per soc validation of pm modes
-Message-ID: <20200803125130.GH3679@piout.net>
-References: <1596439517-12993-1-git-send-email-claudiu.beznea@microchip.com>
- <1596439517-12993-3-git-send-email-claudiu.beznea@microchip.com>
- <20200803083436.GG3679@piout.net>
- <f8282c6f-7f4c-0047-f233-4f40096755f9@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8282c6f-7f4c-0047-f233-4f40096755f9@microchip.com>
+        Mon, 3 Aug 2020 08:52:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596459156;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=MSngICgia1pK9aI580EBIPySPVS0zT0GBc5XA54Jllw=;
+        b=ZYMArt+/3l8elVnt8xj4/NygKmtk0gp0UDQ3gGUb6LkiG0WHa2tjVppYAxWoLaniKk8xq8
+        GiHGuWvN0tZEOcf78RexEgpXSc990Qviak4v4wuPx0GLyZAQ09LFpul/EM8fcpz9IczP7j
+        E/WhE0gJtjQ1dEBpL99m6qF8LRMENms=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-sUK9d3eWPryTnDAsiv7wGA-1; Mon, 03 Aug 2020 08:52:31 -0400
+X-MC-Unique: sUK9d3eWPryTnDAsiv7wGA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B6EEE1005504;
+        Mon,  3 Aug 2020 12:52:30 +0000 (UTC)
+Received: from janakin.usersys.redhat.com (unknown [10.40.208.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A4E4D1001B0B;
+        Mon,  3 Aug 2020 12:52:29 +0000 (UTC)
+From:   Jan Stancek <jstancek@redhat.com>
+To:     luto@mit.edu
+Cc:     hpa@linux.intel.com, linux-kernel@vger.kernel.org,
+        jstancek@redhat.com
+Subject: [PATCH RESEND] selftests: vdso: hash entry size on alpha,s390x is 8 bytes
+Date:   Mon,  3 Aug 2020 14:52:15 +0200
+Message-Id: <93a07b1808e61babef3a20542cbeb4565d3c8410.1596458924.git.jstancek@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2020 10:54:51+0000, Claudiu.Beznea@microchip.com wrote:
-> >> diff --git a/arch/arm/mach-at91/at91rm9200.c b/arch/arm/mach-at91/at91rm9200.c
-> >> index 4f8186211619..7318d8e16797 100644
-> >> --- a/arch/arm/mach-at91/at91rm9200.c
-> >> +++ b/arch/arm/mach-at91/at91rm9200.c
-> >> @@ -13,12 +13,20 @@
-> >>  #include <asm/mach/arch.h>
-> >>
-> >>  #include "generic.h"
-> >> +#include "pm.h"
-> >> +
-> >> +/* AT91RM9200 valid PM modes. */
-> >> +static const int at91rm9200_pm_modes[] = {
-> >> +     AT91_PM_STANDBY,
-> >> +     AT91_PM_ULP0,
-> >> +};
-> >>
-> >>  static void __init at91rm9200_dt_device_init(void)
-> >>  {
-> >>       of_platform_default_populate(NULL, NULL, NULL);
-> >>
-> >> -     at91rm9200_pm_init();
-> >> +     at91rm9200_pm_init(at91rm9200_pm_modes,
-> >> +                        ARRAY_SIZE(at91rm9200_pm_modes));
-> >>  }
-> >>
-> > 
-> > You can avoid the changes in the soc files and leave everything
-> > contained in pm.c as each <soc>_pm_init has a known list of mode that
-> > will very likely never change. Bonus points if you make the arrays
-> > __initdata.
-> 
-> That was my initial approach. I went with the one in this patch to avoid
-> adding yet another struct of_device_id array in pm.c and keep code in pm.c
-> somehow platform independent. If you feel is better your way, then OK, I
-> have no problems with moving it in pm.c.
-> 
+parse_vdso.c is crashing on 5.8-rc5 s390x, because it wrongly reads
+nbucket as 0:
+  Program received signal SIGFPE, Arithmetic exception.
+  0x0000000001000f3e in vdso_sym (version=0x1001280 "LINUX_2.6", name=0x100128a "__vdso_getcpu") at parse_vdso.c:207
+  207             ELF(Word) chain = vdso_info.bucket[elf_hash(name) % vdso_info.nbucket];
+  (gdb) p vdso_info.nbucket
+  $1 = 0
 
-You don't need an other struct of_device_id array as you already have
-all the _pm_init functions broken out by soc family.
+Per readelf source:
+  https://sourceware.org/git/?p=binutils-gdb.git;a=blob;f=binutils/readelf.c;h=2406304fe35a832ac53aa7b1a367f3f7afed4264;hb=HEAD#l10027
+and objdump output hash entries are double size on 64bit s390 and alpha:
+  0000000000000120 <.hash>:
+   120:   00 00 00 00             .long   0x00000000
+   124:   00 00 00 03             .long   0x00000003
+   128:   00 00 00 00             .long   0x00000000
+   12c:   00 00 00 07             .long   0x00000007
+   130:   00 00 00 00             .long   0x00000000
+   134:   00 00 00 01             .long   0x00000001
+   138:   00 00 00 00             .long   0x00000000
+   13c:   00 00 00 05             .long   0x00000005
+   140:   00 00 00 00             .long   0x00000000
+   144:   00 00 00 06             .long   0x00000006
+	  ...
+   16c:   00 00 00 02             .long   0x00000002
+   170:   00 00 00 00             .long   0x00000000
+   174:   00 00 00 03             .long   0x00000003
+   178:   00 00 00 00             .long   0x00000000
+   17c:   00 00 00 04             .long   0x00000004
 
-Going further, for at91rm9200_pm_init and at91sam9_pm_init, maybe you
-can simply enforce soc_pm.data.standby_mode = AT91_PM_STANDBY and
-soc_pm.data.suspend_mode = AT91_PM_ULP0 instead of checking the modes.
+Do similar check in parse_vdso.c and treat hash entries as double word.
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ tools/testing/selftests/vDSO/parse_vdso.c | 48 +++++++++++++++++++----
+ 1 file changed, 40 insertions(+), 8 deletions(-)
 
-> > 
-> >>  static const char *const at91rm9200_dt_board_compat[] __initconst = {
-> >> diff --git a/arch/arm/mach-at91/at91sam9.c b/arch/arm/mach-at91/at91sam9.c
-> >> index 7e572189a5eb..683f2c35a116 100644
-> >> --- a/arch/arm/mach-at91/at91sam9.c
-> >> +++ b/arch/arm/mach-at91/at91sam9.c
-> >> @@ -13,12 +13,19 @@
-> >>  #include <asm/system_misc.h>
-> >>
-> >>  #include "generic.h"
-> >> +#include "pm.h"
-> >> +
-> >> +/* AT91SAM9 valid PM modes. */
-> >> +static const int at91sam9_pm_modes[] = {
-> >> +     AT91_PM_STANDBY,
-> >> +     AT91_PM_ULP0,
-> >> +};
-> >>
-> >>  static void __init at91sam9_init(void)
-> >>  {
-> >>       of_platform_default_populate(NULL, NULL, NULL);
-> >>
-> >> -     at91sam9_pm_init();
-> >> +     at91sam9_pm_init(at91sam9_pm_modes, ARRAY_SIZE(at91sam9_pm_modes));
-> >>  }
-> >>
-> >>  static const char *const at91_dt_board_compat[] __initconst = {
-> >> diff --git a/arch/arm/mach-at91/generic.h b/arch/arm/mach-at91/generic.h
-> >> index 0a4cdcb4985b..610a12e5a71c 100644
-> >> --- a/arch/arm/mach-at91/generic.h
-> >> +++ b/arch/arm/mach-at91/generic.h
-> >> @@ -9,17 +9,17 @@
-> >>  #define _AT91_GENERIC_H
-> >>
-> >>  #ifdef CONFIG_PM
-> >> -extern void __init at91rm9200_pm_init(void);
-> >> -extern void __init at91sam9_pm_init(void);
-> >> -extern void __init sam9x60_pm_init(void);
-> >> -extern void __init sama5_pm_init(void);
-> >> -extern void __init sama5d2_pm_init(void);
-> >> +extern void __init at91rm9200_pm_init(const int *modes, int len);
-> >> +extern void __init at91sam9_pm_init(const int *modes, int len);
-> >> +extern void __init sam9x60_pm_init(const int *modes, int len);
-> >> +extern void __init sama5_pm_init(const int *modes, int len);
-> >> +extern void __init sama5d2_pm_init(const int *modes, int len);
-> >>  #else
-> >> -static inline void __init at91rm9200_pm_init(void) { }
-> >> -static inline void __init at91sam9_pm_init(void) { }
-> >> -static inline void __init sam9x60_pm_init(void) { }
-> >> -static inline void __init sama5_pm_init(void) { }
-> >> -static inline void __init sama5d2_pm_init(void) { }
-> >> +static inline void __init at91rm9200_pm_init(const int *modes, int len) { }
-> >> +static inline void __init at91sam9_pm_init(const int *modes, int len) { }
-> >> +static inline void __init sam9x60_pm_init(const int *modes, int len) { }
-> >> +static inline void __init sama5_pm_init(const int *modes, int len) { }
-> >> +static inline void __init sama5d2_pm_init(const int *modes, int len) { }
-> >>  #endif
-> >>
-> > 
-> > Then this change is not necessary.
-> > 
-> >>  #endif /* _AT91_GENERIC_H */
-> >> diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-> >> index 04fdcbd57100..caf87efc7eeb 100644
-> >> --- a/arch/arm/mach-at91/pm.c
-> >> +++ b/arch/arm/mach-at91/pm.c
-> >> @@ -785,6 +785,59 @@ static const struct of_device_id atmel_pmc_ids[] __initconst = {
-> >>       { /* sentinel */ },
-> >>  };
-> >>
-> >> +static void __init at91_pm_modes_validate(const int *modes, int len)
-> >> +{
-> >> +     u8 i, located = 0;
-> >> +     int mode;
-> >> +
-> >> +#define STANDBY      BIT(0)
-> >> +#define SUSPEND      BIT(1)
-> >> +
-> >> +     for (i = 0; i < len; i++) {
-> >> +             if ((located & STANDBY) && (located & SUSPEND))
-> >> +                     break;
-> >> +
-> >> +             if (modes[i] == soc_pm.data.standby_mode &&
-> >> +                 !(located & STANDBY)) {
-> >> +                     located |= STANDBY;
-> >> +                     continue;
-> >> +             }
-> >> +
-> >> +             if (modes[i] == soc_pm.data.suspend_mode &&
-> >> +                 !(located & SUSPEND)) {
-> >> +                     located |= SUSPEND;
-> >> +                     continue;
-> >> +             }
-> >> +     }
-> >> +
-> >> +     if (!(located & STANDBY)) {
-> >> +             if (soc_pm.data.suspend_mode == AT91_PM_STANDBY)
-> >> +                     mode = AT91_PM_ULP0;
-> >> +             else
-> >> +                     mode = AT91_PM_STANDBY;
-> >> +
-> >> +             pr_warn("AT91: PM: %s mode not supported! Using %s.\n",
-> >> +                     pm_modes[soc_pm.data.standby_mode].pattern,
-> >> +                     pm_modes[mode].pattern);
-> >> +             soc_pm.data.standby_mode = mode;
-> >> +     }
-> >> +
-> >> +     if (!(located & SUSPEND)) {
-> >> +             if (soc_pm.data.standby_mode == AT91_PM_ULP0)
-> >> +                     mode = AT91_PM_STANDBY;
-> >> +             else
-> >> +                     mode = AT91_PM_ULP0;
-> >> +
-> >> +             pr_warn("AT91: PM: %s mode not supported! Using %s.\n",
-> >> +                     pm_modes[soc_pm.data.suspend_mode].pattern,
-> >> +                     pm_modes[mode].pattern);
-> >> +             soc_pm.data.suspend_mode = mode;
-> >> +     }
-> >> +
-> >> +#undef STANDBY
-> >> +#undef SUSPEND
-> > 
-> > You should use two booleans instead of a bit array, this would not make
-> > the code longer and will avoid this #def/#undef thing.
-> 
-> OK, I have no strong opinion on this. I'll switch to booleans.
-> 
-> > 
-> >> +}
-> >> +
-> >>  static void __init at91_pm_init(void (*pm_idle)(void))
-> >>  {
-> >>       struct device_node *pmc_np;
-> >> @@ -821,11 +874,12 @@ static void __init at91_pm_init(void (*pm_idle)(void))
-> >>       }
-> >>  }
-> >>
-> >> -void __init at91rm9200_pm_init(void)
-> >> +void __init at91rm9200_pm_init(const int *modes, int len)
-> >>  {
-> >>       if (!IS_ENABLED(CONFIG_SOC_AT91RM9200))
-> >>               return;
-> >>
-> >> +     at91_pm_modes_validate(modes, len);
-> >>       at91_dt_ramc();
-> >>
-> >>       /*
-> >> @@ -836,11 +890,12 @@ void __init at91rm9200_pm_init(void)
-> >>       at91_pm_init(at91rm9200_idle);
-> >>  }
-> >>
-> >> -void __init sam9x60_pm_init(void)
-> >> +void __init sam9x60_pm_init(const int *modes, int len)
-> >>  {
-> >>       if (!IS_ENABLED(CONFIG_SOC_SAM9X60))
-> >>               return;
-> >>
-> >> +     at91_pm_modes_validate(modes, len);
-> >>       at91_pm_modes_init();
-> >>       at91_dt_ramc();
-> >>       at91_pm_init(at91sam9x60_idle);
-> >> @@ -849,31 +904,33 @@ void __init sam9x60_pm_init(void)
-> >>       soc_pm.config_pmc_ws = at91_sam9x60_config_pmc_ws;
-> >>  }
-> >>
-> >> -void __init at91sam9_pm_init(void)
-> >> +void __init at91sam9_pm_init(const int *modes, int len)
-> >>  {
-> >>       if (!IS_ENABLED(CONFIG_SOC_AT91SAM9))
-> >>               return;
-> >>
-> >> +     at91_pm_modes_validate(modes, len);
-> >>       at91_dt_ramc();
-> >>       at91_pm_init(at91sam9_idle);
-> >>  }
-> >>
-> >> -void __init sama5_pm_init(void)
-> >> +void __init sama5_pm_init(const int *modes, int len)
-> >>  {
-> >>       if (!IS_ENABLED(CONFIG_SOC_SAMA5))
-> >>               return;
-> >>
-> >> +     at91_pm_modes_validate(modes, len);
-> >>       at91_dt_ramc();
-> >>       at91_pm_init(NULL);
-> >>  }
-> >>
-> >> -void __init sama5d2_pm_init(void)
-> >> +void __init sama5d2_pm_init(const int *modes, int len)
-> >>  {
-> >>       if (!IS_ENABLED(CONFIG_SOC_SAMA5D2))
-> >>               return;
-> >>
-> >> +     sama5_pm_init(modes, len);
-> >>       at91_pm_modes_init();
-> >> -     sama5_pm_init();
-> >>
-> >>       soc_pm.ws_ids = sama5d2_ws_ids;
-> >>       soc_pm.config_shdwc_ws = at91_sama5d2_config_shdwc_ws;
-> >> diff --git a/arch/arm/mach-at91/sam9x60.c b/arch/arm/mach-at91/sam9x60.c
-> >> index d8c739d25458..d7c869c7b542 100644
-> >> --- a/arch/arm/mach-at91/sam9x60.c
-> >> +++ b/arch/arm/mach-at91/sam9x60.c
-> >> @@ -14,12 +14,21 @@
-> >>  #include <asm/system_misc.h>
-> >>
-> >>  #include "generic.h"
-> >> +#include "pm.h"
-> >> +
-> >> +/* SAM9X60 valid PM modes. */
-> >> +static const int sam9x60_pm_modes[] = {
-> >> +     AT91_PM_STANDBY,
-> >> +     AT91_PM_ULP0,
-> >> +     AT91_PM_ULP0_FAST,
-> >> +     AT91_PM_ULP1,
-> >> +};
-> >>
-> >>  static void __init sam9x60_init(void)
-> >>  {
-> >>       of_platform_default_populate(NULL, NULL, NULL);
-> >>
-> >> -     sam9x60_pm_init();
-> >> +     sam9x60_pm_init(sam9x60_pm_modes, ARRAY_SIZE(sam9x60_pm_modes));
-> >>  }
-> >>
-> >>  static const char *const sam9x60_dt_board_compat[] __initconst = {
-> >> diff --git a/arch/arm/mach-at91/sama5.c b/arch/arm/mach-at91/sama5.c
-> >> index 89dab7cf01e8..7eb124612a10 100644
-> >> --- a/arch/arm/mach-at91/sama5.c
-> >> +++ b/arch/arm/mach-at91/sama5.c
-> >> @@ -14,11 +14,19 @@
-> >>  #include <asm/system_misc.h>
-> >>
-> >>  #include "generic.h"
-> >> +#include "pm.h"
-> >> +
-> >> +/* SAMA5 valid PM modes. */
-> >> +static const int sama5_pm_modes[] = {
-> >> +     AT91_PM_STANDBY,
-> >> +     AT91_PM_ULP0,
-> >> +     AT91_PM_ULP0_FAST,
-> >> +};
-> >>
-> >>  static void __init sama5_dt_device_init(void)
-> >>  {
-> >>       of_platform_default_populate(NULL, NULL, NULL);
-> >> -     sama5_pm_init();
-> >> +     sama5_pm_init(sama5_pm_modes, ARRAY_SIZE(sama5_pm_modes));
-> >>  }
-> >>
-> >>  static const char *const sama5_dt_board_compat[] __initconst = {
-> >> @@ -44,10 +52,19 @@ DT_MACHINE_START(sama5_alt_dt, "Atmel SAMA5")
-> >>       .l2c_aux_mask   = ~0UL,
-> >>  MACHINE_END
-> >>
-> >> +/* sama5d2 PM modes. */
-> >> +static const int sama5d2_pm_modes[] = {
-> >> +     AT91_PM_STANDBY,
-> >> +     AT91_PM_ULP0,
-> >> +     AT91_PM_ULP0_FAST,
-> >> +     AT91_PM_ULP1,
-> >> +     AT91_PM_BACKUP,
-> >> +};
-> >> +
-> >>  static void __init sama5d2_init(void)
-> >>  {
-> >>       of_platform_default_populate(NULL, NULL, NULL);
-> >> -     sama5d2_pm_init();
-> >> +     sama5d2_pm_init(sama5d2_pm_modes, ARRAY_SIZE(sama5d2_pm_modes));
-> >>  }
+Resend with original author CC-ed.
 
+diff --git a/tools/testing/selftests/vDSO/parse_vdso.c b/tools/testing/selftests/vDSO/parse_vdso.c
+index 413f75620a35..e23efcbd1c88 100644
+--- a/tools/testing/selftests/vDSO/parse_vdso.c
++++ b/tools/testing/selftests/vDSO/parse_vdso.c
+@@ -47,8 +47,9 @@ static struct vdso_info
+ 	/* Symbol table */
+ 	ELF(Sym) *symtab;
+ 	const char *symstrings;
+-	ELF(Word) *bucket, *chain;
++	void *bucket, *chain;
+ 	ELF(Word) nbucket, nchain;
++	bool hash_ent_is_dword;
+ 
+ 	/* Version table */
+ 	ELF(Versym) *versym;
+@@ -69,6 +70,28 @@ static unsigned long elf_hash(const unsigned char *name)
+ 	return h;
+ }
+ 
++/* return value of hash table entry */
++ELF(Word) get_hash_val(void *ptr, ELF(Word) idx)
++{
++	if (vdso_info.hash_ent_is_dword) {
++		ELF(Xword) *table = ptr;
++		/* for vdso assume all values fit in Elf Word */
++		return (ELF(Word)) table[idx];
++	}
++
++	ELF(Word) *table = ptr;
++	return table[idx];
++}
++
++/* return pointer to hash table entry */
++void *get_hash_ptr(void *ptr, ELF(Word) idx)
++{
++	if (vdso_info.hash_ent_is_dword)
++		return &((ELF(Xword) *) ptr)[idx];
++
++	return &((ELF(Word) *) ptr)[idx];
++}
++
+ void vdso_init_from_sysinfo_ehdr(uintptr_t base)
+ {
+ 	size_t i;
+@@ -84,6 +107,14 @@ void vdso_init_from_sysinfo_ehdr(uintptr_t base)
+ 		return;  /* Wrong ELF class -- check ELF_BITS */
+ 	}
+ 
++	/* 64bit s390 and alpha have hash entry size of 8 bytes */
++	if ((hdr->e_machine == EM_ALPHA
++		|| hdr->e_machine == EM_S390)
++		&& hdr->e_ident[EI_CLASS] == ELFCLASS64)
++		vdso_info.hash_ent_is_dword = true;
++	else
++		vdso_info.hash_ent_is_dword = false;
++
+ 	ELF(Phdr) *pt = (ELF(Phdr)*)(vdso_info.load_addr + hdr->e_phoff);
+ 	ELF(Dyn) *dyn = 0;
+ 
+@@ -149,11 +180,11 @@ void vdso_init_from_sysinfo_ehdr(uintptr_t base)
+ 	if (!vdso_info.verdef)
+ 		vdso_info.versym = 0;
+ 
+-	/* Parse the hash table header. */
+-	vdso_info.nbucket = hash[0];
+-	vdso_info.nchain = hash[1];
+-	vdso_info.bucket = &hash[2];
+-	vdso_info.chain = &hash[vdso_info.nbucket + 2];
++
++	vdso_info.nbucket = get_hash_val(hash, 0);
++	vdso_info.nchain = get_hash_val(hash, 1);
++	vdso_info.bucket = get_hash_ptr(hash, 2);
++	vdso_info.chain = get_hash_ptr(hash, vdso_info.nbucket + 2);
+ 
+ 	/* That's all we need. */
+ 	vdso_info.valid = true;
+@@ -204,9 +235,10 @@ void *vdso_sym(const char *version, const char *name)
+ 		return 0;
+ 
+ 	ver_hash = elf_hash(version);
+-	ELF(Word) chain = vdso_info.bucket[elf_hash(name) % vdso_info.nbucket];
++	ELF(Word) chain = get_hash_val(vdso_info.bucket,
++		elf_hash(name) % vdso_info.nbucket);
+ 
+-	for (; chain != STN_UNDEF; chain = vdso_info.chain[chain]) {
++	for (; chain != STN_UNDEF; chain = get_hash_val(vdso_info.chain, chain)) {
+ 		ELF(Sym) *sym = &vdso_info.symtab[chain];
+ 
+ 		/* Check for a defined global or weak function w/ right name. */
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.18.1
+
