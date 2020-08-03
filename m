@@ -2,129 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EFB23A86C
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E5C23A88E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgHCOal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 10:30:41 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:40355 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726358AbgHCOak (ORCPT
+        id S1728439AbgHCOd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 10:33:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726358AbgHCOd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 10:30:40 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id 7BBDB10D1;
-        Mon,  3 Aug 2020 10:30:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 03 Aug 2020 10:30:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        6ek7rotfn8yHr2SVRzyFzJOuazfE8xSPG939AHlpXcs=; b=eMfuj2cAVKP+mJQT
-        biNupJQwLHqaYhHLFPuUZQyX6CGdZVry0cLxvTO0phcdbXXnC+pMPkI29PiaDNuG
-        aus0TI6+71rhFFJ6BuivmuUCNYH+sJkr9LS0qGEhf58g6Kq5foxI8EqS5PQ4BNtR
-        m2Hdlp6p41lZC7lp1a58aYOyyx6HUKRh+y49rCGvH3/At3UhVpzU/LLsFFbPog+Q
-        o+YatBlPIgnd5sSWDoODyp/+5qt4iIs/KHw+Wt+p37JNiEMwKJQSodCj8DAIHgqt
-        92SGbDsncSpk0NxE6QhXTLUk7L+zUbWsu/4R0Yvsu1HaAUw9aPmQK8Z3tV+EcTxW
-        XObDxQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=6ek7rotfn8yHr2SVRzyFzJOuazfE8xSPG939AHlpX
-        cs=; b=koW4Adc0qWAHAZh5OZze593zLQ5jC/97529jgi5ZrIO85WbZaTvEqIQYr
-        FzDW3RVPNUW5x4HnrPnHyRr6XmXm9VP8iHULgGRKn+X1jvbZ6z9ptyApoH5WSadi
-        H6wQAGmPvBQ4QiQWgzvSdwzx6x0ev37TRK7ZDLqk2H9gAmJeOH4fV/UIissEABEd
-        XpLESd5lLaS64CIhyrHxFsftbia3cayePjctHkOuTYP6ZBHCYy2iaZ9Ze725oW/D
-        fNGMN5ICfcWD3u4HYrxir3Sp56lt/TXEKJNl9Bg1yJWqZp3OgM88ok7OhlCLQ3Kd
-        CIIiZfqW8kk15A5jO9EULcEaGWWYw==
-X-ME-Sender: <xms:jB8oX9DYMRIhNCgzRhkgmRWYIqvLOsYXnTdrp5z4cl9pF3Zup2mUyw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrjeeggdejjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
-    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepfe
-    efteetvdeguddvveefveeftedtffduudehueeihfeuvefgveehffeludeggfejnecukfhp
-    peehkedrjedrvdehtddrudekheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehrrghvvghnsehthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:jB8oX7hMug9NSJyrBx-_hsaMghqA8sU1pT1QNwHXC8iZ-PoSEBXb8A>
-    <xmx:jB8oX4lSQFRztQdi_y97W_W-WMfF73BDlC4jB3L_cbtLHrSDvH_uzw>
-    <xmx:jB8oX3ymudJ9OvqndBdAuE8iQpa_i2PpNRXb7Io4TRefSNVLy68EDw>
-    <xmx:jh8oX5JfCwhU_CdTBs5mjIgpfDFvki_ar5qP-6ciQt1_eoT-iTdbyo6YQfc>
-Received: from mickey.themaw.net (58-7-250-185.dyn.iinet.net.au [58.7.250.185])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 01829328005D;
-        Mon,  3 Aug 2020 10:30:30 -0400 (EDT)
-Message-ID: <bfba8e858885b8c507b8816d5296f7ab7f949e78.camel@themaw.net>
-Subject: Re: [PATCH 13/17] watch_queue: Implement mount topology and
- attribute change notifications [ver #5]
-From:   Ian Kent <raven@themaw.net>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Christian Brauner <christian@brauner.io>, andres@anarazel.de,
-        Jeff Layton <jlayton@redhat.com>, dray@redhat.com,
-        Karel Zak <kzak@redhat.com>, keyrings@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 03 Aug 2020 22:30:26 +0800
-In-Reply-To: <1692826.1596457912@warthog.procyon.org.uk>
-References: <303106be4785135446e56cb606138a6e94885887.camel@themaw.net>
-         <CAJfpeguO8Qwkzx9zfGVT7W+pT5p6fgj-_8oJqJbXX_KQBpLLEQ@mail.gmail.com>
-         <1293241.1595501326@warthog.procyon.org.uk>
-         <CAJfpegspWA6oUtdcYvYF=3fij=Bnq03b8VMbU9RNMKc+zzjbag@mail.gmail.com>
-         <158454378820.2863966.10496767254293183123.stgit@warthog.procyon.org.uk>
-         <158454391302.2863966.1884682840541676280.stgit@warthog.procyon.org.uk>
-         <2003787.1595585999@warthog.procyon.org.uk>
-         <865566fb800a014868a9a7e36a00a14430efb11e.camel@themaw.net>
-         <2023286.1595590563@warthog.procyon.org.uk>
-         <CAJfpegsT_3YqHPWCZGX7Lr+sE0NVmczWz5L6cN8CzsVz4YKLCQ@mail.gmail.com>
-         <1283475.1596449889@warthog.procyon.org.uk>
-         <1576646.1596455376@warthog.procyon.org.uk>
-         <1692826.1596457912@warthog.procyon.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Mon, 3 Aug 2020 10:33:26 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69962C06174A;
+        Mon,  3 Aug 2020 07:33:26 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id l2so11844871pff.0;
+        Mon, 03 Aug 2020 07:33:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CSryihUrOfV/QpASOmMQXnPhqAteV/tdNxvfNf+2Xfg=;
+        b=f6NQsPx1SkjRWIIzrAvw+PGh7OTrPeRIjU09/5f1HbEsEBW3tw9g0Ar8D+a8idmOb4
+         5FTeGXd2+X2YtudoVzwpciidf2SUXhlbjHbPx6B/XR3tcXvBBWcbiSoeoa46lHW2N8Hg
+         p6Kc+bkMd02lDhTNFpL3vxsLMIZkPTai+FCiRW/lVS/lTNEydmuQ7uwyaJ5JHrJVtbCb
+         LxxcQ47FRB/UgRGX11GVDSIcxnXRu0gtVOXSvaLrGUI5utT828y27TVT8gtINMCh4pOK
+         P4doXOcAx6+88uFgzha2bpxsf14ck6e/d+qZ3BVSEbEzFT0D6G9xliA+Xl72rGid/RGL
+         REFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CSryihUrOfV/QpASOmMQXnPhqAteV/tdNxvfNf+2Xfg=;
+        b=Uqs/jLCLK9BRJBlfudPaztkIv7+nbKlBP21gmCxanlmO0souvzW/cByXf1B7FqKb/9
+         4m4wvedEzTOuOxSidS4i0eZpw60nFkrd6VIy86uYpRaH9YWHWXeLA01AWMXsF6HkkqvV
+         /m6grhkZ1fOlSoLnfATeJKqXAvPaNtepCeWNipCiCgLT+s/fBlkevzwWyimUGD+k+Ll/
+         +gNmHM2a8cG98zmj4KEtWMV9oiSuwOmZhYFfkwdKGx0KenQ3Hen8TCKiEBBdPboritk7
+         oMufWZL51chu+vTbOrhtqdIli7udtCoNqA8eijM48WdnaGoUs/5Pal8pxL2boBod0Zac
+         vfsA==
+X-Gm-Message-State: AOAM533AQDkGBROuSsSLtgDf7KljDsI4GepTqQxABT1zrFD/ykA1tP6M
+        vJSs15S4Gz3hvJY0/e7maQg=
+X-Google-Smtp-Source: ABdhPJw8jUAIC6cPasGvqz562zsJjwF1GyLzlxHbXTTNNN7GXWCblmsAa3t3KFutJ5N751+aeL6uNw==
+X-Received: by 2002:a62:19c4:: with SMTP id 187mr15865681pfz.312.1596465205971;
+        Mon, 03 Aug 2020 07:33:25 -0700 (PDT)
+Received: from yangdongdo-OptiPlex-9010.mioffice.cn ([209.9.72.214])
+        by smtp.gmail.com with ESMTPSA id x20sm15849188pgc.49.2020.08.03.07.33.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 03 Aug 2020 07:33:25 -0700 (PDT)
+From:   Dongdong Yang <contribute.kernel@gmail.com>
+To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-pm@vger.kernel.org, yangdongdong@xiaomi.com,
+        tanggeliang@xiaomi.com, taojun@xiaomi.com, huangqiwu@xiaomi.com,
+        rocking@linux.alibaba.com, fengwei@xiaomi.com,
+        zhangguoquan@xiaomi.com, gulinghua@xiaomi.com, duhui@xiaomi.com
+Subject: [PATCH v3] Provide USF for the portable equipment.
+Date:   Mon,  3 Aug 2020 22:31:14 +0800
+Message-Id: <cover.1596464894.git.yangdongdong@xiaomi.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-08-03 at 13:31 +0100, David Howells wrote:
-> Ian Kent <raven@themaw.net> wrote:
-> 
-> > > I'm changing it so that the fields are 64-bit, but initialised
-> > > with the
-> > > existing mount ID in the notifications set.  The fsinfo set
-> > > changes that
-> > > to a unique ID.  I'm tempted to make the unique IDs start at
-> > > UINT_MAX+1 to
-> > > disambiguate them.
-> > 
-> > Mmm ... so what would I use as a mount id that's not used, like
-> > NULL
-> > for strings?
-> 
-> Zero is skipped, so you could use that.
-> 
-> > I'm using -1 now but changing this will mean I need something
-> > different.
-> 
-> It's 64-bits, so you're not likely to see it reach -1, even if it
-> does start
-> at UINT_MAX+1.
+From: Dongdong Yang <yangdongdong@xiaomi.com>
 
-Ha, either or, I don't think it will be a problem, there's
-bound to be a few changes so the components using this will
-need to change a bit before it's finalized, shouldn't be a
-big deal I think. At least not for me and shouldn't be much
-for libmount either I think.
+This patch provides USF(User Sensitive Feedback factor) auxiliary
+cpufreq governor to support high level layer sysfs inodes setting
+for utils adjustment purpose from the identified scenario on portable
+equipment. Because the power consumption and UI response are more cared
+for by portable equipment users. And the "screen off" status stands for
+no request from the user, however, the kernel is still expected to
+notify the user in time on modem, network or powerkey events occur. USF
+provides "sched_usf_non_ux_r" sysfs inode to cut down the utils from
+user space tasks according to high level scenario. In addition, it
+usually hints more cpufreq demand that the preemptive counts of the
+tasks on the cpu burst and over the user expecting completed time such
+as the ratio sysctl_sched_latency to sysctl_sched_min_granularity on
+"screen on" status, which more likely with more UI. The sysfs inodes
+"sched_usf_up_l0_r" and "sched_usf_down_r" have been provided to adjust
+the utils according to high level identified scenario to alloc the
+cpufreq in time.
 
-Ian
+Changes in v3
+  - Move usf.c to kernel/sched.
+  - Remove trace_printk and debugfs.
+  - Add document draft.
+  - Update comments.
+
+Changes in v2
+  - Add adjust_task_pred_set switch.
+  - Move adjust_task_pred_demand declaration into sched.h
+  - Update comments.
+
+
+Dongdong Yang (1):
+  sched: Provide USF for the portable equipment.
+
+ Documentation/scheduler/sched-ufs.txt |  78 +++++++++
+ drivers/cpufreq/Kconfig               |  11 ++
+ drivers/staging/Kconfig               |   2 +
+ drivers/staging/Makefile              |   1 +
+ include/trace/events/sched.h          |  35 ++++
+ kernel/sched/Makefile                 |   1 +
+ kernel/sched/cpufreq_schedutil.c      |   3 +
+ kernel/sched/sched.h                  |  10 ++
+ kernel/sched/usf.c                    | 305 ++++++++++++++++++++++++++++++++++
+ 9 files changed, 446 insertions(+)
+ create mode 100644 Documentation/scheduler/sched-ufs.txt
+ create mode 100644 kernel/sched/usf.c
+
+-- 
+2.7.4
 
