@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E011823A02A
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 09:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3AA23A034
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 09:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbgHCHP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 03:15:57 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:55879 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726077AbgHCHPy (ORCPT
+        id S1725948AbgHCHSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 03:18:07 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16096 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725806AbgHCHSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 03:15:54 -0400
-X-UUID: 0a3e5537fda44713a809bef3a2fb8372-20200803
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=CHjYwY83mGtQyAozDroVVTm5cwJQTRU4xw97Fx3g4E4=;
-        b=KV7eRf6US1Dn1adMUwV+ROkMxKfDagXQcv1G4gsLN9fql8pB67wjdG7lAHMtqgWtTgW7uIsydGkWEapIdIWrLgnFYtNSZ+Zgma9W1G2wSdtSQv3hhGj16ES+NE1Raoys4VS89FnFnaDAfEbnaJtvqC/ON23LNAvjd8+8Q4cUylQ=;
-X-UUID: 0a3e5537fda44713a809bef3a2fb8372-20200803
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <crystal.guo@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1312730950; Mon, 03 Aug 2020 15:15:51 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 3 Aug 2020 15:15:48 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 3 Aug 2020 15:15:48 +0800
-From:   Crystal Guo <crystal.guo@mediatek.com>
-To:     <linux@roeck-us.net>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <seiya.wang@mediatek.com>, Crystal Guo <crystal.guo@mediatek.com>
-Subject: [v4,5/5] watchdog: mt8192: add wdt support
-Date:   Mon, 3 Aug 2020 15:15:01 +0800
-Message-ID: <20200803071501.30634-6-crystal.guo@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200803071501.30634-1-crystal.guo@mediatek.com>
-References: <20200803071501.30634-1-crystal.guo@mediatek.com>
+        Mon, 3 Aug 2020 03:18:06 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07373wVO130488;
+        Mon, 3 Aug 2020 03:18:05 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32pa5rwcfu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Aug 2020 03:18:05 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07376IgH138173;
+        Mon, 3 Aug 2020 03:18:05 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32pa5rwcf8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Aug 2020 03:18:05 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07376gmC003714;
+        Mon, 3 Aug 2020 07:18:03 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 32mynh1wsb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Aug 2020 07:18:03 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0737I0Mh30540090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 Aug 2020 07:18:00 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 680B542042;
+        Mon,  3 Aug 2020 07:18:00 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E408A4204B;
+        Mon,  3 Aug 2020 07:17:59 +0000 (GMT)
+Received: from funtu.home (unknown [9.171.45.189])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  3 Aug 2020 07:17:59 +0000 (GMT)
+Subject: Re: [PATCH] s390/pkey: Remove redundant variable initialization
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        ifranzki@linux.ibm.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tianjia.zhang@alibaba.com
+References: <20200802111526.4883-1-tianjia.zhang@linux.alibaba.com>
+From:   Harald Freudenberger <freude@linux.ibm.com>
+Message-ID: <297c9d42-14ed-8972-d3f0-954a6fe9859f@linux.ibm.com>
+Date:   Mon, 3 Aug 2020 09:18:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200802111526.4883-1-tianjia.zhang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-03_04:2020-07-31,2020-08-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 impostorscore=0 mlxscore=0 bulkscore=0 clxscore=1011
+ priorityscore=1501 adultscore=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008030046
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIHN1cHBvcnQgZm9yIHdhdGNoZG9nIGRldmljZSBmb3VuZCBpbiBNVDgxOTIgU29DDQoNClNp
-Z25lZC1vZmYtYnk6IENyeXN0YWwgR3VvIDxjcnlzdGFsLmd1b0BtZWRpYXRlay5jb20+DQpSZXZp
-ZXdlZC1ieTogTWF0dGhpYXMgQnJ1Z2dlciA8bWF0dGhpYXMuYmdnQGdtYWlsLmNvbT4NCi0tLQ0K
-IGRyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jIHwgNiArKysrKysNCiAxIGZpbGUgY2hhbmdlZCwg
-NiBpbnNlcnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3dhdGNoZG9nL210a193ZHQu
-YyBiL2RyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jDQppbmRleCBkNmE2MzkzZjYwOWQuLmFlZjBj
-MmRiNmExMSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jDQorKysgYi9k
-cml2ZXJzL3dhdGNoZG9nL210a193ZHQuYw0KQEAgLTExLDYgKzExLDcgQEANCiANCiAjaW5jbHVk
-ZSA8ZHQtYmluZGluZ3MvcmVzZXQtY29udHJvbGxlci9tdDI3MTItcmVzZXRzLmg+DQogI2luY2x1
-ZGUgPGR0LWJpbmRpbmdzL3Jlc2V0LWNvbnRyb2xsZXIvbXQ4MTgzLXJlc2V0cy5oPg0KKyNpbmNs
-dWRlIDxkdC1iaW5kaW5ncy9yZXNldC1jb250cm9sbGVyL210ODE5Mi1yZXNldHMuaD4NCiAjaW5j
-bHVkZSA8bGludXgvZGVsYXkuaD4NCiAjaW5jbHVkZSA8bGludXgvZXJyLmg+DQogI2luY2x1ZGUg
-PGxpbnV4L2luaXQuaD4NCkBAIC03Niw2ICs3NywxMCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG10
-a193ZHRfZGF0YSBtdDgxODNfZGF0YSA9IHsNCiAJLnRvcHJndV9zd19yc3RfbnVtID0gTVQ4MTgz
-X1RPUFJHVV9TV19SU1RfTlVNLA0KIH07DQogDQorc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfd2R0
-X2RhdGEgbXQ4MTkyX2RhdGEgPSB7DQorCS50b3ByZ3Vfc3dfcnN0X251bSA9IE1UODE5Ml9UT1BS
-R1VfU1dfUlNUX05VTSwNCit9Ow0KKw0KIHN0YXRpYyBpbnQgdG9wcmd1X3Jlc2V0X3VwZGF0ZShz
-dHJ1Y3QgcmVzZXRfY29udHJvbGxlcl9kZXYgKnJjZGV2LA0KIAkJCSAgICAgICB1bnNpZ25lZCBs
-b25nIGlkLCBib29sIGFzc2VydCkNCiB7DQpAQCAtMzIyLDYgKzMyNyw3IEBAIHN0YXRpYyBjb25z
-dCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a193ZHRfZHRfaWRzW10gPSB7DQogCXsgLmNvbXBhdGli
-bGUgPSAibWVkaWF0ZWssbXQyNzEyLXdkdCIsIC5kYXRhID0gJm10MjcxMl9kYXRhIH0sDQogCXsg
-LmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2NTg5LXdkdCIgfSwNCiAJeyAuY29tcGF0aWJsZSA9
-ICJtZWRpYXRlayxtdDgxODMtd2R0IiwgLmRhdGEgPSAmbXQ4MTgzX2RhdGEgfSwNCisJeyAuY29t
-cGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItd2R0IiwgLmRhdGEgPSAmbXQ4MTkyX2RhdGEgfSwN
-CiAJeyAvKiBzZW50aW5lbCAqLyB9DQogfTsNCiBNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBtdGtf
-d2R0X2R0X2lkcyk7DQotLSANCjIuMTguMA0K
-
+On 02.08.20 13:15, Tianjia Zhang wrote:
+> In the first place, the initialization value of `rc` is wrong.
+> It is unnecessary to initialize `rc` variables, so remove their
+> initialization operation.
+>
+> Fixes: f2bbc96e7cfad ("s390/pkey: add CCA AES cipher key support")
+> Cc: Harald Freudenberger <freude@linux.ibm.com>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>  drivers/s390/crypto/pkey_api.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/s390/crypto/pkey_api.c b/drivers/s390/crypto/pkey_api.c
+> index 74e63ec49068..58140506a8e7 100644
+> --- a/drivers/s390/crypto/pkey_api.c
+> +++ b/drivers/s390/crypto/pkey_api.c
+> @@ -818,7 +818,7 @@ static int pkey_keyblob2pkey2(const struct pkey_apqn *apqns, size_t nr_apqns,
+>  static int pkey_apqns4key(const u8 *key, size_t keylen, u32 flags,
+>  			  struct pkey_apqn *apqns, size_t *nr_apqns)
+>  {
+> -	int rc = EINVAL;
+> +	int rc;
+>  	u32 _nr_apqns, *_apqns = NULL;
+>  	struct keytoken_header *hdr = (struct keytoken_header *)key;
+>  
+> @@ -886,7 +886,7 @@ static int pkey_apqns4keytype(enum pkey_key_type ktype,
+>  			      u8 cur_mkvp[32], u8 alt_mkvp[32], u32 flags,
+>  			      struct pkey_apqn *apqns, size_t *nr_apqns)
+>  {
+> -	int rc = -EINVAL;
+> +	int rc;
+>  	u32 _nr_apqns, *_apqns = NULL;
+>  
+>  	if (ktype == PKEY_TYPE_CCA_DATA || ktype == PKEY_TYPE_CCA_CIPHER) {
+Thanks, I've picked this one and committed to the s390 subsystem.
