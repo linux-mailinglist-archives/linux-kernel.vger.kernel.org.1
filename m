@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1036A23A5DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630BC23A4DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729420AbgHCMme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:42:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58472 "EHLO mail.kernel.org"
+        id S1729138AbgHCMbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:31:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728601AbgHCMbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:31:07 -0400
+        id S1727015AbgHCMau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:30:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE8E42054F;
-        Mon,  3 Aug 2020 12:31:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA152204EC;
+        Mon,  3 Aug 2020 12:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457866;
-        bh=KPEQdRBWpj2++NzmpX3wevXP1Ga9IyqWe51CLg9gI0E=;
+        s=default; t=1596457849;
+        bh=comM6opoALNO7vYbhHHew20FWuTAjkZExfK2qLv9Nnw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hKBZgNKGVGU/8ZE+cSZN+jN5SsWSL5IvZd5r54pUV0Gm2ehFldtzyBIEJlTVY4Ud7
-         Aej7EK8rvFev7868wOT/eiCfEAclAIfPQGVQRU93Cw4lxtxHL8YHVPJ27G60H+lhf6
-         /SurIz2l4ARWV2yL9nPfXjdpElFX+Jyfq/brFOrc=
+        b=vVYTDjWWCqYxQwWJdzK7r+eRjr+mHCkmGgbzn6wKPukFIj4fmIsmr+qPgGVkX3m8I
+         some6PofVMgM0lyQ/hAx7FkjfRBzT+zz1G0TDW+yNGqvi0Wk4vzaXWDbDWG2fpx9V3
+         Q6WYFO+atbEHHKbgxvLvpyLtu/ocCg9CgpDXD/c4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Lu Wei <luwei32@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 11/56] Btrfs: fix selftests failure due to uninitialized i_mode in test inodes
-Date:   Mon,  3 Aug 2020 14:19:26 +0200
-Message-Id: <20200803121850.868864740@linuxfoundation.org>
+Subject: [PATCH 5.4 65/90] net: nixge: fix potential memory leak in nixge_probe()
+Date:   Mon,  3 Aug 2020 14:19:27 +0200
+Message-Id: <20200803121900.765688155@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,85 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Lu Wei <luwei32@huawei.com>
 
-[ Upstream commit 9f7fec0ba89108b9385f1b9fb167861224912a4a ]
+[ Upstream commit 366228ed01f6882cc203e3d5b40010dfae0be1c3 ]
 
-Some of the self tests create a test inode, setup some extents and then do
-calls to btrfs_get_extent() to test that the corresponding extent maps
-exist and are correct. However btrfs_get_extent(), since the 5.2 merge
-window, now errors out when it finds a regular or prealloc extent for an
-inode that does not correspond to a regular file (its ->i_mode is not
-S_IFREG). This causes the self tests to fail sometimes, specially when
-KASAN, slub_debug and page poisoning are enabled:
+If some processes in nixge_probe() fail, free_netdev(dev)
+needs to be called to aviod a memory leak.
 
-  $ modprobe btrfs
-  modprobe: ERROR: could not insert 'btrfs': Invalid argument
-
-  $ dmesg
-  [ 9414.691648] Btrfs loaded, crc32c=crc32c-intel, debug=on, assert=on, integrity-checker=on, ref-verify=on
-  [ 9414.692655] BTRFS: selftest: sectorsize: 4096  nodesize: 4096
-  [ 9414.692658] BTRFS: selftest: running btrfs free space cache tests
-  [ 9414.692918] BTRFS: selftest: running extent only tests
-  [ 9414.693061] BTRFS: selftest: running bitmap only tests
-  [ 9414.693366] BTRFS: selftest: running bitmap and extent tests
-  [ 9414.696455] BTRFS: selftest: running space stealing from bitmap to extent tests
-  [ 9414.697131] BTRFS: selftest: running extent buffer operation tests
-  [ 9414.697133] BTRFS: selftest: running btrfs_split_item tests
-  [ 9414.697564] BTRFS: selftest: running extent I/O tests
-  [ 9414.697583] BTRFS: selftest: running find delalloc tests
-  [ 9415.081125] BTRFS: selftest: running find_first_clear_extent_bit test
-  [ 9415.081278] BTRFS: selftest: running extent buffer bitmap tests
-  [ 9415.124192] BTRFS: selftest: running inode tests
-  [ 9415.124195] BTRFS: selftest: running btrfs_get_extent tests
-  [ 9415.127909] BTRFS: selftest: running hole first btrfs_get_extent test
-  [ 9415.128343] BTRFS critical (device (efault)): regular/prealloc extent found for non-regular inode 256
-  [ 9415.131428] BTRFS: selftest: fs/btrfs/tests/inode-tests.c:904 expected a real extent, got 0
-
-This happens because the test inodes are created without ever initializing
-the i_mode field of the inode, and neither VFS's new_inode() nor the btrfs
-callback btrfs_alloc_inode() initialize the i_mode. Initialization of the
-i_mode is done through the various callbacks used by the VFS to create
-new inodes (regular files, directories, symlinks, tmpfiles, etc), which
-all call btrfs_new_inode() which in turn calls inode_init_owner(), which
-sets the inode's i_mode. Since the tests only uses new_inode() to create
-the test inodes, the i_mode was never initialized.
-
-This always happens on a VM I used with kasan, slub_debug and many other
-debug facilities enabled. It also happened to someone who reported this
-on bugzilla (on a 5.3-rc).
-
-Fix this by setting i_mode to S_IFREG at btrfs_new_test_inode().
-
-Fixes: 6bf9e4bd6a2778 ("btrfs: inode: Verify inode mode to avoid NULL pointer dereference")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204397
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 87ab207981ec ("net: nixge: Separate ctrl and dma resources")
+Fixes: abcd3d6fc640 ("net: nixge: Fix error path for obtaining mac address")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Lu Wei <luwei32@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tests/btrfs-tests.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/ni/nixge.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
-index 2eec1dd3803af..82d874b104383 100644
---- a/fs/btrfs/tests/btrfs-tests.c
-+++ b/fs/btrfs/tests/btrfs-tests.c
-@@ -38,7 +38,13 @@ static struct file_system_type test_type = {
+diff --git a/drivers/net/ethernet/ni/nixge.c b/drivers/net/ethernet/ni/nixge.c
+index 2761f3a3ae508..56f285985b432 100644
+--- a/drivers/net/ethernet/ni/nixge.c
++++ b/drivers/net/ethernet/ni/nixge.c
+@@ -1318,19 +1318,21 @@ static int nixge_probe(struct platform_device *pdev)
+ 	netif_napi_add(ndev, &priv->napi, nixge_poll, NAPI_POLL_WEIGHT);
+ 	err = nixge_of_get_resources(pdev);
+ 	if (err)
+-		return err;
++		goto free_netdev;
+ 	__nixge_hw_set_mac_address(ndev);
  
- struct inode *btrfs_new_test_inode(void)
- {
--	return new_inode(test_mnt->mnt_sb);
-+	struct inode *inode;
-+
-+	inode = new_inode(test_mnt->mnt_sb);
-+	if (inode)
-+		inode_init_owner(inode, NULL, S_IFREG);
-+
-+	return inode;
- }
+ 	priv->tx_irq = platform_get_irq_byname(pdev, "tx");
+ 	if (priv->tx_irq < 0) {
+ 		netdev_err(ndev, "could not find 'tx' irq");
+-		return priv->tx_irq;
++		err = priv->tx_irq;
++		goto free_netdev;
+ 	}
  
- static int btrfs_init_test_fs(void)
+ 	priv->rx_irq = platform_get_irq_byname(pdev, "rx");
+ 	if (priv->rx_irq < 0) {
+ 		netdev_err(ndev, "could not find 'rx' irq");
+-		return priv->rx_irq;
++		err = priv->rx_irq;
++		goto free_netdev;
+ 	}
+ 
+ 	priv->coalesce_count_rx = XAXIDMA_DFT_RX_THRESHOLD;
 -- 
 2.25.1
 
