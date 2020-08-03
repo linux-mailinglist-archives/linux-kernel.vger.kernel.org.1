@@ -2,151 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E3A23A912
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A569123A917
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgHCPD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 11:03:58 -0400
-Received: from mga17.intel.com ([192.55.52.151]:24972 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726356AbgHCPDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 11:03:54 -0400
-IronPort-SDR: oYheJHHRIKqDiW+fZMLnvlAY3jeSs+jgYANmGIcS+rrFQy14aBOlwdKkpk7rLZWrBO1bVO4n7T
- haZLfmvYLRqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="132173779"
-X-IronPort-AV: E=Sophos;i="5.75,430,1589266800"; 
-   d="scan'208";a="132173779"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 08:03:53 -0700
-IronPort-SDR: Jnfxgatw79Je6t+dSPbcv95/xzHQnXXvkweXDkYm7QaWn0ziThSSeRmtM5CN0xZfZ+RhwdtxLj
- KTMS2DRfK+8g==
-X-IronPort-AV: E=Sophos;i="5.75,430,1589266800"; 
-   d="scan'208";a="466539194"
-Received: from arossfer-mobl.amr.corp.intel.com (HELO [10.255.230.80]) ([10.255.230.80])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 08:03:52 -0700
-Subject: Re: [PATCH v6 12/12] x86/traps: Fix up invalid PASID
-To:     Andy Lutomirski <luto@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        H Peter Anvin <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu <iommu@lists.linux-foundation.org>,
-        amd-gfx <amd-gfx@lists.freedesktop.org>
-References: <1594684087-61184-1-git-send-email-fenghua.yu@intel.com>
- <1594684087-61184-13-git-send-email-fenghua.yu@intel.com>
- <CALCETrXnO4oh+WyxtSM-j_pP4QgkSg24=y76OBEHxXxAfJtPhA@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f6d34d59-e6eb-ee9f-d247-8fb2f0e37549@intel.com>
-Date:   Mon, 3 Aug 2020 08:03:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727838AbgHCPFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 11:05:23 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:38308 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727852AbgHCPFW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 11:05:22 -0400
+Received: by mail-io1-f70.google.com with SMTP id a65so17787471iog.5
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 08:05:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=cwHAmIAnWDXaQ8U+cgz3uBI7B40rqObvLOBOdb+Z848=;
+        b=DMo8DXG9XcMX30iPIOhcD/dS/pxov10T4m+CqlNBSY+8OTIXUBfYtzzr3x9HQP6b8Z
+         Vf/+o/jiGg8nOcoylzOWnvTnqUuBDqZH7mv2iRqvZdLWzpCI4Njx/ugY9AfrKIi3WHkf
+         mdBVJ2UJgrNicvN2fdMu6dbbBYNGiR/PPOM2rsTU7oSFSUSQqE4OyHrdsgCcgcV3VxLb
+         i7CzSGxGayT6IrQglye8MCYHUu05dn3/UcZ0a7UeuGVG6fvCOst4XdZHHeytGsDib6CQ
+         fJQJJ7QvnbT1DCnpuqWKcLSpKxAa92tFUaG/iG9eMsvMDsdwSKRejPwsBOeFozRW5TUT
+         G5KA==
+X-Gm-Message-State: AOAM533krEP/AnMZ8OEEZF7hnd1PfP+xc/n09/yFW1jLms7DxD7tCPzT
+        r3op1lIbKBrqb9DoyvTZsLJkbHTtEMDGOo6L1G+eBOzP86ul
+X-Google-Smtp-Source: ABdhPJynY1P/Ats+QjnU0eZn1C6aGDytmEJlnR20o3Pr43gms75ovSxM3yYUFPnfz9XxtEny6CaMM1EUKc79LPamNTb2xxmMA0Xn
 MIME-Version: 1.0
-In-Reply-To: <CALCETrXnO4oh+WyxtSM-j_pP4QgkSg24=y76OBEHxXxAfJtPhA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a6b:3bd4:: with SMTP id i203mr231137ioa.205.1596467121253;
+ Mon, 03 Aug 2020 08:05:21 -0700 (PDT)
+Date:   Mon, 03 Aug 2020 08:05:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a876b805abfa77e0@google.com>
+Subject: KASAN: slab-out-of-bounds Read in hci_le_meta_evt
+From:   syzbot <syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/20 4:34 PM, Andy Lutomirski wrote:
->> Thomas suggested to provide a reason for the #GP caused by executing ENQCMD
->> without a valid PASID value programmed. #GP error codes are 16 bits and all
->> 16 bits are taken. Refer to SDM Vol 3, Chapter 16.13 for details. The other
->> choice was to reflect the error code in an MSR. ENQCMD can also cause #GP
->> when loading from the source operand, so its not fully comprehending all
->> the reasons. Rather than special case the ENQCMD, in future Intel may
->> choose a different fault mechanism for such cases if recovery is needed on
->> #GP.
-> Decoding the user instruction is ugly and sets a bad architecture
-> precedent, but we already do it in #GP for UMIP.  So I'm unconvinced.
+Hello,
 
-I'll try to do one more bit of convincing. :)
+syzbot found the following issue on:
 
-In the end, we need a way to figure out if the #GP was from a known "OK"
-source that we can fix up.  You're right that we could fire up the
-instruction decoder to help answer that question.  But, it (also)
-doesn't easily yield a perfect answer as to the source of the #GP, it
-always involves a user copy, and it's a larger code impact than what
-we've got.
+HEAD commit:    5a30a789 Merge tag 'x86-urgent-2020-08-02' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11cd21cc900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c0cfcf935bcc94d2
+dashboard link: https://syzkaller.appspot.com/bug?extid=24ebd650e20bd263ca01
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10fd4504900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14aa36a4900000
 
-I think I went and looked at fixup_umip_exception(), and compared it to
-the alternative which is essentially just these three lines of code:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
 
-> +	/*
-> +	 * If the current task already has a valid PASID in the MSR,
-> +	 * the #GP must be for some other reason.
-> +	 */
-> +	if (current->has_valid_pasid)
-> +		return false;
-...> +	/* Now the current task has a valid PASID in the MSR. */
-> +	current->has_valid_pasid = 1;
+Bluetooth: hci0: unknown advertising packet type: 0x2b
+==================================================================
+BUG: KASAN: slab-out-of-bounds in hci_le_direct_adv_report_evt net/bluetooth/hci_event.c:5850 [inline]
+BUG: KASAN: slab-out-of-bounds in hci_le_meta_evt+0x380c/0x3eb0 net/bluetooth/hci_event.c:5914
+Read of size 1 at addr ffff8880a727de0c by task kworker/u5:0/1535
 
-and *I* was convinced that instruction decoding wasn't worth it.
+CPU: 1 PID: 1535 Comm: kworker/u5:0 Not tainted 5.8.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: hci0 hci_rx_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ hci_le_direct_adv_report_evt net/bluetooth/hci_event.c:5850 [inline]
+ hci_le_meta_evt+0x380c/0x3eb0 net/bluetooth/hci_event.c:5914
+ hci_event_packet+0x245a/0x86f5 net/bluetooth/hci_event.c:6167
+ hci_rx_work+0x22e/0xb10 net/bluetooth/hci_core.c:4705
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
 
-There's a lot of stuff that fixup_umip_exception() does which we don't
-have to duplicate, but it's going to be really hard to get it anywhere
-near as compact as what we've got.
+Allocated by task 6834:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0xae/0x550 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1083 [inline]
+ bt_skb_alloc include/net/bluetooth/bluetooth.h:377 [inline]
+ vhci_get_user drivers/bluetooth/hci_vhci.c:165 [inline]
+ vhci_write+0xbd/0x450 drivers/bluetooth/hci_vhci.c:285
+ call_write_iter include/linux/fs.h:1908 [inline]
+ new_sync_write+0x422/0x650 fs/read_write.c:503
+ vfs_write+0x59d/0x6b0 fs/read_write.c:578
+ ksys_write+0x12d/0x250 fs/read_write.c:631
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-I guess Fenghua could go give instruction decoding a shot and see how it
-looks, though.
+Freed by task 6627:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x103/0x2c0 mm/slab.c:3757
+ tomoyo_find_next_domain+0x81d/0x1f77 security/tomoyo/domain.c:885
+ tomoyo_bprm_check_security security/tomoyo/tomoyo.c:101 [inline]
+ tomoyo_bprm_check_security+0x121/0x1a0 security/tomoyo/tomoyo.c:91
+ security_bprm_check+0x45/0xa0 security/security.c:840
+ search_binary_handler fs/exec.c:1737 [inline]
+ exec_binprm fs/exec.c:1790 [inline]
+ __do_execve_file+0x1577/0x2ee0 fs/exec.c:1926
+ do_execveat_common fs/exec.c:1980 [inline]
+ do_execve+0x35/0x50 fs/exec.c:1997
+ __do_sys_execve fs/exec.c:2073 [inline]
+ __se_sys_execve fs/exec.c:2068 [inline]
+ __x64_sys_execve+0x7c/0xa0 fs/exec.c:2068
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff8880a727dc00
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 12 bytes to the right of
+ 512-byte region [ffff8880a727dc00, ffff8880a727de00)
+The buggy address belongs to the page:
+page:ffffea00029c9f40 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00029e3848 ffffea0002731b88 ffff8880aa000a80
+raw: 0000000000000000 ffff8880a727d000 0000000100000004 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880a727dd00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff8880a727dd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff8880a727de00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                      ^
+ ffff8880a727de80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8880a727df00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
