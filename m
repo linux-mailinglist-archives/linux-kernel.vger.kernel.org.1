@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3926223A684
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318F223A691
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgHCMY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:24:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48514 "EHLO mail.kernel.org"
+        id S1729683AbgHCMtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:49:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727948AbgHCMYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727947AbgHCMYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 3 Aug 2020 08:24:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58718207DF;
-        Mon,  3 Aug 2020 12:24:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EAF5204EC;
+        Mon,  3 Aug 2020 12:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457449;
-        bh=FJeSJvSNg08tWK3Cwq+rpJAQVNgt3gpIFSaX32lO/wU=;
+        s=default; t=1596457452;
+        bh=et039MEu/JZv75gwsVathHW/qTIeunWTRegEb9QD3qs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o82TdfiAcqbPGTtqJcF4WERLaMoCwXrWSAEv7zH8zRYeNysFcw2ZHZ8RoJ5pL99IB
-         MAvdkJVfcoa1R8w3Bi41RJgGHbJlhNGpdA1eUnqtmjBAKVxI/JmwzWBZrJowOg71BX
-         4cTwfJHChORCl4fsmHmhlACTPEnkk9XjF4GSktlw=
+        b=Es9/HtwtRPz4091GarMCNhwNmO9tii5Q38c4/kEuNnSchcQ1kb/xghFTnjHYMkETc
+         KS9J1dXKRvmN41HFg9pHylaGi3UQuIBmzdVB0wByDjGmTQ1uE3l5i1Gg5smovkomES
+         bDLnFxXOfWWMojVWQmzDAXmp1vqKCKQHnh8N8K48=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Pirko <jiri@mellanox.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 072/120] mlxsw: core: Free EMAD transactions using kfree_rcu()
-Date:   Mon,  3 Aug 2020 14:18:50 +0200
-Message-Id: <20200803121906.306197391@linuxfoundation.org>
+Subject: [PATCH 5.7 073/120] mlxsw: spectrum_router: Fix use-after-free in router init / de-init
+Date:   Mon,  3 Aug 2020 14:18:51 +0200
+Message-Id: <20200803121906.355050324@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
 References: <20200803121902.860751811@linuxfoundation.org>
@@ -47,90 +47,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ido Schimmel <idosch@mellanox.com>
 
-[ Upstream commit 3c8ce24b037648a5a15b85888b259a74b05ff97d ]
+[ Upstream commit 5515c3448d55bdcb5ff8a1778aa84f34e4205596 ]
 
-The lifetime of EMAD transactions (i.e., 'struct mlxsw_reg_trans') is
-managed using RCU. They are freed using kfree_rcu() once the transaction
-ends.
+Several notifiers are registered as part of router initialization.
+Since some of these notifiers are registered before the end of the
+initialization, it is possible for them to access uninitialized or freed
+memory when processing notifications [1].
 
-However, in case the transaction failed it is freed immediately after being
-removed from the active transactions list. This is problematic because it is
-still possible for a different CPU to dereference the transaction from an RCU
-read-side critical section while traversing the active transaction list in
-mlxsw_emad_rx_listener_func(). In which case, a use-after-free is triggered
-[1].
+Additionally, some of these notifiers queue work items on a workqueue.
+If these work items are executed after the router was de-initialized,
+they will access freed memory.
 
-Fix this by freeing the transaction after a grace period by calling
-kfree_rcu().
+Fix both problems by moving the registration of the notifiers to the end
+of the router initialization and flush the work queue after they are
+unregistered.
 
 [1]
-BUG: KASAN: use-after-free in mlxsw_emad_rx_listener_func+0x969/0xac0 drivers/net/ethernet/mellanox/mlxsw/core.c:671
-Read of size 8 at addr ffff88800b7964e8 by task syz-executor.2/2881
+BUG: KASAN: use-after-free in __mutex_lock_common kernel/locking/mutex.c:938 [inline]
+BUG: KASAN: use-after-free in __mutex_lock+0xeea/0x1340 kernel/locking/mutex.c:1103
+Read of size 8 at addr ffff888038c3a6e0 by task kworker/u4:1/61
 
-CPU: 0 PID: 2881 Comm: syz-executor.2 Not tainted 5.8.0-rc4+ #44
+CPU: 1 PID: 61 Comm: kworker/u4:1 Not tainted 5.8.0-rc2+ #36
 Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+Workqueue: mlxsw_core_ordered mlxsw_sp_inet6addr_event_work
 Call Trace:
- <IRQ>
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0xf6/0x16e lib/dump_stack.c:118
  print_address_description.constprop.0+0x1c/0x250 mm/kasan/report.c:383
  __kasan_report mm/kasan/report.c:513 [inline]
  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- mlxsw_emad_rx_listener_func+0x969/0xac0 drivers/net/ethernet/mellanox/mlxsw/core.c:671
- mlxsw_core_skb_receive+0x571/0x700 drivers/net/ethernet/mellanox/mlxsw/core.c:2061
- mlxsw_pci_cqe_rdq_handle drivers/net/ethernet/mellanox/mlxsw/pci.c:595 [inline]
- mlxsw_pci_cq_tasklet+0x12a6/0x2520 drivers/net/ethernet/mellanox/mlxsw/pci.c:651
- tasklet_action_common.isra.0+0x13f/0x3e0 kernel/softirq.c:550
- __do_softirq+0x223/0x964 kernel/softirq.c:292
- asm_call_on_stack+0x12/0x20 arch/x86/entry/entry_64.S:711
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- do_softirq_own_stack+0x109/0x140 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:387 [inline]
- __irq_exit_rcu kernel/softirq.c:417 [inline]
- irq_exit_rcu+0x16f/0x1a0 kernel/softirq.c:429
- sysvec_apic_timer_interrupt+0x4e/0xd0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:587
-RIP: 0010:arch_local_irq_restore arch/x86/include/asm/irqflags.h:85 [inline]
-RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0x3b/0x40 kernel/locking/spinlock.c:191
-Code: e8 2a c3 f4 fc 48 89 ef e8 12 96 f5 fc f6 c7 02 75 11 53 9d e8 d6 db 11 fd 65 ff 0d 1f 21 b3 56 5b 5d c3 e8 a7 d7 11 fd 53 9d <eb> ed 0f 1f 00 55 48 89 fd 65 ff 05 05 21 b3 56 ff 74 24 08 48 8d
-RSP: 0018:ffff8880446ffd80 EFLAGS: 00000286
-RAX: 0000000000000006 RBX: 0000000000000286 RCX: 0000000000000006
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffa94ecea9
-RBP: ffff888012934408 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: fffffbfff57be301 R12: 1ffff110088dffc1
-R13: ffff888037b817c0 R14: ffff88802442415a R15: ffff888024424000
- __do_sys_perf_event_open+0x1b5d/0x2bd0 kernel/events/core.c:11874
- do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x473dbd
-Code: Bad RIP value.
-RSP: 002b:00007f21e5e9cc28 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
-RAX: ffffffffffffffda RBX: 000000000057bf00 RCX: 0000000000473dbd
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000040
-RBP: 000000000057bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000003 R11: 0000000000000246 R12: 000000000057bf0c
-R13: 00007ffd0493503f R14: 00000000004d0f46 R15: 00007f21e5e9cd80
+ __mutex_lock_common kernel/locking/mutex.c:938 [inline]
+ __mutex_lock+0xeea/0x1340 kernel/locking/mutex.c:1103
+ mlxsw_sp_inet6addr_event_work+0xb3/0x1b0 drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c:7123
+ process_one_work+0xa3e/0x17a0 kernel/workqueue.c:2269
+ worker_thread+0x9e/0x1050 kernel/workqueue.c:2415
+ kthread+0x355/0x470 kernel/kthread.c:291
+ ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:293
 
-Allocated by task 871:
+Allocated by task 1298:
  save_stack+0x1b/0x40 mm/kasan/common.c:48
  set_track mm/kasan/common.c:56 [inline]
  __kasan_kmalloc mm/kasan/common.c:494 [inline]
  __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:467
  kmalloc include/linux/slab.h:555 [inline]
  kzalloc include/linux/slab.h:669 [inline]
- mlxsw_core_reg_access_emad+0x70/0x1410 drivers/net/ethernet/mellanox/mlxsw/core.c:1812
- mlxsw_core_reg_access+0xeb/0x540 drivers/net/ethernet/mellanox/mlxsw/core.c:1991
- mlxsw_sp_port_get_hw_xstats+0x335/0x7e0 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:1130
- update_stats_cache+0xf4/0x140 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:1173
- process_one_work+0xa3e/0x17a0 kernel/workqueue.c:2269
- worker_thread+0x9e/0x1050 kernel/workqueue.c:2415
- kthread+0x355/0x470 kernel/kthread.c:291
- ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:293
+ mlxsw_sp_router_init+0xb2/0x1d20 drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c:8074
+ mlxsw_sp_init+0xbd8/0x3ac0 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:2932
+ __mlxsw_core_bus_device_register+0x657/0x10d0 drivers/net/ethernet/mellanox/mlxsw/core.c:1375
+ mlxsw_core_bus_device_register drivers/net/ethernet/mellanox/mlxsw/core.c:1436 [inline]
+ mlxsw_devlink_core_bus_device_reload_up+0xcd/0x150 drivers/net/ethernet/mellanox/mlxsw/core.c:1133
+ devlink_reload net/core/devlink.c:2959 [inline]
+ devlink_reload+0x281/0x3b0 net/core/devlink.c:2944
+ devlink_nl_cmd_reload+0x2f1/0x7c0 net/core/devlink.c:2987
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:691 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:736 [inline]
+ genl_rcv_msg+0x611/0x9d0 net/netlink/genetlink.c:753
+ netlink_rcv_skb+0x152/0x440 net/netlink/af_netlink.c:2469
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:764
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x53a/0x750 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x850/0xd90 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0x150/0x190 net/socket.c:672
+ ____sys_sendmsg+0x6d8/0x840 net/socket.c:2363
+ ___sys_sendmsg+0xff/0x170 net/socket.c:2417
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2450
+ do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Freed by task 871:
+Freed by task 1348:
  save_stack+0x1b/0x40 mm/kasan/common.c:48
  set_track mm/kasan/common.c:56 [inline]
  kasan_set_free_info mm/kasan/common.c:316 [inline]
@@ -138,57 +123,161 @@ Freed by task 871:
  slab_free_hook mm/slub.c:1474 [inline]
  slab_free_freelist_hook mm/slub.c:1507 [inline]
  slab_free mm/slub.c:3072 [inline]
- kfree+0xe6/0x320 mm/slub.c:4052
- mlxsw_core_reg_access_emad+0xd45/0x1410 drivers/net/ethernet/mellanox/mlxsw/core.c:1819
- mlxsw_core_reg_access+0xeb/0x540 drivers/net/ethernet/mellanox/mlxsw/core.c:1991
- mlxsw_sp_port_get_hw_xstats+0x335/0x7e0 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:1130
- update_stats_cache+0xf4/0x140 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:1173
- process_one_work+0xa3e/0x17a0 kernel/workqueue.c:2269
- worker_thread+0x9e/0x1050 kernel/workqueue.c:2415
- kthread+0x355/0x470 kernel/kthread.c:291
- ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:293
+ kfree+0xe6/0x320 mm/slub.c:4063
+ mlxsw_sp_fini+0x340/0x4e0 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:3132
+ mlxsw_core_bus_device_unregister+0x16c/0x6d0 drivers/net/ethernet/mellanox/mlxsw/core.c:1474
+ mlxsw_devlink_core_bus_device_reload_down+0x8e/0xc0 drivers/net/ethernet/mellanox/mlxsw/core.c:1123
+ devlink_reload+0xc6/0x3b0 net/core/devlink.c:2952
+ devlink_nl_cmd_reload+0x2f1/0x7c0 net/core/devlink.c:2987
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:691 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:736 [inline]
+ genl_rcv_msg+0x611/0x9d0 net/netlink/genetlink.c:753
+ netlink_rcv_skb+0x152/0x440 net/netlink/af_netlink.c:2469
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:764
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x53a/0x750 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x850/0xd90 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0x150/0x190 net/socket.c:672
+ ____sys_sendmsg+0x6d8/0x840 net/socket.c:2363
+ ___sys_sendmsg+0xff/0x170 net/socket.c:2417
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2450
+ do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-The buggy address belongs to the object at ffff88800b796400
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 232 bytes inside of
- 512-byte region [ffff88800b796400, ffff88800b796600)
+The buggy address belongs to the object at ffff888038c3a000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 1760 bytes inside of
+ 2048-byte region [ffff888038c3a000, ffff888038c3a800)
 The buggy address belongs to the page:
-page:ffffea00002de500 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 head:ffffea00002de500 order:2 compound_mapcount:0 compound_pincount:0
+page:ffffea0000e30e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 head:ffffea0000e30e00 order:3 compound_mapcount:0 compound_pincount:0
 flags: 0x100000000010200(slab|head)
-raw: 0100000000010200 dead000000000100 dead000000000122 ffff88806c402500
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+raw: 0100000000010200 dead000000000100 dead000000000122 ffff88806c40c000
+raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
 page dumped because: kasan: bad access detected
 
 Memory state around the buggy address:
- ffff88800b796380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88800b796400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88800b796480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                          ^
- ffff88800b796500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88800b796580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888038c3a580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888038c3a600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888038c3a680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                       ^
+ ffff888038c3a700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888038c3a780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
 
-Fixes: caf7297e7ab5 ("mlxsw: core: Introduce support for asynchronous EMAD register access")
+Fixes: 965fa8e600d2 ("mlxsw: spectrum_router: Make RIF deletion more robust")
 Signed-off-by: Ido Schimmel <idosch@mellanox.com>
 Reviewed-by: Jiri Pirko <jiri@mellanox.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../ethernet/mellanox/mlxsw/spectrum_router.c | 50 ++++++++++---------
+ 1 file changed, 26 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/core.c b/drivers/net/ethernet/mellanox/mlxsw/core.c
-index 5e76a96a118eb..71b6185b49042 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/core.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
-@@ -1814,7 +1814,7 @@ static int mlxsw_core_reg_access_emad(struct mlxsw_core *mlxsw_core,
- 	err = mlxsw_emad_reg_access(mlxsw_core, reg, payload, type, trans,
- 				    bulk_list, cb, cb_priv, tid);
- 	if (err) {
--		kfree(trans);
-+		kfree_rcu(trans, rcu);
- 		return err;
- 	}
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+index 84b3d78a9dd84..ac1a63fe0899c 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+@@ -8072,16 +8072,6 @@ int mlxsw_sp_router_init(struct mlxsw_sp *mlxsw_sp,
+ 	mlxsw_sp->router = router;
+ 	router->mlxsw_sp = mlxsw_sp;
+ 
+-	router->inetaddr_nb.notifier_call = mlxsw_sp_inetaddr_event;
+-	err = register_inetaddr_notifier(&router->inetaddr_nb);
+-	if (err)
+-		goto err_register_inetaddr_notifier;
+-
+-	router->inet6addr_nb.notifier_call = mlxsw_sp_inet6addr_event;
+-	err = register_inet6addr_notifier(&router->inet6addr_nb);
+-	if (err)
+-		goto err_register_inet6addr_notifier;
+-
+ 	INIT_LIST_HEAD(&mlxsw_sp->router->nexthop_neighs_list);
+ 	err = __mlxsw_sp_router_init(mlxsw_sp);
+ 	if (err)
+@@ -8122,12 +8112,6 @@ int mlxsw_sp_router_init(struct mlxsw_sp *mlxsw_sp,
+ 	if (err)
+ 		goto err_neigh_init;
+ 
+-	mlxsw_sp->router->netevent_nb.notifier_call =
+-		mlxsw_sp_router_netevent_event;
+-	err = register_netevent_notifier(&mlxsw_sp->router->netevent_nb);
+-	if (err)
+-		goto err_register_netevent_notifier;
+-
+ 	err = mlxsw_sp_mp_hash_init(mlxsw_sp);
+ 	if (err)
+ 		goto err_mp_hash_init;
+@@ -8136,6 +8120,22 @@ int mlxsw_sp_router_init(struct mlxsw_sp *mlxsw_sp,
+ 	if (err)
+ 		goto err_dscp_init;
+ 
++	router->inetaddr_nb.notifier_call = mlxsw_sp_inetaddr_event;
++	err = register_inetaddr_notifier(&router->inetaddr_nb);
++	if (err)
++		goto err_register_inetaddr_notifier;
++
++	router->inet6addr_nb.notifier_call = mlxsw_sp_inet6addr_event;
++	err = register_inet6addr_notifier(&router->inet6addr_nb);
++	if (err)
++		goto err_register_inet6addr_notifier;
++
++	mlxsw_sp->router->netevent_nb.notifier_call =
++		mlxsw_sp_router_netevent_event;
++	err = register_netevent_notifier(&mlxsw_sp->router->netevent_nb);
++	if (err)
++		goto err_register_netevent_notifier;
++
+ 	mlxsw_sp->router->fib_nb.notifier_call = mlxsw_sp_router_fib_event;
+ 	err = register_fib_notifier(mlxsw_sp_net(mlxsw_sp),
+ 				    &mlxsw_sp->router->fib_nb,
+@@ -8146,10 +8146,15 @@ int mlxsw_sp_router_init(struct mlxsw_sp *mlxsw_sp,
  	return 0;
+ 
+ err_register_fib_notifier:
+-err_dscp_init:
+-err_mp_hash_init:
+ 	unregister_netevent_notifier(&mlxsw_sp->router->netevent_nb);
+ err_register_netevent_notifier:
++	unregister_inet6addr_notifier(&router->inet6addr_nb);
++err_register_inet6addr_notifier:
++	unregister_inetaddr_notifier(&router->inetaddr_nb);
++err_register_inetaddr_notifier:
++	mlxsw_core_flush_owq();
++err_dscp_init:
++err_mp_hash_init:
+ 	mlxsw_sp_neigh_fini(mlxsw_sp);
+ err_neigh_init:
+ 	mlxsw_sp_vrs_fini(mlxsw_sp);
+@@ -8168,10 +8173,6 @@ err_ipips_init:
+ err_rifs_init:
+ 	__mlxsw_sp_router_fini(mlxsw_sp);
+ err_router_init:
+-	unregister_inet6addr_notifier(&router->inet6addr_nb);
+-err_register_inet6addr_notifier:
+-	unregister_inetaddr_notifier(&router->inetaddr_nb);
+-err_register_inetaddr_notifier:
+ 	mutex_destroy(&mlxsw_sp->router->lock);
+ 	kfree(mlxsw_sp->router);
+ 	return err;
+@@ -8182,6 +8183,9 @@ void mlxsw_sp_router_fini(struct mlxsw_sp *mlxsw_sp)
+ 	unregister_fib_notifier(mlxsw_sp_net(mlxsw_sp),
+ 				&mlxsw_sp->router->fib_nb);
+ 	unregister_netevent_notifier(&mlxsw_sp->router->netevent_nb);
++	unregister_inet6addr_notifier(&mlxsw_sp->router->inet6addr_nb);
++	unregister_inetaddr_notifier(&mlxsw_sp->router->inetaddr_nb);
++	mlxsw_core_flush_owq();
+ 	mlxsw_sp_neigh_fini(mlxsw_sp);
+ 	mlxsw_sp_vrs_fini(mlxsw_sp);
+ 	mlxsw_sp_mr_fini(mlxsw_sp);
+@@ -8191,8 +8195,6 @@ void mlxsw_sp_router_fini(struct mlxsw_sp *mlxsw_sp)
+ 	mlxsw_sp_ipips_fini(mlxsw_sp);
+ 	mlxsw_sp_rifs_fini(mlxsw_sp);
+ 	__mlxsw_sp_router_fini(mlxsw_sp);
+-	unregister_inet6addr_notifier(&mlxsw_sp->router->inet6addr_nb);
+-	unregister_inetaddr_notifier(&mlxsw_sp->router->inetaddr_nb);
+ 	mutex_destroy(&mlxsw_sp->router->lock);
+ 	kfree(mlxsw_sp->router);
+ }
 -- 
 2.25.1
 
