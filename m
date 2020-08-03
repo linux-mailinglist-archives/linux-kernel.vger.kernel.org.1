@@ -2,136 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6247A23A673
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA8223A6AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729241AbgHCMr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728352AbgHCMrs (ORCPT
+        id S1728402AbgHCMv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:51:58 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:36355 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729542AbgHCMv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:47:48 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DE5C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 05:47:47 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id i19so20375996lfj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 05:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UiawdBAdSV10MNkMusk6KDvgMU6ZXm8ieLNJpzgLvRs=;
-        b=C97O7R0Rfw2tGoywNIehE83jo0UdSKAdymy6KFtGYRXy2JZmpPFUHEhCPrycDtb8H3
-         98g511+KDLHkvDZ9nubhDukfZAFd6z/Tkd1YMdE6aI9zaMMaPOLEyBfiNr7/o8t7ltdS
-         FWQzBuzXviZRKX+mznI/YbIcG9gjXpDgfd1oI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UiawdBAdSV10MNkMusk6KDvgMU6ZXm8ieLNJpzgLvRs=;
-        b=uP6983KfFgiWSoolOV9ED4uvyzXiC09Z3i333qv5srm3q8rzuz6twlNnGiq2WG2yCW
-         gnxdbJJUVM+ffdyO9TZH57jK9lpSpZnXkyyjoO9k4Zf5hbgRtFNgwYg4c+nU9yv+kYJG
-         7Afy3v0sJWA92uslD1agP9TlfXnTjOar03c+Yqgxtw6XsReZIJS2K92dCVIX021CUK2S
-         s2v1BIvQCT/IUpPs06UV+huz7CNMudQ8rYWuoeYTu3Tjh4PVkGYqpjQJlwfqUyBvD/Q1
-         M6jEIY8jCz2TPeRpjx38td2HGXC3h9IxMJkeHljO4dv1OyrZW97u3Szu7O6VAS7xTxTU
-         RHWA==
-X-Gm-Message-State: AOAM532ZgeZ2LtpbM0eJ2Ejv6UwDZnJD0Ccc1Nn0w3mJi1kx+5j84Nd+
-        lwLOtt1UpdTn/Nwh0CT82auDTnmWTrVXzsI2+amGYw==
-X-Google-Smtp-Source: ABdhPJxgP5BZtDN7U9WwwQIz450Z/zEXWaCSGn8z77dHbVfT6eNTzm4EDkSd3CjmFkYjwO6eTalxMtZBYfqzD1lTC7c=
-X-Received: by 2002:a19:6b0e:: with SMTP id d14mr5741775lfa.103.1596458865734;
- Mon, 03 Aug 2020 05:47:45 -0700 (PDT)
+        Mon, 3 Aug 2020 08:51:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596459077; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=jepPBJzpwNuriMTj33dYfuOkzUu353rrYsvD7FzsN1c=;
+ b=onefh8/J05V1Fr7p1QxbPn+0PxBz6lLF2aQLcNuTM7CRNU0zlgNXHUtDDNcc7cB2MbjdLAfh
+ eTVCdYeDFiWgOOHw0Cwa86G0jUQr5M7H3tYmO1JmBLfUSAYKxZ0w8mq/sfJi5cs++CZhEhWp
+ ApKUKpe3jbVmBvcjLD9jGdyn8xQ=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
+ 5f28083a849144fbcbb7ff4d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 Aug 2020 12:51:06
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4DF52C433A1; Mon,  3 Aug 2020 12:51:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F0205C433C6;
+        Mon,  3 Aug 2020 12:51:03 +0000 (UTC)
 MIME-Version: 1.0
-References: <1595847753-2234-1-git-send-email-moshe@mellanox.com>
- <CAACQVJqNXh0B=oe5W7psiMGc6LzNPujNe2sypWi_SvH5sY=F3Q@mail.gmail.com>
- <a3e20b44-9399-93c1-210f-e3c1172bf60d@intel.com> <CAACQVJo+bAr_k=LjgdTKbOxFEkpbYAsaWbkSDjUepgO7_XQfNA@mail.gmail.com>
- <7a9c315f-fa29-7bd5-31be-3748b8841b29@mellanox.com>
-In-Reply-To: <7a9c315f-fa29-7bd5-31be-3748b8841b29@mellanox.com>
-From:   Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Date:   Mon, 3 Aug 2020 18:17:33 +0530
-Message-ID: <CAACQVJpZZPfiWszZ36E0Awuo2Ad1w5=4C1rgG=d4qPiWVP609Q@mail.gmail.com>
-Subject: Re: [PATCH net-next RFC 00/13] Add devlink reload level option
-To:     Moshe Shemesh <moshe@mellanox.com>
-Cc:     Jacob Keller <jacob.e.keller@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 03 Aug 2020 20:51:03 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        bvanassche@acm.org, beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com
+Subject: Re: [PATCH v7] scsi: ufs: Quiesce all scsi devices before shutdown
+In-Reply-To: <20200803100448.2738-1-stanley.chu@mediatek.com>
+References: <20200803100448.2738-1-stanley.chu@mediatek.com>
+Message-ID: <70222bbb82a8b167475189110cf69317@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 3, 2020 at 5:47 PM Moshe Shemesh <moshe@mellanox.com> wrote:
->
->
-> On 8/3/2020 1:24 PM, Vasundhara Volam wrote:
-> > On Tue, Jul 28, 2020 at 10:13 PM Jacob Keller <jacob.e.keller@intel.com> wrote:
-> >>
-> >>
-> >> On 7/27/2020 10:25 PM, Vasundhara Volam wrote:
-> >>> On Mon, Jul 27, 2020 at 4:36 PM Moshe Shemesh <moshe@mellanox.com> wrote:
-> >>>> Introduce new option on devlink reload API to enable the user to select the
-> >>>> reload level required. Complete support for all levels in mlx5.
-> >>>> The following reload levels are supported:
-> >>>>    driver: Driver entities re-instantiation only.
-> >>>>    fw_reset: Firmware reset and driver entities re-instantiation.
-> >>> The Name is a little confusing. I think it should be renamed to
-> >>> fw_live_reset (in which both firmware and driver entities are
-> >>> re-instantiated).  For only fw_reset, the driver should not undergo
-> >>> reset (it requires a driver reload for firmware to undergo reset).
-> >>>
-> >> So, I think the differentiation here is that "live_patch" doesn't reset
-> >> anything.
-> > This seems similar to flashing the firmware and does not reset anything.
->
->
-> The live patch is activating fw change without reset.
->
-> It is not suitable for any fw change but fw gaps which don't require reset.
->
-> I can query the fw to check if the pending image change is suitable or
-> require fw reset.
-Okay.
->
-> >>>>    fw_live_patch: Firmware live patching only.
-> >>> This level is not clear. Is this similar to flashing??
-> >>>
-> >>> Also I have a basic query. The reload command is split into
-> >>> reload_up/reload_down handlers (Please correct me if this behaviour is
-> >>> changed with this patchset). What if the vendor specific driver does
-> >>> not support up/down and needs only a single handler to fire a firmware
-> >>> reset or firmware live reset command?
-> >> In the "reload_down" handler, they would trigger the appropriate reset,
-> >> and quiesce anything that needs to be done. Then on reload up, it would
-> >> restore and bring up anything quiesced in the first stage.
-> > Yes, I got the "reload_down" and "reload_up". Similar to the device
-> > "remove" and "re-probe" respectively.
-> >
-> > But our requirement is a similar "ethtool reset" command, where
-> > ethtool calls a single callback in driver and driver just sends a
-> > firmware command for doing the reset. Once firmware receives the
-> > command, it will initiate the reset of driver and firmware entities
-> > asynchronously.
->
->
-> It is similar to mlx5 case here for fw_reset. The driver triggers the fw
-> command to reset and all PFs drivers gets events to handle and do
-> re-initialization.  To fit it to the devlink reload_down and reload_up,
-> I wait for the event handler to complete and it stops at driver unload
-> to have the driver up by devlink reload_up. See patch 8 in this patchset.
->
-Yes, I see reload_down is triggering the reset. In our driver, after
-triggering the reset through a firmware command, reset is done in
-another context as the driver initiates the reset only after receiving
-an ASYNC event from the firmware.
+Hi Stanley,
 
-Probably, we have to use reload_down() to send firmware command to
-trigger reset and do nothing in reload_up. And returning from reload
-does not mean that reset is complete as it is done in another context
-and the driver notifies the health reporter once the reset is
-complete. devlink framework may have to allow drivers to implement
-reload_down only to look more clean or call reload_up only if the
-driver notifies the devlink once reset is completed from another
-context. Please suggest.
+Sorry for the noises, please ignore my previous 2 mails and let's
+focus on this one.
+
+On 2020-08-03 18:04, Stanley Chu wrote:
+> Currently I/O request could be still submitted to UFS device while
+> UFS is working on shutdown flow. This may lead to racing as below
+> scenarios and finally system may crash due to unclocked register
+> accesses.
+> 
+> To fix this kind of issues, in ufshcd_shutdown(),
+> 
+> 1. Use pm_runtime_get_sync() instead of resuming UFS device by
+>    ufshcd_runtime_resume() "internally" to let runtime PM framework
+>    manage and prevent concurrent runtime operations by incoming I/O
+>    requests.
+> 
+> 2. Specifically quiesce all SCSI devices to block all I/O requests
+>    after device is resumed.
+> 
+> Example of racing scenario: While UFS device is runtime-suspended
+> 
+> Thread #1: Executing UFS shutdown flow, e.g.,
+>            ufshcd_suspend(UFS_SHUTDOWN_PM)
+> 
+> Thread #2: Executing runtime resume flow triggered by I/O request,
+>            e.g., ufshcd_resume(UFS_RUNTIME_PM)
+> 
+> This breaks the assumption that UFS PM flows can not be running
+> concurrently and some unexpected racing behavior may happen.
+> 
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+> Changes:
+>   - Since v6:
+> 	- Do quiesce to all SCSI devices.
+>   - Since v4:
+> 	- Use pm_runtime_get_sync() instead of resuming UFS device by
+> ufshcd_runtime_resume() "internally".
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 27 ++++++++++++++++++++++-----
+>  1 file changed, 22 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 307622284239..7cb220b3fde0 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -8640,6 +8640,7 @@ EXPORT_SYMBOL(ufshcd_runtime_idle);
+>  int ufshcd_shutdown(struct ufs_hba *hba)
+>  {
+>  	int ret = 0;
+> +	struct scsi_target *starget;
+> 
+>  	if (!hba->is_powered)
+>  		goto out;
+> @@ -8647,11 +8648,27 @@ int ufshcd_shutdown(struct ufs_hba *hba)
+>  	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
+>  		goto out;
+> 
+> -	if (pm_runtime_suspended(hba->dev)) {
+> -		ret = ufshcd_runtime_resume(hba);
+> -		if (ret)
+> -			goto out;
+> -	}
+> +	/*
+> +	 * Let runtime PM framework manage and prevent concurrent runtime
+> +	 * operations with shutdown flow.
+> +	 */
+> +	pm_runtime_get_sync(hba->dev);
+> +
+> +	/*
+> +	 * Quiesce all SCSI devices to prevent any non-PM requests sending
+> +	 * from block layer during and after shutdown.
+> +	 *
+> +	 * Here we can not use blk_cleanup_queue() since PM requests
+> +	 * (with BLK_MQ_REQ_PREEMPT flag) are still required to be sent
+> +	 * through block layer. Therefore SCSI command queued after the
+> +	 * scsi_target_quiesce() call returned will block until
+> +	 * blk_cleanup_queue() is called.
+> +	 *
+> +	 * Besides, scsi_target_"un"quiesce (e.g., scsi_target_resume) can
+> +	 * be ignored since shutdown is one-way flow.
+> +	 */
+> +	list_for_each_entry(starget, &hba->host->__targets, siblings)
+> +		scsi_target_quiesce(starget);
+> 
+
+Sorry for misleading you to scsi_target_quiesce(), maybe below is 
+better.
+
+     shost_for_each_device(sdev, hba->host)
+         scsi_device_quiesce(sdev);
+
+We may need to discuss more about this quiesce part since I missed 
+something.
+
+After we quiesce the scsi devices, only PM requests are allowed, but it
+is still not safe - PM requests can still pass through.
+
+How about only quiescing the UFS device well known scsi device but using
+freeze_queue to the other scsi devices? blk_mq_freeze_queue can 
+eliminate
+the risk.
+
+      shost_for_each_device(sdev, hba->host) {
+          if (sdev == hba->sdev_ufs_device)
+               scsi_device_quiesce(sdev);
+          else
+               blk_mq_freeze_queue(sdev->request_queue);
+      }
+
+IF blk_mq_freeze_queue is not allowed to be used by LLD (I think we can
+use it as I recalled Bart used to use it in one of his changes to UFS 
+scaling),
+we can use scsi_remove_device instead, it changes scsi device's state to
+SDEV_DEL and calls blk_cleanup_queue.
+
+We can also use scsi_autopm_get_device like below. It is to make sure
+no more PM requests sent to scsi devices (since PM requests are only 
+sent
+during PM ops).
+
+     shost_for_each_device(sdev, hba->host) {
+         scsi_autopm_get_device(sdev);
+         scsi_device_quiesce(sdev);
+     }
+
+Please let me know which one do you prefer or if you have better ideas, 
+thanks!
+
+Regards,
+
+Can Guo.
+
+>  	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
+>  out:
