@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D62523A51F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A249423A5EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729457AbgHCMde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:33:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33380 "EHLO mail.kernel.org"
+        id S1729491AbgHCMnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:43:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729435AbgHCMd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:33:28 -0400
+        id S1729024AbgHCMaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:30:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9D7A204EC;
-        Mon,  3 Aug 2020 12:33:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91E0C20775;
+        Mon,  3 Aug 2020 12:30:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596458007;
-        bh=jWGFztSlPZ2Ee/FF2hv8UCt06rAB2GbADoQoBX0DGEM=;
+        s=default; t=1596457818;
+        bh=lh5kN0aZNa2kwrAZq9484r/FQcxSPMX2RaU2x6rT4S8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qy7jgukRHLVI1QPdzOGsTSZjep42qJuRDBAslHO60gN1aoeeigx6Wx5lNVfiaiefU
-         aZxAKUp9kJnEhbOIuhG+cmEQoaJydBu+zD9/ocNRN0ceyi+f8y8YjoEuSx0wqaeGjH
-         bDyzc5M9lezLKnvyDwQH+p5l80urdSyyMrpmd8hk=
+        b=TuZEJcgFfIbqH2kvYywOtnqiquxXTYxUOFnrpBmnHnzzAQCT8xGf8ZT+LLaRwHXKH
+         Kc/tbvmYeeeVbSG8LqrARJnkg/pR3s0j7ucv8rz5GmdFiEE3/wRorX19c0TjlwqMMy
+         ejbUSMfowKkGzqkTOso1AOjnYSj1g2ToRrCodpe4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eran Ben Elisha <eranbe@mellanox.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 31/56] net/mlx5: Verify Hardware supports requested ptp function on a given pin
+Subject: [PATCH 5.4 84/90] drivers/net/wan: lapb: Corrected the usage of skb_cow
 Date:   Mon,  3 Aug 2020 14:19:46 +0200
-Message-Id: <20200803121851.847496622@linuxfoundation.org>
+Message-Id: <20200803121901.666059663@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +46,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eran Ben Elisha <eranbe@mellanox.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 071995c877a8646209d55ff8edddd2b054e7424c ]
+[ Upstream commit 8754e1379e7089516a449821f88e1fe1ebbae5e1 ]
 
-Fix a bug where driver did not verify Hardware pin capabilities for
-PTP functions.
+This patch fixed 2 issues with the usage of skb_cow in LAPB drivers
+"lapbether" and "hdlc_x25":
 
-Fixes: ee7f12205abc ("net/mlx5e: Implement 1PPS support")
-Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-Reviewed-by: Ariel Levkovich <lariel@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+1) After skb_cow fails, kfree_skb should be called to drop a reference
+to the skb. But in both drivers, kfree_skb is not called.
+
+2) skb_cow should be called before skb_push so that is can ensure the
+safety of skb_push. But in "lapbether", it is incorrectly called after
+skb_push.
+
+More details about these 2 issues:
+
+1) The behavior of calling kfree_skb on failure is also the behavior of
+netif_rx, which is called by this function with "return netif_rx(skb);".
+So this function should follow this behavior, too.
+
+2) In "lapbether", skb_cow is called after skb_push. This results in 2
+logical issues:
+   a) skb_push is not protected by skb_cow;
+   b) An extra headroom of 1 byte is ensured after skb_push. This extra
+      headroom has no use in this function. It also has no use in the
+      upper-layer function that this function passes the skb to
+      (x25_lapb_receive_frame in net/x25/x25_dev.c).
+So logically skb_cow should instead be called before skb_push.
+
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/mellanox/mlx5/core/lib/clock.c   | 23 ++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ drivers/net/wan/hdlc_x25.c  | 4 +++-
+ drivers/net/wan/lapbether.c | 8 +++++---
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-index 54f1a40a68edd..d359e850dbf07 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-@@ -366,10 +366,31 @@ static int mlx5_ptp_enable(struct ptp_clock_info *ptp,
- 	return 0;
- }
- 
-+enum {
-+	MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_IN = BIT(0),
-+	MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_OUT = BIT(1),
-+};
-+
- static int mlx5_ptp_verify(struct ptp_clock_info *ptp, unsigned int pin,
- 			   enum ptp_pin_function func, unsigned int chan)
+diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
+index bf78073ee7fd9..e2a83f4cd3bb6 100644
+--- a/drivers/net/wan/hdlc_x25.c
++++ b/drivers/net/wan/hdlc_x25.c
+@@ -62,8 +62,10 @@ static int x25_data_indication(struct net_device *dev, struct sk_buff *skb)
  {
--	return (func == PTP_PF_PHYSYNC) ? -EOPNOTSUPP : 0;
-+	struct mlx5_clock *clock = container_of(ptp, struct mlx5_clock,
-+						ptp_info);
-+
-+	switch (func) {
-+	case PTP_PF_NONE:
-+		return 0;
-+	case PTP_PF_EXTTS:
-+		return !(clock->pps_info.pin_caps[pin] &
-+			 MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_IN);
-+	case PTP_PF_PEROUT:
-+		return !(clock->pps_info.pin_caps[pin] &
-+			 MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_OUT);
-+	default:
-+		return -EOPNOTSUPP;
+ 	unsigned char *ptr;
+ 
+-	if (skb_cow(skb, 1))
++	if (skb_cow(skb, 1)) {
++		kfree_skb(skb);
+ 		return NET_RX_DROP;
++	}
+ 
+ 	skb_push(skb, 1);
+ 	skb_reset_network_header(skb);
+diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+index 5a6f27298b90f..134e4dd916c1a 100644
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -128,10 +128,12 @@ static int lapbeth_data_indication(struct net_device *dev, struct sk_buff *skb)
+ {
+ 	unsigned char *ptr;
+ 
+-	skb_push(skb, 1);
+-
+-	if (skb_cow(skb, 1))
++	if (skb_cow(skb, 1)) {
++		kfree_skb(skb);
+ 		return NET_RX_DROP;
 +	}
 +
-+	return -EOPNOTSUPP;
- }
++	skb_push(skb, 1);
  
- static const struct ptp_clock_info mlx5_ptp_clock_info = {
+ 	ptr  = skb->data;
+ 	*ptr = X25_IFACE_DATA;
 -- 
 2.25.1
 
