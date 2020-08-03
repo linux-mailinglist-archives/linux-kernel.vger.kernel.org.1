@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E789223A431
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D5023A482
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728038AbgHCMYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:24:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48776 "EHLO mail.kernel.org"
+        id S1728674AbgHCM2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:28:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728013AbgHCMY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:24:27 -0400
+        id S1726821AbgHCM17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:27:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1D09207BB;
-        Mon,  3 Aug 2020 12:24:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DAD8207DF;
+        Mon,  3 Aug 2020 12:27:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457466;
-        bh=XBvsK20w6/gS9XX8ytMSJQLUzv9/dWAw8I3cJHHSmio=;
+        s=default; t=1596457677;
+        bh=qXRrT1m0tUkhRIHg6U4hF3VyK3WiNLfY+zhJKIyIWHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wd5cZUgx0gZ1bjYD5TRUhNow5Q+PdYLsHwjiuRlYR4YvjI5BGsGBaB9PSd8xPJO9W
-         Tv3zSBN+ibBejcUf1zgujSS/P4PX3Q53J/ZKhsBfHqJBHyLTtGe8j15uVjbOeLLAT2
-         J9CEFyqTA2MgN+Tjv/1Md1FtsKlUlWhngydgiyXg=
+        b=UK5z+s4NH6f7uvIJ003hg6zS7kbbpWGFTcQ9Bdk0OoubcdX4wc4AEW6wPzB1/VnWE
+         5SJ9slDxXUWKSHs7uHV1KBhBZBo2/+NUv9fOpZzpJ6WOtDU7iXxKI7qHXfHECNu9Dj
+         X858DjVtW0imCtBZ1nY55TsUNe25WIczdNE8mbIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Remi Pommarel <repk@triplefau.lt>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Tobias Brunner <tobias@strongswan.org>,
+        Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 078/120] mac80211: mesh: Free ie data when leaving mesh
-Date:   Mon,  3 Aug 2020 14:18:56 +0200
-Message-Id: <20200803121906.632519018@linuxfoundation.org>
+Subject: [PATCH 5.4 35/90] xfrm: policy: match with both mark and mask on user interfaces
+Date:   Mon,  3 Aug 2020 14:18:57 +0200
+Message-Id: <20200803121859.311515938@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
-References: <20200803121902.860751811@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +45,261 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Remi Pommarel <repk@triplefau.lt>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 6a01afcf8468d3ca2bd8bbb27503f60dcf643b20 ]
+[ Upstream commit 4f47e8ab6ab796b5380f74866fa5287aca4dcc58 ]
 
-At ieee80211_join_mesh() some ie data could have been allocated (see
-copy_mesh_setup()) and need to be cleaned up when leaving the mesh.
+In commit ed17b8d377ea ("xfrm: fix a warning in xfrm_policy_insert_list"),
+it would take 'priority' to make a policy unique, and allow duplicated
+policies with different 'priority' to be added, which is not expected
+by userland, as Tobias reported in strongswan.
 
-This fixes the following kmemleak report:
+To fix this duplicated policies issue, and also fix the issue in
+commit ed17b8d377ea ("xfrm: fix a warning in xfrm_policy_insert_list"),
+when doing add/del/get/update on user interfaces, this patch is to change
+to look up a policy with both mark and mask by doing:
 
-unreferenced object 0xffff0000116bc600 (size 128):
-  comm "wpa_supplicant", pid 608, jiffies 4294898983 (age 293.484s)
-  hex dump (first 32 bytes):
-    30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00  0...............
-    00 0f ac 08 00 00 00 00 c4 65 40 00 00 00 00 00  .........e@.....
-  backtrace:
-    [<00000000bebe439d>] __kmalloc_track_caller+0x1c0/0x330
-    [<00000000a349dbe1>] kmemdup+0x28/0x50
-    [<0000000075d69baa>] ieee80211_join_mesh+0x6c/0x3b8 [mac80211]
-    [<00000000683bb98b>] __cfg80211_join_mesh+0x1e8/0x4f0 [cfg80211]
-    [<0000000072cb507f>] nl80211_join_mesh+0x520/0x6b8 [cfg80211]
-    [<0000000077e9bcf9>] genl_family_rcv_msg+0x374/0x680
-    [<00000000b1bd936d>] genl_rcv_msg+0x78/0x108
-    [<0000000022c53788>] netlink_rcv_skb+0xb0/0x1c0
-    [<0000000011af8ec9>] genl_rcv+0x34/0x48
-    [<0000000069e41f53>] netlink_unicast+0x268/0x2e8
-    [<00000000a7517316>] netlink_sendmsg+0x320/0x4c0
-    [<0000000069cba205>] ____sys_sendmsg+0x354/0x3a0
-    [<00000000e06bab0f>] ___sys_sendmsg+0xd8/0x120
-    [<0000000037340728>] __sys_sendmsg+0xa4/0xf8
-    [<000000004fed9776>] __arm64_sys_sendmsg+0x44/0x58
-    [<000000001c1e5647>] el0_svc_handler+0xd0/0x1a0
+  mark.v == pol->mark.v && mark.m == pol->mark.m
 
-Fixes: c80d545da3f7 (mac80211: Let userspace enable and configure vendor specific path selection.)
-Signed-off-by: Remi Pommarel <repk@triplefau.lt>
-Link: https://lore.kernel.org/r/20200704135007.27292-1-repk@triplefau.lt
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+and leave the check:
+
+  (mark & pol->mark.m) == pol->mark.v
+
+for tx/rx path only.
+
+As the userland expects an exact mark and mask match to manage policies.
+
+v1->v2:
+  - make xfrm_policy_mark_match inline and fix the changelog as
+    Tobias suggested.
+
+Fixes: 295fae568885 ("xfrm: Allow user space manipulation of SPD mark")
+Fixes: ed17b8d377ea ("xfrm: fix a warning in xfrm_policy_insert_list")
+Reported-by: Tobias Brunner <tobias@strongswan.org>
+Tested-by: Tobias Brunner <tobias@strongswan.org>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/cfg.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/net/xfrm.h     | 11 +++++++----
+ net/key/af_key.c       |  4 ++--
+ net/xfrm/xfrm_policy.c | 39 ++++++++++++++++-----------------------
+ net/xfrm/xfrm_user.c   | 18 +++++++++++-------
+ 4 files changed, 36 insertions(+), 36 deletions(-)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 0f72813fed53e..4230b483168a1 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -2140,6 +2140,7 @@ static int ieee80211_leave_mesh(struct wiphy *wiphy, struct net_device *dev)
- 	ieee80211_stop_mesh(sdata);
- 	mutex_lock(&sdata->local->mtx);
- 	ieee80211_vif_release_channel(sdata);
-+	kfree(sdata->u.mesh.ie);
- 	mutex_unlock(&sdata->local->mtx);
+diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+index fb391c00c19ac..e7a480a4ffb90 100644
+--- a/include/net/xfrm.h
++++ b/include/net/xfrm.h
+@@ -1636,13 +1636,16 @@ int xfrm_policy_walk(struct net *net, struct xfrm_policy_walk *walk,
+ 		     void *);
+ void xfrm_policy_walk_done(struct xfrm_policy_walk *walk, struct net *net);
+ int xfrm_policy_insert(int dir, struct xfrm_policy *policy, int excl);
+-struct xfrm_policy *xfrm_policy_bysel_ctx(struct net *net, u32 mark, u32 if_id,
+-					  u8 type, int dir,
++struct xfrm_policy *xfrm_policy_bysel_ctx(struct net *net,
++					  const struct xfrm_mark *mark,
++					  u32 if_id, u8 type, int dir,
+ 					  struct xfrm_selector *sel,
+ 					  struct xfrm_sec_ctx *ctx, int delete,
+ 					  int *err);
+-struct xfrm_policy *xfrm_policy_byid(struct net *net, u32 mark, u32 if_id, u8,
+-				     int dir, u32 id, int delete, int *err);
++struct xfrm_policy *xfrm_policy_byid(struct net *net,
++				     const struct xfrm_mark *mark, u32 if_id,
++				     u8 type, int dir, u32 id, int delete,
++				     int *err);
+ int xfrm_policy_flush(struct net *net, u8 type, bool task_valid);
+ void xfrm_policy_hash_rebuild(struct net *net);
+ u32 xfrm_get_acqseq(void);
+diff --git a/net/key/af_key.c b/net/key/af_key.c
+index b67ed3a8486c2..979c579afc63b 100644
+--- a/net/key/af_key.c
++++ b/net/key/af_key.c
+@@ -2400,7 +2400,7 @@ static int pfkey_spddelete(struct sock *sk, struct sk_buff *skb, const struct sa
+ 			return err;
+ 	}
  
- 	return 0;
+-	xp = xfrm_policy_bysel_ctx(net, DUMMY_MARK, 0, XFRM_POLICY_TYPE_MAIN,
++	xp = xfrm_policy_bysel_ctx(net, &dummy_mark, 0, XFRM_POLICY_TYPE_MAIN,
+ 				   pol->sadb_x_policy_dir - 1, &sel, pol_ctx,
+ 				   1, &err);
+ 	security_xfrm_policy_free(pol_ctx);
+@@ -2651,7 +2651,7 @@ static int pfkey_spdget(struct sock *sk, struct sk_buff *skb, const struct sadb_
+ 		return -EINVAL;
+ 
+ 	delete = (hdr->sadb_msg_type == SADB_X_SPDDELETE2);
+-	xp = xfrm_policy_byid(net, DUMMY_MARK, 0, XFRM_POLICY_TYPE_MAIN,
++	xp = xfrm_policy_byid(net, &dummy_mark, 0, XFRM_POLICY_TYPE_MAIN,
+ 			      dir, pol->sadb_x_policy_id, delete, &err);
+ 	if (xp == NULL)
+ 		return -ENOENT;
+diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+index 6a1a21ae47bbd..2917711ff8ab6 100644
+--- a/net/xfrm/xfrm_policy.c
++++ b/net/xfrm/xfrm_policy.c
+@@ -1430,14 +1430,10 @@ static void xfrm_policy_requeue(struct xfrm_policy *old,
+ 	spin_unlock_bh(&pq->hold_queue.lock);
+ }
+ 
+-static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
+-				   struct xfrm_policy *pol)
++static inline bool xfrm_policy_mark_match(const struct xfrm_mark *mark,
++					  struct xfrm_policy *pol)
+ {
+-	if (policy->mark.v == pol->mark.v &&
+-	    policy->priority == pol->priority)
+-		return true;
+-
+-	return false;
++	return mark->v == pol->mark.v && mark->m == pol->mark.m;
+ }
+ 
+ static u32 xfrm_pol_bin_key(const void *data, u32 len, u32 seed)
+@@ -1500,7 +1496,7 @@ static void xfrm_policy_insert_inexact_list(struct hlist_head *chain,
+ 		if (pol->type == policy->type &&
+ 		    pol->if_id == policy->if_id &&
+ 		    !selector_cmp(&pol->selector, &policy->selector) &&
+-		    xfrm_policy_mark_match(policy, pol) &&
++		    xfrm_policy_mark_match(&policy->mark, pol) &&
+ 		    xfrm_sec_ctx_match(pol->security, policy->security) &&
+ 		    !WARN_ON(delpol)) {
+ 			delpol = pol;
+@@ -1535,7 +1531,7 @@ static struct xfrm_policy *xfrm_policy_insert_list(struct hlist_head *chain,
+ 		if (pol->type == policy->type &&
+ 		    pol->if_id == policy->if_id &&
+ 		    !selector_cmp(&pol->selector, &policy->selector) &&
+-		    xfrm_policy_mark_match(policy, pol) &&
++		    xfrm_policy_mark_match(&policy->mark, pol) &&
+ 		    xfrm_sec_ctx_match(pol->security, policy->security) &&
+ 		    !WARN_ON(delpol)) {
+ 			if (excl)
+@@ -1607,9 +1603,8 @@ int xfrm_policy_insert(int dir, struct xfrm_policy *policy, int excl)
+ EXPORT_SYMBOL(xfrm_policy_insert);
+ 
+ static struct xfrm_policy *
+-__xfrm_policy_bysel_ctx(struct hlist_head *chain, u32 mark, u32 if_id,
+-			u8 type, int dir,
+-			struct xfrm_selector *sel,
++__xfrm_policy_bysel_ctx(struct hlist_head *chain, const struct xfrm_mark *mark,
++			u32 if_id, u8 type, int dir, struct xfrm_selector *sel,
+ 			struct xfrm_sec_ctx *ctx)
+ {
+ 	struct xfrm_policy *pol;
+@@ -1620,7 +1615,7 @@ __xfrm_policy_bysel_ctx(struct hlist_head *chain, u32 mark, u32 if_id,
+ 	hlist_for_each_entry(pol, chain, bydst) {
+ 		if (pol->type == type &&
+ 		    pol->if_id == if_id &&
+-		    (mark & pol->mark.m) == pol->mark.v &&
++		    xfrm_policy_mark_match(mark, pol) &&
+ 		    !selector_cmp(sel, &pol->selector) &&
+ 		    xfrm_sec_ctx_match(ctx, pol->security))
+ 			return pol;
+@@ -1629,11 +1624,10 @@ __xfrm_policy_bysel_ctx(struct hlist_head *chain, u32 mark, u32 if_id,
+ 	return NULL;
+ }
+ 
+-struct xfrm_policy *xfrm_policy_bysel_ctx(struct net *net, u32 mark, u32 if_id,
+-					  u8 type, int dir,
+-					  struct xfrm_selector *sel,
+-					  struct xfrm_sec_ctx *ctx, int delete,
+-					  int *err)
++struct xfrm_policy *
++xfrm_policy_bysel_ctx(struct net *net, const struct xfrm_mark *mark, u32 if_id,
++		      u8 type, int dir, struct xfrm_selector *sel,
++		      struct xfrm_sec_ctx *ctx, int delete, int *err)
+ {
+ 	struct xfrm_pol_inexact_bin *bin = NULL;
+ 	struct xfrm_policy *pol, *ret = NULL;
+@@ -1700,9 +1694,9 @@ struct xfrm_policy *xfrm_policy_bysel_ctx(struct net *net, u32 mark, u32 if_id,
+ }
+ EXPORT_SYMBOL(xfrm_policy_bysel_ctx);
+ 
+-struct xfrm_policy *xfrm_policy_byid(struct net *net, u32 mark, u32 if_id,
+-				     u8 type, int dir, u32 id, int delete,
+-				     int *err)
++struct xfrm_policy *
++xfrm_policy_byid(struct net *net, const struct xfrm_mark *mark, u32 if_id,
++		 u8 type, int dir, u32 id, int delete, int *err)
+ {
+ 	struct xfrm_policy *pol, *ret;
+ 	struct hlist_head *chain;
+@@ -1717,8 +1711,7 @@ struct xfrm_policy *xfrm_policy_byid(struct net *net, u32 mark, u32 if_id,
+ 	ret = NULL;
+ 	hlist_for_each_entry(pol, chain, byidx) {
+ 		if (pol->type == type && pol->index == id &&
+-		    pol->if_id == if_id &&
+-		    (mark & pol->mark.m) == pol->mark.v) {
++		    pol->if_id == if_id && xfrm_policy_mark_match(mark, pol)) {
+ 			xfrm_pol_hold(pol);
+ 			if (delete) {
+ 				*err = security_xfrm_policy_delete(
+diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
+index e6cfaa680ef3d..fbb7d9d064787 100644
+--- a/net/xfrm/xfrm_user.c
++++ b/net/xfrm/xfrm_user.c
+@@ -1863,7 +1863,6 @@ static int xfrm_get_policy(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	struct km_event c;
+ 	int delete;
+ 	struct xfrm_mark m;
+-	u32 mark = xfrm_mark_get(attrs, &m);
+ 	u32 if_id = 0;
+ 
+ 	p = nlmsg_data(nlh);
+@@ -1880,8 +1879,11 @@ static int xfrm_get_policy(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	if (attrs[XFRMA_IF_ID])
+ 		if_id = nla_get_u32(attrs[XFRMA_IF_ID]);
+ 
++	xfrm_mark_get(attrs, &m);
++
+ 	if (p->index)
+-		xp = xfrm_policy_byid(net, mark, if_id, type, p->dir, p->index, delete, &err);
++		xp = xfrm_policy_byid(net, &m, if_id, type, p->dir,
++				      p->index, delete, &err);
+ 	else {
+ 		struct nlattr *rt = attrs[XFRMA_SEC_CTX];
+ 		struct xfrm_sec_ctx *ctx;
+@@ -1898,8 +1900,8 @@ static int xfrm_get_policy(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 			if (err)
+ 				return err;
+ 		}
+-		xp = xfrm_policy_bysel_ctx(net, mark, if_id, type, p->dir, &p->sel,
+-					   ctx, delete, &err);
++		xp = xfrm_policy_bysel_ctx(net, &m, if_id, type, p->dir,
++					   &p->sel, ctx, delete, &err);
+ 		security_xfrm_policy_free(ctx);
+ 	}
+ 	if (xp == NULL)
+@@ -2166,7 +2168,6 @@ static int xfrm_add_pol_expire(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	u8 type = XFRM_POLICY_TYPE_MAIN;
+ 	int err = -ENOENT;
+ 	struct xfrm_mark m;
+-	u32 mark = xfrm_mark_get(attrs, &m);
+ 	u32 if_id = 0;
+ 
+ 	err = copy_from_user_policy_type(&type, attrs);
+@@ -2180,8 +2181,11 @@ static int xfrm_add_pol_expire(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	if (attrs[XFRMA_IF_ID])
+ 		if_id = nla_get_u32(attrs[XFRMA_IF_ID]);
+ 
++	xfrm_mark_get(attrs, &m);
++
+ 	if (p->index)
+-		xp = xfrm_policy_byid(net, mark, if_id, type, p->dir, p->index, 0, &err);
++		xp = xfrm_policy_byid(net, &m, if_id, type, p->dir, p->index,
++				      0, &err);
+ 	else {
+ 		struct nlattr *rt = attrs[XFRMA_SEC_CTX];
+ 		struct xfrm_sec_ctx *ctx;
+@@ -2198,7 +2202,7 @@ static int xfrm_add_pol_expire(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 			if (err)
+ 				return err;
+ 		}
+-		xp = xfrm_policy_bysel_ctx(net, mark, if_id, type, p->dir,
++		xp = xfrm_policy_bysel_ctx(net, &m, if_id, type, p->dir,
+ 					   &p->sel, ctx, 0, &err);
+ 		security_xfrm_policy_free(ctx);
+ 	}
 -- 
 2.25.1
 
