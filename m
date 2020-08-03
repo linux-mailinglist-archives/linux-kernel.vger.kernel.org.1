@@ -2,70 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5863423B07C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 00:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA75523B07F
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 00:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgHCWvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 18:51:01 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:43986 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgHCWvA (ORCPT
+        id S1728977AbgHCWvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 18:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728213AbgHCWvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 18:51:00 -0400
-Received: by mail-il1-f193.google.com with SMTP id y18so24122511ilp.10;
-        Mon, 03 Aug 2020 15:51:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vFjOPpSlF90T2Ir2lWmLxcZyeP2Xbk9TRXdaHOINJzY=;
-        b=i9U6hHk3llu8TibnYy11TLnEhzJic2L/8fyKDUaK+AMh0vflmNj3yXxOkrBx7j+9CJ
-         385E6sycB2CRkvAXp4X1bmtq987fcq3b65BC59b3hynb1EUDDVtZFYnk5wpSLVgwi1uY
-         7NzVcOyP0HZYLjatv0jM9IVNGXBvD9BqFbzI9hgoj3huctH6qHN6LCkOvZbRRuQC6D6l
-         kAkLQ2zRKPTFMia9jUmKCjY7I17j8RLUMi5ksA8IxPbZ34CpB5UfDk7/emx958D5YSpc
-         brW8uOaT3ldzRMpA/heoWex5HaOcXALCD8EImgpOu3dHKigVzDLmRG5+NeLAfcZ7LS27
-         F8EQ==
-X-Gm-Message-State: AOAM530bQcFS9c/HOTn4Sml/CnMIvdITHKLPNyE6e0Kc69AMQrCufw3H
-        y+YvIUvkWeg8s+/KyQLMLQ==
-X-Google-Smtp-Source: ABdhPJxyGb05fd1DxB+6uXj3V1GZAc9T6EKzCDNJB1v2YuEebatwcG2DvnOsv86rRN6bGYchyYNz/A==
-X-Received: by 2002:a92:9116:: with SMTP id t22mr1708877ild.305.1596495060014;
-        Mon, 03 Aug 2020 15:51:00 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id v8sm8921510ile.74.2020.08.03.15.50.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 15:50:59 -0700 (PDT)
-Received: (nullmailer pid 3280412 invoked by uid 1000);
-        Mon, 03 Aug 2020 22:50:58 -0000
-Date:   Mon, 3 Aug 2020 16:50:58 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org, huyue2@yulong.com,
-        zbestahu@163.com, frowand.list@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] of: reserved-memory: remove duplicated call to
- of_get_flat_dt_prop() for no-map node
-Message-ID: <20200803225058.GA3280324@bogus>
-References: <20200730092353.15644-1-zbestahu@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730092353.15644-1-zbestahu@gmail.com>
+        Mon, 3 Aug 2020 18:51:39 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BB0C06174A;
+        Mon,  3 Aug 2020 15:51:39 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 1A3F312777F36;
+        Mon,  3 Aug 2020 15:34:54 -0700 (PDT)
+Date:   Mon, 03 Aug 2020 15:51:38 -0700 (PDT)
+Message-Id: <20200803.155138.467790375085778952.davem@davemloft.net>
+To:     baijiaju@tsinghua.edu.cn
+Cc:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] atm: eni: avoid accessing the data mapped to streaming
+ DMA
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200802091611.24331-1-baijiaju@tsinghua.edu.cn>
+References: <20200802091611.24331-1-baijiaju@tsinghua.edu.cn>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 03 Aug 2020 15:34:54 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Jul 2020 17:23:53 +0800, Yue Hu wrote:
-> From: Yue Hu <huyue2@yulong.com>
-> 
-> Just use nomap instead of the second call to of_get_flat_dt_prop(). And
-> change nomap as a bool type due to != NULL operator. Also, correct comment
-> about node of 'align' -> 'alignment'.
-> 
-> Signed-off-by: Yue Hu <huyue2@yulong.com>
-> ---
->  drivers/of/of_reserved_mem.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
+From: Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
+Date: Sun,  2 Aug 2020 17:16:11 +0800
 
-Applied, thanks!
+> In do_tx(), skb->data is mapped to streaming DMA on line 1111:
+>   paddr = dma_map_single(...,skb->data,DMA_TO_DEVICE);
+> 
+> Then skb->data is accessed on line 1153:
+>   (skb->data[3] & 0xf)
+> 
+> This access may cause data inconsistency between CPU cache and hardware.
+> 
+> To fix this problem, skb->data[3] is assigned to a local variable before
+> DMA mapping, and then the driver accesses this local variable instead of
+> skb->data[3].
+> 
+> Signed-off-by: Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
+
+Applied.
