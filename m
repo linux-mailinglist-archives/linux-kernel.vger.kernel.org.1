@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE16423A4DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B12C23A659
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729148AbgHCMbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:31:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58232 "EHLO mail.kernel.org"
+        id S1729628AbgHCMrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:47:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729123AbgHCMa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:30:56 -0400
+        id S1728158AbgHCM0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:26:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 878FE204EC;
-        Mon,  3 Aug 2020 12:30:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC6E2207DF;
+        Mon,  3 Aug 2020 12:26:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457855;
-        bh=AgABORwTNRUJplQ+d2D63qNA8DLesu9K85EcX1bW8Z0=;
+        s=default; t=1596457561;
+        bh=2AcUtqFGt7mzEOWg9GHIzX99EIQZG+B6PjrQtevu2MU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=04JKRmfRZKkevFGQKCKIjiAvzDwPNzCTWp+txcU6HuN+WU3u8W9johLu5CDqEIC1x
-         vaMBajEvUV50mbdv4yOS1tc4xhFjSgDSBXzN0izzEYM8JoRROG63Y1Bb6xXuESc4jV
-         GyDTDAfZIOp/V/PY49/4lhbglJEtM4Uh+MI3VJqE=
+        b=WqFjuFJM8MCcCAJQtdfahree/OLBi1hIAjpwHG9uG40SWUbIuuHBlB7f8vcLMutdV
+         zNzSeG0S7la+7VExLjmxeV6yTFsWQNa3F+Uvh31lPyDhs3uCC5GVYUqn2gcmlhFO2+
+         XisxUxi5Y3rtM9YnC7edsOnUJv9X6EhbF5T7cq2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 67/90] net/mlx5e: fix bpf_prog reference count leaks in mlx5e_alloc_rq
-Date:   Mon,  3 Aug 2020 14:19:29 +0200
-Message-Id: <20200803121900.864413586@linuxfoundation.org>
+Subject: [PATCH 5.7 112/120] cxgb4: add missing release on skb in uld_send()
+Date:   Mon,  3 Aug 2020 14:19:30 +0200
+Message-Id: <20200803121908.358699131@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +45,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Xiong <xiongx18@fudan.edu.cn>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit e692139e6af339a1495ef401b2d95f7f9d1c7a44 ]
+[ Upstream commit e6827d1abdc9b061a57d7b7d3019c4e99fabea2f ]
 
-The function invokes bpf_prog_inc(), which increases the reference
-count of a bpf_prog object "rq->xdp_prog" if the object isn't NULL.
+In the implementation of uld_send(), the skb is consumed on all
+execution paths except one. Release skb when returning NET_XMIT_DROP.
 
-The refcount leak issues take place in two error handling paths. When
-either mlx5_wq_ll_create() or mlx5_wq_cyc_create() fails, the function
-simply returns the error code and forgets to drop the reference count
-increased earlier, causing a reference count leak of "rq->xdp_prog".
-
-Fix this issue by jumping to the error handling path err_rq_wq_destroy
-while either function fails.
-
-Fixes: 422d4c401edd ("net/mlx5e: RX, Split WQ objects for different RQ types")
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/sge.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index cb3dcfced89fa..ee0d78f801af5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -432,7 +432,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
- 		err = mlx5_wq_ll_create(mdev, &rqp->wq, rqc_wq, &rq->mpwqe.wq,
- 					&rq->wq_ctrl);
- 		if (err)
--			return err;
-+			goto err_rq_wq_destroy;
- 
- 		rq->mpwqe.wq.db = &rq->mpwqe.wq.db[MLX5_RCV_DBR];
- 
-@@ -485,7 +485,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
- 		err = mlx5_wq_cyc_create(mdev, &rqp->wq, rqc_wq, &rq->wqe.wq,
- 					 &rq->wq_ctrl);
- 		if (err)
--			return err;
-+			goto err_rq_wq_destroy;
- 
- 		rq->wqe.wq.db = &rq->wqe.wq.db[MLX5_RCV_DBR];
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index 28ce9856a0784..0f5ca68c98542 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -2925,6 +2925,7 @@ static inline int uld_send(struct adapter *adap, struct sk_buff *skb,
+ 	txq_info = adap->sge.uld_txq_info[tx_uld_type];
+ 	if (unlikely(!txq_info)) {
+ 		WARN_ON(true);
++		kfree_skb(skb);
+ 		return NET_XMIT_DROP;
+ 	}
  
 -- 
 2.25.1
