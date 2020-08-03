@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E5623A4E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B53323A4F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729154AbgHCMbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:31:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58276 "EHLO mail.kernel.org"
+        id S1729237AbgHCMby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:31:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728590AbgHCMa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:30:58 -0400
+        id S1729229AbgHCMbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:31:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5907F2054F;
-        Mon,  3 Aug 2020 12:30:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CAAF2054F;
+        Mon,  3 Aug 2020 12:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457857;
-        bh=pJ5H1FDL3pGMiWWb7PDYD0GJzFSxTJZlGGU6fRKaFCM=;
+        s=default; t=1596457908;
+        bh=Sp098mK9dW4CZGeuDCp6QtJHCUMG3PJjoVI6NAk/A5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sRufsEvjf6+fHMn4JKZzm4TBdHQ+BF9mfeYZKGGDnnSjzutyCVbHKWpZ4rhEvplOA
-         mceT+dlNQrabtJ7kMegp6Y0sfvtmgEuxcOkwoKIXdgMWj2D1xeeYoga5yIo3Vqqf95
-         CCupPAp25uTK7RGXBoqabktLjxr5tov51BNm29SI=
+        b=SQbJUF6wJ7oC5ETJ/+ds2s+/J9/JLFo+O+njRIXUGDRl3OPwG9iPGTrcNrAEsxw+3
+         Lm6BCvvHr1yd4wMEdc+PBj42SjtSNdjxuehcKJcc0Gyxpo6USjZlPAFEvBllVKXCxV
+         EK/+0hJIWjpW4JshKKXlxfePtnB9N53DMi3fr5C8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Falcon <tlfalcon@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 58/90] ibmvnic: Fix IRQ mapping disposal in error path
-Date:   Mon,  3 Aug 2020 14:19:20 +0200
-Message-Id: <20200803121900.431400169@linuxfoundation.org>
+Subject: [PATCH 4.19 06/56] ath9k_htc: release allocated buffer if timed out
+Date:   Mon,  3 Aug 2020 14:19:21 +0200
+Message-Id: <20200803121850.621312769@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
+References: <20200803121850.306734207@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Falcon <tlfalcon@linux.ibm.com>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 27a2145d6f826d1fad9de06ac541b1016ced3427 ]
+[ Upstream commit 853acf7caf10b828102d92d05b5c101666a6142b ]
 
-RX queue IRQ mappings are disposed in both the TX IRQ and RX IRQ
-error paths. Fix this and dispose of TX IRQ mappings correctly in
-case of an error.
+In htc_config_pipe_credits, htc_setup_complete, and htc_connect_service
+if time out happens, the allocated buffer needs to be released.
+Otherwise there will be memory leak.
 
-Fixes: ea22d51a7831 ("ibmvnic: simplify and improve driver probe function")
-Signed-off-by: Thomas Falcon <tlfalcon@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath9k/htc_hst.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index d585973606990..2d20a48f0ba0a 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -3086,7 +3086,7 @@ req_rx_irq_failed:
- req_tx_irq_failed:
- 	for (j = 0; j < i; j++) {
- 		free_irq(adapter->tx_scrq[j]->irq, adapter->tx_scrq[j]);
--		irq_dispose_mapping(adapter->rx_scrq[j]->irq);
-+		irq_dispose_mapping(adapter->tx_scrq[j]->irq);
+diff --git a/drivers/net/wireless/ath/ath9k/htc_hst.c b/drivers/net/wireless/ath/ath9k/htc_hst.c
+index d2e062eaf5614..f705f0e1cb5be 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_hst.c
++++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+@@ -173,6 +173,7 @@ static int htc_config_pipe_credits(struct htc_target *target)
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC credit config timeout\n");
++		kfree_skb(skb);
+ 		return -ETIMEDOUT;
  	}
- 	release_sub_crqs(adapter, 1);
- 	return rc;
+ 
+@@ -208,6 +209,7 @@ static int htc_setup_complete(struct htc_target *target)
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC start timeout\n");
++		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -280,6 +282,7 @@ int htc_connect_service(struct htc_target *target,
+ 	if (!time_left) {
+ 		dev_err(target->dev, "Service connection timeout for: %d\n",
+ 			service_connreq->service_id);
++		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
+ 
 -- 
 2.25.1
 
