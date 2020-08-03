@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EDC23A635
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC1C23A602
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729601AbgHCMpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:45:50 -0400
-Received: from 8bytes.org ([81.169.241.247]:34698 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728537AbgHCM10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:27:26 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id AE694CA2; Mon,  3 Aug 2020 14:27:24 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH v3 4/4] KVM: SVM: Use __packed shorthand
-Date:   Mon,  3 Aug 2020 14:27:08 +0200
-Message-Id: <20200803122708.5942-5-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200803122708.5942-1-joro@8bytes.org>
-References: <20200803122708.5942-1-joro@8bytes.org>
+        id S1729381AbgHCMnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:43:50 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35734 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728278AbgHCM3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:29:06 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1596457743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RvLCSYDSP40IH/A+6SCmYBKw6wGrWKPPZ7D9/KZ9g7k=;
+        b=NA939e1am+b3iGwgI0Rwq8cIEiKMStGfkzKJIDQMojIh5AcZrnltP2/8yagicIWVj/Vd9j
+        MNS32FFcfMBwiUwi+StJXG34wyK/N21K5sE3cbKlHHSAh/mwUzf2T5bwo9GtCG0mlw0isE
+        adzlkregFJesqalSh639+DELL2CWbOWacGETCS3gnfNBGH0JcTSIQNq23ISFcItMQPQ+eu
+        i6OcpmgDNcCI4RaP8jPgRZ4vY4DQXVltUzbTUKgpFsi7Xg/hQSJc4SjZ36z3oxYxRIc+nx
+        TrEeta2H6mjArjRuk8tuJa6hA19ttg7hRryKG09HR19cXzBCiiTWQHQiA/IciQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1596457743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RvLCSYDSP40IH/A+6SCmYBKw6wGrWKPPZ7D9/KZ9g7k=;
+        b=/9epfUzXI/xZRGA93kyvyRrNxxfCRXRiZw5C3tqr/J5VmCLWRpOE8XzfVcDt9dKSFWrY+z
+        VaR68GiEWbIqj2AQ==
+To:     Sven Schnelle <svens@linux.ibm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 2/2] s390: convert to GENERIC_VDSO
+In-Reply-To: <20200803055645.79042-3-svens@linux.ibm.com>
+References: <20200803055645.79042-1-svens@linux.ibm.com> <20200803055645.79042-3-svens@linux.ibm.com>
+Date:   Mon, 03 Aug 2020 14:29:01 +0200
+Message-ID: <87ft93ncaa.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@alien8.de>
+Sven Schnelle <svens@linux.ibm.com> writes:
 
-Use the shorthand to make it more readable.
+> - CPUCLOCK_VIRT is now handled with a syscall fallback, which might
+>   be slower/less accurate than the old implementation.
 
-No functional changes.
+I can understand the slower, but why does it become less accurate?
 
-Signed-off-by: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/include/asm/svm.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+> Performance number from my system do 100 mio gettimeofday() calls:
+>
+> Plain syscall: 8.6s
+> Generic VDSO:  1.3s
+> old ASM VDSO:  1s
+>
+> So it's a bit slower but still much faster than syscalls.
 
-diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-index 71a308f1fbc8..f41b329943e5 100644
---- a/arch/x86/include/asm/svm.h
-+++ b/arch/x86/include/asm/svm.h
-@@ -150,14 +150,14 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
- #define SVM_NESTED_CTL_NP_ENABLE	BIT(0)
- #define SVM_NESTED_CTL_SEV_ENABLE	BIT(1)
- 
--struct __attribute__ ((__packed__)) vmcb_seg {
-+struct vmcb_seg {
- 	u16 selector;
- 	u16 attrib;
- 	u32 limit;
- 	u64 base;
--};
-+} __packed;
- 
--struct __attribute__ ((__packed__)) vmcb_save_area {
-+struct vmcb_save_area {
- 	struct vmcb_seg es;
- 	struct vmcb_seg cs;
- 	struct vmcb_seg ss;
-@@ -231,9 +231,9 @@ struct __attribute__ ((__packed__)) vmcb_save_area {
- 	u64 xcr0;
- 	u8 valid_bitmap[16];
- 	u64 x87_state_gpa;
--};
-+} __packed;
- 
--struct __attribute__ ((__packed__)) ghcb {
-+struct ghcb {
- 	struct vmcb_save_area save;
- 	u8 reserved_save[2048 - sizeof(struct vmcb_save_area)];
- 
-@@ -242,7 +242,7 @@ struct __attribute__ ((__packed__)) ghcb {
- 	u8 reserved_1[10];
- 	u16 protocol_version;	/* negotiated SEV-ES/GHCB protocol version */
- 	u32 ghcb_usage;
--};
-+} __packed;
- 
- 
- static inline void __unused_size_checks(void)
-@@ -252,11 +252,11 @@ static inline void __unused_size_checks(void)
- 	BUILD_BUG_ON(sizeof(struct ghcb) != 4096);
- }
- 
--struct __attribute__ ((__packed__)) vmcb {
-+struct vmcb {
- 	struct vmcb_control_area control;
- 	u8 reserved_control[1024 - sizeof(struct vmcb_control_area)];
- 	struct vmcb_save_area save;
--};
-+} __packed;
- 
- #define SVM_CPUID_FUNC 0x8000000a
- 
--- 
-2.17.1
+Where is the overhead coming from?
 
+> +static inline u64 __arch_get_hw_counter(s32 clock_mode)
+> +{
+> +	const struct vdso_data *vdso = __arch_get_vdso_data();
+> +	u64 adj, now;
+> +	int cnt;
+> +
+> +	do {
+> +		do {
+> +			cnt = READ_ONCE(vdso->arch.tb_update_cnt);
+> +		} while (cnt & 1);
+
+                smp_rmb() ?
+
+> +		now = get_tod_clock();
+> +		adj = vdso->arch.tod_steering_end - now;
+> +		if (unlikely((s64) adj > 0))
+> +			now += (vdso->arch.tod_steering_delta < 0) ? (adj >> 15) : -(adj >> 15);
+
+                smp_rmb() ?
+
+> +	} while (cnt != READ_ONCE(vdso->arch.tb_update_cnt));
+> +	return now;
+>  	if (ptff_query(PTFF_QTO) && ptff(&qto, sizeof(qto), PTFF_QTO) == 0)
+>  		lpar_offset = qto.tod_epoch_difference;
+> @@ -599,6 +550,13 @@ static int stp_sync_clock(void *data)
+>  		if (stp_info.todoff[0] || stp_info.todoff[1] ||
+>  		    stp_info.todoff[2] || stp_info.todoff[3] ||
+>  		    stp_info.tmd != 2) {
+> +			vdso_data->arch.tb_update_cnt++;
+> +			/*
+> +			 * This barrier isn't really needed as we're called
+> +			 * from stop_machine_cpuslocked(). However it doesn't
+> +			 * hurt in case the code gets changed.
+> +			 */
+> +			smp_wmb();
+
+WMB without a corresponding RMB and an explanation what's ordered
+against what is voodoo at best.
+
+>  			rc = chsc_sstpc(stp_page, STP_OP_SYNC, 0,
+>  					&clock_delta);
+>  			if (rc == 0) {
+> @@ -609,6 +567,8 @@ static int stp_sync_clock(void *data)
+>  				if (rc == 0 && stp_info.tmd != 2)
+>  					rc = -EAGAIN;
+>  			}
+> +			smp_wmb(); /* see comment above */
+
+See my comments above :)
+
+Thanks,
+
+        tglx
