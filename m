@@ -2,287 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B4E23AFC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A305023AFC4
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728814AbgHCVoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 17:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgHCVoX (ORCPT
+        id S1728850AbgHCVrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 17:47:00 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:43675 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728038AbgHCVq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 17:44:23 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D42C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 14:44:22 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x5so878192wmi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 14:44:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=yCdHtgnMm63zVeGJziowVfsBeAvNYTRHKplgeoaFkb4=;
-        b=jn/+eZrVkmkqTrg1LaN5e3FXF4+keQy4miRQb/FqHHnTqrTqQRQjKi92ZHc346xB9/
-         I8EovWTH3ibpATtjRqMu9XEuMm7XyvV8UrE0w3NYYabzVth281jSiZbfry2NtqOO49lO
-         ChzCmLcDZX7foL062faWavR4CX+R3SmRRLlhre898HMuHg4VHTqbfYvpACLUHdAHTyJJ
-         S6W8VYSU7Ea1kHLNNw58paQ3OVAji8HppEuuvzOIblXbqfSWO7K4Pp0esGYrIN2vUEfz
-         jRMY5L0D+1SYYMsoXCSzAgCtdu71JTZPAzF2oxEQM3pDZTPpoVdxvD13R+KcMjhVkjod
-         v5GQ==
+        Mon, 3 Aug 2020 17:46:59 -0400
+Received: by mail-il1-f194.google.com with SMTP id y18so24004856ilp.10;
+        Mon, 03 Aug 2020 14:46:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=yCdHtgnMm63zVeGJziowVfsBeAvNYTRHKplgeoaFkb4=;
-        b=ZKzU/KGyBc9VCxDNzCMZmfEpcVRzD0Q6p0ovMuqV2qcEDPW8iN6neEPmwz32RLbVaO
-         svfVo4x3jcHyphM5gfF7DD4ZOm8J4OynCd8pWOaOHKkQHH/OD4A98mXgGoYAMk2CInZH
-         aZg1/JpEJZP3l262GuydMlmp0rD+9L5P95MvEQMq5Rf+B6F19SzzLWHdpZ5Vqvh/RWoV
-         BNl5eciiSZO5igjpDNxlB0j8+kEzsmkpim4MP7PYhe01cyiwgxSvtXYOzqGUbXcv/pZ+
-         m4HHywqJ5DemVMWkUV3BWHw05YRea+FP7ag/Db1DL8m3tuHCGXTrCGXaAwTdw9FwLJwI
-         C7Vg==
-X-Gm-Message-State: AOAM5319vXCmqqQj5XOaVb0bxFLq2nGC6M30YP8jG/+zMifV4yi6rvMz
-        k6m6ZDFtrZ/e2QAdESKkYmMIog==
-X-Google-Smtp-Source: ABdhPJz+m9iWFUQGO9pwUiDORjIkzgjwrxrfRS1hRYK3ywTh0yudh6eW0B4tWlKKekg7rZ+yTcl8vw==
-X-Received: by 2002:a1c:4e0d:: with SMTP id g13mr998387wmh.177.1596491061313;
-        Mon, 03 Aug 2020 14:44:21 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:4d35:b6a4:4754:61f2? ([2a01:e34:ed2f:f020:4d35:b6a4:4754:61f2])
-        by smtp.googlemail.com with ESMTPSA id j4sm1405436wmi.48.2020.08.03.14.44.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Aug 2020 14:44:20 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Colin King <colin.king@canonical.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Lukasz Luba <Lukasz.Luba@arm.com>,
-        Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>,
-        Henry Yen <henry.yen@mediatek.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] thermal for v5.9-rc1
-Message-ID: <0b3dd92e-0aa0-6f23-fcef-178f2bf6a1c1@linaro.org>
-Date:   Mon, 3 Aug 2020 23:44:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pqP+dO+lvU2cpGzu3ZlIh3GwibVErSRm3PLKdLit8xM=;
+        b=qUfL1cnu0j/j55yZ+WxOJHB4pJLnj9mFezMeNt3TLkYQl0N6T3/AacDfX2LEogCPVp
+         VOYDSCkA7rZGgkH+CA7qXKwJh7KuTiNtWFlp/eoudQgMkvwvFKGLzbqVXBkCvCF2gVE6
+         ruGTj/JHD9DUuikSoZLhciEqC5YP2/7Tr5I0ofNZZU5dENad41JFEHGKPP+4YRW8GFDC
+         TcvHiNrZXvet7FbdXDWjtRmzR06UHtewGOv1qyqP2hhRuzsrZC2o5uadUmAk0pulIl8W
+         ua07BZ13J7SGa0blJJqwRNAf0Phf81WsrA9c1XzdXCAFhlaEIhzwlNPkOo4Yd8VZbjdv
+         tFFg==
+X-Gm-Message-State: AOAM530LC/BMkwGIt533cLscWzYJNPyhsYFoGZgSHkbvXw7dnyEjgd6T
+        NVlOAwXeplxYIB8toaAI7w==
+X-Google-Smtp-Source: ABdhPJyIFlqliaMIlzgK+a5Y0a5XoSIdsh5mf4RHk11U0+xbSeeG1cJIq99uvPwTEu3X8pYVmltwfQ==
+X-Received: by 2002:a92:6a07:: with SMTP id f7mr1525064ilc.271.1596491217938;
+        Mon, 03 Aug 2020 14:46:57 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id q1sm10823790ioh.0.2020.08.03.14.46.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 14:46:57 -0700 (PDT)
+Received: (nullmailer pid 3193370 invoked by uid 1000);
+        Mon, 03 Aug 2020 21:46:55 -0000
+Date:   Mon, 3 Aug 2020 15:46:55 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     linus.walleij@linaro.org, mark.rutland@arm.com,
+        matthias.bgg@gmail.com, sean.wang@kernel.org,
+        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
+        eddie.huang@mediatek.com, chuanjia.liu@mediatek.com,
+        biao.huang@mediatek.com, hongzhou.yang@mediatek.com,
+        erin.lo@mediatek.com, sean.wang@mediatek.com,
+        sj.huang@mediatek.com, seiya.wang@mediatek.com,
+        jg_poxu@mediatek.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: pinctrl: mt8192: add binding document
+Message-ID: <20200803214655.GB3184946@bogus>
+References: <20200801043303.32149-1-zhiyong.tao@mediatek.com>
+ <20200801043303.32149-3-zhiyong.tao@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200801043303.32149-3-zhiyong.tao@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit bcf876870b95592b52519ed4aafcf9d95999bc9c:
+On Sat, Aug 01, 2020 at 12:33:02PM +0800, Zhiyong Tao wrote:
+> The commit adds mt8192 compatible node in binding document.
+> 
+> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> ---
+>  .../bindings/pinctrl/pinctrl-mt8192.yaml      | 175 ++++++++++++++++++
+>  1 file changed, 175 insertions(+)
+>  create mode 100755 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> new file mode 100755
+> index 000000000000..88e18e2e23a0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> @@ -0,0 +1,175 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/pinctrl-mt8192.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek MT8192 Pin Controller
+> +
+> +maintainers:
+> +  - Sean Wang <sean.wang@mediatek.com>
+> +
+> +description: |
+> +  The Mediatek's Pin controller is used to control SoC pins.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt8192-pinctrl
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    description: |
+> +      Number of cells in GPIO specifier. Since the generic GPIO binding is used,
+> +      the amount of cells must be specified as 2. See the below
+> +      mentioned gpio binding representation for description of particular cells.
+> +    const: 2
+> +
+> +  gpio-ranges:
+> +    description: gpio valid number range.
+> +    maxItems: 1
+> +
+> +  reg:
+> +    description: |
+> +      Physical address base for gpio base registers. There are 11 GPIO
+> +      physical address base in mt8192.
+> +    maxItems: 11
+> +
+> +  reg-names:
+> +    description: |
+> +      Gpio base register names.
+> +    maxItems: 11
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    const: 2
+> +
+> +  interrupts:
+> +    description: The interrupt outputs to sysirq.
+> +    maxItems: 1
+> +
+> +#PIN CONFIGURATION NODES
+> +patternProperties:
+> +  '^pins':
+> +    type: object
+> +    description: |
+> +      A pinctrl node should contain at least one subnodes representing the
+> +      pinctrl groups available on the machine. Each subnode will list the
+> +      pins it needs, and how they should be configured, with regard to muxer
+> +      configuration, pullups, drive strength, input enable/disable and
+> +      input schmitt.
+> +      An example of using macro:
+> +      node {
 
-  Linux 5.8 (2020-08-02 14:21:45 -0700)
+'node' doesn't match '^pins' regex.
 
-are available in the Git repository at:
+Better to put an example in the actual example so it is checked.
 
+> +        pinmux = <PIN_NUMBER_PINMUX>;
+> +        GENERIC_PINCONFIG;
+> +      };
+> +    properties:
+> +      pinmux:
+> +        $ref: "/schemas/types.yaml#/definitions/uint32-array"
 
-ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-tags/thermal-v5.9-rc1
+Already a common definition in pinmux-node.yaml. Reference that file in 
+'^pins'.
 
-for you to fetch changes up to aac5cac9851aa6b526c6ab3acb80ec7fb6646df8:
+> +        description: |
+> +          Integer array, represents gpio pin number and mux setting.
+> +          Supported pin number and mux varies for different SoCs, and are defined
+> +          as macros in dt-bindings/pinctrl/<soc>-pinfunc.h directly.
+> +
+> +      GENERIC_PINCONFIG:
 
-  thermal: intel: intel_pch_thermal: Add Cannon Lake Low Power PCH
-support (2020-08-03 23:16:28 +0200)
+That's not a property name.
 
-----------------------------------------------------------------
-- Add support to enable/disable the thermal zones resulting on core code and
-  drivers cleanup (Andrzej Pietrasiewicz)
+> +        description: |
+> +          It is the generic pinconfig options to use, bias-disable,
+> +          bias-pull-down, bias-pull-up, input-enable, input-disable, output-low,
+> +          output-high, input-schmitt-enable, input-schmitt-disable
+> +          and drive-strength are valid.
+> +
+> +          Some special pins have extra pull up strength, there are R0 and R1 pull-up
+> +          resistors available, but for user, it's only need to set R1R0 as 00, 01,
+> +          10 or 11. So It needs config "mediatek,pull-up-adv" or
+> +          "mediatek,pull-down-adv" to support arguments for those special pins.
+> +          Valid arguments are from 0 to 3.
+> +
+> +          We can use "mediatek,tdsel" which is an integer describing the steps for
+> +          output level shifter duty cycle when asserted (high pulse width adjustment).
+> +          Valid arguments  are from 0 to 15.
+> +          We can use "mediatek,rdsel" which is an integer describing the steps for
+> +          input level shifter duty cycle when asserted (high pulse width adjustment).
+> +          Valid arguments are from 0 to 63.
+> +
+> +          When config drive-strength, it can support some arguments, such as
+> +          MTK_DRIVE_4mA, MTK_DRIVE_6mA, etc. See dt-bindings/pinctrl/mt65xx.h.
+> +          It can only support 2/4/6/8/10/12/14/16mA in mt8192.
+> +          For I2C pins, there are existing generic driving setup and the specific
+> +          driving setup. I2C pins can only support 2/4/6/8/10/12/14/16mA driving
+> +          adjustment in generic driving setup. But in specific driving setup,
+> +          they can support 0.125/0.25/0.5/1mA adjustment. If we enable specific
+> +          driving setup for I2C pins, the existing generic driving setup will be
+> +          disabled. For some special features, we need the I2C pins specific
+> +          driving setup. The specific driving setup is controlled by E1E0EN.
+> +          So we need add extra vendor driving preperty instead of
+> +          the generic driving property.
+> +          We can add "mediatek,drive-strength-adv = <XXX>;" to describe the specific
+> +          driving setup property. "XXX" means the value of E1E0EN. EN is 0 or 1.
+> +          It is used to enable or disable the specific driving setup.
+> +          E1E0 is used to describe the detail strength specification of the I2C pin.
+> +          When E1=0/E0=0, the strength is 0.125mA.
+> +          When E1=0/E0=1, the strength is 0.25mA.
+> +          When E1=1/E0=0, the strength is 0.5mA.
+> +          When E1=1/E0=1, the strength is 1mA.
+> +          So the valid arguments of "mediatek,drive-strength-adv" are from 0 to 7.
+> +
+> +      bias-pull-down: true
+> +
+> +      bias-pull-up: true
+> +
+> +      bias-disable: true
+> +
+> +      output-high: true
+> +
+> +      output-low: true
+> +
+> +      input-enable: true
+> +
+> +      input-disable: true
+> +
+> +      input-schmitt-enable: true
+> +
+> +      input-schmitt-disable: true
+> +
+> +    required:
+> +      - pinmux
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +  - gpio-ranges
 
-- Add generic netlink support for userspace notifications: events,
-temperature
-  and discovery commands (Daniel Lezcano)
+additionalProperties: false
 
-- Fix redundant initialization for a ret variable (Colin Ian King)
-
-- Remove the clock cooling code as it is used nowhere (Amit Kucheria)
-
-- Add the rcar_gen3_thermal's r8a774e1 support (Marian-Cristian Rotariu)
-
-- Replace all references to thermal.txt in the documentation to the
-  corresponding yaml files (Amit Kucheria)
-
-- Add maintainer entry for the IPA (Lukasz Luba)
-
-- Add support for MSM8939 for the tsens (Shawn Guo)
-
-- Update power allocator and devfreq cooling to SPDX licensing (Lukasz Luba)
-
-- Add Cannon Lake Low Power PCH support (Sumeet Pawnikar)
-
-- Add tsensor support for V2 mediatek thermal system (Henry Yen)
-
-- Fix thermal zone lookup by ID for the core code (Thierry Reding)
-
-----------------------------------------------------------------
-Amit Kucheria (2):
-      thermal/drivers/clock_cooling: Remove clock_cooling code
-      dt-bindings: thermal: Get rid of thermal.txt and replace references
-
-Andrzej Pietrasiewicz (14):
-      acpi: thermal: Fix error handling in the register function
-      thermal: Store thermal mode in a dedicated enum
-      thermal: Add current mode to thermal zone device
-      thermal: Store device mode in struct thermal_zone_device
-      thermal: remove get_mode() operation of drivers
-      thermal: Add mode helpers
-      thermal: Use mode helpers in drivers
-      thermal: Explicitly enable non-changing thermal zone devices
-      thermal: core: Stop polling DISABLED thermal devices
-      thermal: Simplify or eliminate unnecessary set_mode() methods
-      thermal: Rename set_mode() to change_mode()
-      acpi: thermal: Don't call thermal_zone_device_is_enabled()
-      thermal: imx: Use driver's local data to decide whether to run a
-measurement
-      thermal: Make thermal_zone_device_is_enabled() available to core only
-
-Anson Huang (1):
-      thermal: imx8mm: Support module autoloading
-
-Colin Ian King (1):
-      thermal: core: remove redundant initialization of variable ret
-
-Dan Carpenter (1):
-      thermal: ti-soc-thermal: Fix reversed condition in
-ti_thermal_expose_sensor()
-
-Daniel Lezcano (9):
-      thermal: core: Add helpers to browse the cdev, tz and governor list
-      thermal: core: Get thermal zone by id
-      thermal: core: genetlink support for events/cmd/sampling
-      thermal: core: Add notifications call in the framework
-      thermal: netlink: Fix compilation error when CONFIG_NET=n
-      net: genetlink: Move initialization to core_initcall
-      thermal: netlink: Improve the initcall ordering
-      thermal: core: Move initialization after core initcall
-      thermal: core: Add thermal zone enable/disable notification
-
-Henry Yen (2):
-      thermal: mediatek: Prepare to add support for other platforms
-      thermal: mediatek: Add tsensor support for V2 thermal system
-
-Konrad Dybcio (1):
-      dt-bindings: tsens: qcom: Document MSM8939 compatible
-
-Lukas Bulwahn (1):
-      MAINTAINERS: update entry to thermal governors file name prefixing
-
-Lukasz Luba (2):
-      MAINTAINERS: Add maintenance information for IPA
-      thermal: Update power allocator and devfreq cooling to SPDX licensing
-
-Marian-Cristian Rotariu (1):
-      thermal: rcar_gen3_thermal: Add r8a774e1 support
-
-Niklas Söderlund (1):
-      thermal: rcar_gen3_thermal: Do not shadow thcode variable
-
-Shawn Guo (1):
-      thermal: qcom: tsens-v0_1: Add support for MSM8939
-
-Sumeet Pawnikar (2):
-      thermal: int340x: processor_thermal: fix: update Jasper Lake PCI id
-      thermal: intel: intel_pch_thermal: Add Cannon Lake Low Power PCH
-support
-
-Thierry Reding (1):
-      thermal: core: Fix thermal zone lookup by ID
-
- Documentation/devicetree/bindings/arm/arm,scmi.txt |   2 +-
- Documentation/devicetree/bindings/arm/arm,scpi.txt |   2 +-
- .../devicetree/bindings/arm/freescale/fsl,scu.txt  |   2 +-
- .../arm/marvell/ap80x-system-controller.txt        |   2 +-
- .../arm/marvell/cp110-system-controller.txt        |   2 +-
- .../devicetree/bindings/cpufreq/cpufreq-dt.txt     |   3 +-
- .../bindings/cpufreq/cpufreq-mediatek.txt          |   4 +-
- .../bindings/cpufreq/nvidia,tegra20-cpufreq.txt    |   2 +-
- .../devicetree/bindings/hwmon/gpio-fan.txt         |   3 +-
- Documentation/devicetree/bindings/hwmon/lm90.txt   |   4 +-
- .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml |   2 +-
- .../bindings/thermal/amazon,al-thermal.txt         |   2 +-
- .../bindings/thermal/brcm,avs-ro-thermal.yaml      |   2 +-
- .../bindings/thermal/brcm,bcm2835-thermal.txt      |   2 +-
- .../bindings/thermal/hisilicon-thermal.txt         |   2 +-
- .../bindings/thermal/max77620_thermal.txt          |   6 +-
- .../bindings/thermal/mediatek-thermal.txt          |   2 +-
- .../bindings/thermal/nvidia,tegra124-soctherm.txt  |  10 +-
- .../thermal/nvidia,tegra186-bpmp-thermal.txt       |   2 +-
- .../bindings/thermal/qcom-spmi-temp-alarm.txt      |   2 +-
- .../devicetree/bindings/thermal/qcom-tsens.yaml    |   1 +
- .../bindings/thermal/rockchip-thermal.txt          |   2 +-
- .../devicetree/bindings/thermal/tango-thermal.txt  |   2 +-
- .../bindings/thermal/thermal-generic-adc.txt       |   2 +-
- .../devicetree/bindings/thermal/thermal.txt        | 586
--------------------
- MAINTAINERS                                        |   8 +
- drivers/acpi/thermal.c                             |  76 +--
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_thermal.c |   8 +
- drivers/net/ethernet/mellanox/mlxsw/core_thermal.c |  91 +--
- drivers/net/wireless/intel/iwlwifi/mvm/tt.c        |   9 +-
- drivers/platform/x86/acerhdf.c                     |  33 +-
- drivers/platform/x86/intel_mid_thermal.c           |   6 +
- drivers/power/supply/power_supply_core.c           |   9 +-
- drivers/thermal/Kconfig                            |  20 +-
- drivers/thermal/Makefile                           |   6 +-
- drivers/thermal/armada_thermal.c                   |   6 +
- drivers/thermal/clock_cooling.c                    | 445 --------------
- drivers/thermal/da9062-thermal.c                   |  16 +-
- drivers/thermal/devfreq_cooling.c                  |  10 +-
- drivers/thermal/dove_thermal.c                     |   6 +
- drivers/thermal/gov_power_allocator.c              |   9 +-
- drivers/thermal/hisi_thermal.c                     |   6 +-
- drivers/thermal/imx8mm_thermal.c                   |   1 +
- drivers/thermal/imx_thermal.c                      |  60 +-
- .../intel/int340x_thermal/int3400_thermal.c        |  38 +-
- .../intel/int340x_thermal/int340x_thermal_zone.c   |   5 +
- .../int340x_thermal/processor_thermal_device.c     |   2 +-
- drivers/thermal/intel/intel_pch_thermal.c          |   8 +
- drivers/thermal/intel/intel_quark_dts_thermal.c    |  34 +-
- drivers/thermal/intel/intel_soc_dts_iosf.c         |   3 +
- drivers/thermal/intel/x86_pkg_temp_thermal.c       |   6 +
- drivers/thermal/kirkwood_thermal.c                 |   7 +
- drivers/thermal/mtk_thermal.c                      | 234 ++++++--
- drivers/thermal/qcom/tsens-v0_1.c                  | 144 ++++-
- drivers/thermal/qcom/tsens.c                       |   3 +
- drivers/thermal/qcom/tsens.h                       |   2 +-
- drivers/thermal/rcar_gen3_thermal.c                |  10 +-
- drivers/thermal/rcar_thermal.c                     |   9 +-
- drivers/thermal/rockchip_thermal.c                 |   6 +-
- drivers/thermal/spear_thermal.c                    |   7 +
- drivers/thermal/sprd_thermal.c                     |   6 +-
- drivers/thermal/st/st_thermal.c                    |   5 +
- drivers/thermal/thermal_core.c                     | 174 +++++-
- drivers/thermal/thermal_core.h                     |  15 +
- drivers/thermal/thermal_helpers.c                  |  13 +-
- drivers/thermal/thermal_netlink.c                  | 647
-+++++++++++++++++++++
- drivers/thermal/thermal_netlink.h                  | 104 ++++
- drivers/thermal/thermal_of.c                       |  41 +-
- drivers/thermal/thermal_sysfs.c                    |  52 +-
- drivers/thermal/ti-soc-thermal/ti-thermal-common.c |   2 +-
- include/linux/clock_cooling.h                      |  57 --
- include/linux/devfreq_cooling.h                    |   9 +-
- include/linux/thermal.h                            |  31 +-
- include/uapi/linux/thermal.h                       |  89 ++-
- net/netlink/genetlink.c                            |   2 +-
- 75 files changed, 1632 insertions(+), 1609 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/thermal/thermal.txt
- delete mode 100644 drivers/thermal/clock_cooling.c
- create mode 100644 drivers/thermal/thermal_netlink.c
- create mode 100644 drivers/thermal/thermal_netlink.h
- delete mode 100644 include/linux/clock_cooling.h
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> +
+> +examples:
+> +  - |
+> +            #include <dt-bindings/pinctrl/mt8192-pinfunc.h>
+> +            #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +            pio: pinctrl@10005000 {
+> +                    compatible = "mediatek,mt8192-pinctrl";
+> +                    reg = <0 0x10005000 0 0x1000>,
+> +                          <0 0x11c20000 0 0x1000>,
+> +                          <0 0x11d10000 0 0x1000>,
+> +                          <0 0x11d30000 0 0x1000>,
+> +                          <0 0x11d40000 0 0x1000>,
+> +                          <0 0x11e20000 0 0x1000>,
+> +                          <0 0x11e70000 0 0x1000>,
+> +                          <0 0x11ea0000 0 0x1000>,
+> +                          <0 0x11f20000 0 0x1000>,
+> +                          <0 0x11f30000 0 0x1000>,
+> +                          <0 0x1000b000 0 0x1000>;
+> +                    reg-names = "iocfg0", "iocfg_rm", "iocfg_bm",
+> +                          "iocfg_bl", "iocfg_br", "iocfg_lm",
+> +                          "iocfg_lb", "iocfg_rt", "iocfg_lt",
+> +                          "iocfg_tl", "eint";
+> +                    gpio-controller;
+> +                    #gpio-cells = <2>;
+> +                    gpio-ranges = <&pio 0 0 220>;
+> +                    interrupt-controller;
+> +                    interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH 0>;
+> +                    #interrupt-cells = <2>;
+> +            };
+> -- 
+> 2.18.0
