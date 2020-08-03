@@ -2,61 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F27623AD78
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 21:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094F323AD83
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 21:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728257AbgHCTmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 15:42:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726906AbgHCTmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 15:42:31 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D646E22C9F;
-        Mon,  3 Aug 2020 19:42:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596483750;
-        bh=pg1yMp3Q6hDfDOvtQhZxujnkBMxKrKHKTXX1bU4UQxY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=tWs8XaIn8vAigHR7QF1lMHkQPrbO+/FaTzgbe2uremBsSrlQGNLLcQPmE3I853jNz
-         ZtcIi1hFvzQTLRvU2h9u34eJ/fcrfk5MqNg4rE58AN9GAya57cen3qFmMIDONLeDCS
-         DwGTePIDL7f1t5brhdkxztm8qmlwrRZLttCgrDKE=
-Content-Type: text/plain; charset="utf-8"
+        id S1728665AbgHCToj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 15:44:39 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18156 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728539AbgHCTod (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 15:44:33 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f2868bf0000>; Mon, 03 Aug 2020 12:42:55 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 03 Aug 2020 12:44:32 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 03 Aug 2020 12:44:32 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 3 Aug
+ 2020 19:44:27 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 3 Aug 2020 19:44:27 +0000
+Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.167.221]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f28691a0001>; Mon, 03 Aug 2020 12:44:26 -0700
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <robh+dt@kernel.org>
+CC:     <skomatineni@nvidia.com>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>
+Subject: [PATCH v1 0/6] Fix timeout clock used by hardware data timeout
+Date:   Mon, 3 Aug 2020 12:44:17 -0700
+Message-ID: <1596483863-22153-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1596072174-16358-2-git-send-email-Anson.Huang@nxp.com>
-References: <1596072174-16358-1-git-send-email-Anson.Huang@nxp.com> <1596072174-16358-2-git-send-email-Anson.Huang@nxp.com>
-Subject: Re: [PATCH V9 1/6] clk: imx6sl: Use BIT(x) to avoid shifting signed 32-bit value by 31 bits
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Linux-imx@nxp.com
-To:     Anson Huang <Anson.Huang@nxp.com>, abel.vesa@nxp.com,
-        aisheng.dong@nxp.com, arnd@arndb.de, daniel.baluta@nxp.com,
-        festevam@gmail.com, fugang.duan@nxp.com, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        peng.fan@nxp.com, s.hauer@pengutronix.de, shawnguo@kernel.org,
-        yuehaibing@huawei.com
-Date:   Mon, 03 Aug 2020 12:42:29 -0700
-Message-ID: <159648374959.1360974.3090613408656313501@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1596483775; bh=DGWxMyHwN4Pwyxz1yo3QTWOM2FBrW8pQbRNaJBSqU7Y=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=e6wSO29e4b3+ovgHvWaZGV/R83n0KjMEN+BhSduyfB04Ddiy/sg2ABUTed8ZMdO8N
+         wgpSwv+yEcvkXQAwT/V446KYrEyVrLEiw5/zqj8eAIMMV6jz0M3tf5sAFATgbr42QI
+         I0TpPDNpjNEoMmIc3753EvdF6atOwfv+B2G2PC/5RZ5ethhi0ifWJq2xMLJ0nGvCm3
+         ijcSotzcaktL5jj8QEg2XLLiWMqkvBOZQZgnaPB6hUVIPnPBiiw5TFxbzGBDwdq7kg
+         pyLvNZBi9XgoBfUbnH5IhHCfrANb27WW8VSRdU0X3Ex9NUVZxPzafkRmBh5cXYJiOd
+         /uxB8C1ja+yRw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Anson Huang (2020-07-29 18:22:49)
-> Use readl_relaxed() instead of __raw_readl(), and use BIT(x)
-> instead of (1 << X) to fix below build warning reported by kernel
-> test robot:
->=20
-> drivers/clk/imx/clk-imx6sl.c:149:49: warning: Shifting signed 32-bit
-> value by 31 bits is undefined behaviour [shiftTooManyBitsSigned]
->      while (!(__raw_readl(anatop_base + PLL_ARM) & BM_PLL_ARM_LOCK))
->=20
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
+Tegra210/Tegra186/Tegra194 has incorrectly enabled
+SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK from the beginning of their support.
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Tegra210 and later SDMMC hardware default uses sdmmc_legacy_tm (TMCLK)
+all the time for hardware data timeout instead of SDCLK and this TMCLK
+need to be kept enabled by Tegra sdmmc driver.
+
+This series includes patches to fix this for Tegra210/Tegra186/Tegra194.
+
+These patches need to be manually backported for 4.9, 4.14, 4.19, 5.4
+
+Will send patches to backport separately once these patches are ack'd.
+
+Sowjanya Komatineni (6):
+  sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra210
+  sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra186
+  arm64: tegra: Add missing timeout clock to Tegra210 SDMMC
+  arm64: tegra: Add missing timeout clock to Tegra186 SDMMC nodes
+  arm64: tegra: Add missing timeout clock to Tegra194 SDMMC nodes
+  sdhci: tegra: Add missing TMCLK for data timeout
+
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi | 20 +++++++++------
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi | 15 ++++++-----
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi | 20 +++++++++------
+ drivers/mmc/host/sdhci-tegra.c           | 43 ++++++++++++++++++++++++++++++--
+ 4 files changed, 74 insertions(+), 24 deletions(-)
+
+-- 
+2.7.4
+
