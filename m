@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13F323A44E
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B8D23A4AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgHCMZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:25:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50414 "EHLO mail.kernel.org"
+        id S1728345AbgHCM3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:29:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727100AbgHCMZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:25:34 -0400
+        id S1728908AbgHCM32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:29:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95A2E207DF;
-        Mon,  3 Aug 2020 12:25:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D955E22B45;
+        Mon,  3 Aug 2020 12:29:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457533;
-        bh=Ovjhqwv39e2ikIxzf1AsHlEjRi/VibezVCtApxNyKcw=;
+        s=default; t=1596457767;
+        bh=HmViFfTeuoqo2TmTzNPF8HktHsQ5kxq3RpEg7IDwKwY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ejM3qLrvSVZyPYtuqIr11JYbmsTKkwKcGgnF27nmy53yBezcPApRq9OBdv9m7B4eQ
-         1e2GQFYSnfZwssZ+CpMi8h4cq+Qe6RRMFf08sd6l7cKUVQFh6bSgkKJsLQhfNkW9rZ
-         JpPF7zK5yOgoi3b3ooTPyEmTeJyTijda0flb60wU=
+        b=Bl9p5GiaLWn4U5/WoDN3IuK/fhai+Wa3NWohfQjaLhZPy1QV4TZdTEHLyFWyTzlSM
+         IM00+qp2Fsi3BTt/5AeK8p66SDkcBzfeB8WX6yqo4fFn4AQwu10hEHXECs9J27oUwD
+         lwgxupcCeys3Ti0DLFS2rA1w/r5rRAAMSHkDbU3k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 103/120] scsi: core: Run queue in case of I/O resource contention failure
+Subject: [PATCH 5.4 59/90] bpf: Fix map leak in HASH_OF_MAPS map
 Date:   Mon,  3 Aug 2020 14:19:21 +0200
-Message-Id: <20200803121907.923220422@linuxfoundation.org>
+Message-Id: <20200803121900.478974297@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
-References: <20200803121902.860751811@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,102 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit 3f0dcfbcd2e162fc0a11c1f59b7acd42ee45f126 ]
+[ Upstream commit 1d4e1eab456e1ee92a94987499b211db05f900ea ]
 
-I/O requests may be held in scheduler queue because of resource contention.
-The starvation scenario was handled properly in the regular completion
-path but we failed to account for it during I/O submission. This lead to
-the hang captured below. Make sure we run the queue when resource
-contention is encountered in the submission path.
+Fix HASH_OF_MAPS bug of not putting inner map pointer on bpf_map_elem_update()
+operation. This is due to per-cpu extra_elems optimization, which bypassed
+free_htab_elem() logic doing proper clean ups. Make sure that inner map is put
+properly in optimized case as well.
 
-[   39.054963] scsi 13:0:0:0: rejecting I/O to dead device
-[   39.058700] scsi 13:0:0:0: rejecting I/O to dead device
-[   39.087855] sd 13:0:0:1: [sdd] Synchronizing SCSI cache
-[   39.088909] scsi 13:0:0:1: rejecting I/O to dead device
-[   39.095351] scsi 13:0:0:1: rejecting I/O to dead device
-[   39.096962] scsi 13:0:0:1: rejecting I/O to dead device
-[  247.021859] INFO: task scsi-stress-rem:813 blocked for more than 122 seconds.
-[  247.023258]       Not tainted 5.8.0-rc2 #8
-[  247.024069] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  247.025331] scsi-stress-rem D    0   813    802 0x00004000
-[  247.025334] Call Trace:
-[  247.025354]  __schedule+0x504/0x55f
-[  247.027987]  schedule+0x72/0xa8
-[  247.027991]  blk_mq_freeze_queue_wait+0x63/0x8c
-[  247.027994]  ? do_wait_intr_irq+0x7a/0x7a
-[  247.027996]  blk_cleanup_queue+0x4b/0xc9
-[  247.028000]  __scsi_remove_device+0xf6/0x14e
-[  247.028002]  scsi_remove_device+0x21/0x2b
-[  247.029037]  sdev_store_delete+0x58/0x7c
-[  247.029041]  kernfs_fop_write+0x10d/0x14f
-[  247.031281]  vfs_write+0xa2/0xdf
-[  247.032670]  ksys_write+0x6b/0xb3
-[  247.032673]  do_syscall_64+0x56/0x82
-[  247.034053]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  247.034059] RIP: 0033:0x7f69f39e9008
-[  247.036330] Code: Bad RIP value.
-[  247.036331] RSP: 002b:00007ffdd8116498 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-[  247.037613] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f69f39e9008
-[  247.039714] RDX: 0000000000000002 RSI: 000055cde92a0ab0 RDI: 0000000000000001
-[  247.039715] RBP: 000055cde92a0ab0 R08: 000000000000000a R09: 00007f69f3a79e80
-[  247.039716] R10: 000000000000000a R11: 0000000000000246 R12: 00007f69f3abb780
-[  247.039717] R13: 0000000000000002 R14: 00007f69f3ab6740 R15: 0000000000000002
-
-Link: https://lore.kernel.org/r/20200720025435.812030-1-ming.lei@redhat.com
-Cc: linux-block@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 8c290e60fa2a ("bpf: fix hashmap extra_elems logic")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20200729040913.2815687-1-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_lib.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ kernel/bpf/hashtab.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index b8b4366f12001..887b6a47f5dac 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -564,6 +564,15 @@ static void scsi_mq_uninit_cmd(struct scsi_cmnd *cmd)
- 	scsi_uninit_cmd(cmd);
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 22066a62c8c97..039d64b1bfb7d 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -675,15 +675,20 @@ static void htab_elem_free_rcu(struct rcu_head *head)
+ 	preempt_enable();
  }
  
-+static void scsi_run_queue_async(struct scsi_device *sdev)
-+{
-+	if (scsi_target(sdev)->single_lun ||
-+	    !list_empty(&sdev->host->starved_list))
-+		kblockd_schedule_work(&sdev->requeue_work);
-+	else
-+		blk_mq_run_hw_queues(sdev->request_queue, true);
+-static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
++static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
+ {
+ 	struct bpf_map *map = &htab->map;
++	void *ptr;
+ 
+ 	if (map->ops->map_fd_put_ptr) {
+-		void *ptr = fd_htab_map_get_ptr(map, l);
+-
++		ptr = fd_htab_map_get_ptr(map, l);
+ 		map->ops->map_fd_put_ptr(ptr);
+ 	}
 +}
 +
- /* Returns false when no more bytes to process, true if there are more */
- static bool scsi_end_request(struct request *req, blk_status_t error,
- 		unsigned int bytes)
-@@ -608,11 +617,7 @@ static bool scsi_end_request(struct request *req, blk_status_t error,
++static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
++{
++	htab_put_fd_value(htab, l);
  
- 	__blk_mq_end_request(req, error);
- 
--	if (scsi_target(sdev)->single_lun ||
--	    !list_empty(&sdev->host->starved_list))
--		kblockd_schedule_work(&sdev->requeue_work);
--	else
--		blk_mq_run_hw_queues(q, true);
-+	scsi_run_queue_async(sdev);
- 
- 	percpu_ref_put(&q->q_usage_counter);
- 	return false;
-@@ -1706,6 +1711,7 @@ out_put_budget:
- 		 */
- 		if (req->rq_flags & RQF_DONTPREP)
- 			scsi_mq_uninit_cmd(cmd);
-+		scsi_run_queue_async(sdev);
- 		break;
- 	}
- 	return ret;
+ 	if (htab_is_prealloc(htab)) {
+ 		__pcpu_freelist_push(&htab->freelist, &l->fnode);
+@@ -735,6 +740,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+ 			 */
+ 			pl_new = this_cpu_ptr(htab->extra_elems);
+ 			l_new = *pl_new;
++			htab_put_fd_value(htab, old_elem);
+ 			*pl_new = old_elem;
+ 		} else {
+ 			struct pcpu_freelist_node *l;
 -- 
 2.25.1
 
