@@ -2,82 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBED23AA18
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 18:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0DE23AA25
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 18:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgHCQDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 12:03:24 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:43648 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgHCQDX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 12:03:23 -0400
-Received: from [192.168.254.32] (unknown [47.187.206.220])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 09D5E20B4908;
-        Mon,  3 Aug 2020 09:03:21 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 09D5E20B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1596470602;
-        bh=ZiO52alLmnpxT7j4anLU5ZigsjFuPb9HBovKSoPQQ3w=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=QHf+d+adyjmFUMw8F6KIhtFl2KmvTj4vBrSymSBr/2bDq/bWh9j06EOVn5++PivQ+
-         voHvs0Lb2zIfoJuBfpScJ2evOehCf7CU8vfsuxDIGF7QhHjz3poDRcCPaEONbsDGN9
-         dqsnbvmNS9ytmBh/6/eiWhI5Hsbb5iwXGxjz1OIg=
-Subject: Re: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Mark Rutland' <mark.rutland@arm.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, X86 ML <x86@kernel.org>
-References: <20200728131050.24443-1-madvenka@linux.microsoft.com>
- <CALCETrVy5OMuUx04-wWk9FJbSxkrT2vMfN_kANinudrDwC4Cig@mail.gmail.com>
- <6540b4b7-3f70-adbf-c922-43886599713a@linux.microsoft.com>
- <CALCETrWnNR5v3ZCLfBVQGYK8M0jAvQMaAc9uuO05kfZuh-4d6w@mail.gmail.com>
- <46a1adef-65f0-bd5e-0b17-54856fb7e7ee@linux.microsoft.com>
- <20200731183146.GD67415@C02TD0UTHF1T.local>
- <a3068e3126a942c7a3e7ac115499deb1@AcuMS.aculab.com>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <7fdc102e-75ea-6d91-d2a3-7fe8c91802ce@linux.microsoft.com>
-Date:   Mon, 3 Aug 2020 11:03:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728371AbgHCQEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 12:04:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727824AbgHCQEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 12:04:47 -0400
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DF23207FB;
+        Mon,  3 Aug 2020 16:04:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596470685;
+        bh=/UX1OU9tHTJm7VObpjM87RBY5SlTmYFqwKSYlfihuqs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Aex1PHJJaysd09vlU+np1whABVJWYO/wgGVEovV9wOg6cLl2CSU719BxSEiosliwK
+         wHInjDZVIy8Mkb2GSxlkHKBZx23l5uhEGcX56SdQsqnYYjVkxSXdgN5xk9ZV3BAO+u
+         ZiLZxLktesZol9ClUnGepKSVXZxgvYc2LulD6qic=
+Received: by mail-ej1-f53.google.com with SMTP id qc22so24397867ejb.4;
+        Mon, 03 Aug 2020 09:04:45 -0700 (PDT)
+X-Gm-Message-State: AOAM533OvhGiBbd/rAPnHnPjpIPrEL4YZTN8tlWHXI1MZ5KgbS9AmxXQ
+        zyBk+J+JsNuxgLhh11E+/neQjQyEtALsUOyNpg==
+X-Google-Smtp-Source: ABdhPJwRrgFwRW06WGSZvbtle0QlHRJDgbphx4LdcrD/9UInwK+e+ZsDqq23da9XgbPticp6xo1sUinxOUHtS7ayNBw=
+X-Received: by 2002:a17:906:7492:: with SMTP id e18mr16973100ejl.375.1596470684579;
+ Mon, 03 Aug 2020 09:04:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a3068e3126a942c7a3e7ac115499deb1@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <1596010690-13178-1-git-send-email-neal.liu@mediatek.com>
+ <1596010690-13178-3-git-send-email-neal.liu@mediatek.com> <CAAOTY_8aw=6E7bMJwz5jDLXUxYHpy9_Avbwc90osQGckzANNcg@mail.gmail.com>
+ <1596427295.22971.20.camel@mtkswgap22>
+In-Reply-To: <1596427295.22971.20.camel@mtkswgap22>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 4 Aug 2020 00:04:30 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__VPXMGcR9w8EdnGbJyVbxbLQY+SRAqLbOcTy0D_WLM0w@mail.gmail.com>
+Message-ID: <CAAOTY__VPXMGcR9w8EdnGbJyVbxbLQY+SRAqLbOcTy0D_WLM0w@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] soc: mediatek: add mtk-devapc driver
+To:     Neal Liu <neal.liu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Neal:
 
-
-On 8/3/20 3:27 AM, David Laight wrote:
-> From: Mark Rutland
->> Sent: 31 July 2020 19:32
-> ...
->>> It requires PC-relative data references. I have not worked on all architectures.
->>> So, I need to study this. But do all ISAs support PC-relative data references?
->> Not all do, but pretty much any recent ISA will as it's a practical
->> necessity for fast position-independent code.
-> i386 has neither PC-relative addressing nor moves from %pc.
-> The cpu architecture knows that the sequence:
-> 	call	1f  
-> 1:	pop	%reg  
-> is used to get the %pc value so is treated specially so that
-> it doesn't 'trash' the return stack.
+Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B48=E6=9C=883=E6=97=
+=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=8812:01=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> So PIC code isn't too bad, but you have to use the correct
-> sequence.
+> Hi Chun-Kuang,
+>
+> On Sat, 2020-08-01 at 08:12 +0800, Chun-Kuang Hu wrote:
+> > Hi, Neal:
+> >
+> > This patch is for "mediatek,mt6779-devapc", so I think commit title
+> > should show the SoC ID.
+>
+> Okay, I'll change title to 'soc:mediatek: add mt6779 devapc driver'.
+>
+> >
+> > Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B47=E6=9C=8829=E6=
+=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:29=E5=AF=AB=E9=81=93=EF=BC=9A
+> > >
+> > > MediaTek bus fabric provides TrustZone security support and data
+> > > protection to prevent slaves from being accessed by unexpected
+> > > masters.
+> > > The security violation is logged and sent to the processor for
+> > > further analysis or countermeasures.
+> > >
+> > > Any occurrence of security violation would raise an interrupt, and
+> > > it will be handled by mtk-devapc driver. The violation
+> > > information is printed in order to find the murderer.
+> > >
+> > > Signed-off-by: Neal Liu <neal.liu@mediatek.com>
+> > > ---
+> >
+> > [snip]
+> >
+> > > +
+> > > +struct mtk_devapc_context {
+> > > +       struct device *dev;
+> > > +       u32 vio_idx_num;
+> > > +       void __iomem *devapc_pd_base;
+> > > +       struct mtk_devapc_vio_info *vio_info;
+> > > +       const struct mtk_devapc_pd_offset *offset;
+> > > +       const struct mtk_devapc_vio_dbgs *vio_dbgs;
+> > > +};
+> >
+> > I think this structure should separate the constant part. The constant =
+part is:
+> >
+> > struct mtk_devapc_data {
+> >     const u32 vio_idx_num;
+> >     const struct mtk_devapc_pd_offset *offset; /* I would like to
+> > remove struct mtk_devapc_pd_offset and directly put its member into
+> > this structure */
+> >     const struct mtk_devapc_vio_dbgs *vio_dbgs; /* This may disappear *=
+/
+> > };
+> >
+> > And the context is:
+> >
+> > struct mtk_devapc_context {
+> >     struct device *dev;
+> >     void __iomem *devapc_pd_base;
+> >     const struct mtk_devapc_data *data;
+> > };
+> >
+> > So when you define this, you would not waste memory to store non-consta=
+nt data.
+> >
+> > static const struct mtk_devapc_data devapc_mt6779 =3D {
+> >  .vio_idx_num =3D 510,
+> >  .offset =3D &mt6779_pd_offset,
+> >  .vio_dbgs =3D &mt6779_vio_dbgs,
+> > };
+> >
+>
+> Sorry, I still don't understand why this refactoring will not waste
+> memory to store non-constant data. Could you explain more details?
+> To my understanding, we still also have to allocate memory to store dev
+> & devapc_pd_base.
 
-Is that true only for 32-bit systems only? I thought RIP-relative addressing was
-introduced in 64-bit mode. Please confirm.
+In some situation, it is. You make the non-constant data a global
+variable. I think the context data should be dynamic allocated. If
+this driver is not probed, the non-constant data occupy the memory.
 
-Madhavan
+Regards,
+Chun-Kuang.
+
+>
+> > Regards,
+> > Chun-Kuang.
+> >
+> > > +
+> > > +#endif /* __MTK_DEVAPC_H__ */
+> > > --
+> > > 1.7.9.5
+> > > _______________________________________________
+> > > Linux-mediatek mailing list
+> > > Linux-mediatek@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>
