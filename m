@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2B923A690
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F66723A600
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729679AbgHCMtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:49:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48524 "EHLO mail.kernel.org"
+        id S1728991AbgHCMnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:43:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726810AbgHCMYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:24:16 -0400
+        id S1727786AbgHCM3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:29:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB52F2086A;
-        Mon,  3 Aug 2020 12:24:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C2972083B;
+        Mon,  3 Aug 2020 12:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457455;
-        bh=G+I9uB95KuNChzskSKMQPHWU7ceWfhqiN3yDDHLw8Vc=;
+        s=default; t=1596457753;
+        bh=Rxo3c6npIb6NdgDIk6bWOZC5ouNHLAYGjf7Cf5eDtmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TJ5fkIpUBVhms3KKERjkrkPf7vJInpTFUmHXD7L9H18NaGfCTfnxHbOYOPrNuTqMU
-         BvB4u2onkgJOJ04us6qKQb9rXiB0JSflw90P+EeOz1Ie6wySnpq/BM5qCce607e9h2
-         st4zCUxt7z1bEzEmGEZZNfjKkcUa8Oyn8bYfbw1w=
+        b=CbOYiNekY5RdJmqIybjT7PEYBMLYHsdhXXSwUAohEDhHrLpUqV8KgWr7w6q/tpzpX
+         vyzew2DcSfMWbBykzwIoraOR2fukKiEmzVmQ8NFJOGa6zCM4GeLZpyejX2tCw6Ue+Z
+         qqN+I5qKWorNw0O5LiVytlVEk65ZQpOhqpE+81gA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Danielle Ratson <danieller@mellanox.com>,
-        Amit Cohen <amitc@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 074/120] selftests: ethtool: Fix test when only two speeds are supported
-Date:   Mon,  3 Aug 2020 14:18:52 +0200
-Message-Id: <20200803121906.405466973@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 31/90] rds: Prevent kernel-infoleak in rds_notify_queue_get()
+Date:   Mon,  3 Aug 2020 14:18:53 +0200
+Message-Id: <20200803121859.128380871@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
-References: <20200803121902.860751811@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,55 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amit Cohen <amitc@mellanox.com>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-[ Upstream commit 10fef9ca6a879e7bee090b8e51c9812d438d3fb1 ]
+commit bbc8a99e952226c585ac17477a85ef1194501762 upstream.
 
-The test case check_highest_speed_is_chosen() configures $h1 to
-advertise a subset of its supported speeds and checks that $h2 chooses
-the highest speed from the subset.
+rds_notify_queue_get() is potentially copying uninitialized kernel stack
+memory to userspace since the compiler may leave a 4-byte hole at the end
+of `cmsg`.
 
-To find the common advertised speeds between $h1 and $h2,
-common_speeds_get() is called.
+In 2016 we tried to fix this issue by doing `= { 0 };` on `cmsg`, which
+unfortunately does not always initialize that 4-byte hole. Fix it by using
+memset() instead.
 
-Currently, the first speed returned from common_speeds_get() is removed
-claiming "h1 does not advertise this speed". The claim is wrong because
-the function is called after $h1 already advertised a subset of speeds.
-
-In case $h1 supports only two speeds, it will advertise a single speed
-which will be later removed because of previously mentioned bug. This
-results in the test needlessly failing. When more than two speeds are
-supported this is not an issue because the first advertised speed
-is the lowest one.
-
-Fix this by not removing any speed from the list of commonly advertised
-speeds.
-
-Fixes: 64916b57c0b1 ("selftests: forwarding: Add speed and auto-negotiation test")
-Reported-by: Danielle Ratson <danieller@mellanox.com>
-Signed-off-by: Amit Cohen <amitc@mellanox.com>
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Cc: stable@vger.kernel.org
+Fixes: f037590fff30 ("rds: fix a leak of kernel memory")
+Fixes: bdbe6fbc6a2f ("RDS: recv.c")
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/testing/selftests/net/forwarding/ethtool.sh | 2 --
- 1 file changed, 2 deletions(-)
+ net/rds/recv.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/forwarding/ethtool.sh b/tools/testing/selftests/net/forwarding/ethtool.sh
-index eb8e2a23bbb4c..43a948feed265 100755
---- a/tools/testing/selftests/net/forwarding/ethtool.sh
-+++ b/tools/testing/selftests/net/forwarding/ethtool.sh
-@@ -252,8 +252,6 @@ check_highest_speed_is_chosen()
- 	fi
+--- a/net/rds/recv.c
++++ b/net/rds/recv.c
+@@ -450,12 +450,13 @@ static int rds_still_queued(struct rds_s
+ int rds_notify_queue_get(struct rds_sock *rs, struct msghdr *msghdr)
+ {
+ 	struct rds_notifier *notifier;
+-	struct rds_rdma_notify cmsg = { 0 }; /* fill holes with zero */
++	struct rds_rdma_notify cmsg;
+ 	unsigned int count = 0, max_messages = ~0U;
+ 	unsigned long flags;
+ 	LIST_HEAD(copy);
+ 	int err = 0;
  
- 	local -a speeds_arr=($(common_speeds_get $h1 $h2 0 1))
--	# Remove the first speed, h1 does not advertise this speed.
--	unset speeds_arr[0]
++	memset(&cmsg, 0, sizeof(cmsg));	/* fill holes with zero */
  
- 	max_speed=${speeds_arr[0]}
- 	for current in ${speeds_arr[@]}; do
--- 
-2.25.1
-
+ 	/* put_cmsg copies to user space and thus may sleep. We can't do this
+ 	 * with rs_lock held, so first grab as many notifications as we can stuff
 
 
