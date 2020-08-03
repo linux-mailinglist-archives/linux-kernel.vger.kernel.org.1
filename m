@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C10123A59F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F5723A5E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729430AbgHCMd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:33:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33192 "EHLO mail.kernel.org"
+        id S1729038AbgHCMaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:30:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729414AbgHCMdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:33:19 -0400
+        id S1728132AbgHCMaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:30:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5A2B204EC;
-        Mon,  3 Aug 2020 12:33:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47ECF2086A;
+        Mon,  3 Aug 2020 12:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457998;
-        bh=j4QwB29Ee9qxu9nA3B0US/rFh4yAG4wKdres+4bmP5I=;
+        s=default; t=1596457809;
+        bh=5pduQLlgfqUUfmXNn6eWMBtyvLAHIiItS3XnpYYz72c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uHVePIwjQXMV8Nf0MTM0ZtIqhocyVhuhUT9O7UxtO9t66zuUVBbWVrCt/41Bu10Uq
-         o6A2IBQgIoj7w5712v9WsBrTDa+2RtmS0cBrzj5ZVGLtknc6mc6IdBNZttbYbMSuc/
-         f6+iGsKXVLPiRII9yI6KcoXIfns2pQxON3t3oerI=
+        b=v3XPkN/XEz7OYp8fuqVfY3iaEHA5niQNSlXu8gJYOEnWKiRystFX8NAD3ZX8prz2g
+         AF3g/J5PnXxD4mLMHbx5SHIf6HoFnjtZdKNVrm62mKQbV2bg/LHsbp3QtVC11PauF4
+         E5+g8cXa9XZ3Zg9Ge/ybxge7pwZzfVX6VrspaP+c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tanner Love <tannerlove@google.com>,
-        Willem de Bruijn <willemb@google.com>,
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 28/56] selftests/net: rxtimestamp: fix clang issues for target arch PowerPC
+Subject: [PATCH 5.4 81/90] cxgb4: add missing release on skb in uld_send()
 Date:   Mon,  3 Aug 2020 14:19:43 +0200
-Message-Id: <20200803121851.709960504@linuxfoundation.org>
+Message-Id: <20200803121901.530719207@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +45,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tanner Love <tannerlove@google.com>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 955cbe91bcf782c09afe369c95a20f0a4b6dcc3c ]
+[ Upstream commit e6827d1abdc9b061a57d7b7d3019c4e99fabea2f ]
 
-The signedness of char is implementation-dependent. Some systems
-(including PowerPC and ARM) use unsigned char. Clang 9 threw:
-warning: result of comparison of constant -1 with expression of type \
-'char' is always true [-Wtautological-constant-out-of-range-compare]
-                                  &arg_index)) != -1) {
+In the implementation of uld_send(), the skb is consumed on all
+execution paths except one. Release skb when returning NET_XMIT_DROP.
 
-Tested: make -C tools/testing/selftests TARGETS="net" run_tests
-
-Fixes: 16e781224198 ("selftests/net: Add a test to validate behavior of rx timestamps")
-Signed-off-by: Tanner Love <tannerlove@google.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/networking/timestamping/rxtimestamp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/sge.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/networking/timestamping/rxtimestamp.c b/tools/testing/selftests/networking/timestamping/rxtimestamp.c
-index 7a573fb4c1c4e..c6428f1ac22fb 100644
---- a/tools/testing/selftests/networking/timestamping/rxtimestamp.c
-+++ b/tools/testing/selftests/networking/timestamping/rxtimestamp.c
-@@ -328,8 +328,7 @@ int main(int argc, char **argv)
- 	bool all_tests = true;
- 	int arg_index = 0;
- 	int failures = 0;
--	int s, t;
--	char opt;
-+	int s, t, opt;
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index 506170fe3a8b7..049f1bbe27ab3 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -2441,6 +2441,7 @@ static inline int uld_send(struct adapter *adap, struct sk_buff *skb,
+ 	txq_info = adap->sge.uld_txq_info[tx_uld_type];
+ 	if (unlikely(!txq_info)) {
+ 		WARN_ON(true);
++		kfree_skb(skb);
+ 		return NET_XMIT_DROP;
+ 	}
  
- 	while ((opt = getopt_long(argc, argv, "", long_options,
- 				  &arg_index)) != -1) {
 -- 
 2.25.1
 
