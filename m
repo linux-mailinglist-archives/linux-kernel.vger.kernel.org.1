@@ -2,141 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3130C23AA21
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 18:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6416123AA27
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 18:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728354AbgHCQEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 12:04:45 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:33804 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727824AbgHCQEo (ORCPT
+        id S1728384AbgHCQF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 12:05:28 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37166 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgHCQF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 12:04:44 -0400
-Received: by mail-pl1-f196.google.com with SMTP id o1so20935782plk.1;
-        Mon, 03 Aug 2020 09:04:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=H1YW1bFaxTsvimMCdoWORQnWb2oEU7L5SFl1KFK09R4=;
-        b=Z0r7YS1HU3sApr/ckusXHCsUUz4+3GOGDcwWBgEjRt+m/kt6KWXUfu6lT3LKUclXCO
-         uyw+rFV9/jPBaOcD2mm1L3zgxSKplKm0sPoYFgc2DAVPzS/hE8xrtKlv4LqPJ7WLPhWJ
-         JPUObHmsV2IoJ16oV68nXL1Qx5qRSN8dQuwRfE9knelzgMN2EnDOJz2Is6iGlDS2IdPh
-         8idXyQq1DC0TbIXNpXmim2Ic+Q/8Y2Lfxt5TCmgt1mkodGV3ilyKnddl5qgh4pJCpqpv
-         RMDK0feeFKp+g2p8h0WfL8M7vSoKNaf8PbBFkMGh1EBQwyxodYz7qMTElOcXaysD45Tm
-         JZ2A==
-X-Gm-Message-State: AOAM5305nXUaI5x95xZK0/Of6RHFdg3RIJynqzicS7eGqD6PGjPYO93i
-        VfVB2fpxJGnpI8PTwA0ECAo=
-X-Google-Smtp-Source: ABdhPJzNC/sIb2a14UI0XrWYZ2NNr83AY7ba7bF1bas+yDa4E9/G/g/sXR+dx10npFu8dhEOa2deRg==
-X-Received: by 2002:a17:90a:4701:: with SMTP id h1mr9454pjg.93.1596470683769;
-        Mon, 03 Aug 2020 09:04:43 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id e28sm11680499pfl.124.2020.08.03.09.04.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Aug 2020 09:04:42 -0700 (PDT)
-Subject: Re: [PATCH v7] scsi: ufs: Quiesce all scsi devices before shutdown
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com, cang@codeaurora.org
-Cc:     beanhuo@micron.com, asutoshd@codeaurora.org,
-        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com
-References: <20200803100448.2738-1-stanley.chu@mediatek.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <f40ad9e1-2e45-f21c-d067-eff579982cc7@acm.org>
-Date:   Mon, 3 Aug 2020 09:04:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 3 Aug 2020 12:05:27 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1596470725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cjQTCHJ3y4DCe0XgrxEsW/lCFVYz3XtncIs9t2KFDWo=;
+        b=EffEtYrtRBMLVtJXM7+7hG8uxCdzx7hhyRA3cvJilaJdtMn9hxMjuVfyfSdHYFFADGTfYT
+        cX0wzmKxApuNteQZgaGezuvlaGYRUxXEmh//UmD8WUrHKuNLoJ2X6jACzJ+bCKKWGKRS6T
+        Ze7ShKjud+8Q89ibfrQiOVaGrl5NpESoLojyt+g54oSUignh2cITub++ty/ezi80oPtzTD
+        pfJt4AAy3xKEY6UF0wabSMAjvQJWrvzLIbWHNRi9oE2BkXvt1I2EIT4C7D8b/mrzRNWJDw
+        2R8ops7ds7t3QIR+E4puS5eLc29HmvFjTm3ZBtg/7dSS8in+DZLPUFIoVXpXnQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1596470725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cjQTCHJ3y4DCe0XgrxEsW/lCFVYz3XtncIs9t2KFDWo=;
+        b=2OHatuhcfrikbBZ3q7Z3YDoAaiFa4hvsDYhozvIhnqBz5gClQ5RAMRdNpDItrOLLnO6KLJ
+        U5RzVquCNm1yfICA==
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-s390@vger.kernel.org, hca@linux.ibm.com
+Subject: Re: [PATCH 2/2] s390: convert to GENERIC_VDSO
+In-Reply-To: <yt9dmu3b3jo3.fsf@linux.ibm.com>
+References: <20200803055645.79042-1-svens@linux.ibm.com> <20200803055645.79042-3-svens@linux.ibm.com> <87ft93ncaa.fsf@nanos.tec.linutronix.de> <yt9dmu3b3jo3.fsf@linux.ibm.com>
+Date:   Mon, 03 Aug 2020 18:05:24 +0200
+Message-ID: <87a6zbn29n.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200803100448.2738-1-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-03 03:04, Stanley Chu wrote:
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 307622284239..7cb220b3fde0 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -8640,6 +8640,7 @@ EXPORT_SYMBOL(ufshcd_runtime_idle);
->  int ufshcd_shutdown(struct ufs_hba *hba)
->  {
->  	int ret = 0;
-> +	struct scsi_target *starget;
->  
->  	if (!hba->is_powered)
->  		goto out;
-> @@ -8647,11 +8648,27 @@ int ufshcd_shutdown(struct ufs_hba *hba)
->  	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
->  		goto out;
->  
-> -	if (pm_runtime_suspended(hba->dev)) {
-> -		ret = ufshcd_runtime_resume(hba);
-> -		if (ret)
-> -			goto out;
-> -	}
-> +	/*
-> +	 * Let runtime PM framework manage and prevent concurrent runtime
-> +	 * operations with shutdown flow.
-> +	 */
-> +	pm_runtime_get_sync(hba->dev);
-> +
-> +	/*
-> +	 * Quiesce all SCSI devices to prevent any non-PM requests sending
-> +	 * from block layer during and after shutdown.
-> +	 *
-> +	 * Here we can not use blk_cleanup_queue() since PM requests
-> +	 * (with BLK_MQ_REQ_PREEMPT flag) are still required to be sent
-> +	 * through block layer. Therefore SCSI command queued after the
-> +	 * scsi_target_quiesce() call returned will block until
-> +	 * blk_cleanup_queue() is called.
-> +	 *
-> +	 * Besides, scsi_target_"un"quiesce (e.g., scsi_target_resume) can
-> +	 * be ignored since shutdown is one-way flow.
-> +	 */
-> +	list_for_each_entry(starget, &hba->host->__targets, siblings)
-> +		scsi_target_quiesce(starget);
->  
->  	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
->  out:
+Sven,
 
-This seems wrong to me. Since ufshcd_shutdown() shuts down the link I think
-it should call scsi_remove_device() instead of scsi_target_quiesce().
+Sven Schnelle <svens@linux.ibm.com> writes:
+> Thomas Gleixner <tglx@linutronix.de> writes:
+>>>  			rc = chsc_sstpc(stp_page, STP_OP_SYNC, 0,
+>>>  					&clock_delta);
+>>>  			if (rc == 0) {
+>>> @@ -609,6 +567,8 @@ static int stp_sync_clock(void *data)
+>>>  				if (rc == 0 && stp_info.tmd != 2)
+>>>  					rc = -EAGAIN;
+>>>  			}
+>>> +			smp_wmb(); /* see comment above */
+>>
+>> See my comments above :)
+>
+> :-)
+>
+> What do you think about my question on using vdso_write_begin/end()?
+> __arch_get_hw_counter() is called inside a vdso_read_retry() loop, so i
+> would think that just enclosing this update with vdso_write_begin/end()
+> should sufficient. But i'm not sure whether arch/ should call these
+> functions.
+
+My knee jerk reaction is obviously NO, but OTOH it makes sense to
+utilize the existing sequence count for that.
+
+Though that want's a bit more than just fiddling with the sequence
+counter to be future proof and not restricted to the horrors of stomp
+machine context or some other orchestration mechanism. Something like
+the below.
 
 Thanks,
 
-Bart.
+        tglx
 
+----
+Subject: timekeeping/vsyscall: Provide vdso_update_begin/end()
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Mon, 03 Aug 2020 17:25:31 +0200
 
+Architectures can have the requirement to add additional architecture
+specific data to the VDSO data page which needs to be updated independent
+of the timekeeper updates.
+
+To protect these updates vs. concurrent readers and a conflicting update
+through timekeeping, provide helper functions to make such updates safe.
+
+vdso_update_begin() takes the timekeeper_lock to protect against a
+potential update from timekeeper code and increments the VDSO sequence
+count to signal data inconsistency to concurrent readers. vdso_update_end()
+makes the sequence count even again to signal data consistency and drops
+the timekeeper lock.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/vdso/vsyscall.h            |    3 +++
+ kernel/time/timekeeping.c          |    2 +-
+ kernel/time/timekeeping_internal.h |   11 ++++++++---
+ kernel/time/vsyscall.c             |   30 ++++++++++++++++++++++++++++++
+ 4 files changed, 42 insertions(+), 4 deletions(-)
+
+--- a/include/vdso/vsyscall.h
++++ b/include/vdso/vsyscall.h
+@@ -6,6 +6,9 @@
+ 
+ #include <asm/vdso/vsyscall.h>
+ 
++void vdso_update_begin(void);
++void vdso_update_end(void);
++
+ #endif /* !__ASSEMBLY__ */
+ 
+ #endif /* __VDSO_VSYSCALL_H */
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -50,7 +50,7 @@ static struct {
+ 	.seq = SEQCNT_ZERO(tk_core.seq),
+ };
+ 
+-static DEFINE_RAW_SPINLOCK(timekeeper_lock);
++DEFINE_RAW_SPINLOCK(timekeeper_lock);
+ static struct timekeeper shadow_timekeeper;
+ 
+ /**
+--- a/kernel/time/timekeeping_internal.h
++++ b/kernel/time/timekeeping_internal.h
+@@ -1,12 +1,14 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #ifndef _TIMEKEEPING_INTERNAL_H
+ #define _TIMEKEEPING_INTERNAL_H
+-/*
+- * timekeeping debug functions
+- */
++
+ #include <linux/clocksource.h>
++#include <linux/spinlock.h>
+ #include <linux/time.h>
+ 
++/*
++ * timekeeping debug functions
++ */
+ #ifdef CONFIG_DEBUG_FS
+ extern void tk_debug_account_sleep_time(const struct timespec64 *t);
+ #else
+@@ -31,4 +33,7 @@ static inline u64 clocksource_delta(u64
+ }
+ #endif
+ 
++/* Semi public for serialization of non timekeeper VDSO updates. */
++extern raw_spinlock_t timekeeper_lock;
++
+ #endif /* _TIMEKEEPING_INTERNAL_H */
+--- a/kernel/time/vsyscall.c
++++ b/kernel/time/vsyscall.c
+@@ -13,6 +13,8 @@
+ #include <vdso/helpers.h>
+ #include <vdso/vsyscall.h>
+ 
++#include "timekeeping_internal.h"
++
+ static inline void update_vdso_data(struct vdso_data *vdata,
+ 				    struct timekeeper *tk)
+ {
+@@ -127,3 +129,31 @@ void update_vsyscall_tz(void)
+ 
+ 	__arch_sync_vdso_data(vdata);
+ }
++
++/**
++ * vdso_update_begin - Start of a VDSO update section
++ *
++ * Allows architecture code to safely update the architecture specific VDSO
++ * data.
++ */
++void vdso_update_begin(void)
++{
++	struct vdso_data *vdata = __arch_get_k_vdso_data();
++
++	raw_spin_lock(&timekeeper_lock);
++	vdso_write_begin(vdata);
++}
++
++/**
++ * vdso_update_end - End of a VDSO update section
++ *
++ * Pairs with vdso_update_begin().
++ */
++void vdso_update_end(void)
++{
++	struct vdso_data *vdata = __arch_get_k_vdso_data();
++
++	vdso_write_end(vdata);
++	__arch_sync_vdso_data(vdata);
++	raw_spin_unlock(&timekeeper_lock);
++}
