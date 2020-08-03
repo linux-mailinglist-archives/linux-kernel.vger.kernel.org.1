@@ -2,51 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5398D23AF9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B278723AFA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729075AbgHCVZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 17:25:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46822 "EHLO mail.kernel.org"
+        id S1729139AbgHCVZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 17:25:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726370AbgHCVZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 17:25:03 -0400
-Subject: Re: [GIT PULL] s390 updates for 5.9 merge window
+        id S1728649AbgHCVZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 17:25:04 -0400
+Subject: Re: [GIT PULL] remove unicore32 support
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596489903;
-        bh=o6h9CJEoeX8/ejE7QhxPsgxoQEHkTR7/BMMiMJeNSNU=;
+        s=default; t=1596489904;
+        bh=Y/kU5G6GC8hZ7UbZFteO6xnI6EZqch48cxo86BjBqsc=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Qq91mfsdh5v5jkEnyWaVoPL+1AQn+GAFQwO0MadjQLB9QZeBfIXjUWg3z8Y8QpgCe
-         6e1CIN6OpmOrPE51OjwxqvSKXVSXq3bKdcZaF0P7hf6/39isj6vQ8n4sir8EVVLVb0
-         MuoR+dMc+2bvBpV+2Yrp7aq4rxxAIxc/uVpG098A=
+        b=Hbx28XB9ZvVVMThVqKmQO9yTNF7/U+6H2cNuMf3yB4zFPjc+lUk039cBe8OTYPKIz
+         5rByEVA8B8JfLTvr2gO0gOWhR7+teLNLDgZ3/eQdFobmozy0r7m8e+X7TEl6GhHVqZ
+         WJ2j0Q0N0tICTYhjy3xwjcNvqf/RuTFsoCNsvdas=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200803093315.GA4083@osiris>
-References: <20200803093315.GA4083@osiris>
+In-Reply-To: <20200803093939.GA8243@kernel.org>
+References: <20200803093939.GA8243@kernel.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200803093315.GA4083@osiris>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.9-1
-X-PR-Tracked-Commit-Id: 9a996c67a65d937b23408e56935ef23404c9418e
+X-PR-Tracked-Message-Id: <20200803093939.GA8243@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/
+ tags/rm-unicore32
+X-PR-Tracked-Commit-Id: 3346dd99fb4cd174fdbfb68dc62cd109e4323f0f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 45365a06aa305c9eca1cbf48aef48a7a0cea3b4e
-Message-Id: <159648990348.7765.12917815378039110463.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 05119217a9bd199c4b8b12c01f86df09108b109b
+Message-Id: <159648990386.7765.5540573768023159678.pr-tracker-bot@kernel.org>
 Date:   Mon, 03 Aug 2020 21:25:03 +0000
-To:     Heiko Carstens <hca@linux.ibm.com>
+To:     Mike Rapoport <rppt@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guan Xuetao <gxt@pku.edu.cn>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 3 Aug 2020 11:33:15 +0200:
+The pull request you sent on Mon, 3 Aug 2020 12:39:39 +0300:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.9-1
+> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/ tags/rm-unicore32
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/45365a06aa305c9eca1cbf48aef48a7a0cea3b4e
+https://git.kernel.org/torvalds/c/05119217a9bd199c4b8b12c01f86df09108b109b
 
 Thank you!
 
