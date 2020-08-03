@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2594123A91C
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D7923A924
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgHCPHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 11:07:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50020 "EHLO mx2.suse.de"
+        id S1728031AbgHCPIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 11:08:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726276AbgHCPHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 11:07:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C6737AB3E;
-        Mon,  3 Aug 2020 15:07:20 +0000 (UTC)
-Date:   Mon, 3 Aug 2020 17:07:04 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Hugh Dickins <hughd@google.com>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com
-Subject: Re: [PATCH v17 00/21] per memcg lru lock
-Message-ID: <20200803150704.GV5174@dhcp22.suse.cz>
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
- <49d4f3bf-ccce-3c97-3a4c-f5cefe2d623a@linux.alibaba.com>
- <c00ac587-7f69-768a-84ea-53cbf7469ae9@linux.alibaba.com>
- <alpine.LSU.2.11.2007291105570.4649@eggly.anvils>
- <08c8797d-1935-7b41-b8db-d22f054912ac@linux.alibaba.com>
+        id S1726276AbgHCPIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 11:08:15 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C71A12076E;
+        Mon,  3 Aug 2020 15:08:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596467294;
+        bh=Lrbi2rsIAExF59EuLBc7ucnI9amz38W6mCJdKugNiSY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ICoWVarNkJzobZx++tnhhJngFcae6r4xhlEqj89aatZag49QjN5O7mXay7bxj7NCH
+         JQE6yTT6PfFgtOkugp3ORwOlnC4/BgyQYnlSHTNw08W/1cT7W8D1WHH92PsbDVprvw
+         hGrE+qO9QSqdzq+k0XSsdZeJMweV3FqiiRp79DUg=
+Date:   Mon, 3 Aug 2020 17:07:56 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dongdong Yang <contribute.kernel@gmail.com>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        devel@driverdev.osuosl.org, gulinghua@xiaomi.com,
+        tanggeliang@xiaomi.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangdongdong@xiaomi.com,
+        duhui@xiaomi.com, zhangguoquan@xiaomi.com, fengwei@xiaomi.com,
+        taojun@xiaomi.com, rocking@linux.alibaba.com, huangqiwu@xiaomi.com
+Subject: Re: [PATCH v3] sched: Provide USF for the portable equipment.
+Message-ID: <20200803150756.GA1098726@kroah.com>
+References: <cover.1596464894.git.yangdongdong@xiaomi.com>
+ <23719695ee476715ec54d3310c95d535f8e1391a.1596464896.git.yangdongdong@xiaomi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <08c8797d-1935-7b41-b8db-d22f054912ac@linux.alibaba.com>
+In-Reply-To: <23719695ee476715ec54d3310c95d535f8e1391a.1596464896.git.yangdongdong@xiaomi.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 30-07-20 10:16:13, Alex Shi wrote:
-> 
-> 
-> 在 2020/7/30 上午2:06, Hugh Dickins 写道:
-> > On Wed, 29 Jul 2020, Alex Shi wrote:
-> >>
-> >> Is there any comments or suggestion for this patchset?
-> >> Any hints will be very appreciated.
-> > 
-> > Alex: it is now v5.8-rc7, obviously too late for this patchset to make
-> > v5.9, so I'm currently concentrated on checking some patches headed for
-> > v5.9 (and some bugfix patches of my own that I don't get time to send):
-> > I'll get back to responding on lru_lock in a week or two's time.
-> 
-> Hi Hugh,
-> 
-> Thanks a lot for response! It's fine to wait longer.
-> But thing would be more efficient if review get concentrated...
-> I am still too new in mm area.
+On Mon, Aug 03, 2020 at 10:31:15PM +0800, Dongdong Yang wrote:
+> +	/*
+> +	 * create a sched_usf in cpu_subsys:
+> +	 * /sys/devices/system/cpu/sched_usf/...
 
-I am sorry and owe you a review but it is hard to find time for that.
-This is a large change and the review will be really far from trivial.
-If this version is mostly stable then I would recommend not posting new
-versions and simply remind people you expect the review from by a
-targeted ping.
--- 
-Michal Hocko
-SUSE Labs
+I thought I asked you not to use a "raw" kobject, you are making this
+much harder than it has to be.
+
+Just use a normal struct device.
+
+Also you failed to document your new sysfs files in Documentation/ABI/
+like is required :(
+
+Because of both of those things, this isn't ok as-is, sorry.
+
+greg k-h
