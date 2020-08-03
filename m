@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFD623A76A
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 15:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100D923A770
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 15:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgHCNYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 09:24:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47358 "EHLO mail.kernel.org"
+        id S1727064AbgHCN0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 09:26:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:57636 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbgHCNYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 09:24:42 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E92F8206DA;
-        Mon,  3 Aug 2020 13:24:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596461081;
-        bh=2P+e2agXRGcCDzDHK4A1fBjviZ3qjpqZf+OAaU5r/yI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c9a7+KENOfxIs/9Iy0vX6YmkAbT9I0gWZfOk+2qE3wyDmUQ8+1XKIonsF9mYrgMoo
-         NXZ6S1ltT2KaaZZopvvYsND60TMzjzkYAO62THhGEenXbB1aSZ/DlkQodEId8wu7J8
-         QBUWGbpWbwl8wBmW5XfkMD3LuAuIHGcqpf12w/68=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k2aSF-00H7Mr-Vt; Mon, 03 Aug 2020 14:24:40 +0100
+        id S1727021AbgHCN0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 09:26:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1740230E;
+        Mon,  3 Aug 2020 06:26:19 -0700 (PDT)
+Received: from localhost (unknown [10.1.198.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC5A63F71F;
+        Mon,  3 Aug 2020 06:26:18 -0700 (PDT)
+Date:   Mon, 3 Aug 2020 14:26:17 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH v2 1/7] cpufreq: move invariance setter calls in cpufreq
+ core
+Message-ID: <20200803132617.GA9512@arm.com>
+References: <20200722093732.14297-1-ionela.voinescu@arm.com>
+ <20200722093732.14297-2-ionela.voinescu@arm.com>
+ <CAJZ5v0i5Xrk6oTt81aeXDi1F8gnEspJo9e6nGf10nSvBz-Dbkw@mail.gmail.com>
+ <20200730034128.k4fmblfuwjcmqdze@vireshk-mac-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 03 Aug 2020 14:24:39 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        paulmck@kernel.org, Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        catalin.marinas@arm.com, Alison Wang <alison.wang@nxp.com>,
-        linux-kernel@vger.kernel.org, leoyang.li@nxp.com,
-        vladimir.oltean@nxp.com, Thomas Gleixner <tglx@linutronix.de>,
-        mw@semihalf.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level IRQ
- time accounting
-In-Reply-To: <jhjime0hrvw.mognet@arm.com>
-References: <20200729033934.22349-1-alison.wang@nxp.com>
- <877dumbtoi.fsf@kurt> <20200729094943.lsmhsqlnl7rlnl6f@skbuf>
- <87mu3ho48v.fsf@kurt> <20200730082228.r24zgdeiofvwxijm@skbuf>
- <873654m9zi.fsf@kurt> <20200803081625.czdfwcpw5emcd4ls@skbuf>
- <f61560f5-c4e0-a40b-5845-af3f6d98c7ad@arm.com>
- <20200803113841.pqqpo4hqfwru3upq@skbuf> <jhjime0hrvw.mognet@arm.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <34b6cca5355f9e709554892261ac4b0c@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, olteanv@gmail.com, robin.murphy@arm.com, kurt.kanzenbach@linutronix.de, paulmck@kernel.org, anna-maria@linutronix.de, catalin.marinas@arm.com, alison.wang@nxp.com, linux-kernel@vger.kernel.org, leoyang.li@nxp.com, vladimir.oltean@nxp.com, tglx@linutronix.de, mw@semihalf.com, will@kernel.org, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200730034128.k4fmblfuwjcmqdze@vireshk-mac-ubuntu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-03 12:48, Valentin Schneider wrote:
-> On 03/08/20 12:38, Vladimir Oltean wrote:
->> On Mon, Aug 03, 2020 at 10:51:32AM +0100, Robin Murphy wrote:
->>> 
->>> Having glanced across another thread that mentions IRQ accounting
->>> recently[1], I wonder if the underlying bug here might have something 
->>> do to
->>> with the stuff that Marc's trying to clean up.
->>> 
->>> Robin.
->>> 
->>> [1] 
->>> https://lore.kernel.org/linux-arm-kernel/20200624195811.435857-16-maz@kernel.org/
->> 
->> Thanks Robin. I've applied Marc's "[PATCH v2 00/17] arm/arm64: Turning
->> IPIs into normal interrupts" series and the LS1028A I'm debugging 
->> hangs
->> in absolutely the same way.
->> 
+Hi guys,
+
+On Thursday 30 Jul 2020 at 09:11:28 (+0530), Viresh Kumar wrote:
+> On 27-07-20, 15:48, Rafael J. Wysocki wrote:
+> > On Wed, Jul 22, 2020 at 11:38 AM Ionela Voinescu
+> > <ionela.voinescu@arm.com> wrote:
+> > > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> > > index 036f4cc42ede..bac4101546db 100644
+> > > --- a/drivers/cpufreq/cpufreq.c
+> > > +++ b/drivers/cpufreq/cpufreq.c
+> > > @@ -2058,9 +2058,16 @@ EXPORT_SYMBOL(cpufreq_unregister_notifier);
+> > >  unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+> > >                                         unsigned int target_freq)
+> > >  {
+> > > +       unsigned int freq;
+> > > +
+> > >         target_freq = clamp_val(target_freq, policy->min, policy->max);
+> > > +       freq = cpufreq_driver->fast_switch(policy, target_freq);
+> > > +
+> > > +       if (freq)
+> > > +               arch_set_freq_scale(policy->related_cpus, freq,
+> > > +                                   policy->cpuinfo.max_freq);
+> > 
+> > Why can't arch_set_freq_scale() handle freq == 0?
 > 
-> I'm not too surprised by that, wrt accounting this mostly changes where 
-> the
-> stores go to and barely shuffles when they happen (slightly earlier on 
-> the
-> IPI handling path).
 
-Indeed. This series is just a "let's make things be the way they should 
-be",
-and isn't really fixing any bug. It actually may introduce a couple...
+Sorry, I seem to have missed this question the first time around.
 
-> FWIW I've had 'stress-ng --hrtimers 1' running on my Juno and eMAG for 
-> ~15
-> minutes and haven't had a splat yet.
+arch_set_freq_scale() could handle freq == 0, but given that freq == 0
+is signaling an error here, I do believe this check is well placed, to
+prevent a useless call to arch_set_freq_scale(). Also [1]:
 
-I've started a couple of VMs with that workload too. 400K irq/s on an
-8 vcpu guest, nothing to report so far.
+"""
+ * If 0 is returned by the driver's ->fast_switch() callback to indicate an
+ * error condition, the hardware configuration must be preserved.
+ */
+"""
 
-But removing IRQ_TIME_ACCOUNTING from defconfig is a resounding "no 
-way!".
-It looks like we have a bug, and it should be squashed, not glanced 
-over.
+> Actually there is no need to. AFAIU the freq returned by fast_switch
+> can never be 0 (yeah qcom driver does it right now and I am fixing
+> it). And so we can drop this check altogether.
+> 
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+It's not only the qcom driver, it's also the scmi driver that could
+return 0 [2]. But I don't think "fixing" these drivers is the solution,
+given that 0 is indicated as a valid return value of .fast_switch() to
+signal an error condition [1], while schedutil (the caller), also does
+validation that the returned frequency is !0 before setting it as
+current frequency [3].
+
+Therefore, it is know and (somewhat) documented that 0 indicates an
+error condition and it should be allowed as a return value for
+.fast_switch(). Also, I believe is a good idea to leave the option for
+drivers to return 0 (signaling error) from their implementation of
+.fast_switch().
+
+[1] https://elixir.bootlin.com/linux/v5.8-rc4/source/drivers/cpufreq/cpufreq.c#L2043
+[2] https://elixir.bootlin.com/linux/v5.8-rc4/source/drivers/cpufreq/scmi-cpufreq.c#L76
+[3] https://elixir.bootlin.com/linux/v5.8-rc4/source/kernel/sched/cpufreq_schedutil.c#L124
+
+Thanks,
+Ionela.
+
+> -- 
+> viresh
