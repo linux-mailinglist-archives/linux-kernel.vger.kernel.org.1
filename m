@@ -2,91 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A0523A916
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E3A23A912
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgHCPE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 11:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgHCPE5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 11:04:57 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3742C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 08:04:57 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id e5so14387269qth.5
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 08:04:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v+Y+IeNd3F1n7XlNjxMNDs/pWS3JUJFhlRHoN7oY4mY=;
-        b=dPmwvzU/T3ag5U9ZtHrb8FV/spAvxfqrf4OhrQC7VydMsrv1GHyUT0zQQAEW7C/Qtt
-         Yt8Rem5DpO9L7QJV7wMT1FFmOTy8QBWr/wHw45xpFH//Qjd/lhzEfCSnHhIHGGPPohZT
-         Qk1jGOLKPFn1VPCZDl0/bGw5fpyz0SRe48g6oY/c2Ig1GX4uSXppcfWs8N438ECQQ39y
-         aGznKxCwvspawWMJN2u9PIB8uprF/BpoBJxjnTbkgUARj/1SI4YZvGhrcjqYl4aiIINW
-         zslsvSi/tek2Dac92PSdQfoDsTHLPlLIk8YJpto6kYzAsXst393AATiGwLEve+0aEp/V
-         fzuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v+Y+IeNd3F1n7XlNjxMNDs/pWS3JUJFhlRHoN7oY4mY=;
-        b=XDiFRSXq9Mo97r5FAwEROPUSwXjn8xbnmpbWx8OL06Dmt+IOOCwJchUSIknlnICFiK
-         R+1Rgz0tGdcBjGzokCTPNGEU5x8wgeZg8Il5pFA9JDgm5JNLv7MFVG01UbR/ttBnyJ9B
-         kleZUbaIeRUJ3kfNyxvqenOlI8izBS20P8wpckhffkd4NJkGC4r0QvxxZDx6nYipw8tl
-         phquSn5dxQS/3ZW7dySkL6hBrIeDSqIG3xUyKfyy3/1YLRWpWWXfidMOx7wXw1EdK8UR
-         gQH1JEVmJYCqClZ9N7KAPEYkF1U7E6hRyGLp64CCWX9p33WLfA1cwI/h06ZvujJQWQr4
-         4Dwg==
-X-Gm-Message-State: AOAM530r3TRQpjEzU7RmAzJ5MfQ77oNLDqJu1i302pHtHsO+SIY0QXhE
-        CPD0ldqv67cHe9VU12TNP+pX8A==
-X-Google-Smtp-Source: ABdhPJxuutL92UDVwZwgNfnQqW8lEG9FgF9JCj+WFcZul4NVGAGyNYmG3d/G2pSMDybyPalENciq3g==
-X-Received: by 2002:ac8:5146:: with SMTP id h6mr17130263qtn.290.1596467096898;
-        Mon, 03 Aug 2020 08:04:56 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:ce31])
-        by smtp.gmail.com with ESMTPSA id s33sm23316565qtk.11.2020.08.03.08.04.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 08:04:53 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 11:03:49 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        Vlastimil Babka <vbabka@suse.cz>, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 05/19] mm: memcontrol: decouple reference counting
- from page accounting
-Message-ID: <20200803150349.GA502356@cmpxchg.org>
-References: <20200623174037.3951353-1-guro@fb.com>
- <20200623174037.3951353-6-guro@fb.com>
- <20200803090033.GE5174@dhcp22.suse.cz>
+        id S1727103AbgHCPD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 11:03:58 -0400
+Received: from mga17.intel.com ([192.55.52.151]:24972 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726356AbgHCPDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 11:03:54 -0400
+IronPort-SDR: oYheJHHRIKqDiW+fZMLnvlAY3jeSs+jgYANmGIcS+rrFQy14aBOlwdKkpk7rLZWrBO1bVO4n7T
+ haZLfmvYLRqA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="132173779"
+X-IronPort-AV: E=Sophos;i="5.75,430,1589266800"; 
+   d="scan'208";a="132173779"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 08:03:53 -0700
+IronPort-SDR: Jnfxgatw79Je6t+dSPbcv95/xzHQnXXvkweXDkYm7QaWn0ziThSSeRmtM5CN0xZfZ+RhwdtxLj
+ KTMS2DRfK+8g==
+X-IronPort-AV: E=Sophos;i="5.75,430,1589266800"; 
+   d="scan'208";a="466539194"
+Received: from arossfer-mobl.amr.corp.intel.com (HELO [10.255.230.80]) ([10.255.230.80])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 08:03:52 -0700
+Subject: Re: [PATCH v6 12/12] x86/traps: Fix up invalid PASID
+To:     Andy Lutomirski <luto@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu <iommu@lists.linux-foundation.org>,
+        amd-gfx <amd-gfx@lists.freedesktop.org>
+References: <1594684087-61184-1-git-send-email-fenghua.yu@intel.com>
+ <1594684087-61184-13-git-send-email-fenghua.yu@intel.com>
+ <CALCETrXnO4oh+WyxtSM-j_pP4QgkSg24=y76OBEHxXxAfJtPhA@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <f6d34d59-e6eb-ee9f-d247-8fb2f0e37549@intel.com>
+Date:   Mon, 3 Aug 2020 08:03:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200803090033.GE5174@dhcp22.suse.cz>
+In-Reply-To: <CALCETrXnO4oh+WyxtSM-j_pP4QgkSg24=y76OBEHxXxAfJtPhA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 11:00:33AM +0200, Michal Hocko wrote:
-> On Tue 23-06-20 10:40:23, Roman Gushchin wrote:
-> > @@ -5456,7 +5460,10 @@ static int mem_cgroup_move_account(struct page *page,
-> >  	 */
-> >  	smp_mb();
-> >  
-> > -	page->mem_cgroup = to; 	/* caller should have done css_get */
-> > +	css_get(&to->css);
-> > +	css_put(&from->css);
-> > +
-> > +	page->mem_cgroup = to;
-> >  
-> >  	__unlock_page_memcg(from);
-> 
-> What prevents from memcg to be released here?
+On 7/31/20 4:34 PM, Andy Lutomirski wrote:
+>> Thomas suggested to provide a reason for the #GP caused by executing ENQCMD
+>> without a valid PASID value programmed. #GP error codes are 16 bits and all
+>> 16 bits are taken. Refer to SDM Vol 3, Chapter 16.13 for details. The other
+>> choice was to reflect the error code in an MSR. ENQCMD can also cause #GP
+>> when loading from the source operand, so its not fully comprehending all
+>> the reasons. Rather than special case the ENQCMD, in future Intel may
+>> choose a different fault mechanism for such cases if recovery is needed on
+>> #GP.
+> Decoding the user instruction is ugly and sets a bad architecture
+> precedent, but we already do it in #GP for UMIP.  So I'm unconvinced.
 
-->attach_task() and kill_css() are exclusive through the cgroup_mutex,
-so the base ref cannot disappear from under us during this operation.
+I'll try to do one more bit of convincing. :)
+
+In the end, we need a way to figure out if the #GP was from a known "OK"
+source that we can fix up.  You're right that we could fire up the
+instruction decoder to help answer that question.  But, it (also)
+doesn't easily yield a perfect answer as to the source of the #GP, it
+always involves a user copy, and it's a larger code impact than what
+we've got.
+
+I think I went and looked at fixup_umip_exception(), and compared it to
+the alternative which is essentially just these three lines of code:
+
+> +	/*
+> +	 * If the current task already has a valid PASID in the MSR,
+> +	 * the #GP must be for some other reason.
+> +	 */
+> +	if (current->has_valid_pasid)
+> +		return false;
+...> +	/* Now the current task has a valid PASID in the MSR. */
+> +	current->has_valid_pasid = 1;
+
+and *I* was convinced that instruction decoding wasn't worth it.
+
+There's a lot of stuff that fixup_umip_exception() does which we don't
+have to duplicate, but it's going to be really hard to get it anywhere
+near as compact as what we've got.
+
+I guess Fenghua could go give instruction decoding a shot and see how it
+looks, though.
