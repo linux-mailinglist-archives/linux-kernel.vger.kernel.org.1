@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE31E23ADC6
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 21:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8909423ADC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 21:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728616AbgHCTuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 15:50:37 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:28515 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726906AbgHCTuh (ORCPT
+        id S1728649AbgHCTul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 15:50:41 -0400
+Received: from static.214.254.202.116.clients.your-server.de ([116.202.254.214]:46920
+        "EHLO ciao.gmane.io" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726906AbgHCTuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 15:50:37 -0400
-Received: from [192.168.1.41] ([92.140.224.28])
-        by mwinf5d06 with ME
-        id B7qZ2300B0dNxE4037qat7; Mon, 03 Aug 2020 21:50:34 +0200
-X-ME-Helo: [192.168.1.41]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 03 Aug 2020 21:50:34 +0200
-X-ME-IP: 92.140.224.28
+        Mon, 3 Aug 2020 15:50:40 -0400
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <glk-linux-kernel-4@m.gmane-mx.org>)
+        id 1k2gTm-0002C8-1v
+        for linux-kernel@vger.kernel.org; Mon, 03 Aug 2020 21:50:38 +0200
+X-Injected-Via-Gmane: http://gmane.org/
+To:     linux-kernel@vger.kernel.org
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Subject: Re: [PATCH] gve: Fix the size used in a 'dma_free_coherent()' call
-To:     Joe Perches <joe@perches.com>, Jakub Kicinski <kuba@kernel.org>
-Cc:     csully@google.com, sagis@google.com, jonolson@google.com,
-        davem@davemloft.net, lrizzo@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Newsgroups: gmane.linux.kernel,gmane.linux.network,gmane.linux.kernel.janitors
+Date:   Mon, 3 Aug 2020 21:50:33 +0200
+Message-ID: <639bc995-9d51-3cb7-a9d1-9979ecd9c912@wanadoo.fr>
 References: <20200802141523.691565-1-christophe.jaillet@wanadoo.fr>
  <20200803084106.050eb7f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
  <3a25ddc6-adaa-d17d-50f4-8f8ab2ed25eb@wanadoo.fr>
  <69b4c4838cb743e24a79f81de487ac2e494843ef.camel@perches.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <639bc995-9d51-3cb7-a9d1-9979ecd9c912@wanadoo.fr>
-Date:   Mon, 3 Aug 2020 21:50:33 +0200
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
-MIME-Version: 1.0
 In-Reply-To: <69b4c4838cb743e24a79f81de487ac2e494843ef.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Cc:     netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -94,3 +89,4 @@ Basically, my proposal is to replace this 12 by a 5 in order to accept
 smaller strings before checking if it looks well formatted or not.
 
 CJ
+
