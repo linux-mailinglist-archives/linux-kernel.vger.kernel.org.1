@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96DD23A62D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7166323A66A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729335AbgHCMp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53354 "EHLO mail.kernel.org"
+        id S1729092AbgHCMrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:47:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728564AbgHCM1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:27:33 -0400
+        id S1728203AbgHCMZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:25:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E865204EC;
-        Mon,  3 Aug 2020 12:27:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 868D9204EC;
+        Mon,  3 Aug 2020 12:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457651;
-        bh=bnXW+kq4TokSOv/tJwzDwPvCTCgcOvHAglygsZOHc0s=;
+        s=default; t=1596457522;
+        bh=+bZ7yDzZUgOYT9JI0IYCIKeW/jA887oFGWzPoBuqv18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YPvfxEgjf93l8b3IVqCKCWbTy/cYLrkbWbb5NsFLVRtr495md53vS6Rh6XWDxV41J
-         3Qoo2fzPEoATBWQgUqNTMoWYdngmUobC5rtAfvTMO0J3v1dNRkkTl/KIKKKgL2K9do
-         DWk1XEMTWv2UmprjIiHP+fzJPV8yjqEFKK+bjW9E=
+        b=j9Z9o8gadPme0dfeLgQi0U6qhWEaDgnCKeUYxcRaBTN/kdGn6T53ILB4ktPnj0NOa
+         vcfSany/jdWjnR4SEhMAycJX+pAzdN+euT69BV7Rh9ePwfchfHaIY/Wmt/JxVQyUsC
+         AwBbjzlhzWioFtAmrYMFGy/Y265g7/i/s0Q2pVDg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 24/90] Revert "drm/amdgpu: Fix NULL dereference in dpm sysfs handlers"
+        stable@vger.kernel.org, Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 068/120] octeontx2-pf: Unregister netdev at driver remove
 Date:   Mon,  3 Aug 2020 14:18:46 +0200
-Message-Id: <20200803121858.796616416@linuxfoundation.org>
+Message-Id: <20200803121906.117295157@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: Subbaraya Sundeep <sbhatta@marvell.com>
 
-commit 87004abfbc27261edd15716515d89ab42198b405 upstream.
+[ Upstream commit ed543f5c6a988d8a863d2436794230cef2c82389 ]
 
-This regressed some working configurations so revert it.  Will
-fix this properly for 5.9 and backport then.
+Added unregister_netdev in the driver remove
+function. Generally unregister_netdev is called
+after disabling all the device interrupts but here
+it is called before disabling device mailbox
+interrupts. The reason behind this is VF needs
+mailbox interrupt to communicate with its PF to
+clean up its resources during otx2_stop.
+otx2_stop disables packet I/O and queue interrupts
+first and by using mailbox interrupt communicates
+to PF to free VF resources. Hence this patch
+calls unregister_device just before
+disabling mailbox interrupts.
 
-This reverts commit 38e0c89a19fd13f28d2b4721035160a3e66e270b.
-
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 3184fb5ba96e ("octeontx2-vf: Virtual function driver support")
+Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
-@@ -691,7 +691,8 @@ static ssize_t amdgpu_set_pp_od_clk_volt
- 		tmp_str++;
- 	while (isspace(*++tmp_str));
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
+index c1c263d1ac2ec..92a3db69a6cd6 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
+@@ -618,6 +618,7 @@ static void otx2vf_remove(struct pci_dev *pdev)
+ 	vf = netdev_priv(netdev);
  
--	while ((sub_str = strsep(&tmp_str, delimiter)) != NULL) {
-+	while (tmp_str[0]) {
-+		sub_str = strsep(&tmp_str, delimiter);
- 		ret = kstrtol(sub_str, 0, &parameter[parameter_size]);
- 		if (ret)
- 			return -EINVAL;
-@@ -882,7 +883,8 @@ static ssize_t amdgpu_read_mask(const ch
- 	memcpy(buf_cpy, buf, bytes);
- 	buf_cpy[bytes] = '\0';
- 	tmp = buf_cpy;
--	while ((sub_str = strsep(&tmp, delimiter)) != NULL) {
-+	while (tmp[0]) {
-+		sub_str = strsep(&tmp, delimiter);
- 		if (strlen(sub_str)) {
- 			ret = kstrtol(sub_str, 0, &level);
- 			if (ret)
-@@ -1298,7 +1300,8 @@ static ssize_t amdgpu_set_pp_power_profi
- 			i++;
- 		memcpy(buf_cpy, buf, count-i);
- 		tmp_str = buf_cpy;
--		while ((sub_str = strsep(&tmp_str, delimiter)) != NULL) {
-+		while (tmp_str[0]) {
-+			sub_str = strsep(&tmp_str, delimiter);
- 			ret = kstrtol(sub_str, 0, &parameter[parameter_size]);
- 			if (ret) {
- 				count = -EINVAL;
+ 	cancel_work_sync(&vf->reset_task);
++	unregister_netdev(netdev);
+ 	otx2vf_disable_mbox_intr(vf);
+ 
+ 	otx2_detach_resources(&vf->mbox);
+-- 
+2.25.1
+
 
 
