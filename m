@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E865239D18
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 02:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E77239D17
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 02:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgHCAky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 20:40:54 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9312 "EHLO huawei.com"
+        id S1727909AbgHCAko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 20:40:44 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9311 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727865AbgHCAko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726988AbgHCAko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 2 Aug 2020 20:40:44 -0400
 Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B8C9AF18077B779422B4;
+        by Forcepoint Email with ESMTP id B3B1C4E8D41A1D917389;
         Mon,  3 Aug 2020 08:40:38 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 3 Aug 2020 08:40:29 +0800
+ 14.3.487.0; Mon, 3 Aug 2020 08:40:30 +0800
 From:   Tian Tao <tiantao6@hisilicon.com>
 To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
         <kraxel@redhat.com>, <alexander.deucher@amd.com>,
         <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
         <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
 CC:     <linuxarm@huawei.com>
-Subject: [PATCH drm/hisilicon v2 0/3] hibmc clean up and code refactoring
-Date:   Mon, 3 Aug 2020 08:38:31 +0800
-Message-ID: <1596415114-21175-1-git-send-email-tiantao6@hisilicon.com>
+Subject: [PATCH drm/hisilicon v2 1/3] drm/hisilicon: Remove the unused include statements
+Date:   Mon, 3 Aug 2020 08:38:32 +0800
+Message-ID: <1596415114-21175-2-git-send-email-tiantao6@hisilicon.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1596415114-21175-1-git-send-email-tiantao6@hisilicon.com>
+References: <1596415114-21175-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.56]
@@ -36,24 +38,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-patch #1 and #3 is clean up, patch #2 is for code refactoring
+Remove some unused include statements.
 
-Changes since v1:
-- Rewrite the commits messages and patch name in #1
-- Rewrite the commits message in #2.
-- Add the new patch #3
+v2:
+edit patch name and commit message.
 
-Tian Tao (3):
-  drm/hisilicon: Remove the unused include statements
-  drm/hisilicon: Code refactoring for hibmc_drv_de
-  drm/hisilicon: Rename variables to represent the correct meaning
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   | 3 ---
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 5 -----
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 2 --
+ 3 files changed, 10 deletions(-)
 
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   | 58 ++++++------------------
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  |  5 --
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  2 +
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 -
- 4 files changed, 15 insertions(+), 52 deletions(-)
-
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+index cc70e83..66132eb 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+@@ -17,9 +17,6 @@
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_fourcc.h>
+ #include <drm/drm_gem_vram_helper.h>
+-#include <drm/drm_plane_helper.h>
+-#include <drm/drm_print.h>
+-#include <drm/drm_probe_helper.h>
+ #include <drm/drm_vblank.h>
+ 
+ #include "hibmc_drm_drv.h"
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+index b8d839a..54f6144 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+@@ -11,18 +11,13 @@
+  *	Jianhua Li <lijianhua@huawei.com>
+  */
+ 
+-#include <linux/console.h>
+-#include <linux/module.h>
+ #include <linux/pci.h>
+ 
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_drv.h>
+-#include <drm/drm_fb_helper.h>
+ #include <drm/drm_gem_vram_helper.h>
+ #include <drm/drm_irq.h>
+ #include <drm/drm_managed.h>
+-#include <drm/drm_print.h>
+-#include <drm/drm_probe_helper.h>
+ #include <drm/drm_vblank.h>
+ 
+ #include "hibmc_drm_drv.h"
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+index 2ca69c3..ed12f61 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+@@ -11,10 +11,8 @@
+  *	Jianhua Li <lijianhua@huawei.com>
+  */
+ 
+-#include <drm/drm_gem_vram_helper.h>
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_probe_helper.h>
+-#include <drm/drm_crtc_helper.h>
+ #include <drm/drm_print.h>
+ 
+ #include "hibmc_drm_drv.h"
 -- 
 2.7.4
 
