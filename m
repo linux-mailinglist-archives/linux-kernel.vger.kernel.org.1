@@ -2,207 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF03623A580
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD63723A583
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729617AbgHCMhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729592AbgHCMiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:38:01 -0400
+Received: from mail-am6eur05on2118.outbound.protection.outlook.com ([40.107.22.118]:45056
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727850AbgHCMhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 3 Aug 2020 08:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728370AbgHCMhd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:37:33 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2A5C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 05:37:33 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id qc22so23646857ejb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 05:37:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RkJV+SD+TmWv8t5FtEch6chh6KbkeELojEV638fW9lVophjMjNZgw3CeT3P1Yn5IajoxCbyD7c4GAMXr1AObpl0h1HFjNrrL8CUyAa30EkDE3l5Kw+xzyiwRACcwc/yaIxVHKUgUHnqP/lVj9BmTiQpkxvj5JQagoNq2ewpnU7dcm82EcyflEsNt6uFDKRapCfNhF7gLWW+/nme1hJUCglkwoi9jHHyzSgzWPD9t413qcbYqNXnBTHx1gPx377lKhoDxKm4bmnBqjFio+7+aNJ9CYj066r6rfjJ9Q+jhtfJ+wJdOeS6ALamykFYqZJyMRVyhPfdlcqAZC4izZuKkfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=asfEP+lSwg/LLxLmClZ6FlL/bbOSS78L0Ja8CsV9dtE=;
+ b=J4eOnr3TMQmZ97o56cPgpLDSCqBsBTy9IRgelr4V5b5cg9ZOEmnrZWYr+ui3mKvsnBp6UQpwqw74u/wqBauTuzSp3mYiMnkEUyhsX1KrR0nsZbABZezW8ZD2CN96AlvophwQsnmD8lI2FA/D2KVmgd+Zc6SqekPslUZch4syENLdvJhPAjrxQSHFBb6/hw46oDu7yf3ZNGckM9d8GqL2muCxdrbP3GrkTN74gHRaZEAKTvsyHk3D3FJdFETtW9P2lh5p6dR3UT+JWVWH89Lxhfu4tIztKB2TxaGQSYxJkbBSs83w7RzwT81Arv5HpxxeZwY8DS4vuZScGdsRcxu2ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=habana.ai; dmarc=pass action=none header.from=habana.ai;
+ dkim=pass header.d=habana.ai; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=SYFkGFotJhjv8HSUDqLl/g6SWYqewU0n8NYVoK0ozDU=;
-        b=WIwTFj6u6mG0HCLAD2zEll9ZTp4GBGQG/fS6MZWTHARNXNgSs9xVe9TQgusqLMzJ56
-         8ztCfWBozbc2mwEMJEQ8CY21UZTy7pr3FjDNeYPTpHMCnrvC2owerHrJzgUXHrD503oD
-         G5TYQdbM+U/SiI1n+owk9QrHZMxGqhBr5gBnPY4zusYkvEZyuV9eqjOjoNTKobGPJrly
-         wDaDJoknVS/x88eodvZAAmzNNVrNolPkzfHh0RW3JztwbXenLyuDD9UaTWgLN4Z8wN3z
-         zsYWbTzezjb7evWgylGiOjzTdFFPMckUHELZT0nY/6MJ66tNhlW5/IVBwpSbhFEqA7pf
-         wliQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=SYFkGFotJhjv8HSUDqLl/g6SWYqewU0n8NYVoK0ozDU=;
-        b=iuupiV+y+1zxoCHz31wUksUTpTY2iIuU70gV4H6NvcI9/TB0Xag6r2R3EP93YhC/wz
-         6felwfCO4p066SDBnfp0rN5SnEtRYH4WEY0VS1SAkY/5wcXVMtHX7qT3Ly9PlLywwsXl
-         dxVadJWmB1hf0wQUHljkxw+tCvSmF+ojO6pwXBym4ndqvWM/++jroD05kuDAHR/qEI82
-         t7jJ1IpDMY8ELAYU6NWOe3TTNth0xWsbrbde8MDVCseuJjuXWKcBQwpNvn/YWwVNNBCV
-         v+1H3HBntyBDHD1NaCxuj65l2CXh0tGofJk+Xuupq9C+Sa89131F2Vx3CVpJ2f+EDXcg
-         zxgQ==
-X-Gm-Message-State: AOAM530+Lq2sGEgjGZ1R4wD+6RTIDYWtQxsdKAVCUo2lrhzeRWR/L5+f
-        bz+eUqrMPtqJjny1+G1Pqo0=
-X-Google-Smtp-Source: ABdhPJwaCa6exlp1u0baTo/T1cg7xGnn0Rwe9zWCJHEqEaUmtjHVaognzbtGVOPe62k1lxhoCHgs9w==
-X-Received: by 2002:a17:906:1ec3:: with SMTP id m3mr16815476ejj.197.1596458251793;
-        Mon, 03 Aug 2020 05:37:31 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id bc10sm15968725edb.5.2020.08.03.05.37.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 05:37:31 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 14:37:29 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Arnaldo Carvalho de Melo <acme@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] perf events updates for v5.9
-Message-ID: <20200803123729.GA567306@gmail.com>
+ d=habanalabs.onmicrosoft.com; s=selector2-habanalabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=asfEP+lSwg/LLxLmClZ6FlL/bbOSS78L0Ja8CsV9dtE=;
+ b=t0pMPQreMpb+KxRC1lmdTSGxR0g98MAy0/GpVwx/lWpyQTCX2+T1D22lc600VwdgWUHKQcq3V/sBpYV1gZup9zSuzRzxtIshuMkgf7RB4HnsWC75Oqx7w8ReMCQmKVEjRaisY16uRHlQIEn+EEMzo250FGLMYdK38R/WVxFaAFA=
+Received: from DB8PR02MB5468.eurprd02.prod.outlook.com (2603:10a6:10:ef::22)
+ by DBAPR02MB6008.eurprd02.prod.outlook.com (2603:10a6:10:179::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.21; Mon, 3 Aug
+ 2020 12:37:41 +0000
+Received: from DB8PR02MB5468.eurprd02.prod.outlook.com
+ ([fe80::68d4:6b:d077:19a9]) by DB8PR02MB5468.eurprd02.prod.outlook.com
+ ([fe80::68d4:6b:d077:19a9%4]) with mapi id 15.20.3239.021; Mon, 3 Aug 2020
+ 12:37:41 +0000
+From:   Tomer Tayar <ttayar@habana.ai>
+To:     Oded Gabbay <oded.gabbay@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        SW_Drivers <SW_Drivers@habana.ai>
+Subject: RE: [PATCH] habanalabs: increase length of ASIC name
+Thread-Topic: [PATCH] habanalabs: increase length of ASIC name
+Thread-Index: AQHWaYxqOuUUqglDB0OnEyp9iVHj0qkmUfng
+Date:   Mon, 3 Aug 2020 12:37:41 +0000
+Message-ID: <DB8PR02MB5468A881242A13126D8083FED24D0@DB8PR02MB5468.eurprd02.prod.outlook.com>
+References: <20200803115118.31211-1-oded.gabbay@gmail.com>
+In-Reply-To: <20200803115118.31211-1-oded.gabbay@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=habana.ai;
+x-originating-ip: [31.154.181.186]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d309b8e0-d6f7-4fa3-1581-08d837aa0371
+x-ms-traffictypediagnostic: DBAPR02MB6008:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DBAPR02MB6008D60355D459004BFF2617D24D0@DBAPR02MB6008.eurprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1169;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8+hWs5LY8z4GF/8seOMgzQViPOJvpcJFepCsmkUi9jlN89HiozRBweTzwAgAgKssqaLoEaLgKOYRMvFaN2UpFkQB8i24UcaKPnCuKIEarF3ED6ySP0aUibzTa4DecEtAHc9X3z/AN5ye7KLNUJ4S1zq3xZcvzK0eUZaVYmGbEd9pCEsZFaxiA3Z+BizfHrQ9u8MtatCE9ushJ+oOf6FJDEVglqoo7HHJ5T5rRmNIxt+TR/NhMP3SvMTG5pdSOUy/QYaC+70HrnEX7jUqFjDvLqrQ5mYd6d3pd+QJeTCjQo0Y54x3wsM8S7RG9BDEi2wv
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5468.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39850400004)(136003)(366004)(346002)(376002)(396003)(478600001)(7696005)(558084003)(66946007)(6636002)(66476007)(64756008)(66446008)(66556008)(316002)(110136005)(52536014)(2906002)(55016002)(8936002)(86362001)(5660300002)(8676002)(53546011)(33656002)(76116006)(26005)(186003)(9686003)(6506007)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: /fuBl6LxTJ6f7GLrHV2owq0aHT725m/MKCQQX5qBPsTHvOzk9NxTDopgKj/MpDzrIuup/cf8iJoLRtB5cOSVJWB6Q+ffJXgL4ICNyu4NmN43hRfGTXbSucchSunhqoZAtUF3mSov0CluEwZYw012X5AQx4HUqxUSD6RDeE5994U/A/UhKUa6g0slcYpkbmt435j82IxBlDplUurQbwHSjQBPll98Tz/OH3InFw7JjQHg/Rhp/YrF1wfOM2PCpKpHVqbdTQtE69b6CanY6neCbz9b0gaLIIFFfhXBsryGvY7uIlhuwuFjI07IjJ6oQftngt7Xtue+vHb7SeEsHGeAAQlmufDAJkGyjir68Tb8H6LGlWOwbuucIj4so21vkvIwguK4wsy1bka7d4vpfZQH6cUgIbFTAL3F17u8Yt4nb11cDTwZu2grAJVZ1DE1JhdMkm8GiDvKL6uCsBpZCmyw9+lDiHp01KACjEw+Cy3uAFmSPk74UPKI9KB8DLAzH3TvAkHk0eKlvk6rq8kHvOCKy5kGHJV8Svo5Jun7B6eZu4FOVAw0Xl9IldwPdJjjVeIt3y46vZwObHX7MlEd8qoUhBBI/6tKOSFU2TJX7eGRA10kvOp9TkFQLP6YWu+542XKCfp41K+BGb986mBujvnfgA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-OriginatorOrg: habana.ai
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5468.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d309b8e0-d6f7-4fa3-1581-08d837aa0371
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2020 12:37:41.3326
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4d4539-213c-4ed8-a251-dc9766ba127a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: F2+UnNsCcZpplYxT/VuLFqmWgjVoB9MnEgtswZK6mmckc17Rfo3we85E/Rus2NGx5tQKtai5vBXsrnuVOcpF1Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR02MB6008
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Mon, Aug 3, 2020 at 14:51 Oded Gabbay <oded.gabbay@gmail.com> wrote:
+> Future ASIC names are longer than 15 chars so increase the variable lengt=
+h
+> to 32 chars.
+>=20
+> Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 
-Please pull the latest perf/core git tree from:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-core-2020-08-03
-
-   # HEAD: d903b6d029d66e6478562d75ea18d89098f7b7e8 perf/x86/rapl: Add Hygon Fam18h RAPL support
-
-- HW support updates:
-
-   - Add uncore support for Intel Comet Lake
-
-   - Add RAPL support for Hygon Fam18h
-
-   - Add Intel "IIO stack to PMON mapping" support on Skylake-SP CPUs,
-     which enumerates per device performance counters via sysfs and enables
-     the perf stat --iiostat functionality
-
-   - Add support for Intel "Architectural LBRs", which generalized the model
-     specific LBR hardware tracing feature into a model-independent, architected
-     performance monitoring feature. Usage is mostly seamless to tooling, as the
-     pre-existing LBR features are kept, but there's a couple of advantages
-     under the hood, such as faster context-switching, faster LBR reads,
-     cleaner exposure of LBR features to guest kernels, etc.
-
-     ( Since architectural LBRs are supported via XSAVE, there's related
-       changes to the x86 FPU code as well. )
-
- - ftrace/perf updates: Add support to add a text poke event to record changes
-                        to kernel text (i.e. self-modifying code) in order to
-                        support tracers like Intel PT decoding through
-                        jump labels, kprobes and ftrace trampolines.
-
- - Misc cleanups, smaller fixes.
-
- Thanks,
-
-	Ingo
-
------------------->
-Adrian Hunter (8):
-      perf: Add perf text poke event
-      perf/x86: Add support for perf text poke event for text_poke_bp_batch() callers
-      kprobes: Add symbols for kprobe insn pages
-      kprobes: Add perf ksymbol events for kprobe insn pages
-      perf/x86: Add perf text poke events for kprobes
-      ftrace: Add symbols for ftrace trampolines
-      ftrace: Add perf ksymbol events for ftrace trampolines
-      ftrace: Add perf text poke events for ftrace trampolines
-
-Hu Haowen (1):
-      x86/perf: Fix a typo
-
-Kan Liang (27):
-      perf/x86/intel/uncore: Add Comet Lake support
-      perf/x86/intel/uncore: Fix oops when counting IMC uncore events on some TGL
-      perf/x86/intel/uncore: Record the size of mapped area
-      perf/x86/intel/uncore: Validate MMIO address before accessing
-      x86/cpufeatures: Add Architectural LBRs feature bit
-      perf/x86/intel/lbr: Add a function pointer for LBR reset
-      perf/x86/intel/lbr: Add a function pointer for LBR read
-      perf/x86/intel/lbr: Add the function pointers for LBR save and restore
-      perf/x86/intel/lbr: Factor out a new struct for generic optimization
-      perf/x86/intel/lbr: Use dynamic data structure for task_ctx
-      x86/msr-index: Add bunch of MSRs for Arch LBR
-      perf/x86: Expose CPUID enumeration bits for arch LBR
-      perf/x86/intel/lbr: Support LBR_CTL
-      perf/x86/intel/lbr: Unify the stored format of LBR information
-      perf/x86/intel/lbr: Mark the {rd,wr}lbr_{to,from} wrappers __always_inline
-      perf/x86/intel/lbr: Factor out rdlbr_all() and wrlbr_all()
-      perf/x86/intel/lbr: Factor out intel_pmu_store_lbr
-      perf/x86/intel/lbr: Support Architectural LBR
-      perf/core: Factor out functions to allocate/free the task_ctx_data
-      perf/core: Use kmem_cache to allocate the PMU specific data
-      perf/x86/intel/lbr: Create kmem_cache for the LBR context data
-      perf/x86: Remove task_ctx_size
-      x86/fpu: Use proper mask to replace full instruction mask
-      x86/fpu/xstate: Support dynamic supervisor feature for LBR
-      x86/fpu/xstate: Add helpers for LBR dynamic supervisor feature
-      perf/x86/intel/lbr: Support XSAVES/XRSTORS for LBR context switch
-      perf/x86/intel/lbr: Support XSAVES for arch LBR read
-
-Like Xu (4):
-      perf/x86/core: Refactor hw->idx checks and cleanup
-      perf/x86/lbr: Add interface to get LBR information
-      perf/x86: Add constraint to create guest LBR event without hw counter
-      perf/x86: Keep LBR records unchanged in host context for guest usage
-
-Masami Hiramatsu (1):
-      kprobes: Remove unnecessary module_mutex locking from kprobe_optimizer()
-
-Pu Wen (1):
-      perf/x86/rapl: Add Hygon Fam18h RAPL support
-
-Randy Dunlap (1):
-      perf: <linux/perf_event.h>: drop a duplicated word
-
-Roman Sudarikov (3):
-      perf/x86/intel/uncore: Expose an Uncore unit to PMON mapping
-      perf/x86/intel/uncore: Wrap the max dies calculation into an accessor
-      perf/x86/intel/uncore: Expose an Uncore unit to IIO PMON mapping
-
-Wei Wang (1):
-      perf/x86: Fix variable types for LBR registers
-
-
- Documentation/ABI/testing/sysfs-devices-mapping |  33 ++
- arch/x86/events/core.c                          |  28 +-
- arch/x86/events/intel/core.c                    | 127 ++--
- arch/x86/events/intel/ds.c                      |   6 +-
- arch/x86/events/intel/lbr.c                     | 733 ++++++++++++++++++++----
- arch/x86/events/intel/uncore.c                  |  26 +-
- arch/x86/events/intel/uncore.h                  |  37 ++
- arch/x86/events/intel/uncore_snb.c              |  80 ++-
- arch/x86/events/intel/uncore_snbep.c            | 208 ++++++-
- arch/x86/events/perf_event.h                    | 125 +++-
- arch/x86/events/rapl.c                          |   3 +-
- arch/x86/events/zhaoxin/core.c                  |   2 +-
- arch/x86/include/asm/cpufeatures.h              |   1 +
- arch/x86/include/asm/fpu/internal.h             |  47 +-
- arch/x86/include/asm/fpu/types.h                |  27 +
- arch/x86/include/asm/fpu/xstate.h               |  36 ++
- arch/x86/include/asm/kprobes.h                  |   2 +
- arch/x86/include/asm/msr-index.h                |  16 +
- arch/x86/include/asm/perf_event.h               |  82 ++-
- arch/x86/kernel/alternative.c                   |  37 +-
- arch/x86/kernel/fpu/core.c                      |  39 ++
- arch/x86/kernel/fpu/xstate.c                    |  89 ++-
- arch/x86/kernel/kprobes/core.c                  |  15 +-
- arch/x86/kernel/kprobes/opt.c                   |  38 +-
- include/linux/ftrace.h                          |  12 +-
- include/linux/kprobes.h                         |  15 +
- include/linux/perf_event.h                      |  15 +-
- include/uapi/linux/perf_event.h                 |  26 +-
- kernel/events/core.c                            | 115 +++-
- kernel/kallsyms.c                               |  42 +-
- kernel/kprobes.c                                |  60 +-
- kernel/trace/ftrace.c                           | 101 +++-
- 32 files changed, 1943 insertions(+), 280 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-devices-mapping
+Reviewed-by: Tomer Tayar <ttayar@habana.ai>
