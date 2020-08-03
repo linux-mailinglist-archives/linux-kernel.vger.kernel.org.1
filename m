@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEFF23A4B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFDE23A45A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgHCM3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:29:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56314 "EHLO mail.kernel.org"
+        id S1727783AbgHCM0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:26:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728941AbgHCM3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:29:40 -0400
+        id S1728324AbgHCM0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:26:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29EB6208B3;
-        Mon,  3 Aug 2020 12:29:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A5D4207DF;
+        Mon,  3 Aug 2020 12:26:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457778;
-        bh=LkmYfpO8CCHqVPPYGJEJrOUiJmWXY43q7bamRMNf8qU=;
+        s=default; t=1596457572;
+        bh=f5pWZnTXWdMeH/r/P/ygyxFUvVXk7VoBwu1GlAY/Sms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bS6ziFl+eYvnvcG4Z5QngpbWDXEId9UMkVYHGLfvyvmt1knUt53Zr8lnabtykEYkt
-         rYmu4sfIqhKph0l/YoKXf6aawIIS2aHtRoWBxbe01jQXAzt9iIJeH7O/wy23lqQR7p
-         vSM8mpnqqoM4afSn4FH54gtL6zy59i7QfXqFHfI0=
+        b=vqTLOlzT5axqMTXb2L7NpVvNMba8LbJ1h5zYrO/AquN5vEtRwyl2pvOT1P1eE/L6a
+         QxUFVTI8xrggToIZqGvtuEFtoyChmoK2b6fO2RmwRrtRG2XTu0L72kerOuqkWQJKT2
+         8kwqOuqCMoK7PF97ijd1IruMe+aJK69FbA6LkqBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Pisati <paolo.pisati@canonical.com>,
-        David Ahern <dsahern@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 71/90] selftests: fib_nexthop_multiprefix: fix cleanup() netns deletion
-Date:   Mon,  3 Aug 2020 14:19:33 +0200
-Message-Id: <20200803121901.049058129@linuxfoundation.org>
+Subject: [PATCH 5.7 116/120] riscv: Parse all memory blocks to remove unusable memory
+Date:   Mon,  3 Aug 2020 14:19:34 +0200
+Message-Id: <20200803121908.549697771@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,64 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Pisati <paolo.pisati@canonical.com>
+From: Atish Patra <atish.patra@wdc.com>
 
-[ Upstream commit 651149f60376758a4759f761767965040f9e4464 ]
+[ Upstream commit fa5a198359053c8e21dcc2b39c0e13871059bc9f ]
 
-During setup():
-...
-        for ns in h0 r1 h1 h2 h3
-        do
-                create_ns ${ns}
-        done
-...
+Currently, maximum physical memory allowed is equal to -PAGE_OFFSET.
+That's why we remove any memory blocks spanning beyond that size. However,
+it is done only for memblock containing linux kernel which will not work
+if there are multiple memblocks.
 
-while in cleanup():
-...
-        for n in h1 r1 h2 h3 h4
-        do
-                ip netns del ${n} 2>/dev/null
-        done
-...
+Process all memory blocks to figure out how much memory needs to be removed
+and remove at the end instead of updating the memblock list in place.
 
-and after removing the stderr redirection in cleanup():
-
-$ sudo ./fib_nexthop_multiprefix.sh
-...
-TEST: IPv4: host 0 to host 3, mtu 1400                              [ OK ]
-TEST: IPv6: host 0 to host 3, mtu 1400                              [ OK ]
-Cannot remove namespace file "/run/netns/h4": No such file or directory
-$ echo $?
-1
-
-and a non-zero return code, make kselftests fail (even if the test
-itself is fine):
-
-...
-not ok 34 selftests: net: fib_nexthop_multiprefix.sh # exit=1
-...
-
-Signed-off-by: Paolo Pisati <paolo.pisati@canonical.com>
-Reviewed-by: David Ahern <dsahern@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/fib_nexthop_multiprefix.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/mm/init.c | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/tools/testing/selftests/net/fib_nexthop_multiprefix.sh b/tools/testing/selftests/net/fib_nexthop_multiprefix.sh
-index 9dc35a16e4159..51df5e305855a 100755
---- a/tools/testing/selftests/net/fib_nexthop_multiprefix.sh
-+++ b/tools/testing/selftests/net/fib_nexthop_multiprefix.sh
-@@ -144,7 +144,7 @@ setup()
- 
- cleanup()
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index af8926777567f..115fb9245f160 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -146,26 +146,29 @@ void __init setup_bootmem(void)
  {
--	for n in h1 r1 h2 h3 h4
-+	for n in h0 r1 h1 h2 h3
- 	do
- 		ip netns del ${n} 2>/dev/null
- 	done
+ 	struct memblock_region *reg;
+ 	phys_addr_t mem_size = 0;
++	phys_addr_t total_mem = 0;
++	phys_addr_t mem_start, end = 0;
+ 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
+ 	phys_addr_t vmlinux_start = __pa_symbol(&_start);
+ 
+ 	/* Find the memory region containing the kernel */
+ 	for_each_memblock(memory, reg) {
+-		phys_addr_t end = reg->base + reg->size;
+-
+-		if (reg->base <= vmlinux_start && vmlinux_end <= end) {
+-			mem_size = min(reg->size, (phys_addr_t)-PAGE_OFFSET);
+-
+-			/*
+-			 * Remove memblock from the end of usable area to the
+-			 * end of region
+-			 */
+-			if (reg->base + mem_size < end)
+-				memblock_remove(reg->base + mem_size,
+-						end - reg->base - mem_size);
+-		}
++		end = reg->base + reg->size;
++		if (!total_mem)
++			mem_start = reg->base;
++		if (reg->base <= vmlinux_start && vmlinux_end <= end)
++			BUG_ON(reg->size == 0);
++		total_mem = total_mem + reg->size;
+ 	}
+-	BUG_ON(mem_size == 0);
++
++	/*
++	 * Remove memblock from the end of usable area to the
++	 * end of region
++	 */
++	mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
++	if (mem_start + mem_size < end)
++		memblock_remove(mem_start + mem_size,
++				end - mem_start - mem_size);
+ 
+ 	/* Reserve from the start of the kernel to the end of the kernel */
+ 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
 -- 
 2.25.1
 
