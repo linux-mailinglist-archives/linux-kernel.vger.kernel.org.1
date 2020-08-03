@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3747E23A6F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1CF23A67E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729695AbgHCM4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:56:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56080 "EHLO mail.kernel.org"
+        id S1728078AbgHCMYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:24:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729349AbgHCMz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:55:59 -0400
+        id S1728047AbgHCMYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:24:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B7BA20678;
-        Mon,  3 Aug 2020 12:55:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 209E4207DF;
+        Mon,  3 Aug 2020 12:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596459357;
-        bh=BeTP5E8N4TxHgMJsyoBUItQTsU9Pz7lqhT9OygRn2fQ=;
+        s=default; t=1596457478;
+        bh=2Rf00zb0NiJrc2Hsb0wQlosMgVlGXbTqxrdugp9D0xA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q384vg0KQ0kX8W2mC5CRWdfcQc9pFoT309rijIeIAE4T7X2j6LaR5XYyO1HvF+CH9
-         mWix7Nqi2accfd1CE3Drm42+bj+IZAEQqxbfvWhVH+TcxzsB9497EsOfBfoXnd2mqa
-         ZgX1NnJBOI4Z03NwkAY+9UvpamUxDd3JqqMkr154=
+        b=YL+2cZhY+RZKKIxwKLc7dfUzPIbtlU2nYPsQ3j7DVW4NpOITP0Y+eenOwWTCVZwih
+         oa4taS1G7ptI1tH/SnrHgdq2Qh9ZgflGx4F7EpPC781jXnMtlqY0XuERfyvEKtUvPo
+         8BW6uYljmuD6xj9uPFsFOibA0qWe/upjjMNWZk8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 081/120] RDMA/core: Free DIM memory in error unwind
-Date:   Mon,  3 Aug 2020 14:18:59 +0200
-Message-Id: <20200803121906.816057541@linuxfoundation.org>
+        stable@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 082/120] arm64/alternatives: move length validation inside the subsection
+Date:   Mon,  3 Aug 2020 14:19:00 +0200
+Message-Id: <20200803121906.864468101@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
 References: <20200803121902.860751811@linuxfoundation.org>
@@ -44,35 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Sami Tolvanen <samitolvanen@google.com>
 
-[ Upstream commit fb448ce87a4a9482b084e67faf804aec79ed9b43 ]
+[ Upstream commit 966a0acce2fca776391823381dba95c40e03c339 ]
 
-The memory allocated for the DIM wasn't freed in in error unwind path, fix
-it by calling to rdma_dim_destroy().
+Commit f7b93d42945c ("arm64/alternatives: use subsections for replacement
+sequences") breaks LLVM's integrated assembler, because due to its
+one-pass design, it cannot compute instruction sequence lengths before the
+layout for the subsection has been finalized. This change fixes the build
+by moving the .org directives inside the subsection, so they are processed
+after the subsection layout is known.
 
-Fixes: da6629793aa6 ("RDMA/core: Provide RDMA DIM support for ULPs")
-Link: https://lore.kernel.org/r/20200730082719.1582397-4-leon@kernel.org
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com <mailto:maxg@mellanox.com>>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: f7b93d42945c ("arm64/alternatives: use subsections for replacement sequences")
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1078
+Link: https://lore.kernel.org/r/20200730153701.3892953-1-samitolvanen@google.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cq.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/include/asm/alternative.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-index c259f632f257f..6bb62d04030ac 100644
---- a/drivers/infiniband/core/cq.c
-+++ b/drivers/infiniband/core/cq.c
-@@ -270,6 +270,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
- 	return cq;
+diff --git a/arch/arm64/include/asm/alternative.h b/arch/arm64/include/asm/alternative.h
+index 12f0eb56a1cc3..619db9b4c9d5c 100644
+--- a/arch/arm64/include/asm/alternative.h
++++ b/arch/arm64/include/asm/alternative.h
+@@ -77,9 +77,9 @@ static inline void apply_alternatives_module(void *start, size_t length) { }
+ 	"663:\n\t"							\
+ 	newinstr "\n"							\
+ 	"664:\n\t"							\
+-	".previous\n\t"							\
+ 	".org	. - (664b-663b) + (662b-661b)\n\t"			\
+-	".org	. - (662b-661b) + (664b-663b)\n"			\
++	".org	. - (662b-661b) + (664b-663b)\n\t"			\
++	".previous\n"							\
+ 	".endif\n"
  
- out_destroy_cq:
-+	rdma_dim_destroy(cq);
- 	rdma_restrack_del(&cq->res);
- 	cq->device->ops.destroy_cq(cq, udata);
- out_free_wc:
+ #define __ALTERNATIVE_CFG_CB(oldinstr, feature, cfg_enabled, cb)	\
 -- 
 2.25.1
 
