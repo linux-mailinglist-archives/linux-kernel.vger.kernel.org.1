@@ -2,58 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6593A23A88C
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DD523A897
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728419AbgHCOdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 10:33:24 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42952 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbgHCOdX (ORCPT
+        id S1728013AbgHCOfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 10:35:18 -0400
+Received: from ec2-3-21-30-127.us-east-2.compute.amazonaws.com ([3.21.30.127]:48052
+        "EHLO www.teo-en-ming.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726769AbgHCOfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 10:33:23 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k2bWb-00089n-50; Mon, 03 Aug 2020 16:33:13 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k2bWa-0008QJ-56; Mon, 03 Aug 2020 16:33:12 +0200
-Subject: Re: [PATCH] tools/bpf/bpftool: Fix wrong return value in do_dump()
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>, ast@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        quentin@isovalent.com, kuba@kernel.org, toke@redhat.com,
-        tklauser@distanz.ch, jolsa@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tianjia.zhang@alibaba.com
-References: <20200802111540.5384-1-tianjia.zhang@linux.alibaba.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <31eeb5d8-160a-64b8-9a39-a28add59ec74@iogearbox.net>
-Date:   Mon, 3 Aug 2020 16:33:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Mon, 3 Aug 2020 10:35:18 -0400
+Received: from localhost (localhost [IPv6:::1])
+        by www.teo-en-ming.com (Postfix) with ESMTPA id 5B18343A8BF;
+        Mon,  3 Aug 2020 22:35:17 +0800 (+08)
 MIME-Version: 1.0
-In-Reply-To: <20200802111540.5384-1-tianjia.zhang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Date:   Mon, 03 Aug 2020 22:35:17 +0800
+From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ceo@teo-en-ming-corp.com
+Subject: Teo En Ming's Guide on Basic Configuration of Cisco ASA 5505 Firewall
+Message-ID: <5139ed4ecddea2c71db969418d0ad864@teo-en-ming.com>
+X-Sender: ceo@teo-en-ming.com
+User-Agent: Roundcube Webmail/1.2.3
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25892/Sun Aug  2 17:01:36 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/20 1:15 PM, Tianjia Zhang wrote:
-> In case of btf_id does not exist, a negative error code -ENOENT
-> should be returned.
-> 
-> Fixes: c93cc69004df3 ("bpftool: add ability to dump BTF types")
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: Teo En Ming's Guide on Basic Configuration of Cisco ASA 5505 
+Firewall
 
-Applied, thanks!
+Author: Mr. Turritopsis Dohrnii Teo En Ming (Targeted Individual)
+Country: Singapore
+Date Published: 3rd August 2020 Monday Singapore Time
+Type of Publication: PDF manual
+
+Cisco ASA firewall appliances use open source software.
+
+Cisco Adaptive Security Appliance Software, version 9.8
+Copyright (c) 1996-2019 by Cisco Systems, Inc.
+For licenses and notices for open source software used in this product, 
+please visit
+http://www.cisco.com/go/asa-opensource
+
+Redundant Google Drive download links for Teo En Ming's PDF manual:
+
+[1] 
+https://drive.google.com/file/d/1-YTN_PQxE5uBjuDlEsirzNETXo62H4Gc/view?usp=sharing
+
+[2] 
+https://drive.google.com/file/d/1J19bw0pV5PF_fOalaQ9QkW0uX2XlskXK/view?usp=sharing
+
+[3] 
+https://drive.google.com/file/d/12P-pVWJNIZ4BJpi044PflqoDAg8UDVl9/view?usp=sharing
+
+[4] 
+https://drive.google.com/file/d/1VNoEkdVNyIx43YkeZMM0Lrux51GyDDst/view?usp=sharing
+
+[5] 
+https://drive.google.com/file/d/1eUFHZ5MihrgSxIMfnAqRNls48ib5g3vW/view?usp=sharing
+
+[6] 
+https://drive.google.com/file/d/1Gqqn-d7sMxT7a57ItEzDwqiKxBNkXsc-/view?usp=sharing
+
+Total number of pages: 52
+
+
+
+
+
+
+
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link: 
+https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
+
+********************************************************************************************
+
+Singaporean Mr. Turritopsis Dohrnii Teo En Ming's Academic
+Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
+United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
+2019) and Australia (25 Dec 2019 to 9 Jan 2020):
+
+[1] https://tdtemcerts.wordpress.com/
+
+[2] https://tdtemcerts.blogspot.sg/
+
+[3] https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
