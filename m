@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEDB23A6C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C2623A63C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727808AbgHCMXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:23:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47768 "EHLO mail.kernel.org"
+        id S1727971AbgHCM1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:27:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgHCMXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:23:38 -0400
+        id S1728481AbgHCM1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:27:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E848120738;
-        Mon,  3 Aug 2020 12:23:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F6862083B;
+        Mon,  3 Aug 2020 12:27:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457417;
-        bh=SRurRWJJQO53QXGBHGNX5b7e/Byc0GKIJO6hr2NdXgM=;
+        s=default; t=1596457622;
+        bh=1JjwvQSZ4M0VBLRdBVcCv8G8o/5zetcQ2B4CQCnzuTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aS1RHSFkCw3Lx2GrLxMSx+zCXodZ9mO+1jwaR3iPVAfqzHD9Kahu97duu2aqexXa7
-         eCVGimhUgganW4Y/mr++I5a2EjwiTNnkAUhaJ5Fn6zwxgrsQLagJmLS+5kpPRMROpJ
-         jqxwLHvmXnJ2qLexOG8h0vsxRNqSWR4+EE5ZK2kU=
+        b=0+t3sF8VrkB24vr+uf/bn5BO8QGKQfFlDTUyRq3xv623X0TMqSO5KGf/BIC/xCrwG
+         0wupjASzJ9Zvb75FbLY6tDwrrJbq2fsZWquySwBJ/dscw4UWao4yjeukTRKsvd22aw
+         TMynq7H5UAqTxRMFIQI1y1Bb7WQ3cC57ucxbc66w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eran Ben Elisha <eranbe@mellanox.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 058/120] net/mlx5: Verify Hardware supports requested ptp function on a given pin
+        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: [PATCH 5.4 14/90] vhost/scsi: fix up req type endian-ness
 Date:   Mon,  3 Aug 2020 14:18:36 +0200
-Message-Id: <20200803121905.619010897@linuxfoundation.org>
+Message-Id: <20200803121858.291243957@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
-References: <20200803121902.860751811@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,61 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eran Ben Elisha <eranbe@mellanox.com>
+From: Michael S. Tsirkin <mst@redhat.com>
 
-[ Upstream commit 071995c877a8646209d55ff8edddd2b054e7424c ]
+commit 295c1b9852d000580786375304a9800bd9634d15 upstream.
 
-Fix a bug where driver did not verify Hardware pin capabilities for
-PTP functions.
+vhost/scsi doesn't handle type conversion correctly
+for request type when using virtio 1.0 and up for BE,
+or cross-endian platforms.
 
-Fixes: ee7f12205abc ("net/mlx5e: Implement 1PPS support")
-Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-Reviewed-by: Ariel Levkovich <lariel@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix it up using vhost_32_to_cpu.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- .../ethernet/mellanox/mlx5/core/lib/clock.c   | 23 ++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ drivers/vhost/scsi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-index b88c6456d2154..0267552b8a61b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-@@ -387,10 +387,31 @@ static int mlx5_ptp_enable(struct ptp_clock_info *ptp,
- 	return 0;
- }
+--- a/drivers/vhost/scsi.c
++++ b/drivers/vhost/scsi.c
+@@ -1215,7 +1215,7 @@ vhost_scsi_ctl_handle_vq(struct vhost_sc
+ 			continue;
+ 		}
  
-+enum {
-+	MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_IN = BIT(0),
-+	MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_OUT = BIT(1),
-+};
-+
- static int mlx5_ptp_verify(struct ptp_clock_info *ptp, unsigned int pin,
- 			   enum ptp_pin_function func, unsigned int chan)
- {
--	return (func == PTP_PF_PHYSYNC) ? -EOPNOTSUPP : 0;
-+	struct mlx5_clock *clock = container_of(ptp, struct mlx5_clock,
-+						ptp_info);
-+
-+	switch (func) {
-+	case PTP_PF_NONE:
-+		return 0;
-+	case PTP_PF_EXTTS:
-+		return !(clock->pps_info.pin_caps[pin] &
-+			 MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_IN);
-+	case PTP_PF_PEROUT:
-+		return !(clock->pps_info.pin_caps[pin] &
-+			 MLX5_MTPPS_REG_CAP_PIN_X_MODE_SUPPORT_PPS_OUT);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return -EOPNOTSUPP;
- }
- 
- static const struct ptp_clock_info mlx5_ptp_clock_info = {
--- 
-2.25.1
-
+-		switch (v_req.type) {
++		switch (vhost32_to_cpu(vq, v_req.type)) {
+ 		case VIRTIO_SCSI_T_TMF:
+ 			vc.req = &v_req.tmf;
+ 			vc.req_size = sizeof(struct virtio_scsi_ctrl_tmf_req);
 
 
