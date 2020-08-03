@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB9523A8BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA66823A8BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbgHCOlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 10:41:44 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:38276 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726509AbgHCOlo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 10:41:44 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 073EfUOw026937;
-        Mon, 3 Aug 2020 09:41:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1596465690;
-        bh=zYT9k4890Niz/mBBG6AwDFbRc+Y/kksWo+DFtPoigos=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=cj8KgdCJRMs5ESND4yy9MyCoMeO6H1FP+n1Ps2+fpJ1K/VSFKBB2GhgmgWkQnrJ/Y
-         kc26q5TaycyGNgpoFkGsqvtxqNbuC47X2puQc+rg66SzGcdlaBg5pCoO9W6Gv2q+j4
-         S2NxbPOjsO+4JgfBkafWa8XrGspV44gpkNt/FxL0=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 073EfU1F103016
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 3 Aug 2020 09:41:30 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 3 Aug
- 2020 09:41:30 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 3 Aug 2020 09:41:30 -0500
-Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 073EfRvd033665;
-        Mon, 3 Aug 2020 09:41:27 -0500
-Subject: Re: [PATCH] soc: ti: k3-socinfo: Add entry for J7200
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <ssantosh@kernel.org>,
-        <santosh.shilimkar@oracle.com>, <t-kristo@ti.com>
-CC:     <nsekhar@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <grygorii.strashko@ti.com>, <linux-kernel@vger.kernel.org>,
-        <nm@ti.com>
-References: <20200803105359.16744-1-peter.ujfalusi@ti.com>
-From:   Lokesh Vutla <lokeshvutla@ti.com>
-Message-ID: <f13b8e17-308f-fdf2-885e-318710d4d836@ti.com>
-Date:   Mon, 3 Aug 2020 20:11:26 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200803105359.16744-1-peter.ujfalusi@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1728046AbgHCOld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 10:41:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34624 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726622AbgHCOld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 10:41:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 227CCAF16;
+        Mon,  3 Aug 2020 14:41:47 +0000 (UTC)
+Date:   Mon, 03 Aug 2020 16:41:31 +0200
+Message-ID: <s5hk0yf4wro.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Hui Peng <benquike@gmail.com>,
+        Andrew Oakley <andrew@adoakley.name>,
+        Chris Boyle <chris@boyle.name>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        Dmitry Panchenko <dmitry@d-systems.ee>,
+        Gregor Pintar <grpintar@gmail.com>,
+        Ard van Breemen <ard@kwaak.net>,
+        Hector Martin <marcan@marcan.st>,
+        =?UTF-8?B?RnJhbnRpxaFl?= =?UTF-8?B?ayBLdcSNZXJh?= 
+        <franta-linux@frantovo.cz>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH] ALSA: usb-audio: Add support for Lenovo ThinkStation P620
+In-Reply-To: <20200803142612.17156-1-kai.heng.feng@canonical.com>
+References: <20200803142612.17156-1-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 03/08/20 4:23 pm, Peter Ujfalusi wrote:
-> Update K3 chipinfo driver to support new TI J7200 SoC.
-> It's JTAG PARTNO is 0xBB6D.
+On Mon, 03 Aug 2020 16:26:08 +0200,
+Kai-Heng Feng wrote:
 > 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
-
-Thanks and regards,
-Lokesh
-
-> ---
->  drivers/soc/ti/k3-socinfo.c | 1 +
->  1 file changed, 1 insertion(+)
+> Lenovo ThinkStation P620 is like other TRX40 boards, is equipped with
+> two USB audio cards.
 > 
-> diff --git a/drivers/soc/ti/k3-socinfo.c b/drivers/soc/ti/k3-socinfo.c
-> index af0ba5288e58..bbbc2d2b7091 100644
-> --- a/drivers/soc/ti/k3-socinfo.c
-> +++ b/drivers/soc/ti/k3-socinfo.c
-> @@ -39,6 +39,7 @@ static const struct k3_soc_id {
->  } k3_soc_ids[] = {
->  	{ 0xBB5A, "AM65X" },
->  	{ 0xBB64, "J721E" },
-> +	{ 0xBB6D, "J7200" },
->  };
->  
->  static int
+> USB device (17aa:104d) provides functionality for Internal Speaker and
+> Front Headset. It's UAC v2, so it supports insertion control (jack
+> detection). However, when trying to get the connector status of the
+> speaker, an error occurs:
+> [    5.787405] usb 3-1: cannot get connectors status: req = 0x81, wValue = 0x200, wIndex = 0x1000, type = 0
 > 
+> Since the insertion control works perfectly for the headset, the error
+> for speaker is probably casued by connecting internally. So let's relax
+> the error for a bit if it's a speaker, and always reports it's connected.
+> 
+> USB device (17aa:1046) is for rear Line-in, Line-out and Microphone.
+> The insertion control works for all three jacks. However, there's an
+> Function Unit that doesn't work:
+> [    5.905415] usb 3-6: cannot get ctl value: req = 0x83, wValue = 0xc00, wIndex = 0x1300, type = 4
+> [    5.905418] usb 3-6: 19:0: cannot get min/max values for control 12 (id 19)
+> 
+> So turn off the FU to avoid the error.
+> 
+> Also, add specific card name for both devices, so userspace can easily
+> indentify both cards.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+
+Thanks, applied.
+
+
+Takashi
