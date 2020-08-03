@@ -2,205 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6094239EF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 07:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14ED239E88
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 07:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgHCFTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 01:19:34 -0400
-Received: from mga07.intel.com ([134.134.136.100]:16846 "EHLO mga07.intel.com"
+        id S1726440AbgHCFDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 01:03:36 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:54402 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728032AbgHCFTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 01:19:33 -0400
-IronPort-SDR: +PCa9/ihIbRQUCl3Xvav8GqvmUTMxTcXStN6XcdVFE0Sc2ItfKrfWMhMNLLmGoSijt1MiqUSOI
- bZfYzPOfwEZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9701"; a="216472142"
-X-IronPort-AV: E=Sophos;i="5.75,429,1589266800"; 
-   d="scan'208";a="216472142"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2020 22:19:32 -0700
-IronPort-SDR: xgSN7LuDBztttPvRwXwahH2wKu3/cXRemn3lBKOgjSYVW+SBnlQfGEZrEIXSrKssjt9ZCAqvXi
- sqNRQeqpu+hA==
-X-IronPort-AV: E=Sophos;i="5.75,429,1589266800"; 
-   d="scan'208";a="329890491"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2020 22:19:32 -0700
-Subject: [PATCH v4 09/23] device-dax: Move instance creation parameters to
- 'struct dev_dax_data'
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     akpm@linux-foundation.org
-Cc:     Vishal Verma <vishal.l.verma@intel.com>, peterz@infradead.org,
-        dave.hansen@linux.intel.com, ard.biesheuvel@linaro.org,
-        vishal.l.verma@intel.com, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, joao.m.martins@oracle.com,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Date:   Sun, 02 Aug 2020 22:03:14 -0700
-Message-ID: <159643099411.4062302.1337305960720423895.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <159643094279.4062302.17779410714418721328.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <159643094279.4062302.17779410714418721328.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1725268AbgHCFDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 01:03:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596431015; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ZEq3dQL1T4rfyaJOBFm/8UoCpiFNlnou1J2+YfKngHo=;
+ b=bS+QIwK0a6Gh7x4/kG4K0MKjr3pC09lXiNa+E1muUSEnialacWeTpPOwOK8ohzkKrWlpTlt5
+ dc+DnTPj9OfpMMONcVUeY1zB12pZ82P/R2uI2EUo966+PBJ648zjyqZry0RVDQUtlYi9WWqY
+ ZGnIsxeNTlAzOLNac4AA1/30k6k=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
+ 5f279a96498d6102394b66a2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 Aug 2020 05:03:18
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 733C4C4339C; Mon,  3 Aug 2020 05:03:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 198A3C433C6;
+        Mon,  3 Aug 2020 05:03:16 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 03 Aug 2020 13:03:16 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        bvanassche@acm.org, beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com
+Subject: Re: [PATCH v6] scsi: ufs: Quiesce all scsi devices before shutdown
+In-Reply-To: <20200803042514.7111-1-stanley.chu@mediatek.com>
+References: <20200803042514.7111-1-stanley.chu@mediatek.com>
+Message-ID: <d85cdb877bced2d6b0a8ba67670271f2@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for adding more parameters to instance creation, move
-existing parameters to a new struct.
+Hi Stanley,
 
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/dax/bus.c       |   14 +++++++-------
- drivers/dax/bus.h       |   16 ++++++++--------
- drivers/dax/hmem/hmem.c |    8 +++++++-
- drivers/dax/pmem/core.c |    9 ++++++++-
- 4 files changed, 30 insertions(+), 17 deletions(-)
+On 2020-08-03 12:25, Stanley Chu wrote:
+> Currently I/O request could be still submitted to UFS device while
+> UFS is working on shutdown flow. This may lead to racing as below
+> scenarios and finally system may crash due to unclocked register
+> accesses.
+> 
+> To fix this kind of issues, in ufshcd_shutdown(),
+> 
+> 1. Use pm_runtime_get_sync() instead of resuming UFS device by
+>    ufshcd_runtime_resume() "internally" to let runtime PM framework
+>    manage and prevent concurrent runtime operations by incoming I/O
+>    requests.
+> 
+> 2. Specifically quiesce all SCSI devices to block all I/O requests
+>    after device is resumed.
+> 
+> Example of racing scenario: While UFS device is runtime-suspended
+> 
+> Thread #1: Executing UFS shutdown flow, e.g.,
+>            ufshcd_suspend(UFS_SHUTDOWN_PM)
+> 
+> Thread #2: Executing runtime resume flow triggered by I/O request,
+>            e.g., ufshcd_resume(UFS_RUNTIME_PM)
+> 
+> This breaks the assumption that UFS PM flows can not be running
+> concurrently and some unexpected racing behavior may happen.
+> 
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+> Changes:
+>   - Since v4: Use pm_runtime_get_sync() instead of resuming UFS device
+> by ufshcd_runtime_resume() "internally".
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 39 ++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 34 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 307622284239..fc01171d13b1 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -159,6 +159,12 @@ struct ufs_pm_lvl_states ufs_pm_lvl_states[] = {
+>  	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE},
+>  };
+> 
+> +#define ufshcd_scsi_for_each_sdev(fn) \
+> +	list_for_each_entry(starget, &hba->host->__targets, siblings) { \
+> +		__starget_for_each_device(starget, NULL, \
+> +					  fn); \
+> +	}
+> +
+>  static inline enum ufs_dev_pwr_mode
+>  ufs_get_pm_lvl_to_dev_pwr_mode(enum ufs_pm_level lvl)
+>  {
+> @@ -8629,6 +8635,13 @@ int ufshcd_runtime_idle(struct ufs_hba *hba)
+>  }
+>  EXPORT_SYMBOL(ufshcd_runtime_idle);
+> 
+> +static void ufshcd_quiesce_sdev(struct scsi_device *sdev, void *data)
+> +{
+> +	/* Suspended devices are already quiesced so can be skipped */
 
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index f06ffa66cd78..dffa4655e128 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -395,9 +395,9 @@ static void unregister_dev_dax(void *dev)
- 	put_device(dev);
- }
- 
--struct dev_dax *__devm_create_dev_dax(struct dax_region *dax_region, int id,
--		struct dev_pagemap *pgmap, enum dev_dax_subsys subsys)
-+struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
- {
-+	struct dax_region *dax_region = data->dax_region;
- 	struct device *parent = dax_region->dev;
- 	struct dax_device *dax_dev;
- 	struct dev_dax *dev_dax;
-@@ -405,14 +405,14 @@ struct dev_dax *__devm_create_dev_dax(struct dax_region *dax_region, int id,
- 	struct device *dev;
- 	int rc = -ENOMEM;
- 
--	if (id < 0)
-+	if (data->id < 0)
- 		return ERR_PTR(-EINVAL);
- 
- 	dev_dax = kzalloc(sizeof(*dev_dax), GFP_KERNEL);
- 	if (!dev_dax)
- 		return ERR_PTR(-ENOMEM);
- 
--	memcpy(&dev_dax->pgmap, pgmap, sizeof(*pgmap));
-+	memcpy(&dev_dax->pgmap, data->pgmap, sizeof(struct dev_pagemap));
- 
- 	/*
- 	 * No 'host' or dax_operations since there is no access to this
-@@ -438,13 +438,13 @@ struct dev_dax *__devm_create_dev_dax(struct dax_region *dax_region, int id,
- 
- 	inode = dax_inode(dax_dev);
- 	dev->devt = inode->i_rdev;
--	if (subsys == DEV_DAX_BUS)
-+	if (data->subsys == DEV_DAX_BUS)
- 		dev->bus = &dax_bus_type;
- 	else
- 		dev->class = dax_class;
- 	dev->parent = parent;
- 	dev->type = &dev_dax_type;
--	dev_set_name(dev, "dax%d.%d", dax_region->id, id);
-+	dev_set_name(dev, "dax%d.%d", dax_region->id, data->id);
- 
- 	rc = device_add(dev);
- 	if (rc) {
-@@ -464,7 +464,7 @@ struct dev_dax *__devm_create_dev_dax(struct dax_region *dax_region, int id,
- 
- 	return ERR_PTR(rc);
- }
--EXPORT_SYMBOL_GPL(__devm_create_dev_dax);
-+EXPORT_SYMBOL_GPL(devm_create_dev_dax);
- 
- static int match_always_count;
- 
-diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
-index 55577e9791da..299c2e7fac09 100644
---- a/drivers/dax/bus.h
-+++ b/drivers/dax/bus.h
-@@ -13,18 +13,18 @@ struct dax_region *alloc_dax_region(struct device *parent, int region_id,
- 		struct resource *res, int target_node, unsigned int align);
- 
- enum dev_dax_subsys {
--	DEV_DAX_BUS,
-+	DEV_DAX_BUS = 0, /* zeroed dev_dax_data picks this by default */
- 	DEV_DAX_CLASS,
- };
- 
--struct dev_dax *__devm_create_dev_dax(struct dax_region *dax_region, int id,
--		struct dev_pagemap *pgmap, enum dev_dax_subsys subsys);
-+struct dev_dax_data {
-+	struct dax_region *dax_region;
-+	struct dev_pagemap *pgmap;
-+	enum dev_dax_subsys subsys;
-+	int id;
-+};
- 
--static inline struct dev_dax *devm_create_dev_dax(struct dax_region *dax_region,
--		int id, struct dev_pagemap *pgmap)
--{
--	return __devm_create_dev_dax(dax_region, id, pgmap, DEV_DAX_BUS);
--}
-+struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data);
- 
- /* to be deleted when DEV_DAX_CLASS is removed */
- struct dev_dax *__dax_pmem_probe(struct device *dev, enum dev_dax_subsys subsys);
-diff --git a/drivers/dax/hmem/hmem.c b/drivers/dax/hmem/hmem.c
-index 506893861253..b84fe17178d8 100644
---- a/drivers/dax/hmem/hmem.c
-+++ b/drivers/dax/hmem/hmem.c
-@@ -11,6 +11,7 @@ static int dax_hmem_probe(struct platform_device *pdev)
- 	struct dev_pagemap pgmap = { };
- 	struct dax_region *dax_region;
- 	struct memregion_info *mri;
-+	struct dev_dax_data data;
- 	struct dev_dax *dev_dax;
- 	struct resource *res;
- 
-@@ -26,7 +27,12 @@ static int dax_hmem_probe(struct platform_device *pdev)
- 	if (!dax_region)
- 		return -ENOMEM;
- 
--	dev_dax = devm_create_dev_dax(dax_region, 0, &pgmap);
-+	data = (struct dev_dax_data) {
-+		.dax_region = dax_region,
-+		.id = 0,
-+		.pgmap = &pgmap,
-+	};
-+	dev_dax = devm_create_dev_dax(&data);
- 	if (IS_ERR(dev_dax))
- 		return PTR_ERR(dev_dax);
- 
-diff --git a/drivers/dax/pmem/core.c b/drivers/dax/pmem/core.c
-index ea52bb77a294..08ee5947a49c 100644
---- a/drivers/dax/pmem/core.c
-+++ b/drivers/dax/pmem/core.c
-@@ -14,6 +14,7 @@ struct dev_dax *__dax_pmem_probe(struct device *dev, enum dev_dax_subsys subsys)
- 	resource_size_t offset;
- 	struct nd_pfn_sb *pfn_sb;
- 	struct dev_dax *dev_dax;
-+	struct dev_dax_data data;
- 	struct nd_namespace_io *nsio;
- 	struct dax_region *dax_region;
- 	struct dev_pagemap pgmap = { };
-@@ -57,7 +58,13 @@ struct dev_dax *__dax_pmem_probe(struct device *dev, enum dev_dax_subsys subsys)
- 	if (!dax_region)
- 		return ERR_PTR(-ENOMEM);
- 
--	dev_dax = __devm_create_dev_dax(dax_region, id, &pgmap, subsys);
-+	data = (struct dev_dax_data) {
-+		.dax_region = dax_region,
-+		.id = id,
-+		.pgmap = &pgmap,
-+		.subsys = subsys,
-+	};
-+	dev_dax = devm_create_dev_dax(&data);
- 
- 	/* child dev_dax instances now own the lifetime of the dax_region */
- 	dax_region_put(dax_region);
+Why can runtime suspended sdevs be skipped? Block layer can still resume
+them at any time, no?
 
+> +	if (!pm_runtime_suspended(&sdev->sdev_gendev))
+> +		scsi_device_quiesce(sdev);
+> +}
+> +
+>  /**
+>   * ufshcd_shutdown - shutdown routine
+>   * @hba: per adapter instance
+> @@ -8640,6 +8653,7 @@ EXPORT_SYMBOL(ufshcd_runtime_idle);
+>  int ufshcd_shutdown(struct ufs_hba *hba)
+>  {
+>  	int ret = 0;
+> +	struct scsi_target *starget;
+> 
+>  	if (!hba->is_powered)
+>  		goto out;
+> @@ -8647,11 +8661,26 @@ int ufshcd_shutdown(struct ufs_hba *hba)
+>  	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
+>  		goto out;
+> 
+> -	if (pm_runtime_suspended(hba->dev)) {
+> -		ret = ufshcd_runtime_resume(hba);
+> -		if (ret)
+> -			goto out;
+> -	}
+> +	/*
+> +	 * Let runtime PM framework manage and prevent concurrent runtime
+> +	 * operations with shutdown flow.
+> +	 */
+> +	pm_runtime_get_sync(hba->dev);
+> +
+> +	/*
+> +	 * Quiesce all SCSI devices to prevent any non-PM requests sending
+> +	 * from block layer during and after shutdown.
+> +	 *
+> +	 * Here we can not use blk_cleanup_queue() since PM requests
+> +	 * (with BLK_MQ_REQ_PREEMPT flag) are still required to be sent
+> +	 * through block layer. Therefore SCSI command queued after the
+> +	 * scsi_target_quiesce() call returned will block until
+> +	 * blk_cleanup_queue() is called.
+> +	 *
+> +	 * Besides, scsi_target_"un"quiesce (e.g., scsi_target_resume) can
+> +	 * be ignored since shutdown is one-way flow.
+> +	 */
+> +	ufshcd_scsi_for_each_sdev(ufshcd_quiesce_sdev);
+
+Any reasons why don't use scsi_target_quiesce() here?
+
+Thanks,
+
+Can Guo.
+
+> 
+>  	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
+>  out:
