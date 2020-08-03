@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D47223A4A3
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAE923A4A4
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728514AbgHCM3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:29:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55462 "EHLO mail.kernel.org"
+        id S1728298AbgHCM3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:29:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727786AbgHCM3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:29:09 -0400
+        id S1728492AbgHCM3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:29:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AA67207DF;
-        Mon,  3 Aug 2020 12:29:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4B50204EC;
+        Mon,  3 Aug 2020 12:29:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457747;
-        bh=gXEwiYtWJrb+EFFUrwnNNz7Jzhi9gU+IQFe3eDUXoAg=;
+        s=default; t=1596457750;
+        bh=lRGvQiX1NE9fADubZkFmjLqelZvyaGRyN7GJQ68Un9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EiiUbCL1imQVsSC/SzNB9eg751kkwDCt5CsV9n1jHKYitThiknB/TI7RZ/igQhewp
-         6S8nXxfHlphLPVZ235/vCJrEfZQHOt+u8Y0lzQ0gi1s3Cnz7cey/z53Gs2VlROcYEK
-         PXvywnlExP5Gyfm6HTyS5Di5IuYv6NnvBaUVM/zk=
+        b=gjY9dRirc0EI0hGckUJ8f+ZLmbOHpAzcj1FDN4WgQiEQCd8rxR1hus8Lo69JMEuV9
+         GlvpEwVxcv2F1rd/K0kqf20vYco9WM7WcK15CNTMKj3eDSCZj1HK+6sJPiM8U/rYs3
+         vvq+rDBTEc8WMzlZPUJta9Yt6Sb6aDk0+hz4u9NA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Willy Tarreau <w@1wt.eu>,
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Emese Revfy <re.emese@gmail.com>,
+        Kees Cook <keescook@chromium.org>, Willy Tarreau <w@1wt.eu>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 29/90] random: fix circular include dependency on arm64 after addition of percpu.h
-Date:   Mon,  3 Aug 2020 14:18:51 +0200
-Message-Id: <20200803121859.033423367@linuxfoundation.org>
+Subject: [PATCH 5.4 30/90] random32: remove net_rand_state from the latent entropy gcc plugin
+Date:   Mon,  3 Aug 2020 14:18:52 +0200
+Message-Id: <20200803121859.081084452@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
 References: <20200803121857.546052424@linuxfoundation.org>
@@ -48,55 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willy Tarreau <w@1wt.eu>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 1c9df907da83812e4f33b59d3d142c864d9da57f upstream.
+commit 83bdc7275e6206f560d247be856bceba3e1ed8f2 upstream.
 
-Daniel Díaz and Kees Cook independently reported that commit
-f227e3ec3b5c ("random32: update the net random state on interrupt and
-activity") broke arm64 due to a circular dependency on include files
-since the addition of percpu.h in random.h.
+It turns out that the plugin right now ends up being really unhappy
+about the change from 'static' to 'extern' storage that happened in
+commit f227e3ec3b5c ("random32: update the net random state on interrupt
+and activity").
 
-The correct fix would definitely be to move all the prandom32 stuff out
-of random.h but for backporting, a smaller solution is preferred.
+This is probably a trivial fix for the latent_entropy plugin, but for
+now, just remove net_rand_state from the list of things the plugin
+worries about.
 
-This one replaces linux/percpu.h with asm/percpu.h, and this fixes the
-problem on x86_64, arm64, arm, and mips.  Note that moving percpu.h
-around didn't change anything and that removing it entirely broke
-differently.  When backporting, such options might still be considered
-if this patch fails to help.
-
-[ It turns out that an alternate fix seems to be to just remove the
-  troublesome <asm/pointer_auth.h> remove from the arm64 <asm/smp.h>
-  that causes the circular dependency.
-
-  But we might as well do the whole belt-and-suspenders thing, and
-  minimize inclusion in <linux/random.h> too. Either will fix the
-  problem, and both are good changes.   - Linus ]
-
-Reported-by: Daniel Díaz <daniel.diaz@linaro.org>
-Reported-by: Kees Cook <keescook@chromium.org>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Fixes: f227e3ec3b5c
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Emese Revfy <re.emese@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
  include/linux/random.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/random32.c         |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 --- a/include/linux/random.h
 +++ b/include/linux/random.h
-@@ -9,7 +9,7 @@
+@@ -118,7 +118,7 @@ struct rnd_state {
+ 	__u32 s1, s2, s3, s4;
+ };
  
- #include <linux/list.h>
- #include <linux/once.h>
--#include <linux/percpu.h>
-+#include <asm/percpu.h>
+-DECLARE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++DECLARE_PER_CPU(struct rnd_state, net_rand_state);
  
- #include <uapi/linux/random.h>
+ u32 prandom_u32_state(struct rnd_state *state);
+ void prandom_bytes_state(struct rnd_state *state, void *buf, size_t nbytes);
+--- a/lib/random32.c
++++ b/lib/random32.c
+@@ -48,7 +48,7 @@ static inline void prandom_state_selftes
+ }
+ #endif
  
+-DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++DEFINE_PER_CPU(struct rnd_state, net_rand_state);
+ 
+ /**
+  *	prandom_u32_state - seeded pseudo-random number generator.
 
 
