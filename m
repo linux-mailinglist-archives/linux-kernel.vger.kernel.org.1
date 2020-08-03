@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D589023AD46
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 21:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EE423AD1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 21:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728488AbgHCTg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 15:36:26 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:11188 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728416AbgHCTgU (ORCPT
+        id S1728057AbgHCTfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 15:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726906AbgHCTfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 15:36:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596483379; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=/fIbyeruvI6OUypkSkElgAVRI3+iioCzbrZcNV4VFzA=; b=P6PzgfHkQZmJszB370+Ov/LGZxhJyv6FWiZIM95644SvvNvAqF0LAE6ltlkrQPMRlmWAkoBD
- JBWVfZvqHm1Ny9NdqitzDmw0PSytC+xE8LBohKASwBzr6tzzKUNWV6KSgDAuam0/kCZZ1B+A
- 3v5qRA449L6G/2OGlJjjcrY4bnk=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5f286727bcdc2fe471ca3750 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 Aug 2020 19:36:07
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5D9B5C433B2; Mon,  3 Aug 2020 19:36:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CE1BBC43391;
-        Mon,  3 Aug 2020 19:36:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CE1BBC43391
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        freedreno@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v11 04/12] iommu: Add a domain attribute to get/set a pagetable configuration
-Date:   Mon,  3 Aug 2020 13:35:39 -0600
-Message-Id: <20200803193547.305660-5-jcrouse@codeaurora.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200803193547.305660-1-jcrouse@codeaurora.org>
-References: <20200803193547.305660-1-jcrouse@codeaurora.org>
+        Mon, 3 Aug 2020 15:35:44 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF216C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 12:35:43 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id m20so18601708eds.2
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 12:35:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=UEsnFDOziY/SSigbmemZue+bgzYjtXS6TKGZJuhtS0M=;
+        b=c3ymGK1EIA+piK2yhfbf46E6AQhrP7ulZr7ALLwb90NrwIaKpk1LXqj1m+v6fJPYNI
+         dhSTmmrWWotGkCaEOArtFUIiaEy0Z7DKW3vrEu32uR1ZgX5/+epblHUSLTGcegXxiCua
+         H0wbHNy1uosqCvAVu6CLOnhj56MR7jen8jRLP5xfZy1qzEz2TS/MeEYJRLWOqpOVybDp
+         txkvCfZamy6At8PkFC26m+I+UXS/vRHIvonGpO9I5cEox2CYfMJTdigo00cxkrFzcXeG
+         F2tMhY4DwclmOjImBIxo5Z4o/6Ngtjr6gFqxvwEE7NZ4orG6Bczy4iaK4WQyVDXnEZDR
+         jVog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=UEsnFDOziY/SSigbmemZue+bgzYjtXS6TKGZJuhtS0M=;
+        b=ELtBaOhca0qEmxckxeimYGTe1h0WaBwEW+3w1wapdgTHMxnYZnT8ifM33NoXF08T2F
+         60/em9VZYImUAwylr5t7HpPUKRKDcqWQvxGZ68ZKByo4dJNOsUQBzvBt9AfxM0l82jZe
+         lsmW1Kd+PdwNS/+V/flEv459L32V4M6zD1bdUoGgjc2ESlz86UvdUf5/TiN0ZQEgXCzM
+         LsQWyFilEw+Hj2dsgGGd8kMjoy43RH6Jp08N/ALSGmKQ7PCwtt59hA6bZkPT0NmrGEAH
+         M0Pvgi0NWE6qw8N5NKwMEE5FS0QHXUmL9gQfR8oj1gvpF8Ap7JPA1vR+Mkr6kBKg62Qn
+         v2tQ==
+X-Gm-Message-State: AOAM530Eb2Uu/aFGdGkdJIC2nAv4wdV1+o2lFQcNoTaqGIlRWZ/+TxsH
+        u9Z+4NZFTG8wwUB6G46WExc=
+X-Google-Smtp-Source: ABdhPJyxIvwWnM/3rGv7HWBgGbBREBrVOK2PfPeVBiWnw2y4ltG9QTPHZ+roYFJBH3k8KaqabsAHSA==
+X-Received: by 2002:a50:d1d8:: with SMTP id i24mr17816425edg.341.1596483342125;
+        Mon, 03 Aug 2020 12:35:42 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id n11sm16546091edv.39.2020.08.03.12.35.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 12:35:41 -0700 (PDT)
+Date:   Mon, 3 Aug 2020 21:35:39 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] x86/timers change for v5.9
+Message-ID: <20200803193539.GA1411343@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add domain attribute DOMAIN_ATTR_PGTABLE_CFG. This will be used by
-arm-smmu to share the current pagetable configuration with the
-leaf driver and to allow the leaf driver to set up a new pagetable
-configuration under certain circumstances.
+Linus,
 
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
----
+Please pull the latest x86/timers git tree from:
 
- include/linux/iommu.h | 1 +
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-timers-2020-08-03
+
+   # HEAD: 898ec52d2ba05915aaedcdb21bff2e944c883cb8 x86/xen/time: Set the X86_FEATURE_TSC_KNOWN_FREQ flag in xen_tsc_khz()
+
+A single commit which sets the X86_FEATURE_TSC_KNOWN_FREQ flag for Xen guests,
+to avoid recalibration.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Hayato Ohhashi (1):
+      x86/xen/time: Set the X86_FEATURE_TSC_KNOWN_FREQ flag in xen_tsc_khz()
+
+
+ arch/x86/xen/time.c | 1 +
  1 file changed, 1 insertion(+)
-
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index fee209efb756..995ab8c47ef2 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -118,6 +118,7 @@ enum iommu_attr {
- 	DOMAIN_ATTR_FSL_PAMUV1,
- 	DOMAIN_ATTR_NESTING,	/* two stages of translation */
- 	DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
-+	DOMAIN_ATTR_PGTABLE_CFG,
- 	DOMAIN_ATTR_MAX,
- };
- 
--- 
-2.25.1
 
