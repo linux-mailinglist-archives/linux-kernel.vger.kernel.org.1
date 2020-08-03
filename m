@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A4723A40A
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E479B23A40C
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgHCMWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:22:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45296 "EHLO mail.kernel.org"
+        id S1726968AbgHCMWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:22:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726864AbgHCMVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:21:52 -0400
+        id S1726918AbgHCMWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:22:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2DAD204EC;
-        Mon,  3 Aug 2020 12:21:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E0C520738;
+        Mon,  3 Aug 2020 12:21:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457310;
-        bh=WyKSjpajL0Wrn6EPgmwu9jvodbEDJzLgR334xRdaG9Y=;
+        s=default; t=1596457319;
+        bh=NR5D6eysUwhAEOc3EJ8CMwbgDVnOf+TBq5t1G37/qQI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UF+Co8mkC219o6WlCcAIOEsUOd75KF30qrmIYnSR5VS6JjcZhwyozDFXxkkEBimbi
-         YR34oyHm46wokmb2FkbKQoFiSYoLrpTIAKkJNKoR+MR3aIuAqDqipE3Vf/4FgVY1cy
-         kHx0siLIsJBJsxTLZfxOAnv0MstWMrldAowhb0Fg=
+        b=YW4g96wkHLDQRpKtepPS2keaoTpsq7fvENnWjutPsZPNqzLV0T4cq8Fes5hsnGu2W
+         uW62ZJUfb9I188BWKafSCjejFhHWeL1GoyPXJbdaarHm8TkaVXZ85wU54EgkQ3AuWQ
+         gYhnGNa0kvRAA5ktuzQFNoPBhKOCWAgMjnGuB1wg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Klein <aksecurity@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>, Willy Tarreau <w@1wt.eu>
-Subject: [PATCH 5.7 021/120] random32: update the net random state on interrupt and activity
-Date:   Mon,  3 Aug 2020 14:17:59 +0200
-Message-Id: <20200803121903.882259078@linuxfoundation.org>
+        stable@vger.kernel.org, Duncan <1i5t5.duncan@cox.net>,
+        Mazin Rezk <mnrzk@protonmail.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.7 024/120] drm/amd/display: Clear dm_state for fast updates
+Date:   Mon,  3 Aug 2020 14:18:02 +0200
+Message-Id: <20200803121904.022636587@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
 References: <20200803121902.860751811@linuxfoundation.org>
@@ -49,109 +45,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willy Tarreau <w@1wt.eu>
+From: Mazin Rezk <mnrzk@protonmail.com>
 
-commit f227e3ec3b5cad859ad15666874405e8c1bbc1d4 upstream.
+commit fde9f39ac7f1ffd799a96ffa1e06b2051f0898f1 upstream.
 
-This modifies the first 32 bits out of the 128 bits of a random CPU's
-net_rand_state on interrupt or CPU activity to complicate remote
-observations that could lead to guessing the network RNG's internal
-state.
+This patch fixes a race condition that causes a use-after-free during
+amdgpu_dm_atomic_commit_tail. This can occur when 2 non-blocking commits
+are requested and the second one finishes before the first. Essentially,
+this bug occurs when the following sequence of events happens:
 
-Note that depending on some network devices' interrupt rate moderation
-or binding, this re-seeding might happen on every packet or even almost
-never.
+1. Non-blocking commit #1 is requested w/ a new dm_state #1 and is
+deferred to the workqueue.
 
-In addition, with NOHZ some CPUs might not even get timer interrupts,
-leaving their local state rarely updated, while they are running
-networked processes making use of the random state.  For this reason, we
-also perform this update in update_process_times() in order to at least
-update the state when there is user or system activity, since it's the
-only case we care about.
+2. Non-blocking commit #2 is requested w/ a new dm_state #2 and is
+deferred to the workqueue.
 
-Reported-by: Amit Klein <aksecurity@gmail.com>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+3. Commit #2 starts before commit #1, dm_state #1 is used in the
+commit_tail and commit #2 completes, freeing dm_state #1.
+
+4. Commit #1 starts after commit #2 completes, uses the freed dm_state
+1 and dereferences a freelist pointer while setting the context.
+
+Since this bug has only been spotted with fast commits, this patch fixes
+the bug by clearing the dm_state instead of using the old dc_state for
+fast updates. In addition, since dm_state is only used for its dc_state
+and amdgpu_dm_atomic_commit_tail will retain the dc_state if none is found,
+removing the dm_state should not have any consequences in fast updates.
+
+This use-after-free bug has existed for a while now, but only caused a
+noticeable issue starting from 5.7-rc1 due to 3202fa62f ("slub: relocate
+freelist pointer to middle of object") moving the freelist pointer from
+dm_state->base (which was unused) to dm_state->context (which is
+dereferenced).
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207383
+Fixes: bd200d190f45 ("drm/amd/display: Don't replace the dc_state for fast updates")
+Reported-by: Duncan <1i5t5.duncan@cox.net>
+Signed-off-by: Mazin Rezk <mnrzk@protonmail.com>
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/char/random.c  |    1 +
- include/linux/random.h |    3 +++
- kernel/time/timer.c    |    8 ++++++++
- lib/random32.c         |    2 +-
- 4 files changed, 13 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   36 ++++++++++++++++------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -1277,6 +1277,7 @@ void add_interrupt_randomness(int irq, i
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -8489,20 +8489,38 @@ static int amdgpu_dm_atomic_check(struct
+ 		 * the same resource. If we have a new DC context as part of
+ 		 * the DM atomic state from validation we need to free it and
+ 		 * retain the existing one instead.
++		 *
++		 * Furthermore, since the DM atomic state only contains the DC
++		 * context and can safely be annulled, we can free the state
++		 * and clear the associated private object now to free
++		 * some memory and avoid a possible use-after-free later.
+ 		 */
+-		struct dm_atomic_state *new_dm_state, *old_dm_state;
  
- 	fast_mix(fast_pool);
- 	add_interrupt_bench(cycles);
-+	this_cpu_add(net_rand_state.s1, fast_pool->pool[cycles & 3]);
+-		new_dm_state = dm_atomic_get_new_state(state);
+-		old_dm_state = dm_atomic_get_old_state(state);
++		for (i = 0; i < state->num_private_objs; i++) {
++			struct drm_private_obj *obj = state->private_objs[i].ptr;
  
- 	if (unlikely(crng_init == 0)) {
- 		if ((fast_pool->count >= 64) &&
---- a/include/linux/random.h
-+++ b/include/linux/random.h
-@@ -11,6 +11,7 @@
- #include <linux/kernel.h>
- #include <linux/list.h>
- #include <linux/once.h>
-+#include <linux/percpu.h>
+-		if (new_dm_state && old_dm_state) {
+-			if (new_dm_state->context)
+-				dc_release_state(new_dm_state->context);
++			if (obj->funcs == adev->dm.atomic_obj.funcs) {
++				int j = state->num_private_objs-1;
  
- #include <uapi/linux/random.h>
+-			new_dm_state->context = old_dm_state->context;
++				dm_atomic_destroy_state(obj,
++						state->private_objs[i].state);
  
-@@ -119,6 +120,8 @@ struct rnd_state {
- 	__u32 s1, s2, s3, s4;
- };
- 
-+DECLARE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
+-			if (old_dm_state->context)
+-				dc_retain_state(old_dm_state->context);
++				/* If i is not at the end of the array then the
++				 * last element needs to be moved to where i was
++				 * before the array can safely be truncated.
++				 */
++				if (i != j)
++					state->private_objs[i] =
++						state->private_objs[j];
 +
- u32 prandom_u32_state(struct rnd_state *state);
- void prandom_bytes_state(struct rnd_state *state, void *buf, size_t nbytes);
- void prandom_seed_full_state(struct rnd_state __percpu *pcpu_state);
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -43,6 +43,7 @@
- #include <linux/sched/debug.h>
- #include <linux/slab.h>
- #include <linux/compat.h>
-+#include <linux/random.h>
- 
- #include <linux/uaccess.h>
- #include <asm/unistd.h>
-@@ -1743,6 +1744,13 @@ void update_process_times(int user_tick)
- 	scheduler_tick();
- 	if (IS_ENABLED(CONFIG_POSIX_TIMERS))
- 		run_posix_cpu_timers();
++				state->private_objs[j].ptr = NULL;
++				state->private_objs[j].state = NULL;
++				state->private_objs[j].old_state = NULL;
++				state->private_objs[j].new_state = NULL;
 +
-+	/* The current CPU might make use of net randoms without receiving IRQs
-+	 * to renew them often enough. Let's update the net_rand_state from a
-+	 * non-constant value that's not affine to the number of calls to make
-+	 * sure it's updated when there's some activity (we don't care in idle).
-+	 */
-+	this_cpu_add(net_rand_state.s1, rol32(jiffies, 24) + user_tick);
- }
++				state->num_private_objs = j;
++				break;
++			}
+ 		}
+ 	}
  
- /**
---- a/lib/random32.c
-+++ b/lib/random32.c
-@@ -48,7 +48,7 @@ static inline void prandom_state_selftes
- }
- #endif
- 
--static DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
-+DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
- 
- /**
-  *	prandom_u32_state - seeded pseudo-random number generator.
 
 
