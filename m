@@ -2,116 +2,448 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F16723A3D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898F323A3D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgHCMHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:07:07 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19983 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgHCMHE (ORCPT
+        id S1726504AbgHCMIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgHCMIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:07:04 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f27fd860000>; Mon, 03 Aug 2020 05:05:26 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 03 Aug 2020 05:07:03 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 03 Aug 2020 05:07:03 -0700
-Received: from [10.25.96.161] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 3 Aug
- 2020 12:06:55 +0000
-Subject: Re: [PATCH 09/10] arm64: tegra: Audio graph header for Tegra210
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-CC:     <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
-        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
-        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
-        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
-        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
-References: <1595135417-16589-1-git-send-email-spujar@nvidia.com>
- <1595135417-16589-10-git-send-email-spujar@nvidia.com>
- <871rl72gjb.wl-kuninori.morimoto.gx@renesas.com>
- <b5484f5d-6ed4-e04b-3e62-8f4f3893ed67@nvidia.com>
- <87pn8qzt6n.wl-kuninori.morimoto.gx@renesas.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <6a84b5f8-3e9c-96e4-c8f8-ec95ff5e42ac@nvidia.com>
-Date:   Mon, 3 Aug 2020 17:36:52 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <87pn8qzt6n.wl-kuninori.morimoto.gx@renesas.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596456326; bh=O17RBFs0E+MM0oeqpF+ZH5SzEfjMCHt248amEuAzj9c=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=qB3L+FInzKYByqbBGHPxzkO0x8F6IjpXhXmBoQ05KQ3cM/RUYKsqeVCA2r8EnWGUu
-         ARTnwguioC5a73RO4UcCnSCwsy6Wi6F4Szt7/KlG1FEkQ1h9upp7+4gns2+xyfDU45
-         Exg+vyrjpzzaOq/zgSCYZltBaR1IjU8iCrPTR7iXLPd04RJzaqMEzIJuakc/zPtExU
-         dKiTaALqOf7Vsa3CynVZ09UVmMYJ48uuknvjNENqDKUF5iA/3dRGlae0mk2q2x+c0b
-         QwHLJcSl0hbzfXAKamvjUV23qf54aUZ7wik1sklR/AQghO4eHjX/FKPZNeo+GlFmuv
-         9PNtQyL4EObMA==
+        Mon, 3 Aug 2020 08:08:07 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027B9C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 05:08:07 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id d190so14097003wmd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 05:08:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=afJ+1jNa6X/wuA8VoCFPRYQ1rRNnN3KPn/mimhZlQcA=;
+        b=aIQrvSkwsRjBVYWO42rcANMyRI9aLykLtz986vO5Nbkyw9tR6uvzn4IRi11TK4RZe+
+         hoXXQX6+yvmnZ3YyWggiK1STXKxCHlNtsCLuctBagB9t+yED1mO2Gvd1KNQU79ESbusb
+         OFFDXWaWQ4fT+fLhSK6e0YbfSyBY3SECrperI7S7ci/Y4FnQEkJP0TSJpUXm7/4FCr/P
+         tPqidmlz4vL2a1ziiJP2alL3d21L1lx5zxBsTYghE3HRLahBRyDtm321AJbNFGceoH5d
+         FndlfZpIsiBNVVMKw6sMkhLslTiyl5JgrLs4BN1+rt8M9uE1VBli1KEr/AR3hcw7+Agz
+         NKww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=afJ+1jNa6X/wuA8VoCFPRYQ1rRNnN3KPn/mimhZlQcA=;
+        b=Xc4/yqYW+F5nYceho/U5UiaTpak2uyMHGqwnFRmLXswdSjidUft72lLiRiDyFZ5iUX
+         t0yCBtG8fV+2RaPLxvHagRRy0TaK3R/LPkt72q0cyEkJBHkywj8czJWiDiPNpxhc94Po
+         n//TTGr87xDZCcODS2WqlLWgRxQAgQydnsj3DqQ12JrEeSzh4BqO6DleCOg1aiQ4hUJY
+         UuE+1geOJ2KReZ6jRk5DUwdiCGRgdNEEGwSHUQP8zZj3BnMB4U1n+5BGsQPHy37zKbl3
+         RwoTbTUuA4oUKMR9yLKxxFvTApQKpU4OMUhbSml+IoRoCmKElZ3zrw2KwlWvFBdHtj46
+         lBUg==
+X-Gm-Message-State: AOAM530fl8qwI+uSAFgMfB3KuGhL6NAVmCP2+jrDpuNMmCI6B0xQFkcu
+        IMU27qJdoI2TmkrB0TiZPZXd+/nb
+X-Google-Smtp-Source: ABdhPJzJ6H6x3BoE6383oxJZrue/eKLKfiMNfDNLx+lUjqDwMByV0jwjh/N3ZP5YM3cbuLT/8kYHDA==
+X-Received: by 2002:a1c:9ec6:: with SMTP id h189mr2982151wme.22.1596456484480;
+        Mon, 03 Aug 2020 05:08:04 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id p15sm24301209wrj.61.2020.08.03.05.08.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 05:08:03 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
+Cc:     Ofir Bitton <obitton@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH v3 1/2] habanalabs: Replace dma-fence mechanism with completions
+Date:   Mon,  3 Aug 2020 15:07:58 +0300
+Message-Id: <20200803120759.14732-1-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Ofir Bitton <obitton@habana.ai>
 
-On 7/20/2020 10:21 AM, Kuninori Morimoto wrote:
-> External email: Use caution opening links or attachments
->
->
-> Hi Sameer
->
->>>> +&tegra_admaif {
->>>> +     admaif_port: port {
->>>> +             admaif0: endpoint@0 {
->>>> +                     remote-endpoint = <&xbar_admaif0>;
->>>> +             };
->>>> +             admaif1: endpoint@1 {
->>>> +                     remote-endpoint = <&xbar_admaif1>;
->>>> +             };
->>> (snip)
->>>> +             admaif8: endpoint@8 {
->>>> +                     remote-endpoint = <&xbar_admaif8>;
->>>> +             };
->>>> +             admaif9: endpoint@9 {
->>>> +                     remote-endpoint = <&xbar_admaif9>;
->>>> +             };
->>>> +     };
->>>> +};
->>> I'm not familiar with your system, so, one question.
->>> Does this ADMAIF has total 10 interface which is used in the same time ?
->>> or select one of 10 connections when use ?
->> One ore more ADMAIF interfaces can be used simultaneously. In fact all
->> of them can be used at the same time.
-> Ah, sorry my questoin was not correct.
-> I want to clarify was that below.
->
-> In my understanding,
-> if your system has 10 interfaces,
-> you need to create 10 ports, not 10 endpoints.
-> If your system has 1 interface, but is connected from 10
-> devices, it has 1 port 10 endpoints.
+habanalabs driver uses dma-fence mechanism for synchronization.
+dma-fence mechanism was designed solely for GPUs, hence we purpose
+a simpler mechanism based on completions to replace current
+dma-fence objects.
 
-OK, I see your point. I will work on re-organizing ports/endpoints and 
-once tested will publish V2 for current series. Thanks for inputs.
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+Changes in v3:
+  - mark two internal functions as static
 
->
-> Thank you for your help !!
->
-> Best regards
-> ---
-> Kuninori Morimoto
+ .../habanalabs/common/command_submission.c    | 95 +++++++++----------
+ drivers/misc/habanalabs/common/context.c      | 13 +--
+ drivers/misc/habanalabs/common/habanalabs.h   | 30 ++++--
+ drivers/misc/habanalabs/common/hw_queue.c     |  2 +-
+ 4 files changed, 77 insertions(+), 63 deletions(-)
+
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index b9840e368eb5..2b40aa85bec9 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -38,26 +38,10 @@ void hl_sob_reset_error(struct kref *ref)
+ 			hw_sob->q_idx, hw_sob->sob_id);
+ }
+ 
+-static const char *hl_fence_get_driver_name(struct dma_fence *fence)
+-{
+-	return "HabanaLabs";
+-}
+-
+-static const char *hl_fence_get_timeline_name(struct dma_fence *fence)
+-{
+-	struct hl_cs_compl *hl_cs_compl =
+-		container_of(fence, struct hl_cs_compl, base_fence);
+-
+-	return dev_name(hl_cs_compl->hdev->dev);
+-}
+-
+-static bool hl_fence_enable_signaling(struct dma_fence *fence)
+-{
+-	return true;
+-}
+-
+-static void hl_fence_release(struct dma_fence *fence)
++static void hl_fence_release(struct kref *kref)
+ {
++	struct hl_fence *fence =
++		container_of(kref, struct hl_fence, refcount);
+ 	struct hl_cs_compl *hl_cs_cmpl =
+ 		container_of(fence, struct hl_cs_compl, base_fence);
+ 	struct hl_device *hdev = hl_cs_cmpl->hdev;
+@@ -99,15 +83,27 @@ static void hl_fence_release(struct dma_fence *fence)
+ 	}
+ 
+ free:
+-	kfree_rcu(hl_cs_cmpl, base_fence.rcu);
++	kfree(hl_cs_cmpl);
+ }
+ 
+-static const struct dma_fence_ops hl_fence_ops = {
+-	.get_driver_name = hl_fence_get_driver_name,
+-	.get_timeline_name = hl_fence_get_timeline_name,
+-	.enable_signaling = hl_fence_enable_signaling,
+-	.release = hl_fence_release
+-};
++void hl_fence_put(struct hl_fence *fence)
++{
++	if (fence)
++		kref_put(&fence->refcount, hl_fence_release);
++}
++
++void hl_fence_get(struct hl_fence *fence)
++{
++	if (fence)
++		kref_get(&fence->refcount);
++}
++
++static void hl_fence_init(struct hl_fence *fence)
++{
++	kref_init(&fence->refcount);
++	fence->error = 0;
++	init_completion(&fence->completion);
++}
+ 
+ static void cs_get(struct hl_cs *cs)
+ {
+@@ -336,7 +332,7 @@ static void cs_do_release(struct kref *ref)
+ 		 * In case the wait for signal CS was submitted, the put occurs
+ 		 * in init_signal_wait_cs() right before hanging on the PQ.
+ 		 */
+-		dma_fence_put(cs->signal_fence);
++		hl_fence_put(cs->signal_fence);
+ 	}
+ 
+ 	/*
+@@ -348,19 +344,18 @@ static void cs_do_release(struct kref *ref)
+ 	hl_ctx_put(cs->ctx);
+ 
+ 	/* We need to mark an error for not submitted because in that case
+-	 * the dma fence release flow is different. Mainly, we don't need
++	 * the hl fence release flow is different. Mainly, we don't need
+ 	 * to handle hw_sob for signal/wait
+ 	 */
+ 	if (cs->timedout)
+-		dma_fence_set_error(cs->fence, -ETIMEDOUT);
++		cs->fence->error = -ETIMEDOUT;
+ 	else if (cs->aborted)
+-		dma_fence_set_error(cs->fence, -EIO);
++		cs->fence->error = -EIO;
+ 	else if (!cs->submitted)
+-		dma_fence_set_error(cs->fence, -EBUSY);
+-
+-	dma_fence_signal(cs->fence);
+-	dma_fence_put(cs->fence);
++		cs->fence->error = -EBUSY;
+ 
++	complete_all(&cs->fence->completion);
++	hl_fence_put(cs->fence);
+ 	cs_counters_aggregate(hdev, cs->ctx);
+ 
+ 	kfree(cs->jobs_in_queue_cnt);
+@@ -401,7 +396,7 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 			enum hl_cs_type cs_type, struct hl_cs **cs_new)
+ {
+ 	struct hl_cs_compl *cs_cmpl;
+-	struct dma_fence *other = NULL;
++	struct hl_fence *other = NULL;
+ 	struct hl_cs *cs;
+ 	int rc;
+ 
+@@ -434,7 +429,8 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	cs_cmpl->cs_seq = ctx->cs_sequence;
+ 	other = ctx->cs_pending[cs_cmpl->cs_seq &
+ 				(hdev->asic_prop.max_pending_cs - 1)];
+-	if ((other) && (!dma_fence_is_signaled(other))) {
++
++	if (other && !completion_done(&other->completion)) {
+ 		dev_dbg(hdev->dev,
+ 			"Rejecting CS because of too many in-flights CS\n");
+ 		rc = -EAGAIN;
+@@ -448,8 +444,8 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		goto free_fence;
+ 	}
+ 
+-	dma_fence_init(&cs_cmpl->base_fence, &hl_fence_ops, &cs_cmpl->lock,
+-			ctx->asid, ctx->cs_sequence);
++	/* init hl_fence */
++	hl_fence_init(&cs_cmpl->base_fence);
+ 
+ 	cs->sequence = cs_cmpl->cs_seq;
+ 
+@@ -458,9 +454,9 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 							&cs_cmpl->base_fence;
+ 	ctx->cs_sequence++;
+ 
+-	dma_fence_get(&cs_cmpl->base_fence);
++	hl_fence_get(&cs_cmpl->base_fence);
+ 
+-	dma_fence_put(other);
++	hl_fence_put(other);
+ 
+ 	spin_unlock(&ctx->cs_lock);
+ 
+@@ -773,7 +769,7 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 	struct hl_ctx *ctx = hpriv->ctx;
+ 	struct hl_cs_chunk *cs_chunk_array, *chunk;
+ 	struct hw_queue_properties *hw_queue_prop;
+-	struct dma_fence *sig_fence = NULL;
++	struct hl_fence *sig_fence = NULL;
+ 	struct hl_cs_job *job;
+ 	struct hl_cs *cs;
+ 	struct hl_cb *cb;
+@@ -875,14 +871,14 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 			dev_err(hdev->dev,
+ 				"CS seq 0x%llx is not of a signal CS\n",
+ 				signal_seq);
+-			dma_fence_put(sig_fence);
++			hl_fence_put(sig_fence);
+ 			rc = -EINVAL;
+ 			goto free_signal_seq_array;
+ 		}
+ 
+-		if (dma_fence_is_signaled(sig_fence)) {
++		if (completion_done(&sig_fence->completion)) {
+ 			/* signal CS already finished */
+-			dma_fence_put(sig_fence);
++			hl_fence_put(sig_fence);
+ 			rc = 0;
+ 			goto free_signal_seq_array;
+ 		}
+@@ -894,7 +890,7 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 	rc = allocate_cs(hdev, ctx, cs_type, &cs);
+ 	if (rc) {
+ 		if (cs_type == CS_TYPE_WAIT)
+-			dma_fence_put(sig_fence);
++			hl_fence_put(sig_fence);
+ 		hl_ctx_put(ctx);
+ 		goto free_signal_seq_array;
+ 	}
+@@ -1154,7 +1150,7 @@ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
+ static long _hl_cs_wait_ioctl(struct hl_device *hdev,
+ 		struct hl_ctx *ctx, u64 timeout_us, u64 seq)
+ {
+-	struct dma_fence *fence;
++	struct hl_fence *fence;
+ 	unsigned long timeout;
+ 	long rc;
+ 
+@@ -1173,12 +1169,15 @@ static long _hl_cs_wait_ioctl(struct hl_device *hdev,
+ 				"Can't wait on CS %llu because current CS is at seq %llu\n",
+ 				seq, ctx->cs_sequence);
+ 	} else if (fence) {
+-		rc = dma_fence_wait_timeout(fence, true, timeout);
++		rc = wait_for_completion_interruptible_timeout(
++				&fence->completion, timeout);
++
+ 		if (fence->error == -ETIMEDOUT)
+ 			rc = -ETIMEDOUT;
+ 		else if (fence->error == -EIO)
+ 			rc = -EIO;
+-		dma_fence_put(fence);
++
++		hl_fence_put(fence);
+ 	} else {
+ 		dev_dbg(hdev->dev,
+ 			"Can't wait on seq %llu because current CS is at seq %llu (Fence is gone)\n",
+diff --git a/drivers/misc/habanalabs/common/context.c b/drivers/misc/habanalabs/common/context.c
+index 3e375958e73b..b168a9fce817 100644
+--- a/drivers/misc/habanalabs/common/context.c
++++ b/drivers/misc/habanalabs/common/context.c
+@@ -23,7 +23,7 @@ static void hl_ctx_fini(struct hl_ctx *ctx)
+ 	 */
+ 
+ 	for (i = 0 ; i < hdev->asic_prop.max_pending_cs ; i++)
+-		dma_fence_put(ctx->cs_pending[i]);
++		hl_fence_put(ctx->cs_pending[i]);
+ 
+ 	kfree(ctx->cs_pending);
+ 
+@@ -128,7 +128,7 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx)
+ 	atomic_set(&ctx->thread_ctx_switch_token, 1);
+ 	ctx->thread_ctx_switch_wait_token = 0;
+ 	ctx->cs_pending = kcalloc(hdev->asic_prop.max_pending_cs,
+-				sizeof(struct dma_fence *),
++				sizeof(struct hl_fence *),
+ 				GFP_KERNEL);
+ 	if (!ctx->cs_pending)
+ 		return -ENOMEM;
+@@ -184,10 +184,10 @@ int hl_ctx_put(struct hl_ctx *ctx)
+ 	return kref_put(&ctx->refcount, hl_ctx_do_release);
+ }
+ 
+-struct dma_fence *hl_ctx_get_fence(struct hl_ctx *ctx, u64 seq)
++struct hl_fence *hl_ctx_get_fence(struct hl_ctx *ctx, u64 seq)
+ {
+ 	struct asic_fixed_properties *asic_prop = &ctx->hdev->asic_prop;
+-	struct dma_fence *fence;
++	struct hl_fence *fence;
+ 
+ 	spin_lock(&ctx->cs_lock);
+ 
+@@ -201,8 +201,9 @@ struct dma_fence *hl_ctx_get_fence(struct hl_ctx *ctx, u64 seq)
+ 		return NULL;
+ 	}
+ 
+-	fence = dma_fence_get(
+-			ctx->cs_pending[seq & (asic_prop->max_pending_cs - 1)]);
++	fence = ctx->cs_pending[seq & (asic_prop->max_pending_cs - 1)];
++	hl_fence_get(fence);
++
+ 	spin_unlock(&ctx->cs_lock);
+ 
+ 	return fence;
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 9722706a2d6c..474fb968532e 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -15,7 +15,6 @@
+ #include <linux/cdev.h>
+ #include <linux/iopoll.h>
+ #include <linux/irqreturn.h>
+-#include <linux/dma-fence.h>
+ #include <linux/dma-direction.h>
+ #include <linux/scatterlist.h>
+ #include <linux/hashtable.h>
+@@ -342,9 +341,22 @@ struct asic_fixed_properties {
+ 	u8				completion_queues_count;
+ };
+ 
++/**
++ * struct hl_fence - software synchronization primitive
++ * @completion: fence is implemented using completion
++ * @refcount: refcount for this fence
++ * @error: mark this fence with error
++ *
++ */
++struct hl_fence {
++	struct completion	completion;
++	struct kref		refcount;
++	int			error;
++};
++
+ /**
+  * struct hl_cs_compl - command submission completion object.
+- * @base_fence: kernel fence object.
++ * @base_fence: hl fence object.
+  * @lock: spinlock to protect fence.
+  * @hdev: habanalabs device structure.
+  * @hw_sob: the H/W SOB used in this signal/wait CS.
+@@ -353,7 +365,7 @@ struct asic_fixed_properties {
+  * @sob_val: the SOB value that is used in this signal/wait CS.
+  */
+ struct hl_cs_compl {
+-	struct dma_fence	base_fence;
++	struct hl_fence		base_fence;
+ 	spinlock_t		lock;
+ 	struct hl_device	*hdev;
+ 	struct hl_hw_sob	*hw_sob;
+@@ -800,7 +812,7 @@ struct hl_va_range {
+  * @hdev: pointer to the device structure.
+  * @refcount: reference counter for the context. Context is released only when
+  *		this hits 0l. It is incremented on CS and CS_WAIT.
+- * @cs_pending: array of DMA fence objects representing pending CS.
++ * @cs_pending: array of hl fence objects representing pending CS.
+  * @host_va_range: holds available virtual addresses for host mappings.
+  * @host_huge_va_range: holds available virtual addresses for host mappings
+  *                      with huge pages.
+@@ -832,7 +844,7 @@ struct hl_ctx {
+ 	struct hl_fpriv		*hpriv;
+ 	struct hl_device	*hdev;
+ 	struct kref		refcount;
+-	struct dma_fence	**cs_pending;
++	struct hl_fence		**cs_pending;
+ 	struct hl_va_range	*host_va_range;
+ 	struct hl_va_range	*host_huge_va_range;
+ 	struct hl_va_range	*dram_va_range;
+@@ -919,8 +931,8 @@ struct hl_cs {
+ 	struct list_head	job_list;
+ 	spinlock_t		job_lock;
+ 	struct kref		refcount;
+-	struct dma_fence	*fence;
+-	struct dma_fence	*signal_fence;
++	struct hl_fence		*fence;
++	struct hl_fence		*signal_fence;
+ 	struct work_struct	finish_work;
+ 	struct delayed_work	work_tdr;
+ 	struct list_head	mirror_node;
+@@ -1736,7 +1748,7 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx);
+ void hl_ctx_do_release(struct kref *ref);
+ void hl_ctx_get(struct hl_device *hdev,	struct hl_ctx *ctx);
+ int hl_ctx_put(struct hl_ctx *ctx);
+-struct dma_fence *hl_ctx_get_fence(struct hl_ctx *ctx, u64 seq);
++struct hl_fence *hl_ctx_get_fence(struct hl_ctx *ctx, u64 seq);
+ void hl_ctx_mgr_init(struct hl_ctx_mgr *mgr);
+ void hl_ctx_mgr_fini(struct hl_device *hdev, struct hl_ctx_mgr *mgr);
+ 
+@@ -1778,6 +1790,8 @@ void hl_cs_rollback_all(struct hl_device *hdev);
+ struct hl_cs_job *hl_cs_allocate_job(struct hl_device *hdev,
+ 		enum hl_queue_type queue_type, bool is_kernel_allocated_cb);
+ void hl_sob_reset_error(struct kref *ref);
++void hl_fence_put(struct hl_fence *fence);
++void hl_fence_get(struct hl_fence *fence);
+ 
+ void goya_set_asic_funcs(struct hl_device *hdev);
+ void gaudi_set_asic_funcs(struct hl_device *hdev);
+diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
+index 287681646071..65b9aa69a83e 100644
+--- a/drivers/misc/habanalabs/common/hw_queue.c
++++ b/drivers/misc/habanalabs/common/hw_queue.c
+@@ -474,7 +474,7 @@ static void init_signal_wait_cs(struct hl_cs *cs)
+ 		 * wait CS was submitted.
+ 		 */
+ 		mb();
+-		dma_fence_put(cs->signal_fence);
++		hl_fence_put(cs->signal_fence);
+ 		cs->signal_fence = NULL;
+ 	}
+ }
+-- 
+2.17.1
+
