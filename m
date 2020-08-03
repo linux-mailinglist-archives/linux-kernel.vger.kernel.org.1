@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF1823A61E
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A73B23A6D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728605AbgHCM1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:27:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53394 "EHLO mail.kernel.org"
+        id S1728669AbgHCMyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:54:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728560AbgHCM1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:27:35 -0400
+        id S1727817AbgHCMXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:23:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E98E207FC;
-        Mon,  3 Aug 2020 12:27:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F30722076B;
+        Mon,  3 Aug 2020 12:23:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457654;
-        bh=HkyT1WY2Jwb8f3wNOG+gg1AcitoVC2HNsjZbvGkzX9g=;
+        s=default; t=1596457389;
+        bh=cEtJnSUaGtbTxH18GKYsJEmTgJr5ZoxfZl79ZRBrVn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SxDLhYpLt8K/B2iOo0KLEagsao855YdLxZ9Cv+AfI2PVlGRmmFirCeLjUs/ymp9Yn
-         /zAWFfTR7ewZ+L+tHUvX82gPfqDkK56wFh44j9wVwtySDSKI+IbVcLb2t31nVjDpNM
-         qwpV/QNIChgyPmncKHXLQX6rYbkN/LpfY6ZVEyRg=
+        b=0rtZLjAL9aJg2PqUwfYpt+eI0gAlcKgLqUNOBYHvVyx0xkVn6uRKr77t8MmBsHyrd
+         9nQVsjtk2oXu/gNVWxIIvlktd5iI+sGYEn03qDt5k1HooDn+eEwsAYA+UfRq3+BHgr
+         6v7uKUJ033KLB7n73w58pejHXo8W1NKH9ARuef7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
-        "J. Bruce Fields" <bfields@redhat.com>,
+        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 03/90] sunrpc: check that domain table is empty at module unload.
-Date:   Mon,  3 Aug 2020 14:18:25 +0200
-Message-Id: <20200803121857.711453768@linuxfoundation.org>
+Subject: [PATCH 5.7 049/120] net: hns3: fix desc filling bug when skb is expanded or lineared
+Date:   Mon,  3 Aug 2020 14:18:27 +0200
+Message-Id: <20200803121905.192237001@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,93 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit f45db2b909c7e76f35850e78f017221f30282b8e ]
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-The domain table should be empty at module unload.  If it isn't there is
-a bug somewhere.  So check and report.
+[ Upstream commit cfdaeba5ddc98b303639a3265c2031ac5db249d6 ]
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206651
-Signed-off-by: NeilBrown <neilb@suse.de>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+The linear and frag data part may be changed when the skb is expanded
+or lineared in skb_cow_head() or skb_checksum_help(), which is called
+by hns3_fill_skb_desc(), so the linear len return by skb_headlen()
+before the calling of hns3_fill_skb_desc() is unreliable.
+
+Move hns3_fill_skb_desc() before the calling of skb_headlen() to fix
+this bug.
+
+Fixes: 76ad4f0ee747 ("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/sunrpc.h      |  1 +
- net/sunrpc/sunrpc_syms.c |  2 ++
- net/sunrpc/svcauth.c     | 27 +++++++++++++++++++++++++++
- 3 files changed, 30 insertions(+)
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/net/sunrpc/sunrpc.h b/net/sunrpc/sunrpc.h
-index c9bacb3c930fa..82035fa65b8f9 100644
---- a/net/sunrpc/sunrpc.h
-+++ b/net/sunrpc/sunrpc.h
-@@ -56,4 +56,5 @@ int svc_send_common(struct socket *sock, struct xdr_buf *xdr,
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index df1cb0441183c..0b12425fa2845 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -1098,16 +1098,8 @@ static int hns3_fill_desc(struct hns3_enet_ring *ring, void *priv,
+ 	int k, sizeoflast;
+ 	dma_addr_t dma;
  
- int rpc_clients_notifier_register(void);
- void rpc_clients_notifier_unregister(void);
-+void auth_domain_cleanup(void);
- #endif /* _NET_SUNRPC_SUNRPC_H */
-diff --git a/net/sunrpc/sunrpc_syms.c b/net/sunrpc/sunrpc_syms.c
-index f9edaa9174a43..236fadc4a4399 100644
---- a/net/sunrpc/sunrpc_syms.c
-+++ b/net/sunrpc/sunrpc_syms.c
-@@ -23,6 +23,7 @@
- #include <linux/sunrpc/rpc_pipe_fs.h>
- #include <linux/sunrpc/xprtsock.h>
+-	if (type == DESC_TYPE_SKB) {
+-		struct sk_buff *skb = (struct sk_buff *)priv;
+-		int ret;
+-
+-		ret = hns3_fill_skb_desc(ring, skb, desc);
+-		if (unlikely(ret < 0))
+-			return ret;
+-
+-		dma = dma_map_single(dev, skb->data, size, DMA_TO_DEVICE);
+-	} else if (type == DESC_TYPE_FRAGLIST_SKB) {
++	if (type == DESC_TYPE_FRAGLIST_SKB ||
++	    type == DESC_TYPE_SKB) {
+ 		struct sk_buff *skb = (struct sk_buff *)priv;
  
-+#include "sunrpc.h"
- #include "netns.h"
+ 		dma = dma_map_single(dev, skb->data, size, DMA_TO_DEVICE);
+@@ -1452,6 +1444,10 @@ netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev)
  
- unsigned int sunrpc_net_id;
-@@ -131,6 +132,7 @@ cleanup_sunrpc(void)
- 	unregister_rpc_pipefs();
- 	rpc_destroy_mempool();
- 	unregister_pernet_subsys(&sunrpc_net_ops);
-+	auth_domain_cleanup();
- #if IS_ENABLED(CONFIG_SUNRPC_DEBUG)
- 	rpc_unregister_sysctl();
- #endif
-diff --git a/net/sunrpc/svcauth.c b/net/sunrpc/svcauth.c
-index 550b214cb0015..998b196b61767 100644
---- a/net/sunrpc/svcauth.c
-+++ b/net/sunrpc/svcauth.c
-@@ -19,6 +19,10 @@
- #include <linux/err.h>
- #include <linux/hash.h>
+ 	next_to_use_head = ring->next_to_use;
  
-+#include <trace/events/sunrpc.h>
++	ret = hns3_fill_skb_desc(ring, skb, &ring->desc[ring->next_to_use]);
++	if (unlikely(ret < 0))
++		goto fill_err;
 +
-+#include "sunrpc.h"
-+
- #define RPCDBG_FACILITY	RPCDBG_AUTH
- 
- 
-@@ -203,3 +207,26 @@ struct auth_domain *auth_domain_find(char *name)
- 	return NULL;
- }
- EXPORT_SYMBOL_GPL(auth_domain_find);
-+
-+/**
-+ * auth_domain_cleanup - check that the auth_domain table is empty
-+ *
-+ * On module unload the auth_domain_table must be empty.  To make it
-+ * easier to catch bugs which don't clean up domains properly, we
-+ * warn if anything remains in the table at cleanup time.
-+ *
-+ * Note that we cannot proactively remove the domains at this stage.
-+ * The ->release() function might be in a module that has already been
-+ * unloaded.
-+ */
-+
-+void auth_domain_cleanup(void)
-+{
-+	int h;
-+	struct auth_domain *hp;
-+
-+	for (h = 0; h < DN_HASHMAX; h++)
-+		hlist_for_each_entry(hp, &auth_domain_table[h], hash)
-+			pr_warn("svc: domain %s still present at module unload.\n",
-+				hp->name);
-+}
+ 	ret = hns3_fill_skb_to_desc(ring, skb, DESC_TYPE_SKB);
+ 	if (unlikely(ret < 0))
+ 		goto fill_err;
 -- 
 2.25.1
 
