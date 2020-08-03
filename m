@@ -2,272 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A88723ACFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 21:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF6E23AD10
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 21:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgHCT2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 15:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728107AbgHCT2F (ORCPT
+        id S1728098AbgHCTai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 15:30:38 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:53168 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgHCTai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 15:28:05 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC62C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 12:28:04 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id d2so15440401lfj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 12:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5Y2X7yaPaqpV5N7ZSBlIfeWsAsh614hvLfSmUd/sIQo=;
-        b=DcazyOdl1Cm0XVeXnwrui48N4ZaYguSdbKFvjsZ+0TYZDzyW/R3gtIpcuH/csONMfz
-         aYTj6/SOVEKvPttzCLlGJiyn3iQ0AKkLxYAQCPpu3JHEhoZ6rjT8PP6s4JIV9lZkLlHU
-         YN3/Ww5d+rDWIfMDNdMcUYL/FVe3Uo0W+cxFiOP1JXQ97KC+xQm51MiYa3YLS5APyGh3
-         c1Ms2CYLfZTIhpiMP8+ZYXdv790sAcVxvcCybG3w5Jf+iyCUBuENGyOfivXRvgW/NB/s
-         Mrh8iETSI0JmvRGwuLBOHqwLnQWZV+w+VlgdTpOU8CVGsZogn1DTifyy7URJDSEJoG7b
-         Vyjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5Y2X7yaPaqpV5N7ZSBlIfeWsAsh614hvLfSmUd/sIQo=;
-        b=KP96hyEnkE6us9zPdAifj03adesNMt0aAc6rs1L5yIwqfQMoRmy7chizqJCIt/aywI
-         nsKHvwoxCX9yDJRYRXcLs8ZQxeAxOq7nRGGF5ciZ8ez+z4epo+zFKTH3D8iFbdLsU2NO
-         VdV3CT3SF4zHSwPf5xWdj3F/YASFVdfpbG1fjheBc1Hkz7E0jQWVfN8tYIG+cqqzdcMF
-         Zzw4NT/1LTpULEMkqdziALeWPM+kgjB9HYNsglZoIFdwpI8xu6Tzl9XpNQxheGP6vIq2
-         vNO2R+j+dTscbeGiPqQ+YFglq9vQzpUXk57ttxX2gZuR8eciFk9kmDlCihFLzcVgN4gN
-         GX5w==
-X-Gm-Message-State: AOAM530N988ytyw94sufpRS8fdFsgJK265gql6dw8UBm8mTQYel+3K9e
-        pG/nKkS0KXUJh+5df25MzfNGRg==
-X-Google-Smtp-Source: ABdhPJwIxOFPQlSCRF8+Lv+zlKyhBbbIM851bf2v4dBB9MWP5oNW/38GvNe/VM3bacLc1+ADy8quLA==
-X-Received: by 2002:ac2:4d4f:: with SMTP id 15mr9131918lfp.163.1596482882861;
-        Mon, 03 Aug 2020 12:28:02 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id g4sm5175913lfh.13.2020.08.03.12.28.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 12:28:02 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 21:28:01 +0200
-From:   Niklas <niklas.soderlund@ragnatech.se>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH v2] media: rcar-vin: Add support to select data pins for
- YCbCr422-8bit input
-Message-ID: <20200803192801.GC2297236@oden.dyn.berto.se>
-References: <1596470573-15065-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200803180618.GA2297236@oden.dyn.berto.se>
- <CA+V-a8sHOqM2tB-72Z-wVJjvihycCq1zLuk7Py7uKGMxzOJyaA@mail.gmail.com>
+        Mon, 3 Aug 2020 15:30:38 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 073JRxQi183367;
+        Mon, 3 Aug 2020 19:29:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=NA1XvUfVASuq/nbfh+DSwCBmQzdnwrjR9Pp/u/6X6sw=;
+ b=GuWEG31mHQHO+APfMCxnTJfOWwMREUaRwjfjJI4BgRRbjVKW/gb985p7Agy2HrTeqOSS
+ ITbr3bDdjP+rAGOpvb/4lTQI2fkVsBGKSqZ02QeaNNuCFnA0IfotSBpsJKMXsCt4CvSB
+ fjF5Rvvp8pThsFYgJXqaow6RoKqdXNu6+mOHErlCdJ0NnvZwBz4hXO4Bpm6E2Ybl51eF
+ Hyx+10Plnyjy58OSfCu86q0/U2SPQ72L+ukk1Ftel35Y7mAqTrmsJXFS21UUAfY71bPt
+ d8y/6b+fdaweyu9bZDN+UH1b9Mhoqm3L6R9bSLcqDKL5Q3dE9+pipkNjn2BhByXZ3B+z iQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 32n11n09wf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 03 Aug 2020 19:29:45 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 073JSsEp029993;
+        Mon, 3 Aug 2020 19:29:45 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 32pdhavv2w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 Aug 2020 19:29:45 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 073JTUlh014737;
+        Mon, 3 Aug 2020 19:29:30 GMT
+Received: from [172.16.10.205] (/73.167.45.247)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 03 Aug 2020 12:29:30 -0700
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org, mhocko@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        arnd@arndb.de, keescook@chromium.org, gerg@linux-m68k.org,
+        ktkhai@virtuozzo.com, christian.brauner@ubuntu.com,
+        peterz@infradead.org, esyr@redhat.com, jgg@ziepe.ca,
+        christian@kellner.me, areber@redhat.com, cyphar@cyphar.com
+References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
+ <20200730152250.GG23808@casper.infradead.org>
+ <db3bdbae-eb0f-1ae3-94dd-045e37bc94ba@oracle.com>
+ <20200730171251.GI23808@casper.infradead.org>
+ <63a7404c-e4f6-a82e-257b-217585b0277f@oracle.com>
+ <20200730174956.GK23808@casper.infradead.org>
+ <ab7a25bf-3321-77c8-9bc3-28a223a14032@oracle.com>
+ <87y2n03brx.fsf@x220.int.ebiederm.org>
+ <689d6348-6029-5396-8de7-a26bc3c017e5@oracle.com>
+ <877dufvje9.fsf@x220.int.ebiederm.org>
+From:   Steven Sistare <steven.sistare@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <eeec47c5-232d-fe8e-c19d-70c50c49020c@oracle.com>
+Date:   Mon, 3 Aug 2020 15:29:26 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+V-a8sHOqM2tB-72Z-wVJjvihycCq1zLuk7Py7uKGMxzOJyaA@mail.gmail.com>
+In-Reply-To: <877dufvje9.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9702 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=2
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008030134
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9702 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 mlxscore=0
+ suspectscore=2 mlxlogscore=999 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008030134
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lad,
-
-On 2020-08-03 20:17:54 +0100, Lad, Prabhakar wrote:
-> Hi Niklas,
+On 8/3/2020 11:28 AM, ebiederm@xmission.com wrote:
+> Steven Sistare <steven.sistare@oracle.com> writes:
+>> On 7/30/2020 5:58 PM, ebiederm@xmission.com wrote:
+>>> Here is another suggestion.
+>>>
+>>> Have a very simple program that does:
+>>>
+>>> 	for (;;) {
+>>> 		handle = dlopen("/my/real/program");
+>>> 		real_main = dlsym(handle, "main");
+>>> 		real_main(argc, argv, envp);
+>>> 		dlclose(handle);
+>>> 	}
+>>>
+>>> With whatever obvious adjustments are needed to fit your usecase.
+>>>
+>>> That should give the same level of functionality, be portable to all
+>>> unices, and not require you to duplicate code.  It belive it limits you
+>>> to not upgrading libc, or librt but that is a comparatively small
+>>> limitation.
+>>>
+>>>
+>>> Given that in general the interesting work is done in userspace and that
+>>> userspace has provided an interface for reusing that work already.
+>>> I don't see the justification for adding anything to exec at this point. 
+>>
+>> Thanks for the suggestion.  That is clever, and would make a fun project,
+>> but I would not trust it for production.  These few lines are just
+>> the first of many that it would take to reset the environment to the
+>> well-defined post-exec initial conditions that all executables expect,
+>> and incrementally tearing down state will be prone to bugs.
 > 
-> Thank you for the review.
-> 
-> On Mon, Aug 3, 2020 at 7:06 PM Niklas <niklas.soderlund@ragnatech.se> wrote:
-> >
-> > Hi Lad,
-> >
-> > Thanks for your work.
-> >
-> > On 2020-08-03 17:02:53 +0100, Lad Prabhakar wrote:
-> > > Select the data pins for YCbCr422-8bit input format depending on
-> > > bus_width and data_shift passed as part of DT.
-> > >
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > > ---
-> > > Changes for v2:
-> > > * Dropped DT binding documentation patch
-> > > * Select the data pins depending on bus-width and data-shift
-> >
-> > I like this v2 much better then v1, nice work!
-> >
-> > >
-> > > v1 -
-> > > https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=323799
-> > > ---
-> > >  drivers/media/platform/rcar-vin/rcar-core.c | 5 +++++
-> > >  drivers/media/platform/rcar-vin/rcar-dma.c  | 7 +++++++
-> > >  drivers/media/platform/rcar-vin/rcar-vin.h  | 5 +++++
-> > >  3 files changed, 17 insertions(+)
-> > >
-> > > diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
-> > > index 7440c8965d27..55005d86928d 100644
-> > > --- a/drivers/media/platform/rcar-vin/rcar-core.c
-> > > +++ b/drivers/media/platform/rcar-vin/rcar-core.c
-> > > @@ -624,6 +624,11 @@ static int rvin_parallel_parse_v4l2(struct device *dev,
-> > >       vin->parallel = rvpe;
-> > >       vin->parallel->mbus_type = vep->bus_type;
-> > >
-> > > +     /* select VInDATA[15:8] pins for YCbCr422-8bit format */
-> > > +     if (vep->bus.parallel.bus_width == BUS_WIDTH_8 &&
-> > > +         vep->bus.parallel.data_shift == DATA_SHIFT_8)
-> > > +             vin->parallel->ycbcr_8b_g = true;
-> > > +
-> >
-> > I would store the bus_width and bus_shift values in the struct
-> > rvin_parallel_entity and evaluate them in place rater then create a flag
-> > for this specific use-case..
-> >
-> Ok will do that.
-> 
-> > Also according to the documentation is the check correct? Do we not wish
-> > to use the new mode when bus_width == 16 and bus_shift == 8. The check
-> > you have here seems to describe a 8 lane bus where 0 lanes are used.
-> >
-> bus-width is the actual data lines used, so bus_width == 16 and
-> bus_shift == 8 would mean use lines 23:8, so just check for bus_width
-> == 8 and bus_shift == 8 should be sufficient.
-
-As you and Geert points out I was wrong, they should indeed both be 8.
-
-> 
-> > I think you should also verify that bus_shift is either 0 or 8 as that
-> > is all the driver supports.
-> >
-> Not sure if thats correct.In that case this patch wont make sense, I
-> believed we agreed upon we determine the YDS depending on both
-> bus-width and bus-shift.
-
-I'm sorry I think I lost you :-) The driver is not capable of supporting 
-bus_width = 8 and bus_shift = 2 right? Maybe we are talking about 
-different things.
-
-What I tried to say (updated with the knowledge of that bus_width should 
-indeed be 8 and not 16) was that would it make sens to with bus_width=8 
-allow for a bus_shift value other then 0 or 8? What for example would 
-the driver do if the value was 2?
-
-> 
-> On iWave G21D-Q7 for VI2 interface VI2_G* pins are connected to SoC
-> and for VIN3 interface Vi3_DATA* pins are connected. So in this case
-> the capture only works for VIN2 only if YDS bit is set for 8-bit 422,
-> and for VIN3 capture only works if YDS is 0
-> 
-> &vin2 {
->     status = "okay";
->     pinctrl-0 = <&vin2_pins>;
->     pinctrl-names = "default";
-> 
->     port {
->         #address-cells = <1>;
->         #size-cells = <0>;
-> 
->         vin2ep: endpoint {
->             remote-endpoint = <&ov7725_2>;
->             bus-width = <8>;
->             data-shift = <8>;
->         };
->     };
-> };
-> 
-> &vin3 {
->     status = "okay";
->     pinctrl-0 = <&vin3_pins>;
->     pinctrl-names = "default";
-> 
->     port {
->         #address-cells = <1>;
->         #size-cells = <0>;
-> 
->         vin3ep: endpoint {
->             remote-endpoint = <&ov7725_3>;
->             bus-width = <8>;
->         };
->     };
-> };
-> 
-> 
-> > >       switch (vin->parallel->mbus_type) {
-> > >       case V4L2_MBUS_PARALLEL:
-> > >               vin_dbg(vin, "Found PARALLEL media bus\n");
-> > > diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
-> > > index 1a30cd036371..5db483877d65 100644
-> > > --- a/drivers/media/platform/rcar-vin/rcar-dma.c
-> > > +++ b/drivers/media/platform/rcar-vin/rcar-dma.c
-> > > @@ -127,6 +127,8 @@
-> > >  #define VNDMR2_FTEV          (1 << 17)
-> > >  #define VNDMR2_VLV(n)                ((n & 0xf) << 12)
-> > >
-> > > +#define VNDMR2_YDS           BIT(22)
-> >
-> > This should be grouped with the other VNDMR2_* macros and not on its
-> > own. Also it should be sorted so it should be inserted between
-> > VNDMR2_CES and VNDMR2_FTEV.
-> >
-> > Also I know BIT() is a nice macro but the rest of the driver uses (1 <<
-> > 22), please do the same for this one.
-> >
-> Sure will take care of it.
-> 
-> > > +
-> > >  /* Video n CSI2 Interface Mode Register (Gen3) */
-> > >  #define VNCSI_IFMD_DES1              (1 << 26)
-> > >  #define VNCSI_IFMD_DES0              (1 << 25)
-> > > @@ -698,6 +700,11 @@ static int rvin_setup(struct rvin_dev *vin)
-> > >               /* Data Enable Polarity Select */
-> > >               if (vin->parallel->mbus_flags & V4L2_MBUS_DATA_ENABLE_LOW)
-> > >                       dmr2 |= VNDMR2_CES;
-> > > +
-> > > +             if (vin->parallel->ycbcr_8b_g && vin->mbus_code == MEDIA_BUS_FMT_UYVY8_2X8)
-> > > +                     dmr2 |= VNDMR2_YDS;
-> > > +             else
-> > > +                     dmr2 &= ~VNDMR2_YDS;
-> >
-> > dmr2 is already unitized and YDS is cleared, no need to clear it again
-> > if you don't wish to set it. Taking this and the comments above into
-> > account this would become something like (not tested),
-> >
 > Agreed.
 > 
-> >     switch (vin->mbus_code) {
-> >     case MEDIA_BUS_FMT_UYVY8_2X8:
-> >         if (vin->parallel->bus_width == 16 && vin->parallel->bus_shift == 8)
-> >             dmr2 |= VNDMR2_YDS;
-> >         break;
-> >     default:
-> >         break;
-> >     }
-> >
-> > >       }
-> > >
-> > >       /*
-> > > diff --git a/drivers/media/platform/rcar-vin/rcar-vin.h b/drivers/media/platform/rcar-vin/rcar-vin.h
-> > > index c19d077ce1cb..3126fee9a89b 100644
-> > > --- a/drivers/media/platform/rcar-vin/rcar-vin.h
-> > > +++ b/drivers/media/platform/rcar-vin/rcar-vin.h
-> > > @@ -87,6 +87,9 @@ struct rvin_video_format {
-> > >       u8 bpp;
-> > >  };
-> > >
-> > > +#define BUS_WIDTH_8  8
-> > > +#define DATA_SHIFT_8 8
-> >
-> > As pointed out by Geert, not so useful, use 8 in the code :-)
-> >
-> Agreed will drop it.
+>> Getting a clean slate from a kernel exec is a much more reliable
+>> design.
 > 
-> Cheers,
-> Prabhakar
+> Except you are explicitly throwing that out the window, by preserving
+> VMAs.  You very much need to have a clean bug free shutdown to pass VMAs
+> reliably.
 
--- 
-Regards,
-Niklas Söderlund
+Sure.  The whole community relies on you and others to provide a bug free exec.
+
+>> The use case is creating long-lived apps that never go down, and the
+>> simplest implementation will have the fewest bugs and is the best.
+>> MADV_DOEXEC is simple, and does not even require a new system call,
+>> and the kernel already knows how to exec without bugs.
+> 
+> *ROFL*  I wish the kernel knew how to exec things without bugs.
+
+Essentially you are saying you would argue against any enhancement to exec.
+Surely that is too high a bar.  We must continue to evolve an innovate and
+balance risk against reward.  This use case matters to our business a lot,
+and to others as well, see below.  That is the reward.  I feel you are 
+overstating the risk.  Surely there is some early point in the development
+cycle of some release where this can be integrated and get enough test
+time and soak time to be proven reliable.
+
+> The bugs are hard to hit but the ones I am aware of are not straight
+> forward to fix.
+> 
+> MADV_DOEXEC is not conceptually simple.  It completely violates the
+> guarantees that exec is known to make about the contents of the memory
+> of the new process.  This makes it very difficult to reason about.  
+
+I have having trouble see the difficulty.  Perhaps I am too familar with
+it, but the semantics are few and easy to explain, and it does not introduce
+new concepts: the post-exec process is born with a few more mappings than
+previously, and non-fixed further mmaps choose addresses in the holes.
+
+> Nor
+> will MADV_DOEXEC be tested very much as it has only one or two users.
+> Which means in the fullness of time it is likely someone will change
+> something that will break the implementation subtlely and the bug report
+> probably won't come in for 3 years, or maybe a decade.  At which point
+> it won't be clear if the bug even can be fixed as something else might
+> rely on it.
+
+That's on us; we need to provide kernel tests and be diligent about testing
+new releases.  This matters to our business and we will do so. 
+> What is wrong with live migration between one qemu process and another
+> qemu process on the same machine not work for this use case?
+> 
+> Just reusing live migration would seem to be the simplest path of all,
+> as the code is already implemented.  Further if something goes wrong
+> with the live migration you can fallback to the existing process.  With
+> exec there is no fallback if the new version does not properly support
+> the handoff protocol of the old version.
+
+This is less resource intensive than live migration.  The latter ties up two
+hosts, consumes lots of memory and network bandwidth, may take a long time
+to converge on a busy system, and is unfeasible for guests with a huge amount
+of local storeage (which we call dense I/O shapes).  Live update takes less than
+1 second total, and the guest pause time is 100 - 200 msecs.  It is a very
+attractive solution that other cloud vendors have implemented as well, with
+their own private modifications to exec and and fork.  We have been independently
+working in this area, and we are offering our implementation to the community.
+
+- Steve
