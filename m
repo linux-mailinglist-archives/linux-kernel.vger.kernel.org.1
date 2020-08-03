@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382D823A6A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A84423A60F
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbgHCMtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:49:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48308 "EHLO mail.kernel.org"
+        id S1729553AbgHCMoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:44:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727861AbgHCMYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:24:03 -0400
+        id S1728737AbgHCM20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:28:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B28D20825;
-        Mon,  3 Aug 2020 12:24:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE6E9207DF;
+        Mon,  3 Aug 2020 12:28:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457441;
-        bh=94u6uDODwtksPuc/mYpRSJxDWjbi/Mty9QyjDfExNxE=;
+        s=default; t=1596457705;
+        bh=8dsC/cTUUWFMRDDnC5VWZkXw703a+7EhD/xyNN/90Ww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cl2dvY+vjMfsWI8P+mbdshORNk6igrxxEdkHNN4M2ojAZfvZ+n9tbAw/+J2FVVO/0
-         hdjo3nSegy+9bNjUK88A6O3agzCuDK/g5C7HUhPuze1BAIR/9EGSXHDc058e2AVA9M
-         w77zPCZCQTUEuVXcYbUWl3rdWe/9YoXWGB5eO2hs=
+        b=BH7PDv+AnkxRaQrxojDCMNI47PdvEyBmclEMkG674W3jo9uiBwZhLs1e+NFTdoptV
+         /M2V5rk1HPD4zoABJ/ikHHApnIkLrmIsOW+QshEMkBcHdXAH71hzeq031geKKhgQiX
+         V/epuJiAl0Vb51ZCeYYPN2b0nXlj7oye+hO4Db60=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guillaume Nault <gnault@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 069/120] bareudp: forbid mixing IP and MPLS in multiproto mode
-Date:   Mon,  3 Aug 2020 14:18:47 +0200
-Message-Id: <20200803121906.164574206@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>
+Subject: [PATCH 5.4 27/90] drm/dbi: Fix SPI Type 1 (9-bit) transfer
+Date:   Mon,  3 Aug 2020 14:18:49 +0200
+Message-Id: <20200803121858.938327468@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
-References: <20200803121902.860751811@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,81 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guillaume Nault <gnault@redhat.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-[ Upstream commit 302d201b5cdf6f4781ee6cd9862f377f975d6c43 ]
+commit 900ab59e2621053b009f707f80b2c19ce0af5dee upstream.
 
-In multiproto mode, bareudp_xmit() accepts sending multicast MPLS and
-IPv6 packets regardless of the bareudp ethertype. In practice, this
-let an IP tunnel send multicast MPLS packets, or an MPLS tunnel send
-IPv6 packets.
+The function mipi_dbi_spi1_transfer() will transfer its payload as 9-bit
+data, the 9th (MSB) bit being the data/command bit. In order to do that,
+it unpacks the 8-bit values into 16-bit values, then sets the 9th bit if
+the byte corresponds to data, clears it otherwise. The 7 MSB are
+padding. The array of now 16-bit values is then passed to the SPI core
+for transfer.
 
-We need to restrict the test further, so that the multiproto mode only
-enables
-  * IPv6 for IPv4 tunnels,
-  * or multicast MPLS for unicast MPLS tunnels.
+This function was broken since its introduction, as the length of the
+SPI transfer was set to the payload size before its conversion, but the
+payload doubled in size due to the 8-bit -> 16-bit conversion.
 
-To improve clarity, the protocol validation is moved to its own
-function, where each logical test has its own condition.
+Fixes: 02dd95fe3169 ("drm/tinydrm: Add MIPI DBI support")
+Cc: <stable@vger.kernel.org> # 5.4+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Reviewed-by: Noralf Trønnes <noralf@tronnes.org>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200703141341.1266263-1-paul@crapouillou.net
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-v2: s/ntohs/htons/
-
-Fixes: 4b5f67232d95 ("net: Special handling for IP & MPLS.")
-Signed-off-by: Guillaume Nault <gnault@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bareudp.c | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/drm_mipi_dbi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/bareudp.c b/drivers/net/bareudp.c
-index 3dd46cd551145..88e7900853db9 100644
---- a/drivers/net/bareudp.c
-+++ b/drivers/net/bareudp.c
-@@ -407,19 +407,34 @@ free_dst:
- 	return err;
- }
+--- a/drivers/gpu/drm/drm_mipi_dbi.c
++++ b/drivers/gpu/drm/drm_mipi_dbi.c
+@@ -937,7 +937,7 @@ static int mipi_dbi_spi1_transfer(struct
+ 			}
+ 		}
  
-+static bool bareudp_proto_valid(struct bareudp_dev *bareudp, __be16 proto)
-+{
-+	if (bareudp->ethertype == proto)
-+		return true;
-+
-+	if (!bareudp->multi_proto_mode)
-+		return false;
-+
-+	if (bareudp->ethertype == htons(ETH_P_MPLS_UC) &&
-+	    proto == htons(ETH_P_MPLS_MC))
-+		return true;
-+
-+	if (bareudp->ethertype == htons(ETH_P_IP) &&
-+	    proto == htons(ETH_P_IPV6))
-+		return true;
-+
-+	return false;
-+}
-+
- static netdev_tx_t bareudp_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct bareudp_dev *bareudp = netdev_priv(dev);
- 	struct ip_tunnel_info *info = NULL;
- 	int err;
+-		tr.len = chunk;
++		tr.len = chunk * 2;
+ 		len -= chunk;
  
--	if (skb->protocol != bareudp->ethertype) {
--		if (!bareudp->multi_proto_mode ||
--		    (skb->protocol !=  htons(ETH_P_MPLS_MC) &&
--		     skb->protocol !=  htons(ETH_P_IPV6))) {
--			err = -EINVAL;
--			goto tx_error;
--		}
-+	if (!bareudp_proto_valid(bareudp, skb->protocol)) {
-+		err = -EINVAL;
-+		goto tx_error;
- 	}
- 
- 	info = skb_tunnel_info(skb);
--- 
-2.25.1
-
+ 		ret = spi_sync(spi, &m);
 
 
