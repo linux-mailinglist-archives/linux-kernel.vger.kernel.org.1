@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BBB23AAAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 18:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC7923AAB5
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 18:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgHCQme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 12:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53630 "EHLO
+        id S1727039AbgHCQm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 12:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbgHCQmd (ORCPT
+        with ESMTP id S1725945AbgHCQmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 12:42:33 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D1EC06174A;
-        Mon,  3 Aug 2020 09:42:33 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id z5so20192478pgb.6;
-        Mon, 03 Aug 2020 09:42:33 -0700 (PDT)
+        Mon, 3 Aug 2020 12:42:54 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B468EC061757
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 09:42:53 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id c15so18039436edj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 09:42:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=szeredi.hu; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xdp/fS6+v2ditkJk+cvQMgK9TUqlS62v6zpMnXOv3Ic=;
-        b=a7MqE6FIile7iIvKc0LEMZJMZ6mV1ZL3hknPiZcAHiLJZJVxqLexKXD7MUs4PplR1k
-         32tgmF4SfgrHJDOiSxssO06fHJJU2C0I3z3YIyYXntvBRx5Y/eU7XbilTMMT6KQ65rDR
-         Fa4nsG/JJ/HRkbYr8blHKxHZ2JZ4km4rb/SInDaPLRiyac0407/0kMVuErVAGusfJ7NB
-         wLIHJ7wlCx+F2Av/UvG8cloZM9VRMUr6nuPyLZ+HcNFi8D+DV5kS6kdiOXeRYO6v+xre
-         FKbJmQ7nSvTLIvBS+5Fgn2BXAZIaEq4cQVM2Y6ch8o9/gIfZR5OSv/J4WL8Hfjwmmd6x
-         Wm0g==
+         :cc:content-transfer-encoding;
+        bh=0pKh21HmMgiXpI5XylfnfnlKkDhj9u5DS7LTshm78/Q=;
+        b=hXoXZ6TBCbBScXYbb5A1s7OlEyuW5Wtgf1zZ0XwdDpBSIHsqy8yvn5+w2rGc69nZIT
+         l14JxxWwHcaySE3rw7efhnidZfyYOHa92F+dTJ+xiUKYry90lsnY3Oy+qndo0W7azWJp
+         HxqF9785aLkrsVVsbqgHaqnHqSXxXIEZw0afc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xdp/fS6+v2ditkJk+cvQMgK9TUqlS62v6zpMnXOv3Ic=;
-        b=rdG4jbsyrsLLgnMYuhYN9cQrOtEAakbG5hI8lYnFZIev20N93bHYAPOO81mJgC8gev
-         TSfZZw90hI0DsbDQTnaiC1np/Y/NAprvxJQzkWHqTOprTJzHzrtkuo4spYc37zhXoIvM
-         VDtvvMPPQqKAlncIA1fMY3MbaB9dKbRGY3z4wBh4UP8edUdha7LWTmev4IhlihAKD6JR
-         kqpETh9YYqvIH+J9P3Uw2mNvnuYguNsjN4oy9n16DCUuo+t46/lPh6ntiyD1w8n16hCT
-         fMwO/DBzvDUwbsUuXELkjQeMZ/ZMwHVjICLuNB5pHSLD871Gov1xS3jhRXVZZL1Dq7HY
-         vkyw==
-X-Gm-Message-State: AOAM5337igv9+Pre58yc8pKs5QvyPLs31CNulbBblo2qptlUsB690pC7
-        MV0vEgzIyj2ElOO+9u6paBtt1f7R6nTLTPsZa1I=
-X-Google-Smtp-Source: ABdhPJyLd0xKU1fFXwew/qnMkherfYLTaf5EOHygn2taxpTZTjjFC3duVTdf5UT0qujpqNr/70s7InpKhau8tw1JCjM=
-X-Received: by 2002:a62:758f:: with SMTP id q137mr16020137pfc.170.1596472952830;
- Mon, 03 Aug 2020 09:42:32 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0pKh21HmMgiXpI5XylfnfnlKkDhj9u5DS7LTshm78/Q=;
+        b=AUKm3RmO8WNmCaLCpLc1WNB/GYbLB1YaWB4hXLEuj9TdgSK9vVi4RG73jy7F23zE1k
+         eGTxiT0Nt6o+ryGY0vywT5muljtKRMlfD+25h7GG3iJ6WZxzLVtMfftlaPd2+5Yn+K6L
+         0IWEVRWnPdwWVcBbv/nZo7OkBG3I/rJjWMj2TnzU44zlBrod5nVrzo+x+E4Bcpfre+Eq
+         4/LoavVMtBdw0O4g77eR3wUBihhxTGK9VPcbw4yPGHpHVUnZdVZuOWtRX+jUfLsLltNh
+         wRsKDtK9/O34XSGf+VEGVtbTKUx/LxVr7idzte8t5OiXGYrhrmhcA1llE2GQc0tlsyJm
+         /q6Q==
+X-Gm-Message-State: AOAM533V7iM5sXw8lr6OnFfCELHKsZTZ4BDXXwmfBerp7QNdjguRcMm1
+        0Laryl0LoVu4ijif3qwBtzYVlOc0NXnU/husFm+jgw==
+X-Google-Smtp-Source: ABdhPJwGt6JJkCjQ+xGlIzKcZ+W4kFA471qhTIr1uxHZ9OOmk1ZAH30Hdlmr+9NCbPwUEszgoyIELLGeaKMDR31yuwI=
+X-Received: by 2002:aa7:c915:: with SMTP id b21mr17121686edt.17.1596472972292;
+ Mon, 03 Aug 2020 09:42:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200803145055.5203-1-eajames@linux.ibm.com> <20200803145055.5203-3-eajames@linux.ibm.com>
-In-Reply-To: <20200803145055.5203-3-eajames@linux.ibm.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 3 Aug 2020 19:42:17 +0300
-Message-ID: <CAHp75VevG65uuE4Vv49tSdvpNnxE7AC7W_QR2s8twCPZ=4da_g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] leds: pca955x: Add an IBM software implementation
- of the PCA9552 chip
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Dan Murphy <dmurphy@ti.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        vishwa@linux.ibm.com
+References: <1842689.1596468469@warthog.procyon.org.uk> <1845353.1596469795@warthog.procyon.org.uk>
+In-Reply-To: <1845353.1596469795@warthog.procyon.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 3 Aug 2020 18:42:41 +0200
+Message-ID: <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Filesystem Information
+To:     David Howells <dhowells@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>,
+        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 3, 2020 at 5:51 PM Eddie James <eajames@linux.ibm.com> wrote:
+On Mon, Aug 3, 2020 at 5:50 PM David Howells <dhowells@redhat.com> wrote:
 >
-> IBM created an implementation of the PCA9552 on a PIC16F
-> microcontroller. The I2C device addresses are different from the
-> hardware PCA9552, so add a new compatible string and associated
-> platform data to be able to probe this device.
+>
+> Hi Linus,
+>
+> Here's a set of patches that adds a system call, fsinfo(), that allows
+> information about the VFS, mount topology, superblock and files to be
+> retrieved.
+>
+> The patchset is based on top of the mount notifications patchset so that
+> the mount notification mechanism can be hooked to provide event counters
+> that can be retrieved with fsinfo(), thereby making it a lot faster to wo=
+rk
+> out which mounts have changed.
+>
+> Note that there was a last minute change requested by Mikl=C3=B3s: the ev=
+ent
+> counter bits got moved from the mount notification patchset to this one.
+> The counters got made atomic_long_t inside the kernel and __u64 in the
+> UAPI.  The aggregate changes can be assessed by comparing pre-change tag,
+> fsinfo-core-20200724 to the requested pull tag.
+>
+> Karel Zak has created preliminary patches that add support to libmount[*]
+> and Ian Kent has started working on making systemd use these and mount
+> notifications[**].
 
-...
+So why are you asking to pull at this stage?
 
->         pca9550,
->         pca9551,
->         pca9552,
-> +       ibm_pca9552,
->         pca9553,
+Has anyone done a review of the patchset?
 
-I would rather not mix like this, but use alpha order, for example.
-It's better to read and see which devices are supported by vendor.
+I think it's obvious that this API needs more work.  The integration
+work done by Ian is a good direction, but it's not quite the full
+validation and review that a complex new API needs.
 
-...
+At least that's my opinion.
 
->         },
-
-> +       [ibm_pca9552] = {
-
-> +       },
->         [pca9553] = {
-
-Ditto.
-
-...
-
->         { "pca9550", pca9550 },
->         { "pca9551", pca9551 },
->         { "pca9552", pca9552 },
-> +       { "ibm-pca9552", ibm_pca9552 },
->         { "pca9553", pca9553 },
-
-Ditto.
-
-...
-
->         { .compatible = "nxp,pca9550", .data = (void *)pca9550 },
->         { .compatible = "nxp,pca9551", .data = (void *)pca9551 },
->         { .compatible = "nxp,pca9552", .data = (void *)pca9552 },
-> +       { .compatible = "ibm,pca9552", .data = (void *)ibm_pca9552 },
->         { .compatible = "nxp,pca9553", .data = (void *)pca9553 },
-
-Ditto.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+Miklos
