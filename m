@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D205F23A410
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A48023A402
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgHCMW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:22:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45970 "EHLO mail.kernel.org"
+        id S1726630AbgHCMV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:21:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727001AbgHCMWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:22:22 -0400
+        id S1725948AbgHCMVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:21:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E1FE204EC;
-        Mon,  3 Aug 2020 12:22:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8BCC204EC;
+        Mon,  3 Aug 2020 12:21:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457341;
-        bh=6RSR/NYfl5MBADHW9iHrJq7YyEWpYosWUMcviQuUAw0=;
+        s=default; t=1596457278;
+        bh=2lx6fiOAnloLslFPX4dhjxc7Ol++GN7voOrLJzKi1o4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MaUfzBoofjDZEExecBkxGUlZfjHxwUUs8ZdzEd4/6xkhIo7GnEa51lmpep6PLoDOj
-         yzakqlo7XBt9SWEh4XAfeSV825ctda9OThJTZ+3+O/Wh0P+Abq6emFG79TDsJmDhKD
-         xSLMhxYz8FTBdtXBj3R6DU37WLfyc9QocMMB8TZ0=
+        b=zzD+KytRrj1/9fid5SMDY1Y4QcVfUi64oN64gla3RZf0y255sqptZGSTNCebl0hiU
+         h5s5sqhuf9UwCnPH5speB0ap8fW34VtMuukxcrMkZO7HFCGu5+wc6sct6kMaDwqc+S
+         zTAyf7cqL/W5evdBnikWQBUaJcrm4OQ3UxpxhA88=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.7 009/120] ALSA: hda/hdmi: Fix keep_power assignment for non-component devices
-Date:   Mon,  3 Aug 2020 14:17:47 +0200
-Message-Id: <20200803121903.312800074@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.7 010/120] RDMA/mlx5: Fix prefetch memory leak if get_prefetchable_mr fails
+Date:   Mon,  3 Aug 2020 14:17:48 +0200
+Message-Id: <20200803121903.359637989@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
 References: <20200803121902.860751811@linuxfoundation.org>
@@ -42,56 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-commit c2c3657f0aedb8736a0fb7b2b1985adfb86e7802 upstream.
+commit 5351a56b1a4ceafd7a17ebfdf3cda430cdfd365d upstream.
 
-It's been reported that, when neither nouveau nor Nvidia graphics
-driver is used, the screen starts flickering.  And, after comparing
-between the working case (stable 4.4.x) and the broken case, it turned
-out that the problem comes from the audio component binding.  The
-Nvidia and AMD audio binding code clears the bus->keep_power flag
-whenever snd_hdac_acomp_init() succeeds.  But this doesn't mean that
-the component is actually bound, but it merely indicates that it's
-ready for binding.  So, when both nouveau and Nvidia are blacklisted
-or not ready, the driver keeps running without the audio component but
-also with bus->keep_power = false.  This made the driver runtime PM
-kicked in and powering down when unused, which results in flickering
-in the graphics side, as it seems.
+destroy_prefetch_work() must always be called if the work is not going
+to be queued. The num_sge also should have been set to i, not i-1
+which avoids the condition where it shouldn't have been called in the
+first place.
 
-For fixing the bug, this patch moves the bus->keep_power flag change
-into generic_acomp_notifier_set() that is the function called from the
-master_bind callback of component ops; i.e. it's guaranteed that the
-binding succeeded.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208609
-Fixes: 5a858e79c911 ("ALSA: hda - Disable audio component for legacy Nvidia HDMI codecs")
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200728082033.23933-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Cc: stable@vger.kernel.org
+Fixes: fb985e278a30 ("RDMA/mlx5: Use SRCU properly in ODP prefetch")
+Link: https://lore.kernel.org/r/20200727095712.495652-1-leon@kernel.org
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_hdmi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/odp.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2439,6 +2439,7 @@ static void generic_acomp_notifier_set(s
- 	mutex_lock(&spec->bind_lock);
- 	spec->use_acomp_notifier = use_acomp;
- 	spec->codec->relaxed_resume = use_acomp;
-+	spec->codec->bus->keep_power = 0;
- 	/* reprogram each jack detection logic depending on the notifier */
- 	for (i = 0; i < spec->num_pins; i++)
- 		reprogram_jack_detect(spec->codec,
-@@ -2533,7 +2534,6 @@ static void generic_acomp_init(struct hd
- 	if (!snd_hdac_acomp_init(&codec->bus->core, &spec->drm_audio_ops,
- 				 match_bound_vga, 0)) {
- 		spec->acomp_registered = true;
--		codec->bus->keep_power = 0;
- 	}
- }
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -1798,9 +1798,7 @@ static bool init_prefetch_work(struct ib
+ 		work->frags[i].mr =
+ 			get_prefetchable_mr(pd, advice, sg_list[i].lkey);
+ 		if (!work->frags[i].mr) {
+-			work->num_sge = i - 1;
+-			if (i)
+-				destroy_prefetch_work(work);
++			work->num_sge = i;
+ 			return false;
+ 		}
  
+@@ -1866,6 +1864,7 @@ int mlx5_ib_advise_mr_prefetch(struct ib
+ 	srcu_key = srcu_read_lock(&dev->odp_srcu);
+ 	if (!init_prefetch_work(pd, advice, pf_flags, work, sg_list, num_sge)) {
+ 		srcu_read_unlock(&dev->odp_srcu, srcu_key);
++		destroy_prefetch_work(work);
+ 		return -EINVAL;
+ 	}
+ 	queue_work(system_unbound_wq, &work->work);
 
 
