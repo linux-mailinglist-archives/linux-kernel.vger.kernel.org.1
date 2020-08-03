@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE51023A441
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40E223A493
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbgHCMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:25:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49706 "EHLO mail.kernel.org"
+        id S1727906AbgHCM2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:28:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727019AbgHCMZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:25:06 -0400
+        id S1728764AbgHCM2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:28:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 877A1207DF;
-        Mon,  3 Aug 2020 12:25:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE65B207DF;
+        Mon,  3 Aug 2020 12:28:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457505;
-        bh=6LHmk7Ht4zZ2Wj4OwJ9ygqINNShstrp45leu13E+blE=;
+        s=default; t=1596457716;
+        bh=r6tonUaCA4yIVYEdGSKBGBpprLWVpRT7OC1j2tMOSAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YTd277c2bJIfABQxcP1+5Y44CfNWgbijOZs32cmCDweVO0jfM4Fhn8+0OK3rO7HsU
-         Id56SF3+8Y/6/d4TsRpX2DQMJHqLjvYuSWmNpJVMwHoXUvljVOLOZo84AArlT2Izcw
-         p1HDtrPIOLijoqX+qzgDR9vw6ZX5RrtX4BQQ2me0=
+        b=qrfpgBhKtIXB7GyQIq1pTc0BtfXtfgtlz/qmg0aS94lyAH4THWi2oHuWkao9Kmado
+         byJet5klb02FRZM1vlzhUO35JezG7qwsazD83ynBAKyfZUgu/zTMpN7CoZTFLjWdDy
+         sqDtFLmlUUB8qgb8w8UsEeJob3efBuZUElY7tG04=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
+        stable@vger.kernel.org, Aya Levin <ayal@mellanox.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 091/120] net/mlx5e: fix bpf_prog reference count leaks in mlx5e_alloc_rq
-Date:   Mon,  3 Aug 2020 14:19:09 +0200
-Message-Id: <20200803121907.339054458@linuxfoundation.org>
+Subject: [PATCH 5.4 48/90] net/mlx5e: Fix error path of device attach
+Date:   Mon,  3 Aug 2020 14:19:10 +0200
+Message-Id: <20200803121859.946272744@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
-References: <20200803121902.860751811@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Xiong <xiongx18@fudan.edu.cn>
+From: Aya Levin <ayal@mellanox.com>
 
-[ Upstream commit e692139e6af339a1495ef401b2d95f7f9d1c7a44 ]
+[ Upstream commit 5cd39b6e9a420329a9a408894be7ba8aa7dd755e ]
 
-The function invokes bpf_prog_inc(), which increases the reference
-count of a bpf_prog object "rq->xdp_prog" if the object isn't NULL.
+On failure to attach the netdev, fix the rollback by re-setting the
+device's state back to MLX5E_STATE_DESTROYING.
 
-The refcount leak issues take place in two error handling paths. When
-either mlx5_wq_ll_create() or mlx5_wq_cyc_create() fails, the function
-simply returns the error code and forgets to drop the reference count
-increased earlier, causing a reference count leak of "rq->xdp_prog".
+Failing to attach doesn't stop statistics polling via .ndo_get_stats64.
+In this case, although the device is not attached, it falsely continues
+to query the firmware for counters. Setting the device's state back to
+MLX5E_STATE_DESTROYING prevents the firmware counters query.
 
-Fix this issue by jumping to the error handling path err_rq_wq_destroy
-while either function fails.
-
-Fixes: 422d4c401edd ("net/mlx5e: RX, Split WQ objects for different RQ types")
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Fixes: 26e59d8077a3 ("net/mlx5e: Implement mlx5e interface attach/detach callbacks")
+Signed-off-by: Aya Levin <ayal@mellanox.com>
+Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
 Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index b485eec812111..9861c9e42c0a7 100644
+index c133beb6a7a56..15db4a8746dd7 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -422,7 +422,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
- 		err = mlx5_wq_ll_create(mdev, &rqp->wq, rqc_wq, &rq->mpwqe.wq,
- 					&rq->wq_ctrl);
- 		if (err)
--			return err;
-+			goto err_rq_wq_destroy;
+@@ -5356,6 +5356,8 @@ err_cleanup_tx:
+ 	profile->cleanup_tx(priv);
  
- 		rq->mpwqe.wq.db = &rq->mpwqe.wq.db[MLX5_RCV_DBR];
- 
-@@ -475,7 +475,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
- 		err = mlx5_wq_cyc_create(mdev, &rqp->wq, rqc_wq, &rq->wqe.wq,
- 					 &rq->wq_ctrl);
- 		if (err)
--			return err;
-+			goto err_rq_wq_destroy;
- 
- 		rq->wqe.wq.db = &rq->wqe.wq.db[MLX5_RCV_DBR];
+ out:
++	set_bit(MLX5E_STATE_DESTROYING, &priv->state);
++	cancel_work_sync(&priv->update_stats_work);
+ 	return err;
+ }
  
 -- 
 2.25.1
