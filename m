@@ -2,165 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE1623ADF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 22:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352F023ADE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 22:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgHCUJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 16:09:55 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:44926 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgHCUJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 16:09:55 -0400
-X-Greylist: delayed 329 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 Aug 2020 16:09:52 EDT
-Received: from localhost.localdomain (unknown [46.188.10.168])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 5060C40A206F;
-        Mon,  3 Aug 2020 20:04:22 +0000 (UTC)
-From:   Alexander Monakov <amonakov@ispras.ru>
-To:     amd-gfx@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Monakov <amonakov@ispras.ru>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH] drm/amd/display: use correct scale for actual_brightness
-Date:   Mon,  3 Aug 2020 23:02:18 +0300
-Message-Id: <20200803200218.2167-1-amonakov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S1728779AbgHCUDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 16:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728229AbgHCUDC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 16:03:02 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A59C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 13:03:02 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id w9so29201897qts.6
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 13:03:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6A/5RoJHIBxD93DNQBku4nNngBquUzm6++SOMVJrgBM=;
+        b=lcZFQ/uh69bDfLnH4QjtClbnbC9Wijo0Q/P/gHCCdM3fj9wpEmEMnvAE65yi9VW36F
+         Upac67ajq0iLvIlPQV1bA+0c7RRbr0o7974MNCj33dgPmZU9xomPvDXh0o5BdQYZchym
+         bh+Nkava4V15mqFrjGstx+Ng4+z5bn7clLb0TZWA6a2m1lyGh2Z1ERwlzUZKFHj66WDn
+         ZTg6CxoLfSXuTPNX/zP00UjPcthMGxNyReR0JHcFuqWD7H06I8IjWpyD6zZfJG1JOZ8g
+         w/KoBLdSkQMvrAP6FtcfqzUsyMO27/6msa3/aHctO8Gud+P6Km5Pbg+1aKUCcaiSPCVo
+         xtJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6A/5RoJHIBxD93DNQBku4nNngBquUzm6++SOMVJrgBM=;
+        b=fwYMWC2CE9yQWpaf4ghOpay5jqhyxc5lX6KyND5K1Egmcd7vATpfgxtXx2xryf4z9m
+         wjtBDjV8HFRF8qzKBQd7QVscF28eTiWZ2I77VnKv5UqUGeBmK+XIgPvwri9knjh+4DoK
+         T3sVMsbf1/ffIdJJSBQ3cZVuQFWVyAKQWYx6+cJGjJl18pg+37pl1sv4v2e4RmeMrqSB
+         Hltkw3xCljHPu+NGLQSsHZfQ60sc+5B5ben185zQeIZbPLo2hbIKhFeSeKLNnJAXNxZV
+         3YzQ1t217q9ksGPN5TAhvpWKjZFzxZUuly7PmRTz0ku6tKYFYyh74+5KAgYUUpoOsPMQ
+         v7Ig==
+X-Gm-Message-State: AOAM532hTjp6QhrqLXQ5JSg80G/QMsbE325fTVHwmKT42dOlu3yZkl1T
+        1/36fI/03dL5l68vACY5txWSKDehR8H1rWy+qVlrmw==
+X-Google-Smtp-Source: ABdhPJwQsQN+JeQXv8JCZ0M4lUDsVgP2NGa1eLmBTwt/RITNqrQ0yakErPNcRNeQsO/sDXDEeD7zJ0sY6AdMjAxJ5e0=
+X-Received: by 2002:ac8:72cc:: with SMTP id o12mr17792007qtp.27.1596484981465;
+ Mon, 03 Aug 2020 13:03:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200725041955.9985-1-warthog618@gmail.com> <20200725041955.9985-6-warthog618@gmail.com>
+ <CAHp75VcKtATPDKGAViWqjOJDqukDrgZ13aTU6rTJ1jEeB3vmVw@mail.gmail.com>
+ <20200726011244.GA6587@sol> <CAMpxmJWaEVwjXSFHTYmwdfA+88upVkJ4ePSQf_ziSOa1YdOUKQ@mail.gmail.com>
+ <20200802033158.GA13174@sol>
+In-Reply-To: <20200802033158.GA13174@sol>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 3 Aug 2020 22:02:50 +0200
+Message-ID: <CAMpxmJWZpMFbrMBkLiR9q7chdamVnjw0geDf-pgKrz=AWD8mNg@mail.gmail.com>
+Subject: Re: [PATCH v2 05/18] gpiolib: cdev: support GPIO_GET_LINE_IOCTL and GPIOLINE_GET_VALUES_IOCTL
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation for sysfs backlight level interface requires that
-values in both 'brightness' and 'actual_brightness' files are
-interpreted to be in range from 0 to the value given in the
-'max_brightness' file.
+On Sun, Aug 2, 2020 at 5:32 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> On Fri, Jul 31, 2020 at 06:05:10PM +0200, Bartosz Golaszewski wrote:
+> > On Sun, Jul 26, 2020 at 3:12 AM Kent Gibson <warthog618@gmail.com> wrote:
 
-With amdgpu, max_brightness gives 255, and values written by the user
-into 'brightness' are internally rescaled to a wider range. However,
-reading from 'actual_brightness' gives the raw register value without
-inverse rescaling. This causes issues for various userspace tools such
-as PowerTop and systemd that expect the value to be in the correct
-range.
+[snip!]
 
-Introduce a helper to retrieve internal backlight range. Extend the
-existing 'convert_brightness' function to handle conversion in both
-directions.
+> > > >
+> > > > > +static u64 gpioline_config_flags(struct gpioline_config *lc, int line_idx)
+> > > > > +{
+> > > > > +       int i;
+> > > > > +
+> > > > > +       for (i = lc->num_attrs - 1; i >= 0; i--) {
+> > > >
+> > > > Much better to read is
+> > > >
+> > > > unsigned int i = lc->num_attrs;
+> > > >
+> > > > while (i--) {
+> > > >  ...
+> > > > }
+> > > >
+> > >
+> > > Really? I find that the post-decrement in the while makes determining the
+> > > bounds of the loop more confusing.
+> > >
+> >
+> > Agreed, Andy: this is too much nit-picking. :)
+> >
+>
+> I was actually hoping for some feedback on the direction of that loop,
+> as it relates to the handling of multiple instances of the same
+> attribute associated with a given line.
+>
+> The reverse loop here implements a last in wins policy, but I'm now
+> thinking the kernel should be encouraging userspace to only associate a
+> given attribute with a line once, and that a first in wins would help do
+> that - as additional associations would be ignored.
+>
+> Alternatively, the kernel should enforce that an attribute can only be
+> associated once, but that would require adding more request validation.
+>
 
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=203905
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1242
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
----
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 73 ++++++++-----------
- 1 file changed, 32 insertions(+), 41 deletions(-)
+I guess this would result in a lot of churn to do validation which is
+largely unnecessary? To me the first in wins sounds more consistent.
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 710edc70e37e..03e21e7b7917 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -2881,51 +2881,42 @@ static int set_backlight_via_aux(struct dc_link *link, uint32_t brightness)
- 	return rc ? 0 : 1;
- }
- 
--static u32 convert_brightness(const struct amdgpu_dm_backlight_caps *caps,
--			      const uint32_t user_brightness)
-+static int get_brightness_range(const struct amdgpu_dm_backlight_caps *caps,
-+				unsigned *min, unsigned *max)
- {
--	u32 min, max, conversion_pace;
--	u32 brightness = user_brightness;
--
- 	if (!caps)
--		goto out;
-+		return 0;
- 
--	if (!caps->aux_support) {
--		max = caps->max_input_signal;
--		min = caps->min_input_signal;
--		/*
--		 * The brightness input is in the range 0-255
--		 * It needs to be rescaled to be between the
--		 * requested min and max input signal
--		 * It also needs to be scaled up by 0x101 to
--		 * match the DC interface which has a range of
--		 * 0 to 0xffff
--		 */
--		conversion_pace = 0x101;
--		brightness =
--			user_brightness
--			* conversion_pace
--			* (max - min)
--			/ AMDGPU_MAX_BL_LEVEL
--			+ min * conversion_pace;
-+	if (caps->aux_support) {
-+		// Firmware limits are in nits, DC API wants millinits.
-+		*max = 1000 * caps->aux_max_input_signal;
-+		*min = 1000 * caps->aux_min_input_signal;
- 	} else {
--		/* TODO
--		 * We are doing a linear interpolation here, which is OK but
--		 * does not provide the optimal result. We probably want
--		 * something close to the Perceptual Quantizer (PQ) curve.
--		 */
--		max = caps->aux_max_input_signal;
--		min = caps->aux_min_input_signal;
--
--		brightness = (AMDGPU_MAX_BL_LEVEL - user_brightness) * min
--			       + user_brightness * max;
--		// Multiple the value by 1000 since we use millinits
--		brightness *= 1000;
--		brightness = DIV_ROUND_CLOSEST(brightness, AMDGPU_MAX_BL_LEVEL);
-+		// Firmware limits are 8-bit, PWM control is 16-bit.
-+		*max = 0x101 * caps->max_input_signal;
-+		*min = 0x101 * caps->min_input_signal;
- 	}
-+	return 1;
-+}
- 
--out:
--	return brightness;
-+static u32 convert_brightness(const struct amdgpu_dm_backlight_caps *caps,
-+			      const uint32_t brightness, int from_user)
-+{
-+	unsigned min, max;
-+
-+	if (!get_brightness_range(caps, &min, &max))
-+		return brightness;
-+
-+	if (from_user)
-+		// Rescale 0..255 to min..max
-+		return min + DIV_ROUND_CLOSEST((max - min) * brightness,
-+					       AMDGPU_MAX_BL_LEVEL);
-+
-+	if (brightness < min)
-+		return 0;
-+	// Rescale min..max to 0..255
-+	return DIV_ROUND_CLOSEST(AMDGPU_MAX_BL_LEVEL * (brightness - min),
-+				 max - min);
- }
- 
- static int amdgpu_dm_backlight_update_status(struct backlight_device *bd)
-@@ -2941,7 +2932,7 @@ static int amdgpu_dm_backlight_update_status(struct backlight_device *bd)
- 
- 	link = (struct dc_link *)dm->backlight_link;
- 
--	brightness = convert_brightness(&caps, bd->props.brightness);
-+	brightness = convert_brightness(&caps, bd->props.brightness, 1);
- 	// Change brightness based on AUX property
- 	if (caps.aux_support)
- 		return set_backlight_via_aux(link, brightness);
-@@ -2958,7 +2949,7 @@ static int amdgpu_dm_backlight_get_brightness(struct backlight_device *bd)
- 
- 	if (ret == DC_ERROR_UNEXPECTED)
- 		return bd->props.brightness;
--	return ret;
-+	return convert_brightness(&dm->backlight_caps, ret, 0);
- }
- 
- static const struct backlight_ops amdgpu_dm_backlight_ops = {
+Also: I just started going through the patches - nice idea with the
+GPIO attributes, I really like it. Although I need to give it a longer
+thought tomorrow - I'm wondering if we can maybe unify them and the
+flags.
 
-base-commit: bcf876870b95592b52519ed4aafcf9d95999bc9c
--- 
-2.26.2
+[snip]
 
+Bartosz
