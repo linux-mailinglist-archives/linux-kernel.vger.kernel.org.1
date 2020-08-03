@@ -2,256 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBE723A9BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AAC23A9C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728246AbgHCPmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 11:42:55 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5022 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728060AbgHCPmh (ORCPT
+        id S1728275AbgHCPm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 11:42:57 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:37566 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728232AbgHCPmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 11:42:37 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f28303c0000>; Mon, 03 Aug 2020 08:41:48 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 03 Aug 2020 08:42:37 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 03 Aug 2020 08:42:37 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 3 Aug
- 2020 15:42:36 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 3 Aug 2020 15:42:36 +0000
-Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.167.221]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f28306c0000>; Mon, 03 Aug 2020 08:42:36 -0700
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>
-CC:     <digetx@gmail.com>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 10/10] media: tegra-video: Compute settle times based on the clock rate
-Date:   Mon, 3 Aug 2020 08:42:26 -0700
-Message-ID: <1596469346-937-11-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
-References: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
-MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596469308; bh=roUn4OftC01Up9y6dlWJXGmDtepFSh32F4qmSVfXZBY=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
-         Content-Type;
-        b=PG4hxvt/r6JYxOH7qwbfUR55E0zVB/0XV4jQK5z5DvTXcfFgzctqvOa0VgQkTjuT0
-         FAJTCVxBrkXP2T/ocrTNMKF3MDCLjlbXo4HaskvkftWJze7t+CuE5X6YayWpfaDeSm
-         olrYG2RRkDQbybIRhRVFMOVEkNHAcvD1YChAy+ZlZSlknDz+Zmd4ADN5keDuZAc/3K
-         84rHc3vNwblwI4kOlmz/RuFcey5T2xxcBUzHZIr90/7rq+5UmBkTocCuafoCumPiQY
-         ViO2Ww5toR53FeJn0xTkrfcOrPM8w6Jg/EcTOWxLYbGZJYUGk2XwPQsKECh1wnSa0x
-         ROhd3Lpz/KAnA==
+        Mon, 3 Aug 2020 11:42:55 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 0C8748EE1DD;
+        Mon,  3 Aug 2020 08:42:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1596469374;
+        bh=Uum3YBzktKJNuHiR6OJu5HmfTF5qQnA5gi/i5G/rXrQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=O9JK86TcVP7gbxm2fb/8Q61ppK2NKKQTxTKNuHlV2ceyKu1aTztA5xAoiJrD2pxW/
+         Q+qv2hXr5mwEzJ3gdctVri6mhLMR5/CHlIiEsE/4/lI+JZDaI0KDvNumWeAJkyX13U
+         OCGvKNLxJrKe8ou8wqztvVdP+b2dZwwO98fcCXtA=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id EdiLDuzcATav; Mon,  3 Aug 2020 08:42:53 -0700 (PDT)
+Received: from [153.66.254.194] (unknown [50.35.76.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 81ED08EE14D;
+        Mon,  3 Aug 2020 08:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1596469373;
+        bh=Uum3YBzktKJNuHiR6OJu5HmfTF5qQnA5gi/i5G/rXrQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=s4K2YpwDLz+5kMilTgP8ZNMakkD9GePIXlmZcfIzJDFHwQHhqnSrKdXx2dgkvpwtr
+         hAqE4Wy7TqMCx3r3hCV4Hpap0/QxwKCr2EbyGneLKFgGD6GJ8mv6m1pfA0xUdlMOoP
+         UgLcD2xTWanH2eZI7HU/ES49TBMi0ZvSvbsfkml4=
+Message-ID: <1596469370.29091.13.camel@HansenPartnership.com>
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Steven Sistare <steven.sistare@oracle.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org, mhocko@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        arnd@arndb.de, keescook@chromium.org, gerg@linux-m68k.org,
+        ktkhai@virtuozzo.com, christian.brauner@ubuntu.com,
+        peterz@infradead.org, esyr@redhat.com, jgg@ziepe.ca,
+        christian@kellner.me, areber@redhat.com, cyphar@cyphar.com
+Date:   Mon, 03 Aug 2020 08:42:50 -0700
+In-Reply-To: <877dufvje9.fsf@x220.int.ebiederm.org>
+References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
+         <20200730152250.GG23808@casper.infradead.org>
+         <db3bdbae-eb0f-1ae3-94dd-045e37bc94ba@oracle.com>
+         <20200730171251.GI23808@casper.infradead.org>
+         <63a7404c-e4f6-a82e-257b-217585b0277f@oracle.com>
+         <20200730174956.GK23808@casper.infradead.org>
+         <ab7a25bf-3321-77c8-9bc3-28a223a14032@oracle.com>
+         <87y2n03brx.fsf@x220.int.ebiederm.org>
+         <689d6348-6029-5396-8de7-a26bc3c017e5@oracle.com>
+         <877dufvje9.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Settle time determines the number of cil clock cyles to wait after
-LP00 when moving from LP to HS.
+On Mon, 2020-08-03 at 10:28 -0500, Eric W. Biederman wrote:
+[...]
+> What is wrong with live migration between one qemu process and
+> another qemu process on the same machine not work for this use case?
+> 
+> Just reusing live migration would seem to be the simplest path of
+> all, as the code is already implemented.  Further if something goes
+> wrong with the live migration you can fallback to the existing
+> process.  With exec there is no fallback if the new version does not
+> properly support the handoff protocol of the old version.
 
-This patch computes T-CLK-SETTLE and T-HS-SETTLE times based on cil
-clock rate and pixel rate from the sensor and programs them during
-streaming.
+Actually, could I ask this another way: the other patch set you sent to
+the KVM list was to snapshot the VM to a PKRAM capsule preserved across
+kexec using zero copy for extremely fast save/restore.  The original
+idea was to use this as part of a CRIU based snapshot, kexec to new
+system, restore.  However, why can't you do a local snapshot, restart
+qemu, restore using the PKRAM capsule to achieve exactly the same as
+MADV_DOEXEC does but using a system that's easy to reason about?  It
+may be slightly slower, but I think we're still talking milliseconds.
 
-T-CLK-SETTLE time is the interval during which receiver will ignore
-any HS transitions on clock lane starting from the beginning of
-T-CLK-PREPARE.
-
-T-HS-SETTLE time is the interval during which recevier will ignore
-any HS transitions on data lane starting from the beginning of
-T-HS-PREPARE.
-
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- drivers/staging/media/tegra-video/TODO       |  1 -
- drivers/staging/media/tegra-video/csi.c      | 55 ++++++++++++++++++++++++++++
- drivers/staging/media/tegra-video/csi.h      |  5 +++
- drivers/staging/media/tegra-video/tegra210.c | 17 ++++++++-
- 4 files changed, 75 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/media/tegra-video/TODO b/drivers/staging/media/tegra-video/TODO
-index 98d3c7d..c821081 100644
---- a/drivers/staging/media/tegra-video/TODO
-+++ b/drivers/staging/media/tegra-video/TODO
-@@ -1,5 +1,4 @@
- TODO list
--* Add MIPI clock Settle time computation based on the data rate.
- * Add support for Ganged mode.
- * Add RAW10 packed video format support to Tegra210 video formats.
- * Add support for suspend and resume.
-diff --git a/drivers/staging/media/tegra-video/csi.c b/drivers/staging/media/tegra-video/csi.c
-index 76b4311..93875cb 100644
---- a/drivers/staging/media/tegra-video/csi.c
-+++ b/drivers/staging/media/tegra-video/csi.c
-@@ -19,6 +19,8 @@
- #include "csi.h"
- #include "video.h"
- 
-+#define MHZ			1000000
-+
- static inline struct tegra_csi *
- host1x_client_to_csi(struct host1x_client *client)
- {
-@@ -235,6 +237,59 @@ static int tegra_csi_g_frame_interval(struct v4l2_subdev *subdev,
- 	return 0;
- }
- 
-+static unsigned int csi_get_pixel_rate(struct tegra_csi_channel *csi_chan)
-+{
-+	struct tegra_vi_channel *chan;
-+	struct v4l2_subdev *src_subdev;
-+	struct v4l2_ctrl *ctrl;
-+
-+	chan = v4l2_get_subdev_hostdata(&csi_chan->subdev);
-+	src_subdev = tegra_channel_get_remote_source_subdev(chan);
-+	ctrl = v4l2_ctrl_find(src_subdev->ctrl_handler, V4L2_CID_PIXEL_RATE);
-+	if (ctrl)
-+		return v4l2_ctrl_g_ctrl_int64(ctrl);
-+
-+	return 0;
-+}
-+
-+void tegra_csi_calc_settle_time(struct tegra_csi_channel *csi_chan,
-+				u8 *clk_settle_time,
-+				u8 *ths_settle_time)
-+{
-+	struct tegra_csi *csi = csi_chan->csi;
-+	unsigned int cil_clk_mhz;
-+	unsigned int pix_clk_mhz;
-+	int clk_idx = (csi_chan->csi_port_num >> 1) + 1;
-+
-+	cil_clk_mhz = clk_get_rate(csi->clks[clk_idx].clk) / MHZ;
-+	pix_clk_mhz = csi_get_pixel_rate(csi_chan) / MHZ;
-+
-+	/*
-+	 * CLK Settle time is the interval during which HS receiver should
-+	 * ignore any clock lane HS transitions, starting from the beginning
-+	 * of T-CLK-PREPARE.
-+	 * Per DPHY specification, T-CLK-SETTLE should be between 95ns ~ 300ns
-+	 *
-+	 * 95ns < (clk-settle-programmed + 7) * lp clk period < 300ns
-+	 * midpoint = 197.5 ns
-+	 */
-+	*clk_settle_time = ((95 + 300) * cil_clk_mhz - 14000) / 2000;
-+
-+	/*
-+	 * THS Settle time is the interval during which HS receiver should
-+	 * ignore any data lane HS transitions, starting from the beginning
-+	 * of THS-PREPARE.
-+	 *
-+	 * Per DPHY specification, T-HS-SETTLE should be between 85ns + 6UI
-+	 * and 145ns+10UI.
-+	 * 85ns + 6UI < (Ths-settle-prog + 5) * lp_clk_period < 145ns + 10UI
-+	 * midpoint = 115ns + 8UI
-+	 */
-+	if (pix_clk_mhz)
-+		*ths_settle_time = (115 * cil_clk_mhz + 8000 * cil_clk_mhz
-+				   / (2 * pix_clk_mhz) - 5000) / 1000;
-+}
-+
- static int tegra_csi_enable_stream(struct v4l2_subdev *subdev)
- {
- 	struct tegra_vi_channel *chan = v4l2_get_subdev_hostdata(subdev);
-diff --git a/drivers/staging/media/tegra-video/csi.h b/drivers/staging/media/tegra-video/csi.h
-index 0d50fc3..c65ff73 100644
---- a/drivers/staging/media/tegra-video/csi.h
-+++ b/drivers/staging/media/tegra-video/csi.h
-@@ -51,6 +51,7 @@ struct tegra_csi;
-  * @h_blank: horizontal blanking for TPG active format
-  * @v_blank: vertical blanking for TPG active format
-  * @mipi: mipi device for corresponding csi channel pads
-+ * @pixel_rate: active pixel rate from the sensor on this channel
-  */
- struct tegra_csi_channel {
- 	struct list_head list;
-@@ -67,6 +68,7 @@ struct tegra_csi_channel {
- 	unsigned int h_blank;
- 	unsigned int v_blank;
- 	struct tegra_mipi_device *mipi;
-+	unsigned int pixel_rate;
- };
- 
- /**
-@@ -147,4 +149,7 @@ extern const struct tegra_csi_soc tegra210_csi_soc;
- #endif
- 
- void tegra_csi_error_recover(struct v4l2_subdev *subdev);
-+void tegra_csi_calc_settle_time(struct tegra_csi_channel *csi_chan,
-+				u8 *clk_settle_time,
-+				u8 *ths_settle_time);
- #endif
-diff --git a/drivers/staging/media/tegra-video/tegra210.c b/drivers/staging/media/tegra-video/tegra210.c
-index 253bf33..ac066c0 100644
---- a/drivers/staging/media/tegra-video/tegra210.c
-+++ b/drivers/staging/media/tegra-video/tegra210.c
-@@ -7,6 +7,7 @@
-  * This source file contains Tegra210 supported video formats,
-  * VI and CSI SoC specific data, operations and registers accessors.
-  */
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/clk/tegra.h>
- #include <linux/delay.h>
-@@ -98,6 +99,8 @@
- #define   BRICK_CLOCK_B_4X				(0x2 << 16)
- #define TEGRA_CSI_CIL_PAD_CONFIG1                       0x004
- #define TEGRA_CSI_CIL_PHY_CONTROL                       0x008
-+#define   CLK_SETTLE_MASK				GENMASK(13, 8)
-+#define   THS_SETTLE_MASK				GENMASK(5, 0)
- #define TEGRA_CSI_CIL_INTERRUPT_MASK                    0x00c
- #define TEGRA_CSI_CIL_STATUS                            0x010
- #define TEGRA_CSI_CILX_STATUS                           0x014
-@@ -770,8 +773,14 @@ static int tegra210_csi_start_streaming(struct tegra_csi_channel *csi_chan)
- {
- 	struct tegra_csi *csi = csi_chan->csi;
- 	unsigned int portno = csi_chan->csi_port_num;
-+	u8 clk_settle_time = 0;
-+	u8 ths_settle_time = 10;
- 	u32 val;
- 
-+	if (!csi_chan->pg_mode)
-+		tegra_csi_calc_settle_time(csi_chan, &clk_settle_time,
-+					   &ths_settle_time);
-+
- 	csi_write(csi, portno, TEGRA_CSI_CLKEN_OVERRIDE, 0);
- 
- 	/* clean up status */
-@@ -782,7 +791,9 @@ static int tegra210_csi_start_streaming(struct tegra_csi_channel *csi_chan)
- 
- 	/* CIL PHY registers setup */
- 	cil_write(csi, portno, TEGRA_CSI_CIL_PAD_CONFIG0, 0x0);
--	cil_write(csi, portno, TEGRA_CSI_CIL_PHY_CONTROL, 0xa);
-+	cil_write(csi, portno, TEGRA_CSI_CIL_PHY_CONTROL,
-+		  FIELD_PREP(CLK_SETTLE_MASK, clk_settle_time) |
-+		  FIELD_PREP(THS_SETTLE_MASK, ths_settle_time));
- 
- 	/*
- 	 * The CSI unit provides for connection of up to six cameras in
-@@ -801,7 +812,9 @@ static int tegra210_csi_start_streaming(struct tegra_csi_channel *csi_chan)
- 			  BRICK_CLOCK_A_4X);
- 		cil_write(csi, portno + 1, TEGRA_CSI_CIL_PAD_CONFIG0, 0x0);
- 		cil_write(csi, portno + 1, TEGRA_CSI_CIL_INTERRUPT_MASK, 0x0);
--		cil_write(csi, portno + 1, TEGRA_CSI_CIL_PHY_CONTROL, 0xa);
-+		cil_write(csi, portno + 1, TEGRA_CSI_CIL_PHY_CONTROL,
-+			  FIELD_PREP(CLK_SETTLE_MASK, clk_settle_time) |
-+			  FIELD_PREP(THS_SETTLE_MASK, ths_settle_time));
- 		csi_write(csi, portno, TEGRA_CSI_PHY_CIL_COMMAND,
- 			  CSI_A_PHY_CIL_ENABLE | CSI_B_PHY_CIL_ENABLE);
- 	} else {
--- 
-2.7.4
+James
 
