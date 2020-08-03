@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A451F23A4E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BBC223A65F
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbgHCMbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:31:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58518 "EHLO mail.kernel.org"
+        id S1728293AbgHCMZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:25:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727914AbgHCMbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:31:10 -0400
+        id S1728276AbgHCMZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:25:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 746422076B;
-        Mon,  3 Aug 2020 12:31:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A01E7204EC;
+        Mon,  3 Aug 2020 12:25:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457869;
-        bh=+QC62NbEeI2LDHhBhnfrK0H7jHK8Vrnz7wzz6iPnyQs=;
+        s=default; t=1596457550;
+        bh=wU/TN71rTvgaJrmEbzOri9vKXRrQfz4CqDUk8J6+y90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aSzT7FIJsGhrmsRsfoo6s5L3khtQ37E81tz9rldR6mlvr3fg/JFDzHfLubDtxZOfd
-         X+RhOwEfExKj4X+bdbUEgyCKsahtwpYJw5CWLwusr6iNsRNkzqWHHeddrIO47BulYF
-         QzGeRr+QeIGVVaPbZbG0OoEkx9u03rp4OBj6lbQE=
+        b=aBsrzByo0AXKIMk2QMyUiSWERyJu/OYEHN7UvfQMWMKlr05g+nKJIGKdGGbMGfIhq
+         XNaWj2lvaZpmtj7OpUfYKuYHwqw0p5rJ4+zCHDijeSHd1eTI6Z3NDTtyIzIe1oHBRd
+         3jk2bHdD4yPH9HEA3l9r9o2l4BfNwcbFzwZP79ro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Hancock <hancockrwd@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.19 12/56] PCI/ASPM: Disable ASPM on ASMedia ASM1083/1085 PCIe-to-PCI bridge
+        stable@vger.kernel.org,
+        Raviteja Narayanam <raviteja.narayanam@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 109/120] i2c: cadence: Clear HOLD bit at correct time in Rx path
 Date:   Mon,  3 Aug 2020 14:19:27 +0200
-Message-Id: <20200803121850.919304407@linuxfoundation.org>
+Message-Id: <20200803121908.204499811@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,68 +45,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Hancock <hancockrwd@gmail.com>
+From: Raviteja Narayanam <raviteja.narayanam@xilinx.com>
 
-commit b361663c5a40c8bc758b7f7f2239f7a192180e7c upstream.
+[ Upstream commit 12d4d9ec5eeecd712c73772e422b6d082e66b046 ]
 
-Recently ASPM handling was changed to allow ASPM on PCIe-to-PCI/PCI-X
-bridges.  Unfortunately the ASMedia ASM1083/1085 PCIe to PCI bridge device
-doesn't seem to function properly with ASPM enabled.  On an Asus PRIME
-H270-PRO motherboard, it causes errors like these:
+There are few issues on Zynq SOC observed in the stress tests causing
+timeout errors. Even though all the data is received, timeout error
+is thrown. This is due to an IP bug in which the COMP bit in ISR is
+not set at end of transfer and completion interrupt is not generated.
 
-  pcieport 0000:00:1c.0: AER: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Transmitter ID)
-  pcieport 0000:00:1c.0: AER:   device [8086:a292] error status/mask=00003000/00002000
-  pcieport 0000:00:1c.0: AER:    [12] Timeout
-  pcieport 0000:00:1c.0: AER: Corrected error received: 0000:00:1c.0
-  pcieport 0000:00:1c.0: AER: can't find device of ID00e0
+This bug is seen on Zynq platforms when the following condition occurs:
+Master read & HOLD bit set & Transfer size register reaches '0'.
 
-In addition to flooding the kernel log, this also causes the machine to
-wake up immediately after suspend is initiated.
+One workaround is to clear the HOLD bit before the transfer size
+register reaches '0'. The current implementation checks for this at
+the start of the loop and also only for less than FIFO DEPTH case
+(ignoring the equal to case).
 
-The device advertises ASPM L0s and L1 support in the Link Capabilities
-register, but the ASMedia web page for ASM1083 [1] claims "No PCIe ASPM
-support".
+So clear the HOLD bit when the data yet to receive is less than or
+equal to the FIFO DEPTH. This avoids the IP bug condition.
 
-Windows 10 (build 2004) enables L0s, but it also logs correctable PCIe
-errors.
-
-Add a quirk to disable ASPM for this device.
-
-[1] https://www.asmedia.com.tw/eng/e_show_products.php?cate_index=169&item=114
-
-[bhelgaas: commit log]
-Fixes: 66ff14e59e8a ("PCI/ASPM: Allow ASPM on links to PCIe-to-PCI/PCI-X Bridges")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=208667
-Link: https://lore.kernel.org/r/20200722021803.17958-1-hancockrwd@gmail.com
-Signed-off-by: Robert Hancock <hancockrwd@gmail.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Raviteja Narayanam <raviteja.narayanam@xilinx.com>
+Acked-by: Michal Simek <michal.simek@xilinx.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/i2c/busses/i2c-cadence.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -2307,6 +2307,19 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_IN
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x10f4, quirk_disable_aspm_l0s);
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x1508, quirk_disable_aspm_l0s);
- 
-+static void quirk_disable_aspm_l0s_l1(struct pci_dev *dev)
-+{
-+	pci_info(dev, "Disabling ASPM L0s/L1\n");
-+	pci_disable_link_state(dev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
-+}
+diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
+index 97a0bd6ea31f1..1efdabb5adca0 100644
+--- a/drivers/i2c/busses/i2c-cadence.c
++++ b/drivers/i2c/busses/i2c-cadence.c
+@@ -230,20 +230,21 @@ static irqreturn_t cdns_i2c_isr(int irq, void *ptr)
+ 		/* Read data if receive data valid is set */
+ 		while (cdns_i2c_readreg(CDNS_I2C_SR_OFFSET) &
+ 		       CDNS_I2C_SR_RXDV) {
+-			/*
+-			 * Clear hold bit that was set for FIFO control if
+-			 * RX data left is less than FIFO depth, unless
+-			 * repeated start is selected.
+-			 */
+-			if ((id->recv_count < CDNS_I2C_FIFO_DEPTH) &&
+-			    !id->bus_hold_flag)
+-				cdns_i2c_clear_bus_hold(id);
+-
+ 			if (id->recv_count > 0) {
+ 				*(id->p_recv_buf)++ =
+ 					cdns_i2c_readreg(CDNS_I2C_DATA_OFFSET);
+ 				id->recv_count--;
+ 				id->curr_recv_count--;
 +
-+/*
-+ * ASM1083/1085 PCIe-PCI bridge devices cause AER timeout errors on the
-+ * upstream PCIe root port when ASPM is enabled. At least L0s mode is affected;
-+ * disable both L0s and L1 for now to be safe.
-+ */
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ASMEDIA, 0x1080, quirk_disable_aspm_l0s_l1);
++				/*
++				 * Clear hold bit that was set for FIFO control
++				 * if RX data left is less than or equal to
++				 * FIFO DEPTH unless repeated start is selected
++				 */
++				if (id->recv_count <= CDNS_I2C_FIFO_DEPTH &&
++				    !id->bus_hold_flag)
++					cdns_i2c_clear_bus_hold(id);
 +
- /*
-  * Some Pericom PCIe-to-PCI bridges in reverse mode need the PCIe Retrain
-  * Link bit cleared after starting the link retrain process to allow this
+ 			} else {
+ 				dev_err(id->adap.dev.parent,
+ 					"xfer_size reg rollover. xfer aborted!\n");
+-- 
+2.25.1
+
 
 
