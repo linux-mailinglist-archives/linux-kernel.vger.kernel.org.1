@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29ECD23A68B
+	by mail.lfdr.de (Postfix) with ESMTP id A0F3823A68C
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgHCMYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:24:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48040 "EHLO mail.kernel.org"
+        id S1726826AbgHCMYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:24:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727929AbgHCMXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:23:49 -0400
+        id S1727941AbgHCMXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:23:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02B97207FB;
-        Mon,  3 Aug 2020 12:23:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E30E9204EC;
+        Mon,  3 Aug 2020 12:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457428;
-        bh=gbZfDeAEN0uq8VausNRrRU0+Yp0+lrHqt7Bn1plSna0=;
+        s=default; t=1596457431;
+        bh=2f+qknLEBJ9Scqg4MEihsT/+/GaFehSaxFPzxZeMMnM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NzvFGUnp5qfejh766tyvNmqyZbK5vQsgWbiQjGSfpQige1fL0Z4XwGfSnlUaTP9FS
-         u2XXrJeKOu+Dh0sUbghyMWrZTqLHnp3j/2s4pCMV9Uktz7P84MT1oy6E1AFLGceipz
-         X0y7LPr84YI6fXF4dZ0N8U+SnsTuNT/ysccS0ofw=
+        b=i/a98lwVbBxgL8/8B7QFq99k9orTFSNwL61VjBUXo/IMQY0A1DiPpfVMjC7UPvztf
+         +skZ8AuXqZg/K5ZfkrW+rIzaPOpMGUJP4l7AagrFLi+xcnLSF1KubsPYjTuPg2f59z
+         1oPz+YlYZgAcc19crXTYGYtA+3yXrMQMtv0KIL2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.7 033/120] libtraceevent: Fix build with binutils 2.35
-Date:   Mon,  3 Aug 2020 14:18:11 +0200
-Message-Id: <20200803121904.444006355@linuxfoundation.org>
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.7 034/120] net/x25: Fix x25_neigh refcnt leak when x25 disconnect
+Date:   Mon,  3 Aug 2020 14:18:12 +0200
+Message-Id: <20200803121904.491450067@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
 References: <20200803121902.860751811@linuxfoundation.org>
@@ -46,37 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Hutchings <ben@decadent.org.uk>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-commit 39efdd94e314336f4acbac4c07e0f37bdc3bef71 upstream.
+commit 4becb7ee5b3d2829ed7b9261a245a77d5b7de902 upstream.
 
-In binutils 2.35, 'nm -D' changed to show symbol versions along with
-symbol names, with the usual @@ separator.  When generating
-libtraceevent-dynamic-list we need just the names, so strip off the
-version suffix if present.
+x25_connect() invokes x25_get_neigh(), which returns a reference of the
+specified x25_neigh object to "x25->neighbour" with increased refcnt.
 
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-Tested-by: Salvatore Bonaccorso <carnil@debian.org>
-Reviewed-by: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+When x25 connect success and returns, the reference still be hold by
+"x25->neighbour", so the refcount should be decreased in
+x25_disconnect() to keep refcount balanced.
+
+The reference counting issue happens in x25_disconnect(), which forgets
+to decrease the refcnt increased by x25_get_neigh() in x25_connect(),
+causing a refcnt leak.
+
+Fix this issue by calling x25_neigh_put() before x25_disconnect()
+returns.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/lib/traceevent/plugins/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/x25/x25_subr.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/tools/lib/traceevent/plugins/Makefile
-+++ b/tools/lib/traceevent/plugins/Makefile
-@@ -197,7 +197,7 @@ define do_generate_dynamic_list_file
- 	xargs echo "U w W" | tr 'w ' 'W\n' | sort -u | xargs echo`;\
- 	if [ "$$symbol_type" = "U W" ];then				\
- 		(echo '{';                                              \
--		$(NM) -u -D $1 | awk 'NF>1 {print "\t"$$2";"}' | sort -u;\
-+		$(NM) -u -D $1 | awk 'NF>1 {sub("@.*", "", $$2); print "\t"$$2";"}' | sort -u;\
- 		echo '};';                                              \
- 		) > $2;                                                 \
- 	else                                                            \
+--- a/net/x25/x25_subr.c
++++ b/net/x25/x25_subr.c
+@@ -363,6 +363,10 @@ void x25_disconnect(struct sock *sk, int
+ 		x25->neighbour = NULL;
+ 		read_unlock_bh(&x25_list_lock);
+ 	}
++	read_lock_bh(&x25_list_lock);
++	x25_neigh_put(x25->neighbour);
++	x25->neighbour = NULL;
++	read_unlock_bh(&x25_list_lock);
+ }
+ 
+ /*
 
 
