@@ -2,160 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE0723A95F
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BEE23A967
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 17:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgHCPbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 11:31:47 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:47446 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgHCPbr (ORCPT
+        id S1726932AbgHCPcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 11:32:48 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:39501 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgHCPcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 11:31:47 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k2cR0-00877r-MU; Mon, 03 Aug 2020 09:31:30 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k2cQz-00048L-7z; Mon, 03 Aug 2020 09:31:30 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Steven Sistare <steven.sistare@oracle.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org, mhocko@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        arnd@arndb.de, keescook@chromium.org, gerg@linux-m68k.org,
-        ktkhai@virtuozzo.com, christian.brauner@ubuntu.com,
-        peterz@infradead.org, esyr@redhat.com, jgg@ziepe.ca,
-        christian@kellner.me, areber@redhat.com, cyphar@cyphar.com
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
-        <20200730152250.GG23808@casper.infradead.org>
-        <db3bdbae-eb0f-1ae3-94dd-045e37bc94ba@oracle.com>
-        <20200730171251.GI23808@casper.infradead.org>
-        <63a7404c-e4f6-a82e-257b-217585b0277f@oracle.com>
-        <20200730174956.GK23808@casper.infradead.org>
-        <ab7a25bf-3321-77c8-9bc3-28a223a14032@oracle.com>
-        <87y2n03brx.fsf@x220.int.ebiederm.org>
-        <689d6348-6029-5396-8de7-a26bc3c017e5@oracle.com>
-Date:   Mon, 03 Aug 2020 10:28:14 -0500
-In-Reply-To: <689d6348-6029-5396-8de7-a26bc3c017e5@oracle.com> (Steven
-        Sistare's message of "Fri, 31 Jul 2020 10:57:44 -0400")
-Message-ID: <877dufvje9.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 3 Aug 2020 11:32:46 -0400
+Received: by mail-wm1-f67.google.com with SMTP id q76so14630003wme.4
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 08:32:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aAEEBYH/RNE6F6eih4Xf8kJGXqfcNHHmi9tjJ8DCSlI=;
+        b=ZHEu9jrEGD5jfkB7KwMAUjYGFHe6d0avoeArT8Q1YCmb7TBmz/19HUwWNCgjY/HNFE
+         OIx1TArP5pGgr4hIj+O1waKxpcuzI1/+0RYXU/TM7MOIgmvff5PhS0sVC5/pGFW/HhjF
+         qrupkkiunMVjcB7m9T7rYcs9a0lbH98G7LuBNdMhOAE+iYWQiIbID0qzz1RS4Q0VGvyM
+         2CF8moP78kRTnDvjUKSvz7/1kY8K1USjOZQHHIPOLK1SnMR3n9wsbQCcaMioM7B7w15j
+         Mt5NIrA49jIMPDdkCPuDEO9zt7k3zYBBDJggms0pC70E2ZZU1qIAl7HQhfMs4ISSv/kh
+         wNCA==
+X-Gm-Message-State: AOAM532MMB0VSPGx7eLyX7rzwxQywA0H4lKJ0MphW0RRd7u3btWNQC1Z
+        DoJtrjo48NfXMX9yUDBmolY=
+X-Google-Smtp-Source: ABdhPJyjogI7x4EjysRPYcFwG3urMjXbnPLRiwE52sPayUyavtnb6nVIzYghbVaf/rmvG/kmOb0Rfg==
+X-Received: by 2002:a1c:ba83:: with SMTP id k125mr515975wmf.160.1596468764859;
+        Mon, 03 Aug 2020 08:32:44 -0700 (PDT)
+Received: from tiehlicka.suse.cz (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
+        by smtp.gmail.com with ESMTPSA id w1sm25562444wmc.18.2020.08.03.08.32.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 08:32:44 -0700 (PDT)
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Koutny <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+Subject: [PATCH] mm: Fix protection usage propagation
+Date:   Mon,  3 Aug 2020 17:32:31 +0200
+Message-Id: <20200803153231.15477-1-mhocko@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1k2cQz-00048L-7z;;;mid=<877dufvje9.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/TnIbHCfTWSuRtxPvgCFD72EF12cavVvA=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4767]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Steven Sistare <steven.sistare@oracle.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 773 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 12 (1.6%), b_tie_ro: 11 (1.4%), parse: 1.88
-        (0.2%), extract_message_metadata: 19 (2.5%), get_uri_detail_list: 3.3
-        (0.4%), tests_pri_-1000: 16 (2.0%), tests_pri_-950: 1.42 (0.2%),
-        tests_pri_-900: 1.23 (0.2%), tests_pri_-90: 170 (22.0%), check_bayes:
-        168 (21.7%), b_tokenize: 17 (2.2%), b_tok_get_all: 12 (1.6%),
-        b_comp_prob: 6 (0.8%), b_tok_touch_all: 128 (16.6%), b_finish: 1.14
-        (0.1%), tests_pri_0: 532 (68.9%), check_dkim_signature: 0.60 (0.1%),
-        check_dkim_adsp: 2.3 (0.3%), poll_dns_idle: 0.57 (0.1%), tests_pri_10:
-        2.2 (0.3%), tests_pri_500: 11 (1.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steven Sistare <steven.sistare@oracle.com> writes:
+From: Michal Koutný <mkoutny@suse.com>
 
-> On 7/30/2020 5:58 PM, ebiederm@xmission.com wrote:
->> Here is another suggestion.
->> 
->> Have a very simple program that does:
->> 
->> 	for (;;) {
->> 		handle = dlopen("/my/real/program");
->> 		real_main = dlsym(handle, "main");
->> 		real_main(argc, argv, envp);
->> 		dlclose(handle);
->> 	}
->> 
->> With whatever obvious adjustments are needed to fit your usecase.
->> 
->> That should give the same level of functionality, be portable to all
->> unices, and not require you to duplicate code.  It belive it limits you
->> to not upgrading libc, or librt but that is a comparatively small
->> limitation.
->> 
->> 
->> Given that in general the interesting work is done in userspace and that
->> userspace has provided an interface for reusing that work already.
->> I don't see the justification for adding anything to exec at this point. 
->
-> Thanks for the suggestion.  That is clever, and would make a fun project,
-> but I would not trust it for production.  These few lines are just
-> the first of many that it would take to reset the environment to the
-> well-defined post-exec initial conditions that all executables expect,
-> and incrementally tearing down state will be prone to bugs.
+When workload runs in cgroups that aren't directly below root cgroup and
+their parent specifies reclaim protection, it may end up ineffective.
 
-Agreed.
+The reason is that propagate_protected_usage() is not called in all
+hierarchy up. All the protected usage is incorrectly accumulated in the
+workload's parent. This means that siblings_low_usage is overestimated
+and effective protection underestimated. Even though it is transitional
+phenomenon (uncharge path does correct propagation and fixes the wrong
+children_low_usage), it can undermine the indended protection
+unexpectedly.
 
-> Getting a clean slate from a kernel exec is a much more reliable
-> design.
+The fix is simply updating children_low_usage in respective ancestors
+also in the charging path.
 
-Except you are explicitly throwing that out the window, by preserving
-VMAs.  You very much need to have a clean bug free shutdown to pass VMAs
-reliably.
+Fixes: 230671533d64 ("mm: memory.low hierarchical behavior")
+Cc: stable # 4.18+
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+---
 
-> The use case is creating long-lived apps that never go down, and the
-> simplest implementation will have the fewest bugs and is the best.
-> MADV_DOEXEC is simple, and does not even require a new system call,
-> and the kernel already knows how to exec without bugs.
+Hi,
+I am sending this patch on behalf of Michal Koutny who is currently
+on vacation and didn't get to post it before he left.
 
-*ROFL*  I wish the kernel knew how to exec things without bugs.
-The bugs are hard to hit but the ones I am aware of are not straight
-forward to fix.
+We have noticed this problem while seeing a swap out in a descendant of
+a protected memcg (intermediate node) while the parent was conveniently
+under its protection limit and the memory pressure was external
+to that hierarchy. Michal has pinpointed this down to the wrong
+siblings_low_usage which led to the unwanted reclaim.
 
-MADV_DOEXEC is not conceptually simple.  It completely violates the
-guarantees that exec is known to make about the contents of the memory
-of the new process.  This makes it very difficult to reason about.  Nor
-will MADV_DOEXEC be tested very much as it has only one or two users.
-Which means in the fullness of time it is likely someone will change
-something that will break the implementation subtlely and the bug report
-probably won't come in for 3 years, or maybe a decade.  At which point
-it won't be clear if the bug even can be fixed as something else might
-rely on it.
+I am adding my ack directly in this submission.
 
-What is wrong with live migration between one qemu process and another
-qemu process on the same machine not work for this use case?
+ mm/page_counter.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Just reusing live migration would seem to be the simplest path of all,
-as the code is already implemented.  Further if something goes wrong
-with the live migration you can fallback to the existing process.  With
-exec there is no fallback if the new version does not properly support
-the handoff protocol of the old version.
+diff --git a/mm/page_counter.c b/mm/page_counter.c
+index c56db2d5e159..b4663844c9b3 100644
+--- a/mm/page_counter.c
++++ b/mm/page_counter.c
+@@ -72,7 +72,7 @@ void page_counter_charge(struct page_counter *counter, unsigned long nr_pages)
+ 		long new;
+ 
+ 		new = atomic_long_add_return(nr_pages, &c->usage);
+-		propagate_protected_usage(counter, new);
++		propagate_protected_usage(c, new);
+ 		/*
+ 		 * This is indeed racy, but we can live with some
+ 		 * inaccuracy in the watermark.
+@@ -116,7 +116,7 @@ bool page_counter_try_charge(struct page_counter *counter,
+ 		new = atomic_long_add_return(nr_pages, &c->usage);
+ 		if (new > c->max) {
+ 			atomic_long_sub(nr_pages, &c->usage);
+-			propagate_protected_usage(counter, new);
++			propagate_protected_usage(c, new);
+ 			/*
+ 			 * This is racy, but we can live with some
+ 			 * inaccuracy in the failcnt.
+@@ -125,7 +125,7 @@ bool page_counter_try_charge(struct page_counter *counter,
+ 			*fail = c;
+ 			goto failed;
+ 		}
+-		propagate_protected_usage(counter, new);
++		propagate_protected_usage(c, new);
+ 		/*
+ 		 * Just like with failcnt, we can live with some
+ 		 * inaccuracy in the watermark.
+-- 
+2.27.0
 
-Eric
