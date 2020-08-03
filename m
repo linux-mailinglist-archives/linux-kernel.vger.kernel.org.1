@@ -2,102 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3AF23A7D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 15:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5472E23A7DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 15:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgHCNjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 09:39:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34438 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726805AbgHCNjq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 09:39:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596461984;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ghWxgCtP6DOJs2jlobm5OHTZI32yY8LeVsVq2n2kfjI=;
-        b=hFXyqJEm+8Q4zfW/Sgd5ouS/uEh8qsxwDgZ4RaziVRV1Y/Ca1KA4rk3RuqnVB9iHZ8HmvJ
-        aHi3v1gA/riR+9IJnEbJve4ftdDTcRGa1eGx6Rp6STVdBnxkhdC78OEUak5/4gVwfPT9jf
-        J79hFJzDpd6kLmzASTaEk/gD/FvIf1s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-LTGAt8n1OzWawJK_1tWwRg-1; Mon, 03 Aug 2020 09:39:40 -0400
-X-MC-Unique: LTGAt8n1OzWawJK_1tWwRg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CE27891279;
-        Mon,  3 Aug 2020 13:39:13 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 831A974F58;
-        Mon,  3 Aug 2020 13:39:11 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 18/18] samples: add error state information to test-fsinfo.c
- [ver #21]
-From:   David Howells <dhowells@redhat.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     Jeff Layton <jlayton@kernel.org>, dhowells@redhat.com,
-        torvalds@linux-foundation.org, raven@themaw.net,
-        mszeredi@redhat.com, christian@brauner.io, jannh@google.com,
-        darrick.wong@oracle.com, kzak@redhat.com, jlayton@redhat.com,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 03 Aug 2020 14:39:10 +0100
-Message-ID: <159646195075.1784947.11356745961373523948.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
-References: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S1727891AbgHCNlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 09:41:44 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:59932 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727050AbgHCNln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 09:41:43 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 8313DBA214502E009910;
+        Mon,  3 Aug 2020 21:41:40 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 3 Aug 2020 21:41:30 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <saiprakash.ranjan@codeaurora.org>,
+        <suzuki.poulose@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH] coresight: etm4x: Modify core-commit of cpu to avoid the overflow of HiSilicon ETM
+Date:   Mon, 3 Aug 2020 21:40:42 +0800
+Message-ID: <1596462042-28026-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+When too much trace information is generated on-chip, the ETM will
+overflow, and may cause data loss. This is a common phenomenon on
+ETM devices.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: David Howells <dhowells@redhat.com>
+But sometimes we do not want to lose any performance trace data, so
+we suppress the speed of instructions sent from CPU core to ETM to
+avoid the overflow of ETM.
+
+Signed-off-by: Qi Liu <liuqi115@huawei.com>
 ---
+ drivers/hwtracing/coresight/coresight-etm4x.c | 46 +++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
- samples/vfs/test-fsinfo.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
+index 4a4f0bd..ca9fb11 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x.c
+@@ -43,6 +43,11 @@ MODULE_PARM_DESC(boot_enable, "Enable tracing on boot");
+ #define PARAM_PM_SAVE_NEVER	  1 /* never save any state */
+ #define PARAM_PM_SAVE_SELF_HOSTED 2 /* save self-hosted state only */
 
-diff --git a/samples/vfs/test-fsinfo.c b/samples/vfs/test-fsinfo.c
-index 596fa5e71762..c359c3f52871 100644
---- a/samples/vfs/test-fsinfo.c
-+++ b/samples/vfs/test-fsinfo.c
-@@ -430,6 +430,15 @@ static void dump_afs_fsinfo_server_address(void *reply, unsigned int size)
- 	printf("family=%u\n", ss->ss_family);
- }
- 
-+static void dump_fsinfo_generic_error_state(void *reply, unsigned int size)
-+{
-+	struct fsinfo_error_state *es = reply;
++#define CORE_COMMIT_CLEAR	0x3000
++#define CORE_COMMIT_SHIFT	12
++#define HISI_ETM_AMBA_ID_V1	0x000b6d01
++#define HISI_ETM_AMBA_ID_V2	0x000b6d02
 +
-+	printf("\n");
-+	printf("\tlatest error : %d (%s)\n", es->wb_error_last, strerror(es->wb_error_last));
-+	printf("\tcookie       : 0x%x\n", es->wb_error_cookie);
+ static int pm_save_enable = PARAM_PM_SAVE_FIRMWARE;
+ module_param(pm_save_enable, int, 0444);
+ MODULE_PARM_DESC(pm_save_enable,
+@@ -104,11 +109,41 @@ struct etm4_enable_arg {
+ 	int rc;
+ };
+
++static void etm4_cpu_actlr1_cfg(void *info)
++{
++	struct etm4_enable_arg *arg = (struct etm4_enable_arg *)info;
++	u64 val;
++
++	asm volatile("mrs %0,s3_1_c15_c2_5" : "=r"(val));
++	val &= ~CORE_COMMIT_CLEAR;
++	val |= arg->rc << CORE_COMMIT_SHIFT;
++	asm volatile("msr s3_1_c15_c2_5,%0" : : "r"(val));
 +}
 +
- static void dump_string(void *reply, unsigned int size)
++static void etm4_config_core_commit(int cpu, int val)
++{
++	struct etm4_enable_arg arg = {0};
++
++	arg.rc = val;
++	smp_call_function_single(cpu, etm4_cpu_actlr1_cfg, &arg, 1);
++}
++
+ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
  {
- 	char *s = reply, *p;
-@@ -518,6 +527,7 @@ static const struct fsinfo_attribute fsinfo_attributes[] = {
- 	FSINFO_STRING	(FSINFO_ATTR_AFS_CELL_NAME,	string),
- 	FSINFO_STRING	(FSINFO_ATTR_AFS_SERVER_NAME,	string),
- 	FSINFO_LIST_N	(FSINFO_ATTR_AFS_SERVER_ADDRESSES, afs_fsinfo_server_address),
-+	FSINFO_VSTRUCT  (FSINFO_ATTR_ERROR_STATE,       fsinfo_generic_error_state),
- 	{}
- };
- 
+ 	int i, rc;
++	struct amba_device *adev;
+ 	struct etmv4_config *config = &drvdata->config;
+ 	struct device *etm_dev = &drvdata->csdev->dev;
++	struct device *dev = drvdata->csdev->dev.parent;
++
++	adev = container_of(dev, struct amba_device, dev);
++	/*
++	 * If ETM device is HiSilicon ETM device, reduce the
++	 * core-commit to avoid ETM overflow.
++	 */
++	if (adev->periphid == HISI_ETM_AMBA_ID_V1 ||
++	    adev->periphid == HISI_ETM_AMBA_ID_V2)
++		etm4_config_core_commit(drvdata->cpu, 1);
 
+ 	CS_UNLOCK(drvdata->base);
+
+@@ -469,11 +504,22 @@ static int etm4_enable(struct coresight_device *csdev,
+ static void etm4_disable_hw(void *info)
+ {
+ 	u32 control;
++	struct amba_device *adev;
+ 	struct etmv4_drvdata *drvdata = info;
+ 	struct etmv4_config *config = &drvdata->config;
+ 	struct device *etm_dev = &drvdata->csdev->dev;
++	struct device *dev = drvdata->csdev->dev.parent;
+ 	int i;
+
++	adev = container_of(dev, struct amba_device, dev);
++	/*
++	 * If ETM device is HiSilicon ETM device, resume the
++	 * core-commit after ETM trace is complete.
++	 */
++	if (adev->periphid == HISI_ETM_AMBA_ID_V1 ||
++	    adev->periphid == HISI_ETM_AMBA_ID_V2)
++		etm4_config_core_commit(drvdata->cpu, 0);
++
+ 	CS_UNLOCK(drvdata->base);
+
+ 	/* power can be removed from the trace unit now */
+--
+2.8.1
 
