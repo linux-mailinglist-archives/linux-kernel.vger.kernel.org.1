@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AE223A676
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9654E23A611
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbgHCMsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:48:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49482 "EHLO mail.kernel.org"
+        id S1729559AbgHCMoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:44:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726846AbgHCMYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:24:55 -0400
+        id S1728177AbgHCM2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:28:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2594C204EC;
-        Mon,  3 Aug 2020 12:24:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13978204EC;
+        Mon,  3 Aug 2020 12:28:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457493;
-        bh=hqsaVkWYZ30Bdjp65ee3HuhTa6iU30/KGApD393mAUU=;
+        s=default; t=1596457702;
+        bh=3mwQymnSuAF7EoIQqtlTrQToDWYmmPfzGvkEd4olq2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t/I/4ggz3iKnvz3wM9JAx7/qm24ogk0AlJT5fEAIWW23lVnsYtEq6aHRyMV/3mrSQ
-         2sJ8i7QXscfOd9FkMD29VeioMt/7MTH3krK57wkyxsUG+pRNC4g/pjH9HWQ4xbzAPj
-         8bdYSLNXn6ZjVIUXpCffMg9XoEPmsGGTGET1yTH0=
+        b=0AjX0z20UAFbZt+xK3B948GcrEmeaYzdfzqY8Rax5OpVtxHj1o5BszcdzU4g/fCQO
+         GOfzIN9AJJ/9aorRKZSzxvzaR3CpxomB7Jz9bRtq0Ox5mTOdCOknSAufMtzZE7Eq1R
+         jhF/+BDI9uoGJ1KgxudPXIwBinXIn4tbcpbFiu1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Julia Lawall <julia.lawall@lip6.fr>,
-        Shannon Nelson <snelson@pensando.io>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 088/120] ionic: unlock queue mutex in error path
+        stable@vger.kernel.org,
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 44/90] sh: Fix validation of system call number
 Date:   Mon,  3 Aug 2020 14:19:06 +0200
-Message-Id: <20200803121907.156107894@linuxfoundation.org>
+Message-Id: <20200803121859.755761157@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
-References: <20200803121902.860751811@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,45 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shannon Nelson <snelson@pensando.io>
+From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 
-[ Upstream commit 59929fbb45e06da7d501d3a97f10a91912181f7c ]
+[ Upstream commit 04a8a3d0a73f51c7c2da84f494db7ec1df230e69 ]
 
-On an error return, jump to the unlock at the end to be sure
-to unlock the queue_lock mutex.
+The slow path for traced system call entries accessed a wrong memory
+location to get the number of the maximum allowed system call number.
+Renumber the numbered "local" label for the correct location to avoid
+collisions with actual local labels.
 
-Fixes: 0925e9db4dc8 ("ionic: use mutex to protect queue operations")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-Signed-off-by: Shannon Nelson <snelson@pensando.io>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Fixes: f3a8308864f920d2 ("sh: Add a few missing irqflags tracing markers.")
+Signed-off-by: Rich Felker <dalias@libc.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/pensando/ionic/ionic_lif.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/sh/kernel/entry-common.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_lif.c b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-index 2c3e9ef22129c..337d971ffd92c 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-@@ -1959,7 +1959,7 @@ int ionic_reset_queues(struct ionic_lif *lif, ionic_reset_cb cb, void *arg)
- 		netif_device_detach(lif->netdev);
- 		err = ionic_stop(lif->netdev);
- 		if (err)
--			return err;
-+			goto reset_out;
- 	}
- 
- 	if (cb)
-@@ -1969,6 +1969,8 @@ int ionic_reset_queues(struct ionic_lif *lif, ionic_reset_cb cb, void *arg)
- 		err = ionic_open(lif->netdev);
- 		netif_device_attach(lif->netdev);
- 	}
-+
-+reset_out:
- 	mutex_unlock(&lif->queue_lock);
- 
- 	return err;
+diff --git a/arch/sh/kernel/entry-common.S b/arch/sh/kernel/entry-common.S
+index d31f66e82ce51..4a8ec9e40cc2a 100644
+--- a/arch/sh/kernel/entry-common.S
++++ b/arch/sh/kernel/entry-common.S
+@@ -199,7 +199,7 @@ syscall_trace_entry:
+ 	mov.l	@(OFF_R7,r15), r7   ! arg3
+ 	mov.l	@(OFF_R3,r15), r3   ! syscall_nr
+ 	!
+-	mov.l	2f, r10			! Number of syscalls
++	mov.l	6f, r10			! Number of syscalls
+ 	cmp/hs	r10, r3
+ 	bf	syscall_call
+ 	mov	#-ENOSYS, r0
+@@ -353,7 +353,7 @@ ENTRY(system_call)
+ 	tst	r9, r8
+ 	bf	syscall_trace_entry
+ 	!
+-	mov.l	2f, r8			! Number of syscalls
++	mov.l	6f, r8			! Number of syscalls
+ 	cmp/hs	r8, r3
+ 	bt	syscall_badsys
+ 	!
+@@ -392,7 +392,7 @@ syscall_exit:
+ #if !defined(CONFIG_CPU_SH2)
+ 1:	.long	TRA
+ #endif
+-2:	.long	NR_syscalls
++6:	.long	NR_syscalls
+ 3:	.long	sys_call_table
+ 7:	.long	do_syscall_trace_enter
+ 8:	.long	do_syscall_trace_leave
 -- 
 2.25.1
 
