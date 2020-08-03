@@ -2,101 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC5123A842
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D2C23A84B
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgHCOVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 10:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S1727913AbgHCOWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 10:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbgHCOVG (ORCPT
+        with ESMTP id S1726358AbgHCOWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 10:21:06 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158A1C061756;
-        Mon,  3 Aug 2020 07:21:06 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id i26so24028275edv.4;
-        Mon, 03 Aug 2020 07:21:06 -0700 (PDT)
+        Mon, 3 Aug 2020 10:22:08 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EA0C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 07:22:08 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a14so34415398wra.5
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 07:22:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wbCyApa2X2f4UsWCh/NHyG+lVeEf7BI87hUKtzO/G4U=;
-        b=X8qVjxSTaMzWHRimr+QtI4Fpt5cEuZqCqJ7ZqBLizpfYb9O3tbpx3ML426co6jGmpv
-         CcL4RMqJcizSJFwO8OhJg1cOv2pfkUOY/vLD5NlaOg5EBIUdb1lbb/E4r3maKuiBnj9q
-         JpRJqi/LLqBToyqyPefXKjHDEPZBTNXWTZZPCHLgOY+mwwfyHxz0amxeoKt3D9cj/lNk
-         wnIcyuuDqrPQFRfG4VAvP348CA5ixQ8nNYze8whtQypmrU4ROah1LBZiPuy9GWY10a0A
-         70uEzWMBbdQukRzSKbMML08winYq0wE4DozN/1fJJTJM9avmnjnQM+CRKavMGneDI5QB
-         8dIQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UIgx/HWjFDj4MNVMQkg/plO9eAmsTA2XmhwNF6CYKl4=;
+        b=bkX5r1WKOmEW9wHJaRW535/oKEsaWV7/PaVslkpJu1WV2Yrp7DtlgV1Xl47hk8gwHW
+         duNlV/aC11YaooI8Uv98c4L3iC/hHs+fys4ej6Uai3YzjLmNDEU0LUsFcBRGJbjxiGke
+         BxW0L12mzayM6tdSIWfzxy7XjO/WhuAXLcG5IVNLqkjDLyw5DIpYSHeHpKCvpUlu05s0
+         LpXPoOFybR8DtxulzgcV7qP7JLxCMMhFgpE81k8QJLD6HffNhttD8PIxUUa/gz18f9JF
+         rJjPDlDbsSYXDYE3MD0nO4h9YIvxRaiD+F9PgH4ZvApRMr1K3u4B7oY8XCWn5OYQM4Ck
+         q9uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wbCyApa2X2f4UsWCh/NHyG+lVeEf7BI87hUKtzO/G4U=;
-        b=pHRv0v0WswaY4J9G5Zn64+BVzXEcZQcTwAl2KYf+ZW/FVXpj11O6qFla+JZwEvQVtc
-         a7GoBaD8JLDeUEz2Du5qMsQAd/ngfW8pYJs439vgBicDo+PBApDaL2EZhwR2Vd40wek4
-         O2jTGPPzRd0mkZCsT75bb7xSZkeWD+V/neKs7jJCQGU7vyGSHUt7lDZntfWhda5kAEX6
-         BzjZv1mzdMhRVDu2Yl9uB7fQFsLrFp/EZtplRqu5TQtMOnsKP7LNgNLW4RvAOq+IETH/
-         tgEfRWmzukOTlUz7fpf8aHqc/PGWe8P7CphuTACEQTLI2HERF7IjXQzsxejsXueX/QmL
-         Wt5w==
-X-Gm-Message-State: AOAM530DgLSyZl8qKcThN1mRbzONUxEPJS3aiuU5eR7UVyoSJtyjKz+G
-        JNmWH2bmxATBdeAKutTDcn/n6pZC
-X-Google-Smtp-Source: ABdhPJymutnG36f0kCPfsVbGRsOl5KZZJmH+vwZAhz5M+LfUE9UFm1kqTYoFRyoM3iEMYS62ssE/Lg==
-X-Received: by 2002:a05:6402:1c88:: with SMTP id cy8mr16273439edb.24.1596464464749;
-        Mon, 03 Aug 2020 07:21:04 -0700 (PDT)
-Received: from localhost.localdomain ([86.121.43.21])
-        by smtp.gmail.com with ESMTPSA id p3sm15608432edx.75.2020.08.03.07.21.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UIgx/HWjFDj4MNVMQkg/plO9eAmsTA2XmhwNF6CYKl4=;
+        b=hOr/XACCYL6dJLvHebubdrw/J9wY+6c6ikFnYjnEq5pyuMaaTccQYalAVvlhQk0fRX
+         UFIAiFOC5HfQaax+pk1dEAyhggzvd1cqghTWUIge26wbruicyq/39cJzoCZYgWX3hWdt
+         UEM3OVdPaxdcr2wcuc2rj8Qij1fx/DaLhfOzECaNyiu5btXhOTosqvLilwe3v2s88rsK
+         pNUNbVWKvy2XmFW+YNNz34w0uXeTFt9fhuAzSfap1J4+0kc2BcMZ+Kzp4qTvxCbgyGAC
+         d6NijjYmp90gWMAiEohECFGRFrtvh9r7niszNm96JxtzF9B7qX/eMWWsCxoTVLlNhp9w
+         aKeg==
+X-Gm-Message-State: AOAM531pVwgHNlLWDugqHrE5KnltpmYKF+215SpjB4D6Usfn4jTjpLeA
+        q/GQs7v7urLIkfRFG1KhYGbYJw==
+X-Google-Smtp-Source: ABdhPJxZ3QUkNQ9OtGk4mAkzLrUMsMeIgU0Kqs19up3kC3j9rS1ycAy5nzFiqDD2NgmX/x8Hy2q/gA==
+X-Received: by 2002:a5d:43ca:: with SMTP id v10mr15188109wrr.299.1596464526995;
+        Mon, 03 Aug 2020 07:22:06 -0700 (PDT)
+Received: from starbuck.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id d14sm25309563wre.44.2020.08.03.07.22.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 07:21:03 -0700 (PDT)
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-actions@lists.infradead.org
-Subject: [PATCH v2 3/3] MAINTAINERS: Set pinctrl binding entry for all Actions Semi Owl SoCs
-Date:   Mon,  3 Aug 2020 17:20:56 +0300
-Message-Id: <1a9eb2b12c151d4d765d2aa74dc9cd58b3c117dc.1596461275.git.cristian.ciocaltea@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1596461275.git.cristian.ciocaltea@gmail.com>
-References: <cover.1596461275.git.cristian.ciocaltea@gmail.com>
+        Mon, 03 Aug 2020 07:22:06 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Kevin Hilman <khilman@baylibre.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: meson: vim3: make sound card common to all variants
+Date:   Mon,  3 Aug 2020 16:21:58 +0200
+Message-Id: <20200803142158.173402-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the pinctrl binding entry to match all members of Actions Semi
-Owl SoCs.
+The vim3 sound card definition should be same all the vim3 variants
+Move the definition to the appropriate device tree file.
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
-Changes in v2:
- - Discarded the S500 specific pinctrl binding entry and instead use
-   a generic rule to match all members of Actions Semi Owl SoCs, per
-   Mani's suggestion
- - Renamed patch to reflect the new changes, the original name was:
-   'Add pinctrl binding entry for Actions Semi'
+ .../dts/amlogic/meson-g12b-khadas-vim3.dtsi   | 88 ------------------
+ .../boot/dts/amlogic/meson-khadas-vim3.dtsi   | 90 +++++++++++++++++++
+ 2 files changed, 90 insertions(+), 88 deletions(-)
 
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index acfa5e85a6eb..a1e22a107a1b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1519,7 +1519,7 @@ F:	Documentation/devicetree/bindings/clock/actions,owl-cmu.txt
- F:	Documentation/devicetree/bindings/dma/owl-dma.txt
- F:	Documentation/devicetree/bindings/i2c/i2c-owl.txt
- F:	Documentation/devicetree/bindings/mmc/owl-mmc.yaml
--F:	Documentation/devicetree/bindings/pinctrl/actions,s900-pinctrl.txt
-+F:	Documentation/devicetree/bindings/pinctrl/actions,*
- F:	Documentation/devicetree/bindings/power/actions,owl-sps.txt
- F:	Documentation/devicetree/bindings/timer/actions,owl-timer.txt
- F:	arch/arm/boot/dts/owl-*
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
+index 224c890d32d3..f42cf4b8af2d 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
+@@ -5,8 +5,6 @@
+  * Copyright (c) 2019 Christian Hewitt <christianshewitt@gmail.com>
+  */
+ 
+-#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
+-
+ / {
+ 	model = "Khadas VIM3";
+ 
+@@ -47,69 +45,6 @@ vddcpu_b: regulator-vddcpu-b {
+ 		regulator-boot-on;
+ 		regulator-always-on;
+ 	};
+-
+-	sound {
+-		compatible = "amlogic,axg-sound-card";
+-		model = "G12B-KHADAS-VIM3";
+-		audio-aux-devs = <&tdmout_a>;
+-		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
+-				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
+-				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
+-				"TDM_A Playback", "TDMOUT_A OUT";
+-
+-		assigned-clocks = <&clkc CLKID_MPLL2>,
+-				  <&clkc CLKID_MPLL0>,
+-				  <&clkc CLKID_MPLL1>;
+-		assigned-clock-parents = <0>, <0>, <0>;
+-		assigned-clock-rates = <294912000>,
+-				       <270950400>,
+-				       <393216000>;
+-		status = "okay";
+-
+-		dai-link-0 {
+-			sound-dai = <&frddr_a>;
+-		};
+-
+-		dai-link-1 {
+-			sound-dai = <&frddr_b>;
+-		};
+-
+-		dai-link-2 {
+-			sound-dai = <&frddr_c>;
+-		};
+-
+-		/* 8ch hdmi interface */
+-		dai-link-3 {
+-			sound-dai = <&tdmif_a>;
+-			dai-format = "i2s";
+-			dai-tdm-slot-tx-mask-0 = <1 1>;
+-			dai-tdm-slot-tx-mask-1 = <1 1>;
+-			dai-tdm-slot-tx-mask-2 = <1 1>;
+-			dai-tdm-slot-tx-mask-3 = <1 1>;
+-			mclk-fs = <256>;
+-
+-			codec {
+-				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_A>;
+-			};
+-		};
+-
+-		/* hdmi glue */
+-		dai-link-4 {
+-			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
+-
+-			codec {
+-				sound-dai = <&hdmi_tx>;
+-			};
+-		};
+-	};
+-};
+-
+-&arb {
+-	status = "okay";
+-};
+-
+-&clkc_audio {
+-	status = "okay";
+ };
+ 
+ &cpu0 {
+@@ -154,18 +89,6 @@ &cpu103 {
+ 	clock-latency = <50000>;
+ };
+ 
+-&frddr_a {
+-	status = "okay";
+-};
+-
+-&frddr_b {
+-	status = "okay";
+-};
+-
+-&frddr_c {
+-	status = "okay";
+-};
+-
+ &pwm_ab {
+ 	pinctrl-0 = <&pwm_a_e_pins>;
+ 	pinctrl-names = "default";
+@@ -182,14 +105,3 @@ &pwm_AO_cd {
+ 	status = "okay";
+ };
+ 
+-&tdmif_a {
+-	status = "okay";
+-};
+-
+-&tdmout_a {
+-	status = "okay";
+-};
+-
+-&tohdmitx {
+-	status = "okay";
+-};
+diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+index 6b75157265e1..3738dfd9eb06 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+@@ -7,6 +7,7 @@
+ 
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/gpio/meson-g12a-gpio.h>
++#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
+ 
+ / {
+ 	aliases {
+@@ -161,6 +162,62 @@ hdmi_connector_in: endpoint {
+ 		};
+ 	};
+ 
++
++	sound {
++		compatible = "amlogic,axg-sound-card";
++		model = "G12B-KHADAS-VIM3";
++		audio-aux-devs = <&tdmout_a>;
++		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
++				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
++				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
++				"TDM_A Playback", "TDMOUT_A OUT";
++
++		assigned-clocks = <&clkc CLKID_MPLL2>,
++				  <&clkc CLKID_MPLL0>,
++				  <&clkc CLKID_MPLL1>;
++		assigned-clock-parents = <0>, <0>, <0>;
++		assigned-clock-rates = <294912000>,
++				       <270950400>,
++				       <393216000>;
++		status = "okay";
++
++		dai-link-0 {
++			sound-dai = <&frddr_a>;
++		};
++
++		dai-link-1 {
++			sound-dai = <&frddr_b>;
++		};
++
++		dai-link-2 {
++			sound-dai = <&frddr_c>;
++		};
++
++		/* 8ch hdmi interface */
++		dai-link-3 {
++			sound-dai = <&tdmif_a>;
++			dai-format = "i2s";
++			dai-tdm-slot-tx-mask-0 = <1 1>;
++			dai-tdm-slot-tx-mask-1 = <1 1>;
++			dai-tdm-slot-tx-mask-2 = <1 1>;
++			dai-tdm-slot-tx-mask-3 = <1 1>;
++			mclk-fs = <256>;
++
++			codec {
++				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_A>;
++			};
++		};
++
++		/* hdmi glue */
++		dai-link-4 {
++			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
++
++			codec {
++				sound-dai = <&hdmi_tx>;
++			};
++		};
++	};
++
+ 	wifi32k: wifi32k {
+ 		compatible = "pwm-clock";
+ 		#clock-cells = <0>;
+@@ -169,6 +226,14 @@ wifi32k: wifi32k {
+ 	};
+ };
+ 
++&arb {
++	status = "okay";
++};
++
++&clkc_audio {
++	status = "okay";
++};
++
+ &cec_AO {
+ 	pinctrl-0 = <&cec_ao_a_h_pins>;
+ 	pinctrl-names = "default";
+@@ -221,6 +286,18 @@ &ethmac {
+         amlogic,tx-delay-ns = <2>;
+ };
+ 
++&frddr_a {
++	status = "okay";
++};
++
++&frddr_b {
++	status = "okay";
++};
++
++&frddr_c {
++	status = "okay";
++};
++
+ &hdmi_tx {
+ 	status = "okay";
+ 	pinctrl-0 = <&hdmitx_hpd_pins>, <&hdmitx_ddc_pins>;
+@@ -369,6 +446,19 @@ w25q128: spi-flash@0 {
+ 	};
+ };
+ 
++
++&tdmif_a {
++	status = "okay";
++};
++
++&tdmout_a {
++	status = "okay";
++};
++
++&tohdmitx {
++	status = "okay";
++};
++
+ &uart_A {
+ 	status = "okay";
+ 	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
 -- 
-2.28.0
+2.25.4
 
