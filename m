@@ -2,184 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582AF23B123
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 01:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE3023B0FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 01:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729250AbgHCXmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 19:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728867AbgHCXmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 19:42:06 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296E4C0617A2
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 16:42:05 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id u126so3080125iod.12
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 16:42:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HF/T+OchjGUezOj0UEf10GFTQQZf+tbc2OMbxk27h9Y=;
-        b=TApxXwtwUJD5o0HAtdrg2Jz7uDTJPwLEONeLNGUGJegRF0Nk9D0RgSBMoma06DanDL
-         QWj/LON3kvvQKaJ4kbPOB2lRoKsf7oqpXhXWdDaXBiYWYSo2RmnQWP7lXDo6tWEcxMxP
-         G8M97unhw629Lnr0CGS/vQcCjZImvZN2cu5po=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HF/T+OchjGUezOj0UEf10GFTQQZf+tbc2OMbxk27h9Y=;
-        b=Xqig3/H95lHW3pIVNx1seMz/a90CB8iZISCK4aaTf1bNUY8NhIzESMVgwW8Ua1NQEW
-         5yOlk0Uya4tqtjLDrQ3QOFFqbS5IRKod6ZJlHhgvm/82N3u10emx8LNM2qTrhclQS50B
-         aH/Ol3vZ97/iVXk5iwWMSq+Ur3J6tzQMByhIaOp1xKrstHas8ANvF4IGac0uhLqdw4hS
-         tjyYL4IQTTgX0RJFv8v2y+GaKOMpwje0mFRRQFEQoeJxT4cKY51Du7NrWWk1Q4TRlnMb
-         buukkrccaWhePVKto8yqm3MoNOSv6N870Xa0auVI2d4ipJVxB+/t0wv2ysccnxeJ0ycp
-         wZHA==
-X-Gm-Message-State: AOAM530t31nbGBRTaLQ20OJ5rjdSpNDXvb7SaWxvsRYcTsd4JGTK+ZjQ
-        I4NuRuihhOknMxYLCXE8qZiSOw==
-X-Google-Smtp-Source: ABdhPJzhywQXH6COC8ga0Wwqdg6aTz1UVteetpQVq6p9g/Wh4CbASpyytr/80InFhQsQbzE8n1vjCw==
-X-Received: by 2002:a02:70c3:: with SMTP id f186mr2517211jac.118.1596498124565;
-        Mon, 03 Aug 2020 16:42:04 -0700 (PDT)
-Received: from derch.Home (97-122-92-59.hlrn.qwest.net. [97.122.92.59])
-        by smtp.gmail.com with ESMTPSA id g2sm5468435ioe.4.2020.08.03.16.42.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 16:42:04 -0700 (PDT)
-From:   Daniel Campello <campello@chromium.org>
-To:     LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Daniel Campello <campello@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org
-Subject: [PATCH v4 05/15] iio: sx9310: Change from .probe to .probe_new
-Date:   Mon,  3 Aug 2020 17:41:44 -0600
-Message-Id: <20200803131544.v4.5.Ieb5fdf7381764835dad0b3099c7b19ba754e4c47@changeid>
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-In-Reply-To: <20200803234154.320400-1-campello@chromium.org>
-References: <20200803234154.320400-1-campello@chromium.org>
+        id S1727885AbgHCXlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 19:41:55 -0400
+Received: from mga06.intel.com ([134.134.136.31]:18354 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726350AbgHCXly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 19:41:54 -0400
+IronPort-SDR: G0qOeAw7e5gzgjWnW0Eky7BUFdo9qem4qYu+xgm8HmX7nHRlFUtaRFp6gTqVIhcxJBqKfjDLt9
+ p4hMFEKe/qfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="213761635"
+X-IronPort-AV: E=Sophos;i="5.75,431,1589266800"; 
+   d="scan'208";a="213761635"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 16:41:54 -0700
+IronPort-SDR: bmkyKFeW5lZyeKRGAe2eohz307LW6/ncv5RsbbfJXEPm8V5Vsovkc9cvkZ3TJ5/Mzayr7KRAIw
+ erqt1gCNFi/g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,431,1589266800"; 
+   d="scan'208";a="306107025"
+Received: from lkp-server02.sh.intel.com (HELO 84ccfe698a63) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 03 Aug 2020 16:41:53 -0700
+Received: from kbuild by 84ccfe698a63 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k2k5Y-0000Ig-Dw; Mon, 03 Aug 2020 23:41:52 +0000
+Date:   Tue, 04 Aug 2020 07:41:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/core] BUILD REGRESSION
+ 992414a18cd4de05fa3f8ff7e1c29af758bdee1a
+Message-ID: <5f28a0b8.rkypfjWH7Ix//dK8%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Uses .probe_new in place of .probe. Also uses device_get_match_data()
-for whoami matching.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/core
+branch HEAD: 992414a18cd4de05fa3f8ff7e1c29af758bdee1a  Merge branch 'locking/nmi' into locking/core, to pick up completed topic branch
 
-Signed-off-by: Daniel Campello <campello@chromium.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Error/Warning in current branch:
+
+arch/mips/include/asm/smp.h:28:19: error: static declaration of 'raw_smp_processor_id' follows non-static declaration
+arch/sparc/include/asm/percpu_64.h:19:25: error: '__local_per_cpu_offset' undeclared (first use in this function); did you mean 'per_cpu_offset'?
+include/asm-generic/percpu.h:31:40: error: implicit declaration of function 'raw_smp_processor_id' [-Werror=implicit-function-declaration]
+
+Error/Warning ids grouped by kconfigs:
+
+recent_errors
+|-- arm-allmodconfig
+|   `-- include-asm-generic-percpu.h:error:implicit-declaration-of-function-raw_smp_processor_id
+|-- arm-allyesconfig
+|   `-- include-asm-generic-percpu.h:error:implicit-declaration-of-function-raw_smp_processor_id
+|-- mips-allmodconfig
+|   |-- arch-mips-include-asm-smp.h:error:static-declaration-of-raw_smp_processor_id-follows-non-static-declaration
+|   `-- include-asm-generic-percpu.h:error:implicit-declaration-of-function-raw_smp_processor_id
+|-- mips-allyesconfig
+|   |-- arch-mips-include-asm-smp.h:error:static-declaration-of-raw_smp_processor_id-follows-non-static-declaration
+|   `-- include-asm-generic-percpu.h:error:implicit-declaration-of-function-raw_smp_processor_id
+|-- openrisc-randconfig-r013-20200803
+|   `-- include-asm-generic-percpu.h:error:implicit-declaration-of-function-raw_smp_processor_id
+`-- sparc-allyesconfig
+    `-- arch-sparc-include-asm-percpu_64.h:error:__local_per_cpu_offset-undeclared-(first-use-in-this-function)
+
+elapsed time: 724m
+
+configs tested: 89
+configs skipped: 5
+
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                            lart_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sparc64                             defconfig
+m68k                             allmodconfig
+arm                    vt8500_v6_v7_defconfig
+mips                        omega2p_defconfig
+mips                     loongson1c_defconfig
+m68k                       bvme6000_defconfig
+xtensa                           alldefconfig
+arm                       aspeed_g4_defconfig
+arc                          axs101_defconfig
+powerpc                    amigaone_defconfig
+sh                   sh7770_generic_defconfig
+mips                        bcm47xx_defconfig
+h8300                    h8300h-sim_defconfig
+nds32                             allnoconfig
+powerpc                          alldefconfig
+mips                      bmips_stb_defconfig
+arm                        magician_defconfig
+arm                             pxa_defconfig
+sh                             sh03_defconfig
+mips                         db1xxx_defconfig
+arm                        trizeps4_defconfig
+parisc                           alldefconfig
+mips                           ip32_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a004-20200803
+i386                 randconfig-a005-20200803
+i386                 randconfig-a001-20200803
+i386                 randconfig-a002-20200803
+i386                 randconfig-a003-20200803
+i386                 randconfig-a006-20200803
+x86_64               randconfig-a013-20200803
+x86_64               randconfig-a011-20200803
+x86_64               randconfig-a012-20200803
+x86_64               randconfig-a016-20200803
+x86_64               randconfig-a015-20200803
+x86_64               randconfig-a014-20200803
+i386                 randconfig-a011-20200803
+i386                 randconfig-a012-20200803
+i386                 randconfig-a015-20200803
+i386                 randconfig-a014-20200803
+i386                 randconfig-a013-20200803
+i386                 randconfig-a016-20200803
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
 ---
-
-Changes in v4: None
-Changes in v3: None
-Changes in v2:
- - Added '\n' to dev_err()
-
- drivers/iio/proximity/sx9310.c | 39 ++++++++++++----------------------
- 1 file changed, 14 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-index 3642d23cd5e6f4..c89a4e27201796 100644
---- a/drivers/iio/proximity/sx9310.c
-+++ b/drivers/iio/proximity/sx9310.c
-@@ -138,7 +138,7 @@ struct sx9310_data {
- 	struct completion completion;
- 	unsigned int chan_read, chan_event;
- 	int channel_users[SX9310_NUM_CHANNELS];
--	int whoami;
-+	unsigned int whoami;
- };
- 
- static const struct iio_event_spec sx9310_events[] = {
-@@ -857,24 +857,15 @@ static int sx9310_init_device(struct iio_dev *indio_dev)
- 
- static int sx9310_set_indio_dev_name(struct device *dev,
- 				     struct iio_dev *indio_dev,
--				     const struct i2c_device_id *id, int whoami)
-+				     unsigned int whoami)
- {
--	const struct acpi_device_id *acpi_id;
--
--	/* id will be NULL when enumerated via ACPI */
--	if (id) {
--		if (id->driver_data != whoami)
--			dev_err(dev, "WHOAMI does not match i2c_device_id: %s",
--				id->name);
--	} else if (ACPI_HANDLE(dev)) {
--		acpi_id = acpi_match_device(dev->driver->acpi_match_table, dev);
--		if (!acpi_id)
--			return -ENODEV;
--		if (acpi_id->driver_data != whoami)
--			dev_err(dev, "WHOAMI does not match acpi_device_id: %s",
--				acpi_id->id);
--	} else
-+	unsigned int long ddata;
-+
-+	ddata = (uintptr_t)device_get_match_data(dev);
-+	if (ddata != whoami) {
-+		dev_err(dev, "WHOAMI does not match device data: %u\n", whoami);
- 		return -ENODEV;
-+	}
- 
- 	switch (whoami) {
- 	case SX9310_WHOAMI_VALUE:
-@@ -884,15 +875,14 @@ static int sx9310_set_indio_dev_name(struct device *dev,
- 		indio_dev->name = "sx9311";
- 		break;
- 	default:
--		dev_err(dev, "unexpected WHOAMI response: %u", whoami);
-+		dev_err(dev, "unexpected WHOAMI response: %u\n", whoami);
- 		return -ENODEV;
- 	}
- 
- 	return 0;
- }
- 
--static int sx9310_probe(struct i2c_client *client,
--			const struct i2c_device_id *id)
-+static int sx9310_probe(struct i2c_client *client)
- {
- 	int ret;
- 	struct iio_dev *indio_dev;
-@@ -918,8 +908,7 @@ static int sx9310_probe(struct i2c_client *client,
- 		return ret;
- 	}
- 
--	ret = sx9310_set_indio_dev_name(&client->dev, indio_dev, id,
--					data->whoami);
-+	ret = sx9310_set_indio_dev_name(&client->dev, indio_dev, data->whoami);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -1032,8 +1021,8 @@ static const struct acpi_device_id sx9310_acpi_match[] = {
- MODULE_DEVICE_TABLE(acpi, sx9310_acpi_match);
- 
- static const struct of_device_id sx9310_of_match[] = {
--	{ .compatible = "semtech,sx9310" },
--	{ .compatible = "semtech,sx9311" },
-+	{ .compatible = "semtech,sx9310", (void *)SX9310_WHOAMI_VALUE },
-+	{ .compatible = "semtech,sx9311", (void *)SX9311_WHOAMI_VALUE },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, sx9310_of_match);
-@@ -1052,7 +1041,7 @@ static struct i2c_driver sx9310_driver = {
- 		.of_match_table = sx9310_of_match,
- 		.pm = &sx9310_pm_ops,
- 	},
--	.probe		= sx9310_probe,
-+	.probe_new	= sx9310_probe,
- 	.id_table	= sx9310_id,
- };
- module_i2c_driver(sx9310_driver);
--- 
-2.28.0.163.g6104cc2f0b6-goog
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
