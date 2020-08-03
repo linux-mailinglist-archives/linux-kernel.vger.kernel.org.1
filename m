@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D548E23A51E
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8C423A5ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728875AbgHCMdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:33:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33296 "EHLO mail.kernel.org"
+        id S1729514AbgHCMnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:43:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729427AbgHCMdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:33:25 -0400
+        id S1728487AbgHCMaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:30:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C1C0204EC;
-        Mon,  3 Aug 2020 12:33:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C91FB2177B;
+        Mon,  3 Aug 2020 12:30:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596458003;
-        bh=p6TsHCvvkp3SLABaDg9z5pQt9RWPKGLg3o7T1fgNJ4E=;
+        s=default; t=1596457815;
+        bh=n1FukGZuQXyu2MVVpZOdKAmj1C0W92scKOGnuT4UQO8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BYsB6juNOKcRjjwM2vtSMzFg42eHGna7Gft+TVBnnT6pS3NjnPDAz/HZdNC0Y14zY
-         RxrxGxVbvXe3vS6jXJnUYeu/K9E3Hi3PyaQyHGuu9kUjq+5k5bIVf34GUN6hjblZ1f
-         QDi7mEf29/DbPziCgkFbWS8f06taOJVzibCE7bPg=
+        b=VRQSs2VkiOx/k6uqe5VoD4WWWwU5528l51f/w2U15RKAEo4QKdamhBiobjzKMGjEa
+         XAMvAACq54+PfrDi41+PEh+MKGOkF4NcpYcZNC9NSrW7ueHSYWt2lrGraLowlTvE3R
+         4YCqyu9Pu11o8JHntK8uANnuEvi3yaf2dfndQJGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 30/56] sh: Fix validation of system call number
+        stable@vger.kernel.org, Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 83/90] RISC-V: Set maximum number of mapped pages correctly
 Date:   Mon,  3 Aug 2020 14:19:45 +0200
-Message-Id: <20200803121851.803645933@linuxfoundation.org>
+Message-Id: <20200803121901.620814302@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
-References: <20200803121850.306734207@linuxfoundation.org>
+In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
+References: <20200803121857.546052424@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,55 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+From: Atish Patra <atish.patra@wdc.com>
 
-[ Upstream commit 04a8a3d0a73f51c7c2da84f494db7ec1df230e69 ]
+[ Upstream commit d0d8aae64566b753c4330fbd5944b88af035f299 ]
 
-The slow path for traced system call entries accessed a wrong memory
-location to get the number of the maximum allowed system call number.
-Renumber the numbered "local" label for the correct location to avoid
-collisions with actual local labels.
+Currently, maximum number of mapper pages are set to the pfn calculated
+from the memblock size of the memblock containing kernel. This will work
+until that memblock spans the entire memory. However, it will be set to
+a wrong value if there are multiple memblocks defined in kernel
+(e.g. with efi runtime services).
 
-Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Fixes: f3a8308864f920d2 ("sh: Add a few missing irqflags tracing markers.")
-Signed-off-by: Rich Felker <dalias@libc.org>
+Set the the maximum value to the pfn calculated from dram size.
+
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sh/kernel/entry-common.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/riscv/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/sh/kernel/entry-common.S b/arch/sh/kernel/entry-common.S
-index 28cc61216b649..ed5b758c650d7 100644
---- a/arch/sh/kernel/entry-common.S
-+++ b/arch/sh/kernel/entry-common.S
-@@ -203,7 +203,7 @@ syscall_trace_entry:
- 	mov.l	@(OFF_R7,r15), r7   ! arg3
- 	mov.l	@(OFF_R3,r15), r3   ! syscall_nr
- 	!
--	mov.l	2f, r10			! Number of syscalls
-+	mov.l	6f, r10			! Number of syscalls
- 	cmp/hs	r10, r3
- 	bf	syscall_call
- 	mov	#-ENOSYS, r0
-@@ -357,7 +357,7 @@ ENTRY(system_call)
- 	tst	r9, r8
- 	bf	syscall_trace_entry
- 	!
--	mov.l	2f, r8			! Number of syscalls
-+	mov.l	6f, r8			! Number of syscalls
- 	cmp/hs	r8, r3
- 	bt	syscall_badsys
- 	!
-@@ -396,7 +396,7 @@ syscall_exit:
- #if !defined(CONFIG_CPU_SH2)
- 1:	.long	TRA
- #endif
--2:	.long	NR_syscalls
-+6:	.long	NR_syscalls
- 3:	.long	sys_call_table
- 7:	.long	do_syscall_trace_enter
- 8:	.long	do_syscall_trace_leave
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 3198129230126..b1eb6a0411183 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -115,9 +115,9 @@ void __init setup_bootmem(void)
+ 	/* Reserve from the start of the kernel to the end of the kernel */
+ 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+ 
+-	set_max_mapnr(PFN_DOWN(mem_size));
+ 	max_pfn = PFN_DOWN(memblock_end_of_DRAM());
+ 	max_low_pfn = max_pfn;
++	set_max_mapnr(max_low_pfn);
+ 
+ #ifdef CONFIG_BLK_DEV_INITRD
+ 	setup_initrd();
 -- 
 2.25.1
 
