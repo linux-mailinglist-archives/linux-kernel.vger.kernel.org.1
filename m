@@ -2,66 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7766023B07E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 00:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D537F23B088
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 00:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728964AbgHCWve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 18:51:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:35160 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728213AbgHCWvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 18:51:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5476330E;
-        Mon,  3 Aug 2020 15:51:33 -0700 (PDT)
-Received: from [10.37.12.82] (unknown [10.37.12.82])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C09063F71F;
-        Mon,  3 Aug 2020 15:51:31 -0700 (PDT)
-Subject: Re: [PATCHv3] coresight: etm4x: Fix etm4_count race by moving cpuhp
- callbacks to init
-To:     saiprakash.ranjan@codeaurora.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, swboyd@chromium.org
-Cc:     coresight@lists.linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20200729051310.18436-1-saiprakash.ranjan@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <46cc76c0-3ed7-9877-6cec-0f9ad6226cef@arm.com>
-Date:   Mon, 3 Aug 2020 23:56:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200729051310.18436-1-saiprakash.ranjan@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1728951AbgHCW6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 18:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726770AbgHCW6E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 18:58:04 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D10C06174A;
+        Mon,  3 Aug 2020 15:58:03 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id E5B2812779164;
+        Mon,  3 Aug 2020 15:41:17 -0700 (PDT)
+Date:   Mon, 03 Aug 2020 15:58:02 -0700 (PDT)
+Message-Id: <20200803.155802.2215012000142493904.davem@davemloft.net>
+To:     tianjia.zhang@linux.alibaba.com
+Cc:     claudiu.manoil@nxp.com, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tianjia.zhang@alibaba.com
+Subject: Re: [PATCH] net/enetc: Fix wrong return value in
+ enetc_psfp_parse_clsflower()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200802111538.5338-1-tianjia.zhang@linux.alibaba.com>
+References: <20200802111538.5338-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 03 Aug 2020 15:41:18 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/29/2020 06:13 AM, Sai Prakash Ranjan wrote:
-> etm4_count keeps track of number of ETMv4 registered and on some systems,
-> a race is observed on etm4_count variable which can lead to multiple calls
-> to cpuhp_setup_state_nocalls_cpuslocked(). This function internally calls
-> cpuhp_store_callbacks() which prevents multiple registrations of callbacks
-> for a given state and due to this race, it returns -EBUSY leading to ETM
-> probe failures like below.
-> 
->   coresight-etm4x: probe of 7040000.etm failed with error -16
-> 
-> This race can easily be triggered with async probe by setting probe type
-> as PROBE_PREFER_ASYNCHRONOUS and with ETM power management property
-> "arm,coresight-loses-context-with-cpu".
-> 
-> Prevent this race by moving cpuhp callbacks to etm driver init since the
-> cpuhp callbacks doesn't have to depend on the etm4_count and can be once
-> setup during driver init. Similarly we move cpu_pm notifier registration
-> to driver init and completely remove etm4_count usage. Also now we can
-> use non cpuslocked version of cpuhp callbacks with this movement.
-> 
-> Fixes: 9b6a3f3633a5 ("coresight: etmv4: Fix CPU power management setup in probe() function")
-> Fixes: 58eb457be028 ("hwtracing/coresight-etm4x: Convert to hotplug state machine")
-> Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Date: Sun,  2 Aug 2020 19:15:38 +0800
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> In the case of invalid rule, a positive value EINVAL is returned here.
+> I think this is a typo error. It is necessary to return an error value.
+> 
+> Cc: Po Liu <Po.Liu@nxp.com>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+
+Applied.
