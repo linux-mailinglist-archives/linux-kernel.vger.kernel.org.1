@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAF423A61D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E5223A626
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgHCM1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:27:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53520 "EHLO mail.kernel.org"
+        id S1729262AbgHCMpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:45:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728579AbgHCM1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:27:41 -0400
+        id S1726725AbgHCM1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:27:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CAF4204EC;
-        Mon,  3 Aug 2020 12:27:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DC98207FC;
+        Mon,  3 Aug 2020 12:27:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457659;
-        bh=rRQsBuWultFzeA0SwrZlU9xbZ20iKD/hOXZx30bdjho=;
+        s=default; t=1596457662;
+        bh=5zeqietPhyhUpjpUe2K3zAjtmebUM/EY9MObnePZxdw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0tsV24OdaUYSeGjIQ3CKU4Ac0amnZQxHXZsZWQhGXGozFhVlUT33X5Q8zSiQ5LhXM
-         BIVS3FfRSK1/l2cmawoMFKmLXPrQhfqZemXYpB+wAXRmqiAioWueq6OIlD4kdR7RUn
-         yjaN57uLyyeC8ZtAgFfHDkdKXPLJXaAH768BsFFI=
+        b=tC7suW3kc6NUDhSfWM2FfA2nTwpRT8xLHzDJf2s+Yxo6+HqcMffnLv2a4/HovODWF
+         4r1dug6vaRex083LFvRJBH3yHmfQd7XOlNwFfy/kFsyYIdPod4J18L8+y4+L6GdPAr
+         Q92RHI/+hSvRRk9l5/VOY/rLagSvZH7uqnBkfq/g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Hancock <hancockrwd@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.4 05/90] PCI/ASPM: Disable ASPM on ASMedia ASM1083/1085 PCIe-to-PCI bridge
-Date:   Mon,  3 Aug 2020 14:18:27 +0200
-Message-Id: <20200803121857.806357754@linuxfoundation.org>
+        stable@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
+        Robert Stupp <snazy@gmx.de>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        SeongJae Park <sjpark@amazon.com>
+Subject: [PATCH 5.4 06/90] mm/filemap.c: dont bother dropping mmap_sem for zero size readahead
+Date:   Mon,  3 Aug 2020 14:18:28 +0200
+Message-Id: <20200803121857.853351983@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
 References: <20200803121857.546052424@linuxfoundation.org>
@@ -43,68 +47,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Hancock <hancockrwd@gmail.com>
+From: Jan Kara <jack@suse.cz>
 
-commit b361663c5a40c8bc758b7f7f2239f7a192180e7c upstream.
+commit 5c72feee3e45b40a3c96c7145ec422899d0e8964 upstream.
 
-Recently ASPM handling was changed to allow ASPM on PCIe-to-PCI/PCI-X
-bridges.  Unfortunately the ASMedia ASM1083/1085 PCIe to PCI bridge device
-doesn't seem to function properly with ASPM enabled.  On an Asus PRIME
-H270-PRO motherboard, it causes errors like these:
+When handling a page fault, we drop mmap_sem to start async readahead so
+that we don't block on IO submission with mmap_sem held.  However there's
+no point to drop mmap_sem in case readahead is disabled.  Handle that case
+to avoid pointless dropping of mmap_sem and retrying the fault.  This was
+actually reported to block mlockall(MCL_CURRENT) indefinitely.
 
-  pcieport 0000:00:1c.0: AER: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Transmitter ID)
-  pcieport 0000:00:1c.0: AER:   device [8086:a292] error status/mask=00003000/00002000
-  pcieport 0000:00:1c.0: AER:    [12] Timeout
-  pcieport 0000:00:1c.0: AER: Corrected error received: 0000:00:1c.0
-  pcieport 0000:00:1c.0: AER: can't find device of ID00e0
-
-In addition to flooding the kernel log, this also causes the machine to
-wake up immediately after suspend is initiated.
-
-The device advertises ASPM L0s and L1 support in the Link Capabilities
-register, but the ASMedia web page for ASM1083 [1] claims "No PCIe ASPM
-support".
-
-Windows 10 (build 2004) enables L0s, but it also logs correctable PCIe
-errors.
-
-Add a quirk to disable ASPM for this device.
-
-[1] https://www.asmedia.com.tw/eng/e_show_products.php?cate_index=169&item=114
-
-[bhelgaas: commit log]
-Fixes: 66ff14e59e8a ("PCI/ASPM: Allow ASPM on links to PCIe-to-PCI/PCI-X Bridges")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=208667
-Link: https://lore.kernel.org/r/20200722021803.17958-1-hancockrwd@gmail.com
-Signed-off-by: Robert Hancock <hancockrwd@gmail.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Fixes: 6b4c9f446981 ("filemap: drop the mmap_sem for all blocking operations")
+Reported-by: Minchan Kim <minchan@kernel.org>
+Reported-by: Robert Stupp <snazy@gmx.de>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Minchan Kim <minchan@kernel.org>
+Link: http://lkml.kernel.org/r/20200212101356.30759-1-jack@suse.cz
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: SeongJae Park <sjpark@amazon.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/quirks.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ mm/filemap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -2330,6 +2330,19 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_IN
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x10f4, quirk_disable_aspm_l0s);
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x1508, quirk_disable_aspm_l0s);
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2438,7 +2438,7 @@ static struct file *do_async_mmap_readah
+ 	pgoff_t offset = vmf->pgoff;
  
-+static void quirk_disable_aspm_l0s_l1(struct pci_dev *dev)
-+{
-+	pci_info(dev, "Disabling ASPM L0s/L1\n");
-+	pci_disable_link_state(dev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
-+}
-+
-+/*
-+ * ASM1083/1085 PCIe-PCI bridge devices cause AER timeout errors on the
-+ * upstream PCIe root port when ASPM is enabled. At least L0s mode is affected;
-+ * disable both L0s and L1 for now to be safe.
-+ */
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ASMEDIA, 0x1080, quirk_disable_aspm_l0s_l1);
-+
- /*
-  * Some Pericom PCIe-to-PCI bridges in reverse mode need the PCIe Retrain
-  * Link bit cleared after starting the link retrain process to allow this
+ 	/* If we don't want any read-ahead, don't bother */
+-	if (vmf->vma->vm_flags & VM_RAND_READ)
++	if (vmf->vma->vm_flags & VM_RAND_READ || !ra->ra_pages)
+ 		return fpin;
+ 	if (ra->mmap_miss > 0)
+ 		ra->mmap_miss--;
 
 
