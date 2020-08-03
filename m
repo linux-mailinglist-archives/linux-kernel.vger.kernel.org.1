@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9786B23AEA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25BB23AEB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgHCU6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 16:58:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:57777 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727003AbgHCU6t (ORCPT
+        id S1729161AbgHCU75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 16:59:57 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26647 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729079AbgHCU75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 16:58:49 -0400
+        Mon, 3 Aug 2020 16:59:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596488327;
+        s=mimecast20190719; t=1596488395;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=UIoKJgwiwHBXzqx7bTTScO5nMJSnsWEl2/CTLb7XXEY=;
-        b=WxpH72H+L3sEB6TtSnxqb7vFux0fo9ihkEyrlYNMLIus6La1k0/czg57pjXkaE2a/PNyTE
-        Y4+zBHEM3zX//ej1mB9TpKGWFTRhcpCzmzKt1kdoCoqkUmkM+FXgElXjTAMFSXYOhhsd2P
-        YOTTqGQkZZhnvxYPJwgrPt4OVVDLGnM=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-308-ViDliDEdPWKtPrFnDDPxvg-1; Mon, 03 Aug 2020 16:58:46 -0400
-X-MC-Unique: ViDliDEdPWKtPrFnDDPxvg-1
-Received: by mail-qk1-f199.google.com with SMTP id v22so11063675qkg.15
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 13:58:46 -0700 (PDT)
+        bh=eADcXnv6Prf/ROnr8oMM90J2NN3UdejeU8L0/V+Jmmg=;
+        b=iGOF8Y+8yuH1U4i1mXOA9BunywvSyIPMYWh4/a3/qpPNWh/OC27M/qdAzzSimxrctcp2lH
+        rfp0Cczz7Mo1eBPfP8cFfW4jyHpjK4p+jOUqZSm8UNlL/6RY0cY8fxd2uDNRf2AXtXR65C
+        nV7ktmHgFZ6/9KI9EibDOdsOUQq4Xdo=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-164-uSMih7oIOnCbwutNRQt3mg-1; Mon, 03 Aug 2020 16:58:50 -0400
+X-MC-Unique: uSMih7oIOnCbwutNRQt3mg-1
+Received: by mail-qt1-f200.google.com with SMTP id d2so24284111qtn.8
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 13:58:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=UIoKJgwiwHBXzqx7bTTScO5nMJSnsWEl2/CTLb7XXEY=;
-        b=HcySLiY6456TzByVpLX5c+BNm085YLhgOVlmtcY3bYfBKwSMu7oSYLzm3/DrPTUsCt
-         HJzg9J2j1v94cpL6TP9zy3J542kpjxVzbBTgZP7s8QPC4xb0426nmF/4qRoEPZu31iBM
-         srEC/IQf+R99Buvsa48P/dKDUmPjvJObtfCEDGTJ/QVVnzI1+aNtxIgYnnsrKbgUCgfD
-         hXjiKHPOF+j7HQ7HMzl4a8Bysu/RIU0IqtGNOdX3t1an/cIptM73M5P0Wk1gE7EkwrwY
-         mh9qEsTySf5TnxnZE1hVsqxyI9fu4wmKvKdIbu5y9jK2sS8g3XYcsqvETAWUX+A848nI
-         tq/g==
-X-Gm-Message-State: AOAM533b6VJGALIxs+/ZhSZlnKPq8/h4g2xroSlsIchLbH3t3xaT2UGA
-        EMhnl0rQVFDBMryQyt55iRcXo7sb7JZ+q8Z8FkbJehuRfLyprwEFLC95wxAEoteKM8qD3EMlnk+
-        4hpeAP77L9Wx+5dATtDB8KVKR
-X-Received: by 2002:a05:620a:13cf:: with SMTP id g15mr16786168qkl.48.1596488325832;
-        Mon, 03 Aug 2020 13:58:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/usVrinipJ2UNkJyBG8SnnEAzcc9qw/4hOyTpADhTf+Pw3MhloA9MKuwjt0FKT+pTufaqUQ==
-X-Received: by 2002:a05:620a:13cf:: with SMTP id g15mr16786157qkl.48.1596488325620;
-        Mon, 03 Aug 2020 13:58:45 -0700 (PDT)
+        bh=eADcXnv6Prf/ROnr8oMM90J2NN3UdejeU8L0/V+Jmmg=;
+        b=ccfe/TxLtsFS0NNr2A6+Zi9NUurKgRMKgyM9Ub7ZmBOzJEmUvxD4nHK/MgIYs5+d23
+         +ALnf1vCFB3p2fYCqqjKloGBBV00JO6H6fYoeK17xxYROJ6WhqhzumBAMePpv4+tRfSX
+         SRLVvDDwtSgmLQOxhK2h+ztMWxu7pqcbXeASxwlqz/RO5qhqBuFz6/wvaIIki7YbnMNs
+         pzDL0cMk8tmjbinlWVqCKQsts/qr+h219YJL74zNlCzgZL/ESlcIEQ81zUuqwxolOFc8
+         pXs5nySxzmJUETOM6zy1CchAvV1Ot7nVKbueEnxQRDUizzPwF0NQb45c0Ou8GqXAF4A5
+         +87Q==
+X-Gm-Message-State: AOAM531wop70IHUty+RUJZ1zto8Kpo0RVnNZWsI+th4yBjS91U5E+9j3
+        dXLBF/hRS4HiNTNLOdPKJhBtp9XctI3KMwWrEha14pv71Id2S51V8IPSuWDgNi4vwR16hr5J4GZ
+        hj5XHQQa3zAIJRae3olWrZx6O
+X-Received: by 2002:a37:a851:: with SMTP id r78mr9665289qke.419.1596488329762;
+        Mon, 03 Aug 2020 13:58:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx8heGLu96UxNsBF036shtdOW0/9vkprVq03ErbRtZKSjOp34w1z+ivlgALOlXR/mUDEBkUDg==
+X-Received: by 2002:a37:a851:: with SMTP id r78mr9665273qke.419.1596488329535;
+        Mon, 03 Aug 2020 13:58:49 -0700 (PDT)
 Received: from redhat.com (bzq-79-177-102-128.red.bezeqint.net. [79.177.102.128])
-        by smtp.gmail.com with ESMTPSA id i19sm19925205qkk.68.2020.08.03.13.58.43
+        by smtp.gmail.com with ESMTPSA id e4sm23451075qts.57.2020.08.03.13.58.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 13:58:45 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 16:58:42 -0400
+        Mon, 03 Aug 2020 13:58:49 -0700 (PDT)
+Date:   Mon, 3 Aug 2020 16:58:46 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     virtualization@lists.linux-foundation.org,
         Jason Wang <jasowang@redhat.com>
-Subject: [PATCH v2 02/24] virtio_ring: sparse warning fixup
-Message-ID: <20200803205814.540410-3-mst@redhat.com>
+Subject: [PATCH v2 03/24] virtio: allow __virtioXX, __leXX in config space
+Message-ID: <20200803205814.540410-4-mst@redhat.com>
 References: <20200803205814.540410-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -69,46 +69,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-virtio_store_mb was built with split ring in mind so it accepts
-__virtio16 arguments. Packed ring uses __le16 values, so sparse
-complains.  It's just a store with some barriers so let's convert it to
-a macro, we don't loose too much type safety by doing that.
+Currently all config space fields are of the type __uXX.
+This confuses people and some drivers (notably vdpa)
+access them using CPU endian-ness - which only
+works well for legacy or LE platforms.
+
+Update virtio_cread/virtio_cwrite macros to allow __virtioXX
+and __leXX field types. Follow-up patches will convert
+config space to use these types.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- include/linux/virtio_ring.h | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ include/linux/virtio_config.h | 50 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 48 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/virtio_ring.h b/include/linux/virtio_ring.h
-index 3dc70adfe5f5..b485b13fa50b 100644
---- a/include/linux/virtio_ring.h
-+++ b/include/linux/virtio_ring.h
-@@ -46,16 +46,15 @@ static inline void virtio_wmb(bool weak_barriers)
- 		dma_wmb();
+diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+index 3b4eae5ac5e3..64da491936f7 100644
+--- a/include/linux/virtio_config.h
++++ b/include/linux/virtio_config.h
+@@ -6,6 +6,7 @@
+ #include <linux/bug.h>
+ #include <linux/virtio.h>
+ #include <linux/virtio_byteorder.h>
++#include <linux/compiler_types.h>
+ #include <uapi/linux/virtio_config.h>
+ 
+ struct irq_affinity;
+@@ -287,12 +288,57 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
+ 	return __cpu_to_virtio64(virtio_is_little_endian(vdev), val);
  }
  
--static inline void virtio_store_mb(bool weak_barriers,
--				   __virtio16 *p, __virtio16 v)
--{
--	if (weak_barriers) {
--		virt_store_mb(*p, v);
--	} else {
--		WRITE_ONCE(*p, v);
--		mb();
--	}
--}
-+#define virtio_store_mb(weak_barriers, p, v) \
-+do { \
-+	if (weak_barriers) { \
-+		virt_store_mb(*p, v); \
-+	} else { \
-+		WRITE_ONCE(*p, v); \
-+		mb(); \
-+	} \
-+} while (0) \
- 
- struct virtio_device;
- struct virtqueue;
++/*
++ * Only the checker differentiates between __virtioXX and __uXX types. But we
++ * try to share as much code as we can with the regular GCC build.
++ */
++#if !defined(CONFIG_CC_IS_GCC) && !defined(__CHECKER__)
++
++/* Not a checker - we can keep things simple */
++#define __virtio_native_typeof(x) typeof(x)
++
++#else
++
++/*
++ * We build this out of a couple of helper macros in a vain attempt to
++ * help you keep your lunch down while reading it.
++ */
++#define __virtio_pick_value(x, type, then, otherwise)			\
++	__builtin_choose_expr(__same_type(x, type), then, otherwise)
++
++#define __virtio_pick_type(x, type, then, otherwise)			\
++	__virtio_pick_value(x, type, (then)0, otherwise)
++
++#define __virtio_pick_endian(x, x16, x32, x64, otherwise)			\
++	__virtio_pick_type(x, x16, __u16,					\
++		__virtio_pick_type(x, x32, __u32,				\
++			__virtio_pick_type(x, x64, __u64,			\
++				otherwise)))
++
++#define __virtio_native_typeof(x) typeof(					\
++	__virtio_pick_type(x, __u8, __u8,					\
++		__virtio_pick_endian(x, __virtio16, __virtio32, __virtio64,	\
++			__virtio_pick_endian(x, __le16, __le32, __le64,		\
++				__virtio_pick_endian(x, __u16, __u32, __u64,	\
++					/* No other type allowed */		\
++					(void)0)))))
++
++#endif
++
++#define __virtio_native_type(structname, member) \
++	__virtio_native_typeof(((structname*)0)->member)
++
++#define __virtio_typecheck(structname, member, val) \
++		/* Must match the member's type, and be integer */ \
++		typecheck(__virtio_native_type(structname, member), (val))
++
++
+ /* Config space accessors. */
+ #define virtio_cread(vdev, structname, member, ptr)			\
+ 	do {								\
+ 		might_sleep();						\
+ 		/* Must match the member's type, and be integer */	\
+-		if (!typecheck(typeof((((structname*)0)->member)), *(ptr))) \
++		if (!__virtio_typecheck(structname, member, *(ptr)))	\
+ 			(*ptr) = 1;					\
+ 									\
+ 		switch (sizeof(*ptr)) {					\
+@@ -322,7 +368,7 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
+ 	do {								\
+ 		might_sleep();						\
+ 		/* Must match the member's type, and be integer */	\
+-		if (!typecheck(typeof((((structname*)0)->member)), *(ptr))) \
++		if (!__virtio_typecheck(structname, member, *(ptr)))	\
+ 			BUG_ON((*ptr) == 1);				\
+ 									\
+ 		switch (sizeof(*ptr)) {					\
 -- 
 MST
 
