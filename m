@@ -2,168 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17ADA23A5AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2061923A5B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgHCMkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        id S1729204AbgHCMlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728400AbgHCMkD (ORCPT
+        with ESMTP id S1729125AbgHCMkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:40:03 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97821C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 05:40:03 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id o22so27777058qtt.13
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 05:40:03 -0700 (PDT)
+        Mon, 3 Aug 2020 08:40:40 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07805C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 05:40:40 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id t14so10090619wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 05:40:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BmbNE1buq5pXcu816xflWCrMTaLO2MZ62sTduj5sEmM=;
-        b=VSkxZqhaTCw4jfRyyQHX5mduSPeV5UA3aoGAvElI/iRjr65POS1bMBjuPEedZWp+SO
-         C4EvSD/S2+UBh9Ns39vOKEEMt1ZyQvTmCqKxSp3ZkqIIVwqeVxi9wNRK21BunM/zL3ej
-         Qknk6EO15PutwX7PphSt6bIi7NfG8yffH+b3Nbk2Vgy6y5LmDqC8vs3MZ+U/NpRta1cu
-         sfuLDQPBLHlx69c5XaK8rxcJJXczKkmyXM/w8sUJI938iD8IyRgTtlfVBMiDqoVMAuJd
-         R+A2reXsFP1Ch9hLmrW7bY7wau6OdvCfZsTQ+zqpehQk8/lGLWmeP27daKGQ4spZaVbx
-         NftQ==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mkm6CObS36SJAMkOLwAunKXfddEBXbzFKEGDTTUK8x8=;
+        b=ZRjMJ9i+3XtHFlvWGHZ8k1OJSiJIwYiuaYJjTSDvBsQo7p5Lw2lHEoeMLsDrOtbo5t
+         Y/L6ct5WPSxA6i5eDn+OJ1XtcPhING+tXhwhkyjJXP10dSlFTTYrNBfbMF0GZXXGSSzG
+         KHPqqWfMuDAAl6hwmgPB5+nYUkFTDd+lylEYs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BmbNE1buq5pXcu816xflWCrMTaLO2MZ62sTduj5sEmM=;
-        b=rS3qVVeps8e07xhgQxMLOxgVAatkYtChEo9omznBxf4jkBSakyfibCa/rTyITz7s95
-         icQ+AC2kyS8wYUlUC3lifUGj6xi1ca0lx9hOou4cF6OOburbR454Azx+q/c4pIiIHYC3
-         5XogWV4mRQ+Os0vYa8JixNDXvL2bd/LaLYBFhyhfTKZfSPzAdO4w3ZAC5cSEg8ZCU2fw
-         AA1pt6ZecY04u5W7RN3rj24xy/c1vGBtJRw0YCChStiVQtbbREC8c4+69pMgucIXvDsM
-         uZnqjCxjkPlrhC/CxtOtfzhCkPBZ6BhRUtIgFnPMLL2d4Qb4z4NpEUN/V0JQO+NbVeMf
-         3y0A==
-X-Gm-Message-State: AOAM5335QnNewcyR+jiYr2oZf2qUqmDx9bc1H33kF6y4a7+Xjt3SfUcJ
-        prqQklCEzdc98GK/YxsWhYLq3w==
-X-Google-Smtp-Source: ABdhPJyhP67WF654Q74haL5NM8BWjv2KU6FvcKM6NkYKcXg94B+h3ml0rPibaS3+uUc0lRUK6X+r0w==
-X-Received: by 2002:ac8:22ea:: with SMTP id g39mr16595368qta.146.1596458402728;
-        Mon, 03 Aug 2020 05:40:02 -0700 (PDT)
-Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id z197sm20327163qkb.66.2020.08.03.05.40.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 05:40:01 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 08:39:55 -0400
-From:   Qian Cai <cai@lca.pw>
-To:     nao.horiguchi@gmail.com
-Cc:     linux-mm@kvack.org, mhocko@kernel.org, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com, osalvador@suse.de, tony.luck@intel.com,
-        david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
-        zeil@yandex-team.ru, naoya.horiguchi@nec.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 00/16] HWPOISON: soft offline rework
-Message-ID: <20200803123954.GA4631@lca.pw>
-References: <20200731122112.11263-1-nao.horiguchi@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mkm6CObS36SJAMkOLwAunKXfddEBXbzFKEGDTTUK8x8=;
+        b=Ux/UyGuPdLiAeCs5i81L7wUngAIQS8HK0cbLTkaa9Pll52tA/pdDvvAnR541chofvs
+         fTyD208gnakDxG6zmKfVxtdMF/IF1AayToUEwAjsgLJI9FicglXrgfj7OMzYPekQ6PrT
+         GAfTYEfwFMvk0OzAAmQA9Jw3O8q8Ay/UJTD26fb6yBsMczyyD2VPZ02Unggtfa06uyVx
+         d+b5mA8Kd0sQi1cb7Xm8ecFKo9eJ9bHlnURMLR2OyGsw7cVS+qNHWfn1O9W5niZYXrV4
+         4ivo3LMpQEL8bAFW604ay2A24CdVFgbmD+DaD6oOBrmjGhrHVS9WUwGNtMK5TuIghIxh
+         hMQA==
+X-Gm-Message-State: AOAM530T5dd82fzBEdJ7UjoKTnKoiPiIuqphnvlyzXONjHBi456380Vv
+        SLKWmlnEAVsHA1ob/aEAOZGvDV5nJwKafjq8LDV/ig==
+X-Google-Smtp-Source: ABdhPJyhgboxKbPjxQ++0E3wx9USPAXOub0gcy5KJOARS+aCf/xp/ODALT+aGA7/GIEB4C7d3o1nsP0GO/rZzwXoO+I=
+X-Received: by 2002:a7b:c1c3:: with SMTP id a3mr16280931wmj.111.1596458438572;
+ Mon, 03 Aug 2020 05:40:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200731122112.11263-1-nao.horiguchi@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200724203407.16972-1-james.quinlan@broadcom.com>
+ <20200724203407.16972-10-james.quinlan@broadcom.com> <e37ff97826cf006bf1c9a3e0a134847f8030c79a.camel@suse.de>
+In-Reply-To: <e37ff97826cf006bf1c9a3e0a134847f8030c79a.camel@suse.de>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Mon, 3 Aug 2020 08:40:26 -0400
+Message-ID: <CA+-6iNyzD9DEqKw+w+Cx9ZXpc9j9RF3JS=avF7fk7CsCaTz=og@mail.gmail.com>
+Subject: Re: [PATCH v9 09/12] PCI: brcmstb: Set additional internal memory DMA
+ viewport sizes
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 12:20:56PM +0000, nao.horiguchi@gmail.com wrote:
-> This patchset is the latest version of soft offline rework patchset
-> targetted for v5.9.
-> 
-> Main focus of this series is to stabilize soft offline.  Historically soft
-> offlined pages have suffered from racy conditions because PageHWPoison is
-> used to a little too aggressively, which (directly or indirectly) invades
-> other mm code which cares little about hwpoison.  This results in unexpected
-> behavior or kernel panic, which is very far from soft offline's "do not
-> disturb userspace or other kernel component" policy.
-> 
-> Main point of this change set is to contain target page "via buddy allocator",
-> where we first free the target page as we do for normal pages, and remove
-> from buddy only when we confirm that it reaches free list. There is surely
-> race window of page allocation, but that's fine because someone really want
-> that page and the page is still working, so soft offline can happily give up.
-> 
-> v4 from Oscar tries to handle the race around reallocation, but that part
-> seems still work in progress, so I decide to separate it for changes into
-> v5.9.  Thank you for your contribution, Oscar.
-> 
-> The issue reported by Qian Cai is fixed by patch 16/16.
-
-I am still getting EIO everywhere on next-20200803 (which includes this v5).
-
-# ./random 1
-- start: migrate_huge_offline
-- use NUMA nodes 0,8.
-- mmap and free 8388608 bytes hugepages on node 0
-- mmap and free 8388608 bytes hugepages on node 8
-madvise: Input/output error
-
-From the serial console,
-
-[  637.164222][ T8357] soft offline: 0x118ee0: hugepage isolation failed: 0, page count 2, type 7fff800001000e (referenced|uptodate|dirty|head)
-[  637.164890][ T8357] Soft offlining pfn 0x20001380 at process virtual address 0x7fff9f000000
-[  637.165422][ T8357] Soft offlining pfn 0x3ba00 at process virtual address 0x7fff9f200000
-[  637.166409][ T8357] Soft offlining pfn 0x201914a0 at process virtual address 0x7fff9f000000
-[  637.166833][ T8357] Soft offlining pfn 0x12b9a0 at process virtual address 0x7fff9f200000
-[  637.168044][ T8357] Soft offlining pfn 0x1abb60 at process virtual address 0x7fff9f000000
-[  637.168557][ T8357] Soft offlining pfn 0x20014820 at process virtual address 0x7fff9f200000
-[  637.169493][ T8357] Soft offlining pfn 0x119720 at process virtual address 0x7fff9f000000
-[  637.169603][ T8357] soft offline: 0x119720: hugepage isolation failed: 0, page count 2, type 7fff800001000e (referenced|uptodate|dirty|head)
-[  637.169756][ T8357] Soft offlining pfn 0x118ee0 at process virtual address 0x7fff9f200000
-[  637.170653][ T8357] Soft offlining pfn 0x200e81e0 at process virtual address 0x7fff9f000000
-[  637.171067][ T8357] Soft offlining pfn 0x201c5f60 at process virtual address 0x7fff9f200000
-[  637.172101][ T8357] Soft offlining pfn 0x201c8f00 at process virtual address 0x7fff9f000000
-[  637.172241][ T8357] __get_any_page: 0x201c8f00: unknown zero refcount page type 87fff8000000000
-
-> 
-> This patchset is based on v5.8-rc7-mmotm-2020-07-27-18-18, but I applied
-> this series after reverting previous version.
-> Maybe https://github.com/Naoya-Horiguchi/linux/commits/soft-offline-rework.v5
-> shows what I did more precisely.
-> 
-> Any other comment/suggestion/help would be appreciated.
-> 
-> Thanks,
-> Naoya Horiguchi
-> ---
-> Previous versions:
->   v1: https://lore.kernel.org/linux-mm/1541746035-13408-1-git-send-email-n-horiguchi@ah.jp.nec.com/
->   v2: https://lore.kernel.org/linux-mm/20191017142123.24245-1-osalvador@suse.de/
->   v3: https://lore.kernel.org/linux-mm/20200624150137.7052-1-nao.horiguchi@gmail.com/
->   v4: https://lore.kernel.org/linux-mm/20200716123810.25292-1-osalvador@suse.de/
-> ---
-> Summary:
-> 
-> Naoya Horiguchi (8):
->       mm,hwpoison: cleanup unused PageHuge() check
->       mm, hwpoison: remove recalculating hpage
->       mm,madvise: call soft_offline_page() without MF_COUNT_INCREASED
->       mm,hwpoison-inject: don't pin for hwpoison_filter
->       mm,hwpoison: remove MF_COUNT_INCREASED
->       mm,hwpoison: remove flag argument from soft offline functions
->       mm,hwpoison: introduce MF_MSG_UNSPLIT_THP
->       mm,hwpoison: double-check page count in __get_any_page()
-> 
-> Oscar Salvador (8):
->       mm,madvise: Refactor madvise_inject_error
->       mm,hwpoison: Un-export get_hwpoison_page and make it static
->       mm,hwpoison: Kill put_hwpoison_page
->       mm,hwpoison: Unify THP handling for hard and soft offline
->       mm,hwpoison: Rework soft offline for free pages
->       mm,hwpoison: Rework soft offline for in-use pages
->       mm,hwpoison: Refactor soft_offline_huge_page and __soft_offline_page
->       mm,hwpoison: Return 0 if the page is already poisoned in soft-offline
-> 
->  drivers/base/memory.c      |   2 +-
->  include/linux/mm.h         |  12 +-
->  include/linux/page-flags.h |   6 +-
->  include/ras/ras_event.h    |   3 +
->  mm/hwpoison-inject.c       |  18 +--
->  mm/madvise.c               |  39 +++---
->  mm/memory-failure.c        | 334 ++++++++++++++++++++-------------------------
->  mm/migrate.c               |  11 +-
->  mm/page_alloc.c            |  60 ++++++--
->  9 files changed, 233 insertions(+), 252 deletions(-)
+fls64
+On Sat, Aug 1, 2020 at 1:39 PM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> Hi Jim,
+>
+> On Fri, 2020-07-24 at 16:33 -0400, Jim Quinlan wrote:
+> > The Raspberry Pi (RPI) is currently the only chip using this driver
+> > (pcie-brcmstb.c).  There, only one memory controller is used, without an
+> > extension region, and the SCB0 viewport size is set to the size of the
+> > first and only dma-range region.  Other BrcmSTB SOCs have more complicated
+> > memory configurations that require setting additional viewport sizes.
+> >
+> > BrcmSTB PCIe controllers are intimately connected to the memory
+> > controller(s) on the SOC.  The SOC may have one to three memory
+> > controllers; they are indicated by the term SCBi.  Each controller has a
+> > base region and an optional extension region.  In physical memory, the base
+> > and extension regions of a controller are not adjacent, but in PCIe-space
+> > they are.
+> >
+> > There is a "viewport" for each memory controller that allows DMA from
+> > endpoint devices.  Each viewport's size must be set to a power of two, and
+> > that size must be equal to or larger than the amount of memory each
+> > controller supports which is the sum of base region and its optional
+> > extension.  Further, the 1-3 viewports are also adjacent in PCIe-space.
+> >
+> > Unfortunately the viewport sizes cannot be ascertained from the
+> > "dma-ranges" property so they have their own property, "brcm,scb-sizes".
+> > This is because dma-range information does not indicate what memory
+> > controller it is associated.  For example, consider the following case
+> > where the size of one dma-range is 2GB and the second dma-range is 1GB:
+> >
+> >     /* Case 1: SCB0 size set to 4GB */
+> >     dma-range0: 2GB (from memc0-base)
+> >     dma-range1: 1GB (from memc0-extension)
+> >
+> >     /* Case 2: SCB0 size set to 2GB, SCB1 size set to 1GB */
+> >     dma-range0: 2GB (from memc0-base)
+> >     dma-range1: 1GB (from memc0-extension)
+> >
+> > By just looking at the dma-ranges information, one cannot tell which
+> > situation applies. That is why an additional property is needed.  Its
+> > length indicates the number of memory controllers being used and each value
+> > indicates the viewport size.
+> >
+> > Note that the RPI DT does not have a "brcm,scb-sizes" property value,
+> > as it is assumed that it only requires one memory controller and no
+> > extension.  So the optional use of "brcm,scb-sizes" will be backwards
+> > compatible.
+> >
+> > One last layer of complexity exists: all of the viewports sizes must be
+> > added and rounded up to a power of two to determine what the "BAR" size is.
+> > Further, an offset must be given that indicates the base PCIe address of
+> > this "BAR".  The use of the term BAR is typically associated with endpoint
+> > devices, and the term is used here because the PCIe HW may be used as an RC
+> > or an EP.  In the former case, all of the system memory appears in a single
+> > "BAR" region in PCIe memory.  As it turns out, BrcmSTB PCIe HW is rarely
+> > used in the EP role and its system of mapping memory is an artifact that
+> > requires multiple dma-ranges regions.
+> >
+> > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> > Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> > ---
+> >  drivers/pci/controller/pcie-brcmstb.c | 68 ++++++++++++++++++++-------
+> >  1 file changed, 50 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> > index 8dacb9d3b7b6..3ef2d37cc43b 100644
+> > --- a/drivers/pci/controller/pcie-brcmstb.c
+> > +++ b/drivers/pci/controller/pcie-brcmstb.c
+> > @@ -715,22 +720,44 @@ static inline int brcm_pcie_get_rc_bar2_size_and_offset(struct brcm_pcie *pcie,
+> >                                                       u64 *rc_bar2_offset)
+> >  {
+> >       struct pci_host_bridge *bridge = pci_host_bridge_from_priv(pcie);
+> > -     struct device *dev = pcie->dev;
+> >       struct resource_entry *entry;
+> > +     struct device *dev = pcie->dev;
+> > +     u64 lowest_pcie_addr = ~(u64)0;
+> > +     int ret, i = 0;
+> > +     u64 size = 0;
+> >
+> > -     entry = resource_list_first_type(&bridge->dma_ranges, IORESOURCE_MEM);
+> > -     if (!entry)
+> > -             return -ENODEV;
+> > +     resource_list_for_each_entry(entry, &bridge->dma_ranges) {
+> > +             u64 pcie_beg = entry->res->start - entry->offset;
+> >
+> > +             size += entry->res->end - entry->res->start + 1;
+> > +             if (pcie_beg < lowest_pcie_addr)
+> > +                     lowest_pcie_addr = pcie_beg;
+> > +     }
+> >
+> > -     /*
+> > -      * The controller expects the inbound window offset to be calculated as
+> > -      * the difference between PCIe's address space and CPU's. The offset
+> > -      * provided by the firmware is calculated the opposite way, so we
+> > -      * negate it.
+> > -      */
+> > -     *rc_bar2_offset = -entry->offset;
+> > -     *rc_bar2_size = 1ULL << fls64(entry->res->end - entry->res->start);
+> > +     if (lowest_pcie_addr == ~(u64)0) {
+> > +             dev_err(dev, "DT node has no dma-ranges\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     ret = of_property_read_variable_u64_array(pcie->np, "brcm,scb-sizes", pcie->memc_size, 1,
+> > +                                               PCIE_BRCM_MAX_MEMC);
+> > +
+> > +     if (ret <= 0) {
+> > +             /* Make an educated guess */
+> > +             pcie->num_memc = 1;
+> > +             pcie->memc_size[0] = 1 << fls64(size - 1);
+>
+> You need to 1ULL here.
+Got it.
+Thanks,
+Jim
+>
+> Regards,
+> Nicolas
+>
+> > +     } else {
+> > +             pcie->num_memc = ret;
+> > +     }
+> > +
+> > +     /* Each memc is viewed through a "port" that is a power of 2 */
+> > +     for (i = 0, size = 0; i < pcie->num_memc; i++)
+> > +             size += pcie->memc_size[i];
+> > +
+> > +     /* System memory starts at this address in PCIe-space */
+> > +     *rc_bar2_offset = lowest_pcie_addr;
+> > +     /* The sum of all memc views must also be a power of 2 */
+> > +     *rc_bar2_size = 1ULL << fls64(size - 1);
+> >
+> >       /*
+> >        * We validate the inbound memory view even though we should trust
+>
