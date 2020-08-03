@@ -2,201 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B19C23A2F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 12:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEEC723A303
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 13:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgHCK4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 06:56:14 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:43105 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgHCK4N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 06:56:13 -0400
-Received: by mail-lf1-f65.google.com with SMTP id b11so20230652lfe.10
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 03:56:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MMWR59ppgwvDkLer5o1rKBFEg1vToLpYYmzQrSMwZDA=;
-        b=eRUqCCTmW7PQ7kVVunyZzd6xAsS5J3Al6NeLdWLug8J+Fh2n85scALuOAOheJy0jMD
-         lAR2w6Nsdu6jywVV6yoVzn88pTjecDkUe0YPKWlXAL716ftN07DwnpIgprotqR1WLoxJ
-         CqgysDTzxc3iDcFVq/R4pVN3bzwuAZ1VtaeIdj25dOARmr4lTaZgS/Gxg7YFiwgAIQ4h
-         lD/zcBtGk172quYUulROuf8dCZGuT8qET7zVe5Rk8JnPSO5tqpLBLcVtC9kpSNRHj4Ts
-         YQ0Tgf+JH9zW0vlF3H15maFYmC3whBmJJ3H0WTjqCtzxeYcnT8fVyiyxkLOpOYwa0CQH
-         +XWQ==
-X-Gm-Message-State: AOAM530WtdiHwFy18zC0sALaPoJpj+D2x3vcy10NsWM6c0GwnIjXZWh0
-        gmq/c2SqnByi0Ef9fLEQgp0IGTAi
-X-Google-Smtp-Source: ABdhPJzpYVnZgPuVjD+eeb26rEsIXasQclbm8WTkDfDp5i5cUFrnfCSrvUWAc4ACFTmaGAAlzfFE5A==
-X-Received: by 2002:a19:c206:: with SMTP id l6mr8177709lfc.152.1596452171263;
-        Mon, 03 Aug 2020 03:56:11 -0700 (PDT)
-Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
-        by smtp.googlemail.com with ESMTPSA id d5sm878932ljc.80.2020.08.03.03.56.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 03:56:10 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] coccinelle: api: add kvmalloc script
-Date:   Mon,  3 Aug 2020 13:56:01 +0300
-Message-Id: <20200803105601.12162-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726478AbgHCLAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 07:00:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725945AbgHCLAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 07:00:21 -0400
+Received: from localhost (unknown [122.171.202.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55DB520578;
+        Mon,  3 Aug 2020 11:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596452419;
+        bh=LYS0GWdRpiOi06IUzhl5C/4AAkTdXCxhTjn+IAoTmwI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aknNQkg/fkfqlAJkanuP86F0U0ybdq+0nVqKK3c/cmMK5Mb6txJZRRA1KeHacl4Ag
+         dK3x2SQOz0k+OrDtiLPy69xBdcaBIjnIudeR7vBhfUGph9ozVgDa17Ee5EG9vZ/U25
+         yJmSjh9Iz+yOg9ZX2laUFq6EgqSS3LUUiCNeGX3U=
+Date:   Mon, 3 Aug 2020 16:30:16 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Konrad Dybcio <konradybcio@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     martin.botka1@gmail.com, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        zhengbin <zhengbin13@huawei.com>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Harigovindan P <harigovi@codeaurora.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Xiaozhe Shi <xiaozhes@codeaurora.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH 4/9] drm/msm/dsi: Add phy configuration for SDM630/636/660
+Message-ID: <20200803110016.GL12965@vkoul-mobl>
+References: <20200726111215.22361-1-konradybcio@gmail.com>
+ <20200726111215.22361-5-konradybcio@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200726111215.22361-5-konradybcio@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suggest kvmalloc instead of opencoded kmalloc && vmalloc condition.
+On 26-07-20, 13:12, Konrad Dybcio wrote:
+> These SoCs make use of the 14nm phy, but at different
+> addresses than other 14nm units.
+> 
+> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+> ---
+>  .../devicetree/bindings/display/msm/dsi.txt    |  1 +
+>  drivers/gpu/drm/msm/dsi/phy/dsi_phy.c          |  2 ++
+>  drivers/gpu/drm/msm/dsi/phy/dsi_phy.h          |  1 +
+>  drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c     | 18 ++++++++++++++++++
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
+Is there a reason why dsi phy needs to be here and not in phy subsystem
+drivers/phy/ ?
 
-If coccinelle fails with "Segmentation fault" during analysis, then
-one needs to increase stack limit, e.g. ulimit -s 32767.
+>  4 files changed, 22 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/msm/dsi.txt b/Documentation/devicetree/bindings/display/msm/dsi.txt
+> index af95586c898f..7884fd7a85c1 100644
+> --- a/Documentation/devicetree/bindings/display/msm/dsi.txt
+> +++ b/Documentation/devicetree/bindings/display/msm/dsi.txt
+> @@ -87,6 +87,7 @@ Required properties:
+>    * "qcom,dsi-phy-20nm"
+>    * "qcom,dsi-phy-28nm-8960"
+>    * "qcom,dsi-phy-14nm"
+> +  * "qcom,dsi-phy-14nm-660"
+>    * "qcom,dsi-phy-10nm"
+>    * "qcom,dsi-phy-10nm-8998"
+>  - reg: Physical base address and length of the registers of PLL, PHY. Some
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> index f509ebd77500..009f5b843dd1 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> @@ -499,6 +499,8 @@ static const struct of_device_id dsi_phy_dt_match[] = {
+>  #ifdef CONFIG_DRM_MSM_DSI_14NM_PHY
+>  	{ .compatible = "qcom,dsi-phy-14nm",
+>  	  .data = &dsi_phy_14nm_cfgs },
+> +	{ .compatible = "qcom,dsi-phy-14nm-660",
+> +	  .data = &dsi_phy_14nm_660_cfgs },
+>  #endif
+>  #ifdef CONFIG_DRM_MSM_DSI_10NM_PHY
+>  	{ .compatible = "qcom,dsi-phy-10nm",
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> index 24b294ed3059..ef8672d7b123 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> @@ -45,6 +45,7 @@ extern const struct msm_dsi_phy_cfg dsi_phy_28nm_lp_cfgs;
+>  extern const struct msm_dsi_phy_cfg dsi_phy_20nm_cfgs;
+>  extern const struct msm_dsi_phy_cfg dsi_phy_28nm_8960_cfgs;
+>  extern const struct msm_dsi_phy_cfg dsi_phy_14nm_cfgs;
+> +extern const struct msm_dsi_phy_cfg dsi_phy_14nm_660_cfgs;
+>  extern const struct msm_dsi_phy_cfg dsi_phy_10nm_cfgs;
+>  extern const struct msm_dsi_phy_cfg dsi_phy_10nm_8998_cfgs;
+>  
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> index 1594f1422372..519400501bcd 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> @@ -161,3 +161,21 @@ const struct msm_dsi_phy_cfg dsi_phy_14nm_cfgs = {
+>  	.io_start = { 0x994400, 0x996400 },
+>  	.num_dsi_phy = 2,
+>  };
+> +
+> +const struct msm_dsi_phy_cfg dsi_phy_14nm_660_cfgs = {
+> +	.type = MSM_DSI_PHY_14NM,
+> +	.src_pll_truthtable = { {false, false}, {true, false} },
+> +	.reg_cfg = {
+> +		.num = 1,
+> +		.regs = {
+> +			{"vcca", 17000, 32},
+> +		},
+> +	},
+> +	.ops = {
+> +		.enable = dsi_14nm_phy_enable,
+> +		.disable = dsi_14nm_phy_disable,
+> +		.init = dsi_14nm_phy_init,
+> +	},
+> +	.io_start = { 0xc994400, 0xc996000 },
+> +	.num_dsi_phy = 2,
+> +};
+> -- 
+> 2.27.0
 
-Current, I've sent only one patch for this rule and will send the rest
-after the merge window. https://lkml.org/lkml/2020/7/31/986
-
- scripts/coccinelle/api/kvmalloc.cocci | 127 ++++++++++++++++++++++++++
- 1 file changed, 127 insertions(+)
- create mode 100644 scripts/coccinelle/api/kvmalloc.cocci
-
-diff --git a/scripts/coccinelle/api/kvmalloc.cocci b/scripts/coccinelle/api/kvmalloc.cocci
-new file mode 100644
-index 000000000000..76d6aeab7c09
---- /dev/null
-+++ b/scripts/coccinelle/api/kvmalloc.cocci
-@@ -0,0 +1,127 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+///
-+/// Find conditions in code for kmalloc/vmalloc calls.
-+/// Suggest to use kvmalloc instead.
-+///
-+// Confidence: High
-+// Copyright: (C) 2020 Denis Efremov ISPRAS
-+// Options: --no-includes --include-headers
-+//
-+
-+virtual patch
-+virtual report
-+virtual org
-+virtual context
-+
-+@opportunity depends on !patch@
-+expression E, E1, size;
-+position p;
-+@@
-+
-+(
-+* if (\(size <= E1\|size < E1\|size == E1\|size > E1\) || ...)@p {
-+    ...
-+*    E = \(kmalloc\|kzalloc\|kcalloc\|kmalloc_node\|kzalloc_node\|
-+*          kmalloc_array\|kmalloc_array_node\|kcalloc_node\)(..., size, ...)
-+    ...
-+  } else {
-+    ...
-+*    E = \(vmalloc\|vzalloc\|vmalloc_node\|vzalloc_node\)(..., size, ...)
-+    ...
-+  }
-+|
-+* E = \(kmalloc\|kzalloc\|kcalloc\|kmalloc_node\|kzalloc_node\|
-+*       kmalloc_array\|kmalloc_array_node\|kcalloc_node\)(..., size, ...)
-+  ... when != E = E1
-+      when != size = E1
-+      when any
-+* if (\(!E\|E == NULL\))@p {
-+    ...
-+*   E = \(vmalloc\|vzalloc\|vmalloc_node\|vzalloc_node\)(..., size, ...)
-+    ...
-+  }
-+)
-+
-+@depends on patch@
-+expression E, E1, flags, size, node;
-+identifier x;
-+type T;
-+@@
-+
-+(
-+- if (\(size <= E1\|size < E1\|size == E1\|size > E1\))
-+-    E = kmalloc(size, flags);
-+- else
-+-    E = vmalloc(size);
-++ E = kvmalloc(size, flags);
-+|
-+- E = kmalloc(size, flags | __GFP_NOWARN);
-+- if (\(!E\|E == NULL\))
-+-   E = vmalloc(size);
-++ E = kvmalloc(size, flags);
-+|
-+- T x = kmalloc(size, flags | __GFP_NOWARN);
-+- if (\(!x\|x == NULL\))
-+-   x = vmalloc(size);
-++ T x = kvmalloc(size, flags);
-+|
-+- if (\(size <= E1\|size < E1\|size == E1\|size > E1\))
-+-    E = kzalloc(size, flags);
-+- else
-+-    E = vzalloc(size);
-++ E = kvzalloc(size, flags);
-+|
-+- E = kzalloc(size, flags | __GFP_NOWARN);
-+- if (\(!E\|E == NULL\))
-+-   E = vzalloc(size);
-++ E = kvzalloc(size, flags);
-+|
-+- T x = kzalloc(size, flags | __GFP_NOWARN);
-+- if (\(!x\|x == NULL\))
-+-   x = vzalloc(size);
-++ T x = kvzalloc(size, flags);
-+|
-+- if (\(size <= E1\|size < E1\|size == E1\|size > E1\))
-+-    E = kmalloc_node(size, flags, node);
-+- else
-+-    E = vmalloc_node(size, node);
-++ E = kvmalloc_node(size, flags, node);
-+|
-+- E = kmalloc_node(size, flags | __GFP_NOWARN, node);
-+- if (\(!E\|E == NULL\))
-+-   E = vmalloc_node(size, node);
-++ E = kvmalloc_node(size, flags, node);
-+|
-+- T x = kmalloc_node(size, flags | __GFP_NOWARN, node);
-+- if (\(!x\|x == NULL\))
-+-   x = vmalloc_node(size, node);
-++ T x = kvmalloc_node(size, flags, node);
-+|
-+- if (\(size <= E1\|size < E1\|size == E1\|size > E1\))
-+-    E = kvzalloc_node(size, flags, node);
-+- else
-+-    E = vzalloc_node(size, node);
-++ E = kvzalloc_node(size, flags, node);
-+|
-+- E = kvzalloc_node(size, flags | __GFP_NOWARN, node);
-+- if (\(!E\|E == NULL\))
-+-   E = vzalloc_node(size, node);
-++ E = kvzalloc_node(size, flags, node);
-+|
-+- T x = kvzalloc_node(size, flags | __GFP_NOWARN, node);
-+- if (\(!x\|x == NULL\))
-+-   x = vzalloc_node(size, node);
-++ T x = kvzalloc_node(size, flags, node);
-+)
-+
-+@script: python depends on report@
-+p << opportunity.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING: opportunity for kvmalloc")
-+
-+@script: python depends on org@
-+p << opportunity.p;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING: opportunity for kvmalloc")
 -- 
-2.26.2
-
+~Vinod
