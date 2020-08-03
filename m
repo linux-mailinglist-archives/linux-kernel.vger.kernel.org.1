@@ -2,149 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B3E23A09D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 10:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75B923A0A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 10:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgHCIFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 04:05:40 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28663 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725806AbgHCIFi (ORCPT
+        id S1726002AbgHCII1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 3 Aug 2020 04:08:27 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:46353 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725948AbgHCII0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 04:05:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596441936;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=rjDICGTtLnOhNJI+C4PwXDPW24CnVOEIA8NlpZT8zCo=;
-        b=fgbFMU+ZUIPGQBws/iDSoU93YYNYJNqPyb6frtRD97ad3d2fLU8dXz/gX5dJ8nc1F21s/x
-        maol4ZIEexj847PVyStWhSqW6aIqBampg9hJtmSs5qWK6/lhNB7YVxSaYL+PaOorN4m9cR
-        jf0vxUYQyVYBY/7KIRfG7/bwIs2KtGk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-uxdnYKfnNaOHGujlQ-eoRA-1; Mon, 03 Aug 2020 04:05:34 -0400
-X-MC-Unique: uxdnYKfnNaOHGujlQ-eoRA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 65D3318C63C3;
-        Mon,  3 Aug 2020 08:05:33 +0000 (UTC)
-Received: from [10.36.112.252] (ovpn-112-252.ams2.redhat.com [10.36.112.252])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 28EC35D98D;
-        Mon,  3 Aug 2020 08:05:30 +0000 (UTC)
-Subject: Re: [PATCH] mm, memory_hotplug: update pcp lists everytime onlining a
- memory block
-To:     Charan Teja Reddy <charante@codeaurora.org>,
-        akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, vinmenon@codeaurora.org
-References: <1596372896-15336-1-git-send-email-charante@codeaurora.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <e15bc2ca-6bc5-158c-41df-af13aba75e54@redhat.com>
-Date:   Mon, 3 Aug 2020 10:05:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1596372896-15336-1-git-send-email-charante@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
+        Mon, 3 Aug 2020 04:08:26 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-111-PHrlPE41MKu5ed8gAMWPYg-1; Mon, 03 Aug 2020 09:08:22 +0100
+X-MC-Unique: PHrlPE41MKu5ed8gAMWPYg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 3 Aug 2020 09:08:21 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 3 Aug 2020 09:08:21 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Pavel Machek' <pavel@ucw.cz>
+CC:     'Andy Lutomirski' <luto@kernel.org>,
+        "madvenka@linux.microsoft.com" <madvenka@linux.microsoft.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "LSM List" <linux-security-module@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, X86 ML <x86@kernel.org>
+Subject: RE: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
+Thread-Topic: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
+Thread-Index: AQHWZQT/T+e4gDrzGEmP/30MMvDTCqkgFteggASWI4CAAWJTUA==
+Date:   Mon, 3 Aug 2020 08:08:21 +0000
+Message-ID: <c02fbae7a0754a58884b370657575845@AcuMS.aculab.com>
+References: <20200728131050.24443-1-madvenka@linux.microsoft.com>
+ <CALCETrVy5OMuUx04-wWk9FJbSxkrT2vMfN_kANinudrDwC4Cig@mail.gmail.com>
+ <b9879beef3e740c0aeb1af73485069a8@AcuMS.aculab.com>
+ <20200802115600.GB1162@bug>
+In-Reply-To: <20200802115600.GB1162@bug>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.08.20 14:54, Charan Teja Reddy wrote:
-> When onlining a first memory block in a zone, pcp lists are not updated
-> thus pcp struct will have the default setting of ->high = 0,->batch = 1.
-> This means till the second memory block in a zone(if it have) is onlined
-> the pcp lists of this zone will not contain any pages because pcp's
-> ->count is always greater than ->high thus free_pcppages_bulk() is
-> called to free batch size(=1) pages every time system wants to add a
-> page to the pcp list through free_unref_page(). To put this in a word,
-> system is not using benefits offered by the pcp lists when there is a
-> single onlineable memory block in a zone. Correct this by always
-> updating the pcp lists when memory block is onlined.
-
-I guess such setups are rare ... but I can imagine it being the case
-with virtio-mem in the future ... not 100% if this performance
-optimization is really relevant in practice ... how did you identify this?
-
+From: Pavel Machek <pavel@ucw.cz>
+> Sent: 02 August 2020 12:56
+> Hi!
 > 
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> ---
->  mm/memory_hotplug.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> > > This is quite clever, but now I???m wondering just how much kernel help
+> > > is really needed. In your series, the trampoline is an non-executable
+> > > page.  I can think of at least two alternative approaches, and I'd
+> > > like to know the pros and cons.
+> > >
+> > > 1. Entirely userspace: a return trampoline would be something like:
+> > >
+> > > 1:
+> > > pushq %rax
+> > > pushq %rbc
+> > > pushq %rcx
+> > > ...
+> > > pushq %r15
+> > > movq %rsp, %rdi # pointer to saved regs
+> > > leaq 1b(%rip), %rsi # pointer to the trampoline itself
+> > > callq trampoline_handler # see below
+> >
+> > For nested calls (where the trampoline needs to pass the
+> > original stack frame to the nested function) I think you
+> > just need a page full of:
+> > 	mov	$0, scratch_reg; jmp trampoline_handler
 > 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index dcdf327..7f62d69 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -854,8 +854,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->  	node_states_set_node(nid, &arg);
->  	if (need_zonelists_rebuild)
->  		build_all_zonelists(NULL);
-> -	else
-> -		zone_pcp_update(zone);
-> +	zone_pcp_update(zone);
->  
->  	init_per_zone_wmark_min();
->  
+> I believe you could do with mov %pc, scratch_reg; jmp ...
 > 
+> That has advantage of being able to share single physical
+> page across multiple virtual pages...
 
-Does, in general, look sane to me.
+A lot of architecture don't let you copy %pc that way so you would
+have to use 'call' - but that trashes the return address cache.
+It also needs the trampoline handler to know the addresses
+of the trampolines.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+	David
 
--- 
-Thanks,
-
-David / dhildenb
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
