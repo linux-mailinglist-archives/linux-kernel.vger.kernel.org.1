@@ -2,119 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF82E23A3F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B5423A426
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgHCMSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:18:08 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:64325
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726189AbgHCMSF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:18:05 -0400
-X-IronPort-AV: E=Sophos;i="5.75,430,1589234400"; 
-   d="scan'208";a="355857185"
-Received: from clt-128-93-177-162.vpn.inria.fr ([128.93.177.162])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 14:18:04 +0200
-Date:   Mon, 3 Aug 2020 14:18:03 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: julia@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] coccinelle: api: add kvfree script
-In-Reply-To: <a8d8eade-1d98-b8d9-7c66-bd05b22af751@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2008031416301.27678@hadrien>
-References: <20200605204237.85055-1-efremov@linux.com> <20200731210026.7186-1-efremov@linux.com> <alpine.DEB.2.22.394.2008022142550.2531@hadrien> <a8d8eade-1d98-b8d9-7c66-bd05b22af751@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1727888AbgHCMXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:23:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727874AbgHCMXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:23:30 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 942A6204EC;
+        Mon,  3 Aug 2020 12:23:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596457409;
+        bh=wbwrot403Bej2kBXG1WXcLb0qTZioUMIwWbSmNXGX5E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Tr6y4hvs/bbR8DxfdOGaeLpJcYzv0OXcnXPcrt67m13rrDx8rBlaH+uo3aPZSQua/
+         v9VJ+wUejAZTLDzGFvLOkvzuWJxgbelfoHcsCC0P3kTno090r9oWlPVuTGPBvkWs5D
+         g3dvS0cfzXU3fZwgtoBfU6PTAydIglaiIQDs3wZo=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: [PATCH 5.7 029/120] drm: of: Fix double-free bug
+Date:   Mon,  3 Aug 2020 14:18:07 +0200
+Message-Id: <20200803121904.257261085@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Biju Das <biju.das.jz@bp.renesas.com>
+
+commit 4ee48cc5586bf519df19894273002aa8ef7b70ad upstream.
+
+Fix double-free bug in the error path.
+
+Fixes: 6529007522de ("drm: of: Add drm_of_lvds_get_dual_link_pixel_order")
+Reported-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/1595502654-40595-1-git-send-email-biju.das.jz@bp.renesas.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/gpu/drm/drm_of.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+--- a/drivers/gpu/drm/drm_of.c
++++ b/drivers/gpu/drm/drm_of.c
+@@ -322,10 +322,8 @@ static int drm_of_lvds_get_remote_pixels
+ 		 * configurations by passing the endpoints explicitly to
+ 		 * drm_of_lvds_get_dual_link_pixel_order().
+ 		 */
+-		if (!current_pt || pixels_type != current_pt) {
+-			of_node_put(remote_port);
++		if (!current_pt || pixels_type != current_pt)
+ 			return -EINVAL;
+-		}
+ 	}
+ 
+ 	return pixels_type;
 
 
-On Mon, 3 Aug 2020, Denis Efremov wrote:
-
->
->
-> On 8/2/20 11:24 PM, Julia Lawall wrote:
-> >> +@initialize:python@
-> >> +@@
-> >> +# low-level memory api
-> >> +filter = frozenset(['__vmalloc_area_node'])
-> >> +
-> >> +def relevant(p):
-> >> +    return not (filter & {el.current_element for el in p})
-> >
-> > Is this used?
->
-> I'll remove it in v8. Or do you want me to add iterate_dir_item() in the list?
-
-What is that?
-
->
-> >
-> > Otherwise, I think it would be good to not warn about a use of kvfree
-> > if that use is reachable from a kvmalloc.  There seems to be such a false
-> > positive in fs/btrfs/send.c, on line 1118.
->
-> I don't know how to handle this case without position filter.
-> It's too complex. In iterate_dir_item() there is:
-> buf = kmalloc(buf_len, GFP_KERNEL);
-> while(...) {
-> 	if (...) {
-> 		if (is_vmalloc_addr(buf)) {
-> 			vfree(buf);
-> 			...
-> 		} else {
-> 			char *tmp = krealloc(buf, ...);
->
-> 			if (!tmp)
-> 				kfree(buf);
-> 			...
-> 		}
-> 		if (!buf) {
-> 			buf = kvmalloc(buf_len, GFP_KERNEL);
-> 			...
-> 		}
-> 	}
-> }
-> kvfree(buf);
->
-> Adding "when != kvfree(E)" is not enough:
-> * E = \(kvmalloc\|kvzalloc\|kvcalloc\|kvzalloc_node\|kvmalloc_node\|
-> *       kvmalloc_array\)(...)@k
-> 	... when != is_vmalloc_addr(E)
-> +	when != kvfree(E)
-> 	when any
-> * \(kfree\|kzfree\|vfree\|vfree_atomic\)(E)@p
-
-Why not just
-
-@ok exists@
-position p;
-expression E;
-@@
-
-E = kvalloc(...)
-...
-kvfree@p(...)
-
-Probably that is what you mean by a position filter, but why not add a
-position filter?
-
-julia
-
-
-> >
-> > It also seems that when there are both a kmalloc and a vmalloc, there is
-> > no warning if kfree or vfree is used.  Is that intentional?
-> >
->
-> No, I will try to address it in v8.
->
-> Regards,
-> Denis
->
