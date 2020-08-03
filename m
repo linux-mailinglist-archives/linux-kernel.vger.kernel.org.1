@@ -2,92 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D9123AF81
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537B323AF8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729136AbgHCVMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 17:12:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53368 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729118AbgHCVMn (ORCPT
+        id S1729246AbgHCVPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 17:15:02 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:22592 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728570AbgHCVOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 17:12:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596489162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oDk7BkLvturoY2j4bZcgcnngVm0+SqYFOos8ttHdu5Y=;
-        b=itBpUuOU55gK2BPG0RagsSlnnm9PIyZJeMxtFoFwR3ftTG7tZ4gww6rZ9UmB2WMccXP8lr
-        WrU1HL1kRGxkEYxn0QViv9GH21Cr9coAojBeGQB+aubtVB2KGQNl6Z50+8TOfX54TLCmLu
-        8Vvq9Sj2tHBEQiOMeac4mymsBpduxIo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-41-GjiaqvMBOICm3jt1_nLYPw-1; Mon, 03 Aug 2020 17:12:38 -0400
-X-MC-Unique: GjiaqvMBOICm3jt1_nLYPw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 580D8102C7ED;
-        Mon,  3 Aug 2020 21:12:36 +0000 (UTC)
-Received: from redhat.com (ovpn-112-64.phx2.redhat.com [10.3.112.64])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9FFE15D9F7;
-        Mon,  3 Aug 2020 21:12:32 +0000 (UTC)
-Received: from fche by redhat.com with local (Exim 4.94)
-        (envelope-from <fche@redhat.com>)
-        id 1k2hky-0008Hd-VD; Mon, 03 Aug 2020 17:12:29 -0400
-Date:   Mon, 3 Aug 2020 17:12:28 -0400
-From:   "Frank Ch. Eigler" <fche@redhat.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Joe Lawrence <joe.lawrence@redhat.com>,
-        Evgenii Shatokhin <eshatokhin@virtuozzo.com>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        Miroslav Benes <mbenes@suse.cz>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, arjan@linux.intel.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, rick.p.edgecombe@intel.com,
-        live-patching@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH v4 00/10] Function Granular KASLR
-Message-ID: <20200803211228.GC30810@redhat.com>
-References: <20200717170008.5949-1-kristen@linux.intel.com>
- <alpine.LSU.2.21.2007221122110.10163@pobox.suse.cz>
- <e9c4d88b-86db-47e9-4299-3fac45a7e3fd@virtuozzo.com>
- <202008031043.FE182E9@keescook>
- <fc6d2289-af97-5cf8-a4bb-77c2b0b8375c@redhat.com>
- <20200803193837.GB30810@redhat.com>
- <202008031310.4F8DAA20@keescook>
+        Mon, 3 Aug 2020 17:14:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1596489294; x=1628025294;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=A9YeFP9lUcJ4Il7shxNgntYRt+kEhRaIhYpWYV0cPJ0=;
+  b=J1+kXVUQLiFhSSstL55tYHEXdYCwW/MRwYZ8PeIIF6YuRK3/9+T7zR8e
+   ZpUchcIeeKJTWXkS8NHWdrx70G0Kqx+qpbv/T+B9qP/+xpEls9nwgPLlL
+   QMKj0Ls0Tu/gdiF4nwL5T/yJzJrFjXhoQgkZG2loSgvjPDT5x1ExCBtmr
+   4=;
+IronPort-SDR: 0MUbpDfmLkGtC4er2il2s+Yd9ppFbgY98rd66QIbjUNRSq7kxydYQmSdoltQzGDv9cogKeNmHx
+ sWyiZB3kMncg==
+X-IronPort-AV: E=Sophos;i="5.75,431,1589241600"; 
+   d="scan'208";a="63982103"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-62350142.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 03 Aug 2020 21:14:39 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-62350142.us-east-1.amazon.com (Postfix) with ESMTPS id 20832A1E72;
+        Mon,  3 Aug 2020 21:14:34 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 3 Aug 2020 21:14:34 +0000
+Received: from u79c5a0a55de558.ant.amazon.com (10.43.161.145) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 3 Aug 2020 21:14:31 +0000
+From:   Alexander Graf <graf@amazon.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+CC:     Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Aaron Lewis <aaronlewis@google.com>, <kvm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 0/3] Allow user space to restrict and augment MSR emulation
+Date:   Mon, 3 Aug 2020 23:14:20 +0200
+Message-ID: <20200803211423.29398-1-graf@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202008031310.4F8DAA20@keescook>
-User-Agent: Mutt/1.12.0 (2019-05-25)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.145]
+X-ClientProxiedBy: EX13D36UWB001.ant.amazon.com (10.43.161.84) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi -
+While tying to add support for the MSR_CORE_THREAD_COUNT MSR in KVM,
+I realized that we were still in a world where user space has no control
+over what happens with MSR emulation in KVM.
 
-On Mon, Aug 03, 2020 at 01:11:27PM -0700, Kees Cook wrote:
-> [...]
-> > Systemtap needs to know base addresses of loaded text & data sections,
-> > in order to perform relocation of probe point PCs and context data
-> > addresses.  It uses /sys/module/...., kind of under protest, because
-> > there seems to exist no MODULE_EXPORT'd API to get at that information
-> > some other way.
-> 
-> Wouldn't /proc/kallsysms entries cover this? I must be missing
-> something...
+That is bad for multiple reasons. In my case, I wanted to emulate the
+MSR in user space, because it's a CPU specific register that does not
+exist on older CPUs and that really only contains informational data that
+is on the package level, so it's a natural fit for user space to provide
+it.
 
-We have relocated based on sections, not some subset of function
-symbols accessible that way, partly because DWARF line- and DIE- based
-probes can map to addresses some way away from function symbols, into
-function interiors, or cloned/moved bits of optimized code.  It would
-take some work to prove that function-symbol based heuristic
-arithmetic would have just as much reach.
+However, it is also bad on a platform compatibility level. Currrently,
+KVM has no way to expose different MSRs based on the selected target CPU
+type.
 
-- FChE
+This patch set introduces a way for user space to indicate to KVM which
+MSRs should be handled in kernel space. With that, we can solve part of
+the platform compatibility story. Or at least we can not handle AMD specific
+MSRs on an Intel platform and vice versa.
+
+In addition, it introduces a way for user space to get into the loop
+when an MSR access would generate a #GP fault, such as when KVM finds an
+MSR that is not handled by the in-kernel MSR emulation or when the guest
+is trying to access reserved registers.
+
+In combination with the allow list, the user space trapping allows us
+to emulate arbitrary MSRs in user space, paving the way for target CPU
+specific MSR implementations from user space.
+
+v1 -> v2:
+
+  - s/ETRAP_TO_USER_SPACE/ENOENT/g
+  - deflect all #GP injection events to user space, not just unknown MSRs.
+    That was we can also deflect allowlist errors later
+  - fix emulator case
+  - new patch: KVM: x86: Introduce allow list for MSR emulation
+  - new patch: KVM: selftests: Add test for user space MSR handling
+
+v2 -> v3:
+
+  - return r if r == X86EMUL_IO_NEEDED
+  - s/KVM_EXIT_RDMSR/KVM_EXIT_X86_RDMSR/g
+  - s/KVM_EXIT_WRMSR/KVM_EXIT_X86_WRMSR/g
+  - Use complete_userspace_io logic instead of reply field
+  - Simplify trapping code
+  - document flags for KVM_X86_ADD_MSR_ALLOWLIST
+  - generalize exit path, always unlock when returning
+  - s/KVM_CAP_ADD_MSR_ALLOWLIST/KVM_CAP_X86_MSR_ALLOWLIST/g
+  - Add KVM_X86_CLEAR_MSR_ALLOWLIST
+  - Add test to clear whitelist
+  - Adjust to reply-less API
+  - Fix asserts
+  - Actually trap on MSR_IA32_POWER_CTL writes
+
+v3 -> v4:
+
+  - Mention exit reasons in re-enter mandatory section of API documentation
+  - Clear padding bytes
+  - Generalize get/set deflect functions
+  - Remove redundant pending_user_msr field
+  - lock allow check and clearing
+  - free bitmaps on clear
+
+Alexander Graf (3):
+  KVM: x86: Deflect unknown MSR accesses to user space
+  KVM: x86: Introduce allow list for MSR emulation
+  KVM: selftests: Add test for user space MSR handling
+
+ Documentation/virt/kvm/api.rst                | 157 ++++++++++-
+ arch/x86/include/asm/kvm_host.h               |  13 +
+ arch/x86/include/uapi/asm/kvm.h               |  15 +
+ arch/x86/kvm/emulate.c                        |  18 +-
+ arch/x86/kvm/x86.c                            | 259 +++++++++++++++++-
+ include/trace/events/kvm.h                    |   2 +-
+ include/uapi/linux/kvm.h                      |  15 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/x86_64/user_msr_test.c      | 221 +++++++++++++++
+ 9 files changed, 692 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/user_msr_test.c
+
+-- 
+2.17.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
