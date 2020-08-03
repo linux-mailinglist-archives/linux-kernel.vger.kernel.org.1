@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B075123A4F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECEA23A5CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729246AbgHCMb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729236AbgHCMbx (ORCPT
+        id S1729219AbgHCMl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:41:59 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:40476 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729273AbgHCMcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:31:53 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3B9C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 05:31:53 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 3 Aug 2020 08:32:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596457922;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+FTqyOz+KM8b1l5RbH2zS34D2EqLt9IQI9azf1e1ydg=;
+        b=O2yqvXo0igto70PGbTccw38Nvw+kQKvBUvKy0S/bLEufT+HlS0SCAyJ6cQdvtl6rc3MqFP
+        vHGonZ/MA0O51mYlIihyqjNxA17a9/Z/qbBjuBVW5AD7JczIqHl+HuKwbKP4QgaT0M5V7c
+        a9/LUyfXCO0IzGGyywCGHvR/MNDWdcg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-77-YLQh1wy0P0eZHtUDK-Mg4w-1; Mon, 03 Aug 2020 08:31:58 -0400
+X-MC-Unique: YLQh1wy0P0eZHtUDK-Mg4w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BKy1c3Stbz9sWK;
-        Mon,  3 Aug 2020 22:31:48 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1596457908;
-        bh=A1RYpQrdZ8SRLEMPPRLnaD8brc08MDwIZqWIqkU3Rgs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RN7w1oMw6XcjGMfR7TB4ijQsBlMR4XTWWlqQHCYWI7rPdKDuhVf3mf1xJH4dCKvK6
-         XAUtVLQllopcGiL1O5+K1/IoVxLu33I9uEPX/WECRZZLPtqkrBSmwEwmEgKPRaYMpR
-         csm68F1yGYLkkrHJ2OJZCCprywMrMslVUR1CxGCPNHxDhEQXlfMy4GvK7+2HaqF/tF
-         21yOmkkoWKvsoA4S/1widX/fK8PYJonub0DKeP4aGVBQSoQQFYDFi13mTvLzDus7Sj
-         HKDARDhm3x4eo17XHW8Wf34v3DzLTPtyeJhvmzLQV8di/snc2cUriJhVE3j3GQj1LB
-         K0eZD5WjF8Zlg==
-Date:   Mon, 3 Aug 2020 22:31:47 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Linux-kernel Mailing List <linux-kernel@vger.kernel.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: powerpc: build failures in Linus' tree
-Message-ID: <20200803223147.28adac79@canb.auug.org.au>
-In-Reply-To: <87v9i0yo47.fsf@mpe.ellerman.id.au>
-References: <20200802204842.36bca162@canb.auug.org.au>
-        <20200802172019.GB26677@1wt.eu>
-        <20200803034547.GA15501@1wt.eu>
-        <87v9i0yo47.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7D55101C8A8;
+        Mon,  3 Aug 2020 12:31:56 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8724E7176A;
+        Mon,  3 Aug 2020 12:31:53 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <303106be4785135446e56cb606138a6e94885887.camel@themaw.net>
+References: <303106be4785135446e56cb606138a6e94885887.camel@themaw.net> <CAJfpeguO8Qwkzx9zfGVT7W+pT5p6fgj-_8oJqJbXX_KQBpLLEQ@mail.gmail.com> <1293241.1595501326@warthog.procyon.org.uk> <CAJfpegspWA6oUtdcYvYF=3fij=Bnq03b8VMbU9RNMKc+zzjbag@mail.gmail.com> <158454378820.2863966.10496767254293183123.stgit@warthog.procyon.org.uk> <158454391302.2863966.1884682840541676280.stgit@warthog.procyon.org.uk> <2003787.1595585999@warthog.procyon.org.uk> <865566fb800a014868a9a7e36a00a14430efb11e.camel@themaw.net> <2023286.1595590563@warthog.procyon.org.uk> <CAJfpegsT_3YqHPWCZGX7Lr+sE0NVmczWz5L6cN8CzsVz4YKLCQ@mail.gmail.com> <1283475.1596449889@warthog.procyon.org.uk> <1576646.1596455376@warthog.procyon.org.uk>
+To:     Ian Kent <raven@themaw.net>
+Cc:     dhowells@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>, andres@anarazel.de,
+        Jeff Layton <jlayton@redhat.com>, dray@redhat.com,
+        Karel Zak <kzak@redhat.com>, keyrings@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/17] watch_queue: Implement mount topology and attribute change notifications [ver #5]
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gTzTE=0PurNyae0JTgphoQ1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1692825.1596457912.1@warthog.procyon.org.uk>
+Date:   Mon, 03 Aug 2020 13:31:52 +0100
+Message-ID: <1692826.1596457912@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gTzTE=0PurNyae0JTgphoQ1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Ian Kent <raven@themaw.net> wrote:
 
-Hi Michael,
+> > I'm changing it so that the fields are 64-bit, but initialised with the
+> > existing mount ID in the notifications set.  The fsinfo set changes that
+> > to a unique ID.  I'm tempted to make the unique IDs start at UINT_MAX+1 to
+> > disambiguate them.
+> 
+> Mmm ... so what would I use as a mount id that's not used, like NULL
+> for strings?
 
-On Mon, 03 Aug 2020 21:18:00 +1000 Michael Ellerman <mpe@ellerman.id.au> wr=
-ote:
->
-> If we just move the include of asm/paca.h below asm-generic/percpu.h
-> then it avoids the bad circular dependency and we still have paca.h
-> included from percpu.h as before.
->=20
-> eg:
->=20
-> diff --git a/arch/powerpc/include/asm/percpu.h b/arch/powerpc/include/asm=
-/percpu.h
-> index dce863a7635c..8e5b7d0b851c 100644
-> --- a/arch/powerpc/include/asm/percpu.h
-> +++ b/arch/powerpc/include/asm/percpu.h
-> @@ -10,8 +10,6 @@
-> =20
->  #ifdef CONFIG_SMP
-> =20
-> -#include <asm/paca.h>
-> -
->  #define __my_cpu_offset local_paca->data_offset
-> =20
->  #endif /* CONFIG_SMP */
-> @@ -19,4 +17,6 @@
-> =20
->  #include <asm-generic/percpu.h>
-> =20
-> +#include <asm/paca.h>
-> +
->  #endif /* _ASM_POWERPC_PERCPU_H_ */
->=20
->=20
-> So I think I'm inclined to merge that as a minimal fix that's easy to
-> backport.
->=20
-> cheers
+Zero is skipped, so you could use that.
 
-Looks ok, except does it matter that the include used to be only done
-if __powerpc64__ and CONFIG_SMP are defined?
+> I'm using -1 now but changing this will mean I need something
+> different.
 
---=20
-Cheers,
-Stephen Rothwell
+It's 64-bits, so you're not likely to see it reach -1, even if it does start
+at UINT_MAX+1.
 
---Sig_/gTzTE=0PurNyae0JTgphoQ1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+David
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8oA7MACgkQAVBC80lX
-0Gy0nggAjW0dxUlsqRQt/TwQPBQCCz/n8vIcBBuDcNL80vLeduZpiEP5v+/OEb+G
-nmf5Usmxk7VkODd5OUKIVkU2+q3BET5QBwxQ/BjtOhTGFfxoWzz1Ki1Q4z8fr6gl
-T8c0lwl2c9W4AUsaWIgroQR/KqVBkaPRhcEVcChBwdv1V4mqC61Xf6tsLouzEo8G
-q3ymOVn8kA1UKG4A7Ivk6JI00SYy1nZvEKaN0YRKaZzLmyCkaLa2UVToaRx5fXJ2
-LCTER0c4eNURY4AmGOulxANO2og1MGlU+n9J6zM7fiDb4lFCd5gI3IVQ9De6NAec
-p/fzXpVwEMgp7J+aZ3CLNHrOgTsmzw==
-=eLgV
------END PGP SIGNATURE-----
-
---Sig_/gTzTE=0PurNyae0JTgphoQ1--
