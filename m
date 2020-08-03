@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DAA923A6E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC13123A6F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgHCMWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:22:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45612 "EHLO mail.kernel.org"
+        id S1729716AbgHCM4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:56:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726645AbgHCMWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:22:06 -0400
+        id S1726964AbgHCMWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:22:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 516BD2076B;
-        Mon,  3 Aug 2020 12:22:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B25AC20738;
+        Mon,  3 Aug 2020 12:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457324;
-        bh=Ra0sNR3wVYMaJ2vnp53y3iy9sBigv+XID83l4LIHiJ4=;
+        s=default; t=1596457333;
+        bh=5z5Q8QBzafP67PGyOz2etWaMlFZANqgyI5uCWFQH8cU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jqQ8Qu1ji+goK4z4XZjO8SxV9bqFzu3DFSGIun3EjytOUFRD//2V5kpVFtXtw8vWm
-         H6DmMDfa3AO9aS/ueixpb/5oNJerpUuba2kOz2xULsg1yod/bffjIjb3SUOuMNSuui
-         eW4jg+kMuW7JCJ31FSeXYkf0PuVule7glkcMr3NI=
+        b=lPDIwBT7KbU9Gn3+bjVCwxbtoLHUIib4qbLkThzI1Z/45ktAGJp2FuM1sTaqXqrzG
+         RGuHyoVnSuslaQsZ3LkTSM16zMwLlrUZ3vRocU695frUxPqup4u8KhsAoPlx2Ohg8Z
+         3Y/2Q2HlH+599nT8jYB9Pz2b9Pmk9GaoIhVT8Z0A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry <dpavlushko@gmail.com>,
-        Laurence Tratt <laurie@tratt.net>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.7 003/120] ALSA: usb-audio: Add implicit feedback quirk for SSL2
-Date:   Mon,  3 Aug 2020 14:17:41 +0200
-Message-Id: <20200803121903.032661965@linuxfoundation.org>
+        stable@vger.kernel.org, PeiSen Hou <pshou@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.7 006/120] ALSA: hda/realtek: Fix add a "ultra_low_power" function for intel reference board (alc256)
+Date:   Mon,  3 Aug 2020 14:17:44 +0200
+Message-Id: <20200803121903.167007476@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
 References: <20200803121902.860751811@linuxfoundation.org>
@@ -43,33 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurence Tratt <laurie@tratt.net>
+From: PeiSen Hou <pshou@realtek.com>
 
-commit 3da87ec67a491b9633a82045896c076b794bf938 upstream.
+commit 6fa38ef1534e7e9320aa15e329eb1404ab2f70ac upstream.
 
-As expected, this requires the same quirk as the SSL2+ in order for the
-clock to sync. This was suggested by, and tested on an SSL2, by Dmitry.
+Intel requires to enable power saving mode for intel reference board (alc256)
 
-Suggested-by: Dmitry <dpavlushko@gmail.com>
-Signed-off-by: Laurence Tratt <laurie@tratt.net>
+Signed-off-by: PeiSen Hou <pshou@realtek.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200621075005.52mjjfc6dtdjnr3h@overdrive.tratt.net
+Link: https://lore.kernel.org/r/20200727115647.10967-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/pcm.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -367,6 +367,7 @@ static int set_sync_ep_implicit_fb_quirk
- 		ifnum = 0;
- 		goto add_sync_ep_from_ifnum;
- 	case USB_ID(0x07fd, 0x0008): /* MOTU M Series */
-+	case USB_ID(0x31e9, 0x0001): /* Solid State Logic SSL2 */
- 	case USB_ID(0x31e9, 0x0002): /* Solid State Logic SSL2+ */
- 	case USB_ID(0x0d9a, 0x00df): /* RTX6001 */
- 		ep = 0x81;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7555,7 +7555,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x10cf, 0x1629, "Lifebook U7x7", ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_EXTMIC),
+ 	SND_PCI_QUIRK(0x10ec, 0x10f2, "Intel Reference board", ALC700_FIXUP_INTEL_REFERENCE),
+-	SND_PCI_QUIRK(0x10ec, 0x1230, "Intel Reference board", ALC225_FIXUP_HEADSET_JACK),
++	SND_PCI_QUIRK(0x10ec, 0x1230, "Intel Reference board", ALC295_FIXUP_CHROME_BOOK),
+ 	SND_PCI_QUIRK(0x10f7, 0x8338, "Panasonic CF-SZ6", ALC269_FIXUP_HEADSET_MODE),
+ 	SND_PCI_QUIRK(0x144d, 0xc109, "Samsung Ativ book 9 (NP900X3G)", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x144d, 0xc169, "Samsung Notebook 9 Pen (NP930SBE-K01US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
 
 
