@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46AB23A5D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B7023A4E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729324AbgHCMmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:42:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58802 "EHLO mail.kernel.org"
+        id S1728334AbgHCMb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:31:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727824AbgHCMbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:31:21 -0400
+        id S1727914AbgHCMbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:31:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BBFC2054F;
-        Mon,  3 Aug 2020 12:31:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9593120825;
+        Mon,  3 Aug 2020 12:31:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457880;
-        bh=fshGYLcQsSw3oRUdVr523hsrXJ+lrjE7n7VUtXtO3IQ=;
+        s=default; t=1596457883;
+        bh=ysS3LGq+470SGw6FYTetlB33DoPN5s8hyLYUhLe+03M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lZUiqa2okaM+oQ82axL3Tf/Wk7KR1YheO3q/iC/+SLUGd02uSAF/8u0p2TD42Sgz9
-         xcJ4bOfnYJ2+u40FPDwWuE/vyvQeWq11+fY4CuAiZfcItenBO6lMHIFdXEhRnGpRa6
-         Ng/R5NMZyTyBTugcHRts0yZkoUdAP2/qBUep3bWo=
+        b=sq36ouCZMmBdp+idhjwZBlwyJnszG7uBftzlHHIQd64lpncMFRuGtZIOpDUoecv4n
+         Hqcj1eb/gd4/uDgytATPCzl81AIh9k6D2HXmwVDAUYT47I1PJxINHbN2VA84llsZ6y
+         Mqlc/H85F2vOsDRV5McQYlisJTb9il+mRFf5/VaI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Klein <aksecurity@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>, Willy Tarreau <w@1wt.eu>
-Subject: [PATCH 4.19 16/56] random32: update the net random state on interrupt and activity
-Date:   Mon,  3 Aug 2020 14:19:31 +0200
-Message-Id: <20200803121851.126018222@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 17/56] ARM: percpu.h: fix build error
+Date:   Mon,  3 Aug 2020 14:19:32 +0200
+Message-Id: <20200803121851.174649123@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
 References: <20200803121850.306734207@linuxfoundation.org>
@@ -49,109 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willy Tarreau <w@1wt.eu>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-commit f227e3ec3b5cad859ad15666874405e8c1bbc1d4 upstream.
+commit aa54ea903abb02303bf55855fb51e3fcee135d70 upstream.
 
-This modifies the first 32 bits out of the 128 bits of a random CPU's
-net_rand_state on interrupt or CPU activity to complicate remote
-observations that could lead to guessing the network RNG's internal
-state.
+Fix build error for the case:
+  defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
 
-Note that depending on some network devices' interrupt rate moderation
-or binding, this re-seeding might happen on every packet or even almost
-never.
+config: keystone_defconfig
 
-In addition, with NOHZ some CPUs might not even get timer interrupts,
-leaving their local state rarely updated, while they are running
-networked processes making use of the random state.  For this reason, we
-also perform this update in update_process_times() in order to at least
-update the state when there is user or system activity, since it's the
-only case we care about.
+  CC      arch/arm/kernel/signal.o
+  In file included from ../include/linux/random.h:14,
+                    from ../arch/arm/kernel/signal.c:8:
+  ../arch/arm/include/asm/percpu.h: In function ‘__my_cpu_offset’:
+  ../arch/arm/include/asm/percpu.h:29:34: error: ‘current_stack_pointer’ undeclared (first use in this function); did you mean ‘user_stack_pointer’?
+      : "Q" (*(const unsigned long *)current_stack_pointer));
+                                     ^~~~~~~~~~~~~~~~~~~~~
+                                     user_stack_pointer
 
-Reported-by: Amit Klein <aksecurity@gmail.com>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
+Fixes: f227e3ec3b5c ("random32: update the net random state on interrupt and activity")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/char/random.c  |    1 +
- include/linux/random.h |    3 +++
- kernel/time/timer.c    |    8 ++++++++
- lib/random32.c         |    2 +-
- 4 files changed, 13 insertions(+), 1 deletion(-)
+ arch/arm/include/asm/percpu.h |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -1257,6 +1257,7 @@ void add_interrupt_randomness(int irq, i
+--- a/arch/arm/include/asm/percpu.h
++++ b/arch/arm/include/asm/percpu.h
+@@ -16,6 +16,8 @@
+ #ifndef _ASM_ARM_PERCPU_H_
+ #define _ASM_ARM_PERCPU_H_
  
- 	fast_mix(fast_pool);
- 	add_interrupt_bench(cycles);
-+	this_cpu_add(net_rand_state.s1, fast_pool->pool[cycles & 3]);
- 
- 	if (unlikely(crng_init == 0)) {
- 		if ((fast_pool->count >= 64) &&
---- a/include/linux/random.h
-+++ b/include/linux/random.h
-@@ -9,6 +9,7 @@
- 
- #include <linux/list.h>
- #include <linux/once.h>
-+#include <linux/percpu.h>
- 
- #include <uapi/linux/random.h>
- 
-@@ -115,6 +116,8 @@ struct rnd_state {
- 	__u32 s1, s2, s3, s4;
- };
- 
-+DECLARE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++#include <asm/thread_info.h>
 +
- u32 prandom_u32_state(struct rnd_state *state);
- void prandom_bytes_state(struct rnd_state *state, void *buf, size_t nbytes);
- void prandom_seed_full_state(struct rnd_state __percpu *pcpu_state);
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -44,6 +44,7 @@
- #include <linux/sched/debug.h>
- #include <linux/slab.h>
- #include <linux/compat.h>
-+#include <linux/random.h>
- 
- #include <linux/uaccess.h>
- #include <asm/unistd.h>
-@@ -1654,6 +1655,13 @@ void update_process_times(int user_tick)
- 	scheduler_tick();
- 	if (IS_ENABLED(CONFIG_POSIX_TIMERS))
- 		run_posix_cpu_timers(p);
-+
-+	/* The current CPU might make use of net randoms without receiving IRQs
-+	 * to renew them often enough. Let's update the net_rand_state from a
-+	 * non-constant value that's not affine to the number of calls to make
-+	 * sure it's updated when there's some activity (we don't care in idle).
-+	 */
-+	this_cpu_add(net_rand_state.s1, rol32(jiffies, 24) + user_tick);
- }
- 
- /**
---- a/lib/random32.c
-+++ b/lib/random32.c
-@@ -48,7 +48,7 @@ static inline void prandom_state_selftes
- }
- #endif
- 
--static DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
-+DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
- 
- /**
-  *	prandom_u32_state - seeded pseudo-random number generator.
+ /*
+  * Same as asm-generic/percpu.h, except that we store the per cpu offset
+  * in the TPIDRPRW. TPIDRPRW only exists on V6K and V7
 
 
