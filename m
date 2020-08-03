@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D4223A6E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B090B23A711
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728650AbgHCMz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:55:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45890 "EHLO mail.kernel.org"
+        id S1729748AbgHCM51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:57:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726823AbgHCMWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:22:20 -0400
+        id S1726511AbgHCMV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:21:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B1262076B;
-        Mon,  3 Aug 2020 12:22:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A2D320738;
+        Mon,  3 Aug 2020 12:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457338;
-        bh=4VIgQ+/YAHhQES4rT3DCbadE3AbKY8baNT3gf9iE3M4=;
+        s=default; t=1596457286;
+        bh=G84AUxGogVsnmVra44Oao1d3jsTbdPjzCMOrVvh6gJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1SJmUlcrFfhCeybpZaXWnKgqA8SyCkpDe+hQ0mccZ56O8PTFP5tXM4GSH1bXIfHNr
-         TZ8OTMCW2jvdiUP4lYqpcGWuw2BTsNAfl8IN008hctyL/u6PPEBN1X2hOqNwb44udC
-         iBUIbfHedpGh7kbBa/cqP4Cwv8vjJVOnkxFlYlCI=
+        b=h1cVo//qVdwXnfN2AG0aRQsIZidIqGsbphA18tCeFEFAzWQE3aLG3ykyhQaun1qYI
+         HIgY5An7QRBiZJYPcdyS8qWh42JbcNnnBivkYhkewx7jA5ugYY41tivU+O6mp13N43
+         egCoduWkO6c58pMdLf5zBPB7ZMRVOXyiuZIMRmJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.7 008/120] ALSA: hda: Workaround for spurious wakeups on some Intel platforms
-Date:   Mon,  3 Aug 2020 14:17:46 +0200
-Message-Id: <20200803121903.263637082@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+77a25acfa0382e06ab23@syzkaller.appspotmail.com,
+        Wang Hai <wanghai38@huawei.com>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: [PATCH 5.7 013/120] 9p/trans_fd: Fix concurrency del of req_list in p9_fd_cancelled/p9_read_work
+Date:   Mon,  3 Aug 2020 14:17:51 +0200
+Message-Id: <20200803121903.502916735@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
 References: <20200803121902.860751811@linuxfoundation.org>
@@ -42,87 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit a6630529aecb5a3e84370c376ed658e892e6261e upstream.
+commit 74d6a5d5662975aed7f25952f62efbb6f6dadd29 upstream.
 
-We've received a regression report on Intel HD-audio controller that
-wakes up immediately after S3 suspend.  The bisection leads to the
-commit c4c8dd6ef807 ("ALSA: hda: Skip controller resume if not
-needed").  This commit replaces the system-suspend to use
-pm_runtime_force_suspend() instead of the direct call of
-__azx_runtime_suspend().  However, by some really mysterious reason,
-pm_runtime_force_suspend() causes a spurious wakeup (although it calls
-the same __azx_runtime_suspend() internally).
+p9_read_work and p9_fd_cancelled may be called concurrently.
+In some cases, req->req_list may be deleted by both p9_read_work
+and p9_fd_cancelled.
 
-As an ugly workaround for now, revert the behavior to call
-__azx_runtime_suspend() and __azx_runtime_resume() for those old Intel
-platforms that may exhibit such a problem, while keeping the new
-standard pm_runtime_force_suspend() and pm_runtime_force_resume()
-pair for the remaining chips.
+We can fix it by ignoring replies associated with a cancelled
+request and ignoring cancelled request if message has been received
+before lock.
 
-Fixes: c4c8dd6ef807 ("ALSA: hda: Skip controller resume if not needed")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208649
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200727164443.4233-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: http://lkml.kernel.org/r/20200612090833.36149-1-wanghai38@huawei.com
+Fixes: 60ff779c4abb ("9p: client: remove unused code and any reference to "cancelled" function")
+Cc: <stable@vger.kernel.org> # v3.12+
+Reported-by: syzbot+77a25acfa0382e06ab23@syzkaller.appspotmail.com
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/hda_controller.h |    2 +-
- sound/pci/hda/hda_intel.c      |   17 ++++++++++++++---
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ net/9p/trans_fd.c |   15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/hda_controller.h
-+++ b/sound/pci/hda/hda_controller.h
-@@ -41,7 +41,7 @@
- /* 24 unused */
- #define AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
- #define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
--/* 27 unused */
-+#define AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP (1 << 27) /* Workaround for spurious wakeups after suspend */
- #define AZX_DCAPS_CORBRP_SELF_CLEAR (1 << 28)	/* CORBRP clears itself after reset */
- #define AZX_DCAPS_NO_MSI64      (1 << 29)	/* Stick to 32-bit MSIs */
- #define AZX_DCAPS_SEPARATE_STREAM_TAG	(1 << 30) /* capture and playback use separate stream tag */
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -298,7 +298,8 @@ enum {
- /* PCH for HSW/BDW; with runtime PM */
- /* no i915 binding for this as HSW/BDW has another controller for HDMI */
- #define AZX_DCAPS_INTEL_PCH \
--	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME)
-+	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME |\
-+	 AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
+--- a/net/9p/trans_fd.c
++++ b/net/9p/trans_fd.c
+@@ -362,6 +362,10 @@ static void p9_read_work(struct work_str
+ 		if (m->rreq->status == REQ_STATUS_SENT) {
+ 			list_del(&m->rreq->req_list);
+ 			p9_client_cb(m->client, m->rreq, REQ_STATUS_RCVD);
++		} else if (m->rreq->status == REQ_STATUS_FLSHD) {
++			/* Ignore replies associated with a cancelled request. */
++			p9_debug(P9_DEBUG_TRANS,
++				 "Ignore replies associated with a cancelled request\n");
+ 		} else {
+ 			spin_unlock(&m->client->lock);
+ 			p9_debug(P9_DEBUG_ERROR,
+@@ -703,11 +707,20 @@ static int p9_fd_cancelled(struct p9_cli
+ {
+ 	p9_debug(P9_DEBUG_TRANS, "client %p req %p\n", client, req);
  
- /* HSW HDMI */
- #define AZX_DCAPS_INTEL_HASWELL \
-@@ -1028,7 +1029,14 @@ static int azx_suspend(struct device *de
- 	chip = card->private_data;
- 	bus = azx_bus(chip);
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
--	pm_runtime_force_suspend(dev);
-+	/* An ugly workaround: direct call of __azx_runtime_suspend() and
-+	 * __azx_runtime_resume() for old Intel platforms that suffer from
-+	 * spurious wakeups after S3 suspend
++	spin_lock(&client->lock);
++	/* Ignore cancelled request if message has been received
++	 * before lock.
 +	 */
-+	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
-+		__azx_runtime_suspend(chip);
-+	else
-+		pm_runtime_force_suspend(dev);
- 	if (bus->irq >= 0) {
- 		free_irq(bus->irq, chip);
- 		bus->irq = -1;
-@@ -1057,7 +1065,10 @@ static int azx_resume(struct device *dev
- 	if (azx_acquire_irq(chip, 1) < 0)
- 		return -EIO;
++	if (req->status == REQ_STATUS_RCVD) {
++		spin_unlock(&client->lock);
++		return 0;
++	}
++
+ 	/* we haven't received a response for oldreq,
+ 	 * remove it from the list.
+ 	 */
+-	spin_lock(&client->lock);
+ 	list_del(&req->req_list);
++	req->status = REQ_STATUS_FLSHD;
+ 	spin_unlock(&client->lock);
+ 	p9_req_put(req);
  
--	pm_runtime_force_resume(dev);
-+	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
-+		__azx_runtime_resume(chip, false);
-+	else
-+		pm_runtime_force_resume(dev);
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 
- 	trace_azx_resume(chip);
 
 
