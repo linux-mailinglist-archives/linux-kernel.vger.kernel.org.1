@@ -2,97 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB15E23B44B
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 06:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD3523B464
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 07:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729811AbgHDEuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 00:50:06 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:51500 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726000AbgHDEuF (ORCPT
+        id S1728112AbgHDF2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 01:28:23 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:62271 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgHDF2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 00:50:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596516604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=291IS5a+Koe7ZFOAeLnmWhju7u/xBkE2pYZR4dECKSI=;
-        b=OtoKZecr8bMX5dFEHZKWDOSfSzlLaAJsggAL8f/GQh0uhs3A/BB8W4ViIeiyKngdkhQXsH
-        ytMWDR4oi6QIoHWWYBbCif4E4RVkYktTA1eUabK+o3EIaialIXXexz3h3N0GBpjzCZLXFc
-        G/MSLyhG8ZQLhMENgGddKYxoS80Clz0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-121-mHqv7QeiOHeKynowbcDWIA-1; Tue, 04 Aug 2020 00:50:02 -0400
-X-MC-Unique: mHqv7QeiOHeKynowbcDWIA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26444800469;
-        Tue,  4 Aug 2020 04:50:01 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-12-21.pek2.redhat.com [10.72.12.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 636AA10013D7;
-        Tue,  4 Aug 2020 04:49:54 +0000 (UTC)
-From:   Lianbo Jiang <lijiang@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, x86@kernel.org, hpa@zytor.com, dyoung@redhat.com,
-        bhe@redhat.com, k-hagio@ab.jp.nec.com
-Subject: [PATCH 3/3] kexec_file: correctly output debugging information for the PT_LOAD elf header
-Date:   Tue,  4 Aug 2020 12:49:33 +0800
-Message-Id: <20200804044933.1973-4-lijiang@redhat.com>
-In-Reply-To: <20200804044933.1973-1-lijiang@redhat.com>
-References: <20200804044933.1973-1-lijiang@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Tue, 4 Aug 2020 01:28:22 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200804052816epoutp041447058406410aee5e8b0e5850b38e8b~n_XpGzm2D1859218592epoutp04x
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 05:28:16 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200804052816epoutp041447058406410aee5e8b0e5850b38e8b~n_XpGzm2D1859218592epoutp04x
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1596518896;
+        bh=OrQQsGEG3xgSpGLy9gO7ncefwAQQzvzqrPZ0LNv04A0=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=lkSv8ELG/hr3KH9zJXlegjBOzb/Kbh1mmkMvB1heFLj2S6JwJl+MGwSaQ1AP0kzQT
+         vMLjE2BI8MIJb3kVZjQ21O2B1Qx0uDFSTxxf1eFteIEdBOyJH4xQ8FD3C52GzJS8WV
+         vmp6saRG53KQHX37dQH0MIk/Ei/5F+DzefBozlEc=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20200804052815epcas5p2282174eabe1cb0d863d02657d12277c7~n_XogZszU2984529845epcas5p29;
+        Tue,  4 Aug 2020 05:28:15 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        16.15.09475.FE1F82F5; Tue,  4 Aug 2020 14:28:15 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200803140026epcas5p4f9898295d70c373bc3f52680f0b11586~nxtie5X6n3225132251epcas5p4d;
+        Mon,  3 Aug 2020 14:00:26 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200803140026epsmtrp1bb7e7455de6b998bdb95b868ad52ae5e~nxtieK_iQ1517315173epsmtrp13;
+        Mon,  3 Aug 2020 14:00:26 +0000 (GMT)
+X-AuditID: b6c32a4b-39fff70000002503-a7-5f28f1ef98a5
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        19.7A.08382.A78182F5; Mon,  3 Aug 2020 23:00:26 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200803140025epsmtip2ce2a6a3b1cb92f526382815ab9fe1d1c~nxthAsUSW2099020990epsmtip2a;
+        Mon,  3 Aug 2020 14:00:24 +0000 (GMT)
+From:   Ajay Kumar <ajaykumar.rs@samsung.com>
+To:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        mark.rutland@arm.com, will@kernel.org
+Cc:     joro@8bytes.org, nleeder@codeaurora.org, robin.murphy@arm.com,
+        Ajay Kumar <ajaykumar.rs@samsung.com>
+Subject: [RFC PATCH] dma-iommu: allow devices to set IOVA range dynamically
+Date:   Mon,  3 Aug 2020 19:06:20 +0530
+Message-Id: <20200803133620.13840-1-ajaykumar.rs@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrAIsWRmVeSWpSXmKPExsWy7bCmlu77jxrxBt/26FsceH+QxWLBfmuL
+        ztkb2C02Pb7GanF51xw2i6XXLzJZfDsWY9G69wi7xcEPT1gtWu6YOnB5PDk4j8ljzbw1jB6X
+        +3qZPDat6mTz2Lyk3mPyjeWMHn1bVjF6fN4kF8ARxWWTkpqTWZZapG+XwJXx7eZJtoJO84re
+        +UeYGhg36HYxcnBICJhIvHsAZHJxCAnsZpT4/PwnYxcjJ5DzCciZYghhf2OU2HwmBcQGqV97
+        ZAMbRMNeRon7vy8xQTgtTBJbt7azgFSxCWhLbJt+E8wWEVjOKLH8tRTINmaBLIlNDSogYWEB
+        b4k/P08xg9gsAqoS7/4tYwOxeQVsJZ7df8UCsUxeYvWGA8wg8yUELrFLXJr8iRki4SLx6e9C
+        VghbWOLV8S3sELaUxMv+NnaIhn5Giaf3/0B1r2aUePDwAlS3vcSBK3NYIC7SlFi/Sx8iLCsx
+        9dQ6JhCbWYBPovf3EyaIOK/EjnkgNii41CS2rvCDCMtInDl4BarEQ+LUxYcskNCKlXjycj37
+        BEbZWQgLFjAyrmKUTC0ozk1PLTYtMM5LLdcrTswtLs1L10vOz93ECE4UWt47GB89+KB3iJGJ
+        g/EQowQHs5II78fP6vFCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeZV+nIkTEkhPLEnNTk0tSC2C
+        yTJxcEo1MM1582BzTFzvvUVP514Prkic8dzli1yt7vlEwQkLXSbMrNBevnqOrhnztJbgSJ6s
+        IwsntH1S/tDl7GAWJ2Z5i8ExYMH5UwbfJ7IcM1n+W0xf48lGefFNfpd+RxdOCJqmVVx++NvE
+        XR0H1Q8zSlhEsO733GljPSvqXPUB35NXrtTGsFZde5bHt2j9txWceasC/09/57T3h/e+7HM1
+        u07K/5qzwn4qa197QvyGMxuDve7qp0bECc8JcbXrUwsuvHMnPkGlLOizsvW8G48nFFyzcZdK
+        mNjQYS69iHujQsecusIti+v4FhgsO7jabPdPzQ/u/S7x3n/ZwhvcXu7qEP4XxLTw1e2VJvzt
+        Tt/T9+vVH1ZiKc5INNRiLipOBAACfUCVgwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFLMWRmVeSWpSXmKPExsWy7bCSvG6VhEa8QcsyOYsD7w+yWCzYb23R
+        OXsDu8Wmx9dYLS7vmsNmsfT6RSaLb8diLFr3HmG3OPjhCatFyx1TBy6PJwfnMXmsmbeG0eNy
+        Xy+Tx6ZVnWwem5fUe0y+sZzRo2/LKkaPz5vkAjiiuGxSUnMyy1KL9O0SuDK+3TzJVtBpXtE7
+        /whTA+MG3S5GTg4JAROJtUc2sHUxcnEICexmlHh88DMLREJG4vmOp1C2sMTKf8/ZIYqamCQ2
+        PZ/DDpJgE9CW2Db9JgtIQkRgLaPEwpeL2EASzAJ5EmuvrgazhQW8Jf78PMUMYrMIqEq8+7cM
+        LM4rYCvx7P4rqA3yEqs3HGCewMizgJFhFaNkakFxbnpusWGBYV5quV5xYm5xaV66XnJ+7iZG
+        cPBpae5g3L7qg94hRiYOxkOMEhzMSiK8Hz+rxwvxpiRWVqUW5ccXleakFh9ilOZgURLnvVG4
+        ME5IID2xJDU7NbUgtQgmy8TBKdXAJKVh1KA85/fy/0fN3m6aOlfxiCA/i2F69oGydxez3HbP
+        01N94/nqtvMFbx0XE9P1AY4+R10D2kUcJ/B8FTn0d2fK8e3W/T0fv9axR7yX7TEzMVv9pTv6
+        u/z8+7fqKg7EHT3aejrweUK+hE7EuRtmnxIMfimYvJCNkGXaMFnp/rdHNQ5ml+ImynCcYFZv
+        n529OmHSX7M3X6cI3tFw5pn/eY3T4Xmz5/2T6dytq75/S9kel50b1S/FBdXdMcrN5uq89V6f
+        89u1xSFNwoJbLe7OXLPHYfGvG+bBHbXrl+3msfCSTk/I2lHdeWVu7Q3N3S7XwzewTjj302iG
+        /IyNjmW+RrJzQkuUV70QFVh55pmlvBJLcUaioRZzUXEiAMT1ZiCtAgAA
+X-CMS-MailID: 20200803140026epcas5p4f9898295d70c373bc3f52680f0b11586
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200803140026epcas5p4f9898295d70c373bc3f52680f0b11586
+References: <CGME20200803140026epcas5p4f9898295d70c373bc3f52680f0b11586@epcas5p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, when we enable the debugging switch to debug kexec_file,
-always get the following wrong results:
+Currently, there is no other option to change the lower limit of
+IOVA for any device than calling iova_init_domain(), but the
+said function will re-init whole domain and also doesn't track
+the previously allocated IOVA before re-initing the domain.
 
-kexec_file: Crash PT_LOAD elf header. phdr=00000000c988639b vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=51 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=000000003cca69a0 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=52 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=00000000c584cb9f vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=53 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=00000000cf85d57f vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=54 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=00000000a4a8f847 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=55 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=00000000272ec49f vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=56 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=00000000ea0b65de vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=57 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=000000001f5e490c vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=58 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=00000000dfe4109e vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=59 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=00000000480ed2b6 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=60 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=0000000080b65151 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=61 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=0000000024e31c5e vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=62 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=00000000332e0385 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=63 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=000000002754d5da vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=64 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=00000000783320dd vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=65 p_offset=0x0
-kexec_file: Crash PT_LOAD elf header. phdr=0000000076fe5b64 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=66 p_offset=0x0
+There are cases where the device might not support continuous
+range of addresses, and can also have dependency among buffers
+allocated for firmware, image manipulation, etc and all of the
+address requests pass through IOMMU. In such cases, we can allocate
+buffers stage by stage by setting address limit, and also keep
+track the of same.
 
-The reason is that kernel always prints the values of the next PT_LOAD
-instead of the current PT_LOAD. Change it to ensure that we can get the
-correct debugging information.
+Bit of background can be found here:
+IOVA allocation dependency between firmware buffer and remaining buffers
+https://www.spinics.net/lists/iommu/msg43586.html
 
-Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+This patch allows devices to limit the IOVA space they want
+during allocation at any given point of time. We shall allow
+the same only if the device owns the corresponding iommu_domain,
+that is the device is the only master attached to the domain.
+
+The lower limit of IOVA space is marked by start_pfn, and the upper
+limit is marked by dma_mask and this patch honors the same.
+Since changing dma_mask can extend the addressable region beyond
+current cached node, we do a reset of current cached nodes as well.
+
+Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
 ---
- kernel/kexec_file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/dma-iommu.c | 73 +++++++++++++++++++++++++++++++++++++++
+ drivers/iommu/iommu.c     | 16 +++++++++
+ include/linux/iommu.h     |  6 ++++
+ include/linux/iova.h      |  6 ++++
+ 4 files changed, 101 insertions(+)
 
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index 41616b6a80ad..e2c03b4ce31b 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -1323,10 +1323,10 @@ int crash_prepare_elf64_headers(struct crash_mem *mem, int kernel_map,
- 		phdr->p_filesz = phdr->p_memsz = mend - mstart + 1;
- 		phdr->p_align = 0;
- 		ehdr->e_phnum++;
--		phdr++;
- 		pr_debug("Crash PT_LOAD elf header. phdr=%p vaddr=0x%llx, paddr=0x%llx, sz=0x%llx e_phnum=%d p_offset=0x%llx\n",
- 			phdr, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz,
- 			ehdr->e_phnum, phdr->p_offset);
-+		phdr++;
- 	}
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 4959f5df21bd..2fe3f57ab648 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -167,6 +167,79 @@ void iommu_dma_get_resv_regions(struct device *dev, struct list_head *list)
+ }
+ EXPORT_SYMBOL(iommu_dma_get_resv_regions);
  
- 	*addr = buf;
++/**
++ * iommu_set_iova_range - Limit the IOVA region for a specific device
++ * @dev: Device to set IOVA range for
++ * @base: Base address or the lower limit of the IOVA range
++ * @size: Size of address range from lower limit to upper limit
++ *
++ * Allow a master device to dynamically control the range of IOVA addresses
++ * which are allocated iff the master device is the only device attached to
++ * the corresponding iommu_domain.
++ * This function doesn't harm IOVA addresses outside of current range,
++ * which were allocated prior to calling this function.
++ */
++int iommu_set_iova_range(struct device *dev, dma_addr_t base, u64 size)
++{
++	struct iommu_domain *domain;
++	struct iommu_dma_cookie *cookie;
++	struct iova_domain *iovad;
++	unsigned long shift, base_pfn;
++	u64 new_dma_mask;
++
++	/*
++	 * Check if the IOMMU master device is the sole entry in the group
++	 * If the group has more than one master device using the same IOMMU
++	 * we shouldn't be allowing that device to change the IOVA limit
++	 */
++	if (iommu_group_device_count_from_dev(dev) != 1)
++		return -EINVAL;
++
++	domain = iommu_get_domain_for_dev(dev);
++	if (!domain)
++		return -ENODEV;
++
++	if (domain->type != IOMMU_DOMAIN_DMA)
++		return -EINVAL;
++
++	cookie = domain->iova_cookie;
++	if (!cookie || cookie->type != IOMMU_DMA_IOVA_COOKIE)
++		return -ENODEV;
++
++	iovad = &cookie->iovad;
++
++	shift = iova_shift(iovad);
++	base_pfn = base >> shift;
++
++	base_pfn = max_t(unsigned long, 1, base_pfn);
++
++	/* base cannot be outside aperture */
++	if (domain->geometry.force_aperture) {
++		if (base > domain->geometry.aperture_end ||
++		    base + size <= domain->geometry.aperture_start) {
++			pr_warn("specified DMA range outside IOMMU capability\n");
++			return -EFAULT;
++		}
++		/* ...then finally give it a kicking to make sure it fits */
++		base_pfn = max_t(unsigned long, base_pfn,
++				domain->geometry.aperture_start >> shift);
++	}
++	/* Set page aligned lower limit of IOVA range to start_pfn */
++	iovad->start_pfn = base_pfn;
++
++	/* Set upper limit of IOVA range to dma_mask */
++	new_dma_mask = (u64)base + size;
++	dma_set_mask_and_coherent(dev, new_dma_mask);
++
++	/* Reset cached nodes to start IOVA search from the anchor node */
++	iovad->cached_node = &iovad->anchor.node;
++	iovad->cached32_node = &iovad->anchor.node;
++	iovad->max32_alloc_size = iovad->dma_32bit_pfn;
++
++	return 0;
++}
++EXPORT_SYMBOL(iommu_set_iova_range);
++
+ static int cookie_init_hw_msi_region(struct iommu_dma_cookie *cookie,
+ 		phys_addr_t start, phys_addr_t end)
+ {
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 609bd25bf154..30b2d4e5487d 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -919,6 +919,22 @@ static int iommu_group_device_count(struct iommu_group *group)
+ 	return ret;
+ }
+ 
++int iommu_group_device_count_from_dev(struct device *dev)
++{
++	struct iommu_group *group;
++	int group_device_count;
++
++	group = iommu_group_get(dev);
++	if (!group)
++		return 0;
++
++	group_device_count = iommu_group_device_count(group);
++	iommu_group_put(group);
++
++	return group_device_count;
++}
++EXPORT_SYMBOL_GPL(iommu_group_device_count_from_dev);
++
+ /**
+  * iommu_group_for_each_dev - iterate over each device in the group
+  * @group: the group
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index fee209efb756..4dbd4dab91c0 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -477,6 +477,7 @@ extern int iommu_group_set_name(struct iommu_group *group, const char *name);
+ extern int iommu_group_add_device(struct iommu_group *group,
+ 				  struct device *dev);
+ extern void iommu_group_remove_device(struct device *dev);
++extern int iommu_group_device_count_from_dev(struct device *dev);
+ extern int iommu_group_for_each_dev(struct iommu_group *group, void *data,
+ 				    int (*fn)(struct device *, void *));
+ extern struct iommu_group *iommu_group_get(struct device *dev);
+@@ -828,6 +829,11 @@ static inline void iommu_group_remove_device(struct device *dev)
+ {
+ }
+ 
++static int iommu_group_device_count_from_dev(struct device *dev)
++{
++	return 0;
++}
++
+ static inline int iommu_group_for_each_dev(struct iommu_group *group,
+ 					   void *data,
+ 					   int (*fn)(struct device *, void *))
+diff --git a/include/linux/iova.h b/include/linux/iova.h
+index a0637abffee8..1e7d7b23ff66 100644
+--- a/include/linux/iova.h
++++ b/include/linux/iova.h
+@@ -163,6 +163,7 @@ void put_iova_domain(struct iova_domain *iovad);
+ struct iova *split_and_remove_iova(struct iova_domain *iovad,
+ 	struct iova *iova, unsigned long pfn_lo, unsigned long pfn_hi);
+ void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad);
++int iommu_set_iova_range(struct device *dev, dma_addr_t base, u64 size);
+ #else
+ static inline int iova_cache_get(void)
+ {
+@@ -270,6 +271,11 @@ static inline void free_cpu_cached_iovas(unsigned int cpu,
+ 					 struct iova_domain *iovad)
+ {
+ }
++
++static int iommu_set_iova_range(struct device *dev, dma_addr_t base, u64 size)
++{
++	return 0;
++}
+ #endif
+ 
+ #endif
 -- 
 2.17.1
 
