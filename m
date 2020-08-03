@@ -2,484 +2,669 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEACC23A87C
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188AC23A88A
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 16:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbgHCOcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 10:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        id S1727777AbgHCOdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 10:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbgHCOcV (ORCPT
+        with ESMTP id S1726358AbgHCOdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 10:32:21 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CA5C06174A;
-        Mon,  3 Aug 2020 07:32:20 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id jp10so12285018ejb.0;
-        Mon, 03 Aug 2020 07:32:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=k5ONAMIgnqW/EoT6qv9UbU5FWWEPd2oqQYWKvUFmYr4=;
-        b=o49HWt60cZbDq0j8saM1Tp6KoL0WnDVsKUoKgXHORgwfECmOrMN8xQPrsEsDW4RGWn
-         AnOx5mQH7iFrl2o+mIgrWYYWNeWngJeJT4p0qG6kzbl9QzI9N2fIgCL1pIVl0jZeuRLV
-         nvvUJToBgwlox5eUx+I9pi4PkTy8acksgctNWJhltVpIXZFK8jPzs0SYktt/gsxZ3pG4
-         2IxjN4k9F8PB6Fe8ny53iNwh7getB30kzDHEnV3h3qKwEhtBqiwmCKxWDZRVjZfqiWq8
-         Ut/YHQQ5lVKh8amJIq8H9KbuGxanpyv09Kk5DnWgBoIfhRPJqmp3rzhIder50pIvVk43
-         xMEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k5ONAMIgnqW/EoT6qv9UbU5FWWEPd2oqQYWKvUFmYr4=;
-        b=Oq2CAW04b7xOQooFJrnWLx2S4Lqi2JWgnThSQ1wob2N2l438avkmqH7fNB6c7FBSYr
-         M6kjxtPhL8GbYtoOmooESeeLQLhFrwiJDLMIimWGfIAEJ8QjRs2r7evSA8272vzNuHxp
-         HyMhU8g8b2sGIxvp3VflfBK4hSs6jqjdSAHEh29gSZjCS5g06irSRmtPFY6vPCdzaO21
-         MzDqBv1DuXfLZFgy6s52L0PRoS1DjqoLxAWlCtfd2q6HgOF/+RhxL4XbIvfW8k5DsIqt
-         61J/0/KA9wBeCK2eWOUUmVEBZljdiOXLWYZz4yzrHnVs1PQa4MNcDr+9X4xZxhPpXhwD
-         8ZCA==
-X-Gm-Message-State: AOAM531/V44iVOQF76wXWeFJt5NU2TCJrOz/wqjgyeRNxLCuBVh8pun+
-        ROeTHw7gE21L/NTd5Vqp9Yk=
-X-Google-Smtp-Source: ABdhPJzlQBB/MGH6Y1vfRZteypGHVIibfKinOM2UIaYnQhJnvKUveQMdnRIj/52fsfvrvlvTsZNkTA==
-X-Received: by 2002:a17:906:7e06:: with SMTP id e6mr17732136ejr.236.1596465138563;
-        Mon, 03 Aug 2020 07:32:18 -0700 (PDT)
-Received: from BV030612LT ([86.121.43.21])
-        by smtp.gmail.com with ESMTPSA id u18sm15940973edt.31.2020.08.03.07.32.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 07:32:17 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 17:32:15 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-actions@lists.infradead.org
-Subject: Re: [PATCH 2/3] pinctrl: actions: Add Actions S500 pinctrl driver
-Message-ID: <20200803143215.GA1108663@BV030612LT>
-References: <cover.1593112402.git.cristian.ciocaltea@gmail.com>
- <5ebf34a13fe4e98342e654e834751d3f2c4285e8.1593112402.git.cristian.ciocaltea@gmail.com>
- <20200626142941.GE8333@Mani-XPS-13-9360>
- <20200626171148.GD6611@BV030612LT>
- <20200802151813.GA6486@Mani-XPS-13-9360>
+        Mon, 3 Aug 2020 10:33:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D651C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 07:33:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=MQm5KBxfsva4yRPN/kLNSRO/7YlnpPiEdEdDUTsBjzM=; b=JNo1WdGE4NuZQRSIxtR3q+YxuA
+        dnymcgjXafRlec3I8qPSLlEIzWrxAemNuh0F8m7FCo8ikod5GvBtLfmT3MQ8VTR3Lb6+Om+CPATb6
+        V927bLglRaGqmqIcMT7yE9/q86IKUagTqrV6GLXRXlU6rrOcfY+o87f4uRAe4uH8w+Z7sCyFTFQ0F
+        6AqarAQraNKNDkiq8ZmgbIKyUS0MpQA/aKcW9oYw6w5lIrIQRUP9pYpbNwK5mZAykpN117551M9/Q
+        iggQ+G44U474nL6YpEAAXBg4TQO/zyILhk+VxiSQ0MdmFCcDnB6AjoF12WpbX4xNkL6/+KQmdJFAZ
+        I5jQnZlQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k2bVx-00040m-ST; Mon, 03 Aug 2020 14:33:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BFCF0306CEE;
+        Mon,  3 Aug 2020 16:32:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AF70B2149384E; Mon,  3 Aug 2020 16:32:31 +0200 (CEST)
+Date:   Mon, 3 Aug 2020 16:32:31 +0200
+From:   peterz@infradead.org
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     mbenes@suse.de, linux-kernel@vger.kernel.org, x86@kernel.org,
+        jgross@suse.com
+Subject: [RFC][PATCH] objtool,x86_64,paravirt: Add pv_ops[] support
+Message-ID: <20200803143231.GE2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200802151813.GA6486@Mani-XPS-13-9360>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 02, 2020 at 08:48:13PM +0530, Manivannan Sadhasivam wrote:
-> Hi,
-> 
-> Sorry for the delay. This has fallen through the cracks...
 
-Hi Mani,
+Thomas wanted paramuck vs noinstr, here goes. Very rough, very nasty,
+mostly works.
 
-No problem, thanks for finding the time to review this.
+It requires call sites are the normal indirect call, and not mangled
+retpoison (slow_down_io() had those), it also requires pv_ops[]
+assignments are single instructions and not laundered through some
+pointless intermediate helper (hyperv).
 
-> On Fri, Jun 26, 2020 at 08:11:48PM +0300, Cristian Ciocaltea wrote:
-> > On Fri, Jun 26, 2020 at 07:59:41PM +0530, Manivannan Sadhasivam wrote:
-> > > On Thu, Jun 25, 2020 at 11:16:19PM +0300, Cristian Ciocaltea wrote:
-> > > > Add pinctrl and gpio driver for Actions Semi S500 SoC.
-> > > > 
-> > > > The driver supports pinctrl, pinmux, pinconf, gpio and interrupt
-> > > > functions using a set of registers shared between gpio and pinctrl.
-> > > > 
-> > > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > > > ---
-> > > >  drivers/pinctrl/actions/Kconfig        |    6 +
-> > > >  drivers/pinctrl/actions/Makefile       |    1 +
-> > > >  drivers/pinctrl/actions/pinctrl-s500.c | 1727 ++++++++++++++++++++++++
-> > > >  3 files changed, 1734 insertions(+)
-> > > >  create mode 100644 drivers/pinctrl/actions/pinctrl-s500.c
-> > > > 
-> > > > diff --git a/drivers/pinctrl/actions/Kconfig b/drivers/pinctrl/actions/Kconfig
-> > > > index 966f1c2c89d6..a1d16e8280e5 100644
-> > > > --- a/drivers/pinctrl/actions/Kconfig
-> > > > +++ b/drivers/pinctrl/actions/Kconfig
-> > > > @@ -10,6 +10,12 @@ config PINCTRL_OWL
-> > > >  	help
-> > > >  	  Say Y here to enable Actions Semi OWL pinctrl driver
-> > > >  
-> > > > +config PINCTRL_S500
-> > > > +	bool "Actions Semi S500 pinctrl driver"
-> > > > +	depends on PINCTRL_OWL
-> > > > +	help
-> > > > +	  Say Y here to enable Actions Semi S500 pinctrl driver
-> > > > +
-> > > >  config PINCTRL_S700
-> > > >  	bool "Actions Semi S700 pinctrl driver"
-> > > >  	depends on PINCTRL_OWL
-> > > > diff --git a/drivers/pinctrl/actions/Makefile b/drivers/pinctrl/actions/Makefile
-> > > > index 61aa9107a43a..b9e2c527c9d3 100644
-> > > > --- a/drivers/pinctrl/actions/Makefile
-> > > > +++ b/drivers/pinctrl/actions/Makefile
-> > > > @@ -1,4 +1,5 @@
-> > > >  # SPDX-License-Identifier: GPL-2.0-only
-> > > >  obj-$(CONFIG_PINCTRL_OWL)	+= pinctrl-owl.o
-> > > > +obj-$(CONFIG_PINCTRL_S500) 	+= pinctrl-s500.o
-> > > >  obj-$(CONFIG_PINCTRL_S700) 	+= pinctrl-s700.o
-> > > >  obj-$(CONFIG_PINCTRL_S900) 	+= pinctrl-s900.o
-> > > > diff --git a/drivers/pinctrl/actions/pinctrl-s500.c b/drivers/pinctrl/actions/pinctrl-s500.c
-> > > > new file mode 100644
-> > > > index 000000000000..38e30914af6e
-> > > > --- /dev/null
-> > > > +++ b/drivers/pinctrl/actions/pinctrl-s500.c
-> > > > @@ -0,0 +1,1727 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0+
-> > > > +/*
-> > > > + * Actions Semi S500 SoC Pinctrl driver
-> > > > + *
-> > > > + * Copyright (c) 2014 Actions Semi Inc.
-> > > > + * Copyright (c) 2020 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > > > + */
-> > > > +
-> > > > +#include <linux/module.h>
-> > > > +#include <linux/of.h>
-> > > > +#include <linux/platform_device.h>
-> > > > +#include <linux/pinctrl/pinconf-generic.h>
-> > > > +#include <linux/pinctrl/pinctrl.h>
-> > > > +#include "pinctrl-owl.h"
-> > > > +
-> > > > +/* Pinctrl registers offset */
-> > > > +#define MFCTL0			(0x0040)
-> > > > +#define MFCTL1			(0x0044)
-> > > > +#define MFCTL2			(0x0048)
-> > > > +#define MFCTL3			(0x004C)
-> > > > +#define PAD_PULLCTL0		(0x0060)
-> > > > +#define PAD_PULLCTL1		(0x0064)
-> > > > +#define PAD_PULLCTL2		(0x0068)
-> > > > +#define PAD_ST0			(0x006C)
-> > > > +#define PAD_ST1			(0x0070)
-> > > > +#define PAD_CTL			(0x0074)
-> > > > +#define PAD_DRV0		(0x0080)
-> > > > +#define PAD_DRV1		(0x0084)
-> > > > +#define PAD_DRV2		(0x0088)
-> > > > +
-> > > > +#define _GPIOA(offset)		(offset)
-> > > > +#define _GPIOB(offset)		(32 + (offset))
-> > > > +#define _GPIOC(offset)		(64 + (offset))
-> > > > +#define _GPIOD(offset)		(96 + (offset))
-> > > > +#define _GPIOE(offset)		(128 + (offset))
-> > > > +
-> > > > +#define NUM_GPIOS		(_GPIOE(3) + 1)
-> > > > +#define _PIN(offset)		(NUM_GPIOS + (offset))
-> > > > +
-> > > > +#define DNAND_DQS		_GPIOA(12)
-> > > > +#define DNAND_DQSN		_GPIOA(13)
-> > > > +#define ETH_TXD0		_GPIOA(14)
-> > > > +#define ETH_TXD1		_GPIOA(15)
-> > > > +#define ETH_TXEN		_GPIOA(16)
-> > > > +#define ETH_RXER		_GPIOA(17)
-> > > > +#define ETH_CRS_DV		_GPIOA(18)
-> > > > +#define ETH_RXD1		_GPIOA(19)
-> > > > +#define ETH_RXD0		_GPIOA(20)
-> > > > +#define ETH_REF_CLK		_GPIOA(21)
-> > > > +#define ETH_MDC			_GPIOA(22)
-> > > > +#define ETH_MDIO		_GPIOA(23)
-> > > > +#define SIRQ0			_GPIOA(24)
-> > > > +#define SIRQ1			_GPIOA(25)
-> > > > +#define SIRQ2			_GPIOA(26)
-> > > > +#define I2S_D0			_GPIOA(27)
-> > > > +#define I2S_BCLK0		_GPIOA(28)
-> > > > +#define I2S_LRCLK0		_GPIOA(29)
-> > > > +#define I2S_MCLK0		_GPIOA(30)
-> > > > +#define I2S_D1			_GPIOA(31)
-> > > > +
-> > > > +#define I2S_BCLK1		_GPIOB(0)
-> > > > +#define I2S_LRCLK1		_GPIOB(1)
-> > > > +#define I2S_MCLK1		_GPIOB(2)
-> > > > +#define KS_IN0			_GPIOB(3)
-> > > > +#define KS_IN1			_GPIOB(4)
-> > > > +#define KS_IN2			_GPIOB(5)
-> > > > +#define KS_IN3			_GPIOB(6)
-> > > > +#define KS_OUT0			_GPIOB(7)
-> > > > +#define KS_OUT1			_GPIOB(8)
-> > > > +#define KS_OUT2			_GPIOB(9)
-> > > > +#define LVDS_OEP		_GPIOB(10)
-> > > > +#define LVDS_OEN		_GPIOB(11)
-> > > > +#define LVDS_ODP		_GPIOB(12)
-> > > > +#define LVDS_ODN		_GPIOB(13)
-> > > > +#define LVDS_OCP		_GPIOB(14)
-> > > > +#define LVDS_OCN		_GPIOB(15)
-> > > > +#define LVDS_OBP		_GPIOB(16)
-> > > > +#define LVDS_OBN		_GPIOB(17)
-> > > > +#define LVDS_OAP		_GPIOB(18)
-> > > > +#define LVDS_OAN		_GPIOB(19)
-> > > > +#define LVDS_EEP		_GPIOB(20)
-> > > > +#define LVDS_EEN		_GPIOB(21)
-> > > > +#define LVDS_EDP		_GPIOB(22)
-> > > > +#define LVDS_EDN		_GPIOB(23)
-> > > > +#define LVDS_ECP		_GPIOB(24)
-> > > > +#define LVDS_ECN		_GPIOB(25)
-> > > > +#define LVDS_EBP		_GPIOB(26)
-> > > > +#define LVDS_EBN		_GPIOB(27)
-> > > > +#define LVDS_EAP		_GPIOB(28)
-> > > > +#define LVDS_EAN		_GPIOB(29)
-> > > > +#define LCD0_D18		_GPIOB(30)
-> > > > +#define LCD0_D17		_GPIOB(31)
-> > > > +
-> > > > +#define DSI_DP3			_GPIOC(0)
-> > > > +#define DSI_DN3			_GPIOC(1)
-> > > > +#define DSI_DP1			_GPIOC(2)
-> > > > +#define DSI_DN1			_GPIOC(3)
-> > > > +#define DSI_CP			_GPIOC(4)
-> > > > +#define DSI_CN			_GPIOC(5)
-> > > > +#define DSI_DP0			_GPIOC(6)
-> > > > +#define DSI_DN0			_GPIOC(7)
-> > > > +#define DSI_DP2			_GPIOC(8)
-> > > > +#define DSI_DN2			_GPIOC(9)
-> > > > +#define SD0_D0			_GPIOC(10)
-> > > > +#define SD0_D1			_GPIOC(11)
-> > > > +#define SD0_D2			_GPIOC(12)
-> > > > +#define SD0_D3			_GPIOC(13)
-> > > > +#define SD1_D0			_GPIOC(14) /* SD0_D4 */
-> > > > +#define SD1_D1			_GPIOC(15) /* SD0_D5 */
-> > > > +#define SD1_D2			_GPIOC(16) /* SD0_D6 */
-> > > > +#define SD1_D3			_GPIOC(17) /* SD0_D7 */
-> > > > +#define SD0_CMD			_GPIOC(18)
-> > > > +#define SD0_CLK			_GPIOC(19)
-> > > > +#define SD1_CMD			_GPIOC(20)
-> > > > +#define SD1_CLK			_GPIOC(21)
-> > > > +#define SPI0_SCLK		_GPIOC(22)
-> > > > +#define SPI0_SS			_GPIOC(23)
-> > > > +#define SPI0_MISO		_GPIOC(24)
-> > > > +#define SPI0_MOSI		_GPIOC(25)
-> > > > +#define UART0_RX		_GPIOC(26)
-> > > > +#define UART0_TX		_GPIOC(27)
-> > > > +#define I2C0_SCLK		_GPIOC(28)
-> > > > +#define I2C0_SDATA		_GPIOC(29)
-> > > > +#define SENSOR0_PCLK		_GPIOC(31)
-> > > > +
-> > > > +#define SENSOR0_CKOUT		_GPIOD(10)
-> > > > +#define DNAND_ALE		_GPIOD(12)
-> > > > +#define DNAND_CLE		_GPIOD(13)
-> > > > +#define DNAND_CEB0		_GPIOD(14)
-> > > > +#define DNAND_CEB1		_GPIOD(15)
-> > > > +#define DNAND_CEB2		_GPIOD(16)
-> > > > +#define DNAND_CEB3		_GPIOD(17)
-> > > > +#define UART2_RX		_GPIOD(18)
-> > > > +#define UART2_TX		_GPIOD(19)
-> > > > +#define UART2_RTSB		_GPIOD(20)
-> > > > +#define UART2_CTSB		_GPIOD(21)
-> > > > +#define UART3_RX		_GPIOD(22)
-> > > > +#define UART3_TX		_GPIOD(23)
-> > > > +#define UART3_RTSB		_GPIOD(24)
-> > > > +#define UART3_CTSB		_GPIOD(25)
-> > > > +#define PCM1_IN			_GPIOD(28)
-> > > > +#define PCM1_CLK		_GPIOD(29)
-> > > > +#define PCM1_SYNC		_GPIOD(30)
-> > > > +#define PCM1_OUT		_GPIOD(31)
-> > > > +
-> > > > +#define I2C1_SCLK		_GPIOE(0)
-> > > > +#define I2C1_SDATA		_GPIOE(1)
-> > > > +#define I2C2_SCLK		_GPIOE(2)
-> > > > +#define I2C2_SDATA		_GPIOE(3)
-> > > > +
-> > > > +#define CSI_DN0			_PIN(0)
-> > > > +#define CSI_DP0			_PIN(1)
-> > > > +#define CSI_DN1			_PIN(2)
-> > > > +#define CSI_DP1			_PIN(3)
-> > > > +#define CSI_CN			_PIN(4)
-> > > > +#define CSI_CP			_PIN(5)
-> > > > +#define CSI_DN2			_PIN(6)
-> > > > +#define CSI_DP2			_PIN(7)
-> > > > +#define CSI_DN3			_PIN(8)
-> > > > +#define CSI_DP3			_PIN(9)
-> > > > +
-> > > > +#define DNAND_D0		_PIN(10)
-> > > > +#define DNAND_D1		_PIN(11)
-> > > > +#define DNAND_D2		_PIN(12)
-> > > > +#define DNAND_D3		_PIN(13)
-> > > > +#define DNAND_D4		_PIN(14)
-> > > > +#define DNAND_D5		_PIN(15)
-> > > > +#define DNAND_D6		_PIN(16)
-> > > > +#define DNAND_D7		_PIN(17)
-> > > > +#define DNAND_WRB		_PIN(18)
-> > > > +#define DNAND_RDB		_PIN(19)
-> > > > +#define DNAND_RDBN		_PIN(20)
-> > > > +#define DNAND_RB		_PIN(21)
-> > > > +
-> > > > +#define PORB			_PIN(22)
-> > > > +#define CLKO_25M		_PIN(23)
-> > > > +#define BSEL			_PIN(24)
-> > > > +#define PKG0			_PIN(25)
-> > > > +#define PKG1			_PIN(26)
-> > > > +#define PKG2			_PIN(27)
-> > > > +#define PKG3			_PIN(28)
-> > > > +
-> > > > +#define _FIRSTPAD		_GPIOA(0)
-> > > > +#define _LASTPAD		PKG3
-> > > > +#define NUM_PADS		(_PIN(28) + 1)
-> > > > +
-> > > 
-> > > [...]
-> > > 
-> > > > +static const struct owl_gpio_port s500_gpio_ports[] = {
-> > > > +	OWL_GPIO_PORT(A, 0x0000, 32, 0x0, 0x4, 0x8, 0x204, 0x208, 0x20C, 0x230, 0),
-> > > > +	OWL_GPIO_PORT(B, 0x000C, 32, 0x0, 0x4, 0x8, 0x1F8, 0x204, 0x208, 0x22C, 1),
-> > > > +	OWL_GPIO_PORT(C, 0x0018, 32, 0x0, 0x4, 0x8, 0x1EC, 0x200, 0x204, 0x228, 2),
-> > > > +	OWL_GPIO_PORT(D, 0x0024, 32, 0x0, 0x4, 0x8, 0x1E0, 0x1FC, 0x200, 0x224, 3),
-> > > > +	OWL_GPIO_PORT(E, 0x0030,  4, 0x0, 0x4, 0x8, 0x1D4, 0x1F8, 0x1FC, 0x220, 4),
-> > > 
-> > > Except PORT-A, rest of the offsets for ports seems to be wrong. From where did
-> > > you get these?
-> > > 
-> > > Thanks,
-> > > Mani
-> > 
-> > I computed the offsets using the S500 Datasheet, v1.6 (2016-03-07).
-> > 
-> > Below is an excerpt from chapter '30.4 Register List':
-> > 
-> > -------+--------------
-> > Offset | Register Name
-> > -------+--------------
-> > 0x000C | GPIO_BOUTEN
-> > 0x0010 | GPIO_BINEN
-> > 0x0014 | GPIO_BDAT
-> > ...
-> > 0x0204 | INTC_GPIOCTL
-> > 0x0210 | INTC_GPIOB_PD
-> > 0x0214 | INTC_GPIOB_MSK
-> > ...
-> > 0x0238 | INTC_GPIOB_TYPE0
-> > -------+--------------
-> > 
-> > Hence, for PORT-B, I got the following values:
-> > 
-> > OWL_GPIO_PORT(B,
-> >   0x000C, /* base = GPIO_BOUTEN = 0x000C */
-> >   32,
-> >   0x0,    /* GPIO_BOUTEN - base */
-> >   0x4,    /* GPIO_BINEN - base */
-> >   0x8,    /* GPIO_BDAT - base */
-> >   0x1F8,  /* INTC_GPIOCTL - base */
-> >   0x204,  /* INTC_GPIOB_PD - base */
-> >   0x208,  /* INTC_GPIOB_MSK - base */
-> >   0x22C,  /* INTC_GPIOB_TYPE0 - base */
-> >   1),
-> > 
-> > Did I miss something?
-> > 
-> 
-> No, I missed the fact that the pinctrl-owl.c takes the per port offset into
-> account for calculating the offsets... Sorry for the noise, please go ahead!
+It doesn't warn when you get any of that wrong.
 
-No problem, I have just submitted v2:
-https://lore.kernel.org/lkml/cover.1596461275.git.cristian.ciocaltea@gmail.com/
+But if you have it all lined up right, it will warn about noinstr
+violations due to paramuck:
 
-Thanks again,
-Cristi
+$ ./objtool check -afl ../../defconfig-build/vmlinux.o
+../../defconfig-build/vmlinux.o: warning: objtool: xen_pv_evtchn_do_upcall()+0x69: return with instrumentation enabled
+../../defconfig-build/vmlinux.o: warning: objtool: exc_double_fault()+0x15: call pv_ops[48] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: pv_op[48]: xen_read_cr2
+../../defconfig-build/vmlinux.o: warning: objtool: exc_double_fault()+0x15: call to {dynamic}() leaves .noinstr.text section
+../../defconfig-build/vmlinux.o: warning: objtool: exc_debug()+0x29: call pv_ops[4] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: pv_op[4]: native_get_debugreg
+../../defconfig-build/vmlinux.o: warning: objtool: exc_debug()+0x29: call to {dynamic}() leaves .noinstr.text section
+../../defconfig-build/vmlinux.o: warning: objtool: noist_exc_debug()+0x26: call pv_ops[4] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: pv_op[4]: native_get_debugreg
+../../defconfig-build/vmlinux.o: warning: objtool: noist_exc_debug()+0x26: call to {dynamic}() leaves .noinstr.text section
+../../defconfig-build/vmlinux.o: warning: objtool: exc_nmi()+0x3a: call pv_ops[48] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: pv_op[48]: xen_read_cr2
+../../defconfig-build/vmlinux.o: warning: objtool: exc_nmi()+0x3a: call to {dynamic}() leaves .noinstr.text section
+../../defconfig-build/vmlinux.o: warning: objtool: mce_setup()+0x80: call pv_ops[25] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: pv_op[25]: native_cpuid
+../../defconfig-build/vmlinux.o: warning: objtool: mce_setup()+0x80: call to {dynamic}() leaves .noinstr.text section
+../../defconfig-build/vmlinux.o: warning: objtool: do_machine_check()+0x46: call to mce_rdmsrl() leaves .noinstr.text section
+../../defconfig-build/vmlinux.o: warning: objtool: exc_machine_check()+0x24: call pv_ops[4] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: pv_op[4]: native_get_debugreg
+../../defconfig-build/vmlinux.o: warning: objtool: exc_machine_check()+0x24: call to {dynamic}() leaves .noinstr.text section
+../../defconfig-build/vmlinux.o: warning: objtool: noist_exc_machine_check()+0x24: call pv_ops[4] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: pv_op[4]: native_get_debugreg
+../../defconfig-build/vmlinux.o: warning: objtool: noist_exc_machine_check()+0x24: call to {dynamic}() leaves .noinstr.text section
+../../defconfig-build/vmlinux.o: warning: objtool: exc_page_fault()+0xe: call pv_ops[48] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: pv_op[48]: xen_read_cr2
+../../defconfig-build/vmlinux.o: warning: objtool: exc_page_fault()+0xe: call to {dynamic}() leaves .noinstr.text section
+../../defconfig-build/vmlinux.o: warning: objtool: .entry.text+0xf17: call pv_ops[32] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: .entry.text+0x12f1: call pv_ops[35] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: .entry.text+0xf5a: call pv_ops[32] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: .entry.text+0x1002: call pv_ops[32] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: .entry.text+0x1186: call pv_ops[32] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: .entry.text+0x12ba: call pv_ops[32] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: .entry.text+0x12a7: call pv_ops[32] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: .entry.text+0x124c: call pv_ops[32] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: .entry.text+0x14f0: call pv_ops[32] from noinstr
+../../defconfig-build/vmlinux.o: warning: objtool: .entry.text+0x1683: call pv_ops[32] from noinstr
 
-> Thanks,
-> Mani
-> 
-> > Thanks,
-> > Cristi
-> > 
-> > > 
-> > > > +};
-> > > > +
-> > > > +enum s500_pinconf_pull {
-> > > > +	OWL_PINCONF_PULL_DOWN,
-> > > > +	OWL_PINCONF_PULL_UP,
-> > > > +};
-> > > > +
-> > > > +static int s500_pad_pinconf_arg2val(const struct owl_padinfo *info,
-> > > > +				    unsigned int param, u32 *arg)
-> > > > +{
-> > > > +	switch (param) {
-> > > > +	case PIN_CONFIG_BIAS_PULL_DOWN:
-> > > > +		*arg = OWL_PINCONF_PULL_DOWN;
-> > > > +		break;
-> > > > +	case PIN_CONFIG_BIAS_PULL_UP:
-> > > > +		*arg = OWL_PINCONF_PULL_UP;
-> > > > +		break;
-> > > > +	case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
-> > > > +		*arg = (*arg >= 1 ? 1 : 0);
-> > > > +		break;
-> > > > +	default:
-> > > > +		return -EOPNOTSUPP;
-> > > > +	}
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +static int s500_pad_pinconf_val2arg(const struct owl_padinfo *padinfo,
-> > > > +				    unsigned int param, u32 *arg)
-> > > > +{
-> > > > +	switch (param) {
-> > > > +	case PIN_CONFIG_BIAS_PULL_DOWN:
-> > > > +		*arg = *arg == OWL_PINCONF_PULL_DOWN;
-> > > > +		break;
-> > > > +	case PIN_CONFIG_BIAS_PULL_UP:
-> > > > +		*arg = *arg == OWL_PINCONF_PULL_UP;
-> > > > +		break;
-> > > > +	case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
-> > > > +		*arg = *arg == 1;
-> > > > +		break;
-> > > > +	default:
-> > > > +		return -EOPNOTSUPP;
-> > > > +	}
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +static struct owl_pinctrl_soc_data s500_pinctrl_data = {
-> > > > +	.padinfo = s500_padinfo,
-> > > > +	.pins = (const struct pinctrl_pin_desc *)s500_pads,
-> > > > +	.npins = ARRAY_SIZE(s500_pads),
-> > > > +	.functions = s500_functions,
-> > > > +	.nfunctions = ARRAY_SIZE(s500_functions),
-> > > > +	.groups = s500_groups,
-> > > > +	.ngroups = ARRAY_SIZE(s500_groups),
-> > > > +	.ngpios = NUM_GPIOS,
-> > > > +	.ports = s500_gpio_ports,
-> > > > +	.nports = ARRAY_SIZE(s500_gpio_ports),
-> > > > +	.padctl_arg2val = s500_pad_pinconf_arg2val,
-> > > > +	.padctl_val2arg = s500_pad_pinconf_val2arg,
-> > > > +};
-> > > > +
-> > > > +static int s500_pinctrl_probe(struct platform_device *pdev)
-> > > > +{
-> > > > +	return owl_pinctrl_probe(pdev, &s500_pinctrl_data);
-> > > > +}
-> > > > +
-> > > > +static const struct of_device_id s500_pinctrl_of_match[] = {
-> > > > +	{ .compatible = "actions,s500-pinctrl", },
-> > > > +	{ }
-> > > > +};
-> > > > +
-> > > > +static struct platform_driver s500_pinctrl_driver = {
-> > > > +	.driver = {
-> > > > +		.name = "pinctrl-s500",
-> > > > +		.of_match_table = of_match_ptr(s500_pinctrl_of_match),
-> > > > +	},
-> > > > +	.probe = s500_pinctrl_probe,
-> > > > +};
-> > > > +
-> > > > +static int __init s500_pinctrl_init(void)
-> > > > +{
-> > > > +	return platform_driver_register(&s500_pinctrl_driver);
-> > > > +}
-> > > > +arch_initcall(s500_pinctrl_init);
-> > > > +
-> > > > +static void __exit s500_pinctrl_exit(void)
-> > > > +{
-> > > > +	platform_driver_unregister(&s500_pinctrl_driver);
-> > > > +}
-> > > > +module_exit(s500_pinctrl_exit);
-> > > > +
-> > > > +MODULE_AUTHOR("Actions Semi Inc.");
-> > > > +MODULE_AUTHOR("Cristian Ciocaltea <cristian.ciocaltea@gmail.com>");
-> > > > +MODULE_DESCRIPTION("Actions Semi S500 SoC Pinctrl Driver");
-> > > > +MODULE_LICENSE("GPL");
-> > > > -- 
-> > > > 2.27.0
-> > > > 
+[ funny that, WTH does x86_64 have IRET pv_ops... ]
+
+Requested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/include/asm/paravirt.h    |   8 +--
+ arch/x86/kernel/cpu/mshyperv.c     |   7 ---
+ drivers/clocksource/hyperv_timer.c |   7 +++
+ include/asm-generic/mshyperv.h     |   1 -
+ lib/Kconfig.debug                  |   2 +-
+ tools/objtool/Makefile             |   2 +-
+ tools/objtool/arch.h               |   2 +-
+ tools/objtool/arch/x86/decode.c    |  30 ++++++++-
+ tools/objtool/builtin-check.c      |  10 +--
+ tools/objtool/builtin-orc.c        |  10 +--
+ tools/objtool/check.c              | 126 ++++++++++++++++++++++++++++++++++---
+ tools/objtool/elf.h                |   1 +
+ tools/objtool/objtool.c            |  46 ++++++++++++++
+ tools/objtool/objtool.h            |   9 +++
+ 14 files changed, 218 insertions(+), 43 deletions(-)
+
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+index 3d2afecde50c..db30b35f0d59 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -39,11 +39,11 @@ static inline u64 paravirt_steal_clock(int cpu)
+ /* The paravirtualized I/O functions */
+ static inline void slow_down_io(void)
+ {
+-	pv_ops.cpu.io_delay();
++	PVOP_VCALL0(cpu.io_delay);
+ #ifdef REALLY_SLOW_IO
+-	pv_ops.cpu.io_delay();
+-	pv_ops.cpu.io_delay();
+-	pv_ops.cpu.io_delay();
++	PVOP_VCALL0(cpu.io_delay);
++	PVOP_VCALL0(cpu.io_delay);
++	PVOP_VCALL0(cpu.io_delay);
+ #endif
+ }
+ 
+diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+index af94f05a5c66..31125448b174 100644
+--- a/arch/x86/kernel/cpu/mshyperv.c
++++ b/arch/x86/kernel/cpu/mshyperv.c
+@@ -361,13 +361,6 @@ static void __init ms_hyperv_init_platform(void)
+ #endif
+ }
+ 
+-void hv_setup_sched_clock(void *sched_clock)
+-{
+-#ifdef CONFIG_PARAVIRT
+-	pv_ops.time.sched_clock = sched_clock;
+-#endif
+-}
+-
+ const __initconst struct hypervisor_x86 x86_hyper_ms_hyperv = {
+ 	.name			= "Microsoft Hyper-V",
+ 	.detect			= ms_hyperv_platform,
+diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+index 09aa44cb8a91..bed769a84637 100644
+--- a/drivers/clocksource/hyperv_timer.c
++++ b/drivers/clocksource/hyperv_timer.c
+@@ -418,6 +418,13 @@ static struct clocksource hyperv_cs_msr = {
+ 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
+ };
+ 
++static __always_inline void hv_setup_sched_clock(void *sched_clock)
++{
++#ifdef CONFIG_PARAVIRT
++	pv_ops.time.sched_clock = sched_clock;
++#endif
++}
++
+ static bool __init hv_init_tsc_clocksource(void)
+ {
+ 	u64		tsc_msr;
+diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
+index 1c4fd950f091..c5edc5e08b94 100644
+--- a/include/asm-generic/mshyperv.h
++++ b/include/asm-generic/mshyperv.h
+@@ -168,7 +168,6 @@ void hyperv_report_panic_msg(phys_addr_t pa, size_t size);
+ bool hv_is_hyperv_initialized(void);
+ bool hv_is_hibernation_supported(void);
+ void hyperv_cleanup(void);
+-void hv_setup_sched_clock(void *sched_clock);
+ #else /* CONFIG_HYPERV */
+ static inline bool hv_is_hyperv_initialized(void) { return false; }
+ static inline bool hv_is_hibernation_supported(void) { return false; }
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 3e64a8a809f9..b52957d964a2 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -399,7 +399,7 @@ config STACK_VALIDATION
+ 
+ config VMLINUX_VALIDATION
+ 	bool
+-	depends on STACK_VALIDATION && DEBUG_ENTRY && !PARAVIRT
++	depends on STACK_VALIDATION && DEBUG_ENTRY
+ 	default y
+ 
+ config DEBUG_FORCE_WEAK_PER_CPU
+diff --git a/tools/objtool/Makefile b/tools/objtool/Makefile
+index 7770edcda3a0..d41bfa2130d8 100644
+--- a/tools/objtool/Makefile
++++ b/tools/objtool/Makefile
+@@ -38,7 +38,7 @@ INCLUDES := -I$(srctree)/tools/include \
+ 	    -I$(srctree)/tools/arch/$(SRCARCH)/include	\
+ 	    -I$(srctree)/tools/objtool/arch/$(SRCARCH)/include
+ WARNINGS := $(EXTRA_WARNINGS) -Wno-switch-default -Wno-switch-enum -Wno-packed
+-CFLAGS   := -Werror $(WARNINGS) $(KBUILD_HOSTCFLAGS) -g $(INCLUDES) $(LIBELF_FLAGS)
++CFLAGS   := -Werror $(WARNINGS) $(KBUILD_HOSTCFLAGS) -ggdb3 $(INCLUDES) $(LIBELF_FLAGS)
+ LDFLAGS  += $(LIBELF_LIBS) $(LIBSUBCMD) $(KBUILD_HOSTLDFLAGS)
+ 
+ # Allow old libelf to be used:
+diff --git a/tools/objtool/arch.h b/tools/objtool/arch.h
+index 2e2ce089b0e9..41c3c1d75887 100644
+--- a/tools/objtool/arch.h
++++ b/tools/objtool/arch.h
+@@ -72,7 +72,7 @@ struct instruction;
+ 
+ void arch_initial_func_cfi_state(struct cfi_init_state *state);
+ 
+-int arch_decode_instruction(const struct elf *elf, const struct section *sec,
++int arch_decode_instruction(struct objtool_file *file, const struct section *sec,
+ 			    unsigned long offset, unsigned int maxlen,
+ 			    unsigned int *len, enum insn_type *type,
+ 			    unsigned long *immediate,
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index 1967370440b3..285efbc4e9be 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -15,6 +15,7 @@
+ #include "../../elf.h"
+ #include "../../arch.h"
+ #include "../../warn.h"
++#include "../../objtool.h"
+ 
+ static unsigned char op_to_cfi_reg[][2] = {
+ 	{CFI_AX, CFI_R8},
+@@ -82,12 +83,13 @@ unsigned long arch_jump_destination(struct instruction *insn)
+ 		return -1; \
+ 	else for (list_add_tail(&op->list, ops_list); op; op = NULL)
+ 
+-int arch_decode_instruction(const struct elf *elf, const struct section *sec,
++int arch_decode_instruction(struct objtool_file *file, const struct section *sec,
+ 			    unsigned long offset, unsigned int maxlen,
+ 			    unsigned int *len, enum insn_type *type,
+ 			    unsigned long *immediate,
+ 			    struct list_head *ops_list)
+ {
++	const struct elf *elf = file->elf;
+ 	struct insn insn;
+ 	int x86_64, sign;
+ 	unsigned char op1, op2, rex = 0, rex_b = 0, rex_r = 0, rex_w = 0,
+@@ -469,6 +471,32 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 		*type = INSN_RETURN;
+ 		break;
+ 
++	case 0xc7: /* mov imm, r/m */
++		if (insn.length == 3+4+4 && !strcmp(sec->name, ".init.text")) {
++//		if (rex == 48 && modrm == 0x05) { /* movq $imm32, disp32(%rip) */
++			struct reloc *imm, *disp;
++			struct symbol *func;
++
++			imm = find_reloc_by_dest(elf, (void *)sec, offset+3);
++			disp = find_reloc_by_dest(elf, (void *)sec, offset+7);
++
++			if (imm && !strcmp(imm->sym->name, "pv_ops")) {
++				int idx = (imm->addend + sizeof(void *)) / sizeof(void *);
++
++				func = disp->sym;
++				if (disp->sym->type == STT_SECTION) {
++					func = find_symbol_by_offset(disp->sym->sec, disp->addend);
++					if (!func) {
++						WARN("FAIL %s+%d", disp->sym->name, disp->addend);
++						return -1;
++					}
++				}
++
++				file_pv_add(file, idx, func);
++			}
++		}
++		break;
++
+ 	case 0xcf: /* iret */
+ 		/*
+ 		 * Handle sync_core(), which has an IRET to self.
+diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
+index 7a44174967b5..1109dd69f953 100644
+--- a/tools/objtool/builtin-check.c
++++ b/tools/objtool/builtin-check.c
+@@ -40,18 +40,10 @@ const struct option check_options[] = {
+ 
+ int cmd_check(int argc, const char **argv)
+ {
+-	const char *objname, *s;
+-
+ 	argc = parse_options(argc, argv, check_options, check_usage, 0);
+ 
+ 	if (argc != 1)
+ 		usage_with_options(check_usage, check_options);
+ 
+-	objname = argv[0];
+-
+-	s = strstr(objname, "vmlinux.o");
+-	if (s && !s[9])
+-		vmlinux = true;
+-
+-	return check(objname, false);
++	return check(argv[0], false);
+ }
+diff --git a/tools/objtool/builtin-orc.c b/tools/objtool/builtin-orc.c
+index b1dfe2007962..acb5d3d63c3f 100644
+--- a/tools/objtool/builtin-orc.c
++++ b/tools/objtool/builtin-orc.c
+@@ -24,8 +24,6 @@ static const char *orc_usage[] = {
+ 
+ int cmd_orc(int argc, const char **argv)
+ {
+-	const char *objname;
+-
+ 	argc--; argv++;
+ 	if (argc <= 0)
+ 		usage_with_options(orc_usage, check_options);
+@@ -35,18 +33,14 @@ int cmd_orc(int argc, const char **argv)
+ 		if (argc != 1)
+ 			usage_with_options(orc_usage, check_options);
+ 
+-		objname = argv[0];
+-
+-		return check(objname, true);
++		return check(argv[0], true);
+ 	}
+ 
+ 	if (!strcmp(argv[0], "dump")) {
+ 		if (argc != 2)
+ 			usage_with_options(orc_usage, check_options);
+ 
+-		objname = argv[1];
+-
+-		return orc_dump(objname);
++		return orc_dump(argv[1]);
+ 	}
+ 
+ 	usage_with_options(orc_usage, check_options);
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e034a8f24f46..1aa2d7e4eccd 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -296,7 +296,7 @@ static int decode_instructions(struct objtool_file *file)
+ 			insn->sec = sec;
+ 			insn->offset = offset;
+ 
+-			ret = arch_decode_instruction(file->elf, sec, offset,
++			ret = arch_decode_instruction(file, sec, offset,
+ 						      sec->len - offset,
+ 						      &insn->len, &insn->type,
+ 						      &insn->immediate,
+@@ -334,6 +334,47 @@ static int decode_instructions(struct objtool_file *file)
+ 	return ret;
+ }
+ 
++/*
++ * Read the pv_ops[] .data table to find the static initialized values.
++ */
++static int add_pv_ops(struct objtool_file *file)
++{
++	unsigned long off, end;
++	struct symbol *sym;
++	int idx;
++
++	if (!vmlinux)
++		return 0;
++
++	sym = find_symbol_by_name(file->elf, "pv_ops");
++	if (!sym)
++		return 0;
++
++	off = sym->offset;
++	end = off + sym->len;
++	for (;;) {
++		struct reloc *rel = find_reloc_by_dest_range(file->elf, sym->sec, off, end - off);
++		struct symbol *func;
++
++		if (!rel)
++			break;
++
++		func = rel->sym;
++		if (func->type == STT_SECTION)
++			func = find_symbol_by_offset(rel->sym->sec, rel->addend);
++
++		idx = (rel->offset - sym->offset) / sizeof(unsigned long);
++
++		file_pv_add(file, idx, func);
++
++		off = rel->offset + 1;
++		if (off > end)
++			break;
++	}
++
++	return 0;
++}
++
+ static struct instruction *find_last_insn(struct objtool_file *file,
+ 					  struct section *sec)
+ {
+@@ -1548,16 +1589,54 @@ static void mark_rodata(struct objtool_file *file)
+ 	file->rodata = found;
+ }
+ 
++/* 
++ * allocate and initialize objtool_file::pv_ops based on the presence and size
++ * of the 'pv_ops' symbol
++ */
++static int init_pv_ops(struct objtool_file *file)
++{
++	struct symbol *sym;
++	int idx, nr;
++
++	if (!vmlinux)
++		return 0;
++
++	file->pv_ops = NULL;
++
++	sym = find_symbol_by_name(file->elf, "pv_ops");
++	if (!sym)
++		return 0;
++
++	nr = sym->len / sizeof(unsigned long);
++	file->pv_ops = calloc(sizeof(struct pv_state), nr);
++	if (!file->pv_ops)
++		return -1;
++
++	for (idx = 0; idx < nr; idx++) {
++		INIT_LIST_HEAD(&file->pv_ops[idx].targets);
++	}
++
++	return 0;
++}
++
+ static int decode_sections(struct objtool_file *file)
+ {
+ 	int ret;
+ 
+ 	mark_rodata(file);
+ 
++	ret = init_pv_ops(file);
++	if (ret)
++		return ret;
++
+ 	ret = decode_instructions(file);
+ 	if (ret)
+ 		return ret;
+ 
++	ret = add_pv_ops(file);
++	if (ret)
++		return ret;
++
+ 	ret = add_dead_ends(file);
+ 	if (ret)
+ 		return ret;
+@@ -2209,14 +2288,41 @@ static inline const char *call_dest_name(struct instruction *insn)
+ 	return "{dynamic}";
+ }
+ 
+-static inline bool noinstr_call_dest(struct symbol *func)
++static inline bool noinstr_call_dest(struct objtool_file *file, struct instruction *insn, struct symbol *func)
+ {
+ 	/*
+ 	 * We can't deal with indirect function calls at present;
+ 	 * assume they're instrumented.
+ 	 */
+-	if (!func)
++	if (!func) {
++		/*
++		 * Special case: callq *pv_ops+disp
++		 */
++		struct reloc *rel = find_reloc_by_dest_range(file->elf, insn->sec, insn->offset, insn->len);
++
++		if (rel && !strcmp(rel->sym->name, "pv_ops")) {
++			int idx = rel->addend / sizeof(void *);
++
++			WARN_FUNC("call pv_ops[%d] from noinstr", insn->sec, insn->offset, idx);
++
++			if (!file->pv_ops[idx].clean) {
++				struct symbol *target;
++
++				list_for_each_entry(target, &file->pv_ops[idx].targets, pv_target) {
++					if (!target->sec->noinstr) {
++						WARN("pv_op[%d]: %s", idx, target->name);
++						return false;
++					}
++				}
++
++				file->pv_ops[idx].clean = true;
++			}
++
++			return true; /* assume for now; warn later */
++		}
++
+ 		return false;
++	}
+ 
+ 	/*
+ 	 * If the symbol is from a noinstr section; we good.
+@@ -2235,10 +2341,10 @@ static inline bool noinstr_call_dest(struct symbol *func)
+ 	return false;
+ }
+ 
+-static int validate_call(struct instruction *insn, struct insn_state *state)
++static int validate_call(struct objtool_file *file, struct instruction *insn, struct insn_state *state)
+ {
+ 	if (state->noinstr && state->instr <= 0 &&
+-	    !noinstr_call_dest(insn->call_dest)) {
++	    !noinstr_call_dest(file, insn, insn->call_dest)) {
+ 		WARN_FUNC("call to %s() leaves .noinstr.text section",
+ 				insn->sec, insn->offset, call_dest_name(insn));
+ 		return 1;
+@@ -2259,7 +2365,7 @@ static int validate_call(struct instruction *insn, struct insn_state *state)
+ 	return 0;
+ }
+ 
+-static int validate_sibling_call(struct instruction *insn, struct insn_state *state)
++static int validate_sibling_call(struct objtool_file *file, struct instruction *insn, struct insn_state *state)
+ {
+ 	if (has_modified_stack_frame(insn, state)) {
+ 		WARN_FUNC("sibling call from callable instruction with modified stack frame",
+@@ -2267,7 +2373,7 @@ static int validate_sibling_call(struct instruction *insn, struct insn_state *st
+ 		return 1;
+ 	}
+ 
+-	return validate_call(insn, state);
++	return validate_call(file, insn, state);
+ }
+ 
+ static int validate_return(struct symbol *func, struct instruction *insn, struct insn_state *state)
+@@ -2418,7 +2524,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 
+ 		case INSN_CALL:
+ 		case INSN_CALL_DYNAMIC:
+-			ret = validate_call(insn, &state);
++			ret = validate_call(file, insn, &state);
+ 			if (ret)
+ 				return ret;
+ 
+@@ -2437,7 +2543,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 		case INSN_JUMP_CONDITIONAL:
+ 		case INSN_JUMP_UNCONDITIONAL:
+ 			if (func && is_sibling_call(insn)) {
+-				ret = validate_sibling_call(insn, &state);
++				ret = validate_sibling_call(file, insn, &state);
+ 				if (ret)
+ 					return ret;
+ 
+@@ -2459,7 +2565,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 		case INSN_JUMP_DYNAMIC:
+ 		case INSN_JUMP_DYNAMIC_CONDITIONAL:
+ 			if (func && is_sibling_call(insn)) {
+-				ret = validate_sibling_call(insn, &state);
++				ret = validate_sibling_call(file, insn, &state);
+ 				if (ret)
+ 					return ret;
+ 			}
+diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
+index 6cc80a075166..f6d9cb90b976 100644
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -56,6 +56,7 @@ struct symbol {
+ 	unsigned int len;
+ 	struct symbol *pfunc, *cfunc, *alias;
+ 	bool uaccess_safe;
++	struct list_head pv_target;
+ };
+ 
+ struct reloc {
+diff --git a/tools/objtool/objtool.c b/tools/objtool/objtool.c
+index 58fdda510653..f7d435f00ab3 100644
+--- a/tools/objtool/objtool.c
++++ b/tools/objtool/objtool.c
+@@ -21,7 +21,9 @@
+ #include <subcmd/pager.h>
+ #include <linux/kernel.h>
+ 
++#include "warn.h"
+ #include "builtin.h"
++#include "objtool.h"
+ 
+ struct cmd_struct {
+ 	const char *name;
+@@ -122,3 +124,47 @@ int main(int argc, const char **argv)
+ 
+ 	return 0;
+ }
++
++void file_pv_add(struct objtool_file *file, int idx, struct symbol *func)
++{
++	if (!vmlinux)
++		return;
++
++	if (!file->pv_ops) {
++		WARN("paravirt confused\n");
++		return;
++	}
++
++	/*
++	 * These functions will be patched into native code,
++	 * see paravirt_patch_default().
++	 */
++	if (!strcmp(func->name, "_paravirt_nop") ||
++	    !strcmp(func->name, "_paravirt_ident_64"))
++		return;
++
++//	WARN("pv_ops[%d]: = %s", idx, func->name);
++
++	/*
++	 * These functions will be patched into native code,
++	 * see native_patch().
++	 */
++	if (!strcmp(func->name, "native_restore_fl") ||
++	    !strcmp(func->name, "native_save_fl") ||
++	    !strcmp(func->name, "native_irq_disable") ||
++	    !strcmp(func->name, "native_irq_enable") ||
++	    !strcmp(func->name, "native_read_cr2") ||
++	    !strcmp(func->name, "__native_read_cr3") ||
++	    !strcmp(func->name, "native_write_cr3") ||
++	    !strcmp(func->name, "native_usergs_sysret64") ||
++	    !strcmp(func->name, "native_swapgs") ||
++	    !strcmp(func->name, "native_wbinvd") ||
++	    !strcmp(func->name, "__native_queued_spin_unlock") ||
++	    !strcmp(func->name, "__native_vcpu_is_preempted"))
++		return;
++
++
++	list_add(&func->pv_target, &file->pv_ops[idx].targets);
++	file->pv_ops[idx].clean = false;
++}
++
+diff --git a/tools/objtool/objtool.h b/tools/objtool/objtool.h
+index 528028a66816..73f4087c286e 100644
+--- a/tools/objtool/objtool.h
++++ b/tools/objtool/objtool.h
+@@ -12,13 +12,22 @@
+ 
+ #include "elf.h"
+ 
++struct pv_state {
++	bool clean;
++	struct list_head targets;
++};
++
+ struct objtool_file {
+ 	struct elf *elf;
+ 	struct list_head insn_list;
+ 	DECLARE_HASHTABLE(insn_hash, 20);
+ 	bool ignore_unreachables, c_file, hints, rodata;
++
++	struct pv_state *pv_ops;
+ };
+ 
++void file_pv_add(struct objtool_file *file, int idx, struct symbol *func);
++
+ int check(const char *objname, bool orc);
+ int orc_dump(const char *objname);
+ int create_orc(struct objtool_file *file);
