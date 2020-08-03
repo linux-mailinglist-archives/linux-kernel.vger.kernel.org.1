@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B278723AFA3
+	by mail.lfdr.de (Postfix) with ESMTP id 4668823AFA2
 	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 23:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729139AbgHCVZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 17:25:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46848 "EHLO mail.kernel.org"
+        id S1729121AbgHCVZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 17:25:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728649AbgHCVZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 17:25:04 -0400
-Subject: Re: [GIT PULL] remove unicore32 support
+        id S1729079AbgHCVZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 17:25:05 -0400
+Subject: Re: [GIT PULL] arm64 and cross-arch updates for 5.9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1596489904;
-        bh=Y/kU5G6GC8hZ7UbZFteO6xnI6EZqch48cxo86BjBqsc=;
+        bh=fAVyjeUgL3NSO49K5+SGMRNtb0Par096qpxi5HNRtII=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Hbx28XB9ZvVVMThVqKmQO9yTNF7/U+6H2cNuMf3yB4zFPjc+lUk039cBe8OTYPKIz
-         5rByEVA8B8JfLTvr2gO0gOWhR7+teLNLDgZ3/eQdFobmozy0r7m8e+X7TEl6GhHVqZ
-         WJ2j0Q0N0tICTYhjy3xwjcNvqf/RuTFsoCNsvdas=
+        b=nM0kUN7+qdXcOMQPfuax33BlTmD4bTHfPj+0lYA9hIJU8/bIzwAcxr+YQUZGykSVf
+         aDmKeSvXGnoym2+5w8Cz6y0mZ7zcDlM2mmHshRIyoooesuP7+szx/E4oHgn0jWQRHn
+         msN+bAOosfvbYGyRcqFpX9vC+VmrnfY2kmvCjg7c=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200803093939.GA8243@kernel.org>
-References: <20200803093939.GA8243@kernel.org>
+In-Reply-To: <20200803185347.21925-1-catalin.marinas@arm.com>
+References: <20200803185347.21925-1-catalin.marinas@arm.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200803093939.GA8243@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/
- tags/rm-unicore32
-X-PR-Tracked-Commit-Id: 3346dd99fb4cd174fdbfb68dc62cd109e4323f0f
+X-PR-Tracked-Message-Id: <20200803185347.21925-1-catalin.marinas@arm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-upstream
+X-PR-Tracked-Commit-Id: 0e4cd9f2654915be8d09a1bd1b405ce5426e64c4
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 05119217a9bd199c4b8b12c01f86df09108b109b
-Message-Id: <159648990386.7765.5540573768023159678.pr-tracker-bot@kernel.org>
-Date:   Mon, 03 Aug 2020 21:25:03 +0000
-To:     Mike Rapoport <rppt@kernel.org>
+X-PR-Merge-Commit-Id: 145ff1ec090dce9beb5a9590b5dc288e7bb2e65d
+Message-Id: <159648990477.7765.17056915504307617619.pr-tracker-bot@kernel.org>
+Date:   Mon, 03 Aug 2020 21:25:04 +0000
+To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guan Xuetao <gxt@pku.edu.cn>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 3 Aug 2020 12:39:39 +0300:
+The pull request you sent on Mon,  3 Aug 2020 19:53:47 +0100:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/ tags/rm-unicore32
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-upstream
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/05119217a9bd199c4b8b12c01f86df09108b109b
+https://git.kernel.org/torvalds/c/145ff1ec090dce9beb5a9590b5dc288e7bb2e65d
 
 Thank you!
 
