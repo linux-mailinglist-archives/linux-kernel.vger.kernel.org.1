@@ -2,122 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECF123A534
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B9823A590
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729534AbgHCMeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729518AbgHCMeC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:34:02 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE83BC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 05:34:02 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id y206so7739190pfb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 05:34:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uM2vZnd6apiHVlprtfwpHKfrja9VsUva5BQDdDFeOqI=;
-        b=GZA0wsa4JHDCBaPz1RKHDehOq/1VUdU66+kj/avxY9pSBZ6SwPyRxoTRf5xwNIZIap
-         Ry3e6JKGWp9kAAQF5HcIef+9j0cmFJ06CDwK2r/m0IsFyh7f2ouyt+pN7gdh+y6SH0xo
-         Ko0Vr7zZPTLwXo51JIYczfh6Oy22JldW2lce4JGo2BKa10FR6HcoQ8o/r/rFQ5MJI8qV
-         NaK+vvZ2Dxdo+fEHfONbFc0jAppOuNd4/7toRnGO17uUxUEtvunzAM8N/NvGAZtfO13/
-         kY5EbJIF4hu0u2C9CDsgMd5p4ScqYIdwaplaRue3snb9wtpUtoUiBYljOtaPHQ2smzDQ
-         WQaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uM2vZnd6apiHVlprtfwpHKfrja9VsUva5BQDdDFeOqI=;
-        b=YDc3eciZYB9voWg78JnSmM2l6aO5Ikxwe/w2NRvUjYNMxESJrA2Q6PFBRhEZO1j1Gl
-         8BsCjygkSF4Kc1VhbI1wINdvRCyyAo3JrcHRfK9Przw5ufZIBNgO1Agrx6pIkc/hTggu
-         60LkDrj6yVq9Akb+JlOoTjbERmHyq3rnVdm2KRTfTNjnNmHT8nYO2tRXAiUTZoiheea9
-         T1Eh7vVPQ/auc6UAQnZAaHr0Cp3YdNVnZIvzCjpHiiuBFV36brOZurMk3zi136Iyu1Hv
-         hddSd9AYZOd1B5GbbL+89v6cxlPvsXTpY68r3fcaiqLwX6LeQfnpPpXiB42Lud2fm3Et
-         2mdQ==
-X-Gm-Message-State: AOAM530Uh/3YKDjxumDDS7oEMMOI6RwjEr1cJ3JdnoOgiKtto8egzN3D
-        BbQ1qBW74h22CxemAJov+zbfBhyx
-X-Google-Smtp-Source: ABdhPJyaViM3LU7p5/mxDQhYnuEqgP2PPPQDiqH/iqONh4OFFNM4c3G1wP1TLHilRKlev3rO9g1xUQ==
-X-Received: by 2002:aa7:94b5:: with SMTP id a21mr15523274pfl.237.1596458042235;
-        Mon, 03 Aug 2020 05:34:02 -0700 (PDT)
-Received: from [0.0.0.0] ([101.32.42.91])
-        by smtp.gmail.com with ESMTPSA id r202sm9649046pfc.127.2020.08.03.05.33.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Aug 2020 05:34:01 -0700 (PDT)
-Subject: Re: [PATCH] sched/fair: Fix the logic about active_balance in
- load_balance()
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de
-Cc:     linux-kernel@vger.kernel.org
-References: <20200802045141.130533-1-arch0.zheng@gmail.com>
- <c9afe264-d453-1676-77c9-b29db3481107@arm.com>
-From:   Qi Zheng <arch0.zheng@gmail.com>
-Message-ID: <9b584a64-b419-e7ea-249e-6fed9db804c0@gmail.com>
-Date:   Mon, 3 Aug 2020 20:33:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729293AbgHCMiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:38:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729546AbgHCMeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:34:23 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87D8F2054F;
+        Mon,  3 Aug 2020 12:34:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596458062;
+        bh=CqDYfczcR1q266t02Vom+AVTSJNakCMLYWVNuU1vHTA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DoQrCL+oQCXUMv4UKHkiv7SrlmHJFp7bkkGYydn8kgA9zmNHwN+3sCaNhxM/mtaQn
+         kycP4nEREMBGCXRKiZeLqQkpcU8pqkNmy89F9WtkczF2OcXF7oHOXwc7UD9BPnzDTq
+         xQuDosOGp5YEGSCOttpZaFhbnomb7SYiDcPX76lY=
+Date:   Mon, 3 Aug 2020 13:34:00 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jan Stancek <jstancek@redhat.com>
+Cc:     skhan@linuxfoundation.org, ltp@lists.linux.it,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests: vdso: hash entry size on alpha,s390x is 8
+ bytes
+Message-ID: <20200803123400.GE4502@sirena.org.uk>
+References: <9927ed18c642db002e43afe5e36fb9c18c4f9495.1594811090.git.jstancek@redhat.com>
+ <1881588710.5797015.1596457102422.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <c9afe264-d453-1676-77c9-b29db3481107@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4Epv4kl9IRBfg3rk"
+Content-Disposition: inline
+In-Reply-To: <1881588710.5797015.1596457102422.JavaMail.zimbra@redhat.com>
+X-Cookie: They just buzzed and buzzed...buzzed.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dietmar,
 
-I understand, thank you for your review and very detailed explanation.
+--4Epv4kl9IRBfg3rk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yours,
-Qi Zheng
+On Mon, Aug 03, 2020 at 08:18:22AM -0400, Jan Stancek wrote:
 
-On 2020/8/3 下午3:36, Dietmar Eggemann wrote:
-> On 02/08/2020 06:51, Qi Zheng wrote:
->> I think the unbalance scenario here should be that we need to
->> do active balance but it is not actually done. So fix it.
->>
->> Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
->> ---
->>   kernel/sched/fair.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 2ba8f230feb9..6d8c53718b67 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -9710,7 +9710,7 @@ static int load_balance(int this_cpu, struct rq *this_rq,
->>   	} else
->>   		sd->nr_balance_failed = 0;
->>   
->> -	if (likely(!active_balance) || voluntary_active_balance(&env)) {
->> +	if (likely(!active_balance) && voluntary_active_balance(&env)) {
->>   		/* We were unbalanced, so reset the balancing interval */
->>   		sd->balance_interval = sd->min_interval;
->>   	} else {
->>
-> 
-> Active balance is potentially already been done when we reach this code.
-> 
-> See 'if (need_active_balance(&env))' and 'if (!busiest->active_balance)'
-> further up.
-> 
-> Here we only reset sd->balance_interval in case:
-> (A) the last load balance wasn't an active one
-> (B) the reason for the active load balance was:
->      (1) asym packing
->      (2) capacity of src_cpu is reduced compared to the one of dst_cpu
->      (3) misfit handling
-> 
-> (B) is done to not unnecessarily increase of balance interval, see
-> commit 46a745d90585 ("sched/fair: Fix unnecessary increase of balance
-> interval").
-> 
+> > Do similar check in parse_vdso.c and treat hash entries as double word.
+
+> Ping, any thoughts about the issue or patch?
+
+I'd suggest contacting the authors of that code.
+
+--4Epv4kl9IRBfg3rk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8oBDgACgkQJNaLcl1U
+h9CCPwf+NIw+rcyLIhnRorwowwqEVgX/nqjDNZIycdnQe86dOazM/FkHhE8xFP8X
+ehM0B/EoDmMfXz/AxXWt9hwAH8O5jZyjpLg6M3onsS6uzfwoJloTsAtyahtjidQG
+7jDlMXEwhomOQRr7N+KQe+4LArk5Td2AMpA7luEpE/WMtNXjE6slnQJke+GIBeSc
+SVOz6ID/cv1n1O+c+LV++2xvsupajfPhINLHp9tmholkiy9k+02zkph6SXra0tSv
+cfg3Q+IdGq+yr9KAYpj6+yFcG10X5gQmgQjhbe6ZiLdGOV2IouQc5q1n3+ceSHTl
+AVY1i+c9WXnihPbxDrKB72Uqdb7MWQ==
+=7zqN
+-----END PGP SIGNATURE-----
+
+--4Epv4kl9IRBfg3rk--
