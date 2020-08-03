@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0555623A042
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 09:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CC623A044
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 09:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgHCH1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 03:27:35 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:45107 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgHCH1e (ORCPT
+        id S1726239AbgHCH2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 03:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbgHCH2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 03:27:34 -0400
-Received: by mail-wr1-f67.google.com with SMTP id z18so29617470wrm.12;
-        Mon, 03 Aug 2020 00:27:33 -0700 (PDT)
+        Mon, 3 Aug 2020 03:28:06 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E838DC06174A;
+        Mon,  3 Aug 2020 00:28:05 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g33so1973190pgb.4;
+        Mon, 03 Aug 2020 00:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=N8zgir2t6iz+UzxYd4zks8afHq+WgZA6FxDNrIQU9Os=;
+        b=Ayp/5J2QerO98j5FTZXgOsm/l7P13p1jZTmxOiPYzilbU3iF4mOJ963AdohSAxIarp
+         tUpf77dm/pgjeBVnKt6kOkQBcjo/qMHVf+ZHRblG6+4HGgns4nIWUNGdKApPCrZWQPNq
+         1MQYTS24sK9qMyflFSOtYPSjMKUMEoOFm33ZQE7B//nJLcZic9M15NCMfEUjWPLJ1K2v
+         c1BCs8Sn1BhbeXWkDS6/160JlKVphA2DNOPnNPW41A+lkJ1/GXzMctWeNtxiXtbH7ML+
+         T/RgNadtDGFnFDLospGXMcXKtPxDjezWxM0PtOB2qNPlC5bwQF5b5Z/aNbEyq3c1tJSL
+         V0Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bk+w2IXrWrlLfK9eisE+wLzLklGKFWdlPBnk6Rh8O64=;
-        b=ZM96H6azdKk5z1l5Dj4VganJCVH4lFwksN+3jB1EQ54QYwQB0GbBTl24ZN//+MTYw9
-         /W+9Gn4pDAAUPh45JLSag7maksH9HShAZkIOGIBlfNuQ2hyZlgW7KW/F1FCbdhqHCAnV
-         u2HxCRjCwHY6/GJ01sYXLuZJdFwI8ZK5vRHpDClJpiRikbU/QxfzbPfE8MzLdQ+KSg/B
-         r+ocz6GhvsWK5fylI2NbnN40x8e/aE2ikovR2mJK0pZ+UxjmdcEJjt1MKU03SgER1jHE
-         CjPjwUqOsnklm5DjXAclUbHFwp4FZfxw0vDyYGYiZa9tvrLo7IIDuvqD5PkBZ3vdIjG4
-         DL3Q==
-X-Gm-Message-State: AOAM532wEzDw6eGW6KKi75j+DPJzrsQDWcv01PyjhlceOplslfkaGvTX
-        BBAd54WCiC37YTyEfRa+MP9zbOUB
-X-Google-Smtp-Source: ABdhPJwwT7go5S2QLv9PqWVF1Q/fRxRD0anTRKbY917MFHKIx4ANFqMKdEebkep2UNsdw+uif1yInA==
-X-Received: by 2002:adf:ec45:: with SMTP id w5mr14068689wrn.415.1596439652366;
-        Mon, 03 Aug 2020 00:27:32 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:6dac:e394:c378:553e? ([2601:647:4802:9070:6dac:e394:c378:553e])
-        by smtp.gmail.com with ESMTPSA id l81sm22161672wmf.4.2020.08.03.00.27.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Aug 2020 00:27:31 -0700 (PDT)
-Subject: Re: [IB/srpt] c804af2c1d: last_state.test.blktests.exit_code.143
-To:     Yamin Friedman <yaminf@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        kernel test robot <rong.a.chen@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Max Gurtovoy <maxg@mellanox.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        linux-rdma@vger.kernel.org, lkp@lists.01.org
-References: <20200802060925.GW23458@shao2-debian>
- <f8ef3284-4646-94d9-7eea-14ac0873b03b@acm.org>
- <ed6002b6-cd0c-55c5-c5a5-9c974a476a95@mellanox.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <0c42aeb4-23a5-b9d5-bc17-ef58a04db8e8@grimberg.me>
-Date:   Mon, 3 Aug 2020 00:27:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=N8zgir2t6iz+UzxYd4zks8afHq+WgZA6FxDNrIQU9Os=;
+        b=W67fiU9PROW+FjhyOt6Sh4skl/cp6TKYMTDj00xIBD+UpMIB/ui+9+zQO0DkcYfdrE
+         9v52csPf+OuDsmCZyM0DjkA4ljD9J0YJAYGHyYYwp6UUsj9eQAcVqMXoJl4C3ys0bGNL
+         02ZLHEAlfbE+z3i8iJxjZkizrDFCdjQctgcpGESHhsCBsZDHhAsB02NOBEYKW8KUs6Yj
+         CjDpr+foDMVtoigvB4oSp2Uvit2Enoc7u80HTTXU0LYocysqszRw2F9UpulQ1nj+qXOw
+         RyEitlaiyNCPR8ed/pZ4scnewUcfsdHfCTRxLQtMYAFX7Op0S5LmcF/+p89fjjkNAyKK
+         3ToA==
+X-Gm-Message-State: AOAM5320Q5QAstdG2cUay8ggmJzb+O+WTpcfl665mUpmXj5CG3qCueup
+        tIl07qB8KdtVJdQVhizTFj1esLs+BA/FnhdFsqw=
+X-Google-Smtp-Source: ABdhPJxh35hxOxLvbxYM11D1X/DCFK3iTFLAPLT06Tw2ajS2oTu5VgSzssa5npOEGiWLd9bsOX5S0j8EHiIUrBhS230=
+X-Received: by 2002:a62:7b4e:: with SMTP id w75mr14134631pfc.130.1596439685437;
+ Mon, 03 Aug 2020 00:28:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ed6002b6-cd0c-55c5-c5a5-9c974a476a95@mellanox.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1908555.IiAGLGrh1Z@kreacher> <d1e90fa3-d978-90ae-a015-288139be3450@gmx.com>
+ <CAHp75VcbSR1NSSPemg5dMyfp00uC4wkktVjKSFx4sjSgFC-_vQ@mail.gmail.com>
+In-Reply-To: <CAHp75VcbSR1NSSPemg5dMyfp00uC4wkktVjKSFx4sjSgFC-_vQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 3 Aug 2020 10:27:50 +0300
+Message-ID: <CAHp75Ve0AozEbB_kc+S4qaZJxJJWf20toDK-T2QHYi1o2hfJBg@mail.gmail.com>
+Subject: Re: [PATCH] kobject: Avoid premature parent object freeing in kobject_cleanup()
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Guenter Roeck <guenter@roeck-us.net>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 3, 2020 at 10:25 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Mon, Aug 3, 2020 at 9:47 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> > On 2020/6/5 =E4=B8=8A=E5=8D=881:46, Rafael J. Wysocki wrote:
 
->>> Greeting,
->>>
->>> FYI, we noticed the following commit (built with gcc-9):
->>>
->>> commit: c804af2c1d3152c0cf877eeb50d60c2d49ac0cf0 ("IB/srpt: use new 
->>> shared CQ mechanism")
->>> https://git.kernel.org/cgit/linux/kernel/git/rdma/rdma.git for-next
->>>
->>>
->>> in testcase: blktests
->>> with following parameters:
->>>
->>>     test: srp-group1
->>>     ucode: 0x21
->>>
->>>
->>>
->>> on test machine: 4 threads Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz 
->>> with 4G memory
->>>
->>> caused below changes (please refer to attached dmesg/kmsg for entire 
->>> log/backtrace):
->>>
->>>
->>>
->>>
->>> If you fix the issue, kindly add following tag
->>> Reported-by: kernel test robot <rong.a.chen@intel.com>
->>>
->>>
->>> user  :notice: [   44.688140] 2020-08-01 16:10:22 ./check srp/001 
->>> srp/002 srp/003 srp/004 srp/005 srp/006 srp/007 srp/008 srp/009 
->>> srp/010 srp/011 srp/012 srp/013 srp/015
->>> user  :notice: [   44.706657] srp/001 (Create and remove LUNs)
->>> user  :notice: [   44.718405] srp/001 (Create and remove 
->>> LUNs)                             [passed]
->>> user  :notice: [   44.729902]     runtime  ...  1.972s
->>> user  :notice: [   99.038748] IPMI BMC is not supported on this 
->>> machine, skip bmc-watchdog setup!
->>> user  :notice: [ 3699.039790] Sat Aug  1 17:11:22 UTC 2020 detected 
->>> soft_timeout
->>> user  :notice: [ 3699.060341] kill 960 /usr/bin/time -v -o 
->>> /tmp/lkp/blktests.time /lkp/lkp/src/tests/blktests
->> Yamin and Max, can you take a look at this? The SRP tests from the
->> blktests repository pass reliably with kernel version v5.7 and before.
->> With label next-20200731 from linux-next however that test triggers the
->> following hang:
-> 
-> I will look into it.
+> > > +void kobject_del(struct kobject *kobj)
+> > > +{
+> > > +     struct kobject *parent =3D kobj->parent;
+> > > +
+> > > +     __kobject_del(kobj);
+> > > +     kobject_put(parent);
+> >
+> > Could you please add an extra check on kobj before accessing kobj->pare=
+nt?
+>
+> I do not understand. Where do we access it?
+> kobject_put() is NULL-aware.
 
-FWIW, I ran into this as well with nvme-rdma, but it also reproduces
-when I revert the shared CQ patch from nvme-rdma. Another data point
-is that my tests passes with siw.
+Ah, I see, now.
+
+Should be something like
+    struct kobject *parent =3D kobj ? kobj->parent : NULL;
+
+> > This patch in fact removes the ability to call kobject_del() on NULL
+> > pointer while not cause anything wrong.
+> >
+> > I know this is not a big deal, but such behavior change has already
+> > caused some problem for the incoming btrfs code.
+> > (Now I feels guilty just by looking into the old
+> > kobject_del()/kobject_put() and utilize that feature in btrfs)
+> >
+> > Since the old kobject_del() accepts NULL pointer intentionally, it woul=
+d
+> > be much better to keep such behavior.
+
+
+--=20
+With Best Regards,
+Andy Shevchenko
