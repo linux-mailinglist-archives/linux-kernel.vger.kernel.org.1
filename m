@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95524239D15
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 02:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949D2239D1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 02:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgHCAko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 2 Aug 2020 20:40:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9314 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727087AbgHCAko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 2 Aug 2020 20:40:44 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id AE693715285F6204449D;
-        Mon,  3 Aug 2020 08:40:38 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 3 Aug 2020 08:40:30 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>
-Subject: [PATCH drm/hisilicon v2 3/3] drm/hisilicon: Rename variables to represent the correct meaning
-Date:   Mon, 3 Aug 2020 08:38:34 +0800
-Message-ID: <1596415114-21175-4-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596415114-21175-1-git-send-email-tiantao6@hisilicon.com>
-References: <1596415114-21175-1-git-send-email-tiantao6@hisilicon.com>
+        id S1727995AbgHCAtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 2 Aug 2020 20:49:08 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:47538 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727902AbgHCAtF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 2 Aug 2020 20:49:05 -0400
+Received: by mail-io1-f69.google.com with SMTP id 18so2651608ioo.14
+        for <linux-kernel@vger.kernel.org>; Sun, 02 Aug 2020 17:49:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=zjMjCpZHpZC9oX4mSp6lGsDleX+rgZUM4Hc+zQq53tE=;
+        b=lQBk87UF5B1bM1r2YbsM7UzsNXxNtONYL3cnyoig74LwLxRafupKhx18eXE/f3xTMW
+         nooN7dSI+12dHT3dtT043msbGFSxvozo2X6Fj8nDYzS/W8udKJ+nFavYohZQjfilfgg9
+         qrUrVctcrkrgHazDUw3q+d3PFuOn7MsCEZS/lg+x5kT63FEP0cRzSotp/KWmtr7wBmeA
+         wV3LtVQ+nyis806rdbgyexNgOKk1HU8edFuEqXhvJv95ZM65ktH7BfnfEFeGYoNSUakQ
+         IiXexjiORARamHVbgvTz4LhamXX51NCDukxqC4dVYOH4GEpvO/HytM1E0vk+K+FBePOO
+         zIxA==
+X-Gm-Message-State: AOAM533lYmGg1HqGTGcY+h2cOOrHVRvMdU98XrJF+bIg1c/OF6a7FtS8
+        xhvWqF6j9eau0C1QrVzcYX9RvD8VDPXqViJq4sby1r6bex/y
+X-Google-Smtp-Source: ABdhPJx51fMhfJaafxHzZAN2jjWSIrSl/b5CFIul4+GGQOi4s1mKok/hTo4u9c3s4cBgSHZ/wcwXjrq3H3VFwrd210mpw03EVfqe
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a05:6602:15d0:: with SMTP id f16mr168098iow.45.1596415744953;
+ Sun, 02 Aug 2020 17:49:04 -0700 (PDT)
+Date:   Sun, 02 Aug 2020 17:49:04 -0700
+In-Reply-To: <000000000000ab11c505abeb19f5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000064571305abee81ea@google.com>
+Subject: Re: KASAN: use-after-free Write in __sco_sock_close
+From:   syzbot <syzbot+077eca30d3cb7c02b273@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net,
+        devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        johan.hedberg@gmail.com, kaber@trash.net, kadlec@blackhole.kfki.hu,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        marcel@holtmann.org, mchehab@kernel.org, mchehab@s-opensource.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename plane to primary_plane in the structure hibmc_drm_private.
-so it's clear which plane it represents.
+syzbot has bisected this issue to:
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c  | 2 +-
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+commit 43ea43b9d8b27b7acd443ec59319faa3cdb8a616
+Author: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date:   Wed Oct 12 11:21:43 2016 +0000
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-index af24c72..d9062a3 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-@@ -504,7 +504,7 @@ int hibmc_de_init(struct hibmc_drm_private *priv)
- {
- 	struct drm_device *dev = priv->dev;
- 	struct drm_crtc *crtc = &priv->crtc;
--	struct drm_plane *plane = &priv->plane;
-+	struct drm_plane *plane = &priv->primary_plane;
- 	int ret;
- 
- 	ret = drm_universal_plane_init(dev, plane, 1, &hibmc_plane_funcs,
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-index 91ef15c..197485e 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-@@ -28,7 +28,7 @@ struct hibmc_drm_private {
- 
- 	/* drm */
- 	struct drm_device  *dev;
--	struct drm_plane plane;
-+	struct drm_plane primary_plane;
- 	struct drm_crtc crtc;
- 	struct drm_encoder encoder;
- 	struct drm_connector connector;
--- 
-2.7.4
+    [media] radio-bcm2048: don't ignore errors
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1036e6a4900000
+start commit:   ac3a0c84 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1236e6a4900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1436e6a4900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e59ee776d5aa8d55
+dashboard link: https://syzkaller.appspot.com/bug?extid=077eca30d3cb7c02b273
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12cf1904900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d52e14900000
+
+Reported-by: syzbot+077eca30d3cb7c02b273@syzkaller.appspotmail.com
+Fixes: 43ea43b9d8b2 ("[media] radio-bcm2048: don't ignore errors")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
