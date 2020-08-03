@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5194023A352
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 13:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054B923A355
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 13:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgHCLaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 07:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgHCLaO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 07:30:14 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E609C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 04:30:13 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by andre.telenet-ops.be with bizsmtp
-        id AzWA2300S4C55Sk01zWAKr; Mon, 03 Aug 2020 13:30:11 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1k2YfS-0001gG-Qb; Mon, 03 Aug 2020 13:30:10 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1k2YfS-0002db-OM; Mon, 03 Aug 2020 13:30:10 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for 5.9
-Date:   Mon,  3 Aug 2020 13:30:04 +0200
-Message-Id: <20200803113004.10098-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
+        id S1726568AbgHCLbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 07:31:11 -0400
+Received: from elvis.franken.de ([193.175.24.41]:60602 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725945AbgHCLbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 07:31:10 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k2YgO-0003Nm-00; Mon, 03 Aug 2020 13:31:08 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 44A95C0B3D; Mon,  3 Aug 2020 13:30:20 +0200 (CEST)
+Date:   Mon, 3 Aug 2020 13:30:20 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@linux-mips.org,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <linux-mips@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: BMIPS: Disable pref 30 for buggy CPUs
+Message-ID: <20200803113020.GA8958@alpha.franken.de>
+References: <20200731042401.22871-1-f.fainelli@gmail.com>
+ <21ad5472-1287-acba-5604-09f2e633c043@flygoat.com>
+ <46de49ec-cc8b-708a-0cdd-82389b041078@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <46de49ec-cc8b-708a-0cdd-82389b041078@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Hi Linus,
+On Fri, Jul 31, 2020 at 03:49:28PM -0700, Florian Fainelli wrote:
+> On 7/31/20 3:34 AM, Jiaxun Yang wrote:
+> > 
+> > 
+> > 在 2020/7/31 下午12:24, Florian Fainelli 写道:
+> >> Disable pref 30 by utilizing the standard quirk method and matching the
+> >> affected SoCs: 7344, 7346, 7425.
+> >>
+> >> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> >> ---
+> >>   arch/mips/bmips/setup.c | 17 +++++++++++++++++
+> >>   1 file changed, 17 insertions(+)
+> >>
+> >> diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
+> >> index 19308df5f577..df0efea12611 100644
+> >> --- a/arch/mips/bmips/setup.c
+> >> +++ b/arch/mips/bmips/setup.c
+> >> @@ -110,6 +110,20 @@ static void bcm6368_quirks(void)
+> >>       bcm63xx_fixup_cpu1();
+> >>   }
+> >>   +static void bmips5000_pref30_quirk(void)
+> >> +{
+> >> +    __asm__ __volatile__(
+> >> +    "    li    $8, 0x5a455048\n"
+> >> +    "    .word    0x4088b00f\n"    /* mtc0 $8, $22, 15 */
+> >> +    "    nop; nop; nop\n"
+> >> +    "    .word    0x4008b008\n"    /* mfc0 $8, $22, 8 */
+> >> +    /* disable "pref 30" on buggy CPUs */
+> >> +    "    lui    $9, 0x0800\n"
+> >> +    "    or    $8, $9\n"
+> >> +    "    .word    0x4088b008\n"    /* mtc0 $8, $22, 8 */
+> >> +    : : : "$8", "$9");
+> >> +}
+> > Hi,
+> > 
+> > Is there any toolchain issue blocking read_c0_**** family helpers being
+> > used?
+> > 
+> > Use .word looks unreasonable.
+> 
+> Yes, the assembler would be choking on the custom $22 selector, however
 
-The following changes since commit 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68:
+I guess you meant selector 8 and 15. If BMIPS has a 4 bit selector field
+it might be good to do a binutils patch supporting it.
 
-  Linux 5.8-rc3 (2020-06-28 15:00:24 -0700)
+> this patch should not be necessary given that the boot loader (CFE)
+> should have long been updated by now to disable pref 30.
 
-are available in the Git repository at:
+so, should I add it or drop it ?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.9-tag1
+Thomas.
 
-for you to fetch changes up to 382f429bb559fe991b1ece2e5e58c812e28b3ad8:
-
-  m68k: defconfig: Update defconfigs for v5.8-rc3 (2020-07-13 11:41:52 +0200)
-
-----------------------------------------------------------------
-m68k updates for v5.9
-
-  - Several Kbuild improvements,
-  - Several Mac fixes,
-  - Minor cleanups and fixes,
-  - Defconfig updates.
-
-Note that the base is v5.8-rc3, due to late Kconfig changes impacting
-the defconfigs.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Finn Thain (4):
-      m68k: mac: Don't send IOP message until channel is idle
-      m68k: mac: Fix IOP status/control register writes
-      m68k: mac: Don't send uninitialized data in IOP message reply
-      m68k: mac: Improve IOP debug messages
-
-Geert Uytterhoeven (1):
-      m68k: defconfig: Update defconfigs for v5.8-rc3
-
-Gustavo A. R. Silva (1):
-      m68k: Use sizeof_field() helper
-
-Masahiro Yamada (5):
-      m68k: Add arch/m68k/Kbuild
-      m68k: sun3: Descend to prom from arch/m68k/sun3
-      m68k: Optimize cc-option calls for cpuflags-y
-      m68k: Pass -D options to KBUILD_CPPFLAGS instead of KBUILD_{A,C}FLAGS
-      m68k: Use CLEAN_FILES to clean up files
-
-Michael Schmitz (1):
-      m68k: atari: Annotate dummy read in ROM port IO code as __maybe_unused
-
- arch/m68k/Kbuild                     | 19 ++++++++++
- arch/m68k/Makefile                   | 73 ++++++++++++++----------------------
- arch/m68k/configs/amiga_defconfig    |  3 ++
- arch/m68k/configs/apollo_defconfig   |  3 ++
- arch/m68k/configs/atari_defconfig    |  3 ++
- arch/m68k/configs/bvme6000_defconfig |  3 ++
- arch/m68k/configs/hp300_defconfig    |  3 ++
- arch/m68k/configs/mac_defconfig      |  3 ++
- arch/m68k/configs/multi_defconfig    |  3 ++
- arch/m68k/configs/mvme147_defconfig  |  3 ++
- arch/m68k/configs/mvme16x_defconfig  |  3 ++
- arch/m68k/configs/q40_defconfig      |  3 ++
- arch/m68k/configs/sun3_defconfig     |  3 ++
- arch/m68k/configs/sun3x_defconfig    |  3 ++
- arch/m68k/include/asm/raw_io.h       |  6 +--
- arch/m68k/kernel/signal.c            | 32 ++++++++--------
- arch/m68k/mac/iop.c                  | 60 +++++++++++++----------------
- arch/m68k/sun3/Makefile              |  2 +-
- 18 files changed, 129 insertions(+), 99 deletions(-)
- create mode 100644 arch/m68k/Kbuild
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
