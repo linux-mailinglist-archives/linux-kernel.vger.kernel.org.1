@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8803123A554
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D0323A5A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgHCMf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:35:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35990 "EHLO mail.kernel.org"
+        id S1729475AbgHCMkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:40:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729324AbgHCMfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:35:38 -0400
+        id S1728962AbgHCMdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:33:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7EA02076B;
-        Mon,  3 Aug 2020 12:35:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E9882054F;
+        Mon,  3 Aug 2020 12:33:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596458137;
-        bh=32ybCXC9/qg75IqZYFJk1FcIaj1gEf87f5kOjmPLras=;
+        s=default; t=1596457987;
+        bh=pOfsrTcmGvxL4USw2Stgyi30wbEKbO6BwaawdDfIvHU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gw0jpQSGNtEIyYg7D0K+mFHkkCxh63k7sOE2lw+O+eaYS9O8ttIIJhPS7obEzsO8n
-         g/8eJSHBOmNPrv8ZKlM7puykjXjQ57Tgq4HyKP1t6pAA+FWVM0/eTYBdOJrHdmE9XB
-         5sqVDVqx1kEwqTHGOHaHB9dmxB+ZEhwNxMSfibMI=
+        b=Kau+9ZnP3y6tEOXRNU6AgHXxbXMXcgvO1RHZt4e0BispVsf5ie12yJiyJR7PjpDfy
+         +BXad1V/RTeo6UHW2eyXjmrk+fOywgqddTcg3oJSZT5IJozk9cU1MPD5elFyUbE2yH
+         nFXe0KeCWyBuSWCdqstY3KCerQZ8Bgtj4x80uxsY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 22/51] x86/build/lto: Fix truncated .bss with -fdata-sections
-Date:   Mon,  3 Aug 2020 14:20:07 +0200
-Message-Id: <20200803121850.580603967@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 53/56] cxgb4: add missing release on skb in uld_send()
+Date:   Mon,  3 Aug 2020 14:20:08 +0200
+Message-Id: <20200803121852.925404448@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121849.488233135@linuxfoundation.org>
-References: <20200803121849.488233135@linuxfoundation.org>
+In-Reply-To: <20200803121850.306734207@linuxfoundation.org>
+References: <20200803121850.306734207@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,52 +45,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sami Tolvanen <samitolvanen@google.com>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 6a03469a1edc94da52b65478f1e00837add869a3 ]
+[ Upstream commit e6827d1abdc9b061a57d7b7d3019c4e99fabea2f ]
 
-With CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y, we compile the kernel with
--fdata-sections, which also splits the .bss section.
+In the implementation of uld_send(), the skb is consumed on all
+execution paths except one. Release skb when returning NET_XMIT_DROP.
 
-The new section, with a new .bss.* name, which pattern gets missed by the
-main x86 linker script which only expects the '.bss' name. This results
-in the discarding of the second part and a too small, truncated .bss
-section and an unhappy, non-working kernel.
-
-Use the common BSS_MAIN macro in the linker script to properly capture
-and merge all the generated BSS sections.
-
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: http://lkml.kernel.org/r/20190415164956.124067-1-samitolvanen@google.com
-[ Extended the changelog. ]
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/vmlinux.lds.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/chelsio/cxgb4/sge.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index 8d8e33b720b4e..f9f33a168a002 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -352,7 +352,7 @@ SECTIONS
- 	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {
- 		__bss_start = .;
- 		*(.bss..page_aligned)
--		*(.bss)
-+		*(BSS_MAIN)
- 		. = ALIGN(PAGE_SIZE);
- 		__bss_stop = .;
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index 3d4a765e9e61d..7801f2aeeb30e 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -2367,6 +2367,7 @@ static inline int uld_send(struct adapter *adap, struct sk_buff *skb,
+ 	txq_info = adap->sge.uld_txq_info[tx_uld_type];
+ 	if (unlikely(!txq_info)) {
+ 		WARN_ON(true);
++		kfree_skb(skb);
+ 		return NET_XMIT_DROP;
  	}
+ 
 -- 
 2.25.1
 
