@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D9323A4D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FB123A532
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 14:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgHCMaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 08:30:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57640 "EHLO mail.kernel.org"
+        id S1729140AbgHCMeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 08:34:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729077AbgHCMag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:30:36 -0400
+        id S1728802AbgHCMeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:34:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68C802054F;
-        Mon,  3 Aug 2020 12:30:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9B40204EC;
+        Mon,  3 Aug 2020 12:34:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457834;
-        bh=25NRMhky5p8NZeSWlXQ16BfjITFXelalLZidKBhsFJY=;
+        s=default; t=1596458041;
+        bh=Sp098mK9dW4CZGeuDCp6QtJHCUMG3PJjoVI6NAk/A5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1SDmvSxkpQ8HrGGQs76MLnX6wT3B4BVOzPrqO0eG+ZQhyR1gcJkWj4FLQ/XPrqJns
-         0/V0uXMIMHKG98punpWNdJmkzErRmizyGd9Ri2Ig0fJKkHz1f1vLZyyRs2WYwwQW2N
-         EigOes3qUumqeOBY3uAd7Lhz49cuTL+Bp9lRuM58=
+        b=k69ijQjCZSU15JdYb8rvFtBxcAiiLJAfOD9ZXuhzINxg9FE+E2+Li6YctWrFv3c6y
+         An3OFr1E7biQ5qGEVAF0CjUXYnYUqlZ+QqqoiQUCqFr3Qje1jm9Dta9y+od+5vloar
+         37ki7qHxBvA9uiTszFqlTrNAAY6/41BaBEEhzdIk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 5.4 89/90] perf env: Do not return pointers to local variables
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 06/51] ath9k_htc: release allocated buffer if timed out
 Date:   Mon,  3 Aug 2020 14:19:51 +0200
-Message-Id: <20200803121901.890561589@linuxfoundation.org>
+Message-Id: <20200803121849.782993957@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121849.488233135@linuxfoundation.org>
+References: <20200803121849.488233135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,50 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-commit ebcb9464a2ae3a547e97de476575c82ece0e93e2 upstream.
+[ Upstream commit 853acf7caf10b828102d92d05b5c101666a6142b ]
 
-It is possible to return a pointer to a local variable when looking up
-the architecture name for the running system and no normalization is
-done on that value, i.e. we may end up returning the uts.machine local
-variable.
+In htc_config_pipe_credits, htc_setup_complete, and htc_connect_service
+if time out happens, the allocated buffer needs to be released.
+Otherwise there will be memory leak.
 
-While this doesn't happen on most arches, as normalization takes place,
-lets fix this by making that a static variable and optimize it a bit by
-not always running uname(), only the first time.
-
-Noticed in fedora rawhide running with:
-
-  [perfbuilder@a5ff49d6e6e4 ~]$ gcc --version
-  gcc (GCC) 10.0.1 20200216 (Red Hat 10.0.1-0.8)
-
-Reported-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Ben Hutchings <ben@decadent.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/env.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath9k/htc_hst.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -326,11 +326,11 @@ static const char *normalize_arch(char *
+diff --git a/drivers/net/wireless/ath/ath9k/htc_hst.c b/drivers/net/wireless/ath/ath9k/htc_hst.c
+index d2e062eaf5614..f705f0e1cb5be 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_hst.c
++++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+@@ -173,6 +173,7 @@ static int htc_config_pipe_credits(struct htc_target *target)
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC credit config timeout\n");
++		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
  
- const char *perf_env__arch(struct perf_env *env)
- {
--	struct utsname uts;
- 	char *arch_name;
+@@ -208,6 +209,7 @@ static int htc_setup_complete(struct htc_target *target)
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC start timeout\n");
++		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
  
- 	if (!env || !env->arch) { /* Assume local operation */
--		if (uname(&uts) < 0)
-+		static struct utsname uts = { .machine[0] = '\0', };
-+		if (uts.machine[0] == '\0' && uname(&uts) < 0)
- 			return NULL;
- 		arch_name = uts.machine;
- 	} else
+@@ -280,6 +282,7 @@ int htc_connect_service(struct htc_target *target,
+ 	if (!time_left) {
+ 		dev_err(target->dev, "Service connection timeout for: %d\n",
+ 			service_connreq->service_id);
++		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+-- 
+2.25.1
+
 
 
