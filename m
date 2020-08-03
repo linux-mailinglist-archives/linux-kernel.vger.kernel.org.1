@@ -2,324 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14C223AC6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 20:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A8F23AC82
+	for <lists+linux-kernel@lfdr.de>; Mon,  3 Aug 2020 20:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgHCSex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 14:34:53 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:40816 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727951AbgHCSew (ORCPT
+        id S1728790AbgHCShr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 14:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgHCShr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 14:34:52 -0400
-Received: by mail-lj1-f193.google.com with SMTP id 185so30535436ljj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 11:34:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zdMJ/kZbjayYZu6hB78fKbxhGiXLwV0qHCv1i8H0pn8=;
-        b=EkJUa5VokX6/r3A8jqfjOO6D3gV9sD3kVhfChxE1M0V+JZZ+KXI2om/1m88x2JX+v0
-         QiFonV70eUdssTB1z1mjAmYvFSWrUA/8LheyKaHLxtDIyKcLmP5wSeJDZLtpKX6KEV5a
-         DnkhfuAji+K/dxpTrRLQ7Lt8Y/82jznjvWeuZTYL1Az067Qz77y+KYw0mJNpt5CGVPK1
-         eUjp0L4H0y8lm/FS/keQTQ4x0hSNfahFZ0TA5deZz6feuiAX4/L+unMAlle4f0gS9Vrk
-         rIX27e1IDYiyBBbRbcUdrF3ZDMZvvCG7AH6tV4+ZW1UKKaaPDFcwcNvOevLwkC+pDY/2
-         rDSg==
-X-Gm-Message-State: AOAM531pehLzVfDqjq9XC67b5iPGcnBkSWT+cTM/9N+vGyl8z0PlmQWN
-        bRw89SxvQgg0BlheLSRpeSK7ltEw
-X-Google-Smtp-Source: ABdhPJwWjIJr6jLOAW1ZWCdwRVf3k+rpfZEqx/7VBxSzHaj2UBghqfm7f5wJQ92sqA7GwGDK9vsssA==
-X-Received: by 2002:a2e:9996:: with SMTP id w22mr9050733lji.446.1596479689156;
-        Mon, 03 Aug 2020 11:34:49 -0700 (PDT)
-Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
-        by smtp.googlemail.com with ESMTPSA id a16sm5150029ljj.108.2020.08.03.11.34.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 11:34:48 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7] coccinelle: api: add kfree_mismatch script
-Date:   Mon,  3 Aug 2020 21:34:38 +0300
-Message-Id: <20200803183438.34685-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200605204237.85055-1-efremov@linux.com>
-References: <20200605204237.85055-1-efremov@linux.com>
+        Mon, 3 Aug 2020 14:37:47 -0400
+Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F0A6EC06174A;
+        Mon,  3 Aug 2020 11:37:46 -0700 (PDT)
+Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
+        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 073IZRSs033255;
+        Mon, 3 Aug 2020 20:35:27 +0200 (CEST)
+        (envelope-from pisa@cmp.felk.cvut.cz)
+Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
+        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 073IZR6t003880;
+        Mon, 3 Aug 2020 20:35:27 +0200
+Received: (from pisa@localhost)
+        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 073IZQDX003878;
+        Mon, 3 Aug 2020 20:35:26 +0200
+From:   pisa@cmp.felk.cvut.cz
+To:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        mkl@pengutronix.de, socketcan@hartkopp.net
+Cc:     wg@grandegger.com, davem@davemloft.net, robh+dt@kernel.org,
+        mark.rutland@arm.com, c.emde@osadl.org, armbru@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.jerabek01@gmail.com, ondrej.ille@gmail.com,
+        jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com,
+        Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Subject: [PATCH v4 0/6] CTU CAN FD open-source IP core SocketCAN driver, PCI, platform integration and documentation
+Date:   Mon,  3 Aug 2020 20:34:48 +0200
+Message-Id: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-FELK-MailScanner-Information: 
+X-MailScanner-ID: 073IZRSs033255
+X-FELK-MailScanner: Found to be clean
+X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
+        score=-0.098, required 6, BAYES_00 -0.50, KHOP_HELO_FCRDNS 0.40,
+        SPF_HELO_NONE 0.00, SPF_NONE 0.00)
+X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
+X-FELK-MailScanner-Watermark: 1597084535.10885@eQA+8JpdQO/U9XDaVFVRCg
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check that alloc and free types of functions match each other.
+From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
-Changes in v2:
- - Lines are limited to 80 characters where possible
- - Confidence changed from High to Medium because of 
-   fs/btrfs/send.c:1119 false-positive
- - __vmalloc_area_node() explicitly excluded from analysis
-   instead of !(file in "mm/vmalloc.c") condition
-Changes in v3:
- - prints style in org && report modes changed for python2
-Changes in v4:
- - missing msg argument to print_todo fixed
-Changes in v5:
- - fix position p in kfree rule
- - move @kok and @v positions in choice rule after the arguments
- - remove kvmalloc suggestions
-Changes in v6:
- - more asterisks added in context mode
- - second @kok added to the choice rule
-Changes in v7:
- - file renamed to kfree_mismatch.cocci
- - python function relevant() removed
- - additional rule for filtering free positions added
- - btrfs false-positive fixed
- - confidence level changed to high
- - kvfree_switch rule added
- - names for position variables changed to @a (alloc) and @f (free)
+This driver adds support for the CTU CAN FD open-source IP core.
+More documentation and core sources at project page
+(https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core).
+The core integration to Xilinx Zynq system as platform driver
+is available (https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top).
+Implementation on Intel FPGA based PCI Express board is available
+from project (https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd).
+The CTU CAN FD core emulation send for review for QEMU mainline.
+Development repository for QEMU emulation - ctu-canfd branch of
+  https://gitlab.fel.cvut.cz/canbus/qemu-canbus
 
- scripts/coccinelle/api/kfree_mismatch.cocci | 229 ++++++++++++++++++++
- 1 file changed, 229 insertions(+)
- create mode 100644 scripts/coccinelle/api/kfree_mismatch.cocci
+More about CAN related projects used and developed at the Faculty
+of the Electrical Engineering (http://www.fel.cvut.cz/en/)
+of Czech Technical University (https://www.cvut.cz/en)
+in Prague at http://canbus.pages.fel.cvut.cz/ .
 
-diff --git a/scripts/coccinelle/api/kfree_mismatch.cocci b/scripts/coccinelle/api/kfree_mismatch.cocci
-new file mode 100644
-index 000000000000..9e9ef9fd7a25
---- /dev/null
-+++ b/scripts/coccinelle/api/kfree_mismatch.cocci
-@@ -0,0 +1,229 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+///
-+/// Check that kvmalloc'ed memory is freed by kfree functions,
-+/// vmalloc'ed by vfree functions and kvmalloc'ed by kvfree
-+/// functions.
-+///
-+// Confidence: High
-+// Copyright: (C) 2020 Denis Efremov ISPRAS
-+// Options: --no-includes --include-headers
-+//
-+
-+virtual patch
-+virtual report
-+virtual org
-+virtual context
-+
-+@alloc@
-+expression E, E1;
-+position kok, vok;
-+@@
-+
-+(
-+  if (...) {
-+    ...
-+    E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|
-+          kmalloc_node\|kzalloc_node\|kmalloc_array\|
-+          kmalloc_array_node\|kcalloc_node\)(...)@kok
-+    ...
-+  } else {
-+    ...
-+    E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|
-+          vzalloc_node\|vmalloc_exec\|vmalloc_32\|
-+          vmalloc_32_user\|__vmalloc\|__vmalloc_node_range\|
-+          __vmalloc_node\)(...)@vok
-+    ...
-+  }
-+|
-+  E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|kmalloc_node\|kzalloc_node\|
-+        kmalloc_array\|kmalloc_array_node\|kcalloc_node\)(...)@kok
-+  ... when != E = E1
-+      when any
-+  if (E == NULL) {
-+    ...
-+    E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|
-+          vzalloc_node\|vmalloc_exec\|vmalloc_32\|
-+          vmalloc_32_user\|__vmalloc\|__vmalloc_node_range\|
-+          __vmalloc_node\)(...)@vok
-+    ...
-+  }
-+)
-+
-+@free@
-+expression E;
-+position fok;
-+@@
-+
-+  E = \(kvmalloc\|kvzalloc\|kvcalloc\|kvzalloc_node\|kvmalloc_node\|
-+        kvmalloc_array\)(...)
-+  ...
-+  kvfree(E)@fok
-+
-+@vfree depends on !patch@
-+expression E;
-+position a != alloc.kok;
-+position f != free.fok;
-+@@
-+
-+* E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|kmalloc_node\|
-+*       kzalloc_node\|kmalloc_array\|kmalloc_array_node\|
-+*       kcalloc_node\)(...)@a
-+  ... when != if (...) { ... E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|__vmalloc_node_range\|__vmalloc_node\)(...); ... }
-+      when != is_vmalloc_addr(E)
-+      when any
-+* \(vfree\|vfree_atomic\|kvfree\)(E)@f
-+
-+@depends on patch exists@
-+expression E;
-+position a != alloc.kok;
-+position f != free.fok;
-+@@
-+
-+  E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|kmalloc_node\|
-+        kzalloc_node\|kmalloc_array\|kmalloc_array_node\|
-+        kcalloc_node\)(...)@a
-+  ... when != if (...) { ... E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|__vmalloc_node_range\|__vmalloc_node\)(...); ... }
-+      when != is_vmalloc_addr(E)
-+      when any
-+- \(vfree\|vfree_atomic\|kvfree\)(E)@f
-++ kfree(E)
-+
-+@kfree depends on !patch@
-+expression E;
-+position a != alloc.vok;
-+position f != free.fok;
-+@@
-+
-+* E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|
-+*       vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|
-+*       __vmalloc_node_range\|__vmalloc_node\)(...)@a
-+  ... when != is_vmalloc_addr(E)
-+      when any
-+* \(kfree\|kzfree\|kvfree\)(E)@f
-+
-+@depends on patch exists@
-+expression E;
-+position a != alloc.vok;
-+position f != free.fok;
-+@@
-+
-+  E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|
-+        vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|
-+        __vmalloc_node_range\|__vmalloc_node\)(...)@a
-+  ... when != is_vmalloc_addr(E)
-+      when any
-+- \(kfree\|kvfree\)(E)@f
-++ vfree(E)
-+
-+@kvfree depends on !patch@
-+expression E;
-+position a, f;
-+@@
-+
-+* E = \(kvmalloc\|kvzalloc\|kvcalloc\|kvzalloc_node\|kvmalloc_node\|
-+*       kvmalloc_array\)(...)@a
-+  ... when != is_vmalloc_addr(E)
-+      when any
-+* \(kfree\|kzfree\|vfree\|vfree_atomic\)(E)@f
-+
-+@depends on patch exists@
-+expression E;
-+@@
-+
-+  E = \(kvmalloc\|kvzalloc\|kvcalloc\|kvzalloc_node\|kvmalloc_node\|
-+        kvmalloc_array\)(...)
-+  ... when != is_vmalloc_addr(E)
-+      when any
-+- \(kfree\|vfree\)(E)
-++ kvfree(E)
-+
-+@kvfree_switch depends on !patch@
-+expression alloc.E;
-+position f != free.fok;
-+@@
-+
-+  ... when != is_vmalloc_addr(E)
-+      when any
-+* \(kfree\|kzfree\|vfree\|vfree_atomic\)(E)@f
-+
-+@depends on patch exists@
-+expression alloc.E;
-+position f != free.fok;
-+@@
-+
-+  ... when != is_vmalloc_addr(E)
-+      when any
-+(
-+- \(kfree\|vfree\)(E)@f
-++ kvfree(E)
-+|
-+- kzfree(E)@f
-++ kvfree_sensitive(E)
-+)
-+
-+@script: python depends on report@
-+a << vfree.a;
-+f << vfree.f;
-+@@
-+
-+msg = "WARNING: kmalloc is used to allocate this memory at line %s" % (a[0].line)
-+coccilib.report.print_report(f[0], msg)
-+
-+@script: python depends on org@
-+a << vfree.a;
-+f << vfree.f;
-+@@
-+
-+msg = "WARNING: kmalloc is used to allocate this memory at line %s" % (a[0].line)
-+coccilib.org.print_todo(f[0], msg)
-+
-+@script: python depends on report@
-+a << kfree.a;
-+f << kfree.f;
-+@@
-+
-+msg = "WARNING: vmalloc is used to allocate this memory at line %s" % (a[0].line)
-+coccilib.report.print_report(f[0], msg)
-+
-+@script: python depends on org@
-+a << kfree.a;
-+f << kfree.f;
-+@@
-+
-+msg = "WARNING: vmalloc is used to allocate this memory at line %s" % (a[0].line)
-+coccilib.org.print_todo(f[0], msg)
-+
-+@script: python depends on report@
-+a << kvfree.a;
-+f << kvfree.f;
-+@@
-+
-+msg = "WARNING: kvmalloc is used to allocate this memory at line %s" % (a[0].line)
-+coccilib.report.print_report(f[0], msg)
-+
-+@script: python depends on org@
-+a << kvfree.a;
-+f << kvfree.f;
-+@@
-+
-+msg = "WARNING: kvmalloc is used to allocate this memory at line %s" % (a[0].line)
-+coccilib.org.print_todo(f[0], msg)
-+
-+@script: python depends on report@
-+ka << alloc.kok;
-+va << alloc.vok;
-+f << kvfree_switch.f;
-+@@
-+
-+msg = "WARNING: kmalloc (line %s) && vmalloc (line %s) are used to allocate this memory" % (ka[0].line, va[0].line)
-+coccilib.report.print_report(f[0], msg)
-+
-+@script: python depends on org@
-+ka << alloc.kok;
-+va << alloc.vok;
-+f << kvfree_switch.f;
-+@@
-+
-+msg = "WARNING: kmalloc (line %s) && vmalloc (line %s) are used to allocate this memory" % (ka[0].line, va[0].line)
-+coccilib.org.print_todo(f[0], msg)
-+
+Martin Jerabek (1):
+  can: ctucanfd: add support for CTU CAN FD open-source IP core - bus
+    independent part.
+
+Pavel Pisa (5):
+  dt-bindings: vendor-prefix: add prefix for the Czech Technical
+    University in Prague.
+  dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
+  can: ctucanfd: CTU CAN FD open-source IP core - PCI bus support.
+  can: ctucanfd: CTU CAN FD open-source IP core - platform/SoC support.
+  docs: ctucanfd: CTU CAN FD open-source IP core documentation.
+
+The version 4 changes:
+  - changes summary, 169 non-merge commits, 6 driver,
+    32 IP core sources enhancements and fixes, 58 tests
+    in master and about additional 30 iso-testbench
+    preparation branch.
+  - convert device-tree binding documentation to YAML
+  - QEMU model of CTU CAN FD IP core and generic extension
+    of QEMU CAN bus emulation developed by Jan Charvat.
+  - driver tested on QEMU emulated Malta big-endian MIPS
+    platform and big endian-support fixed.
+  - checkpatch from 5.4 kernel used to cleanup driver formatting
+  - header files generated from IP core IP-Xact description
+    updated to include protocol exception (pex) field.
+    Mechanism to set it from the driver is not provided yet.
+
+The version 3 changes:
+  - sent at 2019-12-21
+  - adapts device tree bindings documentation according to
+    Rob Herring suggestions.
+  - the driver has been separated to individual modules for core support,
+    PCI bus integration and platform, SoC integration.
+  - the FPGA design has been cleaned up and CAN protocol FSM redesigned
+    by Ondrej Ille (the core redesign has been reason to pause attempts to driver
+    submission)
+  - the work from February 2019 on core, test framework and driver
+    1601 commits in total, 436 commits in the core sources, 144 commits
+    in the driver, 151 documentation, 502 in tests.
+  - not all continuous integration tests updated for latest design version yet
+    https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core/pipelines
+  - Zynq hardware in the loop test show no issues for after driver PCI and platform
+    separation and latest VHDL sources updates.
+  - driver code has been periodically tested on 4.18.5-rt3 and 4.19 long term
+    stable kernels.
+  - test of the patches before submission is run on 5.4 kernel
+  - the core has been integrated by Jaroslav Beran <jara.beran@gmail.com>
+    into Intel FPGA based SoC used in the tester developed for Skoda auto
+    at Department of Measurement, Faculty of Electrical Engineering,
+    Czech Technical University https://meas.fel.cvut.cz/ . He has contributed
+    feedback and fixes to the project.
+
+The version 2 sent at 2019-02-27
+
+The version 1 sent at 2019-02-22
+
+Ondrej Ille has prepared the CTU CAN IP Core sources for new release.
+We are waiting with it for the driver review, our intention
+is to release IP when driver is reviewed and mainlined.
+
+DKMS CTU CAN FD driver build by OpenBuildService to ease integration
+into Debian systems when driver is not provided by the distribution
+
+https://build.opensuse.org/package/show/home:ppisa/ctu_can_fd
+
+Jan Charvat <charvj10@fel.cvut.cz> finished work to extend already
+mainlined QEMU SJA1000 and SocketCAN support to provide even CAN FD
+support and CTU CAN FD core support.
+
+  https://gitlab.fel.cvut.cz/canbus/qemu-canbus/-/tree/ctu-canfd
+
+The patches has been sent for review to QEMU mainlining list.
+
+Thanks in advance to all who help us to deliver the project into public.
+
+Thanks to all colleagues, reviewers and other providing feedback,
+infrastructure and enthusiasm and motivation for open-source work.
+
+Build infrastructure and hardware is provided by
+  Department of Control Engineering,
+  Faculty of Electrical Engineering,
+  Czech Technical University in Prague
+  https://dce.fel.cvut.cz/en
+
+ .../devicetree/bindings/net/can/ctu,ctucanfd.yaml  |   70 ++
+ .../devicetree/bindings/vendor-prefixes.yaml       |    2 +
+ .../device_drivers/ctu/FSM_TXT_Buffer_user.png     |  Bin 0 -> 174807 bytes
+ .../device_drivers/ctu/ctucanfd-driver.rst         |  635 +++++++++++
+ drivers/net/can/Kconfig                            |    1 +
+ drivers/net/can/Makefile                           |    1 +
+ drivers/net/can/ctucanfd/Kconfig                   |   38 +
+ drivers/net/can/ctucanfd/Makefile                  |   13 +
+ drivers/net/can/ctucanfd/ctu_can_fd.c              | 1114 ++++++++++++++++++++
+ drivers/net/can/ctucanfd/ctu_can_fd.h              |   88 ++
+ drivers/net/can/ctucanfd/ctu_can_fd_frame.h        |  190 ++++
+ drivers/net/can/ctucanfd/ctu_can_fd_hw.c           |  781 ++++++++++++++
+ drivers/net/can/ctucanfd/ctu_can_fd_hw.h           |  917 ++++++++++++++++
+ drivers/net/can/ctucanfd/ctu_can_fd_pci.c          |  316 ++++++
+ drivers/net/can/ctucanfd/ctu_can_fd_platform.c     |  145 +++
+ drivers/net/can/ctucanfd/ctu_can_fd_regs.h         |  972 +++++++++++++++++
+ 16 files changed, 5283 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+ create mode 100644 Documentation/networking/device_drivers/ctu/FSM_TXT_Buffer_user.png
+ create mode 100644 Documentation/networking/device_drivers/ctu/ctucanfd-driver.rst
+ create mode 100644 drivers/net/can/ctucanfd/Kconfig
+ create mode 100644 drivers/net/can/ctucanfd/Makefile
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd.c
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd.h
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_frame.h
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_hw.c
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_hw.h
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_pci.c
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_platform.c
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_regs.h
+
 -- 
-2.26.2
+2.11.0
 
