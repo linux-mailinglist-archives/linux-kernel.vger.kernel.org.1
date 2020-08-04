@@ -2,116 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4049C23B8F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3804523B8FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729752AbgHDKly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 06:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728170AbgHDKly (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 06:41:54 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C0EC06174A;
-        Tue,  4 Aug 2020 03:41:53 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id u185so19967793pfu.1;
-        Tue, 04 Aug 2020 03:41:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dS+3+hYqZ66uBhMhwpE9mDgfqdGREXxXTLcJTBg38DQ=;
-        b=gOMIs+Ulxkf/Kb2dkPeZGEn2TCWU8Lgw9SjOnGHaKWjSB8ENZ356Iq+3vmqhD/sbdQ
-         OFQEoTVcWkrtOfczN3+xZOKCe+ic3JN0BHmTzaB/L7V38v7JFRy9/AJJ3uAPymKpGSP5
-         h3Ok5CKfbYEWt4mN46WHUaN6g0HyTzjs65bjQPPAN3OpYKvrKKKxBcjIN1xtfDD8+DMe
-         ETEwyXFWsSV3J/4pa5bGRR3mcl4N93gr5bNoAa0TZQHmvDp1IevU1FY87ujtQp4vtNlW
-         ZYYGWlhl5el9PAqgdXCvpmfP5CPt7ITxnzsY4hB36NW5H121wgn+tZIpkoOwJNosbMs4
-         iepA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dS+3+hYqZ66uBhMhwpE9mDgfqdGREXxXTLcJTBg38DQ=;
-        b=MWD1PMjcyXjzeFcw+3ucQqXq4nSqQ5WT0/wF9OoF+huGktoR3F5ZfC0O3EQEbZNbqj
-         D6LsW9bqsaAMKp2/7j8tqI2VAJ93kHnwRMldhU9D5GMt6s8GzqytHcuE6Y1z9wQFGN5p
-         0m4wu+/zKcRgWNRUcZZJk+ATi73X1IAOl7nj8f6t6HWEeOunZrY/dma1SF5hMxmZ0ofg
-         kc4F41a5r/U0sx/TqBvat6Pq9lB2Am+eulnind+CxkVcw18RIbSiI2/KlAeW1kWkm/IQ
-         KBGnp0HyWNzr/im45sQ0NkxldWvj57D05Ar7BBTK16KFgsX28Z43INt0knzqoPpmkCCZ
-         OECw==
-X-Gm-Message-State: AOAM532p9xs+HS2zH50zVnWxM7fvJEJlnOfZv2ORGMmUEX4cmjyZFh0d
-        arwpGFaL2nrQYB2At+CkT3g=
-X-Google-Smtp-Source: ABdhPJwVkry725oBjqKvwKBp+5Fi90O4GOYmW5vJcWNN4EmW2jkEGBAC9qAjuPvRaCJloMFFEN8n8A==
-X-Received: by 2002:a63:1208:: with SMTP id h8mr18942187pgl.128.1596537713384;
-        Tue, 04 Aug 2020 03:41:53 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id t63sm15210765pgt.50.2020.08.04.03.41.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 03:41:52 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Tue, 4 Aug 2020 18:41:48 +0800
-To:     Greg KH <greg@kroah.com>
-Cc:     linux-bluetooth@vger.kernel.org,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        syzbot+fadfba6a911f6bf71842@syzkaller.appspotmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [Linux-kernel-mentees] [PATCH] Bluetooth: Initialize the TX
- queue lock when creating struct l2cap_chan in 6LOWPAN
-Message-ID: <20200804104148.nqxcy4f44uga7wjs@Rk>
-References: <20200804093937.772961-1-coiby.xu@gmail.com>
- <20200804094253.GA2667430@kroah.com>
+        id S1729844AbgHDKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 06:43:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:42406 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728170AbgHDKni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 06:43:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0389E1FB;
+        Tue,  4 Aug 2020 03:43:37 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6B7B3F718;
+        Tue,  4 Aug 2020 03:43:34 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 11:43:32 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Dongdong Yang <contribute.kernel@gmail.com>
+Cc:     gregkh@linuxfoundation.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-pm@vger.kernel.org,
+        yangdongdong@xiaomi.com, yanziily@xiaomi.com,
+        rocking@linux.alibaba.com
+Subject: Re: [PATCH v4] sched: Provide USF for the portable equipment.
+Message-ID: <20200804104331.6vphb2iclwz3buig@e107158-lin.cambridge.arm.com>
+References: <cover.1596526941.git.yangdongdong@xiaomi.com>
+ <820a185b6765d6246ac34f612faedeb35189487c.1596526941.git.yangdongdong@xiaomi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200804094253.GA2667430@kroah.com>
+In-Reply-To: <820a185b6765d6246ac34f612faedeb35189487c.1596526941.git.yangdongdong@xiaomi.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 11:42:53AM +0200, Greg KH wrote:
->On Tue, Aug 04, 2020 at 05:39:37PM +0800, Coiby Xu wrote:
->> When L2CAP channel is destroyed by hci_unregister_dev, it will
->> acquire the spin lock of the (struct l2cap_chan *)->tx_q list to
->> delete all the buffers. But sometimes when hci_unregister_dev is
->> being called, this lock may have not bee initialized. Initialize
->> the TX queue lock when creating struct l2cap_chan in 6LOWPAN to fix
->> this problem.
->>
->> Reported-by: syzbot+fadfba6a911f6bf71842@syzkaller.appspotmail.com
->> Link: https://syzkaller.appspot.com/bug?extid=fadfba6a911f6bf71842
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> ---
->>  net/bluetooth/6lowpan.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/net/bluetooth/6lowpan.c b/net/bluetooth/6lowpan.c
->> index bb55d92691b0..713c618a73df 100644
->> --- a/net/bluetooth/6lowpan.c
->> +++ b/net/bluetooth/6lowpan.c
->> @@ -651,6 +651,7 @@ static struct l2cap_chan *chan_create(void)
->>
->>  	l2cap_chan_set_defaults(chan);
->>
->> +	skb_queue_head_init(&chan->tx_q);
->>  	chan->chan_type = L2CAP_CHAN_CONN_ORIENTED;
->>  	chan->mode = L2CAP_MODE_LE_FLOWCTL;
->>  	chan->imtu = 1280;
->
->Nice, did syzbot verify that this resolves the issue?
->
->thanks,
->
->greg k-h
+Hi Dongdong
 
-Yes. Thank you for reminding me. I'll also add an Tested-by: tag next time.
+On 08/04/20 15:50, Dongdong Yang wrote:
+> +What:		/sys/devices/system/cpu/sched_usf
+> +		/sys/devices/system/cpu/sched_usf/sched_usf_non_ux_r
+> +		/sys/devices/system/cpu/sched_usf/sched_usf_up_l0_r
+> +		/sys/devices/system/cpu/sched_usf/sched_usf_down_r
+> +Date:		Aug 2020
+> +Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
+> +Description:	User Sensitive Feedback factor auxiliary scheduling which
+> +		is providing more utils adjustment settings to the high level
+> +		by scenario identification.
+> +		sched_usf_non_ux_r:
+> +			The ratio of utils is cut down on screen off. The
+> +			default value is 0, which no util is adjusted on sugov
+> +			calculating utils to select cpufreq. Its range is
+> +			[-100 , 0]. If its value falls into [-50, 0), the half
+> +			of utils, which	calculates cpufreq, shall be  cut down.
+> +			If its value falls into [-100, -50), only a quarter of
+> +			utils are left to continue to calculate cpufreq.
+> +			It is expected to be set [-100, 0) once enter into the
+> +			identificated scenario, such as listen to music on
+> +			screen off, and recover to 0 on out of the scenario,
+> +			such as	screen on.
+> +
+> +		sched_usf_up_l0_r:
+> +			The ratio of utils is boost up on screen on. The
+> +			default value is 0, which no util is adjusted on sugov
+> +			calculates utils to select cpufreq. Its range is [0 , 100].
+> +			If its value falls into (0, 50], a quarter of extra utils,
+> +			which calculate cpufreq, shall be added. If its value
+> +			falls into (50, 100], the half of extra utils are added
+> +			to continue to	calculate cpufreq.
+> +			It is expected to be set (0, 100] once enter into the
+> +			identificated scenario, such as browsing videolet on
+> +			screen on, and recover to 0 on out of the scenario,
+> +			such as screen off or videolet into background.
+> +
+> +		sched_usf_down_r:
+> +			The ratio of utils is cut down on screen on. The
+> +			default	value is 0, which no util is adjusted on sugov
+> +			calculating utils to select cpufreq. Its range is
+> +			[-100 , 0]. If its value falls into [-50, 0), the half
+> +			of utils, which	calculate cpufreq, shall be  cut down.
+> +			If its value falls into [-100, -50), only a quarter of
+> +			utils are left to continue to calculate cpufreq.
+> +			It is expected to be set [-100, 0) once enter into the
+> +			identificated scenario, such as browsing videolet on
+> +			screen on, and recover to 0 on	out of the scenario,
+> +			such as screen off or vidolet into background.
+
+AFACS you're duplicating util clamp functionality here. You can already use
+util clamp to boost tasks on screen on, and cap them on screen off. And extra
+brownie points; you can already use that on android 4.19 and 5.4 kernels (I'm
+assuming the battery device is android based, sorry).
+
+Any reason why util clamp isn't giving you what you want?
+
+To cap the system on screen off you need to
+
+	# Don't allow the util to go above 512
+	echo  512 > /proc/sys/kernel/sched_util_clamp_min
+	echo  512 > /proc/sys/kernel/sched_util_clamp_max
+
+To boost the system on screen on, you need first to lift the capping done above
+
+
+	# Allow util to use the full range again
+	echo  1024 > /proc/sys/kernel/sched_util_clamp_min
+	echo  1024 > /proc/sys/kernel/sched_util_clamp_max
+
+	# This is pseudo C code
+	for_each_important_task(p) {
+
+		/*
+		 * boost the task utilization to start from 512.
+		 */
+		sched_attr attr = {
+			.util_min = 512,
+			.util_max = 1024
+		};
+		sched_setattr(p, attr);
+	}
+
+	/* undo boosting once system has settled down */
+	for_each_important_task(p) {
+
+		/*
+		 * reset util_min back to 0, or whatever value you want.
+		 */
+		sched_attr attr = {
+			.util_min = 0,
+			.util_max = 1024
+		};
+		sched_setattr(p, attr);
+	}
+
+There's a cgroup API for util clamp too.
+
+Thanks
 
 --
-Best regards,
-Coiby
+Qais Yousef
