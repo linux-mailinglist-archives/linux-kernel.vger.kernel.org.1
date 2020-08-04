@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8026C23C10C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79CA223C11D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728370AbgHDU61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 16:58:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42184 "EHLO mail.kernel.org"
+        id S1728594AbgHDU7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 16:59:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728114AbgHDU6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728103AbgHDU6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 Aug 2020 16:58:16 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD7DC22CF8;
+        by mail.kernel.org (Postfix) with ESMTPSA id B87AB22CAE;
         Tue,  4 Aug 2020 20:58:14 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1k340j-006HEU-JX; Tue, 04 Aug 2020 16:58:13 -0400
-Message-ID: <20200804205813.485673301@goodmis.org>
+        id 1k340j-006HF0-Nx; Tue, 04 Aug 2020 16:58:13 -0400
+Message-ID: <20200804205813.625104551@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 04 Aug 2020 16:57:54 -0400
+Date:   Tue, 04 Aug 2020 16:57:55 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: [for-linus][PATCH 11/17] ftrace: Fix ftrace_trace_task return value
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: [for-linus][PATCH 12/17] kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler
 References: <20200804205743.419135730@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -36,66 +38,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-I was attempting to use pid filtering with function_graph, but it wasn't
-allowing anything to make it through.  Turns out ftrace_trace_task
-returns false if ftrace_ignore_pid is not-empty, which isn't correct
-anymore.  We're now setting it to FTRACE_PID_IGNORE if we need to ignore
-that pid, otherwise it's set to the pid (which is weird considering the
-name) or to FTRACE_PID_TRACE.  Fix the check to check for !=
-FTRACE_PID_IGNORE.  With this we can now use function_graph with pid
-filtering.
+We found a case of kernel panic on our server. The stack trace is as
+follows(omit some irrelevant information):
 
-Link: https://lkml.kernel.org/r/20200725005048.1790-1-josef@toxicpanda.com
+  BUG: kernel NULL pointer dereference, address: 0000000000000080
+  RIP: 0010:kprobe_ftrace_handler+0x5e/0xe0
+  RSP: 0018:ffffb512c6550998 EFLAGS: 00010282
+  RAX: 0000000000000000 RBX: ffff8e9d16eea018 RCX: 0000000000000000
+  RDX: ffffffffbe1179c0 RSI: ffffffffc0535564 RDI: ffffffffc0534ec0
+  RBP: ffffffffc0534ec1 R08: ffff8e9d1bbb0f00 R09: 0000000000000004
+  R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+  R13: ffff8e9d1f797060 R14: 000000000000bacc R15: ffff8e9ce13eca00
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000000000080 CR3: 00000008453d0005 CR4: 00000000003606e0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   <IRQ>
+   ftrace_ops_assist_func+0x56/0xe0
+   ftrace_call+0x5/0x34
+   tcpa_statistic_send+0x5/0x130 [ttcp_engine]
 
-Fixes: 717e3f5ebc82 ("ftrace: Make function trace pid filtering a bit more exact")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+The tcpa_statistic_send is the function being kprobed. After analysis,
+the root cause is that the fourth parameter regs of kprobe_ftrace_handler
+is NULL. Why regs is NULL? We use the crash tool to analyze the kdump.
+
+  crash> dis tcpa_statistic_send -r
+         <tcpa_statistic_send>: callq 0xffffffffbd8018c0 <ftrace_caller>
+
+The tcpa_statistic_send calls ftrace_caller instead of ftrace_regs_caller.
+So it is reasonable that the fourth parameter regs of kprobe_ftrace_handler
+is NULL. In theory, we should call the ftrace_regs_caller instead of the
+ftrace_caller. After in-depth analysis, we found a reproducible path.
+
+  Writing a simple kernel module which starts a periodic timer. The
+  timer's handler is named 'kprobe_test_timer_handler'. The module
+  name is kprobe_test.ko.
+
+  1) insmod kprobe_test.ko
+  2) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
+  3) echo 0 > /proc/sys/kernel/ftrace_enabled
+  4) rmmod kprobe_test
+  5) stop step 2) kprobe
+  6) insmod kprobe_test.ko
+  7) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
+
+We mark the kprobe as GONE but not disarm the kprobe in the step 4).
+The step 5) also do not disarm the kprobe when unregister kprobe. So
+we do not remove the ip from the filter. In this case, when the module
+loads again in the step 6), we will replace the code to ftrace_caller
+via the ftrace_module_enable(). When we register kprobe again, we will
+not replace ftrace_caller to ftrace_regs_caller because the ftrace is
+disabled in the step 3). So the step 7) will trigger kernel panic. Fix
+this problem by disarming the kprobe when the module is going away.
+
+Link: https://lkml.kernel.org/r/20200728064536.24405-1-songmuchun@bytedance.com
+
+Cc: stable@vger.kernel.org
+Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/ftrace.c | 3 ---
- kernel/trace/trace.h  | 7 ++++++-
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ kernel/kprobes.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index f433cb44300a..4e3a5d79c078 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -139,9 +139,6 @@ static inline void ftrace_ops_init(struct ftrace_ops *ops)
- #endif
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 4a904cc56d68..07bf03fcf574 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2113,6 +2113,13 @@ static void kill_kprobe(struct kprobe *p)
+ 	 * the original probed function (which will be freed soon) any more.
+ 	 */
+ 	arch_remove_kprobe(p);
++
++	/*
++	 * The module is going away. We should disarm the kprobe which
++	 * is using ftrace.
++	 */
++	if (kprobe_ftrace(p))
++		disarm_kprobe_ftrace(p);
  }
  
--#define FTRACE_PID_IGNORE	-1
--#define FTRACE_PID_TRACE	-2
--
- static void ftrace_pid_func(unsigned long ip, unsigned long parent_ip,
- 			    struct ftrace_ops *op, struct pt_regs *regs)
- {
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index f21607f87189..610d21355526 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1103,6 +1103,10 @@ print_graph_function_flags(struct trace_iterator *iter, u32 flags)
- extern struct list_head ftrace_pids;
- 
- #ifdef CONFIG_FUNCTION_TRACER
-+
-+#define FTRACE_PID_IGNORE	-1
-+#define FTRACE_PID_TRACE	-2
-+
- struct ftrace_func_command {
- 	struct list_head	list;
- 	char			*name;
-@@ -1114,7 +1118,8 @@ struct ftrace_func_command {
- extern bool ftrace_filter_param __initdata;
- static inline int ftrace_trace_task(struct trace_array *tr)
- {
--	return !this_cpu_read(tr->array_buffer.data->ftrace_ignore_pid);
-+	return this_cpu_read(tr->array_buffer.data->ftrace_ignore_pid) !=
-+		FTRACE_PID_IGNORE;
- }
- extern int ftrace_is_dead(void);
- int ftrace_create_function_files(struct trace_array *tr,
+ /* Disable one kprobe */
 -- 
 2.26.2
 
