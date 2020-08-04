@@ -2,57 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA3923BCE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D05023BCF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729548AbgHDPDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 11:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729549AbgHDPCB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 11:02:01 -0400
-Received: from forward100j.mail.yandex.net (forward100j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D65C06174A;
-        Tue,  4 Aug 2020 08:02:00 -0700 (PDT)
-Received: from forward103q.mail.yandex.net (forward103q.mail.yandex.net [IPv6:2a02:6b8:c0e:50:0:640:b21c:d009])
-        by forward100j.mail.yandex.net (Yandex) with ESMTP id 4B55E50E031B;
-        Tue,  4 Aug 2020 18:01:45 +0300 (MSK)
-Received: from mxback10q.mail.yandex.net (mxback10q.mail.yandex.net [IPv6:2a02:6b8:c0e:1b4:0:640:b6ef:cb3])
-        by forward103q.mail.yandex.net (Yandex) with ESMTP id 488A461E0011;
-        Tue,  4 Aug 2020 18:01:45 +0300 (MSK)
-Received: from localhost (localhost [::1])
-        by mxback10q.mail.yandex.net (mxback/Yandex) with ESMTP id jNSF9J3USj-1iAKrFnP;
-        Tue, 04 Aug 2020 18:01:44 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1596553304;
-        bh=SPkeXqwcTMvQACiNmVSSb8F9FpqteU2Kb+2386F8/50=;
-        h=Date:Message-Id:Cc:Subject:To:From;
-        b=Bf8tFFD/1SAPi2ycyp+x+y/rrwZkk7ySdvFv/5a01wWG/MphcjJhSgC83HfIj8Epz
-         PGE5k3A7D1MbJOFycNyBN2hh+Ci1wyuEmFhBDpPjuklUfKK+Zn+8TuiM6OXNVBc71F
-         pj+FrUPhp3yaQJ8FtivQuOh5GdjUXACDA+HWwKsg=
-Authentication-Results: mxback10q.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by vla5-8300199a0c8b.qloud-c.yandex.net with HTTP;
-        Tue, 04 Aug 2020 18:01:44 +0300
-From:   Evgeny Novikov <novikov@ispras.ru>
-Envelope-From: eugenenovikov@yandex.ru
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        ldv-project-org <ldv-project@linuxtesting.org>
-Subject: media: ddbridge: potential buffer overflow in open
-MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date:   Tue, 04 Aug 2020 18:01:44 +0300
-Message-Id: <4321596552833@mail.yandex.ru>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
+        id S1729491AbgHDPGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 11:06:53 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:43620 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728467AbgHDPG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 11:06:26 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3A749201244;
+        Tue,  4 Aug 2020 17:06:24 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8C0CE2002D4;
+        Tue,  4 Aug 2020 17:06:20 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E688240252;
+        Tue,  4 Aug 2020 17:06:15 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, stefan@agner.ch, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] dt-bindings: gpio: Convert vf610 to json-schema
+Date:   Tue,  4 Aug 2020 23:01:48 +0800
+Message-Id: <1596553308-13190-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ddb_open() accesses iminor(inode) of the ddbs array that has 64 elements
-at most. There will be a buffer overflow if iminor(inode) is greater
-than 63.
+Convert the vf610 gpio binding to DT schema format using json-schema.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../devicetree/bindings/gpio/gpio-vf610.txt        | 63 -----------------
+ .../devicetree/bindings/gpio/gpio-vf610.yaml       | 79 ++++++++++++++++++++++
+ 2 files changed, 79 insertions(+), 63 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-vf610.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.txt b/Documentation/devicetree/bindings/gpio/gpio-vf610.txt
+deleted file mode 100644
+index ae254aa..0000000
+--- a/Documentation/devicetree/bindings/gpio/gpio-vf610.txt
++++ /dev/null
+@@ -1,63 +0,0 @@
+-* Freescale VF610 PORT/GPIO module
+-
+-The Freescale PORT/GPIO modules are two adjacent modules providing GPIO
+-functionality. Each pair serves 32 GPIOs. The VF610 has 5 instances of
+-each, and each PORT module has its own interrupt.
+-
+-Required properties for GPIO node:
+-- compatible : Should be "fsl,<soc>-gpio", below is supported list:
+-	       "fsl,vf610-gpio"
+-	       "fsl,imx7ulp-gpio"
+-- reg : The first reg tuple represents the PORT module, the second tuple
+-  the GPIO module.
+-- interrupts : Should be the port interrupt shared by all 32 pins.
+-- gpio-controller : Marks the device node as a gpio controller.
+-- #gpio-cells : Should be two. The first cell is the pin number and
+-  the second cell is used to specify the gpio polarity:
+-      0 = active high
+-      1 = active low
+-- interrupt-controller: Marks the device node as an interrupt controller.
+-- #interrupt-cells : Should be 2.  The first cell is the GPIO number.
+-  The second cell bits[3:0] is used to specify trigger type and level flags:
+-      1 = low-to-high edge triggered.
+-      2 = high-to-low edge triggered.
+-      4 = active high level-sensitive.
+-      8 = active low level-sensitive.
+-
+-Optional properties:
+--clocks:	Must contain an entry for each entry in clock-names.
+-		See common clock-bindings.txt for details.
+--clock-names:	A list of clock names. For imx7ulp, it must contain
+-		"gpio", "port".
+-
+-Note: Each GPIO port should have an alias correctly numbered in "aliases"
+-node.
+-
+-Examples:
+-
+-aliases {
+-	gpio0 = &gpio1;
+-	gpio1 = &gpio2;
+-};
+-
+-gpio1: gpio@40049000 {
+-	compatible = "fsl,vf610-gpio";
+-	reg = <0x40049000 0x1000 0x400ff000 0x40>;
+-	interrupts = <0 107 IRQ_TYPE_LEVEL_HIGH>;
+-	gpio-controller;
+-	#gpio-cells = <2>;
+-	interrupt-controller;
+-	#interrupt-cells = <2>;
+-	gpio-ranges = <&iomuxc 0 0 32>;
+-};
+-
+-gpio2: gpio@4004a000 {
+-	compatible = "fsl,vf610-gpio";
+-	reg = <0x4004a000 0x1000 0x400ff040 0x40>;
+-	interrupts = <0 108 IRQ_TYPE_LEVEL_HIGH>;
+-	gpio-controller;
+-	#gpio-cells = <2>;
+-	interrupt-controller;
+-	#interrupt-cells = <2>;
+-	gpio-ranges = <&iomuxc 0 32 32>;
+-};
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+new file mode 100644
+index 0000000..315ffde
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+@@ -0,0 +1,79 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/gpio-vf610.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale VF610 PORT/GPIO module
++
++maintainers:
++  - Stefan Agner <stefan@agner.ch>
++
++description: |
++  The Freescale PORT/GPIO modules are two adjacent modules providing GPIO
++  functionality. Each pair serves 32 GPIOs. The VF610 has 5 instances of
++  each, and each PORT module has its own interrupt.
++
++  Note: Each GPIO port should have an alias correctly numbered in "aliases"
++  node.
++
++properties:
++  compatible:
++    enum:
++      - fsl,vf610-gpio
++      - fsl,imx7ulp-gpio
++
++  reg:
++    description: The first reg tuple represents the PORT module, the second tuple
++      represents the GPIO module.
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 2
++
++  "#gpio-cells":
++    const: 2
++
++  gpio-controller: true
++
++  clocks:
++    items:
++      - description: SoC GPIO clock
++      - description: SoC PORT clock
++
++  clock-names:
++    items:
++      - const: gpio
++      - const: port
++
++  gpio-ranges:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - "#interrupt-cells"
++  - "#gpio-cells"
++  - gpio-controller
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    gpio1: gpio@40049000 {
++        compatible = "fsl,vf610-gpio";
++        reg = <0x40049000 0x1000 0x400ff000 0x40>;
++        interrupts = <0 107 IRQ_TYPE_LEVEL_HIGH>;
++        gpio-controller;
++        #gpio-cells = <2>;
++        interrupt-controller;
++        #interrupt-cells = <2>;
++        gpio-ranges = <&iomuxc 0 0 32>;
++    };
+-- 
+2.7.4
+
