@@ -2,94 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6618B23BE15
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A027723BE19
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729907AbgHDQY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:24:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729784AbgHDQW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:22:26 -0400
-Received: from localhost (mobile-166-175-186-42.mycingular.net [166.175.186.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 005462070A;
-        Tue,  4 Aug 2020 16:22:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596558145;
-        bh=QPah22Jpf1mxNKlgumRygQ+6pg3gt/DjX6c+YL5SJfc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=phX5p8kTYUiPjBezb0Ti6tRvIsmv3KLgGOP6IdfLAU4ZQmDakl7Vvhxxj4scJ6KnC
-         2gY90fRDAzUWLx07WNy8MMMoMGnleoIR6//dB+kHu7u1/+R7Eejh7rxm8vCOUktprP
-         1IJB4TRLbureddgFq3oi6uO+LcPsHxBhv1lCIC+4=
-Date:   Tue, 4 Aug 2020 11:22:23 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: rcar-gen2: Fix crash in resource_list_first_type()
-Message-ID: <20200804162223.GA420993@bjorn-Precision-5520>
+        id S1729955AbgHDQYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:24:41 -0400
+Received: from smtprelay0012.hostedemail.com ([216.40.44.12]:54150 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729855AbgHDQYB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 12:24:01 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 0A3BD180A8CB9;
+        Tue,  4 Aug 2020 16:23:57 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3865:3866:3867:3868:3870:3872:4321:5007:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: pear24_610bb7826fa7
+X-Filterd-Recvd-Size: 1601
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  4 Aug 2020 16:23:55 +0000 (UTC)
+Message-ID: <470c32c1a781f3973a87321abf03e2fcd2dfc1eb.camel@perches.com>
+Subject: Re: [PATCH] staging: wfx: fixed misspelled word in comment
+From:   Joe Perches <joe@perches.com>
+To:     Aditya Bansal <adbansal99@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Date:   Tue, 04 Aug 2020 09:23:54 -0700
+In-Reply-To: <CAEY4DyhRxwxqk80WWaPARYf7BxmM0T7AuLYhjcboLG+KP_XHMQ@mail.gmail.com>
+References: <20200804145816.GA3823@aditya>
+         <bc993561-e494-d6b5-fc73-eb56cb496d75@infradead.org>
+         <fc7b8ab86d5a07525e546a23b97c1818331526b3.camel@perches.com>
+         <CAEY4DyhRxwxqk80WWaPARYf7BxmM0T7AuLYhjcboLG+KP_XHMQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804161325.GA11104@e121166-lin.cambridge.arm.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 05:13:25PM +0100, Lorenzo Pieralisi wrote:
-> On Tue, Aug 04, 2020 at 02:04:30PM +0200, Geert Uytterhoeven wrote:
-> > The conversion to modern host bridge probing made the driver allocate
-> > its private data using devm_pci_alloc_host_bridge(), but forgot to
-> > remove the old allocation.  Hence part of the driver initialization is
-> > done using the new instance, while another part is done using the old
-> > instance, leading to a crash due to uninitialized bridge DMA ranges:
-> > 
-> >     Unable to handle kernel NULL pointer dereference at virtual address 00000008
-> >     pgd = (ptrval)
-> >     [00000008] *pgd=00000000
-> >     Internal error: Oops: 5 [#1] SMP ARM
-> >     CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc1-shmobile-00035-g92d69cc6275845a7 #645
-> >     Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
-> >     PC is at rcar_pci_probe+0x154/0x340
-> >     LR is at _raw_spin_unlock_irqrestore+0x18/0x20
-> > 
-> > Fix this by dropping the old allocation.
-> > 
-> > Fixes: 92d69cc6275845a7 ("PCI: rcar-gen2: Convert to use modern host bridge probe functions")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> >  drivers/pci/controller/pci-rcar-gen2.c | 4 ----
-> >  1 file changed, 4 deletions(-)
-> 
-> Squashed in the initial commit, pushed out on pci/misc.
+On Tue, 2020-08-04 at 16:07 +0530, Aditya Bansal wrote:
+> Should I correct all the instances of the "careful" and submit the
+> patch including both "carefull" and "function" word correct? or only
+> for the "carefull"? I have already submitted one for the "funcion"
+> word.
 
-I updated my 'next' branch with this.
+I suggest submitting a V2 patch with both fixes.
 
-Rob, are there any similar issues in other drivers that we should fix
-before asking Linus to pull this?
+Generally it's better to submit all spelling fixes in a
+single file at once, especially when multiple spelling
+fixes are on the same line.
 
-> > diff --git a/drivers/pci/controller/pci-rcar-gen2.c b/drivers/pci/controller/pci-rcar-gen2.c
-> > index 046965d284a6d54e..c9530038ca9a53fc 100644
-> > --- a/drivers/pci/controller/pci-rcar-gen2.c
-> > +++ b/drivers/pci/controller/pci-rcar-gen2.c
-> > @@ -302,10 +302,6 @@ static int rcar_pci_probe(struct platform_device *pdev)
-> >  	if (mem_res->start & 0xFFFF)
-> >  		return -EINVAL;
-> >  
-> > -	priv = devm_kzalloc(dev, sizeof(struct rcar_pci_priv), GFP_KERNEL);
-> > -	if (!priv)
-> > -		return -ENOMEM;
-> > -
-> >  	priv->mem_res = *mem_res;
-> >  	priv->cfg_res = cfg_res;
-> >  
-> > -- 
-> > 2.17.1
-> > 
+Also, it's generally better to submit separate patches
+for individual files.
+
+
