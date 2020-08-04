@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D05C23BA92
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D0D23BA8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgHDMmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 08:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
+        id S1728132AbgHDMmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 08:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727064AbgHDMlr (ORCPT
+        with ESMTP id S1727862AbgHDMl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 08:41:47 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DFAC0617A1
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 05:41:43 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id j7so28478162qki.5
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 05:41:43 -0700 (PDT)
+        Tue, 4 Aug 2020 08:41:58 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FFBC0617A5
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 05:41:45 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id w15so27704383qtv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 05:41:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=r3AVQip2xq9L4iLlC84/aNvGhdtcJ5cWyH3sWORBbtc=;
-        b=al711nch3pGhu0oC1wlPaqYQVlVmmhVzmYHp/7d5LETFi5Rtuy1m2i6Q7VZyHZWzvU
-         hgxHf9w/ckVjXi3fhG4d+LBft5K89LkjnHbAbhqXdJQf+gaDGnDI0gAmQvywiJ+Vcfpq
-         fXUe1mXmVqZwCTV/bjfqcfsyDvqhOVJmyD48Oj7Db+FICYod8rKgX7Xwry1oDf2wkEup
-         RR75P7hQf3YSyhtdZQyTtr0fFU1zbFApwbVSnzym/MadtAc0yGXWKQ+A2mW0MAhYz+R7
-         l9TXw52PMyujrl18cxAUf/X+TsTelw+wmXc4IeyF7EmwiAsMBbLJcMRtX980kmLZ8TUT
-         wSNQ==
+        bh=OJV+wFsSuBAEdua9Kpud4j6ZGzVdRXqmU9/PZhjVLdc=;
+        b=Ea5YjJ7o620kZq8eHnshiekvC4wpoxtU/m2L83KMHr56wGFqcLIiluwTTPIuK6jPtz
+         NIbahZxx/kLpiZOWX4LifN1sYL8ve+GY+nJ4uXKX/NwgeJ66FB0oBHFDCJ7CnFI+jXp5
+         YfjHAXZMMGH3A1RBkM5ekVG/ygZ56FsWNDeUBLLVL1ABwVsRZPV6DZg8v5EyPdnyI/8q
+         u9+woephvoS6hP7AP7QtlnSDcnrQ3oLlLY/jprakwQVQNuaNzYsx0faunrqjJ1Rwi828
+         vpjJ63tAJJETQeQAfpWW300WdlbW294wpGLA7b0wjZ0R/4TF1hESmC/l3kgC9ReY8bHQ
+         oJZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=r3AVQip2xq9L4iLlC84/aNvGhdtcJ5cWyH3sWORBbtc=;
-        b=YdwSO9/0h2gdGuF80ENniYFMpY/Je9O4d1fW66arENdvjn/iSSmdDlt2fNaDg7/A2c
-         AV3GJzWb7cfttzP5Cqcq+K6G87EX7E/WhpPy8srQB8Cwgkx0RmW9f3VbPFbOowUw2MYj
-         GgWonNQTWh61KYVMbXe34j6k6EBsebQiX5VxtS3tCchDtxL9CudMPzJis60TANyVhtih
-         i0k8XhheVVwPsw2MNRHjvVus75BjjZPQQGY+20e7egK8hVuKaPJDImqnz5AHG19vDteH
-         mzQCNwl9e9flyqBDzzj3SXm9QxvJ0vtMf7pMNP0YhWb2OsIXCgPdj9dSiGs7wUJwEE4r
-         iFEw==
-X-Gm-Message-State: AOAM531sqHCU/DQBcIh2myzjc5QdPRKG8BWlcqf7YCCAlZiMr66rP1g5
-        I4PfMoqXiP8AeUe5GQe71KcOtE5jqF8ek3li
-X-Google-Smtp-Source: ABdhPJxNVNohw+RMFq1uv1gOt0ICKpmDjLXFJp+5X/8n8NGst2h3rqGrz443ENowh4INA9/32k2O/16zVxLTFGJ0
-X-Received: by 2002:ad4:438e:: with SMTP id s14mr21419425qvr.18.1596544902628;
- Tue, 04 Aug 2020 05:41:42 -0700 (PDT)
-Date:   Tue,  4 Aug 2020 14:41:27 +0200
+        bh=OJV+wFsSuBAEdua9Kpud4j6ZGzVdRXqmU9/PZhjVLdc=;
+        b=Q6Z64Cb0jCT7y0pFuaXELg6izRM6RTnbt+H4RX1kzO/h+q951UH9eUqzlNLevLzsq+
+         w3CjSLJv2NYCK0e7qMKWaswEjBhKAdfDP9+Msb0XdSusufZ/ZIhIYpgnME/P+9RxxRhp
+         sKF5FYGUG+96G5HZo9EBy/JJiuOsRRKUfyYva5CSKJ3gz2yASXoQaGDTHxi4r/agHZXe
+         9RExN7trUexfsaukLueIgGBBM+LZcDEyMLvm/4lJMbaDq1bmz2+F6Agksl6nCU96E5kX
+         qwDApqBn2XyfxGlQDkyfZFNWdrdM/SMSPcErmNjmcYCcih9lTPEXUEN+JorFyy53wzYQ
+         blVQ==
+X-Gm-Message-State: AOAM533B1yRdvSjZcsN/HybUy+wMAzRr3qgr5eTpREMsFKzkQ87LWrlR
+        eDiUWFEF91Q/laDYOgVP/cMAgwubnIf3lCte
+X-Google-Smtp-Source: ABdhPJxMCD1uy5OtH/rfQcGvmBrhxSjZNftrKmDoPQf463mdE8fRrlNv8GbsPVw+FCZ38SV1RL/Err4XbOOp0GEM
+X-Received: by 2002:a0c:b604:: with SMTP id f4mr15297001qve.68.1596544904936;
+ Tue, 04 Aug 2020 05:41:44 -0700 (PDT)
+Date:   Tue,  4 Aug 2020 14:41:28 +0200
 In-Reply-To: <cover.1596544734.git.andreyknvl@google.com>
-Message-Id: <99f7d90a4237431bf5988599fb41358e92876eb0.1596544734.git.andreyknvl@google.com>
+Message-Id: <3063ab1411e92bce36061a96e25b651212e70ba6.1596544734.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1596544734.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH v2 4/5] kasan: allow enabling stack tagging for tag-based mode
+Subject: [PATCH v2 5/5] kasan: adjust kasan_stack_oob for tag-based mode
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
@@ -72,32 +72,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use CONFIG_KASAN_STACK to enable stack tagging.
+Use OOB_TAG_OFF as access offset to land the access into the next granule.
 
-Note, that HWASAN short granules [1] are disabled. Supporting those will
-require more kernel changes.
-
-[1] https://clang.llvm.org/docs/HardwareAssistedAddressSanitizerDesign.html
-
+Suggested-by: Walter Wu <walter-zh.wu@mediatek.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- scripts/Makefile.kasan | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ lib/test_kasan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
-index 03757cc60e06..f4beee1b0013 100644
---- a/scripts/Makefile.kasan
-+++ b/scripts/Makefile.kasan
-@@ -44,7 +44,8 @@ else
- endif
+diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+index 7674616d0c37..5d3f496893ef 100644
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -488,7 +488,7 @@ static noinline void __init kasan_global_oob(void)
+ static noinline void __init kasan_stack_oob(void)
+ {
+ 	char stack_array[10];
+-	volatile int i = 0;
++	volatile int i = OOB_TAG_OFF;
+ 	char *p = &stack_array[ARRAY_SIZE(stack_array) + i];
  
- CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
--		-mllvm -hwasan-instrument-stack=0 \
-+		-mllvm -hwasan-instrument-stack=$(CONFIG_KASAN_STACK) \
-+		-mllvm -hwasan-use-short-granules=0 \
- 		$(instrumentation_flags)
- 
- endif # CONFIG_KASAN_SW_TAGS
+ 	pr_info("out-of-bounds on stack\n");
 -- 
 2.28.0.163.g6104cc2f0b6-goog
 
