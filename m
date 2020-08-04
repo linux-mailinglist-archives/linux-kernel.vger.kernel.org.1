@@ -2,329 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CE923BCD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A83823BCE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729484AbgHDPAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 11:00:52 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:28674 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729474AbgHDO7v (ORCPT
+        id S1729468AbgHDPEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 11:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728467AbgHDPAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:59:51 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 074E2eTv012615;
-        Tue, 4 Aug 2020 16:04:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=LAG1/atoWlfWmJtGbllySuRLl1a6COVGHRrcpAnsvT4=;
- b=BL+ho6hQTKnVi4msGN1TyWPhmU0E8Hj9r5AGDUn2IOe5hA503883/UoUUorsbPZ4nhFn
- ubDAZjO88ZpbAm+LE70U0Tt+cpBZnwN6bPm8l7Ly52qQ+3XhREzZo5ggMa/ON0tG2pJQ
- whkK+nUSAFJGD1WL0RiZcgOMfP/qEjxiy1hkkAA1GtUE2nOwiqhW2ftBu6y5ORfy+o/R
- dfLYwysyN/pvERl3HHTlD4v4MjIpvClAl4SWn2m7EDG+Ibd4t+4Ms7bwIe5p6ERQH8dw
- 5o3BVFyX8GSPwtY/5ONatOo5nMkgEWz2Jq63AqCV9X+tWwQWueKyvmZMJkPb3OgWdnQv vg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 32n6sb3dp9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Aug 2020 16:04:32 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D0C7B10002A;
-        Tue,  4 Aug 2020 16:04:29 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag5node2.st.com [10.75.127.14])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C40952BC7A0;
-        Tue,  4 Aug 2020 16:04:29 +0200 (CEST)
-Received: from lmecxl1060.lme.st.com (10.75.127.45) by SFHDAG5NODE2.st.com
- (10.75.127.14) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 4 Aug
- 2020 16:04:28 +0200
-Subject: Re: [PATCH v3 2/2] i2c: stm32f7: Add SMBus Host-Notify protocol
- support
-To:     Alain Volmat <alain.volmat@st.com>, <wsa@kernel.org>
-CC:     <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>
-References: <1596431876-24115-1-git-send-email-alain.volmat@st.com>
- <1596431876-24115-3-git-send-email-alain.volmat@st.com>
-From:   Pierre Yves MORDRET <pierre-yves.mordret@st.com>
-Message-ID: <e27abfbc-6cb4-ab00-04ea-4147982c8393@st.com>
-Date:   Tue, 4 Aug 2020 16:04:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 4 Aug 2020 11:00:01 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929E5C06174A;
+        Tue,  4 Aug 2020 08:00:01 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id e11so6579110otk.4;
+        Tue, 04 Aug 2020 08:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IaNLxJ1/WlvDLv3w/w1llfejQsijIQCGiwCc3+/r9KI=;
+        b=XnDFHAHn2g9C2MR8ZRaL13rYndbckI3ZGTLXFJUu3N1b9L/zHfW+5wja/WoFbxdrLP
+         ZgoUl8KD7T0Y2PlzBRTrHhSe2Ktf7Ule69RwGzXM7FWItptX6XcTKrIfDXOYmv6a4qHm
+         CFBEXRsJhvbtd/V6kOiUA3Bwnkv3YCW3eL01YjWA+kuI98WdABfK81WKx5lbpdwN9DJJ
+         AcVxOA+Kg3Ti3dth1GLJg6qVowpcVxFBKxhv2vorzJKCxf466lInxSSbWW6Q9jzP+gdM
+         XmQ3ySKuqKTaaBUvDO335eKZvuRqR1eV69ZvpkvrKlW4Raqwbl3gt/dqUrWqtAdDrZal
+         9ahg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IaNLxJ1/WlvDLv3w/w1llfejQsijIQCGiwCc3+/r9KI=;
+        b=O2HiAtchKYLfqVeT8C4h/CmpK0lJ/ThyXXf5Sh0r3xhHYC6zmUu8lWO55C6jizAmjj
+         BYc3EDWmCca3F7/iqc9y4UzCjTIY6NGGsDYDE9s2TmZ4MK2gw0KaXK/RtCzM9ONn2c+J
+         M/B946cqE0yu+b7ZTREM9tQdk6ehaZX+ToftGyC91D7Xnz1NEywIhR7eY/VrnOrnHegT
+         jn8nSJwhLGM1BwmqLDsWcwsWOfcrtadjoTb2Q5JzRUD5gxk8Emh/ju9FEWLD4diCSrY9
+         94bDuyHIoy66/IlGRzlMC7Q3fpPjKMVRJT6i80BGGKtI5TpALgGo35JiK4ePZ4lyZMtO
+         2xWw==
+X-Gm-Message-State: AOAM533qHp0tb1aXQ2AQaJ43H92bp6n3mdYEN810R71TtxpHQbKNyFYX
+        ns5oQq+cFvE0IpDlj63ZhUTQt9HXXLwuUKFB5+Q5j56HQM8=
+X-Google-Smtp-Source: ABdhPJwfQiVbIWerhpofmsk6XOXt3poc8oqAEZouH2TKDdVMM6pu1x65uvdYOxbbU2diHF6AiXahTHry2nFgb6qp1vA=
+X-Received: by 2002:a9d:4e6:: with SMTP id 93mr18890630otm.308.1596553200893;
+ Tue, 04 Aug 2020 08:00:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1596431876-24115-3-git-send-email-alain.volmat@st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG5NODE2.st.com
- (10.75.127.14)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-04_04:2020-08-03,2020-08-04 signatures=0
+References: <CANsGL8PFnEvBcfLV7eKZQCONoork3EQ7x_RdtkFPXuWZQbK=qg@mail.gmail.com>
+ <20200804111913.GA15856@quack2.suse.cz>
+In-Reply-To: <20200804111913.GA15856@quack2.suse.cz>
+From:   nirinA raseliarison <nirina.raseliarison@gmail.com>
+Date:   Tue, 4 Aug 2020 17:59:42 +0300
+Message-ID: <CANsGL8Oe-4ZO3K2vxwv+Sh2GgZUwcxyQM+0N7jTC6hTA+086oA@mail.gmail.com>
+Subject: Re: kernel BUG at fs/inode.c:531!
+To:     Jan Kara <jack@suse.cz>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alain
+hello!
+no issue yet with 5.8:
 
-Look good for me
+Linux version 5.8.0.20200803 (nirina@supernova.org) (gcc (GCC) 10.2.0,
+GNU ld version 2.33.1-slack15) #1 SMP Mon Aug 3 16:17:10 EAT 2020
 
-Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@st.com>
+it seems that the bug was triggered when i ran programs compiled
+against gcc-9.3.0 under kernel build with gcc-10.1.0, but not sure if
+that is the real problem. running the programs under the same compiler
+doesn't exhibit the bug and since i rebuilt the programs with
+gcc-10.1.0, i no longer hit the issue.
 
-Best Regards
+here is my /proc/mounts :
 
-On 8/3/20 7:17 AM, Alain Volmat wrote:
-> Rely on the core functions to implement the host-notify
-> protocol via the a I2C slave device.
-> 
-> Signed-off-by: Alain Volmat <alain.volmat@st.com>
-> ---
->  v3: identical to v2
->  v2: fix slot #0 usage condition within stm32f7_i2c_get_free_slave_id
-> 
->  drivers/i2c/busses/Kconfig       |   1 +
->  drivers/i2c/busses/i2c-stm32f7.c | 110 +++++++++++++++++++++++++++++++++------
->  2 files changed, 96 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-> index 735bf31a3fdf..ae8671727a4c 100644
-> --- a/drivers/i2c/busses/Kconfig
-> +++ b/drivers/i2c/busses/Kconfig
-> @@ -1036,6 +1036,7 @@ config I2C_STM32F7
->  	tristate "STMicroelectronics STM32F7 I2C support"
->  	depends on ARCH_STM32 || COMPILE_TEST
->  	select I2C_SLAVE
-> +	select I2C_SMBUS
->  	help
->  	  Enable this option to add support for STM32 I2C controller embedded
->  	  in STM32F7 SoCs.
-> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-> index bff3479fe122..223c238c3c09 100644
-> --- a/drivers/i2c/busses/i2c-stm32f7.c
-> +++ b/drivers/i2c/busses/i2c-stm32f7.c
-> @@ -18,6 +18,7 @@
->  #include <linux/delay.h>
->  #include <linux/err.h>
->  #include <linux/i2c.h>
-> +#include <linux/i2c-smbus.h>
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
->  #include <linux/iopoll.h>
-> @@ -50,6 +51,7 @@
->  
->  /* STM32F7 I2C control 1 */
->  #define STM32F7_I2C_CR1_PECEN			BIT(23)
-> +#define STM32F7_I2C_CR1_SMBHEN			BIT(20)
->  #define STM32F7_I2C_CR1_WUPEN			BIT(18)
->  #define STM32F7_I2C_CR1_SBC			BIT(16)
->  #define STM32F7_I2C_CR1_RXDMAEN			BIT(15)
-> @@ -150,7 +152,7 @@
->  
->  #define STM32F7_I2C_MAX_LEN			0xff
->  #define STM32F7_I2C_DMA_LEN_MIN			0x16
-> -#define STM32F7_I2C_MAX_SLAVE			0x2
-> +#define STM32F7_I2C_MAX_SLAVE			0x3
->  
->  #define STM32F7_I2C_DNF_DEFAULT			0
->  #define STM32F7_I2C_DNF_MAX			16
-> @@ -301,6 +303,8 @@ struct stm32f7_i2c_msg {
->   * @fmp_creg: register address for clearing Fast Mode Plus bits
->   * @fmp_mask: mask for Fast Mode Plus bits in set register
->   * @wakeup_src: boolean to know if the device is a wakeup source
-> + * @smbus_mode: states that the controller is configured in SMBus mode
-> + * @host_notify_client: SMBus host-notify client
->   */
->  struct stm32f7_i2c_dev {
->  	struct i2c_adapter adap;
-> @@ -327,6 +331,8 @@ struct stm32f7_i2c_dev {
->  	u32 fmp_creg;
->  	u32 fmp_mask;
->  	bool wakeup_src;
-> +	bool smbus_mode;
-> +	struct i2c_client *host_notify_client;
->  };
->  
->  /*
-> @@ -1321,10 +1327,18 @@ static int stm32f7_i2c_get_free_slave_id(struct stm32f7_i2c_dev *i2c_dev,
->  	int i;
->  
->  	/*
-> -	 * slave[0] supports 7-bit and 10-bit slave address
-> -	 * slave[1] supports 7-bit slave address only
-> +	 * slave[0] support only SMBus Host address (0x8)
-> +	 * slave[1] supports 7-bit and 10-bit slave address
-> +	 * slave[2] supports 7-bit slave address only
->  	 */
-> -	for (i = STM32F7_I2C_MAX_SLAVE - 1; i >= 0; i--) {
-> +	if (i2c_dev->smbus_mode && (slave->addr == 0x08)) {
-> +		if (i2c_dev->slave[0])
-> +			goto fail;
-> +		*id = 0;
-> +		return 0;
-> +	}
-> +
-> +	for (i = STM32F7_I2C_MAX_SLAVE - 1; i > 0; i--) {
->  		if (i == 1 && (slave->flags & I2C_CLIENT_TEN))
->  			continue;
->  		if (!i2c_dev->slave[i]) {
-> @@ -1333,6 +1347,7 @@ static int stm32f7_i2c_get_free_slave_id(struct stm32f7_i2c_dev *i2c_dev,
->  		}
->  	}
->  
-> +fail:
->  	dev_err(dev, "Slave 0x%x could not be registered\n", slave->addr);
->  
->  	return -EINVAL;
-> @@ -1776,7 +1791,13 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
->  	if (!stm32f7_i2c_is_slave_registered(i2c_dev))
->  		stm32f7_i2c_enable_wakeup(i2c_dev, true);
->  
-> -	if (id == 0) {
-> +	switch (id) {
-> +	case 0:
-> +		/* Slave SMBus Host */
-> +		i2c_dev->slave[id] = slave;
-> +		break;
-> +
-> +	case 1:
->  		/* Configure Own Address 1 */
->  		oar1 = readl_relaxed(i2c_dev->base + STM32F7_I2C_OAR1);
->  		oar1 &= ~STM32F7_I2C_OAR1_MASK;
-> @@ -1789,7 +1810,9 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
->  		oar1 |= STM32F7_I2C_OAR1_OA1EN;
->  		i2c_dev->slave[id] = slave;
->  		writel_relaxed(oar1, i2c_dev->base + STM32F7_I2C_OAR1);
-> -	} else if (id == 1) {
-> +		break;
-> +
-> +	case 2:
->  		/* Configure Own Address 2 */
->  		oar2 = readl_relaxed(i2c_dev->base + STM32F7_I2C_OAR2);
->  		oar2 &= ~STM32F7_I2C_OAR2_MASK;
-> @@ -1802,7 +1825,10 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
->  		oar2 |= STM32F7_I2C_OAR2_OA2EN;
->  		i2c_dev->slave[id] = slave;
->  		writel_relaxed(oar2, i2c_dev->base + STM32F7_I2C_OAR2);
-> -	} else {
-> +		break;
-> +
-> +	default:
-> +		dev_err(dev, "I2C slave id not supported\n");
->  		ret = -ENODEV;
->  		goto pm_free;
->  	}
-> @@ -1843,10 +1869,10 @@ static int stm32f7_i2c_unreg_slave(struct i2c_client *slave)
->  	if (ret < 0)
->  		return ret;
->  
-> -	if (id == 0) {
-> +	if (id == 1) {
->  		mask = STM32F7_I2C_OAR1_OA1EN;
->  		stm32f7_i2c_clr_bits(base + STM32F7_I2C_OAR1, mask);
-> -	} else {
-> +	} else if (id == 2) {
->  		mask = STM32F7_I2C_OAR2_OA2EN;
->  		stm32f7_i2c_clr_bits(base + STM32F7_I2C_OAR2, mask);
->  	}
-> @@ -1911,14 +1937,51 @@ static int stm32f7_i2c_setup_fm_plus_bits(struct platform_device *pdev,
->  					  &i2c_dev->fmp_mask);
->  }
->  
-> +static int stm32f7_i2c_enable_smbus_host(struct stm32f7_i2c_dev *i2c_dev)
-> +{
-> +	struct i2c_adapter *adap = &i2c_dev->adap;
-> +	void __iomem *base = i2c_dev->base;
-> +	struct i2c_client *client;
-> +
-> +	client = i2c_new_slave_host_notify_device(adap);
-> +	if (IS_ERR(client))
-> +		return PTR_ERR(client);
-> +
-> +	i2c_dev->host_notify_client = client;
-> +
-> +	/* Enable SMBus Host address */
-> +	stm32f7_i2c_set_bits(base + STM32F7_I2C_CR1, STM32F7_I2C_CR1_SMBHEN);
-> +
-> +	return 0;
-> +}
-> +
-> +static void stm32f7_i2c_disable_smbus_host(struct stm32f7_i2c_dev *i2c_dev)
-> +{
-> +	void __iomem *base = i2c_dev->base;
-> +
-> +	if (i2c_dev->host_notify_client) {
-> +		/* Disable SMBus Host address */
-> +		stm32f7_i2c_clr_bits(base + STM32F7_I2C_CR1,
-> +				     STM32F7_I2C_CR1_SMBHEN);
-> +		i2c_free_slave_host_notify_device(i2c_dev->host_notify_client);
-> +	}
-> +}
-> +
->  static u32 stm32f7_i2c_func(struct i2c_adapter *adap)
->  {
-> -	return I2C_FUNC_I2C | I2C_FUNC_10BIT_ADDR | I2C_FUNC_SLAVE |
-> -		I2C_FUNC_SMBUS_QUICK | I2C_FUNC_SMBUS_BYTE |
-> -		I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA |
-> -		I2C_FUNC_SMBUS_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL |
-> -		I2C_FUNC_SMBUS_PROC_CALL | I2C_FUNC_SMBUS_PEC |
-> -		I2C_FUNC_SMBUS_I2C_BLOCK;
-> +	struct stm32f7_i2c_dev *i2c_dev = i2c_get_adapdata(adap);
-> +
-> +	u32 func = I2C_FUNC_I2C | I2C_FUNC_10BIT_ADDR | I2C_FUNC_SLAVE |
-> +		   I2C_FUNC_SMBUS_QUICK | I2C_FUNC_SMBUS_BYTE |
-> +		   I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA |
-> +		   I2C_FUNC_SMBUS_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL |
-> +		   I2C_FUNC_SMBUS_PROC_CALL | I2C_FUNC_SMBUS_PEC |
-> +		   I2C_FUNC_SMBUS_I2C_BLOCK;
-> +
-> +	if (i2c_dev->smbus_mode)
-> +		func |= I2C_FUNC_SMBUS_HOST_NOTIFY;
-> +
-> +	return func;
->  }
->  
->  static const struct i2c_algorithm stm32f7_i2c_algo = {
-> @@ -2084,10 +2147,22 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
->  
->  	stm32f7_i2c_hw_config(i2c_dev);
->  
-> +	i2c_dev->smbus_mode = of_property_read_bool(pdev->dev.of_node, "smbus");
-> +
->  	ret = i2c_add_adapter(adap);
->  	if (ret)
->  		goto pm_disable;
->  
-> +	if (i2c_dev->smbus_mode) {
-> +		ret = stm32f7_i2c_enable_smbus_host(i2c_dev);
-> +		if (ret) {
-> +			dev_err(i2c_dev->dev,
-> +				"failed to enable SMBus Host-Notify protocol (%d)\n",
-> +				ret);
-> +			goto i2c_adapter_remove;
-> +		}
-> +	}
-> +
->  	dev_info(i2c_dev->dev, "STM32F7 I2C-%d bus adapter\n", adap->nr);
->  
->  	pm_runtime_mark_last_busy(i2c_dev->dev);
-> @@ -2095,6 +2170,9 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
->  
->  	return 0;
->  
-> +i2c_adapter_remove:
-> +	i2c_del_adapter(adap);
-> +
->  pm_disable:
->  	pm_runtime_put_noidle(i2c_dev->dev);
->  	pm_runtime_disable(i2c_dev->dev);
-> @@ -2126,6 +2204,8 @@ static int stm32f7_i2c_remove(struct platform_device *pdev)
->  {
->  	struct stm32f7_i2c_dev *i2c_dev = platform_get_drvdata(pdev);
->  
-> +	stm32f7_i2c_disable_smbus_host(i2c_dev);
-> +
->  	i2c_del_adapter(&i2c_dev->adap);
->  	pm_runtime_get_sync(i2c_dev->dev);
->  
-> 
+/dev/root / ext4 rw,relatime 0 0
+devtmpfs /dev devtmpfs rw,relatime,size=3D3927496k,nr_inodes=3D981874,mode=
+=3D755 0 0
+proc /proc proc rw,relatime 0 0
+sysfs /sys sysfs rw,relatime 0 0
+tmpfs /run tmpfs rw,nosuid,nodev,noexec,relatime,size=3D32768k,mode=3D755 0=
+ 0
+devpts /dev/pts devpts rw,relatime,gid=3D5,mode=3D620,ptmxmode=3D000 0 0
+tmpfs /dev/shm tmpfs rw,relatime 0 0
+cgroup_root /sys/fs/cgroup tmpfs rw,relatime,size=3D8192k,mode=3D755 0 0
+cpuset /sys/fs/cgroup/cpuset cgroup rw,relatime,cpuset 0 0
+cpu /sys/fs/cgroup/cpu cgroup rw,relatime,cpu 0 0
+cpuacct /sys/fs/cgroup/cpuacct cgroup rw,relatime,cpuacct 0 0
+blkio /sys/fs/cgroup/blkio cgroup rw,relatime,blkio 0 0
+memory /sys/fs/cgroup/memory cgroup rw,relatime,memory 0 0
+devices /sys/fs/cgroup/devices cgroup rw,relatime,devices 0 0
+freezer /sys/fs/cgroup/freezer cgroup rw,relatime,freezer 0 0
+net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
+perf_event /sys/fs/cgroup/perf_event cgroup rw,relatime,perf_event 0 0
+/dev/sda3 /mnt/sda3 ext4 rw,relatime 0 0
+/dev/sda5 /usr/local ext4 rw,relatime 0 0
+/dev/sda6 /mnt/big ext4 rw,relatime 0 0
+/dev/sda1 /mnt/sda1 ext4 rw,relatime 0 0
+tmpfs /var/run tmpfs rw,nosuid,nodev,noexec,relatime,size=3D32768k,mode=3D7=
+55 0 0
+nfsd /proc/fs/nfs nfsd rw,relatime 0 0
+nfsd /proc/fs/nfsd nfsd rw,relatime 0 0
+devpts /dev/pts devpts rw,relatime,gid=3D5,mode=3D620,ptmxmode=3D000 0 0
+none /var/run/user/1000 tmpfs rw,relatime,size=3D102400k,mode=3D700,uid=3D1=
+000 0 0
+none /run/user/1000 tmpfs rw,relatime,size=3D102400k,mode=3D700,uid=3D1000 =
+0 0
+none /var/run/user/0 tmpfs rw,relatime,size=3D102400k,mode=3D700 0 0
+none /run/user/0 tmpfs rw,relatime,size=3D102400k,mode=3D700 0 0
+nirina:/mnt/sda6 /mnt/sda6 nfs
+rw,relatime,vers=3D3,rsize=3D262144,wsize=3D262144,namlen=3D255,hard,proto=
+=3Dtcp,timeo=3D600,retrans=3D2,sec=3Dsys,mountaddr=3D192.168.100.2,mountver=
+s=3D3,mountport=3D37772,mountproto=3Dudp,local_lock=3Dnone,addr=3D192.168.1=
+00.2
+0 0
+nirina:/mnt/sda14 /mnt/sda14 nfs
+rw,relatime,vers=3D3,rsize=3D262144,wsize=3D262144,namlen=3D255,hard,proto=
+=3Dtcp,timeo=3D600,retrans=3D2,sec=3Dsys,mountaddr=3D192.168.100.2,mountver=
+s=3D3,mountport=3D37772,mountproto=3Dudp,local_lock=3Dnone,addr=3D192.168.1=
+00.2
+0 0
+nirina:/mnt/sda15 /mnt/sda15 nfs
+rw,relatime,vers=3D3,rsize=3D262144,wsize=3D262144,namlen=3D255,hard,proto=
+=3Dtcp,timeo=3D600,retrans=3D2,sec=3Dsys,mountaddr=3D192.168.100.2,mountver=
+s=3D3,mountport=3D37772,mountproto=3Dudp,local_lock=3Dnone,addr=3D192.168.1=
+00.2
+0 0
+nirina:/mnt/sda16 /mnt/sda16 nfs
+rw,relatime,vers=3D3,rsize=3D262144,wsize=3D262144,namlen=3D255,hard,proto=
+=3Dtcp,timeo=3D600,retrans=3D2,sec=3Dsys,mountaddr=3D192.168.100.2,mountver=
+s=3D3,mountport=3D37772,mountproto=3Dudp,local_lock=3Dnone,addr=3D192.168.1=
+00.2
+0 0
+
+
+Le mar. 4 ao=C3=BBt 2020 =C3=A0 14:19, Jan Kara <jack@suse.cz> a =C3=A9crit=
+ :
+>
+> Hello!
+>
+> On Wed 27-05-20 21:05:55, nirinA raseliarison wrote:
+> > i hit again this bug with:
+> >
+> > $ cat /proc/version
+> > Linux version 5.7.0-rc7.20200525 (nirina@supernova.org) (gcc version
+> > 10.1.0 (GCC), GNU ld version 2.33.1-slack15) #1 SMP Mon May 25
+> > 02:49:28 EAT 2020
+>
+> Thanks for report! I see this didn't get any reply. Can you still hit thi=
+s
+> issue with 5.8? If yes, what workload do you run on the machine to trigge=
+r
+> this? Can you send contents of /proc/mounts please? Thanks!
+>
+>                                                                 Honza
+>
+> >
+> >
+> > [99390.044690] ------------[ cut here ]------------
+> > [99390.044695] kernel BUG at fs/inode.c:531!
+> > [99390.044702] invalid opcode: 0000 [#1] SMP PTI
+> > [99390.044705] CPU: 0 PID: 149 Comm: kswapd0 Not tainted 5.7.0-rc7.2020=
+0525 #1
+> > [99390.044706] Hardware name: To be filled by O.E.M. To be filled by
+> > O.E.M./ONDA H61V Ver:4.01, BIOS 4.6.5 01/07/2013
+> > [99390.044712] RIP: 0010:clear_inode+0x75/0x80
+> > [99390.044714] Code: a8 20 74 2a a8 40 75 28 48 8b 83 28 01 00 00 48
+> > 8d 93 28 01 00 00 48 39 c2 75 17 48 c7 83 98 00 00 00 60 00 00 00 5b
+> > c3 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b 0f 0b 90 0f 1f 44 00 00 53 ba 48 02
+> > 00 00
+> > [99390.044716] RSP: 0018:ffffc900004c7b50 EFLAGS: 00010006
+> > [99390.044717] RAX: 0000000000000000 RBX: ffff88808c5f9e38 RCX: 0000000=
+000000000
+> > [99390.044718] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff888=
+08c5f9fb8
+> > [99390.044719] RBP: ffff88808c5f9e38 R08: ffffffffffffffff R09: ffffc90=
+0004c7cd8
+> > [99390.044720] R10: 0000000000000000 R11: 0000000000000001 R12: ffff888=
+08c5f9fb0
+> > [99390.044721] R13: ffff888215658000 R14: ffff888215658070 R15: 0000000=
+00000014c
+> > [99390.044723] FS:  0000000000000000(0000) GS:ffff888217600000(0000)
+> > knlGS:0000000000000000
+> > [99390.044724] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [99390.044725] CR2: 00000006f9004000 CR3: 00000001511da001 CR4: 0000000=
+0001606f0
+> > [99390.044726] Call Trace:
+> > [99390.044732]  ext4_clear_inode+0x16/0x80
+> > [99390.044736]  ext4_evict_inode+0x58/0x4c0
+> > [99390.044738]  evict+0xbf/0x180
+> > [99390.044740]  prune_icache_sb+0x7e/0xb0
+> > [99390.044743]  super_cache_scan+0x161/0x1e0
+> > [99390.044746]  do_shrink_slab+0x146/0x290
+> > [99390.044749]  shrink_slab+0xac/0x2a0
+> > [99390.044752]  ? __switch_to_asm+0x40/0x70
+> > [99390.044754]  shrink_node+0x16f/0x660
+> > [99390.044757]  balance_pgdat+0x2cf/0x5b0
+> > [99390.044759]  kswapd+0x1dc/0x3a0
+> > [99390.044762]  ? __schedule+0x217/0x710
+> > [99390.044764]  ? wait_woken+0x80/0x80
+> > [99390.044766]  ? balance_pgdat+0x5b0/0x5b0
+> > [99390.044768]  kthread+0x118/0x130
+> > [99390.044770]  ? kthread_create_worker_on_cpu+0x70/0x70
+> > [99390.044772]  ret_from_fork+0x35/0x40
+> > [99390.044773] Modules linked in: 8021q garp stp mrp llc rtl8192cu
+> > rtl_usb rtl8192c_common rtlwifi mac80211 cfg80211 uas usb_storage
+> > nct6775 hwmon_vid ipv6 rfkill nf_defrag_ipv6 snd_pcm_oss snd_mixer_oss
+> > fuse hid_generic usbhid hid snd_hda_codec_hdmi snd_hda_codec_realtek
+> > snd_hda_codec_generic i2c_dev coretemp hwmon i915 x86_pkg_temp_thermal
+> > intel_powerclamp kvm_intel kvm i2c_algo_bit irqbypass drm_kms_helper
+> > evdev r8169 snd_hda_intel syscopyarea snd_intel_dspcfg realtek
+> > snd_hda_codec libphy crc32_pclmul sysfillrect serio_raw sysimgblt
+> > snd_hwdep fb_sys_fops snd_hda_core drm snd_pcm fan thermal
+> > drm_panel_orientation_quirks snd_timer intel_gtt 8250 agpgart snd
+> > 8250_base ehci_pci serial_core button ehci_hcd video soundcore
+> > i2c_i801 lpc_ich mfd_core mei_me mei loop
+> > [99390.044800] ---[ end trace 2ca57858c52a0ad4 ]---
+> >
+> > --
+> > nirinA
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
