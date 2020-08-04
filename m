@@ -2,120 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F1C23B462
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 07:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD7C23B467
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 07:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbgHDFZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 01:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgHDFZO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 01:25:14 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C94C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 22:25:14 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id m8so12698806pfh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 22:25:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VyvJTV65QYrZba9SIfzf3Qah/NqVWDrTLrkNojuqHV0=;
-        b=SafJSNqu2HzopBQNzSMzXgtQyoN95IoHlxuM48onRYrNr0jx5X5Yx4nbz7n1qxZTaz
-         BBLmwCHy6ILOfFAj4CVMMmylSVMacwrWKkcJQHwIk7vN5K3c9K4FBhLNWH2UDK0qjPuR
-         YGUpqI6YFRmyyfYhhfJDeZht6Y+jZjY7iT5DkLaaNJe5xOHeoArcGLnKyrwUVYgWgrzO
-         j1kh4lVdzME9oNVocVV+RTxxFppvbtEuHgVfDLkCKZT8qhtbHe7/vfLu2r0h/KLji4uj
-         RI5P+HSeGJFYjBdWLInTEPaOTXwpLsJZ2dkncuYuY/PF5XAQYjUlZEzY0oCevMx0Arni
-         uAoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VyvJTV65QYrZba9SIfzf3Qah/NqVWDrTLrkNojuqHV0=;
-        b=sm+pveNm/3mpfe3fW2KmQkGwxOcYtq1OQQdjK01INUgj8nogeLR3J2ZM5kAVuhXGJS
-         PWUbnErkR0Y2FKDMQpSWJfvsj/3AxLxML8Q/X1zWNkLGUvPzcliYJvkCzOFEsJ8E03sr
-         KZ7TeuSUWQISkybFHGmP1Lpt82F3d6COXfjSlqBw3zHEBj897gznIBoFybIqU3vePXjR
-         1sBKMKMGP3HGu5tU2mpkwfz/hkYL0RywgkhmeBpSTJqheD2wJLJM6JgzrpqN1mPLldgX
-         SIJk9iBqVGvXa4TZ40Ouj6Fji72HZEz+7eNtx2mfyQ98omA7KVwd0/YD4hkq8ncNYBwm
-         5mFA==
-X-Gm-Message-State: AOAM533f8Ed19OCCdkmNg7qnIeAD+dpQmdX+Wih2ISli5rcouG4vtLWP
-        kY5vpStn2Eh51UyWhYuAIwL/YQ==
-X-Google-Smtp-Source: ABdhPJzQBa7GAz/BaRtEtdELU/h9ZsuAAyasELfzNQnsQprm5zGlYxyfDe3Uz3t1K1kJ/+YPjsWlhg==
-X-Received: by 2002:a63:5d11:: with SMTP id r17mr17546649pgb.146.1596518713836;
-        Mon, 03 Aug 2020 22:25:13 -0700 (PDT)
-Received: from localhost ([122.162.244.227])
-        by smtp.gmail.com with ESMTPSA id v11sm19518479pgs.22.2020.08.03.22.25.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 03 Aug 2020 22:25:12 -0700 (PDT)
-Date:   Tue, 4 Aug 2020 10:55:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] cpufreq: tegra186: Fix initial frequency
-Message-ID: <20200804052509.24en7voy2bg6vdbc@vireshk-mac-ubuntu>
-References: <20200712100645.13927-1-jonathanh@nvidia.com>
- <20200713032554.cykywnygxln6ukrl@vireshk-i7>
- <3d6091f2-6b04-185f-6c23-e39a34b87877@nvidia.com>
- <20200714034635.2zdv3wzmftjg2t4a@vireshk-i7>
- <8c6d3c32-c142-3981-3a52-6560e885f4c9@nvidia.com>
+        id S1728931AbgHDF3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 01:29:30 -0400
+Received: from mga05.intel.com ([192.55.52.43]:62694 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727035AbgHDF33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 01:29:29 -0400
+IronPort-SDR: wOoSP/RLVSVEWHG2BxbZcGETmWmpGlb/FXRmoZdH5ZHkH6KvUHtEuJ9ZyL3MoSLuFuOWO/oZuQ
+ gN6MPyslrtJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="237113084"
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="237113084"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2020 22:29:28 -0700
+IronPort-SDR: Z8iqhYn++WufcKhSFIRurRKwOsdQH/yF+J5w7TlJp1oymsnYKRD5uGkMvu7j8j3vG0PTbUTF1e
+ xeIsCzEzBVCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="330486541"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by FMSMGA003.fm.intel.com with ESMTP; 03 Aug 2020 22:29:27 -0700
+Subject: Re: [PATCH V1 1/2] mmc: sdhci-pci-o2micro: Bug fix for O2 host
+ controller Seabird1
+To:     "Shirley Her (SC)" <shirley.her@bayhubtech.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200721011733.8416-1-shirley.her@bayhubtech.com>
+ <BY5PR16MB33196E3E0FB7C2143BE7D73F8B4D0@BY5PR16MB3319.namprd16.prod.outlook.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <fc572647-9a51-ee38-c1a7-71f62c1edad0@intel.com>
+Date:   Tue, 4 Aug 2020 08:29:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c6d3c32-c142-3981-3a52-6560e885f4c9@nvidia.com>
-User-Agent: NeoMutt/20170609 (1.8.3)
+In-Reply-To: <BY5PR16MB33196E3E0FB7C2143BE7D73F8B4D0@BY5PR16MB3319.namprd16.prod.outlook.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31-07-20, 13:14, Jon Hunter wrote:
-> I have been doing some more testing on Tegra, I noticed that when
-> reading the current CPU frequency via the sysfs scaling_cur_freq entry,
-> this always returns the cached value (at least for Tegra). Looking at
-> the implementation of scaling_cur_freq I see ...
-> 
-> static ssize_t show_scaling_cur_freq(struct cpufreq_policy *policy, char *buf)
-> {
->         ssize_t ret; 
->         unsigned int freq;
-> 
->         freq = arch_freq_get_on_cpu(policy->cpu);
->         if (freq)
->                 ret = sprintf(buf, "%u\n", freq);
->         else if (cpufreq_driver && cpufreq_driver->setpolicy &&
->                         cpufreq_driver->get)
->                 ret = sprintf(buf, "%u\n", cpufreq_driver->get(policy->cpu));
->         else
->                 ret = sprintf(buf, "%u\n", policy->cur);
->         return ret; 
-> }
-> 
-> The various Tegra CPU frequency drivers do not implement the
-> set_policy callback and hence why we always get the cached value. I
-> see the following commit added this and before it simply return the
-> cached value ...
-> 
-> commit c034b02e213d271b98c45c4a7b54af8f69aaac1e
-> Author: Dirk Brandewie <dirk.j.brandewie@intel.com>
-> Date:   Mon Oct 13 08:37:40 2014 -0700
-> 
->     cpufreq: expose scaling_cur_freq sysfs file for set_policy() drivers
-> 
-> Is this intentional? 
+Sorry, I have been away for a while, but I will look at it shortly.
 
-Yes, it is.
+On 3/08/20 10:23 pm, Shirley Her (SC) wrote:
+> Hi, Adrian:
+> 
+> Do you have chance to review the patched code?
+> 
+> Thanks,
+> Shirley
+> 
+> ----------------------------------------------------------------------------
+> *From:* Shirley Her (SC) <shirley.her@bayhubtech.com>
+> *Sent:* Monday, July 20, 2020 6:18 PM
+> *To:* adrian.hunter@intel.com <adrian.hunter@intel.com>;
+> ulf.hansson@linaro.org <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org
+> <linux-mmc@vger.kernel.org>; linux-kernel@vger.kernel.org
+> <linux-kernel@vger.kernel.org>
+> *Cc:* Shaper Liu (WH) <shaper.liu@bayhubtech.com>; Chevron Li (WH)
+> <chevron.li@bayhubtech.com>; Xiaoguang Yu (WH)
+> <xiaoguang.yu@bayhubtech.com>; Max Huang (SC) <max.huang@bayhubtech.com>;
+> Shirley Her (SC) <shirley.her@bayhubtech.com>
+> *Subject:* [PATCH V1 1/2] mmc: sdhci-pci-o2micro: Bug fix for O2 host
+> controller Seabird1
+>  
+> Add bug fix for O2 host controller Seabird1
+> 
+> Signed-off-by: Shirley Her <shirley.her@bayhubtech.com>
+> ---
+> change in V1:
+> 1. Add quriks2 and mmc->caps2 for Seabird1
+> 2. Add get_cd support for Seabird1
+> ---
+>  drivers/mmc/host/sdhci-pci-o2micro.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-pci-o2micro.c
+> b/drivers/mmc/host/sdhci-pci-o2micro.c
+> index e2a846885902..ed3c605fcf0c 100644
+> --- a/drivers/mmc/host/sdhci-pci-o2micro.c
+> +++ b/drivers/mmc/host/sdhci-pci-o2micro.c
+> @@ -561,6 +561,12 @@ static int sdhci_pci_o2_probe_slot(struct
+> sdhci_pci_slot *slot)
+>                          slot->host->mmc_host_ops.get_cd = sdhci_o2_get_cd;
+>                  }
+>  
+> +               if (chip->pdev->device == PCI_DEVICE_ID_O2_SEABIRD1) {
+> +                       slot->host->mmc_host_ops.get_cd = sdhci_o2_get_cd;
+> +                       host->mmc->caps2 |= MMC_CAP2_NO_SDIO;
+> +                       host->quirks2 |= SDHCI_QUIRK2_PRESET_VALUE_BROKEN;
+> +               }
+> +
+>                  host->mmc_host_ops.execute_tuning = sdhci_o2_execute_tuning;
+>  
+>                  if (chip->pdev->device != PCI_DEVICE_ID_O2_FUJIN2)
+> -- 
+> 2.25.1
+> 
 
-There are two sysfs files to read the current frequency.
-
-- scaling_cur_freq: as you noticed it returns cached value unless it is for
-  setpolicy drivers in whose case cpufreq core doesn't control the frequency and
-  so doesn't cache any values.
-
-- cpuinfo_cur_freq: This will return the value as read from hardware using
-  ->get() callback.
-
--- 
-viresh
