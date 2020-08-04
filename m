@@ -2,204 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2842D23B86B
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40BF23B863
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730176AbgHDKEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 06:04:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22313 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728332AbgHDKEa (ORCPT
+        id S1730120AbgHDKDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 06:03:20 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:16210 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728726AbgHDKDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 06:04:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596535468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=pe+hNlBlJokGLROd+OkEWWry9BPX/DPDTBCU01H/1hU=;
-        b=AQpkWMwP5WUWbk2f655hi1PaAcdq/OPD48PiBLnRXAwvsrfkvp0G7SEGiH58Iif+1j6xiz
-        MojdGss2G9G0rM5hdmkbHGkWsYZkdFwoKBzbCV8+IvkNwNdmkp8JPY0AmsmsP3TOzz+5An
-        xFGGQSBBxhxa1rLuxz6N+kgOwOqY2m4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-o-0RnCYpO9iZCunD2zEs-Q-1; Tue, 04 Aug 2020 06:04:24 -0400
-X-MC-Unique: o-0RnCYpO9iZCunD2zEs-Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4059100CCC8;
-        Tue,  4 Aug 2020 10:04:22 +0000 (UTC)
-Received: from [10.36.113.95] (ovpn-113-95.ams2.redhat.com [10.36.113.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7FC1C5D9F7;
-        Tue,  4 Aug 2020 10:04:15 +0000 (UTC)
-Subject: Re: [PATCH v3 6/6] mm: document semantics of ZONE_MOVABLE
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>
-References: <20200804072408.5481-1-david@redhat.com>
- <20200804072408.5481-7-david@redhat.com> <20200804093323.GB8243@kernel.org>
- <65deeb21-63fe-d1c1-bb87-74a08035f79a@redhat.com>
- <20200804100333.GC8243@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <dbca0807-7bd0-02cc-fe5a-920d5524a9b0@redhat.com>
-Date:   Tue, 4 Aug 2020 12:04:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 4 Aug 2020 06:03:19 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 074A39Ni004120;
+        Tue, 4 Aug 2020 06:03:18 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 32n6cjsk1v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 Aug 2020 06:03:18 -0400
+Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 074A3HHH055531
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 4 Aug 2020 06:03:17 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 4 Aug 2020
+ 06:03:16 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 4 Aug 2020 06:03:15 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 074A3CbR002099;
+        Tue, 4 Aug 2020 06:03:13 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, Stefan Popa <stefan.popa@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH 2/2] iio: imu: adis16480: Add the option to enable/disable burst mode
+Date:   Tue, 4 Aug 2020 13:04:14 +0300
+Message-ID: <20200804100414.39002-2-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200804100414.39002-1-alexandru.ardelean@analog.com>
+References: <20200804100414.39002-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-In-Reply-To: <20200804100333.GC8243@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-04_03:2020-08-03,2020-08-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ clxscore=1015 mlxlogscore=999 bulkscore=0 phishscore=0 adultscore=0
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008040074
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.08.20 12:03, Mike Rapoport wrote:
-> On Tue, Aug 04, 2020 at 11:55:10AM +0200, David Hildenbrand wrote:
->> On 04.08.20 11:33, Mike Rapoport wrote:
->>> On Tue, Aug 04, 2020 at 09:24:08AM +0200, David Hildenbrand wrote:
->>>> Let's document what ZONE_MOVABLE means, how it's used, and which special
->>>> cases we have regarding unmovable pages (memory offlining vs. migration /
->>>> allocations).
->>>>
->>>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>>> Cc: Michal Hocko <mhocko@suse.com>
->>>> Cc: Michael S. Tsirkin <mst@redhat.com>
->>>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
->>>> Cc: Mike Rapoport <rppt@kernel.org>
->>>> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->>>> Cc: Baoquan He <bhe@redhat.com>
->>>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>>
->>> Several nits below, othersize
->>>
->>> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
->>>
->>>> ---
->>>>  include/linux/mmzone.h | 34 ++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 34 insertions(+)
->>>>
->>>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
->>>> index f6f884970511d..600d449e7d9e9 100644
->>>> --- a/include/linux/mmzone.h
->>>> +++ b/include/linux/mmzone.h
->>>> @@ -372,6 +372,40 @@ enum zone_type {
->>>>  	 */
->>>>  	ZONE_HIGHMEM,
->>>>  #endif
->>>> +	/*
->>>> +	 * ZONE_MOVABLE is similar to ZONE_NORMAL, except that it *primarily*
->>>> +	 * only contains movable pages. Main use cases are to make memory
->>>
->>> "Primarily only" sounds awkward. Maybe
->>>
->>> 	... except that it only contains movable pages with few exceptional
->>> 	cases described below. 
->>>
->>> And then 
->>>
->>> 	Main use cases for ZONE_MOVABLE are ...
->>
->> Ack!
->>
->>>
->>>> +	 * offlining more likely to succeed, and to locally limit unmovable
->>>> +	 * allocations - e.g., to increase the number of THP/huge pages.
->>>> +	 * Notable special cases are:
->>>> +	 *
->>>> +	 * 1. Pinned pages: (Long-term) pinning of movable pages might
->>>
->>> 		            ^long, capital L looked out of place for me
->>
->> Ack!
->>
->>>
->>>> +	 *    essentially turn such pages unmovable. Memory offlining might
->>>> +	 *    retry a long time.
->>>> +	 * 2. memblock allocations: kernelcore/movablecore setups might create
->>>> +	 *    situations where ZONE_MOVABLE contains unmovable allocations
->>>> +	 *    after boot. Memory offlining and allocations fail early.
->>>> +	 * 3. Memory holes: Such pages cannot be allocated. Applies only to
->>>> +	 *    boot memory, not hotplugged memory. Memory offlining and
->>>> +	 *    allocations fail early.
->>>
->>> I would clarify where page struct for abscent memory come from
->>
->> Something like:
->>
->> Memory holes: We might have a memmap for memory holes, for example, if
-> 
->                ^w ;-)
-> 
->> we have sections that are only partially System RAM. Such pages cannot
->> be ...
-> 
-> How about
-> 
-> ... sections that are only partially populated 
-> 
-> ?
+From: Stefan Popa <stefan.popa@analog.com>
 
-Yeah, shorter. Thanks!
+Although the burst read function does not require a stall time between
+each 16-bit segment, it however requires more processing since the
+software needs to look for the BURST_ID and take into account the offset
+to the first data channel. Some users might find it useful to be able to
+switch between the two modes.
 
+Signed-off-by: Stefan Popa <stefan.popa@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/imu/adis16480.c | 48 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
+diff --git a/drivers/iio/imu/adis16480.c b/drivers/iio/imu/adis16480.c
+index 9b100c8fb744..7d7712c33435 100644
+--- a/drivers/iio/imu/adis16480.c
++++ b/drivers/iio/imu/adis16480.c
+@@ -330,6 +330,45 @@ static int adis16480_debugfs_init(struct iio_dev *indio_dev)
+ 
+ #endif
+ 
++static ssize_t adis16495_burst_mode_enable_get(struct device *dev,
++					       struct device_attribute *attr,
++					       char *buf)
++{
++	struct adis16480 *st = iio_priv(dev_to_iio_dev(dev));
++
++	return sprintf(buf, "%d\n", st->adis.burst->en);
++}
++
++static ssize_t adis16495_burst_mode_enable_set(struct device *dev,
++					       struct device_attribute *attr,
++					       const char *buf, size_t len)
++{
++	struct adis16480 *st = iio_priv(dev_to_iio_dev(dev));
++	bool val;
++	int ret;
++
++	ret = kstrtobool(buf, &val);
++	if (ret)
++		return ret;
++
++	st->adis.burst->en = val;
++
++	return len;
++}
++
++static IIO_DEVICE_ATTR(burst_mode_enable, 0644,
++		       adis16495_burst_mode_enable_get,
++		       adis16495_burst_mode_enable_set, 0);
++
++static struct attribute *adis16495_attributes[] = {
++	&iio_dev_attr_burst_mode_enable.dev_attr.attr,
++	NULL,
++};
++
++static const struct attribute_group adis16495_attribute_group = {
++	.attrs = adis16495_attributes,
++};
++
+ static int adis16480_set_freq(struct iio_dev *indio_dev, int val, int val2)
+ {
+ 	struct adis16480 *st = iio_priv(indio_dev);
+@@ -1131,6 +1170,14 @@ static const struct iio_info adis16480_info = {
+ 	.debugfs_reg_access = adis_debugfs_reg_access,
+ };
+ 
++static const struct iio_info adis16495_info = {
++	.attrs = &adis16495_attribute_group,
++	.read_raw = &adis16480_read_raw,
++	.write_raw = &adis16480_write_raw,
++	.update_scan_mode = adis_update_scan_mode,
++	.debugfs_reg_access = adis_debugfs_reg_access,
++};
++
+ static int adis16480_stop_device(struct iio_dev *indio_dev)
+ {
+ 	struct adis16480 *st = iio_priv(indio_dev);
+@@ -1365,6 +1412,7 @@ static int adis16480_probe(struct spi_device *spi)
+ 	if (st->chip_info->burst) {
+ 		st->adis.burst = st->chip_info->burst;
+ 		st->adis.burst_extra_len = st->chip_info->burst->extra_len;
++		indio_dev->info = &adis16495_info;
+ 	}
+ 
+ 	ret = adis_setup_buffer_and_trigger(&st->adis, indio_dev,
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
