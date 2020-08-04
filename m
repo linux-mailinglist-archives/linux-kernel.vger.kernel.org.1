@@ -2,85 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCED23BA5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8BF23BA41
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgHDMaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 08:30:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgHDMaB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 08:30:01 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0165FC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 05:04:39 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id BQ4b2300g4C55Sk01Q4bRa; Tue, 04 Aug 2020 14:04:36 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1k2vgJ-0000fz-Qm; Tue, 04 Aug 2020 14:04:35 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1k2vgJ-0002Q0-Nm; Tue, 04 Aug 2020 14:04:35 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Rob Herring <robh@kernel.org>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] PCI: rcar-gen2: Fix crash in resource_list_first_type()
-Date:   Tue,  4 Aug 2020 14:04:30 +0200
-Message-Id: <20200804120430.9253-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+        id S1726923AbgHDMX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 08:23:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46628 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726533AbgHDMXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 08:23:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 796B0AD1E;
+        Tue,  4 Aug 2020 12:06:10 +0000 (UTC)
+Subject: Re: [PATCH v3 1/3] mm/gup: restrict CMA region by using allocation
+ scope API
+To:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@lge.com, Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <1596180906-8442-1-git-send-email-iamjoonsoo.kim@lge.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <370b1f3c-98ea-421a-d4a2-621bab5a5eec@suse.cz>
+Date:   Tue, 4 Aug 2020 14:05:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1596180906-8442-1-git-send-email-iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conversion to modern host bridge probing made the driver allocate
-its private data using devm_pci_alloc_host_bridge(), but forgot to
-remove the old allocation.  Hence part of the driver initialization is
-done using the new instance, while another part is done using the old
-instance, leading to a crash due to uninitialized bridge DMA ranges:
+On 7/31/20 9:35 AM, js1304@gmail.com wrote:
+> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> 
+> We have well defined scope API to exclude CMA region.
+> Use it rather than manipulating gfp_mask manually. With this change,
+> we can now restore __GFP_MOVABLE for gfp_mask like as usual migration
+> target allocation. It would result in that the ZONE_MOVABLE is also
+> searched by page allocator. For hugetlb, gfp_mask is redefined since
+> it has a regular allocation mask filter for migration target.
+> __GPF_NOWARN is added to hugetlb gfp_mask filter since a new user for
+> gfp_mask filter, gup, want to be silent when allocation fails.
+> 
+> Note that this can be considered as a fix for the commit 9a4e9f3b2d73
+> ("mm: update get_user_pages_longterm to migrate pages allocated from
+> CMA region"). However, "Fixes" tag isn't added here since it is just
+> suboptimal but it doesn't cause any problem.
+> 
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
-    Unable to handle kernel NULL pointer dereference at virtual address 00000008
-    pgd = (ptrval)
-    [00000008] *pgd=00000000
-    Internal error: Oops: 5 [#1] SMP ARM
-    CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc1-shmobile-00035-g92d69cc6275845a7 #645
-    Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
-    PC is at rcar_pci_probe+0x154/0x340
-    LR is at _raw_spin_unlock_irqrestore+0x18/0x20
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Fix this by dropping the old allocation.
-
-Fixes: 92d69cc6275845a7 ("PCI: rcar-gen2: Convert to use modern host bridge probe functions")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/pci/controller/pci-rcar-gen2.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/drivers/pci/controller/pci-rcar-gen2.c b/drivers/pci/controller/pci-rcar-gen2.c
-index 046965d284a6d54e..c9530038ca9a53fc 100644
---- a/drivers/pci/controller/pci-rcar-gen2.c
-+++ b/drivers/pci/controller/pci-rcar-gen2.c
-@@ -302,10 +302,6 @@ static int rcar_pci_probe(struct platform_device *pdev)
- 	if (mem_res->start & 0xFFFF)
- 		return -EINVAL;
- 
--	priv = devm_kzalloc(dev, sizeof(struct rcar_pci_priv), GFP_KERNEL);
--	if (!priv)
--		return -ENOMEM;
--
- 	priv->mem_res = *mem_res;
- 	priv->cfg_res = cfg_res;
- 
--- 
-2.17.1
+> ---
+>  include/linux/hugetlb.h |  2 ++
+>  mm/gup.c                | 17 ++++++++---------
+>  2 files changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index 6b9508d..2660b04 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -708,6 +708,8 @@ static inline gfp_t htlb_modify_alloc_mask(struct hstate *h, gfp_t gfp_mask)
+>  	/* Some callers might want to enfoce node */
+>  	modified_mask |= (gfp_mask & __GFP_THISNODE);
+>  
+> +	modified_mask |= (gfp_mask & __GFP_NOWARN);
+> +
+>  	return modified_mask;
+>  }
+>  
+> diff --git a/mm/gup.c b/mm/gup.c
+> index a55f1ec..3990ddc 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1601,10 +1601,12 @@ static struct page *new_non_cma_page(struct page *page, unsigned long private)
+>  	 * Trying to allocate a page for migration. Ignore allocation
+>  	 * failure warnings. We don't force __GFP_THISNODE here because
+>  	 * this node here is the node where we have CMA reservation and
+> -	 * in some case these nodes will have really less non movable
+> +	 * in some case these nodes will have really less non CMA
+>  	 * allocation memory.
+> +	 *
+> +	 * Note that CMA region is prohibited by allocation scope.
+>  	 */
+> -	gfp_t gfp_mask = GFP_USER | __GFP_NOWARN;
+> +	gfp_t gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_NOWARN;
+>  
+>  	if (PageHighMem(page))
+>  		gfp_mask |= __GFP_HIGHMEM;
+> @@ -1612,6 +1614,8 @@ static struct page *new_non_cma_page(struct page *page, unsigned long private)
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  	if (PageHuge(page)) {
+>  		struct hstate *h = page_hstate(page);
+> +
+> +		gfp_mask = htlb_modify_alloc_mask(h, gfp_mask);
+>  		/*
+>  		 * We don't want to dequeue from the pool because pool pages will
+>  		 * mostly be from the CMA region.
+> @@ -1626,11 +1630,6 @@ static struct page *new_non_cma_page(struct page *page, unsigned long private)
+>  		 */
+>  		gfp_t thp_gfpmask = GFP_TRANSHUGE | __GFP_NOWARN;
+>  
+> -		/*
+> -		 * Remove the movable mask so that we don't allocate from
+> -		 * CMA area again.
+> -		 */
+> -		thp_gfpmask &= ~__GFP_MOVABLE;
+>  		thp = __alloc_pages_node(nid, thp_gfpmask, HPAGE_PMD_ORDER);
+>  		if (!thp)
+>  			return NULL;
+> @@ -1773,7 +1772,6 @@ static long __gup_longterm_locked(struct mm_struct *mm,
+>  				     vmas_tmp, NULL, gup_flags);
+>  
+>  	if (gup_flags & FOLL_LONGTERM) {
+> -		memalloc_nocma_restore(flags);
+>  		if (rc < 0)
+>  			goto out;
+>  
+> @@ -1786,9 +1784,10 @@ static long __gup_longterm_locked(struct mm_struct *mm,
+>  
+>  		rc = check_and_migrate_cma_pages(mm, start, rc, pages,
+>  						 vmas_tmp, gup_flags);
+> +out:
+> +		memalloc_nocma_restore(flags);
+>  	}
+>  
+> -out:
+>  	if (vmas_tmp != vmas)
+>  		kfree(vmas_tmp);
+>  	return rc;
+> 
 
