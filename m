@@ -2,175 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075B523BC61
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F9323BC5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729121AbgHDOj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727016AbgHDOhD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:37:03 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B8DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 07:37:02 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id q4so26816750edv.13
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 07:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GO/PaZjgiFmbIuDRQzdv2wEQ6v47brbCE/X/qo+KGSI=;
-        b=MGzOwyvudquI7+thXiAsvTjduPmqjSU+8Jg6qbo7Hm6IpMNgUd3ikSIr6D06QgaZna
-         7Jf9ZKzPaRpkYpXfUnQmdC0A1myZp2zEJg9WyuiLwti06vtSHx2MffTqzYijOIG3dO+S
-         wq+dyltnrBdKrjDuxsS6rTu9Kv1j7ITrSwn3w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GO/PaZjgiFmbIuDRQzdv2wEQ6v47brbCE/X/qo+KGSI=;
-        b=a/NO0vlXSoUgXAYaJ9/4SFD7pUIdLRCDS251VFJxvVyv2n0gBsx0hxBoy0Pk4Pwuso
-         6wo8rsYXPf5iT4OoaAKkFJipFxmtjd+TGxl5iSa9fmDoRj38H6sITnIbQTg3IjY5qmNo
-         z2CjjbalOttB/sf3QEUpeLoExAWknR1VbFi1nS2chNSIWQ8QvOIAR+zlxrPonW9M8/Q8
-         JXExHUJ7IR2AY2pA6srZDKILUqUkKn0o0rywBa5o5blFT/jQIrjnXNlDbI9elCc8hUoz
-         JwU7f9oOeRyXGWpIq+uEWgC7elkdm2VpCl1r6npZQ++JdsCkMORSRPRerdSUvpivw287
-         7AOA==
-X-Gm-Message-State: AOAM532SVyH4t/tEdHwQ549AkQHuaRVk+tduvynx5v0stFu0FxrIwU4Y
-        yT9AbIY6rjLOxp1/DAKdK1zABKpeum6DuO8+eTKowQ==
-X-Google-Smtp-Source: ABdhPJw8dVKolbYySKTpAVDj8Qqnrnk5bHQe6836go+X2Mkbuxqboankiu/s4QrpC7g8HyY1lZnZFgsI4Gl9xJDkvQs=
-X-Received: by 2002:a05:6402:12c4:: with SMTP id k4mr20551403edx.358.1596551821283;
- Tue, 04 Aug 2020 07:37:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <1842689.1596468469@warthog.procyon.org.uk> <1845353.1596469795@warthog.procyon.org.uk>
- <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com> <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
-In-Reply-To: <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 4 Aug 2020 16:36:50 +0200
-Message-ID: <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
-Subject: Re: [GIT PULL] Filesystem Information
-To:     Ian Kent <raven@themaw.net>
-Cc:     David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Christian Brauner <christian@brauner.io>,
-        Lennart Poettering <lennart@poettering.net>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        LSM <linux-security-module@vger.kernel.org>,
+        id S1729163AbgHDOhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:37:20 -0400
+Received: from relay.sw.ru ([185.231.240.75]:42122 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729100AbgHDOhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 10:37:02 -0400
+Received: from [192.168.15.159]
+        by relay3.sw.ru with esmtp (Exim 4.93)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1k2y3L-00062b-9B; Tue, 04 Aug 2020 17:36:31 +0300
+Subject: Re: [PATCH 1/8] ns: Add common refcount into ns_common add use it as
+ counter for net_ns
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     christian.brauner@ubuntu.com, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <159644958332.604812.13004003379291842292.stgit@localhost.localdomain>
+ <159644977635.604812.1319877322927063560.stgit@localhost.localdomain>
+ <875z9ysit5.fsf@x220.int.ebiederm.org>
+ <49106051-be26-7b89-f9e8-7c441dbda18a@virtuozzo.com>
+ <87sgd2o6vt.fsf@x220.int.ebiederm.org>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <6f6f9989-9cde-f93a-ad0a-311f264398f0@virtuozzo.com>
+Date:   Tue, 4 Aug 2020 17:36:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <87sgd2o6vt.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 4:15 AM Ian Kent <raven@themaw.net> wrote:
->
-> On Mon, 2020-08-03 at 18:42 +0200, Miklos Szeredi wrote:
-> > On Mon, Aug 3, 2020 at 5:50 PM David Howells <dhowells@redhat.com>
-> > wrote:
-> > >
-> > > Hi Linus,
-> > >
-> > > Here's a set of patches that adds a system call, fsinfo(), that
-> > > allows
-> > > information about the VFS, mount topology, superblock and files to
-> > > be
-> > > retrieved.
-> > >
-> > > The patchset is based on top of the mount notifications patchset so
-> > > that
-> > > the mount notification mechanism can be hooked to provide event
-> > > counters
-> > > that can be retrieved with fsinfo(), thereby making it a lot faster
-> > > to work
-> > > out which mounts have changed.
-> > >
-> > > Note that there was a last minute change requested by Mikl=C3=B3s: th=
-e
-> > > event
-> > > counter bits got moved from the mount notification patchset to this
-> > > one.
-> > > The counters got made atomic_long_t inside the kernel and __u64 in
-> > > the
-> > > UAPI.  The aggregate changes can be assessed by comparing pre-
-> > > change tag,
-> > > fsinfo-core-20200724 to the requested pull tag.
-> > >
-> > > Karel Zak has created preliminary patches that add support to
-> > > libmount[*]
-> > > and Ian Kent has started working on making systemd use these and
-> > > mount
-> > > notifications[**].
-> >
-> > So why are you asking to pull at this stage?
-> >
-> > Has anyone done a review of the patchset?
->
-> I have been working with the patch set as it has evolved for quite a
-> while now.
->
-> I've been reading the kernel code quite a bit and forwarded questions
-> and minor changes to David as they arose.
->
-> As for a review, not specifically, but while the series implements a
-> rather large change it's surprisingly straight forward to read.
->
-> In the time I have been working with it I haven't noticed any problems
-> except for those few minor things that I reported to David early on (in
-> some cases accompanied by simple patches).
->
-> And more recently (obviously) I've been working with the mount
-> notifications changes and, from a readability POV, I find it's the
-> same as the fsinfo() code.
->
-> >
-> > I think it's obvious that this API needs more work.  The integration
-> > work done by Ian is a good direction, but it's not quite the full
-> > validation and review that a complex new API needs.
->
-> Maybe but the system call is fundamental to making notifications useful
-> and, as I say, after working with it for quite a while I don't fell
-> there's missing features (that David hasn't added along the way) and
-> have found it provides what's needed for what I'm doing (for mount
-> notifications at least).
+On 04.08.2020 16:52, Eric W. Biederman wrote:
+> Kirill Tkhai <ktkhai@virtuozzo.com> writes:
+> 
+>> On 04.08.2020 15:21, Eric W. Biederman wrote:
+>>> Kirill Tkhai <ktkhai@virtuozzo.com> writes:
+>>>
+>>>> Currently, every type of namespaces has its own counter,
+>>>> which is stored in ns-specific part. Say, @net has
+>>>> struct net::count, @pid has struct pid_namespace::kref, etc.
+>>>>
+>>>> This patchset introduces unified counter for all types
+>>>> of namespaces, and converts net namespace to use it first.
+>>>
+>>> And the other refcounts on struct net?
+>>>
+>>> How do they play into what you are trying to do?
+>>
+>> I just don't understand you. Different refcounters are related to different
+>> problems, they are introduced to solve. This patchset changes only one refcounter,
+>> and it does not touch other of them. What do you want to know about others?
+>>
+> 
+> Why net::count not net::passive?  What problem are you trying to solve?
 
-Apart from the various issues related to the various mount ID's and
-their sizes, my general comment is (and was always): why are we adding
-a multiplexer for retrieval of mostly unrelated binary structures?
+net::count is a counter, which indicates whether net is alive and still
+initilized. net::passive does not guarantees that net has not been
+deinitialized yet.
 
-<linux/fsinfo.h> is 345 lines.  This is not a simple and clean API.
+The same with another namespaces. All of merged counters indicate
+that a namespace is alive and initialized. So, we merge them by this property.
 
-A simple and clean replacement API would be:
+> They both are reference counts on the network namespace.
+> 
+> I don't understand what you are trying to do, other than take a bunch of
+> things that look similar and squash them all together.
+> 
+> What semantics does this magical common reference count have?
+> Why is it better for the count to live in ns_common rather than it
+> it's own dedicated field of struct net?
 
-int get_mount_attribute(int dfd, const char *path, const char
-*attr_name, char *value_buf, size_t buf_size, int flags);
+The only visible current effect is better readability and better
+debugability with, say, crash on kernel dump.
 
-No header file needed with dubiously sized binary values.
+> Given that decrementing still requires code per namespace to handle
+> the count going to zero.  How does this benefit anyone?
 
-The only argument was performance, but apart from purely synthetic
-microbenchmarks that hasn't been proven to be an issue.
+Since namespaces are different by type, they require different destructors.
+Generic counter can't solve any problem, the namespaces can address.
 
-And notice how similar the above interface is to getxattr(), or the
-proposed readfile().  Where has the "everything is  a file" philosophy
-gone?
+> Has the effect of cache line placement of the move of the reference
+> count been considered?
 
-I think we already lost that with the xattr API, that should have been
-done in a way that fits this philosophy.  But given that we  have "/"
-as the only special purpose char in filenames, and even repetitions
-are allowed, it's hard to think of a good way to do that.  Pity.
+I don't see any performance impact during namespace creation/destruction
+test.
 
-Still I think it would be nice to have a general purpose attribute
-retrieval API instead of the multiplicity of binary ioctls, xattrs,
-etc.
-
-Is that totally crazy?  Nobody missing the beauty in recently introduced AP=
-Is?
-
-Thanks,
-Miklos
+> All I see in the patch in question is switching a location that the
+> count lives.  Which does not seem useful to me.
+> 
+> I am not fundamentally oppossed but I don't see the point.  At this
+> point it looks like you are making things harder to maintain by making
+> things common that are merely similar
