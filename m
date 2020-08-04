@@ -2,50 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182B923B77A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D76D23B785
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729954AbgHDJRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 05:17:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40006 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726056AbgHDJRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 05:17:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D7F87AD25;
-        Tue,  4 Aug 2020 09:17:55 +0000 (UTC)
-Message-ID: <1596532658.19923.6.camel@suse.com>
-Subject: Re: [PATCH] cdc-acm: rework notification_buffer resizing
-From:   Oliver Neukum <oneukum@suse.com>
-To:     trix@redhat.com, gregkh@linuxfoundation.org, t-herzog@gmx.de
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 04 Aug 2020 11:17:38 +0200
-In-Reply-To: <20200801152154.20683-1-trix@redhat.com>
-References: <20200801152154.20683-1-trix@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1730016AbgHDJSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 05:18:23 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:58122 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbgHDJSW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 05:18:22 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 10E1A1C0BDD; Tue,  4 Aug 2020 11:18:18 +0200 (CEST)
+Date:   Tue, 4 Aug 2020 11:18:17 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     pisa@cmp.felk.cvut.cz
+Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        mkl@pengutronix.de, socketcan@hartkopp.net, wg@grandegger.com,
+        davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com,
+        c.emde@osadl.org, armbru@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com,
+        ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com,
+        porazil@pikron.com
+Subject: Re: [PATCH v4 2/6] dt-bindings: net: can: binding for CTU CAN FD
+ open-source IP core.
+Message-ID: <20200804091817.yuf6s26bclehpwwi@duo.ucw.cz>
+References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
+ <701442883f2b439637ff84544745725bdee7bcf8.1596408856.git.pisa@cmp.felk.cvut.cz>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="kyw4twhhtai4pjwf"
+Content-Disposition: inline
+In-Reply-To: <701442883f2b439637ff84544745725bdee7bcf8.1596408856.git.pisa@cmp.felk.cvut.cz>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Samstag, den 01.08.2020, 08:21 -0700 schrieb trix@redhat.com:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Clang static analysis reports this error
-> 
-> cdc-acm.c:409:3: warning: Use of memory after it is freed
->         acm_process_notification(acm, (unsigned char *)dr);
-> 
-> There are three problems, the first one is that dr is not reset
 
-Hi,
+--kyw4twhhtai4pjwf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thank you, good catch.
+Hi!
 
-	Regards
-		Oliver
+> The commit text again to make checkpatch happy.
 
+?
+
+
+> +    oneOf:
+> +      - items:
+> +          - const: ctu,ctucanfd
+> +          - const: ctu,canfd-2
+> +      - const: ctu,ctucanfd
+
+For consistency, can we have ctu,canfd-1, ctu,canfd-2?
+
+Best regards,
+									Pavel
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--kyw4twhhtai4pjwf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXykn2QAKCRAw5/Bqldv6
+8kYCAJ4jA/qIYWq2pUyjiAJ/fOhTarpq6wCgxLuE0RfCV4mrqnFOk1DXh6CugEU=
+=4PoT
+-----END PGP SIGNATURE-----
+
+--kyw4twhhtai4pjwf--
