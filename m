@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318BC23B556
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AC523B561
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727060AbgHDHEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 03:04:43 -0400
-Received: from mga07.intel.com ([134.134.136.100]:3049 "EHLO mga07.intel.com"
+        id S1729347AbgHDHI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 03:08:56 -0400
+Received: from mga06.intel.com ([134.134.136.31]:60927 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725300AbgHDHEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 03:04:43 -0400
-IronPort-SDR: uV+asw/lHNxmzRg84ubXi1MYmAWmBt5gRAklKl43YTHafIUo9cJh2N86sJGAB7Q3tfVwqm2Dd2
- 5Mfe6NmTKd1w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="216659870"
+        id S1726660AbgHDHI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 03:08:56 -0400
+IronPort-SDR: wC+yJtivv4BCIUTMdcuP3FiSJn4m7EJX6JPbWVZHw5boPPfM63FsxhtDL4GL8sR3+hYw/rI2dT
+ dU+oZwOTz90g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="213801914"
 X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
-   d="scan'208";a="216659870"
+   d="scan'208";a="213801914"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 00:04:42 -0700
-IronPort-SDR: BEzCxMTEOWI2KWxgMhdy8+D9VZxAoT4EjR775AH2lYTG98ChrEBmBxaU4mynWZHK0U7YVrmP7W
- BNfRh1+y3ROA==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 00:08:55 -0700
+IronPort-SDR: u82ETqqGpwhyFOvaVE/ERzB0Sd/W0VfaC1A0teBGGlzzqF6/aM0PnYAR0XWULFeyWfGtyoiP94
+ 89wvgs/EbRnQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
-   d="scan'208";a="324532983"
-Received: from ekonks-mobl.ccr.corp.intel.com (HELO ubuntu) ([10.252.37.210])
-  by fmsmga002.fm.intel.com with ESMTP; 04 Aug 2020 00:04:41 -0700
-Date:   Tue, 4 Aug 2020 09:04:40 +0200
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: linux-next: build failure after merge of the vhost tree
-Message-ID: <20200804070439.GB17220@ubuntu>
-References: <20200804151117.232dfef4@canb.auug.org.au>
- <20200804054758.GA17220@ubuntu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804054758.GA17220@ubuntu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+   d="scan'208";a="315226081"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by fmsmga004.fm.intel.com with ESMTP; 04 Aug 2020 00:08:53 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com
+Subject: [PATCH v3 0/4] Modularization of DFL private feature drivers
+Date:   Tue,  4 Aug 2020 15:05:11 +0800
+Message-Id: <1596524715-18038-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael, looks like something went wrong with your merge? My patch 
-https://lore.kernel.org/r/20200722150927.15587-3-guennadi.liakhovetski@linux.intel.com 
-has the header, your merged commit 
-https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git/commit/?h=vhost&id=bba6f4f52c31af1ce4ebcc063afa08eb063b3d2c
-doesn't have it?
+This patchset makes it possible to develop independent driver modules
+for DFL private features. It also helps to leverage existing kernel
+drivers to enable some IP blocks in DFL.
 
-Thanks
-Guennadi
+Patch #1: An improvement of feature id definition. The feature id will be used
+          as the key field for dfl device/driver matching.
+Patch #2: Release the dfl mmio regions after enumeration, so that private
+          feature drivers could request mmio region in their own drivers.
+Patch #3: Introduce the dfl bus, then dfl devices could be supported by
+          independent dfl drivers.
+Patch #4: An example of the dfl driver for N3000 nios private feature.
 
-On Tue, Aug 04, 2020 at 07:47:58AM +0200, Guennadi Liakhovetski wrote:
-> Hi Stephen,
-> 
-> On Tue, Aug 04, 2020 at 03:11:17PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > After merging the vhost tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> > 
-> > drivers/rpmsg/virtio_rpmsg_bus.c:28:10: fatal error: linux/virtio_rpmsg.h: No such file or directory
-> >    28 | #include <linux/virtio_rpmsg.h>
-> >       |          ^~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Caused by commit
-> > 
-> >   bba6f4f52c31 ("rpmsg: move common structures and defines to headers")
-> > 
-> > I have used the vhost tree from next-20200803 for today.
-> 
-> Yes, I've seen that, that's a clang build for MIPS... I'll have a look.
-> 
-> Thanks
-> Guennadi
-> 
-> > -- 
-> > Cheers,
-> > Stephen Rothwell
+
+Main changes from v1:
+- Add the new Patch #1, to improve the feature id definition.
+- Change the dfl bus uevent format.
+- Change the dfl device's sysfs name format.
+- refactor dfl_dev_add()
+- Add the Patch #4 as an example of the dfl driver.
+- A lot of minor fixes for comments from Hao and Tom.
+
+Main changes from v2:
+- Add the doc for dfl-n3000-nios driver.
+- Minor fixes for comments from Tom.
+
+Xu Yilun (4):
+  fpga: dfl: change data type of feature id to u16
+  fpga: dfl: map feature mmio resources in their own feature drivers
+  fpga: dfl: create a dfl bus type to support DFL devices
+  fpga: dfl: add support for N3000 nios private feature
+
+ Documentation/ABI/testing/sysfs-bus-dfl            |  15 +
+ .../ABI/testing/sysfs-bus-dfl-devices-n3000-nios   |  18 +
+ Documentation/fpga/dfl-n3000-nios.rst              |  39 ++
+ Documentation/fpga/index.rst                       |   1 +
+ drivers/fpga/Kconfig                               |  12 +
+ drivers/fpga/Makefile                              |   2 +
+ drivers/fpga/dfl-fme-perf.c                        |   2 +-
+ drivers/fpga/dfl-n3000-nios.c                      | 518 +++++++++++++++++++++
+ drivers/fpga/dfl-pci.c                             |  24 +-
+ drivers/fpga/dfl.c                                 | 464 +++++++++++++++---
+ drivers/fpga/dfl.h                                 | 101 +++-
+ 11 files changed, 1094 insertions(+), 102 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-n3000-nios
+ create mode 100644 Documentation/fpga/dfl-n3000-nios.rst
+ create mode 100644 drivers/fpga/dfl-n3000-nios.c
+
+-- 
+2.7.4
+
