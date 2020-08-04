@@ -2,120 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D65C23B791
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0498223B793
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730088AbgHDJUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 05:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgHDJUD (ORCPT
+        id S1730111AbgHDJUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 05:20:30 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:58286 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727113AbgHDJU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 05:20:03 -0400
-Received: from tartarus.angband.pl (tartarus.angband.pl [IPv6:2001:41d0:602:dbe::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F622C06174A;
-        Tue,  4 Aug 2020 02:20:03 -0700 (PDT)
-Received: from kilobyte by tartarus.angband.pl with local (Exim 4.92)
-        (envelope-from <kilobyte@angband.pl>)
-        id 1k2t6r-00025G-El; Tue, 04 Aug 2020 11:19:49 +0200
-Date:   Tue, 4 Aug 2020 11:19:49 +0200
-From:   Adam Borowski <kilobyte@angband.pl>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chris Mason <clm@fb.com>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Petr Malat <oss@malat.biz>, Kees Cook <keescook@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
-        Ingo Molnar <mingo@kernel.org>,
-        Patrick Williams <patrick@stwcx.xyz>,
-        Norbert Lange <nolange79@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Xu <alex_y_xu@yahoo.ca>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Terrell <terrelln@fb.com>
-Subject: Re: [PATCH v10 4/8] usr: add support for zstd compressed initramfs
-Message-ID: <20200804091949.GB9657@angband.pl>
-References: <20200730190841.2071656-1-nickrterrell@gmail.com>
- <20200730190841.2071656-5-nickrterrell@gmail.com>
- <CAMuHMdUo5tfcEUaq4x_b9HJy25HXWmBZ3GPfqJy491zDsct5Rg@mail.gmail.com>
- <CA+icZUXGbV1x0YJn-0mLA2TtU2jWS6PO3bqdDrqJBMYOMS9Eog@mail.gmail.com>
+        Tue, 4 Aug 2020 05:20:27 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 44C9C1C0BDE; Tue,  4 Aug 2020 11:20:22 +0200 (CEST)
+Date:   Tue, 4 Aug 2020 11:20:21 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     pisa@cmp.felk.cvut.cz
+Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        mkl@pengutronix.de, socketcan@hartkopp.net, wg@grandegger.com,
+        davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com,
+        c.emde@osadl.org, armbru@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com,
+        ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com,
+        porazil@pikron.com
+Subject: Re: [PATCH v4 2/6] dt-bindings: net: can: binding for CTU CAN FD
+ open-source IP core.
+Message-ID: <20200804092021.yd3wisz3g2ed6ioe@duo.ucw.cz>
+References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
+ <701442883f2b439637ff84544745725bdee7bcf8.1596408856.git.pisa@cmp.felk.cvut.cz>
+ <20200804091817.yuf6s26bclehpwwi@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="lug7fvks3zpvncaz"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+icZUXGbV1x0YJn-0mLA2TtU2jWS6PO3bqdDrqJBMYOMS9Eog@mail.gmail.com>
-X-Junkbait: aaron@angband.pl, zzyx@angband.pl
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: kilobyte@angband.pl
-X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
+In-Reply-To: <20200804091817.yuf6s26bclehpwwi@duo.ucw.cz>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 09:25:23AM +0200, Sedat Dilek wrote:
-> On Tue, Aug 4, 2020 at 8:52 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Thu, Jul 30, 2020 at 9:13 PM Nick Terrell <nickrterrell@gmail.com> wrote:
-> > > From: Nick Terrell <terrelln@fb.com>
-> > > * Add support for a zstd compressed initramfs.
-> > > * Add compression for compressing built-in initramfs with zstd.
 
-> > > --- a/usr/Kconfig
-> > > +++ b/usr/Kconfig
-> > > @@ -100,6 +100,15 @@ config RD_LZ4
-> > >           Support loading of a LZ4 encoded initial ramdisk or cpio buffer
-> > >           If unsure, say N.
-> > >
-> > > +config RD_ZSTD
-> > > +       bool "Support initial ramdisk/ramfs compressed using ZSTD"
-> > > +       default y
-> > > +       depends on BLK_DEV_INITRD
-> > > +       select DECOMPRESS_ZSTD
-> > > +       help
-> > > +         Support loading of a ZSTD encoded initial ramdisk or cpio buffer.
-> > > +         If unsure, say N.
-> >
-> > I'm aware you copied this from the other entries, but IMHO "default y",
-> > and "If unsure, say N" are not a good combination.
+--lug7fvks3zpvncaz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> you are right - for new stuff it should be "default n".
+On Tue 2020-08-04 11:18:17, Pavel Machek wrote:
+> Hi!
+>=20
+> > The commit text again to make checkpatch happy.
+>=20
+> ?
+>=20
+>=20
+> > +    oneOf:
+> > +      - items:
+> > +          - const: ctu,ctucanfd
+> > +          - const: ctu,canfd-2
+> > +      - const: ctu,ctucanfd
+>=20
+> For consistency, can we have ctu,canfd-1, ctu,canfd-2?
 
-It got already applied to Linus' tree with "y", and I think it'd be nice
-to have it as a default.  Let's disable other compressors instead.
+Make it ctu,ctucanfd-1, ctu,ctucanfd-2... to make it consistent with
+the file names.
 
-On the other hand, having an unsupported rd compressor results in a boot
-failure that's not immediately obvious, so that's a reason for keeping
-the setting as "y".
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-On the third hand, distributions default to either gz or xz, thus I'd say:
-* let's have gz xz zstd default to y, all others to n
-* drop bzip2 lzma1 completely
-* distros can't switch the mkinitramfs default yet, but if RD_ZSTD=y now,
-  they'll be able to once they drop support for old kernels in a few years
+--lug7fvks3zpvncaz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> What I am missing - still - is a note - that your user-space should
-> have the correct bits to support zstd-initramfs.
-> Unsure where to place such an information.
+-----BEGIN PGP SIGNATURE-----
 
-Looks like INITRAMFS_COMPRESSION_* have lengthy prose but are not shown in
-menuconfig, while RD_*, with no such prose, are shown.
+iF0EARECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXykoVQAKCRAw5/Bqldv6
+8vYsAKCeIjfDLEJs016P2eTK3X+VulDfHACgu11rZttuoExM+oIWv21xWoEtvPo=
+=5qpT
+-----END PGP SIGNATURE-----
 
-The prose itself is grossly obsolete, too.  I have some updates in:
-    https://github.com/kilobyte/linux/commits/nobz2-v3
-but that patchset needs rebasing and refreshing.
-
-
-Meow!
--- 
-⢀⣴⠾⠻⢶⣦⠀
-⣾⠁⢠⠒⠀⣿⡁
-⢿⡄⠘⠷⠚⠋⠀ It's time to migrate your Imaginary Protocol from version 4i to 6i.
-⠈⠳⣄⠀⠀⠀⠀
+--lug7fvks3zpvncaz--
