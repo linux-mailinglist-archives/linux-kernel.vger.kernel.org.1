@@ -2,92 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F69323BB14
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 15:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D236823BB00
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 15:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728735AbgHDNVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 09:21:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728489AbgHDNSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 09:18:53 -0400
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06AEE208C7;
-        Tue,  4 Aug 2020 13:18:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596547094;
-        bh=wm1oWIkz07CI36FMnq4rtXhsNGI+Mj4JBSlrCfDJPAc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0jgn1VYqfdxa5LdhVuzklR9cLtBODKcqNJ3aBUxv4msLpxK6Sz3egMCyEhYBSiCKB
-         3p+23CyCty+EfglMWaGZyDH6lSCnMIdQjMUbpmFpBR6RemHzEP7Iru2dR2i0xg/jFS
-         ws7XFMfZlkhTK/LIBlLFHdZY9RlLwyMK2llPUhtE=
-Received: by mail-ot1-f47.google.com with SMTP id e11so6313662otk.4;
-        Tue, 04 Aug 2020 06:18:13 -0700 (PDT)
-X-Gm-Message-State: AOAM531qsNqX5wxYnokEWFlcaBe//Vl2+XFckS/6/HPlqYx6F5OxNKBf
-        ECgeTougaMwfBv/8EUpAEQVQoYk0nra/jmJlqFs=
-X-Google-Smtp-Source: ABdhPJzHxSRDNEtGr5s2Fp+eY2I9/mBGbmaBN6cxwMOl06eur/SxYwUp7Y6U9Pc9z5WiTzXxj2I/7LwkJQ/wxudGz9c=
-X-Received: by 2002:a9d:3a04:: with SMTP id j4mr17263203otc.108.1596547093325;
- Tue, 04 Aug 2020 06:18:13 -0700 (PDT)
+        id S1728646AbgHDNTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 09:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728608AbgHDNTc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 09:19:32 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6535FC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 06:19:18 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id d6so28534887ejr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 06:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1tiNv5DVcOXdEPntNp/BHigQ6vn1IdXaRNNTHtn8xqU=;
+        b=KEhgw4sBlsPCdz3kxw6pOlJHSKiC7Xhrls74Blf9MLTBsZBCWCUz06ysPssFA9U19y
+         Yr1EAIthn/gCTRdcIfAYF+6wn1SeTRE1WGDZQperfGWrs4+nANZWMbHukGdUWX4kW5Ms
+         t0R69K52Mm+kNPbIdl2Wftun28JL8wpQIioC8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1tiNv5DVcOXdEPntNp/BHigQ6vn1IdXaRNNTHtn8xqU=;
+        b=KIJa8UY0BCizktW3w8RFmSht4kVw7morOJzDpyuqykbIKVIclmZtuVboVZW8XxV7At
+         ZHHZlvMbpRoJZ/IaU4U+nFzV6po5NI2jHpvEiO/li5+2DbDEgXWQ0O5yRHnkuV3Z8wEj
+         ApmhipAMRRR1IdybMoXaykqRN8F/Lo4v/A2CAPD6/vITOH0q2iNSJ50+VZ4YIy78i5N1
+         m/fUl0PtY7IzqGz3b3xuuFQxLbcVpfMkvhO8sEkzbYn4i5bS20QRX6iIY1joRtF6Cqvy
+         uBmXiR/9+bwpKkUEmOhLGLQoIG0yE3/IFf5w3MrXOU6ND9SNbbLY0YFjuwwTeZou8/px
+         ch4Q==
+X-Gm-Message-State: AOAM530B1ciqpTFLyg+kVjnPfY5WOkL6vpp9/DTXGVeu0xBwuaN/6tHk
+        WLx0DizoUcdbXLnWEquWTgh/XOBLlhI276h6VE1EJA==
+X-Google-Smtp-Source: ABdhPJyoWlMhvjqTJH7OiyxKhB5EGgaKJVZv6f4IRwD539FbIC9dkAFHWgaT/ph3af6QlUQF5Jf2SpagpjgID6l9h+k=
+X-Received: by 2002:a17:907:405f:: with SMTP id ns23mr3966025ejb.511.1596547156596;
+ Tue, 04 Aug 2020 06:19:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200804124417.27102-1-alex.bennee@linaro.org>
-In-Reply-To: <20200804124417.27102-1-alex.bennee@linaro.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 4 Aug 2020 15:18:02 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXErSf7sQ4pPu-1em4AM=9JejA_-w3iwv4Wt=dgbQHxp-g@mail.gmail.com>
-Message-ID: <CAMj1kXErSf7sQ4pPu-1em4AM=9JejA_-w3iwv4Wt=dgbQHxp-g@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/3] put arm64 kvm_config on a diet
-To:     =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
-Cc:     kvm@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>
+References: <158454378820.2863966.10496767254293183123.stgit@warthog.procyon.org.uk>
+ <158454391302.2863966.1884682840541676280.stgit@warthog.procyon.org.uk>
+ <CAJfpegspWA6oUtdcYvYF=3fij=Bnq03b8VMbU9RNMKc+zzjbag@mail.gmail.com>
+ <1293241.1595501326@warthog.procyon.org.uk> <CAJfpeguvLMCw1H8+DPsfZE_k0sEiRtA17pD9HjnceSsAvqqAZw@mail.gmail.com>
+ <43c061d26ddef2aa3ca1ac726da7db9ab461e7be.camel@themaw.net>
+In-Reply-To: <43c061d26ddef2aa3ca1ac726da7db9ab461e7be.camel@themaw.net>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 4 Aug 2020 15:19:05 +0200
+Message-ID: <CAJfpeguFkDDhz7+70pSUv_j=xY5L08ESpaE+jER9vE5p+ZmfFw@mail.gmail.com>
+Subject: Re: [PATCH 13/17] watch_queue: Implement mount topology and attribute
+ change notifications [ver #5]
+To:     Ian Kent <raven@themaw.net>
+Cc:     David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>, andres@anarazel.de,
+        Jeff Layton <jlayton@redhat.com>, dray@redhat.com,
+        Karel Zak <kzak@redhat.com>, keyrings@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 Aug 2020 at 14:45, Alex Benn=C3=A9e <alex.bennee@linaro.org> wrot=
-e:
+On Tue, Aug 4, 2020 at 1:39 PM Ian Kent <raven@themaw.net> wrote:
 >
-> Hi,
+> On Mon, 2020-08-03 at 11:29 +0200, Miklos Szeredi wrote:
+> > On Thu, Jul 23, 2020 at 12:48 PM David Howells <dhowells@redhat.com>
+> > wrote:
+> >
+> > > > >                 __u32   topology_changes;
+> > > > >                 __u32   attr_changes;
+> > > > >                 __u32   aux_topology_changes;
+> > > >
+> > > > Being 32bit this introduces wraparound effects.  Is that really
+> > > > worth it?
+> > >
+> > > You'd have to make 2 billion changes without whoever's monitoring
+> > > getting a
+> > > chance to update their counters.  But maybe it's not worth it
+> > > putting them
+> > > here.  If you'd prefer, I can make the counters all 64-bit and just
+> > > retrieve
+> > > them with fsinfo().
+> >
+> > Yes, I think that would be preferable.
 >
-> When building guest kernels for virtualisation we were bringing in a
-> bunch of stuff from physical hardware which we don't need for our
-> idealised fixable virtual PCI devices. This series makes some Kconfig
-> changes to allow the ThunderX and XGene PCI drivers to be compiled
-> out. It also drops PCI_QUIRKS from the KVM guest build as a virtual
-> PCI device should be quirk free.
+> I think this is the source of the recommendation for removing the
+> change counters from the notification message, correct?
 >
+> While it looks like I may not need those counters for systemd message
+> buffer overflow handling myself I think removing them from the
+> notification message isn't a sensible thing to do.
+>
+> If you need to detect missing messages, perhaps due to message buffer
+> overflow, then you need change counters that are relevant to the
+> notification message itself. That's so the next time you get a message
+> for that object you can be sure that change counter comparisons you
+> you make relate to object notifications you have processed.
 
-What about PCI passthrough?
+I don't quite get it.  Change notification is just that: a
+notification.   You need to know what object that notification relates
+to, to be able to retrieve the up to date attributes of said object.
 
-> This is my first time hacking around Kconfig so I hope I've got the
-> balance between depends and selects right but please let be know if it
-> could be specified in a cleaner way.
+What happens if you get a change counter N in the notification
+message, then get a change counter N + 1 in the attribute retrieval?
+You know that another change happened, and you haven't yet processed
+the notification yet.  So when the notification with N + 1 comes in,
+you can optimize away the attribute retrieve.
+
+Nice optimization, but it's optimizing a race condition, and I don't
+think that's warranted.  I don't see any other use for the change
+counter in the notification message.
+
+
+> Yes, I know it isn't quite that simple, but tallying up what you have
+> processed in the current batch of messages (or in multiple batches of
+> messages if more than one read has been possible) to perform the check
+> is a user space responsibility. And it simply can't be done if the
+> counters consistency is in question which it would be if you need to
+> perform another system call to get it.
 >
-> Alex Benn=C3=A9e (3):
->   arm64: allow de-selection of ThunderX PCI controllers
->   arm64: gate the whole of pci-xgene on CONFIG_PCI_XGENE
->   kernel/configs: don't include PCI_QUIRKS in KVM guest configs
+> It's way more useful to have these in the notification than obtainable
+> via fsinfo() IMHO.
+
+What is it useful for?
+
+If the notification itself would contain the list of updated
+attributes and their new values, then yes, this would make sense.  If
+the notification just tells us that the object was modified, but not
+the modifications themselves, then I don't see how the change counter
+in itself could add any information (other than optimizing the race
+condition above).
+
+Thanks,
+Miklos
+
+Thanks,
+
+
+
 >
->  arch/arm64/Kconfig.platforms    | 2 ++
->  arch/arm64/configs/defconfig    | 1 +
->  drivers/pci/controller/Kconfig  | 7 +++++++
->  drivers/pci/controller/Makefile | 8 +++-----
->  kernel/configs/kvm_guest.config | 1 +
->  5 files changed, 14 insertions(+), 5 deletions(-)
+> >
+> > > > >         n->watch.info & NOTIFY_MOUNT_IS_RECURSIVE if true
+> > > > > indicates that
+> > > > >         the notifcation was generated by an event (eg. SETATTR)
+> > > > > that was
+> > > > >         applied recursively.  The notification is only
+> > > > > generated for the
+> > > > >         object that initially triggered it.
+> > > >
+> > > > Unused in this patchset.  Please don't add things to the API
+> > > > which are not
+> > > > used.
+> > >
+> > > Christian Brauner has patches for mount_setattr() that will need to
+> > > use this.
+> >
+> > Fine, then that patch can add the flag.
+> >
+> > Thanks,
+> > Miklos
 >
-> --
-> 2.20.1
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
