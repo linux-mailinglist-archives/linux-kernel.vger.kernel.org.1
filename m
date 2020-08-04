@@ -2,659 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A0323BE17
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CE223BE0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729921AbgHDQYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:24:33 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43945 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729692AbgHDQWg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:22:36 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from eli@mellanox.com)
-        with SMTP; 4 Aug 2020 19:20:54 +0300
-Received: from nps-server-21.mtl.labs.mlnx (nps-server-21.mtl.labs.mlnx [10.237.240.120])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKsf0024064;
-        Tue, 4 Aug 2020 19:20:54 +0300
-Received: from nps-server-21.mtl.labs.mlnx (localhost [127.0.0.1])
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKst6022655;
-        Tue, 4 Aug 2020 19:20:54 +0300
-Received: (from eli@localhost)
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKsnl022654;
-        Tue, 4 Aug 2020 19:20:54 +0300
-From:   Eli Cohen <eli@mellanox.com>
-To:     mst@redhat.com, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org,
+        id S1729815AbgHDQXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:23:10 -0400
+Received: from mail-mw2nam12on2079.outbound.protection.outlook.com ([40.107.244.79]:4321
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729720AbgHDQVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 12:21:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mcqijRejEuODjm5bJGgIIvQtGO1yAZRFFY6ZFsF+4Fgq5i7l08FYpmYN/lYJ6RC4UHKYBbwgkU+OXSF76BTz9m1yAzZKUQtFnMA2xoHYK297NoreWjwfw9rTMAHgNCpdFCTtnVfZzpmNTKktYRUeIzsWqO0Cna6rUQngI75G4OzxNgORljnFNd0mC9h3/yrD8XRXrKrNqY51CeqLCQUfqO7OBqwdgA6dXzKViUfW0rQkgl5Yx9klwkPW5ZjxS3KnOYUMS+U5HgO2lnvIsfEoAPhzX5yOxExuwK+6Z31qFKUW7RxHZ8/XHgQEP0OXT/8u9mza7kYWo9b4k6CJAKa1og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hv8coRyrgi3+34EaHkGH4iPHYKOflG1bdul2wCtpuMc=;
+ b=U3gJ25S3nU7pUDV9NAIpR0YzJHpYNOtH5L94OCBvEj24RvyWLv8VYkpspH74LSnfjWq8lHTzo0QlIpCnkJIjvLkFR6hihfcE4QCDODQlCKPg+JNqTzOBM7qmqW1IZFS9epF6RWSwMuQrBMIRNtv/9i+ZqFjGcsgnIz7AhHUdkPr6iZGKDcFkseiXr7QVwOMi6Zhd/tgMd7d0Q3qKFZ4WHxO2Z8xTmv0Ur8GZSsQGyp03lDiHq/ObiwQ8QOvlgw1kePfKYgLOcqfiGV2S2G86aqT2LfFUF4w8xa4RRaG/P9BsfT8qUAgBLDZkEoZoNIM8/R+MfulHhx/N/vV/lEQSrg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hv8coRyrgi3+34EaHkGH4iPHYKOflG1bdul2wCtpuMc=;
+ b=uRSImO4+nKV0dgkvskRXOgHDmdKGuPLkgaob1gorB13dDa/q3+B5UORw0h/O0tmllHwZ0AlVWHKjs6CEYvSmWTs6qlZX7JARI9gQZ79wfoGs3+SFqELSZYIG3Uciei/9zg+nyYD0zSDacnrYp0XyrQgIK7MFps7e7S+h2lrY7Y4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BYAPR12MB3560.namprd12.prod.outlook.com (2603:10b6:a03:ae::10)
+ by BY5PR12MB3796.namprd12.prod.outlook.com (2603:10b6:a03:1ae::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.17; Tue, 4 Aug
+ 2020 16:21:14 +0000
+Received: from BYAPR12MB3560.namprd12.prod.outlook.com
+ ([fe80::7d42:c932:e35f:71b1]) by BYAPR12MB3560.namprd12.prod.outlook.com
+ ([fe80::7d42:c932:e35f:71b1%7]) with mapi id 15.20.3239.021; Tue, 4 Aug 2020
+ 16:21:14 +0000
+Subject: Re: [PATCH] drm/amd/display: use correct scale for actual_brightness
+To:     Alexander Monakov <amonakov@ispras.ru>,
+        amd-gfx@lists.freedesktop.org
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
         linux-kernel@vger.kernel.org
-Cc:     shahafs@mellanox.com, saeedm@mellanox.com, parav@mellanox.com,
-        Eli Cohen <eli@mellanox.com>
-Subject: [PATCH V4 linux-next 11/12] vdpa/mlx5: Add shared memory registration code
-Date:   Tue,  4 Aug 2020 19:20:47 +0300
-Message-Id: <20200804162048.22587-12-eli@mellanox.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200804162048.22587-1-eli@mellanox.com>
-References: <20200804162048.22587-1-eli@mellanox.com>
+References: <20200803200218.2167-1-amonakov@ispras.ru>
+From:   "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>
+Message-ID: <a3a167d9-9117-edc1-c761-b31fa3194f8b@amd.com>
+Date:   Tue, 4 Aug 2020 12:21:08 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+In-Reply-To: <20200803200218.2167-1-amonakov@ispras.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT1PR01CA0125.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2c::34) To BYAPR12MB3560.namprd12.prod.outlook.com
+ (2603:10b6:a03:ae::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.31.148.234] (165.204.55.211) by YT1PR01CA0125.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2c::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16 via Frontend Transport; Tue, 4 Aug 2020 16:21:13 +0000
+X-Originating-IP: [165.204.55.211]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 74d8b8b5-394a-415f-8258-08d838926862
+X-MS-TrafficTypeDiagnostic: BY5PR12MB3796:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR12MB37963932C70781C3FC794289EC4A0@BY5PR12MB3796.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WnFF/SRf0xb1o9PezCJhD0pcIqkHWHWwsmCLgaXF4JtptXTX/TjTLz5pEc9SSxNlzIZwpQvXs56xA29YE3oqIc/YfkudBRzBOqf5+aeAlj2SlDSFHarZ89C93ffuHE+kx8OCUu/EMcpa8GYdadQMerjBMdVB8LsGu/UP9Plwox1Kqe7b/BFe/HktlTaXBZWrMMpa/in0o4hjMjPLbSfG2DkP6fV7l6B7srrw4cqYVaMrGtI9VEtNKXjnF+J8fLDOjwstplHhxkySMVCdCNlQtCq3qRo/RPoVLttejMsbiAp1i42WUatNv+ViAFse7JI4ijsLQH0oJirLicglxMmNLp1dEAI1fV3bQx+7FVMpdUrX01+yPwhntARBo9nsDAONS7ZozrYyfmN/4yCKKshc3LmL5IMglVXPN+N0Phc+/k0VNho1vLuYwceB1y3AbNhPoB9dEtKO9QBMsE04ziCO9A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(39860400002)(366004)(136003)(396003)(966005)(52116002)(36756003)(316002)(5660300002)(6486002)(31686004)(53546011)(16576012)(86362001)(66946007)(83380400001)(956004)(2616005)(6666004)(31696002)(26005)(478600001)(8936002)(66556008)(66476007)(16526019)(2906002)(186003)(8676002)(4326008)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: BsSLaNVcIP0hjapCgn5bqdw7Rgudigodi50riakIYO1HF3NWMub+Ec4hwa1hXHSwA8nt4Jw1psfbg5KMojnXbi4YXibI7ybvUHTXio/DwyIb8zcKytto4iub3MdMHwfXwZyHs3Km8QY9qSd+Pv1mmF4OcxNL1+eB4udm1O2e/1sKkBUeWxA1tbR+UnVKN/MxxA6D97jQZEe5B2v9JwPFW6Bw0hJqiX4k0yr1Z1fiWKCo1PLArLXaBRXDVWx+hidEj13b6cds3b5WFspJXRqjyxA4dwpFigInoFHnFMETp7TOGdC9ahEeFvm2GfESnKd17lBcWvaeYtCIrKH+PZ54Mo3H3l4GB5HHXtTPfhXru1ezj5BmH8G1/CLnVXFQVn8965ewulMsgjvGuwgIzEYxSgeRbdirwvO35xXvu7Av1n7iKp0DiLTtvkw3F5QDvtmePZL7elpPKKZP32Rdu9sBtOF/eaIfFdZx6sxf7Bt/FyDgceM1zgGsFS71jM8Efeg59clSHcpFZC1150lSBsR9ksJ9qUMZ5gqa7SirZrxY0d5F2pgGSRWCoX97r5QcM6CdkrDTOIJJURlVfich7C2h4Q2HyTpRUzsStY860kDQqImuq4GINc0qCh3BpAVxdrBPHWmsz+AjLx5kfzhXLGQEHw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74d8b8b5-394a-415f-8258-08d838926862
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3560.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2020 16:21:14.3860
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 985WGD26JGGec8Qi57yXt/DB8VPis6SdHI+N0PUDLw3hYcG403ohtvHIcbX/F6rBBVsqzxL8sVqRAUUc1NNWbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3796
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add code to support registering address space region for the device. The
-virtio driver can run as either:
-1. Guest virtio driver
-2. Userspace virtio driver on the host
-3. Kernel virtio driver on the host
+On 2020-08-03 4:02 p.m., Alexander Monakov wrote:
+> Documentation for sysfs backlight level interface requires that
+> values in both 'brightness' and 'actual_brightness' files are
+> interpreted to be in range from 0 to the value given in the
+> 'max_brightness' file.
+> 
+> With amdgpu, max_brightness gives 255, and values written by the user
+> into 'brightness' are internally rescaled to a wider range. However,
+> reading from 'actual_brightness' gives the raw register value without
+> inverse rescaling. This causes issues for various userspace tools such
+> as PowerTop and systemd that expect the value to be in the correct
+> range.
+> 
+> Introduce a helper to retrieve internal backlight range. Extend the
+> existing 'convert_brightness' function to handle conversion in both
+> directions.
+> 
+> Bug: https://bugzilla.kernel.org/show_bug.cgi?id=203905
+> Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1242
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
 
-In any case a memory key object is required to provide access to memory
-for the device.
+Overall approach seems reasonable, nice catch.
 
-This code will be shared by network or block driver implementations.
+I suggest to add convert_to_user_brightness() instead of making 
+from_user a flag and extending the current functionality though. It 
+makes it more clear from the call site what's happening.
 
-Reviewed-by: Parav Pandit <parav@mellanox.com>
-Signed-off-by: Eli Cohen <eli@mellanox.com>
----
- drivers/vdpa/mlx5/Makefile         |   2 +-
- drivers/vdpa/mlx5/core/Makefile    |   1 -
- drivers/vdpa/mlx5/core/mlx5_vdpa.h |  34 ++
- drivers/vdpa/mlx5/core/mr.c        | 484 +++++++++++++++++++++++++++++
- drivers/vdpa/mlx5/core/resources.c |   3 +
- 5 files changed, 522 insertions(+), 2 deletions(-)
- delete mode 100644 drivers/vdpa/mlx5/core/Makefile
- create mode 100644 drivers/vdpa/mlx5/core/mr.c
+Regards,
+Nicholas Kazlauskas
 
-diff --git a/drivers/vdpa/mlx5/Makefile b/drivers/vdpa/mlx5/Makefile
-index d552abb1d126..b347c62032ea 100644
---- a/drivers/vdpa/mlx5/Makefile
-+++ b/drivers/vdpa/mlx5/Makefile
-@@ -1 +1 @@
--obj-$(CONFIG_MLX5_VDPA) += core/resources.o
-+obj-$(CONFIG_MLX5_VDPA) += core/resources.o core/mr.o
-diff --git a/drivers/vdpa/mlx5/core/Makefile b/drivers/vdpa/mlx5/core/Makefile
-deleted file mode 100644
-index 7070f8c8680d..000000000000
---- a/drivers/vdpa/mlx5/core/Makefile
-+++ /dev/null
-@@ -1 +0,0 @@
--obj-y += resources.o
-diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-index f3571c8b257e..5c92a576edae 100644
---- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-+++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-@@ -7,6 +7,31 @@
- #include <linux/vdpa.h>
- #include <linux/mlx5/driver.h>
- 
-+struct mlx5_vdpa_direct_mr {
-+	u64 start;
-+	u64 end;
-+	u32 perm;
-+	struct mlx5_core_mkey mr;
-+	struct sg_table sg_head;
-+	int log_size;
-+	int nsg;
-+	struct list_head list;
-+	u64 offset;
-+};
-+
-+struct mlx5_vdpa_mr {
-+	struct mlx5_core_mkey mkey;
-+
-+	/* list of direct MRs descendants of this indirect mr */
-+	struct list_head head;
-+	unsigned long num_directs;
-+	unsigned long num_klms;
-+	bool initialized;
-+
-+	/* serialize mkey creation and destruction */
-+	struct mutex mkey_mtx;
-+};
-+
- struct mlx5_vdpa_resources {
- 	u32 pdn;
- 	struct mlx5_uars_page *uar;
-@@ -26,6 +51,8 @@ struct mlx5_vdpa_dev {
- 	u8 status;
- 	u32 max_vqs;
- 	u32 generation;
-+
-+	struct mlx5_vdpa_mr mr;
- };
- 
- int mlx5_vdpa_alloc_pd(struct mlx5_vdpa_dev *dev, u32 *pdn, u16 uid);
-@@ -41,6 +68,13 @@ int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn);
- void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn);
- int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev);
- void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev);
-+int mlx5_vdpa_create_mkey(struct mlx5_vdpa_dev *mvdev, struct mlx5_core_mkey *mkey, u32 *in,
-+			  int inlen);
-+int mlx5_vdpa_destroy_mkey(struct mlx5_vdpa_dev *mvdev, struct mlx5_core_mkey *mkey);
-+int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb,
-+			     bool *change_map);
-+int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb);
-+void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev);
- 
- #define mlx5_vdpa_warn(__dev, format, ...)                                                         \
- 	dev_warn((__dev)->mdev->device, "%s:%d:(pid %d) warning: " format, __func__, __LINE__,     \
-diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-new file mode 100644
-index 000000000000..084698975c47
---- /dev/null
-+++ b/drivers/vdpa/mlx5/core/mr.c
-@@ -0,0 +1,484 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/* Copyright (c) 2020 Mellanox Technologies Ltd. */
-+
-+#include <linux/vdpa.h>
-+#include <linux/gcd.h>
-+#include <linux/string.h>
-+#include <linux/mlx5/qp.h>
-+#include "mlx5_vdpa.h"
-+
-+/* DIV_ROUND_UP where the divider is a power of 2 give by its log base 2 value */
-+#define MLX5_DIV_ROUND_UP_POW2(_n, _s) \
-+({ \
-+	u64 __s = _s; \
-+	u64 _res; \
-+	_res = (((_n) + (1 << (__s)) - 1) >> (__s)); \
-+	_res; \
-+})
-+
-+static int get_octo_len(u64 len, int page_shift)
-+{
-+	u64 page_size = 1ULL << page_shift;
-+	int npages;
-+
-+	npages = ALIGN(len, page_size) >> page_shift;
-+	return (npages + 1) / 2;
-+}
-+
-+static void fill_sg(struct mlx5_vdpa_direct_mr *mr, void *in)
-+{
-+	struct scatterlist *sg;
-+	__be64 *pas;
-+	int i;
-+
-+	pas = MLX5_ADDR_OF(create_mkey_in, in, klm_pas_mtt);
-+	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
-+		(*pas) = cpu_to_be64(sg_dma_address(sg));
-+}
-+
-+static void mlx5_set_access_mode(void *mkc, int mode)
-+{
-+	MLX5_SET(mkc, mkc, access_mode_1_0, mode & 0x3);
-+	MLX5_SET(mkc, mkc, access_mode_4_2, mode >> 2);
-+}
-+
-+static void populate_mtts(struct mlx5_vdpa_direct_mr *mr, __be64 *mtt)
-+{
-+	struct scatterlist *sg;
-+	int i;
-+
-+	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
-+		mtt[i] = cpu_to_be64(sg_dma_address(sg));
-+}
-+
-+static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr)
-+{
-+	int inlen;
-+	void *mkc;
-+	void *in;
-+	int err;
-+
-+	inlen = MLX5_ST_SZ_BYTES(create_mkey_in) + roundup(MLX5_ST_SZ_BYTES(mtt) * mr->nsg, 16);
-+	in = kvzalloc(inlen, GFP_KERNEL);
-+	if (!in)
-+		return -ENOMEM;
-+
-+	MLX5_SET(create_mkey_in, in, uid, mvdev->res.uid);
-+	fill_sg(mr, in);
-+	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
-+	MLX5_SET(mkc, mkc, lw, !!(mr->perm & VHOST_MAP_WO));
-+	MLX5_SET(mkc, mkc, lr, !!(mr->perm & VHOST_MAP_RO));
-+	mlx5_set_access_mode(mkc, MLX5_MKC_ACCESS_MODE_MTT);
-+	MLX5_SET(mkc, mkc, qpn, 0xffffff);
-+	MLX5_SET(mkc, mkc, pd, mvdev->res.pdn);
-+	MLX5_SET64(mkc, mkc, start_addr, mr->offset);
-+	MLX5_SET64(mkc, mkc, len, mr->end - mr->start);
-+	MLX5_SET(mkc, mkc, log_page_size, mr->log_size);
-+	MLX5_SET(mkc, mkc, translations_octword_size,
-+		 get_octo_len(mr->end - mr->start, mr->log_size));
-+	MLX5_SET(create_mkey_in, in, translations_octword_actual_size,
-+		 get_octo_len(mr->end - mr->start, mr->log_size));
-+	populate_mtts(mr, MLX5_ADDR_OF(create_mkey_in, in, klm_pas_mtt));
-+	err = mlx5_vdpa_create_mkey(mvdev, &mr->mr, in, inlen);
-+	kvfree(in);
-+	if (err) {
-+		mlx5_vdpa_warn(mvdev, "Failed to create direct MR\n");
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static void destroy_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr)
-+{
-+	mlx5_vdpa_destroy_mkey(mvdev, &mr->mr);
-+}
-+
-+static u64 map_start(struct vhost_iotlb_map *map, struct mlx5_vdpa_direct_mr *mr)
-+{
-+	return max_t(u64, map->start, mr->start);
-+}
-+
-+static u64 map_end(struct vhost_iotlb_map *map, struct mlx5_vdpa_direct_mr *mr)
-+{
-+	return min_t(u64, map->last + 1, mr->end);
-+}
-+
-+static u64 maplen(struct vhost_iotlb_map *map, struct mlx5_vdpa_direct_mr *mr)
-+{
-+	return map_end(map, mr) - map_start(map, mr);
-+}
-+
-+#define MLX5_VDPA_INVALID_START_ADDR ((u64)-1)
-+#define MLX5_VDPA_INVALID_LEN ((u64)-1)
-+
-+static u64 indir_start_addr(struct mlx5_vdpa_mr *mkey)
-+{
-+	struct mlx5_vdpa_direct_mr *s;
-+
-+	s = list_first_entry_or_null(&mkey->head, struct mlx5_vdpa_direct_mr, list);
-+	if (!s)
-+		return MLX5_VDPA_INVALID_START_ADDR;
-+
-+	return s->start;
-+}
-+
-+static u64 indir_len(struct mlx5_vdpa_mr *mkey)
-+{
-+	struct mlx5_vdpa_direct_mr *s;
-+	struct mlx5_vdpa_direct_mr *e;
-+
-+	s = list_first_entry_or_null(&mkey->head, struct mlx5_vdpa_direct_mr, list);
-+	if (!s)
-+		return MLX5_VDPA_INVALID_LEN;
-+
-+	e = list_last_entry(&mkey->head, struct mlx5_vdpa_direct_mr, list);
-+
-+	return e->end - s->start;
-+}
-+
-+#define LOG_MAX_KLM_SIZE 30
-+#define MAX_KLM_SIZE BIT(LOG_MAX_KLM_SIZE)
-+
-+static u32 klm_bcount(u64 size)
-+{
-+	return (u32)size;
-+}
-+
-+static void fill_indir(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mkey, void *in)
-+{
-+	struct mlx5_vdpa_direct_mr *dmr;
-+	struct mlx5_klm *klmarr;
-+	struct mlx5_klm *klm;
-+	bool first = true;
-+	u64 preve;
-+	int i;
-+
-+	klmarr = MLX5_ADDR_OF(create_mkey_in, in, klm_pas_mtt);
-+	i = 0;
-+	list_for_each_entry(dmr, &mkey->head, list) {
-+again:
-+		klm = &klmarr[i++];
-+		if (first) {
-+			preve = dmr->start;
-+			first = false;
-+		}
-+
-+		if (preve == dmr->start) {
-+			klm->key = cpu_to_be32(dmr->mr.key);
-+			klm->bcount = cpu_to_be32(klm_bcount(dmr->end - dmr->start));
-+			preve = dmr->end;
-+		} else {
-+			klm->key = cpu_to_be32(mvdev->res.null_mkey);
-+			klm->bcount = cpu_to_be32(klm_bcount(dmr->start - preve));
-+			preve = dmr->start;
-+			goto again;
-+		}
-+	}
-+}
-+
-+static int klm_byte_size(int nklms)
-+{
-+	return 16 * ALIGN(nklms, 4);
-+}
-+
-+static int create_indirect_key(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
-+{
-+	int inlen;
-+	void *mkc;
-+	void *in;
-+	int err;
-+	u64 start;
-+	u64 len;
-+
-+	start = indir_start_addr(mr);
-+	len = indir_len(mr);
-+	if (start == MLX5_VDPA_INVALID_START_ADDR || len == MLX5_VDPA_INVALID_LEN)
-+		return -EINVAL;
-+
-+	inlen = MLX5_ST_SZ_BYTES(create_mkey_in) + klm_byte_size(mr->num_klms);
-+	in = kzalloc(inlen, GFP_KERNEL);
-+	if (!in)
-+		return -ENOMEM;
-+
-+	MLX5_SET(create_mkey_in, in, uid, mvdev->res.uid);
-+	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
-+	MLX5_SET(mkc, mkc, lw, 1);
-+	MLX5_SET(mkc, mkc, lr, 1);
-+	mlx5_set_access_mode(mkc, MLX5_MKC_ACCESS_MODE_KLMS);
-+	MLX5_SET(mkc, mkc, qpn, 0xffffff);
-+	MLX5_SET(mkc, mkc, pd, mvdev->res.pdn);
-+	MLX5_SET64(mkc, mkc, start_addr, start);
-+	MLX5_SET64(mkc, mkc, len, len);
-+	MLX5_SET(mkc, mkc, translations_octword_size, klm_byte_size(mr->num_klms) / 16);
-+	MLX5_SET(create_mkey_in, in, translations_octword_actual_size, mr->num_klms);
-+	fill_indir(mvdev, mr, in);
-+	err = mlx5_vdpa_create_mkey(mvdev, &mr->mkey, in, inlen);
-+	kfree(in);
-+	return err;
-+}
-+
-+static void destroy_indirect_key(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mkey)
-+{
-+	mlx5_vdpa_destroy_mkey(mvdev, &mkey->mkey);
-+}
-+
-+static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr,
-+			 struct vhost_iotlb *iotlb)
-+{
-+	struct vhost_iotlb_map *map;
-+	unsigned long lgcd = 0;
-+	int log_entity_size;
-+	unsigned long size;
-+	u64 start = 0;
-+	int err;
-+	struct page *pg;
-+	unsigned int nsg;
-+	int sglen;
-+	u64 pa;
-+	u64 paend;
-+	struct scatterlist *sg;
-+	struct device *dma = mvdev->mdev->device;
-+	int ret;
-+
-+	for (map = vhost_iotlb_itree_first(iotlb, mr->start, mr->end - 1);
-+	     map; map = vhost_iotlb_itree_next(map, start, mr->end - 1)) {
-+		size = maplen(map, mr);
-+		lgcd = gcd(lgcd, size);
-+		start += size;
-+	}
-+	log_entity_size = ilog2(lgcd);
-+
-+	sglen = 1 << log_entity_size;
-+	nsg = MLX5_DIV_ROUND_UP_POW2(mr->end - mr->start, log_entity_size);
-+
-+	err = sg_alloc_table(&mr->sg_head, nsg, GFP_KERNEL);
-+	if (err)
-+		return err;
-+
-+	sg = mr->sg_head.sgl;
-+	for (map = vhost_iotlb_itree_first(iotlb, mr->start, mr->end - 1);
-+	     map; map = vhost_iotlb_itree_next(map, mr->start, mr->end - 1)) {
-+		paend = map->addr + maplen(map, mr);
-+		for (pa = map->addr; pa < paend; pa += sglen) {
-+			pg = pfn_to_page(__phys_to_pfn(pa));
-+			if (!sg) {
-+				mlx5_vdpa_warn(mvdev, "sg null. start 0x%llx, end 0x%llx\n",
-+					       map->start, map->last + 1);
-+				err = -ENOMEM;
-+				goto err_map;
-+			}
-+			sg_set_page(sg, pg, sglen, 0);
-+			sg = sg_next(sg);
-+			if (!sg)
-+				goto done;
-+		}
-+	}
-+done:
-+	mr->log_size = log_entity_size;
-+	mr->nsg = nsg;
-+	ret = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
-+	if (!ret)
-+		goto err_map;
-+
-+	err = create_direct_mr(mvdev, mr);
-+	if (err)
-+		goto err_direct;
-+
-+	return 0;
-+
-+err_direct:
-+	dma_unmap_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
-+err_map:
-+	sg_free_table(&mr->sg_head);
-+	return err;
-+}
-+
-+static void unmap_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr)
-+{
-+	struct device *dma = mvdev->mdev->device;
-+
-+	destroy_direct_mr(mvdev, mr);
-+	dma_unmap_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
-+	sg_free_table(&mr->sg_head);
-+}
-+
-+static int add_direct_chain(struct mlx5_vdpa_dev *mvdev, u64 start, u64 size, u8 perm,
-+			    struct vhost_iotlb *iotlb)
-+{
-+	struct mlx5_vdpa_mr *mr = &mvdev->mr;
-+	struct mlx5_vdpa_direct_mr *dmr;
-+	struct mlx5_vdpa_direct_mr *n;
-+	LIST_HEAD(tmp);
-+	u64 st;
-+	u64 sz;
-+	int err;
-+	int i = 0;
-+
-+	st = start;
-+	while (size) {
-+		sz = (u32)min_t(u64, MAX_KLM_SIZE, size);
-+		dmr = kzalloc(sizeof(*dmr), GFP_KERNEL);
-+		if (!dmr)
-+			goto err_alloc;
-+
-+		dmr->start = st;
-+		dmr->end = st + sz;
-+		dmr->perm = perm;
-+		err = map_direct_mr(mvdev, dmr, iotlb);
-+		if (err) {
-+			kfree(dmr);
-+			goto err_alloc;
-+		}
-+
-+		list_add_tail(&dmr->list, &tmp);
-+		size -= sz;
-+		mr->num_directs++;
-+		mr->num_klms++;
-+		st += sz;
-+		i++;
-+	}
-+	list_splice_tail(&tmp, &mr->head);
-+	return 0;
-+
-+err_alloc:
-+	list_for_each_entry_safe(dmr, n, &mr->head, list) {
-+		list_del_init(&dmr->list);
-+		unmap_direct_mr(mvdev, dmr);
-+		kfree(dmr);
-+	}
-+	return err;
-+}
-+
-+/* The iotlb pointer contains a list of maps. Go over the maps, possibly
-+ * merging mergeable maps, and create direct memory keys that provide the
-+ * device access to memory. The direct mkeys are then referred to by the
-+ * indirect memory key that provides access to the enitre address space given
-+ * by iotlb.
-+ */
-+static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
-+{
-+	struct mlx5_vdpa_mr *mr = &mvdev->mr;
-+	struct mlx5_vdpa_direct_mr *dmr;
-+	struct mlx5_vdpa_direct_mr *n;
-+	struct vhost_iotlb_map *map;
-+	u32 pperm = U16_MAX;
-+	u64 last = U64_MAX;
-+	u64 ps = U64_MAX;
-+	u64 pe = U64_MAX;
-+	u64 start = 0;
-+	int err = 0;
-+	int nnuls;
-+
-+	if (mr->initialized)
-+		return 0;
-+
-+	INIT_LIST_HEAD(&mr->head);
-+	for (map = vhost_iotlb_itree_first(iotlb, start, last); map;
-+	     map = vhost_iotlb_itree_next(map, start, last)) {
-+		start = map->start;
-+		if (pe == map->start && pperm == map->perm) {
-+			pe = map->last + 1;
-+		} else {
-+			if (ps != U64_MAX) {
-+				if (pe < map->start) {
-+					/* We have a hole in the map. Check how
-+					 * many null keys are required to fill it.
-+					 */
-+					nnuls = MLX5_DIV_ROUND_UP_POW2(map->start - pe,
-+								       LOG_MAX_KLM_SIZE);
-+					mr->num_klms += nnuls;
-+				}
-+				err = add_direct_chain(mvdev, ps, pe - ps, pperm, iotlb);
-+				if (err)
-+					goto err_chain;
-+			}
-+			ps = map->start;
-+			pe = map->last + 1;
-+			pperm = map->perm;
-+		}
-+	}
-+	err = add_direct_chain(mvdev, ps, pe - ps, pperm, iotlb);
-+	if (err)
-+		goto err_chain;
-+
-+	/* Create the memory key that defines the guests's address space. This
-+	 * memory key refers to the direct keys that contain the MTT
-+	 * translations
-+	 */
-+	err = create_indirect_key(mvdev, mr);
-+	if (err)
-+		goto err_chain;
-+
-+	mr->initialized = true;
-+	return 0;
-+
-+err_chain:
-+	list_for_each_entry_safe_reverse(dmr, n, &mr->head, list) {
-+		list_del_init(&dmr->list);
-+		unmap_direct_mr(mvdev, dmr);
-+		kfree(dmr);
-+	}
-+	return err;
-+}
-+
-+int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
-+{
-+	struct mlx5_vdpa_mr *mr = &mvdev->mr;
-+	int err;
-+
-+	mutex_lock(&mr->mkey_mtx);
-+	err = _mlx5_vdpa_create_mr(mvdev, iotlb);
-+	mutex_unlock(&mr->mkey_mtx);
-+	return err;
-+}
-+
-+void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
-+{
-+	struct mlx5_vdpa_mr *mr = &mvdev->mr;
-+	struct mlx5_vdpa_direct_mr *dmr;
-+	struct mlx5_vdpa_direct_mr *n;
-+
-+	mutex_lock(&mr->mkey_mtx);
-+	if (!mr->initialized)
-+		goto out;
-+
-+	destroy_indirect_key(mvdev, mr);
-+	list_for_each_entry_safe_reverse(dmr, n, &mr->head, list) {
-+		list_del_init(&dmr->list);
-+		unmap_direct_mr(mvdev, dmr);
-+		kfree(dmr);
-+	}
-+	memset(mr, 0, sizeof(*mr));
-+	mr->initialized = false;
-+out:
-+	mutex_unlock(&mr->mkey_mtx);
-+}
-+
-+static bool map_empty(struct vhost_iotlb *iotlb)
-+{
-+	return !vhost_iotlb_itree_first(iotlb, 0, U64_MAX);
-+}
-+
-+int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb,
-+			     bool *change_map)
-+{
-+	struct mlx5_vdpa_mr *mr = &mvdev->mr;
-+	int err;
-+
-+	*change_map = false;
-+	if (map_empty(iotlb)) {
-+		mlx5_vdpa_destroy_mr(mvdev);
-+		return 0;
-+	}
-+	mutex_lock(&mr->mkey_mtx);
-+	if (mr->initialized) {
-+		mlx5_vdpa_info(mvdev, "memory map update\n");
-+		*change_map = true;
-+	}
-+	if (!*change_map)
-+		err = _mlx5_vdpa_create_mr(mvdev, iotlb);
-+	mutex_unlock(&mr->mkey_mtx);
-+
-+	return err;
-+}
-diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
-index 6c6552b7e9b5..96e6421c5d1c 100644
---- a/drivers/vdpa/mlx5/core/resources.c
-+++ b/drivers/vdpa/mlx5/core/resources.c
-@@ -227,6 +227,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
- 		mlx5_vdpa_warn(mvdev, "resources already allocated\n");
- 		return -EINVAL;
- 	}
-+	mutex_init(&mvdev->mr.mkey_mtx);
- 	res->uar = mlx5_get_uars_page(mdev);
- 	if (IS_ERR(res->uar)) {
- 		err = PTR_ERR(res->uar);
-@@ -262,6 +263,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
- err_uctx:
- 	mlx5_put_uars_page(mdev, res->uar);
- err_uars:
-+	mutex_destroy(&mvdev->mr.mkey_mtx);
- 	return err;
- }
- 
-@@ -277,5 +279,6 @@ void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
- 	dealloc_pd(mvdev, res->pdn, res->uid);
- 	destroy_uctx(mvdev, res->uid);
- 	mlx5_put_uars_page(mvdev->mdev, res->uar);
-+	mutex_destroy(&mvdev->mr.mkey_mtx);
- 	res->valid = false;
- }
--- 
-2.26.0
+> ---
+>   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 73 ++++++++-----------
+>   1 file changed, 32 insertions(+), 41 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 710edc70e37e..03e21e7b7917 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -2881,51 +2881,42 @@ static int set_backlight_via_aux(struct dc_link *link, uint32_t brightness)
+>   	return rc ? 0 : 1;
+>   }
+>   
+> -static u32 convert_brightness(const struct amdgpu_dm_backlight_caps *caps,
+> -			      const uint32_t user_brightness)
+> +static int get_brightness_range(const struct amdgpu_dm_backlight_caps *caps,
+> +				unsigned *min, unsigned *max)
+>   {
+> -	u32 min, max, conversion_pace;
+> -	u32 brightness = user_brightness;
+> -
+>   	if (!caps)
+> -		goto out;
+> +		return 0;
+>   
+> -	if (!caps->aux_support) {
+> -		max = caps->max_input_signal;
+> -		min = caps->min_input_signal;
+> -		/*
+> -		 * The brightness input is in the range 0-255
+> -		 * It needs to be rescaled to be between the
+> -		 * requested min and max input signal
+> -		 * It also needs to be scaled up by 0x101 to
+> -		 * match the DC interface which has a range of
+> -		 * 0 to 0xffff
+> -		 */
+> -		conversion_pace = 0x101;
+> -		brightness =
+> -			user_brightness
+> -			* conversion_pace
+> -			* (max - min)
+> -			/ AMDGPU_MAX_BL_LEVEL
+> -			+ min * conversion_pace;
+> +	if (caps->aux_support) {
+> +		// Firmware limits are in nits, DC API wants millinits.
+> +		*max = 1000 * caps->aux_max_input_signal;
+> +		*min = 1000 * caps->aux_min_input_signal;
+>   	} else {
+> -		/* TODO
+> -		 * We are doing a linear interpolation here, which is OK but
+> -		 * does not provide the optimal result. We probably want
+> -		 * something close to the Perceptual Quantizer (PQ) curve.
+> -		 */
+> -		max = caps->aux_max_input_signal;
+> -		min = caps->aux_min_input_signal;
+> -
+> -		brightness = (AMDGPU_MAX_BL_LEVEL - user_brightness) * min
+> -			       + user_brightness * max;
+> -		// Multiple the value by 1000 since we use millinits
+> -		brightness *= 1000;
+> -		brightness = DIV_ROUND_CLOSEST(brightness, AMDGPU_MAX_BL_LEVEL);
+> +		// Firmware limits are 8-bit, PWM control is 16-bit.
+> +		*max = 0x101 * caps->max_input_signal;
+> +		*min = 0x101 * caps->min_input_signal;
+>   	}
+> +	return 1;
+> +}
+>   
+> -out:
+> -	return brightness;
+> +static u32 convert_brightness(const struct amdgpu_dm_backlight_caps *caps,
+> +			      const uint32_t brightness, int from_user)
+> +{
+> +	unsigned min, max;
+> +
+> +	if (!get_brightness_range(caps, &min, &max))
+> +		return brightness;
+> +
+> +	if (from_user)
+> +		// Rescale 0..255 to min..max
+> +		return min + DIV_ROUND_CLOSEST((max - min) * brightness,
+> +					       AMDGPU_MAX_BL_LEVEL);
+> +
+> +	if (brightness < min)
+> +		return 0;
+> +	// Rescale min..max to 0..255
+> +	return DIV_ROUND_CLOSEST(AMDGPU_MAX_BL_LEVEL * (brightness - min),
+> +				 max - min);
+>   }
+>   
+>   static int amdgpu_dm_backlight_update_status(struct backlight_device *bd)
+> @@ -2941,7 +2932,7 @@ static int amdgpu_dm_backlight_update_status(struct backlight_device *bd)
+>   
+>   	link = (struct dc_link *)dm->backlight_link;
+>   
+> -	brightness = convert_brightness(&caps, bd->props.brightness);
+> +	brightness = convert_brightness(&caps, bd->props.brightness, 1);
+>   	// Change brightness based on AUX property
+>   	if (caps.aux_support)
+>   		return set_backlight_via_aux(link, brightness);
+> @@ -2958,7 +2949,7 @@ static int amdgpu_dm_backlight_get_brightness(struct backlight_device *bd)
+>   
+>   	if (ret == DC_ERROR_UNEXPECTED)
+>   		return bd->props.brightness;
+> -	return ret;
+> +	return convert_brightness(&dm->backlight_caps, ret, 0);
+>   }
+>   
+>   static const struct backlight_ops amdgpu_dm_backlight_ops = {
+> 
+> base-commit: bcf876870b95592b52519ed4aafcf9d95999bc9c
+> 
 
