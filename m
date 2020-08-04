@@ -2,186 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AF923BA63
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEAB23BA71
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgHDMdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 08:33:04 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:36261 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727779AbgHDMcQ (ORCPT
+        id S1726947AbgHDMfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 08:35:13 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:42184 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgHDMfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 08:32:16 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C94F6580552;
-        Tue,  4 Aug 2020 08:32:13 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 04 Aug 2020 08:32:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        GQrvTmzmmFYdgKDOjC8EuXBs0YT7HCIH7S0aDNWKxu4=; b=clTQFpIMSolCW6jY
-        xc99NEC4kl0YqyNOsm6qSVHOkZFRyhaNemvV42oGz7IHHSv3+EpRvRgaPZX4cMIy
-        uG0kY97csqAYzzeIO62vthsBgZrguMDBKu/4hEXIjO4S9A+KjMpZagxQ5rSB+eIx
-        O5n0AO9Qqsy1lDc9obh3cjdW33gc9VxRh7KFRLYeHawdsj7/3L8vr7yb2w8VxEy4
-        6F9I8qHqZYZzJPQ2+9u5WHdCut/HdViUN3H6TEGza9MYaxUCBpBxQSfW58VjyVwo
-        /k3Ao5jizSrnCh6TCBW6h/8qVBg4fpTax4o6yrywHYuGXFDhRak1DbcxlLj+7Lht
-        VWfBLA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=GQrvTmzmmFYdgKDOjC8EuXBs0YT7HCIH7S0aDNWKx
-        u4=; b=CdBBGHL97gKyORvrfh7sIlaBs00XY1tMVHmMDPzGTQSg4+bSBCCqF0hFt
-        IEOc0mHjwjmFv+oIHhMtp9t73oOn8Cksi2OJH0E+hhO5fxCI2oRe2y2ODq1db5vE
-        GjMdoyORzN3OkoEAWJJkbhe/oM+BTvd34+WwFilOZM1ls0pcUHGNrzmgJupL0lwh
-        ZmXqcQagnbWVfqbkqhUP6hOgg1Y6/bJVv9Xw4qEUzBuicH9wojYTrZau8RYBRimo
-        kL6iylsRcEy5jdV1F/iCrShzmtZ0eV4NnoWaj6K31/l79V0bN9nFYTr5bevOyUts
-        izE9B7fraIwpvRSS6TWlVZ+ve9TtQ==
-X-ME-Sender: <xms:TFUpX4-ox1o4MRnKnWdE272jhCVKtxE-9wztQZddi5qFKWRXZKovwQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrjeeigdehgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
-    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepfe
-    efteetvdeguddvveefveeftedtffduudehueeihfeuvefgveehffeludeggfejnecukfhp
-    peduudekrddvtdekrdegjedrudeiudenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehrrghvvghnsehthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:TFUpXwtbPbbZc6pREsPaXvlLpznOoU3pBIZOBhXXNNcVQ2h0mLttnw>
-    <xmx:TFUpX-D9bye0WAANnM0viVcGOmAzEJX1_LFFaakEqE-0b_L9nXh0Yg>
-    <xmx:TFUpX4fEKfhE8UMAm7Q4DP_ltPtsf8PFO0R1s9TQiYNAy1w7fbTTDQ>
-    <xmx:TVUpXwoVZSDciaCCPlUM353wOLXDPtV5BJH8lEGIxW6IJfby6hy0zw>
-Received: from mickey.themaw.net (unknown [118.208.47.161])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 078F830600A6;
-        Tue,  4 Aug 2020 08:32:07 -0400 (EDT)
-Message-ID: <3341383b655b39697b4dcdb9f64c5f3bc46a6ac4.camel@themaw.net>
-Subject: Re: [PATCH 06/18] fsinfo: Add a uniquifier ID to struct mount [ver
- #21]
-From:   Ian Kent <raven@themaw.net>
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>
-Cc:     viro@zeniv.linux.org.uk, torvalds@linux-foundation.org,
-        mszeredi@redhat.com, christian@brauner.io, jannh@google.com,
-        darrick.wong@oracle.com, kzak@redhat.com, jlayton@redhat.com,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 04 Aug 2020 20:32:04 +0800
-In-Reply-To: <20200804104108.GC32719@miu.piliscsaba.redhat.com>
-References: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
-         <159646183662.1784947.5709738540440380373.stgit@warthog.procyon.org.uk>
-         <20200804104108.GC32719@miu.piliscsaba.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 4 Aug 2020 08:35:12 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 074CI0O4019655;
+        Tue, 4 Aug 2020 12:35:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : content-type :
+ content-transfer-encoding : mime-version : date : subject : cc : to :
+ message-id; s=corp-2020-01-29;
+ bh=jfOnjEqOkdNC8tymd3/ppj5lfyzkOoBH/pQeo/+vx7c=;
+ b=i0ag6ziYUsmCJH1F2JtuYUNO56VCsnO/U3H2XljeUF0XwEFbw+AwKy0MUEPPA3lvh20/
+ D5FJz0fKmE6jERK5Rxm6ynhQz7OS19u2dMnd5mZE9/rZKNSfKRuOmbkVX7GjQpxXKQfj
+ SJtb72UI4UfGv4qe9gtOh6bW5zD+86TQv2pHLIAUS3yqaLWTdi17kPzLxiBPCYRTLPjn
+ rhq+Ui8sv5sPuLQL+znJk6sOu8LTv69e+vZIyXwQrOUF/tpa9LgUqBJ7dYMP+1g92XCs
+ BfafAMCPPIgTNefxo5F5xX0QeJbPQ12mBiZfPMYLxhLoU7FKocHjak8mM1ITtKrJfdK6 FQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 32n11n3xqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 04 Aug 2020 12:35:08 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 074CHh9P143317;
+        Tue, 4 Aug 2020 12:33:07 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 32njawgdh2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 04 Aug 2020 12:33:07 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 074CX6W0031543;
+        Tue, 4 Aug 2020 12:33:06 GMT
+Received: from [192.168.1.127] (/47.220.71.223)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 04 Aug 2020 05:33:06 -0700
+From:   John Donnelly <john.p.donnelly@oracle.com>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.5\))
+Date:   Tue, 4 Aug 2020 07:33:05 -0500
+Subject: [(resend) PATCH v3: {linux-4.14.y} ] dm cache: submit writethrough
+ writes in parallel to origin and cache
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Mike Snitzer <snitzer@redhat.com>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org
+Message-Id: <8CFF8DA9-C105-461C-8F5A-DA2BF448A135@oracle.com>
+X-Mailer: Apple Mail (2.3445.9.5)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9702 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ mlxlogscore=974 mlxscore=0 spamscore=0 malwarescore=0 adultscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008040092
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9702 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 mlxscore=0
+ suspectscore=2 mlxlogscore=970 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008040092
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-04 at 12:41 +0200, Miklos Szeredi wrote:
-> On Mon, Aug 03, 2020 at 02:37:16PM +0100, David Howells wrote:
-> > Add a uniquifier ID to struct mount that is effectively unique over
-> > the
-> > kernel lifetime to deal around mnt_id values being reused.  This
-> > can then
-> > be exported through fsinfo() to allow detection of replacement
-> > mounts that
-> > happen to end up with the same mount ID.
-> > 
-> > The normal mount handle is still used for referring to a particular
-> > mount.
-> > 
-> > The mount notification is then changed to convey these unique mount
-> > IDs
-> > rather than the mount handle.
-> > 
-> > Signed-off-by: David Howells <dhowells@redhat.com>
-> > ---
-> > 
-> >  fs/mount.h        |    3 +++
-> >  fs/mount_notify.c |    4 ++--
-> >  fs/namespace.c    |    3 +++
-> >  3 files changed, 8 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/mount.h b/fs/mount.h
-> > index 85456a5f5a3a..1037781be055 100644
-> > --- a/fs/mount.h
-> > +++ b/fs/mount.h
-> > @@ -79,6 +79,9 @@ struct mount {
-> >  	int mnt_expiry_mark;		/* true if marked for
-> > expiry */
-> >  	struct hlist_head mnt_pins;
-> >  	struct hlist_head mnt_stuck_children;
-> > +#ifdef CONFIG_FSINFO
-> > +	u64	mnt_unique_id;		/* ID unique over lifetime of
-> > kernel */
-> > +#endif
-> 
-> Not sure if it's worth making conditional.
-> 
-> >  #ifdef CONFIG_MOUNT_NOTIFICATIONS
-> >  	struct watch_list *mnt_watchers; /* Watches on dentries within
-> > this mount */
-> >  #endif
-> > diff --git a/fs/mount_notify.c b/fs/mount_notify.c
-> > index 44f570e4cebe..d8ba66ed5f77 100644
-> > --- a/fs/mount_notify.c
-> > +++ b/fs/mount_notify.c
-> > @@ -90,7 +90,7 @@ void notify_mount(struct mount *trigger,
-> >  	n.watch.type	= WATCH_TYPE_MOUNT_NOTIFY;
-> >  	n.watch.subtype	= subtype;
-> >  	n.watch.info	= info_flags | watch_sizeof(n);
-> > -	n.triggered_on	= trigger->mnt_id;
-> > +	n.triggered_on	= trigger->mnt_unique_id;
-> >  
-> >  	switch (subtype) {
-> >  	case NOTIFY_MOUNT_EXPIRY:
-> > @@ -102,7 +102,7 @@ void notify_mount(struct mount *trigger,
-> >  	case NOTIFY_MOUNT_UNMOUNT:
-> >  	case NOTIFY_MOUNT_MOVE_FROM:
-> >  	case NOTIFY_MOUNT_MOVE_TO:
-> > -		n.auxiliary_mount	= aux->mnt_id;
-> > +		n.auxiliary_mount = aux->mnt_unique_id;
-> 
-> Hmm, so we now have two ID's:
-> 
->  - one can be used to look up the mount
->  - one is guaranteed to be unique
-> 
-> With this change the mount cannot be looked up with
-> FSINFO_FLAGS_QUERY_MOUNT,
-> right?
-> 
-> Should we be merging the two ID's into a single one which has both
-> properties?
+From: Mike Snitzer <snitzer@redhat.com>
 
-I'd been thinking we would probably need to change to 64 bit ids
-for a while now and I thought that was what was going to happen.
+Discontinue issuing writethrough write IO in series to the origin and
+then cache.
 
-We'll need to change libmount and current code but better early
-on than later.
+Use bio_clone_fast() to create a new origin clone bio that will be
+mapped to the origin device and then bio_chain() it to the bio that gets
+remapped to the cache device.  The origin clone bio does _not_ have a
+copy of the per_bio_data -- as such check_if_tick_bio_needed() will not
+be called.
 
-Ian
+The cache bio (parent bio) will not complete until the origin bio has
+completed -- this fulfills bio_clone_fast()'s requirements as well as
+the requirement to not complete the original IO until the write IO has
+completed to both the origin and cache device.
 
-> 
-> >  		break;
-> >  
-> >  	default:
-> > diff --git a/fs/namespace.c b/fs/namespace.c
-> > index b2b9920ffd3c..1db8a64cd76f 100644
-> > --- a/fs/namespace.c
-> > +++ b/fs/namespace.c
-> > @@ -115,6 +115,9 @@ static int mnt_alloc_id(struct mount *mnt)
-> >  	if (res < 0)
-> >  		return res;
-> >  	mnt->mnt_id = res;
-> > +#ifdef CONFIG_FSINFO
-> > +	mnt->mnt_unique_id = atomic64_inc_return(&vfs_unique_counter);
-> > +#endif
-> >  	return 0;
-> >  }
-> >  
-> > 
-> > 
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+
+(cherry picked from commit 2df3bae9a6543e90042291707b8db0cbfbae9ee9)
+
+Fixes: 4ec34f2196d125ff781170ddc6c3058c08ec5e73 (dm bio record:
+save/restore bi_end_io and bi_integrity )
+
+4ec34f21 introduced a mkfs.ext4 hang on a LVM device that has been
+modified with lvconvert --cachemode=3Dwritethrough.
+
+CC:stable@vger.kernel.org for 4.14.y
+
+Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+Reviewed-by: Somasundaram Krishnasamy =
+<somasundaram.krishnasamy@oracle.com>
+
+conflicts:
+	drivers/md/dm-cache-target.c. -  Corrected usage of
+	writethrough_mode(&cache->feature) that was caught by
+	compiler, and removed unused static functions : =
+writethrough_endio(),
+	defer_writethrough_bio(), wake_deferred_writethrough_worker()
+	that generated warnings.
+---
+drivers/md/dm-cache-target.c | 92 =
+++++++++++++++++++--------------------------
+1 file changed, 37 insertions(+), 55 deletions(-)
+
+diff --git a/drivers/md/dm-cache-target.c b/drivers/md/dm-cache-target.c
+index 69cdb29ef6be..2732d1df05fa 100644
+--- a/drivers/md/dm-cache-target.c
++++ b/drivers/md/dm-cache-target.c
+@@ -450,6 +450,7 @@ struct cache {
+	struct work_struct migration_worker;
+	struct delayed_work waker;
+	struct dm_bio_prison_v2 *prison;
++	struct bio_set *bs;
+
+	mempool_t *migration_pool;
+
+@@ -537,11 +538,6 @@ static void wake_deferred_bio_worker(struct cache =
+*cache)
+	queue_work(cache->wq, &cache->deferred_bio_worker);
+}
+
+-static void wake_deferred_writethrough_worker(struct cache *cache)
+-{
+-	queue_work(cache->wq, &cache->deferred_writethrough_worker);
+-}
+-
+static void wake_migration_worker(struct cache *cache)
+{
+	if (passthrough_mode(&cache->features))
+@@ -868,16 +864,23 @@ static void check_if_tick_bio_needed(struct cache =
+*cache, struct bio *bio)
+	spin_unlock_irqrestore(&cache->lock, flags);
+}
+
+-static void remap_to_origin_clear_discard(struct cache *cache, struct =
+bio *bio,
+-					  dm_oblock_t oblock)
++static void __remap_to_origin_clear_discard(struct cache *cache, struct =
+bio *bio,
++					    dm_oblock_t oblock, bool =
+bio_has_pbd)
+{
+-	// FIXME: this is called way too much.
+-	check_if_tick_bio_needed(cache, bio);
++	if (bio_has_pbd)
++		check_if_tick_bio_needed(cache, bio);
+	remap_to_origin(cache, bio);
+	if (bio_data_dir(bio) =3D=3D WRITE)
+		clear_discard(cache, oblock_to_dblock(cache, oblock));
+}
+
++static void remap_to_origin_clear_discard(struct cache *cache, struct =
+bio *bio,
++					  dm_oblock_t oblock)
++{
++	// FIXME: check_if_tick_bio_needed() is called way too much =
+through this interface
++	__remap_to_origin_clear_discard(cache, bio, oblock, true);
++}
++
+static void remap_to_cache_dirty(struct cache *cache, struct bio *bio,
+				 dm_oblock_t oblock, dm_cblock_t cblock)
+{
+@@ -937,57 +940,26 @@ static void issue_op(struct bio *bio, void =
+*context)
+	accounted_request(cache, bio);
+}
+
+-static void defer_writethrough_bio(struct cache *cache, struct bio =
+*bio)
+-{
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&cache->lock, flags);
+-	bio_list_add(&cache->deferred_writethrough_bios, bio);
+-	spin_unlock_irqrestore(&cache->lock, flags);
+-
+-	wake_deferred_writethrough_worker(cache);
+-}
+-
+-static void writethrough_endio(struct bio *bio)
+-{
+-	struct per_bio_data *pb =3D get_per_bio_data(bio, =
+PB_DATA_SIZE_WT);
+-
+-	dm_unhook_bio(&pb->hook_info, bio);
+-
+-	if (bio->bi_status) {
+-		bio_endio(bio);
+-		return;
+-	}
+-
+-	dm_bio_restore(&pb->bio_details, bio);
+-	remap_to_cache(pb->cache, bio, pb->cblock);
+-
+-	/*
+-	 * We can't issue this bio directly, since we're in interrupt
+-	 * context.  So it gets put on a bio list for processing by the
+-	 * worker thread.
+-	 */
+-	defer_writethrough_bio(pb->cache, bio);
+-}
+-
+/*
+- * FIXME: send in parallel, huge latency as is.
+ * When running in writethrough mode we need to send writes to clean =
+blocks
+- * to both the cache and origin devices.  In future we'd like to clone =
+the
+- * bio and send them in parallel, but for now we're doing them in
+- * series as this is easier.
++ * to both the cache and origin devices.  Clone the bio and send them =
+in parallel.
+ */
+-static void remap_to_origin_then_cache(struct cache *cache, struct bio =
+*bio,
+-				       dm_oblock_t oblock, dm_cblock_t =
+cblock)
++static void remap_to_origin_and_cache(struct cache *cache, struct bio =
+*bio,
++				      dm_oblock_t oblock, dm_cblock_t =
+cblock)
+{
+-	struct per_bio_data *pb =3D get_per_bio_data(bio, =
+PB_DATA_SIZE_WT);
++	struct bio *origin_bio =3D bio_clone_fast(bio, GFP_NOIO, =
+cache->bs);
++
++	BUG_ON(!origin_bio);
+
+-	pb->cache =3D cache;
+-	pb->cblock =3D cblock;
+-	dm_hook_bio(&pb->hook_info, bio, writethrough_endio, NULL);
+-	dm_bio_record(&pb->bio_details, bio);
++	bio_chain(origin_bio, bio);
++	/*
++	 * Passing false to __remap_to_origin_clear_discard() skips
++	 * all code that might use per_bio_data (since clone doesn't =
+have it)
++	 */
++	__remap_to_origin_clear_discard(cache, origin_bio, oblock, =
+false);
++	submit_bio(origin_bio);
+
+-	remap_to_origin_clear_discard(pb->cache, bio, oblock);
++	remap_to_cache(cache, bio, cblock);
+}
+
+/*----------------------------------------------------------------
+@@ -1873,7 +1845,7 @@ static int map_bio(struct cache *cache, struct bio =
+*bio, dm_oblock_t block,
+		} else {
+			if (bio_data_dir(bio) =3D=3D WRITE && =
+writethrough_mode(&cache->features) &&
+			    !is_dirty(cache, cblock)) {
+-				remap_to_origin_then_cache(cache, bio, =
+block, cblock);
++				remap_to_origin_and_cache(cache, bio, =
+block, cblock);
+				accounted_begin(cache, bio);
+			} else
+				remap_to_cache_dirty(cache, bio, block, =
+cblock);
+@@ -2132,6 +2104,9 @@ static void destroy(struct cache *cache)
+		kfree(cache->ctr_args[i]);
+	kfree(cache->ctr_args);
+
++	if (cache->bs)
++		bioset_free(cache->bs);
++
+	kfree(cache);
+}
+
+@@ -2589,6 +2564,13 @@ static int cache_create(struct cache_args *ca, =
+struct cache **result)
+	cache->features =3D ca->features;
+	ti->per_io_data_size =3D get_per_bio_data_size(cache);
+
++	if (writethrough_mode(&cache->features)) {
++		/* Create bioset for writethrough bios issued to origin =
+*/
++		cache->bs =3D bioset_create(BIO_POOL_SIZE, 0, 0);
++		if (!cache->bs)
++			goto bad;
++	}
++
+	cache->callbacks.congested_fn =3D cache_is_congested;
+	dm_table_add_target_callbacks(ti->table, &cache->callbacks);
+
+--=20
+1.8.3.1
 
