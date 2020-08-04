@@ -2,71 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F78723BC3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1965C23BC45
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726224AbgHDOex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:34:53 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:42031 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725864AbgHDOdu (ORCPT
+        id S1728939AbgHDOfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgHDOe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:33:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596551615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xVEmdXu1Elr4lJnyU+c+Iz3v9D/K611e6GoM3Q486ac=;
-        b=Msz8pCy6kyjeh0KX3vwRjcTbFkONhYn8R4gbWBHKvBqGq8+JHWKilXmTHOuqElzK2jERjD
-        nwi3XPr6Mn0O5rLOdOWA15jqeXurLec+srkJS9GB4j2YkCr+w7OAhwv048E8XJ2bdPZhPp
-        C5+ShEuOfSsN1izsERVvQxAmkUX8AQU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-468-koWCRCDfOnCMZn-FTt1fIA-1; Tue, 04 Aug 2020 10:33:33 -0400
-X-MC-Unique: koWCRCDfOnCMZn-FTt1fIA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B368102CC38;
-        Tue,  4 Aug 2020 14:33:32 +0000 (UTC)
-Received: from gondolin (ovpn-112-169.ams2.redhat.com [10.36.112.169])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C4A3172E48;
-        Tue,  4 Aug 2020 14:33:24 +0000 (UTC)
-Date:   Tue, 4 Aug 2020 16:33:22 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH v2 09/24] virtio_fs: correct tags for config space
- fields
-Message-ID: <20200804163322.4799a29a.cohuck@redhat.com>
-In-Reply-To: <20200803205814.540410-10-mst@redhat.com>
-References: <20200803205814.540410-1-mst@redhat.com>
-        <20200803205814.540410-10-mst@redhat.com>
-Organization: Red Hat GmbH
+        Tue, 4 Aug 2020 10:34:28 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972C9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 07:34:20 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id y18so25923647ilp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 07:34:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5Mz7Dz4HhN27ky7XInjg78tahh1Tb1kaHJSAvyuhPZI=;
+        b=i4UavkhNSo6QPSaRE6hxSLJ+6F/G4lelA0CiGp6bzKeEamYkxGdo6G8aSdhcGOknSp
+         uSeehMryIFLQ5/PIVFsLEqG0whteXirWnqr+iobjI5jXiKjc9NrLfvjtIzN91su38GN7
+         olOEZsjcLwR/KmjJpRx50bJd22OXG7STLBGX7xSwF1qV+fhvBDs/YKKRfbimFfuryCjo
+         g8v3A7eCk+EzfiiAccNp67TYeYs5OQ16gEXyTYt60Fojyz7b6VZjBBziTGGrQU8lNS1g
+         /UBJjy+AeEPaxczip54KE84qJz1JHuHP/3ck1Z/mUxsMLp1tiWkDsUxAG/hWi0usSIW6
+         B56A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5Mz7Dz4HhN27ky7XInjg78tahh1Tb1kaHJSAvyuhPZI=;
+        b=ZWFSmRAsIdrmvHYO4YjWR4/BMd1zgFhhMum45clRbO+tGQPfcUmPmmpOYBypJvJlcX
+         9z/N0uyC1KQqjZa0TxL5y3WrgFlilXyxnzIFQ8kHM1sf9DN+qbgu9QYn1phkX3JWlYEd
+         L5eXjme7iiYXTcnsbzC3uTIdmxLRq1KJE9cVryABmhlnHOFnlylZv1Hjgazs7QpaSToZ
+         i5GDVL3pv/cnVwRvNZXKgf+swKwfGUMaKi7xq+tmWOIGDGoO/+ZB+Qx/5XbNczXFMSB6
+         5i9jijFqH8HkICP4b/cOL/0yy7r/R1LwGrI27TQ2rbt8A5rKug1xRU3zhPB0268r7S0e
+         dP1A==
+X-Gm-Message-State: AOAM531mjdUp6ApWzJjfx/W3TV3DFDjxG3hyyWVz+ZCJui6G1bx1irQZ
+        h1u5g9G0SZxAdmwUsCxjF03W/ymovCyyJBVj6mkuIQ==
+X-Google-Smtp-Source: ABdhPJzvAOv2+6wj7DYgW/bjoRT1xIlwrACuCpPpw1/wcu+H/Ta7pklvxHWABPSeHi1fkpXgHfcXMfo58Lf9XiTcPz0=
+X-Received: by 2002:a92:d781:: with SMTP id d1mr4625475iln.68.1596551659736;
+ Tue, 04 Aug 2020 07:34:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <1596541698-18938-1-git-send-email-linmiaohe@huawei.com>
+In-Reply-To: <1596541698-18938-1-git-send-email-linmiaohe@huawei.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 4 Aug 2020 07:34:07 -0700
+Message-ID: <CANn89iK_NVBWwT4QNrb3EpahG3zOQS-Dh68Qdhrm2_xAs7Yu=Q@mail.gmail.com>
+Subject: Re: [PATCH] net: Fix potential out of bound write in skb_try_coalesce()
+To:     linmiaohe <linmiaohe@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Florian Westphal <fw@strlen.de>, martin.varghese@nokia.com,
+        Willem de Bruijn <willemb@google.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Paolo Abeni <pabeni@redhat.com>, shmulik@metanetworks.com,
+        kyk.segfault@gmail.com, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 Aug 2020 16:59:13 -0400
-"Michael S. Tsirkin" <mst@redhat.com> wrote:
+On Tue, Aug 4, 2020 at 4:46 AM linmiaohe <linmiaohe@huawei.com> wrote:
+>
+> From: Miaohe Lin <linmiaohe@huawei.com>
+>
+> The head_frag of skb would occupy one extra skb_frag_t. Take it into
+> account or out of bound write to skb frags may happen.
+>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-> Since fs is a modern-only device,
-> tag config space fields as having little endian-ness.
-> 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->  include/uapi/linux/virtio_fs.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Please share a stack trace if this was a real bug spotted in the wild.
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+I do not believe this patch is correct.
 
+if (A + B >= MAX)   is equivalent to  if (A + B + 1 > MAX)
+
+Note how the other condition (when there is no bytes in skb header) is coded :
+
+if (A + B > MAX) return false;
+
+In anycase, please always provide a Fixes: tag for any bug fix.
+
+Thanks.
