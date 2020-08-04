@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC0123BA74
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC84F23BA78
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgHDMgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 08:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgHDMgA (ORCPT
+        id S1727786AbgHDMha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 08:37:30 -0400
+Received: from sonic315-13.consmr.mail.bf2.yahoo.com ([74.6.134.123]:42568
+        "EHLO sonic315-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726276AbgHDMh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 08:36:00 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9882BC06174A;
-        Tue,  4 Aug 2020 05:35:59 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id c16so21838379ejx.12;
-        Tue, 04 Aug 2020 05:35:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=6RTVhFDX46AnPd26vPe+RB8qNqmkRWknJbiE97l1Y+Y=;
-        b=OxhKHu6db2XpSqxcE6NiFINrJxgBl1DWnXgFtyU+pkKBKOfzyy0+LMbh7NB7HNVfRU
-         lMJGCoDE/FZs+I0WNEJMG5XsdddfDRzcUMWNJu6p52Gu7mJNM+sCuS/VaZb+qIJjMATc
-         R1cfNcJHias4PZkk5yIkei6BALKCW9cfEB9U9E+BymV6YcI4tDWzyhTo0qzWC3ccQQyI
-         sxBWhbkcntUTnU29PDsd1GGfMRoIqRSE0oM2eQqLEsR+ZqV0IScRascUv5BF4oWegVdu
-         lczV+GvaY8Zlsj3LkvcSID3NqGz+TeqAadC7Cnrr+93GAVGDQafxcXR7klC/2PG27GV8
-         oz4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=6RTVhFDX46AnPd26vPe+RB8qNqmkRWknJbiE97l1Y+Y=;
-        b=jUekQbGrFT7ZgGFEIE4H3sXm3s5gvvSVsueo1hRElcdR6g+rty4403BS43yKIw6PTR
-         GTqZh8OQ9NDvw52QEpN80U83ZotLPbjAlLrRtVNAWkDtnwgwGLRpLfbIa1Ds9b9kL6vb
-         eJL2Uh9Ns44cQIlzrDkmJ4a4sWtWgByNoq2nLER77VsJDsfk3ahTQp+VKQC64z+he/C2
-         fVILTCHfP1rr+VYIN4Wgt6q9ZM18TH/kN6bZ8p6/ZFc2npgSVavz/gOgnfcKpsPCo6NT
-         /cOTpAmBF1ts5lJf1L+LT3tmeFapPkCzlh0BEZZc9qC8Z7+tg5/bh0e/GI+ecuEW2nyr
-         X4qQ==
-X-Gm-Message-State: AOAM532339lKu8c2ep0RD+nMVOeT6uwF1geMfiFXFDQb03tykpfw+FTS
-        mThQabI2JIA6jW9C8RZpcIx+VZSX
-X-Google-Smtp-Source: ABdhPJz6aFKnteEC4JgAR1C+2YaUjYOnKQtqD4brmBogNEtSQ0mZlS4h+I6t7kqgs/QwPlpjFkXsRQ==
-X-Received: by 2002:a17:906:a209:: with SMTP id r9mr22108168ejy.413.1596544558402;
-        Tue, 04 Aug 2020 05:35:58 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:598:b88a:676c:15b9:533b:62ba:b5b3])
-        by smtp.gmail.com with ESMTPSA id r19sm18514261edi.85.2020.08.04.05.35.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 05:35:57 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] scsi: ufs: no need to send one Abort Task TM in case the task in DB was cleared
-Date:   Tue,  4 Aug 2020 14:35:34 +0200
-Message-Id: <20200804123534.29104-1-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 4 Aug 2020 08:37:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596544647; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=M87E3x2wdWuLkyJ7nrQr+TaIwjkrvsfKGHDVJctxFQnoOZB78/YLhOYmKRt/buy1HXZnGlCl1cwHewoh6YfrzEL/R3ieKfW+t5A97zgh+NBjSrHeC9QbGyssGfyB+jFkm+CUQubEsrDLGe30NSQo4s44mRPDZj1DP/07tk7od0k3dowS7hN7LpStnlP7juXTl1NhDQAFLfsYZy4Oq/1tt0TMk2iSS06/dsAk/iaK82P8UxNOvkWW4J7fgg1RKSf9WJhso2e6vf4Ao1c4COgpvBmRYi9GTNjZ3cLDpd3gE+HHiXbOWk1iLmjyGPNv5Qew79fz8auAa1RQDXZkZdDYtQ==
+X-YMail-OSG: zWBYfy8VM1lZ0R8Aii91tRY_MfFydI3XwePexgDYXJ2.iOQQYSWVJHjPxTQSwRO
+ ulc2YiORP._obj8wye2263YQfgvrtjon.hObcRACwM23ilOF7XqTWkgY06kgVrtgt6fNva.D00kj
+ 2lyMrcFlxq9OIGJWvSXCBQ2JInQNFXyteJ5WzSjsQRSos2UDAmoksioNNCzl_Bl.gyMG165Pf8WT
+ rqerRrbNkUtSMrMRJzWWLiUWs_M2P4KstucBJ53ueZnqLnyVB0ZhkHwS4fiKghMSxCbr1Ym3pBKz
+ 5442xxCTaCdhrqJW6Ucei0WPvjJKQkuFknVhdvWS5HslTpckNwZm7v2r0mlJHQEDTCM0XjMIoeLf
+ WQLoyKhYPuSDz8Lh.1fZAay4g15Us0o60RDSlq3Eum4GK5dnp3NLv3iwlneHdj_Ur2eg.EucOgQz
+ 7PLBaWJaueFpTHaGh5VR3jc78fx4w7Egn7E9qP26E9D2rlUO34UmsBtjF0LG9maD1GsCouf10kY4
+ zIlqrpWT9T8Mp_7bfaz6x7nt8TnYDuQOe.Naccqs8ffn0SHF.PZV2YL1PpWPHfjibW6LbIcfnZRF
+ CDZbEl7CXCwhsur06gyDX2WKdn_JE.dzkWLEhjtoHcJyUlpmc0F18awGaTdgJygR3cfuaIhcx5pt
+ BFEuzVyhC6Mt7KYv0g92jL.rX9OA2XDjCZCb.k0TDaBLLKwb06_J0_4ZE2LpPOfnQCKzBE6ljAI4
+ VCJ56q0X6D2b1FGdDEhnGSqIoWv0AH6SYpMjWJ.wJDTeTMjyUoxvzo0wvAYcjVR055jOGBJgmplQ
+ 2CkRAt4AiwS.hC8Zp6b7Pz0Ip6jeYFSsByADmqkwnb4l2mst1BXKCNY4NzUTsm75xShACRQeB2FV
+ oM2shkAwdEfJuM6VgyUsxbIG8KeTB7cK95n9E9Y5tImMV8CKmaDGUaZWGyje4ZMnsJUwMgVrWgQi
+ dtW_VL7yDq0ZTz1Ea0ZMPZFqUK6ObpIp03vXurV5TMedoex0kGk_o0e78FENKPEEYDeVOQyGKXS6
+ 6MC99VcGSQP8NkKekg0MBzwsqkjwpyLlLF85feOINJCGJdeosTcBoJtlsQVPni.IHyKkFnOKvt0d
+ n7tdYy445lOj7iqIZZf29wB4Qy.h.FZ43mWE7rcCRuA9vEsi2xcFMutsu8h.W6z7ZPpjqrZ01vqf
+ kJKXTGjuDgVSb.QO.0E5D_WTG4giIwj00ukRmrEDGDIkZnW5KEKBrcPOQxHtFckays3TyG3LWR4m
+ amMNnZmRQOVjbyyGtASrE0xtTLf.R8rxN7NRTdIU_4_uHA_jYib71pLTrKQWzCQNwmisaLlf7u20
+ 2
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Tue, 4 Aug 2020 12:37:27 +0000
+Date:   Tue, 4 Aug 2020 12:37:24 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <bmrsminaa4@gmail.com>
+Reply-To: amrsminaabrunel@gmail.com
+Message-ID: <324990117.248248.1596544644405@mail.yahoo.com>
+Subject: My Dear in the lord
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <324990117.248248.1596544644405.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16397 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
 
-If the bit corresponds to a task in the Doorbell register has been
-cleared, no need to poll the status of the task on the device side
-and to send an Abort Task TM.
-This patch also deletes dispensable dev_err() in case of the task
-already completed.
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/ufs/ufshcd.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+My Dear in the lord
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 307622284239..581b4ab52bf4 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6425,19 +6425,16 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- 		return ufshcd_eh_host_reset_handler(cmd);
- 
- 	ufshcd_hold(hba, false);
--	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
- 	/* If command is already aborted/completed, return SUCCESS */
--	if (!(test_bit(tag, &hba->outstanding_reqs))) {
--		dev_err(hba->dev,
--			"%s: cmd at tag %d already completed, outstanding=0x%lx, doorbell=0x%x\n",
--			__func__, tag, hba->outstanding_reqs, reg);
-+	if (!(test_bit(tag, &hba->outstanding_reqs)))
- 		goto out;
--	}
- 
-+	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
- 	if (!(reg & (1 << tag))) {
- 		dev_err(hba->dev,
- 		"%s: cmd was completed, but without a notifying intr, tag = %d",
- 		__func__, tag);
-+		goto out;
- 	}
- 
- 	/* Print Transfer Request of aborted task */
--- 
-2.17.1
 
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
+ugou the capital city of Burkina Faso in West Africa. The money was from th=
+e sale of his company and death benefits payment and entitlements of my dec=
+eased husband by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
