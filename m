@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4202023C118
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2DE23C125
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728548AbgHDU6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 16:58:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42850 "EHLO mail.kernel.org"
+        id S1728730AbgHDU7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 16:59:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728394AbgHDU6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 16:58:48 -0400
-Received: from gmail.com (unknown [104.132.1.76])
+        id S1727124AbgHDU7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 16:59:32 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCEFF2086A;
-        Tue,  4 Aug 2020 20:58:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596574728;
-        bh=dtol9Ums/BnhF/0mrqyXgMMO0Dg0T0IcgMhAWs7Cpc4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HOjBDJkp94PpyHMCmrl7tSHNej/Cr+XBZUXcsfPLqD5Ny/cMs7p+4+dsx4mOwaX4x
-         oMnMOtKJ/OExtbF+iF2OTWDctUS5Izc4qRGgB1tG/ZvARbF45Ed8eQwLNT1jwzmXR5
-         6CLfVzF54c5nIqm3rrD/iqnAkV0Dlu6vQHahVM4U=
-Date:   Tue, 4 Aug 2020 13:58:46 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        casey@schaufler-ca.com, James Morris <jmorris@namei.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Daniel Colascione <dancol@dancol.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nick Kralevich <nnk@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Calin Juravle <calin@google.com>, kernel-team@android.com,
-        yanfei.xu@windriver.com,
-        syzbot+75867c44841cb6373570@syzkaller.appspotmail.com
-Subject: Re: [PATCH] Userfaultfd: Avoid double free of userfault_ctx and
- remove O_CLOEXEC
-Message-ID: <20200804205846.GB1992048@gmail.com>
-References: <20200804203155.2181099-1-lokeshgidra@google.com>
- <20200804204543.GA1992048@gmail.com>
- <CA+EESO6XGpiTLnxPraZqBigY7mh6G2jkHa2PKXaHXpzdrZd4wA@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CEDC2086A;
+        Tue,  4 Aug 2020 20:59:31 +0000 (UTC)
+Date:   Tue, 4 Aug 2020 16:59:29 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] bootconfig: Fix to find the initargs correctly
+Message-ID: <20200804165929.3bfeb318@oasis.local.home>
+In-Reply-To: <159650953285.270383.14822353843556363851.stgit@devnote2>
+References: <159650953285.270383.14822353843556363851.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+EESO6XGpiTLnxPraZqBigY7mh6G2jkHa2PKXaHXpzdrZd4wA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 01:49:30PM -0700, Lokesh Gidra wrote:
-> On Tue, Aug 4, 2020 at 1:45 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > On Tue, Aug 04, 2020 at 01:31:55PM -0700, Lokesh Gidra wrote:
-> > > when get_unused_fd_flags returns error, ctx will be freed by
-> > > userfaultfd's release function, which is indirectly called by fput().
-> > > Also, if anon_inode_getfile_secure() returns an error, then
-> > > userfaultfd_ctx_put() is called, which calls mmdrop() and frees ctx.
-> > >
-> > > Also, the O_CLOEXEC was inadvertently added to the call to
-> > > get_unused_fd_flags() [1].
-> > >
-> > > Adding Al Viro's suggested-by, based on [2].
-> > >
-> > > [1] https://lore.kernel.org/lkml/1f69c0ab-5791-974f-8bc0-3997ab1d61ea@dancol.org/
-> > > [2] https://lore.kernel.org/lkml/20200719165746.GJ2786714@ZenIV.linux.org.uk/
-> > >
-> > > Fixes: d08ac70b1e0d (Wire UFFD up to SELinux)
-> > > Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> > > Reported-by: syzbot+75867c44841cb6373570@syzkaller.appspotmail.com
-> > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> >
-> > What branch does this patch apply to?  Neither mainline nor linux-next works.
-> >
-> On James Morris' tree (secure_uffd_v5.9 branch).
+On Tue,  4 Aug 2020 11:52:13 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Since the parse_args() stops parsing at '--', bootconfig_params()
+> will never get the '--' as param and initargs_found never be true.
+> In the result, if we pass some init arguments via the bootconfig,
+> those are always appended to the kernel command line with '--'
+> even if the kernel command line already has '--'.
 > 
+> To fix this correctly, check the return value of parse_args()
+> and set initargs_found true if the return value is not an error
+> but a valid address.
 
-For those of us not "in the know", that apparently means branch secure_uffd_v5.9
-of https://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git
+Thanks Masami,
 
-Perhaps it would make more sense to resend your original patch series with this
-fix folded in?
+I'll start testing this now. I just finished testing everything else I
+had in my queue and pushed it to my for-next branch. Can you check to
+see if I missed anything there?
 
-> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> index ae859161908f..e15eb8fdc083 100644
-> --- a/fs/userfaultfd.c
-> +++ b/fs/userfaultfd.c
-> @@ -2042,24 +2042,18 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
->  		O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS),
->  		NULL);
->  	if (IS_ERR(file)) {
-> -		fd = PTR_ERR(file);
-> -		goto out;
-> +		userfaultfd_ctx_put(ctx);
-> +		return PTR_ERR(file);
+-- Steve
+
+
+> 
+> Fixes: f61872bb58a1 ("bootconfig: Use parse_args() to find bootconfig and '--'")
+> Cc: stable@vger.kernel.org
+> Reported-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  Changes in v2:
+>   - Remvoe unneede !IS_ERR().
+> ---
+>  init/main.c |   14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/init/main.c b/init/main.c
+> index 0ead83e86b5a..883ded3638e5 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -387,8 +387,6 @@ static int __init bootconfig_params(char *param, char *val,
+>  {
+>  	if (strcmp(param, "bootconfig") == 0) {
+>  		bootconfig_found = true;
+> -	} else if (strcmp(param, "--") == 0) {
+> -		initargs_found = true;
 >  	}
+>  	return 0;
+>  }
+> @@ -399,19 +397,23 @@ static void __init setup_boot_config(const char *cmdline)
+>  	const char *msg;
+>  	int pos;
+>  	u32 size, csum;
+> -	char *data, *copy;
+> +	char *data, *copy, *err;
+>  	int ret;
 >  
-> -	fd = get_unused_fd_flags(O_RDONLY | O_CLOEXEC);
-> +	fd = get_unused_fd_flags(O_RDONLY);
->  	if (fd < 0) {
->  		fput(file);
-> -		goto out;
-> +		return fd;
->  	}
+>  	/* Cut out the bootconfig data even if we have no bootconfig option */
+>  	data = get_boot_config_from_initrd(&size, &csum);
 >  
->  	ctx->owner = file_inode(file);
->  	fd_install(fd, file);
-> -
-> -out:
-> -	if (fd < 0) {
-> -		mmdrop(ctx->mm);
-> -		kmem_cache_free(userfaultfd_ctx_cachep, ctx);
-> -	}
->  	return fd;
+>  	strlcpy(tmp_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+> -	parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
+> -		   bootconfig_params);
+> +	err = parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
+> +			 bootconfig_params);
+>  
+> -	if (!bootconfig_found)
+> +	if (IS_ERR(err) || !bootconfig_found)
+>  		return;
+>  
+> +	/* parse_args() stops at '--' and returns an address */
+> +	if (err)
+> +		initargs_found = true;
+> +
+>  	if (!data) {
+>  		pr_err("'bootconfig' found on command line, but no bootconfig found\n");
+>  		return;
 
-This introduces the opposite bug: now it's hardcoded to *not* use O_CLOEXEC,
-instead of using the flag the user passed in the flags argument to the syscall.
-
-- Eric
