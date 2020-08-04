@@ -2,183 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C1123BCD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CE923BCD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729482AbgHDO7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:59:50 -0400
-Received: from mail.efficios.com ([167.114.26.124]:53520 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729460AbgHDO7r (ORCPT
+        id S1729484AbgHDPAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 11:00:52 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:28674 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729474AbgHDO7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:59:47 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 1E42A2D7D34;
-        Tue,  4 Aug 2020 10:59:34 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id j61pavjEfe_F; Tue,  4 Aug 2020 10:59:33 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B03592D7F9E;
-        Tue,  4 Aug 2020 10:59:33 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B03592D7F9E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1596553173;
-        bh=586Ig9PSGc+yUdvJdgfaWqOjTOAoEQnYWTHs3H8Yne0=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=CkttCXQD9FRdNGn7iULE/tJLO/t6zHskeRY1FOwmBj1MyGdHm6b0Gt9ReEF18JE+7
-         QDDko8g1YDTSH3gwl4I5azfszwfaisF/rprwUmPSVA0QphpcSjCZxm0pN81gW4IZBH
-         cMHZ1IQh/XzSy/pGgw32qdYvbzhRF7FlKEjtzJAdjAlXaF73b3h5bvmkiqnl8LINlW
-         bMxAbwpN5UHIQ0xD82jm+9uiIfPDjJAuRYR8Dy3jsH+G4Paw/vcflZd+lz2G2YyVMj
-         Rl05/jmJjDyW82cNGW3MO1r+fuk5Ge9nm6a4kTExscBReBAWstBEJLtjFS60pmJt7f
-         qLdsYDbVPuY0Q==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id AykP_FOrFIgL; Tue,  4 Aug 2020 10:59:33 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 689A02D7C5A;
-        Tue,  4 Aug 2020 10:59:33 -0400 (EDT)
-Date:   Tue, 4 Aug 2020 10:59:33 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <1708074166.39992.1596553173337.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200804145145.GM2657@hirez.programming.kicks-ass.net>
-References: <20200728160010.3314-1-mathieu.desnoyers@efficios.com> <20200728160010.3314-2-mathieu.desnoyers@efficios.com> <20200804145145.GM2657@hirez.programming.kicks-ass.net>
-Subject: Re: [RFC PATCH 2/2] sched: membarrier: cover kthread_use_mm
+        Tue, 4 Aug 2020 10:59:51 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 074E2eTv012615;
+        Tue, 4 Aug 2020 16:04:32 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=LAG1/atoWlfWmJtGbllySuRLl1a6COVGHRrcpAnsvT4=;
+ b=BL+ho6hQTKnVi4msGN1TyWPhmU0E8Hj9r5AGDUn2IOe5hA503883/UoUUorsbPZ4nhFn
+ ubDAZjO88ZpbAm+LE70U0Tt+cpBZnwN6bPm8l7Ly52qQ+3XhREzZo5ggMa/ON0tG2pJQ
+ whkK+nUSAFJGD1WL0RiZcgOMfP/qEjxiy1hkkAA1GtUE2nOwiqhW2ftBu6y5ORfy+o/R
+ dfLYwysyN/pvERl3HHTlD4v4MjIpvClAl4SWn2m7EDG+Ibd4t+4Ms7bwIe5p6ERQH8dw
+ 5o3BVFyX8GSPwtY/5ONatOo5nMkgEWz2Jq63AqCV9X+tWwQWueKyvmZMJkPb3OgWdnQv vg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32n6sb3dp9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 Aug 2020 16:04:32 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D0C7B10002A;
+        Tue,  4 Aug 2020 16:04:29 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag5node2.st.com [10.75.127.14])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C40952BC7A0;
+        Tue,  4 Aug 2020 16:04:29 +0200 (CEST)
+Received: from lmecxl1060.lme.st.com (10.75.127.45) by SFHDAG5NODE2.st.com
+ (10.75.127.14) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 4 Aug
+ 2020 16:04:28 +0200
+Subject: Re: [PATCH v3 2/2] i2c: stm32f7: Add SMBus Host-Notify protocol
+ support
+To:     Alain Volmat <alain.volmat@st.com>, <wsa@kernel.org>
+CC:     <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>
+References: <1596431876-24115-1-git-send-email-alain.volmat@st.com>
+ <1596431876-24115-3-git-send-email-alain.volmat@st.com>
+From:   Pierre Yves MORDRET <pierre-yves.mordret@st.com>
+Message-ID: <e27abfbc-6cb4-ab00-04ea-4147982c8393@st.com>
+Date:   Tue, 4 Aug 2020 16:04:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1596431876-24115-3-git-send-email-alain.volmat@st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF79 (Linux)/8.8.15_GA_3953)
-Thread-Topic: sched: membarrier: cover kthread_use_mm
-Thread-Index: lJz/+qFGsVsWXklE3aHMpWTYdfNHyw==
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG5NODE2.st.com
+ (10.75.127.14)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-04_04:2020-08-03,2020-08-04 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Aug 4, 2020, at 10:51 AM, Peter Zijlstra peterz@infradead.org wrote:
+Hi Alain
 
-> On Tue, Jul 28, 2020 at 12:00:10PM -0400, Mathieu Desnoyers wrote:
->> Add comments and memory barrier to kthread_use_mm and kthread_unuse_mm
->> to allow the effect of membarrier(2) to apply to kthreads accessing
->> user-space memory as well.
->> 
->> Given that no prior kthread use this guarantee and that it only affects
->> kthreads, adding this guarantee does not affect user-space ABI.
->> 
->> Refine the check in membarrier_global_expedited to exclude runqueues
->> running the idle thread rather than all kthreads from the IPI cpumask.
->> 
->> This patch applies on top of this patch from Peter Zijlstra:
->> "mm: fix kthread_use_mm() vs TLB invalidate" currently in Andrew
->> Morton's tree.
->> 
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Paul E. McKenney <paulmck@kernel.org>
->> Cc: Nicholas Piggin <npiggin@gmail.com>
->> Cc: Andy Lutomirski <luto@amacapital.net>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> ---
->>  kernel/kthread.c          | 19 +++++++++++++++++++
->>  kernel/sched/membarrier.c |  8 ++------
->>  2 files changed, 21 insertions(+), 6 deletions(-)
->> 
->> diff --git a/kernel/kthread.c b/kernel/kthread.c
->> index 48925b17920e..ef2435517f14 100644
->> --- a/kernel/kthread.c
->> +++ b/kernel/kthread.c
->> @@ -1258,8 +1258,19 @@ void kthread_use_mm(struct mm_struct *mm)
->>  	finish_arch_post_lock_switch();
->>  #endif
->>  
->> +	/*
->> +	 * When a kthread starts operating on an address space, the loop
->> +	 * in membarrier_{private,global}_expedited() may not observe
->> +	 * that tsk->mm, and not issue an IPI. Membarrier requires a
->> +	 * memory barrier after storing to tsk->mm, before accessing
->> +	 * user-space memory. A full memory barrier for membarrier
->> +	 * {PRIVATE,GLOBAL}_EXPEDITED is implicitly provided by
->> +	 * mmdrop().
->> +	 */
->>  	if (active_mm != mm)
->>  		mmdrop(active_mm);
->> +	else
->> +		smp_mb();
->>  
->>  	to_kthread(tsk)->oldfs = get_fs();
->>  	set_fs(USER_DS);
->> @@ -1280,6 +1291,14 @@ void kthread_unuse_mm(struct mm_struct *mm)
->>  	set_fs(to_kthread(tsk)->oldfs);
->>  
->>  	task_lock(tsk);
->> +	/*
->> +	 * When a kthread stops operating on an address space, the loop
->> +	 * in membarrier_{private,global}_expedited() may not observe
->> +	 * that tsk->mm, and not issue an IPI. Membarrier requires a
->> +	 * memory barrier after accessing user-space memory, before
->> +	 * clearing tsk->mm.
->> +	 */
->> +	smp_mb();
->>  	sync_mm_rss(mm);
->>  	local_irq_disable();
+Look good for me
+
+Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@st.com>
+
+Best Regards
+
+On 8/3/20 7:17 AM, Alain Volmat wrote:
+> Rely on the core functions to implement the host-notify
+> protocol via the a I2C slave device.
 > 
-> Would it make sense to put the smp_mb() inside the IRQ disable region?
-
-I've initially placed it right after task_lock so we could eventually
-have a smp_mb__after_non_raw_spinlock or something with a much better naming,
-which would allow removing the extra barrier when it is implied by the
-spinlock.
-
-I don't see moving the barrier inside the irq off region as having any
-significant effect as far as membarrier is concern. Is it something you
-need for tlb flush ?
-
+> Signed-off-by: Alain Volmat <alain.volmat@st.com>
+> ---
+>  v3: identical to v2
+>  v2: fix slot #0 usage condition within stm32f7_i2c_get_free_slave_id
 > 
->>  	tsk->mm = NULL;
->> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
->> index 168479a7d61b..8a294483074d 100644
->> --- a/kernel/sched/membarrier.c
->> +++ b/kernel/sched/membarrier.c
->> @@ -100,13 +100,9 @@ static int membarrier_global_expedited(void)
->>  		    MEMBARRIER_STATE_GLOBAL_EXPEDITED))
->>  			continue;
->>  
->> -		/*
->> -		 * Skip the CPU if it runs a kernel thread. The scheduler
->> -		 * leaves the prior task mm in place as an optimization when
->> -		 * scheduling a kthread.
->> -		 */
->> +		/* Skip the CPU if it runs the idle thread. */
->>  		p = rcu_dereference(cpu_rq(cpu)->curr);
->> -		if (p->flags & PF_KTHREAD)
->> +		if (is_idle_task(p))
->>  			continue;
+>  drivers/i2c/busses/Kconfig       |   1 +
+>  drivers/i2c/busses/i2c-stm32f7.c | 110 +++++++++++++++++++++++++++++++++------
+>  2 files changed, 96 insertions(+), 15 deletions(-)
 > 
-> Do we want to add a:
+> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+> index 735bf31a3fdf..ae8671727a4c 100644
+> --- a/drivers/i2c/busses/Kconfig
+> +++ b/drivers/i2c/busses/Kconfig
+> @@ -1036,6 +1036,7 @@ config I2C_STM32F7
+>  	tristate "STMicroelectronics STM32F7 I2C support"
+>  	depends on ARCH_STM32 || COMPILE_TEST
+>  	select I2C_SLAVE
+> +	select I2C_SMBUS
+>  	help
+>  	  Enable this option to add support for STM32 I2C controller embedded
+>  	  in STM32F7 SoCs.
+> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+> index bff3479fe122..223c238c3c09 100644
+> --- a/drivers/i2c/busses/i2c-stm32f7.c
+> +++ b/drivers/i2c/busses/i2c-stm32f7.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/delay.h>
+>  #include <linux/err.h>
+>  #include <linux/i2c.h>
+> +#include <linux/i2c-smbus.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/iopoll.h>
+> @@ -50,6 +51,7 @@
+>  
+>  /* STM32F7 I2C control 1 */
+>  #define STM32F7_I2C_CR1_PECEN			BIT(23)
+> +#define STM32F7_I2C_CR1_SMBHEN			BIT(20)
+>  #define STM32F7_I2C_CR1_WUPEN			BIT(18)
+>  #define STM32F7_I2C_CR1_SBC			BIT(16)
+>  #define STM32F7_I2C_CR1_RXDMAEN			BIT(15)
+> @@ -150,7 +152,7 @@
+>  
+>  #define STM32F7_I2C_MAX_LEN			0xff
+>  #define STM32F7_I2C_DMA_LEN_MIN			0x16
+> -#define STM32F7_I2C_MAX_SLAVE			0x2
+> +#define STM32F7_I2C_MAX_SLAVE			0x3
+>  
+>  #define STM32F7_I2C_DNF_DEFAULT			0
+>  #define STM32F7_I2C_DNF_MAX			16
+> @@ -301,6 +303,8 @@ struct stm32f7_i2c_msg {
+>   * @fmp_creg: register address for clearing Fast Mode Plus bits
+>   * @fmp_mask: mask for Fast Mode Plus bits in set register
+>   * @wakeup_src: boolean to know if the device is a wakeup source
+> + * @smbus_mode: states that the controller is configured in SMBus mode
+> + * @host_notify_client: SMBus host-notify client
+>   */
+>  struct stm32f7_i2c_dev {
+>  	struct i2c_adapter adap;
+> @@ -327,6 +331,8 @@ struct stm32f7_i2c_dev {
+>  	u32 fmp_creg;
+>  	u32 fmp_mask;
+>  	bool wakeup_src;
+> +	bool smbus_mode;
+> +	struct i2c_client *host_notify_client;
+>  };
+>  
+>  /*
+> @@ -1321,10 +1327,18 @@ static int stm32f7_i2c_get_free_slave_id(struct stm32f7_i2c_dev *i2c_dev,
+>  	int i;
+>  
+>  	/*
+> -	 * slave[0] supports 7-bit and 10-bit slave address
+> -	 * slave[1] supports 7-bit slave address only
+> +	 * slave[0] support only SMBus Host address (0x8)
+> +	 * slave[1] supports 7-bit and 10-bit slave address
+> +	 * slave[2] supports 7-bit slave address only
+>  	 */
+> -	for (i = STM32F7_I2C_MAX_SLAVE - 1; i >= 0; i--) {
+> +	if (i2c_dev->smbus_mode && (slave->addr == 0x08)) {
+> +		if (i2c_dev->slave[0])
+> +			goto fail;
+> +		*id = 0;
+> +		return 0;
+> +	}
+> +
+> +	for (i = STM32F7_I2C_MAX_SLAVE - 1; i > 0; i--) {
+>  		if (i == 1 && (slave->flags & I2C_CLIENT_TEN))
+>  			continue;
+>  		if (!i2c_dev->slave[i]) {
+> @@ -1333,6 +1347,7 @@ static int stm32f7_i2c_get_free_slave_id(struct stm32f7_i2c_dev *i2c_dev,
+>  		}
+>  	}
+>  
+> +fail:
+>  	dev_err(dev, "Slave 0x%x could not be registered\n", slave->addr);
+>  
+>  	return -EINVAL;
+> @@ -1776,7 +1791,13 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
+>  	if (!stm32f7_i2c_is_slave_registered(i2c_dev))
+>  		stm32f7_i2c_enable_wakeup(i2c_dev, true);
+>  
+> -	if (id == 0) {
+> +	switch (id) {
+> +	case 0:
+> +		/* Slave SMBus Host */
+> +		i2c_dev->slave[id] = slave;
+> +		break;
+> +
+> +	case 1:
+>  		/* Configure Own Address 1 */
+>  		oar1 = readl_relaxed(i2c_dev->base + STM32F7_I2C_OAR1);
+>  		oar1 &= ~STM32F7_I2C_OAR1_MASK;
+> @@ -1789,7 +1810,9 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
+>  		oar1 |= STM32F7_I2C_OAR1_OA1EN;
+>  		i2c_dev->slave[id] = slave;
+>  		writel_relaxed(oar1, i2c_dev->base + STM32F7_I2C_OAR1);
+> -	} else if (id == 1) {
+> +		break;
+> +
+> +	case 2:
+>  		/* Configure Own Address 2 */
+>  		oar2 = readl_relaxed(i2c_dev->base + STM32F7_I2C_OAR2);
+>  		oar2 &= ~STM32F7_I2C_OAR2_MASK;
+> @@ -1802,7 +1825,10 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
+>  		oar2 |= STM32F7_I2C_OAR2_OA2EN;
+>  		i2c_dev->slave[id] = slave;
+>  		writel_relaxed(oar2, i2c_dev->base + STM32F7_I2C_OAR2);
+> -	} else {
+> +		break;
+> +
+> +	default:
+> +		dev_err(dev, "I2C slave id not supported\n");
+>  		ret = -ENODEV;
+>  		goto pm_free;
+>  	}
+> @@ -1843,10 +1869,10 @@ static int stm32f7_i2c_unreg_slave(struct i2c_client *slave)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	if (id == 0) {
+> +	if (id == 1) {
+>  		mask = STM32F7_I2C_OAR1_OA1EN;
+>  		stm32f7_i2c_clr_bits(base + STM32F7_I2C_OAR1, mask);
+> -	} else {
+> +	} else if (id == 2) {
+>  		mask = STM32F7_I2C_OAR2_OA2EN;
+>  		stm32f7_i2c_clr_bits(base + STM32F7_I2C_OAR2, mask);
+>  	}
+> @@ -1911,14 +1937,51 @@ static int stm32f7_i2c_setup_fm_plus_bits(struct platform_device *pdev,
+>  					  &i2c_dev->fmp_mask);
+>  }
+>  
+> +static int stm32f7_i2c_enable_smbus_host(struct stm32f7_i2c_dev *i2c_dev)
+> +{
+> +	struct i2c_adapter *adap = &i2c_dev->adap;
+> +	void __iomem *base = i2c_dev->base;
+> +	struct i2c_client *client;
+> +
+> +	client = i2c_new_slave_host_notify_device(adap);
+> +	if (IS_ERR(client))
+> +		return PTR_ERR(client);
+> +
+> +	i2c_dev->host_notify_client = client;
+> +
+> +	/* Enable SMBus Host address */
+> +	stm32f7_i2c_set_bits(base + STM32F7_I2C_CR1, STM32F7_I2C_CR1_SMBHEN);
+> +
+> +	return 0;
+> +}
+> +
+> +static void stm32f7_i2c_disable_smbus_host(struct stm32f7_i2c_dev *i2c_dev)
+> +{
+> +	void __iomem *base = i2c_dev->base;
+> +
+> +	if (i2c_dev->host_notify_client) {
+> +		/* Disable SMBus Host address */
+> +		stm32f7_i2c_clr_bits(base + STM32F7_I2C_CR1,
+> +				     STM32F7_I2C_CR1_SMBHEN);
+> +		i2c_free_slave_host_notify_device(i2c_dev->host_notify_client);
+> +	}
+> +}
+> +
+>  static u32 stm32f7_i2c_func(struct i2c_adapter *adap)
+>  {
+> -	return I2C_FUNC_I2C | I2C_FUNC_10BIT_ADDR | I2C_FUNC_SLAVE |
+> -		I2C_FUNC_SMBUS_QUICK | I2C_FUNC_SMBUS_BYTE |
+> -		I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA |
+> -		I2C_FUNC_SMBUS_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL |
+> -		I2C_FUNC_SMBUS_PROC_CALL | I2C_FUNC_SMBUS_PEC |
+> -		I2C_FUNC_SMBUS_I2C_BLOCK;
+> +	struct stm32f7_i2c_dev *i2c_dev = i2c_get_adapdata(adap);
+> +
+> +	u32 func = I2C_FUNC_I2C | I2C_FUNC_10BIT_ADDR | I2C_FUNC_SLAVE |
+> +		   I2C_FUNC_SMBUS_QUICK | I2C_FUNC_SMBUS_BYTE |
+> +		   I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA |
+> +		   I2C_FUNC_SMBUS_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL |
+> +		   I2C_FUNC_SMBUS_PROC_CALL | I2C_FUNC_SMBUS_PEC |
+> +		   I2C_FUNC_SMBUS_I2C_BLOCK;
+> +
+> +	if (i2c_dev->smbus_mode)
+> +		func |= I2C_FUNC_SMBUS_HOST_NOTIFY;
+> +
+> +	return func;
+>  }
+>  
+>  static const struct i2c_algorithm stm32f7_i2c_algo = {
+> @@ -2084,10 +2147,22 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
+>  
+>  	stm32f7_i2c_hw_config(i2c_dev);
+>  
+> +	i2c_dev->smbus_mode = of_property_read_bool(pdev->dev.of_node, "smbus");
+> +
+>  	ret = i2c_add_adapter(adap);
+>  	if (ret)
+>  		goto pm_disable;
+>  
+> +	if (i2c_dev->smbus_mode) {
+> +		ret = stm32f7_i2c_enable_smbus_host(i2c_dev);
+> +		if (ret) {
+> +			dev_err(i2c_dev->dev,
+> +				"failed to enable SMBus Host-Notify protocol (%d)\n",
+> +				ret);
+> +			goto i2c_adapter_remove;
+> +		}
+> +	}
+> +
+>  	dev_info(i2c_dev->dev, "STM32F7 I2C-%d bus adapter\n", adap->nr);
+>  
+>  	pm_runtime_mark_last_busy(i2c_dev->dev);
+> @@ -2095,6 +2170,9 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
+>  
+>  	return 0;
+>  
+> +i2c_adapter_remove:
+> +	i2c_del_adapter(adap);
+> +
+>  pm_disable:
+>  	pm_runtime_put_noidle(i2c_dev->dev);
+>  	pm_runtime_disable(i2c_dev->dev);
+> @@ -2126,6 +2204,8 @@ static int stm32f7_i2c_remove(struct platform_device *pdev)
+>  {
+>  	struct stm32f7_i2c_dev *i2c_dev = platform_get_drvdata(pdev);
+>  
+> +	stm32f7_i2c_disable_smbus_host(i2c_dev);
+> +
+>  	i2c_del_adapter(&i2c_dev->adap);
+>  	pm_runtime_get_sync(i2c_dev->dev);
+>  
 > 
->	WARN_ON_ONCE(current->mm);
-> 
-> in play_idle_precise() ?
-> 
-> Because, if I read this right, we rely on the idle thread not having an
-> mm.
-
-Yes, that's a good idea.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
