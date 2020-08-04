@@ -2,216 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF2F23C229
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33EA23C21E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgHDXWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 19:22:16 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:49392 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725300AbgHDXWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 19:22:16 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0AF00200326;
-        Wed,  5 Aug 2020 01:22:14 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1C711201346;
-        Wed,  5 Aug 2020 01:22:07 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8CCA4402CF;
-        Wed,  5 Aug 2020 01:21:58 +0200 (CEST)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        peng.fan@nxp.com, abel.vesa@nxp.com, j.remmet@phytec.de,
-        laurent.pinchart@ideasonboard.com, yuehaibing@huawei.com,
-        andrew.smirnov@gmail.com, horia.geanta@nxp.com,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] clk: imx: Explicitly include bits.h
-Date:   Wed,  5 Aug 2020 07:17:29 +0800
-Message-Id: <1596583049-7305-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727112AbgHDXRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 19:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgHDXRy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 19:17:54 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7905CC06174A;
+        Tue,  4 Aug 2020 16:17:54 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3AE88128597D3;
+        Tue,  4 Aug 2020 16:01:08 -0700 (PDT)
+Date:   Tue, 04 Aug 2020 16:17:52 -0700 (PDT)
+Message-Id: <20200804.161752.751928646102837799.davem@davemloft.net>
+To:     christophe.jaillet@wanadoo.fr
+Cc:     khc@pm.waw.pl, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] wan: wanxl: switch from 'pci_' to 'dma_' API
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200804200809.714999-1-christophe.jaillet@wanadoo.fr>
+References: <20200804200809.714999-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 04 Aug 2020 16:01:08 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is better to explicitly include the required header file rather
-then get it through some recursive include.
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Tue,  4 Aug 2020 22:08:09 +0200
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- drivers/clk/imx/clk-busy.c           | 1 +
- drivers/clk/imx/clk-composite-7ulp.c | 1 +
- drivers/clk/imx/clk-fixup-mux.c      | 1 +
- drivers/clk/imx/clk-imx6q.c          | 1 +
- drivers/clk/imx/clk-imx6sx.c         | 1 +
- drivers/clk/imx/clk-imx7d.c          | 1 +
- drivers/clk/imx/clk-lpcg-scu.c       | 1 +
- drivers/clk/imx/clk-pll14xx.c        | 2 +-
- drivers/clk/imx/clk-pllv1.c          | 1 +
- drivers/clk/imx/clk-pllv4.c          | 1 +
- drivers/clk/imx/clk-vf610.c          | 1 +
- drivers/clk/imx/clk.c                | 1 +
- drivers/clk/imx/clk.h                | 1 +
- 13 files changed, 13 insertions(+), 1 deletion(-)
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+> 
+> The patch has been generated with the coccinelle script below and has been
+> hand modified to replace GFP_ with a correct flag.
+> It has been compile tested.
+> 
+> When memory is allocated in 'wanxl_pci_init_one()', GFP_KERNEL can be used
+> because it is a probe function and no lock is acquired.
+> Moreover, just a few lines above, GFP_KERNEL is already used.
+ ...
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-diff --git a/drivers/clk/imx/clk-busy.c b/drivers/clk/imx/clk-busy.c
-index 25c863d..6f17311 100644
---- a/drivers/clk/imx/clk-busy.c
-+++ b/drivers/clk/imx/clk-busy.c
-@@ -4,6 +4,7 @@
-  * Copyright 2012 Linaro Ltd.
-  */
- 
-+#include <linux/bits.h>
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
- #include <linux/io.h>
-diff --git a/drivers/clk/imx/clk-composite-7ulp.c b/drivers/clk/imx/clk-composite-7ulp.c
-index b9efcc8..7c4f31b 100644
---- a/drivers/clk/imx/clk-composite-7ulp.c
-+++ b/drivers/clk/imx/clk-composite-7ulp.c
-@@ -5,6 +5,7 @@
-  *
-  */
- 
-+#include <linux/bits.h>
- #include <linux/clk-provider.h>
- #include <linux/err.h>
- #include <linux/slab.h>
-diff --git a/drivers/clk/imx/clk-fixup-mux.c b/drivers/clk/imx/clk-fixup-mux.c
-index 58a6763..c824015 100644
---- a/drivers/clk/imx/clk-fixup-mux.c
-+++ b/drivers/clk/imx/clk-fixup-mux.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2013 Freescale Semiconductor, Inc.
-  */
- 
-+#include <linux/bits.h>
- #include <linux/clk-provider.h>
- #include <linux/err.h>
- #include <linux/io.h>
-diff --git a/drivers/clk/imx/clk-imx6q.c b/drivers/clk/imx/clk-imx6q.c
-index ba33c79..b2ff187 100644
---- a/drivers/clk/imx/clk-imx6q.c
-+++ b/drivers/clk/imx/clk-imx6q.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/init.h>
- #include <linux/types.h>
-+#include <linux/bits.h>
- #include <linux/clk.h>
- #include <linux/clkdev.h>
- #include <linux/clk-provider.h>
-diff --git a/drivers/clk/imx/clk-imx6sx.c b/drivers/clk/imx/clk-imx6sx.c
-index 89ba712..20dcce5 100644
---- a/drivers/clk/imx/clk-imx6sx.c
-+++ b/drivers/clk/imx/clk-imx6sx.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <dt-bindings/clock/imx6sx-clock.h>
-+#include <linux/bits.h>
- #include <linux/clk.h>
- #include <linux/clkdev.h>
- #include <linux/clk-provider.h>
-diff --git a/drivers/clk/imx/clk-imx7d.c b/drivers/clk/imx/clk-imx7d.c
-index b2057bd..6197710 100644
---- a/drivers/clk/imx/clk-imx7d.c
-+++ b/drivers/clk/imx/clk-imx7d.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <dt-bindings/clock/imx7d-clock.h>
-+#include <linux/bits.h>
- #include <linux/clk.h>
- #include <linux/clkdev.h>
- #include <linux/clk-provider.h>
-diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
-index a73a799..1f0e44f 100644
---- a/drivers/clk/imx/clk-lpcg-scu.c
-+++ b/drivers/clk/imx/clk-lpcg-scu.c
-@@ -4,6 +4,7 @@
-  *	Dong Aisheng <aisheng.dong@nxp.com>
-  */
- 
-+#include <linux/bits.h>
- #include <linux/clk-provider.h>
- #include <linux/err.h>
- #include <linux/io.h>
-diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
-index f5c3e7e..aba36e4 100644
---- a/drivers/clk/imx/clk-pll14xx.c
-+++ b/drivers/clk/imx/clk-pll14xx.c
-@@ -3,7 +3,7 @@
-  * Copyright 2017-2018 NXP.
-  */
- 
--#include <linux/bitops.h>
-+#include <linux/bits.h>
- #include <linux/clk-provider.h>
- #include <linux/err.h>
- #include <linux/export.h>
-diff --git a/drivers/clk/imx/clk-pllv1.c b/drivers/clk/imx/clk-pllv1.c
-index de4f8a4..36ffb05 100644
---- a/drivers/clk/imx/clk-pllv1.c
-+++ b/drivers/clk/imx/clk-pllv1.c
-@@ -1,4 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <linux/bits.h>
- #include <linux/clk-provider.h>
- #include <linux/io.h>
- #include <linux/slab.h>
-diff --git a/drivers/clk/imx/clk-pllv4.c b/drivers/clk/imx/clk-pllv4.c
-index a494504..8ec703f2 100644
---- a/drivers/clk/imx/clk-pllv4.c
-+++ b/drivers/clk/imx/clk-pllv4.c
-@@ -7,6 +7,7 @@
-  *
-  */
- 
-+#include <linux/bits.h>
- #include <linux/clk-provider.h>
- #include <linux/err.h>
- #include <linux/io.h>
-diff --git a/drivers/clk/imx/clk-vf610.c b/drivers/clk/imx/clk-vf610.c
-index 5129ef8..8773f4c 100644
---- a/drivers/clk/imx/clk-vf610.c
-+++ b/drivers/clk/imx/clk-vf610.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/of_address.h>
-+#include <linux/bits.h>
- #include <linux/clk.h>
- #include <linux/syscore_ops.h>
- #include <dt-bindings/clock/vf610-clock.h>
-diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
-index 547cade..47882c5 100644
---- a/drivers/clk/imx/clk.c
-+++ b/drivers/clk/imx/clk.c
-@@ -1,4 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <linux/bits.h>
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
- #include <linux/err.h>
-diff --git a/drivers/clk/imx/clk.h b/drivers/clk/imx/clk.h
-index dd47c19..3b796b3 100644
---- a/drivers/clk/imx/clk.h
-+++ b/drivers/clk/imx/clk.h
-@@ -2,6 +2,7 @@
- #ifndef __MACH_IMX_CLK_H
- #define __MACH_IMX_CLK_H
- 
-+#include <linux/bits.h>
- #include <linux/spinlock.h>
- #include <linux/clk-provider.h>
- 
--- 
-2.7.4
-
+Applied.
