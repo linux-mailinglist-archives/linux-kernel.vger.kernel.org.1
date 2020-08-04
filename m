@@ -2,79 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB9423BD27
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B7523BD2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729611AbgHDPYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 11:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
+        id S1729655AbgHDP0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 11:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729345AbgHDPYo (ORCPT
+        with ESMTP id S1729417AbgHDP0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 11:24:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F2CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 08:24:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=9M0NhBPiWl9Cg/GhWcaL3HQWjufxxCJ8q9QO6yVZY4M=; b=IJDY5Hq3j9s4Gqc0cB2+iKkEvF
-        osld14x9t5cskLdZYDgZ/eIELVLd3PaqA9P60Bxk3yVexNEPgKsU/E8EFG15ubpLG7RTGKIuep0HE
-        YuEYQ78aDAiU1LIZzeosyRdeIeUHEsslthcqZXmu9jxTrNbu0D+imO7vIvAkTHDr0b8S+NTYXI49t
-        7TaR1CKjEo/ovGUoCNuguDoQlbewYoFWQzN2hmrvJ5D3JWUpzHEjQos1TeEbXx0/bYEPrLqi85bqj
-        MnXfy/vSkqSRPzUTMkn51oTKdsJfVrhsz9aKeC891tibukaWZd/y4AdjhnbfoCKOfhLnGGE7fJlHQ
-        RWrx4gtw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k2yny-0008FM-Ik; Tue, 04 Aug 2020 15:24:43 +0000
-Subject: Re: [PATCH] staging: wfx: fixed misspelled word in comment
-To:     Aditya Bansal <adbansal99@gmail.com>, gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20200804145816.GA3823@aditya>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <bc993561-e494-d6b5-fc73-eb56cb496d75@infradead.org>
-Date:   Tue, 4 Aug 2020 08:24:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 4 Aug 2020 11:26:49 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9832C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 08:26:48 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id l4so42825587ejd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 08:26:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X3o6MDqUXmxvVSlcdLb2IgJysM+Vk/j+xrJF23Zh02s=;
+        b=Pv2RJRtdXsa5JPcelCLgxa/MabWdHgHvtHX75GYe7Y7xpruRC9hh7PLtf/ZOrHAiw8
+         VP5SVZy9b8umW6eW4ARyy48QMQ04NXamcrYz/GNkRfZMJGsXWPv/4vzFwLb3jFRpYEil
+         pH6XwupwhFlGXDIdQ31xqorNxSrOTLPt93pOsFh4wouUfVLrvSyQy3o1r6I+AsoT/Vz0
+         RSdzPrqKE53H3zFd38glLLTTI8nU73sl1fjcJGsbwGX5h7qUZ0KqWC8tWUOmv7csf1uL
+         QT7YGckMXfwEbCMNjfsr1ATWDXeF16wNxdgOU8FRKqoElZ1lvj4d+mZyRV4KwZRBLvS2
+         6wcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X3o6MDqUXmxvVSlcdLb2IgJysM+Vk/j+xrJF23Zh02s=;
+        b=jq8ZIbXadMcYO2N+Q+J3renDtU5T1LrTKleUpfXKx1zmpA83Qoqh5wFEw1PdMx3Nc7
+         KZ82nSpOvIe+3V7FWJVRayi5+hp/3NL3qpzq/kbGAiWkTeZ/sVNd7JCLumqKqZbEUc5b
+         ZP+6JwhVtVXHH3THz5WgT4nVW5YkQ+V2JiKNCIGdawI2lid/TfogSr+aB1f60OcORlsr
+         K2d12i2b750Va8YxrSL+GKc3/eCOJsnDWVowC6ZA6Nn4/PIwlai2lSy72ly01MazbMvu
+         KNzZnf/RdkCnanOkhTcXx5vtkgeLaYPKavPZf4Lta7NNgPtvh5TTQ1fJrRUc0luamn3H
+         glUw==
+X-Gm-Message-State: AOAM530easuE8kg7Dse6uLCV1Jgu7hZdhMCiHLzTOPsO+0YWd0syb0GO
+        THi8kikUrK2S6yorFLev3D2SRijmIIaC1hFxqHQ/7A==
+X-Google-Smtp-Source: ABdhPJzaWinHalOkG+8o4dRZjbIYHrsFx1Egu0ptiIqT6GQ27fDqCFx7Adt4ulh0/BdlBtahwcDejEV1GBPU83hOoBw=
+X-Received: by 2002:a17:906:c406:: with SMTP id u6mr23070434ejz.47.1596554807097;
+ Tue, 04 Aug 2020 08:26:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200804145816.GA3823@aditya>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1596509145.5207.21.camel@mtkswgap22> <1596549552-5466-1-git-send-email-Frankie.Chang@mediatek.com>
+ <1596549552-5466-3-git-send-email-Frankie.Chang@mediatek.com>
+In-Reply-To: <1596549552-5466-3-git-send-email-Frankie.Chang@mediatek.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Tue, 4 Aug 2020 08:26:34 -0700
+Message-ID: <CAHRSSExeOn_MO3F3aFc=N0KXBmP0TsWz3RQ8Z-0G2QwK_3y=sw@mail.gmail.com>
+Subject: Re: [PATCH v7 2/3] binder: add trace at free transaction.
+To:     Frankie Chang <Frankie.Chang@mediatek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/20 7:58 AM, Aditya Bansal wrote:
-> From: Aditya Bansal <adbansal99@gmail.com>
-> 
-> Subject: [PATCH] fixed typo in driver/staging/wfx/hif_tx.c file
-> 
-> Correct the spelling of function
-> 
-> Signed-off-by: Aditya Bansal <adbansal99@gmail.com>
+On Tue, Aug 4, 2020 at 7:09 AM Frankie Chang <Frankie.Chang@mediatek.com> wrote:
+>
+> From: "Frankie.Chang" <Frankie.Chang@mediatek.com>
+>
+> Since the original trace_binder_transaction_received cannot
+> precisely present the real finished time of transaction, adding a
+> trace_binder_txn_latency_free at the point of free transaction
+> may be more close to it.
+>
+> Signed-off-by: Frankie.Chang <Frankie.Chang@mediatek.com>
+
+Acked-by: Todd Kjos <tkjos@google.com>
+
 > ---
-> 
-> diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
-> index 5110f9b93762..6a485fa5b72b 100644
-> --- a/drivers/staging/wfx/hif_tx.c
-> +++ b/drivers/staging/wfx/hif_tx.c
-> @@ -125,7 +125,7 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
->  
->  // This function is special. After HIF_REQ_ID_SHUT_DOWN, chip won't reply to any
->  // request anymore. We need to slightly hack struct wfx_hif_cmd for that job. Be
-> -// carefull to only call this funcion during device unregister.
-> +// carefull to only call this function during device unregister.
-
-      careful
-
->  int hif_shutdown(struct wfx_dev *wdev)
+>  drivers/android/binder.c       |   18 ++++++++++++++++++
+>  drivers/android/binder_trace.h |   29 +++++++++++++++++++++++++++++
+>  2 files changed, 47 insertions(+)
+>
+> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> index 2df146f..1bfadc2 100644
+> --- a/drivers/android/binder.c
+> +++ b/drivers/android/binder.c
+> @@ -1508,6 +1508,20 @@ static void binder_free_txn_fixups(struct binder_transaction *t)
+>         }
+>  }
+>
+> +static void binder_txn_latency_free(struct binder_transaction *t)
+> +{
+> +       int from_proc, from_thread, to_proc, to_thread;
+> +
+> +       spin_lock(&t->lock);
+> +       from_proc = t->from ? t->from->proc->pid : 0;
+> +       from_thread = t->from ? t->from->pid : 0;
+> +       to_proc = t->to_proc ? t->to_proc->pid : 0;
+> +       to_thread = t->to_thread ? t->to_thread->pid : 0;
+> +       spin_unlock(&t->lock);
+> +
+> +       trace_binder_txn_latency_free(t, from_proc, from_thread, to_proc, to_thread);
+> +}
+> +
+>  static void binder_free_transaction(struct binder_transaction *t)
 >  {
->  	int ret;
-
-
--- 
-~Randy
-
+>         struct binder_proc *target_proc = t->to_proc;
+> @@ -1518,6 +1532,8 @@ static void binder_free_transaction(struct binder_transaction *t)
+>                         t->buffer->transaction = NULL;
+>                 binder_inner_proc_unlock(target_proc);
+>         }
+> +       if (trace_binder_txn_latency_free_enabled())
+> +               binder_txn_latency_free(t);
+>         /*
+>          * If the transaction has no target_proc, then
+>          * t->buffer->transaction has already been cleared.
+> @@ -3093,6 +3109,8 @@ static void binder_transaction(struct binder_proc *proc,
+>         kfree(tcomplete);
+>         binder_stats_deleted(BINDER_STAT_TRANSACTION_COMPLETE);
+>  err_alloc_tcomplete_failed:
+> +       if (trace_binder_txn_latency_free_enabled())
+> +               binder_txn_latency_free(t);
+>         kfree(t);
+>         binder_stats_deleted(BINDER_STAT_TRANSACTION);
+>  err_alloc_t_failed:
+> diff --git a/drivers/android/binder_trace.h b/drivers/android/binder_trace.h
+> index 6731c3c..eb2c53c 100644
+> --- a/drivers/android/binder_trace.h
+> +++ b/drivers/android/binder_trace.h
+> @@ -95,6 +95,35 @@
+>                   __entry->thread_todo)
+>  );
+>
+> +TRACE_EVENT(binder_txn_latency_free,
+> +       TP_PROTO(struct binder_transaction *t
+> +                int from_proc, int from_thread
+> +                int to_proc, int to_thread),
+> +       TP_ARGS(t, from_proc, from_thread, to_proc, to_thread),
+> +       TP_STRUCT__entry(
+> +               __field(int, debug_id)
+> +               __field(int, from_proc)
+> +               __field(int, from_thread)
+> +               __field(int, to_proc)
+> +               __field(int, to_thread)
+> +               __field(unsigned int, code)
+> +               __field(unsigned int, flags)
+> +       ),
+> +       TP_fast_assign(
+> +               __entry->debug_id = t->debug_id;
+> +               __entry->from_proc = from_proc;
+> +               __entry->from_thread = from_thread;
+> +               __entry->to_proc = to_proc;
+> +               __entry->to_thread = to_thread;
+> +               __entry->code = t->code;
+> +               __entry->flags = t->flags;
+> +       ),
+> +       TP_printk("transaction=%d from %d:%d to %d:%d flags=0x%x code=0x%x",
+> +                 __entry->debug_id, __entry->from_proc, __entry->from_thread,
+> +                 __entry->to_proc, __entry->to_thread, __entry->code,
+> +                 __entry->flags)
+> +);
+> +
+>  TRACE_EVENT(binder_transaction,
+>         TP_PROTO(bool reply, struct binder_transaction *t,
+>                  struct binder_node *target_node),
+> --
+> 1.7.9.5
