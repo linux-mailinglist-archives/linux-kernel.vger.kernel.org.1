@@ -2,120 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880D223B865
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB68B23B868
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730138AbgHDKDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 06:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgHDKD3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 06:03:29 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BECC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 03:03:28 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id i6so3773493edy.5
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 03:03:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lzbKl+uUFfh9XAYP8GcmWr39WT1Cz06a6UbBamDt1vA=;
-        b=Bv+t10ukpzqXnpeDVdA/0sv/wrBsyyxnYg5VPqUER0eYAtKneX2hO/6XQEfibbkG9T
-         y1kp0dJ56fgFTc95lTehXdAZoCKO1Ov1uanAKP+EwnwBcDOEbWpseIdcJ73EMOie2zTr
-         rz71UFOrnNQO86pLgSrLiBIqbDJbya9mLMRKWSl95K/f0Pv2u7f9eGCuRDmZk3ba/Uns
-         E4MPruV0OWTaG2M2pZU3nwSs5KKXf4KaLncmKLeYtZJ8ObGLVLZI/jOzMvCoUHx3bgc8
-         YoVlJZ3NK8rjkr2aYSxGMMGwqtzSGzcsoO4uoAgLsVKQ4WbckQHa0iokZBwhdIodABny
-         LYmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lzbKl+uUFfh9XAYP8GcmWr39WT1Cz06a6UbBamDt1vA=;
-        b=JnUAdtbai2CFVKxqJo4wLnMzx5dYk02zR20S4vOqSht8RB0w076pid1zjek/8QaLEa
-         l7JNEp9ztVbTcvkyukLz+3X/TdEQ7vzmrlvxLiAnv4NSo+Q4jw7u/cPfmOuV9/aTgMso
-         oawk7+c45YGneX87oqU7FPdFERt3qGslk4cDghGYINyPYhUqSWsX8xPNRctgXw91Unmb
-         TPnj9mSmSHGhqYlvbiwXCJy3Ntlaw44T+pUHw+NHeEVfftR6qW3UiAaW5H+zf3ivTIp5
-         R5q5bRHz92sWT5H9PK/C5tWnmx4WdK+bQAqdOMJ94UtARGFxfjQRwFF1Kc1t2amJ6Gxq
-         49ww==
-X-Gm-Message-State: AOAM531tLCAPeZWXcXunqf33vL7jYYZU11TV0pa0zMMr3uYJoWuhjdV3
-        4tImacOfb+Kg7NYR3S2NltoXCA==
-X-Google-Smtp-Source: ABdhPJwkqwGNIrlBXNgqTBNF0wy5hG7hlAvjdLuUgpzyb6rY5azLKrAv4SDjn7ITK9wQaqBBYaGrbw==
-X-Received: by 2002:aa7:d6c2:: with SMTP id x2mr15912050edr.332.1596535407703;
-        Tue, 04 Aug 2020 03:03:27 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id bt20sm18481153edb.62.2020.08.04.03.03.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 04 Aug 2020 03:03:27 -0700 (PDT)
-Subject: Re: [PATCH] nvmem: core: add sanity check in nvmem_device_read()
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>
-Cc:     linux-kernel@vger.kernel.org, bingbu.cao@linux.intel.com
-References: <1596532436-19073-1-git-send-email-bingbu.cao@intel.com>
- <20200804095815.GF13316@paasikivi.fi.intel.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <0e8d60cf-7f8b-c6ab-4184-b869c16b603e@linaro.org>
-Date:   Tue, 4 Aug 2020 11:03:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1730156AbgHDKDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 06:03:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730132AbgHDKDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 06:03:40 -0400
+Received: from kernel.org (unknown [87.70.91.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A96622B40;
+        Tue,  4 Aug 2020 10:03:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596535419;
+        bh=B9xrpei0Bo8lOQ4/GpWeP/lLc0dF8lSZjAbEwyC8Z/8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LIitEWRZ2r6vfSgRGOd9L45wg9k1zY+ZcZ2/Bag8vTG2bBPAAcebfqAYi/86NL+1j
+         LRhkZnXXomYhcDx7rWkEWtC5DGrdyOqeD9pUQH26pophFeLizz+vNYqDUSXR1idqhM
+         qklDRDhzgJpiCrJ5brl7b4lOCISiLmnbfvLwlqEw=
+Date:   Tue, 4 Aug 2020 13:03:33 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH v3 6/6] mm: document semantics of ZONE_MOVABLE
+Message-ID: <20200804100333.GC8243@kernel.org>
+References: <20200804072408.5481-1-david@redhat.com>
+ <20200804072408.5481-7-david@redhat.com>
+ <20200804093323.GB8243@kernel.org>
+ <65deeb21-63fe-d1c1-bb87-74a08035f79a@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200804095815.GF13316@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65deeb21-63fe-d1c1-bb87-74a08035f79a@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 04, 2020 at 11:55:10AM +0200, David Hildenbrand wrote:
+> On 04.08.20 11:33, Mike Rapoport wrote:
+> > On Tue, Aug 04, 2020 at 09:24:08AM +0200, David Hildenbrand wrote:
+> >> Let's document what ZONE_MOVABLE means, how it's used, and which special
+> >> cases we have regarding unmovable pages (memory offlining vs. migration /
+> >> allocations).
+> >>
+> >> Cc: Andrew Morton <akpm@linux-foundation.org>
+> >> Cc: Michal Hocko <mhocko@suse.com>
+> >> Cc: Michael S. Tsirkin <mst@redhat.com>
+> >> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+> >> Cc: Mike Rapoport <rppt@kernel.org>
+> >> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> >> Cc: Baoquan He <bhe@redhat.com>
+> >> Signed-off-by: David Hildenbrand <david@redhat.com>
+> > 
+> > Several nits below, othersize
+> > 
+> > Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> >> ---
+> >>  include/linux/mmzone.h | 34 ++++++++++++++++++++++++++++++++++
+> >>  1 file changed, 34 insertions(+)
+> >>
+> >> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> >> index f6f884970511d..600d449e7d9e9 100644
+> >> --- a/include/linux/mmzone.h
+> >> +++ b/include/linux/mmzone.h
+> >> @@ -372,6 +372,40 @@ enum zone_type {
+> >>  	 */
+> >>  	ZONE_HIGHMEM,
+> >>  #endif
+> >> +	/*
+> >> +	 * ZONE_MOVABLE is similar to ZONE_NORMAL, except that it *primarily*
+> >> +	 * only contains movable pages. Main use cases are to make memory
+> > 
+> > "Primarily only" sounds awkward. Maybe
+> > 
+> > 	... except that it only contains movable pages with few exceptional
+> > 	cases described below. 
+> > 
+> > And then 
+> > 
+> > 	Main use cases for ZONE_MOVABLE are ...
+> 
+> Ack!
+> 
+> > 
+> >> +	 * offlining more likely to succeed, and to locally limit unmovable
+> >> +	 * allocations - e.g., to increase the number of THP/huge pages.
+> >> +	 * Notable special cases are:
+> >> +	 *
+> >> +	 * 1. Pinned pages: (Long-term) pinning of movable pages might
+> > 
+> > 		            ^long, capital L looked out of place for me
+> 
+> Ack!
+> 
+> > 
+> >> +	 *    essentially turn such pages unmovable. Memory offlining might
+> >> +	 *    retry a long time.
+> >> +	 * 2. memblock allocations: kernelcore/movablecore setups might create
+> >> +	 *    situations where ZONE_MOVABLE contains unmovable allocations
+> >> +	 *    after boot. Memory offlining and allocations fail early.
+> >> +	 * 3. Memory holes: Such pages cannot be allocated. Applies only to
+> >> +	 *    boot memory, not hotplugged memory. Memory offlining and
+> >> +	 *    allocations fail early.
+> > 
+> > I would clarify where page struct for abscent memory come from
+> 
+> Something like:
+> 
+> Memory holes: We might have a memmap for memory holes, for example, if
 
+               ^w ;-)
 
-On 04/08/2020 10:58, Sakari Ailus wrote:
-> Hi Bingbu,
-> 
-> Thank you for the patch.
-> 
-> On Tue, Aug 04, 2020 at 05:13:56PM +0800, Bingbu Cao wrote:
->> nvmem_device_read() could be called directly once nvmem device
->> registered, the sanity check should be done before call
->> nvmem_reg_read() as cell and sysfs read did now.
->>
->> Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
->> ---
->>   drivers/nvmem/core.c | 7 +++++++
->>   1 file changed, 7 insertions(+)
->>
->> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
->> index 927eb5f6003f..c9a77993f008 100644
->> --- a/drivers/nvmem/core.c
->> +++ b/drivers/nvmem/core.c
->> @@ -1491,6 +1491,13 @@ int nvmem_device_read(struct nvmem_device *nvmem,
->>   	if (!nvmem)
->>   		return -EINVAL;
->>   
->> +	if (offset >= nvmem->size || bytes < nvmem->word_size)
->> +		return 0;
->> +
->> +	if (bytes + offset > nvmem->size)
->> +		bytes = nvmem->size - offset;
-> 
-> The check is relevant for nvmem_device_write(), too.
-> 
-> There are also other ways to access nvmem devices such as nvmem_cell_read
-> and others alike. Should they be considered as well?
+> we have sections that are only partially System RAM. Such pages cannot
+> be ...
 
-We should probably move these sanity checks to a common place like 
-nvmem_reg_read() and nvmem_reg_write(), so the callers need not 
-duplicate the same!
+How about
 
---srini
+... sections that are only partially populated 
 
+?
+ 
+> ?
 > 
->> +
->> +	bytes = round_down(bytes, nvmem->word_size);
->>   	rc = nvmem_reg_read(nvmem, offset, buf, bytes);
->>   
->>   	if (rc)
+> Thanks!
 > 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
+
+-- 
+Sincerely yours,
+Mike.
