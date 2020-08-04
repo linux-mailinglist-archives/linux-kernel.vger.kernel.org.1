@@ -2,145 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914CE23BCC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF8923BCCA
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729384AbgHDO5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:57:44 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51557 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728157AbgHDO5l (ORCPT
+        id S1729427AbgHDO6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728157AbgHDO6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:57:41 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k2yNP-0007lj-8B; Tue, 04 Aug 2020 14:57:15 +0000
-Date:   Tue, 4 Aug 2020 16:57:14 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        avagin@gmail.com, serge@hallyn.com, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 0/8] namespaces: Introduce generic refcount
-Message-ID: <20200804145714.rcz6vg3bo6chsuoh@wittgenstein>
-References: <159644958332.604812.13004003379291842292.stgit@localhost.localdomain>
- <20200804115649.kzea757e5wwpk4k3@wittgenstein>
- <87d046sj8w.fsf@x220.int.ebiederm.org>
- <20200804123036.2lnkm6it7ko7j3ju@wittgenstein>
- <87r1smpmvk.fsf@x220.int.ebiederm.org>
+        Tue, 4 Aug 2020 10:58:22 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78ADC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 07:58:21 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id a79so4667315pfa.8
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 07:58:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=CxN7Czk8Q/fjw3b2OK/Eu1Y95h805YTwH9VxKqGhCAo=;
+        b=jru5qnT7fx9ST2x/KOLl/kvsCn/g45/ledxil45Vl4N+Ge/ny9q5E5mgRPmVmFLXxW
+         fbngSWkODodtOID37BCP6yMPvZvPA9qsxnnlc/Xuc51KAIOAf7SgpmFgp+YjylD1c3Do
+         zAYZhXAX0OtsnfWwCy/mDSSAER3RBBgg7qhKPVqkFjrI5CnqYU9DnSo1I/Difx6LS+1O
+         MuxRPHyjkVyp6bFhSCcn3l+/vuKizYJXrnQsP9Hn24jXE+XgGB5QrYa8w3ceKt5UdHzN
+         kcH925AQ/1GyoVladVbuqO3B6Lb3aVrBfdqWxgY3/xMkHmz1mHnztJxw1RK4ueU+7Py9
+         F6hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=CxN7Czk8Q/fjw3b2OK/Eu1Y95h805YTwH9VxKqGhCAo=;
+        b=oscophDWq3cuJe4rCUXGBorxvfGU1znaiCK813kG3sh8Fl4/4x+Gt3EP8+hxSf6qVO
+         6N2NxdAhNMxe1UHU8ZsSWrt0Bz/0llRBlLHATJWV+4HLc7p4Y77mA4plWKrWvNLWZ/aa
+         Xk9BBe2vzByJBXQrZLWxHPq8Yu4/reLdCgSI8s8GnIifuObeS1Vfu/SYHVRPW3c4T/mI
+         uyyQ6jdsAC9UP8ZZGTjWTeTDGGaPXWrS+FsCu5iJlUrKdwWGktNy/bywpVRATil0o2Of
+         vPiA0BV6UTJWTiyujte2CRAuvpHIoYNdy1wtAMeFkh4bm2oA+1s9ZcylzI6yGlpnlaGE
+         E37g==
+X-Gm-Message-State: AOAM532LAJmeVAsL/K2Ihj3qXmmMnQOOFxbWmsUPbWmv+8UIXA1IBcam
+        99XX+lb1ie+gGd2ROglp3Mw=
+X-Google-Smtp-Source: ABdhPJwuhINGBfY5nsK2kvG0IomWiTrH6vzMJ6AcEutNSoXYsinQjejRyHJem+tIrvh3h/wq9pLSlw==
+X-Received: by 2002:aa7:9493:: with SMTP id z19mr20942709pfk.190.1596553101344;
+        Tue, 04 Aug 2020 07:58:21 -0700 (PDT)
+Received: from aditya ([49.14.130.231])
+        by smtp.gmail.com with ESMTPSA id na14sm2518023pjb.6.2020.08.04.07.58.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Aug 2020 07:58:20 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 20:28:16 +0530
+From:   Aditya Bansal <adbansal99@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: wfx: fixed misspelled word in comment
+Message-ID: <20200804145816.GA3823@aditya>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87r1smpmvk.fsf@x220.int.ebiederm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 08:21:51AM -0500, Eric W. Biederman wrote:
-> Christian Brauner <christian.brauner@ubuntu.com> writes:
-> 
-> > On Tue, Aug 04, 2020 at 07:11:59AM -0500, Eric W. Biederman wrote:
-> >> Christian Brauner <christian.brauner@ubuntu.com> writes:
-> >> 
-> >> > On Mon, Aug 03, 2020 at 01:16:10PM +0300, Kirill Tkhai wrote:
-> >> >> Every namespace type has its own counter. Some of them are
-> >> >> of refcount_t, some of them are of kref.
-> >> >> 
-> >> >> This patchset introduces generic ns_common::count for any
-> >> >> type of namespaces instead of them.
-> >> >> 
-> >> >> ---
-> >> >
-> >> > I was wondering why that series never made it to me turns out there's
-> >> > some weird bug in my (neo)mutt where it sometimes marks messages as read
-> >> > when I'm deleting completely unrelated messages. That has already cost
-> >> > me a talk slot for an event I really wanted to attend and now it seems
-> >> > to start costing me patches... I need to figure this out.
-> >> >
-> >> > Anyway, thanks for sending this. I pulled this into my tree now.
-> >> 
-> >> Actually why in the world should the reference count be generic?
-> >> 
-> >> What is the point of this patchset?
-> >> 
-> >> What problem does it solve.  Name spaces are not the same, and
-> >> their refcounting needs are not the same so I don't have a clue how it
-> >> helps anything to have a reference count in ns_common.
-> >
-> > What is the point of this opposition to this cleanup?
-> >
-> > It unifies reference counting across namespaces and gets rid of
-> > inconsistencices. Over the years none of the namespaces seem to have
-> > deviated enough from each that they really have needed separate
-> > reference counting mechanisms.
-> 
-> First this posting is the first I have seen of it, unless it was a
-> subset of the weird /proc/namespaces/ patchset that has design problems.
-> In which case I never got this far.
-> 
-> Second I don't see a motivation for this.  The only point to place a
-> reference count in ns_common is if it makes something easier.  What
-> does it make easier and what does it make harder?
-> 
-> For a pure cleanup the questions are what are the trade offs.
-> There are potential performance differences between refcount_t and
-> kfref.
-> 
-> From a practical matter it makes absolutely no sense in the least to
-> talk about the reference count, when some of the namespaces have more
-> than one reference count, with difference semantics and they interrelate
-> in somewhat subtle ways.
-> 
-> Further depending on what is happening sharing code that does not
-> have a fundamental reason to be shared, can make maintenance more
-> difficult as the entire generic infrastructure will need to be updated
-> instead of just that the part that focuses on the one thing.
-> 
-> So I am opposed because the patchset does not explain at all why it
-> makes sense to do, nor what tradeoffs were considered, nor what
-> testing was done.
-> 
-> This change is not as trivial as a spelling change so it is not ok to
-> say it is just a cleanup and move on.  A change in the reference
-> counting can be noticable.  This needs at least to be acknowledged in
-> the change log and at a minimum a hand wavy reason put forth why it is
-> ok.
-> 
-> 
-> Instead what I am seeing as justification is this is a trivial cleanup
-> and no one will notice or care.   And it is not that trivial so I
-> object to the patchset.
+From: Aditya Bansal <adbansal99@gmail.com>
 
-The "not seeing a motivation for this" is a suprising argument to me to
-which I honestly can only respond that I don't see a motivation for not
-doing this. It unifies and simplifies code and removes variance.
+Subject: [PATCH] fixed typo in driver/staging/wfx/hif_tx.c file
 
-There can't be performance differences between kref and refcount_t since
-kref is implemented on top of refcount_t. All functions that Kirill is
-replacing are static inline wrappers around refcount_t helpers.
+Correct the spelling of function
 
-I have no idea why it is wrong talking about reference counts just
-because something can have multiple counters or reference counters.
+Signed-off-by: Aditya Bansal <adbansal99@gmail.com>
+---
 
-Another way of looking at this is that this patchset removes maintenance
-by moving the shared parts of reference counting into a single place.
-They are literally shared across all namespaces. I don't see a specific
-worry other than the very hand wavy "if we ever have to change something
-we have to update the whole generic infrastructure". That could be used
-to shoot down 30 cleanup patchsets each development cycle that
-significantly contribute to code legibility and maintenance. This is
-also how it should work and one of the great benefits of the namespace
-infra along with other parts of the kernel is that it is nice and
-generic.
-
-If you have issues with the patch descriptions than I'm sure Kirill will
-be happy to adapt them to include more detail. If he can't I'm happy to.
-
-Since past experience tells me that we're unlikely to settle this
-dispute let's bring in a few more people to take a look at this.
-
-Christian
+diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
+index 5110f9b93762..6a485fa5b72b 100644
+--- a/drivers/staging/wfx/hif_tx.c
++++ b/drivers/staging/wfx/hif_tx.c
+@@ -125,7 +125,7 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
+ 
+ // This function is special. After HIF_REQ_ID_SHUT_DOWN, chip won't reply to any
+ // request anymore. We need to slightly hack struct wfx_hif_cmd for that job. Be
+-// carefull to only call this funcion during device unregister.
++// carefull to only call this function during device unregister.
+ int hif_shutdown(struct wfx_dev *wdev)
+ {
+ 	int ret;
