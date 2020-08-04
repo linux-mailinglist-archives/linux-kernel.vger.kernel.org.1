@@ -2,227 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639FB23C17A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 23:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C679323C171
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 23:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728127AbgHDVaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 17:30:01 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16788 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727773AbgHDVaA (ORCPT
+        id S1728047AbgHDV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 17:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbgHDV2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 17:30:00 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 074L2Epd193418;
-        Tue, 4 Aug 2020 17:29:33 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32qcaed7j4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Aug 2020 17:29:32 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 074L2CwG193219;
-        Tue, 4 Aug 2020 17:29:32 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32qcaed7hu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Aug 2020 17:29:32 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 074LFmEi017538;
-        Tue, 4 Aug 2020 21:29:31 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma01dal.us.ibm.com with ESMTP id 32n019aaj1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Aug 2020 21:29:31 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 074LTQDY58786138
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 4 Aug 2020 21:29:26 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 20AA1136053;
-        Tue,  4 Aug 2020 21:29:30 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8903B136055;
-        Tue,  4 Aug 2020 21:29:28 +0000 (GMT)
-Received: from oc3560204572.ibm.com (unknown [9.85.148.242])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  4 Aug 2020 21:29:28 +0000 (GMT)
-Message-ID: <c55250b704d6012413b5b36fea34bc57c98756ce.camel@linux.vnet.ibm.com>
-Subject: Re: [PATCH v4 1/7] powerpc/pseries/iommu: Create defines for
- operations in ibm, ddw-applicable
-From:   David Dai <zdai@linux.vnet.ibm.com>
-To:     Leonardo Bras <leobras.c@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Joel Stanley <joel@jms.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Brian King <brking@linux.vnet.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Tue, 04 Aug 2020 16:27:45 -0500
-In-Reply-To: <20200716071658.467820-2-leobras.c@gmail.com>
-References: <20200716071658.467820-1-leobras.c@gmail.com>
-         <20200716071658.467820-2-leobras.c@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-04_04:2020-08-03,2020-08-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- impostorscore=0 suspectscore=0 adultscore=0 mlxscore=0 priorityscore=1501
- malwarescore=0 bulkscore=0 spamscore=0 lowpriorityscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008040142
+        Tue, 4 Aug 2020 17:28:19 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E23C06174A;
+        Tue,  4 Aug 2020 14:28:19 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id bh1so10954656plb.12;
+        Tue, 04 Aug 2020 14:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ggvbd4yb4yZZWZAfp92u/eOPZRUvUZZpx7BWp1lHVnw=;
+        b=p+L9JVoyEFAoLRBnXSekOz72MtMLgddZlandkFfEIj5oEcMGGSIsbjNjrIkQ0XgNyC
+         IE+iIr2+dejI7VzIoQxHTJk++Bymo3Ki2HNcsC4aCAc4AURiFfC2cnd56pMzC6Tdkyv6
+         y/D36mtvVHLOSaJnZmB8BdzVwKp2guOdcVNjVSnjCcgRLJpXZoZRI/70/4VbEhky1v07
+         MwQdnWRi7uK+WxxfKlbTWabb945Y5Yq46dSFvxdTK2QdJRS0y2Vu2d8hypj4yETpH/5a
+         QpkOW4pEIhArK7ErSAj5E7gS2BqTirQUlRvkBJrHysaq4eUJUqBTmRKHqoCeY+IrcGW+
+         BYbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ggvbd4yb4yZZWZAfp92u/eOPZRUvUZZpx7BWp1lHVnw=;
+        b=jc52TYuzvqe0IbG4METT4zGl8lOoo5e8++w1e50+OJcCCf3gr8ZdX59RW6blbrCC7N
+         P9MVVJor2f+CV53jt1C8dFR+lYXadd/NG00bpZH6Gu6VhP8KVrKZ7BQ+2pMhVyBcOmdK
+         kpof9cWrhxLkfdk6221ZMIpbY3u3VKh2C75wqZTt6I6Yd9zBCU5+/3eYfvFWA6VVvh2p
+         6idRZMKvbIPZUSdQuS4bySflIcRbGucvhQUA0CyzrXxlSVoBVUO+Y4PaUR4h/G4YaHVK
+         ICUBMnuYhFgNgP6Jnwb5pk1lBUDLe/44CrDaq8yOghMcccNzT6j27BHJCLputRuYMHjG
+         g0og==
+X-Gm-Message-State: AOAM5300GeJCpbznnC4AlaqrrU80WkPm09cFFyyGnXhpRfKJ7nWfutWN
+        oZVpgQVKgrllLViA0Lvfek3EPFO+
+X-Google-Smtp-Source: ABdhPJx3efPVC6X9dF9EOKcrUStINMOYzkEKonxpnlQDfr4GtOuVHK55NBHklsxL6vGjK4aw5aohTA==
+X-Received: by 2002:a17:902:7c03:: with SMTP id x3mr229907pll.178.1596576498609;
+        Tue, 04 Aug 2020 14:28:18 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r15sm15849751pfq.189.2020.08.04.14.28.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 04 Aug 2020 14:28:18 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 14:28:16 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Roy van Doormaal <roy.van.doormaal@prodrive-technologies.com>
+Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] hwmon: (adc128d818) Fix advanced configuration register
+ init
+Message-ID: <20200804212816.GA218922@roeck-us.net>
+References: <20200728151846.231785-1-roy.van.doormaal@prodrive-technologies.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728151846.231785-1-roy.van.doormaal@prodrive-technologies.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-07-16 at 04:16 -0300, Leonardo Bras wrote:
-> Create defines to help handling ibm,ddw-applicable values, avoiding
-> confusion about the index of given operations.
+On Tue, Jul 28, 2020 at 05:18:45PM +0200, Roy van Doormaal wrote:
+> If the operation mode is non-zero and an external reference voltage is set,
+> first the operation mode is written to the advanced configuration register,
+> followed by the externel reference enable bit,
+> resetting the configuration mode to 0.
 > 
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> ---
->  arch/powerpc/platforms/pseries/iommu.c | 43 ++++++++++++++++------
-> ----
->  1 file changed, 26 insertions(+), 17 deletions(-)
+> To fix this, first compose the value of the advanced configuration register
+> based on the configuration mode and the external reference voltage.
+> The advanced configuration register is then written to the device,
+> if it is different from the default register value (0x0).
 > 
-> diff --git a/arch/powerpc/platforms/pseries/iommu.c
-> b/arch/powerpc/platforms/pseries/iommu.c
-> index 6d47b4a3ce39..ac0d6376bdad 100644
-> --- a/arch/powerpc/platforms/pseries/iommu.c
-> +++ b/arch/powerpc/platforms/pseries/iommu.c
-> @@ -39,6 +39,14 @@
->  
->  #include "pseries.h"
->  
-> +enum {
-> +	DDW_QUERY_PE_DMA_WIN  = 0,
-> +	DDW_CREATE_PE_DMA_WIN = 1,
-> +	DDW_REMOVE_PE_DMA_WIN = 2,
-> +
-> +	DDW_APPLICABLE_SIZE
-> +};
-> +
->  static struct iommu_table_group *iommu_pseries_alloc_group(int node)
->  {
->  	struct iommu_table_group *table_group;
-> @@ -771,12 +779,12 @@ static void remove_ddw(struct device_node *np,
-> bool remove_prop)
->  {
->  	struct dynamic_dma_window_prop *dwp;
->  	struct property *win64;
-> -	u32 ddw_avail[3];
-> +	u32 ddw_avail[DDW_APPLICABLE_SIZE];
->  	u64 liobn;
->  	int ret = 0;
->  
->  	ret = of_property_read_u32_array(np, "ibm,ddw-applicable",
-> -					 &ddw_avail[0], 3);
-> +					 &ddw_avail[0],
-> DDW_APPLICABLE_SIZE);
->  
->  	win64 = of_find_property(np, DIRECT64_PROPNAME, NULL);
->  	if (!win64)
-> @@ -798,15 +806,15 @@ static void remove_ddw(struct device_node *np,
-> bool remove_prop)
->  		pr_debug("%pOF successfully cleared tces in window.\n",
->  			 np);
->  
-> -	ret = rtas_call(ddw_avail[2], 1, 1, NULL, liobn);
-> +	ret = rtas_call(ddw_avail[DDW_REMOVE_PE_DMA_WIN], 1, 1, NULL,
-> liobn);
->  	if (ret)
->  		pr_warn("%pOF: failed to remove direct window: rtas
-> returned "
->  			"%d to ibm,remove-pe-dma-window(%x) %llx\n",
-> -			np, ret, ddw_avail[2], liobn);
-> +			np, ret, ddw_avail[DDW_REMOVE_PE_DMA_WIN],
-> liobn);
->  	else
->  		pr_debug("%pOF: successfully removed direct window:
-> rtas returned "
->  			"%d to ibm,remove-pe-dma-window(%x) %llx\n",
-> -			np, ret, ddw_avail[2], liobn);
-> +			np, ret, ddw_avail[DDW_REMOVE_PE_DMA_WIN],
-> liobn);
->  
->  delprop:
->  	if (remove_prop)
-> @@ -889,11 +897,11 @@ static int query_ddw(struct pci_dev *dev, const
-> u32 *ddw_avail,
->  	buid = pdn->phb->buid;
->  	cfg_addr = ((pdn->busno << 16) | (pdn->devfn << 8));
->  
-> -	ret = rtas_call(ddw_avail[0], 3, 5, (u32 *)query,
-> -		  cfg_addr, BUID_HI(buid), BUID_LO(buid));
-> +	ret = rtas_call(ddw_avail[DDW_QUERY_PE_DMA_WIN], 3, 5, (u32
-> *)query,
-> +			cfg_addr, BUID_HI(buid), BUID_LO(buid));
->  	dev_info(&dev->dev, "ibm,query-pe-dma-windows(%x) %x %x %x"
-> -		" returned %d\n", ddw_avail[0], cfg_addr,
-> BUID_HI(buid),
-> -		BUID_LO(buid), ret);
-> +		" returned %d\n", ddw_avail[DDW_QUERY_PE_DMA_WIN],
-> cfg_addr,
-> +		 BUID_HI(buid), BUID_LO(buid), ret);
->  	return ret;
->  }
->  
-> @@ -920,15 +928,16 @@ static int create_ddw(struct pci_dev *dev,
-> const u32 *ddw_avail,
->  
->  	do {
->  		/* extra outputs are LIOBN and dma-addr (hi, lo) */
-> -		ret = rtas_call(ddw_avail[1], 5, 4, (u32 *)create,
-> -				cfg_addr, BUID_HI(buid), BUID_LO(buid),
-> -				page_shift, window_shift);
-> +		ret = rtas_call(ddw_avail[DDW_CREATE_PE_DMA_WIN], 5, 4,
-> +				(u32 *)create, cfg_addr, BUID_HI(buid),
-> +				BUID_LO(buid), page_shift,
-> window_shift);
->  	} while (rtas_busy_delay(ret));
->  	dev_info(&dev->dev,
->  		"ibm,create-pe-dma-window(%x) %x %x %x %x %x returned
-> %d "
-> -		"(liobn = 0x%x starting addr = %x %x)\n", ddw_avail[1],
-> -		 cfg_addr, BUID_HI(buid), BUID_LO(buid), page_shift,
-> -		 window_shift, ret, create->liobn, create->addr_hi,
-> create->addr_lo);
-> +		"(liobn = 0x%x starting addr = %x %x)\n",
-> +		 ddw_avail[DDW_CREATE_PE_DMA_WIN], cfg_addr,
-> BUID_HI(buid),
-> +		 BUID_LO(buid), page_shift, window_shift, ret, create-
-> >liobn,
-> +		 create->addr_hi, create->addr_lo);
->  
->  	return ret;
->  }
-> @@ -996,7 +1005,7 @@ static u64 enable_ddw(struct pci_dev *dev,
-> struct device_node *pdn)
->  	int page_shift;
->  	u64 dma_addr, max_addr;
->  	struct device_node *dn;
-> -	u32 ddw_avail[3];
-> +	u32 ddw_avail[DDW_APPLICABLE_SIZE];
->  	struct direct_window *window;
->  	struct property *win64;
->  	struct dynamic_dma_window_prop *ddwprop;
-> @@ -1029,7 +1038,7 @@ static u64 enable_ddw(struct pci_dev *dev,
-> struct device_node *pdn)
->  	 * the property is actually in the parent, not the PE
->  	 */
->  	ret = of_property_read_u32_array(pdn, "ibm,ddw-applicable",
-> -					 &ddw_avail[0], 3);
-> +					 &ddw_avail[0],
-> DDW_APPLICABLE_SIZE);
->  	if (ret)
->  		goto out_failed;
->  
-Tested-by: David Dai <zdai@linux.vnet.ibm.com>
+> Signed-off-by: Roy van Doormaal <roy.van.doormaal@prodrive-technologies.com>
 
+Applied.
+
+Thanks,
+Guenter
+
+> ---
+>  drivers/hwmon/adc128d818.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/hwmon/adc128d818.c b/drivers/hwmon/adc128d818.c
+> index f9edec195c35..571d5454c6b2 100644
+> --- a/drivers/hwmon/adc128d818.c
+> +++ b/drivers/hwmon/adc128d818.c
+> @@ -393,6 +393,7 @@ static int adc128_init_client(struct adc128_data *data)
+>  {
+>  	struct i2c_client *client = data->client;
+>  	int err;
+> +	u8 regval = 0x0;
+>  
+>  	/*
+>  	 * Reset chip to defaults.
+> @@ -403,10 +404,17 @@ static int adc128_init_client(struct adc128_data *data)
+>  		return err;
+>  
+>  	/* Set operation mode, if non-default */
+> -	if (data->mode != 0) {
+> -		err = i2c_smbus_write_byte_data(client,
+> -						ADC128_REG_CONFIG_ADV,
+> -						data->mode << 1);
+> +	if (data->mode != 0)
+> +		regval |= data->mode << 1;
+> +
+> +	/* If external vref is selected, configure the chip to use it */
+> +	if (data->regulator)
+> +		regval |= 0x01;
+> +
+> +	/* Write advanced configuration register */
+> +	if (regval != 0x0) {
+> +		err = i2c_smbus_write_byte_data(client, ADC128_REG_CONFIG_ADV,
+> +						regval);
+>  		if (err)
+>  			return err;
+>  	}
+> @@ -416,14 +424,6 @@ static int adc128_init_client(struct adc128_data *data)
+>  	if (err)
+>  		return err;
+>  
+> -	/* If external vref is selected, configure the chip to use it */
+> -	if (data->regulator) {
+> -		err = i2c_smbus_write_byte_data(client,
+> -						ADC128_REG_CONFIG_ADV, 0x01);
+> -		if (err)
+> -			return err;
+> -	}
+> -
+>  	return 0;
+>  }
+>  
