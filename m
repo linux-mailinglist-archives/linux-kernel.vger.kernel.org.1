@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DC923B543
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 08:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EF223B552
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgHDGxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 02:53:23 -0400
-Received: from host-88-217-225-28.customer.m-online.net ([88.217.225.28]:50164
-        "EHLO mail.dev.tdt.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725904AbgHDGxW (ORCPT
+        id S1726398AbgHDHCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 03:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgHDHCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 02:53:22 -0400
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 03F3620084;
-        Tue,  4 Aug 2020 06:53:15 +0000 (UTC)
+        Tue, 4 Aug 2020 03:02:45 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08AFC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 00:02:44 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id bo3so18604391ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 00:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CxNe4ekXK41HFrNyZNvqPeZW/VoZh3/7r8r8cDnp0R8=;
+        b=Bn0GSK1XcbmY+FoSvGDiUY7XGgREUzvTuUFPwbE1eFIhb6ly7cFu8zM613uRg92vWu
+         HNr4+C4pEMDykrOfkOQmA1poSdBsVMiD0mkRbZXk+ADcW7ESiw/0YOWf/7uieZo3Uq93
+         +ljUpnJl8Aa2tf/CyU8LvMEE7bTnbDgOE94RU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CxNe4ekXK41HFrNyZNvqPeZW/VoZh3/7r8r8cDnp0R8=;
+        b=gpmUVN8zoh17Tyr5ytWQeToXEGwQ9+HKCowmV2vPohvZIt+j0f06zf02eOraLwf+ON
+         qMMFSuCezZ8K7qIXkJko3cWIp8JwMCrjwmxkbD2/V2Up8N4lYIgGVVH4KsYN6OLqevPH
+         p89yVmjXlXStzpHkSGlaivIczRQLueiYY6qbvT2A2V8DIBKBEt+5Cnfx1QcD4mjgFd5m
+         OvnG855v9xxy8sRoSYDBDMQeVsSbqQUV8hOYFnW8rKILvByWTeAlQQvK5GVxd1xu8ICC
+         QO90ePu+ywMPHrn8T+s+rZ25yf6zs+/uDQCMhq1FqUmkxVYiY41RYZrKynPwVPDbidpu
+         Tjdg==
+X-Gm-Message-State: AOAM532zy3y5owO7/NcpAudfrBk7YDQaA0Z065knCc8cYTP7CEMCYk/k
+        Y2LbSiCeGJ+BLT/eJeGNTyPfAxSSYmz33zu0+jk=
+X-Google-Smtp-Source: ABdhPJyJwXFz9Q1N+i2iFCmBib0OII/RMvUKVgX86nV1xasykdNKD2DUbvo6UjX0XcATxyxY2TUlzLpWZ2XenUTauHc=
+X-Received: by 2002:a17:906:1ed3:: with SMTP id m19mr19155545ejj.396.1596524563420;
+ Tue, 04 Aug 2020 00:02:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 04 Aug 2020 08:53:15 +0200
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>
-Subject: Re: [PATCH v2] drivers/net/wan/lapbether: Use needed_headroom instead
- of hard_header_len
-Organization: TDT AG
-In-Reply-To: <CAJht_EO1srhh68DifK61+hpY+zBRU8oOAbJOSpjOqePithc7gw@mail.gmail.com>
-References: <20200730073702.16887-1-xie.he.0141@gmail.com>
- <CAJht_EO1srhh68DifK61+hpY+zBRU8oOAbJOSpjOqePithc7gw@mail.gmail.com>
-Message-ID: <c88c0acc63cbc64383811193c5e1b184@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.1.5
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+References: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
+ <CAK8P3a2B5cxE512R0-ni6BJOnkgR7kGueqd3AU9E2PXh0unsmg@mail.gmail.com>
+In-Reply-To: <CAK8P3a2B5cxE512R0-ni6BJOnkgR7kGueqd3AU9E2PXh0unsmg@mail.gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 4 Aug 2020 07:02:31 +0000
+Message-ID: <CACPK8Xd++ZQx9hh21dV6qn73aoWvoFsOHq8Pmgbtpi-GD3ShmA@mail.gmail.com>
+Subject: Re: [GIT PULL 3/5] ARM: SoC changes for v5.9
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     SoC Team <soc@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 3 Aug 2020 at 21:49, Arnd Bergmann <arnd@arndb.de> wrote:
+> ARM: SoC changes for v5.9
 
-On 2020-07-30 10:02, Xie He wrote:
-> Hi Martin,
-> 
-> I'm currently working on a plan to make all X.25 drivers (lapbether.c,
-> x25_asy.c, hdlc_x25.c) to set dev->hard_header_len /
-> dev->needed_headroom correctly. So that upper layers no longer need to
-> guess how much headroom a X.25 device needs with a constant value (as
-> they currently do).
-> 
-> After studying af_packet.c, I found that X.25 drivers needed to set
-> needed_headroom to reserve the headroom instead of using
-> hard_header_len. Because hard_header_len should be the length of the
-> header that would be created by dev_hard_header, and in this case it
-> should be 0, according to the logic of af_packet.c.
-> 
-> So my first step is to fix the settings in lapbether.c. Could you
-> review this patch and extend your support via a "Reviewed-by" tag? If
-> this can be fixed, I'll go on and fix other X.25 drivers. Thanks!
-> 
-> It's very hard to find reviewers for X.25 code because it is
-> relatively unmaintained by people. I hope I can do some of the
-> maintenance work. I greatly appreciate your support!
+> Andy Shevchenko (1):
+>       ARM: orion/gpio: Make use of for_each_requested_gpio()
 
-I don't like the idea to get rid of the 1-byte header.
-This header is also used in userspace, for example when using a tun/tap
-interface for an XoT (X.25 over TCP) application. A change would
-therefore have very far-reaching consequences.
+This change broke the arm build (I noticed it when building multi_v5_defcon=
+fig):
 
-BTW: The linux x25 mailing list does not seem to work anymore. I've been
-on it for some time now, but haven't received a single email from it.
-I've tried to contact owner-linux-x25@vger.kernel.org, but only got an
-"undeliverable" email back.
+../arch/arm/plat-orion/gpio.c:457:2: error: implicit declaration of
+function =E2=80=98for_each_requested_gpio=E2=80=99
+[-Werror=3Dimplicit-function-declaration]
+  457 |  for_each_requested_gpio(chip, i, label) {
+      |  ^~~~~~~~~~~~~~~~~~~~~~~
 
-It would be great if you could add me to CC list of all versions of your
-patches, so I don't need to "google" for any further related mails.
+for_each_requested_gpio isn't in Linus (Torvalds) tree yet. It will be
+fixed when he pulls Linus Walleij's GPIO tree which has the commit:
 
-So, what's the latest version of the patch now, which you want me to
-review?
+ b3337eb24831 gpiolib: Introduce for_each_requested_gpio_in_range() macro
+
+Cheers,
+
+Joel
