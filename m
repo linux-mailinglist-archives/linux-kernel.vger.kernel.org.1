@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF7E23BE02
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7527623BE0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729768AbgHDQV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:21:58 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43880 "EHLO
+        id S1729861AbgHDQYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:24:03 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43881 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729612AbgHDQU6 (ORCPT
+        with ESMTP id S1729615AbgHDQU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:20:58 -0400
+        Tue, 4 Aug 2020 12:20:59 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from eli@mellanox.com)
         with SMTP; 4 Aug 2020 19:20:52 +0300
 Received: from nps-server-21.mtl.labs.mlnx (nps-server-21.mtl.labs.mlnx [10.237.240.120])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKqMD024001;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKqCp024004;
         Tue, 4 Aug 2020 19:20:52 +0300
 Received: from nps-server-21.mtl.labs.mlnx (localhost [127.0.0.1])
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKqcp022638;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKqrp022641;
         Tue, 4 Aug 2020 19:20:52 +0300
 Received: (from eli@localhost)
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKq3H022637;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKqZ0022640;
         Tue, 4 Aug 2020 19:20:52 +0300
 From:   Eli Cohen <eli@mellanox.com>
 To:     mst@redhat.com, jasowang@redhat.com,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Cc:     shahafs@mellanox.com, saeedm@mellanox.com, parav@mellanox.com,
-        Cindy Lu <lulu@redhat.com>
-Subject: [PATCH V4 linux-next 03/12] vhost-vdpa: support get/set backend features
-Date:   Tue,  4 Aug 2020 19:20:39 +0300
-Message-Id: <20200804162048.22587-4-eli@mellanox.com>
+Cc:     shahafs@mellanox.com, saeedm@mellanox.com, parav@mellanox.com
+Subject: [PATCH V4 linux-next 04/12] vhost-vdpa: support IOTLB batching hints
+Date:   Tue,  4 Aug 2020 19:20:40 +0300
+Message-Id: <20200804162048.22587-5-eli@mellanox.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200804162048.22587-1-eli@mellanox.com>
 References: <20200804162048.22587-1-eli@mellanox.com>
@@ -44,58 +43,159 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jason Wang <jasowang@redhat.com>
 
-This patch makes userspace can get and set backend features to
-vhost-vdpa.
+This patches extend the vhost IOTLB API to accept batch updating hints
+form userspace. When userspace wants update the device IOTLB in a
+batch, it may do:
 
-Signed-off-by: Cindy Lu <lulu@redhat.com>
+1) Write vhost_iotlb_msg with VHOST_IOTLB_BATCH_BEGIN flag
+2) Perform a batch of IOTLB updating via VHOST_IOTLB_UPDATE/INVALIDATE
+3) Write vhost_iotlb_msg with VHOST_IOTLB_BATCH_END flag
+
+Vhost-vdpa may decide to batch the IOMMU/IOTLB updating in step 3 when
+vDPA device support set_map() ops. This is useful for the vDPA device
+that want to know all the mappings to tweak their own DMA translation
+logic.
+
+For vDPA device that doesn't require set_map(), no behavior changes.
+
+This capability is advertised via VHOST_BACKEND_F_IOTLB_BATCH capability.
+
 Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/vhost/vdpa.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/vhost/vdpa.c             | 36 ++++++++++++++++++++++++--------
+ include/uapi/linux/vhost.h       |  2 ++
+ include/uapi/linux/vhost_types.h | 11 ++++++++++
+ 3 files changed, 40 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 563ae6204052..2f0310d1b914 100644
+index 2f0310d1b914..0a143615e69d 100644
 --- a/drivers/vhost/vdpa.c
 +++ b/drivers/vhost/vdpa.c
-@@ -26,6 +26,10 @@
- 
+@@ -27,7 +27,9 @@
  #include "vhost.h"
  
-+enum {
-+	VHOST_VDPA_BACKEND_FEATURES = (1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2)
-+};
-+
+ enum {
+-	VHOST_VDPA_BACKEND_FEATURES = (1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2)
++	VHOST_VDPA_BACKEND_FEATURES =
++	(1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2) |
++	(1ULL << VHOST_BACKEND_F_IOTLB_BATCH),
+ };
+ 
  /* Currently, only network backend w/o multiqueue is supported. */
- #define VHOST_VDPA_VQ_MAX	2
+@@ -48,6 +50,7 @@ struct vhost_vdpa {
+ 	int virtio_id;
+ 	int minor;
+ 	struct eventfd_ctx *config_ctx;
++	int in_batch;
+ };
  
-@@ -364,6 +368,8 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
- 	struct vdpa_callback cb;
- 	struct vhost_virtqueue *vq;
- 	struct vhost_vring_state s;
-+	u64 __user *featurep = argp;
-+	u64 features;
- 	u32 idx;
- 	long r;
+ static DEFINE_IDA(vhost_vdpa_ida);
+@@ -140,6 +143,7 @@ static void vhost_vdpa_reset(struct vhost_vdpa *v)
+ 	struct vdpa_device *vdpa = v->vdpa;
  
-@@ -386,6 +392,18 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
- 	case VHOST_GET_VRING_BASE:
- 		vq->last_avail_idx = ops->get_vq_state(v->vdpa, idx);
+ 	vdpa_reset(vdpa);
++	v->in_batch = 0;
+ }
+ 
+ static long vhost_vdpa_get_device_id(struct vhost_vdpa *v, u8 __user *argp)
+@@ -563,13 +567,15 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
+ 	if (r)
+ 		return r;
+ 
+-	if (ops->dma_map)
++	if (ops->dma_map) {
+ 		r = ops->dma_map(vdpa, iova, size, pa, perm);
+-	else if (ops->set_map)
+-		r = ops->set_map(vdpa, dev->iotlb);
+-	else
++	} else if (ops->set_map) {
++		if (!v->in_batch)
++			r = ops->set_map(vdpa, dev->iotlb);
++	} else {
+ 		r = iommu_map(v->domain, iova, pa, size,
+ 			      perm_to_iommu_flags(perm));
++	}
+ 
+ 	return r;
+ }
+@@ -582,12 +588,14 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
+ 
+ 	vhost_vdpa_iotlb_unmap(v, iova, iova + size - 1);
+ 
+-	if (ops->dma_map)
++	if (ops->dma_map) {
+ 		ops->dma_unmap(vdpa, iova, size);
+-	else if (ops->set_map)
+-		ops->set_map(vdpa, dev->iotlb);
+-	else
++	} else if (ops->set_map) {
++		if (!v->in_batch)
++			ops->set_map(vdpa, dev->iotlb);
++	} else {
+ 		iommu_unmap(v->domain, iova, size);
++	}
+ }
+ 
+ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+@@ -680,6 +688,8 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
+ 					struct vhost_iotlb_msg *msg)
+ {
+ 	struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
++	struct vdpa_device *vdpa = v->vdpa;
++	const struct vdpa_config_ops *ops = vdpa->config;
+ 	int r = 0;
+ 
+ 	r = vhost_dev_check_owner(dev);
+@@ -693,6 +703,14 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
+ 	case VHOST_IOTLB_INVALIDATE:
+ 		vhost_vdpa_unmap(v, msg->iova, msg->size);
  		break;
-+	case VHOST_GET_BACKEND_FEATURES:
-+		features = VHOST_VDPA_BACKEND_FEATURES;
-+		if (copy_to_user(featurep, &features, sizeof(features)))
-+			return -EFAULT;
-+		return 0;
-+	case VHOST_SET_BACKEND_FEATURES:
-+		if (copy_from_user(&features, featurep, sizeof(features)))
-+			return -EFAULT;
-+		if (features & ~VHOST_VDPA_BACKEND_FEATURES)
-+			return -EOPNOTSUPP;
-+		vhost_set_backend_features(&v->vdev, features);
-+		return 0;
- 	}
++	case VHOST_IOTLB_BATCH_BEGIN:
++		v->in_batch = true;
++		break;
++	case VHOST_IOTLB_BATCH_END:
++		if (v->in_batch && ops->set_map)
++			ops->set_map(vdpa, dev->iotlb);
++		v->in_batch = false;
++		break;
+ 	default:
+ 		r = -EINVAL;
+ 		break;
+diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
+index 5d9254e2a6b6..11a4948b6216 100644
+--- a/include/uapi/linux/vhost.h
++++ b/include/uapi/linux/vhost.h
+@@ -91,6 +91,8 @@
  
- 	r = vhost_vring_ioctl(&v->vdev, cmd, argp);
+ /* Use message type V2 */
+ #define VHOST_BACKEND_F_IOTLB_MSG_V2 0x1
++/* IOTLB can accept batching hints */
++#define VHOST_BACKEND_F_IOTLB_BATCH  0x2
+ 
+ #define VHOST_SET_BACKEND_FEATURES _IOW(VHOST_VIRTIO, 0x25, __u64)
+ #define VHOST_GET_BACKEND_FEATURES _IOR(VHOST_VIRTIO, 0x26, __u64)
+diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_types.h
+index 669457ce5c48..9a269a88a6ff 100644
+--- a/include/uapi/linux/vhost_types.h
++++ b/include/uapi/linux/vhost_types.h
+@@ -60,6 +60,17 @@ struct vhost_iotlb_msg {
+ #define VHOST_IOTLB_UPDATE         2
+ #define VHOST_IOTLB_INVALIDATE     3
+ #define VHOST_IOTLB_ACCESS_FAIL    4
++/*
++ * VHOST_IOTLB_BATCH_BEGIN and VHOST_IOTLB_BATCH_END allow modifying
++ * multiple mappings in one go: beginning with
++ * VHOST_IOTLB_BATCH_BEGIN, followed by any number of
++ * VHOST_IOTLB_UPDATE messages, and ending with VHOST_IOTLB_BATCH_END.
++ * When one of these two values is used as the message type, the rest
++ * of the fields in the message are ignored. There's no guarantee that
++ * these changes take place automatically in the device.
++ */
++#define VHOST_IOTLB_BATCH_BEGIN    5
++#define VHOST_IOTLB_BATCH_END      6
+ 	__u8 type;
+ };
+ 
 -- 
 2.26.0
 
