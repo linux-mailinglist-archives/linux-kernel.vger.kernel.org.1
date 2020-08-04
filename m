@@ -2,64 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F017323C080
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0984223C083
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgHDUHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 16:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726432AbgHDUHL (ORCPT
+        id S1726967AbgHDUIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 16:08:21 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:30931 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726660AbgHDUIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 16:07:11 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6419C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 13:07:10 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id i10so10267150ljn.2
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 13:07:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u8vVd3eNYQguySxvKcCaV5W8ooNVhtOP1CKm/UC6A7I=;
-        b=s9xx/Duk98DAB0+L8vFJMaT7WWygK0TAVyP8WfoNoaFx3f2OxDMsQm34eFo1UqG5Xr
-         d9dpxhegHqwtwtW6evsWeDD9utm7jF5dneGl3JlS/3ERywgRsNOPa5o0gke2M+69aSwY
-         O9wZPw8E8PiOT0Mo3LmYhFOdJvbUlxHqUTdcU3XwO1/LAH8DVBMbxlw8SIkK30Hdz+Za
-         KXs8UGhnHkIcTbM9q/sVxhDjpXK/r1vgmHsLL3AO8VYtuijNNqWECRksnrVnZ4x/i53X
-         KoS7hM2sZgmiDw2nxwUeo6qssL0XXACOrQKM150LTEUabBJ/VC+boW6XHPfAwM/xQEZR
-         mtDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u8vVd3eNYQguySxvKcCaV5W8ooNVhtOP1CKm/UC6A7I=;
-        b=b03qLapsImdLysKjEm66lNJw5XthRjsJEPbmBJXkrWt5Z4ro24qcSU/LCycyA+dT9D
-         gCdMHvWKk/0YZarbFjPJHcv2eZnHPap9fz4FNddBRy9TRifEyWuDtPrCecJ0xiu9TjxU
-         TB/u9svjqUMwlv7WbiwTbnbzubxSaE53d/gFc4pRhDqEDS0DikOOnaTpVmf2fpCCvbCZ
-         MlZClC8oWdtYIquUMqiKtxR9u6PDP17NitnuHb6bc4q6UZEmRSeMDBL3mnHizQ5Klau8
-         j2szkBlSR09v5+mSbQdx5PZSInV4Kux2B4++U/oSjjaXCzESPmQTGvJHqZD+A6GXgZ7t
-         zx3w==
-X-Gm-Message-State: AOAM530TPUcxn6feWUPjY5xTEkmfXadOOuG7F+lPul9KTX13ORtQK49x
-        K4w8JKoOIZ85cgsdSivc1Ls=
-X-Google-Smtp-Source: ABdhPJyBRrbSBhdu9xngj5VBMCOa3dus0RevnDqkrLCpPxaq4pkyHzKmzy8Eur5swB9DFOpFQqCLPg==
-X-Received: by 2002:a05:651c:c6:: with SMTP id 6mr10769338ljr.237.1596571629160;
-        Tue, 04 Aug 2020 13:07:09 -0700 (PDT)
-Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id g21sm3080020ljh.103.2020.08.04.13.07.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 13:07:08 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com
-Cc:     airlied@linux.ie, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 3/3] drm/amd/display: Constify dcn30_res_pool_funcs
-Date:   Tue,  4 Aug 2020 22:06:55 +0200
-Message-Id: <20200804200655.30495-4-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200804200655.30495-1-rikard.falkeborn@gmail.com>
-References: <20200804200655.30495-1-rikard.falkeborn@gmail.com>
+        Tue, 4 Aug 2020 16:08:20 -0400
+Received: from localhost.localdomain ([93.23.13.33])
+        by mwinf5d72 with ME
+        id BY8B2300Q0in9Tx03Y8CAQ; Tue, 04 Aug 2020 22:08:17 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 04 Aug 2020 22:08:17 +0200
+X-ME-IP: 93.23.13.33
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     khc@pm.waw.pl, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] wan: wanxl: switch from 'pci_' to 'dma_' API
+Date:   Tue,  4 Aug 2020 22:08:09 +0200
+Message-Id: <20200804200809.714999-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,28 +35,285 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of dcn30_res_pool_funcs is to assign its address to a
-const pointer. Make it const to allow the compiler to put it in
-read-only memory.
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
+
+When memory is allocated in 'wanxl_pci_init_one()', GFP_KERNEL can be used
+because it is a probe function and no lock is acquired.
+Moreover, just a few lines above, GFP_KERNEL is already used.
+
+
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/wan/wanxl.c | 54 ++++++++++++++++++++---------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c
-index 653a571e366d..d474a6188445 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c
-@@ -2412,7 +2412,7 @@ static void dcn30_update_bw_bounding_box(struct dc *dc, struct clk_bw_params *bw
- 		dml_init_instance(&dc->current_state->bw_ctx.dml, &dcn3_0_soc, &dcn3_0_ip, DML_PROJECT_DCN30);
- }
+diff --git a/drivers/net/wan/wanxl.c b/drivers/net/wan/wanxl.c
+index 499f7cd19a4a..dc0cc953c4af 100644
+--- a/drivers/net/wan/wanxl.c
++++ b/drivers/net/wan/wanxl.c
+@@ -99,7 +99,7 @@ static inline port_status_t *get_status(struct port *port)
+ static inline dma_addr_t pci_map_single_debug(struct pci_dev *pdev, void *ptr,
+ 					      size_t size, int direction)
+ {
+-	dma_addr_t addr = pci_map_single(pdev, ptr, size, direction);
++	dma_addr_t addr = dma_map_single(&pdev->dev, ptr, size, direction);
+ 	if (addr + size > 0x100000000LL)
+ 		pr_crit("%s: pci_map_single() returned memory at 0x%llx!\n",
+ 			pci_name(pdev), (unsigned long long)addr);
+@@ -180,8 +180,8 @@ static inline void wanxl_tx_intr(struct port *port)
+ 			dev->stats.tx_bytes += skb->len;
+ 		}
+                 desc->stat = PACKET_EMPTY; /* Free descriptor */
+-		pci_unmap_single(port->card->pdev, desc->address, skb->len,
+-				 PCI_DMA_TODEVICE);
++		dma_unmap_single(&port->card->pdev->dev, desc->address,
++				 skb->len, DMA_TO_DEVICE);
+ 		dev_consume_skb_irq(skb);
+                 port->tx_in = (port->tx_in + 1) % TX_BUFFERS;
+         }
+@@ -207,9 +207,9 @@ static inline void wanxl_rx_intr(struct card *card)
+ 			if (!skb)
+ 				dev->stats.rx_dropped++;
+ 			else {
+-				pci_unmap_single(card->pdev, desc->address,
+-						 BUFFER_LENGTH,
+-						 PCI_DMA_FROMDEVICE);
++				dma_unmap_single(&card->pdev->dev,
++						 desc->address, BUFFER_LENGTH,
++						 DMA_FROM_DEVICE);
+ 				skb_put(skb, desc->length);
  
--static struct resource_funcs dcn30_res_pool_funcs = {
-+static const struct resource_funcs dcn30_res_pool_funcs = {
- 	.destroy = dcn30_destroy_resource_pool,
- 	.link_enc_create = dcn30_link_encoder_create,
- 	.panel_cntl_create = dcn30_panel_cntl_create,
+ #ifdef DEBUG_PKT
+@@ -227,9 +227,10 @@ static inline void wanxl_rx_intr(struct card *card)
+ 			if (!skb) {
+ 				skb = dev_alloc_skb(BUFFER_LENGTH);
+ 				desc->address = skb ?
+-					pci_map_single(card->pdev, skb->data,
++					dma_map_single(&card->pdev->dev,
++						       skb->data,
+ 						       BUFFER_LENGTH,
+-						       PCI_DMA_FROMDEVICE) : 0;
++						       DMA_FROM_DEVICE) : 0;
+ 				card->rx_skbs[card->rx_in] = skb;
+ 			}
+ 		}
+@@ -291,8 +292,8 @@ static netdev_tx_t wanxl_xmit(struct sk_buff *skb, struct net_device *dev)
+ #endif
+ 
+ 	port->tx_skbs[port->tx_out] = skb;
+-	desc->address = pci_map_single(port->card->pdev, skb->data, skb->len,
+-				       PCI_DMA_TODEVICE);
++	desc->address = dma_map_single(&port->card->pdev->dev, skb->data,
++				       skb->len, DMA_TO_DEVICE);
+ 	desc->length = skb->len;
+ 	desc->stat = PACKET_FULL;
+ 	writel(1 << (DOORBELL_TO_CARD_TX_0 + port->node),
+@@ -451,9 +452,9 @@ static int wanxl_close(struct net_device *dev)
+ 
+ 		if (desc->stat != PACKET_EMPTY) {
+ 			desc->stat = PACKET_EMPTY;
+-			pci_unmap_single(port->card->pdev, desc->address,
+-					 port->tx_skbs[i]->len,
+-					 PCI_DMA_TODEVICE);
++			dma_unmap_single(&port->card->pdev->dev,
++					 desc->address, port->tx_skbs[i]->len,
++					 DMA_TO_DEVICE);
+ 			dev_kfree_skb(port->tx_skbs[i]);
+ 		}
+ 	}
+@@ -524,9 +525,9 @@ static void wanxl_pci_remove_one(struct pci_dev *pdev)
+ 
+ 	for (i = 0; i < RX_QUEUE_LENGTH; i++)
+ 		if (card->rx_skbs[i]) {
+-			pci_unmap_single(card->pdev,
++			dma_unmap_single(&card->pdev->dev,
+ 					 card->status->rx_descs[i].address,
+-					 BUFFER_LENGTH, PCI_DMA_FROMDEVICE);
++					 BUFFER_LENGTH, DMA_FROM_DEVICE);
+ 			dev_kfree_skb(card->rx_skbs[i]);
+ 		}
+ 
+@@ -534,8 +535,8 @@ static void wanxl_pci_remove_one(struct pci_dev *pdev)
+ 		iounmap(card->plx);
+ 
+ 	if (card->status)
+-		pci_free_consistent(pdev, sizeof(struct card_status),
+-				    card->status, card->status_address);
++		dma_free_coherent(&pdev->dev, sizeof(struct card_status),
++				  card->status, card->status_address);
+ 
+ 	pci_release_regions(pdev);
+ 	pci_disable_device(pdev);
+@@ -579,8 +580,8 @@ static int wanxl_pci_init_one(struct pci_dev *pdev,
+ 	   We set both dma_mask and consistent_dma_mask to 28 bits
+ 	   and pray pci_alloc_consistent() will use this info. It should
+ 	   work on most platforms */
+-	if (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(28)) ||
+-	    pci_set_dma_mask(pdev, DMA_BIT_MASK(28))) {
++	if (dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(28)) ||
++	    dma_set_mask(&pdev->dev, DMA_BIT_MASK(28))) {
+ 		pr_err("No usable DMA configuration\n");
+ 		pci_disable_device(pdev);
+ 		return -EIO;
+@@ -608,9 +609,9 @@ static int wanxl_pci_init_one(struct pci_dev *pdev,
+ 	pci_set_drvdata(pdev, card);
+ 	card->pdev = pdev;
+ 
+-	card->status = pci_alloc_consistent(pdev,
+-					    sizeof(struct card_status),
+-					    &card->status_address);
++	card->status = dma_alloc_coherent(&pdev->dev,
++					  sizeof(struct card_status),
++					  &card->status_address, GFP_KERNEL);
+ 	if (card->status == NULL) {
+ 		wanxl_pci_remove_one(pdev);
+ 		return -ENOBUFS;
+@@ -625,8 +626,8 @@ static int wanxl_pci_init_one(struct pci_dev *pdev,
+ 	/* FIXME when PCI/DMA subsystems are fixed.
+ 	   We set both dma_mask and consistent_dma_mask back to 32 bits
+ 	   to indicate the card can do 32-bit DMA addressing */
+-	if (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32)) ||
+-	    pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
++	if (dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32)) ||
++	    dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))) {
+ 		pr_err("No usable DMA configuration\n");
+ 		wanxl_pci_remove_one(pdev);
+ 		return -EIO;
+@@ -699,9 +700,8 @@ static int wanxl_pci_init_one(struct pci_dev *pdev,
+ 		card->rx_skbs[i] = skb;
+ 		if (skb)
+ 			card->status->rx_descs[i].address =
+-				pci_map_single(card->pdev, skb->data,
+-					       BUFFER_LENGTH,
+-					       PCI_DMA_FROMDEVICE);
++				dma_map_single(&card->pdev->dev, skb->data,
++					       BUFFER_LENGTH, DMA_FROM_DEVICE);
+ 	}
+ 
+ 	mem = ioremap(mem_phy, PDM_OFFSET + sizeof(firmware));
 -- 
-2.28.0
+2.25.1
 
