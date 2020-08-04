@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F8823B4D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 08:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBE323B4D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 08:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbgHDGLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 02:11:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728821AbgHDGLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 02:11:24 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1AF652076E;
-        Tue,  4 Aug 2020 06:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596521483;
-        bh=ppi+8sf/WEedgMmc2O6rkbHCZMrQJgUlzTq2VUbRos0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SoQUM/daP1SBXAIPoPA481EhtQXpLBVbRBaR+iCgrtcmz5fYEwWw+Hqr4qp4gDZ8S
-         vq2bAkBgCIeL8WJ8MuhcqOOtncjfjjtyAoc/Q98O6cYb8fMtuM8Qp1Wd6aR/o4WgTR
-         7iH/Gf2PPi7COflXPHV3eDvEL4PiRnm7md/fclME=
-Date:   Tue, 4 Aug 2020 08:11:20 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.7 000/120] 5.7.13-rc1 review
-Message-ID: <20200804061120.GA696690@kroah.com>
-References: <20200803121902.860751811@linuxfoundation.org>
- <20200803155820.GA160756@roeck-us.net>
- <20200803173330.GA1186998@kroah.com>
- <CAMuHMdW1Cz_JJsTmssVz_0wjX_1_EEXGOvGjygPxTkcMsbR6Lw@mail.gmail.com>
- <20200804030107.GA220454@roeck-us.net>
- <CAHk-=wi-WH0vTEVb=yTuWv=3RrGC2T28dHxqc=QXKkRMz3N3-g@mail.gmail.com>
- <20200804055855.GA114969@roeck-us.net>
+        id S1729313AbgHDGLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 02:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728602AbgHDGLv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 02:11:51 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03EFC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 23:11:50 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 185so32012319ljj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 23:11:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YATFUmsQEtwZnfgWdl5UeyWgtQO3fVAktQVuTkdNN84=;
+        b=GxbN4MBWT2QnFQZOx0XJ9UA0oemVZKu8DVMcXSsOQTdcD5FgLP+FKSLs1NUfxgZ1ym
+         13SSwtjix3edIdHB/LzKs3oQPpp39yjbZz0rI2IhiLddmW+F8UNZh+wk+XgOcUFSgWpL
+         KgS9WEfdPGYlDqwPVcA8ZupXspDOsB04Qv0+k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YATFUmsQEtwZnfgWdl5UeyWgtQO3fVAktQVuTkdNN84=;
+        b=cinXE3IDduiGQKqIghFxmSwhY8E5ekPL0UDuZRcV7b9/NzixxI0NGKYOpgkUcLJFK7
+         VMpfUuwZ9hk9I2EMorS9m+s8p8eZWvImV2RzELSN97uOx1demOTl3YENuaMdrvq8TYyT
+         NTiKwut/dl3WlAMPUUoZiKOS6wq2G0UUr4LvmvqmebdKl0RfLG++rhABaGip1tlRBLli
+         qWOjlJHkI4zkkAagImlJSy8jp4H+gmS/JTJl8nGGDpQZY2wY333H7InjMXV3gOGI8DKC
+         fcdGQSMUxGA1rxXv2QNQJq2FpeQX15An6pTrtHSqodJ/SKi5E7QO7HnltyPNKTwCOCaj
+         /TmQ==
+X-Gm-Message-State: AOAM533Nhl6oopfwRQQqPZjSWjd6Uq9731/m1I/DWCG+K2Q3WC/Hyanx
+        axVkMnOjLAkw2F6v75zpBOH/fg==
+X-Google-Smtp-Source: ABdhPJw9B+y91jBYvJrq3JdL+1NJK33QAr8Ejd8dI1ooDFvkOCojii4KB0OKr7Er4VMWcj3Xw/uijg==
+X-Received: by 2002:a2e:93cd:: with SMTP id p13mr7914891ljh.460.1596521509227;
+        Mon, 03 Aug 2020 23:11:49 -0700 (PDT)
+Received: from [172.16.11.153] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id l26sm2044101ljc.133.2020.08.03.23.11.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Aug 2020 23:11:46 -0700 (PDT)
+Subject: Re: [RFC] saturate check_*_overflow() output?
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com
+References: <202008031118.36756FAD04@keescook>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <f177a821-74a3-e868-81d3-55accfb5b161@rasmusvillemoes.dk>
+Date:   Tue, 4 Aug 2020 08:11:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804055855.GA114969@roeck-us.net>
+In-Reply-To: <202008031118.36756FAD04@keescook>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 10:58:55PM -0700, Guenter Roeck wrote:
-> On Mon, Aug 03, 2020 at 08:12:51PM -0700, Linus Torvalds wrote:
-> > On Mon, Aug 3, 2020 at 8:01 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > >
-> > > The bisect log below applies to both the sparc and the powerpc build
-> > > failures.
-> > 
-> > Does the attached fix it?
-> > 
-> >                  Linus
+On 03/08/2020 20.29, Kees Cook wrote:
+> Hi,
 > 
-> > From 780c8591bce09bbdd2908b7c07b3baba883a1ce6 Mon Sep 17 00:00:00 2001
-> > From: Linus Torvalds <torvalds@linux-foundation.org>
-> > Date: Fri, 31 Jul 2020 07:51:14 +0200
-> > Subject: [PATCH] random32: move the pseudo-random 32-bit definitions to prandom.h
-> > 
-> > The addition of percpu.h to the list of includes in random.h revealed
-> > some circular dependencies on arm64 and possibly other platforms.  This
-> > include was added solely for the pseudo-random definitions, which have
-> > nothing to do with the rest of the definitions in this file but are
-> > still there for legacy reasons.
-> > 
-> > This patch moves the pseudo-random parts to linux/prandom.h and the
-> > percpu.h include with it, which is now guarded by _LINUX_PRANDOM_H and
-> > protected against recursive inclusion.
-> > 
-> > A further cleanup step would be to remove this from <linux/random.h>
-> > entirely, and make people who use the prandom infrastructure include
-> > just the new header file.  That's a bit of a churn patch, but grepping
-> > for "prandom_" and "next_pseudo_random32" should catch most users.
-> > 
-> > Acked-by: Willy Tarreau <w@1wt.eu>
-> > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> 
-> With this patch applied on top of v5.8:
-> 
-> Build results:
-> 	total: 151 pass: 151 fail: 0
-> Qemu test results:
-> 	total: 430 pass: 430 fail: 0
-> 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> I wonder if we should explicitly saturate the output of the overflow
+> helpers as a side-effect of overflow detection? 
 
-Thanks for this, I'll go queue it up in a bit and push out some new
--rc2 releases.
+Please no.
 
-greg k-h
+(That way the output
+> is never available with a "bad" value, if the caller fails to check the
+> result or forgets that *d was written...) since right now, *d will hold
+> the wrapped value.
+
+Exactly. I designed the fallback ones so they would have the same
+semantics as when using gcc's __builtin_* - though with the "all
+operands have same type" restriction, since it would be completely
+unwieldy to handle stuff like (s8) + (u64) -> (s32) in macros.
+
+> Also, if we enable arithmetic overflow detection sanitizers, we're going
+> to trip over the fallback implementation (since it'll wrap and then do
+> the overflow test in the macro).
+
+Huh? The fallback code only ever uses unsigned arithmetic, precisely to
+avoid triggering such warnings. Or are you saying there are some
+sanitizers out there which also warn for, say, (~0u) + 1u? Yes,
+detecting overflow/underflow for a (s32)-(s32)->(s32) without relying on
+-fwrapv is a bit messy, but it's done and AFAIK works just fine even
+with UBSAN enabled.
+
+
+What we might do, to deal with the "caller fails to check the result",
+is to add a
+
+static inline bool __must_check must_check_overflow(bool b) { return
+unlikely(b); }
+
+and wrap all the final "did it overflow" results in that one - perhaps
+also for the __builtin_* cases, I don't know if those are automatically
+equipped with that attribute. [I also don't know if gcc propagates
+likely/unlikely out to the caller, but it shouldn't hurt to have it
+there and might improve code gen if it does.]
+
+Rasmus
+
+PS: Another reason not to saturate is that there are two extreme values,
+and choosing between them makes the code very messy (especially when
+using the __builtins). 5u-10u should saturate to 0u, not UINT_MAX, and
+even for for underflowing a signed computation like INT_MIN + (-7); it
+makes no sense for that to saturate to INT_MAX.
