@@ -2,138 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C8123BF60
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 20:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB01E23BF6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 20:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgHDSaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 14:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
+        id S1726802AbgHDSjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 14:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726101AbgHDSaT (ORCPT
+        with ESMTP id S1725826AbgHDSjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 14:30:19 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1B5C06174A;
-        Tue,  4 Aug 2020 11:30:19 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id q75so35108557iod.1;
-        Tue, 04 Aug 2020 11:30:19 -0700 (PDT)
+        Tue, 4 Aug 2020 14:39:42 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DF5C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 11:39:42 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id bo3so20945322ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 11:39:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zjB/bse/AIG3ec5CH7lkmfaqywcsn17p5QYWsN0kQJw=;
-        b=dCRcZcl935xER4Rf59nQmFnexVv4UViEqV9aZJ2xyWAs38weoDxfzlosh8SsGr6mdj
-         C9sCDBRY8EonQdh2gB6H1Qj1P3z4Gzlgc9FqJ+eDebeKm2rVWZ3hXYgTdhuoIqJR6g2h
-         bfFEvVxD/8SfvyLR2rIPctE+rtmHIuPZT5yJn8xCNA12o9lIdt38gJa8L/OQdNaE4GB+
-         v+NtRGPuTApH/UazFOWT5Dzywn4pGjihzeJv/7jclqR4hpQ3fOTBHIvgt5riFIHZIFB4
-         UCPJsRDcFeymaJKBwDTrFmKmMPsg7U5lGqRAawt6R2zTNNgvgTbJ+mtRMb5dCwON/yKf
-         2Pqw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bkLmvclKDC4NH/baH9VK8NbQ5emijDFqRa7D8TVtths=;
+        b=MftHbpqnXQ5Cig7YZqaj4xNohz3zWOfxYlSXieSNZmEPpG+cmx/mU1jMBDg2t+t+WR
+         5wh31k/s1R9XNKJEwOcOA6jA/ffc7hdhg7ykGyZsa1eorJ6u99el2r1gDU+nW1mVMyBf
+         gYOEsqSC8pHznfc5XiFRm2tag3P79YiWqQEDM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zjB/bse/AIG3ec5CH7lkmfaqywcsn17p5QYWsN0kQJw=;
-        b=iMAQxeJc1JgxqQ488UkURkovBb+OqH6Q648VUzbEasa6N3l6Vsj+Uqgj51PLi8TCzD
-         ypWVP7egJPyRyOZaia6OiZQP+qIcFivLbZVmCYMj6JJuO8tMTv8EU5nIEOMFemhMq4SN
-         uLNkZ7QimTj2j4dvYJ7V4ygElgE45suOwhHlFJ2wf4oGfwFvqpwIQbNDE+hA8CvslK9Y
-         0g1Y41X1QZuuQ3GbFcHIqK/+rxgzwGqMFQWNQBp3oRudBTe1G8JpBleMA61Jsl0n83k8
-         kvra7B/yXZI03Ez3wdK0edLUAsgiMWxrqFJVbrl/T4G7Gsa5gV9wLtxLKebtIV/IfAYb
-         LCeQ==
-X-Gm-Message-State: AOAM532LgNZXo+1Q5Q9dc7AjAsIdPtWXlaW1OFD4Bp17yymEpaMPsXDc
-        LBRoSs6KSq3Tbv/2BzlDhz2OMrnz/d8=
-X-Google-Smtp-Source: ABdhPJxE48uCTrCDf4/g2gDlwTt02WrWwBMyxZk4Wkht9gX32sBeqmTHI3Q1i0yO2RLnxyv6ErMfCA==
-X-Received: by 2002:a6b:15c2:: with SMTP id 185mr6327964iov.207.1596565818447;
-        Tue, 04 Aug 2020 11:30:18 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan (c-73-37-219-234.hsd1.mn.comcast.net. [73.37.219.234])
-        by smtp.gmail.com with ESMTPSA id q70sm13399267ili.49.2020.08.04.11.30.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 11:30:17 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org,
-        Adam Ford <aford173@gmail.com>
-Subject: [PATCH] Input: ili210x: Fix potential memory leaks
-Date:   Tue,  4 Aug 2020 13:30:07 -0500
-Message-Id: <20200804183007.117125-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bkLmvclKDC4NH/baH9VK8NbQ5emijDFqRa7D8TVtths=;
+        b=UutvVVql3iN6Pv2SQhhcAGyFvg9NXCqNrJGHGfvLLxVeE3OzmqmkA7kRnIP2ZYe+5c
+         51jdmDn4nKnhHApDrQRUZ1SHzgLvGgkVCaqrWH1S0u0DsPk0iilKeyHEfWYp7rOKZVF0
+         xq2ng0BRIc4b4REejEiSETEVAW/nqJL0uPpxegriC5M/bn04SAqB7bl5SXuxappQkwSz
+         OMLhVGo82Of31AekI+Smv3Ah4lSCJOAKOYIjFuvDgH1b59tIjp31is2HlN8mgaJdPAj3
+         LNbY7olLCqfhWjxl2/dHoK6OKmroSVcT9WDwOKnxy+ixS4EBV601OfMl9rpoYIc7RaCK
+         lGSQ==
+X-Gm-Message-State: AOAM533B7y5FZPrJepIkvrY2AkW5p0kOuwQUpM5jXgfzVK20OwpnopaV
+        B5QpI6DyfWxTiFG8w1PGgNSvuEQZHz4=
+X-Google-Smtp-Source: ABdhPJw4+vZ/Fkz0HSoRFdrcAC5DDkf4cweiLLaVnbXOEZJOvsMH9989xgiTxXUQ2/3kS9c6S7Vw5A==
+X-Received: by 2002:a17:906:e251:: with SMTP id gq17mr22238272ejb.445.1596566380783;
+        Tue, 04 Aug 2020 11:39:40 -0700 (PDT)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
+        by smtp.gmail.com with ESMTPSA id qc23sm19030922ejb.97.2020.08.04.11.39.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Aug 2020 11:39:40 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id o18so43560527eje.7
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 11:39:40 -0700 (PDT)
+X-Received: by 2002:a2e:8008:: with SMTP id j8mr6989403ljg.312.1596566026687;
+ Tue, 04 Aug 2020 11:33:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200804072435.385370289@linuxfoundation.org> <CA+G9fYs35Eiq1QFM0MOj6Y7gC=YKaiknCPgcJpJ5NMW4Y7qnYQ@mail.gmail.com>
+ <20200804082130.GA1768075@kroah.com>
+In-Reply-To: <20200804082130.GA1768075@kroah.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 4 Aug 2020 11:33:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whJ=shbf-guMGZkGvxh9fVmbrvUuiWO48+PDFG7J9A9qw@mail.gmail.com>
+Message-ID: <CAHk-=whJ=shbf-guMGZkGvxh9fVmbrvUuiWO48+PDFG7J9A9qw@mail.gmail.com>
+Subject: Re: [PATCH 5.7 000/121] 5.7.13-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver requests, memory twice and requests a threaded irq, but
-it doesn't free any of them if something fails.
+On Tue, Aug 4, 2020 at 1:21 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> So Linus's tree is also broken here.
 
-This patch attempts to identify areas where a return was issued
-without freeing allocated memory or IRQ's.
+No, there's 835d1c3a9879 ("arm64: Drop unnecessary include from
+asm/smp.h") upstream.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+But as Guenther points out, I have a few other build errors, but they
+are (finally!) entirely unrelated.
 
-diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
-index 199cf3daec10..967329fbdde3 100644
---- a/drivers/input/touchscreen/ili210x.c
-+++ b/drivers/input/touchscreen/ili210x.c
-@@ -421,7 +421,7 @@ static int ili210x_i2c_probe(struct i2c_client *client,
- 
- 	input = devm_input_allocate_device(dev);
- 	if (!input)
--		return -ENOMEM;
-+		goto free_priv;
- 
- 	priv->client = client;
- 	priv->input = input;
-@@ -443,7 +443,7 @@ static int ili210x_i2c_probe(struct i2c_client *client,
- 				    INPUT_MT_DIRECT);
- 	if (error) {
- 		dev_err(dev, "Unable to set up slots, err: %d\n", error);
--		return error;
-+		goto free_input;
- 	}
- 
- 	error = devm_request_threaded_irq(dev, client->irq, NULL, ili210x_irq,
-@@ -451,27 +451,36 @@ static int ili210x_i2c_probe(struct i2c_client *client,
- 	if (error) {
- 		dev_err(dev, "Unable to request touchscreen IRQ, err: %d\n",
- 			error);
--		return error;
-+		goto free_input;
- 	}
- 
- 	error = devm_add_action_or_reset(dev, ili210x_stop, priv);
- 	if (error)
--		return error;
-+		goto free_irq;
- 
- 	error = devm_device_add_group(dev, &ili210x_attr_group);
- 	if (error) {
- 		dev_err(dev, "Unable to create sysfs attributes, err: %d\n",
- 			error);
--		return error;
-+		goto free_irq;
- 	}
- 
- 	error = input_register_device(priv->input);
- 	if (error) {
- 		dev_err(dev, "Cannot register input device, err: %d\n", error);
--		return error;
-+		goto free_irq;
- 	}
- 
- 	return 0;
-+
-+free_irq:
-+	free_irq(client->irq, client);
-+free_input:
-+	input_free_device(input);
-+free_priv:
-+	kfree(priv);
-+
-+	return error;
- }
- 
- static const struct i2c_device_id ili210x_i2c_id[] = {
--- 
-2.25.1
-
+                Linus
