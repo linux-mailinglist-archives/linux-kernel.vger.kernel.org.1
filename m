@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C84123BE2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A101423BE35
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730000AbgHDQdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:33:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48238 "EHLO
+        id S1730067AbgHDQeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729871AbgHDQd0 (ORCPT
+        with ESMTP id S1729867AbgHDQd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:33:26 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EAEC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 09:33:24 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id s26so20680087pfm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 09:33:24 -0700 (PDT)
+        Tue, 4 Aug 2020 12:33:28 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04546C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 09:33:27 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id f9so2440813pju.4
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 09:33:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=un8jH/D2eshkw7Qt1diChiXDaYKwr27b6qcHEOLaKfM=;
-        b=uWaA3C2+St8byc6QJ3Fe5yIMWqJpX//7+V935TmXZycJbjhFQLT6kg0Up7RkC6iuwA
-         2fOQGSgr9gdFTEuehYrWtoW7cya0eZz2hdM4fbPyWPo6hFN/8ZrMxegKi/2OMe63sgJ6
-         SXotcJu/6RMbVe1SXIpCxfP/cjFWgyHxQ3AVIXydLgE0Kzr47ETELdMFO/6dLYQOyZeg
-         P0UrfNHRoXcREcH1SG089tfyctQd2MewlQTevPub0aLj0iafPxNeRTS5Alq+ZoO4Vpls
-         z0Srw/Q8VjVhrg9Pb4CKXOGimkcyuv8owr1kQbow6+Tk1h87HfsHQmD+hkvbnA3EsW4d
-         YLHQ==
+        bh=f0rQmLd2gYqpAFiuJBl/hAMED12SSRFPW07wfVi8OZw=;
+        b=engxWD/2i+V2t4tSV5/le1iMnbVOBbW/GxmxDrA2C2rs4CWpWnVAScr/gRsHxYe5Ql
+         1XJSb0ubzDfpLGFa1UhUCUKjN7VsIA6WgAKjcWjNQhM/diQIGj/XB0nbu6+ath8kf4Um
+         mqFSKoLK0bXOsqcZreIn6iwicMAj+JOWWF3bMks0HR6MioLICLqKk4JIGN5PlR62Pe6G
+         JHZjdUpxEZOiA8uOtj3a7rV52qLdOPskqNseSItHRhT1l7NPxWAElZe7qyGCGJJ2RtNu
+         FTXcOPmB8QobtYjCqw5PdXP2TwYF5QMpioXR259dPFWdaIID4eqV3sDFbT4aPJIEqBn8
+         DmzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=un8jH/D2eshkw7Qt1diChiXDaYKwr27b6qcHEOLaKfM=;
-        b=c6nnsJvU+HqY1oQIef5hK8sgdibI+MjpG0nBv61wgxZCwCyKBAdpvxvTSi6U/6p9KD
-         NLPD4+fzkFwtqTEilNnhqNfe5N+zJzKampQqGyT6vjbnuyzwfcYhfiGXkjrne/wo8OX8
-         iDjIecQ5FkCsw5Vl6XuvHBe4h2AXp07hSUvCxHIn1OmFzuag5WFkw356vKpvSbKXI/lN
-         0GZgw32ykUh8H1pxSkKwR9/tVUl4TAJWjG8bGkMHhgLDg5RfiN6d64DpBYRS0W3gOTtK
-         SaeGpo7ymEiZdGOsjAyOb7wDDMiJLfLCX01nS61CyhT4WAEwoVjlB3y97PBDuiJKFXH/
-         nDKQ==
-X-Gm-Message-State: AOAM530S6SUy9Ro+kCAyZEoiYORNnNYyuhT3Zd/4pirGriz45FuGOe42
-        8CL/GQlgXFCkNAnALhflBoQ=
-X-Google-Smtp-Source: ABdhPJxiLlCtNf/oUWkcvYIrRWlM36SWgcYNtF65o7bEkz2649Bvgg2GB3AavWDTrcCu35K4SZQrgQ==
-X-Received: by 2002:aa7:9419:: with SMTP id x25mr21668872pfo.67.1596558803708;
-        Tue, 04 Aug 2020 09:33:23 -0700 (PDT)
+        bh=f0rQmLd2gYqpAFiuJBl/hAMED12SSRFPW07wfVi8OZw=;
+        b=dZzc7MiVXMcvFAVeaAmPLsuPpfugIwbazp3kmNI6D2cKP2WXo2eHfUbCMyxxzlV7vD
+         yuaTyYjoUwVFVSwgCij4pGDDNliwHvfJCQnX/ppKrEorx33mmKDLHigJwYgiu2H8MgVg
+         NUrZXED7NSwJSziQO4liGCnHbpOAXtnooBCNE+lbu6Tvz501nn28vc2QAfoHOUZz8kPh
+         lSWrbzWgNAlAyTLMuxClAH0n3gizHzwBrrwf+nn4OM+98dBvOhmsU+qaiUF8fdTSjkdJ
+         yYq3eoMGP/j81vLcTMMDLkl5LbC9Nmws7szucGgyx0hQat5f38TIQWsl+FbCNY2umaP4
+         iUmg==
+X-Gm-Message-State: AOAM5324qRpDv/x87YVOLD/II6/WJq+V+qGeO+SxvMCOh04Ogra5EdOm
+        v8t5hjlPRMRH8Vp8YCQM0TEDSJFs
+X-Google-Smtp-Source: ABdhPJxuZD1NzfjMM1v6tRfNya7PdTVy5RqF4iUWSDT2L02W91t+jOHzvw9orMH0p+VaLSF0t/YBjw==
+X-Received: by 2002:a17:902:fe0d:: with SMTP id g13mr2954693plj.287.1596558806483;
+        Tue, 04 Aug 2020 09:33:26 -0700 (PDT)
 Received: from localhost.localdomain ([123.110.251.138])
-        by smtp.gmail.com with ESMTPSA id m16sm657253pjz.47.2020.08.04.09.33.21
+        by smtp.gmail.com with ESMTPSA id m16sm657253pjz.47.2020.08.04.09.33.23
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 04 Aug 2020 09:33:23 -0700 (PDT)
+        Tue, 04 Aug 2020 09:33:26 -0700 (PDT)
 From:   Gene Chen <gene.chen.richtek@gmail.com>
 To:     lee.jones@linaro.org, matthias.bgg@gmail.com, rafael@kernel.org
 Cc:     broonie@kernel.org, gregkh@linuxfoundation.org,
@@ -54,9 +54,9 @@ Cc:     broonie@kernel.org, gregkh@linuxfoundation.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         gene_chen@richtek.com, benjamin.chao@mediatek.com,
         shufan_lee@richtek.com, cy_huang@richtek.com
-Subject: [PATCH 5/9] mfd: mt6360: Rename mt6360_pmu_data by mt6360_data
-Date:   Wed,  5 Aug 2020 00:32:57 +0800
-Message-Id: <1596558782-3415-6-git-send-email-gene.chen.richtek@gmail.com>
+Subject: [PATCH 5/9] mfd: mt6360: Rename mt6360_pmu_data by mt6360_ddata
+Date:   Wed,  5 Aug 2020 00:32:58 +0800
+Message-Id: <1596558782-3415-7-git-send-email-gene.chen.richtek@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1596558782-3415-1-git-send-email-gene.chen.richtek@gmail.com>
 References: <1596558782-3415-1-git-send-email-gene.chen.richtek@gmail.com>
@@ -67,7 +67,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Gene Chen <gene_chen@richtek.com>
 
-Rename mt6360_pmu_data by mt6360_data because of including
+Rename mt6360_pmu_data by mt6360_ddata because of including
 not only PMU part, but also entire MT6360 IC.
 
 Signed-off-by: Gene Chen <gene_chen@richtek.com>
