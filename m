@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F61923B52E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 08:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C1823B529
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 08:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729472AbgHDGpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 02:45:04 -0400
-Received: from mail-eopbgr700048.outbound.protection.outlook.com ([40.107.70.48]:46817
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        id S1728609AbgHDGo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 02:44:57 -0400
+Received: from mail-dm6nam12on2075.outbound.protection.outlook.com ([40.107.243.75]:1793
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726013AbgHDGoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 02:44:55 -0400
+        id S1725811AbgHDGoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 02:44:54 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zbh9cwOxtY1R/0UfVNiFpmRZN5xdkDrGZYudkePCtIG2J6uOtJ+GpA246+PIqnSb1b1jnwIrH5BW0HBMLLY6B3Cx6tXtmNF5ibJ4dHoaDtExRkt/+wZotBdwhaCCyfqiIKdRnC1oM0auopf3H9rOuRqEtJLRHPtsPQVpcd8/BB3x+N+3iu2G70YRuAWwSajNI34K4ltlQ9LbktuxgCIr/EmllImUIPD67IMT8z+6RNfcdsD1RGPlowR82uSgFVvxVfeEHdeFWHWLCRQHCKcAM9DQUxeH6gsgfbfpUMqZBbXD9Xl4lOI6CEnILh5yYj/W68cPsDKvH5Vt/SSxz5F8TQ==
+ b=UYmxn6zr+jX2G3K/xmqoRMBfVO/2Kj66GtjzrFKQwPCn2jyTx/Nw7JWXZNay6k/OHfsHmsOdNfa+YkvHeHvFRzitrmc1Qewf4OCYGUKHcsC3eiCIROOqRzELEx5uUeUa8hyljYdBQspUsZ4OcX+a7EHj7ByD3o7DVhPyWHJcJk1HWa4h8bxDpgBaUnrnH/eq9+rx/VRP+LS9VUaNGNrs0bR3yi7ld4phNVlSehAL9sbIFuVCqNvhRKCEtePPGoV472G7Mb9Uz7QwKwW56o4UpUoOCohhdOe2yUi+JR4AYHQZT3KUD8LD4VS/DkUTVDU5TmHtMKRC4jsYXNqcpZvY2w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=grZ2h29+pNMEeD3NYoIZV0pqnIdp5O4ban4Jmv40nqI=;
- b=HZ5pF96VvdOv7io1ZPhBgZ4h9XyMVRGZ8WQ0fR1XOxUyA6KGgqTaOSdz+hNcAFf/5tvvsSCDkSDwR14Y8h0y+wxqRddsVQHSquNnA9l9klsOkE/XXlsClztcPKTLE12QFeHe2NEIjGCNXizPnv6u7QeVepJuFpj/k7OYApKfSU0sbEM5eqFOpcp4sCl1LxsRhJuflWwiggyzCHUbaGpn301lQs23d2o4Qw+ias2JLy1nhu1FwXKkCxpdEUpEVeWkoaXKmUpJAGak+vGX/+13ZmqIJOtQwZ2OfoL4AU5JJjWP8I837Wrj6vz/EKjupPfI4+hl6ON6ycl9uk+EP1Xt3w==
+ bh=2d5WSwkqjgB+9B/yWvRV8SciSLU/ka0eJIS3TIAqApo=;
+ b=e5smOd/m6VH3yiIE36QwzK2gYUtEo0mO1ash0iOe4ZZ4WLJvsbaQhb3/2b495vAa6YI646q37QYLo9brkM2095wq+j9VnXpR0tgtPrFtex3BA7OTTBOPfTsLSD4dp15NLkG/sYk2HtyPyM5pLw+y+LF4c72ZmzfYBy77KYSA+iLL7Ex+1pLjgInjJM49zxoY0p+96YCKQhnsxQjV+5PUzkE+4LCMqxI71Pmasq/dK9FYPQDShACm6eeVb7npGrEd7RKHUWaHk8EJTCBd/c/khX0+jdZHc+vW1c1gfvax/r19ned52K2F8+A13m71QFUvHqy7q9ewgbTq5533yg1Y1Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  149.199.60.83) smtp.rcpttodomain=baylibre.com smtp.mailfrom=xilinx.com;
  dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
@@ -26,18 +26,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=grZ2h29+pNMEeD3NYoIZV0pqnIdp5O4ban4Jmv40nqI=;
- b=ZZgkRbOvXniX6xs4dA/8AQF+kknQsQ5SHDSot0p9Z/2oGqeFe+HAZp4dby3bgKaFdPN0j42RTmaT23VtMI03WXd8WxPIDZzffXfQx/t70Teps1jSUotxrJlI1XIaIGEiUFRFp8l8NCMBOEhIys8yX5e8DPuMrnxFTdYUV7lWpjg=
-Received: from MN2PR17CA0002.namprd17.prod.outlook.com (2603:10b6:208:15e::15)
- by SN6PR02MB5087.namprd02.prod.outlook.com (2603:10b6:805:6e::11) with
+ bh=2d5WSwkqjgB+9B/yWvRV8SciSLU/ka0eJIS3TIAqApo=;
+ b=BKA+Ka+bliAeGwuiYRX8lcVFxPY+hfff81a3JFGBrqKi3a4hczaJ6vVYe70c2u3N7lCTNCyGcunHjisnp6e/pBldUM24IbCZUlg9ohqEx/wHxiknmCi3AHL4ykbK7yxVMvXIFi8ffDULGMD33wSF1amd1ib0aUGhb6lLm7OLoZg=
+Received: from MN2PR01CA0052.prod.exchangelabs.com (2603:10b6:208:23f::21) by
+ CY4PR0201MB3553.namprd02.prod.outlook.com (2603:10b6:910:8e::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.21; Tue, 4 Aug
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.20; Tue, 4 Aug
  2020 06:44:51 +0000
-Received: from BL2NAM02FT013.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:15e:cafe::1f) by MN2PR17CA0002.outlook.office365.com
- (2603:10b6:208:15e::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.19 via Frontend
- Transport; Tue, 4 Aug 2020 06:44:50 +0000
+Received: from BL2NAM02FT006.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:23f:cafe::15) by MN2PR01CA0052.outlook.office365.com
+ (2603:10b6:208:23f::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.18 via Frontend
+ Transport; Tue, 4 Aug 2020 06:44:51 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
  smtp.mailfrom=xilinx.com; baylibre.com; dkim=none (message not signed)
  header.d=none;baylibre.com; dmarc=bestguesspass action=none
@@ -46,21 +46,21 @@ Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
  149.199.60.83 as permitted sender) receiver=protection.outlook.com;
  client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
 Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- BL2NAM02FT013.mail.protection.outlook.com (10.152.77.19) with Microsoft SMTP
- Server id 15.20.3239.17 via Frontend Transport; Tue, 4 Aug 2020 06:44:50
+ BL2NAM02FT006.mail.protection.outlook.com (10.152.76.239) with Microsoft SMTP
+ Server id 15.20.3239.17 via Frontend Transport; Tue, 4 Aug 2020 06:44:51
  +0000
-Received: from [149.199.38.66] (port=42207 helo=smtp.xilinx.com)
+Received: from [149.199.38.66] (port=42247 helo=smtp.xilinx.com)
         by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
         (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1k2qgp-00022V-60; Mon, 03 Aug 2020 23:44:47 -0700
+        id 1k2qgp-00022b-Ai; Mon, 03 Aug 2020 23:44:47 -0700
 Received: from [127.0.0.1] (helo=localhost)
         by xsj-pvapsmtp01 with smtp (Exim 4.63)
         (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1k2qgs-0007mp-6h; Mon, 03 Aug 2020 23:44:50 -0700
+        id 1k2qgs-0007mp-Ip; Mon, 03 Aug 2020 23:44:50 -0700
 Received: from [172.19.3.8] (helo=xsjamitsuni50.xilinx.com)
         by xsj-pvapsmtp01 with esmtp (Exim 4.63)
         (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1k2qgl-0007l0-85; Mon, 03 Aug 2020 23:44:43 -0700
+        id 1k2qgl-0007l0-8o; Mon, 03 Aug 2020 23:44:43 -0700
 From:   Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
 To:     mturquette@baylibre.com, m.tretter@pengutronix.de,
         sboyd@kernel.org, michal.simek@xilinx.com, mark.rutland@arm.com,
@@ -70,9 +70,9 @@ Cc:     rajanv@xilinx.com, jollys@xilinx.com, tejasp@xilinx.com,
         Rajan Vaja <rajan.vaja@xilinx.com>,
         Tejas Patel <tejas.patel@xilinx.com>,
         Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-Subject: [PATCH v3 1/3] clk: zynqmp: Use firmware specific common clock flags
-Date:   Mon,  3 Aug 2020 23:44:15 -0700
-Message-Id: <1596523457-40465-2-git-send-email-amit.sunil.dhamne@xilinx.com>
+Subject: [PATCH v3 2/3] clk: zynqmp: Use firmware specific divider clock flags
+Date:   Mon,  3 Aug 2020 23:44:16 -0700
+Message-Id: <1596523457-40465-3-git-send-email-amit.sunil.dhamne@xilinx.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1596523457-40465-1-git-send-email-amit.sunil.dhamne@xilinx.com>
 References: <1596523457-40465-1-git-send-email-amit.sunil.dhamne@xilinx.com>
@@ -83,26 +83,26 @@ X-MS-Office365-Filtering-HT: Tenant
 X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 71a405e3-a4e9-425e-bea6-08d83841e324
-X-MS-TrafficTypeDiagnostic: SN6PR02MB5087:
-X-Microsoft-Antispam-PRVS: <SN6PR02MB508714C680963F3DC4050193A74A0@SN6PR02MB5087.namprd02.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 2804104d-f81c-43e2-fc26-08d83841e34e
+X-MS-TrafficTypeDiagnostic: CY4PR0201MB3553:
+X-Microsoft-Antispam-PRVS: <CY4PR0201MB35531BA6C78E551DA181B8C9A74A0@CY4PR0201MB3553.namprd02.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Oob-TLC-OOBClassifiers: OLM:663;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QSBTwUzTYR8FiGVfc01+/IuTOTEmSFVngRrpdfWmJCMJAp2XJIVPtSlBNvJzl6jNXngsuKwKSn9QZznHu9y/AbNBV9NOo7xoD2BsT1jt1MSgtQIziUxuhk19Q59sjBbcrLPEEMwk/JUm3RVcehC3wZG0HyoIewmjmV7AvKsSnN/ed3P4ZZXbib2o+o9oRSYdu4VP4rAqusfbxs8SjHLDdos11JkKIiS5n0yhuZrm1pLy2OaX//pj1H3KdambC3dBbskU4vCO033oDEB/hHAGczcP9Rt8GZkn8/Dd+fgCz/SjW6UIIzNN8FnK7B1GhQZOuMuLKcRJeWSiS43v6RrJMj9LITc8HGnonpWFJzbtHKaRoioUe7rAvEKu/czfV7YDlvxPk/cQVONyNYHq0Ye5iw==
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(396003)(376002)(136003)(39860400002)(346002)(46966005)(8676002)(70586007)(478600001)(6666004)(9786002)(36756003)(2906002)(8936002)(107886003)(70206006)(83380400001)(186003)(4326008)(26005)(336012)(47076004)(2616005)(426003)(5660300002)(82740400003)(316002)(54906003)(7696005)(81166007)(356005)(82310400002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: qpTiCSd3C14Iv4yJy7i+1J75D6LnIf9g7XOBNyAmHEfv5wqDMB27YnlGPJmijjVhub1iiMFtltYYffhVJ2pEJ7xnXFFG7S8LZgcd+sJgG1Ion5U0MFHgL2sV0O78BkX2dBF1V8nzDaBNS2BRucU1fAcvjy8ETJN8VwaDMMvJDMzvJBpAxgebs9yXf2EvxzEhk050E66wZgfp/RIe1wtcDQsrYgCG0/LWvQ/q2i+X1g2b1o1UNfuSp71E5i/1lzW/i+G1l7ujaMmJClfMzzQCBoe8gpBjI6u/8p2bkdXNOh32xYsxP6/jWKdeA+AuCT723c7lb8BOmVL7uHGeDGpFfBU9it2ZIbUcP+2Moxm/CCJcwj0dHgbtONRmDxQ7rjwbBja9e/Z/tTYe7HbJMuYtSQ==
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(376002)(396003)(346002)(39860400002)(136003)(46966005)(36756003)(4326008)(70206006)(107886003)(81166007)(336012)(47076004)(82740400003)(54906003)(2616005)(356005)(478600001)(8936002)(7696005)(70586007)(83380400001)(316002)(26005)(82310400002)(8676002)(186003)(426003)(9786002)(5660300002)(6666004)(2906002);DIR:OUT;SFP:1101;
 X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2020 06:44:50.7701
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2020 06:44:51.0469
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71a405e3-a4e9-425e-bea6-08d83841e324
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2804104d-f81c-43e2-fc26-08d83841e34e
 X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT013.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT006.eop-nam02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5087
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR0201MB3553
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -110,196 +110,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rajan Vaja <rajan.vaja@xilinx.com>
 
-Currently firmware passes CCF specific flags to ZynqMP clock driver.
-So firmware needs to be updated if CCF flags are changed. The firmware
-should have its own 'flag number space' that is distinct from the
-common clk framework's 'flag number space'. So define and use ZynqMP
-specific common clock flags instead of using CCF flags.
+Use ZynqMP specific divider clock flags instead of using CCF flags.
 
 Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
 Signed-off-by: Tejas Patel <tejas.patel@xilinx.com>
 Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
 ---
- drivers/clk/zynqmp/clk-gate-zynqmp.c |  4 +++-
- drivers/clk/zynqmp/clk-mux-zynqmp.c  |  4 +++-
- drivers/clk/zynqmp/clk-zynqmp.h      | 24 ++++++++++++++++++++++++
- drivers/clk/zynqmp/clkc.c            | 32 +++++++++++++++++++++++++++++++-
- drivers/clk/zynqmp/divider.c         |  5 +++--
- drivers/clk/zynqmp/pll.c             |  4 +++-
- 6 files changed, 67 insertions(+), 6 deletions(-)
+ drivers/clk/zynqmp/clk-zynqmp.h |  9 +++++++++
+ drivers/clk/zynqmp/divider.c    | 24 +++++++++++++++++++++++-
+ 2 files changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/zynqmp/clk-gate-zynqmp.c b/drivers/clk/zynqmp/clk-=
-gate-zynqmp.c
-index 10c9b88..695feaa 100644
---- a/drivers/clk/zynqmp/clk-gate-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-gate-zynqmp.c
-@@ -121,7 +121,9 @@ struct clk_hw *zynqmp_clk_register_gate(const char *nam=
-e, u32 clk_id,
-
-        init.name =3D name;
-        init.ops =3D &zynqmp_clk_gate_ops;
--       init.flags =3D nodes->flag;
-+
-+       init.flags =3D zynqmp_clk_map_common_ccf_flags(nodes->flag);
-+
-        init.parent_names =3D parents;
-        init.num_parents =3D 1;
-
-diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-m=
-ux-zynqmp.c
-index 0619414..a49b1c5 100644
---- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-@@ -120,7 +120,9 @@ struct clk_hw *zynqmp_clk_register_mux(const char *name=
-, u32 clk_id,
-                init.ops =3D &zynqmp_clk_mux_ro_ops;
-        else
-                init.ops =3D &zynqmp_clk_mux_ops;
--       init.flags =3D nodes->flag;
-+
-+       init.flags =3D zynqmp_clk_map_common_ccf_flags(nodes->flag);
-+
-        init.parent_names =3D parents;
-        init.num_parents =3D num_parents;
-        mux->flags =3D nodes->type_flag;
 diff --git a/drivers/clk/zynqmp/clk-zynqmp.h b/drivers/clk/zynqmp/clk-zynqm=
 p.h
-index 5beeb41..974d3da 100644
+index 974d3da..9b2ff35e 100644
 --- a/drivers/clk/zynqmp/clk-zynqmp.h
 +++ b/drivers/clk/zynqmp/clk-zynqmp.h
-@@ -10,6 +10,28 @@
+@@ -32,6 +32,15 @@
+ /* do not gate, ever */
+ #define ZYNQMP_CLK_IS_CRITICAL         BIT(11)
 
- #include <linux/firmware/xlnx-zynqmp.h>
-
-+/* Common Flags */
-+/* must be gated across rate change */
-+#define ZYNQMP_CLK_SET_RATE_GATE       BIT(0)
-+/* must be gated across re-parent */
-+#define ZYNQMP_CLK_SET_PARENT_GATE     BIT(1)
-+/* propagate rate change up one level */
-+#define ZYNQMP_CLK_SET_RATE_PARENT     BIT(2)
-+/* do not gate even if unused */
-+#define ZYNQMP_CLK_IGNORE_UNUSED       BIT(3)
-+/* do not use the cached clk rate */
-+#define ZYNQMP_CLK_GET_RATE_NOCACHE    BIT(6)
-+/* don't re-parent on rate change */
-+#define ZYNQMP_CLK_SET_RATE_NO_REPARENT        BIT(7)
-+/* do not use the cached clk accuracy */
-+#define ZYNQMP_CLK_GET_ACCURACY_NOCACHE        BIT(8)
-+/* recalc rates after notifications */
-+#define ZYNQMP_CLK_RECALC_NEW_RATES    BIT(9)
-+/* clock needs to run to set rate */
-+#define ZYNQMP_CLK_SET_RATE_UNGATE     BIT(10)
-+/* do not gate, ever */
-+#define ZYNQMP_CLK_IS_CRITICAL         BIT(11)
++/* Type Flags for divider clock */
++#define ZYNQMP_CLK_DIVIDER_ONE_BASED           BIT(0)
++#define ZYNQMP_CLK_DIVIDER_POWER_OF_TWO                BIT(1)
++#define ZYNQMP_CLK_DIVIDER_ALLOW_ZERO          BIT(2)
++#define ZYNQMP_CLK_DIVIDER_HIWORD_MASK         BIT(3)
++#define ZYNQMP_CLK_DIVIDER_ROUND_CLOSEST       BIT(4)
++#define ZYNQMP_CLK_DIVIDER_READ_ONLY           BIT(5)
++#define ZYNQMP_CLK_DIVIDER_MAX_AT_ZERO         BIT(6)
 +
  enum topology_type {
         TYPE_INVALID,
         TYPE_MUX,
-@@ -33,6 +55,8 @@ struct clock_topology {
-        u8 custom_type_flag;
- };
-
-+unsigned long zynqmp_clk_map_common_ccf_flags(const u32 zynqmp_flag);
-+
- struct clk_hw *zynqmp_clk_register_pll(const char *name, u32 clk_id,
-                                       const char * const *parents,
-                                       u8 num_parents,
-diff --git a/drivers/clk/zynqmp/clkc.c b/drivers/clk/zynqmp/clkc.c
-index db8d0d7..d813c34 100644
---- a/drivers/clk/zynqmp/clkc.c
-+++ b/drivers/clk/zynqmp/clkc.c
-@@ -271,6 +271,33 @@ static int zynqmp_pm_clock_get_topology(u32 clock_id, =
-u32 index,
-        return ret;
+diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
+index 775d54f..3b8fad0 100644
+--- a/drivers/clk/zynqmp/divider.c
++++ b/drivers/clk/zynqmp/divider.c
+@@ -283,6 +283,28 @@ static u32 zynqmp_clk_get_max_divisor(u32 clk_id, u32 =
+type)
+        return ret_payload[1];
  }
 
-+unsigned long zynqmp_clk_map_common_ccf_flags(const u32 zynqmp_flag)
++static inline unsigned long zynqmp_clk_map_divider_ccf_flags(
++                                              const u32 zynqmp_type_flag)
 +{
 +       unsigned long ccf_flag =3D 0;
 +
-+       ccf_flag |=3D (zynqmp_flag & ZYNQMP_CLK_SET_RATE_GATE) ?
-+                     CLK_SET_RATE_GATE : 0;
-+       ccf_flag |=3D (zynqmp_flag & ZYNQMP_CLK_SET_PARENT_GATE) ?
-+                     CLK_SET_PARENT_GATE : 0;
-+       ccf_flag |=3D (zynqmp_flag & ZYNQMP_CLK_SET_RATE_PARENT) ?
-+                     CLK_SET_RATE_PARENT : 0;
-+       ccf_flag |=3D (zynqmp_flag & ZYNQMP_CLK_IGNORE_UNUSED) ?
-+                     CLK_IGNORE_UNUSED : 0;
-+       ccf_flag |=3D (zynqmp_flag & ZYNQMP_CLK_GET_RATE_NOCACHE) ?
-+                     CLK_GET_RATE_NOCACHE : 0;
-+       ccf_flag |=3D (zynqmp_flag & ZYNQMP_CLK_SET_RATE_NO_REPARENT) ?
-+                     CLK_SET_RATE_NO_REPARENT : 0;
-+       ccf_flag |=3D (zynqmp_flag & ZYNQMP_CLK_GET_ACCURACY_NOCACHE) ?
-+                     CLK_GET_ACCURACY_NOCACHE : 0;
-+       ccf_flag |=3D (zynqmp_flag & ZYNQMP_CLK_RECALC_NEW_RATES) ?
-+                     CLK_RECALC_NEW_RATES : 0;
-+       ccf_flag |=3D (zynqmp_flag & ZYNQMP_CLK_SET_RATE_UNGATE) ?
-+                     CLK_SET_RATE_UNGATE : 0;
-+       ccf_flag |=3D (zynqmp_flag & ZYNQMP_CLK_IS_CRITICAL) ?
-+                     CLK_IS_CRITICAL : 0;
++       ccf_flag |=3D (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_ONE_BASED) ?
++                     CLK_DIVIDER_ONE_BASED : 0;
++       ccf_flag |=3D (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_POWER_OF_TWO) =
+?
++                     CLK_DIVIDER_POWER_OF_TWO : 0;
++       ccf_flag |=3D (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_ALLOW_ZERO) ?
++                     CLK_DIVIDER_ALLOW_ZERO : 0;
++       ccf_flag |=3D (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_POWER_OF_TWO) =
+?
++                     CLK_DIVIDER_HIWORD_MASK : 0;
++       ccf_flag |=3D (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_ROUND_CLOSEST)=
+ ?
++                     CLK_DIVIDER_ROUND_CLOSEST : 0;
++       ccf_flag |=3D (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_READ_ONLY) ?
++                     CLK_DIVIDER_READ_ONLY : 0;
++       ccf_flag |=3D (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_MAX_AT_ZERO) ?
++                     CLK_DIVIDER_MAX_AT_ZERO : 0;
 +       return ccf_flag;
 +}
 +
  /**
-  * zynqmp_clk_register_fixed_factor() - Register fixed factor with the
-  *                                     clock framework
-@@ -292,6 +319,7 @@ struct clk_hw *zynqmp_clk_register_fixed_factor(const c=
-har *name, u32 clk_id,
-        struct zynqmp_pm_query_data qdata =3D {0};
-        u32 ret_payload[PAYLOAD_ARG_CNT];
-        int ret;
-+       unsigned long flag;
-
-        qdata.qid =3D PM_QID_CLOCK_GET_FIXEDFACTOR_PARAMS;
-        qdata.arg1 =3D clk_id;
-@@ -303,9 +331,11 @@ struct clk_hw *zynqmp_clk_register_fixed_factor(const =
-char *name, u32 clk_id,
-        mult =3D ret_payload[1];
-        div =3D ret_payload[2];
-
-+       flag =3D zynqmp_clk_map_common_ccf_flags(nodes->flag);
-+
-        hw =3D clk_hw_register_fixed_factor(NULL, name,
-                                          parents[0],
--                                         nodes->flag, mult,
-+                                         flag, mult,
-                                          div);
-
-        return hw;
-diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
-index 66da02b..775d54f 100644
---- a/drivers/clk/zynqmp/divider.c
-+++ b/drivers/clk/zynqmp/divider.c
-@@ -311,8 +311,9 @@ struct clk_hw *zynqmp_clk_register_divider(const char *=
+  * zynqmp_clk_register_divider() - Register a divider clock
+  * @name:              Name of this clock
+@@ -320,7 +342,7 @@ struct clk_hw *zynqmp_clk_register_divider(const char *=
 name,
-
-        init.name =3D name;
-        init.ops =3D &zynqmp_clk_divider_ops;
--       /* CLK_FRAC is not defined in the common clk framework */
--       init.flags =3D nodes->flag & ~CLK_FRAC;
-+
-+       init.flags =3D zynqmp_clk_map_common_ccf_flags(nodes->flag);
-+
-        init.parent_names =3D parents;
-        init.num_parents =3D 1;
-
-diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
-index 92f449e..d188924 100644
---- a/drivers/clk/zynqmp/pll.c
-+++ b/drivers/clk/zynqmp/pll.c
-@@ -302,7 +302,9 @@ struct clk_hw *zynqmp_clk_register_pll(const char *name=
-, u32 clk_id,
-
-        init.name =3D name;
-        init.ops =3D &zynqmp_pll_ops;
--       init.flags =3D nodes->flag;
-+
-+       init.flags =3D zynqmp_clk_map_common_ccf_flags(nodes->flag);
-+
-        init.parent_names =3D parents;
-        init.num_parents =3D 1;
-
+        /* struct clk_divider assignments */
+        div->is_frac =3D !!((nodes->flag & CLK_FRAC) |
+                          (nodes->custom_type_flag & CUSTOM_FLAG_CLK_FRAC))=
+;
+-       div->flags =3D nodes->type_flag;
++       div->flags =3D zynqmp_clk_map_divider_ccf_flags(nodes->type_flag);
+        div->hw.init =3D &init;
+        div->clk_id =3D clk_id;
+        div->div_type =3D nodes->type;
 --
 2.7.4
 
