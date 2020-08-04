@@ -2,160 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8118123BB76
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 15:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4489823BB85
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 15:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgHDNyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 09:54:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
+        id S1728662AbgHDN4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 09:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728408AbgHDNyR (ORCPT
+        with ESMTP id S1728616AbgHDN4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 09:54:17 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABB6C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 06:54:17 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id o2so1275076vkn.9
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 06:54:17 -0700 (PDT)
+        Tue, 4 Aug 2020 09:56:18 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58D4C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 06:56:17 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id bo3so19893911ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 06:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gjh1CQhNcX/dKpwghpqe5PsnWMgHIT7SFzJs24h1UQM=;
-        b=MqpYAiWijmvg7loVHczpUKtn2+LJz7S2aV+N438n2Y65/hPVYPyLQR3Af4s3W2Ukz5
-         gLYAov6l7shRm+JJpOMpNLndV0/ZN4ObOy7kmt1MItL+zU2Z+xVsuMjvEyJd2qOdyWo0
-         FylGqdCVn+1NMjtq4E5q0zRZFh8pRB+uxba1HCcuNm9M02q8JFldhPwgCaiZOYCWBq17
-         hVfSRFG/p6V6p2i8FPTcnBgv1pNvvWSi1HNczyO13FgS09NjRa2VVtLpmtPOcrBkTVBA
-         UyvW53IFCMp5nvhUMLZR17cge+of0Ri0a1fQv4QKYnq9ADROB24CM2+wvliFp9MVw8OR
-         sPIw==
+        d=melexis.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WzDswwBfXvOnych9mKo86pvZBTTMjA75hoRZ23jMux8=;
+        b=pmGgt5uNMDYr7vjNTIYqQDZw2nFS3qKA/7RvWdEmlg6MUlWxX/ooGUDm1hoPzxBMul
+         NpjY26NP+K3PAFwDJq8Rz5EtNCLnohoUm0vT3gqcoGUwkcjhephDD6Nk1hzDDrsenADy
+         R61GKcqfYiB2j73tkADN1vWO2kLoN63PzUq7q+t+kJ5NtMDucH9wn0TJZkzftcWY2mDH
+         N1udxl/7iHsNvdmfRzBTZ+DTSRCbw/GCKVPlkjDRH4Laki1LCf6W2CNrLo9UkUC7v9fy
+         72qnF8TXmn6l9zclNVoVmqh5PArB4RevO9Iqc9l6Soszra8nGAyWuEkC1VApdcHkdTI7
+         2CIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gjh1CQhNcX/dKpwghpqe5PsnWMgHIT7SFzJs24h1UQM=;
-        b=pPvj9KBUgG0buFW/cgCF5iRKh+/VVBlIA0ObwWkIQ0rUOR1HDlLftLjm1fbQo8wnrF
-         qApw1/IuSOj7tH33aQnU+UE8uxVWADoeKIdqIBgPxdWkvvUzVgEa1xJYeTn7RkSnDckd
-         gr4QZIgubVZ1zzPH+apaNxFT339exYug5dmGHWDiUeIRlNjCmPHp7tg+ztiywZvHTEtZ
-         vHUsY3sqPmOM/wA+WKwzs0opeW3auzhGMA4Agc3Re8OBSqcEipE+txV6Ntrbwak1wmZU
-         X6YH71X/WHVtSRu7BH34yln4tP/HbqAtjgLffBmBCqfhPk/fcKkL/uSKkdXJt0fhRzG4
-         zrcQ==
-X-Gm-Message-State: AOAM532Rvzv7PLrGJ12JhVTYtVBb5+0DSVF2L8xTwkaSJff84Vd3fbzc
-        ziGeW1QU6R9XdYBuXoXy4nrO5A==
-X-Google-Smtp-Source: ABdhPJywEqRIB+C/laAdsWyb753dUVCT2rmRqL5RBMcCSf76aIKKVtfXUnjQ/uxnkDArh3Jzj6HeBQ==
-X-Received: by 2002:a1f:bd02:: with SMTP id n2mr14859615vkf.1.1596549256680;
-        Tue, 04 Aug 2020 06:54:16 -0700 (PDT)
-Received: from google.com (182.71.196.35.bc.googleusercontent.com. [35.196.71.182])
-        by smtp.gmail.com with ESMTPSA id n62sm3130893vke.12.2020.08.04.06.54.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WzDswwBfXvOnych9mKo86pvZBTTMjA75hoRZ23jMux8=;
+        b=QiO1jmLViYKE786gFQudNur5bJuZir4IRQLvzTorU0RKyN/1Cq35DMHWqJFV9EJvIv
+         WGwD9bJBoMjqW/8OWJb/QUPiMbDBmxEY4CxNSGi7ZYuOkqg0TtWvC03mCgH1zGzgq/aP
+         mU55eBxB0HnrUIjwMGcXPGQaL67xwhNTecQXaodkg1LuVLdSEHfqW+p55pODfKxPWY/W
+         +rpKS9n132add67yTEy3Db71/8qbbC2hDiUJURJ/4Z1xdjck/C+E6XOGjPpXZG7vv3nb
+         Wwu7vHczk7sKE7hTuAcsF0OnfuqboYEPgqjFPchCn6PIVaNT6nopu/XnSFhGZFHBx99j
+         PBNg==
+X-Gm-Message-State: AOAM531gm42sohW+wliHsPkMfPA7LYlQLj+YmFLn8dvfsS/D/AyNBzMe
+        wNSaYMnKeV+d8FPF1JNX1AZpLe6sh19EVA==
+X-Google-Smtp-Source: ABdhPJw91afCFXRk5zcL8K32et29oN+/1gU363aw7cgOdED79D7kHcsR2pgFw0GTKeXlVN6Viw6jcw==
+X-Received: by 2002:a17:906:74d0:: with SMTP id z16mr21232387ejl.51.1596549376286;
+        Tue, 04 Aug 2020 06:56:16 -0700 (PDT)
+Received: from localhost.localdomain (ptr-4xajgyum9863qf6si3v.18120a2.ip6.access.telenet.be. [2a02:1810:a421:dd00:2092:7f6b:4676:cab])
+        by smtp.gmail.com with ESMTPSA id r25sm18361473edy.93.2020.08.04.06.56.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 06:54:15 -0700 (PDT)
-Date:   Tue, 4 Aug 2020 13:54:12 +0000
-From:   Kalesh Singh <kaleshsingh@google.com>
-To:     Joel Fernandes <joelaf@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-fsdevel@vger.kernel.org,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Ioannis Ilkos <ilkos@google.com>,
-        John Stultz <john.stultz@linaro.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>
-Subject: Re: [PATCH 1/2] fs: Add fd_install file operation
-Message-ID: <20200804135412.GA934259@google.com>
-References: <20200803144719.3184138-1-kaleshsingh@google.com>
- <20200803144719.3184138-2-kaleshsingh@google.com>
- <CAJWu+orzhpO5hPfUWd0EJp-ViWMifeQ_Ng+R4fHf7xabL+Bggw@mail.gmail.com>
+        Tue, 04 Aug 2020 06:56:15 -0700 (PDT)
+From:   Crt Mori <cmo@melexis.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Crt Mori <cmo@melexis.com>
+Subject: [PATCH v2] iio:temperature:mlx90632: Reduce number of equal calculations
+Date:   Tue,  4 Aug 2020 15:55:55 +0200
+Message-Id: <20200804135555.95186-1-cmo@melexis.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJWu+orzhpO5hPfUWd0EJp-ViWMifeQ_Ng+R4fHf7xabL+Bggw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 08:30:59PM -0400, Joel Fernandes wrote:
-> On Mon, Aug 3, 2020 at 10:47 AM 'Kalesh Singh' via kernel-team
-> <kernel-team@android.com> wrote:
-> >
-> > Provides a per process hook for the acquisition of file descriptors,
-> > despite the method used to obtain the descriptor.
-> >
-> 
-> Hi,
-> So apart from all of the comments received, I think it is hard to
-> understand what the problem is, what the front-end looks like etc.
-> Your commit message is 1 line only.
-> 
-> I do remember some of the challenges discussed before, but it would
-> describe the problem in the commit message in detail and then discuss
-> why this solution is fit.  Please read submitting-patches.rst
-> especially "2) Describe your changes".
-> 
-> thanks,
-> 
->  - Joel
+TAdut4 was calculated each iteration although it did not change. In light
+of near future additions of the Extended range DSP calculations, this
+function refactoring will help reduce unrelated changes in that series as
+well as reduce the number of new functions needed.
 
-Thanks for the advice Joel :)
-> 
-> 
-> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > ---
-> >  Documentation/filesystems/vfs.rst | 5 +++++
-> >  fs/file.c                         | 3 +++
-> >  include/linux/fs.h                | 1 +
-> >  3 files changed, 9 insertions(+)
-> >
-> > diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
-> > index ed17771c212b..95b30142c8d9 100644
-> > --- a/Documentation/filesystems/vfs.rst
-> > +++ b/Documentation/filesystems/vfs.rst
-> > @@ -1123,6 +1123,11 @@ otherwise noted.
-> >  ``fadvise``
-> >         possibly called by the fadvise64() system call.
-> >
-> > +``fd_install``
-> > +       called by the VFS when a file descriptor is installed in the
-> > +       process's file descriptor table, regardless how the file descriptor
-> > +       was acquired -- be it via the open syscall, received over IPC, etc.
-> > +
-> >  Note that the file operations are implemented by the specific
-> >  filesystem in which the inode resides.  When opening a device node
-> >  (character or block special) most filesystems will call special
-> > diff --git a/fs/file.c b/fs/file.c
-> > index abb8b7081d7a..f5db8622b851 100644
-> > --- a/fs/file.c
-> > +++ b/fs/file.c
-> > @@ -616,6 +616,9 @@ void __fd_install(struct files_struct *files, unsigned int fd,
-> >  void fd_install(unsigned int fd, struct file *file)
-> >  {
-> >         __fd_install(current->files, fd, file);
-> > +
-> > +       if (file->f_op->fd_install)
-> > +               file->f_op->fd_install(fd, file);
-> >  }
-> >
-> >  EXPORT_SYMBOL(fd_install);
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index f5abba86107d..b976fbe8c902 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -1864,6 +1864,7 @@ struct file_operations {
-> >                                    struct file *file_out, loff_t pos_out,
-> >                                    loff_t len, unsigned int remap_flags);
-> >         int (*fadvise)(struct file *, loff_t, loff_t, int);
-> > +       void (*fd_install)(int, struct file *);
-> >  } __randomize_layout;
-> >
-> >  struct inode_operations {
-> > --
-> > 2.28.0.163.g6104cc2f0b6-goog
-> >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
-> >
+Signed-off-by: Crt Mori <cmo@melexis.com>
+---
+ drivers/iio/temperature/mlx90632.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/iio/temperature/mlx90632.c b/drivers/iio/temperature/mlx90632.c
+index 51b812bcff2e..763a148a0095 100644
+--- a/drivers/iio/temperature/mlx90632.c
++++ b/drivers/iio/temperature/mlx90632.c
+@@ -374,11 +374,11 @@ static s32 mlx90632_calc_temp_ambient(s16 ambient_new_raw, s16 ambient_old_raw,
+ }
+ 
+ static s32 mlx90632_calc_temp_object_iteration(s32 prev_object_temp, s64 object,
+-					       s64 TAdut, s32 Fa, s32 Fb,
++					       s64 TAdut, s64 TAdut4, s32 Fa, s32 Fb,
+ 					       s32 Ga, s16 Ha, s16 Hb,
+ 					       u16 emissivity)
+ {
+-	s64 calcedKsTO, calcedKsTA, ir_Alpha, TAdut4, Alpha_corr;
++	s64 calcedKsTO, calcedKsTA, ir_Alpha, Alpha_corr;
+ 	s64 Ha_customer, Hb_customer;
+ 
+ 	Ha_customer = ((s64)Ha * 1000000LL) >> 14ULL;
+@@ -393,10 +393,6 @@ static s32 mlx90632_calc_temp_object_iteration(s32 prev_object_temp, s64 object,
+ 	Alpha_corr = emissivity * div64_s64(Alpha_corr, 100000LL);
+ 	Alpha_corr = div64_s64(Alpha_corr, 1000LL);
+ 	ir_Alpha = div64_s64((s64)object * 10000000LL, Alpha_corr);
+-	TAdut4 = (div64_s64(TAdut, 10000LL) + 27315) *
+-		(div64_s64(TAdut, 10000LL) + 27315) *
+-		(div64_s64(TAdut, 10000LL)  + 27315) *
+-		(div64_s64(TAdut, 10000LL) + 27315);
+ 
+ 	return (int_sqrt64(int_sqrt64(ir_Alpha * 1000000000000LL + TAdut4))
+ 		- 27315 - Hb_customer) * 10;
+@@ -406,17 +402,21 @@ static s32 mlx90632_calc_temp_object(s64 object, s64 ambient, s32 Ea, s32 Eb,
+ 				     s32 Fa, s32 Fb, s32 Ga, s16 Ha, s16 Hb,
+ 				     u16 tmp_emi)
+ {
+-	s64 kTA, kTA0, TAdut;
++	s64 kTA, kTA0, TAdut, TAdut4;
+ 	s64 temp = 25000;
+ 	s8 i;
+ 
+ 	kTA = (Ea * 1000LL) >> 16LL;
+ 	kTA0 = (Eb * 1000LL) >> 8LL;
+ 	TAdut = div64_s64(((ambient - kTA0) * 1000000LL), kTA) + 25 * 1000000LL;
++	TAdut4 = (div64_s64(TAdut, 10000LL) + 27315) *
++		(div64_s64(TAdut, 10000LL) + 27315) *
++		(div64_s64(TAdut, 10000LL)  + 27315) *
++		(div64_s64(TAdut, 10000LL) + 27315);
+ 
+ 	/* Iterations of calculation as described in datasheet */
+ 	for (i = 0; i < 5; ++i) {
+-		temp = mlx90632_calc_temp_object_iteration(temp, object, TAdut,
++		temp = mlx90632_calc_temp_object_iteration(temp, object, TAdut, TAdut4,
+ 							   Fa, Fb, Ga, Ha, Hb,
+ 							   tmp_emi);
+ 	}
+-- 
+2.25.1
+
