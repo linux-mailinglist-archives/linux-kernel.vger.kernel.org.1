@@ -2,150 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B82023C239
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5401C23C23D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgHDXev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 19:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56556 "EHLO
+        id S1726964AbgHDXj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 19:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgHDXet (ORCPT
+        with ESMTP id S1725946AbgHDXj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 19:34:49 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797E5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 16:34:49 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id a5so28797904ioa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 16:34:49 -0700 (PDT)
+        Tue, 4 Aug 2020 19:39:57 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545CCC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 16:39:57 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id p13so7336046ilh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 16:39:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vGGF1J+ERy5X4cdVoozyTYTiQ8qrIwcki9GpVzuiAac=;
-        b=S49gs35wchf/23S3uxZ+WP+evpMxe77HR56i82lZK5NggPBf9C072uwY/MRzBWTJUT
-         uUkbo0r79QLmayMwJRaE7WWdaAvmRYlCw8pmFEetEeImITMz5f2Ch0y9KoVwOU84XUKz
-         akVPWCRo77xUXadUti0PP1Cp9LhmUXz8zP6Tik+uyWkZVOMUlb+rhvvUm/6QBHvpcVS0
-         GbmAXJIh2pl/ZVu288keExqTOg9TgMKZO8x3TMPp2xYJUgXnTLSFljth/xgJZ3DD5T48
-         e4WzIsHdU67WlRmMsL0A8ZT3iW5ad5SKqWVlzhjuJoaQoFUlkcMv2avPx8JFFaR/UBv0
-         8iuA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KAv+Btt+rG6Ox1CPAUqo9rR4asUgkeOoH1S88YH5Edo=;
+        b=ptsyhsCd6Ph/5A7FHlNkjEr+qlkyU6udt3o154eLMkRDRs5TsUVCANV7mPi6d/5OrY
+         beIQ+2vQYV3gG7MDFdkT1vxw5CET2SJpfetAbSCnJmwXLif6xah+aPRxMWnaw7M2r0Kz
+         SSko6yeJjIRIvTIXDx8GPchrGI7WB4z6ECF99CDpWwtl+7k83r9efX+prFSNcniM0xrh
+         yOrvcoJ5KxEL0npj3y7DvEP1BYvsBOb3WEB/CwOBcX2D/yVbq9gwOchK7ClmdwSP47MV
+         Jy5yeg2H/qFN/evGHHxcpEs84uDjNtSNchSxD6Iq6rq2WzEYpRXsNxylkILIG28kjpE/
+         Unow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vGGF1J+ERy5X4cdVoozyTYTiQ8qrIwcki9GpVzuiAac=;
-        b=hS28CiYIkA13ULQw+kqB1rzp2FEug5tS8Txj2CMnD+Y2TxshC8rvN0mskC00UnMPEr
-         7KMn41sRe2OkUv/Nrhe4sKCmga8VebrX5Ba58XioW2nNyd2CKJvMQZKvEa0CVMzDxWZJ
-         4uNyCQEVeECklus/7w2QlQVeaX4Ji/A+4JDdOiakXssI6Lq3MhDwXfyI/SUmTfqbla2d
-         cVSHty0YlTidcQGoMLH0aMiRd8keFgvfEcrlhobTyoRGQ8gNSJQmkC24Oc2ccBS38iTr
-         ehSohABBXD66QStkqxduHJOhH5kou4tZqf3pin62EBwmUrH+haizQq2uiISHBvn+gFEK
-         8SjQ==
-X-Gm-Message-State: AOAM532ZCpL5lC3rH5TEUEbLvtvJvXukKu9VKV3uHcW7j0U5D2GqusBo
-        bYdRrFOiezQ/xFMny5+ro60C1Ozvh+9t7GAz42iaqg==
-X-Google-Smtp-Source: ABdhPJxWwj+mGIKejG+Y+aEk2jXUwSEzd/PT3OCVEnMiGbJ2xhGfjVDUJ/Wp8D4RrKrlxyXIqKF7qjPbHA/qTDTnUZs=
-X-Received: by 2002:a5d:824f:: with SMTP id n15mr405195ioo.95.1596584088451;
- Tue, 04 Aug 2020 16:34:48 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KAv+Btt+rG6Ox1CPAUqo9rR4asUgkeOoH1S88YH5Edo=;
+        b=MEQqWHerTUNPpKJ4TM/5rZ8UOx4FFcZ+nYxzU9xPgYObw4Mevza8F+I4hGLRaM6/oy
+         +ULf7nEc9JRLj6pFQznILvyR5OQ+RiaY+bI6d7u1lRgeM4pvstA8FOszbV4b7/DFEWbf
+         JLgrPLPX2qtZykgWyL8R9/6mXK8sOxZgLBfZdckIsyjjsNXSI0kzV8dJpqfacyMipRrr
+         1GCJtW3VIyMZ3OIT+b3iQMs7+3LSV98YjVPOfyevb5AC1X+LI8g9nOjjSb8BmYdUgXdM
+         IZDZXgCL1akNh2lcvLDvXc0wWekSdKqMjcIZae0Ue5pdqJ17hX7D4g/mP5yNAMJ4VipP
+         6B1w==
+X-Gm-Message-State: AOAM530VVQghjq6+uiswG9Rmix23Xgn3W70Eprc7Msu+bTaMGgxCYttz
+        mcnbC3fzSyedR5Ys8KSeSs3RhFNUgyq1ur9VYHU=
+X-Google-Smtp-Source: ABdhPJzQzfdosEg1yelX3UecWI2iObmuhCkzFreuA2mEPPqcPvuvgaAKC7iuZ1f//ZSvGWPq2Wt85rE0Hu50oNnXIuM=
+X-Received: by 2002:a92:450:: with SMTP id 77mr967356ile.244.1596584396459;
+ Tue, 04 Aug 2020 16:39:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200804203155.2181099-1-lokeshgidra@google.com>
- <20200804204543.GA1992048@gmail.com> <CA+EESO6XGpiTLnxPraZqBigY7mh6G2jkHa2PKXaHXpzdrZd4wA@mail.gmail.com>
- <20200804205846.GB1992048@gmail.com>
-In-Reply-To: <20200804205846.GB1992048@gmail.com>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Tue, 4 Aug 2020 16:34:37 -0700
-Message-ID: <CA+EESO7EtZSHmVTMJ53sHMUfrt0E8G7ywBZpYjh1f+oDpjW8=w@mail.gmail.com>
-Subject: Re: [PATCH] Userfaultfd: Avoid double free of userfault_ctx and
- remove O_CLOEXEC
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        casey@schaufler-ca.com, James Morris <jmorris@namei.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Daniel Colascione <dancol@dancol.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nick Kralevich <nnk@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Calin Juravle <calin@google.com>, kernel-team@android.com,
-        yanfei.xu@windriver.com,
-        syzbot+75867c44841cb6373570@syzkaller.appspotmail.com
+Received: by 2002:a92:bb5a:0:0:0:0:0 with HTTP; Tue, 4 Aug 2020 16:39:55 -0700 (PDT)
+Reply-To: hamzakwadrago2@gmail.com
+From:   Hamzak Wadrago <nadia01farouk@gmail.com>
+Date:   Tue, 4 Aug 2020 23:39:55 +0000
+Message-ID: <CAHnwMznm==MqRcDxofYJzH5n5vBRKTYs8FiawpFzPvT=2ExnHg@mail.gmail.com>
+Subject: I will be waiting to hear from you,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 1:58 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Tue, Aug 04, 2020 at 01:49:30PM -0700, Lokesh Gidra wrote:
-> > On Tue, Aug 4, 2020 at 1:45 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> > >
-> > > On Tue, Aug 04, 2020 at 01:31:55PM -0700, Lokesh Gidra wrote:
-> > > > when get_unused_fd_flags returns error, ctx will be freed by
-> > > > userfaultfd's release function, which is indirectly called by fput().
-> > > > Also, if anon_inode_getfile_secure() returns an error, then
-> > > > userfaultfd_ctx_put() is called, which calls mmdrop() and frees ctx.
-> > > >
-> > > > Also, the O_CLOEXEC was inadvertently added to the call to
-> > > > get_unused_fd_flags() [1].
-> > > >
-> > > > Adding Al Viro's suggested-by, based on [2].
-> > > >
-> > > > [1] https://lore.kernel.org/lkml/1f69c0ab-5791-974f-8bc0-3997ab1d61ea@dancol.org/
-> > > > [2] https://lore.kernel.org/lkml/20200719165746.GJ2786714@ZenIV.linux.org.uk/
-> > > >
-> > > > Fixes: d08ac70b1e0d (Wire UFFD up to SELinux)
-> > > > Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> > > > Reported-by: syzbot+75867c44841cb6373570@syzkaller.appspotmail.com
-> > > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> > >
-> > > What branch does this patch apply to?  Neither mainline nor linux-next works.
-> > >
-> > On James Morris' tree (secure_uffd_v5.9 branch).
-> >
->
-> For those of us not "in the know", that apparently means branch secure_uffd_v5.9
-> of https://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git
->
-> Perhaps it would make more sense to resend your original patch series with this
-> fix folded in?
->
-OK. I'll resend the whole patch series with the fixes soon.
+Dear Friend,
 
-> > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> > index ae859161908f..e15eb8fdc083 100644
-> > --- a/fs/userfaultfd.c
-> > +++ b/fs/userfaultfd.c
-> > @@ -2042,24 +2042,18 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
-> >               O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS),
-> >               NULL);
-> >       if (IS_ERR(file)) {
-> > -             fd = PTR_ERR(file);
-> > -             goto out;
-> > +             userfaultfd_ctx_put(ctx);
-> > +             return PTR_ERR(file);
-> >       }
-> >
-> > -     fd = get_unused_fd_flags(O_RDONLY | O_CLOEXEC);
-> > +     fd = get_unused_fd_flags(O_RDONLY);
-> >       if (fd < 0) {
-> >               fput(file);
-> > -             goto out;
-> > +             return fd;
-> >       }
-> >
-> >       ctx->owner = file_inode(file);
-> >       fd_install(fd, file);
-> > -
-> > -out:
-> > -     if (fd < 0) {
-> > -             mmdrop(ctx->mm);
-> > -             kmem_cache_free(userfaultfd_ctx_cachep, ctx);
-> > -     }
-> >       return fd;
->
-> This introduces the opposite bug: now it's hardcoded to *not* use O_CLOEXEC,
-> instead of using the flag the user passed in the flags argument to the syscall.
+I decided to contact you after a careful thought that you may be
+capable of handling this business transaction which I explained below,
+I am the head of Accounts and Audit Department of Bank of Africa
+Ouagadougou. In my department while cross-checking the files of
+foreigners. since our federal government has announced on the need of
+settling all foreign bills to enable foreign investors to come into
+our country and as an order from African unity governed by African
+heads, I discovered an abandoned sum of $15.5m US dollars (fifteen
+million, five hundred thousand US dollars). In an account that belongs
+to one of our foreign customer who died along with his entire family
+in a plane crash.
 
-I get your point. I agree the flags passed in to the syscall should be used.
->
-> - Eric
+Since i got information about his death, The bank have been expecting
+his next of kin to come over and claim his money because The fund
+cannot be released unless somebody applies for it as next of kin or
+relation to the deceased as indicated in our banking guidelines but
+unfortunately I learnt that his supposed next of kin(his son and wife)
+died alongside with him at the plane crash leaving nobody behind for
+the claim .It is therefore upon this discovery that I now decided to
+make this business proposal to you and release the money to you as the
+next of kin (I want to present you as his business associate )to the
+deceased for safety and subsequent disbursement since nobody is coming
+for it and I don't want this money to go into the Bank treasury as
+unclaimed Bill.
+
+The Banking law and guideline here stipulates that if such money
+remained Unclaimed after Nine years, the money will be transferred
+into the Bank treasury as unclaimed fund.. The request of foreigner as
+next of kin in this business is occasioned by the fact that the
+customer was a foreigner and a Burkina be cannot stand as next of kin
+to a foreigner.
+
+I agree that 40% of this money will be for you as foreign partner, in
+respect to the provision of a foreign account, 60% would be for me .
+There after I will visit your country for disbursement according to
+the percentages indicated. Therefore to enable the immediate transfer
+of this fund to your account as arranged, you must apply first to the
+bank as next of kin of the deceased customer.
+
+Upon receipt of your reply, more details and text of application form
+will be given to you for immediate transfer of the fund, I will not
+fail to bring to your notice that this transaction is hitch free and
+that you should not entertain any atom of fear as all required
+arrangements have been made for the transfer.
+
+i will like  you to send me this information about you such as  your
+full names, direct telephone numbers, and physical address.
+
+Yours sincerely,
+Mr. Hamzak Wadrago.
