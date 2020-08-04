@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD9723BEA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 19:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B1A23BEC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 19:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgHDRJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 13:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729628AbgHDRJb (ORCPT
+        id S1730053AbgHDRTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 13:19:02 -0400
+Received: from 5.mo4.mail-out.ovh.net ([188.165.44.50]:53411 "EHLO
+        5.mo4.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729853AbgHDRTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 13:09:31 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1D8C06174A;
-        Tue,  4 Aug 2020 10:09:30 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id c16so22883724ejx.12;
-        Tue, 04 Aug 2020 10:09:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TmsN7b1e8rX4AEr8yauDRsn4mhsHXmUyeaZarjIQThg=;
-        b=SAAlZINXTshQ5UICKXaibx5ndHSbTF9K1YpfnT5oRyj4GQRzF93RaHqvDn3XUZb7pf
-         4orEEGGY44v7pppzWPG8L67xQLJslDm7GVCHbWi/kbk20IZtmTJ4dwzB0f9E6DGOzbJM
-         iGfq/DI41YnTvO/UbAviX67Ab1aI8aJE5+XFDuaeLJ5H0Dhlf3qo7FabyNeCDu1GG4sa
-         sxEfO1jD7Fh9r3SQ18M2ZR2jrCCtRA0ZXL00ehn8hWcs/78j07cGXgkj05Pww4p5Z3e3
-         kCvPnezHEdfb51XPzV86QnBmHRli+kuJhb1pO483tUPcv3NTnMa5YULH0DLJ2cbKqcSZ
-         Wl5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TmsN7b1e8rX4AEr8yauDRsn4mhsHXmUyeaZarjIQThg=;
-        b=UpGtXKU9t7OLyHIJdI3z5mvyd0LknImCXVJLu1WLT6r1+M2lA2QGl6n/6hqQ/JRWoc
-         89iS2hBrTi4wU4iv8xFNUFFRezSoZCIxxHQl9ge6law2kPLg9G6XYRYkGya4oa6puv0/
-         74guAqhr5WRTi1m0Iy5PquDpiz16iiDI1D6gFizpYj+kHqMDWNdOFVUGt4HfCEk7a/q8
-         XfSABn8zDHTjFHAJOv3INwfuBrCMLfJ1yspFI1GzCTm8JlPoShXJhXTgnaR9cbEeOXSQ
-         wmQSIQH+HAJtC8TgNROc0bh8YM3ARvb1Rh4f0zkVuE/AuTbRZ1wlF2ZK4UbFc8hhenrc
-         f47Q==
-X-Gm-Message-State: AOAM531aVp4UGmr4DGAW8AyF9wSxBbuM127Cz7Tm4hitlr2YFn2FYgj/
-        vEuTAFy/gaglZwPRx4ugkXeUo4pzJYqpkfCPI/8lHKxRqA==
-X-Google-Smtp-Source: ABdhPJx8Vxg+h2i9MEAYwONcjbEsNnD8gW5IFxNM/SlRiTssVc6oOKBlbPfhsZh6ZmLZt3RqSDqL3qX3aZw58AVcjFM=
-X-Received: by 2002:a17:906:26c7:: with SMTP id u7mr21715410ejc.13.1596560967679;
- Tue, 04 Aug 2020 10:09:27 -0700 (PDT)
+        Tue, 4 Aug 2020 13:19:01 -0400
+X-Greylist: delayed 569 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 Aug 2020 13:19:00 EDT
+Received: from player774.ha.ovh.net (unknown [10.108.35.158])
+        by mo4.mail-out.ovh.net (Postfix) with ESMTP id 84A90247070
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 19:09:30 +0200 (CEST)
+Received: from etezian.org (213-243-141-64.bb.dnainternet.fi [213.243.141.64])
+        (Authenticated sender: andi@etezian.org)
+        by player774.ha.ovh.net (Postfix) with ESMTPSA id 253FA151129F2;
+        Tue,  4 Aug 2020 17:09:21 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-103G005bf6e1e8c-ecdf-4e2c-a38c-4357f76d3ada,
+                    174E2A681E1E8355CD79DB1D1551BCD4D872E018) smtp.auth=andi@etezian.org
+Date:   Tue, 4 Aug 2020 20:09:20 +0300
+From:   Andi Shyti <andi@etezian.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: s3c24xx: correct kerneldoc comment
+Message-ID: <20200804170920.GC73082@jack.zhora.eu>
+References: <20200804151356.28057-1-krzk@kernel.org>
 MIME-Version: 1.0
-References: <CAMciSVWzH3fuo8eStwRUwGJ+VsJjctLucOZo-EVx07ktXzObFA@mail.gmail.com>
- <83ff62ab-42c8-df6c-32c1-c1df2f8cda7a@roeck-us.net>
-In-Reply-To: <83ff62ab-42c8-df6c-32c1-c1df2f8cda7a@roeck-us.net>
-From:   Naveen Kumar P <naveenkumar.parna@gmail.com>
-Date:   Tue, 4 Aug 2020 22:39:16 +0530
-Message-ID: <CAMciSVVq7LL+c6Va1xqcCfMMMqcM9+3DXsOi+6cyqjPfdLgpGA@mail.gmail.com>
-Subject: Re: iTCO watchdog last reboot reason?
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200804151356.28057-1-krzk@kernel.org>
+X-Ovh-Tracer-Id: 10829468256800653977
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrjeeigdduudduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhguihcuufhhhihtihcuoegrnhguihesvghtvgiiihgrnhdrohhrgheqnecuggftrfgrthhtvghrnheptdfgudduhfefueeujeefieehtdeftefggeevhefgueellefhudetgeeikeduieefnecukfhppedtrddtrddtrddtpddvudefrddvgeefrddugedurdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejjeegrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprghnughisegvthgviihirghnrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 9:45 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 8/4/20 7:41 AM, Naveen Kumar P wrote:
-> > [ Please keep me in CC as I'm not subscribed to the list]
-> >
-> > Hi everyone,
-> >
-> > I enabled the iTCO watchdog in my Linux system.
-> >
-> > sudo cat /dev/watchdog perfectly reboots my system. But, is there a
-> > way to find out on each boot if the machine was rebooted due to a
-> > watchdog timeout or not?
-> >
-> > Any ideas?
-> >
->
-> If the hardware supports it, the driver could set the reboot reason
-> in its probe function.
-Thank you Guenter for the quick response. Can you please point me to
-the corresponding patch?
->
-> Guenter
+Hi Krzysztof,
+
+On Tue, Aug 04, 2020 at 05:13:56PM +0200, Krzysztof Kozlowski wrote:
+> Correct the kerneldoc for structure to fix W=1 compile warning:
+> 
+>     drivers/spi/spi-s3c24xx.c:36: warning: cannot understand function prototype: 'struct s3c24xx_spi_devstate '
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+thanks,
+
+Acked-by: Andi Shyti <andi@etezian.org>
+
+Andi
