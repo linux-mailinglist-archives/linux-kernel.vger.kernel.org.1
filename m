@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1E223B183
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 01:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D70023B18A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 02:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729556AbgHCX71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 19:59:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:35568 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729146AbgHCX70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 19:59:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F6131FB;
-        Mon,  3 Aug 2020 16:59:26 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 46F193F71F;
-        Mon,  3 Aug 2020 16:59:24 -0700 (PDT)
-References: <20200729033934.22349-1-alison.wang@nxp.com> <877dumbtoi.fsf@kurt> <20200729094943.lsmhsqlnl7rlnl6f@skbuf> <87mu3ho48v.fsf@kurt> <20200730082228.r24zgdeiofvwxijm@skbuf> <873654m9zi.fsf@kurt> <87lfiwm2bj.fsf@nanos.tec.linutronix.de> <20200803114112.mrcuupz4ir5uqlp6@skbuf> <87d047n4oh.fsf@nanos.tec.linutronix.de> <jhjh7tjivew.mognet@arm.com> <875z9zmt4i.fsf@nanos.tec.linutronix.de>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, paulmck@kernel.org, mw@semihalf.com,
-        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level IRQ time accounting
-In-reply-to: <875z9zmt4i.fsf@nanos.tec.linutronix.de>
-Date:   Tue, 04 Aug 2020 00:59:19 +0100
-Message-ID: <jhjft93i8mg.mognet@arm.com>
+        id S1728793AbgHDAFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 20:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727791AbgHDAFd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 Aug 2020 20:05:33 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514D5C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 17:05:33 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id k13so14060746plk.13
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 17:05:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NP1mgUkCmlEZxcd7waSmwn0TKmHAK/DFyxCzxl17dtI=;
+        b=YZaf1RAu7uAS0CnsRF0GsZAGSJPQlK4R+8/5vwzXjt3h9My+wgCZZSipHeMi/z/cey
+         ItYGsRbndsWiE0k8aqjqGnSglsRd8b98so9+IV3KOiuJF0BS+FDFLQRjru0QTFqL//ry
+         n4Q8js9xnrNgOZYBiyHsVrEHV3felhZs/hTf8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NP1mgUkCmlEZxcd7waSmwn0TKmHAK/DFyxCzxl17dtI=;
+        b=VfN6KuOcm+g687bt3kkYxmY/fuUIn9ZZVKisGvGQA7pqCRVaoJQl/2epfqePM0lBYZ
+         6VHnk+TMLPnLcXYodt5YESJdhEb9vORYmGiXtjcFiQQSWJ5WImQbt0Qeko0HgjSaZxKF
+         sXBwVmrKNBqnGK/TWOWxKUH/+AKCsIlrYE4yCiE8P9pfJ+/qziTUgOiV8dbdUXs3rRDA
+         7Us9x+5fpPfIQ+OAroS4ul1atOL9+veLSuWU+Akohl3N8R3ob6f1Oh5wceK7eVMbSNlJ
+         MOOmRwGNLDpUlGMRyTW114gTCmovuGYsO8otJpoB1DiBAWpW7iB+dXnKm0gGnmm5JfAL
+         aqrQ==
+X-Gm-Message-State: AOAM5325q2OW7kIrLvDtkKFzv6LRWxZbWQhaGNk125XUmdeWj9XEqKKA
+        /UW3snvZ0VBd2KZkxYuPMVNQaw==
+X-Google-Smtp-Source: ABdhPJxWUF1KaauDaSDNI7jTshdinvkTVNWLw257sbIlPVblmq9Q5WtQduokmKxsaXs2OtizM5yjWQ==
+X-Received: by 2002:a17:90a:3226:: with SMTP id k35mr1610311pjb.114.1596499532554;
+        Mon, 03 Aug 2020 17:05:32 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id e28sm12332756pfl.124.2020.08.03.17.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 17:05:31 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Oder Chiou <oder_chiou@realtek.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Shuming Fan <shumingf@realtek.com>
+Subject: [PATCH 0/3] ASoC: rt5682: Use clk APIs better
+Date:   Mon,  3 Aug 2020 17:05:28 -0700
+Message-Id: <20200804000531.920688-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series drops a printk message down to dev_dbg() because it
+was noisy and then migrates this driver to use clk_hw based APIs instead
+of clk based APIs because this device is a clk provider, not a clk
+consumer. I've only lightly tested the last two patches but I don't have
+all combinations of clks for this device.
 
-On 03/08/20 20:22, Thomas Gleixner wrote:
-> Valentin,
->
-> Valentin Schneider <valentin.schneider@arm.com> writes:
->> On 03/08/20 16:13, Thomas Gleixner wrote:
->>> Vladimir Oltean <olteanv@gmail.com> writes:
->>>>>  1) When irq accounting is disabled, RT throttling kicks in as
->>>>>     expected.
->>>>>
->>>>>  2) With irq accounting the RT throttler does not kick in and the RCU
->>>>>     stall/lockups happen.
->>>> What is this telling us?
->>>
->>> It seems that the fine grained irq time accounting affects the runtime
->>> accounting in some way which I haven't figured out yet.
->>>
->>
->> With IRQ_TIME_ACCOUNTING, rq_clock_task() will always be incremented by a
->> lesser-or-equal value than when not having the option; you start with the
->> same delta_exec but slice some for the IRQ accounting, and leave the rest
->> for the rq_clock_task() (+paravirt).
->>
->> IIUC this means that if you spend e.g. 10% of the time in IRQ and 90% of
->> the time running the stress-ng RT tasks, despite having RT tasks hogging
->> the entirety of the "available time" it is still only 90% runtime, which is
->> below the 95% default and the throttling doesn't happen.
->
->    totaltime = irqtime + tasktime
->
-> Ignoring irqtime and pretending that totaltime is what the scheduler
-> can control and deal with is naive at best.
->
+Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: Shuming Fan <shumingf@realtek.com>
 
-Agreed, however AFAICT rt_time is only incremented by rq_clock_task()
-deltas, which don't include IRQ time with IRQ_TIME_ACCOUNTING=y. That would
-then be directly compared to the sysctl runtime.
+Stephen Boyd (3):
+  ASoC: rt5682: Use dev_dbg() in rt5682_clk_check()
+  ASoC: rt5682: Drop usage of __clk_get_name()
+  ASoC: rt5682: Use clk_hw based APIs for registration
 
-Adding some prints in sched_rt_runtime_exceeded() and running this test
-case on my Juno, I get:
+ sound/soc/codecs/rt5682.c | 73 ++++++++++++---------------------------
+ sound/soc/codecs/rt5682.h |  2 --
+ 2 files changed, 23 insertions(+), 52 deletions(-)
 
-  # IRQ_TIME_ACCOUNTING=y
-  cpu=2 rt_time=713455220 runtime=950000000 rq->avg_irq.util_avg=265
-  (rt_time oscillates between [70.1e7, 75.1e7]; avg_irq between [220, 270])
+Based on the last patch to this driver in linux-next.
 
-  # IRQ_TIME_ACCOUNTING=n
-  cpu=2 rt_time=963035300 runtime=949951811
-  (rt_time oscillates between [94.1e7, 96.1e7];
+base-commit: 6301adf942a31bed65e026a554e5bd55d9e731e1
+-- 
+Sent by a computer, using git, on the internet
 
-Throttling happens for IRQ_TIME_ACCOUNTING=n and doesn't for
-IRQ_TIME_ACCOUNTING=y - clearly the accounted rt_time isn't high enough for
-that to happen, and it does look like what is missing in rt_time (or what
-should be subtracted from the available runtime) is there in the avg_irq.
-
-Or is that another case where I shouldn't have been writing emails at this
-hour?
-
-> Thanks,
->
->         tglx
