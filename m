@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571A023B195
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 02:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B78723B197
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 02:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgHDAMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 20:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
+        id S1728620AbgHDAOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 20:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728010AbgHDAMA (ORCPT
+        with ESMTP id S1728329AbgHDAOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 20:12:00 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36311C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 17:12:00 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id i19so21391155lfj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 17:11:59 -0700 (PDT)
+        Mon, 3 Aug 2020 20:14:42 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EDDC06174A;
+        Mon,  3 Aug 2020 17:14:42 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id 88so35713528wrh.3;
+        Mon, 03 Aug 2020 17:14:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BJMGz9Kc8WVCp/t/OHF9s3yH7VQ2GD7HHPuH9GhBwQs=;
-        b=W94vDVEvD6RunkvlHbkEgBD1oo7wrZKgAqzHxEZ5TGmSkPoskFLl0lduJT1bLMcylJ
-         i1qFErpOiOciZfhkkPxUK1SDkfZzxdgDygWPfoKVaHB2rsGxxYYshcNghQNuDF7TETgY
-         /NnTENgvzaGKZn83r2WPrXJssI/dZzbilP2+o=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pLqa6iIagQjdsqMYxByjjjyKCkbWqHO5m3vOPF/8+wU=;
+        b=cDorCLzbE0Mncpqq+Tg1mP3VivfjCvwGyaEizymXnx/LbHd5cQ8A7SHR015B1w2fNg
+         JHg2+TaD68iHuuCTzsTy54O/ng49d6Fqq/PN9OMlhfAeaioqJQL6ORcedDdUPaO9Np7J
+         nwF7SEacmVdWecgetwUTpDwVIWS9Q006PRgxPMxtnUrvJhYPOrhSBOBXA7AxqkbC/EYw
+         W/QFt17yPz9CnRdWNj8mj17qzLNAMLdCtr8bQjFa0BwnyoAv91ivhuRFozvR2Zy0f+0b
+         5PclOAew8eNUGu30g4D9NpZnRjyrhzwaFS31WzOcBP9GhIbIPEJqS3NyyAux/WP9azSq
+         XSyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BJMGz9Kc8WVCp/t/OHF9s3yH7VQ2GD7HHPuH9GhBwQs=;
-        b=JIaAcbgdnsvQbjSqhmiuzdetUchrztHdxzl4ttKRWiMi2g5/Z2oTumkjJ626jBZ4pN
-         xvTcxv8Wntib7eLLXrxV4ZvBmQHncy4oasDG/ggneaBjEgcHz82VOXKkozwWwQpHmWPN
-         mNGA2Cyd3Ctx8Szs1sdecPGP7OvglRdCL7wm5m0Y0Grj3Tv/X9QX+g4neJe24cZfg/1y
-         PcIn7YEp5qbV1fRkSbBszDCJtMfyjINjThO4UptRwxLj6UDxti/ftUvc1Cobydu22Ak7
-         nyRuUG+qU6hT3eMpOEYaR6HId6/S44GAqq3Zci0W5YJ8mf1bh9n3cZtE99LoColhmm4c
-         wUDg==
-X-Gm-Message-State: AOAM533tn0WgplHLngI8bMqLQm8yCwA263KjG3H2QDj7zJfJvlXwWV2Z
-        Jfo0MrJiQKoowiZnPkikt2Um8DMhLUI=
-X-Google-Smtp-Source: ABdhPJz3XakMB6rWITnAzgK4J8GoQtE16/RRExG7GuNXaK8YaijTVWHafkv9zrXG340LCiLLnYG8tQ==
-X-Received: by 2002:a05:6512:2010:: with SMTP id a16mr9283668lfb.196.1596499918148;
-        Mon, 03 Aug 2020 17:11:58 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id i11sm5463288lfl.31.2020.08.03.17.11.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Aug 2020 17:11:56 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id m15so20731105lfp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 17:11:56 -0700 (PDT)
-X-Received: by 2002:a05:6512:3b7:: with SMTP id v23mr9791274lfp.10.1596499915813;
- Mon, 03 Aug 2020 17:11:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pLqa6iIagQjdsqMYxByjjjyKCkbWqHO5m3vOPF/8+wU=;
+        b=mQNVDT4EH6JHmOpWzrVQLDly9swljhrDECgEYRdcDPnbLlZSmoUqFrnh2By/+vJTBT
+         INIRR8YvXRnNHnHcjn2lSrpshCVBsZAbVZwr09kuzxFhWL0dJOBo5vlg5HhaB4QK457t
+         K06Sg0KPt2hs/4Pg9XiWUNFTmWSp0MP2HsFZALkgfc5giy2YcpY3LHElxbIlL1h2EVpQ
+         PUyKImrpM3oEAeqvNjuqsLnxKinQOnxFQezH+IDaAu/Uh5AoL07rAB8Fg7LfLC0/0SGs
+         VpnGD4dCt6vS9l4IeXE2/Py2j0uldklb2rPtVjEFEd1eH3jp+w0UsnFAsUABQ3RjUeUq
+         uuug==
+X-Gm-Message-State: AOAM531NB5K3t4YOkqbp8Ae9xxg2w5IxAONlyfg4eyJ8uTTD9IrQDg+K
+        436egyKmDNwJaxidI5TADkU=
+X-Google-Smtp-Source: ABdhPJwdsH0pMYRMGanAKEVY9CpKqzquGlGl+O7Q0vlHq/3gfASusHGCqhrWnnyEMu7Sd3KigtzhwA==
+X-Received: by 2002:adf:de91:: with SMTP id w17mr16979218wrl.108.1596500080802;
+        Mon, 03 Aug 2020 17:14:40 -0700 (PDT)
+Received: from localhost (55d43e89.access.ecotel.net. [85.212.62.137])
+        by smtp.gmail.com with ESMTPSA id f63sm2064620wmf.9.2020.08.03.17.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 17:14:40 -0700 (PDT)
+From:   Timo Witte <timo.witte@gmail.com>
+To:     timo.witte@gmail.com
+Cc:     jlee@suse.com, Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org (open list:ACER WMI LAPTOP EXTRAS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] platform/x86: acer-wmi: add automatic keyboard background light toggle key as KEY_LIGHTS_TOGGLE
+Date:   Tue,  4 Aug 2020 02:14:23 +0200
+Message-Id: <20200804001423.36778-1-timo.witte@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <50466810-9148-e245-7c1e-e7435b753582@kernel.dk>
- <CAHk-=wgaxWMA7DVTQq+KxqaWHPDrXDuScX9orzRgxdi7SBfmoA@mail.gmail.com>
- <cd478521-e6ec-a1aa-5f93-29ad13d2a8bb@kernel.dk> <56cb11b1-7943-086e-fb31-6564f4d4d089@kernel.dk>
- <025dcd45-46df-b3fa-6b4a-a8c6a73787b0@kernel.dk> <CAHk-=whZYCK2eNEcTvKWgBvoSL8YLT6G0dexVkFbDiVCLN3zBQ@mail.gmail.com>
- <af6b61c1-e98e-f312-3550-deb7972751a9@kernel.dk>
-In-Reply-To: <af6b61c1-e98e-f312-3550-deb7972751a9@kernel.dk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 3 Aug 2020 17:11:39 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi0RHwerxA165qshpyET4WgpmrTU7pqxzEaD4J74Y3uww@mail.gmail.com>
-Message-ID: <CAHk-=wi0RHwerxA165qshpyET4WgpmrTU7pqxzEaD4J74Y3uww@mail.gmail.com>
-Subject: Re: [GIT PULL] io_uring changes for 5.9-rc1
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 3, 2020 at 4:56 PM Jens Axboe <axboe@kernel.dk> wrote:
->
-> What I ended up with after the last email was just removing the test
-> bit:
->
-> https://git.kernel.dk/cgit/linux-block/commit/?h=io_uring-5.9&id=cbd287c09351f1d3a4b3cb9167a2616a11390d32
->
-> and I clarified the comments on the io_async_buf_func() to add more
-> hints on how everything is triggered instead of just a vague "handler"
-> reference:
->
-> https://git.kernel.dk/cgit/linux-block/commit/?h=io_uring-5.9&id=c1dd91d16246b168b80af9b64c5cc35a66410455
+Got a dmesg message on my AMD Renoir based Acer laptop:
+"acer_wmi: Unknown key number - 0x84" when toggling keyboard
+background light
 
-These both look sensible to me now.
+Signed-off-by: Timo Witte <timo.witte@gmail.com>
+---
+ drivers/platform/x86/acer-wmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-                  Linus
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index 60c18f21588d..87797f785d6a 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -111,6 +111,7 @@ static const struct key_entry acer_wmi_keymap[] __initconst = {
+ 	{KE_KEY, 0x64, {KEY_SWITCHVIDEOMODE} },	/* Display Switch */
+ 	{KE_IGNORE, 0x81, {KEY_SLEEP} },
+ 	{KE_KEY, 0x82, {KEY_TOUCHPAD_TOGGLE} },	/* Touch Pad Toggle */
++	{KE_IGNORE, 0x84, {KEY_LIGHTS_TOGGLE} }, /* Automatic Keyboard background light toggle */
+ 	{KE_KEY, KEY_TOUCHPAD_ON, {KEY_TOUCHPAD_ON} },
+ 	{KE_KEY, KEY_TOUCHPAD_OFF, {KEY_TOUCHPAD_OFF} },
+ 	{KE_IGNORE, 0x83, {KEY_TOUCHPAD_TOGGLE} },
+-- 
+2.27.0
+
