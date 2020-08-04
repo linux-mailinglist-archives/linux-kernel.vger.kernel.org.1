@@ -2,294 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD3523B464
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 07:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793D423B451
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 07:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbgHDF2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 01:28:23 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:62271 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgHDF2W (ORCPT
+        id S1727887AbgHDFGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 01:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726000AbgHDFGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 01:28:22 -0400
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200804052816epoutp041447058406410aee5e8b0e5850b38e8b~n_XpGzm2D1859218592epoutp04x
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 05:28:16 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200804052816epoutp041447058406410aee5e8b0e5850b38e8b~n_XpGzm2D1859218592epoutp04x
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1596518896;
-        bh=OrQQsGEG3xgSpGLy9gO7ncefwAQQzvzqrPZ0LNv04A0=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=lkSv8ELG/hr3KH9zJXlegjBOzb/Kbh1mmkMvB1heFLj2S6JwJl+MGwSaQ1AP0kzQT
-         vMLjE2BI8MIJb3kVZjQ21O2B1Qx0uDFSTxxf1eFteIEdBOyJH4xQ8FD3C52GzJS8WV
-         vmp6saRG53KQHX37dQH0MIk/Ei/5F+DzefBozlEc=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20200804052815epcas5p2282174eabe1cb0d863d02657d12277c7~n_XogZszU2984529845epcas5p29;
-        Tue,  4 Aug 2020 05:28:15 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        16.15.09475.FE1F82F5; Tue,  4 Aug 2020 14:28:15 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200803140026epcas5p4f9898295d70c373bc3f52680f0b11586~nxtie5X6n3225132251epcas5p4d;
-        Mon,  3 Aug 2020 14:00:26 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200803140026epsmtrp1bb7e7455de6b998bdb95b868ad52ae5e~nxtieK_iQ1517315173epsmtrp13;
-        Mon,  3 Aug 2020 14:00:26 +0000 (GMT)
-X-AuditID: b6c32a4b-39fff70000002503-a7-5f28f1ef98a5
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        19.7A.08382.A78182F5; Mon,  3 Aug 2020 23:00:26 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200803140025epsmtip2ce2a6a3b1cb92f526382815ab9fe1d1c~nxthAsUSW2099020990epsmtip2a;
-        Mon,  3 Aug 2020 14:00:24 +0000 (GMT)
-From:   Ajay Kumar <ajaykumar.rs@samsung.com>
-To:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, will@kernel.org
-Cc:     joro@8bytes.org, nleeder@codeaurora.org, robin.murphy@arm.com,
-        Ajay Kumar <ajaykumar.rs@samsung.com>
-Subject: [RFC PATCH] dma-iommu: allow devices to set IOVA range dynamically
-Date:   Mon,  3 Aug 2020 19:06:20 +0530
-Message-Id: <20200803133620.13840-1-ajaykumar.rs@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrAIsWRmVeSWpSXmKPExsWy7bCmlu77jxrxBt/26FsceH+QxWLBfmuL
-        ztkb2C02Pb7GanF51xw2i6XXLzJZfDsWY9G69wi7xcEPT1gtWu6YOnB5PDk4j8ljzbw1jB6X
-        +3qZPDat6mTz2Lyk3mPyjeWMHn1bVjF6fN4kF8ARxWWTkpqTWZZapG+XwJXx7eZJtoJO84re
-        +UeYGhg36HYxcnBICJhIvHsAZHJxCAnsZpT4/PwnYxcjJ5DzCciZYghhf2OU2HwmBcQGqV97
-        ZAMbRMNeRon7vy8xQTgtTBJbt7azgFSxCWhLbJt+E8wWEVjOKLH8tRTINmaBLIlNDSogYWEB
-        b4k/P08xg9gsAqoS7/4tYwOxeQVsJZ7df8UCsUxeYvWGA8wg8yUELrFLXJr8iRki4SLx6e9C
-        VghbWOLV8S3sELaUxMv+NnaIhn5Giaf3/0B1r2aUePDwAlS3vcSBK3NYIC7SlFi/Sx8iLCsx
-        9dQ6JhCbWYBPovf3EyaIOK/EjnkgNii41CS2rvCDCMtInDl4BarEQ+LUxYcskNCKlXjycj37
-        BEbZWQgLFjAyrmKUTC0ozk1PLTYtMM5LLdcrTswtLs1L10vOz93ECE4UWt47GB89+KB3iJGJ
-        g/EQowQHs5II78fP6vFCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeZV+nIkTEkhPLEnNTk0tSC2C
-        yTJxcEo1MM1582BzTFzvvUVP514Prkic8dzli1yt7vlEwQkLXSbMrNBevnqOrhnztJbgSJ6s
-        IwsntH1S/tDl7GAWJ2Z5i8ExYMH5UwbfJ7IcM1n+W0xf48lGefFNfpd+RxdOCJqmVVx++NvE
-        XR0H1Q8zSlhEsO733GljPSvqXPUB35NXrtTGsFZde5bHt2j9txWceasC/09/57T3h/e+7HM1
-        u07K/5qzwn4qa197QvyGMxuDve7qp0bECc8JcbXrUwsuvHMnPkGlLOizsvW8G48nFFyzcZdK
-        mNjQYS69iHujQsecusIti+v4FhgsO7jabPdPzQ/u/S7x3n/ZwhvcXu7qEP4XxLTw1e2VJvzt
-        Tt/T9+vVH1ZiKc5INNRiLipOBAACfUCVgwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFLMWRmVeSWpSXmKPExsWy7bCSvG6VhEa8QcsyOYsD7w+yWCzYb23R
-        OXsDu8Wmx9dYLS7vmsNmsfT6RSaLb8diLFr3HmG3OPjhCatFyx1TBy6PJwfnMXmsmbeG0eNy
-        Xy+Tx6ZVnWwem5fUe0y+sZzRo2/LKkaPz5vkAjiiuGxSUnMyy1KL9O0SuDK+3TzJVtBpXtE7
-        /whTA+MG3S5GTg4JAROJtUc2sHUxcnEICexmlHh88DMLREJG4vmOp1C2sMTKf8/ZIYqamCQ2
-        PZ/DDpJgE9CW2Db9JgtIQkRgLaPEwpeL2EASzAJ5EmuvrgazhQW8Jf78PMUMYrMIqEq8+7cM
-        LM4rYCvx7P4rqA3yEqs3HGCewMizgJFhFaNkakFxbnpusWGBYV5quV5xYm5xaV66XnJ+7iZG
-        cPBpae5g3L7qg94hRiYOxkOMEhzMSiK8Hz+rxwvxpiRWVqUW5ccXleakFh9ilOZgURLnvVG4
-        ME5IID2xJDU7NbUgtQgmy8TBKdXAJKVh1KA85/fy/0fN3m6aOlfxiCA/i2F69oGydxez3HbP
-        01N94/nqtvMFbx0XE9P1AY4+R10D2kUcJ/B8FTn0d2fK8e3W/T0fv9axR7yX7TEzMVv9pTv6
-        u/z8+7fqKg7EHT3aejrweUK+hE7EuRtmnxIMfimYvJCNkGXaMFnp/rdHNQ5ml+ImynCcYFZv
-        n529OmHSX7M3X6cI3tFw5pn/eY3T4Xmz5/2T6dytq75/S9kel50b1S/FBdXdMcrN5uq89V6f
-        89u1xSFNwoJbLe7OXLPHYfGvG+bBHbXrl+3msfCSTk/I2lHdeWVu7Q3N3S7XwzewTjj302iG
-        /IyNjmW+RrJzQkuUV70QFVh55pmlvBJLcUaioRZzUXEiAMT1ZiCtAgAA
-X-CMS-MailID: 20200803140026epcas5p4f9898295d70c373bc3f52680f0b11586
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200803140026epcas5p4f9898295d70c373bc3f52680f0b11586
-References: <CGME20200803140026epcas5p4f9898295d70c373bc3f52680f0b11586@epcas5p4.samsung.com>
+        Tue, 4 Aug 2020 01:06:32 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9333C06174A;
+        Mon,  3 Aug 2020 22:06:31 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BLN5D33t1z9sR4;
+        Tue,  4 Aug 2020 15:06:24 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1596517588;
+        bh=dMxtds0/HyPZlLPxcj8DFbo4u/2OxCDZFrDPX/g7Xgo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=N57fJ4S4VQHpJiLNdz8ct9e9G9Th7VyQE1c/4Rw3ULfZDdiy1AjRkrl6+lIYazO7C
+         S8eG6NtQbvAARp6oWsyGmVLkH+zacE8MCBtMMT/mP94eJQylQQDeCgPFv2vbC7AlcW
+         K80gxTW7szS6GuqBYkRPSxuRqWgS82X/kc+Z3cL5d3YMr2qGHTWqQ3VVCv66FX4kR9
+         qYFKUEDxA3jVRLVJWu/QgqBR0jJOgoruWfaMXZFfZklBByTTMuG+Sc0vhTw8UJZZ65
+         aaaUskCvXd9/lWft/LtN9+SKt2MTualR256sKfPASF3992QaDJOYr5I6hZ9B8DAH9u
+         Hllk+9MuPx/FA==
+Date:   Tue, 4 Aug 2020 15:06:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Xianting Tian <xianting_tian@126.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: linux-next: manual merge of the vhost tree with the scsi tree
+Message-ID: <20200804150622.72067466@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/h=AjQxhuR6yeYHE92Ux.WOU";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, there is no other option to change the lower limit of
-IOVA for any device than calling iova_init_domain(), but the
-said function will re-init whole domain and also doesn't track
-the previously allocated IOVA before re-initing the domain.
+--Sig_/h=AjQxhuR6yeYHE92Ux.WOU
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-There are cases where the device might not support continuous
-range of addresses, and can also have dependency among buffers
-allocated for firmware, image manipulation, etc and all of the
-address requests pass through IOMMU. In such cases, we can allocate
-buffers stage by stage by setting address limit, and also keep
-track the of same.
+Hi all,
 
-Bit of background can be found here:
-IOVA allocation dependency between firmware buffer and remaining buffers
-https://www.spinics.net/lists/iommu/msg43586.html
+Today's linux-next merge of the vhost tree got a conflict in:
 
-This patch allows devices to limit the IOVA space they want
-during allocation at any given point of time. We shall allow
-the same only if the device owns the corresponding iommu_domain,
-that is the device is the only master attached to the domain.
+  drivers/scsi/virtio_scsi.c
 
-The lower limit of IOVA space is marked by start_pfn, and the upper
-limit is marked by dma_mask and this patch honors the same.
-Since changing dma_mask can extend the addressable region beyond
-current cached node, we do a reset of current cached nodes as well.
+between commit:
 
-Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
----
- drivers/iommu/dma-iommu.c | 73 +++++++++++++++++++++++++++++++++++++++
- drivers/iommu/iommu.c     | 16 +++++++++
- include/linux/iommu.h     |  6 ++++
- include/linux/iova.h      |  6 ++++
- 4 files changed, 101 insertions(+)
+  92e8d0323a51 ("scsi: virtio_scsi: Remove unnecessary condition check")
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 4959f5df21bd..2fe3f57ab648 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -167,6 +167,79 @@ void iommu_dma_get_resv_regions(struct device *dev, struct list_head *list)
- }
- EXPORT_SYMBOL(iommu_dma_get_resv_regions);
- 
-+/**
-+ * iommu_set_iova_range - Limit the IOVA region for a specific device
-+ * @dev: Device to set IOVA range for
-+ * @base: Base address or the lower limit of the IOVA range
-+ * @size: Size of address range from lower limit to upper limit
-+ *
-+ * Allow a master device to dynamically control the range of IOVA addresses
-+ * which are allocated iff the master device is the only device attached to
-+ * the corresponding iommu_domain.
-+ * This function doesn't harm IOVA addresses outside of current range,
-+ * which were allocated prior to calling this function.
-+ */
-+int iommu_set_iova_range(struct device *dev, dma_addr_t base, u64 size)
-+{
-+	struct iommu_domain *domain;
-+	struct iommu_dma_cookie *cookie;
-+	struct iova_domain *iovad;
-+	unsigned long shift, base_pfn;
-+	u64 new_dma_mask;
-+
-+	/*
-+	 * Check if the IOMMU master device is the sole entry in the group
-+	 * If the group has more than one master device using the same IOMMU
-+	 * we shouldn't be allowing that device to change the IOVA limit
-+	 */
-+	if (iommu_group_device_count_from_dev(dev) != 1)
-+		return -EINVAL;
-+
-+	domain = iommu_get_domain_for_dev(dev);
-+	if (!domain)
-+		return -ENODEV;
-+
-+	if (domain->type != IOMMU_DOMAIN_DMA)
-+		return -EINVAL;
-+
-+	cookie = domain->iova_cookie;
-+	if (!cookie || cookie->type != IOMMU_DMA_IOVA_COOKIE)
-+		return -ENODEV;
-+
-+	iovad = &cookie->iovad;
-+
-+	shift = iova_shift(iovad);
-+	base_pfn = base >> shift;
-+
-+	base_pfn = max_t(unsigned long, 1, base_pfn);
-+
-+	/* base cannot be outside aperture */
-+	if (domain->geometry.force_aperture) {
-+		if (base > domain->geometry.aperture_end ||
-+		    base + size <= domain->geometry.aperture_start) {
-+			pr_warn("specified DMA range outside IOMMU capability\n");
-+			return -EFAULT;
-+		}
-+		/* ...then finally give it a kicking to make sure it fits */
-+		base_pfn = max_t(unsigned long, base_pfn,
-+				domain->geometry.aperture_start >> shift);
-+	}
-+	/* Set page aligned lower limit of IOVA range to start_pfn */
-+	iovad->start_pfn = base_pfn;
-+
-+	/* Set upper limit of IOVA range to dma_mask */
-+	new_dma_mask = (u64)base + size;
-+	dma_set_mask_and_coherent(dev, new_dma_mask);
-+
-+	/* Reset cached nodes to start IOVA search from the anchor node */
-+	iovad->cached_node = &iovad->anchor.node;
-+	iovad->cached32_node = &iovad->anchor.node;
-+	iovad->max32_alloc_size = iovad->dma_32bit_pfn;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(iommu_set_iova_range);
-+
- static int cookie_init_hw_msi_region(struct iommu_dma_cookie *cookie,
- 		phys_addr_t start, phys_addr_t end)
- {
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 609bd25bf154..30b2d4e5487d 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -919,6 +919,22 @@ static int iommu_group_device_count(struct iommu_group *group)
- 	return ret;
- }
- 
-+int iommu_group_device_count_from_dev(struct device *dev)
-+{
-+	struct iommu_group *group;
-+	int group_device_count;
-+
-+	group = iommu_group_get(dev);
-+	if (!group)
-+		return 0;
-+
-+	group_device_count = iommu_group_device_count(group);
-+	iommu_group_put(group);
-+
-+	return group_device_count;
-+}
-+EXPORT_SYMBOL_GPL(iommu_group_device_count_from_dev);
-+
- /**
-  * iommu_group_for_each_dev - iterate over each device in the group
-  * @group: the group
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index fee209efb756..4dbd4dab91c0 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -477,6 +477,7 @@ extern int iommu_group_set_name(struct iommu_group *group, const char *name);
- extern int iommu_group_add_device(struct iommu_group *group,
- 				  struct device *dev);
- extern void iommu_group_remove_device(struct device *dev);
-+extern int iommu_group_device_count_from_dev(struct device *dev);
- extern int iommu_group_for_each_dev(struct iommu_group *group, void *data,
- 				    int (*fn)(struct device *, void *));
- extern struct iommu_group *iommu_group_get(struct device *dev);
-@@ -828,6 +829,11 @@ static inline void iommu_group_remove_device(struct device *dev)
- {
- }
- 
-+static int iommu_group_device_count_from_dev(struct device *dev)
-+{
-+	return 0;
-+}
-+
- static inline int iommu_group_for_each_dev(struct iommu_group *group,
- 					   void *data,
- 					   int (*fn)(struct device *, void *))
-diff --git a/include/linux/iova.h b/include/linux/iova.h
-index a0637abffee8..1e7d7b23ff66 100644
---- a/include/linux/iova.h
-+++ b/include/linux/iova.h
-@@ -163,6 +163,7 @@ void put_iova_domain(struct iova_domain *iovad);
- struct iova *split_and_remove_iova(struct iova_domain *iovad,
- 	struct iova *iova, unsigned long pfn_lo, unsigned long pfn_hi);
- void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad);
-+int iommu_set_iova_range(struct device *dev, dma_addr_t base, u64 size);
- #else
- static inline int iova_cache_get(void)
- {
-@@ -270,6 +271,11 @@ static inline void free_cpu_cached_iovas(unsigned int cpu,
- 					 struct iova_domain *iovad)
- {
- }
-+
-+static int iommu_set_iova_range(struct device *dev, dma_addr_t base, u64 size)
-+{
-+	return 0;
-+}
- #endif
- 
- #endif
--- 
-2.17.1
+from the scsi tree and commit:
 
+  3dfd411ea7ec ("scsi: virtio_scsi: remove unnecessary condition check")
+
+from the vhost tree.
+
+I fixed it up (I used the former as it was a superset of the latter) and
+can carry the fix as necessary. This is now fixed as far as linux-next
+is concerned, but any non trivial conflicts should be mentioned to your
+upstream maintainer when your tree is submitted for merging.  You may
+also want to consider cooperating with the maintainer of the conflicting
+tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/h=AjQxhuR6yeYHE92Ux.WOU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8o7M4ACgkQAVBC80lX
+0Gwn9gf/b2IkA1XsKW9HauXt4Zd95wSvDUojGmiy4b7vJST27G3TLDNZSkY/EfI1
+IywVy+MQmHbySH02OZtqNLjKiKSXVgKqjMV58CFlSNHW1HPlv0DjwsCE78utz0ty
+HsY9Ztn070+si3api70w0ynn87ztD6jhdBrif+0EJYz/Ulc+f1yVXLXf5oNgb+zm
+ZHvbRwGE5mBgJoyJlIA3v3RMt34W2TBu71bFBlAevllbB6E8r/t6EH/ZG2GNWZpT
+SUJfdQRzpUGJLq+gfxIn1fIP682zBEfdFlr798igKIp276JSw+9cxRApEc7RVjKY
+RW7NG0ra868U3MjjztC10dlDOzcjYA==
+=TecQ
+-----END PGP SIGNATURE-----
+
+--Sig_/h=AjQxhuR6yeYHE92Ux.WOU--
