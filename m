@@ -2,70 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E5523BC01
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5D623BC0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729077AbgHDOZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:25:33 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58813 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728689AbgHDOZX (ORCPT
+        id S1728508AbgHDOZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:25:58 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:38426 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729078AbgHDOZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:25:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596551123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BM2JMxKOJj4ZXY6F1Nf7SDJuSC0Of4l58aNBBuBK3iQ=;
-        b=JCR6ViXIQwk/fZOar6hWodK1gAWTaUINwnDwPz7t0bbnD9zjUSHTZg4aTiTFVlzgqxZhlt
-        Cr38tC+gOeHdQCZNzdvHqgjYP7AkpcW9TFf1vPweHR2OQlBXl4D3Z1RT64XTp9JOtVC4CQ
-        dFT600G1qnWezlnEF6iCABsLi5u9dm8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-kxlU5sKgPl-pVpOICdJONQ-1; Tue, 04 Aug 2020 10:25:21 -0400
-X-MC-Unique: kxlU5sKgPl-pVpOICdJONQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 4 Aug 2020 10:25:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596551135; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
+ Subject: Sender; bh=ykfrIBYjPSVeXGrw23AhWHmjOLWaPxQlMmSQFdAOaNE=; b=cR0mnFbJRVPTRK9MWg96SO99cM9MbRvwKKa2ifJMnXEQu/f22noZD7PYA9XaNWUvigYdJIr8
+ IzdleTRQmfpRbCXcWsn0+fFPIOwIUQQ+Tr+UQ0EUuifDZgG33FVdFXsG61LgjL3kL45Ku3H0
+ u+Vl4CQZvf92Kxna3uOuVPbcG/4=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n15.prod.us-east-1.postgun.com with SMTP id
+ 5f296fda14acd1952bb3d024 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 Aug 2020 14:25:30
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AE730C4339C; Tue,  4 Aug 2020 14:25:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.4] (unknown [223.230.47.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03E7679ED9;
-        Tue,  4 Aug 2020 14:25:20 +0000 (UTC)
-Received: from gondolin (ovpn-112-169.ams2.redhat.com [10.36.112.169])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BFA4C5C6DD;
-        Tue,  4 Aug 2020 14:25:15 +0000 (UTC)
-Date:   Tue, 4 Aug 2020 16:25:13 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        virtualization@lists.linux-foundation.org,
-        v9fs-developer@lists.sourceforge.net
-Subject: Re: [PATCH v2 04/24] virtio_9p: correct tags for config space
- fields
-Message-ID: <20200804162513.6c0448ab.cohuck@redhat.com>
-In-Reply-To: <20200803205814.540410-5-mst@redhat.com>
-References: <20200803205814.540410-1-mst@redhat.com>
-        <20200803205814.540410-5-mst@redhat.com>
-Organization: Red Hat GmbH
+        (Authenticated sender: gkohli)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CE73BC433CA;
+        Tue,  4 Aug 2020 14:25:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CE73BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=gkohli@codeaurora.org
+Subject: Re: [PATCH] nvmem: core: add support to NVMEM_NO_SYSFS_ENTRY
+From:   Gaurav Kohli <gkohli@codeaurora.org>
+To:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        neeraju@codeaurora.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+References: <1596550484-11029-1-git-send-email-gkohli@codeaurora.org>
+ <1596550484-11029-2-git-send-email-gkohli@codeaurora.org>
+Message-ID: <8004ec2b-5efd-7c74-83e6-c4c41fe896c0@codeaurora.org>
+Date:   Tue, 4 Aug 2020 19:55:23 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1596550484-11029-2-git-send-email-gkohli@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 Aug 2020 16:58:50 -0400
-"Michael S. Tsirkin" <mst@redhat.com> wrote:
+Please ignore this patch, some problem in my git send mail.
+Apologies for the spam.
 
-> Tag config space fields as having virtio endian-ness.
+
+On 8/4/2020 7:44 PM, Gaurav Kohli wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> Some users might not want to expose nvmem entry to sysfs and
+> only intend to use kernel interface so add such provision.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->  include/uapi/linux/virtio_9p.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>    Documentation/ABI/stable/sysfs-bus-nvmem |  2 ++
+>    drivers/nvmem/Kconfig                    |  5 +++++
+>    drivers/nvmem/core.c                     | 11 ++++++-----
+>    3 files changed, 13 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/ABI/stable/sysfs-bus-nvmem
+> b/Documentation/ABI/stable/sysfs-bus-nvmem
+> index 5923ab4620c5..12aab0a85fea 100644
+> --- a/Documentation/ABI/stable/sysfs-bus-nvmem
+> +++ b/Documentation/ABI/stable/sysfs-bus-nvmem
+> @@ -6,6 +6,8 @@ Description:
+>    		This file allows user to read/write the raw NVMEM contents.
+>    		Permissions for write to this file depends on the nvmem
+>    		provider configuration.
+> +		Note: This file is not present if CONFIG_NVMEM_NO_SYSFS_ENTRY
+> +		is enabled
+> 
+>    		ex:
+>    		hexdump /sys/bus/nvmem/devices/qfprom0/nvmem
+> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+> index 0a7a470ee859..6ab3276d287c 100644
+> --- a/drivers/nvmem/Kconfig
+> +++ b/drivers/nvmem/Kconfig
+> @@ -192,4 +192,9 @@ config SC27XX_EFUSE
+>    	  This driver can also be built as a module. If so, the module
+>    	  will be called nvmem-sc27xx-efuse.
+> 
+> +config NVMEM_NO_SYSFS_ENTRY
+> +	bool "No nvmem sysfs entry"
+> +
+> +	help
+> +	  Say Yes if you do not want to add nvmem entry to sysfs.
+>    endif
+> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> index b9a0270883a0..c70f183fe379 100644
+> --- a/drivers/nvmem/core.c
+> +++ b/drivers/nvmem/core.c
+> @@ -216,7 +216,7 @@ static const struct attribute_group
+> nvmem_bin_rw_group = {
+> 	.attrs		= nvmem_attrs,
+>    };
+> 
+> -static const struct attribute_group *nvmem_rw_dev_groups[] = {
+> +static const __maybe_unused struct attribute_group
+> *nvmem_rw_dev_groups[] = {
+>    	&nvmem_bin_rw_group,
+>    	NULL,
+>    };
+> @@ -240,7 +240,7 @@ static const struct attribute_group
+> nvmem_bin_ro_group = {
+>    	.attrs		= nvmem_attrs,
+>    };
+> 
+> -static const struct attribute_group *nvmem_ro_dev_groups[] = {
+> +static const __maybe_unused struct attribute_group
+> *nvmem_ro_dev_groups[] = {
+>    	&nvmem_bin_ro_group,
+>    	NULL,
+>    };
+> @@ -265,7 +265,7 @@ static const struct attribute_group
+> nvmem_bin_rw_root_group = {
+>    	.attrs		= nvmem_attrs,
+>    };
+> 
+> -static const struct attribute_group *nvmem_rw_root_dev_groups[] = {
+> +static const __maybe_unused struct attribute_group
+> *nvmem_rw_root_dev_groups[] = {
+>    	&nvmem_bin_rw_root_group,
+>    	NULL,
+>    };
+> @@ -289,7 +289,7 @@ static const struct attribute_group
+> nvmem_bin_ro_root_group = {
+>    	.attrs		= nvmem_attrs,
+>    };
+> 
+> -static const struct attribute_group *nvmem_ro_root_dev_groups[] = {
+> +static const __maybe_unused struct attribute_group
+> *nvmem_ro_root_dev_groups[] = {
+>    	&nvmem_bin_ro_root_group,
+>    	NULL,
+>    };
+> @@ -688,6 +688,7 @@ struct nvmem_device *nvmem_register(const struct
+> nvmem_config *config)
+>    	nvmem->read_only = device_property_present(config->dev, "read-only") |
+>    			   config->read_only;
+> 
+> +#if !defined(CONFIG_NVMEM_NO_SYSFS_ENTRY)
+>    	if (config->root_only)
+>    		nvmem->dev.groups = nvmem->read_only ?
+>    			nvmem_ro_root_dev_groups :
+> @@ -696,7 +697,7 @@ struct nvmem_device *nvmem_register(const struct
+> nvmem_config *config)
+>    		nvmem->dev.groups = nvmem->read_only ?
+>    			nvmem_ro_dev_groups :
+>    			nvmem_rw_dev_groups;
+> -
+> +#endif
+>    	device_initialize(&nvmem->dev);
+> 
+>    	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);
+> 
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
+Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
