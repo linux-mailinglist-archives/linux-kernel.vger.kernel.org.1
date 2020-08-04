@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3D223B5F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F86723B637
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 10:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729636AbgHDHq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 03:46:59 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:53438 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727887AbgHDHq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 03:46:59 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 11CC1270000FDC330E46;
-        Tue,  4 Aug 2020 15:46:57 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Tue, 4 Aug 2020
- 15:46:47 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-CC:     <mcgrof@kernel.org>, <keescook@chromium.org>, <yzaikin@google.com>,
-        <willy@infradead.org>, <hch@lst.de>, <yangyingliang@huawei.com>
-Subject: [PATCH -next] sysctl: fix memleak in proc_sys_call_handler()
-Date:   Tue, 4 Aug 2020 15:45:03 +0000
-Message-ID: <20200804154503.3863200-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1729698AbgHDIAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 04:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728629AbgHDIAu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 04:00:50 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D40CC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 01:00:49 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id g19so27575643ejc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 01:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ka4ursZWzHeHcUfmCrEOqwNJhgydKg059CXG4PMpUJs=;
+        b=GVctKqeEnzKv6JRsSZhMZ2HE6w6h79tHOaCY1SYi03CdT4HFUPh3sdxTNEKwQLRLLD
+         faOVMHGokNejpY9ge0Bi83TyNLyLghDLHPAWPCeEjDauGZkzDNJRp3919MugXe4nW11X
+         rLA0SN4Uc8b825rKOKODkOUWijYRgih9cnG4PkXHSeVhAtPG/gq/udGOn3xJcVs2YblA
+         9EFZsHbANwiYMpQfwPXYTYdwHQZHaOwcwWShTp3sAbnUUjG/vIlWYeweONtTtTDELaE+
+         vhd8VIhCfQec0Qoz+9YcFoMNsigWfuSPeESXwOOYdEYrQo0DkJPMn5SzcO9lEe/5NsA7
+         XQqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ka4ursZWzHeHcUfmCrEOqwNJhgydKg059CXG4PMpUJs=;
+        b=nCQaegK3lQ0bwHL8L9CVSGUEXfIU4lk8XfjHsiUeWyJU3KjCXQ067frL5eokwId5YM
+         k0aoD33/OXR20tNqtxEDyftZCsWPl1YWB7g7Sdaukww0Sb7lVp3q5+0sctMyoDDhjEvK
+         F1ELqtzCRvxoqxBReXrsi7qBUkn3aP64LRhf0+zsUQikH1yxzvLoEVRD8Z9g5eazT3xv
+         kWCV4bkz/J0+Y+pursHaqJWS0M9pOmXbY9sxdw23KAonlZmq86hVI2uIX6hz6JAxfna4
+         bpP9hIv2v4r/x+4Rj5k91dA9Wc5495WQP9FWTDtpHUznThqL70/fLa3a+/eYsFav8FIJ
+         MD0A==
+X-Gm-Message-State: AOAM532rvcBK/uUpeZzq3OagrpQY6Gh4bkWeK/2uzRfqUcbqKlZw6NBZ
+        FaydXvU5qhA27Qq/pbL9YEA5tg==
+X-Google-Smtp-Source: ABdhPJxrlGJh09BGvoR0QWYGdbnyOOjs0CW/dihPJP8QgqlGuW4JhFWaUSVZDKlIm9nZikFhSK1kww==
+X-Received: by 2002:a17:906:990c:: with SMTP id zl12mr19610454ejb.488.1596528048284;
+        Tue, 04 Aug 2020 01:00:48 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id 32sm9260296edf.83.2020.08.04.01.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Aug 2020 01:00:47 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 10:00:26 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [PATCH v2 12/24] virtio_iommu: correct tags for config space
+ fields
+Message-ID: <20200804080026.GA284384@myrica>
+References: <20200803205814.540410-1-mst@redhat.com>
+ <20200803205814.540410-13-mst@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200803205814.540410-13-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a memleak report when doing some fuzz test:
+On Mon, Aug 03, 2020 at 04:59:27PM -0400, Michael S. Tsirkin wrote:
+> Since this is a modern-only device,
+> tag config space fields as having little endian-ness.
+> 
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
-BUG: memory leak
-unreferenced object 0xffff888103f3da00 (size 64):
-comm "syz-executor.0", pid 2270, jiffies 4295404698 (age 46.593s)
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-backtrace:
-[<000000004f2c0607>] kmalloc include/linux/slab.h:559 [inline]
-[<000000004f2c0607>] kzalloc include/linux/slab.h:666 [inline]
-[<000000004f2c0607>] proc_sys_call_handler+0x1d4/0x480 fs/proc/proc_sysctl.c:574
-[<000000005ec6a16b>] call_write_iter include/linux/fs.h:1876 [inline]
-[<000000005ec6a16b>] new_sync_write+0x3c5/0x5b0 fs/read_write.c:515
-[<00000000bbeebb83>] vfs_write+0x4e8/0x670 fs/read_write.c:595
-[<000000009d967c93>] ksys_write+0x10c/0x220 fs/read_write.c:648
-[<00000000139f6002>] do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
-[<00000000b7d61f44>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 
-Go to free buff when copy_from_iter_full() is failed.
+And tested with the latest sparse
 
-Fixes: 1dea05cbc0d7 ("sysctl: Convert to iter interfaces")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- fs/proc/proc_sysctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index 9f6b9c3e3fda..a4a3122f8a58 100644
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -578,7 +578,7 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
- 	if (write) {
- 		error = -EFAULT;
- 		if (!copy_from_iter_full(kbuf, count, iter))
--			goto out;
-+			goto out_free_buf;
- 		kbuf[count] = '\0';
- 	}
- 
--- 
-2.25.1
-
+> ---
+>  include/uapi/linux/virtio_iommu.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+> index 48e3c29223b5..237e36a280cb 100644
+> --- a/include/uapi/linux/virtio_iommu.h
+> +++ b/include/uapi/linux/virtio_iommu.h
+> @@ -18,24 +18,24 @@
+>  #define VIRTIO_IOMMU_F_MMIO			5
+>  
+>  struct virtio_iommu_range_64 {
+> -	__u64					start;
+> -	__u64					end;
+> +	__le64					start;
+> +	__le64					end;
+>  };
+>  
+>  struct virtio_iommu_range_32 {
+> -	__u32					start;
+> -	__u32					end;
+> +	__le32					start;
+> +	__le32					end;
+>  };
+>  
+>  struct virtio_iommu_config {
+>  	/* Supported page sizes */
+> -	__u64					page_size_mask;
+> +	__le64					page_size_mask;
+>  	/* Supported IOVA range */
+>  	struct virtio_iommu_range_64		input_range;
+>  	/* Max domain ID size */
+>  	struct virtio_iommu_range_32		domain_range;
+>  	/* Probe buffer size */
+> -	__u32					probe_size;
+> +	__le32					probe_size;
+>  };
+>  
+>  /* Request types */
+> -- 
+> MST
+> 
