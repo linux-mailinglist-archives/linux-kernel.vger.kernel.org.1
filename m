@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F6123C10B
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66D223C122
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728331AbgHDU6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 16:58:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42170 "EHLO mail.kernel.org"
+        id S1728689AbgHDU7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 16:59:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728068AbgHDU6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728092AbgHDU6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 Aug 2020 16:58:16 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E087022B45;
-        Tue,  4 Aug 2020 20:58:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BFB722CBB;
+        Tue,  4 Aug 2020 20:58:14 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1k340i-006HBu-Sw; Tue, 04 Aug 2020 16:58:12 -0400
-Message-ID: <20200804205812.775534405@goodmis.org>
+        id 1k340j-006HCQ-18; Tue, 04 Aug 2020 16:58:13 -0400
+Message-ID: <20200804205812.917542970@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 04 Aug 2020 16:57:49 -0400
+Date:   Tue, 04 Aug 2020 16:57:50 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [for-linus][PATCH 06/17] ftrace: Do not let direct or IPMODIFY ftrace_ops be added to module
- and set trampolines
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: [for-linus][PATCH 07/17] tracing: Remove outdated comment in stack handling
 References: <20200804205743.419135730@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,46 +36,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-When inserting a module, we find all ftrace_ops referencing it on the
-ftrace_ops_list. But FTRACE_OPS_FL_DIRECT and FTRACE_OPS_FL_IPMODIFY
-flags are special, and should not be set automatically. So warn and
-skip ftrace_ops that have these two flags set and adding new code.
-Also check if only one ftrace_ops references the module, in which case
-we can use a trampoline as an optimization.
+This comment describes the behaviour before commit 2a820bf74918
+("tracing: Use percpu stack trace buffer more intelligently").  Since
+that commit, interrupts and NMIs do use the per-cpu stacks so the
+comment is no longer correct.  Remove it.
 
-Link: https://lkml.kernel.org/r/20200728180554.65203-2-zhouchengming@bytedance.com
+(Note that the FTRACE_STACK_SIZE mentioned in the comment has never
+existed, it probably should have said FTRACE_STACK_ENTRIES.)
 
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Link: https://lkml.kernel.org/r/20200727092840.18659-1-vincent.whitchurch@axis.com
+
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/ftrace.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ kernel/trace/trace.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index d052f856f1cf..f433cb44300a 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -6199,9 +6199,17 @@ static int referenced_filters(struct dyn_ftrace *rec)
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 4aab712f9567..dbcacdd56b02 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2930,12 +2930,6 @@ static void __ftrace_trace_stack(struct trace_buffer *buffer,
+ 		skip++;
+ #endif
  
- 	for (ops = ftrace_ops_list; ops != &ftrace_list_end; ops = ops->next) {
- 		if (ops_references_rec(ops, rec)) {
-+			if (WARN_ON_ONCE(ops->flags & FTRACE_OPS_FL_DIRECT))
-+				continue;
-+			if (WARN_ON_ONCE(ops->flags & FTRACE_OPS_FL_IPMODIFY))
-+				continue;
- 			cnt++;
- 			if (ops->flags & FTRACE_OPS_FL_SAVE_REGS)
- 				rec->flags |= FTRACE_FL_REGS;
-+			if (cnt == 1 && ops->trampoline)
-+				rec->flags |= FTRACE_FL_TRAMP;
-+			else
-+				rec->flags &= ~FTRACE_FL_TRAMP;
- 		}
- 	}
+-	/*
+-	 * Since events can happen in NMIs there's no safe way to
+-	 * use the per cpu ftrace_stacks. We reserve it and if an interrupt
+-	 * or NMI comes in, it will just have to use the default
+-	 * FTRACE_STACK_SIZE.
+-	 */
+ 	preempt_disable_notrace();
  
+ 	stackidx = __this_cpu_inc_return(ftrace_stack_reserve) - 1;
 -- 
 2.26.2
 
