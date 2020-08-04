@@ -2,153 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD60D23BF1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 19:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4D523BF38
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 20:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgHDRtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 13:49:39 -0400
-Received: from mga02.intel.com ([134.134.136.20]:48308 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727902AbgHDRth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 13:49:37 -0400
-IronPort-SDR: WEy+on+2bKgfNfaH46b/qEiN7ohlDnYZ639yl2SCULyOMsaEXm3PvRIW9es8eE9s1U4gnzrZXz
- BOX2mwmbNsBg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="140285010"
-X-IronPort-AV: E=Sophos;i="5.75,434,1589266800"; 
-   d="scan'208";a="140285010"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 10:49:35 -0700
-IronPort-SDR: vs6Dh4VZN5MzxpDli0i/f/kKxKwJorfoxBkdAAWGySOJ2LF6UCtnZMYCY4AIXXfQ9cLhhiuuMK
- zP3QzAo142sQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,434,1589266800"; 
-   d="scan'208";a="288650237"
-Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
-  by orsmga003.jf.intel.com with ESMTP; 04 Aug 2020 10:49:35 -0700
-Subject: Re: [RESEND PATCHv1] fpga: stratix10-soc: make FPGA task
- un-interruptible
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trix@redhat.com, dinguyen@kernel.org,
-        Richard Gong <richard.gong@intel.com>
-References: <1595607009-2065-1-git-send-email-richard.gong@linux.intel.com>
- <20200804164358.GB1499313@epycbox.lan>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <91182a46-edcd-f4f2-3316-696a5147f5e4@linux.intel.com>
-Date:   Tue, 4 Aug 2020 13:04:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726240AbgHDSRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 14:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725826AbgHDSRy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 14:17:54 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D92DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 11:17:54 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id w17so23609925ply.11
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 11:17:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a4tfCnzr4+3Vx6rPZIuq6XqGtDYKgl1/4YSkrP73Ea4=;
+        b=Z+/m0VdDjhfO3sTKjHjfXRkxKWgUFS7YMUFyEubDOG82kpiOKCuzMqtEadaKhvrr4f
+         EuC3pjHVo6WqhHwjS0Ijcwk5s+SQfUN75TB5n45iMclgUHoZ11rmuaPn5wwYjlHvUGcX
+         lM73YXE+VN4fdT0MbELvujQBHlgiIostnMSRgS9Nh437nTC59TJ6JqhQIGXa00qS6t5r
+         Np+G+Wf7G95S055gNuoZjOAl6kqEZOZa1KPNYzBpde7DZrFBx0RD4GhZc6FisVRa9Xum
+         3VCvCa0DclVbD/2CEGfkMQc7gg1z+oO7S1KI8JaxhezsErWYn8nJOe3NmFasCd2YrV+j
+         5DuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a4tfCnzr4+3Vx6rPZIuq6XqGtDYKgl1/4YSkrP73Ea4=;
+        b=U8KpgA8uGRcuBOG6Iw6UKth95wxzsw/obZOdTGcDDLVYIfzuoYd4QwgQyV1J5sE2gr
+         YTN8C88eM5E6E2c58wT2tL652Yvh3C8gXgwS0C3kBmQb8j/lCieFoFEaieVKWg4gJ9mW
+         nYkK4X/0FMAoSeALo2eX96Fl2s1ml0+Jdnky4K2+7Gsq+TbghhucKhtFp4mVgxh5PiVV
+         kSQD5XKfhtB0+SBG7GdPGmb4FXfxWqWuk25jUzXsXnzNq5Z3shKK7D8I2ToYtFcFykrF
+         AUGifJ2uuKxECeAgtwhFgFJmN3otTjD1QuBmsm004xdBArlmAuZxrcy5HxTFRrixqeZ0
+         WYFw==
+X-Gm-Message-State: AOAM530sdCOrzLZpPyRyNTvX5RyMg4gIcJ9lWguDEThejQYFoRfWaPWw
+        sJKV0cBQ9guoX0Ntgc5w8jc=
+X-Google-Smtp-Source: ABdhPJyFGGZ0oNMt7juL0+U0n+sUKltwVR33pI2Fkp6Gv/xOdoV0hiVje9tkeWtWo6h0FS2alHZWZQ==
+X-Received: by 2002:a17:902:ee02:: with SMTP id z2mr20278515plb.291.1596565073765;
+        Tue, 04 Aug 2020 11:17:53 -0700 (PDT)
+Received: from aditya ([139.167.61.143])
+        by smtp.gmail.com with ESMTPSA id o2sm23729722pfh.160.2020.08.04.11.17.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Aug 2020 11:17:53 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 18:17:47 +0530
+From:   Aditya Bansal <adbansal99@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: wfx: fixed misspelled word in comment
+Message-ID: <20200804124627.GA3348@aditya>
+References: <20200804145816.GA3823@aditya>
 MIME-Version: 1.0
-In-Reply-To: <20200804164358.GB1499313@epycbox.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200804145816.GA3823@aditya>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Moritz,
+From: Aditya Bansal <adbansal99@gmail.com>
 
-No problem.
+Subject: [PATCH v2] fixed typo in driver/staging/wfx/hif_tx.c file
 
-Thanks you very much for applying patch to the next!
+Correct the spelling of word function and careful
 
-Regards,
-Richard
+Signed-off-by: Aditya Bansal <adbansal99@gmail.com>
+---
 
-On 8/4/20 11:43 AM, Moritz Fischer wrote:
-> On Fri, Jul 24, 2020 at 11:10:09AM -0500, richard.gong@linux.intel.com wrote:
->> From: Richard Gong <richard.gong@intel.com>
->>
->> When CTRL+C occurs during the process of FPGA reconfiguration, the FPGA
->> reconfiguration process stops and the user can't perform a new FPGA
->> reconfiguration properly.
->>
->> Set FPGA task to be not interruptible so that the user can properly
->> perform FPGA reconfiguration after CTRL+C event.
->>
->> Signed-off-by: Richard Gong <richard.gong@intel.com>
->> Reviewed-by: Tom Rix <trix@redhat.com>
->> ---
->>   drivers/fpga/stratix10-soc.c | 23 +++--------------------
->>   1 file changed, 3 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
->> index 44b7c56..657a70c 100644
->> --- a/drivers/fpga/stratix10-soc.c
->> +++ b/drivers/fpga/stratix10-soc.c
->> @@ -196,17 +196,13 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
->>   	if (ret < 0)
->>   		goto init_done;
->>   
->> -	ret = wait_for_completion_interruptible_timeout(
->> +	ret = wait_for_completion_timeout(
->>   		&priv->status_return_completion, S10_RECONFIG_TIMEOUT);
->>   	if (!ret) {
->>   		dev_err(dev, "timeout waiting for RECONFIG_REQUEST\n");
->>   		ret = -ETIMEDOUT;
->>   		goto init_done;
->>   	}
->> -	if (ret < 0) {
->> -		dev_err(dev, "error (%d) waiting for RECONFIG_REQUEST\n", ret);
->> -		goto init_done;
->> -	}
->>   
->>   	ret = 0;
->>   	if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
->> @@ -318,7 +314,7 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
->>   		 */
->>   		wait_status = 1; /* not timed out */
->>   		if (!priv->status)
->> -			wait_status = wait_for_completion_interruptible_timeout(
->> +			wait_status = wait_for_completion_timeout(
->>   				&priv->status_return_completion,
->>   				S10_BUFFER_TIMEOUT);
->>   
->> @@ -340,13 +336,6 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
->>   			ret = -ETIMEDOUT;
->>   			break;
->>   		}
->> -		if (wait_status < 0) {
->> -			ret = wait_status;
->> -			dev_err(dev,
->> -				"error (%d) waiting for svc layer buffers\n",
->> -				ret);
->> -			break;
->> -		}
->>   	}
->>   
->>   	if (!s10_free_buffers(mgr))
->> @@ -372,7 +361,7 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
->>   		if (ret < 0)
->>   			break;
->>   
->> -		ret = wait_for_completion_interruptible_timeout(
->> +		ret = wait_for_completion_timeout(
->>   			&priv->status_return_completion, timeout);
->>   		if (!ret) {
->>   			dev_err(dev,
->> @@ -380,12 +369,6 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
->>   			ret = -ETIMEDOUT;
->>   			break;
->>   		}
->> -		if (ret < 0) {
->> -			dev_err(dev,
->> -				"error (%d) waiting for RECONFIG_COMPLETED\n",
->> -				ret);
->> -			break;
->> -		}
->>   		/* Not error or timeout, so ret is # of jiffies until timeout */
->>   		timeout = ret;
->>   		ret = 0;
->> -- 
->> 2.7.4
->>
-> 
-> Sorry that one slipped through the cracks, will apply to for-next.
-> 
-> Thanks!
-> 
+diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
+index 5110f9b93762..fc12f9dcefce 100644
+--- a/drivers/staging/wfx/hif_tx.c
++++ b/drivers/staging/wfx/hif_tx.c
+@@ -125,7 +125,7 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
+ 
+ // This function is special. After HIF_REQ_ID_SHUT_DOWN, chip won't reply to any
+ // request anymore. We need to slightly hack struct wfx_hif_cmd for that job. Be
+-// carefull to only call this funcion during device unregister.
++// careful to only call this function during device unregister.
+ int hif_shutdown(struct wfx_dev *wdev)
+ {
+        int ret;
