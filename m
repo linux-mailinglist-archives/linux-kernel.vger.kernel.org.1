@@ -2,88 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDDE23BF1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 19:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9693623BF22
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 19:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728740AbgHDRtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 13:49:17 -0400
-Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:34632
-        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728618AbgHDRtP (ORCPT
+        id S1726058AbgHDRyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 13:54:05 -0400
+Received: from smtprelay0192.hostedemail.com ([216.40.44.192]:49980 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725826AbgHDRyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 13:49:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596563354; bh=9CN9OOEMnPfpZeDCm4a2IWZdvQhL+vpZWFnAuWsKyjM=; h=To:Cc:From:Subject:Date:References:From:Subject; b=Ata+1fw+ljE+JqoL14DRxyaBOV95k+KaphQNOvu47RiSGU4nZHeY1L2OFQM6GiLGBBNZH742UaSsWcaHhK5j+6v75f0ktLibLDWMNGByj+ZO5zfWMkS+2ME3oJZiE7yRsv9IoX/yTgu1VYaJ6r2jLgWYBNxHAEgSmKD+eFQNyqyu4uGwZRP7zZWV3V4Lk+KbzQlwPZiviTu9eEESHlRy3yAa8Ek4+AviIP+ipOwVsaVTmVIS6uL4h7/s8EwuNYccDHVgohK9ssQjgVRKbuTly/6HViS3PgcK4O12zrTfRb0LjQbo6QRHm1Yv2h8Bh0rDKanNqhtaU0N5zlP97qcE0A==
-X-YMail-OSG: TZ1u4LQVM1maeWRg0odaZljk2Y.gCDjZDl5ldg7rep5NrOFL_DFiC8jED8YcJ2l
- f1OJII7WnLopN6W48NqmJfA.e7cbbl7qHVWWmbuJcy6I7cfnqWBmPIs5k7WWmUQ2DccgNOsSRLt5
- wzr30rXbqbye_oYS5IRsXz4PEQED9WtstKJ2czECp0XkurJQZBb2uu2qVx3tw.FCzkkWnSlFuO10
- n89AoeSL4Uut.91ZaHlqTj.tie7Edm2nnHEr5A17Jzwe37qpSAZ4kxEXHp8xDupXcZPppZAAPbIq
- GgdBPo7X2UfuqV06HC4oKcYSdyJ7mZY_eLs5jj7.0eEZCQdSRqf5s.IaL95e_Q3FXS5OGw7vzBQi
- PbGZOGwxaPGEWpmA5OlcxJo8Wjpe9Ldq34b.9ALUbNVGQc6.7XaYrN0VknfXbQl5SelfdFQwLzt9
- zU7AAJ4Gpwg5dGG6QNy6ozd0OgdYY6WvcaeOlrVN_R_xdB72CuK7OpU1maSF3EpNXCs06o5QTY6h
- ik50VUFtHLXqC0mxW6cLuRE2OP7H9dr8yfVOwWNR4_HvW_N_HpKgflDkZ6XDQZxDT5fPwSYiPGtJ
- NnitxDXoMHlnBQtSTmIcwkl6nScVt1r5pjzm_6d0r34YOdlDmKNMQgMnpMEr5Py6A_AFQoBQhYRF
- I4pyVacAPkKtkUFwP.t.IDcd3j_uNQsgG.1SYzY4clR3K7ZgGv0n_vsHG0t_VcSTb01seGus5ful
- Hkk3aKY17w8w8hMhS66ECTE91oPQcxW0ib7HmRAIxjMeF4gcgMKVMZpJ_ypY_IHpwFmjesT8nGQJ
- 25.u9fybSqk7W88UHAli21ALg52k1D1OsoDyJTCpCROCMHdsWaAlCF9OYOA3Ofjxd7tCuKsGYn8a
- R7LfePhUhYxdnuFBODI1BlHruRrzmEnieOKMONyj5Mwd2W4oV92pH2wpVFFncQPrFdJBJZ986wQx
- QZDKeubPGLfjl4tE71rblOAPI_ohzBRkjD43frp9NbBPOlKcUSAZyDWlyovUciwuXNURAjhHBjAK
- uvAtS_K.FCmlPdPufDXxuE8hGzTpqxtYs1m4xUsWEf1JLmO5qutRZGzoCJ_oz8BKJFXJcwaGp6kF
- JPMCq_KgEwSyZioXR._X6yuIQ_hWfgQX5lmI2EPYTUIamIRA_qtC9QnYC3mjZ3z0JgyHwdbDGv3d
- p2bPm_CPui.tkH_nNgXG4CxHAJqh21RCvOsz5q0Md4_5RUSxx44b3tY8CEXO.gl4T_60U2y9Nz0i
- 9XMbsA4Sh5t2Iq28.w9SyoTRz6m2qAkSAONO4RX1n8ZsGhzZ.QgjS.fkMoUq9np4LFvMc4MesRRw
- vcJQV_xmUI6MjTbmea48LfhM6_BvyEHJVrjcd079VD8E-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Tue, 4 Aug 2020 17:49:14 +0000
-Received: by smtp418.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 4161dd1e2f88195a64a81452e29391ff;
-          Tue, 04 Aug 2020 17:49:10 +0000 (UTC)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Subject: [GIT PULL] Smack patches for v5.9
-Message-ID: <8ce85723-5656-0ee8-67a7-35597d9df0dd@schaufler-ca.com>
-Date:   Tue, 4 Aug 2020 10:49:09 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 4 Aug 2020 13:54:03 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A98CE181D303C;
+        Tue,  4 Aug 2020 17:54:02 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2282:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3873:4321:5007:7903:8700:9010:10004:10400:10848:11026:11232:11658:11914:12043:12297:12438:12740:12760:12895:13069:13071:13184:13229:13311:13357:13439:14096:14097:14180:14181:14659:14721:14819:21060:21067:21080:21222:21433:21627:21740:30054:30055:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: army50_54005e126fa8
+X-Filterd-Recvd-Size: 1724
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  4 Aug 2020 17:54:01 +0000 (UTC)
+Message-ID: <ce2ec5ce170b17a902074d111b28f8e924553a87.camel@perches.com>
+Subject: Re: False positive in checkpatch.pl
+From:   Joe Perches <joe@perches.com>
+To:     "Kumar K, Anil" <anil.kumar.k@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 04 Aug 2020 10:54:00 -0700
+In-Reply-To: <MWHPR11MB1712232275EA75228B5069FECE4A0@MWHPR11MB1712.namprd11.prod.outlook.com>
+References: <MWHPR11MB1712232275EA75228B5069FECE4A0@MWHPR11MB1712.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-References: <8ce85723-5656-0ee8-67a7-35597d9df0dd.ref@schaufler-ca.com>
-X-Mailer: WebService/1.1.16397 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus
+On Tue, 2020-08-04 at 17:44 +0000, Kumar K, Anil wrote:
+> Hi Joe,
 
-Here are three minor fixes to Smack for the v5.9 release.
-All were found by automated checkers and have straight forward
-resolution.
+Hello.
 
---
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+Please always cc linux-kernel@vger.kernel.org
 
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+> I noticed a false positive while executing checkpatch.pl. Checkpatch
+> identifies the * as multiplication I guess. I saw there was some
+> discussion about this before. Was there a workaround/fix for this ?
+> Can u please share if so. Thanks for your time
+> 
+> ERROR: need consistent spacing around '*' (ctx:WxV)
+> #8195: FILE: src/soc/intel/abc/include/soc/romstage.h:21:
+> +void mainboard_memory_init_params(FSPM_UPD *mupd);
 
-are available in the Git repository at:
+Basically, avoid typedefs.
 
-  https://github.com/cschaufler/smack-next smack-for-5.9
+Either have the typedef available for checkpatch in the same
+file or don't use typedefs at all.
 
-for you to fetch changes up to 42a2df3e829f3c5562090391b33714b2e2e5ad4a:
+If your project has multiple typedefs and these messages
+annoy you, you could add --typedefsfile=<filepath> to the
+checkpatch command line where <filepath> contains a
+one entry per line list of the typedefs used.
 
-  Smack: prevent underflow in smk_set_cipso() (2020-07-27 13:35:12 -0700)
-
-----------------------------------------------------------------
-Dan Carpenter (2):
-      Smack: fix another vsscanf out of bounds
-      Smack: prevent underflow in smk_set_cipso()
-
-Eric Biggers (1):
-      Smack: fix use-after-free in smk_write_relabel_self()
-
- security/smack/smackfs.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
 
