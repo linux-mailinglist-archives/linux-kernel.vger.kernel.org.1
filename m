@@ -2,105 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3466723B604
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB38B23B60B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbgHDHtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 03:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725932AbgHDHtY (ORCPT
+        id S1729334AbgHDHty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 03:49:54 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:25031 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725932AbgHDHty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 03:49:24 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7C4C06174A;
-        Tue,  4 Aug 2020 00:49:24 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id k13so14573169plk.13;
-        Tue, 04 Aug 2020 00:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=4lUb1UDGtIibOehfsGOpj3d1F0eGCARLUemjRhAopo4=;
-        b=ZiibNN8Sjxcp1HIHuEaLVJfUxGcJ7w6XHP+IdD5Zy5ctaJrRP2lsbQGyOybdf6qYcv
-         4wfu/so9vVxhUtrHI24F/dkcYhD0/vD9qtG9yRlxV0JAPgWBJ4IuODgG0a5ZaCxCMXyz
-         vdtU0yI40y3qbB1BheU1pWTOh3TkpDKcub1szRcGoYZUZRR8KiyRY3bHAldHVpR7SIT4
-         PdecyM8LOF0GKlpy6qP3SSj8u3FOCin3I4FT3O+Ec3tEWk+XHGd6dmpIchFsgusnbxjC
-         0hXqaPgHBLWXb7naGKLV5WirN7JdnRAQwLiybUOlm/8uxUwcLl8+btaqt1oLLpx/R2II
-         p2bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=4lUb1UDGtIibOehfsGOpj3d1F0eGCARLUemjRhAopo4=;
-        b=pcFn8IuuSJdwPhM5175ojzT3sE0TmH3cCqqy/3r+kWyNl4zMc6WJEn/cFGYKpwRUou
-         wj5x8Z+SUWAd9H9mPf17sZlT8aH6gr7nttWZSLYMFUuaLUGGTNbcfPF+eXfk9+IN24e2
-         Oon3fvWtXn+sCvuqAq8YmDWNdT6I7bQmkA3kQKGqo4NLTBJrfa0+TJBoTYJDmPO7/Wg0
-         XzP0fkX4LCD2288dm16cpdigzDbaXiLt0syY8lcXJcfsKK8/rzivBuKv4wjsaIU3BmKz
-         7sAy1C+PNlMkYRp5XCDEl2klGIXcPeI5Jw2L/TDtyQ9MPnYa6GhMgg8KbGq2z4W6iiq7
-         mh0g==
-X-Gm-Message-State: AOAM531oHW84w/wrCVxqLOJfTifMX5uT00UJgiyC8fQJseIPacwg9Ap5
-        MFrxgzLDhvGi9KipWga/PVgByxlx9/Q=
-X-Google-Smtp-Source: ABdhPJxzAJE/ZkD3Su8IXKsD+lGk6tNMUV3r8nMIof4uJv+YxoUbAU8B6Cuv9P0Bj9rdEQe3WGdlUg==
-X-Received: by 2002:a17:902:d303:: with SMTP id b3mr18596539plc.101.1596527364077;
-        Tue, 04 Aug 2020 00:49:24 -0700 (PDT)
-Received: from [127.0.0.1] ([203.205.141.45])
-        by smtp.gmail.com with ESMTPSA id q5sm2746455pfg.89.2020.08.04.00.49.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Aug 2020 00:49:23 -0700 (PDT)
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   brookxu <brookxu.cn@gmail.com>
-Subject: [PATCH] ext4: delete invalid ac_b_extent backup inside
- ext4_mb_use_best_found()
-Message-ID: <ab2231e8-584a-c55b-38b3-5b5f6d02c9b8@gmail.com>
-Date:   Tue, 4 Aug 2020 15:49:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 4 Aug 2020 03:49:54 -0400
+X-IronPort-AV: E=Sophos;i="5.75,433,1589234400"; 
+   d="scan'208";a="462364097"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 09:49:52 +0200
+Date:   Tue, 4 Aug 2020 09:49:52 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Markus Elfring <Markus.Elfring@web.de>
+cc:     Denis Efremov <efremov@linux.com>,
+        Coccinelle <cocci@systeme.lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v3] coccinelle: api: add kvmalloc script
+In-Reply-To: <12b09b8f-7c73-1827-8bf3-63e6041b63fd@web.de>
+Message-ID: <alpine.DEB.2.22.394.2008040949360.2575@hadrien>
+References: <12b09b8f-7c73-1827-8bf3-63e6041b63fd@web.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete invalid ac_b_extent backup inside ext4_mb_use_best_found(),
-we have done this operation in ext4_mb_new_group_pa() and
-ext4_mb_new_inode_pa().
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- fs/ext4/mballoc.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 9b1c3ad..fb63e9f 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1704,10 +1704,6 @@ static void ext4_mb_use_best_found(struct ext4_allocation_context *ac,
-     ac->ac_b_ex.fe_logical = ac->ac_g_ex.fe_logical;
-     ret = mb_mark_used(e4b, &ac->ac_b_ex);
- 
--    /* preallocation can change ac_b_ex, thus we store actually
--     * allocated blocks for history */
--    ac->ac_f_ex = ac->ac_b_ex;
--
-     ac->ac_status = AC_STATUS_FOUND;
-     ac->ac_tail = ret & 0xffff;
-     ac->ac_buddy = ret >> 16;
-@@ -1726,8 +1722,8 @@ static void ext4_mb_use_best_found(struct ext4_allocation_context *ac,
-     /* store last allocated for subsequent stream allocation */
-     if (ac->ac_flags & EXT4_MB_STREAM_ALLOC) {
-         spin_lock(&sbi->s_md_lock);
--        sbi->s_mb_last_group = ac->ac_f_ex.fe_group;
--        sbi->s_mb_last_start = ac->ac_f_ex.fe_start;
-+        sbi->s_mb_last_group = ac->ac_b_ex.fe_group;
-+        sbi->s_mb_last_start = ac->ac_b_ex.fe_start;
-         spin_unlock(&sbi->s_md_lock);
-     }
-     /*
--- 
-1.8.3.1
+On Tue, 4 Aug 2020, Markus Elfring wrote:
 
+> > Changes in v3:
+> > - kvfree rules added
+>
+> I find it interesting to you found such an addition needed for this SmPL script.
+> I imagine that it can be helpful to support such a source code search by
+> a separate script for the semantic patch language.
+>
+> I am curious if my patch review comments for the second version got also a bit
+> of your software development attention.
+>
+> Another implementation detail is relevant for further clarification.
+> The SmPL rules for patch generation differ in search functionality
+> which is provided for other operation modes.
+> Can these deviations influence the confidence level?
+
+I see no useful information in this review, nor in the v2 review.
+
+julia
