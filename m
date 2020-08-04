@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E07623B900
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A1123B907
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729896AbgHDKoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 06:44:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:42436 "EHLO foss.arm.com"
+        id S1729801AbgHDKq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 06:46:28 -0400
+Received: from mga03.intel.com ([134.134.136.65]:56268 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726947AbgHDKoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 06:44:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BE5F31B;
-        Tue,  4 Aug 2020 03:44:13 -0700 (PDT)
-Received: from [10.37.12.45] (unknown [10.37.12.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF34E3F718;
-        Tue,  4 Aug 2020 03:44:11 -0700 (PDT)
-Subject: Re: [PATCH 0/4] CPUFreq statistics retrieved by drivers
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        cristian.marussi@arm.com, rjw@rjwysocki.net
-References: <20200729151208.27737-1-lukasz.luba@arm.com>
- <20200730085333.qubrsv7ufqninihd@vireshk-mac-ubuntu>
- <20200730091014.GA13158@bogus> <3b3a56e9-29ec-958f-fb3b-c689a9389d2f@arm.com>
- <20200804053502.35d3x3vnb3mggtqs@vireshk-mac-ubuntu>
- <f784bf30-83a6-55ff-8fa6-f7bd2d4399b9@arm.com>
- <20200804103857.mxgkmt6qmmzejuzb@vireshk-mac-ubuntu>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <1f978078-b2df-a2e5-6af8-e73f65044ba7@arm.com>
-Date:   Tue, 4 Aug 2020 11:44:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729126AbgHDKpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 06:45:47 -0400
+IronPort-SDR: 0LpYmLK5JTPTFn3wZUkOPdzX33V+C0JuBKqHbR4OswsGJ82HOra6EysTLRqAXR8wm9x5EeIfYY
+ oFLTKhW5Of5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="152253332"
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="152253332"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 03:45:46 -0700
+IronPort-SDR: Rgl9HHvb284G3NxyLIBGw23xxbjPjyvfAQA228weCp025Qc9lmQuFYdiE2cRckxYSf6sCAJUAv
+ cjD99fux4D/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="306306680"
+Received: from ipu5-build.bj.intel.com (HELO [10.238.232.196]) ([10.238.232.196])
+  by orsmga002.jf.intel.com with ESMTP; 04 Aug 2020 03:45:45 -0700
+Subject: Re: [PATCH] nvmem: core: add sanity check in nvmem_device_read()
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <1596532436-19073-1-git-send-email-bingbu.cao@intel.com>
+ <20200804095815.GF13316@paasikivi.fi.intel.com>
+ <0e8d60cf-7f8b-c6ab-4184-b869c16b603e@linaro.org>
+From:   Bingbu Cao <bingbu.cao@linux.intel.com>
+Message-ID: <48f2d716-dad9-054d-d049-452fa272d53b@linux.intel.com>
+Date:   Tue, 4 Aug 2020 18:44:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200804103857.mxgkmt6qmmzejuzb@vireshk-mac-ubuntu>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <0e8d60cf-7f8b-c6ab-4184-b869c16b603e@linaro.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 8/4/20 11:38 AM, Viresh Kumar wrote:
-> On 04-08-20, 11:29, Lukasz Luba wrote:
->> On 8/4/20 6:35 AM, Viresh Kumar wrote:
->>> IIUC, the only concern right now is to capture stats with fast switch ? Maybe we
->>> can do something else in that case and brainstorm a bit..
->>
->> Correct, the fast switch is the only concern right now and not tracked. We
->> could fill in that information with statistics data from firmware
->> with a cpufreq driver help.
->>
->> I could make the if from patch 1/4 covering narrowed case, when
->> fast switch is present, check for drivers stats.
->> Something like:
->> -----------8<------------------------------------------------------------
->> if (policy->fast_switch_enabled)
->> 	if (policy->has_driver_stats)
->> 		return cpufreq_stats_present_driver_data(policy, buf);
->> 	else
->> 		return 0;
->> -------------->8----------------------------------------------------------
+On 8/4/20 6:03 PM, Srinivas Kandagatla wrote:
 > 
-> I don't think doing it with help of firmware is the right thing to do
-> here then. For another platform we may not have a firmware which can
-> help us, we need something in the opp core itself for that. Lemme see
-> if I can do something about it.
-
-OK, great, I will wait then with this patch series v2 which would change
-into debugfs scmi only. Could you please add me on CC, I am very
-interested in.
-
 > 
->>> Why is firmware the governor here ? Aren't you talking about the simple fast
->>> switch case only ?
+> On 04/08/2020 10:58, Sakari Ailus wrote:
+>> Hi Bingbu,
 >>
->> I used a term 'governor' for the firmware because it makes the final
->> set for the frequency. It (FW) should respect the frequency value
->> set using the fast switch. I don't know how other firmware (e.g. Intel)
->> treats this fast switch value or if they even expose FW stats, though.
-> 
-> For Intel I think, Linux is one of the entities that vote for deciding
-> the frequency of the CPUs and the firmware (after taking all such
-> factors into account) chooses a frequency by its own, which must be >=
-> the frequency requested by Linux.
-> 
->> You can read about this statistics region in [1] at:
->> 4.5.5 Performance domain statistics shared memory region
+>> Thank you for the patch.
 >>
+>> On Tue, Aug 04, 2020 at 05:13:56PM +0800, Bingbu Cao wrote:
+>>> nvmem_device_read() could be called directly once nvmem device
+>>> registered, the sanity check should be done before call
+>>> nvmem_reg_read() as cell and sysfs read did now.
 >>>
->>> Over that, I think this cpufreq stats information isn't parsed by any tool right
->>> now and tweaking it a bit won't hurt anyone (like if we start capturing things a
->>> bit differently). So we may not want to worry about breaking userspace ABI here,
->>> if what we are looking to do is the right thing to do.
+>>> Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
+>>> ---
+>>>   drivers/nvmem/core.c | 7 +++++++
+>>>   1 file changed, 7 insertions(+)
+>>>
+>>> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+>>> index 927eb5f6003f..c9a77993f008 100644
+>>> --- a/drivers/nvmem/core.c
+>>> +++ b/drivers/nvmem/core.c
+>>> @@ -1491,6 +1491,13 @@ int nvmem_device_read(struct nvmem_device *nvmem,
+>>>       if (!nvmem)
+>>>           return -EINVAL;
+>>>   +    if (offset >= nvmem->size || bytes < nvmem->word_size)
+>>> +        return 0;
+>>> +
+>>> +    if (bytes + offset > nvmem->size)
+>>> +        bytes = nvmem->size - offset;
 >>
->> So, there is some hope... IMHO it would be better to have this cpufreq
->> stats in normal location, rather then in scmi debugfs.
-> 
-> I agree.
-> 
->>> I am not sure what notifications are we talking about here.
+>> The check is relevant for nvmem_device_write(), too.
 >>
->> There is a notification mechanism described in the SCMI spec [1] at
->> 4.5.4 Notifications.
->> We were referring to that mechanism.
+>> There are also other ways to access nvmem devices such as nvmem_cell_read
+>> and others alike. Should they be considered as well?
 > 
-> Ahh, I see. All I was thinking was about the cpufreq specific
-> notifiers :)
+> We should probably move these sanity checks to a common place like
+> nvmem_reg_read() and nvmem_reg_write(), so the callers need not duplicate the same!
 > 
+Srini and Sakari, thanks for your review.
+
+Is it OK just return INVAL with simple check like below?
+
+if (bytes + offset > nvmem->size ||
+    bytes != round_down(bytes, nvmem->word_size))
+        return -EINVAL;
+
+
+> --srini
+> 
+>>
+>>> +
+>>> +    bytes = round_down(bytes, nvmem->word_size);
+>>>       rc = nvmem_reg_read(nvmem, offset, buf, bytes);
+>>>         if (rc)
+>>
+
+-- 
+Best regards,
+Bingbu Cao
