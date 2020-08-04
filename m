@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C34023BF69
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 20:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975FF23BF6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 20:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgHDSia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 14:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726796AbgHDSi3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 14:38:29 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5DCC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 11:38:29 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id b11so22934840lfe.10
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 11:38:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jMA2j9yQTk3w310DnhDknRZNg2QP1O/2Dv3qHm0WbeI=;
-        b=K2GOscX/WlwdNLdrx7M4y89Nutz4YdOSB974IrnGyj42OxbxTjp5S8LsXZaNgEM4r6
-         K80zLUDgl81Xy8gAfi7z5QH+fcTZLlwTi0zxiqJ0/4mskLpACvEmK+5POMTQmmM1luBi
-         QJlr/bwjnmu2KgmZMKRi2Yj4nZh3q/Bw1flBQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jMA2j9yQTk3w310DnhDknRZNg2QP1O/2Dv3qHm0WbeI=;
-        b=pHhDYTlfHIDF8xA3zGdUHbzEZcNpAV5pM5XEMGostr242Hc70tUDV26o7r7xJoeyhJ
-         pdfIU1OkU7M8tw8dUmjco3nimPPSHKtQ0Hx/pIRvKe0Xp8xu7mPDcXxQc5UulGkuo8jZ
-         PUBh9cg8bk0PcpyRKyhF4IIwbgO4dJfkt0aVJy+b7AzVWp1Xf07gMJpNmjzF7wHne/6t
-         HOGw6mOSH7wR+FHS6hDX/Ymiz0aZbhFOJYkK2eq3xaJB0Igd42TgOrGK5freC/KuPNB+
-         kld46saVTXxLTJrTVqB3n7FRF3ClWYIP1tGZLmQ+WFEDkG09Cdqt0EnrizvJzkvRNQ4F
-         imbQ==
-X-Gm-Message-State: AOAM530HhpVfVTVPNnQVtUIPztwBMf6T19Y1ndPByTyaoBdW/n6OaZqy
-        2QKn141HTjKQ7MVViFWqXYDAeBsXXZg=
-X-Google-Smtp-Source: ABdhPJyfXbfJT9s/pc6KqFNC+Vgak7C1VCYWvxHQ+ATcUyeroZ6+eAy9dh1pHVXTMgV3XvgWs49NpQ==
-X-Received: by 2002:ac2:5ec8:: with SMTP id d8mr11519009lfq.169.1596566306734;
-        Tue, 04 Aug 2020 11:38:26 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id e17sm1362729ljg.85.2020.08.04.11.38.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Aug 2020 11:38:25 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id g6so32105803ljn.11
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 11:38:25 -0700 (PDT)
-X-Received: by 2002:a2e:9252:: with SMTP id v18mr6917688ljg.70.1596566305268;
- Tue, 04 Aug 2020 11:38:25 -0700 (PDT)
+        id S1727803AbgHDSls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 14:41:48 -0400
+Received: from mga14.intel.com ([192.55.52.115]:6550 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726606AbgHDSlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 14:41:47 -0400
+IronPort-SDR: /tAu4mTCxE/zxSxUg73ixnRKXY/ii5wVZV9FQSAIJiclNWhnub3/NX0RO//4JQZs26DmViJw1a
+ OWpxf/JE7tMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="151614819"
+X-IronPort-AV: E=Sophos;i="5.75,434,1589266800"; 
+   d="scan'208";a="151614819"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 11:41:47 -0700
+IronPort-SDR: P+On/KCPJFb54D29X8R4zo1HrfN2yDd2vovuqum2UHaH3TWSdydxYK2ttZHqE8ilDjkYRjI05E
+ uGGxcFW5k0fQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,434,1589266800"; 
+   d="scan'208";a="322855740"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga008.jf.intel.com with ESMTP; 04 Aug 2020 11:41:46 -0700
+Date:   Tue, 4 Aug 2020 11:41:46 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Oliver Upton <oupton@google.com>,
+        Peter Shier <pshier@google.com>
+Subject: Re: [PATCH] KVM: x86: Don't attempt to load PDPTRs when 64-bit mode
+ is enabled
+Message-ID: <20200804184146.GA16023@linux.intel.com>
+References: <20200714015732.32426-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
-References: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
- <CAK8P3a2B5cxE512R0-ni6BJOnkgR7kGueqd3AU9E2PXh0unsmg@mail.gmail.com> <CACPK8Xd++ZQx9hh21dV6qn73aoWvoFsOHq8Pmgbtpi-GD3ShmA@mail.gmail.com>
-In-Reply-To: <CACPK8Xd++ZQx9hh21dV6qn73aoWvoFsOHq8Pmgbtpi-GD3ShmA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 4 Aug 2020 11:38:09 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiUg-S20ywzUv7nB+5AQc1tDh9DZ3wL4oLNpT3sW=iFvw@mail.gmail.com>
-Message-ID: <CAHk-=wiUg-S20ywzUv7nB+5AQc1tDh9DZ3wL4oLNpT3sW=iFvw@mail.gmail.com>
-Subject: Re: [GIT PULL 3/5] ARM: SoC changes for v5.9
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>, SoC Team <soc@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714015732.32426-1-sean.j.christopherson@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 12:02 AM Joel Stanley <joel@jms.id.au> wrote:
->
-> for_each_requested_gpio isn't in Linus (Torvalds) tree yet. It will be
-> fixed when he pulls Linus Walleij's GPIO tree which has the commit:
+On Mon, Jul 13, 2020 at 06:57:32PM -0700, Sean Christopherson wrote:
+> Don't attempt to load PDPTRs if EFER.LME=1, i.e. if 64-bit mode is
+> enabled.  A recent change to reload the PDTPRs when CR0.CD or CR0.NW is
+> toggled botched the EFER.LME handling and sends KVM down the PDTPR path
+> when is_paging() is true, i.e. when the guest toggles CD/NW in 64-bit
+> mode.
+> 
+> Split the CR0 checks for 64-bit vs. 32-bit PAE into separate paths.  The
+> 64-bit path is specifically checking state when paging is toggled on,
+> i.e. CR0.PG transititions from 0->1.  The PDPTR path now needs to run if
+> the new CR0 state has paging enabled, irrespective of whether paging was
+> already enabled.  Trying to shave a few cycles to make the PDPTR path an
+> "else if" case is a mess.
+> 
+> Fixes: d42e3fae6faed ("kvm: x86: Read PDPTEs on CR0.CD and CR0.NW changes")
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Oliver Upton <oupton@google.com>
+> Cc: Peter Shier <pshier@google.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
 
-There are too many Linuses in kernel development.
-
-For the next in-person kernel summit, I suggest a Highlander-style
-"There can be only one" deathmatch.
-
-I will start training immediately.
-
-                Linus
+Ping.  This really needs to be in the initial pull for 5.9, as is kvm/queue
+has a 100% fatality rate for me.
