@@ -2,103 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9564523C1C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 23:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185B823C1B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 23:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgHDV6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 17:58:47 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31945 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728052AbgHDV6p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 17:58:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596578324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kBOKJp8w9KZXZuz53OUDNEXh+d4eCdFrJ20ncB3veo8=;
-        b=dPl8A8UNaI7L9Prg2GoJRKqjd6oArOQSlDFlYnDaueto1VzWlu7usI/sPMe7RgTCL1uD37
-        NCgjEtORJxK65rZcoRa7Y/tER57tyLyGYVboiYbyA+NASBwSv2mWbgRhiZ0SNDIR+YgmP6
-        WxlKeXf7Z3e3qAN1kJriNOJnNv+xEG0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-5AV7SC3ANV6U9ZNH25nRiA-1; Tue, 04 Aug 2020 17:58:39 -0400
-X-MC-Unique: 5AV7SC3ANV6U9ZNH25nRiA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7483E1DE1;
-        Tue,  4 Aug 2020 21:58:36 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-113-133.rdu2.redhat.com [10.10.113.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9845272E48;
-        Tue,  4 Aug 2020 21:58:34 +0000 (UTC)
-Date:   Tue, 4 Aug 2020 17:58:32 -0400
-From:   Neil Horman <nhorman@redhat.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     izabela.bakollari@gmail.com, Neil Horman <nhorman@tuxdriver.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        David Miller <davem@davemloft.net>
-Subject: Re: [Linux-kernel-mentees] [PATCHv2 net-next] dropwatch: Support
- monitoring of dropped frames
-Message-ID: <20200804215832.GB72184@localhost.localdomain>
-References: <20200707171515.110818-1-izabela.bakollari@gmail.com>
- <20200804160908.46193-1-izabela.bakollari@gmail.com>
- <CAM_iQpV-AfX_=o0=ZhU2QzV_pmyWs8RKV0yyMuxFgwFAPwpnXw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM_iQpV-AfX_=o0=ZhU2QzV_pmyWs8RKV0yyMuxFgwFAPwpnXw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S1728276AbgHDVrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 17:47:21 -0400
+Received: from mga02.intel.com ([134.134.136.20]:7503 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727092AbgHDVrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 17:47:20 -0400
+IronPort-SDR: dAHEpdbbxbSrU/HbrwqIYQnGOl8zfw/B/mNnTNdYjjyCT6MEIVJhsDInD3RCbnxmG1q0bZQg50
+ Iz9NP2BUi9EQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="140326369"
+X-IronPort-AV: E=Sophos;i="5.75,435,1589266800"; 
+   d="scan'208";a="140326369"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 14:47:18 -0700
+IronPort-SDR: E69qndROsJ7odBbDVZe7C4viqsnpXK8xXPfW4UkRpid6b9n+f17CO9CJIBnrabJtG0Y/2xhSrs
+ 0in+wJJMr1tA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,435,1589266800"; 
+   d="scan'208";a="330737829"
+Received: from marshy.an.intel.com ([10.122.105.159])
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Aug 2020 14:47:16 -0700
+From:   richard.gong@linux.intel.com
+To:     dinguyen@kernel.org, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        richard.gong@linux.intel.com, Richard Gong <richard.gong@intel.com>
+Subject: [PATCH] arm64: dts: agilex: increase shared memory size to 32Mb
+Date:   Tue,  4 Aug 2020 17:01:32 -0500
+Message-Id: <1596578492-13263-1-git-send-email-richard.gong@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 02:28:28PM -0700, Cong Wang wrote:
-> On Tue, Aug 4, 2020 at 9:14 AM <izabela.bakollari@gmail.com> wrote:
-> >
-> > From: Izabela Bakollari <izabela.bakollari@gmail.com>
-> >
-> > Dropwatch is a utility that monitors dropped frames by having userspace
-> > record them over the dropwatch protocol over a file. This augument
-> > allows live monitoring of dropped frames using tools like tcpdump.
-> >
-> > With this feature, dropwatch allows two additional commands (start and
-> > stop interface) which allows the assignment of a net_device to the
-> > dropwatch protocol. When assinged, dropwatch will clone dropped frames,
-> > and receive them on the assigned interface, allowing tools like tcpdump
-> > to monitor for them.
-> >
-> > With this feature, create a dummy ethernet interface (ip link add dev
-> > dummy0 type dummy), assign it to the dropwatch kernel subsystem, by using
-> > these new commands, and then monitor dropped frames in real time by
-> > running tcpdump -i dummy0.
-> 
-> drop monitor is already able to send dropped packets to user-space,
-> and wireshark already catches up with this feature:
-> 
-> https://code.wireshark.org/review/gitweb?p=wireshark.git;a=commitdiff;h=a94a860c0644ec3b8a129fd243674a2e376ce1c8
-> 
-> So what you propose here seems pretty much a duplicate?
-> 
-I had asked Izabela to implement this feature as an alternative approach to
-doing live capture of dropped packets, as part of the Linux foundation
-mentorship program.  I'm supportive of this additional feature as the added code
-is fairly minimal, and allows for the use of other user space packet monitoring
-tools without additional code changes (i.e. tcpdump/snort/etc can now monitor
-dropped packets without the need to augment those tools with netlink capture
-code.
+From: Richard Gong <richard.gong@intel.com>
 
-Best
-Neil 
-> Thanks.
-> _______________________________________________
-> Linux-kernel-mentees mailing list
-> Linux-kernel-mentees@lists.linuxfoundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
-> 
+Increase the shared memory size from 16Mb to 32Mb so that we can properly
+handle the image authorization for 12+ Mb RBF/JIC files.
+
+Signed-off-by: Richard Gong <richard.gong@intel.com>
+---
+ arch/arm64/boot/dts/intel/socfpga_agilex.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/intel/socfpga_agilex.dtsi b/arch/arm64/boot/dts/intel/socfpga_agilex.dtsi
+index 9d7f19e..d81dd86 100644
+--- a/arch/arm64/boot/dts/intel/socfpga_agilex.dtsi
++++ b/arch/arm64/boot/dts/intel/socfpga_agilex.dtsi
+@@ -20,7 +20,7 @@
+ 
+ 		service_reserved: svcbuffer@0 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x0 0x0 0x1000000>;
++			reg = <0x0 0x0 0x0 0x2000000>;
+ 			alignment = <0x1000>;
+ 			no-map;
+ 		};
+-- 
+2.7.4
 
