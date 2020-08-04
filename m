@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11D323BE1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF7E23BE02
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729993AbgHDQZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:25:53 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43867 "EHLO
+        id S1729768AbgHDQV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:21:58 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43880 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729610AbgHDQU6 (ORCPT
+        with ESMTP id S1729612AbgHDQU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 Aug 2020 12:20:58 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from eli@mellanox.com)
         with SMTP; 4 Aug 2020 19:20:52 +0300
 Received: from nps-server-21.mtl.labs.mlnx (nps-server-21.mtl.labs.mlnx [10.237.240.120])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKqTE023997;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKqMD024001;
         Tue, 4 Aug 2020 19:20:52 +0300
 Received: from nps-server-21.mtl.labs.mlnx (localhost [127.0.0.1])
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKq0N022636;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKqcp022638;
         Tue, 4 Aug 2020 19:20:52 +0300
 Received: (from eli@localhost)
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKqKD022635;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKq3H022637;
         Tue, 4 Aug 2020 19:20:52 +0300
 From:   Eli Cohen <eli@mellanox.com>
 To:     mst@redhat.com, jasowang@redhat.com,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Cc:     shahafs@mellanox.com, saeedm@mellanox.com, parav@mellanox.com
-Subject: [PATCH V4 linux-next 02/12] vhost: generialize backend features setting/getting
-Date:   Tue,  4 Aug 2020 19:20:38 +0300
-Message-Id: <20200804162048.22587-3-eli@mellanox.com>
+Cc:     shahafs@mellanox.com, saeedm@mellanox.com, parav@mellanox.com,
+        Cindy Lu <lulu@redhat.com>
+Subject: [PATCH V4 linux-next 03/12] vhost-vdpa: support get/set backend features
+Date:   Tue,  4 Aug 2020 19:20:39 +0300
+Message-Id: <20200804162048.22587-4-eli@mellanox.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200804162048.22587-1-eli@mellanox.com>
 References: <20200804162048.22587-1-eli@mellanox.com>
@@ -43,91 +44,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jason Wang <jasowang@redhat.com>
 
-Move the backend features setting/getting from net.c to vhost.c to be
-reused by vhost-vdpa.
+This patch makes userspace can get and set backend features to
+vhost-vdpa.
 
+Signed-off-by: Cindy Lu <lulu@redhat.com>
 Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/vhost/net.c   | 18 ++----------------
- drivers/vhost/vhost.c | 15 +++++++++++++++
- drivers/vhost/vhost.h |  2 ++
- 3 files changed, 19 insertions(+), 16 deletions(-)
+ drivers/vhost/vdpa.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index 8e0921d3805d..bfbbe5c876f9 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -1615,21 +1615,6 @@ static long vhost_net_reset_owner(struct vhost_net *n)
- 	return err;
- }
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 563ae6204052..2f0310d1b914 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -26,6 +26,10 @@
  
--static int vhost_net_set_backend_features(struct vhost_net *n, u64 features)
--{
--	int i;
--
--	mutex_lock(&n->dev.mutex);
--	for (i = 0; i < VHOST_NET_VQ_MAX; ++i) {
--		mutex_lock(&n->vqs[i].vq.mutex);
--		n->vqs[i].vq.acked_backend_features = features;
--		mutex_unlock(&n->vqs[i].vq.mutex);
--	}
--	mutex_unlock(&n->dev.mutex);
--
--	return 0;
--}
--
- static int vhost_net_set_features(struct vhost_net *n, u64 features)
- {
- 	size_t vhost_hlen, sock_hlen, hdr_len;
-@@ -1730,7 +1715,8 @@ static long vhost_net_ioctl(struct file *f, unsigned int ioctl,
- 			return -EFAULT;
- 		if (features & ~VHOST_NET_BACKEND_FEATURES)
- 			return -EOPNOTSUPP;
--		return vhost_net_set_backend_features(n, features);
-+		vhost_set_backend_features(&n->dev, features);
+ #include "vhost.h"
+ 
++enum {
++	VHOST_VDPA_BACKEND_FEATURES = (1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2)
++};
++
+ /* Currently, only network backend w/o multiqueue is supported. */
+ #define VHOST_VDPA_VQ_MAX	2
+ 
+@@ -364,6 +368,8 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+ 	struct vdpa_callback cb;
+ 	struct vhost_virtqueue *vq;
+ 	struct vhost_vring_state s;
++	u64 __user *featurep = argp;
++	u64 features;
+ 	u32 idx;
+ 	long r;
+ 
+@@ -386,6 +392,18 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+ 	case VHOST_GET_VRING_BASE:
+ 		vq->last_avail_idx = ops->get_vq_state(v->vdpa, idx);
+ 		break;
++	case VHOST_GET_BACKEND_FEATURES:
++		features = VHOST_VDPA_BACKEND_FEATURES;
++		if (copy_to_user(featurep, &features, sizeof(features)))
++			return -EFAULT;
 +		return 0;
- 	case VHOST_RESET_OWNER:
- 		return vhost_net_reset_owner(n);
- 	case VHOST_SET_OWNER:
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 8f622064b3e8..5e5cc3dd983e 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -2591,6 +2591,21 @@ struct vhost_msg_node *vhost_dequeue_msg(struct vhost_dev *dev,
- }
- EXPORT_SYMBOL_GPL(vhost_dequeue_msg);
++	case VHOST_SET_BACKEND_FEATURES:
++		if (copy_from_user(&features, featurep, sizeof(features)))
++			return -EFAULT;
++		if (features & ~VHOST_VDPA_BACKEND_FEATURES)
++			return -EOPNOTSUPP;
++		vhost_set_backend_features(&v->vdev, features);
++		return 0;
+ 	}
  
-+void vhost_set_backend_features(struct vhost_dev *dev, u64 features)
-+{
-+	struct vhost_virtqueue *vq;
-+	int i;
-+
-+	mutex_lock(&dev->mutex);
-+	for (i = 0; i < dev->nvqs; ++i) {
-+		vq = dev->vqs[i];
-+		mutex_lock(&vq->mutex);
-+		vq->acked_backend_features = features;
-+		mutex_unlock(&vq->mutex);
-+	}
-+	mutex_unlock(&dev->mutex);
-+}
-+EXPORT_SYMBOL_GPL(vhost_set_backend_features);
- 
- static int __init vhost_init(void)
- {
-diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-index 38eb1aa3b68d..9032d3c2a9f4 100644
---- a/drivers/vhost/vhost.h
-+++ b/drivers/vhost/vhost.h
-@@ -214,6 +214,8 @@ void vhost_enqueue_msg(struct vhost_dev *dev,
- 		       struct vhost_msg_node *node);
- struct vhost_msg_node *vhost_dequeue_msg(struct vhost_dev *dev,
- 					 struct list_head *head);
-+void vhost_set_backend_features(struct vhost_dev *dev, u64 features);
-+
- __poll_t vhost_chr_poll(struct file *file, struct vhost_dev *dev,
- 			    poll_table *wait);
- ssize_t vhost_chr_read_iter(struct vhost_dev *dev, struct iov_iter *to,
+ 	r = vhost_vring_ioctl(&v->vdev, cmd, argp);
 -- 
 2.26.0
 
