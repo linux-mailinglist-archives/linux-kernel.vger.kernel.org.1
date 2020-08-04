@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8081023B931
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948EC23B974
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgHDLDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:03:36 -0400
-Received: from foss.arm.com ([217.140.110.172]:42624 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729548AbgHDLDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:03:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81C8430E;
-        Tue,  4 Aug 2020 04:03:04 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B5FBC3F6CF;
-        Tue,  4 Aug 2020 04:03:02 -0700 (PDT)
-References: <20200804033307.76111-1-srikar@linux.vnet.ibm.com> <20200804033307.76111-2-srikar@linux.vnet.ibm.com> <20200804104642.GC2657@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     peterz@infradead.org
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Subject: Re: [PATCH 2/2] powerpc/topology: Override cpu_smt_mask
-In-reply-to: <20200804104642.GC2657@hirez.programming.kicks-ass.net>
-Date:   Tue, 04 Aug 2020 12:02:49 +0100
-Message-ID: <jhjeeomish2.mognet@arm.com>
+        id S1730253AbgHDLUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:20:20 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:33312 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728079AbgHDLIC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 07:08:02 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 074B3JZc013155;
+        Tue, 4 Aug 2020 07:05:37 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 32n6cjsqj0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 Aug 2020 07:05:37 -0400
+Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 074B5aMu005191
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 4 Aug 2020 07:05:36 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 4 Aug 2020 07:05:35 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 4 Aug 2020 07:05:34 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 4 Aug 2020 07:05:34 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 074B5VDs005208;
+        Tue, 4 Aug 2020 07:05:32 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-clk@vger.kernel.org>, <linux-fpga@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>, <mdf@kernel.org>,
+        "Alexandru Ardelean" <alexandru.ardelean@analog.com>
+Subject: [PATCH 0/6] clk: axi-clk-gen: misc updates to the driver
+Date:   Tue, 4 Aug 2020 14:06:52 +0300
+Message-ID: <20200804110658.40911-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-04_03:2020-08-03,2020-08-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ clxscore=1011 mlxlogscore=773 bulkscore=0 phishscore=0 adultscore=0
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008040083
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These patches synchronize the driver with the current state in the
+Analog Devices Linux tree:
+  https://github.com/analogdevicesinc/linux/
 
-On 04/08/20 11:46, peterz@infradead.org wrote:
-> On Tue, Aug 04, 2020 at 09:03:07AM +0530, Srikar Dronamraju wrote:
->> On Power9 a pair of cores can be presented by the firmware as a big-core
->> for backward compatibility reasons, with 4 threads per (small) core and 8
->> threads per big-core. cpu_smt_mask() should generally point to the cpu mask
->> of the (small)core.
->>
->> In order to maintain userspace backward compatibility (with Power8 chips in
->> case of Power9) in enterprise Linux systems, the topology_sibling_cpumask
->> has to be set to big-core. Hence override the default cpu_smt_mask() to be
->> powerpc specific allowing for better scheduling behaviour on Power.
->
-> Why does Linux userspace care about this?
+They have been in the tree for about 2-3, so they did receive some
+testing.
 
-Ditto; from [1], a core contains CPUs that all share the same L1 (and capacity,
-as per SD_SHARE_CPUCAPACITY). So IMO it makes perfect sense to have a first
-domain spanning L1, and its parent spanning L2 - that means
-topology_sibling_cpumask *itself* should span a single core rather than a
-pair.
+Highlights are:
+* Add support for fractional dividers (Lars-Peter Clausen)
+* Enable support for ZynqMP (UltraScale) (Dragos Bogdan)
+* Support frequency limits for ZynqMP (Mathias Tausen)
+  - And continued by Mircea Caprioru, to read them from the IP cores
 
-[1]: https://lkml.kernel.org/r/jhjr1sviswg.mognet@arm.com
+Dragos Bogdan (1):
+  clk: axi-clkgen: add support for ZynqMP (UltraScale)
+
+Lars-Peter Clausen (2):
+  clk: axi-clkgen: Add support for fractional dividers
+  clk: axi-clkgen: Set power bits for fractional mode
+
+Mathias Tausen (1):
+  clk: axi-clkgen: Respect ZYNQMP PFD/VCO frequency limits
+
+Mircea Caprioru (2):
+  include: fpga: adi-axi-common.h: add definitions for supported FPGAs
+  clk: axi-clkgen: Add support for FPGA info
+
+ drivers/clk/Kconfig                 |   2 +-
+ drivers/clk/clk-axi-clkgen.c        | 253 ++++++++++++++++++++++------
+ include/linux/fpga/adi-axi-common.h |  37 ++++
+ 3 files changed, 236 insertions(+), 56 deletions(-)
+
+-- 
+2.17.1
+
