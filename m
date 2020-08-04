@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E4223BFB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 21:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC0723BFE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 21:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgHDTY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 15:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
+        id S1728262AbgHDT2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 15:28:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgHDTYz (ORCPT
+        with ESMTP id S1727124AbgHDT2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 15:24:55 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFAFC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 12:24:55 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id h7so39464420qkk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 12:24:55 -0700 (PDT)
+        Tue, 4 Aug 2020 15:28:16 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5C5C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 12:28:16 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id o22so31604790qtt.13
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 12:28:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pzsHuz3jz2KjqjbdXSlm4QZoLu4U8KSe5A09SXjkgoM=;
-        b=pxfZMuczjhW/F8JFU7DtDbRoeILs3IStkDcNky/fJGelBVVhrK6RDX/i8xekFGTQLM
-         8aEGWH690sudIfYarn+0BOFjl6eO96prLV0OppiwlmxGDHdIenQFHdXAFK+jYYTsyg40
-         PuRh4BRc2RoJ5uMYVGBfIsW1RoJwmcZG3S1GNjK6uAIZUE1XXSXubWOHeNZFFHnWWNM7
-         REcZ5peEYawXrcYglST5UMJ82do8tM7DN8/BhW7fw1HXzqBb6u7bOGvZ7hNK4D70/hdX
-         qu8POu2iJ04zAxE8f/TJDfjm/St+52WnUHaPeUpqhGKaTGWcMJvf35VKUVVGm9PskSal
-         9hew==
+        bh=QZPv3vyb9T7Ph9oNjo817uichWZWclCWnCIRIilrMbI=;
+        b=luRCZFvNv1qw6XK0lP5bctiCtoKipS1zkSan+vF/4w0QNcp7tvBGPSXhl2Hu55Zni2
+         IVovI6W03P4sCwu3UjBAbkx9wSEIM5mQM1b/oB7V1Z/USbGH+S+9dq8ORM02WibWYy9b
+         bgog7iYT5g2zlN7dzdekrUfbBalT2olGkwJrp7/9NhFWIV2ca2WOjnWPWf+Dn0IvLV1u
+         /rmJodWFshUyd/AfAbXgpT+mnlWds6J8r8y3ipFHdaov9xAMXc+gV2A4Kn6NNbfyijtK
+         RC6Atw7BnwPqoTwMP2okxisEmbqsqUZo0D27Afy3247WVNWN8l89zGmUWslqyy5QQDiD
+         eWjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pzsHuz3jz2KjqjbdXSlm4QZoLu4U8KSe5A09SXjkgoM=;
-        b=C7xGAlOHgEeh2veD6lv/7V83Dlg7+XYjqAfQJZF/ksU8gTocYYNsHPrPTdMcR/BJ6M
-         uKfyLjPntcUMFUB4y5KuGlLie1Jua31rcGQLkBi6pXb13e/2SSl6AvvELR3lw9jpg1pE
-         TOIaiMXWjzn64CnYY1otLDoFnTCc17UemFpV/7GM5HxXsWx8GArQbukAsrIV0epvM6aw
-         vsqiHf/OelBeu2oWBiaXXumhBAxNQ4xpCB2DRhjU/ykEyqktvo/Je594tU4BTPgkHUiY
-         ymddd5zeYVe8v1yQkjSgjNvPECweHkexkezXvNPe/EMtObrlefrIXFi3C9LUShCwSOZD
-         8M3w==
-X-Gm-Message-State: AOAM532+abmOfc4vR2y3tyMNzrbfsmruXy/FMwz/PNqtKtGV9YTEX7pe
-        ToTCQGQ2q++QVygdzuit2wwxT6gVv/LpeHj5f5eJjQ==
-X-Google-Smtp-Source: ABdhPJwXWvCIO8Y8R/+lIlTuLCsmrpuS6BKzpZJHHVUHLJbb4ZaN2z9pD5qQ8Cogh5sEA6/8nK1FaweDpNFgdH55DN4=
-X-Received: by 2002:a05:620a:15e8:: with SMTP id p8mr22024185qkm.182.1596569094262;
- Tue, 04 Aug 2020 12:24:54 -0700 (PDT)
+        bh=QZPv3vyb9T7Ph9oNjo817uichWZWclCWnCIRIilrMbI=;
+        b=KRCRluwDMf15XMBoEe3zkkWglQNhdZdJBxtcFKXrSYjVBkgEmFN7UgCZqWh+KrBI/Z
+         MBpznshM8VzINwQLIgzHFfBS23NZhAEkVHGnFc0BX6uQ+arKEg2WvFpL89RwQHtF21eU
+         xjoZXvvUVG1qU/Kk9A9UFGIaD0UWp0/wDxn982FP/3lkEu9F6V6xulMDXxooaNpH1MtQ
+         VBGAUGvKtQSSexbbqiGxwnHA4ZvDY/2COMvdcAkFZmxMv9wkMsUZvtzjHBpYjC5Nsy3g
+         Vru7BbLlVX1L5SKWT81Ohw9bGEdQd8NTgBTcvnG2TYTgo0yuQaRU6PR072Ae7piLD+Rd
+         U4LA==
+X-Gm-Message-State: AOAM5318uBBdn5KyXDdiMnqYzM1D3IsLSa1FCcRc+V+e7y8km7gAUohP
+        2vww1YUXqvuHalxJrQCjTfRWbNdgZ+Sv3StFKk3cUA==
+X-Google-Smtp-Source: ABdhPJymsHefVLQVuV4G3IAFDTvR9UK59lInyk68B5dA9v9fdqqex2N6jbzDONS0DrBScUcDbjSWF5ZEeQa/M1q+dpA=
+X-Received: by 2002:aed:21da:: with SMTP id m26mr23617075qtc.197.1596569295695;
+ Tue, 04 Aug 2020 12:28:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200804000614.4176212-1-joshdon@google.com> <20200804105619.GE2657@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200804105619.GE2657@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 4 Aug 2020 12:24:43 -0700
-Message-ID: <CABk29NuN4n9bzi9YzBf7=6HyXn1uTTTiFE3NiVRQ0AOYfiADhA@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: ignore cache hotness for SMT migration
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200725041955.9985-1-warthog618@gmail.com> <20200725041955.9985-8-warthog618@gmail.com>
+In-Reply-To: <20200725041955.9985-8-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 4 Aug 2020 21:28:04 +0200
+Message-ID: <CAMpxmJW+RqW5=ugXru3ggRnLsPvtGEJ64_sBaY2GAXjeWT50qA@mail.gmail.com>
+Subject: Re: [PATCH v2 07/18] gpiolib: cdev: support edge detection for uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 3:56 AM <peterz@infradead.org> wrote:
+On Sat, Jul 25, 2020 at 6:21 AM Kent Gibson <warthog618@gmail.com> wrote:
 >
-> On Mon, Aug 03, 2020 at 05:06:14PM -0700, Josh Don wrote:
-> > SMT siblings share caches, so cache hotness should be irrelevant for
-> > cross-sibling migration.
-> >
-> > Proposed-by: Venkatesh Pallipadi <venki@google.com>
-> > Signed-off-by: Josh Don <joshdon@google.com>
-> > ---
-> >  kernel/sched/fair.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 2ba8f230feb9..5b203b55bcb2 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -7402,6 +7402,9 @@ static int task_hot(struct task_struct *p, struct lb_env *env)
-> >       if (unlikely(task_has_idle_policy(p)))
-> >               return 0;
-> >
-> > +     if ((env->sd->flags & cpu_smt_flags()) == cpu_smt_flags())
-> > +             return 0;
+> Add support for edge detection to lines requested using
+> GPIO_GET_LINE_IOCTL.
 >
-> I think that wants to be:
->
->         if (env->sd->flags & SD_SHARE_CPUCAPACITY)
->
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> ---
 
-Agreed
+[snip!]
 
-> Also, perhaps stick a comment on top with the rationale for this.
->
-> > +
-> >       /*
-> >        * Buddy candidates are cache hot:
-> >        */
-> > --
-> > 2.28.0.163.g6104cc2f0b6-goog
-> >
+> +
+> +static irqreturn_t edge_irq_thread(int irq, void *p)
+> +{
+> +       struct edge_detector *edet = p;
+> +       struct line *line = edet->line;
+> +       struct gpio_desc *desc = edge_detector_desc(edet);
+> +       struct gpioline_event le;
+> +       int ret;
+> +
+> +       /* Do not leak kernel stack to userspace */
+> +       memset(&le, 0, sizeof(le));
+> +
+> +       /*
+> +        * We may be running from a nested threaded interrupt in which case
+> +        * we didn't get the timestamp from edge_irq_handler().
+> +        */
+> +       if (!edet->timestamp) {
+> +               le.timestamp = ktime_get_ns();
+
+IIRC Marc suggested using smp_rmw() here before reading the timestamp.
+Do we still need it or something changed?
+
+Bartosz
