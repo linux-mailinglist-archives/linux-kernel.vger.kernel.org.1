@@ -2,133 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E7523BD67
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AC823BD6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728493AbgHDPnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 11:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
+        id S1728724AbgHDPo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 11:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725932AbgHDPnL (ORCPT
+        with ESMTP id S1725924AbgHDPo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 11:43:11 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEA5C06174A;
-        Tue,  4 Aug 2020 08:43:11 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id qc22so28160948ejb.4;
-        Tue, 04 Aug 2020 08:43:11 -0700 (PDT)
+        Tue, 4 Aug 2020 11:44:56 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F273BC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 08:44:55 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id q13so14287343vsn.9
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 08:44:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XvDU7ICblMvlU4iZYYabhFUIQmUPVsxNxDRb1FZXmmQ=;
-        b=e+67uSIMTJb41hxcWS6ZQmz0qzGJN+L+0LjLuEvxDP1SR0HK+KVh6uL3ACN479ohD3
-         DLaWjsW/mWVnl/3x1ojrBejYHb+DM/wjSxscTaohaLbeuJCKGccPBqiFa8g732pJRXUP
-         2KVSV9Z++b3X5HJPoDh6XVcCdEJjVDTWwCrdgDICS8KWTRU7O9tNn+K8roCzsUPmarEI
-         oVFQSHvmt4HjwSni/SMqATRSdKoCyXEEu02bXcTrRo5SuSdGil4TT4HjFFoCewftRUi4
-         8KUaA8nTjECb2DfjErOR1OjXDtcFEdROjk2TbRGxLEPAR3yWHAvbDbQDlz1dbR2WFUw1
-         sEVg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H4JQaTkH18iHZhr5mRcUoCQ7w0Oz4NhHM6QKGzTo1bo=;
+        b=ldFkcUFp7ri+IazwVWH1DnJFGu4x0mPAE5c8LizFVx2rdt1FE7sAuwon3cwzJKF5LL
+         ZNJqk1Re7Ztm4LTRTSxLIblqxv1Tdv3kmXSjg7auDZuvC8yZ0w69Nn/DGRo8tp0Eil14
+         jFciSc7TK05orgQRJRd7XKd6eTpBBIMNXzVXQ2Jed9/2SZYXTu2h73RR/N6qsNl/Pca7
+         9+8tv7nrB+KevcGtu4bJtd0lxUtz9q8jECfBtEGtUXeOl6f4BACUpXlr/k4Faqg/qrCp
+         Hx6izzJsxcomSTRM+gxPrYoa/pz+vZQZOFj3Rncam1GLYEBX+eB0thlPgKUiM/AR0tKS
+         NIzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XvDU7ICblMvlU4iZYYabhFUIQmUPVsxNxDRb1FZXmmQ=;
-        b=uk2Ah0uK0DvqfqmDE8/IQb9Lk0xp3te32F6v1/t5EM6GKNBT5EpMDCHr++3WEPo6w+
-         5DnZy4ENWGLt+TTAky8L3Xg2oXJAjzSFgdhaDTq61XixtDN3QPSo44hcxKQtG8z7sHwJ
-         s0WGufGEa8D9/9aOprId/X8qF2R63IKaNXQTvoQL+DFRTUhHXY4r4CcOhyvY1zQmBVE4
-         Thf8kKPXbpoZGlWQ03knr2ZggkuGvov+UjdMw16s684Vwv7NmaQy77PggFBz26+TX89F
-         LPJiwys7sQQ6ZM4RNauxBREiZcyITq0aKsReKqUZVAF1FYda/JA/5fyh1pyfM/UaSPN8
-         h3tw==
-X-Gm-Message-State: AOAM533rhV4nQs/wCpSPqmauW+oWfXuJooPAgOlh7KrrjVJcNoy3bzVn
-        Zqwma4rIZa6eVGm9mo8C6ldj6EyvEG/WDWp9358=
-X-Google-Smtp-Source: ABdhPJyG/9OaPWsq91DUuGc0ZHEkp1Igwsy4OYzy799p9zWx9XbX3KeVYuueq33MKr+f5VDzCNWkOoFl7hDa0Dk2xRI=
-X-Received: by 2002:a17:906:f14f:: with SMTP id gw15mr21260603ejb.245.1596555789850;
- Tue, 04 Aug 2020 08:43:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H4JQaTkH18iHZhr5mRcUoCQ7w0Oz4NhHM6QKGzTo1bo=;
+        b=jIcg+M1O1xOXNPavtUNyhAeV4sqrsJTSTouxu/pf4+1JVMBi9/KjCwKFBRHAL0PMnD
+         52NmJ+PnXZl3Mt1c+/TR6tkuQCJ1TQ9+vgPfUOl5d7tYt91ICsjZhkli1+Ip8jwQS/3P
+         mVghagyNtyztVEaPGYx1L8b80upochSFEOY0A6Im01sjxfEBI+u42RH74isBYHyOgu4S
+         jR2ub917W0N4TEk8OocQ8MO9Ii8kECSSiPTy9nU6u5Th1yaQml9BBMnJbzUTrka+cQQ9
+         8HSwkcebvVxn0OPRFW0c+D4UL5OBHsZilo+rSmS/QdC4q85ZP1w5bFxPUWPdXIgwOhNu
+         913w==
+X-Gm-Message-State: AOAM532Y3poB3eUaWopSRSFmH3EQfkQu9gsOKJLG8ss0TyIraH6vUWqH
+        FCCrmMmjFDac74fZ7i3zU1NxVA==
+X-Google-Smtp-Source: ABdhPJyukknUS02GVsM5w7GzAW9AGOdf699gjZwqpksqLXYiV70ZhFCdPmPPK94v0vzmxZDb4/5nug==
+X-Received: by 2002:a67:ef81:: with SMTP id r1mr8018212vsp.37.1596555894889;
+        Tue, 04 Aug 2020 08:44:54 -0700 (PDT)
+Received: from google.com (182.71.196.35.bc.googleusercontent.com. [35.196.71.182])
+        by smtp.gmail.com with ESMTPSA id b138sm3212924vka.48.2020.08.04.08.44.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Aug 2020 08:44:54 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 15:44:51 +0000
+From:   Kalesh Singh <kaleshsingh@google.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
+        Hridya Valsaraju <hridya@google.com>,
+        Ioannis Ilkos <ilkos@google.com>,
+        John Stultz <john.stultz@linaro.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH 2/2] dmabuf/tracing: Add dma-buf trace events
+Message-ID: <20200804154451.GA948167@google.com>
+References: <20200803144719.3184138-1-kaleshsingh@google.com>
+ <20200803144719.3184138-3-kaleshsingh@google.com>
+ <20200803154125.GA23808@casper.infradead.org>
+ <CAJuCfpFLikjaoopvt+vGN3W=m9auoK+DLQNgUf-xUbYfC=83Mw@mail.gmail.com>
+ <20200803161230.GB23808@casper.infradead.org>
+ <CAJuCfpGot1Lr+eS_AU30gqrrjc0aFWikxySe0667_GTJNsGTMw@mail.gmail.com>
+ <20200803222831.GI1236603@ZenIV.linux.org.uk>
+ <20200804010913.GA2096725@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-References: <1594899334-19772-1-git-send-email-kalyan_t@codeaurora.org> <1594899334-19772-2-git-send-email-kalyan_t@codeaurora.org>
-In-Reply-To: <1594899334-19772-2-git-send-email-kalyan_t@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 4 Aug 2020 08:43:54 -0700
-Message-ID: <CAF6AEGu8GG4i1inhjQ11PDeUxEq=4E2ggVm6cL=AfNHbvNuh6w@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm64: dts: sc7180: add bus clock to mdp node for
- sc7180 target
-To:     Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        nganji@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200804010913.GA2096725@ZenIV.linux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 4:36 AM Kalyan Thota <kalyan_t@codeaurora.org> wrote:
->
-> From: Krishna Manikandan <mkrishn@codeaurora.org>
->
-> Move the bus clock to mdp device node,in order
-> to facilitate bus band width scaling on sc7180
-> target.
->
-> The parent device MDSS will not vote for bus bw,
-> instead the vote will be triggered by mdp device
-> node. Since a minimum vote is required to turn
-> on bus clock, move the clock node to mdp device
-> from where the votes are requested.
->
-> This patch has dependency on the below series
-> https://patchwork.kernel.org/patch/11468783/
->
-> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+On Tue, Aug 04, 2020 at 02:09:13AM +0100, Al Viro wrote:
+> On Mon, Aug 03, 2020 at 11:28:31PM +0100, Al Viro wrote:
+> 
+> > IOW, what the hell is that horror for?  You do realize, for example, that there's
+> > such thing as dup(), right?  And dup2() as well.  And while we are at it, how
+> > do you keep track of removals, considering the fact that you can stick a file
+> > reference into SCM_RIGHTS datagram sent to yourself, close descriptors and an hour
+> > later pick that datagram, suddenly getting descriptor back?
+> > 
+> > Besides, "I have no descriptors left" != "I can't be currently sitting in the middle
+> > of syscall on that sucker"; close() does *NOT* terminate ongoing operations.
+> > 
+> > You are looking at the drastically wrong abstraction level.  Please, describe what
+> > it is that you are trying to achieve.
 
-Reviewed-by: Rob Clark <robdclark@chromium.org>
+Hi Al. Thank you for the comments. Ultimately what we need is to identify processes
+that hold a file reference to the dma-buf. Unfortunately we can't use only
+explicit dma_buf_get/dma_buf_put to track them because when an FD is being shared
+between processes the file references are taken implicitly.
 
-> ---
->  arch/arm64/boot/dts/qcom/sc7180.dtsi | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> index 4f2c0d1..31fed6d 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -1510,10 +1510,9 @@
->                         power-domains = <&dispcc MDSS_GDSC>;
->
->                         clocks = <&gcc GCC_DISP_AHB_CLK>,
-> -                                <&gcc GCC_DISP_HF_AXI_CLK>,
->                                  <&dispcc DISP_CC_MDSS_AHB_CLK>,
->                                  <&dispcc DISP_CC_MDSS_MDP_CLK>;
-> -                       clock-names = "iface", "bus", "ahb", "core";
-> +                       clock-names = "iface", "ahb", "core";
->
->                         assigned-clocks = <&dispcc DISP_CC_MDSS_MDP_CLK>;
->                         assigned-clock-rates = <300000000>;
-> @@ -1539,12 +1538,13 @@
->                                       <0 0x0aeb0000 0 0x2008>;
->                                 reg-names = "mdp", "vbif";
->
-> -                               clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +                               clocks = <&gcc GCC_DISP_HF_AXI_CLK>,
-> +                                        <&dispcc DISP_CC_MDSS_AHB_CLK>,
->                                          <&dispcc DISP_CC_MDSS_ROT_CLK>,
->                                          <&dispcc DISP_CC_MDSS_MDP_LUT_CLK>,
->                                          <&dispcc DISP_CC_MDSS_MDP_CLK>,
->                                          <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
-> -                               clock-names = "iface", "rot", "lut", "core",
-> +                               clock-names = "bus", "iface", "rot", "lut", "core",
->                                               "vsync";
->                                 assigned-clocks = <&dispcc DISP_CC_MDSS_MDP_CLK>,
->                                                   <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
-> --
-> 1.9.1
->
+For example, on the sender side:
+   unix_dgram_sendmsg -> send_scm -> __send_scm -> scm_fp_copy -> fget_raw
+and on the receiver side:
+   unix_dgram_recvmsg -> scm_recv -> scm_detach_fds -> __scm_install_fd -> get_file
+
+I understand now that fd_install is not an appropriate abstraction level to track these.
+Is there a more appropriate alternative where we could use to track these implicit file
+references?
+
+> _IF_ it's "who keeps a particularly long-lived sucker pinned", I would suggest
+> fuser(1) run when you detect that kind of long-lived dmabuf.  With events generated
+> by their constructors and destructors, and detection of longevity done based on
+> that.
+> 
+> But that's only a semi-blind guess at the things you are trying to achieve; please,
+> describe what it really is.
