@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD5F23C104
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792D623C110
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgHDUuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 16:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727124AbgHDUuj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 16:50:39 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B525EC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 13:50:38 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id a26so18167955ejc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 13:50:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KkI8LyHYPiT/h3NnMBo5llKwufDfy44GU0em0whdiHo=;
-        b=N3nUdOpstU6tgvlbaZ/Vd5Np5LpD5/A/embmd7N8aOzXsl7s+P7D0Divmm7dFugl7D
-         /7e+Nb3uchaRfzeevOYDdWbFPiQMCmqkeud32UoqnkEQeQtXl6DX7yjM/rnerZEfSE8N
-         2+oMoDhNuPtZY5WnljVg8cEv+RkFWeUKZ+B9iBA9USpMe2DhREho5nmjjE02gsjOxt4a
-         p0cwYS+gl6C/noiagQyf2FdL1wxAmF4kr6fPgY4VcWMhsvWF3hMxGIfjtwXL7/dBZD2y
-         YVgN+7n4q/gPj0BgeLCrGKyvPq70CkWuZWD1/8mccmNcqIuAb7EBLYKvCQffSRASuk/c
-         WWtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KkI8LyHYPiT/h3NnMBo5llKwufDfy44GU0em0whdiHo=;
-        b=CqRY6C5ZU/kggSgwsYz7NqC3WXmhfAjNMSwFxxkZh326A7s3XBL4Mdfep1GvZF2eDA
-         uqGbROd1sXYaJAWBLwuha1ExlzDSR7wEfXw86pyPjarBbqzQeDu3zZHfaSte7AkTGnbC
-         hwb+HtCLY20CGzQ4z70x0lvIHJMqiqnE4B4gkpw8YldGtqSEssHinI0cB880rprsbEOh
-         dnCndVntQ83Rx3IV1NPOX/7gvUpOLkvvDvMeYJ8sR/+pwgkV6sUpYu4p2LjTAlM5GrSp
-         in+tVlFXgZOrrf0NC5S/ryhesR/Y+QYF3rV9BZ7RTnnrMOcPjLP2mtng+0r4L7hRhfOg
-         mzmA==
-X-Gm-Message-State: AOAM533Lmt+swcEfZOoUbuDDP+dZ3bJ5PcEdXnxF9l+INOx2WKIlefTN
-        F056PVy5VHENDtJKRa6oSiU=
-X-Google-Smtp-Source: ABdhPJzHvn4emSveEiuT4CvTKsAbWiDEiECpET9ac5jEqbAsUZ/TicV6wxWGqMfcKf8yQYkAsx+fBA==
-X-Received: by 2002:a17:906:2801:: with SMTP id r1mr4018755ejc.17.1596574237558;
-        Tue, 04 Aug 2020 13:50:37 -0700 (PDT)
-Received: from ltop.local ([2a02:a03f:a7fb:e200:d068:a44f:fa3b:62da])
-        by smtp.gmail.com with ESMTPSA id f22sm58218edt.91.2020.08.04.13.50.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 13:50:36 -0700 (PDT)
-Date:   Tue, 4 Aug 2020 22:50:36 +0200
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        openrisc@lists.librecores.org
-Subject: Re: [PATCH 6/6] openrisc: uaccess: Add user address space check to
- access_ok
-Message-ID: <20200804205036.vgy7h3mmojzmjihs@ltop.local>
-References: <20200804042354.3930694-1-shorne@gmail.com>
- <20200804042354.3930694-7-shorne@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804042354.3930694-7-shorne@gmail.com>
+        id S1728232AbgHDU6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 16:58:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727045AbgHDU6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 16:58:13 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18DF42086A;
+        Tue,  4 Aug 2020 20:58:13 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.93)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1k340i-006H8j-0g; Tue, 04 Aug 2020 16:58:12 -0400
+Message-ID: <20200804205743.419135730@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Tue, 04 Aug 2020 16:57:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-linus][PATCH 00/17] tracing: Last minute fixes for this merge window
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 01:23:54PM +0900, Stafford Horne wrote:
-> Now that __user annotations are fixed for openrisc uaccess api's we can
-> add checking to the access_ok macro.  This patch adds the __chk_user_ptr
-> check, on normal builds the added check is a nop.
-> 
-> Signed-off-by: Stafford Horne <shorne@gmail.com>
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
 
-Look good to me.
+Head SHA1: c58b46cba71750c6e969625abb1cf3ddabb15e06
 
--- Luc
+
+Chengming Zhou (2):
+      ftrace: Setup correct FTRACE_FL_REGS flags for module
+      ftrace: Do not let direct or IPMODIFY ftrace_ops be added to module and set trampolines
+
+Josef Bacik (1):
+      ftrace: Fix ftrace_trace_task return value
+
+Kevin Hao (2):
+      tracing/hwlat: Drop the duplicate assignment in start_kthread()
+      tracing/hwlat: Honor the tracing_cpumask
+
+Masami Hiramatsu (4):
+      kprobes: Remove show_registers() function prototype
+      lib/bootconfig: Add override operator support
+      tools/bootconfig: Add testcases for value override operator
+      Documentation: bootconfig: Add bootconfig override operator
+
+Muchun Song (1):
+      kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler
+
+Nick Desaulniers (2):
+      tracepoint: Mark __tracepoint_string's __used
+      tracepoint: Use __used attribute definitions from compiler_attributes.h
+
+Peng Fan (1):
+      tracing/uprobe: Remove dead code in trace_uprobe_register()
+
+Vincent Whitchurch (1):
+      tracing: Remove outdated comment in stack handling
+
+Wei Yang (2):
+      tracing: Simplify defining of the next event id
+      tracing: Save one trace_event->type by using __TRACE_LAST_TYPE
+
+Zhaoyang Huang (1):
+      trace : Have tracing buffer info use kvzalloc instead of kzalloc
+
+----
+ Documentation/admin-guide/bootconfig.rst     | 11 ++++++++++
+ include/linux/kprobes.h                      |  1 -
+ include/linux/tracepoint.h                   | 11 +++++-----
+ kernel/kprobes.c                             |  7 ++++++
+ kernel/trace/ftrace.c                        | 22 +++++++++++++------
+ kernel/trace/trace.c                         | 10 ++-------
+ kernel/trace/trace.h                         |  7 +++++-
+ kernel/trace/trace_hwlat.c                   |  6 ++---
+ kernel/trace/trace_output.c                  | 14 ++++++------
+ kernel/trace/trace_uprobe.c                  |  1 -
+ lib/bootconfig.c                             | 33 +++++++++++++++++++---------
+ tools/bootconfig/samples/bad-override.bconf  |  3 +++
+ tools/bootconfig/samples/bad-override2.bconf |  3 +++
+ tools/bootconfig/samples/good-override.bconf |  6 +++++
+ tools/bootconfig/test-bootconfig.sh          | 13 +++++++++++
+ 15 files changed, 104 insertions(+), 44 deletions(-)
+ create mode 100644 tools/bootconfig/samples/bad-override.bconf
+ create mode 100644 tools/bootconfig/samples/bad-override2.bconf
+ create mode 100644 tools/bootconfig/samples/good-override.bconf
