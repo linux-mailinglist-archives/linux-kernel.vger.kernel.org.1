@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A83823BCE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0229123BCD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729468AbgHDPEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 11:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728467AbgHDPAB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 11:00:01 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929E5C06174A;
-        Tue,  4 Aug 2020 08:00:01 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id e11so6579110otk.4;
-        Tue, 04 Aug 2020 08:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IaNLxJ1/WlvDLv3w/w1llfejQsijIQCGiwCc3+/r9KI=;
-        b=XnDFHAHn2g9C2MR8ZRaL13rYndbckI3ZGTLXFJUu3N1b9L/zHfW+5wja/WoFbxdrLP
-         ZgoUl8KD7T0Y2PlzBRTrHhSe2Ktf7Ule69RwGzXM7FWItptX6XcTKrIfDXOYmv6a4qHm
-         CFBEXRsJhvbtd/V6kOiUA3Bwnkv3YCW3eL01YjWA+kuI98WdABfK81WKx5lbpdwN9DJJ
-         AcVxOA+Kg3Ti3dth1GLJg6qVowpcVxFBKxhv2vorzJKCxf466lInxSSbWW6Q9jzP+gdM
-         XmQ3ySKuqKTaaBUvDO335eKZvuRqR1eV69ZvpkvrKlW4Raqwbl3gt/dqUrWqtAdDrZal
-         9ahg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IaNLxJ1/WlvDLv3w/w1llfejQsijIQCGiwCc3+/r9KI=;
-        b=O2HiAtchKYLfqVeT8C4h/CmpK0lJ/ThyXXf5Sh0r3xhHYC6zmUu8lWO55C6jizAmjj
-         BYc3EDWmCca3F7/iqc9y4UzCjTIY6NGGsDYDE9s2TmZ4MK2gw0KaXK/RtCzM9ONn2c+J
-         M/B946cqE0yu+b7ZTREM9tQdk6ehaZX+ToftGyC91D7Xnz1NEywIhR7eY/VrnOrnHegT
-         jn8nSJwhLGM1BwmqLDsWcwsWOfcrtadjoTb2Q5JzRUD5gxk8Emh/ju9FEWLD4diCSrY9
-         94bDuyHIoy66/IlGRzlMC7Q3fpPjKMVRJT6i80BGGKtI5TpALgGo35JiK4ePZ4lyZMtO
-         2xWw==
-X-Gm-Message-State: AOAM533qHp0tb1aXQ2AQaJ43H92bp6n3mdYEN810R71TtxpHQbKNyFYX
-        ns5oQq+cFvE0IpDlj63ZhUTQt9HXXLwuUKFB5+Q5j56HQM8=
-X-Google-Smtp-Source: ABdhPJwfQiVbIWerhpofmsk6XOXt3poc8oqAEZouH2TKDdVMM6pu1x65uvdYOxbbU2diHF6AiXahTHry2nFgb6qp1vA=
-X-Received: by 2002:a9d:4e6:: with SMTP id 93mr18890630otm.308.1596553200893;
- Tue, 04 Aug 2020 08:00:00 -0700 (PDT)
+        id S1729507AbgHDPAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 11:00:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729113AbgHDPAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 11:00:19 -0400
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3CA9D22CB2
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 15:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596553218;
+        bh=UGKz0laAMAeoRRMQ/WBIHLisQCLwq1BVQrmk9x1SlPo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hBmXwqbAD0aEV/RyYT8DMQykRoxAtVj0av0RbXEIsl6QY6lW7RRWsYvqXC4zuixUB
+         X2f1x6fQHOTI40vGFC2qD6o3lMRBfLWEaT3I/gTEJytRbbOlhQr7iIlvO/wCitSdeN
+         bKIYMjAiqMcnBEddhlDUeoUuBM1o+SJ4K1IBHZ04=
+Received: by mail-ed1-f42.google.com with SMTP id a14so13147403edx.7
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 08:00:18 -0700 (PDT)
+X-Gm-Message-State: AOAM532FpzgAcWoFRC0zjqeVATkIzEbAMAitoCRG60FM1An2SxLWIPV1
+        opAZnYfRXvNfCfNiuZy31vyaqRm0+7TRIgjsUw==
+X-Google-Smtp-Source: ABdhPJwunoyDTQhiThZnToQGxQmEkNellltv3DDrPfUVrB3+uPJo4Mn8HeFaGnvA7CheyZl6LWSmvuv4dbDt9K7/sas=
+X-Received: by 2002:aa7:c606:: with SMTP id h6mr8396427edq.288.1596553216689;
+ Tue, 04 Aug 2020 08:00:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <CANsGL8PFnEvBcfLV7eKZQCONoork3EQ7x_RdtkFPXuWZQbK=qg@mail.gmail.com>
- <20200804111913.GA15856@quack2.suse.cz>
-In-Reply-To: <20200804111913.GA15856@quack2.suse.cz>
-From:   nirinA raseliarison <nirina.raseliarison@gmail.com>
-Date:   Tue, 4 Aug 2020 17:59:42 +0300
-Message-ID: <CANsGL8Oe-4ZO3K2vxwv+Sh2GgZUwcxyQM+0N7jTC6hTA+086oA@mail.gmail.com>
-Subject: Re: kernel BUG at fs/inode.c:531!
-To:     Jan Kara <jack@suse.cz>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200804105849.70876-1-linux@fw-web.de> <20200804105849.70876-6-linux@fw-web.de>
+In-Reply-To: <20200804105849.70876-6-linux@fw-web.de>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 4 Aug 2020 23:00:05 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9aDqz3muo6ynqX9r0VjW7tD5vvZOiQyR8UZOTUct8oVA@mail.gmail.com>
+Message-ID: <CAAOTY_9aDqz3muo6ynqX9r0VjW7tD5vvZOiQyR8UZOTUct8oVA@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] arm: dts: mt7623: add display subsystem related
+ device nodes
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        David Airlie <airlied@linux.ie>,
+        chunhui dai <chunhui.dai@mediatek.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        CK Hu <ck.hu@mediatek.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
@@ -62,165 +61,279 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hello!
-no issue yet with 5.8:
+Hi, Frank:
 
-Linux version 5.8.0.20200803 (nirina@supernova.org) (gcc (GCC) 10.2.0,
-GNU ld version 2.33.1-slack15) #1 SMP Mon Aug 3 16:17:10 EAT 2020
-
-it seems that the bug was triggered when i ran programs compiled
-against gcc-9.3.0 under kernel build with gcc-10.1.0, but not sure if
-that is the real problem. running the programs under the same compiler
-doesn't exhibit the bug and since i rebuilt the programs with
-gcc-10.1.0, i no longer hit the issue.
-
-here is my /proc/mounts :
-
-/dev/root / ext4 rw,relatime 0 0
-devtmpfs /dev devtmpfs rw,relatime,size=3D3927496k,nr_inodes=3D981874,mode=
-=3D755 0 0
-proc /proc proc rw,relatime 0 0
-sysfs /sys sysfs rw,relatime 0 0
-tmpfs /run tmpfs rw,nosuid,nodev,noexec,relatime,size=3D32768k,mode=3D755 0=
- 0
-devpts /dev/pts devpts rw,relatime,gid=3D5,mode=3D620,ptmxmode=3D000 0 0
-tmpfs /dev/shm tmpfs rw,relatime 0 0
-cgroup_root /sys/fs/cgroup tmpfs rw,relatime,size=3D8192k,mode=3D755 0 0
-cpuset /sys/fs/cgroup/cpuset cgroup rw,relatime,cpuset 0 0
-cpu /sys/fs/cgroup/cpu cgroup rw,relatime,cpu 0 0
-cpuacct /sys/fs/cgroup/cpuacct cgroup rw,relatime,cpuacct 0 0
-blkio /sys/fs/cgroup/blkio cgroup rw,relatime,blkio 0 0
-memory /sys/fs/cgroup/memory cgroup rw,relatime,memory 0 0
-devices /sys/fs/cgroup/devices cgroup rw,relatime,devices 0 0
-freezer /sys/fs/cgroup/freezer cgroup rw,relatime,freezer 0 0
-net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
-perf_event /sys/fs/cgroup/perf_event cgroup rw,relatime,perf_event 0 0
-/dev/sda3 /mnt/sda3 ext4 rw,relatime 0 0
-/dev/sda5 /usr/local ext4 rw,relatime 0 0
-/dev/sda6 /mnt/big ext4 rw,relatime 0 0
-/dev/sda1 /mnt/sda1 ext4 rw,relatime 0 0
-tmpfs /var/run tmpfs rw,nosuid,nodev,noexec,relatime,size=3D32768k,mode=3D7=
-55 0 0
-nfsd /proc/fs/nfs nfsd rw,relatime 0 0
-nfsd /proc/fs/nfsd nfsd rw,relatime 0 0
-devpts /dev/pts devpts rw,relatime,gid=3D5,mode=3D620,ptmxmode=3D000 0 0
-none /var/run/user/1000 tmpfs rw,relatime,size=3D102400k,mode=3D700,uid=3D1=
-000 0 0
-none /run/user/1000 tmpfs rw,relatime,size=3D102400k,mode=3D700,uid=3D1000 =
-0 0
-none /var/run/user/0 tmpfs rw,relatime,size=3D102400k,mode=3D700 0 0
-none /run/user/0 tmpfs rw,relatime,size=3D102400k,mode=3D700 0 0
-nirina:/mnt/sda6 /mnt/sda6 nfs
-rw,relatime,vers=3D3,rsize=3D262144,wsize=3D262144,namlen=3D255,hard,proto=
-=3Dtcp,timeo=3D600,retrans=3D2,sec=3Dsys,mountaddr=3D192.168.100.2,mountver=
-s=3D3,mountport=3D37772,mountproto=3Dudp,local_lock=3Dnone,addr=3D192.168.1=
-00.2
-0 0
-nirina:/mnt/sda14 /mnt/sda14 nfs
-rw,relatime,vers=3D3,rsize=3D262144,wsize=3D262144,namlen=3D255,hard,proto=
-=3Dtcp,timeo=3D600,retrans=3D2,sec=3Dsys,mountaddr=3D192.168.100.2,mountver=
-s=3D3,mountport=3D37772,mountproto=3Dudp,local_lock=3Dnone,addr=3D192.168.1=
-00.2
-0 0
-nirina:/mnt/sda15 /mnt/sda15 nfs
-rw,relatime,vers=3D3,rsize=3D262144,wsize=3D262144,namlen=3D255,hard,proto=
-=3Dtcp,timeo=3D600,retrans=3D2,sec=3Dsys,mountaddr=3D192.168.100.2,mountver=
-s=3D3,mountport=3D37772,mountproto=3Dudp,local_lock=3Dnone,addr=3D192.168.1=
-00.2
-0 0
-nirina:/mnt/sda16 /mnt/sda16 nfs
-rw,relatime,vers=3D3,rsize=3D262144,wsize=3D262144,namlen=3D255,hard,proto=
-=3Dtcp,timeo=3D600,retrans=3D2,sec=3Dsys,mountaddr=3D192.168.100.2,mountver=
-s=3D3,mountport=3D37772,mountproto=3Dudp,local_lock=3Dnone,addr=3D192.168.1=
-00.2
-0 0
-
-
-Le mar. 4 ao=C3=BBt 2020 =C3=A0 14:19, Jan Kara <jack@suse.cz> a =C3=A9crit=
- :
+Frank Wunderlich <linux@fw-web.de> =E6=96=BC 2020=E5=B9=B48=E6=9C=884=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=887:00=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> Hello!
+> From: Ryder Lee <ryder.lee@mediatek.com>
 >
-> On Wed 27-05-20 21:05:55, nirinA raseliarison wrote:
-> > i hit again this bug with:
-> >
-> > $ cat /proc/version
-> > Linux version 5.7.0-rc7.20200525 (nirina@supernova.org) (gcc version
-> > 10.1.0 (GCC), GNU ld version 2.33.1-slack15) #1 SMP Mon May 25
-> > 02:49:28 EAT 2020
+> Add display subsystem related device nodes for MT7623.
 >
-> Thanks for report! I see this didn't get any reply. Can you still hit thi=
-s
-> issue with 5.8? If yes, what workload do you run on the machine to trigge=
-r
-> this? Can you send contents of /proc/mounts please? Thanks!
+> Cc: CK Hu <ck.hu@mediatek.com>
+> Signed-off-by: chunhui dai <chunhui.dai@mediatek.com>
+> Signed-off-by: Bibby Hsieh <bibby.hsieh@mediatek.com>
+> Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> Tested-by: Frank Wunderlich <frank-w@public-files.de>
+> ---
+> changed v2->v3:
+>   drop bls to dpi routing
+> ---
+>  arch/arm/boot/dts/mt7623.dtsi                 | 177 ++++++++++++++++++
+>  arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts |  72 +++++++
+>  arch/arm/boot/dts/mt7623n-rfb-emmc.dts        |  72 +++++++
+>  3 files changed, 321 insertions(+)
 >
->                                                                 Honza
+> diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dts=
+i
+> index a106c0d90a52..d584a3d678ba 100644
+> --- a/arch/arm/boot/dts/mt7623.dtsi
+> +++ b/arch/arm/boot/dts/mt7623.dtsi
+> @@ -24,6 +24,11 @@ / {
+>         #address-cells =3D <2>;
+>         #size-cells =3D <2>;
 >
-> >
-> >
-> > [99390.044690] ------------[ cut here ]------------
-> > [99390.044695] kernel BUG at fs/inode.c:531!
-> > [99390.044702] invalid opcode: 0000 [#1] SMP PTI
-> > [99390.044705] CPU: 0 PID: 149 Comm: kswapd0 Not tainted 5.7.0-rc7.2020=
-0525 #1
-> > [99390.044706] Hardware name: To be filled by O.E.M. To be filled by
-> > O.E.M./ONDA H61V Ver:4.01, BIOS 4.6.5 01/07/2013
-> > [99390.044712] RIP: 0010:clear_inode+0x75/0x80
-> > [99390.044714] Code: a8 20 74 2a a8 40 75 28 48 8b 83 28 01 00 00 48
-> > 8d 93 28 01 00 00 48 39 c2 75 17 48 c7 83 98 00 00 00 60 00 00 00 5b
-> > c3 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b 0f 0b 90 0f 1f 44 00 00 53 ba 48 02
-> > 00 00
-> > [99390.044716] RSP: 0018:ffffc900004c7b50 EFLAGS: 00010006
-> > [99390.044717] RAX: 0000000000000000 RBX: ffff88808c5f9e38 RCX: 0000000=
-000000000
-> > [99390.044718] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff888=
-08c5f9fb8
-> > [99390.044719] RBP: ffff88808c5f9e38 R08: ffffffffffffffff R09: ffffc90=
-0004c7cd8
-> > [99390.044720] R10: 0000000000000000 R11: 0000000000000001 R12: ffff888=
-08c5f9fb0
-> > [99390.044721] R13: ffff888215658000 R14: ffff888215658070 R15: 0000000=
-00000014c
-> > [99390.044723] FS:  0000000000000000(0000) GS:ffff888217600000(0000)
-> > knlGS:0000000000000000
-> > [99390.044724] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [99390.044725] CR2: 00000006f9004000 CR3: 00000001511da001 CR4: 0000000=
-0001606f0
-> > [99390.044726] Call Trace:
-> > [99390.044732]  ext4_clear_inode+0x16/0x80
-> > [99390.044736]  ext4_evict_inode+0x58/0x4c0
-> > [99390.044738]  evict+0xbf/0x180
-> > [99390.044740]  prune_icache_sb+0x7e/0xb0
-> > [99390.044743]  super_cache_scan+0x161/0x1e0
-> > [99390.044746]  do_shrink_slab+0x146/0x290
-> > [99390.044749]  shrink_slab+0xac/0x2a0
-> > [99390.044752]  ? __switch_to_asm+0x40/0x70
-> > [99390.044754]  shrink_node+0x16f/0x660
-> > [99390.044757]  balance_pgdat+0x2cf/0x5b0
-> > [99390.044759]  kswapd+0x1dc/0x3a0
-> > [99390.044762]  ? __schedule+0x217/0x710
-> > [99390.044764]  ? wait_woken+0x80/0x80
-> > [99390.044766]  ? balance_pgdat+0x5b0/0x5b0
-> > [99390.044768]  kthread+0x118/0x130
-> > [99390.044770]  ? kthread_create_worker_on_cpu+0x70/0x70
-> > [99390.044772]  ret_from_fork+0x35/0x40
-> > [99390.044773] Modules linked in: 8021q garp stp mrp llc rtl8192cu
-> > rtl_usb rtl8192c_common rtlwifi mac80211 cfg80211 uas usb_storage
-> > nct6775 hwmon_vid ipv6 rfkill nf_defrag_ipv6 snd_pcm_oss snd_mixer_oss
-> > fuse hid_generic usbhid hid snd_hda_codec_hdmi snd_hda_codec_realtek
-> > snd_hda_codec_generic i2c_dev coretemp hwmon i915 x86_pkg_temp_thermal
-> > intel_powerclamp kvm_intel kvm i2c_algo_bit irqbypass drm_kms_helper
-> > evdev r8169 snd_hda_intel syscopyarea snd_intel_dspcfg realtek
-> > snd_hda_codec libphy crc32_pclmul sysfillrect serio_raw sysimgblt
-> > snd_hwdep fb_sys_fops snd_hda_core drm snd_pcm fan thermal
-> > drm_panel_orientation_quirks snd_timer intel_gtt 8250 agpgart snd
-> > 8250_base ehci_pci serial_core button ehci_hcd video soundcore
-> > i2c_i801 lpc_ich mfd_core mei_me mei loop
-> > [99390.044800] ---[ end trace 2ca57858c52a0ad4 ]---
-> >
-> > --
-> > nirinA
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> +       aliases {
+> +               rdma0 =3D &rdma0;
+> +               rdma1 =3D &rdma1;
+> +       };
+> +
+>         cpu_opp_table: opp-table {
+>                 compatible =3D "operating-points-v2";
+>                 opp-shared;
+> @@ -321,6 +326,25 @@ pwrap: pwrap@1000d000 {
+>                 clock-names =3D "spi", "wrap";
+>         };
+>
+> +       mipi_tx0: mipi-dphy@10010000 {
+> +               compatible =3D "mediatek,mt7623-mipi-tx",
+
+In mediatek,dsi.txt [1], "mediatek,mt7623-mipi-tx" is undefined.
+
+[1] https://www.kernel.org/doc/Documentation/devicetree/bindings/display/me=
+diatek/mediatek%2Cdsi.txt
+
+> +                            "mediatek,mt2701-mipi-tx";
+> +               reg =3D <0 0x10010000 0 0x90>;
+> +               clocks =3D <&clk26m>;
+> +               clock-output-names =3D "mipi_tx0_pll";
+> +               #clock-cells =3D <0>;
+> +               #phy-cells =3D <0>;
+> +       };
+> +
+> +       cec: cec@10012000 {
+> +               compatible =3D "mediatek,mt7623-cec",
+
+Please explicitly define "mediatek,mt7623-cec" in mediatek,hdmi.txt [2].
+
+[2] https://www.kernel.org/doc/Documentation/devicetree/bindings/display/me=
+diatek/mediatek%2Chdmi.txt
+
+> +                            "mediatek,mt8173-cec";
+> +               reg =3D <0 0x10012000 0 0xbc>;
+> +               interrupts =3D <GIC_SPI 182 IRQ_TYPE_LEVEL_LOW>;
+> +               clocks =3D <&infracfg CLK_INFRA_CEC>;
+> +               status =3D "disabled";
+> +       };
+> +
+>         cir: cir@10013000 {
+>                 compatible =3D "mediatek,mt7623-cir";
+>                 reg =3D <0 0x10013000 0 0x1000>;
+> @@ -369,6 +393,18 @@ apmixedsys: syscon@10209000 {
+>                 #clock-cells =3D <1>;
+>         };
+>
+> +       hdmi_phy: phy@10209100 {
+> +               compatible =3D "mediatek,mt7623-hdmi-phy",
+
+Ditto.
+
+> +                            "mediatek,mt2701-hdmi-phy";
+> +               reg =3D <0 0x10209100 0 0x24>;
+> +               clocks =3D <&apmixedsys CLK_APMIXED_HDMI_REF>;
+> +               clock-names =3D "pll_ref";
+> +               clock-output-names =3D "hdmitx_dig_cts";
+> +               #clock-cells =3D <0>;
+> +               #phy-cells =3D <0>;
+> +               status =3D "disabled";
+> +       };
+> +
+>         rng: rng@1020f000 {
+>                 compatible =3D "mediatek,mt7623-rng";
+>                 reg =3D <0 0x1020f000 0 0x1000>;
+> @@ -568,6 +604,16 @@ bch: ecc@1100e000 {
+>                 status =3D "disabled";
+>         };
+>
+> +       hdmiddc0: i2c@11013000 {
+> +               compatible =3D "mediatek,mt7623-hdmi-ddc",
+
+Ditto.
+
+> +                            "mediatek,mt8173-hdmi-ddc";
+> +               interrupts =3D <GIC_SPI 81 IRQ_TYPE_LEVEL_LOW>;
+> +               reg =3D <0 0x11013000 0 0x1C>;
+> +               clocks =3D <&pericfg CLK_PERI_I2C3>;
+> +               clock-names =3D "ddc-i2c";
+> +               status =3D "disabled";
+> +       };
+> +
+>         nor_flash: spi@11014000 {
+>                 compatible =3D "mediatek,mt7623-nor",
+>                              "mediatek,mt8173-nor";
+> @@ -766,6 +812,84 @@ mmsys: syscon@14000000 {
+>                 #clock-cells =3D <1>;
+>         };
+>
+> +       display_components: dispsys@14000000 {
+> +               compatible =3D "mediatek,mt7623-mmsys",
+> +                            "mediatek,mt2701-mmsys";
+
+In mediatek,mmsys.txt [3], this should be:
+
+mmsys: syscon@14000000 {
+        compatible =3D "mediatek,mt7623-mmsys", "mediatek,mt2701-mmsys", "s=
+yscon"
+
+[3] https://www.kernel.org/doc/Documentation/devicetree/bindings/arm/mediat=
+ek/mediatek%2Cmmsys.txt
+
+> +               reg =3D <0 0x14000000 0 0x1000>;
+> +               power-domains =3D <&scpsys MT2701_POWER_DOMAIN_DISP>;
+> +       };
+> +
+> +       ovl@14007000 {
+> +               compatible =3D "mediatek,mt7623-disp-ovl",
+
+This is not defined in mediatek,disp.txt [4].
+
+[4] https://www.kernel.org/doc/Documentation/devicetree/bindings/display/me=
+diatek/mediatek%2Cdisp.txt
+
+> +                            "mediatek,mt2701-disp-ovl";
+> +               reg =3D <0 0x14007000 0 0x1000>;
+> +               interrupts =3D <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW>;
+> +               clocks =3D <&mmsys CLK_MM_DISP_OVL>;
+> +               iommus =3D <&iommu MT2701_M4U_PORT_DISP_OVL_0>;
+> +               mediatek,larb =3D <&larb0>;
+> +       };
+> +
+> +       rdma0: rdma@14008000 {
+> +               compatible =3D "mediatek,mt7623-disp-rdma",
+> +                            "mediatek,mt2701-disp-rdma";
+> +               reg =3D <0 0x14008000 0 0x1000>;
+> +               interrupts =3D <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW>;
+> +               clocks =3D <&mmsys CLK_MM_DISP_RDMA>;
+> +               iommus =3D <&iommu MT2701_M4U_PORT_DISP_RDMA>;
+> +               mediatek,larb =3D <&larb0>;
+> +       };
+> +
+> +       wdma@14009000 {
+> +               compatible =3D "mediatek,mt7623-disp-wdma",
+> +                            "mediatek,mt2701-disp-wdma";
+> +               reg =3D <0 0x14009000 0 0x1000>;
+> +               interrupts =3D <GIC_SPI 154 IRQ_TYPE_LEVEL_LOW>;
+> +               clocks =3D <&mmsys CLK_MM_DISP_WDMA>;
+> +               iommus =3D <&iommu MT2701_M4U_PORT_DISP_WDMA>;
+> +               mediatek,larb =3D <&larb0>;
+> +       };
+> +
+> +       bls: pwm@1400a000 {
+> +               compatible =3D "mediatek,mt7623-disp-pwm",
+> +                            "mediatek,mt2701-disp-pwm";
+> +               reg =3D <0 0x1400a000 0 0x1000>;
+> +               #pwm-cells =3D <2>;
+> +               clocks =3D <&mmsys CLK_MM_MDP_BLS_26M>,
+> +                        <&mmsys CLK_MM_DISP_BLS>;
+> +               clock-names =3D "main", "mm";
+> +               status =3D "disabled";
+> +       };
+> +
+> +       color@1400b000 {
+> +               compatible =3D "mediatek,mt7623-disp-color",
+> +                            "mediatek,mt2701-disp-color";
+> +               reg =3D <0 0x1400b000 0 0x1000>;
+> +               interrupts =3D <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW>;
+> +               clocks =3D <&mmsys CLK_MM_DISP_COLOR>;
+> +       };
+> +
+> +       dsi: dsi@1400c000 {
+> +               compatible =3D "mediatek,mt7623-dsi",
+
+This is not defined in mediatek,dsi.txt [1].
+
+> +                            "mediatek,mt2701-dsi";
+> +               reg =3D <0 0x1400c000 0 0x1000>;
+> +               interrupts =3D <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW>;
+> +               clocks =3D <&mmsys CLK_MM_DSI_ENGINE>,
+> +                        <&mmsys CLK_MM_DSI_DIG>,
+> +                        <&mipi_tx0>;
+> +               clock-names =3D "engine", "digital", "hs";
+> +               phys =3D <&mipi_tx0>;
+> +               phy-names =3D "dphy";
+> +               status =3D "disabled";
+> +       };
+> +
+> +       mutex: mutex@1400e000 {
+> +               compatible =3D "mediatek,mt7623-disp-mutex",
+> +                            "mediatek,mt2701-disp-mutex";
+> +               reg =3D <0 0x1400e000 0 0x1000>;
+> +               interrupts =3D <GIC_SPI 161 IRQ_TYPE_LEVEL_LOW>;
+> +               clocks =3D <&mmsys CLK_MM_MUTEX_32K>;
+> +       };
+> +
+>         larb0: larb@14010000 {
+>                 compatible =3D "mediatek,mt7623-smi-larb",
+>                              "mediatek,mt2701-smi-larb";
+> @@ -778,6 +902,44 @@ larb0: larb@14010000 {
+>                 power-domains =3D <&scpsys MT2701_POWER_DOMAIN_DISP>;
+>         };
+>
+> +       rdma1: rdma@14012000 {
+> +               compatible =3D "mediatek,mt7623-disp-rdma",
+> +                            "mediatek,mt2701-disp-rdma";
+> +               reg =3D <0 0x14012000 0 0x1000>;
+> +               interrupts =3D <GIC_SPI 164 IRQ_TYPE_LEVEL_LOW>;
+> +               clocks =3D <&mmsys CLK_MM_DISP_RDMA1>;
+> +               iommus =3D <&iommu MT2701_M4U_PORT_DISP_RDMA1>;
+> +               mediatek,larb =3D <&larb0>;
+> +       };
+> +
+> +       dpi0: dpi@14014000 {
+> +               compatible =3D "mediatek,mt7623-dpi",
+
+This is not defined in mediatek,dpi.txt [5].
+
+[5] https://www.kernel.org/doc/Documentation/devicetree/bindings/display/me=
+diatek/mediatek%2Cdpi.txt
+
+Regards,
+Chun-Kuang.
+
+> +                            "mediatek,mt2701-dpi";
+> +               reg =3D <0 0x14014000 0 0x1000>;
+> +               interrupts =3D <GIC_SPI 194 IRQ_TYPE_LEVEL_LOW>;
+> +               clocks =3D <&mmsys CLK_MM_DPI1_DIGL>,
+> +                        <&mmsys CLK_MM_DPI1_ENGINE>,
+> +                        <&apmixedsys CLK_APMIXED_TVDPLL>;
+> +               clock-names =3D "pixel", "engine", "pll";
+> +               status =3D "disabled";
+> +       };
+> +
+> +       hdmi0: hdmi@14015000 {
+> +               compatible =3D "mediatek,mt7623-hdmi",
+> +                            "mediatek,mt8173-hdmi";
+> +               reg =3D <0 0x14015000 0 0x400>;
+> +               clocks =3D <&mmsys CLK_MM_HDMI_PIXEL>,
+> +                        <&mmsys CLK_MM_HDMI_PLL>,
+> +                        <&mmsys CLK_MM_HDMI_AUDIO>,
+> +                        <&mmsys CLK_MM_HDMI_SPDIF>;
+> +               clock-names =3D "pixel", "pll", "bclk", "spdif";
+> +               phys =3D <&hdmi_phy>;
+> +               phy-names =3D "hdmi";
+> +               mediatek,syscon-hdmi =3D <&mmsys 0x900>;
+> +               cec =3D <&cec>;
+> +               status =3D "disabled";
+> +       };
+> +
