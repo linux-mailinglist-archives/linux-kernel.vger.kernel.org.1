@@ -2,106 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CE623B86A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B24D23B86E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730164AbgHDKEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 06:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728332AbgHDKEV (ORCPT
+        id S1730182AbgHDKE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 06:04:58 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:54201 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728332AbgHDKE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 06:04:21 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D029C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 03:04:21 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id x5so2118688wmi.2
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 03:04:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Pegb0ogFlCOGFMDWVKjVJSjrV23uFfG+68FKgoAHUYg=;
-        b=qQ/w6vAtQCyNq/N4PY2sly/z47Hs2FmYbLoaFwozntW55ABMjsTts2O+Es0m+jaOyG
-         ndtUKCdb1yI2DENSgvww2GO8gUK9+zwzLZsL/5tXQOHh7buHn0aN1mb42LcU96AwSlOU
-         PUhRcvOjTh3gr+RqpKJhaCIb6gKkvEXoRy5KrT3L+8Dhd6Q86WoDNtvU3T/LhpBFexCq
-         g4Nd4JtUMXVXPWTZ04C2ZDXxzik3XgVOQXl/dbMhM/jOZHYP0hB0m0ajaC6T2Xwf8GcY
-         xPSSpTuhFtOoR9wZN5cXyunYxhySi3pw/P4B3DFJ/Iqd5aaYi6PZ2M+j1cROPpCEiCgq
-         wgBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Pegb0ogFlCOGFMDWVKjVJSjrV23uFfG+68FKgoAHUYg=;
-        b=CzyFUnZSicXoPXjHUUPVVEowPv4AcHYvYgy2tKq5bHVIsphuKuSffHbjaUtfNzVtwo
-         45+dqyQ1PixZQ4CLsasNt/vYv2VB/JP7Vfk8OIkxDXUzW69UEfFTwCF7vyztA5tL4CLY
-         Rv1Mm8e/spMHEQELAxWpjDKfoVAceJ9fbY12dIyYW7V8DyPBt6A+FIZXrdcEElCE2jC/
-         kFESuMh1BEnevPHB6bHSPyFq2TZUbnogxj4majVG+e/9VvQnevKN6ofWPpNP9qIYQeBZ
-         EWf04egU70Tw/JJU0zoKKGIH5KwsZ1bI2G3lJ4LlAoeOdBgITo+we8d7l15Xps/U7qwr
-         Ib2w==
-X-Gm-Message-State: AOAM533yplUB7SdcJy4TIiCvA7zSA9EliDhVFpvUPOfRh6CXO4v1u24A
-        aGDcqYWW3jz5r7QTln6e00WXCg==
-X-Google-Smtp-Source: ABdhPJwPnDHvQ5rfJ7GM0+ImQIFOM19YzN0zd70NhwTMWU/JLhOpoZSqNUQXGrlv00D6sRZCPVyXWw==
-X-Received: by 2002:a1c:e107:: with SMTP id y7mr3143467wmg.99.1596535460198;
-        Tue, 04 Aug 2020 03:04:20 -0700 (PDT)
-Received: from localhost (jirka.pirko.cz. [84.16.102.26])
-        by smtp.gmail.com with ESMTPSA id z15sm28680490wrn.89.2020.08.04.03.04.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 03:04:19 -0700 (PDT)
-Date:   Tue, 4 Aug 2020 12:04:18 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Moshe Shemesh <moshe@mellanox.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Subject: Re: [PATCH net-next RFC 01/13] devlink: Add reload level option to
- devlink reload command
-Message-ID: <20200804100418.GA2210@nanopsycho>
-References: <20200728114458.762b5396@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <d6fbfedd-9022-ff67-23ed-418607beecc2@intel.com>
- <20200728130653.7ce2f013@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <04f00024-758c-bc19-c187-49847c24a5a4@mellanox.com>
- <20200729140708.5f914c15@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <3352bd96-d10e-6961-079d-5c913a967513@mellanox.com>
- <20200730161101.48f42c5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <0f2467fd-ee2e-1a51-f9c1-02f8a579d542@mellanox.com>
- <20200803141442.GB2290@nanopsycho>
- <20200803135703.16967635@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Tue, 4 Aug 2020 06:04:57 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U4jkImR_1596535490;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U4jkImR_1596535490)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 04 Aug 2020 18:04:51 +0800
+Subject: Re: [PATCH v17 21/21] mm/lru: revise the comments of lru_lock
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Jann Horn <jannh@google.com>
+References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1595681998-19193-22-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0UfpHjBTHvtZz7=WMhZZAunVYuNMpuYBQCiorERb5seFUQ@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <f34e790f-50e6-112c-622f-d7ab804c6d22@linux.alibaba.com>
+Date:   Tue, 4 Aug 2020 18:04:34 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200803135703.16967635@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAKgT0UfpHjBTHvtZz7=WMhZZAunVYuNMpuYBQCiorERb5seFUQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Aug 03, 2020 at 10:57:03PM CEST, kuba@kernel.org wrote:
->On Mon, 3 Aug 2020 16:14:42 +0200 Jiri Pirko wrote:
->> >devlink dev reload [ net-ns-respawn { PID | NAME | ID } ] [ driver-param-init
->> >] [ fw-activate [ --live] ]  
->> 
->> Jakub, why do you prefer to have another extra level-specific option
->> "live"? I think it is clear to have it as a separate level. The behaviour
->> of the operation is quite different.
->
->I was trying to avoid having to provide a Cartesian product of
->operation and system disruption level, if any other action can
->be done "live" at some point.
->
->But no strong feelings about that one.
->
->Really, as long as there is no driver-specific defaults (or as 
->little driver-specific anything as possible) and user actions 
->are clearly expressed (fw-reset does not necessarily imply
->fw-activation) - the API will be fine IMO.
 
-Clear actions, that is what I'm fine with.
 
-But not sure how you think we can achieve no driver-specific defaults.
-We have them already :/ I don't think we can easily remove them and not
-break user expectations.
+在 2020/8/4 上午6:37, Alexander Duyck 写道:
+>>
+>>  shrink_inactive_list() also diverts any unevictable pages that it finds on the
+>> -inactive lists to the appropriate zone's unevictable list.
+>> +inactive lists to the appropriate node's unevictable list.
+>>
+>>  shrink_inactive_list() should only see SHM_LOCK'd pages that became SHM_LOCK'd
+>>  after shrink_active_list() had moved them to the inactive list, or pages mapped
+> Same here.
 
+lruvec is used per memcg per node actually, and it fallback to node if memcg disabled.
+So the comments are still right.
+
+And most of changes just fix from zone->lru_lock to pgdat->lru_lock change.
+> 
+>> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+>> index 64ede5f150dc..44738cdb5a55 100644
+>> --- a/include/linux/mm_types.h
+>> +++ b/include/linux/mm_types.h
+>> @@ -78,7 +78,7 @@ struct page {
+>>                 struct {        /* Page cache and anonymous pages */
+>>                         /**
+>>                          * @lru: Pageout list, eg. active_list protected by
+>> -                        * pgdat->lru_lock.  Sometimes used as a generic list
+>> +                        * lruvec->lru_lock.  Sometimes used as a generic list
+>>                          * by the page owner.
+>>                          */
+>>                         struct list_head lru;
+>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+>> index 8af956aa13cf..c92289a4e14d 100644
+>> --- a/include/linux/mmzone.h
+>> +++ b/include/linux/mmzone.h
+>> @@ -115,7 +115,7 @@ static inline bool free_area_empty(struct free_area *area, int migratetype)
+>>  struct pglist_data;
+>>
+>>  /*
+>> - * zone->lock and the zone lru_lock are two of the hottest locks in the kernel.
+>> + * zone->lock and the lru_lock are two of the hottest locks in the kernel.
+>>   * So add a wild amount of padding here to ensure that they fall into separate
+>>   * cachelines.  There are very few zone structures in the machine, so space
+>>   * consumption is not a concern here.
+> So I don't believe you are using ZONE_PADDING in any way to try and
+> protect the LRU lock currently. At least you aren't using it in the
+> lruvec. As such it might make sense to just drop the reference to the
+> lru_lock here. That reminds me that we still need to review the
+> placement of the lru_lock and determine if there might be a better
+> placement and/or padding that might improve performance when under
+> heavy stress.
+> 
+
+Right, is it the following looks better?
+
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index ccc76590f823..0ed520954843 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -113,8 +113,7 @@ static inline bool free_area_empty(struct free_area *area, int migratetype)
+ struct pglist_data;
+
+ /*
+- * zone->lock and the lru_lock are two of the hottest locks in the kernel.
+- * So add a wild amount of padding here to ensure that they fall into separate
++ * Add a wild amount of padding here to ensure datas fall into separate
+  * cachelines.  There are very few zone structures in the machine, so space
+  * consumption is not a concern here.
+  */
+
+Thanks!
+Alex
