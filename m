@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801E923B94F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FEF23B951
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730211AbgHDLQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:16:01 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:42932 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgHDLND (ORCPT
+        id S1730233AbgHDLQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730118AbgHDLPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:13:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1596539582; x=1628075582;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=cABTCBkYCZRK9yGKmo95ajZBgIwDxSEMc4wqVo78+9g=;
-  b=YkxfGdWG2O2uyCPWAofpMDN7MmVVBPJkWcXB+XNMXbCxXTxtTsbfPW0w
-   yOjg9Pz3hV/eZRoChltTJWClAmDn5Tz81FJ66QlnB7fmHYE1AmfXXzfOo
-   vbQGttm2r+gRWKitePNmsIUnoE5qJvyMgyWCMP+5XIqYJ2CjlOjpk5ii/
-   R5dVFJ0PlREbbsyK9EVDeQa9i2aHZn2iEGFsGuT3naQuV58oDGp9xwDJw
-   aoxnv1kV+mPsVJWqWDsVBiI+55lOLJf4K0QPpXINHbiGXYgdzxqHXIuu4
-   BHm7t/VOL4m5yu3GzOAe+tN3izBI08sKObwAFiGsDFYBK3YFlXU1F9iUf
-   A==;
-IronPort-SDR: U5FIzf9eO09nF7yxc2ErkzzGE+AyObXpRESQoG2nHrvOCj3mowVlPyl3AJgPqJsgXNgpVHObcy
- dwUQ33U/IkHESI15DQYWNd8k3EEwpXDNutIm54JQEANsiC7mqasE1TvgvAbUm+dGzBX42TwnMr
- 5LxG6C3Ou7qqIAXyJle+qFT0fR1Q8uKVGo/QgSOoBQIaXbO88dnSrHdrncvVd1dbRaPpQr7R9P
- jn2q6ytoEfLkcNbAZk7hDAJLgoF3Bmwtgc0dmCJwaVArv8oxHzXG5DWcVv2szkBEv5MFiBAMZ/
- U5w=
-X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
-   d="scan'208";a="86626294"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Aug 2020 04:07:54 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 4 Aug 2020 04:07:49 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 4 Aug 2020 04:07:47 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <wenyou.yang@atmel.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 3/3] ARM: at91: pm: of_node_put() after its usage
-Date:   Tue, 4 Aug 2020 14:07:38 +0300
-Message-ID: <1596539258-20719-4-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596539258-20719-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1596539258-20719-1-git-send-email-claudiu.beznea@microchip.com>
+        Tue, 4 Aug 2020 07:15:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85CEC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 04:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LB7jmCFC/W82958r6LEZ1hABD4alrUzDqK9eGecST54=; b=dRv1njrB5aKGteUDUCZASxt1Zh
+        gFAL4j55c1Gidy+tKtz925jDMtqOVwJ57cHkQXCw64b3c62e64mtMwhM/H1km9ElWrbaYmw1OSbvZ
+        e8Hg9hiEhcil16aW5/7lVXXLZCfTBmImymyMVireG4j1PdMUfS4avU3npPFZN0PZzJUUT80LLCC9L
+        5F+v/wSwg+2tabk4EXiqJpvb6DHUEVgu26jXHVAEqczSniFInexPVZLPVDqVlc/NDebCOndMwZHhb
+        txgBRFbrlnwx0K41rla2CK7yxPt97Un5Oj5Y/7jZWAquoXc+RQRv8LJmIpt2fy3hTsvjFBKZGqdou
+        WWyXwPdg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k2uoC-0003wm-Tu; Tue, 04 Aug 2020 11:08:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3F3A3301A66;
+        Tue,  4 Aug 2020 13:08:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1DEA62BE64848; Tue,  4 Aug 2020 13:08:40 +0200 (CEST)
+Date:   Tue, 4 Aug 2020 13:08:40 +0200
+From:   peterz@infradead.org
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH v4 05/10] sched/topology: Define and assign sched_domain
+ flag metadata
+Message-ID: <20200804110840.GF2657@hirez.programming.kicks-ass.net>
+References: <20200731115502.12954-1-valentin.schneider@arm.com>
+ <20200731115502.12954-6-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731115502.12954-6-valentin.schneider@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Put node after it has been used.
+On Fri, Jul 31, 2020 at 12:54:57PM +0100, Valentin Schneider wrote:
+> +/*
+> + * Domain members share CPU capacity (i.e. SMT)
+> + *
+> + * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
+> + * CPU capacity.
+> + */
+> +SD_FLAG(SD_SHARE_CPUCAPACITY,   6, SDF_SHARED_CHILD)
+> +
+> +/*
+> + * Domain members share CPU package resources (i.e. caches)
+> + *
+> + * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
+> + * the same cache(s).
+> + */
+> +SD_FLAG(SD_SHARE_PKG_RESOURCES, 7, SDF_SHARED_CHILD)
 
-Fixes: 13f16017d3e3f ("ARM: at91: pm: Tie the USB clock mask to the pmc")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- arch/arm/mach-at91/pm.c | 1 +
- 1 file changed, 1 insertion(+)
+We should probably rename these to SD_SHARE_CORE / SD_SHARE_CACHE or
+something, but let me first go through this series (and hopefully apply)
+before we go make more changes.
 
-diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-index 51902c4c9bb4..e332c6b1548c 100644
---- a/arch/arm/mach-at91/pm.c
-+++ b/arch/arm/mach-at91/pm.c
-@@ -841,6 +841,7 @@ static void __init at91_pm_init(void (*pm_idle)(void))
- 
- 	pmc_np = of_find_matching_node_and_match(NULL, atmel_pmc_ids, &of_id);
- 	soc_pm.data.pmc = of_iomap(pmc_np, 0);
-+	of_node_put(pmc_np);
- 	if (!soc_pm.data.pmc) {
- 		pr_err("AT91: PM not supported, PMC not found\n");
- 		return;
--- 
-2.7.4
 
+.. onwards!
