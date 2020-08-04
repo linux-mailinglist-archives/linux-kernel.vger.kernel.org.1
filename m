@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D6023BC73
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991F623BC75
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729161AbgHDOlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:41:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36502 "EHLO mail.kernel.org"
+        id S1728999AbgHDOoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:44:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59030 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725904AbgHDOla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:41:30 -0400
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77F0522CE3
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 14:41:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596552089;
-        bh=49+4jaBGejOQEj2mBMoA+n/qjCxSINfX1ZlDTF4RB9g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SIo20VzQD1hcKkTqZ3z6GBe+Nk04OJx3rnyojyF0dO0yfKTibSzFTxzo9XexiAGpL
-         7kift6qM8OTaCC660NCKLt6bJH6Yq6r+KkBvLatUZlR7pHxBD1y4RuGzEjCe+xwcIQ
-         /sG0jMIKiPHNmA+iSLJKMuPh+iI8pcYgGIjtOg34=
-Received: by mail-ej1-f48.google.com with SMTP id qc22so27910076ejb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 07:41:29 -0700 (PDT)
-X-Gm-Message-State: AOAM530cwXBizKcMlLCJoOnkVjoMStT7/uBkQco6d2PLaN+eYWIp1r8b
-        eO4TSeJMUWReNI2145k6a+E1fz8jeu4GTonC2w==
-X-Google-Smtp-Source: ABdhPJxZ0G5jQrTt8tCKNFsHW0hKmhaebXxOjBoQebMkyIg/uoMGnJRW5xIni95vs+vqhJWTPzUYNN6/fLd4aQtB8v8=
-X-Received: by 2002:a17:906:d92c:: with SMTP id rn12mr21013338ejb.187.1596552088025;
- Tue, 04 Aug 2020 07:41:28 -0700 (PDT)
+        id S1725904AbgHDOn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 10:43:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 516D9AB7D;
+        Tue,  4 Aug 2020 14:44:14 +0000 (UTC)
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+Cc:     "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Hannes Reinecke <hare@suse.com>, Xiao Ni <xni@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Enzo Matsumiya <ematsumiya@suse.com>,
+        Jens Axboe <axboe@kernel.dk>, Evan Green <evgreen@chromium.org>
+References: <20200804142332.29961-1-colyli@suse.de>
+ <SN4PR0401MB3598033FF16A5AE1D375EDD69B4A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <b469f0ec-0185-c624-b967-5080d805040c@suse.de>
+ <SN4PR0401MB35983A30C6AE9886EF6E91C79B4A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   Coly Li <colyli@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ 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
+Subject: Re: [PATCH] block: tolerate 0 byte discard_granularity in
+ __blkdev_issue_discard()
+Message-ID: <2f70177e-4964-0fce-14bf-506b0821128b@suse.de>
+Date:   Tue, 4 Aug 2020 22:43:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200804105849.70876-1-linux@fw-web.de> <20200804105849.70876-5-linux@fw-web.de>
-In-Reply-To: <20200804105849.70876-5-linux@fw-web.de>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 4 Aug 2020 22:41:16 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-Nd9jTiSZPZDUj3YtuqJTWCJTR91y2xjNT6y9f4v1+aQ@mail.gmail.com>
-Message-ID: <CAAOTY_-Nd9jTiSZPZDUj3YtuqJTWCJTR91y2xjNT6y9f4v1+aQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] drm/mediatek: dpi/dsi: change the getting
- possible_crtc way
-To:     Frank Wunderlich <linux@fw-web.de>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <SN4PR0401MB35983A30C6AE9886EF6E91C79B4A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Frank:
+On 2020/8/4 22:37, Johannes Thumshirn wrote:
+> On 04/08/2020 16:34, Coly Li wrote:
+>> On 2020/8/4 22:31, Johannes Thumshirn wrote:
+>>> On 04/08/2020 16:23, Coly Li wrote:
+>>>> This is the procedure to reproduce the panic,
+>>>>   # modprobe scsi_debug delay=0 dev_size_mb=2048 max_queue=1
+>>>>   # losetup -f /dev/nvme0n1 --direct-io=on
+>>>>   # blkdiscard /dev/loop0 -o 0 -l 0x200
+>>>
+>>> losetup -f /dev/sdX isn't it?
+>>>
+>>
+>> In my case, I use a NVMe SSD as the backing device of the loop device.
+>> Because I don't have a scsi lun.
+>>
+>> And loading scsi_debug module seems necessary, otherwise the discard
+>> process just hang and I cannot see the kernel panic (I don't know why yet).
+> 
+> OK, now that's highly interesting. Does it also happen if you back loop with
+> a file? loop_config_discard() has different cases for the different backing devices/files. S
+> 
+No, for a file backing, q->limits.discard_granularity is set to
+inode->i_sb->s_blocksize. And the encrypted loop device does not support
+discard.
 
-Frank Wunderlich <linux@fw-web.de> =E6=96=BC 2020=E5=B9=B48=E6=9C=884=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=887:00=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> From: Jitao Shi <jitao.shi@mediatek.com>
->
-> For current mediatek dsi encoder, its possible crtc is fixed in crtc
-> 0, and mediatek dpi encoder's possible crtc is fixed in crtc 1. In
-> some SoC the possible crtc is not fixed in this case, so call
-> mtk_drm_find_possible_crtc_by_comp() to find out the correct possible
-> crtc.
+Such issue just only happens on a device backing loop device which
+announces supporting discard. Without Ming's fix to loop device driver,
+discard on LBA 0 will trigger the BUG() panic in my setup (Maybe it is
+more easier to trigger this BUG() panic with scsi lun).
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-
->
-> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> ---
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 3 ++-
->  drivers/gpu/drm/mediatek/mtk_dsi.c | 3 ++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
-k/mtk_dpi.c
-> index d4f0fb7ad312..e43977015843 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -608,7 +608,8 @@ static int mtk_dpi_bind(struct device *dev, struct de=
-vice *master, void *data)
->         drm_encoder_helper_add(&dpi->encoder, &mtk_dpi_encoder_helper_fun=
-cs);
->
->         /* Currently DPI0 is fixed to be driven by OVL1 */
-> -       dpi->encoder.possible_crtcs =3D BIT(1);
-> +       dpi->encoder.possible_crtcs =3D
-> +               mtk_drm_find_possible_crtc_by_comp(drm_dev, dpi->ddp_comp=
-);
->
->         ret =3D drm_bridge_attach(&dpi->encoder, dpi->bridge, NULL, 0);
->         if (ret) {
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
-k/mtk_dsi.c
-> index 270bf22c98fe..c31d9c12d4a9 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-> @@ -892,7 +892,8 @@ static int mtk_dsi_create_conn_enc(struct drm_device =
-*drm, struct mtk_dsi *dsi)
->          * Currently display data paths are statically assigned to a crtc=
- each.
->          * crtc 0 is OVL0 -> COLOR0 -> AAL -> OD -> RDMA0 -> UFOE -> DSI0
->          */
-> -       dsi->encoder.possible_crtcs =3D 1;
-> +       dsi->encoder.possible_crtcs =3D
-> +               mtk_drm_find_possible_crtc_by_comp(drm, dsi->ddp_comp);
->
->         /* If there's a bridge, attach to it and let it create the connec=
-tor */
->         if (dsi->bridge) {
-> --
-> 2.25.1
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Coly Li
