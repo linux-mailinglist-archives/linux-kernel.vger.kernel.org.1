@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC6C23BE04
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B49023BE10
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgHDQWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:22:32 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43912 "EHLO
+        id S1729892AbgHDQYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:24:13 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43913 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729658AbgHDQVC (ORCPT
+        with ESMTP id S1729664AbgHDQU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:21:02 -0400
+        Tue, 4 Aug 2020 12:20:59 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from eli@mellanox.com)
         with SMTP; 4 Aug 2020 19:20:53 +0300
 Received: from nps-server-21.mtl.labs.mlnx (nps-server-21.mtl.labs.mlnx [10.237.240.120])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKrMK024049;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKrPM024053;
         Tue, 4 Aug 2020 19:20:53 +0300
 Received: from nps-server-21.mtl.labs.mlnx (localhost [127.0.0.1])
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKrhH022647;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKrrM022649;
         Tue, 4 Aug 2020 19:20:53 +0300
 Received: (from eli@localhost)
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKrt4022646;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKr0f022648;
         Tue, 4 Aug 2020 19:20:53 +0300
 From:   Eli Cohen <eli@mellanox.com>
 To:     mst@redhat.com, jasowang@redhat.com,
@@ -29,9 +29,9 @@ To:     mst@redhat.com, jasowang@redhat.com,
         linux-kernel@vger.kernel.org
 Cc:     shahafs@mellanox.com, saeedm@mellanox.com, parav@mellanox.com,
         Eli Cohen <eli@mellanox.com>
-Subject: [PATCH V4 linux-next 07/12] net/vdpa: Use struct for set/get vq state
-Date:   Tue,  4 Aug 2020 19:20:43 +0300
-Message-Id: <20200804162048.22587-8-eli@mellanox.com>
+Subject: [PATCH V4 linux-next 08/12] vdpa: Modify get_vq_state() to return error code
+Date:   Tue,  4 Aug 2020 19:20:44 +0300
+Message-Id: <20200804162048.22587-9-eli@mellanox.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200804162048.22587-1-eli@mellanox.com>
 References: <20200804162048.22587-1-eli@mellanox.com>
@@ -42,201 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For now VQ state involves 16 bit available index value encoded in u64
-variable. In the future it will be extended to contain more fields. Use
-struct to contain the state, now containing only a single u16 for the
-available index. In the future we can add fields to this struct.
+Modify get_vq_state() so it returns an error code. In case of hardware
+acceleration, the available index may be retrieved from the device, an
+operation that can possibly fail.
 
 Reviewed-by: Parav Pandit <parav@mellanox.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Eli Cohen <eli@mellanox.com>
 ---
- drivers/vdpa/ifcvf/ifcvf_base.c  |  4 ++--
- drivers/vdpa/ifcvf/ifcvf_base.h  |  4 ++--
- drivers/vdpa/ifcvf/ifcvf_main.c  |  9 +++++----
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 10 ++++++----
- drivers/vhost/vdpa.c             |  7 +++++--
- include/linux/vdpa.h             | 18 ++++++++++++++----
- 6 files changed, 34 insertions(+), 18 deletions(-)
+ drivers/vdpa/ifcvf/ifcvf_main.c  | 5 +++--
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 5 +++--
+ drivers/vhost/vdpa.c             | 5 ++++-
+ include/linux/vdpa.h             | 4 ++--
+ 4 files changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/vdpa/ifcvf/ifcvf_base.c b/drivers/vdpa/ifcvf/ifcvf_base.c
-index 94bf0328b68d..f2a128e56de5 100644
---- a/drivers/vdpa/ifcvf/ifcvf_base.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_base.c
-@@ -272,7 +272,7 @@ static int ifcvf_config_features(struct ifcvf_hw *hw)
- 	return 0;
- }
- 
--u64 ifcvf_get_vq_state(struct ifcvf_hw *hw, u16 qid)
-+u16 ifcvf_get_vq_state(struct ifcvf_hw *hw, u16 qid)
- {
- 	struct ifcvf_lm_cfg __iomem *ifcvf_lm;
- 	void __iomem *avail_idx_addr;
-@@ -287,7 +287,7 @@ u64 ifcvf_get_vq_state(struct ifcvf_hw *hw, u16 qid)
- 	return last_avail_idx;
- }
- 
--int ifcvf_set_vq_state(struct ifcvf_hw *hw, u16 qid, u64 num)
-+int ifcvf_set_vq_state(struct ifcvf_hw *hw, u16 qid, u16 num)
- {
- 	struct ifcvf_lm_cfg __iomem *ifcvf_lm;
- 	void __iomem *avail_idx_addr;
-diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
-index 24af422b5a3e..08f267a2aafe 100644
---- a/drivers/vdpa/ifcvf/ifcvf_base.h
-+++ b/drivers/vdpa/ifcvf/ifcvf_base.h
-@@ -116,7 +116,7 @@ void ifcvf_set_status(struct ifcvf_hw *hw, u8 status);
- void io_write64_twopart(u64 val, u32 *lo, u32 *hi);
- void ifcvf_reset(struct ifcvf_hw *hw);
- u64 ifcvf_get_features(struct ifcvf_hw *hw);
--u64 ifcvf_get_vq_state(struct ifcvf_hw *hw, u16 qid);
--int ifcvf_set_vq_state(struct ifcvf_hw *hw, u16 qid, u64 num);
-+u16 ifcvf_get_vq_state(struct ifcvf_hw *hw, u16 qid);
-+int ifcvf_set_vq_state(struct ifcvf_hw *hw, u16 qid, u16 num);
- struct ifcvf_adapter *vf_to_adapter(struct ifcvf_hw *hw);
- #endif /* _IFCVF_H_ */
 diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-index 7c93225367db..dc311e972b9e 100644
+index dc311e972b9e..076d7ac5e723 100644
 --- a/drivers/vdpa/ifcvf/ifcvf_main.c
 +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-@@ -237,19 +237,20 @@ static u16 ifcvf_vdpa_get_vq_num_max(struct vdpa_device *vdpa_dev)
+@@ -237,12 +237,13 @@ static u16 ifcvf_vdpa_get_vq_num_max(struct vdpa_device *vdpa_dev)
  	return IFCVF_QUEUE_MAX;
  }
  
--static u64 ifcvf_vdpa_get_vq_state(struct vdpa_device *vdpa_dev, u16 qid)
-+static void ifcvf_vdpa_get_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
-+				    struct vdpa_vq_state *state)
+-static void ifcvf_vdpa_get_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
+-				    struct vdpa_vq_state *state)
++static int ifcvf_vdpa_get_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
++				   struct vdpa_vq_state *state)
  {
  	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
  
--	return ifcvf_get_vq_state(vf, qid);
-+	state->avail_index = ifcvf_get_vq_state(vf, qid);
+ 	state->avail_index = ifcvf_get_vq_state(vf, qid);
++	return 0;
  }
  
  static int ifcvf_vdpa_set_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
--				   u64 num)
-+				   const struct vdpa_vq_state *state)
- {
- 	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
- 
--	return ifcvf_set_vq_state(vf, qid, num);
-+	return ifcvf_set_vq_state(vf, qid, state->avail_index);
- }
- 
- static void ifcvf_vdpa_set_vq_cb(struct vdpa_device *vdpa_dev, u16 qid,
 diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 676cb2f53202..f1c351d5959b 100644
+index f1c351d5959b..c68741363643 100644
 --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
 +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -450,26 +450,28 @@ static bool vdpasim_get_vq_ready(struct vdpa_device *vdpa, u16 idx)
- 	return vq->ready;
- }
- 
--static int vdpasim_set_vq_state(struct vdpa_device *vdpa, u16 idx, u64 state)
-+static int vdpasim_set_vq_state(struct vdpa_device *vdpa, u16 idx,
-+				const struct vdpa_vq_state *state)
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
- 	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
- 	struct vringh *vrh = &vq->vring;
- 
- 	spin_lock(&vdpasim->lock);
--	vrh->last_avail_idx = state;
-+	vrh->last_avail_idx = state->avail_index;
- 	spin_unlock(&vdpasim->lock);
- 
+@@ -464,14 +464,15 @@ static int vdpasim_set_vq_state(struct vdpa_device *vdpa, u16 idx,
  	return 0;
  }
  
--static u64 vdpasim_get_vq_state(struct vdpa_device *vdpa, u16 idx)
-+static void vdpasim_get_vq_state(struct vdpa_device *vdpa, u16 idx,
-+				 struct vdpa_vq_state *state)
+-static void vdpasim_get_vq_state(struct vdpa_device *vdpa, u16 idx,
+-				 struct vdpa_vq_state *state)
++static int vdpasim_get_vq_state(struct vdpa_device *vdpa, u16 idx,
++				struct vdpa_vq_state *state)
  {
  	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
  	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
  	struct vringh *vrh = &vq->vring;
  
--	return vrh->last_avail_idx;
-+	state->avail_index = vrh->last_avail_idx;
+ 	state->avail_index = vrh->last_avail_idx;
++	return 0;
  }
  
  static u32 vdpasim_get_vq_align(struct vdpa_device *vdpa)
 diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 0049e34f7ca6..c2e1e2d55084 100644
+index c2e1e2d55084..a0b7c91948e1 100644
 --- a/drivers/vhost/vdpa.c
 +++ b/drivers/vhost/vdpa.c
-@@ -366,6 +366,7 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
- {
- 	struct vdpa_device *vdpa = v->vdpa;
- 	const struct vdpa_config_ops *ops = vdpa->config;
-+	struct vdpa_vq_state vq_state;
- 	struct vdpa_callback cb;
- 	struct vhost_virtqueue *vq;
- 	struct vhost_vring_state s;
-@@ -391,7 +392,8 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+@@ -392,7 +392,10 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
  		ops->set_vq_ready(vdpa, idx, s.num);
  		return 0;
  	case VHOST_GET_VRING_BASE:
--		vq->last_avail_idx = ops->get_vq_state(v->vdpa, idx);
-+		ops->get_vq_state(v->vdpa, idx, &vq_state);
-+		vq->last_avail_idx = vq_state.avail_index;
+-		ops->get_vq_state(v->vdpa, idx, &vq_state);
++		r = ops->get_vq_state(v->vdpa, idx, &vq_state);
++		if (r)
++			return r;
++
+ 		vq->last_avail_idx = vq_state.avail_index;
  		break;
  	case VHOST_GET_BACKEND_FEATURES:
- 		features = VHOST_VDPA_BACKEND_FEATURES;
-@@ -421,7 +423,8 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
- 		break;
- 
- 	case VHOST_SET_VRING_BASE:
--		if (ops->set_vq_state(vdpa, idx, vq->last_avail_idx))
-+		vq_state.avail_index = vq->last_avail_idx;
-+		if (ops->set_vq_state(vdpa, idx, &vq_state))
- 			r = -EINVAL;
- 		break;
- 
 diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-index 7b1e9df8fc11..8f412620071d 100644
+index 8f412620071d..fd6e560d70f9 100644
 --- a/include/linux/vdpa.h
 +++ b/include/linux/vdpa.h
-@@ -27,6 +27,14 @@ struct vdpa_notification_area {
- 	resource_size_t size;
- };
- 
-+/**
-+ * vDPA vq_state definition
-+ * @avail_index: available index
-+ */
-+struct vdpa_vq_state {
-+	u16	avail_index;
-+};
-+
- /**
-  * vDPA device - representation of a vDPA device
-  * @dev: underlying device
-@@ -80,12 +88,12 @@ struct vdpa_device {
-  * @set_vq_state:		Set the state for a virtqueue
-  *				@vdev: vdpa device
-  *				@idx: virtqueue index
-- *				@state: virtqueue state (last_avail_idx)
-+ *				@state: pointer to set virtqueue state (last_avail_idx)
-  *				Returns integer: success (0) or error (< 0)
-  * @get_vq_state:		Get the state for a virtqueue
-  *				@vdev: vdpa device
-  *				@idx: virtqueue index
-- *				Returns virtqueue state (last_avail_idx)
-+ *				@state: pointer to returned state (last_avail_idx)
-  * @get_vq_notification: 	Get the notification area for a virtqueue
-  *				@vdev: vdpa device
-  *				@idx: virtqueue index
-@@ -182,8 +190,10 @@ struct vdpa_config_ops {
- 			  struct vdpa_callback *cb);
- 	void (*set_vq_ready)(struct vdpa_device *vdev, u16 idx, bool ready);
+@@ -192,8 +192,8 @@ struct vdpa_config_ops {
  	bool (*get_vq_ready)(struct vdpa_device *vdev, u16 idx);
--	int (*set_vq_state)(struct vdpa_device *vdev, u16 idx, u64 state);
--	u64 (*get_vq_state)(struct vdpa_device *vdev, u16 idx);
-+	int (*set_vq_state)(struct vdpa_device *vdev, u16 idx,
-+			    const struct vdpa_vq_state *state);
-+	void (*get_vq_state)(struct vdpa_device *vdev, u16 idx,
-+			     struct vdpa_vq_state *state);
+ 	int (*set_vq_state)(struct vdpa_device *vdev, u16 idx,
+ 			    const struct vdpa_vq_state *state);
+-	void (*get_vq_state)(struct vdpa_device *vdev, u16 idx,
+-			     struct vdpa_vq_state *state);
++	int (*get_vq_state)(struct vdpa_device *vdev, u16 idx,
++			    struct vdpa_vq_state *state);
  	struct vdpa_notification_area
  	(*get_vq_notification)(struct vdpa_device *vdev, u16 idx);
  	int (*get_vq_irq)(struct vdpa_device *vdv, u16 idx);
