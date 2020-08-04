@@ -2,525 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B154923BE6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7D823BE77
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 19:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729870AbgHDQ4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
+        id S1729916AbgHDQ7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728295AbgHDQ4X (ORCPT
+        with ESMTP id S1726276AbgHDQ7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:56:23 -0400
-Received: from mxwww.masterlogin.de (mxwww.masterlogin.de [IPv6:2a03:2900:1:1::b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA06C06179E
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 09:56:18 -0700 (PDT)
-Received: from mxout1.routing.net (unknown [192.168.10.81])
-        by forward.mxwww.masterlogin.de (Postfix) with ESMTPS id 371FC96151;
-        Tue,  4 Aug 2020 16:56:14 +0000 (UTC)
-Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
-        by mxout1.routing.net (Postfix) with ESMTP id F387C402F8;
-        Tue,  4 Aug 2020 16:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-        s=20200217; t=1596560174;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AzBGcZ+vbk/R/lBHASsN4TX5ORmNe1ddeJtTwA/FqeQ=;
-        b=Gq6MX+KBgiiOpWed/9+P5b9/A42SGpHYsGVvQsoGrwaPFtLH5bnRUhhLLQP+WHiCCM41bD
-        XgLiJCcPFzYhRW1WCQrnBZiDDkDl1uE6a6LK12YaF2Nwtw+UVtOU4KN5/hluX4jcLU+0Td
-        glhUUMByuOrh70iLyah+2oMLObkswGY=
-Received: from localhost.localdomain (fttx-pool-217.61.144.119.bambit.de [217.61.144.119])
-        by mxbox3.masterlogin.de (Postfix) with ESMTPSA id 2DEFF3603C2;
-        Tue,  4 Aug 2020 16:56:13 +0000 (UTC)
-From:   Frank Wunderlich <linux@fw-web.de>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ryder Lee <ryder.lee@mediatek.com>, CK Hu <ck.hu@mediatek.com>,
-        chunhui dai <chunhui.dai@mediatek.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>
-Subject: [PATCH v4 6/6] arm: dts: mt7623: add display subsystem related device nodes
-Date:   Tue,  4 Aug 2020 18:55:55 +0200
-Message-Id: <20200804165555.75159-8-linux@fw-web.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200804165555.75159-1-linux@fw-web.de>
-References: <20200804165555.75159-1-linux@fw-web.de>
+        Tue, 4 Aug 2020 12:59:00 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBCDC06174A;
+        Tue,  4 Aug 2020 09:58:59 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id c6so2605750pje.1;
+        Tue, 04 Aug 2020 09:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s7tJRMGtBgVpiZsq41tG0aW9vObPT36tj7uvOHxXjQo=;
+        b=NpE99CFYrlsfu3hq1z5SEouS3shamUUKRRZ3H/ppmfQlD47u/Ou7BRWPCsHwtiQzSb
+         cDkesdm+qte8ZQgtGpRxzKx/6VgcJ/q54ptLsr6EkU3IPRm5TZdb09fe+V8+kKqH9Yrs
+         Z2JnShlGMxo2zk36EZGRiD4ZnFzTjMfXUstZwdLxJGOwU9sFFruh3T6Kc1GX72hJj55M
+         yuZcg6TFzRW2Uev4tWs1wizcSosD1OYz5f+AQAeY4e4elKKZK4IKOW7hkVOWlLwEmSSv
+         Xnmp8nBDLhkxxJ7r5q6xDVOU2A0tSi4q+nN5Fbv5BuVUG7yDYG5Z8oZvUkqxbX5I7n6s
+         n43w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=s7tJRMGtBgVpiZsq41tG0aW9vObPT36tj7uvOHxXjQo=;
+        b=QeqA7fUB7X+lnkI1uHF4Qfi2hfmrDeK5h4Xea3GpBH9mL62JoJii6/cCIfv2f78aL9
+         rLrmFTdWXl7BKQkH+G7B4xlzAAlUNY718+THXxe6lhJouZ1GneHDKXJUAMOk4wTUuHcf
+         Xl5UbeuHUXK62lPUwiFxKAGqbV0dG4Y4WnlqFNh5Vk+SgGB2E+DQRq4EJUCCHkZovzOa
+         MTBOCawkdyIW1T9XiuZVkNEwgVZwatibSuS1dkxR+mj6qZhyp+tbqEYvzdxY8aPYHeIo
+         R1MklNrVhGEPDnr5twHXHEDcRWe1FjhiBvNN/qQDAjHEhSSW5jiiCU39hYhnQNoj3eXT
+         EPfw==
+X-Gm-Message-State: AOAM531cnE8P57ggOwulJL+hbUNvyl7+gwr6+31sM9rh8O3qhA5psdZe
+        bhsjGwZo99xjIuBKnys3xF8=
+X-Google-Smtp-Source: ABdhPJx69JRXImT/2HIoJpgCuMTZ1rH4z4ZqaIpL9xs2sdug9VLVMSCOWhQIwdGVg0eBC/GBbrMaZw==
+X-Received: by 2002:a17:90a:6589:: with SMTP id k9mr5096511pjj.165.1596560339086;
+        Tue, 04 Aug 2020 09:58:59 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 8sm3307605pjx.14.2020.08.04.09.58.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Aug 2020 09:58:58 -0700 (PDT)
+Subject: Re: [PATCH v1] tcpm: Honour pSnkStdby requirement during negotiation
+To:     Badhri Jagan Sridharan <badhri@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        --validate@google.com
+References: <20200804065111.3889122-1-badhri@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <28df079b-835d-9005-b711-df386e2b308b@roeck-us.net>
+Date:   Tue, 4 Aug 2020 09:58:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200804065111.3889122-1-badhri@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryder Lee <ryder.lee@mediatek.com>
+On 8/3/20 11:51 PM, Badhri Jagan Sridharan wrote:
+>>From PD Spec:
+> The Sink Shall transition to Sink Standby before a positive or
+> negative voltage transition of VBUS. During Sink Standby
+> the Sink Shall reduce its power draw to pSnkStdby. This allows
+> the Source to manage the voltage transition as well as
+> supply sufficient operating current to the Sink to maintain PD
+> operation during the transition. The Sink Shall
+> complete this transition to Sink Standby within tSnkStdby
+> after evaluating the Accept Message from the Source. The
+> transition when returning to Sink operation from Sink Standby
+> Shall be completed within tSnkNewPower. The
+> pSnkStdby requirement Shall only apply if the Sink power draw
+> is higher than this level.
+> 
+> The above requirement needs to be met to prevent hard resets
+> from port partner.
+> 
+> Introducing psnkstdby_after_accept flag to accommodate systems
+> where the input current limit loops are not fast enough to meet
+> tSnkStby(15 msec).
+> 
+> When not set, port requests PD_P_SNK_STDBY upon entering SNK_DISCOVERY and
+> the actual currrent limit after RX of PD_CTRL_PSRDY for PD link,
+> SNK_READY for non-pd link.
+> 
+> When set, port requests CC advertisement based current limit during
+> SNK_DISCOVERY, current gets limited to PD_P_SNK_STDBY during
+> SNK_TRANSITION_SINK, PD based current limit gets set after RX of
+> PD_CTRL_PSRDY. However, in this case it has to be made sure that the
+> tSnkStdby (15 msec) is met.
+> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 52 +++++++++++++++++++++++++++--------
+>  include/linux/usb/pd.h        |  5 +++-
+>  2 files changed, 44 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 3ef37202ee37..e46da41940b9 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -293,9 +293,12 @@ struct tcpm_port {
+>  	unsigned int operating_snk_mw;
+>  	bool update_sink_caps;
+>  
+> -	/* Requested current / voltage */
+> +	/* Set current / voltage */
+>  	u32 current_limit;
+>  	u32 supply_voltage;
+> +	/* current / voltage requested to partner */
+> +	u32 req_current_limit;
+> +	u32 req_supply_voltage;
 
-Add display subsystem related device nodes for MT7623.
+I don't see a clear delineation where, when, and why supply_voltage vs. req_supply_voltage
+and current_limit vs. req_current_limit is used. Maybe someone else does and can give a
+Reviewed-by: tag, but for my part I'll have to spend some time trying to understand
+what each variable and its use now means. Overall this suggests that the code may now be
+a bit fragile. If those two sets of variables are now indeed needed, I think it would help
+to have a detailed explanation for each use. This would help reducing the probability
+of errors if the code has to be touched again in the future.
 
-Cc: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: chunhui dai <chunhui.dai@mediatek.com>
-Signed-off-by: Bibby Hsieh <bibby.hsieh@mediatek.com>
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-Tested-by: Frank Wunderlich <frank-w@public-files.de>
----
-changed
-v3->v4:
-  drop display_components which is duplicate of existing mmsys
-v2->v3:
-  drop bls to dpi routing
----
- arch/arm/boot/dts/mt7623.dtsi                 | 170 ++++++++++++++++++
- arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts |  72 ++++++++
- arch/arm/boot/dts/mt7623n-rfb-emmc.dts        |  72 ++++++++
- 3 files changed, 314 insertions(+)
+>  
+>  	/* Used to export TA voltage and current */
+>  	struct power_supply *psy;
+> @@ -323,13 +326,27 @@ struct tcpm_port {
+>  	struct pd_mode_data mode_data;
+>  	struct typec_altmode *partner_altmode[ALTMODE_DISCOVERY_MAX];
+>  	struct typec_altmode *port_altmode[ALTMODE_DISCOVERY_MAX];
+> -
+>  	/* Deadline in jiffies to exit src_try_wait state */
+>  	unsigned long max_wait;
+>  
+>  	/* port belongs to a self powered device */
+>  	bool self_powered;
+>  
+> +	/*
+> +	 * Honour psnkstdby after accept is received.
+> +	 * However, in this case it has to be made sure that the tSnkStdby (15
+> +	 * msec) is met.
+> +	 *
+> +	 * When not set, port requests PD_P_SNK_STDBY_5V upon entering SNK_DISCOVERY and
+> +	 * the actual currrent limit after RX of PD_CTRL_PSRDY for PD link,
+> +	 * SNK_READY for non-pd link.
+> +	 *
+> +	 * When set, port requests CC advertisement based current limit during
+> +	 * SNK_DISCOVERY, current gets limited to PD_P_SNK_STDBY_5V during SNK_TRANSITION_SINK,
+> +	 * PD based current limit gets set after RX of PD_CTRL_PSRDY.
+> +	 */
+> +	bool psnkstdby_after_accept;
+> +
+>  #ifdef CONFIG_DEBUG_FS
+>  	struct dentry *dentry;
+>  	struct mutex logbuffer_lock;	/* log buffer access lock */
+> @@ -1787,9 +1804,8 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+>  		switch (port->state) {
+>  		case SNK_TRANSITION_SINK:
+>  			if (port->vbus_present) {
+> -				tcpm_set_current_limit(port,
+> -						       port->current_limit,
+> -						       port->supply_voltage);
+> +				tcpm_set_current_limit(port, port->req_current_limit,
+> +						       port->req_supply_voltage);
+>  				port->explicit_contract = true;
+>  				tcpm_set_state(port, SNK_READY, 0);
+>  			} else {
+> @@ -1861,8 +1877,8 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+>  			break;
+>  		case SNK_NEGOTIATE_PPS_CAPABILITIES:
+>  			port->pps_data.active = true;
+> -			port->supply_voltage = port->pps_data.out_volt;
+> -			port->current_limit = port->pps_data.op_curr;
+> +			port->req_supply_voltage = port->pps_data.out_volt;
+> +			port->req_current_limit = port->pps_data.op_curr;
+>  			tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
+>  			break;
+>  		case SOFT_RESET_SEND:
+> @@ -2463,8 +2479,8 @@ static int tcpm_pd_build_request(struct tcpm_port *port, u32 *rdo)
+>  			 flags & RDO_CAP_MISMATCH ? " [mismatch]" : "");
+>  	}
+>  
+> -	port->current_limit = ma;
+> -	port->supply_voltage = mv;
+> +	port->req_current_limit = ma;
+> +	port->req_supply_voltage = mv;
+>  
+>  	return 0;
+>  }
+> @@ -3235,9 +3251,11 @@ static void run_state_machine(struct tcpm_port *port)
+>  		break;
+>  	case SNK_DISCOVERY:
+>  		if (port->vbus_present) {
+> -			tcpm_set_current_limit(port,
+> -					       tcpm_get_current_limit(port),
+> -					       5000);
+> +			if (port->psnkstdby_after_accept || tcpm_get_current_limit(port) <=
+> +			    PD_P_SNK_STDBY_5V)
+> +				tcpm_set_current_limit(port, tcpm_get_current_limit(port), 5000);
+> +			else
+> +				tcpm_set_current_limit(port, PD_P_SNK_STDBY_5V, 5000);
+>  			tcpm_set_charge(port, true);
+>  			tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
+>  			break;
+> @@ -3318,6 +3336,10 @@ static void run_state_machine(struct tcpm_port *port)
+>  		}
+>  		break;
+>  	case SNK_TRANSITION_SINK:
+> +		if (port->psnkstdby_after_accept)
+> +			tcpm_set_current_limit(port, tcpm_get_current_limit(port) >
+> +					       PD_P_SNK_STDBY_5V ? PD_P_SNK_STDBY_5V :
+> +					       tcpm_get_current_limit(port), 5000);
+>  	case SNK_TRANSITION_SINK_VBUS:
+>  		tcpm_set_state(port, hard_reset_state(port),
+>  			       PD_T_PS_TRANSITION);
+> @@ -3331,6 +3353,10 @@ static void run_state_machine(struct tcpm_port *port)
+>  			port->pwr_opmode = TYPEC_PWR_MODE_PD;
+>  		}
+>  
+> +		/* Set current limit for NON-PD link when psnkstdby_after_accept is not set*/
+> +		if (!port->pd_capable && !port->psnkstdby_after_accept)
+> +			tcpm_set_current_limit(port, tcpm_get_current_limit(port), 5000);
+> +
+>  		tcpm_swap_complete(port, 0);
+>  		tcpm_typec_connect(port);
+>  		tcpm_check_send_discover(port);
+> @@ -4513,6 +4539,8 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
+>  	port->typec_caps.type = ret;
+>  	port->port_type = port->typec_caps.type;
+>  
+> +	port->psnkstdby_after_accept = fwnode_property_read_bool(fwnode, "psnkstdby-after-accept");
+> +
 
-diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
-index a106c0d90a52..f2cb44a69454 100644
---- a/arch/arm/boot/dts/mt7623.dtsi
-+++ b/arch/arm/boot/dts/mt7623.dtsi
-@@ -24,6 +24,11 @@ / {
- 	#address-cells = <2>;
- 	#size-cells = <2>;
- 
-+	aliases {
-+		rdma0 = &rdma0;
-+		rdma1 = &rdma1;
-+	};
-+
- 	cpu_opp_table: opp-table {
- 		compatible = "operating-points-v2";
- 		opp-shared;
-@@ -321,6 +326,25 @@ pwrap: pwrap@1000d000 {
- 		clock-names = "spi", "wrap";
- 	};
- 
-+	mipi_tx0: mipi-dphy@10010000 {
-+		compatible = "mediatek,mt7623-mipi-tx",
-+			     "mediatek,mt2701-mipi-tx";
-+		reg = <0 0x10010000 0 0x90>;
-+		clocks = <&clk26m>;
-+		clock-output-names = "mipi_tx0_pll";
-+		#clock-cells = <0>;
-+		#phy-cells = <0>;
-+	};
-+
-+	cec: cec@10012000 {
-+		compatible = "mediatek,mt7623-cec",
-+			     "mediatek,mt8173-cec";
-+		reg = <0 0x10012000 0 0xbc>;
-+		interrupts = <GIC_SPI 182 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&infracfg CLK_INFRA_CEC>;
-+		status = "disabled";
-+	};
-+
- 	cir: cir@10013000 {
- 		compatible = "mediatek,mt7623-cir";
- 		reg = <0 0x10013000 0 0x1000>;
-@@ -369,6 +393,18 @@ apmixedsys: syscon@10209000 {
- 		#clock-cells = <1>;
- 	};
- 
-+	hdmi_phy: phy@10209100 {
-+		compatible = "mediatek,mt7623-hdmi-phy",
-+			     "mediatek,mt2701-hdmi-phy";
-+		reg = <0 0x10209100 0 0x24>;
-+		clocks = <&apmixedsys CLK_APMIXED_HDMI_REF>;
-+		clock-names = "pll_ref";
-+		clock-output-names = "hdmitx_dig_cts";
-+		#clock-cells = <0>;
-+		#phy-cells = <0>;
-+		status = "disabled";
-+	};
-+
- 	rng: rng@1020f000 {
- 		compatible = "mediatek,mt7623-rng";
- 		reg = <0 0x1020f000 0 0x1000>;
-@@ -568,6 +604,16 @@ bch: ecc@1100e000 {
- 		status = "disabled";
- 	};
- 
-+	hdmiddc0: i2c@11013000 {
-+		compatible = "mediatek,mt7623-hdmi-ddc",
-+			     "mediatek,mt8173-hdmi-ddc";
-+		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_LOW>;
-+		reg = <0 0x11013000 0 0x1C>;
-+		clocks = <&pericfg CLK_PERI_I2C3>;
-+		clock-names = "ddc-i2c";
-+		status = "disabled";
-+	};
-+
- 	nor_flash: spi@11014000 {
- 		compatible = "mediatek,mt7623-nor",
- 			     "mediatek,mt8173-nor";
-@@ -766,6 +812,77 @@ mmsys: syscon@14000000 {
- 		#clock-cells = <1>;
- 	};
- 
-+	ovl@14007000 {
-+		compatible = "mediatek,mt7623-disp-ovl",
-+			     "mediatek,mt2701-disp-ovl";
-+		reg = <0 0x14007000 0 0x1000>;
-+		interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&mmsys CLK_MM_DISP_OVL>;
-+		iommus = <&iommu MT2701_M4U_PORT_DISP_OVL_0>;
-+		mediatek,larb = <&larb0>;
-+	};
-+
-+	rdma0: rdma@14008000 {
-+		compatible = "mediatek,mt7623-disp-rdma",
-+			     "mediatek,mt2701-disp-rdma";
-+		reg = <0 0x14008000 0 0x1000>;
-+		interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&mmsys CLK_MM_DISP_RDMA>;
-+		iommus = <&iommu MT2701_M4U_PORT_DISP_RDMA>;
-+		mediatek,larb = <&larb0>;
-+	};
-+
-+	wdma@14009000 {
-+		compatible = "mediatek,mt7623-disp-wdma",
-+			     "mediatek,mt2701-disp-wdma";
-+		reg = <0 0x14009000 0 0x1000>;
-+		interrupts = <GIC_SPI 154 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&mmsys CLK_MM_DISP_WDMA>;
-+		iommus = <&iommu MT2701_M4U_PORT_DISP_WDMA>;
-+		mediatek,larb = <&larb0>;
-+	};
-+
-+	bls: pwm@1400a000 {
-+		compatible = "mediatek,mt7623-disp-pwm",
-+			     "mediatek,mt2701-disp-pwm";
-+		reg = <0 0x1400a000 0 0x1000>;
-+		#pwm-cells = <2>;
-+		clocks = <&mmsys CLK_MM_MDP_BLS_26M>,
-+			 <&mmsys CLK_MM_DISP_BLS>;
-+		clock-names = "main", "mm";
-+		status = "disabled";
-+	};
-+
-+	color@1400b000 {
-+		compatible = "mediatek,mt7623-disp-color",
-+			     "mediatek,mt2701-disp-color";
-+		reg = <0 0x1400b000 0 0x1000>;
-+		interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&mmsys CLK_MM_DISP_COLOR>;
-+	};
-+
-+	dsi: dsi@1400c000 {
-+		compatible = "mediatek,mt7623-dsi",
-+			     "mediatek,mt2701-dsi";
-+		reg = <0 0x1400c000 0 0x1000>;
-+		interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&mmsys CLK_MM_DSI_ENGINE>,
-+			 <&mmsys CLK_MM_DSI_DIG>,
-+			 <&mipi_tx0>;
-+		clock-names = "engine", "digital", "hs";
-+		phys = <&mipi_tx0>;
-+		phy-names = "dphy";
-+		status = "disabled";
-+	};
-+
-+	mutex: mutex@1400e000 {
-+		compatible = "mediatek,mt7623-disp-mutex",
-+			     "mediatek,mt2701-disp-mutex";
-+		reg = <0 0x1400e000 0 0x1000>;
-+		interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&mmsys CLK_MM_MUTEX_32K>;
-+	};
-+
- 	larb0: larb@14010000 {
- 		compatible = "mediatek,mt7623-smi-larb",
- 			     "mediatek,mt2701-smi-larb";
-@@ -778,6 +895,44 @@ larb0: larb@14010000 {
- 		power-domains = <&scpsys MT2701_POWER_DOMAIN_DISP>;
- 	};
- 
-+	rdma1: rdma@14012000 {
-+		compatible = "mediatek,mt7623-disp-rdma",
-+			     "mediatek,mt2701-disp-rdma";
-+		reg = <0 0x14012000 0 0x1000>;
-+		interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&mmsys CLK_MM_DISP_RDMA1>;
-+		iommus = <&iommu MT2701_M4U_PORT_DISP_RDMA1>;
-+		mediatek,larb = <&larb0>;
-+	};
-+
-+	dpi0: dpi@14014000 {
-+		compatible = "mediatek,mt7623-dpi",
-+			     "mediatek,mt2701-dpi";
-+		reg = <0 0x14014000 0 0x1000>;
-+		interrupts = <GIC_SPI 194 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&mmsys CLK_MM_DPI1_DIGL>,
-+			 <&mmsys CLK_MM_DPI1_ENGINE>,
-+			 <&apmixedsys CLK_APMIXED_TVDPLL>;
-+		clock-names = "pixel", "engine", "pll";
-+		status = "disabled";
-+	};
-+
-+	hdmi0: hdmi@14015000 {
-+		compatible = "mediatek,mt7623-hdmi",
-+			     "mediatek,mt8173-hdmi";
-+		reg = <0 0x14015000 0 0x400>;
-+		clocks = <&mmsys CLK_MM_HDMI_PIXEL>,
-+			 <&mmsys CLK_MM_HDMI_PLL>,
-+			 <&mmsys CLK_MM_HDMI_AUDIO>,
-+			 <&mmsys CLK_MM_HDMI_SPDIF>;
-+		clock-names = "pixel", "pll", "bclk", "spdif";
-+		phys = <&hdmi_phy>;
-+		phy-names = "hdmi";
-+		mediatek,syscon-hdmi = <&mmsys 0x900>;
-+		cec = <&cec>;
-+		status = "disabled";
-+	};
-+
- 	imgsys: syscon@15000000 {
- 		compatible = "mediatek,mt7623-imgsys",
- 			     "mediatek,mt2701-imgsys",
-@@ -1102,6 +1257,21 @@ pins-cir {
- 		};
- 	};
- 
-+	hdmi_pins_a: hdmi-default {
-+		pins-hdmi {
-+			pinmux = <MT7623_PIN_123_HTPLG_FUNC_HTPLG>;
-+			input-enable;
-+			bias-pull-down;
-+		};
-+	};
-+
-+	hdmi_ddc_pins_a: hdmi_ddc-default {
-+		pins-hdmi-ddc {
-+			pinmux = <MT7623_PIN_124_GPIO124_FUNC_HDMISCK>,
-+				 <MT7623_PIN_125_GPIO125_FUNC_HDMISD>;
-+		};
-+	};
-+
- 	i2c0_pins_a: i2c0-default {
- 		pins-i2c0 {
- 			pinmux = <MT7623_PIN_75_SDA0_FUNC_SDA0>,
-diff --git a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-index 2b760f90f38c..b1c83e919015 100644
---- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-+++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-@@ -21,6 +21,19 @@ chosen {
- 		stdout-path = "serial2:115200n8";
- 	};
- 
-+	connector {
-+		compatible = "hdmi-connector";
-+		label = "hdmi";
-+		type = "d";
-+		ddc-i2c-bus = <&hdmiddc0>;
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint = <&hdmi0_out>;
-+			};
-+		};
-+	};
-+
- 	cpus {
- 		cpu@0 {
- 			proc-supply = <&mt6323_vproc_reg>;
-@@ -114,10 +127,18 @@ memory@80000000 {
- 	};
- };
- 
-+&bls {
-+	status = "okay";
-+};
-+
- &btif {
- 	status = "okay";
- };
- 
-+&cec {
-+	status = "okay";
-+};
-+
- &cir {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&cir_pins_a>;
-@@ -128,6 +149,21 @@ &crypto {
- 	status = "okay";
- };
- 
-+&dpi0 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		port@0 {
-+			reg = <0>;
-+			dpi0_out: endpoint {
-+				remote-endpoint = <&hdmi0_in>;
-+			};
-+		};
-+	};
-+};
-+
- &eth {
- 	status = "okay";
- 
-@@ -199,6 +235,42 @@ fixed-link {
- 	};
- };
- 
-+&hdmi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&hdmi_pins_a>;
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		port@0 {
-+			reg = <0>;
-+			hdmi0_in: endpoint {
-+				remote-endpoint = <&dpi0_out>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+			hdmi0_out: endpoint {
-+				remote-endpoint = <&hdmi_connector_in>;
-+			};
-+		};
-+	};
-+};
-+
-+&hdmiddc0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&hdmi_ddc_pins_a>;
-+	status = "okay";
-+};
-+
-+&hdmi_phy {
-+	mediatek,ibias = <0xa>;
-+	mediatek,ibias_up = <0x1c>;
-+	status = "okay";
-+};
-+
- &i2c0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&i2c0_pins_a>;
-diff --git a/arch/arm/boot/dts/mt7623n-rfb-emmc.dts b/arch/arm/boot/dts/mt7623n-rfb-emmc.dts
-index 0447748f9fa0..7e3ded7d9e7d 100644
---- a/arch/arm/boot/dts/mt7623n-rfb-emmc.dts
-+++ b/arch/arm/boot/dts/mt7623n-rfb-emmc.dts
-@@ -24,6 +24,19 @@ chosen {
- 		stdout-path = "serial2:115200n8";
- 	};
- 
-+	connector {
-+		compatible = "hdmi-connector";
-+		label = "hdmi";
-+		type = "d";
-+		ddc-i2c-bus = <&hdmiddc0>;
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint = <&hdmi0_out>;
-+			};
-+		};
-+	};
-+
- 	cpus {
- 		cpu@0 {
- 			proc-supply = <&mt6323_vproc_reg>;
-@@ -106,10 +119,18 @@ sound {
- 	};
- };
- 
-+&bls {
-+	status = "okay";
-+};
-+
- &btif {
- 	status = "okay";
- };
- 
-+&cec {
-+	status = "okay";
-+};
-+
- &cir {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&cir_pins_a>;
-@@ -120,6 +141,21 @@ &crypto {
- 	status = "okay";
- };
- 
-+&dpi0 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		port@0 {
-+			reg = <0>;
-+			dpi0_out: endpoint {
-+				remote-endpoint = <&hdmi0_in>;
-+			};
-+		};
-+	};
-+};
-+
- &eth {
- 	status = "okay";
- 
-@@ -203,6 +239,42 @@ fixed-link {
- 	};
- };
- 
-+&hdmi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&hdmi_pins_a>;
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		port@0 {
-+			reg = <0>;
-+			hdmi0_in: endpoint {
-+				remote-endpoint = <&dpi0_out>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+			hdmi0_out: endpoint {
-+				remote-endpoint = <&hdmi_connector_in>;
-+			};
-+		};
-+	};
-+};
-+
-+&hdmiddc0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&hdmi_ddc_pins_a>;
-+	status = "okay";
-+};
-+
-+&hdmi_phy {
-+	mediatek,ibias = <0xa>;
-+	mediatek,ibias_up = <0x1c>;
-+	status = "okay";
-+};
-+
- &i2c0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&i2c0_pins_a>;
--- 
-2.25.1
+I think this will need to be documented.
+
+Guenter
+
+>  	if (port->port_type == TYPEC_PORT_SNK)
+>  		goto sink;
+>  
+> diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
+> index b6c233e79bd4..6bd70f77045e 100644
+> --- a/include/linux/usb/pd.h
+> +++ b/include/linux/usb/pd.h
+> @@ -483,5 +483,8 @@ static inline unsigned int rdo_max_power(u32 rdo)
+>  #define PD_N_CAPS_COUNT		(PD_T_NO_RESPONSE / PD_T_SEND_SOURCE_CAP)
+>  #define PD_N_HARD_RESET_COUNT	2
+>  
+> -#define PD_T_BIST_CONT_MODE	50 /* 30 - 60 ms */
+> +#define PD_T_BIST_CONT_MODE	50	/* 30 - 60 ms */
+> +
+> +#define PD_P_SNK_STDBY_5V	500	/* 2500 mw - 500mA @ 5V */
+> +
+>  #endif /* __LINUX_USB_PD_H */
+> 
 
