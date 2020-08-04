@@ -2,122 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6683F23BC9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F27223BCA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729365AbgHDOsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:48:53 -0400
-Received: from mail.efficios.com ([167.114.26.124]:47576 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726556AbgHDOsn (ORCPT
+        id S1729422AbgHDOtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729289AbgHDOtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:48:43 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 322B92D7B46;
-        Tue,  4 Aug 2020 10:48:42 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id ZEZP2hoar3Hm; Tue,  4 Aug 2020 10:48:42 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E1FD22D7B43;
-        Tue,  4 Aug 2020 10:48:41 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E1FD22D7B43
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1596552521;
-        bh=DcQU8cz0KN0eXUyY05/A6WfPdiNsESHnmyMO1LCZ4uM=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=uYmTC1kZZsQtypzvkqDNCRzveU5otX6OKgQccRZSDowJGm5tLIvSvmsbXdn/nUzzv
-         Ebr5rHzYdxEqw44eWIZW0ODpWcMR3/L22gWeQd/HpQlgrkTKXIXOwoTirx3AIlUIo3
-         bJLC1Rwl3RVoTScPjx0AFy+wm4X229MPtlbhBWa/EoJ1cU7jwE9gd/9CUpZx7oNAUQ
-         mm9j1a2P4RrvZV4+Hz+sJ2zjgdblqkVdXZIKdvKzPrkmkcWx2q0zmJwWwJYhDhGgw7
-         iUgjKF4kMxu0zYXM+Tza0LYTCp3TC94TFxS08IXIw/0/TLivvI1+9LmTtB/VzHkTUY
-         2XbkGUOQ8/arQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id cdPm4lxPdYGP; Tue,  4 Aug 2020 10:48:41 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id D2D9A2D7A50;
-        Tue,  4 Aug 2020 10:48:41 -0400 (EDT)
-Date:   Tue, 4 Aug 2020 10:48:41 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-mm <linux-mm@kvack.org>
-Message-ID: <709073430.39864.1596552521779.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200804143419.GL2657@hirez.programming.kicks-ass.net>
-References: <20200728160010.3314-1-mathieu.desnoyers@efficios.com> <20200804143419.GL2657@hirez.programming.kicks-ass.net>
-Subject: Re: [RFC PATCH 1/2] sched: Fix exit_mm vs membarrier
+        Tue, 4 Aug 2020 10:49:00 -0400
+Received: from forward500p.mail.yandex.net (forward500p.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b7:110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26891C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 07:48:59 -0700 (PDT)
+Received: from mxback5g.mail.yandex.net (mxback5g.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b7:166])
+        by forward500p.mail.yandex.net (Yandex) with ESMTP id 423E6940350;
+        Tue,  4 Aug 2020 17:48:49 +0300 (MSK)
+Received: from localhost (localhost [::1])
+        by mxback5g.mail.yandex.net (mxback/Yandex) with ESMTP id rSFBIL9Fqs-mmIW95H6;
+        Tue, 04 Aug 2020 17:48:48 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1596552528;
+        bh=rS/+6n/koFWKSBys6+6aWID9TEc0lcxKA4Nv1F6EDF0=;
+        h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
+        b=qtxEzZCu0A7cbwJIUikJA3ukGT/DD5Px3H4fZVFvDGYFa8VIRw8V8Uv82F7AT3Tb8
+         uydEkCvkihjV5Ll0vRHn5QdOKIcJtvHB4lUFHaJF9Sua/OLusutYPkHmi9HtFKcD+Z
+         BJXwcB2Qm3vr4ZS6SYZDLdo6BVLJusYdGY6VJLQQ=
+Authentication-Results: mxback5g.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by iva5-64778ce1ba26.qloud-c.yandex.net with HTTP;
+        Tue, 04 Aug 2020 17:48:48 +0300
+From:   Evgeny Novikov <novikov@ispras.ru>
+Envelope-From: eugenenovikov@yandex.ru
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        ldv-project-org <ldv-project@linuxtesting.org>
+In-Reply-To: <23dceaac-526d-4ee3-40de-cf354b0aeabd@roeck-us.net>
+References: <856951596540762@mail.yandex.ru> <23dceaac-526d-4ee3-40de-cf354b0aeabd@roeck-us.net>
+Subject: Re: hwmon: (sis5595) potential null pointer dereference in probe
 MIME-Version: 1.0
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date:   Tue, 04 Aug 2020 17:48:48 +0300
+Message-Id: <4831596552157@mail.yandex.ru>
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF79 (Linux)/8.8.15_GA_3953)
-Thread-Topic: sched: Fix exit_mm vs membarrier
-Thread-Index: 4wlPtxcjq37vbD29WsZHDlFzoriwyA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+04.08.2020, 17:33, "Guenter Roeck" <linux@roeck-us.net>:
+> On 8/4/20 4:50 AM, Evgeny Novikov wrote:
+>>  sis5595_pci_probe() registers platform driver callbacks and just then
+>>  initializes global pointer variable s_bridge. sis5595_probe() may
+>>  dereference it before this happens that can result in null pointer
+>>  dereference.
+>
+> sis5595_probe() is only called after the device is registered,
+> which happens in sis5595_device_add() after s_bridge is set. This is
+> a southbridge, so there won't be any hot insertion/removal events.
+>
 
+Thank you for this hint. We need to tune our models appropriately.
 
------ On Aug 4, 2020, at 10:34 AM, Peter Zijlstra peterz@infradead.org wrote:
+>>  We can not swap registration of platform driver callbacks with
+>>  initialization of s_bridge since sm_sis5595_exit() assumes the
+>>  current order. Perhaps it has sense to implement a pci_driver.remove
+>>  callback that will take care about deregistration of platform driver
+>>  callbacks.
+>
+> Agreed regarding the remove function. However, given the age of the chip,
+> I'd rather remove the driver than spending time on cleanup efforts.
+> This looks like a perfect candidate for depreciation.
+>
 
-> On Tue, Jul 28, 2020 at 12:00:09PM -0400, Mathieu Desnoyers wrote:
->> exit_mm should issue memory barriers after user-space memory accesses,
->> before clearing current->mm, to order user-space memory accesses
->> performed prior to exit_mm before clearing tsk->mm, which has the
->> effect of skipping the membarrier private expedited IPIs.
->> 
->> The membarrier system call can be issued concurrently with do_exit
->> if we have thread groups created with CLONE_VM but not CLONE_THREAD.
-> 
-> I'm still wonder what the exact failure case is though; exit_mm() is on
-> the exit path (as the name very much implies) and the thread is about to
-> die. The context switch that follows guarantees a full barrier before we
-> run anything else again.
+This is completely up to you. Anyway the driver does not have the bug.
 
-Here is the scenario I have in mind:
+Best regards,
+Evgeny
 
-Two thread groups are created, A and B. Thread group B is created by
-issuing clone from group A with flag CLONE_VM set, but not CLONE_THREAD.
-Let's assume we have a single thread within each thread group (Thread A
-and Thread B).
-
-The AFAIU we can have:
-
-Userspace variables:
-
-int x = 0, y = 0;
-
-CPU 0                   CPU 1
-Thread A                Thread B
-(in thread group A)     (in thread group B)
-
-x = 1
-barrier()
-y = 1
-exit()
-exit_mm()
-current->mm = NULL;
-                        r1 = load y
-                        membarrier()
-                          skips CPU 0 (no IPI) because its current mm is NULL
-                        r2 = load x
-                        BUG_ON(r1 == 1 && r2 == 0)
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+> Guenter
