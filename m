@@ -2,134 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4C223C21B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF2F23C229
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbgHDXPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 19:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgHDXPQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 19:15:16 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74F5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 16:15:15 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id 88so38866738wrh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 16:15:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K9gpV2EukdQDh4ZPc/03X4i9rg/1FfiYZWy/TtTUyw8=;
-        b=vKJZJB4t0jSDcSkqtMkclvkoltustEMpfBLwXU8BrykAMNEVDNLtHeqArD1xoF+pmL
-         zaF0CRqkShgYuuro7xHtWxKH2yb5cBT6zxtSTqSiaIzbSJAVy+gE42naRGMSjbVcR9eB
-         ctXZcbHll/mIlqktiIqmKmTVCDCcvj4Iya97fiL0xBiS9FeQvCKqh919HAd4AdOgB8Y6
-         0CosIPoenyb16IUbqWHJaHj8SsxoTzqYMurGLB357gRe23Z2O5FBsA32+wjKfZvfmWRr
-         KcL6TGmgM3X3oAETPebL+wDfiWTMeh2FOFjfMtelbY4KbbG7oamjlwacW8vGs/3m/z0v
-         dDbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K9gpV2EukdQDh4ZPc/03X4i9rg/1FfiYZWy/TtTUyw8=;
-        b=ttcOqwK83DMUCv0I5m3AJu8oQsTBrIkNuc0rSgdzQc8Zr7KxNJfUsRZ3FOw5L0UyVO
-         jC2shEtm/Kr5T9rHnPxXq7q2bTY1kKFGIX2U2SY/D6xc420HGicX/rVmL27oSKCMSMhi
-         VENUKt+0R6WqX0fm8itQOTWPbIl2YAtUraqhfNyeEuF0b6DCGqCtvzCKtN9MO/uu5xNp
-         uv7V6KMjWSt2O50dsXispHokFthjuHpUBQnlFAUJ8gbwbrM5e8iyru9NZ4nKBkkqR0GI
-         +O3wTI5KV5n8OwtsstS1EpYlRUG2723Nv2Yj3mh6+ZjgZNzY7w64KCpZVEFnaMdfoZeY
-         3ZbA==
-X-Gm-Message-State: AOAM532P0ZRBE9dilvRdst4KYwcUDOMKiLEFXvcvmyJ3VHHevihR/Ffq
-        y+QnfmDGxrYi4lukF6uhkeXzHLsx5ZZNrjZmr9+AXA==
-X-Google-Smtp-Source: ABdhPJy4RdIlWhdyRLD6kiD0K/NkH2q77aUp4lqTCqpftNSh7mSJgiGdKaBGJxxzuqDVOJbrUK3SlC2QFHtvY/yN8i0=
-X-Received: by 2002:a5d:4e8c:: with SMTP id e12mr191888wru.19.1596582914310;
- Tue, 04 Aug 2020 16:15:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200801070924.1786166-1-davidgow@google.com> <20200801070924.1786166-4-davidgow@google.com>
- <CABVgOSnpsnYw=0mAks4Xr2rGe07ER1041TKCCY1izeCfT8TcBQ@mail.gmail.com> <CAAeHK+y5KBuAfpeO90X0rxyZmPj4OQGUF=L-q3GAgQUTFNxdsQ@mail.gmail.com>
-In-Reply-To: <CAAeHK+y5KBuAfpeO90X0rxyZmPj4OQGUF=L-q3GAgQUTFNxdsQ@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Wed, 5 Aug 2020 07:15:02 +0800
-Message-ID: <CABVgOS=fOj++o2sBbOAwnKJSC+2s4dE6pDuuZNHYq+u_ayPiAw@mail.gmail.com>
-Subject: Re: [PATCH v10 3/5] KASAN: Port KASAN Tests to KUnit
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Patricia Alfonso <trishalfonso@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726752AbgHDXWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 19:22:16 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:49392 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725300AbgHDXWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 19:22:16 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0AF00200326;
+        Wed,  5 Aug 2020 01:22:14 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1C711201346;
+        Wed,  5 Aug 2020 01:22:07 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8CCA4402CF;
+        Wed,  5 Aug 2020 01:21:58 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        peng.fan@nxp.com, abel.vesa@nxp.com, j.remmet@phytec.de,
+        laurent.pinchart@ideasonboard.com, yuehaibing@huawei.com,
+        andrew.smirnov@gmail.com, horia.geanta@nxp.com,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] clk: imx: Explicitly include bits.h
+Date:   Wed,  5 Aug 2020 07:17:29 +0800
+Message-Id: <1596583049-7305-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 6:15 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> On Tue, Aug 4, 2020 at 12:59 AM David Gow <davidgow@google.com> wrote:
-> >
-> > On Sat, Aug 1, 2020 at 3:10 PM David Gow <davidgow@google.com> wrote:
-> > >
-> > > From: Patricia Alfonso <trishalfonso@google.com>
-> > >
-> > > Transfer all previous tests for KASAN to KUnit so they can be run
-> > > more easily. Using kunit_tool, developers can run these tests with their
-> > > other KUnit tests and see "pass" or "fail" with the appropriate KASAN
-> > > report instead of needing to parse each KASAN report to test KASAN
-> > > functionalities. All KASAN reports are still printed to dmesg.
-> > >
-> > > Stack tests do not work properly when KASAN_STACK is enabled so
-> > > those tests use a check for "if IS_ENABLED(CONFIG_KASAN_STACK)" so they
-> > > only run if stack instrumentation is enabled. If KASAN_STACK is not
-> > > enabled, KUnit will print a statement to let the user know this test
-> > > was not run with KASAN_STACK enabled.
-> > >
-> > > copy_user_test and kasan_rcu_uaf cannot be run in KUnit so there is a
-> > > separate test file for those tests, which can be run as before as a
-> > > module.
-> > >
-> > > Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
-> > > Signed-off-by: David Gow <davidgow@google.com>
-> > > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> > > Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-> > > Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> > > ---
-> > >  lib/Kconfig.kasan       |  22 +-
-> > >  lib/Makefile            |   7 +-
-> > >  lib/kasan_kunit.c       | 770 ++++++++++++++++++++++++++++++++
-> > >  lib/test_kasan.c        | 946 ----------------------------------------
-> > >  lib/test_kasan_module.c | 111 +++++
-> > >  5 files changed, 902 insertions(+), 954 deletions(-)
-> > >  create mode 100644 lib/kasan_kunit.c
-> > >  delete mode 100644 lib/test_kasan.c
-> > >  create mode 100644 lib/test_kasan_module.c
-> >
-> > Whoops -- this patch had a few nasty whitespace issues make it
-> > through. I'll send out a new version with those fixed.
-> >
-> > I'm pondering splitting it up to do the file rename
-> > (test_kasan.c->kasan_kunit.c) separately as well, as git's rename
-> > detection is not particularly happy with it.
->
-> Maybe also name it kunit_kasan.c? Probably in the future we'll have
-> kunit_kmsan.c, etc.
+It is better to explicitly include the required header file rather
+then get it through some recursive include.
 
-The name here uses _kunit as a suffix as part of a plan to standardise
-that for all KUnit tests.
-There's some draft documentation for the proposed naming guidelines here:
-https://lore.kernel.org/linux-kselftest/20200702071416.1780522-1-davidgow@google.com/
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ drivers/clk/imx/clk-busy.c           | 1 +
+ drivers/clk/imx/clk-composite-7ulp.c | 1 +
+ drivers/clk/imx/clk-fixup-mux.c      | 1 +
+ drivers/clk/imx/clk-imx6q.c          | 1 +
+ drivers/clk/imx/clk-imx6sx.c         | 1 +
+ drivers/clk/imx/clk-imx7d.c          | 1 +
+ drivers/clk/imx/clk-lpcg-scu.c       | 1 +
+ drivers/clk/imx/clk-pll14xx.c        | 2 +-
+ drivers/clk/imx/clk-pllv1.c          | 1 +
+ drivers/clk/imx/clk-pllv4.c          | 1 +
+ drivers/clk/imx/clk-vf610.c          | 1 +
+ drivers/clk/imx/clk.c                | 1 +
+ drivers/clk/imx/clk.h                | 1 +
+ 13 files changed, 13 insertions(+), 1 deletion(-)
 
-(The idea here was for kunit tests for modules to nicely sort next to
-the corresponding modules, which is why _kunit is a suffix, but that
-doesn't really apply for something built-in like KASAN.)
+diff --git a/drivers/clk/imx/clk-busy.c b/drivers/clk/imx/clk-busy.c
+index 25c863d..6f17311 100644
+--- a/drivers/clk/imx/clk-busy.c
++++ b/drivers/clk/imx/clk-busy.c
+@@ -4,6 +4,7 @@
+  * Copyright 2012 Linaro Ltd.
+  */
+ 
++#include <linux/bits.h>
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+diff --git a/drivers/clk/imx/clk-composite-7ulp.c b/drivers/clk/imx/clk-composite-7ulp.c
+index b9efcc8..7c4f31b 100644
+--- a/drivers/clk/imx/clk-composite-7ulp.c
++++ b/drivers/clk/imx/clk-composite-7ulp.c
+@@ -5,6 +5,7 @@
+  *
+  */
+ 
++#include <linux/bits.h>
+ #include <linux/clk-provider.h>
+ #include <linux/err.h>
+ #include <linux/slab.h>
+diff --git a/drivers/clk/imx/clk-fixup-mux.c b/drivers/clk/imx/clk-fixup-mux.c
+index 58a6763..c824015 100644
+--- a/drivers/clk/imx/clk-fixup-mux.c
++++ b/drivers/clk/imx/clk-fixup-mux.c
+@@ -3,6 +3,7 @@
+  * Copyright (C) 2013 Freescale Semiconductor, Inc.
+  */
+ 
++#include <linux/bits.h>
+ #include <linux/clk-provider.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+diff --git a/drivers/clk/imx/clk-imx6q.c b/drivers/clk/imx/clk-imx6q.c
+index ba33c79..b2ff187 100644
+--- a/drivers/clk/imx/clk-imx6q.c
++++ b/drivers/clk/imx/clk-imx6q.c
+@@ -6,6 +6,7 @@
+ 
+ #include <linux/init.h>
+ #include <linux/types.h>
++#include <linux/bits.h>
+ #include <linux/clk.h>
+ #include <linux/clkdev.h>
+ #include <linux/clk-provider.h>
+diff --git a/drivers/clk/imx/clk-imx6sx.c b/drivers/clk/imx/clk-imx6sx.c
+index 89ba712..20dcce5 100644
+--- a/drivers/clk/imx/clk-imx6sx.c
++++ b/drivers/clk/imx/clk-imx6sx.c
+@@ -4,6 +4,7 @@
+  */
+ 
+ #include <dt-bindings/clock/imx6sx-clock.h>
++#include <linux/bits.h>
+ #include <linux/clk.h>
+ #include <linux/clkdev.h>
+ #include <linux/clk-provider.h>
+diff --git a/drivers/clk/imx/clk-imx7d.c b/drivers/clk/imx/clk-imx7d.c
+index b2057bd..6197710 100644
+--- a/drivers/clk/imx/clk-imx7d.c
++++ b/drivers/clk/imx/clk-imx7d.c
+@@ -4,6 +4,7 @@
+  */
+ 
+ #include <dt-bindings/clock/imx7d-clock.h>
++#include <linux/bits.h>
+ #include <linux/clk.h>
+ #include <linux/clkdev.h>
+ #include <linux/clk-provider.h>
+diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
+index a73a799..1f0e44f 100644
+--- a/drivers/clk/imx/clk-lpcg-scu.c
++++ b/drivers/clk/imx/clk-lpcg-scu.c
+@@ -4,6 +4,7 @@
+  *	Dong Aisheng <aisheng.dong@nxp.com>
+  */
+ 
++#include <linux/bits.h>
+ #include <linux/clk-provider.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
+index f5c3e7e..aba36e4 100644
+--- a/drivers/clk/imx/clk-pll14xx.c
++++ b/drivers/clk/imx/clk-pll14xx.c
+@@ -3,7 +3,7 @@
+  * Copyright 2017-2018 NXP.
+  */
+ 
+-#include <linux/bitops.h>
++#include <linux/bits.h>
+ #include <linux/clk-provider.h>
+ #include <linux/err.h>
+ #include <linux/export.h>
+diff --git a/drivers/clk/imx/clk-pllv1.c b/drivers/clk/imx/clk-pllv1.c
+index de4f8a4..36ffb05 100644
+--- a/drivers/clk/imx/clk-pllv1.c
++++ b/drivers/clk/imx/clk-pllv1.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <linux/bits.h>
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+ #include <linux/slab.h>
+diff --git a/drivers/clk/imx/clk-pllv4.c b/drivers/clk/imx/clk-pllv4.c
+index a494504..8ec703f2 100644
+--- a/drivers/clk/imx/clk-pllv4.c
++++ b/drivers/clk/imx/clk-pllv4.c
+@@ -7,6 +7,7 @@
+  *
+  */
+ 
++#include <linux/bits.h>
+ #include <linux/clk-provider.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+diff --git a/drivers/clk/imx/clk-vf610.c b/drivers/clk/imx/clk-vf610.c
+index 5129ef8..8773f4c 100644
+--- a/drivers/clk/imx/clk-vf610.c
++++ b/drivers/clk/imx/clk-vf610.c
+@@ -4,6 +4,7 @@
+  */
+ 
+ #include <linux/of_address.h>
++#include <linux/bits.h>
+ #include <linux/clk.h>
+ #include <linux/syscore_ops.h>
+ #include <dt-bindings/clock/vf610-clock.h>
+diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
+index 547cade..47882c5 100644
+--- a/drivers/clk/imx/clk.c
++++ b/drivers/clk/imx/clk.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <linux/bits.h>
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
+ #include <linux/err.h>
+diff --git a/drivers/clk/imx/clk.h b/drivers/clk/imx/clk.h
+index dd47c19..3b796b3 100644
+--- a/drivers/clk/imx/clk.h
++++ b/drivers/clk/imx/clk.h
+@@ -2,6 +2,7 @@
+ #ifndef __MACH_IMX_CLK_H
+ #define __MACH_IMX_CLK_H
+ 
++#include <linux/bits.h>
+ #include <linux/spinlock.h>
+ #include <linux/clk-provider.h>
+ 
+-- 
+2.7.4
 
--- David
