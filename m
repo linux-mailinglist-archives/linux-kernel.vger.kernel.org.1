@@ -2,66 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC95723B68E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 10:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910E123B691
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 10:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729156AbgHDINW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 04:13:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55112 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725932AbgHDINV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 04:13:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2114FB64A;
-        Tue,  4 Aug 2020 08:13:36 +0000 (UTC)
+        id S1729606AbgHDINt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 04:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbgHDINr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 04:13:47 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4811C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 01:13:47 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d1so22411717plr.8
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 01:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QTZfG/kR29WZl/QqtrKhHeYkzxPgGUcbCVsRoqYuMCg=;
+        b=DYdif+vRQ34VCrII1rcRURMIr1UR4eoarWbg2ONWRx2uRCdkqrY/8JzU46Oa5nbfS1
+         uzfdNROpnO06HKpLdfpbuCQ6FGlq1Q5agZp+uGKZ5nqXoP26nuPN6pGHOUvRcoyQ5bfG
+         Qx/B/rXOjGtqaGu/9kKoQQZm1SZEHot04BYIN3+aFdQAblXL7A87TG51b8LtSNB5EETn
+         /UOZrqg0fsXd/BPGQy1t9OVN/S/GLvcqnKP5beN4UKBBmJY+KZhj5C/MnD9to9XjnKka
+         UQ5K8pRSkK4hmoSUUGWd4okRUmae3379DE7RgP2SDmoISUxFqIE48oXwWhe4UDm+zj0M
+         HtvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QTZfG/kR29WZl/QqtrKhHeYkzxPgGUcbCVsRoqYuMCg=;
+        b=cy1SJiMs00eSn+uQSsHAEIleIcAeOViGcjyBsayIBjJvF5eRP6Pj5CfISx04O8dOoH
+         kGh+GAFzpVFikUdJmSgHgjmQ3VAA1wO4xuTp+lqz7ntvVEg808HEmZ2xR+pp74kX/dpW
+         Px9h8fkESWyZqCWgzjuC/Nu3AzxKY+BkDMEkAEpyAbMJ5hkegmCK/6JstQawpX1ELUCC
+         hcAov7LqI7NOmKDhvFr1D0xMUgZoOGklNGFLHBtksx8JDORgICaDyRiR7ZCQrGvWqhlO
+         BjSk0l2u4xdGCmyjQEKQMaw+KhyVM1ukbFFGB9RHdT12BNxZe8XSpPrOYya4NothHWMO
+         MmXA==
+X-Gm-Message-State: AOAM533WbdPVSOponcfuTCnQ+jCwfU1Fr0Rk7a/QOYC6McYW5jTJUFzV
+        nfQV641lTIh4CdzJ8+/qnzY=
+X-Google-Smtp-Source: ABdhPJz+uClNx0qLTPNR0v0kaWetuL5qHIA7MjIEAIYLOMnWp36caMp4FKmFAUV7cMJ+CR83l1o0Dg==
+X-Received: by 2002:a17:90b:c90:: with SMTP id o16mr3081175pjz.79.1596528827041;
+        Tue, 04 Aug 2020 01:13:47 -0700 (PDT)
+Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id c10sm18237720pfc.62.2020.08.04.01.13.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 04 Aug 2020 01:13:46 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 01:13:34 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_sai: Clean code for synchronize mode
+Message-ID: <20200804081333.GA664@Asurada-Nvidia>
+References: <CAA+D8AOGF44UUq=P1S-M5TUwDUaOnqVmHJKPDBM9DAzt1nVzmQ@mail.gmail.com>
+ <20200803215735.GA5461@Asurada-Nvidia>
+ <CAA+D8ANQxnvR2bOyHVRs5h2NJhMeVh4gjLPknaz7aQ86MtL0sQ@mail.gmail.com>
+ <20200804021114.GA15390@Asurada-Nvidia>
+ <CAA+D8ANagfMXPAkK4-vBDY9rZMukVUXs8FfBCHS0avXt57pekA@mail.gmail.com>
+ <20200804030004.GA27028@Asurada-Nvidia>
+ <CAA+D8ANuLQuUO+VsABjt2t1ccK+LGayq13d6EEcV18=4KNaC+w@mail.gmail.com>
+ <CAA+D8AP=27SdR68T-LiQHkJ0_dJaqtgcS-oi9d8arUzvTz5GwA@mail.gmail.com>
+ <20200804070345.GA27658@Asurada-Nvidia>
+ <CAA+D8ANodghXDbUVOqpf9uq8A5FVbDFEFkf4dWdyMUNDTPaJ7A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 04 Aug 2020 10:13:19 +0200
-From:   osalvador@suse.de
-To:     Qian Cai <cai@lca.pw>
-Cc:     =?UTF-8?Q?HORIGUCHI_NAOYA=28=E5=A0=80=E5=8F=A3=E3=80=80=E7=9B=B4?=
-         =?UTF-8?Q?=E4=B9=9F=29?= <naoya.horiguchi@nec.com>,
-        nao.horiguchi@gmail.com, linux-mm@kvack.org, mhocko@kernel.org,
-        akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        tony.luck@intel.com, david@redhat.com,
-        aneesh.kumar@linux.vnet.ibm.com, zeil@yandex-team.ru,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 00/16] HWPOISON: soft offline rework
-In-Reply-To: <20200804014942.GC8894@lca.pw>
-References: <20200731122112.11263-1-nao.horiguchi@gmail.com>
- <20200803190709.GB8894@lca.pw>
- <20200804011644.GA25028@hori.linux.bs1.fc.nec.co.jp>
- <20200804014942.GC8894@lca.pw>
-User-Agent: Roundcube Webmail
-Message-ID: <3349ee83873c944a4276e4547e78ab1e@suse.de>
-X-Sender: osalvador@suse.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA+D8ANodghXDbUVOqpf9uq8A5FVbDFEFkf4dWdyMUNDTPaJ7A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-04 03:49, Qian Cai wrote:
+On Tue, Aug 04, 2020 at 03:53:51PM +0800, Shengjiu Wang wrote:
+
+> > >                 /* Check if the opposite FRDE is also disabled */
+> > >                 regmap_read(sai->regmap, FSL_SAI_xCSR(!tx, ofs), &xcsr);
+> > > +               if (sai->synchronous[tx] && !sai->synchronous[!tx] && !(xcsr & FSL_SAI_CSR_FRDE))
+> > > +                       fsl_sai_config_disable(sai, !tx);
+> >
+> > > +               if (sai->synchronous[tx] || !sai->synchronous[!tx] || !(xcsr & FSL_SAI_CSR_FRDE))
+> > > +                       fsl_sai_config_disable(sai, tx);
+> >
+> > The first "||" should probably be "&&".
 > 
-> Well, each iteration will mmap/munmap, so there should be no leaking.
+> No. it is !(!sai->synchronous[tx] && sai->synchronous[!tx] && (xcsr &
+> FSL_SAI_CSR_FRDE))
+> so then convert to
+> (sai->synchronous[tx] || !sai->synchronous[!tx] || !(xcsr & FSL_SAI_CSR_FRDE))
 > 
-> https://gitlab.com/cailca/linux-mm/-/blob/master/random.c#L376
-> 
-> It also seem to me madvise(MADV_SOFT_OFFLINE) does start to fragment 
-> memory
-> somehow, because after this "madvise: Cannot allocate memory" happened, 
-> I
-> immediately checked /proc/meminfo and then found no hugepage usage at 
-> all.
+> if change to &&, then it won't work for:
+> sai->synchronous[tx] = false, sai->synchronous[!tx]=false.
 
-Unfortunately I will be off for a week, but out of curiosity, could you 
-try out with below tree [1] and see if you still see those issues?
+Ahh..probably should be
+if (!(sync[dir] && !sync[adir]) || !frde)
 
-Thanks for your time
+I have a (seemingly) correct version in my sample code.
 
-[1] https://github.com/leberus/linux-mm-1/tree/hwpoison
-
-
-
+And...please untangle the logic using the given example -- adding
+helper function(s) and comments. And, though the driver does have
+places using array[tx] and array[!tx], better not to use any more
+boolean type variable as an array index, as it's hard to read.
