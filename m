@@ -2,97 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF6A23B761
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5003B23B764
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgHDJM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 05:12:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37674 "EHLO mx2.suse.de"
+        id S1728122AbgHDJPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 05:15:17 -0400
+Received: from mga12.intel.com ([192.55.52.136]:26085 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726201AbgHDJM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 05:12:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B0900B1B9;
-        Tue,  4 Aug 2020 09:13:10 +0000 (UTC)
-Subject: Re: [PATCH] mm: sort freelist by rank number
-To:     Cho KyongHo <pullip.cho@samsung.com>
-Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        hyesoo.yu@samsung.com, janghyuck.kim@samsung.com
-References: <CGME20200803061805epcas2p20faeeff0b31b23d1bc4464972285b561@epcas2p2.samsung.com>
- <1596435031-41837-1-git-send-email-pullip.cho@samsung.com>
- <5f41af0f-4593-3441-12f4-5b0f7e6999ac@redhat.com>
- <ebea485c-7cce-3a4a-2ac4-7a608efe2844@suse.cz> <20200804023548.GA186735@KEI>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <947a09ba-968b-4c4d-68bb-d13de9c885a1@suse.cz>
-Date:   Tue, 4 Aug 2020 11:12:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200804023548.GA186735@KEI>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1725856AbgHDJPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 05:15:16 -0400
+IronPort-SDR: etIyCEtHzeIxmC6DOJyM876zRR8mbmnhoVYoz/eUitHAbZtQ2yoS/d+YgeVDEoEwi2/by75XLN
+ d8xPGFoN8JSA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="131846744"
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="131846744"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 02:15:16 -0700
+IronPort-SDR: uOX8vFjOZCA1KulpAbQNwzaINFIwCQ+himuKYXfYAYTJUZraK3mJnel0teLCwuD0AK3Kqquc4E
+ c7bG0JaWRNIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="466989286"
+Received: from ipu5-build.bj.intel.com ([10.238.232.196])
+  by orsmga005.jf.intel.com with ESMTP; 04 Aug 2020 02:15:14 -0700
+From:   Bingbu Cao <bingbu.cao@intel.com>
+To:     srinivas.kandagatla@linaro.org, linux-kernel@vger.kernel.org
+Cc:     sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        bingbu.cao@linux.intel.com
+Subject: [PATCH] nvmem: core: add sanity check in nvmem_device_read()
+Date:   Tue,  4 Aug 2020 17:13:56 +0800
+Message-Id: <1596532436-19073-1-git-send-email-bingbu.cao@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/20 4:35 AM, Cho KyongHo wrote:
-> On Mon, Aug 03, 2020 at 05:45:55PM +0200, Vlastimil Babka wrote:
->> On 8/3/20 9:57 AM, David Hildenbrand wrote:
->> > On 03.08.20 08:10, pullip.cho@samsung.com wrote:
->> >> From: Cho KyongHo <pullip.cho@samsung.com>
->> >> 
->> >> LPDDR5 introduces rank switch delay. If three successive DRAM accesses
->> >> happens and the first and the second ones access one rank and the last
->> >> access happens on the other rank, the latency of the last access will
->> >> be longer than the second one.
->> >> To address this panelty, we can sort the freelist so that a specific
->> >> rank is allocated prior to another rank. We expect the page allocator
->> >> can allocate the pages from the same rank successively with this
->> >> change. It will hopefully improves the proportion of the consecutive
->> >> memory accesses to the same rank.
->> > 
->> > This certainly needs performance numbers to justify ... and I am sorry,
->> > "hopefully improves" is not a valid justification :)
->> > 
->> > I can imagine that this works well initially, when there hasn't been a
->> > lot of memory fragmentation going on. But quickly after your system is
->> > under stress, I doubt this will be very useful. Proof me wrong. ;)
->> 
->> Agreed. The implementation of __preferred_rank() seems to be very simple and
->> optimistic.
-> 
-> DRAM rank is selected by CS bits from DRAM controllers. In the most systems
-> CS bits are alloated to specific bit fields in BUS address. For example,
-> If CS bit is allocated to bit[16] in bus (physical) address in two rank
-> system, all 16KiB with bit[16] = 1 are in the rank 1 and the others are
-> in the rank 0.
-> This patch is not beneficial to other system than the mobile devices
-> with LPDDR5. That is why the default behavior of this patch is noop.
+nvmem_device_read() could be called directly once nvmem device
+registered, the sanity check should be done before call
+nvmem_reg_read() as cell and sysfs read did now.
 
-Hmm, the patch requires at least pageblock_nr_pages, which is 2MB on x86 (dunno
-about ARM), so 16KiB would be way too small. What are the actual granularities then?
+Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
+---
+ drivers/nvmem/core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
->> I think these systems could perhaps better behave as NUMA with (interleaved)
->> nodes for each rank, then you immediately have all the mempolicies support etc
->> to achieve what you need? Of course there's some cost as well, but not the costs
->> of adding hacks to page allocator core?
-> 
-> Thank you for the proposal. NUMA will be helpful to allocate pages from
-> a specific rank programmatically. I should consider NUMA if rank
-> affinity should be also required.
-> However, page allocation overhead by this policy (page migration and
-> reclamation ect.) will give the users worse responsiveness. The intend
-> of this patch is to reduce rank switch delay optimistically without
-> hurting page allocation speed.
-
-The problem is, without some control of page migration and reclaim, the simple
-preference approach will not work after some uptime, as David suggested. It will
-just mean that the preferred rank will be allocated first, then the
-non-preferred rank (Linux will fill all unused memory with page cache if
-possible), then reclaim will free memory from both ranks without any special
-care, and new allocations will thus come from both ranks.
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 927eb5f6003f..c9a77993f008 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -1491,6 +1491,13 @@ int nvmem_device_read(struct nvmem_device *nvmem,
+ 	if (!nvmem)
+ 		return -EINVAL;
+ 
++	if (offset >= nvmem->size || bytes < nvmem->word_size)
++		return 0;
++
++	if (bytes + offset > nvmem->size)
++		bytes = nvmem->size - offset;
++
++	bytes = round_down(bytes, nvmem->word_size);
+ 	rc = nvmem_reg_read(nvmem, offset, buf, bytes);
+ 
+ 	if (rc)
+-- 
+2.7.4
 
