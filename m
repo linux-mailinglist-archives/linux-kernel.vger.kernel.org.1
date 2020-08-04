@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122EC23B9EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA3723B9F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730425AbgHDLtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:49:46 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:55884 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730383AbgHDLs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:48:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596541739; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From;
- bh=vGH9LKTOm9sL1O4ddHVopCGrjaeylS/jHpnPnE8H5C0=; b=p0KhID1ROV6URe6qCzfaQMrPzfhunlP2zV8yit7Q+VIQ+ouqmW5owOvKDRL0zb+UketV3b1X
- ljfxkCfoDr03+NFr7FWbPrpQC41ImtOELlLlL1DNlEew/0aYExtlwR/LxvxyyaGh5pJ/7yfy
- 8kYhcw8jrOKcpAyQt1lptSHUKWY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
- 5f294b2a781ba1c5e2e7a4a6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 Aug 2020 11:48:58
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6E201C433C9; Tue,  4 Aug 2020 11:48:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: *
-X-Spam-Status: No, score=1.9 required=2.0 tests=ALL_TRUSTED,FROM_ADDR_WS,
-        SPF_HELO_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from vgarodia-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vgarodia)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70F7BC433C6;
-        Tue,  4 Aug 2020 11:48:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 70F7BC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=qti.qualcomm.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.helo=vgarodia-linux.qualcomm.com
-From:   Vikash Garodia <"Vikash Garodia"@qti.qualcomm.com>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, mansur@codeaurora.org,
-        rkurapat@qti.qualcomm.com, gkapalli@qti.qualcomm.com
-Subject: [PATCH] venus: fixes for list corruption
-Date:   Tue,  4 Aug 2020 17:18:45 +0530
-Message-Id: <20200804114845.25086-1-user@vgarodia-linux>
-X-Mailer: git-send-email 2.28.0
+        id S1730436AbgHDLxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729698AbgHDLtN (ORCPT
+        <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 07:49:13 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E73BC06174A
+        for <Linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 04:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=R1BpYLpY9SppDsEqsOomEhp8dPWGGoK9Ld+yLP0ESbw=; b=LVS9izSi8A2kiEYk7U8ynr0ABC
+        D7e+g3UqysEvd+4IaEwceeZr2Ht8YdHWzxX7yBZboNpe65/d8MLykxgbyrfoinHZfCUMvHoPTS53O
+        imeCwhytPSKHa1lDoVBlD8IZjHwuiPax9HMUfB7yyBF4BudMqrtKscJfVbNfa+G/YsOOhmLDrAwIG
+        aWHY/7YniodHTySFsOO0hRg0e/WIbsdtkQoV8OrO3W+atkq7VC/VOF4Dt8XlcbQghVCGNt3DPdLIs
+        FTQKboyrbCH+48oBttt0E2gybVQUqY4ZlB2Uknfg6pq9LH3XNifP1OkcbACj2O63dFBUwKiET52CW
+        0LDLdvgg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k2vRF-000858-W1; Tue, 04 Aug 2020 11:49:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 649E5301E02;
+        Tue,  4 Aug 2020 13:49:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 408DA2BDB8C9E; Tue,  4 Aug 2020 13:49:00 +0200 (CEST)
+Date:   Tue, 4 Aug 2020 13:49:00 +0200
+From:   peterz@infradead.org
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     mingo@redhat.com, oleg@redhat.com, acme@kernel.org,
+        jolsa@kernel.org, Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com
+Subject: Re: [PATCH v1 2/2] perf/core: Fake regs for leaked kernel samples
+Message-ID: <20200804114900.GI2657@hirez.programming.kicks-ass.net>
+References: <20200731025617.16243-1-yao.jin@linux.intel.com>
+ <20200731025617.16243-2-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731025617.16243-2-yao.jin@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vikash Garodia <vgarodia@codeaurora.org>
+On Fri, Jul 31, 2020 at 10:56:17AM +0800, Jin Yao wrote:
+> @@ -6973,7 +6973,8 @@ static struct perf_callchain_entry __empty_callchain = { .nr = 0, };
+>  struct perf_callchain_entry *
+>  perf_callchain(struct perf_event *event, struct pt_regs *regs)
+>  {
+> -	bool kernel = !event->attr.exclude_callchain_kernel;
+> +	bool kernel = !event->attr.exclude_callchain_kernel &&
+> +		      !event->attr.exclude_kernel;
 
-There are few list handling issues while adding and deleting
-node in the registered buf list in the driver.
-1. list addition - buffer added into the list during buf_init
-while not deleted during cleanup.
-2. list deletion - In capture streamoff, the list was reinitialized.
-As a result, if any node was present in the list, it would
-lead to issue while cleaning up that node during buf_cleanup.
+This seems weird; how can we get there. Also it seems to me that if you
+have !exclude_callchain_kernel you already have permission for kernel
+bits, so who cares.
 
-Corresponding call traces below:
-[  165.751014] Call trace:
-[  165.753541]  __list_add_valid+0x58/0x88
-[  165.757532]  venus_helper_vb2_buf_init+0x74/0xa8 [venus_core]
-[  165.763450]  vdec_buf_init+0x34/0xb4 [venus_dec]
-[  165.768271]  __buf_prepare+0x598/0x8a0 [videobuf2_common]
-[  165.773820]  vb2_core_qbuf+0xb4/0x334 [videobuf2_common]
-[  165.779298]  vb2_qbuf+0x78/0xb8 [videobuf2_v4l2]
-[  165.784053]  v4l2_m2m_qbuf+0x80/0xf8 [v4l2_mem2mem]
-[  165.789067]  v4l2_m2m_ioctl_qbuf+0x2c/0x38 [v4l2_mem2mem]
-[  165.794624]  v4l_qbuf+0x48/0x58
+>  	bool user   = !event->attr.exclude_callchain_user;
+>  	/* Disallow cross-task user callchains. */
+>  	bool crosstask = event->ctx->task && event->ctx->task != current;
+> @@ -6988,12 +6989,39 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
+>  	return callchain ?: &__empty_callchain;
+>  }
+>  
+> +static struct pt_regs *leak_check(struct perf_event_header *header,
+> +				  struct perf_event *event,
+> +				  struct pt_regs *regs)
+> +{
+> +	struct pt_regs *regs_fake = NULL;
+> +
+> +	if (event->attr.exclude_kernel && !user_mode(regs)) {
+> +		if (!(current->flags & PF_KTHREAD)) {
+> +			regs_fake = task_pt_regs(current);
+> +			if (!user_mode(regs_fake)) {
+> +				regs_fake = NULL;
+> +				instruction_pointer_set(regs, -1L);
+> +			}
+> +		} else
+> +			instruction_pointer_set(regs, -1L);
 
-[ 1797.556001] Call trace:
-[ 1797.558516]  __list_del_entry_valid+0x88/0x9c
-[ 1797.562989]  vdec_buf_cleanup+0x54/0x228 [venus_dec]
-[ 1797.568088]  __buf_prepare+0x270/0x8a0 [videobuf2_common]
-[ 1797.573625]  vb2_core_qbuf+0xb4/0x338 [videobuf2_common]
-[ 1797.579082]  vb2_qbuf+0x78/0xb8 [videobuf2_v4l2]
-[ 1797.583830]  v4l2_m2m_qbuf+0x80/0xf8 [v4l2_mem2mem]
-[ 1797.588843]  v4l2_m2m_ioctl_qbuf+0x2c/0x38 [v4l2_mem2mem]
-[ 1797.594389]  v4l_qbuf+0x48/0x58
+That violates coding style, also:
 
-Signed-off-by: Vikash Garodia <vgarodia@codeaurora.org>
----
- drivers/media/platform/qcom/venus/vdec.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+		if (!(current->flags & PF_KTHREAD)) {
+			regs_fake = task_pt_regs(current);
+			if (!user_mode(regs_fake)) /* is this not a BUG?  */
+				regs_fake = NULL;
+		}
 
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index 7c4c483d5438..76be14efbfb0 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -1088,8 +1088,6 @@ static int vdec_stop_capture(struct venus_inst *inst)
- 		break;
- 	}
- 
--	INIT_LIST_HEAD(&inst->registeredbufs);
--
- 	return ret;
- }
- 
-@@ -1189,6 +1187,14 @@ static int vdec_buf_init(struct vb2_buffer *vb)
- static void vdec_buf_cleanup(struct vb2_buffer *vb)
- {
- 	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
-+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-+	struct venus_buffer *buf = to_venus_buffer(vbuf);
-+
-+	mutex_lock(&inst->lock);
-+	if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
-+		if (!list_empty(&inst->registeredbufs))
-+			list_del_init(&buf->reg_list);
-+	mutex_unlock(&inst->lock);
- 
- 	inst->buf_count--;
- 	if (!inst->buf_count)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+		if (!regs_fake)
+			instruction_pointer_set(regs, -1L);
 
+Seems simpler to me.
+
+> +		if ((header->misc & PERF_RECORD_MISC_CPUMODE_MASK) ==
+> +		     PERF_RECORD_MISC_KERNEL) {
+> +			header->misc &= ~PERF_RECORD_MISC_CPUMODE_MASK;
+> +			header->misc |= PERF_RECORD_MISC_USER;
+> +		}
+
+Why the conditional? At this point it had better be unconditionally
+user, no?
+
+		headers->misc &= ~PERF_RECORD_MISC_CPUMODE_MASK;
+		headers->misc |= PERF_RECORD_MISC_USER;
+
+> +	}
+> +
+> +	return regs_fake;
+> +}
