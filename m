@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04B223C111
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFE623C10A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgHDU6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 16:58:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41810 "EHLO mail.kernel.org"
+        id S1728320AbgHDU6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 16:58:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728039AbgHDU6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728045AbgHDU6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 Aug 2020 16:58:13 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31C8E22B42;
+        by mail.kernel.org (Postfix) with ESMTPSA id 535C622BF3;
         Tue,  4 Aug 2020 20:58:13 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1k340i-006H9J-6K; Tue, 04 Aug 2020 16:58:12 -0400
-Message-ID: <20200804205812.055623798@goodmis.org>
+        id 1k340i-006H9q-Ag; Tue, 04 Aug 2020 16:58:12 -0400
+Message-ID: <20200804205812.216460366@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 04 Aug 2020 16:57:44 -0400
+Date:   Tue, 04 Aug 2020 16:57:45 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [for-linus][PATCH 01/17] tracing: Simplify defining of the next event id
+Subject: [for-linus][PATCH 02/17] tracing: Save one trace_event->type by using __TRACE_LAST_TYPE
 References: <20200804205743.419135730@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,58 +38,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-The value to be used and compared in trace_search_list() is "last + 1".
-Let's just define next to be "last + 1" instead of doing the addition
-each time.
+Static defined trace_event->type stops at (__TRACE_LAST_TYPE - 1) and
+dynamic trace_event->type starts from (__TRACE_LAST_TYPE + 1).
 
-Link: https://lkml.kernel.org/r/20200703020612.12930-2-richard.weiyang@linux.alibaba.com
+To save one trace_event->type index, let's use __TRACE_LAST_TYPE.
+
+Link: https://lkml.kernel.org/r/20200703020612.12930-3-richard.weiyang@linux.alibaba.com
 
 Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_output.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/trace/trace_output.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index 73976de7f8cc..a35232d61601 100644
+index a35232d61601..4d1893564912 100644
 --- a/kernel/trace/trace_output.c
 +++ b/kernel/trace/trace_output.c
-@@ -675,11 +675,11 @@ static LIST_HEAD(ftrace_event_list);
+@@ -20,7 +20,7 @@ DECLARE_RWSEM(trace_event_sem);
+ 
+ static struct hlist_head event_hash[EVENT_HASHSIZE] __read_mostly;
+ 
+-static int next_event_type = __TRACE_LAST_TYPE + 1;
++static int next_event_type = __TRACE_LAST_TYPE;
+ 
+ enum print_line_t trace_print_bputs_msg_only(struct trace_iterator *iter)
+ {
+@@ -675,7 +675,7 @@ static LIST_HEAD(ftrace_event_list);
  static int trace_search_list(struct list_head **list)
  {
  	struct trace_event *e;
--	int last = __TRACE_LAST_TYPE;
-+	int next = __TRACE_LAST_TYPE + 1;
+-	int next = __TRACE_LAST_TYPE + 1;
++	int next = __TRACE_LAST_TYPE;
  
  	if (list_empty(&ftrace_event_list)) {
  		*list = &ftrace_event_list;
--		return last + 1;
-+		return next;
- 	}
- 
- 	/*
-@@ -687,17 +687,17 @@ static int trace_search_list(struct list_head **list)
- 	 * lets see if somebody freed one.
- 	 */
- 	list_for_each_entry(e, &ftrace_event_list, list) {
--		if (e->type != last + 1)
-+		if (e->type != next)
- 			break;
--		last++;
-+		next++;
- 	}
- 
- 	/* Did we used up all 65 thousand events??? */
--	if ((last + 1) > TRACE_EVENT_TYPE_MAX)
-+	if (next > TRACE_EVENT_TYPE_MAX)
- 		return 0;
- 
- 	*list = &e->list;
--	return last + 1;
-+	return next;
- }
- 
- void trace_event_read_lock(void)
 -- 
 2.26.2
 
