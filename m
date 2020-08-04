@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B49023BE10
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4BB23BE0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729892AbgHDQYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:24:13 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43913 "EHLO
+        id S1729850AbgHDQXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:23:49 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43928 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729664AbgHDQU7 (ORCPT
+        with ESMTP id S1729673AbgHDQU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 Aug 2020 12:20:59 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from eli@mellanox.com)
-        with SMTP; 4 Aug 2020 19:20:53 +0300
+        with SMTP; 4 Aug 2020 19:20:54 +0300
 Received: from nps-server-21.mtl.labs.mlnx (nps-server-21.mtl.labs.mlnx [10.237.240.120])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKrPM024053;
-        Tue, 4 Aug 2020 19:20:53 +0300
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKsAe024056;
+        Tue, 4 Aug 2020 19:20:54 +0300
 Received: from nps-server-21.mtl.labs.mlnx (localhost [127.0.0.1])
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKrrM022649;
-        Tue, 4 Aug 2020 19:20:53 +0300
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKsf1022651;
+        Tue, 4 Aug 2020 19:20:54 +0300
 Received: (from eli@localhost)
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKr0f022648;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKrVF022650;
         Tue, 4 Aug 2020 19:20:53 +0300
 From:   Eli Cohen <eli@mellanox.com>
 To:     mst@redhat.com, jasowang@redhat.com,
@@ -29,9 +29,9 @@ To:     mst@redhat.com, jasowang@redhat.com,
         linux-kernel@vger.kernel.org
 Cc:     shahafs@mellanox.com, saeedm@mellanox.com, parav@mellanox.com,
         Eli Cohen <eli@mellanox.com>
-Subject: [PATCH V4 linux-next 08/12] vdpa: Modify get_vq_state() to return error code
-Date:   Tue,  4 Aug 2020 19:20:44 +0300
-Message-Id: <20200804162048.22587-9-eli@mellanox.com>
+Subject: [PATCH V4 linux-next 09/12] vdpa/mlx5: Add hardware descriptive header file
+Date:   Tue,  4 Aug 2020 19:20:45 +0300
+Message-Id: <20200804162048.22587-10-eli@mellanox.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200804162048.22587-1-eli@mellanox.com>
 References: <20200804162048.22587-1-eli@mellanox.com>
@@ -42,92 +42,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify get_vq_state() so it returns an error code. In case of hardware
-acceleration, the available index may be retrieved from the device, an
-operation that can possibly fail.
+Keep all vdpa related hardware definitions in this file.
 
 Reviewed-by: Parav Pandit <parav@mellanox.com>
 Signed-off-by: Eli Cohen <eli@mellanox.com>
 ---
- drivers/vdpa/ifcvf/ifcvf_main.c  | 5 +++--
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 5 +++--
- drivers/vhost/vdpa.c             | 5 ++++-
- include/linux/vdpa.h             | 4 ++--
- 4 files changed, 12 insertions(+), 7 deletions(-)
+ drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h | 168 +++++++++++++++++++++++++
+ 1 file changed, 168 insertions(+)
+ create mode 100644 drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h
 
-diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-index dc311e972b9e..076d7ac5e723 100644
---- a/drivers/vdpa/ifcvf/ifcvf_main.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-@@ -237,12 +237,13 @@ static u16 ifcvf_vdpa_get_vq_num_max(struct vdpa_device *vdpa_dev)
- 	return IFCVF_QUEUE_MAX;
- }
- 
--static void ifcvf_vdpa_get_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
--				    struct vdpa_vq_state *state)
-+static int ifcvf_vdpa_get_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
-+				   struct vdpa_vq_state *state)
- {
- 	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
- 
- 	state->avail_index = ifcvf_get_vq_state(vf, qid);
-+	return 0;
- }
- 
- static int ifcvf_vdpa_set_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index f1c351d5959b..c68741363643 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -464,14 +464,15 @@ static int vdpasim_set_vq_state(struct vdpa_device *vdpa, u16 idx,
- 	return 0;
- }
- 
--static void vdpasim_get_vq_state(struct vdpa_device *vdpa, u16 idx,
--				 struct vdpa_vq_state *state)
-+static int vdpasim_get_vq_state(struct vdpa_device *vdpa, u16 idx,
-+				struct vdpa_vq_state *state)
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
- 	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
- 	struct vringh *vrh = &vq->vring;
- 
- 	state->avail_index = vrh->last_avail_idx;
-+	return 0;
- }
- 
- static u32 vdpasim_get_vq_align(struct vdpa_device *vdpa)
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index c2e1e2d55084..a0b7c91948e1 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -392,7 +392,10 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
- 		ops->set_vq_ready(vdpa, idx, s.num);
- 		return 0;
- 	case VHOST_GET_VRING_BASE:
--		ops->get_vq_state(v->vdpa, idx, &vq_state);
-+		r = ops->get_vq_state(v->vdpa, idx, &vq_state);
-+		if (r)
-+			return r;
+diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h b/drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h
+new file mode 100644
+index 000000000000..f6f57a29b38e
+--- /dev/null
++++ b/drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h
+@@ -0,0 +1,168 @@
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
++/* Copyright (c) 2020 Mellanox Technologies Ltd. */
 +
- 		vq->last_avail_idx = vq_state.avail_index;
- 		break;
- 	case VHOST_GET_BACKEND_FEATURES:
-diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-index 8f412620071d..fd6e560d70f9 100644
---- a/include/linux/vdpa.h
-+++ b/include/linux/vdpa.h
-@@ -192,8 +192,8 @@ struct vdpa_config_ops {
- 	bool (*get_vq_ready)(struct vdpa_device *vdev, u16 idx);
- 	int (*set_vq_state)(struct vdpa_device *vdev, u16 idx,
- 			    const struct vdpa_vq_state *state);
--	void (*get_vq_state)(struct vdpa_device *vdev, u16 idx,
--			     struct vdpa_vq_state *state);
-+	int (*get_vq_state)(struct vdpa_device *vdev, u16 idx,
-+			    struct vdpa_vq_state *state);
- 	struct vdpa_notification_area
- 	(*get_vq_notification)(struct vdpa_device *vdev, u16 idx);
- 	int (*get_vq_irq)(struct vdpa_device *vdv, u16 idx);
++#ifndef __MLX5_VDPA_IFC_H_
++#define __MLX5_VDPA_IFC_H_
++
++#include <linux/mlx5/mlx5_ifc.h>
++
++enum {
++	MLX5_VIRTIO_Q_EVENT_MODE_NO_MSIX_MODE  = 0x0,
++	MLX5_VIRTIO_Q_EVENT_MODE_QP_MODE       = 0x1,
++	MLX5_VIRTIO_Q_EVENT_MODE_MSIX_MODE     = 0x2,
++};
++
++enum {
++	MLX5_VIRTIO_EMULATION_CAP_VIRTIO_QUEUE_TYPE_SPLIT   = 0x1, // do I check this caps?
++	MLX5_VIRTIO_EMULATION_CAP_VIRTIO_QUEUE_TYPE_PACKED  = 0x2,
++};
++
++enum {
++	MLX5_VIRTIO_EMULATION_VIRTIO_QUEUE_TYPE_SPLIT   = 0,
++	MLX5_VIRTIO_EMULATION_VIRTIO_QUEUE_TYPE_PACKED  = 1,
++};
++
++struct mlx5_ifc_virtio_q_bits {
++	u8    virtio_q_type[0x8];
++	u8    reserved_at_8[0x5];
++	u8    event_mode[0x3];
++	u8    queue_index[0x10];
++
++	u8    full_emulation[0x1];
++	u8    virtio_version_1_0[0x1];
++	u8    reserved_at_22[0x2];
++	u8    offload_type[0x4];
++	u8    event_qpn_or_msix[0x18];
++
++	u8    doorbell_stride_index[0x10];
++	u8    queue_size[0x10];
++
++	u8    device_emulation_id[0x20];
++
++	u8    desc_addr[0x40];
++
++	u8    used_addr[0x40];
++
++	u8    available_addr[0x40];
++
++	u8    virtio_q_mkey[0x20];
++
++	u8    max_tunnel_desc[0x10];
++	u8    reserved_at_170[0x8];
++	u8    error_type[0x8];
++
++	u8    umem_1_id[0x20];
++
++	u8    umem_1_size[0x20];
++
++	u8    umem_1_offset[0x40];
++
++	u8    umem_2_id[0x20];
++
++	u8    umem_2_size[0x20];
++
++	u8    umem_2_offset[0x40];
++
++	u8    umem_3_id[0x20];
++
++	u8    umem_3_size[0x20];
++
++	u8    umem_3_offset[0x40];
++
++	u8    counter_set_id[0x20];
++
++	u8    reserved_at_320[0x8];
++	u8    pd[0x18];
++
++	u8    reserved_at_340[0xc0];
++};
++
++struct mlx5_ifc_virtio_net_q_object_bits {
++	u8    modify_field_select[0x40];
++
++	u8    reserved_at_40[0x20];
++
++	u8    vhca_id[0x10];
++	u8    reserved_at_70[0x10];
++
++	u8    queue_feature_bit_mask_12_3[0xa];
++	u8    dirty_bitmap_dump_enable[0x1];
++	u8    vhost_log_page[0x5];
++	u8    reserved_at_90[0xc];
++	u8    state[0x4];
++
++	u8    reserved_at_a0[0x5];
++	u8    queue_feature_bit_mask_2_0[0x3];
++	u8    tisn_or_qpn[0x18];
++
++	u8    dirty_bitmap_mkey[0x20];
++
++	u8    dirty_bitmap_size[0x20];
++
++	u8    dirty_bitmap_addr[0x40];
++
++	u8    hw_available_index[0x10];
++	u8    hw_used_index[0x10];
++
++	u8    reserved_at_160[0xa0];
++
++	struct mlx5_ifc_virtio_q_bits virtio_q_context;
++};
++
++struct mlx5_ifc_create_virtio_net_q_in_bits {
++	struct mlx5_ifc_general_obj_in_cmd_hdr_bits general_obj_in_cmd_hdr;
++
++	struct mlx5_ifc_virtio_net_q_object_bits obj_context;
++};
++
++struct mlx5_ifc_create_virtio_net_q_out_bits {
++	struct mlx5_ifc_general_obj_out_cmd_hdr_bits general_obj_out_cmd_hdr;
++};
++
++struct mlx5_ifc_destroy_virtio_net_q_in_bits {
++	struct mlx5_ifc_general_obj_in_cmd_hdr_bits general_obj_out_cmd_hdr;
++};
++
++struct mlx5_ifc_destroy_virtio_net_q_out_bits {
++	struct mlx5_ifc_general_obj_out_cmd_hdr_bits general_obj_out_cmd_hdr;
++};
++
++struct mlx5_ifc_query_virtio_net_q_in_bits {
++	struct mlx5_ifc_general_obj_in_cmd_hdr_bits general_obj_in_cmd_hdr;
++};
++
++struct mlx5_ifc_query_virtio_net_q_out_bits {
++	struct mlx5_ifc_general_obj_out_cmd_hdr_bits general_obj_out_cmd_hdr;
++
++	struct mlx5_ifc_virtio_net_q_object_bits obj_context;
++};
++
++enum {
++	MLX5_VIRTQ_MODIFY_MASK_STATE                    = (u64)1 << 0,
++	MLX5_VIRTQ_MODIFY_MASK_DIRTY_BITMAP_PARAMS      = (u64)1 << 3,
++	MLX5_VIRTQ_MODIFY_MASK_DIRTY_BITMAP_DUMP_ENABLE = (u64)1 << 4,
++};
++
++enum {
++	MLX5_VIRTIO_NET_Q_OBJECT_STATE_INIT     = 0x0,
++	MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY      = 0x1,
++	MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND  = 0x2,
++	MLX5_VIRTIO_NET_Q_OBJECT_STATE_ERR      = 0x3,
++};
++
++enum {
++	MLX5_RQTC_LIST_Q_TYPE_RQ            = 0x0,
++	MLX5_RQTC_LIST_Q_TYPE_VIRTIO_NET_Q  = 0x1,
++};
++
++struct mlx5_ifc_modify_virtio_net_q_in_bits {
++	struct mlx5_ifc_general_obj_in_cmd_hdr_bits general_obj_in_cmd_hdr;
++
++	struct mlx5_ifc_virtio_net_q_object_bits obj_context;
++};
++
++struct mlx5_ifc_modify_virtio_net_q_out_bits {
++	struct mlx5_ifc_general_obj_out_cmd_hdr_bits general_obj_out_cmd_hdr;
++};
++
++#endif /* __MLX5_VDPA_IFC_H_ */
 -- 
 2.26.0
 
