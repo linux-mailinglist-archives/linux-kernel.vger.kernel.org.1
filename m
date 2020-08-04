@@ -2,100 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F3923B7FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6459C23B811
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728595AbgHDJnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 05:43:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55056 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725832AbgHDJnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 05:43:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 747B9ADE5;
-        Tue,  4 Aug 2020 09:43:36 +0000 (UTC)
-Message-ID: <e0b2a00c8cf86cb1a91804942d35c9d4b98e9f9f.camel@suse.de>
-Subject: Re: [PATCH v2 2/2] dma-pool: Only allocate from CMA when in same
- memory zone
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     amit.pundir@linaro.org, linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, rientjes@google.com,
-        jeremy.linton@arm.com, linux-rpi-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org
-Date:   Tue, 04 Aug 2020 11:43:15 +0200
-In-Reply-To: <20200804060633.GA7368@lst.de>
-References: <20200803160956.19235-1-nsaenzjulienne@suse.de>
-         <20200803160956.19235-3-nsaenzjulienne@suse.de>
-         <20200804060633.GA7368@lst.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-37n9dG1PtRrqctFyLGEb"
-User-Agent: Evolution 3.36.4 
+        id S1729103AbgHDJsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 05:48:40 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2565 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726844AbgHDJsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 05:48:40 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id A7CEA2CFDA64335D3338;
+        Tue,  4 Aug 2020 10:48:38 +0100 (IST)
+Received: from localhost (10.52.124.224) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Tue, 4 Aug 2020
+ 10:48:38 +0100
+Date:   Tue, 4 Aug 2020 10:47:13 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Jay Fang <f.fangjian@huawei.com>
+CC:     Sean V Kelley <sean.v.kelley@intel.com>, <bhelgaas@google.com>,
+        <rjw@rjwysocki.net>, <ashok.raj@kernel.org>, <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Subject: Re: [RFC PATCH 8/9] PCI/PME: Add RCEC PME handling
+Message-ID: <20200804104713.0000767f@Huawei.com>
+In-Reply-To: <edbcf3da-a1d5-e1b6-6a1a-a286429fc4e3@huawei.com>
+References: <20200724172223.145608-1-sean.v.kelley@intel.com>
+        <20200724172223.145608-9-sean.v.kelley@intel.com>
+        <edbcf3da-a1d5-e1b6-6a1a-a286429fc4e3@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.52.124.224]
+X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 4 Aug 2020 16:35:59 +0800
+Jay Fang <f.fangjian@huawei.com> wrote:
 
---=-37n9dG1PtRrqctFyLGEb
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> ÔÚ 2020/7/25 1:22, Sean V Kelley Ð´µÀ:
+> > The Root Complex Event Collectors(RCEC) appear as peers of Root Ports
+> > and also have the PME capability. So add RCEC support to the current PME
+> > service driver and attach the PME service driver to the RCEC device.
+> > 
+> > Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> > Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> > Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> > ---
+> >  drivers/pci/pcie/pme.c | 15 +++++++++++----
+> >  1 file changed, 11 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/pci/pcie/pme.c b/drivers/pci/pcie/pme.c
+> > index 6a32970bb731..87799166c96a 100644
+> > --- a/drivers/pci/pcie/pme.c
+> > +++ b/drivers/pci/pcie/pme.c
+> > @@ -310,7 +310,10 @@ static int pcie_pme_can_wakeup(struct pci_dev *dev, void *ign)
+> >  static void pcie_pme_mark_devices(struct pci_dev *port)
+> >  {
+> >  	pcie_pme_can_wakeup(port, NULL);
+> > -	if (port->subordinate)
+> > +
+> > +	if (pci_pcie_type(port) == PCI_EXP_TYPE_RC_EC)
+> > +		pcie_walk_rcec(port, pcie_pme_can_wakeup, NULL);
+> > +	else if (port->subordinate)
+> >  		pci_walk_bus(port->subordinate, pcie_pme_can_wakeup, NULL);
+> >  }
+> >  
+> > @@ -320,10 +323,15 @@ static void pcie_pme_mark_devices(struct pci_dev *port)
+> >   */
+> >  static int pcie_pme_probe(struct pcie_device *srv)
+> >  {
+> > -	struct pci_dev *port;
+> > +	struct pci_dev *port = srv->port;
+> >  	struct pcie_pme_service_data *data;
+> >  	int ret;
+> >  
+> > +	/* Limit to Root Ports or Root Complex Event Collectors */
+> > +	if ((pci_pcie_type(port) != PCI_EXP_TYPE_RC_EC) &&
+> > +	    (pci_pcie_type(port) != PCI_EXP_TYPE_ROOT_PORT))
+> > +		return -ENODEV;
+> > +
+> >  	data = kzalloc(sizeof(*data), GFP_KERNEL);
+> >  	if (!data)
+> >  		return -ENOMEM;
+> > @@ -333,7 +341,6 @@ static int pcie_pme_probe(struct pcie_device *srv)
+> >  	data->srv = srv;
+> >  	set_service_data(srv, data);
+> >  
+> > -	port = srv->port;
+> >  	pcie_pme_interrupt_enable(port, false);
+> >  	pcie_clear_root_pme_status(port);
+> >  
+> > @@ -445,7 +452,7 @@ static void pcie_pme_remove(struct pcie_device *srv)
+> >  
+> >  static struct pcie_port_service_driver pcie_pme_driver = {
+> >  	.name		= "pcie_pme",
+> > -	.port_type	= PCI_EXP_TYPE_ROOT_PORT,
+> > +	.port_type	= PCIE_ANY_PORT,  
+> Maybe we can use port_type for driver matching. There is no need
+> to check the type of port in pcie_pme_probe function.
+> 
 
-On Tue, 2020-08-04 at 08:06 +0200, Christoph Hellwig wrote:
-> On Mon, Aug 03, 2020 at 06:09:56PM +0200, Nicolas Saenz Julienne wrote:
-> > +	if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp & GFP_DMA))
-> > +		return end <=3D DMA_BIT_MASK(zone_dma_bits);
-> > +	if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp & GFP_DMA32))
-> > +		return end <=3D DMA_BIT_MASK(32);
-> > +	if (gfp & GFP_KERNEL)
-> > +		return end > DMA_BIT_MASK(32);
->=20
-> So the GFP_KERNEL one here looks weird.  For one I don't think the if
-> line is needed at all, and it just confuses things.
+I walked into the same hole for the AER case.  
+port_type is effectively an enum so there is no way of specifying several
+types unless you want to register different instances of pcie_port_service_driver
+and that isn't currently possible.
 
-Yes, sorry, shoud've seen that.
+The PCIE_ANY_PORT is a special case value.
 
-> Second I don't see the need (and actually some harm) in preventing GFP_KE=
-RNEL
-> allocations from dipping into lower CMA areas - something that we did sup=
-port
-> before 5.8 with the single pool.
+https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/pci_regs.h#L477
+https://elixir.bootlin.com/linux/latest/source/drivers/pci/pci-driver.c#L1651
 
-My thinking is the least we pressure CMA the better, it's generally scarse,=
- and
-it'll not grow as the atomic pools grow. As far as harm is concerned, we no=
-w
-check addresses for correctness, so we shouldn't run into problems.
+So odd corner case, but I think this is the right solution. Anything better
+would require a lot more code to change.
 
-There is a potential case for architectures defining a default CMA but not
-defining DMA zones where this could be problematic. But isn't that just pla=
-in
-abusing CMA? If you need low memory allocations, you should be defining DMA
-zones.
-
-Regards,
-Nicolas
+Jonathan
 
 
---=-37n9dG1PtRrqctFyLGEb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl8pLbMACgkQlfZmHno8
-x/6CFQgAroY7OAksNUQQ1MqKTFjhXVRYkfoAZYNmH6unfh6DBZ8bbSiIy9zgoaP8
-W4Ve63kWqEzS9f64iOzDugZuZA5Cxs8w7ELVhNtfxN/qdLNHYOA3BkDsvDy+fHcD
-Q5ITY/XPPFvGoLsI8N4z1DT4GAnS3iRZhl9LzslqGoOyQPcl9iLgVrxCOWDNhAek
-7HGtXe+7mTFogwtf6r03ywUQCpBs56ZFXAbzKfeyhMSUHNjz4rPlfruOW8GpyMvA
-JZeK2B6Pk4QSads310PrY4ZRkLYO2vmrYlFXSOosFv7oF6wwd7wnYMVI05JuQ7Yo
-55KdR6h6r+HQ7BslvbaH8GDPGMiYhA==
-=Ah73
------END PGP SIGNATURE-----
 
---=-37n9dG1PtRrqctFyLGEb--
+> 
+> Jay
+> 
+> >  	.service	= PCIE_PORT_SERVICE_PME,
+> >  
+> >  	.probe		= pcie_pme_probe,
+> >   
+
 
