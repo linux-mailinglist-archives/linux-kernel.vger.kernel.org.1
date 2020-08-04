@@ -2,74 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5807A23BBC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3B723BBD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgHDOIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:08:42 -0400
-Received: from mga05.intel.com ([192.55.52.43]:53396 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728295AbgHDOIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:08:41 -0400
-IronPort-SDR: XS8qljxKVgjYQavCgI8MnETloa6u60JwZmBS6EoSpsreRNU+86kX8Z1VldaZgKDoVgpURhVuek
- vDNhf6Jhp/qw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="237173706"
-X-IronPort-AV: E=Sophos;i="5.75,434,1589266800"; 
-   d="scan'208";a="237173706"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 07:08:41 -0700
-IronPort-SDR: jpVdsLPzPtpjw2/cTI6dzHctykOsudeBCyXp9XKBMoS4rFelUd68/jIuqJ52axOOw5S+7ClqQx
- Cmd23apcxHOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,434,1589266800"; 
-   d="scan'208";a="396582659"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga001.fm.intel.com with SMTP; 04 Aug 2020 07:08:35 -0700
-Received: by lahna (sSMTP sendmail emulation); Tue, 04 Aug 2020 17:08:34 +0300
-Date:   Tue, 4 Aug 2020 17:08:34 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Daniel Gutson <daniel.gutson@eclypsium.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Bazhaniuk <alex@eclypsium.com>,
-        Richard Hughes <hughsient@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI
- flash chip writable
-Message-ID: <20200804140834.GR1375436@lahna.fi.intel.com>
-References: <20200804135817.5495-1-daniel.gutson@eclypsium.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804135817.5495-1-daniel.gutson@eclypsium.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1728753AbgHDOPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:15:12 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:9833 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728595AbgHDOPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 10:15:05 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 04 Aug 2020 07:15:05 -0700
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Aug 2020 07:15:04 -0700
+Received: from gkohli-linux.qualcomm.com ([10.204.78.26])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 04 Aug 2020 19:44:50 +0530
+Received: by gkohli-linux.qualcomm.com (Postfix, from userid 427023)
+        id 5DC1C486A; Tue,  4 Aug 2020 19:44:47 +0530 (IST)
+From:   Gaurav Kohli <gkohli@codeaurora.org>
+To:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        neeraju@codeaurora.org, Gaurav Kohli <gkohli@codeaurora.org>
+Subject: [PATCH] arm64: Skip apply SSBS call for non SSBS system
+Date:   Tue,  4 Aug 2020 19:44:42 +0530
+Message-Id: <1596550484-11029-1-git-send-email-gkohli@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 10:58:17AM -0300, Daniel Gutson wrote:
-> Currently, the intel-spi-pci driver tries to unconditionally set
-> the SPI chip writeable. After discussing in the LKML, the original
-> author decided that it was better  to remove the attempt.
-> 
-> Context, the intel-spi has a module argument that controls
-> whether the driver attempts to turn the SPI flash chip writeable.
-> The default value is FALSE (don't try to make it writeable).
-> However, this flag applies only for a number of devices, coming from the
-> platform driver, whereas the devices detected through the PCI driver
-> (intel-spi-pci) are not subject to this check since the configuration
-> takes place in intel-spi-pci which doesn't have an argument.
-> 
-> This patch removes the code that attempts to turn the SPI chip writeable.
-> 
-> Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
+In a system where no cpu's implement SSBS, for
+them no need to set pstate. This might help to save
+few cpu cycles during context switch.
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
+
+diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+index 6089638..79f80f1 100644
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@ -477,6 +477,13 @@ static void ssbs_thread_switch(struct task_struct *next)
+ 	struct pt_regs *regs = task_pt_regs(next);
+ 
+ 	/*
++	 * For Targets which don't have SSBS support, they
++	 * can return from here.
++	 */
++	if (!IS_ENABLED(CONFIG_ARM64_SSBD))
++		return;
++
++	/*
+ 	 * Nothing to do for kernel threads, but 'regs' may be junk
+ 	 * (e.g. idle task) so check the flags and bail early.
+ 	 */
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
+Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+
