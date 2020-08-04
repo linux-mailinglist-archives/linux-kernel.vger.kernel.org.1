@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9240B23BC43
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A119C23BC44
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgHDOfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726233AbgHDOeg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:34:36 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6922EC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 07:34:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rT1zFsCcNBoed+cS0r1O3dipNS0y2QkGY3nkVRu0WAs=; b=OAw9HpV59MhEsoHgDkBvOcukmI
-        NDt0vxY+zFXXjizuSMkBlgRFrZbzdx6DNiYZlUwURrgSCkbqtR/xcwVWoGwVlICuNtGbqVvRzatuS
-        mAtRO2kzcqS9TjEGnY7A7rHX34GbkzrCcFhPxo5+xZeqELZi39jrIIXJwF6EzvY55i34nK2StIx5F
-        bv5TKmWmC8WAmcHMuJOlKmwRUFJ3r9lFnVCW21VZ66NDJOCEBhC48LmbXb7ilPKhdqvzNDvy4CWL+
-        sPpSfn5uPYa0owzt9ukedFbCrxOlGp8F+/wYwhG8xEU7CSnWo5K76TpdSwfA9KNoP6U8Puw9iJMgE
-        Y8qfvHdg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k2y1F-0006yi-UK; Tue, 04 Aug 2020 14:34:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4ADA5301E02;
-        Tue,  4 Aug 2020 16:34:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 369FB2B7C12A4; Tue,  4 Aug 2020 16:34:19 +0200 (CEST)
-Date:   Tue, 4 Aug 2020 16:34:19 +0200
-From:   peterz@infradead.org
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>, linux-mm@kvack.org
-Subject: Re: [RFC PATCH 1/2] sched: Fix exit_mm vs membarrier
-Message-ID: <20200804143419.GL2657@hirez.programming.kicks-ass.net>
-References: <20200728160010.3314-1-mathieu.desnoyers@efficios.com>
+        id S1728808AbgHDOfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:35:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53746 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726058AbgHDOeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 10:34:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 34DD0B71B;
+        Tue,  4 Aug 2020 14:34:46 +0000 (UTC)
+Subject: Re: [PATCH] block: tolerate 0 byte discard_granularity in
+ __blkdev_issue_discard()
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+Cc:     "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Hannes Reinecke <hare@suse.com>, Xiao Ni <xni@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Enzo Matsumiya <ematsumiya@suse.com>,
+        Jens Axboe <axboe@kernel.dk>, Evan Green <evgreen@chromium.org>
+References: <20200804142332.29961-1-colyli@suse.de>
+ <SN4PR0401MB3598033FF16A5AE1D375EDD69B4A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   Coly Li <colyli@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ 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
+Message-ID: <b469f0ec-0185-c624-b967-5080d805040c@suse.de>
+Date:   Tue, 4 Aug 2020 22:34:25 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728160010.3314-1-mathieu.desnoyers@efficios.com>
+In-Reply-To: <SN4PR0401MB3598033FF16A5AE1D375EDD69B4A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 12:00:09PM -0400, Mathieu Desnoyers wrote:
-> exit_mm should issue memory barriers after user-space memory accesses,
-> before clearing current->mm, to order user-space memory accesses
-> performed prior to exit_mm before clearing tsk->mm, which has the
-> effect of skipping the membarrier private expedited IPIs.
+On 2020/8/4 22:31, Johannes Thumshirn wrote:
+> On 04/08/2020 16:23, Coly Li wrote:
+>> This is the procedure to reproduce the panic,
+>>   # modprobe scsi_debug delay=0 dev_size_mb=2048 max_queue=1
+>>   # losetup -f /dev/nvme0n1 --direct-io=on
+>>   # blkdiscard /dev/loop0 -o 0 -l 0x200
 > 
-> The membarrier system call can be issued concurrently with do_exit
-> if we have thread groups created with CLONE_VM but not CLONE_THREAD.
+> losetup -f /dev/sdX isn't it?
+> 
 
-I'm still wonder what the exact failure case is though; exit_mm() is on
-the exit path (as the name very much implies) and the thread is about to
-die. The context switch that follows guarantees a full barrier before we
-run anything else again.
+In my case, I use a NVMe SSD as the backing device of the loop device.
+Because I don't have a scsi lun.
 
-> The following comment in exit_mm() seems rather puzzling though:
-> 
->         /* more a memory barrier than a real lock */
->         task_lock(current);
-> 
-> So considering that spinlocks are not full memory barriers nowadays,
-> some digging into the origins of this comment led me to 2002, at the
-> earliest commit tracked by Thomas Gleixner's bitkeeper era's history
-> at https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/
-> 
-> At that point, this comment was followed by:
-> 
-> +               /* more a memory barrier than a real lock */
-> +               task_lock(tsk);
-> +               tsk->mm = NULL;
-> +               task_unlock(tsk);
-> 
-> Which seems to indicate that grabbing the lock is really about acting as
-> a memory barrier, but I wonder if it is meant to be a full barrier or
-> just an acquire.
-> 
-> If a full memory barrier happens to be needed even without membarrier,
-> perhaps this fix also corrects other issues ? It unclear from the
-> comment what this memory barrier orders though. Is it the chain
-> exit -> waitpid, or is it related to entering lazy TLB ?
+And loading scsi_debug module seems necessary, otherwise the discard
+process just hang and I cannot see the kernel panic (I don't know why yet).
 
-I'm as puzzled by that comment as are you.
-
-It does seem to be required for glorious stuff like get_task_mm()
-though.
-
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Andy Lutomirski <luto@amacapital.net>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Alan Stern <stern@rowland.harvard.edu>
-> Cc: linux-mm@kvack.org
-> ---
->  kernel/exit.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index 727150f28103..ce272ec55cdc 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -474,6 +474,14 @@ static void exit_mm(void)
->  	BUG_ON(mm != current->active_mm);
->  	/* more a memory barrier than a real lock */
->  	task_lock(current);
-> +	/*
-> +	 * When a thread stops operating on an address space, the loop
-> +	 * in membarrier_{private,global}_expedited() may not observe
-> +	 * that tsk->mm, and not issue an IPI. Membarrier requires a
-> +	 * memory barrier after accessing user-space memory, before
-> +	 * clearing tsk->mm.
-> +	 */
-> +	smp_mb();
-
-So like stated above, I'm not sure how missing that IPI is going to be a
-problem, we're dying...
-
->  	current->mm = NULL;
->  	mmap_read_unlock(mm);
->  	enter_lazy_tlb(mm, current);
-> -- 
-> 2.11.0
-> 
+Coly Li
