@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E1023B781
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E9E23B774
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgHDJSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 05:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgHDJSR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 05:18:17 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39BCC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 02:18:17 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1k2t5I-0001VS-UG; Tue, 04 Aug 2020 11:18:12 +0200
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1k2t5I-00036w-67; Tue, 04 Aug 2020 11:18:12 +0200
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Thorsten Scherer <t.scherer@eckelmann.de>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] gpio: siox: indicate exclusive support of threaded IRQs
-Date:   Tue,  4 Aug 2020 11:16:03 +0200
-Message-Id: <20200804091603.541-1-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S1729841AbgHDJRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 05:17:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39872 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726201AbgHDJRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 05:17:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C90EEAD25;
+        Tue,  4 Aug 2020 09:17:21 +0000 (UTC)
+Message-ID: <1596532623.19923.5.camel@suse.com>
+Subject: Re: [PATCH] cdc-acm: rework notification_buffer resizing
+From:   Oliver Neukum <oneukum@suse.com>
+To:     trix@redhat.com, gregkh@linuxfoundation.org, t-herzog@gmx.de
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 04 Aug 2020 11:17:03 +0200
+In-Reply-To: <20200801152154.20683-1-trix@redhat.com>
+References: <20200801152154.20683-1-trix@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generic GPIO consumers like gpio-keys use request_any_context_irq()
-to request a threaded handler if irq_settings_is_nested_thread() ==
-true or a hardirq handler otherwise.
-
-Drivers using handle_nested_irq() must be sure that the nested
-IRQs were requested with threaded handlers, because the IRQ
-is handled by calling action->thread_fn().
-
-The gpio-siox driver dispatches IRQs via handle_nested_irq,
-but has irq_settings_is_nested_thread() == false.
-
-Set gpio_irq_chip::threaded to remedy this.
-
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
-I am writing a driver similar to gpio-siox and I ran into a null pointer
-dereference, because ->threaded wasn't set. I didn't test this on actual
-SIOX hardware.
-
-This patch doesn't fix the case were are driver explicitly calls
-request_irq and is combined with a driver that does handle_nested_irq.
-
-Is there a flag, such drivers should additionally set or should we
-check action->thread_fn before calling it inside handle_nested_irq?
----
- drivers/gpio/gpio-siox.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpio/gpio-siox.c b/drivers/gpio/gpio-siox.c
-index 26e1fe092304..f8c5e9fc4bac 100644
---- a/drivers/gpio/gpio-siox.c
-+++ b/drivers/gpio/gpio-siox.c
-@@ -245,6 +245,7 @@ static int gpio_siox_probe(struct siox_device *sdevice)
- 	girq->chip = &ddata->ichip;
- 	girq->default_type = IRQ_TYPE_NONE;
- 	girq->handler = handle_level_irq;
-+	girq->threaded = true;
- 
- 	ret = devm_gpiochip_add_data(dev, &ddata->gchip, NULL);
- 	if (ret)
--- 
-2.28.0
+Am Samstag, den 01.08.2020, 08:21 -0700 schrieb trix@redhat.com:
+> From: Tom Rix <trix@redhat.com>
+> 
+> Clang static analysis reports this error
+> 
+> cdc-acm.c:409:3: warning: Use of memory after it is freed
+>         acm_process_notification(acm, (unsigned char *)dr);
+> 
+> There are three problems, the first one is that dr is not reset
+> 
+> The variable dr is set with
+> 
+> if (acm->nb_index)
+> 	dr = (struct usb_cdc_notification *)acm->notification_buffer;
+> 
+> But if the notification_buffer is too small it is resized with
+> 
+> 		if (acm->nb_size) {
+> 			kfree(acm->notification_buffer);
+> 			acm->nb_size = 0;
+> 		}
+> 		alloc_size = roundup_pow_of_two(expected_size);
+> 		/*
+> 		 * kmalloc ensures a valid notification_buffer after a
+> 		 * use of kfree in case the previous allocation was too
+> 		 * small. Final freeing is done on disconnect.
+> 		 */
+> 		acm->notification_buffer =
+> 			kmalloc(alloc_size, GFP_ATOMIC);
+> 
+> dr should point to the new acm->notification_buffer.
+> 
+> The second problem is any data in the notification_buffer is lost
+> when the pointer is freed.  In the normal case, the current data
+> is accumulated in the notification_buffer here.
+> 
+> 	memcpy(&acm->notification_buffer[acm->nb_index],
+> 	       urb->transfer_buffer, copy_size);
+> 
+> When a resize happens, anything before
+> notification_buffer[acm->nb_index] is garbage.
+> 
+> The third problem is the acm->nb_index is not reset on a
+> resizing buffer error.
+> 
+> So switch resizing to using krealloc and reassign dr and
+> reset nb_index.
+> 
+> Fixes: ea2583529cd1 ("cdc-acm: reassemble fragmented notifications")
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+Acked-by: Oliver Neukum <oneukum@suse.com>
 
