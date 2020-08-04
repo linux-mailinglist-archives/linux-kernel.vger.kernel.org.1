@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1844023BA8F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A83123BA95
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728019AbgHDMmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 08:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
+        id S1728223AbgHDMmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 08:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727022AbgHDMlj (ORCPT
+        with ESMTP id S1727044AbgHDMlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 08:41:39 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E654AC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 05:41:38 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id r12so4402579qvx.20
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 05:41:38 -0700 (PDT)
+        Tue, 4 Aug 2020 08:41:45 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63253C06179F
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 05:41:42 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id k11so12080248wrv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 05:41:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=MkWKUi7xJlcxy+e8OWBoJNl1OXW3h1d9K35k1It603c=;
-        b=El9eCMgZto7hrv7PDOK8sz2wSLBcDVP89TfYWUHfgVCBju0bnGiOsMLl6XBn8jPSjh
-         qrgdXGRXN4HlmL1fOGf8voLbPZt1X18PEjYdDjjXTh3PKpwhCwvxfdH77PmSuIH6bHjH
-         IzHWS/61LABdVG/cl9nv7tSaT02sva1I2t9kU4CCxKn2Fuq5zAhsavQCtRi26JwEs+Dl
-         9fQdx9ceg+7jPTrfJr2H/RPbendmsnMPAjmTuZXHQ5z0+weqjI1akX4ATVsuIjOK4K4K
-         9i8R5X/OYsJ9UZwUQgh+6iCBRktsvnPbggGzIRvclgIctl5ElMdM+aNZB9sDbsroXJJs
-         M9ug==
+        bh=KTaExCeIbMBtrg6f3KaFtKJ9kXln1IxZOo4x1K8ywoo=;
+        b=epaWaJlt64ntx42FNABLMyLva14SlmdYcoGzzYGyrXWUnAJnxMu5GEZgilr7YOjQyg
+         rwN+m322Ym4K72DntPYQLTQpUlUsvtp9hOED35dktAjWzCeoMAdqgWFu+8q67qvVGdd0
+         ASSvypkGepo2fVM74GawP/zGW8ARgykh7GWGHusAgWS8l/UBxb0pdkO0TYQ7EmgRfqVS
+         +AhohRsPKYfLCyuszVYf5jaiW3P7HKDO0xMW0AxuHSElSjjWJ6UveE2t2MgCnIL+ItDv
+         /1ed6bLGDRty9mFhZhCq6dEUtquKavGW9+Vz9/sId52Rf88V2RXw/k9gqiVHbxbaBWtN
+         +9hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=MkWKUi7xJlcxy+e8OWBoJNl1OXW3h1d9K35k1It603c=;
-        b=R8ejtpRmwRcusdbAA4WsosOsje2x+Yt1M3ivlIyNfXyygRbWJBihnstj1dSfZZPJ/4
-         FRKSu/2dYPSOCiaUSDyW+a8l9k/3Y9WmpgqtJVzwjdDSPiewfx9BBcDGsdlQNuBFDLjY
-         pdnngqcs5T1eTatP3SGuqWOiBjdyfHiVN2rGH0hPuAYpRF9UJWqc68zJnv0sa1r3WzO8
-         t2v0oO2wESDc+dpPWpmrlps0gfw8JebHXy2ew/eo7x+0s/+W5oFrip77U8JZsWbHeguU
-         r3rvLLCYnlHWW5Lq2C0e8kP9qQAgmqaldZDKW3Kd3MyKXWdE0FX8y+W04jcYMr9YZ+yx
-         iP6Q==
-X-Gm-Message-State: AOAM532zcJE4cvfVaMm/YZjQbvn23tkXO2clMhiK0l80312Pl4ibO3cB
-        JvW6pQK0ZD8w8Ir37WsnYmxeB8oEu86MVR63
-X-Google-Smtp-Source: ABdhPJwC+zlXBovbZ5yMemFd6n1F3dx7E2v/1/0xLypGVzYOL4r1AHzTFwqN6hvHO5BmR1xUzcpuB+Tj4Xl/elq0
-X-Received: by 2002:ad4:4152:: with SMTP id z18mr22181844qvp.42.1596544898043;
- Tue, 04 Aug 2020 05:41:38 -0700 (PDT)
-Date:   Tue,  4 Aug 2020 14:41:25 +0200
+        bh=KTaExCeIbMBtrg6f3KaFtKJ9kXln1IxZOo4x1K8ywoo=;
+        b=Et0MFlCrNyqVfqSAqsKDl3D5xY5dCjpw7s7dySK6JgByaNIo2j0xY9FhrokZC3MYtY
+         8n6UnHsADO/TPCBeUpUSzPnvFW9p9FrWDgDukHBSLQLKIXjzJMtVXcxWHLDGjdONWt7Z
+         Yck6tW+bYq89trFYOG5phGU0IdPuPilYOCTbD3yCWQNgkUzYPL69eJgOsTXB1psJ1u12
+         dYcJ+UxdGHz9B8vTJqpdZvRRFk8Gu4uRDCL2Cw1QCoH896mcrF89ZFs8Qtz+52Mf+qxr
+         Q/8jH6cHglVC6dZYRbREh4ujco/OHhht+Uq/2ck/TITGo0TAqk23V9GbjqE+TnY9HTMw
+         Pmwg==
+X-Gm-Message-State: AOAM533lIoGglukMFmx9KeaJMN7OuFEv7iTzYU45chfHWf1TieelmpSm
+        yGuQKfiojRlIOFfs3ZSk6nW4U32vXSr4uXZs
+X-Google-Smtp-Source: ABdhPJwWjosW9Y2ZD4qtR2i07CuuW2KOWsc+Y1P+/2KrTNBkB6pCcdGVRsu0tHMa3wVdBR/M1mpyQCpyke7nl0k9
+X-Received: by 2002:a7b:cd93:: with SMTP id y19mr492659wmj.0.1596544900281;
+ Tue, 04 Aug 2020 05:41:40 -0700 (PDT)
+Date:   Tue,  4 Aug 2020 14:41:26 +0200
 In-Reply-To: <cover.1596544734.git.andreyknvl@google.com>
-Message-Id: <6514652d3a32d3ed33d6eb5c91d0af63bf0d1a0c.1596544734.git.andreyknvl@google.com>
+Message-Id: <26fb6165a17abcf61222eda5184c030fb6b133d1.1596544734.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1596544734.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH v2 2/5] efi: provide empty efi_enter_virtual_mode implementation
+Subject: [PATCH v2 3/5] kasan, arm64: don't instrument functions that enable kasan
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
@@ -65,41 +65,59 @@ Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Elena Petrova <lenaptr@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kernel test robot <lkp@intel.com>
+        Andrey Konovalov <andreyknvl@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_EFI is not enabled, we might get an undefined reference
-to efi_enter_virtual_mode() error, if this efi_enabled() call isn't
-inlined into start_kernel(). This happens in particular, if start_kernel()
-is annodated with __no_sanitize_address.
+This patch prepares Software Tag-Based KASAN for stack tagging support.
 
-Reported-by: kernel test robot <lkp@intel.com>
+With stack tagging enabled, KASAN tags stack variable in each function
+in its prologue. In start_kernel() stack variables get tagged before KASAN
+is enabled via setup_arch()->kasan_init(). As the result the tags for
+start_kernel()'s stack variables end up in the temporary shadow memory.
+Later when KASAN gets enabled, switched to normal shadow, and starts
+checking tags, this leads to false-positive reports, as proper tags are
+missing in normal shadow.
+
+Disable KASAN instrumentation for start_kernel(). Also disable it for
+arm64's setup_arch() as a precaution (it doesn't have any stack variables
+right now).
+
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- include/linux/efi.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm64/kernel/setup.c | 2 +-
+ init/main.c               | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 05c47f857383..73db1ae04cef 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -606,7 +606,11 @@ extern void *efi_get_pal_addr (void);
- extern void efi_map_pal_code (void);
- extern void efi_memmap_walk (efi_freemem_callback_t callback, void *arg);
- extern void efi_gettimeofday (struct timespec64 *ts);
-+#ifdef CONFIG_EFI
- extern void efi_enter_virtual_mode (void);	/* switch EFI to virtual mode, if possible */
-+#else
-+static inline void efi_enter_virtual_mode (void) {}
-+#endif
- #ifdef CONFIG_X86
- extern efi_status_t efi_query_variable_store(u32 attributes,
- 					     unsigned long size,
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index 93b3844cf442..575da075a2b9 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -276,7 +276,7 @@ arch_initcall(reserve_memblock_reserved_regions);
+ 
+ u64 __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
+ 
+-void __init setup_arch(char **cmdline_p)
++void __init __no_sanitize_address setup_arch(char **cmdline_p)
+ {
+ 	init_mm.start_code = (unsigned long) _text;
+ 	init_mm.end_code   = (unsigned long) _etext;
+diff --git a/init/main.c b/init/main.c
+index 0ead83e86b5a..7e5e25d9fe42 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -827,7 +827,7 @@ void __init __weak arch_call_rest_init(void)
+ 	rest_init();
+ }
+ 
+-asmlinkage __visible void __init start_kernel(void)
++asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
+ {
+ 	char *command_line;
+ 	char *after_dashes;
 -- 
 2.28.0.163.g6104cc2f0b6-goog
 
