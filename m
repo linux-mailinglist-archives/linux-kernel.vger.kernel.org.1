@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCE423BEC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 19:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92F523BEC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 19:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730100AbgHDRTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 13:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729778AbgHDRTc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 13:19:32 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029B3C06174A;
-        Tue,  4 Aug 2020 10:19:32 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id bh1so10359264plb.12;
-        Tue, 04 Aug 2020 10:19:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4w/Ljx5lsCqOPOdBCcxxVX9P69TJXsiTDGuIgF1vcBw=;
-        b=NBHUSzIGKhb6NUmUeOIXUxLVmH9RkXdBf4yyBesE29jjXSZC4EoHgbkSfudGxL+wNI
-         MRZaF2kq8vT4L2Kmv55+ABK9N+mD2kVf2h/4FnxTwFdbgBkIZeVhmYxSnz5XiVeEoA7p
-         y91ohIP+q5denOE2vALGF5Jod/piN+3PbCz5GT9tl+DeoAOxvbTFClCuRXd6l+LQN+Hl
-         w7/enjTq4MSYjz4pzYl8tLn/MIcfeBNwt3JwdE8ByERQo6zqaVf0DiwA/UrCGJsTSSZA
-         bnqW1wHbTzTFYkZvP2dmA5wClDZObwFcrkOvquM4Sw8TgktR5+5g6WkwL29Xr9FxHMGc
-         O4Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4w/Ljx5lsCqOPOdBCcxxVX9P69TJXsiTDGuIgF1vcBw=;
-        b=DeJViLRQC29+kUQldFbuDj6z4rh5oYjKIf+vtIgadFV70eFStYXZMACbIPJGaAquC7
-         UedojPoHGEVHMC6SZ5an+aAJsayfKFfWAuA0aj6QhErRJQkupYtx+WF/f7YdJ9T5YLPZ
-         EP/PoKK8+s4qOpul47YAwsKDo2mG4hKE+i90HUS2wGBQw/VXSQ1AXSK8IUQxndqm7bJv
-         fUZoyFQONNHZd98jJlsEl9aVW0vcl6YSbUHuEnGhlRgaKGD4otjv1lmxAcUQ756xVO9D
-         5NzFRgsu/OW7ANd4aEsjQsOnPtv1zq+vWOnyLv+m89fqwmshAY+PjofDpEAXlmkuSxet
-         2SyQ==
-X-Gm-Message-State: AOAM5307WN0WPnk58suG6owZd89/IZAh+2VIavviUqNag69NFZ7UA1s8
-        dh2SmayINJqBmvcrr8NP8/8LyIdy
-X-Google-Smtp-Source: ABdhPJxsvhyOma8LtgCrM0D2bxYl6kyeZUCw326WO0i/Vc+Ad8kORjOw/NSgm/IxSsxY/xCZ221Dyg==
-X-Received: by 2002:a17:902:b58f:: with SMTP id a15mr20346433pls.87.1596561571391;
-        Tue, 04 Aug 2020 10:19:31 -0700 (PDT)
-Received: from [10.230.30.107] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id na14sm2843191pjb.6.2020.08.04.10.19.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Aug 2020 10:19:30 -0700 (PDT)
-Subject: Re: [PATCH 0/4] CPUFreq statistics retrieved by drivers
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, cristian.marussi@arm.com,
-        rjw@rjwysocki.net
-References: <20200729151208.27737-1-lukasz.luba@arm.com>
- <20200730085333.qubrsv7ufqninihd@vireshk-mac-ubuntu>
- <20200730091014.GA13158@bogus> <3b3a56e9-29ec-958f-fb3b-c689a9389d2f@arm.com>
- <20200731155650.GC14529@bogus>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <ae352c39-f7c4-c69e-0113-7c810c130ee0@gmail.com>
-Date:   Tue, 4 Aug 2020 10:19:23 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.10.0
+        id S1730112AbgHDRVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 13:21:02 -0400
+Received: from mout.gmx.net ([212.227.17.22]:33269 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729391AbgHDRVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 13:21:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1596561629;
+        bh=Xm96KhWFipnp8fHSl6yjWFA/cv3nb5aR+D9sTB7Q9DQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=XMFNeBE/s6ISNUdNbeuMDY9W86xY0QoxQ/+90CVOHJSbw2GwzY7Lb8bKhHtLy+vkk
+         Il3LgUtHUPLuOZ6J2PW/Z3GLN4OBms/YUrzYuLn75Vn/Tw5D4DjLj+HopIFt8/9zv/
+         zfocukZeUcSPLMQiBXmf0ed+5xmE+bp28Ey+HVKU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.144.119] ([217.61.144.119]) by web-mail.gmx.net
+ (3c-app-gmx-bap28.server.lan [172.19.172.98]) (via HTTP); Tue, 4 Aug 2020
+ 19:20:29 +0200
 MIME-Version: 1.0
-In-Reply-To: <20200731155650.GC14529@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-ID: <trinity-c649c75e-dd0a-4a92-9e88-e8668da0218c-1596561629490@3c-app-gmx-bap28>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     linux-mediatek@lists.infradead.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Landen Chao <landen.chao@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>
+Subject: Aw: [PATCH v4] net: ethernet: mtk_eth_soc: fix MTU warnings
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 4 Aug 2020 19:20:29 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20200804165555.75159-3-linux@fw-web.de>
+References: <20200804165555.75159-1-linux@fw-web.de>
+ <20200804165555.75159-3-linux@fw-web.de>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:e5KOynI+/rmWbuU9ZXSdr2OtpLUfZJDwrtcFmCyHYcfQVIktZj8UP54lT6kmijAyztwFJ
+ yl/DkXGXQ9Km7aZjja8OXleAwTwC6f5x+7GrVb8EA4paejLAXDLRv8/fYbZ68ydyCLdtMM3yBdjH
+ /q8jD73GgUR48Illv+r2TScJj6C3PviJBHLRqjUg33gd8KhkYp/xVBSvLtdpdbMx44jxft6Hpf85
+ HF/O01uWs6rqiEp/w8+rwXYUEwoQOPVwPC426wQnR5ol7MjBq1vZJYL+5VCQiaajwa45QGffs1d+
+ VM=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fY8FUHPb9Ek=:Ua9iZ3Yg4RDjnNGD/ZPz/O
+ hyYwHgepwofq66laYElGNV1ODrmQDlRHdDec0bu4wjLVSmg9x4bXgTU8kYNwAb3yL4YlcBG7q
+ Tf4NFSYvsuux9HJtwMcLQS0fSa5iC2V3lN6C7jexawqn6QJUacH+vXJc503dwVncIlh6TcmRe
+ 7Ea0Sdven4PLpsNH+cAAwM9N+FfqG0hagPXgYSB+0MIxvGGSNcKc8mXJEzhAUEHZRx7Dxwosa
+ M1YShXtqraCNNmNyeQoK17yiThA3lC/1HiGX31LCnSqr2er5/nOSqHplojHViohzu0gG4lWK2
+ J9AUbBQZxwApFMX5ZD1xWaUPiMIR/Bpz6sNu2BJJzsf/JmYsjTi/qz8LB/ytj0kSmPvPsxUzz
+ HZDQ8163owvPngnqgZvam6MmHCU+YPOlnQzYa5MNgsAQZXWFl/BO1IWCuXPHWPJk/cqPqva5A
+ nEttbHAyAUDmVpgAyznV2mz8noGFTZ+om2Vy4gsgCj9doKTVElFOD43X32sIBqlaFo0rcocZa
+ eAptwzH4b3tCmk8NX/qXJyjRGNAy9/z3FxhzQDXo3h5CaIuxvGIniDxFSou3xveZZfMo9e8po
+ LCN9RojlegcSK9tF0jnhmC56V57vnUXfBknp+S3klp0y+yPPqh/fyfDTK8CbLdPjDusRJhpVl
+ chOm+NtXkKLmTLE3TRRyC65EBNoTeOhGSduzTVxIGzFUTTs6ZOdDm3OSa/i6tF9TRgM8=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+sorry, send this accidentally while posting my hdmi series v4 (have not deleted patch-file)
+just ignore this...it's already merged
 
-
-On 7/31/2020 8:56 AM, Sudeep Holla wrote:
-> On Thu, Jul 30, 2020 at 10:36:51AM +0100, Lukasz Luba wrote:
->>
->> In this case I think we would have to create debugfs.
->> Sudeep do you think these debugfs should be exposed from the protocol
->> layer:
->> drivers/firmware/arm_scmi/perf.c
-> 
-> I prefer above over cpufreq as we can support for all the devices not
-> just cpus which avoids adding similar support elsewhere(mostly devfreq)
-> 
->> or maybe from the cpufreq scmi driver? I would probably be safer to have
->> it in the cpufreq driver because we have scmi_handle there.
->>
-> 
-> Cristian was thinking if we can consolidate all such debugfs under one
-> device may be and that should eliminate your handle restriction. I would
-> like to see how that works out in implementation but I don't have any 
-> better suggestion ATM.
-
-debugfs is not enabled in production kernels, and especially not with
-Android kernels, so sticking those in sysfs like the existing cpufreq
-subsystem statistics may be a better choice.
--- 
-Florian
+regards Frank
