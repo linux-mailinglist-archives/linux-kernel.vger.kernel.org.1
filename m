@@ -2,104 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D121523B40C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 06:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAFB23B41C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 06:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729246AbgHDE01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 00:26:27 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:33234 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726000AbgHDE00 (ORCPT
+        id S1729776AbgHDE3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 00:29:41 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4366 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729294AbgHDE3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 00:26:26 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596515186; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=DM0cwbE0E11xbWUTJtr8W3gA66HihacHsZV+CyhBE6I=;
- b=a2GKq2zJtsEhbWPrHSg0niC3ZsVcByVZ6Hvr2xn4Rki8v+pwl1b5V5RN7N4Jctt/GMtCtgSh
- VnBVrQds9J38+axXQNp8wI3/Rm2ixkcYgzzxVsUsKgFd5+6UtAn8c6t3+Yvgsk0l5K+O6Lsh
- IKhi5QfEKuVEd7EDa4q21gwfR3Y=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f28e35b798b102968606315 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 Aug 2020 04:26:03
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C0E08C433CA; Tue,  4 Aug 2020 04:26:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E84AAC433C9;
-        Tue,  4 Aug 2020 04:26:01 +0000 (UTC)
+        Tue, 4 Aug 2020 00:29:32 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f28e3fa0000>; Mon, 03 Aug 2020 21:28:42 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 03 Aug 2020 21:29:31 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 03 Aug 2020 21:29:31 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 4 Aug
+ 2020 04:29:26 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Tue, 4 Aug 2020 04:29:26 +0000
+Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.167.221]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f28e4260000>; Mon, 03 Aug 2020 21:29:26 -0700
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <robh+dt@kernel.org>
+CC:     <skomatineni@nvidia.com>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>
+Subject: [PATCH v2 0/6] Fix timeout clock used by hardware data timeout
+Date:   Mon, 3 Aug 2020 21:29:17 -0700
+Message-ID: <1596515363-27235-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 04 Aug 2020 09:56:01 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     gregkh@linuxfoundation.org, suzuki.poulose@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>
-Subject: Re: [PATCH] coresight: etm4x: Add Support for HiSilicon ETM device
-In-Reply-To: <1596461740-13527-1-git-send-email-liuqi115@huawei.com>
-References: <1596461740-13527-1-git-send-email-liuqi115@huawei.com>
-Message-ID: <8285c6a853e0ded975483e53750805dd@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1596515322; bh=REKrDQIX2fbhaB+vRDALQXRankEEOSbLXL0Gz0gOA8U=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=dlh20VQUOCM+d/QvzJO693PHzaoMM86UVDWX5zSdjE1eS5A3ZznXV0XEEHqqzSAxi
+         HIyqZ1HG9x66eGDYdtaLhySzepsXSjUgtsNy2gTcUPUhHqUPfrHi272NP/1VkgnwJX
+         1tW8q2UmLl9eS7EJKsCGTpQsdBsZ7zl77Rd1zkC88u3wTIU+bTC5xe9VAxkLbXXUb7
+         U6OpIN0xl7gVqN4dAQA0Tsin9IxUz7JeI/PoR6hlrLxkAfzcK2anMIEVA4jU6Pflym
+         xj1q+zGefKHDpefXxyuKbouTL9dfXrTOIhuwDo7M0dzqc3unGQeaQb/nPJ0ulHy9EF
+         I56iMqJsD0iPA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qi Liu,
+Tegra210/Tegra186/Tegra194 has incorrectly enabled
+SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK from the beginning of their support.
 
-On 2020-08-03 19:05, Qi Liu wrote:
-> Add ETMv4 periperhal ID for HiSilicon Hip08 and Hip09 platform. Hip08
-> contains ETMv4.2 device and Hip09 contains ETMv4.5 device.
-> 
-> Signed-off-by: Qi Liu <liuqi115@huawei.com>
-> ---
->  drivers/hwtracing/coresight/coresight-etm4x.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c
-> b/drivers/hwtracing/coresight/coresight-etm4x.c
-> index 0c35cd5e..4a4f0bd 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-> @@ -1561,6 +1561,8 @@ static struct amba_cs_uci_id uci_id_etm4[] = {
->  };
-> 
->  static const struct amba_id etm4_ids[] = {
-> +	CS_AMBA_ID(0x000b6d02),			/* HiSilicon-Hip09 */
-> +	CS_AMBA_ID(0x000b6d01),			/* HiSilicon-Hip08 */
->  	CS_AMBA_ID(0x000bb95d),			/* Cortex-A53 */
->  	CS_AMBA_ID(0x000bb95e),			/* Cortex-A57 */
->  	CS_AMBA_ID(0x000bb95a),			/* Cortex-A72 */
-> --
-> 2.8.1
+Tegra210 and later SDMMC hardware default uses sdmmc_legacy_tm (TMCLK)
+all the time for hardware data timeout instead of SDCLK and this TMCLK
+need to be kept enabled by Tegra sdmmc driver.
 
-You have missed adding the maintainers/reviewers of coresight(Mathieu 
-and Mike),
-you can use scripts/get_maintainer.pl on the drivers to get the 
-maintainers and
-reviewers for the corresponding drivers, same on other patch as well.
+This series includes patches to fix this for Tegra210/Tegra186/Tegra194.
 
-Thanks,
-Sai
+These patches need to be manually backported for 4.9, 4.14, 4.19, 5.4
+
+Will send patches to backport separately once these patches are ack'd.
+
+Delta between patch versions:
+[v2]:	Includes minor fix
+	- Patch-0006: parentheses around operand of '!'
+
+Sowjanya Komatineni (6):
+  sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra210
+  sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra186
+  arm64: tegra: Add missing timeout clock to Tegra210 SDMMC
+  arm64: tegra: Add missing timeout clock to Tegra186 SDMMC nodes
+  arm64: tegra: Add missing timeout clock to Tegra194 SDMMC nodes
+  sdhci: tegra: Add missing TMCLK for data timeout
+
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi | 20 +++++++++------
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi | 15 ++++++-----
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi | 20 +++++++++------
+ drivers/mmc/host/sdhci-tegra.c           | 43 ++++++++++++++++++++++++++++++--
+ 4 files changed, 74 insertions(+), 24 deletions(-)
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.7.4
+
