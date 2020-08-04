@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB01E23BF6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 20:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F2323BF67
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 20:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgHDSjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 14:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
+        id S1726766AbgHDSg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 14:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725826AbgHDSjm (ORCPT
+        with ESMTP id S1725826AbgHDSg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 14:39:42 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DF5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 11:39:42 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id bo3so20945322ejb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 11:39:42 -0700 (PDT)
+        Tue, 4 Aug 2020 14:36:57 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99B7C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 11:36:57 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id c16so23298280ils.8
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 11:36:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bkLmvclKDC4NH/baH9VK8NbQ5emijDFqRa7D8TVtths=;
-        b=MftHbpqnXQ5Cig7YZqaj4xNohz3zWOfxYlSXieSNZmEPpG+cmx/mU1jMBDg2t+t+WR
-         5wh31k/s1R9XNKJEwOcOA6jA/ffc7hdhg7ykGyZsa1eorJ6u99el2r1gDU+nW1mVMyBf
-         gYOEsqSC8pHznfc5XiFRm2tag3P79YiWqQEDM=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=NximXCR+X9ioznzMmPae/3L/NXwCllFU33x91drOXbw=;
+        b=Et0ffPIuGjJMb9ycXDU7UY4Tr2Kz4fe7myjbq1jxyFcY5nkzlWMKpW+4l7j+SBpEqJ
+         T1iKQrocmnYV6AZkyNLOV+nZXXkbxk/ykxj7/aOB4rq+XtbBID3YXLMKa/Buq9QvSIyf
+         6JOpaF7c34Qb4LYC0/JPv4CEmTzNxyca0ohWjm8M01AfNm15uP6gLUloUvzDavHRRC5x
+         7Dk6LbR5O4Hyu4PtBQyYsP4RtcM27GECiu5sVXFJiPfTLf8V36lAKj78hJ5vXLj8KKrV
+         DH1/EDRxw1nzeBdEm0pwfiqiE7/VQU4Eq18DCNzt84Me1SuaUPU67+XSbFaMa72XaHoZ
+         5sBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bkLmvclKDC4NH/baH9VK8NbQ5emijDFqRa7D8TVtths=;
-        b=UutvVVql3iN6Pv2SQhhcAGyFvg9NXCqNrJGHGfvLLxVeE3OzmqmkA7kRnIP2ZYe+5c
-         51jdmDn4nKnhHApDrQRUZ1SHzgLvGgkVCaqrWH1S0u0DsPk0iilKeyHEfWYp7rOKZVF0
-         xq2ng0BRIc4b4REejEiSETEVAW/nqJL0uPpxegriC5M/bn04SAqB7bl5SXuxappQkwSz
-         OMLhVGo82Of31AekI+Smv3Ah4lSCJOAKOYIjFuvDgH1b59tIjp31is2HlN8mgaJdPAj3
-         LNbY7olLCqfhWjxl2/dHoK6OKmroSVcT9WDwOKnxy+ixS4EBV601OfMl9rpoYIc7RaCK
-         lGSQ==
-X-Gm-Message-State: AOAM533B7y5FZPrJepIkvrY2AkW5p0kOuwQUpM5jXgfzVK20OwpnopaV
-        B5QpI6DyfWxTiFG8w1PGgNSvuEQZHz4=
-X-Google-Smtp-Source: ABdhPJw4+vZ/Fkz0HSoRFdrcAC5DDkf4cweiLLaVnbXOEZJOvsMH9989xgiTxXUQ2/3kS9c6S7Vw5A==
-X-Received: by 2002:a17:906:e251:: with SMTP id gq17mr22238272ejb.445.1596566380783;
-        Tue, 04 Aug 2020 11:39:40 -0700 (PDT)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
-        by smtp.gmail.com with ESMTPSA id qc23sm19030922ejb.97.2020.08.04.11.39.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Aug 2020 11:39:40 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id o18so43560527eje.7
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 11:39:40 -0700 (PDT)
-X-Received: by 2002:a2e:8008:: with SMTP id j8mr6989403ljg.312.1596566026687;
- Tue, 04 Aug 2020 11:33:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200804072435.385370289@linuxfoundation.org> <CA+G9fYs35Eiq1QFM0MOj6Y7gC=YKaiknCPgcJpJ5NMW4Y7qnYQ@mail.gmail.com>
- <20200804082130.GA1768075@kroah.com>
-In-Reply-To: <20200804082130.GA1768075@kroah.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 4 Aug 2020 11:33:30 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whJ=shbf-guMGZkGvxh9fVmbrvUuiWO48+PDFG7J9A9qw@mail.gmail.com>
-Message-ID: <CAHk-=whJ=shbf-guMGZkGvxh9fVmbrvUuiWO48+PDFG7J9A9qw@mail.gmail.com>
-Subject: Re: [PATCH 5.7 000/121] 5.7.13-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NximXCR+X9ioznzMmPae/3L/NXwCllFU33x91drOXbw=;
+        b=oUwcgO1FwKa4dwOJmI68CMnbdCUtD4mzSd8WnVZlf3jxKxjil0OLCmdlK2ULj07vp+
+         CDqXbZO43JqSw7MAEu72SWoz7UFipjmttY4wtZ8PdUli37ol0Wgane8X9PeT9z6+Hk1Z
+         Ord/d95mdhucGvMZsec2pB3tk8wtJkYB6aO5JVGD5lWnuNCPKB30D3K8Lhf0OICTluVZ
+         PESRutxdSQMFuw6Z4NpBwhf31r/ASRSMpjRc1AH/OiXQuOpU/UkL/aX5Lls8IHwpLpvm
+         LKC4RkcKpWSyCr+Bdu1xOakQ14iLD2vLgQA34Ee0HgadLOJ5pJhVsBar4tHQON1RKcm0
+         /hHQ==
+X-Gm-Message-State: AOAM532UDCOFuQmDN54s/7lhPZq8MA0kjQOdetGVVUuDysnsvY1RG2gQ
+        bSpzHOjfLIO+t7ms/mrir88=
+X-Google-Smtp-Source: ABdhPJzdbhSiu5ZeIf2UgfewtIQxiZCZD3i7G0Lsd/r/94iYLOoASlpHWCdroDravDL7F9WNrmgqQg==
+X-Received: by 2002:a92:6c0b:: with SMTP id h11mr6143276ilc.66.1596566217029;
+        Tue, 04 Aug 2020 11:36:57 -0700 (PDT)
+Received: from localhost.localdomain (x-128-101-215-112.reshalls.umn.edu. [128.101.215.112])
+        by smtp.gmail.com with ESMTPSA id o2sm13156346ili.83.2020.08.04.11.36.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Aug 2020 11:36:56 -0700 (PDT)
+From:   James Bond <jameslouisebond@gmail.com>
+To:     jameslouisebond@gmail.com
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Greg Kroah-Hartman <gregkh@suse.de>,
+        Mike Waychison <mikew@google.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] firmware: dmi-sysfs: Add clean-up operations to fix refcount leak
+Date:   Tue,  4 Aug 2020 13:36:49 -0500
+Message-Id: <20200804183650.4024-1-jameslouisebond@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 1:21 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> So Linus's tree is also broken here.
+According to the documentation of function kobject_init_and_add(),
+when this function returns an error, kobject_put() must be called
+to properly clean up the memory associated with the object.
 
-No, there's 835d1c3a9879 ("arm64: Drop unnecessary include from
-asm/smp.h") upstream.
+Fixes: 925a1da7477f ("firmware: Break out system_event_log in dmi-sysfs")
+Signed-off-by: James Bond <jameslouisebond@gmail.com>
+---
+ drivers/firmware/dmi-sysfs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-But as Guenther points out, I have a few other build errors, but they
-are (finally!) entirely unrelated.
+diff --git a/drivers/firmware/dmi-sysfs.c b/drivers/firmware/dmi-sysfs.c
+index 8b8127fa8955..848b6a0f94eb 100644
+--- a/drivers/firmware/dmi-sysfs.c
++++ b/drivers/firmware/dmi-sysfs.c
+@@ -457,8 +457,10 @@ static int dmi_system_event_log(struct dmi_sysfs_entry *entry)
+ 				   &dmi_system_event_log_ktype,
+ 				   &entry->kobj,
+ 				   "system_event_log");
+-	if (ret)
++	if (ret) {
++		kobject_put(entry->child);
+ 		goto out_free;
++	}
+ 
+ 	ret = sysfs_create_bin_file(entry->child, &dmi_sel_raw_attr);
+ 	if (ret)
+-- 
+2.17.1
 
-                Linus
