@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A367E23BE2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE9D23BE2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729819AbgHDQdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48194 "EHLO
+        id S1729913AbgHDQd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729761AbgHDQdK (ORCPT
+        with ESMTP id S1729761AbgHDQdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:33:10 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2D5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 09:33:10 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id h12so11178013pgf.7
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 09:33:10 -0700 (PDT)
+        Tue, 4 Aug 2020 12:33:18 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27699C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 09:33:13 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id x6so7363360pgx.12
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 09:33:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=HB1DkkB09qWrt8yrL+0cExf6RI1ifp17/l8uSNxk2h8=;
-        b=GfVX7JRFiyydVuUHwuRkSVoi9Dt0M5wctuGo85UGu0V2/Bj7Iw8ZwXXGeO4G4xDYUp
-         np+vuVGQa5uJtQ5C31c4dZJiLgWfpIur8koDCTklGFO8cTy0AblmPIrtFv+x6zbUWlOT
-         neQsgY/KR+u4llcwlXhihfz4YjLhQp/XBRiNHkyCviUJh4FS3bKQ85+LznC6fEfIuEQ/
-         52IL5umBBsFcVVp+irJlf3fP1BZ6XHeSONtKK0VkFxNYwYw7ZtTT1HgL6z3nGzejUQT0
-         unemmPAeku7yf65PcsNx6ewsfJ02kcUyFGBedcDqotM0QDLi8b2Zs/YUuV8LFCSLj/lj
-         sKVQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=wr09/zFN7INgSL/hkVohJfKLUB87eURQe5zN5T5ukzo=;
+        b=B0jJXT0jtUj2/zo9XBQUyG9Kdu2EmQSJbRxb7duGHAWijyWMOh65XKfOh49n6LjnfG
+         uAIZcH9qeltXn/9+qyDOPWmOIvH4Cz1eUrgsqvMvUDBepmPnNGkBUdX9MltM9v9bIOv3
+         QBYDTBcY57lOpqriYV8yen5STihrd506+zE8DglgJcu2eR6EijFFGprI99ckzm4Vk5A+
+         LLjjDPME987JPYAq1UwvNFA1To3AO5JRA7fSfUcTdsrHzR2KImeLIMYXMK2vrGQ2MJTD
+         z6iJKdR450NkyaPy3Aw5RsqP05P+HdtxGXSBe9Jg0CVpBoE0+dc/cw9aOMisknlvHORB
+         YTRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=HB1DkkB09qWrt8yrL+0cExf6RI1ifp17/l8uSNxk2h8=;
-        b=T8pbQR2kywCasNaUd9bu7vj+vbZPsxtqALavvxZESNF0/fZ6FMt/FuUpngqHu/XuqG
-         wP+98UsZXFdKRPfR5bjWDGTe315l/W56r2mXmU7a5XbSWR9ktnPBLKnwNkFDp7kn4FrW
-         VmIxtJC1SeqCMw3EVwtdYfoBph0Geka+1M5TsIE4wK7EexZCDtFbesyiLnsOjVmrUsjG
-         g3wEJZ6ugFqk1jXdAt3uaLYVQGOqJ8fH+7ICPA+Lkw/d7RsodKvyMqC4kt7LTZujsR1r
-         +7JFIq4Wg419hDmn/dt1J5KsJg0aCABa/hlf1M4peeRzmxZwRkqF8lgsAPtx7smqKer3
-         6H9g==
-X-Gm-Message-State: AOAM531+6JQg0UwlAJQtww4NkaoCsRtPk28QNf6ITuSxtv5B18MRjQSn
-        ZAnk4lTKg8clz/kuqTOqw+k=
-X-Google-Smtp-Source: ABdhPJyuQ7eqMONZEolc8ZLYWfB5jUxqOVUQhl5ZrHz4/DSZc3qM9xhnweID1yjp3OR1tkJPH+s7BQ==
-X-Received: by 2002:a62:7bc5:: with SMTP id w188mr12600475pfc.192.1596558790085;
-        Tue, 04 Aug 2020 09:33:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=wr09/zFN7INgSL/hkVohJfKLUB87eURQe5zN5T5ukzo=;
+        b=qDuvp13DZ9xwc5Pbu5e6CoZH3BqWydZdYFi9GuTOldVnOIOLQnck0yb+/orJi0GE8b
+         qOWaPDBXZAxfHClfKT2es2xT0T+zIpRVz4ZgJAOV08jkiQ1hFULPEXmhDT/IL/DshD6I
+         yeEka3T5UM/nL5e9zTBOPHPatTBbgPnvj0qSIUGvr9w9CgokrHEH7OHtK3Ab7tczz6KG
+         I/XXhl3vIUJN3fzkdluISl5y2UghQjjbaD98LdZ1WABwSv5DhICO2+3d4pLyRocfpxLT
+         D3g++DV3SdtzByXfGX2w0bgQShfjkN9MRwhhBMLwVqyyR6Pniv+LR8Q5gt3hPO/Wg2Jz
+         bv8A==
+X-Gm-Message-State: AOAM532fweJQkAsq47J3RDidKXt2PbRv/b9542yw2bXF8CcxsseZUdcy
+        ICX/1P4e3uhCvGVutkUlCng=
+X-Google-Smtp-Source: ABdhPJw1Pi3AXMVkSCaqPv5hExwHd2BxhzyFK6XiKYORGvLW802pSliKRXJSIuMPEv6iHBbTj1zYsg==
+X-Received: by 2002:aa7:8514:: with SMTP id v20mr21774599pfn.18.1596558792756;
+        Tue, 04 Aug 2020 09:33:12 -0700 (PDT)
 Received: from localhost.localdomain ([123.110.251.138])
-        by smtp.gmail.com with ESMTPSA id m16sm657253pjz.47.2020.08.04.09.33.07
+        by smtp.gmail.com with ESMTPSA id m16sm657253pjz.47.2020.08.04.09.33.10
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 04 Aug 2020 09:33:09 -0700 (PDT)
+        Tue, 04 Aug 2020 09:33:12 -0700 (PDT)
 From:   Gene Chen <gene.chen.richtek@gmail.com>
 To:     lee.jones@linaro.org, matthias.bgg@gmail.com, rafael@kernel.org
 Cc:     broonie@kernel.org, gregkh@linuxfoundation.org,
@@ -53,37 +54,49 @@ Cc:     broonie@kernel.org, gregkh@linuxfoundation.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         gene_chen@richtek.com, benjamin.chao@mediatek.com,
         shufan_lee@richtek.com, cy_huang@richtek.com
-Subject: [PATCH v3 0/9] mfd: mt6360: Merge different sub-devices I2C read/write
-Date:   Wed,  5 Aug 2020 00:32:52 +0800
-Message-Id: <1596558782-3415-1-git-send-email-gene.chen.richtek@gmail.com>
+Subject: [PATCH 1/9] mfd: mt6360: Rearrange include file
+Date:   Wed,  5 Aug 2020 00:32:53 +0800
+Message-Id: <1596558782-3415-2-git-send-email-gene.chen.richtek@gmail.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1596558782-3415-1-git-send-email-gene.chen.richtek@gmail.com>
+References: <1596558782-3415-1-git-send-email-gene.chen.richtek@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series merge different sub-device I2C read/write into one Regmap and
-fix coding style for well-organized.
+From: Gene Chen <gene_chen@richtek.com>
 
-Gene Chen (9)
-  mfd: mt6360: Rearrange include file
-  mfd: mt6360: Remove redundant brackets around raw numbers
-  mfd: mt6360: Indicate sub-dev compatible name by using
-  mfd: mt6360: Combine mt6360 pmic/ldo resources into mt6360
-  mfd: mt6360: Rename mt6360_pmu_data by mt6360_ddata
-  mfd: mt6360: Rename mt6360_pmu by mt6360
-  mfd: mt6360: Remove handle_post_irq callback function
-  mfd: mt6360: Fix flow which is used to check ic exist
-  mfd: mt6360: Merge different sub-devices I2C read/write
+Rearrange include file without sorting by alphabet.
 
- drivers/base/regmap/Kconfig         |    3 
- drivers/base/regmap/Makefile        |    1 
- drivers/base/regmap/regmap-mt6360.c |  163 ++++++++++++++
- drivers/mfd/Kconfig                 |    2 
- drivers/mfd/mt6360-core.c           |  394 +++++++++++++++++++-----------------
- include/linux/mfd/mt6360.h          |  225 --------------------
+Signed-off-by: Gene Chen <gene_chen@richtek.com>
+---
+ drivers/mfd/mt6360-core.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-changelogs between v2 & v3
-- Replace mt6360_data to mt6360_ddata
-- Split I2C read/write to regmap driver
+diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+index e9cacc2..c7a955f 100644
+--- a/drivers/mfd/mt6360-core.c
++++ b/drivers/mfd/mt6360-core.c
+@@ -5,15 +5,14 @@
+  * Author: Gene Chen <gene_chen@richtek.com>
+  */
+ 
++#include <linux/crc8.h>
+ #include <linux/i2c.h>
+-#include <linux/init.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+ #include <linux/mfd/core.h>
+ #include <linux/module.h>
+-#include <linux/of_irq.h>
+-#include <linux/of_platform.h>
+-#include <linux/version.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
+ 
+ #include <linux/mfd/mt6360.h>
+ 
+-- 
+2.7.4
 
