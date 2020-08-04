@@ -2,139 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C510F23B58F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DF823B597
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729837AbgHDHYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 03:24:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46654 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729814AbgHDHYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 03:24:35 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D42DA2076E;
-        Tue,  4 Aug 2020 07:24:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596525875;
-        bh=iB6R7IBok3ueDFendbTSpkFcS7RL5r4SRINNMe8NET8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nt2MYSAxOYaKrjb6IUSebHGHE5UOKgAiKRZZUnyceUl5BqR6gN6496ejFkZVMAPTS
-         y1Yv9JJ8Az5lfzXzgJ5LZTlAOA4CZsrMifcVK66TMM1l9OW+EoqfiJrUZz241eJVJe
-         wZ6i0kKGZmWS2mzxhQ7t2pqgozPyPAC8/YuV7xjY=
-Received: by pali.im (Postfix)
-        id 67FB57FD; Tue,  4 Aug 2020 09:24:32 +0200 (CEST)
-Date:   Tue, 4 Aug 2020 09:24:32 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        PCI <linux-pci@vger.kernel.org>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, Xogium <contact@xogium.me>
-Subject: Re: [PATCH 4/5] PCI: aardvark: Implement driver 'remove' function
- and allow to build it as module
-Message-ID: <20200804072432.c27dmwzjyelgd4h4@pali>
-References: <20200715142557.17115-1-marek.behun@nic.cz>
- <20200715142557.17115-5-marek.behun@nic.cz>
- <20200729184809.GA569408@bogus>
- <20200803144634.nr5cjddyvdnv3lxo@pali>
- <CAL_JsqLvqt9VneSm3Up9ib0AH7jWytA9fss_QMfJwd8xrVEp4A@mail.gmail.com>
+        id S1729891AbgHDHZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 03:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728654AbgHDHZf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 03:25:35 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B14C06174A;
+        Tue,  4 Aug 2020 00:25:35 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id z11so1020042oon.5;
+        Tue, 04 Aug 2020 00:25:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=3G6duaqKS+iqVSYEuxdfn+liPqqsSiNQMWQkrp/rtcA=;
+        b=P+oC1ONX4KhsZvaMwr9JFGsSROK1t2WF8nWhL5Hb8WlbFKQcfjnffuj5cHtyDXhTQe
+         RtZ2sbTg4+PrRlYLSiyDjOOOnYVQbPjoeqHiOnUxGAs/YqTy1MkqtHmAeXR537w3YEbf
+         BhQ+AeypP5X7Qz2CxJPJ/VX/W8AYeiTh6dyQTbQRnC6MgKKSPMS1yzts1edOkNPNcsls
+         BAeHs8BqCJsk0tMUbC525jtBsTJNnhrPSEfmKInyz42f2CGeNyYv/LoW9Df+k1R/3HEq
+         PWtqACBeJGC1XbRWBkibV9geaauVi1aWrie/ld1nlJa4l3F3rN+y3HuDVw93r7k6LUTs
+         j72Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=3G6duaqKS+iqVSYEuxdfn+liPqqsSiNQMWQkrp/rtcA=;
+        b=k4ge71sBwNIZk6XAj4E7AGQStzc7S6aPI7xWbc9Td52HnE0t74pRCksaOojj7ZI2wq
+         aqvpyuFXkmvtxiSHjp8vaLCY4FNhbp+7n4JLMiUxCIuv3RB+ea92R0FMMx9y8zRRkPpi
+         TtvM9QAG/7lg7cAhZTyYYZKpVsjHCaljc+E/PhM4Fhil5GWtU1lYcWbofZCoIiBKjlK6
+         eTDBJ8BgUTU2vS89IRbpos5FCtwC8rFR9H2SZ2pQ7vI7kzbDlFcem4csqrF5xuiJlGXR
+         mf9RUKJMB8GzfaqYC1rKGY8xgIweBmqqmA7HytiMRGV3HeBCiGTqWcuBub075UulDnrh
+         rpWg==
+X-Gm-Message-State: AOAM530+U24lF/1Um5XmkLSX9KdOGoqgvx3jfQy45k4sDMRro0Sul0CI
+        fXdZ2cGWp3suGgUWuHkcD6EqSlTgwfpu3iLFOkI=
+X-Google-Smtp-Source: ABdhPJxRuEKIkrFsD8hgOom6KFNXxJ1GrBXHYx0gjfD8gbX84cPUXN3kfUBPjtHwww2sbHWbMVw7OYS2H0mw+tE+r/w=
+X-Received: by 2002:a4a:dfd4:: with SMTP id p20mr7546616ood.86.1596525934626;
+ Tue, 04 Aug 2020 00:25:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqLvqt9VneSm3Up9ib0AH7jWytA9fss_QMfJwd8xrVEp4A@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+References: <20200730190841.2071656-1-nickrterrell@gmail.com>
+ <20200730190841.2071656-5-nickrterrell@gmail.com> <CAMuHMdUo5tfcEUaq4x_b9HJy25HXWmBZ3GPfqJy491zDsct5Rg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUo5tfcEUaq4x_b9HJy25HXWmBZ3GPfqJy491zDsct5Rg@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 4 Aug 2020 09:25:23 +0200
+Message-ID: <CA+icZUXGbV1x0YJn-0mLA2TtU2jWS6PO3bqdDrqJBMYOMS9Eog@mail.gmail.com>
+Subject: Re: [PATCH v10 4/8] usr: add support for zstd compressed initramfs
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Nick Terrell <nickrterrell@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chris Mason <clm@fb.com>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Petr Malat <oss@malat.biz>, Kees Cook <keescook@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
+        Ingo Molnar <mingo@kernel.org>,
+        Patrick Williams <patrick@stwcx.xyz>,
+        Norbert Lange <nolange79@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Xu <alex_y_xu@yahoo.ca>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Terrell <terrelln@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 03 August 2020 14:00:37 Rob Herring wrote:
-> On Mon, Aug 3, 2020 at 8:46 AM Pali Rohár <pali@kernel.org> wrote:
+On Tue, Aug 4, 2020 at 8:52 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Nick,
+>
+> On Thu, Jul 30, 2020 at 9:13 PM Nick Terrell <nickrterrell@gmail.com> wrote:
+> > From: Nick Terrell <terrelln@fb.com>
 > >
-> > On Wednesday 29 July 2020 12:48:09 Rob Herring wrote:
-> > > On Wed, Jul 15, 2020 at 04:25:56PM +0200, Marek Behún wrote:
-> > > > From: Pali Rohár <pali@kernel.org>
-> > > >
-> > > > Providing driver's 'remove' function allows kernel to bind and unbind devices
-> > > > from aardvark driver. It also allows to build aardvark driver as a module.
-> > > >
-> > > > Compiling aardvark as a module simplifies development and debugging of
-> > > > this driver as it can be reloaded at runtime without the need to reboot
-> > > > to new kernel.
-> > > >
-> > > > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > > > Reviewed-by: Marek Behún <marek.behun@nic.cz>
-> > > > ---
-> > > >  drivers/pci/controller/Kconfig        |  2 +-
-> > > >  drivers/pci/controller/pci-aardvark.c | 25 ++++++++++++++++++++++---
-> > > >  2 files changed, 23 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-> > > > index adddf21fa381..f9da5ff2c517 100644
-> > > > --- a/drivers/pci/controller/Kconfig
-> > > > +++ b/drivers/pci/controller/Kconfig
-> > > > @@ -12,7 +12,7 @@ config PCI_MVEBU
-> > > >     select PCI_BRIDGE_EMUL
-> > > >
-> > > >  config PCI_AARDVARK
-> > > > -   bool "Aardvark PCIe controller"
-> > > > +   tristate "Aardvark PCIe controller"
-> > > >     depends on (ARCH_MVEBU && ARM64) || COMPILE_TEST
-> > > >     depends on OF
-> > > >     depends on PCI_MSI_IRQ_DOMAIN
-> > > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> > > > index d5f58684d962..0a5aa6d77f5d 100644
-> > > > --- a/drivers/pci/controller/pci-aardvark.c
-> > > > +++ b/drivers/pci/controller/pci-aardvark.c
-> > > > @@ -14,6 +14,7 @@
-> > > >  #include <linux/irq.h>
-> > > >  #include <linux/irqdomain.h>
-> > > >  #include <linux/kernel.h>
-> > > > +#include <linux/module.h>
-> > > >  #include <linux/pci.h>
-> > > >  #include <linux/init.h>
-> > > >  #include <linux/phy/phy.h>
-> > > > @@ -1114,6 +1115,7 @@ static int advk_pcie_probe(struct platform_device *pdev)
-> > > >
-> > > >     pcie = pci_host_bridge_priv(bridge);
-> > > >     pcie->pdev = pdev;
-> > > > +   platform_set_drvdata(pdev, pcie);
-> > > >
-> > > >     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > > >     pcie->base = devm_ioremap_resource(dev, res);
-> > > > @@ -1204,18 +1206,35 @@ static int advk_pcie_probe(struct platform_device *pdev)
-> > > >     return 0;
-> > > >  }
-> > > >
-> > > > +static int advk_pcie_remove(struct platform_device *pdev)
-> > > > +{
-> > > > +   struct advk_pcie *pcie = platform_get_drvdata(pdev);
-> > > > +   struct pci_host_bridge *bridge = pci_host_bridge_from_priv(pcie);
-> > > > +
-> > > > +   pci_stop_root_bus(bridge->bus);
-> > > > +   pci_remove_root_bus(bridge->bus);
-> > >
-> > > Based on pci_host_common_remove() implementation, doesn't this need a
-> > > lock around it (pci_lock_rescan_remove)?
+> > * Add support for a zstd compressed initramfs.
+> > * Add compression for compressing built-in initramfs with zstd.
 > >
-> > Well, I'm not sure. I looked into other pci drivers and none of
-> > following drivers pci-tegra.c, pcie-altera.c, pcie-brcmstb.c,
-> > pcie-iproc.c, pcie-mediatek.c, pcie-rockchip-host.c calls
-> > pci_lock_rescan_remove() and pci_unlock_rescan_remove().
-> 
-> The mutex protects the bus->devices list, so yes I believe it is needed.
-> 
-> Rob
+> > I have tested this patch by boot testing with buildroot and QEMU.
+> > Specifically, I booted the kernel with both a zstd and gzip compressed
+> > initramfs, both built into the kernel and separate. I ensured that the
+> > correct compression algorithm was used. I tested on arm, aarch64, i386,
+> > and x86_64.
+> >
+> > This patch has been tested in production on aarch64 and x86_64 devices.
+> >
+> > Additionally, I have performance measurements from internal use in
+> > production. On an aarch64 device we saw 19 second boot time improvement
+> > from switching from lzma to zstd (27 seconds to 8 seconds). On an x86_64
+> > device we saw a 9 second boot time reduction from switching from xz to
+> > zstd.
+> >
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > Signed-off-by: Nick Terrell <terrelln@fb.com>
+>
+> Thanks for your patch, which is now commit a30d8a39f0571425 ("usr: Add
+> support for zstd compressed initramfs").
+>
+> > --- a/usr/Kconfig
+> > +++ b/usr/Kconfig
+> > @@ -100,6 +100,15 @@ config RD_LZ4
+> >           Support loading of a LZ4 encoded initial ramdisk or cpio buffer
+> >           If unsure, say N.
+> >
+> > +config RD_ZSTD
+> > +       bool "Support initial ramdisk/ramfs compressed using ZSTD"
+> > +       default y
+> > +       depends on BLK_DEV_INITRD
+> > +       select DECOMPRESS_ZSTD
+> > +       help
+> > +         Support loading of a ZSTD encoded initial ramdisk or cpio buffer.
+> > +         If unsure, say N.
+>
+> I'm aware you copied this from the other entries, but IMHO "default y",
+> and "If unsure, say N" are not a good combination.
+>
 
-Thank you Rob! It means that all above pci drivers should be fixed too.
+Hi Geert,
 
-I will prepare a new version of aardvark patches with protecting pci
-stop/remove functions. And later I can look at some common bridge remove
-function for fixing those other pci drivers.
+you are right - for new stuff it should be "default n".
+
+What I am missing - still - is a note - that your user-space should
+have the correct bits to support zstd-initramfs.
+Unsure where to place such an information.
+
+If you send a patch for above feel free to add my:
+
+Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
+
+Thanks.
+
+Regards,
+- Sedat -
+
+[1] https://bugs.debian.org/955469
+
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
