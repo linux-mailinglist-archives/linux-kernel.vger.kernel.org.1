@@ -2,244 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9AF23BBF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1D023BBBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728964AbgHDOYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:24:16 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:44646 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728387AbgHDOYB (ORCPT
+        id S1729071AbgHDOG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729040AbgHDOGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:24:01 -0400
-X-Greylist: delayed 1185 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 Aug 2020 10:23:58 EDT
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 074E2fQ5012620;
-        Tue, 4 Aug 2020 16:03:58 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=g1q2H5ysWZ/cXh6WfPm4E7PqZip4LMdzOc7r6xjdZSM=;
- b=Qm5g9VHzkCDj/E2I+yHWyl7ZJHtljlBmJ+uwrcJ04ePIKtmyxRjcHCwPFfenGhsaNmzF
- Pq4k4Skii6cXgwgJsdD+6dtFmBfLOvHjDF23zn+WzwWRTLqmkGtHNxsDkhEhs1tJuZJ5
- WQPELmgy/oDgOpMo79wsuXLkMQxg1AKLCEaK0XnXzhDGrc/oTyirqF4eJkEBpMrFk2hA
- +D+85nli4GJjqpyyug/w2LNPumQEP5BKwvytyK0aFfAbqx13E5MuOYG3vCQWGGanpGjX
- mkHtIw8UlYkmbZ+B7H7skP6CldWT3+9M2GuVBGpdneph9KVnDEnQVzWxIplLm0tAudia wg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 32n6sb3dju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Aug 2020 16:03:58 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 54FBC100034;
-        Tue,  4 Aug 2020 16:03:56 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag5node2.st.com [10.75.127.14])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1FA6F2BC7A0;
-        Tue,  4 Aug 2020 16:03:56 +0200 (CEST)
-Received: from lmecxl1060.lme.st.com (10.75.127.44) by SFHDAG5NODE2.st.com
- (10.75.127.14) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 4 Aug
- 2020 16:03:55 +0200
-Subject: Re: [PATCH v3 1/2] i2c: smbus: add core function handling SMBus
- host-notify
-To:     Alain Volmat <alain.volmat@st.com>, <wsa@kernel.org>
-CC:     <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>
-References: <1596431876-24115-1-git-send-email-alain.volmat@st.com>
- <1596431876-24115-2-git-send-email-alain.volmat@st.com>
-From:   Pierre Yves MORDRET <pierre-yves.mordret@st.com>
-Message-ID: <46f8ab6e-e53d-dadc-1031-425757fb9a4f@st.com>
-Date:   Tue, 4 Aug 2020 16:03:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 4 Aug 2020 10:06:10 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DCFC06179F
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 07:06:03 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a21so42556266ejj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 07:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=X3HxHy5S4PrUuz449H0o4Ag1oc/qbWvdkKBe/LVNW6o=;
+        b=nshr+bmSps+Z7Uuy0tBMZmI5R64n0GR2pwPswja3xFrnVIu77A7IfAVGF+f+3jzyQr
+         ou1xZrFIjDGUn416vFDrNmnmG7EHS773Qoi9IU4jFK+TXGJl+G+SxvxzS02kJGF0tyH1
+         xw6qRfQ7OiDClfzyh3TRcSc2xzdPP6HiTHDmw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=X3HxHy5S4PrUuz449H0o4Ag1oc/qbWvdkKBe/LVNW6o=;
+        b=jugG07LF+4xr+idwcTwBDlVha91coA9ixL1IVs55JDcj9pxV275WMwcGymWJ88E3LW
+         cGa79Cjcq+S8/bzOHPJ+kP7uiM9/SAyyidOU/erXVDL45Ivp78RNH4FLTpXdTUtKK+it
+         jf6hc4RD2D1sCg0u7llvQQXtGQvF1QxJuB6iMatR5JGu4OHlT4wW5A5nOZ+cSEd42LLk
+         h/sSEFilYhcWCE/kZZEHGK3IFeuzMXvFH+QRU3BnLFSPQ+3NR6CilcRLDvJHcfhRi6Li
+         KLig2PjFQaRZnlHTTHLVmqXEOnytd4/mGRwpiMFo0FBfEDuSfA0QztRcAqmA+pw8M4mX
+         I1fg==
+X-Gm-Message-State: AOAM530Cd6Ye+SfJYRLvpk/JtTQjZJwHUcFL+gxrpQdBxH1M3JrmDFwD
+        G4IQD8mzppWfRmmLOhU4lpclHQ==
+X-Google-Smtp-Source: ABdhPJzA1e2vU8ujQhGlEAruZavvrK8zeb9pU6jc/nq4dJTJ6iNsb8oAxzlQwmXFzPNyV8brMfMXQA==
+X-Received: by 2002:a17:906:b082:: with SMTP id x2mr2563546ejy.349.1596549961631;
+        Tue, 04 Aug 2020 07:06:01 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-212-96-48-140.catv.broadband.hu. [212.96.48.140])
+        by smtp.gmail.com with ESMTPSA id g25sm18338511ejh.110.2020.08.04.07.06.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Aug 2020 07:06:01 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 16:05:58 +0200
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     David Howells <dhowells@redhat.com>
+Cc:     viro@zeniv.linux.org.uk, torvalds@linux-foundation.org,
+        raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
+        jannh@google.com, darrick.wong@oracle.com, kzak@redhat.com,
+        jlayton@redhat.com, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 15/18] fsinfo: Add an attribute that lists all the
+ visible mounts in a namespace [ver #21]
+Message-ID: <20200804140558.GF32719@miu.piliscsaba.redhat.com>
+References: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
+ <159646191446.1784947.11228235431863356055.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <1596431876-24115-2-git-send-email-alain.volmat@st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG5NODE2.st.com
- (10.75.127.14)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-04_04:2020-08-03,2020-08-04 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159646191446.1784947.11228235431863356055.stgit@warthog.procyon.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alain
-
-Look good for me
-
-Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@st.com>
-
-Best Regards
-
-On 8/3/20 7:17 AM, Alain Volmat wrote:
-> SMBus Host-Notify protocol, from the adapter point of view
-> consist of receiving a message from a client, including the
-> client address and some other data.
+On Mon, Aug 03, 2020 at 02:38:34PM +0100, David Howells wrote:
+> Add a filesystem attribute that exports a list of all the visible mounts in
+> a namespace, given the caller's chroot setting.  The returned list is an
+> array of:
 > 
-> It can be simply handled by creating a new slave device
-> and registering a callback performing the parsing of the
-> message received from the client.
+> 	struct fsinfo_mount_child {
+> 		__u64	mnt_unique_id;
+> 		__u32	mnt_id;
+> 		__u32	parent_id;
+> 		__u32	mnt_notify_sum;
+> 		__u32	sb_notify_sum;
+> 	};
 > 
-> This commit introduces two new core functions
->   * i2c_new_slave_host_notify_device
->   * i2c_free_slave_host_notify_device
-> that take care of registration of the new slave device and
-> callback and will call i2c_handle_smbus_host_notify once a
-> Host-Notify event is received.
+> where each element contains a once-in-a-system-lifetime unique ID, the
+> mount ID (which may get reused), the parent mount ID and sums of the
+> notification/change counters for the mount and its superblock.
+
+The change counters are currently conditional on CONFIG_MOUNT_NOTIFICATIONS.
+Is this is intentional?
+
 > 
-> Signed-off-by: Alain Volmat <alain.volmat@st.com>
+> This works with a read lock on the namespace_sem, but ideally would do it
+> under the RCU read lock only.
+> 
+> Signed-off-by: David Howells <dhowells@redhat.com>
 > ---
->  v3: move smbus host-notify slave code into i2c-smbus.c file
->      rework slave callback index handling
->      add sanity check in slave free function
->  v2: identical to v1
->  drivers/i2c/i2c-smbus.c   | 107 ++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/i2c-smbus.h |  12 ++++++
->  2 files changed, 119 insertions(+)
 > 
-> diff --git a/drivers/i2c/i2c-smbus.c b/drivers/i2c/i2c-smbus.c
-> index dc0108287ccf..d3d06e3b4f3b 100644
-> --- a/drivers/i2c/i2c-smbus.c
-> +++ b/drivers/i2c/i2c-smbus.c
-> @@ -197,6 +197,113 @@ EXPORT_SYMBOL_GPL(i2c_handle_smbus_alert);
+>  fs/fsinfo.c                 |    1 +
+>  fs/internal.h               |    1 +
+>  fs/namespace.c              |   37 +++++++++++++++++++++++++++++++++++++
+>  include/uapi/linux/fsinfo.h |    4 ++++
+>  samples/vfs/test-fsinfo.c   |   22 ++++++++++++++++++++++
+>  5 files changed, 65 insertions(+)
+> 
+> diff --git a/fs/fsinfo.c b/fs/fsinfo.c
+> index 0540cce89555..f230124ffdf5 100644
+> --- a/fs/fsinfo.c
+> +++ b/fs/fsinfo.c
+> @@ -296,6 +296,7 @@ static const struct fsinfo_attribute fsinfo_common_attributes[] = {
+>  	FSINFO_STRING	(FSINFO_ATTR_MOUNT_POINT,	fsinfo_generic_mount_point),
+>  	FSINFO_STRING	(FSINFO_ATTR_MOUNT_POINT_FULL,	fsinfo_generic_mount_point_full),
+>  	FSINFO_LIST	(FSINFO_ATTR_MOUNT_CHILDREN,	fsinfo_generic_mount_children),
+> +	FSINFO_LIST	(FSINFO_ATTR_MOUNT_ALL,		fsinfo_generic_mount_all),
+>  	{}
+>  };
 >  
->  module_i2c_driver(smbalert_driver);
+> diff --git a/fs/internal.h b/fs/internal.h
+> index cb5edcc7125a..267b4aaf0271 100644
+> --- a/fs/internal.h
+> +++ b/fs/internal.h
+> @@ -102,6 +102,7 @@ extern int fsinfo_generic_mount_topology(struct path *, struct fsinfo_context *)
+>  extern int fsinfo_generic_mount_point(struct path *, struct fsinfo_context *);
+>  extern int fsinfo_generic_mount_point_full(struct path *, struct fsinfo_context *);
+>  extern int fsinfo_generic_mount_children(struct path *, struct fsinfo_context *);
+> +extern int fsinfo_generic_mount_all(struct path *, struct fsinfo_context *);
 >  
-> +#if IS_ENABLED(CONFIG_I2C_SLAVE)
-> +#define SMBUS_HOST_NOTIFY_LEN	3
-> +struct i2c_slave_host_notify_status {
-> +	u8 index;
-> +	u8 addr;
-> +};
-> +
-> +static int i2c_slave_host_notify_cb(struct i2c_client *client,
-> +				    enum i2c_slave_event event, u8 *val)
-> +{
-> +	struct i2c_slave_host_notify_status *status = client->dev.platform_data;
-> +
-> +	switch (event) {
-> +	case I2C_SLAVE_WRITE_RECEIVED:
-> +		/* We only retrieve the first byte received (addr)
-> +		 * since there is currently no support to retrieve the data
-> +		 * parameter from the client.
-> +		 */
-> +		if (status->index == 0)
-> +			status->addr = *val;
-> +		if (status->index < U8_MAX)
-> +			status->index++;
-> +		break;
-> +	case I2C_SLAVE_STOP:
-> +		if (status->index == SMBUS_HOST_NOTIFY_LEN)
-> +			i2c_handle_smbus_host_notify(client->adapter,
-> +						     status->addr);
-> +		fallthrough;
-> +	case I2C_SLAVE_WRITE_REQUESTED:
-> +		status->index = 0;
-> +		break;
-> +	case I2C_SLAVE_READ_REQUESTED:
-> +	case I2C_SLAVE_READ_PROCESSED:
-> +		*val = 0xff;
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * i2c_new_slave_host_notify_device - get a client for SMBus host-notify support
-> + * @adapter: the target adapter
-> + * Context: can sleep
-> + *
-> + * Setup handling of the SMBus host-notify protocol on a given I2C bus segment.
-> + *
-> + * Handling is done by creating a device and its callback and handling data
-> + * received via the SMBus host-notify address (0x8)
-> + *
-> + * This returns the client, which should be ultimately freed using
-> + * i2c_free_slave_host_notify_device(); or an ERRPTR to indicate an error.
-> + */
-> +struct i2c_client *i2c_new_slave_host_notify_device(struct i2c_adapter *adapter)
-> +{
-> +	struct i2c_board_info host_notify_board_info = {
-> +		I2C_BOARD_INFO("smbus_host_notify", 0x08),
-> +		.flags  = I2C_CLIENT_SLAVE,
-> +	};
-> +	struct i2c_slave_host_notify_status *status;
-> +	struct i2c_client *client;
-> +	int ret;
-> +
-> +	status = kzalloc(sizeof(struct i2c_slave_host_notify_status),
-> +			 GFP_KERNEL);
-> +	if (!status)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	host_notify_board_info.platform_data = status;
-> +
-> +	client = i2c_new_client_device(adapter, &host_notify_board_info);
-> +	if (IS_ERR(client)) {
-> +		kfree(status);
-> +		return client;
-> +	}
-> +
-> +	ret = i2c_slave_register(client, i2c_slave_host_notify_cb);
-> +	if (ret) {
-> +		i2c_unregister_device(client);
-> +		kfree(status);
-> +		return ERR_PTR(ret);
-> +	}
-> +
-> +	return client;
-> +}
-> +EXPORT_SYMBOL_GPL(i2c_new_slave_host_notify_device);
-> +
-> +/**
-> + * i2c_free_slave_host_notify_device - free the client for SMBus host-notify
-> + * support
-> + * @client: the client to free
-> + * Context: can sleep
-> + *
-> + * Free the i2c_client allocated via i2c_new_slave_host_notify_device
-> + */
-> +void i2c_free_slave_host_notify_device(struct i2c_client *client)
-> +{
-> +	if (IS_ERR_OR_NULL(client))
-> +		return;
-> +
-> +	i2c_slave_unregister(client);
-> +	kfree(client->dev.platform_data);
-> +	i2c_unregister_device(client);
-> +}
-> +EXPORT_SYMBOL_GPL(i2c_free_slave_host_notify_device);
-> +#endif
-> +
 >  /*
->   * SPD is not part of SMBus but we include it here for convenience as the
->   * target systems are the same.
-> diff --git a/include/linux/i2c-smbus.h b/include/linux/i2c-smbus.h
-> index 1e4e0de4ef8b..1ef421818d3a 100644
-> --- a/include/linux/i2c-smbus.h
-> +++ b/include/linux/i2c-smbus.h
-> @@ -38,6 +38,18 @@ static inline int of_i2c_setup_smbus_alert(struct i2c_adapter *adap)
->  	return 0;
+>   * fs_struct.c
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index 122c12f9512b..1f2e06507244 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -4494,4 +4494,41 @@ int fsinfo_generic_mount_children(struct path *path, struct fsinfo_context *ctx)
+>  	return ctx->usage;
 >  }
->  #endif
-> +#if IS_ENABLED(CONFIG_I2C_SMBUS) && IS_ENABLED(CONFIG_I2C_SLAVE)
-> +struct i2c_client *i2c_new_slave_host_notify_device(struct i2c_adapter *adapter);
-> +void i2c_free_slave_host_notify_device(struct i2c_client *client);
-> +#else
-> +static inline struct i2c_client *i2c_new_slave_host_notify_device(struct i2c_adapter *adapter)
-> +{
-> +	return ERR_PTR(-ENOSYS);
-> +}
-> +static inline void i2c_free_slave_host_notify_device(struct i2c_client *client)
-> +{
-> +}
-> +#endif
 >  
->  #if IS_ENABLED(CONFIG_I2C_SMBUS) && IS_ENABLED(CONFIG_DMI)
->  void i2c_register_spd(struct i2c_adapter *adap);
+> +/*
+> + * Return information about all the mounts in the namespace referenced by the
+> + * path.
+> + */
+> +int fsinfo_generic_mount_all(struct path *path, struct fsinfo_context *ctx)
+> +{
+> +	struct mnt_namespace *ns;
+> +	struct mount *m, *p;
+> +	struct path chroot;
+> +	bool allow;
+> +
+> +	m = real_mount(path->mnt);
+> +	ns = m->mnt_ns;
+> +
+> +	get_fs_root(current->fs, &chroot);
+> +	rcu_read_lock();
+> +	allow = are_paths_connected(&chroot, path) || capable(CAP_SYS_ADMIN);
+> +	rcu_read_unlock();
+> +	path_put(&chroot);
+> +	if (!allow)
+> +		return -EPERM;
+> +
+> +	down_read(&namespace_sem);
+> +
+> +	list_for_each_entry(p, &ns->list, mnt_list) {
+
+This is missing locking and check added by commit 9f6c61f96f2d ("proc/mounts:
+add cursor").
+
+> +		struct path mnt_root;
+> +
+> +		mnt_root.mnt	= &p->mnt;
+> +		mnt_root.dentry	= p->mnt.mnt_root;
+> +		if (are_paths_connected(path, &mnt_root))
+> +			fsinfo_store_mount(ctx, p, p == m);
+> +	}
+> +
+> +	up_read(&namespace_sem);
+> +	return ctx->usage;
+> +}
+> +
+>  #endif /* CONFIG_FSINFO */
+> diff --git a/include/uapi/linux/fsinfo.h b/include/uapi/linux/fsinfo.h
+> index 81329de6905e..e40192d98648 100644
+> --- a/include/uapi/linux/fsinfo.h
+> +++ b/include/uapi/linux/fsinfo.h
+> @@ -37,6 +37,7 @@
+>  #define FSINFO_ATTR_MOUNT_POINT_FULL	0x203	/* Absolute path of mount (string) */
+>  #define FSINFO_ATTR_MOUNT_TOPOLOGY	0x204	/* Mount object topology */
+>  #define FSINFO_ATTR_MOUNT_CHILDREN	0x205	/* Children of this mount (list) */
+> +#define FSINFO_ATTR_MOUNT_ALL		0x206	/* List all mounts in a namespace (list) */
+>  
+>  #define FSINFO_ATTR_AFS_CELL_NAME	0x300	/* AFS cell name (string) */
+>  #define FSINFO_ATTR_AFS_SERVER_NAME	0x301	/* Name of the Nth server (string) */
+> @@ -128,6 +129,8 @@ struct fsinfo_mount_topology {
+>  /*
+>   * Information struct element for fsinfo(FSINFO_ATTR_MOUNT_CHILDREN).
+>   * - An extra element is placed on the end representing the parent mount.
+> + *
+> + * Information struct element for fsinfo(FSINFO_ATTR_MOUNT_ALL).
+>   */
+>  struct fsinfo_mount_child {
+>  	__u64	mnt_unique_id;		/* Kernel-lifetime unique mount ID */
+> @@ -139,6 +142,7 @@ struct fsinfo_mount_child {
+>  };
+>  
+>  #define FSINFO_ATTR_MOUNT_CHILDREN__STRUCT struct fsinfo_mount_child
+> +#define FSINFO_ATTR_MOUNT_ALL__STRUCT struct fsinfo_mount_child
+>  
+>  /*
+>   * Information struct for fsinfo(FSINFO_ATTR_STATFS).
+> diff --git a/samples/vfs/test-fsinfo.c b/samples/vfs/test-fsinfo.c
+> index 374825ab85b0..596fa5e71762 100644
+> --- a/samples/vfs/test-fsinfo.c
+> +++ b/samples/vfs/test-fsinfo.c
+> @@ -365,6 +365,27 @@ static void dump_fsinfo_generic_mount_children(void *reply, unsigned int size)
+>  	       (unsigned long long)r->mnt_notify_sum, mp);
+>  }
+>  
+> +static void dump_fsinfo_generic_mount_all(void *reply, unsigned int size)
+> +{
+> +	struct fsinfo_mount_child *r = reply;
+> +	ssize_t mplen;
+> +	char path[32], *mp;
+> +
+> +	struct fsinfo_params params = {
+> +		.flags		= FSINFO_FLAGS_QUERY_MOUNT,
+> +		.request	= FSINFO_ATTR_MOUNT_POINT_FULL,
+> +	};
+> +
+> +	sprintf(path, "%u", r->mnt_id);
+> +	mplen = get_fsinfo(path, "FSINFO_ATTR_MOUNT_POINT_FULL", &params, (void **)&mp);
+> +	if (mplen < 0)
+> +		mp = "-";
+> +
+> +	printf("%5x %5x %12llx %10llu %s\n",
+> +	       r->mnt_id, r->parent_id, (unsigned long long)r->mnt_unique_id,
+> +	       r->mnt_notify_sum, mp);
+> +}
+> +
+>  static void dump_afs_fsinfo_server_address(void *reply, unsigned int size)
+>  {
+>  	struct fsinfo_afs_server_address *f = reply;
+> @@ -492,6 +513,7 @@ static const struct fsinfo_attribute fsinfo_attributes[] = {
+>  	FSINFO_STRING_N	(FSINFO_ATTR_MOUNT_POINT,	string),
+>  	FSINFO_STRING_N	(FSINFO_ATTR_MOUNT_POINT_FULL,	string),
+>  	FSINFO_LIST	(FSINFO_ATTR_MOUNT_CHILDREN,	fsinfo_generic_mount_children),
+> +	FSINFO_LIST	(FSINFO_ATTR_MOUNT_ALL,		fsinfo_generic_mount_all),
+>  
+>  	FSINFO_STRING	(FSINFO_ATTR_AFS_CELL_NAME,	string),
+>  	FSINFO_STRING	(FSINFO_ATTR_AFS_SERVER_NAME,	string),
+> 
 > 
