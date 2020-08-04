@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B2A23B6B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 10:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BB223B6B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 10:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729629AbgHDISH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 04:18:07 -0400
-Received: from mga12.intel.com ([192.55.52.136]:20181 "EHLO mga12.intel.com"
+        id S1729577AbgHDIVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 04:21:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726793AbgHDISH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 04:18:07 -0400
-IronPort-SDR: PK9eileLvzXHNVXQMTIVmNvyg7mAQ+KduJd+B03hK1GpoyUlIPCc6zXj8hc2gD132cDIhRjgFI
- wZ0aOJdpAs6Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="131840845"
-X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
-   d="scan'208";a="131840845"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 01:18:06 -0700
-IronPort-SDR: lIPKwjOwt6Z/dHXBMxc2tUMS7VrggARADIVhJLj8dxURiyIUymmGIKXCbXECFxFk6hkn6KZVS2
- 6EsbiN6ViElg==
-X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
-   d="scan'208";a="330528978"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 01:18:03 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id F148D20686; Tue,  4 Aug 2020 11:18:01 +0300 (EEST)
-Date:   Tue, 4 Aug 2020 11:18:01 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Jacopo Mondi <jacopo@jmondi.org>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] media: i2c: ov5640: Fallback to parallel mode
-Message-ID: <20200804081801.GD13316@paasikivi.fi.intel.com>
-References: <1596465107-14251-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1596465107-14251-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1726276AbgHDIVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 04:21:51 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A45B2177B;
+        Tue,  4 Aug 2020 08:21:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596529310;
+        bh=yHshFQTi7X9tbhZouHzBQeXdvJY2DlleNpabUG8FjaI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FZ9qmCsVt7qSCuPmQDFZPrKgb4532pL0NxZXI+1/Wbn7Yj7maW4Fcp1/X00FmB+fu
+         cX8aOl+UxTthB3k15IAJUXI/iK6Qg+u/RZDy08V450BadaFCuzWk4q4t6Q1/6+5DME
+         oZu78065UZLeQ+4trscJqr8fn952N8oeZAx62JrE=
+Date:   Tue, 4 Aug 2020 10:21:30 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH 5.7 000/121] 5.7.13-rc2 review
+Message-ID: <20200804082130.GA1768075@kroah.com>
+References: <20200804072435.385370289@linuxfoundation.org>
+ <CA+G9fYs35Eiq1QFM0MOj6Y7gC=YKaiknCPgcJpJ5NMW4Y7qnYQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1596465107-14251-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYs35Eiq1QFM0MOj6Y7gC=YKaiknCPgcJpJ5NMW4Y7qnYQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
-
-On Mon, Aug 03, 2020 at 03:31:47PM +0100, Lad Prabhakar wrote:
-> Fallback to parallel mode if bus_type doesn't match the supported
-> interfaces by the driver.
+On Tue, Aug 04, 2020 at 01:46:31PM +0530, Naresh Kamboju wrote:
+> On Tue, 4 Aug 2020 at 13:03, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.7.13 release.
+> > There are 121 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 06 Aug 2020 07:23:45 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.13-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  drivers/media/i2c/ov5640.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> arm64 build broken.
 > 
-> diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-> index 08c67250042f..4e88b0540740 100644
-> --- a/drivers/media/i2c/ov5640.c
-> +++ b/drivers/media/i2c/ov5640.c
-> @@ -3074,6 +3074,12 @@ static int ov5640_probe(struct i2c_client *client)
->  		return ret;
->  	}
->  
-> +	/* fallback to parallel mode */
-> +	if (sensor->ep.bus_type != V4L2_MBUS_PARALLEL &&
-> +	    sensor->ep.bus_type != V4L2_MBUS_CSI2_DPHY &&
-> +	    sensor->ep.bus_type != V4L2_MBUS_BT656)
-> +		sensor->ep.bus_type = V4L2_MBUS_PARALLEL;
+> make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=arm64
+> CROSS_COMPILE=aarch64-linux-gnu- HOSTCC=gcc CC="sccache
+> aarch64-linux-gnu-gcc" O=build Image
+> #
+> In file included from ../include/linux/smp.h:67,
+>                  from ../include/linux/percpu.h:7,
+>                  from ../include/linux/prandom.h:12,
+>                  from ../include/linux/random.h:118,
+>                  from ../arch/arm64/include/asm/pointer_auth.h:6,
+>                  from ../arch/arm64/include/asm/processor.h:39,
+>                  from ../include/linux/mutex.h:19,
+>                  from ../include/linux/kernfs.h:12,
+>                  from ../include/linux/sysfs.h:16,
+>                  from ../include/linux/kobject.h:20,
+>                  from ../include/linux/of.h:17,
+>                  from ../include/linux/irqdomain.h:35,
+>                  from ../include/linux/acpi.h:13,
+>                  from ../include/acpi/apei.h:9,
+>                  from ../include/acpi/ghes.h:5,
+>                  from ../include/linux/arm_sdei.h:8,
+>                  from ../arch/arm64/kernel/asm-offsets.c:10:
+> ../arch/arm64/include/asm/smp.h:100:29: error: field ‘ptrauth_key’ has
+> incomplete type
+>   100 |  struct ptrauth_keys_kernel ptrauth_key;
+>       |                             ^~~~~~~~~~~
+> make[2]: *** [../scripts/Makefile.build:100:
+> arch/arm64/kernel/asm-offsets.s] Error 1
 
-You basically need the type from the v4l2_fwnode_endpoint_parse(), and if
-you don't have any of the above bus types, probe should fail. The old
-bindings were documented in a way that either parallel or CSI-2 bus will be
-used, and there were no defaults. So all should be well.
+Wow that was fast :(
 
--- 
-Sakari Ailus
+So Linus's tree is also broken here.  I think it's time I just removed
+all of these patches from now until we get this all fixed up properly...
+
+thanks,
+
+greg k-h
