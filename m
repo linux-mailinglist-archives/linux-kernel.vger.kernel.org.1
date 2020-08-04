@@ -2,287 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143E023B985
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1F123B9B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730097AbgHDL2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:28:35 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46098 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgHDL2L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:28:11 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k2v72-0001zq-Ed; Tue, 04 Aug 2020 11:28:08 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] fork cleanup for v5.9
-Date:   Tue,  4 Aug 2020 13:28:01 +0200
-Message-Id: <20200804112801.72380-1-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.28.0
+        id S1730293AbgHDLjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:39:19 -0400
+Received: from mail-eopbgr130070.outbound.protection.outlook.com ([40.107.13.70]:26599
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729799AbgHDLjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 07:39:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Frl4cMOkRJA20qthKGmSPt6n6LoT83Ole6nIuoGDNcgAkIZmreTKx7+4f0ymF69++K6jxhbI9p/Zw/r9yJtzFu6nV5llWiCGVUuZlnlv3kp+hxjMg438UsSb9fcJsFLO+ufTwJ/NTfZqsYy4VEwZq8rdKTgRooehaen8qM7wcN/LJ0D1PL9yxKLgud59zEz7tIQONY9Q8WVKrcohjqFB18gOLk4NanvYTR05jN47Zb4r+YRt1WO0cMLjEEmqXTm9WepsijrLp2KgITArNwH1qyxbbF7k3XNZ7knLqGePgcwh8oVYwzAlCh240nAOzhpSNbFRwqhn6XhpEWmXx5zSWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ad8OQyX4I1YH5lU+pKpT+Pj7NTw6P/pEJp75goOmSGU=;
+ b=UVJn2vtgZhvy63gZ8/xF1uRPwcl2+Tru6f/uozv0L56z5n8jJvulAxPmhI2ENgGRl48RLnZlOKSWzrqun8PjCiD4p/9ewAqJ+dSPVfoTb/1Xw/9arOzC0pvMUwe0/ZGCZYxt4iFHtipjUccSdrHx+KNfA0n1RVMGgoRerZNVDB/fJWyAfoF9UGLCvLCd/bJrrk8+UvUeWI7WifgpF/STjQF37G5xo9zOw220iEchBwB4GiNPqAeahv66ItbS1TIHKxWdanIKtxkvpN8mILYpjsriRjpzhHF5xw8CAtMmlRrcoH0NUkFU+8ms44ShpDLPWjt6at+IxdlMaE51gQ6/+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=neutral (sender ip is
+ 193.240.239.45) smtp.rcpttodomain=kernel.org smtp.mailfrom=diasemi.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ad8OQyX4I1YH5lU+pKpT+Pj7NTw6P/pEJp75goOmSGU=;
+ b=WCEDRTmxHWzrEC9O/T+N/+WFaFv0BfRyJG5Sy/N5l+iyINtCaPyshgzHMxTuwUn8PaljcnX+VcCX7WWeCn0D0lQUocNyYuPq/p8dabQi5T16nCl7eKpudZ5j0DR4n8TPPBuJKypW0e+Ibk9uNW1yn4qTlhQMMjdeo4T7NAeRVdc=
+Received: from PR3P192CA0054.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:57::29)
+ by AM0PR10MB3044.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:158::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.20; Tue, 4 Aug
+ 2020 11:39:07 +0000
+Received: from HE1EUR02FT063.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:102:57:cafe::c7) by PR3P192CA0054.outlook.office365.com
+ (2603:10a6:102:57::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16 via Frontend
+ Transport; Tue, 4 Aug 2020 11:39:07 +0000
+X-MS-Exchange-Authentication-Results: spf=neutral (sender IP is
+ 193.240.239.45) smtp.mailfrom=diasemi.com; kernel.org; dkim=none (message not
+ signed) header.d=none;kernel.org; dmarc=fail action=none
+ header.from=diasemi.com;
+Received-SPF: Neutral (protection.outlook.com: 193.240.239.45 is neither
+ permitted nor denied by domain of diasemi.com)
+Received: from mailrelay1.diasemi.com (193.240.239.45) by
+ HE1EUR02FT063.mail.protection.outlook.com (10.152.11.211) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3239.20 via Frontend Transport; Tue, 4 Aug 2020 11:39:06 +0000
+Received: from krsrvapps-03.diasemi.com (10.93.17.2) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Tue, 4 Aug 2020 13:39:05 +0200
+Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
+ 4BB2213F670; Tue,  4 Aug 2020 20:39:04 +0900 (KST)
+Message-ID: <4c3579cc6623f50d53e3cacca29a5cd1954c2063.1596522828.git.Roy.Im@diasemi.com>
+In-Reply-To: <cover.1596522828.git.Roy.Im@diasemi.com>
+References: <cover.1596522828.git.Roy.Im@diasemi.com>
+From:   Roy Im <roy.im.opensource@diasemi.com>
+Date:   Tue, 4 Aug 2020 15:33:47 +0900
+Subject: [PATCH v19 1/3] MAINTAINERS: da7280 updates to the Dialog
+ Semiconductor search terms
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Support Opensource <support.opensource@diasemi.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 501c25ed-c284-4a9e-7b76-08d8386aff22
+X-MS-TrafficTypeDiagnostic: AM0PR10MB3044:
+X-Microsoft-Antispam-PRVS: <AM0PR10MB3044FA5DDADF7802F5187F50A24A0@AM0PR10MB3044.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /jK3b9eqaeS+D16gnIBsxGyh6mytttk/SN8ZJHVzKYliuM/q8DcXei9WHR9zA4lPIs5hJyvmVLt9E0L+rH1RqCC5TUJBJGqU8zdo6uhJCPU7YOb2NjXHCOx/7wRR0oKg9Syca7lJ8U0lW0ZCk6s6DBeNr+nXpRzatfthsdgWHuK2Q/xGS6n2Zk6mY4LFsIJocjvL/TTCydPH75+4JyqJ//gf0RX43xvTCH/d5JSqUVYa3jTFC/DGm+46LBXZcJpaJ4BEUydsiSoqimN1SCvtm6izykOg7O7dcDpGlqYsXQ5ZaSd+nqsErVXYXpvKd0iIP5Q+X8ucMr69vJoBOJqS++6j+zYKX7aFCgYZQOokHTZNsd/EuBtWwX9/3zuYIeKEVQ31IhRydXU8vaopLsy0AXAjyT1+dLuRuvcTCgO4JtT/KpWVSAw12va5b6SDXaQDBTVykxL6jMHdsy5rwkT78YjQizcY9FqLXrwYlp6AP12ymrdu6B+twZizrM00LkQD
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(46966005)(426003)(8676002)(966005)(83380400001)(5660300002)(336012)(356005)(2616005)(6266002)(498600001)(107886003)(2906002)(33310700002)(4326008)(82310400002)(36906005)(81166007)(42186006)(47076004)(86362001)(54906003)(110136005)(6666004)(8936002)(70206006)(186003)(36756003)(70586007)(26005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2020 11:39:06.8079
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 501c25ed-c284-4a9e-7b76-08d8386aff22
+X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR02FT063.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3044
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This patch adds the da7280 bindings doc and driver to the Dialog
+Semiconductor support list.
 
-/* Summary */
-This is a series announced some time back (cf. [2]) when we reworked a chunk of
-the process creation paths in the kernel and switched to struct
-{kernel_}clone_args.
+Signed-off-by: Roy Im <roy.im.opensource@diasemi.com>
 
-High-level this does two main things:
-1. Remove the double export of both do_fork() and _do_fork() where do_fork()
-   used the incosistent legacy clone calling convention. Now we only export
-   _do_fork() which is based on struct kernel_clone_args.
-2. Remove the copy_thread_tls()/copy_thread() split making the
-   architecture specific HAVE_COYP_THREAD_TLS config option obsolete.
+---
+v19: No changes.
+v18: No changes.
+v17: No changes.
+v16: No changes.
+v15: No changes.
+v14: No changes.
+v13: No changes.
+v12: Corrected file list order.
+v11: No changes.
+v10: No changes.
+v9: No changes.
+v8: No changes.
+v7: No changes.
+v6: No changes.
+v5: No changes.
+v4: No changes.
+v3: No changes.
+v2: No changes.
 
-This switches all remaining architectures to select HAVE_COPY_THREAD_TLS and
-thus to the copy_thread_tls() calling convention. The current split makes the
-process creation codepaths more convoluted than they need to be. Each
-architecture has their own copy_thread() function unless it selects
-HAVE_COPY_THREAD_TLS then it has a copy_thread_tls() function. The split is not
-needed anymore nowadays, all architectures support CLONE_SETTLS but quite a few
-of them never bothered to select HAVE_COPY_THREAD_TLS and instead simply
-continued to use copy_thread() and use the old calling convention.
-Removing this split cleans up the process creation codepaths and paves the way
-for implementing clone3() on such architectures since it requires the
-copy_thread_tls() calling convention.
-After having made each architectures support copy_thread_tls() this series
-simply renames that function back to copy_thread().
-It also switches all architectures that call do_fork() directly over to
-_do_fork() and the struct kernel_clone_args calling convention. This is a
-corollary of switching the architectures that did not yet support it over to
-copy_thread_tls() since do_fork() is conditional on not supporting
-copy_thread_tls() (Mostly because it lacks a separate argument for tls which is
-trivial to fix but there's no need for this function to exist.).
 
-The do_fork() removal is in itself already useful as it allows to to remove the
-export of both do_fork() and _do_fork() we currently have in favor of only
-_do_fork(). This has already been discussed back when we added clone3(). The
-legacy clone() calling convention is - as is probably well-known - somewhat odd
-or as Al once put it in arch/Kconfig (cf. [1]):
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-  #
-  # ABI hall of shame
-  #
-  config CLONE_BACKWARDS
-  config CLONE_BACKWARDS2
-  config CLONE_BACKWARDS3
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4e2698c..81a9416 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5003,6 +5003,7 @@ M:	Support Opensource <support.opensource@diasemi.com>
+ S:	Supported
+ W:	http://www.dialog-semiconductor.com/products
+ F:	Documentation/devicetree/bindings/input/da90??-onkey.txt
++F:	Documentation/devicetree/bindings/input/dlg,da72??.txt
+ F:	Documentation/devicetree/bindings/mfd/da90*.txt
+ F:	Documentation/devicetree/bindings/regulator/da92*.txt
+ F:	Documentation/devicetree/bindings/regulator/slg51000.txt
+@@ -5013,6 +5014,7 @@ F:	Documentation/hwmon/da90??.rst
+ F:	drivers/gpio/gpio-da90??.c
+ F:	drivers/hwmon/da90??-hwmon.c
+ F:	drivers/iio/adc/da91??-*.c
++F:	drivers/input/misc/da72??.[ch]
+ F:	drivers/input/misc/da90??_onkey.c
+ F:	drivers/input/touchscreen/da9052_tsi.c
+ F:	drivers/leds/leds-da90??.c
+-- 
+end-of-patch for PATCH v19
 
-that is aggravated by the fact that some architectures such as sparc follow the
-CLONE_BACKWARDSx calling convention but don't really select the corresponding
-config option since they call do_fork() directly.
-So do_fork() enforces a somewhat arbitrary calling convention in the first place
-that doesn't really help the individual architectures that deviate from it. They
-can thus simply be switched to _do_fork() enforcing a single calling convention.
-(I really hope that any new architectures will __not__ try to implement their
- own calling conventions...) Most architectures already have made a similar
-switch (m68k comes to mind).
-
-Overall this removes more code then it adds even with a good portion of added
-comments. It simplifies a chunk of arch specific assembly either by moving the
-code into C or by simply rewriting the assembly.
-
-Architectures that have been touched in non-trivial ways have all been actually
-boot and stress tested: sparc and ia64 have been tested with Debian 9 images.
-They are the two architectures which have been touched the most. All non-trivial
-changes to architectures have seen acks from the relevant maintainers.
-nios2 with a custom built buildroot image. h8300 I couldn't get something
-bootable to test on but the changes have been fairly automatic and I'm sure
-we'll hear people yell if I broke something there. All other architectures that
-have been touched in trivial ways have been compile tested for each single patch
-of the series via git rebase -x "make ..." v5.8-rc2. arm{64} and x86{_64} have
-been boot tested even though they have just been trivially touched (removal of
-the HAVE_COPY_THREAD_TLS macro from their Kconfig) because well they are
-basically "core architectures" and since it is trivial to get your hands on a
-useable image.
-
-/* Testing */
-All patches are based on v5.8-rc2 and have been sitting in linux-next. No build
-failures or warnings were observed. All old and new tests of relevant
-test-suites are passing.
-
-/* Conflicts */
-There are a few smaller conflicts that linux-next reported:
-
-1. csky tree: https://lore.kernel.org/lkml/20200803182550.4c7df8ae@canb.auug.org.au
-   Stephen's suggestion to fix it seems correct:
-
-diff --cc arch/csky/Kconfig
-index af238739811e,902f1142d550..000000000000
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@@ -39,11 -38,6 +39,10 @@@ config CSK
-        select GX6605S_TIMER if CPU_CK610
-        select HAVE_ARCH_TRACEHOOK
-        select HAVE_ARCH_AUDITSYSCALL
- +      select HAVE_ARCH_MMAP_RND_BITS
- +      select HAVE_ARCH_SECCOMP_FILTER
--       select HAVE_COPY_THREAD_TLS
- +      select HAVE_CONTEXT_TRACKING
- +      select HAVE_VIRT_CPU_ACCOUNTING_GEN
-        select HAVE_DEBUG_BUGVERBOSE
-        select HAVE_DYNAMIC_FTRACE
-        select HAVE_DYNAMIC_FTRACE_WITH_REGS
-
-2. sh tree: https://lore.kernel.org/lkml/20200722203812.6ca23e0d@canb.auug.org.au
-   Stephen's suggestion to fix it seems correct:
-
-diff --cc arch/um/Kconfig
-index 32c1d1945033,ef69be17ff70..000000000000
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@@ -14,8 -14,6 +14,7 @@@ config UM
-        select HAVE_FUTEX_CMPXCHG if FUTEX
-        select HAVE_DEBUG_KMEMLEAK
-        select HAVE_DEBUG_BUGVERBOSE
--       select HAVE_COPY_THREAD_TLS
- +      select NO_DMA
-        select GENERIC_IRQ_SHOW
-        select GENERIC_CPU_DEVICES
-        select GENERIC_CLOCKEVENTS
-
-3. riscv tree: https://lore.kernel.org/lkml/20200713165846.5166ff82@canb.auug.org.au
-   Stephen's suggestion to fix it seems correct:
-
-diff --cc arch/riscv/Kconfig
-index 76a0cfad3367,f6a3a2bea3d8..000000000000
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@@ -57,9 -52,6 +57,8 @@@ config RISC
-        select HAVE_ARCH_SECCOMP_FILTER
-        select HAVE_ARCH_TRACEHOOK
-        select HAVE_ASM_MODVERSIONS
- +      select HAVE_CONTEXT_TRACKING
--       select HAVE_COPY_THREAD_TLS
- +      select HAVE_DEBUG_KMEMLEAK
-        select HAVE_DMA_CONTIGUOUS if MMU
-        select HAVE_EBPF_JIT if MMU
-        select HAVE_FUTEX_CMPXCHG if FUTEX
-
-4. memlock tree: https://lore.kernel.org/lkml/20200706155811.7928b30d@canb.auug.org.au
-   The conflict is in arch/unicore32/kernel/process.c and it seems that the
-   unicore32 port is about to be removed. So if that tree lands than the changes
-   in 8496da092a53 ("unicore: switch to copy_thread_tls()") can just be dropped
-   similar to what Stephen did for linux-next.
-
-Fwiw, doing a test-merge with current mainline bcf876870b95 ("Linux 5.8") shows me:
-
-brauner@wittgenstein|~/src/git/linux/linux|master $%=
-> git pull git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/fork-v5.9
-From gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux
- * tag                         fork-v5.9  -> FETCH_HEAD
-Auto-merging kernel/fork.c
-Auto-merging arch/x86/kernel/process.c
-Auto-merging arch/x86/Kconfig
-Auto-merging arch/riscv/Kconfig
-Auto-merging arch/arm64/Kconfig
-Auto-merging arch/arc/Kconfig
-Merge made by the 'recursive' strategy.
-
-And nothing looks suspicious afterwards.
-
-The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
-
-  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/fork-v5.9
-
-for you to fetch changes up to 714acdbd1c94e7e3ab90f6b6938f1ccb27b662f0:
-
-  arch: rename copy_thread_tls() back to copy_thread() (2020-07-04 23:41:37 +0200)
-
-Please consider pulling these changes from the signed fork-v5.9 tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-fork-v5.9
-
-----------------------------------------------------------------
-Christian Brauner (17):
-      fork: fold legacy_clone_args_valid() into _do_fork()
-      sparc64: enable HAVE_COPY_THREAD_TLS
-      sparc: share process creation helpers between sparc and sparc64
-      sparc: unconditionally enable HAVE_COPY_THREAD_TLS
-      ia64: enable HAVE_COPY_THREAD_TLS, switch to kernel_clone_args
-      nios2: enable HAVE_COPY_THREAD_TLS, switch to kernel_clone_args
-      h8300: select HAVE_COPY_THREAD_TLS, switch to kernel_clone_args
-      fork: remove do_fork()
-      alpha: switch to copy_thread_tls()
-      c6x: switch to copy_thread_tls()
-      hexagon: switch to copy_thread_tls()
-      microblaze: switch to copy_thread_tls()
-      nds32: switch to copy_thread_tls()
-      sh: switch to copy_thread_tls()
-      unicore: switch to copy_thread_tls()
-      arch: remove HAVE_COPY_THREAD_TLS
-      arch: rename copy_thread_tls() back to copy_thread()
-
- arch/Kconfig                      |   7 ---
- arch/alpha/kernel/process.c       |   9 ++--
- arch/arc/Kconfig                  |   1 -
- arch/arc/kernel/process.c         |   5 +-
- arch/arm/Kconfig                  |   1 -
- arch/arm/kernel/process.c         |   5 +-
- arch/arm64/Kconfig                |   1 -
- arch/arm64/kernel/process.c       |   2 +-
- arch/c6x/kernel/process.c         |   4 +-
- arch/csky/Kconfig                 |   1 -
- arch/csky/kernel/process.c        |   2 +-
- arch/h8300/kernel/process.c       |  17 ++++--
- arch/hexagon/kernel/process.c     |   6 +--
- arch/ia64/kernel/entry.S          |  32 +++++------
- arch/ia64/kernel/process.c        |  29 +++++++---
- arch/m68k/Kconfig                 |   1 -
- arch/m68k/kernel/process.c        |   8 +--
- arch/microblaze/kernel/process.c  |   6 +--
- arch/mips/Kconfig                 |   1 -
- arch/mips/kernel/process.c        |   5 +-
- arch/nds32/kernel/process.c       |   4 +-
- arch/nios2/kernel/entry.S         |   7 +--
- arch/nios2/kernel/process.c       |  23 ++++++--
- arch/openrisc/Kconfig             |   1 -
- arch/openrisc/kernel/process.c    |   6 +--
- arch/parisc/Kconfig               |   1 -
- arch/parisc/kernel/process.c      |   2 +-
- arch/powerpc/Kconfig              |   1 -
- arch/powerpc/kernel/process.c     |   2 +-
- arch/riscv/Kconfig                |   1 -
- arch/riscv/kernel/process.c       |   4 +-
- arch/s390/Kconfig                 |   1 -
- arch/s390/kernel/process.c        |   4 +-
- arch/sh/kernel/process_32.c       |   6 +--
- arch/sparc/include/asm/syscalls.h |   7 ++-
- arch/sparc/kernel/Makefile        |   1 +
- arch/sparc/kernel/entry.S         |  29 +++-------
- arch/sparc/kernel/kernel.h        |  11 ++--
- arch/sparc/kernel/process.c       | 110 ++++++++++++++++++++++++++++++++++++++
- arch/sparc/kernel/process_32.c    |  33 ++----------
- arch/sparc/kernel/process_64.c    |  40 ++------------
- arch/sparc/kernel/syscalls.S      |  23 ++++----
- arch/um/Kconfig                   |   1 -
- arch/um/kernel/process.c          |   2 +-
- arch/unicore32/kernel/process.c   |   7 ++-
- arch/x86/Kconfig                  |   1 -
- arch/x86/kernel/process.c         |   4 +-
- arch/x86/kernel/sys_ia32.c        |   3 --
- arch/x86/kernel/unwind_frame.c    |   2 +-
- arch/xtensa/Kconfig               |   1 -
- arch/xtensa/kernel/process.c      |   2 +-
- include/linux/sched/task.h        |  17 +-----
- kernel/fork.c                     |  67 ++++++-----------------
- 53 files changed, 277 insertions(+), 290 deletions(-)
- create mode 100644 arch/sparc/kernel/process.c
