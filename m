@@ -2,134 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12A823B99D
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2505123B9A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730221AbgHDLe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:34:58 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:51676 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729789AbgHDLev (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:34:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596540888;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=etjlVeN4UH1qO9OU1bYP1CrExEJDSItCGo2UFGYinfY=;
-        b=ZySsi+t7LQe8pn3C4JPSzc0CimRZKRNhht5dpsc6IF+U9CQ7uRWhyPoQMES5tAjcuCHV42
-        esJ8LCZmFiP56t0fHJeBewYQroKvdc3okzyKfJvORDbdB8IgEfMp/rDkOSz7nU45G53ArM
-        hxh7gkxv6wwZuMikliuYXMI4EPXt5uM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362--PWjaPm2NvK-pYOXQjXF9w-1; Tue, 04 Aug 2020 07:34:47 -0400
-X-MC-Unique: -PWjaPm2NvK-pYOXQjXF9w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1730186AbgHDLhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:37:20 -0400
+Received: from correo.us.es ([193.147.175.20]:57980 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728157AbgHDLhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 07:37:19 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id CDAD7F2DED
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 13:37:17 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id BFB36DA853
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 13:37:17 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id AF996DA84B; Tue,  4 Aug 2020 13:37:17 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 76A96DA73D;
+        Tue,  4 Aug 2020 13:37:15 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 04 Aug 2020 13:37:15 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [213.143.49.65])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7591D10059A9;
-        Tue,  4 Aug 2020 11:34:45 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D2C771764;
-        Tue,  4 Aug 2020 11:34:42 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200804101659.GA32719@miu.piliscsaba.redhat.com>
-References: <20200804101659.GA32719@miu.piliscsaba.redhat.com> <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk> <159646180259.1784947.223853053048725752.stgit@warthog.procyon.org.uk>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk,
-        linux-api@vger.kernel.org, torvalds@linux-foundation.org,
-        raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
-        jannh@google.com, darrick.wong@oracle.com, kzak@redhat.com,
-        jlayton@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/18] fsinfo: Add fsinfo() syscall to query filesystem information [ver #21]
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id EF7F042EE38E;
+        Tue,  4 Aug 2020 13:37:14 +0200 (CEST)
+Date:   Tue, 4 Aug 2020 13:37:11 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     William Mcvicker <willmcvicker@google.com>
+Cc:     security@kernel.org, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] netfilter: nat: add a range check for l3/l4
+ protonum
+Message-ID: <20200804113711.GA20988@salvia>
+References: <20200727175720.4022402-1-willmcvicker@google.com>
+ <20200727175720.4022402-2-willmcvicker@google.com>
+ <20200729214607.GA30831@salvia>
+ <20200731002611.GA1035680@google.com>
+ <20200731175115.GA16982@salvia>
+ <20200731181633.GA1209076@google.com>
+ <20200803183156.GA3084830@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2041167.1596540881.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 04 Aug 2020 12:34:41 +0100
-Message-ID: <2041168.1596540881@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200803183156.GA3084830@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miklos Szeredi <miklos@szeredi.hu> wrote:
+Hi,
 
-> > 		__u32	Mth;
-> =
+This patch is much smaller and if you confirm this is address the
+issue, then this is awesome.
 
-> The Mth field seems to be unused in this patchset.  Since the struct is
-> extensible, I guess there's no point in adding it now.
+On Mon, Aug 03, 2020 at 06:31:56PM +0000, William Mcvicker wrote:
+[...]
+> diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+> index 31fa94064a62..56d310f8b29a 100644
+> --- a/net/netfilter/nf_conntrack_netlink.c
+> +++ b/net/netfilter/nf_conntrack_netlink.c
+> @@ -1129,6 +1129,8 @@ ctnetlink_parse_tuple(const struct nlattr * const cda[],
+>  	if (!tb[CTA_TUPLE_IP])
+>  		return -EINVAL;
+>  
+> +	if (l3num >= NFPROTO_NUMPROTO)
+> +		return -EINVAL;
 
-Yeah - I was using it to index through the server address lists for networ=
-k
-filesystems (ie. the Mth address of the Nth server), but I've dropped the =
-nfs
-patch and made afs return an array of addresses for the Nth server since t=
-he
-address list can get reordered.
+l3num can only be either NFPROTO_IPV4 or NFPROTO_IPV6.
 
-Ordinarily, I'd just take it out, but I don't want to cause the patchset t=
-o
-get dropped for yet another merge cycle :-/
+Other than that, bail out with EOPNOTSUPP.
 
-> > +#define FSINFO_ATTR_FSINFO_ATTRIBUTE_INFO 0x100	/* Information about =
-attr N (for path) */
-> > +#define FSINFO_ATTR_FSINFO_ATTRIBUTES	0x101	/* List of supported attr=
-s (for path) */
-> =
-
-> I think it would make sense to move the actual attributes to a separate =
-patch
-> and leave this just being the infrastructure.
-
-Maybe.  If there are no attributes, then it makes it a bit hard to test.
-
-> > +struct fsinfo_u128 {
-> ...
-> =
-
-> Shouldn't this belong in <linux/types.h>?
-
-Maybe.  Ideally, I'd use a proper C type rather than a struct.
-
-> Is there a reason these are 128 wide fields?  Are we approaching the lim=
-its of
-> 64bits?
-
-Dave Chinner was talking at LSF a couple of years ago, IIRC, about looking
-beyond the 16 Exa limit in XFS.  I've occasionally talked to people who ha=
-ve
-multi-Peta data sets in AFS or whatever they were using, streamed from sci=
-ence
-experiments, so the limit isn't necessarily all *that* far off.
-
-> > +struct fsinfo_limits {
-> > +	struct fsinfo_u128 max_file_size;	/* Maximum file size */
-> > +	struct fsinfo_u128 max_ino;		/* Maximum inode number */
-> =
-
-> Again, what's the reason.  AFACT we are not yet worried about overflowin=
-g 64
-> bits.  Future proofing is good, but there has to be some rules and reaso=
-ns
-> behind the decisions.
-
-This is cheap to do.  This information is expected to be static for the
-lifetime a superblock and, for most filesystems, of the running kernel, so
-simply copying it with memcpy() from rodata is going to suffice most of th=
-e
-time.
-
-But don't worry - 640K is sufficient for everyone ;-)
-
-David
-
+Thank you.
