@@ -2,107 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA0923B5DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD96D23B5E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729907AbgHDHjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 03:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726808AbgHDHjv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 03:39:51 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0145C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 00:39:51 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id t6so1539139pjr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 00:39:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bUrPosWpbtUZGITpvnlHaTi7khIGfAqisN4TaUAkCAE=;
-        b=Pavvz+FooPxe5h/5VDGo9c4Zqz16bgtEwD8V/rIC6jRcmkXDzkMZP9aWi2Jn95G93Z
-         5pbFR5GPK5OyIIAy3AhSc23Kixg/Putnz1htPQUk7OmNcBBpaF5y7bPxDpuhtvFnx6mU
-         vftTrbowyZZkyRTg03tMsEiPJgke6IGpEIcrecBx9rhUhrlvnFbgAG88UI7xoG6S7kMN
-         A1AlVHrGIrPF9D83O38YZPJjdBUkX2qRlYQjaSzGHRiFk/JyPT1nKlNaWdD6BY6JXtqm
-         +veqW2flCbTe7MASrs0MuGHk67tV/CJowYkbNdrKJb1l+r3d83uO2kfc2sLl0sdH0LSc
-         c2hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bUrPosWpbtUZGITpvnlHaTi7khIGfAqisN4TaUAkCAE=;
-        b=cE7MWoKVsqG90ATAzB91yDO1qtySDf7Ntqtvv0EJZh1UE5uEZzqSpyxSRPNwqAoIT9
-         A+hRpQqKzdnJtMKAILCbWXpp6x2daPsjF1UuIIabVy2NsKbhtif96ct88OxXYGtaMiOU
-         dMEf0b+zbxDHUO6cimd8UQmR1A5dpjtGU4wpwJNKjReZfedCmActZWX9Plv+Rv5+/kWq
-         cNGWiSs92DuWclO5GsZufh0TMSabG0hVpB2cbuafsXrYTJAQSOwDfD1J4a3qTeGiF73f
-         iDFCDkqv3UJ2gqETNgxhMN26/IJSeObPJfwtshb982rnbN2XvwbBw5QWY7YPe8u2FCeq
-         lT/A==
-X-Gm-Message-State: AOAM5325DXUEjz8FIEZmP1xOpPtyEOGOQyDMEeOTFyZvUbsYrqhz9/jV
-        uEZLy8X/ORsR7Le2FownfUZFU+mrD3gQAoVjwnE=
-X-Google-Smtp-Source: ABdhPJxKhp0KbfInWbfMcpcBEQhF6c+PPuWTjPfHws+fWHsolyRuqos5w/qy91+QMtSQaRgWq1w0LTLFvWsgHpr7Mhc=
-X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr3285472pjp.228.1596526791226;
- Tue, 04 Aug 2020 00:39:51 -0700 (PDT)
+        id S1729954AbgHDHmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 03:42:31 -0400
+Received: from mailout11.rmx.de ([94.199.88.76]:37719 "EHLO mailout11.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726808AbgHDHma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 03:42:30 -0400
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout11.rmx.de (Postfix) with ESMTPS id 4BLRYF45jsz3ybM;
+        Tue,  4 Aug 2020 09:42:25 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4BLRY03tZlz2xNM;
+        Tue,  4 Aug 2020 09:42:12 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.102) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Tue, 4 Aug
+ 2020 09:40:12 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "Hartmut Knaack" <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Peter Meerwald-Stadler" <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 2/2] iio: light: as73211: New driver
+Date:   Tue, 4 Aug 2020 09:40:11 +0200
+Message-ID: <2356337.HYKpEJ1Wej@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <CAHp75Vev64E86OWm+eV=1o4ZDs0Xh_Y1z6V54GmpRwWmjD7=eA@mail.gmail.com>
+References: <20200802163735.76617-1-ceggers@arri.de> <20200802163735.76617-3-ceggers@arri.de> <CAHp75Vev64E86OWm+eV=1o4ZDs0Xh_Y1z6V54GmpRwWmjD7=eA@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
- <CAK8P3a2B5cxE512R0-ni6BJOnkgR7kGueqd3AU9E2PXh0unsmg@mail.gmail.com>
- <CACPK8Xd++ZQx9hh21dV6qn73aoWvoFsOHq8Pmgbtpi-GD3ShmA@mail.gmail.com> <CAHp75Vc8yXqCsZ79=YWZLJ3ObgA1AYLj0eqqK0e8sXvMWsf+Hg@mail.gmail.com>
-In-Reply-To: <CAHp75Vc8yXqCsZ79=YWZLJ3ObgA1AYLj0eqqK0e8sXvMWsf+Hg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 4 Aug 2020 10:39:34 +0300
-Message-ID: <CAHp75VcadLh+hM244agKKif_QeSj1osHMzuC8wv9UVFo7diX5w@mail.gmail.com>
-Subject: Re: [GIT PULL 3/5] ARM: SoC changes for v5.9
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        SoC Team <soc@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.102]
+X-RMX-ID: 20200804-094212-4BLRY03tZlz2xNM-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 10:33 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Tue, Aug 4, 2020 at 10:02 AM Joel Stanley <joel@jms.id.au> wrote:
-> >
-> > On Mon, 3 Aug 2020 at 21:49, Arnd Bergmann <arnd@arndb.de> wrote:
-> > > ARM: SoC changes for v5.9
-> >
-> > > Andy Shevchenko (1):
-> > >       ARM: orion/gpio: Make use of for_each_requested_gpio()
-> >
-> > This change broke the arm build (I noticed it when building multi_v5_de=
-fconfig):
-> >
-> > ../arch/arm/plat-orion/gpio.c:457:2: error: implicit declaration of
-> > function =E2=80=98for_each_requested_gpio=E2=80=99
-> > [-Werror=3Dimplicit-function-declaration]
-> >   457 |  for_each_requested_gpio(chip, i, label) {
-> >       |  ^~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > for_each_requested_gpio isn't in Linus (Torvalds) tree yet. It will be
-> > fixed when he pulls Linus Walleij's GPIO tree which has the commit:
-> >
-> >  b3337eb24831 gpiolib: Introduce for_each_requested_gpio_in_range() mac=
-ro
->
-> Linus W. specifically created an immutable branch [1] for this.
-> And I think I commented somewhere that entire branch should be pulled.
+On Sunday, 2 August 2020, 20:02:35 CEST, Andy Shevchenko wrote:
+> Thanks for an update, my comments below.
 
-https://www.spinics.net/lists/linux-gpio/msg51186.html
+Thanks for the review. Please see below for my questions.
 
-Sorry if that message wasn't clear.
+Best regards
+Christian
 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.gi=
-t/log/?h=3Dib-for-each-requested
+> On Sun, Aug 2, 2020 at 7:40 PM Christian Eggers <ceggers@arri.de> wrote:
+> > Datasheet:
+> > https://ams.com/documents/20143/36005/AS73211_DS000556_3-01.pdf/a65474c0-
+> > b302-c2fd-e30a-c98df87616df
+> Do we need the UUID after the document file name?
+I have send AMS an inquiry. Not sure whether I will get an answer. I will wait
+a few days until sending v6.
 
---=20
-With Best Regards,
-Andy Shevchenko
+> > +#define AS73211_OFFSET_TEMP (-66.9)
+> > +#define AS73211_SCALE_TEMP  0.05
+> 
+> In the kernel we don't do float arithmetic. How these are being used?
+Does this restriction also apply for compile time constants? I am quite 
+sure that all calculations using these defines will be evaluated at compile
+time. If found a number of other places where probably the same is done:
+
+find . -name '*.c' | xargs grep "#define.*[0-9]\.[0-9]" | grep -v '"' | grep -v "\/\*.*[0-9]\.[0-9]"
+
+> > +               *val2 = (AS73211_OFFSET_TEMP - (int)AS73211_OFFSET_TEMP) *
+> > 1000000;
+> > 
+> > +                       *val2 = (AS73211_SCALE_TEMP -
+> > (int)AS73211_SCALE_TEMP) * 1000000;
+> Magic 1000000 multiplier.
+I think that in the context of IIO_VAL_INT_PLUS_MICRO this isn't quite magic. Using
+1000000 directly seems quite usual:
+
+find drivers/iio/ -type f | xargs grep "val2 = .*1000000"
+
+> I think here you got them always 0. And to fix that you need to
+> redefine (with also units included in the name) above constants like
+> #define ..._OFFSET_TEMP_mC 66500
+> ... _SCALE_TEMP_?? 50
+a scale factor has no unit
+
+> 
+> Consider to use definitions from
+> https://elixir.bootlin.com/linux/latest/source/include/linux/units.h
+There are only definition for milli celsius. For IIO_VAL_INT_PLUS_MICRO I would
+require micro celsius.
+
+If I have the freedom, I would keep it as it is. Else I would suggest the following:
+#define AS73211_OFFSET_TEMP_INT (-66)
+#define AS73211_OFFSET_TEMP_MICRO 900000
+#define AS73211_SCALE_TEMP_INT 0
+#define AS73211_SCALE_TEMP_MICRO 50000
+
+> > +       }}
+> > +
+> > +       return -EINVAL;
+> 
+> Make it default case.
+changed. Is there any benefit? My IDE's syntax checker now complains
+"No return, in a function returning non-void". But gcc is happy with this.
+
+> > +       ret = devm_iio_device_register(dev, indio_dev);
+> > +       if (ret < 0)
+> > +               return ret;
+> > +
+> > +       return 0;
+> 
+>   return devm_iio_device_register();
+changed. I prefer the original pattern as it would produce less changed lines
+if something needs to inserted later.
+
+
+
