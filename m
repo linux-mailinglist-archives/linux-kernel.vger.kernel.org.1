@@ -2,154 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0275723B961
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F7723B96C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730160AbgHDLPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728590AbgHDLLP (ORCPT
+        id S1730084AbgHDLTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:19:48 -0400
+Received: from hera.aquilenet.fr ([185.233.100.1]:46408 "EHLO
+        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730000AbgHDLOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:11:15 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3595C06179E
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 04:10:29 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id f24so21467622ejx.6
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 04:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=LUO7jo3FUXjnHuSWrvkgDc8ShkHl+xvb4QPdJ+Ew7K0=;
-        b=AcB2wWn7nJOnOjtAZI2ty9OqmeFFOZFVL45E7BFhX5SPIcW3VtkOR+qUtzz4cW1Amh
-         a8QwSKFo98HF2LF0sNlbAVy68HKFTrQ2m67EV0c9+qGFmSiTp+X72J2K3/PZ7T9ADVbS
-         /h1t54J7UrFJ78sNMyRK2sf41gsAwjnh/LarowKZHHL2r1yNHBSBSepCMpdRoU3Buw7s
-         5wHJzKz/c8XqDwNrpNa0ALWO8mJ0l50I0j+GfwgroCv6ZN+ChdIhHuon7jV4JoKd+nw+
-         R/u6km1Y4NvxUq0QhR2oP3HETsWEjNKfMJX4b430uUzWS8EaQ54sr9/ARxAkqxxa/ek/
-         gfig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=LUO7jo3FUXjnHuSWrvkgDc8ShkHl+xvb4QPdJ+Ew7K0=;
-        b=Fiuar4YifZCTMk7m11qsdAb2bjrcTq4SZEuC3FG/4rXRfx3OhkWTLGXemAOjTihB1/
-         dvO5SzMA1vrYhqfgAJXXkoI6ywvFz8GoLu7cew8pynK+BqFK6SYneBRtqTuJ81M4/fei
-         V+zUODZgt//OIXw2zvE434qrea6sGIcCIye0QebXDWz1RO9oEHswwYu6ZrAG6g6l7b9k
-         waAA0QimsYEL/FShE44fJEmTcTtPSl1NeEUDmHOuAvBNzSa9DiOvLwzwcVCvlJi52r/w
-         6BuubUomVdml2tputube5cgybSwT6gPRhaM5D/EfTqNhAHcVMEHJH6s008Ff7PSNlRFc
-         XcBQ==
-X-Gm-Message-State: AOAM532kLexXKzFQmeDgVf2rxdNFDqF71LqOHYpBxD9ul+2ga+D+rrur
-        Twgnl+7QIbpGgtGTg5VeA102oZej
-X-Google-Smtp-Source: ABdhPJypG2NYj+Y2lkCfCrM/+c7Uccum1Cy8scFtgpAguQCcT1b4iQkv0UpJkrh5TjBkF/ei0Rld9g==
-X-Received: by 2002:a17:907:100f:: with SMTP id ox15mr21862836ejb.125.1596539428528;
-        Tue, 04 Aug 2020 04:10:28 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id l7sm16762533edn.45.2020.08.04.04.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 04:10:27 -0700 (PDT)
-Date:   Tue, 4 Aug 2020 13:10:25 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [GIT PULL] sched/fifo changes for v5.9
-Message-ID: <20200804111025.GA1556312@gmail.com>
+        Tue, 4 Aug 2020 07:14:20 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id 382F1DB4F;
+        Tue,  4 Aug 2020 13:12:49 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 5f8jKIz8z6hR; Tue,  4 Aug 2020 13:12:48 +0200 (CEST)
+Received: from function (lfbn-bor-1-797-11.w86-234.abo.wanadoo.fr [86.234.239.11])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 416091866;
+        Tue,  4 Aug 2020 13:12:48 +0200 (CEST)
+Received: from samy by function with local (Exim 4.94)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1k2usB-001aIz-7l; Tue, 04 Aug 2020 13:12:47 +0200
+Date:   Tue, 4 Aug 2020 13:12:47 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, speakup@linux-speakup.org
+Subject: [PATCH 1/2] speakup: Fix wait_for_xmitr for ttyio case
+Message-ID: <20200804111247.sqx7g74lpaemgw4k@function>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        speakup@linux-speakup.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+User-Agent: NeoMutt/20170609 (1.8.3)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+This was missed while introducing the tty-based serial access.
 
-Please pull the latest sched/fifo git tree from:
+The only remaining use of wait_for_xmitr with tty-based access is in
+spk_synth_is_alive_restart to check whether the synth can be restarted.
+With tty-based this is up to the tty layer to cope with the buffering
+etc. so we can just say yes.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-fifo-2020-08-04
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-   # HEAD: 4fd5750af02ab7bba7c58a073060cc1da8a69173 sched,tracing: Convert to sched_set_fifo()
-
-This tree adds the sched_set_fifo*() encapsulation APIs to remove
-static priority level knowledge from non-scheduler code.
-
-The three APIs for non-scheduler code to set SCHED_FIFO are:
-
- - sched_set_fifo()
- - sched_set_fifo_low()
- - sched_set_normal()
-
-These are two FIFO priority levels: default (high), and a 'low' priority level,
-plus sched_set_normal() to set the policy back to non-SCHED_FIFO.
-
-Since the changes affect a lot of non-scheduler code, we kept this in a separate
-tree.
-
-When merging to the latest upstream tree there's a conflict in drivers/spi/spi.c,
-which can be resolved via:
-
-	sched_set_fifo(ctlr->kworker_task);
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
- Thanks,
-
-	Ingo
-
------------------->
-Peter Zijlstra (24):
-      sched: Provide sched_set_fifo()
-      sched,bL_switcher: Convert to sched_set_fifo*()
-      sched,crypto: Convert to sched_set_fifo*()
-      sched,acpi_pad: Convert to sched_set_fifo*()
-      sched,drbd: Convert to sched_set_fifo*()
-      sched,psci: Convert to sched_set_fifo*()
-      sched,msm: Convert to sched_set_fifo*()
-      sched,drm/scheduler: Convert to sched_set_fifo*()
-      sched,ivtv: Convert to sched_set_fifo*()
-      sched,mmc: Convert to sched_set_fifo*()
-      sched,spi: Convert to sched_set_fifo*()
-      sched,powercap: Convert to sched_set_fifo*()
-      sched,ion: Convert to sched_set_normal()
-      sched,powerclamp: Convert to sched_set_fifo()
-      sched,serial: Convert to sched_set_fifo()
-      sched,watchdog: Convert to sched_set_fifo()
-      sched,irq: Convert to sched_set_fifo()
-      sched,locktorture: Convert to sched_set_fifo()
-      sched,rcuperf: Convert to sched_set_fifo_low()
-      sched,rcutorture: Convert to sched_set_fifo_low()
-      sched,psi: Convert to sched_set_fifo_low()
-      sched: Remove sched_setscheduler*() EXPORTs
-      sched: Remove sched_set_*() return value
-      sched,tracing: Convert to sched_set_fifo()
-
-
- arch/arm/common/bL_switcher.c            |  3 +-
- crypto/crypto_engine.c                   |  3 +-
- drivers/acpi/acpi_pad.c                  |  3 +-
- drivers/block/drbd/drbd_receiver.c       |  5 +---
- drivers/firmware/psci/psci_checker.c     | 10 +------
- drivers/gpu/drm/msm/msm_drv.c            | 13 +--------
- drivers/gpu/drm/scheduler/sched_main.c   |  3 +-
- drivers/media/pci/ivtv/ivtv-driver.c     |  4 +--
- drivers/mmc/core/sdio_irq.c              |  3 +-
- drivers/platform/chrome/cros_ec_spi.c    | 11 ++-----
- drivers/powercap/idle_inject.c           |  4 +--
- drivers/spi/spi.c                        |  4 +--
- drivers/staging/android/ion/ion_heap.c   |  4 +--
- drivers/thermal/intel/intel_powerclamp.c |  5 +---
- drivers/tty/serial/sc16is7xx.c           |  3 +-
- drivers/watchdog/watchdog_dev.c          |  3 +-
- include/linux/sched.h                    |  3 ++
- kernel/irq/manage.c                      |  6 +---
- kernel/locking/locktorture.c             | 10 ++-----
- kernel/rcu/rcuperf.c                     |  8 ++---
- kernel/rcu/rcutorture.c                  |  7 +----
- kernel/sched/core.c                      | 50 ++++++++++++++++++++++++++++++--
- kernel/sched/psi.c                       |  5 +---
- kernel/trace/ring_buffer_benchmark.c     | 48 +++++++++++++++---------------
- 24 files changed, 98 insertions(+), 120 deletions(-)
+Index: linux-2.6/drivers/accessibility/speakup/serialio.c
+===================================================================
+--- linux-2.6.orig/drivers/accessibility/speakup/serialio.c
++++ linux-2.6/drivers/accessibility/speakup/serialio.c
+@@ -32,6 +32,7 @@ static void spk_serial_tiocmset(unsigned
+ static unsigned char spk_serial_in(void);
+ static unsigned char spk_serial_in_nowait(void);
+ static void spk_serial_flush_buffer(void);
++static int spk_serial_wait_for_xmitr(struct spk_synth *in_synth);
+ 
+ struct spk_io_ops spk_serial_io_ops = {
+ 	.synth_out = spk_serial_out,
+@@ -40,6 +41,7 @@ struct spk_io_ops spk_serial_io_ops = {
+ 	.synth_in = spk_serial_in,
+ 	.synth_in_nowait = spk_serial_in_nowait,
+ 	.flush_buffer = spk_serial_flush_buffer,
++	.wait_for_xmitr = spk_serial_wait_for_xmitr,
+ };
+ EXPORT_SYMBOL_GPL(spk_serial_io_ops);
+ 
+@@ -211,7 +213,7 @@ void spk_stop_serial_interrupt(void)
+ }
+ EXPORT_SYMBOL_GPL(spk_stop_serial_interrupt);
+ 
+-int spk_wait_for_xmitr(struct spk_synth *in_synth)
++static int spk_serial_wait_for_xmitr(struct spk_synth *in_synth)
+ {
+ 	int tmout = SPK_XMITR_TIMEOUT;
+ 
+Index: linux-2.6/drivers/accessibility/speakup/spk_priv.h
+===================================================================
+--- linux-2.6.orig/drivers/accessibility/speakup/spk_priv.h
++++ linux-2.6/drivers/accessibility/speakup/spk_priv.h
+@@ -34,7 +34,6 @@
+ 
+ const struct old_serial_port *spk_serial_init(int index);
+ void spk_stop_serial_interrupt(void);
+-int spk_wait_for_xmitr(struct spk_synth *in_synth);
+ void spk_serial_release(void);
+ void spk_ttyio_release(void);
+ void spk_ttyio_register_ldisc(void);
+Index: linux-2.6/drivers/accessibility/speakup/spk_ttyio.c
+===================================================================
+--- linux-2.6.orig/drivers/accessibility/speakup/spk_ttyio.c
++++ linux-2.6/drivers/accessibility/speakup/spk_ttyio.c
+@@ -116,6 +116,7 @@ static void spk_ttyio_tiocmset(unsigned
+ static unsigned char spk_ttyio_in(void);
+ static unsigned char spk_ttyio_in_nowait(void);
+ static void spk_ttyio_flush_buffer(void);
++static int spk_ttyio_wait_for_xmitr(struct spk_synth *in_synth);
+ 
+ struct spk_io_ops spk_ttyio_ops = {
+ 	.synth_out = spk_ttyio_out,
+@@ -125,6 +126,7 @@ struct spk_io_ops spk_ttyio_ops = {
+ 	.synth_in = spk_ttyio_in,
+ 	.synth_in_nowait = spk_ttyio_in_nowait,
+ 	.flush_buffer = spk_ttyio_flush_buffer,
++	.wait_for_xmitr = spk_ttyio_wait_for_xmitr,
+ };
+ EXPORT_SYMBOL_GPL(spk_ttyio_ops);
+ 
+@@ -286,6 +288,11 @@ static void spk_ttyio_tiocmset(unsigned
+ 	mutex_unlock(&speakup_tty_mutex);
+ }
+ 
++static int spk_ttyio_wait_for_xmitr(struct spk_synth *in_synth)
++{
++	return 1;
++}
++
+ static unsigned char ttyio_in(int timeout)
+ {
+ 	struct spk_ldisc_data *ldisc_data = speakup_tty->disc_data;
+Index: linux-2.6/drivers/accessibility/speakup/spk_types.h
+===================================================================
+--- linux-2.6.orig/drivers/accessibility/speakup/spk_types.h
++++ linux-2.6/drivers/accessibility/speakup/spk_types.h
+@@ -158,6 +158,7 @@ struct spk_io_ops {
+ 	unsigned char (*synth_in)(void);
+ 	unsigned char (*synth_in_nowait)(void);
+ 	void (*flush_buffer)(void);
++	int (*wait_for_xmitr)(struct spk_synth *synth);
+ };
+ 
+ struct spk_synth {
+Index: linux-2.6/drivers/accessibility/speakup/synth.c
+===================================================================
+--- linux-2.6.orig/drivers/accessibility/speakup/synth.c
++++ linux-2.6/drivers/accessibility/speakup/synth.c
+@@ -159,7 +159,7 @@ int spk_synth_is_alive_restart(struct sp
+ {
+ 	if (synth->alive)
+ 		return 1;
+-	if (spk_wait_for_xmitr(synth) > 0) {
++	if (synth->io_ops->wait_for_xmitr(synth) > 0) {
+ 		/* restart */
+ 		synth->alive = 1;
+ 		synth_printf("%s", synth->init);
