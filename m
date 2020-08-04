@@ -2,110 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5401C23C23D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF57F23C240
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgHDXj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 19:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgHDXj5 (ORCPT
+        id S1727115AbgHDXmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 19:42:32 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:28313 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbgHDXmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 19:39:57 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545CCC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 16:39:57 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id p13so7336046ilh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 16:39:57 -0700 (PDT)
+        Tue, 4 Aug 2020 19:42:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=KAv+Btt+rG6Ox1CPAUqo9rR4asUgkeOoH1S88YH5Edo=;
-        b=ptsyhsCd6Ph/5A7FHlNkjEr+qlkyU6udt3o154eLMkRDRs5TsUVCANV7mPi6d/5OrY
-         beIQ+2vQYV3gG7MDFdkT1vxw5CET2SJpfetAbSCnJmwXLif6xah+aPRxMWnaw7M2r0Kz
-         SSko6yeJjIRIvTIXDx8GPchrGI7WB4z6ECF99CDpWwtl+7k83r9efX+prFSNcniM0xrh
-         yOrvcoJ5KxEL0npj3y7DvEP1BYvsBOb3WEB/CwOBcX2D/yVbq9gwOchK7ClmdwSP47MV
-         Jy5yeg2H/qFN/evGHHxcpEs84uDjNtSNchSxD6Iq6rq2WzEYpRXsNxylkILIG28kjpE/
-         Unow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=KAv+Btt+rG6Ox1CPAUqo9rR4asUgkeOoH1S88YH5Edo=;
-        b=MEQqWHerTUNPpKJ4TM/5rZ8UOx4FFcZ+nYxzU9xPgYObw4Mevza8F+I4hGLRaM6/oy
-         +ULf7nEc9JRLj6pFQznILvyR5OQ+RiaY+bI6d7u1lRgeM4pvstA8FOszbV4b7/DFEWbf
-         JLgrPLPX2qtZykgWyL8R9/6mXK8sOxZgLBfZdckIsyjjsNXSI0kzV8dJpqfacyMipRrr
-         1GCJtW3VIyMZ3OIT+b3iQMs7+3LSV98YjVPOfyevb5AC1X+LI8g9nOjjSb8BmYdUgXdM
-         IZDZXgCL1akNh2lcvLDvXc0wWekSdKqMjcIZae0Ue5pdqJ17hX7D4g/mP5yNAMJ4VipP
-         6B1w==
-X-Gm-Message-State: AOAM530VVQghjq6+uiswG9Rmix23Xgn3W70Eprc7Msu+bTaMGgxCYttz
-        mcnbC3fzSyedR5Ys8KSeSs3RhFNUgyq1ur9VYHU=
-X-Google-Smtp-Source: ABdhPJzQzfdosEg1yelX3UecWI2iObmuhCkzFreuA2mEPPqcPvuvgaAKC7iuZ1f//ZSvGWPq2Wt85rE0Hu50oNnXIuM=
-X-Received: by 2002:a92:450:: with SMTP id 77mr967356ile.244.1596584396459;
- Tue, 04 Aug 2020 16:39:56 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1596584551; x=1628120551;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=/JZsLbScAtVllbk3M4EYC9jSC+EH8BJFD7YNLkO2jbw=;
+  b=ZCKW12nO5uz9aWo1YWbcZvs1SqWxkDxowEw2YV3KM5XV7vGNLwVlAsWG
+   /8MmiHW6IJIN4ZXS49sKu+4RBBAMBpJz80aPfAL4CFFlXtytWU5hcrRTj
+   1y8I6q26pr+45aTVmjWyic4e5esj1jWruZwoOuDPkqblNX/UinOTb7nzQ
+   o=;
+IronPort-SDR: tXSAvE3I+eAbNDPDnUOFaCSbmANsG665E5E2LDRc5x+gN2ZBKiLpEWpXlkrOemTAkQzeu7PQUy
+ xDAgL7lVT3Tg==
+X-IronPort-AV: E=Sophos;i="5.75,435,1589241600"; 
+   d="scan'208";a="65620285"
+Subject: Re: [PATCH v2 01/11] xen/manage: keep track of the on-going suspend mode
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 04 Aug 2020 23:42:18 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com (Postfix) with ESMTPS id 5A165A258A;
+        Tue,  4 Aug 2020 23:42:11 +0000 (UTC)
+Received: from EX13D10UWA002.ant.amazon.com (10.43.160.228) by
+ EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 4 Aug 2020 23:42:02 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
+ EX13D10UWA002.ant.amazon.com (10.43.160.228) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 4 Aug 2020 23:42:01 +0000
+Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
+ (172.22.96.68) by mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP
+ Server id 15.0.1497.2 via Frontend Transport; Tue, 4 Aug 2020 23:42:01 +0000
+Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
+        id 935F940362; Tue,  4 Aug 2020 23:42:01 +0000 (UTC)
+Date:   Tue, 4 Aug 2020 23:42:01 +0000
+From:   Anchal Agarwal <anchalag@amazon.com>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+CC:     Stefano Stabellini <sstabellini@kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <x86@kernel.org>, <jgross@suse.com>, <linux-pm@vger.kernel.org>,
+        <linux-mm@kvack.org>, <kamatam@amazon.com>,
+        <konrad.wilk@oracle.com>, <roger.pau@citrix.com>,
+        <axboe@kernel.dk>, <davem@davemloft.net>, <rjw@rjwysocki.net>,
+        <len.brown@intel.com>, <pavel@ucw.cz>, <peterz@infradead.org>,
+        <eduval@amazon.com>, <sblbir@amazon.com>,
+        <xen-devel@lists.xenproject.org>, <vkuznets@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dwmw@amazon.co.uk>, <benh@kernel.crashing.org>
+Message-ID: <20200804234201.GA23820@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+References: <20200721000348.GA19610@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <408d3ce9-2510-2950-d28d-fdfe8ee41a54@oracle.com>
+ <alpine.DEB.2.21.2007211640500.17562@sstabellini-ThinkPad-T480s>
+ <20200722180229.GA32316@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <alpine.DEB.2.21.2007221645430.17562@sstabellini-ThinkPad-T480s>
+ <20200723225745.GB32316@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <alpine.DEB.2.21.2007241431280.17562@sstabellini-ThinkPad-T480s>
+ <66a9b838-70ed-0807-9260-f2c31343a081@oracle.com>
+ <20200730230634.GA17221@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <53b577a3-6af9-5587-7e47-485be38b3653@oracle.com>
 MIME-Version: 1.0
-Received: by 2002:a92:bb5a:0:0:0:0:0 with HTTP; Tue, 4 Aug 2020 16:39:55 -0700 (PDT)
-Reply-To: hamzakwadrago2@gmail.com
-From:   Hamzak Wadrago <nadia01farouk@gmail.com>
-Date:   Tue, 4 Aug 2020 23:39:55 +0000
-Message-ID: <CAHnwMznm==MqRcDxofYJzH5n5vBRKTYs8FiawpFzPvT=2ExnHg@mail.gmail.com>
-Subject: I will be waiting to hear from you,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <53b577a3-6af9-5587-7e47-485be38b3653@oracle.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Fri, Jul 31, 2020 at 10:13:48AM -0400, Boris Ostrovsky wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> 
+> 
+> 
+> On 7/30/20 7:06 PM, Anchal Agarwal wrote:
+> > On Mon, Jul 27, 2020 at 06:08:29PM -0400, Boris Ostrovsky wrote:
+> >> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> >>
+> >>
+> >>
+> >> On 7/24/20 7:01 PM, Stefano Stabellini wrote:
+> >>> Yes, it does, thank you. I'd rather not introduce unknown regressions so
+> >>> I would recommend to add an arch-specific check on registering
+> >>> freeze/thaw/restore handlers. Maybe something like the following:
+> >>>
+> >>> #ifdef CONFIG_X86
+> >>>     .freeze = blkfront_freeze,
+> >>>     .thaw = blkfront_restore,
+> >>>     .restore = blkfront_restore
+> >>> #endif
+> >>>
+> >>>
+> >>> maybe Boris has a better suggestion on how to do it
+> >>
+> >> An alternative might be to still install pm notifier in
+> >> drivers/xen/manage.c (I think as result of latest discussions we decided
+> >> we won't need it) and return -ENOTSUPP for ARM for
+> >> PM_HIBERNATION_PREPARE and friends. Would that work?
+> >>
+> > I think the question here is for registering driver specific freeze/thaw/restore
+> > callbacks for x86 only. I have dropped the pm_notifier in the v3 still pending
+> > testing. So I think just registering driver specific callbacks for x86 only is a
+> > good option. What do you think?
+> 
+> 
+> I suggested using the notifier under assumption that if it returns an
+> error then that will prevent callbacks to be called because hibernation
+> will be effectively disabled. But I haven't looked at PM code so I don't
+> know whether this is actually the case.
+>
+I think this could be done. PM_HIBERNATION_PREPARE could return -ENOTSUPP
+for arm and pvh dom0 when the notifier call chain is invoked for this case
+in hibernate(). This will then be an empty notifier just for checking two
+usecases.
+Also, for pvh dom0, the earlier code didn't register any notifier,
+with this approach you are suggesting setup the notifier for hvm/pvh dom0 and
+arm but fail during notifier call chain during PM_HIBERNATION_PREPARE ?
 
-I decided to contact you after a careful thought that you may be
-capable of handling this business transaction which I explained below,
-I am the head of Accounts and Audit Department of Bank of Africa
-Ouagadougou. In my department while cross-checking the files of
-foreigners. since our federal government has announced on the need of
-settling all foreign bills to enable foreign investors to come into
-our country and as an order from African unity governed by African
-heads, I discovered an abandoned sum of $15.5m US dollars (fifteen
-million, five hundred thousand US dollars). In an account that belongs
-to one of our foreign customer who died along with his entire family
-in a plane crash.
-
-Since i got information about his death, The bank have been expecting
-his next of kin to come over and claim his money because The fund
-cannot be released unless somebody applies for it as next of kin or
-relation to the deceased as indicated in our banking guidelines but
-unfortunately I learnt that his supposed next of kin(his son and wife)
-died alongside with him at the plane crash leaving nobody behind for
-the claim .It is therefore upon this discovery that I now decided to
-make this business proposal to you and release the money to you as the
-next of kin (I want to present you as his business associate )to the
-deceased for safety and subsequent disbursement since nobody is coming
-for it and I don't want this money to go into the Bank treasury as
-unclaimed Bill.
-
-The Banking law and guideline here stipulates that if such money
-remained Unclaimed after Nine years, the money will be transferred
-into the Bank treasury as unclaimed fund.. The request of foreigner as
-next of kin in this business is occasioned by the fact that the
-customer was a foreigner and a Burkina be cannot stand as next of kin
-to a foreigner.
-
-I agree that 40% of this money will be for you as foreign partner, in
-respect to the provision of a foreign account, 60% would be for me .
-There after I will visit your country for disbursement according to
-the percentages indicated. Therefore to enable the immediate transfer
-of this fund to your account as arranged, you must apply first to the
-bank as next of kin of the deceased customer.
-
-Upon receipt of your reply, more details and text of application form
-will be given to you for immediate transfer of the fund, I will not
-fail to bring to your notice that this transaction is hitch free and
-that you should not entertain any atom of fear as all required
-arrangements have been made for the transfer.
-
-i will like  you to send me this information about you such as  your
-full names, direct telephone numbers, and physical address.
-
-Yours sincerely,
-Mr. Hamzak Wadrago.
+I think still getting rid of suspend mode that was earlier a part of this
+notifier is a good idea as it seems redundant as you pointed out earlier. 
+> 
+> The advantage of doing it in the notifier is that instead of adding
+> ifdefs to each driver you will be able to prevent callbacks from a
+> single place. Plus you can use this do disable hibernation for PVH dom0
+> as well.
+> 
+> 
+> 
+> -boris
+> 
+Anchal
+> 
+> 
