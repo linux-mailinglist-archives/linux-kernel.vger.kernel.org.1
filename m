@@ -2,97 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDE523C227
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51C423C233
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgHDXVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 19:21:20 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:38252 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgHDXVU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 19:21:20 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 074NIbZb030203;
-        Tue, 4 Aug 2020 23:21:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=H135zvtEAzXbolPThwPCDvRBY1IcuIZhqA58376mAzA=;
- b=ClodJWCgLTzJCxFrMksszeahSOEnwsEagGVl1HRDKEeX5WG5jN/Bn2oqc0Tli+ZQa8WJ
- 2ZaWvBjrI8nBRsr1qEz+T1d7TOYMqr8lmZtt6hiVMdJuJ8pJ3dVQjR6QLJPN+gcNgR2K
- ftDgskoEyu5sDliPNxRdBj1FQ2zcT12FbL89Lq013yAFAWeZtNykqTODaDzCmANvEt1i
- aTSVafUcpu3fJ5HHb6hNAKPEYTWWBXAR9q0SAcwA0DbIBEgiOouTeemRCiOjj21x2ReH
- qO984uIEHXZ7pZ1ubJTc5juL+QBhCSkDgJKy+D3YxWDxuECCxpMBTVjlyRSQwlf6d7bH Dg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 32nc9ynpya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 04 Aug 2020 23:21:08 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 074NJ8lZ118157;
-        Tue, 4 Aug 2020 23:21:08 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 32p5gswv73-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 04 Aug 2020 23:21:08 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 074NL784005815;
-        Tue, 4 Aug 2020 23:21:07 GMT
-Received: from [10.74.104.59] (/10.74.104.59)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 04 Aug 2020 16:21:07 -0700
-Subject: Re: [PATCH] soc: ti: k3-socinfo: Add entry for J7200
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>, ssantosh@kernel.org,
-        t-kristo@ti.com
-Cc:     nsekhar@ti.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, nm@ti.com
-References: <20200803105359.16744-1-peter.ujfalusi@ti.com>
- <f13b8e17-308f-fdf2-885e-318710d4d836@ti.com>
- <a3ea4e4f-1c7e-b7b1-798e-4fda0ce73cba@ti.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <e4fc0d2c-6440-378c-0184-f42777594c9c@oracle.com>
-Date:   Tue, 4 Aug 2020 16:21:05 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        id S1726339AbgHDX2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 19:28:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725300AbgHDX2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 19:28:01 -0400
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAC9E2177B
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 23:28:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596583681;
+        bh=rJGKAU6a1vzNuxXQY0o9qKI5eBpyPrG8L2if9FYJihk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WntteR60Vu4o3yv/DQqCFvGs/UkMiveYHDMpO2/We1IMPK/3hJ36Scc+gCYNHO2Sg
+         PoASieKQP3pkJyerhWvKIJzI0OBOdMjGV7P2IvfXaBRRWWh6B49LvyFf2Qjgqe7Xc7
+         FCAN7uOU4sMdbMwZxLc5h6AlyoRc3LBokhADh/EU=
+Received: by mail-ej1-f42.google.com with SMTP id g19so30496798ejc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 16:28:00 -0700 (PDT)
+X-Gm-Message-State: AOAM530ia4SJPuYsqNTM1391lN+LDOZzaGiHA3ER25TekZoE9V1l6s5D
+        WZf2JfrhDh4Xay6iI+3sLY2qR3au/HIyZ1GlEg==
+X-Google-Smtp-Source: ABdhPJxhbuNd1k98tAHaLGm0Jd5RqlzV6OlBiVekuIBcntzql1W1cBK2/N+vIybzOkyo7GJwfzhqcUft9Dq8+VB6xZM=
+X-Received: by 2002:a17:906:f14f:: with SMTP id gw15mr466293ejb.245.1596583679325;
+ Tue, 04 Aug 2020 16:27:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a3ea4e4f-1c7e-b7b1-798e-4fda0ce73cba@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9703 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
- phishscore=0 spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008040160
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9703 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0
- adultscore=0 clxscore=1015 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008040160
+References: <20200804165555.75159-1-linux@fw-web.de> <20200804165555.75159-2-linux@fw-web.de>
+In-Reply-To: <20200804165555.75159-2-linux@fw-web.de>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 5 Aug 2020 07:27:48 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-zetZmpTjHJuEr-qrQWP8Rykj3s=Kx6M+U3TO44MNr2Q@mail.gmail.com>
+Message-ID: <CAAOTY_-zetZmpTjHJuEr-qrQWP8Rykj3s=Kx6M+U3TO44MNr2Q@mail.gmail.com>
+Subject: Re: [PATCH v4 1/6] dt-bindings: mediatek: add mt7623 display-nodes
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/20 2:39 PM, Grygorii Strashko wrote:
-> Hi Santosh,
-> 
-> On 03/08/2020 17:41, Lokesh Vutla wrote:
->>
->>
->> On 03/08/20 4:23 pm, Peter Ujfalusi wrote:
->>> Update K3 chipinfo driver to support new TI J7200 SoC.
->>> It's JTAG PARTNO is 0xBB6D.
->>>
->>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->>
->> Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
->>
-> 
-> Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> 
-Thanks for reviews. Will add it to the queue.
+Frank Wunderlich <linux@fw-web.de> =E6=96=BC 2020=E5=B9=B48=E6=9C=885=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8812:56=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> From: Frank Wunderlich <frank-w@public-files.de>
+>
+> mt7623 uses mt2701/mt8173 for drm, but have own compatibles
+
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+
+>
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> ---
+>  .../devicetree/bindings/display/mediatek/mediatek,disp.txt    | 2 +-
+>  .../devicetree/bindings/display/mediatek/mediatek,dpi.txt     | 2 +-
+>  .../devicetree/bindings/display/mediatek/mediatek,dsi.txt     | 4 ++--
+>  .../devicetree/bindings/display/mediatek/mediatek,hdmi.txt    | 4 ++++
+>  4 files changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp=
+.txt
+> index b91e709db7a4..121220745d46 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> @@ -43,7 +43,7 @@ Required properties (all function blocks):
+>         "mediatek,<chip>-dpi"                   - DPI controller, see med=
+iatek,dpi.txt
+>         "mediatek,<chip>-disp-mutex"            - display mutex
+>         "mediatek,<chip>-disp-od"               - overdrive
+> -  the supported chips are mt2701, mt2712 and mt8173.
+> +  the supported chips are mt2701, mt7623, mt2712 and mt8173.
+>  - reg: Physical base address and length of the function block register s=
+pace
+>  - interrupts: The interrupt signal from the function block (required, ex=
+cept for
+>    merge and split function blocks).
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+dpi.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.t=
+xt
+> index 77def4456706..dc1ebd13cc88 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.txt
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.txt
+> @@ -7,7 +7,7 @@ output bus.
+>
+>  Required properties:
+>  - compatible: "mediatek,<chip>-dpi"
+> -  the supported chips are mt2701 , mt8173 and mt8183.
+> +  the supported chips are mt2701, mt7623, mt8173 and mt8183.
+>  - reg: Physical base address and length of the controller's registers
+>  - interrupts: The interrupt signal from the function block.
+>  - clocks: device clocks
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+dsi.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.t=
+xt
+> index 8e4729de8c85..f06f24d405a5 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.txt
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.txt
+> @@ -7,7 +7,7 @@ channel output.
+>
+>  Required properties:
+>  - compatible: "mediatek,<chip>-dsi"
+> -  the supported chips are mt2701, mt8173 and mt8183.
+> +- the supported chips are mt2701, mt7623, mt8173 and mt8183.
+>  - reg: Physical base address and length of the controller's registers
+>  - interrupts: The interrupt signal from the function block.
+>  - clocks: device clocks
+> @@ -26,7 +26,7 @@ The MIPI TX configuration module controls the MIPI D-PH=
+Y.
+>
+>  Required properties:
+>  - compatible: "mediatek,<chip>-mipi-tx"
+> -  the supported chips are mt2701, mt8173 and mt8183.
+> +- the supported chips are mt2701, 7623, mt8173 and mt8183.
+>  - reg: Physical base address and length of the controller's registers
+>  - clocks: PLL reference clock
+>  - clock-output-names: name of the output clock line to the DSI encoder
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+hdmi.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi=
+.txt
+> index 7b124242b0c5..6b1c586403e4 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.tx=
+t
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.tx=
+t
+> @@ -6,6 +6,7 @@ its parallel input.
+>
+>  Required properties:
+>  - compatible: Should be "mediatek,<chip>-hdmi".
+> +- the supported chips are mt2701, mt7623 and mt8173
+>  - reg: Physical base address and length of the controller's registers
+>  - interrupts: The interrupt signal from the function block.
+>  - clocks: device clocks
+> @@ -32,6 +33,7 @@ The HDMI CEC controller handles hotplug detection and C=
+EC communication.
+>
+>  Required properties:
+>  - compatible: Should be "mediatek,<chip>-cec"
+> +- the supported chips are mt7623 and mt8173
+>  - reg: Physical base address and length of the controller's registers
+>  - interrupts: The interrupt signal from the function block.
+>  - clocks: device clock
+> @@ -44,6 +46,7 @@ The Mediatek's I2C controller is used to interface with=
+ I2C devices.
+>
+>  Required properties:
+>  - compatible: Should be "mediatek,<chip>-hdmi-ddc"
+> +- the supported chips are mt7623 and mt8173
+>  - reg: Physical base address and length of the controller's registers
+>  - clocks: device clock
+>  - clock-names: Should be "ddc-i2c".
+> @@ -56,6 +59,7 @@ output and drives the HDMI pads.
+>
+>  Required properties:
+>  - compatible: "mediatek,<chip>-hdmi-phy"
+> +- the supported chips are mt2701, mt7623 and mt8173
+>  - reg: Physical base address and length of the module's registers
+>  - clocks: PLL reference clock
+>  - clock-names: must contain "pll_ref"
+> --
+> 2.25.1
+>
