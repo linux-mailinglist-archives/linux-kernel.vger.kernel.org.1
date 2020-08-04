@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC9F23BA61
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C77C23BA68
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbgHDMci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 08:32:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47558 "EHLO
+        id S1727981AbgHDMdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 08:33:14 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47594 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbgHDMaU (ORCPT
+        with ESMTP id S1727069AbgHDMbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 08:30:20 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        Tue, 4 Aug 2020 08:31:13 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1k2w57-0005bE-2S; Tue, 04 Aug 2020 12:30:13 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/net: skip msg_zerocopy test if we have less than 4 CPUs
-Date:   Tue,  4 Aug 2020 13:30:12 +0100
-Message-Id: <20200804123012.378750-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1k2w5V-0005dF-IX; Tue, 04 Aug 2020 12:30:37 +0000
+Date:   Tue, 4 Aug 2020 14:30:36 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] namespaces: Introduce generic refcount
+Message-ID: <20200804123036.2lnkm6it7ko7j3ju@wittgenstein>
+References: <159644958332.604812.13004003379291842292.stgit@localhost.localdomain>
+ <20200804115649.kzea757e5wwpk4k3@wittgenstein>
+ <87d046sj8w.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87d046sj8w.fsf@x220.int.ebiederm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Aug 04, 2020 at 07:11:59AM -0500, Eric W. Biederman wrote:
+> Christian Brauner <christian.brauner@ubuntu.com> writes:
+> 
+> > On Mon, Aug 03, 2020 at 01:16:10PM +0300, Kirill Tkhai wrote:
+> >> Every namespace type has its own counter. Some of them are
+> >> of refcount_t, some of them are of kref.
+> >> 
+> >> This patchset introduces generic ns_common::count for any
+> >> type of namespaces instead of them.
+> >> 
+> >> ---
+> >
+> > I was wondering why that series never made it to me turns out there's
+> > some weird bug in my (neo)mutt where it sometimes marks messages as read
+> > when I'm deleting completely unrelated messages. That has already cost
+> > me a talk slot for an event I really wanted to attend and now it seems
+> > to start costing me patches... I need to figure this out.
+> >
+> > Anyway, thanks for sending this. I pulled this into my tree now.
+> 
+> Actually why in the world should the reference count be generic?
+> 
+> What is the point of this patchset?
+> 
+> What problem does it solve.  Name spaces are not the same, and
+> their refcounting needs are not the same so I don't have a clue how it
+> helps anything to have a reference count in ns_common.
 
-The current test will exit with a failure if it cannot set affinity on
-specific CPUs which is problematic when running this on single CPU
-systems. Add a check for the number of CPUs and skip the test if
-the CPU requirement is not met.
+What is the point of this opposition to this cleanup?
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- tools/testing/selftests/net/msg_zerocopy.sh | 5 +++++
- 1 file changed, 5 insertions(+)
+It unifies reference counting across namespaces and gets rid of
+inconsistencices. Over the years none of the namespaces seem to have
+deviated enough from each that they really have needed separate
+reference counting mechanisms.
 
-diff --git a/tools/testing/selftests/net/msg_zerocopy.sh b/tools/testing/selftests/net/msg_zerocopy.sh
-index 825ffec85cea..97bc527e1297 100755
---- a/tools/testing/selftests/net/msg_zerocopy.sh
-+++ b/tools/testing/selftests/net/msg_zerocopy.sh
-@@ -21,6 +21,11 @@ readonly DADDR6='fd::2'
- 
- readonly path_sysctl_mem="net.core.optmem_max"
- 
-+if [[ $(nproc) -lt 4 ]]; then
-+	echo "SKIP: test requires at least 4 CPUs"
-+	exit 4
-+fi
-+
- # No arguments: automated test
- if [[ "$#" -eq "0" ]]; then
- 	$0 4 tcp -t 1
--- 
-2.27.0
-
+Christian
