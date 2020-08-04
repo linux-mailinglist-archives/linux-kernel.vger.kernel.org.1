@@ -2,52 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C1A23C20F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1008323C212
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgHDXHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 19:07:31 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:54507 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726788AbgHDXHb (ORCPT
+        id S1727820AbgHDXLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 19:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726999AbgHDXLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 19:07:31 -0400
-X-Originating-IP: 90.66.108.79
-Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 69CFAE0003;
-        Tue,  4 Aug 2020 23:07:27 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     a.zummo@towertech.it, linux@roeck-us.net,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v3] rtc: ds1307: provide an indication that the watchdog has fired
-Date:   Wed,  5 Aug 2020 01:07:27 +0200
-Message-Id: <159658242980.19041.17408394582474699284.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200727034615.19755-1-chris.packham@alliedtelesis.co.nz>
-References: <20200727034615.19755-1-chris.packham@alliedtelesis.co.nz>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 4 Aug 2020 19:11:10 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A012C06174A;
+        Tue,  4 Aug 2020 16:11:10 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 9A3E612896E69;
+        Tue,  4 Aug 2020 15:54:23 -0700 (PDT)
+Date:   Tue, 04 Aug 2020 16:11:08 -0700 (PDT)
+Message-Id: <20200804.161108.958554880119569573.davem@davemloft.net>
+To:     yuehaibing@huawei.com
+Cc:     ioana.ciornei@nxp.com, ruxandra.radulescu@nxp.com, kuba@kernel.org,
+        andrew@lunn.ch, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dpaa2-eth: Fix passing zero to 'PTR_ERR' warning
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200804132643.42104-1-yuehaibing@huawei.com>
+References: <20200804132643.42104-1-yuehaibing@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 04 Aug 2020 15:54:23 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Jul 2020 15:46:14 +1200, Chris Packham wrote:
-> There's not much feedback when the ds1388 watchdog fires. Generally it
-> yanks on the reset line and the board reboots. Capture the fact that the
-> watchdog has fired in the past so that userspace can retrieve it via
-> WDIOC_GETBOOTSTATUS. This should help distinguish a watchdog triggered
-> reset from a power interruption.
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Tue, 4 Aug 2020 21:26:43 +0800
 
-Applied, thanks!
+> Fix smatch warning:
+> 
+> drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c:2419
+>  alloc_channel() warn: passing zero to 'ERR_PTR'
+> 
+> setup_dpcon() should return ERR_PTR(err) instead of zero in error
+> handling case.
+> 
+> Fixes: d7f5a9d89a55 ("dpaa2-eth: defer probe on object allocate")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-[1/1] rtc: ds1307: provide an indication that the watchdog has fired
-      commit: 9bf1306257589b3a5ad46175538af9922d94e26f
-
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+Applied and queued up for -stable, thank you.
