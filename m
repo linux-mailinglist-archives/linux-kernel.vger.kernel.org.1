@@ -2,186 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E5C23B960
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F46023B96D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728675AbgHDLP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:15:27 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:47992 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728174AbgHDLIC (ORCPT
+        id S1730130AbgHDLTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:19:52 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:9733 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729992AbgHDLMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:08:02 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 074B4tG2006974;
-        Tue, 4 Aug 2020 07:05:47 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 32n69ehhy5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Aug 2020 07:05:47 -0400
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 074B5jEg065028
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 4 Aug 2020 07:05:45 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 4 Aug 2020
- 07:05:44 -0400
-Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Tue, 4 Aug 2020 07:05:44 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 074B5VE0005208;
-        Tue, 4 Aug 2020 07:05:42 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-clk@vger.kernel.org>, <linux-fpga@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>, <mdf@kernel.org>,
-        Mircea Caprioru <mircea.caprioru@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 6/6] clk: axi-clkgen: Add support for FPGA info
-Date:   Tue, 4 Aug 2020 14:06:58 +0300
-Message-ID: <20200804110658.40911-7-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200804110658.40911-1-alexandru.ardelean@analog.com>
-References: <20200804110658.40911-1-alexandru.ardelean@analog.com>
+        Tue, 4 Aug 2020 07:12:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1596539573; x=1628075573;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=YtPmNSzbbPBoaWL3cjrf0tY68ii9T+o40iaT31QMEek=;
+  b=AiC5OOOEGksdfuFrcb+7c61f4Hax86sRM8iZET/VuvrGW6JM3ltZJhrb
+   hjkWQFHjV1EPRH1eyXxGFKS0M+kgeAye337VRghmy7fcdwZaUxLEwULRF
+   2sEYKufWBUvGTk0Yi+euLqBN1qkOPW686lgs5Lf6i3X+1q8LgtGlHNjBd
+   2Am9NmTNMs7zslJyG4dDh+jVchUrd8g1a9xEmUd1A7zNg7Rr2gGbswbGU
+   4SIi83+/bMd22v5cwuBOsoueGRvRs/Jq5eOrDjvvuuZ7otf3cccAF0T9N
+   i8O6hzCQyXmEJn0J23Jq97sjLoOTRUJ/yMY9ytmPIlfqnV7VQRignD0UX
+   A==;
+IronPort-SDR: ACpT0KWn+jHP0gpRWqL89XvoRrasTUHibOYUfOXG/rWYHk5gGMB4Cb1hKX3mqyVRvfygXj5yuJ
+ A9eothsGg+4S+2+2OIpLXZIn25c1Ah3d0e5GCCM9C2xAVz7qwohSiYBWioysUJxh4SgrRcemnM
+ W2BJirjPiB6sAs9v49dnoqtsaEMO0FVfNzsg1UI76b+sIFZ+xNim7fWUZoq9q5ifvnB46GwyLj
+ EQ6EVZMJd5axMycJxFOCJVE3EMHG1RY7r52XpBRo9YNjBDziOgiylPBHWywBVOxYWKyyAthfBH
+ EYw=
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="90374050"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Aug 2020 04:07:43 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 4 Aug 2020 04:07:40 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 4 Aug 2020 04:07:38 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <wenyou.yang@atmel.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2 0/3] AT91 PM improvements
+Date:   Tue, 4 Aug 2020 14:07:35 +0300
+Message-ID: <1596539258-20719-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
 Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-04_03:2020-08-03,2020-08-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 spamscore=0 clxscore=1015
- mlxscore=0 malwarescore=0 suspectscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008040084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mircea Caprioru <mircea.caprioru@analog.com>
+Hi,
 
-This patch adds support for vco maximum and minimum ranges in accordance
-with fpga speed grade, voltage, device package, technology and family. This
-new information is extracted from two new registers implemented in the ip
-core: ADI_REG_FPGA_INFO and ADI_REG_FPGA_VOLTAGE, which are stored in the
-'include/linux/fpga/adi-axi-common.h' file as they are common to all ADI
-FPGA cores.
+This series adds ULP0 fast mode intended to reduce the suspend/resume
+time in the detriment of power consumption (patch 1/3).
+Along with this patch 2/3 adds code to avoid requesting a PM mode
+not available on platforms not supporting it.
+Patch 3/3 decrements a device_node refcount after its usage.
 
-Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/clk/clk-axi-clkgen.c | 67 +++++++++++++++++++++++++++++++-----
- 1 file changed, 59 insertions(+), 8 deletions(-)
+Thank you,
+Claudiu Beznea
 
-diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
-index 6ffc19e9d850..51c890103dad 100644
---- a/drivers/clk/clk-axi-clkgen.c
-+++ b/drivers/clk/clk-axi-clkgen.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/platform_device.h>
- #include <linux/clk-provider.h>
-+#include <linux/fpga/adi-axi-common.h>
- #include <linux/slab.h>
- #include <linux/io.h>
- #include <linux/of.h>
-@@ -49,6 +50,7 @@
- struct axi_clkgen {
- 	void __iomem *base;
- 	struct clk_hw clk_hw;
-+	unsigned int pcore_version;
- };
- 
- static uint32_t axi_clkgen_lookup_filter(unsigned int m)
-@@ -101,15 +103,15 @@ static uint32_t axi_clkgen_lookup_lock(unsigned int m)
- }
- 
- #ifdef ARCH_ZYNQMP
--static const unsigned int fpfd_min = 10000;
--static const unsigned int fpfd_max = 450000;
--static const unsigned int fvco_min = 800000;
--static const unsigned int fvco_max = 1600000;
-+static unsigned int fpfd_min = 10000;
-+static unsigned int fpfd_max = 450000;
-+static unsigned int fvco_min = 800000;
-+static unsigned int fvco_max = 1600000;
- #else
--static const unsigned int fpfd_min = 10000;
--static const unsigned int fpfd_max = 300000;
--static const unsigned int fvco_min = 600000;
--static const unsigned int fvco_max = 1200000;
-+static unsigned int fpfd_min = 10000;
-+static unsigned int fpfd_max = 300000;
-+static unsigned int fvco_min = 600000;
-+static unsigned int fvco_max = 1200000;
- #endif
- 
- static void axi_clkgen_calc_params(unsigned long fin, unsigned long fout,
-@@ -229,6 +231,49 @@ static void axi_clkgen_read(struct axi_clkgen *axi_clkgen,
- 	*val = readl(axi_clkgen->base + reg);
- }
- 
-+static void axi_clkgen_setup_ranges(struct axi_clkgen *axi_clkgen)
-+{
-+	unsigned int reg_value;
-+	unsigned int tech, family, speed_grade, voltage;
-+
-+	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_FPGA_INFO, &reg_value);
-+	tech = ADI_AXI_INFO_FPGA_TECH(reg_value);
-+	family = ADI_AXI_INFO_FPGA_FAMILY(reg_value);
-+	speed_grade = ADI_AXI_INFO_FPGA_SPEED_GRADE(reg_value);
-+
-+	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_FPGA_VOLTAGE, &reg_value);
-+	voltage = ADI_AXI_INFO_FPGA_VOLTAGE(reg_value);
-+
-+	switch (speed_grade) {
-+	case ADI_AXI_FPGA_SPEED_1 ... ADI_AXI_FPGA_SPEED_1LV:
-+		fvco_max = 1200000;
-+		fpfd_max = 450000;
-+		break;
-+	case ADI_AXI_FPGA_SPEED_2 ... ADI_AXI_FPGA_SPEED_2LV:
-+		fvco_max = 1440000;
-+		fpfd_max = 500000;
-+		if ((family == ADI_AXI_FPGA_FAMILY_KINTEX) |
-+		    (family == ADI_AXI_FPGA_FAMILY_ARTIX)) {
-+			if (voltage < 950) {
-+				fvco_max = 1200000;
-+				fpfd_max = 450000;
-+			}
-+		}
-+		break;
-+	case ADI_AXI_FPGA_SPEED_3:
-+		fvco_max = 1600000;
-+		fpfd_max = 550000;
-+		break;
-+	default:
-+		break;
-+	};
-+
-+	if (tech == ADI_AXI_FPGA_TECH_ULTRASCALE_PLUS) {
-+		fvco_max = 1600000;
-+		fvco_min = 800000;
-+	}
-+}
-+
- static int axi_clkgen_wait_non_busy(struct axi_clkgen *axi_clkgen)
- {
- 	unsigned int timeout = 10000;
-@@ -524,6 +569,12 @@ static int axi_clkgen_probe(struct platform_device *pdev)
- 	if (IS_ERR(axi_clkgen->base))
- 		return PTR_ERR(axi_clkgen->base);
- 
-+	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_VERSION,
-+			&axi_clkgen->pcore_version);
-+
-+	if (ADI_AXI_PCORE_VER_MAJOR(axi_clkgen->pcore_version) > 0x04)
-+		axi_clkgen_setup_ranges(axi_clkgen);
-+
- 	init.num_parents = of_clk_get_parent_count(pdev->dev.of_node);
- 	if (init.num_parents < 1 || init.num_parents > 2)
- 		return -EINVAL;
+Changes in v2:
+- in patch 2/3:
+	- move per SoC supported mode arrays in *_pm_init() functions.
+	- use 2 booleans in at91_pm_modes_validate() for modes validation
+	- continue to use array of supported modes in at91rm9200_pm_init()
+	  and at91sam9_pm_init() instead of forcing
+	  soc_pm.data.standby_mode = AT91_PM_STANDBY and
+	  soc_pm.data.suspend_mode = AT91_PM_ULP0 to breaking the user
+	  configuration (it might request ulp0 as standby mode or vice versa)
+	  
+Claudiu Beznea (3):
+  ARM: at91: pm: add support for ULP0 fast wakeup
+  ARM: at91: pm: add per soc validation of pm modes
+  ARM: at91: pm: of_node_put() after its usage
+
+ arch/arm/mach-at91/pm.c         | 93 ++++++++++++++++++++++++++++++++++++++---
+ arch/arm/mach-at91/pm.h         |  5 ++-
+ arch/arm/mach-at91/pm_suspend.S | 41 ++++++++++++++++--
+ 3 files changed, 127 insertions(+), 12 deletions(-)
+
 -- 
-2.17.1
+2.7.4
 
