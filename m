@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA1623B51A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 08:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295FD23B51C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 08:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgHDGl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 02:41:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725811AbgHDGl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 02:41:57 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77C3120781;
-        Tue,  4 Aug 2020 06:41:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596523317;
-        bh=qM66h2KOjBvSnoLO4auffKSN9+voT/hyDatDYKNZHTg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PKyVOkf0vG7jeJ3DE1PWY5i3ZbA8ivcNNOimr9LceOQj3Od4237LOVFQ22OkoedxG
-         UNBQHQ9texX162I+YL9B2+9nmyFEe0y7w0+qtFfIMkrXj3nZxB2kwRA/LP4jzTG0PW
-         dhPlw6tKb/k4CBG59tkO5O3HHY9mR3zCz/3wcRX8=
-Date:   Tue, 4 Aug 2020 08:41:54 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Gutson <daniel@eclypsium.com>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>
-Subject: Re: [PATCH] Platform lockdown information in SYSFS
-Message-ID: <20200804064154.GE696690@kroah.com>
-References: <20200730214136.5534-1-daniel.gutson@eclypsium.com>
- <20200731070053.GC1518178@kroah.com>
- <CAFmMkTGdzjjrvitY8fT+RcXFqHG1JGMB-3w1hi1c8CD0FH34Tw@mail.gmail.com>
- <20200731141503.GA1717752@kroah.com>
- <CAFmMkTG7tkFzwwo_WNe2EFFRVijvGm+NLaeN3qX6CVzTViWBag@mail.gmail.com>
+        id S1728462AbgHDGmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 02:42:20 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:34402 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgHDGmT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 02:42:19 -0400
+Received: by mail-ej1-f67.google.com with SMTP id o23so13728708ejr.1;
+        Mon, 03 Aug 2020 23:42:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=To/tKZ673YdcmGe7ISEnqDnAKsZbt6QyqhCKeqY+VQQ=;
+        b=E9Xwa0hCd9OmeS3kH3s6UDNOXQOuo3zXI0u6grAGhGMZaKxKyPYQJKRjJD+i0JYYfy
+         YWtPTMd0fsAnsAqhYZUrkY14S0/SWc3+e4FO+Nia5IjC3SWQmJt5HF1WLjcfwADIX5it
+         lv7cLoYvL7p/ZQ5PndvoK0AH+SZaKWa3QMBEbHNsD/c+Yldjs3sPp3JCxiKC2DCzIaSp
+         moQ+/o4FA4iuI1uIkf2Ezx4eYkhueKJZ8C1Ckyti3nMMH7MFLd5lKkWyBj3aT/wEcLpd
+         2pELQW7YGUUNUQhusVJmtodNoGnxznf/GsUwNyoJUmQKgmvCnRITeC0atuHrU34erYcX
+         ubxw==
+X-Gm-Message-State: AOAM531j4Iee+mNndaoaVA0A3IA4kO8V7TfopcVOXOIP4gwMUT3f2JjT
+        iHwegnxUQbjIc3eUyhMdCKss2V7nqi0=
+X-Google-Smtp-Source: ABdhPJy//7W0MX3eI3cZyIQWn6WwzEAzB6TVyn8uEL/oeZHDKkza/pBJBDyVOfFfy1hJVbO5q0GLZw==
+X-Received: by 2002:a17:906:1c84:: with SMTP id g4mr19954755ejh.59.1596523337256;
+        Mon, 03 Aug 2020 23:42:17 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.117])
+        by smtp.googlemail.com with ESMTPSA id sb3sm18150471ejb.113.2020.08.03.23.42.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 03 Aug 2020 23:42:16 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 08:42:13 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: Re: [PATCH] memory: samsung: exynos5422-dmc: propagate error from
+ exynos5_counters_get()
+Message-ID: <20200804064213.GA10089@kozik-lap>
+References: <CGME20200804061225eucas1p283c1e0dc404bc420a2184480fdfd2b0d@eucas1p2.samsung.com>
+ <20200804061210.5415-1-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAFmMkTG7tkFzwwo_WNe2EFFRVijvGm+NLaeN3qX6CVzTViWBag@mail.gmail.com>
+In-Reply-To: <20200804061210.5415-1-m.szyprowski@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 07:04:56PM -0300, Daniel Gutson wrote:
-> > > > Think of this as an input device.  You don't put the random input
-> > > > attributes all in one place, you create a new device that represents the
-> > > > input interface and register that.
+On Tue, Aug 04, 2020 at 08:12:10AM +0200, Marek Szyprowski wrote:
+> exynos5_counters_get() might fail with -EPROBE_DEFER if the driver for
+> devfreq event counter is not yet probed. Propagate that error value to
+> the caller to ensure that the exynos5422-dmc driver will be probed again
+> when devfreq event contuner is available.
 > 
-> I'm having trouble with this. What's the dev_t for the child devices?
-> I'm doing
->     child_device = device_create(&my_class, &pdev->dev, MKDEV(0, 0),
-> NULL, "child");
-> pdev is the pci_device (intel-spi-pci)
-> dmesg shows
+> This fixes boot hang if both exynos5422-dmc and exynos-ppmu drivers are
+> compiled as modules.
 > 
->     sysfs: cannot create duplicate filename '/class/my-class'
->     (call trace)
->     kobject_add_internal failed for my-class with -EEXIST, don't try
-> to register things with the same name in the same directory.
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>  drivers/memory/samsung/exynos5422-dmc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Without seeing all of your code, I can't tell you what you are doing
-wrong, but the kernel should be giving you a huge hint here...
+Thanks, looks good. I'll apply it to fixes after merge window.
 
-Don't create duplicate names in the same subdirectory.
-
-thanks,
-
-greg k-h
+Best regards,
+Krzysztof
