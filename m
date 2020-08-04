@@ -2,182 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA2523B8C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C0D23B8D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728343AbgHDKaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 06:30:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:42282 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726056AbgHDK37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 06:29:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3DEF1FB;
-        Tue,  4 Aug 2020 03:29:58 -0700 (PDT)
-Received: from [10.37.12.45] (unknown [10.37.12.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 123F83F718;
-        Tue,  4 Aug 2020 03:29:56 -0700 (PDT)
-Subject: Re: [PATCH 0/4] CPUFreq statistics retrieved by drivers
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        cristian.marussi@arm.com, rjw@rjwysocki.net
-References: <20200729151208.27737-1-lukasz.luba@arm.com>
- <20200730085333.qubrsv7ufqninihd@vireshk-mac-ubuntu>
- <20200730091014.GA13158@bogus> <3b3a56e9-29ec-958f-fb3b-c689a9389d2f@arm.com>
- <20200804053502.35d3x3vnb3mggtqs@vireshk-mac-ubuntu>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <f784bf30-83a6-55ff-8fa6-f7bd2d4399b9@arm.com>
-Date:   Tue, 4 Aug 2020 11:29:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200804053502.35d3x3vnb3mggtqs@vireshk-mac-ubuntu>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1729346AbgHDKed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 06:34:33 -0400
+Received: from mx0a-0039f301.pphosted.com ([148.163.133.242]:10658 "EHLO
+        mx0a-0039f301.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725996AbgHDKec (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 06:34:32 -0400
+X-Greylist: delayed 14404 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 Aug 2020 06:34:32 EDT
+Received: from pps.filterd (m0174677.ppops.net [127.0.0.1])
+        by mx0a-0039f301.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0746F4Tm030157;
+        Tue, 4 Aug 2020 06:34:13 GMT
+Received: from eur04-vi1-obe.outbound.protection.outlook.com (mail-vi1eur04lp2058.outbound.protection.outlook.com [104.47.14.58])
+        by mx0a-0039f301.pphosted.com with ESMTP id 32pxbn0b4s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 Aug 2020 06:34:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I2qMPqEkxAZfZ0d0HW79twlwuxkCI5Eo1wrgrhtUjErGfvOuzhYpK7wVCILinRMYlhz36CJZZi2CBmwMFrbZjAQLZfTfWHUgnKryrYdEKhdkI6ZjVZg5GLfmxYE0RNKsFXoW/+/HdZXJhvi+/St7CjVDExl530VLulyGplLD7fVV/PpB+Cmvvi/tVcufNrF4rL0rhq2u47PtY/4jG0FWsoT4/EjyA+g1Y+f3rdXxovEw3xv2YxVerFmlAY9R4iSfMapA2wHpzizGOdBwlsJqlecFR1rwhpiIFzlVCsk/qFwXSBeICyD2QSJktcrqqtZgbGUHqY6iEKIQf1xCA0uN4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dt7A68HQ6gnedq5sqGeegGqbUhQ1pFj77ot3E81bgeg=;
+ b=E7c5szBumkGIc5bbhtrksE13bqVScpWRvKU2kS8U8VEOwqQvLrpd70M34blJVzxqlvIjei4fd+Xx2GGLb90hljXtfLkNSNqo53UQru/sq9TdEbLHA9OsxlfHGNw5GjeWQhbTFQ17yEl7OiUnNWgtw1+Fg7S5WGm335ciAPnIF7eYlEIs4ZdSJ1SNi2fhhwWefcorouDxepiuh91fFjXwe2hFDpM16q6BXKDleb3Rq1VGmr8m0yNS+Q4vc3t0LJn6nG38cBYdxKWY/GptEXI3rtCG2PJji7LY3DUs/Mq3tkJ8XAE0Tw4Pi19ZdkYY8yT+m3BvgAsjQcXMLJ4+cmMATw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
+ dkim=pass header.d=epam.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dt7A68HQ6gnedq5sqGeegGqbUhQ1pFj77ot3E81bgeg=;
+ b=ZdqmafcCcvAnNy5j2aw2FTlcDKcS4AEP8FokdC4D6MUA71zIXTocU7UUt+EOp4w3g1eOQJPKq8AAdXYAotRVwW0yy1qXHVpC0qNSROHVi/zHmu+bYdB9xEZdfr/ses9/A9w/Ddiwnp58C1Vvst7kY52porwneLV+LMo68WPUHI92XrHL5wdJaQ6u/wY3mYD8wkAI0GzlVMTyFwYIw/+36NWVWmvN1Tr7PpckEkRxy+YPtuImPc345ljkA6z+/gDeBB/7DkNcrw1pGS7cRBW7kl1m7b3tDyrtm+bsZ37DLuzHhaW4jTxujMNIOWYvjNAPZrazy2RrsGsaXO30GS5vsQ==
+Received: from AM0PR03MB6324.eurprd03.prod.outlook.com (2603:10a6:20b:153::17)
+ by AM0PR03MB6242.eurprd03.prod.outlook.com (2603:10a6:20b:15c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16; Tue, 4 Aug
+ 2020 06:34:10 +0000
+Received: from AM0PR03MB6324.eurprd03.prod.outlook.com
+ ([fe80::21e5:6d27:5ba0:f508]) by AM0PR03MB6324.eurprd03.prod.outlook.com
+ ([fe80::21e5:6d27:5ba0:f508%9]) with mapi id 15.20.3239.022; Tue, 4 Aug 2020
+ 06:34:10 +0000
+From:   Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        Oleksandr Andrushchenko <andr2000@gmail.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>
+CC:     "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Subject: Re: [PATCH 1/6] xen/gntdev: Fix dmabuf import with non-zero sgt
+ offset
+Thread-Topic: [PATCH 1/6] xen/gntdev: Fix dmabuf import with non-zero sgt
+ offset
+Thread-Index: AQHWZzlJKFE4UhNAbk+yHV1cN0npaaknfdGAgAAGQIA=
+Date:   Tue, 4 Aug 2020 06:34:10 +0000
+Message-ID: <df1a02e7-e0e2-cbb1-3d30-9b17c44be6a6@epam.com>
+References: <20200731125109.18666-1-andr2000@gmail.com>
+ <20200731125109.18666-2-andr2000@gmail.com>
+ <acf507b8-462a-1fa0-c54f-cc5c44d3cc55@suse.com>
+In-Reply-To: <acf507b8-462a-1fa0-c54f-cc5c44d3cc55@suse.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=epam.com;
+x-originating-ip: [185.199.97.5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8da35b25-f110-4d4c-cf95-08d838406574
+x-ms-traffictypediagnostic: AM0PR03MB6242:
+x-microsoft-antispam-prvs: <AM0PR03MB6242D3D1695690390E429EA9E74A0@AM0PR03MB6242.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:265;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YGxIjuTcC1ym7LSNcIU6NVRpoTZ9yA4Foa8hdQkd8aqwmrmlbStFhQm/C2N7cNHrJzG0ua3qH5OByx7SQW6q8tQSntu1b420l6+aPC7mlXps6gsGxTCp6wsaftmMv5IvCgdIQwBgChLSvgAFqLOkSgofMoaPsDcMnm454rAL/UL78pZlJNtU+Z/nKzzmGAAOVt7eWf5N5pBQf5WXqAjGIvFxm+fsevfn6oEjBK0CMb5r6AN4LVw0JAObMIH3nUC+BmYtFOfkiz+0LljG80CMJPvThh5EtLlPFyFduzaudykOv/lDw0Y5UepytCaGgAnzHjMwDyB8rXIPZ5vxMHaywA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR03MB6324.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(396003)(136003)(376002)(346002)(39860400002)(8676002)(316002)(7416002)(8936002)(478600001)(2616005)(31686004)(66556008)(66476007)(2906002)(4744005)(4326008)(91956017)(76116006)(66446008)(64756008)(6512007)(6486002)(71200400001)(5660300002)(31696002)(6506007)(66574015)(110136005)(54906003)(83380400001)(26005)(66946007)(36756003)(53546011)(86362001)(186003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: INSR6J7iTUjY9XyKgBhBiirH/eEJSoTgHGW43dLM5sbH4OWEp71/BLqouEecEzd981Fshf40pJZAFUCRQxN/ctPEuWRRI1nWA1zha3L5gHb0pzTQR0dAa4oEwYE0T0yqvM1R27kJwYc+1PgeSZ9KR3y1sg4HW2qWLkdxE3nrIRPlnd7zJDEY64X93gY1PgJcZ/N0sI53weARP/is7kcRJN00Baz32wCFHpTSG3qLLyMbpHNkN+pZtO13UkeaMC2i9yL6S+5I0fEZFnjKWvfn+UfWuYtQ/JCscA3+hgktwk7Rs3MfcwExkGxFGx57cRCddVC/MOxxd/p5ivlXWA35KnVIvXRzzojDdBv9PtcP9YSnYjbDIAagbhrCZM002A2spncp4ARbfDDBtOYikaP0q0OzbhaNovdy5bBnqZCJYT+lH6OmUXSoMFmDXxVV7w8NHRphaZUhJBnYG3UfZM3LaWU/yr/gIEgOhpi61o8bSY7TPEvXLAl0q4A/qLVZnJ3pxLhFZOCdfT4p5YLJii2BcjWJ3C04O6h33Q6wKJamnUTwoRKau+lwZXS9rWSBvm7afbhRoW23aQNCtd6NvAbAnuG9hcpw4D27QPZz4FHgYFijMw5s0+ZfvzjkybirmTRNR754dAwYYc8h51FUW1t3ZA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <44D1CE254150BE4D8C6C2DEB066AFF88@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: epam.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR03MB6324.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8da35b25-f110-4d4c-cf95-08d838406574
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2020 06:34:10.3016
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hV6Qrp8GB499WVSSD4JV2S2HYxmCfiV8zl3Sl3nW00RX9xOrT4QxFJD4I0FwGBpcx6A2UBbjdChwrBP03UnUjiH7BiMDvjJiAoUkBwsw/ZXYwsLgbPx/efolMd8QANRy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR03MB6242
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-04_02:2020-08-03,2020-08-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 spamscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 adultscore=0 clxscore=1011 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008040047
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/4/20 6:35 AM, Viresh Kumar wrote:
-> On 30-07-20, 10:36, Lukasz Luba wrote:
->> On 7/30/20 10:10 AM, Sudeep Holla wrote:
->>> On Thu, Jul 30, 2020 at 02:23:33PM +0530, Viresh Kumar wrote:
->>>> On 29-07-20, 16:12, Lukasz Luba wrote:
->>>>> The existing CPUFreq framework does not tracks the statistics when the
->>>>> 'fast switch' is used or when firmware changes the frequency independently
->>>>> due to e.g. thermal reasons. However, the firmware might track the frequency
->>>>> changes and expose this to the kernel.
->>>>>
->>>>> This patch set aims to introduce CPUfreq statistics gathered by firmware
->>>>> and retrieved by CPUFreq driver. It would require a new API functions
->>>>> in the CPUFreq, which allows to poke drivers to get these stats.
->>>>>
->>>>> The needed CPUFreq infrastructure is in patch 1/4, patch 2/4 extends
->>>>> ARM SCMI protocol layer, patches 3/4, 4/4  modify ARM SCMI CPUFreq driver.
->>>>
->>>> Are you doing this for the fast switch case or because your platform
->>>> actually runs at frequencies which may be different from what cpufreq
->>>> core has requested ?
->>>>
->>>
->>> I think so.
->>
->> For both cases, but fast switch is major and present. Thermal is not
->> currently implemented in SCP FW, but might be in future.
-> 
-> Okay, lets simplify things a bit and merge things slowly upstream and merge only
-> what is required right now.
-> 
-> IIUC, the only concern right now is to capture stats with fast switch ? Maybe we
-> can do something else in that case and brainstorm a bit..
-
-Correct, the fast switch is the only concern right now and not tracked. 
-We could fill in that information with statistics data from firmware
-with a cpufreq driver help.
-
-I could make the if from patch 1/4 covering narrowed case, when
-fast switch is present, check for drivers stats.
-Something like:
------------8<------------------------------------------------------------
-if (policy->fast_switch_enabled)
-	if (policy->has_driver_stats)
-		return cpufreq_stats_present_driver_data(policy, buf);
-	else
-		return 0;
--------------->8----------------------------------------------------------
-
-> 
->>>> I am also not sure what these tables should represent, what the
->>>> cpufreq core has decided for the CPUs or the frequencies we actually
->>>> run at, as these two can be very different for example if the hardware
->>>> runs at frequencies which don't match exactly to what is there in the
->>>> freq table. I believe these are rather to show what cpufreq and its
->>>> governors are doing with the CPUs.
->>>>
->>>
->>> Exactly, I raised similar point in internal discussion and asked Lukasz
->>> to take up the same on the list. I assume it was always what cpufreq
->>> requested rather than what was delivered. So will we break the userspace
->>> ABI if we change that is the main question.
->>
->> Thank you for confirmation. If that is the mechanism for tracking what
->> cpufreq governors are doing with the CPUs, then is clashes with
->> presented data in FW memory, because firmware is the governor.
-> 
-> Why is firmware the governor here ? Aren't you talking about the simple fast
-> switch case only ?
-
-I used a term 'governor' for the firmware because it makes the final
-set for the frequency. It (FW) should respect the frequency value
-set using the fast switch. I don't know how other firmware (e.g. Intel)
-treats this fast switch value or if they even expose FW stats, though.
-
-You can read about this statistics region in [1] at:
-4.5.5 Performance domain statistics shared memory region
-
-> 
-> Over that, I think this cpufreq stats information isn't parsed by any tool right
-> now and tweaking it a bit won't hurt anyone (like if we start capturing things a
-> bit differently). So we may not want to worry about breaking userspace ABI here,
-> if what we are looking to do is the right thing to do.
-
-So, there is some hope... IMHO it would be better to have this cpufreq
-stats in normal location, rather then in scmi debugfs.
-
-> 
->>>> Over that I would like the userspace stats to work exactly as the way
->>>> they work right now, i.e. capture all transitions from one freq to
->>>> other, not just time-in-state. Also resetting of the stats from
->>>> userspace for example. All allocation and printing of the data must be
->>>> done from stats core, the only thing which the driver would do at the
->>>> end is updating the stats structure and nothing more. Instead of
->>>> reading all stats from the firmware, it will be much easier if you can
->>>> just get the information from the firmware whenever there is a
->>>> frequency switch and then we can update the stats the way it is done
->>>> right now. And that would be simple.
->>>>
->>>
->>> Good point, but notifications may not be lightweight. If that is no good,
->>> alternatively, I suggested to keep these firmware stats in a separate
->>> debugfs. Thoughts ?
->>
->> I agree that notifications might not be lightweight.
-> 
-> I am not sure what notifications are we talking about here.
-
-There is a notification mechanism described in the SCMI spec [1] at
-4.5.4 Notifications.
-We were referring to that mechanism.
-
-> 
->> Furthermore I think
->> this still clashes with the assumption that cpufreq governor decisions
->> are tracked in these statistics, not the firmware decision.
->>
->> In this case I think we would have to create debugfs.
->> Sudeep do you think these debugfs should be exposed from the protocol
->> layer:
->> drivers/firmware/arm_scmi/perf.c
->> or maybe from the cpufreq scmi driver? I would probably be safer to have
->> it in the cpufreq driver because we have scmi_handle there.
-> 
-> For the CPUs it would be better if we can keep things in cpufreq only, lets see
-> how we go about it.
-> 
-
-If that would be only ARM SCMI debugfs directory, then we would like to
-keep it in the scmi. We could re-use the code for devfreq (GPU)
-device, which is also exposed as performance domain.
-
-Thank you Viresh for your comments.
-
-Regards,
-Lukasz
-
-[1] 
-https://static.docs.arm.com/den0056/b/DEN0056B_System_Control_and_Management_Interface_v2_0.pdf
+DQpPbiA4LzQvMjAgOToxMSBBTSwgSsO8cmdlbiBHcm/DnyB3cm90ZToNCj4gT24gMzEuMDcuMjAg
+MTQ6NTEsIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3RlOg0KPj4gRnJvbTogT2xla3NhbmRy
+IEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hlbmtvQGVwYW0uY29tPg0KPj4NCj4+
+IEl0IGlzIHBvc3NpYmxlIHRoYXQgdGhlIHNjYXR0ZXItZ2F0aGVyIHRhYmxlIGR1cmluZyBkbWFi
+dWYgaW1wb3J0IGhhcw0KPj4gbm9uLXplcm8gb2Zmc2V0IG9mIHRoZSBkYXRhLCBidXQgdXNlci1z
+cGFjZSBkb2Vzbid0IGV4cGVjdCB0aGF0Lg0KPj4gRml4IHRoaXMgYnkgZmFpbGluZyB0aGUgaW1w
+b3J0LCBzbyB1c2VyLXNwYWNlIGRvZXNuJ3QgYWNjZXNzIHdyb25nIGRhdGEuDQo+Pg0KPj4gRml4
+ZXM6IDM3Y2NiNDRkMGIwMCAoInhlbi9nbnRkZXY6IEltcGxlbWVudCBkbWEtYnVmIGltcG9ydCBm
+dW5jdGlvbmFsaXR5IikNCj4NCj4gSSBjYW4ndCBmaW5kIHRoaXMgY29tbWl0IGluIHRoZSB0cmVl
+LiBEaWQgeW91IG1lYW4gYmY4ZGM1NWIxMzU4Pw0KSSdsbCBkb3VibGUtY2hlY2ssIHRoYW5rIHlv
+dQ0KPg0KPiBBbmQgZG9uJ3QgeW91IHdhbnQgdG8gQ2Mgc3RhYmxlIGZvciB0aGlzIHBhdGNoLCB0
+b28/DQpIbSwgeWVzLCBzb3VuZHMgcmVhc29uYWJsZQ0KPg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6
+IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIDxvbGVrc2FuZHJfYW5kcnVzaGNoZW5rb0BlcGFtLmNv
+bT4NCj4NCj4gQWNrZWQtYnk6IEp1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT4NCj4NCj4N
+Cj4gSnVlcmdlbg==
