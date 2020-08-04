@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7527623BE0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C82923BE07
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgHDQYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:24:03 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43881 "EHLO
+        id S1729806AbgHDQWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:22:52 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:43896 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729615AbgHDQU7 (ORCPT
+        with ESMTP id S1729632AbgHDQVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:20:59 -0400
+        Tue, 4 Aug 2020 12:21:00 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from eli@mellanox.com)
-        with SMTP; 4 Aug 2020 19:20:52 +0300
+        with SMTP; 4 Aug 2020 19:20:53 +0300
 Received: from nps-server-21.mtl.labs.mlnx (nps-server-21.mtl.labs.mlnx [10.237.240.120])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKqCp024004;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 074GKq9h024042;
         Tue, 4 Aug 2020 19:20:52 +0300
 Received: from nps-server-21.mtl.labs.mlnx (localhost [127.0.0.1])
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKqrp022641;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 074GKq7r022643;
         Tue, 4 Aug 2020 19:20:52 +0300
 Received: (from eli@localhost)
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKqZ0022640;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 074GKqgm022642;
         Tue, 4 Aug 2020 19:20:52 +0300
 From:   Eli Cohen <eli@mellanox.com>
 To:     mst@redhat.com, jasowang@redhat.com,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
 Cc:     shahafs@mellanox.com, saeedm@mellanox.com, parav@mellanox.com
-Subject: [PATCH V4 linux-next 04/12] vhost-vdpa: support IOTLB batching hints
-Date:   Tue,  4 Aug 2020 19:20:40 +0300
-Message-Id: <20200804162048.22587-5-eli@mellanox.com>
+Subject: [PATCH V4 linux-next 05/12] vdpasim: support batch updating
+Date:   Tue,  4 Aug 2020 19:20:41 +0300
+Message-Id: <20200804162048.22587-6-eli@mellanox.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200804162048.22587-1-eli@mellanox.com>
 References: <20200804162048.22587-1-eli@mellanox.com>
@@ -43,159 +43,94 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jason Wang <jasowang@redhat.com>
 
-This patches extend the vhost IOTLB API to accept batch updating hints
-form userspace. When userspace wants update the device IOTLB in a
-batch, it may do:
-
-1) Write vhost_iotlb_msg with VHOST_IOTLB_BATCH_BEGIN flag
-2) Perform a batch of IOTLB updating via VHOST_IOTLB_UPDATE/INVALIDATE
-3) Write vhost_iotlb_msg with VHOST_IOTLB_BATCH_END flag
-
-Vhost-vdpa may decide to batch the IOMMU/IOTLB updating in step 3 when
-vDPA device support set_map() ops. This is useful for the vDPA device
-that want to know all the mappings to tweak their own DMA translation
-logic.
-
-For vDPA device that doesn't require set_map(), no behavior changes.
-
-This capability is advertised via VHOST_BACKEND_F_IOTLB_BATCH capability.
+The vDPA simulator support both set_map() and dma_map()/dma_unmap()
+operations. But vhost-vdpa can only use one of them. So this patch
+introduce a module parameter (batch_mapping) that let vpda_sim to
+support only one of those dma operations. The batched mapping via
+set_map() is enabled by default.
 
 Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/vhost/vdpa.c             | 36 ++++++++++++++++++++++++--------
- include/uapi/linux/vhost.h       |  2 ++
- include/uapi/linux/vhost_types.h | 11 ++++++++++
- 3 files changed, 40 insertions(+), 9 deletions(-)
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 40 +++++++++++++++++++++++++++++---
+ 1 file changed, 37 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 2f0310d1b914..0a143615e69d 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -27,7 +27,9 @@
- #include "vhost.h"
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index 13febedd73ee..07ded545197d 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -34,6 +34,10 @@
+ #define DRV_DESC     "vDPA Device Simulator"
+ #define DRV_LICENSE  "GPL v2"
  
- enum {
--	VHOST_VDPA_BACKEND_FEATURES = (1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2)
-+	VHOST_VDPA_BACKEND_FEATURES =
-+	(1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2) |
-+	(1ULL << VHOST_BACKEND_F_IOTLB_BATCH),
++static int batch_mapping = 1;
++module_param(batch_mapping, int, 0444);
++MODULE_PARM_DESC(batch_mapping, "Batched mapping 1 -Enable; 0 - Disable");
++
+ struct vdpasim_virtqueue {
+ 	struct vringh vring;
+ 	struct vringh_kiov iov;
+@@ -334,15 +338,21 @@ static const struct dma_map_ops vdpasim_dma_ops = {
  };
  
- /* Currently, only network backend w/o multiqueue is supported. */
-@@ -48,6 +50,7 @@ struct vhost_vdpa {
- 	int virtio_id;
- 	int minor;
- 	struct eventfd_ctx *config_ctx;
-+	int in_batch;
- };
+ static const struct vdpa_config_ops vdpasim_net_config_ops;
++static const struct vdpa_config_ops vdpasim_net_batch_config_ops;
  
- static DEFINE_IDA(vhost_vdpa_ida);
-@@ -140,6 +143,7 @@ static void vhost_vdpa_reset(struct vhost_vdpa *v)
- 	struct vdpa_device *vdpa = v->vdpa;
- 
- 	vdpa_reset(vdpa);
-+	v->in_batch = 0;
- }
- 
- static long vhost_vdpa_get_device_id(struct vhost_vdpa *v, u8 __user *argp)
-@@ -563,13 +567,15 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
- 	if (r)
- 		return r;
- 
--	if (ops->dma_map)
-+	if (ops->dma_map) {
- 		r = ops->dma_map(vdpa, iova, size, pa, perm);
--	else if (ops->set_map)
--		r = ops->set_map(vdpa, dev->iotlb);
--	else
-+	} else if (ops->set_map) {
-+		if (!v->in_batch)
-+			r = ops->set_map(vdpa, dev->iotlb);
-+	} else {
- 		r = iommu_map(v->domain, iova, pa, size,
- 			      perm_to_iommu_flags(perm));
-+	}
- 
- 	return r;
- }
-@@ -582,12 +588,14 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
- 
- 	vhost_vdpa_iotlb_unmap(v, iova, iova + size - 1);
- 
--	if (ops->dma_map)
-+	if (ops->dma_map) {
- 		ops->dma_unmap(vdpa, iova, size);
--	else if (ops->set_map)
--		ops->set_map(vdpa, dev->iotlb);
--	else
-+	} else if (ops->set_map) {
-+		if (!v->in_batch)
-+			ops->set_map(vdpa, dev->iotlb);
-+	} else {
- 		iommu_unmap(v->domain, iova, size);
-+	}
- }
- 
- static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
-@@ -680,6 +688,8 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
- 					struct vhost_iotlb_msg *msg)
+ static struct vdpasim *vdpasim_create(void)
  {
- 	struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
-+	struct vdpa_device *vdpa = v->vdpa;
-+	const struct vdpa_config_ops *ops = vdpa->config;
- 	int r = 0;
++	const struct vdpa_config_ops *ops;
+ 	struct vdpasim *vdpasim;
+ 	struct device *dev;
+ 	int ret = -ENOMEM;
  
- 	r = vhost_dev_check_owner(dev);
-@@ -693,6 +703,14 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
- 	case VHOST_IOTLB_INVALIDATE:
- 		vhost_vdpa_unmap(v, msg->iova, msg->size);
- 		break;
-+	case VHOST_IOTLB_BATCH_BEGIN:
-+		v->in_batch = true;
-+		break;
-+	case VHOST_IOTLB_BATCH_END:
-+		if (v->in_batch && ops->set_map)
-+			ops->set_map(vdpa, dev->iotlb);
-+		v->in_batch = false;
-+		break;
- 	default:
- 		r = -EINVAL;
- 		break;
-diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
-index 5d9254e2a6b6..11a4948b6216 100644
---- a/include/uapi/linux/vhost.h
-+++ b/include/uapi/linux/vhost.h
-@@ -91,6 +91,8 @@
+-	vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL,
+-				    &vdpasim_net_config_ops);
++	if (batch_mapping)
++		ops = &vdpasim_net_batch_config_ops;
++	else
++		ops = &vdpasim_net_config_ops;
++
++	vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL, ops);
+ 	if (!vdpasim)
+ 		goto err_alloc;
  
- /* Use message type V2 */
- #define VHOST_BACKEND_F_IOTLB_MSG_V2 0x1
-+/* IOTLB can accept batching hints */
-+#define VHOST_BACKEND_F_IOTLB_BATCH  0x2
- 
- #define VHOST_SET_BACKEND_FEATURES _IOW(VHOST_VIRTIO, 0x25, __u64)
- #define VHOST_GET_BACKEND_FEATURES _IOR(VHOST_VIRTIO, 0x26, __u64)
-diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_types.h
-index 669457ce5c48..9a269a88a6ff 100644
---- a/include/uapi/linux/vhost_types.h
-+++ b/include/uapi/linux/vhost_types.h
-@@ -60,6 +60,17 @@ struct vhost_iotlb_msg {
- #define VHOST_IOTLB_UPDATE         2
- #define VHOST_IOTLB_INVALIDATE     3
- #define VHOST_IOTLB_ACCESS_FAIL    4
-+/*
-+ * VHOST_IOTLB_BATCH_BEGIN and VHOST_IOTLB_BATCH_END allow modifying
-+ * multiple mappings in one go: beginning with
-+ * VHOST_IOTLB_BATCH_BEGIN, followed by any number of
-+ * VHOST_IOTLB_UPDATE messages, and ending with VHOST_IOTLB_BATCH_END.
-+ * When one of these two values is used as the message type, the rest
-+ * of the fields in the message are ignored. There's no guarantee that
-+ * these changes take place automatically in the device.
-+ */
-+#define VHOST_IOTLB_BATCH_BEGIN    5
-+#define VHOST_IOTLB_BATCH_END      6
- 	__u8 type;
+@@ -641,12 +651,36 @@ static const struct vdpa_config_ops vdpasim_net_config_ops = {
+ 	.get_config             = vdpasim_get_config,
+ 	.set_config             = vdpasim_set_config,
+ 	.get_generation         = vdpasim_get_generation,
+-	.set_map                = vdpasim_set_map,
+ 	.dma_map                = vdpasim_dma_map,
+ 	.dma_unmap              = vdpasim_dma_unmap,
+ 	.free                   = vdpasim_free,
  };
  
++static const struct vdpa_config_ops vdpasim_net_batch_config_ops = {
++	.set_vq_address         = vdpasim_set_vq_address,
++	.set_vq_num             = vdpasim_set_vq_num,
++	.kick_vq                = vdpasim_kick_vq,
++	.set_vq_cb              = vdpasim_set_vq_cb,
++	.set_vq_ready           = vdpasim_set_vq_ready,
++	.get_vq_ready           = vdpasim_get_vq_ready,
++	.set_vq_state           = vdpasim_set_vq_state,
++	.get_vq_state           = vdpasim_get_vq_state,
++	.get_vq_align           = vdpasim_get_vq_align,
++	.get_features           = vdpasim_get_features,
++	.set_features           = vdpasim_set_features,
++	.set_config_cb          = vdpasim_set_config_cb,
++	.get_vq_num_max         = vdpasim_get_vq_num_max,
++	.get_device_id          = vdpasim_get_device_id,
++	.get_vendor_id          = vdpasim_get_vendor_id,
++	.get_status             = vdpasim_get_status,
++	.set_status             = vdpasim_set_status,
++	.get_config             = vdpasim_get_config,
++	.set_config             = vdpasim_set_config,
++	.get_generation         = vdpasim_get_generation,
++	.set_map                = vdpasim_set_map,
++	.free                   = vdpasim_free,
++};
++
+ static int __init vdpasim_dev_init(void)
+ {
+ 	vdpasim_dev = vdpasim_create();
 -- 
 2.26.0
 
