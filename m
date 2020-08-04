@@ -2,131 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9585623BBF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6570D23BBF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbgHDOYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:24:01 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:53136 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728880AbgHDOXu (ORCPT
+        id S1728990AbgHDOYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728903AbgHDOX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:23:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596551029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iy5rOiKvzn/ihf1AsNDgRAp385wBg2mwZBntnUSOdjY=;
-        b=hT9HPjSFt8YBB/MEENy1OTOaGfNleaf5V1zHXy3LdXT/alj70aF9CyQGLSD8iBaDTgXaej
-        EcB5SazeQ1HSrXDXJbtbVCKuJ6E9DcBIyLKI2ab7nV97yrAwEiIholWrYLjPj4tVs74mm0
-        lYxvNL6C565snCCDQ4oQNPATIQ2YLQ0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-jw4ds942OKiTFM2bmKBI3A-1; Tue, 04 Aug 2020 10:23:47 -0400
-X-MC-Unique: jw4ds942OKiTFM2bmKBI3A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 228AE800461;
-        Tue,  4 Aug 2020 14:23:46 +0000 (UTC)
-Received: from gondolin (ovpn-112-169.ams2.redhat.com [10.36.112.169])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E13B7B90F;
-        Tue,  4 Aug 2020 14:23:42 +0000 (UTC)
-Date:   Tue, 4 Aug 2020 16:23:40 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 03/24] virtio: allow __virtioXX, __leXX in config
- space
-Message-ID: <20200804162340.046b719b.cohuck@redhat.com>
-In-Reply-To: <20200803205814.540410-4-mst@redhat.com>
-References: <20200803205814.540410-1-mst@redhat.com>
-        <20200803205814.540410-4-mst@redhat.com>
-Organization: Red Hat GmbH
+        Tue, 4 Aug 2020 10:23:58 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80364C06174A;
+        Tue,  4 Aug 2020 07:23:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=k3hHT8hBP3vIg+5n2HC1ywURgKIRKUgYzqnMS2vhhdM=; b=YaID0GqXpy1LpLRHHrlA5ZgUdz
+        YRGNR6WocYcAEBMUYF6t2biBQQZsEFcHxoQjE9fZYjLOXGJvpnh17wTBwaWVviPibgVhjtzD1VpNl
+        CXYJfWd6M0ExGPid892N2ilOazv9V15LYR0KDCJcB58l52fAtPISo6oZohbygZn1JD6R8o3EvvKJ0
+        Mht2Ln7RQbdCwW6RIIT8QRChYwE6jcSTh01gvuhnDUVvaKgrbVrfETGDK9EsEGiZovSfSYX3GVzmO
+        shjByq9fco8EqvTIr1/L1omF4lOkIZVQX82BF7paNS2+MsJFJuBPh/3IvmeI8gWNmTqqKPz4bK0qP
+        LEmOq8jQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k2xr0-0004yR-9p; Tue, 04 Aug 2020 14:23:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3F2F730477A;
+        Tue,  4 Aug 2020 16:23:44 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 281592B7C12A3; Tue,  4 Aug 2020 16:23:44 +0200 (CEST)
+Date:   Tue, 4 Aug 2020 16:23:44 +0200
+From:   peterz@infradead.org
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Ian Rogers <irogers@google.com>, mingo@kernel.org
+Subject: Re: [PATCH] lib: kunit: add test_min_heap test conversion to KUnit
+Message-ID: <20200804142344.GM2674@hirez.programming.kicks-ass.net>
+References: <20200729201146.537433-1-vitor@massaru.org>
+ <20200729203908.GD2655@hirez.programming.kicks-ass.net>
+ <CADQ6JjW-=SNjV-abGpGA9NfHD4yGG_bD5FmvW99W-Vo06twkbw@mail.gmail.com>
+ <20200804132517.GK2657@hirez.programming.kicks-ass.net>
+ <CADQ6JjWzze-VAmg_b9EkS4iVySt5pw8V4FSxYpDFAj8jvBxuGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADQ6JjWzze-VAmg_b9EkS4iVySt5pw8V4FSxYpDFAj8jvBxuGA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 Aug 2020 16:58:46 -0400
-"Michael S. Tsirkin" <mst@redhat.com> wrote:
+On Tue, Aug 04, 2020 at 10:46:21AM -0300, Vitor Massaru Iha wrote:
+> On Tue, Aug 4, 2020 at 10:25 AM <peterz@infradead.org> wrote:
+> > On Wed, Jul 29, 2020 at 06:57:17PM -0300, Vitor Massaru Iha wrote:
+> >
+> > > The results can be seen this way:
+> > >
+> > > This is an excerpt from the test.log with the result in TAP format:
+> > > [snip]
+> > > ok 5 - example
+> > >     # Subtest: min-heap
+> > >     1..6
+> > >     ok 1 - test_heapify_all_true
+> > >     ok 2 - test_heapify_all_false
+> > >     ok 3 - test_heap_push_true
+> > >     ok 4 - test_heap_push_false
+> > >     ok 5 - test_heap_pop_push_true
+> > >     ok 6 - test_heap_pop_push_false
+> > > [snip]
 
-> Currently all config space fields are of the type __uXX.
-> This confuses people and some drivers (notably vdpa)
-> access them using CPU endian-ness - which only
-> works well for legacy or LE platforms.
+So ^ is TAP format?
+
+> > I don't care or care to use either; what does dmesg do? It used to be
+> > that just building the self-tests was sufficient and any error would
+> > show in dmesg when you boot the machine.
+> >
+> > But if I now have to use some damn tool, this is a regression.
 > 
-> Update virtio_cread/virtio_cwrite macros to allow __virtioXX
-> and __leXX field types. Follow-up patches will convert
-> config space to use these types.
-> 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->  include/linux/virtio_config.h | 50 +++++++++++++++++++++++++++++++++--
->  1 file changed, 48 insertions(+), 2 deletions(-)
+> If you don't want to, you don't need to use the kunit-tool. If you
+> compile the tests as builtin and run the Kernel on your machine
+> the test result will be shown in dmesg in TAP format.
 
-(...)
-
-> @@ -287,12 +288,57 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
->  	return __cpu_to_virtio64(virtio_is_little_endian(vdev), val);
->  }
->  
-> +/*
-> + * Only the checker differentiates between __virtioXX and __uXX types. But we
-> + * try to share as much code as we can with the regular GCC build.
-> + */
-> +#if !defined(CONFIG_CC_IS_GCC) && !defined(__CHECKER__)
-> +
-> +/* Not a checker - we can keep things simple */
-> +#define __virtio_native_typeof(x) typeof(x)
-> +
-> +#else
-> +
-> +/*
-> + * We build this out of a couple of helper macros in a vain attempt to
-> + * help you keep your lunch down while reading it.
-> + */
-
-It might help with the lunch, but it still gives a slight queasiness.
-No ideas for a better version, though.
-
-> +#define __virtio_pick_value(x, type, then, otherwise)			\
-> +	__builtin_choose_expr(__same_type(x, type), then, otherwise)
-> +
-> +#define __virtio_pick_type(x, type, then, otherwise)			\
-> +	__virtio_pick_value(x, type, (then)0, otherwise)
-> +
-> +#define __virtio_pick_endian(x, x16, x32, x64, otherwise)			\
-> +	__virtio_pick_type(x, x16, __u16,					\
-> +		__virtio_pick_type(x, x32, __u32,				\
-> +			__virtio_pick_type(x, x64, __u64,			\
-> +				otherwise)))
-> +
-> +#define __virtio_native_typeof(x) typeof(					\
-> +	__virtio_pick_type(x, __u8, __u8,					\
-> +		__virtio_pick_endian(x, __virtio16, __virtio32, __virtio64,	\
-> +			__virtio_pick_endian(x, __le16, __le32, __le64,		\
-> +				__virtio_pick_endian(x, __u16, __u32, __u64,	\
-> +					/* No other type allowed */		\
-> +					(void)0)))))
-> +
-> +#endif
-> +
-> +#define __virtio_native_type(structname, member) \
-> +	__virtio_native_typeof(((structname*)0)->member)
-> +
-> +#define __virtio_typecheck(structname, member, val) \
-> +		/* Must match the member's type, and be integer */ \
-> +		typecheck(__virtio_native_type(structname, member), (val))
-> +
-> +
-
-Acked-by: Cornelia Huck <cohuck@redhat.com>
-
+That's seems a lot more verbose than it is now. I've recently even done
+a bunch of tests that don't print anything on success, dmesg is clutter
+enough already.
