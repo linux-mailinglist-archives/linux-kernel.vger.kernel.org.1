@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8771323B1C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 02:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3341D23B1D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 02:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgHDApo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 20:45:44 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:16557 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727899AbgHDApm (ORCPT
+        id S1727885AbgHDAsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 20:48:30 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:44470 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726398AbgHDAsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 20:45:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596501941; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=OLPKTdSqqloYxw93IHUq14f5yJAcWoSaKHnlKyo6IBE=; b=HW9Y9yKnUijw+NVIRr8+2NtUJI6fFUFz+GP8HA7+AchIqQfs65k0ViZy/64BLWsVzZ01xwTr
- 5qMr1Oth+MkW8gl7Mqc2RxPfeQgsTQBUGDkg7QMVwGedPqJBWidhFQyGwIJzmTn14YznrcOF
- sxnIcBlf8bMGEerxKgbGW8F3jC8=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f28afb576a940cda8876370 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 Aug 2020 00:45:41
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3D123C433A0; Tue,  4 Aug 2020 00:45:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Mon, 3 Aug 2020 20:48:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596502109;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pni1o6aoiUKtw/3OfYS97iO3vEt5WV4q/1D+eS1+IJs=;
+        b=ZmlhDmNuaJUuiZ8L/QL3k+b8YCtvUSzkwzN4JFnDg7C+zHykVDe3i7gyoiOSbjE0XZyLrg
+        ZoR/X9yg+vG6WDE+I4iepy7sBLHiJi5odz8TynWlCR2dSbcOy3uww6VbSiFVUXVhcCyfrL
+        CdIrLMr8ySyPeaiqSqWWJM8l8ekRTjw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-Q5lytYKUP--GAurLnuzXlQ-1; Mon, 03 Aug 2020 20:48:27 -0400
+X-MC-Unique: Q5lytYKUP--GAurLnuzXlQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3419DC433C6;
-        Tue,  4 Aug 2020 00:45:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3419DC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     robh+dt@kernel.org, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, agross@kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        jackp@codeaurora.org, sboyd@kernel.org,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v7 4/4] arm64: boot: dts: qcom: pm8150b: Add DTS node for PMIC VBUS booster
-Date:   Mon,  3 Aug 2020 17:45:23 -0700
-Message-Id: <20200804004523.7964-5-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200804004523.7964-1-wcheng@codeaurora.org>
-References: <20200804004523.7964-1-wcheng@codeaurora.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C60F5100AA23;
+        Tue,  4 Aug 2020 00:48:24 +0000 (UTC)
+Received: from redhat.com (ovpn-112-64.phx2.redhat.com [10.3.112.64])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 32DEF5D9F7;
+        Tue,  4 Aug 2020 00:48:21 +0000 (UTC)
+Received: from fche by redhat.com with local (Exim 4.94)
+        (envelope-from <fche@redhat.com>)
+        id 1k2l7p-0008W3-HU; Mon, 03 Aug 2020 20:48:17 -0400
+Date:   Mon, 3 Aug 2020 20:48:17 -0400
+From:   "Frank Ch. Eigler" <fche@redhat.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Joe Lawrence <joe.lawrence@redhat.com>,
+        Evgenii Shatokhin <eshatokhin@virtuozzo.com>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        Miroslav Benes <mbenes@suse.cz>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, arjan@linux.intel.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, rick.p.edgecombe@intel.com,
+        live-patching@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [PATCH v4 00/10] Function Granular KASLR
+Message-ID: <20200804004817.GD30810@redhat.com>
+References: <20200717170008.5949-1-kristen@linux.intel.com>
+ <alpine.LSU.2.21.2007221122110.10163@pobox.suse.cz>
+ <e9c4d88b-86db-47e9-4299-3fac45a7e3fd@virtuozzo.com>
+ <202008031043.FE182E9@keescook>
+ <fc6d2289-af97-5cf8-a4bb-77c2b0b8375c@redhat.com>
+ <20200803193837.GB30810@redhat.com>
+ <202008031310.4F8DAA20@keescook>
+ <20200803211228.GC30810@redhat.com>
+ <202008031439.F1399A588@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202008031439.F1399A588@keescook>
+User-Agent: Mutt/1.12.0 (2019-05-25)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the required DTS node for the USB VBUS output regulator, which is
-available on PM8150B.  This will provide the VBUS source to connected
-peripherals.
+Hi -
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/pm8150b.dtsi   | 6 ++++++
- arch/arm64/boot/dts/qcom/sm8150-mtp.dts | 4 ++++
- 2 files changed, 10 insertions(+)
+> > We have relocated based on sections, not some subset of function
+> > symbols accessible that way, partly because DWARF line- and DIE- based
+> > probes can map to addresses some way away from function symbols, into
+> > function interiors, or cloned/moved bits of optimized code.  It would
+> > take some work to prove that function-symbol based heuristic
+> > arithmetic would have just as much reach.
+> 
+> Interesting. Do you have an example handy? 
 
-diff --git a/arch/arm64/boot/dts/qcom/pm8150b.dtsi b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-index 053c659734a7..9e560c1ca30d 100644
---- a/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-@@ -53,6 +53,12 @@ power-on@800 {
- 			status = "disabled";
- 		};
- 
-+		pm8150b_vbus: dcdc@1100 {
-+			compatible = "qcom,pm8150b-vbus-reg";
-+			status = "disabled";
-+			reg = <0x1100>;
-+		};
-+
- 		pm8150b_typec: typec@1500 {
- 			compatible = "qcom,pm8150b-usb-typec";
- 			status = "disabled";
-diff --git a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-index 6c6325c3af59..ba3b5b802954 100644
---- a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-@@ -409,6 +409,10 @@ &ufs_mem_phy {
- 	vdda-pll-max-microamp = <19000>;
- };
- 
-+&pm8150b_vbus {
-+	status = "okay";
-+};
-+
- &usb_1_hsphy {
- 	status = "okay";
- 	vdda-pll-supply = <&vdd_usb_hs_core>;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+No, I'm afraid I don't have one that I know cannot possibly be
+expressed by reference to a function symbol only.  I'd look at
+systemtap (4.3) probe point lists like:
+
+% stap -vL 'kernel.statement("*@kernel/*verif*.c:*")'
+% stap -vL 'module("amdgpu").statement("*@*execution*.c:*")'
+
+which give an impression of computed PC addresses.
+
+> It seems like something like that would reference the enclosing
+> section, which means we can't just leave them out of the sysfs
+> list... (but if such things never happen in the function-sections,
+> then we *can* remove them...)
+
+I'm not sure we can easily prove they can never happen there.
+
+- FChE
 
