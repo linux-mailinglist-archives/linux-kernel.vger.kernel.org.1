@@ -2,126 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC8C23C1FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C10523C204
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 01:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgHDXAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 19:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726955AbgHDXAF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 19:00:05 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D16C06179E
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 16:00:05 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g33so5912048pgb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 16:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rcZb+dHytv0a32nKpWx1evN57JE3AVDCE8fU5l5akxE=;
-        b=TVPlXmnofY4oNI4lkFaO/QjHknqPBUcZWI9D3ZsaudyW2Xm/AsgQMBtyFstm66Q92T
-         iKkOGtZOUqGJ1sLgmSltnMcNQNHVq2F7DoD/0PxZTNRRE2VYC7sRXCeM7x3AypNJJwuB
-         MEVULh6cW6y7Nk+oyaOde07gfo7whh4CHCkYQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rcZb+dHytv0a32nKpWx1evN57JE3AVDCE8fU5l5akxE=;
-        b=Dpcnb8VG8FqOSPCkEosRO7wCYbfkZ+ZQyZl/mzdI4jIgvvnL8q0OZ9kPe1Dy4hROar
-         DSk6bSIUFAhqSQzxz7OX1RRE80Cdk3bvbHSJXCYUhmgzIkgC35+K9BLSent47l2fHbbG
-         m5ZA87/j+qli4OCffK1sUbuXSI/Fb+rk0B18RlxcF8a1eDasP7qBFYTJCsrWaZoPGVHp
-         Kgz4fQKV87MyGbP3WiiXt+ODfB1ACZpyt11X7+36aTQSSY28L/kCIS5Rmbz5GtAKJuRe
-         ZOWDAoup3MloneEf3Eod3Tr4Q+tDEeXbS5n/LP2yyjHMOrO0KjEqW6UmUrtoYaTSjLMW
-         agIg==
-X-Gm-Message-State: AOAM531QXALgQwIoGv64th/LV/H/jCN0yfCgvUD3i05Jjpmy5ABxh6Gi
-        qnAJ/6MAmPttwqZYvuFYuB7XjSUVgDY=
-X-Google-Smtp-Source: ABdhPJy1jQHdDTxYXJqvgHoo3khVirwf9b0zx6/wK4kt+3c+gECT298hPuwBViACzGRRYUCo7jsrPQ==
-X-Received: by 2002:a63:2482:: with SMTP id k124mr568208pgk.332.1596582004360;
-        Tue, 04 Aug 2020 16:00:04 -0700 (PDT)
-Received: from bhanumaiya-glaptop.hsd1.ca.comcast.net ([2601:646:9500:590:250:b6ff:fe8e:b459])
-        by smtp.gmail.com with ESMTPSA id y4sm247141pgb.16.2020.08.04.16.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 16:00:03 -0700 (PDT)
-From:   Bhanu Prakash Maiya <bhanumaiya@chromium.org>
-X-Google-Original-From: Bhanu Prakash Maiya <bhanumaiya@google.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Furquan Shaikh <furquan@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Raul E Rangel <rrangel@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Duncan Laurie <dlaurie@google.com>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Eric Peers <epeers@google.com>,
-        Bhanu Prakash Maiya <bhanumaiya@chromium.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 2/2] dt-bindings: mfd: Add DT compatible string "google,cros_ec_uart"
-Date:   Tue,  4 Aug 2020 15:59:57 -0700
-Message-Id: <20200804155833.v5.2.I8d7530d8372e4ef298ddaaaad612a2cdd24ed93e@changeid>
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-In-Reply-To: <20200804155833.v5.1.Ic98067cd92a0b7fed9cd3dfb7b4e736e76551cda@changeid>
-References: <20200804155833.v5.1.Ic98067cd92a0b7fed9cd3dfb7b4e736e76551cda@changeid>
+        id S1727087AbgHDXCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 19:02:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726831AbgHDXB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 19:01:59 -0400
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8BC622B45
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 23:01:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596582119;
+        bh=G0QXhj8uvE6uFG6LEZRUpWEjC9R2zkgt7jzZ8pwDd9c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CAEtWlpJUCItzCh0R85X2nUmruZ3t3Ig3+reCj6xaQeikD1+DGcFEWHZb85MDCrIX
+         7/xVZw/mxS+fQsvaHRl8suTRwNYGM85ckttn036gSG26IjnYeI/kBXaOW9BIzkcYH5
+         EVFouvvLMRXFZF241KforHyr19RuJfcTkEsiQVhY=
+Received: by mail-ed1-f50.google.com with SMTP id c15so21426365edj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 16:01:58 -0700 (PDT)
+X-Gm-Message-State: AOAM530nE86r41eFE7CaKrBz9Tur3QdmcuWJ8z9lZqJWfEYA2hS2fyaz
+        r7FBJWbeCV2FTtRdZnBKCIsPrcghP00udY7NaA==
+X-Google-Smtp-Source: ABdhPJyiqhWgjKSgZozGPp1jl9K0B7+yb2PKS2guwR3ob296qpnBATjzZoDka004lYrqOD1qk897url6EerXEvu419k=
+X-Received: by 2002:a50:e109:: with SMTP id h9mr207114edl.47.1596582117170;
+ Tue, 04 Aug 2020 16:01:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200804165555.75159-1-linux@fw-web.de> <20200804165555.75159-4-linux@fw-web.de>
+In-Reply-To: <20200804165555.75159-4-linux@fw-web.de>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 5 Aug 2020 07:01:45 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8VB6wkKLCAcJtwbhzOxN8R3=FzdJhab5NzmpOxyLEmeg@mail.gmail.com>
+Message-ID: <CAAOTY_8VB6wkKLCAcJtwbhzOxN8R3=FzdJhab5NzmpOxyLEmeg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/6] drm/mediatek: add ddp routing for mt7623
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
+Hi, Frank:
 
-Add DT compatible string in
-Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+Frank Wunderlich <linux@fw-web.de> =E6=96=BC 2020=E5=B9=B48=E6=9C=885=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8812:56=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> From: Frank Wunderlich <frank-w@public-files.de>
+>
+> on BPi-R2/mt7623 main-path have to be routed to DPI0 (hdmi) instead of DS=
+I0
+> using compatible "mt7623-mmsys" already defined in dts
 
-Signed-off-by: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-Changes in v5: None
-Changes in v4:
-- Changes in commit message.
-
-Changes in v3:
-- Rebased changes on google,cros-ec.yaml
-
-Changes in v2:
-- No change
-
- Documentation/devicetree/bindings/mfd/google,cros-ec.yaml | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-index 6a7279a85ec1c..552d1c9bf3de4 100644
---- a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-+++ b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-@@ -10,11 +10,12 @@ maintainers:
-   - Benson Leung <bleung@chromium.org>
-   - Enric Balletbo i Serra <enric.balletbo@collabora.com>
-   - Guenter Roeck <groeck@chromium.org>
-+  - Bhanu Prakash Maiya <bhanumaiya@chromium.org>
- 
- description:
-   Google's ChromeOS EC is a microcontroller which talks to the AP and
-   implements various functions such as keyboard and battery charging.
--  The EC can be connected through various interfaces (I2C, SPI, and others)
-+  The EC can be connected through various interfaces (I2C, SPI, UART and others)
-   and the compatible string specifies which interface is being used.
- 
- properties:
-@@ -29,6 +30,9 @@ properties:
-       - description:
-           For implementations of the EC is connected through RPMSG.
-         const: google,cros-ec-rpmsg
-+      - description:
-+          For implementations of the EC is connected through UART.
-+        const: google,cros-ec-uart
- 
-   google,cros-ec-spi-pre-delay:
-     description:
--- 
-2.26.2
-
+>
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_drv.c | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/med=
+iatek/mtk_drm_drv.c
+> index 6bd369434d9d..11e3752c670d 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> @@ -74,6 +74,19 @@ static const enum mtk_ddp_comp_id mt2701_mtk_ddp_ext[]=
+ =3D {
+>         DDP_COMPONENT_DPI0,
+>  };
+>
+> +static const enum mtk_ddp_comp_id mt7623_mtk_ddp_main[] =3D {
+> +       DDP_COMPONENT_OVL0,
+> +       DDP_COMPONENT_RDMA0,
+> +       DDP_COMPONENT_COLOR0,
+> +       DDP_COMPONENT_BLS,
+> +       DDP_COMPONENT_DPI0,
+> +};
+> +
+> +static const enum mtk_ddp_comp_id mt7623_mtk_ddp_ext[] =3D {
+> +       DDP_COMPONENT_RDMA1,
+> +       DDP_COMPONENT_DSI0,
+> +};
+> +
+>  static const enum mtk_ddp_comp_id mt2712_mtk_ddp_main[] =3D {
+>         DDP_COMPONENT_OVL0,
+>         DDP_COMPONENT_COLOR0,
+> @@ -127,6 +140,14 @@ static const struct mtk_mmsys_driver_data mt2701_mms=
+ys_driver_data =3D {
+>         .shadow_register =3D true,
+>  };
+>
+> +static const struct mtk_mmsys_driver_data mt7623_mmsys_driver_data =3D {
+> +       .main_path =3D mt7623_mtk_ddp_main,
+> +       .main_len =3D ARRAY_SIZE(mt7623_mtk_ddp_main),
+> +       .ext_path =3D mt7623_mtk_ddp_ext,
+> +       .ext_len =3D ARRAY_SIZE(mt7623_mtk_ddp_ext),
+> +       .shadow_register =3D true,
+> +};
+> +
+>  static const struct mtk_mmsys_driver_data mt2712_mmsys_driver_data =3D {
+>         .main_path =3D mt2712_mtk_ddp_main,
+>         .main_len =3D ARRAY_SIZE(mt2712_mtk_ddp_main),
+> @@ -422,6 +443,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[=
+] =3D {
+>  static const struct of_device_id mtk_drm_of_ids[] =3D {
+>         { .compatible =3D "mediatek,mt2701-mmsys",
+>           .data =3D &mt2701_mmsys_driver_data},
+> +       { .compatible =3D "mediatek,mt7623-mmsys",
+> +         .data =3D &mt7623_mmsys_driver_data},
+>         { .compatible =3D "mediatek,mt2712-mmsys",
+>           .data =3D &mt2712_mmsys_driver_data},
+>         { .compatible =3D "mediatek,mt8173-mmsys",
+> --
+> 2.25.1
+>
