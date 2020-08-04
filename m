@@ -2,97 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D0D23BA8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B98823BA97
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728132AbgHDMmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 08:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727862AbgHDMl6 (ORCPT
+        id S1728282AbgHDMnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 08:43:51 -0400
+Received: from host-88-217-225-28.customer.m-online.net ([88.217.225.28]:56536
+        "EHLO mail.dev.tdt.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726210AbgHDMnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 08:41:58 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FFBC0617A5
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 05:41:45 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id w15so27704383qtv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 05:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=OJV+wFsSuBAEdua9Kpud4j6ZGzVdRXqmU9/PZhjVLdc=;
-        b=Ea5YjJ7o620kZq8eHnshiekvC4wpoxtU/m2L83KMHr56wGFqcLIiluwTTPIuK6jPtz
-         NIbahZxx/kLpiZOWX4LifN1sYL8ve+GY+nJ4uXKX/NwgeJ66FB0oBHFDCJ7CnFI+jXp5
-         YfjHAXZMMGH3A1RBkM5ekVG/ygZ56FsWNDeUBLLVL1ABwVsRZPV6DZg8v5EyPdnyI/8q
-         u9+woephvoS6hP7AP7QtlnSDcnrQ3oLlLY/jprakwQVQNuaNzYsx0faunrqjJ1Rwi828
-         vpjJ63tAJJETQeQAfpWW300WdlbW294wpGLA7b0wjZ0R/4TF1hESmC/l3kgC9ReY8bHQ
-         oJZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=OJV+wFsSuBAEdua9Kpud4j6ZGzVdRXqmU9/PZhjVLdc=;
-        b=Q6Z64Cb0jCT7y0pFuaXELg6izRM6RTnbt+H4RX1kzO/h+q951UH9eUqzlNLevLzsq+
-         w3CjSLJv2NYCK0e7qMKWaswEjBhKAdfDP9+Msb0XdSusufZ/ZIhIYpgnME/P+9RxxRhp
-         sKF5FYGUG+96G5HZo9EBy/JJiuOsRRKUfyYva5CSKJ3gz2yASXoQaGDTHxi4r/agHZXe
-         9RExN7trUexfsaukLueIgGBBM+LZcDEyMLvm/4lJMbaDq1bmz2+F6Agksl6nCU96E5kX
-         qwDApqBn2XyfxGlQDkyfZFNWdrdM/SMSPcErmNjmcYCcih9lTPEXUEN+JorFyy53wzYQ
-         blVQ==
-X-Gm-Message-State: AOAM533B1yRdvSjZcsN/HybUy+wMAzRr3qgr5eTpREMsFKzkQ87LWrlR
-        eDiUWFEF91Q/laDYOgVP/cMAgwubnIf3lCte
-X-Google-Smtp-Source: ABdhPJxMCD1uy5OtH/rfQcGvmBrhxSjZNftrKmDoPQf463mdE8fRrlNv8GbsPVw+FCZ38SV1RL/Err4XbOOp0GEM
-X-Received: by 2002:a0c:b604:: with SMTP id f4mr15297001qve.68.1596544904936;
- Tue, 04 Aug 2020 05:41:44 -0700 (PDT)
-Date:   Tue,  4 Aug 2020 14:41:28 +0200
-In-Reply-To: <cover.1596544734.git.andreyknvl@google.com>
-Message-Id: <3063ab1411e92bce36061a96e25b651212e70ba6.1596544734.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <cover.1596544734.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH v2 5/5] kasan: adjust kasan_stack_oob for tag-based mode
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 4 Aug 2020 08:43:50 -0400
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 94668200F9;
+        Tue,  4 Aug 2020 12:43:46 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 04 Aug 2020 14:43:46 +0200
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-x25@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Brian Norris <briannorris@chromium.org>,
+        netdev-owner@vger.kernel.org
+Subject: Re: [net v3] drivers/net/wan/lapbether: Use needed_headroom instead
+ of hard_header_len
+Organization: TDT AG
+In-Reply-To: <20200802195046.402539-1-xie.he.0141@gmail.com>
+References: <20200802195046.402539-1-xie.he.0141@gmail.com>
+Message-ID: <d02996f90f64d55d5c5e349560bfde46@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.1.5
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use OOB_TAG_OFF as access offset to land the access into the next granule.
+On 2020-08-02 21:50, Xie He wrote:
+> In net/packet/af_packet.c, the function packet_snd first reserves a
+> headroom of length (dev->hard_header_len + dev->needed_headroom).
+> Then if the socket is a SOCK_DGRAM socket, it calls dev_hard_header,
+> which calls dev->header_ops->create, to create the link layer header.
+> If the socket is a SOCK_RAW socket, it "un-reserves" a headroom of
+> length (dev->hard_header_len), and assumes the user to provide the
+> appropriate link layer header.
+> 
+> So according to the logic of af_packet.c, dev->hard_header_len should
+> be the length of the header that would be created by
+> dev->header_ops->create.
+> 
+> However, this driver doesn't provide dev->header_ops, so logically
+> dev->hard_header_len should be 0.
+> 
+> So we should use dev->needed_headroom instead of dev->hard_header_len
+> to request necessary headroom to be allocated.
 
-Suggested-by: Walter Wu <walter-zh.wu@mediatek.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- lib/test_kasan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm not an expert in the field, but after reading the commit message and
+the previous comments, I'd say that makes sense.
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 7674616d0c37..5d3f496893ef 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -488,7 +488,7 @@ static noinline void __init kasan_global_oob(void)
- static noinline void __init kasan_stack_oob(void)
- {
- 	char stack_array[10];
--	volatile int i = 0;
-+	volatile int i = OOB_TAG_OFF;
- 	char *p = &stack_array[ARRAY_SIZE(stack_array) + i];
- 
- 	pr_info("out-of-bounds on stack\n");
--- 
-2.28.0.163.g6104cc2f0b6-goog
+> 
+> This change fixes kernel panic when this driver is used with AF_PACKET
+> SOCK_RAW sockets. Call stack when panic:
+> 
+> [  168.399197] skbuff: skb_under_panic: text:ffffffff819d95fb len:20
+> put:14 head:ffff8882704c0a00 data:ffff8882704c09fd tail:0x11 end:0xc0
+> dev:veth0
+> ...
+> [  168.399255] Call Trace:
+> [  168.399259]  skb_push.cold+0x14/0x24
+> [  168.399262]  eth_header+0x2b/0xc0
+> [  168.399267]  lapbeth_data_transmit+0x9a/0xb0 [lapbether]
+> [  168.399275]  lapb_data_transmit+0x22/0x2c [lapb]
+> [  168.399277]  lapb_transmit_buffer+0x71/0xb0 [lapb]
+> [  168.399279]  lapb_kick+0xe3/0x1c0 [lapb]
+> [  168.399281]  lapb_data_request+0x76/0xc0 [lapb]
+> [  168.399283]  lapbeth_xmit+0x56/0x90 [lapbether]
+> [  168.399286]  dev_hard_start_xmit+0x91/0x1f0
+> [  168.399289]  ? irq_init_percpu_irqstack+0xc0/0x100
+> [  168.399291]  __dev_queue_xmit+0x721/0x8e0
+> [  168.399295]  ? packet_parse_headers.isra.0+0xd2/0x110
+> [  168.399297]  dev_queue_xmit+0x10/0x20
+> [  168.399298]  packet_sendmsg+0xbf0/0x19b0
+> ......
+
+Shouldn't this kernel panic be intercepted by a skb_cow() before the
+skb_push() in lapbeth_data_transmit()?
+
+> 
+> Additional change:
+> When sending, check skb->len to ensure the 1-byte pseudo header is
+> present before reading it.
+> 
+> Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> Cc: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> ---
+> 
+> Change from v2:
+> Added skb->len check when sending.
+> 
+> Change from v1:
+> None
+> 
+> ---
+>  drivers/net/wan/lapbether.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+> index b2868433718f..8a3f7ba36f7e 100644
+> --- a/drivers/net/wan/lapbether.c
+> +++ b/drivers/net/wan/lapbether.c
+> @@ -157,6 +157,9 @@ static netdev_tx_t lapbeth_xmit(struct sk_buff 
+> *skb,
+>  	if (!netif_running(dev))
+>  		goto drop;
+> 
+> +	if (skb->len < 1)
+> +		goto drop;
+> +
+>  	switch (skb->data[0]) {
+>  	case X25_IFACE_DATA:
+>  		break;
+> @@ -305,6 +308,7 @@ static void lapbeth_setup(struct net_device *dev)
+>  	dev->netdev_ops	     = &lapbeth_netdev_ops;
+>  	dev->needs_free_netdev = true;
+>  	dev->type            = ARPHRD_X25;
+> +	dev->hard_header_len = 0;
+>  	dev->mtu             = 1000;
+>  	dev->addr_len        = 0;
+>  }
+> @@ -331,7 +335,8 @@ static int lapbeth_new_device(struct net_device 
+> *dev)
+>  	 * then this driver prepends a length field of 2 bytes,
+>  	 * then the underlying Ethernet device prepends its own header.
+>  	 */
+> -	ndev->hard_header_len = -1 + 3 + 2 + dev->hard_header_len;
+> +	ndev->needed_headroom = -1 + 3 + 2 + dev->hard_header_len
+> +					   + dev->needed_headroom;
+> 
+>  	lapbeth = netdev_priv(ndev);
+>  	lapbeth->axdev = ndev;
 
