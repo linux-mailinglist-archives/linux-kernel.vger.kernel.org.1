@@ -2,185 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5FE23B189
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 02:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB2323B18B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 02:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729096AbgHDAFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 Aug 2020 20:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
+        id S1729189AbgHDAGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 Aug 2020 20:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728012AbgHDAFg (ORCPT
+        with ESMTP id S1728010AbgHDAGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 Aug 2020 20:05:36 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FB4C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 17:05:36 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id u10so12383964plr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 17:05:36 -0700 (PDT)
+        Mon, 3 Aug 2020 20:06:16 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA37CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  3 Aug 2020 17:06:16 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id p6so28721204plo.8
+        for <linux-kernel@vger.kernel.org>; Mon, 03 Aug 2020 17:06:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XYxlPxktLYpTU+ajRvocUmvWDtHWUPhy8uwzwzVSk3I=;
-        b=kSXUbVgMYfHIPmXvbDKDf53m5ed9n1Gm6wnE6Vy5a4s1jaI4+9yrAkwN4xh9jxDUCj
-         WQlzPLz+ANy+WsdXd6S24HWI0jcEtM+EQeiagJNqQZZIftIkdToSDqBWVkXMifVxXbvd
-         gxYItY//3bUQS8cwCayYMupFA/eJoX86S2fbQ=
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=16cxH9SNyU+dYbQ8O4g4KQ5RGoppj2BxdNS3QniE0qg=;
+        b=XcZ8NEauPhMXWvdr1SeYjUxiwyns2TOKcv2o07F9BB6dn4sJHRhG0Nkf003ag17XBe
+         +d72y57K+l29K4QOEipOu9Krr9oSpybIgsyi5uyh75CqFKY5G1reOAvziG/SUOz0VV+A
+         jqlF6CLuPlcyv8ZyxpZpx1WyPfa+2Lzw5yISwBS7b1XhF+iYWvrEqcXRzJaSSdOU8nZA
+         pbxjEzc61zdsMzQ0l+ebomOlLDWOKf0/0bl/KwABaMxxeDBWuD+skO0rWV80QxEmvZTz
+         JzUfpchtGJ5Wl17gZdbMblwO7nqahJ08uanyTwEKHgwdtdbaynD8+gz6M5SkshmZZhdH
+         7YOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XYxlPxktLYpTU+ajRvocUmvWDtHWUPhy8uwzwzVSk3I=;
-        b=gtyCF3S058PkVxPUo/tpLgJiBtISuBcXCW8/cxq/7jmpieiANBDEqCvcbKN7z7ha+E
-         ToNKP1RihDG1vj1UD1j74qh3vG2sYSgLKnX333E8XIvJvCVCQ12g+dRuEUP6vjoJ3pWk
-         2xGamYg+n78hhRXIAJJb6+Q1wjyOC+Lg2GID3FFmhol7oK51PORibDANPApe8k629pu1
-         RjHzDtWcu+51ynFBIuJ4KxpUpNqqcbMknEjT2WDKGF/UX5MHRrgrCSmR8aqXn/ZwykTG
-         eiUiTXtot30LFwgP+6226TKUvXr+sCaa/bhNEXkpVPa7qvAKv1rISse59Zmj5N4LBfhC
-         je9g==
-X-Gm-Message-State: AOAM533ELrLSFeJ5ITWQdUaSbLmavFD3FTyf0MQgUDItJ5GE891XoKGm
-        +yx9M9Hbsxqcq9P/xGnNU6ZZzg==
-X-Google-Smtp-Source: ABdhPJy0Kl39KCvp6CQkcZipctw4cxaao9j76i19pk33xNx5VtGJDatjpizlaD3AgEZ9rDJKr/SibQ==
-X-Received: by 2002:a17:90a:33e8:: with SMTP id n95mr1683693pjb.183.1596499535212;
-        Mon, 03 Aug 2020 17:05:35 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id e28sm12332756pfl.124.2020.08.03.17.05.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 17:05:34 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Mark Brown <broonie@kernel.org>,
-        Oder Chiou <oder_chiou@realtek.com>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Shuming Fan <shumingf@realtek.com>
-Subject: [PATCH 3/3] ASoC: rt5682: Use clk_hw based APIs for registration
-Date:   Mon,  3 Aug 2020 17:05:31 -0700
-Message-Id: <20200804000531.920688-4-swboyd@chromium.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=16cxH9SNyU+dYbQ8O4g4KQ5RGoppj2BxdNS3QniE0qg=;
+        b=KdFQrM3If1ethJYJCRwbNi/h4HEGMftBLiq35gPy0EroUwyz0ZmOrVyE5d6acbej9m
+         yZsMVVT5+WkuG3tc3tpv8hcg5vZImbtoAMO/CUEIo2aAXfvtvEjIMiMEdbo55ojkEzG3
+         tUszCTR6DBOiuKJCxeOWkihdBvqjSvu8jiY6Fwr7/h3sJIBdyGpub1eIwYs67rsBJFEJ
+         4pcae1vktGzLMejYl/KvEHV2pTjUx5u8lTIyUg4JoPSfmHxIUhRHxXqaEJygs21TqvtI
+         2Wpu+IFF0fWNNGKw3cwx8e9GyMwMhfDcTptdZk8w7OsKghdTh25QjpRYrMTAGe73X1Co
+         oAjQ==
+X-Gm-Message-State: AOAM532STVqnap2y8L/3z4Dee5Ei3/ywWoiOtmq0bC9Ktmk5i+wao8q7
+        ha/vMZqYkffBLk5KfltlFRIQfl/dMXTK
+X-Google-Smtp-Source: ABdhPJw/vfSpadDVVuhstLQitoN99ychwaTmcS5RlVdxpLHWs8GPSyeuBDUGdhWU/odQidGAx4lCUErmLr07
+X-Received: by 2002:a65:6710:: with SMTP id u16mr16622183pgf.45.1596499576252;
+ Mon, 03 Aug 2020 17:06:16 -0700 (PDT)
+Date:   Mon,  3 Aug 2020 17:06:14 -0700
+Message-Id: <20200804000614.4176212-1-joshdon@google.com>
+Mime-Version: 1.0
 X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-In-Reply-To: <20200804000531.920688-1-swboyd@chromium.org>
-References: <20200804000531.920688-1-swboyd@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH] sched/fair: ignore cache hotness for SMT migration
+From:   Josh Don <joshdon@google.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel@vger.kernel.org, Josh Don <joshdon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The (new?) style of clk registration uses clk_hw based APIs so that we
-can more easily see the difference between clk providers and clk
-consumers. Use the clk_hw based APIs to do this and migrate to devm for
-the clkdev creation so that we can reduce the amount of code.
+SMT siblings share caches, so cache hotness should be irrelevant for
+cross-sibling migration.
 
-Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: Shuming Fan <shumingf@realtek.com>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Proposed-by: Venkatesh Pallipadi <venki@google.com>
+Signed-off-by: Josh Don <joshdon@google.com>
 ---
- sound/soc/codecs/rt5682.c | 47 +++++++++------------------------------
- sound/soc/codecs/rt5682.h |  2 --
- 2 files changed, 11 insertions(+), 38 deletions(-)
+ kernel/sched/fair.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index d8a1973a4624..bfb26fec7137 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2755,8 +2755,6 @@ static int rt5682_register_dai_clks(struct snd_soc_component *component)
- 	struct device *dev = component->dev;
- 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
- 	struct rt5682_platform_data *pdata = &rt5682->pdata;
--	struct clk *dai_clk;
--	struct clk_lookup *dai_clk_lookup;
- 	struct clk_hw *dai_clk_hw;
- 	int i, ret;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 2ba8f230feb9..5b203b55bcb2 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7402,6 +7402,9 @@ static int task_hot(struct task_struct *p, struct lb_env *env)
+ 	if (unlikely(task_has_idle_policy(p)))
+ 		return 0;
  
-@@ -2784,8 +2782,7 @@ static int rt5682_register_dai_clks(struct snd_soc_component *component)
- 			break;
- 		default:
- 			dev_err(dev, "Invalid clock index\n");
--			ret = -EINVAL;
--			goto err;
-+			return -EINVAL;
- 		}
- 
- 		init.name = pdata->dai_clk_names[i];
-@@ -2793,39 +2790,26 @@ static int rt5682_register_dai_clks(struct snd_soc_component *component)
- 		init.flags = CLK_GET_RATE_NOCACHE | CLK_SET_RATE_GATE;
- 		dai_clk_hw->init = &init;
- 
--		dai_clk = devm_clk_register(dev, dai_clk_hw);
--		if (IS_ERR(dai_clk)) {
--			dev_warn(dev, "Failed to register %s: %ld\n",
--				 init.name, PTR_ERR(dai_clk));
--			ret = PTR_ERR(dai_clk);
--			goto err;
-+		ret = devm_clk_hw_register(dev, dai_clk_hw);
-+		if (ret) {
-+			dev_warn(dev, "Failed to register %s: %d\n",
-+				 init.name, ret);
-+			return ret;
- 		}
--		rt5682->dai_clks[i] = dai_clk;
- 
- 		if (dev->of_node) {
- 			devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get,
- 						    dai_clk_hw);
- 		} else {
--			dai_clk_lookup = clkdev_create(dai_clk, init.name,
--						       "%s", dev_name(dev));
--			if (!dai_clk_lookup) {
--				ret = -ENOMEM;
--				goto err;
--			} else {
--				rt5682->dai_clks_lookup[i] = dai_clk_lookup;
--			}
-+			ret = devm_clk_hw_register_clkdev(dev, dai_clk_hw,
-+							  init.name,
-+							  dev_name(dev));
-+			if (ret)
-+				return ret;
- 		}
- 	}
- 
- 	return 0;
--
--err:
--	do {
--		if (rt5682->dai_clks_lookup[i])
--			clkdev_drop(rt5682->dai_clks_lookup[i]);
--	} while (i-- > 0);
--
--	return ret;
- }
- #endif /* CONFIG_COMMON_CLK */
- 
-@@ -2882,15 +2866,6 @@ static void rt5682_remove(struct snd_soc_component *component)
- {
- 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
- 
--#ifdef CONFIG_COMMON_CLK
--	int i;
--
--	for (i = RT5682_DAI_NUM_CLKS - 1; i >= 0; --i) {
--		if (rt5682->dai_clks_lookup[i])
--			clkdev_drop(rt5682->dai_clks_lookup[i]);
--	}
--#endif
--
- 	rt5682_reset(rt5682);
- }
- 
-diff --git a/sound/soc/codecs/rt5682.h b/sound/soc/codecs/rt5682.h
-index 6d94327beae5..354acd735ef4 100644
---- a/sound/soc/codecs/rt5682.h
-+++ b/sound/soc/codecs/rt5682.h
-@@ -1411,8 +1411,6 @@ struct rt5682_priv {
- 
- #ifdef CONFIG_COMMON_CLK
- 	struct clk_hw dai_clks_hw[RT5682_DAI_NUM_CLKS];
--	struct clk_lookup *dai_clks_lookup[RT5682_DAI_NUM_CLKS];
--	struct clk *dai_clks[RT5682_DAI_NUM_CLKS];
- 	struct clk *mclk;
- #endif
- 
++	if ((env->sd->flags & cpu_smt_flags()) == cpu_smt_flags())
++		return 0;
++
+ 	/*
+ 	 * Buddy candidates are cache hot:
+ 	 */
 -- 
-Sent by a computer, using git, on the internet
+2.28.0.163.g6104cc2f0b6-goog
 
