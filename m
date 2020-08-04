@@ -2,145 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2F023BE52
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9176123BE5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbgHDQoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:44:01 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:40183 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgHDQoA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:44:00 -0400
-Received: by mail-pj1-f65.google.com with SMTP id d4so2470009pjx.5;
-        Tue, 04 Aug 2020 09:43:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yuWZSG0s7bzdgOA+0VPUa0Lp1EJmf3kTDXCdwURyIzM=;
-        b=lT68BkXSIOmXOr67Tm0FV4KnPqK64pqfPFVCSRp7qO/wC8l3Ug/goXok+7RCCK31MZ
-         l4S1tUzKY5iWdIJuPoY0QLvDt2Qp9Q3Gfv5v3BCZmClFRY07spOABF9KnGe1Oeok5QIj
-         q3/U8uKZ97SsM0o5Nj5vdD5FAbyJVDsYM8+XaVE8mbf5aUhTqgAtMi87TLo3eYKUQnGV
-         zitN57NvtBBflO3wwBX18zFVLJ5wovTDe88zkKt0jGL+Yxg1U+pN/fVpmesxtvP6ENwi
-         u84qOf2IEF8M07Esu4yXERslKGxm69VxEoa3wMF6Y7DceKpFI86nGRcmEvOLVr4FXkWB
-         m1CQ==
-X-Gm-Message-State: AOAM533YEEOsV3egvO3PHpFVg+0e4ZXU5SvmGoZfSJnLUgE2s+b0guxg
-        psNNOFbmjFEbi1jhvrcIgEk=
-X-Google-Smtp-Source: ABdhPJwQAdJMl4TUvT7CbHM8MU9xR/EullcnuFrqc2v93iFTMiBqfiMICZh3PHM4XFs4o0SBNpcVTw==
-X-Received: by 2002:a17:90b:2388:: with SMTP id mr8mr5740417pjb.64.1596559439463;
-        Tue, 04 Aug 2020 09:43:59 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id d14sm15649659pfn.161.2020.08.04.09.43.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 09:43:58 -0700 (PDT)
-Date:   Tue, 4 Aug 2020 09:43:58 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     richard.gong@linux.intel.com
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, dinguyen@kernel.org,
-        Richard Gong <richard.gong@intel.com>
-Subject: Re: [RESEND PATCHv1] fpga: stratix10-soc: make FPGA task
- un-interruptible
-Message-ID: <20200804164358.GB1499313@epycbox.lan>
-References: <1595607009-2065-1-git-send-email-richard.gong@linux.intel.com>
+        id S1728408AbgHDQs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:48:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726556AbgHDQsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 12:48:46 -0400
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3540322B42;
+        Tue,  4 Aug 2020 16:48:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596559726;
+        bh=XtTYH2CBM+FfyYHxxzZ/HqJhy5od5481V87r3BsfF1g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cTYyYczrP2Fza0nJZl/33bicYLldzN3ycfuQiiZoGY7cIGCJZkmDJROuhIGkeneyD
+         aQhbyWQlDi9p33/rrob1WQynWVsYWvmPWYpwnhLIpgq6vWAxCqH7tfL6r1YansBg+1
+         G4xka8sQI+C1eDG15xLn4+TcEphbvVGqdFZwrFLE=
+Received: by mail-ot1-f53.google.com with SMTP id z18so10593951otk.6;
+        Tue, 04 Aug 2020 09:48:46 -0700 (PDT)
+X-Gm-Message-State: AOAM530+VfLZ55G+99Vzf2Y9o8YLz4NkcAfWq57tpDwk6SuoC77YbQSy
+        1vZdH2e5kNBdEFxOvyW5u0aHboQ2HWj3OgbWNg==
+X-Google-Smtp-Source: ABdhPJzPV8uvXqh6O/JUBpj5TnwgwzExJk0S9hLiInnICudH7jyw70A8FQVV0CT8jJVusYUZQSRCTMACd9K2r0hD+EA=
+X-Received: by 2002:a9d:7f84:: with SMTP id t4mr10321004otp.192.1596559725452;
+ Tue, 04 Aug 2020 09:48:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1595607009-2065-1-git-send-email-richard.gong@linux.intel.com>
+References: <20200804161325.GA11104@e121166-lin.cambridge.arm.com> <20200804162223.GA420993@bjorn-Precision-5520>
+In-Reply-To: <20200804162223.GA420993@bjorn-Precision-5520>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 4 Aug 2020 10:48:33 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKZTu0=MhFDOgPC92i48mGjtq9aSJAc84i+wq2YT3O31g@mail.gmail.com>
+Message-ID: <CAL_JsqKZTu0=MhFDOgPC92i48mGjtq9aSJAc84i+wq2YT3O31g@mail.gmail.com>
+Subject: Re: [PATCH] PCI: rcar-gen2: Fix crash in resource_list_first_type()
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 11:10:09AM -0500, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
-> 
-> When CTRL+C occurs during the process of FPGA reconfiguration, the FPGA
-> reconfiguration process stops and the user can't perform a new FPGA
-> reconfiguration properly.
-> 
-> Set FPGA task to be not interruptible so that the user can properly
-> perform FPGA reconfiguration after CTRL+C event.
-> 
-> Signed-off-by: Richard Gong <richard.gong@intel.com>
-> Reviewed-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/fpga/stratix10-soc.c | 23 +++--------------------
->  1 file changed, 3 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
-> index 44b7c56..657a70c 100644
-> --- a/drivers/fpga/stratix10-soc.c
-> +++ b/drivers/fpga/stratix10-soc.c
-> @@ -196,17 +196,13 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
->  	if (ret < 0)
->  		goto init_done;
->  
-> -	ret = wait_for_completion_interruptible_timeout(
-> +	ret = wait_for_completion_timeout(
->  		&priv->status_return_completion, S10_RECONFIG_TIMEOUT);
->  	if (!ret) {
->  		dev_err(dev, "timeout waiting for RECONFIG_REQUEST\n");
->  		ret = -ETIMEDOUT;
->  		goto init_done;
->  	}
-> -	if (ret < 0) {
-> -		dev_err(dev, "error (%d) waiting for RECONFIG_REQUEST\n", ret);
-> -		goto init_done;
-> -	}
->  
->  	ret = 0;
->  	if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
-> @@ -318,7 +314,7 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
->  		 */
->  		wait_status = 1; /* not timed out */
->  		if (!priv->status)
-> -			wait_status = wait_for_completion_interruptible_timeout(
-> +			wait_status = wait_for_completion_timeout(
->  				&priv->status_return_completion,
->  				S10_BUFFER_TIMEOUT);
->  
-> @@ -340,13 +336,6 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
->  			ret = -ETIMEDOUT;
->  			break;
->  		}
-> -		if (wait_status < 0) {
-> -			ret = wait_status;
-> -			dev_err(dev,
-> -				"error (%d) waiting for svc layer buffers\n",
-> -				ret);
-> -			break;
-> -		}
->  	}
->  
->  	if (!s10_free_buffers(mgr))
-> @@ -372,7 +361,7 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
->  		if (ret < 0)
->  			break;
->  
-> -		ret = wait_for_completion_interruptible_timeout(
-> +		ret = wait_for_completion_timeout(
->  			&priv->status_return_completion, timeout);
->  		if (!ret) {
->  			dev_err(dev,
-> @@ -380,12 +369,6 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
->  			ret = -ETIMEDOUT;
->  			break;
->  		}
-> -		if (ret < 0) {
-> -			dev_err(dev,
-> -				"error (%d) waiting for RECONFIG_COMPLETED\n",
-> -				ret);
-> -			break;
-> -		}
->  		/* Not error or timeout, so ret is # of jiffies until timeout */
->  		timeout = ret;
->  		ret = 0;
-> -- 
-> 2.7.4
-> 
+On Tue, Aug 4, 2020 at 10:22 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Tue, Aug 04, 2020 at 05:13:25PM +0100, Lorenzo Pieralisi wrote:
+> > On Tue, Aug 04, 2020 at 02:04:30PM +0200, Geert Uytterhoeven wrote:
+> > > The conversion to modern host bridge probing made the driver allocate
+> > > its private data using devm_pci_alloc_host_bridge(), but forgot to
+> > > remove the old allocation.  Hence part of the driver initialization is
+> > > done using the new instance, while another part is done using the old
+> > > instance, leading to a crash due to uninitialized bridge DMA ranges:
+> > >
+> > >     Unable to handle kernel NULL pointer dereference at virtual address 00000008
+> > >     pgd = (ptrval)
+> > >     [00000008] *pgd=00000000
+> > >     Internal error: Oops: 5 [#1] SMP ARM
+> > >     CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc1-shmobile-00035-g92d69cc6275845a7 #645
+> > >     Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
+> > >     PC is at rcar_pci_probe+0x154/0x340
+> > >     LR is at _raw_spin_unlock_irqrestore+0x18/0x20
+> > >
+> > > Fix this by dropping the old allocation.
+> > >
+> > > Fixes: 92d69cc6275845a7 ("PCI: rcar-gen2: Convert to use modern host bridge probe functions")
+> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > ---
+> > >  drivers/pci/controller/pci-rcar-gen2.c | 4 ----
+> > >  1 file changed, 4 deletions(-)
+> >
+> > Squashed in the initial commit, pushed out on pci/misc.
+>
+> I updated my 'next' branch with this.
+>
+> Rob, are there any similar issues in other drivers that we should fix
+> before asking Linus to pull this?
 
-Sorry that one slipped through the cracks, will apply to for-next.
+I'd expect only different issues. :)
 
-Thanks!
+This commit is unique as it was using the old arm32 PCI functions and
+the most complicated change of the lot.
+
+Rob
