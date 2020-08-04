@@ -2,52 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3336B23B57F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13C123B58B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729592AbgHDHUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 03:20:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728654AbgHDHUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 03:20:04 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729614AbgHDHY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 03:24:29 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:31113 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726974AbgHDHY3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 03:24:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596525867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JiseTXeyGcxm0IDE+cCbj3AHOMga1BCxMtg+WGu3TNY=;
+        b=JrPJXgEvM0Ke78HL0QOSMC8dbgTYeNJicscGhN0UKH83nILVb9AR7uPi9dqrY313YYlzZV
+        8OHhZ5Y5kaqLZwBA8XDw3HjIwbJyz9Xifa6awKWsegz1MkxJ7kucEiMioTiWec6JifAtVL
+        YeXCC8PtqzIY1EhCH1He6QYkbb4MUco=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-nqgPXntXN3GHtsdhgNi-Ww-1; Tue, 04 Aug 2020 03:24:23 -0400
+X-MC-Unique: nqgPXntXN3GHtsdhgNi-Ww-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E2822076C;
-        Tue,  4 Aug 2020 07:20:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596525604;
-        bh=7o+GGNvYDggfVKcvkcydQ3oRMVae6I6vRgnD5cwx+us=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bKDvxR57uNwAMGXCyOCIcDA/gFDq7HoYaGpeThcisvT1vWFtMt4qHogJBwWgIQtnc
-         QTLc74NNKzy7TR50E7sjibZuvF6MCzOmwm/Lf58+CYDWfIuufQZbytglAENI5P28R4
-         GLUxw/UrBpLzEWXlxvttcvch64GF20xZ3Lau9bsA=
-Date:   Tue, 4 Aug 2020 09:19:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] eeprom: at25: allow page sizes greater than 16 bit
-Message-ID: <20200804071945.GB1416416@kroah.com>
-References: <20200727111218.26926-1-ceggers@arri.de>
- <9183924.TykLrII94J@n95hx1g2>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D41D858;
+        Tue,  4 Aug 2020 07:24:21 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-95.ams2.redhat.com [10.36.113.95])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7BE475DA33;
+        Tue,  4 Aug 2020 07:24:09 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>, Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Qian Cai <cai@lca.pw>
+Subject: [PATCH v3 0/6] mm / virtio-mem: support ZONE_MOVABLE
+Date:   Tue,  4 Aug 2020 09:24:02 +0200
+Message-Id: <20200804072408.5481-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9183924.TykLrII94J@n95hx1g2>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 08:40:52AM +0200, Christian Eggers wrote:
-> Ping?
+@Andrew can we give this a churn and consider it for v5.9 in case there
+are no more comments?
 
-It's the middle of the merge window now, I can't take any patches for
-the next 2 weeks, sorry.  It is in my queue, and will be looked at after
-5.9-rc1 is out.
+Patch #1-#4 have RB's, patch #5 is virtio-mem stuff maintained by me,
+patch #6 is just a doc update.
 
-thanks,
+---
 
-greg k-h
+Currently, virtio-mem does not really support ZONE_MOVABLE. While it allows
+to online fully plugged memory blocks to ZONE_MOVABLE, it does not allow
+to online partially-plugged memory blocks to ZONE_MOVABLE and will never
+consider such memory blocks when unplugging memory. This might be
+surprising for users (especially, if onlining suddenly fails).
+
+Let's support partially plugged memory blocks in ZONE_MOVABLE, allowing
+partially plugged memory blocks to be online to ZONE_MOVABLE and also
+unplugging from such memory blocks.
+
+This is especially helpful for testing, but also paves the way for
+virtio-mem optimizations, allowing more memory to get reliably unplugged.
+
+Cleanup has_unmovable_pages() and set_migratetype_isolate(), providing
+better documentation of how ZONE_MOVABLE interacts with different kind of
+unmovable pages (memory offlining vs. alloc_contig_range()).
+
+v2 -> v3:
+- "mm: document semantics of ZONE_MOVABLE"
+-- Fix a typo
+
+v1 -> v2:
+- "mm/page_isolation: don't dump_page(NULL) in set_migratetype_isolate()"
+-- Move to position 1, add Fixes: tag
+-- Drop unused "out:" label
+- "mm/page_isolation: drop WARN_ON_ONCE() in set_migratetype_isolate()"
+-- Keep curly braces on "else" case
+- Replace "[PATCH v1 5/6] mm/page_alloc: restrict ZONE_MOVABLE optimization
+           in has_unmovable_pages() to memory offlining"
+  by "mm: document semantics of ZONE_MOVABLE"
+-- Brain dump of what I know about ZONE_MOVABLE
+
+David Hildenbrand (6):
+  mm/page_isolation: don't dump_page(NULL) in set_migratetype_isolate()
+  mm/page_alloc: tweak comments in has_unmovable_pages()
+  mm/page_isolation: drop WARN_ON_ONCE() in set_migratetype_isolate()
+  mm/page_isolation: cleanup set_migratetype_isolate()
+  virtio-mem: don't special-case ZONE_MOVABLE
+  mm: document semantics of ZONE_MOVABLE
+
+ drivers/virtio/virtio_mem.c | 47 +++++++------------------------------
+ include/linux/mmzone.h      | 34 +++++++++++++++++++++++++++
+ mm/page_alloc.c             | 22 +++++------------
+ mm/page_isolation.c         | 39 ++++++++++++++----------------
+ 4 files changed, 65 insertions(+), 77 deletions(-)
+
+-- 
+2.26.2
+
