@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E44B23BA1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30F323BA1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 14:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgHDMKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 08:10:53 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46626 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730387AbgHDL5w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:57:52 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k2vYo-0003XZ-4h; Tue, 04 Aug 2020 11:56:50 +0000
-Date:   Tue, 4 Aug 2020 13:56:49 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     akpm@linux-foundation.org, ebiederm@xmission.com,
-        viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/8] namespaces: Introduce generic refcount
-Message-ID: <20200804115649.kzea757e5wwpk4k3@wittgenstein>
-References: <159644958332.604812.13004003379291842292.stgit@localhost.localdomain>
+        id S1726399AbgHDMGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 08:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730392AbgHDL5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 07:57:53 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53641208A9;
+        Tue,  4 Aug 2020 11:57:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596542230;
+        bh=R+Foz/8zo9+GgInhMqlvYCUr1NnxOx7pfypaHXJtLWU=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=ET8j1kSfWY6jHru5raK6NT3mqrxz3v7kY1krCYzhz+E6sE0bOwwGXa5kR6WG5l+F4
+         t5GzhPIgTX9huR5qmEhYxFVcmtVpUJznvNbYuAc9EwVNCNXpwK/1IjAtJGcubWZfLp
+         3xJ+2DVeN6f4YMugSyc7NFCN6J/8WyQFjBqvEASM=
+Date:   Tue, 4 Aug 2020 13:56:50 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        linux-kernel@vger.kernel.org, speakup@linux-speakup.org
+Subject: Re: [PATCH 2/2] speakup: only build serialio when ISA is enabled
+Message-ID: <20200804115650.GB203147@kroah.com>
+References: <20200804111332.dex7jobmabifdzw5@function>
+ <20200804113413.GA181242@kroah.com>
+ <20200804114951.ijs3hnezi4f64nll@function>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <159644958332.604812.13004003379291842292.stgit@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200804114951.ijs3hnezi4f64nll@function>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 01:16:10PM +0300, Kirill Tkhai wrote:
-> Every namespace type has its own counter. Some of them are
-> of refcount_t, some of them are of kref.
+On Tue, Aug 04, 2020 at 01:49:51PM +0200, Samuel Thibault wrote:
+> Greg KH, le mar. 04 août 2020 13:34:13 +0200, a ecrit:
+> > On Tue, Aug 04, 2020 at 01:13:32PM +0200, Samuel Thibault wrote:
+> > > Drivers using serialio are already made available in Kconfig only under
+> > > the ISA condition.
+> > > 
+> > > This solves warnings in inb/outb macros on platform that do not have 
+> > > support for ISA.
+> > > 
+> > > Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+> > > 
+> > > Index: linux-2.6/drivers/accessibility/speakup/Makefile
+> > > ===================================================================
+> > > --- linux-2.6.orig/drivers/accessibility/speakup/Makefile
+> > > +++ linux-2.6/drivers/accessibility/speakup/Makefile
+> > > @@ -16,6 +16,7 @@ obj-$(CONFIG_SPEAKUP_SYNTH_TXPRT) += spe
+> > >  obj-$(CONFIG_SPEAKUP_SYNTH_DUMMY) += speakup_dummy.o
+> > >  
+> > >  obj-$(CONFIG_SPEAKUP) += speakup.o
+> > > +obj-$(CONFIG_ISA) += serialio.o
+> > >  speakup-y := \
+> > >  	buffers.o \
+> > >  	devsynth.o \
+> > > @@ -25,7 +26,6 @@ speakup-y := \
+> > >  	keyhelp.o \
+> > >  	kobjects.o \
+> > >  	selection.o \
+> > > -	serialio.o \
+> > >  	spk_ttyio.o \
+> > >  	synth.o \
+> > >  	thread.o \
+> > 
+> > Oops, no, I get the following build errors with this patch:
+> > 
+> > ERROR: modpost: "spk_wait_for_xmitr" [drivers/accessibility/speakup/speakup.ko] undefined!
 > 
-> This patchset introduces generic ns_common::count for any
-> type of namespaces instead of them.
-> 
-> ---
+> Yes, it depends on the first of the queue.
 
-I was wondering why that series never made it to me turns out there's
-some weird bug in my (neo)mutt where it sometimes marks messages as read
-when I'm deleting completely unrelated messages. That has already cost
-me a talk slot for an event I really wanted to attend and now it seems
-to start costing me patches... I need to figure this out.
+Ah, missed that, ok, let me try this again...
 
-Anyway, thanks for sending this. I pulled this into my tree now.
-
-Thanks!
-Christian
-
-> 
-> Kirill Tkhai (8):
->       ns: Add common refcount into ns_common add use it as counter for net_ns
->       uts: Use generic ns_common::count
->       ipc: Use generic ns_common::count
->       pid: Use generic ns_common::count
->       user: Use generic ns_common::count
->       mnt: Use generic ns_common::count
->       cgroup: Use generic ns_common::count
->       time: Use generic ns_common::count
-> 
-> 
->  fs/mount.h                     |    3 +--
->  fs/namespace.c                 |    4 ++--
->  include/linux/cgroup.h         |    5 ++---
->  include/linux/ipc_namespace.h  |    3 +--
->  include/linux/ns_common.h      |    3 +++
->  include/linux/pid_namespace.h  |    4 +---
->  include/linux/time_namespace.h |    9 ++++-----
->  include/linux/user_namespace.h |    5 ++---
->  include/linux/utsname.h        |    9 ++++-----
->  include/net/net_namespace.h    |   11 ++++-------
->  init/version.c                 |    2 +-
->  ipc/msgutil.c                  |    2 +-
->  ipc/namespace.c                |    4 ++--
->  kernel/cgroup/cgroup.c         |    2 +-
->  kernel/cgroup/namespace.c      |    2 +-
->  kernel/pid.c                   |    2 +-
->  kernel/pid_namespace.c         |   13 +++----------
->  kernel/time/namespace.c        |    9 +++------
->  kernel/user.c                  |    2 +-
->  kernel/user_namespace.c        |    4 ++--
->  kernel/utsname.c               |    7 ++-----
->  net/core/net-sysfs.c           |    6 +++---
->  net/core/net_namespace.c       |    6 +++---
->  net/ipv4/inet_timewait_sock.c  |    4 ++--
->  net/ipv4/tcp_metrics.c         |    2 +-
->  25 files changed, 51 insertions(+), 72 deletions(-)
-> 
-> --
-> Signed-off-by: Kirill Tkhai <ktkhai@virtuozzo.com>
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> 
