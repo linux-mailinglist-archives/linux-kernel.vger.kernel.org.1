@@ -2,63 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B126423B47D
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 07:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B390C23B487
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 07:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729781AbgHDFff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 01:35:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41998 "EHLO mx2.suse.de"
+        id S1729636AbgHDFmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 01:42:42 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:47602 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgHDFfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 01:35:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 12673ACB5;
-        Tue,  4 Aug 2020 05:35:49 +0000 (UTC)
-Subject: Re: [PATCH v3 10/11] xen/arm: introduce phys/dma translations in
- xen_dma_sync_for_*
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        hch@infradead.org,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>
-References: <alpine.DEB.2.21.2007101521290.4124@sstabellini-ThinkPad-T480s>
- <20200710223427.6897-10-sstabellini@kernel.org>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <68f244b5-86e7-4c94-7a22-f9ca53311857@suse.com>
-Date:   Tue, 4 Aug 2020 07:35:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200710223427.6897-10-sstabellini@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728811AbgHDFml (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 01:42:41 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BDA862011A2;
+        Tue,  4 Aug 2020 07:42:39 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 70C75201194;
+        Tue,  4 Aug 2020 07:42:34 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A0D70402DE;
+        Tue,  4 Aug 2020 07:42:27 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     hongxing.zhu@nxp.com, l.stach@pengutronix.de,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] PCI: imx6: Do not output error message when devm_clk_get() failed with -EPROBE_DEFER
+Date:   Tue,  4 Aug 2020 13:38:01 +0800
+Message-Id: <1596519481-28072-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.07.20 00:34, Stefano Stabellini wrote:
-> From: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> 
-> xen_dma_sync_for_cpu, xen_dma_sync_for_device, xen_arch_need_swiotlb are
-> getting called passing dma addresses. On some platforms dma addresses
-> could be different from physical addresses. Before doing any operations
-> on these addresses we need to convert them back to physical addresses
-> using dma_to_phys.
-> 
-> Move the arch_sync_dma_for_cpu and arch_sync_dma_for_device calls from
-> xen_dma_sync_for_cpu/device to swiotlb-xen.c, and add a call dma_to_phys
-> to do address translations there.
-> 
-> dma_cache_maint is fixed by the next patch.
-> 
-> Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> Tested-by: Corey Minyard <cminyard@mvista.com>
-> Tested-by: Roman Shaposhnik <roman@zededa.com>
+When devm_clk_get() returns -EPROBE_DEFER, i.MX6 PCI driver should
+NOT print error message, just return -EPROBE_DEFER is enough.
 
-Acked-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ drivers/pci/controller/dwc/pci-imx6.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+index 4e5c379..ee75d35 100644
+--- a/drivers/pci/controller/dwc/pci-imx6.c
++++ b/drivers/pci/controller/dwc/pci-imx6.c
+@@ -1076,20 +1076,26 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+ 	/* Fetch clocks */
+ 	imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
+ 	if (IS_ERR(imx6_pcie->pcie_phy)) {
+-		dev_err(dev, "pcie_phy clock source missing or invalid\n");
+-		return PTR_ERR(imx6_pcie->pcie_phy);
++		ret = PTR_ERR(imx6_pcie->pcie_phy);
++		if (ret != -EPROBE_DEFER)
++			dev_err(dev, "pcie_phy clock source missing or invalid\n");
++		return ret;
+ 	}
+ 
+ 	imx6_pcie->pcie_bus = devm_clk_get(dev, "pcie_bus");
+ 	if (IS_ERR(imx6_pcie->pcie_bus)) {
+-		dev_err(dev, "pcie_bus clock source missing or invalid\n");
+-		return PTR_ERR(imx6_pcie->pcie_bus);
++		ret = PTR_ERR(imx6_pcie->pcie_bus);
++		if (ret != -EPROBE_DEFER)
++			dev_err(dev, "pcie_bus clock source missing or invalid\n");
++		return ret;
+ 	}
+ 
+ 	imx6_pcie->pcie = devm_clk_get(dev, "pcie");
+ 	if (IS_ERR(imx6_pcie->pcie)) {
+-		dev_err(dev, "pcie clock source missing or invalid\n");
+-		return PTR_ERR(imx6_pcie->pcie);
++		ret = PTR_ERR(imx6_pcie->pcie);
++		if (ret != -EPROBE_DEFER)
++			dev_err(dev, "pcie clock source missing or invalid\n");
++		return ret;
+ 	}
+ 
+ 	switch (imx6_pcie->drvdata->variant) {
+@@ -1097,15 +1103,19 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+ 		imx6_pcie->pcie_inbound_axi = devm_clk_get(dev,
+ 							   "pcie_inbound_axi");
+ 		if (IS_ERR(imx6_pcie->pcie_inbound_axi)) {
+-			dev_err(dev, "pcie_inbound_axi clock missing or invalid\n");
+-			return PTR_ERR(imx6_pcie->pcie_inbound_axi);
++			ret = PTR_ERR(imx6_pcie->pcie_inbound_axi);
++			if (ret != -EPROBE_DEFER)
++				dev_err(dev, "pcie_inbound_axi clock missing or invalid\n");
++			return ret;
+ 		}
+ 		break;
+ 	case IMX8MQ:
+ 		imx6_pcie->pcie_aux = devm_clk_get(dev, "pcie_aux");
+ 		if (IS_ERR(imx6_pcie->pcie_aux)) {
+-			dev_err(dev, "pcie_aux clock source missing or invalid\n");
+-			return PTR_ERR(imx6_pcie->pcie_aux);
++			ret = PTR_ERR(imx6_pcie->pcie_aux);
++			if (ret != -EPROBE_DEFER)
++				dev_err(dev, "pcie_aux clock source missing or invalid\n");
++			return ret;
+ 		}
+ 		/* fall through */
+ 	case IMX7D:
+-- 
+2.7.4
 
-Juergen
