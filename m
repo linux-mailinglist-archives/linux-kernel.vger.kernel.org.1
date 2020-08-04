@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDB723C11C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C954223C117
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbgHDU7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 16:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42176 "EHLO mail.kernel.org"
+        id S1728484AbgHDU6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 16:58:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728148AbgHDU6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 16:58:16 -0400
+        id S1728156AbgHDU6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 16:58:17 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0726B22D04;
+        by mail.kernel.org (Postfix) with ESMTPSA id 3897322CF7;
         Tue,  4 Aug 2020 20:58:15 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1k340k-006HG2-0w; Tue, 04 Aug 2020 16:58:14 -0400
-Message-ID: <20200804205813.904386422@goodmis.org>
+        id 1k340k-006HGY-7R; Tue, 04 Aug 2020 16:58:14 -0400
+Message-ID: <20200804205814.061094876@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 04 Aug 2020 16:57:57 -0400
+Date:   Tue, 04 Aug 2020 16:57:58 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-linus][PATCH 14/17] kprobes: Remove show_registers() function prototype
+Subject: [for-linus][PATCH 15/17] lib/bootconfig: Add override operator support
 References: <20200804205743.419135730@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,30 +38,103 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Remove show_registers() function prototype because this function
-has been renamed by commit 57da8b960b9a ("x86: Avoid double stack
-traces with show_regs()"), and commit 80006dbee674 ("kprobes/x86:
-Remove jprobe implementation") has removed the caller in kprobes.
-So this doesn't exist anymore.
+Add the value override operator (":=") support to the bootconfig.
+
+This value override operator will be useful for the bootloaders
+which will only update the existing bootconfig according to the
+bootloader boot options.
+
+Without this override operator, the bootloader needs to parse
+the existing bootconfig and update it. However, with this
+assignment, it can just append the updated (partial) bootconfig
+text at the tail of existing one without parsing it.
+(Of course, it must update the size, checksum and magic,
+ but that will be done easily)
+
+Link: https://lkml.kernel.org/r/159482882954.126704.16209517125614438640.stgit@devnote2
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/linux/kprobes.h | 1 -
- 1 file changed, 1 deletion(-)
+ lib/bootconfig.c | 33 +++++++++++++++++++++++----------
+ 1 file changed, 23 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 6adf90f248d7..81cb7e00ccdc 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -227,7 +227,6 @@ extern int arch_prepare_kprobe(struct kprobe *p);
- extern void arch_arm_kprobe(struct kprobe *p);
- extern void arch_disarm_kprobe(struct kprobe *p);
- extern int arch_init_kprobes(void);
--extern void show_registers(struct pt_regs *regs);
- extern void kprobes_inc_nmissed_count(struct kprobe *p);
- extern bool arch_within_kprobe_blacklist(unsigned long addr);
- extern int arch_populate_kprobe_blacklist(void);
+diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+index 912ef4921398..a5f701161f6b 100644
+--- a/lib/bootconfig.c
++++ b/lib/bootconfig.c
+@@ -329,22 +329,30 @@ const char * __init xbc_node_find_next_key_value(struct xbc_node *root,
+ 
+ /* XBC parse and tree build */
+ 
++static int __init xbc_init_node(struct xbc_node *node, char *data, u32 flag)
++{
++	unsigned long offset = data - xbc_data;
++
++	if (WARN_ON(offset >= XBC_DATA_MAX))
++		return -EINVAL;
++
++	node->data = (u16)offset | flag;
++	node->child = 0;
++	node->next = 0;
++
++	return 0;
++}
++
+ static struct xbc_node * __init xbc_add_node(char *data, u32 flag)
+ {
+ 	struct xbc_node *node;
+-	unsigned long offset;
+ 
+ 	if (xbc_node_num == XBC_NODE_MAX)
+ 		return NULL;
+ 
+ 	node = &xbc_nodes[xbc_node_num++];
+-	offset = data - xbc_data;
+-	node->data = (u16)offset;
+-	if (WARN_ON(offset >= XBC_DATA_MAX))
++	if (xbc_init_node(node, data, flag) < 0)
+ 		return NULL;
+-	node->data |= flag;
+-	node->child = 0;
+-	node->next = 0;
+ 
+ 	return node;
+ }
+@@ -603,7 +611,9 @@ static int __init xbc_parse_kv(char **k, char *v, int op)
+ 	if (c < 0)
+ 		return c;
+ 
+-	if (!xbc_add_sibling(v, XBC_VALUE))
++	if (op == ':' && child) {
++		xbc_init_node(child, v, XBC_VALUE);
++	} else if (!xbc_add_sibling(v, XBC_VALUE))
+ 		return -ENOMEM;
+ 
+ 	if (c == ',') {	/* Array */
+@@ -787,7 +797,7 @@ int __init xbc_init(char *buf, const char **emsg, int *epos)
+ 
+ 	p = buf;
+ 	do {
+-		q = strpbrk(p, "{}=+;\n#");
++		q = strpbrk(p, "{}=+;:\n#");
+ 		if (!q) {
+ 			p = skip_spaces(p);
+ 			if (*p != '\0')
+@@ -798,9 +808,12 @@ int __init xbc_init(char *buf, const char **emsg, int *epos)
+ 		c = *q;
+ 		*q++ = '\0';
+ 		switch (c) {
++		case ':':
+ 		case '+':
+ 			if (*q++ != '=') {
+-				ret = xbc_parse_error("Wrong '+' operator",
++				ret = xbc_parse_error(c == '+' ?
++						"Wrong '+' operator" :
++						"Wrong ':' operator",
+ 							q - 2);
+ 				break;
+ 			}
 -- 
 2.26.2
 
