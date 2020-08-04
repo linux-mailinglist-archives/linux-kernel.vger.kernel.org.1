@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0870823C0F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E7B23C101
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgHDUsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 16:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59272 "EHLO
+        id S1728278AbgHDUs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 16:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728203AbgHDUsD (ORCPT
+        with ESMTP id S1727057AbgHDUs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 16:48:03 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314B8C0617A2
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 13:48:02 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id lk11so3141535pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 13:48:02 -0700 (PDT)
+        Tue, 4 Aug 2020 16:48:28 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DE3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 13:48:28 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id m22so860578eje.10
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 13:48:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=e9HT6AS5pNuhm0IIEReS4jZdj/HAbOxw73GUYA4oHss=;
-        b=WKeGul3KEmcWpYGkwOPuVNB4KHstNGi/6UCVOenRedf0cDpH6p3N89em9zoCkJX65A
-         YwY93C9vP5AeXLg6dD+Df8uE9y2uyVPzYuwA+jYo6+NU0T72fcbt0V/T0asicft1AvSa
-         99WMuzMxTO67XWoZMW2zQAp8oWB5obGAFel9NIZ1qWvVsujj/eVRbXW05xPYoMBZdRVJ
-         cKBW1gC6e9Zl09JEkGwle03eAHNJksK27r3Zb1TfSbk9bwX3QL2530KKioWMzCnfhrjh
-         6hNPdTCQEp+UpMnqlccneAqNP9ehdDxEQeDqaV0cQGF5OWhztg1MongG3VrIlfKmdoGk
-         yNlA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NqpbOQVzDCzUgU0urNu9EPIE4Ge9MLfqzEnXxyaLaK0=;
+        b=vSmsvJySEicOLbSHzIA6J7MgSzVb0wwZnrCz69Ozrzro7d3Ac1yqFZH0FAfB73KIwY
+         8JYwmoBy0NZVisqeb84sLLG/CkCrIjrwrM1XE4HolDbRdylLOvRrwDKWgx8qGEzEJCX7
+         zppNPDwiytYQmvHetDGpoJBMfqCPpoxdG9YtpEesl8rGln7bjGSWl9OOJnxr81w5/GNj
+         QTUhiusCCh6y1z8gksTYZi5Vl2onOiiaMGavWoSA8LmVVgXrkBQKiHHEZQ2sujUoGs0w
+         /4Ix6WtmX4toYoHqZFEFmBgBYybhz8y/7cQqkah6j200r92kY8kaRy5dlF0SEBcW42Rf
+         TI4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=e9HT6AS5pNuhm0IIEReS4jZdj/HAbOxw73GUYA4oHss=;
-        b=PZmYUJ4Cn4Q5i39IB/6/EMcBJm1RW0SFtFcqsC/0D1/6FG8nJDQ9pR4KPN+bf3dUbc
-         e9PFIkCyO6IwGMZJas2eHbiwzuUuFmdy6huzAneWJzm3yBWeKte0s/pLtzjmTVMV07NJ
-         BLfsTFNjV7UtLFtgawsdlo3aULp7+MqLFfGgg34+UE6c0pv4haYQIktu8mAj/GgOl7YL
-         TWH0iJ4XmPdJ+v8yKFCJQ8L6qoEYWC5XO6CRk8R8cwle6QrIHw4M5VgADOYueDgKu/A8
-         5ZuSghh9nfrxESKNxMJ7uxVCu+Vuw5bvYIMpSIr7GBqxTLQ25MMK2ZnfPmITccwtW2Bi
-         b50w==
-X-Gm-Message-State: AOAM531widwF+CVqckd0xmdOuVHT7brhSiBOWFQ+L8EGbw+RtpfrBKhP
-        rF1c0wCcFb1qMCrXpDzDXjHGr2RPzyGDB2SVBNeTDg==
-X-Google-Smtp-Source: ABdhPJwvVPf58Z+s5F3/exJw2LvrTU9deyzhRpg78+XvTlgNql9h3A7N5TCVgZfFd9nf9/1cES1eS4gEGASc8UKOHawR4Q==
-X-Received: by 2002:a17:902:9682:: with SMTP id n2mr87047plp.11.1596574081620;
- Tue, 04 Aug 2020 13:48:01 -0700 (PDT)
-Date:   Tue,  4 Aug 2020 13:47:45 -0700
-In-Reply-To: <20200804204745.987648-1-brendanhiggins@google.com>
-Message-Id: <20200804204745.987648-6-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20200804204745.987648-1-brendanhiggins@google.com>
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH v6 5/5] Documentation: kunit: add a brief blurb about kunit_test_suite
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org,
-        alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com,
-        akpm@linux-foundation.org, rppt@linux.ibm.com,
-        frowand.list@gmail.com
-Cc:     gregkh@linuxfoundation.org, sboyd@kernel.org, logang@deltatee.com,
-        mcgrof@kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NqpbOQVzDCzUgU0urNu9EPIE4Ge9MLfqzEnXxyaLaK0=;
+        b=Omm9CaNnnr5gDOjQSqFSCsDiPYHtAm+NqNvXgDcCDYPC0ZYX1JcOeWtEmiksEZAXNH
+         166+OFaTMuv+A8dlEYVO8YL+jN4lhEfzLeMlYGATb8XJpQpPkgd2cpfkUO/rkidcgHv/
+         J2YUATgy3c8KZDTckbgF0CE7j24KlKSHfkHMAwWvAT8CRSMtJuiA3btjVsftAfyX1YIM
+         jS856csdH8OiP4c9S0aEThGGaoRaZ8P4SVxF/yLoBhDksYi66QPkzhEX6sVGXjtLiJxN
+         Dbw2peUEO19FhDEv1GhwUVMdoVp76P7Gbfi0LMlPis5FGJ2nZYOwZMIboRragqCWL7zs
+         uZeQ==
+X-Gm-Message-State: AOAM533yMlIiKY1KubvhxtxvD36SHyrt9LL9kYoguslq3o4OD4PYE7ff
+        O3AKQ08IjbshpXfkT0kUOWw=
+X-Google-Smtp-Source: ABdhPJwu9MuLWp3ZrRR44iWqE5kIVxrgTONB0odsS9YEKhesx9g3xCecLA/JtmUU+mCFSReF2GgKxA==
+X-Received: by 2002:a17:906:1392:: with SMTP id f18mr22686757ejc.521.1596574107347;
+        Tue, 04 Aug 2020 13:48:27 -0700 (PDT)
+Received: from ltop.local ([2a02:a03f:a7fb:e200:d068:a44f:fa3b:62da])
+        by smtp.gmail.com with ESMTPSA id di5sm78772edb.16.2020.08.04.13.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Aug 2020 13:48:24 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 22:48:08 +0200
+From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        openrisc@lists.librecores.org
+Subject: Re: [PATCH 3/6] openrisc: uaccess: Use static inline function in
+ access_ok
+Message-ID: <20200804204808.ttgkwrievzn5aoqd@ltop.local>
+References: <20200804042354.3930694-1-shorne@gmail.com>
+ <20200804042354.3930694-4-shorne@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200804042354.3930694-4-shorne@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a brief blurb saying how and when the kunit_test_suite() macro
-works to the usage documentation.
+On Tue, Aug 04, 2020 at 01:23:51PM +0900, Stafford Horne wrote:
+> As suggested by Linus when reviewing commit 9cb2feb4d21d
+> ("arch/openrisc: Fix issues with access_ok()") last year; making
+> __range_ok an inline function also fixes the used twice issue that the
+> commit was fixing.  I agree it's a good cleanup.  This patch addresses
+> that as I am currently working on the access_ok macro to fixup sparse
+> annotations in OpenRISC.
+> 
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Stafford Horne <shorne@gmail.com>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- Documentation/dev-tools/kunit/usage.rst | 5 +++++
- 1 file changed, 5 insertions(+)
+Look good to me.
 
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index 3c3fe8b5feccf..961d3ea3ca19a 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -211,6 +211,11 @@ KUnit test framework.
- .. note::
-    A test case will only be run if it is associated with a test suite.
- 
-+``kunit_test_suite(...)`` is a macro which tells the linker to put the specified
-+test suite in a special linker section so that it can be run by KUnit either
-+after late_init, or when the test module is loaded (depending on whether the
-+test was built in or not).
-+
- For more information on these types of things see the :doc:`api/test`.
- 
- Isolating Behavior
--- 
-2.28.0.163.g6104cc2f0b6-goog
-
+-- Luc
