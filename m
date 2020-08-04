@@ -2,190 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9277D23B9DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD5D23B9EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730206AbgHDLrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:47:31 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:17114 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730309AbgHDLrT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:47:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596541638; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=9fHpmvzcjn/WksFVNHKlyTEU4Iz3HuXFQuXdLVDER64=; b=fJNZ+ZMpjnSQweQiXw4OEWmLg00Y/+HP+aXXcpAJ3sgVaeAdcxGtCcbzIBTmLdp2nr/qAUPn
- DmkcRGUZTHjRbvNctQQ7FwpFgRl9I6iUCow0qLkequVyhzcNytc3BP8meaIq0iyL7cLHYigV
- JBSLn6XfZnyT0qIyimovATUeAW0=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n20.prod.us-west-2.postgun.com with SMTP id
- 5f294ac64e5050c6c5d424e8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 Aug 2020 11:47:18
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 18857C433CB; Tue,  4 Aug 2020 11:47:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D72FCC433CA;
-        Tue,  4 Aug 2020 11:47:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D72FCC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     ulf.hansson@linaro.org, robh+dt@kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH 3/3] arm64: dts: sc7180: Add assigned-performance-states for i2c
-Date:   Tue,  4 Aug 2020 17:16:56 +0530
-Message-Id: <1596541616-27688-4-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596541616-27688-1-git-send-email-rnayak@codeaurora.org>
-References: <1596541616-27688-1-git-send-email-rnayak@codeaurora.org>
+        id S1730415AbgHDLti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:49:38 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:21477 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730352AbgHDLrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 07:47:51 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BLY0M093zz9tyRk;
+        Tue,  4 Aug 2020 13:47:47 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 8iY7O26Wbfpc; Tue,  4 Aug 2020 13:47:46 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BLY0L6FxBz9tyRh;
+        Tue,  4 Aug 2020 13:47:46 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5AB588B767;
+        Tue,  4 Aug 2020 13:47:48 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id mTZy4H7V6-x5; Tue,  4 Aug 2020 13:47:48 +0200 (CEST)
+Received: from po16052vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA19C8B7A5;
+        Tue,  4 Aug 2020 13:47:47 +0200 (CEST)
+Received: by po16052vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id A565B65BBB; Tue,  4 Aug 2020 11:47:47 +0000 (UTC)
+Message-Id: <cover.1596541334.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v9 0/5] powerpc: switch VDSO to C implementation
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
+        anton@ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        arnd@arndb.de, tglx@linutronix.de, vincenzo.frascino@arm.com,
+        luto@kernel.org, linux-arch@vger.kernel.org
+Date:   Tue,  4 Aug 2020 11:47:47 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qup-i2c devices on sc7180 are clocked with a fixed clock (19.2 Mhz)
-Though qup-i2c does not support DVFS, it still needs to vote for a
-performance state on 'cx' to satisfy the 19.2 Mhz clock frequency
-requirement.
+This is the nineth version of a series to switch powerpc VDSO to
+generic C implementation.
 
-Use 'assigned-performance-states' to pass this information from
-device tree, and also add the power-domains property to specify
-the cx power-domain.
+Main changes since v8 are:
+- Dropped the patches which put the VDSO datapage in front of VDSO text in the mapping
+- Adds a second stack frame because the caller doesn't set one, at least on PPC64
+- Saving the TOC pointer on PPC64 (is that really needed ?)
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+This series applies on today's powerpc/merge branch.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index d46b383..f96ca21 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -767,6 +767,8 @@
- 						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -819,6 +821,8 @@
- 						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -871,6 +875,8 @@
- 						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -905,6 +911,8 @@
- 						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -957,6 +965,8 @@
- 						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -991,6 +1001,8 @@
- 						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -1058,6 +1070,8 @@
- 						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -1110,6 +1124,8 @@
- 						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -1144,6 +1160,8 @@
- 						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -1196,6 +1214,8 @@
- 						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -1230,6 +1250,8 @@
- 						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
-@@ -1282,6 +1304,8 @@
- 						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
+See the last patches for details on changes and performance.
+
+Christophe Leroy (5):
+  powerpc/processor: Move cpu_relax() into asm/vdso/processor.h
+  powerpc/vdso: Prepare for switching VDSO to generic C implementation.
+  powerpc/vdso: Save and restore TOC pointer on PPC64
+  powerpc/vdso: Switch VDSO to generic C implementation.
+  powerpc/vdso: Provide __kernel_clock_gettime64() on vdso32
+
+ arch/powerpc/Kconfig                         |   2 +
+ arch/powerpc/include/asm/clocksource.h       |   7 +
+ arch/powerpc/include/asm/processor.h         |  13 +-
+ arch/powerpc/include/asm/vdso/clocksource.h  |   7 +
+ arch/powerpc/include/asm/vdso/gettimeofday.h | 191 ++++++++++++
+ arch/powerpc/include/asm/vdso/processor.h    |  23 ++
+ arch/powerpc/include/asm/vdso/vsyscall.h     |  25 ++
+ arch/powerpc/include/asm/vdso_datapage.h     |  40 +--
+ arch/powerpc/kernel/asm-offsets.c            |  49 +--
+ arch/powerpc/kernel/time.c                   |  91 +-----
+ arch/powerpc/kernel/vdso.c                   |   5 +-
+ arch/powerpc/kernel/vdso32/Makefile          |  32 +-
+ arch/powerpc/kernel/vdso32/config-fake32.h   |  34 +++
+ arch/powerpc/kernel/vdso32/gettimeofday.S    | 300 +------------------
+ arch/powerpc/kernel/vdso32/vdso32.lds.S      |   1 +
+ arch/powerpc/kernel/vdso32/vgettimeofday.c   |  35 +++
+ arch/powerpc/kernel/vdso64/Makefile          |  23 +-
+ arch/powerpc/kernel/vdso64/gettimeofday.S    | 242 +--------------
+ arch/powerpc/kernel/vdso64/vgettimeofday.c   |  29 ++
+ 19 files changed, 447 insertions(+), 702 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/clocksource.h
+ create mode 100644 arch/powerpc/include/asm/vdso/clocksource.h
+ create mode 100644 arch/powerpc/include/asm/vdso/gettimeofday.h
+ create mode 100644 arch/powerpc/include/asm/vdso/processor.h
+ create mode 100644 arch/powerpc/include/asm/vdso/vsyscall.h
+ create mode 100644 arch/powerpc/kernel/vdso32/config-fake32.h
+ create mode 100644 arch/powerpc/kernel/vdso32/vgettimeofday.c
+ create mode 100644 arch/powerpc/kernel/vdso64/vgettimeofday.c
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.25.0
 
