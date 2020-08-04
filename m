@@ -2,87 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC6523B9F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D3B23BA03
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730295AbgHDLvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:51:14 -0400
-Received: from hera.aquilenet.fr ([185.233.100.1]:46904 "EHLO
-        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730371AbgHDLtz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:49:55 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id C93CEE0E8;
-        Tue,  4 Aug 2020 13:49:53 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id scU3giwOwsSK; Tue,  4 Aug 2020 13:49:53 +0200 (CEST)
-Received: from function.home (lfbn-bor-1-797-11.w86-234.abo.wanadoo.fr [86.234.239.11])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id EB4FE2534;
-        Tue,  4 Aug 2020 13:49:52 +0200 (CEST)
-Received: from samy by function.home with local (Exim 4.94)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1k2vS3-001bAW-C5; Tue, 04 Aug 2020 13:49:51 +0200
-Date:   Tue, 4 Aug 2020 13:49:51 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, speakup@linux-speakup.org
-Subject: Re: [PATCH 2/2] speakup: only build serialio when ISA is enabled
-Message-ID: <20200804114951.ijs3hnezi4f64nll@function>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
-        speakup@linux-speakup.org
-References: <20200804111332.dex7jobmabifdzw5@function>
- <20200804113413.GA181242@kroah.com>
+        id S1730323AbgHDL5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:57:43 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36354 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730358AbgHDLyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 07:54:40 -0400
+IronPort-SDR: yvhls4l+eb1tRfZb2WlfJmaCYQ61KW0wJd/jjGSEIdo1UoW/CfzqOAumjtbMw0CnkyOweMDGDT
+ uozNiaRLwxYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="170378366"
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="170378366"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 04:52:39 -0700
+IronPort-SDR: 5j8lkSutCNkcZJP6Z22txQhbEEyybEd3JikPty+wtafuTyns5+9QrI47aQw9fxslKMosrmzW2t
+ GxfCGB2fWp8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="396550686"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga001.fm.intel.com with SMTP; 04 Aug 2020 04:52:34 -0700
+Received: by lahna (sSMTP sendmail emulation); Tue, 04 Aug 2020 14:52:33 +0300
+Date:   Tue, 4 Aug 2020 14:52:33 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Daniel Gutson <daniel.gutson@eclypsium.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bazhaniuk <alex@eclypsium.com>,
+        Richard Hughes <hughsient@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] Remove attempt by intel-spi-pci to turn the SPI flash
+ chip writeable
+Message-ID: <20200804115233.GO1375436@lahna.fi.intel.com>
+References: <20200803134449.72502-1-daniel.gutson@eclypsium.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200804113413.GA181242@kroah.com>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
+In-Reply-To: <20200803134449.72502-1-daniel.gutson@eclypsium.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH, le mar. 04 août 2020 13:34:13 +0200, a ecrit:
-> On Tue, Aug 04, 2020 at 01:13:32PM +0200, Samuel Thibault wrote:
-> > Drivers using serialio are already made available in Kconfig only under
-> > the ISA condition.
-> > 
-> > This solves warnings in inb/outb macros on platform that do not have 
-> > support for ISA.
-> > 
-> > Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-> > 
-> > Index: linux-2.6/drivers/accessibility/speakup/Makefile
-> > ===================================================================
-> > --- linux-2.6.orig/drivers/accessibility/speakup/Makefile
-> > +++ linux-2.6/drivers/accessibility/speakup/Makefile
-> > @@ -16,6 +16,7 @@ obj-$(CONFIG_SPEAKUP_SYNTH_TXPRT) += spe
-> >  obj-$(CONFIG_SPEAKUP_SYNTH_DUMMY) += speakup_dummy.o
-> >  
-> >  obj-$(CONFIG_SPEAKUP) += speakup.o
-> > +obj-$(CONFIG_ISA) += serialio.o
-> >  speakup-y := \
-> >  	buffers.o \
-> >  	devsynth.o \
-> > @@ -25,7 +26,6 @@ speakup-y := \
-> >  	keyhelp.o \
-> >  	kobjects.o \
-> >  	selection.o \
-> > -	serialio.o \
-> >  	spk_ttyio.o \
-> >  	synth.o \
-> >  	thread.o \
-> 
-> Oops, no, I get the following build errors with this patch:
-> 
-> ERROR: modpost: "spk_wait_for_xmitr" [drivers/accessibility/speakup/speakup.ko] undefined!
+Hi,
 
-Yes, it depends on the first of the queue.
+On Mon, Aug 03, 2020 at 10:44:49AM -0300, Daniel Gutson wrote:
+> Currently, the intel-spi-pci driver tries to unconditionally set
+> the SPI chip writeable. After discussing in the LKML, the original
+> author decided that it was better  to remove the attempt.
+> 
+> Context, the intel-spi has a module argument that controls
+> whether the driver attempts to turn the SPI flash chip writeable.
+> The default value is FALSE (don't try to make it writeable).
+> However, this flag applies only for a number of devices, coming from the
+> platform driver, whereas the devices detected through the PCI driver
+> (intel-spi-pci) are not subject to this check since the configuration
+> takes place in intel-spi-pci which doesn't have an argument.
+> 
+> This patch removes the code that attempts to turn the SPI chip writeable.
 
-Samuel
+I think you should make the $subject to follow the convention used in
+the SPI-NOR subsystem. You can see it running following command:
+
+  $ git log --oneline drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+
+In this case I think it should be:
+
+  mtd: spi-nor: intel-spi: Do not try to make the SPI flash chip writable
+
+or something like that.
+
+The patch itself looks good, one minor comment below.
+
+> 
+> Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
+> ---
+>  drivers/mtd/spi-nor/controllers/intel-spi-pci.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> index 81329f680bec..d721ba4e8b41 100644
+> --- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> +++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> @@ -41,13 +41,7 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
+>  	if (!info)
+>  		return -ENOMEM;
+>  
+> -	/* Try to make the chip read/write */
+>  	pci_read_config_dword(pdev, BCR, &bcr);
+> -	if (!(bcr & BCR_WPD)) {
+> -		bcr |= BCR_WPD;
+> -		pci_write_config_dword(pdev, BCR, bcr);
+> -		pci_read_config_dword(pdev, BCR, &bcr);
+> -	}
+>  	info->writeable = !!(bcr & BCR_WPD);
+
+Perhaps we should log this in debug level (dev_dbg()) so when debugging
+possible issues we can see that the chip is write protected by the BIOS.
+
+>  
+>  	ispi = intel_spi_probe(&pdev->dev, &pdev->resource[0], info);
+> -- 
+> 2.25.1
