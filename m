@@ -2,60 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BCD23C1A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 23:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49A323C1A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 23:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgHDVkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 17:40:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51946 "EHLO mail.kernel.org"
+        id S1728358AbgHDVkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 17:40:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728294AbgHDVkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 17:40:11 -0400
-Subject: Re: [GIT PULL] seccomp updates for v5.9-rc1
+        id S1728302AbgHDVkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 17:40:13 -0400
+Subject: Re: [GIT PULL] SELinux patches for v5.9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596577211;
-        bh=1Z/hgMUTKsJFFf+z1KUINoL4+XYMgzWonTZBdmSEQFk=;
+        s=default; t=1596577212;
+        bh=LGM8VL8I37A2Tt5HGk6cHGMdfAs9oQQmcuhSNVg+lD4=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=lZ2nHok296YdTrADXEa0mMsA4YmxtN0ZmE5XELz/HW+JEF9gvgs1M8dL6lDtyFEk3
-         1ew7uhUqbp6EyACopc7pOALbL3hcnlM8S/wxtxTLZqLsnWEL3FZKApqSRnZ+Km8/XD
-         nX/XIgQ+F8eLaEovQvpPz7TNfqZL+VQKCKCllRT4=
+        b=Iv5gcQ/XuHG5yU135Z3eQpv6HSYZMHaNnUU7sKKLMi2b27GgUdb68KPGJs4rqsRZX
+         74Xq5UhZHtjxuPRe1NWvHOV+mlU3Hpe7DSFri4YQk1PHwFiXe99NSpMVWCGAWMhs/V
+         m91g3GoorwrthpgfepEgJxZrP3dFGuLCAQdmtlWo=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <202008031231.0D9CBD0FD@keescook>
-References: <202008031231.0D9CBD0FD@keescook>
+In-Reply-To: <CAHC9VhTy5xcOqx2SRjsyC-H-xvj3vvbHDt7O-S7TLYhXjANZGw@mail.gmail.com>
+References: <CAHC9VhTy5xcOqx2SRjsyC-H-xvj3vvbHDt7O-S7TLYhXjANZGw@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <202008031231.0D9CBD0FD@keescook>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git
- tags/seccomp-v5.9-rc1
-X-PR-Tracked-Commit-Id: c97aedc52dce4c87d4c44de4e6af941cd102600c
+X-PR-Tracked-Message-Id: <CAHC9VhTy5xcOqx2SRjsyC-H-xvj3vvbHDt7O-S7TLYhXjANZGw@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+ tags/selinux-pr-20200803
+X-PR-Tracked-Commit-Id: 54b27f9287a7b3dfc85549f01fc9d292c92c68b9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9ecc6ea491f0c0531ad81ef9466284df260b2227
-Message-Id: <159657721137.17686.13475565214310463918.pr-tracker-bot@kernel.org>
-Date:   Tue, 04 Aug 2020 21:40:11 +0000
-To:     Kees Cook <keescook@chromium.org>
+X-PR-Merge-Commit-Id: 49e917deeb81e263bcdb4b20e61ca18111995ffe
+Message-Id: <159657721266.17686.17285046647020246350.pr-tracker-bot@kernel.org>
+Date:   Tue, 04 Aug 2020 21:40:12 +0000
+To:     Paul Moore <paul@paul-moore.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Chris Palmer <palmer@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Matt Denton <mpdenton@google.com>,
-        Robert Sesek <rsesek@google.com>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, Will Drewry <wad@chromium.org>,
-        Yonghong Song <yhs@fb.com>
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 3 Aug 2020 12:39:30 -0700:
+The pull request you sent on Mon, 3 Aug 2020 19:16:10 -0400:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v5.9-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20200803
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9ecc6ea491f0c0531ad81ef9466284df260b2227
+https://git.kernel.org/torvalds/c/49e917deeb81e263bcdb4b20e61ca18111995ffe
 
 Thank you!
 
