@@ -2,134 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4E923B545
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 08:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1206B23B50F
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 08:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726916AbgHDGyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 02:54:25 -0400
-Received: from mx0b-0039f301.pphosted.com ([148.163.137.242]:41814 "EHLO
-        mx0b-0039f301.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725811AbgHDGyY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 02:54:24 -0400
-X-Greylist: delayed 1122 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 Aug 2020 02:54:23 EDT
-Received: from pps.filterd (m0174682.ppops.net [127.0.0.1])
-        by mx0b-0039f301.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0746ZVhp008400;
-        Tue, 4 Aug 2020 06:35:31 GMT
-Received: from eur05-vi1-obe.outbound.protection.outlook.com (mail-vi1eur05lp2170.outbound.protection.outlook.com [104.47.17.170])
-        by mx0b-0039f301.pphosted.com with ESMTP id 32n6tpwcm1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Aug 2020 06:35:31 +0000
+        id S1726240AbgHDGgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 02:36:15 -0400
+Received: from mail-eopbgr140073.outbound.protection.outlook.com ([40.107.14.73]:27778
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725300AbgHDGgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 02:36:14 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CeAFWw1N8FMLvd6BjNQnvnM5GdsTvmZ1cmiMLHI+i2FOoWa+nUngMNOfW1nZ0CRrWmdc2d5iuYLRxBaAx5abb6nq3xn9jZCUfh1y5nMTAvTkfslrK+shhl/Al4Pe1rF5dV1vW8CvUUSORBeC0kB2kx37c3gumRTgbtkh2bQ5X/Y8YBraD/I7tQrN/JxGFw+lVCwrAjPvENgc7veZ9l4bzVSbtSVp9B2ConrPpxknG3UeHmi2wnbhqUVYDhzuPfvM1BL/qrUrS4j/Xv5EcRvfm/z7kXI/vzWREEq1+Rs3qXEMbMKEwZPw3kDjzjXcRRu2l/1YIkX3WQ54QFFh73llmg==
+ b=n3OVUlov3Iu8MgVh+PTyOCqrnVTNCqPyNlAhiDtQrdyW1Jepz/gcT3u+CrJxLIpXEsVvYIFLZcFzb2ceSH57ytO9Rhu6yxaJWwUYDrBLqNIqnEPZb70qonb01suu4HCXg5ndfJ7HCF5QLskSwIYMoBq0R3SWopycgBIc07rtJM8KWMeilXhA3ZuwYQdQgCntb/XNgFp0FLBH4Dz/BHxVkv1dMYwmLnoyHTiqYciIDBo4FP8z9pza6J95/X7v18i/P99nw3v1fjYPWafm1qzy0Fx2ODvo/ldN6Hdhqd30I9HGShpnDVn2h+pRifIE2ZoAgNhfRdsuFruzjgAj1tMErA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lc4bC+XGhCr1+jTG6XrTRAZNK53WspKNeV6btNcHLOQ=;
- b=Fh8C+9D3jY8xg8DY5Vw5G7iO9/yNOj8BIkPiRjbh9PohbGhnPqgUfecL5tWSd2Yn01ZSMTvSCukP9H/eUinIj/kFQNL5uYoytZry9WJhlkMzarGz0IyQZli1sxs82Ap8cTNRn32MXbW8ZWRHQLJQ7OgcBrmGCryqRJ0YNUzdN8+UXgzgwmgG6QshI4BI6Y9YjBJN2RH/I1/Mu6OZGsYDtB7gB4LTBQcXB1kfBRf577E94pWwY4xPuMJrtfg30Fpk9kRPi2QHQzbhyaDwjhfhT1qK+LJmkcjVBf8lXhYzUbGb5YNfYYSLjLPvxple9ZZAphNE+SrTqaf6Gy1O96ifyA==
+ bh=WBgRgYhXuWUBpjtbOI0hy7g5HoeulDhj+jpR0lmXINk=;
+ b=TG26LZ+SnI85dFeG2ciXb+H/K+2oDp3aGduqTeLzAadaATrMeN2vicDkT+TYsYy89wEIoK1u9lIaT0yBvBhdPlb7UempYDBWbReN6dF+B3NeibU4zdK6EbTjBMOkQN8+fsfkvZLe9KTkDufOdRf4SAdcI5s/F2japZddEIQsJ7MvxQrdN7+M4OywdvQq6oqI8RhiS4K1qIL11QszoZYrIVGqu2CGKeuaE2ZO8CONG6TsUzewrIur5rbAXcK2vzmSdjwnsq8SubRgHBNdLZOHl3ORbshcxNMGNxhp7YnZj/PPmok7IOK0rYq8/jcGQ9YOAU2XD+j0WOJJG2LLQoclgQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
- dkim=pass header.d=epam.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector1;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lc4bC+XGhCr1+jTG6XrTRAZNK53WspKNeV6btNcHLOQ=;
- b=W1yKdZ3xXeFkNfbDw0Mw8vicuaylfoLjpGSFJ36M9uzzFArpOOrEcpcFpqZBvHE9JvlkdRe8THPAdCvq+wmDqbe3Mv9ZCtYCd9OJwOGoE+2jBkjX2j9aNvvLivM0bANzCduMvuk204g7u7orZi0AVmgr9gSCXv6iq1YPm7bmKyovE50VbQVeOSvWz43ELuZzmrFcJpP20IHOALSNSH/iXa+Rbe9jmA3brDUuMIl0p9ScmoUj6XPKUP8XZn3rNxjoOUL9hbf6/p5sfYAujpSAftj55WHQYoY2pSjwPzJs4/NTlTB5IRYD6CLwbe6mD5KQvp7HSrq55ZShQ4BAYASVmA==
-Received: from AM0PR03MB6324.eurprd03.prod.outlook.com (2603:10a6:20b:153::17)
- by AM0PR03MB4018.eurprd03.prod.outlook.com (2603:10a6:208:73::28) with
+ bh=WBgRgYhXuWUBpjtbOI0hy7g5HoeulDhj+jpR0lmXINk=;
+ b=b4wVgE0z04+ysZiwJ8cjrwslv65C2RACxHXtdLqjuUn5c0tkhemt1qmHcDvfN6DRUbfOxKiF62SR6VCHn28w/IxH/Sm1LlAT8yw83zPkDoUAJL6fWfsgft0ilVOCGDgtnaVkDfosY8qOXSMprNk9cAEinAhldCkLNy91aWrSmm8=
+Received: from VI1PR04MB5103.eurprd04.prod.outlook.com (2603:10a6:803:51::19)
+ by VE1PR04MB6592.eurprd04.prod.outlook.com (2603:10a6:803:124::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16; Tue, 4 Aug
- 2020 06:35:20 +0000
-Received: from AM0PR03MB6324.eurprd03.prod.outlook.com
- ([fe80::21e5:6d27:5ba0:f508]) by AM0PR03MB6324.eurprd03.prod.outlook.com
- ([fe80::21e5:6d27:5ba0:f508%9]) with mapi id 15.20.3239.022; Tue, 4 Aug 2020
- 06:35:20 +0000
-From:   Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.21; Tue, 4 Aug
+ 2020 06:36:10 +0000
+Received: from VI1PR04MB5103.eurprd04.prod.outlook.com
+ ([fe80::2c2c:20a4:38cd:73c3]) by VI1PR04MB5103.eurprd04.prod.outlook.com
+ ([fe80::2c2c:20a4:38cd:73c3%7]) with mapi id 15.20.3239.022; Tue, 4 Aug 2020
+ 06:36:10 +0000
+From:   Hongbo Wang <hongbo.wang@nxp.com>
+To:     David Miller <davem@davemloft.net>
+CC:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
+        Po Liu <po.liu@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandru Marginean <alexandru.marginean@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Leo Li <leoyang.li@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        "jiri@resnulli.us" <jiri@resnulli.us>,
+        "idosch@idosch.org" <idosch@idosch.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "nikolay@cumulusnetworks.com" <nikolay@cumulusnetworks.com>,
+        "roopa@cumulusnetworks.com" <roopa@cumulusnetworks.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>
-CC:     "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
-Subject: Re: [PATCH 2/6] drm/xen-front: Fix misused IS_ERR_OR_NULL checks
-Thread-Topic: [PATCH 2/6] drm/xen-front: Fix misused IS_ERR_OR_NULL checks
-Thread-Index: AQHWZzlL0sSwpF/GAkKOn1bzUQtIbaknfhgAgAAGTYA=
-Date:   Tue, 4 Aug 2020 06:35:20 +0000
-Message-ID: <0ed5082f-0280-16c0-7410-f6a90262bcee@epam.com>
-References: <20200731125109.18666-1-andr2000@gmail.com>
- <20200731125109.18666-3-andr2000@gmail.com>
- <6d719ab2-d9f6-2c3c-8979-b12a4d10b96d@suse.com>
-In-Reply-To: <6d719ab2-d9f6-2c3c-8979-b12a4d10b96d@suse.com>
-Accept-Language: en-US
+        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "ivecera@redhat.com" <ivecera@redhat.com>
+Subject: RE: [EXT] Re: [PATCH v4 2/2] net: dsa: ocelot: Add support for QinQ
+ Operation
+Thread-Topic: [EXT] Re: [PATCH v4 2/2] net: dsa: ocelot: Add support for QinQ
+ Operation
+Thread-Index: AQHWZltTjJoiQZyRB0ahxfHbav3IXakm9cqAgACG/8A=
+Date:   Tue, 4 Aug 2020 06:36:10 +0000
+Message-ID: <VI1PR04MB51039B32C580321D99B8DEE8E14A0@VI1PR04MB5103.eurprd04.prod.outlook.com>
+References: <20200730102505.27039-1-hongbo.wang@nxp.com>
+        <20200730102505.27039-3-hongbo.wang@nxp.com>
+ <20200803.145843.2285407129021498421.davem@davemloft.net>
+In-Reply-To: <20200803.145843.2285407129021498421.davem@davemloft.net>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=epam.com;
-x-originating-ip: [185.199.97.5]
+authentication-results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bacc23d0-ea50-4283-2028-08d838408f3a
-x-ms-traffictypediagnostic: AM0PR03MB4018:
-x-microsoft-antispam-prvs: <AM0PR03MB4018A320EF9328C686A18CC1E74A0@AM0PR03MB4018.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9dc8e492-3ecf-4291-f3a3-08d83840ad06
+x-ms-traffictypediagnostic: VE1PR04MB6592:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VE1PR04MB65925EC42434E4E924BA5811E14A0@VE1PR04MB6592.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sqyyZXAPZ/z3H/Ly6eF9f8KwJNrs3gHUd7BkzkMkooK993gYHTEATALdExOL6H9QMcfJh1tDL2F2gwXEZ0ME7/72z7KqgNkXvoTmiDLlx5bTRl+ZP16OVYb0lrrMHo1eyUxSTCJq3eIy6/Dsks54lUK3XTaFimEAKBd0jZaRh2P84kzti5xVgu6/ZcT8RxVM6hwlwe0DoQpLkW/V/IXpXDvpfq/Lns6qRLTneUgA11tahXTc2sCHWrJ9EsUlHc1V2p9Im/D2U/BpvZ8NCFsccFDhCq1OK2HF0NLKlj679PC3ECOf+81fWOdbJVEoP6SylEsJdb16FTFtdKuDtrrGEw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR03MB6324.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(39860400002)(376002)(366004)(346002)(66574015)(6506007)(6512007)(8676002)(53546011)(4326008)(186003)(26005)(83380400001)(36756003)(31686004)(8936002)(5660300002)(316002)(91956017)(66946007)(66476007)(86362001)(66556008)(2906002)(64756008)(7416002)(478600001)(31696002)(110136005)(6486002)(2616005)(71200400001)(54906003)(66446008)(76116006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: QhMR69WQhyMQBpqeJiEZEx3t6YQfRYIHmcl9/oJQ/HDt4ZL3N+44TRYBCNnSIpLxDYIQSw0S5kIlIyqqePFeblBo8NkLY7Cf5pdFsUpKe300DENnQ5ZJ7gmILqCvA9rgn6afos3kr/OLASAShgamTSZZcVNFTgfO9UjUz20464hy6mpgQ+cljP/al8X4dOVSJrTMm4qJuSJve63M9Q/+Ev2iPQtDUw1efwrofG6IhBb6eJKdtMzjW1phYKSxZ3Qikm/w/azdvKxxXvC3ygYg9gNrd6eXb/wnuSS7FSZfSCDo4gJgV3S5Rnpl5kIGy/O0kJ73dd7yUansAwehyR4kr6STB4ZkJoQagqEzVxosgv3Ske/p1Pw+V1Cyyclm2lniAkuR+nmOGLJRb2gzYhJfBIwJAjqrWVZ3NwETooCK2l11zbOiLNL7sH1AFGuKmdNG/pejZJse0a1QybQAYtkFGwq1YJ7wmiTrEavtc7O4Urm9feUSZ1L7eQI10ZF1JvsUJPtratVDP8SR8o/S0VS728f3BH/r23Ep/yd/5lJ/D5o64U63zZ/sAr0eUuJfS/f33YwzFCqOlVd7nz4jvvOgm+80i1M+a9HOA0sz0UsIGsnpeHwZP0by9EO7qb/ZP+D9vSi4SUt4MhrVrRT/U4mvGQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5ABBA776A8DB0E4FA17CEE06E29E6409@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+x-microsoft-antispam-message-info: cTukOEO4xRdU7RDvCoDuFCYYbSgRqyg2s4/eFbGWbsdJVyoPcZi+Ub5atCtbPSE/YTbQVTQgSV9yrWh6Z5L5bk5eBwTgjDH66X29GCGMxdMzYwrv3bfuNBDHWx/h19BNtLLmAXMbtLB6NZYT6Hq8CZHsLW2tMr2hz7D4e2I7N3ZYj7BRj39h1B7SMkTNJinCM2oqym/B84hsf0bhih1Mdmbho3H710SzClTZ/sWRZ4n0uYEv4wCgdS3Vo9NGc4TuJTrGpZ++vgIyzHRZGicnQ3iw++ebdI6WTLBy2gfInHK81qNd4xeHAOi2lBG8l4TiFlMWYS/vaJLLHwJIRc1NJg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5103.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(136003)(396003)(39860400002)(376002)(366004)(83380400001)(55016002)(26005)(6506007)(33656002)(5660300002)(7696005)(2906002)(52536014)(6916009)(7416002)(86362001)(9686003)(478600001)(186003)(71200400001)(316002)(66476007)(76116006)(64756008)(66946007)(8936002)(54906003)(8676002)(4326008)(44832011)(66556008)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: xf+v+lTOY1dCALEwXpyqWT/peRY9rZ88W8zm+JTM1Dgcs98tdrdt9IDsXFEBwRu1/i7/B8ydTOjmhPxepQeWbEessrPQzg5tZtzYTHmMXGce7+ahHBCvdMUpnz33+TUGtQk1c84K55KFAU1Rcasu6yYlFtNyOhmWQ78gyPd4Vh4/+w0dVH4FBZgOhOkb5EcUvVY+vnWYcWfg5VYusGTQjEwyaeehzTbldjksF9YQNLE+BLq+c4U79W8l2gxzMIuG6wwVjMKGBg7NCHSfRFTxCBtdhi9uO0c7MBw14IQGD5M9dnJswl9oKAO+fI/4qKghZoBgtV9/CZKZLP2RMLqLLDETu3H/2k9bJydF0zdAjpZiFCNV+31pkKR4K77UEM1BG+0LVA9988X6OWufP+cXMPNdGQe1+sO8V218DVLrOiKbGQqKovsgIj40umxOOf9NF4Mp9sCrYsMBGoaaEZyyBjrbATykoqNPpLDhVcNuvz8WgAvtLmQ9GAMPDhLUvHQH6qM8zqxseOV1NFaTVyXCOo6O7A53Jx54Z524VxrSG93mtltUm53ayM8Dj1L9hkPcIq0me33upxF8oX/3xg2JkmFLrdbxKIrAdJ12jKezmD8+UzKfvrYZSzgOj0ov4kNZg+KgM0I3TT9tXY7+iais9w==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: epam.com
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR03MB6324.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bacc23d0-ea50-4283-2028-08d838408f3a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2020 06:35:20.3465
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5103.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9dc8e492-3ecf-4291-f3a3-08d83840ad06
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2020 06:36:10.2882
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eWW9QHSAhzV90syBmS6r/Z9p4/KgvXA0vEqEkQWozdMl3VOe2ymlHHY9Nfl97BEU53Knv0qBk4HcSN5cf6Tr8jBETyEVY2WLegbTT8kNbuOsKC6ByeJxghM8NwIZyVgh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR03MB4018
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-04_02:2020-08-03,2020-08-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
- impostorscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxscore=0
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008040048
+X-MS-Exchange-CrossTenant-userprincipalname: +WF1xHJTG+taBEkXl5oGe9IuQ6+nWGeJT1zbAiwpJxks5RpmJ8McS4FKyo0RUmBn9jVHUU9InyXpBvJFsVsbaw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6592
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiA4LzQvMjAgOToxMiBBTSwgSsO8cmdlbiBHcm/DnyB3cm90ZToNCj4gT24gMzEuMDcuMjAg
-MTQ6NTEsIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3RlOg0KPj4gRnJvbTogT2xla3NhbmRy
-IEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hlbmtvQGVwYW0uY29tPg0KPj4NCj4+
-IFRoZSBwYXRjaCBjNTc1YjdlZWI4OWY6ICJkcm0veGVuLWZyb250OiBBZGQgc3VwcG9ydCBmb3Ig
-WGVuIFBWDQo+PiBkaXNwbGF5IGZyb250ZW5kIiBmcm9tIEFwciAzLCAyMDE4LCBsZWFkcyB0byB0
-aGUgZm9sbG93aW5nIHN0YXRpYw0KPj4gY2hlY2tlciB3YXJuaW5nOg0KPj4NCj4+IMKgwqDCoMKg
-ZHJpdmVycy9ncHUvZHJtL3hlbi94ZW5fZHJtX2Zyb250X2dlbS5jOjE0MCB4ZW5fZHJtX2Zyb250
-X2dlbV9jcmVhdGUoKQ0KPj4gwqDCoMKgwqB3YXJuOiBwYXNzaW5nIHplcm8gdG8gJ0VSUl9DQVNU
-Jw0KPj4NCj4+IGRyaXZlcnMvZ3B1L2RybS94ZW4veGVuX2RybV9mcm9udF9nZW0uYw0KPj4gwqDC
-oMKgIDEzM8KgIHN0cnVjdCBkcm1fZ2VtX29iamVjdCAqeGVuX2RybV9mcm9udF9nZW1fY3JlYXRl
-KHN0cnVjdCBkcm1fZGV2aWNlICpkZXYsDQo+PiDCoMKgwqAgMTM0wqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc2l6ZV90IHNpemUpDQo+PiDCoMKgwqAgMTM1wqAgew0K
-Pj4gwqDCoMKgIDEzNsKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgeGVuX2dlbV9vYmplY3QgKnhl
-bl9vYmo7DQo+PiDCoMKgwqAgMTM3DQo+PiDCoMKgwqAgMTM4wqDCoMKgwqDCoMKgwqDCoMKgIHhl
-bl9vYmogPSBnZW1fY3JlYXRlKGRldiwgc2l6ZSk7DQo+PiDCoMKgwqAgMTM5wqDCoMKgwqDCoMKg
-wqDCoMKgIGlmIChJU19FUlJfT1JfTlVMTCh4ZW5fb2JqKSkNCj4+IMKgwqDCoCAxNDDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBFUlJfQ0FTVCh4ZW5fb2JqKTsNCj4+
-DQo+PiBGaXggdGhpcyBhbmQgdGhlIHJlc3Qgb2YgbWlzdXNlZCBwbGFjZXMgd2l0aCBJU19FUlJf
-T1JfTlVMTCBpbiB0aGUNCj4+IGRyaXZlci4NCj4+DQo+PiBGaXhlczrCoCBjNTc1YjdlZWI4OWY6
-ICJkcm0veGVuLWZyb250OiBBZGQgc3VwcG9ydCBmb3IgWGVuIFBWIGRpc3BsYXkgZnJvbnRlbmQi
-DQo+DQo+IEFnYWluIGZvcmdvdCB0byBDYyBzdGFibGU/DQoNCkkgd2FzIGp1c3Qgbm90IHN1cmUg
-aWYgdGhlc2UgbWlub3IgZml4ZXMgbmVlZCB0byBnbyB0aGUgc3RhYmxlLCBidXQgSSB3aWxsIGFk
-ZA0KDQpUaGFuayB5b3UNCg0KPg0KPg0KPiBKdWVyZ2Vu
+> > +     if (vlan->proto =3D=3D ETH_P_8021AD) {
+> > +             ocelot->enable_qinq =3D true;
+> > +             ocelot_port->qinq_mode =3D true;
+> > +     }
+>  ...
+> > +     if (vlan->proto =3D=3D ETH_P_8021AD) {
+> > +             ocelot->enable_qinq =3D false;
+> > +             ocelot_port->qinq_mode =3D false;
+> > +     }
+> > +
+>=20
+> I don't understand how this can work just by using a boolean to track the
+> state.
+>=20
+> This won't work properly if you are handling multiple QinQ VLAN entries.
+>=20
+> Also, I need Andrew and Florian to review and ACK the DSA layer changes t=
+hat
+> add the protocol value to the device notifier block.
+
+Hi David,
+Thanks for reply.
+
+When setting bridge's VLAN protocol to 802.1AD by the command "ip link set =
+br0 type bridge vlan_protocol 802.1ad", it will call dsa_slave_vlan_rx_add(=
+dev, proto, vid) for every port in the bridge, the parameter vid is port's =
+pvid 1,
+if pvid's proto is 802.1AD, I will enable switch's enable_qinq, and the rel=
+ated port's qinq_mode,
+
+When there are multiple QinQ VLAN entries, If one VLAN's proto is 802.1AD, =
+I will enable switch and the related port into QinQ mode.
+
+Thanks,
+hongbo
+
