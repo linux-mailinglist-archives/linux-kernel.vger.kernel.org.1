@@ -2,65 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5777A23B9D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122EC23B9EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730278AbgHDLqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:46:00 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8758 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728157AbgHDLp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:45:59 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id F22B52BADDED43D36394;
-        Tue,  4 Aug 2020 19:45:55 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 4 Aug 2020
- 19:45:46 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <pshelar@ovn.org>,
-        <fw@strlen.de>, <martin.varghese@nokia.com>, <willemb@google.com>,
-        <edumazet@google.com>, <dcaratti@redhat.com>,
-        <steffen.klassert@secunet.com>, <pabeni@redhat.com>,
-        <shmulik@metanetworks.com>, <kyk.segfault@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] net: Fix potential out of bound write in skb_try_coalesce()
-Date:   Tue, 4 Aug 2020 19:48:18 +0800
-Message-ID: <1596541698-18938-1-git-send-email-linmiaohe@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1730425AbgHDLtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:49:46 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55884 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730383AbgHDLs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 07:48:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596541739; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From;
+ bh=vGH9LKTOm9sL1O4ddHVopCGrjaeylS/jHpnPnE8H5C0=; b=p0KhID1ROV6URe6qCzfaQMrPzfhunlP2zV8yit7Q+VIQ+ouqmW5owOvKDRL0zb+UketV3b1X
+ ljfxkCfoDr03+NFr7FWbPrpQC41ImtOELlLlL1DNlEew/0aYExtlwR/LxvxyyaGh5pJ/7yfy
+ 8kYhcw8jrOKcpAyQt1lptSHUKWY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
+ 5f294b2a781ba1c5e2e7a4a6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 Aug 2020 11:48:58
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6E201C433C9; Tue,  4 Aug 2020 11:48:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: *
+X-Spam-Status: No, score=1.9 required=2.0 tests=ALL_TRUSTED,FROM_ADDR_WS,
+        SPF_HELO_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from vgarodia-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vgarodia)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70F7BC433C6;
+        Tue,  4 Aug 2020 11:48:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 70F7BC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=qti.qualcomm.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.helo=vgarodia-linux.qualcomm.com
+From:   Vikash Garodia <"Vikash Garodia"@qti.qualcomm.com>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, mansur@codeaurora.org,
+        rkurapat@qti.qualcomm.com, gkapalli@qti.qualcomm.com
+Subject: [PATCH] venus: fixes for list corruption
+Date:   Tue,  4 Aug 2020 17:18:45 +0530
+Message-Id: <20200804114845.25086-1-user@vgarodia-linux>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Vikash Garodia <vgarodia@codeaurora.org>
 
-The head_frag of skb would occupy one extra skb_frag_t. Take it into
-account or out of bound write to skb frags may happen.
+There are few list handling issues while adding and deleting
+node in the registered buf list in the driver.
+1. list addition - buffer added into the list during buf_init
+while not deleted during cleanup.
+2. list deletion - In capture streamoff, the list was reinitialized.
+As a result, if any node was present in the list, it would
+lead to issue while cleaning up that node during buf_cleanup.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Corresponding call traces below:
+[  165.751014] Call trace:
+[  165.753541]  __list_add_valid+0x58/0x88
+[  165.757532]  venus_helper_vb2_buf_init+0x74/0xa8 [venus_core]
+[  165.763450]  vdec_buf_init+0x34/0xb4 [venus_dec]
+[  165.768271]  __buf_prepare+0x598/0x8a0 [videobuf2_common]
+[  165.773820]  vb2_core_qbuf+0xb4/0x334 [videobuf2_common]
+[  165.779298]  vb2_qbuf+0x78/0xb8 [videobuf2_v4l2]
+[  165.784053]  v4l2_m2m_qbuf+0x80/0xf8 [v4l2_mem2mem]
+[  165.789067]  v4l2_m2m_ioctl_qbuf+0x2c/0x38 [v4l2_mem2mem]
+[  165.794624]  v4l_qbuf+0x48/0x58
+
+[ 1797.556001] Call trace:
+[ 1797.558516]  __list_del_entry_valid+0x88/0x9c
+[ 1797.562989]  vdec_buf_cleanup+0x54/0x228 [venus_dec]
+[ 1797.568088]  __buf_prepare+0x270/0x8a0 [videobuf2_common]
+[ 1797.573625]  vb2_core_qbuf+0xb4/0x338 [videobuf2_common]
+[ 1797.579082]  vb2_qbuf+0x78/0xb8 [videobuf2_v4l2]
+[ 1797.583830]  v4l2_m2m_qbuf+0x80/0xf8 [v4l2_mem2mem]
+[ 1797.588843]  v4l2_m2m_ioctl_qbuf+0x2c/0x38 [v4l2_mem2mem]
+[ 1797.594389]  v4l_qbuf+0x48/0x58
+
+Signed-off-by: Vikash Garodia <vgarodia@codeaurora.org>
 ---
- net/core/skbuff.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/qcom/venus/vdec.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 8a0c39e4ab0a..b489ba201fac 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -5154,7 +5154,7 @@ bool skb_try_coalesce(struct sk_buff *to, struct sk_buff *from,
- 		unsigned int offset;
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 7c4c483d5438..76be14efbfb0 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -1088,8 +1088,6 @@ static int vdec_stop_capture(struct venus_inst *inst)
+ 		break;
+ 	}
  
- 		if (to_shinfo->nr_frags +
--		    from_shinfo->nr_frags >= MAX_SKB_FRAGS)
-+		    from_shinfo->nr_frags + 1 >= MAX_SKB_FRAGS)
- 			return false;
+-	INIT_LIST_HEAD(&inst->registeredbufs);
+-
+ 	return ret;
+ }
  
- 		if (skb_head_is_locked(from))
+@@ -1189,6 +1187,14 @@ static int vdec_buf_init(struct vb2_buffer *vb)
+ static void vdec_buf_cleanup(struct vb2_buffer *vb)
+ {
+ 	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
++	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
++	struct venus_buffer *buf = to_venus_buffer(vbuf);
++
++	mutex_lock(&inst->lock);
++	if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
++		if (!list_empty(&inst->registeredbufs))
++			list_del_init(&buf->reg_list);
++	mutex_unlock(&inst->lock);
+ 
+ 	inst->buf_count--;
+ 	if (!inst->buf_count)
 -- 
-2.19.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
