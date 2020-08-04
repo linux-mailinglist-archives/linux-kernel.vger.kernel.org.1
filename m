@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584EB23C121
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F6123C10B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgHDU7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 16:59:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42168 "EHLO mail.kernel.org"
+        id S1728331AbgHDU6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 16:58:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728061AbgHDU6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728068AbgHDU6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 Aug 2020 16:58:16 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBC3522BED;
+        by mail.kernel.org (Postfix) with ESMTPSA id E087022B45;
         Tue,  4 Aug 2020 20:58:13 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1k340i-006HBO-OO; Tue, 04 Aug 2020 16:58:12 -0400
-Message-ID: <20200804205812.638727187@goodmis.org>
+        id 1k340i-006HBu-Sw; Tue, 04 Aug 2020 16:58:12 -0400
+Message-ID: <20200804205812.775534405@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 04 Aug 2020 16:57:48 -0400
+Date:   Tue, 04 Aug 2020 16:57:49 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org,
         Chengming Zhou <zhouchengming@bytedance.com>,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [for-linus][PATCH 05/17] ftrace: Setup correct FTRACE_FL_REGS flags for module
+Subject: [for-linus][PATCH 06/17] ftrace: Do not let direct or IPMODIFY ftrace_ops be added to module
+ and set trampolines
 References: <20200804205743.419135730@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +40,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chengming Zhou <zhouchengming@bytedance.com>
 
-When module loaded and enabled, we will use __ftrace_replace_code
-for module if any ftrace_ops referenced it found. But we will get
-wrong ftrace_addr for module rec in ftrace_get_addr_new, because
-rec->flags has not been setup correctly. It can cause the callback
-function of a ftrace_ops has FTRACE_OPS_FL_SAVE_REGS to be called
-with pt_regs set to NULL.
-So setup correct FTRACE_FL_REGS flags for rec when we call
-referenced_filters to find ftrace_ops references it.
+When inserting a module, we find all ftrace_ops referencing it on the
+ftrace_ops_list. But FTRACE_OPS_FL_DIRECT and FTRACE_OPS_FL_IPMODIFY
+flags are special, and should not be set automatically. So warn and
+skip ftrace_ops that have these two flags set and adding new code.
+Also check if only one ftrace_ops references the module, in which case
+we can use a trampoline as an optimization.
 
-Link: https://lkml.kernel.org/r/20200728180554.65203-1-zhouchengming@bytedance.com
+Link: https://lkml.kernel.org/r/20200728180554.65203-2-zhouchengming@bytedance.com
 
-Cc: stable@vger.kernel.org
-Fixes: 8c4f3c3fa9681 ("ftrace: Check module functions being traced on reload")
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/ftrace.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ kernel/trace/ftrace.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index c141d347f71a..d052f856f1cf 100644
+index d052f856f1cf..f433cb44300a 100644
 --- a/kernel/trace/ftrace.c
 +++ b/kernel/trace/ftrace.c
-@@ -6198,8 +6198,11 @@ static int referenced_filters(struct dyn_ftrace *rec)
- 	int cnt = 0;
+@@ -6199,9 +6199,17 @@ static int referenced_filters(struct dyn_ftrace *rec)
  
  	for (ops = ftrace_ops_list; ops != &ftrace_list_end; ops = ops->next) {
--		if (ops_references_rec(ops, rec))
--		    cnt++;
-+		if (ops_references_rec(ops, rec)) {
-+			cnt++;
-+			if (ops->flags & FTRACE_OPS_FL_SAVE_REGS)
-+				rec->flags |= FTRACE_FL_REGS;
-+		}
+ 		if (ops_references_rec(ops, rec)) {
++			if (WARN_ON_ONCE(ops->flags & FTRACE_OPS_FL_DIRECT))
++				continue;
++			if (WARN_ON_ONCE(ops->flags & FTRACE_OPS_FL_IPMODIFY))
++				continue;
+ 			cnt++;
+ 			if (ops->flags & FTRACE_OPS_FL_SAVE_REGS)
+ 				rec->flags |= FTRACE_FL_REGS;
++			if (cnt == 1 && ops->trampoline)
++				rec->flags |= FTRACE_FL_TRAMP;
++			else
++				rec->flags &= ~FTRACE_FL_TRAMP;
+ 		}
  	}
  
- 	return cnt;
-@@ -6378,8 +6381,8 @@ void ftrace_module_enable(struct module *mod)
- 		if (ftrace_start_up)
- 			cnt += referenced_filters(rec);
- 
--		/* This clears FTRACE_FL_DISABLED */
--		rec->flags = cnt;
-+		rec->flags &= ~FTRACE_FL_DISABLED;
-+		rec->flags += cnt;
- 
- 		if (ftrace_start_up && cnt) {
- 			int failed = __ftrace_replace_code(rec, 1);
 -- 
 2.26.2
 
