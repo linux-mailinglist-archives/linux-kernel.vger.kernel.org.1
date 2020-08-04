@@ -2,174 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E3523B990
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E565F23B996
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 13:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730016AbgHDLcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 07:32:15 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46160 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728157AbgHDLcG (ORCPT
+        id S1730156AbgHDLdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 07:33:00 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:43527 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728157AbgHDLc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:32:06 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k2vAp-0002Fi-Tt; Tue, 04 Aug 2020 11:32:04 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] checkpoint/restore changes for v5.9
-Date:   Tue,  4 Aug 2020 13:32:02 +0200
-Message-Id: <20200804113202.72667-1-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 4 Aug 2020 07:32:59 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 04 Aug 2020 04:32:58 -0700
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Aug 2020 04:32:56 -0700
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 04 Aug 2020 17:02:29 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id F05E44BA0; Tue,  4 Aug 2020 17:02:26 +0530 (IST)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        travitej@codeaurora.org, nganji@codeaurora.org,
+        swboyd@chromium.org, abhinavk@codeaurora.org,
+        ddavenport@chromium.org
+Subject: [v1] drm/msm/dpu: update reservations in commit path
+Date:   Tue,  4 Aug 2020 17:02:24 +0530
+Message-Id: <1596540744-6902-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+DPU resources reserved in the atomic_check path gets unwinded
+during modeset operation before commit happens in a non seamless
+transition.
 
-/* Summary */
-This pull request contains the changes to enable unprivileged
-checkpoint/restore of processes. Given that this work has been going on for
-quite some time the first sentence in this summary is hopefully more exciting
-than the actual final code changes required.
-Unprivileged checkpoint/restore has seen a frequent increase in interest over
-the last two years and has thus been one of the main topics for the combined
-containers & checkpoint/restore microconference since at least 2018 (cf. [1]).
+Update the reservations in the commit path to avoid resource
+failures. Secondly have dummy reservations in atomic_check path
+so that we can gracefully fail the composition if resources are
+not available.
 
-Here are just the three most frequent use-cases that were brought forward:
-1. The JVM developers are integrating checkpoint/restore into a Java VM to
-   significantly decrease the startup time.
-2. In high-performance computing environment a resource manager will typically
-   be distributing jobs where users are always running as non-root.
-   Long-running and "large" processes with significant startup times are
-   supposed to be checkpointed and restored with CRIU.
-3. Container migration as a non-root user.
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-In all of these scenarios it is either desirable or required to run without
-CAP_SYS_ADMIN. The userspace implementation of checkpoint/restore CRIU already
-has the pull request for supporting unprivileged checkpoint/restore up (cf. [2]).
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index 63976dc..c6b8254 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -565,7 +565,7 @@ static int dpu_encoder_virt_atomic_check(
+ 	const struct drm_display_mode *mode;
+ 	struct drm_display_mode *adj_mode;
+ 	struct msm_display_topology topology;
+-	struct dpu_global_state *global_state;
++	struct dpu_global_state tmp_resv_state;
+ 	int i = 0;
+ 	int ret = 0;
+ 
+@@ -582,7 +582,7 @@ static int dpu_encoder_virt_atomic_check(
+ 	dpu_kms = to_dpu_kms(priv->kms);
+ 	mode = &crtc_state->mode;
+ 	adj_mode = &crtc_state->adjusted_mode;
+-	global_state = dpu_kms_get_existing_global_state(dpu_kms);
++	memset(&tmp_resv_state, 0, sizeof(tmp_resv_state));
+ 	trace_dpu_enc_atomic_check(DRMID(drm_enc));
+ 
+ 	/*
+@@ -621,7 +621,7 @@ static int dpu_encoder_virt_atomic_check(
+ 		 * info may not be available to complete reservation.
+ 		 */
+ 		if (drm_atomic_crtc_needs_modeset(crtc_state)) {
+-			ret = dpu_rm_reserve(&dpu_kms->rm, global_state,
++			ret = dpu_rm_reserve(&dpu_kms->rm, &tmp_resv_state,
+ 					drm_enc, crtc_state, topology);
+ 		}
+ 	}
+@@ -966,7 +966,7 @@ static void dpu_encoder_virt_mode_set(struct drm_encoder *drm_enc,
+ 	struct dpu_hw_blk *hw_lm[MAX_CHANNELS_PER_ENC];
+ 	struct dpu_hw_blk *hw_dspp[MAX_CHANNELS_PER_ENC] = { NULL };
+ 	int num_lm, num_ctl, num_pp, num_dspp;
+-	int i, j;
++	int i, j, rc;
+ 
+ 	if (!drm_enc) {
+ 		DPU_ERROR("invalid encoder\n");
+@@ -1006,6 +1006,13 @@ static void dpu_encoder_virt_mode_set(struct drm_encoder *drm_enc,
+ 
+ 	topology = dpu_encoder_get_topology(dpu_enc, dpu_kms, adj_mode);
+ 
++	rc = dpu_rm_reserve(&dpu_kms->rm, global_state, drm_enc,
++		drm_crtc->state, topology);
++	if (rc) {
++		DPU_ERROR_ENC(dpu_enc, "Failed to reserve resources\n");
++		return;
++	}
++
+ 	/* Query resource that have been reserved in atomic check step. */
+ 	num_pp = dpu_rm_get_assigned_resources(&dpu_kms->rm, global_state,
+ 		drm_enc->base.id, DPU_HW_BLK_PINGPONG, hw_pp,
+-- 
+1.9.1
 
-To enable unprivileged checkpoint/restore a new dedicated capability
-CAP_CHECKPOINT_RESTORE is introduced. This solution has last been discussed in
-2019 in a talk by Google at Linux Plumbers (cf. [1] "Update on Task Migration
-at Google Using CRIU") with Adrian and Nicolas providing the implementation now
-over the last months. In essence, this allows the CRIU binary to be installed
-with the CAP_CHECKPOINT_RESTORE vfs capability set thereby enabling
-unprivileged users to restore processes.
-
-To make this possible the following permissions are altered:
-1. Selecting a specific PID via clone3() set_tid
-   - Relaxed from userns CAP_SYS_ADMIN to CAP_CHECKPOINT_RESTORE.
-2. Selecting a specific PID via /proc/sys/kernel/ns_last_pid
-   - Relaxed from userns CAP_SYS_ADMIN to CAP_CHECKPOINT_RESTORE.
-3. Accessing /proc/pid/map_files
-   - Relaxed from init userns CAP_SYS_ADMIN to init userns
-     CAP_CHECKPOINT_RESTORE.
-4. Changing /proc/self/exe
-   - Relaxed from userns CAP_SYS_ADMIN to userns CAP_CHECKPOINT_RESTORE.
-
-Of these four changes the /proc/self/exe change deserves a few words because
-the reasoning behind even restricting /proc/self/exe changes in the first place
-is just full of historical quirks and tracking this down was a questionable
-version of fun that I'd like to spare others.
-In short, it is trivial to change /proc/self/exe as an unprivileged user, i.e.
-without userns CAP_SYS_ADMIN right now. Either via ptrace() or by simply
-intercepting the elf loader in userspace during exec. Nicolas was nice enough
-to even provide a POC for the latter (cf. [3]) to illustrate this fact.
-The original patchset which introduced PR_SET_MM_MAP had no permissions around
-changing the exe link. They too argued that it is trivial to spoof the exe link
-already which is true. The argument brought up against this was that the Tomoyo
-LSM uses the exe link in tomoyo_manager() to detect whether the calling process
-is a policy manager. This caused changing the exe links to be guarded by userns
-CAP_SYS_ADMIN. All in all this rather seems like a "better guard it with
-something rather than nothing" argument which imho doesn't qualify as a great
-security policy. Again, because spoofing the exe link is possible for the
-calling process so even if this were security relevant it was broken back then
-and would be broken today. So technically, dropping all permissions around
-changing the exe link would probably be possible and would send a clearer
-message to any userspace that relies on /proc/self/exe for security reasons
-that they should stop doing this but for now we're only relaxing the exe link
-permissions from userns CAP_SYS_ADMIN to userns CAP_CHECKPOINT_RESTORE.
-
-There's a final uapi change in here. Changing the exe link used to accidently
-return EINVAL when the caller lacked the necessary permissions instead of
-the more correct EPERM. This pr contains a commit fixing this. I assume that
-userspace won't notice or care and if they do I will revert this commit. But
-since we are changing the permissions anyway it seems like a good opportunity
-to try this fix.
-
-With these changes merged unprivileged checkpoint/restore will be possible and
-has already been tested by various users.
-
-[1]: LPC 2018
-     1. "Task Migration at Google Using CRIU"
-        https://www.youtube.com/watch?v=yI_1cuhoDgA&t=12095
-     2. "Securely Migrating Untrusted Workloads with CRIU"
-        https://www.youtube.com/watch?v=yI_1cuhoDgA&t=14400
-     LPC 2019
-     1. "CRIU and the PID dance"
-         https://www.youtube.com/watch?v=LN2CUgp8deo&list=PLVsQ_xZBEyN30ZA3Pc9MZMFzdjwyz26dO&index=9&t=2m48s
-     2. "Update on Task Migration at Google Using CRIU"
-        https://www.youtube.com/watch?v=LN2CUgp8deo&list=PLVsQ_xZBEyN30ZA3Pc9MZMFzdjwyz26dO&index=9&t=1h2m8s
-[2]: https://github.com/checkpoint-restore/criu/pull/1155
-[3]: https://github.com/nviennot/run_as_exe
-
-/* Testing */
-All patches are based on v5.8-rc5 and have been sitting in linux-next. No build
-failures or warnings were observed. All old and new tests are passing.
-
-/* Conflicts */
-At the time of creating this PR no merge conflicts were reported from
-linux-next and no merge conflicts showed up doing a test-merge with current
-mainline bcf876870b95 ("Linux 5.8").
-
-The following changes since commit 11ba468877bb23f28956a35e896356252d63c983:
-
-  Linux 5.8-rc5 (2020-07-12 16:34:50 -0700)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/cap-checkpoint-restore-v5.9
-
-for you to fetch changes up to 1d27a0be16d6c95fd71deef34e94b40cb4411cc9:
-
-  selftests: add clone3() CAP_CHECKPOINT_RESTORE test (2020-07-20 15:47:42 +0200)
-
-Please consider pulling these changes from the signed cap-checkpoint-restore-v5.9 tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-cap-checkpoint-restore-v5.9
-
-----------------------------------------------------------------
-Adrian Reber (5):
-      capabilities: Introduce CAP_CHECKPOINT_RESTORE
-      pid: use checkpoint_restore_ns_capable() for set_tid
-      pid_namespace: use checkpoint_restore_ns_capable() for ns_last_pid
-      proc: allow access in init userns for map_files with CAP_CHECKPOINT_RESTORE
-      selftests: add clone3() CAP_CHECKPOINT_RESTORE test
-
-Nicolas Viennot (2):
-      prctl: Allow local CAP_CHECKPOINT_RESTORE to change /proc/self/exe
-      prctl: exe link permission error changed from -EINVAL to -EPERM
-
- fs/proc/base.c                                     |   8 +-
- include/linux/capability.h                         |   6 +
- include/uapi/linux/capability.h                    |   9 +-
- kernel/pid.c                                       |   2 +-
- kernel/pid_namespace.c                             |   2 +-
- kernel/sys.c                                       |  13 +-
- security/selinux/include/classmap.h                |   5 +-
- tools/testing/selftests/clone3/.gitignore          |   1 +
- tools/testing/selftests/clone3/Makefile            |   4 +-
- .../clone3/clone3_cap_checkpoint_restore.c         | 182 +++++++++++++++++++++
- 10 files changed, 217 insertions(+), 15 deletions(-)
- create mode 100644 tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
