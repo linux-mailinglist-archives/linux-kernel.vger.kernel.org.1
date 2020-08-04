@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0230723B667
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 10:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4869923B682
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 10:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbgHDIIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 04:08:44 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:57742 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726788AbgHDIIo (ORCPT
+        id S1728064AbgHDIK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 04:10:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23875 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726036AbgHDIK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 04:08:44 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 07488BP00017074, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 07488BP00017074
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 4 Aug 2020 16:08:11 +0800
-Received: from RTEXMB05.realtek.com.tw (172.21.6.98) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 4 Aug 2020 16:08:11 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 4 Aug 2020 16:08:10 +0800
-Received: from RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8]) by
- RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8%5]) with mapi id
- 15.01.1779.005; Tue, 4 Aug 2020 16:08:10 +0800
-From:   =?utf-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     Chris Clayton <chris2553@googlemail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "philquadra@gmail.com" <philquadra@gmail.com>,
-        "Arnd Bergmann" <arnd@arndb.de>
-Subject: RE: PATCH: rtsx_pci driver - don't disable the rts5229 card reader on Intel NUC boxes
-Thread-Topic: PATCH: rtsx_pci driver - don't disable the rts5229 card reader
- on Intel NUC boxes
-Thread-Index: AQHWaQXnJbf1udfgtku7UiOjY+d5jakktnGAgAKFU9D//9NfgIAAiHfA
-Date:   Tue, 4 Aug 2020 08:08:10 +0000
-Message-ID: <11e224ca299b48f1bea07082f2ff7c00@realtek.com>
-References: <862172f0-cd23-800c-27b1-27cb49e99099@googlemail.com>
- <a9a94d7f-4873-7a10-4911-f3c760257c5c@googlemail.com>
- <5729c72bbc2740d3917619c85e2fde58@realtek.com>
- <20200804074831.GB1761483@kroah.com>
-In-Reply-To: <20200804074831.GB1761483@kroah.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.88.99]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 4 Aug 2020 04:10:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596528624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VsjEcZFY41HjIzug4Auk9yvODlAjSkAecOahal1f2M0=;
+        b=WmvoMseiajnOm/8Wtjb5WTDg48WOktZEvDtQWuEeCIT1ChWmx+qZj2xF34We18504syd/+
+        PTzyx2bhrSDGsJBNsx7JFMF0iPbE+iq01+ziTXYshVmaRrgwDEL8N6T5cpbALTnUpsf9mG
+        zcusLQrI5tPshYGySAN7aGQdwwSMDJ8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-dJ03uWRUM32rQeTI_pE7rw-1; Tue, 04 Aug 2020 04:10:22 -0400
+X-MC-Unique: dJ03uWRUM32rQeTI_pE7rw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C560102C802;
+        Tue,  4 Aug 2020 08:10:21 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 29B5560CC0;
+        Tue,  4 Aug 2020 08:10:20 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200804173456.01c819ea@canb.auug.org.au>
+References: <20200804173456.01c819ea@canb.auug.org.au>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     dhowells@redhat.com,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the fsinfo tree
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2010724.1596528619.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 04 Aug 2020 09:10:19 +0100
+Message-ID: <2010725.1596528619@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBncmVna2hAbGludXhmb3VuZGF0
-aW9uLm9yZyBbbWFpbHRvOmdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnXQ0KPiBTZW50OiBUdWVz
-ZGF5LCBBdWd1c3QgMDQsIDIwMjAgMzo0OSBQTQ0KPiBUbzog5ZCz5piK5r6EIFJpY2t5DQo+IENj
-OiBDaHJpcyBDbGF5dG9uOyBMS01MOyByZHVubGFwQGluZnJhZGVhZC5vcmc7IHBoaWxxdWFkcmFA
-Z21haWwuY29tOyBBcm5kDQo+IEJlcmdtYW5uDQo+IFN1YmplY3Q6IFJlOiBQQVRDSDogcnRzeF9w
-Y2kgZHJpdmVyIC0gZG9uJ3QgZGlzYWJsZSB0aGUgcnRzNTIyOSBjYXJkIHJlYWRlciBvbg0KPiBJ
-bnRlbCBOVUMgYm94ZXMNCj4gDQo+IE9uIFR1ZSwgQXVnIDA0LCAyMDIwIGF0IDAyOjQ0OjQxQU0g
-KzAwMDAsIOWQs+aYiua+hCBSaWNreSB3cm90ZToNCj4gPiBIaSBDaHJpcywNCj4gPg0KPiA+IHJ0
-c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgRlBEVEwsIE9DX1BPV0VSX0RPV04sIE9DX1BPV0VS
-X0RPV04pOw0KPiA+IFRoaXMgcmVnaXN0ZXIgb3BlcmF0aW9uIHNhdmVkIHBvd2VyIHVuZGVyIDFt
-QSwgc28gaWYgZG8gbm90IGNhcmUgdGhlIDFtQQ0KPiBwb3dlciB3ZSBjYW4gaGF2ZSBhIHBhdGNo
-IHRvIHJlbW92ZSBpdCwgbWFrZSBjb21wYXRpYmxlIHdpdGggTlVDNg0KPiA+IFdlIHRlc3RlZCBv
-dGhlcnMgb3VyIGNhcmQgcmVhZGVyIHRoYXQgcmVtb3ZlIGl0LCB3ZSBkaWQgbm90IHNlZSBhbnkg
-c2lkZSBlZmZlY3QNCj4gPg0KPiA+IEhpIEdyZWcgay1oLA0KPiA+DQo+ID4gRG8geW91IGhhdmUg
-YW55IGNvbW1lbnRzPw0KPiANCj4gY29tbWVudHMgb24gd2hhdD8gIEkgZG9uJ3Qga25vdyB3aGF0
-IHlvdSBhcmUgcmVzcG9uZGluZyB0byBoZXJlLCBzb3JyeS4NCj4gDQpDYW4gd2UgaGF2ZSBhIHBh
-dGNoIHRvIGtlcm5lbCBmb3IgTlVDNj8gSXQgbWF5IGNhdXNlIG1vcmUgcG93ZXIoMW1BKSBidXQg
-aXQgd2lsbCBoYXZlIG1vcmUgY29tcGF0aWJpbGl0eQ0KDQo+IGdyZWcgay1oDQo+IA0KPiAtLS0t
-LS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUt
-bWFpbC4NCg==
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+
+> After merging the fsinfo tree, today's linux-next build (powerpc
+> allyesconfig) produced these warnings:
+> =
+
+> samples/vfs/test-mntinfo.c: In function 'display_mount':
+> samples/vfs/test-mntinfo.c:146:19: warning: format '%llx' expects argume=
+nt of type 'long long unsigned int', but argument 3 has type '__u64' {aka =
+'long unsigned int'} [-Wformat=3D]
+...
+
+I've appended a patch for that.
+
+David
+
