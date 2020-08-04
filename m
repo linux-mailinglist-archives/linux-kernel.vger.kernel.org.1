@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8891723BE34
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C3523BE31
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729950AbgHDQeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
+        id S1730041AbgHDQdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729957AbgHDQdc (ORCPT
+        with ESMTP id S1729994AbgHDQdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:33:32 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F38C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 09:33:32 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ep8so2447318pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 09:33:32 -0700 (PDT)
+        Tue, 4 Aug 2020 12:33:35 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17AFC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 09:33:34 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id w17so23307636ply.11
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 09:33:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=grYjB3bY1LamRvNCUCtAo+X888pdbkIk5YYwGBwcowM=;
-        b=qmZcb0Ama9epFwO2zMvDdHAwnOQBNe6r9ylGehgzoogzAbqGVAoGNj7hCdtU8OEMYj
-         qb7ZOvNqNaZ8dTWhVHzK/8CJEdvhhnw84e8+dHd9G1VlNCYPRu6eXMDpW0JEL/WQ8RQ+
-         bUG+DF1l9xx7EcM68Sk6JdEg1RJxcHLeDqBBG21wqpgQGW8HgbSc+ZJgjtd7eeintcjs
-         ybyRktCUSm4pvk4qbBYeWUMpx/N0Fje+GoqrUxiEHGhQ35f5z2iSSLoR8x0cbQd+BqnB
-         ZfupiqD+Zmf60oFXnbD7UYdJDzFrk2z2+AYlD+x5dZeYHQzgD2dL3A9EWP1WPHXxFNEy
-         UJwg==
+        bh=sPIOzSYU2pA/shBWLkg3uMxU0iGcVrzwOJmIFEIBLoQ=;
+        b=dofzX/8j/y3zd4rnbPgoEyOo3X9xNcwVZZOSj+XtCWmEnMDc7DnG5c62WqfRz08+8M
+         ZwrABnFgyTjIp9Fn7Fi0LdCW5ECjAbimZzTF6qvTScJRyicb/QbwyCPvBoGlbd3VZHCE
+         KAsN0OuG+a4DA5yiPiegy6IS+oVaBvkOS0x/bPcCoUx56OyXz81hZiCvt3Tm9HxWViCB
+         IsBriMgCt0CbCp4F4ugZknYc0mwrb0EqMLKnb2mwR45KsKDzl/5ZHpIQHFc/378MglJu
+         xc1VbACdkmqqtk8BKMaHZNdap4K1k6QKGgGIhhIDjdGcydcufAXupIEFV4fcgMk+E9BS
+         6XAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=grYjB3bY1LamRvNCUCtAo+X888pdbkIk5YYwGBwcowM=;
-        b=PAD4eazFyv9lGyyGIAecils3VA/aQydz2aJrlPZPQgrVREpadfwlTA+okwc78cXsQ7
-         KF9E/5TKETJjvquyzkWaTwDs8kPfMqn7GP69AZvOXM72zpg6gW8A4s30UCHvTkOFUsV9
-         Q+h60k6N/FI3+9bFEb9rfxMQP+qD5nUgUoloq46FLUTgGk2OK8ll/mCkLSXKUAjl9zHr
-         u9qLBXAFA813YL0eVRo/kUmth+xPbqXEYbBOFZEleCF3fyvKXm/04eBDHQUREd/jEQP2
-         0InTFJiYlNC9bF89kIkhkv4j6hOVDNtkOdWHzcD4Xc/PbFsbPhWPGZxd0j+AyNWuuT+z
-         Tb3A==
-X-Gm-Message-State: AOAM530W2OXLzzy5Fr7X9iajB0kQDH2W2mm6nq1OJfxjfLLMyyh70qhv
-        XGuCd1BYr+sRrPOBt/dwt9c=
-X-Google-Smtp-Source: ABdhPJyV7sZ1cObVMUHEG1WB2iDkjjlTo02Be2rFobYUkhCGd4Ud2pEVsyBmeRV5CJyg1hWBid20WQ==
-X-Received: by 2002:a17:90a:ba05:: with SMTP id s5mr4915328pjr.132.1596558811835;
-        Tue, 04 Aug 2020 09:33:31 -0700 (PDT)
+        bh=sPIOzSYU2pA/shBWLkg3uMxU0iGcVrzwOJmIFEIBLoQ=;
+        b=rwb4do7M8d2MpXtaCz+Stk3QeZv8btRfTaO9FBlEmgeT5sQLog0XhxAW1Ksimt1/uY
+         CQq9iyMDnmyl+7gAl4QHfpUCu9gJGQxz04L+zWKfYlr+r5dq48RPrHNky5vC0BDiBLx/
+         nyaBf/Bo/76+g7hBLYZG1H+nzAzWgYfqe7iteAj9QNzvW2kVwnbHlXX1pXTBgdMeRbfH
+         5jz7v81jF9GA/DNuSC6vpbv0xtu4I3tLhcJY47IZDaaO8CHkKFo+1p3VwNOoqLGB+vVC
+         aHjgqhufZc6HAI8mTTfz8LLGuY+K1qa8kU4Z121nMGnlbbmWPNPN+GnH1miuU6zZ2B98
+         AvSw==
+X-Gm-Message-State: AOAM530TyM5z6hSL4/hUlr97vAKvPvdduhIDjc2Ktk6Jo5GO1C2md/0L
+        QRHokHhThJRWK7cCN56nUww=
+X-Google-Smtp-Source: ABdhPJxVpyamQPe8QZBWDZVCZhK6mVUocCsi7M32bZX/yUj88jF+LNTLuEoEcElYX0puGn6zuzf70Q==
+X-Received: by 2002:a17:902:9a94:: with SMTP id w20mr21094155plp.59.1596558814544;
+        Tue, 04 Aug 2020 09:33:34 -0700 (PDT)
 Received: from localhost.localdomain ([123.110.251.138])
-        by smtp.gmail.com with ESMTPSA id m16sm657253pjz.47.2020.08.04.09.33.29
+        by smtp.gmail.com with ESMTPSA id m16sm657253pjz.47.2020.08.04.09.33.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 04 Aug 2020 09:33:31 -0700 (PDT)
+        Tue, 04 Aug 2020 09:33:34 -0700 (PDT)
 From:   Gene Chen <gene.chen.richtek@gmail.com>
 To:     lee.jones@linaro.org, matthias.bgg@gmail.com, rafael@kernel.org
 Cc:     broonie@kernel.org, gregkh@linuxfoundation.org,
@@ -54,9 +54,9 @@ Cc:     broonie@kernel.org, gregkh@linuxfoundation.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         gene_chen@richtek.com, benjamin.chao@mediatek.com,
         shufan_lee@richtek.com, cy_huang@richtek.com
-Subject: [PATCH 7/9] mfd: mt6360: Remove handle_post_irq callback function
-Date:   Wed,  5 Aug 2020 00:33:00 +0800
-Message-Id: <1596558782-3415-9-git-send-email-gene.chen.richtek@gmail.com>
+Subject: [PATCH 8/9] mfd: mt6360: Fix flow which is used to check ic exist
+Date:   Wed,  5 Aug 2020 00:33:01 +0800
+Message-Id: <1596558782-3415-10-git-send-email-gene.chen.richtek@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1596558782-3415-1-git-send-email-gene.chen.richtek@gmail.com>
 References: <1596558782-3415-1-git-send-email-gene.chen.richtek@gmail.com>
@@ -67,72 +67,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Gene Chen <gene_chen@richtek.com>
 
-Remove handle_post_irq which is used to retrigger IRQ.
-Set IRQ level low trigger in dtsi to keep IRQ always be handled.
+Fix flow which is used to check ic exist.
 
 Signed-off-by: Gene Chen <gene_chen@richtek.com>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/mt6360-core.c  | 17 ++++-------------
- include/linux/mfd/mt6360.h |  2 +-
- 2 files changed, 5 insertions(+), 14 deletions(-)
+ drivers/mfd/mt6360-core.c | 32 +++++++++++++++++++++-----------
+ 1 file changed, 21 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-index f75122b..2356d99 100644
+index 2356d99..677c974 100644
 --- a/drivers/mfd/mt6360-core.c
 +++ b/drivers/mfd/mt6360-core.c
-@@ -208,15 +208,8 @@ static const struct regmap_irq mt6360_irqs[] =  {
- 	REGMAP_IRQ_REG_LINE(MT6360_LDO7_PGB_EVT, 8),
+@@ -293,6 +293,25 @@ static const struct mfd_cell mt6360_devs[] = {
+ 		    NULL, 0, 0, "mediatek,mt6360-tcpc"),
  };
  
--static int mt6360_pmu_handle_post_irq(void *irq_drv_data)
--{
--	struct mt6360_ddata *ddata = irq_drv_data;
--
--	return regmap_update_bits(ddata->regmap,
--		MT6360_PMU_IRQ_SET, MT6360_IRQ_RETRIG, MT6360_IRQ_RETRIG);
--}
--
--static struct regmap_irq_chip mt6360_irq_chip = {
-+static const struct regmap_irq_chip mt6360_irq_chip = {
-+	.name = "mt6360_irqs",
- 	.irqs = mt6360_irqs,
- 	.num_irqs = ARRAY_SIZE(mt6360_irqs),
- 	.num_regs = MT6360_PMU_IRQ_REGNUM,
-@@ -225,7 +218,6 @@ static struct regmap_irq_chip mt6360_irq_chip = {
- 	.ack_base = MT6360_PMU_CHG_IRQ1,
- 	.init_ack_masked = true,
- 	.use_ack = true,
--	.handle_post_irq = mt6360_pmu_handle_post_irq,
- };
++static int mt6360_check_vendor_info(struct mt6360_ddata *ddata)
++{
++	u32 info;
++	int ret;
++
++	ret = regmap_read(ddata->regmap, MT6360_PMU_DEV_INFO, &info);
++	if (ret < 0)
++		return ret;
++
++	if ((info & CHIP_VEN_MASK) != CHIP_VEN_MT6360) {
++		dev_err(&client->dev, "Device not supported\n");
++		return -ENODEV;
++	}
++
++	ddata->chip_rev = info & CHIP_REV_MASK;
++
++	return 0;
++}
++
+ static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] = {
+ 	MT6360_PMU_SLAVEID,
+ 	MT6360_PMIC_SLAVEID,
+@@ -303,7 +322,6 @@ static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] = {
+ static int mt6360_probe(struct i2c_client *client)
+ {
+ 	struct mt6360_ddata *ddata;
+-	unsigned int reg_data;
+ 	int i, ret;
  
- static const struct regmap_config mt6360_pmu_regmap_config = {
-@@ -339,10 +331,9 @@ static int mt6360_probe(struct i2c_client *client)
- 		return -ENODEV;
+ 	ddata = devm_kzalloc(&client->dev, sizeof(*ddata), GFP_KERNEL);
+@@ -319,17 +337,9 @@ static int mt6360_probe(struct i2c_client *client)
+ 		return PTR_ERR(ddata->regmap);
  	}
  
--	mt6360_irq_chip.irq_drv_data = ddata;
- 	ret = devm_regmap_add_irq_chip(&client->dev, ddata->regmap, client->irq,
--				       IRQF_TRIGGER_FALLING, 0,
--				       &mt6360_irq_chip, &ddata->irq_data);
-+				       0, 0, &mt6360_irq_chip,
-+				       &ddata->irq_data);
- 	if (ret) {
- 		dev_err(&client->dev, "Failed to add Regmap IRQ Chip\n");
+-	ret = regmap_read(ddata->regmap, MT6360_PMU_DEV_INFO, &reg_data);
+-	if (ret) {
+-		dev_err(&client->dev, "Device not found\n");
++	ret = mt6360_check_vendor_info(ddata);
++	if (ret)
  		return ret;
-diff --git a/include/linux/mfd/mt6360.h b/include/linux/mfd/mt6360.h
-index fbe106c..da0fb5c 100644
---- a/include/linux/mfd/mt6360.h
-+++ b/include/linux/mfd/mt6360.h
-@@ -230,7 +230,7 @@ struct mt6360_data {
- #define MT6360_PMU_MAXREG			MT6360_PMU_LDO_MASK2
+-	}
+-
+-	ddata->chip_rev = reg_data & CHIP_REV_MASK;
+-	if (ddata->chip_rev != CHIP_VEN_MT6360) {
+-		dev_err(&client->dev, "Device not supported\n");
+-		return -ENODEV;
+-	}
  
- /* MT6360_PMU_IRQ_SET */
--#define MT6360_PMU_IRQ_REGNUM	(MT6360_PMU_LDO_IRQ2 - MT6360_PMU_CHG_IRQ1 + 1)
-+#define MT6360_PMU_IRQ_REGNUM	16
- #define MT6360_IRQ_RETRIG	BIT(2)
- 
- #define CHIP_VEN_MASK				0xF0
+ 	ret = devm_regmap_add_irq_chip(&client->dev, ddata->regmap, client->irq,
+ 				       0, 0, &mt6360_irq_chip,
 -- 
 2.7.4
 
