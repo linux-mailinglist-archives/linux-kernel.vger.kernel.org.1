@@ -2,59 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D189023B87F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2790823B880
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 12:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730136AbgHDKJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 06:09:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728472AbgHDKJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 06:09:33 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F59D2177B;
-        Tue,  4 Aug 2020 10:09:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596535773;
-        bh=BDVRKWhd/ahtDaxAjQb6ui5srULsGQG8iPjKOzeDYao=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BW3ipZV+5YAVRX5Mn3sd2PMkK5RfgdNxEPEBVHalyf3pdxQYUpoQ/aWmu9g8OVNO/
-         UHSDj/TmDBH1ny1fFVAMNTwHr5UsZ7dS/yOWnOaDiYecJ7q8FF5dJTSGn5ZQDWDsxP
-         X+OXH8O94E8uZsnuiSeS4+o2q23ICjydFY0+r/Xc=
-Date:   Tue, 4 Aug 2020 12:09:12 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH kernel] serial_core: Check for port state when tty is
- in error state
-Message-ID: <20200804100912.GA2671027@kroah.com>
-References: <20200728124359.980-1-aik@ozlabs.ru>
- <eb3cf1b2-8519-1722-22aa-6182ee734a27@ozlabs.ru>
+        id S1727932AbgHDKNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 06:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725924AbgHDKNL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 06:13:11 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F6FC06174A;
+        Tue,  4 Aug 2020 03:13:11 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o5so3847752pgb.2;
+        Tue, 04 Aug 2020 03:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VUZ+5uaWO5tygxXuvOm55d3w56P1W5CNtNbPKcozm+o=;
+        b=BbsTPuA4f+c97Mqm4Dhm66f9TB6s3p0y9+fl9la8dSQZ1b2w4EnvmGOkSZBlZVxEQi
+         +mAkU4d3/nigMTMcM7HEC6B7H+1drbyVBb0RJc7P0/JU3g595pcwSRPU7RMk6djLgmZA
+         Tbl1Dvre/iCIBqpldW1K0yGa6l7xkuj3dk/8rQVSOEgOCjCiEwzYUv6gSZQC4P6uwLcL
+         MAq4Fwc9SDNxh0PEm2MTNSNHRODPIBO7AFqc+IkxqPjybdG1dyf5SgMd9VnehbaP8hw/
+         6fhPTL/NW+557guMWBZx68Sjj5L1z4eX5LvEFxXfC2M4t3j/QQl0EdlFy/RAepYcv2r5
+         Edhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VUZ+5uaWO5tygxXuvOm55d3w56P1W5CNtNbPKcozm+o=;
+        b=fUeeWvd2ZRejQZ1sWQrw256P97RzM4EbMsJVtqowW9H2Y3RFKi9vHSKKHb23bDF0uB
+         A9+EBVVHyz5hqsYSufAFR8NyB+EtgFOBPCGbD4e1tnVvm3XHZbGZF10RpgvGkDQsHxOz
+         1Oz3hA0Tzpf4MNq6qOAvVFDuQVLCQ4/z5FigXLEQPGS8ZLDTSPWdhLosVlSa6IqiDSYw
+         Lo/zglcq0yfNyT+MHLUOaR9hUO0Blua4VIQsPZxdU07TPEG0xpJnp8cmRhhPeHxa22Nm
+         K6o3OmXBTLFoUtO4I52kjqwAqF2IXuf26QDefTApr5mo0FLH9VVu224gRdLi8Kq6SIT9
+         jDpw==
+X-Gm-Message-State: AOAM533szIRmvwyPzx+9BmUbxlyq2ejjP9N7w7ZSMJSVfDp7587711Fv
+        glscVrFiURINRX4SHjreuNY0FwFi+9OydCxjTFY=
+X-Google-Smtp-Source: ABdhPJyKMDJtC/pI434FF62GRZ35Xm2o0EpxfqLH2ESt2EmF/5liRp8UjeIexAeqMr2Xm0lz1ysYmDrSXO5yB3E4XyA=
+X-Received: by 2002:a63:5412:: with SMTP id i18mr19181541pgb.63.1596535990834;
+ Tue, 04 Aug 2020 03:13:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eb3cf1b2-8519-1722-22aa-6182ee734a27@ozlabs.ru>
+References: <20200730073702.16887-1-xie.he.0141@gmail.com> <CAJht_EO1srhh68DifK61+hpY+zBRU8oOAbJOSpjOqePithc7gw@mail.gmail.com>
+ <c88c0acc63cbc64383811193c5e1b184@dev.tdt.de> <CA+FuTSeCFn+t55R8G54bFt4i8zP_gOHT7eZ5TeqNmcX5yL3tGw@mail.gmail.com>
+ <CAJht_EOeCpy_SLKk2KXJHBj79VCujUZWiZou_BDfMr+pVWKGPA@mail.gmail.com>
+In-Reply-To: <CAJht_EOeCpy_SLKk2KXJHBj79VCujUZWiZou_BDfMr+pVWKGPA@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Tue, 4 Aug 2020 03:13:00 -0700
+Message-ID: <CAJht_EN5fRKMHZRtqOgYKZ4wmOZOQcrGnarEPWUxRD31eaftRA@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/net/wan/lapbether: Use needed_headroom instead
+ of hard_header_len
+To:     Willem de Bruijn <willemb@google.com>
+Cc:     Martin Schiller <ms@dev.tdt.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 08:02:27PM +1000, Alexey Kardashevskiy wrote:
-> Ping?
-> 
-> ps. Greg, your name came up in "git format-patch -M --stdout -1 HEAD |
-> ./scripts/get_maintainer.pl --norolestats --l" ;)
+On Tue, Aug 4, 2020 at 3:07 AM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> Maybe we could contact <majordomo@vger.kernel.org>. It seems to be the
+> manager of VGER mail lists.
 
-It's in my queue to review, but can't do anything now that the merge
-window is open.
-
-Also, as it's an RFC, that means you don't think it should be merged, so
-perhaps do some work to verify that you think this is correct and resend
-it?
-
-thanks,
-
-greg k-h
+Oh. No. Majordomo seems to be a robot.
