@@ -2,83 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D984323C115
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4202023C118
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 22:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728442AbgHDU6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 16:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42200 "EHLO mail.kernel.org"
+        id S1728548AbgHDU6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 16:58:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728159AbgHDU6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 16:58:17 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1728394AbgHDU6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 16:58:48 -0400
+Received: from gmail.com (unknown [104.132.1.76])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE58C22CB3;
-        Tue,  4 Aug 2020 20:58:15 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.93)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1k340k-006HHa-HM; Tue, 04 Aug 2020 16:58:14 -0400
-Message-ID: <20200804205814.412245900@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Tue, 04 Aug 2020 16:58:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-linus][PATCH 17/17] Documentation: bootconfig: Add bootconfig override operator
-References: <20200804205743.419135730@goodmis.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id BCEFF2086A;
+        Tue,  4 Aug 2020 20:58:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596574728;
+        bh=dtol9Ums/BnhF/0mrqyXgMMO0Dg0T0IcgMhAWs7Cpc4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HOjBDJkp94PpyHMCmrl7tSHNej/Cr+XBZUXcsfPLqD5Ny/cMs7p+4+dsx4mOwaX4x
+         oMnMOtKJ/OExtbF+iF2OTWDctUS5Izc4qRGgB1tG/ZvARbF45Ed8eQwLNT1jwzmXR5
+         6CLfVzF54c5nIqm3rrD/iqnAkV0Dlu6vQHahVM4U=
+Date:   Tue, 4 Aug 2020 13:58:46 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, James Morris <jmorris@namei.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Daniel Colascione <dancol@dancol.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nick Kralevich <nnk@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Calin Juravle <calin@google.com>, kernel-team@android.com,
+        yanfei.xu@windriver.com,
+        syzbot+75867c44841cb6373570@syzkaller.appspotmail.com
+Subject: Re: [PATCH] Userfaultfd: Avoid double free of userfault_ctx and
+ remove O_CLOEXEC
+Message-ID: <20200804205846.GB1992048@gmail.com>
+References: <20200804203155.2181099-1-lokeshgidra@google.com>
+ <20200804204543.GA1992048@gmail.com>
+ <CA+EESO6XGpiTLnxPraZqBigY7mh6G2jkHa2PKXaHXpzdrZd4wA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+EESO6XGpiTLnxPraZqBigY7mh6G2jkHa2PKXaHXpzdrZd4wA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+On Tue, Aug 04, 2020 at 01:49:30PM -0700, Lokesh Gidra wrote:
+> On Tue, Aug 4, 2020 at 1:45 PM Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > On Tue, Aug 04, 2020 at 01:31:55PM -0700, Lokesh Gidra wrote:
+> > > when get_unused_fd_flags returns error, ctx will be freed by
+> > > userfaultfd's release function, which is indirectly called by fput().
+> > > Also, if anon_inode_getfile_secure() returns an error, then
+> > > userfaultfd_ctx_put() is called, which calls mmdrop() and frees ctx.
+> > >
+> > > Also, the O_CLOEXEC was inadvertently added to the call to
+> > > get_unused_fd_flags() [1].
+> > >
+> > > Adding Al Viro's suggested-by, based on [2].
+> > >
+> > > [1] https://lore.kernel.org/lkml/1f69c0ab-5791-974f-8bc0-3997ab1d61ea@dancol.org/
+> > > [2] https://lore.kernel.org/lkml/20200719165746.GJ2786714@ZenIV.linux.org.uk/
+> > >
+> > > Fixes: d08ac70b1e0d (Wire UFFD up to SELinux)
+> > > Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+> > > Reported-by: syzbot+75867c44841cb6373570@syzkaller.appspotmail.com
+> > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> >
+> > What branch does this patch apply to?  Neither mainline nor linux-next works.
+> >
+> On James Morris' tree (secure_uffd_v5.9 branch).
+> 
 
-Add a sentence about bootconfig override operator (":=") to
-bootconfig.rst.
+For those of us not "in the know", that apparently means branch secure_uffd_v5.9
+of https://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git
 
-Link: https://lkml.kernel.org/r/159482884682.126704.7198860675721719878.stgit@devnote2
+Perhaps it would make more sense to resend your original patch series with this
+fix folded in?
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- Documentation/admin-guide/bootconfig.rst | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+> index ae859161908f..e15eb8fdc083 100644
+> --- a/fs/userfaultfd.c
+> +++ b/fs/userfaultfd.c
+> @@ -2042,24 +2042,18 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
+>  		O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS),
+>  		NULL);
+>  	if (IS_ERR(file)) {
+> -		fd = PTR_ERR(file);
+> -		goto out;
+> +		userfaultfd_ctx_put(ctx);
+> +		return PTR_ERR(file);
+>  	}
+>  
+> -	fd = get_unused_fd_flags(O_RDONLY | O_CLOEXEC);
+> +	fd = get_unused_fd_flags(O_RDONLY);
+>  	if (fd < 0) {
+>  		fput(file);
+> -		goto out;
+> +		return fd;
+>  	}
+>  
+>  	ctx->owner = file_inode(file);
+>  	fd_install(fd, file);
+> -
+> -out:
+> -	if (fd < 0) {
+> -		mmdrop(ctx->mm);
+> -		kmem_cache_free(userfaultfd_ctx_cachep, ctx);
+> -	}
+>  	return fd;
 
-diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
-index d6b3b77a4129..a22024f9175e 100644
---- a/Documentation/admin-guide/bootconfig.rst
-+++ b/Documentation/admin-guide/bootconfig.rst
-@@ -71,6 +71,16 @@ For example,::
-  foo = bar, baz
-  foo = qux  # !ERROR! we can not re-define same key
- 
-+If you want to update the value, you must use the override operator
-+``:=`` explicitly. For example::
-+
-+ foo = bar, baz
-+ foo := qux
-+
-+then, the ``qux`` is assigned to ``foo`` key. This is useful for
-+overriding the default value by adding (partial) custom bootconfigs
-+without parsing the default bootconfig.
-+
- If you want to append the value to existing key as an array member,
- you can use ``+=`` operator. For example::
- 
-@@ -84,6 +94,7 @@ For example, following config is NOT allowed.::
- 
-  foo = value1
-  foo.bar = value2 # !ERROR! subkey "bar" and value "value1" can NOT co-exist
-+ foo.bar := value2 # !ERROR! even with the override operator, this is NOT allowed.
- 
- 
- Comments
--- 
-2.26.2
+This introduces the opposite bug: now it's hardcoded to *not* use O_CLOEXEC,
+instead of using the flag the user passed in the flags argument to the syscall.
 
-
+- Eric
