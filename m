@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F9323BC5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EEA23BC5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgHDOhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:37:20 -0400
-Received: from relay.sw.ru ([185.231.240.75]:42122 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729100AbgHDOhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:37:02 -0400
-Received: from [192.168.15.159]
-        by relay3.sw.ru with esmtp (Exim 4.93)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1k2y3L-00062b-9B; Tue, 04 Aug 2020 17:36:31 +0300
-Subject: Re: [PATCH 1/8] ns: Add common refcount into ns_common add use it as
- counter for net_ns
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     christian.brauner@ubuntu.com, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org
-References: <159644958332.604812.13004003379291842292.stgit@localhost.localdomain>
- <159644977635.604812.1319877322927063560.stgit@localhost.localdomain>
- <875z9ysit5.fsf@x220.int.ebiederm.org>
- <49106051-be26-7b89-f9e8-7c441dbda18a@virtuozzo.com>
- <87sgd2o6vt.fsf@x220.int.ebiederm.org>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <6f6f9989-9cde-f93a-ad0a-311f264398f0@virtuozzo.com>
-Date:   Tue, 4 Aug 2020 17:36:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726200AbgHDOjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:39:21 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:42036 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728170AbgHDOht (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 10:37:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596551869;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PwNkT0v8I/HHisER5czdNP2hJZSZK/ZRB/AxXoRcFSE=;
+        b=b8Su4rtDcevbF2GoAD+23DdxFiWHW/st/vnYbnu1bLQCwmn+ZPQUd/hojI0Hi/wl5jzev2
+        2INQwe0IWpkzioA6R5IDtXcaK2l7bKnV9hZUfuxAZfnefJKvtWUb0RiXAXehrzEbEHDry1
+        gUdsNnLE/uO3AS8/0Ad5stYDY2/cQys=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-Fejl2NDNNi-q-Qb4q66WXQ-1; Tue, 04 Aug 2020 10:37:47 -0400
+X-MC-Unique: Fejl2NDNNi-q-Qb4q66WXQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3EF9C800685;
+        Tue,  4 Aug 2020 14:37:46 +0000 (UTC)
+Received: from gondolin (ovpn-112-169.ams2.redhat.com [10.36.112.169])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DCE261983;
+        Tue,  4 Aug 2020 14:37:39 +0000 (UTC)
+Date:   Tue, 4 Aug 2020 16:37:37 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 13/24] virtio_mem: correct tags for config space
+ fields
+Message-ID: <20200804163737.0b8e6ea7.cohuck@redhat.com>
+In-Reply-To: <20200803205814.540410-14-mst@redhat.com>
+References: <20200803205814.540410-1-mst@redhat.com>
+        <20200803205814.540410-14-mst@redhat.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-In-Reply-To: <87sgd2o6vt.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.08.2020 16:52, Eric W. Biederman wrote:
-> Kirill Tkhai <ktkhai@virtuozzo.com> writes:
+On Mon, 3 Aug 2020 16:59:32 -0400
+"Michael S. Tsirkin" <mst@redhat.com> wrote:
+
+> Since this is a modern-only device,
+> tag config space fields as having little endian-ness.
 > 
->> On 04.08.2020 15:21, Eric W. Biederman wrote:
->>> Kirill Tkhai <ktkhai@virtuozzo.com> writes:
->>>
->>>> Currently, every type of namespaces has its own counter,
->>>> which is stored in ns-specific part. Say, @net has
->>>> struct net::count, @pid has struct pid_namespace::kref, etc.
->>>>
->>>> This patchset introduces unified counter for all types
->>>> of namespaces, and converts net namespace to use it first.
->>>
->>> And the other refcounts on struct net?
->>>
->>> How do they play into what you are trying to do?
->>
->> I just don't understand you. Different refcounters are related to different
->> problems, they are introduced to solve. This patchset changes only one refcounter,
->> and it does not touch other of them. What do you want to know about others?
->>
+> TODO: check other uses of __virtioXX types in this header,
+> should probably be __leXX.
+
+Yes, I think so.
+
 > 
-> Why net::count not net::passive?  What problem are you trying to solve?
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>  include/uapi/linux/virtio_mem.h | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 
-net::count is a counter, which indicates whether net is alive and still
-initilized. net::passive does not guarantees that net has not been
-deinitialized yet.
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
-The same with another namespaces. All of merged counters indicate
-that a namespace is alive and initialized. So, we merge them by this property.
-
-> They both are reference counts on the network namespace.
-> 
-> I don't understand what you are trying to do, other than take a bunch of
-> things that look similar and squash them all together.
-> 
-> What semantics does this magical common reference count have?
-> Why is it better for the count to live in ns_common rather than it
-> it's own dedicated field of struct net?
-
-The only visible current effect is better readability and better
-debugability with, say, crash on kernel dump.
-
-> Given that decrementing still requires code per namespace to handle
-> the count going to zero.  How does this benefit anyone?
-
-Since namespaces are different by type, they require different destructors.
-Generic counter can't solve any problem, the namespaces can address.
-
-> Has the effect of cache line placement of the move of the reference
-> count been considered?
-
-I don't see any performance impact during namespace creation/destruction
-test.
-
-> All I see in the patch in question is switching a location that the
-> count lives.  Which does not seem useful to me.
-> 
-> I am not fundamentally oppossed but I don't see the point.  At this
-> point it looks like you are making things harder to maintain by making
-> things common that are merely similar
