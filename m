@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4C723C141
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 23:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4099F23C148
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 23:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgHDVQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 17:16:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbgHDVQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 17:16:10 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1F9C20792;
-        Tue,  4 Aug 2020 21:16:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596575770;
-        bh=6y7RE+hgDgrNRFsLnMe7+1bqyOR9ko768+Vm0y40/zM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M2dGU1wdwMijDDQjOhfIgAuo8XXz6zJkha4owe9yHW7H84Vw9FkNIGAfD5N+iOuPq
-         2DhtL2Bn3pyGZZTgVRsrQ8g3DXPFqSpftVVfSGHjN24kNHIrFMwkPilNS4mrwEP4l0
-         IOv43Qv7qCRti04OcpT9ta5lHI05EPA7eqtDWvjM=
-Date:   Tue, 4 Aug 2020 14:16:08 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Colascione <dancol@google.com>
-Cc:     timmurray@google.com, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, viro@zeniv.linux.org.uk, paul@paul-moore.com,
-        nnk@google.com, sds@tycho.nsa.gov, lokeshgidra@google.com,
-        jmorris@namei.org
-Subject: Re: [PATCH v5 3/3] Wire UFFD up to SELinux
-Message-ID: <20200804211608.GC1992048@gmail.com>
-References: <20200326200634.222009-1-dancol@google.com>
- <20200401213903.182112-1-dancol@google.com>
- <20200401213903.182112-4-dancol@google.com>
+        id S1726250AbgHDVR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 17:17:57 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37706 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgHDVR4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 17:17:56 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 074LHijA092401;
+        Tue, 4 Aug 2020 16:17:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596575864;
+        bh=dnuKJu0JfecZdhyAST4+2sMtlGa18cLkeWz2YiyDzig=;
+        h=From:To:CC:Subject:Date;
+        b=i0q/abFpuKOV5IsD4azc5ksGsYqX3f7dyH5+8u9Uqb61EtLj7lQ5mSygjpvnyiA3M
+         B23ZLI5O1CZVcgBuJKoG9JgIn37syx5fkfeqM0x0cwCIbqaHcRaZC/rM4iA5dQey7y
+         eoeCiWMUQ3wrPxnr1wfHTT12bRC01HFpKEXNhVZg=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 074LHi8l040102
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 4 Aug 2020 16:17:44 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 4 Aug
+ 2020 16:17:43 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 4 Aug 2020 16:17:43 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 074LHgUF061484;
+        Tue, 4 Aug 2020 16:17:43 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        <santosh.shilimkar@oracle.com>, Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <t-kristo@ti.com>
+CC:     Sekhar Nori <nsekhar@ti.com>, Dave Gerlach <d-gerlach@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH next 0/3] soc: ti: k3: add am65x sr2.0 support
+Date:   Wed, 5 Aug 2020 00:17:29 +0300
+Message-ID: <20200804211732.2861-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200401213903.182112-4-dancol@google.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 02:39:03PM -0700, Daniel Colascione wrote:
-> This change gives userfaultfd file descriptors a real security
-> context, allowing policy to act on them.
-> 
-> Signed-off-by: Daniel Colascione <dancol@google.com>
-> ---
->  fs/userfaultfd.c | 30 ++++++++++++++++++++++++++----
->  1 file changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> index 37df7c9eedb1..78ff5d898733 100644
-> --- a/fs/userfaultfd.c
-> +++ b/fs/userfaultfd.c
-> @@ -76,6 +76,8 @@ struct userfaultfd_ctx {
->  	bool mmap_changing;
->  	/* mm with one ore more vmas attached to this userfaultfd_ctx */
->  	struct mm_struct *mm;
-> +	/* The inode that owns this context --- not a strong reference.  */
-> +	const struct inode *owner;
->  };
+Hi Santosh,
 
-Adding this field seems wrong.  There's no reference held to it, so it can only
-be used if the caller holds a reference to the inode anyway.  The only user of
-this field is via userfafultfd_read(), so why not just use the inode of the
-struct file passed to userfaultfd_read()?
+This series adds support for the TI AM65x SR2.0 SoC Ringacc which has fixed
+errata i2023 "RINGACC, UDMA: RINGACC and UDMA Ring State Interoperability
+Issue after Channel Teardown". This errata also fixed for J271E SoC.
+The SOC bus chipinfo data is used to identify the SoC and configure
+i2023 errata W/A.
 
->  SYSCALL_DEFINE1(userfaultfd, int, flags)
->  {
-> +	struct file *file;
->  	struct userfaultfd_ctx *ctx;
->  	int fd;
->  
-> @@ -1974,8 +1979,25 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
->  	/* prevent the mm struct to be freed */
->  	mmgrab(ctx->mm);
->  
-> -	fd = anon_inode_getfd("[userfaultfd]", &userfaultfd_fops, ctx,
-> -			      O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS));
-> +	file = anon_inode_getfile_secure(
-> +		"[userfaultfd]", &userfaultfd_fops, ctx,
-> +		O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS),
-> +		NULL);
-> +	if (IS_ERR(file)) {
-> +		fd = PTR_ERR(file);
-> +		goto out;
-> +	}
-> +
-> +	fd = get_unused_fd_flags(O_RDONLY | O_CLOEXEC);
-> +	if (fd < 0) {
-> +		fput(file);
-> +		goto out;
-> +	}
-> +
-> +	ctx->owner = file_inode(file);
-> +	fd_install(fd, file);
-> +
-> +out:
->  	if (fd < 0) {
->  		mmdrop(ctx->mm);
->  		kmem_cache_free(userfaultfd_ctx_cachep, ctx);
+This changes made "ti,dma-ring-reset-quirk" DT property obsolete, so it's removed.
 
-What's the point of anon_inode_getfile_secure()?  anon_inode_getfd_secure()
-would work here too.
+Grygorii Strashko (3):
+  soc: ti: k3: ringacc: add am65x sr2.0 support
+  bindings: soc: ti: soc: ringacc: remove ti,dma-ring-reset-quirk
+  arm64: dts: ti: k3-am65: ringacc: drop ti,dma-ring-reset-quirk
 
-- Eric
+ .../bindings/soc/ti/k3-ringacc.yaml           |  6 ----
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi      |  1 -
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi       |  1 -
+ drivers/soc/ti/k3-ringacc.c                   | 33 +++++++++++++++++--
+ 4 files changed, 30 insertions(+), 11 deletions(-)
+
+-- 
+2.17.1
+
