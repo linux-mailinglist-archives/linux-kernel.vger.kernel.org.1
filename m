@@ -2,177 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F77E23BC74
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E37823BC78
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 16:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728489AbgHDOn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 10:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36962 "EHLO mail.kernel.org"
+        id S1728749AbgHDOol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 10:44:41 -0400
+Received: from mout.gmx.net ([212.227.17.20]:39535 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725904AbgHDOnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 10:43:55 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 893182075D;
-        Tue,  4 Aug 2020 14:43:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596552235;
-        bh=PR9lGaNfYYuKKCwBgZipB38E9ZH8vb2DxOGeZiAiRjY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GzIq9tre5sCt5z6jzbhWVIOHvBYMoJdZ2oMxA1RT+dTvWKUS5F/nf8mhH0Vi/kW3v
-         wdiBRJRB8XWxz/QLCQrlJkGu57RzFURfwg+uKeMldksd6b4Uq19Syw1sHGXUbGaKd7
-         2FgN/7Oe3lSeTK4eFMAtVUFIahtqyX3tVwuQBi68=
-Date:   Tue, 4 Aug 2020 16:44:14 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Gutson <daniel@eclypsium.com>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>
-Subject: Re: [PATCH] Platform lockdown information in SYSFS
-Message-ID: <20200804144414.GA50022@kroah.com>
-References: <20200730214136.5534-1-daniel.gutson@eclypsium.com>
- <20200731070053.GC1518178@kroah.com>
- <CAFmMkTGdzjjrvitY8fT+RcXFqHG1JGMB-3w1hi1c8CD0FH34Tw@mail.gmail.com>
- <20200731141503.GA1717752@kroah.com>
- <CAFmMkTG7tkFzwwo_WNe2EFFRVijvGm+NLaeN3qX6CVzTViWBag@mail.gmail.com>
- <20200804064154.GE696690@kroah.com>
- <CAFmMkTE1PHPrZwnH7DKFW145dn01LhydTbL7HPTO+_zKA+P61Q@mail.gmail.com>
- <20200804142250.GA247448@kroah.com>
- <CAFmMkTFEWrMsigabvE2HtmpFXMe0qb8QZJHzMzQ=wZXE1G3fbQ@mail.gmail.com>
+        id S1725932AbgHDOoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 10:44:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1596552262;
+        bh=M74RPzCRuh0utMrP2KavnbtPD979HoMyUkUEHnxdnJs=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=dYrylRTKVRIaRg43Q7R8dFGXyUIuT65S2ps9pSJ4yruv+Jj3pkeAH4uh7lQ3AiF5J
+         RZY5f5j8oZLknIonBki5iU8pX8szlaQZHqJrh0eoZf430MnNzgt2PevIm7M8B2Z/rk
+         kucm7ikTNfyF7pyzfBBdHb7KJrw9fpXiacUOMQXw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.144.119] ([217.61.144.119]) by web-mail.gmx.net
+ (3c-app-gmx-bap28.server.lan [172.19.172.98]) (via HTTP); Tue, 4 Aug 2020
+ 16:44:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFmMkTFEWrMsigabvE2HtmpFXMe0qb8QZJHzMzQ=wZXE1G3fbQ@mail.gmail.com>
+Message-ID: <trinity-5e5aa82a-c026-4138-9f33-d3776710eb47-1596552262328@3c-app-gmx-bap28>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Frank Wunderlich <linux@fw-web.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Aw: Re: [PATCH v3 1/5] drm: mediatek: add ddp routing for mt7623
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 4 Aug 2020 16:44:22 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <CAAOTY_94Kt3Z4FhB+1Chca-tanzY1Xwun8D2ZQ09Y7p7+Jw40Q@mail.gmail.com>
+References: <20200804105849.70876-1-linux@fw-web.de>
+ <20200804105849.70876-2-linux@fw-web.de>
+ <CAAOTY_94Kt3Z4FhB+1Chca-tanzY1Xwun8D2ZQ09Y7p7+Jw40Q@mail.gmail.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:K4vr5xLllernAPYxqzkou0b7G3SwErhkjcivj32wkp1hhhjwRwbRXU4j/Bnwcf5k5o44V
+ fsU3r3SIxaDuuJpR4PyfEoLEzHoXnaAyzRA8Tu+cILYk7+t+UiHnn0KvLmJdN6igayqfcQE6XJTg
+ JwRCXhLqPRdkwKLIo/RcogO0U3xXRKiMhCJZ7afFIIgokPJ9TUrZZJyZBPiFjdk6ZCcnHunNUSip
+ kLsOMsNzIukx5LMmkNfHryQwKkcp9Ed/Pe4ioIs36Vjxj2zSdUfHqI3Qbdnni1PJrvnD2OLCMI3r
+ KE=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:49jcVtSXYUo=:DnAfsV9jgGCpqHD/1MAphF
+ hYDUK8odWLBafkI6/tiA/6/C/AOvtCBjZPxJ8SwaQDLBoUjTDioKsGr8dykcCu1vfJh5uPoz1
+ JQxyOT9C+JlN4cdP4EyjbG+Mk9CSDBNNJZe0wFI66xx/TotpXuYXgjdoZL/gCb+7vOOZhsOs3
+ C0TsuGjF6oz6UVbpWQ0b6ht4H5cc+redjzkrzA/IQF+ZAE991FUb1NWvu1Dqdg4gNUNK4TJxg
+ l1oJ7KXNSWzg/syEbOiF18opnTiuIdbSZM5Mj5TwOTw++8V6Rp6swHdRtBnBVuFbMzUnEmI/G
+ 9aZrLD0oeJsOt/GDancoHAJkzptPKlAUsSjCRdgrZBGbNW/GZB8zNp1P9Q6+SKbjEiujlQpIK
+ 8VqiJSUXmuVcKjDa381e27es8qbxEh4iTDKT58m5Y0zRZtk6+6eiuSeZJLcpMQOaOv0esbK2p
+ MJqvwYhbwrB464E8dJmf3xFJFmBQe0aOg50D2shEcJ57UVUmCDnD/p2z4vCZEJPtmZMnKCgNo
+ UnNI3xIvdjp/vmKHUpDPzWMrqdxIBoAhsaJH1jPmr7QnCEoiES2Ku0vCyjvULGkhNb/cTd3vn
+ ECawz2iJJJzz12wPpGAEz0S4Iytm1dgiYFDEtfKC7oYrNOX7fu2argrmV1tzDOLN7UcinTaHV
+ oIL7Iy8c9qOb/YpbBfCo0DC0C/eTMNxYZsjLy0AOg14NRCRyi42ZIOrJi4VSrodip04Q=
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 11:37:02AM -0300, Daniel Gutson wrote:
-> On Tue, Aug 4, 2020 at 11:23 AM Greg Kroah-Hartman <
-> gregkh@linuxfoundation.org> wrote:
-> >
-> > On Tue, Aug 04, 2020 at 10:50:13AM -0300, Daniel Gutson wrote:
-> > > On Tue, Aug 4, 2020 at 3:41 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Mon, Aug 03, 2020 at 07:04:56PM -0300, Daniel Gutson wrote:
-> > > > > > > > Think of this as an input device.  You don't put the random
-> input
-> > > > > > > > attributes all in one place, you create a new device that
-> represents the
-> > > > > > > > input interface and register that.
-> > > > >
-> > > > > I'm having trouble with this. What's the dev_t for the child
-> devices?
-> > > > > I'm doing
-> > > > >     child_device = device_create(&my_class, &pdev->dev, MKDEV(0, 0),
-> > > > > NULL, "child");
-> > > > > pdev is the pci_device (intel-spi-pci)
-> > > > > dmesg shows
-> > > > >
-> > > > >     sysfs: cannot create duplicate filename '/class/my-class'
-> > > > >     (call trace)
-> > > > >     kobject_add_internal failed for my-class with -EEXIST, don't try
-> > > > > to register things with the same name in the same directory.
-> > > >
-> > > > Without seeing all of your code, I can't tell you what you are doing
-> > > > wrong, but the kernel should be giving you a huge hint here...
-> > > >
-> > > > Don't create duplicate names in the same subdirectory.
-> > >
-> > > I'm not doing that. One of my questions is if MKDEV(0, 0) is valid for
-> > > create_device, which I inferred so from the documentation.
-> >
-> > Yes it is, but that's not the error given to you :)
-> >
-> > Many in-kernel users call device_create() with MKDEV(0, 0)
-> >
-> > > Here is the listing
-> >
-> > <snip>
-> >
-> > It's not in any format to read, please never strip leading whitespace,
-> > it hurts my brain...
-> 
-> (trying again)
-> Also, this is in pastebin:  https://pastebin.com/8Ye9eUm5
-> 
-> #include <linux/kobject.h>
-> #include <linux/sysfs.h>
-> #include <linux/module.h>
-> #include <linux/init.h>
-> #include <linux/list.h>
-> #include <linux/slab.h>
-> #include <linux/device.h>
-> #include <linux/pci.h>
-> 
-> static ssize_t howareyou_show(struct class *class, struct class_attribute
-> *attr,
->    char *buf)
-> {
->         return sprintf(buf, "%s\n", "How are you?");
-> }
-> static CLASS_ATTR_RO(howareyou);
+Hi,
 
-These are rare, as they are "global" for a class, are you sure you want
-that?
+> Gesendet: Dienstag, 04. August 2020 um 16:34 Uhr
+> Von: "Chun-Kuang Hu" <chunkuang.hu@kernel.org>
 
-> 
-> static struct class my_class = {
->         .name =         "my-class",
->         .owner =        THIS_MODULE,
-> };
-> 
-> struct device* child_device;
-> 
-> static int mypci_probe(struct pci_dev *pdev,
->       const struct pci_device_id *id)
-> {
->         int ret;
-> 
->         ret = pcim_enable_device(pdev);
->         if (ret)
->                 return ret;
-> 
->         ret = class_register(&my_class);
->         if (ret < 0)
->                 return ret;
-> 
-> 
->         pr_info("DFG: Recognized. DID: %lx\n", (unsigned long
-> int)id->driver_data);
->         pr_info("DFG: device DID: %lx\n", (unsigned long int)pdev->device);
-> 
->         ret = class_create_file(&my_class, &class_attr_howareyou);
->         if (ret != 0) {
->                pr_err("DFG class create file error: %d\n", ret);
->                class_unregister(&my_class);
->                return ret;
->        }
-> 
->        child_device = device_create(&my_class, &pdev->dev, MKDEV(0, 0),
-> NULL, "child");
->         if (child_device == NULL) {
->                pr_err("DFG error child device NULL");
->         }
-> 
->         return ret;
-> }
-> 
+> > -static const enum mtk_ddp_comp_id mt2712_mtk_ddp_main[] =3D {
+> > +static enum mtk_ddp_comp_id mt2712_mtk_ddp_main[] =3D {
+>
+> Why do you remove 'const'?
 
+was removed by previous patch and not re-added (revert failed), sorry. wil=
+l fix in next version, if all other is ok.
 
-Looks sane, what does your kernel log say when you load this?
-
-thanks,
-
-greg k-h
+regards Frank
