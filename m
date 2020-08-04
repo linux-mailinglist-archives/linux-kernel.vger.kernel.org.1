@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD5123BE65
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6386123BE6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 18:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728734AbgHDQvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 12:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
+        id S1729535AbgHDQ4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 12:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgHDQvd (ORCPT
+        with ESMTP id S1728097AbgHDQ4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:51:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704CFC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 09:51:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=e2zja8aZ6SqYiYvPmFBqBslRk1AjgMR07SNX1tomLLY=; b=ZQl0UP9U3hZZSLGmPhwR2IDjEN
-        OTKWAt5UQ/XwCj5q0cvAToEEMo87oSFCGdexQQcnDteGoO3pYeWi4ra/R+xuWP8kVE1cj9udtyidm
-        q5M0Bea8oanJBu6P9uIDytTE9x4LReoF08Ir5I0QZ4mKZUM2pou4u8KB9MQunQ+tgnvCvZeofx6RL
-        laCMk33SlDLC2wyvqc8wCgr7XchkX8Pm3BEMgvV92XdvW3/gGC8YawQi5+YVEojs5xxMypEMtPZJt
-        0nOi2SbL+kDOjF67QBTGFsRqckQyhiG+fCEudoFDfrl7NSVXf2x1/wr++6areRHJayaT2b6dwfPzM
-        ZxECoGEg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k309p-0004Ra-Ak; Tue, 04 Aug 2020 16:51:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6ED96301E02;
-        Tue,  4 Aug 2020 18:51:18 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 533302B90EB46; Tue,  4 Aug 2020 18:51:18 +0200 (CEST)
-Date:   Tue, 4 Aug 2020 18:51:18 +0200
-From:   peterz@infradead.org
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [RFC PATCH 1/2] sched: Fix exit_mm vs membarrier
-Message-ID: <20200804165118.GN2657@hirez.programming.kicks-ass.net>
-References: <20200728160010.3314-1-mathieu.desnoyers@efficios.com>
- <20200804143419.GL2657@hirez.programming.kicks-ass.net>
- <709073430.39864.1596552521779.JavaMail.zimbra@efficios.com>
+        Tue, 4 Aug 2020 12:56:17 -0400
+Received: from mxwww.masterlogin.de (mxwww.masterlogin.de [IPv6:2a03:2900:1:1::b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF25C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 09:56:16 -0700 (PDT)
+Received: from mxout4.routing.net (unknown [192.168.10.112])
+        by forward.mxwww.masterlogin.de (Postfix) with ESMTPS id C520F9614D;
+        Tue,  4 Aug 2020 16:56:08 +0000 (UTC)
+Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
+        by mxout4.routing.net (Postfix) with ESMTP id 898281014A6;
+        Tue,  4 Aug 2020 16:56:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1596560168;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Vxlga8+auKVwR7Eu02+nIG8nf/8YHYDyC6kB6ZLEXCs=;
+        b=uLBV4u730I7W/HQsGBK8p59T74w59J7oOrvykIk/QoRr/GNLZZf0epHYCNc3YmOvy9hAg8
+        e67YJDj2kWP2ARv/fDcL/mGs1i+vYH/dFhaf9XCtVDG8PuxM97EBJq1m2MV4GxjD/h68RF
+        lUEGIoLsQs6bxtZD+c3qDxln7Z1cmyg=
+Received: from localhost.localdomain (fttx-pool-217.61.144.119.bambit.de [217.61.144.119])
+        by mxbox3.masterlogin.de (Postfix) with ESMTPSA id BA22736041E;
+        Tue,  4 Aug 2020 16:56:07 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/6] make hdmi work on bananapi-r2
+Date:   Tue,  4 Aug 2020 18:55:48 +0200
+Message-Id: <20200804165555.75159-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <709073430.39864.1596552521779.JavaMail.zimbra@efficios.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 10:48:41AM -0400, Mathieu Desnoyers wrote:
-> Here is the scenario I have in mind:
+From: Frank Wunderlich <frank-w@public-files.de>
 
-> Userspace variables:
-> 
-> int x = 0, y = 0;
-> 
-> CPU 0                   CPU 1
-> Thread A                Thread B
-> (in thread group A)     (in thread group B)
-> 
-> x = 1
-> barrier()
-> y = 1
-> exit()
-> exit_mm()
-> current->mm = NULL;
->                         r1 = load y
->                         membarrier()
->                           skips CPU 0 (no IPI) because its current mm is NULL
->                         r2 = load x
->                         BUG_ON(r1 == 1 && r2 == 0)
-> 
+This Patch-Series adds missing Patches/Bugfixes to get hdmi working
+on BPI-R2
 
-Ah, yes of course.
-
-We really should have a bunch of these scenarios in membarrier.c.
+v3->v4:
+ - fix removed const in "add ddp routing for mt7623"
+ - change subjects to "drm/mediatek:..."
+ - add documentation for mt7623-* compatibles
+ - dropped redundant display_components node (mmsys compatible)
+ - add reviewd-by collected in v3
+v2->v3:
+ - use own mmsys-routing for mt7623 instead of code getting different
+   routing from dts
+ - remove ddp routing bls -> dpi from bpir2/rfb dts
+ - updated some commit-Messages as suggested by CK Hu
+v1->v2:
+ - using get_possible_crtc API instead of hardcoded
+ - drop unused dts-nodes
+ - refine commit-messages as far as i can :)
+   "config component output by device node port" is needed to fix a WARN_ON()
+   "fix boot up for 720 and 480 but 1080" fixes flickering, 
+     which may cause also some resolutions not working on some TFT (had some pr>
 
 
+Frank Wunderlich (2):
+  dt-bindings: mediatek: add mt7623 display-nodes
+  drm/mediatek: add ddp routing for mt7623
 
-Now, the above cannot happen because we have an unconditional
-atomic_dec_and_test() in do_exit() before exit_mm(), but I'm sure
-relying on that is a wee bit dodgy.
+Jitao Shi (1):
+  drm/mediatek: dpi/dsi: change the getting possible_crtc way
+
+Ryder Lee (1):
+  arm: dts: mt7623: add display subsystem related device nodes
+
+Stu Hsieh (1):
+  drm/mediatek: Add get_possible_crtc API for dpi, dsi
+
+chunhui dai (1):
+  drm/mediatek: disable tmds on mt2701
+
+ .../display/mediatek/mediatek,disp.txt        |   2 +-
+ .../display/mediatek/mediatek,dpi.txt         |   2 +-
+ .../display/mediatek/mediatek,dsi.txt         |   4 +-
+ .../display/mediatek/mediatek,hdmi.txt        |   4 +
+ arch/arm/boot/dts/mt7623.dtsi                 | 170 ++++++++++++++++++
+ arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts |  72 ++++++++
+ arch/arm/boot/dts/mt7623n-rfb-emmc.dts        |  72 ++++++++
+ drivers/gpu/drm/mediatek/mtk_dpi.c            |   3 +-
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |  42 +++++
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   |   2 +
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  23 +++
+ drivers/gpu/drm/mediatek/mtk_dsi.c            |   3 +-
+ drivers/gpu/drm/mediatek/mtk_hdmi_phy.c       |   3 +
+ drivers/gpu/drm/mediatek/mtk_hdmi_phy.h       |   1 +
+ .../gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c    |   1 +
+ 15 files changed, 398 insertions(+), 6 deletions(-)
+
+-- 
+2.25.1
+
