@@ -2,91 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E2E23BB56
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 15:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5401723BB5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 15:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgHDNq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 09:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725826AbgHDNq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 09:46:29 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EE162075D;
-        Tue,  4 Aug 2020 13:46:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596548788;
-        bh=roMCFNmPPkY9aOtB8mbdYYu8t78Z3ZS0O3Rhws1u9uE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ebOiwiw6ObunrZDT7PrvjzIBqiWke7wA41Iayk6OkmK6KmXuDxquLSr6joJ6RQz6D
-         9zdmERHtU5Z+zeY4147ZiponZGJgLvcc98Y+Nzaargz1rPGaZMCR1UrttQMh1Jun8c
-         aDQFAOYaJRFhnGNldBQbEEjc2jAiqKKBlbxvNxZk=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k2xGs-00HOpC-P7; Tue, 04 Aug 2020 14:46:26 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 04 Aug 2020 14:46:26 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        christoffer.dall@arm.com
-Subject: Re: [PATCH  v1 3/3] kernel/configs: don't include PCI_QUIRKS in KVM
- guest configs
-In-Reply-To: <20200804124417.27102-4-alex.bennee@linaro.org>
-References: <20200804124417.27102-1-alex.bennee@linaro.org>
- <20200804124417.27102-4-alex.bennee@linaro.org>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <f80cfa932a650d8f7e8fc02a1656b4c2@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: alex.bennee@linaro.org, kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, christoffer.dall@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1728343AbgHDNs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 09:48:27 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49564 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725826AbgHDNsW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 09:48:22 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1k2xIT-0002gl-8L; Tue, 04 Aug 2020 13:48:05 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     tiwai@suse.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Nikhil Mahale <nmahale@nvidia.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Aaron Plattner <aplattner@nvidia.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] ALSA: hda/hdmi: Add quirk to force connectivity
+Date:   Tue,  4 Aug 2020 21:48:00 +0800
+Message-Id: <20200804134801.10872-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-04 13:44, Alex Bennée wrote:
-> The VIRTIO_PCI support is an idealised PCI bus, we don't need a bunch
-> of bloat for real world hardware for a VirtIO guest.
+HDMI on some platforms doesn't enable audio support because its Port
+Connectivity [31:30] is set to AC_JACK_PORT_NONE:
+Node 0x05 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0b000094: OUT Detect HBR HDMI DP
+  Pin Default 0x58560010: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+  Devices: 0
+  Connection: 3
+     0x02 0x03* 0x04
 
-Who says this guest will only have virtio devices?
+For now, use a quirk to force connectivity based on SSID. If there are
+more platforms affected by the same issue, we can eye for a more generic
+solution.
 
-Or even, virtio devices without bugs? Given that said device can
-come from any VMM, I'm not sure this is the right thing to do.
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2:
+ - Use a quirk list instead.
 
-Thanks,
+ include/sound/hda_codec.h  |  1 +
+ sound/pci/hda/patch_hdmi.c | 14 +++++++++++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-         M.
-
-> 
-> Signed-off-by: Alex Bennée <alex.bennee@linaro.org>
-> ---
->  kernel/configs/kvm_guest.config | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/configs/kvm_guest.config 
-> b/kernel/configs/kvm_guest.config
-> index 208481d91090..672863a2fdf1 100644
-> --- a/kernel/configs/kvm_guest.config
-> +++ b/kernel/configs/kvm_guest.config
-> @@ -13,6 +13,7 @@ CONFIG_IP_PNP_DHCP=y
->  CONFIG_BINFMT_ELF=y
->  CONFIG_PCI=y
->  CONFIG_PCI_MSI=y
-> +CONFIG_PCI_QUIRKS=n
->  CONFIG_DEBUG_KERNEL=y
->  CONFIG_VIRTUALIZATION=y
->  CONFIG_HYPERVISOR_GUEST=y
-
+diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
+index d16a4229209b..947cba68d9fe 100644
+--- a/include/sound/hda_codec.h
++++ b/include/sound/hda_codec.h
+@@ -254,6 +254,7 @@ struct hda_codec {
+ 	unsigned int link_down_at_suspend:1; /* link down at runtime suspend */
+ 	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
+ 	unsigned int mst_no_extra_pcms:1; /* no backup PCMs for DP-MST */
++	unsigned int force_connect:1; /* force connectivity */
+ 
+ #ifdef CONFIG_PM
+ 	unsigned long power_on_acct;
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index cd46247988e4..40d4f0e0e3d7 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1701,7 +1701,8 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+ 	 * all device entries on the same pin
+ 	 */
+ 	config = snd_hda_codec_get_pincfg(codec, pin_nid);
+-	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
++	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE &&
++	    !codec->force_connect)
+ 		return 0;
+ 
+ 	/*
+@@ -1803,11 +1804,17 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+ 	return 0;
+ }
+ 
++static const struct snd_pci_quirk force_connect_list[] = {
++	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
++	{}
++};
++
+ static int hdmi_parse_codec(struct hda_codec *codec)
+ {
+ 	hda_nid_t start_nid;
+ 	unsigned int caps;
+ 	int i, nodes;
++	const struct snd_pci_quirk *q;
+ 
+ 	nodes = snd_hda_get_sub_nodes(codec, codec->core.afg, &start_nid);
+ 	if (!start_nid || nodes < 0) {
+@@ -1815,6 +1822,11 @@ static int hdmi_parse_codec(struct hda_codec *codec)
+ 		return -EINVAL;
+ 	}
+ 
++	q = snd_pci_quirk_lookup(codec->bus->pci, force_connect_list);
++
++	if (q && q->value)
++		codec->force_connect = 1;
++
+ 	/*
+ 	 * hdmi_add_pin() assumes total amount of converters to
+ 	 * be known, so first discover all converters
 -- 
-Jazz is not dead. It just smells funny...
+2.17.1
+
