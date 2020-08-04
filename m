@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701E123BD3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C441923BD4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 17:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729730AbgHDPf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 11:35:58 -0400
-Received: from hera.aquilenet.fr ([185.233.100.1]:50340 "EHLO
-        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729698AbgHDPfu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 11:35:50 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id 7450B1689;
-        Tue,  4 Aug 2020 17:35:44 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id NNp9mwS61FzL; Tue,  4 Aug 2020 17:35:43 +0200 (CEST)
-Received: from function (lfbn-bor-1-797-11.w86-234.abo.wanadoo.fr [86.234.239.11])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id A37C4154E;
-        Tue,  4 Aug 2020 17:35:43 +0200 (CEST)
-Received: from samy by function with local (Exim 4.94)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1k2yyc-00278t-Dr; Tue, 04 Aug 2020 17:35:42 +0200
-Date:   Tue, 4 Aug 2020 17:35:42 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        speakup@linux-speakup.org
-Subject: Re: [PATCH 2/2] speakup: only build serialio when ISA is enabled
-Message-ID: <20200804153542.zowupa4ygdgxnciu@function>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, speakup@linux-speakup.org
-References: <20200804111332.dex7jobmabifdzw5@function>
- <20200804113413.GA181242@kroah.com>
- <20200804114951.ijs3hnezi4f64nll@function>
- <20200804115817.GC203147@kroah.com>
+        id S1728303AbgHDPjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 11:39:53 -0400
+Received: from mout.gmx.net ([212.227.17.21]:39193 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726916AbgHDPjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 11:39:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1596555523;
+        bh=KVIdFu4snYkr3f0Fmfu+cjnV5+Wi4qwOh8QwNS/ed8c=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=ashTFwDO+vcqxgOr36RVtsWHsXJJF443+1fukpwEObzeCAweNjSbUAzI41i+gk0qb
+         Xzdu7DO1ExiCSJXwRHxM3Kk/IZ72sWE/dOXmfr4/5hAy150oJUrNAsU+2qHFqey/Wa
+         fA3yDurcLYLtr1c1Eds8OOuFVgv+I1hRnyDo4rWs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.144.119] ([217.61.144.119]) by web-mail.gmx.net
+ (3c-app-gmx-bap28.server.lan [172.19.172.98]) (via HTTP); Tue, 4 Aug 2020
+ 17:38:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200804115817.GC203147@kroah.com>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
+Message-ID: <trinity-387bb173-6a50-4227-bf3c-90401dbf77ad-1596555523067@3c-app-gmx-bap28>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Frank Wunderlich <linux@fw-web.de>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        chunhui dai <chunhui.dai@mediatek.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        CK Hu <ck.hu@mediatek.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Aw: Re: [PATCH v3 5/5] arm: dts: mt7623: add display subsystem
+ related device nodes
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 4 Aug 2020 17:38:43 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <CAAOTY_9aDqz3muo6ynqX9r0VjW7tD5vvZOiQyR8UZOTUct8oVA@mail.gmail.com>
+References: <20200804105849.70876-1-linux@fw-web.de>
+ <20200804105849.70876-6-linux@fw-web.de>
+ <CAAOTY_9aDqz3muo6ynqX9r0VjW7tD5vvZOiQyR8UZOTUct8oVA@mail.gmail.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:AvRFvL6vHuGUQ5uZliiJaNJd4wt1NtazV/Qat3cVkfRNTmtJqvMDQKW9h9oDuBiDwO8Mn
+ oi3RObTfOlRtNEXAyVHW2NweYjhXsSP30UIi6LJCUn5BjQhsIpG3/cN1ZFAPV/FIubTZT6SplmHU
+ s5QEmlh5MhkmKG49LRBwwoJgH12ukqlazYcHIs1zvj13WAoYvMCm/GSEsMWaZMCh94kxHAz2BVP8
+ /h4qsIzRszFNz6hkqNQqwICaX/HiDvg+sv31O06HNk842CYF8Gi5tNkKzwy+IUPgZWohVHLA/fS+
+ z4=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yNX/tQxieYA=:BIuFsOgMQlg98Dfeok5Br6
+ osXUJXBjbntsuBNNb3ofJFWKIfT1DbO93O1YCbpAemnlcFLL4EWjOEc6XY3uxMjNnKdBLg+Ai
+ 5+XRHi2BH1EsXm9bJdhzBbJaI/2uOKXeLBMnINw4SgEl3GYxYwIklN0zeOd9bI7s/DCboO/oy
+ dptBuU7tmXyAas4ItU+c4e0ZHwDw3hlJCnXDPmkNhDG1Mi5v5JGA8eGDeNHMGQ6e+f6zCc0V1
+ 9jVk1G4brldrTsPn0uqoZIUkOwYG6YTYhA2xuw0ISWq42I0Hf5ugmGfiAiclVsVzsyYYl5tK/
+ coGstICAYKRtHKmm/0fGNfbAedvsRNGsunnwb7+pboVtRNKpTgpBNXXbmtcxiZsAGzyLxM3pn
+ DuupVksCKzDEOonkh3JZF03WMEmO/NQoxNcR4FLM/cNW/BXMVQxJ57opmoy8DCU7rnqSNhfJO
+ DcjRjfJs88rSjnXgdR7yLtKIyFImhD/Qq8Vc3Mibb9APwkGRc0E6O4GPDxSQfJBTtX1S6+jxn
+ TJHXE4LqumuSQxRY6lu+wJE7Lpbq5zyUFwQBd85bpJIBLUlSsjd1pO9xhN0svmJTeHvUzp292
+ tWA5/bYlK/3KMd+72fwdDRJT7krem+2YP6l4mm1pU+3NYjsRO2n+vH9b/PHLRDLCC+smVLUTM
+ Z2qoZ/TB457pRswiA7ISCPGYB02/HNbPgtP9fEM+OlYzqcnxcmyDPS6ZNSt3bSzdkGBY=
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH, le mar. 04 août 2020 13:58:17 +0200, a ecrit:
-> 	ERROR: modpost: "spk_serial_io_ops" [drivers/accessibility/speakup/speakup_keypc.ko] undefined!
-> 	ERROR: modpost: "spk_stop_serial_interrupt" [drivers/accessibility/speakup/speakup_keypc.ko] undefined!
+> Gesendet: Dienstag, 04. August 2020 um 17:00 Uhr
+> Von: "Chun-Kuang Hu" <chunkuang.hu@kernel.org>
 
-Oh, indeed, these are not covered by the first patch.
+> > +       display_components: dispsys@14000000 {
+> > +               compatible =3D "mediatek,mt7623-mmsys",
+> > +                            "mediatek,mt2701-mmsys";
+>
+> In mediatek,mmsys.txt [3], this should be:
+>
+> mmsys: syscon@14000000 {
+>         compatible =3D "mediatek,mt7623-mmsys", "mediatek,mt2701-mmsys",=
+ "syscon"
+>
+> [3] https://www.kernel.org/doc/Documentation/devicetree/bindings/arm/med=
+iatek/mediatek%2Cmmsys.txt
 
-I realize that KEYPC depends on ISA, but with COMPILE_TEST as
-alternative. We can build serialio in the COMPILE_TEST case too, I'll
-update the patches.
+oh i see i can drop this because there is already a mmsys-node with the co=
+mpatibles from documentation.
+only powerdomain is missing, but this seems not be needed (hdmi works with=
+out this "display_components" node)...
 
-But then we'll still have:
+    mmsys: syscon@14000000 {
+        compatible =3D "mediatek,mt7623-mmsys",
+                 "mediatek,mt2701-mmsys",
+                 "syscon";
+        reg =3D <0 0x14000000 0 0x1000>;
+        #clock-cells =3D <1>;
+    };
 
-> the riscv build issues.
-
-Actually I was surprised by the riscv build issue: the issue is within
-riscv's inb() implementation, serialio.c is only calling it.
-arch/riscv/include/asm/io.h says:
-
-#define PCI_IOBASE		((void __iomem *)PCI_IO_START)
-[...]
-#define inb(c)		({ u8  __v; __io_pbr(); __v = readb_cpu((void*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
-
-and thus yes it's arithmetic over a (void*) pointer, the caller cannot
-do anything about it.
-
-8250_port.c itself uses inb(), doesn't it get a warning as well? Or is
-it getting compiled-out on riscv because of some Kconfig condition?  I
-see that the whole drivers/tty/serial is under HAS_IOMEM, and that's the
-only condition I can see for 8250_port.c (except SERIAL_8250 of course),
-is that it, or is SERIAL_8250 just not enabled in the riscv bot?
-
-Actually the warning seems new, when looking at the Debian build log:
-
-https://buildd.debian.org/status/fetch.php?pkg=linux&arch=riscv64&ver=5.7.10-1&stamp=1595803499&raw=0
-
-and looking for serialio.c, I do not see a warning, and its code hasn't
-changed. Is the build bot compiler just more talkative?
-
-Samuel
+    display_components: dispsys@14000000 {
+        compatible =3D "mediatek,mt7623-mmsys",
+                 "mediatek,mt2701-mmsys";
+        reg =3D <0 0x14000000 0 0x1000>;
+        power-domains =3D <&scpsys MT2701_POWER_DOMAIN_DISP>;
+    };
