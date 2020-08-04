@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DBA23B40F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 06:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E685523B414
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 06:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729637AbgHDE3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 00:29:31 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9705 "EHLO
+        id S1729720AbgHDE3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 00:29:34 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9715 "EHLO
         hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726000AbgHDE3a (ORCPT
+        with ESMTP id S1728409AbgHDE3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 00:29:30 -0400
+        Tue, 4 Aug 2020 00:29:31 -0400
 Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f28e3c80000>; Mon, 03 Aug 2020 21:27:52 -0700
+        id <B5f28e3c90000>; Mon, 03 Aug 2020 21:27:53 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
   by hqpgpgate101.nvidia.com (PGP Universal service);
   Mon, 03 Aug 2020 21:29:30 -0700
 X-PGP-Universal: processed;
         by hqpgpgate101.nvidia.com on Mon, 03 Aug 2020 21:29:30 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
  (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 4 Aug
- 2020 04:29:27 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Tue, 4 Aug 2020 04:29:27 +0000
+ 2020 04:29:28 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Tue, 4 Aug 2020 04:29:28 +0000
 Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.167.221]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f28e4270000>; Mon, 03 Aug 2020 21:29:27 -0700
+        id <B5f28e4270003>; Mon, 03 Aug 2020 21:29:28 -0700
 From:   Sowjanya Komatineni <skomatineni@nvidia.com>
 To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
         <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
@@ -34,9 +34,9 @@ To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
 CC:     <skomatineni@nvidia.com>, <devicetree@vger.kernel.org>,
         <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-mmc@vger.kernel.org>
-Subject: [PATCH v2 2/6] sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra186
-Date:   Mon, 3 Aug 2020 21:29:19 -0700
-Message-ID: <1596515363-27235-3-git-send-email-skomatineni@nvidia.com>
+Subject: [PATCH v2 3/6] arm64: tegra: Add missing timeout clock to Tegra210 SDMMC
+Date:   Mon, 3 Aug 2020 21:29:20 -0700
+Message-ID: <1596515363-27235-4-git-send-email-skomatineni@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1596515363-27235-1-git-send-email-skomatineni@nvidia.com>
 References: <1596515363-27235-1-git-send-email-skomatineni@nvidia.com>
@@ -44,48 +44,88 @@ X-NVConfidentiality: public
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596515272; bh=Xg0kN+ZLnsmq3g1igRis+krnn+hehdx0cZTx8kHWSnQ=;
+        t=1596515273; bh=ACOKX3Nl/6yIILPCm9RSoySc3q8XcKN5zLWzcZFbHZo=;
         h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
          In-Reply-To:References:X-NVConfidentiality:MIME-Version:
          Content-Type;
-        b=l7SVCG2xy6SqC5vBAynAAvYcQCjmNVXJbUl383WeaEWI8iaZMz+MQHX/f4N00fr56
-         FsjRPPgTIfwdwLHBH6uJYVeO74Fd7vyTVMjAmq5xPCTo9uZF0DLw6HAKrM0B5gg/3M
-         rE63fykpiLUjeL1DN4jHAzbYBfZpftL/3iD4VS3GBWN+iobLaNZH+U/k/UFz1akfBS
-         ZwdoPs4ytAYTyT2A4e8Ewn4NQlc/3sPpP8JTwXS+xGyvth1JvZSALFnxUe3I7mjuYK
-         HFxV9Tr9PIkZUmQP30+6vO25aGup0XwtE7FwhfQImkxnIveZ0gO0O0MKuO4YhvdSdU
-         VxMPpON/R+rXg==
+        b=V0WPUqDx1ynhkZ6efdII46Ov3GX+29coMOt6h00EipH4vkG1erm7sW0N1GDRIbfRf
+         GJ8pIDMH/VbuKt7JXsXwTDO4BaJrFWKIaE7FG+ahOZ2AL6z1i9nGtaLH1wSVJHQ2fX
+         SAZ4q1cBJCO4TBfX93bxpFk9tEfUE+BWj3Zu2xNP/LkshZD2GDwPmbtU7Jq13rKCpz
+         RVXAbDPRWiOQmoUk5fs/cS2+XMByUCUBzCaUXK+NSvT2k5b/fTS/obITn5Cof2kmVe
+         QiMZ/v1WCkrsXfpnTXf9V+9EXZKgNA5zw8gPaA4SDEb+TizwE+G0Zk3aLyJV3qD5mU
+         42F7t4fGICs9Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 4346b7c7941d ("mmc: tegra: Add Tegra186 support")
+commit 742af7e7a0a1 ("arm64: tegra: Add Tegra210 support")
 
-SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK is set for Tegra186 from the
-beginning of its support in driver.
+Tegra210 uses separate SDMMC_LEGACY_TM clock for data timeout and
+this clock is not enabled currently which is not recommended.
 
-Tegra186 SDMMC hardware by default uses timeout clock (TMCLK) instead
-of SDCLK and this quirk should not be set.
+Tegra SDMMC advertises 12Mhz as timeout clock frequency in host
+capability register.
 
-So, this patch remove this quirk for Tegra186.
+So, this clock should be kept enabled by SDMMC driver.
 
 Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
 ---
- drivers/mmc/host/sdhci-tegra.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
-index 2be3511..31ed321 100644
---- a/drivers/mmc/host/sdhci-tegra.c
-+++ b/drivers/mmc/host/sdhci-tegra.c
-@@ -1455,7 +1455,6 @@ static const struct sdhci_ops tegra186_sdhci_ops = {
- 
- static const struct sdhci_pltfm_data sdhci_tegra186_pdata = {
- 	.quirks = SDHCI_QUIRK_BROKEN_TIMEOUT_VAL |
--		  SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
- 		  SDHCI_QUIRK_SINGLE_POWER_WRITE |
- 		  SDHCI_QUIRK_NO_HISPD_BIT |
- 		  SDHCI_QUIRK_BROKEN_ADMA_ZEROLEN_DESC |
+diff --git a/arch/arm64/boot/dts/nvidia/tegra210.dtsi b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
+index 829f786..8cca216 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
+@@ -1194,8 +1194,9 @@
+ 		compatible = "nvidia,tegra210-sdhci";
+ 		reg = <0x0 0x700b0000 0x0 0x200>;
+ 		interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&tegra_car TEGRA210_CLK_SDMMC1>;
+-		clock-names = "sdhci";
++		clocks = <&tegra_car TEGRA210_CLK_SDMMC1>,
++			 <&tegra_car TEGRA210_CLK_SDMMC_LEGACY>;
++		clock-names = "sdhci", "tmclk";
+ 		resets = <&tegra_car 14>;
+ 		reset-names = "sdhci";
+ 		pinctrl-names = "sdmmc-3v3", "sdmmc-1v8",
+@@ -1222,8 +1223,9 @@
+ 		compatible = "nvidia,tegra210-sdhci";
+ 		reg = <0x0 0x700b0200 0x0 0x200>;
+ 		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&tegra_car TEGRA210_CLK_SDMMC2>;
+-		clock-names = "sdhci";
++		clocks = <&tegra_car TEGRA210_CLK_SDMMC2>,
++			 <&tegra_car TEGRA210_CLK_SDMMC_LEGACY>;
++		clock-names = "sdhci", "tmclk";
+ 		resets = <&tegra_car 9>;
+ 		reset-names = "sdhci";
+ 		pinctrl-names = "sdmmc-1v8-drv";
+@@ -1239,8 +1241,9 @@
+ 		compatible = "nvidia,tegra210-sdhci";
+ 		reg = <0x0 0x700b0400 0x0 0x200>;
+ 		interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&tegra_car TEGRA210_CLK_SDMMC3>;
+-		clock-names = "sdhci";
++		clocks = <&tegra_car TEGRA210_CLK_SDMMC3>,
++			 <&tegra_car TEGRA210_CLK_SDMMC_LEGACY>;
++		clock-names = "sdhci", "tmclk";
+ 		resets = <&tegra_car 69>;
+ 		reset-names = "sdhci";
+ 		pinctrl-names = "sdmmc-3v3", "sdmmc-1v8",
+@@ -1262,8 +1265,9 @@
+ 		compatible = "nvidia,tegra210-sdhci";
+ 		reg = <0x0 0x700b0600 0x0 0x200>;
+ 		interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&tegra_car TEGRA210_CLK_SDMMC4>;
+-		clock-names = "sdhci";
++		clocks = <&tegra_car TEGRA210_CLK_SDMMC4>,
++			 <&tegra_car TEGRA210_CLK_SDMMC_LEGACY>;
++		clock-names = "sdhci", "tmclk";
+ 		resets = <&tegra_car 15>;
+ 		reset-names = "sdhci";
+ 		pinctrl-names = "sdmmc-3v3-drv", "sdmmc-1v8-drv";
 -- 
 2.7.4
 
