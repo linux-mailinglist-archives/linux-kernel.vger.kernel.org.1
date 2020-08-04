@@ -2,123 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A597D23B595
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C510F23B58F
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 09:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729881AbgHDHYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 03:24:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21451 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729859AbgHDHYr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 03:24:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596525885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x8xawYLO0vUiARW1lmruTP1AmZxbUMKLU8ccSw/5V4w=;
-        b=A+jqMg2HDg00g95sIPYirjQtvQTxsU7KTTxvZ2QctqfZ1l+HsbCJBFj+QJ7T3a42v3qCWH
-        JasZnmSjaYdUnVxbNjObLFqt3fOMDmLlvYYUPRDTfxnPGKI6d4jlLwni9T+8ZoXmXgmWSl
-        GMQqZVEhsGrLEdBuxs1kS1aa5OfcQqY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-7o7WNa6WMw6osuJDRunGrg-1; Tue, 04 Aug 2020 03:24:43 -0400
-X-MC-Unique: 7o7WNa6WMw6osuJDRunGrg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729837AbgHDHYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 03:24:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729814AbgHDHYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 03:24:35 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7295A100A628;
-        Tue,  4 Aug 2020 07:24:42 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-113-95.ams2.redhat.com [10.36.113.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C43C5D9F7;
-        Tue,  4 Aug 2020 07:24:37 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>
-Subject: [PATCH v3 6/6] mm: document semantics of ZONE_MOVABLE
-Date:   Tue,  4 Aug 2020 09:24:08 +0200
-Message-Id: <20200804072408.5481-7-david@redhat.com>
-In-Reply-To: <20200804072408.5481-1-david@redhat.com>
-References: <20200804072408.5481-1-david@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id D42DA2076E;
+        Tue,  4 Aug 2020 07:24:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596525875;
+        bh=iB6R7IBok3ueDFendbTSpkFcS7RL5r4SRINNMe8NET8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nt2MYSAxOYaKrjb6IUSebHGHE5UOKgAiKRZZUnyceUl5BqR6gN6496ejFkZVMAPTS
+         y1Yv9JJ8Az5lfzXzgJ5LZTlAOA4CZsrMifcVK66TMM1l9OW+EoqfiJrUZz241eJVJe
+         wZ6i0kKGZmWS2mzxhQ7t2pqgozPyPAC8/YuV7xjY=
+Received: by pali.im (Postfix)
+        id 67FB57FD; Tue,  4 Aug 2020 09:24:32 +0200 (CEST)
+Date:   Tue, 4 Aug 2020 09:24:32 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        PCI <linux-pci@vger.kernel.org>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, Xogium <contact@xogium.me>
+Subject: Re: [PATCH 4/5] PCI: aardvark: Implement driver 'remove' function
+ and allow to build it as module
+Message-ID: <20200804072432.c27dmwzjyelgd4h4@pali>
+References: <20200715142557.17115-1-marek.behun@nic.cz>
+ <20200715142557.17115-5-marek.behun@nic.cz>
+ <20200729184809.GA569408@bogus>
+ <20200803144634.nr5cjddyvdnv3lxo@pali>
+ <CAL_JsqLvqt9VneSm3Up9ib0AH7jWytA9fss_QMfJwd8xrVEp4A@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <CAL_JsqLvqt9VneSm3Up9ib0AH7jWytA9fss_QMfJwd8xrVEp4A@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's document what ZONE_MOVABLE means, how it's used, and which special
-cases we have regarding unmovable pages (memory offlining vs. migration /
-allocations).
+On Monday 03 August 2020 14:00:37 Rob Herring wrote:
+> On Mon, Aug 3, 2020 at 8:46 AM Pali Rohár <pali@kernel.org> wrote:
+> >
+> > On Wednesday 29 July 2020 12:48:09 Rob Herring wrote:
+> > > On Wed, Jul 15, 2020 at 04:25:56PM +0200, Marek Behún wrote:
+> > > > From: Pali Rohár <pali@kernel.org>
+> > > >
+> > > > Providing driver's 'remove' function allows kernel to bind and unbind devices
+> > > > from aardvark driver. It also allows to build aardvark driver as a module.
+> > > >
+> > > > Compiling aardvark as a module simplifies development and debugging of
+> > > > this driver as it can be reloaded at runtime without the need to reboot
+> > > > to new kernel.
+> > > >
+> > > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > > Reviewed-by: Marek Behún <marek.behun@nic.cz>
+> > > > ---
+> > > >  drivers/pci/controller/Kconfig        |  2 +-
+> > > >  drivers/pci/controller/pci-aardvark.c | 25 ++++++++++++++++++++++---
+> > > >  2 files changed, 23 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+> > > > index adddf21fa381..f9da5ff2c517 100644
+> > > > --- a/drivers/pci/controller/Kconfig
+> > > > +++ b/drivers/pci/controller/Kconfig
+> > > > @@ -12,7 +12,7 @@ config PCI_MVEBU
+> > > >     select PCI_BRIDGE_EMUL
+> > > >
+> > > >  config PCI_AARDVARK
+> > > > -   bool "Aardvark PCIe controller"
+> > > > +   tristate "Aardvark PCIe controller"
+> > > >     depends on (ARCH_MVEBU && ARM64) || COMPILE_TEST
+> > > >     depends on OF
+> > > >     depends on PCI_MSI_IRQ_DOMAIN
+> > > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > > > index d5f58684d962..0a5aa6d77f5d 100644
+> > > > --- a/drivers/pci/controller/pci-aardvark.c
+> > > > +++ b/drivers/pci/controller/pci-aardvark.c
+> > > > @@ -14,6 +14,7 @@
+> > > >  #include <linux/irq.h>
+> > > >  #include <linux/irqdomain.h>
+> > > >  #include <linux/kernel.h>
+> > > > +#include <linux/module.h>
+> > > >  #include <linux/pci.h>
+> > > >  #include <linux/init.h>
+> > > >  #include <linux/phy/phy.h>
+> > > > @@ -1114,6 +1115,7 @@ static int advk_pcie_probe(struct platform_device *pdev)
+> > > >
+> > > >     pcie = pci_host_bridge_priv(bridge);
+> > > >     pcie->pdev = pdev;
+> > > > +   platform_set_drvdata(pdev, pcie);
+> > > >
+> > > >     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > > >     pcie->base = devm_ioremap_resource(dev, res);
+> > > > @@ -1204,18 +1206,35 @@ static int advk_pcie_probe(struct platform_device *pdev)
+> > > >     return 0;
+> > > >  }
+> > > >
+> > > > +static int advk_pcie_remove(struct platform_device *pdev)
+> > > > +{
+> > > > +   struct advk_pcie *pcie = platform_get_drvdata(pdev);
+> > > > +   struct pci_host_bridge *bridge = pci_host_bridge_from_priv(pcie);
+> > > > +
+> > > > +   pci_stop_root_bus(bridge->bus);
+> > > > +   pci_remove_root_bus(bridge->bus);
+> > >
+> > > Based on pci_host_common_remove() implementation, doesn't this need a
+> > > lock around it (pci_lock_rescan_remove)?
+> >
+> > Well, I'm not sure. I looked into other pci drivers and none of
+> > following drivers pci-tegra.c, pcie-altera.c, pcie-brcmstb.c,
+> > pcie-iproc.c, pcie-mediatek.c, pcie-rockchip-host.c calls
+> > pci_lock_rescan_remove() and pci_unlock_rescan_remove().
+> 
+> The mutex protects the bus->devices list, so yes I believe it is needed.
+> 
+> Rob
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc: Baoquan He <bhe@redhat.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/mmzone.h | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+Thank you Rob! It means that all above pci drivers should be fixed too.
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index f6f884970511d..600d449e7d9e9 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -372,6 +372,40 @@ enum zone_type {
- 	 */
- 	ZONE_HIGHMEM,
- #endif
-+	/*
-+	 * ZONE_MOVABLE is similar to ZONE_NORMAL, except that it *primarily*
-+	 * only contains movable pages. Main use cases are to make memory
-+	 * offlining more likely to succeed, and to locally limit unmovable
-+	 * allocations - e.g., to increase the number of THP/huge pages.
-+	 * Notable special cases are:
-+	 *
-+	 * 1. Pinned pages: (Long-term) pinning of movable pages might
-+	 *    essentially turn such pages unmovable. Memory offlining might
-+	 *    retry a long time.
-+	 * 2. memblock allocations: kernelcore/movablecore setups might create
-+	 *    situations where ZONE_MOVABLE contains unmovable allocations
-+	 *    after boot. Memory offlining and allocations fail early.
-+	 * 3. Memory holes: Such pages cannot be allocated. Applies only to
-+	 *    boot memory, not hotplugged memory. Memory offlining and
-+	 *    allocations fail early.
-+	 * 4. PG_hwpoison pages: While poisoned pages can be skipped during
-+	 *    memory offlining, such pages cannot be allocated.
-+	 * 5. Unmovable PG_offline pages: In paravirtualized environments,
-+	 *    hotplugged memory blocks might only partially be managed by the
-+	 *    buddy (e.g., via XEN-balloon, Hyper-V balloon, virtio-mem). The
-+	 *    parts not manged by the buddy are unmovable PG_offline pages. In
-+	 *    some cases (virtio-mem), such pages can be skipped during
-+	 *    memory offlining, however, cannot be moved/allocated. These
-+	 *    techniques might use alloc_contig_range() to hide previously
-+	 *    exposed pages from the buddy again (e.g., to implement some sort
-+	 *    of memory unplug in virtio-mem).
-+	 *
-+	 * In general, no unmovable allocations that degrade memory offlining
-+	 * should end up in ZONE_MOVABLE. Allocators (like alloc_contig_range())
-+	 * have to expect that migrating pages in ZONE_MOVABLE can fail (even
-+	 * if has_unmovable_pages() states that there are no unmovable pages,
-+	 * there can be false negatives).
-+	 */
- 	ZONE_MOVABLE,
- #ifdef CONFIG_ZONE_DEVICE
- 	ZONE_DEVICE,
--- 
-2.26.2
-
+I will prepare a new version of aardvark patches with protecting pci
+stop/remove functions. And later I can look at some common bridge remove
+function for fixing those other pci drivers.
