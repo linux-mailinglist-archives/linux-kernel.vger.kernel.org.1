@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F85B23B779
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718F323B77D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 Aug 2020 11:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729912AbgHDJRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 05:17:31 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:25659 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgHDJRb (ORCPT
+        id S1729968AbgHDJRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 05:17:49 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:2937 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727066AbgHDJRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 05:17:31 -0400
+        Tue, 4 Aug 2020 05:17:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1596532649; x=1628068649;
+  t=1596532666; x=1628068666;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=+msM65TSYoEYqlq1Q40WvWM/P8W82CwRgOMq1o/5Bps=;
-  b=rFwbEAqIDYIpA/23LnJWKirdz81r0hataqyCrMpN4R1kJDO56yFd8pKy
-   E2/A/Nbdgy7wxgWt7u+MEB9tYCgfBEbDywt6qBBewhbcspqedV8M04S/C
-   TvRyWewnpEBBlMvyS1ZfJIxUSCeZjmy5AAxzZyR1mnSi8txVubX5KrGte
-   c=;
-IronPort-SDR: 2LfGF0tsgh/wgkOuL82YJ6XTzOdgIhvKKNVgcxt+7J6ZBaHpd55+EIealJpLL4tCWnUTTCzOU3
- TCRFj052VsVw==
+  bh=KanOXBmrNsHYzBYB8gquHIKd6o9nbTmdI2Il5D6pxXw=;
+  b=ZKEKPKlcSVTzn97meTemEGxky4UB7gjCdRd6EXU6alvPt/o0T4luuPJg
+   iYtSBg3ELLLM+2BQ2XqVc4V6WtrYihSYWc1TKKbF1gC6ap4DmCDjKtOcR
+   072U5RyOgr6fq5/97HU6rsFrJtYM2SvsoexGuszckTvMjon2hJUWWObj2
+   Y=;
+IronPort-SDR: 179l3hooCdAV+57V+BgCwul0XKf2B5bwb/zCLHJ1953UuS2Xjd5YU4LsefIm+8PpyCHYrHxHs0
+ G/7uZRxBLe1g==
 X-IronPort-AV: E=Sophos;i="5.75,433,1589241600"; 
-   d="scan'208";a="47335648"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 04 Aug 2020 09:17:24 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com (Postfix) with ESMTPS id AE3C2A2596;
-        Tue,  4 Aug 2020 09:17:21 +0000 (UTC)
+   d="scan'208";a="45900980"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 04 Aug 2020 09:17:42 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com (Postfix) with ESMTPS id 1BEAAA22DD;
+        Tue,  4 Aug 2020 09:17:40 +0000 (UTC)
 Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 4 Aug 2020 09:17:21 +0000
+ id 15.0.1497.2; Tue, 4 Aug 2020 09:17:39 +0000
 Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.248) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 4 Aug 2020 09:17:03 +0000
+ id 15.0.1497.2; Tue, 4 Aug 2020 09:17:22 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -57,9 +57,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
         <linux-damon@amazon.com>, <linux-mm@kvack.org>,
         <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v19 07/15] mm/damon: Implement access pattern recording
-Date:   Tue, 4 Aug 2020 11:14:08 +0200
-Message-ID: <20200804091416.31039-8-sjpark@amazon.com>
+Subject: [PATCH v19 08/15] mm/damon: Add a tracepoint
+Date:   Tue, 4 Aug 2020 11:14:09 +0200
+Message-ID: <20200804091416.31039-9-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200804091416.31039-1-sjpark@amazon.com>
 References: <20200804091416.31039-1-sjpark@amazon.com>
@@ -75,254 +75,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit implements the recording feature of DAMON.  If this feature
-is enabled, DAMON writes the monitored access patterns in its binary
-format into a file which specified by the user.  This is already able to
-be implemented by each user using the callbacks.  However, as the
-recording is expected to be widely used, this commit implements the
-feature in the DAMON, for more convenience.
+This commit adds a tracepoint for DAMON.  It traces the monitoring
+results of each region for each aggregation interval.  Using this, DAMON
+can easily integrated with tracepoints supporting tools such as perf.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 Reviewed-by: Leonard Foerster <foersleo@amazon.de>
 ---
- include/linux/damon.h |  15 +++++
- mm/damon.c            | 141 +++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 153 insertions(+), 3 deletions(-)
+ include/trace/events/damon.h | 43 ++++++++++++++++++++++++++++++++++++
+ mm/damon.c                   |  4 ++++
+ 2 files changed, 47 insertions(+)
+ create mode 100644 include/trace/events/damon.h
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index f79112c56bbc..ad771c39d1a9 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -75,6 +75,14 @@ struct damon_target {
-  * in case of virtual memory monitoring) and applies the changes for each
-  * @regions_update_interval.  All time intervals are in micro-seconds.
-  *
-+ * @rbuf: In-memory buffer for monitoring result recording.
-+ * @rbuf_len: The length of @rbuf.
-+ * @rbuf_offset: The offset for next write to @rbuf.
-+ * @rfile_path: Record file path.
-+ *
-+ * If @rbuf, @rbuf_len, and @rfile_path are set, the monitored results are
-+ * automatically stored in @rfile_path file.
-+ *
-  * @kdamond:		Kernel thread who does the monitoring.
-  * @kdamond_stop:	Notifies whether kdamond should stop.
-  * @kdamond_lock:	Mutex for the synchronizations with @kdamond.
-@@ -139,6 +147,11 @@ struct damon_ctx {
- 	struct timespec64 last_aggregation;
- 	struct timespec64 last_regions_update;
- 
-+	unsigned char *rbuf;
-+	unsigned int rbuf_len;
-+	unsigned int rbuf_offset;
-+	char *rfile_path;
+diff --git a/include/trace/events/damon.h b/include/trace/events/damon.h
+new file mode 100644
+index 000000000000..2f422f4f1fb9
+--- /dev/null
++++ b/include/trace/events/damon.h
+@@ -0,0 +1,43 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM damon
 +
- 	struct task_struct *kdamond;
- 	bool kdamond_stop;
- 	struct mutex kdamond_lock;
-@@ -167,6 +180,8 @@ int damon_set_targets(struct damon_ctx *ctx,
- int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
- 		unsigned long aggr_int, unsigned long regions_update_int,
- 		unsigned long min_nr_reg, unsigned long max_nr_reg);
-+int damon_set_recording(struct damon_ctx *ctx,
-+				unsigned int rbuf_len, char *rfile_path);
- int damon_start(struct damon_ctx *ctx);
- int damon_stop(struct damon_ctx *ctx);
- 
++#if !defined(_TRACE_DAMON_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_DAMON_H
++
++#include <linux/damon.h>
++#include <linux/types.h>
++#include <linux/tracepoint.h>
++
++TRACE_EVENT(damon_aggregated,
++
++	TP_PROTO(struct damon_target *t, struct damon_region *r,
++		unsigned int nr_regions),
++
++	TP_ARGS(t, r, nr_regions),
++
++	TP_STRUCT__entry(
++		__field(unsigned long, target_id)
++		__field(unsigned int, nr_regions)
++		__field(unsigned long, start)
++		__field(unsigned long, end)
++		__field(unsigned int, nr_accesses)
++	),
++
++	TP_fast_assign(
++		__entry->target_id = t->id;
++		__entry->nr_regions = nr_regions;
++		__entry->start = r->ar.start;
++		__entry->end = r->ar.end;
++		__entry->nr_accesses = r->nr_accesses;
++	),
++
++	TP_printk("target_id=%lu nr_regions=%u %lu-%lu: %u",
++			__entry->target_id, __entry->nr_regions,
++			__entry->start, __entry->end, __entry->nr_accesses)
++);
++
++#endif /* _TRACE_DAMON_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
 diff --git a/mm/damon.c b/mm/damon.c
-index fa908dc39270..b3420ba97fd2 100644
+index b3420ba97fd2..65e65e779313 100644
 --- a/mm/damon.c
 +++ b/mm/damon.c
-@@ -57,6 +57,10 @@
- #define damon_for_each_target_safe(t, next, ctx) \
- 	list_for_each_entry_safe(t, next, &(ctx)->targets_list, list)
+@@ -20,6 +20,8 @@
  
-+#define MIN_RECORD_BUFFER_LEN	1024
-+#define MAX_RECORD_BUFFER_LEN	(4 * 1024 * 1024)
-+#define MAX_RFILE_PATH_LEN	256
-+
- /* Get a random number in [l, r) */
- #define damon_rand(l, r) (l + prandom_u32() % (r - l))
+ #define pr_fmt(fmt) "damon: " fmt
  
-@@ -772,16 +776,88 @@ static bool kdamond_aggregate_interval_passed(struct damon_ctx *ctx)
- }
++#define CREATE_TRACE_POINTS
++
+ #include <linux/damon.h>
+ #include <linux/delay.h>
+ #include <linux/kthread.h>
+@@ -31,6 +33,7 @@
+ #include <linux/sched/mm.h>
+ #include <linux/sched/task.h>
+ #include <linux/slab.h>
++#include <trace/events/damon.h>
  
- /*
-- * Reset the aggregated monitoring results
-+ * Flush the content in the result buffer to the result file
-+ */
-+static void damon_flush_rbuffer(struct damon_ctx *ctx)
-+{
-+	ssize_t sz;
-+	loff_t pos = 0;
-+	struct file *rfile;
-+
-+	if (!ctx->rbuf_offset)
-+		return;
-+
-+	rfile = filp_open(ctx->rfile_path, O_CREAT | O_RDWR | O_APPEND, 0644);
-+	if (IS_ERR(rfile)) {
-+		pr_err("Cannot open the result file %s\n",
-+				ctx->rfile_path);
-+		return;
-+	}
-+
-+	while (ctx->rbuf_offset) {
-+		sz = kernel_write(rfile, ctx->rbuf, ctx->rbuf_offset, &pos);
-+		if (sz < 0)
-+			break;
-+		ctx->rbuf_offset -= sz;
-+	}
-+	filp_close(rfile, NULL);
-+}
-+
-+/*
-+ * Write a data into the result buffer
-+ */
-+static void damon_write_rbuf(struct damon_ctx *ctx, void *data, ssize_t size)
-+{
-+	if (!ctx->rbuf_len || !ctx->rbuf || !ctx->rfile_path)
-+		return;
-+	if (ctx->rbuf_offset + size > ctx->rbuf_len)
-+		damon_flush_rbuffer(ctx);
-+	if (ctx->rbuf_offset + size > ctx->rbuf_len) {
-+		pr_warn("%s: flush failed, or wrong size given(%u, %zu)\n",
-+				__func__, ctx->rbuf_offset, size);
-+		return;
-+	}
-+
-+	memcpy(&ctx->rbuf[ctx->rbuf_offset], data, size);
-+	ctx->rbuf_offset += size;
-+}
-+
-+/*
-+ * Flush the aggregated monitoring results to the result buffer
-+ *
-+ * Stores current tracking results to the result buffer and reset 'nr_accesses'
-+ * of each region.  The format for the result buffer is as below:
-+ *
-+ *   <time> <number of targets> <array of target infos>
-+ *
-+ *   target info: <id> <number of regions> <array of region infos>
-+ *   region info: <start address> <end address> <nr_accesses>
-  */
- static void kdamond_reset_aggregated(struct damon_ctx *c)
- {
- 	struct damon_target *t;
--	struct damon_region *r;
-+	struct timespec64 now;
-+	unsigned int nr;
-+
-+	ktime_get_coarse_ts64(&now);
-+
-+	damon_write_rbuf(c, &now, sizeof(now));
-+	nr = nr_damon_targets(c);
-+	damon_write_rbuf(c, &nr, sizeof(nr));
- 
- 	damon_for_each_target(t, c) {
--		damon_for_each_region(r, t)
-+		struct damon_region *r;
-+
-+		damon_write_rbuf(c, &t->id, sizeof(t->id));
-+		nr = nr_damon_regions(t);
-+		damon_write_rbuf(c, &nr, sizeof(nr));
-+		damon_for_each_region(r, t) {
-+			damon_write_rbuf(c, &r->ar.start, sizeof(r->ar.start));
-+			damon_write_rbuf(c, &r->ar.end, sizeof(r->ar.end));
-+			damon_write_rbuf(c, &r->nr_accesses,
-+					sizeof(r->nr_accesses));
+ /* Minimal region size.  Every damon_region is aligned by this. */
+ #define MIN_REGION PAGE_SIZE
+@@ -856,6 +859,7 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
+ 			damon_write_rbuf(c, &r->ar.end, sizeof(r->ar.end));
+ 			damon_write_rbuf(c, &r->nr_accesses,
+ 					sizeof(r->nr_accesses));
++			trace_damon_aggregated(t, r, nr);
  			r->nr_accesses = 0;
-+		}
- 	}
- }
- 
-@@ -965,6 +1041,14 @@ static bool kdamond_need_stop(struct damon_ctx *ctx)
- 	return true;
- }
- 
-+static void kdamond_write_record_header(struct damon_ctx *ctx)
-+{
-+	int recfmt_ver = 2;
-+
-+	damon_write_rbuf(ctx, "damon_recfmt_ver", 16);
-+	damon_write_rbuf(ctx, &recfmt_ver, sizeof(recfmt_ver));
-+}
-+
- /*
-  * The monitoring daemon that runs as a kernel thread
-  */
-@@ -981,6 +1065,8 @@ static int kdamond_fn(void *data)
- 		ctx->init_target_regions(ctx);
- 	sz_limit = damon_region_sz_limit(ctx);
- 
-+	kdamond_write_record_header(ctx);
-+
- 	while (!kdamond_need_stop(ctx)) {
- 		if (ctx->prepare_access_checks)
- 			ctx->prepare_access_checks(ctx);
-@@ -1007,6 +1093,7 @@ static int kdamond_fn(void *data)
- 			sz_limit = damon_region_sz_limit(ctx);
  		}
  	}
-+	damon_flush_rbuffer(ctx);
- 	damon_for_each_target(t, ctx) {
- 		damon_for_each_region_safe(r, next, t)
- 			damon_destroy_region(r);
-@@ -1112,6 +1199,54 @@ int damon_set_targets(struct damon_ctx *ctx,
- 	return 0;
- }
- 
-+/**
-+ * damon_set_recording() - Set attributes for the recording.
-+ * @ctx:	target kdamond context
-+ * @rbuf_len:	length of the result buffer
-+ * @rfile_path:	path to the monitor result files
-+ *
-+ * Setting 'rbuf_len' 0 disables recording.
-+ *
-+ * This function should not be called while the kdamond is running.
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+int damon_set_recording(struct damon_ctx *ctx,
-+			unsigned int rbuf_len, char *rfile_path)
-+{
-+	size_t rfile_path_len;
-+
-+	if (rbuf_len && (rbuf_len > MAX_RECORD_BUFFER_LEN ||
-+			rbuf_len < MIN_RECORD_BUFFER_LEN)) {
-+		pr_err("result buffer size (%u) is out of [%d,%d]\n",
-+				rbuf_len, MIN_RECORD_BUFFER_LEN,
-+				MAX_RECORD_BUFFER_LEN);
-+		return -EINVAL;
-+	}
-+	rfile_path_len = strnlen(rfile_path, MAX_RFILE_PATH_LEN);
-+	if (rfile_path_len >= MAX_RFILE_PATH_LEN) {
-+		pr_err("too long (>%d) result file path %s\n",
-+				MAX_RFILE_PATH_LEN, rfile_path);
-+		return -EINVAL;
-+	}
-+	ctx->rbuf_len = rbuf_len;
-+	kfree(ctx->rbuf);
-+	ctx->rbuf = NULL;
-+	kfree(ctx->rfile_path);
-+	ctx->rfile_path = NULL;
-+
-+	if (rbuf_len) {
-+		ctx->rbuf = kvmalloc(rbuf_len, GFP_KERNEL);
-+		if (!ctx->rbuf)
-+			return -ENOMEM;
-+	}
-+	ctx->rfile_path = kmalloc(rfile_path_len + 1, GFP_KERNEL);
-+	if (!ctx->rfile_path)
-+		return -ENOMEM;
-+	strncpy(ctx->rfile_path, rfile_path, rfile_path_len + 1);
-+	return 0;
-+}
-+
- /**
-  * damon_set_attrs() - Set attributes for the monitoring.
-  * @ctx:		monitoring context
 -- 
 2.17.1
 
