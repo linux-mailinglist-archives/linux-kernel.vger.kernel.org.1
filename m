@@ -2,95 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEC823CFE1
+	by mail.lfdr.de (Postfix) with ESMTP id 61BFF23CFE0
 	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728974AbgHET0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:26:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59805 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728687AbgHEROC (ORCPT
+        id S1729105AbgHET0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728720AbgHEROO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:14:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yTnFp3FGNnUMIV+drG+EiP28NPY1kzNtc5gU15VKTgg=;
-        b=IRftECynq87jUiSLcCluSeDUigQgevfSUIo+31YFvyNWw7GnRHKSlxJX9Rgcgob9LAPp8y
-        tDwIVkeO/inoizwk/LsywieN9mWYkLHc+ihG3R+Rh40+ICBvLsEJVoiyWPdf94DJG1bTM/
-        3qJrLHjmS6LLj27dPcMgDAIAFwfSdDQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-CVKT19CpOAaHFqv9tWctXA-1; Wed, 05 Aug 2020 13:13:57 -0400
-X-MC-Unique: CVKT19CpOAaHFqv9tWctXA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CC2D80183C;
-        Wed,  5 Aug 2020 17:13:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 089C25D9DC;
-        Wed,  5 Aug 2020 17:13:48 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <1596555579.10158.23.camel@HansenPartnership.com>
-References: <1596555579.10158.23.camel@HansenPartnership.com> <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>, linux-ext4@vger.kernel.org,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-api@vger.kernel.org, torvalds@linux-foundation.org,
-        raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
-        jannh@google.com, kzak@redhat.com, jlayton@redhat.com,
-        linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/18] VFS: Filesystem information [ver #21]
+        Wed, 5 Aug 2020 13:14:14 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B813C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:14:13 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f7so41458465wrw.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:14:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=O2Z+gsERAbYUlsg9gw6crNbMPqluMGxTEOgr/4rZTw4=;
+        b=jUE+3alYOOQtv2miLq0F96zlFjP5GPcCexLPOqoHU/yyP8QNOeHC0dlqSKGcC2bfEp
+         x8WV1wFoX3DoZePftDZ6qYNPybGQm0qopnSkkbgRI8uthD+7cakoepqRwRlcRgcqt/N9
+         Ncj2Mu4XtiP6jU3bU2jdankPxvbuTbtU5v6FAcKVOvPe48FTrCh1b6pJ2qvRNSyvyNwZ
+         uXMk+umh01F0ZOcBWuV6jp5/5ibfJPSP/K6PxUJr3uCWEM8YfBKSO7FhnJ3UcBrIZtB+
+         iSFeauVeBEs94CUlgl95Pw3BET3oqFfZUuc+en+Wf+GVdysY4o5Xydcd6pwmaTVZ3dnI
+         w7Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=O2Z+gsERAbYUlsg9gw6crNbMPqluMGxTEOgr/4rZTw4=;
+        b=ep8pN+eN331VCMLut4Ls4y9CwRQulhUD+1XMVyfR87NbxOoyNfw7E3BrIDeyFaFwSm
+         /Qt0RGVpwvw4IYJVpEHnDuQjIoyi45lyrUp8YoGziKmjSyeWEq45SpUC8gjYQjocTAR+
+         tapWjXclJgyppzGtQjYco9xei2t1jTtDKKLyHhpLni8XC8WmQ+0v4UpcfiQhqlzaTrff
+         Q8lIQoo/3rE9skEpBpHP528ewQH+PZdWjBUsZ19M92kl//CNKH1eskyPliozHqmWSfu4
+         ueO5MzpCg1mWj9kvL3K4GpgVf4o+vHHipBdk38vBi+K7vTEKEh4CKCFurVp8TJC0Rili
+         SUaA==
+X-Gm-Message-State: AOAM530kM8g0Gj7e1pwUe3dewGD+cTTNtmc/Y1ub2/ft2Kfadq2vXtjU
+        bVFMlpJaRuZrHj8MY0ArdBzfws85P6KGCVbQHcU=
+X-Google-Smtp-Source: ABdhPJxjVR4SDpUcI7PJE0w5x891XIkaF8JaTDxQ969GVi+LupaeH+BW7wVhMAeFW7+9w7MnshV3ZHNyzGJ30tTZwSQ=
+X-Received: by 2002:a5d:6646:: with SMTP id f6mr3681884wrw.155.1596647652323;
+ Wed, 05 Aug 2020 10:14:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2329128.1596647628.1@warthog.procyon.org.uk>
-Date:   Wed, 05 Aug 2020 18:13:48 +0100
-Message-ID: <2329129.1596647628@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Received: by 2002:a1c:c28a:0:0:0:0:0 with HTTP; Wed, 5 Aug 2020 10:14:11 -0700 (PDT)
+Reply-To: dossou.cabinet1@gmail.com
+From:   Dossou Cabinet patrick <veroniquerebeccagomez@gmail.com>
+Date:   Wed, 5 Aug 2020 19:14:11 +0200
+Message-ID: <CAF67nhjOi1WvKMc3CYNZPFnAG7=3FU77xMmywFaKcUaXiwXXdg@mail.gmail.com>
+Subject: Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
+Dear friend,
+Please accept my apologies, I didn't mean to invade your privacy, but
+I wrote you an email already, but I'm not sure you have it, so I'm
+resending it to you.  I pray that this letter reaches you in good
+health.  I am Barrister Dossou Patrick.  I have a US $ 10 million
+business proposal in the codicil and last will from a deceased who
+happens to be my client.
 
-> It sort of petered out into a long winding thread about why not use
-> sysfs instead, which really doesn't look like a good idea to me.
+He also has the same last name with you and he is from your country as
+well.  I want to introduce you to his bank as his next of kin so that
+the bank will pay the 10 million US dollars to your account in your
+country and I will come to your country for my own part.
 
-It seemed to turn into a set of procfs symlinks that pointed at a bunch of
-sysfs stuff - or possibly some special filesystem.
+I will provide more details on the subject once I have received your
+response via the attached email address: [Dossou.cabinet1@gmail.com]
+You can also request my phone number for further discussion  On the
+question.  We may also take this opportunity to discuss the split
+ratio and fund transfer terms on your behalf.
+Regards,
+Dossou patrick, Esq
 
-> Could I make a suggestion about how this should be done in a way that
-> doesn't actually require the fsinfo syscall at all: it could just be
-> done with fsconfig.
 
-I'd prefer to keep it separate.  The interface for fsconfig() is intended to
-move stuff into the kernel, not out of it.  Better to add a parallel syscall
-to go the other way (kind of like we have setxattr/getxattr, sendmsg/recvmsg).
+..................................................
+..................................................
+.........................
 
-Further, fsinfo() can refer directly to a file/fd/mount/whatever, but
-fsconfig() doesn't do that.  You have to use fspick() to get a context before
-you can use fsconfig().  Now, that's fine if you want to gather several pieces
-of information from a particular object, but it's not so good if you want to
-get one piece of information from each of several objects.
 
-> ... make it table configured...
+Querido amigo,
+Accept put exonerated, no quer=C3=ADa invadir su privacidad, pero he wrote
+an electronic correo anteriormente, pero no estoy seguro de que lo
+haya recibido, as=C3=AD that lo enviar=C3=A9 de regreso.  Rezo para que est=
+a
+carta te llegue con buena salud.  Soy el abogado Delmedre Daniel.
+Tengo una commercial propuesta of $ 10 million dollars of Los Estados
+Unidos en el codicilo y el =C3=BAltimo testimonio of a fallecido that
+results ser mi client.
 
-I did, kind of (though I didn't call it that).  Al rewrote the code to get rid
-of it.
+El tambi=C3=A9n lleva el mismo apellido contigo y tambi=C3=A9n es de tu pa=
+=C3=ADs.
+Quiero presentarle has known banco como pariente m=C3=A1s cercano para que
+ellos paguen los 10 $ million d=C3=B3lares estadounidenses has known cuenta
+en su pa=C3=ADs y yo ir=C3=A9 has su pa=C3=ADs por mi propia parte.
 
-David
-
+Dar=C3=A9 m=C3=A1s aclaraciones sobre el thema una vez que reciba su respue=
+sta
+through the direcci=C3=B3n de correo electr=C3=B3nico
+adjunta:[Dossou.cabinet1@gmail.com] Tambi=C3=A9n puede solicitar mi n=C3=BA=
+mero
+de tel=C3=A9fono para una discusi=C3=B3n adicional sobre el asunto.  Tambi=
+=C3=A9n
+podemos aprovechar esa opportunidad para analizar the relaci=C3=B3n de
+intercambio y las modalidades of the transferencia del fondo a su
+number.
+Saludos,
+Dosssou patrick, Esq
