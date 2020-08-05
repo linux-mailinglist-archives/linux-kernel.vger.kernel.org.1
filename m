@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FEA23D405
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 00:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7BC23D409
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 00:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgHEWso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 18:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
+        id S1726722AbgHEWuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 18:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgHEWsl (ORCPT
+        with ESMTP id S1726130AbgHEWu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 18:48:41 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A9DC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 15:48:41 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id t6so25611403pgq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 15:48:41 -0700 (PDT)
+        Wed, 5 Aug 2020 18:50:26 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1449C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 15:50:25 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id k35so27787700qtk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 15:50:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2f0chzsU8plamndGAVa0L+UE4xurrF8AKN1ix/elzeo=;
-        b=LOq++iuhI8DCPBmvAeXeK/R4Egf9sXfsO+JT+/SfxSso00VNm7Owtu/33R1IS0Wdeg
-         5cgE+2K4leqV8LFpAL8zTtFMcgIOH1TEuj2VQguyDAXEa0Fn1TvGiD5vMj9rq10q3ukx
-         xTNbJJ62lXn8Aog2ut6XDKkljIOiYrE58r4Ps=
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=7O3UtfnS/mNLmFOS+lsZ1i4Dn60nUb+QzLe2DjT4KBg=;
+        b=CWCdHI/c+etNs1XZU07tYKaYttKUL9hZyLnr7FbZTjWadegAJfcNrihtWA8srTg1+i
+         pGgUriwEDnS4Ktwn8UYKQdg9shWVj7ZZvzeGiwX0O0QYZCIvZ9FbCVZxqH7YEpZURUYN
+         mM974U/73V/vydWMZKEfvFWxKNgm1JnQLh/gCfequG4hp6DDUo776BxS0uvI1RNY7CiG
+         g0xzPs7/LtQOJFeb2WyJHjRzCj6hHWSxU4dFnkP4KAEnnpVOHYMh5C+fc0+q72qfGhz7
+         J3R1v9I+Q7tYxgnrRzaVPzTZwBa4YLfXyh03iO9VpE6hNHQ8mG+GwCt0M+j8wwN+5+QP
+         WtkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2f0chzsU8plamndGAVa0L+UE4xurrF8AKN1ix/elzeo=;
-        b=EPFNAkFa7MIDjV+3nLENrqsblTz+zBp8f3eWfiThEIl9raeQzumkoIVMqizlh3WXr8
-         6pS1bN2Aa4lVYjaTGWQ+dABxpsA0/2vJz0+3EvL/83ED8nbW6GVOFOFg41vALF9Wbz+Q
-         qxZYDg6VnMGpv2ikUzT0Czs3tWCBSZ8sh88dz0PZ3Ksc9dqVi3MTJ+jqQphNbe8yvlHq
-         O6ZdjdZcEVx9+BV2m3o/fBUgeX8sxiCa/i83vrvIOiusgIo8KrCLzSn5t8Ue+Mts7M86
-         N9YwSwdUOxtTDSHIUb1IyBn02Fx/s0gD/JGgtIM4UqEwlSN6iEsZjwr452E8C6o1j2DT
-         z80A==
-X-Gm-Message-State: AOAM531c9bhKKOL5SA3UAB72Tl05XLBlT488CU5MPS0KrjSts46fpO+P
-        U6VjrPhPRK+8p4GXQW96QdYVEyPcS3aMxy2EQNnuw8ZFnyYnpmD3lQ/0Lfw/PY7buBg2IOgL/Jk
-        vdd1SFU5zTML+UKvVNIrzAkyyYOhJnxTCmFfdkGqk6/IQkeARgX53+zdZA4WVXYheagmfhu1inO
-        4cIGU=
-X-Google-Smtp-Source: ABdhPJyC+rZ3Bjtr0TdW+a+bIzEPmblHyS5UqJfZswoqNuslOCgYSdiV2Xf7kGGECmLcSIkxYh4bpA==
-X-Received: by 2002:a63:5349:: with SMTP id t9mr5210648pgl.204.1596667718770;
-        Wed, 05 Aug 2020 15:48:38 -0700 (PDT)
-Received: from [10.230.182.181] ([192.19.224.250])
-        by smtp.gmail.com with ESMTPSA id f3sm5378263pfj.206.2020.08.05.15.48.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 15:48:37 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] PCI: iproc: Set affinity mask on MSI interrupts
-To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        helgaas@kernel.org, sbranden@broadcom.com, f.fainelli@gmail.com,
-        lorenzo.pieralisi@arm.com, robh@kernel.org
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200803035241.7737-1-mark.tomlinson@alliedtelesis.co.nz>
-From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <00166b29-f284-984c-81c2-54d5c1e3343a@broadcom.com>
-Date:   Wed, 5 Aug 2020 15:48:36 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200803035241.7737-1-mark.tomlinson@alliedtelesis.co.nz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=7O3UtfnS/mNLmFOS+lsZ1i4Dn60nUb+QzLe2DjT4KBg=;
+        b=mvGAjkEL3DOS1mJKibUvLdZm79rU5j8seo0hvodmJ50DFvlhUmbdq9P2wOglMdPJUP
+         jAMB9av9AMgEKDg290DSzxCoR87xI5YYubjJHlPVf7lxB3cAmjNgpv9KSqYeFyAdKFlE
+         jkWwBz/Nwcz/xTOcVhIpA6188CVT0qI4lOqA7T1Ljb1kOXUhnU6J8GzTTvLlG06Lvwwc
+         QjpORiJYmg/yEXu42ZCfJdnzJI7QqwqNQLU1nPMQxpGNL5FQHEO8dA6aqUEb7OgwtLGZ
+         eEUo5dLg6xNut1cXyk9lr2wSnktaHPPUWnKyrpLj2vO6HHdvv/2VAiGZ76Tf0+eKcYkc
+         0rjw==
+X-Gm-Message-State: AOAM532ApN8JD29qCnwiHsrcwZU61beFtLUVeZ1vBx0lQvCqjmjMlQmo
+        eSJjE++oYF0ilXpRRIs3umwXX4HMJDbH4a+wq0U=
+X-Google-Smtp-Source: ABdhPJyQXLTYjM6TqUweQc16QWwQBIceCnx9d8Jac3bT5VxdhwSINOugDy09sztt4I38wu3ql5UTAzb1NPhR4Hx2N5c=
+X-Received: by 2002:ad4:564d:: with SMTP id bl13mr5864367qvb.60.1596667824695;
+ Wed, 05 Aug 2020 15:50:24 -0700 (PDT)
+Date:   Wed,  5 Aug 2020 15:50:14 -0700
+Message-Id: <20200805225015.2847624-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
+Subject: [PATCH] scripts/gdb: fix python 3.8 SyntaxWarning
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>
+Cc:     Aymeric Agon-Rambosson <aymeric.agon@yandex.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixes the observed warnings:
+scripts/gdb/linux/rbtree.py:20: SyntaxWarning: "is" with a literal. Did
+you mean "=="?
+  if node is 0:
+scripts/gdb/linux/rbtree.py:36: SyntaxWarning: "is" with a literal. Did
+you mean "=="?
+  if node is 0:
 
+It looks like this is a new warning added in Python 3.8. I've only seen
+this once after adding the add-auto-load-safe-path rule to my ~/.gdbinit
+for a new tree.
 
-On 8/2/2020 8:52 PM, Mark Tomlinson wrote:
-> The core interrupt code expects the irq_set_affinity call to update the
-> effective affinity for the interrupt. This was not being done, so update
-> iproc_msi_irq_set_affinity() to do so.
-> 
-> Fixes: 3bc2b2348835 ("PCI: iproc: Add iProc PCIe MSI support")
-> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-> ---
-> changes in v2:
->  - Patch 1/2 Added Fixes tag
->  - Patch 2/2 Replace original change with change suggested by Bjorn
->    Helgaas.
-> 
-> changes in v3:
->  - Use bitfield rather than bool to save memory.
-> 
->  drivers/pci/controller/pcie-iproc-msi.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
-> index 3176ad3ab0e5..908475d27e0e 100644
-> --- a/drivers/pci/controller/pcie-iproc-msi.c
-> +++ b/drivers/pci/controller/pcie-iproc-msi.c
-> @@ -209,15 +209,20 @@ static int iproc_msi_irq_set_affinity(struct irq_data *data,
->  	struct iproc_msi *msi = irq_data_get_irq_chip_data(data);
->  	int target_cpu = cpumask_first(mask);
->  	int curr_cpu;
-> +	int ret;
->  
->  	curr_cpu = hwirq_to_cpu(msi, data->hwirq);
->  	if (curr_cpu == target_cpu)
-> -		return IRQ_SET_MASK_OK_DONE;
-> +		ret = IRQ_SET_MASK_OK_DONE;
-> +	else {
-> +		/* steer MSI to the target CPU */
-> +		data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
-> +		ret = IRQ_SET_MASK_OK;
-> +	}
->  
-> -	/* steer MSI to the target CPU */
-> -	data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
-> +	irq_data_update_effective_affinity(data, cpumask_of(target_cpu));
->  
-> -	return IRQ_SET_MASK_OK;
-> +	return ret;
->  }
->  
->  static void iproc_msi_irq_compose_msi_msg(struct irq_data *data,
-> 
+Cc: Stephen Boyd <swboyd@chromium.org>
+Fixes: commit 449ca0c95ea2 ("scripts/gdb: add rb tree iterating utilities")
+Link: https://adamj.eu/tech/2020/01/21/why-does-python-3-8-syntaxwarning-for-is-literal/
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ scripts/gdb/linux/rbtree.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Looks good with the Fixes tag added. Thanks.
+diff --git a/scripts/gdb/linux/rbtree.py b/scripts/gdb/linux/rbtree.py
+index c4b991607917..fe462855eefd 100644
+--- a/scripts/gdb/linux/rbtree.py
++++ b/scripts/gdb/linux/rbtree.py
+@@ -17,7 +17,7 @@ def rb_first(root):
+         raise gdb.GdbError("Must be struct rb_root not {}".format(root.type))
+ 
+     node = root['rb_node']
+-    if node is 0:
++    if node == 0:
+         return None
+ 
+     while node['rb_left']:
+@@ -33,7 +33,7 @@ def rb_last(root):
+         raise gdb.GdbError("Must be struct rb_root not {}".format(root.type))
+ 
+     node = root['rb_node']
+-    if node is 0:
++    if node == 0:
+         return None
+ 
+     while node['rb_right']:
+-- 
+2.28.0.163.g6104cc2f0b6-goog
 
-Reviewed-by: Ray Jui <ray.jui@broadcom.com>
