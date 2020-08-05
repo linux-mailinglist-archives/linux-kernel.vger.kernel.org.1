@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF3623C9DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 12:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A236D23C9EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 12:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgHEK0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 06:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726294AbgHEKUm (ORCPT
+        id S1728087AbgHEKgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 06:36:16 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:11277 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728170AbgHEK0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 06:20:42 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA5BC06174A;
-        Wed,  5 Aug 2020 03:20:33 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id k4so39132399oik.2;
-        Wed, 05 Aug 2020 03:20:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BJBaD0dmpIwl3OFF62Duu8Al4BAy5YbR6DEHF/xlu64=;
-        b=SfeSwzoCi3tpmcruq5SoKeynBD4KRVlFLiv9wybfEAtfk9c8P0v1zCN5l7MGCqUSip
-         q9oQ/BdFpc9quum9EZuQ+pX2U2kZqoGNfQYTyn9e7gSlh1OMp2RstL9SS6qEKFi5xXtq
-         Uioa3fwSJUl6Rp2jpogbvxltBBg3J1M0ZrbCKxiii45zFf2Fk+ndy9dPdSYTYKGQWVMs
-         fBBnY1AUv1um/0l5Uw9CPA0CDlOaG8LLJ3cF+7o8xtV9mKJhABOSwaOqBc5P3nCbNDsV
-         H8eB83Y9kOkHyrxpaa6zEUxlYLGt0ITvMtFd5kaHyDmBqRoG2SHc1pvg4727NrPkeERC
-         wwXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BJBaD0dmpIwl3OFF62Duu8Al4BAy5YbR6DEHF/xlu64=;
-        b=mGvpZiVEGssmxHCyCzk2UweM9uze7UhZDIxGUGIQ8aCPI4nsoecl6RqLHiiOOpNCS3
-         oSEpqk10n3tUbWrk+vddMIRo/gPrgBBNNcVY6aGojKMAd/42mBS84bPjhGdZDhF88JQP
-         QsC8Lf5yq5P5uXhax2HotEwHH/9oM/xUjoB9YFXfc4GiUHjVSIG9b0ERTCBrMTXGL+BI
-         odED2HXX17UJKwPjWKD3Jqdwkjv3NBHdKe8mwmODoRTB2s9Dzbt/+/ioBAK7VYNYo8Q2
-         yA8FvCSjM659VBE490+qlvlpVEAGpyNJoyG1hEWCVCMMiujepQRK8T4Y506HZ3NBv2ZD
-         f8GQ==
-X-Gm-Message-State: AOAM530itZdQZRmaL9MnVxZphGrJmVpEYsk3u72jChjVo0u7Xr5KiYXr
-        VaIV10pVjQYZ2ZOFCHuouc5TF1VT9+RY51Z84XE=
-X-Google-Smtp-Source: ABdhPJwlVue2/n0mFUlPdZw6GxjzkQ/SxIheaScbZLj4aaM7XovkgSn7XN9So3WKaM+AMmKtEMGADoKPrTrM3xCyk6I=
-X-Received: by 2002:a05:6808:b03:: with SMTP id s3mr2184018oij.154.1596622830271;
- Wed, 05 Aug 2020 03:20:30 -0700 (PDT)
+        Wed, 5 Aug 2020 06:26:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1596623179; x=1628159179;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=h/0isfh8p8B1tbntU7DOOWsRw+KNgTWlrOkmU2ux2KQ=;
+  b=I0WW5w/i3V14QLplvh4/UDH/vF6Ba6FjTz/8A1phbJgwmlB2boGC0JLx
+   3FISCo8uT71oXwhlVPANK/3C7n+y7gXzm8iK+sdnbH4qaba7POiEbEbKE
+   PeUWQmptvaphFAm+O9jMExk92gujrAlf2UzLNUQy36jyWifOl2z/d+3d1
+   GGa7kxSASH8N2YhHe/D3eprTVdCz9JZBdQNn34gBqLD5ExJzbuauonCvy
+   Xzs+0q/M4O8xwc7GY7QElASYJw63cOjA6/zLclDTbWeFHm2OoDO/w/gUW
+   Qu5NJ5rAL4zIEkq+RP3P+O/BuV2yn0F28VtUrphgM+fVtoPhc8H/qZgBI
+   Q==;
+IronPort-SDR: /tllqZmaNSf0pwVngbbkvrWa4jPFHORmq6vu9xyHDGcSsHwMl/qi4RNeuiLjTRfDbsjhW8OpW5
+ XpDoR0jI099Yp0G6vt/om2Pojc8aDZfLbMoob8LgnthK26Rb0cSfYsTVQ4Ern0hBZIR6KSwrm9
+ kPXw0Spmdy4JWwlpp9wKLil6PbUJBOBwtSzvJ1Q9EHvDltd2hSqGxudITIM9Pzo9fB2E6u2jC9
+ P5rBXhyk54OnjHb69E6cbn3W3ylV+tI3USE+3ZbUWFWzpalrEMNZiY6+7xUABrZfkQ0JFAQwrq
+ eUE=
+X-IronPort-AV: E=Sophos;i="5.75,436,1589212800"; 
+   d="scan'208";a="253548017"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 05 Aug 2020 18:25:16 +0800
+IronPort-SDR: tmI21nJS/lX63fAYjytIkd1PWsChQ6KHyBIxA5KxqlfhiOGJCJCNheH3zB+KLrZxhRCjNircE2
+ 7NeegtjBktaQ==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 03:12:36 -0700
+IronPort-SDR: VUewrqLbnzqHz+1znrMauq+iKaQ9F6wif5BzAqHWU2V2ZT7K1lVDvG0MTfXji6pud1QgJHJ3zk
+ LoEnDGt9JhZA==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun52) ([10.149.66.28])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 03:25:15 -0700
+Date:   Wed, 5 Aug 2020 11:25:11 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@wdc.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] riscv: ptrace: Use the correct API for `fcsr'
+ access
+In-Reply-To: <20200805024807.GM1236603@ZenIV.linux.org.uk>
+Message-ID: <alpine.LFD.2.21.2008051117180.24175@redsun52.ssa.fujisawa.hgst.com>
+References: <20200805020745.GL1236603@ZenIV.linux.org.uk> <mhng-cd1ff2e9-7d34-4d56-8d79-b2d02a239290@palmerdabbelt-glaptop1> <20200805024807.GM1236603@ZenIV.linux.org.uk>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
 MIME-Version: 1.0
-References: <20200805095105.GA483832@mwanda>
-In-Reply-To: <20200805095105.GA483832@mwanda>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Wed, 5 Aug 2020 13:20:02 +0300
-Message-ID: <CAFCwf12iuz-q8U7_VEJvxKZpzfauKASjMDHOk7HMncuBnAyo4w@mail.gmail.com>
-Subject: Re: [PATCH] habanalabs: Fix a loop in gaudi_extract_ecc_info()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Omer Shpigelman <oshpigelman@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 12:51 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> The condition was reversed.  It should have been less than instead of
-> greater than.  The result is that we never enter the loop.
->
-> Fixes: fcc6a4e60678 ("habanalabs: Extract ECC information from FW")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-> index 00a0a7238d81..de2f81b80ced 100644
-> --- a/drivers/misc/habanalabs/gaudi/gaudi.c
-> +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-> @@ -5215,7 +5215,7 @@ static int gaudi_extract_ecc_info(struct hl_device *hdev,
->         *memory_wrapper_idx = 0xFF;
->
->         /* Iterate through memory wrappers, a single bit must be set */
-> -       for (i = 0 ; i > num_mem_regs ; i++) {
-> +       for (i = 0 ; i < num_mem_regs ; i++) {
->                 err_addr += i * 4;
->                 err_word = RREG32(err_addr);
->                 if (err_word) {
-> --
-> 2.27.0
->
-This patch is:
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+On Wed, 5 Aug 2020, Al Viro wrote:
 
-Thanks!
-Applied to -fixes
+> > I'm not sure I understand what you're saying, but given that branch replaces
+> > all of this I guess it's best to just do nothing on our end here?
+> 
+> It doesn't replace ->put() (for now); it _does_ replace ->get() and AFAICS the
+> replacement is much saner:
+> 
+> static int riscv_fpr_get(struct task_struct *target,
+>                          const struct user_regset *regset,
+>                          struct membuf to)
+> {
+> 	struct __riscv_d_ext_state *fstate = &target->thread.fstate;
+> 
+> 	membuf_write(&to, fstate, offsetof(struct __riscv_d_ext_state, fcsr));
+> 	membuf_store(&to, fstate->fcsr);
+> 	return membuf_zero(&to, 4);     // explicitly pad
+> }
+
+ I'm glad to see the old interface go, it was cumbersome.
+
+> user_regset_copyout() calling conventions are atrocious and so are those of
+> regset ->get().  The best thing to do with both is to take them out of their
+> misery and be done with that.  Do you see any problems with riscv gdbserver
+> on current linux-next?  If not, I'd rather see that "API" simply go away...
+> If there are problems, I would very much prefer fixes on top of what's done
+> in that branch.
+
+ I can push linux-next through regression-testing with RISC-V gdbserver 
+and/or native GDB if that would help.  This is also used with core dumps, 
+but honestly I don't know what state RISC-V support is in in the BFD/GDB's 
+core dump interpreter, as people tend to forget about the core dump 
+feature nowadays.
+
+  Maciej
