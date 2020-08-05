@@ -2,148 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E4923CFAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EF323CFAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728933AbgHETXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728813AbgHERbU (ORCPT
+        id S1729103AbgHETXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:23:43 -0400
+Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:38884
+        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728678AbgHERbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:31:20 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE37C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:31:20 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id j7so23926882oij.9
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S/ISdwGRB2GCE/7Xam1/dQaAy+/JGNh8/9LD5lfT6Q8=;
-        b=ghcoPHMA4uw28WgOVzXRPP0CmnoExCjAxOo/7KmxGQsjS8zBNBAhAMXWxKfLFYlEDg
-         32FCEyDWyRpnraHu8yP5qT6szaA6vANpE0TJ2lZkz+udUIHLqORuu6tzjUgpt1ZADOMO
-         /vqB53nnWRUMh0ukvafMsEeOTfOP5ky5VJw/RAWqyVEa27dZFHxOBog2urmrHqb3fw0r
-         F7u/hjaWxzcyXBDXXJc+jAKlLsVzcpzZ72geF7iTiRYzb84u9vAkxi7B2kpJ6PI/Xng1
-         aCjYtkP89x85/C/aFifUNRBkQEQr80jm/p2ZXzqzIUsJiaLCDm1MuhlkPXDZC6zBtjlE
-         jatQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S/ISdwGRB2GCE/7Xam1/dQaAy+/JGNh8/9LD5lfT6Q8=;
-        b=JTlKq92U91r3Oo0J3g9ch4vimlHCWTcrHLb4sTXshHa/nVqDBdzsSfzFll/DpZQ+dZ
-         IR5PeUv8/+fAYMyGFSyC47Tk2P3zXESHHeox4lwGzARmD0H9pixcGDryb1/jTaJb6bAE
-         c4hDpPWMfn2DfZXAkeTVpUXcI2vwjM4LOFJ7VOEH4eMBeFkJfsu9eRd3qEcWOpbglnnt
-         XnZQ6BA0b+DPmYGXw0pQaOKSsN6kREXYw6AGXrSog+5/iwxpDML483y0z13YVuqCB1Y9
-         6u8bAO+V/L8vmyig1nT8aG/JHOSNBcmc3/7cWoXo1EVcH6sqiEYlZzOtA2Tn7HTwzbZy
-         cLPQ==
-X-Gm-Message-State: AOAM532dFPFDkwpkic3Oq50PfR54KVd+CqBdDTDjNjoctW4F1VD6JXWr
-        VOzekPEPgLcbQBt2Edhege1pd8EEQxIehMzc+pNa9A==
-X-Google-Smtp-Source: ABdhPJxiDkkic07fV/je3DdhbKQK5XhAfGjN5TMoqNesvJMpBh1CdI81IbcTegAoQDR7HPruFH4dXQnd4r8PoGavTmc=
-X-Received: by 2002:aca:d4d5:: with SMTP id l204mr3765321oig.70.1596648678688;
- Wed, 05 Aug 2020 10:31:18 -0700 (PDT)
+        Wed, 5 Aug 2020 13:31:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596648677; bh=jvxkSkOTSPyya8QAh7XMh9VDbBmnEMvd/5JFSW3wW7w=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=fLJxyoQ0Ucj0oVNgJ1rM4UO6F5l8kggbJlA+sGdfoJcr4vlI5q/42iAV7UtHQrh/oY3kmaVKJA/0Crvpf/c4iNqTLQAtqERivlNmgMe47lKK/DB2x71lilw87KRNj8ykzhrTWNEyXL8ErlIbBKSNdwbtOT9q/ikyt5KueH4wtCWWflI25uPG2Hq6Pkpsw+B9QzOfBcO4cbnQfth3jjLnmllsVjZh5osHnY0uN3QXvVGanJcCIKEN7RH2OC6EImqH9dGyoBC39E6wJyRcrVLHCMWjhsE4iB+wd7NVqkVN+aHnKk+V1ayim5vGXNfpnInEAkaaoQ/pg1GGzLYDek+qSQ==
+X-YMail-OSG: pQNn7cwVM1kuAR5tTKU.VeynlGP2Sr8sFVOjP1ZFSPgyutQRgtrndCh9OpSard8
+ OF0AvjfBMu4g6fshBSlG89XEg7WOTdJfx17d0BCYONAVElTfKBnK53K2oWDgZOda0AUs__XvjBm4
+ m6hpcf1JqSdeigNnKZ9E6Fcyfec7724ELUlAHAEx5s3cLwP0zw_KibM52X_3bHIHv.jbhJcNMd35
+ CL.FeLbN.GIkbk.xt3y47QWEw9nSDBqfI6ga0AeJkZ1WMIqoQ6d6a1YCM83KTAFzhKZBEsinsYJu
+ C_L62f8SDVJOFLrKXEow5u1WXLBXiy0YlHHdbOwd4XonjfLETA48fLfoUN2xPcTSomXsUCxNFKuN
+ hzysY48s6jIoPsIUah79BoOlsKhEUQkIf1t4TJX3.1rtCIGXgzp4hQSTQCg5d353biTu1BJgbqrl
+ aP5vbPM1qIB1oiwxSWrczivnCydbVQ0JanmEzwWTRIldQnqYx7AZY_GET94Vgu2LH20MpQ9emk9M
+ kSQjZG8gBZjfdt6a1ysgStYIDCabS3G0N6xcp8EptAcxw3Qruf4OdITjZj2S2zaF_Tt.skfdBiEH
+ lAHgm.huo_1ZXUxCE9z1t._79GXkQxOBd5zQiVaW0cqSShaB3LY4F8B6_vUTWwwdLONiXJ19J4Up
+ Wm31TQhynLbs7JZ68uP0QtT_XnyOhfhVy2R8pKrzP5PFxvFA_kghVA4ezXeISzW4o0KKFBMZ8Mnd
+ hQkhUb3PWp95j5EfJEorKMhuE37noTgh3Th8DHifuYcOblFW2t9kzlTvdgt0D9lAZSNnCCcQLK1M
+ DFOL48v0BX9ngqLh1GL2H5uPFdAIQqq5zCe7fg1Nx9UYJW_PF_aYkahieQxIFNbFmEAdfQmEB_E2
+ .bW.UZR9.ymD.VmFWfxrCjgDb7voW9KI6_9oYkpeeWjq0hN2aFmdeD5y_rJwO0uSnV6G_DojYwdD
+ kbh9qY.zpTtSKYx1VCH3EnvV0wimTKo_bqVjJ16q3eCoAV4HCEvFmMTiJo0qJUwuZytTjdJnPKOM
+ JSXznefce69FbHCgYl9jljaGUgZLDCf8y8mlkOb1dVj2SAgl9LOZib0nrdG3SXeZLloKPqmxF.M.
+ UuuM3qdiQHBOxoOB.er3adFi2oAQoewElCx.3rgVhzeuU7N8MQKOZg1Z7cFl8ihhdCJVguGdTuyX
+ xq30kdJHL0OXYG57JQFIlJgWt3FMFhRY8mnYjEJoVlkgBSIiyYYLdDa97YWhwnRgILsZqwK.tLFn
+ k3PNyzLH_5Twmr_etFSjeZqeFXrmxFjPxmQrIFbvY08YY55cHZFWLI.Iar6BUpjAHxet89OwO20M
+ R5UwWNtxKDvK8ErTgk6ThIsZ_UaG3A5mILcwpZywf1KXOJyUbq2fasYTJ_d0MapAK34JubX4c
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Wed, 5 Aug 2020 17:31:17 +0000
+Received: by smtp430.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID ed7a3cd929d73e97781e8fdb08361289;
+          Wed, 05 Aug 2020 17:31:15 +0000 (UTC)
+Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20200805004331.20652-1-nramas@linux.microsoft.com>
+ <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
+ <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
+ <c7c168f2-e30b-d2c5-abcb-1b6919197474@schaufler-ca.com>
+ <20200805154504.GB4365@sequoia>
+ <7c7a076b-6ba7-2e8d-409a-b3b4e4738c41@linux.microsoft.com>
+ <20200805161449.GC4365@sequoia>
+ <ae80581d-a34c-51f4-d4f9-94c1e341fd15@linux.microsoft.com>
+ <20200805163243.GD4365@sequoia>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <ed202762-d7e3-dd13-eda4-03f4e77f1e28@schaufler-ca.com>
+Date:   Wed, 5 Aug 2020 10:31:14 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <0000000000007d3b2d05ac1c303e@google.com> <20200805132629.GA87338@elver.google.com>
- <20200805134232.GR2674@hirez.programming.kicks-ass.net> <20200805135940.GA156343@elver.google.com>
- <20200805141237.GS2674@hirez.programming.kicks-ass.net> <20200805141709.GD35926@hirez.programming.kicks-ass.net>
- <CANpmjNN6FWZ+MsAn3Pj+WEez97diHzqF8hjONtHG15C2gSpSgw@mail.gmail.com>
-In-Reply-To: <CANpmjNN6FWZ+MsAn3Pj+WEez97diHzqF8hjONtHG15C2gSpSgw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 5 Aug 2020 19:31:07 +0200
-Message-ID: <CANpmjNNy3XKQqgrjGPPKKvXhAoF=mae7dk8hmoS4k4oNnnB=KA@mail.gmail.com>
-Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*() helpers
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>, yu-cheng.yu@intel.com,
-        jgross@suse.com, sdeep@vmware.com,
-        virtualization@lists.linux-foundation.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200805163243.GD4365@sequoia>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.16436 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 at 16:36, Marco Elver <elver@google.com> wrote:
+On 8/5/2020 9:32 AM, Tyler Hicks wrote:
+> On 2020-08-05 09:21:24, Lakshmi Ramasubramanian wrote:
+>> On 8/5/20 9:14 AM, Tyler Hicks wrote:
+>>> On 2020-08-05 09:07:48, Lakshmi Ramasubramanian wrote:
+>>>> On 8/5/20 8:45 AM, Tyler Hicks wrote:
+>>>>> On 2020-08-05 08:36:40, Casey Schaufler wrote:
+>>>>>> On 8/4/2020 6:14 PM, Lakshmi Ramasubramanian wrote:
+>>>>>>> On 8/4/20 6:04 PM, Casey Schaufler wrote:
+>>>>>>>> On 8/4/2020 5:43 PM, Lakshmi Ramasubramanian wrote:
+>>>>>>>>> Critical data structures of security modules are currently not measured.
+>>>>>>>>> Therefore an attestation service, for instance, would not be able to
+>>>>>>>>> attest whether the security modules are always operating with the policies
+>>>>>>>>> and configuration that the system administrator had setup. The policies
+>>>>>>>>> and configuration for the security modules could be tampered with by
+>>>>>>>>> malware by exploiting kernel vulnerabilities or modified through some
+>>>>>>>>> inadvertent actions on the system. Measuring such critical data would
+>>>>>>>>> enable an attestation service to better assess the state of the system.
+>>>>>>>> I still wonder why you're calling this an LSM change/feature when
+>>>>>>>> all the change is in IMA and SELinux. You're not putting anything
+>>>>>>>> into the LSM infrastructure, not are you using the LSM infrastructure
+>>>>>>>> to achieve your ends. Sure, you *could* support other security modules
+>>>>>>>> using this scheme, but you have a configuration dependency on
+>>>>>>>> SELinux, so that's at best going to be messy. If you want this to
+>>>>>>>> be an LSM "feature" you need to use the LSM hooking mechanism.
+>>>>>>>> I'm not objecting to the feature. It adds value. But as you've
+>>>>>>>> implemented it it is either an IMA extension to SELinux, or an
+>>>>>>>> SELiux extension to IMA. Could AppArmor add hooks for this without
+>>>>>>>> changing the IMA code? It doesn't look like it to me.
+>>>>>>> The check in IMA to allow the new IMA hook func LSM_STATE and LSM_POLICY when SELinux is enabled is just because SELinux is the only security module using these hooks now.
+>>>>>>>
+>>>>>>> To enable AppArmor, for instance, to use the new IMA hooks to measure state and policy would just require adding the check for CONFIG_SECURITY_APPARMOR. Other than that, there are no IMA changes needed to support AppArmor or other such security modules.
+>>>>>> This is exactly what I'm objecting to. What if a system has both SELinux
+>>>>>> and AppArmor compiled in? What if it has both enabled?
+>>>>> The SELinux state and policy would be measured but the AppArmor
+>>>>> state/policy would be silently ignored. This isn't ideal as the IMA
+>>>>> policy author would need to read the kernel code to figure out which
+>>>>> LSMs are going to be measured.
+>>>> Tyler - I am not sure why AppArmor state\policy would be ignored when both
+>>>> SELinux and AppArmor are enabled. Could you please clarify?
+>>> I think Casey is talking about now (when AppArmor is not supported by
+>>> this feature) and you're talking about the future (when AppArmor may be
+>>> supported by this feature).
+>> Got it - thanks for clarifying.
+>>
+>> But with the current code if SELinux is enabled on the system, but AppArmor
+>> is not and the IMA policy contains "measure func=LSM_STATE" then the policy
+>> will be rejected as "-EINVAL".
+> The AppArmor policy load? Yes, the load will fail.
 >
-> On Wed, 5 Aug 2020 at 16:17, <peterz@infradead.org> wrote:
-> >
-> > On Wed, Aug 05, 2020 at 04:12:37PM +0200, peterz@infradead.org wrote:
-> > > On Wed, Aug 05, 2020 at 03:59:40PM +0200, Marco Elver wrote:
-> > > > On Wed, Aug 05, 2020 at 03:42PM +0200, peterz@infradead.org wrote:
-> > >
-> > > > > Shouldn't we __always_inline those? They're going to be really small.
-> > > >
-> > > > I can send a v2, and you can choose. For reference, though:
-> > > >
-> > > >     ffffffff86271ee0 <arch_local_save_flags>:
-> > > >     ffffffff86271ee0:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-> > > >     ffffffff86271ee5:       48 83 3d 43 87 e4 01    cmpq   $0x0,0x1e48743(%rip)        # ffffffff880ba630 <pv_ops+0x120>
-> > > >     ffffffff86271eec:       00
-> > > >     ffffffff86271eed:       74 0d                   je     ffffffff86271efc <arch_local_save_flags+0x1c>
-> > > >     ffffffff86271eef:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-> > > >     ffffffff86271ef4:       ff 14 25 30 a6 0b 88    callq  *0xffffffff880ba630
-> > > >     ffffffff86271efb:       c3                      retq
-> > > >     ffffffff86271efc:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-> > > >     ffffffff86271f01:       0f 0b                   ud2
-> > >
-> > > >     ffffffff86271a90 <arch_local_irq_restore>:
-> > > >     ffffffff86271a90:       53                      push   %rbx
-> > > >     ffffffff86271a91:       48 89 fb                mov    %rdi,%rbx
-> > > >     ffffffff86271a94:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-> > > >     ffffffff86271a99:       48 83 3d 97 8b e4 01    cmpq   $0x0,0x1e48b97(%rip)        # ffffffff880ba638 <pv_ops+0x128>
-> > > >     ffffffff86271aa0:       00
-> > > >     ffffffff86271aa1:       74 11                   je     ffffffff86271ab4 <arch_local_irq_restore+0x24>
-> > > >     ffffffff86271aa3:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-> > > >     ffffffff86271aa8:       48 89 df                mov    %rbx,%rdi
-> > > >     ffffffff86271aab:       ff 14 25 38 a6 0b 88    callq  *0xffffffff880ba638
-> > > >     ffffffff86271ab2:       5b                      pop    %rbx
-> > > >     ffffffff86271ab3:       c3                      retq
-> > > >     ffffffff86271ab4:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-> > > >     ffffffff86271ab9:       0f 0b                   ud2
-> > >
-> > >
-> > > Blergh, that's abysmall. In part I suspect because you have
-> > > CONFIG_PARAVIRT_DEBUG, let me try and untangle that PV macro maze.
-> >
-> > Yeah, look here:
-> >
-> > 0000 0000000000462149 <arch_local_save_flags>:
-> > 0000   462149:  ff 14 25 00 00 00 00    callq  *0x0
-> > 0003                    46214c: R_X86_64_32S    pv_ops+0x120
-> > 0007   462150:  c3                      retq
-> >
-> >
-> > That's exactly what I was expecting.
+> What Casey is talking about is when SELinux and AppArmor are enabled in
+> the kernel config but AppArmor is active. This scenario is true in
+> distro kernels such as Ubuntu's kernel:
 >
-> Ah, for some reason the __always_inline version does *not* work with
-> KCSAN -- I'm getting various warnings, including the same lockdep
-> warning. I think there is some weirdness when this stuff gets inlined
-> into instrumented functions. At least with KCSAN, when any accesses
-> here are instrumented, and then KCSAN disable/enables interrupts,
-> things break. So, these functions should never be instrumented,
-> noinstr or not. Marking them 'inline noinstr' seems like the safest
-> option. Without CONFIG_PARAVIRT_DEBUG, any compiler should hopefully
-> inline them?
+> $ grep -e CONFIG_SECURITY_SELINUX= -e CONFIG_SECURITY_APPARMOR= /boot/config-5.4.0-42-generic 
+> CONFIG_SECURITY_SELINUX=y
+> CONFIG_SECURITY_APPARMOR=y
+> $ cat /sys/kernel/security/lsm
+> lockdown,capability,yama,apparmor
 
-Oh well, it seems that KCSAN on syzbot still crashes even with this
-"fix". It's harder to reproduce though, and I don't have a clear
-reproducer other than "fuzz the kernel" right now. I think the new IRQ
-state tracking code is still not compatible with KCSAN, even though we
-thought it would be. Most likely there are still ways to get recursion
-lockdep->KCSAN. An alternative would be to deal with the recursion
-like we did before, instead of trying to squash all of it. I'll try to
-investigate -- Peter, if you have ideas, help is appreciated.
+Yes. This is one reason that a compile time check is inappropriate.
+You also have the case with SELinux where you can unload the module.
+It's deprecated, but still possible.
 
-Thanks,
--- Marco
+If you boot with SELinux compiled in, but with security=none on
+the boot line you also have a case where the compile time check is
+inappropriate.
+
+> Casey also likely has LSM stacking in mind here where SELinux and
+> AppArmor could both be active at the same time but the LSM stacking
+> series is not yet applied.
+
+It isn't in Linus' kernel, but is available in Ubuntu.
+The audit/IMA rule selection get hairy in the multiple
+security module case, but you don't need to add that
+for the proposed scheme to be flawed.
+
+>
+> Tyler
+>
+>> So the policy author would get a feedback even now.
+>> Correct me if I am wrong.
+>>
+>>  -lakshmi
