@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793D123CFF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5107323D006
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728880AbgHET1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:27:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28579 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728641AbgHERNE (ORCPT
+        id S1726262AbgHET22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:28:28 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33062 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728608AbgHERLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:13:04 -0400
+        Wed, 5 Aug 2020 13:11:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647582;
+        s=mimecast20190719; t=1596647489;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=QZtQO+RPpH+qMcVX7UHHBecNGQz0/LWgC7hfTGQuckU=;
-        b=BiZf+SQPkhv15UyvVHjdinZ8N64kunXFOU480/nrQ+Q6i2WtsSuhBm1xF0pKbHTSEHp4Gq
-        6VWu/B67wiEHqI9Y/k8pl+mm+Ij6oj5aNKw1sTZ16P/8yOu3J0jqIVx/SLakOd/KVRcE9H
-        CbXypTR4lZ4wOsDMEH87QCkj4r0UT28=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-iAbHYY24O7u1B-70GkGgqw-1; Wed, 05 Aug 2020 09:43:21 -0400
-X-MC-Unique: iAbHYY24O7u1B-70GkGgqw-1
-Received: by mail-wr1-f71.google.com with SMTP id f14so13524862wrm.22
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:43:20 -0700 (PDT)
+        bh=uT4MZK/WmjMO9Hf3gYa75MOY3iZoVd/8WD7Av4sgX3M=;
+        b=fz3cZWATFlooZQq0MXjZPzUUlnPn1W/B76XD9gBoyELEwI/A8mfkQPHIE43y3G3dU/tH8y
+        o3VEz+J3zcBlxU1fjUNSkt2VHzX+/K/yhlhgAFfpPLVX9H0CRfCCohfFpYSI6wEB+jTl/Y
+        aP6+1QNNxyC+54ymBPbvrC2vl/3IMSE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-pVxkJcPEOW-nlrg5iMJx1Q-1; Wed, 05 Aug 2020 09:43:37 -0400
+X-MC-Unique: pVxkJcPEOW-nlrg5iMJx1Q-1
+Received: by mail-wm1-f69.google.com with SMTP id u144so2739965wmu.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:43:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=QZtQO+RPpH+qMcVX7UHHBecNGQz0/LWgC7hfTGQuckU=;
-        b=ajFoYkR3jy1reHEfBLayaRLG8ts6mf3u6xCtN14VRrZGzkdjdOpcH8fTDAbgvVHdkV
-         n6fg/8y0L0i181KyLsZ+FqwDtk3OSJXcfGAOGZSCAwyTP6qAbvIBAAZEtLG/7vbFlucb
-         lhhwkMfWnq0sLb2viYxKTs5c0dBeg1UVY+iYeI7EFBZkC/gvLdsj21Loqr5UbnjLL4iq
-         7AeUV+MUe9Ygl/qgkf1y8NK4VkL4d0V8E5shYbfjh0h5RTCwFhJCrCMYnFkniA1tQ2Ea
-         2Y+8k7jofGZCD3bkHMiABiL56O7fnKRQw4xlLvmWnztrpbui6AaZIAOUbdA4dC/89SpZ
-         yxDg==
-X-Gm-Message-State: AOAM531ybiMO90teg4EBXxyaxksCFtWBa0RJq9yQzTrjiuN7N6FWbzfp
-        imjmJS5XGXmXFnzF7rtF/bNqJmBjQsj0D6Pu97zdJrO9AJzHeCZj29b/MPkn0nRoochS6DMw/Zz
-        u1SRqPG2wRjnEgs4SP2SknIpl
-X-Received: by 2002:a05:600c:2189:: with SMTP id e9mr3594946wme.171.1596634999574;
-        Wed, 05 Aug 2020 06:43:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzaUQx57cc7JttIMX2xKEoawmsqxvIFhQa983nt+oNgyKZc7lcEC6u20fEKG5dxWjJXOX9tYA==
-X-Received: by 2002:a05:600c:2189:: with SMTP id e9mr3594934wme.171.1596634999421;
-        Wed, 05 Aug 2020 06:43:19 -0700 (PDT)
-Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
-        by smtp.gmail.com with ESMTPSA id x6sm594339wmx.28.2020.08.05.06.43.17
+        bh=uT4MZK/WmjMO9Hf3gYa75MOY3iZoVd/8WD7Av4sgX3M=;
+        b=WZc2EICH8XbdaKrr0eKGPxdKzt4fOJyBYrVw+x712xY8x9t3LTxjSTAMASVYaYqgmO
+         Dc5btFMBppKfb1os7EqHnIpHpqXywrDQrR3dY3P0nwZhUyHvBTY9lKNNxNAMpkanUIZJ
+         LbPhQYe4b5807OzKG7GWOMKv+AIIxvzIWK49SXl7m4bZRzguFrQpYvUQZUkhqKUjOxD7
+         FO3RJGETcID1/rIF6nVV0GJV62j+ZYqv85lQ/WXJUJxwWOGuNYkuT1ijFKkr14JQPno0
+         O9YsP3Eim7Gokv/S1o1LSe6uxFq+uGZPoB7UzTe+wNuHxydSPg6m9NG7VYz4SbnfFCZd
+         webA==
+X-Gm-Message-State: AOAM533ZFaf5yXFsb8kA4EZiEGYpFxCAodp7GMTSNFxNo4MOJhvsoxkP
+        //yLQn2JHvoH5CAdgWHsEfFl3dltu5UyYRpA0PeNSmJgtEuGyi9mLicaY7rnsPfT4fSvLSONGfD
+        F0ndmzEXOFXYYUkJ3LwquEDkK
+X-Received: by 2002:adf:b302:: with SMTP id j2mr2859690wrd.294.1596635016393;
+        Wed, 05 Aug 2020 06:43:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzITs/miouKXFVmBFtcFlH4aNnnt5FWqtlGH9JkX5pGWDGOgygL5Olr/ps3r5ZDSsC1a6fhYg==
+X-Received: by 2002:adf:b302:: with SMTP id j2mr2859668wrd.294.1596635016220;
+        Wed, 05 Aug 2020 06:43:36 -0700 (PDT)
+Received: from redhat.com ([192.117.173.58])
+        by smtp.gmail.com with ESMTPSA id z15sm2842664wrn.89.2020.08.05.06.43.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:43:18 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:43:16 -0400
+        Wed, 05 Aug 2020 06:43:35 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:43:33 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
+Cc:     Cornelia Huck <cohuck@redhat.com>, Amit Shah <amit@kernel.org>,
         Jason Wang <jasowang@redhat.com>,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 01/38] virtio_balloon: fix sparse warning
-Message-ID: <20200805134226.1106164-2-mst@redhat.com>
+Subject: [PATCH v3 07/38] virtio_console: correct tags for config space fields
+Message-ID: <20200805134226.1106164-8-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,32 +70,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-balloon uses virtio32_to_cpu instead of cpu_to_virtio32
-to convert a native endian number to virtio.
-No practical difference but makes sparse warn.
-Fix it up.
+Tag config space fields as having virtio endian-ness.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Acked-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 ---
- drivers/virtio/virtio_balloon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/linux/virtio_console.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-index 54fd989f9353..8bc1704ffdf3 100644
---- a/drivers/virtio/virtio_balloon.c
-+++ b/drivers/virtio/virtio_balloon.c
-@@ -600,7 +600,7 @@ static int send_cmd_id_start(struct virtio_balloon *vb)
- 	while (virtqueue_get_buf(vq, &unused))
- 		;
+diff --git a/include/uapi/linux/virtio_console.h b/include/uapi/linux/virtio_console.h
+index b7fb108c9310..7e6ec2ff0560 100644
+--- a/include/uapi/linux/virtio_console.h
++++ b/include/uapi/linux/virtio_console.h
+@@ -45,13 +45,13 @@
  
--	vb->cmd_id_active = virtio32_to_cpu(vb->vdev,
-+	vb->cmd_id_active = cpu_to_virtio32(vb->vdev,
- 					virtio_balloon_cmd_id_received(vb));
- 	sg_init_one(&sg, &vb->cmd_id_active, sizeof(vb->cmd_id_active));
- 	err = virtqueue_add_outbuf(vq, &sg, 1, &vb->cmd_id_active, GFP_KERNEL);
+ struct virtio_console_config {
+ 	/* colums of the screens */
+-	__u16 cols;
++	__virtio16 cols;
+ 	/* rows of the screens */
+-	__u16 rows;
++	__virtio16 rows;
+ 	/* max. number of ports this device can hold */
+-	__u32 max_nr_ports;
++	__virtio32 max_nr_ports;
+ 	/* emergency write register */
+-	__u32 emerg_wr;
++	__virtio32 emerg_wr;
+ } __attribute__((packed));
+ 
+ /*
 -- 
 MST
 
