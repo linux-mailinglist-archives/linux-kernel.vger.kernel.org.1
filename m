@@ -2,132 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC3E23D134
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B778F23D09C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728345AbgHET5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
+        id S1728970AbgHETvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727976AbgHEQnt (ORCPT
+        with ESMTP id S1728112AbgHEQw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:43:49 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057D8C0A8894
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:55:33 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id p16so26623106ile.0
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:55:33 -0700 (PDT)
+        Wed, 5 Aug 2020 12:52:59 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0FDC0A8895
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:55:48 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f7so40830290wrw.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:55:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=T0iHC5DzypW6poy3NDVtNkEOvm1za2UqY6n/ov5xw0A=;
-        b=DAhkOvAYaZ9UtoECfWC2gAqYzdQdZu4/OTZhHotTaCMraihBeTETAb2o+tdVB+R9c/
-         fgruEjKoM8VG+YdsLo4GUZF8VaCggzTi5h3uToTV2f2Sv1hwOpZ5HvtTKuXa2Y1A6q3O
-         zX5fNDo98uB0Sok2zX9/YQGJMJ6y+B1u0vCnk=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ja++vUWPJ08EOA6SgZWSzzzNGHnYWDLpTD9FHTxS0rw=;
+        b=mPCsyVauudhQuP/KJCzACLzD1hGJ28aiHs4qkIVT+dJsG9lMfuT7dSoXYJbFizKZRP
+         kR2I6h/RpqcqrsXsr0WOQrAgDwfnAX/8FSgglt/yxTXrl83b60/gxayRpC2euEgFfaQN
+         aKk3SV25A7zijFrcxS9Y8ftx/QbxX1RciA4Z8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T0iHC5DzypW6poy3NDVtNkEOvm1za2UqY6n/ov5xw0A=;
-        b=Za+jP8TRd/y0YjnZe3RtdSUzgdbs16df2TFiS5X8njCCuxXR/VcLGsigxfqXCHYqCg
-         LxMpQDhPzEd81nj+e7JkTkWwEwclPVOzVhnanT6fcF27/HbebcmAEHWhssVszHxRHpTo
-         CAciMwgcQXCBLI1+Qtk7Gys+drDDkz0Q7ysTvqSWB7bjY18Ttz8Ge8Hh6cKtqr4ipo7V
-         4CCvqIwzQlSgfFFAwUzNTJFcvag1e9nkmSmlfk1i72O691ebfpG97BDKVEEN/updhlDm
-         SxnjoSDFqfUbwydUWMNfLpkFx9IdVV8Fb/HTe96jY2AlUOzzVOfVGiJmdXlYM0IP1nrB
-         gRUA==
-X-Gm-Message-State: AOAM533L/S4dvQ7qh+X0k/Omf9nLBSP34labvHyVaH2X1YG2KTjFkOMd
-        5mGdBSV62XpkRRWrMOv7SaQmXQ==
-X-Google-Smtp-Source: ABdhPJygRlU9l3OctXlmAVj+p1MKYQ+VT9ZvU9QPRbxWDqUzC6q+bEae4dy82QDhDGDE28iGtnJLqA==
-X-Received: by 2002:a92:c14d:: with SMTP id b13mr3548606ilh.269.1596635733090;
-        Wed, 05 Aug 2020 06:55:33 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id c2sm1073796iow.6.2020.08.05.06.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 06:55:32 -0700 (PDT)
-Subject: Re: [PATCH] soc: qmi: allow user to set handle wq to hiprio
-To:     =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     elder@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        kvalo@codeaurora.org, agross@kernel.org, ohad@wizery.com,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
-        ath11k@lists.infradead.org, netdev@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        srinivas.kandagatla@linaro.org, sibis@codeaurora.org
-References: <ADUAnwD8DVByMMSsrG-r3Kri.3.1596374087585.Hmail.wenhu.wang@vivo.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <5c6123f2-1a65-8615-9d5d-3bb1d25818b2@ieee.org>
-Date:   Wed, 5 Aug 2020 08:55:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ja++vUWPJ08EOA6SgZWSzzzNGHnYWDLpTD9FHTxS0rw=;
+        b=YLy363nUIkCOzd6VjVp+4sPb5IutYkMQiLloaqRkdmuu61SR2J4KrTsckTPJqcZLEu
+         gUfrTyoeYwULRBdBDJsSV0DwSN1o4D2xv6FVzcfv5RPVbLosufQ24jQnsrEcUOIVh+cq
+         g3lexNhyuMwrfvWui/BWAMV3E+Bu3QHVe0wlsuUYFXh/9IZXlvLyaS+7KwHQBhYVKBcS
+         1ysKvdptOFCi2k8aBncQiAnIxJirSZ988k7rAbkcVKnd3uXSs5t6dkVdBJciJzckee+w
+         WdOncfzcHfc8m8SjyED7f6CmV2nP1Fm62Hr1erVqLUk2cP9x6vypfPTrkmBFXxl1uhL5
+         25Zg==
+X-Gm-Message-State: AOAM531AgqocASB/Xwl9IKCNcYxs+t2NYhhgYY0iILe5X4rjaL5qYgSS
+        hjnMC8n3CV1clRMdGxY6G7VE8A==
+X-Google-Smtp-Source: ABdhPJxYNtjsQJjSF6xJ7nBQbZo3fBriXEe6OI14ms3Hr23UwjYAMHhqsXQOBERea4H+jC1NM69TBw==
+X-Received: by 2002:a5d:5485:: with SMTP id h5mr2759249wrv.427.1596635746822;
+        Wed, 05 Aug 2020 06:55:46 -0700 (PDT)
+Received: from chromium.org (205.215.190.35.bc.googleusercontent.com. [35.190.215.205])
+        by smtp.gmail.com with ESMTPSA id p14sm3039630wrg.96.2020.08.05.06.55.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 06:55:46 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 13:55:44 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Xia Jiang <xia.jiang@mediatek.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rick Chang <rick.chang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        srv_heupstream@mediatek.com, senozhatsky@chromium.org,
+        mojahsu@chromium.org, drinkcat@chromium.org,
+        maoguang.meng@mediatek.com
+Subject: Re: [PATCH v11 22/28] media: platform: Change the call functions of
+ getting/enable/disable the jpeg's clock
+Message-ID: <20200805135544.GA1014704@chromium.org>
+References: <20200804034102.22983-1-xia.jiang@mediatek.com>
+ <20200804034102.22983-23-xia.jiang@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <ADUAnwD8DVByMMSsrG-r3Kri.3.1596374087585.Hmail.wenhu.wang@vivo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200804034102.22983-23-xia.jiang@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/20 8:14 AM, 王文虎 wrote:
-> 
->>> Currently the qmi_handle is initialized single threaded and strictly
->>> ordered with the active set to 1. This is pretty simple and safe but
->>> sometimes ineffency. So it is better to allow user to decide whether
->>> a high priority workqueue should be used.
->>
->> Can you please describe a scenario where this is needed/desired and
->> perhaps also comment on why this is not always desired?
->>
-> 
-> Well, one scenario is that when the AP wants to check the status of the
-> subsystems and the whole QMI data path. It first sends out an indication
-> which asks the subsystems to report their status. After the subsystems send
-> responses to the AP, the responses then are queued on the workqueue of
-> the QMI handler. Actually the AP is configured to do the check in a specific
-> interval regularly. And it check the report counts within a specific delay after
-> it sends out the related indication. When the AP has been under a heavy
-> load for long, the reports are queue their without CPU resource to update
-> the report counts within the specific delay. As a result, the thread that checks
-> the report counts takes it misleadingly that the QMI data path or the subsystems
-> are crashed.
-> 
-> The patch can really resolve the problem mentioned abolve.
+Hi Xia,
 
-Is it your intention to submit code that actually does what you describe
-above?  If so, then (as David said) you should propose this change at
-the time it will be needed--which is at the time you send that new
-code out for review.
-
-Even in that case, I don't believe using a high priority workqueue
-would guarantee the improved behavior you think this would provide.
-
-In case it wasn't clear already, this change won't be accepted
-at this time (despite your explanation above).
-
-						-Alex
-
+On Tue, Aug 04, 2020 at 11:40:56AM +0800, Xia Jiang wrote:
+> Use the generic clk_bulk_* helpers to enable and disable clocks.
 > 
-> For narmal situations, it is enough to just use normal priority QMI workqueue.
-> 
->> Regards,
->> Bjorn
->>
->>>
->>> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
->>> ---
->>>  drivers/net/ipa/ipa_qmi.c             | 4 ++--
->>>  drivers/net/wireless/ath/ath10k/qmi.c | 2 +-
->>>  drivers/net/wireless/ath/ath11k/qmi.c | 2 +-
->>>  drivers/remoteproc/qcom_sysmon.c      | 2 +-
->>>  drivers/slimbus/qcom-ngd-ctrl.c       | 4 ++--
->>>  drivers/soc/qcom/pdr_interface.c      | 4 ++--
->>>  drivers/soc/qcom/qmi_interface.c      | 9 +++++++--
->>>  include/linux/soc/qcom/qmi.h          | 3 ++-
->>>  samples/qmi/qmi_sample_client.c       | 4 ++--
->>>  9 files changed, 20 insertions(+), 14 deletions(-)
+> Signed-off-by: Xia Jiang <xia.jiang@mediatek.com>
+> ---
+> v11: specify the names of the clocks in the driver
+> ---
+>  .../media/platform/mtk-jpeg/mtk_jpeg_core.c   | 28 +++++++++++++------
+>  .../media/platform/mtk-jpeg/mtk_jpeg_core.h   |  8 +++---
+>  2 files changed, 23 insertions(+), 13 deletions(-)
 > 
 
+Thank you for the patch. It looks good to me.
+
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+
+One comment below about a thing that should be fixed in the future,
+separately from this series.
+
+> diff --git a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+> index 7881e9c93df7..47d570f32e3f 100644
+> --- a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+> +++ b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+> @@ -783,14 +783,15 @@ static void mtk_jpeg_clk_on(struct mtk_jpeg_dev *jpeg)
+>  	ret = mtk_smi_larb_get(jpeg->larb);
+>  	if (ret)
+>  		dev_err(jpeg->dev, "mtk_smi_larb_get larbvdec fail %d\n", ret);
+> -	clk_prepare_enable(jpeg->clk_jdec_smi);
+> -	clk_prepare_enable(jpeg->clk_jdec);
+> +
+> +	ret = clk_bulk_prepare_enable(jpeg->num_clks, jpeg->clks);
+> +	if (ret)
+> +		dev_err(jpeg->dev, "Failed to open jpeg clk: %d\n", ret);
+
+The errors in this function should be propagated to the caller and
+handled properly across the whole call stack.
+
+Best regards,
+Tomasz
