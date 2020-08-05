@@ -2,155 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7B223CCC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3083C23CCCF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgHERCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728329AbgHERAT (ORCPT
+        id S1727114AbgHERFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:05:30 -0400
+Received: from rdslmr.btconnect.com ([62.239.164.79]:6565 "EHLO
+        mail.btconnect.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727857AbgHERCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:00:19 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3A9C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:00:18 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id h12so13400517pgf.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:00:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G4DbSMP4s0KjqjCan6W9KS0glhbgg9IjBH8ScNTbzmc=;
-        b=TcYCkFinQMAmeGEbggt+P/zVipBJP9sUzymkh/0UP7qWpBP0wJxrUmmpwnZkwKfCQs
-         1ZTu1iB15ld0Bhyrq87BeyrwUclEJzRw8XYHcOhGxIrzfMkYboWY+oFCCzhSMexuEvHR
-         kUqbqgJULFZlvUvwMfQ4YQ5A662brkmIo/NGcoxMmQ1RMan9EySwSx+qwQ3A6EhusfTC
-         2PpK8fj5TgtrqBvA1adGDdtwm62MLhVb9PASfqcPX/cAc8jBIAOPQwbtV71D6kEFWUSX
-         pEHLs/MsocS7WJ9o6KomQqb+wODk/8MeK36XlG0sqT/PApoyC+U7nN8vGWw0RsfgNV0p
-         Vqnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G4DbSMP4s0KjqjCan6W9KS0glhbgg9IjBH8ScNTbzmc=;
-        b=Yk2kzldkNSBqQMOnmwE/W94KXrclbgleJNjFvDJUU6JTag457RRl+4YN6APDkJ79eG
-         IisPHUjH5CwH7aDLK6MDCsWVQdTAxLTMe+3r//NkPjzYNiXWBY0cTZcEkPlMWDMWo7iT
-         VcojgvKSlUUj3xv1GOm2nfmtTqAAoqWTNmCnOcBZDQNhX1ZE8mqE4XS/XbHljRpHJX3N
-         /LBeER1/0SW78b+8NWquDXC13mUkb1/7XslSO6+CVRyeYHnIAfA5DrJygYVdUiOiP66D
-         LRNP2MNY5ITOXGTr5OF7XZp0QCi6O4fy6myWXIcDeTogZnd5P7B4grwgYqXFOoH3rlVk
-         c9Tg==
-X-Gm-Message-State: AOAM530TOcmNbWRRtv7dvYMB/eUE063oT0m/A4LYJyaq1ZztNZ/ihmnX
-        /pz75zY102/kN3UqZugrVVI/i6w5gQcWYfkqnsAaCg==
-X-Google-Smtp-Source: ABdhPJxyrDwOYA4hiJxh0WZeOnWjCsjtUjmSKRmwF8SWkAGXvKq4kBpieblfCx/y1SmwwZt8QYpg8abb4dQVxRCVJyk=
-X-Received: by 2002:aa7:8a4d:: with SMTP id n13mr4581156pfa.143.1596646817583;
- Wed, 05 Aug 2020 10:00:17 -0700 (PDT)
+        Wed, 5 Aug 2020 13:02:47 -0400
+Received: from mail.btconnect.com (rd11780omr11.iuser.iroot.adidom.com [10.187.89.172])
+        by rd11780slr11.dci.bt.com (MOS 4.4.8-GA)
+        with ESMTP id ASH82054;
+        Wed, 5 Aug 2020 18:00:19 +0100
+Received: (from localhost [127.0.0.1])
+        by rd11780omr11.dci.bt.com (MOS 4.4.8-GA)
+        id QBQ17930;
+        Wed,  5 Aug 2020 18:00:09 +0100 (BST)
+Received: from x590fed30.dyn.telefonica.de (EHLO User) ([89.15.237.48])
+        by rd11780omr11.dci.bt.com
+        with ESMTP id QBQ17119 (AUTH package@btconnect.com);
+        Wed, 05 Aug 2020 17:59:58 +0100 (BST)
+Reply-To: <johnwoods272@gmail.com>
+From:   "John Woods" <package@btconnect.com>
+Subject: Proposal
+Date:   Wed, 5 Aug 2020 18:59:56 +0200
 MIME-Version: 1.0
-References: <20200805162713.16386-1-songmuchun@bytedance.com> <20200805125056.1dfe74b5@oasis.local.home>
-In-Reply-To: <20200805125056.1dfe74b5@oasis.local.home>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 6 Aug 2020 00:59:41 +0800
-Message-ID: <CAMZfGtW2LJTUB6OaixF-V0tVPXt5kEzVvUvOSbO551r0vvZGbg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] kprobes: fix NULL pointer dereference
- at kprobe_ftrace_handler
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, mhiramat@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, sfr@canb.auug.org.au, mingo@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Chengming Zhou <zhouchengming@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <202008051659.QBQ17119@rd11780omr11.dci.bt.com>
+X-Mirapoint-IP-Reputation: reputation=Fair-1,
+        source=Queried,
+        refid=tid=0001.0A782F92.5F2AE577.0033,
+        actions=TAG
+X-Junkmail: UCE(56)
+X-Junkmail-Status: score=56/50, host=rd11780omr11.dci.bt.com
+X-Junkmail-Signature-Raw: score=bulk(6),
+        refid=str=0001.0A782F20.5F2A6993.0016,ss=3,sh,re=0.000,recu=0.000,reip=0.000,cl=3,cld=1,fgs=16,
+        ip=89.15.237.48,
+        so=2016-11-06 16:00:04,
+        dmn=2013-03-21 17:37:32,
+        mode=multiengine
+X-Junkmail-IWF: false
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 12:51 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu,  6 Aug 2020 00:27:13 +0800
-> Muchun Song <songmuchun@bytedance.com> wrote:
->
-> > We found a case of kernel panic on our server. The stack trace is as
-> > follows(omit some irrelevant information):
-> >
-> >   BUG: kernel NULL pointer dereference, address: 0000000000000080
-> >   RIP: 0010:kprobe_ftrace_handler+0x5e/0xe0
-> >   RSP: 0018:ffffb512c6550998 EFLAGS: 00010282
-> >   RAX: 0000000000000000 RBX: ffff8e9d16eea018 RCX: 0000000000000000
-> >   RDX: ffffffffbe1179c0 RSI: ffffffffc0535564 RDI: ffffffffc0534ec0
-> >   RBP: ffffffffc0534ec1 R08: ffff8e9d1bbb0f00 R09: 0000000000000004
-> >   R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> >   R13: ffff8e9d1f797060 R14: 000000000000bacc R15: ffff8e9ce13eca00
-> >   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >   CR2: 0000000000000080 CR3: 00000008453d0005 CR4: 00000000003606e0
-> >   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >   Call Trace:
-> >    <IRQ>
-> >    ftrace_ops_assist_func+0x56/0xe0
-> >    ftrace_call+0x5/0x34
-> >    tcpa_statistic_send+0x5/0x130 [ttcp_engine]
-> >
-> > The tcpa_statistic_send is the function being kprobed. After analysis,
-> > the root cause is that the fourth parameter regs of kprobe_ftrace_handler
-> > is NULL. Why regs is NULL? We use the crash tool to analyze the kdump.
-> >
-> >   crash> dis tcpa_statistic_send -r
-> >          <tcpa_statistic_send>: callq 0xffffffffbd8018c0 <ftrace_caller>
-> >
-> > The tcpa_statistic_send calls ftrace_caller instead of ftrace_regs_caller.
-> > So it is reasonable that the fourth parameter regs of kprobe_ftrace_handler
-> > is NULL. In theory, we should call the ftrace_regs_caller instead of the
-> > ftrace_caller. After in-depth analysis, we found a reproducible path.
-> >
-> >   Writing a simple kernel module which starts a periodic timer. The
-> >   timer's handler is named 'kprobe_test_timer_handler'. The module
-> >   name is kprobe_test.ko.
-> >
-> >   1) insmod kprobe_test.ko
-> >   2) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
-> >   3) echo 0 > /proc/sys/kernel/ftrace_enabled
-> >   4) rmmod kprobe_test
-> >   5) stop step 2) kprobe
-> >   6) insmod kprobe_test.ko
-> >   7) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
-> >
-> > We mark the kprobe as GONE but not disarm the kprobe in the step 4).
-> > The step 5) also do not disarm the kprobe when unregister kprobe. So
-> > we do not remove the ip from the filter. In this case, when the module
-> > loads again in the step 6), we will replace the code to ftrace_caller
-> > via the ftrace_module_enable(). When we register kprobe again, we will
-> > not replace ftrace_caller to ftrace_regs_caller because the ftrace is
-> > disabled in the step 3). So the step 7) will trigger kernel panic. Fix
-> > this problem by disarming the kprobe when the module is going away.
-> >
-> > Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
-> > Acked-by: Song Liu <songliubraving@fb.com>
-> > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
-> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> > ---
-> > changelogs in v2:
-> >  1) fix compiler warning for !CONFIG_KPROBES_ON_FTRACE.
->
-> The original patch has already been pulled into the queue and tested.
-> Please make a new patch that adds this update, as if your original
-> patch has already been accepted.
+Dear Sir, Madam,
+ 
 
-Will do, thanks!
+Proposal
 
->
-> Feel free to base it off of:
->
->  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git  for-next
->
-> -- Steve
+ 
+I am Mr.John Woods, a Consultant with the Department of Power and Steel here in Spain . I have been contracted by a wealthy individual and serving  government official from somewhere in Africa who is interested in  engaging your services for investment of a large volume of fund (Ten Million Five Hundred Thousand Dollars ) Which he Deposited with a Finance Company here in Spain . You will act as the beneficiary of the fund to carry out the investment of the fund in any business venture you consider lucrative.
 
+If you are capable of handling any type of investment in your country, Please, get back to me immediately and send your telephone and fax numbers to enable me communicate with you and provide you with further details.
 
+Note that 30% of the fund is your share (Commission) for securing the fund from the security company before the investment of the fund shall be carried out. This is necessary because the investor as a serving government official in his country of origin is eager to transfer ownership of the fund to you because he is not expected in his official capacity to own such huge sum of money.
 
--- 
-Yours,
-Muchun
+I will appreciate an urgent response from you.
+
+Yours faithfully,
+
+Mr.John Woods
