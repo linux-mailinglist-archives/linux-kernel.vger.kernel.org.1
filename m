@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD0823D035
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE70B23D03C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728712AbgHETp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:45:26 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45454 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729186AbgHETpP (ORCPT
+        id S1728993AbgHETpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728808AbgHETps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:45:15 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 29CB91C0BD2; Wed,  5 Aug 2020 21:45:13 +0200 (CEST)
-Date:   Wed, 5 Aug 2020 21:45:12 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Konrad Dybcio <konradybcio@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [GIT PULL 0/5] ARM: SoC: changes for v5.9
-Message-ID: <20200805194512.bh5hds2l46opcole@duo.ucw.cz>
-References: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
- <20200805172746.GC1118@bug>
- <CAK8P3a2KnmDXYCyst15=kZWneDTMFAbz47F_TYnY_26+W4PM6A@mail.gmail.com>
- <CAMS8qEVzCtxrH-K4U4_TeHi3RXDQ7UeGo+sVnB-HPS0Y+mju-w@mail.gmail.com>
+        Wed, 5 Aug 2020 15:45:48 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486D8C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 12:45:48 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id x9so49101663ljc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:45:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YMknd1+dlXX/Q3YM8+W65fV77VdzsmUF/OU4h6Xq9xE=;
+        b=ZAog/SvHzVeXNMZb2Fj5fRotY3ezW+cicXN46stQ1/EcG2JvDXQPNisMdRpFYwto3Q
+         Dv3M/sBUceZ5Dyhdv1XWGkFmj4MJymVOF7batv5qAvZjxsoQDutBTN4BJSi6RVDxcp3D
+         +gb2PdLmzPW3FgOKTKFIsirWz5+LHUS5bP2gk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YMknd1+dlXX/Q3YM8+W65fV77VdzsmUF/OU4h6Xq9xE=;
+        b=USmsfdciSdr11akVF9BYLNoHknZATLM3jBJkVvSN+qkVgf4aerYrMcK0R16dcE3uGO
+         RJKxdPxTT4nfE1tpY8BflLNcT5K0fryo463HlIJmWy7YBIlT60IzqV4XPjOJ3C1Z2x8V
+         kU3qakAp49KSB/UFiOs+w1okro7/moJtC8xuDjJ5dn0CTu3xYF1puoTUuVFK8hRTYHhr
+         stKp6CuMiSNhYKSm4G4vJAqXp6GvDtFi2P6nBEY7iYk6+ZCvhNPS7W3N9ZbwOdlcjRQd
+         tMfzN56koAzxO6ASEmCYBmnGYji0mtfPTHpykMKb6h6iYEpkfFMebz7qdyDOxHaY6CGQ
+         AUqw==
+X-Gm-Message-State: AOAM531K0wdsgKktZ8+M370QVUDyKu0iZiO2TYkCYjkwjOzL92WPdysf
+        fCIY8NlqKUkIOQyBD0OA4dOPJgYG0Ho=
+X-Google-Smtp-Source: ABdhPJxbttMueh0g+FJQJHAU0nMBUlO+pk/KI159Lt0689bPr4sf3zDhDeQzL2MVZHxWRslyCJhDhw==
+X-Received: by 2002:a05:651c:1a7:: with SMTP id c7mr2279863ljn.345.1596656745353;
+        Wed, 05 Aug 2020 12:45:45 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id s4sm1553029lfc.56.2020.08.05.12.45.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 12:45:43 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id j22so19005357lfm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:45:42 -0700 (PDT)
+X-Received: by 2002:ac2:522b:: with SMTP id i11mr2306959lfl.30.1596656741926;
+ Wed, 05 Aug 2020 12:45:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="v2jz4bfp3v7pyu7z"
-Content-Disposition: inline
-In-Reply-To: <CAMS8qEVzCtxrH-K4U4_TeHi3RXDQ7UeGo+sVnB-HPS0Y+mju-w@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+References: <20200805153506.978105994@linuxfoundation.org> <CA+G9fYv_aX36Kq_RD5dAL_By4AFq=-ZY_qh7VhLG=HJQv5mDzg@mail.gmail.com>
+ <71a132bf-5ddb-a97a-9b65-6767fd806ee9@roeck-us.net> <CAHk-=wi0WGMs6+Jz6rXbQO4mfzf8LGVc3TwmCdz0OwRtj7GgMQ@mail.gmail.com>
+ <7e1c9df5-d334-461d-56fc-53625c6ca163@roeck-us.net>
+In-Reply-To: <7e1c9df5-d334-461d-56fc-53625c6ca163@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 5 Aug 2020 12:45:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj1m3VFa6Sz96gxNjKCOH21jDuuODm46-VAukD5YGc1yA@mail.gmail.com>
+Message-ID: <CAHk-=wj1m3VFa6Sz96gxNjKCOH21jDuuODm46-VAukD5YGc1yA@mail.gmail.com>
+Subject: Re: [PATCH 5.7 0/6] 5.7.14-rc1 review
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Willy Tarreau <w@1wt.eu>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 5, 2020 at 12:24 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 8/5/20 11:37 AM, Linus Torvalds wrote:
+> >
+> > Because the trivial fix would be something like the appended, which is
+> > the right thing to do anyway.
+>
+> Correct.
 
---v2jz4bfp3v7pyu7z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'll take that as an Ack, and also remove the crazy reverse include
+from archrandom.h that most definitely shouldn't be there.
 
-Hi!
+It's now commit 585524081ecd ("random: random.h should include
+archrandom.h, not the other way around") in my tree, because a grep
+for "archrandom.h" shows that now the only place it exists is
+<linux/random.h> and a few files that cannot possibly affect arm64
+(because they are on x86 and powerpc, neither of which has that insane
+reverse include).
 
-> Thanks for all the kind words, I really appreciate it.
-
-Thanks for good work :-).
-
-> >My impression is that the newly added phones are still fairly rudimentar=
-y,
-> >but some others that were added in the past releases have gotten
-> >further. I don't know any details, but I've added Konrad to Cc, he can
-> >comment on his work.
->=20
-> Thanks for adding me. The Sony sdm630/6 phones are shaping up really
-> well, but most of the work is not upstreamed yet mainly due to SMMU
-> maintainers not liking Qualcomm code and looking for cleaner
-> solutions. As time progresses, more things will see the light of the
-> upstream. The current-ish progress can be seen on my github [1]. And
-> much more is yet to come.
->=20
-> Regarding msm8992/4, there is a need for the 20nm DSI PHY driver. It
-> exists for every other gen of qcom SoCs since 2013, but due to low
-> interest in these platforms, this specific one never got there. I
-> tried emailing the person who wrote most of the present ones, but
-> gmail told me the mail didn't exist :shrug:.
-
-I won't pretend to understand all this. Do you normally have modems
-working?
-
-> >> Should we have some kind of linux-phones mailing list? There is quite =
-a lot of
-> >> stuff common in phones.
->=20
-> >PostmarketOS is probably the right place to look for this.
->=20
-> First of all: postmarketOS, not PostmarketOS :P
->=20
-> I would actually say that's incorrect. With the release of the
-> PinePhone and the Librem 5, the Linux mobile community has entered its
-> heyday and plenty mobile-oriented distributions have arisen (for
-> example Mobian, Manjaro ARM, Pure OS-ARM etc.) and some have gotten
-> more attention than before (think Ubuntu Touch, Maemo Leste). pmOS is
-> only one of many.
->=20
-> The current thing to do is every distro maintains their own kernel (or
-> over 100 like in pmOS, which is terrible for the poor CI :/) and only
-> a small percentage of patches end up being upstreamed for various
-> reasons (clean-ness of the code, will of the maintainers, time
-> constraints..). As time goes, we're gonna see more stuff being
-> added.
-
-I did not know how popular PinePhone is. Does it currently have useful
-battery life?
-
-Would something like phone@vger.kernel.org be useful for low-level
-stuff?
-
-Best regards,
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---v2jz4bfp3v7pyu7z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXysMSAAKCRAw5/Bqldv6
-8phFAJ4z18tm5ObumuMFHNk30LayrjBw8gCfZ7oRyGDbXIqWqqdKsst3BA+ROQ4=
-=OxLd
------END PGP SIGNATURE-----
-
---v2jz4bfp3v7pyu7z--
+               Linus
