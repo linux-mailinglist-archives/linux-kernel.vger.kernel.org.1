@@ -2,176 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B1223D16F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B5723D1C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728530AbgHEUAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:00:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41723 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727850AbgHEQkT (ORCPT
+        id S1729447AbgHEUGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726186AbgHEQfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:40:19 -0400
-X-Greylist: delayed 3566 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 12:40:17 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596645610;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NJk+gBSUOEE3QpuiYByxtg4+dvbr5r/Pq6TTI3Asc18=;
-        b=I9j2o1YvOgMjOWcW1sHpa/hl+Sw3ABo5PBsvy7BYXDSIEaBFoUSHv061+5cK+C4FyAOKTN
-        RL4fCNNJKNOOuE3yv9VnKiGcsuF3FnxdV3VpBSZv31ZuJBFQXm39sE4ZO7BZEGjheLbBUg
-        7G8GzRyFzVEKcZPcYlAqo8hjWsVxPgQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-45-0f5z5dajPBWD27hU59vXIA-1; Wed, 05 Aug 2020 10:24:23 -0400
-X-MC-Unique: 0f5z5dajPBWD27hU59vXIA-1
-Received: by mail-wm1-f70.google.com with SMTP id u144so2782484wmu.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 07:24:22 -0700 (PDT)
+        Wed, 5 Aug 2020 12:35:06 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21128C008686;
+        Wed,  5 Aug 2020 07:25:09 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id p8so8421945pgn.13;
+        Wed, 05 Aug 2020 07:25:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AC9ky2C3Ij8fAbqbNhEO64rPYUTHmvfPvc5f+fIvzK8=;
+        b=FTFMp8DnK1Q4yCvVpBK237B45BNVaxqLnYbQeyXwNQKF3T0ZVU+frSVo2esy4lqhLh
+         UePeEM1VFfFpKnHfqUwbxpdTEgtDQShJwz55PkiFECm7qsuRTvY6kYyy9S47l4ATuIST
+         dua2Rmvkia9HCFr72HBFOWjaa0TWmFVmzg7hq2BZynnJVB8GEhIzk7/gG4Vhy4/L0i8L
+         2azsYhrCvRtU5v6COB/6TuounJ6wQoB0k2vQbZr2TB2bwcPsfsOLTOVXglXguUvlCY2W
+         d5r80JAsoCHdPTRcH3pi7HNGXontHgVz8GQsJGEZFOk6QpEXe/9i9TR89eHn4CQABQJE
+         QRAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NJk+gBSUOEE3QpuiYByxtg4+dvbr5r/Pq6TTI3Asc18=;
-        b=sBdEIGTOjhtAhiL0fZUPTjjObotf9qZEvh3TJGQ9zTA2A/W133rX582YlxAnvVI5mF
-         wL69r7xenrLQ6Su/gdMNkxmMJ+Dt7vyJA5etrY/CA/+gL3SipjYOKDwFYScwfdYvq+Lp
-         MBzqrRpEcEk4ybOVl2iZ7QfUeJ/FI3X+BadRlsCU37CK1evTVIU00CNkr8r3/e7xiOGS
-         Py0Mc5i49W2sk0VfIxydlGcB/EQlOI1WUMmZc7/8F0gfJbq0dau56pnwYdDUAvYBSL5c
-         Cnf9Ozfjlzfxcod4CZNCq84fCzDh7wYcre5QAE/RS1Uy5ZCHkKFFjxs0HH7P8oi/iuhG
-         gyBQ==
-X-Gm-Message-State: AOAM530aUrHPBOw6nkTVKo5dSWphVtUnoh5iI4E5leeGejCgahDKUooz
-        kAmpTtEDQCb4IggIXkt+qwnSCsQ4V0c8+wyRQHuCVKOIim3Ndb1TD0Mp80kYx5u/wtLrVg5nZGU
-        48dbOTHKVYNM6l7boCmwpc5pb
-X-Received: by 2002:a1c:1d92:: with SMTP id d140mr3577308wmd.143.1596637461351;
-        Wed, 05 Aug 2020 07:24:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxykd/6TYQBVQob6vYx2bOO/iHZmxM2Bk8CCL9fbpMhS8zjTz+5shlJ5og3sBNrgt6khAQqMA==
-X-Received: by 2002:a1c:1d92:: with SMTP id d140mr3577290wmd.143.1596637461088;
-        Wed, 05 Aug 2020 07:24:21 -0700 (PDT)
-Received: from steredhat ([5.171.198.65])
-        by smtp.gmail.com with ESMTPSA id x11sm2840060wmc.33.2020.08.05.07.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 07:24:20 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 16:24:15 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v3 06/38] virtio_blk: correct tags for config space fields
-Message-ID: <20200805142415.sqx7saezivvcolkt@steredhat>
-References: <20200805134226.1106164-1-mst@redhat.com>
- <20200805134226.1106164-7-mst@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AC9ky2C3Ij8fAbqbNhEO64rPYUTHmvfPvc5f+fIvzK8=;
+        b=suwqqfbNEyFVR0HtOzzQ/5qz8hGlUjd3YjO/AbcpdghzZzhxqIjNv+Hdew114er+vc
+         1mkgw7zvGwoxkFUibxFn0LPEZVZRVf0CeeNh64LOzfPiF0HsahAl46yA8YeDppSCaobG
+         td6vXsedUN1p6D7YIi9LFEo7PFBbf5Kyqr7X+FFvHlDEIyG2cNmy9MZbIMwYuiU7hwTH
+         HStBSVkx2U4/aHkyo/zAN6CqOIf3LEuNmhGEyqX02gYFk/bCPsRQV5ZpfGqQ6GoI+qyc
+         54NP3XBAEWkyF5q/vjj0hUKNsie14iNW8ky7BoiD+EHYqFd+tgNR4HCL98WwIAyB0ulE
+         qdqA==
+X-Gm-Message-State: AOAM5329X9MnIcmmnGW1Dbut81pLxMfDSh1sqnzwWSlRZX535ka9RJ5X
+        1bcliss3NdIV/iygIn8dqRgE0/wGGDKRzKLM61ELMzK9o9c=
+X-Google-Smtp-Source: ABdhPJy3Zwn4T8BNUfOUv+eXKmotLpzwuZ7FaC/MF6rO2BR8iLdAlMXguhBtGU6wXRb1rk93OIPQquvJFGErG8XjcBo=
+X-Received: by 2002:a62:7b4e:: with SMTP id w75mr3503195pfc.130.1596637508595;
+ Wed, 05 Aug 2020 07:25:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805134226.1106164-7-mst@redhat.com>
+References: <20200805134226.1106164-1-mst@redhat.com> <20200805134226.1106164-19-mst@redhat.com>
+In-Reply-To: <20200805134226.1106164-19-mst@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 5 Aug 2020 17:24:53 +0300
+Message-ID: <CAHp75Vfyjxegi8EtNqVZLVUDzR_0WOJQVmJFoJi4DFxDgNRG-g@mail.gmail.com>
+Subject: Re: [PATCH v3 18/38] mlxbf-tmfifo: sparse tags for config access
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Andy Shevchenko <andy@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Vadim Pasternak <vadimp@mellanox.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 09:43:30AM -0400, Michael S. Tsirkin wrote:
-> Tag config space fields as having virtio endian-ness.
-> 
+On Wed, Aug 5, 2020 at 4:44 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> mlxbf-tmfifo accesses config space using native types -
+> which works for it since the legacy virtio native types.
+>
+> This will break if it ever needs to support modern virtio,
+> so with new tags previously introduced for virtio net config,
+> sparse now warns for this in drivers.
+>
+> Since this is a legacy only device, fix it up using
+> virtio_legacy_is_little_endian for now.
+>
+> No functional changes.
+>
+
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
 > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+> Acked-by: Cornelia Huck <cohuck@redhat.com>
 > ---
->  include/uapi/linux/virtio_blk.h | 26 +++++++++++++-------------
->  1 file changed, 13 insertions(+), 13 deletions(-)
-
-
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-
-
-> 
-> diff --git a/include/uapi/linux/virtio_blk.h b/include/uapi/linux/virtio_blk.h
-> index 0f99d7b49ede..d888f013d9ff 100644
-> --- a/include/uapi/linux/virtio_blk.h
-> +++ b/include/uapi/linux/virtio_blk.h
-> @@ -57,20 +57,20 @@
->  
->  struct virtio_blk_config {
->  	/* The capacity (in 512-byte sectors). */
-> -	__u64 capacity;
-> +	__virtio64 capacity;
->  	/* The maximum segment size (if VIRTIO_BLK_F_SIZE_MAX) */
-> -	__u32 size_max;
-> +	__virtio32 size_max;
->  	/* The maximum number of segments (if VIRTIO_BLK_F_SEG_MAX) */
-> -	__u32 seg_max;
-> +	__virtio32 seg_max;
->  	/* geometry of the device (if VIRTIO_BLK_F_GEOMETRY) */
->  	struct virtio_blk_geometry {
-> -		__u16 cylinders;
-> +		__virtio16 cylinders;
->  		__u8 heads;
->  		__u8 sectors;
->  	} geometry;
->  
->  	/* block size of device (if VIRTIO_BLK_F_BLK_SIZE) */
-> -	__u32 blk_size;
-> +	__virtio32 blk_size;
->  
->  	/* the next 4 entries are guarded by VIRTIO_BLK_F_TOPOLOGY  */
->  	/* exponent for physical block per logical block. */
-> @@ -78,42 +78,42 @@ struct virtio_blk_config {
->  	/* alignment offset in logical blocks. */
->  	__u8 alignment_offset;
->  	/* minimum I/O size without performance penalty in logical blocks. */
-> -	__u16 min_io_size;
-> +	__virtio16 min_io_size;
->  	/* optimal sustained I/O size in logical blocks. */
-> -	__u32 opt_io_size;
-> +	__virtio32 opt_io_size;
->  
->  	/* writeback mode (if VIRTIO_BLK_F_CONFIG_WCE) */
->  	__u8 wce;
->  	__u8 unused;
->  
->  	/* number of vqs, only available when VIRTIO_BLK_F_MQ is set */
-> -	__u16 num_queues;
-> +	__virtio16 num_queues;
->  
->  	/* the next 3 entries are guarded by VIRTIO_BLK_F_DISCARD */
->  	/*
->  	 * The maximum discard sectors (in 512-byte sectors) for
->  	 * one segment.
->  	 */
-> -	__u32 max_discard_sectors;
-> +	__virtio32 max_discard_sectors;
->  	/*
->  	 * The maximum number of discard segments in a
->  	 * discard command.
->  	 */
-> -	__u32 max_discard_seg;
-> +	__virtio32 max_discard_seg;
->  	/* Discard commands must be aligned to this number of sectors. */
-> -	__u32 discard_sector_alignment;
-> +	__virtio32 discard_sector_alignment;
->  
->  	/* the next 3 entries are guarded by VIRTIO_BLK_F_WRITE_ZEROES */
->  	/*
->  	 * The maximum number of write zeroes sectors (in 512-byte sectors) in
->  	 * one segment.
->  	 */
-> -	__u32 max_write_zeroes_sectors;
-> +	__virtio32 max_write_zeroes_sectors;
->  	/*
->  	 * The maximum number of segments in a write zeroes
->  	 * command.
->  	 */
-> -	__u32 max_write_zeroes_seg;
-> +	__virtio32 max_write_zeroes_seg;
->  	/*
->  	 * Set if a VIRTIO_BLK_T_WRITE_ZEROES request may result in the
->  	 * deallocation of one or more of the sectors.
-> -- 
+>  drivers/platform/mellanox/mlxbf-tmfifo.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> index 5739a9669b29..bbc4e71a16ff 100644
+> --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
+> +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> @@ -625,7 +625,10 @@ static void mlxbf_tmfifo_rxtx_header(struct mlxbf_tmfifo_vring *vring,
+>                         vdev_id = VIRTIO_ID_NET;
+>                         hdr_len = sizeof(struct virtio_net_hdr);
+>                         config = &fifo->vdev[vdev_id]->config.net;
+> -                       if (ntohs(hdr.len) > config->mtu +
+> +                       /* A legacy-only interface for now. */
+> +                       if (ntohs(hdr.len) >
+> +                           __virtio16_to_cpu(virtio_legacy_is_little_endian(),
+> +                                             config->mtu) +
+>                             MLXBF_TMFIFO_NET_L2_OVERHEAD)
+>                                 return;
+>                 } else {
+> @@ -1231,8 +1234,12 @@ static int mlxbf_tmfifo_probe(struct platform_device *pdev)
+>
+>         /* Create the network vdev. */
+>         memset(&net_config, 0, sizeof(net_config));
+> -       net_config.mtu = ETH_DATA_LEN;
+> -       net_config.status = VIRTIO_NET_S_LINK_UP;
+> +
+> +       /* A legacy-only interface for now. */
+> +       net_config.mtu = __cpu_to_virtio16(virtio_legacy_is_little_endian(),
+> +                                          ETH_DATA_LEN);
+> +       net_config.status = __cpu_to_virtio16(virtio_legacy_is_little_endian(),
+> +                                             VIRTIO_NET_S_LINK_UP);
+>         mlxbf_tmfifo_get_cfg_mac(net_config.mac);
+>         rc = mlxbf_tmfifo_create_vdev(dev, fifo, VIRTIO_ID_NET,
+>                                       MLXBF_TMFIFO_NET_FEATURES, &net_config,
+> --
 > MST
-> 
-> _______________________________________________
-> Virtualization mailing list
-> Virtualization@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
-> 
+>
 
+
+-- 
+With Best Regards,
+Andy Shevchenko
