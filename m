@@ -2,241 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E3223CF61
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76BC23CF5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgHETUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
+        id S1728825AbgHETTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728950AbgHERsv (ORCPT
+        with ESMTP id S1728849AbgHER5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:48:51 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FF3C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:48:50 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id t10so20359723plz.10
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:48:50 -0700 (PDT)
+        Wed, 5 Aug 2020 13:57:50 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC67C061575;
+        Wed,  5 Aug 2020 10:56:42 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id v89so10014357ybi.8;
+        Wed, 05 Aug 2020 10:56:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=AN9lXxTtUIqeSqnhtWqPoGBSysu+7woyVZhyjrKsSws=;
-        b=i1T15cW+HRL+p852S2fTs1hjBZSveLXDnk5dyOQ1naPnB8IlqcrYRJ2raHvn8KKQ+t
-         3AmssaQxfBZL5DwXppRiWMwzjlEg6F4gsvrulkvmWdqO+0ADxQklRCHhse2fTsYd13f8
-         m37Lo9uNFOYZaW/n+uWZF/gd+ECIMVc3JcrUQrz6A7JMbq45dfwz++RDsO3y76yf1zA8
-         NPqfUuiUOMXUoVm2W9Q78t7IG2kI5pldoyxzGCuiwPvQpTlLuIh9Z5Zk3ZY1DHx1mE4Y
-         Dv2T356bWIPPw9Dee7exTc3Ld0vX45KMgINZVyyuKCy/77jqGYOwpSadK5zIltWDT4G/
-         AyPw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=li1hE9tF4it7VfRmrQee8o6JUSjiVegDf8MI6ZEx7Xw=;
+        b=VRGtmUGAWQDDkaTOsTmd9lNenNetoywtXI7HdQOOcsYrutySs+ol6ML0Z5mC8hGUCb
+         KSMEhswVQo13kTKOSWxuNm8lLyxp2KhNKBHTGJQRNNoLvxtGK9Et+iXpeQ/JrdlNNviw
+         xB+HZm4D3SQI76qe7TUwFRtnT93f4+jAT4bxO4xQVy+g4cK/HXfTanmG15XG/D4+LPhK
+         jDKZCmUsSH6LhEhez8cm0ONUz3ns1lxQGvrufJR+y9btO0A6wWKTtowEpL02k99C/iXx
+         35svsGvqq+bq5qbjca1p7V99jdmR5bOAN2dtD0oMbwQsfoQU/piZ+E9VW+WK87APsVxV
+         I1qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=AN9lXxTtUIqeSqnhtWqPoGBSysu+7woyVZhyjrKsSws=;
-        b=WB+u/ZdrX1vZ24n+wEHGaSu4PeP0eOrjf4+h8FH97tSGby4r04PO+Q8qcNeD1Jn0wX
-         8RY+yL6Dw58+DdkKOZ2U6MHwJah0ir23dDF8K6FC2uffABYRUP8YgFyKi9acbSHDydYv
-         ISntzCcv8o6qAVPslCec93ZNpdJvDvmTTBv/bnv4UXQgAsEZPEwcSbtDomKeQyzKg4tv
-         AaaqgIuKnu/B8qOt/WNMoLEYycvcmL3xBR45b8CwpzFAm+WY790tHu9SqBmDRJ0EBt+n
-         lTf4V1NsBJ06LNSRMdP6xgopR1XW5zM8dhjuAfOsdZgItNAIFIn78XRZMG3x+niG9sw/
-         Y4TA==
-X-Gm-Message-State: AOAM5302JAE3oFceMopfakBL++7jLa7O7A0D2hvkg7HPG5J/itfOOPN/
-        2ZRQvYpTiMYLdfosKQvbzwdpWQ==
-X-Google-Smtp-Source: ABdhPJyj978+UEa8ClNSaHWi3r3lQbgAj9hS3PWUrlDsGOSW08sBlMCtMtXlqGVUaieKyXqEzt3+wg==
-X-Received: by 2002:a17:90b:1106:: with SMTP id gi6mr4643433pjb.2.1596649730064;
-        Wed, 05 Aug 2020 10:48:50 -0700 (PDT)
-Received: from [10.213.170.159] (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
-        by smtp.gmail.com with ESMTPSA id z25sm4219247pfn.159.2020.08.05.10.48.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 05 Aug 2020 10:48:49 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>
-Cc:     bhelgaas@google.com, rjw@rjwysocki.net, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Qiuxu Zhuo" <qiuxu.zhuo@intel.com>
-Subject: Re: [PATCH V2 6/9] PCI: Add 'rcec' field to pci_dev for associated
- RCiEPs
-Date:   Wed, 05 Aug 2020 10:48:46 -0700
-X-Mailer: MailMate (1.13.1r5671)
-Message-ID: <BE94DF65-ED67-4113-A932-58BFE86B1152@intel.com>
-In-Reply-To: <20200805184020.00000cf3@Huawei.com>
-References: <20200804194052.193272-1-sean.v.kelley@intel.com>
- <20200804194052.193272-7-sean.v.kelley@intel.com>
- <20200805184020.00000cf3@Huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=li1hE9tF4it7VfRmrQee8o6JUSjiVegDf8MI6ZEx7Xw=;
+        b=gryqoJf/LtjfnFAsJ4ofMNBSTAjWtT1qed9uWG9K43/qVhPfTwB6ow4aYX3T/N0RVQ
+         iv7jtaLDb3rWK2JgCC3xFrglpA3/HHjp5fBCtPJULXQJ1qcWe7MTF/ga4kBz8ttwurxE
+         G52oqM5WqGNKmtOihs9fk8MJ52CC3JRzqpn7mIJ0OeknVPPpM+5KMxTxeqKJDssG+D+y
+         RC1GnY+O7ApFabh152/GbekoP//c4ggxdImprDcXUFFsthdmWT/0WB1trl5OZp4NR9bR
+         2oFxylLq0EvrkrchV5j3q5I69SnaiMGefW9PVOFWf54m1UDId7Zv1RfynHjevf+YFTTa
+         dutQ==
+X-Gm-Message-State: AOAM5332CJfjEdLYwLV4IUrj0hqlIu5XOurdP2fU5EYZjvShkD5w3ZUk
+        0Hnq/taSVC5AkvmkHa2NVqNT2fpRjSrU6yPSVhs=
+X-Google-Smtp-Source: ABdhPJxPByyNb7ICLni4pJ6BsJD+EnvzFEbpCnvzZnfR60EZfc/fsAHIWGHssLiBJNHBNUN1hd8RlUQMqwOlM7mahTU=
+X-Received: by 2002:a25:824a:: with SMTP id d10mr6810040ybn.260.1596650201303;
+ Wed, 05 Aug 2020 10:56:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+References: <20200801084721.1812607-1-songliubraving@fb.com>
+ <20200801084721.1812607-6-songliubraving@fb.com> <CAEf4BzaP4TGF7kcmZRAKsy=oWPpFA6sUGFkctpGz-fPp+YuSOQ@mail.gmail.com>
+ <DDCD362E-21D3-46BF-90A6-8F3221CBB54E@fb.com> <CAEf4BzY5RYMM6w8wn3qEB3AsuKWv-TMaD5NVFj=YqbCW4DLjqA@mail.gmail.com>
+ <7384B583-EE19-4045-AC72-B6FE87C187DD@fb.com> <CAEf4BzaiJnCu14AWougmxH80msGdOp4S8ZNmAiexMmtwUM_2Xg@mail.gmail.com>
+ <AF9D0E8C-0AA5-4BE4-90F4-946FABAB63FD@fb.com> <20200805171639.tsqjmifd7eb3htou@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYFfAubxo1QY6Axth=gwS9DfzwRkvnYLspfk9tLia0LPg@mail.gmail.com> <20200805174552.56q6eauad7glyzgm@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200805174552.56q6eauad7glyzgm@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 5 Aug 2020 10:56:30 -0700
+Message-ID: <CAEf4BzYUTvjAJ4uvYxBbbO7Vjh+K++F0HJe8mJ09RdhOeLeZGQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add benchmark for uprobe vs. user_prog
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Xu <dlxu@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5 Aug 2020, at 10:40, Jonathan Cameron wrote:
+On Wed, Aug 5, 2020 at 10:45 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Aug 05, 2020 at 10:27:28AM -0700, Andrii Nakryiko wrote:
+> > On Wed, Aug 5, 2020 at 10:16 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Aug 05, 2020 at 04:47:30AM +0000, Song Liu wrote:
+> > > >
+> > > > Being able to trigger BPF program on a different CPU could enable many
+> > > > use cases and optimizations. The use case I am looking at is to access
+> > > > perf_event and percpu maps on the target CPU. For example:
+> > > >       0. trigger the program
+> > > >       1. read perf_event on cpu x;
+> > > >       2. (optional) check which process is running on cpu x;
+> > > >       3. add perf_event value to percpu map(s) on cpu x.
+> > >
+> > > If the whole thing is about doing the above then I don't understand why new
+> > > prog type is needed. Can prog_test_run support existing BPF_PROG_TYPE_KPROBE?
+> > > "enable many use cases" sounds vague. I don't think folks reading
+> > > the patches can guess those "use cases".
+> > > "Testing existing kprobe bpf progs" would sound more convincing to me.
+> >
+> > Was just about to propose the same :) I wonder if generic test_run()
+> > capability to trigger test programs of whatever supported type on a
+> > specified CPU through IPI can be added. That way you can even use the
+> > XDP program to do what Song seems to need.
+> >
+> > TRACEPOINTs might also be a good fit here, given it seems simpler to
+> > let users specify custom tracepoint data for test_run(). Having the
+> > ability to unit-test KPROBE and TRACEPOINT, however rudimentary, is
+> > already a big win.
+> >
+> > > If the test_run framework can be extended to trigger kprobe with correct pt_regs.
+> > > As part of it test_run would trigger on a given cpu with $ip pointing
+> > > to some test fuction in test_run.c. For local test_run the stack trace
+> > > would include bpf syscall chain. For IPI the stack trace would include
+> > > the corresponding kernel pieces where top is our special test function.
+> > > Sort of like pseudo kprobe where there is no actual kprobe logic,
+> > > since kprobe prog doesn't care about mechanism. It needs correct
+> > > pt_regs only as input context.
+> > > The kprobe prog output (return value) has special meaning though,
+> > > so may be kprobe prog type is not a good fit.
+> >
+> > It does? I don't remember returning 1 from KPROBE changing anything. I
+> > thought it's only the special bpf_override_return() that can influence
+> > the kernel function return result.
+>
+> See comment in trace_call_bpf().
+> And logic to handle it in kprobe_perf_func() for kprobes.
+> and in perf_trace_run_bpf_submit() for tracepoints.
+> It's historical and Song actually discovered an issue with such behavior.
+> I don't remember whether we've concluded on the solution.
 
-> On Tue, 4 Aug 2020 12:40:49 -0700
-> Sean V Kelley <sean.v.kelley@intel.com> wrote:
->
->> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->>
->> When attempting error recovery for an RCiEP associated with an RCEC 
->> device,
->> there needs to be a way to update the Root Error Status, the 
->> Uncorrectable
->> Error Status and the Uncorrectable Error Severity of the parent RCEC.
->> So add the 'rcec' field to the pci_dev structure and provide a hook 
->> for the
->> Root Port Driver to associate RCiEPs with their respective parent 
->> RCEC.
->>
->> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
->> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Hi,
->
-> One question in line.
->
->> ---
->>  drivers/pci/pcie/aer.c         |  9 +++++----
->>  drivers/pci/pcie/err.c         | 12 ++++++++++++
->>  drivers/pci/pcie/portdrv_pci.c | 15 +++++++++++++++
->>  include/linux/pci.h            |  3 +++
->>  4 files changed, 35 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
->> index 87283cda3990..f658607e8e00 100644
->> --- a/drivers/pci/pcie/aer.c
->> +++ b/drivers/pci/pcie/aer.c
->> @@ -1358,17 +1358,18 @@ static int aer_probe(struct pcie_device *dev)
->>  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->>  {
->>  	int aer = dev->aer_cap;
->> +	int rc = 0;
->>  	u32 reg32;
->> -	int rc;
->> -
->>
->>  	/* Disable Root's interrupt in response to error messages */
->>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->>  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
->>  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
->>
->> -	rc = pci_bus_error_reset(dev);
->> -	pci_info(dev, "Root Port link has been reset\n");
->> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
->> +		rc = pci_bus_error_reset(dev);
->> +		pci_info(dev, "Root Port link has been reset\n");
->> +	}
->>
->>  	/* Clear Root Error Status */
->>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
->> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
->> index 4812aa678eff..43f1c55c76db 100644
->> --- a/drivers/pci/pcie/err.c
->> +++ b/drivers/pci/pcie/err.c
->> @@ -203,6 +203,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev 
->> *dev,
->>  		pci_walk_dev_affected(dev, report_frozen_detected, &status);
->>  		if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
->>  			status = flr_on_rciep(dev);
->> +			/*
->> +			 * The callback only clears the Root Error Status
->> +			 * of the RCEC (see aer.c).
->> +			 */
->> +			if (pcie_aer_is_native(dev) && dev->rcec)
->> +				reset_link(dev->rcec);
->
-> I'm not sure about this pcie_aer_is_native check.
-> We don't check in the normal EP path.  Perhaps we should be checking 
-> there
-> as well?
-
-Looks like we should.  Will make adjustments and test.
-
->
-> I can contrive a CPER record that hits the reset_link for the normal 
-> EP on my qemu
-> test setup.  Just for fun it causes a synchronous external abort that 
-> I need
-> to track down but not related this patch or indeed reset_link and may 
-> just reflect
-> an impossible to hit path in the e1000e driver.
->
-> It needs a very contrived combination of blocks that say the error is 
-> fatal
-> and others that say it isn't so I'm not that worried about that.
-
-Okay, will also test on my end.
-
-Thanks,
-
-Sean
-
->
->
->>  			if (status != PCI_ERS_RESULT_RECOVERED) {
->>  				pci_warn(dev, "function level reset failed\n");
->>  				goto failed;
->> @@ -247,7 +253,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev 
->> *dev,
->>  		if (pcie_aer_is_native(dev))
->>  			pcie_clear_device_status(dev);
->>  		pci_aer_clear_nonfatal_status(dev);
->> +	} else if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
->> +		if (pcie_aer_is_native(dev) && dev->rcec)
->> +			pcie_clear_device_status(dev->rcec);
->> +		if (dev->rcec)
->> +			pci_aer_clear_nonfatal_status(dev->rcec);
->>  	}
->> +
->>  	pci_info(dev, "device recovery successful\n");
->>  	return status;
->>
->> diff --git a/drivers/pci/pcie/portdrv_pci.c 
->> b/drivers/pci/pcie/portdrv_pci.c
->> index 4d880679b9b1..dff5c9e13412 100644
->> --- a/drivers/pci/pcie/portdrv_pci.c
->> +++ b/drivers/pci/pcie/portdrv_pci.c
->> @@ -90,6 +90,18 @@ static const struct dev_pm_ops pcie_portdrv_pm_ops 
->> = {
->>  #define PCIE_PORTDRV_PM_OPS	NULL
->>  #endif /* !PM */
->>
->> +static int pcie_hook_rcec(struct pci_dev *pdev, void *data)
->> +{
->> +	struct pci_dev *rcec = (struct pci_dev *)data;
->> +
->> +	pdev->rcec = rcec;
->> +	pci_dbg(rcec, "RCiEP(under an RCEC) %04x:%02x:%02x.%d\n",
->> +		pci_domain_nr(pdev->bus), pdev->bus->number,
->> +		PCI_SLOT(pdev->devfn), PCI_FUNC(pdev->devfn));
->> +
->> +	return 0;
->> +}
->> +
->>  /*
->>   * pcie_portdrv_probe - Probe PCI-Express port devices
->>   * @dev: PCI-Express port device being probed
->> @@ -110,6 +122,9 @@ static int pcie_portdrv_probe(struct pci_dev 
->> *dev,
->>  	     (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)))
->>  		return -ENODEV;
->>
->> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)
->> +		pcie_walk_rcec(dev, pcie_hook_rcec, dev);
->> +
->>  	status = pcie_port_device_register(dev);
->>  	if (status)
->>  		return status;
->> diff --git a/include/linux/pci.h b/include/linux/pci.h
->> index ee49469bd2b5..d5f7dbbf5e2f 100644
->> --- a/include/linux/pci.h
->> +++ b/include/linux/pci.h
->> @@ -326,6 +326,9 @@ struct pci_dev {
->>  #ifdef CONFIG_PCIEAER
->>  	u16		aer_cap;	/* AER capability offset */
->>  	struct aer_stats *aer_stats;	/* AER stats for this device */
->> +#endif
->> +#ifdef CONFIG_PCIEPORTBUS
->> +	struct pci_dev	*rcec;		/* Associated RCEC device */
->>  #endif
->>  	u8		pcie_cap;	/* PCIe capability offset */
->>  	u8		msi_cap;	/* MSI capability offset */
+Oh, thanks for pointers. Never realized there is more going on with
+those. I guess return 1; is not advised then, as it causes extra
+overhead.
