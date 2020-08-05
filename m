@@ -2,148 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB56223C4F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 07:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4358323C4E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 07:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgHEFXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 01:23:06 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:64254 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgHEFXG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 01:23:06 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200805052302epoutp01182cf93d7098aa5fcd1de85ffb037f8e~oR8XDbl590089800898epoutp01D
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:23:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200805052302epoutp01182cf93d7098aa5fcd1de85ffb037f8e~oR8XDbl590089800898epoutp01D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1596604982;
-        bh=Vv6SM1wYGRvFEWv4+K3CiduycYOby04MPbyseFMmwbw=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=ddFRLq8Lp6CitecZFJDlsijZNyYSXaWrX4RQQqXTqix3DSLC3Hp63oDdEHN28YHmt
-         MubRmbQCCd9kNkvjQA0ArSLb3H6FeWnBxVH5D+xDVF2vG64V8EV5R2++vbjkjeMZ6f
-         6vyle+W3KwCLfhK7vSGz7KqaiWZnDcJauDemm2hM=
-Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p4.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200805052302epcas1p415ad979a6bba89eeb879f1a386352722~oR8WgAHpN0237402374epcas1p49;
-        Wed,  5 Aug 2020 05:23:02 +0000 (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v7 1/4] scsi: ufs: Add UFS feature related parameter
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <231786897.01596600181895.JavaMail.epsvc@epcpadp2>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <231786897.01596604981993.JavaMail.epsvc@epcpadp2>
-Date:   Wed, 05 Aug 2020 13:58:48 +0900
-X-CMS-MailID: 20200805045848epcms2p57f67844bf334f1b3a5014ec0d98fddf0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200805033750epcms2p3fd74b94500593df38d50e1bf426c2347
-References: <231786897.01596600181895.JavaMail.epsvc@epcpadp2>
-        <CGME20200805033750epcms2p3fd74b94500593df38d50e1bf426c2347@epcms2p5>
+        id S1725999AbgHEFBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 01:01:15 -0400
+Received: from mail-eopbgr70078.outbound.protection.outlook.com ([40.107.7.78]:19994
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725372AbgHEFBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 01:01:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SFhNdjioP+ZLcr7JH6eJDv1D55Tbx/xnvdjQihju/8d6nGUZds5oqhD5SwRYmWOaA5tHHQuHvb10gj0HFWQ0QUONrlMeVYdIQeROTWNx6wVDsf9fthKEHwngMbGYUwC0fFFBAqM6CXn5ujGYz4B0H4ydQfsNjPcR2GfblmWcLLbl9ixG1cvezuD+VWx1aBNAL6o9McxaJYe0vx8xlbCJp3PFoYh+SK9Wf4OX8juo9Hegs0w1Zbte7Y/vMfX7QQU9NFaqf/WYUkfqHaMTNUNDvCCVBmftas+WVWhCctZKQskUGUDhzDmCcClArNJ1Z4S+1qjM/n1cE1rv9DF+St1z6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v8KK4eODDzpXcKc9J6J0rAxn0iEk7FgJWvfCbI7mIu4=;
+ b=i8KPaNfUbwC6+laJ9EjqXJtc49kjfHZUq90AUqA5k221HHPewGWxDEcjSuHZZn1B7Xg72mxHfV3uT51atyGWr6U4J1m739Vfo01/xqpyxA1CmCszWPNKLFlGxJRmjqxkR3IsunhR4oVSrB6und8WudTQkDohx22gE97FOQopSB/XNVWTUpH0pBofvLodOKCPnFi/Au9BTQCR/FVG4YArhvQqlL0ZgO9rC55tAP5uC6Nl1EV2ZBNp7pMI2eFbWpeYwcfkFBN8/iiG1VnJA7zEi4dbKDg+9QElG8T3UhM5rR8wXp28E4sh78a8n2jExyMm4A1jJee1yG9Nknjt94czww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v8KK4eODDzpXcKc9J6J0rAxn0iEk7FgJWvfCbI7mIu4=;
+ b=mIFqnwQhxpb9YOy81LoFKedIaw5JxdEc6ExRbRTLjabK6ddWOgrUkO1a0YYoYGudVvye2DLKcETq588NxajiC5yw/R63RgSeVuuAI9LZgk481+IfCbPaFy17fYmdWUptq9DghTi16H/60xKjvbur71O0YitCoY0px1E4XkWLQt0=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=mellanox.com;
+Received: from AM0PR05MB4786.eurprd05.prod.outlook.com (2603:10a6:208:b3::15)
+ by AM0PR05MB5842.eurprd05.prod.outlook.com (2603:10a6:208:133::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16; Wed, 5 Aug
+ 2020 05:01:10 +0000
+Received: from AM0PR05MB4786.eurprd05.prod.outlook.com
+ ([fe80::9186:8b7:3cf7:7813]) by AM0PR05MB4786.eurprd05.prod.outlook.com
+ ([fe80::9186:8b7:3cf7:7813%7]) with mapi id 15.20.3239.021; Wed, 5 Aug 2020
+ 05:01:09 +0000
+Date:   Wed, 5 Aug 2020 08:01:06 +0300
+From:   Eli Cohen <eli@mellanox.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
+        saeedm@mellanox.com, parav@mellanox.com
+Subject: Re: [PATCH V4 linux-next 00/12] VDPA support for Mellanox ConnectX
+ devices
+Message-ID: <20200805050105.GA5442@nps-server-21.mtl.labs.mlnx>
+References: <20200804162048.22587-1-eli@mellanox.com>
+ <20200804172726-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200804172726-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-ClientProxiedBy: AM0PR04CA0100.eurprd04.prod.outlook.com
+ (2603:10a6:208:be::41) To AM0PR05MB4786.eurprd05.prod.outlook.com
+ (2603:10a6:208:b3::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nps-server-21.mtl.labs.mlnx (94.188.199.18) by AM0PR04CA0100.eurprd04.prod.outlook.com (2603:10a6:208:be::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15 via Frontend Transport; Wed, 5 Aug 2020 05:01:08 +0000
+X-Originating-IP: [94.188.199.18]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d86993b8-3c74-40d9-9d26-08d838fc9166
+X-MS-TrafficTypeDiagnostic: AM0PR05MB5842:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR05MB5842F3668673B38A76AA84BBC54B0@AM0PR05MB5842.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ufh4JB/ZK2lUIV8sJqrISt1v3xa/5PSCwayltxUNdDWJTkvkujjdFuOdpHuRdyeonvgPrDGlSikZ939382NTRi7LPzr7xiCU/NBCS7rtXf/2AXc3yypdJCD++6Xpcy59I1w9kG8Nk25TmCQa3lLSnUKzHEN00YtQyyrWyfyBMUw/SqC9LoCnl3wT8KEPUinc+6XiY2e0zYrloWxv8FQwgs6D/uZ8WBP84jnsAy60WRpEMgGfoo0G/do1h5lqIxIVwIuPRWtASjBXJeppS5NueE/YJV2ekr5iSQEvs6q12K39DqdFA0unog0/WCnH9JQPoopLp6Nssta1gz+xhzG2CPiSWfBpl/zQ2Ow/95xY82Erdab2I3Q1u6blppjmPlZBORqMIY1y8041L1D9mHOO3Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB4786.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(366004)(376002)(39860400002)(396003)(346002)(66476007)(83380400001)(956004)(86362001)(9686003)(5660300002)(1076003)(66556008)(66946007)(55016002)(8676002)(52116002)(2906002)(316002)(186003)(33656002)(8936002)(966005)(7696005)(26005)(478600001)(107886003)(16526019)(4326008)(6506007)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: dvqkNsmwH+KwK26qPVZifujfv8mrv6kutZUBEoYkh+4C70C/vysioSl2ZRHMUdCwcgrf+amMpSfOONLR5HJKj2EoKLJ84ifLqWzlvfuvJDCUjuL2lL96nQ8pLhz5iia3oWhl+F/yT3JJDTl0QROqu7yQSPhxx8I4a8sik4ZMGSf1FXaV1zPshU7xTtr3FD258TG1NtSOL73L/O57RJszv+S63r7IX6yp/O8gVRZTA51DtX4xiANfTRqP8IBuHliu2OnaIWpjS6Ekk1a9s2nxVIOtGdeVKsgLCX0fL7V4kDdrjcboG9N4pgxC2UU7m+86bfCN1c4zAmaPKpefxconQh7pBCI3kcP0s7qi8AlFiF80WcCBSIXpsuaLqNtnqxdu7FegFCauOJIBuTPqZpKRhadsMXLTbYatr46OKIBWMq9XUq2GiR3y6moMItOrroMRSLdb4WB73SNQSQXWXuqoM4/GznESCklHOIBjkFu0MXh9pMFjGc1r0uSSd/MJh9NRZ7mfp98pnYXQv4ZaqM5HaXK40F6YOHLX2/+uAsJnQkK6uAHScRwPXh42IzRI9P8DLN54bbqcV1JRfC1x3oaakJvBxvj8wh3USJgnAaMJLBN9+wGrdrF00YTLPCrR7IzBkdvOoN754W0YIK6cguPTWQ==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d86993b8-3c74-40d9-9d26-08d838fc9166
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB4786.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2020 05:01:09.7089
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: alXpOFRkW7TLyUXZVuyxJ1vKYJy5mRT/6tfdZBZigjZSMu6nVm0BCwlWZhZ9uW5xi0PVgjW4RoCqRHx27GKxmA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5842
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a patch for parameters to be used for UFS features layer and HPB
-module.
+On Tue, Aug 04, 2020 at 05:29:09PM -0400, Michael S. Tsirkin wrote:
+> On Tue, Aug 04, 2020 at 07:20:36PM +0300, Eli Cohen wrote:
+> > Hi Michael,
+> > please note that this series depends on mlx5 core device driver patches
+> > in mlx5-next branch in
+> > git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git.
+> 
+> Thanks! OK so what's the plan for merging this?
+> Do patches at least build well enough that I can push them
+> upstream? Or do they have to go on top of the mellanox tree?
+> 
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Tested-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- drivers/scsi/ufs/ufs.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+The patches are built on your linux-next branch which I updated
+yesterday.
 
-diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-index f8ab16f30fdc..ae557b8d3eba 100644
---- a/drivers/scsi/ufs/ufs.h
-+++ b/drivers/scsi/ufs/ufs.h
-@@ -122,6 +122,7 @@ enum flag_idn {
- 	QUERY_FLAG_IDN_WB_EN                            = 0x0E,
- 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN                 = 0x0F,
- 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_DURING_HIBERN8     = 0x10,
-+	QUERY_FLAG_IDN_HPB_RESET                        = 0x11,
- };
- 
- /* Attribute idn for Query requests */
-@@ -195,6 +196,9 @@ enum unit_desc_param {
- 	UNIT_DESC_PARAM_PHY_MEM_RSRC_CNT	= 0x18,
- 	UNIT_DESC_PARAM_CTX_CAPABILITIES	= 0x20,
- 	UNIT_DESC_PARAM_LARGE_UNIT_SIZE_M1	= 0x22,
-+	UNIT_DESC_HPB_LU_MAX_ACTIVE_REGIONS	= 0x23,
-+	UNIT_DESC_HPB_LU_PIN_REGION_START_OFFSET	= 0x25,
-+	UNIT_DESC_HPB_LU_NUM_PIN_REGIONS	= 0x27,
- 	UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS	= 0x29,
- };
- 
-@@ -235,6 +239,8 @@ enum device_desc_param {
- 	DEVICE_DESC_PARAM_PSA_MAX_DATA		= 0x25,
- 	DEVICE_DESC_PARAM_PSA_TMT		= 0x29,
- 	DEVICE_DESC_PARAM_PRDCT_REV		= 0x2A,
-+	DEVICE_DESC_PARAM_HPB_VER		= 0x40,
-+	DEVICE_DESC_PARAM_HPB_CONTROL		= 0x42,
- 	DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP	= 0x4F,
- 	DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN	= 0x53,
- 	DEVICE_DESC_PARAM_WB_TYPE		= 0x54,
-@@ -283,6 +289,10 @@ enum geometry_desc_param {
- 	GEOMETRY_DESC_PARAM_ENM4_MAX_NUM_UNITS	= 0x3E,
- 	GEOMETRY_DESC_PARAM_ENM4_CAP_ADJ_FCTR	= 0x42,
- 	GEOMETRY_DESC_PARAM_OPT_LOG_BLK_SIZE	= 0x44,
-+	GEOMETRY_DESC_HPB_REGION_SIZE		= 0x48,
-+	GEOMETRY_DESC_HPB_NUMBER_LU		= 0x49,
-+	GEOMETRY_DESC_HPB_SUBREGION_SIZE	= 0x4A,
-+	GEOMETRY_DESC_HPB_DEVICE_MAX_ACTIVE_REGIONS	= 0x4B,
- 	GEOMETRY_DESC_PARAM_WB_MAX_ALLOC_UNITS	= 0x4F,
- 	GEOMETRY_DESC_PARAM_WB_MAX_WB_LUNS	= 0x53,
- 	GEOMETRY_DESC_PARAM_WB_BUFF_CAP_ADJ	= 0x54,
-@@ -327,6 +337,7 @@ enum {
- 
- /* Possible values for dExtendedUFSFeaturesSupport */
- enum {
-+	UFS_DEV_HPB_SUPPORT		= BIT(7),
- 	UFS_DEV_WRITE_BOOSTER_SUP	= BIT(8),
- };
- 
-@@ -537,6 +548,7 @@ struct ufs_dev_info {
- 	u8 *model;
- 	u16 wspecversion;
- 	u32 clk_gating_wait_us;
-+	u8 b_ufs_feature_sup;
- 	u32 d_ext_ufs_feature_sup;
- 	u8 b_wb_buffer_type;
- 	u32 d_wb_alloc_units;
--- 
-2.17.1
+I am based on this commit:
+776b7b25f10b (origin/linux-next) vhost: add an RPMsg API
 
+On top of that I merged
+git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git
 
+and after that I have Jason's patches (five patches), than one patch
+from Max and then my patches (seven).
+
+It builds fine on x84_64.
+I fixed some conflicts on Jason's patches.
+
+I also tested it to verify it's working.
+
+BTW, for some reason I did not get all the patches into my mailbox and I
+suspect they were not all sent. Did you get all the series 0-13?
+
+Please let me know, and if needed I'll resend.
+
+> 
+> > git pull git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next 
+> > 
+> > They also depend Jason Wang's patches: https://lkml.org/lkml/2020/7/1/301
+> 
+> The ones you included, right?
+>
+
+Right.
+ 
+> > Jason, I had to resolve some conflicts so I would appreciate of you can verify
+> > that it is ok.
+> > 
+> > The following series of patches provide VDPA support for Mellanox
+> > devices. The supported devices are ConnectX6 DX and newer.
+> > 
+> > Currently, only a network driver is implemented; future patches will
+> > introduce a block device driver. iperf performance on a single queue is
+> > around 12 Gbps.  Future patches will introduce multi queue support.
+> > 
+> > The files are organized in such a way that code that can be used by
+> > different VDPA implementations will be placed in a common are resides in
+> > drivers/vdpa/mlx5/core.
+> > 
+> > Only virtual functions are currently supported. Also, certain firmware
+> > capabilities must be set to enable the driver. Physical functions (PFs)
+> > are skipped by the driver.
+> > 
+> > To make use of the VDPA net driver, one must load mlx5_vdpa. In such
+> > case, VFs will be operated by the VDPA driver. Although one can see a
+> > regular instance of a network driver on the VF, the VDPA driver takes
+> > precedence over the NIC driver, steering-wize.
+> > 
+> > Currently, the device/interface infrastructure in mlx5_core is used to
+> > probe drivers. Future patches will introduce virtbus as a means to
+> > register devices and drivers and VDPA will be adapted to it.
+> > 
+> > The mlx5 mode of operation required to support VDPA is switchdev mode.
+> > Once can use Linux or OVS bridge to take care of layer 2 switching.
+> > 
+> > In order to provide virtio networking to a guest, an updated version of
+> > qemu is required. This version has been tested by the following quemu
+> > version:
+> > 
+> > url: https://github.com/jasowang/qemu.git
+> > branch: vdpa
+> > Commit ID: 6f4e59b807db
+> > 
+> > 
+> > V2->V3
+> > Fix makefile to use include path relative to the root of the kernel
+> > 
+> > V3-V4
+> > Rebase Jason's patches on linux-next branch
+> > Fix krobot error on mips arch
+> > Make use of the free callback to destroy resoruces on unload
+> > Use VIRTIO_F_ACCESS_PLATFORM instead of legacy VIRTIO_F_IOMMU_PLATFORM
+> > Add empty implementations for get_vq_notification() and get_vq_irq()
+> > 
+> > 
+> > Eli Cohen (6):
+> >   net/vdpa: Use struct for set/get vq state
+> >   vdpa: Modify get_vq_state() to return error code
+> >   vdpa/mlx5: Add hardware descriptive header file
+> >   vdpa/mlx5: Add support library for mlx5 VDPA implementation
+> >   vdpa/mlx5: Add shared memory registration code
+> >   vdpa/mlx5: Add VDPA driver for supported mlx5 devices
+> > 
+> > Jason Wang (5):
+> >   vhost-vdpa: refine ioctl pre-processing
+> >   vhost: generialize backend features setting/getting
+> >   vhost-vdpa: support get/set backend features
+> >   vhost-vdpa: support IOTLB batching hints
+> >   vdpasim: support batch updating
+> > 
+> > Max Gurtovoy (1):
+> >   vdpa: remove hard coded virtq num
+> > 
+> >  drivers/vdpa/Kconfig                   |   19 +
+> >  drivers/vdpa/Makefile                  |    1 +
+> >  drivers/vdpa/ifcvf/ifcvf_base.c        |    4 +-
+> >  drivers/vdpa/ifcvf/ifcvf_base.h        |    4 +-
+> >  drivers/vdpa/ifcvf/ifcvf_main.c        |   13 +-
+> >  drivers/vdpa/mlx5/Makefile             |    4 +
+> >  drivers/vdpa/mlx5/core/mlx5_vdpa.h     |   91 ++
+> >  drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h |  168 ++
+> >  drivers/vdpa/mlx5/core/mr.c            |  484 ++++++
+> >  drivers/vdpa/mlx5/core/resources.c     |  284 ++++
+> >  drivers/vdpa/mlx5/net/main.c           |   76 +
+> >  drivers/vdpa/mlx5/net/mlx5_vnet.c      | 1965 ++++++++++++++++++++++++
+> >  drivers/vdpa/mlx5/net/mlx5_vnet.h      |   24 +
+> >  drivers/vdpa/vdpa.c                    |    3 +
+> >  drivers/vdpa/vdpa_sim/vdpa_sim.c       |   53 +-
+> >  drivers/vhost/net.c                    |   18 +-
+> >  drivers/vhost/vdpa.c                   |   76 +-
+> >  drivers/vhost/vhost.c                  |   15 +
+> >  drivers/vhost/vhost.h                  |    2 +
+> >  include/linux/vdpa.h                   |   24 +-
+> >  include/uapi/linux/vhost.h             |    2 +
+> >  include/uapi/linux/vhost_types.h       |   11 +
+> >  22 files changed, 3284 insertions(+), 57 deletions(-)
+> >  create mode 100644 drivers/vdpa/mlx5/Makefile
+> >  create mode 100644 drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> >  create mode 100644 drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h
+> >  create mode 100644 drivers/vdpa/mlx5/core/mr.c
+> >  create mode 100644 drivers/vdpa/mlx5/core/resources.c
+> >  create mode 100644 drivers/vdpa/mlx5/net/main.c
+> >  create mode 100644 drivers/vdpa/mlx5/net/mlx5_vnet.c
+> >  create mode 100644 drivers/vdpa/mlx5/net/mlx5_vnet.h
+> > 
+> > -- 
+> > 2.26.0
+> 
