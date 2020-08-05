@@ -2,114 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7EE23D07B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81C823D099
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728893AbgHETtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
+        id S1728710AbgHETvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728339AbgHETsw (ORCPT
+        with ESMTP id S1728624AbgHETuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:48:52 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A9BC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 12:48:52 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id k18so16212602pfp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:48:52 -0700 (PDT)
+        Wed, 5 Aug 2020 15:50:44 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38296C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 12:50:44 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id x24so10192332otp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:50:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L17CWK1m3SliQ1EsOYU/bGzhjK9+vwZDDuk1FmFiO2U=;
-        b=1pykeJF3J6nCADZe+oNtNIXQbcs+6ezxghmqOsh5fLU98/DwcNnv6LNoX+V1+UugAi
-         jbyJ8S2TBOozl6G1DzMZCxynY3o6i+DGfRl/10ug/Rn+wOeWxyon8mc4qCiNfAcSOlaX
-         Q1HDUu/1/pzCfyrajnzKkwAgyJeEag+JYZyhXLp5kmPoCJVhcp06Lw+lUiLi3NvQWbh4
-         DG7P2QZ5iwlFIXFcJf3lYuWJzqqkVt3SAFOCFWWRU+dvO/DS/jWqvpCT48AGYfs2XRGS
-         II4pH/3/UBYQglTe1cGiwkxrDjQCtBpGnFjwHqTV0iO7m94pOe11X7M/NWYeGUYJjqyr
-         FznA==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VuI/sJKChWIgcA9YX17Vw0/G7XG/JpOM9iBt62Uihj0=;
+        b=QyMrRJ2Sdo1u1Ywbj9MGXheY1I0xnqtLQfoPR3Om141/eW9ET5BsyaqPDvXBZB4GTs
+         v0A3L/WNkHm9SCfyID7NAx9JCGgnfJfc9Go+T9kxD8QefiCVxXfGfLoezYJQYdUqjoWp
+         snrKykkM1x5AvEB4ZkAGuuGfzAjmCDL3T3xMU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=L17CWK1m3SliQ1EsOYU/bGzhjK9+vwZDDuk1FmFiO2U=;
-        b=qr0DoveL+Tbda+DC0szfFdE4nRn0COXr9j6IM89q08rcntY2rh5tQd3OAeFd8rNji2
-         EJGJNfB0Y1isBnMvPoqPwOswBtL05A0qSBweTR2a7yXCxs4H0mjQ1hdLwtvvtqXnCIMZ
-         tf8p7wZYH+E62RC3xN+fszYaEyesL+9z84nMTQW6GiwD4/K9D073+4yCspcLQHPCqiZf
-         Jf2zY9eLnRceGYZ6/+59M5l6dkifPltUUTSbIG8UUZRL5nOvza/XCgDrjOP2ZKVDhHn0
-         Jaa+cPh4VZcM++wtHhWFSmK9pjnCBFntDTFUTJj7C8pGYitTT+dEpM+5kKSglPZlRMcE
-         k5dQ==
-X-Gm-Message-State: AOAM530KgfuXB2NRahdctQA67C0yYYuvMyJZ9Bl/TuluhKdSqIKUyJ5n
-        WaDegeYK7yF7/NP7AUo+J4t5/w==
-X-Google-Smtp-Source: ABdhPJwLhRMrPJuYQBuTk34kbj1gU4nZ+/dxUu//j3YIMASMw5+RvnfEU2fU01veDmWaS+MvgWUtCQ==
-X-Received: by 2002:a63:e00c:: with SMTP id e12mr4364217pgh.413.1596656931925;
-        Wed, 05 Aug 2020 12:48:51 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id z189sm4627140pfb.178.2020.08.05.12.48.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 12:48:51 -0700 (PDT)
-Date:   Wed, 05 Aug 2020 12:48:51 -0700 (PDT)
-X-Google-Original-Date: Wed, 05 Aug 2020 12:48:49 PDT (-0700)
-Subject:     Re: [PATCH 1/2] riscv: ptrace: Use the correct API for `fcsr' access
-In-Reply-To: <alpine.LFD.2.21.2008051117180.24175@redsun52.ssa.fujisawa.hgst.com>
-CC:     viro@zeniv.linux.org.uk, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     macro@wdc.com
-Message-ID: <mhng-6e42b0e6-1f3b-41a3-a023-4145fb4d8980@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VuI/sJKChWIgcA9YX17Vw0/G7XG/JpOM9iBt62Uihj0=;
+        b=E6FjQWibGYUQAM+x26vGwYADNFNvr+WvO5+v8Zr5N9NB9WMv6WckZXjXBqj/0zsfm/
+         1thuxyb/ofwzYZYk21NLbILgL+arDa9A/lbXd3+rqtW63BOStcWuT14XXUpFXzocGfca
+         vpVfqXKLaP5zUS5aAj4s/cRqPjEXn8AIESRZMPedxGKVoJhKjHJOPHWHlCfvCqypxawX
+         JogfmjXoNBpLJ/MFxsj2TmxniRLz1MDGFtxcWb0mTyrz3/LRJNX9nanIRiwFH3nd/wyN
+         CRTXqkrPUedKk4P+vGAWQFh7Xq77lk2B++x58kKMUgSj/adVJsqnzpIDRpyayOP8mK1j
+         /ugA==
+X-Gm-Message-State: AOAM530h3sD0DeGZcUh74jJ2zCAnkuYo3QOGeU4J7XZXsf1rhQo+312Q
+        E/CVd/IaJpJ2eHKMEi0UOkyM5Q==
+X-Google-Smtp-Source: ABdhPJzVbpJRF9EmzEMLmBRCP07DM7eTcfR++AGDxEhQrnCm23HC8AzoYmVBFzNMocQQh1OVmG5p2g==
+X-Received: by 2002:a9d:3bb5:: with SMTP id k50mr3971985otc.361.1596657043297;
+        Wed, 05 Aug 2020 12:50:43 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id a66sm638956oob.44.2020.08.05.12.50.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 12:50:42 -0700 (PDT)
+Subject: Re: [PATCH] selftests: more general make nesting support
+To:     Greg Thelen <gthelen@google.com>, Shuah Khan <shuah@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200728073241.3625015-1-gthelen@google.com>
+ <CAHH2K0bU7w_rbKN_f0Fe_ZdGLtgBz_GVKS3eottTtm8P7QGoJA@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3d949545-a7f2-4057-1204-600eabfd8f28@linuxfoundation.org>
+Date:   Wed, 5 Aug 2020 13:50:41 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAHH2K0bU7w_rbKN_f0Fe_ZdGLtgBz_GVKS3eottTtm8P7QGoJA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 05 Aug 2020 03:25:11 PDT (-0700), macro@wdc.com wrote:
-> On Wed, 5 Aug 2020, Al Viro wrote:
->
->> > I'm not sure I understand what you're saying, but given that branch replaces
->> > all of this I guess it's best to just do nothing on our end here?
+On 8/5/20 1:36 PM, Greg Thelen wrote:
+> On Tue, Jul 28, 2020 at 12:32 AM Greg Thelen <gthelen@google.com> wrote:
 >>
->> It doesn't replace ->put() (for now); it _does_ replace ->get() and AFAICS the
->> replacement is much saner:
+>> selftests can be built from the toplevel kernel makefile (e.g. make
+>> kselftest-all) or directly (make -C tools/testing/selftests all).
 >>
->> static int riscv_fpr_get(struct task_struct *target,
->>                          const struct user_regset *regset,
->>                          struct membuf to)
->> {
->> 	struct __riscv_d_ext_state *fstate = &target->thread.fstate;
+>> The toplevel kernel makefile explicitly disables implicit rules with
+>> "MAKEFLAGS += -rR", which is passed to tools/testing/selftests.  Some
+>> selftest makefiles require implicit make rules, which is why
+>> commit 67d8712dcc70 ("selftests: Fix build failures when invoked from
+>> kselftest target") reenables implicit rules by clearing MAKEFLAGS if
+>> MAKELEVEL=1.
 >>
->> 	membuf_write(&to, fstate, offsetof(struct __riscv_d_ext_state, fcsr));
->> 	membuf_store(&to, fstate->fcsr);
->> 	return membuf_zero(&to, 4);     // explicitly pad
->> }
->
->  I'm glad to see the old interface go, it was cumbersome.
->
->> user_regset_copyout() calling conventions are atrocious and so are those of
->> regset ->get().  The best thing to do with both is to take them out of their
->> misery and be done with that.  Do you see any problems with riscv gdbserver
->> on current linux-next?  If not, I'd rather see that "API" simply go away...
->> If there are problems, I would very much prefer fixes on top of what's done
->> in that branch.
->
->  I can push linux-next through regression-testing with RISC-V gdbserver
-> and/or native GDB if that would help.  This is also used with core dumps,
-> but honestly I don't know what state RISC-V support is in in the BFD/GDB's
-> core dump interpreter, as people tend to forget about the core dump
-> feature nowadays.
+>> So far so good.  However, if the toplevel makefile is called from an
+>> outer makefile then MAKELEVEL will be elevated, which breaks the
+>> MAKELEVEL equality test.
+>> Example wrapped makefile error:
+>>    $ cat ~/Makefile
+>>    all:
+>>          $(MAKE) defconfig
+>>          $(MAKE) kselftest-all
+>>    $ make -sf ~/Makefile
+>>      futex_wait_timeout.c /src/tools/testing/selftests/kselftest_harness.h   /src/tools/testing/selftests/kselftest.h ../include/futextest.h ../include/atomic.h ../include/logging.h -lpthread -lrt -o /src/tools/testing/selftests/futex/functional/futex_wait_timeout
+>>    make[4]: futex_wait_timeout.c: Command not found
+>>
+>> Rather than checking $(MAKELEVEL), check for $(LINK.c), which is a more
+>> direct side effect of "make -R".  This enables arbitrary makefile
+>> nesting.
+>>
+>> Signed-off-by: Greg Thelen <gthelen@google.com>
+>> ---
+>>   tools/testing/selftests/Makefile | 8 ++++----
+>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+>> index 1195bd85af38..289a2e4b3f6f 100644
+>> --- a/tools/testing/selftests/Makefile
+>> +++ b/tools/testing/selftests/Makefile
+>> @@ -84,10 +84,10 @@ endif
+>>   # of the targets gets built.
+>>   FORCE_TARGETS ?=
+>>
+>> -# Clear LDFLAGS and MAKEFLAGS if called from main
+>> -# Makefile to avoid test build failures when test
+>> -# Makefile doesn't have explicit build rules.
+>> -ifeq (1,$(MAKELEVEL))
+>> +# Clear LDFLAGS and MAKEFLAGS when implicit rules are missing.  This provides
+>> +# implicit rules to sub-test Makefiles which avoids build failures in test
+>> +# Makefile that don't have explicit build rules.
+>> +ifeq (,$(LINK.c))
+>>   override LDFLAGS =
+>>   override MAKEFLAGS =
+>>   endif
+>> --
+>> 2.28.0.rc0.142.g3c755180ce-goog
+> 
+> Is there any feedback on this patch?  It's not high priority but something that
+> will help me make more use of selftests.
+> 
 
-IIRC Andrew does GDB test suite runs sometimes natively on Linux as part of
-general GDB maintiance and we don't see major issues, but I'm pretty checked
-out of GDB development these days so he would know better than I do.  It's
-always great to have someone test stuff, though -- and I doubt he's testing
-linux-next.  It's been on my TODO list for a long time now to put together
-tip-of-tree testing for the various projects but I've never gotten around to
-doing it.
+No issues with the patch. I will apply it once the merge window ends.
 
-Oddly enough, despite not really using GDB I have used it for core dumps -- I
-was writing a tool to convert commit logs to coredumps with the GDB reverse
-debugging annotations, but I never got around to finishing it.
+thanks,
+-- Shuah
