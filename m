@@ -2,105 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F12823CF8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFD523CF33
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729063AbgHETWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728960AbgHERlq (ORCPT
+        id S1728774AbgHETQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:16:29 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39366 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729144AbgHESAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:41:46 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C23C0D941F;
-        Wed,  5 Aug 2020 08:16:52 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id j16so4477021ooc.7;
-        Wed, 05 Aug 2020 08:16:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ma8XUemDPSU43scaub//Tj8SjqSjSSXU9X7SXIYVoOU=;
-        b=bmU5erMabaHnH11G4ugT3ZM+1sK5m+CgBAaNTNYXbKwghE1JcaTdfyatMzrkN6xRef
-         8EyEh25LYHNs4TS3f4pJAkWTp5YFFgNSK3ELo+H/WbG2E9LWM762Cz3tKJiSc6zm3ViG
-         J0jnPEFIfMw17vO0s7xuJmbGKFt7L9SS+jsHuGwFpussM36hCV716bIr74P5QdnjImBf
-         8PPeWstiKPeXSx2pLUCkb5rOTzSLytHTfDnEKL3NcyLBucMwnutLVMbLhkLp5FTHqF6L
-         q5Ay4BPAEamWokIyry1/VbK2ccfvRIu99e/1qHRH5hAewbZ6HLYixM6lDLnZuivkVD+j
-         +ncA==
-X-Gm-Message-State: AOAM530wFlP+DcDNIcMPIc1IHfgx/k6PtcqyB1SRwDI9Jh/fd5Et9e8T
-        sUCF2xXLhgEgbqLyA1GhX/cM4coEDBUUP1k+V88eDJD5
-X-Google-Smtp-Source: ABdhPJwe10oto1QkttDyucMJ1qGeA6Wk+Q0uDI4AF3ApXEWocJh2xeIhIPIH+vNM+BYieFqojz9wao5UdxjTIgmcZbQ=
-X-Received: by 2002:a9d:7d8c:: with SMTP id j12mr2827246otn.250.1596636279974;
- Wed, 05 Aug 2020 07:04:39 -0700 (PDT)
+        Wed, 5 Aug 2020 14:00:40 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k3K8N-0003HE-PN; Wed, 05 Aug 2020 14:11:11 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Lijun Ou <oulijun@huawei.com>, Wei Hu <huwei87@hisilicon.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/hns: fix spelling mistake "epmty" -> "empty"
+Date:   Wed,  5 Aug 2020 15:11:11 +0100
+Message-Id: <20200805141111.22804-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200728134226.27592-1-trix@redhat.com>
-In-Reply-To: <20200728134226.27592-1-trix@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 5 Aug 2020 16:04:28 +0200
-Message-ID: <CAMuHMdX-m+q-SYveM2BQyM+EoiQ1ctVviJzjs+UbTzH9cJaqMQ@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: of: reset name variable in of_gpiochip_add_hog
-To:     trix@redhat.com
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Frank Rowand <frank.rowand@sony.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+From: Colin Ian King <colin.king@canonical.com>
 
-Thanks for your patch!
+There is a spelling mistake in a dev_dbg message. Fix it.
 
-On Tue, Jul 28, 2020 at 3:42 PM <trix@redhat.com> wrote:
-> From: Tom Rix <trix@redhat.com>
->
-> Clang static analysis reports this error
->
-> gpiolib-of.c:664:9: warning: 2nd function call argument
->   is an uninitialized value [core.CallAndMessage]
->         ret = gpiod_hog(desc, name, lflags, dflags);
->
-> name is sometimes set by of_parse_own_gpio
-> name is always used by gpiod_hog
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is a false-positive: gpiod_hog() is only called if
-of_parse_own_gpio() returned success, in which case it has filled in the
-name output parameter.
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index 07b4c85d341d..aeb3a6fa7d47 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -535,7 +535,7 @@ static void hns_roce_set_sdb_ext(struct hns_roce_dev *hr_dev, u32 ext_sdb_alept,
+ 	roce_write(hr_dev, ROCEE_EXT_DB_SQ_H_REG, val);
+ 
+ 	dev_dbg(dev, "ext SDB depth: 0x%x\n", db->ext_db->esdb_dep);
+-	dev_dbg(dev, "ext SDB threshold: epmty: 0x%x, ful: 0x%x\n",
++	dev_dbg(dev, "ext SDB threshold: empty: 0x%x, ful: 0x%x\n",
+ 		ext_sdb_alept, ext_sdb_alful);
+ }
+ 
+-- 
+2.27.0
 
-> So it is necessary to reset name so an old value is
-> not mistakenly used by gpiod_hog.
-
-Hence this is not needed.
-
-> Fixes: bc21077e084b ("gpio: of: Extract of_gpiochip_add_hog()")
-
-This is not the commit that introduced the "bug".
-
-> Signed-off-by: Tom Rix <trix@redhat.com>
-
-> --- a/drivers/gpio/gpiolib-of.c
-> +++ b/drivers/gpio/gpiolib-of.c
-> @@ -657,6 +657,7 @@ static int of_gpiochip_add_hog(struct gpio_chip *chip, struct device_node *hog)
->         int ret;
->
->         for (i = 0;; i++) {
-> +               name = NULL;
->                 desc = of_parse_own_gpio(hog, chip, i, &name, &lflags, &dflags);
->                 if (IS_ERR(desc))
->                         break;
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
