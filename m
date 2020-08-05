@@ -2,128 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BDC23D1E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BD823D1F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgHEUHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:07:16 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60878 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgHEQeG (ORCPT
+        id S1728367AbgHEUH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:07:59 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:44956 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726710AbgHEQcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:34:06 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075GM4BD038971;
-        Wed, 5 Aug 2020 16:33:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=IQLdx5abes21j8K7iHnVnBLrSGwXYmzNR4vIr2rCepI=;
- b=q25j3yFCZq1ZH0dHoKbPHv8VCIDBkrVg3ESlEMQDIO313ZVAJL3bbCVbkb87xqQrRUCm
- DfEqdeLSynhXTeQqUjffQd7tCybsxI5V6XItsOVGvoV1y/+WTHJtLq0knW7tro0lSVOv
- ERcCwS+/uwfmQsffNQvLBPBN5QgyUMIKp368IpUQlFtCrTqLx15i/WuTy6OY49J/UwbY
- w5CSyW0Sz14pqW8luVJCotpnL5HKonN2RZYUSgpi98TmDG6IeXp7/LlW6BLkbOZjVKxf
- 84uZpBM8DSraJiNmdLk98yq/t5ykat3kqPuv/ENLvgYkV7yy2uqmZTxy6lNN7rCVXC3C WA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 32n11nb3fk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 05 Aug 2020 16:33:33 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075GJBpZ061181;
-        Wed, 5 Aug 2020 16:31:32 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 32p5gu12aq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 05 Aug 2020 16:31:30 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 075GVTHY020512;
-        Wed, 5 Aug 2020 16:31:29 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 05 Aug 2020 09:31:29 -0700
-Date:   Wed, 5 Aug 2020 09:31:26 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, riteshh@linux.ibm.com,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [GIT PULL] iomap: new code for 5.9-rc1
-Message-ID: <20200805163126.GC6107@magnolia>
-References: <20200805153214.GA6090@magnolia>
- <CAHc6FU6yMnuKdVsAXkWgwr2ViMSXJdBXksrQDvHwaaw4p8u0rQ@mail.gmail.com>
- <20200805162349.GB6107@magnolia>
+        Wed, 5 Aug 2020 12:32:47 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 41B9F20B490F;
+        Wed,  5 Aug 2020 09:32:45 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 41B9F20B490F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1596645165;
+        bh=8yTIBJVbmtc/Ck+OeQOYKUTT/Vn4mSXQcj3sHYU5LSU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rcJA6biwrheMOPMW1mbfKbELuTrJnZPGduuj3E6ondhtAyA2zpMThDwsu9URxK6Bg
+         w8zeCZVMVOhL767hzJD213nTDYgsLPIf5L7tt392sCHkW8ehdZ0pGEdSHzQyDnOlkN
+         SxqnVt+vKbHcN6/j8D92NBImdtUMYHNuYrJ7nSeg=
+Date:   Wed, 5 Aug 2020 11:32:43 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>, zohar@linux.ibm.com,
+        stephen.smalley.work@gmail.com, sashal@kernel.org,
+        jmorris@namei.org, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
+Message-ID: <20200805163243.GD4365@sequoia>
+References: <20200805004331.20652-1-nramas@linux.microsoft.com>
+ <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
+ <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
+ <c7c168f2-e30b-d2c5-abcb-1b6919197474@schaufler-ca.com>
+ <20200805154504.GB4365@sequoia>
+ <7c7a076b-6ba7-2e8d-409a-b3b4e4738c41@linux.microsoft.com>
+ <20200805161449.GC4365@sequoia>
+ <ae80581d-a34c-51f4-d4f9-94c1e341fd15@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200805162349.GB6107@magnolia>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
- phishscore=0 spamscore=0 adultscore=0 suspectscore=1 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008050132
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 mlxscore=0
- suspectscore=1 mlxlogscore=999 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008050132
+In-Reply-To: <ae80581d-a34c-51f4-d4f9-94c1e341fd15@linux.microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 09:23:49AM -0700, Darrick J. Wong wrote:
-> On Wed, Aug 05, 2020 at 05:54:31PM +0200, Andreas Gruenbacher wrote:
-> > Hi Darrick,
+On 2020-08-05 09:21:24, Lakshmi Ramasubramanian wrote:
+> On 8/5/20 9:14 AM, Tyler Hicks wrote:
+> > On 2020-08-05 09:07:48, Lakshmi Ramasubramanian wrote:
+> > > On 8/5/20 8:45 AM, Tyler Hicks wrote:
+> > > > On 2020-08-05 08:36:40, Casey Schaufler wrote:
+> > > > > On 8/4/2020 6:14 PM, Lakshmi Ramasubramanian wrote:
+> > > > > > On 8/4/20 6:04 PM, Casey Schaufler wrote:
+> > > > > > > On 8/4/2020 5:43 PM, Lakshmi Ramasubramanian wrote:
+> > > > > > > > Critical data structures of security modules are currently not measured.
+> > > > > > > > Therefore an attestation service, for instance, would not be able to
+> > > > > > > > attest whether the security modules are always operating with the policies
+> > > > > > > > and configuration that the system administrator had setup. The policies
+> > > > > > > > and configuration for the security modules could be tampered with by
+> > > > > > > > malware by exploiting kernel vulnerabilities or modified through some
+> > > > > > > > inadvertent actions on the system. Measuring such critical data would
+> > > > > > > > enable an attestation service to better assess the state of the system.
+> > > > > > > 
+> > > > > > > I still wonder why you're calling this an LSM change/feature when
+> > > > > > > all the change is in IMA and SELinux. You're not putting anything
+> > > > > > > into the LSM infrastructure, not are you using the LSM infrastructure
+> > > > > > > to achieve your ends. Sure, you *could* support other security modules
+> > > > > > > using this scheme, but you have a configuration dependency on
+> > > > > > > SELinux, so that's at best going to be messy. If you want this to
+> > > > > > > be an LSM "feature" you need to use the LSM hooking mechanism.
+> > > > > > 
+> > > > > > > 
+> > > > > > > I'm not objecting to the feature. It adds value. But as you've
+> > > > > > > implemented it it is either an IMA extension to SELinux, or an
+> > > > > > > SELiux extension to IMA. Could AppArmor add hooks for this without
+> > > > > > > changing the IMA code? It doesn't look like it to me.
+> > > > > > 
+> > > > > > The check in IMA to allow the new IMA hook func LSM_STATE and LSM_POLICY when SELinux is enabled is just because SELinux is the only security module using these hooks now.
+> > > > > > 
+> > > > > > To enable AppArmor, for instance, to use the new IMA hooks to measure state and policy would just require adding the check for CONFIG_SECURITY_APPARMOR. Other than that, there are no IMA changes needed to support AppArmor or other such security modules.
+> > > > > 
+> > > > > This is exactly what I'm objecting to. What if a system has both SELinux
+> > > > > and AppArmor compiled in? What if it has both enabled?
+> > > > 
+> > > > The SELinux state and policy would be measured but the AppArmor
+> > > > state/policy would be silently ignored. This isn't ideal as the IMA
+> > > > policy author would need to read the kernel code to figure out which
+> > > > LSMs are going to be measured.
+> > > 
+> > > Tyler - I am not sure why AppArmor state\policy would be ignored when both
+> > > SELinux and AppArmor are enabled. Could you please clarify?
 > > 
-> > On Wed, Aug 5, 2020 at 5:40 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> > > ----------------------------------------------------------------
-> > > Andreas Gruenbacher (1):
-> > >       iomap: Make sure iomap_end is called after iomap_begin
-> > 
-> > that commit (d1b4f507d71de) contains the following garbage in the
-> > commit message:
-> > 
-> >     The message from this sender included one or more files
-> >     which could not be scanned for virus detection; do not
-> >     open these files unless you are certain of the sender's intent.
-> > 
-> >     ----------------------------------------------------------------------
-> > 
-> > How did it come to that?
+> > I think Casey is talking about now (when AppArmor is not supported by
+> > this feature) and you're talking about the future (when AppArmor may be
+> > supported by this feature).
 > 
-> I have no idea.  It's not in the email that I turned into a patch, but
-> golly roundtripping git patches through email and back to git sucks.
+> Got it - thanks for clarifying.
+> 
+> But with the current code if SELinux is enabled on the system, but AppArmor
+> is not and the IMA policy contains "measure func=LSM_STATE" then the policy
+> will be rejected as "-EINVAL".
 
-Aha-- the effing Oracle email virus scanner doesn't run on mails coming
-in via mailing lists (which is the copy that I keep in my archive) but
-the copy that you sent direct to me /did/ get a virus scan, which failed
-because it's too stupid to recognize plain text, so the virus scanner
-injected its stupid warning *into the message body*, and then I git-am'd
-that without noticing.
+The AppArmor policy load? Yes, the load will fail.
 
-S'ok, they're moving us to Exchange soon, so I expect never to hear from
-any of you ever again.
+What Casey is talking about is when SELinux and AppArmor are enabled in
+the kernel config but AppArmor is active. This scenario is true in
+distro kernels such as Ubuntu's kernel:
 
---D
+$ grep -e CONFIG_SECURITY_SELINUX= -e CONFIG_SECURITY_APPARMOR= /boot/config-5.4.0-42-generic 
+CONFIG_SECURITY_SELINUX=y
+CONFIG_SECURITY_APPARMOR=y
+$ cat /sys/kernel/security/lsm
+lockdown,capability,yama,apparmor
 
+Casey also likely has LSM stacking in mind here where SELinux and
+AppArmor could both be active at the same time but the LSM stacking
+series is not yet applied.
+
+Tyler
+
+> So the policy author would get a feedback even now.
+> Correct me if I am wrong.
 > 
-> Oh well, I guess I have to rebase the whole branch now.
-> 
-> Linus: please ignore this pull request.
-> 
-> --D
-> 
-> > 
-> > Thanks,
-> > Andreas
-> > 
-> 
+>  -lakshmi
