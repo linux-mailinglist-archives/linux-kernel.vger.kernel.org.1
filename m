@@ -2,53 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D1F23D02B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CA923D02D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgHETav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:30:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728586AbgHETa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:30:27 -0400
-Subject: Re: [GIT PULL] USB/Thunderbolt patches for 5.9-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596655824;
-        bh=RNKlLDsxzIi6tmaPwQpT2046A1v3ABwRrprGAFgNa+k=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=s84tR+BDnrjuXgLKYaIgsIcoe+KqQGc91Tflj8sily9QT+V7jywG9Ooq1wPe0d+ij
-         v9aWRgU9z5iM/mGy1nBVKIL+gK/dNVdN/cqcp6ymiV3NM7M0If2Qsi/VOBBi/kQt6S
-         /V6R6a9ZhkikkmaT3XxY0KhWdSGkJpOdBHf0TNKg=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200804173811.GA513846@kroah.com>
-References: <20200804173811.GA513846@kroah.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200804173811.GA513846@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.9-rc1
-X-PR-Tracked-Commit-Id: e3ee0e740c3887d2293e8d54a8707218d70d86ca
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ecfd7940b8641da6e41ca94eba36876dc2ba827b
-Message-Id: <159665582422.8842.6896986572629697703.pr-tracker-bot@kernel.org>
-Date:   Wed, 05 Aug 2020 19:30:24 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+        id S1728526AbgHETb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728951AbgHETbG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 15:31:06 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC004C061575;
+        Wed,  5 Aug 2020 12:31:05 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 2DB3A152F10F1;
+        Wed,  5 Aug 2020 12:14:19 -0700 (PDT)
+Date:   Wed, 05 Aug 2020 12:31:03 -0700 (PDT)
+Message-Id: <20200805.123103.464522080473075661.davem@davemloft.net>
+To:     sbrivio@redhat.com
+Cc:     sfr@canb.auug.org.au, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        heiko.carstens@de.ibm.com, xiyou.wangcong@gmail.com
+Subject: Re: [PATCH RESEND net-next] ip_tunnel_core: Fix build for archs
+ without _HAVE_ARCH_IPV6_CSUM
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200805153931.50a3d518@redhat.com>
+References: <20200805153931.50a3d518@redhat.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 05 Aug 2020 12:14:19 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 4 Aug 2020 19:38:11 +0200:
+From: Stefano Brivio <sbrivio@redhat.com>
+Date: Wed, 5 Aug 2020 15:39:31 +0200
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.9-rc1
+> On architectures defining _HAVE_ARCH_IPV6_CSUM, we get
+> csum_ipv6_magic() defined by means of arch checksum.h headers. On
+> other architectures, we actually need to include net/ip6_checksum.h
+> to be able to use it.
+> 
+> Without this include, building with defconfig breaks at least for
+> s390.
+> 
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Fixes: 4cb47a8644cc ("tunnels: PMTU discovery support for directly bridged IP packets")
+> Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ecfd7940b8641da6e41ca94eba36876dc2ba827b
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Applied, thank you.
