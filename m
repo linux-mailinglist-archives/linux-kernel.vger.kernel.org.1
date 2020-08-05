@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59E223CE4E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C1D23CE55
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgHESXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 14:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60022 "EHLO
+        id S1729227AbgHESYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 14:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729177AbgHESLJ (ORCPT
+        with ESMTP id S1729178AbgHESLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 5 Aug 2020 14:11:09 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C17C0617AA;
-        Wed,  5 Aug 2020 11:10:04 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id kr4so5002588pjb.2;
-        Wed, 05 Aug 2020 11:10:04 -0700 (PDT)
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D734C06174A;
+        Wed,  5 Aug 2020 11:10:10 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id u20so1247784pfn.0;
+        Wed, 05 Aug 2020 11:10:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WTM3EObT3LvzgDa2Th+yu/O1H5aR0y1ccsFniyABYRo=;
-        b=l4cTspdyAYCWbEjppQX+Fb2L416fUEAwNKrrHUm6B4zJghAaxhcegEK8Omg5m8tif/
-         IZZ7CHtevkQEffmuJ1bfi14ttSviBep+rxI3x1uiPcSCOPbV8SGOR5Ukk9akWvIRUjNF
-         eXKOL3rKqc+no4ChaLWdTpnV2Z0Dj0sRtEPpwojRcq1N4b1ChtPil14pHqATbTm8saxO
-         kg2KDNbbddnL7mzL0c1I7Qykl5BwT/ekAqUX0uL6zJaMidx5y1hZDeQDpsPr0YvLpgoH
-         /ieDeUaCUV2Ib8+avnDnARBYJn6BzHmXrWswCJv1H1XTKdofPT61EMyIx96bGPkCf6Fv
-         DPQA==
+        bh=BIelC/rsG5LlfCfiRk2OK0We+ffRSIzCW8qbxQDXpBs=;
+        b=hf+eR422jWMydn6U5vfGmRcr6WRiQRedOZ1+fXRaGmOLOA0QDcOVCKczD2IOQfnMUa
+         DRWfaTJEcBBZ3Br/8mn3yAkuUoY6lTQbfumrxdiGRxYXQXH3M9O5gbsUxBp249ODISfq
+         NlvL/NyyPy11GcV+dU8nAynEWgYDY6uVIWTk+VWVHvQNKmpXaAWghFjHScQ9N3e9Jcsb
+         sNnUIGlLiKsdsk1WWudgPEkWLiPoclIlPbY9fS8f6r9RSypbRICuC616VoLB/YajcYod
+         l+XoEN11YMvw7ZnVAspjvjN2UsRb8j2bnhYKn6wcbDM8Ji01zcPUbDDcwkJ6STajEBnJ
+         QdLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WTM3EObT3LvzgDa2Th+yu/O1H5aR0y1ccsFniyABYRo=;
-        b=O4VFaBqj/AJG12uYBtk1WsrKk3wLAQOdSYI/hgi9wSenAqBq+IvVbkHJURIiZM7W5d
-         tZv0QiyqYTSZ24m5Lg2QLLKOdm294UilCctKQsoYWwBvhDMvySH0JEuw6790dtwjpS88
-         QA9ohGt91Gpk9yiM7odjEOoagpi2zlWE4TCReIUdVyLj00J2MR8+QnQXX8nwpTEMSNbG
-         6msBH03qkn4zQTMVDP3DSky17eOekmSXzoeIvDEof7qQyImnMnzBQeZUkROFWY3m9caT
-         7TQBgQI94Ydw2gNUSWLZbJjN4ErpZmGJQlK5NyhaIlHawdcj8w8WAHiAaCFJDqaE8zPe
-         WiNQ==
-X-Gm-Message-State: AOAM531npVDJpq6YBPqVkxFX+zfZTY7RCLAbIYd6KTh9hUfsV3u/wGyg
-        6+csPFF70JcSxYd2R+v18yY=
-X-Google-Smtp-Source: ABdhPJypMLjBmn+f2cVhb9fi+OqAIE6zgSB7z2zcn11Hpe+sE5yPaJdaOSSLzaDlYOzdrSFIi5ySwg==
-X-Received: by 2002:a17:90a:a511:: with SMTP id a17mr4595964pjq.23.1596651004006;
-        Wed, 05 Aug 2020 11:10:04 -0700 (PDT)
+        bh=BIelC/rsG5LlfCfiRk2OK0We+ffRSIzCW8qbxQDXpBs=;
+        b=PzwbWE4ac9ApM54nQtTfLzgtxK8/tQLgQGSaSGcp2Rthd9eHMYuXgs29WQZWM3dnuz
+         fG66D3AUz8jI5Ppm66Efnf2b289Vf9cGgm86B4bCQG8KGDJS7ae8S8hiar5oa6ZTvTKb
+         gpWmNX9sZdgBdLMA34r9TA7msSvKxRSaoD0lR2cbrrM5meGfcun21Wmrk9/7+COumN+5
+         vtmzTk3cAL4wlqZFVzR4/oWQMboFeE+eAxYPNlTC+tKJXIUlpKFy5XhBXJKk8oFtIv8U
+         LrbCQtmBB5JpgFF6/b3aEbcOkpOpzjhstsJ/43zK7NDPWZ7v6Z8e0Shnxrfk358plP0S
+         ++3A==
+X-Gm-Message-State: AOAM530BoyxqepzOqyYx0blHa9gIjxxv/HQlRI65LfMGltBRlT2keoTY
+        iPjmGwfCoTBu5YVAwFtt4lk=
+X-Google-Smtp-Source: ABdhPJyClIjD3Alxk47jczZytSJA88FVc00EHEWRuyu4K0qCudUE+Tf0WljQP/05ghRXsy+HixMFsw==
+X-Received: by 2002:a63:6945:: with SMTP id e66mr3926452pgc.177.1596651010103;
+        Wed, 05 Aug 2020 11:10:10 -0700 (PDT)
 Received: from varodek.iballbatonwifi.com ([103.105.152.86])
-        by smtp.gmail.com with ESMTPSA id t63sm4977510pfb.210.2020.08.05.11.09.58
+        by smtp.gmail.com with ESMTPSA id t63sm4977510pfb.210.2020.08.05.11.10.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 11:10:03 -0700 (PDT)
+        Wed, 05 Aug 2020 11:10:09 -0700 (PDT)
 From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
 To:     Bjorn Helgaas <helgaas@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
@@ -65,9 +65,9 @@ Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
         linux-geode@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
         Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v1 07/12] fbdev: savagefb: use generic power management
-Date:   Wed,  5 Aug 2020 23:37:17 +0530
-Message-Id: <20200805180722.244008-8-vaibhavgupta40@gmail.com>
+Subject: [PATCH v1 08/12] fbdev: cyber2000fb: use generic power management
+Date:   Wed,  5 Aug 2020 23:37:18 +0530
+Message-Id: <20200805180722.244008-9-vaibhavgupta40@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200805180722.244008-1-vaibhavgupta40@gmail.com>
 References: <20200805180722.244008-1-vaibhavgupta40@gmail.com>
@@ -91,116 +91,50 @@ and drivers are required to do only device-specific jobs.
 
 Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 ---
- drivers/video/fbdev/savage/savagefb_driver.c | 52 ++++++++++++--------
- 1 file changed, 32 insertions(+), 20 deletions(-)
+ drivers/video/fbdev/cyber2000fb.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/video/fbdev/savage/savagefb_driver.c b/drivers/video/fbdev/savage/savagefb_driver.c
-index 3c8ae87f0ea7..d6aae759e90f 100644
---- a/drivers/video/fbdev/savage/savagefb_driver.c
-+++ b/drivers/video/fbdev/savage/savagefb_driver.c
-@@ -2346,9 +2346,9 @@ static void savagefb_remove(struct pci_dev *dev)
+diff --git a/drivers/video/fbdev/cyber2000fb.c b/drivers/video/fbdev/cyber2000fb.c
+index 42d37bed518a..d45355b9a58c 100644
+--- a/drivers/video/fbdev/cyber2000fb.c
++++ b/drivers/video/fbdev/cyber2000fb.c
+@@ -1810,7 +1810,7 @@ static void cyberpro_pci_remove(struct pci_dev *dev)
  	}
  }
  
--static int savagefb_suspend(struct pci_dev *dev, pm_message_t mesg)
-+static int savagefb_suspend_late(struct device *dev, pm_message_t mesg)
+-static int cyberpro_pci_suspend(struct pci_dev *dev, pm_message_t state)
++static int __maybe_unused cyberpro_pci_suspend(struct device *dev)
  {
--	struct fb_info *info = pci_get_drvdata(dev);
-+	struct fb_info *info = dev_get_drvdata(dev);
- 	struct savagefb_par *par = info->par;
- 
- 	DBG("savagefb_suspend");
-@@ -2356,7 +2356,7 @@ static int savagefb_suspend(struct pci_dev *dev, pm_message_t mesg)
- 	if (mesg.event == PM_EVENT_PRETHAW)
- 		mesg.event = PM_EVENT_FREEZE;
- 	par->pm_state = mesg.event;
--	dev->dev.power.power_state = mesg;
-+	dev->power.power_state = mesg;
- 
- 	/*
- 	 * For PM_EVENT_FREEZE, do not power down so the console
-@@ -2374,17 +2374,29 @@ static int savagefb_suspend(struct pci_dev *dev, pm_message_t mesg)
- 	savagefb_blank(FB_BLANK_POWERDOWN, info);
- 	savage_set_default_par(par, &par->save);
- 	savage_disable_mmio(par);
--	pci_save_state(dev);
--	pci_disable_device(dev);
--	pci_set_power_state(dev, pci_choose_state(dev, mesg));
- 	console_unlock();
- 
  	return 0;
  }
- 
--static int savagefb_resume(struct pci_dev* dev)
-+static int __maybe_unused savagefb_suspend(struct device *dev)
+@@ -1818,9 +1818,9 @@ static int cyberpro_pci_suspend(struct pci_dev *dev, pm_message_t state)
+ /*
+  * Re-initialise the CyberPro hardware
+  */
+-static int cyberpro_pci_resume(struct pci_dev *dev)
++static int __maybe_unused cyberpro_pci_resume(struct device *dev)
  {
--	struct fb_info *info = pci_get_drvdata(dev);
-+	return savagefb_suspend_late(dev, PMSG_SUSPEND);
-+}
+-	struct cfb_info *cfb = pci_get_drvdata(dev);
++	struct cfb_info *cfb = dev_get_drvdata(dev);
+ 
+ 	if (cfb) {
+ 		cyberpro_pci_enable_mmio(cfb);
+@@ -1846,12 +1846,15 @@ static struct pci_device_id cyberpro_pci_table[] = {
+ 
+ MODULE_DEVICE_TABLE(pci, cyberpro_pci_table);
+ 
++static SIMPLE_DEV_PM_OPS(cyberpro_pci_pm_ops,
++			 cyberpro_pci_suspend,
++			 cyberpro_pci_resume);
 +
-+static int __maybe_unused savagefb_hibernate(struct device *dev)
-+{
-+	return savagefb_suspend_late(dev, PMSG_HIBERNATE);
-+}
-+
-+static int __maybe_unused savagefb_freeze(struct device *dev)
-+{
-+	return savagefb_suspend_late(dev, PMSG_FREEZE);
-+}
-+
-+static int __maybe_unused savagefb_resume(struct device *dev)
-+{
-+	struct fb_info *info = dev_get_drvdata(dev);
- 	struct savagefb_par *par = info->par;
- 	int cur_state = par->pm_state;
- 
-@@ -2396,20 +2408,11 @@ static int savagefb_resume(struct pci_dev* dev)
- 	 * The adapter was not powered down coming back from a
- 	 * PM_EVENT_FREEZE.
- 	 */
--	if (cur_state == PM_EVENT_FREEZE) {
--		pci_set_power_state(dev, PCI_D0);
-+	if (cur_state == PM_EVENT_FREEZE)
- 		return 0;
--	}
- 
- 	console_lock();
- 
--	pci_set_power_state(dev, PCI_D0);
--	pci_restore_state(dev);
--
--	if (pci_enable_device(dev))
--		DBG("err");
--
--	pci_set_master(dev);
- 	savage_enable_mmio(par);
- 	savage_init_hw(par);
- 	savagefb_set_par(info);
-@@ -2420,6 +2423,16 @@ static int savagefb_resume(struct pci_dev* dev)
- 	return 0;
- }
- 
-+static const struct dev_pm_ops savagefb_pm_ops = {
-+#ifdef CONFIG_PM_SLEEP
-+	.suspend	= savagefb_suspend,
-+	.resume		= savagefb_resume,
-+	.freeze		= savagefb_freeze,
-+	.thaw		= savagefb_resume,
-+	.poweroff	= savagefb_hibernate,
-+	.restore	= savagefb_resume,
-+#endif
-+};
- 
- static const struct pci_device_id savagefb_devices[] = {
- 	{PCI_VENDOR_ID_S3, PCI_CHIP_SUPSAV_MX128,
-@@ -2500,8 +2513,7 @@ static struct pci_driver savagefb_driver = {
- 	.name =     "savagefb",
- 	.id_table = savagefb_devices,
- 	.probe =    savagefb_probe,
--	.suspend =  savagefb_suspend,
--	.resume =   savagefb_resume,
-+	.driver.pm = &savagefb_pm_ops,
- 	.remove =   savagefb_remove,
+ static struct pci_driver cyberpro_driver = {
+ 	.name		= "CyberPro",
+ 	.probe		= cyberpro_pci_probe,
+ 	.remove		= cyberpro_pci_remove,
+-	.suspend	= cyberpro_pci_suspend,
+-	.resume		= cyberpro_pci_resume,
++	.driver.pm	= &cyberpro_pci_pm_ops,
+ 	.id_table	= cyberpro_pci_table
  };
  
 -- 
