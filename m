@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8F423C8B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACF323C8C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728094AbgHEJKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 05:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbgHEJKX (ORCPT
+        id S1728471AbgHEJL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 05:11:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56296 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728383AbgHEJLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 05:10:23 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF085C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 02:10:22 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id c10so2866626pjn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 02:10:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=rQKMQ1kqbR8Gl0+GJv0CY/jTM8wgLqzh+7PcecIdixo=;
-        b=taZwAr00hNVPPdtvSJoQWsn17PFruz9uEWZl6oJJAxXiZIOTv+zZe6zrXWIPlCVs34
-         F4o5QtfvqNkLRFsVDKwd3IKwJi00W4MMxgl+Vg8FvSb1usS/bmo442blGfzxsUNZs/lx
-         LF3DJSBiNo1LZfOCN+N+h5WgfHvTq9nCAyntt5D5D0qrMXEO/gycc6HV03IqHxfYTw1+
-         VMYhc277NF7vAOeEuoOOmag/LMFFvBFTXIYkYDs/fHguSxcowiSYNgFnkYMcs0Jptyl1
-         DnFnrz96GnrRSps1H/9Zm4/RhKetEqcMZ9/sw1PvKaPO3WF6LmYi7RHlUslRDFkhr6FG
-         nyyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=rQKMQ1kqbR8Gl0+GJv0CY/jTM8wgLqzh+7PcecIdixo=;
-        b=A9m4Jd5SD720CUM9O9geeSrPQpcqkZLF2VGBtrxoAAIPgwzEjzaMt6DlYBJNcO4LQM
-         FsdQvyIIpEgdcqyqxkJkoMbV7ORTPte7GuAWUrimE3J/CeWtPN4EPnm6rOaW/JOWk4KH
-         kKswVR4z33kEsS4hC65xFqHGnLE+usq8ABgEAX6iQ9rcZmUS5ygvmeVSkp/LkLk2e0Ma
-         xYTBe3ueYzlO45Z0a5qgI1HSrtE2sosQwH9NhwyX9Xo8Ci09ZJd0Np0iZW4Oac81i+Bg
-         BsSvG4lCLghU4N+T1SiLGiUnw3YN1PkkyQFOekmHm3vWMGsZWrFmhALCdLBP/w+T7Y7/
-         B4qQ==
-X-Gm-Message-State: AOAM532gPdSjKjdCCSIBqIceD9zvuqU1VA8fVgsawOllseAwH5zWjN8r
-        92ROJMfkh9ds4ydEwitHgadh2Fgh09aB4hUlmlY=
-X-Google-Smtp-Source: ABdhPJzW4+dE3PGD6qy5rxDR4O4e4d1ioJnHMs5N+C6E9XL16ytDCHAPqDyCnqHXXWPQailrW/P8SbcARSI5WHQ5d/Y=
-X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr2301236pjb.40.1596618621939;
- Wed, 05 Aug 2020 02:10:21 -0700 (PDT)
+        Wed, 5 Aug 2020 05:11:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596618680;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ozBDa1/xPHY8DQkaA9JqUMmSyVVQ14zD1Crd0znMso=;
+        b=PKa1vVZ2ktwBbfJkH7uBUaodNzgQ70N4m/jCCX7g/UIAZUY8lbCvw7c9g+fCCXqVyht8ex
+        9nC4o/YKAN4lSfzxNsQjmVN66prsFkDwEUcJYUhezxiXCa9yG0tA9vq0Ik9tc6LfFXIAx8
+        0LsaCfLZyY43EVbe7qQasoabcd3WOxU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-yG35Dv0sMVyPaqKEAb-z_A-1; Wed, 05 Aug 2020 05:11:16 -0400
+X-MC-Unique: yG35Dv0sMVyPaqKEAb-z_A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB37818C63C1;
+        Wed,  5 Aug 2020 09:11:11 +0000 (UTC)
+Received: from localhost (ovpn-12-71.pek2.redhat.com [10.72.12.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E2D2772E4F;
+        Wed,  5 Aug 2020 09:11:07 +0000 (UTC)
+Date:   Wed, 5 Aug 2020 17:11:05 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        clang-built-linux@googlegroups.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org
+Subject: Re: [PATCH v2 16/17] memblock: implement
+ for_each_reserved_mem_region() using __next_mem_region()
+Message-ID: <20200805091105.GW10792@MiWiFi-R3L-srv>
+References: <20200802163601.8189-1-rppt@kernel.org>
+ <20200802163601.8189-17-rppt@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:a161:0:0:0:0 with HTTP; Wed, 5 Aug 2020 02:10:21
- -0700 (PDT)
-Reply-To: robertandersonhappy1@gmail.com
-From:   robert <ekesineugwu5@gmail.com>
-Date:   Wed, 5 Aug 2020 02:10:21 -0700
-Message-ID: <CALM=UYp0C-MuiyBkz7zQOUEMEqnj6E8kyCnDxy-ZjvQDmxEvOg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200802163601.8189-17-rppt@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day my good friend.
+On 08/02/20 at 07:36pm, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Iteration over memblock.reserved with for_each_reserved_mem_region() used
+> __next_reserved_mem_region() that implemented a subset of
+> __next_mem_region().
+> 
+> Use __for_each_mem_range() and, essentially, __next_mem_region() with
+> appropriate parameters to reduce code duplication.
+> 
+> While on it, rename for_each_reserved_mem_region() to
+> for_each_reserved_mem_range() for consistency.
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  .clang-format                    |  2 +-
+>  arch/arm64/kernel/setup.c        |  2 +-
+>  drivers/irqchip/irq-gic-v3-its.c |  2 +-
+>  include/linux/memblock.h         | 12 +++------
+>  mm/memblock.c                    | 46 +++++++-------------------------
+>  5 files changed, 17 insertions(+), 47 deletions(-)
 
-How are you doing today? It has been long i hear from you, what is going on
-your side? Today i am very much happy to inform you about my success in
-getting those inheritance funds transferred under the co-operation of a new
-partner from India Asia. He is a Canadian but based in India, but presently
-i'm in India for investment projects with my own share of the total sum of
-millions dollars. meanwhile, i didn't forget your past efforts and attempts
-to assist me in transferring those inheritance funds despite that it failed
-us some how, i want you to contact my secretary in Lome Togo Republic West
-Africa, her name is solomon brand, this is he email address (
-solomonbrand003@gmail.com ), ask her to contact Ecobank were i
-kept the sum of $350,000.00, for your compensation, this compensation fund
-is for all the past efforts and attempts to assist me in the passed
-transaction. I appreciated your efforts at that time very much. so feel
-free and contact my secretary Mr solomon brand, and instruct her where
-Ecobank will transfer the total sum of $350,000.00.
+Reviewed-by: Baoquan He <bhe@redhat.com>
 
-Please do let me know immediately Ecobank transfer the fund $350.000.00
-into your own bank account, in the moment, I am too busy here because of
-the investment projects which i am having with my new partner at hand, so
-get in touch with Mr solomon brand on he email address, he will
-contact Ecobank on your behalf without any delay. Stay safe of Covid 19.
-
-Best regards,
-Dr. robert anderson
