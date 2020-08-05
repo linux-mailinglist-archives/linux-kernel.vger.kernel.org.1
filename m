@@ -2,152 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E313023CD5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BCA23CD14
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgHERZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:25:40 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50480 "EHLO
+        id S1728740AbgHERTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:19:48 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:33145 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728380AbgHERPw (ORCPT
+        by vger.kernel.org with ESMTP id S1728404AbgHERSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:15:52 -0400
+        Wed, 5 Aug 2020 13:18:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647748;
+        s=mimecast20190719; t=1596647883;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PnsUzUfj/maYqHomtkyX8zOTJsr1HA4XmfpAedp5w54=;
-        b=DeryNfi/I8TWnVYpbFGeKRYBxYXcBLI7lh768OVYH4z14HY5XStnmBqSQKo56/0zX2TkCJ
-        e1WQxONYb9ULFE/5OiujbQpV/BSFRA1Ouf1dAXt/rdC3Owg3gCs2QwwtpMQRK0Md9K1ZeS
-        SWgIoSdMfLWnHEAIPQhmSkud5vSZ6zg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-joDcdIZgNNOe4MMDKA_rmw-1; Wed, 05 Aug 2020 09:44:46 -0400
-X-MC-Unique: joDcdIZgNNOe4MMDKA_rmw-1
-Received: by mail-wr1-f72.google.com with SMTP id f14so13526341wrm.22
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PnsUzUfj/maYqHomtkyX8zOTJsr1HA4XmfpAedp5w54=;
-        b=UqY0ZLkjsjLKAz/5+7XBPQu9BXZLIosuKvqbd7CMdTt7RqdByFeMuM+ac0/3YmWn2o
-         qrYTb0FGk3GOE5E6Kb4N8vxXqHiSP44s1PhasqvE5/KTXQIG/M6yB54z1InpgmTZJSPW
-         ujDXQ1315k+EvYqoXtjqKKUiwOEqZ5yMCZtOdedhH9vCF8DwUEv7vgqrMreduI38XZBW
-         Sv/Thkk8Cmfxxejx4agK0Nad9pXQbjybrSWMw8NxdfaWsAW4rFGAIi3AWvHaMkbB5Nqj
-         ZLFD23sqe/tkXNt3M0Qr6EdUOoek9DbdSil0eF11ujtpBAifsM3peKmQ1L3AdOEhoitS
-         1+8A==
-X-Gm-Message-State: AOAM531dq70XDbw/VvRcubrq1yQO6vbg15R+8v7F86XdlkaYmtXj5Dfx
-        ASbDkCzaGpxpdD/Eppiyga5/sfpxVv5Rrrue7g5nAepxHDLhM+kIY93JYt25zY9KYpdzhhGa/+W
-        RyhqvnVJEgYkiGAnVDQHOoGOg
-X-Received: by 2002:a7b:ce83:: with SMTP id q3mr3330207wmj.5.1596635085325;
-        Wed, 05 Aug 2020 06:44:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxspf2A9DeJp/XDd6wXksBjAJ9F8IN1IMgFckmDgI4O8zQGWyVV23BOfPLRsaeXGpCTmqk5Bg==
-X-Received: by 2002:a7b:ce83:: with SMTP id q3mr3330187wmj.5.1596635085095;
-        Wed, 05 Aug 2020 06:44:45 -0700 (PDT)
-Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
-        by smtp.gmail.com with ESMTPSA id l21sm2648720wmj.25.2020.08.05.06.44.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:44 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:44:42 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Gonglei <arei.gonglei@huawei.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        bh=u6BgoSObisAMVxaJpQKxat6BIIq50UZiECX71HIFPB8=;
+        b=aZ7tmdLEVPwzcCnIg5z/chXFiwdYPYYXh1YUAkWe4dNyTansASoFm8SX/FUSs4eBu28m0u
+        CgEKFtkb8iMep2NL8PGzRBLsOsDfwuJO6GunnhW0cZ0fjVePGpp23SeOmPlX1cs2aRv0D2
+        kjRwobiwce7PFTYoCgVa9TSrKxn5WDk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-EMfVmt2BMeOPnRR1pJUjkQ-1; Wed, 05 Aug 2020 09:59:56 -0400
+X-MC-Unique: EMfVmt2BMeOPnRR1pJUjkQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D27D80183C;
+        Wed,  5 Aug 2020 13:59:55 +0000 (UTC)
+Received: from gondolin (ovpn-113-4.ams2.redhat.com [10.36.113.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 943062B6D9;
+        Wed,  5 Aug 2020 13:59:50 +0000 (UTC)
+Date:   Wed, 5 Aug 2020 15:59:48 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
-        virtualization@lists.linux-foundation.org,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH v3 32/38] virtio_crypto: convert to LE accessors
-Message-ID: <20200805134226.1106164-33-mst@redhat.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 38/38] virtio_net: use LE accessors for speed/duplex
+Message-ID: <20200805155948.4869b0cc.cohuck@redhat.com>
+In-Reply-To: <20200805134226.1106164-39-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
+        <20200805134226.1106164-39-mst@redhat.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805134226.1106164-1-mst@redhat.com>
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Virtio crypto is modern-only. Use LE accessors for config space.
+On Wed, 5 Aug 2020 09:45:00 -0400
+"Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/crypto/virtio/virtio_crypto_core.c | 46 +++++++++++-----------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+> Speed and duplex config fields depend on VIRTIO_NET_F_SPEED_DUPLEX
+> which being 63>31 depends on VIRTIO_F_VERSION_1.
+> 
+> Accordingly, use LE accessors for these fields.
+> 
+> Reported-by: Cornelia Huck <cohuck@redhat.com>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>  drivers/net/virtio_net.c        | 9 +++++----
+>  include/uapi/linux/virtio_net.h | 2 +-
+>  2 files changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index ba38765dc490..0934b1ec5320 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -2264,12 +2264,13 @@ static void virtnet_update_settings(struct virtnet_info *vi)
+>  	if (!virtio_has_feature(vi->vdev, VIRTIO_NET_F_SPEED_DUPLEX))
+>  		return;
+>  
+> -	speed = virtio_cread32(vi->vdev, offsetof(struct virtio_net_config,
+> -						  speed));
+> +	virtio_cread_le(vi->vdev, struct virtio_net_config, speed, &speed);
+> +
+>  	if (ethtool_validate_speed(speed))
+>  		vi->speed = speed;
+> -	duplex = virtio_cread8(vi->vdev, offsetof(struct virtio_net_config,
+> -						  duplex));
+> +
+> +	virtio_cread_le(vi->vdev, struct virtio_net_config, duplex, &duplex);
 
-diff --git a/drivers/crypto/virtio/virtio_crypto_core.c b/drivers/crypto/virtio/virtio_crypto_core.c
-index c8a962c62663..aeecce27fe8f 100644
---- a/drivers/crypto/virtio/virtio_crypto_core.c
-+++ b/drivers/crypto/virtio/virtio_crypto_core.c
-@@ -204,8 +204,8 @@ static int virtcrypto_update_status(struct virtio_crypto *vcrypto)
- 	u32 status;
- 	int err;
- 
--	virtio_cread(vcrypto->vdev,
--	    struct virtio_crypto_config, status, &status);
-+	virtio_cread_le(vcrypto->vdev,
-+			struct virtio_crypto_config, status, &status);
- 
- 	/*
- 	 * Unknown status bits would be a host error and the driver
-@@ -323,31 +323,31 @@ static int virtcrypto_probe(struct virtio_device *vdev)
- 	if (!vcrypto)
- 		return -ENOMEM;
- 
--	virtio_cread(vdev, struct virtio_crypto_config,
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
- 			max_dataqueues, &max_data_queues);
- 	if (max_data_queues < 1)
- 		max_data_queues = 1;
- 
--	virtio_cread(vdev, struct virtio_crypto_config,
--		max_cipher_key_len, &max_cipher_key_len);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		max_auth_key_len, &max_auth_key_len);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		max_size, &max_size);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		crypto_services, &crypto_services);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		cipher_algo_l, &cipher_algo_l);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		cipher_algo_h, &cipher_algo_h);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		hash_algo, &hash_algo);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		mac_algo_l, &mac_algo_l);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		mac_algo_h, &mac_algo_h);
--	virtio_cread(vdev, struct virtio_crypto_config,
--		aead_algo, &aead_algo);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			max_cipher_key_len, &max_cipher_key_len);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			max_auth_key_len, &max_auth_key_len);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			max_size, &max_size);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			crypto_services, &crypto_services);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			cipher_algo_l, &cipher_algo_l);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			cipher_algo_h, &cipher_algo_h);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			hash_algo, &hash_algo);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			mac_algo_l, &mac_algo_l);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			mac_algo_h, &mac_algo_h);
-+	virtio_cread_le(vdev, struct virtio_crypto_config,
-+			aead_algo, &aead_algo);
- 
- 	/* Add virtio crypto device to global table */
- 	err = virtcrypto_devmgr_add_dev(vcrypto);
--- 
-MST
+Looks a bit odd for an u8, but does not really hurt.
+
+> +
+>  	if (ethtool_validate_duplex(duplex))
+>  		vi->duplex = duplex;
+>  }
+> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+> index 27d996f29dd1..3f55a4215f11 100644
+> --- a/include/uapi/linux/virtio_net.h
+> +++ b/include/uapi/linux/virtio_net.h
+> @@ -99,7 +99,7 @@ struct virtio_net_config {
+>  	 * speed, in units of 1Mb. All values 0 to INT_MAX are legal.
+>  	 * Any other value stands for unknown.
+>  	 */
+> -	__virtio32 speed;
+> +	__le32 speed;
+>  	/*
+>  	 * 0x00 - half duplex
+>  	 * 0x01 - full duplex
+
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
