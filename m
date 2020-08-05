@@ -2,81 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC1123CCD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF70C23CCF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728507AbgHERHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728489AbgHERF6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:05:58 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97400C06179E
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:05:54 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id v6so31401987iow.11
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:05:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fBJV0XruchpYgDI1qMU6kXVYMvuaojqcy/VM/BfhHS4=;
-        b=DDlDKTDb/0WHPHlQszr8T/dicZ3JvB4fFR88fjW3PYNXn4Bd1sOBHkO14IfBQN8Kzh
-         wW8hvZGObDj1LUEztpmRYNVUjkSGbX9qyi02lldsKk72wxUXVKWu5CWFbhAWtfQn4TMN
-         63WibHCjsj6FWC078lkCBf7/E3a8z4dWQFw1y8Cugeyb89wnvH4FYd4FiEQDGXaUQZ5R
-         hAx8fkejSXcWdQJTeHgHVzIFmTdNLFra23jvNnZDA8dVXvtPgm0wPyE8T5NteTKpHUnp
-         7Vh0NuAPJbKmXEVGBtIJWc/WQ0DOUBfE5Wi4IsL0+v86q4+xHk7bbof7HBChNKrE0TEi
-         BUvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fBJV0XruchpYgDI1qMU6kXVYMvuaojqcy/VM/BfhHS4=;
-        b=oXraB0UsLiiyFeSzSXYOBKl6gW3rmZygI0zfQ9jXBM3K5cx34CXRey/OMA6yquvVlw
-         3kZxHXI4zwSCmx9KaMwdFxoykSJSCYrdnpFYkBfF0G6pNR5N+Y0TF4qqalfhXhLy7W8G
-         qncFhmBH3WogFlerNeNsS1zIm0QMz/ekA7Cfh9k1pieGe7TXrLsJqHiWg92HuU/eX6UN
-         AGGP0ybGD6PtOU0OB8fX9lphR1ybJTo9U3qdKewXJi/Q5uQ7O8pz3cm8WpFVDQAZMQ4t
-         JaaiE9+AV6+FfCdfPYbHHZ+aktmdJAue+bwY9lSETvLb2ZVcOY6UHsUEskDg1u10D5IL
-         uMyw==
-X-Gm-Message-State: AOAM532he2150l40S7BCfvoVk8qdNwgczdNfRGh7KmxpXbgZRdrhRtLX
-        DIDfenXiH7uVlzYqLxub2uwFDJdslB23pj5W+F4LTQ==
-X-Google-Smtp-Source: ABdhPJytYzCJbS45tauBAiUZxFGUgBBjr+Uns//aaQKG0bhrMyRYe2msAgYn/W/ZmBM7UHzdKHfygm67zRHOOqVWsNE=
-X-Received: by 2002:a6b:c3cf:: with SMTP id t198mr4294638iof.164.1596647152347;
- Wed, 05 Aug 2020 10:05:52 -0700 (PDT)
+        id S1728622AbgHERMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:12:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728541AbgHERJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:09:38 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B3A322D2C;
+        Wed,  5 Aug 2020 17:09:31 +0000 (UTC)
+Date:   Wed, 5 Aug 2020 13:09:29 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [External] linux-next: build warning after merge of the ftrace
+ tree
+Message-ID: <20200805130929.15ad82f4@oasis.local.home>
+In-Reply-To: <20200806020445.649ddaa8b8ec1b91e23508e4@kernel.org>
+References: <20200805142136.0331f7ea@canb.auug.org.au>
+        <CAMZfGtX0a3tui_KQfCXLcARVcev9V-HV6HMkXgVXObq8w-4EQg@mail.gmail.com>
+        <20200805111105.081276bb@oasis.local.home>
+        <20200806020445.649ddaa8b8ec1b91e23508e4@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200728143741.2718593-1-vkuznets@redhat.com> <20200728143741.2718593-3-vkuznets@redhat.com>
-In-Reply-To: <20200728143741.2718593-3-vkuznets@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 5 Aug 2020 10:05:40 -0700
-Message-ID: <CALMp9eSWsvufDXMuTUR3Fmh91O7tHUaqpDbAoavSMc=prpcDzg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] KVM: x86: introduce KVM_MEM_PCI_HOLE memory
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Peter Xu <peterx@redhat.com>, Michael Tsirkin <mst@redhat.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 7:38 AM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
->
-> PCIe config space can (depending on the configuration) be quite big but
-> usually is sparsely populated. Guest may scan it by accessing individual
-> device's page which, when device is missing, is supposed to have 'pci
-> hole' semantics: reads return '0xff' and writes get discarded. Compared
-> to the already existing KVM_MEM_READONLY, VMM doesn't need to allocate
-> real memory and stuff it with '0xff'.
+On Thu, 6 Aug 2020 02:04:45 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Note that the bus error semantics described should apply to *any*
-unbacked guest physical addresses, not just addresses in the PCI hole.
-(Typically, this also applies to the standard local APIC page
-(0xfee00xxx) when the local APIC is either disabled or in x2APIC mode,
-which is an area that kvm has had trouble with in the past.)
+> > Looks like that would work. Care to send a formal patch. Could you also
+> > change arm_kprobe_ftrace() as well?  
+> 
+> Looks good to me too as far as updating it to static inline function.
+
+Can you add an Acked-by to the final patch from Muchun?
+(when he sends it out)
+
+Thanks!
+
+-- Steve
