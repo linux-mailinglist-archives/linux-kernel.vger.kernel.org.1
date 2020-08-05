@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4B823D010
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A30623D00A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgHET3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:29:06 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58146 "EHLO
+        id S1728919AbgHET2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:28:48 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54994 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728508AbgHERL0 (ORCPT
+        by vger.kernel.org with ESMTP id S1728599AbgHERL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 5 Aug 2020 13:11:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -17,46 +17,49 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=atxIzRxbT9FOuFO2CvHZA+vE3tCMe4mwfA9uGPPCf/o=;
-        b=QlV5//egNjqtTFYg2w8PuGMZhp8PmKeuIGAigotEg9qFjWKXsg2oNW/qX+nUZHtO0OeGy+
-        pfeAqW0lA/i7ayhBu/WBuyJFgR8GzP14TJ1vFZXkX+l4tzQs4hvdZkeEcQNG5uQ3ZtpM/p
-        5zNVXaqmm2tSiTEbiH92QdQXSeIqVGg=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-a_j_3ljVMmiBjFtudKSGGA-1; Wed, 05 Aug 2020 09:45:01 -0400
-X-MC-Unique: a_j_3ljVMmiBjFtudKSGGA-1
-Received: by mail-wm1-f71.google.com with SMTP id a5so2741587wmj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:45:01 -0700 (PDT)
+        bh=nsePUp5bwDzPkeGMt9DhuoyzhxlPvsYKTxQ+QKtzY8M=;
+        b=L00RFt4hyZphKEkzOLKgLtwumDIYN0ka0yiSzXi3Lxkxo0DUCDZZ6eKg3TGRf6zfhXvtWR
+        7gKepz9QStTnZtbGqHcA+9dtlFWmw3DOgS1X9FDgfroL9Vz2G3Aanpvhw7LL70/NH0wb8d
+        n/mECgc9MFl+7dZNNT+mCUELluNK8hg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-qXjyYV8GOJ63X808JCdliQ-1; Wed, 05 Aug 2020 09:45:04 -0400
+X-MC-Unique: qXjyYV8GOJ63X808JCdliQ-1
+Received: by mail-wr1-f72.google.com with SMTP id b13so10876161wrq.19
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:45:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=atxIzRxbT9FOuFO2CvHZA+vE3tCMe4mwfA9uGPPCf/o=;
-        b=OirF39JF6jY/74aa6JMgLoeCMgBFmlv3jEFIg4A8D4tXDSAzaKfCeM6rPUS2cAcBrF
-         N+4mrAiAoeUH+D4DOx79j4K9jCq18RcrNVCwwKAOv6YGAEs4A5f5tzXjELVrAcie48Yc
-         LK2P/Tbq91/kJ8Uoutklh/4EmqiWrz52FfvtE2/d/e7xREg7G7x/aTByf+jrX9ZNDK3S
-         c6BQul9XWO9UcHin42RN3y/J0rrzMvm8KFwAQxWQg5UML43YiM6VfMcFkYc+Whs+e0Fo
-         zMp3Kl2gOSXAa6sheuWsTu5f7oBq5USUQaD6J/ZI1FoA6jGRjBaOWEF6jzhZXjYa9frc
-         OmBg==
-X-Gm-Message-State: AOAM530lW0U2Gc4ylxgSmxmhhpN41iTjsAEFDoe2lC4AJE1tClqwmS/G
-        4A6T+EKYDndrI3ALNjfNf2YJS1EBX/jnYi29wnBx7HMYspDSkccniFwJPXXfTiPa4dDn4MGVg7m
-        TOG4o+lsop1x3i1RfFS2LJQv1
-X-Received: by 2002:a1c:2095:: with SMTP id g143mr3259120wmg.113.1596635100200;
-        Wed, 05 Aug 2020 06:45:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwi486zYfcrRq7SJ5KWTOvEIp6eSofJ8hVOMn9kJixY7f4ly7cOd7mIjGAtKnLyQE6YgYvPbA==
-X-Received: by 2002:a1c:2095:: with SMTP id g143mr3259106wmg.113.1596635100023;
-        Wed, 05 Aug 2020 06:45:00 -0700 (PDT)
-Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id v15sm2904117wrm.23.2020.08.05.06.44.58
+        bh=nsePUp5bwDzPkeGMt9DhuoyzhxlPvsYKTxQ+QKtzY8M=;
+        b=dJLeetCIT4mmlidH0LsgEQG4gbOUXaLw0e/e/vr9EwxkWUGAXEGkCVCYq8wrS9Ow4j
+         KzTd7T9FayoZB7Db+LO3XtozH+mgpTamIjaeDW/USAvBtckaQvK4B7ZTwUC7YglrqIKx
+         hMVdsQ4cVvmLQap+JeDQN7c6KQHWOUvULsdUoIKhTsPElikuv49GfU5IWYfgIzOdAPnI
+         wTO78MZjFnmLUNd6nSlJ2sqLL02+9VATxEzDQi8bvSx8ioHlILzHeewx0WiWdXDWgqlE
+         pC1tNUOsFgcEqstXHcKjiL8p3vC4Xr0cYbZBcC9NFEwwxN+6U1i+26myo5YEejQhwCTI
+         TjMw==
+X-Gm-Message-State: AOAM533ziHBw5S1Ct5sKP+IEhx1WA2kq/i9ERs1thcxgM3DAqKSpDq9T
+        LvhmQz9j/6VxBiwdRA9nhkR1dCmS1grCt3dNiWVeaQoqDBW5EuNt0+UmmfPaV/jfCCJgU12e+2y
+        jZ2xI0/dAzGM1+Iyr+tHWpxxy
+X-Received: by 2002:a1c:96c5:: with SMTP id y188mr3540959wmd.72.1596635102978;
+        Wed, 05 Aug 2020 06:45:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyhLoRx7IzuivQlViG9F0fDgIgMdjMVV9PC0dBe4LfMZpIiYNNk/XwHbeS7FyfdebXIBXrqkg==
+X-Received: by 2002:a1c:96c5:: with SMTP id y188mr3540940wmd.72.1596635102770;
+        Wed, 05 Aug 2020 06:45:02 -0700 (PDT)
+Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
+        by smtp.gmail.com with ESMTPSA id e16sm2907812wrx.30.2020.08.05.06.45.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:59 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:44:56 -0400
+        Wed, 05 Aug 2020 06:45:02 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:45:00 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 37/38] virtio_config: drop LE option from config space
-Message-ID: <20200805134226.1106164-38-mst@redhat.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: [PATCH v3 38/38] virtio_net: use LE accessors for speed/duplex
+Message-ID: <20200805134226.1106164-39-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -69,61 +72,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All drivers now use virtio_cread/write_le for LE config
-space fields. Drop LE option from virtio_cread/write, only leaving
-the option to access transitional fields.
+Speed and duplex config fields depend on VIRTIO_NET_F_SPEED_DUPLEX
+which being 63>31 depends on VIRTIO_F_VERSION_1.
 
+Accordingly, use LE accessors for these fields.
+
+Reported-by: Cornelia Huck <cohuck@redhat.com>
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- include/linux/virtio_config.h | 28 ++--------------------------
- 1 file changed, 2 insertions(+), 26 deletions(-)
+ drivers/net/virtio_net.c        | 9 +++++----
+ include/uapi/linux/virtio_net.h | 2 +-
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index cc7a2b1fd7b2..ecb166c824bb 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -293,19 +293,7 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
- 		__u8: (x), \
- 		__virtio16: virtio16_to_cpu((vdev), (x)), \
- 		__virtio32: virtio32_to_cpu((vdev), (x)), \
--		__virtio64: virtio64_to_cpu((vdev), (x)), \
--		/*
--		 * Why define a default? checker can distinguish between
--		 * e.g. __u16, __le16 and __virtio16, but GCC can't so
--		 * attempts to define variants for both look like a duplicate
--		 * variant to it.
--		 */ \
--		default: _Generic((x), \
--				 __u8: (x), \
--				 __le16: virtio16_to_cpu((vdev), (__force __virtio16)(x)), \
--				 __le32: virtio32_to_cpu((vdev), (__force __virtio32)(x)), \
--				 __le64: virtio64_to_cpu((vdev), (__force __virtio64)(x)) \
--				 ) \
-+		__virtio64: virtio64_to_cpu((vdev), (x)) \
- 		)
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index ba38765dc490..0934b1ec5320 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2264,12 +2264,13 @@ static void virtnet_update_settings(struct virtnet_info *vi)
+ 	if (!virtio_has_feature(vi->vdev, VIRTIO_NET_F_SPEED_DUPLEX))
+ 		return;
  
- #define cpu_to_virtio(vdev, x, m) \
-@@ -313,19 +301,7 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
- 		__u8: (x), \
- 		__virtio16: cpu_to_virtio16((vdev), (x)), \
- 		__virtio32: cpu_to_virtio32((vdev), (x)), \
--		__virtio64: cpu_to_virtio64((vdev), (x)), \
--		/*
--		 * Why define a default? checker can distinguish between
--		 * e.g. __u16, __le16 and __virtio16, but GCC can't so
--		 * attempts to define variants for both look like a duplicate
--		 * variant to it.
--		 */ \
--		default: _Generic((m), \
--				 __u8: (x), \
--				 __le16: (__force __le16)cpu_to_virtio16((vdev), (x)), \
--				 __le32: (__force __le32)cpu_to_virtio32((vdev), (x)), \
--				 __le64: (__force __le64)cpu_to_virtio64((vdev), (x)) \
--				 ) \
-+		__virtio64: cpu_to_virtio64((vdev), (x)) \
- 		)
- 
- #define __virtio_native_type(structname, member) \
+-	speed = virtio_cread32(vi->vdev, offsetof(struct virtio_net_config,
+-						  speed));
++	virtio_cread_le(vi->vdev, struct virtio_net_config, speed, &speed);
++
+ 	if (ethtool_validate_speed(speed))
+ 		vi->speed = speed;
+-	duplex = virtio_cread8(vi->vdev, offsetof(struct virtio_net_config,
+-						  duplex));
++
++	virtio_cread_le(vi->vdev, struct virtio_net_config, duplex, &duplex);
++
+ 	if (ethtool_validate_duplex(duplex))
+ 		vi->duplex = duplex;
+ }
+diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+index 27d996f29dd1..3f55a4215f11 100644
+--- a/include/uapi/linux/virtio_net.h
++++ b/include/uapi/linux/virtio_net.h
+@@ -99,7 +99,7 @@ struct virtio_net_config {
+ 	 * speed, in units of 1Mb. All values 0 to INT_MAX are legal.
+ 	 * Any other value stands for unknown.
+ 	 */
+-	__virtio32 speed;
++	__le32 speed;
+ 	/*
+ 	 * 0x00 - half duplex
+ 	 * 0x01 - full duplex
 -- 
 MST
 
