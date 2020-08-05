@@ -2,133 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DD823CF5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A68023CF3A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgHETTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:19:37 -0400
-Received: from sonic314-26.consmr.mail.ne1.yahoo.com ([66.163.189.152]:41873
-        "EHLO sonic314-26.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729005AbgHER5v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:57:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596650251; bh=XgCG8lcnjxIeORNmuwc0TYv7CRCaev7O3WlPBRfqpr0=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=WnD7xdKb4N2f5LuWbzmSMX1np7tmR9/d6cH08D39mWyn2seWWdzLcNNfNdrjTcApHP+kNA9XldW9GeU/Kj/UzWPU8MZ5/Z2Ry0+28lBY1kWmJby9QWq+EV8z0eCeJC5aJzTmL6KNctba3e+IFrfgQNsc71AP2JKX/gVKmfZoxI5sLQ56gwSmR9tLXhMvs/GBoglMHoWUWjecgljhx1zXhGDMHzyt0VNXFC7mYqy9VT8CqF7XFcb/ru/PgaMkQHbBfOkBW3b64h+LDnRCdlUMdhnj5QmoZwsPrVS7QdTj9CGoiqgPk/dOJgts4mRO1B5ewH+nrD6PFWyXBZMSzWfH+w==
-X-YMail-OSG: EcG99zoVM1l1r3Qoo_WGiePhQymKAFr8EMIUs.I4BAUfEQngK_EOiRChwqsdXOA
- QrqFyH9yoITKqXafD_kI.5oH8hvz1MEJ.0jykx3RLzlmKDwmgd8HmmB6Vn9PWWmzkve6yl6Gr.1r
- MgcgK9tLWJSEWB4Qw5v867YyN_NDCAtnw8qdp1PDosvbCsu283G6GmGz8Y3TeRils9VfsCAa8W3a
- P63REHjlUMn9dN46zE6MMUno4h8KM.O7iF4ovjYUlfaiMwvBH3Q3NT56PTDhPsdIbwGGD6JlDJoU
- RsfEvQLLXdOYnOpUaxn235XBciPVCkHDLBSUHxOvHJnr9OxhU9IY_XbjOsFGhrWoJ5OMD6yIHV.O
- ORuVO.1ysn4F3pb3I9iVSciSkFdKbca8wvL6im_cA8KbWnq4R0oKK7GOdu0XexhKrrBRF7qFcNQv
- QRLMaPmBlvG9o53ta5jcR15g_W0X4jjYBdbuQO3ybuaYLLeR26LW2sC.xcuec6IV93u2fOOwZ0Bl
- dCX5ZpiiDGaYpeX04xEhcmP0cC77Hbh6GU.D7FuOOAmPUTnXOPEBLTysd54Mo0VZLDwmz57h2qu5
- iwojtdI.O9d7dO6xQ2FYHGlXagQmrDbaKaKVWfnixfPeHDb8.wSmfWpzwJLK8s9GATiuEw7tDHOi
- m5xDZSSk5xWTS2vjzYra0Mdm2uQG6KKrH0D_rUlz5T2UCgBX8hIjn2WznDiZt0wEk9GiCNtOr8QM
- ivK6oTEnri7xTw1GFodpXyvf.wGvA5kYgKZ0WCT7QtYZSU04gZCmCwDCEg4FUDgwGmhq4BtyshLt
- IqAPChrMF5s2yn7C43Y0vMcjagFLN7bHP7cGm6LkemYmuSC56DgG5gFaOcy2JWdGMGCumVtKcPXd
- kB3NKxkrr3S71tnACRqiHxYmHejg1SYF0Vd0TSfljmJXd9aGPTx28T7Faix134NpyyB5qjecDxZu
- dChhNcW6VODl.bRRKQh_M4x45gaEmCy5bCj6NE6wcAFn6XjtbYeEcQoE3TpOUzhoFEiVg3FxUmmf
- 6LNl9rWGb.Ox_1AIrLs2rmZ6BNNDjPKI7jEQGAo3XqR1QQN355976YvwoJ.VEl9oKzblFxE27szh
- BlFNnvccB8oSNuY8nHeBFtO1C2QNU2MdtsrCgzVK9F9lY8aXbSx7bGp_9yxG8U9rpXxXkRHt1vvz
- fhsF8QD9zSWVc1_3mytV1kNTO4uAO4dqueKq7m5OrTrwylBfXSncJQdTLJml1UDd2nxWNjcuecc5
- A3XmpwkEnsy4aToKbQOia11QaQUnG2ZbEVfqzXGhy80NzXHnqUzn.pcvaITpdhoRaaQrQoF6s.qI
- XaTAP_qsLC3m70HKWjNNuSH2asF6aDuQT8KMEXhXXJ.Crqtf0iQx7SO4D64WDgUP246nXhh0-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.ne1.yahoo.com with HTTP; Wed, 5 Aug 2020 17:57:31 +0000
-Received: by smtp405.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 434318a9e6d32e1fab30c48ef80acc72;
-          Wed, 05 Aug 2020 17:57:26 +0000 (UTC)
-Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     stephen.smalley.work@gmail.com, sashal@kernel.org,
-        jmorris@namei.org, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
- <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
- <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
- <c7c168f2-e30b-d2c5-abcb-1b6919197474@schaufler-ca.com>
- <20200805154504.GB4365@sequoia>
- <69810007161e689ac817099fb1c6df21962963e4.camel@linux.ibm.com>
- <9ad079ff-1bd4-1302-e6fb-25a7396ef12f@linux.microsoft.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <ecc97f59-c2cc-0b23-6199-925ba0d6358b@schaufler-ca.com>
-Date:   Wed, 5 Aug 2020 10:57:25 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <9ad079ff-1bd4-1302-e6fb-25a7396ef12f@linux.microsoft.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.16436 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
+        id S1728788AbgHETRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:17:30 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24276 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729081AbgHER7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:59:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596650391; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=kg0EF5rfNOmYrsglJGmq1Vj6cS50it6TVyt41Nu8U+I=; b=T+GRg4K5xNDU+n6IiYgqYFJ6js5BJSC2wXJpYEJtI7zfDtZhlxmDje/2uo0AZvdOxVq6Ft9U
+ lWXSaneba2B9D0uPMyfihqe2L+r5KSTY1SrrVVYIMjlg6ylowrMWMtWeVt6CfeeNMlLr7yHt
+ cbZzbbZcPCAzVP1P6CTKYdw+OLQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n15.prod.us-east-1.postgun.com with SMTP id
+ 5f2af37790893260dd5dddde (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 05 Aug 2020 17:59:19
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9626BC433A0; Wed,  5 Aug 2020 17:59:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from eberman-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: eberman)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 76DC1C43395;
+        Wed,  5 Aug 2020 17:59:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 76DC1C43395
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=eberman@codeaurora.org
+From:   Elliot Berman <eberman@codeaurora.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     Elliot Berman <eberman@codeaurora.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Steve Muckle <smuckle@google.com>,
+        Trilok Soni <tsoni@codeaurora.org>
+Subject: [PATCH] kbuild: Add dtc flag test
+Date:   Wed,  5 Aug 2020 10:58:48 -0700
+Message-Id: <1596650328-14869-1-git-send-email-eberman@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/2020 10:25 AM, Lakshmi Ramasubramanian wrote:
-> On 8/5/20 10:03 AM, Mimi Zohar wrote:
->> On Wed, 2020-08-05 at 10:45 -0500, Tyler Hicks wrote:
->>
->>> In addition to SELINUX_STATE and SELINUX_POLICY, we should also consider
->>> the proposed LSM_STATE and LSM_POLICY func values but require an "lsm"
->>> rule conditional.
->>>
->>> So the current proposed rules:
->>>
->>> ? measure func=LSM_STATE
->>> ? measure func=LSM_POLICY
->>>
->>> Would become:
->>>
->>> ? measure func=LSM_STATE lsm=selinux
->>> ? measure func=LSM_POLICY lsm=selinux
->>>
->>> The following rules would be rejected:
->>>
->>> ? measure func=LSM_STATE
->>> ? measure func=LSM_POLICY
->>> ? measure func=LSM_STATE lsm=apparmor
->>> ? measure func=LSM_POLICY lsm=smack
->>
->> Kees is cleaning up the firmware code which differentiated between how
->> firmware was loaded.?? There will be a single firmware enumeration.
->>
->> Similarly, the new IMA hook to measure critical state may be placed in
->> multiple places.? Is there really a need from a policy perspective for
->> differentiating the source of the critical state being measurind??? The
->> data being measured should include some identifying information.
->
-> Yes Mimi - SELinux is including the identifying information in the "event name" field. Please see a sample measurement of STATE and POLICY for SELinux below:
->
-> 10 e32e...5ac3 ima-buf sha256:86e8...4594 selinux-state-1595389364:287899386 696e697469616c697a65643d313b656e61626c65643d313b656e666f7263696e673d303b636865636b72657170726f743d313b6e6574776f726b5f706565725f636f6e74726f6c733d313b6f70656e5f7065726d733d313b657874656e6465645f736f636b65745f636c6173733d313b616c776179735f636865636b5f6e6574776f726b3d303b6367726f75705f7365636c6162656c3d313b6e6e705f6e6f737569645f7472616e736974696f6e3d313b67656e66735f7365636c6162656c5f73796d6c696e6b733d303
->
-> 10 f4a7...9408 ima-ng sha256:8d1d...1834 selinux-policy-hash-1595389353:863934271
->
->>
->> I think moving away from the idea that measuring "critical" data should
->> be limited to LSMs, will clarify this.
->>
->
-> Are you suggesting that instead of calling the hooks LSM_STATE and LSM_POLICY, we should keep it more generic so that it can be utilized by any subsystem to measure their "critical data"?
+Host dtc may not support the same flags as kernel's copy of dtc. Test
+if dtc supports each flag when the dtc comes from host.
 
-Policy, state, history or whim, it should be up to the security module
-to determine what data it cares about, and how it should be measured.
-Smack does not keep its policy in a single blob of data, it uses lists
-which can be modified at will. Your definition of the behavior for
-LSM_POLICY wouldn't work for Smack. That doesn't mean that there isn't
-a viable way to measure the Smack policy, it just means that IMA isn't
-the place for it. If SELinux wants its data measured, SELinux should be
-providing the mechanism to do it.
+Signed-off-by: Elliot Berman <eberman@codeaurora.org>
+---
+ scripts/Makefile.lib | 34 ++++++++++++++++++++++------------
+ 1 file changed, 22 insertions(+), 12 deletions(-)
 
-I guess that I'm agreeing with you in part. If you want a generic measurement
-of "critical data", you don't need to assign a type to it, you have the
-caller (a security module, a device driver or whatever) identify itself and
-how it is going to deal with the data. That's very different from what you've
-done to date.
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 841ac03..2722a67 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -274,25 +274,35 @@ quiet_cmd_gzip = GZIP    $@
+ 
+ # DTC
+ # ---------------------------------------------------------------------------
++ifeq ("$(origin DTC)", "command line")
++PHONY += $(DTC)
++dtc-option = $(call try-run, $(DTC) $1 -v,$1)
++else
++# Just add the flag. DTC is compiled later as a prerequisite, so there's no dtc
++# to test the flag against. This is okay because we're not testing flags which
++# aren't supported by in-kernel dtc to begin with.
++dtc-option = $1
++endif
++
+ DTC ?= $(objtree)/scripts/dtc/dtc
+-DTC_FLAGS += -Wno-interrupt_provider
++DTC_FLAGS += $(call dtc-option,-Wno-interrupt_provider)
+ 
+ # Disable noisy checks by default
+ ifeq ($(findstring 1,$(KBUILD_EXTRA_WARN)),)
+-DTC_FLAGS += -Wno-unit_address_vs_reg \
+-	-Wno-unit_address_format \
+-	-Wno-avoid_unnecessary_addr_size \
+-	-Wno-alias_paths \
+-	-Wno-graph_child_address \
+-	-Wno-simple_bus_reg \
+-	-Wno-unique_unit_address \
+-	-Wno-pci_device_reg
++DTC_FLAGS += $(call dtc-option,-Wno-unit_address_vs_reg) \
++	$(call dtc-option,-Wno-unit_address_format) \
++	$(call dtc-option,-Wno-avoid_unnecessary_addr_size) \
++	$(call dtc-option,-Wno-alias_paths) \
++	$(call dtc-option,-Wno-graph_child_address) \
++	$(call dtc-option,-Wno-simple_bus_reg) \
++	$(call dtc-option,-Wno-unique_unit_address) \
++	$(call dtc-option,-Wno-pci_device_reg)
+ endif
+ 
+ ifneq ($(findstring 2,$(KBUILD_EXTRA_WARN)),)
+-DTC_FLAGS += -Wnode_name_chars_strict \
+-	-Wproperty_name_chars_strict \
+-	-Winterrupt_provider
++DTC_FLAGS += $(call dtc-option,-Wnode_name_chars_strict) \
++	$(call dtc-option,-Wproperty_name_chars_strict) \
++	$(call dtc-option,-Winterrupt_provider)
+ endif
+ 
+ DTC_FLAGS += $(DTC_FLAGS_$(basetarget))
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
->
-> I think that is a good idea.
->
-> ?-lakshmi
