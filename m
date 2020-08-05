@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C9023D030
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAC723D043
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729190AbgHETco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:32:44 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:44580 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729154AbgHETcf (ORCPT
+        id S1729425AbgHETqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729079AbgHETdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:32:35 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C9CC71C0BDE; Wed,  5 Aug 2020 21:32:33 +0200 (CEST)
-Date:   Wed, 5 Aug 2020 21:32:33 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Konrad Dybcio <konradybcio@gmail.com>
-Subject: Re: [GIT PULL 0/5] ARM: SoC: changes for v5.9
-Message-ID: <20200805193233.hp6mrzccs6p2pz2g@duo.ucw.cz>
-References: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
- <20200805172746.GC1118@bug>
- <CAK8P3a2KnmDXYCyst15=kZWneDTMFAbz47F_TYnY_26+W4PM6A@mail.gmail.com>
+        Wed, 5 Aug 2020 15:33:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B86C061575;
+        Wed,  5 Aug 2020 12:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BjUxyEqkYiqtsdR/KvRwz6ZbXTHnw0kNXap/n+8pwLc=; b=d99BKyoGx9hy4YcJdLSUMJqThT
+        5nqIKVLtODQNoljLBcp8S5Qe51texKqOh2lHfYRF6oE9Eennni9qvKXvoNCBo1BmBItdODcTP8rr0
+        d9fwQtJqhR7ZefvrgjrymVDmQgC18lF3oe0V6z2N2edcUvDcRkE+9XOUCafaUKs24HosE1ZjfNpyP
+        orzIgTlu+kNLZ8DcTbs9SzVLlHxhTCkbT8b6BA/62VFAu20gPM6e4dugjgbyb55pQ8ZyZvQxTDPzk
+        tMeIVEAdm2vkbkv0U8ueOK/GHFSZ2Sv4iPAT4k3TV9OgjyznmX+JjL+tR/NszZzvUQ9KYpokZ96xB
+        mE2m1QXA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3P9r-0005s8-TN; Wed, 05 Aug 2020 19:33:03 +0000
+Date:   Wed, 5 Aug 2020 20:33:03 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ian Kent <raven@themaw.net>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/18] fsinfo: Add a uniquifier ID to struct mount [ver
+ #21]
+Message-ID: <20200805193303.GM23808@casper.infradead.org>
+References: <CAJfpegtOguKOGWxv-sA_C9eSWG_3Srnj_k=oW-wSHNprCipFVg@mail.gmail.com>
+ <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
+ <159646183662.1784947.5709738540440380373.stgit@warthog.procyon.org.uk>
+ <20200804104108.GC32719@miu.piliscsaba.redhat.com>
+ <2306029.1596636828@warthog.procyon.org.uk>
+ <2315925.1596641410@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="l2livdf6ntlighw4"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a2KnmDXYCyst15=kZWneDTMFAbz47F_TYnY_26+W4PM6A@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <2315925.1596641410@warthog.procyon.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 05, 2020 at 04:30:10PM +0100, David Howells wrote:
+> Miklos Szeredi <miklos@szeredi.hu> wrote:
+> 
+> > idr_alloc_cyclic() seems to be a good template for doing the lower
+> > 32bit allocation, and we can add code to increment the high 32bit on
+> > wraparound.
+> > 
+> > Lots of code uses idr_alloc_cyclic() so I guess it shouldn't be too
+> > bad in terms of memory use or performance.
+> 
+> It's optimised for shortness of path and trades memory for performance.  It's
+> currently implemented using an xarray, so memory usage is dependent on the
+> sparseness of the tree.  Each node in the tree is 576 bytes and in the worst
+> case, each one node will contain one mount - and then you have to backfill the
+> ancestry, though for lower memory costs.
+> 
+> Systemd makes life more interesting since it sets up a whole load of
+> propagations.  Each mount you make may cause several others to be created, but
+> that would likely make the tree more efficient.
 
---l2livdf6ntlighw4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I would recommend using xa_alloc and ignoring the ID assigned from
+xa_alloc.  Looking up by unique ID is then a matter of iterating every
+mount (xa_for_each()) looking for a matching unique ID in the mount
+struct.  That's O(n) search, but it's faster than a linked list, and we
+don't have that many mounts in a system.
 
-On Wed 2020-08-05 21:06:45, Arnd Bergmann wrote:
-> On Wed, Aug 5, 2020 at 7:27 PM Pavel Machek <pavel@ucw.cz> wrote:
-> > > 2. In the past few merge windows we have seen an increase in (usually
-> > >    older) Android phones and tablets gaining mainline kernel support.
-> > >    This time we get a total of eight Snapdragon phones and two Tegra
-> > >    tablets. To me this indicates that we finally have sufficient driv=
-er
-> > >    support, in particular on the GPU side, to make this workable.
-> > >    It also shows the impact that a single hobbyist developer can have,
-> > >    as most of the new support was submitted by Konrad Dybcio who only
-> > >    started contributing kernel patches to mainline Linux for postmark=
-etos
-> > >    earlier this year.
-> >
-> > I'm happy to see that. So far, Nokia N900 is reaonably supported (basic=
-ally everything
-> > but Bluetooth works, voicecalls miss userland daemon for audio), and Mo=
-torola
-> > Droid 4 (modem needs some more in kernel, camera will be hard).
-> >
-> > Is there anything with similar support coming in, or is it usual "it bo=
-ots,
-> > serial console works"?
->=20
-> My impression is that the newly added phones are still fairly rudimentary,
-> but some others that were added in the past releases have gotten
-> further. I don't know any details, but I've added Konrad to Cc, he can
-> comment on his work.
->=20
-> One of the missing pieces with the OMAP based phones has always
-> been the GPU, and on that front I think by now almost every other GPU
-> is ahead.
-
-I have working 3D on Droid 4 with Maemo Leste... but I'm not sure what
-kind of hacks are involved. (And not sure I want to know).
-
-> > Should we have some kind of linux-phones mailing list? There is quite a=
- lot of
-> > stuff common in phones.
->=20
-> PostmarketOS is probably the right place to look for this.
-
-Yes, I monitor postmarketOS a bit.
-
-But I believe we should have something cross-distro. I'm more involved
-with Maemo Leste, but there are other players -- at least Librem and
-Jolla.
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---l2livdf6ntlighw4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXysJUQAKCRAw5/Bqldv6
-8lCsAJ4si4Dy8ZQ5LESLKIwkKq7mrToYaQCeIpY7FJaklNDYssEO5SS40hDc34k=
-=Ck0F
------END PGP SIGNATURE-----
-
---l2livdf6ntlighw4--
+The maple tree will handle this case more effectively, but I can't
+recommend waiting for that to be ready.
