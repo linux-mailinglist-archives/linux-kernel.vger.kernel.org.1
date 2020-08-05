@@ -2,125 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26CD23D23F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986F423D2D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726186AbgHEUKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:10:44 -0400
-Received: from us-smtp-delivery-162.mimecast.com ([216.205.24.162]:45478 "EHLO
-        us-smtp-delivery-162.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727116AbgHEUKU (ORCPT
+        id S1728040AbgHEUQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726346AbgHEUQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 16:10:20 -0400
-X-Greylist: delayed 391 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 16:10:18 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hp.com; s=mimecast20180716;
-        t=1596658205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+9mWlKgawWyzm6IVadGDHV4bGfBtDf+UhcobH0DMQkQ=;
-        b=QyGJRddO44tkROFseqW/kOFFgqVdRe3wqqKbz5UNu/aQKLqXmJ5r4eNj0ZjcKzt9Cgy8Dd
-        rY0TL+7ZyzR5Z5Il+eIdMM2JmWqyWkUc06LBhG0Zm/BUIpPz72VKviz2RdP7I1/0M6eFK0
-        byFI266t1tylAkNF2hAELr5Doc9jyMs=
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-2p1KVlywNoCtmxE5cRJzhw-1; Wed, 05 Aug 2020 16:03:33 -0400
-X-MC-Unique: 2p1KVlywNoCtmxE5cRJzhw-1
-Received: from TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
- (2a01:111:e400:7712::13) by TU4PR8401MB0733.NAMPRD84.PROD.OUTLOOK.COM
- (2a01:111:e400:7712::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.17; Wed, 5 Aug
- 2020 20:03:32 +0000
-Received: from TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::402e:74e4:29e4:6b82]) by TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::402e:74e4:29e4:6b82%5]) with mapi id 15.20.3239.022; Wed, 5 Aug 2020
- 20:03:32 +0000
-From:   "Bhat, Jayalakshmi Manjunath" <jayalakshmi.bhat@hp.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: DRBG CAVS test error
-Thread-Topic: DRBG CAVS test error
-Thread-Index: AdZrY3vHWwqYoDEaT/2M2s+J7Jrz8Q==
-Date:   Wed, 5 Aug 2020 20:03:31 +0000
-Message-ID: <TU4PR8401MB1216BF9450F95187F94BCE01F64B0@TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [106.51.105.36]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7570faa9-83ae-44d1-b90d-08d8397aa0d7
-x-ms-traffictypediagnostic: TU4PR8401MB0733:
-x-microsoft-antispam-prvs: <TU4PR8401MB07339F4282AD033AA8F5808CF64B0@TU4PR8401MB0733.NAMPRD84.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: q2arix/vhU8KmB5tv6cCdWd3WQYqMTWHjQdRaV+0QxFlqdqOLXI4ci1Re7ojz3NfZ3mRQLxSBN5WJx/4Be6EzAbSvTAixgLvaP2Q3MOk7YSIEKPxRugE39oP+BBH00X1wLrNTar/kYM9aKkfGMKzrsNmkKVqx4Wyu14+vmY+IH01NuuN0ukWKigYm/nXM575di1H4bqbnU3rxlMl3cG3NZdYR+gQL2MN+CruXCVi5lp15y+7xWLgIV/q33eI9MVuLOth4xkhHZRRG1/zl7BvqIV6xG1B2nVMy9AkmVPdpFbjFPTuSVPjUu3Vf9gXqMx3xONEOpdFZtcg4zBaqhaiBg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(366004)(396003)(376002)(136003)(39860400002)(346002)(9686003)(478600001)(76116006)(2906002)(5660300002)(86362001)(3480700007)(26005)(52536014)(8936002)(55016002)(33656002)(55236004)(71200400001)(8676002)(66476007)(6916009)(66946007)(66446008)(66556008)(64756008)(186003)(316002)(7696005)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 2txvO2VguWG57kyzxw7FPbx3w8KLMf7QPi+Yp9AyLy1t2EgCTuw/QkgBVLa+ufqOkbb5BINP/5f27UwthQ5tEd0y2Is90kgVmgvGvhJQPAXVqxBEV27pYuQL4wVfuLwEXmFBkngpQdhs99NyPlfR3zuaEwpvM4B6hAT37o9eb7zhSy0wUN/ye3dAeP0wXKgA1UYaaDQ4u9nqP8oxTpBSLF72zcDSKt4aQhrf07VaMPEVgrhOJ+GNtTwhcGA139Jxp56ahU82/Q+xC7xnxyqn+mAOM9F3Jmz9M0fGsWupsEN7Aes96cZtDfNQYAdm59vCv4pTNvIn0Nyi/6m7NGzsAr2BC3Jn/FXDsjUfdTluHMIvWWDM7Er4iXuiQHXHBKWbgKut4FizMaStGycQ9q4HTMjKwzDTlzgSKF5HSsK24eRjuqjfDpsyOcH9VOJJFcplK7UtOMBVZ0HwjOaEMHbCuOmZjbE+GfhIuGK0AR5IiQ3QPm/Xcv2vrpwfGVPzII/g2VlOLfkIrcQV2LmJ4sZn9iBFmDqNrRSgI+l+e16XLuIAjZObBTPggS0/uVZ04a73ge+qe68/CaiUzWjCFBGcN9O8LTa0H7ofobQYFn8AnuEQB5NJM7mkcEK5tdo8NC4HSQmGS9OW68cPiwhLyPh/GA==
-x-ms-exchange-transport-forked: True
+        Wed, 5 Aug 2020 16:16:31 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D09C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 13:16:31 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 184so7579186wmb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 13:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mvZaPjIJLvtOgPYXMFlMx5wZd5X7d+jAa4ldSeMhyoQ=;
+        b=hNmZtfw9e/tJMFfp21LgePx8DltnNpnr8FBE74vgHDQa3ZEWgdq3dOKzsjFaTdcQuC
+         IVdke6Bv8KWffSRpEPYckwOf4LVo7qFLJHL/BO3kBQATUcGYdiN/GRSvmGOTPR28B6dU
+         azuHtBLy6G52GZktGNjtuBcqEM3i4TlpNWZlPHyjBC4n08n4F/WZvvkxoKlLy+bIyvXM
+         +MsAakuwy8XNXNvIXjsOw28Ov4b7z4WeLrQin4hbQEWkRqMuvEM8Gx/hi7GeQVHp29EE
+         0Sbux34JbU+C15v+nnMmpGjrD28xSEZIpfNLo5AqZxW48l6PPTlH0SUaXhaCVO2eKFA9
+         u4/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mvZaPjIJLvtOgPYXMFlMx5wZd5X7d+jAa4ldSeMhyoQ=;
+        b=LdJVw8jAnObZcklcEiAqybNtxsGCG7XFsJIxjuNzbn75KcP9IGyyrwCMLmm8Pwfvhx
+         6Up8n0U/RMEjuTYao1VXHUA4bcwkUL7/fkf2+I8hOhu7Sf8DUyzB1ibEbVTkyFP4qsYs
+         iZHisc4KDOlcmfzzygeuqIzsXSRl+dhvbKIs8/WW9TVJCt9cOZu4Q/J4Uhxhf9UP+fbe
+         d21OdO8DAiFHKlBc9u3gYJabJWyWZqezxH+nAA0UTpu7b7tgVOnFjtlwiBKZZwpXoFFj
+         umnOeJS6RrXpSfFt725BbuNPclmJXVKWHKv4ygWGn+v/qeBxUMLhQzrfqvRTsl/Ci2ER
+         J48w==
+X-Gm-Message-State: AOAM532+0ckh0Dvg4MP34u1EfMj0TXbPe6Myg6J3Ywd+DaS/UPRHr82b
+        t6ibnlMjmsHdMShXD1tyh6Bigw6vhlEqcw==
+X-Google-Smtp-Source: ABdhPJypxMiLvEy3JIjRjWxtXQqYwQQdXvAIyJE7Grq1AVxGxkensdbRojbsN4BLEOzzq+XjL66ohA==
+X-Received: by 2002:a1c:1d91:: with SMTP id d139mr4933808wmd.144.1596658590287;
+        Wed, 05 Aug 2020 13:16:30 -0700 (PDT)
+Received: from trex (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
+        by smtp.gmail.com with ESMTPSA id l1sm4076167wrb.12.2020.08.05.13.16.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 05 Aug 2020 13:16:29 -0700 (PDT)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Wed, 5 Aug 2020 22:16:28 +0200
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>,
+        sumit.garg@linaro.org, ricardo@foundries.io, mike@foundries.io,
+        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv6] drivers: optee: allow op-tee to access devices on the
+ i2c bus
+Message-ID: <20200805201628.GA11492@trex>
+References: <20200722212105.1798-1-jorge@foundries.io>
+ <20200805133501.GA8360@trex>
+ <20200805142404.GA550721@jade>
 MIME-Version: 1.0
-X-OriginatorOrg: hp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7570faa9-83ae-44d1-b90d-08d8397aa0d7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2020 20:03:31.8971
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: ca7981a2-785a-463d-b82a-3db87dfc3ce6
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hkZkcijue985djURgHnFT8FIPZmMJTK/KO2EU30xYHd84xG0GDbTjJlR2CWLUfSOxKiI1NRn7iYXCExOciMn0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TU4PR8401MB0733
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA62A171 smtp.mailfrom=jayalakshmi.bhat@hp.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hp.com
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805142404.GA550721@jade>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All
+On 05/08/20, Jens Wiklander wrote:
+> On Wed, Aug 05, 2020 at 03:35:01PM +0200, Jorge Ramirez-Ortiz, Foundries wrote:
+> > On 22/07/20, Jorge Ramirez-Ortiz wrote:
+> > > Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
+> > > control this type of cryptographic devices it needs coordinated access
+> > > to the bus, so collisions and RUNTIME_PM dont get in the way.
+> > > 
+> > > This trampoline driver allow OP-TEE to access them.
+> > > Tested on imx8mm LPDDR4
+> > > 
+> > > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> > > ---
+> > >  v6: compile out if CONFIG_I2C not enabled
+> > >  v5: alphabetic order of includes
+> > >  v4: remove unnecessary extra line in optee_msg.h
+> > >  v3: use from/to msg param to support all types of memory
+> > >      modify OPTEE_MSG_RPC_CMD_I2C_TRANSFER message id
+> > >      
+> > >  drivers/tee/optee/optee_msg.h | 16 +++++++
+> > >  drivers/tee/optee/rpc.c       | 88 +++++++++++++++++++++++++++++++++++
+> > >  2 files changed, 104 insertions(+)
+> > > 
+> > > diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
+> > > index 795bc19ae17a..14b580f55356 100644
+> > > --- a/drivers/tee/optee/optee_msg.h
+> > > +++ b/drivers/tee/optee/optee_msg.h
+> > > @@ -419,4 +419,20 @@ struct optee_msg_arg {
+> > >   */
+> > >  #define OPTEE_MSG_RPC_CMD_SHM_FREE	7
+> > >  
+> > > +/*
+> > > + * Access a device on an i2c bus
+> > > + *
+> > > + * [in]  param[0].u.value.a		mode: RD(0), WR(1)
+> > > + * [in]  param[0].u.value.b		i2c adapter
+> > > + * [in]  param[0].u.value.c		i2c chip
+> > > + *
+> > > + * [in/out] memref[1]			buffer to exchange the transfer data
+> > > + *					with the secure world
+> > > + *
+> > > + * [out]  param[0].u.value.a		bytes transferred by the driver
+> > > + */
+> > > +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 21
+> > > +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
+> > > +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
+> > > +
+> > >  #endif /* _OPTEE_MSG_H */
+> > > diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+> > > index b4ade54d1f28..5fd5c6c93896 100644
+> > > --- a/drivers/tee/optee/rpc.c
+> > > +++ b/drivers/tee/optee/rpc.c
+> > > @@ -7,6 +7,7 @@
+> > >  
+> > >  #include <linux/delay.h>
+> > >  #include <linux/device.h>
+> > > +#include <linux/i2c.h>
+> > >  #include <linux/slab.h>
+> > >  #include <linux/tee_drv.h>
+> > >  #include "optee_private.h"
+> > > @@ -49,6 +50,90 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+> > >  	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> > >  }
+> > >  
+> > > +#if IS_ENABLED(CONFIG_I2C)
+> > > +static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+> > > +					     struct optee_msg_arg *arg)
+> > > +{
+> > > +	struct i2c_client client;
+> > > +	struct tee_param *params;
+> > > +	uint32_t type;
+> > > +	int i, ret;
+> > > +	size_t len;
+> > > +	char *buf;
+> > > +	uint32_t attr[] = {
+> > > +		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
+> > > +		TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT,
+> > > +		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT,
+> > > +	};
+> > > +
+> > > +	if (arg->num_params != ARRAY_SIZE(attr)) {
+> > > +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> > > +		return;
+> > > +	}
+> > > +
+> > > +	params = kmalloc_array(arg->num_params, sizeof(struct tee_param),
+> > > +			       GFP_KERNEL);
+> > > +	if (!params) {
+> > > +		arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
+> > > +		return;
+> > > +	}
+> > > +
+> > > +	if (optee_from_msg_param(params, arg->num_params, arg->params))
+> > > +		goto bad;
+> > > +
+> > > +	for (i = 0; i < arg->num_params; i++) {
+> > > +		type = params[i].attr & TEE_IOCTL_PARAM_ATTR_TYPE_MASK;
+> > > +		if (type != attr[i])
+> > > +			goto bad;
+> > > +	}
+> > > +
+> > > +	client.addr = params[0].u.value.c;
+> > > +	client.adapter = i2c_get_adapter(params[0].u.value.b);
+> > > +	if (!client.adapter)
+> > > +		goto bad;
+> > > +
+> > > +	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
+> > > +
+> > > +	buf = params[1].u.memref.shm->kaddr;
+> > > +	len = params[1].u.memref.size;
+> > > +
+> > > +	switch (params[0].u.value.a) {
+> > > +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
+> > > +		ret = i2c_master_recv(&client, buf, len);
+> > > +		break;
+> > > +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
+> > > +		ret = i2c_master_send(&client, buf, len);
+> > > +		break;
+> > > +	default:
+> > > +		i2c_put_adapter(client.adapter);
+> > > +		goto bad;
+> > > +	}
+> > > +
+> > > +	if (ret >= 0) {
+> > > +		params[2].u.value.a = ret;
+> > > +		arg->ret = TEEC_SUCCESS;
+> > > +	} else {
+> > > +		arg->ret = TEEC_ERROR_COMMUNICATION;
+> > > +	}
+> > > +
+> > > +	if (optee_to_msg_param(arg->params, arg->num_params, params))
+> > > +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> > > +
+> > > +	i2c_put_adapter(client.adapter);
+> > > +	kfree(params);
+> > > +	return;
+> > > +bad:
+> > > +	kfree(params);
+> > > +	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> > > +}
+> > > +#else
+> > > +static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+> > > +					     struct optee_msg_arg *arg)
+> > > +{
+> > > +	arg->ret = TEEC_ERROR_COMMUNICATION;
+> > > +}
+> > > +#endif
+> > > +
+> > >  static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
+> > >  {
+> > >  	struct wq_entry *w;
+> > > @@ -382,6 +467,9 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+> > >  	case OPTEE_MSG_RPC_CMD_SHM_FREE:
+> > >  		handle_rpc_func_cmd_shm_free(ctx, arg);
+> > >  		break;
+> > > +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
+> > > +		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
+> > > +		break;
+> > >  	default:
+> > >  		handle_rpc_supp_cmd(ctx, arg);
+> > >  	}
+> > 
+> > 
+> > any comments please?
+> 
+> As you know we're still reviewing the secure world counterpart at
+> https://github.com/OP-TEE/optee_os/pull/3905
 
-I am executing DRBG CAVS test, using drbg_nopr_hmac_sha512. Below is the co=
-de snippet.
+yep
 
-test_data.testentropy =3D &testentropy;
-drbg_string_fill(&testentropy, drbg_st->entropy_nonce_input, drbg_st->entro=
-py_nonce_len);
-drbg_string_fill(&pers, drbg_st->personalization_string, iv_struct->persona=
-lization_string_len);
-ret =3D crypto_drbg_reset_test(drng, &pers, &test_data);
+> Where we're sorting out the ABI. Thanks for your patience.
 
-drbg_string_fill(&additional_input, drbg_st->additional_input_reseed, drbg_=
-st->additional_input_reseed_len);
-if (drbg_st->entropy_input_reseed_len >0)
-=09drbg_string_fill(&entropy_input, drbg_st->>entropy_input_reseed, drbg_st=
-->entropy_input_reseed_len);
-ret =3D crypto_drbg_get_bytes_addtl(drng, buf, test->expectedlen, &addition=
-al_input);
+after the initial comments on the first patch it was not clear why
+there were none on the follow up ones. but sure, thanks for taking the
+time.
 
-drbg_string_fill(&additional_input,   drbg_st->additional_generate,    drbg=
-_st->additional_generate_len);
-if (drbg_st->entropy_input_generate_len >0)
-=09drbg_string_fill(&entropy_input, drbg_st->entropy_input_generate, drbg_s=
-t->entropy_input_generate_len);
-ret =3D crypto_drbg_get_bytes_addtl(drng, buf, test->expectedlen, &addition=
-al_input);
 
-drbg_string_fill(&additional_input, drbg_st->additional_input_final,    drb=
-g_st->additional_input_final_len);
-if (additional_input_final_len > 0)
-=09drbg_string_fill(&entropy_input, drbg_st->entropy_input_final, drbg_st->=
-entropy_input_final_len);
-ret =3D crypto_drbg_get_bytes_addtl(drng, buf, test->expectedlen, &addition=
-al_input);
-
-However the output generated seems to be wrong. Can any help me to indicate=
- what I am doing wrong
-
-Regards,
-Jaya
-
+> 
+> Cheers,
+> Jens
