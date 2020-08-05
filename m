@@ -2,126 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBCE23CF99
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0D723CF8F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgHETWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
+        id S1729067AbgHETWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728957AbgHERlo (ORCPT
+        with ESMTP id S1728958AbgHERlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 5 Aug 2020 13:41:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038A8C00868C;
-        Wed,  5 Aug 2020 07:30:28 -0700 (PDT)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A27C008696;
+        Wed,  5 Aug 2020 07:34:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=tMlw34gS6+NLjHY9pLlnAZv6Tp4OOwHaKGN71bnbpa0=; b=p8DeZzKinsTQYfTsiPWzaIThev
-        hzd5r0BTeRXvvP7YA8+omo4nLwDoXHkFucrO5R/4tJXKHZ+s5GvbH5d7R+QPIRMQfq236UPXaYgIN
-        L/WG3G1lf0/sAsa0b2uj21AgUTtHZ/RCq90TShBqT4jeijLDhpI5eVqs/SdKYtVq2vTzu+dWv23jf
-        XfGMMsDgTRbOIp+vqp565v6mLk3XzfwArM2X2OME17qgNRG+6LYKhfResSj8ID1KC7M6+Pd3soqgS
-        yTsIASL2RelHR93RaSfAP/bwGejgrBl5RGG6FS9u/rBnrWzHko3wVpePgLdP/DkSDEys4aoAmTTkf
-        3pMRl+SQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3KQy-0007VY-Oe; Wed, 05 Aug 2020 14:30:25 +0000
-Subject: Re: [PATCH][next] staging: wfx: fix a handful of spelling mistakes
-To:     Colin King <colin.king@canonical.com>,
-        =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200805142317.23845-1-colin.king@canonical.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <049d06fd-0ccb-38ae-e077-4cbbd742cea0@infradead.org>
-Date:   Wed, 5 Aug 2020 07:30:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:Reply-To:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=gd1cvJcf7uborbbKx0aO1kHmrhM0AMk3ZC07sorW0mo=; b=DviZDtxx2MHlNyWGdaIVddIrjV
+        7sJq9PcnuQ4ZdiSVXe1EAuAlrE0jvzCn7CK8//Wq1vSfIkN1vGuKV473qQp451A+CsMXa7cmLdq8i
+        EKx+j5bAPfmngqlFK7fdD44UxDgf+cyAy3yJljPRuaUamb2Wu75O5ibPQuDI7JnWiwKP1459ADvbq
+        yCCSB3ey+lYFK+fUvUdESznHyu583fr2rv2dCmR/8VSGohwFQzjHR0RrUzCtkWqtw7Nwg9ZA9Xm2j
+        j2eG9/eRe+UXPbBeVvjqaa5PvHi/EuSjSmsA6ss3gtsTILcA/4P+AFdKF1DqosTFRnLlktoG0mwQX
+        9WIV39tQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:53382 helo=rmk-PC.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1k3KUx-0003br-SU; Wed, 05 Aug 2020 15:34:31 +0100
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1k3KUx-0000da-In; Wed, 05 Aug 2020 15:34:31 +0100
+From:   Russell King <rmk+kernel@armlinux.org.uk>
+To:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     netdev@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: update phylink/sfp keyword matching
 MIME-Version: 1.0
-In-Reply-To: <20200805142317.23845-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1k3KUx-0000da-In@rmk-PC.armlinux.org.uk>
+Date:   Wed, 05 Aug 2020 15:34:31 +0100
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/20 7:23 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There are various spelling mistakes in comments and error messages.
-> Fix these.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/staging/wfx/data_rx.c | 2 +-
->  drivers/staging/wfx/data_tx.c | 2 +-
->  drivers/staging/wfx/debug.c   | 4 ++--
->  drivers/staging/wfx/hif_rx.c  | 2 +-
->  drivers/staging/wfx/hif_tx.c  | 4 ++--
->  drivers/staging/wfx/main.c    | 2 +-
->  drivers/staging/wfx/main.h    | 2 +-
->  drivers/staging/wfx/sta.c     | 2 +-
->  8 files changed, 10 insertions(+), 10 deletions(-)
-> 
+syzbot has revealed that the "phylink" keyword exists in non-phylink
+related contexts in the bluetooth stack. To avoid receiving
+inappropriate notifications, change the keyword matching regexp to
+something which avoids this, while still allowing changes to networking
+drivers that make use of phylink to be detected.
 
-> diff --git a/drivers/staging/wfx/debug.c b/drivers/staging/wfx/debug.c
-> index 3f1712b7c919..e396f18747d1 100644
-> --- a/drivers/staging/wfx/debug.c
-> +++ b/drivers/staging/wfx/debug.c
-> @@ -299,7 +299,7 @@ static ssize_t wfx_send_hif_msg_read(struct file *file, char __user *user_buf,
->  		return ret;
->  	if (context->ret < 0)
->  		return context->ret;
-> -	// Be carefull, write() is waiting for a full message while read()
-> +	// Be careful, write() is waiting for a full message while read()
->  	// only return a payload
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+---
+Linus,
 
-	   only returns a payload
+Is this something you're willing to merge directly please?
 
->  	if (copy_to_user(user_buf, context->reply, count))
->  		return -EFAULT;
+Thanks.
 
-> diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
-> index 5110f9b93762..11fbdb5fcecc 100644
-> --- a/drivers/staging/wfx/hif_tx.c
-> +++ b/drivers/staging/wfx/hif_tx.c
-> @@ -125,7 +125,7 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
->  
->  // This function is special. After HIF_REQ_ID_SHUT_DOWN, chip won't reply to any
->  // request anymore. We need to slightly hack struct wfx_hif_cmd for that job. Be
-> -// carefull to only call this funcion during device unregister.
-> +// carefull to only call this function during device unregister.
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-      careful
-
->  int hif_shutdown(struct wfx_dev *wdev)
->  {
->  	int ret;
-
-> diff --git a/drivers/staging/wfx/main.h b/drivers/staging/wfx/main.h
-> index c59d375dd3ad..63138777e72a 100644
-> --- a/drivers/staging/wfx/main.h
-> +++ b/drivers/staging/wfx/main.h
-> @@ -19,7 +19,7 @@ struct wfx_dev;
->  struct hwbus_ops;
->  
->  struct wfx_platform_data {
-> -	/* Keyset and ".sec" extention will appended to this string */
-> +	/* Keyset and ".sec" extension will appended to this string */
-
-	                               will be appended
-
-
->  	const char *file_fw;
->  	const char *file_pds;
->  	struct gpio_desc *gpio_wakeup;
-
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4e2698cc7e23..3b11a8b84129 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15431,7 +15431,7 @@ F:	drivers/net/phy/phylink.c
+ F:	drivers/net/phy/sfp*
+ F:	include/linux/phylink.h
+ F:	include/linux/sfp.h
+-K:	phylink
++K:	phylink\.h|struct\s+phylink|\.phylink|>phylink_|phylink_(autoneg|clear|connect|create|destroy|disconnect|ethtool|helper|mac|mii|of|set|start|stop|test|validate)
+ 
+ SGI GRU DRIVER
+ M:	Dimitri Sivanich <sivanich@sgi.com>
 -- 
-~Randy
+2.20.1
 
