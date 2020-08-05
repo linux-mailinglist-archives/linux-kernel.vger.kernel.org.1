@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D407923CFBC
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4D323CFC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgHETYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:24:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:33804 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728709AbgHER1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:27:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD457D6E;
-        Wed,  5 Aug 2020 04:04:46 -0700 (PDT)
-Received: from [10.37.12.81] (unknown [10.37.12.81])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4C2F3FA32;
-        Wed,  5 Aug 2020 04:04:44 -0700 (PDT)
-Subject: Re: [PATCH 0/4] CPUFreq statistics retrieved by drivers
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org
-Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net
-References: <20200729151208.27737-1-lukasz.luba@arm.com>
- <a3354ae8-f40f-83f2-d6eb-7f588af75e97@gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <119ce268-18dc-7a4c-b0b2-3a66ff9ff4b0@arm.com>
-Date:   Wed, 5 Aug 2020 12:04:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728861AbgHETZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728577AbgHERZG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:25:06 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA5BC0086A6;
+        Wed,  5 Aug 2020 07:46:41 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id v13so23174659oiv.13;
+        Wed, 05 Aug 2020 07:46:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a747GTvzdj8BhTC99m/ltqffKPbWLknrH4UGCy7e+04=;
+        b=rx4G6ali42qaP1XHM/3dxNM9N32RXYC90XDH13dCFvCuQE5nEC2SKndrWA1Ie0QM7S
+         ezkvzSM2i8lafkAgtm1zUyLUZf3GeD4Vd0ts1FW+G6aOiCuLMKVX9g3yrcVAaWb25Q1/
+         UuEbBKFc18FoVVCVauRntkumg7dcVHp+khSrm6YNG+h44L31cZ/P4g8/iFP0WY7iWNEP
+         tSORMkowazJHMGpHn7YGoId8llCJWyuVhcjSSGiKJMQJW6fqBUxIWdgWJGQfLtkwsGdU
+         cJDqr9WWtb64EhtmBX9uAw0gm8IsXtKmLeVhSZheEL8nKT7dqasoc7/lWyTq54nXtgNY
+         hOOw==
+X-Gm-Message-State: AOAM530bfeRays6JRYcl9Jh6UofxignYBe8JLo4m2ms3N+Db/oZU/M6V
+        Lb/RFB32tjmPRPwFHpoYvaPE/S9lp36FDTsWnBY0Qg==
+X-Google-Smtp-Source: ABdhPJxOLh0H5vKRdwT+SgNB4/VJFY79xxN/fk4jyCR22Pxw8fbAj3AqGa5onUuCO90I+Y+bzEmqLPTLGI8ksjYr6g8=
+X-Received: by 2002:aca:b742:: with SMTP id h63mr2149267oif.148.1596625738500;
+ Wed, 05 Aug 2020 04:08:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a3354ae8-f40f-83f2-d6eb-7f588af75e97@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594919915-5225-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 5 Aug 2020 13:08:47 +0200
+Message-ID: <CAMuHMdVNrbi2twUoJ1wB4DY++M+VgsLVQXxS_NTK9YtExF8BBg@mail.gmail.com>
+Subject: Re: [PATCH 02/20] arm64: dts: renesas: r8a774e1: Add PCIe device nodes
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
+        Niklas <niklas.soderlund@ragnatech.se>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-ide@vger.kernel.org,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 16, 2020 at 7:18 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add PCIe{0,1} device nodes for R8A774E1 SoC.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.10.
 
-On 8/4/20 6:27 PM, Florian Fainelli wrote:
-> 
-> 
-> On 7/29/2020 8:12 AM, Lukasz Luba wrote:
->> Hi all,
->>
->> The existing CPUFreq framework does not tracks the statistics when the
->> 'fast switch' is used or when firmware changes the frequency independently
->> due to e.g. thermal reasons. However, the firmware might track the frequency
->> changes and expose this to the kernel.
-> 
-> Or the firmware might have changed the CPU frequency in response to a
-> request from the secure world for instance.
+Gr{oetje,eeting}s,
 
-Possible
+                        Geert
 
-> 
->>
->> This patch set aims to introduce CPUfreq statistics gathered by firmware
->> and retrieved by CPUFreq driver. It would require a new API functions
->> in the CPUFreq, which allows to poke drivers to get these stats.
-> 
->  From a debugging perspective, it would be helpful if the firmware
-> maintained statistics were exposed as a super-set of the Linux cpufreq
-> statistics and aggregated into them such that you could view the normal
-> world vs. secure world residency of a given frequency point. This would
-> help because a lot of times, Linux requests freq X, but the secure world
-> requires freq Y (with X >= Y) and people do not really understand why
-> the resulting power usage is higher for instance.
-> 
-> What are your thoughts on this?
-> 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-I know that Viresh is going to develop patches and improve these
-cpufreq stats framework. Maybe he also had this 'aggregation' in mind.
-I will leave it him.
-
-Thank you for your feedback.
-
-Regards,
-Lukasz
-
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
