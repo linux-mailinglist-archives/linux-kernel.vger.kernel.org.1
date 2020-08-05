@@ -2,264 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F19623CDDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431B623CDC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbgHERzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729061AbgHERzO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:55:14 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FF7C061757;
-        Wed,  5 Aug 2020 10:45:11 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id e14so10370555ybf.4;
-        Wed, 05 Aug 2020 10:45:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WASnyqpRdX3pKbpXG9wBHZsTQpXpNL3ba2dFW/cytJg=;
-        b=lz9h/9TsV9rSWTnJYNn6ppFAXqyT82G4yQRK/yeyn1L0pu83Wg8DDjN/XvMNaLK1Ff
-         s699Q+oNFtp3j4FwZ0RyDxOgWudW49RYRaNLl3gwGRrYZTz7luLxYTrKSCv9+ErsWdWq
-         INvY3CMrAteZA/Q8DvGu8eDRqIN6y0nqQE20DOto68YEL9+7daUtm5pAl5xYxqCznVtH
-         SdouWsdMlk/N93eAOE8otLqXmfGeiYJ1G1hhO892NjUNSmVLtMHDxUnAY6GtwDUf/W4g
-         cNtYxBHev1jXwn+MEFNWsX1c5bYWlz8luCYnGAZDcul7McvLs7mmx3kPdahO3HOvP7ai
-         S9MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WASnyqpRdX3pKbpXG9wBHZsTQpXpNL3ba2dFW/cytJg=;
-        b=An4+1/UB89ahgwCgjD5CcrotIyXgc8901MVYbvGMy455wXqUwiyoU2POiIygbFS62B
-         bXZlLH4qGtjCpJvCdz8UyYY/s6gg2cBSnh6LcMI7WInC7sRUs52qo2gIXWuWUBEEhL0X
-         +JNK/gOukoWd6v7ZC8c0OBf9BJCp4Ozy18a+3cu40TtakGNSqeItY11z3RPdr6USt9Of
-         040vU/R5n5s2q9vxbZYImHrElUKS/9aK4Xvi3kqz29Ql2rsDFwPO1BuPsp7LbGdmH0Ae
-         l1Pcmbo4kr1jB0wnLX9znPkk3k1jmQ0oW8p84YPLdCr+Ar/uY26EpC8tjRdm7Ew7L+KC
-         khug==
-X-Gm-Message-State: AOAM532Rcl3lHYzXV/MTiiugYrhfHKje7z2SdbszSfnSgnAMEB9sd1iA
-        N70dwrU2z73P7On9t5PCXg2kts1Fv2bJPl99E9uYQg==
-X-Google-Smtp-Source: ABdhPJyz1QXVgqVK8+dIwmFgxFVPfScHXk6KuaCo4C84uXyJXxmWd99+aubDp31eFiZDo7C1LBefr+6JPeTPdFDCEWw=
-X-Received: by 2002:a5b:44d:: with SMTP id s13mr6588545ybp.403.1596649509768;
- Wed, 05 Aug 2020 10:45:09 -0700 (PDT)
+        id S1728854AbgHERwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:52:40 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2581 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728952AbgHERue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:50:34 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id CBE82384A041F92D525B;
+        Wed,  5 Aug 2020 18:50:33 +0100 (IST)
+Received: from localhost (10.52.120.30) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 5 Aug 2020
+ 18:50:32 +0100
+Date:   Wed, 5 Aug 2020 18:49:07 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <ashok.raj@intel.com>,
+        <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Subject: Re: [PATCH V2 7/9] PCI/AER: Add RCEC AER handling
+Message-ID: <20200805184907.00000507@Huawei.com>
+In-Reply-To: <20200804194052.193272-8-sean.v.kelley@intel.com>
+References: <20200804194052.193272-1-sean.v.kelley@intel.com>
+        <20200804194052.193272-8-sean.v.kelley@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20200801084721.1812607-1-songliubraving@fb.com>
- <20200801084721.1812607-3-songliubraving@fb.com> <CAEf4BzYp4gO1P+OrY7hGyQjdia3BuSu4DX2_z=UF6RfGNa+gkQ@mail.gmail.com>
- <9C1285C1-ECD6-46BD-BA95-3E9E81C00EF0@fb.com> <CAEf4BzYojfFiMn6VeUkxUsdSTdFK0A4MzKQxhCCp_OowkseznQ@mail.gmail.com>
- <5BC1D7AD-32C1-4CDC-BA99-F4DABE61EEA3@fb.com> <CAEf4BzbbCZmijrU4vfkmq2PFsMMFG+xz9qR1e4wfrdm6tF4_hA@mail.gmail.com>
- <4DB698F2-BC51-4E96-BC3B-F478BE9AE106@fb.com> <CAEf4Bza4KXkVov=UwouryG5JcqYQ=9mDG8nBoWmb97rv+_yqTw@mail.gmail.com>
- <88081DFA-39FF-42BB-98F4-CCDE634A1775@fb.com>
-In-Reply-To: <88081DFA-39FF-42BB-98F4-CCDE634A1775@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Aug 2020 10:44:59 -0700
-Message-ID: <CAEf4Bza+GYLb=jVLsf_Q7O8Tpa-EXP4tiHGuuyDmTXs80njXRQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/5] libbpf: support BPF_PROG_TYPE_USER programs
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Xu <dlxu@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.30]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 12:23 AM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Aug 4, 2020, at 11:54 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Aug 4, 2020 at 11:26 PM Song Liu <songliubraving@fb.com> wrote:
-> >>
-> >>
-> >>
-> >>> On Aug 4, 2020, at 10:32 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >>>
-> >>> On Tue, Aug 4, 2020 at 8:59 PM Song Liu <songliubraving@fb.com> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>>> On Aug 4, 2020, at 6:38 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >>>>>
-> >>>>> On Mon, Aug 3, 2020 at 6:18 PM Song Liu <songliubraving@fb.com> wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>>> On Aug 2, 2020, at 6:40 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >>>>>>>
-> >>>>>>> On Sat, Aug 1, 2020 at 1:50 AM Song Liu <songliubraving@fb.com> wrote:
-> >>>>>>>>
-> >>>>>>
-> >>>>>> [...]
-> >>>>>>
-> >>>>>>>
-> >>>>>>>> };
-> >>>>>>>>
-> >>>>>>>> LIBBPF_API int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *test_attr);
-> >>>>>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> >>>>>>>> index b9f11f854985b..9ce175a486214 100644
-> >>>>>>>> --- a/tools/lib/bpf/libbpf.c
-> >>>>>>>> +++ b/tools/lib/bpf/libbpf.c
-> >>>>>>>> @@ -6922,6 +6922,7 @@ static const struct bpf_sec_def section_defs[] = {
-> >>>>>>>>     BPF_PROG_SEC("lwt_out",                 BPF_PROG_TYPE_LWT_OUT),
-> >>>>>>>>     BPF_PROG_SEC("lwt_xmit",                BPF_PROG_TYPE_LWT_XMIT),
-> >>>>>>>>     BPF_PROG_SEC("lwt_seg6local",           BPF_PROG_TYPE_LWT_SEG6LOCAL),
-> >>>>>>>> +       BPF_PROG_SEC("user",                    BPF_PROG_TYPE_USER),
-> >>>>>>>
-> >>>>>>> let's do "user/" for consistency with most other prog types (and nice
-> >>>>>>> separation between prog type and custom user name)
-> >>>>>>
-> >>>>>> About "user" vs. "user/", I still think "user" is better.
-> >>>>>>
-> >>>>>> Unlike kprobe and tracepoint, user prog doesn't use the part after "/".
-> >>>>>> This is similar to "perf_event" for BPF_PROG_TYPE_PERF_EVENT, "xdl" for
-> >>>>>> BPF_PROG_TYPE_XDP, etc. If we specify "user" here, "user/" and "user/xxx"
-> >>>>>> would also work. However, if we specify "user/" here, programs that used
-> >>>>>> "user" by accident will fail to load, with a message like:
-> >>>>>>
-> >>>>>>      libbpf: failed to load program 'user'
-> >>>>>>
-> >>>>>> which is confusing.
-> >>>>>
-> >>>>> xdp, perf_event and a bunch of others don't enforce it, that's true,
-> >>>>> they are a bit of a legacy,
-> >>>>
-> >>>> I don't see w/o "/" is a legacy thing. BPF_PROG_TYPE_STRUCT_OPS just uses
-> >>>> "struct_ops".
-> >>>>
-> >>>>> unfortunately. But all the recent ones do,
-> >>>>> and we explicitly did that for xdp_dev/xdp_cpu, for instance.
-> >>>>> Specifying just "user" in the spec would allow something nonsensical
-> >>>>> like "userargh", for instance, due to this being treated as a prefix.
-> >>>>> There is no harm to require users to do "user/my_prog", though.
-> >>>>
-> >>>> I don't see why allowing "userargh" is a problem. Failing "user" is
-> >>>> more confusing. We can probably improve that by a hint like:
-> >>>>
-> >>>>   libbpf: failed to load program 'user', do you mean "user/"?
-> >>>>
-> >>>> But it is pretty silly. "user/something_never_used" also looks weird.
-> >>>
-> >>> "userargh" is terrible, IMO. It's a different identifier that just
-> >>> happens to have the first 4 letters matching "user" program type.
-> >>> There must be either a standardized separator (which happens to be
-> >>> '/') or none. See the suggestion below.
-> >>
-> >> We have no problem deal with "a different identifier that just happens
-> >> to have the first letters matching", like xdp vs. xdp_devmap and
-> >> xdp_cpumap, right?
-> >>
-> >
-> > xdp vs xdp_devmap is an entirely different thing. We deal with it by
-> > checking xdp_devmap first. What I'm saying is that user can do
-> > "xdpomg" and libbpf would be happy (today). And I don't think that's
-> > good. But further, if someone does something like "xdp_devmap_omg",
-> > guess which program type will be inferred? Hint: not xdp_devmap and
-> > libbpf won't report an error either. All because "xdp" is so lax
-> > today.
-> >
-> >>>>
-> >>>>> Alternatively, we could introduce a new convention in the spec,
-> >>>>> something like "user?", which would accept either "user" or
-> >>>>> "user/something", but not "user/" nor "userblah". We can try that as
-> >>>>> well.
-> >>>>
-> >>>> Again, I don't really understand why allowing "userblah" is a problem.
-> >>>> We already have "xdp", "xdp_devmap/", and "xdp_cpumap/", they all work
-> >>>> fine so far.
-> >>>
-> >>> Right, we have "xdp_devmap/" and "xdp_cpumap/", as you say. I haven't
-> >>> seen so much pushback against trailing forward slash with those ;)
-> >>
-> >> I haven't seen any issue with old "perf_event", "xdp" and new "struct_ops"
-> >> either.
-> >>
-> >>>
-> >>> But anyways, as part of deprecating APIs and preparing libbpf for 1.0
-> >>> release over this half, I think I'm going to emit warnings for names
-> >>> like "prog_type_whatever" or "prog_typeevenworse", etc. And asking
-> >>> users to normalize section names to either "prog_type" or
-> >>> "prog_type/something/here", whichever makes sense for a specific
-> >>> program type.
-> >>
-> >> Exactly, "user" makes sense here; while "kprobe/__set_task_comm" makes
-> >> sense for kprobe.
-> >
-> > Right, but "userblah" doesn't. It would be great if you could help
-> > make what I described above become true. But at least don't make it
-> > worse by allowing unrestricted "user" prefix. I'm OK with strict
-> > "user" or "user/blah", I'm not OK with "userblah", I'm sorry.
->
-> If the concern with "userblah" is real and unbearable, so is "xdpblah"
-> and "perf_eventblah", and so on, and so on.
->
+On Tue, 4 Aug 2020 12:40:50 -0700
+Sean V Kelley <sean.v.kelley@intel.com> wrote:
 
-Oh yeah, "xdpblah" makes me cringe. "Some other kid is doing wrong
-thing, let me do it as well" style of argument never worked for me
-with my parents, I don't see why it should work here :)
+> The Root Complex Event Collectors(RCEC) appear as peers to Root Ports
+> and also have the AER capability. So add RCEC support to the current AER
+> service driver and attach the AER service driver to the RCEC device.
+> 
+> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-But anyways, let's table this discussion, it's not worth spending so
-much time on it. As I said, I'm going to start enforcing standardized
-separator or a single program type word soon enough. Might as well do
-that for "userblah".
+Looks good to me.
 
-> >
-> >>
-> >>> Right now libbpf doesn't allow two separate BPF programs
-> >>> with the same section name, so enforcing strict "user" is limiting to
-> >>> users. We are going to lift that restriction pretty soon, though. But
-> >>> for now, please stick with what we've been doing lately and mark it as
-> >>> "user/", later we'll allow just "user" as well.
-> >>
-> >> Since we would allow "user" later, why we have to reject it for now?
-> >
-> > Because libbpf is dumb in that regard today? And instead of migrating
-> > users later, I want to prevent users making bad choices right now.
->
-> The good choice here is to use "user", IMO. And you are preventing people
-> to use it. If user has to use "user/" for now. They will have to update
-> the programs later, right? If the conclusion is "user/xxx" is the ultimate
-> goal, I would agree with "user/" for now.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-They won't have to update, "user/something" would still work.
+> ---
+>  drivers/pci/pcie/aer.c | 27 ++++++++++++++++++++-------
+>  1 file changed, 20 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index f658607e8e00..55ee9518368f 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -300,7 +300,7 @@ int pci_aer_raw_clear_status(struct pci_dev *dev)
+>  		return -EIO;
+>  
+>  	port_type = pci_pcie_type(dev);
+> -	if (port_type == PCI_EXP_TYPE_ROOT_PORT) {
+> +	if (port_type == PCI_EXP_TYPE_ROOT_PORT || port_type == PCI_EXP_TYPE_RC_EC) {
+>  		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &status);
+>  		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, status);
+>  	}
+> @@ -595,7 +595,8 @@ static umode_t aer_stats_attrs_are_visible(struct kobject *kobj,
+>  	if ((a == &dev_attr_aer_rootport_total_err_cor.attr ||
+>  	     a == &dev_attr_aer_rootport_total_err_fatal.attr ||
+>  	     a == &dev_attr_aer_rootport_total_err_nonfatal.attr) &&
+> -	    pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT)
+> +	    ((pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT) &&
+> +	    (pci_pcie_type(pdev) != PCI_EXP_TYPE_RC_EC)))
+>  		return 0;
+>  
+>  	return a->mode;
+> @@ -916,7 +917,10 @@ static bool find_source_device(struct pci_dev *parent,
+>  	if (result)
+>  		return true;
+>  
+> -	pci_walk_bus(parent->subordinate, find_device_iter, e_info);
+> +	if (pci_pcie_type(parent) == PCI_EXP_TYPE_RC_EC)
+> +		pcie_walk_rcec(parent, find_device_iter, e_info);
+> +	else
+> +		pci_walk_bus(parent->subordinate, find_device_iter, e_info);
+>  
+>  	if (!e_info->error_dev_num) {
+>  		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
+> @@ -1053,6 +1057,7 @@ int aer_get_device_error_info(struct pci_dev *dev, struct aer_err_info *info)
+>  		if (!(info->status & ~info->mask))
+>  			return 0;
+>  	} else if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+> +		   pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC ||
+>  	           pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM ||
+>  		   info->severity == AER_NONFATAL) {
+>  
+> @@ -1205,6 +1210,7 @@ static int set_device_error_reporting(struct pci_dev *dev, void *data)
+>  	int type = pci_pcie_type(dev);
+>  
+>  	if ((type == PCI_EXP_TYPE_ROOT_PORT) ||
+> +	    (type == PCI_EXP_TYPE_RC_EC) ||
+>  	    (type == PCI_EXP_TYPE_UPSTREAM) ||
+>  	    (type == PCI_EXP_TYPE_DOWNSTREAM)) {
+>  		if (enable)
+> @@ -1229,9 +1235,11 @@ static void set_downstream_devices_error_reporting(struct pci_dev *dev,
+>  {
+>  	set_device_error_reporting(dev, &enable);
+>  
+> -	if (!dev->subordinate)
+> -		return;
+> -	pci_walk_bus(dev->subordinate, set_device_error_reporting, &enable);
+> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)
+> +		pcie_walk_rcec(dev, set_device_error_reporting, &enable);
+> +	else if (dev->subordinate)
+> +		pci_walk_bus(dev->subordinate, set_device_error_reporting, &enable);
+> +
+>  }
+>  
+>  /**
+> @@ -1329,6 +1337,11 @@ static int aer_probe(struct pcie_device *dev)
+>  	struct device *device = &dev->device;
+>  	struct pci_dev *port = dev->port;
+>  
+> +	/* Limit to Root Ports or Root Complex Event Collectors */
+> +	if ((pci_pcie_type(port) != PCI_EXP_TYPE_RC_EC) &&
+> +	    (pci_pcie_type(port) != PCI_EXP_TYPE_ROOT_PORT))
+> +		return -ENODEV;
+> +
+>  	rpc = devm_kzalloc(device, sizeof(struct aer_rpc), GFP_KERNEL);
+>  	if (!rpc)
+>  		return -ENOMEM;
+> @@ -1385,7 +1398,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+>  
+>  static struct pcie_port_service_driver aerdriver = {
+>  	.name		= "aer",
+> -	.port_type	= PCI_EXP_TYPE_ROOT_PORT,
+> +	.port_type	= PCIE_ANY_PORT,
+>  	.service	= PCIE_PORT_SERVICE_AER,
+>  
+>  	.probe		= aer_probe,
 
->
-> > Then relax it, if necessary. Alternatively, we can fix up libbpf logic
-> > before the USER program type lands.
->
-> I don't see why the USER program type need to wait for libbpf fix, as
-> "xdp", "perf_event", etc. all work well today.
 
-It's about being a good citizen and helping move libbpf forward.
-
->
-> >
-> >> Imagine the user just compiled and booted into a new kernel with user
-> >> program support; and then got the following message:
-> >>
-> >>        libbpf: failed to load program 'user'
-> >>
-> >> If I were the user, I would definitely question whether the kernel was
-> >> correct...
-> >
-> > That's also bad, and again, we can make libbpf better. I think moving
-> > forward any non-recognized BPF program type should be reported by
-> > libbpf as an error. But we can't do it right now, we have to have a
-> > period in which users will get a chance to update their BPF programs.
-> > This will have to happen over few libbpf releases at least. So please
-> > join in on the fun of fixing stuff like this.
->
-> I'd love to join the fun. Maybe after user program lands ;)
->
->
-
-Of course :) see above.
