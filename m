@@ -2,141 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C583423CCD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A40623CD25
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728530AbgHERJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:09:09 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36010 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728451AbgHEREw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:04:52 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 075FDwkb127568;
-        Wed, 5 Aug 2020 11:32:29 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32qu0v8ymy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 11:32:28 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 075FGMQE029092;
-        Wed, 5 Aug 2020 15:32:26 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 32mynhas6q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 15:32:26 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 075FUvYT60555774
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 5 Aug 2020 15:30:57 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1DF38AE045;
-        Wed,  5 Aug 2020 15:32:24 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 49002AE051;
-        Wed,  5 Aug 2020 15:32:23 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.95.205])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  5 Aug 2020 15:32:23 +0000 (GMT)
-Message-ID: <4400d951e18528297e3e63524ff0ff63d48efda1.camel@linux.ibm.com>
-Subject: [GIT PULL] integrity subsystem updates for v5.9
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Wed, 05 Aug 2020 11:32:19 -0400
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-05_10:2020-08-03,2020-08-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- clxscore=1015 impostorscore=0 lowpriorityscore=0 suspectscore=2
- phishscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008050124
+        id S1728771AbgHERV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:21:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728631AbgHERRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:17:52 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D8492336E;
+        Wed,  5 Aug 2020 15:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596642750;
+        bh=BocLtQpZTd5/Ym1RXKF6hFrclOeOhuwE8H0dnbnxEiI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dOkRmSA94q71naKXBjTPUYF8YgOp66T5R+7mqizs5NaYdD93tG0fVwqD9tEmo9v0a
+         mNzAkjitYDfroyW1jXaPBqbxIvpylpQNVpP2XKGl+5s+KsPWD6Y3eiC2slEd9KCsuA
+         2zFkGlJghMRFuFvPRj/jqWgJntgCRH3u/MMtyVH8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Emese Revfy <re.emese@gmail.com>,
+        Kees Cook <keescook@chromium.org>, Willy Tarreau <w@1wt.eu>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.7 4/6] random32: remove net_rand_state from the latent entropy gcc plugin
+Date:   Wed,  5 Aug 2020 17:52:31 +0200
+Message-Id: <20200805153507.183761235@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200805153506.978105994@linuxfoundation.org>
+References: <20200805153506.978105994@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-The nicest change is the IMA policy rule checking.  The other changes
-include allowing the kexec boot cmdline line measure policy rules to be
-defined in terms of the inode associated with the kexec kernel image,
-making the IMA_APPRAISE_BOOTPARAM, which governs the IMA appraise mode
-(log, fix, enforce), a runtime decision based on the secure boot mode
-of the system, and including errno in the audit log.
+commit 83bdc7275e6206f560d247be856bceba3e1ed8f2 upstream.
 
-thanks,
+It turns out that the plugin right now ends up being really unhappy
+about the change from 'static' to 'extern' storage that happened in
+commit f227e3ec3b5c ("random32: update the net random state on interrupt
+and activity").
 
-Mimi
+This is probably a trivial fix for the latent_entropy plugin, but for
+now, just remove net_rand_state from the list of things the plugin
+worries about.
 
-The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Emese Revfy <re.emese@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
+---
+ include/linux/random.h |    2 +-
+ lib/random32.c         |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-are available in the Git repository at:
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -120,7 +120,7 @@ struct rnd_state {
+ 	__u32 s1, s2, s3, s4;
+ };
+ 
+-DECLARE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++DECLARE_PER_CPU(struct rnd_state, net_rand_state);
+ 
+ u32 prandom_u32_state(struct rnd_state *state);
+ void prandom_bytes_state(struct rnd_state *state, void *buf, size_t nbytes);
+--- a/lib/random32.c
++++ b/lib/random32.c
+@@ -48,7 +48,7 @@ static inline void prandom_state_selftes
+ }
+ #endif
+ 
+-DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++DEFINE_PER_CPU(struct rnd_state, net_rand_state);
+ 
+ /**
+  *	prandom_u32_state - seeded pseudo-random number generator.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.9
-
-for you to fetch changes up to 3db0d0c276a752af39beb5ca7424cb659aa005bb:
-
-  integrity: remove redundant initialization of variable ret (2020-07-27 16:52:09 -0400)
-
-----------------------------------------------------------------
-integrity-v5.9
-
-----------------------------------------------------------------
-Bruno Meneguele (1):
-      ima: move APPRAISE_BOOTPARAM dependency on ARCH_POLICY to runtime
-
-Colin Ian King (1):
-      integrity: remove redundant initialization of variable ret
-
-Lakshmi Ramasubramanian (2):
-      integrity: Add errno field in audit message
-      IMA: Add audit log for failure conditions
-
-Maurizio Drocco (1):
-      ima: extend boot_aggregate with kernel measurements
-
-Mimi Zohar (1):
-      Merge branch 'validate-policy-rules' into next-integrity
-
-Tyler Hicks (14):
-      ima: Have the LSM free its audit rule
-      ima: Free the entire rule when deleting a list of rules
-      ima: Free the entire rule if it fails to parse
-      ima: Fail rule parsing when buffer hook functions have an invalid action
-      ima: Fail rule parsing when the KEXEC_CMDLINE hook is combined with an invalid cond
-      ima: Fail rule parsing when the KEY_CHECK hook is combined with an invalid cond
-      ima: Fail rule parsing when appraise_flag=blacklist is unsupportable
-      ima: Shallow copy the args_p member of ima_rule_entry.lsm elements
-      ima: Use correct type for the args_p member of ima_rule_entry.lsm elements
-      ima: Move comprehensive rule validation checks out of the token parser
-      ima: Use the common function to detect LSM conditionals in a rule
-      ima: Support additional conditionals in the KEXEC_CMDLINE hook function
-      ima: Rename internal filter rule functions
-      ima: AppArmor satisfies the audit rule requirements
-
- include/linux/ima.h                          |   4 +-
- kernel/kexec_file.c                          |   2 +-
- security/integrity/digsig_asymmetric.c       |   2 +-
- security/integrity/ima/Kconfig               |   4 +-
- security/integrity/ima/ima.h                 |  75 +++++----
- security/integrity/ima/ima_api.c             |   2 +-
- security/integrity/ima/ima_appraise.c        |   8 +-
- security/integrity/ima/ima_asymmetric_keys.c |   2 +-
- security/integrity/ima/ima_crypto.c          |  15 +-
- security/integrity/ima/ima_main.c            |  41 +++--
- security/integrity/ima/ima_modsig.c          |  20 ---
- security/integrity/ima/ima_policy.c          | 240 +++++++++++++++++++--------
- security/integrity/ima/ima_queue_keys.c      |   7 +-
- security/integrity/integrity.h               |  13 ++
- security/integrity/integrity_audit.c         |  11 +-
- 15 files changed, 301 insertions(+), 145 deletions(-)
 
