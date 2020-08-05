@@ -2,174 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9F423CCAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB36C23CCA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727101AbgHEQ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        id S1728332AbgHEQ4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728290AbgHEQyb (ORCPT
+        with ESMTP id S1728232AbgHEQwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:54:31 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51C1C08E834;
-        Wed,  5 Aug 2020 06:12:18 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id c19so4373567wmd.1;
-        Wed, 05 Aug 2020 06:12:18 -0700 (PDT)
+        Wed, 5 Aug 2020 12:52:44 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B2FC08EA0A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:16:28 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id w25so12174904ljo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:16:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=B9JUGt8Pb9MDGuBsLIt3kVKcTw+cuX4wnQpyN3p61KQ=;
-        b=pbk1cNPRF/GvqfGkOr+BRCbGcJN5u/R67NUNZc5JeQP6+Ucu93yX5HNmhmIGcpnbDg
-         b/Vb5CNZU1Ai7dd2ZgXfZe5Eg5kzp4G+pIcJFMIjbRDvqndYePvwy8BiVcZGC3tCtAo9
-         1ONUxrvdZxxvAzMHnCb/p9eoxfg87gYN5yhFKc8hJSTQBNaQq5Hj19/HA74yll88Arrt
-         NjKOdn4OI7CxOZk6HgB0D6UUc5eiGbxAcuj0VhtfZavaaCzB0miFqJiT9b9E7RHQUSRB
-         5sFbWUnFxYCQUFI/90+Y6qZ37czHQwsEmr6FzhuPpkC64Q7HbsWa0gq0WF6xe/ubtMgM
-         cL7g==
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a94+vY6/4IIigbXjg7NoT3QyS3gyeM3tRGM7IVe4C4A=;
+        b=15Gzl4QZddTS7bZppiLCks8TnKdGjjThf1+1n2PB6hvFFKm0anFwj1mRbuIopHjtjZ
+         PmhBrjQq9P0jGAtfWE0WpRv0NUlg+TC0xFMMPI0UdQ5zswvcPJgKz7zuojmmHBPoo+fM
+         Nk0mZHL66mV47gSHqMPCmZEUVeTWLmSsOnPbETHn7F1sflFlCeHJG6lZ2ugkPeICATot
+         05QaAVOAxe1WcFLQn+qCP6t5k76N4waNiQE70DxT7FRmkjn2xfCFlv5kCxbeR48a6fqW
+         uAr7zHqPvdbgmz0OpHYND8tA6Zag4e4lDHNcV8RPJwuOPO8wmk2LM8lc02XvlEKJ7Fnh
+         gSew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=B9JUGt8Pb9MDGuBsLIt3kVKcTw+cuX4wnQpyN3p61KQ=;
-        b=sxZNa+apP25vppczNLXjRDKJiB1s22yXdKGBh1woBI82+Qg/MohcBMvxgq7jTB01rO
-         BU0qWS21oOjjFVAUiu7fbvc/L034wBHFJYkGEuR3hZvhQwBSyjrzXiRMmsw7CwtIogAu
-         Lmvdvx2VS6Tlz5ZDxC5seIKc9G0TOivfwdIOm5uap+zxdqRe/Zy1NdYzhWB5bUsQbuDL
-         WDH2PaetIsYxUKB01CNDiN7v0iZlE25E0BlIAzzW4q7q1ckdC3FM1KbwY44y5mjPc0SK
-         aCeKHY3KDhOuCKb4U7ygOd22iexkjHUUfqvt2i0afBfIPgr9c/COfmTOS393e7TiiTJZ
-         60eA==
-X-Gm-Message-State: AOAM530arzSf2ncFR1sWcJXYBcSpEd6eQt0kYz3qxnApG5Orkot2vF9c
-        FfQhO/j4P1SYhpSwg5zdbhA=
-X-Google-Smtp-Source: ABdhPJx7QnQpLkIIv5E0GyPade/7mWzzITIagloPzo8qbKK9XtJXsRfCQT2mdy/5AeRoPFSS4o0yFA==
-X-Received: by 2002:a1c:6555:: with SMTP id z82mr3330653wmb.67.1596633137287;
-        Wed, 05 Aug 2020 06:12:17 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (host-95-251-1-48.retail.telecomitalia.it. [95.251.1.48])
-        by smtp.googlemail.com with ESMTPSA id j11sm2669756wrq.69.2020.08.05.06.12.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:12:16 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 2/2] dt-bindings: cpufreq: Document Krait CPU Cache scaling
-Date:   Wed,  5 Aug 2020 15:11:59 +0200
-Message-Id: <20200805131200.3234-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200805131200.3234-1-ansuelsmth@gmail.com>
-References: <20200805131200.3234-1-ansuelsmth@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a94+vY6/4IIigbXjg7NoT3QyS3gyeM3tRGM7IVe4C4A=;
+        b=r40xh0nQUeQ+g+hA3YTt6BQ85M1JhpCRGmHIfgMy4EsozwjIy4bepp7PKu6pKsZe3O
+         EQjdaYP6Ccy3AZZ3pEY6YDJLw27jHtcyo6BH8eCOHqUn4KZpoLM372yJThxowLNlGBY3
+         +z3bUhRtpn7y8zb7dKznF4YD7Y5FvSzMBlxMHgnw6bS9huongLPuBm3ECDxuvL4iHSBd
+         iG1lX10E/i57f5c0c70z2gIlMZn9gAY8n6AykDimA9eG49tr2LlEHF0iocpzktqSp8yh
+         InEWHifnuF43lfJUxqra+B0QkFafQ8nXxXJV9RxlOkBHIUWasMTfAvvMttRB/b6nDlnE
+         OI4g==
+X-Gm-Message-State: AOAM530Tq+Ui/febeUqff2rQXaUn0sfitgZEx/P0+IovsdVU9AxQTNUV
+        O29tGYMTvH4/NPYwBhum2dfwvz9LMGaEYdpwbVJ39w==
+X-Google-Smtp-Source: ABdhPJwjg5Ra/z1LK5PGj9yIvEUV894D92SaQPSdTYQ19poiZFDx8xCMEmv974RmQSyC4iXeKoYKya43bsM13OJHPJc=
+X-Received: by 2002:a2e:9c59:: with SMTP id t25mr1397247ljj.402.1596633386436;
+ Wed, 05 Aug 2020 06:16:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200721174228.misj2mgqzcfz2lsj@pesu.pes.edu> <20200729160333.GA3652767@kroah.com>
+ <VI1PR04MB480018F32A080BC5CC76E3C7F34B0@VI1PR04MB4800.eurprd04.prod.outlook.com>
+ <20200805125627.GA1822283@kroah.com>
+In-Reply-To: <20200805125627.GA1822283@kroah.com>
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+Date:   Wed, 5 Aug 2020 18:46:15 +0530
+Message-ID: <CAAhDqq3iZXdtxC6kaRZg7520gzBORmP75uWDf+fNBtwr_Zpi9A@mail.gmail.com>
+Subject: Re: [PATCH v2] tty: serial: fsl_lpuart.c: prevent a bad shift operation
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Vabhav Sharma (OSS)" <vabhav.sharma@oss.nxp.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bhuvanchandra.dv@toradex.com" <bhuvanchandra.dv@toradex.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document dedicated Krait CPU Cache Scaling driver.
+On Wed, Aug 5, 2020 at 6:26 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Aug 05, 2020 at 12:09:34PM +0000, Vabhav Sharma (OSS) wrote:
+> >
+> >
+> > > -----Original Message-----
+> > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Sent: Wednesday, July 29, 2020 9:34 PM
+> > > To: B K Karthik <bkkarthik@pesu.pes.edu>
+> > > Cc: Jiri Slaby <jirislaby@kernel.org>; linux-serial@vger.kernel.org; linux-
+> > > kernel@vger.kernel.org; Vabhav Sharma (OSS)
+> > > <vabhav.sharma@oss.nxp.com>; bhuvanchandra.dv@toradex.com
+> > > Subject: Re: [PATCH v2] tty: serial: fsl_lpuart.c: prevent a bad shift operation
+> > >
+> > > On Tue, Jul 21, 2020 at 11:12:29PM +0530, B K Karthik wrote:
+> > > > prevent a bad shift operation by verifying that the argument to fls is
+> > > > non zero.
+> > > >
+> > > > Reported-by: "Vabhav Sharma (OSS)" <vabhav.sharma@oss.nxp.com>
+> > > > Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
+> > > > ---
+> > > > v1 -> v2:
+> > > >   added Reported-by tag
+> > > >
+> > > >  drivers/tty/serial/fsl_lpuart.c | 3 ++-
+> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/tty/serial/fsl_lpuart.c
+> > > > b/drivers/tty/serial/fsl_lpuart.c index 7ca642249224..0cc64279cd2d
+> > > > 100644
+> > > > --- a/drivers/tty/serial/fsl_lpuart.c
+> > > > +++ b/drivers/tty/serial/fsl_lpuart.c
+> > > > @@ -1168,7 +1168,8 @@ static inline int lpuart_start_rx_dma(struct
+> > > lpuart_port *sport)
+> > > >    * 10ms at any baud rate.
+> > > >    */
+> > > >   sport->rx_dma_rng_buf_len = (DMA_RX_TIMEOUT * baud /  bits /
+> > > 1000) * 2;
+> > > > - sport->rx_dma_rng_buf_len = (1 << (fls(sport->rx_dma_rng_buf_len)
+> > > - 1));
+> > > > + if (sport->rx_dma_rng_buf_len != 0)
+> > >
+> > > How can this variable become 0?
+> > Condition x, taking false branch
+> > Explicitly returning zero
+> >
+> > static __always_inline int fls(unsigned int x)
+> > {
+> >       return x ? sizeof(x) * 8 - __builtin_clz(x) : 0;
+> > }
+>
+> What false branch?
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- .../bindings/cpufreq/krait-cache-scale.yaml   | 89 +++++++++++++++++++
- 1 file changed, 89 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
+I'm assuming he's talking about the value after : in the ? operator.
 
-diff --git a/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml b/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
-new file mode 100644
-index 000000000000..190276ba035a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
-@@ -0,0 +1,89 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/cpufreq/krait-cache-scale.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Krait Cpu Cache Frequency Scaling dedicated driver
-+
-+maintainers:
-+  - Ansuel Smith <ansuelsmth@gmail.com>
-+
-+description: |
-+  This Scale the Krait CPU Cache Frequency and optionally voltage
-+  when the Cpu Frequency is changed (using the cpufreq notifier).
-+
-+  Cache is scaled with the max frequency across all core and the cache
-+  frequency will scale based on the configured threshold in the dts.
-+
-+  The cache is hardcoded to 3 frequency bin, idle, nominal and high.
-+
-+properties:
-+  compatible:
-+    const: qcom,krait-cache
-+
-+  clocks:
-+    description: Phandle to the L2 CPU clock
-+
-+  clock-names:
-+    const: "l2"
-+
-+  voltage-tolerance:
-+    description: Same voltage tollerance of the Krait CPU
-+
-+  l2-rates:
-+    description: |
-+      Frequency the L2 cache will be scaled at.
-+      Value is in Hz.
-+    items:
-+      - description: idle
-+      - description: nominal
-+      - description: high
-+
-+  l2-cpufreq:
-+    description: |
-+      Threshold used by the driver to scale the L2 cache.
-+      If the max CPU Frequency is more than the set frequency,
-+      the driver will transition to the next frequency bin.
-+      Value is in kHz
-+    items:
-+      - description: idle
-+      - description: nominal
-+      - description: high
-+
-+  l2-volt:
-+    description: |
-+      Threshold used by the driver to scale the L2 cache.
-+      If the max CPU Frequency is more than the set frequency,
-+      the driver will transition to the next frequency bin.
-+      Value is in microvolt.
-+    items:
-+      - description: idle
-+      - description: nominal
-+      - description: high
-+
-+  l2-supply:
-+    description: Phandle to the L2 regulator supply.
-+
-+required:
-+  - compatible
-+  - clocks
-+  - clock-names
-+  - voltage-tolerance
-+  - l2-rates
-+  - l2-cpufreq
-+  - l2-supply
-+  - l2-volt
-+
-+examples:
-+  - |
-+    qcom-krait-cache {
-+      compatible = "qcom,krait-cache";
-+      clocks = <&kraitcc 4>;
-+      clock-names = "l2";
-+      voltage-tolerance = <5>;
-+      l2-rates = <384000000 1000000000 1200000000>;
-+      l2-cpufreq = <384000 600000 1200000>;
-+      l2-volt = <1100000 1100000 1150000>;
-+      l2-supply = <&smb208_s1a>;
-+    };
--- 
-2.27.0
+I am checking for the wrong thing in the if statement. We will have to
+check for the return value of fls() before performing the shift.
+I can change it and send a v3 if you agree.
 
+Please let me know.
+
+thanks,
+
+karthik
