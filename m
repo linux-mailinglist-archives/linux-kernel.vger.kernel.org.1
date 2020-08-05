@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328E223CFF3
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1814723D001
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbgHET1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:27:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53682 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728645AbgHERNE (ORCPT
+        id S1728695AbgHET2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:28:00 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:34843 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728607AbgHERLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:13:04 -0400
+        Wed, 5 Aug 2020 13:11:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647582;
+        s=mimecast20190719; t=1596647489;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=f1A99Kan+ToYvUmOMuODkd0BFkRSjBNq3WkT2nA5570=;
-        b=dR3nXJcOxXQhXr4gn6VmnbjOJP1FxOpoj2yjDm2sGOB2XQpNQ99v7U/3kvvgfu2ewkayRf
-        Mn68IMjrF78i0E6dWUf6UonGQbjnuSf6zeMNP4h7bmrKiCr5kRQkOMBWv3GbNGUE/rYh6a
-        XuR6rfx7M4qLvf6K9kuF8xUCy8KVRQA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-226-YGQs7NjpOLOPTbjI2RF8dw-1; Wed, 05 Aug 2020 09:44:15 -0400
-X-MC-Unique: YGQs7NjpOLOPTbjI2RF8dw-1
-Received: by mail-wm1-f70.google.com with SMTP id v8so2472111wma.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:14 -0700 (PDT)
+        bh=Z+ItaiktMWQThwK9MNBEGmvl3xKPTH4X3U+c0Slx6t4=;
+        b=bFVbbcMyiR47CdBlw8JX7LALxpSMiOqWJKOC+oV771BVWtum0zCn7xvcK82E98ECPA4LUW
+        bnPikVqKpvWc5i02dudJn5sGFC6AUCguSGqS0yO6ye+YpcP9Xx5U2ULRcZDibSK6RWisLv
+        qVhxraibeWL/Q6t3ta+vzfuFI51ckOQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-14-QRDlC3cuPbKC6shZqIivNQ-1; Wed, 05 Aug 2020 09:44:17 -0400
+X-MC-Unique: QRDlC3cuPbKC6shZqIivNQ-1
+Received: by mail-wm1-f71.google.com with SMTP id i15so2471740wmb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=f1A99Kan+ToYvUmOMuODkd0BFkRSjBNq3WkT2nA5570=;
-        b=RmQjnOjh0hU13RKHQJropXLjhmfjSglH0WbBkyo/rEZJJ/yPBRrGOX+eU5vCwIa6sA
-         A9hRyDt+i9QdMUtRKgkqpzXDQARRHA5KDE0FeuEHtrB3nsi5c2CLle5z4x93UnG2JTZ5
-         pcSZZp3WGNCergW0SiXllQqIBLFHFaiLsvWeN6Z/vKSp7djIxlMZ/jwhVQPFVHuABpmI
-         vyo4kBJrvVKzPQ4/5fRt5YCy9zGVytWEAkbYSB6xWs/HogFgXYi1JSpvYbEz6/GQXKgR
-         0w82e+SI+hOSS0dZc+Bc/Gok3NVA74eOP0shV8U/3pj46pJNgEKFQyyCMD8eu/u+Ns/T
-         k4oA==
-X-Gm-Message-State: AOAM530nS37PNfNZ19yGdeOv/sU8/dWSA84L4ob5nNxjHloIUebpKMGP
-        pQnWD9dO872K1A1O5MHafan3CAjixkHkLBySWPYg3USeIDlaP9hknCaojq/7IxS+jXVsXIvn0I1
-        6u6hWOFdjrG29Yo4QzF8QTAW7
-X-Received: by 2002:a5d:56c9:: with SMTP id m9mr2815443wrw.311.1596635052938;
-        Wed, 05 Aug 2020 06:44:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz1s5cwBUNfyg52XUg786M5asAtfYsirHkxCrJWthFsY+eLaHorMKAhGdLmAYB5+K4MVfGhow==
-X-Received: by 2002:a5d:56c9:: with SMTP id m9mr2815427wrw.311.1596635052770;
-        Wed, 05 Aug 2020 06:44:12 -0700 (PDT)
-Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
-        by smtp.gmail.com with ESMTPSA id o30sm2873971wra.67.2020.08.05.06.44.11
+        bh=Z+ItaiktMWQThwK9MNBEGmvl3xKPTH4X3U+c0Slx6t4=;
+        b=gk/u02svT0cAK31V174eLkqdzz3vzCoGlmaHn+JJNG+bmyoIQtZAwMyZgKNHyKW3bh
+         mo/XWevDbW5EE4dGaNLcdTEFJdZ9hy3To+rZZepxto1U5Z7r5n9VCQ8u74omxzoift+Y
+         ZFzbiZGVMn1dIyPA4E3rILOXYgMP/He6U3n1LfN4ZhsfTqlplMNt430D86+ThUa4/rTK
+         UVSkmhewWmRmFaomEN/F6Wz0V2lUgHJsqBPK0UylseTzM1zAsNF51Tmoolb1YRScsmZc
+         3yoxceJNORl+mHnd8RME/OMb6THI8KS81uspmoN1/uxkzQlIcCrCId+XWdu16dzsS7gt
+         BPjg==
+X-Gm-Message-State: AOAM5331U8nU8jDRIHkdwGFNHGl83jGQh/kj2eQD/Q/WkiSjSXlkYoRn
+        uS78PtISqf0Cae8lXUDnIaPXb5zmoyaevfaSQ6KpLGmj+xVmkO7PKVdXKGJM2pyV1Hpxayq+QOE
+        8f4zPObCpAmwOe/f3mbAN59+g
+X-Received: by 2002:a05:6000:1152:: with SMTP id d18mr3074174wrx.357.1596635055367;
+        Wed, 05 Aug 2020 06:44:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzvA+Frs/2FvOknz7TvvmpwiVR+bgI+oEORnEClWTDh1sDHeItL0iJ+Rvz1Zn02P4rB2YHxLQ==
+X-Received: by 2002:a05:6000:1152:: with SMTP id d18mr3074160wrx.357.1596635055122;
+        Wed, 05 Aug 2020 06:44:15 -0700 (PDT)
+Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
+        by smtp.gmail.com with ESMTPSA id k1sm2780743wrw.91.2020.08.05.06.44.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:12 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:44:10 -0400
+        Wed, 05 Aug 2020 06:44:14 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:44:13 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH v3 20/38] vhost/vdpa: switch to new helpers
-Message-ID: <20200805134226.1106164-21-mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v3 21/38] virtio_vdpa: legacy features handling
+Message-ID: <20200805134226.1106164-22-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -69,55 +69,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For new helpers handling legacy features to be effective,
-vhost needs to invoke them. Tie them in.
+We normally expect vdpa to use the modern interface.
+However for consistency, let's use same APIs as vhost
+for legacy guests.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- drivers/vhost/vdpa.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/virtio/virtio_vdpa.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 18869a35d408..3674404688f5 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -118,9 +118,8 @@ static irqreturn_t vhost_vdpa_config_cb(void *private)
- static void vhost_vdpa_reset(struct vhost_vdpa *v)
+diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+index c30eb55030be..4a9ddb44b2a7 100644
+--- a/drivers/virtio/virtio_vdpa.c
++++ b/drivers/virtio/virtio_vdpa.c
+@@ -57,9 +57,8 @@ static void virtio_vdpa_get(struct virtio_device *vdev, unsigned offset,
+ 			    void *buf, unsigned len)
  {
- 	struct vdpa_device *vdpa = v->vdpa;
+ 	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
 -	const struct vdpa_config_ops *ops = vdpa->config;
  
--	ops->set_status(vdpa, 0);
+-	ops->get_config(vdpa, offset, buf, len);
++	vdpa_get_config(vdpa, offset, buf, len);
+ }
+ 
+ static void virtio_vdpa_set(struct virtio_device *vdev, unsigned offset,
+@@ -101,9 +100,8 @@ static void virtio_vdpa_set_status(struct virtio_device *vdev, u8 status)
+ static void virtio_vdpa_reset(struct virtio_device *vdev)
+ {
+ 	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+-	const struct vdpa_config_ops *ops = vdpa->config;
+ 
+-	return ops->set_status(vdpa, 0);
 +	vdpa_reset(vdpa);
  }
  
- static long vhost_vdpa_get_device_id(struct vhost_vdpa *v, u8 __user *argp)
-@@ -196,7 +195,6 @@ static long vhost_vdpa_get_config(struct vhost_vdpa *v,
- 				  struct vhost_vdpa_config __user *c)
+ static bool virtio_vdpa_notify(struct virtqueue *vq)
+@@ -294,12 +292,11 @@ static u64 virtio_vdpa_get_features(struct virtio_device *vdev)
+ static int virtio_vdpa_finalize_features(struct virtio_device *vdev)
  {
- 	struct vdpa_device *vdpa = v->vdpa;
+ 	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
 -	const struct vdpa_config_ops *ops = vdpa->config;
- 	struct vhost_vdpa_config config;
- 	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
- 	u8 *buf;
-@@ -209,7 +207,7 @@ static long vhost_vdpa_get_config(struct vhost_vdpa *v,
- 	if (!buf)
- 		return -ENOMEM;
  
--	ops->get_config(vdpa, config.off, buf, config.len);
-+	vdpa_get_config(vdpa, config.off, buf, config.len);
+ 	/* Give virtio_ring a chance to accept features. */
+ 	vring_transport_features(vdev);
  
- 	if (copy_to_user(c->buf, buf, config.len)) {
- 		kvfree(buf);
-@@ -282,7 +280,7 @@ static long vhost_vdpa_set_features(struct vhost_vdpa *v, u64 __user *featurep)
- 	if (features & ~vhost_vdpa_features[v->virtio_id])
- 		return -EINVAL;
+-	return ops->set_features(vdpa, vdev->features);
++	return vdpa_set_features(vdpa, vdev->features);
+ }
  
--	if (ops->set_features(vdpa, features))
-+	if (vdpa_set_features(vdpa, features))
- 		return -EINVAL;
- 
- 	return 0;
+ static const char *virtio_vdpa_bus_name(struct virtio_device *vdev)
 -- 
 MST
 
