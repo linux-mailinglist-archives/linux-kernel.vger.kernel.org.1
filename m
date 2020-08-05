@@ -2,107 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C6523D175
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F80323D2D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbgHEUBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:01:15 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:44248 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727772AbgHEQlW (ORCPT
+        id S1729905AbgHEUQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:16:27 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:33610 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgHEQS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:41:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596645679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wvvVbA3neuStjhovJpqPYB6dYLf6War6ZdtpyVOVpoo=;
-        b=i/Odx8Me+EPwmNQysiDcGj42l+I4M2lX/hXOnHR4ejUjdhvBL0d0xd609gRo6T0kvR0uPM
-        ErHFxwGXLUcE+CewdQq5szRNp4SeGBvW+l8kiQJreBZ9WCBhAZaGp1MCYhbT3hsBtQe75z
-        B5khOsvWa7NM+AAoBHOWjn0KMDX0Sg0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-HfoEEMGyOMSIrZeaPznJcg-1; Wed, 05 Aug 2020 09:13:03 -0400
-X-MC-Unique: HfoEEMGyOMSIrZeaPznJcg-1
-Received: by mail-wr1-f69.google.com with SMTP id b8so3952959wrr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:13:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wvvVbA3neuStjhovJpqPYB6dYLf6War6ZdtpyVOVpoo=;
-        b=RV6mf5RGV6gczLV6O2gZetSpZKdiIK0tZ19QsHxqz/seo1+VIhLrZjeCiTYuoWNhpQ
-         MEUf2fg6RvoJ0/atR/3fY5sAD8p/HZ0V8/BaRX3JIMRqvSgsq8reWv+81+gZTIPwj/va
-         Uhd2Yy9URkfTfiSMaJAAE8n5BbGqKTjrwwwZJTkkpdDgvc+5Bha+RnYQFYG8FWO2itqW
-         LOxobWp/azb8O6mgIgvEpT2ZUI6rFDl38UukW/Bu7d8Khyas7iJOAt1sC502UGY3CTwR
-         CdM+Egkkj63mQPAXgSCFlBLj8cMGv16/QYqZGLdUrERMRTmp5Rq3sdQKoNJOq8+dFIlG
-         eZ2g==
-X-Gm-Message-State: AOAM530VxfYllx7XwjC1ou84/i9c+OPvj/FwiVl5hCbQgtsqxG/SAbG6
-        EiyQjdzpyit6WuodkVSXvgSC5BSy0ALQ6uVqqrG+voCHynGY3WmY3Vxq6Mu/WrLO2LVhDYT0X04
-        MFOwUVgrI+sDlXiYiKubr5LzW
-X-Received: by 2002:a1c:1d91:: with SMTP id d139mr3411890wmd.144.1596633182190;
-        Wed, 05 Aug 2020 06:13:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz9coyERUcXT3yxN24ZYMf+XfyA2+T1qmyE4JuGsj7TRNRDbULVwH+0UMH6Eic7iEdmMl0Cjg==
-X-Received: by 2002:a1c:1d91:: with SMTP id d139mr3411871wmd.144.1596633182015;
-        Wed, 05 Aug 2020 06:13:02 -0700 (PDT)
-Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
-        by smtp.gmail.com with ESMTPSA id 31sm2746951wrp.87.2020.08.05.06.12.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:13:01 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:12:58 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <eli@mellanox.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
-        saeedm@mellanox.com, parav@mellanox.com
-Subject: Re: [PATCH V4 linux-next 00/12] VDPA support for Mellanox ConnectX
- devices
-Message-ID: <20200805090304-mutt-send-email-mst@kernel.org>
-References: <20200804162048.22587-1-eli@mellanox.com>
- <20200805075856-mutt-send-email-mst@kernel.org>
- <20200805124054.GA125576@mtl-vdi-166.wap.labs.mlnx>
- <20200805084604-mutt-send-email-mst@kernel.org>
- <20200805130158.GA126406@mtl-vdi-166.wap.labs.mlnx>
+        Wed, 5 Aug 2020 12:18:57 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 075DGWpe104587;
+        Wed, 5 Aug 2020 08:16:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596633392;
+        bh=jv05QMyNRK6yayjZc1mP1MO1HJsGqxdVtsib46m4psw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=T+RhXndV1BPGC6RiOs7bIZtzzRI4KezTc5sDYRlBrjptGzd2t5N7YZbKtslASCm69
+         b/5xu9BxUpwVFMXXDLrGZthhOepTcxE1+BIVleZU4bl43OY6PtQJNTighBMU0OqK2P
+         ZpdLH+gUqiy+MGAwAKqtJYQPm2GE/UllwhRVIMSk=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 075DGWwE068176
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 5 Aug 2020 08:16:32 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 5 Aug
+ 2020 08:16:32 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 5 Aug 2020 08:16:32 -0500
+Received: from [10.250.232.88] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 075DGTr0043569;
+        Wed, 5 Aug 2020 08:16:30 -0500
+Subject: Re: [PATCH] mmc: sdhci_am654: Add workaround for card detect debounce
+ timer
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>
+CC:     <ulf.hansson@linaro.org>
+References: <20200729234130.25056-1-faiz_abbas@ti.com>
+ <2d692a90-0e58-ae69-9b5b-c9eb3ffe21ec@intel.com>
+ <75b188ef-2755-b833-4756-79f0f171f8bd@ti.com>
+ <c5b166c9-f9ba-e01e-b759-57ac93d99832@intel.com>
+From:   Faiz Abbas <faiz_abbas@ti.com>
+Message-ID: <3f7e85c7-b0ba-e6a8-8d9f-091413614773@ti.com>
+Date:   Wed, 5 Aug 2020 18:46:28 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805130158.GA126406@mtl-vdi-166.wap.labs.mlnx>
+In-Reply-To: <c5b166c9-f9ba-e01e-b759-57ac93d99832@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 04:01:58PM +0300, Eli Cohen wrote:
-> On Wed, Aug 05, 2020 at 08:48:52AM -0400, Michael S. Tsirkin wrote:
-> > > 
-> > > Did you merge this?:
-> > > git pull git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next
-> > 
-> > 
-> > I can only merge this tree if no one else will. Linus does not like
-> > getting same patches through two trees.
-> > 
-> > Is this the case? Is mlx5-next going to be merged through
-> > my tree in this cycle?
-> > 
-> 
-> Saeed Mahameed from Mellanox (located in California) usuaally sends out
-> net patches. So he's supposed to send that to Dave Miller.
-> 
-> I think Saeed should answer this. Let's wait a few more hours till he
-> wakes up.
-
-Alternatives:
-- merge vdpa through Saeed's tree. I can ack that, we'll need to
-  resolve any conflicts by merging the two trees and show the
-  result to Linus so he can resolve the merge in the same way.
-- extract just the necessary patches that are needed for vdpa and
-  merge through my tree.
-- if Saeed sends his pull today, it's likely it will be merged
-  early next week. Then I can rebase and send a pull with your patches
-  on top. A bit risky.
-- do some tricks with build. E.g. disable build of your code,
-  and enable in Saeed's tree when everything is merged together.
-  Can be somewhat hard.
 
