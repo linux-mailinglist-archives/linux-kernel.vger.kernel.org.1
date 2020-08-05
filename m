@@ -2,136 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F1823CC37
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DC423CCAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgHEQb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:31:59 -0400
-Received: from sonic314-26.consmr.mail.ne1.yahoo.com ([66.163.189.152]:41290
-        "EHLO sonic314-26.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726996AbgHEQ03 (ORCPT
+        id S1727915AbgHEQ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728322AbgHEQzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:26:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596644748; bh=1cU3wjJlOPvRuw2818Qutqs4mQWnaGRISNeePAjFogU=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=HeJ8bZXaFWiKJIzzL3gho1AU0tgiQ1e+Kb08in02P1pufoU7rhEns/aCYmNdCZAHT4DQBoS4Cr3I8K9oxvyjxLE9gG2ed/JjWYEyiJcFEpUziw0XGGP0cuWqHvVvdTHKUoko0LrzjqtZtH8Dd7J57tZ4BodEutf0BKR6TYcd90I/3lBq5Rj6w1NLuNAzhFQm3Yn74yb/YdsG3vN1Z+OpIsg9ISa+Qc71AQS0ZkVNA2cDmJOefm7AuBtmrDG7LjBtVg4RCoaD+T0jWWAysaCkUdueq68berw3vBnA7mcncCyJhYXYz6L1cY67fKjYgZQqdaR+qzmPmR/1XMeuMozf3g==
-X-YMail-OSG: iMtRnVsVM1nBFaQ4NlnavoaLZ.x_8bBSps_sPqYvR6j1jlYcZJRhJZp65eLXgdE
- q9ApMJrEobSvGXllUAQTERK4waFhlfC6Mw18jWRv3d4F3t_mwWDayC8PJA1Aj8dUzUjY.G1iHHsr
- E5PU7woRCZ25BLBBFU_fCg21.oa.KU6.xTeDQsUOPd0R38DzROYXZai7oGC8j7RfILJodifwka4a
- 9.DH1xziHMKmGpcT1UA4RkuIPvCXwQYmDqcE1JzzWD3.IiMX.tGfAnfROeYFRooiuQnG1K4BVioT
- Tpgnv0eB4m76wEOdOnrhNMk.Yjb9swgY74lxanI5peFxYoTo2BywAn4zsR0ukS2eseA3nTQdSLLF
- lLafs4oEPPUwKKCFesH1XAzOEUH2TFiDCnPIHGi9_6MT9rN1FNN_cwJ__4VSbt8tQOpeQ3w3sHwX
- FaLPA7A_UtFPgw46T8PahKmjre0uyB2vklwCgwIanUt0GzDLCjYPkzoBkkj0tjnaYEXybt_nevxn
- xrh1L9Usez8iRMlr_O0hD.D5qulo.Dp5r3ry2UQ_Z2m1S6M.g5tsbAaoms3XhMkW6JEmdN2UpD2V
- QMDaiBQSIjE8tEIpk6gsZplzC5Z0EnIaPhcOxxJYfhr7f1KvSBOdqNW.aFnUR7JEyXkTzm3dHR.K
- M45tNrYI2FWF4fcfLDswyAoM82xogimHXTsnvN3eDQ7EVitTcSn4DcWlWy1zhs_VORG1oiYw8K6B
- 66NkLqxPZqAhep4hRanKfuGSXjeYsS4funYv80RXiqEyYCXFuTHXi4kVqzoS9Ao.51miCllCOLbs
- W8IZKld99Ngl4NxhQ6yiihJRJE.3r4nyXMVrKxJ17WncVYJRm_Olq4GWGlC_odAqZ096jFP1adYp
- 0eruq27ZgLFCqO0SG.cUnyximRlQPkETs6VvApCn9knzzt.cnpL94y2HeYYUsmhbnC4d1fLwLRr9
- itaS6XiJsbwKiXz0rJmJ1FYUUbRLRALK5AOLNHQ9zIzs7KiiPY6Mrf2LwhFOnqw2ZRcaCAtfq1wD
- L6Gzi36AkigAhdhYsma7_4Y7hG2JkN6k9_n9rggASFmj0DIFEMwBzyMR9HyeSc2VHDUNx3avC1a0
- ZAmtg2kAdPOIhb4jxJvHZRuMYBcGKhiqmpsnCwSA3YlMFnH8Neq82OO_Y7yMtNxhnQzBABRIBlVk
- UIyvHfLpuWx0X6cvEHrZB1MSQCM74nc3dLUkNAGExhF5JyLLB8eEeqyuDECr5jm50itdW0Gx1eaw
- yliYZaSh2ALhZNFHOdo1Jv3S.9k6bFq39_YTMU1K.VzS2b7ThUAFaWbbNiYHkNQKZQ6jFzG.B0bm
- JvjuabJA.mNyuekH95nCF46Y6YV2sWp4cQzG0g2sv21s9IlM5iyXoNtqsuA--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.ne1.yahoo.com with HTTP; Wed, 5 Aug 2020 16:25:48 +0000
-Received: by smtp417.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 05f98be0901e51aef2f5e5eae571f525;
-          Wed, 05 Aug 2020 15:36:40 +0000 (UTC)
-Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        zohar@linux.ibm.com, stephen.smalley.work@gmail.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
- <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
- <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <c7c168f2-e30b-d2c5-abcb-1b6919197474@schaufler-ca.com>
-Date:   Wed, 5 Aug 2020 08:36:40 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 5 Aug 2020 12:55:15 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7856C001FCA;
+        Wed,  5 Aug 2020 08:47:51 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id di22so25717997edb.12;
+        Wed, 05 Aug 2020 08:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+thVhnOzocq+PgCFY0tda78F/9CHLw5tyXEyW5ctJ0o=;
+        b=K30Jpi+unvD+CodHrimHJBJOgIBKD2vORRRsNDdnxowxbqvNqWmkAuS87xxPAvIxSE
+         ePsUbOvmJ2NJ/xZNYGM9PJaoNcn/9NN9lsFvOaM2shMUcbTCUbYb86NythE2JhhhJNZQ
+         IPzpttIxwWgZMBIpbgr3qu+/sQaRlEc9o+gOa6sbnKflX3vw5+Qyq+5+Ts4dZtEaZoIB
+         r7bRtoTPTc7S494vAZzE1jsYQXemBVLfNJfQpUKxqDPcxayazZStrgobE4jw9ZObecr+
+         UKlUHS8s2PCiYg+N0X5gslQEfsQEMKsjRSifBnzyqFxNyjtFjnSSOtvmPkfGyBskiDbl
+         BVZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+thVhnOzocq+PgCFY0tda78F/9CHLw5tyXEyW5ctJ0o=;
+        b=s0mIlclpL3+TdiGf3d9+AhofQqABHMrsq3YaVAOv7Hpyf1hxuXoA68/5admcysEYZ6
+         IH8CL3rNK/EmB1Q+lnV2ASxvrRJkXeeFwg61WQb3pVlD6xWFwozSsRWwLa1mGboghe9N
+         JA7RhAAmmAg5yTu5DmdIkmyO/1dV+t782aniKUxW5hZzGwOFn+T3oe7yD4ZQt352OU5C
+         291yHgS9Nw8braywlZzBCqKHAl5C3uPxVyXEpU45m+bl4TiX1PitYma3qAVNOZjyCbSm
+         THG9oGzYglMfms3ZEMIOj/H76H4bkijgGFmCUvNt8YoPtLclHl+mztxNBOd5Nj3dN53R
+         BIlg==
+X-Gm-Message-State: AOAM531SbDZUtlZI9iMECw9kpQgqCg6LRsA7jrzoD6ynH5p6J3tkdSgX
+        kuUfCaE1tOxDopXfULzdHkyReJJ02NbkATQw0vpQ87/nwQg=
+X-Google-Smtp-Source: ABdhPJwWW0KOvBhVO5pikas+uaQ+9Bi+oT+23iSZ47+Y2ckg0AYW5ATvLjA/5bzvEOv35sFXN/1aBcuO1YWaqys/Vi4=
+X-Received: by 2002:a05:6402:a5b:: with SMTP id bt27mr3476095edb.120.1596642470596;
+ Wed, 05 Aug 2020 08:47:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.16436 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
+References: <1596634446-1413-1-git-send-email-kalyan_t@codeaurora.org>
+In-Reply-To: <1596634446-1413-1-git-send-email-kalyan_t@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 5 Aug 2020 08:48:34 -0700
+Message-ID: <CAF6AEGtWNDGDsUBVk-Ud5OpretHA4qKDKtE+3mS=C8DAa=+Heg@mail.gmail.com>
+Subject: Re: [v1] drm/msm/dpu: Fix reservation failures in modeset
+To:     Kalyan Thota <kalyan_t@codeaurora.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Raviteja Tamatam <travitej@codeaurora.org>,
+        nganji@codeaurora.org, Stephen Boyd <swboyd@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Drew Davenport <ddavenport@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/2020 6:14 PM, Lakshmi Ramasubramanian wrote:
-> On 8/4/20 6:04 PM, Casey Schaufler wrote:
->> On 8/4/2020 5:43 PM, Lakshmi Ramasubramanian wrote:
->>> Critical data structures of security modules are currently not measured.
->>> Therefore an attestation service, for instance, would not be able to
->>> attest whether the security modules are always operating with the policies
->>> and configuration that the system administrator had setup. The policies
->>> and configuration for the security modules could be tampered with by
->>> malware by exploiting kernel vulnerabilities or modified through some
->>> inadvertent actions on the system. Measuring such critical data would
->>> enable an attestation service to better assess the state of the system.
->>
->> I still wonder why you're calling this an LSM change/feature when
->> all the change is in IMA and SELinux. You're not putting anything
->> into the LSM infrastructure, not are you using the LSM infrastructure
->> to achieve your ends. Sure, you *could* support other security modules
->> using this scheme, but you have a configuration dependency on
->> SELinux, so that's at best going to be messy. If you want this to
->> be an LSM "feature" you need to use the LSM hooking mechanism.
+On Wed, Aug 5, 2020 at 6:34 AM Kalyan Thota <kalyan_t@codeaurora.org> wrote:
 >
->>
->> I'm not objecting to the feature. It adds value. But as you've
->> implemented it it is either an IMA extension to SELinux, or an
->> SELiux extension to IMA. Could AppArmor add hooks for this without
->> changing the IMA code? It doesn't look like it to me.
+> In TEST_ONLY commit, rm global_state will duplicate the
+> object and request for new reservations, once they pass
+> then the new state will be swapped with the old and will
+> be available for the Atomic Commit.
 >
-> The check in IMA to allow the new IMA hook func LSM_STATE and LSM_POLICY when SELinux is enabled is just because SELinux is the only security module using these hooks now.
+> This patch fixes some of missing links in the resource
+> reservation sequence mentioned above.
 >
-> To enable AppArmor, for instance, to use the new IMA hooks to measure state and policy would just require adding the check for CONFIG_SECURITY_APPARMOR. Other than that, there are no IMA changes needed to support AppArmor or other such security modules.
+> 1) Creation of a duplicate state in test_only commit (Rob)
+> 2) Allow resource release only during crtc_active false.
+>
+> For #2
+> In a modeset operation, swap state happens well before disable.
+> Hence clearing reservations in disable will cause failures
+> in modeset enable.
+>
+> Sequence:
+>     Swap state --> old, new
+>     modeset disables --> virt disable
+>     modeset enable --> virt modeset
+>
+> Allow reservations to be cleared only when crtc active is false
+> as in that case there wont be any modeset enable after disable.
+>
+> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> index 63976dc..b85a576 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> @@ -582,7 +582,7 @@ static int dpu_encoder_virt_atomic_check(
+>         dpu_kms = to_dpu_kms(priv->kms);
+>         mode = &crtc_state->mode;
+>         adj_mode = &crtc_state->adjusted_mode;
+> -       global_state = dpu_kms_get_existing_global_state(dpu_kms);
+> +       global_state = dpu_kms_get_global_state(crtc_state->state);
+>         trace_dpu_enc_atomic_check(DRMID(drm_enc));
+>
+>         /*
+> @@ -1172,6 +1172,7 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+>         struct msm_drm_private *priv;
+>         struct dpu_kms *dpu_kms;
+>         struct dpu_global_state *global_state;
+> +       struct drm_crtc_state *crtc_state;
+>         int i = 0;
+>
+>         if (!drm_enc) {
+> @@ -1191,6 +1192,7 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+>         priv = drm_enc->dev->dev_private;
+>         dpu_kms = to_dpu_kms(priv->kms);
+>         global_state = dpu_kms_get_existing_global_state(dpu_kms);
+> +       crtc_state = drm_enc->crtc->state;
+>
+>         trace_dpu_enc_disable(DRMID(drm_enc));
+>
+> @@ -1220,7 +1222,8 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+>
+>         DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
+>
+> -       dpu_rm_release(global_state, drm_enc);
+> +       if (crtc_state->active_changed && !crtc_state->active)
+> +               dpu_rm_release(global_state, drm_enc);
 
-This is exactly what I'm objecting to. What if a system has both SELinux
-and AppArmor compiled in? What if it has both enabled?
+I still think releasing the state in the atomic_commit() path is the
+wrong thing to do.  In the commit path, the various state objects
+should be immutable.. ie. in the atomic_test() path you derive the new
+hw state (including assignment/release of resources), and
+atomic_commit() is simply pushing the state down to the hw.
+
+Otherwise, this looks better than v1.
+
+BR,
+-R
 
 >
-> Please see Patch 1/4
->
-> +            else if (IS_ENABLED(CONFIG_SECURITY_SELINUX) &&
-> +                 strcmp(args[0].from, "LSM_STATE") == 0)
-> +                entry->func = LSM_STATE;
-> +            else if (IS_ENABLED(CONFIG_SECURITY_SELINUX) &&
-> +                 strcmp(args[0].from, "LSM_POLICY") == 0)
-> +                entry->func = LSM_POLICY;
->
-> And, if early boot measurement is needed for AppArmor the following change in IMA's Kconfig
->
-> Patch 4/4
->
-> +config IMA_QUEUE_EARLY_BOOT_DATA
->      bool
-> +    depends on SECURITY_SELINUX || (IMA_MEASURE_ASYMMETRIC_KEYS && SYSTEM_TRUSTED_KEYRING)
->      default y
->
-> If you think calling this an "LSM feature" is not appropriate, please suggest a better phrase.
-
-In the code above you are under CONFIG_SECURITY_SELINUX.
-I would suggest that it's an SELinux feature, so you should
-be using SELINUX_STATE and SELINUX_POLICY, as I suggested
-before. Just because SELinux has state and policy to measure
-doesn't mean that a different module might not have other data,
-such as history, that should be covered as well.
-
-I realize that IMA already has compile time dependencies to
-determine which xattrs to measure. There's no reason that
-the xattr list couldn't be determined at boot time, with
-each security module providing the XATTR_NAME values it
-uses.
-
->
-> But like I said above, with minimal change in IMA other security modules can be supported to measure STATE and POLICY data.
->
->  -lakshmi
->
+>         mutex_unlock(&dpu_enc->enc_lock);
+>  }
+> --
+> 1.9.1
 >
