@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA1F23D2AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAB823D2A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729579AbgHEUPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:15:03 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:31507 "EHLO pegase1.c-s.fr"
+        id S1726965AbgHEUOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:14:52 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:19893 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726604AbgHEQVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:21:04 -0400
+        id S1726605AbgHEQVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:21:05 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BMFqM2bGYz9vD3q;
-        Wed,  5 Aug 2020 17:27:27 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4BMFqN1M0jz9vD3y;
+        Wed,  5 Aug 2020 17:27:28 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id L2uasisRzKAF; Wed,  5 Aug 2020 17:27:27 +0200 (CEST)
+        with ESMTP id FrQjfHC17EgI; Wed,  5 Aug 2020 17:27:28 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BMFqM116rz9vD3n;
-        Wed,  5 Aug 2020 17:27:27 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BMFqN0Yv4z9vD3n;
+        Wed,  5 Aug 2020 17:27:28 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 44D088B7ED;
-        Wed,  5 Aug 2020 17:27:29 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3BC418B7ED;
+        Wed,  5 Aug 2020 17:27:30 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id aH2Oy26jO9oh; Wed,  5 Aug 2020 17:27:29 +0200 (CEST)
+        with ESMTP id 1ILtOrr_uo5w; Wed,  5 Aug 2020 17:27:30 +0200 (CEST)
 Received: from po16052vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0FBF08B7EC;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id F2CCD8B7EC;
         Wed,  5 Aug 2020 17:27:29 +0200 (CEST)
 Received: by po16052vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id B76FC65BC2; Wed,  5 Aug 2020 15:27:28 +0000 (UTC)
-Message-Id: <07884ed033c31e074747b7eb8eaa329d15db07ec.1596641219.git.christophe.leroy@csgroup.eu>
+        id C654A65BC2; Wed,  5 Aug 2020 15:27:29 +0000 (UTC)
+Message-Id: <6eddca2d5611fd57312a88eae31278c87a8fc99d.1596641224.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/32s: Fix is_module_segment() when MODULES_VADDR is
- defined
+Subject: [PATCH] powerpc/kasan: Fix KASAN_SHADOW_START on BOOK3S_32
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed,  5 Aug 2020 15:27:28 +0000 (UTC)
+Date:   Wed,  5 Aug 2020 15:27:29 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When MODULES_VADDR is defined, is_module_segment() shall check the
-address against it instead of checking agains VMALLOC_START.
+On BOOK3S_32, when we have modules and strict kernel RWX, modules
+are not in vmalloc space but in a dedicated segment that is
+below PAGE_OFFSET.
+
+So KASAN_SHADOW_START must take it into account.
+
+MODULES_VADDR can't be used because it is not defined yet
+in kasan.h
 
 Fixes: 6ca055322da8 ("powerpc/32s: Use dedicated segment for modules with STRICT_KERNEL_RWX")
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/mm/book3s32/mmu.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/powerpc/include/asm/kasan.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/mm/book3s32/mmu.c b/arch/powerpc/mm/book3s32/mmu.c
-index c0162911f6cb..82ae9e06a773 100644
---- a/arch/powerpc/mm/book3s32/mmu.c
-+++ b/arch/powerpc/mm/book3s32/mmu.c
-@@ -191,10 +191,17 @@ static bool is_module_segment(unsigned long addr)
- {
- 	if (!IS_ENABLED(CONFIG_MODULES))
- 		return false;
-+#ifdef MODULES_VADDR
-+	if (addr < ALIGN_DOWN(MODULES_VADDR, SZ_256M))
-+		return false;
-+	if (addr >= ALIGN(MODULES_END, SZ_256M))
-+		return false;
+diff --git a/arch/powerpc/include/asm/kasan.h b/arch/powerpc/include/asm/kasan.h
+index d635b96c7ea6..7355ed05e65e 100644
+--- a/arch/powerpc/include/asm/kasan.h
++++ b/arch/powerpc/include/asm/kasan.h
+@@ -15,11 +15,18 @@
+ #ifndef __ASSEMBLY__
+ 
+ #include <asm/page.h>
++#include <linux/sizes.h>
+ 
+ #define KASAN_SHADOW_SCALE_SHIFT	3
+ 
++#if defined(CONFIG_PPC_BOOK3S_32) && defined(CONFIG_MODULES) && defined(CONFIG_STRICT_KERNEL_RWX)
++#define KASAN_KERN_START	ALIGN_DOWN(PAGE_OFFSET - SZ_256M, SZ_256M)
 +#else
- 	if (addr < ALIGN_DOWN(VMALLOC_START, SZ_256M))
- 		return false;
- 	if (addr >= ALIGN(VMALLOC_END, SZ_256M))
- 		return false;
++#define KASAN_KERN_START	PAGE_OFFSET
 +#endif
- 	return true;
- }
++
+ #define KASAN_SHADOW_START	(KASAN_SHADOW_OFFSET + \
+-				 (PAGE_OFFSET >> KASAN_SHADOW_SCALE_SHIFT))
++				 (KASAN_KERN_START >> KASAN_SHADOW_SCALE_SHIFT))
+ 
+ #define KASAN_SHADOW_OFFSET	ASM_CONST(CONFIG_KASAN_SHADOW_OFFSET)
  
 -- 
 2.25.0
