@@ -2,175 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9449023C613
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2705F23C5F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgHEGiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 02:38:12 -0400
-Received: from mail-eopbgr70055.outbound.protection.outlook.com ([40.107.7.55]:29152
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728036AbgHEGiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 02:38:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EeUESxhZI0/cO7GsftvR612/kF8ofX3OJKSOpJprmb5GWd5IWJmFQZYZQxhOS5df2AN9oojTVXiIruPXXOaoP5o2QnY3ki280wfwenPp4QO/YGaHdCY/va4R+87t17a5pgHucc25sE/cx3xdYNtyhj+GElZ9HBg0gcGXWZo5fgIog0X3XoALHG5hfV6nUy1sx9hkfedOS4S+Ov47aUEkHp3g7YC7BJ/6wYCTyDR+z6sCCjckKFfXMeLaXBlhC7w5w6d6wnWDX8tHmp4NjzFilZbtnEMY74w7wdhPrTldv02m36kz3L5PLKsbEthjlg0Phh95S3MN92KqAR36/Ouc9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n0zMM0JhlzaXBePhSH+s1xb8PjeOUHkljWYyPZBV9FY=;
- b=HIpyKzgEpd0wDkW4nu+4cAsrUhWRe4lplowb5S/xm/pCeor1UYE8b1TC//F7idP6cMj3KwxV3E96rYsaWzsZ94gp1WwS4JJ3l8hjgC31BoVLFUcCFwyjAyvz5yKwiPt/yvlA10tDO3K79offz1e3Z0SyzpoUEJkV4ITpnGjxRKH/YO6Z3aySWdhKWToMH7W5K6ZIl/inMc72xGKXxu+lSkXoaQm2ktmJ9J9qioKVMEiZJ4nDRZyC50pHsC5ILoSoGpKtpZ3khbSQ041hbFFSrgfluxN6GnhiLoLz+j4xen8QZGiOqpsAVT4R8c6F8k5W6CJtCGBqPyyuK8EifR5jlg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n0zMM0JhlzaXBePhSH+s1xb8PjeOUHkljWYyPZBV9FY=;
- b=IFdVIsfLWNbSHKhU1/pqr7qxzfduiIf0njI/cxvMC5E/1cRN+eZJLWTWgrcd4w+y5DXalngNAMiJeCExRy3bBXPj7EMiEqgyUJpH1wTCufUP3WIq6rxrTmMWxpfw0RU/+RMGptpVl3o2jgvwP5oBJz1bFzkph23edw8GGyt4L+8=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0402MB3342.eurprd04.prod.outlook.com
- (2603:10a6:803:11::14) by VI1PR04MB3055.eurprd04.prod.outlook.com
- (2603:10a6:802:9::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.16; Wed, 5 Aug
- 2020 06:38:03 +0000
-Received: from VI1PR0402MB3342.eurprd04.prod.outlook.com
- ([fe80::c1a:39dd:a2d5:3d2f]) by VI1PR0402MB3342.eurprd04.prod.outlook.com
- ([fe80::c1a:39dd:a2d5:3d2f%7]) with mapi id 15.20.3261.016; Wed, 5 Aug 2020
- 06:38:03 +0000
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] ASoC: fsl_sai: Replace synchronous check with fsl_sai_dir_is_synced
-Date:   Wed,  5 Aug 2020 14:34:13 +0800
-Message-Id: <20200805063413.4610-4-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200805063413.4610-1-shengjiu.wang@nxp.com>
-References: <20200805063413.4610-1-shengjiu.wang@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0109.apcprd03.prod.outlook.com
- (2603:1096:4:91::13) To VI1PR0402MB3342.eurprd04.prod.outlook.com
- (2603:10a6:803:11::14)
+        id S1728217AbgHEGfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 02:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbgHEGfE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 02:35:04 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C32C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 23:35:04 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id d20so3124766ual.13
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 23:35:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=thLd5vrBCF5P811qdhS5FGqyyjmv+p/jdT9ome4aBi8=;
+        b=SfxnniAa129b0crE1YIs3dMuOw1J3LmTLgMWqZEDtKroig4aaXS3lR2zXg8R9aXbOe
+         XOHmMzpTAa16Scwu8P+q6ELMY6fbQh7+3XFku/PNMUflM4yonPA8RzIz0zSVDZnO24C+
+         nm5eob0piBsXhHqpPAMWHcmLMRPJffWtadAOJ1YoF69GKcdPKlP+75g+ooRSxSmC3YPj
+         oFcaV1ij8aaDSl9BdW+cIxtboZRlJem4xhJCWhVRnKz33pEvPx2su7JClAveIbvjWbmm
+         /qKUgd0Gc3gG/v10HEZT04AfgPbURs5jdKYlgeG67azWJNtowg1uBztDBzW193xSGjsM
+         mUww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=thLd5vrBCF5P811qdhS5FGqyyjmv+p/jdT9ome4aBi8=;
+        b=GVy/fgjpQkCy7jnAqh2REvLlFx8lHrPfVzpPppRCBwI43qSf6zoD7k4fgO7VQpp2Ir
+         UfMl6m0qQEHcSTpuO5nfkTdbUIPBW8TlAbAoII/sKv9Pa1aC8BCTC25SeFLaaqD7jyWr
+         5Qy4UNmkAsJxTHGlGAe5iwlWdE/zDq36eGeUhQ1VhNC5r9Trd1cKCXHdHKO0lCizwSU+
+         fdyc/huscy04vDNqJNTozCZjz7rCedpK0m2y2RG3q4H9Kh49R6H29YFmAkzm5/M/ucFt
+         XQoDOG6oZiUMCksTWiryfqjhzShcTxkbzsyhAVtfEP0d+pgsTK+4g1kIVsMYl6mMQbIM
+         de3Q==
+X-Gm-Message-State: AOAM531bEyc2CtLczHOSr//cZCqhz7VmEGNNtot2TdDlh6Zp8+msw/Tw
+        O4QeM+O6+lQYTcilsLQJdv8fOI4IHaUXZVC1pnTO0w==
+X-Google-Smtp-Source: ABdhPJy8ojrQUZrccFBTduwq6pfZs56aMVCn+bFtsYmIcwR60XVGesaJV3i//CCOA2ED8/cqabMhiyiaSZz9CeZPcPI=
+X-Received: by 2002:ab0:6049:: with SMTP id o9mr993076ual.19.1596609303400;
+ Tue, 04 Aug 2020 23:35:03 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from audiosh1.ap.freescale.net (119.31.174.67) by SG2PR03CA0109.apcprd03.prod.outlook.com (2603:1096:4:91::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3261.12 via Frontend Transport; Wed, 5 Aug 2020 06:37:59 +0000
-X-Mailer: git-send-email 2.27.0
-X-Originating-IP: [119.31.174.67]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e81d0715-3079-4b82-d699-08d8390a1a76
-X-MS-TrafficTypeDiagnostic: VI1PR04MB3055:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB3055351D95B05C7A6789BF62E34B0@VI1PR04MB3055.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9/hWTrDqxUBo6+pCDII9E5M1mpVafJORP4Ka0aCU44nHZGw9SsbQrY++hNjgMoafxa/6BXNQlvDQEtjnfA+mqaZMppYDYrlQBthdZ9Y9MYR4Ep2+NYJpbaPAA5Iyz0Hh1jbfwqjD/+RLnxG+dMhGtDY/GXAF8OKzY+r3a+IYhajXglx7W3lr21DCpYEk+TLSPVcRn+e1LLtxNroW1740F36Zakgxvbt8k5gEaHGbU6HXnI34P3B/9/N2kOymzT97X8FHBcQ/uxt7cj3rq4xYl1y8JWKBBwdPW3OJwDV/ld3C7kd8CE449B4BqeunGVl6fKv3XkINvBqjyDw+AEWOYxCV/1gR46UhpWxD1E6VdkVmnkuM5fUlj9h1vNu6e8Rx
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3342.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(39860400002)(346002)(376002)(136003)(36756003)(2906002)(44832011)(26005)(86362001)(6506007)(16526019)(186003)(956004)(2616005)(1076003)(5660300002)(6666004)(7416002)(6486002)(6512007)(316002)(8936002)(8676002)(52116002)(478600001)(66946007)(83380400001)(66556008)(66476007)(921003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 7nDoisJfWUDRAgJWXkTnmJrFfXd1rZVNRDEfO+Slf736iQN9WwaS35nJBYq0hmslMmYsN6zKLxWEQwr/OSHC8ZWY9LG0x0q4pL/bsOWEMXiqAYaCI7UxTeLN4WqjD1II4VEAfvGX/xoc6Ifn1m3urQ5BGEho5XnxohQO96F7Or09xNBFtnpoUFGhnH2InCXvT3vR7cKJZ17uqrE0HdsgmnOZI4Y7WdKdqcsVPwtxY110tkiJW1Y4M5qd0WnfTy58CARVSlS3EUhVszNdXLUrRgdknssKwGnM+4j+7hGWbko0yPpxIz1NchCnXxrk2KmxJbsLsixtw7u6y+3WgnCx2MkKTSyqKdwkFZqQnQ7tyUn75utiKzL6P7DQb0twvb4fhOvz7ph3ZyFHqMVihbZJNh4HhyXLU8tEr8gwj4qZdNb7F9DLxPA6sgbfOLVKv9fL/2CHqg3AxFEj0TLQ8jMHQxsFnDF5XYCkdkmX3pzIjG6St/WsLY36CVGKcXFoCu1xykOc8Mn3GYH6dIawlqdFfgHOseIKgwJNUo8YzqV/kIBmaQo/BFU4MLkg3IL9fMnbg5lFELbUPeK1BhblYES3cA5IQNRwRlBTiHke2xKkYMI1itz+0YHmA7FrimX0sgJxnw3PKP70BEzJ3Ah7CnyQNg==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e81d0715-3079-4b82-d699-08d8390a1a76
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3342.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2020 06:38:03.1725
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y9a+lMgDUdkUEC8RRBUQCB8BDZZtsPZnKui9OCI0vz+nO15EExXV33hPvpjaIhqjsUyGXgNiDz5MppOYiJ4xnw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3055
+References: <20200721011733.8416-1-shirley.her@bayhubtech.com>
+In-Reply-To: <20200721011733.8416-1-shirley.her@bayhubtech.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 5 Aug 2020 08:34:26 +0200
+Message-ID: <CAPDyKFq9moAmkz3RuCNgxB-jEW=-SkqWu_TmvinVcDOKVQQuBw@mail.gmail.com>
+Subject: Re: [PATCH V1 1/2] mmc: sdhci-pci-o2micro: Bug fix for O2 host
+ controller Seabird1
+To:     shirley her <shirley.her@bayhubtech.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Shaper Liu (WH)" <shaper.liu@bayhubtech.com>,
+        "Chevron Li (WH)" <chevron.li@bayhubtech.com>,
+        "Xiaoguang Yu (WH)" <xiaoguang.yu@bayhubtech.com>,
+        "Max Huang (SC)" <max.huang@bayhubtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As new function fsl_sai_dir_is_synced is included for checking if
-stream is synced by the opposite stream, then replace the existing
-synchronous checking with this new function.
+On Tue, 21 Jul 2020 at 03:18, shirley her <shirley.her@bayhubtech.com> wrote:
+>
+> Add bug fix for O2 host controller Seabird1
+>
+> Signed-off-by: Shirley Her <shirley.her@bayhubtech.com>
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_sai.c | 40 ++++++++++++++++------------------------
- 1 file changed, 16 insertions(+), 24 deletions(-)
+Applied for next (a while ago), thanks!
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 334090d581ae..f6969a5d49e3 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -350,6 +350,8 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 	unsigned int ofs = sai->soc_data->reg_offset;
- 	unsigned long clk_rate;
- 	u32 savediv = 0, ratio, savesub = freq;
-+	int adir = tx ? RX : TX;
-+	int dir = tx ? TX : RX;
- 	u32 id;
- 	int ret = 0;
- 
-@@ -408,19 +410,17 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 	 * 4) For Tx and Rx are both Synchronous with another SAI, we just
- 	 *    ignore it.
- 	 */
--	if ((sai->synchronous[TX] && !sai->synchronous[RX]) ||
--	    (!tx && !sai->synchronous[RX])) {
--		regmap_update_bits(sai->regmap, FSL_SAI_RCR2(ofs),
-+	if (fsl_sai_dir_is_synced(sai, adir)) {
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCR2(!tx, ofs),
- 				   FSL_SAI_CR2_MSEL_MASK,
- 				   FSL_SAI_CR2_MSEL(sai->mclk_id[tx]));
--		regmap_update_bits(sai->regmap, FSL_SAI_RCR2(ofs),
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCR2(!tx, ofs),
- 				   FSL_SAI_CR2_DIV_MASK, savediv - 1);
--	} else if ((sai->synchronous[RX] && !sai->synchronous[TX]) ||
--		   (tx && !sai->synchronous[TX])) {
--		regmap_update_bits(sai->regmap, FSL_SAI_TCR2(ofs),
-+	} else if (!sai->synchronous[dir]) {
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCR2(tx, ofs),
- 				   FSL_SAI_CR2_MSEL_MASK,
- 				   FSL_SAI_CR2_MSEL(sai->mclk_id[tx]));
--		regmap_update_bits(sai->regmap, FSL_SAI_TCR2(ofs),
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCR2(tx, ofs),
- 				   FSL_SAI_CR2_DIV_MASK, savediv - 1);
- 	}
- 
-@@ -442,6 +442,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	u32 val_cr4 = 0, val_cr5 = 0;
- 	u32 slots = (channels == 1) ? 2 : channels;
- 	u32 slot_width = word_width;
-+	int adir = tx ? RX : TX;
- 	int ret;
- 
- 	if (sai->slots)
-@@ -491,22 +492,13 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	 * RCR5(TCR5) for playback(capture), or there will be sync error.
- 	 */
- 
--	if (!sai->is_slave_mode) {
--		if (!sai->synchronous[TX] && sai->synchronous[RX] && !tx) {
--			regmap_update_bits(sai->regmap, FSL_SAI_TCR4(ofs),
--				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
--				val_cr4);
--			regmap_update_bits(sai->regmap, FSL_SAI_TCR5(ofs),
--				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
--				FSL_SAI_CR5_FBT_MASK, val_cr5);
--		} else if (!sai->synchronous[RX] && sai->synchronous[TX] && tx) {
--			regmap_update_bits(sai->regmap, FSL_SAI_RCR4(ofs),
--				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
--				val_cr4);
--			regmap_update_bits(sai->regmap, FSL_SAI_RCR5(ofs),
--				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
--				FSL_SAI_CR5_FBT_MASK, val_cr5);
--		}
-+	if (!sai->is_slave_mode && fsl_sai_dir_is_synced(sai, adir)) {
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCR4(!tx, ofs),
-+				   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
-+				   val_cr4);
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCR5(!tx, ofs),
-+				   FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
-+				   FSL_SAI_CR5_FBT_MASK, val_cr5);
- 	}
- 
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
--- 
-2.27.0
+> ---
+> change in V1:
+> 1. Add quriks2 and mmc->caps2 for Seabird1
+> 2. Add get_cd support for Seabird1
 
+Future wise, I wouldn't mind that you fold some of this information
+into the commit message. It's always good to have a good description
+of the change.
+
+Kind regards
+Uffe
+
+
+> ---
+>  drivers/mmc/host/sdhci-pci-o2micro.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci-pci-o2micro.c b/drivers/mmc/host/sdhci-pci-o2micro.c
+> index e2a846885902..ed3c605fcf0c 100644
+> --- a/drivers/mmc/host/sdhci-pci-o2micro.c
+> +++ b/drivers/mmc/host/sdhci-pci-o2micro.c
+> @@ -561,6 +561,12 @@ static int sdhci_pci_o2_probe_slot(struct sdhci_pci_slot *slot)
+>                         slot->host->mmc_host_ops.get_cd = sdhci_o2_get_cd;
+>                 }
+>
+> +               if (chip->pdev->device == PCI_DEVICE_ID_O2_SEABIRD1) {
+> +                       slot->host->mmc_host_ops.get_cd = sdhci_o2_get_cd;
+> +                       host->mmc->caps2 |= MMC_CAP2_NO_SDIO;
+> +                       host->quirks2 |= SDHCI_QUIRK2_PRESET_VALUE_BROKEN;
+> +               }
+> +
+>                 host->mmc_host_ops.execute_tuning = sdhci_o2_execute_tuning;
+>
+>                 if (chip->pdev->device != PCI_DEVICE_ID_O2_FUJIN2)
+> --
+> 2.25.1
+>
