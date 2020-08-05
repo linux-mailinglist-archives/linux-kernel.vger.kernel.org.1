@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3832223D008
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960AB23D00B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbgHET2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:28:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32013 "EHLO
+        id S1728935AbgHET2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:28:52 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22595 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728612AbgHERLb (ORCPT
+        with ESMTP id S1728401AbgHERL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:11:31 -0400
+        Wed, 5 Aug 2020 13:11:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647489;
+        s=mimecast20190719; t=1596647485;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aTite/iD0lQBRsDAUmY/i15AjG2mB78/HSvWX+2Oy3A=;
-        b=ZCsy6hghHHxpvm+UAuRlGfP5ReAko5dndR8p/b6hkMIso+M8GNb58Mj8uVFDTeemFqLFww
-        jDBEc9W7L2Jf5oxvDe7dPFm1VnJcf8Wapbn9TD98k0s/HNH9nw8n1F+cNs2HO4BvrSNloO
-        lARG2G3a+NXtUP7+JRPMkZcwWX/KCNU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314--WmjpFDvOfm_oikNDSEmCw-1; Wed, 05 Aug 2020 09:44:35 -0400
-X-MC-Unique: -WmjpFDvOfm_oikNDSEmCw-1
-Received: by mail-wm1-f72.google.com with SMTP id q15so2738833wmj.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:35 -0700 (PDT)
+        bh=7dHJWpRpe+SGCeKRCL7RrX1ymnMkDIH+g5Ri3pUQbvw=;
+        b=H3HlkJLAUu8Lj6wSmGqSXHK1Z16X0UOdIw6G5//tPXHPiA/SYC2lPKex5611TUcNN8i41J
+        Gq/SmKgA3bw4tjcV4VLfffguIrGEL6c6HidkyuhRyIcHOBjoB6jcrLJJKK9oboLJdi3rH7
+        tAIs8JNJSIgsS/M2cv0TuMf2qu0dX70=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-RB_ERJMfOrmN89RTL3nP2g-1; Wed, 05 Aug 2020 09:44:38 -0400
+X-MC-Unique: RB_ERJMfOrmN89RTL3nP2g-1
+Received: by mail-wm1-f71.google.com with SMTP id c184so1973887wme.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=aTite/iD0lQBRsDAUmY/i15AjG2mB78/HSvWX+2Oy3A=;
-        b=COsNbVF70AY2aUdVM7ao1ygBtAGyia5VhCVgSYrBgck1DWe/W3Cfq3RIUYGR9u6MZh
-         5Y2IwOhjFmH3ShB2H1cTdd7yZ2rzLDC6wOvdkX3F5ptQtVlnAWprGK5h8yAAC5oLRcyJ
-         SREaZxWEhd9YAb3oAvW+QD/GOurTK005jwB0bLONaxJCMeR7yWvonymUViv5EHBeNBjp
-         Udpbgy8YaMpICTaw7c+Ioc/3WCaMWw3mkq4esE46pqqARKTU+rbQrlGZqHX5/bWVejFp
-         MzIseVjqJ5rfj+/xjtqdXdP+aEbp9yQ1bYIzqs8ANFL4riPT85ABKuSRbk1l5f0j+m9L
-         nwXw==
-X-Gm-Message-State: AOAM5308zdGrOVkE8wR6+/fTJVtoyFO/5jxutvvIStfin7Plp6ZvF1QK
-        DTSv63GFuZ+0YgJy0n/28+nB3goR94Z9u0gELYDyh4JLtOgJ3DFW6n+oqjVBmVbTdEOE3av0Ayn
-        1m7dFZd8mcegnO0V8igNQ34pf
-X-Received: by 2002:a1c:7915:: with SMTP id l21mr3585718wme.50.1596635073670;
-        Wed, 05 Aug 2020 06:44:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBmRcbWg6Zcj3SVEKY1RPNAFRs6pH6ZTvrDA1nI/1TIiw8ZC6tgWC862aXu3/qn+3fvibSog==
-X-Received: by 2002:a1c:7915:: with SMTP id l21mr3585709wme.50.1596635073461;
-        Wed, 05 Aug 2020 06:44:33 -0700 (PDT)
+        bh=7dHJWpRpe+SGCeKRCL7RrX1ymnMkDIH+g5Ri3pUQbvw=;
+        b=UwneuivqsJqQCNTRKIdODC/cBCSA3Y9zcJS35mowRVCuzdjlkYV3hvydqF1Gulh1I/
+         sPLnL+SRrxL7/jBzIwjRC+YTRlAzV+rtzOFQ8xJPvhG62ID3eRrqU9bYBm/OmYY8ZBcT
+         MIXnt2h+Nm0mXM+aWWsp1NBC3TakWc4Boy/1Z2NVt1lzPPVBwOhlFpxFofLe1Z1Bb4ag
+         WhgnVvBWpEdk6ig18fyQr6G3ovite1VH0oCnEIT2Kfly7Getr0Ey0b5cir1a1sol29qh
+         mlxPRzVyDaErwKdwXEU9xkcfsdVI3jG9jnqF4QOJ4p2IvoppOieMB7htukS3mD/qKnfz
+         zxlw==
+X-Gm-Message-State: AOAM530d++m+h80cWq7FR1PWe/nOg2hOEaI3GO33VaCXQF1wiCkgme1i
+        xEev9xjOxL9InPies5Fif1XUhibRjCe8zmyhySQT37YYHqi2EyB0MjGUtsc7ZoMBbelV8qFojWH
+        CHbg5aSPRsZfRwnHKVtOgMhTr
+X-Received: by 2002:adf:b441:: with SMTP id v1mr2885514wrd.61.1596635076657;
+        Wed, 05 Aug 2020 06:44:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwQGdbl54JNx1KvL4TiD4XZk3a0G829i0AZqCQq/0GXJ2UmmPCnIhNjqrC/ljNwKlqjr429kg==
+X-Received: by 2002:adf:b441:: with SMTP id v1mr2885496wrd.61.1596635076408;
+        Wed, 05 Aug 2020 06:44:36 -0700 (PDT)
 Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id b77sm2354968wmb.3.2020.08.05.06.44.32
+        by smtp.gmail.com with ESMTPSA id o2sm3136755wrh.70.2020.08.05.06.44.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:32 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:44:31 -0400
+        Wed, 05 Aug 2020 06:44:35 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:44:33 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Jason Wang <jasowang@redhat.com>,
+Cc:     David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 28/38] virtio_config: add virtio_cread_le_feature
-Message-ID: <20200805134226.1106164-29-mst@redhat.com>
+Subject: [PATCH v3 29/38] virtio_balloon: use LE config space accesses
+Message-ID: <20200805134226.1106164-30-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -69,32 +70,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mirrors virtio_cread_feature but for LE fields.
+Balloon is LE, it's cleaner to access it as such directly.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- include/linux/virtio_config.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/virtio/virtio_balloon.c | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
 
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index 5b5196fec899..cc7a2b1fd7b2 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -555,4 +555,14 @@ static inline void virtio_cwrite64(struct virtio_device *vdev,
- 		_r;							\
- 	})
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index 8bc1704ffdf3..31cc97f2f515 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -398,12 +398,9 @@ static inline s64 towards_target(struct virtio_balloon *vb)
+ 	s64 target;
+ 	u32 num_pages;
  
-+/* Conditional config space accessors. */
-+#define virtio_cread_le_feature(vdev, fbit, structname, member, ptr)	\
-+	({								\
-+		int _r = 0;						\
-+		if (!virtio_has_feature(vdev, fbit))			\
-+			_r = -ENOENT;					\
-+		else							\
-+			virtio_cread_le((vdev), structname, member, ptr); \
-+		_r;							\
-+	})
- #endif /* _LINUX_VIRTIO_CONFIG_H */
+-	virtio_cread(vb->vdev, struct virtio_balloon_config, num_pages,
+-		     &num_pages);
+-
+ 	/* Legacy balloon config space is LE, unlike all other devices. */
+-	if (!virtio_has_feature(vb->vdev, VIRTIO_F_VERSION_1))
+-		num_pages = le32_to_cpu((__force __le32)num_pages);
++	virtio_cread_le(vb->vdev, struct virtio_balloon_config, num_pages,
++			&num_pages);
+ 
+ 	target = num_pages;
+ 	return target - vb->num_pages;
+@@ -462,11 +459,8 @@ static void update_balloon_size(struct virtio_balloon *vb)
+ 	u32 actual = vb->num_pages;
+ 
+ 	/* Legacy balloon config space is LE, unlike all other devices. */
+-	if (!virtio_has_feature(vb->vdev, VIRTIO_F_VERSION_1))
+-		actual = (__force u32)cpu_to_le32(actual);
+-
+-	virtio_cwrite(vb->vdev, struct virtio_balloon_config, actual,
+-		      &actual);
++	virtio_cwrite_le(vb->vdev, struct virtio_balloon_config, actual,
++			 &actual);
+ }
+ 
+ static void update_balloon_stats_func(struct work_struct *work)
+@@ -579,12 +573,10 @@ static u32 virtio_balloon_cmd_id_received(struct virtio_balloon *vb)
+ {
+ 	if (test_and_clear_bit(VIRTIO_BALLOON_CONFIG_READ_CMD_ID,
+ 			       &vb->config_read_bitmap)) {
+-		virtio_cread(vb->vdev, struct virtio_balloon_config,
+-			     free_page_hint_cmd_id,
+-			     &vb->cmd_id_received_cache);
+ 		/* Legacy balloon config space is LE, unlike all other devices. */
+-		if (!virtio_has_feature(vb->vdev, VIRTIO_F_VERSION_1))
+-			vb->cmd_id_received_cache = le32_to_cpu((__force __le32)vb->cmd_id_received_cache);
++		virtio_cread_le(vb->vdev, struct virtio_balloon_config,
++				free_page_hint_cmd_id,
++				&vb->cmd_id_received_cache);
+ 	}
+ 
+ 	return vb->cmd_id_received_cache;
+@@ -987,8 +979,8 @@ static int virtballoon_probe(struct virtio_device *vdev)
+ 		if (!want_init_on_free())
+ 			memset(&poison_val, PAGE_POISON, sizeof(poison_val));
+ 
+-		virtio_cwrite(vb->vdev, struct virtio_balloon_config,
+-			      poison_val, &poison_val);
++		virtio_cwrite_le(vb->vdev, struct virtio_balloon_config,
++				 poison_val, &poison_val);
+ 	}
+ 
+ 	vb->pr_dev_info.report = virtballoon_free_page_report;
 -- 
 MST
 
