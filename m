@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C7623D01F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3832223D008
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728987AbgHETaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:30:00 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36952 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728557AbgHERKL (ORCPT
+        id S1728768AbgHET2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:28:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32013 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728612AbgHERLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:10:11 -0400
+        Wed, 5 Aug 2020 13:11:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647410;
+        s=mimecast20190719; t=1596647489;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=rITNW/NU1Wv42UK2hT0FegE7HEoaDEjHqXI0VXDNUgg=;
-        b=LsRniJBSuAAAsFzo6sGVwQymK6Jm37AtaXO6QAyXiOuVUoKMbiD6lTQotZePoBfV61aDj0
-        HUemDBTsGG4flYU3rwe++x7sb1m0MONlyb89V0ZW4az3iTnlwDcGbZX5D/BVHVAhXlFQyB
-        yIX9+B5UEDLPrlAnXaZIZDmCZ2nZAbI=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-160-TnxXk2naPrSSD7nj03hm0w-1; Wed, 05 Aug 2020 09:44:32 -0400
-X-MC-Unique: TnxXk2naPrSSD7nj03hm0w-1
-Received: by mail-wr1-f71.google.com with SMTP id s23so13430322wrb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:32 -0700 (PDT)
+        bh=aTite/iD0lQBRsDAUmY/i15AjG2mB78/HSvWX+2Oy3A=;
+        b=ZCsy6hghHHxpvm+UAuRlGfP5ReAko5dndR8p/b6hkMIso+M8GNb58Mj8uVFDTeemFqLFww
+        jDBEc9W7L2Jf5oxvDe7dPFm1VnJcf8Wapbn9TD98k0s/HNH9nw8n1F+cNs2HO4BvrSNloO
+        lARG2G3a+NXtUP7+JRPMkZcwWX/KCNU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-314--WmjpFDvOfm_oikNDSEmCw-1; Wed, 05 Aug 2020 09:44:35 -0400
+X-MC-Unique: -WmjpFDvOfm_oikNDSEmCw-1
+Received: by mail-wm1-f72.google.com with SMTP id q15so2738833wmj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=rITNW/NU1Wv42UK2hT0FegE7HEoaDEjHqXI0VXDNUgg=;
-        b=douW860ND1DAfJZ+qne1xFvfvHL7cH/r2FEqChapJmm+mIZun18EFG4stIMxv/rywN
-         PRu416IDTcodMnbsngna7XXrUlIrLI512Evl5Ev+afH+Nb5GYvB/plX+muMXPvU1glmQ
-         BTh2pbJFa1h8dpf5/yn50uk0u03Rklz3M886E3HjzIn2AeC9IVbQDvUF0E78Mw72vD+j
-         j7L+liexY+FIM5M3KQ97YZsGrT6fF41Tri+zYH++ncSE188budnGpqnrdOTzUN7uVj9w
-         3UhDtY2AkTQEkxz/Deo/QQMKDflMipR3lFUDWGONk9sUE0dx8dhQryLBD3zbYoeo3nqQ
-         37dQ==
-X-Gm-Message-State: AOAM530h3JP68DNENlB+TbTcjZxvWErl2GWdFmKtTH5KeSZJXFo4tA5J
-        UEsk+/EyBmrMKsmphxULEzH1AIphjkbXWys7ZcmCNP3FpW8q1t3LFuxrgwn9zpZDQYtBYkZM63n
-        U6fWVWNHrmXhQZ8UL0i0NWFmp
-X-Received: by 2002:a1c:28c1:: with SMTP id o184mr3561059wmo.91.1596635070886;
-        Wed, 05 Aug 2020 06:44:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwcZLOj081T5kxFNjl1P5IaJV7iDG1ay5q9gWzjOmdLhKok8j4JZTnYScNBYJMMxfhLX53FGQ==
-X-Received: by 2002:a1c:28c1:: with SMTP id o184mr3561042wmo.91.1596635070706;
-        Wed, 05 Aug 2020 06:44:30 -0700 (PDT)
-Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
-        by smtp.gmail.com with ESMTPSA id g8sm2732859wme.13.2020.08.05.06.44.29
+        bh=aTite/iD0lQBRsDAUmY/i15AjG2mB78/HSvWX+2Oy3A=;
+        b=COsNbVF70AY2aUdVM7ao1ygBtAGyia5VhCVgSYrBgck1DWe/W3Cfq3RIUYGR9u6MZh
+         5Y2IwOhjFmH3ShB2H1cTdd7yZ2rzLDC6wOvdkX3F5ptQtVlnAWprGK5h8yAAC5oLRcyJ
+         SREaZxWEhd9YAb3oAvW+QD/GOurTK005jwB0bLONaxJCMeR7yWvonymUViv5EHBeNBjp
+         Udpbgy8YaMpICTaw7c+Ioc/3WCaMWw3mkq4esE46pqqARKTU+rbQrlGZqHX5/bWVejFp
+         MzIseVjqJ5rfj+/xjtqdXdP+aEbp9yQ1bYIzqs8ANFL4riPT85ABKuSRbk1l5f0j+m9L
+         nwXw==
+X-Gm-Message-State: AOAM5308zdGrOVkE8wR6+/fTJVtoyFO/5jxutvvIStfin7Plp6ZvF1QK
+        DTSv63GFuZ+0YgJy0n/28+nB3goR94Z9u0gELYDyh4JLtOgJ3DFW6n+oqjVBmVbTdEOE3av0Ayn
+        1m7dFZd8mcegnO0V8igNQ34pf
+X-Received: by 2002:a1c:7915:: with SMTP id l21mr3585718wme.50.1596635073670;
+        Wed, 05 Aug 2020 06:44:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBmRcbWg6Zcj3SVEKY1RPNAFRs6pH6ZTvrDA1nI/1TIiw8ZC6tgWC862aXu3/qn+3fvibSog==
+X-Received: by 2002:a1c:7915:: with SMTP id l21mr3585709wme.50.1596635073461;
+        Wed, 05 Aug 2020 06:44:33 -0700 (PDT)
+Received: from redhat.com ([192.117.173.58])
+        by smtp.gmail.com with ESMTPSA id b77sm2354968wmb.3.2020.08.05.06.44.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:30 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:44:28 -0400
+        Wed, 05 Aug 2020 06:44:32 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:44:31 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Jason Wang <jasowang@redhat.com>,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 27/38] virtio_caif: correct tags for config space fields
-Message-ID: <20200805134226.1106164-28-mst@redhat.com>
+Subject: [PATCH v3 28/38] virtio_config: add virtio_cread_le_feature
+Message-ID: <20200805134226.1106164-29-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -69,30 +69,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tag config space fields as having virtio endian-ness.
+Mirrors virtio_cread_feature but for LE fields.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- include/linux/virtio_caif.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/virtio_config.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/include/linux/virtio_caif.h b/include/linux/virtio_caif.h
-index 5d2d3124ca3d..ea722479510c 100644
---- a/include/linux/virtio_caif.h
-+++ b/include/linux/virtio_caif.h
-@@ -11,9 +11,9 @@
+diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+index 5b5196fec899..cc7a2b1fd7b2 100644
+--- a/include/linux/virtio_config.h
++++ b/include/linux/virtio_config.h
+@@ -555,4 +555,14 @@ static inline void virtio_cwrite64(struct virtio_device *vdev,
+ 		_r;							\
+ 	})
  
- #include <linux/types.h>
- struct virtio_caif_transf_config {
--	u16 headroom;
--	u16 tailroom;
--	u32 mtu;
-+	__virtio16 headroom;
-+	__virtio16 tailroom;
-+	__virtio32 mtu;
- 	u8 reserved[4];
- };
- 
++/* Conditional config space accessors. */
++#define virtio_cread_le_feature(vdev, fbit, structname, member, ptr)	\
++	({								\
++		int _r = 0;						\
++		if (!virtio_has_feature(vdev, fbit))			\
++			_r = -ENOENT;					\
++		else							\
++			virtio_cread_le((vdev), structname, member, ptr); \
++		_r;							\
++	})
+ #endif /* _LINUX_VIRTIO_CONFIG_H */
 -- 
 MST
 
