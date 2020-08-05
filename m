@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C3023CF9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793D123CFF1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729089AbgHETW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:22:56 -0400
-Received: from m15114.mail.126.com ([220.181.15.114]:39844 "EHLO
-        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728921AbgHERlL (ORCPT
+        id S1728880AbgHET1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:27:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28579 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728641AbgHERNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:41:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=QTs20Y2uQb75JxoibU
-        08BQmlRKaNqO3ksWubKbOLAMk=; b=XdEhO1lYn70aHJn7bKkRt5gQFR/zOndikH
-        dnrY/5tS8TJBqf9VAde3cKoSDLEvLpG2QoYTEfmDpJnSOymC7FfHdKzJU3bmYTC1
-        FVefq/mXxXuqR1p9+4SoFxen0bHthfSqJ/4Nf0mtcSprnTcNwnSxd4GuWRoMKY35
-        /2fGAmJjQ=
-Received: from 192.168.137.129 (unknown [112.10.84.202])
-        by smtp7 (Coremail) with SMTP id DsmowADXTEK3tSpfUXVBIA--.57772S3;
-        Wed, 05 Aug 2020 21:35:53 +0800 (CST)
-From:   Xianting Tian <xianting_tian@126.com>
-To:     bcrl@kvack.org, viro@zeniv.linux.org.uk
-Cc:     linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] aio: use wait_for_completion_io() when waiting for completion of io
-Date:   Wed,  5 Aug 2020 09:35:51 -0400
-Message-Id: <1596634551-27526-1-git-send-email-xianting_tian@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DsmowADXTEK3tSpfUXVBIA--.57772S3
-X-Coremail-Antispam: 1Uf129KBjvdXoWrur1xKF48Ww1rtF1DCw4rKrg_yoWkCrc_Gr
-        18tF18uayUXFWDKw1jkrZ3t3s0939rC3Z5WanxWF97Gay3GasxCr1Dtwn0vFySg342qF15
-        Wws8CFW7trnrCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0loGPUUUUU==
-X-Originating-IP: [112.10.84.202]
-X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi5hl3pFpD-Dx3VQAAsX
+        Wed, 5 Aug 2020 13:13:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596647582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QZtQO+RPpH+qMcVX7UHHBecNGQz0/LWgC7hfTGQuckU=;
+        b=BiZf+SQPkhv15UyvVHjdinZ8N64kunXFOU480/nrQ+Q6i2WtsSuhBm1xF0pKbHTSEHp4Gq
+        6VWu/B67wiEHqI9Y/k8pl+mm+Ij6oj5aNKw1sTZ16P/8yOu3J0jqIVx/SLakOd/KVRcE9H
+        CbXypTR4lZ4wOsDMEH87QCkj4r0UT28=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-iAbHYY24O7u1B-70GkGgqw-1; Wed, 05 Aug 2020 09:43:21 -0400
+X-MC-Unique: iAbHYY24O7u1B-70GkGgqw-1
+Received: by mail-wr1-f71.google.com with SMTP id f14so13524862wrm.22
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:43:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QZtQO+RPpH+qMcVX7UHHBecNGQz0/LWgC7hfTGQuckU=;
+        b=ajFoYkR3jy1reHEfBLayaRLG8ts6mf3u6xCtN14VRrZGzkdjdOpcH8fTDAbgvVHdkV
+         n6fg/8y0L0i181KyLsZ+FqwDtk3OSJXcfGAOGZSCAwyTP6qAbvIBAAZEtLG/7vbFlucb
+         lhhwkMfWnq0sLb2viYxKTs5c0dBeg1UVY+iYeI7EFBZkC/gvLdsj21Loqr5UbnjLL4iq
+         7AeUV+MUe9Ygl/qgkf1y8NK4VkL4d0V8E5shYbfjh0h5RTCwFhJCrCMYnFkniA1tQ2Ea
+         2Y+8k7jofGZCD3bkHMiABiL56O7fnKRQw4xlLvmWnztrpbui6AaZIAOUbdA4dC/89SpZ
+         yxDg==
+X-Gm-Message-State: AOAM531ybiMO90teg4EBXxyaxksCFtWBa0RJq9yQzTrjiuN7N6FWbzfp
+        imjmJS5XGXmXFnzF7rtF/bNqJmBjQsj0D6Pu97zdJrO9AJzHeCZj29b/MPkn0nRoochS6DMw/Zz
+        u1SRqPG2wRjnEgs4SP2SknIpl
+X-Received: by 2002:a05:600c:2189:: with SMTP id e9mr3594946wme.171.1596634999574;
+        Wed, 05 Aug 2020 06:43:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzaUQx57cc7JttIMX2xKEoawmsqxvIFhQa983nt+oNgyKZc7lcEC6u20fEKG5dxWjJXOX9tYA==
+X-Received: by 2002:a05:600c:2189:: with SMTP id e9mr3594934wme.171.1596634999421;
+        Wed, 05 Aug 2020 06:43:19 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
+        by smtp.gmail.com with ESMTPSA id x6sm594339wmx.28.2020.08.05.06.43.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 06:43:18 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:43:16 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v3 01/38] virtio_balloon: fix sparse warning
+Message-ID: <20200805134226.1106164-2-mst@redhat.com>
+References: <20200805134226.1106164-1-mst@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805134226.1106164-1-mst@redhat.com>
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
+X-Mutt-Fcc: =sent
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When waiting for the completion of io, we need account iowait time. As
-wait_for_completion() calls schedule_timeout(), which doesn't account
-iowait time. While wait_for_completion_io() calls io_schedule_timeout(),
-which will account iowait time.
+balloon uses virtio32_to_cpu instead of cpu_to_virtio32
+to convert a native endian number to virtio.
+No practical difference but makes sparse warn.
+Fix it up.
 
-So using wait_for_completion_io() instead of wait_for_completion()
-when waiting for completion of io before exit_aio and io_destroy.
-
-Signed-off-by: Xianting Tian <xianting_tian@126.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Acked-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 ---
- fs/aio.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/virtio/virtio_balloon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/aio.c b/fs/aio.c
-index 91e7cc4..498b8a0 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -892,7 +892,7 @@ void exit_aio(struct mm_struct *mm)
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index 54fd989f9353..8bc1704ffdf3 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -600,7 +600,7 @@ static int send_cmd_id_start(struct virtio_balloon *vb)
+ 	while (virtqueue_get_buf(vq, &unused))
+ 		;
  
- 	if (!atomic_sub_and_test(skipped, &wait.count)) {
- 		/* Wait until all IO for the context are done. */
--		wait_for_completion(&wait.comp);
-+		wait_for_completion_io(&wait.comp);
- 	}
- 
- 	RCU_INIT_POINTER(mm->ioctx_table, NULL);
-@@ -1400,7 +1400,7 @@ static long read_events(struct kioctx *ctx, long min_nr, long nr,
- 		 * is destroyed.
- 		 */
- 		if (!ret)
--			wait_for_completion(&wait.comp);
-+			wait_for_completion_io(&wait.comp);
- 
- 		return ret;
- 	}
+-	vb->cmd_id_active = virtio32_to_cpu(vb->vdev,
++	vb->cmd_id_active = cpu_to_virtio32(vb->vdev,
+ 					virtio_balloon_cmd_id_received(vb));
+ 	sg_init_one(&sg, &vb->cmd_id_active, sizeof(vb->cmd_id_active));
+ 	err = virtqueue_add_outbuf(vq, &sg, 1, &vb->cmd_id_active, GFP_KERNEL);
 -- 
-1.8.3.1
+MST
 
