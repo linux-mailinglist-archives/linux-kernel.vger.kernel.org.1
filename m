@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC13B23D294
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA58D23D1B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729720AbgHEUON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:14:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:33034 "EHLO foss.arm.com"
+        id S1729118AbgHEUFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:05:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58322 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726622AbgHEQX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:23:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 264F913D5;
-        Wed,  5 Aug 2020 06:56:56 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B9B13F7BB;
-        Wed,  5 Aug 2020 06:56:54 -0700 (PDT)
-References: <877dumbtoi.fsf@kurt> <20200729094943.lsmhsqlnl7rlnl6f@skbuf> <87mu3ho48v.fsf@kurt> <20200730082228.r24zgdeiofvwxijm@skbuf> <873654m9zi.fsf@kurt> <87lfiwm2bj.fsf@nanos.tec.linutronix.de> <20200803114112.mrcuupz4ir5uqlp6@skbuf> <87d047n4oh.fsf@nanos.tec.linutronix.de> <jhjh7tjivew.mognet@arm.com> <875z9zmt4i.fsf@nanos.tec.linutronix.de> <20200805134002.GQ2674@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     peterz@infradead.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, paulmck@kernel.org, mw@semihalf.com,
-        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>
-Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level IRQ time accounting
-In-reply-to: <20200805134002.GQ2674@hirez.programming.kicks-ass.net>
-Date:   Wed, 05 Aug 2020 14:56:49 +0100
-Message-ID: <jhja6z9i4bi.mognet@arm.com>
+        id S1727120AbgHEQfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:35:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1583AAEF5;
+        Wed,  5 Aug 2020 14:04:49 +0000 (UTC)
+Date:   Wed, 5 Aug 2020 16:04:30 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Prarit Bhargava <prarit@redhat.com>
+Cc:     corbet@lwn.net, rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        chunyan.zhang@unisoc.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, orsonzhai@gmail.com,
+        zhang.lyra@gmail.com
+Subject: Re: [PATCH V13] printk: Add monotonic, boottime, and realtime
+ timestamps
+Message-ID: <20200805140430.GI24529@alley>
+References: <20200729114423.30606-1-zhang.lyra@gmail.com>
+ <20200729122236.17418-1-prarit@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200729122236.17418-1-prarit@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 2020-07-29 08:22:36, Prarit Bhargava wrote:
+>   Chunyan Zhang <zhang.lyra@gmail.com> wrote:
+> > From: Prarit Bhargava <prarit@redhat.com>
+> > 
+> > printk.time=1/CONFIG_PRINTK_TIME=1 adds a unmodified local hardware clock
+> > timestamp to printk messages.  The local hardware clock loses time each
+> > day making it difficult to determine exactly when an issue has occurred in
+> > the kernel log, and making it difficult to determine how kernel and
+> > hardware issues relate to each other in real time.
+> > 
+> > Make printk output different timestamps by adding options for no
+> > timestamp, the local hardware clock, the monotonic clock, the boottime
+> > clock, and the real clock.  Allow a user to pick one of the clocks by
+> > using the printk.time kernel parameter.  Output the type of clock in
+> > /sys/module/printk/parameters/time so userspace programs can interpret the
+> > timestamp.
+> > 
+> ISTR the reason that this was dropped was because of the a problem with
+> the way systemd read the kernel's timestamps.  It got the attention of
+> Linus, and it was then pulled from the tree.
+> 
+> I need to go back and review the entire thread as it's been several years
+> since we had the discussion although ISTR someone mentioning that doing two
+> timestamps would not be a problem for systemd.
 
-On 05/08/20 14:40, peterz@infradead.org wrote:
-> On Mon, Aug 03, 2020 at 09:22:53PM +0200, Thomas Gleixner wrote:
->
->>    totaltime = irqtime + tasktime
->>
->> Ignoring irqtime and pretending that totaltime is what the scheduler
->> can control and deal with is naive at best.
->
-> Well no, that's what we call system overhead and is assumed to be
-> included in the 'error margin'.
->
-> The way things are set up is that we say that, by default, RT tasks can
-> consume 95% of cputime and the remaining 5% is sufficient to keep the
-> system alive.
->
-> Those 5% include all system overhead, IRQs, RCU, !RT workqueues etc..
->
-> Obviously IRQ_TIME accounting changes the balance a bit, but that's what
-> it is. We can't really do anything better.
->
+I guess that you talk about this thread
+https://lore.kernel.org/lkml/CA+55aFwUfA__6MgMgjENnx+_RYY2ZOOLiSx2ea1AvYhSZN+78A@mail.gmail.com/
 
-I'm starting to think that as well. I tried some fugly hack of injecting
-avg_irq into sched_rt_runtime_exceeded() with something along the lines of:
+> For example,
+> 
+> [48551.015086]
+> 
+> would be
+> 
+> [48551.015086] m[xxxx.xxxx]
+> 
+> for the monotonic clock timestamp, and
+> 
+> [48551.015086] b[xxxx.xxxx]
+> 
+> for the boottime clock, etc.
 
-  irq_time = (rq->avg_irq.util_avg * sched_rt_period(rt_rq)) >> SCHED_CAPACITY_SHIFT;
+This approach has several drawbacks:
 
-It's pretty bad for a few reasons; one is that avg_irq already has its own
-period (PELT-based). Another is that it is, as Dietmar pointed out, CPU and
-freq invariant, so falls over on big.LITTLE.
+  + Too long prefix might make it hard to see the real messages
+    because of shrunken/wrapped lines.
 
-Making update_curr_rt() use rq_clock() rather than rq_clock_task() makes it
-"work" but goes against all the good reasons there were to introduce
-rq_clock_task() in the first place.
+  + Too long lines are problem with slow consoles.
 
-> Apparently this SoC has significant IRQ time for some reason. Also,
-> relying on RT throttling for 'correct' behaviour is also wrong. What
-> needs to be done is find who is using all this RT time and why, that
-> isn't right.
+  + More space will be necessary to store all the time stamps.
 
-I've been tempted to say the test case is a bit bogus, but am not familiar
-enough with the RT throttling details to stand that ground. That said, from
-both looking at the execution and the stress-ng source code, it seems to
-unconditionally spawn 32 FIFO-50 tasks (there's even an option to make
-these FIFO-99!!!), which is quite a crowd on monoCPU systems.
+  + Userspace tools would need/want to parse the format. We would
+    need to maintain it forever.
+
+
+Linus had an interesting idea to print all timestamps regularly.
+The frequency might be configurable. It might print, for example,
+the following line every 10 minutes or once a day:
+
+  [48551.015086] System alive: b[xxxx.xxxx] m[xxxx.xxxx]
+
+It might be useful in general to see when the system was still alive
+before it froze.
+
+Would it be enough to sort messages printed with different clock
+sources?
+
+Best Regards,
+Petr
