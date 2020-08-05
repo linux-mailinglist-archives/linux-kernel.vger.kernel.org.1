@@ -2,138 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01D523C8F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8F423C8B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728715AbgHEJOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 05:14:45 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:58952 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728658AbgHEJNn (ORCPT
+        id S1728094AbgHEJKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 05:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726175AbgHEJKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 05:13:43 -0400
+        Wed, 5 Aug 2020 05:10:23 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF085C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 02:10:22 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id c10so2866626pjn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 02:10:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1596618823; x=1628154823;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PjFXOtCuwEnfKyB7ZS+LsNc46T9Vj62xWcGURLnWUrE=;
-  b=WP+yGyj8LfnY6QYhGqUcOeX2sl7q2EIxqDXlT50pI08VHcmBM7wPIOqU
-   bQ2Q5YsnfPTLVZhRRBivP4RarjSndEd7zTm4QVHDGMLuIaHdMgtE4bPw2
-   q42A8ePNwISqjSG8plpEyUI3p4T3OJoH71oN+TvXSv2TnwMLvgnBgcTeT
-   E=;
-IronPort-SDR: rzIkGJeoP5W6DZzjxGgYhooXNR5msuoi/CAiBItm/MyrkgudraV93c9qjcyZSEONnhzjFJkRl8
- PmZV/5mpb12g==
-X-IronPort-AV: E=Sophos;i="5.75,436,1589241600"; 
-   d="scan'208";a="46143825"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 05 Aug 2020 09:13:42 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (Postfix) with ESMTPS id 5DAC8A24DD;
-        Wed,  5 Aug 2020 09:13:39 +0000 (UTC)
-Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 5 Aug 2020 09:13:39 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.192) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 5 Aug 2020 09:13:30 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "David Duncan" <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Karen Noel" <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        "Uwe Dannowski" <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v6 18/18] MAINTAINERS: Add entry for the Nitro Enclaves driver
-Date:   Wed, 5 Aug 2020 12:10:17 +0300
-Message-ID: <20200805091017.86203-19-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200805091017.86203-1-andraprs@amazon.com>
-References: <20200805091017.86203-1-andraprs@amazon.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=rQKMQ1kqbR8Gl0+GJv0CY/jTM8wgLqzh+7PcecIdixo=;
+        b=taZwAr00hNVPPdtvSJoQWsn17PFruz9uEWZl6oJJAxXiZIOTv+zZe6zrXWIPlCVs34
+         F4o5QtfvqNkLRFsVDKwd3IKwJi00W4MMxgl+Vg8FvSb1usS/bmo442blGfzxsUNZs/lx
+         LF3DJSBiNo1LZfOCN+N+h5WgfHvTq9nCAyntt5D5D0qrMXEO/gycc6HV03IqHxfYTw1+
+         VMYhc277NF7vAOeEuoOOmag/LMFFvBFTXIYkYDs/fHguSxcowiSYNgFnkYMcs0Jptyl1
+         DnFnrz96GnrRSps1H/9Zm4/RhKetEqcMZ9/sw1PvKaPO3WF6LmYi7RHlUslRDFkhr6FG
+         nyyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=rQKMQ1kqbR8Gl0+GJv0CY/jTM8wgLqzh+7PcecIdixo=;
+        b=A9m4Jd5SD720CUM9O9geeSrPQpcqkZLF2VGBtrxoAAIPgwzEjzaMt6DlYBJNcO4LQM
+         FsdQvyIIpEgdcqyqxkJkoMbV7ORTPte7GuAWUrimE3J/CeWtPN4EPnm6rOaW/JOWk4KH
+         kKswVR4z33kEsS4hC65xFqHGnLE+usq8ABgEAX6iQ9rcZmUS5ygvmeVSkp/LkLk2e0Ma
+         xYTBe3ueYzlO45Z0a5qgI1HSrtE2sosQwH9NhwyX9Xo8Ci09ZJd0Np0iZW4Oac81i+Bg
+         BsSvG4lCLghU4N+T1SiLGiUnw3YN1PkkyQFOekmHm3vWMGsZWrFmhALCdLBP/w+T7Y7/
+         B4qQ==
+X-Gm-Message-State: AOAM532gPdSjKjdCCSIBqIceD9zvuqU1VA8fVgsawOllseAwH5zWjN8r
+        92ROJMfkh9ds4ydEwitHgadh2Fgh09aB4hUlmlY=
+X-Google-Smtp-Source: ABdhPJzW4+dE3PGD6qy5rxDR4O4e4d1ioJnHMs5N+C6E9XL16ytDCHAPqDyCnqHXXWPQailrW/P8SbcARSI5WHQ5d/Y=
+X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr2301236pjb.40.1596618621939;
+ Wed, 05 Aug 2020 02:10:21 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.43.160.192]
-X-ClientProxiedBy: EX13D19UWA004.ant.amazon.com (10.43.160.102) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6a10:a161:0:0:0:0 with HTTP; Wed, 5 Aug 2020 02:10:21
+ -0700 (PDT)
+Reply-To: robertandersonhappy1@gmail.com
+From:   robert <ekesineugwu5@gmail.com>
+Date:   Wed, 5 Aug 2020 02:10:21 -0700
+Message-ID: <CALM=UYp0C-MuiyBkz7zQOUEMEqnj6E8kyCnDxy-ZjvQDmxEvOg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
----
-Changelog
+Good day my good friend.
 
-v5 -> v6
+How are you doing today? It has been long i hear from you, what is going on
+your side? Today i am very much happy to inform you about my success in
+getting those inheritance funds transferred under the co-operation of a new
+partner from India Asia. He is a Canadian but based in India, but presently
+i'm in India for investment projects with my own share of the total sum of
+millions dollars. meanwhile, i didn't forget your past efforts and attempts
+to assist me in transferring those inheritance funds despite that it failed
+us some how, i want you to contact my secretary in Lome Togo Republic West
+Africa, her name is solomon brand, this is he email address (
+solomonbrand003@gmail.com ), ask her to contact Ecobank were i
+kept the sum of $350,000.00, for your compensation, this compensation fund
+is for all the past efforts and attempts to assist me in the passed
+transaction. I appreciated your efforts at that time very much. so feel
+free and contact my secretary Mr solomon brand, and instruct her where
+Ecobank will transfer the total sum of $350,000.00.
 
-* No changes.
+Please do let me know immediately Ecobank transfer the fund $350.000.00
+into your own bank account, in the moment, I am too busy here because of
+the investment projects which i am having with my new partner at hand, so
+get in touch with Mr solomon brand on he email address, he will
+contact Ecobank on your behalf without any delay. Stay safe of Covid 19.
 
-v4 -> v5
-
-* No changes.
-
-v3 -> v4
-
-* No changes.
-
-v2 -> v3
-
-* Update file entries to be in alphabetical order.
-
-v1 -> v2
-
-* No changes.
----
- MAINTAINERS | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4e2698cc7e23..0d83aaad3cd4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12127,6 +12127,19 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/lftan/nios2.git
- F:	arch/nios2/
- 
-+NITRO ENCLAVES (NE)
-+M:	Andra Paraschiv <andraprs@amazon.com>
-+M:	Alexandru Vasile <lexnv@amazon.com>
-+M:	Alexandru Ciobotaru <alcioa@amazon.com>
-+L:	linux-kernel@vger.kernel.org
-+S:	Supported
-+W:	https://aws.amazon.com/ec2/nitro/nitro-enclaves/
-+F:	Documentation/nitro_enclaves/
-+F:	drivers/virt/nitro_enclaves/
-+F:	include/linux/nitro_enclaves.h
-+F:	include/uapi/linux/nitro_enclaves.h
-+F:	samples/nitro_enclaves/
-+
- NOHZ, DYNTICKS SUPPORT
- M:	Frederic Weisbecker <fweisbec@gmail.com>
- M:	Thomas Gleixner <tglx@linutronix.de>
--- 
-2.20.1 (Apple Git-117)
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
-
+Best regards,
+Dr. robert anderson
