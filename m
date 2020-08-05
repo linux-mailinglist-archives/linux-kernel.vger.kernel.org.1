@@ -2,41 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D6C23D1CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BECA23D1AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729757AbgHEUGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:06:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49790 "EHLO mail.kernel.org"
+        id S1727105AbgHEUFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:05:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726987AbgHEQel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:34:41 -0400
+        id S1726402AbgHEQgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:36:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6BF823382;
-        Wed,  5 Aug 2020 15:52:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF2662339E;
+        Wed,  5 Aug 2020 15:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596642779;
-        bh=POF6DDiHm8atPTslFXz0sLdllxBBkRKfAFe2q0FnobE=;
+        s=default; t=1596642789;
+        bh=fshGYLcQsSw3oRUdVr523hsrXJ+lrjE7n7VUtXtO3IQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gg+itV+r90Y6NJdDD0QLTkJ1Kak0FRXZ1l7TGvxe1R8a9uw9RgtkSHAPofHqaJw/Y
-         1kfFJYrMLT50fYMskW4NFimBq87Cw1pu+F4LC7g7AYzxmbGq/dzaG39dOw2fBK0ZxZ
-         0/Hc0BV0vhJVkOApRnPkaVwf8x0y2Q6nM4bXMomU=
+        b=FA+cFCpJByyCLrQaA+xjz7yCg5InSp2Py9rUpYcTsCrRLCFPVpyk09wg1gZqlv0j8
+         braYbQuZUqv0MQmtrxEkHIlsPgmV9i2psI96wuJPI8XSik46ve4qcVpoX+EUBBg8Ig
+         v/YYLAiaR9ClL29w6gbr5Imu4MbmX2uum33l2hOI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Subject: [PATCH 5.4 8/9] selftests: bpf: Fix detach from sockmap tests
-Date:   Wed,  5 Aug 2020 17:52:45 +0200
-Message-Id: <20200805153507.423308944@linuxfoundation.org>
+        stable@vger.kernel.org, Amit Klein <aksecurity@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>, Willy Tarreau <w@1wt.eu>
+Subject: [PATCH 4.19 1/6] random32: update the net random state on interrupt and activity
+Date:   Wed,  5 Aug 2020 17:53:00 +0200
+Message-Id: <20200805153505.558718245@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200805153507.053638231@linuxfoundation.org>
-References: <20200805153507.053638231@linuxfoundation.org>
+In-Reply-To: <20200805153505.472594546@linuxfoundation.org>
+References: <20200805153505.472594546@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,75 +51,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenz Bauer <lmb@cloudflare.com>
+From: Willy Tarreau <w@1wt.eu>
 
-commit f43cb0d672aa8eb09bfdb779de5900c040487d1d upstream.
+commit f227e3ec3b5cad859ad15666874405e8c1bbc1d4 upstream.
 
-Fix sockmap tests which rely on old bpf_prog_dispatch behaviour.
-In the first case, the tests check that detaching without giving
-a program succeeds. Since these are not the desired semantics,
-invert the condition. In the second case, the clean up code doesn't
-supply the necessary program fds.
+This modifies the first 32 bits out of the 128 bits of a random CPU's
+net_rand_state on interrupt or CPU activity to complicate remote
+observations that could lead to guessing the network RNG's internal
+state.
 
-Fixes: bb0de3131f4c ("bpf: sockmap: Require attach_bpf_fd when detaching a program")
-Reported-by: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20200709115151.75829-1-lmb@cloudflare.com
+Note that depending on some network devices' interrupt rate moderation
+or binding, this re-seeding might happen on every packet or even almost
+never.
+
+In addition, with NOHZ some CPUs might not even get timer interrupts,
+leaving their local state rarely updated, while they are running
+networked processes making use of the random state.  For this reason, we
+also perform this update in update_process_times() in order to at least
+update the state when there is user or system activity, since it's the
+only case we care about.
+
+Reported-by: Amit Klein <aksecurity@gmail.com>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/testing/selftests/bpf/test_maps.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/char/random.c  |    1 +
+ include/linux/random.h |    3 +++
+ kernel/time/timer.c    |    8 ++++++++
+ lib/random32.c         |    2 +-
+ 4 files changed, 13 insertions(+), 1 deletion(-)
 
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -793,19 +793,19 @@ static void test_sockmap(unsigned int ta
- 	}
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -1257,6 +1257,7 @@ void add_interrupt_randomness(int irq, i
  
- 	err = bpf_prog_detach(fd, BPF_SK_SKB_STREAM_PARSER);
--	if (err) {
-+	if (!err) {
- 		printf("Failed empty parser prog detach\n");
- 		goto out_sockmap;
- 	}
+ 	fast_mix(fast_pool);
+ 	add_interrupt_bench(cycles);
++	this_cpu_add(net_rand_state.s1, fast_pool->pool[cycles & 3]);
  
- 	err = bpf_prog_detach(fd, BPF_SK_SKB_STREAM_VERDICT);
--	if (err) {
-+	if (!err) {
- 		printf("Failed empty verdict prog detach\n");
- 		goto out_sockmap;
- 	}
+ 	if (unlikely(crng_init == 0)) {
+ 		if ((fast_pool->count >= 64) &&
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -9,6 +9,7 @@
  
- 	err = bpf_prog_detach(fd, BPF_SK_MSG_VERDICT);
--	if (err) {
-+	if (!err) {
- 		printf("Failed empty msg verdict prog detach\n");
- 		goto out_sockmap;
- 	}
-@@ -1094,19 +1094,19 @@ static void test_sockmap(unsigned int ta
- 		assert(status == 0);
- 	}
+ #include <linux/list.h>
+ #include <linux/once.h>
++#include <linux/percpu.h>
  
--	err = bpf_prog_detach(map_fd_rx, __MAX_BPF_ATTACH_TYPE);
-+	err = bpf_prog_detach2(parse_prog, map_fd_rx, __MAX_BPF_ATTACH_TYPE);
- 	if (!err) {
- 		printf("Detached an invalid prog type.\n");
- 		goto out_sockmap;
- 	}
+ #include <uapi/linux/random.h>
  
--	err = bpf_prog_detach(map_fd_rx, BPF_SK_SKB_STREAM_PARSER);
-+	err = bpf_prog_detach2(parse_prog, map_fd_rx, BPF_SK_SKB_STREAM_PARSER);
- 	if (err) {
- 		printf("Failed parser prog detach\n");
- 		goto out_sockmap;
- 	}
+@@ -115,6 +116,8 @@ struct rnd_state {
+ 	__u32 s1, s2, s3, s4;
+ };
  
--	err = bpf_prog_detach(map_fd_rx, BPF_SK_SKB_STREAM_VERDICT);
-+	err = bpf_prog_detach2(verdict_prog, map_fd_rx, BPF_SK_SKB_STREAM_VERDICT);
- 	if (err) {
- 		printf("Failed parser prog detach\n");
- 		goto out_sockmap;
++DECLARE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++
+ u32 prandom_u32_state(struct rnd_state *state);
+ void prandom_bytes_state(struct rnd_state *state, void *buf, size_t nbytes);
+ void prandom_seed_full_state(struct rnd_state __percpu *pcpu_state);
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -44,6 +44,7 @@
+ #include <linux/sched/debug.h>
+ #include <linux/slab.h>
+ #include <linux/compat.h>
++#include <linux/random.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/unistd.h>
+@@ -1654,6 +1655,13 @@ void update_process_times(int user_tick)
+ 	scheduler_tick();
+ 	if (IS_ENABLED(CONFIG_POSIX_TIMERS))
+ 		run_posix_cpu_timers(p);
++
++	/* The current CPU might make use of net randoms without receiving IRQs
++	 * to renew them often enough. Let's update the net_rand_state from a
++	 * non-constant value that's not affine to the number of calls to make
++	 * sure it's updated when there's some activity (we don't care in idle).
++	 */
++	this_cpu_add(net_rand_state.s1, rol32(jiffies, 24) + user_tick);
+ }
+ 
+ /**
+--- a/lib/random32.c
++++ b/lib/random32.c
+@@ -48,7 +48,7 @@ static inline void prandom_state_selftes
+ }
+ #endif
+ 
+-static DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
+ 
+ /**
+  *	prandom_u32_state - seeded pseudo-random number generator.
 
 
