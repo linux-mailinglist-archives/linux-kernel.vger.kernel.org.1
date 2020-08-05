@@ -2,159 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AA023D182
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B1223D16F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgHEUCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgHEQkG (ORCPT
+        id S1728530AbgHEUAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:00:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41723 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727850AbgHEQkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:40:06 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B87C0086CF;
-        Wed,  5 Aug 2020 07:15:10 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id y206so12491410pfb.10;
-        Wed, 05 Aug 2020 07:15:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=+xqqce3bt1Dd6YXyCPFzN+2GzEUcHoRk0/h1IH691fM=;
-        b=vAw9kGgbL9KkM2+HjZkFVCiAEauRuoyizHa2DE6NIt/H/ukbr4biFl6FGaPLzqYR1m
-         Y8feBgiVM4qSu50iFsGj6seA3Q+j9oLVsC7ZTIW301zQZQePILt51nINe00B/lm8asGU
-         PKFIcoHfyTy1Yx46R8iwO4Rxoy5FpkzLWDtvWhOqdK9bSIiQs6/5DuDW7e0ipqsIoY0A
-         08il6ksimfsPfvDVAGglj0SYwjOIfKLZxarQPN2FahhOz43Is6/czXHIMgMCOgMr4y04
-         vhwJqQOnsRjbTh6jrbJbOGh7SYE4nuYoF8PVX7nrKYDnKxHNrLHLJczLHyu9B/gQ/KA7
-         GRjA==
+        Wed, 5 Aug 2020 12:40:19 -0400
+X-Greylist: delayed 3566 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 12:40:17 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596645610;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NJk+gBSUOEE3QpuiYByxtg4+dvbr5r/Pq6TTI3Asc18=;
+        b=I9j2o1YvOgMjOWcW1sHpa/hl+Sw3ABo5PBsvy7BYXDSIEaBFoUSHv061+5cK+C4FyAOKTN
+        RL4fCNNJKNOOuE3yv9VnKiGcsuF3FnxdV3VpBSZv31ZuJBFQXm39sE4ZO7BZEGjheLbBUg
+        7G8GzRyFzVEKcZPcYlAqo8hjWsVxPgQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-0f5z5dajPBWD27hU59vXIA-1; Wed, 05 Aug 2020 10:24:23 -0400
+X-MC-Unique: 0f5z5dajPBWD27hU59vXIA-1
+Received: by mail-wm1-f70.google.com with SMTP id u144so2782484wmu.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 07:24:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=+xqqce3bt1Dd6YXyCPFzN+2GzEUcHoRk0/h1IH691fM=;
-        b=bRSBgwUsoZJA+v2asKhhrB0Q6JOGDp+Ykwbvb5CrNSQaZhPP675pt3f6D8R4fqdKp+
-         LAaeJPAlRVFqvwa0ysLPtO7c66We2P366giN0AR81qYVVzguwoaoZyXOvu7cHVUhlfQ9
-         nUTanDYeXJb4ETE3aWDfUpZBOfdZYl5D8Tb4w0Ut5WomoXYzXqExMs2xjepXvUgi8UrV
-         5gN+vh0eshD5/ehUs/kwbLjCJkFIQXVMS2yWY9R24gOg4/kYIVP6q2ZdPR1sNYU5Fyii
-         jX/I9t4sQyqMRYgVNRJunhmvNkWfvMdfcxWjHudZRKYBClqFS9haijnnpWPD2tWczB6u
-         /08Q==
-X-Gm-Message-State: AOAM533zPAOCh9O5T70rmqZA9opE0BjCDZxblhpRgnOlqeFXeUCh1KBa
-        ZYVQLt9r+8SmxpYqxPgbnmY=
-X-Google-Smtp-Source: ABdhPJwbuUbGXm01c54qPcEJaJWwHBAtthhYKl/qC5Dq5fmWMZtf+rrnJZ29JSqA4wwniCL3ChsA7g==
-X-Received: by 2002:a62:6842:: with SMTP id d63mr3551252pfc.82.1596636907357;
-        Wed, 05 Aug 2020 07:15:07 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.62])
-        by smtp.gmail.com with ESMTPSA id g12sm3197172pjd.6.2020.08.05.07.15.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NJk+gBSUOEE3QpuiYByxtg4+dvbr5r/Pq6TTI3Asc18=;
+        b=sBdEIGTOjhtAhiL0fZUPTjjObotf9qZEvh3TJGQ9zTA2A/W133rX582YlxAnvVI5mF
+         wL69r7xenrLQ6Su/gdMNkxmMJ+Dt7vyJA5etrY/CA/+gL3SipjYOKDwFYScwfdYvq+Lp
+         MBzqrRpEcEk4ybOVl2iZ7QfUeJ/FI3X+BadRlsCU37CK1evTVIU00CNkr8r3/e7xiOGS
+         Py0Mc5i49W2sk0VfIxydlGcB/EQlOI1WUMmZc7/8F0gfJbq0dau56pnwYdDUAvYBSL5c
+         Cnf9Ozfjlzfxcod4CZNCq84fCzDh7wYcre5QAE/RS1Uy5ZCHkKFFjxs0HH7P8oi/iuhG
+         gyBQ==
+X-Gm-Message-State: AOAM530aUrHPBOw6nkTVKo5dSWphVtUnoh5iI4E5leeGejCgahDKUooz
+        kAmpTtEDQCb4IggIXkt+qwnSCsQ4V0c8+wyRQHuCVKOIim3Ndb1TD0Mp80kYx5u/wtLrVg5nZGU
+        48dbOTHKVYNM6l7boCmwpc5pb
+X-Received: by 2002:a1c:1d92:: with SMTP id d140mr3577308wmd.143.1596637461351;
+        Wed, 05 Aug 2020 07:24:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxykd/6TYQBVQob6vYx2bOO/iHZmxM2Bk8CCL9fbpMhS8zjTz+5shlJ5og3sBNrgt6khAQqMA==
+X-Received: by 2002:a1c:1d92:: with SMTP id d140mr3577290wmd.143.1596637461088;
+        Wed, 05 Aug 2020 07:24:21 -0700 (PDT)
+Received: from steredhat ([5.171.198.65])
+        by smtp.gmail.com with ESMTPSA id x11sm2840060wmc.33.2020.08.05.07.24.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 07:15:06 -0700 (PDT)
-From:   Yulei Zhang <yulei.kernel@gmail.com>
-To:     pbonzini@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sean.j.christopherson@intel.com, jmattson@google.com,
-        vkuznets@redhat.com, xiaoguangrong.eric@gmail.com,
-        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
-        Yulei Zhang <yuleixzhang@tencent.com>
-Subject: [RFC 8/9] Introduce kvm module parameter global_tdp to turn on the direct build EPT mode
-Date:   Wed,  5 Aug 2020 22:15:56 +0800
-Message-Id: <20200805141556.9430-1-yulei.kernel@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 05 Aug 2020 07:24:20 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 16:24:15 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v3 06/38] virtio_blk: correct tags for config space fields
+Message-ID: <20200805142415.sqx7saezivvcolkt@steredhat>
+References: <20200805134226.1106164-1-mst@redhat.com>
+ <20200805134226.1106164-7-mst@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805134226.1106164-7-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yulei Zhang <yuleixzhang@tencent.com>
+On Wed, Aug 05, 2020 at 09:43:30AM -0400, Michael S. Tsirkin wrote:
+> Tag config space fields as having virtio endian-ness.
+> 
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+> ---
+>  include/uapi/linux/virtio_blk.h | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
 
-Currently global_tdp is only supported on intel X86 system with ept
-supported, and it will turn off the smm mode when enable global_tdp.
 
-Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
----
- arch/x86/include/asm/kvm_host.h |  4 ++++
- arch/x86/kvm/mmu/mmu.c          |  5 ++++-
- arch/x86/kvm/x86.c              | 11 ++++++++++-
- 3 files changed, 18 insertions(+), 2 deletions(-)
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 7063b9d2cac0..a8c219fb33f5 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1368,6 +1368,8 @@ extern u64  kvm_default_tsc_scaling_ratio;
- 
- extern u64 kvm_mce_cap_supported;
- 
-+extern bool global_tdp;
-+
- /*
-  * EMULTYPE_NO_DECODE - Set when re-emulating an instruction (after completing
-  *			userspace I/O) to indicate that the emulation context
-@@ -1698,6 +1700,8 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
- #endif
- }
- 
-+inline bool boot_cpu_is_amd(void);
-+
- #define put_smstate(type, buf, offset, val)                      \
- 	*(type *)((buf) + (offset) - 0x7e00) = val
- 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 485f7287aad2..f963a3b0500f 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4630,7 +4630,7 @@ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
- }
- EXPORT_SYMBOL_GPL(reset_shadow_zero_bits_mask);
- 
--static inline bool boot_cpu_is_amd(void)
-+inline bool boot_cpu_is_amd(void)
- {
- 	WARN_ON_ONCE(!tdp_enabled);
- 	return shadow_x_mask == 0;
-@@ -6471,6 +6471,9 @@ int kvm_direct_tdp_populate_page_table(struct kvm *kvm, struct kvm_memory_slot *
- 	kvm_pfn_t pfn;
- 	int host_level;
- 
-+	if (!global_tdp)
-+		return 0;
-+
- 	if (!kvm->arch.global_root_hpa) {
- 		struct page *page;
- 		WARN_ON(!tdp_enabled);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 37e11b3588b5..abe838240084 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -162,6 +162,9 @@ module_param(force_emulation_prefix, bool, S_IRUGO);
- int __read_mostly pi_inject_timer = -1;
- module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
- 
-+bool __read_mostly global_tdp;
-+module_param_named(global_tdp, global_tdp, bool, S_IRUGO);
-+
- #define KVM_NR_SHARED_MSRS 16
- 
- struct kvm_shared_msrs_global {
-@@ -3403,7 +3406,10 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		 * fringe case that is not enabled except via specific settings
- 		 * of the module parameters.
- 		 */
--		r = kvm_x86_ops.has_emulated_msr(MSR_IA32_SMBASE);
-+		if (global_tdp)
-+			r = 0;
-+		else
-+			r = kvm_x86_ops.has_emulated_msr(MSR_IA32_SMBASE);
- 		break;
- 	case KVM_CAP_VAPIC:
- 		r = !kvm_x86_ops.cpu_has_accelerated_tpr();
-@@ -9675,6 +9681,9 @@ int kvm_arch_hardware_setup(void *opaque)
- 	if (r != 0)
- 		return r;
- 
-+	if ((tdp_enabled == false) || boot_cpu_is_amd())
-+		global_tdp = 0;
-+
- 	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
- 
- 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
--- 
-2.17.1
+
+> 
+> diff --git a/include/uapi/linux/virtio_blk.h b/include/uapi/linux/virtio_blk.h
+> index 0f99d7b49ede..d888f013d9ff 100644
+> --- a/include/uapi/linux/virtio_blk.h
+> +++ b/include/uapi/linux/virtio_blk.h
+> @@ -57,20 +57,20 @@
+>  
+>  struct virtio_blk_config {
+>  	/* The capacity (in 512-byte sectors). */
+> -	__u64 capacity;
+> +	__virtio64 capacity;
+>  	/* The maximum segment size (if VIRTIO_BLK_F_SIZE_MAX) */
+> -	__u32 size_max;
+> +	__virtio32 size_max;
+>  	/* The maximum number of segments (if VIRTIO_BLK_F_SEG_MAX) */
+> -	__u32 seg_max;
+> +	__virtio32 seg_max;
+>  	/* geometry of the device (if VIRTIO_BLK_F_GEOMETRY) */
+>  	struct virtio_blk_geometry {
+> -		__u16 cylinders;
+> +		__virtio16 cylinders;
+>  		__u8 heads;
+>  		__u8 sectors;
+>  	} geometry;
+>  
+>  	/* block size of device (if VIRTIO_BLK_F_BLK_SIZE) */
+> -	__u32 blk_size;
+> +	__virtio32 blk_size;
+>  
+>  	/* the next 4 entries are guarded by VIRTIO_BLK_F_TOPOLOGY  */
+>  	/* exponent for physical block per logical block. */
+> @@ -78,42 +78,42 @@ struct virtio_blk_config {
+>  	/* alignment offset in logical blocks. */
+>  	__u8 alignment_offset;
+>  	/* minimum I/O size without performance penalty in logical blocks. */
+> -	__u16 min_io_size;
+> +	__virtio16 min_io_size;
+>  	/* optimal sustained I/O size in logical blocks. */
+> -	__u32 opt_io_size;
+> +	__virtio32 opt_io_size;
+>  
+>  	/* writeback mode (if VIRTIO_BLK_F_CONFIG_WCE) */
+>  	__u8 wce;
+>  	__u8 unused;
+>  
+>  	/* number of vqs, only available when VIRTIO_BLK_F_MQ is set */
+> -	__u16 num_queues;
+> +	__virtio16 num_queues;
+>  
+>  	/* the next 3 entries are guarded by VIRTIO_BLK_F_DISCARD */
+>  	/*
+>  	 * The maximum discard sectors (in 512-byte sectors) for
+>  	 * one segment.
+>  	 */
+> -	__u32 max_discard_sectors;
+> +	__virtio32 max_discard_sectors;
+>  	/*
+>  	 * The maximum number of discard segments in a
+>  	 * discard command.
+>  	 */
+> -	__u32 max_discard_seg;
+> +	__virtio32 max_discard_seg;
+>  	/* Discard commands must be aligned to this number of sectors. */
+> -	__u32 discard_sector_alignment;
+> +	__virtio32 discard_sector_alignment;
+>  
+>  	/* the next 3 entries are guarded by VIRTIO_BLK_F_WRITE_ZEROES */
+>  	/*
+>  	 * The maximum number of write zeroes sectors (in 512-byte sectors) in
+>  	 * one segment.
+>  	 */
+> -	__u32 max_write_zeroes_sectors;
+> +	__virtio32 max_write_zeroes_sectors;
+>  	/*
+>  	 * The maximum number of segments in a write zeroes
+>  	 * command.
+>  	 */
+> -	__u32 max_write_zeroes_seg;
+> +	__virtio32 max_write_zeroes_seg;
+>  	/*
+>  	 * Set if a VIRTIO_BLK_T_WRITE_ZEROES request may result in the
+>  	 * deallocation of one or more of the sectors.
+> -- 
+> MST
+> 
+> _______________________________________________
+> Virtualization mailing list
+> Virtualization@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+> 
 
