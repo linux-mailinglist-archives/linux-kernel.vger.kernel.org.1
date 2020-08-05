@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925E023D263
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF5523D252
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgHEUMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:12:24 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56892 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726224AbgHEQZe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:25:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596644702;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RDiNTwaajX9EstP2+rkOoaOqP4Sp0ty/xDldPk1nRuY=;
-        b=ZLdpXk/HNS+AUi3ROo21rtg5Qv/XEfMrWtwgHBP6n1uUNof4vHLTDb87x3rxT0koc07SI1
-        KTy/QnlzYkehHheLsKET1MfkI4cCZ3DuAAVbypP255ovHcsjVT2UagoKVgj5mgELRtEPhL
-        jo0xtTQdhi26UO7nuMhsfxoSWEsvsFk=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-8-SHZBO5PKyIvv0gCClUaA-1; Wed, 05 Aug 2020 11:54:43 -0400
-X-MC-Unique: 8-SHZBO5PKyIvv0gCClUaA-1
-Received: by mail-oi1-f199.google.com with SMTP id r62so24674299oif.0
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 08:54:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RDiNTwaajX9EstP2+rkOoaOqP4Sp0ty/xDldPk1nRuY=;
-        b=IthWmMS8xZQSDvwSqscmjk5bY4HJHr+GJonXaZ01m59jUARBBPpCT+zZaCaQbVRiiz
-         TQVOggI5eBwZH0vyvC1M5yn2gxzCzKBedHfA9Ny6V01a4kt4N16JCluyUr3g0iIUDEpZ
-         HBPai90yR7WMcUK6P2acZaxmCt09l0spEdicr7V7rlyTBzZXNpc4QYU4DMCkSAeNRncv
-         VGCARDjcyTCzRxYJjivciC3ADCLzwfMTf3xPm9ONkg0PkmNCX8xeKUJ4iLa/nj31BHHe
-         m6NkCCHYv7XBmdKlBW73qIj0q/jdKHuPf3IRYoa1dblK/vlYgLtEXqGa4fYvJh5FKFQO
-         wo9w==
-X-Gm-Message-State: AOAM530gmFnzVJ9Q3DN2PGLte/1WHF8ThkYeJ/5Nros5U82yYjwZ8Nep
-        1JD8x7jaiKJ1Rlvmr1N9trNQ5AfMgjYf6quprJNcW/3xwpGgOebDZr3S7LwsQj2jZxXLZ+nEDZD
-        cq4U6PfmYPzfodGDVujmt78AmXJIupWZ6sFmnan7E
-X-Received: by 2002:a9d:3784:: with SMTP id x4mr3040060otb.95.1596642882737;
-        Wed, 05 Aug 2020 08:54:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFNuf696slwlPSZJynKjLvYPlN0RCiKIOzOVmS4vUbpxiRMAJuurwOtGRZDzCz52Sm2DXwT3decGCiphYpc3o=
-X-Received: by 2002:a9d:3784:: with SMTP id x4mr3040047otb.95.1596642882501;
- Wed, 05 Aug 2020 08:54:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200805153214.GA6090@magnolia>
-In-Reply-To: <20200805153214.GA6090@magnolia>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Wed, 5 Aug 2020 17:54:31 +0200
-Message-ID: <CAHc6FU6yMnuKdVsAXkWgwr2ViMSXJdBXksrQDvHwaaw4p8u0rQ@mail.gmail.com>
-Subject: Re: [GIT PULL] iomap: new code for 5.9-rc1
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, riteshh@linux.ibm.com,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1729676AbgHEULp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:11:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727006AbgHEQ1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:27:42 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 029A72311F;
+        Wed,  5 Aug 2020 15:55:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596642942;
+        bh=qLO2o0mSxwMb9NIevBlzz6FtAr3nJ1YFHl9EQ14dEfk=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=1+HKfGAolToUv+Ni+OR9LVDesgAhGSjLcKeUX1k8GZsyM5zBJXiuKR7yXqfwLIMTi
+         7/ZTxgyDcDBXPUkCvOkWpAJEdiIlQwsJb7yBQ0q/uFOA/Fyq8tuHqXrqdgXMR4NQ+t
+         KypJKPv8fTULKS1OojELAnTGF+2jHMt75kb7GcRs=
+Date:   Wed, 05 Aug 2020 16:55:19 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Tobias Schramm <t.schramm@manjaro.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20200804195136.1485392-1-t.schramm@manjaro.org>
+References: <20200804195136.1485392-1-t.schramm@manjaro.org>
+Subject: Re: [PATCH] spi: stm32: clear only asserted irq flags on interrupt
+Message-Id: <159664291990.49398.7013081287878568700.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Darrick,
+On Tue, 4 Aug 2020 21:51:36 +0200, Tobias Schramm wrote:
+> Previously the stm32h7 interrupt thread cleared all non-masked interrupts.
+> If an interrupt was to occur during the handling of another interrupt its
+> flag would be unset, resulting in a lost interrupt.
+> This patches fixes the issue by clearing only the currently set interrupt
+> flags.
 
-On Wed, Aug 5, 2020 at 5:40 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> ----------------------------------------------------------------
-> Andreas Gruenbacher (1):
->       iomap: Make sure iomap_end is called after iomap_begin
+Applied to
 
-that commit (d1b4f507d71de) contains the following garbage in the
-commit message:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-    The message from this sender included one or more files
-    which could not be scanned for virus detection; do not
-    open these files unless you are certain of the sender's intent.
+Thanks!
 
-    ----------------------------------------------------------------------
+[1/1] spi: stm32: clear only asserted irq flags on interrupt
+      commit: ae1ba50f1e706dfd7ce402ac52c1f1f10becad68
 
-How did it come to that?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Andreas
-
+Mark
