@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5107323D006
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B67A23D00C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgHET22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:28:28 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33062 "EHLO
+        id S1728798AbgHET2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:28:42 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:20858 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728608AbgHERLb (ORCPT
+        by vger.kernel.org with ESMTP id S1728606AbgHERLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:11:31 -0400
+        Wed, 5 Aug 2020 13:11:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1596647489;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=uT4MZK/WmjMO9Hf3gYa75MOY3iZoVd/8WD7Av4sgX3M=;
-        b=fz3cZWATFlooZQq0MXjZPzUUlnPn1W/B76XD9gBoyELEwI/A8mfkQPHIE43y3G3dU/tH8y
-        o3VEz+J3zcBlxU1fjUNSkt2VHzX+/K/yhlhgAFfpPLVX9H0CRfCCohfFpYSI6wEB+jTl/Y
-        aP6+1QNNxyC+54ymBPbvrC2vl/3IMSE=
+        bh=mTaDCFq9EEd7EtxWljV0ocT/0BezQzutVLOCNJo6y1g=;
+        b=P8oH3T8XsDtZXkvU7I5oS3CifsJbfbGIbYPVN6AEWvlJFhVBZ8OdlqOAiujL8JKQngwI/T
+        wRYGJmyb0JJbMIYCuj7yd8VKsF565amwA9yW2ohJnF0N4Xa1VUK5Jeg3JyYeVA2OPshQXw
+        YJ1/jDccJe3frDRH/OPHea5kybluP+I=
 Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
  [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-pVxkJcPEOW-nlrg5iMJx1Q-1; Wed, 05 Aug 2020 09:43:37 -0400
-X-MC-Unique: pVxkJcPEOW-nlrg5iMJx1Q-1
-Received: by mail-wm1-f69.google.com with SMTP id u144so2739965wmu.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:43:37 -0700 (PDT)
+ us-mta-344-mKMlaaoOOdqqnCl_NdRkxQ-1; Wed, 05 Aug 2020 09:43:55 -0400
+X-MC-Unique: mKMlaaoOOdqqnCl_NdRkxQ-1
+Received: by mail-wm1-f69.google.com with SMTP id f74so2745317wmf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:43:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=uT4MZK/WmjMO9Hf3gYa75MOY3iZoVd/8WD7Av4sgX3M=;
-        b=WZc2EICH8XbdaKrr0eKGPxdKzt4fOJyBYrVw+x712xY8x9t3LTxjSTAMASVYaYqgmO
-         Dc5btFMBppKfb1os7EqHnIpHpqXywrDQrR3dY3P0nwZhUyHvBTY9lKNNxNAMpkanUIZJ
-         LbPhQYe4b5807OzKG7GWOMKv+AIIxvzIWK49SXl7m4bZRzguFrQpYvUQZUkhqKUjOxD7
-         FO3RJGETcID1/rIF6nVV0GJV62j+ZYqv85lQ/WXJUJxwWOGuNYkuT1ijFKkr14JQPno0
-         O9YsP3Eim7Gokv/S1o1LSe6uxFq+uGZPoB7UzTe+wNuHxydSPg6m9NG7VYz4SbnfFCZd
-         webA==
-X-Gm-Message-State: AOAM533ZFaf5yXFsb8kA4EZiEGYpFxCAodp7GMTSNFxNo4MOJhvsoxkP
-        //yLQn2JHvoH5CAdgWHsEfFl3dltu5UyYRpA0PeNSmJgtEuGyi9mLicaY7rnsPfT4fSvLSONGfD
-        F0ndmzEXOFXYYUkJ3LwquEDkK
-X-Received: by 2002:adf:b302:: with SMTP id j2mr2859690wrd.294.1596635016393;
-        Wed, 05 Aug 2020 06:43:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzITs/miouKXFVmBFtcFlH4aNnnt5FWqtlGH9JkX5pGWDGOgygL5Olr/ps3r5ZDSsC1a6fhYg==
-X-Received: by 2002:adf:b302:: with SMTP id j2mr2859668wrd.294.1596635016220;
-        Wed, 05 Aug 2020 06:43:36 -0700 (PDT)
-Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id z15sm2842664wrn.89.2020.08.05.06.43.34
+        bh=mTaDCFq9EEd7EtxWljV0ocT/0BezQzutVLOCNJo6y1g=;
+        b=FWMYAF2Ua2u5L/TM8MvbSEEGCDwElNRjVHQRg9ioimxLcPOKJJO8Bt/DkaM4Q5MhOh
+         eB/fkKcnXxSjBHNpRiFCCx51Vn0Z48kRJWVUh2iOVH3O+ECx+aD863N2AiXs+aww7vp1
+         WUc9uo0DtOjNJlE/PPURX5lHzjrf12gADqeUMHp3SP5H4nrYUYyxxc+Qb+bfctWCRDHt
+         YPnAwDK1J1U2H1jIwauY97QsNsaMZg8MCeQtChs4XW69JZRb3tjrrr6SKu3A2/2p+huO
+         JlGPJ4koGHCmf/ZlgYHC0jQ12lPUm654IGnDOMim2zYJJERZNFwgA11/NqGmo7XIQ1oz
+         DCtQ==
+X-Gm-Message-State: AOAM533D2PsensYeWL414UH93O6+1lEgi0B4L32wBzNMiNA5QRzTlQrd
+        hj2fPLaqXdMhP9HRK0i+RvQpfA9NHDnwexZ0NMy+3fX1Oz+RivSCAC0f6wHEHYX7uQcla0LGhSa
+        OOQiJgYHuXlSf2LOg03Cf2sdy
+X-Received: by 2002:a1c:1f8b:: with SMTP id f133mr3336548wmf.65.1596635030700;
+        Wed, 05 Aug 2020 06:43:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyT1f4LtdHhh5Ky3zKW65+1UGCe/Bl8zMSMSLYR6HxdNcX+9Oze99mEQYLayP5cnoDyV6YEGw==
+X-Received: by 2002:a1c:1f8b:: with SMTP id f133mr3336534wmf.65.1596635030516;
+        Wed, 05 Aug 2020 06:43:50 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
+        by smtp.gmail.com with ESMTPSA id v16sm634wmj.14.2020.08.05.06.43.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:43:35 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:43:33 -0400
+        Wed, 05 Aug 2020 06:43:49 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:43:48 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Cornelia Huck <cohuck@redhat.com>, Amit Shah <amit@kernel.org>,
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 07/38] virtio_console: correct tags for config space fields
-Message-ID: <20200805134226.1106164-8-mst@redhat.com>
+Subject: [PATCH v3 12/38] virtio_iommu: correct tags for config space fields
+Message-ID: <20200805134226.1106164-13-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,36 +71,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tag config space fields as having virtio endian-ness.
+Since this is a modern-only device,
+tag config space fields as having little endian-ness.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 ---
- include/uapi/linux/virtio_console.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/uapi/linux/virtio_iommu.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/uapi/linux/virtio_console.h b/include/uapi/linux/virtio_console.h
-index b7fb108c9310..7e6ec2ff0560 100644
---- a/include/uapi/linux/virtio_console.h
-+++ b/include/uapi/linux/virtio_console.h
-@@ -45,13 +45,13 @@
+diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+index 48e3c29223b5..237e36a280cb 100644
+--- a/include/uapi/linux/virtio_iommu.h
++++ b/include/uapi/linux/virtio_iommu.h
+@@ -18,24 +18,24 @@
+ #define VIRTIO_IOMMU_F_MMIO			5
  
- struct virtio_console_config {
- 	/* colums of the screens */
--	__u16 cols;
-+	__virtio16 cols;
- 	/* rows of the screens */
--	__u16 rows;
-+	__virtio16 rows;
- 	/* max. number of ports this device can hold */
--	__u32 max_nr_ports;
-+	__virtio32 max_nr_ports;
- 	/* emergency write register */
--	__u32 emerg_wr;
-+	__virtio32 emerg_wr;
- } __attribute__((packed));
+ struct virtio_iommu_range_64 {
+-	__u64					start;
+-	__u64					end;
++	__le64					start;
++	__le64					end;
+ };
  
- /*
+ struct virtio_iommu_range_32 {
+-	__u32					start;
+-	__u32					end;
++	__le32					start;
++	__le32					end;
+ };
+ 
+ struct virtio_iommu_config {
+ 	/* Supported page sizes */
+-	__u64					page_size_mask;
++	__le64					page_size_mask;
+ 	/* Supported IOVA range */
+ 	struct virtio_iommu_range_64		input_range;
+ 	/* Max domain ID size */
+ 	struct virtio_iommu_range_32		domain_range;
+ 	/* Probe buffer size */
+-	__u32					probe_size;
++	__le32					probe_size;
+ };
+ 
+ /* Request types */
 -- 
 MST
 
