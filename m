@@ -2,248 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6CE23C67F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEA323C64E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728468AbgHEHEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 03:04:53 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:59324 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728387AbgHEHEl (ORCPT
+        id S1728178AbgHEHBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 03:01:34 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28794 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725904AbgHEHBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 03:04:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1596611080; x=1628147080;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OZo+vTKyPigtYlE9tXWQERpNEX8zpQE9PZnr8q+Ltb4=;
-  b=sUA6GMFQ0kIF3/U/qhI6dmFfXUy497pbBoSUzfCYWij/oTCXD9jQf6wj
-   HLLEjau5COQHttpAHkLjSjdTaOGZAJiwLnl991P7wdzsnzo+yi9GZO7cT
-   P/j/N8lJigvQ4F3TjknDw7jdxtyVWl56uexxSGLd0+hy4xO2mr33Lfq4e
-   Q=;
-IronPort-SDR: cCGpUd6OuigIzbeDCIZdv0SZ/X1hxGWx6gKPQ7Vz5EYMYbeZ3Fb9/hrPtQyaivgBvl6A2GyGli
- L3sQsjnsqFvQ==
-X-IronPort-AV: E=Sophos;i="5.75,436,1589241600"; 
-   d="scan'208";a="47559040"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 05 Aug 2020 07:04:39 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id 7D2B3A056E;
-        Wed,  5 Aug 2020 07:04:28 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 5 Aug 2020 07:04:27 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.26) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 5 Aug 2020 07:04:08 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <fan.du@intel.com>, <foersleo@amazon.de>,
-        <gthelen@google.com>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <rppt@kernel.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
-        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
-        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC v6 10/10] Docs/DAMON: Document physical memory monitoring support
-Date:   Wed, 5 Aug 2020 08:59:51 +0200
-Message-ID: <20200805065951.18221-11-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200805065951.18221-1-sjpark@amazon.com>
-References: <20200805065951.18221-1-sjpark@amazon.com>
+        Wed, 5 Aug 2020 03:01:32 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0756xOps022463;
+        Wed, 5 Aug 2020 00:01:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=PXpzQOg3+0z5l1+dcGpT0rYHreCWRIJ4sTnnfgcvgNI=;
+ b=gIfnD9D0ztbLb0TIGB85GkuD9LKznM7ZYdFhhjINVufKEStwzKOvaKX+0Wy09HNI45Fo
+ czgunOyTJu/H2aie+qSwwk9NQB6TS/1J3iuyxAYD0EhAKjnMFqnHqI8QlLOpps7K9isf
+ /DEFwFHTmvAezSAppMxoAKrxb3hVNZDQrRk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32n81jrnru-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 05 Aug 2020 00:01:16 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 5 Aug 2020 00:01:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lAgk0iPygd7eALccmQ2nsvH9rOz7xpcmPQ/aPazK4krYplwuCOIa8AA0Rz0NC41+dEBMwPg81NvATdK3tcGm3q0ONawP7lqyy3vHvPv40qiumov0Gn9d6xRo8uagivwJkdSfh8Y47GnYnP5ElusDGTWXtOSagKnjYZZDkpVmBJC3JCodLcTp7VhW08uu6F0ZdIqSD54y+b6t/L/ApY9N4TkcDkHDeZj0wKXklcU9XWnFtiF1XmXR8T3Obr/1aysg9ThFPbaHrS6JLjykgXsS4LZIyldS6QtaARS4g7MtoEeoRX4DTtKdxbth2gjFXLxx41r/rp1xaDiKbpRcsD46uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PXpzQOg3+0z5l1+dcGpT0rYHreCWRIJ4sTnnfgcvgNI=;
+ b=df2zkBBovuecD32asV/nNoevbU5HcBDodRqXZruWMjq9HR+rvpIu/RGbARfFehIM3UGvN+ksVg3lgClcjRKTPamIKKhaikKdRtUbLlddYkTuHIhPZNcanfbQh0gPGoutHSlCqW55A5KbIhhbg6jAWdPWwzFLJjXYq+jBfTxVLYXQK3CgJjg4CODNk0gMjPAhWZUv5JRRlFZriOZh3wHlJ88HjzIwPHfMfzYMLs+lPdgB3FeT+7dVln6r6KOg20wZG6t3jX65xA68AD0fVIDn73dbpBZ++5Xe8Up/lsy/8yAdgs+2qMzxMg6D1vgC7lL6Cxs5zFvpAfbHSptLDZLItg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PXpzQOg3+0z5l1+dcGpT0rYHreCWRIJ4sTnnfgcvgNI=;
+ b=LMe+cImbSeC8n2P7nc/sSzhfIfCCKte6cVOxiZGTrhuwkLgolJCf8+D5C14tcFAy6SVvgxibO7aKhM4STdq6BO9kL+Ny4jnxSOExz1QXcB0XdCgm59ksSVfz8oZtMuWQZRxiECqQlAPKOiS7ZqJ/Mv/wzWbMse12vQ9JUU9C/zM=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2565.namprd15.prod.outlook.com (2603:10b6:a03:14f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.21; Wed, 5 Aug
+ 2020 07:01:00 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3239.022; Wed, 5 Aug 2020
+ 07:01:00 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Xu <dlxu@fb.com>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add benchmark for uprobe vs.
+ user_prog
+Thread-Topic: [PATCH bpf-next 5/5] selftests/bpf: add benchmark for uprobe vs.
+ user_prog
+Thread-Index: AQHWZ+C4z/mDZUCS20yCUvtKcPb5ZakloXcAgAAxPICAAAZdgIACmfGAgABTZwCAADDfgIAAEL+AgAAUkIA=
+Date:   Wed, 5 Aug 2020 07:01:00 +0000
+Message-ID: <BA750BC0-0A3B-488B-806C-90C1B6CDF586@fb.com>
+References: <20200801084721.1812607-1-songliubraving@fb.com>
+ <20200801084721.1812607-6-songliubraving@fb.com>
+ <CAEf4BzaP4TGF7kcmZRAKsy=oWPpFA6sUGFkctpGz-fPp+YuSOQ@mail.gmail.com>
+ <DDCD362E-21D3-46BF-90A6-8F3221CBB54E@fb.com>
+ <CAEf4BzY5RYMM6w8wn3qEB3AsuKWv-TMaD5NVFj=YqbCW4DLjqA@mail.gmail.com>
+ <7384B583-EE19-4045-AC72-B6FE87C187DD@fb.com>
+ <CAEf4BzaiJnCu14AWougmxH80msGdOp4S8ZNmAiexMmtwUM_2Xg@mail.gmail.com>
+ <AF9D0E8C-0AA5-4BE4-90F4-946FABAB63FD@fb.com>
+ <CAEf4BzZ29G2KexhKY=CffOPK_DiqAXxRHWuVRREHv0dnXgobRQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ29G2KexhKY=CffOPK_DiqAXxRHWuVRREHv0dnXgobRQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.80.23.2.2)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:8f7]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6516eea3-bd85-44ff-9103-08d8390d4fb9
+x-ms-traffictypediagnostic: BYAPR15MB2565:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB2565CEB4EE1E92CF776BF166B34B0@BYAPR15MB2565.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +xiM+tmHV5XyvW15G/2juyA4j/HFf5d39t4e0MGv8Un41mH+wHK7/9g02fj9SQv9qqqBG6ziE5ikyIHsnuVlwNpGE/aQX8BLuQem72VzVaGEUsN9IaLIwl2s3VEJKFq6pejROyxYLsIROxbgeiTfRa8wcWDAc7mIbjz75rkt2o5p7fxoJTa4EbtvROj6WPoZHkzacoh/JwsHnupbZHAJK3xEgnFTNoq+bGEjjP1vkFVGvAzD0G5KUcVemDFQliWR5s5JeIB6AHCLAA3zfo4+4H6s3rXSD5wr0TuxyuU2YH0fJoqlHehLwU9bRqeQNpDSw6N7MfpPnCoFTpQLE/rG+A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(346002)(39860400002)(136003)(366004)(376002)(66446008)(64756008)(66476007)(66556008)(66946007)(76116006)(2616005)(8676002)(6486002)(71200400001)(478600001)(4326008)(8936002)(6512007)(54906003)(6916009)(186003)(53546011)(6506007)(86362001)(36756003)(5660300002)(83380400001)(33656002)(316002)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: GkyXbmnpW4uFuPfRp8CTlloSEBm+bHYaVFH6I9cNFRZIQ+g3dQXRDpj+jijiEEIjGWao0q0dCeSUzMZMqTEYOY6HJHZD8ZYtt9WSMR99lE8mVKy7/uFcfv3JPaeY+yITLQjhZWOBeg0WGVTWQdJvtosC0IaUDEuW/LiK6b8ujDUKogB9e6ISb9JO+GyUgR6kjvhNdPIsri4Ohond+bhyGK/pZkEdr7Mrg/EJu8x1ve26/VenyibwiSrh/ZVjwNwrtLgXXwkMJf9xsPxSt4iKl6SPMKdWk+saFnlrwVA9BtF9pSB9R9EcZ4g8YQDXF8qPX/BtNZRvubfNioTh18HeJsuanCYU/ZcwwwlTKj8WACmz/XuvW3XrEKLKfCJ1auei1PNCzL3b0FKHWHPjGN3OVdBDO9BCzVYJ6OQBX3/96ycVPkj3OLUsTJVt7aR/K9u9OqmMXBE78BGik0BdF0bLsGNvEjQEVV99lu4FB35tEIkNyiZ4btxwY20/vz0cvst1KcqA4dEljrulUUk0N2sptMEVMr7lbr3/jSXkiRR56i3N1wYzyPeAEyO0RVn6GzjntwlHXtuVw15qxubeZwbSmAyWAgp8dZANB0DYnNqHy9k9/vSbkwhyhgQYMkAE21dHvWb7wz9h+MzIOrfmqmrM1BZ1UinjIU5rN5pQLl8SA+0=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9C4D0A46F11C014AA4C96CE3879F77BC@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.160.26]
-X-ClientProxiedBy: EX13D24UWB002.ant.amazon.com (10.43.161.159) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6516eea3-bd85-44ff-9103-08d8390d4fb9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2020 07:01:00.6435
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uPZGOohdVbImtNNv1b+DjklO2Gjd8y8ixwscjO70gNCCl9HODC6JoaMTAj1YLhqmiN/xjUxM4CKlRdAulntcow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2565
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-05_04:2020-08-03,2020-08-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ impostorscore=0 spamscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
+ bulkscore=0 malwarescore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008050059
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
-
-This commit updates the DAMON documents for the physical memory
-monitoring support.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- Documentation/admin-guide/mm/damon/usage.rst | 42 ++++++++++++++++----
- Documentation/vm/damon/design.rst            | 29 +++++++++-----
- Documentation/vm/damon/faq.rst               |  5 +--
- 3 files changed, 54 insertions(+), 22 deletions(-)
-
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index cf0d44ce0ac9..88b8e9254a7e 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -10,15 +10,16 @@ DAMON provides below three interfaces for different users.
-   This is for privileged people such as system administrators who want a
-   just-working human-friendly interface.  Using this, users can use the DAMON’s
-   major features in a human-friendly way.  It may not be highly tuned for
--  special cases, though.  It supports only virtual address spaces monitoring.
-+  special cases, though.  It supports both virtual and physical address spaces
-+  monitoring.
- - *debugfs interface.*
-   This is for privileged user space programmers who want more optimized use of
-   DAMON.  Using this, users can use DAMON’s major features by reading
-   from and writing to special debugfs files.  Therefore, you can write and use
-   your personalized DAMON debugfs wrapper programs that reads/writes the
-   debugfs files instead of you.  The DAMON user space tool is also a reference
--  implementation of such programs.  It supports only virtual address spaces
--  monitoring.
-+  implementation of such programs.  It supports both virtual and physical
-+  address spaces monitoring.
- - *Kernel Space Programming Interface.*
-   This is for kernel space programmers.  Using this, users can utilize every
-   feature of DAMON most flexibly and efficiently by writing kernel space
-@@ -49,8 +50,10 @@ Recording Data Access Pattern
- 
- The ``record`` subcommand records the data access pattern of target workloads
- in a file (``./damon.data`` by default).  You can specify the target with 1)
--the command for execution of the monitoring target process, or 2) pid of
--running target process.  Below example shows a command target usage::
-+the command for execution of the monitoring target process, 2) pid of running
-+target process, or 3) the special keyword, 'paddr', if you want to monitor the
-+system's physical memory address space.  Below example shows a command target
-+usage::
- 
-     # cd <kernel>/tools/damon/
-     # damo record "sleep 5"
-@@ -61,6 +64,15 @@ of the process.  Below example shows a pid target usage::
-     # sleep 5 &
-     # damo record `pidof sleep`
- 
-+Finally, below example shows the use of the special keyword, 'paddr'::
-+
-+    # damo record paddr
-+
-+In this case, the monitoring target regions defaults to the largetst 'System
-+RAM' region specified in '/proc/iomem' file.  Note that the initial monitoring
-+target region is maintained rather than dynamically updated like the virtual
-+memory address spaces monitoring case.
-+
- The location of the recorded file can be explicitly set using ``-o`` option.
- You can further tune this by setting the monitoring attributes.  To know about
- the monitoring attributes in detail, please refer to the
-@@ -319,20 +331,34 @@ check it again::
-     # cat target_ids
-     42 4242
- 
-+Users can also monitor the physical memory address space of the system by
-+writing a special keyword, "``paddr\n``" to the file.  Because physical address
-+space monitoring doesn't support multiple targets, reading the file will show a
-+fake value, ``-1``, as below::
-+
-+    # cd <debugfs>/damon
-+    # echo paddr > target_ids
-+    # cat target_ids
-+    -1
-+
- Note that setting the target ids doesn't start the monitoring.
- 
- 
- Initial Monitoring Target Regions
- ---------------------------------
- 
--In case of the debugfs based monitoring, DAMON automatically sets and updates
--the monitoring target regions so that entire memory mappings of target
--processes can be covered. However, users might want to limit the monitoring
-+In case of the virtual address space monitoring, DAMON automatically sets and
-+updates the monitoring target regions so that entire memory mappings of target
-+processes can be covered.  However, users might want to limit the monitoring
- region to specific address ranges, such as the heap, the stack, or specific
- file-mapped area.  Or, some users might know the initial access pattern of
- their workloads and therefore want to set optimal initial regions for the
- 'adaptive regions adjustment'.
- 
-+In contrast, DAMON do not automatically sets and updates the monitoring target
-+regions in case of physical memory monitoring.  Therefore, users should set the
-+monitoring target regions by themselves.
-+
- In such cases, users can explicitly set the initial monitoring target regions
- as they want, by writing proper values to the ``init_regions`` file.  Each line
- of the input should represent one region in below form.::
-diff --git a/Documentation/vm/damon/design.rst b/Documentation/vm/damon/design.rst
-index 727d72093f8f..0666e19018fd 100644
---- a/Documentation/vm/damon/design.rst
-+++ b/Documentation/vm/damon/design.rst
-@@ -35,27 +35,34 @@ two parts:
- 1. Identification of the monitoring target address range for the address space.
- 2. Access check of specific address range in the target space.
- 
--DAMON currently provides the implementation of the primitives for only the
--virtual address spaces. Below two subsections describe how it works.
-+DAMON currently provides the implementations of the primitives for the physical
-+and virtual address spaces. Below two subsections describe how those work.
- 
- 
- PTE Accessed-bit Based Access Check
- -----------------------------------
- 
--The implementation for the virtual address space uses PTE Accessed-bit for
--basic access checks.  It finds the relevant PTE Accessed bit from the address
--by walking the page table for the target task of the address.  In this way, the
--implementation finds and clears the bit for next sampling target address and
--checks whether the bit set again after one sampling period.  This could disturb
--other kernel subsystems using the Accessed bits, namely Idle page tracking and
--the reclaim logic.  To avoid such disturbances, DAMON makes it mutually
--exclusive with Idle page tracking and uses ``PG_idle`` and ``PG_young`` page
--flags to solve the conflict with the reclaim logic, as Idle page tracking does.
-+Both of the implementations for physical and virtual address spaces use PTE
-+Accessed-bit for basic access checks.  Only one difference is the way of
-+finding the relevant PTE Accessed bit(s) from the address.  While the
-+implementation for the virtual address walks the page table for the target task
-+of the address, the implementation for the physical address walks every page
-+table having a mapping to the address.  In this way, the implementations find
-+and clear the bit(s) for next sampling target address and checks whether the
-+bit(s) set again after one sampling period.  This could disturb other kernel
-+subsystems using the Accessed bits, namely Idle page tracking and the reclaim
-+logic.  To avoid such disturbances, DAMON makes it mutually exclusive with Idle
-+page tracking and uses ``PG_idle`` and ``PG_young`` page flags to solve the
-+conflict with the reclaim logic, as Idle page tracking does.
- 
- 
- VMA-based Target Address Range Construction
- -------------------------------------------
- 
-+This is only for the virtual address space primitives implementation.  That for
-+the physical address space simply asks users to manually set the monitoring
-+target address ranges.
-+
- Only small parts in the super-huge virtual address space of the processes are
- mapped to the physical memory and accessed.  Thus, tracking the unmapped
- address regions is just wasteful.  However, because DAMON can deal with some
-diff --git a/Documentation/vm/damon/faq.rst b/Documentation/vm/damon/faq.rst
-index 088128bbf22b..6469d54c480f 100644
---- a/Documentation/vm/damon/faq.rst
-+++ b/Documentation/vm/damon/faq.rst
-@@ -43,10 +43,9 @@ constructions and actual access checks can be implemented and configured on the
- DAMON core by the users.  In this way, DAMON users can monitor any address
- space with any access check technique.
- 
--Nonetheless, DAMON provides vma tracking and PTE Accessed bit check based
-+Nonetheless, DAMON provides vma/rmap tracking and PTE Accessed bit check based
- implementations of the address space dependent functions for the virtual memory
--by default, for a reference and convenient use.  In near future, we will
--provide those for physical memory address space.
-+and the physical memory by default, for a reference and convenient use.
- 
- 
- Can I simply monitor page granularity?
--- 
-2.17.1
-
+DQoNCj4gT24gQXVnIDQsIDIwMjAsIGF0IDEwOjQ3IFBNLCBBbmRyaWkgTmFrcnlpa28gPGFuZHJp
+aS5uYWtyeWlrb0BnbWFpbC5jb20+IHdyb3RlOg0KPiANCj4gT24gVHVlLCBBdWcgNCwgMjAyMCBh
+dCA5OjQ3IFBNIFNvbmcgTGl1IDxzb25nbGl1YnJhdmluZ0BmYi5jb20+IHdyb3RlOg0KPj4gDQo+
+PiANCj4+IA0KPj4+IE9uIEF1ZyA0LCAyMDIwLCBhdCA2OjUyIFBNLCBBbmRyaWkgTmFrcnlpa28g
+PGFuZHJpaS5uYWtyeWlrb0BnbWFpbC5jb20+IHdyb3RlOg0KPj4+IA0KPj4+IE9uIFR1ZSwgQXVn
+IDQsIDIwMjAgYXQgMjowMSBQTSBTb25nIExpdSA8c29uZ2xpdWJyYXZpbmdAZmIuY29tPiB3cm90
+ZToNCj4+Pj4gDQo+Pj4+IA0KPj4+PiANCj4+Pj4+IE9uIEF1ZyAyLCAyMDIwLCBhdCAxMDoxMCBQ
+TSwgQW5kcmlpIE5ha3J5aWtvIDxhbmRyaWkubmFrcnlpa29AZ21haWwuY29tPiB3cm90ZToNCj4+
+Pj4+IA0KPj4+Pj4gT24gU3VuLCBBdWcgMiwgMjAyMCBhdCA5OjQ3IFBNIFNvbmcgTGl1IDxzb25n
+bGl1YnJhdmluZ0BmYi5jb20+IHdyb3RlOg0KPj4+Pj4+IA0KPj4+Pj4+IA0KPj4+Pj4+PiBPbiBB
+dWcgMiwgMjAyMCwgYXQgNjo1MSBQTSwgQW5kcmlpIE5ha3J5aWtvIDxhbmRyaWkubmFrcnlpa29A
+Z21haWwuY29tPiB3cm90ZToNCj4+Pj4+Pj4gDQo+Pj4+Pj4+IE9uIFNhdCwgQXVnIDEsIDIwMjAg
+YXQgMTo1MCBBTSBTb25nIExpdSA8c29uZ2xpdWJyYXZpbmdAZmIuY29tPiB3cm90ZToNCj4+Pj4+
+Pj4+IA0KPj4+Pj4+Pj4gQWRkIGEgYmVuY2htYXJrIHRvIGNvbXBhcmUgcGVyZm9ybWFuY2Ugb2YN
+Cj4+Pj4+Pj4+IDEpIHVwcm9iZTsNCj4+Pj4+Pj4+IDIpIHVzZXIgcHJvZ3JhbSB3L28gYXJnczsN
+Cj4+Pj4+Pj4+IDMpIHVzZXIgcHJvZ3JhbSB3LyBhcmdzOw0KPj4+Pj4+Pj4gNCkgdXNlciBwcm9n
+cmFtIHcvIGFyZ3Mgb24gcmFuZG9tIGNwdS4NCj4+Pj4+Pj4+IA0KPj4+Pj4+PiANCj4+Pj4+Pj4g
+Q2FuIHlvdSBwbGVhc2UgYWRkIGl0IHRvIHRoZSBleGlzdGluZyBiZW5jaG1hcmsgcnVubmVyIGlu
+c3RlYWQsIGUuZy4sDQo+Pj4+Pj4+IGFsb25nIHRoZSBvdGhlciBiZW5jaF90cmlnZ2VyIGJlbmNo
+bWFya3M/IE5vIG5lZWQgdG8gcmUtaW1wbGVtZW50DQo+Pj4+Pj4+IGJlbmNobWFyayBzZXR1cC4g
+QW5kIGFsc28gdGhhdCB3b3VsZCBhbHNvIGFsbG93IHRvIGNvbXBhcmUgZXhpc3RpbmcNCj4+Pj4+
+Pj4gd2F5cyBvZiBjaGVhcGx5IHRyaWdnZXJpbmcgYSBwcm9ncmFtIHZzIHRoaXMgbmV3IF9VU0VS
+IHByb2dyYW0/DQo+Pj4+Pj4gDQo+Pj4+Pj4gV2lsbCB0cnkuDQo+Pj4+Pj4gDQo+Pj4+Pj4+IA0K
+Pj4+Pj4+PiBJZiB0aGUgcGVyZm9ybWFuY2UgaXMgbm90IHNpZ25pZmljYW50bHkgYmV0dGVyIHRo
+YW4gb3RoZXIgd2F5cywgZG8geW91DQo+Pj4+Pj4+IHRoaW5rIGl0IHN0aWxsIG1ha2VzIHNlbnNl
+IHRvIGFkZCBhIG5ldyBCUEYgcHJvZ3JhbSB0eXBlPyBJIHRoaW5rDQo+Pj4+Pj4+IHRyaWdnZXJp
+bmcgS1BST0JFL1RSQUNFUE9JTlQgZnJvbSBicGZfcHJvZ190ZXN0X3J1bigpIHdvdWxkIGJlIHZl
+cnkNCj4+Pj4+Pj4gbmljZSwgbWF5YmUgaXQncyBwb3NzaWJsZSB0byBhZGQgdGhhdCBpbnN0ZWFk
+IG9mIGEgbmV3IHByb2dyYW0gdHlwZT8NCj4+Pj4+Pj4gRWl0aGVyIHdheSwgbGV0J3Mgc2VlIGNv
+bXBhcmlzb24gd2l0aCBvdGhlciBwcm9ncmFtIHRyaWdnZXJpbmcNCj4+Pj4+Pj4gbWVjaGFuaXNt
+cyBmaXJzdC4NCj4+Pj4+PiANCj4+Pj4+PiBUcmlnZ2VyaW5nIEtQUk9CRSBhbmQgVFJBQ0VQT0lO
+VCBmcm9tIGJwZl9wcm9nX3Rlc3RfcnVuKCkgd2lsbCBiZSB1c2VmdWwuDQo+Pj4+Pj4gQnV0IEkg
+ZG9uJ3QgdGhpbmsgdGhleSBjYW4gYmUgdXNlZCBpbnN0ZWFkIG9mIHVzZXIgcHJvZ3JhbSwgZm9y
+IGEgY291cGxlDQo+Pj4+Pj4gcmVhc29ucy4gRmlyc3QsIEtQUk9CRS9UUkFDRVBPSU5UIG1heSBi
+ZSB0cmlnZ2VyZWQgYnkgb3RoZXIgcHJvZ3JhbXMNCj4+Pj4+PiBydW5uaW5nIGluIHRoZSBzeXN0
+ZW0sIHNvIHVzZXIgd2lsbCBoYXZlIHRvIGZpbHRlciB0aG9zZSBub2lzZSBvdXQgaW4NCj4+Pj4+
+PiBlYWNoIHByb2dyYW0uIFNlY29uZCwgaXQgaXMgbm90IGVhc3kgdG8gc3BlY2lmeSBDUFUgZm9y
+IEtQUk9CRS9UUkFDRVBPSU5ULA0KPj4+Pj4+IHdoaWxlIHRoaXMgZmVhdHVyZSBjb3VsZCBiZSB1
+c2VmdWwgaW4gbWFueSBjYXNlcywgZS5nLiBnZXQgc3RhY2sgdHJhY2UNCj4+Pj4+PiBvbiBhIGdp
+dmVuIENQVS4NCj4+Pj4+PiANCj4+Pj4+IA0KPj4+Pj4gUmlnaHQsIGl0J3Mgbm90IGFzIGNvbnZl
+bmllbnQgd2l0aCBLUFJPQkUvVFJBQ0VQT0lOVCBhcyB3aXRoIHRoZSBVU0VSDQo+Pj4+PiBwcm9n
+cmFtIHlvdSd2ZSBhZGRlZCBzcGVjaWZpY2FsbHkgd2l0aCB0aGF0IGZlYXR1cmUgaW4gbWluZC4g
+QnV0IGlmDQo+Pj4+PiB5b3UgcGluIHVzZXItc3BhY2UgdGhyZWFkIG9uIHRoZSBuZWVkZWQgQ1BV
+IGFuZCB0cmlnZ2VyIGtwcm9iZS90cCwNCj4+Pj4+IHRoZW4geW91J2xsIGdldCB3aGF0IHlvdSB3
+YW50LiBBcyBmb3IgdGhlICJub2lzZSIsIHNlZSBob3cNCj4+Pj4+IGJlbmNoX3RyaWdnZXIoKSBk
+ZWFscyB3aXRoIHRoYXQ6IGl0IHJlY29yZHMgdGhyZWFkIElEIGFuZCBmaWx0ZXJzDQo+Pj4+PiBl
+dmVyeXRoaW5nIG5vdCBtYXRjaGluZy4gWW91IGNhbiBkbyB0aGUgc2FtZSB3aXRoIENQVSBJRC4g
+SXQncyBub3QgYXMNCj4+Pj4+IGF1dG9tYXRpYyBhcyB3aXRoIGEgc3BlY2lhbCBCUEYgcHJvZ3Jh
+bSB0eXBlLCBidXQgc3RpbGwgcHJldHR5IHNpbXBsZSwNCj4+Pj4+IHdoaWNoIGlzIHdoeSBJJ20g
+c3RpbGwgZGVjaWRpbmcgKGZvciBteXNlbGYpIHdoZXRoZXIgVVNFUiBwcm9ncmFtIHR5cGUNCj4+
+Pj4+IGlzIG5lY2Vzc2FyeSA6KQ0KPj4+PiANCj4+Pj4gSGVyZSBhcmUgc29tZSBiZW5jaF90cmln
+Z2VyIG51bWJlcnM6DQo+Pj4+IA0KPj4+PiBiYXNlICAgICAgOiAgICAxLjY5OCDCsSAwLjAwMU0v
+cw0KPj4+PiB0cCAgICAgICAgOiAgICAxLjQ3NyDCsSAwLjAwMU0vcw0KPj4+PiByYXd0cCAgICAg
+OiAgICAxLjU2NyDCsSAwLjAwMU0vcw0KPj4+PiBrcHJvYmUgICAgOiAgICAxLjQzMSDCsSAwLjAw
+ME0vcw0KPj4+PiBmZW50cnkgICAgOiAgICAxLjY5MSDCsSAwLjAwME0vcw0KPj4+PiBmbW9kcmV0
+ICAgOiAgICAxLjY1NCDCsSAwLjAwME0vcw0KPj4+PiB1c2VyICAgICAgOiAgICAxLjI1MyDCsSAw
+LjAwME0vcw0KPj4+PiBmZW50cnktb24tY3B1OiAgICAwLjAyMiDCsSAwLjAxMU0vcw0KPj4+PiB1
+c2VyLW9uLWNwdTogICAgMC4zMTUgwrEgMC4wMDFNL3MNCj4+Pj4gDQo+Pj4gDQo+Pj4gT2ssIHNv
+IGJhc2ljYWxseSBhbGwgb2YgcmF3X3RwLHRwLGtwcm9iZSxmZW50cnkvZmV4aXQgYXJlDQo+Pj4g
+c2lnbmlmaWNhbnRseSBmYXN0ZXIgdGhhbiBVU0VSIHByb2dyYW1zLiBTdXJlLCB3aGVuIGNvbXBh
+cmVkIHRvDQo+Pj4gdXByb2JlLCB0aGV5IGFyZSBmYXN0ZXIsIGJ1dCBub3Qgd2hlbiBkb2luZyBv
+bi1zcGVjaWZpYy1DUFUgcnVuLCBpdA0KPj4+IHNlZW1zIChqdWRnaW5nIGZyb20gdGhpcyBwYXRj
+aCdzIGRlc2NyaXB0aW9uLCBpZiBJJ20gcmVhZGluZyBpdA0KPj4+IHJpZ2h0KS4gQW55d2F5cywg
+c3BlZWQgYXJndW1lbnQgc2hvdWxkbid0IGJlIGEgcmVhc29uIGZvciBkb2luZyB0aGlzLA0KPj4+
+IElNTy4NCj4+PiANCj4+Pj4gVGhlIHR3byAib24tY3B1IiB0ZXN0cyBydW4gdGhlIHByb2dyYW0g
+b24gYSBkaWZmZXJlbnQgQ1BVIChzZWUgdGhlIHBhdGNoDQo+Pj4+IGF0IHRoZSBlbmQpLg0KPj4+
+PiANCj4+Pj4gInVzZXIiIGlzIGFib3V0IDI1JSBzbG93ZXIgdGhhbiAiZmVudHJ5Ii4gSSB0aGlu
+ayB0aGlzIGlzIG1vc3RseSBiZWNhdXNlDQo+Pj4+IGdldHBnaWQoKSBpcyBhIGZhc3RlciBzeXNj
+YWxsIHRoYW4gYnBmKEJQRl9URVNUX1JVTikuDQo+Pj4gDQo+Pj4gWWVzLCBwcm9iYWJseS4NCj4+
+PiANCj4+Pj4gDQo+Pj4+ICJ1c2VyLW9uLWNwdSIgaXMgbW9yZSB0aGFuIDEweCBmYXN0ZXIgdGhh
+biAiZmVudHJ5LW9uLWNwdSIsIGJlY2F1c2UgSVBJDQo+Pj4+IGlzIHdheSBmYXN0ZXIgdGhhbiBt
+b3ZpbmcgdGhlIHByb2Nlc3MgKHZpYSBzY2hlZF9zZXRhZmZpbml0eSkuDQo+Pj4gDQo+Pj4gSSBk
+b24ndCB0aGluayB0aGF0J3MgYSBnb29kIGNvbXBhcmlzb24sIGJlY2F1c2UgeW91IGFyZSBhY3R1
+YWxseQ0KPj4+IHRlc3Rpbmcgc2NoZWRfc2V0YWZmaW5pdHkgcGVyZm9ybWFuY2Ugb24gZWFjaCBp
+dGVyYXRpb24gdnMgSVBJIGluIHRoZQ0KPj4+IGtlcm5lbCwgbm90IGEgQlBGIG92ZXJoZWFkLg0K
+Pj4+IA0KPj4+IEkgdGhpbmsgdGhlIGZhaXIgY29tcGFyaXNvbiBmb3IgdGhpcyB3b3VsZCBiZSB0
+byBjcmVhdGUgYSB0aHJlYWQgYW5kDQo+Pj4gcGluIGl0IG9uIG5lY2Vzc2FyeSBDUFUsIGFuZCBv
+bmx5IHRoZW4gQlBGIHByb2dyYW0gY2FsbHMgaW4gYSBsb29wLg0KPj4+IEJ1dCBJIGJldCBhbnkg
+b2YgZXhpc3RpbmcgcHJvZ3JhbSB0eXBlcyB3b3VsZCBiZWF0IFVTRVIgcHJvZ3JhbS4NCj4+PiAN
+Cj4+Pj4gDQo+Pj4+IEZvciB1c2UgY2FzZXMgdGhhdCB3ZSB3b3VsZCBsaWtlIHRvIGNhbGwgQlBG
+IHByb2dyYW0gb24gc3BlY2lmaWMgQ1BVLA0KPj4+PiB0cmlnZ2VyaW5nIGl0IHZpYSBJUEkgaXMg
+YSBsb3QgZmFzdGVyLg0KPj4+IA0KPj4+IFNvIHRoZXNlIHVzZSBjYXNlcyB3b3VsZCBiZSBuaWNl
+IHRvIGV4cGFuZCBvbiBpbiB0aGUgbW90aXZhdGlvbmFsIHBhcnQNCj4+PiBvZiB0aGUgcGF0Y2gg
+c2V0LiBJdCdzIG5vdCByZWFsbHkgZW1waGFzaXplZCBhbmQgaXQncyBub3QgYXQgYWxsIGNsZWFy
+DQo+Pj4gd2hhdCB5b3UgYXJlIHRyeWluZyB0byBhY2hpZXZlLiBJdCBhbHNvIHNlZW1zLCBkZXBl
+bmRpbmcgb24gbGF0ZW5jeQ0KPj4+IHJlcXVpcmVtZW50cywgaXQncyB0b3RhbGx5IHBvc3NpYmxl
+IHRvIGFjaGlldmUgY29tcGFyYWJsZSByZXN1bHRzIGJ5DQo+Pj4gcHJlLWNyZWF0aW5nIGEgdGhy
+ZWFkIGZvciBlYWNoIENQVSwgcGlubmluZyBlYWNoIG9uZSB0byBpdHMgZGVzaWduYXRlZA0KPj4+
+IENQVSBhbmQgdGhlbiB1c2luZyBhbnkgc3VpdGFibGUgdXNlci1zcGFjZSBzaWduYWxpbmcgbWVj
+aGFuaXNtIChhDQo+Pj4gcXVldWUsIGNvbmR2YXIsIGV0YykgdG8gYXNrIGEgdGhyZWFkIHRvIHRy
+aWdnZXIgQlBGIHByb2dyYW0gKGZlbnRyeSBvbg0KPj4+IGdldHBnaWQoKSwgZm9yIGluc3RhbmNl
+KS4NCj4+IA0KPj4gSSBkb24ndCBzZWUgd2h5IHVzZXIgc3BhY2Ugc2lnbmFsIHBsdXMgZmVudHJ5
+IHdvdWxkIGJlIGZhc3RlciB0aGFuIElQSS4NCj4+IElmIHRoZSB0YXJnZXQgY3B1IGlzIHJ1bm5p
+bmcgc29tZXRoaW5nLCB0aGlzIGdvbm5hIGFkZCB0d28gY29udGV4dA0KPj4gc3dpdGNoZXMuDQo+
+PiANCj4gDQo+IEkgZGlkbid0IHNheSBmYXN0ZXIsIGRpZCBJPyBJIHNhaWQgaXQgd291bGQgYmUg
+Y29tcGFyYWJsZSBhbmQgd291bGRuJ3QNCj4gcmVxdWlyZSBhIG5ldyBwcm9ncmFtIHR5cGUuDQoN
+CldlbGwsIEkgZG9uJ3QgdGhpbmsgYWRkaW5nIHByb2dyYW0gdHlwZSBpcyB0aGF0IGJpZyBhIGRl
+YWwuIElmIHRoYXQgaXMNCnJlYWxseSBhIHByb2JsZW0sIHdlIGNhbiB1c2UgYSBuZXcgYXR0YWNo
+IHR5cGUgaW5zdGVhZC4gVGhlIGdvYWwgaXMgdG8gDQp0cmlnZ2VyIGl0IHdpdGggc3lzX2JwZigp
+IG9uIGEgZGlmZmVyZW50IGNwdS4gU28gd2UgY2FuIGNhbGwgaXQga3Byb2JlDQphdHRhY2ggdG8g
+bm90aGluZyBhbmQgaGFjayB0aGF0IHdheS4gSSBhZGQgdGhlIG5ldyB0eXBlIGJlY2F1c2UgaXQg
+bWFrZXMNCnNlbnNlLiBUaGUgdXNlciBqdXN0IHdhbnQgdG8gdHJpZ2dlciBhIEJQRiBwcm9ncmFt
+IGZyb20gdXNlciBzcGFjZS4gDQoNCj4gQnV0IHRoZW4gYWdhaW4sIHdpdGhvdXQga25vd2luZyBh
+bGwgdGhlDQo+IGRldGFpbHMsIGl0J3MgYSBiaXQgaGFyZCB0byBkaXNjdXNzIHRoaXMuIEUuZy4s
+IGlmIHlvdSBuZWVkIHRvIHRyaWdnZXINCj4gdGhhdCBCUEYgcHJvZ3JhbSBwZXJpb2RpY2FsbHks
+IHlvdSBjYW4gc2xlZXAgaW4gdGhvc2UgcGVyLUNQVSB0aHJlYWRzLA0KPiBvciBlcG9sbCwgb3Ig
+d2hhdGV2ZXIuIE9yIG1heWJlIHlvdSBjYW4gc2V0IHVwIGEgcGVyLUNQVSBwZXJmIGV2ZW50DQo+
+IHRoYXQgd291bGQgdHJpZ2dlciB5b3VyIHByb2dyYW0gb24gdGhlIGRlc2lyZWQgQ1BVLCBldGMu
+TXkgcG9pbnQgaXMNCj4gdGhhdCBJIGFuZCBvdGhlcnMgc2hvdWxkbid0IGJlIGd1ZXNzaW5nIHRo
+aXMsIEknZCBleHBlY3Qgc29tZW9uZSB3aG8ncw0KPiBwcm9wb3NpbmcgYW4gZW50aXJlIG5ldyBC
+UEYgcHJvZ3JhbSB0eXBlIHRvIG1vdGl2YXRlIHdoeSB0aGlzIG5ldw0KPiBwcm9ncmFtIHR5cGUg
+aXMgbmVjZXNzYXJ5IGFuZCB3aGF0IHByb2JsZW0gaXQncyBzb2x2aW5nIHRoYXQgY2FuJ3QgYmUN
+Cj4gc29sdmVkIHdpdGggZXhpc3RpbmcgbWVhbnMuDQoNClllcywgdGhlcmUgYXJlIG90aGVyIG9w
+dGlvbnMuIEJ1dCB0aGV5IGFsbCBjb21lIHdpdGggbm9uLXRyaXZpYWwgY29zdC4gDQpQZXItQ1BV
+LXBlci1wcm9jZXNzIHRocmVhZHMgYW5kL29yIHBlci1DUFUgcGVyZiBldmVudCBhcmUgY29zdCB3
+ZSBoYXZlIA0KdG8gcGF5IGluIHByb2R1Y3Rpb24uIElNTywgdGhlc2UgY29zdCBhcmUgbXVjaCBo
+aWdoZXIgdGhhbiBhIG5ldyBwcm9ncmFtDQp0eXBlIChvciBhdHRhY2ggdHlwZSkuIA0KDQo+IA0K
+PiBCVFcsIGhvdyBmcmVxdWVudGx5IGRvIHlvdSBuZWVkIHRvIHRyaWdnZXIgdGhlIEJQRiBwcm9n
+cmFtPyBTZWVtcyB2ZXJ5DQo+IGZyZXF1ZW50bHksIGlmIDIgdnMgMSBjb250ZXh0IHN3aXRjaGVz
+IG1pZ2h0IGJlIGEgcHJvYmxlbT8NCg0KVGhlIHdob2xlIHNvbHV0aW9uIHJlcXVpcmVzIHR3byBC
+UEYgcHJvZ3JhbXMuIE9uZSBvbiBlYWNoIGNvbnRleHQgc3dpdGNoLCANCnRoZSBvdGhlciBpcyB0
+aGUgdXNlciBwcm9ncmFtLiBUaGUgdXNlciBwcm9ncmFtIHdpbGwgbm90IHRyaWdnZXIgdmVyeQ0K
+b2Z0ZW4uIA0KDQo+IA0KPj4+IEkgYmV0IGluIHRoaXMgY2FzZSB0aGUgIHBlcmZvcm1hbmNlIHdv
+dWxkIGJlDQo+Pj4gcmVhbGx5IG5pY2UgZm9yIGEgbG90IG9mIHByYWN0aWNhbCB1c2UgY2FzZXMu
+IEJ1dCB0aGVuIGFnYWluLCBJIGRvbid0DQo+Pj4ga25vdyBkZXRhaWxzIG9mIHRoZSBpbnRlbmRl
+ZCB1c2UgY2FzZSwgc28gcGxlYXNlIHByb3ZpZGUgc29tZSBtb3JlDQo+Pj4gZGV0YWlscy4NCj4+
+IA0KPj4gQmVpbmcgYWJsZSB0byB0cmlnZ2VyIEJQRiBwcm9ncmFtIG9uIGEgZGlmZmVyZW50IENQ
+VSBjb3VsZCBlbmFibGUgbWFueQ0KPj4gdXNlIGNhc2VzIGFuZCBvcHRpbWl6YXRpb25zLiBUaGUg
+dXNlIGNhc2UgSSBhbSBsb29raW5nIGF0IGlzIHRvIGFjY2Vzcw0KPj4gcGVyZl9ldmVudCBhbmQg
+cGVyY3B1IG1hcHMgb24gdGhlIHRhcmdldCBDUFUuIEZvciBleGFtcGxlOg0KPj4gICAgICAgIDAu
+IHRyaWdnZXIgdGhlIHByb2dyYW0NCj4+ICAgICAgICAxLiByZWFkIHBlcmZfZXZlbnQgb24gY3B1
+IHg7DQo+PiAgICAgICAgMi4gKG9wdGlvbmFsKSBjaGVjayB3aGljaCBwcm9jZXNzIGlzIHJ1bm5p
+bmcgb24gY3B1IHg7DQo+PiAgICAgICAgMy4gYWRkIHBlcmZfZXZlbnQgdmFsdWUgdG8gcGVyY3B1
+IG1hcChzKSBvbiBjcHUgeC4NCj4+IA0KPj4gSWYgd2UgZG8gdGhlc2Ugc3RlcHMgaW4gYSBCUEYg
+cHJvZ3JhbSBvbiBjcHUgeCwgdGhlIGNvc3QgaXM6DQo+PiAgICAgICAgQS4wKSB0cmlnZ2VyIEJQ
+RiB2aWEgSVBJOw0KPj4gICAgICAgIEEuMSkgcmVhZCBwZXJmX2V2ZW50IGxvY2FsbHk7DQo+PiAg
+ICAgICAgQS4yKSBsb2NhbCBhY2Nlc3MgY3VycmVudDsNCj4+ICAgICAgICBBLjMpIGxvY2FsIGFj
+Y2VzcyBvZiBwZXJjcHUgbWFwKHMpLg0KPj4gDQo+PiBJZiB3ZSBjYW4gb25seSBkbyB0aGVzZSBv
+biBhIGRpZmZlcmVudCBDUFUsIHRoZSBjb3N0IHdpbGwgYmU6DQo+PiAgICAgICAgQi4wKSB0cmln
+Z2VyIEJQRiBsb2NhbGx5Ow0KPj4gICAgICAgIEIuMSkgcmVhZCBwZXJmX2V2ZW50IHZpYSBJUEk7
+DQo+PiAgICAgICAgQi4yKSByZW1vdGUgYWNjZXNzIGN1cnJlbnQgb24gY3B1IHg7DQo+PiAgICAg
+ICAgQi4zKSByZW1vdGUgYWNjZXNzIHBlcmNwdSBtYXAocyksIG9yIHVzZSBub24tcGVyY3B1IG1h
+cCgyKS4NCj4+IA0KPj4gQ29zdCBvZiAoQS4wICsgQS4xKSBpcyBhYm91dCBzYW1lIGFzIChCLjAg
+KyBCLjEpLCBtYXliZSBhIGxpdHRsZSBoaWdoZXINCj4+IChzeXNfYnBmKCksIHZzLiBzeXNfZ2V0
+cGdpZCgpKS4gQnV0IEEuMiBhbmQgQS4zIHdpbGwgYmUgc2lnbmlmaWNhbnRseQ0KPj4gY2hlYXBl
+ciB0aGFuIEIuMiBhbmQgQi4zLg0KPj4gDQo+PiBEb2VzIHRoaXMgbWFrZSBzZW5zZT8NCj4gDQo+
+IEl0IGRvZXMsIHRoYW5rcy4gQnV0IHdoYXQgSSB3YXMgZGVzY3JpYmluZyBpcyBzdGlsbCBBLCBu
+bz8gQlBGIHByb2dyYW0NCj4gd2lsbCBiZSB0cmlnZ2VyZWQgb24geW91ciBkZXNpcmVkIGNwdSBY
+LCB3b3VsZG4ndCBpdD8NCg0KV2VsbCwgdGhhdCB3b3VsZCBiZSBvcHRpb24gQywgYnV0IEMgY291
+bGQgbm90IGRvIHN0ZXAgMiwgYmVjYXVzZSB3ZSBjb250ZXh0IA0Kc3dpdGNoIHRvIHRoZSBkZWRp
+Y2F0ZWQgdGhyZWFkLiANCg0K
