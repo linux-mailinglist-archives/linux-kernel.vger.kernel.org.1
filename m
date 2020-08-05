@@ -2,114 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 961F223D154
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E648E23D25F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728432AbgHET7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:59:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40238 "EHLO mail.kernel.org"
+        id S1726799AbgHEUMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:12:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727791AbgHET7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:59:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727020AbgHEQ1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:27:40 -0400
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D643320842;
-        Wed,  5 Aug 2020 19:59:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E835422B48;
+        Wed,  5 Aug 2020 10:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596657557;
-        bh=NqqjDQMRilzAdD7UPU03j2iNb8NGkE/19Y0RHoqcz6U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=s4JZgkbrDrXzFR7AF2Xnqbs6Z7UGlQfMZzgq+Tvj+qs1oGYl/GgPTP/HBvQ9WpdW9
-         /NstMv7W5yf5RuTWoQ13cRHrurjLSXNyq4klOhHIxH3Ha8/INecpHxTkzTRJVmeQUO
-         FD9k51RCAXX6yZ54RIzQIxyWl4xPY/vJS734vzvQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: [PATCH 5.7 0/7] 5.7.14-rc2 review
-Date:   Wed,  5 Aug 2020 21:59:33 +0200
-Message-Id: <20200805195916.183355405@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
+        s=default; t=1596623482;
+        bh=1KGUWj0pR+2MJSTXGoe2kv9kDdmhjrT4ZUDgSPT30Lg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DztFBbHaJmfLXguERc4iO/+C8kDCuxWxe54V2rQADelhOhyrjs+B1R02wY4g9lGwR
+         NYLc/XumwnvqUcNuDhKnkdZ5v8SfnUAb/71U87pSpdn+jnJbAj8Z4SECzowbaP3x2p
+         4EBnGi/dsVGr4fG4ZH1deIbkZeUT/FXH/6HjeH5k=
+Received: by mail-lj1-f174.google.com with SMTP id i10so12301461ljn.2;
+        Wed, 05 Aug 2020 03:31:21 -0700 (PDT)
+X-Gm-Message-State: AOAM531SQi1oBgKUQKUgQlARvMnnqBM/zjfD42hV8ifsmFIH1LdrEOow
+        AR3dNn274KWdN6Yywe4bLHRcqFSjZMT9z5zMjFk=
+X-Google-Smtp-Source: ABdhPJwzE7/C8D2eIm+yh36NJaV0W0Km5i0/HVwfBymfZU9rxA3GdNEiEf5+UTWgnJ9LTGmC2/RA9NpCIFcry1SA848=
+X-Received: by 2002:a2e:9d17:: with SMTP id t23mr1114817lji.456.1596623480201;
+ Wed, 05 Aug 2020 03:31:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.7.14-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.7.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.7.14-rc2
-X-KernelTest-Deadline: 2020-08-07T19:59+00:00
-Content-Transfer-Encoding: 8bit
+References: <1595792274-28580-1-git-send-email-ilial@codeaurora.org>
+ <20200726194528.GC1661457@lunn.ch> <20200727.103233.2024296985848607297.davem@davemloft.net>
+ <CA+5LGR1KwePssqhCkZ6qT_W87fO2o1XPze53mJwjkTWtphiWrA@mail.gmail.com> <20200804192435.GG1919070@lunn.ch>
+In-Reply-To: <20200804192435.GG1919070@lunn.ch>
+From:   Ilia Lin <ilia.lin@kernel.org>
+Date:   Wed, 5 Aug 2020 13:31:08 +0300
+X-Gmail-Original-Message-ID: <CA+5LGR32kKvaeDnb4qpGS_f=t-U4dDCYpnVy7R9zgAQCJW6jtA@mail.gmail.com>
+Message-ID: <CA+5LGR32kKvaeDnb4qpGS_f=t-U4dDCYpnVy7R9zgAQCJW6jtA@mail.gmail.com>
+Subject: Re: [PATCH] net: dev: Add API to check net_dev readiness
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     David Miller <davem@davemloft.net>, ilial@codeaurora.org,
+        kuba@kernel.org, jiri@mellanox.com, edumazet@google.com,
+        ap420073@gmail.com, xiyou.wangcong@gmail.com, maximmi@mellanox.com,
+        Ilia Lin <ilia.lin@kernel.org>, netdev@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.7.14 release.
-There are 7 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+My comments inline.
 
-Responses should be made by Fri, 07 Aug 2020 19:59:06 +0000.
-Anything received after that time might be too late.
+Thanks,
+Ilia Lin
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.14-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.7.14-rc2
-
-Linus Torvalds <torvalds@linux-foundation.org>
-    random: random.h should include archrandom.h, not the other way around
-
-Marc Zyngier <maz@kernel.org>
-    arm64: Workaround circular dependency in pointer_auth.h
-
-Linus Torvalds <torvalds@linux-foundation.org>
-    random32: move the pseudo-random 32-bit definitions to prandom.h
-
-Linus Torvalds <torvalds@linux-foundation.org>
-    random32: remove net_rand_state from the latent entropy gcc plugin
-
-Willy Tarreau <w@1wt.eu>
-    random: fix circular include dependency on arm64 after addition of percpu.h
-
-Grygorii Strashko <grygorii.strashko@ti.com>
-    ARM: percpu.h: fix build error
-
-Willy Tarreau <w@1wt.eu>
-    random32: update the net random state on interrupt and activity
-
-
--------------
-
-Diffstat:
-
- Makefile                              |  4 +-
- arch/arm/include/asm/percpu.h         |  2 +
- arch/arm64/include/asm/archrandom.h   |  1 -
- arch/arm64/include/asm/pointer_auth.h |  8 +++-
- arch/arm64/kernel/kaslr.c             |  2 +-
- drivers/char/random.c                 |  1 +
- include/linux/prandom.h               | 78 +++++++++++++++++++++++++++++++++++
- include/linux/random.h                | 63 ++--------------------------
- kernel/time/timer.c                   |  8 ++++
- lib/random32.c                        |  2 +-
- 10 files changed, 104 insertions(+), 65 deletions(-)
-
-
+On Tue, Aug 4, 2020 at 10:24 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Tue, Aug 04, 2020 at 08:47:18PM +0300, Ilia Lin wrote:
+> > Hi Andrew and David,
+>
+> Hi Ilia
+>
+> Please don't top post.
+>
+> >
+> > Thank you for your comments!
+> >
+> > The client driver is still work in progress, but it can be seen here:
+> > https://source.codeaurora.org/quic/la/kernel/msm-4.19/tree/drivers/platform/msm/ipa/ipa_api.c#n3842
+> >
+> > For HW performance reasons, it has to be in subsys_initcall.
+>
+> Well, until the user of this new API is ready, we will not accept the
+> patch.
+OK, but once we submit the change in the driver, is it good to go?
+>
+> You also need to explain "For HW performance reasons". Why is this
+> driver special that it can do things which no over driver does?
+There are very strict KPI requirements. E.g. automotive rear mirror
+must be online 3 sec since boot.
+>
+> And you should really be working on net-next, not this dead kernel
+> version, if you want to get merged into mainline.
+Of course, the upstream submition will be done on the mainline. I just
+gave an example of an existing product driver.
+>
+> Network drivers do not belong is drivers/platform. There is also ready
+> a drivers/net/ipa, so i assume you will move there.
+Sure, the driver in the drivers/net/ipa is the one that will be
+updated in the future.
+>
+>   Andrew
