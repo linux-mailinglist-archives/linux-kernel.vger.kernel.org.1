@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263ED23CD7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5BC23CD88
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728923AbgHEReh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:34:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:33806 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728629AbgHER1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:27:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE2281063;
-        Wed,  5 Aug 2020 05:41:33 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A34A93FA1C;
-        Wed,  5 Aug 2020 05:41:31 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 13:41:29 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Dongdong Yang <contribute.kernel@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "yangdongdong@xiaomi.com" <yangdongdong@xiaomi.com>,
-        "yanziily@xiaomi.com" <yanziily@xiaomi.com>,
-        "rocking@linux.alibaba.com" <rocking@linux.alibaba.com>
-Subject: Re: [PATCH v4] sched: Provide USF for the portable equipment.
-Message-ID: <20200805124128.kfx7uofqnrtk6kux@e107158-lin.cambridge.arm.com>
-References: <cover.1596526941.git.yangdongdong@xiaomi.com>
- <820a185b6765d6246ac34f612faedeb35189487c.1596526941.git.yangdongdong@xiaomi.com>
- <20200804104331.6vphb2iclwz3buig@e107158-lin.cambridge.arm.com>
- <CADhdXfpxWqYEL_cWVtEAxg-3OWgVZuZ5sLzNm6G+k484kG3HRw@mail.gmail.com>
- <20200805095341.cmoxmy47ts3ntxee@e107158-lin.cambridge.arm.com>
- <CADhdXfqJhE6F9q2dhnRhZGQvgJ0GSWXG1AmgL9i+rYqAwxvZDw@mail.gmail.com>
+        id S1728895AbgHERhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728893AbgHERfG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:35:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15536C001FC2
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 08:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ihXFtoBSuvtLohh/RvNeAjifvCivLgmoMzFjTemcXXU=; b=SNRJxYhcymyueDueAlAmzlc+wu
+        mTrx+TaefdMhYPmbw3mUXokg5Svh3p2wlp9zpr0FcUX0wH2Mz/TsKW/6dndyvKP+Eii5XHUMdnQr2
+        tDK7+CM8aOaxmoAdFcZ9UZKdsbeYM5uDJVfLQ4kxzYsUHYrkAUuXSK+fkrsIER12IM/0eIeprk76r
+        mLjwDUZU6E7zGtmBtF5zfDvPJ815weh5P7ydY9i5qUPDbmrXWdDHadj1s7uB7KB6phhuuMZJ7Eal4
+        DzCgaE1nAqa3+pJ06Rhmh532fUOyRbKO4BADXpJacMZu2i+iapPcW6TV+GvKGkM2gBSWX2Gebh3TA
+        3WYhVMMQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3LO1-0001kt-22; Wed, 05 Aug 2020 15:31:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 04026301A66;
+        Wed,  5 Aug 2020 17:31:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B77A922B957E9; Wed,  5 Aug 2020 17:31:20 +0200 (CEST)
+Date:   Wed, 5 Aug 2020 17:31:20 +0200
+From:   peterz@infradead.org
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
+        will@kernel.org, paulmck@kernel.org, mw@semihalf.com,
+        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>
+Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level
+ IRQ time accounting
+Message-ID: <20200805153120.GU2674@hirez.programming.kicks-ass.net>
+References: <87mu3ho48v.fsf@kurt>
+ <20200730082228.r24zgdeiofvwxijm@skbuf>
+ <873654m9zi.fsf@kurt>
+ <87lfiwm2bj.fsf@nanos.tec.linutronix.de>
+ <20200803114112.mrcuupz4ir5uqlp6@skbuf>
+ <87d047n4oh.fsf@nanos.tec.linutronix.de>
+ <jhjh7tjivew.mognet@arm.com>
+ <875z9zmt4i.fsf@nanos.tec.linutronix.de>
+ <20200805134002.GQ2674@hirez.programming.kicks-ass.net>
+ <jhja6z9i4bi.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CADhdXfqJhE6F9q2dhnRhZGQvgJ0GSWXG1AmgL9i+rYqAwxvZDw@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <jhja6z9i4bi.mognet@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/05/20 19:13, Dongdong Yang wrote:
-> Appreciate Qais for your clamp implementation. I would like to add traces
-> for uclamp_rq_util_with and feedback you if I run into any issues.
+On Wed, Aug 05, 2020 at 02:56:49PM +0100, Valentin Schneider wrote:
 
-Thanks.
+> I've been tempted to say the test case is a bit bogus, but am not familiar
+> enough with the RT throttling details to stand that ground. That said, from
+> both looking at the execution and the stress-ng source code, it seems to
+> unconditionally spawn 32 FIFO-50 tasks (there's even an option to make
+> these FIFO-99!!!), which is quite a crowd on monoCPU systems.
 
-FYI, top posting in LKML is frowned upon. Please put your answer underneath the
-quoted text.
-
-> 
-> The util would not be adjusted as soon as FB screen on notification be
-> received by USF from kernel level if it is set by sched_usf_non_ux, no
-> matter whether screen on or off. However, sched_util_clamp_min/max have not
-> been recovered until user space screen on detection. The screen on response
-> would not be in time for the sensitive user when many background tasks are
-> running.  Whether the kernel module could also
-> set sched_util_clamp_min/max?
-
-For boosting, are you just changing the sysctl or are you actively using
-sched_setattr() to boost tasks too?
-
-Please have a look at the documentation for the sysctl interface.
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/tree/Documentation/admin-guide/sysctl/kernel.rst?h=sched/core#n1065
-
-In summary, they just control the _allowed_ levels. So you can use it to
-cap/throttle the maximum performance level the system is running at. But you
-can't use it to boost the whole system. You must use the sched_setattr() to
-boost important tasks individually or if all the tasks are in a cgroup you
-can use that. For cgroup interface there's a caveat. If you want to use it
-let me know so I can explain how boosting would work there.
-
-I advise to use the sched_setattr() interface to target and boost those
-important tasks only. You can as well be smart and target all the background
-tasks to cap them via sched_setattr(). In this case you wouldn't have to modify
-the sysctl_sched_util_clamp_min/max.
-
-I don't see uclamp being a suitable interface for in-kernel users. PM_QOS is
-more suitable in my opinion for in-kernel users if you want to impact the
-overall system performance.
-
-I might have misunderstood what you were saying above. If so, can you please
-rephrase?
-
-Thanks
-
---
-Qais Yousef
+Oh, so it's a case of: we do stupid without tuning and the system falls
+over. I can live with that.
