@@ -2,77 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365D223D215
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B0E23D19C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729242AbgHEUIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:08:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49780 "EHLO mail.kernel.org"
+        id S1728296AbgHEUDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:03:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726869AbgHEQce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:32:34 -0400
-Received: from localhost.localdomain (unknown [194.230.155.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727874AbgHEQii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:38:38 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FE192245C;
-        Wed,  5 Aug 2020 15:51:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9CC723356;
+        Wed,  5 Aug 2020 15:52:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596642663;
-        bh=jWj0WeLI2bTZqXoSzm4YiO4duySDXE/ANme0mZDkCFY=;
-        h=From:To:Subject:Date:From;
-        b=FuyXtPOokL9dq42pPtPfpND3C18XqEmSHiQOVmG3R63oIyrvLDa7yESzWRa/Z071N
-         Fa89RISm272D1o+zizen/LZR8qqA7JH4v4Zu+6b4Y1mwWCEJK23UM/KRQV7/lbifxO
-         /f7VoKAnW8uqTMY3eC33gWgTx9Mgo8r8mPcpuqfY=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] s390/Kconfig: add missing ZCRYPT dependency to VFIO_AP
-Date:   Wed,  5 Aug 2020 17:50:53 +0200
-Message-Id: <20200805155053.3739-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        s=default; t=1596642737;
+        bh=WyKSjpajL0Wrn6EPgmwu9jvodbEDJzLgR334xRdaG9Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TlTvasGOKp1Z29JDvwn0dMD6eqxuewOd8ic9GN3jloqI+bJDsTt6MpK8wfvKkbTHe
+         gxxWyZ86yC9Pn0IrItm+yYB1QNsJl6Bn6r8fXCD7emmsm9gN35CR/GUkxbhI3uPfFN
+         JsekOBkZXp7MlSdS54aZFUgZsWoxY2hgQXoF1kpA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Amit Klein <aksecurity@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>, Willy Tarreau <w@1wt.eu>
+Subject: [PATCH 5.7 1/6] random32: update the net random state on interrupt and activity
+Date:   Wed,  5 Aug 2020 17:52:28 +0200
+Message-Id: <20200805153507.042931685@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200805153506.978105994@linuxfoundation.org>
+References: <20200805153506.978105994@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The VFIO_AP uses ap_driver_register() (and deregister) functions
-implemented in ap_bus.c (compiled into ap.o).  However the ap.o will be
-built only if CONFIG_ZCRYPT is selected.
+From: Willy Tarreau <w@1wt.eu>
 
-This was not visible before commit e93a1695d7fb ("iommu: Enable compile
-testing for some of drivers") because the CONFIG_VFIO_AP depends on
-CONFIG_S390_AP_IOMMU which depends on the missing CONFIG_ZCRYPT.  After
-adding COMPILE_TEST, it is possible to select a configuration with
-VFIO_AP and S390_AP_IOMMU but without the ZCRYPT.
+commit f227e3ec3b5cad859ad15666874405e8c1bbc1d4 upstream.
 
-Add proper dependency to the VFIO_AP to fix build errors:
+This modifies the first 32 bits out of the 128 bits of a random CPU's
+net_rand_state on interrupt or CPU activity to complicate remote
+observations that could lead to guessing the network RNG's internal
+state.
 
-ERROR: modpost: "ap_driver_register" [drivers/s390/crypto/vfio_ap.ko] undefined!
-ERROR: modpost: "ap_driver_unregister" [drivers/s390/crypto/vfio_ap.ko] undefined!
+Note that depending on some network devices' interrupt rate moderation
+or binding, this re-seeding might happen on every packet or even almost
+never.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: e93a1695d7fb ("iommu: Enable compile testing for some of drivers")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+In addition, with NOHZ some CPUs might not even get timer interrupts,
+leaving their local state rarely updated, while they are running
+networked processes making use of the random state.  For this reason, we
+also perform this update in update_process_times() in order to at least
+update the state when there is user or system activity, since it's the
+only case we care about.
+
+Reported-by: Amit Klein <aksecurity@gmail.com>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/s390/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/char/random.c  |    1 +
+ include/linux/random.h |    3 +++
+ kernel/time/timer.c    |    8 ++++++++
+ lib/random32.c         |    2 +-
+ 4 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 8c0b52940165..2a31a5e74e42 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -766,6 +766,7 @@ config VFIO_AP
- 	def_tristate n
- 	prompt "VFIO support for AP devices"
- 	depends on S390_AP_IOMMU && VFIO_MDEV_DEVICE && KVM
-+	depends on ZCRYPT
- 	help
- 		This driver grants access to Adjunct Processor (AP) devices
- 		via the VFIO mediated device interface.
--- 
-2.17.1
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -1277,6 +1277,7 @@ void add_interrupt_randomness(int irq, i
+ 
+ 	fast_mix(fast_pool);
+ 	add_interrupt_bench(cycles);
++	this_cpu_add(net_rand_state.s1, fast_pool->pool[cycles & 3]);
+ 
+ 	if (unlikely(crng_init == 0)) {
+ 		if ((fast_pool->count >= 64) &&
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -11,6 +11,7 @@
+ #include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/once.h>
++#include <linux/percpu.h>
+ 
+ #include <uapi/linux/random.h>
+ 
+@@ -119,6 +120,8 @@ struct rnd_state {
+ 	__u32 s1, s2, s3, s4;
+ };
+ 
++DECLARE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++
+ u32 prandom_u32_state(struct rnd_state *state);
+ void prandom_bytes_state(struct rnd_state *state, void *buf, size_t nbytes);
+ void prandom_seed_full_state(struct rnd_state __percpu *pcpu_state);
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -43,6 +43,7 @@
+ #include <linux/sched/debug.h>
+ #include <linux/slab.h>
+ #include <linux/compat.h>
++#include <linux/random.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/unistd.h>
+@@ -1743,6 +1744,13 @@ void update_process_times(int user_tick)
+ 	scheduler_tick();
+ 	if (IS_ENABLED(CONFIG_POSIX_TIMERS))
+ 		run_posix_cpu_timers();
++
++	/* The current CPU might make use of net randoms without receiving IRQs
++	 * to renew them often enough. Let's update the net_rand_state from a
++	 * non-constant value that's not affine to the number of calls to make
++	 * sure it's updated when there's some activity (we don't care in idle).
++	 */
++	this_cpu_add(net_rand_state.s1, rol32(jiffies, 24) + user_tick);
+ }
+ 
+ /**
+--- a/lib/random32.c
++++ b/lib/random32.c
+@@ -48,7 +48,7 @@ static inline void prandom_state_selftes
+ }
+ #endif
+ 
+-static DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
++DEFINE_PER_CPU(struct rnd_state, net_rand_state) __latent_entropy;
+ 
+ /**
+  *	prandom_u32_state - seeded pseudo-random number generator.
+
 
