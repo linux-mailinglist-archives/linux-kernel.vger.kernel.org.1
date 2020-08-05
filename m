@@ -2,151 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59AC23D1FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0DB23D243
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728016AbgHEUIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:08:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20406 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726713AbgHEQcr (ORCPT
+        id S1729034AbgHEULL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:11:11 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:5112 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726180AbgHEQ1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:32:47 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 075D4146186521;
-        Wed, 5 Aug 2020 09:20:00 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32qruk0knu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 09:19:59 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 075D5FdN192885;
-        Wed, 5 Aug 2020 09:19:59 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32qruk0kms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 09:19:58 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 075DGv9b001903;
-        Wed, 5 Aug 2020 13:19:56 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 32mynh4de4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 13:19:56 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 075DJspl18809262
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 5 Aug 2020 13:19:54 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5AC25A405F;
-        Wed,  5 Aug 2020 13:19:54 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 02CD2A405B;
-        Wed,  5 Aug 2020 13:19:52 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.95.205])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  5 Aug 2020 13:19:51 +0000 (GMT)
-Message-ID: <b7df114e8e0d276e66575b6970a1e459d1dd4196.camel@linux.ibm.com>
-Subject: Re: [PATCH v6 1/4] IMA: Add func to measure LSM state and policy
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>, sashal@kernel.org,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Wed, 05 Aug 2020 09:19:51 -0400
-In-Reply-To: <CAEjxPJ6X+Cqd5QtZBmNm2cujwbg-STfRF7_8i=Ny8yuc6z9BwQ@mail.gmail.com>
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
-         <20200805004331.20652-2-nramas@linux.microsoft.com>
-         <4b9d2715d3ef3c8f915ef03867cfb1a39c0abc54.camel@linux.ibm.com>
-         <f88bf25e-37ef-7f00-6162-215838961bb0@gmail.com>
-         <31d00876438d2652890ab8bf6ba2e80f554ca7a4.camel@linux.ibm.com>
-         <CAEjxPJ6X+Cqd5QtZBmNm2cujwbg-STfRF7_8i=Ny8yuc6z9BwQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-05_09:2020-08-03,2020-08-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 bulkscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
- spamscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008050104
+        Wed, 5 Aug 2020 12:27:43 -0400
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 05 Aug 2020 06:34:40 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 05 Aug 2020 06:34:38 -0700
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 05 Aug 2020 19:04:07 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id D31433EBB; Wed,  5 Aug 2020 19:04:07 +0530 (IST)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        travitej@codeaurora.org, nganji@codeaurora.org,
+        swboyd@chromium.org, abhinavk@codeaurora.org,
+        ddavenport@chromium.org
+Subject: [v1] drm/msm/dpu: Fix reservation failures in modeset
+Date:   Wed,  5 Aug 2020 19:04:06 +0530
+Message-Id: <1596634446-1413-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-08-05 at 09:03 -0400, Stephen Smalley wrote:
-> On Wed, Aug 5, 2020 at 8:57 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > On Wed, 2020-08-05 at 08:46 -0400, Stephen Smalley wrote:
-> > > On 8/4/20 11:25 PM, Mimi Zohar wrote:
-> > > 
-> > > > Hi Lakshmi,
-> > > > 
-> > > > There's still  a number of other patch sets needing to be reviewed
-> > > > before my getting to this one.  The comment below is from a high level.
-> > > > 
-> > > > On Tue, 2020-08-04 at 17:43 -0700, Lakshmi Ramasubramanian wrote:
-> > > > > Critical data structures of security modules need to be measured to
-> > > > > enable an attestation service to verify if the configuration and
-> > > > > policies for the security modules have been setup correctly and
-> > > > > that they haven't been tampered with at runtime. A new IMA policy is
-> > > > > required for handling this measurement.
-> > > > > 
-> > > > > Define two new IMA policy func namely LSM_STATE and LSM_POLICY to
-> > > > > measure the state and the policy provided by the security modules.
-> > > > > Update ima_match_rules() and ima_validate_rule() to check for
-> > > > > the new func and ima_parse_rule() to handle the new func.
-> > > > I can understand wanting to measure the in kernel LSM memory state to
-> > > > make sure it hasn't changed, but policies are stored as files.  Buffer
-> > > > measurements should be limited  to those things that are not files.
-> > > > 
-> > > > Changing how data is passed to the kernel has been happening for a
-> > > > while.  For example, instead of passing the kernel module or kernel
-> > > > image in a buffer, the new syscalls - finit_module, kexec_file_load -
-> > > > pass an open file descriptor.  Similarly, instead of loading the IMA
-> > > > policy data, a pathname may be provided.
-> > > > 
-> > > > Pre and post security hooks already exist for reading files.   Instead
-> > > > of adding IMA support for measuring the policy file data, update the
-> > > > mechanism for loading the LSM policy.  Then not only will you be able
-> > > > to measure the policy, you'll also be able to require the policy be
-> > > > signed.
-> > > 
-> > > To clarify, the policy being measured by this patch series is a
-> > > serialized representation of the in-memory policy data structures being
-> > > enforced by SELinux.  Not the file that was loaded.  Hence, this
-> > > measurement would detect tampering with the in-memory policy data
-> > > structures after the policy has been loaded.  In the case of SELinux,
-> > > one can read this serialized representation via /sys/fs/selinux/policy.
-> > > The result is not byte-for-byte identical to the policy file that was
-> > > loaded but can be semantically compared via sediff and other tools to
-> > > determine whether it is equivalent.
-> > 
-> > Thank you for the clarification.   Could the policy hash be included
-> > with the other critical data?  Does it really need to be measured
-> > independently?
-> 
-> They were split into two separate functions because we wanted to be
-> able to support using different templates for them (ima-buf for the
-> state variables so that the measurement includes the original buffer,
-> which is small and relatively fixed-size, and ima-ng for the policy
-> because it is large and we just want to capture the hash for later
-> comparison against known-good).  Also, the state variables are
-> available for measurement always from early initialization, whereas
-> the policy is only available for measurement once we have loaded an
-> initial policy.
+In TEST_ONLY commit, rm global_state will duplicate the
+object and request for new reservations, once they pass
+then the new state will be swapped with the old and will
+be available for the Atomic Commit.
 
-Ok, measuring the policy separately from other critical data makes
-sense.  Instead of measuring the policy, which is large, measure the
-policy hash.
+This patch fixes some of missing links in the resource
+reservation sequence mentioned above.
 
-Mimi
+1) Creation of a duplicate state in test_only commit (Rob)
+2) Allow resource release only during crtc_active false.
+
+For #2
+In a modeset operation, swap state happens well before disable.
+Hence clearing reservations in disable will cause failures
+in modeset enable.
+
+Sequence:
+    Swap state --> old, new
+    modeset disables --> virt disable
+    modeset enable --> virt modeset
+
+Allow reservations to be cleared only when crtc active is false
+as in that case there wont be any modeset enable after disable.
+
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index 63976dc..b85a576 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -582,7 +582,7 @@ static int dpu_encoder_virt_atomic_check(
+ 	dpu_kms = to_dpu_kms(priv->kms);
+ 	mode = &crtc_state->mode;
+ 	adj_mode = &crtc_state->adjusted_mode;
+-	global_state = dpu_kms_get_existing_global_state(dpu_kms);
++	global_state = dpu_kms_get_global_state(crtc_state->state);
+ 	trace_dpu_enc_atomic_check(DRMID(drm_enc));
+ 
+ 	/*
+@@ -1172,6 +1172,7 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+ 	struct msm_drm_private *priv;
+ 	struct dpu_kms *dpu_kms;
+ 	struct dpu_global_state *global_state;
++	struct drm_crtc_state *crtc_state;
+ 	int i = 0;
+ 
+ 	if (!drm_enc) {
+@@ -1191,6 +1192,7 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+ 	priv = drm_enc->dev->dev_private;
+ 	dpu_kms = to_dpu_kms(priv->kms);
+ 	global_state = dpu_kms_get_existing_global_state(dpu_kms);
++	crtc_state = drm_enc->crtc->state;
+ 
+ 	trace_dpu_enc_disable(DRMID(drm_enc));
+ 
+@@ -1220,7 +1222,8 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+ 
+ 	DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
+ 
+-	dpu_rm_release(global_state, drm_enc);
++	if (crtc_state->active_changed && !crtc_state->active)
++		dpu_rm_release(global_state, drm_enc);
+ 
+ 	mutex_unlock(&dpu_enc->enc_lock);
+ }
+-- 
+1.9.1
 
