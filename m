@@ -2,112 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD77123CD72
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D51223CD87
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgHERbT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 Aug 2020 13:31:19 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:34911 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728665AbgHER2m (ORCPT
+        id S1728830AbgHERhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728535AbgHERdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:28:42 -0400
-Received: by mail-yb1-f194.google.com with SMTP id y134so18954095yby.2
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:28:41 -0700 (PDT)
+        Wed, 5 Aug 2020 13:33:02 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5E5C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:32:46 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b30so24690322lfj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0O/A2cezVuB/QMtGDV0w8M/cQpgej4IbeFVmCUBKN34=;
+        b=g2z0q3DehVGOj6+EVJm4x/hwlkqyBJ+6sjjEolBgDgmrVojA82SWGyPYplXGk6nZz4
+         tBDDsgA5D3E9t07YwgHjqIhce2JrBaqR24SLIZ9H7iaBBCDQfXGPdagobUmPf8h2MrgL
+         A7vpzsGgHrnqUu6WLBssX3eI8MTOw2kBAKj0I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jIESkjbosNzI2i/4mKhOLQJDIy5XIt98gpDKy5En5c4=;
-        b=Yi/UzzzM3z87dUT0oujl32lPhaPVgx2Sn1+vNdHuCqqEBJpFAuNC3KC8ty/ZhyDPl5
-         9iDRQJZg7MTbPYrdSCFiB/i4HkH2Tv7DUUusG1FP2dUxkmZ1Ld2gsVzPmNNKMnNQ3CIO
-         knLfysXQAQcR6XZI7aP/BJWVSGEDwA8xgIPET41D4z97mLroaQbAhHQcl9IsG3sbl8qO
-         of3Ii58DQsw7DnzD9gE8WbL4TJhKpogdqE/uXrpJPhIGLP4eKqVAdNDQq8ttWUWARg58
-         AW/66NlMN+t/gZrb4JUO2c/+cPqpfkvzejaRnAWMayfFKokBMp22f1fHdHZ9cK9sIFUk
-         EGWg==
-X-Gm-Message-State: AOAM530ZmDPU2lVWg4C6zpjT9GGvnSJz1tecJX/MAYYmDADQg1Ue+cEM
-        akkvhJCjXFgzmquD4F7pYyMO7hEZEGVIw2nOUkM=
-X-Google-Smtp-Source: ABdhPJzte+8NoKSJuGw9eYFA13DSpKHsDBmKqgn4k/Mm9Ytk75/dvy05IZxLYFMiua2sOAJDf1Wocp/j2vKgV+Qprrs=
-X-Received: by 2002:a25:4609:: with SMTP id t9mr6233360yba.231.1596648521373;
- Wed, 05 Aug 2020 10:28:41 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=0O/A2cezVuB/QMtGDV0w8M/cQpgej4IbeFVmCUBKN34=;
+        b=s2DACMfZuU9qs+VSTcwfx5xIt9tcSjfqaKWWrg6wgSKh4aib/EcxzYJZeNeibcFN6w
+         eV74mSKVs+Zjs8E97DnE+lA74AIdUNLOT/nqzamBWRBUMJqbI+dNAfHeMpM/BMJD9P54
+         l1/Hrm1gEKlzP3jn/lfALeKNaBvNlpXNKtbiM1wzLUV+J21dCAA7ATkUhd5RdTHWd/U5
+         zA0acvlHU3wxz+erlEXfsSfWo3PbqPwZxroljQSlUdoPkZ4LR+6LSUbywIRHOLOvBWYd
+         fgIp9CfTzNb/S+QGcqYGHlpj1TNHac7UTZmuUhF8kGstC9IwpNP8IMW9A068TuVN5lYs
+         ug8w==
+X-Gm-Message-State: AOAM532wIkBk8BXFjzQkFyATBVP92tmLGEsABDl0X41R/IYEeGGl7ZBr
+        zNYKUng8a11ReaE95vYoNab/9yg8Qqg=
+X-Google-Smtp-Source: ABdhPJyNmFdmwnm3KHe9UwHdiHFOc3/NnoFvD3/05v89UKKsTk/d/hGID1NAQPskyBE3e2pEhgFcTA==
+X-Received: by 2002:a19:6d1e:: with SMTP id i30mr2072975lfc.104.1596648764163;
+        Wed, 05 Aug 2020 10:32:44 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id k12sm1378843lfe.68.2020.08.05.10.32.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 10:32:42 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id v9so14151255ljk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:32:42 -0700 (PDT)
+X-Received: by 2002:a2e:545:: with SMTP id 66mr2031802ljf.285.1596648762224;
+ Wed, 05 Aug 2020 10:32:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200722152422.72532-1-kernel@esmil.dk> <20200722152422.72532-2-kernel@esmil.dk>
- <CADasFoDfRwcfFHM_Sa-HzwSDyXEr2PNu3Wfe5riwZJM9XsELBQ@mail.gmail.com>
-In-Reply-To: <CADasFoDfRwcfFHM_Sa-HzwSDyXEr2PNu3Wfe5riwZJM9XsELBQ@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Wed, 5 Aug 2020 19:28:29 +0200
-Message-ID: <CANBLGcym5LER30xEVCmVU=6BTNTTLJDUL72DnVSB0V2MsBOwuA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] riscv: Clean up module relocations
-To:     Luke Nelson <lukenels@cs.washington.edu>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Zong Li <zong@andestech.com>, Andreas Schwab <schwab@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>
+References: <0e3a9c1f-7ac6-33e2-ed11-5a56659fc5f7@linuxfoundation.org>
+ <CAHk-=wi4iDwuazgXQ-1yvM_JMTBepi9rc-zfSMeyjfDgSS2fgA@mail.gmail.com> <8d894cb3-83ac-66bc-48ec-dc273d1afcbe@linuxfoundation.org>
+In-Reply-To: <8d894cb3-83ac-66bc-48ec-dc273d1afcbe@linuxfoundation.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 5 Aug 2020 10:32:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiKe_rBFthfttj1fM3cwqaArSUN0Dz1KhARdMNo1a2F=A@mail.gmail.com>
+Message-ID: <CAHk-=wiKe_rBFthfttj1fM3cwqaArSUN0Dz1KhARdMNo1a2F=A@mail.gmail.com>
+Subject: Re: [GIT PULL] Kselftest update for Linux 5.9-rc1
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Jul 2020 at 20:53, Luke Nelson <lukenels@cs.washington.edu> wrote:
+On Wed, Aug 5, 2020 at 7:13 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
 >
-> Thanks for the patch!
->
-> > Also RISC-V has a number of instruction pairs to
-> > generate 32bit immediates or jump/call offsets. Eg.:
-> >
-> > lui   rd, hi20
-> > addi  rd, rd, lo12
->
-> On RV64, both hi20 from lui and lo12 from addi are sign-extended to 64 bits.
-> This means that there are some 32-bit signed offsets (in the range
-> [2^31-2^11, 2^31-1])
-> that are not encodable using (lui+addi), (auipc+jalr), etc. (see
-> discussion at [1]).
->
-> The following note is from the ISA manual:
-> >>> Note that the set of address offsets that can be formed by pairing LUI with LD,
-> >>> AUIPC with JALR, etc. in RV64I is [−2^31−2^11, 2^31−2^11−1].
+> Please pull the following Kselftest update for Linux 5.9-rc1.
 
-Good point!
+Ok, it worked fine this time, although now you lost the note about the
+conflict ;)
 
-> The existing code and the new code both seem buggy if the offset happens to
-> be a 32-bit int but falls outside of the encodable range.
->
-> > +       if (offset != (s32)offset) {
-> > [...]
-> > +       if (offset != (s32)offset) {
-> > [...]
->
-> These checks should probably be replaced with something similar to
-> what's used in the RV64 BPF JIT here: [2],
-> except that this code should check if using RV32 or RV64, since the
-> encodable range differs for each.
+I took the version from the seccomp tree that seemed to be the
+slightly cleaned-up one.
 
-Yeah, I decided to leave these checks as they are to not change
-everything at once, but I'll see if I can improve on those in the next
-version.
-
-> > My hope is that we can eventually factor out the code to generate
-> > immediates and instructions so it can be reused both here, in the
-> > jump-label code and in the bpf-jit code, but let's take it
-> > one step at a time.
->
-> This sounds great! Having fewer copies of RISC-V encoding logic around will
-> hopefully decrease the likelihood of bugs :) Some other archs already
-> have shared
-> infrastructure for doing instruction encoding (e.g., in
-> arch/arm64/kernel/insn.c);
-> we should consider doing something similar for RISC-V.
-
-Exactly this. I've even tried to copy the naming from arm64 as well.
-I'll send a 2nd version of this after -rc1.
-
->
-> - Luke Nelson
->
-> [1]: https://groups.google.com/a/groups.riscv.org/forum/#!topic/isa-dev/bwWFhBnnZFQ
-> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=489553dd13a88d8a882db10622ba8b9b58582ce4
+            Linus
