@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3548523CFC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B19A23CFD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728754AbgHETZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728650AbgHERZK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:25:10 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61291C0086AA
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 07:46:50 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id q4so29500655edv.13
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 07:46:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3edvsdiBJ+dMkVwgYQe5b56g/OTwtECyNQldn00sS/k=;
-        b=pIV877Jp9EOP/kj6De7JQRLtf8VLarGd/I50CrlfCnVlTSEvY4ZesiGKNPAJkMSA9S
-         1xuBLUfpu8+qhUlXVyP6XOQ6q0sRV7EwvIwaXpVhCVUJTjQCjAneENJ37v5t/IG4dAAS
-         5v+E0LKx1h0Z1Z/D73XVOhVsAP6a9wsqDzKnw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3edvsdiBJ+dMkVwgYQe5b56g/OTwtECyNQldn00sS/k=;
-        b=NYVG+lRRHzvFw3xA1cuL3SDmpz4Vudm1GyGGSlKcykYBFCRQ7YW9/T11UxNzA/WacG
-         jCXS+Nt7a2nt8hzPjHy+JP8ZoHtwE4u1/pN5ak9kfFWAh5YDld0bCwGIYAnsKLKcGezs
-         wChUA3y8aefLl0fK1sPAHeE4NPyFBjhe1n94HNrTHlEpiUHmb0Aumew95sgiQtwVsozx
-         ks3aWTtZFc4snekYGhJTFkkOqPz95ds0nHRQ8kawBel+lvaFVr8VyV0qqxfmeFp39Cii
-         h8U2BsjJ8Mlm+vc7JzjgE/oinKlN22oKssEcNTuQ6wUvsGWkFOc7HnBOHSiw0r1JwN6Y
-         8amA==
-X-Gm-Message-State: AOAM530UNV3wfeDPqrqo5tYD2qIydALAORerp6zdRXXB+zmxQiNrwg+p
-        CSEf/Qs32nIGZ+s0eqATwtt8S8y7chThuoNgR3RFQQ==
-X-Google-Smtp-Source: ABdhPJy96Yk1HJK8pmfb/tsUqlvWao5KdebzpybEXlIErIo0+XHeGRmkn8IkxZto7tV3EPeU3amgjnjkLpPlXf7haIA=
-X-Received: by 2002:a05:6402:13d4:: with SMTP id a20mr3180723edx.161.1596638802798;
- Wed, 05 Aug 2020 07:46:42 -0700 (PDT)
+        id S1728989AbgHETZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:25:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728752AbgHERPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:15:17 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 564DD23358;
+        Wed,  5 Aug 2020 15:52:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596642739;
+        bh=6FgrgiJMhJWY/pk9YHVcLDKtAoJdeS6mUUN7RSlzR2c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NsfFWwfdZSB6l1WldLt9QgjlhEw/faYvDGypjB6/aDrMSzJQ11Ljz9CaKe4cTZ1nB
+         U8BYXh/OznzbeHAe3QF0gnoklRVqPnAlCSEj5SJfo7ueZYE0p3UatcQ3PvgLCBXTcf
+         NvEdOgzRyQC9dNTFg/AD7CzFAQHSE8+Y7+DMi4fo=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: [PATCH 5.7 0/6] 5.7.14-rc1 review
+Date:   Wed,  5 Aug 2020 17:52:27 +0200
+Message-Id: <20200805153506.978105994@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
- <159646183662.1784947.5709738540440380373.stgit@warthog.procyon.org.uk>
- <20200804104108.GC32719@miu.piliscsaba.redhat.com> <2306029.1596636828@warthog.procyon.org.uk>
-In-Reply-To: <2306029.1596636828@warthog.procyon.org.uk>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 5 Aug 2020 16:46:31 +0200
-Message-ID: <CAJfpegtOguKOGWxv-sA_C9eSWG_3Srnj_k=oW-wSHNprCipFVg@mail.gmail.com>
-Subject: Re: [PATCH 06/18] fsinfo: Add a uniquifier ID to struct mount [ver #21]
-To:     David Howells <dhowells@redhat.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ian Kent <raven@themaw.net>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.7.14-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.7.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.7.14-rc1
+X-KernelTest-Deadline: 2020-08-07T15:35+00:00
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 4:14 PM David Howells <dhowells@redhat.com> wrote:
+This is the start of the stable review cycle for the 5.7.14 release.
+There are 6 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-> However, looking up that identifier requires some sort of structure for doing
-> this and it's kind of worst case for the IDR tree as the keys are gradually
-> going to spread out, causing it to eat more memory.  It may be a tradeoff
-> worth making, and the memory consumption might not be that bad - or we could
-> use some other data structure such as an rbtree.
+Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
+Anything received after that time might be too late.
 
-idr_alloc_cyclic() seems to be a good template for doing the lower
-32bit allocation, and we can add code to increment the high 32bit on
-wraparound.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.14-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
+and the diffstat can be found below.
 
-Lots of code uses idr_alloc_cyclic() so I guess it shouldn't be too
-bad in terms of memory use or performance.
+thanks,
 
-Thanks,
-Miklos
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.7.14-rc1
+
+Marc Zyngier <maz@kernel.org>
+    arm64: Workaround circular dependency in pointer_auth.h
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    random32: move the pseudo-random 32-bit definitions to prandom.h
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    random32: remove net_rand_state from the latent entropy gcc plugin
+
+Willy Tarreau <w@1wt.eu>
+    random: fix circular include dependency on arm64 after addition of percpu.h
+
+Grygorii Strashko <grygorii.strashko@ti.com>
+    ARM: percpu.h: fix build error
+
+Willy Tarreau <w@1wt.eu>
+    random32: update the net random state on interrupt and activity
+
+
+-------------
+
+Diffstat:
+
+ Makefile                              |  4 +-
+ arch/arm/include/asm/percpu.h         |  2 +
+ arch/arm64/include/asm/pointer_auth.h |  8 +++-
+ drivers/char/random.c                 |  1 +
+ include/linux/prandom.h               | 78 +++++++++++++++++++++++++++++++++++
+ include/linux/random.h                | 63 ++--------------------------
+ kernel/time/timer.c                   |  8 ++++
+ lib/random32.c                        |  2 +-
+ 8 files changed, 103 insertions(+), 63 deletions(-)
+
+
