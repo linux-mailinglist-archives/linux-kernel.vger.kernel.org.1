@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B5B23CF25
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7898F23CF16
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729037AbgHETOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbgHETMp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:12:45 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85711C0611E0
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 12:10:56 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id k13so18104424plk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:10:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/BPxTQP7JYvXtVQk0ki81teqlb2JaRXEp1ARBXZnsKo=;
-        b=BZyj8tQZ0jh5Oos+bACAQdHzM8BctEVB1nm/RUpKxUQ6Pi6G9SvTFeD7fBZ/X6lfVI
-         FkEJ/WjkqHZlKv6fs1JF+djzVBcU9No5gkz3vxU0yeAYZg6d4i9kwLBmPh3V4BN9RclB
-         zTSxsjl5UmQZ3wGmv+ar3sNRei7z2zx0aTBPLAJrM8lq2oHQ27xaltidycvB+G9bYUaR
-         iPPkoe5114KZNWhvTOaH3rhFgeMCltmUtlYFwAd/c5ctZi1gdsQ0E0v/X7k+i7g+xyTm
-         JUxqfiNWjVM174YYeHWS7YFZ5kytejVTaFOyGZHdu4NYhmfkoZnYnf3xaO34Fv5Opblj
-         Nqmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/BPxTQP7JYvXtVQk0ki81teqlb2JaRXEp1ARBXZnsKo=;
-        b=nbIiSRJNNQi8WwW52gAbmLVSZ4Y99WIWSZt5ugNnS12fYvG8tGnNaspWQEmoHRYvaE
-         uEMMexe8q15fnRsA/ozfeyvL4cAZIzF/CA5FfEu7AxJAA8XeYSSz6YeKEYqianrMXAet
-         bxFCwI50dlCFgYb4AD67fqTJTIdrCTxm9hAwn2pg/litClXsGccluUMjAke2Aj35c7Dl
-         vPxflvn7idjSv6agVlFwIkJWgMNDYfMHHtQv4cWy/DNVErcFh9JtAIM6kM/+fy+7tkCd
-         hx8Jxz6cg2SwH+nz07PAXhepR94JuQZTZA3HrWUh7EXj4YeWhUB2jw+iLy0gj6wVA3uJ
-         +Lng==
-X-Gm-Message-State: AOAM530alCsnqEWiioPJG75gLm/RFLCf7Mk/SI+NCCubCaGq1g19Z80n
-        VUNjc6sPpAA5e8MIL1RYjrj0aPsjrbQ=
-X-Google-Smtp-Source: ABdhPJxBxqd+46Ue4ysKapAHTBKv3UWlsAyzGfbE/liq0Ut6moG79tcjnHZxH6I+Zn1xfkVM57hEQA==
-X-Received: by 2002:a17:90a:77ca:: with SMTP id e10mr4434931pjs.150.1596654655824;
-        Wed, 05 Aug 2020 12:10:55 -0700 (PDT)
-Received: from [192.168.1.58] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id s125sm5061242pfc.63.2020.08.05.12.10.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 12:10:55 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: Fix use-after-free in io_sq_wq_submit_work()
-To:     Guoyu Huang <hgy5945@gmail.com>, viro@zeniv.linux.org.uk
-Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200805034042.GA29805@ubuntu>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f4e1b9ee-1b13-9862-8df8-cdad62821715@kernel.dk>
-Date:   Wed, 5 Aug 2020 13:10:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728893AbgHETN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:13:56 -0400
+Received: from mga17.intel.com ([192.55.52.151]:40671 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727915AbgHETLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 15:11:46 -0400
+IronPort-SDR: qKX/ElW97fakr3JPsGtRORLgay4GLsxsHmianTeKpbmcvse2HSjsa2LrUTsaFSiJQq52pY06wl
+ BHzHcCNgLGvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="132713644"
+X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
+   d="scan'208";a="132713644"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 12:11:45 -0700
+IronPort-SDR: gMtDv2wkDCrBFAxkgWEqDl3k5FFjBnx432Tkp7OHaGlY0qBEc7kSWXLpFuba6aQYFJUUSHKTnj
+ sNu4wS1fmExQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
+   d="scan'208";a="289026130"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orsmga003.jf.intel.com with ESMTP; 05 Aug 2020 12:11:44 -0700
+Date:   Wed, 5 Aug 2020 12:11:26 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Cathy Zhang <cathy.zhang@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-edac <linux-edac@vger.kernel.org>
+Subject: Re: [PATCH v2] x86/cpu: Use SERIALIZE in sync_core() when available
+Message-ID: <20200805191126.GA27509@ranerica-svr.sc.intel.com>
+References: <20200805021059.1331-1-ricardo.neri-calderon@linux.intel.com>
+ <20200805044840.GA9127@nazgul.tnic>
+ <47A60E6A-0742-45FB-B707-175E87C58184@zytor.com>
+ <20200805050808.GC9127@nazgul.tnic>
+ <20200805170717.GB26661@ranerica-svr.sc.intel.com>
+ <CALCETrWByBugaunKPz52sdOGJpEdNNMK2kcp-wXgjFpFZuoOmQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200805034042.GA29805@ubuntu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrWByBugaunKPz52sdOGJpEdNNMK2kcp-wXgjFpFZuoOmQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/20 9:40 PM, Guoyu Huang wrote:
-> when ctx->sqo_mm is zero, io_sq_wq_submit_work() frees 'req'
-> without deleting it from 'task_list'. After that, 'req' is
-> accessed in io_ring_ctx_wait_and_kill() which lead to
-> a use-after-free.
+On Wed, Aug 05, 2020 at 11:28:31AM -0700, Andy Lutomirski wrote:
+> On Wed, Aug 5, 2020 at 10:07 AM Ricardo Neri
+> <ricardo.neri-calderon@linux.intel.com> wrote:
+> >
+> > On Wed, Aug 05, 2020 at 07:08:08AM +0200, Borislav Petkov wrote:
+> > > On Tue, Aug 04, 2020 at 09:58:25PM -0700, hpa@zytor.com wrote:
+> > > > Because why use an alternative to jump over one instruction?
+> > > >
+> > > > I personally would prefer to have the IRET put out of line
+> > >
+> > > Can't yet - SERIALIZE CPUs are a minority at the moment.
+> > >
+> > > > and have the call/jmp replaced by SERIALIZE inline.
+> > >
+> > > Well, we could do:
+> > >
+> > >       alternative_io("... IRET bunch", __ASM_SERIALIZE, X86_FEATURE_SERIALIZE, ...);
+> > >
+> > > and avoid all kinds of jumping. Alternatives get padded so there
+> > > would be a couple of NOPs following when SERIALIZE gets patched in
+> > > but it shouldn't be a problem. I guess one needs to look at what gcc
+> > > generates...
+> >
+> > But the IRET-TO-SELF code has instruction which modify the stack. This
+> > would violate stack invariance in alternatives as enforced in commit
+> > 7117f16bf460 ("objtool: Fix ORC vs alternatives"). As a result, objtool
+> > gives warnings as follows:
+> >
+> > arch/x86/kernel/alternative.o: warning: objtool: do_sync_core()+0xe:
+> > alternative modifies stack
+> >
+> > Perhaps in this specific case it does not matter as the changes in the
+> > stack will be undone by IRET. However, using alternative_io would require
+> > adding the macro STACK_FRAME_NON_STANDARD to functions using sync_core().
+> > IMHO, it wouldn't look good.
+> >
+> > So maybe the best approach is to implement as you suggested using
+> > static_cpu_has()?
+> 
+> I agree.  Let's keep it simple.
+> 
+> Honestly, I think the right solution is to have iret_to_self() in
+> actual asm and invoke it from C as needed. 
 
-This looks like an old one, that affects 5.4 only. I've massaged
-it to apply on top of another fix, will ask to get it queued up for
-stable. Thanks!
+Do you mean anything different from what we have already [1]? If I
+understand your comment correctly, we have exactly that: an
+iret_to_self() asm implementation invoked from C.
 
--- 
-Jens Axboe
+Thanks and BR,
+Ricardo
 
+[1]. https://lore.kernel.org/lkml/20200727043132.15082-4-ricardo.neri-calderon@linux.intel.com/
+
+Thanks and BR,
+Ricardo
