@@ -2,96 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189A023C4D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 06:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5A923C4D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 06:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgHEEzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 00:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgHEEzf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 00:55:35 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01566C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 21:55:35 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id j7so3566153vkk.12
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 21:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=95VAJwuWsnt7rqYXS/THJIeTIBqbDOLU5i5b+6qdQ+U=;
-        b=Jw3p35b0ClW4Z3+m+3tlqz09EukutWPByGwtY0y89xZlkmMeL8HYM2dl2rTnzQ+AD+
-         LQ8fOVrDTiOqy+aNlBORRWWlRTMbUC9rtHXpDHCtMKtorYEWmtfq76DF1sHXgfzFsLer
-         moqhLdLms2P9haKIW0uUrHVgLLe1uiaaX5DhU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=95VAJwuWsnt7rqYXS/THJIeTIBqbDOLU5i5b+6qdQ+U=;
-        b=FYYwcr9IdSsStTHbd/K5E886gPQB7FQwNRjDnguVbV4BwzU5k/iOixCOzDTDTgMhCq
-         zqeUvZTeSThFcWzJB5KG69zTjkNx3w5vL3GrIT+xve8syyYyOMy3nwkdDnybzrzAqp8Q
-         iIFAi/ELVQafMIdlDsi0eszZ3QDBcfAsmAKxRmbNiEpvmXFQ59kBnQ56wv82vpJLRI0r
-         wsbKj0WmyOPUMiy+si6QVBSDTIVC1xX5QZ4EZdTkt3WNNEdM0y32FK6nBnWNEpO7SQX4
-         YhvL5BiM6+qme7itVb6jUv2jb7jAVikpCyilNYRNWdjUdWfILijRJb0VwLrUK8akRd4S
-         LrqQ==
-X-Gm-Message-State: AOAM533CGsl2NfrJFXC073CfUWY+sfbADNeO1V/DDzp4NXr82xUzD236
-        RDP1S/P8WL3eGbyy5tAxf+wq/5Z7i5E=
-X-Google-Smtp-Source: ABdhPJy4XL4wBRA8E7mpEw3Fvd7O7DAlvT8xovQNIApALA/16XcaRHphCqabUCWAV16VWBV+XloyKA==
-X-Received: by 2002:a1f:5986:: with SMTP id n128mr1106775vkb.93.1596603333916;
-        Tue, 04 Aug 2020 21:55:33 -0700 (PDT)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
-        by smtp.gmail.com with ESMTPSA id y17sm185378vky.49.2020.08.04.21.55.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Aug 2020 21:55:32 -0700 (PDT)
-Received: by mail-ua1-f45.google.com with SMTP id g20so9089424uan.7
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 21:55:32 -0700 (PDT)
-X-Received: by 2002:ab0:44e5:: with SMTP id n92mr846587uan.121.1596603332244;
- Tue, 04 Aug 2020 21:55:32 -0700 (PDT)
+        id S1726490AbgHEE7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 00:59:10 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:56239 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725868AbgHEE7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 00:59:07 -0400
+Received: from [IPv6:2601:646:8600:3281:4d47:1bf:1c0:ca78] ([IPv6:2601:646:8600:3281:4d47:1bf:1c0:ca78])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 0754wZ0n1340656
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 4 Aug 2020 21:58:37 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 0754wZ0n1340656
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020072401; t=1596603517;
+        bh=K0YtmlVOlBrq2tiPxngWD6/nA93bB+Z0pt3YUuJ0E/o=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=O/7+2mMiUk1rHmLD+v09FyUwzmvm8h6gepWLUfGSy3qqZ9WFnAQ2ceHrzwkF9DBB3
+         wLVvy8mN9RL5qSjeUwOCjQmLjbXUtH1xKKPR3BSqsWohinv3u6/tkchGGZq0joTkvY
+         lb2ovEmbwpEXvrd9g0Z132SBHhM2KJVArIYYVlTK4uVDx+qEotVfRCfj3Y+gHVaY2l
+         y6LPz1foxoZDyMlwDUcJTvOVm9nK2KyW2ABa3DGBOb/tT6AAUFI113tGTmzYDdrN3l
+         hoUYuq5Or8NC20qJiiozi/asvqNDYPTzQsFAgFFyJHnICrWEdH5MVsokbu2gArvDWx
+         8dTRYU52EL90Q==
+Date:   Tue, 04 Aug 2020 21:58:25 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20200805044840.GA9127@nazgul.tnic>
+References: <20200805021059.1331-1-ricardo.neri-calderon@linux.intel.com> <20200805044840.GA9127@nazgul.tnic>
 MIME-Version: 1.0
-References: <20200804070837.1084024-1-swboyd@chromium.org>
-In-Reply-To: <20200804070837.1084024-1-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 4 Aug 2020 21:55:21 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WafrkdkwnLofw_S9TYXQ9kQT_ZrMEGGzGnmKA17ypEPQ@mail.gmail.com>
-Message-ID: <CAD=FV=WafrkdkwnLofw_S9TYXQ9kQT_ZrMEGGzGnmKA17ypEPQ@mail.gmail.com>
-Subject: Re: [PATCH] regulator: Avoid grabbing regulator lock during suspend/resume
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Matthias Kaehlcke <mka@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] x86/cpu: Use SERIALIZE in sync_core() when available
+To:     Borislav Petkov <bp@suse.de>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Cathy Zhang <cathy.zhang@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-edac@vger.kernel.org
+From:   hpa@zytor.com
+Message-ID: <47A60E6A-0742-45FB-B707-175E87C58184@zytor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Aug 4, 2020 at 12:08 AM Stephen Boyd <swboyd@chromium.org> wrote:
+On August 4, 2020 9:48:40 PM PDT, Borislav Petkov <bp@suse=2Ede> wrote:
+>On Tue, Aug 04, 2020 at 07:10:59PM -0700, Ricardo Neri wrote:
+>> The SERIALIZE instruction gives software a way to force the processor
+>to
+>> complete all modifications to flags, registers and memory from
+>previous
+>> instructions and drain all buffered writes to memory before the next
+>> instruction is fetched and executed=2E Thus, it serves the purpose of
+>> sync_core()=2E Use it when available=2E
+>>=20
+>> Commit 7117f16bf460 ("objtool: Fix ORC vs alternatives") enforced
+>stack
+>> invariance in alternatives=2E The iret-to-self does not comply with
+>such
+>> invariance=2E Thus, it cannot be used inside alternative code=2E Instea=
+d,
+>use
+>> an alternative that jumps to SERIALIZE when available=2E
+>>=20
+>> Cc: Andy Lutomirski <luto@kernel=2Eorg>
+>> Cc: Cathy Zhang <cathy=2Ezhang@intel=2Ecom>
+>> Cc: Dave Hansen <dave=2Ehansen@linux=2Eintel=2Ecom>
+>> Cc: Fenghua Yu <fenghua=2Eyu@intel=2Ecom>
+>> Cc: "H=2E Peter Anvin" <hpa@zytor=2Ecom>
+>> Cc: Kyung Min Park <kyung=2Emin=2Epark@intel=2Ecom>
+>> Cc: Peter Zijlstra <peterz@infradead=2Eorg>
+>> Cc: "Ravi V=2E Shankar" <ravi=2Ev=2Eshankar@intel=2Ecom>
+>> Cc: Sean Christopherson <sean=2Ej=2Echristopherson@intel=2Ecom>
+>> Cc: linux-edac@vger=2Ekernel=2Eorg
+>> Cc: linux-kernel@vger=2Ekernel=2Eorg
+>> Suggested-by: Andy Lutomirski <luto@kernel=2Eorg>
+>> Signed-off-by: Ricardo Neri <ricardo=2Eneri-calderon@linux=2Eintel=2Eco=
+m>
+>> ---
+>> This is a v2 from my initial submission [1]=2E The first three patches
+>of
+>> the series have been merged in Linus' tree=2E Hence, I am submitting
+>only
+>> this patch for review=2E
+>>=20
+>> [1]=2E https://lkml=2Eorg/lkml/2020/7/27/8
+>>=20
+>> Changes since v1:
+>>  * Support SERIALIZE using alternative runtime patching=2E
+>>    (Peter Zijlstra, H=2E Peter Anvin)
+>>  * Added a note to specify which version of binutils supports
+>SERIALIZE=2E
+>>    (Peter Zijlstra)
+>>  * Verified that (::: "memory") is used=2E (H=2E Peter Anvin)
+>> ---
+>>  arch/x86/include/asm/special_insns=2Eh |  2 ++
+>>  arch/x86/include/asm/sync_core=2Eh     | 10 +++++++++-
+>>  2 files changed, 11 insertions(+), 1 deletion(-)
+>>=20
+>> diff --git a/arch/x86/include/asm/special_insns=2Eh
+>b/arch/x86/include/asm/special_insns=2Eh
+>> index 59a3e13204c3=2E=2E25cd67801dda 100644
+>> --- a/arch/x86/include/asm/special_insns=2Eh
+>> +++ b/arch/x86/include/asm/special_insns=2Eh
+>> @@ -10,6 +10,8 @@
+>>  #include <linux/irqflags=2Eh>
+>>  #include <linux/jump_label=2Eh>
+>> =20
+>> +/* Instruction opcode for SERIALIZE; supported in binutils >=3D 2=2E35=
+=2E
+>*/
+>> +#define __ASM_SERIALIZE "=2Ebyte 0xf, 0x1, 0xe8"
+>>  /*
+>>   * Volatile isn't enough to prevent the compiler from reordering the
+>>   * read/write functions for the control registers and messing
+>everything up=2E
+>> diff --git a/arch/x86/include/asm/sync_core=2Eh
+>b/arch/x86/include/asm/sync_core=2Eh
+>> index fdb5b356e59b=2E=2E201ea3d9a6bd 100644
+>> --- a/arch/x86/include/asm/sync_core=2Eh
+>> +++ b/arch/x86/include/asm/sync_core=2Eh
+>> @@ -5,15 +5,19 @@
+>>  #include <linux/preempt=2Eh>
+>>  #include <asm/processor=2Eh>
+>>  #include <asm/cpufeature=2Eh>
+>> +#include <asm/special_insns=2Eh>
+>> =20
+>>  #ifdef CONFIG_X86_32
+>>  static inline void iret_to_self(void)
+>>  {
+>>  	asm volatile (
+>> +		ALTERNATIVE("", "jmp 2f", X86_FEATURE_SERIALIZE)
+>>  		"pushfl\n\t"
+>>  		"pushl %%cs\n\t"
+>>  		"pushl $1f\n\t"
+>>  		"iret\n\t"
+>> +		"2:\n\t"
+>> +		__ASM_SERIALIZE "\n"
+>>  		"1:"
+>>  		: ASM_CALL_CONSTRAINT : : "memory");
+>>  }
+>> @@ -23,6 +27,7 @@ static inline void iret_to_self(void)
+>>  	unsigned int tmp;
+>> =20
+>>  	asm volatile (
+>> +		ALTERNATIVE("", "jmp 2f", X86_FEATURE_SERIALIZE)
 >
-> I see it takes about 5us per regulator to grab the lock, check that this
-> regulator isn't going to do anything for suspend, and then release the
-> lock. When that is combined with PMICs that have dozens of regulators we
-> get into a state where we spend a few miliseconds doing a bunch of
-> locking operations synchronously to figure out that there's nothing to
-> do. Let's reorganize the code here a bit so that we don't grab the lock
-> until we're actually going to do something so that suspend is a little
-> faster.
+>Why is this and above stuck inside the asm statement?
 >
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/regulator/core.c | 75 +++++++++++++++++++++++++++-------------
->  1 file changed, 51 insertions(+), 24 deletions(-)
+>Why can't you simply do:
+>
+>	if (static_cpu_has(X86_FEATURE_SERIALIZE)) {
+>		asm volatile(__ASM_SERIALIZE ::: "memory");
+>		return;
+>	}
+>
+>on function entry instead of making it more unreadable for no
+>particular
+>reason?
 
-Looks good to me.  Agree that getting a pointer to the relevant
-"struct regulator_state" and checking whether some details about it
-and our ops should be safe to do without a lock.  Patch looks clean
-and correct.
+Because why use an alternative to jump over one instruction?
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+I personally would prefer to have the IRET put out of line and have the ca=
+ll/jmp replaced by SERIALIZE inline=2E
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
