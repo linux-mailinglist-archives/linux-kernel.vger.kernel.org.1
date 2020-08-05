@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4471E23CFF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3C323D01D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgHET1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:27:36 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36008 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728648AbgHERNE (ORCPT
+        id S1728707AbgHET35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:29:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43176 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728554AbgHERKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:13:04 -0400
+        Wed, 5 Aug 2020 13:10:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647582;
+        s=mimecast20190719; t=1596647407;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Cgzc7fKo8GoNarTDetAApPhaV9xAvssaIfGNymLUTzM=;
-        b=EMnIT0OPC4DkFuKA/ZyWIOSSBnYVr+oRZo4QuerpLTqd4W8/j0TZj/nlyIf/lCmfGYvYE2
-        LRuon5P33QP33Jn7MiZbr80KwUcNwvJEZblfnAISCZsX3/ZR+JeVYSGNhqW8LrwHhms71D
-        CN+w00Rs74fiLtpI6sedwq/2r6Zc4Sk=
+        bh=XBRZHl7JCJFhcfupZL8iAhY/apUMRtB5oC1LWGAgU4A=;
+        b=BdzJi/1qxsjYplX9UHJnssT/2ipPnfKLyXNtuqAX0EdvC5yBvGeOWH0tkFtWUfQZRVCCP7
+        t4glj4Ud13UVyITwsXvJLny6e170e6e9PebDU5jGr+Qi+T1Y/H0X2Zm0Ty6w90ouiGlr+H
+        UgNupPu+ZtSu7YxmEUkQp5NZPSsBQx0=
 Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
  [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-bT8RRy36OLSBF3bxAViCxg-1; Wed, 05 Aug 2020 09:44:00 -0400
-X-MC-Unique: bT8RRy36OLSBF3bxAViCxg-1
-Received: by mail-wm1-f70.google.com with SMTP id v8so2471856wma.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:00 -0700 (PDT)
+ us-mta-162-RHgXzudWO8anti7-jtQNlw-1; Wed, 05 Aug 2020 09:44:03 -0400
+X-MC-Unique: RHgXzudWO8anti7-jtQNlw-1
+Received: by mail-wm1-f70.google.com with SMTP id u144so2740420wmu.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Cgzc7fKo8GoNarTDetAApPhaV9xAvssaIfGNymLUTzM=;
-        b=ZWxMp5k0fK8rFzhqrdIVE9Vr2zR+4l/D8AhU7BRa37S7PXJs3qC8K9ldEASRy3i2GJ
-         ezWKDPT2uQ7QaO7SqL6W1S5+4cil73/zEUExNDYTFmjieJq0T6fl3ffHrGu/rR6MAfMy
-         wDeDllMZvL7VJmlMJ5Kf3xGitV/5B3nYZCx8El041WgAHubiLGc7twaTiXuNKH/M+jub
-         +nAYZjBOzUEQjXYfdGaLVJZ5HPthxX3Q34i/6goFeUlWs62NBK2l10r2ez5V7J7ZcxeG
-         cKJ6FZ3+f5qcIkeEA5HASg1XHdX54xB9KftYOkRU6oXyZw3Erb7LgRKYuospwd7zIi2w
-         wzIw==
-X-Gm-Message-State: AOAM5307y60Z1tgYFnaZjE5AB2mUAjT5fPIzc5Ayu0K3GZ+Y5TFBTFha
-        IgWAzxwiRouKuGx8Hr2oJD8iCpsfC6mKXXx6up1BUNpdtI7Mw/5eTzwS8vXekUh8f+dL4N91lf9
-        7EP2W5tcfDXDTJv/20Gx2UlfA
-X-Received: by 2002:adf:f847:: with SMTP id d7mr2742207wrq.328.1596635039290;
-        Wed, 05 Aug 2020 06:43:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRqO12QcUwDk9o3YsfPdSGZy8iXhCreHkQXWrlBGFyjkXszT12U4qC7xxUD0DhWva5Aj2v4Q==
-X-Received: by 2002:adf:f847:: with SMTP id d7mr2742192wrq.328.1596635039093;
-        Wed, 05 Aug 2020 06:43:59 -0700 (PDT)
-Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id p8sm3005021wrq.9.2020.08.05.06.43.57
+        bh=XBRZHl7JCJFhcfupZL8iAhY/apUMRtB5oC1LWGAgU4A=;
+        b=nMu2xPXb37FeQzs86ow0OYxGOnKW+7vK6xizNMF5hZY0EDf2aFs1fVwH6eSkDf3YkG
+         1fi8ThJD1iBqUlQyv3DqxGtCUGPgBf82bTo6tavynUkjX7xZKs6jYAdxO9ZplAZTvlH2
+         eOGXeWfsXRw7K2S1epWgOqR1OFUvCwLESBivMDc9l8X67xunIeCOMLpvivF03Vsr1zDT
+         j/g9KAc55UOdq0MCS3suC2f47vwYcXnn4Ow4VWUHR4XMlP4i2CfjERli8FNsH5HcUN4P
+         Ea8lI9np19uuLC1xCwrQZPgwVYBfgBMuonddhJu/RnWs31XlV5AsTMuWjwdjG71RL7vX
+         r1Sg==
+X-Gm-Message-State: AOAM533K0hZFjCvjgw+U4CIy1jyB+7yyJN/duW6+uZaOAwENALGtYnVX
+        nDqTIdLFsYqYd2O/k7/JSt5WHwTVt6TXbP6p3387ufIef2XCq5gWekTsPWngO5JFq89Q5DkHhQS
+        u390o+QxzeYj5PgHzuecIL8C8
+X-Received: by 2002:a7b:ca57:: with SMTP id m23mr3291799wml.35.1596635042166;
+        Wed, 05 Aug 2020 06:44:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDiytpas+5HWe7CFND1zqnudLwtNEfOy8SdQ5eObOxwbDWWrns+xYAUPDW5UZJfGlbiTGXfw==
+X-Received: by 2002:a7b:ca57:: with SMTP id m23mr3291789wml.35.1596635041995;
+        Wed, 05 Aug 2020 06:44:01 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
+        by smtp.gmail.com with ESMTPSA id x2sm3035450wrg.73.2020.08.05.06.44.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:43:58 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:43:56 -0400
+        Wed, 05 Aug 2020 06:44:01 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:43:59 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Cornelia Huck <cohuck@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 15/38] virtio_pmem: correct tags for config space fields
-Message-ID: <20200805134226.1106164-16-mst@redhat.com>
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH v3 16/38] virtio_scsi: correct tags for config space fields
+Message-ID: <20200805134226.1106164-17-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,30 +75,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since this is a modern-only device,
-tag config space fields as having little endian-ness.
+Tag config space fields as having virtio endian-ness.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 ---
- include/uapi/linux/virtio_pmem.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/virtio_scsi.c       |  4 ++--
+ include/uapi/linux/virtio_scsi.h | 20 ++++++++++----------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/include/uapi/linux/virtio_pmem.h b/include/uapi/linux/virtio_pmem.h
-index b022787ffb94..d676b3620383 100644
---- a/include/uapi/linux/virtio_pmem.h
-+++ b/include/uapi/linux/virtio_pmem.h
-@@ -15,8 +15,8 @@
- #include <linux/virtio_config.h>
+diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
+index 0e0910c5b942..c36aeb9a1330 100644
+--- a/drivers/scsi/virtio_scsi.c
++++ b/drivers/scsi/virtio_scsi.c
+@@ -746,14 +746,14 @@ static struct scsi_host_template virtscsi_host_template = {
  
- struct virtio_pmem_config {
--	__u64 start;
--	__u64 size;
-+	__le64 start;
-+	__le64 size;
- };
+ #define virtscsi_config_get(vdev, fld) \
+ 	({ \
+-		typeof(((struct virtio_scsi_config *)0)->fld) __val; \
++		__virtio_native_type(struct virtio_scsi_config, fld) __val; \
+ 		virtio_cread(vdev, struct virtio_scsi_config, fld, &__val); \
+ 		__val; \
+ 	})
  
- #define VIRTIO_PMEM_REQ_TYPE_FLUSH      0
+ #define virtscsi_config_set(vdev, fld, val) \
+ 	do { \
+-		typeof(((struct virtio_scsi_config *)0)->fld) __val = (val); \
++		__virtio_native_type(struct virtio_scsi_config, fld) __val = (val); \
+ 		virtio_cwrite(vdev, struct virtio_scsi_config, fld, &__val); \
+ 	} while(0)
+ 
+diff --git a/include/uapi/linux/virtio_scsi.h b/include/uapi/linux/virtio_scsi.h
+index cc18ef8825c0..0abaae4027c0 100644
+--- a/include/uapi/linux/virtio_scsi.h
++++ b/include/uapi/linux/virtio_scsi.h
+@@ -103,16 +103,16 @@ struct virtio_scsi_event {
+ } __attribute__((packed));
+ 
+ struct virtio_scsi_config {
+-	__u32 num_queues;
+-	__u32 seg_max;
+-	__u32 max_sectors;
+-	__u32 cmd_per_lun;
+-	__u32 event_info_size;
+-	__u32 sense_size;
+-	__u32 cdb_size;
+-	__u16 max_channel;
+-	__u16 max_target;
+-	__u32 max_lun;
++	__virtio32 num_queues;
++	__virtio32 seg_max;
++	__virtio32 max_sectors;
++	__virtio32 cmd_per_lun;
++	__virtio32 event_info_size;
++	__virtio32 sense_size;
++	__virtio32 cdb_size;
++	__virtio16 max_channel;
++	__virtio16 max_target;
++	__virtio32 max_lun;
+ } __attribute__((packed));
+ 
+ /* Feature Bits */
 -- 
 MST
 
