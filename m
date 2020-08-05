@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3342323D022
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328E223CFF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgHET3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:29:55 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:45007 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728560AbgHERKM (ORCPT
+        id S1726695AbgHET1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:27:15 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53682 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728645AbgHERNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:10:12 -0400
+        Wed, 5 Aug 2020 13:13:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647410;
+        s=mimecast20190719; t=1596647582;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=E6FiLGXEyromLE+NGBVYxEgCEa70YCiNICtsxGYJF7c=;
-        b=QP8yJgvdDNr2BbylYdG1PVtVCpuYa0Q+HFe5SOoF094poxjRxn9b1O+c8FYHGS743Zdy9+
-        uJjaQO1aecXSb81dLVhuy0x1Q2aTO4SQTIFF1vE2Rv5LhJxCdBQ6jbBuaNfBJlivQ+Y4qg
-        luX2IAfuaAR2q/6azNSeOsuPW7l6EpM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-73-3CmHU3QjNGKFRaAaLM5rrw-1; Wed, 05 Aug 2020 09:44:10 -0400
-X-MC-Unique: 3CmHU3QjNGKFRaAaLM5rrw-1
-Received: by mail-wr1-f72.google.com with SMTP id r29so9279407wrr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:09 -0700 (PDT)
+        bh=f1A99Kan+ToYvUmOMuODkd0BFkRSjBNq3WkT2nA5570=;
+        b=dR3nXJcOxXQhXr4gn6VmnbjOJP1FxOpoj2yjDm2sGOB2XQpNQ99v7U/3kvvgfu2ewkayRf
+        Mn68IMjrF78i0E6dWUf6UonGQbjnuSf6zeMNP4h7bmrKiCr5kRQkOMBWv3GbNGUE/rYh6a
+        XuR6rfx7M4qLvf6K9kuF8xUCy8KVRQA=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-YGQs7NjpOLOPTbjI2RF8dw-1; Wed, 05 Aug 2020 09:44:15 -0400
+X-MC-Unique: YGQs7NjpOLOPTbjI2RF8dw-1
+Received: by mail-wm1-f70.google.com with SMTP id v8so2472111wma.6
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=E6FiLGXEyromLE+NGBVYxEgCEa70YCiNICtsxGYJF7c=;
-        b=B94py169xq8f7CSho4eiLR0uO3FXr1TDClH4Qbj0ezxaKsWodqeahkYb65d4q6FHT/
-         4JtGYjZUDhsITwA+dZ76J6k13ttH72jOwxlcIifvz3P/O6tQr9/DMX3XmymxeGIg82pC
-         SnwMOHuBT32z22d+p5Va4FePf/InA7BbaasO/8M8qjA7BG6i+6NgNLytEHFDKR0/Si8E
-         k3YwitxtRWVUrdKER8UAe7z8CuWu5XLjXMilw3U59jTsyKcfBqaThhfxnV5hCb9IsFda
-         SErKyGB+V2+IZFUwdhCxDLVE8UqyG+JKPeoGS32g+Hjw/4GNeIfBxvRFB53CLuSHEQsc
-         Ha1Q==
-X-Gm-Message-State: AOAM531cQ0qCNHn4Xd6sBAuetXcOHx3uL1QhR6m3N+b4szeBV4FaizUV
-        2jP3y4UqjvkgpKZV9SILPH1Hi1czPa/x2zA6Ht4LSO7SXo5MigeLe/5+J97jgbI2HZxkwpsuOvZ
-        FCWhktqh/HOmX4m8A6+yu592P
-X-Received: by 2002:adf:ec04:: with SMTP id x4mr2747071wrn.28.1596635048493;
-        Wed, 05 Aug 2020 06:44:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzQI4FlgMw3rbHxklSaF89feIW66tgc8CCicGOY4FAHT13RLsJQet+pRNk6EzHyh659HRSHmQ==
-X-Received: by 2002:adf:ec04:: with SMTP id x4mr2747025wrn.28.1596635047405;
-        Wed, 05 Aug 2020 06:44:07 -0700 (PDT)
-Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id t13sm2717293wru.65.2020.08.05.06.44.05
+        bh=f1A99Kan+ToYvUmOMuODkd0BFkRSjBNq3WkT2nA5570=;
+        b=RmQjnOjh0hU13RKHQJropXLjhmfjSglH0WbBkyo/rEZJJ/yPBRrGOX+eU5vCwIa6sA
+         A9hRyDt+i9QdMUtRKgkqpzXDQARRHA5KDE0FeuEHtrB3nsi5c2CLle5z4x93UnG2JTZ5
+         pcSZZp3WGNCergW0SiXllQqIBLFHFaiLsvWeN6Z/vKSp7djIxlMZ/jwhVQPFVHuABpmI
+         vyo4kBJrvVKzPQ4/5fRt5YCy9zGVytWEAkbYSB6xWs/HogFgXYi1JSpvYbEz6/GQXKgR
+         0w82e+SI+hOSS0dZc+Bc/Gok3NVA74eOP0shV8U/3pj46pJNgEKFQyyCMD8eu/u+Ns/T
+         k4oA==
+X-Gm-Message-State: AOAM530nS37PNfNZ19yGdeOv/sU8/dWSA84L4ob5nNxjHloIUebpKMGP
+        pQnWD9dO872K1A1O5MHafan3CAjixkHkLBySWPYg3USeIDlaP9hknCaojq/7IxS+jXVsXIvn0I1
+        6u6hWOFdjrG29Yo4QzF8QTAW7
+X-Received: by 2002:a5d:56c9:: with SMTP id m9mr2815443wrw.311.1596635052938;
+        Wed, 05 Aug 2020 06:44:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz1s5cwBUNfyg52XUg786M5asAtfYsirHkxCrJWthFsY+eLaHorMKAhGdLmAYB5+K4MVfGhow==
+X-Received: by 2002:a5d:56c9:: with SMTP id m9mr2815427wrw.311.1596635052770;
+        Wed, 05 Aug 2020 06:44:12 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
+        by smtp.gmail.com with ESMTPSA id o30sm2873971wra.67.2020.08.05.06.44.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:06 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:44:04 -0400
+        Wed, 05 Aug 2020 06:44:12 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:44:10 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Andy Shevchenko <andy@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Vadim Pasternak <vadimp@mellanox.com>,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH v3 18/38] mlxbf-tmfifo: sparse tags for config access
-Message-ID: <20200805134226.1106164-19-mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: [PATCH v3 20/38] vhost/vdpa: switch to new helpers
+Message-ID: <20200805134226.1106164-21-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -72,55 +69,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mlxbf-tmfifo accesses config space using native types -
-which works for it since the legacy virtio native types.
-
-This will break if it ever needs to support modern virtio,
-so with new tags previously introduced for virtio net config,
-sparse now warns for this in drivers.
-
-Since this is a legacy only device, fix it up using
-virtio_legacy_is_little_endian for now.
-
-No functional changes.
+For new helpers handling legacy features to be effective,
+vhost needs to invoke them. Tie them in.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Cornelia Huck <cohuck@redhat.com>
 ---
- drivers/platform/mellanox/mlxbf-tmfifo.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/vhost/vdpa.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index 5739a9669b29..bbc4e71a16ff 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -625,7 +625,10 @@ static void mlxbf_tmfifo_rxtx_header(struct mlxbf_tmfifo_vring *vring,
- 			vdev_id = VIRTIO_ID_NET;
- 			hdr_len = sizeof(struct virtio_net_hdr);
- 			config = &fifo->vdev[vdev_id]->config.net;
--			if (ntohs(hdr.len) > config->mtu +
-+			/* A legacy-only interface for now. */
-+			if (ntohs(hdr.len) >
-+			    __virtio16_to_cpu(virtio_legacy_is_little_endian(),
-+					      config->mtu) +
- 			    MLXBF_TMFIFO_NET_L2_OVERHEAD)
- 				return;
- 		} else {
-@@ -1231,8 +1234,12 @@ static int mlxbf_tmfifo_probe(struct platform_device *pdev)
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 18869a35d408..3674404688f5 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -118,9 +118,8 @@ static irqreturn_t vhost_vdpa_config_cb(void *private)
+ static void vhost_vdpa_reset(struct vhost_vdpa *v)
+ {
+ 	struct vdpa_device *vdpa = v->vdpa;
+-	const struct vdpa_config_ops *ops = vdpa->config;
  
- 	/* Create the network vdev. */
- 	memset(&net_config, 0, sizeof(net_config));
--	net_config.mtu = ETH_DATA_LEN;
--	net_config.status = VIRTIO_NET_S_LINK_UP;
-+
-+	/* A legacy-only interface for now. */
-+	net_config.mtu = __cpu_to_virtio16(virtio_legacy_is_little_endian(),
-+					   ETH_DATA_LEN);
-+	net_config.status = __cpu_to_virtio16(virtio_legacy_is_little_endian(),
-+					      VIRTIO_NET_S_LINK_UP);
- 	mlxbf_tmfifo_get_cfg_mac(net_config.mac);
- 	rc = mlxbf_tmfifo_create_vdev(dev, fifo, VIRTIO_ID_NET,
- 				      MLXBF_TMFIFO_NET_FEATURES, &net_config,
+-	ops->set_status(vdpa, 0);
++	vdpa_reset(vdpa);
+ }
+ 
+ static long vhost_vdpa_get_device_id(struct vhost_vdpa *v, u8 __user *argp)
+@@ -196,7 +195,6 @@ static long vhost_vdpa_get_config(struct vhost_vdpa *v,
+ 				  struct vhost_vdpa_config __user *c)
+ {
+ 	struct vdpa_device *vdpa = v->vdpa;
+-	const struct vdpa_config_ops *ops = vdpa->config;
+ 	struct vhost_vdpa_config config;
+ 	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
+ 	u8 *buf;
+@@ -209,7 +207,7 @@ static long vhost_vdpa_get_config(struct vhost_vdpa *v,
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	ops->get_config(vdpa, config.off, buf, config.len);
++	vdpa_get_config(vdpa, config.off, buf, config.len);
+ 
+ 	if (copy_to_user(c->buf, buf, config.len)) {
+ 		kvfree(buf);
+@@ -282,7 +280,7 @@ static long vhost_vdpa_set_features(struct vhost_vdpa *v, u64 __user *featurep)
+ 	if (features & ~vhost_vdpa_features[v->virtio_id])
+ 		return -EINVAL;
+ 
+-	if (ops->set_features(vdpa, features))
++	if (vdpa_set_features(vdpa, features))
+ 		return -EINVAL;
+ 
+ 	return 0;
 -- 
 MST
 
