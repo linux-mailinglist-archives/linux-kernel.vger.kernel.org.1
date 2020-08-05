@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0DB23D243
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CA123D16E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgHEULL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:11:11 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:5112 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgHEQ1n (ORCPT
+        id S1729797AbgHEUAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727823AbgHEQkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:27:43 -0400
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 05 Aug 2020 06:34:40 -0700
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 05 Aug 2020 06:34:38 -0700
-Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 05 Aug 2020 19:04:07 +0530
-Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
-        id D31433EBB; Wed,  5 Aug 2020 19:04:07 +0530 (IST)
-From:   Kalyan Thota <kalyan_t@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        seanpaul@chromium.org, hoegsberg@chromium.org,
-        dianders@chromium.org, mkrishn@codeaurora.org,
-        travitej@codeaurora.org, nganji@codeaurora.org,
-        swboyd@chromium.org, abhinavk@codeaurora.org,
-        ddavenport@chromium.org
-Subject: [v1] drm/msm/dpu: Fix reservation failures in modeset
-Date:   Wed,  5 Aug 2020 19:04:06 +0530
-Message-Id: <1596634446-1413-1-git-send-email-kalyan_t@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        Wed, 5 Aug 2020 12:40:07 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867A2C0A3BDC
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:34:43 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id q76so6359579wme.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jUm96D8c3KBJ6s62BHerMk/IRi7rhmWP25W/0OLk1ZU=;
+        b=sr0mHcaFg3/B+cuW/APq4vgco/kRUKHGPN8ruB0hAt74JLypp6gI0mmL4/QMzOgpPZ
+         xX1Chxnnu4QLipjFo6IFNfNjaZjq98LJRBn4EIPSCzF/pqCAXI22oAVUVKy+yAOYe2gC
+         nz8b0qiJ8r5foCm/fMq1gaFXi97wA9uPx90RB5rqCFvDC9X64J9d9pfuSHdfHMXDmotg
+         KJ84Q85TUeoNXYyMq7hWD9y0ujzl8hCBZaOGr8LlOnFFrTL4R126pLFooZuVeJoR0EOO
+         tcJlbJ6IhM7cTQ6bH/2wlMm/iVAzf7XJvlDA7AaU0t3HAxjh2Z8ZEHCN/sc21xmgP7Mk
+         GXIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jUm96D8c3KBJ6s62BHerMk/IRi7rhmWP25W/0OLk1ZU=;
+        b=FwsUusJHYBJO9JZyVyvC2b0EgeR/swKfjZRSAh768rnCwTJfT1M5iuPJTj7X4sTrak
+         Y6PkZoW7ZIRhFgVwJUWrHUUGTrvYc4aJa7h9iW8/7yl3Dlt2Liy0INvrziIyLH+s3GvX
+         bx8XQ684X74meXoCoKev79E2R5jUN7UNN2FLaclw4nY4iOOEYgZ2/7vP2a3cxQ3byM/l
+         IqAfG5ZwoA3itz6xRnDioNiR2rDF/thtWp6//A4tcJQ/yHB01yB0r8o2spHK9oVX71WD
+         r8ZsTssSF3ZxHzg3cXo9amR2X6U8PB5ffmuS10RFAArSOrwSiy4dEsY2f/85cVQ7gFr1
+         ukEg==
+X-Gm-Message-State: AOAM532yHU7PqFxNafZuOsgb3RwFDm7mN6gxT+KfMRv9AK57l41yXdmB
+        LQNYXCE0zarIzlO7wtUv5d4EBA==
+X-Google-Smtp-Source: ABdhPJyRcs7JRyS8/812me57oeRdjLSDfD7mFLhAWXcdCLI8E9eJI4aXg9Szz5CIpD7pOchaqXtHgg==
+X-Received: by 2002:a1c:9803:: with SMTP id a3mr3193427wme.57.1596634462319;
+        Wed, 05 Aug 2020 06:34:22 -0700 (PDT)
+Received: from trex (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
+        by smtp.gmail.com with ESMTPSA id j2sm2973661wrp.46.2020.08.05.06.34.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 05 Aug 2020 06:34:21 -0700 (PDT)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Wed, 5 Aug 2020 15:34:20 +0200
+To:     Jorge Ramirez-Ortiz <jorge@foundries.io>
+Cc:     sumit.garg@linaro.org, mpm@selenic.com,
+        herbert@gondor.apana.org.au, jens.wiklander@linaro.org,
+        arnd@arndb.de, ricardo@foundries.io, mike@foundries.io,
+        gregkh@linuxfoundation.org, op-tee@lists.trustedfirmware.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 2/2] hwrng: optee: fix wait use case
+Message-ID: <20200805133420.GA8276@trex>
+References: <20200723084622.31134-1-jorge@foundries.io>
+ <20200723084622.31134-2-jorge@foundries.io>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723084622.31134-2-jorge@foundries.io>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In TEST_ONLY commit, rm global_state will duplicate the
-object and request for new reservations, once they pass
-then the new state will be swapped with the old and will
-be available for the Atomic Commit.
+On 23/07/20, Jorge Ramirez-Ortiz wrote:
+> The current code waits for data to be available before attempting a
+> second read. However the second read would not be executed as the
+> while loop exits.
+> 
+> This fix does not wait if all data has been read and reads a second
+> time if only partial data was retrieved on the first read.
+> 
+> This fix also does not attempt to read if not data is requested.
+> 
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> ---
+>  v2: tidy up the while loop to avoid reading when no data is requested
+> 
+>  drivers/char/hw_random/optee-rng.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/char/hw_random/optee-rng.c b/drivers/char/hw_random/optee-rng.c
+> index 5bc4700c4dae..a99d82949981 100644
+> --- a/drivers/char/hw_random/optee-rng.c
+> +++ b/drivers/char/hw_random/optee-rng.c
+> @@ -122,14 +122,14 @@ static int optee_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+>  	if (max > MAX_ENTROPY_REQ_SZ)
+>  		max = MAX_ENTROPY_REQ_SZ;
+>  
+> -	while (read == 0) {
+> +	while (read < max) {
+>  		rng_size = get_optee_rng_data(pvt_data, data, (max - read));
+>  
+>  		data += rng_size;
+>  		read += rng_size;
+>  
+>  		if (wait && pvt_data->data_rate) {
+> -			if (timeout-- == 0)
+> +			if ((timeout-- == 0) || (read == max))
+>  				return read;
+>  			msleep((1000 * (max - read)) / pvt_data->data_rate);
+>  		} else {
 
-This patch fixes some of missing links in the resource
-reservation sequence mentioned above.
-
-1) Creation of a duplicate state in test_only commit (Rob)
-2) Allow resource release only during crtc_active false.
-
-For #2
-In a modeset operation, swap state happens well before disable.
-Hence clearing reservations in disable will cause failures
-in modeset enable.
-
-Sequence:
-    Swap state --> old, new
-    modeset disables --> virt disable
-    modeset enable --> virt modeset
-
-Allow reservations to be cleared only when crtc active is false
-as in that case there wont be any modeset enable after disable.
-
-Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index 63976dc..b85a576 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -582,7 +582,7 @@ static int dpu_encoder_virt_atomic_check(
- 	dpu_kms = to_dpu_kms(priv->kms);
- 	mode = &crtc_state->mode;
- 	adj_mode = &crtc_state->adjusted_mode;
--	global_state = dpu_kms_get_existing_global_state(dpu_kms);
-+	global_state = dpu_kms_get_global_state(crtc_state->state);
- 	trace_dpu_enc_atomic_check(DRMID(drm_enc));
- 
- 	/*
-@@ -1172,6 +1172,7 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
- 	struct msm_drm_private *priv;
- 	struct dpu_kms *dpu_kms;
- 	struct dpu_global_state *global_state;
-+	struct drm_crtc_state *crtc_state;
- 	int i = 0;
- 
- 	if (!drm_enc) {
-@@ -1191,6 +1192,7 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
- 	priv = drm_enc->dev->dev_private;
- 	dpu_kms = to_dpu_kms(priv->kms);
- 	global_state = dpu_kms_get_existing_global_state(dpu_kms);
-+	crtc_state = drm_enc->crtc->state;
- 
- 	trace_dpu_enc_disable(DRMID(drm_enc));
- 
-@@ -1220,7 +1222,8 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
- 
- 	DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
- 
--	dpu_rm_release(global_state, drm_enc);
-+	if (crtc_state->active_changed && !crtc_state->active)
-+		dpu_rm_release(global_state, drm_enc);
- 
- 	mutex_unlock(&dpu_enc->enc_lock);
- }
--- 
-1.9.1
-
+any comments please?
