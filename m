@@ -2,104 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAC123D1AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2337023D231
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbgHEUF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:05:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727808AbgHEQgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:36:37 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6E9121744;
-        Wed,  5 Aug 2020 12:56:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596632170;
-        bh=SmzHEjXJKI0Ah3FCpKvLcMIvLkMQABYGGHX0eTpxkp0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bCxIQJw4GOQ+h1x3tpCiOUo/92RnUW5K44Ue5g2BDrgjVKDIeXDdMTLRnPjibu+3M
-         Lc+TzYJggQfzEAXArbpTLmfrvfB/Y9EwDdCS/TJ+h1PFBtf+fU8o3bsVmUfKp1RiqO
-         ox5N7Y2xXe+uqcPy6x6U6/8b6T9WvZmByeDlqzew=
-Date:   Wed, 5 Aug 2020 14:56:27 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Vabhav Sharma (OSS)" <vabhav.sharma@oss.nxp.com>
-Cc:     B K Karthik <bkkarthik@pesu.pes.edu>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bhuvanchandra.dv@toradex.com" <bhuvanchandra.dv@toradex.com>
-Subject: Re: [PATCH v2] tty: serial: fsl_lpuart.c: prevent a bad shift
- operation
-Message-ID: <20200805125627.GA1822283@kroah.com>
-References: <20200721174228.misj2mgqzcfz2lsj@pesu.pes.edu>
- <20200729160333.GA3652767@kroah.com>
- <VI1PR04MB480018F32A080BC5CC76E3C7F34B0@VI1PR04MB4800.eurprd04.prod.outlook.com>
+        id S1726772AbgHEUJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:09:44 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:34550 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726851AbgHEQ31 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:29:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596644965;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8ULrzApT10RVIpakDAc4yxKBeNUnNTeZD7ehmAQ8Tms=;
+        b=XYyYL82KozWTlZEnoE9hOkSv4h3gvP+3o59kDPpoly70br8ohs3XhJba1B8Ym4Q/p/LeQF
+        pZJmSzhoo2/7eoi+CNDlwNIX2+E7RGLxwfOb4RlJRDQhUD2x7guwiO6JscV4YPeBBI0N7C
+        rDdG9ZIb8gZfrkO97UioElzEMnkBBxA=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-MD482BvWNSGIVOfLKES59g-1; Wed, 05 Aug 2020 08:58:08 -0400
+X-MC-Unique: MD482BvWNSGIVOfLKES59g-1
+Received: by mail-wr1-f72.google.com with SMTP id z1so13537647wrn.18
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:58:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8ULrzApT10RVIpakDAc4yxKBeNUnNTeZD7ehmAQ8Tms=;
+        b=gXLL4HjKnSfOop8outjvqjE1HViPmYOCX1yZz4sCKaukOPhDmQRfa8nrZ+I3FV+Np4
+         C6e1eiL/oBCUIiypWL6AW+AFqXKSkCPLlkSKOxVaz1x+7MKjzmx/WN88RBC6xnP3951v
+         xmuUsfpxUlRCOWf6grSEulGXASlW/bpU/uD2LWmIPPWifiqgkGd2aw68aYWYhSl2BRhF
+         wI3Hp41CGdfaLvNoDfJ844TOFch96RnI9VG97Sjd2lzf5qutifAGAkJoFr5qP00y3EOM
+         BD6KZoxzMOxUSub9W35bSRn0lwFiZPlKomCZkAijY2HrrySUfCcjlad/ixs5k/DnrOhO
+         3gew==
+X-Gm-Message-State: AOAM5309x3Kt3GHVGmSvab8Em2lg3lx3PMDnG/lFDCgcx2t5TK8ycUSv
+        8NFuJ6REsi+GuI65uSJk6PQiqXBpQmAyFlqh1VY8Hw71DVKZqq84+fM6cShf8zOzuRjGTPmDhWH
+        vZlG0pkCjlcQSOUpO9GaYUrZu
+X-Received: by 2002:adf:a106:: with SMTP id o6mr2692913wro.1.1596632287579;
+        Wed, 05 Aug 2020 05:58:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJymsZfge35MX/5Sup1G9j697447cGxNEw/hBVXxdZ/SC5LeZkULFXxLuRBqbaI8jyXaxQHhUw==
+X-Received: by 2002:adf:a106:: with SMTP id o6mr2692833wro.1.1596632286353;
+        Wed, 05 Aug 2020 05:58:06 -0700 (PDT)
+Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
+        by smtp.gmail.com with ESMTPSA id p8sm2842373wrq.9.2020.08.05.05.58.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 05:58:05 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 08:58:02 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
+        shahafs@mellanox.com, hanand@xilinx.com, mhabets@solarflare.com,
+        gdawar@xilinx.com, saugatm@xilinx.com, vmireyno@marvell.com,
+        zhangweining@ruijie.com.cn, eli@mellanox.com
+Subject: Re: [PATCH 4/4] vhost: vdpa: report iova range
+Message-ID: <20200805085635-mutt-send-email-mst@kernel.org>
+References: <20200617032947.6371-1-jasowang@redhat.com>
+ <20200617032947.6371-5-jasowang@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <VI1PR04MB480018F32A080BC5CC76E3C7F34B0@VI1PR04MB4800.eurprd04.prod.outlook.com>
+In-Reply-To: <20200617032947.6371-5-jasowang@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 12:09:34PM +0000, Vabhav Sharma (OSS) wrote:
+On Wed, Jun 17, 2020 at 11:29:47AM +0800, Jason Wang wrote:
+> This patch introduces a new ioctl for vhost-vdpa device that can
+> report the iova range by the device. For device that depends on
+> platform IOMMU, we fetch the iova range via DOMAIN_ATTR_GEOMETRY. For
+> devices that has its own DMA translation unit, we fetch it directly
+> from vDPA bus operation.
 > 
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> ---
+>  drivers/vhost/vdpa.c             | 27 +++++++++++++++++++++++++++
+>  include/uapi/linux/vhost.h       |  4 ++++
+>  include/uapi/linux/vhost_types.h |  5 +++++
+>  3 files changed, 36 insertions(+)
 > 
-> > -----Original Message-----
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Sent: Wednesday, July 29, 2020 9:34 PM
-> > To: B K Karthik <bkkarthik@pesu.pes.edu>
-> > Cc: Jiri Slaby <jirislaby@kernel.org>; linux-serial@vger.kernel.org; linux-
-> > kernel@vger.kernel.org; Vabhav Sharma (OSS)
-> > <vabhav.sharma@oss.nxp.com>; bhuvanchandra.dv@toradex.com
-> > Subject: Re: [PATCH v2] tty: serial: fsl_lpuart.c: prevent a bad shift operation
-> > 
-> > On Tue, Jul 21, 2020 at 11:12:29PM +0530, B K Karthik wrote:
-> > > prevent a bad shift operation by verifying that the argument to fls is
-> > > non zero.
-> > >
-> > > Reported-by: "Vabhav Sharma (OSS)" <vabhav.sharma@oss.nxp.com>
-> > > Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
-> > > ---
-> > > v1 -> v2:
-> > > 	added Reported-by tag
-> > >
-> > >  drivers/tty/serial/fsl_lpuart.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/tty/serial/fsl_lpuart.c
-> > > b/drivers/tty/serial/fsl_lpuart.c index 7ca642249224..0cc64279cd2d
-> > > 100644
-> > > --- a/drivers/tty/serial/fsl_lpuart.c
-> > > +++ b/drivers/tty/serial/fsl_lpuart.c
-> > > @@ -1168,7 +1168,8 @@ static inline int lpuart_start_rx_dma(struct
-> > lpuart_port *sport)
-> > >  	 * 10ms at any baud rate.
-> > >  	 */
-> > >  	sport->rx_dma_rng_buf_len = (DMA_RX_TIMEOUT * baud /  bits /
-> > 1000) * 2;
-> > > -	sport->rx_dma_rng_buf_len = (1 << (fls(sport->rx_dma_rng_buf_len)
-> > - 1));
-> > > +	if (sport->rx_dma_rng_buf_len != 0)
-> > 
-> > How can this variable become 0?
-> Condition x, taking false branch
-> Explicitly returning zero 
-> 
-> static __always_inline int fls(unsigned int x)
-> {
-> 	return x ? sizeof(x) * 8 - __builtin_clz(x) : 0;
-> }
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 77a0c9fb6cc3..ad23e66cbf57 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -332,6 +332,30 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
+>  
+>  	return 0;
+>  }
+> +
+> +static long vhost_vdpa_get_iova_range(struct vhost_vdpa *v, u32 __user *argp)
+> +{
+> +	struct iommu_domain_geometry geo;
+> +	struct vdpa_device *vdpa = v->vdpa;
+> +	const struct vdpa_config_ops *ops = vdpa->config;
+> +	struct vhost_vdpa_iova_range range;
+> +	struct vdpa_iova_range vdpa_range;
+> +
+> +	if (!ops->set_map && !ops->dma_map) {
 
-What false branch?
+Why not just check if (ops->get_iova_range) directly?
 
-I don't see how this can ever be an issue in "the real world", can you
-explain how it could ever be a problem?
 
-thanks,
 
-greg k-h
+
+> +		iommu_domain_get_attr(v->domain,
+> +				      DOMAIN_ATTR_GEOMETRY, &geo);
+> +		range.start = geo.aperture_start;
+> +		range.end = geo.aperture_end;
+> +	} else {
+> +		vdpa_range = ops->get_iova_range(vdpa);
+> +		range.start = vdpa_range.start;
+> +		range.end = vdpa_range.end;
+> +	}
+> +
+> +	return copy_to_user(argp, &range, sizeof(range));
+> +
+> +}
+> +
+>  static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+>  				   void __user *argp)
+>  {
+> @@ -442,6 +466,9 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
+>  	case VHOST_VDPA_SET_CONFIG_CALL:
+>  		r = vhost_vdpa_set_config_call(v, argp);
+>  		break;
+> +	case VHOST_VDPA_GET_IOVA_RANGE:
+> +		r = vhost_vdpa_get_iova_range(v, argp);
+> +		break;
+>  	default:
+>  		r = vhost_dev_ioctl(&v->vdev, cmd, argp);
+>  		if (r == -ENOIOCTLCMD)
+> diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
+> index 0c2349612e77..850956980e27 100644
+> --- a/include/uapi/linux/vhost.h
+> +++ b/include/uapi/linux/vhost.h
+> @@ -144,4 +144,8 @@
+>  
+>  /* Set event fd for config interrupt*/
+>  #define VHOST_VDPA_SET_CONFIG_CALL	_IOW(VHOST_VIRTIO, 0x77, int)
+> +
+> +/* Get the valid iova range */
+> +#define VHOST_VDPA_GET_IOVA_RANGE	_IOW(VHOST_VIRTIO, 0x78, \
+> +					     struct vhost_vdpa_iova_range)
+>  #endif
+> diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_types.h
+> index 669457ce5c48..4025b5a36177 100644
+> --- a/include/uapi/linux/vhost_types.h
+> +++ b/include/uapi/linux/vhost_types.h
+> @@ -127,6 +127,11 @@ struct vhost_vdpa_config {
+>  	__u8 buf[0];
+>  };
+>  
+> +struct vhost_vdpa_iova_range {
+> +	__u64 start;
+> +	__u64 end;
+> +};
+> +
+
+
+Pls document fields. And I think first/last is a better API ...
+
+>  /* Feature bits */
+>  /* Log all write descriptors. Can be changed while device is active. */
+>  #define VHOST_F_LOG_ALL 26
+> -- 
+> 2.20.1
+
