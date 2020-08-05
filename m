@@ -2,194 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB2A23C5BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E92E23C5A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgHEG1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 02:27:05 -0400
-Received: from atl4mhfb04.myregisteredsite.com ([209.17.115.120]:50078 "EHLO
-        atl4mhfb04.myregisteredsite.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725904AbgHEG1E (ORCPT
+        id S1727979AbgHEGR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 02:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726550AbgHEGR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 02:27:04 -0400
-X-Greylist: delayed 548 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 02:27:02 EDT
-Received: from jax4mhob08.myregisteredsite.com (jax4mhob08.myregisteredsite.com [64.69.218.88])
-        by atl4mhfb04.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id 0756Hp2J012836
-        for <linux-kernel@vger.kernel.org>; Wed, 5 Aug 2020 02:17:51 -0400
-Received: from mailpod.hostingplatform.com (atl4qobmail04pod0.registeredsite.com [10.30.71.206])
-        by jax4mhob08.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id 0756HnkU032363
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Wed, 5 Aug 2020 02:17:49 -0400
-Received: (qmail 3705 invoked by uid 0); 5 Aug 2020 06:17:49 -0000
-X-TCPREMOTEIP: 83.128.90.119
-X-Authenticated-UID: mike@milosoftware.com
-Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
-  by 0 with ESMTPA; 5 Aug 2020 06:17:48 -0000
-From:   Mike Looijmans <mike.looijmans@topic.nl>
-To:     linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, vincent.whitchurch@axis.com,
-        balbi@kernel.org, gregkh@linuxfoundation.org, lgirdwood@gmail.com,
-        Mike Looijmans <mike.looijmans@topic.nl>
-Subject: [PATCH v4] usb: dwc3: Add support for VBUS power control
-Date:   Wed,  5 Aug 2020 08:17:44 +0200
-Message-Id: <20200805061744.20404-1-mike.looijmans@topic.nl>
-X-Mailer: git-send-email 2.17.1
+        Wed, 5 Aug 2020 02:17:58 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61898C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 23:17:58 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k3CkM-0002qN-Kt; Wed, 05 Aug 2020 08:17:54 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k3CkL-0004TT-LN; Wed, 05 Aug 2020 08:17:53 +0200
+Date:   Wed, 5 Aug 2020 08:17:53 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Thorsten Scherer <t.scherer@eckelmann.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] gpio: siox: indicate exclusive support of threaded IRQs
+Message-ID: <20200805061753.5o63zu4ionhgjab4@pengutronix.de>
+References: <20200804091603.541-1-a.fatoum@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="scljatgkl7jdtay7"
+Content-Disposition: inline
+In-Reply-To: <20200804091603.541-1-a.fatoum@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support VBUS power control using regulator framework. Enables the regulator
-while the port is in host mode.
 
-The "vbus-supply" property can be provided using a usb-connector child node
-and standard devicetree bindings.
+--scljatgkl7jdtay7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
----
-v2: Add missing devm_regulator_get call which got lost during rebase
-v3: Remove devicetree binding, use standard usb-connector
-    Fix probe fail when vbus-supply is not present
-v4: Use devm_regulator_get (without "optional")
+Hello,
 
- drivers/usb/dwc3/core.c | 34 ++++++++++++++++++++++++++--------
- drivers/usb/dwc3/core.h |  4 ++++
- drivers/usb/dwc3/drd.c  |  6 ++----
- 3 files changed, 32 insertions(+), 12 deletions(-)
+[adding tglx for irq expertise to Cc]
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index edc17155cb2b..abfd043bae21 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -25,6 +25,7 @@
- #include <linux/of.h>
- #include <linux/acpi.h>
- #include <linux/pinctrl/consumer.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/reset.h>
- 
- #include <linux/usb/ch9.h>
-@@ -112,6 +113,23 @@ void dwc3_set_prtcap(struct dwc3 *dwc, u32 mode)
- 	dwc->current_dr_role = mode;
- }
- 
-+void dwc3_set_vbus(struct dwc3 *dwc, bool enable)
-+{
-+	int ret;
-+
-+	if (enable != dwc->vbus_reg_enabled) {
-+		if (enable)
-+			ret = regulator_enable(dwc->vbus_reg);
-+		else
-+			ret = regulator_disable(dwc->vbus_reg);
-+		if (!ret)
-+			dwc->vbus_reg_enabled = enable;
-+	}
-+
-+	if (dwc->usb2_phy)
-+		otg_set_vbus(dwc->usb2_phy->otg, enable);
-+}
-+
- static void __dwc3_set_mode(struct work_struct *work)
- {
- 	struct dwc3 *dwc = work_to_dwc(work);
-@@ -164,8 +182,7 @@ static void __dwc3_set_mode(struct work_struct *work)
- 		if (ret) {
- 			dev_err(dwc->dev, "failed to initialize host\n");
- 		} else {
--			if (dwc->usb2_phy)
--				otg_set_vbus(dwc->usb2_phy->otg, true);
-+			dwc3_set_vbus(dwc, true);
- 			phy_set_mode(dwc->usb2_generic_phy, PHY_MODE_USB_HOST);
- 			phy_set_mode(dwc->usb3_generic_phy, PHY_MODE_USB_HOST);
- 		}
-@@ -173,8 +190,7 @@ static void __dwc3_set_mode(struct work_struct *work)
- 	case DWC3_GCTL_PRTCAP_DEVICE:
- 		dwc3_event_buffers_setup(dwc);
- 
--		if (dwc->usb2_phy)
--			otg_set_vbus(dwc->usb2_phy->otg, false);
-+		dwc3_set_vbus(dwc, false);
- 		phy_set_mode(dwc->usb2_generic_phy, PHY_MODE_USB_DEVICE);
- 		phy_set_mode(dwc->usb3_generic_phy, PHY_MODE_USB_DEVICE);
- 
-@@ -1183,8 +1199,7 @@ static int dwc3_core_init_mode(struct dwc3 *dwc)
- 	case USB_DR_MODE_PERIPHERAL:
- 		dwc3_set_prtcap(dwc, DWC3_GCTL_PRTCAP_DEVICE);
- 
--		if (dwc->usb2_phy)
--			otg_set_vbus(dwc->usb2_phy->otg, false);
-+		dwc3_set_vbus(dwc, false);
- 		phy_set_mode(dwc->usb2_generic_phy, PHY_MODE_USB_DEVICE);
- 		phy_set_mode(dwc->usb3_generic_phy, PHY_MODE_USB_DEVICE);
- 
-@@ -1198,8 +1213,7 @@ static int dwc3_core_init_mode(struct dwc3 *dwc)
- 	case USB_DR_MODE_HOST:
- 		dwc3_set_prtcap(dwc, DWC3_GCTL_PRTCAP_HOST);
- 
--		if (dwc->usb2_phy)
--			otg_set_vbus(dwc->usb2_phy->otg, true);
-+		dwc3_set_vbus(dwc, true);
- 		phy_set_mode(dwc->usb2_generic_phy, PHY_MODE_USB_HOST);
- 		phy_set_mode(dwc->usb3_generic_phy, PHY_MODE_USB_HOST);
- 
-@@ -1470,6 +1484,10 @@ static int dwc3_probe(struct platform_device *pdev)
- 
- 	dwc3_get_properties(dwc);
- 
-+	dwc->vbus_reg = devm_regulator_get(dev, "vbus");
-+	if (IS_ERR(dwc->vbus_reg))
-+		return PTR_ERR(dwc->vbus_reg);
-+
- 	dwc->reset = devm_reset_control_array_get(dev, true, true);
- 	if (IS_ERR(dwc->reset))
- 		return PTR_ERR(dwc->reset);
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index 4c171a8e215f..cee2574d7bf4 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -1085,6 +1085,9 @@ struct dwc3 {
- 
- 	bool			phys_ready;
- 
-+	struct regulator	*vbus_reg;
-+	bool			vbus_reg_enabled;
-+
- 	struct ulpi		*ulpi;
- 	bool			ulpi_ready;
- 
-@@ -1397,6 +1400,7 @@ struct dwc3_gadget_ep_cmd_params {
- 
- /* prototypes */
- void dwc3_set_prtcap(struct dwc3 *dwc, u32 mode);
-+void dwc3_set_vbus(struct dwc3 *dwc, bool enable);
- void dwc3_set_mode(struct dwc3 *dwc, u32 mode);
- u32 dwc3_core_fifo_space(struct dwc3_ep *dep, u8 type);
- 
-diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
-index 7db1ffc92bbd..45fdec2d128d 100644
---- a/drivers/usb/dwc3/drd.c
-+++ b/drivers/usb/dwc3/drd.c
-@@ -384,8 +384,7 @@ void dwc3_otg_update(struct dwc3 *dwc, bool ignore_idstatus)
- 		if (ret) {
- 			dev_err(dwc->dev, "failed to initialize host\n");
- 		} else {
--			if (dwc->usb2_phy)
--				otg_set_vbus(dwc->usb2_phy->otg, true);
-+			dwc3_set_vbus(dwc, true);
- 			if (dwc->usb2_generic_phy)
- 				phy_set_mode(dwc->usb2_generic_phy,
- 					     PHY_MODE_USB_HOST);
-@@ -398,8 +397,7 @@ void dwc3_otg_update(struct dwc3 *dwc, bool ignore_idstatus)
- 		dwc3_event_buffers_setup(dwc);
- 		spin_unlock_irqrestore(&dwc->lock, flags);
- 
--		if (dwc->usb2_phy)
--			otg_set_vbus(dwc->usb2_phy->otg, false);
-+		dwc3_set_vbus(dwc, false);
- 		if (dwc->usb2_generic_phy)
- 			phy_set_mode(dwc->usb2_generic_phy,
- 				     PHY_MODE_USB_DEVICE);
--- 
-2.17.1
+On Tue, Aug 04, 2020 at 11:16:03AM +0200, Ahmad Fatoum wrote:
+> Generic GPIO consumers like gpio-keys use request_any_context_irq()
+> to request a threaded handler if irq_settings_is_nested_thread() =3D=3D
+> true or a hardirq handler otherwise.
+>=20
+> Drivers using handle_nested_irq() must be sure that the nested
+> IRQs were requested with threaded handlers, because the IRQ
+> is handled by calling action->thread_fn().
+>=20
+> The gpio-siox driver dispatches IRQs via handle_nested_irq,
+> but has irq_settings_is_nested_thread() =3D=3D false.
+>=20
+> Set gpio_irq_chip::threaded to remedy this.
 
+Sounds reasonable, but I have to keep this for others to judge if this
+is indeed how the irq stuff works.
+
+> ---
+> I am writing a driver similar to gpio-siox and I ran into a null pointer
+> dereference, because ->threaded wasn't set. I didn't test this on actual
+> SIOX hardware.
+>=20
+> This patch doesn't fix the case were are driver explicitly calls
+> request_irq and is combined with a driver that does handle_nested_irq.
+>=20
+> Is there a flag, such drivers should additionally set or should we
+> check action->thread_fn before calling it inside handle_nested_irq?
+
+If gpio_irq_chip::threaded being set means that this problem happens
+IMHO the driver is fine and something in the generic gpio code should do
+the right thing here.
+
+Best regards and thanks for caring,
+Uwe
+
+> ---
+>  drivers/gpio/gpio-siox.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/gpio/gpio-siox.c b/drivers/gpio/gpio-siox.c
+> index 26e1fe092304..f8c5e9fc4bac 100644
+> --- a/drivers/gpio/gpio-siox.c
+> +++ b/drivers/gpio/gpio-siox.c
+> @@ -245,6 +245,7 @@ static int gpio_siox_probe(struct siox_device *sdevic=
+e)
+>  	girq->chip =3D &ddata->ichip;
+>  	girq->default_type =3D IRQ_TYPE_NONE;
+>  	girq->handler =3D handle_level_irq;
+> +	girq->threaded =3D true;
+> =20
+>  	ret =3D devm_gpiochip_add_data(dev, &ddata->gchip, NULL);
+>  	if (ret)
+> --=20
+> 2.28.0
+>=20
+>=20
+>=20
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--scljatgkl7jdtay7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8qTw4ACgkQwfwUeK3K
+7AlrUAf+IghLO1gMP9U0E33gkqS45ybfOZWgLa1og560LyTFT3AZWWsjHwCeDp9x
+X3hGtJ3ExmfLLb6K9Y5q91RGhR3yy9rAXqHZeyqv9F4MWCnzDv1riYawIpcbzdv3
+dJ8t0KpPb49Cmto7HmVqYN+61fczDaVrjo3z1j+mH/4keQfubjGI/kFN3+ujzdU1
+tLdSaMOO+/B+V8IGCB5ssf1vX67ZqBmVc0z8cPTM5Kj/nm7hzaP0wMqUkubTSpe+
+HL++JO/VAwj1IoxwYnmzHi+9uCKx1RTHYBX+uSieajscYNHPPdTIM/mFVHazg9BO
+e6i20gEDBdFnAC1hnsWTIHV4sOJC/g==
+=4D8H
+-----END PGP SIGNATURE-----
+
+--scljatgkl7jdtay7--
