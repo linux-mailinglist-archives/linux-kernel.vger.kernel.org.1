@@ -2,148 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C92623CAA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 14:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9774E23CABB
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 14:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbgHEMm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 08:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727079AbgHEMfb (ORCPT
+        id S1728216AbgHEMuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 08:50:19 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:35388 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728360AbgHEMfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 08:35:31 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D05C034602
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 04:39:02 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z14so9685875ljm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 04:39:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6TvjUnTm3Y5LiaMbBPV2mUIVgR3ziXI0s8HbjrnA5yk=;
-        b=WRNld065cEQU2INXDtduGn6EF8elmKTsER82EwhljYoNVp3VZCVgEQSzoypxXJUVlP
-         nh7OKnoaPuuCpwx8piX6TQkBV6EQ6HBITZ4QShW6RM/1y92PnsSbaMi/igM7Z1motf/X
-         cx1ukPSYcYAbwsDcf8zVArLSQp/YF3LYAwK+o=
+        Wed, 5 Aug 2020 08:35:44 -0400
+Received: by mail-oi1-f196.google.com with SMTP id k4so39435189oik.2;
+        Wed, 05 Aug 2020 05:35:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6TvjUnTm3Y5LiaMbBPV2mUIVgR3ziXI0s8HbjrnA5yk=;
-        b=e66jL0mUHcx45aUbnHozLJJUeV99PoUo2KrxVkroiaDcOizpdtORETfJD4MRrj0F6F
-         Uw2Tz07TtJFUu66XH+aBHPX1eNez1XsF6ylBOwWh6RC30mwzMvI/c4PHseBvldNHNFy9
-         0wYJH4qH3sjvY5Ge8kcab2FxcsihcCwY40N6e57KuYOs8n+VHUgJZkyEsnoCp87Pd2tu
-         sgaEWm42E2gWUT9pcbl5AxJweX4/D3LvNH/XbdjAx0vId8vmRoIAFNhYm97I92vlLPyV
-         zJOyjN2onX3unVLI5a2cUTRDdEcZm0xhPALh+/xbOLKmRWADygi80SlAmOvUmmxMpHQ5
-         Dsuw==
-X-Gm-Message-State: AOAM5303qMTJjU1Q1a2Y7zb0THzl0d0emZmdYLZbRvGhhB52oC5vCjaN
-        ktI8C1bFZARDuLbLpOOIGHuobw==
-X-Google-Smtp-Source: ABdhPJwbKV6OdZO3LdU7TLVM8VV0AtWx3f65Yb5ZEHaLrSidq/l+m2qGwqla2T3OTtXmTuju7w/C5g==
-X-Received: by 2002:a2e:3312:: with SMTP id d18mr1214229ljc.222.1596627540325;
-        Wed, 05 Aug 2020 04:39:00 -0700 (PDT)
-Received: from [172.16.11.132] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id g21sm782579ljh.103.2020.08.05.04.38.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 04:38:59 -0700 (PDT)
-Subject: Re: [RFC] saturate check_*_overflow() output?
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        Segher Boessenkool <segher@kernel.crashing.org>
-References: <202008031118.36756FAD04@keescook>
- <f177a821-74a3-e868-81d3-55accfb5b161@rasmusvillemoes.dk>
- <202008041137.02D231B@keescook>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <6d190601-68f1-c086-97ac-2ee1c08f5a34@rasmusvillemoes.dk>
-Date:   Wed, 5 Aug 2020 13:38:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fi0Vkqop4EGcsiOxJMU7b52vof3OIZ3dx6v9pdPXURk=;
+        b=Fjkc66/9z1rjezmzJZw6poKCoQ5ijqbbKucCg8c5uY+vD60eOjjmnEPBvKHpQVyo3T
+         5pa+lMj8TwVBkvbAcTITAmudONTGslPJ/CdlskfrqiV+lL80Mhr5A2ViFrilcA0F8asO
+         S7RNwHsHPLqZCdNTTPaYTdCeyaTx6cNen0GyE4zjKXUcSBG4gu37Cd+eG7oLKn8gG7s5
+         dV59dJ3RL0K7yzORNpg66f4As1szXqgdA/xXuxNPlJbBPTDOpbcCxE5KSFEKF6M10VWl
+         kWDISRGG13cUeFfBCe/AcP9o+h0QEp46u4VYOzHEis+9Es3J7JLJy6TZNE0HTiHhTtVN
+         xUGQ==
+X-Gm-Message-State: AOAM531c0orxplAMj5VENbNTKueO15XWqM6mNoB3pJBBows1KeAU7gez
+        oOHukhSz4A6yT955gTiIiaZdnPpyx0in16TjA8Luaw==
+X-Google-Smtp-Source: ABdhPJy7sqwBSiN+pyzIPZ9M2XedaR1gb87JLdDr/1wnAKP9dc8YJ0PX9xHpkxMnE8yZusJ10E71WEVlm96ZcFvLUso=
+X-Received: by 2002:aca:b742:: with SMTP id h63mr2275849oif.148.1596628879890;
+ Wed, 05 Aug 2020 05:01:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <202008041137.02D231B@keescook>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1595005225-11519-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1595005225-11519-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1595005225-11519-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 5 Aug 2020 14:01:06 +0200
+Message-ID: <CAMuHMdUZi4iPTv5Q7PgHkTEOS-N53rB2iRHBw=Mr0v1Lo89MKw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: sh-pfc: r8a7790: Add USB1 PWEN pin and group
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2020 21.23, Kees Cook wrote:
-> On Tue, Aug 04, 2020 at 08:11:45AM +0200, Rasmus Villemoes wrote:
+On Fri, Jul 17, 2020 at 7:00 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+>
+> Add USB1 PWEN pin and group for USB1 interface.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
->> What we might do, to deal with the "caller fails to check the result",
->> is to add a
->>
->> static inline bool __must_check must_check_overflow(bool b) { return
->> unlikely(b); }
->>
->> and wrap all the final "did it overflow" results in that one - perhaps
->> also for the __builtin_* cases, I don't know if those are automatically
->> equipped with that attribute. [I also don't know if gcc propagates
->> likely/unlikely out to the caller, but it shouldn't hurt to have it
->> there and might improve code gen if it does.]
-> 
-> (What is the formal name for the ({ ...; return_value; }) C construct?)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in sh-pfc-for-v5.10.
 
-https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html
+Gr{oetje,eeting}s,
 
-> Will that work as a macro return value? If so, that's extremely useful.
+                        Geert
 
-Yes and no. Just wrapping the last expression in the statement
-expression with my must_check_overflow(), as in
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-@@ -67,17 +72,18 @@
-        typeof(d) __d = (d);                    \
-        (void) (&__a == &__b);                  \
-        (void) (&__a == __d);                   \
--       __builtin_sub_overflow(__a, __b, __d);  \
-+       must_check_overflow(__builtin_sub_overflow(__a, __b, __d));     \
- })
-
-does not appear to work. For some reason, this can't be (ab)used to
-overrule the __must_check this simply:
-
-  - kstrtoint(a, b, c);
-  + ({ kstrtoint(a, b, c); });
-
-still gives a warning for kstrtoint(). But failing to use the result of
-check_sub_overflow() as patched above does not give a warning.
-
-I'm guessing gcc has some internal very early simplification that
-replaces single-expression statement-exprs with just that expression,
-and the warn-unused-result triggers later. But as soon as the
-statement-expr becomes a little non-trivial (e.g. above), my guess is
-that the whole thing gets assigned to some internal "variable"
-representing the result, and that assignment then counts as a use of the
-return value from must_check_overflow() - cc'ing Segher, as he usually
-knows these details.
-
-Anyway, we don't need to apply it to the last expression inside ({}), we
-can just pass the whole ({}) to must_check_overflow() as in
-
--#define check_sub_overflow(a, b, d) ({         \
-+#define check_sub_overflow(a, b, d) must_check_overflow(({             \
-        typeof(a) __a = (a);                    \
-        typeof(b) __b = (b);                    \
-        typeof(d) __d = (d);                    \
-        (void) (&__a == &__b);                  \
-        (void) (&__a == __d);                   \
-        __builtin_sub_overflow(__a, __b, __d);  \
--})
-+}))
-
-and that's even more natural for the fallback cases which would be
-
- #define check_sub_overflow(a, b, d)                                    \
-+       must_check_overflow(                                            \
-        __builtin_choose_expr(is_signed_type(typeof(a)),                \
-                        __signed_sub_overflow(a, b, d),                 \
--                       __unsigned_sub_overflow(a, b, d))
-+                       __unsigned_sub_overflow(a, b, d)))
-
-(in all cases with some whitespace reflowing).
-
-Rasmus
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
