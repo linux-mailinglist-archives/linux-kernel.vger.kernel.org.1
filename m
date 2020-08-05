@@ -2,133 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81C823D099
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECCE23D0A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728710AbgHETvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728624AbgHETuo (ORCPT
+        id S1729160AbgHETvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:51:46 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:50410 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728211AbgHETv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:50:44 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38296C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 12:50:44 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id x24so10192332otp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VuI/sJKChWIgcA9YX17Vw0/G7XG/JpOM9iBt62Uihj0=;
-        b=QyMrRJ2Sdo1u1Ywbj9MGXheY1I0xnqtLQfoPR3Om141/eW9ET5BsyaqPDvXBZB4GTs
-         v0A3L/WNkHm9SCfyID7NAx9JCGgnfJfc9Go+T9kxD8QefiCVxXfGfLoezYJQYdUqjoWp
-         snrKykkM1x5AvEB4ZkAGuuGfzAjmCDL3T3xMU=
+        Wed, 5 Aug 2020 15:51:28 -0400
+Received: by mail-pj1-f66.google.com with SMTP id e4so5266834pjd.0;
+        Wed, 05 Aug 2020 12:51:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VuI/sJKChWIgcA9YX17Vw0/G7XG/JpOM9iBt62Uihj0=;
-        b=E6FjQWibGYUQAM+x26vGwYADNFNvr+WvO5+v8Zr5N9NB9WMv6WckZXjXBqj/0zsfm/
-         1thuxyb/ofwzYZYk21NLbILgL+arDa9A/lbXd3+rqtW63BOStcWuT14XXUpFXzocGfca
-         vpVfqXKLaP5zUS5aAj4s/cRqPjEXn8AIESRZMPedxGKVoJhKjHJOPHWHlCfvCqypxawX
-         JogfmjXoNBpLJ/MFxsj2TmxniRLz1MDGFtxcWb0mTyrz3/LRJNX9nanIRiwFH3nd/wyN
-         CRTXqkrPUedKk4P+vGAWQFh7Xq77lk2B++x58kKMUgSj/adVJsqnzpIDRpyayOP8mK1j
-         /ugA==
-X-Gm-Message-State: AOAM530h3sD0DeGZcUh74jJ2zCAnkuYo3QOGeU4J7XZXsf1rhQo+312Q
-        E/CVd/IaJpJ2eHKMEi0UOkyM5Q==
-X-Google-Smtp-Source: ABdhPJzVbpJRF9EmzEMLmBRCP07DM7eTcfR++AGDxEhQrnCm23HC8AzoYmVBFzNMocQQh1OVmG5p2g==
-X-Received: by 2002:a9d:3bb5:: with SMTP id k50mr3971985otc.361.1596657043297;
-        Wed, 05 Aug 2020 12:50:43 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id a66sm638956oob.44.2020.08.05.12.50.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 12:50:42 -0700 (PDT)
-Subject: Re: [PATCH] selftests: more general make nesting support
-To:     Greg Thelen <gthelen@google.com>, Shuah Khan <shuah@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200728073241.3625015-1-gthelen@google.com>
- <CAHH2K0bU7w_rbKN_f0Fe_ZdGLtgBz_GVKS3eottTtm8P7QGoJA@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3d949545-a7f2-4057-1204-600eabfd8f28@linuxfoundation.org>
-Date:   Wed, 5 Aug 2020 13:50:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6emjLqhFv6lUP9L7Pmh7/cPih4ItBfkcf8aGfybjT1g=;
+        b=Aqa4u7Mlwxf7pSSwQQY6ayO5MmpR60jbjrBqidQFyNczeB3m8wi51HtxSEIQfEyxqg
+         Eh6rbK94+uhQnaWzE4P+cEWNiRHgPLVnhiUv2UaXh0//FyaVCMwI/jM2p9s5iPrhGrev
+         9m6RWQHSc6+I/PSIrxvab1Bb6e4AqTX1XJBreO0+RH0dM9EIN8c86GuxCxQp84b92Puc
+         LlrQqs/dQ2saaOMO9D1CVlGQxMk1anALsby6VM/ITCmYcClwcNUrBWY6mdPYG+gmp2Ty
+         TBDXuUVD4FgokQMhGu3ywK2jNSSCS48d9FP7ULh86ZqC1wUX/Cax6vyt3ijQhkysjVId
+         HZnw==
+X-Gm-Message-State: AOAM5327Ofqa7VVnonjibYlWpNzj/ay0BR9rxMRCqrGEXQnVuSGGykcH
+        W4JITyXj5N9Qxl/1UQYKtqE=
+X-Google-Smtp-Source: ABdhPJxW5sF6pW3KYLCyWMfpQB82bFtbLDql/G3Tu1uJ4NEJ2sYoQ/T3T/PvHALY0w0D77xXNCN/mg==
+X-Received: by 2002:a17:902:7241:: with SMTP id c1mr4725311pll.79.1596657087373;
+        Wed, 05 Aug 2020 12:51:27 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id bj18sm3878823pjb.5.2020.08.05.12.51.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 12:51:26 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 12:51:25 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     "Wu, Hao" <hao.wu@intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: Add Tom Rix as fpga reviewer
+Message-ID: <20200805195125.GA1905851@epycbox.lan>
+References: <20200804162003.19402-1-trix@redhat.com>
+ <20200804164133.GA1499313@epycbox.lan>
+ <DM6PR11MB3819024D3EE4913E0AA97680854B0@DM6PR11MB3819.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHH2K0bU7w_rbKN_f0Fe_ZdGLtgBz_GVKS3eottTtm8P7QGoJA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB3819024D3EE4913E0AA97680854B0@DM6PR11MB3819.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/20 1:36 PM, Greg Thelen wrote:
-> On Tue, Jul 28, 2020 at 12:32 AM Greg Thelen <gthelen@google.com> wrote:
->>
->> selftests can be built from the toplevel kernel makefile (e.g. make
->> kselftest-all) or directly (make -C tools/testing/selftests all).
->>
->> The toplevel kernel makefile explicitly disables implicit rules with
->> "MAKEFLAGS += -rR", which is passed to tools/testing/selftests.  Some
->> selftest makefiles require implicit make rules, which is why
->> commit 67d8712dcc70 ("selftests: Fix build failures when invoked from
->> kselftest target") reenables implicit rules by clearing MAKEFLAGS if
->> MAKELEVEL=1.
->>
->> So far so good.  However, if the toplevel makefile is called from an
->> outer makefile then MAKELEVEL will be elevated, which breaks the
->> MAKELEVEL equality test.
->> Example wrapped makefile error:
->>    $ cat ~/Makefile
->>    all:
->>          $(MAKE) defconfig
->>          $(MAKE) kselftest-all
->>    $ make -sf ~/Makefile
->>      futex_wait_timeout.c /src/tools/testing/selftests/kselftest_harness.h   /src/tools/testing/selftests/kselftest.h ../include/futextest.h ../include/atomic.h ../include/logging.h -lpthread -lrt -o /src/tools/testing/selftests/futex/functional/futex_wait_timeout
->>    make[4]: futex_wait_timeout.c: Command not found
->>
->> Rather than checking $(MAKELEVEL), check for $(LINK.c), which is a more
->> direct side effect of "make -R".  This enables arbitrary makefile
->> nesting.
->>
->> Signed-off-by: Greg Thelen <gthelen@google.com>
->> ---
->>   tools/testing/selftests/Makefile | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
->> index 1195bd85af38..289a2e4b3f6f 100644
->> --- a/tools/testing/selftests/Makefile
->> +++ b/tools/testing/selftests/Makefile
->> @@ -84,10 +84,10 @@ endif
->>   # of the targets gets built.
->>   FORCE_TARGETS ?=
->>
->> -# Clear LDFLAGS and MAKEFLAGS if called from main
->> -# Makefile to avoid test build failures when test
->> -# Makefile doesn't have explicit build rules.
->> -ifeq (1,$(MAKELEVEL))
->> +# Clear LDFLAGS and MAKEFLAGS when implicit rules are missing.  This provides
->> +# implicit rules to sub-test Makefiles which avoids build failures in test
->> +# Makefile that don't have explicit build rules.
->> +ifeq (,$(LINK.c))
->>   override LDFLAGS =
->>   override MAKEFLAGS =
->>   endif
->> --
->> 2.28.0.rc0.142.g3c755180ce-goog
+On Wed, Aug 05, 2020 at 07:58:21AM +0000, Wu, Hao wrote:
+> > Subject: Re: [PATCH] MAINTAINERS: Add Tom Rix as fpga reviewer
+> > 
+> > Hi Tom,
+> > 
+> > On Tue, Aug 04, 2020 at 09:20:03AM -0700, trix@redhat.com wrote:
+> > > From: Tom Rix <trix@redhat.com>
+> > >
+> > > I take care of fpga kernel and userspace for Red Hat and would
+> > > like help out more with the mainline kernel.
+> > >
+> > > Signed-off-by: Tom Rix <trix@redhat.com>
+> > > ---
+> > >  MAINTAINERS | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index ce2737b1feb5..6fdb01776413 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -6805,6 +6805,7 @@ F:	drivers/net/ethernet/nvidia/*
+> > >
+> > >  FPGA DFL DRIVERS
+> > >  M:	Wu Hao <hao.wu@intel.com>
+> > > +R:	Tom Rix <trix@redhat.com>
+> > >  L:	linux-fpga@vger.kernel.org
+> > >  S:	Maintained
+> > >  F:	Documentation/fpga/dfl.rst
+> > > @@ -6813,6 +6814,7 @@ F:	include/uapi/linux/fpga-dfl.h
+> > >
+> > >  FPGA MANAGER FRAMEWORK
+> > >  M:	Moritz Fischer <mdf@kernel.org>
+> > > +R:	Tom Rix <trix@redhat.com>
+> > >  L:	linux-fpga@vger.kernel.org
+> > >  S:	Maintained
+> > >  W:	http://www.rocketboards.org
+> > > --
+> > > 2.18.1
+> > >
+> > Acked-by: Moritz Fischer <mdf@kernel.org>
+> > 
+> > I can take the patch, can I get an Acked-by from Hao?
 > 
-> Is there any feedback on this patch?  It's not high priority but something that
-> will help me make more use of selftests.
+> Sure. : ) 
 > 
+> Acked-by: Wu Hao <hao.wu@intel.com>
+> 
+> Thanks!
+> Hao
+> 
+> > 
+> > Thanks!
+> > 
+> > Moritz
 
-No issues with the patch. I will apply it once the merge window ends.
+Applied to for-next,
 
-thanks,
--- Shuah
+Thanks,
+Moritz
