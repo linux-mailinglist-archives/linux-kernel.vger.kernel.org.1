@@ -2,63 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9C623CF3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB21523CF42
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728815AbgHETRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
+        id S1728464AbgHETSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbgHETPo (ORCPT
+        with ESMTP id S1728332AbgHETQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:15:44 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B922C061A29;
-        Wed,  5 Aug 2020 12:13:22 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 57300152E87E4;
-        Wed,  5 Aug 2020 11:56:35 -0700 (PDT)
-Date:   Wed, 05 Aug 2020 12:13:20 -0700 (PDT)
-Message-Id: <20200805.121320.990654813010240919.davem@davemloft.net>
-To:     xiangxia.m.yue@gmail.com
-Cc:     echaudro@redhat.com, kuba@kernel.org, pabeni@redhat.com,
-        pshelar@ovn.org, syzkaller-bugs@googlegroups.com,
-        dev@openvswitch.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] net: openvswitch: silence suspicious RCU usage warning
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200805071911.64101-1-xiangxia.m.yue@gmail.com>
-References: <20200805071911.64101-1-xiangxia.m.yue@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+        Wed, 5 Aug 2020 15:16:24 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E221AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 12:15:47 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id o21so19875281oie.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:15:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jYEN2cvet5zB5B5eyNC+shZAVcvkiH+f+FbncW7ectU=;
+        b=Ena+3Y8jxN4bGxdwm2AgkNEPvhg6MLLZCSTy7U08iocYStSazDPf+mGA4GOi9UBExJ
+         yyTAwbejrI9oilVci6jN+uTDCXPdwtYjC29V613/TBch+v6qBURzpNLeeokDLwtyHbJg
+         bUATeRa0Te0lbhpCWgdx5vOURqCdNxw8cjPj0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jYEN2cvet5zB5B5eyNC+shZAVcvkiH+f+FbncW7ectU=;
+        b=dqEzeNNSFUJbNt6QpF7fpwd3EuwOuN4oK83h/VGu8NpIrkrYIkxx7MIvr9RhP4hUf3
+         2rDyuh9J/fKrA4oVW/DQBP1Ztbhe5fJCTnVwX/NUzj5Pt1u2JDI33aZvQLpY+j6tqh6u
+         h8qYcezBPCmZ736k/qi+jm+t9PKmEAslr1R7KYP1Uwoew/GmFfazRgmJv5m2HFOdz4ml
+         W22e0zQROlbqVuxmM+fH0tIygOtGCg33t6wwuZ8zNWOvsp/yahUm66X5TJd5JGfnbJon
+         f47LYgFFM3L2frKEm0MfUBV50v37MEJW5azHB29FEFfPHXaTy/9dy3k1e+HNIAfauccy
+         ++ug==
+X-Gm-Message-State: AOAM533/4oKVwrd43HGZALIb8gZAXzMja4wUv+9BEvua/XTPT3VFKEj5
+        E2xYg1/kP4KexxeiP6Iq1FtyDg==
+X-Google-Smtp-Source: ABdhPJw4kgHT2DVcqZYav5EpT9M+m+g1ZhwCut2UPLjmjltFinAwFibAgUqzfTyBmsEbXr2RgRzHYg==
+X-Received: by 2002:aca:b30b:: with SMTP id c11mr2101630oif.48.1596654945457;
+        Wed, 05 Aug 2020 12:15:45 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id o22sm539984ota.49.2020.08.05.12.15.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 12:15:44 -0700 (PDT)
+Subject: Re: [GIT PULL] Kselftest update for Linux 5.9-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <0e3a9c1f-7ac6-33e2-ed11-5a56659fc5f7@linuxfoundation.org>
+ <CAHk-=wi4iDwuazgXQ-1yvM_JMTBepi9rc-zfSMeyjfDgSS2fgA@mail.gmail.com>
+ <8d894cb3-83ac-66bc-48ec-dc273d1afcbe@linuxfoundation.org>
+ <CAHk-=wiKe_rBFthfttj1fM3cwqaArSUN0Dz1KhARdMNo1a2F=A@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3c439640-111e-7399-5839-a5cba4a98a54@linuxfoundation.org>
+Date:   Wed, 5 Aug 2020 13:15:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=wiKe_rBFthfttj1fM3cwqaArSUN0Dz1KhARdMNo1a2F=A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 05 Aug 2020 11:56:35 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xiangxia.m.yue@gmail.com
-Date: Wed,  5 Aug 2020 15:19:11 +0800
+On 8/5/20 11:32 AM, Linus Torvalds wrote:
+> On Wed, Aug 5, 2020 at 7:13 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> Please pull the following Kselftest update for Linux 5.9-rc1.
+> 
+> Ok, it worked fine this time, although now you lost the note about the
+> conflict ;)
+> 
 
-> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> 
-> ovs_flow_tbl_destroy always is called from RCU callback
-> or error path. It is no need to check if rcu_read_lock
-> or lockdep_ovsl_is_held was held.
-> 
-> ovs_dp_cmd_fill_info always is called with ovs_mutex,
-> So use the rcu_dereference_ovsl instead of rcu_dereference
-> in ovs_flow_tbl_masks_cache_size.
-> 
-> Fixes: 9bf24f594c6a ("net: openvswitch: make masks cache size configurable")
-> Cc: Eelco Chaudron <echaudro@redhat.com>
-> Reported-by: syzbot+c0eb9e7cdde04e4eb4be@syzkaller.appspotmail.com
-> Reported-by: syzbot+f612c02823acb02ff9bc@syzkaller.appspotmail.com
-> Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Sorry about that. I should have included that as well.
 
-Applied, thank you.
+> I took the version from the seccomp tree that seemed to be the
+> slightly cleaned-up one.
+> 
+
+Yes. The version from seccomp tree is the one to pick up. Thanks
+for working through this.
+
+thanks,
+-- Shuah
