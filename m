@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C4223D01A
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8D223D023
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728641AbgHET3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728587AbgHET3Z (ORCPT
+        id S1728198AbgHETaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:30:16 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:44408 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728990AbgHETaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:29:25 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9CDC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 12:29:25 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z14so11423990ljm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:29:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oyP1mU6+ebwH2z4wx3gLMWWnEis6gU/VrLrd1AZyGlg=;
-        b=fhlYmL/3y0kHtYeNI3bs4iExuMdI3NUu+EGIEiYSvoTfiDoHjdisaOOXhNzoT6ZyHG
-         OOtMakr4cVU5Hpag9vrMwmhHolDGMxnAycaLSeCVrr7FdySR03Cx1kvgw+iXe19F2rNI
-         jxRORS0aBWPqFjspy7Ks+36oCD6BpLOSCabEU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oyP1mU6+ebwH2z4wx3gLMWWnEis6gU/VrLrd1AZyGlg=;
-        b=AZzwZWiEKso2iv532QK7VeQqDKo//Tdf/llMf9NIye+mog0zw/fWE0zSBX/jhgDxVK
-         Ou1IKBqFqBejUxEmdX7lgYN9C9AZgXdz3bew08qwX2wu7aiymSABdG0OC8ucOG7c6kFg
-         N5t9CZrbTa/8iidvCN1RmfeYy1qoQKnVXX8xVuIm8+vuUJC3uQSJi1HfBJEV96LW2Vgk
-         t8mz4UwS1Nig3nRye2C5n6aKLtAzp9BGs1m+Q6ztFD+tUqnDJsXHyZCSIn6IMeROBCDy
-         /22GJZGdSLRLZ59sRMr5/eZKNOiMHv1DjsfDhx8oA1ZcvwPRT6pOx8vHU1lQOOV4HKkv
-         cSCQ==
-X-Gm-Message-State: AOAM533UWZ7UoayyqE2tKhk/Lf+49/Yx3nP8hFoZp7YC+5K5WfpsQHpc
-        3E824X5Oy6hxei6Au8oxvUdU5WIY3f0=
-X-Google-Smtp-Source: ABdhPJziMrIhvehoqJBjpubbj75FFYhoFbsWoryDNSKvQar+Cf3sphVMJRhuzt4A1+JYMO44MFJUZQ==
-X-Received: by 2002:a2e:8904:: with SMTP id d4mr2024937lji.400.1596655761953;
-        Wed, 05 Aug 2020 12:29:21 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id m12sm1261519ljh.127.2020.08.05.12.29.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 12:29:20 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id z14so11423866ljm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:29:20 -0700 (PDT)
-X-Received: by 2002:a2e:7615:: with SMTP id r21mr2026657ljc.371.1596655760225;
- Wed, 05 Aug 2020 12:29:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200803140726.GA752014@infradead.org> <CAHk-=wg1h_XfPbXvisfAUsXU-WiOeCJDUibhxZGu=x9w-VKB0A@mail.gmail.com>
- <CAHk-=wg9dzJOkvysjgdHv5eFJU76EFAwCxNenRxTtq6VWof98Q@mail.gmail.com> <20200805082845.GA25876@infradead.org>
-In-Reply-To: <20200805082845.GA25876@infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 5 Aug 2020 12:29:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgPwB3uWy9FVzD6yhVnDzY9fHth0WaQ0vqmRThhoU6Wrg@mail.gmail.com>
-Message-ID: <CAHk-=wgPwB3uWy9FVzD6yhVnDzY9fHth0WaQ0vqmRThhoU6Wrg@mail.gmail.com>
-Subject: Re: [GIT PULL] configfs updates for 5.9
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Kai M??kisara" <Kai.Makisara@kolumbus.fi>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Joel Becker <jlbec@evilplan.org>,
+        Wed, 5 Aug 2020 15:30:05 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7EDF61C0BD2; Wed,  5 Aug 2020 21:30:01 +0200 (CEST)
+Date:   Wed, 5 Aug 2020 21:30:01 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lenny Szubowicz <lszubowi@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>
+Subject: Re: [Ksummit-discuss] [TECH TOPIC] Planning code obsolescence
+Message-ID: <20200805193001.nebwdutcek53pnit@duo.ucw.cz>
+References: <CAK8P3a2PK_bC5=3wcWm43=y5xk-Dq5-fGPExJMnOrNfGfB1m1A@mail.gmail.com>
+ <20200805172629.GA1040@bug>
+ <CAMuHMdV20tZSu5gGsjf8h334+0xr1f=N9NvOoxHQGq42GYsj4g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="2as7iuittmdh4m5a"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdV20tZSu5gGsjf8h334+0xr1f=N9NvOoxHQGq42GYsj4g@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 1:28 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> Yes, but this is a fundamental problem with the commit on close
-> model that the configfs binary attributes implement, and we have to
-> work around that somehow.  The current behavior is to entirely ignore
-> errors, which of course has major issues.
 
-Ignoring errors is better than randomly not doing the commit at all,
-which is what that patch does.
+--2as7iuittmdh4m5a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I guess the alternative might be to just commit on every ->flush
+On Wed 2020-08-05 20:50:43, Geert Uytterhoeven wrote:
+> Hi Pavel,
+>=20
+> On Wed, Aug 5, 2020 at 7:26 PM Pavel Machek <pavel@ucw.cz> wrote:
+> > > I have submitted the below as a topic for the linux/arch/* MC that Mi=
+ke
+> > > and I run, but I suppose it also makes sense to discuss it on the
+> > > ksummit-discuss mailing list (cross-posted to linux-arch and lkml) as=
+ well
+> > > even if we don't discuss it at the main ksummit track.
+> >
+> > > * Latest kernel in which it was known to have worked
+> >
+> > For some old hardware, I started collecting kernel version, .config and=
+ dmesg from
+> > successful boots. github.com/pavelmachek, click on "missy".
+>=20
+> You mean your complete hardware collection doesn't boot v5.8? ;-)
 
-That's how ->flush() is designed to be used, yes. It's also why it's
-named that way.
+I need to do some pushing, and yes, maybe some more testing.
 
-It can obviously cause problems too, if you have multiple opens (ie
-dup/fork) and one file descriptor is closed while another is in the
-middle of a series of writes
+But I was wondering if someone sees this as useful and wants to
+contribute more devices? :-).
+									Pavel
 
-But honestly, if you do binary writes to sysfs, you should do them as
-one single write, and the flush function should take that mutex and
-then skip the flush if write_in_progress is true.
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-Because in *that* case, it has serialized with other writers and we
-know that those other writers will flush when closing, and there's no
-race.
+--2as7iuittmdh4m5a
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You can still screw up by doing multiple independent writes and do s
-close() in between the writes, but at some point it becomes a "yeah,
-that's broken and nobody actually does that" issue.
+-----BEGIN PGP SIGNATURE-----
 
-                Linus
+iF0EARECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXysIuQAKCRAw5/Bqldv6
+8ne8AKCzcy8jflTVvnbaGcu03o4XWep3TgCgiOYXuMl+/WCzPV9BgoTFu+rV6qA=
+=rLGV
+-----END PGP SIGNATURE-----
+
+--2as7iuittmdh4m5a--
