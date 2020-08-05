@@ -2,165 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D87023D2E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3144B23D2F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgHEUTj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 Aug 2020 16:19:39 -0400
-Received: from mga12.intel.com ([192.55.52.136]:63556 "EHLO mga12.intel.com"
+        id S1726695AbgHEUZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:25:08 -0400
+Received: from mga04.intel.com ([192.55.52.120]:48318 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbgHEUTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 16:19:38 -0400
-IronPort-SDR: jRg6g+aihljhKVo7IYgeHbtq/vxkD9PLlw7GqoDD5LgS2Pxs/4edTf5QWjmOs6aOllXRuZDjeL
- k0x+5YqCH5Cw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="132211385"
+        id S1725921AbgHEUZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 16:25:07 -0400
+IronPort-SDR: v/CKGYZIam4YgNDycXSSr5lATQMmuvmQlFevLkGDADIJG2IvkmRS4yJntgQsQLIbUyi0FCcHPV
+ WtBSqW4QoKDQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="150111857"
 X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="132211385"
+   d="scan'208";a="150111857"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 13:19:38 -0700
-IronPort-SDR: w9VSCNrISXm96GGjOlNyk4yJ4AZEqjxtdap/DxRUPdcHd6GR7/SdzO2DGKE9Nih3CrBJdlNu3m
- RCa+339YsD3A==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 13:25:07 -0700
+IronPort-SDR: kezO5/WussJGFg7dIssbmvAgKMSBF5DGkXV8yXkCCdnijdhBXgkkVd/g4Cd0AEp0/8xEnuhIle
+ TgkbDC/7mJ6A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="467585502"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga005.jf.intel.com with ESMTP; 05 Aug 2020 13:19:37 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 5 Aug 2020 13:19:37 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 5 Aug 2020 13:19:36 -0700
-Received: from orsmsx612.amr.corp.intel.com ([10.22.229.25]) by
- ORSMSX612.amr.corp.intel.com ([10.22.229.25]) with mapi id 15.01.1713.004;
- Wed, 5 Aug 2020 13:19:36 -0700
-From:   "Dey, Megha" <megha.dey@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     "Jiang, Dave" <dave.jiang@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Lin, Jing" <jing.lin@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: RE: [PATCH RFC v2 04/18] irq/dev-msi: Introduce APIs to allocate/free
- dev-msi interrupts
-Thread-Topic: [PATCH RFC v2 04/18] irq/dev-msi: Introduce APIs to
- allocate/free dev-msi interrupts
-Thread-Index: AQHWX3heqXf8B+7kfUafGS9cbpYfH6kSrV6AgAExB0iAFi3TEA==
-Date:   Wed, 5 Aug 2020 20:19:36 +0000
-Message-ID: <8cdfef10438047f5ae7fc81770d32351@intel.com>
-References: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com>
- <159534736176.28840.5547007059232964457.stgit@djiang5-desk3.ch.intel.com>
- <20200721162501.GC2021248@mellanox.com>
- <b3bc68b3-937e-4b64-e1c7-84942d7ba60c@intel.com>
- <20200722173515.GL2021248@mellanox.com>
-In-Reply-To: <20200722173515.GL2021248@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
+   d="scan'208";a="332958427"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
+  by orsmga007.jf.intel.com with ESMTP; 05 Aug 2020 13:25:06 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     bhelgaas@google.com, eranian@google.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V2 0/6] Support PCIe3 uncore PMU on Snow Ridge
+Date:   Wed,  5 Aug 2020 13:24:05 -0700
+Message-Id: <1596659051-95759-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+From: Kan Liang <kan.liang@linux.intel.com>
 
-> -----Original Message-----
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> Sent: Wednesday, July 22, 2020 10:35 AM
-> To: Dey, Megha <megha.dey@intel.com>
-> Cc: Jiang, Dave <dave.jiang@intel.com>; vkoul@kernel.org; maz@kernel.org;
-> bhelgaas@google.com; rafael@kernel.org; gregkh@linuxfoundation.org;
-> tglx@linutronix.de; hpa@zytor.com; alex.williamson@redhat.com; Pan, Jacob
-> jun <jacob.jun.pan@intel.com>; Raj, Ashok <ashok.raj@intel.com>; Liu, Yi L
-> <yi.l.liu@intel.com>; Lu, Baolu <baolu.lu@intel.com>; Tian, Kevin
-> <kevin.tian@intel.com>; Kumar, Sanjay K <sanjay.k.kumar@intel.com>; Luck,
-> Tony <tony.luck@intel.com>; Lin, Jing <jing.lin@intel.com>; Williams, Dan J
-> <dan.j.williams@intel.com>; kwankhede@nvidia.com; eric.auger@redhat.com;
-> parav@mellanox.com; Hansen, Dave <dave.hansen@intel.com>;
-> netanelg@mellanox.com; shahafs@mellanox.com; yan.y.zhao@linux.intel.com;
-> pbonzini@redhat.com; Ortiz, Samuel <samuel.ortiz@intel.com>; Hossain, Mona
-> <mona.hossain@intel.com>; dmaengine@vger.kernel.org; linux-
-> kernel@vger.kernel.org; x86@kernel.org; linux-pci@vger.kernel.org;
-> kvm@vger.kernel.org
-> Subject: Re: [PATCH RFC v2 04/18] irq/dev-msi: Introduce APIs to allocate/free
-> dev-msi interrupts
-> 
-> On Wed, Jul 22, 2020 at 10:05:52AM -0700, Dey, Megha wrote:
-> >
-> >
-> > On 7/21/2020 9:25 AM, Jason Gunthorpe wrote:
-> > > On Tue, Jul 21, 2020 at 09:02:41AM -0700, Dave Jiang wrote:
-> > > > From: Megha Dey <megha.dey@intel.com>
-> > > >
-> > > > The dev-msi interrupts are to be allocated/freed only for custom
-> > > > devices, not standard PCI-MSIX devices.
-> > > >
-> > > > These interrupts are device-defined and they are distinct from the
-> > > > already existing msi interrupts:
-> > > > pci-msi: Standard PCI MSI/MSI-X setup format
-> > > > platform-msi: Platform custom, but device-driver opaque MSI
-> > > > setup/control
-> > > > arch-msi: fallback for devices not assigned to the generic PCI
-> > > > domain
-> > > > dev-msi: device defined IRQ domain for ancillary devices. For e.g.
-> > > > DSA portal devices use device specific IMS(Interrupt message store)
-> interrupts.
-> > > >
-> > > > dev-msi interrupts are represented by their own device-type. That
-> > > > means
-> > > > dev->msi_list is never contended for different interrupt types. It
-> > > > will either be all PCI-MSI or all device-defined.
-> > >
-> > > Not sure I follow this, where is the enforcement that only dev-msi
-> > > or normal MSI is being used at one time on a single struct device?
-> > >
-> >
-> > So, in the dev_msi_alloc_irqs, I first check if the dev_is_pci..
-> > If it is a pci device, it is forbidden to use dev-msi and must use the
-> > pci subsystem calls. dev-msi is to be used for all other custom
-> > devices, mdev or otherwise.
-> 
-> What prevents creating a dev-msi directly on the struct pci_device ?
+Changes since V1:
+- Drop the platform device solution
+- A new uncore PCI sub driver solution is introduced which searches
+  the PCIe Root Port device via pci_get_device() and id table.
+  Register a PCI bus notifier for the remove notification. Once the
+  device is removed, the uncore driver can be notified to unregister
+  the corresponding PMU.
+- Modify the parameters of uncore_pci_pmu_unregister() function.
 
-In the next patchset, I have explicitly added code which denies PCI devices from using the dev_msi alloc/free APIS
-> 
-> Jason
+The Snow Ridge integrated PCIe3 uncore performance monitoring unit (PMU)
+can be used to collect the performance data, e.g., the utilization
+between the PCIe devices and the components (in M2IOSF) which are
+responsible for translating and managing the requests to/from the
+device. The performance data is very useful for analyzing the
+performance of the PCIe devices.
+
+The PCIe3 uncore PMU was once supported in the Linux kernel, but it was
+removed by the commit 2167f1625c2f ("perf/x86/intel/uncore: Remove
+PCIe3 unit for SNR") due to the conflict between the PCIe Root Port
+driver and the perf uncore driver. The counters of the PCIe3 uncore PMU
+are located in the configuration space of the PCIe Root Port device,
+which already has a bonded driver portdrv_pci. One device can only have
+one bonded driver. The uncore driver is always failed to be loaded.
+
+To re-enable the PCIe3 uncore PMU support in the uncore driver, a new
+solution should be introduced, which has to meet the requirements as
+below:
+- must have a reliable way to find the PCIe Root Port device from the
+  uncore driver;
+- must be able to access the uncore counters of the PCIe Root Port
+  device from the uncore driver;
+- must support hotplug. When the PCIe Root Port device is removed, the
+  uncore driver has to be notified and unregisters the PCIe3 uncore
+  PMU.
+
+In the v1 patch set, a new platform device solution is implemented to
+address the issue, but it's rejected.
+https://lkml.kernel.org/r/20200708183034.GA466341@bjorn-Precision-5520
+
+A new uncore PCI sub driver solution is introduced from the V2 patch
+set, which:
+- searches the PCIe Root Port device via pci_get_device() and id table.
+  The matched pci_dev can be used to register a PMU for accessing the
+  counters in the PCIe Root Port device.
+- register a PCI bus notifier. Once the device is removed, the uncore
+  driver can be notified to unregister the corresponding PMU.
+
+Kan Liang (6):
+  perf/x86/intel/uncore: Factor out uncore_pci_get_dev_die_info()
+  perf/x86/intel/uncore: Factor out uncore_pci_find_dev_pmu()
+  perf/x86/intel/uncore: Factor out uncore_pci_pmu_register()
+  perf/x86/intel/uncore: Factor out uncore_pci_pmu_unregister()
+  perf/x86/intel/uncore: Generic support for the PCI sub driver
+  perf/x86/intel/uncore: Support PCIe3 unit on Snow Ridge
+
+ arch/x86/events/intel/uncore.c       | 273 +++++++++++++++++++++++++++--------
+ arch/x86/events/intel/uncore.h       |   1 +
+ arch/x86/events/intel/uncore_snbep.c |  53 +++++++
+ 3 files changed, 265 insertions(+), 62 deletions(-)
+
+-- 
+2.7.4
+
