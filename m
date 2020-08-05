@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A30623D00A
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F12823CF8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbgHET2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:28:48 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54994 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728599AbgHERL0 (ORCPT
+        id S1729063AbgHETWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728960AbgHERlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:11:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nsePUp5bwDzPkeGMt9DhuoyzhxlPvsYKTxQ+QKtzY8M=;
-        b=L00RFt4hyZphKEkzOLKgLtwumDIYN0ka0yiSzXi3Lxkxo0DUCDZZ6eKg3TGRf6zfhXvtWR
-        7gKepz9QStTnZtbGqHcA+9dtlFWmw3DOgS1X9FDgfroL9Vz2G3Aanpvhw7LL70/NH0wb8d
-        n/mECgc9MFl+7dZNNT+mCUELluNK8hg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-qXjyYV8GOJ63X808JCdliQ-1; Wed, 05 Aug 2020 09:45:04 -0400
-X-MC-Unique: qXjyYV8GOJ63X808JCdliQ-1
-Received: by mail-wr1-f72.google.com with SMTP id b13so10876161wrq.19
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:45:04 -0700 (PDT)
+        Wed, 5 Aug 2020 13:41:46 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C23C0D941F;
+        Wed,  5 Aug 2020 08:16:52 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id j16so4477021ooc.7;
+        Wed, 05 Aug 2020 08:16:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nsePUp5bwDzPkeGMt9DhuoyzhxlPvsYKTxQ+QKtzY8M=;
-        b=dJLeetCIT4mmlidH0LsgEQG4gbOUXaLw0e/e/vr9EwxkWUGAXEGkCVCYq8wrS9Ow4j
-         KzTd7T9FayoZB7Db+LO3XtozH+mgpTamIjaeDW/USAvBtckaQvK4B7ZTwUC7YglrqIKx
-         hMVdsQ4cVvmLQap+JeDQN7c6KQHWOUvULsdUoIKhTsPElikuv49GfU5IWYfgIzOdAPnI
-         wTO78MZjFnmLUNd6nSlJ2sqLL02+9VATxEzDQi8bvSx8ioHlILzHeewx0WiWdXDWgqlE
-         pC1tNUOsFgcEqstXHcKjiL8p3vC4Xr0cYbZBcC9NFEwwxN+6U1i+26myo5YEejQhwCTI
-         TjMw==
-X-Gm-Message-State: AOAM533ziHBw5S1Ct5sKP+IEhx1WA2kq/i9ERs1thcxgM3DAqKSpDq9T
-        LvhmQz9j/6VxBiwdRA9nhkR1dCmS1grCt3dNiWVeaQoqDBW5EuNt0+UmmfPaV/jfCCJgU12e+2y
-        jZ2xI0/dAzGM1+Iyr+tHWpxxy
-X-Received: by 2002:a1c:96c5:: with SMTP id y188mr3540959wmd.72.1596635102978;
-        Wed, 05 Aug 2020 06:45:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyhLoRx7IzuivQlViG9F0fDgIgMdjMVV9PC0dBe4LfMZpIiYNNk/XwHbeS7FyfdebXIBXrqkg==
-X-Received: by 2002:a1c:96c5:: with SMTP id y188mr3540940wmd.72.1596635102770;
-        Wed, 05 Aug 2020 06:45:02 -0700 (PDT)
-Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
-        by smtp.gmail.com with ESMTPSA id e16sm2907812wrx.30.2020.08.05.06.45.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:45:02 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:45:00 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH v3 38/38] virtio_net: use LE accessors for speed/duplex
-Message-ID: <20200805134226.1106164-39-mst@redhat.com>
-References: <20200805134226.1106164-1-mst@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ma8XUemDPSU43scaub//Tj8SjqSjSSXU9X7SXIYVoOU=;
+        b=bmU5erMabaHnH11G4ugT3ZM+1sK5m+CgBAaNTNYXbKwghE1JcaTdfyatMzrkN6xRef
+         8EyEh25LYHNs4TS3f4pJAkWTp5YFFgNSK3ELo+H/WbG2E9LWM762Cz3tKJiSc6zm3ViG
+         J0jnPEFIfMw17vO0s7xuJmbGKFt7L9SS+jsHuGwFpussM36hCV716bIr74P5QdnjImBf
+         8PPeWstiKPeXSx2pLUCkb5rOTzSLytHTfDnEKL3NcyLBucMwnutLVMbLhkLp5FTHqF6L
+         q5Ay4BPAEamWokIyry1/VbK2ccfvRIu99e/1qHRH5hAewbZ6HLYixM6lDLnZuivkVD+j
+         +ncA==
+X-Gm-Message-State: AOAM530wFlP+DcDNIcMPIc1IHfgx/k6PtcqyB1SRwDI9Jh/fd5Et9e8T
+        sUCF2xXLhgEgbqLyA1GhX/cM4coEDBUUP1k+V88eDJD5
+X-Google-Smtp-Source: ABdhPJwe10oto1QkttDyucMJ1qGeA6Wk+Q0uDI4AF3ApXEWocJh2xeIhIPIH+vNM+BYieFqojz9wao5UdxjTIgmcZbQ=
+X-Received: by 2002:a9d:7d8c:: with SMTP id j12mr2827246otn.250.1596636279974;
+ Wed, 05 Aug 2020 07:04:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805134226.1106164-1-mst@redhat.com>
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+References: <20200728134226.27592-1-trix@redhat.com>
+In-Reply-To: <20200728134226.27592-1-trix@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 5 Aug 2020 16:04:28 +0200
+Message-ID: <CAMuHMdX-m+q-SYveM2BQyM+EoiQ1ctVviJzjs+UbTzH9cJaqMQ@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: of: reset name variable in of_gpiochip_add_hog
+To:     trix@redhat.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Frank Rowand <frank.rowand@sony.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Speed and duplex config fields depend on VIRTIO_NET_F_SPEED_DUPLEX
-which being 63>31 depends on VIRTIO_F_VERSION_1.
+Hi Tom,
 
-Accordingly, use LE accessors for these fields.
+Thanks for your patch!
 
-Reported-by: Cornelia Huck <cohuck@redhat.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/net/virtio_net.c        | 9 +++++----
- include/uapi/linux/virtio_net.h | 2 +-
- 2 files changed, 6 insertions(+), 5 deletions(-)
+On Tue, Jul 28, 2020 at 3:42 PM <trix@redhat.com> wrote:
+> From: Tom Rix <trix@redhat.com>
+>
+> Clang static analysis reports this error
+>
+> gpiolib-of.c:664:9: warning: 2nd function call argument
+>   is an uninitialized value [core.CallAndMessage]
+>         ret = gpiod_hog(desc, name, lflags, dflags);
+>
+> name is sometimes set by of_parse_own_gpio
+> name is always used by gpiod_hog
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ba38765dc490..0934b1ec5320 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2264,12 +2264,13 @@ static void virtnet_update_settings(struct virtnet_info *vi)
- 	if (!virtio_has_feature(vi->vdev, VIRTIO_NET_F_SPEED_DUPLEX))
- 		return;
- 
--	speed = virtio_cread32(vi->vdev, offsetof(struct virtio_net_config,
--						  speed));
-+	virtio_cread_le(vi->vdev, struct virtio_net_config, speed, &speed);
-+
- 	if (ethtool_validate_speed(speed))
- 		vi->speed = speed;
--	duplex = virtio_cread8(vi->vdev, offsetof(struct virtio_net_config,
--						  duplex));
-+
-+	virtio_cread_le(vi->vdev, struct virtio_net_config, duplex, &duplex);
-+
- 	if (ethtool_validate_duplex(duplex))
- 		vi->duplex = duplex;
- }
-diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
-index 27d996f29dd1..3f55a4215f11 100644
---- a/include/uapi/linux/virtio_net.h
-+++ b/include/uapi/linux/virtio_net.h
-@@ -99,7 +99,7 @@ struct virtio_net_config {
- 	 * speed, in units of 1Mb. All values 0 to INT_MAX are legal.
- 	 * Any other value stands for unknown.
- 	 */
--	__virtio32 speed;
-+	__le32 speed;
- 	/*
- 	 * 0x00 - half duplex
- 	 * 0x01 - full duplex
--- 
-MST
+This is a false-positive: gpiod_hog() is only called if
+of_parse_own_gpio() returned success, in which case it has filled in the
+name output parameter.
 
+> So it is necessary to reset name so an old value is
+> not mistakenly used by gpiod_hog.
+
+Hence this is not needed.
+
+> Fixes: bc21077e084b ("gpio: of: Extract of_gpiochip_add_hog()")
+
+This is not the commit that introduced the "bug".
+
+> Signed-off-by: Tom Rix <trix@redhat.com>
+
+> --- a/drivers/gpio/gpiolib-of.c
+> +++ b/drivers/gpio/gpiolib-of.c
+> @@ -657,6 +657,7 @@ static int of_gpiochip_add_hog(struct gpio_chip *chip, struct device_node *hog)
+>         int ret;
+>
+>         for (i = 0;; i++) {
+> +               name = NULL;
+>                 desc = of_parse_own_gpio(hog, chip, i, &name, &lflags, &dflags);
+>                 if (IS_ERR(desc))
+>                         break;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
