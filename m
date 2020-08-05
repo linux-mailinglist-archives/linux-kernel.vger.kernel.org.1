@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED5923D273
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A453623D2AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729714AbgHEUMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726970AbgHEQZe (ORCPT
+        id S1729822AbgHEUPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:15:06 -0400
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:40840 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726585AbgHEQVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:25:34 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41589C001FE0
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 09:16:36 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 17so2616034pfw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:16:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yoUWB0P6FTokCu5fDJiOmP1nTkXeVKywh1BuHo0WaYk=;
-        b=PH+mAesaWFdItU17aWsg/FXG5MD1NTJNqiVx4V5E7t/gK1JX24tKMa9SU33PBqiVlW
-         hJnkIvrbxMcLIfI/5vfig4MkwqT8ywcTqOzNQ1/MhO6RK4tW2PMqUofXj0H6dv6+NK9U
-         KmxgLN3iKX4j5mg3wdDNJ9wn2Was1zgft42N8=
+        Wed, 5 Aug 2020 12:21:02 -0400
+Received: by mail-lf1-f48.google.com with SMTP id m15so23907579lfp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:21:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yoUWB0P6FTokCu5fDJiOmP1nTkXeVKywh1BuHo0WaYk=;
-        b=ILJ3M1goKNBueurKnM2Pb5KUxKhkylNrg0HkBhPs9xw5/MONzEjlN63QwkKJFjdS5G
-         uLcFi12HaJWuYnS5Iyqzpvl+YIUm/RwhOdI73tgR+V3TRMkcsV9/VH7OiOtnU8BQAhgg
-         gvS31pGV7lfmdQUHNb/g5Z/729R7yPN44l5pYs8x+awPNIgcnHsL8uN0wldHoJ2a36jy
-         sHSVZYVqo5szCfjOOJNEHK3yLsDq8c3wVC20nDul2HKDEiWOb27W4tiZdhi8eZTztWQs
-         wUPhmMcG+w154CnnfqA2+AKuhbSGQmMLT1bnD1gajku3DfmJrLWv3lYVpzFyIKHrW3Sj
-         IIwg==
-X-Gm-Message-State: AOAM533NPsFWyal4z4/3V93Eb9fRibh4GzOmK5U7XSZ9Yx9OwMM9YfCc
-        xDSfkFLtMv3zEWXNBVU1izs80Q==
-X-Google-Smtp-Source: ABdhPJyI7n/ZnEwi7VJ7iEODyBwIQasFlmldWO0wkAr5x7dLBPwWfsy76ZCGbBdA4sMgeYeWOSX1XA==
-X-Received: by 2002:a63:1c23:: with SMTP id c35mr3471145pgc.91.1596644195727;
-        Wed, 05 Aug 2020 09:16:35 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id f2sm4259734pfb.184.2020.08.05.09.16.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=29PkptMrIh0wL9+y+cJ5jR3/l+AuSbnf80pfRQhXI6Y=;
+        b=dTibp3nObfdWJnTarzU3qIoY1mtETKuafEGlU4yplAbFLJSCzNBimrDjRq/qATLpwS
+         gRs5XYvsXYBDs85iMQJaMJQRLaCvYhUai0dMmyEauFaiwFHHM5xKoqrVoIAtaF+sBsv9
+         wrlfMeM2ce2OMAzsAeUO3ESADzXYC6ig7fRfprtPkoTxiNA9tIhVMeB1yypl1MY6p3mp
+         UGmZwFoOfprFqE4faN1fOFRUYzhxotX54hnZlL8FebdhLBbD0BdBHG5l1J+JSrMniiOo
+         G5QnVLjUarzMd4Mtdw6bUbrG2dxvg1wpMd9Gu3+rdwwMKWCJJLstxN9gtvRDR/OfryMJ
+         8kWQ==
+X-Gm-Message-State: AOAM531ibLZjCc7LsWpAa7uM/u6rmBpXFUIsblkzhg0llMncpC3J8X3Q
+        wMhC4+Ft5+PU9Q3u7RS9ICw=
+X-Google-Smtp-Source: ABdhPJwRYPUdeEvLiz482raxZOFw8HkgE2IwIkweXVoWC2qvJ9WAhYrqx0qx0zGOZKDFxLndOgXJ3A==
+X-Received: by 2002:a19:457:: with SMTP id 84mr1946291lfe.191.1596644459745;
+        Wed, 05 Aug 2020 09:20:59 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id a16sm1165711ljj.108.2020.08.05.09.20.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 09:16:35 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     swboyd@chromium.org, Alex Elder <elder@linaro.org>,
-        mka@chromium.org, Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] soc: qcom: aoss: qmp_send() can't handle interruptions so stop pretending
-Date:   Wed,  5 Aug 2020 09:16:11 -0700
-Message-Id: <20200805091141.2.If847565ed7568448c67804f3735d5f8a61eda560@changeid>
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-In-Reply-To: <20200805091141.1.I86b3faaecb0d82997b599b1300f879606c71e116@changeid>
-References: <20200805091141.1.I86b3faaecb0d82997b599b1300f879606c71e116@changeid>
+        Wed, 05 Aug 2020 09:20:58 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1k3MA2-00005N-PL; Wed, 05 Aug 2020 18:21:02 +0200
+Date:   Wed, 5 Aug 2020 18:21:02 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Alex Elder <elder@ieee.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] greybus: Use fallthrough pseudo-keyword
+Message-ID: <20200805162102.GK3634@localhost>
+References: <20200727183258.GA28571@embeddedor>
+ <63871608-e076-26b0-85df-cff11699c3a3@ieee.org>
+ <e36013ba-e19a-86c9-cb68-d7ad5559c292@ieee.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <e36013ba-e19a-86c9-cb68-d7ad5559c292@ieee.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function qmp_send() called wait_event_interruptible_timeout() to
-wait for its interrupt.  However, this function did not check for
--ERESTARTSYS and assumed that any non-zero return value meant that the
-event happened.
+On Wed, Aug 05, 2020 at 08:14:47AM -0500, Alex Elder wrote:
+> On 7/28/20 5:37 PM, Alex Elder wrote:
+> > On 7/27/20 1:32 PM, Gustavo A. R. Silva wrote:
+> >> Replace the existing /* fall through */ comments and its variants with
+> >> the new pseudo-keyword macro fallthrough[1].
+> >>
+> >> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> > 
+> > Thanks for the patch.  It looks good, but it raises
+> > another question I'd like discussion on.
 
-While we could try to figure out how to handle interruptions by
-figuring out how to cancel and/or undo our transfer in a race-free way
-and then communicating this status back to all of our callers, that
-seems like a whole lot of complexity.  As I understand it the transfer
-should happen rather quickly and if we're really hitting the 1 second
-timeout we're in deep doggy doodoo anyway.  Let's just use the
-non-interruptible version of the function and call it good enough.
+Sorry about the late reply on this.
 
-Found by code inspection.  No known test cases expose the problem
-described here.
+> It's been a week, and we heard back from Viresh (and Joe) on
+> this, but no one else.  Viresh left out the break statement on
+> the last case of the switch statement intentionally, arguing
+> that it is not needed (much like a return statement at the end
+> of a void function).  But he doesn't feel strongly enough
+> insist it should stay that way.  I'm sure the others omitted
+> the break statement intentionally as well.
 
-Fixes: 2209481409b7 ("soc: qcom: Add AOSS QMP driver")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+I really don't mind break statements in the final case and often do add
+them, but I'm a bit reluctant to suggest that this is something that
+need "fixing". There are a ton of these all over the kernel, and I think
+we have too many opportunities for people to do mechanical clean ups
+already.
 
- drivers/soc/qcom/qcom_aoss.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Especially after Gustavo's work, the only real argument for adding them
+is mostly moot as the compiler would catch it if anyone adds a new case
+and forgets about the break statement.
 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index 818cdf74a267..897f9f1c33ba 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -257,8 +257,8 @@ static int qmp_send(struct qmp *qmp, const void *data, size_t len, bool noirq)
- 		time_left = readx_poll_timeout_atomic(qmp_message_empty, qmp,
- 						      is_empty, is_empty, 1U, 1000000U);
- 	else
--		time_left = wait_event_interruptible_timeout(qmp->event,
--							     qmp_message_empty(qmp), HZ);
-+		time_left = wait_event_timeout(qmp->event, qmp_message_empty(qmp), HZ);
-+
- 	if (!time_left) {
- 		dev_err(qmp->dev, "ucore did not ack channel\n");
- 		ret = -ETIMEDOUT;
--- 
-2.28.0.163.g6104cc2f0b6-goog
+> Given no strong pushback, I'll ask you (Gustavo) to post a
+> second patch adding the missing break statements I described
+> (and look for any others I might have missed).  If you would
+> prefer not to do that, just say so, and I will send out such
+> a patch myself.
 
+I'd probably just leave it as is, if only to not inspire others to send
+copy-cat "fixes".
+
+Johan
