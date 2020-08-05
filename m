@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB60B23C7D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A56523C7EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgHEIcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 04:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgHEIcv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 04:32:51 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF67C06174A;
-        Wed,  5 Aug 2020 01:32:51 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id q16so21193929ybk.6;
-        Wed, 05 Aug 2020 01:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QMUv2ojLbgkbNjy8R8PZ7qLfqmfzFtBoqOYdedJ2bnc=;
-        b=aqR4DbID7bj/Ery02pr0Zf1tqbYdGDFS8QdtlRqESrS0bfzPQwuaFomo0JlB199P7A
-         f0b0Gk8kKsv4uyOmA45UfAOzMHUD4iZEk/KZSjZ6dWlB1Fuz+cImvVsSBYiQj0lrNhEs
-         Z2j46vIST2amb3nh1Au2pDcdsp+XTcqkLo7+JGKhrpA5+tWhMcgW4JnOMEpmtlaxhBRj
-         hbtlv8k9iV6fMcIsfxzeO3VNg4LpBCUSFqawcC/azblq9r+t8MYMnNzSEl21d52XE8hb
-         kMst3jFoocBfbJXd4uyb9qa7t9qUB8cHL3yoGyfb/r5egn8zixHhK0iOpknUSVcZENXJ
-         1PRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QMUv2ojLbgkbNjy8R8PZ7qLfqmfzFtBoqOYdedJ2bnc=;
-        b=Q1XHLJLvfH+bl5GVuBqUo80KHnX6Z6pYVpyd1X5vaOusotGHaOzx59QBkp1zDQeZTB
-         enWWeELzjwqSyDDQmjdGjxldtFb6NVnXAW9POJB3t8V9D/9n+2tnbJWvEQo3XBkjnEpI
-         smm1j0QlyK7cPzoEQdm0EHgMAA7AnLoV4iUDjtvm9IQhi1vFedbIHn3T2+Pa2/neZ+ja
-         6A2qeo7z6IWiWcAoSbfm2YCs6dJTlDYWxzR30vx396EuGhRY1L29o2VWaJHc7gAySQ8K
-         wszmvsE3xM+J5Evd8FFgQEvKRu0ZrsLLKTyY6bH8+ys8I7SfXaHL/kErqg71CUQDkC3b
-         Grcw==
-X-Gm-Message-State: AOAM5310+GdIbgV19FSr/uYbRC2XvVT3dhepdbApYuuCe3UOvHeLEwao
-        8bMOYVkPrplplTVSFVxxB3udn8Y+ftUlppsIHdU=
-X-Google-Smtp-Source: ABdhPJwCxyo6Mgcjt5sLnCUPzfgXDk/Kc5vQQlt5qmzrN5MSfk1K996vJuD0IfhXu1dXRkSk7c+J/+d30wt1+CIDrXI=
-X-Received: by 2002:a25:3355:: with SMTP id z82mr3233231ybz.445.1596616370390;
- Wed, 05 Aug 2020 01:32:50 -0700 (PDT)
+        id S1728118AbgHEIij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 04:38:39 -0400
+Received: from mga07.intel.com ([134.134.136.100]:25018 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726439AbgHEIie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 04:38:34 -0400
+IronPort-SDR: f1nYxTmaJPwX8wVN8HqJNQZwYC1MNz7lsLRw4YEiRAXd3Mx+Ny/mbI9C8CRGjqHgCUS3/QvbP0
+ pBH+RyObqM0g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="216860196"
+X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
+   d="scan'208";a="216860196"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 01:38:34 -0700
+IronPort-SDR: C5UplkwAzVPBoDRXrtWOYKDvmUsb2QCq9x8pl4nYSQKVpvMIt1aGCsCdNlFzspJd63WXHU6QVC
+ JRl1DDUnPpSQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
+   d="scan'208";a="288857820"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga003.jf.intel.com with ESMTP; 05 Aug 2020 01:38:32 -0700
+Date:   Wed, 5 Aug 2020 16:35:04 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     "Wu, Hao" <hao.wu@intel.com>
+Cc:     "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>
+Subject: Re: [PATCH v3 4/4] fpga: dfl: add support for N3000 nios private
+  feature
+Message-ID: <20200805083504.GA20262@yilunxu-OptiPlex-7050>
+References: <1596524715-18038-1-git-send-email-yilun.xu@intel.com>
+ <1596524715-18038-5-git-send-email-yilun.xu@intel.com>
+ <DM6PR11MB38196B703EA0772783466AA9854A0@DM6PR11MB3819.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <1596465107-14251-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1596465107-14251-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200804081801.GD13316@paasikivi.fi.intel.com>
-In-Reply-To: <20200804081801.GD13316@paasikivi.fi.intel.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 5 Aug 2020 09:32:24 +0100
-Message-ID: <CA+V-a8vk2=TJ3y2o56jZ-8gGXQy_aRu_TeraU0iCyisFdweEPg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] media: i2c: ov5640: Fallback to parallel mode
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB38196B703EA0772783466AA9854A0@DM6PR11MB3819.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+Thanks for your quick response, I'm OK with most changes. Some comments
+inline.
 
-Thank you for the review.
+On Tue, Aug 04, 2020 at 08:56:12PM +0800, Wu, Hao wrote:
+> > Subject: [PATCH v3 4/4] fpga: dfl: add support for N3000 nios private feature
+> 
+> > +#define NIOS_INIT0x1000
+> > +#define NIOS_INIT_DONEBIT(0)
+> > +#define NIOS_INIT_STARTBIT(1)
+> > +/* Mode for PKVL A, link 0, the same below */
+> > +#define REQ_FEC_MODE_A0_MSKGENMASK(9, 8)
+> > +#define REQ_FEC_MODE_A1_MSKGENMASK(11, 10)
+> > +#define REQ_FEC_MODE_A2_MSKGENMASK(13, 12)
+> > +#define REQ_FEC_MODE_A3_MSKGENMASK(15, 14)
+> > +#define REQ_FEC_MODE_B0_MSKGENMASK(17, 16)
+> > +#define REQ_FEC_MODE_B1_MSKGENMASK(19, 18)
+> > +#define REQ_FEC_MODE_B2_MSKGENMASK(21, 20)
+> > +#define REQ_FEC_MODE_B3_MSKGENMASK(23, 22)
+> > +#define REQ_FEC_MODE_NO0x0
+> > +#define REQ_FEC_MODE_KR0x1
+> > +#define REQ_FEC_MODE_RS0x2
+> 
+> What does REQ mean?
 
-On Tue, Aug 4, 2020 at 9:18 AM Sakari Ailus
-<sakari.ailus@linux.intel.com> wrote:
->
-> Hi Prabhakar,
->
-> On Mon, Aug 03, 2020 at 03:31:47PM +0100, Lad Prabhakar wrote:
-> > Fallback to parallel mode if bus_type doesn't match the supported
-> > interfaces by the driver.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  drivers/media/i2c/ov5640.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-> > index 08c67250042f..4e88b0540740 100644
-> > --- a/drivers/media/i2c/ov5640.c
-> > +++ b/drivers/media/i2c/ov5640.c
-> > @@ -3074,6 +3074,12 @@ static int ov5640_probe(struct i2c_client *client)
-> >               return ret;
-> >       }
-> >
-> > +     /* fallback to parallel mode */
-> > +     if (sensor->ep.bus_type != V4L2_MBUS_PARALLEL &&
-> > +         sensor->ep.bus_type != V4L2_MBUS_CSI2_DPHY &&
-> > +         sensor->ep.bus_type != V4L2_MBUS_BT656)
-> > +             sensor->ep.bus_type = V4L2_MBUS_PARALLEL;
->
-> You basically need the type from the v4l2_fwnode_endpoint_parse(), and if
-> you don't have any of the above bus types, probe should fail. The old
-> bindings were documented in a way that either parallel or CSI-2 bus will be
-> used, and there were no defaults. So all should be well.
->
-The bus_type is coming from v4l2_fwnode_endpoint_parse(), I'll add the
-check to fail if type doesn't match the supported interfaces and drop
-the above check.
+It's the abbreviation of REQUEST, on spec these fields names
+REQUEST_FEC_MODE_X_X
 
-Cheers,
-Prabhakar
+> > +/* ns is the abbreviation of nios_spi */
+> > +static int ns_bus_poll_stat_timeout(void __iomem *base, u64 *v)
+> 
+> Why adding "bus" here? I just see it's polling on register bits, right?
+> It's a little confusing on ns_bus.
 
-> --
-> Sakari Ailus
+It is the polling for regmap read/write, the regmap is also called
+regbus, so I name ns_bus here.
+
+I could change the name, do you think there is confusing also for 
+ns_bus_reg_read & ns_bus_reg_write?
+
+Thanks,
+Yilun.
