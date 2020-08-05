@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE2A23CE38
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E06523CE09
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728535AbgHESVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 14:21:23 -0400
-Received: from m15114.mail.126.com ([220.181.15.114]:43466 "EHLO
-        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729115AbgHESNh (ORCPT
+        id S1728579AbgHESHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 14:07:23 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39392 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728934AbgHESEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 14:13:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=QTs20Y2uQb75JxoibU
-        08BQmlRKaNqO3ksWubKbOLAMk=; b=XdEhO1lYn70aHJn7bKkRt5gQFR/zOndikH
-        dnrY/5tS8TJBqf9VAde3cKoSDLEvLpG2QoYTEfmDpJnSOymC7FfHdKzJU3bmYTC1
-        FVefq/mXxXuqR1p9+4SoFxen0bHthfSqJ/4Nf0mtcSprnTcNwnSxd4GuWRoMKY35
-        /2fGAmJjQ=
-Received: from 192.168.137.129 (unknown [112.10.84.202])
-        by smtp7 (Coremail) with SMTP id DsmowADXTEK3tSpfUXVBIA--.57772S3;
-        Wed, 05 Aug 2020 21:35:53 +0800 (CST)
-From:   Xianting Tian <xianting_tian@126.com>
-To:     bcrl@kvack.org, viro@zeniv.linux.org.uk
-Cc:     linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] aio: use wait_for_completion_io() when waiting for completion of io
-Date:   Wed,  5 Aug 2020 09:35:51 -0400
-Message-Id: <1596634551-27526-1-git-send-email-xianting_tian@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DsmowADXTEK3tSpfUXVBIA--.57772S3
-X-Coremail-Antispam: 1Uf129KBjvdXoWrur1xKF48Ww1rtF1DCw4rKrg_yoWkCrc_Gr
-        18tF18uayUXFWDKw1jkrZ3t3s0939rC3Z5WanxWF97Gay3GasxCr1Dtwn0vFySg342qF15
-        Wws8CFW7trnrCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0loGPUUUUU==
-X-Originating-IP: [112.10.84.202]
-X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi5hl3pFpD-Dx3VQAAsX
+        Wed, 5 Aug 2020 14:04:06 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k3KC3-0003ZB-9w; Wed, 05 Aug 2020 14:14:59 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/usnic: fix spelling mistake "transistion" -> "transition"
+Date:   Wed,  5 Aug 2020 15:14:59 +0100
+Message-Id: <20200805141459.23069-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When waiting for the completion of io, we need account iowait time. As
-wait_for_completion() calls schedule_timeout(), which doesn't account
-iowait time. While wait_for_completion_io() calls io_schedule_timeout(),
-which will account iowait time.
+From: Colin Ian King <colin.king@canonical.com>
 
-So using wait_for_completion_io() instead of wait_for_completion()
-when waiting for completion of io before exit_aio and io_destroy.
+There is a spelling mistake in a usnic_err error message. Fix it.
 
-Signed-off-by: Xianting Tian <xianting_tian@126.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- fs/aio.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/usnic/usnic_ib_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/aio.c b/fs/aio.c
-index 91e7cc4..498b8a0 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -892,7 +892,7 @@ void exit_aio(struct mm_struct *mm)
- 
- 	if (!atomic_sub_and_test(skipped, &wait.count)) {
- 		/* Wait until all IO for the context are done. */
--		wait_for_completion(&wait.comp);
-+		wait_for_completion_io(&wait.comp);
- 	}
- 
- 	RCU_INIT_POINTER(mm->ioctx_table, NULL);
-@@ -1400,7 +1400,7 @@ static long read_events(struct kioctx *ctx, long min_nr, long nr,
- 		 * is destroyed.
- 		 */
- 		if (!ret)
--			wait_for_completion(&wait.comp);
-+			wait_for_completion_io(&wait.comp);
- 
- 		return ret;
- 	}
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_main.c b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+index c9abe1c01e4e..662e7fc7f628 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_main.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+@@ -120,7 +120,7 @@ static void usnic_ib_qp_grp_modify_active_to_err(struct usnic_ib_dev *us_ibdev)
+ 								IB_QPS_ERR,
+ 								NULL);
+ 				if (status) {
+-					usnic_err("Failed to transistion qp grp %u from %s to %s\n",
++					usnic_err("Failed to transition qp grp %u from %s to %s\n",
+ 						qp_grp->grp_id,
+ 						usnic_ib_qp_grp_state_to_string
+ 						(cur_state),
 -- 
-1.8.3.1
+2.27.0
 
