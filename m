@@ -2,111 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1195023D228
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394EA23D282
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgHEUJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:09:30 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44774 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbgHEQce (ORCPT
+        id S1728885AbgHEUN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726571AbgHEQXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:32:34 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 33C1D20B4916;
-        Wed,  5 Aug 2020 09:21:25 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 33C1D20B4916
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1596644485;
-        bh=GzAsE7yIveqCecXCvd87U4xE2Iv3TtxhwzS/oH7sMZQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=tAdrgRN+aiLODwPD2Pu1t/IPAMRAiJp2U3MWvDjOQx4AmOIgoovl6hWOOeVMDJtJt
-         srJScwliKGlB05ubxJW3Wzi7YO2eKzS+pomSQSUqJxynjqI9F3S5cW+JA1RfOPWOoS
-         r5NxUGUp0TBH7UejIn8B1uTkrKsu2u62Nak4Higk=
-Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>, zohar@linux.ibm.com,
-        stephen.smalley.work@gmail.com, sashal@kernel.org,
-        jmorris@namei.org, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
- <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
- <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
- <c7c168f2-e30b-d2c5-abcb-1b6919197474@schaufler-ca.com>
- <20200805154504.GB4365@sequoia>
- <7c7a076b-6ba7-2e8d-409a-b3b4e4738c41@linux.microsoft.com>
- <20200805161449.GC4365@sequoia>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <ae80581d-a34c-51f4-d4f9-94c1e341fd15@linux.microsoft.com>
-Date:   Wed, 5 Aug 2020 09:21:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 5 Aug 2020 12:23:32 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9D5C0086A2;
+        Wed,  5 Aug 2020 09:23:31 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id t11so5687650plr.5;
+        Wed, 05 Aug 2020 09:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IeRsxVSY253Dl1UryHxPoWgaYMLY3iT3hncn20nrsEQ=;
+        b=hkzPp96SNBY8LoUvt2W1bUig34IOWher6jbEXQfq1b3RD7ZlI6Afo4fuG2q8yyhEiK
+         tJmO/TFFHzTHeIr6pay/PgJgm4kKweKK3hgCMyGkIOjXCpZ9ddn0R9zMcxQBvWzbIL0V
+         /Op54Ocm3KxoSgX4+eHZX8LB8hXxw4EnTHE3G7r6W2YfiydL/KnnFsdjwfhNI7E9JI5Q
+         xe1t419Qw44UAfDEaf1VuBBG7pOR1mOOD2JXVnatY6smyrREhdRUM9M/9WdaPtatYqEa
+         WZL1wQ00vlqeMLmVneqr0P+USzxG9l3Ie4oTWVHPUbePCQnnqCndQhx7E8VwvmDGfKKG
+         tvmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IeRsxVSY253Dl1UryHxPoWgaYMLY3iT3hncn20nrsEQ=;
+        b=VrKkoSe7LCAX8pDh+HwGlXgCxWOKWqa8wPKtSLGt925kCo2rMRD+g6dI2tAR3Eog7m
+         PFS/b4H2Qn3gJU1KvunmZkJP9hIBnwW8lwmhHHmv4xVVoQNT0MDWIZtMDQaQVPzJ2EyB
+         No4+EAX0kuF7TApooByr2VINGboFK2acTqKO5bM6+gqr504IOhsIfOyC128LYsA6/B54
+         ZgRXxNaFpqW+d6Rk1Vqjm6vnA0hHATX8BQyP9sgA3ZQ36csXq7idVzxjk5Vuu1cgKLwe
+         SqK6TPS3WysaEOPJ+3mFE9sgbGpBYEi9yCN9EyPoYtfhJ420XNfIU86/KNWuGizfmwrL
+         XaHg==
+X-Gm-Message-State: AOAM533OFfqRWgj299ULU6b+DXUyq6cvDTpalKwNXjOWfcgb2LaCLGqT
+        BpM/uWBjiGcQyHCPVwjSZ9A=
+X-Google-Smtp-Source: ABdhPJyF+fa9fDEaevgKFX7Ga5Bf/Qae+ENKw81F0F1ZsY+x6a9bOPt4CcgeVGvHuq4hmBnfyiZQdw==
+X-Received: by 2002:a17:90a:f290:: with SMTP id fs16mr4032872pjb.35.1596644609948;
+        Wed, 05 Aug 2020 09:23:29 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id y196sm4244977pfc.202.2020.08.05.09.23.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 09:23:29 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 21:51:54 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Tomoya MORINAGA <tomoya-linux@dsn.okisemi.com>,
+        Tomoya MORINAGA <tomoya.rohm@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: Re: [PATCH v1] i2c: eg20t: use generic power management
+Message-ID: <20200805162154.GA3179@gmail.com>
+References: <20200805152331.GA510793@bjorn-Precision-5520>
+ <20200805152832.GA511823@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20200805161449.GC4365@sequoia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200805152832.GA511823@bjorn-Precision-5520>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/20 9:14 AM, Tyler Hicks wrote:
-> On 2020-08-05 09:07:48, Lakshmi Ramasubramanian wrote:
->> On 8/5/20 8:45 AM, Tyler Hicks wrote:
->>> On 2020-08-05 08:36:40, Casey Schaufler wrote:
->>>> On 8/4/2020 6:14 PM, Lakshmi Ramasubramanian wrote:
->>>>> On 8/4/20 6:04 PM, Casey Schaufler wrote:
->>>>>> On 8/4/2020 5:43 PM, Lakshmi Ramasubramanian wrote:
->>>>>>> Critical data structures of security modules are currently not measured.
->>>>>>> Therefore an attestation service, for instance, would not be able to
->>>>>>> attest whether the security modules are always operating with the policies
->>>>>>> and configuration that the system administrator had setup. The policies
->>>>>>> and configuration for the security modules could be tampered with by
->>>>>>> malware by exploiting kernel vulnerabilities or modified through some
->>>>>>> inadvertent actions on the system. Measuring such critical data would
->>>>>>> enable an attestation service to better assess the state of the system.
->>>>>>
->>>>>> I still wonder why you're calling this an LSM change/feature when
->>>>>> all the change is in IMA and SELinux. You're not putting anything
->>>>>> into the LSM infrastructure, not are you using the LSM infrastructure
->>>>>> to achieve your ends. Sure, you *could* support other security modules
->>>>>> using this scheme, but you have a configuration dependency on
->>>>>> SELinux, so that's at best going to be messy. If you want this to
->>>>>> be an LSM "feature" you need to use the LSM hooking mechanism.
->>>>>
->>>>>>
->>>>>> I'm not objecting to the feature. It adds value. But as you've
->>>>>> implemented it it is either an IMA extension to SELinux, or an
->>>>>> SELiux extension to IMA. Could AppArmor add hooks for this without
->>>>>> changing the IMA code? It doesn't look like it to me.
->>>>>
->>>>> The check in IMA to allow the new IMA hook func LSM_STATE and LSM_POLICY when SELinux is enabled is just because SELinux is the only security module using these hooks now.
->>>>>
->>>>> To enable AppArmor, for instance, to use the new IMA hooks to measure state and policy would just require adding the check for CONFIG_SECURITY_APPARMOR. Other than that, there are no IMA changes needed to support AppArmor or other such security modules.
->>>>
->>>> This is exactly what I'm objecting to. What if a system has both SELinux
->>>> and AppArmor compiled in? What if it has both enabled?
->>>
->>> The SELinux state and policy would be measured but the AppArmor
->>> state/policy would be silently ignored. This isn't ideal as the IMA
->>> policy author would need to read the kernel code to figure out which
->>> LSMs are going to be measured.
->>
->> Tyler - I am not sure why AppArmor state\policy would be ignored when both
->> SELinux and AppArmor are enabled. Could you please clarify?
+On Wed, Aug 05, 2020 at 10:28:32AM -0500, Bjorn Helgaas wrote:
+> [update Linus's address, drop Qi's (bounced)]
 > 
-> I think Casey is talking about now (when AppArmor is not supported by
-> this feature) and you're talking about the future (when AppArmor may be
-> supported by this feature).
+> On Wed, Aug 05, 2020 at 10:23:31AM -0500, Bjorn Helgaas wrote:
+> > [+cc Tomoya, Linus, Qi, Ben from e9bc8fa5df1c]
+> > 
+> > On Mon, Jul 20, 2020 at 07:30:32PM +0530, Vaibhav Gupta wrote:
+> > > Drivers using legacy PM have to manage PCI states and device's PM states
+> > > themselves. They also need to take care of configuration registers.
+> > > 
+> > > With improved and powerful support of generic PM, PCI Core takes care of
+> > > above mentioned, device-independent, jobs.
+> > > 
+> > > This driver makes use of PCI helper functions like
+> > > pci_save/restore_state(), pci_enable/disable_device(),
+> > > pci_enable_wake() and pci_set_power_state() to do required operations. In
+> > > generic mode, they are no longer needed.
+> > > 
+> > > Change function parameter in both .suspend() and .resume() to
+> > > "struct device*" type. Use to_pci_dev() and dev_get_drvdata() to get
+> > > "struct pci_dev*" variable and drv data.
+> > > 
+> > > Compile-tested only.
+> > > 
+> > > Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> > > ---
+> > >  drivers/i2c/busses/i2c-eg20t.c | 39 ++++++++--------------------------
+> > >  1 file changed, 9 insertions(+), 30 deletions(-)
+> > > 
+> > > diff --git a/drivers/i2c/busses/i2c-eg20t.c b/drivers/i2c/busses/i2c-eg20t.c
+> > > index 73f139690e4e..c0ddc4cc2ce7 100644
+> > > --- a/drivers/i2c/busses/i2c-eg20t.c
+> > > +++ b/drivers/i2c/busses/i2c-eg20t.c
+> > > @@ -846,11 +846,10 @@ static void pch_i2c_remove(struct pci_dev *pdev)
+> > >  	kfree(adap_info);
+> > >  }
+> > >  
+> > > -#ifdef CONFIG_PM
+> > > -static int pch_i2c_suspend(struct pci_dev *pdev, pm_message_t state)
+> > > +static int __maybe_unused pch_i2c_suspend(struct device *dev)
+> > >  {
+> > > -	int ret;
+> > >  	int i;
+> > > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > >  	struct adapter_info *adap_info = pci_get_drvdata(pdev);
+> > 
+> > Why don't you use "adap_info = dev_get_drvdata(dev)" as you did below,
+> > so you don't need to_pci_dev()?
+> >
+Actually, line 870, pch_pci_dbg() again needs "struct pci_dev*" type pointer.
+Either way I had to use to_pci_dev(), so defined "pdev" which made less number
+of required changes in the code.
+> > >  	void __iomem *p = adap_info->pch_data[0].pch_base_address;
+> > >  
+> > > @@ -872,34 +871,17 @@ static int pch_i2c_suspend(struct pci_dev *pdev, pm_message_t state)
+> > >  		ioread32(p + PCH_I2CSR), ioread32(p + PCH_I2CBUFSTA),
+> > >  		ioread32(p + PCH_I2CESRSTA));
+> > >  
+> > > -	ret = pci_save_state(pdev);
+> > > -
+> > > -	if (ret) {
+> > > -		pch_pci_err(pdev, "pci_save_state\n");
+> > > -		return ret;
+> > > -	}
+> > > -
+> > > -	pci_enable_wake(pdev, PCI_D3hot, 0);
+> > > -	pci_disable_device(pdev);
+> > > -	pci_set_power_state(pdev, pci_choose_state(pdev, state));
+> > > +	device_wakeup_disable(dev);
+> > >  
+> > >  	return 0;
+> > >  }
+> > >  
+> > > -static int pch_i2c_resume(struct pci_dev *pdev)
+> > > +static int __maybe_unused pch_i2c_resume(struct device *dev)
+> > >  {
+> > >  	int i;
+> > > -	struct adapter_info *adap_info = pci_get_drvdata(pdev);
+> > > -
+> > > -	pci_set_power_state(pdev, PCI_D0);
+> > > -	pci_restore_state(pdev);
+> > > +	struct adapter_info *adap_info = dev_get_drvdata(dev);
+> > >  
+> > > -	if (pci_enable_device(pdev) < 0) {
+> > > -		pch_pci_err(pdev, "pch_i2c_resume:pci_enable_device FAILED\n");
+> > > -		return -EIO;
+> > > -	}
+> > > -
+> > > -	pci_enable_wake(pdev, PCI_D3hot, 0);
+> > > +	device_wakeup_disable(dev);
+> > 
+> > It *looks* wrong to disable wakeup in both suspend and resume.  I
+> > think the usual pattern is to enable wakeup in suspend and disable it
+> > in resume.
+> > 
+> > But it looks like it's been that way since the driver was added by
+> > e9bc8fa5df1c ("i2c-eg20t: add driver for Intel EG20T").
+> > 
+> > If the device doesn't support wakeup, I would not expect the driver to
+> > mention wakeup at all.
+> > 
+> > In any case, I think it's the right thing for *this* patch to preserve
+> > the previous wakeup behavior.  Maybe we want a follow-up patch to just
+> > remove both device_wakeup_disable() calls?
+> > 
+We have seen this issue earlier in other drivers too. I remember you even
+identified and listed them.
+The PCI core calls, pci_enable_wake(pci_dev, PCI_D0, false). And if the driver
+does not want to enable-wake on suspend, we discussed and concluded that the
+calls should be dropped.
+I am sending v2, to include dropping wakeup call.
 
-Got it - thanks for clarifying.
-
-But with the current code if SELinux is enabled on the system, but 
-AppArmor is not and the IMA policy contains "measure func=LSM_STATE" 
-then the policy will be rejected as "-EINVAL".
-So the policy author would get a feedback even now.
-Correct me if I am wrong.
-
-  -lakshmi
+Thanks
+Vaibhav Gupta
+> > >  	for (i = 0; i < adap_info->ch_num; i++)
+> > >  		pch_i2c_init(&adap_info->pch_data[i]);
+> > > @@ -908,18 +890,15 @@ static int pch_i2c_resume(struct pci_dev *pdev)
+> > >  
+> > >  	return 0;
+> > >  }
+> > > -#else
+> > > -#define pch_i2c_suspend NULL
+> > > -#define pch_i2c_resume NULL
+> > > -#endif
+> > > +
+> > > +static SIMPLE_DEV_PM_OPS(pch_i2c_pm_ops, pch_i2c_suspend, pch_i2c_resume);
+> > >  
+> > >  static struct pci_driver pch_pcidriver = {
+> > >  	.name = KBUILD_MODNAME,
+> > >  	.id_table = pch_pcidev_id,
+> > >  	.probe = pch_i2c_probe,
+> > >  	.remove = pch_i2c_remove,
+> > > -	.suspend = pch_i2c_suspend,
+> > > -	.resume = pch_i2c_resume
+> > > +	.driver.pm = &pch_i2c_pm_ops,
+> > >  };
+> > >  
+> > >  module_pci_driver(pch_pcidriver);
+> > > -- 
+> > > 2.27.0
+> > > 
