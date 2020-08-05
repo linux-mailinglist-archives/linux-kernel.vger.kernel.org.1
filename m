@@ -2,111 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC2F23D06E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1875623D145
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbgHETsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728031AbgHEQ50 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:57:26 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B37EC001FCC
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 08:52:16 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id o1so25491749plk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 08:52:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3rgPdx4FvPNj3L/b4d9eiz4Lukmw32rT0pYFOATs+yo=;
-        b=uhBO0OpFg/LYWCU/5Q95FYkvHAjv/6vqQnVWGZzffuTQK/Qt3glmHzfnFmhjJqC8RT
-         N0CiCQ6ukSeX5YVxSKoMGN9Qb1uJBgtNieq4cbiZZSukukLRsN2H4hGfYtlcRiwHyfs3
-         BvjqbigytY0sqh3GHRdYZ4Dp0GpMRo6dKqTWxcM19sUN5Y1Yv8qcNnh5Zt+epIcPsJ95
-         paI74rAQyMO4signAODc/PF3fcaVtAkg4y87a9W67Jz1Dchst1zaLxoEIQcm/vUWZJQh
-         m5f5buRbOnH0sv7xBuqOH/zDcxvvoc1xi8kLJC9YoO8EdYWn1DBBSpoZtiHLLljLBM0c
-         azHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3rgPdx4FvPNj3L/b4d9eiz4Lukmw32rT0pYFOATs+yo=;
-        b=dO6b8Yk+EtcfrH25Sn7ceE5mWbRaXV48dbCiIRSNSFxTMEdjVJNXKV4yRLx3YpBkXj
-         FDpEzNcUi2yPMGMHEPsX9RBUMDWrucrcVnenyUmalnhM4mo1BAgqQBuI8+vET0Yl4Sbo
-         AK6dpLLZxYCqYRrVrz7j1YJ11hUe466vsibRd/U4bRt6vyTykcoXnP4/l3JwtOaa6iHI
-         cYVD4g8CNH/WLa3KOwK/ZKfWyDPg8lYXEEJzDfDDCUs6dGko3aJMgw6Baceci09iXH1Y
-         UAZ482A7OMBr4xVmmH3HfIN93VDnQ2ylmnDAxC2GAq+/7ldXtW/ocb8jy9mAalyGQcEG
-         jS7g==
-X-Gm-Message-State: AOAM533NU41cSieW//8rS6WohuL1iGEAa3OUwK6rq31Oq3WkDzf5uIPY
-        hni6finlt2RMHDrF7ZobRSA+TiTP6b58b6fS3EdId0+a0CTFew==
-X-Google-Smtp-Source: ABdhPJz+S08tQUWlf0uwerTLvPYHj7weeZ1Gqq2V3WinQnKdQtXh5JjIbGt6HHa9rGmGMGwnT3MhZnsWIgeaF+dLaW8=
-X-Received: by 2002:a17:90a:fa8c:: with SMTP id cu12mr4074109pjb.229.1596642731102;
- Wed, 05 Aug 2020 08:52:11 -0700 (PDT)
+        id S1729656AbgHET62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:58:28 -0400
+Received: from mga09.intel.com ([134.134.136.24]:59149 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727961AbgHEQnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:43:20 -0400
+IronPort-SDR: fpgWkWNcSberW51hNT7x2/+p7CKVpW+G+7kxMxQ9+e68Mc2OhuS9TsZ8BsCrFuym+5/7070ICn
+ qSBBQd9CiCHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="153723581"
+X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
+   d="scan'208";a="153723581"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 08:55:21 -0700
+IronPort-SDR: 8Ldgirbk9WR0+0MEOYNpC6S72cOf5baWD0xHSTkzDhWRVg+D9Bgo8uRMUEhCenD9Cu9gKGYHd9
+ y6XjT332rDJA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
+   d="scan'208";a="276132211"
+Received: from lkp-server02.sh.intel.com (HELO 37a337f97289) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 05 Aug 2020 08:55:20 -0700
+Received: from kbuild by 37a337f97289 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k3Ll9-0000pk-Le; Wed, 05 Aug 2020 15:55:19 +0000
+Date:   Wed, 05 Aug 2020 23:54:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.07.24b] BUILD SUCCESS
+ 304e23263bcbd11f1172ba03989be60beb8382c1
+Message-ID: <5f2ad641.NZUBeh4D+NafibVk%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20200805142136.0331f7ea@canb.auug.org.au> <CAMZfGtX0a3tui_KQfCXLcARVcev9V-HV6HMkXgVXObq8w-4EQg@mail.gmail.com>
- <20200805111105.081276bb@oasis.local.home>
-In-Reply-To: <20200805111105.081276bb@oasis.local.home>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 5 Aug 2020 23:51:34 +0800
-Message-ID: <CAMZfGtU7iTFAZVRFgh5vgzB9nSOoDjm7F4Jqpd4uhEe8NListQ@mail.gmail.com>
-Subject: Re: [External] linux-next: build warning after merge of the ftrace tree
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 11:11 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 5 Aug 2020 12:53:39 +0800
-> Muchun Song <songmuchun@bytedance.com> wrote:
->
-> > On Wed, Aug 5, 2020 at 12:21 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > After merging the ftrace tree, today's linux-next build (powerpc
-> > > ppc64_defconfig) produced this warning:
-> > >
-> > > kernel/kprobes.c: In function 'kill_kprobe':
-> > > kernel/kprobes.c:1116:33: warning: statement with no effect [-Wunused-value]
-> > >  1116 | #define disarm_kprobe_ftrace(p) (-ENODEV)
-> > >       |                                 ^
-> > > kernel/kprobes.c:2154:3: note: in expansion of macro 'disarm_kprobe_ftrace'
-> > >  2154 |   disarm_kprobe_ftrace(p);
-> > >       |   ^~~~~~~~~~~~~~~~~~~~
-> > >
-> >
-> > Sorry, maybe we should rework the macro of disarm_kprobe_ftrace to an
-> > inline function like below.
-> >
-> > -#define disarm_kprobe_ftrace(p)        (-ENODEV)
-> > +static inline int disarm_kprobe_ftrace(struct kprobe *p)
-> > +{
-> > +       return -ENODEV
-> > +}
-> >  #endif
->
-> Looks like that would work. Care to send a formal patch. Could you also
-> change arm_kprobe_ftrace() as well?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.07.24b
+branch HEAD: 304e23263bcbd11f1172ba03989be60beb8382c1  fixup! squash! tools/memory-model: Add a simple entry point document
 
-OK, I will do that. Thanks.
+elapsed time: 724m
 
->
-> Thanks!
->
-> -- Steve
+configs tested: 125
+configs skipped: 15
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       mainstone_defconfig
+sh                   sh7770_generic_defconfig
+mips                       rbtx49xx_defconfig
+ia64                         bigsur_defconfig
+arm                          simpad_defconfig
+sh                          polaris_defconfig
+microblaze                      mmu_defconfig
+powerpc64                           defconfig
+sh                          rsk7201_defconfig
+arm                         axm55xx_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                       m5475evb_defconfig
+powerpc                       holly_defconfig
+powerpc                     pq2fads_defconfig
+c6x                                 defconfig
+arm                           u8500_defconfig
+powerpc                    amigaone_defconfig
+sh                           se7712_defconfig
+arc                           tb10x_defconfig
+sh                           se7780_defconfig
+mips                   sb1250_swarm_defconfig
+mips                         tb0287_defconfig
+sh                        dreamcast_defconfig
+sh                          r7780mp_defconfig
+arm                        realview_defconfig
+arm                           sunxi_defconfig
+microblaze                    nommu_defconfig
+mips                      fuloong2e_defconfig
+mips                     loongson1c_defconfig
+arm                          lpd270_defconfig
+arc                      axs103_smp_defconfig
+powerpc                    mvme5100_defconfig
+mips                        bcm47xx_defconfig
+c6x                         dsk6455_defconfig
+powerpc                  storcenter_defconfig
+m68k                       m5275evb_defconfig
+arm                  colibri_pxa270_defconfig
+ia64                      gensparse_defconfig
+arm                         orion5x_defconfig
+m68k                             alldefconfig
+arm                     am200epdkit_defconfig
+arm                         nhk8815_defconfig
+mips                     loongson1b_defconfig
+sh                         apsh4a3a_defconfig
+m68k                       m5249evb_defconfig
+powerpc                      chrp32_defconfig
+mips                        omega2p_defconfig
+arm                            xcep_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                         shannon_defconfig
+arm                     davinci_all_defconfig
+xtensa                generic_kc705_defconfig
+arm                          moxart_defconfig
+sh                           sh2007_defconfig
+sh                           se7751_defconfig
+powerpc                       ppc64_defconfig
+arc                        vdk_hs38_defconfig
+arm                      tct_hammer_defconfig
+arm                             ezx_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a005-20200805
+i386                 randconfig-a004-20200805
+i386                 randconfig-a001-20200805
+i386                 randconfig-a003-20200805
+i386                 randconfig-a002-20200805
+i386                 randconfig-a006-20200805
+x86_64               randconfig-a013-20200805
+x86_64               randconfig-a011-20200805
+x86_64               randconfig-a012-20200805
+x86_64               randconfig-a016-20200805
+x86_64               randconfig-a015-20200805
+x86_64               randconfig-a014-20200805
+i386                 randconfig-a011-20200805
+i386                 randconfig-a012-20200805
+i386                 randconfig-a013-20200805
+i386                 randconfig-a014-20200805
+i386                 randconfig-a015-20200805
+i386                 randconfig-a016-20200805
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
--- 
-Yours,
-Muchun
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
