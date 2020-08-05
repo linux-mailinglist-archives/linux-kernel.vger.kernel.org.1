@@ -2,64 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D0523C72F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3693B23C733
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgHEHur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 03:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbgHEHun (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 03:50:43 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4A0C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 00:50:42 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1k3EC7-0003wV-G7; Wed, 05 Aug 2020 09:50:39 +0200
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1k3EC7-0007Z0-5j; Wed, 05 Aug 2020 09:50:39 +0200
-Date:   Wed, 5 Aug 2020 09:50:39 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: ili210x: Fix potential memory leaks
-Message-ID: <20200805075039.jptytefw3mm2d4nq@pengutronix.de>
-References: <20200804183007.117125-1-aford173@gmail.com>
+        id S1726940AbgHEHw3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 Aug 2020 03:52:29 -0400
+Received: from mx1.emlix.com ([188.40.240.192]:45480 "EHLO mx1.emlix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725981AbgHEHw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 03:52:28 -0400
+Received: from mailer.emlix.com (unknown [81.20.119.6])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.emlix.com (Postfix) with ESMTPS id 818925FCA2;
+        Wed,  5 Aug 2020 09:52:25 +0200 (CEST)
+From:   Rolf Eike Beer <eb@emlix.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@imgtec.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH] binfmt_elf: fix documented return value for load_elf_phdrs()
+Date:   Wed, 05 Aug 2020 09:52:23 +0200
+Message-ID: <6469675.ETGqQKjL3G@devpool35>
+Organization: emlix GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804183007.117125-1-aford173@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:48:37 up 263 days, 23:07, 241 users,  load average: 0.14, 0.10,
- 0.05
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+This function has never returned anything but a plain NULL.
 
-On 20-08-04 13:30, Adam Ford wrote:
-> This driver requests, memory twice and requests a threaded irq, but
-> it doesn't free any of them if something fails.
+Fixes: 6a8d38945cf4e6e819d6b550250615db763065a0
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+---
+ fs/binfmt_elf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Free'ing is done automatically because the driver uses devres
-(identified by devm_ prepfix) functions.
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 9fe3b51c116a..251298d25c8c 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -428,7 +428,7 @@ static int elf_read(struct file *file, void *buf, size_t len, loff_t pos)
+  *
+  * Loads ELF program headers from the binary file elf_file, which has the ELF
+  * header pointed to by elf_ex, into a newly allocated array. The caller is
+- * responsible for freeing the allocated data. Returns an ERR_PTR upon failure.
++ * responsible for freeing the allocated data. Returns NULL upon failure.
+  */
+ static struct elf_phdr *load_elf_phdrs(const struct elfhdr *elf_ex,
+ 				       struct file *elf_file)
+-- 
+2.28.0
 
-Regards,
-  Marco
+
+-- 
+Rolf Eike Beer, emlix GmbH, http://www.emlix.com
+Fon +49 551 30664-0, Fax +49 551 30664-11
+Gothaer Platz 3, 37083 Göttingen, Germany
+Sitz der Gesellschaft: Göttingen, Amtsgericht Göttingen HR B 3160
+Geschäftsführung: Heike Jordan, Dr. Uwe Kracke – Ust-IdNr.: DE 205 198 055
+
+emlix - smart embedded open source
+
+
+
