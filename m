@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B10A23CD1D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD9F23CCCD
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728531AbgHERUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:20:38 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:51030 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728714AbgHERSk (ORCPT
+        id S1728432AbgHERDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:03:33 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:25185 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728078AbgHERBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:18:40 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 075DHV9M072287;
-        Wed, 5 Aug 2020 08:17:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1596633451;
-        bh=57yF68qyZ0azOmyzTIEwYs+6yRB7tuKz3qfi5lQTL2Y=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=fb84QEizh1xqIZv4YwwWKBoNcIaWNZdLEhdp8PKXmcuSz5LdjdZudXZ+ZMNZfMHp+
-         I3YuZE1CRruSM+2Cd9D/meA6KiIyju3KG+y7B2dEGuxf4+6NuubBU86ah5a8RLBs36
-         MaqnS51DCQ7/TOyrO0POqJY3nYVUcAdxjSdLfkaA=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 075DHVG9004195
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 5 Aug 2020 08:17:31 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 5 Aug
- 2020 08:17:30 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 5 Aug 2020 08:17:30 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 075DHSMg035743;
-        Wed, 5 Aug 2020 08:17:28 -0500
-Subject: Re: [PATCH] dmaengine: ti: k3-udma-glue: Fix parameters for rx ring
- pair request
-To:     Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-CC:     <ssantosh@kernel.org>, <santosh.shilimkar@oracle.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>
-References: <20200805112746.15475-1-peter.ujfalusi@ti.com>
- <20200805113237.GX12965@vkoul-mobl>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <3eea63fe-88f5-d6b6-433a-bb15495a839d@ti.com>
-Date:   Wed, 5 Aug 2020 16:17:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 5 Aug 2020 13:01:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596646856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZlNXGeTfp4AaGj7FagUROXadawxdtFtkc3vB/EgDPDU=;
+        b=fnqUZyJwBTcglKwRnzavTbc2N9y2EQnUhd3PDLCm5pQeqEPV0W1YEMHS4Y7kgadX6vphRE
+        hDzPEnxNOq4DY0db1I8MgajPq2+l14uWlVyzHxG2Mtdi5uDSnkdiugyd15xCv0jDZyX6GF
+        AtMQk7tTf6unWHXsNs3t8VJBSWTu9lQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-coVgblsjPW66gkJld0A0fg-1; Wed, 05 Aug 2020 09:29:19 -0400
+X-MC-Unique: coVgblsjPW66gkJld0A0fg-1
+Received: by mail-wm1-f70.google.com with SMTP id t26so2726561wmn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:29:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZlNXGeTfp4AaGj7FagUROXadawxdtFtkc3vB/EgDPDU=;
+        b=oW83QJa+mnHRQZDioUUanU5yI5XKBbFXR3HySoPrhmP3hGplEW2+iu6CcbTZ9twggD
+         okyVbx4j5RPMOv242Ak9NJdLMg+4ihI5gfKZzR2repymWk8Rnp6yqNA7Q2/9h1IVbB/K
+         9/P3yd3YRW6qE0DU6ud7GLND94h/Ey4Vya5YnsL7lmYTioaZq3cNZfw1RCecrvZZ3Yqn
+         xO1mET/wiLD0KhEa8AZ98ByM3LipJptEZnu2ctgyirQnb+/SR80n3pjAOG3I4HQF5JCT
+         SNtnTUks78t3Ior+D5dVnyEggdRQfbA5nUvHxgVfO5gro9uJOANZz4NdhpqZi8mz7RSg
+         Aclw==
+X-Gm-Message-State: AOAM530HnWliDpHKYv6yuBzKAldbN57WIEDLNsps6AoGsQlcqodWGZkW
+        LZoa4g7TN29w3hJ4fwRUyG40+JO4XwRl2F5f1C4zVIBG9ZasqoNVTNyvUbCGfA5lYOMHUr2BvM0
+        dx2hKPymWIz4tuT4zi0SkX/XO
+X-Received: by 2002:a1c:2dc6:: with SMTP id t189mr3492803wmt.26.1596634158283;
+        Wed, 05 Aug 2020 06:29:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJbh142iguNxC67bdTgdKSa8fH88cZSGiuSiR54HZcWK+ZPtzZyXH9COzQuExoJPoIfhvlDw==
+X-Received: by 2002:a1c:2dc6:: with SMTP id t189mr3492788wmt.26.1596634158107;
+        Wed, 05 Aug 2020 06:29:18 -0700 (PDT)
+Received: from redhat.com ([192.117.173.58])
+        by smtp.gmail.com with ESMTPSA id d14sm2806981wre.44.2020.08.05.06.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 06:29:17 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:29:12 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Vadim Pasternak <vadimp@mellanox.com>,
+        platform-driver-x86@vger.kernel.org,
+        Darren Hart <dvhart@infradead.org>,
+        virtualization@lists.linux-foundation.org,
+        Andy Shevchenko <andy@infradead.org>
+Subject: Re: [PATCH v2 18/24] mlxbf-tmfifo: sparse tags for config access
+Message-ID: <20200805092904-mutt-send-email-mst@kernel.org>
+References: <20200803205814.540410-1-mst@redhat.com>
+ <20200803205814.540410-19-mst@redhat.com>
+ <20200804165634.4df11c6b.cohuck@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200805113237.GX12965@vkoul-mobl>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200804165634.4df11c6b.cohuck@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 05/08/2020 14:32, Vinod Koul wrote:
-> On 05-08-20, 14:27, Peter Ujfalusi wrote:
->> The original commit mixed up the forward and completion ring IDs for the
->> rx flow configuration.
+On Tue, Aug 04, 2020 at 04:56:34PM +0200, Cornelia Huck wrote:
+> On Mon, 3 Aug 2020 17:00:01 -0400
+> "Michael S. Tsirkin" <mst@redhat.com> wrote:
 > 
-> Acked-By: Vinod Koul <vkoul@kernel.org>
+> > mlxbf-tmfifo accesses config space using native types -
+> > which works for it since the legacy virtio native types.
+> > 
+> > This will break if it ever needs to support modern virtio,
+> > so with new tags previously introduced for virtio net config,
+> > sparse now warns for this in drivers.
+> > 
+> > Since this is a legacy only device, fix it up using
+> > virtio_legacy_is_little_endian for now.
 > 
->>
->> Fixes: 4927b1ab2047 ("dmaengine: ti: k3-udma: Switch to k3_ringacc_request_rings_pair")
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> ---
->> Hi Santosh, Vinod,
->>
->> the offending patch was queued via ti SoC tree.
->> Santosh, can you pick up this fix also?
+> I'm wondering if the driver should make this more explicit?
 
-Thank you Peter for catching this - it's valid issue.
-but I'd like to note that issue was discovered with private code and
-nothing is broken in Master.
 
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Not sure how though.
 
--- 
-Best regards,
-grygorii
+> No issues with the patch, though.
+> 
+> > 
+> > No functional changes.
+> > 
+> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > ---
+> >  drivers/platform/mellanox/mlxbf-tmfifo.c | 13 ++++++++++---
+> >  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> Acked-by: Cornelia Huck <cohuck@redhat.com>
+
