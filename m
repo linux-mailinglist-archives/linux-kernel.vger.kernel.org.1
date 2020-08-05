@@ -2,160 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9E423D112
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA4123D0E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728232AbgHETzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
+        id S1728346AbgHETyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728043AbgHEQqQ (ORCPT
+        with ESMTP id S1727023AbgHEQsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:46:16 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49672C061757;
-        Wed,  5 Aug 2020 03:53:57 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id t10so19702088plz.10;
-        Wed, 05 Aug 2020 03:53:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=n6eJX7kP2wSPXMfsAV6wxlSNMqm5O3KWO3aWCRlizZw=;
-        b=ZzlJ8kJoS7x+Dr6GTqIhchPVuBKmZlR0zUuECW0cbKEhBrYElwE7LQ7jHTErhJ2kQl
-         HVQnpAfXI+4M6TyxQykGyIWV17dv2YXk0J5lTE69XNDRBK1LXR0ximX3GaeNG22uFydr
-         Ok3z75gZLQbISvYmmqbaV8a5heyCDdNjeOWBaKc0+opsTD+mbUh7CtRNmRPhtkIwOuMG
-         dx04lDe4XSlsBbdWF8ZOdG5ItJ0gSmBe0Pq1nnheKKv4mTaT+zeDTyaNbciggbhd/rcG
-         Lc8JSrmCjV1KbqbJi1/NV+Nm4P/P1CRcg8AemG9hRxKK2zDn99xZmgc4m5/u2GoEItk2
-         GPJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=n6eJX7kP2wSPXMfsAV6wxlSNMqm5O3KWO3aWCRlizZw=;
-        b=e5O2msKvhjNQIJGwkKYmDI9kFjPhe/fF79YhuHi5TfW1y9XEKWONSOURpUgnH3hmjo
-         ZUiXL01mhX2v9+BdB206RDWAWifm57bVoFaQqYGDCz4J4hN9n+Dh0L4H9NBAlIBmDhdl
-         dPqiQbH3HkVa/+9kWnREPDVjZx/Lr0SOoi22vnLPn5YrOfr3RIJiDMFxHawGatuo4CfS
-         3hk6hvhmPY0cN6nRr7a0tdOtsqVoW/W1OlJleJO9tsnPm0Lsvr8y/4gQo2Pf049mVdez
-         jhZcHgC4Vuocm3L86o7v/ZR44D/sUPyWwbRIELBRemL0MgGEXrYRSfBF4PEXiMbJUjaz
-         WOSw==
-X-Gm-Message-State: AOAM532skLEgb8PIog7ltvzatOmMAStVqOKgKEO1l7d0fh9OXD/wrf/U
-        /GSF7gvS+A3uCCQlsruppmhxMXqv9Tc=
-X-Google-Smtp-Source: ABdhPJx8eWt5XQbC91jHW+PQBpRVhEPK391Djy5BqFygVS6+lYLLwe83RtbnRNGUGjnUrVZMyGDKEA==
-X-Received: by 2002:a17:90a:5d15:: with SMTP id s21mr2766192pji.154.1596624835362;
-        Wed, 05 Aug 2020 03:53:55 -0700 (PDT)
-Received: from localhost ([104.192.108.10])
-        by smtp.gmail.com with ESMTPSA id n25sm2978818pff.51.2020.08.05.03.53.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 03:53:54 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 03:53:50 -0700
-From:   Guoyu Huang <hgy5945@gmail.com>
-To:     viro@zeniv.linux.org.uk, axboe@kernel.dk
-Cc:     linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] io_uring: Fix NULL pointer dereference in loop_rw_write()
-Message-ID: <20200805105350.GA102801@ubuntu>
+        Wed, 5 Aug 2020 12:48:51 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C53C0617A5
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 03:59:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qb5U+VkJeFNZ75SkKEHYzclgKvgBgrsLHC56vepzRKY=; b=xFHALyBK7Ks+CaVxifXKXAJB2F
+        BLpkmjOHk+qEUN1en8QKWBK8hunWdt/i0RAGHVbtZ8AnZhfzWB2n2ehFXxLoIw33Odr+JPb7I00OT
+        mKXZhrv8EwPR1FGrTaSarotwWuAoJm6gDsZO4NL5eP4y8apDgHpjVqeWSzHhjPg+vfnHLn0BVl4eT
+        nnztS0YNCH1IHfDFcjqSRaRTkIBkMmrqMUo2ZHV3OX/EoWFmp7oNugyyrOS3ROexrDGtExcpKXr2c
+        xQsOzPGka7qxcv2ykQp7Hg1j1/iCva3zELhbp1Z+nzY3i8A2PBw4p+JU9uHlc2xFk6W9au7eWN5MU
+        ug1qpq3w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3H8k-0003m0-Sg; Wed, 05 Aug 2020 10:59:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2B9C2300F7A;
+        Wed,  5 Aug 2020 12:59:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 187F123E7A695; Wed,  5 Aug 2020 12:59:20 +0200 (CEST)
+Date:   Wed, 5 Aug 2020 12:59:20 +0200
+From:   peterz@infradead.org
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 2/2] sched: membarrier: cover kthread_use_mm
+Message-ID: <20200805105920.GB35926@hirez.programming.kicks-ass.net>
+References: <20200728160010.3314-1-mathieu.desnoyers@efficios.com>
+ <20200728160010.3314-2-mathieu.desnoyers@efficios.com>
+ <20200804145145.GM2657@hirez.programming.kicks-ass.net>
+ <1708074166.39992.1596553173337.JavaMail.zimbra@efficios.com>
+ <20200804170153.GO2657@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200804170153.GO2657@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-loop_rw_iter() does not check whether the file has a read or
-write function. This can lead to NULL pointer dereference
-when the user passes in a file descriptor that does not have
-read or write function.
+On Tue, Aug 04, 2020 at 07:01:53PM +0200, peterz@infradead.org wrote:
+> On Tue, Aug 04, 2020 at 10:59:33AM -0400, Mathieu Desnoyers wrote:
+> > ----- On Aug 4, 2020, at 10:51 AM, Peter Zijlstra peterz@infradead.org wrote:
+> > > On Tue, Jul 28, 2020 at 12:00:10PM -0400, Mathieu Desnoyers wrote:
+> 
+> > >>  	task_lock(tsk);
+> > >> +	/*
+> > >> +	 * When a kthread stops operating on an address space, the loop
+> > >> +	 * in membarrier_{private,global}_expedited() may not observe
+> > >> +	 * that tsk->mm, and not issue an IPI. Membarrier requires a
+> > >> +	 * memory barrier after accessing user-space memory, before
+> > >> +	 * clearing tsk->mm.
+> > >> +	 */
+> > >> +	smp_mb();
+> > >>  	sync_mm_rss(mm);
+> > >>  	local_irq_disable();
+> > > 
+> > > Would it make sense to put the smp_mb() inside the IRQ disable region?
+> > 
+> > I've initially placed it right after task_lock so we could eventually
+> > have a smp_mb__after_non_raw_spinlock or something with a much better naming,
+> > which would allow removing the extra barrier when it is implied by the
+> > spinlock.
+> 
+> Oh, right, fair enough. I'll go think about if smp_mb__after_spinlock()
+> will work for mutexes too.
+> 
+> It basically needs to upgrade atomic*_acquire() to smp_mb(). So that's
+> all architectures that have their own _acquire() and an actual
+> smp_mb__after_atomic().
+> 
+> Which, from the top of my head are only arm64, power and possibly riscv.
+> And if I then git-grep smp_mb__after_spinlock, all those seem to be
+> covered.
+> 
+> But let me do a better audit..
 
-The crash log looks like this:
+All I could find is csky, which, afaict, defines a superfluous
+smp_mb__after_spinlock.
 
-[   99.834071] BUG: kernel NULL pointer dereference, address: 0000000000000000
-[   99.835364] #PF: supervisor instruction fetch in kernel mode
-[   99.836522] #PF: error_code(0x0010) - not-present page
-[   99.837771] PGD 8000000079d62067 P4D 8000000079d62067 PUD 79d8c067 PMD 0
-[   99.839649] Oops: 0010 [#2] SMP PTI
-[   99.840591] CPU: 1 PID: 333 Comm: io_wqe_worker-0 Tainted: G      D           5.8.0 #2
-[   99.842622] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-[   99.845140] RIP: 0010:0x0
-[   99.845840] Code: Bad RIP value.
-[   99.846672] RSP: 0018:ffffa1c7c01ebc08 EFLAGS: 00010202
-[   99.848018] RAX: 0000000000000000 RBX: ffff92363bd67300 RCX: ffff92363d461208
-[   99.849854] RDX: 0000000000000010 RSI: 00007ffdbf696bb0 RDI: ffff92363bd67300
-[   99.851743] RBP: ffffa1c7c01ebc40 R08: 0000000000000000 R09: 0000000000000000
-[   99.853394] R10: ffffffff9ec692a0 R11: 0000000000000000 R12: 0000000000000010
-[   99.855148] R13: 0000000000000000 R14: ffff92363d461208 R15: ffffa1c7c01ebc68
-[   99.856914] FS:  0000000000000000(0000) GS:ffff92363dd00000(0000) knlGS:0000000000000000
-[   99.858651] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   99.860032] CR2: ffffffffffffffd6 CR3: 000000007ac66000 CR4: 00000000000006e0
-[   99.861979] Call Trace:
-[   99.862617]  loop_rw_iter.part.0+0xad/0x110
-[   99.863838]  io_write+0x2ae/0x380
-[   99.864644]  ? kvm_sched_clock_read+0x11/0x20
-[   99.865595]  ? sched_clock+0x9/0x10
-[   99.866453]  ? sched_clock_cpu+0x11/0xb0
-[   99.867326]  ? newidle_balance+0x1d4/0x3c0
-[   99.868283]  io_issue_sqe+0xd8f/0x1340
-[   99.869216]  ? __switch_to+0x7f/0x450
-[   99.870280]  ? __switch_to_asm+0x42/0x70
-[   99.871254]  ? __switch_to_asm+0x36/0x70
-[   99.872133]  ? lock_timer_base+0x72/0xa0
-[   99.873155]  ? switch_mm_irqs_off+0x1bf/0x420
-[   99.874152]  io_wq_submit_work+0x64/0x180
-[   99.875192]  ? kthread_use_mm+0x71/0x100
-[   99.876132]  io_worker_handle_work+0x267/0x440
-[   99.877233]  io_wqe_worker+0x297/0x350
-[   99.878145]  kthread+0x112/0x150
-[   99.878849]  ? __io_worker_unuse+0x100/0x100
-[   99.879935]  ? kthread_park+0x90/0x90
-[   99.880874]  ret_from_fork+0x22/0x30
-[   99.881679] Modules linked in:
-[   99.882493] CR2: 0000000000000000
-[   99.883324] ---[ end trace 4453745f4673190b ]---
-[   99.884289] RIP: 0010:0x0
-[   99.884837] Code: Bad RIP value.
-[   99.885492] RSP: 0018:ffffa1c7c01ebc08 EFLAGS: 00010202
-[   99.886851] RAX: 0000000000000000 RBX: ffff92363acd7f00 RCX: ffff92363d461608
-[   99.888561] RDX: 0000000000000010 RSI: 00007ffe040d9e10 RDI: ffff92363acd7f00
-[   99.890203] RBP: ffffa1c7c01ebc40 R08: 0000000000000000 R09: 0000000000000000
-[   99.891907] R10: ffffffff9ec692a0 R11: 0000000000000000 R12: 0000000000000010
-[   99.894106] R13: 0000000000000000 R14: ffff92363d461608 R15: ffffa1c7c01ebc68
-[   99.896079] FS:  0000000000000000(0000) GS:ffff92363dd00000(0000) knlGS:0000000000000000
-[   99.898017] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   99.899197] CR2: ffffffffffffffd6 CR3: 000000007ac66000 CR4: 00000000000006e0
+The relevant architectures are indeed power, arm64 and riscv, they all
+have custom acquire/release and all define smp_mb__after_spinlock()
+appropriately.
 
-Signed-off-by: Guoyu Huang <hgy5945@gmail.com>
----
- fs/io_uring.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 493e5047e67c..3c21e2e002b4 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2661,8 +2661,10 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
-
- 		if (req->file->f_op->read_iter)
- 			ret2 = call_read_iter(req->file, kiocb, &iter);
--		else
-+		else if (req->file->f_op->read)
- 			ret2 = loop_rw_iter(READ, req->file, kiocb, &iter);
-+		else
-+			ret2 = -EINVAL;
-
- 		/* Catch -EAGAIN return for forced non-blocking submission */
- 		if (!force_nonblock || ret2 != -EAGAIN) {
-@@ -2776,8 +2778,10 @@ static int io_write(struct io_kiocb *req, bool force_nonblock)
-
- 		if (req->file->f_op->write_iter)
- 			ret2 = call_write_iter(req->file, kiocb, &iter);
--		else
-+		else if (req->file->f_op->write)
- 			ret2 = loop_rw_iter(WRITE, req->file, kiocb, &iter);
-+		else
-+			ret2 = -EINVAL;
-
- 		if (!force_nonblock)
- 			current->signal->rlim[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
---
-2.25.1
-
+Should we rename it to smp_mb__after_acquire() ?
