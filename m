@@ -2,116 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB53023C69D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A01A23C6E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbgHEHJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 03:09:35 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:24596 "EHLO pegase1.c-s.fr"
+        id S1728137AbgHEHU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 03:20:28 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:59538 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725983AbgHEHJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 03:09:30 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BM2mk02YLz9vD3p;
-        Wed,  5 Aug 2020 09:09:26 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id kXUHZnOa37pX; Wed,  5 Aug 2020 09:09:25 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BM2mj5Zxmz9vD3j;
-        Wed,  5 Aug 2020 09:09:25 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CA1538B7E1;
-        Wed,  5 Aug 2020 09:09:26 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id xQhmU62iHP7V; Wed,  5 Aug 2020 09:09:26 +0200 (CEST)
-Received: from po16052vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8D7088B75F;
-        Wed,  5 Aug 2020 09:09:26 +0200 (CEST)
-Received: by po16052vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 676E865BBD; Wed,  5 Aug 2020 07:09:26 +0000 (UTC)
-Message-Id: <32049545671e558b6ef822e0f501a2038c121bf1.1596611196.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1596611196.git.christophe.leroy@csgroup.eu>
-References: <cover.1596611196.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v10 5/5] powerpc/vdso: Provide __kernel_clock_gettime64() on
- vdso32
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
-        anton@ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        arnd@arndb.de, tglx@linutronix.de, vincenzo.frascino@arm.com,
-        luto@kernel.org, linux-arch@vger.kernel.org
-Date:   Wed,  5 Aug 2020 07:09:26 +0000 (UTC)
+        id S1725904AbgHEHU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 03:20:27 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 57F512003A1;
+        Wed,  5 Aug 2020 09:20:25 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8A6A1201418;
+        Wed,  5 Aug 2020 09:20:20 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 03B5F40309;
+        Wed,  5 Aug 2020 09:20:14 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     axboe@kernel.dk, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] dt-bindings: ata: Convert i.MX sata to json-schema
+Date:   Wed,  5 Aug 2020 15:15:46 +0800
+Message-Id: <1596611746-29155-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provides __kernel_clock_gettime64() on vdso32. This is the
-64 bits version of __kernel_clock_gettime() which is
-y2038 compliant.
+Convert the i.MX sata binding to DT schema format using json-schema.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- arch/powerpc/kernel/vdso32/gettimeofday.S  | 9 +++++++++
- arch/powerpc/kernel/vdso32/vdso32.lds.S    | 1 +
- arch/powerpc/kernel/vdso32/vgettimeofday.c | 6 ++++++
- 3 files changed, 16 insertions(+)
+ Documentation/devicetree/bindings/ata/imx-sata.txt | 37 ----------
+ .../devicetree/bindings/ata/imx-sata.yaml          | 81 ++++++++++++++++++++++
+ 2 files changed, 81 insertions(+), 37 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/ata/imx-sata.txt
+ create mode 100644 Documentation/devicetree/bindings/ata/imx-sata.yaml
 
-diff --git a/arch/powerpc/kernel/vdso32/gettimeofday.S b/arch/powerpc/kernel/vdso32/gettimeofday.S
-index fd7b01c51281..a6e29f880e0e 100644
---- a/arch/powerpc/kernel/vdso32/gettimeofday.S
-+++ b/arch/powerpc/kernel/vdso32/gettimeofday.S
-@@ -35,6 +35,15 @@ V_FUNCTION_BEGIN(__kernel_clock_gettime)
- 	cvdso_call __c_kernel_clock_gettime
- V_FUNCTION_END(__kernel_clock_gettime)
- 
-+/*
-+ * Exact prototype of clock_gettime64()
-+ *
-+ * int __kernel_clock_gettime64(clockid_t clock_id, struct __timespec64 *ts);
-+ *
-+ */
-+V_FUNCTION_BEGIN(__kernel_clock_gettime64)
-+	cvdso_call __c_kernel_clock_gettime64
-+V_FUNCTION_END(__kernel_clock_gettime64)
- 
- /*
-  * Exact prototype of clock_getres()
-diff --git a/arch/powerpc/kernel/vdso32/vdso32.lds.S b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-index 4c985467a668..582c5b046cc9 100644
---- a/arch/powerpc/kernel/vdso32/vdso32.lds.S
-+++ b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-@@ -148,6 +148,7 @@ VERSION
- #ifndef CONFIG_PPC_BOOK3S_601
- 		__kernel_gettimeofday;
- 		__kernel_clock_gettime;
-+		__kernel_clock_gettime64;
- 		__kernel_clock_getres;
- 		__kernel_time;
- 		__kernel_get_tbfreq;
-diff --git a/arch/powerpc/kernel/vdso32/vgettimeofday.c b/arch/powerpc/kernel/vdso32/vgettimeofday.c
-index 0b9ab4c22ef2..f7f71fecf4ed 100644
---- a/arch/powerpc/kernel/vdso32/vgettimeofday.c
-+++ b/arch/powerpc/kernel/vdso32/vgettimeofday.c
-@@ -11,6 +11,12 @@ int __c_kernel_clock_gettime(clockid_t clock, struct old_timespec32 *ts,
- 	return __cvdso_clock_gettime32_data(vd, clock, ts);
- }
- 
-+int __c_kernel_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts,
-+			       const struct vdso_data *vd)
-+{
-+	return __cvdso_clock_gettime_data(vd, clock, ts);
-+}
+diff --git a/Documentation/devicetree/bindings/ata/imx-sata.txt b/Documentation/devicetree/bindings/ata/imx-sata.txt
+deleted file mode 100644
+index 781f887..0000000
+--- a/Documentation/devicetree/bindings/ata/imx-sata.txt
++++ /dev/null
+@@ -1,37 +0,0 @@
+-* Freescale i.MX AHCI SATA Controller
+-
+-The Freescale i.MX SATA controller mostly conforms to the AHCI interface
+-with some special extensions at integration level.
+-
+-Required properties:
+-- compatible : should be one of the following:
+-   - "fsl,imx53-ahci" for i.MX53 SATA controller
+-   - "fsl,imx6q-ahci" for i.MX6Q SATA controller
+-   - "fsl,imx6qp-ahci" for i.MX6QP SATA controller
+-- interrupts : interrupt mapping for SATA IRQ
+-- reg : registers mapping
+-- clocks : list of clock specifiers, must contain an entry for each
+-  required entry in clock-names
+-- clock-names : should include "sata", "sata_ref" and "ahb" entries
+-
+-Optional properties:
+-- fsl,transmit-level-mV : transmit voltage level, in millivolts.
+-- fsl,transmit-boost-mdB : transmit boost level, in milli-decibels
+-- fsl,transmit-atten-16ths : transmit attenuation, in 16ths
+-- fsl,receive-eq-mdB : receive equalisation, in milli-decibels
+-  Please refer to the technical documentation or the driver source code
+-  for the list of legal values for these options.
+-- fsl,no-spread-spectrum : disable spread-spectrum clocking on the SATA
+-  link.
+-
+-Examples:
+-
+-sata@2200000 {
+-	compatible = "fsl,imx6q-ahci";
+-	reg = <0x02200000 0x4000>;
+-	interrupts = <0 39 IRQ_TYPE_LEVEL_HIGH>;
+-	clocks = <&clks IMX6QDL_CLK_SATA>,
+-		 <&clks IMX6QDL_CLK_SATA_REF_100M>,
+-		 <&clks IMX6QDL_CLK_AHB>;
+-	clock-names = "sata", "sata_ref", "ahb";
+-};
+diff --git a/Documentation/devicetree/bindings/ata/imx-sata.yaml b/Documentation/devicetree/bindings/ata/imx-sata.yaml
+new file mode 100644
+index 0000000..cd94937
+--- /dev/null
++++ b/Documentation/devicetree/bindings/ata/imx-sata.yaml
+@@ -0,0 +1,81 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/ata/imx-sata.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- int __c_kernel_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz,
- 			    const struct vdso_data *vd)
- {
++title: Freescale i.MX AHCI SATA Controller
++
++maintainers:
++  - Shawn Guo <shawn.guo@linaro.org>
++
++description: |
++  The Freescale i.MX SATA controller mostly conforms to the AHCI interface
++  with some special extensions at integration level.
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx53-ahci
++      - fsl,imx6q-ahci
++      - fsl,imx6qp-ahci
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: sata clock
++      - description: sata reference clock
++      - description: ahb clock
++
++  clock-names:
++    items:
++      - const: sata
++      - const: sata_ref
++      - const: ahb
++
++  fsl,transmit-level-mV:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: transmit voltage level, in millivolts.
++
++  fsl,transmit-boost-mdB:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: transmit boost level, in milli-decibels.
++
++  fsl,transmit-atten-16ths:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: transmit attenuation, in 16ths.
++
++  fsl,receive-eq-mdB:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: receive equalisation, in milli-decibels.
++
++  fsl,no-spread-spectrum:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: if present, disable spread-spectrum clocking on the SATA link.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx6qdl-clock.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    sata@2200000 {
++        compatible = "fsl,imx6q-ahci";
++        reg = <0x02200000 0x4000>;
++        interrupts = <0 39 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&clks IMX6QDL_CLK_SATA>,
++                 <&clks IMX6QDL_CLK_SATA_REF_100M>,
++                 <&clks IMX6QDL_CLK_AHB>;
++        clock-names = "sata", "sata_ref", "ahb";
++    };
 -- 
-2.25.0
+2.7.4
 
