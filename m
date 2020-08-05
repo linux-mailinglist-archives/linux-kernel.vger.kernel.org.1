@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20EE23D194
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26CD23D23F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728257AbgHEUDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728886AbgHEUCi (ORCPT
+        id S1726186AbgHEUKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:10:44 -0400
+Received: from us-smtp-delivery-162.mimecast.com ([216.205.24.162]:45478 "EHLO
+        us-smtp-delivery-162.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727116AbgHEUKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 16:02:38 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25505C061575;
-        Wed,  5 Aug 2020 13:02:38 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id t14so7538410wmi.3;
-        Wed, 05 Aug 2020 13:02:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qqgHHRDh2vam44aFxeq1w53pSFB4MdPrZe7uyWVRU6U=;
-        b=Ob7LksjGa0aZs2m01xbQZdVjIWBzhBxbIOyXY5wpaHYumy35R2/Jv8jZWVZ++3BKf2
-         hbZouCFEhcSFaNgLZEmqKDJiNxTgD46KyhqMEqUalUOcuI/8iBBDsNAv1f9LSypu0+HV
-         O5/kvAwENGSK9+4OBYUEi9pLhLYQ0QVhqVkttLF2wuXk3TwpFIuZ1RFcQmG2dmQChgMB
-         qFhISD8aO0poYqPAWIRk5VRv6b66jvSXJ45koP/z4TFift2V9l8c+AVQB5+565M9vO28
-         9y80Te71+/12ch6t06IdmFVUxwMpFcBb8lsDqFnnOvZ9bRjpwR4fZQ8009W3GfRiK/z6
-         BHyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qqgHHRDh2vam44aFxeq1w53pSFB4MdPrZe7uyWVRU6U=;
-        b=ldd+kUjCRuKEheUhAMmpJpks9VCS2xEnmXkdsA4tkEvgLg1f5EcwHiutoSmnPuCavi
-         t+4EEW0JyDiI3bc9d2WEN6nhvfh6yV6Tp0c9OSR7Qtgd2sNCd7IedBV6ZZD/FDMUQ0xO
-         nzbzTT0mLVB35V6Ya7nwQMQ++vgV+FYQ1s6OFI71SFdxByG0Hdd1d3UfDUX3QuwpRxe/
-         SckRCVK8KAFvlm8LOSHpe55raG2gWeEwl4QjO/wUe8+Sd5gfK25i2LaQVEdiRkWuZW85
-         68IE8GbfjWJLVFksS++Tj4C6bYZosxJhTjiYhexLzB2g4iB7ZQRQI4I5sdc+wBkRCA2R
-         26PA==
-X-Gm-Message-State: AOAM531fcoPiv4bXS8++tHRWgG+/txvbGwnl2MtRkJtt3KiJFKqPHfgj
-        DL10T4+OBRQNH7LnyZ45QtVOSpbTFGSieQu+pVk=
-X-Google-Smtp-Source: ABdhPJz8P1i0SoHVl3LdWEDNvULJHbQrR0s6lAMUuSfOi8apEVNdiVwkn2blV5Qoc4Yy6j5Bas5Un5bqPKqZ9LY5RrY=
-X-Received: by 2002:a1c:f70a:: with SMTP id v10mr4648351wmh.39.1596657756225;
- Wed, 05 Aug 2020 13:02:36 -0700 (PDT)
+        Wed, 5 Aug 2020 16:10:20 -0400
+X-Greylist: delayed 391 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 16:10:18 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hp.com; s=mimecast20180716;
+        t=1596658205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+9mWlKgawWyzm6IVadGDHV4bGfBtDf+UhcobH0DMQkQ=;
+        b=QyGJRddO44tkROFseqW/kOFFgqVdRe3wqqKbz5UNu/aQKLqXmJ5r4eNj0ZjcKzt9Cgy8Dd
+        rY0TL+7ZyzR5Z5Il+eIdMM2JmWqyWkUc06LBhG0Zm/BUIpPz72VKviz2RdP7I1/0M6eFK0
+        byFI266t1tylAkNF2hAELr5Doc9jyMs=
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ us-mta-207-2p1KVlywNoCtmxE5cRJzhw-1; Wed, 05 Aug 2020 16:03:33 -0400
+X-MC-Unique: 2p1KVlywNoCtmxE5cRJzhw-1
+Received: from TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+ (2a01:111:e400:7712::13) by TU4PR8401MB0733.NAMPRD84.PROD.OUTLOOK.COM
+ (2a01:111:e400:7712::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.17; Wed, 5 Aug
+ 2020 20:03:32 +0000
+Received: from TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::402e:74e4:29e4:6b82]) by TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::402e:74e4:29e4:6b82%5]) with mapi id 15.20.3239.022; Wed, 5 Aug 2020
+ 20:03:32 +0000
+From:   "Bhat, Jayalakshmi Manjunath" <jayalakshmi.bhat@hp.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: DRBG CAVS test error
+Thread-Topic: DRBG CAVS test error
+Thread-Index: AdZrY3vHWwqYoDEaT/2M2s+J7Jrz8Q==
+Date:   Wed, 5 Aug 2020 20:03:31 +0000
+Message-ID: <TU4PR8401MB1216BF9450F95187F94BCE01F64B0@TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [106.51.105.36]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7570faa9-83ae-44d1-b90d-08d8397aa0d7
+x-ms-traffictypediagnostic: TU4PR8401MB0733:
+x-microsoft-antispam-prvs: <TU4PR8401MB07339F4282AD033AA8F5808CF64B0@TU4PR8401MB0733.NAMPRD84.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: q2arix/vhU8KmB5tv6cCdWd3WQYqMTWHjQdRaV+0QxFlqdqOLXI4ci1Re7ojz3NfZ3mRQLxSBN5WJx/4Be6EzAbSvTAixgLvaP2Q3MOk7YSIEKPxRugE39oP+BBH00X1wLrNTar/kYM9aKkfGMKzrsNmkKVqx4Wyu14+vmY+IH01NuuN0ukWKigYm/nXM575di1H4bqbnU3rxlMl3cG3NZdYR+gQL2MN+CruXCVi5lp15y+7xWLgIV/q33eI9MVuLOth4xkhHZRRG1/zl7BvqIV6xG1B2nVMy9AkmVPdpFbjFPTuSVPjUu3Vf9gXqMx3xONEOpdFZtcg4zBaqhaiBg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(366004)(396003)(376002)(136003)(39860400002)(346002)(9686003)(478600001)(76116006)(2906002)(5660300002)(86362001)(3480700007)(26005)(52536014)(8936002)(55016002)(33656002)(55236004)(71200400001)(8676002)(66476007)(6916009)(66946007)(66446008)(66556008)(64756008)(186003)(316002)(7696005)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 2txvO2VguWG57kyzxw7FPbx3w8KLMf7QPi+Yp9AyLy1t2EgCTuw/QkgBVLa+ufqOkbb5BINP/5f27UwthQ5tEd0y2Is90kgVmgvGvhJQPAXVqxBEV27pYuQL4wVfuLwEXmFBkngpQdhs99NyPlfR3zuaEwpvM4B6hAT37o9eb7zhSy0wUN/ye3dAeP0wXKgA1UYaaDQ4u9nqP8oxTpBSLF72zcDSKt4aQhrf07VaMPEVgrhOJ+GNtTwhcGA139Jxp56ahU82/Q+xC7xnxyqn+mAOM9F3Jmz9M0fGsWupsEN7Aes96cZtDfNQYAdm59vCv4pTNvIn0Nyi/6m7NGzsAr2BC3Jn/FXDsjUfdTluHMIvWWDM7Er4iXuiQHXHBKWbgKut4FizMaStGycQ9q4HTMjKwzDTlzgSKF5HSsK24eRjuqjfDpsyOcH9VOJJFcplK7UtOMBVZ0HwjOaEMHbCuOmZjbE+GfhIuGK0AR5IiQ3QPm/Xcv2vrpwfGVPzII/g2VlOLfkIrcQV2LmJ4sZn9iBFmDqNrRSgI+l+e16XLuIAjZObBTPggS0/uVZ04a73ge+qe68/CaiUzWjCFBGcN9O8LTa0H7ofobQYFn8AnuEQB5NJM7mkcEK5tdo8NC4HSQmGS9OW68cPiwhLyPh/GA==
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-References: <20200805121527.19157-1-colin.king@canonical.com>
-In-Reply-To: <20200805121527.19157-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 5 Aug 2020 16:02:25 -0400
-Message-ID: <CADnq5_OCQGCEwXN8=74AJck=ctAhbRp_0Hvb1B1hyqA_+3N0ZQ@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amdgpu: fix spelling mistake "paramter" -> "parameter"
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: hp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7570faa9-83ae-44d1-b90d-08d8397aa0d7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2020 20:03:31.8971
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: ca7981a2-785a-463d-b82a-3db87dfc3ce6
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hkZkcijue985djURgHnFT8FIPZmMJTK/KO2EU30xYHd84xG0GDbTjJlR2CWLUfSOxKiI1NRn7iYXCExOciMn0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TU4PR8401MB0733
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA62A171 smtp.mailfrom=jayalakshmi.bhat@hp.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hp.com
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 8:15 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a spelling mistake in a dev_warn message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Hi All
 
-Applied.  Thanks!
+I am executing DRBG CAVS test, using drbg_nopr_hmac_sha512. Below is the co=
+de snippet.
 
-Alex
+test_data.testentropy =3D &testentropy;
+drbg_string_fill(&testentropy, drbg_st->entropy_nonce_input, drbg_st->entro=
+py_nonce_len);
+drbg_string_fill(&pers, drbg_st->personalization_string, iv_struct->persona=
+lization_string_len);
+ret =3D crypto_drbg_reset_test(drng, &pers, &test_data);
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> index b72aeeb0a226..16e23f053361 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> @@ -1201,7 +1201,7 @@ static int amdgpu_device_check_arguments(struct amdgpu_device *adev)
->
->         if (amdgpu_num_kcq > 8 || amdgpu_num_kcq < 0) {
->                 amdgpu_num_kcq = 8;
-> -               dev_warn(adev->dev, "set kernel compute queue number to 8 due to invalid paramter provided by user\n");
-> +               dev_warn(adev->dev, "set kernel compute queue number to 8 due to invalid parameter provided by user\n");
->         }
->
->         return 0;
-> --
-> 2.27.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+drbg_string_fill(&additional_input, drbg_st->additional_input_reseed, drbg_=
+st->additional_input_reseed_len);
+if (drbg_st->entropy_input_reseed_len >0)
+=09drbg_string_fill(&entropy_input, drbg_st->>entropy_input_reseed, drbg_st=
+->entropy_input_reseed_len);
+ret =3D crypto_drbg_get_bytes_addtl(drng, buf, test->expectedlen, &addition=
+al_input);
+
+drbg_string_fill(&additional_input,   drbg_st->additional_generate,    drbg=
+_st->additional_generate_len);
+if (drbg_st->entropy_input_generate_len >0)
+=09drbg_string_fill(&entropy_input, drbg_st->entropy_input_generate, drbg_s=
+t->entropy_input_generate_len);
+ret =3D crypto_drbg_get_bytes_addtl(drng, buf, test->expectedlen, &addition=
+al_input);
+
+drbg_string_fill(&additional_input, drbg_st->additional_input_final,    drb=
+g_st->additional_input_final_len);
+if (additional_input_final_len > 0)
+=09drbg_string_fill(&entropy_input, drbg_st->entropy_input_final, drbg_st->=
+entropy_input_final_len);
+ret =3D crypto_drbg_get_bytes_addtl(drng, buf, test->expectedlen, &addition=
+al_input);
+
+However the output generated seems to be wrong. Can any help me to indicate=
+ what I am doing wrong
+
+Regards,
+Jaya
+
