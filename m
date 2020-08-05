@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F80323D2D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FC023D292
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729905AbgHEUQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:16:27 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:33610 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgHEQS5 (ORCPT
+        id S1729618AbgHEUOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:14:15 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44102 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726748AbgHEQX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:18:57 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 075DGWpe104587;
-        Wed, 5 Aug 2020 08:16:32 -0500
+        Wed, 5 Aug 2020 12:23:26 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 075DHV9M072287;
+        Wed, 5 Aug 2020 08:17:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1596633392;
-        bh=jv05QMyNRK6yayjZc1mP1MO1HJsGqxdVtsib46m4psw=;
+        s=ti-com-17Q1; t=1596633451;
+        bh=57yF68qyZ0azOmyzTIEwYs+6yRB7tuKz3qfi5lQTL2Y=;
         h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=T+RhXndV1BPGC6RiOs7bIZtzzRI4KezTc5sDYRlBrjptGzd2t5N7YZbKtslASCm69
-         b/5xu9BxUpwVFMXXDLrGZthhOepTcxE1+BIVleZU4bl43OY6PtQJNTighBMU0OqK2P
-         ZpdLH+gUqiy+MGAwAKqtJYQPm2GE/UllwhRVIMSk=
+        b=fb84QEizh1xqIZv4YwwWKBoNcIaWNZdLEhdp8PKXmcuSz5LdjdZudXZ+ZMNZfMHp+
+         I3YuZE1CRruSM+2Cd9D/meA6KiIyju3KG+y7B2dEGuxf4+6NuubBU86ah5a8RLBs36
+         MaqnS51DCQ7/TOyrO0POqJY3nYVUcAdxjSdLfkaA=
 Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 075DGWwE068176
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 075DHVG9004195
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 5 Aug 2020 08:16:32 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
+        Wed, 5 Aug 2020 08:17:31 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
  (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 5 Aug
- 2020 08:16:32 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 08:17:30 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 5 Aug 2020 08:16:32 -0500
-Received: from [10.250.232.88] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 075DGTr0043569;
-        Wed, 5 Aug 2020 08:16:30 -0500
-Subject: Re: [PATCH] mmc: sdhci_am654: Add workaround for card detect debounce
- timer
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>
-CC:     <ulf.hansson@linaro.org>
-References: <20200729234130.25056-1-faiz_abbas@ti.com>
- <2d692a90-0e58-ae69-9b5b-c9eb3ffe21ec@intel.com>
- <75b188ef-2755-b833-4756-79f0f171f8bd@ti.com>
- <c5b166c9-f9ba-e01e-b759-57ac93d99832@intel.com>
-From:   Faiz Abbas <faiz_abbas@ti.com>
-Message-ID: <3f7e85c7-b0ba-e6a8-8d9f-091413614773@ti.com>
-Date:   Wed, 5 Aug 2020 18:46:28 +0530
+ Frontend Transport; Wed, 5 Aug 2020 08:17:30 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 075DHSMg035743;
+        Wed, 5 Aug 2020 08:17:28 -0500
+Subject: Re: [PATCH] dmaengine: ti: k3-udma-glue: Fix parameters for rx ring
+ pair request
+To:     Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+CC:     <ssantosh@kernel.org>, <santosh.shilimkar@oracle.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>
+References: <20200805112746.15475-1-peter.ujfalusi@ti.com>
+ <20200805113237.GX12965@vkoul-mobl>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <3eea63fe-88f5-d6b6-433a-bb15495a839d@ti.com>
+Date:   Wed, 5 Aug 2020 16:17:24 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <c5b166c9-f9ba-e01e-b759-57ac93d99832@intel.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200805113237.GX12965@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
