@@ -2,161 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F9623D087
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A20523D038
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728848AbgHETts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:49:48 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53672 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728190AbgHETt1 (ORCPT
+        id S1729654AbgHETpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbgHETpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:49:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596656965;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tsm1SEelM+06nJv4QwmFAcC36E4Y0iDtTBk3gpYTlNg=;
-        b=hjJi/IwJoZvX88G+wwIw2hlWeoSw9hbnCcQF//QSUMVeu5CmCe1iH42jKLza0ORUMEU7nA
-        zpxd5EpYZ5tsb9F1MxAcOxsXzsJiHLFpHbs+xX1R8BIQIe49QPhBIznY1+XMZGQ/lAAVRN
-        VWQUm11SQHdgiLpOxIDAJy7KDG1E1Nk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-UcynKxo0OZaFTugrhfP42g-1; Wed, 05 Aug 2020 15:34:14 -0400
-X-MC-Unique: UcynKxo0OZaFTugrhfP42g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C93B8015FB;
-        Wed,  5 Aug 2020 19:34:13 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5D64D5DA6A;
-        Wed,  5 Aug 2020 19:34:10 +0000 (UTC)
-Date:   Wed, 5 Aug 2020 15:34:09 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     John Donnelly <john.p.donnelly@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, dm-devel@redhat.com
-Subject: fixing 4.14-stable's broken DM cache writethrough support [was: Re:
- [(resend) PATCH v3: {linux-4.14.y} ] dm cache: submit writethrough writes in
- parallel to origin and cache]
-Message-ID: <20200805193409.GA21824@redhat.com>
-References: <8CFF8DA9-C105-461C-8F5A-DA2BF448A135@oracle.com>
- <20200804124735.GA219143@kroah.com>
- <20200804182037.GA15453@redhat.com>
- <20200805143242.GC2154236@kroah.com>
+        Wed, 5 Aug 2020 15:45:07 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7824CC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 12:36:26 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id r7so7302510vsq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:36:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gpE3pI+c54t6EfFzgTsovD6WfPTVv6WNXfktad4/3wk=;
+        b=I9BUjuhDQNAzE2pI2FinWz92sPpvEO6KTOIMHLGhafXwBpVELW0tLwqop3XTJkKDYv
+         Tn1lvCb8qvdfBNG4BYLjw1LmKzvk5SZl5ML5eAUt4ZFYRE/j54+em3p/Pwdy/llYmUy6
+         C+XG80hvDcS8pYjgtCdT2NI3YW+0Vi5kgUBosIwWGHyLk5v1Ev+ON2OuJKhI6Ga7oVEQ
+         G/+VfS44pXs3d0JSTeUrzBmKYY3Gl5ujrY5kESY7zaOXONdG5iXBTS14WoKIQuP4zfyi
+         MvPRxN70UsrWlwA9kM0RVKWCmESDygXDMV66Y4Y2kVo8eA735xbCkreQyLhGckDqMvu7
+         OKqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gpE3pI+c54t6EfFzgTsovD6WfPTVv6WNXfktad4/3wk=;
+        b=NMctQ5POVNt8cGitw9ezhirn2HRBXo02ZPjUFFJYKrLRJ/2mFbxZKCelBbPQqbFtgs
+         sPd0zOw0W59TGaIWR3/zqXy5bg4APBAmrwLt63PYshOeVWdoAljVj1QjlgkiHY4rgBnX
+         v3c9zXkJr4VueOqBLxxhweG9HmpmnAFw/P275+SJpULAeXrfoiL20I7edufFvx22vCBy
+         KsxCyHxlGyuK1FLHd6lu2ov/EAaLtuzpHkKaBbIhn98IszknhlHAvdpiQ6XS20R+p9Oh
+         Dyp+zFUrMi+H1/Nuq3MdIVLxIFG69oEUl9frFKL0RAyUIz3juUX+QCAEzdk2H+7BF+4P
+         b3Uw==
+X-Gm-Message-State: AOAM533kAUVWAQcF6WCGug+4A78t3qDWHsI4teWBQgIFTh/yPyyVXqaz
+        feClqMCs8xAP4+BtWJkvSTj8LSLkqu2LNpk8xvCxP4QEuNxLcw==
+X-Google-Smtp-Source: ABdhPJzpsjel2TEzh8Y0IarhecVHni+meEcN9TX2IdZJ6p3P1z0TtPWp+z2oihdnSQuga7vI+QQFtmR+MG6HJjL1U+I=
+X-Received: by 2002:a67:f2ce:: with SMTP id a14mr3323321vsn.49.1596656184959;
+ Wed, 05 Aug 2020 12:36:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805143242.GC2154236@kroah.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200728073241.3625015-1-gthelen@google.com>
+In-Reply-To: <20200728073241.3625015-1-gthelen@google.com>
+From:   Greg Thelen <gthelen@google.com>
+Date:   Wed, 5 Aug 2020 12:36:13 -0700
+Message-ID: <CAHH2K0bU7w_rbKN_f0Fe_ZdGLtgBz_GVKS3eottTtm8P7QGoJA@mail.gmail.com>
+Subject: Re: [PATCH] selftests: more general make nesting support
+To:     Shuah Khan <shuah@kernel.org>, skhan@linuxfoundation.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05 2020 at 10:32am -0400,
-Greg KH <gregkh@linuxfoundation.org> wrote:
+On Tue, Jul 28, 2020 at 12:32 AM Greg Thelen <gthelen@google.com> wrote:
+>
+> selftests can be built from the toplevel kernel makefile (e.g. make
+> kselftest-all) or directly (make -C tools/testing/selftests all).
+>
+> The toplevel kernel makefile explicitly disables implicit rules with
+> "MAKEFLAGS +=3D -rR", which is passed to tools/testing/selftests.  Some
+> selftest makefiles require implicit make rules, which is why
+> commit 67d8712dcc70 ("selftests: Fix build failures when invoked from
+> kselftest target") reenables implicit rules by clearing MAKEFLAGS if
+> MAKELEVEL=3D1.
+>
+> So far so good.  However, if the toplevel makefile is called from an
+> outer makefile then MAKELEVEL will be elevated, which breaks the
+> MAKELEVEL equality test.
+> Example wrapped makefile error:
+>   $ cat ~/Makefile
+>   all:
+>         $(MAKE) defconfig
+>         $(MAKE) kselftest-all
+>   $ make -sf ~/Makefile
+>     futex_wait_timeout.c /src/tools/testing/selftests/kselftest_harness.h=
+   /src/tools/testing/selftests/kselftest.h ../include/futextest.h ../inclu=
+de/atomic.h ../include/logging.h -lpthread -lrt -o /src/tools/testing/selft=
+ests/futex/functional/futex_wait_timeout
+>   make[4]: futex_wait_timeout.c: Command not found
+>
+> Rather than checking $(MAKELEVEL), check for $(LINK.c), which is a more
+> direct side effect of "make -R".  This enables arbitrary makefile
+> nesting.
+>
+> Signed-off-by: Greg Thelen <gthelen@google.com>
+> ---
+>  tools/testing/selftests/Makefile | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/M=
+akefile
+> index 1195bd85af38..289a2e4b3f6f 100644
+> --- a/tools/testing/selftests/Makefile
+> +++ b/tools/testing/selftests/Makefile
+> @@ -84,10 +84,10 @@ endif
+>  # of the targets gets built.
+>  FORCE_TARGETS ?=3D
+>
+> -# Clear LDFLAGS and MAKEFLAGS if called from main
+> -# Makefile to avoid test build failures when test
+> -# Makefile doesn't have explicit build rules.
+> -ifeq (1,$(MAKELEVEL))
+> +# Clear LDFLAGS and MAKEFLAGS when implicit rules are missing.  This pro=
+vides
+> +# implicit rules to sub-test Makefiles which avoids build failures in te=
+st
+> +# Makefile that don't have explicit build rules.
+> +ifeq (,$(LINK.c))
+>  override LDFLAGS =3D
+>  override MAKEFLAGS =3D
+>  endif
+> --
+> 2.28.0.rc0.142.g3c755180ce-goog
 
-> On Tue, Aug 04, 2020 at 02:20:38PM -0400, Mike Snitzer wrote:
-> > On Tue, Aug 04 2020 at  8:47am -0400,
-> > Greg KH <gregkh@linuxfoundation.org> wrote:
-> > 
-> > > On Tue, Aug 04, 2020 at 07:33:05AM -0500, John Donnelly wrote:
-> > > > From: Mike Snitzer <snitzer@redhat.com>
-> > > > 
-> > > > Discontinue issuing writethrough write IO in series to the origin and
-> > > > then cache.
-> > > > 
-> > > > Use bio_clone_fast() to create a new origin clone bio that will be
-> > > > mapped to the origin device and then bio_chain() it to the bio that gets
-> > > > remapped to the cache device.  The origin clone bio does _not_ have a
-> > > > copy of the per_bio_data -- as such check_if_tick_bio_needed() will not
-> > > > be called.
-> > > > 
-> > > > The cache bio (parent bio) will not complete until the origin bio has
-> > > > completed -- this fulfills bio_clone_fast()'s requirements as well as
-> > > > the requirement to not complete the original IO until the write IO has
-> > > > completed to both the origin and cache device.
-> > > > 
-> > > > Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-> > > > 
-> > > > (cherry picked from commit 2df3bae9a6543e90042291707b8db0cbfbae9ee9)
-> > > > 
-> > > > Fixes: 4ec34f2196d125ff781170ddc6c3058c08ec5e73 (dm bio record:
-> > > > save/restore bi_end_io and bi_integrity )
-> > > > 
-> > > > 4ec34f21 introduced a mkfs.ext4 hang on a LVM device that has been
-> > > > modified with lvconvert --cachemode=writethrough.
-> > > > 
-> > > > CC:stable@vger.kernel.org for 4.14.y
-> > > > 
-> > > > Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
-> > > > Reviewed-by: Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
-> > > > 
-> > > > conflicts:
-> > > > 	drivers/md/dm-cache-target.c. -  Corrected usage of
-> > > > 	writethrough_mode(&cache->feature) that was caught by
-> > > > 	compiler, and removed unused static functions : writethrough_endio(),
-> > > > 	defer_writethrough_bio(), wake_deferred_writethrough_worker()
-> > > > 	that generated warnings.
-> > > 
-> > > What is this "conflicts nonsense"?  You don't see that in any other
-> > > kernel patch changelog, do you?
-> > > 
-> > > > ---
-> > > > drivers/md/dm-cache-target.c | 92 ++++++++++++++++++--------------------------
-> > > > 1 file changed, 37 insertions(+), 55 deletions(-)
-> > > 
-> > > Please fix your email client up, it's totally broken and this does not
-> > > work at all and is getting frustrating from my side here.
-> > > 
-> > > Try sending emails to yourself and see if you can apply the patches, as
-> > > the one you sent here does not work, again:
-> > 
-> > John's inability to submit a patch that can apply aside: I do not like
-> > how this patch header is constructed (yet attributed "From" me).  It is
-> > devoid of detail as it relates to stable@.
-> > 
-> > Greg, please don't apply the v4 of this patch either.  I'll craft a
-> > proper stable@ patch that explains the reason for change and why we're
-> > left having to resolve conflicts in stable@.
-> > 
-> > But first I need to focus on sending DM changes to Linus for v5.9 merge.
-> 
-> Ok, no worries, I'll drop all of these from my review queue and wait for
-> something from you sometime in the future.
-
-Hey Greg,
-
-SO I've looked this required 4.14 stable@ backport over. Because 4.14
-already has these commits (to fix a dm integrity issue):
-1b17159e52b dm bio record: save/restore bi_end_io and bi_integrity
-248aa2645aa dm integrity: use dm_bio_record and dm_bio_restore
-
-DM-cache's 4.14 writethrough mode got broken because its implementation
-(ab)used dm_hook_bio+dm_bio_record and predates 4.15's switch to using
-bio_chain() via commit 2df3bae9a654.  Without commit 2df3bae9a654 the
-dm_hook_bio+dm_bio_record changes from commit 1b17159e52b break
-dm-cache's writethrough support.
-
-So 4.14-stable now needs these 3 upstream 4.15 commits:
-8e3c3827776f dm cache: pass cache structure to mode functions
-2df3bae9a654 dm cache: submit writethrough writes in parallel to origin and cache
-9958f1d9a04e dm cache: remove all obsolete writethrough-specific code
-
-Applying those commits to v4.14.190 with:
-git cherry-pick -x 8e3c3827776f^..9958f1d9a04e
-
-results in a kernel that successfully builds and should fix
-4.14-stable's broken dm-cache writethrough support.
-
-Are you ok with queueing up applying these 3 upstream commits to
-4.14-stable or do you need me to send a patchset?
-
-Thanks,
-Mike
-
+Is there any feedback on this patch?  It's not high priority but something =
+that
+will help me make more use of selftests.
