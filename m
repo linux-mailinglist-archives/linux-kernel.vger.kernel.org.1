@@ -2,143 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5251023C825
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6058C23C82F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728138AbgHEItf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 04:49:35 -0400
-Received: from mga04.intel.com ([192.55.52.120]:30474 "EHLO mga04.intel.com"
+        id S1728255AbgHEIvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 04:51:16 -0400
+Received: from mout.gmx.net ([212.227.17.20]:44637 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgHEItc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 04:49:32 -0400
-IronPort-SDR: smC7siSlzqjFwgT/kPdk/a2Nx9+zxswaruDhYa80aan5QxqJQxc7mQFZk5TYbTmxFFRuK02Brc
- DROgBOkqFIow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="149930438"
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="149930438"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 01:49:32 -0700
-IronPort-SDR: inDHEm7R7TbnfSeKEiELpSAlk4ItHNo7Wy9lelKgCwAQOdXVgxRrepaigoTrpsXk4kKj18gSwz
- AXzTNxOuhQZA==
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="330870223"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 01:49:30 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 82C1220859; Wed,  5 Aug 2020 11:49:28 +0300 (EEST)
-Date:   Wed, 5 Aug 2020 11:49:28 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH] PM: runtime: Add kerneldoc comments to multiple helpers
-Message-ID: <20200805084928.GK13316@paasikivi.fi.intel.com>
-References: <2672940.cHDmkauF2A@kreacher>
- <20200803085347.GV13316@paasikivi.fi.intel.com>
- <CAJZ5v0hRi3DZ69b1b=xes4qz2keq_aGDzX5kKQsR_rkwuFgk0w@mail.gmail.com>
- <20200803230536.GB13316@paasikivi.fi.intel.com>
- <CAJZ5v0jDpuKYJED90CveWgfYcoA60X5qYY6U6CJmEFd7KDiY-A@mail.gmail.com>
+        id S1725868AbgHEIvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 04:51:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1596617396;
+        bh=KouBFqPcVdY/N2jpqO+a5lVPiMqUcEXz0mYKHefvmGY=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=PQ7H44NKYk24ie8whky4P/jtvHI4A3RB5Ggj+HPlOdWg5moXiKOsEEGJf26zYDqDb
+         vfED0TdDZhJ8LzdqPusAOPTY3PjZlnRWwDXRTRL3WrRN/o33l55OP1BrQfiw01gADm
+         1uMXYlTYrbbNv4yza3AzyOVWCPWSwEzUrIiCb/Lk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [80.208.209.197] ([80.208.209.197]) by web-mail.gmx.net
+ (3c-app-gmx-bap13.server.lan [172.19.172.83]) (via HTTP); Wed, 5 Aug 2020
+ 10:49:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jDpuKYJED90CveWgfYcoA60X5qYY6U6CJmEFd7KDiY-A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <trinity-35b75199-be7e-4e56-bfc9-1d8bf7075df1-1596617396324@3c-app-gmx-bap13>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        chunhui dai <chunhui.dai@mediatek.com>,
+        David Airlie <airlied@linux.ie>,
+        Sean Wang <sean.wang@mediatek.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        CK Hu <ck.hu@mediatek.com>, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Frank Wunderlich <linux@fw-web.de>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Aw: Re:  Re:  Re: [PATCH v4 6/6] arm: dts: mt7623: add display
+ subsystem related device nodes
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 5 Aug 2020 10:49:56 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <bde8de134f59c4375e4048faf124c61af0b95920.camel@infradead.org>
+References: <20200804165555.75159-1-linux@fw-web.de>
+ <20200804165555.75159-8-linux@fw-web.de>
+ <3966b4f687f2fabf9041059dd5f39165177a6ef6.camel@infradead.org>
+ <trinity-5335a61e-b8f0-4441-9fe9-0827cdd67ce4-1596562816887@3c-app-gmx-bap28>
+ <45d34c6cc19c2e5c13f9e88a8e04bdae9259ffdc.camel@infradead.org>
+ <trinity-16cee263-ff59-4595-adc1-738071745162-1596612461427@3c-app-gmx-bap13>
+ <bde8de134f59c4375e4048faf124c61af0b95920.camel@infradead.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:02+hrQwIbNKgot54dm3HJDNKjTwKbsyfpioUZ2s9RwWRJQMTA7VOZRh/pL3a9UGoFVTCN
+ ERILIMlNaDjkc2TrLP6Gpib+y9jm1gT93Gao0qy6TOyS7ZY5Pcmiwa/hFmqqBw0sETOOim7kdheu
+ QrkKaZxd7kwCxWiPRVRs9Pmzo8H/6Yf7oVgLuRlm1LNtnp20Z0bybSKu/XlUT6O3aPAOSAKdTtL+
+ Z5whKcy09j+dZ6HoVVNVfUZGSTZ1QRskLbtCPoKU8es+a/aXSpcl6T8dUGYxw6dTA/aBrl0rZfzX
+ vE=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:sGV1u3BLYEs=:ZmeFvu+MGFu42w9/0EZtNz
+ y3ygbRJ/gxvzAKmPS0TDo3EqFrrvRTbvlEgmMQphdULdqverfTtQWhDOvuYX4H9XeTbDYHICh
+ 1u4nPRhU8LkBfK3OQmKDaFH52AsaQoUPcpNmMFqfXgT2zismRqV4YY/DzhRedSMjbW/LXFX5O
+ 9f7pJWQR/dzVelZFUa6ktefaFla1rztZfdhFaUoCMkM/6daiFmBOTW6BxP/PfcS581BqmFRvx
+ kBqCAOKJN3+cXCFP/xnHMSZfPHlzY1hmvATTKLz+Y6VCSnJ6vCcbjujVUjEkqCOECZCpHjjBK
+ 3MxKUsIb53GKhcCQWbS+t+6c3lhZCuevgl0ISDshpHINWCIIdvqpAT1qPqihdu1YoVeSAp4jw
+ qpdG3elw3uN2wUkYCF+804pajrgO7t0IJ2JaUJHEQ3tV8xrUkA4ENN5dv+PNeOdwh9n0Mvbxw
+ HwPEJ0/j3unee2GpYuPG46ZIuA4LU/8RQKdQFDvxzD6Z4WJkDHwiEWinthNXCbpy1tivg3VnK
+ 5tc8jHH4eOvtsmFzG/AOh4Yib9Ts2ifF3dEcLYDT1k8/baNDPqKIs4fB/HH5zU+LVNg4mcTNr
+ /ZZMS/yynDp3VUr5tkPcQ3aiIHtJO7vWqHYKlM9Z65CMilYkQFILL6kJHjWVbrET0GuGryUdz
+ MLqM6V6DDQqqyb4nxNRY5/s21N7uiwhZIw6BDbNtXsFaj0hWdzTMhVOzfin8up3/DNLI=
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+> Gesendet: Mittwoch, 05. August 2020 um 10:36 Uhr
+> Von: "David Woodhouse" <dwmw2@infradead.org>
 
-On Tue, Aug 04, 2020 at 12:15:03PM +0200, Rafael J. Wysocki wrote:
-> Hi Sakari,
-> 
-> On Tue, Aug 4, 2020 at 1:05 AM Sakari Ailus
-> <sakari.ailus@linux.intel.com> wrote:
-> >
-> > Hi Rafael,
-> >
-> > On Mon, Aug 03, 2020 at 01:36:52PM +0200, Rafael J. Wysocki wrote:
-> > > Hi Sakari,
-> > >
-> > > On Mon, Aug 3, 2020 at 10:53 AM Sakari Ailus
-> > > <sakari.ailus@linux.intel.com> wrote:
-> > > >
-> > > > Hi Rafael,
-> > > >
-> > > > Thanks for the patch.
-> > > >
-> > > > On Fri, Jul 31, 2020 at 07:03:26PM +0200, Rafael J. Wysocki wrote:
-> > > > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > > >
-> > > > > Add kerneldoc comments to multiple PM-runtime helper functions
-> > > > > defined as static inline wrappers around lower-level routines to
-> > > > > provide quick reference decumentation of their behavior.
-> > > >
-> > > > > Some of them are similar to each other with subtle differences only
-> > > > > and the behavior of some of them may appear as counter-intuitive, so
-> > > > > clarify all that to avoid confusion.
-> > > > >
-> > > > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > > > ---
-> > > > >  include/linux/pm_runtime.h |  246 +++++++++++++++++++++++++++++++++++++++++++++
-> > > > >  1 file changed, 246 insertions(+)
-> > > > >
-> > > > > Index: linux-pm/include/linux/pm_runtime.h
-> > > > > ===================================================================
-> > > > > --- linux-pm.orig/include/linux/pm_runtime.h
-> > > > > +++ linux-pm/include/linux/pm_runtime.h
-> > > > > @@ -60,58 +60,151 @@ extern void pm_runtime_put_suppliers(str
-> > > > >  extern void pm_runtime_new_link(struct device *dev);
-> > > > >  extern void pm_runtime_drop_link(struct device *dev);
-> > > > >
-> > > > > +/**
-> > > > > + * pm_runtime_get_if_in_use - Conditionally bump up runtime PM usage counter.
-> > > > > + * @dev: Target device.
-> > > > > + *
-> > > > > + * Increment the runtime PM usage counter of @dev if its runtime PM status is
-> > > > > + * %RPM_ACTIVE and its runtime PM usage counter is greater than 0.
-> > > >
-> > > > The implementation of the non-runtime PM variants (used when CONFIG_PM is
-> > > > disabled) isn't here but I think it'd be nice if their behaviour was also
-> > > > documented here. pm_runtime_get_if_in_use() returns -EINVAL if CONFIG_PM is
-> > > > disabled, for instance.
-> > >
-> > > These kerneldoc comments cover the CONFIG_PM case only.  The behavior
-> > > for !CONFIG_PM needs to be figured out from the code, if it matters.
-> > >
-> > > I'm not sure why it would matter for pm_runtime_get_if_in_use(), in particular?
-> >
-> > Just as an example. It depends on the use case, but there have been bugs
-> > related to these (e.g. commit 4d471563d87b2b83e73b8abffb9273950e6d2e36),
-> > likely at least partly because it's extra manual work to figure out what a
-> > given API function could return when it's not documented.
-> 
-> If it is a static inline wrapper around another exported function,
-> whoever uses it should look at the documentation of the function being
-> wrapped anyway, so IMO it is sufficient to document the return values
-> in there and also (as stated in another message) this avoids the need
-> to manually synchronize the kerneldoc comments every time a new return
-> value is added or removed.
-> 
-> In the particular case above it might be useful to change
-> pm_runtime_get_if_active() to return bool, make it return "false" if
-> PM-runtime is disabled for the device and update the callers
-> accordingly (some of them still appear to be doing the wrong thing).
-> 
-> IOW, it would return "true" only if the usage counter has been
-> incremented and so it needs to be decremented.
+> > mt7623.dtsi =3D> mt7623n.dtsi =3D> mt7623n-bananapi-bpi-r2.dts
+> > mt7623.dtsi =3D> mt7623a.dtsi =3D> mt7623a-unielec-u7623.dts (not exis=
+ting yet,
+> > openwrt seems to use a board-specific dtsi)
+>
+> Yes, I think we should.
 
-In the case of above commit, the driver is interested in knowing whether
-the device is powered on, and so accessible. That's the case if PM is
-disabled, so it should return true. Then we do lose the information whether
-the counter was touched. I guess we should keep it as-is.
+i want to see what MTK/DT owner says to this...
+my current way will be still adding the nodes to existing mt7623.dtsi (lik=
+e ryder lee did it in original patch)
+but disabling them to not break mt7623a and splitting it afterwards.
 
--- 
-Sakari Ailus
+> I'll create mt7623a.dtsi and upstream the U7623 support; I think that
+> can happen without conflicting with anything you do.
+>
+> I note that the GPU node has been added to mt7623.dtsi in 5.8 too;
+> that'll want to move to the new mt7623n.dtsi that you create, along
+> with your other new additions.
+
+i guess mali-node also needs to be moved to mt7623n.dtsi, so my current wa=
+y seems right...
+but it's decision of MTK/DT owner. if they make a note i squash the disabl=
+ing-commit into this and post v5
+
+regards Frank
