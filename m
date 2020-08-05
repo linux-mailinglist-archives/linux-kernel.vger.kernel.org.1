@@ -2,67 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3C323D01D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3342323D022
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbgHET35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:29:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43176 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728554AbgHERKL (ORCPT
+        id S1728583AbgHET3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:29:55 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:45007 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728560AbgHERKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:10:11 -0400
+        Wed, 5 Aug 2020 13:10:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647407;
+        s=mimecast20190719; t=1596647410;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=XBRZHl7JCJFhcfupZL8iAhY/apUMRtB5oC1LWGAgU4A=;
-        b=BdzJi/1qxsjYplX9UHJnssT/2ipPnfKLyXNtuqAX0EdvC5yBvGeOWH0tkFtWUfQZRVCCP7
-        t4glj4Ud13UVyITwsXvJLny6e170e6e9PebDU5jGr+Qi+T1Y/H0X2Zm0Ty6w90ouiGlr+H
-        UgNupPu+ZtSu7YxmEUkQp5NZPSsBQx0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-162-RHgXzudWO8anti7-jtQNlw-1; Wed, 05 Aug 2020 09:44:03 -0400
-X-MC-Unique: RHgXzudWO8anti7-jtQNlw-1
-Received: by mail-wm1-f70.google.com with SMTP id u144so2740420wmu.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:03 -0700 (PDT)
+        bh=E6FiLGXEyromLE+NGBVYxEgCEa70YCiNICtsxGYJF7c=;
+        b=QP8yJgvdDNr2BbylYdG1PVtVCpuYa0Q+HFe5SOoF094poxjRxn9b1O+c8FYHGS743Zdy9+
+        uJjaQO1aecXSb81dLVhuy0x1Q2aTO4SQTIFF1vE2Rv5LhJxCdBQ6jbBuaNfBJlivQ+Y4qg
+        luX2IAfuaAR2q/6azNSeOsuPW7l6EpM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-73-3CmHU3QjNGKFRaAaLM5rrw-1; Wed, 05 Aug 2020 09:44:10 -0400
+X-MC-Unique: 3CmHU3QjNGKFRaAaLM5rrw-1
+Received: by mail-wr1-f72.google.com with SMTP id r29so9279407wrr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=XBRZHl7JCJFhcfupZL8iAhY/apUMRtB5oC1LWGAgU4A=;
-        b=nMu2xPXb37FeQzs86ow0OYxGOnKW+7vK6xizNMF5hZY0EDf2aFs1fVwH6eSkDf3YkG
-         1fi8ThJD1iBqUlQyv3DqxGtCUGPgBf82bTo6tavynUkjX7xZKs6jYAdxO9ZplAZTvlH2
-         eOGXeWfsXRw7K2S1epWgOqR1OFUvCwLESBivMDc9l8X67xunIeCOMLpvivF03Vsr1zDT
-         j/g9KAc55UOdq0MCS3suC2f47vwYcXnn4Ow4VWUHR4XMlP4i2CfjERli8FNsH5HcUN4P
-         Ea8lI9np19uuLC1xCwrQZPgwVYBfgBMuonddhJu/RnWs31XlV5AsTMuWjwdjG71RL7vX
-         r1Sg==
-X-Gm-Message-State: AOAM533K0hZFjCvjgw+U4CIy1jyB+7yyJN/duW6+uZaOAwENALGtYnVX
-        nDqTIdLFsYqYd2O/k7/JSt5WHwTVt6TXbP6p3387ufIef2XCq5gWekTsPWngO5JFq89Q5DkHhQS
-        u390o+QxzeYj5PgHzuecIL8C8
-X-Received: by 2002:a7b:ca57:: with SMTP id m23mr3291799wml.35.1596635042166;
-        Wed, 05 Aug 2020 06:44:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDiytpas+5HWe7CFND1zqnudLwtNEfOy8SdQ5eObOxwbDWWrns+xYAUPDW5UZJfGlbiTGXfw==
-X-Received: by 2002:a7b:ca57:: with SMTP id m23mr3291789wml.35.1596635041995;
-        Wed, 05 Aug 2020 06:44:01 -0700 (PDT)
-Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
-        by smtp.gmail.com with ESMTPSA id x2sm3035450wrg.73.2020.08.05.06.44.00
+        bh=E6FiLGXEyromLE+NGBVYxEgCEa70YCiNICtsxGYJF7c=;
+        b=B94py169xq8f7CSho4eiLR0uO3FXr1TDClH4Qbj0ezxaKsWodqeahkYb65d4q6FHT/
+         4JtGYjZUDhsITwA+dZ76J6k13ttH72jOwxlcIifvz3P/O6tQr9/DMX3XmymxeGIg82pC
+         SnwMOHuBT32z22d+p5Va4FePf/InA7BbaasO/8M8qjA7BG6i+6NgNLytEHFDKR0/Si8E
+         k3YwitxtRWVUrdKER8UAe7z8CuWu5XLjXMilw3U59jTsyKcfBqaThhfxnV5hCb9IsFda
+         SErKyGB+V2+IZFUwdhCxDLVE8UqyG+JKPeoGS32g+Hjw/4GNeIfBxvRFB53CLuSHEQsc
+         Ha1Q==
+X-Gm-Message-State: AOAM531cQ0qCNHn4Xd6sBAuetXcOHx3uL1QhR6m3N+b4szeBV4FaizUV
+        2jP3y4UqjvkgpKZV9SILPH1Hi1czPa/x2zA6Ht4LSO7SXo5MigeLe/5+J97jgbI2HZxkwpsuOvZ
+        FCWhktqh/HOmX4m8A6+yu592P
+X-Received: by 2002:adf:ec04:: with SMTP id x4mr2747071wrn.28.1596635048493;
+        Wed, 05 Aug 2020 06:44:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQI4FlgMw3rbHxklSaF89feIW66tgc8CCicGOY4FAHT13RLsJQet+pRNk6EzHyh659HRSHmQ==
+X-Received: by 2002:adf:ec04:: with SMTP id x4mr2747025wrn.28.1596635047405;
+        Wed, 05 Aug 2020 06:44:07 -0700 (PDT)
+Received: from redhat.com ([192.117.173.58])
+        by smtp.gmail.com with ESMTPSA id t13sm2717293wru.65.2020.08.05.06.44.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:01 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:43:59 -0400
+        Wed, 05 Aug 2020 06:44:06 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:44:04 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH v3 16/38] virtio_scsi: correct tags for config space fields
-Message-ID: <20200805134226.1106164-17-mst@redhat.com>
+        Andy Shevchenko <andy@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Vadim Pasternak <vadimp@mellanox.com>,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH v3 18/38] mlxbf-tmfifo: sparse tags for config access
+Message-ID: <20200805134226.1106164-19-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -75,67 +72,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tag config space fields as having virtio endian-ness.
+mlxbf-tmfifo accesses config space using native types -
+which works for it since the legacy virtio native types.
+
+This will break if it ever needs to support modern virtio,
+so with new tags previously introduced for virtio net config,
+sparse now warns for this in drivers.
+
+Since this is a legacy only device, fix it up using
+virtio_legacy_is_little_endian for now.
+
+No functional changes.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Acked-by: Cornelia Huck <cohuck@redhat.com>
 ---
- drivers/scsi/virtio_scsi.c       |  4 ++--
- include/uapi/linux/virtio_scsi.h | 20 ++++++++++----------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/platform/mellanox/mlxbf-tmfifo.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
-index 0e0910c5b942..c36aeb9a1330 100644
---- a/drivers/scsi/virtio_scsi.c
-+++ b/drivers/scsi/virtio_scsi.c
-@@ -746,14 +746,14 @@ static struct scsi_host_template virtscsi_host_template = {
+diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+index 5739a9669b29..bbc4e71a16ff 100644
+--- a/drivers/platform/mellanox/mlxbf-tmfifo.c
++++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+@@ -625,7 +625,10 @@ static void mlxbf_tmfifo_rxtx_header(struct mlxbf_tmfifo_vring *vring,
+ 			vdev_id = VIRTIO_ID_NET;
+ 			hdr_len = sizeof(struct virtio_net_hdr);
+ 			config = &fifo->vdev[vdev_id]->config.net;
+-			if (ntohs(hdr.len) > config->mtu +
++			/* A legacy-only interface for now. */
++			if (ntohs(hdr.len) >
++			    __virtio16_to_cpu(virtio_legacy_is_little_endian(),
++					      config->mtu) +
+ 			    MLXBF_TMFIFO_NET_L2_OVERHEAD)
+ 				return;
+ 		} else {
+@@ -1231,8 +1234,12 @@ static int mlxbf_tmfifo_probe(struct platform_device *pdev)
  
- #define virtscsi_config_get(vdev, fld) \
- 	({ \
--		typeof(((struct virtio_scsi_config *)0)->fld) __val; \
-+		__virtio_native_type(struct virtio_scsi_config, fld) __val; \
- 		virtio_cread(vdev, struct virtio_scsi_config, fld, &__val); \
- 		__val; \
- 	})
- 
- #define virtscsi_config_set(vdev, fld, val) \
- 	do { \
--		typeof(((struct virtio_scsi_config *)0)->fld) __val = (val); \
-+		__virtio_native_type(struct virtio_scsi_config, fld) __val = (val); \
- 		virtio_cwrite(vdev, struct virtio_scsi_config, fld, &__val); \
- 	} while(0)
- 
-diff --git a/include/uapi/linux/virtio_scsi.h b/include/uapi/linux/virtio_scsi.h
-index cc18ef8825c0..0abaae4027c0 100644
---- a/include/uapi/linux/virtio_scsi.h
-+++ b/include/uapi/linux/virtio_scsi.h
-@@ -103,16 +103,16 @@ struct virtio_scsi_event {
- } __attribute__((packed));
- 
- struct virtio_scsi_config {
--	__u32 num_queues;
--	__u32 seg_max;
--	__u32 max_sectors;
--	__u32 cmd_per_lun;
--	__u32 event_info_size;
--	__u32 sense_size;
--	__u32 cdb_size;
--	__u16 max_channel;
--	__u16 max_target;
--	__u32 max_lun;
-+	__virtio32 num_queues;
-+	__virtio32 seg_max;
-+	__virtio32 max_sectors;
-+	__virtio32 cmd_per_lun;
-+	__virtio32 event_info_size;
-+	__virtio32 sense_size;
-+	__virtio32 cdb_size;
-+	__virtio16 max_channel;
-+	__virtio16 max_target;
-+	__virtio32 max_lun;
- } __attribute__((packed));
- 
- /* Feature Bits */
+ 	/* Create the network vdev. */
+ 	memset(&net_config, 0, sizeof(net_config));
+-	net_config.mtu = ETH_DATA_LEN;
+-	net_config.status = VIRTIO_NET_S_LINK_UP;
++
++	/* A legacy-only interface for now. */
++	net_config.mtu = __cpu_to_virtio16(virtio_legacy_is_little_endian(),
++					   ETH_DATA_LEN);
++	net_config.status = __cpu_to_virtio16(virtio_legacy_is_little_endian(),
++					      VIRTIO_NET_S_LINK_UP);
+ 	mlxbf_tmfifo_get_cfg_mac(net_config.mac);
+ 	rc = mlxbf_tmfifo_create_vdev(dev, fifo, VIRTIO_ID_NET,
+ 				      MLXBF_TMFIFO_NET_FEATURES, &net_config,
 -- 
 MST
 
