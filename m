@@ -2,192 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E59D23CC23
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98AC23CC1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgHEQ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:27:27 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:43520 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726634AbgHEQX1 (ORCPT
+        id S1726804AbgHEQXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:23:53 -0400
+Received: from mail-pl1-f199.google.com ([209.85.214.199]:50931 "EHLO
+        mail-pl1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbgHEQWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:23:27 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E630020B490F;
-        Wed,  5 Aug 2020 09:07:48 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E630020B490F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1596643669;
-        bh=vaUisLR9Kht4UfqcTKrNtIIIJRf+vX4y2SvJm7PWt8g=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=e+cpFn2dGtKBp/rCWfhHorxZGUmJI/qQGPmC9dLzn2UmWv75lQty7oqUrkOksSCRg
-         bD2QBPct/k8XzlPK7V5YX+8evojo/kYJH1V/CqXWCDArYOXpBvjRfOTNSvksYoAof7
-         3bGs66iTeYBgVYd2p69HCLGt0vDPQ66SqH7sdOOw=
-Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        sashal@kernel.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
- <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
- <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
- <c7c168f2-e30b-d2c5-abcb-1b6919197474@schaufler-ca.com>
- <20200805154504.GB4365@sequoia>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <7c7a076b-6ba7-2e8d-409a-b3b4e4738c41@linux.microsoft.com>
-Date:   Wed, 5 Aug 2020 09:07:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 5 Aug 2020 12:22:34 -0400
+Received: by mail-pl1-f199.google.com with SMTP id k1so20636356plk.17
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:22:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=avna9i89Ds5+HlHIO0jP2gsy42y6k6d4i5A6G0eC9Zg=;
+        b=cqiM6zXyb+4Y0idhAMPqo7HcGO4hyqvt7OzGEpFJUh2I6sNqurFnRMyV67iZHMncCv
+         +AK+de0vFOcX5K5kL1fgFCEoXkxnQHaFpanozovQSdq8qQ/fgn/BOHzOgraoy+DsYQ/3
+         xE3qIXHbEiz2xRuIFuhCH6gyD4QbV+6ooqMxp4njlEoQSH2BILfLpFSltI6BMnqJ2B/d
+         GUg0/Py/GhkhWTE1dkII7OSzk8fMg2D5+3c0C9g+WNf9w4ZTX0zeAaes+88ZArcg+1Be
+         y1K01rKeStpEzdgpuiOQBqjCyf397o80OgVy5FOD1C9C6610s+Dep5ztcn5hcJy/G9OP
+         fjRw==
+X-Gm-Message-State: AOAM533uMsdOvKkPch/xZLPQ1GwMQfdB6xw0x6foBlgGbndwW0LLpzto
+        iC4+PblzBYm5YE5IH/V2dp4iKIfA12UE7Qu6fEETD3+KIfKl
+X-Google-Smtp-Source: ABdhPJyx4yEzfPaYCDRlqOY3SOtYmFn8sbh8/x3+5nlNm2RDYZA9WGMYMn0ZKb0xJk3/Mq74bCnR7H5fZMI1spSxNxHREkmBWCcD
 MIME-Version: 1.0
-In-Reply-To: <20200805154504.GB4365@sequoia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:24c2:: with SMTP id h2mr4088770ioe.198.1596643761947;
+ Wed, 05 Aug 2020 09:09:21 -0700 (PDT)
+Date:   Wed, 05 Aug 2020 09:09:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000438c6705ac23983f@google.com>
+Subject: BUG: unable to handle kernel paging request in lock_sock_nested
+From:   syzbot <syzbot+3ea58ce4ad976e46ca65@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/20 8:45 AM, Tyler Hicks wrote:
-> On 2020-08-05 08:36:40, Casey Schaufler wrote:
->> On 8/4/2020 6:14 PM, Lakshmi Ramasubramanian wrote:
->>> On 8/4/20 6:04 PM, Casey Schaufler wrote:
->>>> On 8/4/2020 5:43 PM, Lakshmi Ramasubramanian wrote:
->>>>> Critical data structures of security modules are currently not measured.
->>>>> Therefore an attestation service, for instance, would not be able to
->>>>> attest whether the security modules are always operating with the policies
->>>>> and configuration that the system administrator had setup. The policies
->>>>> and configuration for the security modules could be tampered with by
->>>>> malware by exploiting kernel vulnerabilities or modified through some
->>>>> inadvertent actions on the system. Measuring such critical data would
->>>>> enable an attestation service to better assess the state of the system.
->>>>
->>>> I still wonder why you're calling this an LSM change/feature when
->>>> all the change is in IMA and SELinux. You're not putting anything
->>>> into the LSM infrastructure, not are you using the LSM infrastructure
->>>> to achieve your ends. Sure, you *could* support other security modules
->>>> using this scheme, but you have a configuration dependency on
->>>> SELinux, so that's at best going to be messy. If you want this to
->>>> be an LSM "feature" you need to use the LSM hooking mechanism.
->>>
->>>>
->>>> I'm not objecting to the feature. It adds value. But as you've
->>>> implemented it it is either an IMA extension to SELinux, or an
->>>> SELiux extension to IMA. Could AppArmor add hooks for this without
->>>> changing the IMA code? It doesn't look like it to me.
->>>
->>> The check in IMA to allow the new IMA hook func LSM_STATE and LSM_POLICY when SELinux is enabled is just because SELinux is the only security module using these hooks now.
->>>
->>> To enable AppArmor, for instance, to use the new IMA hooks to measure state and policy would just require adding the check for CONFIG_SECURITY_APPARMOR. Other than that, there are no IMA changes needed to support AppArmor or other such security modules.
->>
->> This is exactly what I'm objecting to. What if a system has both SELinux
->> and AppArmor compiled in? What if it has both enabled?
-> 
-> The SELinux state and policy would be measured but the AppArmor
-> state/policy would be silently ignored. This isn't ideal as the IMA
-> policy author would need to read the kernel code to figure out which
-> LSMs are going to be measured.
+Hello,
 
-Tyler - I am not sure why AppArmor state\policy would be ignored when 
-both SELinux and AppArmor are enabled. Could you please clarify?
+syzbot found the following issue on:
 
-When both the security modules are enabled, IMA policy validator would 
-look like below:
+HEAD commit:    ac3a0c84 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=141a4c1a900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c0cfcf935bcc94d2
+dashboard link: https://syzkaller.appspot.com/bug?extid=3ea58ce4ad976e46ca65
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-if (IS_ENABLED(CONFIG_SECURITY_SELINUX) ||
-     IS_ENABLED(CONFIG_SECURITY_APPARMOR)) &&
-     strcmp(args[0].from, "LSM_STATE") == 0)
-                 entry->func = LSM_STATE;
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Similar one for LSM_POLICY validation.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3ea58ce4ad976e46ca65@syzkaller.appspotmail.com
 
-Both SELinux and AppArmor can call ima_measure_lsm_state() and 
-ima_measure_lsm_policy() to measure state and policy respectively.
+BUG: unable to handle page fault for address: fffffbfff32980d2
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 21ffe5067 P4D 21ffe5067 PUD 21ffe4067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 19427 Comm: kworker/0:15 Not tainted 5.8.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events l2cap_chan_timeout
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0xdb/0x180 mm/kasan/generic.c:192
+Code: 80 38 00 74 f2 48 89 c2 b8 01 00 00 00 48 85 d2 75 56 5b 5d 41 5c c3 48 85 d2 74 5e 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 50 <80> 38 00 74 f2 eb d4 41 bc 08 00 00 00 48 89 ea 45 29 dc 4d 8d 1c
+RSP: 0018:ffffc90001ed78c0 EFLAGS: 00010082
+RAX: fffffbfff32980d2 RBX: fffffbfff32980d3 RCX: ffffffff8159b005
+RDX: fffffbfff32980d3 RSI: 0000000000000008 RDI: ffffffff994c0690
+RBP: fffffbfff32980d2 R08: 0000000000000000 R09: ffffffff994c0697
+R10: fffffbfff32980d2 R11: 0000000000000000 R12: ffff88806a3fc380
+R13: ffff88806a3fcd12 R14: 0000000000000000 R15: ffff88806a3fcc50
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff32980d2 CR3: 000000009cb24000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ instrument_atomic_read include/linux/instrumented.h:56 [inline]
+ test_bit include/asm-generic/bitops/instrumented-non-atomic.h:110 [inline]
+ __lock_acquire+0x1025/0x56e0 kernel/locking/lockdep.c:4350
+ lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:4959
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+ _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+ spin_lock_bh include/linux/spinlock.h:358 [inline]
+ lock_sock_nested+0x3b/0x110 net/core/sock.c:3049
+ l2cap_sock_teardown_cb+0x88/0x400 net/bluetooth/l2cap_sock.c:1520
+ l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
+ l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:824
+ l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+Modules linked in:
+CR2: fffffbfff32980d2
+---[ end trace 74995b61ea36495b ]---
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0xdb/0x180 mm/kasan/generic.c:192
+Code: 80 38 00 74 f2 48 89 c2 b8 01 00 00 00 48 85 d2 75 56 5b 5d 41 5c c3 48 85 d2 74 5e 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 50 <80> 38 00 74 f2 eb d4 41 bc 08 00 00 00 48 89 ea 45 29 dc 4d 8d 1c
+RSP: 0018:ffffc90001ed78c0 EFLAGS: 00010082
+RAX: fffffbfff32980d2 RBX: fffffbfff32980d3 RCX: ffffffff8159b005
+RDX: fffffbfff32980d3 RSI: 0000000000000008 RDI: ffffffff994c0690
+RBP: fffffbfff32980d2 R08: 0000000000000000 R09: ffffffff994c0697
+R10: fffffbfff32980d2 R11: 0000000000000000 R12: ffff88806a3fc380
+R13: ffff88806a3fcd12 R14: 0000000000000000 R15: ffff88806a3fcc50
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff32980d2 CR3: 000000009cb24000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-I don't think we should go the route of defining IMA hooks per security 
-module (i.e., SELINUX_STATE, APPARMOR_STATE, SELINUX_POLICY, etc.) 
-Instead keep the hook generic that any SM could use - which is what I 
-have tried to address in this patch series.
 
->>
->>>
->>> Please see Patch 1/4
->>>
->>> +            else if (IS_ENABLED(CONFIG_SECURITY_SELINUX) &&
->>> +                 strcmp(args[0].from, "LSM_STATE") == 0)
->>> +                entry->func = LSM_STATE;
->>> +            else if (IS_ENABLED(CONFIG_SECURITY_SELINUX) &&
->>> +                 strcmp(args[0].from, "LSM_POLICY") == 0)
->>> +                entry->func = LSM_POLICY;
->>>
->>> And, if early boot measurement is needed for AppArmor the following change in IMA's Kconfig
->>>
->>> Patch 4/4
->>>
->>> +config IMA_QUEUE_EARLY_BOOT_DATA
->>>       bool
->>> +    depends on SECURITY_SELINUX || (IMA_MEASURE_ASYMMETRIC_KEYS && SYSTEM_TRUSTED_KEYRING)
->>>       default y
->>>
->>> If you think calling this an "LSM feature" is not appropriate, please suggest a better phrase.
->>
->> In the code above you are under CONFIG_SECURITY_SELINUX.
->> I would suggest that it's an SELinux feature, so you should
->> be using SELINUX_STATE and SELINUX_POLICY, as I suggested
->> before. Just because SELinux has state and policy to measure
->> doesn't mean that a different module might not have other data,
->> such as history, that should be covered as well.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Good point - if other SMs have data besides state and policy, we can 
-define IMA hooks to measure that as well.
-
-But I still think it is not the right approach to call this 
-SELINUX_STATE and SELINUX_POLICY - it will lead to unnecessary code 
-duplication in IMA as more SMs are onboarded, in my opinion. Correct me 
-if I am wrong.
-
-  -lakshmi
-
-> 
-> In addition to SELINUX_STATE and SELINUX_POLICY, we should also consider
-> the proposed LSM_STATE and LSM_POLICY func values but require an "lsm"
-> rule conditional.
-> 
-> So the current proposed rules:
-> 
->   measure func=LSM_STATE
->   measure func=LSM_POLICY
-> 
-> Would become:
-> 
->   measure func=LSM_STATE lsm=selinux
->   measure func=LSM_POLICY lsm=selinux
-> 
-> The following rules would be rejected:
-> 
->   measure func=LSM_STATE
->   measure func=LSM_POLICY
->   measure func=LSM_STATE lsm=apparmor
->   measure func=LSM_POLICY lsm=smack
-> 
-> Of course, the apparmor and smack rules could/would be allowed when
-> proper support is in place.
-> 
-
-> 
->>
->> I realize that IMA already has compile time dependencies to
->> determine which xattrs to measure. There's no reason that
->> the xattr list couldn't be determined at boot time, with
->> each security module providing the XATTR_NAME values it
->> uses.
->>
->>>
->>> But like I said above, with minimal change in IMA other security modules can be supported to measure STATE and POLICY data.
->>>
->>>   -lakshmi
->>>
->>>
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
