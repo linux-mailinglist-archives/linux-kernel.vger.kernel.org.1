@@ -2,131 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB36C23CCA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E368323CCBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728332AbgHEQ4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728232AbgHEQwo (ORCPT
+        id S1728296AbgHEQ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:59:37 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35232 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728363AbgHEQ56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:52:44 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B2FC08EA0A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:16:28 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id w25so12174904ljo.12
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:16:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a94+vY6/4IIigbXjg7NoT3QyS3gyeM3tRGM7IVe4C4A=;
-        b=15Gzl4QZddTS7bZppiLCks8TnKdGjjThf1+1n2PB6hvFFKm0anFwj1mRbuIopHjtjZ
-         PmhBrjQq9P0jGAtfWE0WpRv0NUlg+TC0xFMMPI0UdQ5zswvcPJgKz7zuojmmHBPoo+fM
-         Nk0mZHL66mV47gSHqMPCmZEUVeTWLmSsOnPbETHn7F1sflFlCeHJG6lZ2ugkPeICATot
-         05QaAVOAxe1WcFLQn+qCP6t5k76N4waNiQE70DxT7FRmkjn2xfCFlv5kCxbeR48a6fqW
-         uAr7zHqPvdbgmz0OpHYND8tA6Zag4e4lDHNcV8RPJwuOPO8wmk2LM8lc02XvlEKJ7Fnh
-         gSew==
+        Wed, 5 Aug 2020 12:57:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596646676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zyd3PzoPVBU8umiKYNKDpmG6iIok/EZRtyPBBz7RY7k=;
+        b=C/7XQAnb6Xty+oPzdAfcYxE1R3XR8clOLe85MFIlribPQqMpck4qBTlsA4gAE9ZCoZ5gLD
+        HANA7B9PdNEkmOK8trkmD/cw1JyUGK7qnw4sxaIXAxniPjgKJRRv9xKZ2z10VoP07/XID9
+        v7XW3Ae24U9O2DCBHKe9GmWnMb0CHqk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-GfHkMBVBPhilVqL1dTtTXw-1; Wed, 05 Aug 2020 09:26:54 -0400
+X-MC-Unique: GfHkMBVBPhilVqL1dTtTXw-1
+Received: by mail-wr1-f72.google.com with SMTP id e14so10102035wrr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:26:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a94+vY6/4IIigbXjg7NoT3QyS3gyeM3tRGM7IVe4C4A=;
-        b=r40xh0nQUeQ+g+hA3YTt6BQ85M1JhpCRGmHIfgMy4EsozwjIy4bepp7PKu6pKsZe3O
-         EQjdaYP6Ccy3AZZ3pEY6YDJLw27jHtcyo6BH8eCOHqUn4KZpoLM372yJThxowLNlGBY3
-         +z3bUhRtpn7y8zb7dKznF4YD7Y5FvSzMBlxMHgnw6bS9huongLPuBm3ECDxuvL4iHSBd
-         iG1lX10E/i57f5c0c70z2gIlMZn9gAY8n6AykDimA9eG49tr2LlEHF0iocpzktqSp8yh
-         InEWHifnuF43lfJUxqra+B0QkFafQ8nXxXJV9RxlOkBHIUWasMTfAvvMttRB/b6nDlnE
-         OI4g==
-X-Gm-Message-State: AOAM530Tq+Ui/febeUqff2rQXaUn0sfitgZEx/P0+IovsdVU9AxQTNUV
-        O29tGYMTvH4/NPYwBhum2dfwvz9LMGaEYdpwbVJ39w==
-X-Google-Smtp-Source: ABdhPJwjg5Ra/z1LK5PGj9yIvEUV894D92SaQPSdTYQ19poiZFDx8xCMEmv974RmQSyC4iXeKoYKya43bsM13OJHPJc=
-X-Received: by 2002:a2e:9c59:: with SMTP id t25mr1397247ljj.402.1596633386436;
- Wed, 05 Aug 2020 06:16:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zyd3PzoPVBU8umiKYNKDpmG6iIok/EZRtyPBBz7RY7k=;
+        b=ZtM7+pXY79vCLZSDX0L4XLTbgqKrleE13fhvwh15YBdFhDc9seOqcE6UBdw6UbI1JQ
+         zGMyVejyY4MYySQPs90cZI3gO6gtSfril78mlV3hvWl7mzE7+yCZjsZaLucBU00ATE27
+         lOq8t9iwXHeb9wZJ8ckeAgs56cUrz0QAk0ZpSStrkSR2fcPBSQL0QoXhlQ5zvJVOvJWk
+         MqOKmMDDWODkUP8MkZdR6TN44xqbow6qVSvgx4HmRd7Tcu9wzQhwXVerdECCM58C91GN
+         NODFi4gYuZgC8wz7oMHpiUr+IyW/2bYhkYOPhSV2VLYCZo3vW/L9dLIt4IkSDOUxfLZ2
+         /tYA==
+X-Gm-Message-State: AOAM5326jPxTjjgUuCdwgcYGyBHwM8xPX392LupcmZ7zVYASgtQ7hsha
+        0IcjQlqddsQIda9w/oi4nDfpNvPRVzs2pssAZ8KpqtxxDuou5SqdUPq8sx3SZxAcc9yefafSJF3
+        AxTeJfP/WFDPpClfMJmHurQOO
+X-Received: by 2002:a1c:1b93:: with SMTP id b141mr3365746wmb.150.1596634011543;
+        Wed, 05 Aug 2020 06:26:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwwZAH5oygZ0ZUZzuE41OHF5cCSmEBQ89jkVd4RBBHCf1yH6T/rbTULK4FaN2pLJbGTzixbnQ==
+X-Received: by 2002:a1c:1b93:: with SMTP id b141mr3365734wmb.150.1596634011358;
+        Wed, 05 Aug 2020 06:26:51 -0700 (PDT)
+Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
+        by smtp.gmail.com with ESMTPSA id g18sm2877887wru.27.2020.08.05.06.26.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 06:26:50 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:26:48 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 14/24] virtio_net: correct tags for config space fields
+Message-ID: <20200805092621-mutt-send-email-mst@kernel.org>
+References: <20200803205814.540410-1-mst@redhat.com>
+ <20200803205814.540410-15-mst@redhat.com>
+ <20200804164444.5174452d.cohuck@redhat.com>
 MIME-Version: 1.0
-References: <20200721174228.misj2mgqzcfz2lsj@pesu.pes.edu> <20200729160333.GA3652767@kroah.com>
- <VI1PR04MB480018F32A080BC5CC76E3C7F34B0@VI1PR04MB4800.eurprd04.prod.outlook.com>
- <20200805125627.GA1822283@kroah.com>
-In-Reply-To: <20200805125627.GA1822283@kroah.com>
-From:   B K Karthik <bkkarthik@pesu.pes.edu>
-Date:   Wed, 5 Aug 2020 18:46:15 +0530
-Message-ID: <CAAhDqq3iZXdtxC6kaRZg7520gzBORmP75uWDf+fNBtwr_Zpi9A@mail.gmail.com>
-Subject: Re: [PATCH v2] tty: serial: fsl_lpuart.c: prevent a bad shift operation
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Vabhav Sharma (OSS)" <vabhav.sharma@oss.nxp.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bhuvanchandra.dv@toradex.com" <bhuvanchandra.dv@toradex.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200804164444.5174452d.cohuck@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 6:26 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Aug 05, 2020 at 12:09:34PM +0000, Vabhav Sharma (OSS) wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Sent: Wednesday, July 29, 2020 9:34 PM
-> > > To: B K Karthik <bkkarthik@pesu.pes.edu>
-> > > Cc: Jiri Slaby <jirislaby@kernel.org>; linux-serial@vger.kernel.org; linux-
-> > > kernel@vger.kernel.org; Vabhav Sharma (OSS)
-> > > <vabhav.sharma@oss.nxp.com>; bhuvanchandra.dv@toradex.com
-> > > Subject: Re: [PATCH v2] tty: serial: fsl_lpuart.c: prevent a bad shift operation
-> > >
-> > > On Tue, Jul 21, 2020 at 11:12:29PM +0530, B K Karthik wrote:
-> > > > prevent a bad shift operation by verifying that the argument to fls is
-> > > > non zero.
-> > > >
-> > > > Reported-by: "Vabhav Sharma (OSS)" <vabhav.sharma@oss.nxp.com>
-> > > > Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
-> > > > ---
-> > > > v1 -> v2:
-> > > >   added Reported-by tag
-> > > >
-> > > >  drivers/tty/serial/fsl_lpuart.c | 3 ++-
-> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/tty/serial/fsl_lpuart.c
-> > > > b/drivers/tty/serial/fsl_lpuart.c index 7ca642249224..0cc64279cd2d
-> > > > 100644
-> > > > --- a/drivers/tty/serial/fsl_lpuart.c
-> > > > +++ b/drivers/tty/serial/fsl_lpuart.c
-> > > > @@ -1168,7 +1168,8 @@ static inline int lpuart_start_rx_dma(struct
-> > > lpuart_port *sport)
-> > > >    * 10ms at any baud rate.
-> > > >    */
-> > > >   sport->rx_dma_rng_buf_len = (DMA_RX_TIMEOUT * baud /  bits /
-> > > 1000) * 2;
-> > > > - sport->rx_dma_rng_buf_len = (1 << (fls(sport->rx_dma_rng_buf_len)
-> > > - 1));
-> > > > + if (sport->rx_dma_rng_buf_len != 0)
-> > >
-> > > How can this variable become 0?
-> > Condition x, taking false branch
-> > Explicitly returning zero
-> >
-> > static __always_inline int fls(unsigned int x)
-> > {
-> >       return x ? sizeof(x) * 8 - __builtin_clz(x) : 0;
-> > }
->
-> What false branch?
+On Tue, Aug 04, 2020 at 04:44:44PM +0200, Cornelia Huck wrote:
+> On Mon, 3 Aug 2020 16:59:37 -0400
+> "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> 
+> > Tag config space fields as having virtio endian-ness.
+> > 
+> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > ---
+> >  include/uapi/linux/virtio_net.h | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+> > index 19d23e5baa4e..27d996f29dd1 100644
+> > --- a/include/uapi/linux/virtio_net.h
+> > +++ b/include/uapi/linux/virtio_net.h
+> > @@ -87,19 +87,19 @@ struct virtio_net_config {
+> >  	/* The config defining mac address (if VIRTIO_NET_F_MAC) */
+> >  	__u8 mac[ETH_ALEN];
+> >  	/* See VIRTIO_NET_F_STATUS and VIRTIO_NET_S_* above */
+> > -	__u16 status;
+> > +	__virtio16 status;
+> >  	/* Maximum number of each of transmit and receive queues;
+> >  	 * see VIRTIO_NET_F_MQ and VIRTIO_NET_CTRL_MQ.
+> >  	 * Legal values are between 1 and 0x8000
+> >  	 */
+> > -	__u16 max_virtqueue_pairs;
+> > +	__virtio16 max_virtqueue_pairs;
+> >  	/* Default maximum transmit unit advice */
+> > -	__u16 mtu;
+> > +	__virtio16 mtu;
+> >  	/*
+> >  	 * speed, in units of 1Mb. All values 0 to INT_MAX are legal.
+> >  	 * Any other value stands for unknown.
+> >  	 */
+> > -	__u32 speed;
+> > +	__virtio32 speed;
+> 
+> Hm... VIRTIO_NET_F_SPEED_DUPLEX can only be negotiated if VERSION_1 has
+> also been negotiated; I think this should be __le32?
 
-I'm assuming he's talking about the value after : in the ? operator.
+OK APIs for this are in a separate patch.
+I'll add conversion as a patch on top.
 
-I am checking for the wrong thing in the if statement. We will have to
-check for the return value of fls() before performing the shift.
-I can change it and send a v3 if you agree.
 
-Please let me know.
+> >  	/*
+> >  	 * 0x00 - half duplex
+> >  	 * 0x01 - full duplex
 
-thanks,
-
-karthik
