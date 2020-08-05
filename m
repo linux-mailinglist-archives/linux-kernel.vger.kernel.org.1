@@ -2,149 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9533523D305
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA29A23D321
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgHEUaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgHEUag (ORCPT
+        id S1728245AbgHEUgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:36:06 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50790 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728643AbgHEUgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 16:30:36 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4744C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 13:30:36 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id h12so13923415pgf.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 13:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=V2Jneb4UoC2fWhfkl2WuSXjrqudasBUYHmLXhIRx3sk=;
-        b=pcQ+CWVT4oLml67bVoKGdBrXiIt7brVuWQjj0LD09b+AngJInQ8Y6CUnoA0UrI3sdc
-         ZI8iC43ed5wx35fMkbBrp53kBvdkjPJtIjcUeggyZwTRh2r7RuNFjQlPC+5RSd6sLgJ2
-         wZ3XlwsC/q33UhMKsxwp/rZyd8GOr+pSHxVDkaM58gr4ji0rIY+zPXMIIL+ViJVvT1th
-         qPOge8g4RUFNaOpwFiW6SM4ukLxkwHzbpt0D4to95MnycKe7UZHeQoHQXrX//8j3ZTA7
-         HwxRIVgqQb0V/Z4HmaY+NWeZqiEGvXgxF/+ajwF4DLUUnujfTge4pW0MsiCwG7JlPO3D
-         LC4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=V2Jneb4UoC2fWhfkl2WuSXjrqudasBUYHmLXhIRx3sk=;
-        b=obPKvXYF5M8GH8pAM76rElsJzfuC7ECx49gj7rAXIuArSiXOMycFTnaf5OpIGGQD++
-         yzesSFSbquyTz5q5NU9fZiz9jGWTtQwpw/Xl/TWoG82b7Tq4wiWpO4EGAkQ1GRjOoV2B
-         4c5IGR+saXStdxee2E+jcNDPv37FzaPeG2WKPYGF8QcWDrVS1qlbCuc7Nx/qv9AKXR/3
-         l0Xac/RR6bdDtSVE4JbWkAKEFnivOH+m2Q8Tp3VLCZKH30HKZJbzVQOwEm8b14ArEddE
-         dnZBonoY0GQVJwMVLW4KnGpjmOrW+N/juvydCefxf3bzNm5AvmrPgDEjN6JmwbavB4bS
-         O6Vw==
-X-Gm-Message-State: AOAM5337VOhz9BNdB8GXx9oHO9LVkYOVPtbG9bGaZcvmCmplaKGjs46S
-        6hMfLAaGUw0q7IfU3I2oZDNuww==
-X-Google-Smtp-Source: ABdhPJzlUCR+yFWKLNVh6nLZ+fETiNYut2U9HTsD85qd8SdUH966JaRJXmA4AC5PH6GFfqQzG1tN7Q==
-X-Received: by 2002:a63:e107:: with SMTP id z7mr4413591pgh.71.1596659436077;
-        Wed, 05 Aug 2020 13:30:36 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:a84d:be3c:49a:e3a1? ([2601:646:c200:1ef2:a84d:be3c:49a:e3a1])
-        by smtp.gmail.com with ESMTPSA id js19sm3920084pjb.33.2020.08.05.13.30.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 13:30:35 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2] x86/cpu: Use SERIALIZE in sync_core() when available
-Date:   Wed, 5 Aug 2020 13:30:32 -0700
-Message-Id: <AC4AC665-06C3-404A-8245-BA4F1F4C4961@amacapital.net>
-References: <20200805191126.GA27509@ranerica-svr.sc.intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Cathy Zhang <cathy.zhang@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-edac <linux-edac@vger.kernel.org>
-In-Reply-To: <20200805191126.GA27509@ranerica-svr.sc.intel.com>
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-X-Mailer: iPhone Mail (17G68)
+        Wed, 5 Aug 2020 16:36:03 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075FmSsH177468;
+        Wed, 5 Aug 2020 15:48:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=j6PDDC/Mn/spTqWrjmibfzc15MJWahsDJABkuGlXOL8=;
+ b=pKfbdaR1rm6EexkfUXMute1LqT50Jj8as1sABST78bRKCEEgG3nIT0PcMsMSeSWpB2DE
+ vgRfTz2tZ+wUJfFHRK2FLgt1OkjkHQ5yl5ccyEm/t/+y+ZtAZxaLNUN06K6uT1yoi0UR
+ KKIjiYEsN3rSOxgy9Vv4Bhjt9cXL/jLoQlGlg8EjPM/Cir0iTN8zivyH+Z5IzY5cOKmf
+ lZN+cHfyXETqdEOgEL/8leGIVp3cd7RW722uy1OsLV/XVABEHG0ZUsKK/guUoPWM1qsw
+ zHKv7arRrdoOKBxTe25AXv8RkfCTvr9aiS0RWCUUSjCPrGrstJX1prYRmw3vrDxL3/uc bQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 32n11naua7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 05 Aug 2020 15:48:49 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075FljmT139364;
+        Wed, 5 Aug 2020 15:48:49 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 32qyaa143y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 05 Aug 2020 15:48:49 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 075Fmj4g003269;
+        Wed, 5 Aug 2020 15:48:46 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 05 Aug 2020 08:48:45 -0700
+Date:   Wed, 5 Aug 2020 08:48:43 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Coly Li <colyli@suse.de>
+Cc:     linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Enzo Matsumiya <ematsumiya@suse.com>,
+        Evan Green <evgreen@chromium.org>,
+        Hannes Reinecke <hare@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Xiao Ni <xni@redhat.com>
+Subject: Re: [PATCH v3] block: check queue's limits.discard_granularity in
+ __blkdev_issue_discard()
+Message-ID: <20200805154843.GB191798@magnolia>
+References: <20200805063150.41037-1-colyli@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805063150.41037-1-colyli@suse.de>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=1
+ spamscore=0 bulkscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050128
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 mlxscore=0
+ suspectscore=1 mlxlogscore=999 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050128
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 05, 2020 at 02:31:50PM +0800, Coly Li wrote:
+> If create a loop device with a backing NVMe SSD, current loop device
+> driver doesn't correctly set its  queue's limits.discard_granularity and
+> leaves it as 0. If a discard request at LBA 0 on this loop device, in
+> __blkdev_issue_discard() the calculated req_sects will be 0, and a zero
+> length discard request will trigger a BUG() panic in generic block layer
+> code at block/blk-mq.c:563.
+> 
+> [  955.565006][   C39] ------------[ cut here ]------------
+> [  955.559660][   C39] invalid opcode: 0000 [#1] SMP NOPTI
+> [  955.622171][   C39] CPU: 39 PID: 248 Comm: ksoftirqd/39 Tainted: G            E     5.8.0-default+ #40
+> [  955.622171][   C39] Hardware name: Lenovo ThinkSystem SR650 -[7X05CTO1WW]-/-[7X05CTO1WW]-, BIOS -[IVE160M-2.70]- 07/17/2020
+> [  955.622175][   C39] RIP: 0010:blk_mq_end_request+0x107/0x110
+> [  955.622177][   C39] Code: 48 8b 03 e9 59 ff ff ff 48 89 df 5b 5d 41 5c e9 9f ed ff ff 48 8b 35 98 3c f4 00 48 83 c7 10 48 83 c6 19 e8 cb 56 c9 ff eb cb <0f> 0b 0f 1f 80 00 00 00 00 0f 1f 44 00 00 55 48 89 e5 41 56 41 54
+> [  955.622179][   C39] RSP: 0018:ffffb1288701fe28 EFLAGS: 00010202
+> [  955.749277][   C39] RAX: 0000000000000001 RBX: ffff956fffba5080 RCX: 0000000000004003
+> [  955.749278][   C39] RDX: 0000000000000003 RSI: 0000000000000000 RDI: 0000000000000000
+> [  955.749279][   C39] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> [  955.749279][   C39] R10: ffffb1288701fd28 R11: 0000000000000001 R12: ffffffffa8e05160
+> [  955.749280][   C39] R13: 0000000000000004 R14: 0000000000000004 R15: ffffffffa7ad3a1e
+> [  955.749281][   C39] FS:  0000000000000000(0000) GS:ffff95bfbda00000(0000) knlGS:0000000000000000
+> [  955.749282][   C39] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  955.749282][   C39] CR2: 00007f6f0ef766a8 CR3: 0000005a37012002 CR4: 00000000007606e0
+> [  955.749283][   C39] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [  955.749284][   C39] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [  955.749284][   C39] PKRU: 55555554
+> [  955.749285][   C39] Call Trace:
+> [  955.749290][   C39]  blk_done_softirq+0x99/0xc0
+> [  957.550669][   C39]  __do_softirq+0xd3/0x45f
+> [  957.550677][   C39]  ? smpboot_thread_fn+0x2f/0x1e0
+> [  957.550679][   C39]  ? smpboot_thread_fn+0x74/0x1e0
+> [  957.550680][   C39]  ? smpboot_thread_fn+0x14e/0x1e0
+> [  957.550684][   C39]  run_ksoftirqd+0x30/0x60
+> [  957.550687][   C39]  smpboot_thread_fn+0x149/0x1e0
+> [  957.886225][   C39]  ? sort_range+0x20/0x20
+> [  957.886226][   C39]  kthread+0x137/0x160
+> [  957.886228][   C39]  ? kthread_park+0x90/0x90
+> [  957.886231][   C39]  ret_from_fork+0x22/0x30
+> [  959.117120][   C39] ---[ end trace 3dacdac97e2ed164 ]---
+> 
+> This is the procedure to reproduce the panic,
+>   # modprobe scsi_debug delay=0 dev_size_mb=2048 max_queue=1
+>   # losetup -f /dev/nvme0n1 --direct-io=on
+>   # blkdiscard /dev/loop0 -o 0 -l 0x200
+> 
+> This patch fixes the issue by checking q->limits.discard_granularity in
+> __blkdev_issue_discard() before composing the discard bio. If the value
+> is 0, then prints a warning oops information and returns -EOPNOTSUPP to
+> the caller to indicate that this buggy device driver doesn't support
+> discard request.
+> 
+> Fixes: 9b15d109a6b2 ("block: improve discard bio alignment in __blkdev_issue_discard()")
+> Fixes: c52abf563049 ("loop: Better discard support for block devices")
+> Reported-and-suggested-by: Ming Lei <ming.lei@redhat.com>
+> Signed-off-by: Coly Li <colyli@suse.de>
+> Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> Cc: Bart Van Assche <bvanassche@acm.org>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Enzo Matsumiya <ematsumiya@suse.com>
+> Cc: Evan Green <evgreen@chromium.org>
+> Cc: Hannes Reinecke <hare@suse.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Martin K. Petersen <martin.petersen@oracle.com>
+> Cc: Xiao Ni <xni@redhat.com>
+> ---
+> Changelog:
+> v3: print device name assocated with the buggy driver.
+> v2: fix typo of the wrong return error code.
+> v1: first version.
+> 
+>  block/blk-lib.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/block/blk-lib.c b/block/blk-lib.c
+> index 019e09bb9c0e..d3bbb3d9fac3 100644
+> --- a/block/blk-lib.c
+> +++ b/block/blk-lib.c
+> @@ -47,6 +47,15 @@ int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
+>  		op = REQ_OP_DISCARD;
+>  	}
+>  
+> +	/* In case the discard granularity isn't set by buggy device driver */
+> +	if (WARN_ON_ONCE(!q->limits.discard_granularity)) {
+> +		char dev_name[BDEVNAME_SIZE];
+> +
+> +		bdevname(bdev, dev_name);
+> +		pr_err("%s: Error: discard_granularity is 0.\n", dev_name);
 
+Hm, you might want to ratelimit this, before some buggy device +
+careless program flood dmesg.
 
-> On Aug 5, 2020, at 12:11 PM, Ricardo Neri <ricardo.neri-calderon@linux.int=
-el.com> wrote:
->=20
-> =EF=BB=BFOn Wed, Aug 05, 2020 at 11:28:31AM -0700, Andy Lutomirski wrote:
->>> On Wed, Aug 5, 2020 at 10:07 AM Ricardo Neri
->>> <ricardo.neri-calderon@linux.intel.com> wrote:
->>>=20
->>> On Wed, Aug 05, 2020 at 07:08:08AM +0200, Borislav Petkov wrote:
->>>> On Tue, Aug 04, 2020 at 09:58:25PM -0700, hpa@zytor.com wrote:
->>>>> Because why use an alternative to jump over one instruction?
->>>>>=20
->>>>> I personally would prefer to have the IRET put out of line
->>>>=20
->>>> Can't yet - SERIALIZE CPUs are a minority at the moment.
->>>>=20
->>>>> and have the call/jmp replaced by SERIALIZE inline.
->>>>=20
->>>> Well, we could do:
->>>>=20
->>>>      alternative_io("... IRET bunch", __ASM_SERIALIZE, X86_FEATURE_SERI=
-ALIZE, ...);
->>>>=20
->>>> and avoid all kinds of jumping. Alternatives get padded so there
->>>> would be a couple of NOPs following when SERIALIZE gets patched in
->>>> but it shouldn't be a problem. I guess one needs to look at what gcc
->>>> generates...
->>>=20
->>> But the IRET-TO-SELF code has instruction which modify the stack. This
->>> would violate stack invariance in alternatives as enforced in commit
->>> 7117f16bf460 ("objtool: Fix ORC vs alternatives"). As a result, objtool
->>> gives warnings as follows:
->>>=20
->>> arch/x86/kernel/alternative.o: warning: objtool: do_sync_core()+0xe:
->>> alternative modifies stack
->>>=20
->>> Perhaps in this specific case it does not matter as the changes in the
->>> stack will be undone by IRET. However, using alternative_io would requir=
-e
->>> adding the macro STACK_FRAME_NON_STANDARD to functions using sync_core()=
-.
->>> IMHO, it wouldn't look good.
->>>=20
->>> So maybe the best approach is to implement as you suggested using
->>> static_cpu_has()?
->>=20
->> I agree.  Let's keep it simple.
->>=20
->> Honestly, I think the right solution is to have iret_to_self() in
->> actual asm and invoke it from C as needed.=20
->=20
-> Do you mean anything different from what we have already [1]? If I
-> understand your comment correctly, we have exactly that: an
-> iret_to_self() asm implementation invoked from C.
+Also, why is it necessary to WARN_ON_ONCE /and/ pr_err the same
+condition?
 
-I meant asm as in a .S file. But the code we have is fine for this purpose, a=
-t least for now.
+--D
 
->=20
-> Thanks and BR,
-> Ricardo
->=20
-> [1]. https://lore.kernel.org/lkml/20200727043132.15082-4-ricardo.neri-cald=
-eron@linux.intel.com/
->=20
-> Thanks and BR,
-> Ricardo
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+>  	bs_mask = (bdev_logical_block_size(bdev) >> 9) - 1;
+>  	if ((sector | nr_sects) & bs_mask)
+>  		return -EINVAL;
+> -- 
+> 2.26.2
+> 
