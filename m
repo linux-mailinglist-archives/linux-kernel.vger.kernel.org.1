@@ -2,30 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E477E23CD7B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B36723CD76
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgHEReZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 Aug 2020 13:34:25 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:36646 "EHLO
+        id S1728333AbgHERdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:33:11 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:36668 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728068AbgHER1i (ORCPT
+        with ESMTP id S1728800AbgHER1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:27:38 -0400
+        Wed, 5 Aug 2020 13:27:50 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 343591C0BDE; Wed,  5 Aug 2020 19:27:36 +0200 (CEST)
-Date:   Wed, 5 Aug 2020 19:27:35 +0200
+        id A6D8A1C0BE1; Wed,  5 Aug 2020 19:27:47 +0200 (CEST)
+Date:   Wed, 5 Aug 2020 19:27:46 +0200
 From:   Pavel Machek <pavel@ucw.cz>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Remove myself as LED subsystem maintainer
-Message-ID: <20200805172735.GB1118@bug>
-References: <20200804101525.7235-1-jacek.anaszewski@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [GIT PULL 0/5] ARM: SoC: changes for v5.9
+Message-ID: <20200805172746.GC1118@bug>
+References: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200804101525.7235-1-jacek.anaszewski@gmail.com>
+In-Reply-To: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -34,20 +36,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi!
 
-> It don't have enough time for reviewing patches and thus don't
-> want to be listed as regular LED maintainer. Nonetheless I may still
-> give a review from time to time.
+> 2. In the past few merge windows we have seen an increase in (usually
+>    older) Android phones and tablets gaining mainline kernel support.
+>    This time we get a total of eight Snapdragon phones and two Tegra
+>    tablets. To me this indicates that we finally have sufficient driver
+>    support, in particular on the GPU side, to make this workable.
+>    It also shows the impact that a single hobbyist developer can have,
+>    as most of the new support was submitted by Konrad Dybcio who only
+>    started contributing kernel patches to mainline Linux for postmarketos
+>    earlier this year.
 
-Thanks for all the good work you did maintaining LEDs over the years!
+I'm happy to see that. So far, Nokia N900 is reaonably supported (basically everything
+but Bluetooth works, voicecalls miss userland daemon for audio), and Motorola
+Droid 4 (modem needs some more in kernel, camera will be hard).
 
-> Signed-off-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Is there anything with similar support coming in, or is it usual "it boots,
+serial console works"?
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
-
-(I'm not sure what the process is here, do I take it through the LED tree?)
+Should we have some kind of linux-phones mailing list? There is quite a lot of
+stuff common in phones.
 
 Best regards,
 									Pavel
+
+
 -- 
 (english) http://www.livejournal.com/~pavelmachek
 (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
