@@ -2,135 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2E223CC7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB3223CCA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgHEQrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:47:51 -0400
-Received: from relay5.mymailcheap.com ([159.100.241.64]:53783 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726915AbgHEQor (ORCPT
+        id S1728281AbgHEQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728235AbgHEQwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:44:47 -0400
-Received: from relay2.mymailcheap.com (relay2.mymailcheap.com [217.182.113.132])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 6623720138;
-        Wed,  5 Aug 2020 14:05:40 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id F0D453ECDA;
-        Wed,  5 Aug 2020 15:59:36 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id CD7802A520;
-        Wed,  5 Aug 2020 15:59:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1596635976;
-        bh=S0OjsalZhEvIZt4IpeHX6PgqDxctcBe0fHDg4vfhXTE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=haHFXP6dVcbqJe8MN/VtNlyS/R1FGB3Mu3s8Z3Cf31PF9YC+SgaFOeobpW9T45EzK
-         b1w/sBC6x27uGUzVZA400aMkbRj+UGXknHtHwJeX8Sks0ZLmf6VyfYKKKqb5IW52RE
-         187wK/ajVONwrrntKIQb2oIUYffKwmQPMSBMX2l8=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id QmimT9RVqYc1; Wed,  5 Aug 2020 15:59:35 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Wed,  5 Aug 2020 15:59:35 +0200 (CEST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 07D6D425BE;
-        Wed,  5 Aug 2020 13:59:35 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="cTHYaMoE";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (li986-206.members.linode.com [45.33.36.206])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 29486425BD;
-        Wed,  5 Aug 2020 13:59:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1596635964;
-        bh=S0OjsalZhEvIZt4IpeHX6PgqDxctcBe0fHDg4vfhXTE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=cTHYaMoESq7+fGabHgADpG5oML+zWL7rnb/3QhjaU3nbEE4nFok5qmyEq0TMy43vW
-         QJf4ZErjbupxtpgpkBbMmJAmjpESlGYjhabyjXt0otH5nq4BwFsWQmxgUNxMncOZmN
-         LPPpHy0LDAvjgCCgQQNDI6/zhJMHMs0l3bIiGNYk=
-Subject: Re: [PATCH v2] MIPS: Provide Kconfig option for default IEEE 754
- conformance mode
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     WANG Xuerui <git@xen0n.name>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-References: <20200801061147.1412187-1-jiaxun.yang@flygoat.com>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <d03a350c-842c-c041-f11b-017ec68e3de4@flygoat.com>
-Date:   Wed, 5 Aug 2020 21:59:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.1.0
+        Wed, 5 Aug 2020 12:52:47 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FA8C0A889A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:59:48 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id d190so5915177wmd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YePFlbgRyxtaEPeLEBJjJwQHaLa9kCxqtVKAjxXaA4s=;
+        b=Z5kHZzSnP9D+z1S1WsCu3aU+IDWEOuiM0ivLzH6g4d78Fby9txad2tOtD4VRLX0SON
+         bo2WmnHAebg1AO2RIEm869SD1tvMwl8PEaBPsEAVZPtvoelB5eNntVjHBEt792WPCvyM
+         T2IW81BKntuaM9mYeIEK1ucA5T9vTVaPSCsXS3QkZbj+pec+NtmUUv4BG05QPXsim03v
+         j10AWvoudWWqL3+g2ezwYQbIawxphTcsuOHXkc6PYaiJjmmylbxHnh5dKvT9OVxdgsd/
+         PHReDlxwHaflM4HJKK0naHGVRMYSpIwHLj8pHWlhIoc07Y84msqkwko0powOpxjZaoOh
+         0nog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YePFlbgRyxtaEPeLEBJjJwQHaLa9kCxqtVKAjxXaA4s=;
+        b=naqgIPJJG6qCiPhwzOimPa3InCserSodto6UxSSvNab7UAXRE2kohSpUCLSFuRg5fb
+         YdIjJ5jEFwzn6dKsCui6gAhIJrNmg+Znx2PHR+xaJFv2W+icrnAl0sEA1qB8pwKJCA7f
+         4+6AbBw8xxsZjL8T/ge85umi8tBwroPqM9sJfKw8iTBQrxWUd9HxNLw9z+TcZRQs5rz8
+         gRBeQAXdE7JmexqrjDuj51atAkm7DeSk1PQojZF/6xgn2lkT32ev41rZVH2LGHmeGJ0K
+         EX4oZmRWgL5scz3r89ZkN56IFPdr2sapuTp0LOZKTorjhIzAi5oXKGBae10yp97Mbbn8
+         kiHA==
+X-Gm-Message-State: AOAM532JGtu6SDVRyxyONvMB20Ox1j4PhqVPUd4V/MC+QU8KarVQRmLX
+        z7bZnXDvYT1UVy/eCql/9d7Ziw==
+X-Google-Smtp-Source: ABdhPJwtRJzQ0YudQiBCt4tmSW3vYnOL4vBIiSdBd03aC1QgGCDZKLTzEBmUkGpDmRTC7l9G+9mOWw==
+X-Received: by 2002:a1c:96d7:: with SMTP id y206mr3357845wmd.9.1596635986525;
+        Wed, 05 Aug 2020 06:59:46 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id p15sm2823841wrj.61.2020.08.05.06.59.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 06:59:45 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 15:59:40 +0200
+From:   Marco Elver <elver@google.com>
+To:     peterz@infradead.org
+Cc:     bp@alien8.de, dave.hansen@linux.intel.com, fenghua.yu@intel.com,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        tony.luck@intel.com, x86@kernel.org, yu-cheng.yu@intel.com,
+        jgross@suse.com, sdeep@vmware.com,
+        virtualization@lists.linux-foundation.org,
+        kasan-dev@googlegroups.com,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>
+Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
+ helpers
+Message-ID: <20200805135940.GA156343@elver.google.com>
+References: <0000000000007d3b2d05ac1c303e@google.com>
+ <20200805132629.GA87338@elver.google.com>
+ <20200805134232.GR2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200801061147.1412187-1-jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 07D6D425BE
-X-Spamd-Result: default: False [1.40 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com,zoho.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         RCVD_IN_DNSWL_NONE(0.00)[213.133.102.83:from];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         FREEMAIL_CC(0.00)[xen0n.name,gmail.com,lemote.com,zoho.com,vger.kernel.org];
-         SUSPICIOUS_RECIPS(1.50)[];
-         RCVD_COUNT_TWO(0.00)[2]
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805134232.GR2674@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 05, 2020 at 03:42PM +0200, peterz@infradead.org wrote:
+> On Wed, Aug 05, 2020 at 03:26:29PM +0200, Marco Elver wrote:
+> > Add missing noinstr to arch_local*() helpers, as they may be called from
+> > noinstr code.
+> > 
+> > On a KCSAN config with CONFIG_PARAVIRT=y, syzbot stumbled across corrupt
+> 
+> Cute, so I've been working on adding objtool support for this a little:
+> 
+>   https://lkml.kernel.org/r/20200803143231.GE2674@hirez.programming.kicks-ass.net
+> 
+> > diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+> > index 3d2afecde50c..a606f2ba2b5e 100644
+> > --- a/arch/x86/include/asm/paravirt.h
+> > +++ b/arch/x86/include/asm/paravirt.h
+> > @@ -760,27 +760,27 @@ bool __raw_callee_save___native_vcpu_is_preempted(long cpu);
+> >  	((struct paravirt_callee_save) { func })
+> >  
+> >  #ifdef CONFIG_PARAVIRT_XXL
+> > -static inline notrace unsigned long arch_local_save_flags(void)
+> > +static inline noinstr unsigned long arch_local_save_flags(void)
+> >  {
+> >  	return PVOP_CALLEE0(unsigned long, irq.save_fl);
+> >  }
+> >  
+> > -static inline notrace void arch_local_irq_restore(unsigned long f)
+> > +static inline noinstr void arch_local_irq_restore(unsigned long f)
+> >  {
+> >  	PVOP_VCALLEE1(irq.restore_fl, f);
+> >  }
+> >  
+> > -static inline notrace void arch_local_irq_disable(void)
+> > +static inline noinstr void arch_local_irq_disable(void)
+> >  {
+> >  	PVOP_VCALLEE0(irq.irq_disable);
+> >  }
+> >  
+> > -static inline notrace void arch_local_irq_enable(void)
+> > +static inline noinstr void arch_local_irq_enable(void)
+> >  {
+> >  	PVOP_VCALLEE0(irq.irq_enable);
+> >  }
+> >  
+> > -static inline notrace unsigned long arch_local_irq_save(void)
+> > +static inline noinstr unsigned long arch_local_irq_save(void)
+> >  {
+> >  	unsigned long f;
+> >  
+> 
+> Shouldn't we __always_inline those? They're going to be really small.
 
+I can send a v2, and you can choose. For reference, though:
 
-ÔÚ 2020/8/1 14:11, Jiaxun Yang Ð´µÀ:
-> Requested by downstream distros, a Kconfig option for default
-> IEEE 754 conformance mode allows them to set their mode to
-> relaxed by default.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Reviewed-by: WANG Xuerui <git@xen0n.name>
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> Reviewed-by: Huacai Chen <chenhc@lemote.com>
->
-> --
-> v2: Reword according to Xuerui's suggestion.
-> ---
-Hi Thomas,
+	ffffffff86271ee0 <arch_local_save_flags>:
+	ffffffff86271ee0:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+	ffffffff86271ee5:       48 83 3d 43 87 e4 01    cmpq   $0x0,0x1e48743(%rip)        # ffffffff880ba630 <pv_ops+0x120>
+	ffffffff86271eec:       00
+	ffffffff86271eed:       74 0d                   je     ffffffff86271efc <arch_local_save_flags+0x1c>
+	ffffffff86271eef:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+	ffffffff86271ef4:       ff 14 25 30 a6 0b 88    callq  *0xffffffff880ba630
+	ffffffff86271efb:       c3                      retq
+	ffffffff86271efc:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+	ffffffff86271f01:       0f 0b                   ud2
+	ffffffff86271f03:       66 66 2e 0f 1f 84 00    data16 nopw %cs:0x0(%rax,%rax,1)
+	ffffffff86271f0a:       00 00 00 00
+	ffffffff86271f0e:       66 90                   xchg   %ax,%ax
 
-Is it possible to get this patch into 5.9 merge window?
-I think it have got enough review tag, and the config option was requested
-by a Debian developer. The next Debian release will take 5.9 lts kernel and
-they don't want to ship a non-bootable kernel in a major release.
+	[...]
 
-Thanks.
+	ffffffff86271a90 <arch_local_irq_restore>:
+	ffffffff86271a90:       53                      push   %rbx
+	ffffffff86271a91:       48 89 fb                mov    %rdi,%rbx
+	ffffffff86271a94:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+	ffffffff86271a99:       48 83 3d 97 8b e4 01    cmpq   $0x0,0x1e48b97(%rip)        # ffffffff880ba638 <pv_ops+0x128>
+	ffffffff86271aa0:       00
+	ffffffff86271aa1:       74 11                   je     ffffffff86271ab4 <arch_local_irq_restore+0x24>
+	ffffffff86271aa3:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+	ffffffff86271aa8:       48 89 df                mov    %rbx,%rdi
+	ffffffff86271aab:       ff 14 25 38 a6 0b 88    callq  *0xffffffff880ba638
+	ffffffff86271ab2:       5b                      pop    %rbx
+	ffffffff86271ab3:       c3                      retq
+	ffffffff86271ab4:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+	ffffffff86271ab9:       0f 0b                   ud2
+	ffffffff86271abb:       cc                      int3
+	ffffffff86271abc:       cc                      int3
+	ffffffff86271abd:       cc                      int3
+	ffffffff86271abe:       cc                      int3
+	ffffffff86271abf:       cc                      int3
 
-- Jiaxun
+	[... and the rest looking of similar size.]
+
+Thanks,
+-- Marco
