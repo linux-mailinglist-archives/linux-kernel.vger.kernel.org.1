@@ -2,175 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FE823D096
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4954923D0AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgHETvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
+        id S1728393AbgHETwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728242AbgHEQxB (ORCPT
+        with ESMTP id S1728188AbgHEQvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:53:01 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB306C06179F;
-        Wed,  5 Aug 2020 03:39:52 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id l23so18421245edv.11;
-        Wed, 05 Aug 2020 03:39:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qyFh0B+qFmeaq1ZmytjXM93bJReydW1Q9ZU9edq9NSw=;
-        b=bVFSImkw00AL0eXqqbm3McDE84S5/SUhPXauKRgX+RjQFLzzEOAeh1BxV0FJ3xAAJ8
-         1m9bTe46ht4zUL8tAAqdHoPyHHhXwgxz57qLRYZBkP1rOpXqwVPYcAxOgvpR3o1XZCvd
-         bKQ02Q/qe51m5JtFTL8dGAPE9LdxItd2sC82ekIWLriM37yTWvtT9wqaonMYVBxGcQsw
-         +zI+CvFrLgHWC4r5ucuH1UgeKusLtLEaaKkIAdpnL07hRj4ecHa4FRkTefDBklwy016F
-         SmZCH5u8fNVjpgNpY4T9v0gNPH7uqjlKD/oYpEbSz/QWj6hUWqWda6kBf+oHuX5ddoK0
-         OAgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qyFh0B+qFmeaq1ZmytjXM93bJReydW1Q9ZU9edq9NSw=;
-        b=XBS4pGdKUI13EAWBJI9b4qky93AVJszjKtxtykJrhXF0Y7Am3bzhsftJioSQDO2msx
-         xRA3nCjNpNuo7emfTZM0JKWlKHPInQnTamyXs0kQkmzsUbNpJoxpBdusq3MEVlKUTePr
-         mKTQHxag0JTUtTxvCvCsjVtWCefvSO0+HyFhHCdz1BlQUtBby2UJnBTsQho9GCpNuUCi
-         6BdiGRbkShhNKOscHob/nd8DBJeIT7va5xzmEPKraXLlJE2U31usgs9RYNhY0XrWyJA0
-         HSB1INe+wXze4IPuKnjpLaZ7fmYax0m0NnpIN05c0vRMJnrXk6SEXxs9at/wVve3oCBI
-         Q9cg==
-X-Gm-Message-State: AOAM533Z6iQuredxtrVG37hAGEG/fqtZgqUDj/z3GDz0R5T6IfNkaReH
-        RXMlwOxvtc4OtLTS5tXKmT4/3VAkfYI=
-X-Google-Smtp-Source: ABdhPJy1V19vqtue79NewqfTmzf1nPJGkjGZEOewMpAdzyXd2UkFmYEa3u7VhPr+z0BqzwARa9XAKw==
-X-Received: by 2002:a05:6402:17c2:: with SMTP id s2mr2105104edy.188.1596623990966;
-        Wed, 05 Aug 2020 03:39:50 -0700 (PDT)
-Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
-        by smtp.gmail.com with ESMTPSA id ec20sm1260116ejb.61.2020.08.05.03.39.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 03:39:50 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] crypto/x86: Use CRC32 mnemonic in crc32c-intel_glue.c
-Date:   Wed,  5 Aug 2020 12:39:32 +0200
-Message-Id: <20200805103932.255524-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 5 Aug 2020 12:51:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5642AC0617A1;
+        Wed,  5 Aug 2020 03:42:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=T7Zf13XTlUQSe/dbrPakLq04rPma9WfTqW7+qPuHC/8=; b=EaHVI8YpmOMLdyJSiFa8b1rMZa
+        0pJMt8imbpuIDWtkEyuefvwlxGb3nV5J+pz5zWStG5j+fmTmLkA9tqg7L3p1a6WcpMKdFhV4a0DaD
+        VyPLI7JjRDuAmMRSIWaEywhQdx9uRyCg0JYiAyPE0+sP7iSJ8zVa0RAAz36CQx1kqy9rUEy0DjUEM
+        8SQ9nLZcb4IBuuGFOT5BwydR56trYSzQfkcWmmL5o5sY4LvAU9hqp4ye9W5vJrnYFflNd+9tQS/yL
+        VIzjvHwaapa6qqUpbyx+xFkwsRpbKkKHZd4+3aVr/hc5UNNtsJDfW0W/niTsXW6+ZOGBtGxeX2EU0
+        OQ+M/oAw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3Grl-0005Zg-JH; Wed, 05 Aug 2020 10:41:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DEF00301A66;
+        Wed,  5 Aug 2020 12:41:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8CC03235CDBB2; Wed,  5 Aug 2020 12:41:46 +0200 (CEST)
+Date:   Wed, 5 Aug 2020 12:41:46 +0200
+From:   peterz@infradead.org
+To:     ren_guo@c-sky.com
+Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        mathieu.desnoyers@efficios.com, Will Deacon <will@kernel.org>
+Subject: csky: smp_mb__after_spinlock
+Message-ID: <20200805104146.GP2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current minimum required version of binutils is 2.23,
-which supports CRC32 instruction mnemonic.
+Hi,
 
-Replace the byte-wise specification of CRC32 with this proper mnemonic.
-The compiler is now able to pass memory operand to the instruction,
-so there is no need for a temporary register anymore.
+While doing an audit of smp_mb__after_spinlock, I found that csky
+defines it, why?
 
-Some examples of the improvement:
+CSKY only has smp_mb(), it doesn't override __atomic_acquire_fence or
+otherwise special cases it's atomic*_acquire() primitives. It has an
+explicit smp_mb() in its arch_spin_lock().
 
- 12a:	48 8b 08             	mov    (%rax),%rcx
- 12d:	f2 48 0f 38 f1 f1    	crc32q %rcx,%rsi
- 133:	48 83 c0 08          	add    $0x8,%rax
- 137:	48 39 d0             	cmp    %rdx,%rax
- 13a:	75 ee                	jne    12a <crc32c_intel_update+0x1a>
-
-to:
-
- 125:	f2 48 0f 38 f1 06    	crc32q (%rsi),%rax
- 12b:	48 83 c6 08          	add    $0x8,%rsi
- 12f:	48 39 d6             	cmp    %rdx,%rsi
- 132:	75 f1                	jne    125 <crc32c_intel_update+0x15>
-
-and:
-
- 146:	0f b6 08             	movzbl (%rax),%ecx
- 149:	f2 0f 38 f0 f1       	crc32b %cl,%esi
- 14e:	48 83 c0 01          	add    $0x1,%rax
- 152:	48 39 d0             	cmp    %rdx,%rax
- 155:	75 ef                	jne    146 <crc32c_intel_update+0x36>
-
-to:
-
- 13b:	f2 0f 38 f0 02       	crc32b (%rdx),%eax
- 140:	48 83 c2 01          	add    $0x1,%rdx
- 144:	48 39 ca             	cmp    %rcx,%rdx
- 147:	75 f2                	jne    13b <crc32c_intel_update+0x2b>
-
-As the compiler has some more freedom w.r.t. register allocation,
-there is also a couple of reg-reg moves removed.
-
-There are no hidden states for CRC32 insn, so there is no need to mark
-assembly as volatile.
-
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-CC: Herbert Xu <herbert@gondor.apana.org.au>
-CC: "David S. Miller" <davem@davemloft.net>
-CC: Thomas Gleixner <tglx@linutronix.de>
-CC: Ingo Molnar <mingo@redhat.com>
-CC: Borislav Petkov <bp@alien8.de>
-CC: "H. Peter Anvin" <hpa@zytor.com>
 ---
- arch/x86/crypto/crc32c-intel_glue.c | 24 ++++++++----------------
- 1 file changed, 8 insertions(+), 16 deletions(-)
-
-diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
-index d2d069bd459b..3a34b2351559 100644
---- a/arch/x86/crypto/crc32c-intel_glue.c
-+++ b/arch/x86/crypto/crc32c-intel_glue.c
-@@ -27,12 +27,6 @@
+diff --git a/arch/csky/include/asm/spinlock.h b/arch/csky/include/asm/spinlock.h
+index 7cf3f2b34cea..22a05caf2d18 100644
+--- a/arch/csky/include/asm/spinlock.h
++++ b/arch/csky/include/asm/spinlock.h
+@@ -88,9 +88,6 @@ static inline int arch_spin_is_contended(arch_spinlock_t *lock)
  
- #define SCALE_F	sizeof(unsigned long)
+ #include <asm/qrwlock.h>
  
--#ifdef CONFIG_X86_64
--#define REX_PRE "0x48, "
--#else
--#define REX_PRE
--#endif
+-/* See include/linux/spinlock.h */
+-#define smp_mb__after_spinlock()	smp_mb()
 -
- #ifdef CONFIG_X86_64
+ #else /* CONFIG_QUEUED_RWLOCKS */
+ 
  /*
-  * use carryless multiply version of crc32c when buffer
-@@ -48,11 +42,8 @@ asmlinkage unsigned int crc_pcl(const u8 *buffer, int len,
- static u32 crc32c_intel_le_hw_byte(u32 crc, unsigned char const *data, size_t length)
- {
- 	while (length--) {
--		__asm__ __volatile__(
--			".byte 0xf2, 0xf, 0x38, 0xf0, 0xf1"
--			:"=S"(crc)
--			:"0"(crc), "c"(*data)
--		);
-+		asm("crc32b %1, %0"
-+		    : "+r" (crc) : "rm" (*data));
- 		data++;
- 	}
- 
-@@ -66,11 +57,12 @@ static u32 __pure crc32c_intel_le_hw(u32 crc, unsigned char const *p, size_t len
- 	unsigned long *ptmp = (unsigned long *)p;
- 
- 	while (iquotient--) {
--		__asm__ __volatile__(
--			".byte 0xf2, " REX_PRE "0xf, 0x38, 0xf1, 0xf1;"
--			:"=S"(crc)
--			:"0"(crc), "c"(*ptmp)
--		);
-+#ifdef CONFIG_X86_64
-+		asm("crc32q %1, %q0"
-+#else
-+		asm("crc32l %1, %0"
-+#endif
-+		    : "+r" (crc) : "rm" (*ptmp));
- 		ptmp++;
- 	}
- 
--- 
-2.26.2
-
