@@ -2,106 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8326323D354
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F9523D375
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 23:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgHEU7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:59:30 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:46154 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725920AbgHEU72 (ORCPT
+        id S1726787AbgHEVK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 17:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725139AbgHEVKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 16:59:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596661167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=jAIXysMz+ztRK+9IphGR8JksjwMIkYoVzpw6WZkH4eA=;
-        b=ZFCELN3r8CfGVKMCC6xm4dmTk3B7ZmFqDPU9ETeLF/YZ/wL6PCIouvPMN71ZWHzlaQqzc/
-        samppKUp+Hhe/Yot0vQGT1uaV4UPbz8Y408fGD8HL8Eo5cNvFSyICjVpywSxCX0JlWwkSU
-        ZNrNjMw3gOK0/jhD4oL033wI1OXTNn0=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-0kcvxPAVNCOxW5vtBbPMYQ-1; Wed, 05 Aug 2020 16:59:23 -0400
-X-MC-Unique: 0kcvxPAVNCOxW5vtBbPMYQ-1
-Received: by mail-qk1-f197.google.com with SMTP id 3so31961510qkv.13
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 13:59:23 -0700 (PDT)
+        Wed, 5 Aug 2020 17:10:24 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9145BC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 14:10:23 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id d6so34099717ejr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 14:10:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V2PZXILdefiTwwzfO5OUUQBgzK17xy7UQ4vY/f0A1uM=;
+        b=aPqJee4+/II1pDeHm6YJT9N8szJtyfH8/u0a/mb/rUh0XKwrO9/lI6mAKg/YUjZsap
+         p0B7nL/zuMyT3EsRGWbvq29/0Lc9irQLp5boKwUO0dgr7wICe4bQ/VVNo2zfxFQFtKUF
+         aTAuAP1cEHDioLUgDXQmFNnV10RJlUC2CPrZI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=jAIXysMz+ztRK+9IphGR8JksjwMIkYoVzpw6WZkH4eA=;
-        b=dFWcr81grE7kDg0Na5rOk3EggRS4KntWElqLxSDjnX4TmZ7D6I6/7bdjwKCpHqtCSs
-         u3MycoYAQH5GXmVHdfIKs1s7diE+oRsB6cjSwkgCGBJGcnhMlqqFt7MaOyhXpmsrOqHz
-         XUY9RGwvb6K0u4YPjFiCM9fjwNCiWLnUl054FTD4iuUixZmxKkl4HyHByRs0XsIvi72M
-         lCg5+adfx/ZBirp8zT8MFteXboM656tI4KtCJGJSVuP5On3hUsqVhj/LbB/XlotBgXF/
-         ox6NcQXnayImrDi/9YSjJ3h3eH87ft/cNBYlXKlWL5v5B/SclIBiq+m4YfT/TxrhRipc
-         lhXw==
-X-Gm-Message-State: AOAM5300DShFbtOvDcNbN4acQ1g0j5Aa1Chz1Zd40nj/VKK2W/rO4/ue
-        oEsMyV55t0APyQUT0tnT3fBfXYxdLTGQFlwvr92EYspBUilc8pIPb7e4Z9y+e0c6UJZ0uSkI5P5
-        70+NiXBuDWEHsxJOHuvco0VSw
-X-Received: by 2002:a37:84c:: with SMTP id 73mr5330200qki.464.1596661163155;
-        Wed, 05 Aug 2020 13:59:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxMeglqrJbSFSxjPBAaJs2BV5HNNaqoHH3sQfpvvAW+bLdrzYALcTYC6CF/kqo4ivso2fbfUg==
-X-Received: by 2002:a37:84c:: with SMTP id 73mr5330186qki.464.1596661162880;
-        Wed, 05 Aug 2020 13:59:22 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id c21sm2346084qka.9.2020.08.05.13.59.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 13:59:22 -0700 (PDT)
-From:   trix@redhat.com
-To:     patrik.r.jakobsson@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
-        airlied@redhat.com, yakui.zhao@intel.com, alan@linux.intel.com
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] drm/gma500: fix error check
-Date:   Wed,  5 Aug 2020 13:59:11 -0700
-Message-Id: <20200805205911.20927-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V2PZXILdefiTwwzfO5OUUQBgzK17xy7UQ4vY/f0A1uM=;
+        b=pth4mrdZhPml0j0mRK21e7OWk4VHtCwmptAgP4KyGLk/lnLPBXOfmqBVJ3iJDUWXHP
+         vMEB9X4iVtDXUxJH4DeURrD59NTb2iMRC14CIu4yImoA6oH+yVCq8Yk+JCsde9A/mXfl
+         CNuNTfZKnxRD0Vlkd3msjjQNznLidSIaWq/cEmoAlqh84hpN3FXd3R9H2mLz4PWcd7bT
+         aOlDTHIpUnkWJhbU0fdv5alqNWfCAOhaBXoAVdS/JiMGOkXiMwdvFv15XZ5ShLDrLhnk
+         vCP5Wj3yNV1mrqG9EI+ex3RZjNqtK7pWWMZNf1dzVBI/VIb3DvqAoiTXzcGPF1EOO9bQ
+         Tb6Q==
+X-Gm-Message-State: AOAM533xz3wADfCzCmlBGttRYsgBTHfQ8/om0orBnJmt3Q8ix/GQV/oB
+        5C5r7xcQmMCjoRB++8G/F1ng4A4Mz5k=
+X-Google-Smtp-Source: ABdhPJxBX95do5yPbM4lrDh4XtNiezNlJO3s6gwxpdpxHravQ2Hcf/I2l2NlL9cK9EI6tYrwUL4iHg==
+X-Received: by 2002:a17:906:4f82:: with SMTP id o2mr1251879eju.424.1596661821719;
+        Wed, 05 Aug 2020 14:10:21 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id ec20sm2247304ejb.61.2020.08.05.14.10.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 14:10:21 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id jp10so21379409ejb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 14:10:21 -0700 (PDT)
+X-Received: by 2002:a05:6402:28f:: with SMTP id l15mr1118783edv.233.1596661486208;
+ Wed, 05 Aug 2020 14:04:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200721042522.2403410-1-amstan@chromium.org>
+In-Reply-To: <20200721042522.2403410-1-amstan@chromium.org>
+From:   Alexandru M Stan <amstan@chromium.org>
+Date:   Wed, 5 Aug 2020 14:04:09 -0700
+X-Gmail-Original-Message-ID: <CAHNYxRzwQ2jx99M0oyNv8CDE4h051jcdAdYFjRd8mhNjB19FgA@mail.gmail.com>
+Message-ID: <CAHNYxRzwQ2jx99M0oyNv8CDE4h051jcdAdYFjRd8mhNjB19FgA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] PWM backlight interpolation adjustments
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Mon, Jul 20, 2020 at 9:27 PM Alexandru Stan <amstan@chromium.org> wrote:
+>
+> I was trying to adjust the brightness for a new chromebook:
+> https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2291209
+> Like a lot of panels, the low end needs to be cropped,
+> and now that we have the interpolation stuff I wanted to make use of it
+> and bake in even the curve.
+>
+> I found the behavior a little unintuitive and non-linear. See patch 1
+> for a suggested fix for this.
+>
+> Unfortunatelly a few veyron dts files were relying on this
+> (perhaps weird) behavior. Those devices also want a minimum brightness.
+> The issue is that they also want the 0% point for turning off the
+> display.
+> https://github.com/torvalds/linux/commit/6233269bce47bd450196a671ab28eb1ec5eb88d9#diff-e401ae20091bbfb311a062c464f4f47fL23
+>
+> So the idea here is to change those dts files to only say <3 255> (patch
+> 3), and add in a virtual 0% point at the bottom of the scale (patch 2).
+>
+> We have to do this conditionally because it seems some devices like to
+> have the scale inverted:
+>   % git grep "brightness-levels\s*=\s*<\s*[1-9]"|cat
+>   arch/arm/boot/dts/tegra124-apalis-eval.dts:             brightness-levels = <255 231 223 207 191 159 127 0>;
+>
+>
+> Alexandru Stan (3):
+>   backlight: pwm_bl: Fix interpolation
+>   backlight: pwm_bl: Artificially add 0% during interpolation
+>   ARM: dts: rockchip: Remove 0 point in backlight
+>
+>  arch/arm/boot/dts/rk3288-veyron-jaq.dts    |  2 +-
+>  arch/arm/boot/dts/rk3288-veyron-minnie.dts |  2 +-
+>  arch/arm/boot/dts/rk3288-veyron-tiger.dts  |  2 +-
+>  drivers/video/backlight/pwm_bl.c           | 78 +++++++++++-----------
+>  4 files changed, 42 insertions(+), 42 deletions(-)
+>
+> --
+> 2.27.0
+>
 
-Reviewing this block of code in cdv_intel_dp_init()
+Hello,
 
-ret = cdv_intel_dp_aux_native_read(gma_encoder, DP_DPCD_REV, ...
+Friendly ping.
+Let me know if you would like me to make any changes to my patches.
 
-cdv_intel_edp_panel_vdd_off(gma_encoder);
-if (ret == 0) {
-	/* if this fails, presume the device is a ghost */
-	DRM_INFO("failed to retrieve link info, disabling eDP\n");
-	drm_encoder_cleanup(encoder);
-	cdv_intel_dp_destroy(connector);
-	goto err_priv;
-} else {
-
-The (ret == 0) is not strict enough.
-cdv_intel_dp_aux_native_read() returns > 0 on success
-otherwise it is failure.
-
-So change to <=
-
-Fixes: d112a8163f83 ("gma500/cdv: Add eDP support")
-
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-index f41cbb753bb4..720a767118c9 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-@@ -2078,7 +2078,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
- 					       intel_dp->dpcd,
- 					       sizeof(intel_dp->dpcd));
- 		cdv_intel_edp_panel_vdd_off(gma_encoder);
--		if (ret == 0) {
-+		if (ret <= 0) {
- 			/* if this fails, presume the device is a ghost */
- 			DRM_INFO("failed to retrieve link info, disabling eDP\n");
- 			drm_encoder_cleanup(encoder);
--- 
-2.18.1
-
+Thanks,
+Alexandru M Stan
