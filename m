@@ -2,110 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B7C23C4CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 06:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0323B23C4D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 06:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbgHEEyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 00:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgHEEyQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 00:54:16 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C044EC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 21:54:15 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id i138so30343809ild.9
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 21:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NWo03ksp49RFL4JmDzwg1K5bhOAK4XGZLQniw/219G8=;
-        b=E81rywuv5jgi+eBdLbYbwYDvs4S2czenFZvhB1YC1y/NftdIsFgVUA1ZK/wfI8Jxj7
-         xMYUePEk5sVOqPfniR68qjURFNzRoMrGSoE5dSgOUmNJwrGcAyypBKlA6AmZA8KLsTIg
-         wAPFQug2Ys9nENpQZ3ggfwyjSOCw+I/+q3smVA66LCDzfkN9Yq3yx2A6OGzcXh6mps23
-         1l7s7ApF1guhJE7KxDtu42Dt+DLOCA3J8fkUaRPyXAuY43Q1DWwg5hTiwcoQf8ng6AFk
-         8nzH05HEs0ud7F6dwzX1qsgr1rxkVMC+HFsC4rYWaZ/H8SwfUlPJwsCbpsOC5Mm0oVDv
-         LPWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NWo03ksp49RFL4JmDzwg1K5bhOAK4XGZLQniw/219G8=;
-        b=WKd3ETpOhHQL8wLWmzRUkEuYFXXLQ50/O4e3FqhS/fleIVXB6TeMUmd73jMdmndyns
-         fXDzf6iJx8rYDJQk5Lr2VKLhQt1HhiT6r4kb1sL1v3dMxq0xEsVqki2+qhvrrPEhTdej
-         vhxv5lZtWRxXNMLqB8u51JcXtT6hUBx4QHbOB+F7XewI/m1XorgOmUu9+Jd//TnCALXT
-         OLs9n7hi9HQvIK4Aqn9AIeJAzKtOTZ17AeUl0e+R9uDoJj58/C+dGn1Nl4ZRqSj/8Ih5
-         LvxWTAc5PLIY20XPFGW9bMr5Y8mhaZF+LnwHe4YHxslAwNHu+G/ltMcm16p/fHLzO+lR
-         KsFQ==
-X-Gm-Message-State: AOAM533/r3v5eIB9NBG+IaKiHhHPUEYBUu/44sVKCGwRLV9YNYh4fucw
-        lHWL6YjLxkkTSwQ2MI/66mYMUtpmPHqt3+jMLiRtEg==
-X-Google-Smtp-Source: ABdhPJz5MeslcA4Sik6ZMi6cw+tVlvFZuDre6Q9opHEXM/cGMG+OCYbcl2xE9BruElI6JfBmumJtPWPdmjALO/LCbQI=
-X-Received: by 2002:a92:c0c3:: with SMTP id t3mr2167405ilf.47.1596603254968;
- Tue, 04 Aug 2020 21:54:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200804203155.2181099-1-lokeshgidra@google.com>
- <20200805034758.lrobunwdcqtknsvz@yavin.dot.cyphar.com> <20200805040806.GB1136@sol.localdomain>
-In-Reply-To: <20200805040806.GB1136@sol.localdomain>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Tue, 4 Aug 2020 21:54:03 -0700
-Message-ID: <CA+EESO6hds3EJY-MWKiG3tRJfJnyTr4Y_v9+hu5zU1=jiQ_xmQ@mail.gmail.com>
-Subject: Re: [PATCH] Userfaultfd: Avoid double free of userfault_ctx and
- remove O_CLOEXEC
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        casey@schaufler-ca.com, James Morris <jmorris@namei.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Daniel Colascione <dancol@dancol.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nick Kralevich <nnk@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Calin Juravle <calin@google.com>, kernel-team@android.com,
-        yanfei.xu@windriver.com,
-        syzbot+75867c44841cb6373570@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1726096AbgHEE7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 00:59:02 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:36098 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725372AbgHEE7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 00:59:01 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3221F1A0403;
+        Wed,  5 Aug 2020 06:58:59 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 14BB01A04E8;
+        Wed,  5 Aug 2020 06:58:54 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1835A40319;
+        Wed,  5 Aug 2020 06:58:48 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, galak@codeaurora.org,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH 1/3] dt-bindings: serial: Convert i.MX uart to json-schema
+Date:   Wed,  5 Aug 2020 12:54:17 +0800
+Message-Id: <1596603259-5367-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 9:08 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Wed, Aug 05, 2020 at 01:47:58PM +1000, Aleksa Sarai wrote:
-> > On 2020-08-04, Lokesh Gidra <lokeshgidra@google.com> wrote:
-> > > when get_unused_fd_flags returns error, ctx will be freed by
-> > > userfaultfd's release function, which is indirectly called by fput().
-> > > Also, if anon_inode_getfile_secure() returns an error, then
-> > > userfaultfd_ctx_put() is called, which calls mmdrop() and frees ctx.
-> > >
-> > > Also, the O_CLOEXEC was inadvertently added to the call to
-> > > get_unused_fd_flags() [1].
-> >
-> > I disagree that it is "wrong" to do O_CLOEXEC-by-default (after all,
-> > it's trivial to disable O_CLOEXEC, but it's non-trivial to enable it on
-> > an existing file descriptor because it's possible for another thread to
-> > exec() before you set the flag). Several new syscalls and fd-returning
-> > facilities are O_CLOEXEC-by-default now (the most obvious being pidfds
-> > and seccomp notifier fds).
->
-> Sure, O_CLOEXEC *should* be the default, but this is an existing syscall so it
-> has to keep the existing behavior.
->
-> > At the very least there should be a new flag added that sets O_CLOEXEC.
->
-> There already is one (but these patches broke it).
->
-I looked at the existing implementation, and the right thing is to
-pass on the 'flags' (that is passed in to the syscall) to fetch 'fd'.
+Convert the i.MX uart binding to DT schema format using json-schema.
 
-Besides, as you said in the other email thread,
-anon_inode_getfile_secure() should be replaced with
-anon_inode_getfd_secure(), which will remove this ambiguity.
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../devicetree/bindings/serial/fsl-imx-uart.txt    | 40 ----------
+ .../devicetree/bindings/serial/fsl-imx-uart.yaml   | 92 ++++++++++++++++++++++
+ 2 files changed, 92 insertions(+), 40 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/serial/fsl-imx-uart.txt
+ create mode 100644 Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml
 
-I'll resend the patch series soon with all the changes that you proposed.
-> - Eric
+diff --git a/Documentation/devicetree/bindings/serial/fsl-imx-uart.txt b/Documentation/devicetree/bindings/serial/fsl-imx-uart.txt
+deleted file mode 100644
+index 9582fc2..0000000
+--- a/Documentation/devicetree/bindings/serial/fsl-imx-uart.txt
++++ /dev/null
+@@ -1,40 +0,0 @@
+-* Freescale i.MX Universal Asynchronous Receiver/Transmitter (UART)
+-
+-Required properties:
+-- compatible : Should be "fsl,<soc>-uart"
+-- reg : Address and length of the register set for the device
+-- interrupts : Should contain uart interrupt
+-
+-Optional properties:
+-- fsl,dte-mode : Indicate the uart works in DTE mode. The uart works
+-                  in DCE mode by default.
+-- fsl,inverted-tx , fsl,inverted-rx : Indicate that the hardware attached
+-  to the peripheral inverts the signal transmitted or received,
+-  respectively, and that the peripheral should invert its output/input
+-  using the INVT/INVR registers.
+-- rs485-rts-delay, rs485-rts-active-low, rs485-rx-during-tx,
+-  linux,rs485-enabled-at-boot-time: see rs485.txt. Note that for RS485
+-  you must enable either the "uart-has-rtscts" or the "rts-gpios"
+-  properties. In case you use "uart-has-rtscts" the signal that controls
+-  the transceiver is actually CTS_B, not RTS_B. CTS_B is always output,
+-  and RTS_B is input, regardless of dte-mode.
+-
+-Please check Documentation/devicetree/bindings/serial/serial.yaml
+-for the complete list of generic properties.
+-
+-Note: Each uart controller should have an alias correctly numbered
+-in "aliases" node.
+-
+-Example:
+-
+-aliases {
+-	serial0 = &uart1;
+-};
+-
+-uart1: serial@73fbc000 {
+-	compatible = "fsl,imx51-uart", "fsl,imx21-uart";
+-	reg = <0x73fbc000 0x4000>;
+-	interrupts = <31>;
+-	uart-has-rtscts;
+-	fsl,dte-mode;
+-};
+diff --git a/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml b/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml
+new file mode 100644
+index 0000000..cba3f83
+--- /dev/null
++++ b/Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml
+@@ -0,0 +1,92 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/serial/fsl-imx-uart.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX Universal Asynchronous Receiver/Transmitter (UART)
++
++maintainers:
++  - Fabio Estevam <fabio.estevam@nxp.com>
++
++allOf:
++  - $ref: "serial.yaml"
++  - $ref: "rs485.yaml"
++
++properties:
++  compatible:
++    oneOf:
++      - const: fsl,imx1-uart
++      - const: fsl,imx21-uart
++      - const: fsl,imx53-uart
++      - const: fsl,imx6q-uart
++      - items:
++          - enum:
++            - fsl,imx25-uart
++            - fsl,imx27-uart
++            - fsl,imx31-uart
++            - fsl,imx35-uart
++            - fsl,imx50-uart
++            - fsl,imx51-uart
++          - const: fsl,imx21-uart
++      - items:
++          - enum:
++            - fsl,imx6sl-uart
++            - fsl,imx6sll-uart
++            - fsl,imx6sx-uart
++            - fsl,imx6ul-uart
++            - fsl,imx7d-uart
++          - const: fsl,imx6q-uart
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  fsl,dte-mode:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      Indicate the uart works in DTE mode. The uart works in DCE mode by default.
++
++  fsl,inverted-tx:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      Indicate that the hardware attached to the peripheral inverts the signal
++      transmitted, and that the peripheral should invert its output using the
++      INVT registers.
++
++  fsl,inverted-rx:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      Indicate that the hardware attached to the peripheral inverts the signal
++      received, and that the peripheral should invert its input using the
++      INVR registers.
++
++  uart-has-rtscts: true
++
++  rs485-rts-delay: true
++  rs485-rts-active-low: true
++  rs485-rx-during-tx: true
++  linux,rs485-enabled-at-boot-time: true
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    aliases {
++        serial0 = &uart1;
++    };
++
++    uart1: serial@73fbc000 {
++        compatible = "fsl,imx51-uart", "fsl,imx21-uart";
++        reg = <0x73fbc000 0x4000>;
++        interrupts = <31>;
++        uart-has-rtscts;
++        fsl,dte-mode;
++    };
+-- 
+2.7.4
+
