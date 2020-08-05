@@ -2,218 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F0C23D2DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6739723D2E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgHEUTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:19:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726013AbgHEUTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 16:19:04 -0400
-Received: from localhost (mobile-166-175-186-42.mycingular.net [166.175.186.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C08722B42;
-        Wed,  5 Aug 2020 20:19:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596658743;
-        bh=9ZU3tOBOV62KtGOwY6EQ1jVnbWgX/1syfR1TvQSTbzc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=mkadEPoAkce2xQobRg1rFSLi4AAEXKYR2DudqHgQ1JhFZKOtr4vqzaFll2OQC8sHb
-         G9y3s6sJGan+0CJs8oa12+px1hLZ5Bv8Fx2uMxi70kHezueiX/D3jkB3xjfM0g12br
-         M6mYiu3hVkbTRpwyksloYu+UcjiRznWrIDgIibJ0=
-Date:   Wed, 5 Aug 2020 15:19:01 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Andres Salomon <dilinger@queued.net>,
-        Antonino Daplas <adaplas@gmail.com>,
-        Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-geode@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v1 01/12] fbdev: gxfb: use generic power management
-Message-ID: <20200805201901.GA529929@bjorn-Precision-5520>
+        id S1726764AbgHEUT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:19:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbgHEUTq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 16:19:46 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C270DC061757
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 13:19:46 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t6so5114216pjr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 13:19:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qVjtbYhstiKuNQL6JeVbBPs4G1xXwyHdcoC1ZxR9HUQ=;
+        b=lBeyGQOGbakQKscP5qJp87U0BD2iPT7BShFj1oh45m4vW3V+uOyjQZjzqLblxE+DoG
+         ub+MTpdonw61jGuhYukxNyO/HMUXjsmaRDFu5GslTldXpvTE1UfUzpXvKOGxj4GBOLFJ
+         o1jzDk6g7iUKQwYW/KEivXAieYBSN294EgsiL2TdFPLYA4zX/pRBxN4U3YNsKkDsBxqR
+         aW+1CWTbx8Oktp2rcBVnX7xXXbWHanLCj0j5d3/0RGRRX8bdH+kVmgZKOjHTKoPbwrjy
+         kD9dI/VFWynhcgO7mpFsAc5PiwBbeklTcxzilRT/p1dFwFyC+yDqdJhCmaEC7t6r8Ihd
+         ix+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qVjtbYhstiKuNQL6JeVbBPs4G1xXwyHdcoC1ZxR9HUQ=;
+        b=mmhomsUWzkLd6sJ+GF1/LKe/Gl0tCEdpX+81dRfyMRM+JK3sV32QV6kEdRIv5/TX+p
+         WpSdbTe7KbpcOLkP80ncqA/4JDqt1te8mEOyMclb1xTioRWPrx4/LgZiiaAAhgYtxEub
+         BRc/vSQsWumt2aFwJXVmq/7jUWMXtUyaS1cTVUNx9dsuwekuIUNBuVzQkIyvY/cDs6Wl
+         AlpoEFj7uOIEig8W2/jSUNMpbt3IIcY59sp4TnxPJkGgpc1onHb7cnq7+ImBY6EZCxZe
+         MgNdjOn2zj05kHvA6qv6vTLctTdYrf17liK3PbZHPfeCF0OiFBcONeKLUhPC0ps5Sl/y
+         EDgQ==
+X-Gm-Message-State: AOAM533ptNCnCtOyy4WA718O3o6HvvZ+SFFrfPkSLlm31XLAMWfZty8c
+        KVUeozUjx/5hqtZaij09yk6HKBu+r3ziwvwZdKXLjA==
+X-Google-Smtp-Source: ABdhPJyzC3W0lW0kRAsgMCPz7TzprnpMpUFYzlQwQ8cedIEf9CqmMuoAlFAGdxAKZ6AyjNgpHiemuwv1bJvRpW+qLtA=
+X-Received: by 2002:a17:90a:17e9:: with SMTP id q96mr4963217pja.91.1596658785977;
+ Wed, 05 Aug 2020 13:19:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805180722.244008-2-vaibhavgupta40@gmail.com>
+References: <20200718000637.3632841-1-saravanak@google.com>
+ <20200718000637.3632841-3-saravanak@google.com> <CALAqxLVZ+rFE+hM9OtQ46NqpTHeLu6oKLNWKstLv1U5zbwyq7g@mail.gmail.com>
+In-Reply-To: <CALAqxLVZ+rFE+hM9OtQ46NqpTHeLu6oKLNWKstLv1U5zbwyq7g@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 5 Aug 2020 13:19:10 -0700
+Message-ID: <CAGETcx_rkK3-bKhDP_N4n_WyXLXFPoaUV9rbY_Y+H1Joj=dCyw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] irqchip/qcom-pdc: Switch to using
+ IRQCHIP_PLATFORM_DRIVER helper macros
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 11:37:11PM +0530, Vaibhav Gupta wrote:
-> Drivers using legacy power management .suspen()/.resume() callbacks
-> have to manage PCI states and device's PM states themselves. They also
-> need to take care of standard configuration registers.
-
-s/using legacy/using legacy PCI/
-s/.suspen/.suspend/ (in all these patches)
-
-I wouldn't necessarily repost the whole series just for that (unless
-the maintainer wants it), but maybe update your branch so if you have
-occasion to repost for other reasons, this will be fixed.
-
-This particular driver actually doesn't *do* any of the PCI state or
-device PM state management you mention.  And I don't see the "single
-'struct dev_pm_ops'" you mention below -- I thought that meant you
-would have a single struct shared between drivers (I think you did
-that for IDE?), but that's not what you're doing.  This driver has
-gxfb_pm_ops, the next has lxfb_pm_ops, etc.
-
-AFAICT the patches are fine, but the commit logs don't seem exactly
-accurate.
-
-> Switch to generic power management framework using a single
-> "struct dev_pm_ops" variable to take the unnecessary load from the driver.
-> This also avoids the need for the driver to directly call most of the PCI
-> helper functions and device power state control functions, as through
-> the generic framework PCI Core takes care of the necessary operations,
-> and drivers are required to do only device-specific jobs.
+On Wed, Aug 5, 2020 at 12:44 AM John Stultz <john.stultz@linaro.org> wrote:
 >
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-> ---
->  drivers/video/fbdev/geode/gxfb.h       |  5 ----
->  drivers/video/fbdev/geode/gxfb_core.c  | 36 ++++++++++++++------------
->  drivers/video/fbdev/geode/suspend_gx.c |  4 ---
->  3 files changed, 20 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/geode/gxfb.h b/drivers/video/fbdev/geode/gxfb.h
-> index d2e9c5c8e294..792c111c21e4 100644
-> --- a/drivers/video/fbdev/geode/gxfb.h
-> +++ b/drivers/video/fbdev/geode/gxfb.h
-> @@ -21,7 +21,6 @@ struct gxfb_par {
->  	void __iomem *dc_regs;
->  	void __iomem *vid_regs;
->  	void __iomem *gp_regs;
-> -#ifdef CONFIG_PM
->  	int powered_down;
->  
->  	/* register state, for power management functionality */
-> @@ -36,7 +35,6 @@ struct gxfb_par {
->  	uint64_t fp[FP_REG_COUNT];
->  
->  	uint32_t pal[DC_PAL_COUNT];
-> -#endif
->  };
->  
->  unsigned int gx_frame_buffer_size(void);
-> @@ -49,11 +47,8 @@ void gx_set_dclk_frequency(struct fb_info *info);
->  void gx_configure_display(struct fb_info *info);
->  int gx_blank_display(struct fb_info *info, int blank_mode);
->  
-> -#ifdef CONFIG_PM
->  int gx_powerdown(struct fb_info *info);
->  int gx_powerup(struct fb_info *info);
-> -#endif
-> -
->  
->  /* Graphics Processor registers (table 6-23 from the data book) */
->  enum gp_registers {
-> diff --git a/drivers/video/fbdev/geode/gxfb_core.c b/drivers/video/fbdev/geode/gxfb_core.c
-> index d38a148d4746..44089b331f91 100644
-> --- a/drivers/video/fbdev/geode/gxfb_core.c
-> +++ b/drivers/video/fbdev/geode/gxfb_core.c
-> @@ -322,17 +322,14 @@ static struct fb_info *gxfb_init_fbinfo(struct device *dev)
->  	return info;
->  }
->  
-> -#ifdef CONFIG_PM
-> -static int gxfb_suspend(struct pci_dev *pdev, pm_message_t state)
-> +static int __maybe_unused gxfb_suspend(struct device *dev)
->  {
-> -	struct fb_info *info = pci_get_drvdata(pdev);
-> +	struct fb_info *info = dev_get_drvdata(dev);
->  
-> -	if (state.event == PM_EVENT_SUSPEND) {
-> -		console_lock();
-> -		gx_powerdown(info);
-> -		fb_set_suspend(info, 1);
-> -		console_unlock();
-> -	}
-> +	console_lock();
-> +	gx_powerdown(info);
-> +	fb_set_suspend(info, 1);
-> +	console_unlock();
->  
->  	/* there's no point in setting PCI states; we emulate PCI, so
->  	 * we don't end up getting power savings anyways */
-> @@ -340,9 +337,9 @@ static int gxfb_suspend(struct pci_dev *pdev, pm_message_t state)
->  	return 0;
->  }
->  
-> -static int gxfb_resume(struct pci_dev *pdev)
-> +static int __maybe_unused gxfb_resume(struct device *dev)
->  {
-> -	struct fb_info *info = pci_get_drvdata(pdev);
-> +	struct fb_info *info = dev_get_drvdata(dev);
->  	int ret;
->  
->  	console_lock();
-> @@ -356,7 +353,6 @@ static int gxfb_resume(struct pci_dev *pdev)
->  	console_unlock();
->  	return 0;
->  }
-> -#endif
->  
->  static int gxfb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  {
-> @@ -467,15 +463,23 @@ static const struct pci_device_id gxfb_id_table[] = {
->  
->  MODULE_DEVICE_TABLE(pci, gxfb_id_table);
->  
-> +static const struct dev_pm_ops gxfb_pm_ops = {
-> +#ifdef CONFIG_PM_SLEEP
-> +	.suspend	= gxfb_suspend,
-> +	.resume		= gxfb_resume,
-> +	.freeze		= NULL,
-> +	.thaw		= gxfb_resume,
-> +	.poweroff	= NULL,
-> +	.restore	= gxfb_resume,
-> +#endif
-> +};
-> +
->  static struct pci_driver gxfb_driver = {
->  	.name		= "gxfb",
->  	.id_table	= gxfb_id_table,
->  	.probe		= gxfb_probe,
->  	.remove		= gxfb_remove,
-> -#ifdef CONFIG_PM
-> -	.suspend	= gxfb_suspend,
-> -	.resume		= gxfb_resume,
-> -#endif
-> +	.driver.pm	= &gxfb_pm_ops,
->  };
->  
->  #ifndef MODULE
-> diff --git a/drivers/video/fbdev/geode/suspend_gx.c b/drivers/video/fbdev/geode/suspend_gx.c
-> index 1110a527c35c..8c49d4e98772 100644
-> --- a/drivers/video/fbdev/geode/suspend_gx.c
-> +++ b/drivers/video/fbdev/geode/suspend_gx.c
-> @@ -11,8 +11,6 @@
->  
->  #include "gxfb.h"
->  
-> -#ifdef CONFIG_PM
-> -
->  static void gx_save_regs(struct gxfb_par *par)
->  {
->  	int i;
-> @@ -259,5 +257,3 @@ int gx_powerup(struct fb_info *info)
->  	par->powered_down  = 0;
->  	return 0;
->  }
-> -
-> -#endif
-> -- 
-> 2.27.0
-> 
+> On Fri, Jul 17, 2020 at 5:06 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > Switch the driver to use the helper macros. In addition to reducing the
+> > number of lines, this also adds module unload protection (if the driver
+> > is compiled as a module) by switching from module_platform_driver to
+> > builtin_platform_driver.
+> >
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> >  drivers/irqchip/qcom-pdc.c | 26 +++-----------------------
+> >  1 file changed, 3 insertions(+), 23 deletions(-)
+> >
+> > diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+> > index 5b624e3295e4..c1c5dfad57cc 100644
+> > --- a/drivers/irqchip/qcom-pdc.c
+> > +++ b/drivers/irqchip/qcom-pdc.c
+> > @@ -432,28 +432,8 @@ static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
+> >         return ret;
+> >  }
+> >
+> > -static int qcom_pdc_probe(struct platform_device *pdev)
+> > -{
+> > -       struct device_node *np = pdev->dev.of_node;
+> > -       struct device_node *parent = of_irq_find_parent(np);
+> > -
+> > -       return qcom_pdc_init(np, parent);
+> > -}
+> > -
+> > -static const struct of_device_id qcom_pdc_match_table[] = {
+> > -       { .compatible = "qcom,pdc" },
+> > -       {}
+> > -};
+> > -MODULE_DEVICE_TABLE(of, qcom_pdc_match_table);
+> > -
+> > -static struct platform_driver qcom_pdc_driver = {
+> > -       .probe = qcom_pdc_probe,
+> > -       .driver = {
+> > -               .name = "qcom-pdc",
+> > -               .of_match_table = qcom_pdc_match_table,
+> > -               .suppress_bind_attrs = true,
+> > -       },
+> > -};
+> > -module_platform_driver(qcom_pdc_driver);
+> > +IRQCHIP_PLATFORM_DRIVER_BEGIN(qcom_pdc)
+> > +IRQCHIP_MATCH("qcom,pdc", qcom_pdc_init)
+> > +IRQCHIP_PLATFORM_DRIVER_END(qcom_pdc)
+> >  MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller");
+> >  MODULE_LICENSE("GPL v2");
+>
+> <sigh>
+> So this is where I bashfully admit I didn't get a chance to try this
+> patch series out, as I had success with a much older version of
+> Saravana's macro magic.
+>
+> But unfortunately, now that this has landed in mainline, I'm seeing
+> boot regressions on db845c. :( This is in the non-modular case,
+> building the driver in.
+
+Does that mean the modular version is working? Or you haven't tried
+that yet? I'll wait for your reply before I try to fix it. I don't
+have the hardware, but it should be easy to guess this issue looking
+at the code delta.
+
+The only significant change from what your probe function is doing is
+this snippet. But it'd be surprising if this only affects the builtin
+case.
+
++ if (par_np == np)
++         par_np = NULL;
++
++ /*
++ * If there's a parent interrupt controller and  none of the parent irq
++ * domains have been registered, that means the parent interrupt
++ * controller has not been initialized yet.  it's not time for this
++ * interrupt controller to initialize. So, defer probe of this
++ * interrupt controller. The actual initialization callback of this
++ * interrupt controller can check for specific domains as necessary.
++ */
++ if (par_np && !irq_find_matching_host(np, DOMAIN_BUS_ANY))
++         return -EPROBE_DEFER;
+
+> I managed to bisect it down to this patch, and reverting it avoids the
+> issue. I don't see what is wrong right off, but I really need to get
+> to bed, so I'll dig further tomorrow.
+>
+> Saravana: Apologies for not getting around to testing this beforehand!
+
+No worries. Apologies for breaking it accidentally.
+
+-Saravana
