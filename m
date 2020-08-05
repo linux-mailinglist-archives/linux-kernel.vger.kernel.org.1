@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DED23CEBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A531123CED7
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgHETB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:01:56 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:45523 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728413AbgHES7p (ORCPT
+        id S1728183AbgHETHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:07:06 -0400
+Received: from smtprelay0126.hostedemail.com ([216.40.44.126]:50842 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728288AbgHES6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 14:59:45 -0400
-Received: by mail-oi1-f193.google.com with SMTP id o21so19829167oie.12;
-        Wed, 05 Aug 2020 11:59:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HPsV2zoZzYtOhvNoZSOkLk25C0ml14YDgasXK3+w6VE=;
-        b=tMR/PBhMUHMguPTr5Gyr8IQgCY3BIOBiiNqdGaYmGoT5LpVNd3g1v1P97cEqhEQdcq
-         cOOOus0vdNjBaqhXSHuwu8xKRBApxY5Au4PGlUhbP6g103nA8PahjfZXyYJzfo+bdgLW
-         FOv9BfNf1GR7ZhcwJhOkRMqVfFwHVrYg3WAh7aXsDrlzv1dtwy58iPYsfYka3gyiRClP
-         sHVQxTS5HTWYBjgdCZW0dIJNPlZghH/o9PmiWxqtbnRoMtYAIq0Wpu5e/LcXnaiameBf
-         DtI9UdeH+8xpjPNGvUj9pw+z0amgDG3c1RVjxz0IAsl7jV9UCLneQ7iR33FmDnmuiGhw
-         10uQ==
-X-Gm-Message-State: AOAM532KV/Q06JuNoNZaCEIb08uEaK63VHbcU/6tWsF+yB4H43hQcS5w
-        5+xDIXR6se5Zzby54ddz3wvwm9dd2iUM0UXHz2AdSg==
-X-Google-Smtp-Source: ABdhPJyjRO4HSKl3hSDUVF5bSG5jZ4RKTOAV+ZERBUYtGBdE78D2y4bJ+423aczt1eKUP/YF0MvfgAOfOKarZ6B+Nu4=
-X-Received: by 2002:aca:b742:: with SMTP id h63mr3779425oif.148.1596653455300;
- Wed, 05 Aug 2020 11:50:55 -0700 (PDT)
+        Wed, 5 Aug 2020 14:58:42 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave05.hostedemail.com (Postfix) with ESMTP id 4E64E18288A26
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 18:58:19 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 4E22D8384366;
+        Wed,  5 Aug 2020 18:54:27 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2734:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3873:3874:4321:5007:6120:10004:10400:10450:10455:10848:11232:11658:11914:12043:12294:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:19904:19999:21080:21212:21451:21627:30054:30056:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: line74_2607a7726fb1
+X-Filterd-Recvd-Size: 2112
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  5 Aug 2020 18:54:26 +0000 (UTC)
+Message-ID: <8977553d1b52e567f72abc2ccad0eb5bca62e242.camel@perches.com>
+Subject: Re: [PATCH] MAINTAINERS: update phylink/sfp keyword matching
+From:   Joe Perches <joe@perches.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Date:   Wed, 05 Aug 2020 11:54:25 -0700
+In-Reply-To: <20200805182250.GX1551@shell.armlinux.org.uk>
+References: <E1k3KUx-0000da-In@rmk-PC.armlinux.org.uk>
+         <CAHk-=whbLwN9GEVVt=7eYhPYk0t0Wh1xeuNEDD+xmQxBFjAQJA@mail.gmail.com>
+         <20200805182250.GX1551@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-References: <CAK8P3a2PK_bC5=3wcWm43=y5xk-Dq5-fGPExJMnOrNfGfB1m1A@mail.gmail.com>
- <20200805172629.GA1040@bug>
-In-Reply-To: <20200805172629.GA1040@bug>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 5 Aug 2020 20:50:43 +0200
-Message-ID: <CAMuHMdV20tZSu5gGsjf8h334+0xr1f=N9NvOoxHQGq42GYsj4g@mail.gmail.com>
-Subject: Re: [Ksummit-discuss] [TECH TOPIC] Planning code obsolescence
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+On Wed, 2020-08-05 at 19:22 +0100, Russell King - ARM Linux admin wrote:
+> On Wed, Aug 05, 2020 at 11:11:28AM -0700, Linus Torvalds wrote:
+> > On Wed, Aug 5, 2020 at 7:34 AM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> > > Is this something you're willing to merge directly please?
+> > 
+> > Done.
+> > 
+> > That said:
+> > 
+> > > -K:     phylink
+> > > +K:     phylink\.h|struct\s+phylink|\.phylink|>phylink_|phylink_(autoneg|clear|connect|create|destroy|disconnect|ethtool|helper|mac|mii|of|set|start|stop|test|validate)
+> > 
+> > That's a very awkward pattern. I wonder if there could be better ways
+> > to express this (ie "only apply this pattern to these files" kind of
+> > thing)
+> 
+> Yes, it's extremely awkward - I spent much of the morning with perl
+> testing it out on the drivers/ subtree.
 
-On Wed, Aug 5, 2020 at 7:26 PM Pavel Machek <pavel@ucw.cz> wrote:
-> > I have submitted the below as a topic for the linux/arch/* MC that Mike
-> > and I run, but I suppose it also makes sense to discuss it on the
-> > ksummit-discuss mailing list (cross-posted to linux-arch and lkml) as well
-> > even if we don't discuss it at the main ksummit track.
->
-> > * Latest kernel in which it was known to have worked
->
-> For some old hardware, I started collecting kernel version, .config and dmesg from
-> successful boots. github.com/pavelmachek, click on "missy".
+And perhaps easier to read would be to use multiple K: lines.
+(?: used to avoid unnecessary capture groups)
 
-You mean your complete hardware collection doesn't boot v5.8? ;-)
+K:	phylink\.h|struct\s+phylink
+K:	(?:\.|\-\>)phylink_
+K:	phylink_(?:autoneg|clear|connect|create|destroy|disconnect|ethtool|helper|mac|mii|of|set|start|stop|test|validate)
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
