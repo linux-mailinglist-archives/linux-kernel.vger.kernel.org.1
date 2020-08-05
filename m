@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A453623D2AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA8323D25C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729822AbgHEUPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:15:06 -0400
-Received: from mail-lf1-f48.google.com ([209.85.167.48]:40840 "EHLO
-        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726585AbgHEQVC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:21:02 -0400
-Received: by mail-lf1-f48.google.com with SMTP id m15so23907579lfp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:21:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=29PkptMrIh0wL9+y+cJ5jR3/l+AuSbnf80pfRQhXI6Y=;
-        b=dTibp3nObfdWJnTarzU3qIoY1mtETKuafEGlU4yplAbFLJSCzNBimrDjRq/qATLpwS
-         gRs5XYvsXYBDs85iMQJaMJQRLaCvYhUai0dMmyEauFaiwFHHM5xKoqrVoIAtaF+sBsv9
-         wrlfMeM2ce2OMAzsAeUO3ESADzXYC6ig7fRfprtPkoTxiNA9tIhVMeB1yypl1MY6p3mp
-         UGmZwFoOfprFqE4faN1fOFRUYzhxotX54hnZlL8FebdhLBbD0BdBHG5l1J+JSrMniiOo
-         G5QnVLjUarzMd4Mtdw6bUbrG2dxvg1wpMd9Gu3+rdwwMKWCJJLstxN9gtvRDR/OfryMJ
-         8kWQ==
-X-Gm-Message-State: AOAM531ibLZjCc7LsWpAa7uM/u6rmBpXFUIsblkzhg0llMncpC3J8X3Q
-        wMhC4+Ft5+PU9Q3u7RS9ICw=
-X-Google-Smtp-Source: ABdhPJwRYPUdeEvLiz482raxZOFw8HkgE2IwIkweXVoWC2qvJ9WAhYrqx0qx0zGOZKDFxLndOgXJ3A==
-X-Received: by 2002:a19:457:: with SMTP id 84mr1946291lfe.191.1596644459745;
-        Wed, 05 Aug 2020 09:20:59 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id a16sm1165711ljj.108.2020.08.05.09.20.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 09:20:58 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1k3MA2-00005N-PL; Wed, 05 Aug 2020 18:21:02 +0200
-Date:   Wed, 5 Aug 2020 18:21:02 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Alex Elder <elder@ieee.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] greybus: Use fallthrough pseudo-keyword
-Message-ID: <20200805162102.GK3634@localhost>
-References: <20200727183258.GA28571@embeddedor>
- <63871608-e076-26b0-85df-cff11699c3a3@ieee.org>
- <e36013ba-e19a-86c9-cb68-d7ad5559c292@ieee.org>
+        id S1729630AbgHEUME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:12:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:33112 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726175AbgHEQ1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:27:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B31C11424;
+        Wed,  5 Aug 2020 09:21:24 -0700 (PDT)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 863283F7D7;
+        Wed,  5 Aug 2020 09:21:16 -0700 (PDT)
+Subject: Re: [PATCH RFC] sched/fair: simplfy the work when reweighting entity
+To:     Jiang Biao <benbjiang@gmail.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        linux-kernel@vger.kernel.org, Jiang Biao <benbjiang@tencent.com>
+References: <20200804071222.31675-1-benbjiang@tencent.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <f9eab9a5-c7c2-dbf3-834b-abd9c376f92c@arm.com>
+Date:   Wed, 5 Aug 2020 18:21:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e36013ba-e19a-86c9-cb68-d7ad5559c292@ieee.org>
+In-Reply-To: <20200804071222.31675-1-benbjiang@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 08:14:47AM -0500, Alex Elder wrote:
-> On 7/28/20 5:37 PM, Alex Elder wrote:
-> > On 7/27/20 1:32 PM, Gustavo A. R. Silva wrote:
-> >> Replace the existing /* fall through */ comments and its variants with
-> >> the new pseudo-keyword macro fallthrough[1].
-> >>
-> >> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> > 
-> > Thanks for the patch.  It looks good, but it raises
-> > another question I'd like discussion on.
+On 04/08/2020 09:12, Jiang Biao wrote:
+> If a se is on_rq when reweighting entity, all we need should be
+> updating the load of cfs_rq, other dequeue/enqueue works could be
+> redundant, such as,
+> * account_numa_dequeue/account_numa_enqueue
+> * list_del/list_add from/into cfs_tasks
+> * nr_running--/nr_running++
 
-Sorry about the late reply on this.
+I think this could make sense. Have you spotted a code path where this
+gives you a change?
 
-> It's been a week, and we heard back from Viresh (and Joe) on
-> this, but no one else.  Viresh left out the break statement on
-> the last case of the switch statement intentionally, arguing
-> that it is not needed (much like a return statement at the end
-> of a void function).  But he doesn't feel strongly enough
-> insist it should stay that way.  I'm sure the others omitted
-> the break statement intentionally as well.
+I guess only for a task on the rq, so: entity_is_task(se) && se->on_rq
 
-I really don't mind break statements in the final case and often do add
-them, but I'm a bit reluctant to suggest that this is something that
-need "fixing". There are a ton of these all over the kernel, and I think
-we have too many opportunities for people to do mechanical clean ups
-already.
+> Just simplfy the work. Could be helpful for the hot path.
 
-Especially after Gustavo's work, the only real argument for adding them
-is mostly moot as the compiler would catch it if anyone adds a new case
-and forgets about the break statement.
+IMHO hotpath is update_cfs_group() -> reweight_entity() but this is only
+called for '!entity_is_task(se)'.
 
-> Given no strong pushback, I'll ask you (Gustavo) to post a
-> second patch adding the missing break statements I described
-> (and look for any others I might have missed).  If you would
-> prefer not to do that, just say so, and I will send out such
-> a patch myself.
+See
 
-I'd probably just leave it as is, if only to not inspire others to send
-copy-cat "fixes".
+ 3290         if (!gcfs_rq)
+ 3291                 return;
 
-Johan
+in update_cfs_group().
+
+The 'entity_is_task(se)' case is
+
+set_load_weight(struct task_struct *p, ...) -> reweight_task(p, ...) ->
+reweight_entity(..., &p->se, ...)
+
+but here !se->on_rq.
+
+> Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+> ---
+>  kernel/sched/fair.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 04fa8dbcfa4d..18a8fc7bd0de 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3086,7 +3086,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+>  		/* commit outstanding execution time */
+>  		if (cfs_rq->curr == se)
+>  			update_curr(cfs_rq);
+> -		account_entity_dequeue(cfs_rq, se);
+> +		update_load_sub(&cfs_rq->load, se->load.weight);
+>  	}
+>  	dequeue_load_avg(cfs_rq, se);
+>  
+> @@ -3102,7 +3102,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+>  
+>  	enqueue_load_avg(cfs_rq, se);
+>  	if (se->on_rq)
+> -		account_entity_enqueue(cfs_rq, se);
+> +		update_load_add(&cfs_rq->load, se->load.weight);
+>  
+>  }
