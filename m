@@ -2,116 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3280F23C3A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 04:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B5723C394
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 04:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbgHECsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 22:48:18 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:39602 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727109AbgHECsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 22:48:16 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6B1C920139E;
-        Wed,  5 Aug 2020 04:48:14 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BEE05201398;
-        Wed,  5 Aug 2020 04:48:08 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E3A2740302;
-        Wed,  5 Aug 2020 04:48:01 +0200 (CEST)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, marex@denx.de,
-        s.trumtrar@pengutronix.de, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 3/3] dt-bindings: crypto: Convert i.MX sahara to json-schema
-Date:   Wed,  5 Aug 2020 10:43:30 +0800
-Message-Id: <1596595410-26921-3-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596595410-26921-1-git-send-email-Anson.Huang@nxp.com>
-References: <1596595410-26921-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727030AbgHECqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 22:46:15 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:35801 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725950AbgHECqO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 22:46:14 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id E28E67A0;
+        Tue,  4 Aug 2020 22:46:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 04 Aug 2020 22:46:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        IvuYjKO9pN6K+vAWRqibzIqM3OYU4+K+s3T9Dk3ouIw=; b=vlM5EUwQ/x4UJ7E8
+        YhXZ1kPKw2NUQ42oCMDwCd2H/E4euiu1P6vLO/niY/fETbXRFv825WU5PeIOrDnQ
+        OhgKrQmi3itObSKr+yrGAUkRjAklhk7eOyjUJzqDxj0pXNS5DQn+zMMNHNhPAabw
+        ZBakQztcAhAItSsZW+YmJ/XOBNZUTNwvAU1A4kvSVGtO7Ss7ITkn+/AnQ/9CeKnT
+        LmEYYnSfuRzM0oaZqozKwZ9++GtAYj20gdp9bQyRcv8Nj/Y7PLyawcr4iY3pif3O
+        nh/tby7f3Qneizm9SvKKCSYyfwmiVT8BedLoRIRIPVy6KK9IkHzUjLzZ4kVFvSC5
+        Ba0KnQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=IvuYjKO9pN6K+vAWRqibzIqM3OYU4+K+s3T9Dk3ou
+        Iw=; b=MVUmKnJOSbu7/gD/q8HCdCRczqaTofFTAlP43Ct1aS5op7QYW+1wXe8gn
+        RvWRDeha4WPVRqJte36BxgXm3b8Zp3U6t4Z6RSWQzgd0ME5CA+pwZKhagBXtc1r3
+        HYxKo2U6V5u8FFvtYd4gg/5x2H1fH4kkaXh6SJBRFqLWL1WZ3gqaS8J0QwHsY+M+
+        wDhQt0ZxrgcalFW6KZPf1Slm54lXYvMVFMPz4Z8DTjgKqN19JqQ2w+W/xZ4+54z7
+        9Ge60+Yk6aVaDF9KUukztyXsdOhigxTahRLJZA2d6Fc/6MVjp1Jp/OFjOPwjOgqp
+        qF565/31vWAPBxT/XWyHVQFqm+DLQ==
+X-ME-Sender: <xms:cx0qX5PFVUVHJpiteDyg-Cg3vScQq7_xhMSDQZJuR0LFEWgum5hceA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrjeejgdeifecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
+    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepfe
+    efteetvdeguddvveefveeftedtffduudehueeihfeuvefgveehffeludeggfejnecukfhp
+    peehkedrjedrvdehhedrvddvtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehrrghvvghnsehthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:cx0qX79NgXqC3EAzu4qfJdZsGrXNvqKjt0np5riXE8UOhEgFHw7MFA>
+    <xmx:cx0qX4QMXJoBvyzqg0XBduTNwHazfsyLOsHneqSgPwxIpzoxaW8sFQ>
+    <xmx:cx0qX1tYA7Oj487kuUZ69qWZklkAsYSYqV5XWE77jA9DpjrsPYq4FQ>
+    <xmx:dB0qX95F28B-p_RjsFRrLz3o9ANfcmd3bJDiNGriQ-9SOf-rSZv_SeHABD4>
+Received: from mickey.themaw.net (58-7-255-220.dyn.iinet.net.au [58.7.255.220])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 8FD983280060;
+        Tue,  4 Aug 2020 22:46:06 -0400 (EDT)
+Message-ID: <5078554c6028e29c91d815c63e2af1ffac2ecbbb.camel@themaw.net>
+Subject: Re: [PATCH 10/18] fsinfo: Provide notification overrun handling
+ support [ver #21]
+From:   Ian Kent <raven@themaw.net>
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        David Howells <dhowells@redhat.com>
+Cc:     viro@zeniv.linux.org.uk, torvalds@linux-foundation.org,
+        mszeredi@redhat.com, christian@brauner.io, jannh@google.com,
+        darrick.wong@oracle.com, kzak@redhat.com, jlayton@redhat.com,
+        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 05 Aug 2020 10:46:02 +0800
+In-Reply-To: <94bba6f200bb2bbf83f4945faa2ccb83fd947540.camel@themaw.net>
+References: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
+         <159646187082.1784947.4293611877413578847.stgit@warthog.procyon.org.uk>
+         <20200804135641.GE32719@miu.piliscsaba.redhat.com>
+         <94bba6f200bb2bbf83f4945faa2ccb83fd947540.camel@themaw.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX sahara binding to DT schema format using json-schema.
+On Wed, 2020-08-05 at 10:05 +0800, Ian Kent wrote:
+> On Tue, 2020-08-04 at 15:56 +0200, Miklos Szeredi wrote:
+> > On Mon, Aug 03, 2020 at 02:37:50PM +0100, David Howells wrote:
+> > > Provide support for the handling of an overrun in a watch
+> > > queue.  In the
+> > > event that an overrun occurs, the watcher needs to be able to
+> > > find
+> > > out what
+> > > it was that they missed.  To this end, previous patches added
+> > > event
+> > > counters to struct mount.
+> > 
+> > So this is optimizing the buffer overrun case?
+> > 
+> > Shoun't we just make sure that the likelyhood of overruns is low
+> > and
+> > if it
+> > happens, just reinitialize everthing from scratch (shouldn't be
+> > *that*
+> > expensive).
+> 
+> But maybe not possible if you are using notifications for tracking
+> state in user space, you need to know when the thing you have needs
+> to be synced because you missed something and it's during the
+> notification processing you actually have the object that may need
+> to be refreshed.
+> 
+> > Trying to find out what was missed seems like just adding
+> > complexity
+> > for no good
+> > reason.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- .../devicetree/bindings/crypto/fsl-imx-sahara.txt  | 15 ----------
- .../devicetree/bindings/crypto/fsl-imx-sahara.yaml | 35 ++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 15 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/crypto/fsl-imx-sahara.txt
- create mode 100644 Documentation/devicetree/bindings/crypto/fsl-imx-sahara.yaml
+Coming back to an actual use case.
 
-diff --git a/Documentation/devicetree/bindings/crypto/fsl-imx-sahara.txt b/Documentation/devicetree/bindings/crypto/fsl-imx-sahara.txt
-deleted file mode 100644
-index db690b1..0000000
---- a/Documentation/devicetree/bindings/crypto/fsl-imx-sahara.txt
-+++ /dev/null
-@@ -1,15 +0,0 @@
--Freescale SAHARA Cryptographic Accelerator included in some i.MX chips.
--Currently only i.MX27 and i.MX53 are supported.
--
--Required properties:
--- compatible : Should be "fsl,<soc>-sahara"
--- reg : Should contain SAHARA registers location and length
--- interrupts : Should contain SAHARA interrupt number
--
--Example:
--
--sah: crypto@10025000 {
--	compatible = "fsl,imx27-sahara";
--	reg = <	0x10025000 0x800>;
--	interrupts = <75>;
--};
-diff --git a/Documentation/devicetree/bindings/crypto/fsl-imx-sahara.yaml b/Documentation/devicetree/bindings/crypto/fsl-imx-sahara.yaml
-new file mode 100644
-index 0000000..3cabc6b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/crypto/fsl-imx-sahara.yaml
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/crypto/fsl-imx-sahara.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale SAHARA Cryptographic Accelerator included in some i.MX chips
-+
-+maintainers:
-+  - Steffen Trumtrar <s.trumtrar@pengutronix.de>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx27-sahara
-+      - fsl,imx53-sahara
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+examples:
-+  - |
-+    crypto@10025000 {
-+        compatible = "fsl,imx27-sahara";
-+        reg = < 0x10025000 0x800>;
-+        interrupts = <75>;
-+    };
--- 
-2.7.4
+What I said above is one aspect but, since I'm looking at this right
+now with systemd, and I do have the legacy code to fall back to, the
+"just reset everything" suggestion does make sense.
+
+But I'm struggling to see how I can identify notification buffer
+overrun in libmount, and overrun is just one possibility for lost
+notifications, so I like the idea that, as a library user, I can
+work out that I need to take action based on what I have in the
+notifications themselves.
+
+Ian
 
