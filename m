@@ -2,120 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7898F23CF16
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9C623CF3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728893AbgHETN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:13:56 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40671 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727915AbgHETLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:11:46 -0400
-IronPort-SDR: qKX/ElW97fakr3JPsGtRORLgay4GLsxsHmianTeKpbmcvse2HSjsa2LrUTsaFSiJQq52pY06wl
- BHzHcCNgLGvA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="132713644"
-X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="132713644"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 12:11:45 -0700
-IronPort-SDR: gMtDv2wkDCrBFAxkgWEqDl3k5FFjBnx432Tkp7OHaGlY0qBEc7kSWXLpFuba6aQYFJUUSHKTnj
- sNu4wS1fmExQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="289026130"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga003.jf.intel.com with ESMTP; 05 Aug 2020 12:11:44 -0700
-Date:   Wed, 5 Aug 2020 12:11:26 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
-        Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Cathy Zhang <cathy.zhang@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-edac <linux-edac@vger.kernel.org>
-Subject: Re: [PATCH v2] x86/cpu: Use SERIALIZE in sync_core() when available
-Message-ID: <20200805191126.GA27509@ranerica-svr.sc.intel.com>
-References: <20200805021059.1331-1-ricardo.neri-calderon@linux.intel.com>
- <20200805044840.GA9127@nazgul.tnic>
- <47A60E6A-0742-45FB-B707-175E87C58184@zytor.com>
- <20200805050808.GC9127@nazgul.tnic>
- <20200805170717.GB26661@ranerica-svr.sc.intel.com>
- <CALCETrWByBugaunKPz52sdOGJpEdNNMK2kcp-wXgjFpFZuoOmQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrWByBugaunKPz52sdOGJpEdNNMK2kcp-wXgjFpFZuoOmQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728815AbgHETRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726524AbgHETPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 15:15:44 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B922C061A29;
+        Wed,  5 Aug 2020 12:13:22 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 57300152E87E4;
+        Wed,  5 Aug 2020 11:56:35 -0700 (PDT)
+Date:   Wed, 05 Aug 2020 12:13:20 -0700 (PDT)
+Message-Id: <20200805.121320.990654813010240919.davem@davemloft.net>
+To:     xiangxia.m.yue@gmail.com
+Cc:     echaudro@redhat.com, kuba@kernel.org, pabeni@redhat.com,
+        pshelar@ovn.org, syzkaller-bugs@googlegroups.com,
+        dev@openvswitch.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] net: openvswitch: silence suspicious RCU usage warning
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200805071911.64101-1-xiangxia.m.yue@gmail.com>
+References: <20200805071911.64101-1-xiangxia.m.yue@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 05 Aug 2020 11:56:35 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 11:28:31AM -0700, Andy Lutomirski wrote:
-> On Wed, Aug 5, 2020 at 10:07 AM Ricardo Neri
-> <ricardo.neri-calderon@linux.intel.com> wrote:
-> >
-> > On Wed, Aug 05, 2020 at 07:08:08AM +0200, Borislav Petkov wrote:
-> > > On Tue, Aug 04, 2020 at 09:58:25PM -0700, hpa@zytor.com wrote:
-> > > > Because why use an alternative to jump over one instruction?
-> > > >
-> > > > I personally would prefer to have the IRET put out of line
-> > >
-> > > Can't yet - SERIALIZE CPUs are a minority at the moment.
-> > >
-> > > > and have the call/jmp replaced by SERIALIZE inline.
-> > >
-> > > Well, we could do:
-> > >
-> > >       alternative_io("... IRET bunch", __ASM_SERIALIZE, X86_FEATURE_SERIALIZE, ...);
-> > >
-> > > and avoid all kinds of jumping. Alternatives get padded so there
-> > > would be a couple of NOPs following when SERIALIZE gets patched in
-> > > but it shouldn't be a problem. I guess one needs to look at what gcc
-> > > generates...
-> >
-> > But the IRET-TO-SELF code has instruction which modify the stack. This
-> > would violate stack invariance in alternatives as enforced in commit
-> > 7117f16bf460 ("objtool: Fix ORC vs alternatives"). As a result, objtool
-> > gives warnings as follows:
-> >
-> > arch/x86/kernel/alternative.o: warning: objtool: do_sync_core()+0xe:
-> > alternative modifies stack
-> >
-> > Perhaps in this specific case it does not matter as the changes in the
-> > stack will be undone by IRET. However, using alternative_io would require
-> > adding the macro STACK_FRAME_NON_STANDARD to functions using sync_core().
-> > IMHO, it wouldn't look good.
-> >
-> > So maybe the best approach is to implement as you suggested using
-> > static_cpu_has()?
+From: xiangxia.m.yue@gmail.com
+Date: Wed,  5 Aug 2020 15:19:11 +0800
+
+> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 > 
-> I agree.  Let's keep it simple.
+> ovs_flow_tbl_destroy always is called from RCU callback
+> or error path. It is no need to check if rcu_read_lock
+> or lockdep_ovsl_is_held was held.
 > 
-> Honestly, I think the right solution is to have iret_to_self() in
-> actual asm and invoke it from C as needed. 
+> ovs_dp_cmd_fill_info always is called with ovs_mutex,
+> So use the rcu_dereference_ovsl instead of rcu_dereference
+> in ovs_flow_tbl_masks_cache_size.
+> 
+> Fixes: 9bf24f594c6a ("net: openvswitch: make masks cache size configurable")
+> Cc: Eelco Chaudron <echaudro@redhat.com>
+> Reported-by: syzbot+c0eb9e7cdde04e4eb4be@syzkaller.appspotmail.com
+> Reported-by: syzbot+f612c02823acb02ff9bc@syzkaller.appspotmail.com
+> Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-Do you mean anything different from what we have already [1]? If I
-understand your comment correctly, we have exactly that: an
-iret_to_self() asm implementation invoked from C.
-
-Thanks and BR,
-Ricardo
-
-[1]. https://lore.kernel.org/lkml/20200727043132.15082-4-ricardo.neri-calderon@linux.intel.com/
-
-Thanks and BR,
-Ricardo
+Applied, thank you.
