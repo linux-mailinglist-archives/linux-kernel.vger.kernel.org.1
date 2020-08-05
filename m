@@ -2,240 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526B923CC7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9F423CCAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgHEQtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        id S1727101AbgHEQ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728034AbgHEQqQ (ORCPT
+        with ESMTP id S1728290AbgHEQyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:46:16 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F29C034624
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:05:14 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id z3so27036845ilh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:05:14 -0700 (PDT)
+        Wed, 5 Aug 2020 12:54:31 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51C1C08E834;
+        Wed,  5 Aug 2020 06:12:18 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id c19so4373567wmd.1;
+        Wed, 05 Aug 2020 06:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wzax1JoI9zRG5UqAp2s+JfDhNvSfuH/tKXpfiaAlnEc=;
-        b=DVJOqyZE9aXM1N+pfiDtYjX3fYyUcoPNlyB0YkcYDwJBmZgzFrdfWonlYEyaOL5giJ
-         ZePKRZCkC3SW9XJENgZgB1Y41LR1KE70JQUb/cvOtsw6VrjMWoNzBdw/3edomY9xa1SS
-         Z0kPKqHhEpuK16s23XYP5fHbjF9BeVjUSoF4KNfkRXtSreZ3XE4Raq64oMlE+VncQxkG
-         rijeaFFwnTaK+xqK+/kPzOjzvDkohlendgCOh0CBg4Vk8vC/YdqgngVQq6jgrY6vleE4
-         5X+BOeFY+9hoqCuQnxphvVelaCyYLthSwTXf2nI0omcaVq1TvpBBKqvr7L/wTK7f72YB
-         LX1w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=B9JUGt8Pb9MDGuBsLIt3kVKcTw+cuX4wnQpyN3p61KQ=;
+        b=pbk1cNPRF/GvqfGkOr+BRCbGcJN5u/R67NUNZc5JeQP6+Ucu93yX5HNmhmIGcpnbDg
+         b/Vb5CNZU1Ai7dd2ZgXfZe5Eg5kzp4G+pIcJFMIjbRDvqndYePvwy8BiVcZGC3tCtAo9
+         1ONUxrvdZxxvAzMHnCb/p9eoxfg87gYN5yhFKc8hJSTQBNaQq5Hj19/HA74yll88Arrt
+         NjKOdn4OI7CxOZk6HgB0D6UUc5eiGbxAcuj0VhtfZavaaCzB0miFqJiT9b9E7RHQUSRB
+         5sFbWUnFxYCQUFI/90+Y6qZ37czHQwsEmr6FzhuPpkC64Q7HbsWa0gq0WF6xe/ubtMgM
+         cL7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wzax1JoI9zRG5UqAp2s+JfDhNvSfuH/tKXpfiaAlnEc=;
-        b=GBmU5Dfq67MLj9lD5B9rmRqNNVyvD4y5wSvpljnnwf3F1hU+VE4EcJmeRAV2lUYd6P
-         7Cr8yxe3sBcwJGWkcSk1cncl9tQX0MMnAN6fvnFfojDZusI2gbUHa7Emz6jNEzt+wmUH
-         J2fSUfUkiajIsHIjP7X9KNgETkp17LgmvbjiBKvq/LyAJ/jAk8rNfJM3KMbYTzLS+qBC
-         ozeAvjwm38cAOayxoBHrGG8hpkFPEGPvjjqLWhiYdXDrstybD9csNJXabCZQbAtydpcw
-         3XF0KQjBgcohI6Vpm4rdrY1Zcrzzco2exbnEAQIsxAQCynlrwB5I88+fZm8+fstkao2C
-         sfLw==
-X-Gm-Message-State: AOAM532hlDOdIFjwB7Pk3UtG49b3avTk3DJ+iZBaOo0Xevpc9VTOwrcn
-        yp41ymLjI/di4iaYvcdLqT4eGg==
-X-Google-Smtp-Source: ABdhPJxp6OK2QdRf+UwsBi/lMaDPcEVuBouzFlXVW62OTS1hOEXu47t2qPN6mIV2jZjdLcSglOlSeA==
-X-Received: by 2002:a92:660e:: with SMTP id a14mr3990516ilc.262.1596632713672;
-        Wed, 05 Aug 2020 06:05:13 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id k18sm1003543ioh.50.2020.08.05.06.05.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 06:05:12 -0700 (PDT)
-Subject: Re: [greybus-dev] [PATCH v4 1/7] staging: greybus: audio: Update
- snd_jack FW usage as per new APIs
-To:     Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Mark Greer <mgreer@animalcreek.com>
-Cc:     devel@driverdev.osuosl.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <cover.1594290158.git.vaibhav.sr@gmail.com>
- <896b8e24d990f2bca5aafaebd26e37095042951e.1594290158.git.vaibhav.sr@gmail.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <7cbc0daa-993f-ffc9-78f4-b1e62fd54304@linaro.org>
-Date:   Wed, 5 Aug 2020 08:05:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=B9JUGt8Pb9MDGuBsLIt3kVKcTw+cuX4wnQpyN3p61KQ=;
+        b=sxZNa+apP25vppczNLXjRDKJiB1s22yXdKGBh1woBI82+Qg/MohcBMvxgq7jTB01rO
+         BU0qWS21oOjjFVAUiu7fbvc/L034wBHFJYkGEuR3hZvhQwBSyjrzXiRMmsw7CwtIogAu
+         Lmvdvx2VS6Tlz5ZDxC5seIKc9G0TOivfwdIOm5uap+zxdqRe/Zy1NdYzhWB5bUsQbuDL
+         WDH2PaetIsYxUKB01CNDiN7v0iZlE25E0BlIAzzW4q7q1ckdC3FM1KbwY44y5mjPc0SK
+         aCeKHY3KDhOuCKb4U7ygOd22iexkjHUUfqvt2i0afBfIPgr9c/COfmTOS393e7TiiTJZ
+         60eA==
+X-Gm-Message-State: AOAM530arzSf2ncFR1sWcJXYBcSpEd6eQt0kYz3qxnApG5Orkot2vF9c
+        FfQhO/j4P1SYhpSwg5zdbhA=
+X-Google-Smtp-Source: ABdhPJx7QnQpLkIIv5E0GyPade/7mWzzITIagloPzo8qbKK9XtJXsRfCQT2mdy/5AeRoPFSS4o0yFA==
+X-Received: by 2002:a1c:6555:: with SMTP id z82mr3330653wmb.67.1596633137287;
+        Wed, 05 Aug 2020 06:12:17 -0700 (PDT)
+Received: from Ansuel-XPS.localdomain (host-95-251-1-48.retail.telecomitalia.it. [95.251.1.48])
+        by smtp.googlemail.com with ESMTPSA id j11sm2669756wrq.69.2020.08.05.06.12.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 06:12:16 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 2/2] dt-bindings: cpufreq: Document Krait CPU Cache scaling
+Date:   Wed,  5 Aug 2020 15:11:59 +0200
+Message-Id: <20200805131200.3234-3-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200805131200.3234-1-ansuelsmth@gmail.com>
+References: <20200805131200.3234-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <896b8e24d990f2bca5aafaebd26e37095042951e.1594290158.git.vaibhav.sr@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/9/20 5:27 AM, Vaibhav Agarwal wrote:
-> snd_soc_jack APIs are modified in recent kernel versions. This patch
-> updates the codec driver to resolve the compilation errors related to
-> jack framework.
+Document dedicated Krait CPU Cache Scaling driver.
 
-Greg has already accepted this series so I won't review this now.  But
-I still wanted to provide this comment.
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ .../bindings/cpufreq/krait-cache-scale.yaml   | 89 +++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
 
-It would be helpful in the future to provide a little more information
-about the nature of the changes to these APIs.  As a reviewer I had to
-go track them down to get a little more context about what you are doing
-here.  So you could say something like:
-
-  Audio jacks are now registered at the card level rather than being
-  associated with a CODEC.  The new card-based API allows a jack's pins
-  to be supplied when the jack is first registered.  See: 970939964c26
-  ("ASoC: Allow to register jacks at the card level")
-
-In other words, don't just say "the APIs changed," say "here is how
-the APIs have changed."  This kind of introduction can be very helpful
-and time saving for your reviewers.
-
-					-Alex
-
-> Signed-off-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
-> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/staging/greybus/audio_codec.c | 54 +++++++++++++++++++++------
->  1 file changed, 42 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-> index 08746c85dea6..5d3a5e6a8fe6 100644
-> --- a/drivers/staging/greybus/audio_codec.c
-> +++ b/drivers/staging/greybus/audio_codec.c
-> @@ -709,17 +709,26 @@ static struct snd_soc_dai_driver gbaudio_dai[] = {
->  };
->  
->  static int gbaudio_init_jack(struct gbaudio_module_info *module,
-> -			     struct snd_soc_codec *codec)
-> +			     struct snd_soc_card *card)
->  {
->  	int ret;
-> +	struct snd_soc_jack_pin *headset, *button;
->  
->  	if (!module->jack_mask)
->  		return 0;
->  
->  	snprintf(module->jack_name, NAME_SIZE, "GB %d Headset Jack",
->  		 module->dev_id);
-> -	ret = snd_soc_jack_new(codec, module->jack_name, module->jack_mask,
-> -			       &module->headset_jack);
-> +
-> +	headset = devm_kzalloc(module->dev, sizeof(*headset), GFP_KERNEL);
-> +	if (!headset)
-> +		return -ENOMEM;
-> +
-> +	headset->pin = module->jack_name;
-> +	headset->mask = module->jack_mask;
-> +
-> +	ret = snd_soc_card_jack_new(card, module->jack_name, module->jack_mask,
-> +				    &module->headset_jack, headset, 1);
->  	if (ret) {
->  		dev_err(module->dev, "Failed to create new jack\n");
->  		return ret;
-> @@ -730,11 +739,21 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  
->  	snprintf(module->button_name, NAME_SIZE, "GB %d Button Jack",
->  		 module->dev_id);
-> -	ret = snd_soc_jack_new(codec, module->button_name, module->button_mask,
-> -			       &module->button_jack);
-> +	button = devm_kzalloc(module->dev, sizeof(*button), GFP_KERNEL);
-> +	if (!button) {
-> +		ret = -ENOMEM;
-> +		goto free_headset;
-> +	}
-> +
-> +	button->pin = module->button_name;
-> +	button->mask = module->button_mask;
-> +
-> +	ret = snd_soc_card_jack_new(card, module->button_name,
-> +				    module->button_mask, &module->button_jack,
-> +				    button, 1);
->  	if (ret) {
->  		dev_err(module->dev, "Failed to create button jack\n");
-> -		return ret;
-> +		goto free_headset;
->  	}
->  
->  	/*
-> @@ -750,7 +769,7 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  				       KEY_MEDIA);
->  		if (ret) {
->  			dev_err(module->dev, "Failed to set BTN_0\n");
-> -			return ret;
-> +			goto free_button;
->  		}
->  	}
->  
-> @@ -759,7 +778,7 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  				       KEY_VOICECOMMAND);
->  		if (ret) {
->  			dev_err(module->dev, "Failed to set BTN_1\n");
-> -			return ret;
-> +			goto free_button;
->  		}
->  	}
->  
-> @@ -768,7 +787,7 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  				       KEY_VOLUMEUP);
->  		if (ret) {
->  			dev_err(module->dev, "Failed to set BTN_2\n");
-> -			return ret;
-> +			goto free_button;
->  		}
->  	}
->  
-> @@ -777,7 +796,7 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  				       KEY_VOLUMEDOWN);
->  		if (ret) {
->  			dev_err(module->dev, "Failed to set BTN_0\n");
-> -			return ret;
-> +			goto free_button;
->  		}
->  	}
->  
-> @@ -788,6 +807,16 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
->  	*/
->  
->  	return 0;
-> +
-> +free_button:
-> +	snd_device_free(card->snd_card, module->button_jack.jack);
-> +	list_del(&module->button_jack.list);
-> +
-> +free_headset:
-> +	snd_device_free(card->snd_card, module->headset_jack.jack);
-> +	list_del(&module->headset_jack.list);
-> +
-> +	return ret;
->  }
->  
->  int gbaudio_register_module(struct gbaudio_module_info *module)
-> @@ -815,7 +844,7 @@ int gbaudio_register_module(struct gbaudio_module_info *module)
->  		return -EINVAL;
->  	}
->  
-> -	ret = gbaudio_init_jack(module, codec);
-> +	ret = gbaudio_init_jack(module, component->card);
->  	if (ret) {
->  		up_write(&card->controls_rwsem);
->  		return ret;
-> @@ -942,7 +971,8 @@ void gbaudio_unregister_module(struct gbaudio_module_info *module)
->  
->  #ifdef CONFIG_SND_JACK
->  	/* free jack devices for this module from codec->jack_list */
-> -	list_for_each_entry_safe(jack, next_j, &codec->jack_list, list) {
-> +	list_for_each_entry_safe(jack, next_j, &component->card->jack_list,
-> +				 list) {
->  		if (jack == &module->headset_jack)
->  			mask = GBCODEC_JACK_MASK;
->  		else if (jack == &module->button_jack)
-> 
+diff --git a/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml b/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
+new file mode 100644
+index 000000000000..190276ba035a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
+@@ -0,0 +1,89 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/cpufreq/krait-cache-scale.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Krait Cpu Cache Frequency Scaling dedicated driver
++
++maintainers:
++  - Ansuel Smith <ansuelsmth@gmail.com>
++
++description: |
++  This Scale the Krait CPU Cache Frequency and optionally voltage
++  when the Cpu Frequency is changed (using the cpufreq notifier).
++
++  Cache is scaled with the max frequency across all core and the cache
++  frequency will scale based on the configured threshold in the dts.
++
++  The cache is hardcoded to 3 frequency bin, idle, nominal and high.
++
++properties:
++  compatible:
++    const: qcom,krait-cache
++
++  clocks:
++    description: Phandle to the L2 CPU clock
++
++  clock-names:
++    const: "l2"
++
++  voltage-tolerance:
++    description: Same voltage tollerance of the Krait CPU
++
++  l2-rates:
++    description: |
++      Frequency the L2 cache will be scaled at.
++      Value is in Hz.
++    items:
++      - description: idle
++      - description: nominal
++      - description: high
++
++  l2-cpufreq:
++    description: |
++      Threshold used by the driver to scale the L2 cache.
++      If the max CPU Frequency is more than the set frequency,
++      the driver will transition to the next frequency bin.
++      Value is in kHz
++    items:
++      - description: idle
++      - description: nominal
++      - description: high
++
++  l2-volt:
++    description: |
++      Threshold used by the driver to scale the L2 cache.
++      If the max CPU Frequency is more than the set frequency,
++      the driver will transition to the next frequency bin.
++      Value is in microvolt.
++    items:
++      - description: idle
++      - description: nominal
++      - description: high
++
++  l2-supply:
++    description: Phandle to the L2 regulator supply.
++
++required:
++  - compatible
++  - clocks
++  - clock-names
++  - voltage-tolerance
++  - l2-rates
++  - l2-cpufreq
++  - l2-supply
++  - l2-volt
++
++examples:
++  - |
++    qcom-krait-cache {
++      compatible = "qcom,krait-cache";
++      clocks = <&kraitcc 4>;
++      clock-names = "l2";
++      voltage-tolerance = <5>;
++      l2-rates = <384000000 1000000000 1200000000>;
++      l2-cpufreq = <384000 600000 1200000>;
++      l2-volt = <1100000 1100000 1150000>;
++      l2-supply = <&smb208_s1a>;
++    };
+-- 
+2.27.0
 
