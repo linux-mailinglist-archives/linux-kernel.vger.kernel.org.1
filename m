@@ -2,172 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A1023CC9E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C777523CC8C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgHEQzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47334 "EHLO
+        id S1726338AbgHEQv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728031AbgHEQvs (ORCPT
+        with ESMTP id S1727857AbgHEQsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:51:48 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D767C061A18;
-        Wed,  5 Aug 2020 04:17:45 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id m19so5453637ejd.8;
-        Wed, 05 Aug 2020 04:17:45 -0700 (PDT)
+        Wed, 5 Aug 2020 12:48:38 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CD6C061A20
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 04:25:55 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id c19so4184107wmd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 04:25:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=mime-version:reply-to:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=Zrjr0dNIkt2m1+BKksioKrys5J6KBI+9icWKSKASiQk=;
-        b=SHN1TG21dBGpPDpmZDXULtggAM4kaiv43xS6oAJLmNcm3wiHUt0uyMIJ2efXc7Dz3U
-         1loP3SEVKBdQHzAAo0BEYhA3XNPVaD0D7RnpAEJjeAI9vRM41eLRDJIkvTlJdCcFFqgo
-         G3iE+vR3obJTi+dGEocJAoRu9ygaMehpQqxbluSIDxyQi89yDaCy6USwoXEOEO7XOZ3e
-         09gHNdkDEaM/7ZTMEKYcOSytDHa5pf1RPJiqiGjzT8I3tsS4jiPQ3C/OoZXVXk1zBLPS
-         85KrJ3qpYbfSzblpmvQ/X6HExulYyEZCBGgwcQpeFLjPqpxpMpOoC2OIAnDBNcX4wvQh
-         ORMQ==
+        bh=arLJjw4ajAn6LC2XU3pN5oUvvehh5rZnK18PYWOQ1S8=;
+        b=jGiE1YtzBlr0Ljfk6jrDDLG6nlt7UK/ishf+k5DygsmY4i09u58i/YvAW291JMa8xO
+         rupPhRqppccVVmAgBfyJImjfSbHgBxJKNmnUp9mUBD5pHWHFZvxXMdb1Vufj1wHCotWB
+         M4wJoprLFL2mhqi1cddTas4YhMu0DhBmzHOAK/NB7861/fNymIq3E7/rzu/NjIzVnG46
+         xGoUrfCGpEMl5wDvyK4BJo6X2CRKuP2rpmUsA+Via339fqKmQPCAX7Uoqt8hL61EAeOA
+         +GngFgbakMOKX0sxkwrcq8L2q+gt15R+TovgEWcr4aeRPiBprTmQKerNrkmjSFNbEhsS
+         ZNJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zrjr0dNIkt2m1+BKksioKrys5J6KBI+9icWKSKASiQk=;
-        b=Bclkv5amVbzQRFcw0btg/zIVf/hPkFJ3PRKPSnsbwdrftXPxXhbcdqv/36qx2S/ZvA
-         44QMDRoYiPtEWNxOpi1FGDdkcaF2jahX6GzTrLUhrQ+ehokKuaW5zj50WwjzO4OJ8R+U
-         uzFmtve8z3YAid+PRe8PP59ihc1nQz14GtdOAtpQ4g2sHiMt4TLtyjQRTwi4TX6FZYQ2
-         BatM0QWE8UncyzMqzqkGQgIyjrN8yFLzoqQc2FkQPN81KXrocH0CTox1SIAfEcxFTrl2
-         7BQta3SWTL5z7P07R00ZpfoCqwIFrJ8X1CxBVZHxvAZ4FGN3jWdYYsjE2jQYHnjFOTmx
-         zDeg==
-X-Gm-Message-State: AOAM533VTbRh1l1202PZ9AceGATiNlavEuf7ASov/XwnQ5w4qR+FLP3X
-        3lC9Of5VY3SwyfEcnRIlojg8yiml+/U=
-X-Google-Smtp-Source: ABdhPJy3wSby5htQ9GdIMsy5COTpu5Y7etCDMcTnWVGpzGRoH63LMsgYqXDMlsFRZ2p1TFTevDreBw==
-X-Received: by 2002:a17:906:4157:: with SMTP id l23mr2610722ejk.491.1596626263446;
-        Wed, 05 Aug 2020 04:17:43 -0700 (PDT)
-Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
-        by smtp.gmail.com with ESMTPSA id y9sm1247694edt.34.2020.08.05.04.17.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 04:17:42 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH v2] crypto/x86: Use CRC32 mnemonic in crc32c-intel_glue.c
-Date:   Wed,  5 Aug 2020 13:17:29 +0200
-Message-Id: <20200805111729.359078-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=arLJjw4ajAn6LC2XU3pN5oUvvehh5rZnK18PYWOQ1S8=;
+        b=f+minp+qHL//wUd7CddURt+feVzcFNrCr1LXWYAhSmaCDAefX5Bak85AJdzO1eagP8
+         pmICRNpzgxNFMfFD05+Db6inXN7XuWF/we5jRiuwpqlpkne1VQLWBCtHC0KpWGPXweJt
+         mZi4SH6VlWa4nW/ncEsMIvq+0kMEaFjv/Ijja2mCCIyQLjc3GCI18hGh9W1ukwOe9Uuk
+         uykQClEYSyDCGYx/UISsleOmB/GfCRtNTsYutMA64P2l9VboOjI2Iy2jtIM9m1mShCRQ
+         PfpCqIn33U9EO/FK3lMa5hXRQMD2rqoXACNWMGVJlD6rY8DENxUbCK+5wwdjhXyGTvEJ
+         BARw==
+X-Gm-Message-State: AOAM530wX5zXrAMEtqLYNN3xpgh6fXDbXgyOhw8qcmZFfiu9C6rRVIPp
+        u6iwhkSHikDfBS+A6wxMGCG/Y6nmmgqGgApvl6Y=
+X-Google-Smtp-Source: ABdhPJy6C1lVPnCwucN990PC0fSIaVBJMIBGekHNnu98Z3OfwaCRW5lK88ig75hGeO4zHb1OE+tTP2PXlqbS84tNK4s=
+X-Received: by 2002:a1c:7915:: with SMTP id l21mr3051491wme.50.1596626753596;
+ Wed, 05 Aug 2020 04:25:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a1c:2ecb:0:0:0:0:0 with HTTP; Wed, 5 Aug 2020 04:25:52 -0700 (PDT)
+Reply-To: elizabethhedw@gmail.com
+From:   "Mrs. Elizabeth Edward" <dr.modiga.marten@gmail.com>
+Date:   Wed, 5 Aug 2020 12:25:52 +0100
+Message-ID: <CAD91S9+wXv1pLCx+7tG3AQNWU47RYBiffWtGo1Me-9ksgkNfVA@mail.gmail.com>
+Subject: REPLY ME URGENTLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current minimum required version of binutils is 2.23,
-which supports CRC32 instruction mnemonic.
+Greeting
 
-Replace the byte-wise specification of CRC32 with this proper mnemonic.
-The compiler is now able to pass memory operand to the instruction,
-so there is no need for a temporary register anymore.
+Please forgive me for stressing you with my predicaments and I sorry
+to approach you through this media it is because it serves the fastest
+means of communication. I came across your E-mail from my personal
+search and I decided to contact you believing you will be honest to
+fulfill my final wish before I die.
 
-Some examples of the improvement:
+I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
+am suffering from a pro-long critical cancer, my doctors confirmed I
+may not live beyond two months from now as my ill health has defiled
+all forms of medical treatment.
 
- 12a:	48 8b 08             	mov    (%rax),%rcx
- 12d:	f2 48 0f 38 f1 f1    	crc32q %rcx,%rsi
- 133:	48 83 c0 08          	add    $0x8,%rax
- 137:	48 39 d0             	cmp    %rdx,%rax
- 13a:	75 ee                	jne    12a <crc32c_intel_update+0x1a>
+Since my days are numbered, I=E2=80=99ve decided willingly to fulfill my
+long-time promise to donate you the sum ($5.000.000.00) million
+dollars I inherited from my late husband Mr. Edward Herbart, foreign
+bank account over years. I need a very honest person who can assist in
+transfer of this money to his or her account and use the funds for
+charities work of God while you use 50% for yourself. I want you to
+know there are no risk involved, it is 100% hitch free & safe. If you
+will be interesting to assist in getting this fund into your account
+for charity project to fulfill my promise before I die please let me
+know immediately. I will appreciate your utmost confidentiality as I
+wait for your reply.
 
-to:
+Best Regards
 
- 125:	f2 48 0f 38 f1 06    	crc32q (%rsi),%rax
- 12b:	48 83 c6 08          	add    $0x8,%rsi
- 12f:	48 39 d6             	cmp    %rdx,%rsi
- 132:	75 f1                	jne    125 <crc32c_intel_update+0x15>
-
-and:
-
- 146:	0f b6 08             	movzbl (%rax),%ecx
- 149:	f2 0f 38 f0 f1       	crc32b %cl,%esi
- 14e:	48 83 c0 01          	add    $0x1,%rax
- 152:	48 39 d0             	cmp    %rdx,%rax
- 155:	75 ef                	jne    146 <crc32c_intel_update+0x36>
-
-to:
-
- 13b:	f2 0f 38 f0 02       	crc32b (%rdx),%eax
- 140:	48 83 c2 01          	add    $0x1,%rdx
- 144:	48 39 ca             	cmp    %rcx,%rdx
- 147:	75 f2                	jne    13b <crc32c_intel_update+0x2b>
-
-As the compiler has some more freedom w.r.t. register allocation,
-there is also a couple of reg-reg moves removed.
-
-There are no hidden states for CRC32 insn, so there is no need to mark
-assembly as volatile.
-
-v2: Introduce CRC32_INST define.
-
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-CC: Herbert Xu <herbert@gondor.apana.org.au>
-CC: "David S. Miller" <davem@davemloft.net>
-CC: Thomas Gleixner <tglx@linutronix.de>
-CC: Ingo Molnar <mingo@redhat.com>
-CC: Borislav Petkov <bp@alien8.de>
-CC: "H. Peter Anvin" <hpa@zytor.com>
----
- arch/x86/crypto/crc32c-intel_glue.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
-
-diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
-index d2d069bd459b..feccb5254c7e 100644
---- a/arch/x86/crypto/crc32c-intel_glue.c
-+++ b/arch/x86/crypto/crc32c-intel_glue.c
-@@ -28,9 +28,9 @@
- #define SCALE_F	sizeof(unsigned long)
- 
- #ifdef CONFIG_X86_64
--#define REX_PRE "0x48, "
-+#define CRC32_INST "crc32q %1, %q0"
- #else
--#define REX_PRE
-+#define CRC32_INST "crc32l %1, %0"
- #endif
- 
- #ifdef CONFIG_X86_64
-@@ -48,11 +48,8 @@ asmlinkage unsigned int crc_pcl(const u8 *buffer, int len,
- static u32 crc32c_intel_le_hw_byte(u32 crc, unsigned char const *data, size_t length)
- {
- 	while (length--) {
--		__asm__ __volatile__(
--			".byte 0xf2, 0xf, 0x38, 0xf0, 0xf1"
--			:"=S"(crc)
--			:"0"(crc), "c"(*data)
--		);
-+		asm("crc32b %1, %0"
-+		    : "+r" (crc) : "rm" (*data));
- 		data++;
- 	}
- 
-@@ -66,11 +63,8 @@ static u32 __pure crc32c_intel_le_hw(u32 crc, unsigned char const *p, size_t len
- 	unsigned long *ptmp = (unsigned long *)p;
- 
- 	while (iquotient--) {
--		__asm__ __volatile__(
--			".byte 0xf2, " REX_PRE "0xf, 0x38, 0xf1, 0xf1;"
--			:"=S"(crc)
--			:"0"(crc), "c"(*ptmp)
--		);
-+		asm(CRC32_INST
-+		    : "+r" (crc) : "rm" (*ptmp));
- 		ptmp++;
- 	}
- 
--- 
-2.26.2
-
+Mrs. Elizabeth Edward
