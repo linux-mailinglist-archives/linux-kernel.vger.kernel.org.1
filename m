@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A2323D16C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA0523D21A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729190AbgHEUAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:00:33 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:43808 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727077AbgHEQlU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:41:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596645679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Htm2JdguJ9wMbfUtNGIDXZzv/Zt05ES7M0m8GbVzmRI=;
-        b=Gh+sCAEAdGXKIjSuTtiwJB9iB9HPP+PB1SJTOrR/Cgb4GnZWl1whY8PTniAE4jp97YtQwK
-        gASuurYHRyWBH8GVqQQ0SbC3E2nZwd5g98OQ7aD2+PABWth2kOfvhfrwXrkiCgFmWZMQ+Q
-        Poc4+DhB+daagcCLCcT5ZJE8PGmAAzk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-432-bSMZvbQQPtmbHwA5KYU1wQ-1; Wed, 05 Aug 2020 09:06:35 -0400
-X-MC-Unique: bSMZvbQQPtmbHwA5KYU1wQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729690AbgHEUJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:09:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726676AbgHEQce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:32:34 -0400
+Received: from localhost (unknown [122.171.202.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BFAEB80183C;
-        Wed,  5 Aug 2020 13:06:33 +0000 (UTC)
-Received: from localhost (unknown [10.36.110.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5F7537B900;
-        Wed,  5 Aug 2020 13:06:31 +0000 (UTC)
-Date:   Wed, 5 Aug 2020 15:06:27 +0200
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        <heiko.carstens@de.ibm.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20200805150627.3351fe24@redhat.com>
-In-Reply-To: <20200805223121.7dec86de@canb.auug.org.au>
-References: <20200805223121.7dec86de@canb.auug.org.au>
-Organization: Red Hat
+        by mail.kernel.org (Postfix) with ESMTPSA id D03A322D71;
+        Wed,  5 Aug 2020 13:12:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596633130;
+        bh=sLKCC1QjgtJmAuERFbBWWP9fB/9Lhbpc7SgboYEp2z8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qa76cu0k9JFT6Ep1vcMTDDSxNDUx8rkcmQTEoTyj2Yfn3MNeejXJcDLWqLr/2eprq
+         LWlVGdOpwZX00VbkLmmoD0MsamOzJ0N9d1L6XIzhRmpVPel5+M9VurA4NaX0HJsSdU
+         Vt1+jO3PBNqZWNu5eQAt9Hp5muY6A1tka5hysA3E=
+Date:   Wed, 5 Aug 2020 18:42:05 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     dan.j.williams@intel.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] dmaengine: iop-adma: Fix -Wint-to-pointer-cast
+ build warning
+Message-ID: <20200805131205.GY12965@vkoul-mobl>
+References: <20200803141035.45284-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200803141035.45284-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 22:31:21 +1000
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-
-> Hi all,
+On 03-08-20, 22:10, YueHaibing wrote:
+> drivers/dma/iop-adma.c:447:13: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+> drivers/dma/iop-adma.c:449:4: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+> drivers/dma/iop-adma.c:1301:3: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
 > 
-> After merging the net-next tree, today's linux-next build (s390 defconfig)
-> failed like this:
+> Use void* for dma_desc_pool_virt, dma_addr_t for dma_desc_pool,
+> and use %pad to print dma_addr_t.
 > 
-> net/ipv4/ip_tunnel_core.c:335:2: error: implicit declaration of function 'csum_ipv6_magic' [-Werror=implicit-function-declaration]
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/dma/iop-adma.c | 17 ++++++++---------
+>  1 file changed, 8 insertions(+), 9 deletions(-)
 > 
-> Caused by commit
+> diff --git a/drivers/dma/iop-adma.c b/drivers/dma/iop-adma.c
+> index 3350bffb2e93..8e17e4405959 100644
+> --- a/drivers/dma/iop-adma.c
+> +++ b/drivers/dma/iop-adma.c
+> @@ -415,7 +415,8 @@ static void iop_chan_start_null_xor(struct iop_adma_chan *iop_chan);
+>   * */
+>  static int iop_adma_alloc_chan_resources(struct dma_chan *chan)
+>  {
+> -	char *hw_desc;
+> +	void *hw_desc;
+> +	dma_addr_t dma_desc;
+>  	int idx;
+>  	struct iop_adma_chan *iop_chan = to_iop_adma_chan(chan);
+>  	struct iop_adma_desc_slot *slot = NULL;
+> @@ -436,17 +437,16 @@ static int iop_adma_alloc_chan_resources(struct dma_chan *chan)
+>  				" %d descriptor slots", idx);
+>  			break;
+>  		}
+> -		hw_desc = (char *) iop_chan->device->dma_desc_pool_virt;
+> -		slot->hw_desc = (void *) &hw_desc[idx * IOP_ADMA_SLOT_SIZE];
+> +		hw_desc = iop_chan->device->dma_desc_pool_virt;
+> +		slot->hw_desc = hw_desc + idx * IOP_ADMA_SLOT_SIZE;
+
+So you want to pointer arithmetic on a void pointer !
+
+Are you sure math is correct here and will work on different compilers?
+
+>  
+>  		dma_async_tx_descriptor_init(&slot->async_tx, chan);
+>  		slot->async_tx.tx_submit = iop_adma_tx_submit;
+>  		INIT_LIST_HEAD(&slot->tx_list);
+>  		INIT_LIST_HEAD(&slot->chain_node);
+>  		INIT_LIST_HEAD(&slot->slot_node);
+> -		hw_desc = (char *) iop_chan->device->dma_desc_pool;
+> -		slot->async_tx.phys =
+> -			(dma_addr_t) &hw_desc[idx * IOP_ADMA_SLOT_SIZE];
+> +		dma_desc = iop_chan->device->dma_desc_pool;
+> +		slot->async_tx.phys = dma_desc + idx * IOP_ADMA_SLOT_SIZE;
+>  		slot->idx = idx;
+>  
+>  		spin_lock_bh(&iop_chan->lock);
+> @@ -1296,9 +1296,8 @@ static int iop_adma_probe(struct platform_device *pdev)
+>  		goto err_free_adev;
+>  	}
+>  
+> -	dev_dbg(&pdev->dev, "%s: allocated descriptor pool virt %p phys %p\n",
+> -		__func__, adev->dma_desc_pool_virt,
+> -		(void *) adev->dma_desc_pool);
+> +	dev_dbg(&pdev->dev, "%s: allocated descriptor pool virt %p phys %pad\n",
+> +		__func__, adev->dma_desc_pool_virt, &adev->dma_desc_pool);
+>  
+>  	adev->id = plat_data->hw_id;
+>  
+> -- 
+> 2.17.1
 > 
->   4cb47a8644cc ("tunnels: PMTU discovery support for directly bridged IP packets")
-
-Ouch, sorry for that.
-
-I'm getting a few of them by the way:
-
----
-net/core/skbuff.o: In function `skb_checksum_setup_ipv6':
-/home/sbrivio/net-next/net/core/skbuff.c:4980: undefined reference to `csum_ipv6_magic'
-net/core/netpoll.o: In function `netpoll_send_udp':
-/home/sbrivio/net-next/net/core/netpoll.c:419: undefined reference to `csum_ipv6_magic'
-net/netfilter/utils.o: In function `nf_ip6_checksum':
-/home/sbrivio/net-next/net/netfilter/utils.c:74: undefined reference to `csum_ipv6_magic'
-/home/sbrivio/net-next/net/netfilter/utils.c:84: undefined reference to `csum_ipv6_magic'
-net/netfilter/utils.o: In function `nf_ip6_checksum_partial':
-/home/sbrivio/net-next/net/netfilter/utils.c:112: undefined reference to `csum_ipv6_magic'
-net/ipv4/ip_tunnel_core.o:/home/sbrivio/net-next/net/ipv4/ip_tunnel_core.c:335: more undefined references to `csum_ipv6_magic' follow
----
-
-...checking how it should be fixed now.
-
-Heiko, by the way, do we want to provide a s390 version similar to the
-existing csum_partial() implementation in
-arch/s390/include/asm/checksum.h right away? Otherwise, I'll just take
-care of the ifdeffery.
 
 -- 
-Stefano
-
+~Vinod
