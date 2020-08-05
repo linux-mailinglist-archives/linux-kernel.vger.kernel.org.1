@@ -2,173 +2,1277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D76E23C74A
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BAA23C781
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgHEH63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 03:58:29 -0400
-Received: from mga18.intel.com ([134.134.136.126]:51291 "EHLO mga18.intel.com"
+        id S1728328AbgHEILn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 04:11:43 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:22975 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgHEH61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 03:58:27 -0400
-IronPort-SDR: rCy/9Vty1DTyBzJejWZm3psnEeV5iUGlGRMta7rK7BKH1DOMHiRXwajb3DxFDwewsxjtoktu/N
- Of6rIqXdjUhA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="140076991"
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="140076991"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 00:58:25 -0700
-IronPort-SDR: 71GrBF4BsY/EnmStCgNSDfqPuwkj3wdxBGg5jihMyWTiyvzYuzf+2lAa0euVuqlMqpMzWUKK9X
- D7exJsvGy3Zg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="274705860"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Aug 2020 00:58:24 -0700
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 5 Aug 2020 00:58:24 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 5 Aug 2020 00:58:24 -0700
-Received: from FMSEDG002.ED.cps.intel.com (10.1.192.134) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 5 Aug 2020 00:58:24 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.51) by
- edgegateway.intel.com (192.55.55.69) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Wed, 5 Aug 2020 00:58:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L//5DcyEYtpsWdDmsw6Sez9ak8k0DEOL7gBpuTD/k1lcbkSKnNRH5UZHp86FcGq5rsusujizjtMm/CXg0qoEHcgBvbyje2lS5GAoyiSPbARqLnVmsDBkork/YixzecOyaDnP3npJJ3dj2WL+XBPAv4ssFR9LVKLz4ddro/m/W9c/D2OCvgOT9PIJop0MaZpFGcK1ctCSR1tWSffelYFquWPfpprYcIQ7MvFNSTjmey6lTAyEawRj3JDE1tulGC+WkFEb5D3ZubOwI1klOk3R/itVHN2aXOtTvN3Fzm/X17ZrmsAZIE9ot0V26nWz/1N8R/qqSu6AGU4fj9cxTetOwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A0cxir2E5ZpVmC9frX7pBstaCRmqrXgH1abG7rsNZ9s=;
- b=kLYYyr0skvEnVdsdtMzKQ1/RO0OtGuFy372pmMPK71NUDI6LY6P9HAhOzgbR7EbXIwWxHI5xfGtCw0+wLjcnuSQoM8k2Pk2L47BoVA01zbQ8+Kq2M2pqFapQsLVRKvBB3XkkXqc2LkYXHUMMDeyMU6hpN93ErRW4nfbC0S26F9s/vq5/ojJf9Ak2DDNvgwo2p4QD2TBxyp3zBVBcW8Zwu9FTb7tx3l7/fy6sMPmkOoYmJXSJiFx7mLoBK11rJxj/W3iOUTIHLgxQh02xJqxwRT7xo4d81Ceo9KuT6q/akivS2aox6PcrnVOB/AEqA+M5Pvh3bnb45I3L+I5g1DKYNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A0cxir2E5ZpVmC9frX7pBstaCRmqrXgH1abG7rsNZ9s=;
- b=cAmmPQVzTPlEgwLZP1LFv4R5wsLMjB96BFjRrYC6PAbX0qsptm/NMMviRQCKzLojWE0TvXce9bjgSIJF07HeZvCIgbkZEqbhkdhOmEn30jSIkQUz9GS2Q1XyIcN0Y5yp9+483G/KlxWNATOojNXjolX0lOGAJc6pOyJ7GxfxJiA=
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
- by DM5PR11MB1948.namprd11.prod.outlook.com (2603:10b6:3:112::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.21; Wed, 5 Aug
- 2020 07:58:21 +0000
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::c1c1:6930:f17d:a80a]) by DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::c1c1:6930:f17d:a80a%4]) with mapi id 15.20.3239.022; Wed, 5 Aug 2020
- 07:58:21 +0000
-From:   "Wu, Hao" <hao.wu@intel.com>
-To:     Moritz Fischer <mdf@kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>
-CC:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] MAINTAINERS: Add Tom Rix as fpga reviewer
-Thread-Topic: [PATCH] MAINTAINERS: Add Tom Rix as fpga reviewer
-Thread-Index: AQHWans7T4WlLLIB2kGoBg4966P7lqkoJ0KAgAD96rA=
-Date:   Wed, 5 Aug 2020 07:58:21 +0000
-Message-ID: <DM6PR11MB3819024D3EE4913E0AA97680854B0@DM6PR11MB3819.namprd11.prod.outlook.com>
-References: <20200804162003.19402-1-trix@redhat.com>
- <20200804164133.GA1499313@epycbox.lan>
-In-Reply-To: <20200804164133.GA1499313@epycbox.lan>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.55.46.36]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 07510d88-07a7-4997-3efc-08d83915526e
-x-ms-traffictypediagnostic: DM5PR11MB1948:
-x-microsoft-antispam-prvs: <DM5PR11MB1948C91580C44BC15E10F2C8854B0@DM5PR11MB1948.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cl8j5tiFWhRU+9JnGVQqOx8kr68QRyPNJ/qIIpk2WQxV8IQSfMzWfYJkJkUZXfKgXYu7UuGz5Ay3JNiAbrzOQ+Jmn2hfF8j7XWBdBhe8tvbEuCj/mkHKCm7wEe2IucIwoW1BOAgHzmI1ooX4ekeGyyhnemuU4Lnslk7tRuzFaNTDoWjHTcT/xOEHP1wVXb9kDmTaNZTe9Wsx1ljgR8DsO6/F03AYFXGAv4vbMqJK8rl58OnGAQngLrbbbsKuTZWXdtP6nSx/qwd4hC/sOyr4Gl604Sd2t/YpUXvGK/5L3iieEwV+JxYiv5Yd0+szeVdG8n8s50wwitxVhLHkDz23NhRLXJBayPcCne51RhKz5epHTULlKCbuaLtduwIMwq5nYhPAFin1mEVR8A3MMDwmOQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(346002)(376002)(366004)(396003)(39860400002)(86362001)(316002)(54906003)(8676002)(110136005)(8936002)(55016002)(71200400001)(478600001)(9686003)(6506007)(33656002)(52536014)(76116006)(66946007)(66476007)(66556008)(64756008)(66446008)(5660300002)(186003)(26005)(4326008)(2906002)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: oIIcGaZYGQ46HjgOy72oTBHEg/Q/R0R/E/5toQz/uHpRYuWZh3deIlwX0JTQcYnIRr5c+KWVb577J/IKVT54TpqOwKd2v2zuk/DDwYY1hL1rxUXWm8Z2a1jg4s4NZq9cpstZFYErZBjiRzsmJaynhv/nTC9mhM2dj+XNdgHVZjezPhQl9d5AG6jB9vw4F6mXD0Qe2Yyxff01cq5YcIO8t4KWYOHFwCQSQRPkJWWfYeaUl9Fcu+e3roCaiuQ1pTS9f9C4IslBQ3wfXC6Zg1GS9UYGr3Mlpia/CkEGiZH11RwYAhU30uhP9HKxiez/odKgxwxNyhcilV8dQoEgxQQlFoeubJasdfOEvWFZxaLIlCehL5USX2OAoRKHZ28Q7NmlY5f1CnY3h1cQ2myDjZJBCgtMq/tBFvP3IGrLZPa/QgEbKmUHR/Ju/fhRZo02ssSmW62D+bQU7ZAm/48BKnTY8jZqfQRMRXRovUvMIkvcgw8G72RxeeoGr0IxCgUrR20gFC/TkXYot9Y4gn9RPRghOPI71OArYrl4/ZpdL6qJtpTLOTrUSI7njBoYmVUPGq5lCo2X3kFF2YA7Rix3itLtg4CDWYuUuP7FaAscoIETPSnQc57i3eJnSTBHhZ9i6N6tCXYxkn+mCqi3zYc1Kvq2Jg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07510d88-07a7-4997-3efc-08d83915526e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2020 07:58:21.1879
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: imZOzlRlmKFaDe/iYC52YaMznDk99F4aXQP6SElXFqQPLsds63ZZJduTgIQrKj/BWn0CQEE0qbMuA5ZfuUCqSw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1948
-X-OriginatorOrg: intel.com
+        id S1725868AbgHEIL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 04:11:26 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BM2mj1nr4z9vD3n;
+        Wed,  5 Aug 2020 09:09:25 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id dogyjSgGluEP; Wed,  5 Aug 2020 09:09:25 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BM2mj0mw4z9vD3j;
+        Wed,  5 Aug 2020 09:09:25 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3D4F48B7E1;
+        Wed,  5 Aug 2020 09:09:26 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id SujRoEXqhTLr; Wed,  5 Aug 2020 09:09:26 +0200 (CEST)
+Received: from po16052vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 86FC58B75F;
+        Wed,  5 Aug 2020 09:09:25 +0200 (CEST)
+Received: by po16052vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 6116E65BBD; Wed,  5 Aug 2020 07:09:25 +0000 (UTC)
+Message-Id: <cef59e8ce459b921aeb6e64855ddbd2d41726249.1596611196.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1596611196.git.christophe.leroy@csgroup.eu>
+References: <cover.1596611196.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v10 4/5] powerpc/vdso: Switch VDSO to generic C
+ implementation.
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
+        anton@ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        arnd@arndb.de, tglx@linutronix.de, vincenzo.frascino@arm.com,
+        luto@kernel.org, linux-arch@vger.kernel.org
+Date:   Wed,  5 Aug 2020 07:09:25 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH] MAINTAINERS: Add Tom Rix as fpga reviewer
->=20
-> Hi Tom,
->=20
-> On Tue, Aug 04, 2020 at 09:20:03AM -0700, trix@redhat.com wrote:
-> > From: Tom Rix <trix@redhat.com>
-> >
-> > I take care of fpga kernel and userspace for Red Hat and would
-> > like help out more with the mainline kernel.
-> >
-> > Signed-off-by: Tom Rix <trix@redhat.com>
-> > ---
-> >  MAINTAINERS | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index ce2737b1feb5..6fdb01776413 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -6805,6 +6805,7 @@ F:	drivers/net/ethernet/nvidia/*
-> >
-> >  FPGA DFL DRIVERS
-> >  M:	Wu Hao <hao.wu@intel.com>
-> > +R:	Tom Rix <trix@redhat.com>
-> >  L:	linux-fpga@vger.kernel.org
-> >  S:	Maintained
-> >  F:	Documentation/fpga/dfl.rst
-> > @@ -6813,6 +6814,7 @@ F:	include/uapi/linux/fpga-dfl.h
-> >
-> >  FPGA MANAGER FRAMEWORK
-> >  M:	Moritz Fischer <mdf@kernel.org>
-> > +R:	Tom Rix <trix@redhat.com>
-> >  L:	linux-fpga@vger.kernel.org
-> >  S:	Maintained
-> >  W:	http://www.rocketboards.org
-> > --
-> > 2.18.1
-> >
-> Acked-by: Moritz Fischer <mdf@kernel.org>
->=20
-> I can take the patch, can I get an Acked-by from Hao?
+For VDSO32 on PPC64, we create a fake 32 bits config, on the same
+principle as MIPS architecture, in order to get the correct parts of
+the different asm header files.
 
-Sure. : )=20
+With the C VDSO, the performance is slightly lower, but it is worth
+it as it will ease maintenance and evolution, and also brings clocks
+that are not supported with the ASM VDSO.
 
-Acked-by: Wu Hao <hao.wu@intel.com>
+On an 8xx at 132 MHz, vdsotest with the ASM VDSO:
+gettimeofday:    vdso: 828 nsec/call
+clock-getres-realtime-coarse:    vdso: 391 nsec/call
+clock-gettime-realtime-coarse:    vdso: 614 nsec/call
+clock-getres-realtime:    vdso: 460 nsec/call
+clock-gettime-realtime:    vdso: 876 nsec/call
+clock-getres-monotonic-coarse:    vdso: 399 nsec/call
+clock-gettime-monotonic-coarse:    vdso: 691 nsec/call
+clock-getres-monotonic:    vdso: 460 nsec/call
+clock-gettime-monotonic:    vdso: 1026 nsec/call
 
-Thanks!
-Hao
+On an 8xx at 132 MHz, vdsotest with the C VDSO:
+gettimeofday:    vdso: 955 nsec/call
+clock-getres-realtime-coarse:    vdso: 545 nsec/call
+clock-gettime-realtime-coarse:    vdso: 592 nsec/call
+clock-getres-realtime:    vdso: 545 nsec/call
+clock-gettime-realtime:    vdso: 941 nsec/call
+clock-getres-monotonic-coarse:    vdso: 545 nsec/call
+clock-gettime-monotonic-coarse:    vdso: 591 nsec/call
+clock-getres-monotonic:    vdso: 545 nsec/call
+clock-gettime-monotonic:    vdso: 940 nsec/call
 
->=20
-> Thanks!
->=20
-> Moritz
+It is even better for gettime with monotonic clocks.
+
+Unsupported clocks with ASM VDSO:
+clock-gettime-boottime:    vdso: 3851 nsec/call
+clock-gettime-tai:    vdso: 3852 nsec/call
+clock-gettime-monotonic-raw:    vdso: 3396 nsec/call
+
+Same clocks with C VDSO:
+clock-gettime-tai:    vdso: 941 nsec/call
+clock-gettime-monotonic-raw:    vdso: 1001 nsec/call
+clock-gettime-monotonic-coarse:    vdso: 591 nsec/call
+
+On an 8321E at 333 MHz, vdsotest with the ASM VDSO:
+gettimeofday:    vdso: 220 nsec/call
+clock-getres-realtime-coarse:    vdso: 102 nsec/call
+clock-gettime-realtime-coarse:    vdso: 178 nsec/call
+clock-getres-realtime:    vdso: 129 nsec/call
+clock-gettime-realtime:    vdso: 235 nsec/call
+clock-getres-monotonic-coarse:    vdso: 105 nsec/call
+clock-gettime-monotonic-coarse:    vdso: 208 nsec/call
+clock-getres-monotonic:    vdso: 129 nsec/call
+clock-gettime-monotonic:    vdso: 274 nsec/call
+
+On an 8321E at 333 MHz, vdsotest with the C VDSO:
+gettimeofday:    vdso: 272 nsec/call
+clock-getres-realtime-coarse:    vdso: 160 nsec/call
+clock-gettime-realtime-coarse:    vdso: 184 nsec/call
+clock-getres-realtime:    vdso: 166 nsec/call
+clock-gettime-realtime:    vdso: 281 nsec/call
+clock-getres-monotonic-coarse:    vdso: 160 nsec/call
+clock-gettime-monotonic-coarse:    vdso: 184 nsec/call
+clock-getres-monotonic:    vdso: 169 nsec/call
+clock-gettime-monotonic:    vdso: 275 nsec/call
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v9:
+- Rebased (Impact on arch/powerpc/kernel/vdso??/Makefile
+
+v7:
+- Split out preparatory changes in a new preceding patch
+- Added -fasynchronous-unwind-tables to CC flags.
+
+v6:
+- Added missing prototypes in asm/vdso/gettimeofday.h for __c_kernel_ functions.
+- Using STACK_FRAME_OVERHEAD instead of INT_FRAME_SIZE
+- Rebased on powerpc/merge as of 7 Apr 2020
+- Fixed build failure with gcc 9
+- Added a patch to create asm/vdso/processor.h and more cpu_relax() in it
+---
+ arch/powerpc/Kconfig                       |   2 +
+ arch/powerpc/include/asm/vdso/vsyscall.h   |  25 ++
+ arch/powerpc/include/asm/vdso_datapage.h   |  40 +--
+ arch/powerpc/kernel/asm-offsets.c          |  49 +---
+ arch/powerpc/kernel/time.c                 |  91 +------
+ arch/powerpc/kernel/vdso.c                 |   5 +-
+ arch/powerpc/kernel/vdso32/Makefile        |  32 ++-
+ arch/powerpc/kernel/vdso32/config-fake32.h |  34 +++
+ arch/powerpc/kernel/vdso32/gettimeofday.S  | 291 +--------------------
+ arch/powerpc/kernel/vdso64/Makefile        |  23 +-
+ arch/powerpc/kernel/vdso64/gettimeofday.S  | 242 +----------------
+ 11 files changed, 143 insertions(+), 691 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/vdso/vsyscall.h
+ create mode 100644 arch/powerpc/kernel/vdso32/config-fake32.h
+
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 8c7656cc10eb..9977ab939b42 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -171,6 +171,7 @@ config PPC
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select GENERIC_STRNLEN_USER
+ 	select GENERIC_TIME_VSYSCALL
++	select GENERIC_GETTIMEOFDAY
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
+ 	select HAVE_ARCH_JUMP_LABEL
+@@ -202,6 +203,7 @@ config PPC
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_GCC_PLUGINS			if GCC_VERSION >= 50200   # plugin support on gcc <= 5.1 is buggy on PPC
++	select HAVE_GENERIC_VDSO
+ 	select HAVE_HW_BREAKPOINT		if PERF_EVENTS && (PPC_BOOK3S || PPC_8xx)
+ 	select HAVE_IDE
+ 	select HAVE_IOREMAP_PROT
+diff --git a/arch/powerpc/include/asm/vdso/vsyscall.h b/arch/powerpc/include/asm/vdso/vsyscall.h
+new file mode 100644
+index 000000000000..c56a030c0623
+--- /dev/null
++++ b/arch/powerpc/include/asm/vdso/vsyscall.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ASM_VDSO_VSYSCALL_H
++#define __ASM_VDSO_VSYSCALL_H
++
++#ifndef __ASSEMBLY__
++
++#include <linux/timekeeper_internal.h>
++#include <asm/vdso_datapage.h>
++
++/*
++ * Update the vDSO data page to keep in sync with kernel timekeeping.
++ */
++static __always_inline
++struct vdso_data *__arch_get_k_vdso_data(void)
++{
++	return vdso_data->data;
++}
++#define __arch_get_k_vdso_data __arch_get_k_vdso_data
++
++/* The asm-generic header needs to be included after the definitions above */
++#include <asm-generic/vdso/vsyscall.h>
++
++#endif /* !__ASSEMBLY__ */
++
++#endif /* __ASM_VDSO_VSYSCALL_H */
+diff --git a/arch/powerpc/include/asm/vdso_datapage.h b/arch/powerpc/include/asm/vdso_datapage.h
+index b9ef6cf50ea5..c4d320504d26 100644
+--- a/arch/powerpc/include/asm/vdso_datapage.h
++++ b/arch/powerpc/include/asm/vdso_datapage.h
+@@ -36,6 +36,7 @@
+ 
+ #include <linux/unistd.h>
+ #include <linux/time.h>
++#include <vdso/datapage.h>
+ 
+ #define SYSCALL_MAP_SIZE      ((NR_syscalls + 31) / 32)
+ 
+@@ -45,7 +46,7 @@
+ 
+ #ifdef CONFIG_PPC64
+ 
+-struct vdso_data {
++struct vdso_arch_data {
+ 	__u8  eye_catcher[16];		/* Eyecatcher: SYSTEMCFG:PPC64	0x00 */
+ 	struct {			/* Systemcfg version numbers	     */
+ 		__u32 major;		/* Major number			0x10 */
+@@ -59,13 +60,13 @@ struct vdso_data {
+ 	__u32 processor;		/* Processor type		0x1C */
+ 	__u64 processorCount;		/* # of physical processors	0x20 */
+ 	__u64 physicalMemorySize;	/* Size of real memory(B)	0x28 */
+-	__u64 tb_orig_stamp;		/* Timebase at boot		0x30 */
++	__u64 tb_orig_stamp;		/* (NU) Timebase at boot	0x30 */
+ 	__u64 tb_ticks_per_sec;		/* Timebase tics / sec		0x38 */
+-	__u64 tb_to_xs;			/* Inverse of TB to 2^20	0x40 */
+-	__u64 stamp_xsec;		/*				0x48 */
+-	__u64 tb_update_count;		/* Timebase atomicity ctr	0x50 */
+-	__u32 tz_minuteswest;		/* Minutes west of Greenwich	0x58 */
+-	__u32 tz_dsttime;		/* Type of dst correction	0x5C */
++	__u64 tb_to_xs;			/* (NU) Inverse of TB to 2^20	0x40 */
++	__u64 stamp_xsec;		/* (NU)				0x48 */
++	__u64 tb_update_count;		/* (NU) Timebase atomicity ctr	0x50 */
++	__u32 tz_minuteswest;		/* (NU) Min. west of Greenwich	0x58 */
++	__u32 tz_dsttime;		/* (NU) Type of dst correction	0x5C */
+ 	__u32 dcache_size;		/* L1 d-cache size		0x60 */
+ 	__u32 dcache_line_size;		/* L1 d-cache line size		0x64 */
+ 	__u32 icache_size;		/* L1 i-cache size		0x68 */
+@@ -78,14 +79,10 @@ struct vdso_data {
+ 	__u32 icache_block_size;		/* L1 i-cache block size     */
+ 	__u32 dcache_log_block_size;		/* L1 d-cache log block size */
+ 	__u32 icache_log_block_size;		/* L1 i-cache log block size */
+-	__u32 stamp_sec_fraction;		/* fractional seconds of stamp_xtime */
+-	__s32 wtom_clock_nsec;			/* Wall to monotonic clock nsec */
+-	__s64 wtom_clock_sec;			/* Wall to monotonic clock sec */
+-	__s64 stamp_xtime_sec;			/* xtime secs as at tb_orig_stamp */
+-	__s64 stamp_xtime_nsec;			/* xtime nsecs as at tb_orig_stamp */
+-	__u32 hrtimer_res;			/* hrtimer resolution */
+    	__u32 syscall_map_64[SYSCALL_MAP_SIZE]; /* map of syscalls  */
+    	__u32 syscall_map_32[SYSCALL_MAP_SIZE]; /* map of syscalls */
++
++	struct vdso_data data[CS_BASES];
+ };
+ 
+ #else /* CONFIG_PPC64 */
+@@ -93,26 +90,15 @@ struct vdso_data {
+ /*
+  * And here is the simpler 32 bits version
+  */
+-struct vdso_data {
+-	__u64 tb_orig_stamp;		/* Timebase at boot		0x30 */
++struct vdso_arch_data {
+ 	__u64 tb_ticks_per_sec;		/* Timebase tics / sec		0x38 */
+-	__u64 tb_to_xs;			/* Inverse of TB to 2^20	0x40 */
+-	__u64 stamp_xsec;		/*				0x48 */
+-	__u32 tb_update_count;		/* Timebase atomicity ctr	0x50 */
+-	__u32 tz_minuteswest;		/* Minutes west of Greenwich	0x58 */
+-	__u32 tz_dsttime;		/* Type of dst correction	0x5C */
+-	__s32 wtom_clock_sec;			/* Wall to monotonic clock */
+-	__s32 wtom_clock_nsec;
+-	__s32 stamp_xtime_sec;		/* xtime seconds as at tb_orig_stamp */
+-	__s32 stamp_xtime_nsec;		/* xtime nsecs as at tb_orig_stamp */
+-	__u32 stamp_sec_fraction;	/* fractional seconds of stamp_xtime */
+-	__u32 hrtimer_res;		/* hrtimer resolution */
+    	__u32 syscall_map_32[SYSCALL_MAP_SIZE]; /* map of syscalls */
++	struct vdso_data data[CS_BASES];
+ };
+ 
+ #endif /* CONFIG_PPC64 */
+ 
+-extern struct vdso_data *vdso_data;
++extern struct vdso_arch_data *vdso_data;
+ 
+ #else /* __ASSEMBLY__ */
+ 
+diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+index 8711c2164b45..684260186dbf 100644
+--- a/arch/powerpc/kernel/asm-offsets.c
++++ b/arch/powerpc/kernel/asm-offsets.c
+@@ -397,47 +397,16 @@ int main(void)
+ #endif /* ! CONFIG_PPC64 */
+ 
+ 	/* datapage offsets for use by vdso */
+-	OFFSET(CFG_TB_ORIG_STAMP, vdso_data, tb_orig_stamp);
+-	OFFSET(CFG_TB_TICKS_PER_SEC, vdso_data, tb_ticks_per_sec);
+-	OFFSET(CFG_TB_TO_XS, vdso_data, tb_to_xs);
+-	OFFSET(CFG_TB_UPDATE_COUNT, vdso_data, tb_update_count);
+-	OFFSET(CFG_TZ_MINUTEWEST, vdso_data, tz_minuteswest);
+-	OFFSET(CFG_TZ_DSTTIME, vdso_data, tz_dsttime);
+-	OFFSET(CFG_SYSCALL_MAP32, vdso_data, syscall_map_32);
+-	OFFSET(WTOM_CLOCK_SEC, vdso_data, wtom_clock_sec);
+-	OFFSET(WTOM_CLOCK_NSEC, vdso_data, wtom_clock_nsec);
+-	OFFSET(STAMP_XTIME_SEC, vdso_data, stamp_xtime_sec);
+-	OFFSET(STAMP_XTIME_NSEC, vdso_data, stamp_xtime_nsec);
+-	OFFSET(STAMP_SEC_FRAC, vdso_data, stamp_sec_fraction);
+-	OFFSET(CLOCK_HRTIMER_RES, vdso_data, hrtimer_res);
++	OFFSET(VDSO_DATA_OFFSET, vdso_arch_data, data);
++	OFFSET(CFG_TB_TICKS_PER_SEC, vdso_arch_data, tb_ticks_per_sec);
++	OFFSET(CFG_SYSCALL_MAP32, vdso_arch_data, syscall_map_32);
+ #ifdef CONFIG_PPC64
+-	OFFSET(CFG_ICACHE_BLOCKSZ, vdso_data, icache_block_size);
+-	OFFSET(CFG_DCACHE_BLOCKSZ, vdso_data, dcache_block_size);
+-	OFFSET(CFG_ICACHE_LOGBLOCKSZ, vdso_data, icache_log_block_size);
+-	OFFSET(CFG_DCACHE_LOGBLOCKSZ, vdso_data, dcache_log_block_size);
+-	OFFSET(CFG_SYSCALL_MAP64, vdso_data, syscall_map_64);
+-	OFFSET(TVAL64_TV_SEC, __kernel_old_timeval, tv_sec);
+-	OFFSET(TVAL64_TV_USEC, __kernel_old_timeval, tv_usec);
+-#endif
+-	OFFSET(TSPC64_TV_SEC, __kernel_timespec, tv_sec);
+-	OFFSET(TSPC64_TV_NSEC, __kernel_timespec, tv_nsec);
+-	OFFSET(TVAL32_TV_SEC, old_timeval32, tv_sec);
+-	OFFSET(TVAL32_TV_USEC, old_timeval32, tv_usec);
+-	OFFSET(TSPC32_TV_SEC, old_timespec32, tv_sec);
+-	OFFSET(TSPC32_TV_NSEC, old_timespec32, tv_nsec);
+-	/* timeval/timezone offsets for use by vdso */
+-	OFFSET(TZONE_TZ_MINWEST, timezone, tz_minuteswest);
+-	OFFSET(TZONE_TZ_DSTTIME, timezone, tz_dsttime);
+-
+-	/* Other bits used by the vdso */
+-	DEFINE(CLOCK_REALTIME, CLOCK_REALTIME);
+-	DEFINE(CLOCK_MONOTONIC, CLOCK_MONOTONIC);
+-	DEFINE(CLOCK_REALTIME_COARSE, CLOCK_REALTIME_COARSE);
+-	DEFINE(CLOCK_MONOTONIC_COARSE, CLOCK_MONOTONIC_COARSE);
+-	DEFINE(CLOCK_MAX, CLOCK_TAI);
+-	DEFINE(NSEC_PER_SEC, NSEC_PER_SEC);
+-	DEFINE(EINVAL, EINVAL);
+-	DEFINE(KTIME_LOW_RES, KTIME_LOW_RES);
++	OFFSET(CFG_ICACHE_BLOCKSZ, vdso_arch_data, icache_block_size);
++	OFFSET(CFG_DCACHE_BLOCKSZ, vdso_arch_data, dcache_block_size);
++	OFFSET(CFG_ICACHE_LOGBLOCKSZ, vdso_arch_data, icache_log_block_size);
++	OFFSET(CFG_DCACHE_LOGBLOCKSZ, vdso_arch_data, dcache_log_block_size);
++	OFFSET(CFG_SYSCALL_MAP64, vdso_arch_data, syscall_map_64);
++#endif
+ 
+ #ifdef CONFIG_BUG
+ 	DEFINE(BUG_ENTRY_SIZE, sizeof(struct bug_entry));
+diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+index 6fcae436ae51..b63b1f97a1b3 100644
+--- a/arch/powerpc/kernel/time.c
++++ b/arch/powerpc/kernel/time.c
+@@ -91,6 +91,7 @@ static struct clocksource clocksource_timebase = {
+ 	.flags        = CLOCK_SOURCE_IS_CONTINUOUS,
+ 	.mask         = CLOCKSOURCE_MASK(64),
+ 	.read         = timebase_read,
++	.vdso_clock_mode	= VDSO_CLOCKMODE_ARCHTIMER,
+ };
+ 
+ #define DECREMENTER_DEFAULT_MAX 0x7FFFFFFF
+@@ -855,95 +856,6 @@ static notrace u64 timebase_read(struct clocksource *cs)
+ 	return (u64)get_tb();
+ }
+ 
+-
+-void update_vsyscall(struct timekeeper *tk)
+-{
+-	struct timespec64 xt;
+-	struct clocksource *clock = tk->tkr_mono.clock;
+-	u32 mult = tk->tkr_mono.mult;
+-	u32 shift = tk->tkr_mono.shift;
+-	u64 cycle_last = tk->tkr_mono.cycle_last;
+-	u64 new_tb_to_xs, new_stamp_xsec;
+-	u64 frac_sec;
+-
+-	if (clock != &clocksource_timebase)
+-		return;
+-
+-	xt.tv_sec = tk->xtime_sec;
+-	xt.tv_nsec = (long)(tk->tkr_mono.xtime_nsec >> tk->tkr_mono.shift);
+-
+-	/* Make userspace gettimeofday spin until we're done. */
+-	++vdso_data->tb_update_count;
+-	smp_mb();
+-
+-	/*
+-	 * This computes ((2^20 / 1e9) * mult) >> shift as a
+-	 * 0.64 fixed-point fraction.
+-	 * The computation in the else clause below won't overflow
+-	 * (as long as the timebase frequency is >= 1.049 MHz)
+-	 * but loses precision because we lose the low bits of the constant
+-	 * in the shift.  Note that 19342813113834067 ~= 2^(20+64) / 1e9.
+-	 * For a shift of 24 the error is about 0.5e-9, or about 0.5ns
+-	 * over a second.  (Shift values are usually 22, 23 or 24.)
+-	 * For high frequency clocks such as the 512MHz timebase clock
+-	 * on POWER[6789], the mult value is small (e.g. 32768000)
+-	 * and so we can shift the constant by 16 initially
+-	 * (295147905179 ~= 2^(20+64-16) / 1e9) and then do the
+-	 * remaining shifts after the multiplication, which gives a
+-	 * more accurate result (e.g. with mult = 32768000, shift = 24,
+-	 * the error is only about 1.2e-12, or 0.7ns over 10 minutes).
+-	 */
+-	if (mult <= 62500000 && clock->shift >= 16)
+-		new_tb_to_xs = ((u64) mult * 295147905179ULL) >> (clock->shift - 16);
+-	else
+-		new_tb_to_xs = (u64) mult * (19342813113834067ULL >> clock->shift);
+-
+-	/*
+-	 * Compute the fractional second in units of 2^-32 seconds.
+-	 * The fractional second is tk->tkr_mono.xtime_nsec >> tk->tkr_mono.shift
+-	 * in nanoseconds, so multiplying that by 2^32 / 1e9 gives
+-	 * it in units of 2^-32 seconds.
+-	 * We assume shift <= 32 because clocks_calc_mult_shift()
+-	 * generates shift values in the range 0 - 32.
+-	 */
+-	frac_sec = tk->tkr_mono.xtime_nsec << (32 - shift);
+-	do_div(frac_sec, NSEC_PER_SEC);
+-
+-	/*
+-	 * Work out new stamp_xsec value for any legacy users of systemcfg.
+-	 * stamp_xsec is in units of 2^-20 seconds.
+-	 */
+-	new_stamp_xsec = frac_sec >> 12;
+-	new_stamp_xsec += tk->xtime_sec * XSEC_PER_SEC;
+-
+-	/*
+-	 * tb_update_count is used to allow the userspace gettimeofday code
+-	 * to assure itself that it sees a consistent view of the tb_to_xs and
+-	 * stamp_xsec variables.  It reads the tb_update_count, then reads
+-	 * tb_to_xs and stamp_xsec and then reads tb_update_count again.  If
+-	 * the two values of tb_update_count match and are even then the
+-	 * tb_to_xs and stamp_xsec values are consistent.  If not, then it
+-	 * loops back and reads them again until this criteria is met.
+-	 */
+-	vdso_data->tb_orig_stamp = cycle_last;
+-	vdso_data->stamp_xsec = new_stamp_xsec;
+-	vdso_data->tb_to_xs = new_tb_to_xs;
+-	vdso_data->wtom_clock_sec = tk->wall_to_monotonic.tv_sec;
+-	vdso_data->wtom_clock_nsec = tk->wall_to_monotonic.tv_nsec;
+-	vdso_data->stamp_xtime_sec = xt.tv_sec;
+-	vdso_data->stamp_xtime_nsec = xt.tv_nsec;
+-	vdso_data->stamp_sec_fraction = frac_sec;
+-	vdso_data->hrtimer_res = hrtimer_resolution;
+-	smp_wmb();
+-	++(vdso_data->tb_update_count);
+-}
+-
+-void update_vsyscall_tz(void)
+-{
+-	vdso_data->tz_minuteswest = sys_tz.tz_minuteswest;
+-	vdso_data->tz_dsttime = sys_tz.tz_dsttime;
+-}
+-
+ static void __init clocksource_init(void)
+ {
+ 	struct clocksource *clock;
+@@ -1113,7 +1025,6 @@ void __init time_init(void)
+ 		sys_tz.tz_dsttime = 0;
+ 	}
+ 
+-	vdso_data->tb_update_count = 0;
+ 	vdso_data->tb_ticks_per_sec = tb_ticks_per_sec;
+ 
+ 	/* initialise and enable the large decrementer (if we have one) */
+diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
+index 8dad44262e75..23208a051af5 100644
+--- a/arch/powerpc/kernel/vdso.c
++++ b/arch/powerpc/kernel/vdso.c
+@@ -17,6 +17,7 @@
+ #include <linux/elf.h>
+ #include <linux/security.h>
+ #include <linux/memblock.h>
++#include <vdso/datapage.h>
+ 
+ #include <asm/processor.h>
+ #include <asm/mmu.h>
+@@ -70,10 +71,10 @@ static int vdso_ready;
+  * with it, it will become dynamically allocated
+  */
+ static union {
+-	struct vdso_data	data;
++	struct vdso_arch_data	data;
+ 	u8			page[PAGE_SIZE];
+ } vdso_data_store __page_aligned_data;
+-struct vdso_data *vdso_data = &vdso_data_store.data;
++struct vdso_arch_data *vdso_data = &vdso_data_store.data;
+ 
+ /* Format of the patch table */
+ struct vdso_patch_def
+diff --git a/arch/powerpc/kernel/vdso32/Makefile b/arch/powerpc/kernel/vdso32/Makefile
+index 87ab1152d5ce..b922044236dd 100644
+--- a/arch/powerpc/kernel/vdso32/Makefile
++++ b/arch/powerpc/kernel/vdso32/Makefile
+@@ -2,7 +2,23 @@
+ 
+ # List of files in the vdso, has to be asm only for now
+ 
+-obj-vdso32 = sigtramp.o gettimeofday.o datapage.o cacheflush.o note.o getcpu.o
++ARCH_REL_TYPE_ABS := R_PPC_JUMP_SLOT|R_PPC_GLOB_DAT|R_PPC_ADDR32|R_PPC_ADDR24|R_PPC_ADDR16|R_PPC_ADDR16_LO|R_PPC_ADDR16_HI|R_PPC_ADDR16_HA|R_PPC_ADDR14|R_PPC_ADDR14_BRTAKEN|R_PPC_ADDR14_BRNTAKEN
++include $(srctree)/lib/vdso/Makefile
++
++obj-vdso32 = sigtramp.o datapage.o cacheflush.o note.o getcpu.o $(obj-vdso32-y)
++obj-vdso32 += gettimeofday.o
++
++ifneq ($(c-gettimeofday-y),)
++  ifdef CONFIG_PPC64
++    CFLAGS_vgettimeofday.o += -include $(srctree)/$(src)/config-fake32.h
++  endif
++  CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
++  CFLAGS_vgettimeofday.o += $(DISABLE_LATENT_ENTROPY_PLUGIN)
++  CFLAGS_vgettimeofday.o += $(call cc-option, -fno-stack-protector)
++  CFLAGS_vgettimeofday.o += -DDISABLE_BRANCH_PROFILING
++  CFLAGS_vgettimeofday.o += -ffreestanding -fasynchronous-unwind-tables
++  CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
++endif
+ 
+ # Build rules
+ 
+@@ -15,6 +31,7 @@ endif
+ CC32FLAGS :=
+ ifdef CONFIG_PPC64
+ CC32FLAGS += -m32
++KBUILD_CFLAGS := $(filter-out -mcmodel=medium,$(KBUILD_CFLAGS))
+ endif
+ 
+ targets := $(obj-vdso32) vdso32.so vdso32.so.dbg
+@@ -23,6 +40,7 @@ obj-vdso32 := $(addprefix $(obj)/, $(obj-vdso32))
+ GCOV_PROFILE := n
+ KCOV_INSTRUMENT := n
+ UBSAN_SANITIZE := n
++KASAN_SANITIZE := n
+ 
+ ccflags-y := -shared -fno-common -fno-builtin -nostdlib \
+ 	-Wl,-soname=linux-vdso32.so.1 -Wl,--hash-style=both
+@@ -36,8 +54,8 @@ CPPFLAGS_vdso32.lds += -P -C -Upowerpc
+ $(obj)/vdso32_wrapper.o : $(obj)/vdso32.so
+ 
+ # link rule for the .so file, .lds has to be first
+-$(obj)/vdso32.so.dbg: $(src)/vdso32.lds $(obj-vdso32) FORCE
+-	$(call if_changed,vdso32ld)
++$(obj)/vdso32.so.dbg: $(src)/vdso32.lds $(obj-vdso32) $(obj)/vgettimeofday.o FORCE
++	$(call if_changed,vdso32ld_and_check)
+ 
+ # strip rule for the .so file
+ $(obj)/%.so: OBJCOPYFLAGS := -S
+@@ -47,12 +65,16 @@ $(obj)/%.so: $(obj)/%.so.dbg FORCE
+ # assembly rules for the .S files
+ $(obj-vdso32): %.o: %.S FORCE
+ 	$(call if_changed_dep,vdso32as)
++$(obj)/vgettimeofday.o: %.o: %.c FORCE
++	$(call if_changed_dep,vdso32cc)
+ 
+ # actual build commands
+-quiet_cmd_vdso32ld = VDSO32L $@
+-      cmd_vdso32ld = $(VDSOCC) $(c_flags) $(CC32FLAGS) -o $@ $(call cc-ldoption, -Wl$(comma)--orphan-handling=warn) -Wl,-T$(filter %.lds,$^) $(filter %.o,$^)
++quiet_cmd_vdso32ld_and_check = VDSO32L $@
++      cmd_vdso32ld_and_check = $(VDSOCC) $(c_flags) $(CC32FLAGS) -o $@ $(call cc-ldoption, -Wl$(comma)--orphan-handling=warn) -Wl,-T$(filter %.lds,$^) $(filter %.o,$^) ; $(cmd_vdso_check)
+ quiet_cmd_vdso32as = VDSO32A $@
+       cmd_vdso32as = $(VDSOCC) $(a_flags) $(CC32FLAGS) -c -o $@ $<
++quiet_cmd_vdso32cc = VDSO32C $@
++      cmd_vdso32cc = $(VDSOCC) $(c_flags) $(CC32FLAGS) -c -o $@ $<
+ 
+ # install commands for the unstripped file
+ quiet_cmd_vdso_install = INSTALL $@
+diff --git a/arch/powerpc/kernel/vdso32/config-fake32.h b/arch/powerpc/kernel/vdso32/config-fake32.h
+new file mode 100644
+index 000000000000..e16041fc15c9
+--- /dev/null
++++ b/arch/powerpc/kernel/vdso32/config-fake32.h
+@@ -0,0 +1,34 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * In case of a 32 bit VDSO for a 64 bit kernel fake a 32 bit kernel
++ * configuration.
++ */
++
++#undef CONFIG_PPC64
++#undef CONFIG_64BIT
++#define CONFIG_PPC32
++#define CONFIG_32BIT 1
++#define CONFIG_GENERIC_ATOMIC64 1
++
++#ifdef CONFIG_PPC_BOOK3S_64
++#undef CONFIG_PPC_BOOK3S_64
++#undef CONFIG_PPC_PSERIES
++#define CONFIG_PPC_BOOK3S_32
++#else
++#define CONFIG_PPC_MMU_NOHASH_32
++#define CONFIG_FSL_BOOKE
++#endif
++
++#define CONFIG_TASK_SIZE	0
++#undef CONFIG_MMIOWB
++#undef CONFIG_PPC_SPLPAR
++#undef CONFIG_SPARSEMEM
++#undef CONFIG_PGTABLE_LEVELS
++#define CONFIG_PGTABLE_LEVELS	2
++#undef CONFIG_TRANSPARENT_HUGEPAGE
++#undef CONFIG_SPARSEMEM_VMEMMAP
++#undef CONFIG_FLATMEM
++#define CONFIG_FLATMEM
++#undef CONFIG_PPC_INDIRECT_MMIO
++#undef CONFIG_PPC_INDIRECT_PIO
++#undef CONFIG_EEH
+diff --git a/arch/powerpc/kernel/vdso32/gettimeofday.S b/arch/powerpc/kernel/vdso32/gettimeofday.S
+index e7f8f9f1b3f4..fd7b01c51281 100644
+--- a/arch/powerpc/kernel/vdso32/gettimeofday.S
++++ b/arch/powerpc/kernel/vdso32/gettimeofday.S
+@@ -12,13 +12,7 @@
+ #include <asm/vdso_datapage.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/unistd.h>
+-
+-/* Offset for the low 32-bit part of a field of long type */
+-#ifdef CONFIG_PPC64
+-#define LOPART	4
+-#else
+-#define LOPART	0
+-#endif
++#include <asm/vdso/gettimeofday.h>
+ 
+ 	.text
+ /*
+@@ -28,32 +22,7 @@
+  *
+  */
+ V_FUNCTION_BEGIN(__kernel_gettimeofday)
+-  .cfi_startproc
+-	mflr	r12
+-  .cfi_register lr,r12
+-
+-	mr.	r10,r3			/* r10 saves tv */
+-	mr	r11,r4			/* r11 saves tz */
+-	get_datapage	r9, r0
+-	beq	3f
+-	LOAD_REG_IMMEDIATE(r7, 1000000)	/* load up USEC_PER_SEC */
+-	bl	__do_get_tspec@local	/* get sec/usec from tb & kernel */
+-	stw	r3,TVAL32_TV_SEC(r10)
+-	stw	r4,TVAL32_TV_USEC(r10)
+-
+-3:	cmplwi	r11,0			/* check if tz is NULL */
+-	mtlr	r12
+-	crclr	cr0*4+so
+-	li	r3,0
+-	beqlr
+-
+-	lwz	r4,CFG_TZ_MINUTEWEST(r9)/* fill tz */
+-	lwz	r5,CFG_TZ_DSTTIME(r9)
+-	stw	r4,TZONE_TZ_MINWEST(r11)
+-	stw	r5,TZONE_TZ_DSTTIME(r11)
+-
+-	blr
+-  .cfi_endproc
++	cvdso_call __c_kernel_gettimeofday
+ V_FUNCTION_END(__kernel_gettimeofday)
+ 
+ /*
+@@ -63,127 +32,7 @@ V_FUNCTION_END(__kernel_gettimeofday)
+  *
+  */
+ V_FUNCTION_BEGIN(__kernel_clock_gettime)
+-  .cfi_startproc
+-	/* Check for supported clock IDs */
+-	cmpli	cr0,r3,CLOCK_REALTIME
+-	cmpli	cr1,r3,CLOCK_MONOTONIC
+-	cror	cr0*4+eq,cr0*4+eq,cr1*4+eq
+-
+-	cmpli	cr5,r3,CLOCK_REALTIME_COARSE
+-	cmpli	cr6,r3,CLOCK_MONOTONIC_COARSE
+-	cror	cr5*4+eq,cr5*4+eq,cr6*4+eq
+-
+-	cror	cr0*4+eq,cr0*4+eq,cr5*4+eq
+-	bne	cr0, .Lgettime_fallback
+-
+-	mflr	r12			/* r12 saves lr */
+-  .cfi_register lr,r12
+-	mr	r11,r4			/* r11 saves tp */
+-	get_datapage	r9, r0
+-	LOAD_REG_IMMEDIATE(r7, NSEC_PER_SEC)	/* load up NSEC_PER_SEC */
+-	beq	cr5, .Lcoarse_clocks
+-.Lprecise_clocks:
+-	bl	__do_get_tspec@local	/* get sec/nsec from tb & kernel */
+-	bne	cr1, .Lfinish		/* not monotonic -> all done */
+-
+-	/*
+-	 * CLOCK_MONOTONIC
+-	 */
+-
+-	/* now we must fixup using wall to monotonic. We need to snapshot
+-	 * that value and do the counter trick again. Fortunately, we still
+-	 * have the counter value in r8 that was returned by __do_get_xsec.
+-	 * At this point, r3,r4 contain our sec/nsec values, r5 and r6
+-	 * can be used, r7 contains NSEC_PER_SEC.
+-	 */
+-
+-	lwz	r5,(WTOM_CLOCK_SEC+LOPART)(r9)
+-	lwz	r6,WTOM_CLOCK_NSEC(r9)
+-
+-	/* We now have our offset in r5,r6. We create a fake dependency
+-	 * on that value and re-check the counter
+-	 */
+-	or	r0,r6,r5
+-	xor	r0,r0,r0
+-	add	r9,r9,r0
+-	lwz	r0,(CFG_TB_UPDATE_COUNT+LOPART)(r9)
+-        cmpl    cr0,r8,r0		/* check if updated */
+-	bne-	.Lprecise_clocks
+-	b	.Lfinish_monotonic
+-
+-	/*
+-	 * For coarse clocks we get data directly from the vdso data page, so
+-	 * we don't need to call __do_get_tspec, but we still need to do the
+-	 * counter trick.
+-	 */
+-.Lcoarse_clocks:
+-	lwz	r8,(CFG_TB_UPDATE_COUNT+LOPART)(r9)
+-	andi.	r0,r8,1                 /* pending update ? loop */
+-	bne-	.Lcoarse_clocks
+-	add	r9,r9,r0		/* r0 is already 0 */
+-
+-	/*
+-	 * CLOCK_REALTIME_COARSE, below values are needed for MONOTONIC_COARSE
+-	 * too
+-	 */
+-	lwz	r3,STAMP_XTIME_SEC+LOPART(r9)
+-	lwz	r4,STAMP_XTIME_NSEC+LOPART(r9)
+-	bne	cr6,1f
+-
+-	/* CLOCK_MONOTONIC_COARSE */
+-	lwz	r5,(WTOM_CLOCK_SEC+LOPART)(r9)
+-	lwz	r6,WTOM_CLOCK_NSEC(r9)
+-
+-	/* check if counter has updated */
+-	or	r0,r6,r5
+-1:	or	r0,r0,r3
+-	or	r0,r0,r4
+-	xor	r0,r0,r0
+-	add	r3,r3,r0
+-	lwz	r0,CFG_TB_UPDATE_COUNT+LOPART(r9)
+-	cmpl	cr0,r0,r8               /* check if updated */
+-	bne-	.Lcoarse_clocks
+-
+-	/* Counter has not updated, so continue calculating proper values for
+-	 * sec and nsec if monotonic coarse, or just return with the proper
+-	 * values for realtime.
+-	 */
+-	bne	cr6, .Lfinish
+-
+-	/* Calculate and store result. Note that this mimics the C code,
+-	 * which may cause funny results if nsec goes negative... is that
+-	 * possible at all ?
+-	 */
+-.Lfinish_monotonic:
+-	add	r3,r3,r5
+-	add	r4,r4,r6
+-	cmpw	cr0,r4,r7
+-	cmpwi	cr1,r4,0
+-	blt	1f
+-	subf	r4,r7,r4
+-	addi	r3,r3,1
+-1:	bge	cr1, .Lfinish
+-	addi	r3,r3,-1
+-	add	r4,r4,r7
+-
+-.Lfinish:
+-	stw	r3,TSPC32_TV_SEC(r11)
+-	stw	r4,TSPC32_TV_NSEC(r11)
+-
+-	mtlr	r12
+-	crclr	cr0*4+so
+-	li	r3,0
+-	blr
+-
+-	/*
+-	 * syscall fallback
+-	 */
+-.Lgettime_fallback:
+-	li	r0,__NR_clock_gettime
+-  .cfi_restore lr
+-	sc
+-	blr
+-  .cfi_endproc
++	cvdso_call __c_kernel_clock_gettime
+ V_FUNCTION_END(__kernel_clock_gettime)
+ 
+ 
+@@ -194,37 +43,7 @@ V_FUNCTION_END(__kernel_clock_gettime)
+  *
+  */
+ V_FUNCTION_BEGIN(__kernel_clock_getres)
+-  .cfi_startproc
+-	/* Check for supported clock IDs */
+-	cmplwi	cr0, r3, CLOCK_MAX
+-	cmpwi	cr1, r3, CLOCK_REALTIME_COARSE
+-	cmpwi	cr7, r3, CLOCK_MONOTONIC_COARSE
+-	bgt	cr0, 99f
+-	LOAD_REG_IMMEDIATE(r5, KTIME_LOW_RES)
+-	beq	cr1, 1f
+-	beq	cr7, 1f
+-
+-	mflr	r12
+-  .cfi_register lr,r12
+-	get_datapage	r3, r0
+-	lwz	r5, CLOCK_HRTIMER_RES(r3)
+-	mtlr	r12
+-1:	li	r3,0
+-	cmpli	cr0,r4,0
+-	crclr	cr0*4+so
+-	beqlr
+-	stw	r3,TSPC32_TV_SEC(r4)
+-	stw	r5,TSPC32_TV_NSEC(r4)
+-	blr
+-
+-	/*
+-	 * syscall fallback
+-	 */
+-99:
+-	li	r0,__NR_clock_getres
+-	sc
+-	blr
+-  .cfi_endproc
++	cvdso_call __c_kernel_clock_getres
+ V_FUNCTION_END(__kernel_clock_getres)
+ 
+ 
+@@ -235,105 +54,5 @@ V_FUNCTION_END(__kernel_clock_getres)
+  *
+  */
+ V_FUNCTION_BEGIN(__kernel_time)
+-  .cfi_startproc
+-	mflr	r12
+-  .cfi_register lr,r12
+-
+-	mr	r11,r3			/* r11 holds t */
+-	get_datapage	r9, r0
+-
+-	lwz	r3,STAMP_XTIME_SEC+LOPART(r9)
+-
+-	cmplwi	r11,0			/* check if t is NULL */
+-	mtlr	r12
+-	crclr	cr0*4+so
+-	beqlr
+-	stw	r3,0(r11)		/* store result at *t */
+-	blr
+-  .cfi_endproc
++	cvdso_call_time __c_kernel_time
+ V_FUNCTION_END(__kernel_time)
+-
+-/*
+- * This is the core of clock_gettime() and gettimeofday(),
+- * it returns the current time in r3 (seconds) and r4.
+- * On entry, r7 gives the resolution of r4, either USEC_PER_SEC
+- * or NSEC_PER_SEC, giving r4 in microseconds or nanoseconds.
+- * It expects the datapage ptr in r9 and doesn't clobber it.
+- * It clobbers r0, r5 and r6.
+- * On return, r8 contains the counter value that can be reused.
+- * This clobbers cr0 but not any other cr field.
+- */
+-__do_get_tspec:
+-  .cfi_startproc
+-	/* Check for update count & load values. We use the low
+-	 * order 32 bits of the update count
+-	 */
+-1:	lwz	r8,(CFG_TB_UPDATE_COUNT+LOPART)(r9)
+-	andi.	r0,r8,1			/* pending update ? loop */
+-	bne-	1b
+-	xor	r0,r8,r8		/* create dependency */
+-	add	r9,r9,r0
+-
+-	/* Load orig stamp (offset to TB) */
+-	lwz	r5,CFG_TB_ORIG_STAMP(r9)
+-	lwz	r6,(CFG_TB_ORIG_STAMP+4)(r9)
+-
+-	/* Get a stable TB value */
+-2:	MFTBU(r3)
+-	MFTBL(r4)
+-	MFTBU(r0)
+-	cmplw	cr0,r3,r0
+-	bne-	2b
+-
+-	/* Subtract tb orig stamp and shift left 12 bits.
+-	 */
+-	subfc	r4,r6,r4
+-	subfe	r0,r5,r3
+-	slwi	r0,r0,12
+-	rlwimi.	r0,r4,12,20,31
+-	slwi	r4,r4,12
+-
+-	/*
+-	 * Load scale factor & do multiplication.
+-	 * We only use the high 32 bits of the tb_to_xs value.
+-	 * Even with a 1GHz timebase clock, the high 32 bits of
+-	 * tb_to_xs will be at least 4 million, so the error from
+-	 * ignoring the low 32 bits will be no more than 0.25ppm.
+-	 * The error will just make the clock run very very slightly
+-	 * slow until the next time the kernel updates the VDSO data,
+-	 * at which point the clock will catch up to the kernel's value,
+-	 * so there is no long-term error accumulation.
+-	 */
+-	lwz	r5,CFG_TB_TO_XS(r9)	/* load values */
+-	mulhwu	r4,r4,r5
+-	li	r3,0
+-
+-	beq+	4f			/* skip high part computation if 0 */
+-	mulhwu	r3,r0,r5
+-	mullw	r5,r0,r5
+-	addc	r4,r4,r5
+-	addze	r3,r3
+-4:
+-	/* At this point, we have seconds since the xtime stamp
+-	 * as a 32.32 fixed-point number in r3 and r4.
+-	 * Load & add the xtime stamp.
+-	 */
+-	lwz	r5,STAMP_XTIME_SEC+LOPART(r9)
+-	lwz	r6,STAMP_SEC_FRAC(r9)
+-	addc	r4,r4,r6
+-	adde	r3,r3,r5
+-
+-	/* We create a fake dependency on the result in r3/r4
+-	 * and re-check the counter
+-	 */
+-	or	r6,r4,r3
+-	xor	r0,r6,r6
+-	add	r9,r9,r0
+-	lwz	r0,(CFG_TB_UPDATE_COUNT+LOPART)(r9)
+-        cmplw	cr0,r8,r0		/* check if updated */
+-	bne-	1b
+-
+-	mulhwu	r4,r4,r7		/* convert to micro or nanoseconds */
+-
+-	blr
+-  .cfi_endproc
+diff --git a/arch/powerpc/kernel/vdso64/Makefile b/arch/powerpc/kernel/vdso64/Makefile
+index 38c317f25141..7890d889f9c5 100644
+--- a/arch/powerpc/kernel/vdso64/Makefile
++++ b/arch/powerpc/kernel/vdso64/Makefile
+@@ -1,8 +1,20 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # List of files in the vdso, has to be asm only for now
+ 
++ARCH_REL_TYPE_ABS := R_PPC_JUMP_SLOT|R_PPC_GLOB_DAT|R_PPC_ADDR32|R_PPC_ADDR24|R_PPC_ADDR16|R_PPC_ADDR16_LO|R_PPC_ADDR16_HI|R_PPC_ADDR16_HA|R_PPC_ADDR14|R_PPC_ADDR14_BRTAKEN|R_PPC_ADDR14_BRNTAKEN
++include $(srctree)/lib/vdso/Makefile
++
+ obj-vdso64 = sigtramp.o gettimeofday.o datapage.o cacheflush.o note.o getcpu.o
+ 
++ifneq ($(c-gettimeofday-y),)
++  CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
++  CFLAGS_vgettimeofday.o += $(DISABLE_LATENT_ENTROPY_PLUGIN)
++  CFLAGS_vgettimeofday.o += $(call cc-option, -fno-stack-protector)
++  CFLAGS_vgettimeofday.o += -DDISABLE_BRANCH_PROFILING
++  CFLAGS_vgettimeofday.o += -ffreestanding -fasynchronous-unwind-tables
++  CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
++endif
++
+ # Build rules
+ 
+ targets := $(obj-vdso64) vdso64.so vdso64.so.dbg
+@@ -11,6 +23,7 @@ obj-vdso64 := $(addprefix $(obj)/, $(obj-vdso64))
+ GCOV_PROFILE := n
+ KCOV_INSTRUMENT := n
+ UBSAN_SANITIZE := n
++KASAN_SANITIZE := n
+ 
+ ccflags-y := -shared -fno-common -fno-builtin -nostdlib \
+ 	-Wl,-soname=linux-vdso64.so.1 -Wl,--hash-style=both
+@@ -20,12 +33,14 @@ obj-y += vdso64_wrapper.o
+ extra-y += vdso64.lds
+ CPPFLAGS_vdso64.lds += -P -C -U$(ARCH)
+ 
++$(obj)/vgettimeofday.o: %.o: %.c FORCE
++
+ # Force dependency (incbin is bad)
+ $(obj)/vdso64_wrapper.o : $(obj)/vdso64.so
+ 
+ # link rule for the .so file, .lds has to be first
+-$(obj)/vdso64.so.dbg: $(src)/vdso64.lds $(obj-vdso64) FORCE
+-	$(call if_changed,vdso64ld)
++$(obj)/vdso64.so.dbg: $(src)/vdso64.lds $(obj-vdso64) $(obj)/vgettimeofday.o FORCE
++	$(call if_changed,vdso64ld_and_check)
+ 
+ # strip rule for the .so file
+ $(obj)/%.so: OBJCOPYFLAGS := -S
+@@ -33,8 +48,8 @@ $(obj)/%.so: $(obj)/%.so.dbg FORCE
+ 	$(call if_changed,objcopy)
+ 
+ # actual build commands
+-quiet_cmd_vdso64ld = VDSO64L $@
+-      cmd_vdso64ld = $(CC) $(c_flags) -o $@ -Wl,-T$(filter %.lds,$^) $(filter %.o,$^) $(call cc-ldoption, -Wl$(comma)--orphan-handling=warn)
++quiet_cmd_vdso64ld_and_check = VDSO64L $@
++      cmd_vdso64ld_and_check = $(CC) $(c_flags) -o $@ -Wl,-T$(filter %.lds,$^) $(filter %.o,$^) $(call cc-ldoption, -Wl$(comma)--orphan-handling=warn); $(cmd_vdso_check)
+ 
+ # install commands for the unstripped file
+ quiet_cmd_vdso_install = INSTALL $@
+diff --git a/arch/powerpc/kernel/vdso64/gettimeofday.S b/arch/powerpc/kernel/vdso64/gettimeofday.S
+index 20f8be40c653..d7a7bfb51081 100644
+--- a/arch/powerpc/kernel/vdso64/gettimeofday.S
++++ b/arch/powerpc/kernel/vdso64/gettimeofday.S
+@@ -12,6 +12,7 @@
+ #include <asm/vdso_datapage.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/unistd.h>
++#include <asm/vdso/gettimeofday.h>
+ 
+ 	.text
+ /*
+@@ -21,31 +22,7 @@
+  *
+  */
+ V_FUNCTION_BEGIN(__kernel_gettimeofday)
+-  .cfi_startproc
+-	mflr	r12
+-  .cfi_register lr,r12
+-
+-	mr	r11,r3			/* r11 holds tv */
+-	mr	r10,r4			/* r10 holds tz */
+-	get_datapage	r3, r0
+-	cmpldi	r11,0			/* check if tv is NULL */
+-	beq	2f
+-	lis	r7,1000000@ha		/* load up USEC_PER_SEC */
+-	addi	r7,r7,1000000@l
+-	bl	V_LOCAL_FUNC(__do_get_tspec) /* get sec/us from tb & kernel */
+-	std	r4,TVAL64_TV_SEC(r11)	/* store sec in tv */
+-	std	r5,TVAL64_TV_USEC(r11)	/* store usec in tv */
+-2:	cmpldi	r10,0			/* check if tz is NULL */
+-	beq	1f
+-	lwz	r4,CFG_TZ_MINUTEWEST(r3)/* fill tz */
+-	lwz	r5,CFG_TZ_DSTTIME(r3)
+-	stw	r4,TZONE_TZ_MINWEST(r10)
+-	stw	r5,TZONE_TZ_DSTTIME(r10)
+-1:	mtlr	r12
+-	crclr	cr0*4+so
+-	li	r3,0			/* always success */
+-	blr
+-  .cfi_endproc
++	cvdso_call __c_kernel_gettimeofday
+ V_FUNCTION_END(__kernel_gettimeofday)
+ 
+ 
+@@ -56,120 +33,7 @@ V_FUNCTION_END(__kernel_gettimeofday)
+  *
+  */
+ V_FUNCTION_BEGIN(__kernel_clock_gettime)
+-  .cfi_startproc
+-	/* Check for supported clock IDs */
+-	cmpwi	cr0,r3,CLOCK_REALTIME
+-	cmpwi	cr1,r3,CLOCK_MONOTONIC
+-	cror	cr0*4+eq,cr0*4+eq,cr1*4+eq
+-
+-	cmpwi	cr5,r3,CLOCK_REALTIME_COARSE
+-	cmpwi	cr6,r3,CLOCK_MONOTONIC_COARSE
+-	cror	cr5*4+eq,cr5*4+eq,cr6*4+eq
+-
+-	cror	cr0*4+eq,cr0*4+eq,cr5*4+eq
+-	bne	cr0,99f
+-
+-	mflr	r12			/* r12 saves lr */
+-  .cfi_register lr,r12
+-	mr	r11,r4			/* r11 saves tp */
+-	get_datapage	r3, r0
+-	lis	r7,NSEC_PER_SEC@h	/* want nanoseconds */
+-	ori	r7,r7,NSEC_PER_SEC@l
+-	beq	cr5,70f
+-50:	bl	V_LOCAL_FUNC(__do_get_tspec)	/* get time from tb & kernel */
+-	bne	cr1,80f			/* if not monotonic, all done */
+-
+-	/*
+-	 * CLOCK_MONOTONIC
+-	 */
+-
+-	/* now we must fixup using wall to monotonic. We need to snapshot
+-	 * that value and do the counter trick again. Fortunately, we still
+-	 * have the counter value in r8 that was returned by __do_get_tspec.
+-	 * At this point, r4,r5 contain our sec/nsec values.
+-	 */
+-
+-	ld	r6,WTOM_CLOCK_SEC(r3)
+-	lwa	r9,WTOM_CLOCK_NSEC(r3)
+-
+-	/* We now have our result in r6,r9. We create a fake dependency
+-	 * on that result and re-check the counter
+-	 */
+-	or	r0,r6,r9
+-	xor	r0,r0,r0
+-	add	r3,r3,r0
+-	ld	r0,CFG_TB_UPDATE_COUNT(r3)
+-        cmpld   cr0,r0,r8		/* check if updated */
+-	bne-	50b
+-	b	78f
+-
+-	/*
+-	 * For coarse clocks we get data directly from the vdso data page, so
+-	 * we don't need to call __do_get_tspec, but we still need to do the
+-	 * counter trick.
+-	 */
+-70:	ld      r8,CFG_TB_UPDATE_COUNT(r3)
+-	andi.   r0,r8,1                 /* pending update ? loop */
+-	bne-    70b
+-	add     r3,r3,r0		/* r0 is already 0 */
+-
+-	/*
+-	 * CLOCK_REALTIME_COARSE, below values are needed for MONOTONIC_COARSE
+-	 * too
+-	 */
+-	ld      r4,STAMP_XTIME_SEC(r3)
+-	ld      r5,STAMP_XTIME_NSEC(r3)
+-	bne     cr6,75f
+-
+-	/* CLOCK_MONOTONIC_COARSE */
+-	ld	r6,WTOM_CLOCK_SEC(r3)
+-	lwa     r9,WTOM_CLOCK_NSEC(r3)
+-
+-	/* check if counter has updated */
+-	or      r0,r6,r9
+-75:	or	r0,r0,r4
+-	or	r0,r0,r5
+-	xor     r0,r0,r0
+-	add     r3,r3,r0
+-	ld      r0,CFG_TB_UPDATE_COUNT(r3)
+-	cmpld   cr0,r0,r8               /* check if updated */
+-	bne-    70b
+-
+-	/* Counter has not updated, so continue calculating proper values for
+-	 * sec and nsec if monotonic coarse, or just return with the proper
+-	 * values for realtime.
+-	 */
+-	bne     cr6,80f
+-
+-	/* Add wall->monotonic offset and check for overflow or underflow */
+-78:	add     r4,r4,r6
+-	add     r5,r5,r9
+-	cmpd    cr0,r5,r7
+-	cmpdi   cr1,r5,0
+-	blt     79f
+-	subf    r5,r7,r5
+-	addi    r4,r4,1
+-79:	bge     cr1,80f
+-	addi    r4,r4,-1
+-	add     r5,r5,r7
+-
+-80:	std	r4,TSPC64_TV_SEC(r11)
+-	std	r5,TSPC64_TV_NSEC(r11)
+-
+-	mtlr	r12
+-	crclr	cr0*4+so
+-	li	r3,0
+-	blr
+-
+-	/*
+-	 * syscall fallback
+-	 */
+-99:
+-	li	r0,__NR_clock_gettime
+-  .cfi_restore lr
+-	sc
+-	blr
+-  .cfi_endproc
++	cvdso_call __c_kernel_clock_gettime
+ V_FUNCTION_END(__kernel_clock_gettime)
+ 
+ 
+@@ -180,34 +44,7 @@ V_FUNCTION_END(__kernel_clock_gettime)
+  *
+  */
+ V_FUNCTION_BEGIN(__kernel_clock_getres)
+-  .cfi_startproc
+-	/* Check for supported clock IDs */
+-	cmpwi	cr0,r3,CLOCK_REALTIME
+-	cmpwi	cr1,r3,CLOCK_MONOTONIC
+-	cror	cr0*4+eq,cr0*4+eq,cr1*4+eq
+-	bne	cr0,99f
+-
+-	mflr	r12
+-  .cfi_register lr,r12
+-	get_datapage	r3, r0
+-	lwz	r5, CLOCK_HRTIMER_RES(r3)
+-	mtlr	r12
+-	li	r3,0
+-	cmpldi	cr0,r4,0
+-	crclr	cr0*4+so
+-	beqlr
+-	std	r3,TSPC64_TV_SEC(r4)
+-	std	r5,TSPC64_TV_NSEC(r4)
+-	blr
+-
+-	/*
+-	 * syscall fallback
+-	 */
+-99:
+-	li	r0,__NR_clock_getres
+-	sc
+-	blr
+-  .cfi_endproc
++	cvdso_call __c_kernel_clock_getres
+ V_FUNCTION_END(__kernel_clock_getres)
+ 
+ /*
+@@ -217,74 +54,5 @@ V_FUNCTION_END(__kernel_clock_getres)
+  *
+  */
+ V_FUNCTION_BEGIN(__kernel_time)
+-  .cfi_startproc
+-	mflr	r12
+-  .cfi_register lr,r12
+-
+-	mr	r11,r3			/* r11 holds t */
+-	get_datapage	r3, r0
+-
+-	ld	r4,STAMP_XTIME_SEC(r3)
+-
+-	cmpldi	r11,0			/* check if t is NULL */
+-	beq	2f
+-	std	r4,0(r11)		/* store result at *t */
+-2:	mtlr	r12
+-	crclr	cr0*4+so
+-	mr	r3,r4
+-	blr
+-  .cfi_endproc
++	cvdso_call_time __c_kernel_time
+ V_FUNCTION_END(__kernel_time)
+-
+-
+-/*
+- * This is the core of clock_gettime() and gettimeofday(),
+- * it returns the current time in r4 (seconds) and r5.
+- * On entry, r7 gives the resolution of r5, either USEC_PER_SEC
+- * or NSEC_PER_SEC, giving r5 in microseconds or nanoseconds.
+- * It expects the datapage ptr in r3 and doesn't clobber it.
+- * It clobbers r0, r6 and r9.
+- * On return, r8 contains the counter value that can be reused.
+- * This clobbers cr0 but not any other cr field.
+- */
+-V_FUNCTION_BEGIN(__do_get_tspec)
+-  .cfi_startproc
+-	/* check for update count & load values */
+-1:	ld	r8,CFG_TB_UPDATE_COUNT(r3)
+-	andi.	r0,r8,1			/* pending update ? loop */
+-	bne-	1b
+-	xor	r0,r8,r8		/* create dependency */
+-	add	r3,r3,r0
+-
+-	/* Get TB & offset it. We use the MFTB macro which will generate
+-	 * workaround code for Cell.
+-	 */
+-	MFTB(r6)
+-	ld	r9,CFG_TB_ORIG_STAMP(r3)
+-	subf	r6,r9,r6
+-
+-	/* Scale result */
+-	ld	r5,CFG_TB_TO_XS(r3)
+-	sldi	r6,r6,12		/* compute time since stamp_xtime */
+-	mulhdu	r6,r6,r5		/* in units of 2^-32 seconds */
+-
+-	/* Add stamp since epoch */
+-	ld	r4,STAMP_XTIME_SEC(r3)
+-	lwz	r5,STAMP_SEC_FRAC(r3)
+-	or	r0,r4,r5
+-	or	r0,r0,r6
+-	xor	r0,r0,r0
+-	add	r3,r3,r0
+-	ld	r0,CFG_TB_UPDATE_COUNT(r3)
+-	cmpld   r0,r8			/* check if updated */
+-	bne-	1b			/* reload if so */
+-
+-	/* convert to seconds & nanoseconds and add to stamp */
+-	add	r6,r6,r5		/* add on fractional seconds of xtime */
+-	mulhwu	r5,r6,r7		/* compute micro or nanoseconds and */
+-	srdi	r6,r6,32		/* seconds since stamp_xtime */
+-	clrldi	r5,r5,32
+-	add	r4,r4,r6
+-	blr
+-  .cfi_endproc
+-V_FUNCTION_END(__do_get_tspec)
+-- 
+2.25.0
+
+
+
