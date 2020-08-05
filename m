@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D579A23CFFF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4B823D010
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728648AbgHET1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:27:55 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31683 "EHLO
+        id S1728912AbgHET3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:29:06 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58146 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728484AbgHERLi (ORCPT
+        by vger.kernel.org with ESMTP id S1728508AbgHERL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:11:38 -0400
+        Wed, 5 Aug 2020 13:11:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647495;
+        s=mimecast20190719; t=1596647485;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=b15p4KXARwEoNlM1WPMg2pSx9ElZxt97JOcTPOVUe28=;
-        b=i3Lnw1HiFS8yHzfxOhhEqGfCcM1+tg+4mj9NRYGKSu7XjfypqsU62kD9okHzwov2MhysnN
-        Vh+XKAucGsTKWdELMHNrFHzB/6dPU3bcYfAfELSUGc36bJQ7MQy1EXmIlUwFDHR7iks6Ew
-        9AP1A8u/VZCCjcWR8qGWzFyrjemNTXY=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-337-eEw80S1zOBa64Z7RfCHjGg-1; Wed, 05 Aug 2020 09:44:57 -0400
-X-MC-Unique: eEw80S1zOBa64Z7RfCHjGg-1
-Received: by mail-wr1-f72.google.com with SMTP id k11so13088606wrv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:57 -0700 (PDT)
+        bh=atxIzRxbT9FOuFO2CvHZA+vE3tCMe4mwfA9uGPPCf/o=;
+        b=QlV5//egNjqtTFYg2w8PuGMZhp8PmKeuIGAigotEg9qFjWKXsg2oNW/qX+nUZHtO0OeGy+
+        pfeAqW0lA/i7ayhBu/WBuyJFgR8GzP14TJ1vFZXkX+l4tzQs4hvdZkeEcQNG5uQ3ZtpM/p
+        5zNVXaqmm2tSiTEbiH92QdQXSeIqVGg=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-a_j_3ljVMmiBjFtudKSGGA-1; Wed, 05 Aug 2020 09:45:01 -0400
+X-MC-Unique: a_j_3ljVMmiBjFtudKSGGA-1
+Received: by mail-wm1-f71.google.com with SMTP id a5so2741587wmj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:45:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=b15p4KXARwEoNlM1WPMg2pSx9ElZxt97JOcTPOVUe28=;
-        b=uizYrap89vMU3cqdqtWHXbZaisASDhNSoSIneiymlee0GMBnVVaeItj16O1bR5RaBC
-         0N+HeXLTge3SBKjQ5npE1iTivScyt4QcBm1NFIZUJ5BkHL8wBfLWNHX67TIRKBrSChhC
-         MbcZFB68i6CC+cHtG0O4eimtqVfgPYv4qWapCUq8oy2fYdiSue3R1zuWhapgI7jUNjyR
-         1rbaLMhBUC7TIJQpSRhsWqWd04bc6M5OQSZoxSVqeUteEQbfXeLHexW88AzwDl0/P+Pm
-         XidZPjUj+ADyiKe8lqG9rrh5DjeUXHbnjg/ncYMvQDxgQgGriGpkHrAY476hqnX4EIWZ
-         50VQ==
-X-Gm-Message-State: AOAM532NyQbLYrCc0pxJiaiLyF5iKm6WN44DNDeBXyCXrMrF5ibujIqq
-        N4UmW8nNq7ri8ZCHxtof/acggfjjMoRv42iZK556KtDaP8UErafuUUVcNoxyG53GwCGSaQrPy2T
-        QUS8U7yOMunluLtEPcBsAxQIX
-X-Received: by 2002:a5d:480b:: with SMTP id l11mr2753634wrq.85.1596635096342;
-        Wed, 05 Aug 2020 06:44:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwIX/R1ocyCLsQIShtCU4c22XE3xHsPPWnbXDGuQ6U2zNmRfwjcU+K6dqulnNoNKqfVGu6vnw==
-X-Received: by 2002:a5d:480b:: with SMTP id l11mr2753620wrq.85.1596635096132;
-        Wed, 05 Aug 2020 06:44:56 -0700 (PDT)
+        bh=atxIzRxbT9FOuFO2CvHZA+vE3tCMe4mwfA9uGPPCf/o=;
+        b=OirF39JF6jY/74aa6JMgLoeCMgBFmlv3jEFIg4A8D4tXDSAzaKfCeM6rPUS2cAcBrF
+         N+4mrAiAoeUH+D4DOx79j4K9jCq18RcrNVCwwKAOv6YGAEs4A5f5tzXjELVrAcie48Yc
+         LK2P/Tbq91/kJ8Uoutklh/4EmqiWrz52FfvtE2/d/e7xREg7G7x/aTByf+jrX9ZNDK3S
+         c6BQul9XWO9UcHin42RN3y/J0rrzMvm8KFwAQxWQg5UML43YiM6VfMcFkYc+Whs+e0Fo
+         zMp3Kl2gOSXAa6sheuWsTu5f7oBq5USUQaD6J/ZI1FoA6jGRjBaOWEF6jzhZXjYa9frc
+         OmBg==
+X-Gm-Message-State: AOAM530lW0U2Gc4ylxgSmxmhhpN41iTjsAEFDoe2lC4AJE1tClqwmS/G
+        4A6T+EKYDndrI3ALNjfNf2YJS1EBX/jnYi29wnBx7HMYspDSkccniFwJPXXfTiPa4dDn4MGVg7m
+        TOG4o+lsop1x3i1RfFS2LJQv1
+X-Received: by 2002:a1c:2095:: with SMTP id g143mr3259120wmg.113.1596635100200;
+        Wed, 05 Aug 2020 06:45:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwi486zYfcrRq7SJ5KWTOvEIp6eSofJ8hVOMn9kJixY7f4ly7cOd7mIjGAtKnLyQE6YgYvPbA==
+X-Received: by 2002:a1c:2095:: with SMTP id g143mr3259106wmg.113.1596635100023;
+        Wed, 05 Aug 2020 06:45:00 -0700 (PDT)
 Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id b203sm2926580wmc.22.2020.08.05.06.44.54
+        by smtp.gmail.com with ESMTPSA id v15sm2904117wrm.23.2020.08.05.06.44.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:55 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:44:53 -0400
+        Wed, 05 Aug 2020 06:44:59 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:44:56 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        virtualization@lists.linux-foundation.org,
-        iommu@lists.linux-foundation.org
-Subject: [PATCH v3 36/38] virtio-iommu: convert to LE accessors
-Message-ID: <20200805134226.1106164-37-mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v3 37/38] virtio_config: drop LE option from config space
+Message-ID: <20200805134226.1106164-38-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,69 +69,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Virtio iommu is modern-only. Use LE accessors for config space.
+All drivers now use virtio_cread/write_le for LE config
+space fields. Drop LE option from virtio_cread/write, only leaving
+the option to access transitional fields.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- drivers/iommu/virtio-iommu.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ include/linux/virtio_config.h | 28 ++--------------------------
+ 1 file changed, 2 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-index f6f07489a9aa..b4da396cce60 100644
---- a/drivers/iommu/virtio-iommu.c
-+++ b/drivers/iommu/virtio-iommu.c
-@@ -1010,8 +1010,8 @@ static int viommu_probe(struct virtio_device *vdev)
- 	if (ret)
- 		return ret;
+diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+index cc7a2b1fd7b2..ecb166c824bb 100644
+--- a/include/linux/virtio_config.h
++++ b/include/linux/virtio_config.h
+@@ -293,19 +293,7 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
+ 		__u8: (x), \
+ 		__virtio16: virtio16_to_cpu((vdev), (x)), \
+ 		__virtio32: virtio32_to_cpu((vdev), (x)), \
+-		__virtio64: virtio64_to_cpu((vdev), (x)), \
+-		/*
+-		 * Why define a default? checker can distinguish between
+-		 * e.g. __u16, __le16 and __virtio16, but GCC can't so
+-		 * attempts to define variants for both look like a duplicate
+-		 * variant to it.
+-		 */ \
+-		default: _Generic((x), \
+-				 __u8: (x), \
+-				 __le16: virtio16_to_cpu((vdev), (__force __virtio16)(x)), \
+-				 __le32: virtio32_to_cpu((vdev), (__force __virtio32)(x)), \
+-				 __le64: virtio64_to_cpu((vdev), (__force __virtio64)(x)) \
+-				 ) \
++		__virtio64: virtio64_to_cpu((vdev), (x)) \
+ 		)
  
--	virtio_cread(vdev, struct virtio_iommu_config, page_size_mask,
--		     &viommu->pgsize_bitmap);
-+	virtio_cread_le(vdev, struct virtio_iommu_config, page_size_mask,
-+			&viommu->pgsize_bitmap);
+ #define cpu_to_virtio(vdev, x, m) \
+@@ -313,19 +301,7 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
+ 		__u8: (x), \
+ 		__virtio16: cpu_to_virtio16((vdev), (x)), \
+ 		__virtio32: cpu_to_virtio32((vdev), (x)), \
+-		__virtio64: cpu_to_virtio64((vdev), (x)), \
+-		/*
+-		 * Why define a default? checker can distinguish between
+-		 * e.g. __u16, __le16 and __virtio16, but GCC can't so
+-		 * attempts to define variants for both look like a duplicate
+-		 * variant to it.
+-		 */ \
+-		default: _Generic((m), \
+-				 __u8: (x), \
+-				 __le16: (__force __le16)cpu_to_virtio16((vdev), (x)), \
+-				 __le32: (__force __le32)cpu_to_virtio32((vdev), (x)), \
+-				 __le64: (__force __le64)cpu_to_virtio64((vdev), (x)) \
+-				 ) \
++		__virtio64: cpu_to_virtio64((vdev), (x)) \
+ 		)
  
- 	if (!viommu->pgsize_bitmap) {
- 		ret = -EINVAL;
-@@ -1022,25 +1022,25 @@ static int viommu_probe(struct virtio_device *vdev)
- 	viommu->last_domain = ~0U;
- 
- 	/* Optional features */
--	virtio_cread_feature(vdev, VIRTIO_IOMMU_F_INPUT_RANGE,
--			     struct virtio_iommu_config, input_range.start,
--			     &input_start);
-+	virtio_cread_le_feature(vdev, VIRTIO_IOMMU_F_INPUT_RANGE,
-+				struct virtio_iommu_config, input_range.start,
-+				&input_start);
- 
--	virtio_cread_feature(vdev, VIRTIO_IOMMU_F_INPUT_RANGE,
--			     struct virtio_iommu_config, input_range.end,
--			     &input_end);
-+	virtio_cread_le_feature(vdev, VIRTIO_IOMMU_F_INPUT_RANGE,
-+				struct virtio_iommu_config, input_range.end,
-+				&input_end);
- 
--	virtio_cread_feature(vdev, VIRTIO_IOMMU_F_DOMAIN_RANGE,
--			     struct virtio_iommu_config, domain_range.start,
--			     &viommu->first_domain);
-+	virtio_cread_le_feature(vdev, VIRTIO_IOMMU_F_DOMAIN_RANGE,
-+				struct virtio_iommu_config, domain_range.start,
-+				&viommu->first_domain);
- 
--	virtio_cread_feature(vdev, VIRTIO_IOMMU_F_DOMAIN_RANGE,
--			     struct virtio_iommu_config, domain_range.end,
--			     &viommu->last_domain);
-+	virtio_cread_le_feature(vdev, VIRTIO_IOMMU_F_DOMAIN_RANGE,
-+				struct virtio_iommu_config, domain_range.end,
-+				&viommu->last_domain);
- 
--	virtio_cread_feature(vdev, VIRTIO_IOMMU_F_PROBE,
--			     struct virtio_iommu_config, probe_size,
--			     &viommu->probe_size);
-+	virtio_cread_le_feature(vdev, VIRTIO_IOMMU_F_PROBE,
-+				struct virtio_iommu_config, probe_size,
-+				&viommu->probe_size);
- 
- 	viommu->geometry = (struct iommu_domain_geometry) {
- 		.aperture_start	= input_start,
+ #define __virtio_native_type(structname, member) \
 -- 
 MST
 
