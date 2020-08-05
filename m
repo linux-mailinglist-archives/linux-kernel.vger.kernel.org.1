@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B7523CBE5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8702223CBF6
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbgHEP7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 11:59:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30028 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726013AbgHEPui (ORCPT
+        id S1726221AbgHEQL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:11:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33435 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726200AbgHEPsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 11:50:38 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 075BXXuJ178180;
-        Wed, 5 Aug 2020 08:00:44 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32qst1vrkv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 08:00:44 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 075BZrpK184019;
-        Wed, 5 Aug 2020 08:00:43 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32qst1vrj7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 08:00:43 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 075BuB2d019265;
-        Wed, 5 Aug 2020 12:00:41 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma02fra.de.ibm.com with ESMTP id 32n018ameg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 12:00:40 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 075C0cZX26870164
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 5 Aug 2020 12:00:38 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2487D4C05A;
-        Wed,  5 Aug 2020 12:00:38 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7F2D04C050;
-        Wed,  5 Aug 2020 12:00:35 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.95.205])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  5 Aug 2020 12:00:35 +0000 (GMT)
-Message-ID: <1624d016e4110cf903e4b3d22f253edc34c6b39c.camel@linux.ibm.com>
-Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 05 Aug 2020 08:00:33 -0400
-In-Reply-To: <20200805004331.20652-1-nramas@linux.microsoft.com>
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-05_08:2020-08-03,2020-08-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=840
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 mlxscore=0
- adultscore=0 clxscore=1015 suspectscore=0 spamscore=0 malwarescore=0
- phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008050097
+        Wed, 5 Aug 2020 11:48:38 -0400
+X-Greylist: delayed 723 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 11:48:37 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596642331;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2rdWMsfVYoLVMGMuU1zSO9y5DV7npaEchPj2O2QlCzs=;
+        b=gqstTDtoesNQpmIXXrmaVyp1fjVXg9pB5CuuWcQrCkV5M57coYkYX0MisWG8xrv6zUm76Y
+        KMdDB3I4PugRZrBe79JUB4o0ZGSag3tb+up3l2V4SiiopX/FWB2XYWJ3XvuT0m28UQ5ZBR
+        hXv7qG8iOnwoKf+y8HADzfyRlhvQ69E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-TzVqO_I0MwqTgX4ANH4PbQ-1; Wed, 05 Aug 2020 09:18:39 -0400
+X-MC-Unique: TzVqO_I0MwqTgX4ANH4PbQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB70091270;
+        Wed,  5 Aug 2020 13:18:37 +0000 (UTC)
+Received: from epycfail.redhat.com (unknown [10.36.110.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DCBC5380;
+        Wed,  5 Aug 2020 13:18:35 +0000 (UTC)
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        heiko.carstens@de.ibm.com, Cong Wang <xiyou.wangcong@gmail.com>
+Subject: [PATCH net-next] ip_tunnel_core: Fix build for archs without _HAVE_ARCH_IPV6_CSUM
+Date:   Wed,  5 Aug 2020 15:18:21 +0200
+Message-Id: <a85e9878716c2904488d56335320b7131613e94c.1596633316.git.sbrivio@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-04 at 17:43 -0700, Lakshmi Ramasubramanian wrote:
-> Critical data structures of security modules are currently not measured.
-> Therefore an attestation service, for instance, would not be able to
-> attest whether the security modules are always operating with the policies
-> and configuration that the system administrator had setup. The policies
-> and configuration for the security modules could be tampered with by
-> malware by exploiting kernel vulnerabilities or modified through some
-> inadvertent actions on the system. Measuring such critical data would
-> enable an attestation service to better assess the state of the system.
+On architectures defining _HAVE_ARCH_IPV6_CSUM, we get
+csum_ipv6_magic() defined by means of arch checksum.h headers. On
+other architectures, we actually need to include net/ip6_checksum.h
+to be able to use it.
 
-From a high level review, "Critical data structures" should be the
-focus of this patch set.  Measuring "critical data structures" should
-be independent of measuring the "policy" being loaded.   The in memory
-policy hash could be an example of  data included in the "critical data
-structures". 
+Without this include, building with defconfig breaks at least for
+s390.
 
-Keep this patch set simple.
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 4cb47a8644cc ("tunnels: PMTU discovery support for directly bridged IP packets")
+Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
+---
+I'm submitting this for net-next despite the fact it's closed, as
+the offending code isn't merged to net.git yet. Should I rather
+submit this to... linux-next?
 
-Mimi
+ net/ipv4/ip_tunnel_core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/ipv4/ip_tunnel_core.c b/net/ipv4/ip_tunnel_core.c
+index 9ddee2a0c66d..75c6013ff9a4 100644
+--- a/net/ipv4/ip_tunnel_core.c
++++ b/net/ipv4/ip_tunnel_core.c
+@@ -25,6 +25,7 @@
+ #include <net/protocol.h>
+ #include <net/ip_tunnels.h>
+ #include <net/ip6_tunnel.h>
++#include <net/ip6_checksum.h>
+ #include <net/arp.h>
+ #include <net/checksum.h>
+ #include <net/dsfield.h>
+-- 
+2.27.0
 
