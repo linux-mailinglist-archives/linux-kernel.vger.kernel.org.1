@@ -2,219 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE1323CD4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627F923CD68
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgHERYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728776AbgHERXy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:23:54 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86000C06174A;
-        Wed,  5 Aug 2020 10:23:54 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id v15so20146934lfg.6;
-        Wed, 05 Aug 2020 10:23:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RTUzsrfaQoHKZVy9cmLeHwNyr/nr7Ihju/lId3cbKHg=;
-        b=d+vuuiZGBac23smNQ/5Nf9Dtkcm0tB0T2ace/UJGn7IdY34laxqz0QKuy6qVcYXxTX
-         +8g+LxrozCHuwfFazJh+d4Gvx834EMtyZ02EnbqXmyZeYfbo2+glRHaEsq3vewzceL7d
-         D4Da75X3ZOYT6Og0MHRZ4/ylzjZ69jXb5Zchd7WdC9qyGi9hlFdQHA0Ix0X1mBw/Cr33
-         UWgjurxDi3NxRBYA9finrD5CMQcLN96aphBlSEOEkpQYo6NpLfFNmBl0rZP+na9DMuel
-         cUPpqtz90/ge5DVXsbx8uRqOX9U5GSJtDe4HchlLMPjAhkGrAN81LQQt4i2S1uiClG6X
-         nucQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RTUzsrfaQoHKZVy9cmLeHwNyr/nr7Ihju/lId3cbKHg=;
-        b=TRvl2Aa7cYOUcLxij2bDi5QlPupJNJNH3ox0he3pQsE4lIpF9oD3HjqbkoDE6s/+A4
-         nYhwijzW7lfa7ySQbeKQZgNMwAHlJlhcgRuWEqEftUHBpLyZP0U3Qs3O0B8ankFVpWIj
-         PlI/ocP0crr4IX01PdZrM+hNk/cMTAr5jFWwptZEi9U5L0c7dkpfKKdeoC5Xi1qTEcS1
-         0xRGAb5VuIci3ZxxCSnkFqmkJ6b9DfkivVc66P1hjUwgbA9c6AH2qxE/dfTq3IEh/rhX
-         sMLxtEZQto7VU5uXcBDidWWR/peMB8PYf6FbZIArrPaVckSED7sILVaewluIQuRT5f4s
-         hpOw==
-X-Gm-Message-State: AOAM532DdbCK7AomIncYtRdn44lTLeSn2oL41ubFVKOoAoUO+nxXQ2hk
-        D5TEEfAEocVAT50zlCNbOqKyYHE0
-X-Google-Smtp-Source: ABdhPJx974DTKzMbJvfgKqrnBwD14STcF/ve8Md3Id04y1YrjXJl8wCgVmYa/KTjw2EDqxWlfwYpAA==
-X-Received: by 2002:a19:d14:: with SMTP id 20mr2030698lfn.27.1596648232750;
-        Wed, 05 Aug 2020 10:23:52 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
-        by smtp.googlemail.com with ESMTPSA id a19sm1398454lff.25.2020.08.05.10.23.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 10:23:52 -0700 (PDT)
-Subject: Re: [PATCH v8 08/10] gpu: host1x: mipi: Keep MIPI clock enabled till
- calibration is done
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     jonathanh@nvidia.com, frankc@nvidia.com, hverkuil@xs4all.nl,
-        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
- <1596469346-937-9-git-send-email-skomatineni@nvidia.com>
- <20200805134600.GA3351349@ulmo>
- <103efe31-1abc-54f2-6004-490d7bb1b61a@gmail.com>
- <dcd58ae7-58ed-11d1-0e10-7f522b651b30@gmail.com>
- <addb92e5-7c7a-6fba-117d-c7880b2d4597@nvidia.com>
- <ed80bf2f-213f-286a-59b2-fc85e4181b3d@gmail.com>
- <6eede805-80fd-016f-22f8-b6d25f6587af@nvidia.com>
- <1c12e40e-de7f-0599-a941-82760b4c7668@gmail.com>
- <9ef0b875-e826-43e2-207e-168d2081ff6a@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <57b48a06-325c-86ba-db24-011de7ab51a3@gmail.com>
-Date:   Wed, 5 Aug 2020 20:23:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728591AbgHER1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:27:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51202 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728418AbgHERZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:25:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CE2E8B028;
+        Wed,  5 Aug 2020 17:26:01 +0000 (UTC)
+From:   Coly Li <colyli@suse.de>
+To:     linux-block@vger.kernel.org
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Coly Li <colyli@suse.de>, Ming Lei <ming.lei@redhat.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Enzo Matsumiya <ematsumiya@suse.com>,
+        Evan Green <evgreen@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Xiao Ni <xni@redhat.com>
+Subject: [PATCH v4] block: check queue's limits.discard_granularity in __blkdev_issue_discard()
+Date:   Thu,  6 Aug 2020 01:25:03 +0800
+Message-Id: <20200805172503.45121-1-colyli@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <9ef0b875-e826-43e2-207e-168d2081ff6a@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-05.08.2020 20:04, Sowjanya Komatineni пишет:
-> 
-> On 8/5/20 9:57 AM, Dmitry Osipenko wrote:
->> 05.08.2020 19:50, Sowjanya Komatineni пишет:
->>> On 8/5/20 9:47 AM, Dmitry Osipenko wrote:
->>>> 05.08.2020 19:33, Sowjanya Komatineni пишет:
->>>>> On 8/5/20 7:19 AM, Dmitry Osipenko wrote:
->>>>>> 05.08.2020 17:05, Dmitry Osipenko пишет:
->>>>>>> 05.08.2020 16:46, Thierry Reding пишет:
->>>>>>>> On Mon, Aug 03, 2020 at 08:42:24AM -0700, Sowjanya Komatineni
->>>>>>>> wrote:
->>>>>>>>> With the split of MIPI calibration into tegra_mipi_calibrate() and
->>>>>>>>> tegra_mipi_wait(), MIPI clock is not kept enabled till the
->>>>>>>>> calibration
->>>>>>>>> is done.
->>>>>>>>>
->>>>>>>>> So, this patch skips disabling MIPI clock after triggering
->>>>>>>>> start of
->>>>>>>>> calibration and disables it only after waiting for done status
->>>>>>>>> from
->>>>>>>>> the calibration logic.
->>>>>>>>>
->>>>>>>>> This patch renames tegra_mipi_calibrate() as
->>>>>>>>> tegra_mipi_start_calibration()
->>>>>>>>> and tegra_mipi_wait() as tegra_mipi_finish_calibration() to be
->>>>>>>>> inline
->>>>>>>>> with their usage.
->>>>>>>>>
->>>>>>>>> As MIPI clock is left enabled and in case of any failures with CSI
->>>>>>>>> input
->>>>>>>>> streaming tegra_mipi_finish_calibration() will not get invoked.
->>>>>>>>> So added new API tegra_mipi_cancel_calibration() which disables
->>>>>>>>> MIPI clock
->>>>>>>>> and consumer drivers can call this in such cases.
->>>>>>>>>
->>>>>>>>> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
->>>>>>>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->>>>>>>>> ---
->>>>>>>>>     drivers/gpu/drm/tegra/dsi.c |  4 ++--
->>>>>>>>>     drivers/gpu/host1x/mipi.c   | 19 ++++++++++---------
->>>>>>>>>     include/linux/host1x.h      |  5 +++--
->>>>>>>>>     3 files changed, 15 insertions(+), 13 deletions(-)
->>>>>>>>>
->>>>>>>>> diff --git a/drivers/gpu/drm/tegra/dsi.c
->>>>>>>>> b/drivers/gpu/drm/tegra/dsi.c
->>>>>>>>> index 3820e8d..a7864e9 100644
->>>>>>>>> --- a/drivers/gpu/drm/tegra/dsi.c
->>>>>>>>> +++ b/drivers/gpu/drm/tegra/dsi.c
->>>>>>>>> @@ -694,11 +694,11 @@ static int tegra_dsi_pad_calibrate(struct
->>>>>>>>> tegra_dsi *dsi)
->>>>>>>>>             DSI_PAD_PREEMP_PD(0x03) | DSI_PAD_PREEMP_PU(0x3);
->>>>>>>>>         tegra_dsi_writel(dsi, value, DSI_PAD_CONTROL_3);
->>>>>>>>>     -    err = tegra_mipi_calibrate(dsi->mipi);
->>>>>>>>> +    err = tegra_mipi_start_calibration(dsi->mipi);
->>>>>>>>>         if (err < 0)
->>>>>>>>>             return err;
->>>>>>>>>     -    return tegra_mipi_wait(dsi->mipi);
->>>>>>>>> +    return tegra_mipi_finish_calibration(dsi->mipi);
->>>>>>>>>     }
->>>>>>>>>       static void tegra_dsi_set_timeout(struct tegra_dsi *dsi,
->>>>>>>>> unsigned long bclk,
->>>>>>>>> diff --git a/drivers/gpu/host1x/mipi.c b/drivers/gpu/host1x/mipi.c
->>>>>>>>> index e606464..b15ab6e 100644
->>>>>>>>> --- a/drivers/gpu/host1x/mipi.c
->>>>>>>>> +++ b/drivers/gpu/host1x/mipi.c
->>>>>>>>> @@ -293,17 +293,19 @@ int tegra_mipi_disable(struct
->>>>>>>>> tegra_mipi_device *dev)
->>>>>>>>>     }
->>>>>>>>>     EXPORT_SYMBOL(tegra_mipi_disable);
->>>>>>>>>     -int tegra_mipi_wait(struct tegra_mipi_device *device)
->>>>>>>>> +void tegra_mipi_cancel_calibration(struct tegra_mipi_device
->>>>>>>>> *device)
->>>>>>>>> +{
->>>>>>>>> +    clk_disable(device->mipi->clk);
->>>>>>>> Do we need to do anything with the MIPI_CAL_CTRL and
->>>>>>>> MIPI_CAL_STATUS
->>>>>>>> registers here? We don't clear the START bit in the former when the
->>>>>>>> calibration has successfully finished, but I suspect that's because
->>>>>>>> the bit is self-clearing. But I wonder if we still need to clear it
->>>>>>>> upon cancellation to make sure the calibration does indeed stop.
->>>>>>> Apparently there is no way to explicitly stop calibration other
->>>>>>> than to
->>>>>>> reset MIPI calibration block, but Sowjanya says this is unnecessary.
->>>>>>>
->>>>>>> Perhaps having a fixed delay before disabling clock could be
->>>>>>> enough to
->>>>>>> ensure that calibration is stopped before the clock is disabled?
->>>>>>>
->>>>>> Actually, there is a MIPI_CAL_ACTIVE bit in the status register.
->>>>>> Maybe
->>>>>> it needs to be polled until it's unset?
->>>>> Confirmed with HW design team during this patch update.
->>>>>
->>>>> SW does not need to clear START bit and only write 1 takes effect to
->>>>> that bit.
->>>>>
->>>>> Also, no need to have delay or do any other register settings
->>>>> unclear as
->>>>> its FSM and there's nothing to get stuck.
->>>>>
->>>>> Also it goes thru small finite set of codes and by the time sensor
->>>>> programming happens for enabling streaming FSM will finish its
->>>>> calibration sequence much early and it will only wait for pads LP-11.
->>>>>
->>>>> So, during cancel we only need disable MIPI clock.
->>>>>
->>>> But there is no guarantee that cancel_calibration() couldn't be invoked
->>>> in the middle of the calibration process, hence FSM could freeze in an
->>>> intermediate state if it's running on the disabled MIPI clock, this
->>>> doesn't sound good.
->>> Actual calibration logic uses UART_FST_CAL clock which is always enabled
->> What enables the UART_FST_CAL clock? I don't see this clock used
->> anywhere.
-> 
-> UART_FST_MIPI_CAL is shared with uart and is always enabled all the time.
-> 
-> I don't see mipi driver handling this and I think that's because this
-> clock is enabled all the time as its used for UART as well. Probably
-> thierry can comment on this clock.
+If create a loop device with a backing NVMe SSD, current loop device
+driver doesn't correctly set its  queue's limits.discard_granularity and
+leaves it as 0. If a discard request at LBA 0 on this loop device, in
+__blkdev_issue_discard() the calculated req_sects will be 0, and a zero
+length discard request will trigger a BUG() panic in generic block layer
+code at block/blk-mq.c:563.
 
-It's not only the MIPI driver, the clock isn't defined at all neither in
-the clk driver, nor in clk DT bindings.
+[  955.565006][   C39] ------------[ cut here ]------------
+[  955.559660][   C39] invalid opcode: 0000 [#1] SMP NOPTI
+[  955.622171][   C39] CPU: 39 PID: 248 Comm: ksoftirqd/39 Tainted: G            E     5.8.0-default+ #40
+[  955.622171][   C39] Hardware name: Lenovo ThinkSystem SR650 -[7X05CTO1WW]-/-[7X05CTO1WW]-, BIOS -[IVE160M-2.70]- 07/17/2020
+[  955.622175][   C39] RIP: 0010:blk_mq_end_request+0x107/0x110
+[  955.622177][   C39] Code: 48 8b 03 e9 59 ff ff ff 48 89 df 5b 5d 41 5c e9 9f ed ff ff 48 8b 35 98 3c f4 00 48 83 c7 10 48 83 c6 19 e8 cb 56 c9 ff eb cb <0f> 0b 0f 1f 80 00 00 00 00 0f 1f 44 00 00 55 48 89 e5 41 56 41 54
+[  955.622179][   C39] RSP: 0018:ffffb1288701fe28 EFLAGS: 00010202
+[  955.749277][   C39] RAX: 0000000000000001 RBX: ffff956fffba5080 RCX: 0000000000004003
+[  955.749278][   C39] RDX: 0000000000000003 RSI: 0000000000000000 RDI: 0000000000000000
+[  955.749279][   C39] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+[  955.749279][   C39] R10: ffffb1288701fd28 R11: 0000000000000001 R12: ffffffffa8e05160
+[  955.749280][   C39] R13: 0000000000000004 R14: 0000000000000004 R15: ffffffffa7ad3a1e
+[  955.749281][   C39] FS:  0000000000000000(0000) GS:ffff95bfbda00000(0000) knlGS:0000000000000000
+[  955.749282][   C39] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  955.749282][   C39] CR2: 00007f6f0ef766a8 CR3: 0000005a37012002 CR4: 00000000007606e0
+[  955.749283][   C39] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  955.749284][   C39] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  955.749284][   C39] PKRU: 55555554
+[  955.749285][   C39] Call Trace:
+[  955.749290][   C39]  blk_done_softirq+0x99/0xc0
+[  957.550669][   C39]  __do_softirq+0xd3/0x45f
+[  957.550677][   C39]  ? smpboot_thread_fn+0x2f/0x1e0
+[  957.550679][   C39]  ? smpboot_thread_fn+0x74/0x1e0
+[  957.550680][   C39]  ? smpboot_thread_fn+0x14e/0x1e0
+[  957.550684][   C39]  run_ksoftirqd+0x30/0x60
+[  957.550687][   C39]  smpboot_thread_fn+0x149/0x1e0
+[  957.886225][   C39]  ? sort_range+0x20/0x20
+[  957.886226][   C39]  kthread+0x137/0x160
+[  957.886228][   C39]  ? kthread_park+0x90/0x90
+[  957.886231][   C39]  ret_from_fork+0x22/0x30
+[  959.117120][   C39] ---[ end trace 3dacdac97e2ed164 ]---
 
-It could be fragile to assume that it's always enabled.
+This is the procedure to reproduce the panic,
+  # modprobe scsi_debug delay=0 dev_size_mb=2048 max_queue=1
+  # losetup -f /dev/nvme0n1 --direct-io=on
+  # blkdiscard /dev/loop0 -o 0 -l 0x200
 
-> Also regarding cancel calibration, as FSM goes thru only finite sequence
-> codes by the time csi stream and sensor stream happens which is where we
-> check for calibration to complete for sure calibration will be finished
-> and calibration logic will only wait for pads to be in LP-11 to apply
-> results. So nothing special needed during cancel except to turn clock
-> off to balance its usage count.
+This patch fixes the issue by checking q->limits.discard_granularity in
+__blkdev_issue_discard() before composing the discard bio. If the value
+is 0, then prints a warning oops information and returns -EOPNOTSUPP to
+the caller to indicate that this buggy device driver doesn't support
+discard request.
 
-I guess it should be okay for the case of the VI driver, but
-in general please don't assume that code can't change in the future. The
-common API always should be made reliable for all possible situations.
+Fixes: 9b15d109a6b2 ("block: improve discard bio alignment in __blkdev_issue_discard()")
+Fixes: c52abf563049 ("loop: Better discard support for block devices")
+Reported-and-suggested-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Coly Li <colyli@suse.de>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Darrick J. Wong <darrick.wong@oracle.com>
+Cc: Enzo Matsumiya <ematsumiya@suse.com>
+Cc: Evan Green <evgreen@chromium.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: Xiao Ni <xni@redhat.com>
+---
+Changelog:
+v4: use pr_err_ratelimited(), and add more reviewed-by tags.
+v3: print device name assocated with the buggy driver.
+v2: fix typo of the wrong return error code.
+v1: first version.
+
+ block/blk-lib.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/block/blk-lib.c b/block/blk-lib.c
+index 019e09bb9c0e..d3bbb3d9fac3 100644
+--- a/block/blk-lib.c
++++ b/block/blk-lib.c
+@@ -47,6 +47,15 @@ int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
+ 		op = REQ_OP_DISCARD;
+ 	}
+ 
++	/* In case the discard granularity isn't set by buggy device driver */
++	if (WARN_ON_ONCE(!q->limits.discard_granularity)) {
++		char dev_name[BDEVNAME_SIZE];
++
++		bdevname(bdev, dev_name);
++		pr_err_ratelimited("%s: Error: discard_granularity is 0.\n", dev_name);
++		return -EOPNOTSUPP;
++	}
++
+ 	bs_mask = (bdev_logical_block_size(bdev) >> 9) - 1;
+ 	if ((sector | nr_sects) & bs_mask)
+ 		return -EINVAL;
+-- 
+2.26.2
+
