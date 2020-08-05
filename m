@@ -2,147 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D0F23CCE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E538823CD16
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728545AbgHERJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:09:35 -0400
-Received: from mail-pl1-f200.google.com ([209.85.214.200]:33982 "EHLO
-        mail-pl1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728495AbgHERHK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:07:10 -0400
-Received: by mail-pl1-f200.google.com with SMTP id 65so32928794plf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:07:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=A1AQFUtZc3oUBC+ELHd0XSkjPz6GoWRGj0v6BMelR/0=;
-        b=XcDyIO5O8JreBZId5ejSbrbD8ffOt8z2ZeSooiv0S5iIPXDc7fBbBbZEgoGGTam3K3
-         YdIZUPtxIirj0m1BujDBfy3iP9uPUIJMOYesVFp/TVsBFjajc+uDqqZFD3CX5IJnPYbV
-         7EQHfGEuI3r5m8GREJO5phT9bCT83YetKH2UlFoJaUrWLT+dXsRQzJstCnGdBjx5FP+T
-         nIfqgnm7teRlkdhrURQqVBv3M0lsBtD0afk7+xbR5dK3VxBlsm49EBNgf7jQVwTSaWxt
-         XaGQVHnPdnH2SRaV+33r26fIKVMFHbPFAWfE/0XThfXncshfxBVySLhupYTiEvzDC/bv
-         mthw==
-X-Gm-Message-State: AOAM530x3uIjtQLWmS2YTc04tCjWOQMMgq/VF8LCpF47O3CN0VpPfrF+
-        KFBChs5+QYg20rzb6CcYwyArflRN4zqW+s3RmwvOyp9qtDj/
-X-Google-Smtp-Source: ABdhPJykkigbEi+M0gISZNJMdIPXT3ju2NiFa2v2XCWKQqEk8ic4jWaTpxRf/FDS3gSAkV6njowu7TVDsJBm9V9nFFyGPEY0qALC
+        id S1728234AbgHERT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:19:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:33668 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728653AbgHERSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:18:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F37F230E;
+        Wed,  5 Aug 2020 05:36:48 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E18173FA1C;
+        Wed,  5 Aug 2020 05:36:46 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 13:36:43 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Lukasz Luba <lukasz.luba@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, cristian.marussi@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>, rjw@rjwysocki.net
+Subject: Re: [PATCH 0/4] CPUFreq statistics retrieved by drivers
+Message-ID: <20200805123643.GB4818@bogus>
+References: <20200729151208.27737-1-lukasz.luba@arm.com>
+ <20200730085333.qubrsv7ufqninihd@vireshk-mac-ubuntu>
+ <20200730091014.GA13158@bogus>
+ <3b3a56e9-29ec-958f-fb3b-c689a9389d2f@arm.com>
+ <20200731155650.GC14529@bogus>
+ <ae352c39-f7c4-c69e-0113-7c810c130ee0@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:b4d1:: with SMTP id d200mr3127653iof.70.1596629836200;
- Wed, 05 Aug 2020 05:17:16 -0700 (PDT)
-Date:   Wed, 05 Aug 2020 05:17:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000039829c05ac205a4c@google.com>
-Subject: KMSAN: uninit-value in do_xdp_generic
-From:   syzbot <syzbot+007ef8d907f2fb6e17ca@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, glider@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae352c39-f7c4-c69e-0113-7c810c130ee0@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Aug 04, 2020 at 10:19:23AM -0700, Florian Fainelli wrote:
+>
+>
+> On 7/31/2020 8:56 AM, Sudeep Holla wrote:
+> > On Thu, Jul 30, 2020 at 10:36:51AM +0100, Lukasz Luba wrote:
+> >>
+> >> In this case I think we would have to create debugfs.
+> >> Sudeep do you think these debugfs should be exposed from the protocol
+> >> layer:
+> >> drivers/firmware/arm_scmi/perf.c
+> >
+> > I prefer above over cpufreq as we can support for all the devices not
+> > just cpus which avoids adding similar support elsewhere(mostly devfreq)
+> >
+> >> or maybe from the cpufreq scmi driver? I would probably be safer to have
+> >> it in the cpufreq driver because we have scmi_handle there.
+> >>
+> >
+> > Cristian was thinking if we can consolidate all such debugfs under one
+> > device may be and that should eliminate your handle restriction. I would
+> > like to see how that works out in implementation but I don't have any
+> > better suggestion ATM.
+>
+> debugfs is not enabled in production kernels, and especially not with
+> Android kernels, so sticking those in sysfs like the existing cpufreq
+> subsystem statistics may be a better choice.
 
-syzbot found the following issue on:
+Fair enough. I was suggesting that only if we can't push this into existing
+sysfs support. If we can, then we need not worry about it. If not, I don't
+want a user ABI just for SCMI for this firmware stats, I would rather keep
+it in debugfs for debug purposes. This will be useless once we start seeing
+AMU in the hardware and hence I was pushing for debugfs.
 
-HEAD commit:    93f54a72 instrumented.h: fix KMSAN support
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=16fa5198900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa4f3b91169c2501
-dashboard link: https://syzkaller.appspot.com/bug?extid=007ef8d907f2fb6e17ca
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+007ef8d907f2fb6e17ca@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in netif_receive_generic_xdp net/core/dev.c:4670 [inline]
-BUG: KMSAN: uninit-value in do_xdp_generic+0x1312/0x24f0 net/core/dev.c:4735
-CPU: 1 PID: 11582 Comm: syz-executor.1 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1df/0x240 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- netif_receive_generic_xdp net/core/dev.c:4670 [inline]
- do_xdp_generic+0x1312/0x24f0 net/core/dev.c:4735
- __netif_receive_skb_core+0x9a0/0x5890 net/core/dev.c:5107
- __netif_receive_skb_one_core net/core/dev.c:5279 [inline]
- __netif_receive_skb net/core/dev.c:5395 [inline]
- netif_receive_skb_internal net/core/dev.c:5497 [inline]
- netif_receive_skb+0x56c/0xff0 net/core/dev.c:5556
- tun_rx_batched include/linux/skbuff.h:4327 [inline]
- tun_get_user+0x6df8/0x72f0 drivers/net/tun.c:1972
- tun_chr_write_iter+0x1f2/0x360 drivers/net/tun.c:2001
- call_write_iter include/linux/fs.h:1908 [inline]
- new_sync_write fs/read_write.c:503 [inline]
- vfs_write+0xd98/0x1480 fs/read_write.c:578
- ksys_write+0x267/0x450 fs/read_write.c:631
- __do_sys_write fs/read_write.c:643 [inline]
- __se_sys_write+0x92/0xb0 fs/read_write.c:640
- __ia32_sys_write+0x4a/0x70 fs/read_write.c:640
- do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
- __do_fast_syscall_32+0x2aa/0x400 arch/x86/entry/common.c:477
- do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f1b549
-Code: Bad RIP value.
-RSP: 002b:00000000f54910cc EFLAGS: 00000296 ORIG_RAX: 0000000000000004
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000240
-RDX: 000000000000000c RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
- kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
- slab_alloc_node mm/slub.c:2839 [inline]
- __kmalloc_node_track_caller+0xb40/0x1200 mm/slub.c:4478
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- pskb_expand_head+0x20b/0x1b00 net/core/skbuff.c:1627
- netif_receive_generic_xdp net/core/dev.c:4616 [inline]
- do_xdp_generic+0x58c/0x24f0 net/core/dev.c:4735
- __netif_receive_skb_core+0x9a0/0x5890 net/core/dev.c:5107
- __netif_receive_skb_one_core net/core/dev.c:5279 [inline]
- __netif_receive_skb net/core/dev.c:5395 [inline]
- netif_receive_skb_internal net/core/dev.c:5497 [inline]
- netif_receive_skb+0x56c/0xff0 net/core/dev.c:5556
- tun_rx_batched include/linux/skbuff.h:4327 [inline]
- tun_get_user+0x6df8/0x72f0 drivers/net/tun.c:1972
- tun_chr_write_iter+0x1f2/0x360 drivers/net/tun.c:2001
- call_write_iter include/linux/fs.h:1908 [inline]
- new_sync_write fs/read_write.c:503 [inline]
- vfs_write+0xd98/0x1480 fs/read_write.c:578
- ksys_write+0x267/0x450 fs/read_write.c:631
- __do_sys_write fs/read_write.c:643 [inline]
- __se_sys_write+0x92/0xb0 fs/read_write.c:640
- __ia32_sys_write+0x4a/0x70 fs/read_write.c:640
- do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
- __do_fast_syscall_32+0x2aa/0x400 arch/x86/entry/common.c:477
- do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--
+Regards,
+Sudeep
