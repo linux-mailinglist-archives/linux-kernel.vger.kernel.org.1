@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F9523D375
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 23:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FE123D362
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 23:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgHEVK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 17:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
+        id S1726226AbgHEVHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 17:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725139AbgHEVKY (ORCPT
+        with ESMTP id S1725139AbgHEVHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 17:10:24 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9145BC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 14:10:23 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id d6so34099717ejr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 14:10:23 -0700 (PDT)
+        Wed, 5 Aug 2020 17:07:34 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F05C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 14:07:33 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id kr4so5412816pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 14:07:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V2PZXILdefiTwwzfO5OUUQBgzK17xy7UQ4vY/f0A1uM=;
-        b=aPqJee4+/II1pDeHm6YJT9N8szJtyfH8/u0a/mb/rUh0XKwrO9/lI6mAKg/YUjZsap
-         p0B7nL/zuMyT3EsRGWbvq29/0Lc9irQLp5boKwUO0dgr7wICe4bQ/VVNo2zfxFQFtKUF
-         aTAuAP1cEHDioLUgDXQmFNnV10RJlUC2CPrZI=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t32+K6etBUX79TR2T2NSsnsirFvY4dxDRuLsVkhuHkU=;
+        b=oXIAtmAYQGlEIRzENScxODCyVYWpsOI8UmcLy2ewaSMVMAsRl/WxzQt7BkbMR01IR0
+         HlpVGPpM85H5s2aK38k7QRK9AHyvMT7IZY5Vp82s7xDqBYGmtUbUVI+HbApWYA/WX085
+         uGn41RMopWt9EZB0FxkuA4cNKY5D9gXKz/UQQSJNEs01PniJxyHRXyGZdgUmSy62Fsa/
+         8Hvn70ClApXaYpk7re2kLbWM/iYkksMPUYzVT2QjOzf20yNFmfgknf6kl9804DHhhQBZ
+         tmE92sUtJw84ox2RKvBzMT7t1PXKYjuJMB1STR+9NiCVPVCLv5wtGy277Kiiy1Qo56nm
+         q7yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V2PZXILdefiTwwzfO5OUUQBgzK17xy7UQ4vY/f0A1uM=;
-        b=pth4mrdZhPml0j0mRK21e7OWk4VHtCwmptAgP4KyGLk/lnLPBXOfmqBVJ3iJDUWXHP
-         vMEB9X4iVtDXUxJH4DeURrD59NTb2iMRC14CIu4yImoA6oH+yVCq8Yk+JCsde9A/mXfl
-         CNuNTfZKnxRD0Vlkd3msjjQNznLidSIaWq/cEmoAlqh84hpN3FXd3R9H2mLz4PWcd7bT
-         aOlDTHIpUnkWJhbU0fdv5alqNWfCAOhaBXoAVdS/JiMGOkXiMwdvFv15XZ5ShLDrLhnk
-         vCP5Wj3yNV1mrqG9EI+ex3RZjNqtK7pWWMZNf1dzVBI/VIb3DvqAoiTXzcGPF1EOO9bQ
-         Tb6Q==
-X-Gm-Message-State: AOAM533xz3wADfCzCmlBGttRYsgBTHfQ8/om0orBnJmt3Q8ix/GQV/oB
-        5C5r7xcQmMCjoRB++8G/F1ng4A4Mz5k=
-X-Google-Smtp-Source: ABdhPJxBX95do5yPbM4lrDh4XtNiezNlJO3s6gwxpdpxHravQ2Hcf/I2l2NlL9cK9EI6tYrwUL4iHg==
-X-Received: by 2002:a17:906:4f82:: with SMTP id o2mr1251879eju.424.1596661821719;
-        Wed, 05 Aug 2020 14:10:21 -0700 (PDT)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id ec20sm2247304ejb.61.2020.08.05.14.10.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 14:10:21 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id jp10so21379409ejb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 14:10:21 -0700 (PDT)
-X-Received: by 2002:a05:6402:28f:: with SMTP id l15mr1118783edv.233.1596661486208;
- Wed, 05 Aug 2020 14:04:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t32+K6etBUX79TR2T2NSsnsirFvY4dxDRuLsVkhuHkU=;
+        b=O4PVQSXpr/Ks+aq1LPbRkjp4Lq6n9x+Kkd6+m+H4m6HYKmbQAi/vliAqbmZQm47Ajb
+         j/D1LziCJxKi27l308aC+kkXohdaUkrSmBbVYBqP+4XDf31Dn5HKl/IjU8CxBwR35voR
+         xIuvnFv8b3z40wM7zYk+7EHWAG7ClV01Qpr3S+d49dsxb9Z341Ue/u5jCkWqbfu+ghkn
+         u8ajt7VIAUUz3zWz3CBIL/URwohAqCAzWKoa6w9UKQTy3jyBesaFt7P3UfoJXuWBk9kG
+         2Ijd5lWrJFTGULmeThAbNOwhCKBjayq+bFGBBOky6r04U27atV7ShtT4c7pcCFeQ/OU7
+         5k2w==
+X-Gm-Message-State: AOAM532DxnZJpZSTFnfZdayexa77jNZwIrOPZoPcbAGF07XHps+2McGZ
+        qhUIVFE6MbGAeQ8q6VqEwvz5NTpQ
+X-Google-Smtp-Source: ABdhPJxavelKRsSSNtIeBgcATfztw5zsvv8H/JH4+QBoGNkccGnpfFuLlkhSnSWrROIsYUzr6D0c0g==
+X-Received: by 2002:a17:90a:4b8c:: with SMTP id i12mr5352742pjh.83.1596661653120;
+        Wed, 05 Aug 2020 14:07:33 -0700 (PDT)
+Received: from localhost (g223.115-65-55.ppp.wakwak.ne.jp. [115.65.55.223])
+        by smtp.gmail.com with ESMTPSA id g12sm4405356pfb.190.2020.08.05.14.07.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 14:07:31 -0700 (PDT)
+From:   Stafford Horne <shorne@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Stafford Horne <shorne@gmail.com>
+Subject: [PATCH v2 0/6] OpenRISC header and sparse warning fixes for 5.9
+Date:   Thu,  6 Aug 2020 06:07:19 +0900
+Message-Id: <20200805210725.310301-1-shorne@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200721042522.2403410-1-amstan@chromium.org>
-In-Reply-To: <20200721042522.2403410-1-amstan@chromium.org>
-From:   Alexandru M Stan <amstan@chromium.org>
-Date:   Wed, 5 Aug 2020 14:04:09 -0700
-X-Gmail-Original-Message-ID: <CAHNYxRzwQ2jx99M0oyNv8CDE4h051jcdAdYFjRd8mhNjB19FgA@mail.gmail.com>
-Message-ID: <CAHNYxRzwQ2jx99M0oyNv8CDE4h051jcdAdYFjRd8mhNjB19FgA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] PWM backlight interpolation adjustments
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 9:27 PM Alexandru Stan <amstan@chromium.org> wrote:
->
-> I was trying to adjust the brightness for a new chromebook:
-> https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2291209
-> Like a lot of panels, the low end needs to be cropped,
-> and now that we have the interpolation stuff I wanted to make use of it
-> and bake in even the curve.
->
-> I found the behavior a little unintuitive and non-linear. See patch 1
-> for a suggested fix for this.
->
-> Unfortunatelly a few veyron dts files were relying on this
-> (perhaps weird) behavior. Those devices also want a minimum brightness.
-> The issue is that they also want the 0% point for turning off the
-> display.
-> https://github.com/torvalds/linux/commit/6233269bce47bd450196a671ab28eb1ec5eb88d9#diff-e401ae20091bbfb311a062c464f4f47fL23
->
-> So the idea here is to change those dts files to only say <3 255> (patch
-> 3), and add in a virtual 0% point at the bottom of the scale (patch 2).
->
-> We have to do this conditionally because it seems some devices like to
-> have the scale inverted:
->   % git grep "brightness-levels\s*=\s*<\s*[1-9]"|cat
->   arch/arm/boot/dts/tegra124-apalis-eval.dts:             brightness-levels = <255 231 223 207 191 159 127 0>;
->
->
-> Alexandru Stan (3):
->   backlight: pwm_bl: Fix interpolation
->   backlight: pwm_bl: Artificially add 0% during interpolation
->   ARM: dts: rockchip: Remove 0 point in backlight
->
->  arch/arm/boot/dts/rk3288-veyron-jaq.dts    |  2 +-
->  arch/arm/boot/dts/rk3288-veyron-minnie.dts |  2 +-
->  arch/arm/boot/dts/rk3288-veyron-tiger.dts  |  2 +-
->  drivers/video/backlight/pwm_bl.c           | 78 +++++++++++-----------
->  4 files changed, 42 insertions(+), 42 deletions(-)
->
-> --
-> 2.27.0
->
-
 Hello,
 
-Friendly ping.
-Let me know if you would like me to make any changes to my patches.
+Changes since v1:
+ - in "io: Fixup defines and move include to the end" added a linux/types.h
+   include as there were compiler failurs pointed out by kbuild.
 
-Thanks,
-Alexandru M Stan
+This a series of fixes for OpenRISC sparse warnings.  The kbuild robots report
+many issues related to issues with OpenRISC headers having missing or incorrect
+sparse annotations.
+
+Example kdbuild-all report:
+
+  net/ipv4/ip_sockglue.c:1489:13: sparse: sparse: incorrect type in initializer (different address spaces)
+
+  https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/MB6SE7BX425ENFTSIL6KAOB3CVS4WJLH/
+
+Also this includes a few cleanups which I noticed while working on the warning
+fixups.
+
+-Stafford
+
+Stafford Horne (6):
+  openrisc: io: Fixup defines and move include to the end
+  openrisc: uaccess: Fix sparse address space warnings
+  openrisc: uaccess: Use static inline function in access_ok
+  openrisc: uaccess: Remove unused macro __addr_ok
+  openrisc: signal: Fix sparse address space warnings
+  openrisc: uaccess: Add user address space check to access_ok
+
+ arch/openrisc/include/asm/io.h      |  9 +++++++--
+ arch/openrisc/include/asm/uaccess.h | 21 +++++++++++----------
+ arch/openrisc/kernel/signal.c       | 14 +++++++-------
+ 3 files changed, 25 insertions(+), 19 deletions(-)
+
+-- 
+2.26.2
+
