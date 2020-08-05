@@ -2,90 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9DC23C9A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B82523C9AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgHEJzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 05:55:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727972AbgHEJy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 05:54:27 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D37220792;
-        Wed,  5 Aug 2020 09:54:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596621261;
-        bh=YHxmFzC+i8NL+lLlcDEA7V7cryScK1yFI5iWFnAXZ7g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yLj59uDj6wytOjCdhqd+HC6siugHCSEu23VMBzTdtUZ2EEuXshboHtaSY8l4owDyP
-         RRV3IZR/VcJQC+2VUEqg/wjBdOzqlL/dk8HbXp7xpK4BYLjJkiYKGCPJKIJT3HZKPI
-         nBWmLihJP2ftAFhii9CO7s3GybtPgKavhhEcod+o=
-Date:   Wed, 5 Aug 2020 11:54:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH 5.7 000/121] 5.7.13-rc2 review
-Message-ID: <20200805095439.GB1634853@kroah.com>
-References: <20200804072435.385370289@linuxfoundation.org>
- <CA+G9fYs35Eiq1QFM0MOj6Y7gC=YKaiknCPgcJpJ5NMW4Y7qnYQ@mail.gmail.com>
- <20200804082130.GA1768075@kroah.com>
- <CAHk-=whJ=shbf-guMGZkGvxh9fVmbrvUuiWO48+PDFG7J9A9qw@mail.gmail.com>
- <c32ad2216ca3dd83d6d3d740512db9de@kernel.org>
+        id S1728390AbgHEJ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 05:57:29 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:40024 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726524AbgHEJ50 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 05:57:26 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0759q1ue058669;
+        Wed, 5 Aug 2020 09:57:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=RibtCPkve4j2kefMno2VhgrpqtFMrAYMVvhuiwVWbYc=;
+ b=E9cCPwxjESJrVXUFc11fTCBgS9PCfrdNi/4HLVljoXhbjwytwOZfvJcpryNB67i3KjHi
+ UJ/kojGBOQn9cq6d7riX4ZVFnT92FDzz5r6WY4icYu3A/efjwk4QZrxoDHO+ZuGdNd3m
+ Ne+BezfStsVJcdgGpM/LHju2hzWZkSIwOz2IIgNjcXD2zJmrGOT434kPMiuVoUXLENm5
+ YFqfNMYN/0/z3c+brItkGpDMPFXT/WKc6m9PmNhDODI6hFTCn7L+8HykFf/AoWtGHLn9
+ ftnw1/hAqVfPNQMJshKqyRwTr0aJ9vH7kZMOnbHhWFNfkgf4zt17bvA8EMQLw5LjsytS MQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 32qnd41cxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 05 Aug 2020 09:57:10 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0759rkYW129012;
+        Wed, 5 Aug 2020 09:55:09 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 32njayderc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 05 Aug 2020 09:55:09 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0759t8eE028911;
+        Wed, 5 Aug 2020 09:55:08 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 05 Aug 2020 02:55:07 -0700
+Date:   Wed, 5 Aug 2020 12:55:01 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Stefan Achatz <erazor_de@users.sourceforge.net>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] HID: roccat: add bounds checking in
+ kone_sysfs_write_settings()
+Message-ID: <20200805095501.GD483832@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c32ad2216ca3dd83d6d3d740512db9de@kernel.org>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9703 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 malwarescore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008050082
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9703 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 clxscore=1011 mlxscore=0
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 adultscore=0
+ lowpriorityscore=0 spamscore=0 bulkscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050082
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 10:23:06PM +0100, Marc Zyngier wrote:
-> On 2020-08-04 19:33, Linus Torvalds wrote:
-> > On Tue, Aug 4, 2020 at 1:21 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > > 
-> > > So Linus's tree is also broken here.
-> > 
-> > No, there's 835d1c3a9879 ("arm64: Drop unnecessary include from
-> > asm/smp.h") upstream.
-> 
-> My bet is that Greg ended up with this patch backported to
-> 5.7, but doesn't have 62a679cb2825 ("arm64: simplify ptrauth
-> initialization") as the latter isn't a fix.
-> 
-> I don't think any of these two patches are worth backporting,
-> to be honest.
+In the original code we didn't check if the new value for
+"settings->startup_profile" was within bounds that could possibly
+result in an out of bounds array acccess.  What we did was we checked if
+we could write the data to the firmware and it's possibly the firmware
+checks these values but there is no way to know.  It's safer and easier
+to read if we check it in the kernel as well.
 
-I didn't have either of those patches, so I can try applying them to see
-if the build errors go away.  But if you don't think they should be
-applied, what should I do?
+I also added a check to ensure that "settings->size" was correct.  The
+comments say that the only valid value is 36 which is sizeof(struct
+kone_settings).
 
-Here's what I did have queued up:
+Fixes: 14bf62cde794 ("HID: add driver for Roccat Kone gaming mouse")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+This isn't tested.  Checking settings->size seems like a good idea, but
+there is a slight risky because maybe invalid values used to be allowed
+and I don't want to break user space.
 
-f227e3ec3b5c ("random32: update the net random state on interrupt and activity")
-aa54ea903abb ("ARM: percpu.h: fix build error")
-1c9df907da83 ("random: fix circular include dependency on arm64 after addition of percpu.h")
-83bdc7275e62 ("random32: remove net_rand_state from the latent entropy gcc plugin")
-c0842fbc1b18 ("random32: move the pseudo-random 32-bit definitions to prandom.h")
+ drivers/hid/hid-roccat-kone.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-And that caused the builds to blow up.
+diff --git a/drivers/hid/hid-roccat-kone.c b/drivers/hid/hid-roccat-kone.c
+index 1a6e600197d0..5e8e1517f23c 100644
+--- a/drivers/hid/hid-roccat-kone.c
++++ b/drivers/hid/hid-roccat-kone.c
+@@ -294,31 +294,41 @@ static ssize_t kone_sysfs_write_settings(struct file *fp, struct kobject *kobj,
+ 	struct kone_device *kone = hid_get_drvdata(dev_get_drvdata(dev));
+ 	struct usb_device *usb_dev = interface_to_usbdev(to_usb_interface(dev));
+ 	int retval = 0, difference, old_profile;
++	struct kone_settings *settings = (struct kone_settings *)buf;
+ 
+ 	/* I need to get my data in one piece */
+ 	if (off != 0 || count != sizeof(struct kone_settings))
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&kone->kone_lock);
+-	difference = memcmp(buf, &kone->settings, sizeof(struct kone_settings));
++	difference = memcmp(settings, &kone->settings,
++			    sizeof(struct kone_settings));
+ 	if (difference) {
+-		retval = kone_set_settings(usb_dev,
+-				(struct kone_settings const *)buf);
+-		if (retval) {
+-			mutex_unlock(&kone->kone_lock);
+-			return retval;
++		if (settings->size != sizeof(struct kone_settings) ||
++		    settings->startup_profile < 1 ||
++		    settings->startup_profile > 5) {
++			retval = -EINVAL;
++			goto unlock;
+ 		}
+ 
++		retval = kone_set_settings(usb_dev, settings);
++		if (retval)
++			goto unlock;
++
+ 		old_profile = kone->settings.startup_profile;
+-		memcpy(&kone->settings, buf, sizeof(struct kone_settings));
++		memcpy(&kone->settings, settings, sizeof(struct kone_settings));
+ 
+ 		kone_profile_activated(kone, kone->settings.startup_profile);
+ 
+ 		if (kone->settings.startup_profile != old_profile)
+ 			kone_profile_report(kone, kone->settings.startup_profile);
+ 	}
++unlock:
+ 	mutex_unlock(&kone->kone_lock);
+ 
++	if (retval)
++		return retval;
++
+ 	return sizeof(struct kone_settings);
+ }
+ static BIN_ATTR(settings, 0660, kone_sysfs_read_settings,
+-- 
+2.27.0
 
-So, what should I do here?
-
-thanks,
-
-greg k-h
