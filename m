@@ -2,258 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8591323CD0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3452A23CD46
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728670AbgHERSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50598 "EHLO
+        id S1728820AbgHERXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728516AbgHERKz (ORCPT
+        with ESMTP id S1728497AbgHERQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:10:55 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BEDC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:10:54 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id g14so9193695iom.0
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:10:54 -0700 (PDT)
+        Wed, 5 Aug 2020 13:16:43 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275AEC06174A;
+        Wed,  5 Aug 2020 10:16:43 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id r4so14989193pls.2;
+        Wed, 05 Aug 2020 10:16:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LKoP11nkvOdBjLbNMsJ6mS897rkmdxw+OMORh/Gp4dA=;
-        b=GpjIVCI6a03/UEs6DBRtDfOpuL79ZJtMen/Mx6fZk9kE0pYngE8oVpJLMswOW46JmA
-         MhDigq/7/enDILO0WaKYgKJkvhFgk8iJZ+1/kn0awByH6AewETF70nYT93b2wNenFSSf
-         O0nKjUlmlhkJ/G6AMGe7Cx5QGmXJMo3szYzc08E9epEo7OvxDGBxFU/6DUIFchoqvJrt
-         xd0T9/EgwuW07QgS0vyjPEUBxl7COwhsSiCzioyOmeRqCeSmJYJaG1rmVrQXYzarwdbT
-         5i9O10bY3rojgoz2kH6ePLtQh1bF4stYMgMls32QWdnovhan2/+4ppo8cBNhW8Gzb04k
-         0nFA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=09YSKPP7Cq8VsV0IMBuxAsBm/yvKaFDSCahx4z1NFcQ=;
+        b=tqO0M2IBSkDzDHxoQDOnAATXSwqNxm90XEEAkKpFztXTwlqlHWOmv+BXv3Sa/F0jHh
+         /vpnLYSxSaj65tJfLmXqL7YNzX6DVxWM+NahlBxARrOUn5AbVv5ZbcEbTv2DLpHdBgi6
+         BvQhl13guAvmywkJ1hVNSuTK3j9oqw82tsFv+NblXgQyPJeWFL0S/velRw7rfNPtSN+0
+         Tgfsxz8lTfrxFoPy/+CVveRihaC/P17OpZJmOV4LoxkIOC/5a4SWqfQ6rHnCGWNXtL/H
+         Of6WGeC40kASrNllKhkSozfyBGoKnUB7Rx+WGuclFS/u+0RQd/8MC+y1tdL53+NH9Cm6
+         HC0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LKoP11nkvOdBjLbNMsJ6mS897rkmdxw+OMORh/Gp4dA=;
-        b=PXhsWc6f4aFKS0gWsVXhdeXfLjKa85ynacVV/YnnrJxZnYJuzkmfOZ/i2eEzBKodYi
-         gOVEvkwX9dZOEYqzoz7nMHYEdqm2iGo1bXvR5lsdN3LiG6KVl1+eatSZCo7JaIueemha
-         JPkQEPh/VqyS2s/nwhbnnBfks2QcAXQYmKetcGwweW7N7YIkmo7LFEWhq7OZF/Zfn+jQ
-         uiVfHJaIHiBXtaDpVDGY3HKTD8AkZfKWwuIZyKEPZpEiqndrplbPHWSKCKPw+mGBjvdC
-         Po3X/F4ynWmLXetEFdoFeuGqzUjHnbUacJBonrhLkozAj2DLnB9iMglBLxROH9nEPdhy
-         65Hg==
-X-Gm-Message-State: AOAM531jdoynNEwtXK9+O7fMFmHvE0McL7bPH3Wx6hyuqC3sayVfgAD5
-        gz3e0xwBOQ0twX4gR4zx7qjzpvS0SGiWbLL9WR5h/w==
-X-Google-Smtp-Source: ABdhPJwvU0rq9b8X9APyOBTEnYQ8zXpYCksXMZ/jVli4oSFBnrGrMT7ShfLdmvkIb4kHg6uOWdLqfxAZLVmF4H1neRc=
-X-Received: by 2002:a05:6602:1343:: with SMTP id i3mr4316598iov.134.1596647453522;
- Wed, 05 Aug 2020 10:10:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=09YSKPP7Cq8VsV0IMBuxAsBm/yvKaFDSCahx4z1NFcQ=;
+        b=AayXoPbbgsOvbdpffm97368955qIMRmjiF0V0UyEQSwk1oF9lFPJKAq9w5N2OI3vu6
+         /GMdshFvUu1Xs4nPjjDnt2Tupogv/mri4cDOrUCrmxvFXVXBEFIr4pBIluL5DLf05cKj
+         WxDmWTdJdDHSa3WH0i2vY47SdcKqOQjQckvhAi45VRC0GDI9b4dsDhb8UK4eVzmkAf3x
+         P1uiydahjPle+xnVaaclEPg+smef7QQLSxmytIAh6sUUcKvKyT0fp1A1EkvJPubLIeVy
+         +2OKRzUtSYeHqfCV+LnItFRCJUZ/YuFzIxzENK0MNVStn6eOrKwOC0pkjWu3J+W1aTSY
+         vz8w==
+X-Gm-Message-State: AOAM532/TGRn7WT/arfSF9XWi8zHAMOHtpJs28HQvxRxfXmaS34M7GKh
+        PPUDdZoEVFT0KhJn07jvn/Q=
+X-Google-Smtp-Source: ABdhPJwUGn9rRBdEQrMwQQSOgL4hqeAra8KQU6l7Yc00ExdaONKgUZjxB5Gl9xdQLixur2v9izy6Ig==
+X-Received: by 2002:a17:90b:154:: with SMTP id em20mr4496017pjb.173.1596647802631;
+        Wed, 05 Aug 2020 10:16:42 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:16b0])
+        by smtp.gmail.com with ESMTPSA id np4sm3957912pjb.4.2020.08.05.10.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 10:16:41 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 10:16:39 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Xu <dlxu@fb.com>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add benchmark for uprobe vs.
+ user_prog
+Message-ID: <20200805171639.tsqjmifd7eb3htou@ast-mbp.dhcp.thefacebook.com>
+References: <20200801084721.1812607-1-songliubraving@fb.com>
+ <20200801084721.1812607-6-songliubraving@fb.com>
+ <CAEf4BzaP4TGF7kcmZRAKsy=oWPpFA6sUGFkctpGz-fPp+YuSOQ@mail.gmail.com>
+ <DDCD362E-21D3-46BF-90A6-8F3221CBB54E@fb.com>
+ <CAEf4BzY5RYMM6w8wn3qEB3AsuKWv-TMaD5NVFj=YqbCW4DLjqA@mail.gmail.com>
+ <7384B583-EE19-4045-AC72-B6FE87C187DD@fb.com>
+ <CAEf4BzaiJnCu14AWougmxH80msGdOp4S8ZNmAiexMmtwUM_2Xg@mail.gmail.com>
+ <AF9D0E8C-0AA5-4BE4-90F4-946FABAB63FD@fb.com>
 MIME-Version: 1.0
-References: <20200727203324.2614917-1-bgardon@google.com> <20200804211444.GA31916@linux.intel.com>
-In-Reply-To: <20200804211444.GA31916@linux.intel.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 5 Aug 2020 10:10:42 -0700
-Message-ID: <CANgfPd9kbnzW+eaBi+dwA1+E2VXEd6JfN4n2PstWrmh4VPRFjA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] kvm: mmu: zap pages when zapping only parent
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AF9D0E8C-0AA5-4BE4-90F4-946FABAB63FD@fb.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 2:14 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> On Mon, Jul 27, 2020 at 01:33:24PM -0700, Ben Gardon wrote:
-> > When the KVM MMU zaps a page, it will recursively zap the unsynced child
-> > pages, but not the synced ones. This can create problems over time when
-> > running many nested guests because it leaves unlinked pages which will not
-> > be freed until the page quota is hit. With the default page quota of 20
-> > shadow pages per 1000 guest pages, this looks like a memory leak and can
-> > degrade MMU performance.
-> >
-> > In a recent benchmark, substantial performance degradation was observed:
-> > An L1 guest was booted with 64G memory.
-> > 2G nested Windows guests were booted, 10 at a time for 20
-> > iterations. (200 total boots)
-> > Windows was used in this benchmark because they touch all of their
-> > memory on startup.
-> > By the end of the benchmark, the nested guests were taking ~10% longer
-> > to boot. With this patch there is no degradation in boot time.
-> > Without this patch the benchmark ends with hundreds of thousands of
-> > stale EPT02 pages cluttering up rmaps and the page hash map. As a
-> > result, VM shutdown is also much slower: deleting memslot 0 was
-> > observed to take over a minute. With this patch it takes just a
-> > few miliseconds.
-> >
-> > If TDP is enabled, zap child shadow pages when zapping the only parent
-> > shadow page.
->
-> Comments on the mechanics below.  For the approach itself, I wonder if we
-> could/should go even further, i.e. be even more aggressive in reaping nested
-> TDP shadow pages.
->
-> For this to work, KVM is effectively relying on the write flooding detection
-> in kvm_mmu_pte_write() to kick in, i.e. KVM needs the L1 VMM to overwrite
-> the TDP tables that L1 was using for L2.  In particular, L1 needs to write
-> the upper level TDP entries in order for L0 to effeciently reclaim memory.
->
-> For HyperV as L1, I believe that will happen sooner than later as HyperV
-> maintains a pool of zeroed pages, i.e. L1 will quickly zero out the old TDP
-> entries and trigger the zap.
->
-> For KVM as L1, that may not hold true for all scenarios due to lazy zeroing
-> of memory.  If L1 is creating and destroying VMs (as in the benchmark), then
-> it will work as expected.  But if L1 creates and destroys a large L2 without
-> reallocating all memory used for L2's TDP tables, the write flooding will
-> never happen and L0 will keep the stale SPs even though L2 is dead.
->
-> The above scenario may or may not be problematic in practice.  I would
-> assume any reasonably active L1 will quickly do something with the old TDP
-> memory and trigger write flooding, but at the same time it's plausible that
-> L1 could leave pages unused for a decent amount of time.
->
-> One thought would be to track nested TDP PGDs and periodically purge PGDs
-> that haven't been used in some arbitrary amount of time and/or an arbitrary
-> threshold for the number of nested TDP PGDs is reached.  That being said,
-> either of those is probably overkill without more analysis on the below
-> approach.
+On Wed, Aug 05, 2020 at 04:47:30AM +0000, Song Liu wrote:
+> 
+> Being able to trigger BPF program on a different CPU could enable many
+> use cases and optimizations. The use case I am looking at is to access
+> perf_event and percpu maps on the target CPU. For example:
+> 	0. trigger the program
+> 	1. read perf_event on cpu x;
+> 	2. (optional) check which process is running on cpu x;
+> 	3. add perf_event value to percpu map(s) on cpu x. 
 
-We thought about this as well, but in the absence of a workload which
-doesn't get sufficient reclaim from write flooding, it didn't seem
-worth implementing.
-
->
-> > Tested by running the kvm-unit-tests suite on an Intel Haswell machine.
-> > No regressions versus
-> > commit c34b26b98cac ("KVM: MIPS: clean up redundant 'kvm_run' parameters"),
-> > or warnings.
-> >
-> > Reviewed-by: Peter Shier <pshier@google.com>
-> > Signed-off-by: Ben Gardon <bgardon@google.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 49 +++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 44 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index fa506aaaf0194..c550bc3831dcc 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -2626,13 +2626,52 @@ static bool mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
-> >       return false;
-> >  }
-> >
-> > -static void kvm_mmu_page_unlink_children(struct kvm *kvm,
-> > -                                      struct kvm_mmu_page *sp)
-> > +static int kvm_mmu_page_unlink_children(struct kvm *kvm,
-> > +                                     struct kvm_mmu_page *sp,
-> > +                                     struct list_head *invalid_list)
-> >  {
-> >       unsigned i;
-> > +     int zapped = 0;
-> > +
-> > +     for (i = 0; i < PT64_ENT_PER_PAGE; ++i) {
-> > +             u64 *sptep = sp->spt + i;
-> > +             u64 spte = *sptep;
-> > +             struct kvm_mmu_page *child_sp;
-> > +
-> > +             /*
-> > +              * Zap the page table entry, unlinking any potential child
-> > +              * page
-> > +              */
-> > +             mmu_page_zap_pte(kvm, sp, sptep);
-> > +
-> > +             /* If there is no child page for this spte, continue */
-> > +             if (!is_shadow_present_pte(spte) ||
-> > +                 is_last_spte(spte, sp->role.level))
-> > +                     continue;
-> > +
-> > +             /*
-> > +              * If TDP is enabled, then any shadow pages are part of either
-> > +              * the EPT01 or an EPT02. In either case, do not expect the
-> > +              * same pattern of page reuse seen in x86 PTs for
-> > +              * copy-on-write  and similar techniques. In this case, it is
-> > +              * unlikely that a parentless shadow PT will be used again in
-> > +              * the near future. Zap it to keep the rmaps and page hash
-> > +              * maps from filling up with stale EPT02 pages.
-> > +              */
-> > +             if (!tdp_enabled)
-> > +                     continue;
->
-> I haven't tested, but I believe this will have the unwanted side effect of
-> blasting large swaths of EPT01 if recycling is triggered.  Because the list
-> of active SPs is FIFO (and never reordered), the first entries are almost
-> always the root SP and then high level SPs.  If make_mmu_pages_available()
-> triggers kvm_mmu_zap_oldest_mmu_pages(), this is take out the high level SP
-> and all its children.
->
-> That may or may not be a problem in practice, but it's outside the scope of
-> what this patch is trying to accomplish.
->
-> TL;DR: what about further conditioning this on sp->role.guest_mode?
-
-I agree this is a potential problem and conditioning on
-sp->role.guest_mode seems like an adequate solution for preventing
-this leaky behavior for nested. If there were a better way to get the
-recursive zapping for all TDP structures without the reclaim being
-overly aggressive, that feels more intuitive, but certainly more work
-to implement. I suppose a parameter could be added when zapping to
-prevent recursive zapping but I'm happy with the guest mode condition
-for now.
-
->
-> > +
-> > +             child_sp = to_shadow_page(spte & PT64_BASE_ADDR_MASK);
-> > +             if (WARN_ON_ONCE(!child_sp))
->
-> This WARN is pointless, mmu_page_zap_pte() above will already have dereferenced
-> the child shadow page, i.e. any null pointer will have exploded.
->
-> > +                     continue;
-> > +
-> > +             /* Zap the page if it has no remaining parent pages */
-> > +             if (!child_sp->parent_ptes.val)
->
-> IMO it's easier to read if these checks are collapsed, e.g.:
->
->                 if (!tdp_enabled || !child_sp->role.guest_mode ||
->                     child_sp->parent_ptes.val)
->                         continue;
->
->                 zapped += kvm_mmu_prepare_zap_page(kvm, child_sp, invalid_list);
->
->
-> Alternatively, what about moving this logic into mmu_page_zap_pte()?  That
-> can be done with a little massaging of FNAME(invlpg) and would avoid what is
-> effectively redundant checks on is_shadow_present_pte() and is_last_spte().
-> Patches attached and somewhat tested.
-
-That seems like a good change to me and the patches you attached look
-good to me. I'm happy to review them more if you want to send them to
-the mailing list as their own series. Thanks for putting them
-together.
-
->
-> > +                     zapped += kvm_mmu_prepare_zap_page(kvm, child_sp,
-> > +                                                        invalid_list);
-> > +     }
-> >
-> > -     for (i = 0; i < PT64_ENT_PER_PAGE; ++i)
-> > -             mmu_page_zap_pte(kvm, sp, sp->spt + i);
-> > +     return zapped;
-> >  }
-> >
-> >  static void kvm_mmu_unlink_parents(struct kvm *kvm, struct kvm_mmu_page *sp)
-> > @@ -2678,7 +2717,7 @@ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
-> >       trace_kvm_mmu_prepare_zap_page(sp);
-> >       ++kvm->stat.mmu_shadow_zapped;
-> >       *nr_zapped = mmu_zap_unsync_children(kvm, sp, invalid_list);
-> > -     kvm_mmu_page_unlink_children(kvm, sp);
-> > +     *nr_zapped += kvm_mmu_page_unlink_children(kvm, sp, invalid_list);
-> >       kvm_mmu_unlink_parents(kvm, sp);
-> >
-> >       /* Zapping children means active_mmu_pages has become unstable. */
-> > --
-> > 2.28.0.rc0.142.g3c755180ce-goog
-> >
+If the whole thing is about doing the above then I don't understand why new
+prog type is needed. Can prog_test_run support existing BPF_PROG_TYPE_KPROBE?
+"enable many use cases" sounds vague. I don't think folks reading
+the patches can guess those "use cases".
+"Testing existing kprobe bpf progs" would sound more convincing to me.
+If the test_run framework can be extended to trigger kprobe with correct pt_regs.
+As part of it test_run would trigger on a given cpu with $ip pointing
+to some test fuction in test_run.c. For local test_run the stack trace
+would include bpf syscall chain. For IPI the stack trace would include
+the corresponding kernel pieces where top is our special test function.
+Sort of like pseudo kprobe where there is no actual kprobe logic,
+since kprobe prog doesn't care about mechanism. It needs correct
+pt_regs only as input context.
+The kprobe prog output (return value) has special meaning though,
+so may be kprobe prog type is not a good fit.
+Something like fentry/fexit may be better, since verifier check_return_code()
+enforces 'return 0'. So their return value is effectively "void".
+Then prog_test_run would need to gain an ability to trigger
+fentry/fexit prog on a given cpu.
