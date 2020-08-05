@@ -2,145 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D8823C7DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C5F23C7E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbgHEIgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 04:36:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgHEIgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 04:36:32 -0400
-Received: from localhost (router.4pisysteme.de [80.79.225.122])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D32D21744;
-        Wed,  5 Aug 2020 08:36:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596616591;
-        bh=rq6tPApAB+dxBpQmJ6x3QrSRVGchYJT6t4pWpmDeeTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rw/Yi6bOhIoSPQ686F+lhFsQCcCekuYkYcOsFIbJr/rfnWdhWEwslRIDaLFYbHpTj
-         jmjt35cCrqpUJeGaYKFQorepSa3Z5wz8JVArtZGq9aop1VXQY405AFC2HYm/ZbTmN7
-         cxAaMyYiM2my1dK1ZRAQsecKf9uA6MzYqvvSaUj0=
-Date:   Wed, 5 Aug 2020 10:36:29 +0200
-From:   <wsa@kernel.org>
-To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc:     <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <robh+dt@kernel.org>,
-        <ludovic.desroches@microchip.com>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <linux@armlinux.org.uk>,
-        <kamel.bouhara@bootlin.com>
-Subject: Re: [PATCH 2/4] i2c: core: add generic I2C GPIO recovery
-Message-ID: <20200805083629.GB1229@kunai>
-Mail-Followup-To: <wsa@kernel.org>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <robh+dt@kernel.org>,
-        <ludovic.desroches@microchip.com>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <linux@armlinux.org.uk>,
-        <kamel.bouhara@bootlin.com>
-References: <20200804095926.205643-1-codrin.ciubotariu@microchip.com>
- <20200804095926.205643-3-codrin.ciubotariu@microchip.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="b5gNqxB1S1yM7hjW"
-Content-Disposition: inline
-In-Reply-To: <20200804095926.205643-3-codrin.ciubotariu@microchip.com>
+        id S1728111AbgHEIhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 04:37:21 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:49546 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728021AbgHEIhB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 04:37:01 -0400
+Received: from localhost (unknown [192.168.167.209])
+        by lucky1.263xmail.com (Postfix) with ESMTP id E6688B0743;
+        Wed,  5 Aug 2020 16:36:50 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P12030T139956846577408S1596616609190052_;
+        Wed, 05 Aug 2020 16:36:50 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <8e8bd938e45a208ef8604a951d9c156f>
+X-RL-SENDER: hjc@rock-chips.com
+X-SENDER: hjc@rock-chips.com
+X-LOGIN-NAME: hjc@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Sandy Huang <hjc@rock-chips.com>
+To:     heiko@sntech.de,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     huangtao@rock-chips.com, andy.yan@rock-chips.com,
+        linux-rockchip@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, kever.yang@rock-chips.com,
+        Sandy Huang <hjc@rock-chips.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: sysfs: Add to get current mode
+Date:   Wed,  5 Aug 2020 16:36:46 +0800
+Message-Id: <20200805083646.4123-1-hjc@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+add this node to get the current true mode.
 
---b5gNqxB1S1yM7hjW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Sandy Huang <hjc@rock-chips.com>
+---
+ drivers/gpu/drm/drm_sysfs.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-On Tue, Aug 04, 2020 at 12:59:24PM +0300, Codrin Ciubotariu wrote:
-> Multiple I2C bus drivers use similar bindings to obtain information needed
-> for I2C recovery. For example, for platforms using device-tree, the
-> properties look something like this:
->=20
-> &i2c {
-> 	...
-> 	pinctrl-names =3D "default", "gpio";
-> 	pinctrl-0 =3D <&pinctrl_i2c_default>;
-> 	pinctrl-1 =3D <&pinctrl_i2c_gpio>;
-> 	sda-gpios =3D <&pio 0 GPIO_ACTIVE_HIGH>;
-> 	scl-gpios =3D <&pio 1 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-> 	...
-> }
->=20
-> For this reason, we can add this common initialization in the core. This
-> way, other I2C bus drivers will be able to support GPIO recovery just by
-> providing a pointer to platform's pinctrl and calling i2c_recover_bus()
-> when SDA is stuck low.
->=20
-> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> ---
-Applied to for-next, thanks! Two minor change:
+diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
+index 939f0032aab1..f39bcd34853b 100644
+--- a/drivers/gpu/drm/drm_sysfs.c
++++ b/drivers/gpu/drm/drm_sysfs.c
+@@ -19,6 +19,7 @@
+ #include <linux/slab.h>
+ 
+ #include <drm/drm_connector.h>
++#include <drm/drm_crtc.h>
+ #include <drm/drm_device.h>
+ #include <drm/drm_file.h>
+ #include <drm/drm_modes.h>
+@@ -236,16 +237,45 @@ static ssize_t modes_show(struct device *device,
+ 	return written;
+ }
+ 
++static ssize_t current_mode_show(struct device *device,
++		      struct device_attribute *attr,
++		      char *buf)
++{
++	struct drm_connector *connector = to_drm_connector(device);
++	struct drm_display_mode *mode;
++	struct drm_crtc_state *crtc_state;
++	bool interlaced;
++	int written = 0;
++
++	if (!connector->state || !connector->state->crtc)
++		return written;
++
++	crtc_state = connector->state->crtc->state;
++	if (!crtc_state)
++		return written;
++
++	mode = &crtc_state->mode;
++
++	interlaced = !!(mode->flags & DRM_MODE_FLAG_INTERLACE);
++	written += snprintf(buf + written, PAGE_SIZE - written, "%dx%d%s%d\n",
++			    mode->hdisplay, mode->vdisplay,
++			    interlaced ? "i" : "p", drm_mode_vrefresh(mode));
++
++	return written;
++}
++
+ static DEVICE_ATTR_RW(status);
+ static DEVICE_ATTR_RO(enabled);
+ static DEVICE_ATTR_RO(dpms);
+ static DEVICE_ATTR_RO(modes);
++static DEVICE_ATTR_RO(current_mode);
+ 
+ static struct attribute *connector_dev_attrs[] = {
+ 	&dev_attr_status.attr,
+ 	&dev_attr_enabled.attr,
+ 	&dev_attr_dpms.attr,
+ 	&dev_attr_modes.attr,
++	&dev_attr_current_mode.attr,
+ 	NULL
+ };
+ 
+-- 
+2.17.1
 
-> +	/* for pinctrl state changes, we need all the information */
-> +	if (!bri->pins_default || !bri->pins_gpio) {
-> +		bri->pinctrl =3D NULL;
-> +		bri->pins_default =3D NULL;
-> +		bri->pins_gpio =3D NULL;
-> +	} else {
-> +		dev_info(dev, "using pinctrl states for GPIO recovery");
-> +	}
-
-I inverted the logic here:
-
- 294         /* for pinctrl state changes, we need all the information */
- 295         if (bri->pins_default && bri->pins_gpio) {
- 296                 dev_info(dev, "using pinctrl states for GPIO recovery"=
-);
- 297         } else {
- 298                 bri->pinctrl =3D NULL;
- 299                 bri->pins_default =3D NULL;
- 300                 bri->pins_gpio =3D NULL;
- 301         }
-
-I think it is a bit easier to read if the desired path is not in the
-else case.
 
 
-> + * @pins_default: default state of SCL/SDA lines, when they are assigned=
- to the
-> + *      I2C bus. Optional. Populated internally for GPIO recovery, if a =
-state with
-> + *      the name PINCTRL_STATE_DEFAULT is found and pinctrl is valid.
-> + * @pins_gpio: recovery state of SCL/SDA lines, when they are used as GP=
-IOs.
-> + *      Optional. Populated internally for GPIO recovery, if this state =
-is called
-> + *      "gpio" or "recovery" and pinctrl is valid.
-
-Added "pinctrl" to "state of SCL/SDA" to make it clear.
-
-
---b5gNqxB1S1yM7hjW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8qb40ACgkQFA3kzBSg
-KbYZ8A/+IoGrrXtuuVfRr2wWgX3iz5Zj0mVU0fXGVwN0YoGe3OcHNdo6S7f+Pzy/
-I1PZcxBBNjC9ffOXPWBxm8QC/HcT6ZHpY+Bs6CEJMFwXraTBDo8n93iZ3F0tpIbi
-LpXpYLUSbxG6nw9t9HMyoxwtIx4a0vP0r6RAqzj+DFIXUc4dimmUlTVV4dxpJ5Pm
-HcPxS7b+X1X3vKFw721eKQAhZfJW3iqo6gqRCGBPByORmxApG/I3M8de+Jb/7aqg
-n+bne+1ULGILn93WyDVHrQ9b6l5Lj+iD9leRqUaeEfnZAv7zMvEmx4UnwFf3OsSE
-/HWTxB5YZjjkOOKFGodTtd4iOy0rB2BtRRCnVXR2oF2FdotinYHDhPDF/n0KDpLi
-obtYBBh1jozlHxE1Mm1ZK5Db5kgYasjqAzZgXC4q2EIB4aY7GoaUIswts0QbxH/T
-Vep/4DNZQCfIRXbiQWVx0ocaKIBGAC/e6GBjz3378MhQ730O6F/iVNacTXFb/MEy
-TPRzItlBBRkHQlci0bmymfQPEK6EINwD1IgbaTWYyQy3XXi9RYkiG1Goun6tpolC
-VcbQTTkhE+3RSaBwTbcr6CBMp2TWRZW0FVhr6oQT6sKQjMmbD7TDY4uQr+2GdCKR
-KJ3mdnILcKHY7WcZMwCVZu7ZCugLmodXEP1kc2bnXw61ONa8VsE=
-=WUKN
------END PGP SIGNATURE-----
-
---b5gNqxB1S1yM7hjW--
