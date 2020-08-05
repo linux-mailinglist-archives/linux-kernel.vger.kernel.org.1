@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E648E23D25F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FC923D2B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgHEUMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49490 "EHLO mail.kernel.org"
+        id S1726994AbgHEUPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:15:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727020AbgHEQ1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:27:40 -0400
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726489AbgHEQUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:20:17 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E835422B48;
-        Wed,  5 Aug 2020 10:31:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 616D7207FC;
+        Wed,  5 Aug 2020 10:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596623482;
-        bh=1KGUWj0pR+2MJSTXGoe2kv9kDdmhjrT4ZUDgSPT30Lg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DztFBbHaJmfLXguERc4iO/+C8kDCuxWxe54V2rQADelhOhyrjs+B1R02wY4g9lGwR
-         NYLc/XumwnvqUcNuDhKnkdZ5v8SfnUAb/71U87pSpdn+jnJbAj8Z4SECzowbaP3x2p
-         4EBnGi/dsVGr4fG4ZH1deIbkZeUT/FXH/6HjeH5k=
-Received: by mail-lj1-f174.google.com with SMTP id i10so12301461ljn.2;
-        Wed, 05 Aug 2020 03:31:21 -0700 (PDT)
-X-Gm-Message-State: AOAM531SQi1oBgKUQKUgQlARvMnnqBM/zjfD42hV8ifsmFIH1LdrEOow
-        AR3dNn274KWdN6Yywe4bLHRcqFSjZMT9z5zMjFk=
-X-Google-Smtp-Source: ABdhPJwzE7/C8D2eIm+yh36NJaV0W0Km5i0/HVwfBymfZU9rxA3GdNEiEf5+UTWgnJ9LTGmC2/RA9NpCIFcry1SA848=
-X-Received: by 2002:a2e:9d17:: with SMTP id t23mr1114817lji.456.1596623480201;
- Wed, 05 Aug 2020 03:31:20 -0700 (PDT)
+        s=default; t=1596624686;
+        bh=x3ZHXxquKDbAiA2NrYdhb8ekIS3wwnWPgFDvfXsCgjQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tz9/O3MwNWVUjnDemRDBvIBHLVnCwzcZU9KwGVAfLwJL9klqT5BXqz1Xdd8jPqNwM
+         JihxqNRzl/tuH3X1xIDDy5h7jYfjdribFzyTkod95UguTpz2DDZsDpOs0iFqDPn3aZ
+         SwLoSRPWz174jubsykqQiQ8naeWwRJ0IJ1ilLquY=
+Date:   Wed, 5 Aug 2020 11:51:04 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Alain Volmat <alain.volmat@st.com>
+Cc:     amelie.delaunay@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, linux-spi@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        fabrice.gasnier@st.com
+Subject: Re: [PATCH 03/18] spi: stm32h7: remove unused mode fault MODF event
+ handling
+Message-ID: <20200805105104.GC5556@sirena.org.uk>
+References: <1596610933-32599-1-git-send-email-alain.volmat@st.com>
+ <1596610933-32599-4-git-send-email-alain.volmat@st.com>
 MIME-Version: 1.0
-References: <1595792274-28580-1-git-send-email-ilial@codeaurora.org>
- <20200726194528.GC1661457@lunn.ch> <20200727.103233.2024296985848607297.davem@davemloft.net>
- <CA+5LGR1KwePssqhCkZ6qT_W87fO2o1XPze53mJwjkTWtphiWrA@mail.gmail.com> <20200804192435.GG1919070@lunn.ch>
-In-Reply-To: <20200804192435.GG1919070@lunn.ch>
-From:   Ilia Lin <ilia.lin@kernel.org>
-Date:   Wed, 5 Aug 2020 13:31:08 +0300
-X-Gmail-Original-Message-ID: <CA+5LGR32kKvaeDnb4qpGS_f=t-U4dDCYpnVy7R9zgAQCJW6jtA@mail.gmail.com>
-Message-ID: <CA+5LGR32kKvaeDnb4qpGS_f=t-U4dDCYpnVy7R9zgAQCJW6jtA@mail.gmail.com>
-Subject: Re: [PATCH] net: dev: Add API to check net_dev readiness
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     David Miller <davem@davemloft.net>, ilial@codeaurora.org,
-        kuba@kernel.org, jiri@mellanox.com, edumazet@google.com,
-        ap420073@gmail.com, xiyou.wangcong@gmail.com, maximmi@mellanox.com,
-        Ilia Lin <ilia.lin@kernel.org>, netdev@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4jXrM3lyYWu4nBt5"
+Content-Disposition: inline
+In-Reply-To: <1596610933-32599-4-git-send-email-alain.volmat@st.com>
+X-Cookie: Fast, cheap, good: pick two.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My comments inline.
 
-Thanks,
-Ilia Lin
+--4jXrM3lyYWu4nBt5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue, Aug 4, 2020 at 10:24 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Tue, Aug 04, 2020 at 08:47:18PM +0300, Ilia Lin wrote:
-> > Hi Andrew and David,
->
-> Hi Ilia
->
-> Please don't top post.
->
-> >
-> > Thank you for your comments!
-> >
-> > The client driver is still work in progress, but it can be seen here:
-> > https://source.codeaurora.org/quic/la/kernel/msm-4.19/tree/drivers/platform/msm/ipa/ipa_api.c#n3842
-> >
-> > For HW performance reasons, it has to be in subsys_initcall.
->
-> Well, until the user of this new API is ready, we will not accept the
-> patch.
-OK, but once we submit the change in the driver, is it good to go?
->
-> You also need to explain "For HW performance reasons". Why is this
-> driver special that it can do things which no over driver does?
-There are very strict KPI requirements. E.g. automotive rear mirror
-must be online 3 sec since boot.
->
-> And you should really be working on net-next, not this dead kernel
-> version, if you want to get merged into mainline.
-Of course, the upstream submition will be done on the mainline. I just
-gave an example of an existing product driver.
->
-> Network drivers do not belong is drivers/platform. There is also ready
-> a drivers/net/ipa, so i assume you will move there.
-Sure, the driver in the drivers/net/ipa is the one that will be
-updated in the future.
->
->   Andrew
+On Wed, Aug 05, 2020 at 09:01:58AM +0200, Alain Volmat wrote:
+> From: Antonio Borneo <antonio.borneo@st.com>
+
+> Accordingly to STM32H7 document RM0433, "mode fault" MODF is
+> a special mode to handle a spi bus with multiple masters, in
+> which each master has to "detect" if another master enables
+> its CS to take control of the bus. Once this is detected,
+> all other masters has to temporarily switch to "slave" mode.
+
+> Such multi-master mode is not supported in Linux and this
+> driver properly disables the mode by setting the bits
+> SPI_CR1_SSI and SPI_CFG2_SSM, thus forcing a master only
+> operating mode.
+
+> In this condition, we will never receive an interrupt due to
+> MODF event and we do not need to handle it.
+
+> Remove all the unused code around handling MODF events.
+
+What does having this cost us?  Hopefully it's not doing much but if
+something goes wrong with the hardware and this does get flagged up for
+some reason it'd be good to know about it.  It doesn't seem to be having
+a big impact on the code or anything.
+
+--4jXrM3lyYWu4nBt5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8qjxcACgkQJNaLcl1U
+h9C+kAf8CK9hJ/6Jc4BQ05hn0nAaypIJAYNq1bv8lExUjoH1m3AeiTfTBbh8Aq25
+W/1u3hhb83akhry/0vcVC2vSF5UGKInNhyeb6FRRoqUaiBD2krRo55ZDgmYeD7Ta
+F34U8K3C4QbYMpQeKO5ceuZZOadkfjxKrgX4h+ZkFwGXaUn8tIGN9MDZLKyQ85md
+ecRl77X3Wt9kX9OxEml6f5UFJvbaVA//arSxikBmyBnFDAe4udEu9PVXHtdJ1pNy
+jvw6E20aw6tBoteFTfL1iv36f8kImbVrjGWJjgHEUu2ujyEgQgJfg9xrU3wWIykr
+OlTao50KMlI4sHvYI2leN01XzXGJdA==
+=gL3F
+-----END PGP SIGNATURE-----
+
+--4jXrM3lyYWu4nBt5--
