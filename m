@@ -2,252 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2324523CC5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F1823CC37
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgHEQj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:39:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727826AbgHEQgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:36:48 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4D1023139;
-        Wed,  5 Aug 2020 14:31:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596637917;
-        bh=4l6PzSylny4AqO/Nz3Y+KnLCPnwMAkHpLaLWiehwhIw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BePY22krm9TUenyQaTu7sjfk+iLSWQ/n3Fxy4sLiFC41NpXJkG3iNUuJOtNqQkE/Z
-         xkygmG5nRTMmFzDf/rWIXjuw+t8EDKoveniyZdWd+SIU4PhE30hpP+Ti3W8k8dlYnW
-         vlBoMElh6zceLfDGYgKnbQ+AqZI9SFkwLQ3txlb8=
-Date:   Wed, 5 Aug 2020 16:32:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     John Donnelly <john.p.donnelly@oracle.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mike Snitzer <snitzer@redhat.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v4: {linux-4.14.y} ] dm cache: submit writethrough writes
- in parallel to origin and cache
-Message-ID: <20200805143214.GB2154236@kroah.com>
-References: <20200805000746.53112-1-john.p.donnelly@oracle.com>
- <0FFD1933-FB8F-4628-BAE6-1754E5A818BF@oracle.com>
+        id S1726167AbgHEQb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:31:59 -0400
+Received: from sonic314-26.consmr.mail.ne1.yahoo.com ([66.163.189.152]:41290
+        "EHLO sonic314-26.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726996AbgHEQ03 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:26:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596644748; bh=1cU3wjJlOPvRuw2818Qutqs4mQWnaGRISNeePAjFogU=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=HeJ8bZXaFWiKJIzzL3gho1AU0tgiQ1e+Kb08in02P1pufoU7rhEns/aCYmNdCZAHT4DQBoS4Cr3I8K9oxvyjxLE9gG2ed/JjWYEyiJcFEpUziw0XGGP0cuWqHvVvdTHKUoko0LrzjqtZtH8Dd7J57tZ4BodEutf0BKR6TYcd90I/3lBq5Rj6w1NLuNAzhFQm3Yn74yb/YdsG3vN1Z+OpIsg9ISa+Qc71AQS0ZkVNA2cDmJOefm7AuBtmrDG7LjBtVg4RCoaD+T0jWWAysaCkUdueq68berw3vBnA7mcncCyJhYXYz6L1cY67fKjYgZQqdaR+qzmPmR/1XMeuMozf3g==
+X-YMail-OSG: iMtRnVsVM1nBFaQ4NlnavoaLZ.x_8bBSps_sPqYvR6j1jlYcZJRhJZp65eLXgdE
+ q9ApMJrEobSvGXllUAQTERK4waFhlfC6Mw18jWRv3d4F3t_mwWDayC8PJA1Aj8dUzUjY.G1iHHsr
+ E5PU7woRCZ25BLBBFU_fCg21.oa.KU6.xTeDQsUOPd0R38DzROYXZai7oGC8j7RfILJodifwka4a
+ 9.DH1xziHMKmGpcT1UA4RkuIPvCXwQYmDqcE1JzzWD3.IiMX.tGfAnfROeYFRooiuQnG1K4BVioT
+ Tpgnv0eB4m76wEOdOnrhNMk.Yjb9swgY74lxanI5peFxYoTo2BywAn4zsR0ukS2eseA3nTQdSLLF
+ lLafs4oEPPUwKKCFesH1XAzOEUH2TFiDCnPIHGi9_6MT9rN1FNN_cwJ__4VSbt8tQOpeQ3w3sHwX
+ FaLPA7A_UtFPgw46T8PahKmjre0uyB2vklwCgwIanUt0GzDLCjYPkzoBkkj0tjnaYEXybt_nevxn
+ xrh1L9Usez8iRMlr_O0hD.D5qulo.Dp5r3ry2UQ_Z2m1S6M.g5tsbAaoms3XhMkW6JEmdN2UpD2V
+ QMDaiBQSIjE8tEIpk6gsZplzC5Z0EnIaPhcOxxJYfhr7f1KvSBOdqNW.aFnUR7JEyXkTzm3dHR.K
+ M45tNrYI2FWF4fcfLDswyAoM82xogimHXTsnvN3eDQ7EVitTcSn4DcWlWy1zhs_VORG1oiYw8K6B
+ 66NkLqxPZqAhep4hRanKfuGSXjeYsS4funYv80RXiqEyYCXFuTHXi4kVqzoS9Ao.51miCllCOLbs
+ W8IZKld99Ngl4NxhQ6yiihJRJE.3r4nyXMVrKxJ17WncVYJRm_Olq4GWGlC_odAqZ096jFP1adYp
+ 0eruq27ZgLFCqO0SG.cUnyximRlQPkETs6VvApCn9knzzt.cnpL94y2HeYYUsmhbnC4d1fLwLRr9
+ itaS6XiJsbwKiXz0rJmJ1FYUUbRLRALK5AOLNHQ9zIzs7KiiPY6Mrf2LwhFOnqw2ZRcaCAtfq1wD
+ L6Gzi36AkigAhdhYsma7_4Y7hG2JkN6k9_n9rggASFmj0DIFEMwBzyMR9HyeSc2VHDUNx3avC1a0
+ ZAmtg2kAdPOIhb4jxJvHZRuMYBcGKhiqmpsnCwSA3YlMFnH8Neq82OO_Y7yMtNxhnQzBABRIBlVk
+ UIyvHfLpuWx0X6cvEHrZB1MSQCM74nc3dLUkNAGExhF5JyLLB8eEeqyuDECr5jm50itdW0Gx1eaw
+ yliYZaSh2ALhZNFHOdo1Jv3S.9k6bFq39_YTMU1K.VzS2b7ThUAFaWbbNiYHkNQKZQ6jFzG.B0bm
+ JvjuabJA.mNyuekH95nCF46Y6YV2sWp4cQzG0g2sv21s9IlM5iyXoNtqsuA--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.ne1.yahoo.com with HTTP; Wed, 5 Aug 2020 16:25:48 +0000
+Received: by smtp417.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 05f98be0901e51aef2f5e5eae571f525;
+          Wed, 05 Aug 2020 15:36:40 +0000 (UTC)
+Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        zohar@linux.ibm.com, stephen.smalley.work@gmail.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20200805004331.20652-1-nramas@linux.microsoft.com>
+ <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
+ <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <c7c168f2-e30b-d2c5-abcb-1b6919197474@schaufler-ca.com>
+Date:   Wed, 5 Aug 2020 08:36:40 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0FFD1933-FB8F-4628-BAE6-1754E5A818BF@oracle.com>
+In-Reply-To: <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.16436 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 07:12:46PM -0500, John Donnelly wrote:
-> 
-> 
-> > On Aug 4, 2020, at 7:07 PM, john.p.donnelly@oracle.com wrote:
-> > 
-> > From: Mike Snitzer <snitzer@redhat.com>
-> > 
-> > Discontinue issuing writethrough write IO in series to the origin and
-> > then cache.
-> > 
-> > Use bio_clone_fast() to create a new origin clone bio that will be
-> > mapped to the origin device and then bio_chain() it to the bio that gets
-> > remapped to the cache device.  The origin clone bio does _not_ have a
-> > copy of the per_bio_data -- as such check_if_tick_bio_needed() will not
-> > be called.
-> > 
-> > The cache bio (parent bio) will not complete until the origin bio has
-> > completed -- this fulfills bio_clone_fast()'s requirements as well as
-> > the requirement to not complete the original IO until the write IO has
-> > completed to both the origin and cache device.
-> > 
-> > Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-> > 
-> > (cherry picked from commit 2df3bae9a6543e90042291707b8db0cbfbae9ee9)
-> > 
-> > Fixes: 4ec34f2196d125ff781170ddc6c3058c08ec5e73 (dm bio record:
-> > save/restore bi_end_io and bi_integrity )
-> > 
-> > 4ec34f21 introduced a mkfs.ext4 hang on a LVM device that has been
-> > modified with lvconvert --cachemode=writethrough.
-> > 
-> > CC:stable@vger.kernel.org for 4.14.y
-> > 
-> > Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
-> > Reviewed-by: Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
-> > ---
-> > drivers/md/dm-cache-target.c | 92 ++++++++++++++++++--------------------------
-> > 1 file changed, 37 insertions(+), 55 deletions(-)
-> > 
-> > diff --git a/drivers/md/dm-cache-target.c b/drivers/md/dm-cache-target.c
-> > index 69cdb29ef6be..2732d1df05fa 100644
-> > --- a/drivers/md/dm-cache-target.c
-> > +++ b/drivers/md/dm-cache-target.c
-> > @@ -450,6 +450,7 @@ struct cache {
-> > 	struct work_struct migration_worker;
-> > 	struct delayed_work waker;
-> > 	struct dm_bio_prison_v2 *prison;
-> > +	struct bio_set *bs;
-> > 
-> > 	mempool_t *migration_pool;
-> > 
-> > @@ -537,11 +538,6 @@ static void wake_deferred_bio_worker(struct cache *cache)
-> > 	queue_work(cache->wq, &cache->deferred_bio_worker);
-> > }
-> > 
-> > -static void wake_deferred_writethrough_worker(struct cache *cache)
-> > -{
-> > -	queue_work(cache->wq, &cache->deferred_writethrough_worker);
-> > -}
-> > -
-> > static void wake_migration_worker(struct cache *cache)
-> > {
-> > 	if (passthrough_mode(&cache->features))
-> > @@ -868,16 +864,23 @@ static void check_if_tick_bio_needed(struct cache *cache, struct bio *bio)
-> > 	spin_unlock_irqrestore(&cache->lock, flags);
-> > }
-> > 
-> > -static void remap_to_origin_clear_discard(struct cache *cache, struct bio *bio,
-> > -					  dm_oblock_t oblock)
-> > +static void __remap_to_origin_clear_discard(struct cache *cache, struct bio *bio,
-> > +					    dm_oblock_t oblock, bool bio_has_pbd)
-> > {
-> > -	// FIXME: this is called way too much.
-> > -	check_if_tick_bio_needed(cache, bio);
-> > +	if (bio_has_pbd)
-> > +		check_if_tick_bio_needed(cache, bio);
-> > 	remap_to_origin(cache, bio);
-> > 	if (bio_data_dir(bio) == WRITE)
-> > 		clear_discard(cache, oblock_to_dblock(cache, oblock));
-> > }
-> > 
-> > +static void remap_to_origin_clear_discard(struct cache *cache, struct bio *bio,
-> > +					  dm_oblock_t oblock)
-> > +{
-> > +	// FIXME: check_if_tick_bio_needed() is called way too much through this interface
-> > +	__remap_to_origin_clear_discard(cache, bio, oblock, true);
-> > +}
-> > +
-> > static void remap_to_cache_dirty(struct cache *cache, struct bio *bio,
-> > 				 dm_oblock_t oblock, dm_cblock_t cblock)
-> > {
-> > @@ -937,57 +940,26 @@ static void issue_op(struct bio *bio, void *context)
-> > 	accounted_request(cache, bio);
-> > }
-> > 
-> > -static void defer_writethrough_bio(struct cache *cache, struct bio *bio)
-> > -{
-> > -	unsigned long flags;
-> > -
-> > -	spin_lock_irqsave(&cache->lock, flags);
-> > -	bio_list_add(&cache->deferred_writethrough_bios, bio);
-> > -	spin_unlock_irqrestore(&cache->lock, flags);
-> > -
-> > -	wake_deferred_writethrough_worker(cache);
-> > -}
-> > -
-> > -static void writethrough_endio(struct bio *bio)
-> > -{
-> > -	struct per_bio_data *pb = get_per_bio_data(bio, PB_DATA_SIZE_WT);
-> > -
-> > -	dm_unhook_bio(&pb->hook_info, bio);
-> > -
-> > -	if (bio->bi_status) {
-> > -		bio_endio(bio);
-> > -		return;
-> > -	}
-> > -
-> > -	dm_bio_restore(&pb->bio_details, bio);
-> > -	remap_to_cache(pb->cache, bio, pb->cblock);
-> > -
-> > -	/*
-> > -	 * We can't issue this bio directly, since we're in interrupt
-> > -	 * context.  So it gets put on a bio list for processing by the
-> > -	 * worker thread.
-> > -	 */
-> > -	defer_writethrough_bio(pb->cache, bio);
-> > -}
-> > -
-> > /*
-> > - * FIXME: send in parallel, huge latency as is.
-> >  * When running in writethrough mode we need to send writes to clean blocks
-> > - * to both the cache and origin devices.  In future we'd like to clone the
-> > - * bio and send them in parallel, but for now we're doing them in
-> > - * series as this is easier.
-> > + * to both the cache and origin devices.  Clone the bio and send them in parallel.
-> >  */
-> > -static void remap_to_origin_then_cache(struct cache *cache, struct bio *bio,
-> > -				       dm_oblock_t oblock, dm_cblock_t cblock)
-> > +static void remap_to_origin_and_cache(struct cache *cache, struct bio *bio,
-> > +				      dm_oblock_t oblock, dm_cblock_t cblock)
-> > {
-> > -	struct per_bio_data *pb = get_per_bio_data(bio, PB_DATA_SIZE_WT);
-> > +	struct bio *origin_bio = bio_clone_fast(bio, GFP_NOIO, cache->bs);
-> > +
-> > +	BUG_ON(!origin_bio);
-> > 
-> > -	pb->cache = cache;
-> > -	pb->cblock = cblock;
-> > -	dm_hook_bio(&pb->hook_info, bio, writethrough_endio, NULL);
-> > -	dm_bio_record(&pb->bio_details, bio);
-> > +	bio_chain(origin_bio, bio);
-> > +	/*
-> > +	 * Passing false to __remap_to_origin_clear_discard() skips
-> > +	 * all code that might use per_bio_data (since clone doesn't have it)
-> > +	 */
-> > +	__remap_to_origin_clear_discard(cache, origin_bio, oblock, false);
-> > +	submit_bio(origin_bio);
-> > 
-> > -	remap_to_origin_clear_discard(pb->cache, bio, oblock);
-> > +	remap_to_cache(cache, bio, cblock);
-> > }
-> > 
-> > /*----------------------------------------------------------------
-> > @@ -1873,7 +1845,7 @@ static int map_bio(struct cache *cache, struct bio *bio, dm_oblock_t block,
-> > 		} else {
-> > 			if (bio_data_dir(bio) == WRITE && writethrough_mode(&cache->features) &&
-> > 			    !is_dirty(cache, cblock)) {
-> > -				remap_to_origin_then_cache(cache, bio, block, cblock);
-> > +				remap_to_origin_and_cache(cache, bio, block, cblock);
-> > 				accounted_begin(cache, bio);
-> > 			} else
-> > 				remap_to_cache_dirty(cache, bio, block, cblock);
-> > @@ -2132,6 +2104,9 @@ static void destroy(struct cache *cache)
-> > 		kfree(cache->ctr_args[i]);
-> > 	kfree(cache->ctr_args);
-> > 
-> > +	if (cache->bs)
-> > +		bioset_free(cache->bs);
-> > +
-> > 	kfree(cache);
-> > }
-> > 
-> > @@ -2589,6 +2564,13 @@ static int cache_create(struct cache_args *ca, struct cache **result)
-> > 	cache->features = ca->features;
-> > 	ti->per_io_data_size = get_per_bio_data_size(cache);
-> > 
-> > +	if (writethrough_mode(&cache->features)) {
-> > +		/* Create bioset for writethrough bios issued to origin */
-> > +		cache->bs = bioset_create(BIO_POOL_SIZE, 0, 0);
-> > +		if (!cache->bs)
-> > +			goto bad;
-> > +	}
-> > +
-> > 	cache->callbacks.congested_fn = cache_is_congested;
-> > 	dm_table_add_target_callbacks(ti->table, &cache->callbacks);
-> > 
-> > -- 
-> > 1.8.3.1
-> > 
-> 
-> Hi Greg,
-> 
-> I was working out my sendmail setup   
+On 8/4/2020 6:14 PM, Lakshmi Ramasubramanian wrote:
+> On 8/4/20 6:04 PM, Casey Schaufler wrote:
+>> On 8/4/2020 5:43 PM, Lakshmi Ramasubramanian wrote:
+>>> Critical data structures of security modules are currently not measured.
+>>> Therefore an attestation service, for instance, would not be able to
+>>> attest whether the security modules are always operating with the policies
+>>> and configuration that the system administrator had setup. The policies
+>>> and configuration for the security modules could be tampered with by
+>>> malware by exploiting kernel vulnerabilities or modified through some
+>>> inadvertent actions on the system. Measuring such critical data would
+>>> enable an attestation service to better assess the state of the system.
+>>
+>> I still wonder why you're calling this an LSM change/feature when
+>> all the change is in IMA and SELinux. You're not putting anything
+>> into the LSM infrastructure, not are you using the LSM infrastructure
+>> to achieve your ends. Sure, you *could* support other security modules
+>> using this scheme, but you have a configuration dependency on
+>> SELinux, so that's at best going to be messy. If you want this to
+>> be an LSM "feature" you need to use the LSM hooking mechanism.
+>
+>>
+>> I'm not objecting to the feature. It adds value. But as you've
+>> implemented it it is either an IMA extension to SELinux, or an
+>> SELiux extension to IMA. Could AppArmor add hooks for this without
+>> changing the IMA code? It doesn't look like it to me.
+>
+> The check in IMA to allow the new IMA hook func LSM_STATE and LSM_POLICY when SELinux is enabled is just because SELinux is the only security module using these hooks now.
+>
+> To enable AppArmor, for instance, to use the new IMA hooks to measure state and policy would just require adding the check for CONFIG_SECURITY_APPARMOR. Other than that, there are no IMA changes needed to support AppArmor or other such security modules.
 
-Dude, we got 5 different copies of this.  Try testing email setups on a
-non-globally-distributed mailing list first, otherwise it just looks
-like spam...
+This is exactly what I'm objecting to. What if a system has both SELinux
+and AppArmor compiled in? What if it has both enabled?
 
-greg k-h
+>
+> Please see Patch 1/4
+>
+> +            else if (IS_ENABLED(CONFIG_SECURITY_SELINUX) &&
+> +                 strcmp(args[0].from, "LSM_STATE") == 0)
+> +                entry->func = LSM_STATE;
+> +            else if (IS_ENABLED(CONFIG_SECURITY_SELINUX) &&
+> +                 strcmp(args[0].from, "LSM_POLICY") == 0)
+> +                entry->func = LSM_POLICY;
+>
+> And, if early boot measurement is needed for AppArmor the following change in IMA's Kconfig
+>
+> Patch 4/4
+>
+> +config IMA_QUEUE_EARLY_BOOT_DATA
+>      bool
+> +    depends on SECURITY_SELINUX || (IMA_MEASURE_ASYMMETRIC_KEYS && SYSTEM_TRUSTED_KEYRING)
+>      default y
+>
+> If you think calling this an "LSM feature" is not appropriate, please suggest a better phrase.
+
+In the code above you are under CONFIG_SECURITY_SELINUX.
+I would suggest that it's an SELinux feature, so you should
+be using SELINUX_STATE and SELINUX_POLICY, as I suggested
+before. Just because SELinux has state and policy to measure
+doesn't mean that a different module might not have other data,
+such as history, that should be covered as well.
+
+I realize that IMA already has compile time dependencies to
+determine which xattrs to measure. There's no reason that
+the xattr list couldn't be determined at boot time, with
+each security module providing the XATTR_NAME values it
+uses.
+
+>
+> But like I said above, with minimal change in IMA other security modules can be supported to measure STATE and POLICY data.
+>
+>  -lakshmi
+>
+>
