@@ -2,87 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D94523D3E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 00:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D9E23D3FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 00:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgHEW1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 18:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgHEW1r (ORCPT
+        id S1726202AbgHEWlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 18:41:32 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:50488 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726078AbgHEWla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 18:27:47 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3964C061574;
-        Wed,  5 Aug 2020 15:27:46 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BMR8B4NV4z9sTM;
-        Thu,  6 Aug 2020 08:27:38 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1596666459;
-        bh=H1q7O14vu9zhIhL/tHyQXAvQU555EVFOoWuAexg7pyQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eo+YwzPc6VIgTyNKoK/068zdkNxNdRelrLdxSqcVdAt9RuJPdog5dmV8EMGHupyjE
-         grgkBYPKlEnBMuB0hH+k87V6FEQdhza/ssRfT3p5LbpILZg9I5UlRoNEDQXFDucCiG
-         djhiJs6G1jo/hdkozU2rlI4DTqXNf0LWMFKHzGVtwwecmk2Ok7RXrf6TEG+FuRlbnY
-         l4tzUggdrxlkh+f93JExEJmobZ6hv5/UYszPiYSxd4uikQ2sokl35RjmGHnEpQJdTG
-         9R5ziXptnHIYkvSwLXZoLeraFktcO/39plytpg0E+Ppyt5Fz+pEAyrROYbjWtURdj0
-         wBTxD7zrL4YFg==
-Date:   Thu, 6 Aug 2020 08:27:37 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the seccomp tree with the kselftest
- tree
-Message-ID: <20200806082737.44f4594b@canb.auug.org.au>
-In-Reply-To: <0300764c-a9cf-bdef-57aa-afc0e59d8c17@linuxfoundation.org>
-References: <20200720155917.607fff9b@canb.auug.org.au>
-        <20200805154511.698d76d0@canb.auug.org.au>
-        <0300764c-a9cf-bdef-57aa-afc0e59d8c17@linuxfoundation.org>
+        Wed, 5 Aug 2020 18:41:30 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 075DGWpe104587;
+        Wed, 5 Aug 2020 08:16:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596633392;
+        bh=jv05QMyNRK6yayjZc1mP1MO1HJsGqxdVtsib46m4psw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=T+RhXndV1BPGC6RiOs7bIZtzzRI4KezTc5sDYRlBrjptGzd2t5N7YZbKtslASCm69
+         b/5xu9BxUpwVFMXXDLrGZthhOepTcxE1+BIVleZU4bl43OY6PtQJNTighBMU0OqK2P
+         ZpdLH+gUqiy+MGAwAKqtJYQPm2GE/UllwhRVIMSk=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 075DGWwE068176
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 5 Aug 2020 08:16:32 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 5 Aug
+ 2020 08:16:32 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 5 Aug 2020 08:16:32 -0500
+Received: from [10.250.232.88] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 075DGTr0043569;
+        Wed, 5 Aug 2020 08:16:30 -0500
+Subject: Re: [PATCH] mmc: sdhci_am654: Add workaround for card detect debounce
+ timer
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>
+CC:     <ulf.hansson@linaro.org>
+References: <20200729234130.25056-1-faiz_abbas@ti.com>
+ <2d692a90-0e58-ae69-9b5b-c9eb3ffe21ec@intel.com>
+ <75b188ef-2755-b833-4756-79f0f171f8bd@ti.com>
+ <c5b166c9-f9ba-e01e-b759-57ac93d99832@intel.com>
+From:   Faiz Abbas <faiz_abbas@ti.com>
+Message-ID: <3f7e85c7-b0ba-e6a8-8d9f-091413614773@ti.com>
+Date:   Wed, 5 Aug 2020 18:46:28 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ZRTwqCiW1vXJ/0U_fCPCwbE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <c5b166c9-f9ba-e01e-b759-57ac93d99832@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ZRTwqCiW1vXJ/0U_fCPCwbE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Adrian,
 
-Hi Shuah,
+On 05/08/20 3:16 pm, Adrian Hunter wrote:
+> On 5/08/20 11:22 am, Faiz Abbas wrote:
+>> Hi Adrian,
+>>
+>> On 05/08/20 1:44 pm, Adrian Hunter wrote:
+>>> On 30/07/20 2:41 am, Faiz Abbas wrote:
+>>>> There is a one time delay because of a card detect debounce timer in the
+>>>> controller IP. This timer runs as soon as power is applied to the module
+>>>> regardless of whether a card is present or not and any writes to
+>>>> SDHCI_POWER_ON will return 0 before it expires. This timeout has been
+>>>> measured to be about 1 second in am654x and j721e.
+>>>>
+>>>> Write-and-read-back in a loop on SDHCI_POWER_ON for a maximum of
+>>>> 1.5 seconds to make sure that the controller actually powers on.
+>>>>
+>>>> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+>>>> ---
+>>>>  drivers/mmc/host/sdhci_am654.c | 21 +++++++++++++++++++++
+>>>>  1 file changed, 21 insertions(+)
+>>>>
+>>>> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
+>>>> index 1718b9e8af63..55cff9de2f3e 100644
+>>>> --- a/drivers/mmc/host/sdhci_am654.c
+>>>> +++ b/drivers/mmc/host/sdhci_am654.c
+>>>> @@ -272,6 +272,7 @@ static void sdhci_j721e_4bit_set_clock(struct sdhci_host *host,
+>>>>  	sdhci_set_clock(host, clock);
+>>>>  }
+>>>>  
+>>>> +#define MAX_POWER_ON_TIMEOUT	1500 /* ms */
+>>>>  static void sdhci_am654_write_b(struct sdhci_host *host, u8 val, int reg)
+>>>>  {
+>>>>  	unsigned char timing = host->mmc->ios.timing;
+>>>> @@ -291,6 +292,26 @@ static void sdhci_am654_write_b(struct sdhci_host *host, u8 val, int reg)
+>>>>  	}
+>>>>  
+>>>>  	writeb(val, host->ioaddr + reg);
+>>>> +	if (reg == SDHCI_POWER_CONTROL && (val & SDHCI_POWER_ON)) {
+>>>> +		/*
+>>>> +		 * Power on will not happen until the card detect debounce
+>>>> +		 * timer expires. Wait at least 1.5 seconds for the power on
+>>>> +		 * bit to be set
+>>>> +		 */
+>>>
+>>> Can you use readb_poll_timeout() here?
+>>>
+>>
+>> The loop is write -> readback -> check for set bit -> write again and so on until timeout
+>> so poll_timeout() calls will not work.
+> 
+> I mentioned it because pedantically you need to check the condition
+> again after a timeout.  Alternatively, the read_poll_timeout macro
 
-On Wed, 5 Aug 2020 16:24:04 -0600 Shuah Khan <skhan@linuxfoundation.org> wr=
-ote:
->
-> This is sorted out. I added a note to my pull request.
+Ideally, the timeout will never happen because the internal timer always expires at
+1 second. The actual time spent in the loop can be anything less than 1 second
+depending on when clocks were enabled
 
-Thanks for letting me know.
+> can be used with a function, something like below (not even compile
+> tested!)
+> 
+> static u8 write_power_on(struct sdhci_host *host, u8 val, int reg)
+> {
+> 	writeb(val, host->ioaddr + reg);
+> 	usleep_range(1000, 10000);
+> 	return readb(host->ioaddr + reg);
+> }
+> 
+> #define MAX_POWER_ON_TIMEOUT	1500000 /* us */
+> static void sdhci_am654_write_b(struct sdhci_host *host, u8 val, int reg)
+> {
+> 	unsigned char timing = host->mmc->ios.timing;
+> 	u8 pwr;
+> 
+> 	if (reg == SDHCI_HOST_CONTROL) {
+> 		switch (timing) {
+> 		/*
+> 		 * According to the data manual, HISPD bit
+> 		 * should not be set in these speed modes.
+> 		 */
+> 		case MMC_TIMING_SD_HS:
+> 		case MMC_TIMING_MMC_HS:
+> 		case MMC_TIMING_UHS_SDR12:
+> 		case MMC_TIMING_UHS_SDR25:
+> 			val &= ~SDHCI_CTRL_HISPD;
+> 		}
+> 	}
+> 
+> 	writeb(val, host->ioaddr + reg);
+> 
+> 	/*
+> 	 * Power on will not happen until the card detect debounce
+> 	 * timer expires. Wait at least 1.5 seconds for the power on
+> 	 * bit to be set
+> 	 */
+> 	if (reg == SDHCI_POWER_CONTROL && (val & SDHCI_POWER_ON) &&
+> 	    read_poll_timeout(write_power_on, pwr, (pwr & SDHCI_POWER_ON), 0,
+> 			      MAX_POWER_ON_TIMEOUT, false, host, val, reg))
+> 			dev_warn(mmc_dev(host->mmc), "Power on failed\n");
+> 			return;
+> 		}
+> 	}
+> }
+> 
 
---=20
-Cheers,
-Stephen Rothwell
+Looks good. Let me add this in v2.
 
---Sig_/ZRTwqCiW1vXJ/0U_fCPCwbE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8rMlkACgkQAVBC80lX
-0Gxw/gf/fWJvPq4fO83nMC18QNBOjxcrII3czTqDLK1t1YPN2DM7YUXkocN5PKKi
-guNJOAEcJzH7SmreNi4TX+/kNeKPbxppLFabKlis4if5qN0dXBdzGmCGzF7Clbup
-ojs1sH1Q7JA1xThd3Drr83EVYv6O4HSyoAMeqa4YVSqkB+jaY0YrqgZb0nOsEfpY
-Ksp7qkOY+yBQL4l2q56OGK66LUM7UC8m9xlKWTX45xu2CSdblvyPO/XsEUuAzNk4
-v6nWbh6MoP0Xchr7h9HomS9iwjNHB29ugwuj1ogdfpXpxHjyqL/cNcCjWo1rUeIr
-pnc3C7Y2+Kr3auU4KaXCeGYONMK5Ag==
-=nBro
------END PGP SIGNATURE-----
-
---Sig_/ZRTwqCiW1vXJ/0U_fCPCwbE--
+Thanks,
+Faiz
