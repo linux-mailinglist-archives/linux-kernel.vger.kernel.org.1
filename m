@@ -2,135 +2,451 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485B723C8F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C08223C8FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgHEJPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 05:15:17 -0400
-Received: from mga17.intel.com ([192.55.52.151]:35414 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728677AbgHEJNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 05:13:47 -0400
-IronPort-SDR: Xt/dDT4sjlwDTtXCuHI9D3UokNoZYNi7IFD6j0xtC1Hr5pa9KxfaUHtF0zDGwwnUmueXLFQcLR
- RdWkqR3f9vcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="132574549"
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="132574549"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 02:13:47 -0700
-IronPort-SDR: V6U/5SN4492DaeBg1wOdzZtdesbnd7RdPylFknAMEzKmW9oC318nCOwrpxrhZjjNhCkM1skSRr
- RLRLow1+SNhA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="315683191"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Aug 2020 02:13:47 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 5 Aug 2020 02:13:46 -0700
-Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 5 Aug 2020 02:13:46 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 5 Aug 2020 02:13:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lsjhHjtbP/13jAYNyrBGwvNBTUgN0dwpIFVZ0uhtQWvesdSMo0MTmh1si1p5MTmVZlQkXJSTwUsaSSXFGMJ1tXSqErnv+4Ezay4bE4y25u4QuHBEV2iqwml6slkY5VNsKElRtnPXgq+hXoapUCtwbUI7n3+Jn0XIy/2/9TpNonoH2cuKBkguMgoQdc3pJgInfbNHZcaQeVUsVOc6AJau1lWzweM55XAU+e2NHxLWr0rziP4ZaqACPKuFWcautd6wY64znUDSwtOqaNK4tTLQQLbkndsvPuvN15pYmsCfUueOBhW/Bp9Orsb70nkXJfHnTJdtuWU0qEwPQmP4a1t5Tw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CphVXTqFpWsrP4hjpY5R5g+wlI4kCZd5b4ZiUC3z3n4=;
- b=VB2BAm8XhpAddNcFWjgRs1nH/cwmWA+o5kyZzx2dWzGcXuLL6qFq8SPTBTeddriMUk+C/bjqoD3lR0tqH9rWBv0046r7MWIpglxAhgnrsxhnA6EgGT3jLtmDyjEnvikYD5HlEO5qfKEi/yttm1QUgOagSKOOeQxp9h/h7AA7+R5BZYMChBB093d+f20zI2oW9D23F/PR6nSpbc7RNoM+KJxCHoLJoHY+woHHcf+El2Gk15qsoCaB+G3W44pL/0/MQPvV/3cmkaTJ7LQmvN1jp8s1j9jCqVOd/KyZBFZu4hVVPZDDfpclRZ+CUxlXmeyNl9GdEe4+2fSXPHX7zvug9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CphVXTqFpWsrP4hjpY5R5g+wlI4kCZd5b4ZiUC3z3n4=;
- b=n4L27uZqGAu2QD7v33FdeN+mzctCF4NAessxfotugb4U4v6Ber6fT05yZUrelsSgs7DrMHER9vTaEuZYBRDw3Pbd5PVmpDh6lBetDzLJA6/iJxHBoOrxWE6NPxlQmz/PsV8FobwFXNbzrd6DXDi6zbDsr3XrrJpAAZzFXVjGoEU=
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
- by DM6PR11MB3322.namprd11.prod.outlook.com (2603:10b6:5:55::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.17; Wed, 5 Aug
- 2020 09:13:44 +0000
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::c1c1:6930:f17d:a80a]) by DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::c1c1:6930:f17d:a80a%4]) with mapi id 15.20.3239.022; Wed, 5 Aug 2020
- 09:13:44 +0000
-From:   "Wu, Hao" <hao.wu@intel.com>
-To:     "Xu, Yilun" <yilun.xu@intel.com>,
-        "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        "Xu, Yilun" <yilun.xu@intel.com>
-Subject: RE: [PATCH v3 1/4] fpga: dfl: change data type of feature id to u16
-Thread-Topic: [PATCH v3 1/4] fpga: dfl: change data type of feature id to u16
-Thread-Index: AQHWai4tuZLWw9qNcUyLNI3Z6SZQ1akpPMlw
-Date:   Wed, 5 Aug 2020 09:13:44 +0000
-Message-ID: <DM6PR11MB3819752BB8E7437CC6E20284854B0@DM6PR11MB3819.namprd11.prod.outlook.com>
-References: <1596524715-18038-1-git-send-email-yilun.xu@intel.com>
- <1596524715-18038-2-git-send-email-yilun.xu@intel.com>
-In-Reply-To: <1596524715-18038-2-git-send-email-yilun.xu@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.55.46.36]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 12af20be-0f48-402b-dfb4-08d8391fda68
-x-ms-traffictypediagnostic: DM6PR11MB3322:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB33222FAFC396CD226E404B98854B0@DM6PR11MB3322.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KJw33si7QX4nHzVOxXhdZDpqkPzt+A/uf1bbY68M+oZuqXuuZcD75Vpg5TQjhLWeGj6wbjqbzTGw0F+oKSrCKS6SQilCUQVVnM/CR++mTfQwbdZLozdQfVspk4aIWH0I9x33r9wbOnS+wbrRa4n+DaKP577g8gnQIkJkrbmZOLSN1DhS8eH8FINDuCGxRK6KIuVaA+dBbcFCnLqySnrDi/+ao3+Bf9768XMH0Pkl2iOEsiEbl7XkZa9vk0dEQoBaNO5ijpKLJS6ik+8s15T2CnYqY5exZBBPsSTEKqXia9sTwMzDNqf8JMoH6fdP4x08TLO/ivDbAdloma7MXv8ZkQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(346002)(366004)(136003)(376002)(186003)(55016002)(8936002)(316002)(66946007)(54906003)(52536014)(76116006)(110136005)(66476007)(86362001)(8676002)(71200400001)(33656002)(478600001)(107886003)(64756008)(4326008)(9686003)(5660300002)(26005)(66446008)(66556008)(2906002)(6506007)(4744005)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: OMvMLigKNAWf3AM1FX+vwqElTb0Ez00QAmxcDn96XfBIJbUnO0vSbujkjU/10zFzqPgjdpKZKvibCgF0c5Li8Jk9DsDWiKb8bBwSVCeZab8SgIt28HROIzuR1wNHIJenbgdcAJIv78uSwAIa4NSG4q4OZLndVnAZrpHBmPnEiTh/PSY4WkAZWC8KbS4gmgpCI8j1nJOFfHCb5+GygQpjJVKU7dEMrOGakf7gDPJF0HI5sl8ananqVUI2MzwbG/pN0QKFcEGzQ9hSh8vHC/R9VsPdtbASRZzbcoDosf6Sm0CG6sTMt+EkfzEEI0d2dkjteqGyysmRnLl5VY3N93uwyp6Dis8d7V9t/gHxIp1nSmNCklRAa/uDQJKgG3hrBI6JVQTeYWe6i1Q6d6kp8nXLVPHucSIHj7qnox8qjLpsfHve5Jy32v9sCScf/VU/6SUbJ7r1x6fCCldgH9erlVOyVxvz7iKHz2RtiYWEpK4BBkbuqRmWp76Z/tXDHfISmExc9mjDk9LQqPZ8Bm0KJBnxLMSUIRKZjyM7xg4Uyp03qmklZrvTpYi/BrHl5gNk+C8cV7PVaVew/ZMgge3oZWQe3TASStLuI+ecxQ2Frd+1n+icJ6u+VV05f62L6egjJNU9umvfOXE5R4iG8PLGeVGsmg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728453AbgHEJS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 05:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728103AbgHEJQA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 05:16:00 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FBBC0617A5;
+        Wed,  5 Aug 2020 02:16:00 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id d4so3952428pjx.5;
+        Wed, 05 Aug 2020 02:16:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=RMxcGrPbEAoC0dWj6JnjIK9Yac+QqvBvzfndgHKt36k=;
+        b=RAx/E+D4pHwF528vOONN8NWIPXiIoCamnCuWHgMrCEt9l/xnT93jIlNEKiOTwVj2Ct
+         LX5OIcBNV/c5uTPDWuYVpO/qqTQyjGtY86MT1WPVYlNjpXVHyyBpM3wWUT3NkIDQuRnv
+         dboGhqeYHRbxJOZIDAG5wrtcBD+2TrobzHU3QzyGb7FQzGhE8wvL804SUl80y/LTyAM5
+         FhUuUh2TJ26IcgYANyF1QL8xPaQiLFbyHt9zGOYT+Kmn7AP9oxcmoQRI2sEisUYpP05e
+         nd6qp6pDfyIdt48wUFt8O0erU78nNHjZEJ936hzHT5TByLWKdoUkHLo7xaUIm87B2lbC
+         8LDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=RMxcGrPbEAoC0dWj6JnjIK9Yac+QqvBvzfndgHKt36k=;
+        b=bogHsTKTPpzsZIckMIsKYtCXJ+TJb3JurselqPJkKplPoujUm/GqT2BwHacZvIz2Yw
+         P7cNYF+98ZzQiL43xOVJI+ow6w3KhgC61y1XnZLoR0mxGgyzpdjTHoaz3VmqpgG6dp7E
+         mHktxS/3gezykJZTNRzV4N2pI6IhOyTxNSpkyY1RSDCxhmnMaJqsK1iRX0aTYCso/7pd
+         OHI4t14pXeHQ/G8kqBL8zwMANu2ljec6xTMyOTcbQFEWeBIT2/P5l49MAUPRIEdjB2pV
+         O4You3FP16L9NJP3Dvx9eoh9KrKguUo7CK09EUYUfsY2/+Z0pFZvB8PUn30gpu6XxMVM
+         dFVQ==
+X-Gm-Message-State: AOAM533C+vtmYB1E8HNlVNaVuoQpA+l4lvkEpj6iXKEIxcVtyaCBZcm1
+        02UTX2EPXFs5iY0yHN+Ak53p/Y4MmNs=
+X-Google-Smtp-Source: ABdhPJysiS2fhUyKX9UaJd143tFnyagpzexrGY+hRRHBaQdCVQgtvYtbmHRX8bLt8m82ZP8M8L4QlQ==
+X-Received: by 2002:a17:902:a617:: with SMTP id u23mr2023491plq.188.1596618959518;
+        Wed, 05 Aug 2020 02:15:59 -0700 (PDT)
+Received: from [127.0.0.1] ([203.205.141.45])
+        by smtp.gmail.com with ESMTPSA id q83sm2767847pfc.31.2020.08.05.02.15.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 02:15:59 -0700 (PDT)
+Subject: Re: [PATCH v2 2/3] ext4: limit the length of per-inode prealloc list
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+References: <bb8be35a-ba56-44f6-b492-c3244f667a30@gmail.com>
+ <EEA00B35-CC71-4E81-B5DB-596EE3B0AB56@dilger.ca>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <bc768e7e-d8c6-72a2-c984-79cae4bcb9c9@gmail.com>
+Date:   Wed, 5 Aug 2020 17:15:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12af20be-0f48-402b-dfb4-08d8391fda68
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2020 09:13:44.2501
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /oQ2X+GnLKLBx0tYunSqKcvBpCgMJ7FJ9+m/AbbrfcGE1dOBfvj8mG3SPF81LThDRQi9K49Eeh8U/KqGg48BTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3322
-X-OriginatorOrg: intel.com
+In-Reply-To: <EEA00B35-CC71-4E81-B5DB-596EE3B0AB56@dilger.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: [PATCH v3 1/4] fpga: dfl: change data type of feature id to u16
->=20
-> The feature id is stored in a 12 bit field in DFH. So a u16 variable is
-> enough for feature id.
->=20
-> This patch changes all feature id related places to fit u16.
->=20
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Reviewed-by: Tom Rix <trix@redhat.com>
+Add more... , As we expected, the running time of the test process is
+reduced significantly.
 
-Acked-by: Wu Hao <hao.wu@intel.com>
+Running time on unrepaired kernel：
+[root@TENCENT64 ~]# time taskset 0x01 ./sparse /data1/sparce.dat
+real    0m2.051s
+user    0m0.008s
+sys    0m2.026s
 
-Thanks
-Hao
+Running time on repaired kernel：
+[root@TENCENT64 ~]# time taskset 0x01 ./sparse /data1/sparce.dat
+real    0m0.471s
+user    0m0.004s
+sys        0m0.395s
 
+Thanks.
+
+Andreas Dilger wrote on 2020/8/5 12:53:
+> On Aug 4, 2020, at 7:02 PM, brookxu <brookxu.cn@gmail.com> wrote:
+>> In the scenario of writing sparse files, the Per-inode prealloc list may
+>> be very long, resulting in high overhead for ext4_mb_use_preallocated().
+>> To circumvent this problem, we limit the maximum length of per-inode
+>> prealloc list to 512 and allow users to modify it.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> Do you have any kind of measurements that show the benefit of this patch?
+> For example performance improvement, memory or CPU usage before and after?
+> How long is "very long"?
+>
+> Cheers, Andreas
+>
+>> ---
+>>  fs/ext4/ext4.h        |  3 ++-
+>>  fs/ext4/extents.c     | 10 ++++-----
+>>  fs/ext4/file.c        |  2 +-
+>>  fs/ext4/indirect.c    |  2 +-
+>>  fs/ext4/inode.c       |  6 +++---
+>>  fs/ext4/ioctl.c       |  2 +-
+>>  fs/ext4/mballoc.c     | 57 +++++++++++++++++++++++++++++++++++++++++++++++----
+>>  fs/ext4/mballoc.h     |  4 ++++
+>>  fs/ext4/move_extent.c |  4 ++--
+>>  fs/ext4/super.c       |  2 +-
+>>  fs/ext4/sysfs.c       |  2 ++
+>>  11 files changed, 75 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+>> index 42f5060..68e0ebe 100644
+>> --- a/fs/ext4/ext4.h
+>> +++ b/fs/ext4/ext4.h
+>> @@ -1501,6 +1501,7 @@ struct ext4_sb_info {
+>>      unsigned int s_mb_stats;
+>>      unsigned int s_mb_order2_reqs;
+>>      unsigned int s_mb_group_prealloc;
+>> +    unsigned int s_mb_max_inode_prealloc;
+>>      unsigned int s_max_dir_size_kb;
+>>      /* where last allocation was done - for stream allocation */
+>>      unsigned long s_mb_last_group;
+>> @@ -2651,7 +2652,7 @@ extern int ext4_init_inode_table(struct super_block *sb,
+>>  extern ext4_fsblk_t ext4_mb_new_blocks(handle_t *,
+>>                  struct ext4_allocation_request *, int *);
+>>  extern int ext4_mb_reserve_blocks(struct super_block *, int);
+>> -extern void ext4_discard_preallocations(struct inode *);
+>> +extern void ext4_discard_preallocations(struct inode *, unsigned int);
+>>  extern int __init ext4_init_mballoc(void);
+>>  extern void ext4_exit_mballoc(void);
+>>  extern void ext4_free_blocks(handle_t *handle, struct inode *inode,
+>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+>> index 221f240..a40f928 100644
+>> --- a/fs/ext4/extents.c
+>> +++ b/fs/ext4/extents.c
+>> @@ -100,7 +100,7 @@ static int ext4_ext_trunc_restart_fn(struct inode *inode, int *dropped)
+>>       * i_mutex. So we can safely drop the i_data_sem here.
+>>       */
+>>      BUG_ON(EXT4_JOURNAL(inode) == NULL);
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>      up_write(&EXT4_I(inode)->i_data_sem);
+>>      *dropped = 1;
+>>      return 0;
+>> @@ -4272,7 +4272,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>>               * not a good idea to call discard here directly,
+>>               * but otherwise we'd need to call it every free().
+>>               */
+>> -            ext4_discard_preallocations(inode);
+>> +            ext4_discard_preallocations(inode, 0);
+>>              if (flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE)
+>>                  fb_flags = EXT4_FREE_BLOCKS_NO_QUOT_UPDATE;
+>>              ext4_free_blocks(handle, inode, NULL, newblock,
+>> @@ -5299,7 +5299,7 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
+>>      }
+>>
+>>      down_write(&EXT4_I(inode)->i_data_sem);
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>
+>>      ret = ext4_es_remove_extent(inode, punch_start,
+>>                      EXT_MAX_BLOCKS - punch_start);
+>> @@ -5313,7 +5313,7 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
+>>          up_write(&EXT4_I(inode)->i_data_sem);
+>>          goto out_stop;
+>>      }
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>
+>>      ret = ext4_ext_shift_extents(inode, handle, punch_stop,
+>>                       punch_stop - punch_start, SHIFT_LEFT);
+>> @@ -5445,7 +5445,7 @@ static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len)
+>>          goto out_stop;
+>>
+>>      down_write(&EXT4_I(inode)->i_data_sem);
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>
+>>      path = ext4_find_extent(inode, offset_lblk, NULL, 0);
+>>      if (IS_ERR(path)) {
+>> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+>> index 2a01e31..e3ab8ea 100644
+>> --- a/fs/ext4/file.c
+>> +++ b/fs/ext4/file.c
+>> @@ -148,7 +148,7 @@ static int ext4_release_file(struct inode *inode, struct file *filp)
+>>                  !EXT4_I(inode)->i_reserved_data_blocks)
+>>      {
+>>          down_write(&EXT4_I(inode)->i_data_sem);
+>> -        ext4_discard_preallocations(inode);
+>> +        ext4_discard_preallocations(inode, 0);
+>>          up_write(&EXT4_I(inode)->i_data_sem);
+>>      }
+>>      if (is_dx(inode) && filp->private_data)
+>> diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
+>> index be2b66e..ec6b930 100644
+>> --- a/fs/ext4/indirect.c
+>> +++ b/fs/ext4/indirect.c
+>> @@ -696,7 +696,7 @@ static int ext4_ind_trunc_restart_fn(handle_t *handle, struct inode *inode,
+>>       * i_mutex. So we can safely drop the i_data_sem here.
+>>       */
+>>      BUG_ON(EXT4_JOURNAL(inode) == NULL);
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>      up_write(&EXT4_I(inode)->i_data_sem);
+>>      *dropped = 1;
+>>      return 0;
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index 10dd470..bb9e1cd 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -383,7 +383,7 @@ void ext4_da_update_reserve_space(struct inode *inode,
+>>       */
+>>      if ((ei->i_reserved_data_blocks == 0) &&
+>>          !inode_is_open_for_write(inode))
+>> -        ext4_discard_preallocations(inode);
+>> +        ext4_discard_preallocations(inode, 0);
+>>  }
+>>
+>>  static int __check_block_validity(struct inode *inode, const char *func,
+>> @@ -4056,7 +4056,7 @@ int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length)
+>>      if (stop_block > first_block) {
+>>
+>>          down_write(&EXT4_I(inode)->i_data_sem);
+>> -        ext4_discard_preallocations(inode);
+>> +        ext4_discard_preallocations(inode, 0);
+>>
+>>          ret = ext4_es_remove_extent(inode, first_block,
+>>                          stop_block - first_block);
+>> @@ -4211,7 +4211,7 @@ int ext4_truncate(struct inode *inode)
+>>
+>>      down_write(&EXT4_I(inode)->i_data_sem);
+>>
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>
+>>      if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+>>          err = ext4_ext_truncate(handle, inode);
+>> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+>> index 999cf6a..a5fcc23 100644
+>> --- a/fs/ext4/ioctl.c
+>> +++ b/fs/ext4/ioctl.c
+>> @@ -202,7 +202,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
+>>      reset_inode_seed(inode);
+>>      reset_inode_seed(inode_bl);
+>>
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>
+>>      err = ext4_mark_inode_dirty(handle, inode);
+>>      if (err < 0) {
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 4f21f34..28a139f 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -2736,6 +2736,7 @@ int ext4_mb_init(struct super_block *sb)
+>>      sbi->s_mb_stats = MB_DEFAULT_STATS;
+>>      sbi->s_mb_stream_request = MB_DEFAULT_STREAM_THRESHOLD;
+>>      sbi->s_mb_order2_reqs = MB_DEFAULT_ORDER2_REQS;
+>> +    sbi->s_mb_max_inode_prealloc = MB_DEFAULT_MAX_INODE_PREALLOC;
+>>      /*
+>>       * The default group preallocation is 512, which for 4k block
+>>       * sizes translates to 2 megabytes.  However for bigalloc file
+>> @@ -4103,7 +4104,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>>   *
+>>   * FIXME!! Make sure it is valid at all the call sites
+>>   */
+>> -void ext4_discard_preallocations(struct inode *inode)
+>> +void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
+>>  {
+>>      struct ext4_inode_info *ei = EXT4_I(inode);
+>>      struct super_block *sb = inode->i_sb;
+>> @@ -4121,15 +4122,18 @@ void ext4_discard_preallocations(struct inode *inode)
+>>
+>>      mb_debug(sb, "discard preallocation for inode %lu\n",
+>>           inode->i_ino);
+>> -    trace_ext4_discard_preallocations(inode);
+>> +    trace_ext4_discard_preallocations(inode,  needed);
+>>
+>>      INIT_LIST_HEAD(&list);
+>>
+>> +    if (needed == 0)
+>> +        needed = UINT_MAX;
+>> +
+>>  repeat:
+>>      /* first, collect all pa's in the inode */
+>>      spin_lock(&ei->i_prealloc_lock);
+>> -    while (!list_empty(&ei->i_prealloc_list)) {
+>> -        pa = list_entry(ei->i_prealloc_list.next,
+>> +    while (!list_empty(&ei->i_prealloc_list) && needed) {
+>> +        pa = list_entry(ei->i_prealloc_list.prev,
+>>                  struct ext4_prealloc_space, pa_inode_list);
+>>          BUG_ON(pa->pa_obj_lock != &ei->i_prealloc_lock);
+>>          spin_lock(&pa->pa_lock);
+>> @@ -4150,6 +4154,7 @@ void ext4_discard_preallocations(struct inode *inode)
+>>              spin_unlock(&pa->pa_lock);
+>>              list_del_rcu(&pa->pa_inode_list);
+>>              list_add(&pa->u.pa_tmp_list, &list);
+>> +            needed--;
+>>              continue;
+>>          }
+>>
+>> @@ -4549,10 +4554,42 @@ static void ext4_mb_add_n_trim(struct ext4_allocation_context *ac)
+>>  }
+>>
+>>  /*
+>> + * if per-inode prealloc list is too long, trim some PA
+>> + */
+>> +static void
+>> +ext4_mb_trim_inode_pa(struct inode *inode)
+>> +{
+>> +    struct ext4_inode_info *ei = EXT4_I(inode);
+>> +    struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+>> +    struct ext4_prealloc_space *pa;
+>> +    int count = 0, delta;
+>> +
+>> +    rcu_read_lock();
+>> +    list_for_each_entry_rcu(pa, &ei->i_prealloc_list, pa_inode_list) {
+>> +        spin_lock(&pa->pa_lock);
+>> +        if (pa->pa_deleted) {
+>> +            spin_unlock(&pa->pa_lock);
+>> +            continue;
+>> +        }
+>> +        count++;
+>> +        spin_unlock(&pa->pa_lock);
+>> +    }
+>> +    rcu_read_unlock();
+>> +
+>> +    delta = (sbi->s_mb_max_inode_prealloc >> 2) + 1;
+>> +    if (count > sbi->s_mb_max_inode_prealloc + delta) {
+>> +        count -= sbi->s_mb_max_inode_prealloc;
+>> +        ext4_discard_preallocations(inode, count);
+>> +    }
+>> +}
+>> +
+>> +/*
+>>   * release all resource we used in allocation
+>>   */
+>>  static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+>>  {
+>> +    struct inode *inode = ac->ac_inode;
+>> +    struct ext4_inode_info *ei = EXT4_I(inode);
+>>      struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+>>      struct ext4_prealloc_space *pa = ac->ac_pa;
+>>      if (pa) {
+>> @@ -4578,6 +4615,17 @@ static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+>>                  ext4_mb_add_n_trim(ac);
+>>              }
+>>          }
+>> +
+>> +        if (pa->pa_type == MB_INODE_PA) {
+>> +            /*
+>> +             * treat per-inode prealloc list as a lru list, then try
+>> +             * to trim the least recently used PA.
+>> +             */
+>> +            spin_lock(pa->pa_obj_lock);
+>> +            list_move(&ei->i_prealloc_list, &pa->pa_inode_list);
+>> +            spin_unlock(pa->pa_obj_lock);
+>> +        }
+>> +
+>>          ext4_mb_put_pa(ac, ac->ac_sb, pa);
+>>      }
+>>      if (ac->ac_bitmap_page)
+>> @@ -4587,6 +4635,7 @@ static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+>>      if (ac->ac_flags & EXT4_MB_HINT_GROUP_ALLOC)
+>>          mutex_unlock(&ac->ac_lg->lg_mutex);
+>>      ext4_mb_collect_stats(ac);
+>> +    ext4_mb_trim_inode_pa(inode);
+>>      return 0;
+>>  }
+>>
+>> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
+>> index 6b4d17c..e75b474 100644
+>> --- a/fs/ext4/mballoc.h
+>> +++ b/fs/ext4/mballoc.h
+>> @@ -73,6 +73,10 @@
+>>   */
+>>  #define MB_DEFAULT_GROUP_PREALLOC    512
+>>
+>> +/*
+>> + * maximum length of inode prealloc list
+>> + */
+>> +#define MB_DEFAULT_MAX_INODE_PREALLOC    512
+>>
+>>  struct ext4_free_data {
+>>      /* this links the free block information from sb_info */
+>> diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
+>> index 1ed86fb..0d601b8 100644
+>> --- a/fs/ext4/move_extent.c
+>> +++ b/fs/ext4/move_extent.c
+>> @@ -686,8 +686,8 @@
+>>
+>>  out:
+>>      if (*moved_len) {
+>> -        ext4_discard_preallocations(orig_inode);
+>> -        ext4_discard_preallocations(donor_inode);
+>> +        ext4_discard_preallocations(orig_inode, 0);
+>> +        ext4_discard_preallocations(donor_inode, 0);
+>>      }
+>>
+>>      ext4_ext_drop_refs(path);
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index 330957e..8ce61f3 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -1216,7 +1216,7 @@ void ext4_clear_inode(struct inode *inode)
+>>  {
+>>      invalidate_inode_buffers(inode);
+>>      clear_inode(inode);
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>      ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
+>>      dquot_drop(inode);
+>>      if (EXT4_I(inode)->jinode) {
+>> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+>> index 6c9fc9e..92f04e9 100644
+>> --- a/fs/ext4/sysfs.c
+>> +++ b/fs/ext4/sysfs.c
+>> @@ -215,6 +215,7 @@ static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
+>>  EXT4_RW_ATTR_SBI_UI(mb_order2_req, s_mb_order2_reqs);
+>>  EXT4_RW_ATTR_SBI_UI(mb_stream_req, s_mb_stream_request);
+>>  EXT4_RW_ATTR_SBI_UI(mb_group_prealloc, s_mb_group_prealloc);
+>> +EXT4_RW_ATTR_SBI_UI(mb_max_inode_prealloc, s_mb_max_inode_prealloc);
+>>  EXT4_RW_ATTR_SBI_UI(extent_max_zeroout_kb, s_extent_max_zeroout_kb);
+>>  EXT4_ATTR(trigger_fs_error, 0200, trigger_test_error);
+>>  EXT4_RW_ATTR_SBI_UI(err_ratelimit_interval_ms, s_err_ratelimit_state.interval);
+>> @@ -257,6 +258,7 @@ static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
+>>      ATTR_LIST(mb_order2_req),
+>>      ATTR_LIST(mb_stream_req),
+>>      ATTR_LIST(mb_group_prealloc),
+>> +    ATTR_LIST(mb_max_inode_prealloc),
+>>      ATTR_LIST(max_writeback_mb_bump),
+>>      ATTR_LIST(extent_max_zeroout_kb),
+>>      ATTR_LIST(trigger_fs_error),
+>>
+>> --
+>> 1.8.3.1
+>>
+>
+> Cheers, Andreas
+>
+>
+>
+>
+>
