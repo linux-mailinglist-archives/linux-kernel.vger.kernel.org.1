@@ -2,114 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA0523D21A
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C6523D175
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729690AbgHEUJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:09:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726676AbgHEQce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:32:34 -0400
-Received: from localhost (unknown [122.171.202.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D03A322D71;
-        Wed,  5 Aug 2020 13:12:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596633130;
-        bh=sLKCC1QjgtJmAuERFbBWWP9fB/9Lhbpc7SgboYEp2z8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qa76cu0k9JFT6Ep1vcMTDDSxNDUx8rkcmQTEoTyj2Yfn3MNeejXJcDLWqLr/2eprq
-         LWlVGdOpwZX00VbkLmmoD0MsamOzJ0N9d1L6XIzhRmpVPel5+M9VurA4NaX0HJsSdU
-         Vt1+jO3PBNqZWNu5eQAt9Hp5muY6A1tka5hysA3E=
-Date:   Wed, 5 Aug 2020 18:42:05 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     dan.j.williams@intel.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] dmaengine: iop-adma: Fix -Wint-to-pointer-cast
- build warning
-Message-ID: <20200805131205.GY12965@vkoul-mobl>
-References: <20200803141035.45284-1-yuehaibing@huawei.com>
+        id S1728071AbgHEUBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:01:15 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:44248 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727772AbgHEQlW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:41:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596645679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wvvVbA3neuStjhovJpqPYB6dYLf6War6ZdtpyVOVpoo=;
+        b=i/Odx8Me+EPwmNQysiDcGj42l+I4M2lX/hXOnHR4ejUjdhvBL0d0xd609gRo6T0kvR0uPM
+        ErHFxwGXLUcE+CewdQq5szRNp4SeGBvW+l8kiQJreBZ9WCBhAZaGp1MCYhbT3hsBtQe75z
+        B5khOsvWa7NM+AAoBHOWjn0KMDX0Sg0=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-HfoEEMGyOMSIrZeaPznJcg-1; Wed, 05 Aug 2020 09:13:03 -0400
+X-MC-Unique: HfoEEMGyOMSIrZeaPznJcg-1
+Received: by mail-wr1-f69.google.com with SMTP id b8so3952959wrr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:13:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wvvVbA3neuStjhovJpqPYB6dYLf6War6ZdtpyVOVpoo=;
+        b=RV6mf5RGV6gczLV6O2gZetSpZKdiIK0tZ19QsHxqz/seo1+VIhLrZjeCiTYuoWNhpQ
+         MEUf2fg6RvoJ0/atR/3fY5sAD8p/HZ0V8/BaRX3JIMRqvSgsq8reWv+81+gZTIPwj/va
+         Uhd2Yy9URkfTfiSMaJAAE8n5BbGqKTjrwwwZJTkkpdDgvc+5Bha+RnYQFYG8FWO2itqW
+         LOxobWp/azb8O6mgIgvEpT2ZUI6rFDl38UukW/Bu7d8Khyas7iJOAt1sC502UGY3CTwR
+         CdM+Egkkj63mQPAXgSCFlBLj8cMGv16/QYqZGLdUrERMRTmp5Rq3sdQKoNJOq8+dFIlG
+         eZ2g==
+X-Gm-Message-State: AOAM530VxfYllx7XwjC1ou84/i9c+OPvj/FwiVl5hCbQgtsqxG/SAbG6
+        EiyQjdzpyit6WuodkVSXvgSC5BSy0ALQ6uVqqrG+voCHynGY3WmY3Vxq6Mu/WrLO2LVhDYT0X04
+        MFOwUVgrI+sDlXiYiKubr5LzW
+X-Received: by 2002:a1c:1d91:: with SMTP id d139mr3411890wmd.144.1596633182190;
+        Wed, 05 Aug 2020 06:13:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9coyERUcXT3yxN24ZYMf+XfyA2+T1qmyE4JuGsj7TRNRDbULVwH+0UMH6Eic7iEdmMl0Cjg==
+X-Received: by 2002:a1c:1d91:: with SMTP id d139mr3411871wmd.144.1596633182015;
+        Wed, 05 Aug 2020 06:13:02 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
+        by smtp.gmail.com with ESMTPSA id 31sm2746951wrp.87.2020.08.05.06.12.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 06:13:01 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:12:58 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <eli@mellanox.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
+        saeedm@mellanox.com, parav@mellanox.com
+Subject: Re: [PATCH V4 linux-next 00/12] VDPA support for Mellanox ConnectX
+ devices
+Message-ID: <20200805090304-mutt-send-email-mst@kernel.org>
+References: <20200804162048.22587-1-eli@mellanox.com>
+ <20200805075856-mutt-send-email-mst@kernel.org>
+ <20200805124054.GA125576@mtl-vdi-166.wap.labs.mlnx>
+ <20200805084604-mutt-send-email-mst@kernel.org>
+ <20200805130158.GA126406@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200803141035.45284-1-yuehaibing@huawei.com>
+In-Reply-To: <20200805130158.GA126406@mtl-vdi-166.wap.labs.mlnx>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-08-20, 22:10, YueHaibing wrote:
-> drivers/dma/iop-adma.c:447:13: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-> drivers/dma/iop-adma.c:449:4: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-> drivers/dma/iop-adma.c:1301:3: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+On Wed, Aug 05, 2020 at 04:01:58PM +0300, Eli Cohen wrote:
+> On Wed, Aug 05, 2020 at 08:48:52AM -0400, Michael S. Tsirkin wrote:
+> > > 
+> > > Did you merge this?:
+> > > git pull git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next
+> > 
+> > 
+> > I can only merge this tree if no one else will. Linus does not like
+> > getting same patches through two trees.
+> > 
+> > Is this the case? Is mlx5-next going to be merged through
+> > my tree in this cycle?
+> > 
 > 
-> Use void* for dma_desc_pool_virt, dma_addr_t for dma_desc_pool,
-> and use %pad to print dma_addr_t.
+> Saeed Mahameed from Mellanox (located in California) usuaally sends out
+> net patches. So he's supposed to send that to Dave Miller.
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/dma/iop-adma.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/dma/iop-adma.c b/drivers/dma/iop-adma.c
-> index 3350bffb2e93..8e17e4405959 100644
-> --- a/drivers/dma/iop-adma.c
-> +++ b/drivers/dma/iop-adma.c
-> @@ -415,7 +415,8 @@ static void iop_chan_start_null_xor(struct iop_adma_chan *iop_chan);
->   * */
->  static int iop_adma_alloc_chan_resources(struct dma_chan *chan)
->  {
-> -	char *hw_desc;
-> +	void *hw_desc;
-> +	dma_addr_t dma_desc;
->  	int idx;
->  	struct iop_adma_chan *iop_chan = to_iop_adma_chan(chan);
->  	struct iop_adma_desc_slot *slot = NULL;
-> @@ -436,17 +437,16 @@ static int iop_adma_alloc_chan_resources(struct dma_chan *chan)
->  				" %d descriptor slots", idx);
->  			break;
->  		}
-> -		hw_desc = (char *) iop_chan->device->dma_desc_pool_virt;
-> -		slot->hw_desc = (void *) &hw_desc[idx * IOP_ADMA_SLOT_SIZE];
-> +		hw_desc = iop_chan->device->dma_desc_pool_virt;
-> +		slot->hw_desc = hw_desc + idx * IOP_ADMA_SLOT_SIZE;
+> I think Saeed should answer this. Let's wait a few more hours till he
+> wakes up.
 
-So you want to pointer arithmetic on a void pointer !
+Alternatives:
+- merge vdpa through Saeed's tree. I can ack that, we'll need to
+  resolve any conflicts by merging the two trees and show the
+  result to Linus so he can resolve the merge in the same way.
+- extract just the necessary patches that are needed for vdpa and
+  merge through my tree.
+- if Saeed sends his pull today, it's likely it will be merged
+  early next week. Then I can rebase and send a pull with your patches
+  on top. A bit risky.
+- do some tricks with build. E.g. disable build of your code,
+  and enable in Saeed's tree when everything is merged together.
+  Can be somewhat hard.
 
-Are you sure math is correct here and will work on different compilers?
-
->  
->  		dma_async_tx_descriptor_init(&slot->async_tx, chan);
->  		slot->async_tx.tx_submit = iop_adma_tx_submit;
->  		INIT_LIST_HEAD(&slot->tx_list);
->  		INIT_LIST_HEAD(&slot->chain_node);
->  		INIT_LIST_HEAD(&slot->slot_node);
-> -		hw_desc = (char *) iop_chan->device->dma_desc_pool;
-> -		slot->async_tx.phys =
-> -			(dma_addr_t) &hw_desc[idx * IOP_ADMA_SLOT_SIZE];
-> +		dma_desc = iop_chan->device->dma_desc_pool;
-> +		slot->async_tx.phys = dma_desc + idx * IOP_ADMA_SLOT_SIZE;
->  		slot->idx = idx;
->  
->  		spin_lock_bh(&iop_chan->lock);
-> @@ -1296,9 +1296,8 @@ static int iop_adma_probe(struct platform_device *pdev)
->  		goto err_free_adev;
->  	}
->  
-> -	dev_dbg(&pdev->dev, "%s: allocated descriptor pool virt %p phys %p\n",
-> -		__func__, adev->dma_desc_pool_virt,
-> -		(void *) adev->dma_desc_pool);
-> +	dev_dbg(&pdev->dev, "%s: allocated descriptor pool virt %p phys %pad\n",
-> +		__func__, adev->dma_desc_pool_virt, &adev->dma_desc_pool);
->  
->  	adev->id = plat_data->hw_id;
->  
-> -- 
-> 2.17.1
-> 
-
--- 
-~Vinod
