@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B123723CC4D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6619023CC83
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbgHEQgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:36:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727003AbgHEQeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:34:37 -0400
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1E932076E;
-        Wed,  5 Aug 2020 12:51:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596631911;
-        bh=HOnj3Rf9xvYALWHvNzwxaM2OZCJy8zKF4WAd1JhW220=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XudrjJsWpfCBAJJ8j5BppShNMFB17hCnJEe1RkAj+b445j2sdQinbuYok0ZAPoY/4
-         QEALh8/3vpuplsPnBWfKjuLsf+wRiG9iPh1Qp3Ru0K5F9AoKY2XUEN9lI/mabG57rN
-         x+A2+zvpvbvZJrpgCe4722pZ8vEgVOB4+QXqLByg=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Joshua Kinard <kumba@gentoo.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Mike Rapoport <rppt@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        kernel test robot <lkp@intel.com>, stable@vger.kernel.org
-Subject: [PATCH] MIPS: SGI-IP27: always enable NUMA in Kconfig
-Date:   Wed,  5 Aug 2020 15:51:41 +0300
-Message-Id: <20200805125141.24987-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1728142AbgHEQtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728076AbgHEQsi (ORCPT
+        <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:48:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66197C03461D
+        for <Linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:57:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Gt9NJuA9NqxmEUokFcw04m2QCDlb3+WQJaB6tPto9FA=; b=eftEKmgaThAuFa0orFvtGPAOiu
+        s8pj8/SncERZwwqVyJQhJ7T2c+Z61TwMviUEWCveyF4i1kyZyfA8uy1LiTvm6llCjAjC6PoIO9Aqx
+        U4j7p+wBzYOO/G+gNMiKJOAADsh2Xbb2XvdbOAODuX/3ovwz0OsGhu7kl+93TvAADgGq/6ZtZQ6jo
+        FQ2Dqvu2Ys1XYrpC2A1gBL+XBkHvPb33oK2xvW7VF+olR5C6Q44hsdi24a4iQWr6dDFZq03+ysi0D
+        s9sPHaTP6sEPY2nVSo4qoNdf08vAMqGe69DUF7K5976e8/Ex2hnMrZyLwETLlHY2PVe8k62sybSKB
+        BJulv18Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3Iyj-0003Pb-27; Wed, 05 Aug 2020 12:57:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0685F300F7A;
+        Wed,  5 Aug 2020 14:57:08 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DA00821493853; Wed,  5 Aug 2020 14:57:07 +0200 (CEST)
+Date:   Wed, 5 Aug 2020 14:57:07 +0200
+From:   peterz@infradead.org
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     mingo@redhat.com, oleg@redhat.com, acme@kernel.org,
+        jolsa@kernel.org, Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com
+Subject: Re: [PATCH v1 2/2] perf/core: Fake regs for leaked kernel samples
+Message-ID: <20200805125707.GC35926@hirez.programming.kicks-ass.net>
+References: <20200731025617.16243-1-yao.jin@linux.intel.com>
+ <20200731025617.16243-2-yao.jin@linux.intel.com>
+ <20200804114900.GI2657@hirez.programming.kicks-ass.net>
+ <4c958d61-11a7-9f3e-9e7d-d733270144a1@linux.intel.com>
+ <20200805124454.GP2657@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805124454.GP2657@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Wed, Aug 05, 2020 at 02:44:54PM +0200, peterz@infradead.org wrote:
 
-When a configuration has NUMA disabled and SGI_IP27 enabled, the build
-fails:
+> How's this?
 
-  CC      kernel/bounds.s
-  CC      arch/mips/kernel/asm-offsets.s
-In file included from arch/mips/include/asm/topology.h:11,
-                 from include/linux/topology.h:36,
-                 from include/linux/gfp.h:9,
-                 from include/linux/slab.h:15,
-                 from include/linux/crypto.h:19,
-                 from include/crypto/hash.h:11,
-                 from include/linux/uio.h:10,
-                 from include/linux/socket.h:8,
-                 from include/linux/compat.h:15,
-                 from arch/mips/kernel/asm-offsets.c:12:
-include/linux/topology.h: In function 'numa_node_id':
-arch/mips/include/asm/mach-ip27/topology.h:16:27: error: implicit declaration of function 'cputonasid'; did you mean 'cpu_vpe_id'? [-Werror=implicit-function-declaration]
- #define cpu_to_node(cpu) (cputonasid(cpu))
-                           ^~~~~~~~~~
-include/linux/topology.h:119:9: note: in expansion of macro 'cpu_to_node'
-  return cpu_to_node(raw_smp_processor_id());
-         ^~~~~~~~~~~
-include/linux/topology.h: In function 'cpu_cpu_mask':
-arch/mips/include/asm/mach-ip27/topology.h:19:7: error: implicit declaration of function 'hub_data' [-Werror=implicit-function-declaration]
-      &hub_data(node)->h_cpus)
-       ^~~~~~~~
-include/linux/topology.h:210:9: note: in expansion of macro 'cpumask_of_node'
-  return cpumask_of_node(cpu_to_node(cpu));
-         ^~~~~~~~~~~~~~~
-arch/mips/include/asm/mach-ip27/topology.h:19:21: error: invalid type argument of '->' (have 'int')
-      &hub_data(node)->h_cpus)
-                     ^~
-include/linux/topology.h:210:9: note: in expansion of macro 'cpumask_of_node'
-  return cpumask_of_node(cpu_to_node(cpu));
-         ^~~~~~~~~~~~~~~
+Clearly I didn't even hold it near a compiler...
 
-Before switch from discontigmem to sparsemem, there always was
-CONFIG_NEED_MULTIPLE_NODES=y because it was selected by DISCONTIGMEM.
-Without DISCONTIGMEM it is possible to have SPARSEMEM without NUMA for
-SGI_IP27 and as many things there rely on custom node definition, the
-build breaks.
+> ---
+>  kernel/events/core.c | 38 +++++++++++++++++++++++++++++++++-----
+>  1 file changed, 33 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 7c436d705fbd..3e4e328b521a 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -6988,23 +6988,49 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
+>  	return callchain ?: &__empty_callchain;
+>  }
+>  
+> +/*
+> + * Due to interrupt latency (skid), we may enter the kernel before taking the
+> + * PMI, even if the PMU is configured to only count user events. To avoid
+> + * leaking kernel addresses, use task_pt_regs(), when available.
+> + */
+> +static struct pt_regs *sanitize_sample_regs(struct perf_event *event, struct pt_regs *regs)
+> +{
+> +	struct pt_regs *sample_regs = regs;
+> +
+> +	/* user only */
+> +	if (!event->attr.exclude_kernel || !event->attr.exclude_hv ||
+> +	    !event->attr.exclude_host   || !event->attr.exclude_guest)
+> +		return sample_regs;
+> +
+> +	if (sample_regs(regs))
+> +		return sample_regs;
 
-As Thomas noted "... there are right now too many places in IP27 code,
-which assumes NUMA enabled", the simplest solution would be to always
-enable NUMA for SGI-IP27 builds.
+That wants to he:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 397dc00e249e ("mips: sgi-ip27: switch from DISCONTIGMEM to SPARSEMEM")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+	if (user_regs(regs))
+		return sample_regs;
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 6fee1a133e9d..a7e40bb1e5bc 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -678,6 +678,7 @@ config SGI_IP27
- 	select SYS_SUPPORTS_NUMA
- 	select SYS_SUPPORTS_SMP
- 	select MIPS_L1_CACHE_SHIFT_7
-+	select NUMA
- 	help
- 	  This are the SGI Origin 200, Origin 2000 and Onyx 2 Graphics
- 	  workstations.  To compile a Linux kernel that runs on these, say Y
--- 
-2.26.2
+> +
+> +	if (!(current->flags & PF_KTHREAD)) {
 
+s/{//
+
+> +		sample_regs = task_pt_regs(current);
+> +	else
+> +		instruction_pointer_set(regs, -1L);
+> +
+> +	return sample_regs;
+> +}
