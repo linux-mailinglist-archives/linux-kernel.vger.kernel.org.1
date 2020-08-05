@@ -2,125 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD3323C427
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 05:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 464FA23C435
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 05:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbgHEDvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 23:51:16 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35370 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726305AbgHEDu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 23:50:57 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id EB04F3C152A363C86B4A;
-        Wed,  5 Aug 2020 11:50:53 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Wed, 5 Aug 2020 11:50:50 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     <robin@protonic.nl>, <linux@rempel-privat.de>,
-        <kernel@pengutronix.de>, <socketcan@hartkopp.net>,
-        <mkl@pengutronix.de>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net 4/4] can: j1939: add rxtimer for multipacket broadcast session
-Date:   Wed, 5 Aug 2020 11:50:25 +0800
-Message-ID: <1596599425-5534-5-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1596599425-5534-1-git-send-email-zhangchangzhong@huawei.com>
-References: <1596599425-5534-1-git-send-email-zhangchangzhong@huawei.com>
+        id S1726769AbgHED5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 23:57:33 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:46186 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725904AbgHED5b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 23:57:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596599849;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TYHMWO+/kd/xb1BEqnZIo41jyaK7ZhQvyZqkmGc35KI=;
+        b=Xr2voHUYkBjlVhxBLEFlUUZQkFLmFIMB9d+ScRmkNqp8Ban4KesCOdD6ZLMwI2DHfddeQL
+        PFG6UFzzLTKW6Ye954Fd+rwM1ZVy1XRJXJBxCAEDlew3/IvEgIwYcK6ReAyzVz3ywuopXh
+        GnPqhg0mlMnNU9x4elFXTWXxDJPlCEk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-qwjgBZnQPM-_Txp2UuCA1g-1; Tue, 04 Aug 2020 23:57:25 -0400
+X-MC-Unique: qwjgBZnQPM-_Txp2UuCA1g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7FD12800138;
+        Wed,  5 Aug 2020 03:57:20 +0000 (UTC)
+Received: from localhost (ovpn-12-71.pek2.redhat.com [10.72.12.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B719C87B38;
+        Wed,  5 Aug 2020 03:57:18 +0000 (UTC)
+Date:   Wed, 5 Aug 2020 11:57:15 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        clang-built-linux@googlegroups.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org
+Subject: Re: [PATCH v2 11/17] arch, mm: replace for_each_memblock() with
+ for_each_mem_pfn_range()
+Message-ID: <20200805035715.GS10792@MiWiFi-R3L-srv>
+References: <20200802163601.8189-1-rppt@kernel.org>
+ <20200802163601.8189-12-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200802163601.8189-12-rppt@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to SAE J1939/21 (Chapter 5.12.3 and APPENDIX C), for transmit
-side the required time interval between packets of a multipacket
-broadcast message is 50 to 200 ms, the responder shall use a timeout of
-250ms (provides margin allowing for the maximumm spacing of 200ms). For
-receive side a timeout will occur when a time of greater than 750 ms
-elapsed between two message packets when more packets were expected.
+On 08/02/20 at 07:35pm, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> There are several occurrences of the following pattern:
+> 
+> 	for_each_memblock(memory, reg) {
+> 		start_pfn = memblock_region_memory_base_pfn(reg);
+> 		end_pfn = memblock_region_memory_end_pfn(reg);
+> 
+> 		/* do something with start_pfn and end_pfn */
+> 	}
+> 
+> Rather than iterate over all memblock.memory regions and each time query
+> for their start and end PFNs, use for_each_mem_pfn_range() iterator to get
+> simpler and clearer code.
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  arch/arm/mm/init.c           | 11 ++++-------
+>  arch/arm64/mm/init.c         | 11 ++++-------
+>  arch/powerpc/kernel/fadump.c | 11 ++++++-----
+>  arch/powerpc/mm/mem.c        | 15 ++++++++-------
+>  arch/powerpc/mm/numa.c       |  7 ++-----
+>  arch/s390/mm/page-states.c   |  6 ++----
+>  arch/sh/mm/init.c            |  9 +++------
+>  mm/memblock.c                |  6 ++----
+>  mm/sparse.c                  | 10 ++++------
+>  9 files changed, 35 insertions(+), 51 deletions(-)
+> 
 
-So this patch fix and add rxtimer for multipacket broadcast session.
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- net/can/j1939/transport.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
-
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 5757f9f..fad210e 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -716,10 +716,12 @@ static int j1939_session_tx_rts(struct j1939_session *session)
- 		return ret;
- 
- 	session->last_txcmd = dat[0];
--	if (dat[0] == J1939_TP_CMD_BAM)
-+	if (dat[0] == J1939_TP_CMD_BAM) {
- 		j1939_tp_schedule_txtimer(session, 50);
--
--	j1939_tp_set_rxtimeout(session, 1250);
-+		j1939_tp_set_rxtimeout(session, 250);
-+	} else {
-+		j1939_tp_set_rxtimeout(session, 1250);
-+	}
- 
- 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
- 
-@@ -1665,11 +1667,15 @@ static void j1939_xtp_rx_rts(struct j1939_priv *priv, struct sk_buff *skb,
- 	}
- 	session->last_cmd = cmd;
- 
--	j1939_tp_set_rxtimeout(session, 1250);
--
--	if (cmd != J1939_TP_CMD_BAM && !session->transmission) {
--		j1939_session_txtimer_cancel(session);
--		j1939_tp_schedule_txtimer(session, 0);
-+	if (cmd == J1939_TP_CMD_BAM) {
-+		if (!session->transmission)
-+			j1939_tp_set_rxtimeout(session, 750);
-+	} else {
-+		if (!session->transmission) {
-+			j1939_session_txtimer_cancel(session);
-+			j1939_tp_schedule_txtimer(session, 0);
-+		}
-+		j1939_tp_set_rxtimeout(session, 1250);
- 	}
- 
- 	j1939_session_put(session);
-@@ -1720,6 +1726,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 	int offset;
- 	int nbytes;
- 	bool final = false;
-+	bool remain = false;
- 	bool do_cts_eoma = false;
- 	int packet;
- 
-@@ -1781,6 +1788,8 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 	    j1939_cb_is_broadcast(&session->skcb)) {
- 		if (session->pkt.rx >= session->pkt.total)
- 			final = true;
-+		else
-+			remain = true;
- 	} else {
- 		/* never final, an EOMA must follow */
- 		if (session->pkt.rx >= session->pkt.last)
-@@ -1790,6 +1799,9 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 	if (final) {
- 		j1939_session_timers_cancel(session);
- 		j1939_session_completed(session);
-+	} else if (remain) {
-+		if (!session->transmission)
-+			j1939_tp_set_rxtimeout(session, 750);
- 	} else if (do_cts_eoma) {
- 		j1939_tp_set_rxtimeout(session, 1250);
- 		if (!session->transmission)
--- 
-2.9.5
+Reviewed-by: Baoquan He <bhe@redhat.com>
 
