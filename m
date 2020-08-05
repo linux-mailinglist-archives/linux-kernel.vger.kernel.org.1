@@ -2,129 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BD823D1F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244D023D1EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgHEUH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:07:59 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44956 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726710AbgHEQcr (ORCPT
+        id S1729677AbgHEUHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:07:37 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:50428 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726854AbgHEQdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:32:47 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 41B9F20B490F;
-        Wed,  5 Aug 2020 09:32:45 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 41B9F20B490F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1596645165;
-        bh=8yTIBJVbmtc/Ck+OeQOYKUTT/Vn4mSXQcj3sHYU5LSU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rcJA6biwrheMOPMW1mbfKbELuTrJnZPGduuj3E6ondhtAyA2zpMThDwsu9URxK6Bg
-         w8zeCZVMVOhL767hzJD213nTDYgsLPIf5L7tt392sCHkW8ehdZ0pGEdSHzQyDnOlkN
-         SxqnVt+vKbHcN6/j8D92NBImdtUMYHNuYrJ7nSeg=
-Date:   Wed, 5 Aug 2020 11:32:43 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>, zohar@linux.ibm.com,
-        stephen.smalley.work@gmail.com, sashal@kernel.org,
-        jmorris@namei.org, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
-Message-ID: <20200805163243.GD4365@sequoia>
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
- <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
- <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
- <c7c168f2-e30b-d2c5-abcb-1b6919197474@schaufler-ca.com>
- <20200805154504.GB4365@sequoia>
- <7c7a076b-6ba7-2e8d-409a-b3b4e4738c41@linux.microsoft.com>
- <20200805161449.GC4365@sequoia>
- <ae80581d-a34c-51f4-d4f9-94c1e341fd15@linux.microsoft.com>
+        Wed, 5 Aug 2020 12:33:08 -0400
+Received: by mail-il1-f197.google.com with SMTP id a15so9450134iln.17
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:33:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=xdDF8KAwPeDbsdN5hACSBVSNt3eeL93Vn3ZE06PW0ws=;
+        b=fo/FLZZe8cS6uVivjFidc2bW9QzF8fzWCrPgAkCJ+M78WijC7Jl9cnU513nhNU8tmh
+         9b0VGXgHm6Hmar2J14EIr8je6HoXsW0hCjflRIORBWtDngJ1Q4GNJ384EyTAAWq/lmnu
+         9C9NTPsSnxl6y77PrIzuw1lJu8crIedp2RWLRArdX1iJBMkU7lnkdqeu3t8Pj8NQQyT0
+         5aCCxcx4iL0pAm0TOza4KgOzMThJKb8/XLVSwnJjqiO81nvDRAeD6soYKWNdgs29Jufv
+         ouDuhpywTHhi3KMYIS5kBZ88e5tTCB19OFq3lvgQOALeFlIYtvHrr36cTHYvF/73qS8v
+         Inag==
+X-Gm-Message-State: AOAM531/jXiupQidtlXJ82I4c02huLtQlVMJ2ei38SspwQFcTfHLhVQ6
+        CIUTYmsirgfxNFBZ1Vy78/m87UZoBUFtWNPDX5rJEGtVHf0S
+X-Google-Smtp-Source: ABdhPJx1bzir56joK2ABAxtH0sKqUYFQk87L5ebinbPqcd6dHIycZoH3GBn4mZAYZSuRbVEjVUHzKuZ7t4g9wSnDVEVr5CKihhk0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae80581d-a34c-51f4-d4f9-94c1e341fd15@linux.microsoft.com>
+X-Received: by 2002:a6b:ba06:: with SMTP id k6mr4243404iof.101.1596645187111;
+ Wed, 05 Aug 2020 09:33:07 -0700 (PDT)
+Date:   Wed, 05 Aug 2020 09:33:07 -0700
+In-Reply-To: <00000000000023efa305ac1b5309@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000035d35105ac23ed6d@google.com>
+Subject: Re: WARNING: refcount bug in l2cap_global_chan_by_psm
+From:   syzbot <syzbot+39ad9f042519082fcec9@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, edubezval@gmail.com,
+        johan.hedberg@gmail.com, kaber@trash.net, kadlec@blackhole.kfki.hu,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        marcel@holtmann.org, mchehab@kernel.org, mchehab@s-opensource.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-05 09:21:24, Lakshmi Ramasubramanian wrote:
-> On 8/5/20 9:14 AM, Tyler Hicks wrote:
-> > On 2020-08-05 09:07:48, Lakshmi Ramasubramanian wrote:
-> > > On 8/5/20 8:45 AM, Tyler Hicks wrote:
-> > > > On 2020-08-05 08:36:40, Casey Schaufler wrote:
-> > > > > On 8/4/2020 6:14 PM, Lakshmi Ramasubramanian wrote:
-> > > > > > On 8/4/20 6:04 PM, Casey Schaufler wrote:
-> > > > > > > On 8/4/2020 5:43 PM, Lakshmi Ramasubramanian wrote:
-> > > > > > > > Critical data structures of security modules are currently not measured.
-> > > > > > > > Therefore an attestation service, for instance, would not be able to
-> > > > > > > > attest whether the security modules are always operating with the policies
-> > > > > > > > and configuration that the system administrator had setup. The policies
-> > > > > > > > and configuration for the security modules could be tampered with by
-> > > > > > > > malware by exploiting kernel vulnerabilities or modified through some
-> > > > > > > > inadvertent actions on the system. Measuring such critical data would
-> > > > > > > > enable an attestation service to better assess the state of the system.
-> > > > > > > 
-> > > > > > > I still wonder why you're calling this an LSM change/feature when
-> > > > > > > all the change is in IMA and SELinux. You're not putting anything
-> > > > > > > into the LSM infrastructure, not are you using the LSM infrastructure
-> > > > > > > to achieve your ends. Sure, you *could* support other security modules
-> > > > > > > using this scheme, but you have a configuration dependency on
-> > > > > > > SELinux, so that's at best going to be messy. If you want this to
-> > > > > > > be an LSM "feature" you need to use the LSM hooking mechanism.
-> > > > > > 
-> > > > > > > 
-> > > > > > > I'm not objecting to the feature. It adds value. But as you've
-> > > > > > > implemented it it is either an IMA extension to SELinux, or an
-> > > > > > > SELiux extension to IMA. Could AppArmor add hooks for this without
-> > > > > > > changing the IMA code? It doesn't look like it to me.
-> > > > > > 
-> > > > > > The check in IMA to allow the new IMA hook func LSM_STATE and LSM_POLICY when SELinux is enabled is just because SELinux is the only security module using these hooks now.
-> > > > > > 
-> > > > > > To enable AppArmor, for instance, to use the new IMA hooks to measure state and policy would just require adding the check for CONFIG_SECURITY_APPARMOR. Other than that, there are no IMA changes needed to support AppArmor or other such security modules.
-> > > > > 
-> > > > > This is exactly what I'm objecting to. What if a system has both SELinux
-> > > > > and AppArmor compiled in? What if it has both enabled?
-> > > > 
-> > > > The SELinux state and policy would be measured but the AppArmor
-> > > > state/policy would be silently ignored. This isn't ideal as the IMA
-> > > > policy author would need to read the kernel code to figure out which
-> > > > LSMs are going to be measured.
-> > > 
-> > > Tyler - I am not sure why AppArmor state\policy would be ignored when both
-> > > SELinux and AppArmor are enabled. Could you please clarify?
-> > 
-> > I think Casey is talking about now (when AppArmor is not supported by
-> > this feature) and you're talking about the future (when AppArmor may be
-> > supported by this feature).
-> 
-> Got it - thanks for clarifying.
-> 
-> But with the current code if SELinux is enabled on the system, but AppArmor
-> is not and the IMA policy contains "measure func=LSM_STATE" then the policy
-> will be rejected as "-EINVAL".
+syzbot has bisected this issue to:
 
-The AppArmor policy load? Yes, the load will fail.
+commit 3c1e300966d7edc380e405b3ab70b6e3c813a121
+Author: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date:   Tue Oct 18 19:44:12 2016 +0000
 
-What Casey is talking about is when SELinux and AppArmor are enabled in
-the kernel config but AppArmor is active. This scenario is true in
-distro kernels such as Ubuntu's kernel:
+    [media] si4713: don't break long lines
 
-$ grep -e CONFIG_SECURITY_SELINUX= -e CONFIG_SECURITY_APPARMOR= /boot/config-5.4.0-42-generic 
-CONFIG_SECURITY_SELINUX=y
-CONFIG_SECURITY_APPARMOR=y
-$ cat /sys/kernel/security/lsm
-lockdown,capability,yama,apparmor
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=108f4002900000
+start commit:   c0842fbc random32: move the pseudo-random 32-bit definitio..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=128f4002900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=148f4002900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=76cacb0fe58c4a1e
+dashboard link: https://syzkaller.appspot.com/bug?extid=39ad9f042519082fcec9
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14491b04900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1188e392900000
 
-Casey also likely has LSM stacking in mind here where SELinux and
-AppArmor could both be active at the same time but the LSM stacking
-series is not yet applied.
+Reported-by: syzbot+39ad9f042519082fcec9@syzkaller.appspotmail.com
+Fixes: 3c1e300966d7 ("[media] si4713: don't break long lines")
 
-Tyler
-
-> So the policy author would get a feedback even now.
-> Correct me if I am wrong.
-> 
->  -lakshmi
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
