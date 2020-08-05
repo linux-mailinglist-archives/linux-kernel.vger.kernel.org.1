@@ -2,58 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45FE23C634
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36B923C63C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbgHEGsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 02:48:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39062 "EHLO mail.kernel.org"
+        id S1727971AbgHEGyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 02:54:11 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:43170 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726382AbgHEGsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 02:48:32 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E63B2076E;
-        Wed,  5 Aug 2020 06:48:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596610111;
-        bh=HMyvD8NsGy2u833AuNGlzuWSRw2uA7wsTK0RAPThsLI=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=18qa1fuhPqZCLDqstMlypKMAv8ES/94BCJdib+oqYTSCI4iBJA+YAyZ9DuPVjN1YY
-         mMpfuXN9ceeOTd7xv8zijMYVCvXsOTjff2LE3WZvakhw9+PjJWkTwguUnVS8vFp+Ux
-         QO/FkbtdRMvyDtCjMo3X1MRYkfdfBAe2ZnI2JqxI=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <69c90a004b3f5b7ae282f5ec5ca2920a48f23e02.1596040416.git.gurus@codeaurora.org>
-References: <944856eb819081268fab783236a916257de120e4.1596040416.git.gurus@codeaurora.org> <69c90a004b3f5b7ae282f5ec5ca2920a48f23e02.1596040416.git.gurus@codeaurora.org>
-Subject: Re: [PATCH v2 2/2] thermal: qcom-spmi-temp-alarm: add support for GEN2 rev 1 PMIC peripherals
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        linux-kernel@vger.kernel.org,
-        Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Amit Kucheria <amit.kucheria@linaro.org>,
-        Guru Das Srinagesh <gurus@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org
-Date:   Tue, 04 Aug 2020 23:48:30 -0700
-Message-ID: <159661011044.1360974.2399567989389491381@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S1725920AbgHEGyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 02:54:11 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E04062003A2;
+        Wed,  5 Aug 2020 08:54:08 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 22B2F2011A3;
+        Wed,  5 Aug 2020 08:54:06 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5FEF54024E;
+        Wed,  5 Aug 2020 08:54:02 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
+        o.rempel@pengutronix.de, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] dt-bindings: nvmem: Convert snvs lpgpr to json-schema
+Date:   Wed,  5 Aug 2020 14:49:32 +0800
+Message-Id: <1596610172-30323-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Guru Das Srinagesh (2020-07-29 09:52:52)
-> From: David Collins <collinsd@codeaurora.org>
->=20
-> Add support for TEMP_ALARM GEN2 PMIC peripherals with digital
-> major revision 1.  This revision utilizes a different temperature
-> threshold mapping than earlier revisions.
->=20
-> Signed-off-by: David Collins <collinsd@codeaurora.org>
-> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-> ---
+Convert the snvs lpgpr binding to DT schema format using json-schema.
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../devicetree/bindings/nvmem/snvs-lpgpr.txt       | 21 ---------------
+ .../devicetree/bindings/nvmem/snvs-lpgpr.yaml      | 31 ++++++++++++++++++++++
+ 2 files changed, 31 insertions(+), 21 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/nvmem/snvs-lpgpr.txt
+ create mode 100644 Documentation/devicetree/bindings/nvmem/snvs-lpgpr.yaml
+
+diff --git a/Documentation/devicetree/bindings/nvmem/snvs-lpgpr.txt b/Documentation/devicetree/bindings/nvmem/snvs-lpgpr.txt
+deleted file mode 100644
+index 3cb1708..0000000
+--- a/Documentation/devicetree/bindings/nvmem/snvs-lpgpr.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-Device tree bindings for Low Power General Purpose Register found in i.MX6Q/D
+-and i.MX7 Secure Non-Volatile Storage.
+-
+-This DT node should be represented as a sub-node of a "syscon",
+-"simple-mfd" node.
+-
+-Required properties:
+-- compatible: should be one of the fallowing variants:
+-	"fsl,imx6q-snvs-lpgpr" for Freescale i.MX6Q/D/DL/S
+-	"fsl,imx6ul-snvs-lpgpr" for Freescale i.MX6UL
+-	"fsl,imx7d-snvs-lpgpr" for Freescale i.MX7D/S
+-
+-Example:
+-snvs: snvs@020cc000 {
+-	compatible = "fsl,sec-v4.0-mon", "syscon", "simple-mfd";
+-	reg = <0x020cc000 0x4000>;
+-
+-	snvs_lpgpr: snvs-lpgpr {
+-		compatible = "fsl,imx6q-snvs-lpgpr";
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/nvmem/snvs-lpgpr.yaml b/Documentation/devicetree/bindings/nvmem/snvs-lpgpr.yaml
+new file mode 100644
+index 0000000..cbc6262
+--- /dev/null
++++ b/Documentation/devicetree/bindings/nvmem/snvs-lpgpr.yaml
+@@ -0,0 +1,31 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/nvmem/snvs-lpgpr.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Low Power General Purpose Register found in i.MX Secure Non-Volatile Storage
++
++maintainers:
++  - Oleksij Rempel <o.rempel@pengutronix.de>
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx6q-snvs-lpgpr
++      - fsl,imx6ul-snvs-lpgpr
++      - fsl,imx7d-snvs-lpgpr
++
++required:
++  - compatible
++
++examples:
++  - |
++    snvs@20cc000 {
++        compatible = "fsl,sec-v4.0-mon", "syscon", "simple-mfd";
++        reg = <0x20cc000 0x4000>;
++
++        snvs_lpgpr: snvs-lpgpr {
++            compatible = "fsl,imx6q-snvs-lpgpr";
++        };
++    };
+-- 
+2.7.4
+
