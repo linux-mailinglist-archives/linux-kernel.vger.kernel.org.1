@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FE423C7E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B18023C7EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgHEIhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 04:37:23 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:53869 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728034AbgHEIhE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 04:37:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1596616623; x=1628152623;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=Es/AESjvOGxiOJk/uRAnyFyd7n9LRD5gxJGqirrLrQg=;
-  b=LIIi9pXcg6slhVTLDpO2LdPyt4k0awDJuldCUyP8DQvC1XIcRcALGv9c
-   rGWdrgcpw5Oq0YQ6lYWWLMTJkT2Dq43HgtzlVYqX6aSZVs2JKreJXBOoR
-   12n3OSwcBGwL0Fx3Fnqy85hC5elyxvJfIXwCxhyGv5CGzxRqYgdYfyaY5
-   ERd+0eiunbeTSGl3x4JiL26n2I5uXzxAE9T9N8pv12Ffoorx4QZGNyCPo
-   /aQn1Fv05LmAA1XmBeDAtrPlE+G1coBFgbQiTCroc/MA5koTpZ1vFMa3t
-   4JrhaBcNdknd77zvqQhzUVPXXc22E9q7i2qnIqgIdjwXqc0KXZ6KbxiqX
-   A==;
-IronPort-SDR: h9vNGQhJ24Sdyg/dA7FhkwEAb5rXXkh2lndvQRC4FM2RLbov7TXaQzovMxVxuch7x6Jr2qyieP
- 3Yv9lmFiBCixF0KacKg1vQdjp8omJRiY+mIZKjQaTQiGztstYHjDqROF+KSZDiekyXnM86sbM2
- ayf8Oibdq0XZoN9VN0L5go3FbEkbU3VcrfPA2jtPTVFxPW0giy1qFsg/KT0mjeMzDkUzlrJMGt
- N44FRYy5a+wLlA8HMmmYY8MGW0E8j8caMkyavJzDCwxOgq/lFFdYjTU5CwwfC5BVNzDyyVweJ6
- nhM=
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="84485790"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Aug 2020 01:37:03 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 5 Aug 2020 01:37:02 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 5 Aug 2020 01:36:59 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v3 3/3] ARM: at91: pm: of_node_put() after its usage
-Date:   Wed, 5 Aug 2020 11:36:50 +0300
-Message-ID: <1596616610-15460-4-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596616610-15460-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1596616610-15460-1-git-send-email-claudiu.beznea@microchip.com>
+        id S1727794AbgHEIif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 04:38:35 -0400
+Received: from elvis.franken.de ([193.175.24.41]:35123 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726175AbgHEIie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 04:38:34 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k3EwR-0008Mh-00; Wed, 05 Aug 2020 10:38:31 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 50BAFC0BDA; Wed,  5 Aug 2020 10:37:20 +0200 (CEST)
+Date:   Wed, 5 Aug 2020 10:37:20 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
+        Paul Burton <paul.burton@mips.com>, linux-mips@vger.kernel.org
+Subject: Re: arch/mips/include/asm/mach-ip27/topology.h:19:7: error: implicit
+ declaration of function 'hub_data'
+Message-ID: <20200805083720.GA7297@alpha.franken.de>
+References: <202008040108.xTarUIe8%lkp@intel.com>
+ <20200803194910.GC72435@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200803194910.GC72435@linux.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Put node after it has been used.
+On Mon, Aug 03, 2020 at 10:49:10PM +0300, Mike Rapoport wrote:
+> On Tue, Aug 04, 2020 at 01:39:14AM +0800, kernel test robot wrote:
+> [...]
+> > 
+> > All errors (new ones prefixed by >>):
+> > 
+> >    In file included from arch/mips/include/asm/topology.h:11,
+> >                     from include/linux/topology.h:36,
+> >                     from include/linux/gfp.h:9,
+> >                     from include/linux/slab.h:15,
+> >                     from include/linux/crypto.h:19,
+> >                     from include/crypto/hash.h:11,
+> >                     from include/linux/uio.h:10,
+> >                     from include/linux/socket.h:8,
+> >                     from include/linux/compat.h:15,
+> >                     from arch/mips/kernel/asm-offsets.c:12:
+> >    arch/mips/include/asm/mach-ip27/topology.h:25:39: error: 'MAX_COMPACT_NODES' undeclared here (not in a function)
+> >       25 | extern unsigned char __node_distances[MAX_COMPACT_NODES][MAX_COMPACT_NODES];
+> >          |                                       ^~~~~~~~~~~~~~~~~
+> >    include/linux/topology.h: In function 'numa_node_id':
+> > >> arch/mips/include/asm/mach-ip27/topology.h:16:27: error: implicit declaration of function 'cputonasid' [-Werror=implicit-function-declaration]
+> >       16 | #define cpu_to_node(cpu) (cputonasid(cpu))
+> >          |                           ^~~~~~~~~~
+> 
+> This happens when randconfig disables NUMA and has SGI_IP27 enabled.
+> Before switch from discontigmem to sparsemem, there always was
+> CONFIG_NEED_MULTIPLE_NODES=y because it was selected by DISCONTIGMEM.
+> Without DISCONTIGMEM it is possible to have SPARSEMEM without NUMA for
+> SGI_IP27 and as many things there rely on custom node definition, the
+> build breaks.
+> 
+> I don't remember small Origin or Onyx systems so I think it would be
+> reasonable to make SGI_IP27 to select NUMA.
 
-Fixes: 13f16017d3e3f ("ARM: at91: pm: Tie the USB clock mask to the pmc")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- arch/arm/mach-at91/pm.c | 1 +
- 1 file changed, 1 insertion(+)
+IMHO there are right now too many places in IP27 code, which assumes NUMA
+enabled, so your patch makes sense. And if someone wants to get it
+supported without NUMA enabled, I'm taking that patch as well.
 
-diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-index 4aaab918f982..9f1101de80c6 100644
---- a/arch/arm/mach-at91/pm.c
-+++ b/arch/arm/mach-at91/pm.c
-@@ -841,6 +841,7 @@ static void __init at91_pm_init(void (*pm_idle)(void))
- 
- 	pmc_np = of_find_matching_node_and_match(NULL, atmel_pmc_ids, &of_id);
- 	soc_pm.data.pmc = of_iomap(pmc_np, 0);
-+	of_node_put(pmc_np);
- 	if (!soc_pm.data.pmc) {
- 		pr_err("AT91: PM not supported, PMC not found\n");
- 		return;
+> If the below patch makes sense I'll resend it formally.
+
+yes please.
+
+Thomas.
+
 -- 
-2.7.4
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
