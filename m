@@ -2,37 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44FC23CE0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A69923CE07
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbgHESIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 14:08:11 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39393 "EHLO
+        id S1729092AbgHESGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 14:06:31 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39387 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729060AbgHESEG (ORCPT
+        with ESMTP id S1729168AbgHESEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 5 Aug 2020 14:04:06 -0400
 Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <colin.king@canonical.com>)
-        id 1k3HZQ-0008I0-5Z; Wed, 05 Aug 2020 11:26:56 +0000
+        id 1k3IKN-0003C3-Gp; Wed, 05 Aug 2020 12:15:27 +0000
 From:   Colin King <colin.king@canonical.com>
-To:     Laura Abbott <labbott@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        devel@driverdev.osuosl.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: ion: fix spelling mistake in function name "detatch" -> "detach"
-Date:   Wed,  5 Aug 2020 12:26:55 +0100
-Message-Id: <20200805112655.17696-1-colin.king@canonical.com>
+Subject: [PATCH][next] drm/amdgpu: fix spelling mistake "paramter" -> "parameter"
+Date:   Wed,  5 Aug 2020 13:15:27 +0100
+Message-Id: <20200805121527.19157-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -44,38 +38,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-There is a spelling mistake in the function name ion_dma_buf_detatch.
-Fix it by removing the extraneous t.
+There is a spelling mistake in a dev_warn message. Fix it.
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/staging/android/ion/ion.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/android/ion/ion.c b/drivers/staging/android/ion/ion.c
-index 3c9f09506ffa..e1fe03ceb7f1 100644
---- a/drivers/staging/android/ion/ion.c
-+++ b/drivers/staging/android/ion/ion.c
-@@ -205,8 +205,8 @@ static int ion_dma_buf_attach(struct dma_buf *dmabuf,
- 	return 0;
- }
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index b72aeeb0a226..16e23f053361 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -1201,7 +1201,7 @@ static int amdgpu_device_check_arguments(struct amdgpu_device *adev)
  
--static void ion_dma_buf_detatch(struct dma_buf *dmabuf,
--				struct dma_buf_attachment *attachment)
-+static void ion_dma_buf_detach(struct dma_buf *dmabuf,
-+			       struct dma_buf_attachment *attachment)
- {
- 	struct ion_dma_buf_attachment *a = attachment->priv;
- 	struct ion_buffer *buffer = dmabuf->priv;
-@@ -331,7 +331,7 @@ static const struct dma_buf_ops dma_buf_ops = {
- 	.mmap = ion_mmap,
- 	.release = ion_dma_buf_release,
- 	.attach = ion_dma_buf_attach,
--	.detach = ion_dma_buf_detatch,
-+	.detach = ion_dma_buf_detach,
- 	.begin_cpu_access = ion_dma_buf_begin_cpu_access,
- 	.end_cpu_access = ion_dma_buf_end_cpu_access,
- };
+ 	if (amdgpu_num_kcq > 8 || amdgpu_num_kcq < 0) {
+ 		amdgpu_num_kcq = 8;
+-		dev_warn(adev->dev, "set kernel compute queue number to 8 due to invalid paramter provided by user\n");
++		dev_warn(adev->dev, "set kernel compute queue number to 8 due to invalid parameter provided by user\n");
+ 	}
+ 
+ 	return 0;
 -- 
 2.27.0
 
