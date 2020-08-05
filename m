@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819DE23CFFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEEC823CFE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728475AbgHET1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728500AbgHERMf (ORCPT
+        id S1728974AbgHET0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:26:15 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59805 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728687AbgHEROC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:12:35 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE69C0617A2
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:12:20 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id k23so46628723iom.10
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:12:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=KkfsA9tbt51JhKe8sFTLvMpREroWrtYLfSyGKrepgnc=;
-        b=sV/MLpudecnRU4GQxONhClJttWv3PUwHU66kJKLWiHum4YhBiyGbSz5MhfOBgXKOrr
-         MKWe2ljEQ952stDe2dXiAh2gsZbWP9Z/HXkK2PxOkyxkjpUXWT6VYx0bhDB6qKEvtgAo
-         0+8VpahpNTwnAPH32jAbzyTPZe00UK+uDCwUv51GlJVhvbo8Zy9YpIrVKbiPtA4iVEXe
-         +O7bnZ7s/S+pDsjGSV9MVUNIi9PE1F0kTWRdUSroboeB0xUzpHzmdYlthsVDyMwIu8FR
-         VzFuVtzTc3Jt62SIS85GIC7n8Iks7jgVMsvpNqFG4dlxCxIlwObJfeuAbSYL+Um7ewcM
-         nY/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=KkfsA9tbt51JhKe8sFTLvMpREroWrtYLfSyGKrepgnc=;
-        b=fafwCy6/DkJA0BAqyzvJskDC6vXWOQTA6HQI5pBdpFqne8InNdAk2k0XXztvp0AkpS
-         jFjQw72itpqtU3akD6joq7kMVzQthyp0UofES92eO1S1GWwYbU/fsaaq8SKP4+K+AOxA
-         VirhcghQ2Q0QgbEtsKgFcdSihJU5/JGPMydZBCwpDFT843aXfBisVB5hYC8eu8g7X/7F
-         4aTPfvEdHOsq+AfCNHAK8Uiez0kIim2pOxWc5u89O+9boB/Cj9qb5UhVZMgl43l+bzdp
-         5xTsh5Ep8nTJWEyRoGEyjMz59IC9e1GTS0LWpgEbL/qEn/sq0lCzB04v4Vo7wQO20YdL
-         63Sw==
-X-Gm-Message-State: AOAM530WYTGdks6JsQudX5gEcCu6tJnpTvBrtnoZrTP/fPLdiTkB2ZR0
-        87bUu0qeqj7EmWPFjaCcT7pS86hNV9yNjpC5IOKsuw==
-X-Google-Smtp-Source: ABdhPJydvkbI8JuH0DRGc8fl99fy8gEfBBiNspPdGBUDSlzEmjUkpG8MId4QwMHSc07sfLFkkrPwZ1DMKb81MUx1Ntg=
-X-Received: by 2002:a05:6638:1614:: with SMTP id x20mr5286536jas.92.1596647539517;
- Wed, 05 Aug 2020 10:12:19 -0700 (PDT)
-MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 5 Aug 2020 22:42:08 +0530
-Message-ID: <CA+G9fYtpsT23+xXkOfhBt3RP6MeHKjQCrmgF921mDdwQ+wZu2g@mail.gmail.com>
-Subject: stable rc 4.4 - v4.4.232-33-g0b3898baf614 - build breaks on arm64,
- arm, x86_64 and i386.
-To:     linux- stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Jiang Ying <jiangying8582@126.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
+        Wed, 5 Aug 2020 13:14:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596647641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yTnFp3FGNnUMIV+drG+EiP28NPY1kzNtc5gU15VKTgg=;
+        b=IRftECynq87jUiSLcCluSeDUigQgevfSUIo+31YFvyNWw7GnRHKSlxJX9Rgcgob9LAPp8y
+        tDwIVkeO/inoizwk/LsywieN9mWYkLHc+ihG3R+Rh40+ICBvLsEJVoiyWPdf94DJG1bTM/
+        3qJrLHjmS6LLj27dPcMgDAIAFwfSdDQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-CVKT19CpOAaHFqv9tWctXA-1; Wed, 05 Aug 2020 13:13:57 -0400
+X-MC-Unique: CVKT19CpOAaHFqv9tWctXA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CC2D80183C;
+        Wed,  5 Aug 2020 17:13:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 089C25D9DC;
+        Wed,  5 Aug 2020 17:13:48 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <1596555579.10158.23.camel@HansenPartnership.com>
+References: <1596555579.10158.23.camel@HansenPartnership.com> <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk,
+        Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, wanglong19@meituan.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Eric Biggers <ebiggers@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>, linux-ext4@vger.kernel.org,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-api@vger.kernel.org, torvalds@linux-foundation.org,
+        raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
+        jannh@google.com, kzak@redhat.com, jlayton@redhat.com,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/18] VFS: Filesystem information [ver #21]
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2329128.1596647628.1@warthog.procyon.org.uk>
+Date:   Wed, 05 Aug 2020 18:13:48 +0100
+Message-ID: <2329129.1596647628@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-stable rc 4.4 build breaks on arm64, arm, x86_64 and i386.
+James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
 
-Here are the build log failures on arm64.
-   git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-s=
-table-rc.git
-    target_arch: arm64
-    toolchain: gcc-9
-    git_short_log: 0b3898baf614 (\Linux 4.4.233-rc1\)
-    git_sha: 0b3898baf61459e1f963dcf893b4683174668975
-    git_describe: v4.4.232-33-g0b3898baf614
-    kernel_version: 4.4.233-rc1
+> It sort of petered out into a long winding thread about why not use
+> sysfs instead, which really doesn't look like a good idea to me.
 
-make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm64
-CROSS_COMPILE=3Daarch64-linux-gnu- HOSTCC=3Dgcc CC=3D"sccache
-aarch64-linux-gnu-gcc" O=3Dbuild Image
-#
-../arch/arm64/kernel/hw_breakpoint.c: In function =E2=80=98arch_bp_generic_=
-fields=E2=80=99:
-../arch/arm64/kernel/hw_breakpoint.c:348:5: note: parameter passing
-for argument of type =E2=80=98struct arch_hw_breakpoint_ctrl=E2=80=99 chang=
-ed in GCC
-9.1
-  348 | int arch_bp_generic_fields(struct arch_hw_breakpoint_ctrl ctrl,
-      |     ^~~~~~~~~~~~~~~~~~~~~~
-../fs/ext4/inode.c: In function =E2=80=98ext4_direct_IO=E2=80=99:
-../fs/ext4/inode.c:3355:9: error: =E2=80=98offset=E2=80=99 redeclared as di=
-fferent
-kind of symbol
- 3355 |  loff_t offset =3D iocb->ki_pos;
-      |         ^~~~~~
-../fs/ext4/inode.c:3349:17: note: previous definition of =E2=80=98offset=E2=
-=80=99 was here
- 3349 |          loff_t offset)
-      |          ~~~~~~~^~~~~~
-make[3]: *** [../scripts/Makefile.build:277: fs/ext4/inode.o] Error 1
-make[3]: Target '__build' not remade because of errors.
-make[2]: *** [../scripts/Makefile.build:484: fs/ext4] Error 2
-../drivers/net/ethernet/apm/xgene/xgene_enet_main.c:32:36: warning:
-array =E2=80=98xgene_enet_acpi_match=E2=80=99 assumed to have one element
-   32 | static const struct acpi_device_id xgene_enet_acpi_match[];
-      |                                    ^~~~~~~~~~~~~~~~~~~~~
-make[2]: Target '__build' not remade because of errors.
-make[1]: *** [/linux/Makefile:1006: fs] Error 2
-make[1]: Target 'Image' not remade because of errors.
-make: *** [Makefile:152: sub-make] Error 2
-make: Target 'Image' not remade because of errors.
+It seemed to turn into a set of procfs symlinks that pointed at a bunch of
+sysfs stuff - or possibly some special filesystem.
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+> Could I make a suggestion about how this should be done in a way that
+> doesn't actually require the fsinfo syscall at all: it could just be
+> done with fsconfig.
+
+I'd prefer to keep it separate.  The interface for fsconfig() is intended to
+move stuff into the kernel, not out of it.  Better to add a parallel syscall
+to go the other way (kind of like we have setxattr/getxattr, sendmsg/recvmsg).
+
+Further, fsinfo() can refer directly to a file/fd/mount/whatever, but
+fsconfig() doesn't do that.  You have to use fspick() to get a context before
+you can use fsconfig().  Now, that's fine if you want to gather several pieces
+of information from a particular object, but it's not so good if you want to
+get one piece of information from each of several objects.
+
+> ... make it table configured...
+
+I did, kind of (though I didn't call it that).  Al rewrote the code to get rid
+of it.
+
+David
+
