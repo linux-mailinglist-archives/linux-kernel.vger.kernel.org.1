@@ -2,79 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5BC23CD88
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3838923CD78
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728895AbgHERhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
+        id S1728891AbgHEReE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728893AbgHERfG (ORCPT
+        with ESMTP id S1728788AbgHER1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:35:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15536C001FC2
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 08:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ihXFtoBSuvtLohh/RvNeAjifvCivLgmoMzFjTemcXXU=; b=SNRJxYhcymyueDueAlAmzlc+wu
-        mTrx+TaefdMhYPmbw3mUXokg5Svh3p2wlp9zpr0FcUX0wH2Mz/TsKW/6dndyvKP+Eii5XHUMdnQr2
-        tDK7+CM8aOaxmoAdFcZ9UZKdsbeYM5uDJVfLQ4kxzYsUHYrkAUuXSK+fkrsIER12IM/0eIeprk76r
-        mLjwDUZU6E7zGtmBtF5zfDvPJ815weh5P7ydY9i5qUPDbmrXWdDHadj1s7uB7KB6phhuuMZJ7Eal4
-        DzCgaE1nAqa3+pJ06Rhmh532fUOyRbKO4BADXpJacMZu2i+iapPcW6TV+GvKGkM2gBSWX2Gebh3TA
-        3WYhVMMQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3LO1-0001kt-22; Wed, 05 Aug 2020 15:31:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 04026301A66;
-        Wed,  5 Aug 2020 17:31:20 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B77A922B957E9; Wed,  5 Aug 2020 17:31:20 +0200 (CEST)
-Date:   Wed, 5 Aug 2020 17:31:20 +0200
-From:   peterz@infradead.org
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, paulmck@kernel.org, mw@semihalf.com,
-        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>
-Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level
- IRQ time accounting
-Message-ID: <20200805153120.GU2674@hirez.programming.kicks-ass.net>
-References: <87mu3ho48v.fsf@kurt>
- <20200730082228.r24zgdeiofvwxijm@skbuf>
- <873654m9zi.fsf@kurt>
- <87lfiwm2bj.fsf@nanos.tec.linutronix.de>
- <20200803114112.mrcuupz4ir5uqlp6@skbuf>
- <87d047n4oh.fsf@nanos.tec.linutronix.de>
- <jhjh7tjivew.mognet@arm.com>
- <875z9zmt4i.fsf@nanos.tec.linutronix.de>
- <20200805134002.GQ2674@hirez.programming.kicks-ass.net>
- <jhja6z9i4bi.mognet@arm.com>
+        Wed, 5 Aug 2020 13:27:40 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC804C061575;
+        Wed,  5 Aug 2020 10:27:39 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id x2so4035803ybf.12;
+        Wed, 05 Aug 2020 10:27:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BUORAD323AYH3zxx1yaS/aYxJilBT0bejXUe4CU1IsU=;
+        b=nb7391sFHHARlePNt23uWFUiCgJDNofextE1aito4sTSYWdJoc/yW7awE7AwDekIQy
+         nQMdw7M56WSttzqnt4r/rinYc+iholmrAs7j82PJhz9OyuE2x/UDuIptCwy+aAUe/sc3
+         sdtBKtVW+qtwEkNoyEUWTlvt01nHEyrNTAccsXcBausvwY9lV3kNzseWdWRWUtpBf4vn
+         vzKszBu0NEbXGrPfS4t/lH+3P7PxcrEKLJR29/MG5j281+Hfmh49/8/4XbVjVcnKcE72
+         Bx+120NdmYBdfsL53Mxn9gS4y1TRSKlUMPMNKievyfxEQ22EH7gDVg375zEA+oMC3NRR
+         AOog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BUORAD323AYH3zxx1yaS/aYxJilBT0bejXUe4CU1IsU=;
+        b=mU25JNlQ0WbPKa7k0gKFBqalEON1tO+EE3nK4Qj+H+g9EbqZtghfIkZm4HH3s9ABLt
+         nKY0XOvgIwmiY2FhUTr9g5jmWty/zyOzfRqBn94qcQSrVIlPQGZ3y/U6uNm7UJqBXTT1
+         tRtsfSwTCWyBcrk6f8yNX8Oz23fJ0JdEmTimRxBHgFad7OyMGwPbr2IJx1+SEi7yQiKI
+         Ms5g2YafQApTE1OFHNA9w7gOxEbwJFL427igAoBvR5FpjlzI7SQfUTh1omZI6kQ2focH
+         iUXxwuep1Rz6RlMCzqWKRlvEjXLig06uFjNM0XxMHG6F5b6K59ZMW5zknaN6RIaOWWx6
+         yNSA==
+X-Gm-Message-State: AOAM533NVlK8SyNGepOAlQ6A2SMjP1sn/MTFN5RpiM/w1njadRIbdaS0
+        6rScp2wsuSMbTQS1Bn2WA5unEvOq9kEgxbq0HFk=
+X-Google-Smtp-Source: ABdhPJzV/vqVTpcSUL8lQmokCDonYTJ8sM2iojmyXsyq64VdK2J/hLo3FUzGE0OyGsfWug1unqWO9IDmfJ0pgr3dC+s=
+X-Received: by 2002:a25:2ad3:: with SMTP id q202mr6206874ybq.27.1596648459142;
+ Wed, 05 Aug 2020 10:27:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhja6z9i4bi.mognet@arm.com>
+References: <20200801084721.1812607-1-songliubraving@fb.com>
+ <20200801084721.1812607-6-songliubraving@fb.com> <CAEf4BzaP4TGF7kcmZRAKsy=oWPpFA6sUGFkctpGz-fPp+YuSOQ@mail.gmail.com>
+ <DDCD362E-21D3-46BF-90A6-8F3221CBB54E@fb.com> <CAEf4BzY5RYMM6w8wn3qEB3AsuKWv-TMaD5NVFj=YqbCW4DLjqA@mail.gmail.com>
+ <7384B583-EE19-4045-AC72-B6FE87C187DD@fb.com> <CAEf4BzaiJnCu14AWougmxH80msGdOp4S8ZNmAiexMmtwUM_2Xg@mail.gmail.com>
+ <AF9D0E8C-0AA5-4BE4-90F4-946FABAB63FD@fb.com> <20200805171639.tsqjmifd7eb3htou@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200805171639.tsqjmifd7eb3htou@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 5 Aug 2020 10:27:28 -0700
+Message-ID: <CAEf4BzYFfAubxo1QY6Axth=gwS9DfzwRkvnYLspfk9tLia0LPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add benchmark for uprobe vs. user_prog
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Xu <dlxu@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 02:56:49PM +0100, Valentin Schneider wrote:
+On Wed, Aug 5, 2020 at 10:16 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Aug 05, 2020 at 04:47:30AM +0000, Song Liu wrote:
+> >
+> > Being able to trigger BPF program on a different CPU could enable many
+> > use cases and optimizations. The use case I am looking at is to access
+> > perf_event and percpu maps on the target CPU. For example:
+> >       0. trigger the program
+> >       1. read perf_event on cpu x;
+> >       2. (optional) check which process is running on cpu x;
+> >       3. add perf_event value to percpu map(s) on cpu x.
+>
+> If the whole thing is about doing the above then I don't understand why new
+> prog type is needed. Can prog_test_run support existing BPF_PROG_TYPE_KPROBE?
+> "enable many use cases" sounds vague. I don't think folks reading
+> the patches can guess those "use cases".
+> "Testing existing kprobe bpf progs" would sound more convincing to me.
 
-> I've been tempted to say the test case is a bit bogus, but am not familiar
-> enough with the RT throttling details to stand that ground. That said, from
-> both looking at the execution and the stress-ng source code, it seems to
-> unconditionally spawn 32 FIFO-50 tasks (there's even an option to make
-> these FIFO-99!!!), which is quite a crowd on monoCPU systems.
+Was just about to propose the same :) I wonder if generic test_run()
+capability to trigger test programs of whatever supported type on a
+specified CPU through IPI can be added. That way you can even use the
+XDP program to do what Song seems to need.
 
-Oh, so it's a case of: we do stupid without tuning and the system falls
-over. I can live with that.
+TRACEPOINTs might also be a good fit here, given it seems simpler to
+let users specify custom tracepoint data for test_run(). Having the
+ability to unit-test KPROBE and TRACEPOINT, however rudimentary, is
+already a big win.
+
+> If the test_run framework can be extended to trigger kprobe with correct pt_regs.
+> As part of it test_run would trigger on a given cpu with $ip pointing
+> to some test fuction in test_run.c. For local test_run the stack trace
+> would include bpf syscall chain. For IPI the stack trace would include
+> the corresponding kernel pieces where top is our special test function.
+> Sort of like pseudo kprobe where there is no actual kprobe logic,
+> since kprobe prog doesn't care about mechanism. It needs correct
+> pt_regs only as input context.
+> The kprobe prog output (return value) has special meaning though,
+> so may be kprobe prog type is not a good fit.
+
+It does? I don't remember returning 1 from KPROBE changing anything. I
+thought it's only the special bpf_override_return() that can influence
+the kernel function return result.
+
+> Something like fentry/fexit may be better, since verifier check_return_code()
+> enforces 'return 0'. So their return value is effectively "void".
+> Then prog_test_run would need to gain an ability to trigger
+> fentry/fexit prog on a given cpu.
