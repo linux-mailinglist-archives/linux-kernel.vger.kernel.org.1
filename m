@@ -2,137 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A1423C786
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5032223C76B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbgHEIMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 04:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728160AbgHEIFn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 04:05:43 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA56C06174A;
-        Wed,  5 Aug 2020 01:05:42 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id a34so18332386ybj.9;
-        Wed, 05 Aug 2020 01:05:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ohHs0aTHt4EN2lAERZatHD3N+Zhcsjq6lSkSQ86OZ7c=;
-        b=W2FufXtzNO1DxkIBUAjkRISlynEEA8Flpx9efpdgqFVRD50Fo+SU9567tGy/1b8ofy
-         EfDOHsbeLJb3QyN9+REBojrOasH0ogd+U2Ioq6cQYFv7A1kyYIf4CV2aR4FXa4CEzXW6
-         ybbk8t/iEG6tIlvmzCxwKkPAUw2cb1eDvg6YdB/GDuRjBzKvfPgM3N2rK2uD7t2daMHh
-         FsLvIxuUbJVtCD2m7DY0P2BLTdc2LwCXS8TGzcPxSR678DTw2rg3E6hDZpgOVfhTUmBG
-         SE8DsoYHiuebMBRJYTTSD1L9mhKdq+hQS2AwPe8mN006Ow6TnwJ2EfIKdAZmcF4JcHaH
-         8fsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ohHs0aTHt4EN2lAERZatHD3N+Zhcsjq6lSkSQ86OZ7c=;
-        b=fOTHv9qyPzdDY3npc+KsW1cNN9lQfpFYjcacxHdQcjjFo/Q7VmkHgE8u/dVCxD1Xiu
-         xHV7sJag61LWERBLyNvE9XPdebxLJy5P1YlmOk9hkJbPX38R2PyYCyXoAN/cDCKkFVSN
-         e9uP1WXVec5Zc0v/nrSHlJ32OBwMqxpvLOKKciFqdtXvlYZ+bA5uz6Uytpr7ltHbrZKA
-         0mVXct69UwDIylXlJ9E6/qCK6H/tFVJ+ATiFcwQ2m0EiKA+u5APoTq+rNSIBMm86+2vW
-         RP5s1qeT0yutDalEM3k3r89KHd6X/ICvSNWsCaI5ClDCJi8+pJcOQWsaA9fyDSXYC7lw
-         QERA==
-X-Gm-Message-State: AOAM532BPeCQIvjfxwp1/qMpXb8TUd78lWyW6QYbINJc5t2AmwxAqp+H
-        T/KCUUDM8oQiAADSXM98r3bU5U+Jgoq8zO+NFK4=
-X-Google-Smtp-Source: ABdhPJwaAiO/Es1VEZFBFhn7DvIyi6gk4N3vmj9czx2+RjxA1iF/Hx+bGVEFMkR82jjSBe1kh1+JIaQ+Ibc4oxITckY=
-X-Received: by 2002:a25:9186:: with SMTP id w6mr2676030ybl.401.1596614742159;
- Wed, 05 Aug 2020 01:05:42 -0700 (PDT)
+        id S1728294AbgHEIIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 04:08:13 -0400
+Received: from mga17.intel.com ([192.55.52.151]:27768 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728103AbgHEIG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 04:06:59 -0400
+IronPort-SDR: zFV+RSDXo+QrxeBWfm5urjuU+5dK/syNoNXjrI/wBF9hNaWxlMt4cEZWk+YS2uzhuQPmIWy6sy
+ 0R6yjcZIUBNA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="132565404"
+X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
+   d="scan'208";a="132565404"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 01:06:56 -0700
+IronPort-SDR: TXCzUvfTE8HQm5pRaoT3axqbHZpTJ9m0DQlZimClpzcxkZNDv90pZBYKMOQERpX3hG3+4OXvIn
+ l9U1IhTsjg3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
+   d="scan'208";a="493195293"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by fmsmga005.fm.intel.com with ESMTP; 05 Aug 2020 01:06:54 -0700
+Subject: Re: [PATCH v2 6/6] sdhci: tegra: Add missing TMCLK for data timeout
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        ulf.hansson@linaro.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+References: <1596515363-27235-1-git-send-email-skomatineni@nvidia.com>
+ <1596515363-27235-7-git-send-email-skomatineni@nvidia.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <d131fc8c-fa1f-cb67-fe6a-955d3582d1d6@intel.com>
+Date:   Wed, 5 Aug 2020 11:06:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1596465107-14251-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1596465107-14251-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200804081458.GC13316@paasikivi.fi.intel.com>
-In-Reply-To: <20200804081458.GC13316@paasikivi.fi.intel.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 5 Aug 2020 09:05:15 +0100
-Message-ID: <CA+V-a8sP443vzj5niegZx=UMKKM1ZEy==6PfxYLYxuZAOqwUkw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: media: i2c: ov5640: Document bus-type property
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1596515363-27235-7-git-send-email-skomatineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+On 4/08/20 7:29 am, Sowjanya Komatineni wrote:
+> commit b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
 
-Thank you for the review.
+So that could be a Fixes tag also?
 
-On Tue, Aug 4, 2020 at 9:15 AM Sakari Ailus
-<sakari.ailus@linux.intel.com> wrote:
->
-> Hi Prabhakar,
->
-> Thanks for the update.
->
-> On Mon, Aug 03, 2020 at 03:31:44PM +0100, Lad Prabhakar wrote:
-> > Document the possible bus-type's supported by the OV5640 sensor driver.
-> >
-> > Also add the bus-type in example node.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  Documentation/devicetree/bindings/media/i2c/ov5640.txt | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/ov5640.txt b/Documentation/devicetree/bindings/media/i2c/ov5640.txt
-> > index c97c2f2da12d..00131dbb147e 100644
-> > --- a/Documentation/devicetree/bindings/media/i2c/ov5640.txt
-> > +++ b/Documentation/devicetree/bindings/media/i2c/ov5640.txt
-> > @@ -36,9 +36,15 @@ Endpoint node required properties for parallel connection are:
-> >  - data-shift: shall be set to <2> for 8 bits parallel bus
-> >             (lines 9:2 are used) or <0> for 10 bits parallel bus
-> >  - hsync-active: active state of the HSYNC signal, 0/1 for LOW/HIGH respectively.
-> > +             (Required for bus-type 5)
-> >  - vsync-active: active state of the VSYNC signal, 0/1 for LOW/HIGH respectively.
-> > +             (Required for bus-type 5)
-> >  - pclk-sample: sample data on rising (1) or falling (0) edge of the pixel clock
-> > -            signal.
-> > +            signal. (Required for bus-type 5)
-> > +- bus-type: data bus type. Possible values are:
-> > +         4 - MIPI CSI-2 D-PHY
-> > +         5 - Parallel
-> > +         6 - Bt.656
->
-> This is under required parallel properties. You could document value 4
-> under CSI-2 related properties.
->
-Agreed will do that.
+> 
+> Tegra210 and later has a separate sdmmc_legacy_tm (TMCLK) used by Tegra
+> SDMMC hawdware for data timeout to achive better timeout than using
+> SDCLK and using TMCLK is recommended.
+> 
+> USE_TMCLK_FOR_DATA_TIMEOUT bit in Tegra SDMMC register
+> SDHCI_TEGRA_VENDOR_SYS_SW_CTRL can be used to choose either TMCLK or
+> SDCLK for data timeout.
+> 
+> Default USE_TMCLK_FOR_DATA_TIMEOUT bit is set to 1 and TMCLK is used
+> for data timeout by Tegra SDMMC hardware and having TMCLK not enabled
+> is not recommended.
+> 
+> So, this patch fixes it.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
 
-Cheers,
-Prabhakar
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-> >
-> >  Examples:
-> >
-> > @@ -86,6 +92,7 @@ Examples:
-> >                               hsync-active = <0>;
-> >                               vsync-active = <0>;
-> >                               pclk-sample = <1>;
-> > +                             bus-type = <5>;
-> >                       };
-> >               };
-> >       };
->
-> --
-> Regards,
->
-> Sakari Ailus
+> ---
+>  drivers/mmc/host/sdhci-tegra.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
+> index 31ed321..c0b9405 100644
+> --- a/drivers/mmc/host/sdhci-tegra.c
+> +++ b/drivers/mmc/host/sdhci-tegra.c
+> @@ -140,6 +140,7 @@ struct sdhci_tegra_autocal_offsets {
+>  struct sdhci_tegra {
+>  	const struct sdhci_tegra_soc_data *soc_data;
+>  	struct gpio_desc *power_gpio;
+> +	struct clk *tmclk;
+>  	bool ddr_signaling;
+>  	bool pad_calib_required;
+>  	bool pad_control_available;
+> @@ -1611,6 +1612,44 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
+>  		goto err_power_req;
+>  	}
+>  
+> +	/*
+> +	 * Tegra210 has a separate SDMMC_LEGACY_TM clock used for host
+> +	 * timeout clock and SW can choose TMCLK or SDCLK for hardware
+> +	 * data timeout through the bit USE_TMCLK_FOR_DATA_TIMEOUT of
+> +	 * the register SDHCI_TEGRA_VENDOR_SYS_SW_CTRL.
+> +	 *
+> +	 * USE_TMCLK_FOR_DATA_TIMEOUT bit default is set to 1 and SDMMC uses
+> +	 * 12Mhz TMCLK which is advertised in host capability register.
+> +	 * With TMCLK of 12Mhz provides maximum data timeout period that can
+> +	 * be achieved is 11s better than using SDCLK for data timeout.
+> +	 *
+> +	 * So, TMCLK is set to 12Mhz and kept enabled all the time on SoC's
+> +	 * supporting SDR104 mode and when not using SDCLK for data timeout.
+> +	 */
+> +
+> +	if ((soc_data->nvquirks & NVQUIRK_ENABLE_SDR104) &&
+> +	    !(soc_data->pdata->quirks & SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK)) {
+> +		clk = devm_clk_get(&pdev->dev, "tmclk");
+> +		if (IS_ERR(clk)) {
+> +			rc = PTR_ERR(clk);
+> +			if (rc == -EPROBE_DEFER)
+> +				goto err_power_req;
+> +
+> +			dev_warn(&pdev->dev, "failed to get tmclk: %d\n", rc);
+> +			clk = NULL;
+> +		}
+> +
+> +		clk_set_rate(clk, 12000000);
+> +		rc = clk_prepare_enable(clk);
+> +		if (rc) {
+> +			dev_err(&pdev->dev,
+> +				"failed to enable tmclk: %d\n", rc);
+> +			goto err_power_req;
+> +		}
+> +
+> +		tegra_host->tmclk = clk;
+> +	}
+> +
+>  	clk = devm_clk_get(mmc_dev(host->mmc), NULL);
+>  	if (IS_ERR(clk)) {
+>  		rc = PTR_ERR(clk);
+> @@ -1654,6 +1693,7 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
+>  err_rst_get:
+>  	clk_disable_unprepare(pltfm_host->clk);
+>  err_clk_get:
+> +	clk_disable_unprepare(tegra_host->tmclk);
+>  err_power_req:
+>  err_parse_dt:
+>  	sdhci_pltfm_free(pdev);
+> @@ -1671,6 +1711,7 @@ static int sdhci_tegra_remove(struct platform_device *pdev)
+>  	reset_control_assert(tegra_host->rst);
+>  	usleep_range(2000, 4000);
+>  	clk_disable_unprepare(pltfm_host->clk);
+> +	clk_disable_unprepare(tegra_host->tmclk);
+>  
+>  	sdhci_pltfm_free(pdev);
+>  
+> 
+
