@@ -2,234 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF47D23D143
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15BE23D0A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729268AbgHET6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:58:22 -0400
-Received: from mga05.intel.com ([192.55.52.43]:34508 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727964AbgHEQnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:43:24 -0400
-IronPort-SDR: QHWM3mZp2cFbSqFR5OQG0D7APYFJ8jPkz8wY1LQ1M7YBsBb0Y4d3Qbf+hxrt2PLrPOG8NHQZg4
- O9f2mRMHDzyA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="237426245"
-X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="237426245"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 08:39:33 -0700
-IronPort-SDR: yLfjaykiAzRDjge9SfLeQgda3TNDDalC9ngpUZVuw3g0Uc+AvRJZTH3dObBDBLHicmKCrAbnOB
- sDHkU0Ak7y/A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="292976799"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga006.jf.intel.com with ESMTP; 05 Aug 2020 08:39:33 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 5 Aug 2020 08:39:33 -0700
-Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 5 Aug 2020 08:39:33 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.107)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 5 Aug 2020 08:39:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bsj30xMKeb+KUlCcZIrLDuMK5I3djCz//jg1DjB1bsOejK8YqjaPur+NMcBt7X0+ws6XQXwHWvqjqYE3DCy6MKbcF2AIZQ3048xxrTbGUhFDoaHB5NYJ3mARgUZ5LIr44NUHV8nqwuNjD6XzvKZRfom/nDHuPi7i1sdWFFf/G5lhn7OO0wXFNhtexsEYW5ih7fOuE+eGr3hPanOY18xGaae+BMh3V0YX6gowXroDB39JVfdzw7+784vm6g5fnF36W9MHCjxcxKh5fO6SA+p3YXigKMaUTdNE2tX7bu/y/1+l2pl1Pt2B4MWCZb+PN+SO4EXq5jYDt1SrI7KyMldkLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zQieyJimN3vVTkOvvWWIiKhsO/yxalMJFflegv77Ctc=;
- b=iQYhb5IeLz3hOUhn6m5+lWCWRlfMEE9kgbuR05YK1x0IsbB2/C0ARaKEZRV5sJvOi9smSQMUoc3dmenGZ6QExDfAoSHx3cUSX0hhGCrDKYuYHF9F7LavcBrcm7UwxAc53BNVlUd2OK0B0CRTKmcquRiVIHf2KcaAs79F6shObegRL5vKSloBIlaTsDrqPI7g4gERbq0Fs4ARTMaCMYFNMb3fmogG4Mwe8RSFV2xU21AGFxOnGs6ml8Ogc1cNG2q+fZ2yXVp8M5H4GZMGwj3x493FFANzOk0MxggheADxsX+zNSJ42Fo2eorfR3tFnzI0FSinS1PjFhEx/mgrXjOsdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zQieyJimN3vVTkOvvWWIiKhsO/yxalMJFflegv77Ctc=;
- b=tvVxGCgBsWuxSm5tddRgQ0WVU9Ume+vCNn6G0RzNqUjH+ViUFL/sZmOnZOw22bJEhUfF3un51IMUsm57ECph5RPnceqUEjwkhdfMk3pmpltN+LKvq6AKqEy3F6g8rDqwrUhRRwgXev+hDVHwz5uAUXTj3sFY1YvnRovzHBVSKUA=
-Received: from SN6PR11MB2574.namprd11.prod.outlook.com (2603:10b6:805:59::14)
- by SA0PR11MB4559.namprd11.prod.outlook.com (2603:10b6:806:9a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.18; Wed, 5 Aug
- 2020 15:39:26 +0000
-Received: from SN6PR11MB2574.namprd11.prod.outlook.com
- ([fe80::54:b143:c75e:41bd]) by SN6PR11MB2574.namprd11.prod.outlook.com
- ([fe80::54:b143:c75e:41bd%7]) with mapi id 15.20.3261.015; Wed, 5 Aug 2020
- 15:39:26 +0000
-From:   "Eads, Gage" <gage.eads@intel.com>
-To:     gregkh <gregkh@linuxfoundation.org>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Topel, Bjorn" <bjorn.topel@intel.com>
-Subject: RE: [PATCH 04/20] dlb2: add device ioctl layer and first 4 ioctls
-Thread-Topic: [PATCH 04/20] dlb2: add device ioctl layer and first 4 ioctls
-Thread-Index: AQHWWGERiGLMQx7oL0apZ2u4U144JKkooA3AgACXcwCAAIoQsIAABNcAgAABGXA=
-Date:   Wed, 5 Aug 2020 15:39:25 +0000
-Message-ID: <SN6PR11MB2574B45613993A52DF40E76BF64B0@SN6PR11MB2574.namprd11.prod.outlook.com>
-References: <20200712134331.8169-1-gage.eads@intel.com>
- <20200712134331.8169-5-gage.eads@intel.com>
- <CAK8P3a2OmSPGNghM+Y9ThH7hgKJKVSKRPaSPN17gUVRUh_o3bQ@mail.gmail.com>
- <SN6PR11MB2574422442C26A41FBC89DA1F64A0@SN6PR11MB2574.namprd11.prod.outlook.com>
- <20200805064622.GA608152@kroah.com>
- <SN6PR11MB2574EE40D3120F92F1BFEEAAF64B0@SN6PR11MB2574.namprd11.prod.outlook.com>
- <20200805151750.GB2403607@kroah.com>
-In-Reply-To: <20200805151750.GB2403607@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=intel.com;
-x-originating-ip: [68.203.30.51]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7f45ec8e-0792-40e0-44e9-08d83955bbeb
-x-ms-traffictypediagnostic: SA0PR11MB4559:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA0PR11MB4559AF55B007B2BBC8A4A8B6F64B0@SA0PR11MB4559.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8MXYceo8sRWm/j1EBYTvTjg4y08EfFaioCFV7iySWHD/cy0jdZFb64fF8Ob3y1QnG455bWYpOnPSpZ8dztPQmpdcU+fV0YiqnNjkQ4fxyT+VNy8DHnIkA44nElj+QL0XXjkkV2enyBxqaMhHGEYK6Ipqb18cCx1tsOouQQWl6xzYXI45VIWvdV+rvwcwzX81/5VRBOwtW/vFuTP6djmI5Sxn7xokgEAxZDretpKWfppM8xdoie2iOcDM/XaeBI6Okt92MdprAVGuJZmtVSvAty/y6zLn9O+jPpTMm+0jLlOb6VCJFKA8XSPzA+jvZQ9NeQ9Me6cY8atdG2LjRr5a4A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2574.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(376002)(136003)(366004)(346002)(316002)(6506007)(66446008)(64756008)(66476007)(26005)(33656002)(52536014)(4326008)(55016002)(66556008)(2906002)(186003)(8936002)(76116006)(66946007)(6916009)(53546011)(9686003)(478600001)(54906003)(86362001)(5660300002)(107886003)(71200400001)(8676002)(83380400001)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: g9CJAIrAaxi4yBGAhjQOzH1iQ0ePaNQ+HTldaJcBIGyJlfppMfAkhgAbzXVmE3RjmVoJILz1vyThMwwWD0I54X3X6xEZ1oJxzn4G7uhgJxAZImXstZX8U1p1oDB1OTqJGSza942IK34qxx49/ZAnUPqcLFcV76VbLNnaXfm+rPAAlpv1OrAEiZ3YRFtlzu4teH5s7wL/aa9GA7nqUrOnpQ9ihqWU1eOAj3llLcMr9mparSrOkt2LrFmyIxBWnoPEOSqvZwS791Yka5X+3W+tX0SEyhhGJdFpI/Gg2SWZLx343gyd3iCWwSL/3kqGReGdTrdQbu+XW9kvGMJeVQu1y7P6/y3E8NJSiiu6V+OTWm8lei7wbn/my8G/kvaV7PECunp/MrDCyxAaI5Nuw7koga34/FgIZngD3Z/Wl9JbdCcsePrW+0pqwXjGF1ydXiGj6tiB93VByKFd126lOg7j57RzDNlCu0FnHJVzWdYEPxgQdQIPN3Imc9xT8LMNm1FfEdTejDVmLBD/OsBOjNEe5h5fNyW1VyuW/dzOMHiOMPPsgZ5dGYVLm2bjjM/cLo1YCNbw8TWWbE6eQgxpChc9fQAtUKvgLMEbisXza7rgu8/R/aKW/56zNsPJUy1PCtnzNHQIVrkPt3/pQgQB6zyLJg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729073AbgHETvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728204AbgHEQwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:52:25 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D48C001FC5;
+        Wed,  5 Aug 2020 08:43:48 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id x6so15102211qvr.8;
+        Wed, 05 Aug 2020 08:43:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=czjIYKIMqrKx6NztO4qHKv0Vt37ieCFKeMG2O/uHiYg=;
+        b=JmbYr8IuLilXgfVziMkJJADX+seDHRIXyosFHEnEGxvzY7/FkcqApH7N3pvh+5shjk
+         Q9+bbS8dSq1gjKMskj0yJMF+TGs8ar6xTV30rGxjAP/fH9ccGRnUkkHYZKIAL0kTz8bv
+         4RsWkIposRJM9gxUZwrqGEjaFBs+3WCd2Z4rlDquUdCvagBjUsK8TCIKG4nhszIgTF7C
+         /+RIvsj8Z8xsySpriyn8IQ8s5w+Y35UKJkcnJ/w9nmh+P7la7XV3+BCAKjqiP5xoY/uL
+         Hd7atbVYYzxGQwPODP/fNVBOyjhWPGBcxO5ffP2utZDHNe4ks5lQ1hir+ZTN6OoWcist
+         rcUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=czjIYKIMqrKx6NztO4qHKv0Vt37ieCFKeMG2O/uHiYg=;
+        b=tOddIAlZs1QtERZCJT2irykS6q537sY9OA9SP8r2WEGx5v3cyrYmJcDKs379VZ9DbV
+         bmydf3S8uFXWmA2MxirzWcYfuZGIWjDLAEv4vFIrkH7Au7AVnSd0zuUIudmblGBhXigl
+         n9k3Ne41Fia9K7cCqL9S5MiCxm9vmaP9Ye/U8fVjCjr2Asxwt1fnPMAR0k+VqFddvLiN
+         doYXG9ldx/FRq56MhlfMgrI+iP108Sb1WU+bPWZH8XBKVLzqWDA5IXfu6HlP6xDXWp+d
+         avc/bpHIan3JOGA3BK4AWiYsIo8c0axVqukpu7bFCX1QB7UZYAcw+VSHjLH3RWHL+WTW
+         VfXA==
+X-Gm-Message-State: AOAM5325q1TWjZD7WWDprLoLk9ABGQ02TGN9QHn2hgonKFPbhb5+5PNF
+        HG64m1LBcOAxvh5xiBKV+bU=
+X-Google-Smtp-Source: ABdhPJyHjyZcUS4lx3kYJlGYbr+5Wv7FvFmaR0g2jYyml05P+PoihEVt8BPlIURWZmvmF7jy8xr56g==
+X-Received: by 2002:a0c:b604:: with SMTP id f4mr4418696qve.68.1596642224148;
+        Wed, 05 Aug 2020 08:43:44 -0700 (PDT)
+Received: from [192.168.1.190] (pool-71-244-252-199.bltmmd.fios.verizon.net. [71.244.252.199])
+        by smtp.gmail.com with ESMTPSA id k48sm2611318qtk.44.2020.08.05.08.43.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 08:43:43 -0700 (PDT)
+Subject: Re: [PATCH v6 1/4] IMA: Add func to measure LSM state and policy
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Casey Schaufler <casey@schaufler-ca.com>, sashal@kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        John Johansen <john.johansen@canonical.com>
+References: <20200805004331.20652-1-nramas@linux.microsoft.com>
+ <20200805004331.20652-2-nramas@linux.microsoft.com>
+ <4b9d2715d3ef3c8f915ef03867cfb1a39c0abc54.camel@linux.ibm.com>
+ <f88bf25e-37ef-7f00-6162-215838961bb0@gmail.com>
+ <31d00876438d2652890ab8bf6ba2e80f554ca7a4.camel@linux.ibm.com>
+ <CAEjxPJ6X+Cqd5QtZBmNm2cujwbg-STfRF7_8i=Ny8yuc6z9BwQ@mail.gmail.com>
+ <b7df114e8e0d276e66575b6970a1e459d1dd4196.camel@linux.ibm.com>
+ <CAEjxPJ7d1yg659OCU6diXXGqegc_jSzO4ZPhkRqQtJnRn-kC0g@mail.gmail.com>
+ <20200805150732.GA4365@sequoia>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Message-ID: <39390a53-51df-12f0-5451-e677ccca581a@gmail.com>
+Date:   Wed, 5 Aug 2020 11:43:42 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2574.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f45ec8e-0792-40e0-44e9-08d83955bbeb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2020 15:39:25.9447
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UxbBaCeKkfWNaTQRYD/XGiZzRbMLk1NNSuHcza+aejKBa2hvdC6tCu8I3k1BgZhv3mtPXi74Difwe2GEDzd4bg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4559
-X-OriginatorOrg: intel.com
+In-Reply-To: <20200805150732.GA4365@sequoia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/5/20 11:07 AM, Tyler Hicks wrote:
+
+> On 2020-08-05 10:27:43, Stephen Smalley wrote:
+>> On Wed, Aug 5, 2020 at 9:20 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+>>> On Wed, 2020-08-05 at 09:03 -0400, Stephen Smalley wrote:
+>>>> On Wed, Aug 5, 2020 at 8:57 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+>>>>> On Wed, 2020-08-05 at 08:46 -0400, Stephen Smalley wrote:
+>>>>>> On 8/4/20 11:25 PM, Mimi Zohar wrote:
+>>>>>>
+>>>>>>> Hi Lakshmi,
+>>>>>>>
+>>>>>>> There's still  a number of other patch sets needing to be reviewed
+>>>>>>> before my getting to this one.  The comment below is from a high level.
+>>>>>>>
+>>>>>>> On Tue, 2020-08-04 at 17:43 -0700, Lakshmi Ramasubramanian wrote:
+>>>>>>>> Critical data structures of security modules need to be measured to
+>>>>>>>> enable an attestation service to verify if the configuration and
+>>>>>>>> policies for the security modules have been setup correctly and
+>>>>>>>> that they haven't been tampered with at runtime. A new IMA policy is
+>>>>>>>> required for handling this measurement.
+>>>>>>>>
+>>>>>>>> Define two new IMA policy func namely LSM_STATE and LSM_POLICY to
+>>>>>>>> measure the state and the policy provided by the security modules.
+>>>>>>>> Update ima_match_rules() and ima_validate_rule() to check for
+>>>>>>>> the new func and ima_parse_rule() to handle the new func.
+>>>>>>> I can understand wanting to measure the in kernel LSM memory state to
+>>>>>>> make sure it hasn't changed, but policies are stored as files.  Buffer
+>>>>>>> measurements should be limited  to those things that are not files.
+>>>>>>>
+>>>>>>> Changing how data is passed to the kernel has been happening for a
+>>>>>>> while.  For example, instead of passing the kernel module or kernel
+>>>>>>> image in a buffer, the new syscalls - finit_module, kexec_file_load -
+>>>>>>> pass an open file descriptor.  Similarly, instead of loading the IMA
+>>>>>>> policy data, a pathname may be provided.
+>>>>>>>
+>>>>>>> Pre and post security hooks already exist for reading files.   Instead
+>>>>>>> of adding IMA support for measuring the policy file data, update the
+>>>>>>> mechanism for loading the LSM policy.  Then not only will you be able
+>>>>>>> to measure the policy, you'll also be able to require the policy be
+>>>>>>> signed.
+>>>>>> To clarify, the policy being measured by this patch series is a
+>>>>>> serialized representation of the in-memory policy data structures being
+>>>>>> enforced by SELinux.  Not the file that was loaded.  Hence, this
+>>>>>> measurement would detect tampering with the in-memory policy data
+>>>>>> structures after the policy has been loaded.  In the case of SELinux,
+>>>>>> one can read this serialized representation via /sys/fs/selinux/policy.
+>>>>>> The result is not byte-for-byte identical to the policy file that was
+>>>>>> loaded but can be semantically compared via sediff and other tools to
+>>>>>> determine whether it is equivalent.
+>>>>> Thank you for the clarification.   Could the policy hash be included
+>>>>> with the other critical data?  Does it really need to be measured
+>>>>> independently?
+>>>> They were split into two separate functions because we wanted to be
+>>>> able to support using different templates for them (ima-buf for the
+>>>> state variables so that the measurement includes the original buffer,
+>>>> which is small and relatively fixed-size, and ima-ng for the policy
+>>>> because it is large and we just want to capture the hash for later
+>>>> comparison against known-good).  Also, the state variables are
+>>>> available for measurement always from early initialization, whereas
+>>>> the policy is only available for measurement once we have loaded an
+>>>> initial policy.
+>>> Ok, measuring the policy separately from other critical data makes
+>>> sense.  Instead of measuring the policy, which is large, measure the
+>>> policy hash.
+>> I think that was the original approach.  However, I had concerns with
+>> adding code to SELinux to compute a hash over the policy versus
+>> leaving that to IMA's existing policy and mechanism.  If that's
+>> preferred I guess we can do it that way but seems less flexible and
+>> duplicative.
+> In AppArmor, we store the sha1 of the raw policy as the policy is
+> loaded. The hash is exposed to userspace in apparmorfs. See commit
+> 5ac8c355ae00 ("apparmor: allow introspecting the loaded policy pre
+> internal transform").
+>
+> It has proved useful as a mechanism for debugging as sometimes the
+> on-disk policy doesn't match the loaded policy and this can be a good
+> way to check that while providing support to users. John also mentions
+> checkpoint/restore in the commit message and I could certainly see how
+> the policy hashes would be useful in that scenario.
+>
+> When thinking through how Lakshmi's series could be extended for
+> AppArmor support, I was thinking that the AppArmor policy measurement
+> would be a measurement of these hashes that we already have in place.
+>
+> Perhaps there's some general usefulness in storing/exposing an SELinux
+> policy hash rather than only seeing it as duplicative property required
+> this measurement series?
+
+That would be a hash of the policy file that was last loaded via the 
+selinuxfs interface for loading policy, not a hash of the in-memory 
+policy data structures at the time of measurement (which is what this 
+patch series is implementing).  The duplicative part is with respect to 
+selecting a hash algorithm and hashing the in-memory policy as part of 
+the SELinux code rather than just passing the policy buffer to IMA for 
+measurement like any other buffer.  Userspace can already hash the 
+in-memory policy data itself by running sha256sum or whatever on 
+/sys/fs/selinux/policy, so we don't need to save or expose that separately.
 
 
-> -----Original Message-----
-> From: gregkh <gregkh@linuxfoundation.org>
-> Sent: Wednesday, August 5, 2020 10:18 AM
-> To: Eads, Gage <gage.eads@intel.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>; linux-kernel@vger.kernel.org;
-> Karlsson, Magnus <magnus.karlsson@intel.com>; Topel, Bjorn
-> <bjorn.topel@intel.com>
-> Subject: Re: [PATCH 04/20] dlb2: add device ioctl layer and first 4 ioctl=
-s
->=20
-> On Wed, Aug 05, 2020 at 03:07:50PM +0000, Eads, Gage wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: gregkh <gregkh@linuxfoundation.org>
-> > > Sent: Wednesday, August 5, 2020 1:46 AM
-> > > To: Eads, Gage <gage.eads@intel.com>
-> > > Cc: Arnd Bergmann <arnd@arndb.de>; linux-kernel@vger.kernel.org;
-> > > Karlsson, Magnus <magnus.karlsson@intel.com>; Topel, Bjorn
-> > > <bjorn.topel@intel.com>
-> > > Subject: Re: [PATCH 04/20] dlb2: add device ioctl layer and first 4 i=
-octls
-> > >
-> > > On Tue, Aug 04, 2020 at 10:20:47PM +0000, Eads, Gage wrote:
-> > > > > > +/* [7:0]: device revision, [15:8]: device version */
-> > > > > > +#define DLB2_SET_DEVICE_VERSION(ver, rev) (((ver) << 8) |
-> (rev))
-> > > > > > +
-> > > > > > +static int dlb2_ioctl_get_device_version(struct dlb2_dev *dev,
-> > > > > > +                                        unsigned long user_arg=
-,
-> > > > > > +                                        u16 size)
-> > > > > > +{
-> > > > > > +       struct dlb2_get_device_version_args arg;
-> > > > > > +       struct dlb2_cmd_response response;
-> > > > > > +       int ret;
-> > > > > > +
-> > > > > > +       dev_dbg(dev->dlb2_device, "Entering %s()\n", __func__);
-> > > > > > +
-> > > > > > +       response.status =3D 0;
-> > > > > > +       response.id =3D DLB2_SET_DEVICE_VERSION(2, DLB2_REV_A0)=
-;
-> > > > > > +
-> > > > > > +       ret =3D dlb2_copy_from_user(dev, user_arg, size, &arg,
-> > > sizeof(arg));
-> > > > > > +       if (ret)
-> > > > > > +               return ret;
-> > > > > > +
-> > > > > > +       ret =3D dlb2_copy_resp_to_user(dev, arg.response,
-> &response);
-> > > > >
-> > > > > Better avoid any indirect pointers. As you always return a consta=
-nt
-> > > > > here, I think the entire ioctl command can be removed until you
-> > > > > actually need it. If you have an ioctl command that needs both
-> > > > > input and output, use _IOWR() to define it and put all arguments
-> > > > > into the same structure.
-> > > >
-> > > > I should've caught this in my earlier response, sorry. The device
-> version
-> > > > command is intentionally the first in the user interface enum. My
-> > > > goal is for all device versions (e.g. DLB 1.0 in the future) to be
-> accessible
-> > > > through a /dev/dlb%d node. To allow this, all drivers would support
-> the
-> > > same
-> > > > device-version command as command 0, then the subsequent
-> commands
-> > > can be
-> > > > tailored to that particular device. User-space would query the vers=
-ion
-> first
-> > > > to determine which set of ioctl commands it needs to use.
-> > > >
-> > > > So even though the response is constant (for now), it must occupy
-> > > command 0 for
-> > > > this design to work.
-> > >
-> > > "versions" for ioctls just do not work, please don't go down that pat=
-h,
-> > > they should not be needed.  See the many different discussions about
-> > > this topic on lkml for other subsystem submissions if you are curious=
-.
-> > >
-> >
-> > This approach is based on VFIO's modular ioctl design, which has a
-> different
-> > API for Type1 vs. SPAPR IOMMUs. Similarly a DLB driver could have a
-> different
-> > API for each device version (but each API would be fixed, not versioned=
-). I
-> > didn't see any concerns on lkml over VFIO when it was originally submit=
-ted
-> -- though
-> > that was 8 years ago, perhaps the community's feelings have changed
-> since then.
->=20
-> Fixed apis for device types is usually the better way to go.  See the
-> review comments on the nitro_enclaves driver submission a few weeks ago
-> for the full details.
-
-Thanks for the pointer -- I think we're on the same page regarding fixed AP=
-Is.
-I'll clarify the documentation for this ioctl in v2 so it's clear that its
-purpose is to support fixed APIs for different hardware versions/types.
-
-Thanks,
-Gage
