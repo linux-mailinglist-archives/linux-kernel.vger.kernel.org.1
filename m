@@ -2,152 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AC023CF14
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C3623CEF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728802AbgHETNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:13:37 -0400
-Received: from sonic304-27.consmr.mail.ne1.yahoo.com ([66.163.191.153]:35749
-        "EHLO sonic304-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729034AbgHES0s (ORCPT
+        id S1728597AbgHETKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:10:45 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:28957 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729277AbgHESe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 14:26:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596651945; bh=FOt0zwyHrJWGV8EAmJgJDEq7xIcxGCYOB9lxPGye2YQ=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=sligP+Ml+0zuo/I/JfvSiHtxUKTMcEpvND0H95NeiDHvw2DSGx1zLe+2lArdHgJMKDRDWQIktPA1qeQl0A15IDLuRv2uhxj69lX241Sx65eaJJFTuO2ubMsS/X+Pd3fV2eSfpRytARw8MoE86QP1KuWHlNSrnftOZuQH+508PPx9XvAjBofb0VuSqdQvn/gLnoKhJ/CsvRBfT6XACVqYU/pCQ9f0FhzIdcBAhz0ho0U2ZoTjvoZQLrH+Syn+l507Riw794LdT8xga0ooLTmZxS8T9YWetudDjcl6CzomiW9291uxEq4Kt+tndWJbFjhEClJ6g4atHvZYNW5WOYqfmg==
-X-YMail-OSG: oN35ZiMVM1mfYW44uLsECdJwf7aD1ebBeTnN47QhSKpbA7H7q0Ta45_XoY7Kxk0
- xRjvrj75awjVybWRzEYlkQqAg45ISZEVAfMkKYDi_XF__mUx5lwC9ueVSvW_Twy.88xSKQUysr9Y
- E7brLsol0w7WOUw4yuyfX6IlxhhN7fCImvnue0cfi.rj05KqrVhqrv1FBU5BBp8gbsZU4SjqpnPY
- UdVQLQfUJzYPvvSP9X3yTyTda5.PP1goC2KLANQ18Xk_zH8ezbsTw0e6mwF455n.7AUZ6lSVQtwx
- AhALXcD0ZOkTYrxFIItbGTi5XVkwdRyZ639sUMf1lskNosHAA0OUWGETOZ3hUErwTUfoxx.3okAG
- WggPQUXdxskaPZmPUM1GP3lUcFyFkA7mK0GmeHyedUXkiBuOvaju0xfCKlfo2k10.8lDazlgvQnY
- RYczWa.58pSBZ0Eha2JLmD6yHtYawj2WbLgC0O0P9hdk3nuK2iyh0_Q3tb8X8OrELC7.zO94HAf.
- 4u2bUphuWWJulV2f_voWaWwe34ebnkJ_hEu58OoG_xI9MkolsISXrzm9eWqe56tDp3AmkRJE_la0
- GthSM4.GjUd3m1VIQ5y58cHlTRzjLiF.8S2H.8W_jZqd2N4DD4sW0Ap_QT_vi39MrOil7o_u6eX9
- IlAwQzRZkGdDFU_UvbRxX6KGtCY5C4cqwJuxU3bA.wxUxZ8junCY4LHlbZguoL_ml2Ko8xCm0p7y
- lBXzF5MTevox7HjcnvlKVcolNY1PB_l8d42XNjldN.4wIO.sGfhPWURdlYn0CnOdWD40gsvKjxTJ
- 2y9kznja8hJWE1z8XGwU13S7nAHC_JKrgDzYiYTtuvo.pCwir4BF9EBjQHFq4qCLRH_jhuYL868C
- u7DBHPQdFhDSD10r7Snc3bYEmoiLYAEnnLBwALxU_nOB768bcT5Ppv8Kk5Yb0TeT601.QOo5KkHD
- AvDUdu1hgNLKXvwf1zL4EfV7RHAj203PLRRHTgJYMJ8FiINWOINsvyxlsXGkkKZMg2LwiEH6VO1D
- 79fHSkZRKUPGx5dJWi4x_qjN2u3C72zPeWDymvlbLhkYlphEPaKwPLyjd_vCbo5wTMAvsnl13dwQ
- YnIpL4vuo0i_Xt5SFphPU0pDe_0WnXFpl0etDBb3fYPKGBqC_KYGfj0gPpdUxc.N3ko.ScZU_iV6
- oPV1DjWZVXATDpSYk82s6k_hlgFH61VIik95J2gTxRcexi3EdmVZub5vQNjbCoTPLULut5vo.9XN
- 7YzU5BpMpMHc9Qiet3.LUhNtYZnxjBR41WDdFB6TfHTkncBh0c8JftZAiKL7fMPhmQfI_kTcP5nU
- LlsKcjv8N1KPTj8tXQM4_0c_CvAnj6M44bRS8GcARpKK7z5EohGgkdnXuP40V7zrhXyk-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ne1.yahoo.com with HTTP; Wed, 5 Aug 2020 18:25:45 +0000
-Received: by smtp410.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID a204618d0e4212a8de77f50ea77d7c86;
-          Wed, 05 Aug 2020 18:25:40 +0000 (UTC)
-Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     stephen.smalley.work@gmail.com, sashal@kernel.org,
-        jmorris@namei.org, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
- <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
- <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
- <c7c168f2-e30b-d2c5-abcb-1b6919197474@schaufler-ca.com>
- <20200805154504.GB4365@sequoia>
- <69810007161e689ac817099fb1c6df21962963e4.camel@linux.ibm.com>
- <9ad079ff-1bd4-1302-e6fb-25a7396ef12f@linux.microsoft.com>
- <ecc97f59-c2cc-0b23-6199-925ba0d6358b@schaufler-ca.com>
- <50f00ace-8d46-01c2-bf0f-d5484aafd95c@linux.microsoft.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <5570a4d8-8779-6efe-b208-f7efa8ba9488@schaufler-ca.com>
-Date:   Wed, 5 Aug 2020 11:25:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 5 Aug 2020 14:34:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596652464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=NY6yDRCEkpDg5LXNyaSXdjYfolIgk3OXFlkk/eTLcfo=;
+        b=TMd4GERiI+bEXs4rhCyW03aVqmXrWmfxAG+WgTM5wqEI7Mta5xj9a8sCnUuuvwH/7GiZKv
+        hNxEcyIOsKFdFmjQuccKCsmhKb7+PivyacDMtwQ40SpMROJP6oGJLvcT5nia825gu+Qn9A
+        YDvG5xpWA2pYiciG3M0MBT7BEIwh/MA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-NIBy4lHNMPuW20DwNN_t3g-1; Wed, 05 Aug 2020 14:26:09 -0400
+X-MC-Unique: NIBy4lHNMPuW20DwNN_t3g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA9A210059A7;
+        Wed,  5 Aug 2020 18:26:07 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 794135F202;
+        Wed,  5 Aug 2020 18:26:07 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] First batch of KVM changes for Linux 5.9
+Date:   Wed,  5 Aug 2020 14:26:06 -0400
+Message-Id: <20200805182606.12621-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <50f00ace-8d46-01c2-bf0f-d5484aafd95c@linux.microsoft.com>
-Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.16436 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/2020 11:08 AM, Lakshmi Ramasubramanian wrote:
-> On 8/5/20 10:57 AM, Casey Schaufler wrote:
->> On 8/5/2020 10:25 AM, Lakshmi Ramasubramanian wrote:
->>> On 8/5/20 10:03 AM, Mimi Zohar wrote:
->>>> On Wed, 2020-08-05 at 10:45 -0500, Tyler Hicks wrote:
->>>>
->>>>> In addition to SELINUX_STATE and SELINUX_POLICY, we should also consider
->>>>> the proposed LSM_STATE and LSM_POLICY func values but require an "lsm"
->>>>> rule conditional.
->>>>>
->>>>> So the current proposed rules:
->>>>>
->>>>> ? measure func=LSM_STATE
->>>>> ? measure func=LSM_POLICY
->>>>>
->>>>> Would become:
->>>>>
->>>>> ? measure func=LSM_STATE lsm=selinux
->>>>> ? measure func=LSM_POLICY lsm=selinux
->>>>>
->>>>> The following rules would be rejected:
->>>>>
->>>>> ? measure func=LSM_STATE
->>>>> ? measure func=LSM_POLICY
->>>>> ? measure func=LSM_STATE lsm=apparmor
->>>>> ? measure func=LSM_POLICY lsm=smack
->>>>
->>>> Kees is cleaning up the firmware code which differentiated between how
->>>> firmware was loaded.?? There will be a single firmware enumeration.
->>>>
->>>> Similarly, the new IMA hook to measure critical state may be placed in
->>>> multiple places.? Is there really a need from a policy perspective for
->>>> differentiating the source of the critical state being measurind??? The
->>>> data being measured should include some identifying information.
->>>
->>> Yes Mimi - SELinux is including the identifying information in the "event name" field. Please see a sample measurement of STATE and POLICY for SELinux below:
->>>
->>> 10 e32e...5ac3 ima-buf sha256:86e8...4594 selinux-state-1595389364:287899386 696e697469616c697a65643d313b656e61626c65643d313b656e666f7263696e673d303b636865636b72657170726f743d313b6e6574776f726b5f706565725f636f6e74726f6c733d313b6f70656e5f7065726d733d313b657874656e6465645f736f636b65745f636c6173733d313b616c776179735f636865636b5f6e6574776f726b3d303b6367726f75705f7365636c6162656c3d313b6e6e705f6e6f737569645f7472616e736974696f6e3d313b67656e66735f7365636c6162656c5f73796d6c696e6b733d303
->>>
->>> 10 f4a7...9408 ima-ng sha256:8d1d...1834 selinux-policy-hash-1595389353:863934271
->>>
->>>>
->>>> I think moving away from the idea that measuring "critical" data should
->>>> be limited to LSMs, will clarify this.
->>>>
->>>
->>> Are you suggesting that instead of calling the hooks LSM_STATE and LSM_POLICY, we should keep it more generic so that it can be utilized by any subsystem to measure their "critical data"?
->>
->> Policy, state, history or whim, it should be up to the security module
->> to determine what data it cares about, and how it should be measured.
->> Smack does not keep its policy in a single blob of data, it uses lists
->> which can be modified at will. Your definition of the behavior for
->> LSM_POLICY wouldn't work for Smack. That doesn't mean that there isn't
->> a viable way to measure the Smack policy, it just means that IMA isn't
->> the place for it. If SELinux wants its data measured, SELinux should be
->> providing the mechanism to do it.
->>
->> I guess that I'm agreeing with you in part. If you want a generic measurement
->> of "critical data", you don't need to assign a type to it, you have the
->> caller (a security module, a device driver or whatever) identify itself and
->> how it is going to deal with the data. That's very different from what you've
->> done to date.
->
-> Agree.
->
-> Like Stephen had stated earlier, the reason we kept separate hooks (STATE and POLICY) is because the data for state is usually small and therefore we measure the entire data. Whereas, policy data is usually quite large (a few MB) and hence we measure a hash of the policy.
+Linus,
 
-SELinux should determine how it wants its data measured.
-SELinux, not IMA, should determine if some "critical data"
-be measured in total, by its hash or as a count of policy
-rules. It would be handy for IMA to supply functions to do
-data blobs and hashes, but it should be up to the caller to
-decide if they meet their needs.
+The following changes since commit 8038a922cf9af5266eaff29ce996a0d1b788fc0d:
 
->
-> If change to a generic measurement of "critical data", at the least IMA should provide a way to measure "data" and "hash(data)".
->
-> And, with the caller providing the identifying information, there would be no need to call it "LSM_STATE" or "SELINUX_STATE" or such.
->
-> ?-lakshmi
->
->
+  Merge tag 'kvmarm-fixes-5.8-3' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into kvm-master (2020-07-06 13:05:38 -0400)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to f3633c2683545213de4a00a9b0c3fba741321fb2:
+
+  Merge tag 'kvm-s390-next-5.9-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux into kvm-next-5.6 (2020-08-03 14:19:13 -0400)
+
+----------------------------------------------------------------
+s390: implement diag318
+
+x86:
+* Report last CPU for debugging
+* Emulate smaller MAXPHYADDR in the guest than in the host
+* .noinstr and tracing fixes from Thomas
+* nested SVM page table switching optimization and fixes
+
+Generic:
+* Unify shadow MMU cache data structures across architectures
+
+----------------------------------------------------------------
+
+There is a conflict in arch/x86/kernel/kvm.c that git will only
+partially report.  idtentry_enter_cond_rcu and idtentry_exit_cond_rcu
+have been renamed to idtentry_enter and idtentry_exit and their return
+type went from bool to idtentry_state_t.  There are two occurrences
+but git will only notice the first one (and only partly so, it misses
+the function calls altogether).
+
+The resolution is simple, but I've included it at the end of this message
+anyway.
+
+Thanks,
+
+Paolo
+
+Colin Ian King (1):
+      KVM: MIPS: fix spelling mistake "Exteneded" -> "Extended"
+
+Collin Walling (2):
+      s390/setup: diag 318: refactor struct
+      s390/kvm: diagnose 0x318 sync and reset
+
+Dan Carpenter (1):
+      KVM: SVM: Fix sev_pin_memory() error handling
+
+Haiwei Li (1):
+      KVM: Using macros instead of magic values
+
+Huacai Chen (1):
+      MIPS: KVM: Fix build error caused by 'kvm_run' cleanup
+
+Jiaxun Yang (2):
+      MIPS: KVM: Limit Trap-and-Emulate to MIPS32R2 only
+      MIPS: KVM: Remove outdated README
+
+Jim Mattson (7):
+      kvm: svm: Prefer vcpu->cpu to raw_smp_processor_id()
+      kvm: svm: Always set svm->last_cpu on VMRUN
+      kvm: vmx: Add last_cpu to struct vcpu_vmx
+      kvm: x86: Add "last CPU" to some KVM_EXIT information
+      kvm: x86: Move last_cpu into kvm_vcpu_arch as last_vmentry_cpu
+      kvm: x86: Set last_vmentry_cpu in vcpu_enter_guest
+      kvm: x86: Read PDPTEs on CR0.CD and CR0.NW changes
+
+Joerg Roedel (4):
+      KVM: SVM: Rename struct nested_state to svm_nested_state
+      KVM: SVM: Add vmcb_ prefix to mark_*() functions
+      KVM: SVM: Add svm_ prefix to set/clr/is_intercept()
+      KVM: SVM: Rename svm_nested_virtualize_tpr() to nested_svm_virtualize_tpr()
+
+John Hubbard (2):
+      KVM: SVM: fix svn_pin_memory()'s use of get_user_pages_fast()
+      KVM: SVM: convert get_user_pages() --> pin_user_pages()
+
+Krish Sadhukhan (4):
+      KVM: x86: Move the check for upper 32 reserved bits of DR6 to separate function
+      KVM: nSVM: Check that DR6[63:32] and DR7[64:32] are not set on vmrun of nested guests
+      KVM: x86: Create mask for guest CR4 reserved bits in kvm_update_cpuid()
+      KVM: nSVM: Check that MBZ bits in CR3 and CR4 are not set on vmrun of nested guests
+
+Like Xu (2):
+      kvm: x86: limit the maximum number of vPMU fixed counters to 3
+      KVM/x86: pmu: Fix #GP condition check for RDPMC emulation
+
+Maxim Levitsky (1):
+      kvm: x86: replace kvm_spec_ctrl_test_value with runtime test on the host
+
+Mohammed Gamal (5):
+      KVM: x86: Add helper functions for illegal GPA checking and page fault injection
+      KVM: x86: mmu: Move translate_gpa() to mmu.c
+      KVM: x86: mmu: Add guest physical address check in translate_gpa()
+      KVM: VMX: Add guest physical address check in EPT violation and misconfig
+      KVM: x86: Add a capability for GUEST_MAXPHYADDR < HOST_MAXPHYADDR support
+
+Paolo Bonzini (11):
+      Merge branch 'kvm-async-pf-int' into HEAD
+      Merge branch 'kvm-master' into HEAD
+      KVM: x86: report sev_pin_memory errors with PTR_ERR
+      KVM: x86: Make CR4.VMXE reserved for the guest
+      KVM: MMU: stop dereferencing vcpu->arch.mmu to get the context for MMU init
+      KVM: x86: rename update_bp_intercept to update_exception_bitmap
+      KVM: x86: update exception bitmap on CPUID changes
+      KVM: VMX: introduce vmx_need_pf_intercept
+      KVM: VMX: optimize #PF injection when MAXPHYADDR does not match
+      KVM: nSVM: remove nonsensical EXITINFO1 adjustment on nested NPF
+      Merge tag 'kvm-s390-next-5.9-1' of git://git.kernel.org/.../kvms390/linux into kvm-next-5.6
+
+Peter Xu (2):
+      KVM: X86: Move ignore_msrs handling upper the stack
+      KVM: X86: Do the same ignore_msrs check for feature msrs
+
+Sean Christopherson (46):
+      KVM: x86/mmu: Drop kvm_arch_write_log_dirty() wrapper
+      KVM: nVMX: WARN if PML emulation helper is invoked outside of nested guest
+      KVM: x86/mmu: Make .write_log_dirty a nested operation
+      KVM: nVMX: Wrap VM-Fail valid path in generic VM-Fail helper
+      KVM: x86/mmu: Avoid multiple hash lookups in kvm_get_mmu_page()
+      KVM: x86/mmu: Optimize MMU page cache lookup for fully direct MMUs
+      KVM: x86/mmu: Don't put invalid SPs back on the list of active pages
+      KVM: x86/mmu: Batch zap MMU pages when recycling oldest pages
+      KVM: x86/mmu: Batch zap MMU pages when shrinking the slab
+      KVM: x86/mmu: Exit to userspace on make_mmu_pages_available() error
+      KVM: x86/mmu: Move mmu_audit.c and mmutrace.h into the mmu/ sub-directory
+      KVM: x86/mmu: Move kvm_mmu_available_pages() into mmu.c
+      KVM: x86/mmu: Add MMU-internal header
+      KVM: x86/mmu: Make kvm_mmu_page definition and accessor internal-only
+      KVM: x86/mmu: Add sptep_to_sp() helper to wrap shadow page lookup
+      KVM: x86/mmu: Rename page_header() to to_shadow_page()
+      KVM: x86/mmu: Track the associated kmem_cache in the MMU caches
+      KVM: x86/mmu: Consolidate "page" variant of memory cache helpers
+      KVM: x86/mmu: Use consistent "mc" name for kvm_mmu_memory_cache locals
+      KVM: x86/mmu: Remove superfluous gotos from mmu_topup_memory_caches()
+      KVM: x86/mmu: Try to avoid crashing KVM if a MMU memory cache is empty
+      KVM: x86/mmu: Move fast_page_fault() call above mmu_topup_memory_caches()
+      KVM: x86/mmu: Topup memory caches after walking GVA->GPA
+      KVM: x86/mmu: Clean up the gorilla math in mmu_topup_memory_caches()
+      KVM: x86/mmu: Separate the memory caches for shadow pages and gfn arrays
+      KVM: x86/mmu: Make __GFP_ZERO a property of the memory cache
+      KVM: x86/mmu: Zero allocate shadow pages (outside of mmu_lock)
+      KVM: x86/mmu: Skip filling the gfn cache for guaranteed direct MMU topups
+      KVM: x86/mmu: Prepend "kvm_" to memory cache helpers that will be global
+      KVM: Move x86's version of struct kvm_mmu_memory_cache to common code
+      KVM: Move x86's MMU memory cache helpers to common KVM code
+      KVM: arm64: Drop @max param from mmu_topup_memory_cache()
+      KVM: arm64: Use common code's approach for __GFP_ZERO with memory caches
+      KVM: arm64: Use common KVM implementation of MMU memory caches
+      KVM: MIPS: Drop @max param from mmu_topup_memory_cache()
+      KVM: MIPS: Account pages used for GPA page tables
+      KVM: MIPS: Use common KVM implementation of MMU memory caches
+      KVM: nSVM: Correctly set the shadow NPT root level in its MMU role
+      KVM: VMX: Drop a duplicate declaration of construct_eptp()
+      KVM: x86/mmu: Add separate helper for shadow NPT root page role calc
+      KVM: VMX: Make vmx_load_mmu_pgd() static
+      KVM: x86: Pull the PGD's level from the MMU instead of recalculating it
+      KVM: VXM: Remove temporary WARN on expected vs. actual EPTP level mismatch
+      KVM: x86: Dynamically calculate TDP level from max level and MAXPHYADDR
+      KVM: x86/mmu: Rename max_page_level to max_huge_page_level
+      KVM: x86: Specify max TDP level via kvm_configure_mmu()
+
+Thomas Gleixner (7):
+      x86/kvm: Move context tracking where it belongs
+      x86/kvm/vmx: Add hardirq tracing to guest enter/exit
+      x86/kvm/svm: Add hardirq tracing on guest enter/exit
+      x86/kvm/vmx: Move guest enter/exit into .noinstr.text
+      x86/kvm/svm: Move guest enter/exit into .noinstr.text
+      x86/kvm/svm: Use uninstrumented wrmsrl() to restore GS
+      x86/kvm/vmx: Use native read/write_cr2()
+
+Tianjia Zhang (3):
+      KVM: s390: clean up redundant 'kvm_run' parameters
+      KVM: arm64: clean up redundant 'kvm_run' parameters
+      KVM: MIPS: clean up redundant 'kvm_run' parameters
+
+Uros Bizjak (1):
+      KVM: x86: Use VMCALL and VMMCALL mnemonics in kvm_para.h
+
+Vitaly Kuznetsov (13):
+      KVM: x86: Switch KVM guest to using interrupts for page ready APF delivery
+      KVM: x86: drop KVM_PV_REASON_PAGE_READY case from kvm_handle_page_fault()
+      KVM: async_pf: change kvm_setup_async_pf()/kvm_arch_setup_async_pf() return type to bool
+      KVM: x86: take as_id into account when checking PGD
+      KVM: x86: move MSR_IA32_PERF_CAPABILITIES emulation to common x86 code
+      KVM: nSVM: split kvm_init_shadow_npt_mmu() from kvm_init_shadow_mmu()
+      KVM: nSVM: reset nested_run_pending upon nested_svm_vmrun_msrpm() failure
+      KVM: nSVM: prepare to handle errors from enter_svm_guest_mode()
+      KVM: nSVM: introduce nested_svm_load_cr3()/nested_npt_enabled()
+      KVM: nSVM: move kvm_set_cr3() after nested_svm_uninit_mmu_context()
+      KVM: nSVM: implement nested_svm_load_cr3() and use it for host->guest switch
+      KVM: nSVM: use nested_svm_load_cr3() on guest->host switch
+      KVM: x86: drop superfluous mmu_check_root() from fast_pgd_switch()
+
+Wanpeng Li (1):
+      KVM: LAPIC: Set the TDCR settable bits
+
+Xiaoyao Li (9):
+      KVM: X86: Reset vcpu->arch.cpuid_nent to 0 if SET_CPUID* fails
+      KVM: X86: Go on updating other CPUID leaves when leaf 1 is absent
+      KVM: lapic: Use guest_cpuid_has() in kvm_apic_set_version()
+      KVM: X86: Move kvm_apic_set_version() to kvm_update_cpuid()
+      KVM: x86: Introduce kvm_check_cpuid()
+      KVM: x86: Extract kvm_update_cpuid_runtime() from kvm_update_cpuid()
+      KVM: x86: Rename kvm_update_cpuid() to kvm_vcpu_after_set_cpuid()
+      KVM: x86: Rename cpuid_update() callback to vcpu_after_set_cpuid()
+      KVM: x86: Move kvm_x86_ops.vcpu_after_set_cpuid() into kvm_vcpu_after_set_cpuid()
+
+Zhenzhong Duan (4):
+      Revert "KVM: X86: Fix setup the virt_spin_lock_key before static key get initialized"
+      x86/kvm: Change print code to use pr_*() format
+      x86/kvm: Add "nopvspin" parameter to disable PV spinlocks
+      xen: Mark "xen_nopvspin" parameter obsolete
+
+ Documentation/admin-guide/kernel-parameters.txt |  10 +-
+ Documentation/virt/kvm/api.rst                  |   5 +
+ arch/arm64/include/asm/kvm_coproc.h             |  12 +-
+ arch/arm64/include/asm/kvm_host.h               |  22 +-
+ arch/arm64/include/asm/kvm_mmu.h                |   2 +-
+ arch/arm64/include/asm/kvm_types.h              |   8 +
+ arch/arm64/kvm/arm.c                            |   8 +-
+ arch/arm64/kvm/handle_exit.c                    |  36 +-
+ arch/arm64/kvm/mmio.c                           |  11 +-
+ arch/arm64/kvm/mmu.c                            |  61 +---
+ arch/arm64/kvm/sys_regs.c                       |  13 +-
+ arch/mips/Kconfig                               |   1 +
+ arch/mips/include/asm/kvm_host.h                |  39 +-
+ arch/mips/include/asm/kvm_types.h               |   7 +
+ arch/mips/kvm/00README.txt                      |  31 --
+ arch/mips/kvm/Kconfig                           |   3 +-
+ arch/mips/kvm/emulate.c                         |  65 ++--
+ arch/mips/kvm/mips.c                            |  11 +-
+ arch/mips/kvm/mmu.c                             |  44 +--
+ arch/mips/kvm/trap_emul.c                       | 114 +++---
+ arch/mips/kvm/vz.c                              |  26 +-
+ arch/powerpc/include/asm/Kbuild                 |   1 +
+ arch/s390/include/asm/Kbuild                    |   1 +
+ arch/s390/include/asm/diag.h                    |   6 +-
+ arch/s390/include/asm/kvm_host.h                |   4 +-
+ arch/s390/include/uapi/asm/kvm.h                |   7 +-
+ arch/s390/kernel/setup.c                        |   3 +-
+ arch/s390/kvm/kvm-s390.c                        |  54 ++-
+ arch/s390/kvm/vsie.c                            |   1 +
+ arch/x86/Kconfig                                |   1 +
+ arch/x86/include/asm/hardirq.h                  |   4 +-
+ arch/x86/include/asm/idtentry.h                 |   4 +
+ arch/x86/include/asm/kvm_host.h                 |  95 ++---
+ arch/x86/include/asm/kvm_para.h                 |   3 +-
+ arch/x86/include/asm/kvm_types.h                |   7 +
+ arch/x86/include/asm/qspinlock.h                |   1 +
+ arch/x86/kernel/kvm.c                           | 118 ++++--
+ arch/x86/kvm/cpuid.c                            | 115 +++---
+ arch/x86/kvm/cpuid.h                            |   2 +-
+ arch/x86/kvm/lapic.c                            |  11 +-
+ arch/x86/kvm/mmu.h                              |  34 +-
+ arch/x86/kvm/mmu/mmu.c                          | 461 +++++++++++++-----------
+ arch/x86/kvm/{ => mmu}/mmu_audit.c              |  12 +-
+ arch/x86/kvm/mmu/mmu_internal.h                 |  63 ++++
+ arch/x86/kvm/{ => mmu}/mmutrace.h               |   2 +-
+ arch/x86/kvm/mmu/page_track.c                   |   2 +-
+ arch/x86/kvm/mmu/paging_tmpl.h                  |  19 +-
+ arch/x86/kvm/pmu.c                              |   5 +
+ arch/x86/kvm/pmu.h                              |   2 +
+ arch/x86/kvm/svm/avic.c                         |   2 +-
+ arch/x86/kvm/svm/nested.c                       | 142 ++++++--
+ arch/x86/kvm/svm/sev.c                          |  47 +--
+ arch/x86/kvm/svm/svm.c                          | 262 +++++++++-----
+ arch/x86/kvm/svm/svm.h                          |  32 +-
+ arch/x86/kvm/svm/vmenter.S                      |   2 +-
+ arch/x86/kvm/vmx/nested.c                       | 149 +++++---
+ arch/x86/kvm/vmx/ops.h                          |   4 +
+ arch/x86/kvm/vmx/pmu_intel.c                    |  17 -
+ arch/x86/kvm/vmx/vmenter.S                      |   5 +-
+ arch/x86/kvm/vmx/vmx.c                          | 209 ++++++-----
+ arch/x86/kvm/vmx/vmx.h                          |  12 +-
+ arch/x86/kvm/x86.c                              | 231 +++++++-----
+ arch/x86/kvm/x86.h                              |  34 +-
+ arch/x86/xen/spinlock.c                         |   4 +-
+ include/asm-generic/kvm_types.h                 |   5 +
+ include/linux/kvm_host.h                        |  12 +-
+ include/linux/kvm_types.h                       |  19 +
+ include/uapi/linux/kvm.h                        |   4 +
+ kernel/locking/qspinlock.c                      |   7 +
+ virt/kvm/async_pf.c                             |  16 +-
+ virt/kvm/kvm_main.c                             |  63 ++++
+ 71 files changed, 1633 insertions(+), 1212 deletions(-)
+ create mode 100644 arch/arm64/include/asm/kvm_types.h
+ create mode 100644 arch/mips/include/asm/kvm_types.h
+ delete mode 100644 arch/mips/kvm/00README.txt
+ create mode 100644 arch/x86/include/asm/kvm_types.h
+ rename arch/x86/kvm/{ => mmu}/mmu_audit.c (96%)
+ create mode 100644 arch/x86/kvm/mmu/mmu_internal.h
+ rename arch/x86/kvm/{ => mmu}/mmutrace.h (99%)
+ create mode 100644 include/asm-generic/kvm_types.h
+
+diff --cc arch/x86/kernel/kvm.c
+index d9995931ea18,3f78482d9496..000000000000
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@@ -34,6 -31,6 +34,7 @@@
+  #include <asm/apic.h>
+  #include <asm/apicdef.h>
+  #include <asm/hypervisor.h>
+++#include <asm/idtentry.h>
+  #include <asm/tlb.h>
+  #include <asm/cpuidle_haltpoll.h>
+  
+@@@ -235,13 -232,18 +236,13 @@@ EXPORT_SYMBOL_GPL(kvm_read_and_reset_ap
+  
+  noinstr bool __kvm_handle_async_pf(struct pt_regs *regs, u32 token)
+  {
+ -	u32 reason = kvm_read_and_reset_apf_flags();
+ +	u32 flags = kvm_read_and_reset_apf_flags();
+- 	bool rcu_exit;
++ 	idtentry_state_t state;
+  
+ -	switch (reason) {
+ -	case KVM_PV_REASON_PAGE_NOT_PRESENT:
+ -	case KVM_PV_REASON_PAGE_READY:
+ -		break;
+ -	default:
+ +	if (!flags)
+  		return false;
+ -	}
+  
+- 	rcu_exit = idtentry_enter_cond_rcu(regs);
++ 	state = idtentry_enter(regs);
+  	instrumentation_begin();
+  
+  	/*
+@@@ -266,27 -268,6 +267,27 @@@
+  	return true;
+  }
+  
+ +DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncpf_interrupt)
+ +{
+ +	struct pt_regs *old_regs = set_irq_regs(regs);
+ +	u32 token;
+- 	bool rcu_exit;
+++	idtentry_state_t rcu_exit;
+ +
+- 	rcu_exit = idtentry_enter_cond_rcu(regs);
+++	rcu_exit = idtentry_enter(regs);
+ +
+ +	inc_irq_stat(irq_hv_callback_count);
+ +
+ +	if (__this_cpu_read(apf_reason.enabled)) {
+ +		token = __this_cpu_read(apf_reason.token);
+ +		kvm_async_pf_task_wake(token);
+ +		__this_cpu_write(apf_reason.token, 0);
+ +		wrmsrl(MSR_KVM_ASYNC_PF_ACK, 1);
+ +	}
+ +
+- 	idtentry_exit_cond_rcu(regs, rcu_exit);
+++	idtentry_exit(regs, rcu_exit);
+ +	set_irq_regs(old_regs);
+ +}
+ +
+  static void __init paravirt_ops_setup(void)
+  {
+  	pv_info.name = "KVM";
+
