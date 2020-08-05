@@ -2,138 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887E223CE3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28BC23CE1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729060AbgHESVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 14:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
+        id S1728413AbgHESOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 14:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729181AbgHESLW (ORCPT
+        with ESMTP id S1729161AbgHESJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 14:11:22 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2CCC06138D;
-        Wed,  5 Aug 2020 11:10:32 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id s15so16744045qvv.7;
-        Wed, 05 Aug 2020 11:10:32 -0700 (PDT)
+        Wed, 5 Aug 2020 14:09:08 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E15C06179E
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 11:09:07 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id g19so13170748plq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 11:09:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CSOoq3zhF6z2fZ+X97MfanJIRrTuyK8BNIkdVGDMQEQ=;
-        b=WkEWqptLDy3R6ioOulhs9LCTz33DYC1YwZpUJavPXOLVGV2Oh1GCAetOfpDiAicnfC
-         bnnTTBfinXKPD8zwEhxTo3jAr1u6b1KivySeOrU9BiBn/I6UQAqhjBJCNsMKvG0hkImf
-         ALAyJ0TBul74xRJlxBK0ORqfKLnd46HXDgh18AjaR8DPqu0fHH8ldssbfQi1trX6tRB7
-         5UW7Vc1V2K2qydneRegNu1wCNbnVqa8s8SaDMEMPNS65YHhlNkvARMGJz77FYBEcMec3
-         v1SU3F9ISIdfIyZiYpIFsVgMAzZcO+5s6AMfJZRSIANi/QySkiAvuVZebvBhIVj14HNN
-         KJ6A==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=QLQQ3+0etev233V3umPOvDVR32FRU3B4OHKUUP2KCtU=;
+        b=cJiqL12yAVnWOtPxTPDWYZdMhDSWBAVmkAM12MtrQWair/KCdQo04Q3JIQaoAM68oK
+         ktSPgagxplpFLOSivwPxXlyLmZ92ZTz3JVHDcF6/Cz4OlbXaPaTiRZjvjuSzWmWhXBzE
+         yzJ+fL6mCIagoCzT1NECUKisLKh6z4D7js2Hf3U7aCoqSrbYX0WVKFekkz4uJhiiIet7
+         DhXKPeB7VM8W0WHLbH73QWjOPLzuqi7sEOCCSHiYDjdSCrJo1OD5COzxsMXQtU1T0EOw
+         Y2rxz7mQriURh7LCeOKmkx27XTY8t5Uz3lKEJGFq5TO8vbur3wZg1crfB4zhD6bw96lq
+         OkeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CSOoq3zhF6z2fZ+X97MfanJIRrTuyK8BNIkdVGDMQEQ=;
-        b=a4Plm0h/9rXTD4DSDFG67hE/2D5IY1EAldWANby4cPctLkiqPo4Ped9khm/Z1iUGuX
-         soLEHmcfXVsL2O3zVZSsvIzjZGDrzdeJfP7kAo5cjj1UTD3u+GxwICQgQW5Ffvisjqc1
-         WMc/mS1lTjSmN7w3GcdzWX2R/14/TPkHIsuSZMj3OeCew7e96gBJCVGz9diRbEBL+I9r
-         seAheRMgxGkRCxnFvXscmqKwnljpGc83bQSouqJdjkMq/xtk7nG4wPlKZ5Vx1jYpjR/y
-         UCl/re5o8+CpdaWuAoWv4Bvs5oYxW053tWhI3oNqceyFn1dYBfAwKBLXoiaOPPnym312
-         OT4w==
-X-Gm-Message-State: AOAM530BDCfwX1T4ctGYQKfWyNjVotXgZnz12wqWqp4YweWjpH8dQfH6
-        ibluYCAoc+ODEW6S1UTe+Q==
-X-Google-Smtp-Source: ABdhPJybD0CTplQH9PaqhvAh94r4pvrJHLy/2Cb1rWWuo+HcvlxTLUJMXYleqq82a0Jy8907RV108g==
-X-Received: by 2002:ad4:438f:: with SMTP id s15mr5142142qvr.164.1596651031728;
-        Wed, 05 Aug 2020 11:10:31 -0700 (PDT)
-Received: from localhost.localdomain (146-115-88-66.s3894.c3-0.sbo-ubr1.sbo.ma.cable.rcncustomer.com. [146.115.88.66])
-        by smtp.gmail.com with ESMTPSA id i7sm2571560qtb.27.2020.08.05.11.10.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 11:10:31 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH net] Bluetooth: Fix slab-out-of-bounds read in hci_le_direct_adv_report_evt()
-Date:   Wed,  5 Aug 2020 14:09:02 -0400
-Message-Id: <20200805180902.684024-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=QLQQ3+0etev233V3umPOvDVR32FRU3B4OHKUUP2KCtU=;
+        b=QO3mLhK2PPg0hOxm0at/APNuQD6+P0OH29Ib5qzn2+Phxv+hhkyZGNNajFOrnwiyp/
+         2skyrYmISV3dQnM2oi9a4EF3wKu7yIv7On2gtDpiuP4qrxAAVf2UzreP7tbMoGvWNdRM
+         uS7tuEsohi8koTGiZ7/k9GE9pslYO1qM3HscKrTAWqzn8t8bvrfL16uJTvoayY5H1+2L
+         bnb0XPvgqqvRIEsx8baXFF7b++x/YXjYLhvsEHLEVVFPxxwjv8WfYORtdR020CLvIUpI
+         4qkxLEqSFVcx5KVCtOecGdXnX31opqIzZKO/NbBvC7D/TcQ//WmVx50neU7bcc2iHLzl
+         TPuQ==
+X-Gm-Message-State: AOAM532QCioM7KMnMHbCHbUlwwG3XU9wkcw1muKTiEZg9/utxxfzAOVU
+        yKMA+a0d40YwLrTjr+vPSXwqeoHVjr0=
+X-Google-Smtp-Source: ABdhPJzgLgfCkhTYirh3jlA82isYOiQXoI3I2L0JOH5MsNNl4huINEybPkouEx/HAXGjPugwTQeLcA==
+X-Received: by 2002:a17:902:b686:: with SMTP id c6mr4212408pls.133.1596650947056;
+        Wed, 05 Aug 2020 11:09:07 -0700 (PDT)
+Received: from [10.213.170.159] (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
+        by smtp.gmail.com with ESMTPSA id fv21sm3722351pjb.16.2020.08.05.11.09.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 05 Aug 2020 11:09:06 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>
+Cc:     bhelgaas@google.com, rjw@rjwysocki.net, ashok.raj@intel.com,
+        tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Qiuxu Zhuo" <qiuxu.zhuo@intel.com>
+Subject: Re: [PATCH V2 9/9] PCI/AER: Add RCEC AER error injection support
+Date:   Wed, 05 Aug 2020 11:09:04 -0700
+X-Mailer: MailMate (1.13.1r5671)
+Message-ID: <32674ABF-0189-4477-8BEA-84DA393FD148@intel.com>
+In-Reply-To: <20200805185450.0000512d@Huawei.com>
+References: <20200804194052.193272-1-sean.v.kelley@intel.com>
+ <20200804194052.193272-10-sean.v.kelley@intel.com>
+ <20200805185450.0000512d@Huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`num_reports` is not being properly checked. A malformed event packet with
-a large `num_reports` number makes hci_le_direct_adv_report_evt() read out
-of bounds. Fix it.
+On 5 Aug 2020, at 10:54, Jonathan Cameron wrote:
 
-Reported-and-tested-by: syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
-Fixes: 2f010b55884e ("Bluetooth: Add support for handling LE Direct Advertising Report events")
-Link: https://syzkaller.appspot.com/bug?extid=24ebd650e20bd263ca01
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
-I moved the initialization of `ev` out of the loop and restructured the
-function a bit, since otherwise the check would look like:
+> On Tue, 4 Aug 2020 12:40:52 -0700
+> Sean V Kelley <sean.v.kelley@intel.com> wrote:
+>
+>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>
+>> The Root Complex Event Collectors(RCEC) appear as peers to Root Ports
+>> and also have the AER capability. So add RCEC support to the current AER
+>> error injection driver.
+>>
+>> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
+>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>
+> Silly English subtlety inline.
+>
+>> ---
+>>  drivers/pci/pcie/aer_inject.c | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/pci/pcie/aer_inject.c b/drivers/pci/pcie/aer_inject.c
+>> index c2cbf425afc5..2077dc826fdf 100644
+>> --- a/drivers/pci/pcie/aer_inject.c
+>> +++ b/drivers/pci/pcie/aer_inject.c
+>> @@ -333,8 +333,11 @@ static int aer_inject(struct aer_error_inj *einj)
+>>  	if (!dev)
+>>  		return -ENODEV;
+>>  	rpdev = pcie_find_root_port(dev);
+>> +	/* If Root port not found, try to find an RCEC */
+>> +	if (!rpdev)
+>> +		rpdev = dev->rcec;
+>>  	if (!rpdev) {
+>> -		pci_err(dev, "Root port not found\n");
+>> +		pci_err(dev, "Root port or RCEC not found\n");
+>
+> That is a bit confusing, could be
+>
+> RP | !RCEC
+>
+> "Neither root port nor RCEC found\n" perhaps?
 
-	if (!num_reports || skb->len < num_reports * sizeof(struct hci_ev_le_direct_adv_info) + 1)
-		return;
+Sounds good to me. Will correct.
 
-Therefore I used the similar structure with hci_inquiry_result_evt() etc.
+Thanks,
 
-hci_le_adv_report_evt() and hci_le_ext_adv_report_evt() also have the
-same issue with `num_reports`, but I'm not sure how to perform the check
-for them, since they use variable-length reports. Should we do something
-like this? (take hci_le_adv_report_evt() as example:)
+Sean
 
-	if (!num_reports ||
-	    skb->len < num_reports * (sizeof(*ev) + HCI_MAX_AD_LENGTH + 1) + 1)
-		return;
-
-Then how about hci_le_ext_adv_report_evt()? There is no such
-`HCI_MAX_AD_LENGTH` restrictions on `ev->length` for it, I assume?
-
-Would like to hear your opinion. Thank you!
-
- net/bluetooth/hci_event.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
-
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 4b7fc430793c..aec43ae488d1 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5863,21 +5863,19 @@ static void hci_le_direct_adv_report_evt(struct hci_dev *hdev,
- 					 struct sk_buff *skb)
- {
- 	u8 num_reports = skb->data[0];
--	void *ptr = &skb->data[1];
-+	struct hci_ev_le_direct_adv_info *ev = (void *)&skb->data[1];
- 
--	hci_dev_lock(hdev);
-+	if (!num_reports || skb->len < num_reports * sizeof(*ev) + 1)
-+		return;
- 
--	while (num_reports--) {
--		struct hci_ev_le_direct_adv_info *ev = ptr;
-+	hci_dev_lock(hdev);
- 
-+	for (; num_reports; num_reports--, ev++)
- 		process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
- 				   ev->bdaddr_type, &ev->direct_addr,
- 				   ev->direct_addr_type, ev->rssi, NULL, 0,
- 				   false);
- 
--		ptr += sizeof(*ev);
--	}
--
- 	hci_dev_unlock(hdev);
- }
- 
--- 
-2.25.1
-
+>
+>
+>>  		ret = -ENODEV;
+>>  		goto out_put;
+>>  	}
