@@ -2,62 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC62523D103
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D7823D0E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729103AbgHETze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:55:34 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37526 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726806AbgHEQrW (ORCPT
+        id S1729453AbgHETyF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 Aug 2020 15:54:05 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:42396 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728121AbgHEQtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:47:22 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k3LAB-0001gn-UM; Wed, 05 Aug 2020 15:17:08 +0000
-Date:   Wed, 5 Aug 2020 17:17:07 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] fork cleanup for v5.9
-Message-ID: <20200805151707.boubg3h4vetewxow@wittgenstein>
-References: <20200804112801.72380-1-christian.brauner@ubuntu.com>
- <20200805083128.GA27209@infradead.org>
+        Wed, 5 Aug 2020 12:49:09 -0400
+X-Greylist: delayed 2502 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 12:49:07 EDT
+Received: from relay3-d.mail.gandi.net (unknown [217.70.183.195])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 947DC3A9F99;
+        Wed,  5 Aug 2020 15:27:41 +0000 (UTC)
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 385F760004;
+        Wed,  5 Aug 2020 15:22:18 +0000 (UTC)
+Date:   Wed, 5 Aug 2020 17:22:17 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Nicolas Pitre <nico@fluxnic.net>
+Cc:     Conor Culhane <conor.culhane@silvaco.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        "linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rajeev Huralikoppi <rajeev.huralikoppi@silvaco.com>
+Subject: Re: [PATCH 3/4] i3c: master: svc: Add Silvaco I3C master driver
+Message-ID: <20200805172217.27a00af5@xps13>
+In-Reply-To: <nycvar.YSQ.7.77.849.2008051105550.1112668@knanqh.ubzr>
+References: <20200709080159.2178-1-miquel.raynal@bootlin.com>
+        <20200709080159.2178-3-miquel.raynal@bootlin.com>
+        <nycvar.YSQ.7.77.849.2008031546570.1112668@knanqh.ubzr>
+        <BN6PR16MB1762D6CE430AB08B7A2BE5FCF14A0@BN6PR16MB1762.namprd16.prod.outlook.com>
+        <nycvar.YSQ.7.77.849.2008051105550.1112668@knanqh.ubzr>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200805083128.GA27209@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 09:31:28AM +0100, Christoph Hellwig wrote:
-> On Tue, Aug 04, 2020 at 01:28:01PM +0200, Christian Brauner wrote:
-> > High-level this does two main things:
-> > 1. Remove the double export of both do_fork() and _do_fork() where do_fork()
-> >    used the incosistent legacy clone calling convention. Now we only export
-> >    _do_fork() which is based on struct kernel_clone_args.
+Hi Nicolas,
+
+Nicolas Pitre <nico@fluxnic.net> wrote on Wed, 5 Aug 2020 11:13:41
+-0400 (EDT):
+
+> On Tue, 4 Aug 2020, Conor Culhane wrote:
 > 
-> Can we retire the _do_fork name as well please?  For one we really don't
-> use single underscore prefix in the kernel, and we also try to avoid our
-> normal __ prefixes if there is no non-prefixed vesion.  Also the name
-> feels wrong, as this implements all of clone and not just fork.
-> What about kernel_clone to match the name of the args structure?
-
-Yep, sounds good. I actually had a patch for that but it introduced a
-lot of jitter into the series because there's quite a few odd places
-where _do_fork() is used.
-
+> > Miquel is passing 0 as the delay_us argument.  
 > 
-> Also none of them actaully is exported (thankfully!).
+> Good point.
+> 
+> > Is this still a concern?  
+> 
+> Not in that case.
 
-Ah, sorry that was confusing. What I meant was "exported" in the sense
-of visible outside of the file not actually in the "useable from
-modules" sense.
+I will check again if looping over this register read actually
+makes sense or not. If yes, I will add a comment here.
 
-Thanks!
-Christian
+Thanks,
+Miquèl
