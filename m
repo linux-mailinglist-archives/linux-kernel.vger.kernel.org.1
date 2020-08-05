@@ -2,134 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC3A23CE1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3013A23CE3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729195AbgHESNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 14:13:50 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:44718 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729162AbgHESJX (ORCPT
+        id S1729109AbgHESWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 14:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728903AbgHESLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 14:09:23 -0400
-Received: by mail-il1-f198.google.com with SMTP id y82so26450277ilk.11
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 11:09:23 -0700 (PDT)
+        Wed, 5 Aug 2020 14:11:50 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D0EC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 11:11:48 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id i19so24738415lfj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 11:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uHPd0ivHK9bW5amsgeLfepexH6gYrZPkMtMTrC1KpJc=;
+        b=G6m8qZi+rIjXCmBgPmBj7032K/nQAr3NLRmvf8lYANY8VpHEqkoOUIMmt+d3pIfFAy
+         8S/32NBJn8RJ/n/l2yPIG3zMcmrEYdd6pmDQs2lDLxgnOVDIQ+3AIoH5XEELjwY5dNjh
+         HhXyJvJT3gL+HQyS6+b1R9X52DRdebGwo1/5U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=YloGL6E01nHExHJj20pzTeVaG7arypuWNvc/TTQM6GU=;
-        b=m4v0HvcvxZyyRqXzpC5ZajM9cbr4OVej7m0RjCcnoWlyOp7ODReW/1kCbpOORUD7Qx
-         a2JVuGtMmdZ6ZKhjJ6CFH5k5Ef4poNu7KeP95yVbdaR8qFIkkuMUmNZGcLXxZQGIJVMJ
-         InovqNEoV+EDUgaOr6SzEPtxXJJvLzEoa73lkNGJHYGCTgONZ+ey4Z+YJ/sUmL9PTKxQ
-         n3XdjIbHF4Lw/A+UeiwDt3T1vZYwWsJ0+HyrAs3twuVYb3k5Evf3v1Uce3xj3dIJ0/Tm
-         X2LG2txnwXqmxOApQH+Fy9Sbm3xuIu8BSgjLZNakzui4Rch+2ffkOYTg+QclsTgZl3pq
-         b+nQ==
-X-Gm-Message-State: AOAM530MNV+hz2vHre66XfO+TZFufJJEVBVAjFvwyHKOjHnoiB9xOWyw
-        /Q0A5ziyBKFAW79hICiZWwb7XXTzimYnqdCDDEkG0/6eQMI/
-X-Google-Smtp-Source: ABdhPJxKKv7Wr77Bbzsv5urdfzRqc3Ro2et+RbGkg6ws9iwd9GeFuikYIHMlqbLtnzqWa1N3LL1eyj/v5jRCbV2oUEfjHNWPBA2z
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uHPd0ivHK9bW5amsgeLfepexH6gYrZPkMtMTrC1KpJc=;
+        b=UvWyUl4yuBOMOtiwI4MaGfhKUPadMfr6yUy4pbwfwSMk4ffrMf3qDdXcAn3Fn2p//N
+         geT5nPf4Opjk/w5QHRc8k/PRlfTyDZ519QQWu0t+esAiBMOh3IH4uJL89RUpPDh41Mux
+         DayfoAglCTeLTzdj6ypnRJMtm9k0Bt1mguIFk0wtioGCOuhbMqNAO+P17OmKk2qv1xD6
+         KEpITbk7OGNwDMMvYbHtw66pfBx3ed1Zy6liu6sjBsD6Uwm1avfNpcrUQjoh+Cf/4U8I
+         cifOSEclvY+T/63naaYguGMLghRo8rkxqU2PO/YjRhEWcB2SDSRmnBsuA4zE4EGiZmiE
+         EEeQ==
+X-Gm-Message-State: AOAM533i3XdvgYtWdnM1YednZlXZl9hykWWw/s3WZpnr623pFoeOZu05
+        VZ5p0CczEua0kez7gJCOhNTnRFnH7QU=
+X-Google-Smtp-Source: ABdhPJzLUWqmZRtU4lgbzg3GXbajzJM0wVcH6H91xI30kqsXDWnOfnMEHK9ZSJPdHHh6vHz1oXN5bQ==
+X-Received: by 2002:ac2:530e:: with SMTP id c14mr2108964lfh.127.1596651106396;
+        Wed, 05 Aug 2020 11:11:46 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id 29sm1276673ljv.72.2020.08.05.11.11.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 11:11:45 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id v9so14283437ljk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 11:11:45 -0700 (PDT)
+X-Received: by 2002:a2e:9252:: with SMTP id v18mr1882996ljg.70.1596651104717;
+ Wed, 05 Aug 2020 11:11:44 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2493:: with SMTP id x19mr5753725jat.53.1596650962939;
- Wed, 05 Aug 2020 11:09:22 -0700 (PDT)
-Date:   Wed, 05 Aug 2020 11:09:22 -0700
-In-Reply-To: <000000000000b087a705ac2369dd@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000079f28205ac254528@google.com>
-Subject: Re: INFO: trying to register non-static key in l2cap_chan_del
-From:   syzbot <syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <E1k3KUx-0000da-In@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1k3KUx-0000da-In@rmk-PC.armlinux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 5 Aug 2020 11:11:28 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whbLwN9GEVVt=7eYhPYk0t0Wh1xeuNEDD+xmQxBFjAQJA@mail.gmail.com>
+Message-ID: <CAHk-=whbLwN9GEVVt=7eYhPYk0t0Wh1xeuNEDD+xmQxBFjAQJA@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: update phylink/sfp keyword matching
+To:     Russell King <rmk+kernel@armlinux.org.uk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Aug 5, 2020 at 7:34 AM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+>
+> Is this something you're willing to merge directly please?
 
-HEAD commit:    4c900a6b farsync: switch from 'pci_' to 'dma_' API
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1561801a900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=91a13b78c7dc258d
-dashboard link: https://syzkaller.appspot.com/bug?extid=abfc0f5e668d4099af73
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15bdcc3a900000
+Done.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com
+That said:
 
-INFO: trying to register non-static key.
-the code is fine but needs lockdep annotation.
-turning off the locking correctness validator.
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.8.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events l2cap_chan_timeout
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- assign_lock_key kernel/locking/lockdep.c:894 [inline]
- register_lock_class+0x157d/0x1630 kernel/locking/lockdep.c:1206
- __lock_acquire+0xfa/0x56e0 kernel/locking/lockdep.c:4259
- lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:4959
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
- _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
- spin_lock_bh include/linux/spinlock.h:358 [inline]
- lock_sock_nested+0x3b/0x110 net/core/sock.c:3019
- l2cap_sock_teardown_cb+0x88/0x400 net/bluetooth/l2cap_sock.c:1520
- l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
- l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:823
- l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 0 P4D 0 
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.8.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events l2cap_chan_timeout
-RIP: 0010:0x0
-Code: Bad RIP value.
-RSP: 0018:ffffc90000cbfb60 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffff8880931bd000 RCX: ffffffff8728bc2f
-RDX: 1ffff11014549a8c RSI: ffffffff8728be7c RDI: ffff8880a2a4d000
-RBP: 0000000000000005 R08: 0000000000000001 R09: ffff8880a2a4d067
-R10: 0000000000000009 R11: 0000000000000001 R12: 000000000000006f
-R13: ffff8880a2a4d000 R14: 0000000000000000 R15: 0000000000000005
-FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 00000000929e6000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- l2cap_sock_teardown_cb+0x374/0x400 net/bluetooth/l2cap_sock.c:1547
- l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
- l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:823
- l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-Modules linked in:
-CR2: 0000000000000000
----[ end trace ecb0577583d92fc1 ]---
-RIP: 0010:0x0
-Code: Bad RIP value.
-RSP: 0018:ffffc90000cbfb60 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffff8880931bd000 RCX: ffffffff8728bc2f
-RDX: 1ffff11014549a8c RSI: ffffffff8728be7c RDI: ffff8880a2a4d000
-RBP: 0000000000000005 R08: 0000000000000001 R09: ffff8880a2a4d067
-R10: 0000000000000009 R11: 0000000000000001 R12: 000000000000006f
-R13: ffff8880a2a4d000 R14: 0000000000000000 R15: 0000000000000005
-FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 00000000929e6000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> -K:     phylink
+> +K:     phylink\.h|struct\s+phylink|\.phylink|>phylink_|phylink_(autoneg|clear|connect|create|destroy|disconnect|ethtool|helper|mac|mii|of|set|start|stop|test|validate)
 
+That's a very awkward pattern. I wonder if there could be better ways
+to express this (ie "only apply this pattern to these files" kind of
+thing)
+
+Isn't the 'F' pattern already complete enough that maybe the K pattern
+isn't even worth it?
+
+Just a thought, no biggie.
+
+           Linus
