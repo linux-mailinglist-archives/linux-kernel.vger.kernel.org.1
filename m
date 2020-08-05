@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F0623D17F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101AE23D191
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgHEUBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727817AbgHEUBe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 16:01:34 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5924EC061575;
-        Wed,  5 Aug 2020 13:01:34 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id y3so41841721wrl.4;
-        Wed, 05 Aug 2020 13:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sFMazUp0MhwJbVuexgj1bxt76f5CLnr6BJ4vAddg9SU=;
-        b=clorqv+GMwdktNqZ6yyQxXrKzFF6/uB+b5UtHOzV5SpjRSNFQ89UimVPAVq4+9+NSo
-         OHRqMlxYcEasQ3TVdW5ps6BHjWd7Y0TElNh/rAhBHZJ9VXFG8ud6KZAiF1Ik40MEn3ux
-         JSH7uR2kmM+6HCKQgIn6onU0fuQqfGIHGZrKkx5raOUaLR3nJCgCUm9y4bsf45vpFb7R
-         GAb5WCzsUSZJ3JhpIul+FGKcCtEklbMpGNS7tuionEjy3dJ/JTOmY2ZUws3eyk7qoPBo
-         UZv5Xc+GIR7hK6+W5zAO0YoeyZJX+f00gcwsw5G1mNngdt/2pMvtz+osrtNJ0cK/KS7a
-         r9Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sFMazUp0MhwJbVuexgj1bxt76f5CLnr6BJ4vAddg9SU=;
-        b=Gxj7OhdhflMYfslkwFpW1OdxXNA5W+7ue8LRItzDr+2ePLcOzMSLAFyLAK0URjaSY1
-         mpcw8BZR0jugra0aByU7JmG75MQkHXAx6sepQdaI0aPkakQL8sn0LtYjKZFzlYxILYO8
-         B+azBSvL0Y3Wd+mz8tMoCBlXa2LsLuHCe25DIuqHGm3ocpuhUMzP0meaYroFwCUJwv9P
-         LnFUzGAQcLbtQQHAMSCEMuJFTJPpK9h90hEWyuPxF0AZTGIm3o1m8KzO89fks4m1KPju
-         HIP0QvqhW3YTN1AdNHc277Auv2GlDGL3XFpYQryYb6X9AaCX0BsFkDMVWcf9Ih+w8Fgc
-         ZrlQ==
-X-Gm-Message-State: AOAM532tc7PusHfT/s/HJB24fmSShfS3xSaHNq5A5nEecSo31lY69w9D
-        ZCNOotoCDS4ieh+vlQZLGx1XHe8s6wLmxhvrGkA=
-X-Google-Smtp-Source: ABdhPJzcEbloQmJvxKNefm95pR63lEvoWfrv/5u8FdjvGjUP4tRNqqhD2adAS9zjFX5NZBZdKixnLqEcd/X7qdyfync=
-X-Received: by 2002:a5d:494b:: with SMTP id r11mr4356598wrs.419.1596657693122;
- Wed, 05 Aug 2020 13:01:33 -0700 (PDT)
+        id S1729134AbgHEUCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:02:37 -0400
+Received: from mga01.intel.com ([192.55.52.88]:56433 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728886AbgHEUC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 16:02:28 -0400
+IronPort-SDR: tEZgkUK8gJbEskp/5QggItYZZV9rmWw47wdKwUpSl4c6bgWw0wLfFJgqmFpJFl1yj/QSxznlHy
+ dNTqgRO19FdA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="170722104"
+X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
+   d="scan'208";a="170722104"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 13:02:26 -0700
+IronPort-SDR: xT+qWi59QbK+7BF7WkCvMt7fUZANd2g064635Re20OBwvJyewGJ6veydrd5hRmKWa93WNgW/E+
+ lsvyq5rX6wbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
+   d="scan'208";a="492940625"
+Received: from lkp-server02.sh.intel.com (HELO 37a337f97289) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 05 Aug 2020 13:02:25 -0700
+Received: from kbuild by 37a337f97289 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k3PcH-0000tu-1R; Wed, 05 Aug 2020 20:02:25 +0000
+Date:   Thu, 6 Aug 2020 04:02:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Shannon Nelson <snelson@pensando.io>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: drivers/net/ethernet/pensando/ionic/ionic_ethtool.c:250:51: warning:
+ Clarify calculation precedence for '&' and
+Message-ID: <202008060413.VgrMuqLJ%lkp@intel.com>
 MIME-Version: 1.0
-References: <20200805113510.18277-1-colin.king@canonical.com>
-In-Reply-To: <20200805113510.18277-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 5 Aug 2020 16:01:22 -0400
-Message-ID: <CADnq5_NA9f2N3xkH4WAdDEP+0-5W0LkmTRy3yXqFdnWQmfsVmQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: fix spelling mistake "Falied" -> "Failed"
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 7:35 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a spelling mistake in a DRM_ERROR message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2324d50d051ec0f14a548e78554fb02513d6dcef
+commit: 4d03e00a21409f63668349ae4123f5707d9a28cf ionic: Add initial ethtool support
+date:   11 months ago
+compiler: ia64-linux-gcc (GCC) 9.3.0
 
-This is already fixed.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Alex
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-> index 49d4514aa6ed..c68369731b20 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-> @@ -2010,7 +2010,7 @@ static int psp_suspend(void *handle)
->
->         ret = psp_tmr_terminate(psp);
->         if (ret) {
-> -               DRM_ERROR("Falied to terminate tmr\n");
-> +               DRM_ERROR("Failed to terminate tmr\n");
->                 return ret;
->         }
->
-> --
-> 2.27.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+cppcheck warnings: (new ones prefixed by >>)
+
+>> drivers/net/ethernet/pensando/ionic/ionic_ethtool.c:250:51: warning: Clarify calculation precedence for '&' and '?'. [clarifyCalculation]
+     pause->rx_pause = pause_type & IONIC_PAUSE_F_RX ? 1 : 0;
+                                                     ^
+   drivers/net/ethernet/pensando/ionic/ionic_ethtool.c:251:51: warning: Clarify calculation precedence for '&' and '?'. [clarifyCalculation]
+     pause->tx_pause = pause_type & IONIC_PAUSE_F_TX ? 1 : 0;
+                                                     ^
+--
+>> drivers/net/geneve.c:898:46: warning: Clarify calculation precedence for '&' and '?'. [clarifyCalculation]
+     df = key->tun_flags & TUNNEL_DONT_FRAGMENT ? htons(IP_DF) : 0;
+                                                ^
+
+vim +250 drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
+
+   239	
+   240	static void ionic_get_pauseparam(struct net_device *netdev,
+   241					 struct ethtool_pauseparam *pause)
+   242	{
+   243		struct ionic_lif *lif = netdev_priv(netdev);
+   244		u8 pause_type;
+   245	
+   246		pause->autoneg = 0;
+   247	
+   248		pause_type = lif->ionic->idev.port_info->config.pause_type;
+   249		if (pause_type) {
+ > 250			pause->rx_pause = pause_type & IONIC_PAUSE_F_RX ? 1 : 0;
+   251			pause->tx_pause = pause_type & IONIC_PAUSE_F_TX ? 1 : 0;
+   252		}
+   253	}
+   254	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
