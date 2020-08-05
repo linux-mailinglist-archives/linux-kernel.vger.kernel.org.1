@@ -2,119 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C644023CDC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6529023CDD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729043AbgHERwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:52:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728859AbgHERoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:44:00 -0400
-Received: from localhost (mobile-166-175-186-42.mycingular.net [166.175.186.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 674EB2073E;
-        Wed,  5 Aug 2020 17:43:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596649411;
-        bh=RiwzAtjuf8ObXHWny2WLgMqRBru3zrdleC7LsT+rj2k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=F69wTfs8HLNpiiVRM2qh0nFb0ahhJsGPtuiG9HBGkxULkBpth/rtoOZNTjoemwM7g
-         MviExTIi2gCogQEmcNwll+2dvxpsmQGGnKdC/nq3jvtk2BQzU/WPaWxF5aW8ELZAIS
-         TaIGNaBva5wJG7URInhcWNW8I3BmadYohhxiNIOg=
-Date:   Wed, 5 Aug 2020 12:43:28 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rjw@rjwysocki.net, ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Subject: Re: [PATCH V2 2/9] PCI: Extend Root Port Driver to support RCEC
-Message-ID: <20200805174328.GA521293@bjorn-Precision-5520>
+        id S1729024AbgHERtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728986AbgHERoo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:44:44 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED6AC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:44:43 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id bh1so12583302plb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:44:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OeVarHB8PyC/4WrdMH1wOnZuquqBZq7uGaYiqaJ/H2s=;
+        b=iYNRhBUE6a6QRqZgvap/7b6HfFiE6nn5SF6u9BZ45g4hcY5ly0Tddjzei52onqC+ua
+         nPE6GMic/x8EdXYFlIZDbKtcad+icJvGX3GCSblD8YJnipnUimix3w1YUBEqJF7uNKIQ
+         SyMZMMX9um2AZK0j+y258RYcKICG+Kr3q7aUuCTm8kL/G7cH+vGSy6AXxstJxKZCKiEA
+         Avsvi2T6+glTOJKwv4M3c2hK/bf+NloSXGW66axtsQ6nRrPp0h0BKvQQFuA7UvBsSgCE
+         2aXiKHiI/CVmpPlQN/pXwGB34/FyJBOpUQve7SYpYzOxBHlc/Uo6JETHMS2C1CWmXvzg
+         9jtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OeVarHB8PyC/4WrdMH1wOnZuquqBZq7uGaYiqaJ/H2s=;
+        b=K4TTn9UcLLyS1BeuWvNS7USiT7S+SjS8DWCZc7ciytTyHvNh8ncwZzaaL4EWwj9GEb
+         kk/tw4IJfIN8yQnNr4gHMdvgaOU3IQEH65RZTUYk4madwZgRsYybZHvMNYWepxAUTRgE
+         2i9K0x2KnLrOrA1DQCOs1hZJhP2fX7mdbrWwFw7yHnfXvAMnAOZOq7z/Eugy0iq2Vgr1
+         xU8V3TiB/sMOVrhZOD2lpOx/t3Q3FrBu8hHU8ufJn1JE/pv4wns+Xi01qb/u7A6DW+m8
+         ex+RN6Yo7EHVnr3X8gqfuquCuZXQdIJ39bNZqVosTW/DUGwuCRkMsPp53QDnRLQ456Qt
+         +Z5w==
+X-Gm-Message-State: AOAM5327Y4P2xPzACh4VTsxweqDZ+2SvmkJ0JDpr5g07Z59fgJotaBNQ
+        AVv6VvbS5UYBE/Q/Jp4FnGAenFjPOD5opiXRGkoAlg==
+X-Google-Smtp-Source: ABdhPJxYIH4X/KPPSVLO3TPfmhVajNLyAm6evVBVZ4ZWeH0jRb4W3Vq6aFy+xQJKcALm/osgPRjKbK+HjbIGlOk2hTY=
+X-Received: by 2002:a17:90a:3ad1:: with SMTP id b75mr4123456pjc.25.1596649482146;
+ Wed, 05 Aug 2020 10:44:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804194052.193272-3-sean.v.kelley@intel.com>
+References: <20200708230402.1644819-1-ndesaulniers@google.com>
+ <CAKwvOdmXtFo8YoNd7pgBnTQEwTZw0nGx-LypDiFKRR_HzZm9aA@mail.gmail.com>
+ <CAKwvOdkGmgdh6-4VRUGkd1KRC-PgFcGwP5vKJvO9Oj3cB_Qh6Q@mail.gmail.com>
+ <20200720.163458.475401930020484350.davem@davemloft.net> <CAKwvOdmU+Eh0BF+o4yqSBFRXkokLOzvy-Qni27DcXOSKv5KOtQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdmU+Eh0BF+o4yqSBFRXkokLOzvy-Qni27DcXOSKv5KOtQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 5 Aug 2020 10:44:30 -0700
+Message-ID: <CAKwvOd=YBL_igN-Z1V9bePdt9+GOqkKq-H4Wg8GBZvBsdOHeOw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2 net] bitfield.h cleanups
+To:     David Miller <davem@davemloft.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, oss-drivers@netronome.com,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alex Elder <elder@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"git log --oneline" again.
+On Thu, Jul 30, 2020 at 3:37 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Mon, Jul 20, 2020 at 4:35 PM David Miller <davem@davemloft.net> wrote:
+> >
+> > From: Nick Desaulniers <ndesaulniers@google.com>
+> > Date: Mon, 20 Jul 2020 12:48:38 -0700
+> >
+> > > Hi David, bumping for review.
+> >
+> > If it's not active in my networking patchwork you can't just bump your original
+> > submission like this.
+> >
+> > You have to submit your series entirely again.
+> >
+> > And if it is in patchwork, such "bumping" is %100 unnecessary.  It's
+> > in my queue, it is not lost, and I will process it when I have the
+> > time.
+> >
+> > Thank you.
+>
+> Hi David,
+> Sorry, I'm not familiar with your workflow.  By patchwork, are you
+> referring to patchwork.ozlabs.org?  If so, I guess filtering on
+> Delegate=davem
+> (https://patchwork.ozlabs.org/project/netdev/list/?series=&submitter=&state=&q=&archive=&delegate=34)
+> is your queue?  I don't see my patches in the above query, but I do
+> see my series here:
+> https://patchwork.ozlabs.org/project/netdev/list/?series=188486&state=*
+> but they're marked "Not Applicable".  What does that mean?
 
-On Tue, Aug 04, 2020 at 12:40:45PM -0700, Sean V Kelley wrote:
-> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> 
-> If a Root Complex Integrated Endpoint (RCiEP) is implemented, errors may
-> optionally be sent to a corresponding Root Complex Event Collector (RCEC).
-> Each RCiEP must be associated with no more than one RCEC. Interface errors
-> are reported to the OS by RCECs.
-> 
-> For an RCEC (technically not a Bridge), error messages "received" from
-> associated RCiEPs must be enabled for "transmission" in order to cause a
-> System Error via the Root Control register or (when the Advanced Error
-> Reporting Capability is present) reporting via the Root Error Command
-> register and logging in the Root Error Status register and Error Source
-> Identification register.
-> 
-> Given the commonality with Root Ports and the need to also support AER
-> and PME services for RCECs, extend the Root Port driver to support RCEC
-> devices through the addition of the RCEC Class ID to the driver
-> structure.
-> 
-> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> ---
->  drivers/pci/pcie/portdrv_core.c | 8 ++++----
->  drivers/pci/pcie/portdrv_pci.c  | 5 ++++-
->  2 files changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-> index 50a9522ab07d..5d4a400094fc 100644
-> --- a/drivers/pci/pcie/portdrv_core.c
-> +++ b/drivers/pci/pcie/portdrv_core.c
-> @@ -234,11 +234,11 @@ static int get_port_device_capability(struct pci_dev *dev)
->  #endif
->  
->  	/*
-> -	 * Root ports are capable of generating PME too.  Root Complex
-> -	 * Event Collectors can also generate PMEs, but we don't handle
-> -	 * those yet.
-> +	 * Root ports and Root Complex Event Collectors are capable
-> +	 * of generating PME too.
->  	 */
-> -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT &&
-> +	if ((pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
-> +	     pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC) &&
->  	    (pcie_ports_native || host->native_pme)) {
->  		services |= PCIE_PORT_SERVICE_PME;
->  
-> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
-> index 3a3ce40ae1ab..4d880679b9b1 100644
-> --- a/drivers/pci/pcie/portdrv_pci.c
-> +++ b/drivers/pci/pcie/portdrv_pci.c
-> @@ -106,7 +106,8 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
->  	if (!pci_is_pcie(dev) ||
->  	    ((pci_pcie_type(dev) != PCI_EXP_TYPE_ROOT_PORT) &&
->  	     (pci_pcie_type(dev) != PCI_EXP_TYPE_UPSTREAM) &&
-> -	     (pci_pcie_type(dev) != PCI_EXP_TYPE_DOWNSTREAM)))
-> +	     (pci_pcie_type(dev) != PCI_EXP_TYPE_DOWNSTREAM) &&
-> +	     (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)))
->  		return -ENODEV;
->  
->  	status = pcie_port_device_register(dev);
-> @@ -195,6 +196,8 @@ static const struct pci_device_id port_pci_ids[] = {
->  	{ PCI_DEVICE_CLASS(((PCI_CLASS_BRIDGE_PCI << 8) | 0x00), ~0) },
->  	/* subtractive decode PCI-to-PCI bridge, class type is 060401h */
->  	{ PCI_DEVICE_CLASS(((PCI_CLASS_BRIDGE_PCI << 8) | 0x01), ~0) },
-> +	/* handle any Root Complex Event Collector */
-> +	{ PCI_DEVICE_CLASS(((PCI_CLASS_SYSTEM_RCEC << 8) | 0x00), ~0) },
->  	{ },
->  };
->  
-> -- 
-> 2.27.0
-> 
+Hi David,
+I read through https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html#q-how-often-do-changes-from-these-trees-make-it-to-the-mainline-linus-tree
+and noticed http://vger.kernel.org/~davem/net-next.html.  Since the
+merge window just opened, it sounds like I'll need to wait 2 weeks for
+it to close before resending? Is that correct? Based on:
+
+> IMPORTANT: Do not send new net-next content to netdev during the period during which net-next tree is closed.
+
+Then based on the next section in the doc, it sounds like I was
+missing which tree to put the patch in, in the subject? I believe
+these patches should target net-next (not net) since they're not
+addressing regressions from the most recent cycle.
+
+Do I have all that right?
+-- 
+Thanks,
+~Nick Desaulniers
