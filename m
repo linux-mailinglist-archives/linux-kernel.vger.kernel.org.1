@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964CD23D240
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAC123D1AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgHEUKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:10:48 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:57938 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgHEQ2Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:28:24 -0400
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 177683B10E3;
-        Wed,  5 Aug 2020 12:49:58 +0000 (UTC)
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 34158C0009;
-        Wed,  5 Aug 2020 12:47:31 +0000 (UTC)
-Date:   Wed, 5 Aug 2020 14:51:13 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH] media: ov5640: Correct Bit Div register in clock tree
- diagram
-Message-ID: <20200805125113.rhrhy6j6uccv3jmz@uno.localdomain>
-References: <20200803090658.10073-1-paul.kocialkowski@bootlin.com>
+        id S1727961AbgHEUF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:05:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727808AbgHEQgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:36:37 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6E9121744;
+        Wed,  5 Aug 2020 12:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596632170;
+        bh=SmzHEjXJKI0Ah3FCpKvLcMIvLkMQABYGGHX0eTpxkp0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bCxIQJw4GOQ+h1x3tpCiOUo/92RnUW5K44Ue5g2BDrgjVKDIeXDdMTLRnPjibu+3M
+         Lc+TzYJggQfzEAXArbpTLmfrvfB/Y9EwDdCS/TJ+h1PFBtf+fU8o3bsVmUfKp1RiqO
+         ox5N7Y2xXe+uqcPy6x6U6/8b6T9WvZmByeDlqzew=
+Date:   Wed, 5 Aug 2020 14:56:27 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Vabhav Sharma (OSS)" <vabhav.sharma@oss.nxp.com>
+Cc:     B K Karthik <bkkarthik@pesu.pes.edu>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bhuvanchandra.dv@toradex.com" <bhuvanchandra.dv@toradex.com>
+Subject: Re: [PATCH v2] tty: serial: fsl_lpuart.c: prevent a bad shift
+ operation
+Message-ID: <20200805125627.GA1822283@kroah.com>
+References: <20200721174228.misj2mgqzcfz2lsj@pesu.pes.edu>
+ <20200729160333.GA3652767@kroah.com>
+ <VI1PR04MB480018F32A080BC5CC76E3C7F34B0@VI1PR04MB4800.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200803090658.10073-1-paul.kocialkowski@bootlin.com>
+In-Reply-To: <VI1PR04MB480018F32A080BC5CC76E3C7F34B0@VI1PR04MB4800.eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Wed, Aug 05, 2020 at 12:09:34PM +0000, Vabhav Sharma (OSS) wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Sent: Wednesday, July 29, 2020 9:34 PM
+> > To: B K Karthik <bkkarthik@pesu.pes.edu>
+> > Cc: Jiri Slaby <jirislaby@kernel.org>; linux-serial@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; Vabhav Sharma (OSS)
+> > <vabhav.sharma@oss.nxp.com>; bhuvanchandra.dv@toradex.com
+> > Subject: Re: [PATCH v2] tty: serial: fsl_lpuart.c: prevent a bad shift operation
+> > 
+> > On Tue, Jul 21, 2020 at 11:12:29PM +0530, B K Karthik wrote:
+> > > prevent a bad shift operation by verifying that the argument to fls is
+> > > non zero.
+> > >
+> > > Reported-by: "Vabhav Sharma (OSS)" <vabhav.sharma@oss.nxp.com>
+> > > Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
+> > > ---
+> > > v1 -> v2:
+> > > 	added Reported-by tag
+> > >
+> > >  drivers/tty/serial/fsl_lpuart.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/tty/serial/fsl_lpuart.c
+> > > b/drivers/tty/serial/fsl_lpuart.c index 7ca642249224..0cc64279cd2d
+> > > 100644
+> > > --- a/drivers/tty/serial/fsl_lpuart.c
+> > > +++ b/drivers/tty/serial/fsl_lpuart.c
+> > > @@ -1168,7 +1168,8 @@ static inline int lpuart_start_rx_dma(struct
+> > lpuart_port *sport)
+> > >  	 * 10ms at any baud rate.
+> > >  	 */
+> > >  	sport->rx_dma_rng_buf_len = (DMA_RX_TIMEOUT * baud /  bits /
+> > 1000) * 2;
+> > > -	sport->rx_dma_rng_buf_len = (1 << (fls(sport->rx_dma_rng_buf_len)
+> > - 1));
+> > > +	if (sport->rx_dma_rng_buf_len != 0)
+> > 
+> > How can this variable become 0?
+> Condition x, taking false branch
+> Explicitly returning zero 
+> 
+> static __always_inline int fls(unsigned int x)
+> {
+> 	return x ? sizeof(x) * 8 - __builtin_clz(x) : 0;
+> }
 
-On Mon, Aug 03, 2020 at 11:06:58AM +0200, Paul Kocialkowski wrote:
-> Although the code is correct and doing the right thing, the clock diagram
-> showed the wrong register for the bit divider, which had me doubting the
-> understanding of the tree. Fix this to avoid doubts in the future.
+What false branch?
 
-Thanks for spotting this! Correct indeed!
+I don't see how this can ever be an issue in "the real world", can you
+explain how it could ever be a problem?
 
-I'm not sure it's worth a fixes tag, but just in case:
-Fixes: aa2882481cada ("media: ov5640: Adjust the clock based on the expected rate")
+thanks,
 
-
-Acked-by: Jacopo Mondi <jacopo@jmondi.org>
->
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> ---
->  drivers/media/i2c/ov5640.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-> index 854031f0b64a..fe08a45b0426 100644
-> --- a/drivers/media/i2c/ov5640.c
-> +++ b/drivers/media/i2c/ov5640.c
-> @@ -751,7 +751,7 @@ static int ov5640_mod_reg(struct ov5640_dev *sensor, u16 reg,
->   *               +->| PLL Root Div | - reg 0x3037, bit 4
->   *                  +-+------------+
->   *                    |  +---------+
-> - *                    +->| Bit Div | - reg 0x3035, bits 0-3
-> + *                    +->| Bit Div | - reg 0x3034, bits 0-3
->   *                       +-+-------+
->   *                         |  +-------------+
->   *                         +->| SCLK Div    | - reg 0x3108, bits 0-1
-> --
-> 2.26.2
->
+greg k-h
