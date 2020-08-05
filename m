@@ -2,113 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A3423CFA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3B023CF58
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729099AbgHETX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:23:27 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:36349 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728881AbgHERbX (ORCPT
+        id S1728590AbgHETTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:19:35 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39334 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729022AbgHER5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:31:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596648682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e2gumUE5A/5ojzMFKs9UdfuL6+IZWqdj2OsZcZsTEkI=;
-        b=eI7VMI+Ic8nifMSLQzQsI5duOrcCcqDS9M2fITOl4U+oVELqIG28XSA202IlbRXWPbEcHJ
-        cNDMuguvFcY2NVb04+PzG1L1QcCxsRAVsMRqPUJJw6HL6gJB3jHQGKTdLPLMd7CZtrL+Lt
-        i+4OqzvCJrXJLy0Ewsz/DjeKrKq8DC0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-12-8_Z_ROD0MgGQYCnHoTmj4w-1; Wed, 05 Aug 2020 10:14:03 -0400
-X-MC-Unique: 8_Z_ROD0MgGQYCnHoTmj4w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2EC371DF7;
-        Wed,  5 Aug 2020 14:13:54 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DE65D5C1BD;
-        Wed,  5 Aug 2020 14:13:48 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200804104108.GC32719@miu.piliscsaba.redhat.com>
-References: <20200804104108.GC32719@miu.piliscsaba.redhat.com> <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk> <159646183662.1784947.5709738540440380373.stgit@warthog.procyon.org.uk>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk,
-        torvalds@linux-foundation.org, raven@themaw.net,
-        mszeredi@redhat.com, christian@brauner.io, jannh@google.com,
-        darrick.wong@oracle.com, kzak@redhat.com, jlayton@redhat.com,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/18] fsinfo: Add a uniquifier ID to struct mount [ver #21]
+        Wed, 5 Aug 2020 13:57:52 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k3KK5-0004Gk-Ej; Wed, 05 Aug 2020 14:23:17 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] staging: wfx: fix a handful of spelling mistakes
+Date:   Wed,  5 Aug 2020 15:23:17 +0100
+Message-Id: <20200805142317.23845-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2306028.1596636828.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 05 Aug 2020 15:13:48 +0100
-Message-ID: <2306029.1596636828@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miklos Szeredi <miklos@szeredi.hu> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> > +#ifdef CONFIG_FSINFO
-> > +	u64	mnt_unique_id;		/* ID unique over lifetime of kernel */
-> > +#endif
->
-> Not sure if it's worth making conditional.
+There are various spelling mistakes in comments and error messages.
+Fix these.
 
-You can't get at it without CONFIG_FSINFO=3Dy as it stands, but making it
-unconditional might be reasonable.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/staging/wfx/data_rx.c | 2 +-
+ drivers/staging/wfx/data_tx.c | 2 +-
+ drivers/staging/wfx/debug.c   | 4 ++--
+ drivers/staging/wfx/hif_rx.c  | 2 +-
+ drivers/staging/wfx/hif_tx.c  | 4 ++--
+ drivers/staging/wfx/main.c    | 2 +-
+ drivers/staging/wfx/main.h    | 2 +-
+ drivers/staging/wfx/sta.c     | 2 +-
+ 8 files changed, 10 insertions(+), 10 deletions(-)
 
-> > -		n.auxiliary_mount	=3D aux->mnt_id;
-> > +		n.auxiliary_mount =3D aux->mnt_unique_id;
->
-> Hmm, so we now have two ID's:
->
->  - one can be used to look up the mount
->  - one is guaranteed to be unique
->
-> With this change the mount cannot be looked up with FSINFO_FLAGS_QUERY_M=
-OUNT,
-> right?
->
-> Should we be merging the two ID's into a single one which has both prope=
-rties?
-
-Ideally, yes... but...  The 31-bit mnt_id is currently exposed to userspac=
-e in
-various places, e.g. /proc, sys_name_to_handle_at().  So we have to keep t=
-hat
-as is and we can't expand it.
-
-For fsinfo(), however, it might make sense to only use the 64-bit uniquifi=
-er
-as the identifier to use for direct look up.
-
-However, looking up that identifier requires some sort of structure for do=
-ing
-this and it's kind of worst case for the IDR tree as the keys are graduall=
-y
-going to spread out, causing it to eat more memory.  It may be a tradeoff
-worth making, and the memory consumption might not be that bad - or we cou=
-ld
-use some other data structure such as an rbtree.
-
-That's why I was going for the 31-bit identifier + uniquifier so that you =
-can at
-least tell if the identifier got recycled reasonably quickly.
-
-David
+diff --git a/drivers/staging/wfx/data_rx.c b/drivers/staging/wfx/data_rx.c
+index 6fb078880742..7fcbbfc53416 100644
+--- a/drivers/staging/wfx/data_rx.c
++++ b/drivers/staging/wfx/data_rx.c
+@@ -73,7 +73,7 @@ void wfx_rx_cb(struct wfx_vif *wvif,
+ 	if (arg->rx_flags.encryp)
+ 		hdr->flag |= RX_FLAG_DECRYPTED;
+ 
+-	// Block ack negociation is offloaded by the firmware. However,
++	// Block ack negotiation is offloaded by the firmware. However,
+ 	// re-ordering must be done by the mac80211.
+ 	if (ieee80211_is_action(frame->frame_control) &&
+ 	    mgmt->u.action.category == WLAN_CATEGORY_BACK &&
+diff --git a/drivers/staging/wfx/data_tx.c b/drivers/staging/wfx/data_tx.c
+index 3acf4eb0214d..41f9afd41e14 100644
+--- a/drivers/staging/wfx/data_tx.c
++++ b/drivers/staging/wfx/data_tx.c
+@@ -234,7 +234,7 @@ static void wfx_tx_fixup_rates(struct ieee80211_tx_rate *rates)
+ 	int i;
+ 	bool finished;
+ 
+-	// Firmware is not able to mix rates with differents flags
++	// Firmware is not able to mix rates with different flags
+ 	for (i = 0; i < IEEE80211_TX_MAX_RATES; i++) {
+ 		if (rates[0].flags & IEEE80211_TX_RC_SHORT_GI)
+ 			rates[i].flags |= IEEE80211_TX_RC_SHORT_GI;
+diff --git a/drivers/staging/wfx/debug.c b/drivers/staging/wfx/debug.c
+index 3f1712b7c919..e396f18747d1 100644
+--- a/drivers/staging/wfx/debug.c
++++ b/drivers/staging/wfx/debug.c
+@@ -267,7 +267,7 @@ static ssize_t wfx_send_hif_msg_write(struct file *file,
+ 	if (count < sizeof(struct hif_msg))
+ 		return -EINVAL;
+ 
+-	// wfx_cmd_send() chekc that reply buffer is wide enough, but do not
++	// wfx_cmd_send() checks that reply buffer is wide enough, but does not
+ 	// return precise length read. User have to know how many bytes should
+ 	// be read. Filling reply buffer with a memory pattern may help user.
+ 	memset(context->reply, 0xFF, sizeof(context->reply));
+@@ -299,7 +299,7 @@ static ssize_t wfx_send_hif_msg_read(struct file *file, char __user *user_buf,
+ 		return ret;
+ 	if (context->ret < 0)
+ 		return context->ret;
+-	// Be carefull, write() is waiting for a full message while read()
++	// Be careful, write() is waiting for a full message while read()
+ 	// only return a payload
+ 	if (copy_to_user(user_buf, context->reply, count))
+ 		return -EFAULT;
+diff --git a/drivers/staging/wfx/hif_rx.c b/drivers/staging/wfx/hif_rx.c
+index cc7c0cf226ba..1d32973d8ec1 100644
+--- a/drivers/staging/wfx/hif_rx.c
++++ b/drivers/staging/wfx/hif_rx.c
+@@ -118,7 +118,7 @@ static int hif_keys_indication(struct wfx_dev *wdev,
+ 
+ 	// SL_PUB_KEY_EXCHANGE_STATUS_SUCCESS is used by legacy secure link
+ 	if (body->status && body->status != HIF_STATUS_SLK_NEGO_SUCCESS)
+-		dev_warn(wdev->dev, "secure link negociation error\n");
++		dev_warn(wdev->dev, "secure link negotiation error\n");
+ 	memcpy(pubkey, body->ncp_pub_key, sizeof(pubkey));
+ 	memreverse(pubkey, sizeof(pubkey));
+ 	wfx_sl_check_pubkey(wdev, pubkey, body->ncp_pub_key_mac);
+diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
+index 5110f9b93762..11fbdb5fcecc 100644
+--- a/drivers/staging/wfx/hif_tx.c
++++ b/drivers/staging/wfx/hif_tx.c
+@@ -78,7 +78,7 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
+ 
+ 	wfx_bh_request_tx(wdev);
+ 
+-	// NOTE: no timeout is catched async is enabled
++	// NOTE: no timeout is caught async is enabled
+ 	if (async)
+ 		return 0;
+ 
+@@ -125,7 +125,7 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
+ 
+ // This function is special. After HIF_REQ_ID_SHUT_DOWN, chip won't reply to any
+ // request anymore. We need to slightly hack struct wfx_hif_cmd for that job. Be
+-// carefull to only call this funcion during device unregister.
++// carefull to only call this function during device unregister.
+ int hif_shutdown(struct wfx_dev *wdev)
+ {
+ 	int ret;
+diff --git a/drivers/staging/wfx/main.c b/drivers/staging/wfx/main.c
+index 11dfa088fc86..4263f912760b 100644
+--- a/drivers/staging/wfx/main.c
++++ b/drivers/staging/wfx/main.c
+@@ -384,7 +384,7 @@ int wfx_probe(struct wfx_dev *wdev)
+ 	err = wfx_sl_init(wdev);
+ 	if (err && wdev->hw_caps.capabilities.link_mode == SEC_LINK_ENFORCED) {
+ 		dev_err(wdev->dev,
+-			"chip require secure_link, but can't negociate it\n");
++			"chip require secure_link, but can't negotiate it\n");
+ 		goto err0;
+ 	}
+ 
+diff --git a/drivers/staging/wfx/main.h b/drivers/staging/wfx/main.h
+index c59d375dd3ad..63138777e72a 100644
+--- a/drivers/staging/wfx/main.h
++++ b/drivers/staging/wfx/main.h
+@@ -19,7 +19,7 @@ struct wfx_dev;
+ struct hwbus_ops;
+ 
+ struct wfx_platform_data {
+-	/* Keyset and ".sec" extention will appended to this string */
++	/* Keyset and ".sec" extension will appended to this string */
+ 	const char *file_fw;
+ 	const char *file_pds;
+ 	struct gpio_desc *gpio_wakeup;
+diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
+index 4e30ab17a93d..ad63332f690c 100644
+--- a/drivers/staging/wfx/sta.c
++++ b/drivers/staging/wfx/sta.c
+@@ -214,7 +214,7 @@ static int wfx_get_ps_timeout(struct wfx_vif *wvif, bool *enable_ps)
+ 	if (chan0 && chan1 && chan0->hw_value != chan1->hw_value &&
+ 	    wvif->vif->type != NL80211_IFTYPE_AP) {
+ 		// It is necessary to enable powersave if channels
+-		// are differents.
++		// are different.
+ 		if (enable_ps)
+ 			*enable_ps = true;
+ 		if (wvif->wdev->force_ps_timeout > -1)
+-- 
+2.27.0
 
