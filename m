@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824A323CFEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC3E23D007
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728863AbgHET07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:26:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51468 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728640AbgHERNF (ORCPT
+        id S1728613AbgHET2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:28:33 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:57257 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728412AbgHERLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:13:05 -0400
+        Wed, 5 Aug 2020 13:11:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647582;
+        s=mimecast20190719; t=1596647489;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HGH8uN/cNB2/6WI5Jdaw/ORCmqNBtzwnAZDFmfA6T4k=;
-        b=VXM7FVPMxmCI285L/PcZqkRdE6DskdD35RjopDLv/GQWm2hf6XvA7PEIc98mDVOXnQ/oAg
-        hrlx0GjSWgNJnHvX1eQ70XvMbkGFYFus9piDzD/kmmA9MvXgGbJR9PoBy6VOif9LcTHrAP
-        pECIacZFAD2DWlXx2uqQc3n7XcYa9Wk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-tbJDOK7UPuOShBCFkj6Nmg-1; Wed, 05 Aug 2020 09:44:19 -0400
-X-MC-Unique: tbJDOK7UPuOShBCFkj6Nmg-1
-Received: by mail-wr1-f72.google.com with SMTP id b8so3980965wrr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:19 -0700 (PDT)
+        bh=Oi4CR23bemPbIyBSn03I/oQ2VbOHBaULBpoKArW5b+0=;
+        b=ViAD3CNcWmAN+e7peJFWHsT+zKS3N43OEGellPj+jSCrWT8OSkzZADjHqSV4xTCdt4bZUK
+        OIOka4YdA5UWwhRly6sHuSA6X4LOcWy4DELszkiUSXVCp0DibrQNkICDwHR2aOUetYgBaI
+        z3iai655ST8C9C4pbkMrOHpU8fh07DM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-llVJfvwOO2eWaNG9W5d4-w-1; Wed, 05 Aug 2020 09:44:30 -0400
+X-MC-Unique: llVJfvwOO2eWaNG9W5d4-w-1
+Received: by mail-wm1-f71.google.com with SMTP id f74so2745943wmf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HGH8uN/cNB2/6WI5Jdaw/ORCmqNBtzwnAZDFmfA6T4k=;
-        b=I3clkaDDvAVQvwFHb2tZ8EdoN2sH6BOcflAG0douaNgn6QeqgTq3SUoU19m8X0w67O
-         mWr3HQbtlJSk5Jh4N+TdvVd1aR9JEWyXcgh6FbWa2x259zyb1pc07vF0yXSBGDNSTyGi
-         7rC7TlVSdzKoN3rfkGA4f5cunvfOUqJK1/sBOMP/TU0uVa5IB2wPRo0ISI3XlOR0glCK
-         LuvCfIAqb93j8jM9eLxRuqA4KQH+uS2ddpH96pSqjMITZFXfdX6QrbhLG8mnWZmyHTUk
-         6SudgdU+GU8LV0Y2XNdjMB9qAQ9ZlY2AuD2QC3zq/oBRfWKnt89HdZ6sWvIHPzHbSQac
-         D1Qw==
-X-Gm-Message-State: AOAM532fVFCjN3e3jk2De6ewxFdJ51ZRbI2QWs2NJAnwIpUrsL85Dhl1
-        rR4i2Ewa/0eiaRpoBn1/q0EnuxT7PgZzroVmS76SM/DmjpdDuRRUz5k13tfzSI6Ky4XYR1QEnPM
-        vXihYiG/JEfY8fq+owxsGBeXv
-X-Received: by 2002:a1c:a513:: with SMTP id o19mr3312342wme.119.1596635057957;
-        Wed, 05 Aug 2020 06:44:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyC4k9IinKSvhYB2iv/paIM/IOHx4dnXSDebtCSSPL0wngI27bkfM89iBZEVeTyNvldrdyFDQ==
-X-Received: by 2002:a1c:a513:: with SMTP id o19mr3312320wme.119.1596635057717;
-        Wed, 05 Aug 2020 06:44:17 -0700 (PDT)
+        bh=Oi4CR23bemPbIyBSn03I/oQ2VbOHBaULBpoKArW5b+0=;
+        b=Y2eARn+6kbtDlXRvhaOkKyEVGLnu46NN16BFCFOXw6M4LBWP9vXLKxcDmwl15FOkHQ
+         AWLeziy1fyugjsgStUFYRmd3Yyx7oEvRo4cwUYPjHqs2TVrBdcQa/r3nebBcSV96ic1P
+         hy8LwbO/gijGSDKLz7zZHD8JG4ovDRB1Mezltwew4ZfLbO6pP/Pat4+XFHXF0eYr+ICt
+         KITFF5fp2SaVrzMcQFSTSAYHOtvTbgLd0soYxM/SgxOLU7SOesx+Cy+n37p1ffAtDYkx
+         Ka0FYinR5ufcWuJ1rnFpGAL+edqIBA4cMx5gXyZ//ABP8wohT7B61jmu0ptLbZdEfjSA
+         UT5A==
+X-Gm-Message-State: AOAM532/pqmIcRO37b6fd9mzhFfCy/3ah4pIXa0yxWgQia2qvIIokvR9
+        vVxq+mkU+tWhmNhM+iK8KI2miCiwCqmYJNjM2rh2LjVhjWnnKCbV2H6u67l9oLEeVRlRHCvvDEB
+        mtwnojATlPhXvIm8xuKFiJcep
+X-Received: by 2002:a7b:cc90:: with SMTP id p16mr3095000wma.79.1596635068411;
+        Wed, 05 Aug 2020 06:44:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznD7SElHR1ba9YFcNoWzD+TthlJQKN9Qe3cw8IS76anMHj+jkdeXutWXn0hFJZpgmXPOns7Q==
+X-Received: by 2002:a7b:cc90:: with SMTP id p16mr3094984wma.79.1596635068196;
+        Wed, 05 Aug 2020 06:44:28 -0700 (PDT)
 Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
-        by smtp.gmail.com with ESMTPSA id g25sm2755239wmh.35.2020.08.05.06.44.16
+        by smtp.gmail.com with ESMTPSA id y203sm2960492wmc.29.2020.08.05.06.44.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:17 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:44:15 -0400
+        Wed, 05 Aug 2020 06:44:27 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:44:26 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Jason Wang <jasowang@redhat.com>,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 22/38] vdpa_sim: fix endian-ness of config space
-Message-ID: <20200805134226.1106164-23-mst@redhat.com>
+Subject: [PATCH v3 26/38] virtio_config: LE config space accessors
+Message-ID: <20200805134226.1106164-27-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -69,97 +69,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VDPA sim accesses config space as native endian - this is
-wrong since it's a modern device and actually uses LE.
-
-It only supports modern guests so we could punt and
-just force LE, but let's use the full virtio APIs since people
-tend to copy/paste code, and this is not data path anyway.
+To be used by modern code, as well as to handle LE only fields such as
+balloon.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 33 +++++++++++++++++++++++++++-----
- 1 file changed, 28 insertions(+), 5 deletions(-)
+ include/linux/virtio_config.h | 65 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index a9bc5e0fb353..b7d5727fde4c 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -24,6 +24,7 @@
- #include <linux/etherdevice.h>
- #include <linux/vringh.h>
- #include <linux/vdpa.h>
-+#include <linux/virtio_byteorder.h>
- #include <linux/vhost_iotlb.h>
- #include <uapi/linux/virtio_config.h>
- #include <uapi/linux/virtio_net.h>
-@@ -72,6 +73,23 @@ struct vdpasim {
- 	u64 features;
- };
+diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+index 441fd6dd42ab..5b5196fec899 100644
+--- a/include/linux/virtio_config.h
++++ b/include/linux/virtio_config.h
+@@ -375,6 +375,71 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
+ 				  sizeof(virtio_cwrite_v));		\
+ 	} while(0)
  
-+/* TODO: cross-endian support */
-+static inline bool vdpasim_is_little_endian(struct vdpasim *vdpasim)
-+{
-+	return virtio_legacy_is_little_endian() ||
-+		(vdpasim->features & (1ULL << VIRTIO_F_VERSION_1));
-+}
++/*
++ * Nothing virtio-specific about these, but let's worry about generalizing
++ * these later.
++ */
++#define virtio_le_to_cpu(x) \
++	_Generic((x), \
++		__u8: (x), \
++		 __le16: le16_to_cpu(x), \
++		 __le32: le32_to_cpu(x), \
++		 __le64: le64_to_cpu(x) \
++		)
 +
-+static inline u16 vdpasim16_to_cpu(struct vdpasim *vdpasim, __virtio16 val)
-+{
-+	return __virtio16_to_cpu(vdpasim_is_little_endian(vdpasim), val);
-+}
++#define virtio_cpu_to_le(x, m) \
++	_Generic((m), \
++		 __u8: (x), \
++		 __le16: cpu_to_le16(x), \
++		 __le32: cpu_to_le32(x), \
++		 __le64: cpu_to_le64(x) \
++		)
 +
-+static inline __virtio16 cpu_to_vdpasim16(struct vdpasim *vdpasim, u16 val)
-+{
-+	return __cpu_to_virtio16(vdpasim_is_little_endian(vdpasim), val);
-+}
++/* LE (e.g. modern) Config space accessors. */
++#define virtio_cread_le(vdev, structname, member, ptr)			\
++	do {								\
++		typeof(((structname*)0)->member) virtio_cread_v;	\
++									\
++		might_sleep();						\
++		/* Sanity check: must match the member's type */	\
++		typecheck(typeof(virtio_le_to_cpu(virtio_cread_v)), *(ptr)); \
++									\
++		switch (sizeof(virtio_cread_v)) {			\
++		case 1:							\
++		case 2:							\
++		case 4:							\
++			vdev->config->get((vdev), 			\
++					  offsetof(structname, member), \
++					  &virtio_cread_v,		\
++					  sizeof(virtio_cread_v));	\
++			break;						\
++		default:						\
++			__virtio_cread_many((vdev), 			\
++					  offsetof(structname, member), \
++					  &virtio_cread_v,		\
++					  1,				\
++					  sizeof(virtio_cread_v));	\
++			break;						\
++		}							\
++		*(ptr) = virtio_le_to_cpu(virtio_cread_v);		\
++	} while(0)
 +
- static struct vdpasim *vdpasim_dev;
- 
- static struct vdpasim *vdpa_to_sim(struct vdpa_device *vdpa)
-@@ -306,7 +324,6 @@ static const struct vdpa_config_ops vdpasim_net_config_ops;
- 
- static struct vdpasim *vdpasim_create(void)
- {
--	struct virtio_net_config *config;
- 	struct vdpasim *vdpasim;
- 	struct device *dev;
- 	int ret = -ENOMEM;
-@@ -331,10 +348,7 @@ static struct vdpasim *vdpasim_create(void)
- 	if (!vdpasim->buffer)
- 		goto err_iommu;
- 
--	config = &vdpasim->config;
--	config->mtu = 1500;
--	config->status = VIRTIO_NET_S_LINK_UP;
--	eth_random_addr(config->mac);
-+	eth_random_addr(vdpasim->config.mac);
- 
- 	vringh_set_iotlb(&vdpasim->vqs[0].vring, vdpasim->iommu);
- 	vringh_set_iotlb(&vdpasim->vqs[1].vring, vdpasim->iommu);
-@@ -448,6 +462,7 @@ static u64 vdpasim_get_features(struct vdpa_device *vdpa)
- static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
-+	struct virtio_net_config *config = &vdpasim->config;
- 
- 	/* DMA mapping must be done by driver */
- 	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
-@@ -455,6 +470,14 @@ static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
- 
- 	vdpasim->features = features & vdpasim_features;
- 
-+	/* We generally only know whether guest is using the legacy interface
-+	 * here, so generally that's the earliest we can set config fields.
-+	 * Note: We actually require VIRTIO_F_ACCESS_PLATFORM above which
-+	 * implies VIRTIO_F_VERSION_1, but let's not try to be clever here.
-+	 */
++/* Config space accessors. */
++#define virtio_cwrite_le(vdev, structname, member, ptr)			\
++	do {								\
++		typeof(((structname*)0)->member) virtio_cwrite_v =	\
++			virtio_cpu_to_le(*(ptr), ((structname*)0)->member); \
++									\
++		might_sleep();						\
++		/* Sanity check: must match the member's type */	\
++		typecheck(typeof(virtio_le_to_cpu(virtio_cwrite_v)), *(ptr)); \
++									\
++		vdev->config->set((vdev), offsetof(structname, member),	\
++				  &virtio_cwrite_v,			\
++				  sizeof(virtio_cwrite_v));		\
++	} while(0)
 +
-+	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
-+	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
- 	return 0;
- }
- 
++
+ /* Read @count fields, @bytes each. */
+ static inline void __virtio_cread_many(struct virtio_device *vdev,
+ 				       unsigned int offset,
 -- 
 MST
 
