@@ -2,164 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB79323D2BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F1D23D2CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729231AbgHEUPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:15:54 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:21064 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726459AbgHEQUK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:20:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596644408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QVpgCBuAAnsCtvrERYgdCRjC/scatHyJclE27/3mCkw=;
-        b=U8zkKwExRznM8pqplosJ/ua6azvHDRzUfAkNVSgc+Y88DP8UqFVjFQJmntB+XnLa+ZUxjz
-        jqKOC+4jPoM7eeRB5X0FTHSaRHwAm87Z7xbNk1eoUs73Lq5eUn0JEvhZXkV5BTg5wkFCQy
-        1YApHOo1iOJ2czYwcYfUbx/kuh54Weg=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-251-Oajkk616PMeyboigt-8DAw-1; Wed, 05 Aug 2020 12:02:14 -0400
-X-MC-Unique: Oajkk616PMeyboigt-8DAw-1
-Received: by mail-qt1-f197.google.com with SMTP id q19so22642053qtp.0
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:02:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=QVpgCBuAAnsCtvrERYgdCRjC/scatHyJclE27/3mCkw=;
-        b=JqBNipwRk+fg0QlpjlmLDWMJajYa8LkrzpwRYRATvHCQLErA6r93c9iWN0SRSQOpOW
-         feNm/gjgxYPJ0qWpjlLibscVr+JZQW4ebQfgUdVRSMRuoT/GPJWqWaDq90XD2FuuixBh
-         dbWIghQRQuHZtSXMDqC28ORpRc2DZe9SADT22VGyY4Zz6zgjBf8C2r6nf1f0PFONb7rR
-         rtsc8xpP0Z52/RDd2VJhvcE6KHz66wLSCd2ely9Wtx8hOr7Ib1GyuQOZknClGMSgTNFI
-         SOtFkcO4pRG/8EqQx6nidxFkJzX3310xdJUKYt8ovau1Xfy77SHHLRviWNQ5IvfXY+iF
-         cLdQ==
-X-Gm-Message-State: AOAM531HFqkgw4Jow/hbGyqFXpwZUOPH2x/hF0Q2x7m6pNv9Lut0pAKW
-        ASlls5LXQ5G4wFd6C7rqRWWhZGL9Atj5AT4C5F4p+spylBZC+UFDS03D1NKu1n9AXx4zZ4tC/cS
-        ZeeQIwkUcOnDjnkgVghdE3HLM
-X-Received: by 2002:ad4:554f:: with SMTP id v15mr4340227qvy.30.1596643333107;
-        Wed, 05 Aug 2020 09:02:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCEt6SOCQIQNlgWFc2fSlY6oagtplzPU3BVLGyxoUjfFLo9zIHh0cZuAl1swq7IdMfrOOlkw==
-X-Received: by 2002:ad4:554f:: with SMTP id v15mr4340183qvy.30.1596643332734;
-        Wed, 05 Aug 2020 09:02:12 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id d46sm2548270qtk.37.2020.08.05.09.02.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 09:02:12 -0700 (PDT)
-Subject: Re: [PATCH 5/6] include: fpga: adi-axi-common.h: add definitions for
- supported FPGAs
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, mdf@kernel.org,
-        Mircea Caprioru <mircea.caprioru@analog.com>
-References: <20200804110658.40911-1-alexandru.ardelean@analog.com>
- <20200804110658.40911-6-alexandru.ardelean@analog.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <f69c3dc7-be50-9685-b70f-8af2f7093646@redhat.com>
-Date:   Wed, 5 Aug 2020 09:02:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728001AbgHEUQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:16:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:32966 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726005AbgHEQS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:18:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B93E91424;
+        Wed,  5 Aug 2020 09:03:18 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ADCEE3F7D7;
+        Wed,  5 Aug 2020 09:03:16 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 17:03:12 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Lukasz Luba <lukasz.luba@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, cristian.marussi@arm.com,
+        rjw@rjwysocki.net, Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH 0/4] CPUFreq statistics retrieved by drivers
+Message-ID: <20200805160312.GC4818@bogus>
+References: <20200729151208.27737-1-lukasz.luba@arm.com>
+ <a3354ae8-f40f-83f2-d6eb-7f588af75e97@gmail.com>
+ <119ce268-18dc-7a4c-b0b2-3a66ff9ff4b0@arm.com>
+ <20200805130436.3d2g7z2rsdoesuuk@vireshk-mac-ubuntu>
 MIME-Version: 1.0
-In-Reply-To: <20200804110658.40911-6-alexandru.ardelean@analog.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805130436.3d2g7z2rsdoesuuk@vireshk-mac-ubuntu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 8/4/20 4:06 AM, Alexandru Ardelean wrote:
-> From: Mircea Caprioru <mircea.caprioru@analog.com>
+On Wed, Aug 05, 2020 at 06:34:36PM +0530, Viresh Kumar wrote:
+> On 05-08-20, 12:04, Lukasz Luba wrote:
+> > I know that Viresh is going to develop patches and improve these
+> > cpufreq stats framework. Maybe he also had this 'aggregation' in mind.
+> > I will leave it him.
 >
-> All (newer) FPGA IP cores supported by Analog Devices, store information in
-> the synthesized designs. This information describes various parameters,
-> including the family of boards on which this is deployed, speed-grade, and
-> so on.
+> I am only going to look at cpufreq's view of stats independently from
+> the firmware.
 >
-> Currently, some of these definitions are deployed mostly on Xilinx boards,
-> but they have been considered also for FPGA boards from other vendors.
->
-> The register definitions are described at this link:
->   https://wiki.analog.com/resources/fpga/docs/hdl/regmap
-> (the 'Base (common to all cores)' section).
->
-> Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  include/linux/fpga/adi-axi-common.h | 37 +++++++++++++++++++++++++++++
->  1 file changed, 37 insertions(+)
->
-> diff --git a/include/linux/fpga/adi-axi-common.h b/include/linux/fpga/adi-axi-common.h
-> index 141ac3f251e6..7cca2d62cc45 100644
-> --- a/include/linux/fpga/adi-axi-common.h
-> +++ b/include/linux/fpga/adi-axi-common.h
-> @@ -13,6 +13,9 @@
->  
->  #define ADI_AXI_REG_VERSION			0x0000
->  
-> +#define ADI_AXI_REG_FPGA_INFO			0x001C
-> +#define ADI_AXI_REG_FPGA_VOLTAGE		0x0140
-> +
->  #define ADI_AXI_PCORE_VER(major, minor, patch)	\
->  	(((major) << 16) | ((minor) << 8) | (patch))
->  
-> @@ -20,4 +23,38 @@
->  #define ADI_AXI_PCORE_VER_MINOR(version)	(((version) >> 8) & 0xff)
->  #define ADI_AXI_PCORE_VER_PATCH(version)	((version) & 0xff)
->  
-> +#define ADI_AXI_INFO_FPGA_VOLTAGE(val)		((val) & 0xffff)
-> +
-> +#define ADI_AXI_INFO_FPGA_TECH(info)		(((info) >> 24) & 0xff)
-> +#define ADI_AXI_INFO_FPGA_FAMILY(info)		(((info) >> 16) & 0xff)
-> +#define ADI_AXI_INFO_FPGA_SPEED_GRADE(info)	(((info) >> 8) & 0xff)
-> +
-> +enum adi_axi_fgpa_technology {
 
-enum types are defined but not used.  It would be better to convert all of these to #defines.
++1, I agree with that. Kernel must avoid any logic to aggregate or
+interpret the data in a generic way. The userspace tools can manage that
+especially if this tend to be platform specific.
 
-These are only the Xilinx values. Need to add the Intel values from
-
-https://github.com/analogdevicesinc/hdl/blob/master/library/scripts/adi_intel_device_info_enc.tcl
-
-The #define names need to include XILINX or INTEL.
-
-Tom
-
-> +	ADI_AXI_FPGA_TECH_UNKNOWN = 0,
-> +	ADI_AXI_FPGA_TECH_SERIES7,
-> +	ADI_AXI_FPGA_TECH_ULTRASCALE,
-> +	ADI_AXI_FPGA_TECH_ULTRASCALE_PLUS,
-> +};
-> +
-> +enum adi_axi_fpga_family {
-> +	ADI_AXI_FPGA_FAMILY_UNKNOWN = 0,
-> +	ADI_AXI_FPGA_FAMILY_ARTIX,
-> +	ADI_AXI_FPGA_FAMILY_KINTEX,
-> +	ADI_AXI_FPGA_FAMILY_VIRTEX,
-> +	ADI_AXI_FPGA_FAMILY_ZYNQ,
-> +};
-> +
-> +enum adi_axi_fpga_speed_grade {
-> +	ADI_AXI_FPGA_SPEED_UNKNOWN	= 0,
-> +	ADI_AXI_FPGA_SPEED_1		= 10,
-> +	ADI_AXI_FPGA_SPEED_1L		= 11,
-> +	ADI_AXI_FPGA_SPEED_1H		= 12,
-> +	ADI_AXI_FPGA_SPEED_1HV		= 13,
-> +	ADI_AXI_FPGA_SPEED_1LV		= 14,
-> +	ADI_AXI_FPGA_SPEED_2		= 20,
-> +	ADI_AXI_FPGA_SPEED_2L		= 21,
-> +	ADI_AXI_FPGA_SPEED_2LV		= 22,
-> +	ADI_AXI_FPGA_SPEED_3		= 30,
-> +};
-> +
->  #endif /* ADI_AXI_COMMON_H_ */
-
+--
+Regards,
+Sudeep
