@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BA923CD59
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CA723CD24
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728776AbgHERZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:25:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20106 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728434AbgHERPz (ORCPT
+        id S1728755AbgHERVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:21:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42639 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728634AbgHERRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:15:55 -0400
+        Wed, 5 Aug 2020 13:17:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647753;
+        s=mimecast20190719; t=1596647847;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=STRPg9BVyZpQBUjxmFISwRqEbAWE+bVhgTrTRTM6kiY=;
-        b=VRJ0YWpQ0c+uP/Ryur/w7uLW71vp4g1RgsMpIO2s7gRtApGwh+olTcYZ5Hk+cSnYCQ7Q6u
-        d4bXDDItqBdAxtGnfWNgTiXTG8/SnKbZm9Z62kHxrxkTClGioAhVDfDmqjwvuHKNyPwa+l
-        z3TvFNoqnfJA+8KzhcBORmE73UDN5Kc=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-54-yujJeULlM6ep_63dFh5SBg-1; Wed, 05 Aug 2020 08:52:02 -0400
-X-MC-Unique: yujJeULlM6ep_63dFh5SBg-1
-Received: by mail-wm1-f70.google.com with SMTP id z1so2674392wmf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:52:01 -0700 (PDT)
+        bh=7wryOIrrGjx7qHTonL03QxNMVi3GzMOIvfN7c2/DZ4s=;
+        b=NEVJjaKPqP6OEUscpFv2MTMx9g7+xAXuHwL4p2KGMlCURbbxIPh3oR58CxOLoXIccchlIZ
+        YmJXObQ7PCOPGmwZIJIG62evNNBU3gqBCSmKHCQezXsDqJHlzZBgZOI71E5Emht7+U2VrQ
+        HR4f+ZkkHNjAjB9Smsu39NPdfGa6teQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-126-lRvZ2o2HM1WFPKOHNZYtJA-1; Wed, 05 Aug 2020 08:55:32 -0400
+X-MC-Unique: lRvZ2o2HM1WFPKOHNZYtJA-1
+Received: by mail-wr1-f72.google.com with SMTP id b13so10830996wrq.19
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:55:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=STRPg9BVyZpQBUjxmFISwRqEbAWE+bVhgTrTRTM6kiY=;
-        b=tErLCdiVGYs4bLyIHAEgLP9hxKU9Bhh4SZBz/JOazCFVc+vFkWNbfPYAKn3q8gjYoB
-         n5S/nKbstMkc8Zx+yzDpJx+KwteVCPo/Eq15IcXCJ+uI1u0jVrLaArvzKil8US8vOupD
-         yAfgIPYVQXRI3ls25UJ6xcJA1x8yO4jxs+xclX5cYwMq25bDvLrGupPBHlR3Yen+pOer
-         jlJx+gijSfQHNIAxJldQG9YbGK5DBAqju2gLs2zY8Y4A0sHqCTxzYsvEZhMhzmlVlAY4
-         dGu2kwvDp8SaIAFAqkDhGRQ3WqE/aRzOUv0K2jHeACEQkHoxj9i517W0UrNAILnr7qEu
-         NPMw==
-X-Gm-Message-State: AOAM530kjlr7ZcY+1zgcxhV4Ng1ysmyGcxbv1mi9Xl2ymzEsoXnZfe8g
-        JdP/8iWbOyzTiePr7giokicybZh0oESODviRk2Y6qNcTkhySQsGCv24/SWbmvke9WSm3nW3MQkM
-        kRoAf3eWWSbSaP7ETOjFsMrEd
-X-Received: by 2002:adf:df91:: with SMTP id z17mr2983497wrl.149.1596631920758;
-        Wed, 05 Aug 2020 05:52:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw6umQ9Sab+V6SIKbgtKo5j71BttoOfNgpgZYy1vFuI8eJ1cruGln/hlGyt7wK7Wd/qXgH6+A==
-X-Received: by 2002:adf:df91:: with SMTP id z17mr2983483wrl.149.1596631920602;
-        Wed, 05 Aug 2020 05:52:00 -0700 (PDT)
-Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
-        by smtp.gmail.com with ESMTPSA id p6sm2796795wmg.0.2020.08.05.05.51.58
+        bh=7wryOIrrGjx7qHTonL03QxNMVi3GzMOIvfN7c2/DZ4s=;
+        b=WdqfjnGVcEtqXwhIfax+BCSmdP63Hiuiqwq3DEY1LaOYEwpkCwLv2SY9NSdlLchgg3
+         4W3cMROu3axfxhzxAiw6dTju8QmxIOs1yKAEDDVA5GYOC8F61SW8+Q3Ndnzc0MZBI3kp
+         zcnzYhC7ie/rsnHRzgCC1E9wFClV63UeUOnuhqwCX5tE/9oW9nr9IWedBgD+7srJbq3B
+         FY4xpedMA1fWYpJb3oaLxcW9mMp42BPamK2Od5jmpCoh3X+kvd6zQRAeNeo2njKziNbp
+         Jxkytb877l6gd02dmcswK/U2Ird1mmnKaDO4zBqz4LS/p+JS5PGz4XnVlOvjQPnm+Lk3
+         A00A==
+X-Gm-Message-State: AOAM533VTeM+QQ4qol8j3Pd+BAlsmLbpiy2ENUjbkDSpVLXB/is5o5qS
+        O4j/hEXqUvzrVY94T9r0mehkpepeQ/WRkgtm2pW9yxiOgWlLGPXYq2vsF/FA89/7ZdsZOdFKRHe
+        kWLP6PzqQmux0yXttzSlK/CGj
+X-Received: by 2002:a5d:5641:: with SMTP id j1mr2726623wrw.399.1596632131183;
+        Wed, 05 Aug 2020 05:55:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy+d3vclQ9GPgtT3OT3+FcxmtxQjAU228iBaB3UFD2Bzh1BnV8/Gw9OtsyrBfKZn8DubjRAFQ==
+X-Received: by 2002:a5d:5641:: with SMTP id j1mr2726609wrw.399.1596632130998;
+        Wed, 05 Aug 2020 05:55:30 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
+        by smtp.gmail.com with ESMTPSA id 32sm2783363wrn.86.2020.08.05.05.55.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 05:51:59 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 08:51:56 -0400
+        Wed, 05 Aug 2020 05:55:30 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 08:55:27 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     Jason Wang <jasowang@redhat.com>
 Cc:     virtualization@lists.linux-foundation.org,
@@ -59,74 +59,56 @@ Cc:     virtualization@lists.linux-foundation.org,
         shahafs@mellanox.com, hanand@xilinx.com, mhabets@solarflare.com,
         gdawar@xilinx.com, saugatm@xilinx.com, vmireyno@marvell.com,
         zhangweining@ruijie.com.cn, eli@mellanox.com
-Subject: Re: [PATCH 1/4] vdpa: introduce config op to get valid iova range
-Message-ID: <20200805085035-mutt-send-email-mst@kernel.org>
+Subject: Re: [PATCH 3/4] vdpa: get_iova_range() is mandatory for device
+ specific DMA translation
+Message-ID: <20200805085217-mutt-send-email-mst@kernel.org>
 References: <20200617032947.6371-1-jasowang@redhat.com>
- <20200617032947.6371-2-jasowang@redhat.com>
+ <20200617032947.6371-4-jasowang@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200617032947.6371-2-jasowang@redhat.com>
+In-Reply-To: <20200617032947.6371-4-jasowang@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 11:29:44AM +0800, Jason Wang wrote:
-> This patch introduce a config op to get valid iova range from the vDPA
-> device.
+On Wed, Jun 17, 2020 at 11:29:46AM +0800, Jason Wang wrote:
+> In order to let userspace work correctly, get_iova_range() is a must
+> for the device that has its own DMA translation logic.
+
+I guess you mean for a device.
+
+However in absence of ths op, I don't see what is wrong with just
+assuming device can access any address.
+
 > 
 > Signed-off-by: Jason Wang <jasowang@redhat.com>
 > ---
->  include/linux/vdpa.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+>  drivers/vdpa/vdpa.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> index 239db794357c..b7633ed2500c 100644
-> --- a/include/linux/vdpa.h
-> +++ b/include/linux/vdpa.h
-> @@ -41,6 +41,16 @@ struct vdpa_device {
->  	unsigned int index;
->  };
+> diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+> index de211ef3738c..ab7af978ef70 100644
+> --- a/drivers/vdpa/vdpa.c
+> +++ b/drivers/vdpa/vdpa.c
+> @@ -82,6 +82,10 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
+>  	if (!!config->dma_map != !!config->dma_unmap)
+>  		goto err;
 >  
-> +/**
-> + * vDPA IOVA range - the IOVA range support by the device
-> + * @start: start of the IOVA range
-> + * @end: end of the IOVA range
-> + */
-> +struct vdpa_iova_range {
-> +	u64 start;
-> +	u64 end;
-> +};
+> +	if ((config->dma_map || config->set_map) &&
+> +	    !config->get_iova_range)
+> +		goto err;
 > +
+>  	err = -ENOMEM;
+>  	vdev = kzalloc(size, GFP_KERNEL);
+>  	if (!vdev)
+
+What about devices using an IOMMU for translation?
+IOMMUs generally have a limited IOVA range too, right?
 
 
-This is ambiguous. Is end in the range or just behind it?
-How about first/last?
 
-
-
->  /**
->   * vDPA_config_ops - operations for configuring a vDPA device.
->   * Note: vDPA device drivers are required to implement all of the
-> @@ -134,6 +144,9 @@ struct vdpa_device {
->   * @get_generation:		Get device config generation (optional)
->   *				@vdev: vdpa device
->   *				Returns u32: device generation
-> + * @get_iova_range:		Get supported iova range (on-chip IOMMU)
-> + *				@vdev: vdpa device
-> + *				Returns the iova range supported by the device
->   * @set_map:			Set device memory mapping (optional)
->   *				Needed for device that using device
->   *				specific DMA translation (on-chip IOMMU)
-> @@ -195,6 +208,7 @@ struct vdpa_config_ops {
->  	void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
->  			   const void *buf, unsigned int len);
->  	u32 (*get_generation)(struct vdpa_device *vdev);
-> +	struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
->  
->  	/* DMA ops */
->  	int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
 > -- 
 > 2.20.1
 
