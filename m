@@ -2,140 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301F323D25B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1AA023D182
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729257AbgHEUMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:12:01 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:35473 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726542AbgHEQ1l (ORCPT
+        id S1728229AbgHEUCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727116AbgHEQkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:27:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596644839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aTaUnitmoEeIEDUwyHCtIzCzP0qdhb1jpiKMzznBJEI=;
-        b=NZ5NjTMH5aUAFnWvjTZLzjeBruxCd+/ReEyjS5f0OXoVm8VrOJR6F6DLAB8svAOF2WTtRZ
-        1Yohi6xYGJdhuF/GHyJWPGNhaao8Uz/Ixix73hwSsfoZBbJwo2kcYOMoyZDPG4a50hiTS7
-        ecn1AAMzTRFZ3FlSFNR7qgfDM68EJyY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-247-5_qzgieNNLSzpICrC8eShQ-1; Wed, 05 Aug 2020 10:11:36 -0400
-X-MC-Unique: 5_qzgieNNLSzpICrC8eShQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 337DD107BEF5;
-        Wed,  5 Aug 2020 14:11:34 +0000 (UTC)
-Received: from prarit.bos.redhat.com (dhcp16-222-232.7a2m.lab.eng.bos.redhat.com [10.16.222.232])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C47C5D9DC;
-        Wed,  5 Aug 2020 14:11:32 +0000 (UTC)
-Subject: Re: [PATCH V13] printk: Add monotonic, boottime, and realtime
- timestamps
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     corbet@lwn.net, rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        chunyan.zhang@unisoc.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, orsonzhai@gmail.com,
-        zhang.lyra@gmail.com
-References: <20200729114423.30606-1-zhang.lyra@gmail.com>
- <20200729122236.17418-1-prarit@redhat.com> <20200805140430.GI24529@alley>
-From:   Prarit Bhargava <prarit@redhat.com>
-Message-ID: <77c37735-e258-4933-f568-8450253a38ff@redhat.com>
-Date:   Wed, 5 Aug 2020 10:11:32 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <20200805140430.GI24529@alley>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Wed, 5 Aug 2020 12:40:06 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B87C0086CF;
+        Wed,  5 Aug 2020 07:15:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y206so12491410pfb.10;
+        Wed, 05 Aug 2020 07:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=+xqqce3bt1Dd6YXyCPFzN+2GzEUcHoRk0/h1IH691fM=;
+        b=vAw9kGgbL9KkM2+HjZkFVCiAEauRuoyizHa2DE6NIt/H/ukbr4biFl6FGaPLzqYR1m
+         Y8feBgiVM4qSu50iFsGj6seA3Q+j9oLVsC7ZTIW301zQZQePILt51nINe00B/lm8asGU
+         PKFIcoHfyTy1Yx46R8iwO4Rxoy5FpkzLWDtvWhOqdK9bSIiQs6/5DuDW7e0ipqsIoY0A
+         08il6ksimfsPfvDVAGglj0SYwjOIfKLZxarQPN2FahhOz43Is6/czXHIMgMCOgMr4y04
+         vhwJqQOnsRjbTh6jrbJbOGh7SYE4nuYoF8PVX7nrKYDnKxHNrLHLJczLHyu9B/gQ/KA7
+         GRjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+xqqce3bt1Dd6YXyCPFzN+2GzEUcHoRk0/h1IH691fM=;
+        b=bRSBgwUsoZJA+v2asKhhrB0Q6JOGDp+Ykwbvb5CrNSQaZhPP675pt3f6D8R4fqdKp+
+         LAaeJPAlRVFqvwa0ysLPtO7c66We2P366giN0AR81qYVVzguwoaoZyXOvu7cHVUhlfQ9
+         nUTanDYeXJb4ETE3aWDfUpZBOfdZYl5D8Tb4w0Ut5WomoXYzXqExMs2xjepXvUgi8UrV
+         5gN+vh0eshD5/ehUs/kwbLjCJkFIQXVMS2yWY9R24gOg4/kYIVP6q2ZdPR1sNYU5Fyii
+         jX/I9t4sQyqMRYgVNRJunhmvNkWfvMdfcxWjHudZRKYBClqFS9haijnnpWPD2tWczB6u
+         /08Q==
+X-Gm-Message-State: AOAM533zPAOCh9O5T70rmqZA9opE0BjCDZxblhpRgnOlqeFXeUCh1KBa
+        ZYVQLt9r+8SmxpYqxPgbnmY=
+X-Google-Smtp-Source: ABdhPJwbuUbGXm01c54qPcEJaJWwHBAtthhYKl/qC5Dq5fmWMZtf+rrnJZ29JSqA4wwniCL3ChsA7g==
+X-Received: by 2002:a62:6842:: with SMTP id d63mr3551252pfc.82.1596636907357;
+        Wed, 05 Aug 2020 07:15:07 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.62])
+        by smtp.gmail.com with ESMTPSA id g12sm3197172pjd.6.2020.08.05.07.15.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 07:15:06 -0700 (PDT)
+From:   Yulei Zhang <yulei.kernel@gmail.com>
+To:     pbonzini@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sean.j.christopherson@intel.com, jmattson@google.com,
+        vkuznets@redhat.com, xiaoguangrong.eric@gmail.com,
+        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
+        Yulei Zhang <yuleixzhang@tencent.com>
+Subject: [RFC 8/9] Introduce kvm module parameter global_tdp to turn on the direct build EPT mode
+Date:   Wed,  5 Aug 2020 22:15:56 +0800
+Message-Id: <20200805141556.9430-1-yulei.kernel@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yulei Zhang <yuleixzhang@tencent.com>
 
+Currently global_tdp is only supported on intel X86 system with ept
+supported, and it will turn off the smm mode when enable global_tdp.
 
-On 8/5/20 10:04 AM, Petr Mladek wrote:
-> On Wed 2020-07-29 08:22:36, Prarit Bhargava wrote:
->>   Chunyan Zhang <zhang.lyra@gmail.com> wrote:
->>> From: Prarit Bhargava <prarit@redhat.com>
->>>
->>> printk.time=1/CONFIG_PRINTK_TIME=1 adds a unmodified local hardware clock
->>> timestamp to printk messages.  The local hardware clock loses time each
->>> day making it difficult to determine exactly when an issue has occurred in
->>> the kernel log, and making it difficult to determine how kernel and
->>> hardware issues relate to each other in real time.
->>>
->>> Make printk output different timestamps by adding options for no
->>> timestamp, the local hardware clock, the monotonic clock, the boottime
->>> clock, and the real clock.  Allow a user to pick one of the clocks by
->>> using the printk.time kernel parameter.  Output the type of clock in
->>> /sys/module/printk/parameters/time so userspace programs can interpret the
->>> timestamp.
->>>
->> ISTR the reason that this was dropped was because of the a problem with
->> the way systemd read the kernel's timestamps.  It got the attention of
->> Linus, and it was then pulled from the tree.
->>
->> I need to go back and review the entire thread as it's been several years
->> since we had the discussion although ISTR someone mentioning that doing two
->> timestamps would not be a problem for systemd.
-> 
-> I guess that you talk about this thread
-> https://lore.kernel.org/lkml/CA+55aFwUfA__6MgMgjENnx+_RYY2ZOOLiSx2ea1AvYhSZN+78A@mail.gmail.com/
-> 
->> For example,
->>
->> [48551.015086]
->>
->> would be
->>
->> [48551.015086] m[xxxx.xxxx]
->>
->> for the monotonic clock timestamp, and
->>
->> [48551.015086] b[xxxx.xxxx]
->>
->> for the boottime clock, etc.
-> 
-> This approach has several drawbacks:
-> 
->   + Too long prefix might make it hard to see the real messages
->     because of shrunken/wrapped lines.
-> 
->   + Too long lines are problem with slow consoles.
-> 
->   + More space will be necessary to store all the time stamps.
-> 
->   + Userspace tools would need/want to parse the format. We would
->     need to maintain it forever.
-> 
-> 
-> Linus had an interesting idea to print all timestamps regularly.
-> The frequency might be configurable. It might print, for example,
-> the following line every 10 minutes or once a day:
-> 
->   [48551.015086] System alive: b[xxxx.xxxx] m[xxxx.xxxx]
-> 
-> It might be useful in general to see when the system was still alive
-> before it froze.
-> 
-> Would it be enough to sort messages printed with different clock
-> sources?
+Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+---
+ arch/x86/include/asm/kvm_host.h |  4 ++++
+ arch/x86/kvm/mmu/mmu.c          |  5 ++++-
+ arch/x86/kvm/x86.c              | 11 ++++++++++-
+ 3 files changed, 18 insertions(+), 2 deletions(-)
 
-Hey Petr,
-
-After reviewing the thread (it has been three years after all), I have asked
-Orson and Lyra to look at the suggested changes by tglx and Linus and submit
-those instead of "this" patch.
-
-I should have updated this thread with that info.  Sorry 'bout that.
-
-P.
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 7063b9d2cac0..a8c219fb33f5 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1368,6 +1368,8 @@ extern u64  kvm_default_tsc_scaling_ratio;
+ 
+ extern u64 kvm_mce_cap_supported;
+ 
++extern bool global_tdp;
++
+ /*
+  * EMULTYPE_NO_DECODE - Set when re-emulating an instruction (after completing
+  *			userspace I/O) to indicate that the emulation context
+@@ -1698,6 +1700,8 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
+ #endif
+ }
+ 
++inline bool boot_cpu_is_amd(void);
++
+ #define put_smstate(type, buf, offset, val)                      \
+ 	*(type *)((buf) + (offset) - 0x7e00) = val
+ 
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 485f7287aad2..f963a3b0500f 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4630,7 +4630,7 @@ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
+ }
+ EXPORT_SYMBOL_GPL(reset_shadow_zero_bits_mask);
+ 
+-static inline bool boot_cpu_is_amd(void)
++inline bool boot_cpu_is_amd(void)
+ {
+ 	WARN_ON_ONCE(!tdp_enabled);
+ 	return shadow_x_mask == 0;
+@@ -6471,6 +6471,9 @@ int kvm_direct_tdp_populate_page_table(struct kvm *kvm, struct kvm_memory_slot *
+ 	kvm_pfn_t pfn;
+ 	int host_level;
+ 
++	if (!global_tdp)
++		return 0;
++
+ 	if (!kvm->arch.global_root_hpa) {
+ 		struct page *page;
+ 		WARN_ON(!tdp_enabled);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 37e11b3588b5..abe838240084 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -162,6 +162,9 @@ module_param(force_emulation_prefix, bool, S_IRUGO);
+ int __read_mostly pi_inject_timer = -1;
+ module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
+ 
++bool __read_mostly global_tdp;
++module_param_named(global_tdp, global_tdp, bool, S_IRUGO);
++
+ #define KVM_NR_SHARED_MSRS 16
+ 
+ struct kvm_shared_msrs_global {
+@@ -3403,7 +3406,10 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 		 * fringe case that is not enabled except via specific settings
+ 		 * of the module parameters.
+ 		 */
+-		r = kvm_x86_ops.has_emulated_msr(MSR_IA32_SMBASE);
++		if (global_tdp)
++			r = 0;
++		else
++			r = kvm_x86_ops.has_emulated_msr(MSR_IA32_SMBASE);
+ 		break;
+ 	case KVM_CAP_VAPIC:
+ 		r = !kvm_x86_ops.cpu_has_accelerated_tpr();
+@@ -9675,6 +9681,9 @@ int kvm_arch_hardware_setup(void *opaque)
+ 	if (r != 0)
+ 		return r;
+ 
++	if ((tdp_enabled == false) || boot_cpu_is_amd())
++		global_tdp = 0;
++
+ 	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
+ 
+ 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
+-- 
+2.17.1
 
