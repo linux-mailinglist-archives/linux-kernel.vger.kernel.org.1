@@ -2,80 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E538823CD16
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B23823CCEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgHERT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:19:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:33668 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728653AbgHERSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:18:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F37F230E;
-        Wed,  5 Aug 2020 05:36:48 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E18173FA1C;
-        Wed,  5 Aug 2020 05:36:46 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 13:36:43 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, cristian.marussi@arm.com,
-        Sudeep Holla <sudeep.holla@arm.com>, rjw@rjwysocki.net
-Subject: Re: [PATCH 0/4] CPUFreq statistics retrieved by drivers
-Message-ID: <20200805123643.GB4818@bogus>
-References: <20200729151208.27737-1-lukasz.luba@arm.com>
- <20200730085333.qubrsv7ufqninihd@vireshk-mac-ubuntu>
- <20200730091014.GA13158@bogus>
- <3b3a56e9-29ec-958f-fb3b-c689a9389d2f@arm.com>
- <20200731155650.GC14529@bogus>
- <ae352c39-f7c4-c69e-0113-7c810c130ee0@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae352c39-f7c4-c69e-0113-7c810c130ee0@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728342AbgHERMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:12:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32478 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728489AbgHERIi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:08:38 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 075CWW3e113416;
+        Wed, 5 Aug 2020 08:38:08 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qrr1qq47-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 08:38:08 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 075CWeu2113976;
+        Wed, 5 Aug 2020 08:38:07 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qrr1qq35-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 08:38:07 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 075CZkxk021961;
+        Wed, 5 Aug 2020 12:38:05 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 32n018amv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 12:38:04 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 075Cc2Pk20775184
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 5 Aug 2020 12:38:02 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8ED954C058;
+        Wed,  5 Aug 2020 12:38:02 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 37B504C046;
+        Wed,  5 Aug 2020 12:38:00 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.95.205])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  5 Aug 2020 12:37:59 +0000 (GMT)
+Message-ID: <3a96065c7c628be36eba99ad0da8d78cdac7dcaf.camel@linux.ibm.com>
+Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 05 Aug 2020 08:37:59 -0400
+In-Reply-To: <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
+References: <20200805004331.20652-1-nramas@linux.microsoft.com>
+         <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-05_09:2020-08-03,2020-08-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ suspectscore=0 mlxscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008050102
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 10:19:23AM -0700, Florian Fainelli wrote:
->
->
-> On 7/31/2020 8:56 AM, Sudeep Holla wrote:
-> > On Thu, Jul 30, 2020 at 10:36:51AM +0100, Lukasz Luba wrote:
-> >>
-> >> In this case I think we would have to create debugfs.
-> >> Sudeep do you think these debugfs should be exposed from the protocol
-> >> layer:
-> >> drivers/firmware/arm_scmi/perf.c
-> >
-> > I prefer above over cpufreq as we can support for all the devices not
-> > just cpus which avoids adding similar support elsewhere(mostly devfreq)
-> >
-> >> or maybe from the cpufreq scmi driver? I would probably be safer to have
-> >> it in the cpufreq driver because we have scmi_handle there.
-> >>
-> >
-> > Cristian was thinking if we can consolidate all such debugfs under one
-> > device may be and that should eliminate your handle restriction. I would
-> > like to see how that works out in implementation but I don't have any
-> > better suggestion ATM.
->
-> debugfs is not enabled in production kernels, and especially not with
-> Android kernels, so sticking those in sysfs like the existing cpufreq
-> subsystem statistics may be a better choice.
+On Tue, 2020-08-04 at 18:04 -0700, Casey Schaufler wrote:
+> On 8/4/2020 5:43 PM, Lakshmi Ramasubramanian wrote:
+> > Critical data structures of security modules are currently not measured.
+> > Therefore an attestation service, for instance, would not be able to
+> > attest whether the security modules are always operating with the policies
+> > and configuration that the system administrator had setup. The policies
+> > and configuration for the security modules could be tampered with by
+> > malware by exploiting kernel vulnerabilities or modified through some
+> > inadvertent actions on the system. Measuring such critical data would
+> > enable an attestation service to better assess the state of the system.
+> 
+> I still wonder why you're calling this an LSM change/feature when
+> all the change is in IMA and SELinux. You're not putting anything
+> into the LSM infrastructure, not are you using the LSM infrastructure
+> to achieve your ends. Sure, you *could* support other security modules
+> using this scheme, but you have a configuration dependency on
+> SELinux, so that's at best going to be messy. If you want this to
+> be an LSM "feature" you need to use the LSM hooking mechanism.
+> 
+> I'm not objecting to the feature. It adds value. But as you've
+> implemented it it is either an IMA extension to SELinux, or an
+> SELiux extension to IMA. Could AppArmor add hooks for this without
+> changing the IMA code? It doesn't look like it to me.
 
-Fair enough. I was suggesting that only if we can't push this into existing
-sysfs support. If we can, then we need not worry about it. If not, I don't
-want a user ABI just for SCMI for this firmware stats, I would rather keep
-it in debugfs for debug purposes. This will be useless once we start seeing
-AMU in the hardware and hence I was pushing for debugfs.
+Agreed.  Without reviewing the patch set in depth, I'm not quite sure
+why this patch set needs to be limited to measuring just LSM critical
+data and can't be generalized.    The patch set could be titled "ima:
+measuring critical data" or "ima: measuring critical kernel data". 
+Measuring SELinux critical data would be an example of its usage.
 
---
-Regards,
-Sudeep
+For an example, refer to the ima_file_check hook, which is an example
+of IMA being called directly, not via an LSM hook.
+
+Mimi
+
