@@ -2,143 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1451623CCBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194FF23CC34
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgHERAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:00:25 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:44772 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728360AbgHEQ5o (ORCPT
+        id S1726517AbgHEQaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726217AbgHEQ1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:57:44 -0400
-Received: by mail-il1-f198.google.com with SMTP id y82so26271918ilk.11
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:57:43 -0700 (PDT)
+        Wed, 5 Aug 2020 12:27:40 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F99C001FDF
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 09:16:35 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id w19so12525564plq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:16:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u5CgDyHZh9RmBIguTtW8MfajwzfpPjyTKuSzmrxdMU8=;
+        b=FDcw2hYy4Py5Axh/CsQVkdXe+aP99s6M7nxdI7CttWEb6+aTZkAl4+LtEgPhUg/N3D
+         q1urrsolKzUY1kbUM7OlOxtKIzD3QbqM1w1J4nVJSksUY/hoXHHDhA6h3OSl3U4tt0zs
+         ESZAK/asKRVCuVH2ut3bC7EwESYWpvmMn6+KQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=vD/veeEc05bcXlG0e+JSfe9O59TwwwUvH3Hr6H/SIyA=;
-        b=DT4ShEHPi6FH6QoYLd3QL9v5ycy4OPhG8zz34atxEDEb98d8T0mS5Q1SDdtQ23O1DX
-         jM3R7SJ9PTZPwXe27H+cbdMgDAI+bt4n2eU74g5vIlb4f0mJu+N02Og3kLlDpw/ArJaR
-         JJuCQpk0lYgHzMYu7M/BjrEzQGQIYudZLL78O1+6LOi6hxaX2KkRaGgmiAdNY/Y5OZc5
-         GbHHhXOqUmdln5OkaGJQ7Fw+L/yLWS+2pAhmkPqh5or9uOZFjKRC7mZVqQl4DYQiwqcW
-         YqOaRUXHHZ1hrIsnx6O1gDFkoQTDPDKvUts4dulzYsKfp8wyesntu+V/5EwP4zKqDcts
-         WlvQ==
-X-Gm-Message-State: AOAM531FE9Yz5A8blOLvGLKmVD1+Mkyc4CEdAZ9VMs9n64DTAMFB1Nj3
-        XwRwtlHxR2GiBQWY87FPQtowl9MjMkxuL7KPxafZksfhiGxQ
-X-Google-Smtp-Source: ABdhPJyCIyEAmTjH3mqmhkj1F6rTlvWQHvwfZk6hoXyQVk34+x2BOvU/JDLR5tpGpsL3ZeWGnfdbt0fxmuRIfqVtucp3aBL6viaF
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u5CgDyHZh9RmBIguTtW8MfajwzfpPjyTKuSzmrxdMU8=;
+        b=fFOoFKP95oHyQXEjyKUbTIUZqpBA/pDEFn3gHmJYkQ4hCz5Rk8J6QoT2O5E6KEV6ge
+         VozqKD7dWH2gql0SoiVKwyxdrdr3pu1m7M/J9h4qoYODTuZTMZRULa8UduuLGd4KaxLt
+         tyLeJo4V6WBiYNgWQ9GvHd5xdxjPzeyMnqiMQ3/aMTHRq9XZtMXh15QPF0nkg5Rw6sgv
+         g6OGplaio7+JRIViZILkIl5oSnies0PHo05+HDVYpgb8FtyM/hmKj1lG4Nwfr2llndyA
+         vWpbAiFvm6lTzNye0PaVFamVMTBH05uOrYs+Up3L9qB4Ev6rxmDoWGWq+Kj4UalaIIXN
+         jMwA==
+X-Gm-Message-State: AOAM5303DQLlDfXbQ+W/5JZUe9WW50g7gjm5cr8ti6gkouvQm6vaRuMR
+        Tr9KHUr6KJOMQN5LCcq8Xfdwag==
+X-Google-Smtp-Source: ABdhPJy50K2eKCG+xULNutmAaiRXfFfczTrysNIfy1hK7rGQ8HfVVR9CpYmGt/BqRTxpFl4aLLihxA==
+X-Received: by 2002:a17:902:780f:: with SMTP id p15mr3995867pll.56.1596644194594;
+        Wed, 05 Aug 2020 09:16:34 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id f2sm4259734pfb.184.2020.08.05.09.16.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 09:16:34 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     swboyd@chromium.org, Alex Elder <elder@linaro.org>,
+        mka@chromium.org, Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] soc: qcom: aoss: Don't wait for IRQ if we might be in suspend/resume noirq
+Date:   Wed,  5 Aug 2020 09:16:10 -0700
+Message-Id: <20200805091141.1.I86b3faaecb0d82997b599b1300f879606c71e116@changeid>
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
 MIME-Version: 1.0
-X-Received: by 2002:a92:dcc6:: with SMTP id b6mr4591063ilr.147.1596642980561;
- Wed, 05 Aug 2020 08:56:20 -0700 (PDT)
-Date:   Wed, 05 Aug 2020 08:56:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b087a705ac2369dd@google.com>
-Subject: INFO: trying to register non-static key in l2cap_chan_del
-From:   syzbot <syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Running suspend/resume tests on a sc7180-based board with a modem I
+found that both system suspend and system resume would hang for 1
+second.  These messages indicate where:
 
-syzbot found the following issue on:
+  genpd genpd:0:4080000.remoteproc: calling genpd_suspend_noirq+0x0/0x2c @ 18659, parent: none
+  genpd genpd:0:4080000.remoteproc: genpd_suspend_noirq+0x0/0x2c returned 0 after 987917 usecs
 
-HEAD commit:    442489c2 Merge tag 'timers-core-2020-08-04' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15aa9494900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=669b4bedb6478222
-dashboard link: https://syzkaller.appspot.com/bug?extid=abfc0f5e668d4099af73
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Adding a printout, I found that we were working with the power domain
+where "res->pd.name" was "modem".
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I found that we were hanging on the wait_event_interruptible_timeout()
+call in qmp_send().  Specifically we'd wait for the whole 1 second
+timeout to hit, then we'd notice that our condition was true and would
+continue on our merry way.  Sure enough, I could confirm that
+wait_event_interruptible_timeout() was returning "1" which indicates
+that the condition evaluated to true and we also timed out.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com
+Dumping the stack at the time of the failure made the problem clear.
+Specifically the stack looked like:
+   qmp_send+0x1cc/0x210
+   qmp_pd_power_toggle+0x90/0xb8
+   qmp_pd_power_off+0x20/0x2c
+   genpd_sync_power_off+0x80/0x12c
+   genpd_finish_suspend+0xd8/0x108
+   genpd_suspend_noirq+0x20/0x2c
+   dpm_run_callback+0xe0/0x1d4
+   __device_suspend_noirq+0xfc/0x200
+   dpm_suspend_noirq+0x174/0x3bc
+   suspend_devices_and_enter+0x198/0x8a0
+   pm_suspend+0x550/0x6f4
+As you can see we're running from the "noirq" callback.  Looking at
+what was supposed to wake us up, it was qmp_intr() (our IRQ handler).
+Doh!
 
-INFO: trying to register non-static key.
-the code is fine but needs lockdep annotation.
-turning off the locking correctness validator.
-CPU: 1 PID: 27 Comm: kworker/1:1 Not tainted 5.8.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events l2cap_chan_timeout
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- assign_lock_key kernel/locking/lockdep.c:894 [inline]
- register_lock_class+0x157d/0x1630 kernel/locking/lockdep.c:1206
- __lock_acquire+0xf9/0x5640 kernel/locking/lockdep.c:4305
- lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:5005
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
- _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
- spin_lock_bh include/linux/spinlock.h:359 [inline]
- lock_sock_nested+0x3b/0x110 net/core/sock.c:3070
- l2cap_sock_teardown_cb+0x88/0x400 net/bluetooth/l2cap_sock.c:1520
- l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
- l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:824
- l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 32376067 P4D 32376067 PUD 9356f067 PMD 0 
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 27 Comm: kworker/1:1 Not tainted 5.8.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events l2cap_chan_timeout
-RIP: 0010:0x0
-Code: Bad RIP value.
-RSP: 0018:ffffc90000e17b60 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffff88808d94c000 RCX: ffffffff8723aa4f
-RDX: 1ffff11005e48c8c RSI: ffffffff8723ac9c RDI: ffff88802f246000
-RBP: 0000000000000005 R08: 0000000000000001 R09: ffff88802f246067
-R10: 0000000000000009 R11: 0000000000000001 R12: 000000000000006f
-R13: ffff88802f246000 R14: 0000000000000000 R15: 0000000000000005
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000094fa9000 CR4: 00000000001426e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- l2cap_sock_teardown_cb+0x374/0x400 net/bluetooth/l2cap_sock.c:1547
- l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
- l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:824
- l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 661471e896caece1 ]---
-RIP: 0010:0x0
-Code: Bad RIP value.
-RSP: 0018:ffffc90000e17b60 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffff88808d94c000 RCX: ffffffff8723aa4f
-RDX: 1ffff11005e48c8c RSI: ffffffff8723ac9c RDI: ffff88802f246000
-RBP: 0000000000000005 R08: 0000000000000001 R09: ffff88802f246067
-R10: 0000000000000009 R11: 0000000000000001 R12: 000000000000006f
-R13: ffff88802f246000 R14: 0000000000000000 R15: 0000000000000005
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000094fa9000 CR4: 00000000001426e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+I believe that the correct fix here is to assume that our power_off /
+power_on functions might be called at "noirq" time and just always
+poll if we're called via that path.  Other paths can continue to wait
+for the IRQ.
 
-
+Fixes: 2209481409b7 ("soc: qcom: Add AOSS QMP driver")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+This problem was observed on the Chrome OS 5.4 tree which has some
+extra patches in it compared to mainline.  The top of the current
+Qualcomm tree didn't have the delay, but that's probably because
+everything isn't fully enabled there yet.  I at least confirmed that
+this patch doesn't actually _break_ anything on mainline, though.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ drivers/soc/qcom/qcom_aoss.c | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+index ed2c687c16b3..818cdf74a267 100644
+--- a/drivers/soc/qcom/qcom_aoss.c
++++ b/drivers/soc/qcom/qcom_aoss.c
+@@ -6,6 +6,7 @@
+ #include <linux/clk-provider.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/mailbox_client.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+@@ -215,6 +216,8 @@ static bool qmp_message_empty(struct qmp *qmp)
+  * @qmp: qmp context
+  * @data: message to be sent
+  * @len: length of the message
++ * @noirq: If true we might have been called from the "noirq" suspend/resume
++ *         callbacks, so fall back to polling mode for waiting for completion.
+  *
+  * Transmit @data to AOSS and wait for the AOSS to acknowledge the message.
+  * @len must be a multiple of 4 and not longer than the mailbox size. Access is
+@@ -222,11 +225,12 @@ static bool qmp_message_empty(struct qmp *qmp)
+  *
+  * Return: 0 on success, negative errno on failure
+  */
+-static int qmp_send(struct qmp *qmp, const void *data, size_t len)
++static int qmp_send(struct qmp *qmp, const void *data, size_t len, bool noirq)
+ {
+ 	long time_left;
+ 	size_t tlen;
+ 	int ret;
++	bool is_empty;
+ 
+ 	if (WARN_ON(len + sizeof(u32) > qmp->size))
+ 		return -EINVAL;
+@@ -245,8 +249,16 @@ static int qmp_send(struct qmp *qmp, const void *data, size_t len)
+ 	tlen = readl(qmp->msgram + qmp->offset);
+ 	qmp_kick(qmp);
+ 
+-	time_left = wait_event_interruptible_timeout(qmp->event,
+-						     qmp_message_empty(qmp), HZ);
++	/*
++	 * We may be called from a suspend/resume "noirq" context.  In such
++	 * a case we have no choice but to poll.
++	 */
++	if (noirq)
++		time_left = readx_poll_timeout_atomic(qmp_message_empty, qmp,
++						      is_empty, is_empty, 1U, 1000000U);
++	else
++		time_left = wait_event_interruptible_timeout(qmp->event,
++							     qmp_message_empty(qmp), HZ);
+ 	if (!time_left) {
+ 		dev_err(qmp->dev, "ucore did not ack channel\n");
+ 		ret = -ETIMEDOUT;
+@@ -267,7 +279,7 @@ static int qmp_qdss_clk_prepare(struct clk_hw *hw)
+ 	static const char buf[QMP_MSG_LEN] = "{class: clock, res: qdss, val: 1}";
+ 	struct qmp *qmp = container_of(hw, struct qmp, qdss_clk);
+ 
+-	return qmp_send(qmp, buf, sizeof(buf));
++	return qmp_send(qmp, buf, sizeof(buf), false);
+ }
+ 
+ static void qmp_qdss_clk_unprepare(struct clk_hw *hw)
+@@ -275,7 +287,7 @@ static void qmp_qdss_clk_unprepare(struct clk_hw *hw)
+ 	static const char buf[QMP_MSG_LEN] = "{class: clock, res: qdss, val: 0}";
+ 	struct qmp *qmp = container_of(hw, struct qmp, qdss_clk);
+ 
+-	qmp_send(qmp, buf, sizeof(buf));
++	qmp_send(qmp, buf, sizeof(buf), false);
+ }
+ 
+ static const struct clk_ops qmp_qdss_clk_ops = {
+@@ -321,7 +333,7 @@ static int qmp_pd_power_toggle(struct qmp_pd *res, bool enable)
+ 	snprintf(buf, sizeof(buf),
+ 		 "{class: image, res: load_state, name: %s, val: %s}",
+ 		 res->pd.name, enable ? "on" : "off");
+-	return qmp_send(res->qmp, buf, sizeof(buf));
++	return qmp_send(res->qmp, buf, sizeof(buf), true);
+ }
+ 
+ static int qmp_pd_power_on(struct generic_pm_domain *domain)
+@@ -438,7 +450,7 @@ static int qmp_cdev_set_cur_state(struct thermal_cooling_device *cdev,
+ 			qmp_cdev->name,
+ 			cdev_state ? "on" : "off");
+ 
+-	ret = qmp_send(qmp_cdev->qmp, buf, sizeof(buf));
++	ret = qmp_send(qmp_cdev->qmp, buf, sizeof(buf), false);
+ 
+ 	if (!ret)
+ 		qmp_cdev->state = cdev_state;
+-- 
+2.28.0.163.g6104cc2f0b6-goog
+
