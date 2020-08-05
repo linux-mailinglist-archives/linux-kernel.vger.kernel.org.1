@@ -2,193 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D0823CF8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F33423CF7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbgHETWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:22:31 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2579 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728961AbgHERlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:41:49 -0400
-Received: from lhreml712-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 6699C2A264AE1F7A9CDD;
-        Wed,  5 Aug 2020 18:41:46 +0100 (IST)
-Received: from localhost (10.52.120.30) by lhreml712-chm.china.huawei.com
- (10.201.108.63) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 5 Aug 2020
- 18:41:45 +0100
-Date:   Wed, 5 Aug 2020 18:40:20 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <ashok.raj@intel.com>,
-        <tony.luck@intel.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Subject: Re: [PATCH V2 6/9] PCI: Add 'rcec' field to pci_dev for associated
- RCiEPs
-Message-ID: <20200805184020.00000cf3@Huawei.com>
-In-Reply-To: <20200804194052.193272-7-sean.v.kelley@intel.com>
-References: <20200804194052.193272-1-sean.v.kelley@intel.com>
-        <20200804194052.193272-7-sean.v.kelley@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726643AbgHETVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:21:31 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:61112 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728929AbgHERmr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:42:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1596649366; x=1628185366;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=lNEkMbYi0vdrAauS7Kx1F2bZJKjVMy/W93IpO/fQsUY=;
+  b=QLWP0f4m1iXMxE7WwpXelDNbJnoNpF+g0+s6zbmV6NzsvnU9VULdxkeI
+   gY9/qb9cgZPYou8CeQkx/eJVolTOG/oZ7NyXiJT+rDnyjMXLfW03bDpfT
+   KqB676qf2oJz5gqmTw4a4slQHYINimnhvUdLlAyixXdcL2ljd5cHg23Bh
+   E=;
+IronPort-SDR: 9ySw8fWle7MttK7suY4BIhxnPpUpw/OAAJafe5LAcUtSaR7nXlHuY3JimXe5qJR44ypaJ2YRoP
+ 96gheUehfPyA==
+X-IronPort-AV: E=Sophos;i="5.75,438,1589241600"; 
+   d="scan'208";a="57653120"
+Subject: Re: [PATCH v2 01/11] xen/manage: keep track of the on-going suspend mode
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 05 Aug 2020 17:42:44 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com (Postfix) with ESMTPS id C5250A2967;
+        Wed,  5 Aug 2020 17:42:42 +0000 (UTC)
+Received: from EX13D08UEB001.ant.amazon.com (10.43.60.245) by
+ EX13MTAUEB002.ant.amazon.com (10.43.60.12) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 5 Aug 2020 17:42:20 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
+ EX13D08UEB001.ant.amazon.com (10.43.60.245) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 5 Aug 2020 17:42:20 +0000
+Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
+ (172.22.96.68) by mail-relay.amazon.com (10.43.61.169) with Microsoft SMTP
+ Server id 15.0.1497.2 via Frontend Transport; Wed, 5 Aug 2020 17:42:19 +0000
+Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
+        id D027740865; Wed,  5 Aug 2020 17:42:19 +0000 (UTC)
+Date:   Wed, 5 Aug 2020 17:42:19 +0000
+From:   Anchal Agarwal <anchalag@amazon.com>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+CC:     Stefano Stabellini <sstabellini@kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <x86@kernel.org>, <jgross@suse.com>, <linux-pm@vger.kernel.org>,
+        <linux-mm@kvack.org>, <kamatam@amazon.com>,
+        <konrad.wilk@oracle.com>, <roger.pau@citrix.com>,
+        <axboe@kernel.dk>, <davem@davemloft.net>, <rjw@rjwysocki.net>,
+        <len.brown@intel.com>, <pavel@ucw.cz>, <peterz@infradead.org>,
+        <eduval@amazon.com>, <sblbir@amazon.com>,
+        <xen-devel@lists.xenproject.org>, <vkuznets@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dwmw@amazon.co.uk>, <benh@kernel.crashing.org>
+Message-ID: <20200805174219.GA16105@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+References: <alpine.DEB.2.21.2007211640500.17562@sstabellini-ThinkPad-T480s>
+ <20200722180229.GA32316@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <alpine.DEB.2.21.2007221645430.17562@sstabellini-ThinkPad-T480s>
+ <20200723225745.GB32316@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <alpine.DEB.2.21.2007241431280.17562@sstabellini-ThinkPad-T480s>
+ <66a9b838-70ed-0807-9260-f2c31343a081@oracle.com>
+ <20200730230634.GA17221@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <53b577a3-6af9-5587-7e47-485be38b3653@oracle.com>
+ <20200804234201.GA23820@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <50d0dbe1-533e-792a-6916-8c72d623064a@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.30]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml712-chm.china.huawei.com (10.201.108.63)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <50d0dbe1-533e-792a-6916-8c72d623064a@oracle.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 Aug 2020 12:40:49 -0700
-Sean V Kelley <sean.v.kelley@intel.com> wrote:
-
-> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+On Wed, Aug 05, 2020 at 09:31:13AM -0400, Boris Ostrovsky wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
 > 
-> When attempting error recovery for an RCiEP associated with an RCEC device,
-> there needs to be a way to update the Root Error Status, the Uncorrectable
-> Error Status and the Uncorrectable Error Severity of the parent RCEC.
-> So add the 'rcec' field to the pci_dev structure and provide a hook for the
-> Root Port Driver to associate RCiEPs with their respective parent RCEC.
 > 
-> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-Hi,
-
-One question in line.
-
-> ---
->  drivers/pci/pcie/aer.c         |  9 +++++----
->  drivers/pci/pcie/err.c         | 12 ++++++++++++
->  drivers/pci/pcie/portdrv_pci.c | 15 +++++++++++++++
->  include/linux/pci.h            |  3 +++
->  4 files changed, 35 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 87283cda3990..f658607e8e00 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -1358,17 +1358,18 @@ static int aer_probe(struct pcie_device *dev)
->  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->  {
->  	int aer = dev->aer_cap;
-> +	int rc = 0;
->  	u32 reg32;
-> -	int rc;
-> -
->  
->  	/* Disable Root's interrupt in response to error messages */
->  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
->  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
->  
-> -	rc = pci_bus_error_reset(dev);
-> -	pci_info(dev, "Root Port link has been reset\n");
-> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
-> +		rc = pci_bus_error_reset(dev);
-> +		pci_info(dev, "Root Port link has been reset\n");
-> +	}
->  
->  	/* Clear Root Error Status */
->  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 4812aa678eff..43f1c55c76db 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -203,6 +203,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  		pci_walk_dev_affected(dev, report_frozen_detected, &status);
->  		if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
->  			status = flr_on_rciep(dev);
-> +			/*
-> +			 * The callback only clears the Root Error Status
-> +			 * of the RCEC (see aer.c).
-> +			 */
-> +			if (pcie_aer_is_native(dev) && dev->rcec)
-> +				reset_link(dev->rcec);
-
-I'm not sure about this pcie_aer_is_native check.
-We don't check in the normal EP path.  Perhaps we should be checking there
-as well?
-
-I can contrive a CPER record that hits the reset_link for the normal EP on my qemu
-test setup.  Just for fun it causes a synchronous external abort that I need
-to track down but not related this patch or indeed reset_link and may just reflect
-an impossible to hit path in the e1000e driver.
-
-It needs a very contrived combination of blocks that say the error is fatal
-and others that say it isn't so I'm not that worried about that.
-
-
->  			if (status != PCI_ERS_RESULT_RECOVERED) {
->  				pci_warn(dev, "function level reset failed\n");
->  				goto failed;
-> @@ -247,7 +253,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  		if (pcie_aer_is_native(dev))
->  			pcie_clear_device_status(dev);
->  		pci_aer_clear_nonfatal_status(dev);
-> +	} else if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
-> +		if (pcie_aer_is_native(dev) && dev->rcec)
-> +			pcie_clear_device_status(dev->rcec);
-> +		if (dev->rcec)
-> +			pci_aer_clear_nonfatal_status(dev->rcec);
->  	}
-> +
->  	pci_info(dev, "device recovery successful\n");
->  	return status;
->  
-> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
-> index 4d880679b9b1..dff5c9e13412 100644
-> --- a/drivers/pci/pcie/portdrv_pci.c
-> +++ b/drivers/pci/pcie/portdrv_pci.c
-> @@ -90,6 +90,18 @@ static const struct dev_pm_ops pcie_portdrv_pm_ops = {
->  #define PCIE_PORTDRV_PM_OPS	NULL
->  #endif /* !PM */
->  
-> +static int pcie_hook_rcec(struct pci_dev *pdev, void *data)
-> +{
-> +	struct pci_dev *rcec = (struct pci_dev *)data;
-> +
-> +	pdev->rcec = rcec;
-> +	pci_dbg(rcec, "RCiEP(under an RCEC) %04x:%02x:%02x.%d\n",
-> +		pci_domain_nr(pdev->bus), pdev->bus->number,
-> +		PCI_SLOT(pdev->devfn), PCI_FUNC(pdev->devfn));
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * pcie_portdrv_probe - Probe PCI-Express port devices
->   * @dev: PCI-Express port device being probed
-> @@ -110,6 +122,9 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
->  	     (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)))
->  		return -ENODEV;
->  
-> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)
-> +		pcie_walk_rcec(dev, pcie_hook_rcec, dev);
-> +
->  	status = pcie_port_device_register(dev);
->  	if (status)
->  		return status;
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index ee49469bd2b5..d5f7dbbf5e2f 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -326,6 +326,9 @@ struct pci_dev {
->  #ifdef CONFIG_PCIEAER
->  	u16		aer_cap;	/* AER capability offset */
->  	struct aer_stats *aer_stats;	/* AER stats for this device */
-> +#endif
-> +#ifdef CONFIG_PCIEPORTBUS
-> +	struct pci_dev	*rcec;		/* Associated RCEC device */
->  #endif
->  	u8		pcie_cap;	/* PCIe capability offset */
->  	u8		msi_cap;	/* MSI capability offset */
-
-
+> On 8/4/20 7:42 PM, Anchal Agarwal wrote:
+> >
+> > I think this could be done. PM_HIBERNATION_PREPARE could return -ENOTSUPP
+> > for arm and pvh dom0 when the notifier call chain is invoked for this case
+> > in hibernate(). This will then be an empty notifier just for checking two
+> > usecases.
+> > Also, for pvh dom0, the earlier code didn't register any notifier,
+> > with this approach you are suggesting setup the notifier for hvm/pvh dom0 and
+> > arm but fail during notifier call chain during PM_HIBERNATION_PREPARE ?
+> 
+> 
+> Right.
+> 
+> 
+> (Although the earlier code did register the notifier:
+> xen_setup_pm_notifier() would return an error for !xen_hvm_domain() and
+> PVH *is* an HVM domain, so registration would actually happen)
+>
+Yes you are right. My bad, what I meant with "earlier code" was whatever we
+discussed w.r.t to removing the notifier all together, it won't be registered for
+pvh dom0.
+Anyways got the point :)
+> 
+> >
+> > I think still getting rid of suspend mode that was earlier a part of this
+> > notifier is a good idea as it seems redundant as you pointed out earlier.
+> 
+> 
+> Yes.
+> 
+> 
+> -boris
+Thanks,
+Anchal
+> 
+> 
