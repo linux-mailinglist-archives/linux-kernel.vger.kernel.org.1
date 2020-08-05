@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D57123CC9D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5CF23CCB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728233AbgHEQzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:55:22 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:39200 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728141AbgHEQvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:51:51 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BMHhd05b5z9vB7v;
-        Wed,  5 Aug 2020 18:51:45 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id XDMUEKcHu9Nb; Wed,  5 Aug 2020 18:51:44 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BMHhc689vz9vB7t;
-        Wed,  5 Aug 2020 18:51:44 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0D6838B7ED;
-        Wed,  5 Aug 2020 18:51:47 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Y_J6TVisphoA; Wed,  5 Aug 2020 18:51:46 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3EFD58B7EC;
-        Wed,  5 Aug 2020 18:51:46 +0200 (CEST)
-Subject: Re: [PATCH v10 2/5] powerpc/vdso: Prepare for switching VDSO to
- generic C implementation.
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
-        anton@ozlabs.org, linux-arch@vger.kernel.org, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, luto@kernel.org, tglx@linutronix.de,
-        vincenzo.frascino@arm.com, linuxppc-dev@lists.ozlabs.org
-References: <cover.1596611196.git.christophe.leroy@csgroup.eu>
- <348528c33cd4007f3fee7fe643ef160843d09a6c.1596611196.git.christophe.leroy@csgroup.eu>
- <20200805140307.GO6753@gate.crashing.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <7d409421-6396-8eba-8250-b6c9ff8232d9@csgroup.eu>
-Date:   Wed, 5 Aug 2020 18:51:44 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728124AbgHEQ6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728352AbgHEQ44 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:56:56 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB546C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 09:52:46 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id w17so25558138ply.11
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:52:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zXZGtsOURmZyHZLbU5fvxhNJ7/uuuH+Jf1Odf6vVQ/Y=;
+        b=LbdFwCwwQ9+ZYyYA91SbJw79q5NmfsQ584hs+WRyh/6ENT1awKjxbLxxdjwZpDO0gW
+         Tr8xIPC0qYpNF56Q/Vts64nXhmUpDrmJLjoqxk/snzwrty3UkfAgqdzR5hinsLeFi6zI
+         R0hscqToNuNUSjBqXpBmkZOBp4sTvJCK+24di3gbiG9OWnxJYYP1bNtXGr9Q30ftrg8q
+         vPn815m/91evw5LuxWkVMSPSZo6J39FiRaqdzSkpKUsghh81J8x/r1EPU6Nb+/hb8iwv
+         nY6iURyZ+psWPW05NKmkzHzYlTDuN6KZ6xlntRf6Sn4Wii2ZfodpTQ2Z15XVy28LdWcO
+         rpow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zXZGtsOURmZyHZLbU5fvxhNJ7/uuuH+Jf1Odf6vVQ/Y=;
+        b=kGnl9/jCsbFAhpZuSSQWnJMY0Jvr8pgV4L0rjQNOUHZUgoV1rF85SNztAusp/1cOli
+         Co/0XEy0NHqFZNgIwojNxXzd3sE0Bx4OBsJE3gxhZwZMoyW8K3chWP265A6yEpml8Vwf
+         ZWRdMOfor+s1ywmyh8lFwdKE3G6RL1dSZwWdeWPpGojHLJQsjRPm7a/02uppqKyupt2X
+         3NbttArBe3E2Fwiy+XZ8TiNqCL5d5lbTupar/fi+b7SXxM8ApgonVtmFX9L/kQGcmF+6
+         vNxlXA0NamUfROrI+/b7FOAWoMYwWXM7lRGuFEY0Nc4qx1/y+R4CS9rR31PgZlptv+WN
+         4xsQ==
+X-Gm-Message-State: AOAM533z2BGAb9JPRBR9Gv9QUPNjfyMD3ateUzMkj2zZ+67/2wXt3bmD
+        c/vgPwnKYsu+AuyzB8We8PgfjJ01aPG8V7X00sQ=
+X-Google-Smtp-Source: ABdhPJzq2IoaaG/XACuojhMxN71N1xV8rgh0jzB4NCZ3up/DasYj5P+gibCzFgPgwUVAYsmZlRJnUeV8JfW04Jc8fHk=
+X-Received: by 2002:a17:90a:148:: with SMTP id z8mr4414464pje.197.1596646366165;
+ Wed, 05 Aug 2020 09:52:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200805140307.GO6753@gate.crashing.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <cover.1594290158.git.vaibhav.sr@gmail.com> <896b8e24d990f2bca5aafaebd26e37095042951e.1594290158.git.vaibhav.sr@gmail.com>
+ <7cbc0daa-993f-ffc9-78f4-b1e62fd54304@linaro.org>
+In-Reply-To: <7cbc0daa-993f-ffc9-78f4-b1e62fd54304@linaro.org>
+From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Date:   Wed, 5 Aug 2020 22:22:09 +0530
+Message-ID: <CAAs364-PFw2OGGhwBH8RB7jBPD4Xre4puu9G-7P+z6Ur_Ni-yA@mail.gmail.com>
+Subject: Re: [greybus-dev] [PATCH v4 1/7] staging: greybus: audio: Update
+ snd_jack FW usage as per new APIs
+To:     Alex Elder <elder@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        devel@driverdev.osuosl.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Again,
+On Wed, Aug 5, 2020 at 6:35 PM Alex Elder <elder@linaro.org> wrote:
+>
+> On 7/9/20 5:27 AM, Vaibhav Agarwal wrote:
+> > snd_soc_jack APIs are modified in recent kernel versions. This patch
+> > updates the codec driver to resolve the compilation errors related to
+> > jack framework.
+>
+> Greg has already accepted this series so I won't review this now.  But
+> I still wanted to provide this comment.
+>
+> It would be helpful in the future to provide a little more information
+> about the nature of the changes to these APIs.  As a reviewer I had to
+> go track them down to get a little more context about what you are doing
+> here.  So you could say something like:
+>
+>   Audio jacks are now registered at the card level rather than being
+>   associated with a CODEC.  The new card-based API allows a jack's pins
+>   to be supplied when the jack is first registered.  See: 970939964c26
+>   ("ASoC: Allow to register jacks at the card level")
+>
+> In other words, don't just say "the APIs changed," say "here is how
+> the APIs have changed."  This kind of introduction can be very helpful
+> and time saving for your reviewers.
+>
 
-Le 05/08/2020 à 16:03, Segher Boessenkool a écrit :
-> Hi!
-> 
-> On Wed, Aug 05, 2020 at 07:09:23AM +0000, Christophe Leroy wrote:
->> +/*
->> + * The macros sets two stack frames, one for the caller and one for the callee
->> + * because there are no requirement for the caller to set a stack frame when
->> + * calling VDSO so it may have omitted to set one, especially on PPC64
->> + */
-> 
-> If the caller follows the ABI, there always is a stack frame.  So what
-> is going on?
+Thanks for the feedback Alex. I'll take care of the commit message while
+sharing similar patches.
 
-Looks like it is not the case. See discussion at 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/2a67c333893454868bbfda773ba4b01c20272a5d.1588079622.git.christophe.leroy@c-s.fr/
-
-Seems like GCC uses the redzone and doesn't set a stack frame. I guess 
-it doesn't know that the inline assembly contains a function call so it 
-doesn't set the frame.
-
-
-Christophe
+--
+vaibhav
