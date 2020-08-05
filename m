@@ -2,64 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B36723CD76
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD77123CD72
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbgHERdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:33:11 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:36668 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728800AbgHER1u (ORCPT
+        id S1728753AbgHERbT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 Aug 2020 13:31:19 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:34911 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728665AbgHER2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:27:50 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A6D8A1C0BE1; Wed,  5 Aug 2020 19:27:47 +0200 (CEST)
-Date:   Wed, 5 Aug 2020 19:27:46 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [GIT PULL 0/5] ARM: SoC: changes for v5.9
-Message-ID: <20200805172746.GC1118@bug>
-References: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
+        Wed, 5 Aug 2020 13:28:42 -0400
+Received: by mail-yb1-f194.google.com with SMTP id y134so18954095yby.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:28:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jIESkjbosNzI2i/4mKhOLQJDIy5XIt98gpDKy5En5c4=;
+        b=Yi/UzzzM3z87dUT0oujl32lPhaPVgx2Sn1+vNdHuCqqEBJpFAuNC3KC8ty/ZhyDPl5
+         9iDRQJZg7MTbPYrdSCFiB/i4HkH2Tv7DUUusG1FP2dUxkmZ1Ld2gsVzPmNNKMnNQ3CIO
+         knLfysXQAQcR6XZI7aP/BJWVSGEDwA8xgIPET41D4z97mLroaQbAhHQcl9IsG3sbl8qO
+         of3Ii58DQsw7DnzD9gE8WbL4TJhKpogdqE/uXrpJPhIGLP4eKqVAdNDQq8ttWUWARg58
+         AW/66NlMN+t/gZrb4JUO2c/+cPqpfkvzejaRnAWMayfFKokBMp22f1fHdHZ9cK9sIFUk
+         EGWg==
+X-Gm-Message-State: AOAM530ZmDPU2lVWg4C6zpjT9GGvnSJz1tecJX/MAYYmDADQg1Ue+cEM
+        akkvhJCjXFgzmquD4F7pYyMO7hEZEGVIw2nOUkM=
+X-Google-Smtp-Source: ABdhPJzte+8NoKSJuGw9eYFA13DSpKHsDBmKqgn4k/Mm9Ytk75/dvy05IZxLYFMiua2sOAJDf1Wocp/j2vKgV+Qprrs=
+X-Received: by 2002:a25:4609:: with SMTP id t9mr6233360yba.231.1596648521373;
+ Wed, 05 Aug 2020 10:28:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200722152422.72532-1-kernel@esmil.dk> <20200722152422.72532-2-kernel@esmil.dk>
+ <CADasFoDfRwcfFHM_Sa-HzwSDyXEr2PNu3Wfe5riwZJM9XsELBQ@mail.gmail.com>
+In-Reply-To: <CADasFoDfRwcfFHM_Sa-HzwSDyXEr2PNu3Wfe5riwZJM9XsELBQ@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Wed, 5 Aug 2020 19:28:29 +0200
+Message-ID: <CANBLGcym5LER30xEVCmVU=6BTNTTLJDUL72DnVSB0V2MsBOwuA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] riscv: Clean up module relocations
+To:     Luke Nelson <lukenels@cs.washington.edu>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Zong Li <zong@andestech.com>, Andreas Schwab <schwab@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Thu, 30 Jul 2020 at 20:53, Luke Nelson <lukenels@cs.washington.edu> wrote:
+>
+> Thanks for the patch!
+>
+> > Also RISC-V has a number of instruction pairs to
+> > generate 32bit immediates or jump/call offsets. Eg.:
+> >
+> > lui   rd, hi20
+> > addi  rd, rd, lo12
+>
+> On RV64, both hi20 from lui and lo12 from addi are sign-extended to 64 bits.
+> This means that there are some 32-bit signed offsets (in the range
+> [2^31-2^11, 2^31-1])
+> that are not encodable using (lui+addi), (auipc+jalr), etc. (see
+> discussion at [1]).
+>
+> The following note is from the ISA manual:
+> >>> Note that the set of address offsets that can be formed by pairing LUI with LD,
+> >>> AUIPC with JALR, etc. in RV64I is [−2^31−2^11, 2^31−2^11−1].
 
-> 2. In the past few merge windows we have seen an increase in (usually
->    older) Android phones and tablets gaining mainline kernel support.
->    This time we get a total of eight Snapdragon phones and two Tegra
->    tablets. To me this indicates that we finally have sufficient driver
->    support, in particular on the GPU side, to make this workable.
->    It also shows the impact that a single hobbyist developer can have,
->    as most of the new support was submitted by Konrad Dybcio who only
->    started contributing kernel patches to mainline Linux for postmarketos
->    earlier this year.
+Good point!
 
-I'm happy to see that. So far, Nokia N900 is reaonably supported (basically everything
-but Bluetooth works, voicecalls miss userland daemon for audio), and Motorola
-Droid 4 (modem needs some more in kernel, camera will be hard).
+> The existing code and the new code both seem buggy if the offset happens to
+> be a 32-bit int but falls outside of the encodable range.
+>
+> > +       if (offset != (s32)offset) {
+> > [...]
+> > +       if (offset != (s32)offset) {
+> > [...]
+>
+> These checks should probably be replaced with something similar to
+> what's used in the RV64 BPF JIT here: [2],
+> except that this code should check if using RV32 or RV64, since the
+> encodable range differs for each.
 
-Is there anything with similar support coming in, or is it usual "it boots,
-serial console works"?
+Yeah, I decided to leave these checks as they are to not change
+everything at once, but I'll see if I can improve on those in the next
+version.
 
-Should we have some kind of linux-phones mailing list? There is quite a lot of
-stuff common in phones.
+> > My hope is that we can eventually factor out the code to generate
+> > immediates and instructions so it can be reused both here, in the
+> > jump-label code and in the bpf-jit code, but let's take it
+> > one step at a time.
+>
+> This sounds great! Having fewer copies of RISC-V encoding logic around will
+> hopefully decrease the likelihood of bugs :) Some other archs already
+> have shared
+> infrastructure for doing instruction encoding (e.g., in
+> arch/arm64/kernel/insn.c);
+> we should consider doing something similar for RISC-V.
 
-Best regards,
-									Pavel
+Exactly this. I've even tried to copy the naming from arm64 as well.
+I'll send a 2nd version of this after -rc1.
 
-
--- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+>
+> - Luke Nelson
+>
+> [1]: https://groups.google.com/a/groups.riscv.org/forum/#!topic/isa-dev/bwWFhBnnZFQ
+> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=489553dd13a88d8a882db10622ba8b9b58582ce4
