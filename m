@@ -2,254 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A802823CEC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5748323CEDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728533AbgHETEm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 Aug 2020 15:04:42 -0400
-Received: from mga04.intel.com ([192.55.52.120]:38938 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726641AbgHETDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:03:31 -0400
-IronPort-SDR: Bjr0eIBEThAAu5Pa0JaT/CbbgMMwnPs0CnH9UwSvZopieoKLfOhX2fiHleWlDGJwoImBN1sxBJ
- t3YbOaJwvnTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="150096648"
-X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="150096648"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 12:02:36 -0700
-IronPort-SDR: kOtcuMG4gMNIrsxRtpbD/fpRoVv/3BIlO6dAqrNrVpZQd0S6BdorrqFLwriXDE1FgTBhlMPwyU
- oG4b/XX9ymPA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="332937302"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga007.jf.intel.com with ESMTP; 05 Aug 2020 12:02:36 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 5 Aug 2020 12:02:36 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 5 Aug 2020 12:02:35 -0700
-Received: from orsmsx612.amr.corp.intel.com ([10.22.229.25]) by
- ORSMSX612.amr.corp.intel.com ([10.22.229.25]) with mapi id 15.01.1713.004;
- Wed, 5 Aug 2020 12:02:35 -0700
-From:   "Dey, Megha" <megha.dey@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "jgg@mellanox.com" <jgg@mellanox.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Lin, Jing" <jing.lin@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "jgg@mellanox.com" <jgg@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>
-CC:     "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: RE: [PATCH RFC v2 03/18] irq/dev-msi: Create IR-DEV-MSI irq domain
-Thread-Topic: [PATCH RFC v2 03/18] irq/dev-msi: Create IR-DEV-MSI irq domain
-Thread-Index: AQHWX3hgPPNI1mxfxEuTvl+wlEh0s6kUiEyAgBVtKUA=
-Date:   Wed, 5 Aug 2020 19:02:35 +0000
-Message-ID: <ec81670539674beea58c9a6c4104b26b@intel.com>
-References: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com>
- <159534735519.28840.10435935598386192252.stgit@djiang5-desk3.ch.intel.com>
- <87lfjbz3cs.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87lfjbz3cs.fsf@nanos.tec.linutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728233AbgHETHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:07:54 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:52505 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727066AbgHETHG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 15:07:06 -0400
+Received: from mail-qk1-f180.google.com ([209.85.222.180]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MuUvU-1ktqiK3KZG-00ralV for <linux-kernel@vger.kernel.org>; Wed, 05 Aug
+ 2020 21:07:03 +0200
+Received: by mail-qk1-f180.google.com with SMTP id p25so2232493qkp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:07:02 -0700 (PDT)
+X-Gm-Message-State: AOAM5327EMIC2+pHCnhzADtBtRjUtmqNExpKbaf1+pBPUraBz2CTZ61k
+        QQiIO0FW0Y5rYo6dIViGuBoZBX+LGwDd5MGrQGc=
+X-Google-Smtp-Source: ABdhPJxjj0wDC7OhYiMfIDd49ORNWNupSh5DH92LofMPrEqb1HOApEvRkUJlmHW3pwJQra2jfF+7R0Ek62KzxwXcbfs=
+X-Received: by 2002:a37:b942:: with SMTP id j63mr4772181qkf.138.1596654421650;
+ Wed, 05 Aug 2020 12:07:01 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
+ <20200805172746.GC1118@bug>
+In-Reply-To: <20200805172746.GC1118@bug>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 5 Aug 2020 21:06:45 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2KnmDXYCyst15=kZWneDTMFAbz47F_TYnY_26+W4PM6A@mail.gmail.com>
+Message-ID: <CAK8P3a2KnmDXYCyst15=kZWneDTMFAbz47F_TYnY_26+W4PM6A@mail.gmail.com>
+Subject: Re: [GIT PULL 0/5] ARM: SoC: changes for v5.9
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Konrad Dybcio <konradybcio@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:bGbsl3BEepsSAYqvdVmSXF/5nBRHuGya08h7FkJDE8Ps8OjD/Zt
+ dNGz17iV9XQ8VfQTgaKs8GoY3UN5jtHOfTDa5spYsVCY4lhtK/tgBKg/E3Yj7Uv+1m1D3wU
+ Q3+XLNogeZmIvMVKBvMieEIvzckEGy7R3QbGWGGcUQFsf0yqrg7qsLxnzjWohXgukRguvs0
+ i06gabXC3kDtoEKkP0h3w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9GPoFj7rbPA=:U5u0PWKZkePxzrGz8hAokU
+ JAMQa+rq3a6gw8M70zPBv9/SaM/DbpaVOacioq+rq04sry2/ndJkOakOytJn5dLzDI36bBBZu
+ tbgDP+QgSvNrWyAkUIoFDn0GYNFmuxiyx4tJTTKAmitvk2f35JdqMz8EX2TxoDGV2lAi47L9t
+ daRXtbFLyYx8HyqyTeayZqTHDuJP2K/RKLheucSgsXqDdsFOoQF6ix4fQ6D568ygWHwhAlVRO
+ 5YnKELMPJDC7BJ9cx3DuLh6tob7R6JtI3R5hfh6Zp9v+Mq3hYKSKpVLcFZcIQVwZPcrpSpeDX
+ ZwCHHrd0cs1IPg4oqCSUPFZegG1jtcNHZdCNqT1f/GQr8vg7e2l26JtUk4RG3Tp72Ef6prk5G
+ MGbf1F9CqFIckfHhQKjLSFxDE1die9zppRbvyz+nuWkchisu9UAvewOcIAehZ6NYuMB7Y9Y2x
+ qp3LYu2idLLZW8Cv3f+xMWl+PbWv8C01cr793FtzqzomyAXWA0pWx6T+SUBHllbj7AoFkQNTi
+ Kk6jNjpQSlXdD5XLO91WYHuOy1+MWK+yh52FluRDCByAY4peYGkEJCBdvKs20kr3wEyVfgdOS
+ hMzsFXGN6hPDTszt9a8mD5IOuXyhrXLwYC3sjrk04hbRG/OtL9yGAzuDUFfk6JvYnR9VsHYo9
+ peohmagdSqi4+MNwYDV/TnZS7UlMDcxRQHeZymmNA/a5tayoR2kjVWV5AMZkWnVwb8v6Lluzk
+ Wh2zjNtW0MD6WV2M+UZBvwQvax+4POArF2Qs6dtMFuZjIXxYWiIuqrtyVgtBUknZnnxWlYmDo
+ uURaYYjLLGQVO9PfSBQ3OYYX5yX3cZCgcCKu2cJI5jM3aM4ErZ+jbGqmAJxmqnEIXL7Dg0F
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Wed, Aug 5, 2020 at 7:27 PM Pavel Machek <pavel@ucw.cz> wrote:
+> > 2. In the past few merge windows we have seen an increase in (usually
+> >    older) Android phones and tablets gaining mainline kernel support.
+> >    This time we get a total of eight Snapdragon phones and two Tegra
+> >    tablets. To me this indicates that we finally have sufficient driver
+> >    support, in particular on the GPU side, to make this workable.
+> >    It also shows the impact that a single hobbyist developer can have,
+> >    as most of the new support was submitted by Konrad Dybcio who only
+> >    started contributing kernel patches to mainline Linux for postmarketos
+> >    earlier this year.
+>
+> I'm happy to see that. So far, Nokia N900 is reaonably supported (basically everything
+> but Bluetooth works, voicecalls miss userland daemon for audio), and Motorola
+> Droid 4 (modem needs some more in kernel, camera will be hard).
+>
+> Is there anything with similar support coming in, or is it usual "it boots,
+> serial console works"?
 
-> -----Original Message-----
-> From: Thomas Gleixner <tglx@linutronix.de>
-> Sent: Wednesday, July 22, 2020 1:45 PM
-> To: Jiang, Dave <dave.jiang@intel.com>; vkoul@kernel.org; Dey, Megha
-> <megha.dey@intel.com>; maz@kernel.org; bhelgaas@google.com;
-> rafael@kernel.org; gregkh@linuxfoundation.org; hpa@zytor.com;
-> alex.williamson@redhat.com; Pan, Jacob jun <jacob.jun.pan@intel.com>; Raj,
-> Ashok <ashok.raj@intel.com>; jgg@mellanox.com; Liu, Yi L <yi.l.liu@intel.com>;
-> Lu, Baolu <baolu.lu@intel.com>; Tian, Kevin <kevin.tian@intel.com>; Kumar,
-> Sanjay K <sanjay.k.kumar@intel.com>; Luck, Tony <tony.luck@intel.com>; Lin,
-> Jing <jing.lin@intel.com>; Williams, Dan J <dan.j.williams@intel.com>;
-> kwankhede@nvidia.com; eric.auger@redhat.com; parav@mellanox.com;
-> jgg@mellanox.com; rafael@kernel.org; Hansen, Dave
-> <dave.hansen@intel.com>; netanelg@mellanox.com; shahafs@mellanox.com;
-> yan.y.zhao@linux.intel.com; pbonzini@redhat.com; Ortiz, Samuel
-> <samuel.ortiz@intel.com>; Hossain, Mona <mona.hossain@intel.com>
-> Cc: dmaengine@vger.kernel.org; linux-kernel@vger.kernel.org;
-> x86@kernel.org; linux-pci@vger.kernel.org; kvm@vger.kernel.org
-> Subject: Re: [PATCH RFC v2 03/18] irq/dev-msi: Create IR-DEV-MSI irq domain
-> 
-> Dave Jiang <dave.jiang@intel.com> writes:
-> > From: Megha Dey <megha.dey@intel.com>
-> >
-> > When DEV_MSI is enabled, the dev_msi_default_domain is updated to the
-> > base DEV-MSI irq  domain. If interrupt remapping is enabled, we create
-> 
-> s/we//
+My impression is that the newly added phones are still fairly rudimentary,
+but some others that were added in the past releases have gotten
+further. I don't know any details, but I've added Konrad to Cc, he can
+comment on his work.
 
-ok
-> 
-> > a new IR-DEV-MSI irq domain and update the dev_msi_default domain to
-> > the same.
-> >
-> > For X86, introduce a new irq_alloc_type which will be used by the
-> > interrupt remapping driver.
-> >
-> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > Signed-off-by: Megha Dey <megha.dey@intel.com>
-> > Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-> > ---
-> >  arch/x86/include/asm/hw_irq.h       |    1 +
-> >  arch/x86/kernel/apic/msi.c          |   12 ++++++
-> >  drivers/base/dev-msi.c              |   66 +++++++++++++++++++++++++++++++----
-> >  drivers/iommu/intel/irq_remapping.c |   11 +++++-
-> >  include/linux/intel-iommu.h         |    1 +
-> >  include/linux/irqdomain.h           |   11 ++++++
-> >  include/linux/msi.h                 |    3 ++
-> 
-> Why is this mixing generic code, x86 core code and intel specific driver code?
-> This is new functionality so:
-> 
->       1) Provide the infrastructure
->       2) Add support to architecture specific parts
->       3) Enable it
+One of the missing pieces with the OMAP based phones has always
+been the GPU, and on that front I think by now almost every other GPU
+is ahead.
 
-Ok, I will try to adhere to the layering next time around..
-> 
-> > +
-> > +#ifdef CONFIG_DEV_MSI
-> > +int dev_msi_prepare(struct irq_domain *domain, struct device *dev,
-> > +			   int nvec, msi_alloc_info_t *arg) {
-> > +	memset(arg, 0, sizeof(*arg));
-> > +
-> > +	arg->type = X86_IRQ_ALLOC_TYPE_DEV_MSI;
-> > +
-> > +	return 0;
-> > +}
-> > +#endif
-> 
-> What is this? Tons of new lines for taking up more space and not a single
-> comment.
+> Should we have some kind of linux-phones mailing list? There is quite a lot of
+> stuff common in phones.
 
-Hmm, I will add a comment..
-> 
-> > -static int dev_msi_prepare(struct irq_domain *domain, struct device
-> > *dev,
-> > +int __weak dev_msi_prepare(struct irq_domain *domain, struct device
-> > +*dev,
-> >  			   int nvec, msi_alloc_info_t *arg)  {
-> >  	memset(arg, 0, sizeof(*arg));
-> 
-> Oh well. So every architecure which needs to override this and I assume all
-> which are eventually going to support it need to do the memset() in their
-> override.
-> 
->        memset(arg,,,);
->        arch_dev_msi_prepare();
-> 
-> 
-Per you suggestion, I have introduced arch_dev_msi_prepare which returns 0 by default unless
-overridden by arch code in the next patch set.
+PostmarketOS is probably the right place to look for this.
 
-> > -	dev_msi_default_domain = msi_create_irq_domain(fn,
-> &dev_msi_domain_info, parent);
-> > +	/*
-> > +	 * This initcall may come after remap code is initialized. Ensure that
-> > +	 * dev_msi_default domain is updated correctly.
-> 
-> What? No, this is a disgusting hack. Get your ordering straight, that's not rocket
-> science.
-> 
-
-Hmm yeah, actually I realized we don't really need to have 2 new IRQ domains for dev-msi 
-(with and without interrupt remapping enabled). Hence all this will go away in the next round
-of patches.
-
-> > +#ifdef CONFIG_IRQ_REMAP
-> 
-> IRQ_REMAP is x86 specific. Is this file x86 only or intended to be for general use?
-> If it's x86 only, then this should be clearly documented. If not, then these
-> x86'isms have no place here.
-
-True, I will take care of this in the next patch set.
-> 
-> > +struct irq_domain *create_remap_dev_msi_irq_domain(struct irq_domain
-> *parent,
-> > +						   const char *name)
-> 
-> So we have msi_create_irq_domain() and this is about dev_msi, right? So can
-> you please stick with a consistent naming scheme?
-
-sure
-> 
-> > +{
-> > +	struct fwnode_handle *fn;
-> > +	struct irq_domain *domain;
-> > +
-> > +	fn = irq_domain_alloc_named_fwnode(name);
-> > +	if (!fn)
-> > +		return NULL;
-> > +
-> > +	domain = msi_create_irq_domain(fn, &dev_msi_ir_domain_info,
-> parent);
-> > +	if (!domain) {
-> > +		pr_warn("failed to initialize irqdomain for IR-DEV-MSI.\n");
-> > +		return ERR_PTR(-ENXIO);
-> > +	}
-> > +
-> > +	irq_domain_update_bus_token(domain,
-> DOMAIN_BUS_PLATFORM_MSI);
-> > +
-> > +	if (!dev_msi_default_domain)
-> > +		dev_msi_default_domain = domain;
-> 
-> Can this be called several times? If so, then this lacks a comment. If not, then
-> this condition is useless.
-
-Hmm this will go way in the next patch set, thank you for your input!
-> 
-> Thanks,
-> 
->         tglx
+       Arnd
