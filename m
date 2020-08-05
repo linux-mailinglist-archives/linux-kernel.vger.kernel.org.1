@@ -2,156 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5032223C76B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0EF23C77C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgHEIIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 04:08:13 -0400
-Received: from mga17.intel.com ([192.55.52.151]:27768 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728103AbgHEIG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 04:06:59 -0400
-IronPort-SDR: zFV+RSDXo+QrxeBWfm5urjuU+5dK/syNoNXjrI/wBF9hNaWxlMt4cEZWk+YS2uzhuQPmIWy6sy
- 0R6yjcZIUBNA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="132565404"
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="132565404"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 01:06:56 -0700
-IronPort-SDR: TXCzUvfTE8HQm5pRaoT3axqbHZpTJ9m0DQlZimClpzcxkZNDv90pZBYKMOQERpX3hG3+4OXvIn
- l9U1IhTsjg3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="493195293"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
-  by fmsmga005.fm.intel.com with ESMTP; 05 Aug 2020 01:06:54 -0700
-Subject: Re: [PATCH v2 6/6] sdhci: tegra: Add missing TMCLK for data timeout
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        ulf.hansson@linaro.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-References: <1596515363-27235-1-git-send-email-skomatineni@nvidia.com>
- <1596515363-27235-7-git-send-email-skomatineni@nvidia.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <d131fc8c-fa1f-cb67-fe6a-955d3582d1d6@intel.com>
-Date:   Wed, 5 Aug 2020 11:06:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728267AbgHEILJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 04:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728214AbgHEIHW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 04:07:22 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291ADC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 01:07:22 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id i129so4835331vsi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 01:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H0nOFFF7hzc6dw8TmhAOGzyrKIPGf5iLMCTuLYuw0u4=;
+        b=SPNRDUgdSDQlK5tqqIU4NcO4Laf7h6KZOhYv7nAV/kYD7hmyqmT/G00JE4LmRs3N54
+         uQpwTCU1s+SbL0Kbqlns5LWQ+tbXmteqBTgtQYSBsmekDKE5eCLjvth/Tr7fuIFPBs3R
+         NRf/Ne1J9uPNH825RyxPoTL9RQkaRMYB+Mk3awoR+70zFSOva7Tu8e1KglvZ0cuDsNd1
+         nOKvqqn1RDqm5ZutMWgwgZeUri7lqzd0biqY1+X+nDRytnsKlLTieF5hIHN1HNDij/1s
+         HOp/DYpDv9CNrpYCEJt6MKUvVhTP/9UgcCVMn6oQtDGJqdNW6xA58AkW3hDIq1wMghtN
+         BwkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H0nOFFF7hzc6dw8TmhAOGzyrKIPGf5iLMCTuLYuw0u4=;
+        b=WZ9rVEaIHwlXQvNBZVt/DR8NpizKp7A6YAFhp2emnQIQK4kLuclyfIw1noQKcW47mq
+         +Szi9eKsnQu/4c4DT2Q9L5rECCAZhFbf3btNEMAUdq1l4+BAaejrLTI7Q0S6fxPpfBaT
+         DpcgDBETgIRc6nCcTP72dl2zfYVaIpQ4VaQ14tiHG/sWXoc+YBYZ6wOHBDLZcYsFk8Yv
+         IYxde/3GJ9ObKHAa90lDw0vub7ZVkhiNsIIK86P4tbB2skPXqEs/vzlw4p/a3KPRdgor
+         NP+mFyQmdL/y5INN2iIFjYXA88a1zI6ZtdfXvRWIMEoPWv+SDgQ2up/WMmRoXfzGOT00
+         fxUg==
+X-Gm-Message-State: AOAM530CkiWCeWZGeOCHaMZDEidxBMtp5eLV1PhnWKCPO9vxpOGtfMFm
+        hmZj5GcEcAo3kAe1g9HYkh7jowQW
+X-Google-Smtp-Source: ABdhPJyywUkwd2MNVNywvYnb9KFia/D+EVX1rgJYxN0t4//18F/rJmFs8xmvm7R/jr5EC+HhylQP9w==
+X-Received: by 2002:a67:f6d7:: with SMTP id v23mr1165269vso.38.1596614841056;
+        Wed, 05 Aug 2020 01:07:21 -0700 (PDT)
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
+        by smtp.gmail.com with ESMTPSA id u3sm264272vkb.0.2020.08.05.01.07.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 01:07:19 -0700 (PDT)
+Received: by mail-vs1-f42.google.com with SMTP id q13so15293901vsn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 01:07:18 -0700 (PDT)
+X-Received: by 2002:a67:f5ce:: with SMTP id t14mr1105046vso.240.1596614838401;
+ Wed, 05 Aug 2020 01:07:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1596515363-27235-7-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200804123012.378750-1-colin.king@canonical.com> <b99004ea-cd9d-bec3-5f9f-82dcb00a6284@gmail.com>
+In-Reply-To: <b99004ea-cd9d-bec3-5f9f-82dcb00a6284@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 5 Aug 2020 10:06:41 +0200
+X-Gmail-Original-Message-ID: <CA+FuTSd9K+s1rXUFpb_RWEC-uAgwU1Vz44zaUPaZK0cfsX4kwA@mail.gmail.com>
+Message-ID: <CA+FuTSd9K+s1rXUFpb_RWEC-uAgwU1Vz44zaUPaZK0cfsX4kwA@mail.gmail.com>
+Subject: Re: [PATCH] selftests/net: skip msg_zerocopy test if we have less
+ than 4 CPUs
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/08/20 7:29 am, Sowjanya Komatineni wrote:
-> commit b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
+On Wed, Aug 5, 2020 at 2:54 AM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>
+>
+>
+> On 8/4/20 5:30 AM, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > The current test will exit with a failure if it cannot set affinity on
+> > specific CPUs which is problematic when running this on single CPU
+> > systems. Add a check for the number of CPUs and skip the test if
+> > the CPU requirement is not met.
+> >
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >  tools/testing/selftests/net/msg_zerocopy.sh | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/net/msg_zerocopy.sh b/tools/testing/selftests/net/msg_zerocopy.sh
+> > index 825ffec85cea..97bc527e1297 100755
+> > --- a/tools/testing/selftests/net/msg_zerocopy.sh
+> > +++ b/tools/testing/selftests/net/msg_zerocopy.sh
+> > @@ -21,6 +21,11 @@ readonly DADDR6='fd::2'
+> >
+> >  readonly path_sysctl_mem="net.core.optmem_max"
+> >
+> > +if [[ $(nproc) -lt 4 ]]; then
+> > +     echo "SKIP: test requires at least 4 CPUs"
+> > +     exit 4
+> > +fi
+> > +
+> >  # No arguments: automated test
+> >  if [[ "$#" -eq "0" ]]; then
+> >       $0 4 tcp -t 1
+> >
+>
+> Test explicitly uses CPU 2 and 3, right ?
+>
+> nproc could be 500, yet cpu 2 or 3 could be offline
+>
+> # cat /sys/devices/system/cpu/cpu3/online
+> 0
+> # echo $(nproc)
+> 71
 
-So that could be a Fixes tag also?
+The cpu affinity is only set to bring some stability across runs.
 
-> 
-> Tegra210 and later has a separate sdmmc_legacy_tm (TMCLK) used by Tegra
-> SDMMC hawdware for data timeout to achive better timeout than using
-> SDCLK and using TMCLK is recommended.
-> 
-> USE_TMCLK_FOR_DATA_TIMEOUT bit in Tegra SDMMC register
-> SDHCI_TEGRA_VENDOR_SYS_SW_CTRL can be used to choose either TMCLK or
-> SDCLK for data timeout.
-> 
-> Default USE_TMCLK_FOR_DATA_TIMEOUT bit is set to 1 and TMCLK is used
-> for data timeout by Tegra SDMMC hardware and having TMCLK not enabled
-> is not recommended.
-> 
-> So, this patch fixes it.
-> 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+The test does not actually verify that a run with zerocopy is some
+factor faster than without, as that factor is hard to choose across
+all platforms. As a result the automated run mainly gives code coverage.
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-
-> ---
->  drivers/mmc/host/sdhci-tegra.c | 41 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
-> index 31ed321..c0b9405 100644
-> --- a/drivers/mmc/host/sdhci-tegra.c
-> +++ b/drivers/mmc/host/sdhci-tegra.c
-> @@ -140,6 +140,7 @@ struct sdhci_tegra_autocal_offsets {
->  struct sdhci_tegra {
->  	const struct sdhci_tegra_soc_data *soc_data;
->  	struct gpio_desc *power_gpio;
-> +	struct clk *tmclk;
->  	bool ddr_signaling;
->  	bool pad_calib_required;
->  	bool pad_control_available;
-> @@ -1611,6 +1612,44 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
->  		goto err_power_req;
->  	}
->  
-> +	/*
-> +	 * Tegra210 has a separate SDMMC_LEGACY_TM clock used for host
-> +	 * timeout clock and SW can choose TMCLK or SDCLK for hardware
-> +	 * data timeout through the bit USE_TMCLK_FOR_DATA_TIMEOUT of
-> +	 * the register SDHCI_TEGRA_VENDOR_SYS_SW_CTRL.
-> +	 *
-> +	 * USE_TMCLK_FOR_DATA_TIMEOUT bit default is set to 1 and SDMMC uses
-> +	 * 12Mhz TMCLK which is advertised in host capability register.
-> +	 * With TMCLK of 12Mhz provides maximum data timeout period that can
-> +	 * be achieved is 11s better than using SDCLK for data timeout.
-> +	 *
-> +	 * So, TMCLK is set to 12Mhz and kept enabled all the time on SoC's
-> +	 * supporting SDR104 mode and when not using SDCLK for data timeout.
-> +	 */
-> +
-> +	if ((soc_data->nvquirks & NVQUIRK_ENABLE_SDR104) &&
-> +	    !(soc_data->pdata->quirks & SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK)) {
-> +		clk = devm_clk_get(&pdev->dev, "tmclk");
-> +		if (IS_ERR(clk)) {
-> +			rc = PTR_ERR(clk);
-> +			if (rc == -EPROBE_DEFER)
-> +				goto err_power_req;
-> +
-> +			dev_warn(&pdev->dev, "failed to get tmclk: %d\n", rc);
-> +			clk = NULL;
-> +		}
-> +
-> +		clk_set_rate(clk, 12000000);
-> +		rc = clk_prepare_enable(clk);
-> +		if (rc) {
-> +			dev_err(&pdev->dev,
-> +				"failed to enable tmclk: %d\n", rc);
-> +			goto err_power_req;
-> +		}
-> +
-> +		tegra_host->tmclk = clk;
-> +	}
-> +
->  	clk = devm_clk_get(mmc_dev(host->mmc), NULL);
->  	if (IS_ERR(clk)) {
->  		rc = PTR_ERR(clk);
-> @@ -1654,6 +1693,7 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
->  err_rst_get:
->  	clk_disable_unprepare(pltfm_host->clk);
->  err_clk_get:
-> +	clk_disable_unprepare(tegra_host->tmclk);
->  err_power_req:
->  err_parse_dt:
->  	sdhci_pltfm_free(pdev);
-> @@ -1671,6 +1711,7 @@ static int sdhci_tegra_remove(struct platform_device *pdev)
->  	reset_control_assert(tegra_host->rst);
->  	usleep_range(2000, 4000);
->  	clk_disable_unprepare(pltfm_host->clk);
-> +	clk_disable_unprepare(tegra_host->tmclk);
->  
->  	sdhci_pltfm_free(pdev);
->  
-> 
-
+It's preferable to always run. And on sched_setaffinity failure log a
+message about possible jitter and continue. I can send that patch, if
+the approach sounds good.
