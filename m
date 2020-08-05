@@ -2,163 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5374D23D14C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D30723D0E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729777AbgHET6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
+        id S1729199AbgHETyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727920AbgHEQmM (ORCPT
+        with ESMTP id S1728022AbgHEQtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:42:12 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267E1C094244
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:26:40 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id p20so5798446wrf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:26:39 -0700 (PDT)
+        Wed, 5 Aug 2020 12:49:18 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC98C0A54D7
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:35:07 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 3so6379462wmi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:35:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=rz+460zN+OkszOn8+vBru36XCbCu8scZ/4ePoWYVtUg=;
-        b=F7rF0IMWYFHctSXsi4L5jkI7s2rDEICofDZEIFb/Mnc0olQ1F9dR20+N7FHkksIJge
-         SmA4W+izSWd2xpr3HvHbsiAy+2J1K2AMgrnaQYZfVaf/c7SlSw0yYJXZZUv7p6LI3a9x
-         D3IL3vF8GSwDnq/h9THfUWuSperQHqsQwJvjVuh5vhouVgLuNqrJ899nDX2jWX6RbkR1
-         63wyQypBQ963B/M2vWSesAEOtHwCqDpsPef7QwKCS2VITQpHYr0zVrx+NxMd6fDsFBHA
-         rHmBhDoDO4Y4D9FJa9440x3SsTx2KeUrt7UW4Rc8UBLwgdJz5Jsph0fgwQqOakfu3+FB
-         QZ1Q==
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XXeGLz34bYWmNFzqfqhBtWZ9iEar1i2pmO1UJcovYN0=;
+        b=agV0pjX4C9pKnYX6aRQmdh11gXtpju5b6eyH31dPeE3+d0t0s8UmTLMKvFzbX0NGql
+         BIpbiK5CXTPlUl1NNaefSN+RGPcsEsE8uwZF6QV6hBcDQlus9BFWTGCyHPV8CdbSNtTH
+         DnI0EJBOdA3WYLC5MQ0ImCA9JghATjNOsXvcFiKgk9vqXb4jopbwUqxQiYJCS+S3dzZD
+         e0GBLF0MRh7ZMmmY+McX6c3oQAryC8Il5xlx2AB+so/UCiZBnnxqDuIi2xjwNkBB1dnz
+         XU5zN0E+8uZu4QRAcUkvoDRYMKN/6mg/5c2HZvKmOk9WdG4tJ4Kw/r67W8rqJD0jtN+m
+         vyRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=rz+460zN+OkszOn8+vBru36XCbCu8scZ/4ePoWYVtUg=;
-        b=G5ik7JP//DytjiDkyFf3qJowtQz5zWa7IofNbSW8Sj5gmF40cj5aMPS4BEpeKTUjoj
-         GIMETKCBXsTNb+LwBEeND47xoQiwhghTYyU1UwFZUcYpDK3Mcwt4EvmguE0yQ9mkiFo9
-         rNuFpEvO775uuXt/eNtuJvazTziGvtGx6lsAeTqx3l3KUWn5J1Dw8qjAyduES+qN2De1
-         td+lGdC0u2cbUk1ZNpsYVUREv17Q9ec2bEdq5nKy1HeevTzfGojx6nbqV0nWZCCg/Dtm
-         nF335uAKjO9ztwUL9VkPy+SlimnsNwVt3+8oC/+qeGFwnXalKWC52tm9BltGNlT+nAHH
-         D0iw==
-X-Gm-Message-State: AOAM533ZhL5PMSdLjCVSJoA1IpHpIdULxHwHCA3uM8RAz9t5IMKxW4WT
-        lciJrA+VHxLxfwq32niZZVUH8Q==
-X-Google-Smtp-Source: ABdhPJyERtYQbOcIa35dXAjlEnTUCu9FuPXaK99mV4OPiJJJ9/GGeawbtGASUnjMiR7XXrPMsQzglA==
-X-Received: by 2002:adf:cf10:: with SMTP id o16mr2613948wrj.380.1596633996070;
-        Wed, 05 Aug 2020 06:26:36 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id p15sm2718271wrj.61.2020.08.05.06.26.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:26:34 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 15:26:29 +0200
-From:   Marco Elver <elver@google.com>
-To:     bp@alien8.de, dave.hansen@linux.intel.com, fenghua.yu@intel.com,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        tony.luck@intel.com, x86@kernel.org, yu-cheng.yu@intel.com,
-        peterz@infradead.org, jgross@suse.com, sdeep@vmware.com,
-        virtualization@lists.linux-foundation.org,
-        kasan-dev@googlegroups.com
-Cc:     syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>
-Subject: [PATCH] x86/paravirt: Add missing noinstr to arch_local*() helpers
-Message-ID: <20200805132629.GA87338@elver.google.com>
-References: <0000000000007d3b2d05ac1c303e@google.com>
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XXeGLz34bYWmNFzqfqhBtWZ9iEar1i2pmO1UJcovYN0=;
+        b=TvXM1kQ77UAn+WHgucl+MCOwQoJNGqEr2yTcmLnbc1NZ0MWlyb/FrullAucpIK9aS2
+         4EBt+aGpWTnvjRnBcns34gsWG0It/RgUtDJFokQsfIUmDSJbpbehKnCFaLOmz66y8gpT
+         fn2URdYnTph+ohD31bJhQr7f/jK75f7JzjuVwtRJlbfLUoojJdOnW56uB6wDx9Vd49F4
+         4O0BynIV8KbQnug/XHQR+Q3AlgoNzfpR4uixB34uuUgTFDCkX8ksEc+vMyarQbwQSY0H
+         b+OLB4lI4APM+tZjccDKSp579jmn0vaT0G6kFzQYZro4OBk7lKc+F3KF4ShTRCfuCRer
+         M88g==
+X-Gm-Message-State: AOAM532GMVkgDBoYYpYjRVlT+UXKtH2aNzELT763FahFT763INmPnYSf
+        FFjBH+is3hMrgBEAlFgGQlaQpw==
+X-Google-Smtp-Source: ABdhPJyUOCJay8eOBTQR8YFF6VpCvXgQAeXKUqTHzNDQGKnWVXRjM4m9NzNk3pSzAwtzcQVabNFsqg==
+X-Received: by 2002:a1c:9952:: with SMTP id b79mr3389342wme.68.1596634503172;
+        Wed, 05 Aug 2020 06:35:03 -0700 (PDT)
+Received: from trex (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
+        by smtp.gmail.com with ESMTPSA id f15sm2948383wrt.80.2020.08.05.06.35.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 05 Aug 2020 06:35:02 -0700 (PDT)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Wed, 5 Aug 2020 15:35:01 +0200
+To:     Jorge Ramirez-Ortiz <jorge@foundries.io>
+Cc:     jens.wiklander@linaro.org, sumit.garg@linaro.org,
+        ricardo@foundries.io, mike@foundries.io, tee-dev@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv6] drivers: optee: allow op-tee to access devices on the
+ i2c bus
+Message-ID: <20200805133501.GA8360@trex>
+References: <20200722212105.1798-1-jorge@foundries.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <0000000000007d3b2d05ac1c303e@google.com>
-User-Agent: Mutt/1.14.4 (2020-06-18)
+In-Reply-To: <20200722212105.1798-1-jorge@foundries.io>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing noinstr to arch_local*() helpers, as they may be called from
-noinstr code.
+On 22/07/20, Jorge Ramirez-Ortiz wrote:
+> Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
+> control this type of cryptographic devices it needs coordinated access
+> to the bus, so collisions and RUNTIME_PM dont get in the way.
+> 
+> This trampoline driver allow OP-TEE to access them.
+> Tested on imx8mm LPDDR4
+> 
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> ---
+>  v6: compile out if CONFIG_I2C not enabled
+>  v5: alphabetic order of includes
+>  v4: remove unnecessary extra line in optee_msg.h
+>  v3: use from/to msg param to support all types of memory
+>      modify OPTEE_MSG_RPC_CMD_I2C_TRANSFER message id
+>      
+>  drivers/tee/optee/optee_msg.h | 16 +++++++
+>  drivers/tee/optee/rpc.c       | 88 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 104 insertions(+)
+> 
+> diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
+> index 795bc19ae17a..14b580f55356 100644
+> --- a/drivers/tee/optee/optee_msg.h
+> +++ b/drivers/tee/optee/optee_msg.h
+> @@ -419,4 +419,20 @@ struct optee_msg_arg {
+>   */
+>  #define OPTEE_MSG_RPC_CMD_SHM_FREE	7
+>  
+> +/*
+> + * Access a device on an i2c bus
+> + *
+> + * [in]  param[0].u.value.a		mode: RD(0), WR(1)
+> + * [in]  param[0].u.value.b		i2c adapter
+> + * [in]  param[0].u.value.c		i2c chip
+> + *
+> + * [in/out] memref[1]			buffer to exchange the transfer data
+> + *					with the secure world
+> + *
+> + * [out]  param[0].u.value.a		bytes transferred by the driver
+> + */
+> +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 21
+> +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
+> +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
+> +
+>  #endif /* _OPTEE_MSG_H */
+> diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+> index b4ade54d1f28..5fd5c6c93896 100644
+> --- a/drivers/tee/optee/rpc.c
+> +++ b/drivers/tee/optee/rpc.c
+> @@ -7,6 +7,7 @@
+>  
+>  #include <linux/delay.h>
+>  #include <linux/device.h>
+> +#include <linux/i2c.h>
+>  #include <linux/slab.h>
+>  #include <linux/tee_drv.h>
+>  #include "optee_private.h"
+> @@ -49,6 +50,90 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+>  	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+>  }
+>  
+> +#if IS_ENABLED(CONFIG_I2C)
+> +static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+> +					     struct optee_msg_arg *arg)
+> +{
+> +	struct i2c_client client;
+> +	struct tee_param *params;
+> +	uint32_t type;
+> +	int i, ret;
+> +	size_t len;
+> +	char *buf;
+> +	uint32_t attr[] = {
+> +		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
+> +		TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT,
+> +		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT,
+> +	};
+> +
+> +	if (arg->num_params != ARRAY_SIZE(attr)) {
+> +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +		return;
+> +	}
+> +
+> +	params = kmalloc_array(arg->num_params, sizeof(struct tee_param),
+> +			       GFP_KERNEL);
+> +	if (!params) {
+> +		arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
+> +		return;
+> +	}
+> +
+> +	if (optee_from_msg_param(params, arg->num_params, arg->params))
+> +		goto bad;
+> +
+> +	for (i = 0; i < arg->num_params; i++) {
+> +		type = params[i].attr & TEE_IOCTL_PARAM_ATTR_TYPE_MASK;
+> +		if (type != attr[i])
+> +			goto bad;
+> +	}
+> +
+> +	client.addr = params[0].u.value.c;
+> +	client.adapter = i2c_get_adapter(params[0].u.value.b);
+> +	if (!client.adapter)
+> +		goto bad;
+> +
+> +	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
+> +
+> +	buf = params[1].u.memref.shm->kaddr;
+> +	len = params[1].u.memref.size;
+> +
+> +	switch (params[0].u.value.a) {
+> +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
+> +		ret = i2c_master_recv(&client, buf, len);
+> +		break;
+> +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
+> +		ret = i2c_master_send(&client, buf, len);
+> +		break;
+> +	default:
+> +		i2c_put_adapter(client.adapter);
+> +		goto bad;
+> +	}
+> +
+> +	if (ret >= 0) {
+> +		params[2].u.value.a = ret;
+> +		arg->ret = TEEC_SUCCESS;
+> +	} else {
+> +		arg->ret = TEEC_ERROR_COMMUNICATION;
+> +	}
+> +
+> +	if (optee_to_msg_param(arg->params, arg->num_params, params))
+> +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +
+> +	i2c_put_adapter(client.adapter);
+> +	kfree(params);
+> +	return;
+> +bad:
+> +	kfree(params);
+> +	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +}
+> +#else
+> +static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+> +					     struct optee_msg_arg *arg)
+> +{
+> +	arg->ret = TEEC_ERROR_COMMUNICATION;
+> +}
+> +#endif
+> +
+>  static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
+>  {
+>  	struct wq_entry *w;
+> @@ -382,6 +467,9 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+>  	case OPTEE_MSG_RPC_CMD_SHM_FREE:
+>  		handle_rpc_func_cmd_shm_free(ctx, arg);
+>  		break;
+> +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
+> +		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
+> +		break;
+>  	default:
+>  		handle_rpc_supp_cmd(ctx, arg);
+>  	}
 
-On a KCSAN config with CONFIG_PARAVIRT=3Dy, syzbot stumbled across corrupt
-IRQ trace state, with lockdep_assert_irqs_enabled() failing spuriously.
-When enabling CONFIG_DEBUG_LOCKDEP=3Dy, we get a warning about
 
-	DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled())
-
-which we had seen before due to KCSAN-lockdep recursion. Due to
-"lockdep: Prepare for NMI IRQ state tracking", KCSAN was changed to use
-non-raw local_irq_{save,restore}(), assuming there is no more
-KCSAN-lockdep recursion.
-
-It turns out that the arch_local*() helpers in paravirt.h were missing
-noinstr, as they themselves are used from noinstr code that is called
-=66rom lockdep. When inserting debug-code that warns us if lockdep is in
-the stacktrace from KCSAN, we get,
-
-	RIP: 0010:kcsan_setup_watchpoint[...]
-	[...]
-	Call Trace:
-	 arch_local_save_flags+0x11/0x30 arch/x86/include/asm/paravirt.h:765
-	 check_preemption_disabled+0x51/0x140 lib/smp_processor_id.c:19
-	 __this_cpu_preempt_check+0x18/0x20 lib/smp_processor_id.c:65
-	 lockdep_hardirqs_off+0xaa/0x130 kernel/locking/lockdep.c:3801
-	 trace_hardirqs_off+0x14/0x80 kernel/trace/trace_preemptirq.c:76
-	 __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
-	 _raw_spin_lock_irqsave+0x48/0x90 kernel/locking/spinlock.c:159
-	 wake_up_new_task+0x2c/0x270 kernel/sched/core.c:3338
-	 _do_fork+0x27b/0x4f0 kernel/fork.c:2474
-	 kernel_thread+0x85/0xb0 kernel/fork.c:2502
-	 create_kthread kernel/kthread.c:315 [inline]
-	 kthreadd+0x427/0x500 kernel/kthread.c:634
-	 ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-pointing to arch_local_save_flags() in paravirt.h, which is called from
-noinstr functions in smp_processor_id.c, which in turn are called from
-lockdep.
-
-Link: https://lkml.kernel.org/r/0000000000007d3b2d05ac1c303e@google.com
-Reported-by: syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
----
- arch/x86/include/asm/paravirt.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravir=
-t.h
-index 3d2afecde50c..a606f2ba2b5e 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -760,27 +760,27 @@ bool __raw_callee_save___native_vcpu_is_preempted(lon=
-g cpu);
- 	((struct paravirt_callee_save) { func })
-=20
- #ifdef CONFIG_PARAVIRT_XXL
--static inline notrace unsigned long arch_local_save_flags(void)
-+static inline noinstr unsigned long arch_local_save_flags(void)
- {
- 	return PVOP_CALLEE0(unsigned long, irq.save_fl);
- }
-=20
--static inline notrace void arch_local_irq_restore(unsigned long f)
-+static inline noinstr void arch_local_irq_restore(unsigned long f)
- {
- 	PVOP_VCALLEE1(irq.restore_fl, f);
- }
-=20
--static inline notrace void arch_local_irq_disable(void)
-+static inline noinstr void arch_local_irq_disable(void)
- {
- 	PVOP_VCALLEE0(irq.irq_disable);
- }
-=20
--static inline notrace void arch_local_irq_enable(void)
-+static inline noinstr void arch_local_irq_enable(void)
- {
- 	PVOP_VCALLEE0(irq.irq_enable);
- }
-=20
--static inline notrace unsigned long arch_local_irq_save(void)
-+static inline noinstr unsigned long arch_local_irq_save(void)
- {
- 	unsigned long f;
-=20
---=20
-2.28.0.163.g6104cc2f0b6-goog
+any comments please?
