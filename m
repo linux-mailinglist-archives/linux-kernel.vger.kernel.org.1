@@ -2,169 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC0D23D0D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC3E23D134
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgHETxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46376 "EHLO
+        id S1728345AbgHET5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728135AbgHEQtp (ORCPT
+        with ESMTP id S1727976AbgHEQnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:49:45 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DAFC0A8887;
-        Wed,  5 Aug 2020 06:46:09 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f18so4442872wmc.0;
-        Wed, 05 Aug 2020 06:46:09 -0700 (PDT)
+        Wed, 5 Aug 2020 12:43:49 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057D8C0A8894
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:55:33 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id p16so26623106ile.0
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:55:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IvlO0ppqF9UArsb4hIlu04eWVyRDh7e1MY8XEpiuw5k=;
-        b=WQcRJ7Z65FK/7+pUqdkKp75OOYNe0WQjFo9Cw5blTqO239cCEwOFQZIYRnZC/dQ95J
-         Z+7BGqY7HIIQEtu4h7s6r67mif32DQb+48H4bbOm1WbvK7AZgLVZ0rAuQbs+6/sR6bF7
-         ty3+pNDO91++Due/cBCi7Kk//QXrlda/LRsn1wTegLtMxE0XOnHEj4pAf/fWrDg0xkXY
-         Jlr2BhQ3MG46ASm/9QD0OxE/3r5+HQlytZAmrxVeyAlRMzqD+BDqps77XKQ+zTq2Slkl
-         /yfoB2MKKPs1Myihdi0loj/EiIW4u2FBEo+EIK2xo2jjBLxORl8KKmP7Rzgk3LrvVxuq
-         izkQ==
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=T0iHC5DzypW6poy3NDVtNkEOvm1za2UqY6n/ov5xw0A=;
+        b=DAhkOvAYaZ9UtoECfWC2gAqYzdQdZu4/OTZhHotTaCMraihBeTETAb2o+tdVB+R9c/
+         fgruEjKoM8VG+YdsLo4GUZF8VaCggzTi5h3uToTV2f2Sv1hwOpZ5HvtTKuXa2Y1A6q3O
+         zX5fNDo98uB0Sok2zX9/YQGJMJ6y+B1u0vCnk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IvlO0ppqF9UArsb4hIlu04eWVyRDh7e1MY8XEpiuw5k=;
-        b=kTEmLvkzzrOX8Bf2ItYPoWwIXrw9/kJKF02B6e1vH5MI/F3sY76vG9ezh4I0oYWeLA
-         T0LDLyN0rznloltTEgL4Ekh82aIxy0lbSzWWJ22Y0qId4LOOlUpiuSFTAf0oCpYzxQAy
-         7/hxDmKTFosy+mBTNkj+A2rT1LorpBiWuRJM9oOKjMMsuZl+XESA0FqHRjd0cY50ExAc
-         1bbYMfU4e57ppJ+++wN543IHflannecL3+dYci5YYc8pd2F/NrKv5DZC8hQiK3hGeoNq
-         mpHQl7k2S7mtXnbsgQryyAYa40bw1+dlcBSZTrlf4QZcmWCEkbAy6UD7Ig4VUUU/2Gck
-         hWfg==
-X-Gm-Message-State: AOAM533G0U5lLhQwvViUvkzjB+aeRiGlJXdzAKTioIvpCV9kQBsGd7zI
-        qk9dc+mDeirLJeYDkqI2cLE=
-X-Google-Smtp-Source: ABdhPJz2VKUWk6KI0JO8VGpsFKkoIikz2P2rKNJOslir2jWvq2D49ff4HvuEEUnMhMtDL4+vNT/IJQ==
-X-Received: by 2002:a1c:2dc6:: with SMTP id t189mr3556800wmt.26.1596635166313;
-        Wed, 05 Aug 2020 06:46:06 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id k126sm3077720wme.17.2020.08.05.06.46.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:46:02 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 15:46:00 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     jonathanh@nvidia.com, frankc@nvidia.com, hverkuil@xs4all.nl,
-        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com,
-        digetx@gmail.com, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 08/10] gpu: host1x: mipi: Keep MIPI clock enabled till
- calibration is done
-Message-ID: <20200805134600.GA3351349@ulmo>
-References: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
- <1596469346-937-9-git-send-email-skomatineni@nvidia.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T0iHC5DzypW6poy3NDVtNkEOvm1za2UqY6n/ov5xw0A=;
+        b=Za+jP8TRd/y0YjnZe3RtdSUzgdbs16df2TFiS5X8njCCuxXR/VcLGsigxfqXCHYqCg
+         LxMpQDhPzEd81nj+e7JkTkWwEwclPVOzVhnanT6fcF27/HbebcmAEHWhssVszHxRHpTo
+         CAciMwgcQXCBLI1+Qtk7Gys+drDDkz0Q7ysTvqSWB7bjY18Ttz8Ge8Hh6cKtqr4ipo7V
+         4CCvqIwzQlSgfFFAwUzNTJFcvag1e9nkmSmlfk1i72O691ebfpG97BDKVEEN/updhlDm
+         SxnjoSDFqfUbwydUWMNfLpkFx9IdVV8Fb/HTe96jY2AlUOzzVOfVGiJmdXlYM0IP1nrB
+         gRUA==
+X-Gm-Message-State: AOAM533L/S4dvQ7qh+X0k/Omf9nLBSP34labvHyVaH2X1YG2KTjFkOMd
+        5mGdBSV62XpkRRWrMOv7SaQmXQ==
+X-Google-Smtp-Source: ABdhPJygRlU9l3OctXlmAVj+p1MKYQ+VT9ZvU9QPRbxWDqUzC6q+bEae4dy82QDhDGDE28iGtnJLqA==
+X-Received: by 2002:a92:c14d:: with SMTP id b13mr3548606ilh.269.1596635733090;
+        Wed, 05 Aug 2020 06:55:33 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id c2sm1073796iow.6.2020.08.05.06.55.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 06:55:32 -0700 (PDT)
+Subject: Re: [PATCH] soc: qmi: allow user to set handle wq to hiprio
+To:     =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     elder@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        kvalo@codeaurora.org, agross@kernel.org, ohad@wizery.com,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+        ath11k@lists.infradead.org, netdev@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        srinivas.kandagatla@linaro.org, sibis@codeaurora.org
+References: <ADUAnwD8DVByMMSsrG-r3Kri.3.1596374087585.Hmail.wenhu.wang@vivo.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <5c6123f2-1a65-8615-9d5d-3bb1d25818b2@ieee.org>
+Date:   Wed, 5 Aug 2020 08:55:30 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
-Content-Disposition: inline
-In-Reply-To: <1596469346-937-9-git-send-email-skomatineni@nvidia.com>
-User-Agent: Mutt/1.14.4 (2020-06-18)
+In-Reply-To: <ADUAnwD8DVByMMSsrG-r3Kri.3.1596374087585.Hmail.wenhu.wang@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/2/20 8:14 AM, 王文虎 wrote:
+> 
+>>> Currently the qmi_handle is initialized single threaded and strictly
+>>> ordered with the active set to 1. This is pretty simple and safe but
+>>> sometimes ineffency. So it is better to allow user to decide whether
+>>> a high priority workqueue should be used.
+>>
+>> Can you please describe a scenario where this is needed/desired and
+>> perhaps also comment on why this is not always desired?
+>>
+> 
+> Well, one scenario is that when the AP wants to check the status of the
+> subsystems and the whole QMI data path. It first sends out an indication
+> which asks the subsystems to report their status. After the subsystems send
+> responses to the AP, the responses then are queued on the workqueue of
+> the QMI handler. Actually the AP is configured to do the check in a specific
+> interval regularly. And it check the report counts within a specific delay after
+> it sends out the related indication. When the AP has been under a heavy
+> load for long, the reports are queue their without CPU resource to update
+> the report counts within the specific delay. As a result, the thread that checks
+> the report counts takes it misleadingly that the QMI data path or the subsystems
+> are crashed.
+> 
+> The patch can really resolve the problem mentioned abolve.
 
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Is it your intention to submit code that actually does what you describe
+above?  If so, then (as David said) you should propose this change at
+the time it will be needed--which is at the time you send that new
+code out for review.
 
-On Mon, Aug 03, 2020 at 08:42:24AM -0700, Sowjanya Komatineni wrote:
-> With the split of MIPI calibration into tegra_mipi_calibrate() and
-> tegra_mipi_wait(), MIPI clock is not kept enabled till the calibration
-> is done.
->=20
-> So, this patch skips disabling MIPI clock after triggering start of
-> calibration and disables it only after waiting for done status from
-> the calibration logic.
->=20
-> This patch renames tegra_mipi_calibrate() as tegra_mipi_start_calibration=
-()
-> and tegra_mipi_wait() as tegra_mipi_finish_calibration() to be inline
-> with their usage.
->=20
-> As MIPI clock is left enabled and in case of any failures with CSI input
-> streaming tegra_mipi_finish_calibration() will not get invoked.
-> So added new API tegra_mipi_cancel_calibration() which disables MIPI clock
-> and consumer drivers can call this in such cases.
->=20
-> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  drivers/gpu/drm/tegra/dsi.c |  4 ++--
->  drivers/gpu/host1x/mipi.c   | 19 ++++++++++---------
->  include/linux/host1x.h      |  5 +++--
->  3 files changed, 15 insertions(+), 13 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/tegra/dsi.c b/drivers/gpu/drm/tegra/dsi.c
-> index 3820e8d..a7864e9 100644
-> --- a/drivers/gpu/drm/tegra/dsi.c
-> +++ b/drivers/gpu/drm/tegra/dsi.c
-> @@ -694,11 +694,11 @@ static int tegra_dsi_pad_calibrate(struct tegra_dsi=
- *dsi)
->  		DSI_PAD_PREEMP_PD(0x03) | DSI_PAD_PREEMP_PU(0x3);
->  	tegra_dsi_writel(dsi, value, DSI_PAD_CONTROL_3);
-> =20
-> -	err =3D tegra_mipi_calibrate(dsi->mipi);
-> +	err =3D tegra_mipi_start_calibration(dsi->mipi);
->  	if (err < 0)
->  		return err;
-> =20
-> -	return tegra_mipi_wait(dsi->mipi);
-> +	return tegra_mipi_finish_calibration(dsi->mipi);
->  }
-> =20
->  static void tegra_dsi_set_timeout(struct tegra_dsi *dsi, unsigned long b=
-clk,
-> diff --git a/drivers/gpu/host1x/mipi.c b/drivers/gpu/host1x/mipi.c
-> index e606464..b15ab6e 100644
-> --- a/drivers/gpu/host1x/mipi.c
-> +++ b/drivers/gpu/host1x/mipi.c
-> @@ -293,17 +293,19 @@ int tegra_mipi_disable(struct tegra_mipi_device *de=
-v)
->  }
->  EXPORT_SYMBOL(tegra_mipi_disable);
-> =20
-> -int tegra_mipi_wait(struct tegra_mipi_device *device)
-> +void tegra_mipi_cancel_calibration(struct tegra_mipi_device *device)
-> +{
-> +	clk_disable(device->mipi->clk);
+Even in that case, I don't believe using a high priority workqueue
+would guarantee the improved behavior you think this would provide.
 
-Do we need to do anything with the MIPI_CAL_CTRL and MIPI_CAL_STATUS
-registers here? We don't clear the START bit in the former when the
-calibration has successfully finished, but I suspect that's because
-the bit is self-clearing. But I wonder if we still need to clear it
-upon cancellation to make sure the calibration does indeed stop.
+In case it wasn't clear already, this change won't be accepted
+at this time (despite your explanation above).
 
-Thierry
+						-Alex
 
---0OAP2g/MAC+5xKAE
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> For narmal situations, it is enough to just use normal priority QMI workqueue.
+> 
+>> Regards,
+>> Bjorn
+>>
+>>>
+>>> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+>>> ---
+>>>  drivers/net/ipa/ipa_qmi.c             | 4 ++--
+>>>  drivers/net/wireless/ath/ath10k/qmi.c | 2 +-
+>>>  drivers/net/wireless/ath/ath11k/qmi.c | 2 +-
+>>>  drivers/remoteproc/qcom_sysmon.c      | 2 +-
+>>>  drivers/slimbus/qcom-ngd-ctrl.c       | 4 ++--
+>>>  drivers/soc/qcom/pdr_interface.c      | 4 ++--
+>>>  drivers/soc/qcom/qmi_interface.c      | 9 +++++++--
+>>>  include/linux/soc/qcom/qmi.h          | 3 ++-
+>>>  samples/qmi/qmi_sample_client.c       | 4 ++--
+>>>  9 files changed, 20 insertions(+), 14 deletions(-)
+> 
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl8quBQACgkQ3SOs138+
-s6GBNw/+MTmEubphwcvWa9ieNScL1nFuVHEUP4lHuuvAbR/nUQ/vzMjHwCZsZKfJ
-8LACRgG2l/SCkv1ei6v6km7tQHIvpCI1ceJgljHZK6Jfdl8NgAUryJjr6xugZ7SJ
-DnAaqtE2j4Nf0Zi79PLxCXaOnU/nqALuYADJ6SOyyENnFwJnGnvHsjbhtvO94yMF
-11z6PLDQzsncmWl0SRIVMF0rql+NG+Xb3aJbUeqfXRFzF6SvOd7H7taCt8pD2oJJ
-+v+Mx6iqvkWFWeJ7e1IbYP7WhATL8c4kU6CcqKG7F+GW9Hrvh1NNw+R1k5DechLY
-b64JrgILrJdsjCfvs9AA68US//oXHTGXHwDhjmHmHPQhLv2eZZ4cPjvjvVACYW9b
-hUiwNJ4k1nsztAPewYHFM0ISJ0zGyO5AMKXG0k20EAFx/Tdu28hSUbOdlnWhu0fL
-zSslBqdnsfBO1AAFMO5DS/2IbIangcLQWZbnA0RKb61znnLHhpf1RdmCauw0Trnr
-ZruwSWQuqTXOgRD7FEqfXhVjjgcPjrHkVYaqpyRwNBKYOo1oHhbzNId34UxHZVa4
-EYU2ePiPuO1BQFmJhbetHacampQoymghSlGmf6jCg6BUuN+gIWkJyeeVxyPMSsJJ
-BN09B8wtbCeASpRN0fuFt2TgfmRh72SoyFSCi6yVgmEcfX0NfmQ=
-=wSg4
------END PGP SIGNATURE-----
-
---0OAP2g/MAC+5xKAE--
