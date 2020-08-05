@@ -2,181 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F2A23CD62
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D0F23CCE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728840AbgHER0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:26:09 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58582 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728586AbgHERZa (ORCPT
+        id S1728545AbgHERJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:09:35 -0400
+Received: from mail-pl1-f200.google.com ([209.85.214.200]:33982 "EHLO
+        mail-pl1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728495AbgHERHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:25:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596648328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dvhF/2Uq1kX64zND5Z4WYms1vSnLsR66mXtK5h4mjnE=;
-        b=iYFMjEoxEdZFBoHaoGE3hzOhco99rfVrZHBB3ReXsCMaSLAXGdqVJkOyn93XE3hQfhICwN
-        Zern9eyP1/scIQ0swxqT3Vyl4SJfaF2alMtJtBoOFBjGi4igLtGD7Zfoitw7p4Q1Ns+KlA
-        vrUfD5glH7nzaK8mEWkoJZj2ElRY8OI=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-138-iL-hBD-FMUOvPz-BFV-jnA-1; Wed, 05 Aug 2020 07:45:51 -0400
-X-MC-Unique: iL-hBD-FMUOvPz-BFV-jnA-1
-Received: by mail-wr1-f70.google.com with SMTP id k11so12987437wrv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 04:45:51 -0700 (PDT)
+        Wed, 5 Aug 2020 13:07:10 -0400
+Received: by mail-pl1-f200.google.com with SMTP id 65so32928794plf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:07:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dvhF/2Uq1kX64zND5Z4WYms1vSnLsR66mXtK5h4mjnE=;
-        b=N1Wwxc8FftXuwtr7pZP8VW8ME0A6Y7FIByFhcMrw/wPPSFrDcccsjr3/7rnkj3vIqv
-         D8T76m08XISgvCZgDuR+69VMhQFAOwF+RCobOziUyb7GGXNPResW/Pa/UC66y4KKpdDA
-         e1J4PEsAdqCkBhr4vNBxN5ZtyMpo6IGuvnrJbAhPPaSI62UWPO17+yG11BD+TyZ58/BO
-         teYSpWNR1dVBAQL4bdLLfrkDL7ptK7YHq/SshYShwa7a/+rbR/FqojWZLt1XzAcO14k+
-         jX64PY/YwlMcUTDT6q2DX4YJk9/8+xc5ffe3LXa0Abgor8EJkdMX6DnCIEeuLA8sFzU3
-         mLFQ==
-X-Gm-Message-State: AOAM532u4FCzHQuktKEsPO5IeMMx9soKSR8DTLfxUrg9Nv8Yz9xtCTPF
-        UT0PvUIe42zGKEyPtgybH25xd2InSv4fjSgGaGFWtXULcInC62x8ZfN8cMDlY2fuVfRutcJ8Oqy
-        oin9h51HdKZlP/S/WjRPhRbt3
-X-Received: by 2002:a1c:a590:: with SMTP id o138mr2959634wme.4.1596627950597;
-        Wed, 05 Aug 2020 04:45:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxUqGQTkpCDTfa2ZGtGXUiAZzqSzaobMzIluThYVUCvwubI43LF+I4IqyX+82lokvtNLNwvgg==
-X-Received: by 2002:a1c:a590:: with SMTP id o138mr2959613wme.4.1596627950321;
-        Wed, 05 Aug 2020 04:45:50 -0700 (PDT)
-Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id o2sm2693544wrh.70.2020.08.05.04.45.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 04:45:49 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 07:45:46 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 03/24] virtio: allow __virtioXX, __leXX in config space
-Message-ID: <20200805074434-mutt-send-email-mst@kernel.org>
-References: <20200803205814.540410-1-mst@redhat.com>
- <20200803205814.540410-4-mst@redhat.com>
- <ce85a206-45a6-da3d-45a7-06f068f3bad7@redhat.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=A1AQFUtZc3oUBC+ELHd0XSkjPz6GoWRGj0v6BMelR/0=;
+        b=XcDyIO5O8JreBZId5ejSbrbD8ffOt8z2ZeSooiv0S5iIPXDc7fBbBbZEgoGGTam3K3
+         YdIZUPtxIirj0m1BujDBfy3iP9uPUIJMOYesVFp/TVsBFjajc+uDqqZFD3CX5IJnPYbV
+         7EQHfGEuI3r5m8GREJO5phT9bCT83YetKH2UlFoJaUrWLT+dXsRQzJstCnGdBjx5FP+T
+         nIfqgnm7teRlkdhrURQqVBv3M0lsBtD0afk7+xbR5dK3VxBlsm49EBNgf7jQVwTSaWxt
+         XaGQVHnPdnH2SRaV+33r26fIKVMFHbPFAWfE/0XThfXncshfxBVySLhupYTiEvzDC/bv
+         mthw==
+X-Gm-Message-State: AOAM530x3uIjtQLWmS2YTc04tCjWOQMMgq/VF8LCpF47O3CN0VpPfrF+
+        KFBChs5+QYg20rzb6CcYwyArflRN4zqW+s3RmwvOyp9qtDj/
+X-Google-Smtp-Source: ABdhPJykkigbEi+M0gISZNJMdIPXT3ju2NiFa2v2XCWKQqEk8ic4jWaTpxRf/FDS3gSAkV6njowu7TVDsJBm9V9nFFyGPEY0qALC
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ce85a206-45a6-da3d-45a7-06f068f3bad7@redhat.com>
+X-Received: by 2002:a6b:b4d1:: with SMTP id d200mr3127653iof.70.1596629836200;
+ Wed, 05 Aug 2020 05:17:16 -0700 (PDT)
+Date:   Wed, 05 Aug 2020 05:17:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000039829c05ac205a4c@google.com>
+Subject: KMSAN: uninit-value in do_xdp_generic
+From:   syzbot <syzbot+007ef8d907f2fb6e17ca@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, glider@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 02:28:23PM +0800, Jason Wang wrote:
-> 
-> On 2020/8/4 上午4:58, Michael S. Tsirkin wrote:
-> > Currently all config space fields are of the type __uXX.
-> > This confuses people and some drivers (notably vdpa)
-> > access them using CPU endian-ness - which only
-> > works well for legacy or LE platforms.
-> > 
-> > Update virtio_cread/virtio_cwrite macros to allow __virtioXX
-> > and __leXX field types. Follow-up patches will convert
-> > config space to use these types.
-> > 
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > ---
-> >   include/linux/virtio_config.h | 50 +++++++++++++++++++++++++++++++++--
-> >   1 file changed, 48 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-> > index 3b4eae5ac5e3..64da491936f7 100644
-> > --- a/include/linux/virtio_config.h
-> > +++ b/include/linux/virtio_config.h
-> > @@ -6,6 +6,7 @@
-> >   #include <linux/bug.h>
-> >   #include <linux/virtio.h>
-> >   #include <linux/virtio_byteorder.h>
-> > +#include <linux/compiler_types.h>
-> >   #include <uapi/linux/virtio_config.h>
-> >   struct irq_affinity;
-> > @@ -287,12 +288,57 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
-> >   	return __cpu_to_virtio64(virtio_is_little_endian(vdev), val);
-> >   }
-> > +/*
-> > + * Only the checker differentiates between __virtioXX and __uXX types. But we
-> > + * try to share as much code as we can with the regular GCC build.
-> > + */
-> > +#if !defined(CONFIG_CC_IS_GCC) && !defined(__CHECKER__)
-> > +
-> > +/* Not a checker - we can keep things simple */
-> > +#define __virtio_native_typeof(x) typeof(x)
-> > +
-> > +#else
-> > +
-> > +/*
-> > + * We build this out of a couple of helper macros in a vain attempt to
-> > + * help you keep your lunch down while reading it.
-> > + */
-> > +#define __virtio_pick_value(x, type, then, otherwise)			\
-> > +	__builtin_choose_expr(__same_type(x, type), then, otherwise)
-> > +
-> > +#define __virtio_pick_type(x, type, then, otherwise)			\
-> > +	__virtio_pick_value(x, type, (then)0, otherwise)
-> > +
-> > +#define __virtio_pick_endian(x, x16, x32, x64, otherwise)			\
-> > +	__virtio_pick_type(x, x16, __u16,					\
-> > +		__virtio_pick_type(x, x32, __u32,				\
-> > +			__virtio_pick_type(x, x64, __u64,			\
-> > +				otherwise)))
-> > +
-> > +#define __virtio_native_typeof(x) typeof(					\
-> > +	__virtio_pick_type(x, __u8, __u8,					\
-> > +		__virtio_pick_endian(x, __virtio16, __virtio32, __virtio64,	\
-> > +			__virtio_pick_endian(x, __le16, __le32, __le64,		\
-> > +				__virtio_pick_endian(x, __u16, __u32, __u64,	\
-> > +					/* No other type allowed */		\
-> > +					(void)0)))))
-> > +
-> > +#endif
-> > +
-> > +#define __virtio_native_type(structname, member) \
-> > +	__virtio_native_typeof(((structname*)0)->member)
-> > +
-> > +#define __virtio_typecheck(structname, member, val) \
-> > +		/* Must match the member's type, and be integer */ \
-> > +		typecheck(__virtio_native_type(structname, member), (val))
-> > +
-> > +
-> >   /* Config space accessors. */
-> >   #define virtio_cread(vdev, structname, member, ptr)			\
-> >   	do {								\
-> >   		might_sleep();						\
-> >   		/* Must match the member's type, and be integer */	\
-> > -		if (!typecheck(typeof((((structname*)0)->member)), *(ptr))) \
-> > +		if (!__virtio_typecheck(structname, member, *(ptr)))	\
-> >   			(*ptr) = 1;					\
-> 
-> 
-> A silly question,  compare to using set()/get() directly, what's the value
-> of the accessors macro here?
-> 
-> Thanks
+Hello,
 
-get/set don't convert to the native endian, I guess that's why
-drivers use cread/cwrite. It is also nice that there's type
-safety, checking the correct integer width is used.
+syzbot found the following issue on:
 
-> 
-> >   									\
-> >   		switch (sizeof(*ptr)) {					\
-> > @@ -322,7 +368,7 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
-> >   	do {								\
-> >   		might_sleep();						\
-> >   		/* Must match the member's type, and be integer */	\
-> > -		if (!typecheck(typeof((((structname*)0)->member)), *(ptr))) \
-> > +		if (!__virtio_typecheck(structname, member, *(ptr)))	\
-> >   			BUG_ON((*ptr) == 1);				\
-> >   									\
-> >   		switch (sizeof(*ptr)) {					\
+HEAD commit:    93f54a72 instrumented.h: fix KMSAN support
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=16fa5198900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fa4f3b91169c2501
+dashboard link: https://syzkaller.appspot.com/bug?extid=007ef8d907f2fb6e17ca
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+userspace arch: i386
 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+007ef8d907f2fb6e17ca@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in netif_receive_generic_xdp net/core/dev.c:4670 [inline]
+BUG: KMSAN: uninit-value in do_xdp_generic+0x1312/0x24f0 net/core/dev.c:4735
+CPU: 1 PID: 11582 Comm: syz-executor.1 Not tainted 5.8.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1df/0x240 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ netif_receive_generic_xdp net/core/dev.c:4670 [inline]
+ do_xdp_generic+0x1312/0x24f0 net/core/dev.c:4735
+ __netif_receive_skb_core+0x9a0/0x5890 net/core/dev.c:5107
+ __netif_receive_skb_one_core net/core/dev.c:5279 [inline]
+ __netif_receive_skb net/core/dev.c:5395 [inline]
+ netif_receive_skb_internal net/core/dev.c:5497 [inline]
+ netif_receive_skb+0x56c/0xff0 net/core/dev.c:5556
+ tun_rx_batched include/linux/skbuff.h:4327 [inline]
+ tun_get_user+0x6df8/0x72f0 drivers/net/tun.c:1972
+ tun_chr_write_iter+0x1f2/0x360 drivers/net/tun.c:2001
+ call_write_iter include/linux/fs.h:1908 [inline]
+ new_sync_write fs/read_write.c:503 [inline]
+ vfs_write+0xd98/0x1480 fs/read_write.c:578
+ ksys_write+0x267/0x450 fs/read_write.c:631
+ __do_sys_write fs/read_write.c:643 [inline]
+ __se_sys_write+0x92/0xb0 fs/read_write.c:640
+ __ia32_sys_write+0x4a/0x70 fs/read_write.c:640
+ do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
+ __do_fast_syscall_32+0x2aa/0x400 arch/x86/entry/common.c:477
+ do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f1b549
+Code: Bad RIP value.
+RSP: 002b:00000000f54910cc EFLAGS: 00000296 ORIG_RAX: 0000000000000004
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000240
+RDX: 000000000000000c RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
+ kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
+ slab_alloc_node mm/slub.c:2839 [inline]
+ __kmalloc_node_track_caller+0xb40/0x1200 mm/slub.c:4478
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ pskb_expand_head+0x20b/0x1b00 net/core/skbuff.c:1627
+ netif_receive_generic_xdp net/core/dev.c:4616 [inline]
+ do_xdp_generic+0x58c/0x24f0 net/core/dev.c:4735
+ __netif_receive_skb_core+0x9a0/0x5890 net/core/dev.c:5107
+ __netif_receive_skb_one_core net/core/dev.c:5279 [inline]
+ __netif_receive_skb net/core/dev.c:5395 [inline]
+ netif_receive_skb_internal net/core/dev.c:5497 [inline]
+ netif_receive_skb+0x56c/0xff0 net/core/dev.c:5556
+ tun_rx_batched include/linux/skbuff.h:4327 [inline]
+ tun_get_user+0x6df8/0x72f0 drivers/net/tun.c:1972
+ tun_chr_write_iter+0x1f2/0x360 drivers/net/tun.c:2001
+ call_write_iter include/linux/fs.h:1908 [inline]
+ new_sync_write fs/read_write.c:503 [inline]
+ vfs_write+0xd98/0x1480 fs/read_write.c:578
+ ksys_write+0x267/0x450 fs/read_write.c:631
+ __do_sys_write fs/read_write.c:643 [inline]
+ __se_sys_write+0x92/0xb0 fs/read_write.c:640
+ __ia32_sys_write+0x4a/0x70 fs/read_write.c:640
+ do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
+ __do_fast_syscall_32+0x2aa/0x400 arch/x86/entry/common.c:477
+ do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
