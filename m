@@ -2,122 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921AC23D3EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 00:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D807A23D3F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 00:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgHEWbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 18:31:14 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33029 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726005AbgHEWbK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 18:31:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596666668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ta8W4lWYHuibGb7VenSY+ZFBUsjZkLeP1z3XiFNvHH0=;
-        b=BFZyF6cdedbYLC/e8ATDFwN4J3w1yOnHGyjWgTyy4MAfS1pYDRb0BrvLbhgUHna7hSdXMk
-        mGKDiL5Y88njsZuOmTkO8o9LEbvPJ1+jULrKEVlrL4n24lZ/Fx/8CewHeNNKsyh4I8M/kk
-        kVdNZ7keawujCxyQOo4K2OXIZujgxtA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-pkwOLtYMPPmhFg_uehD0fQ-1; Wed, 05 Aug 2020 18:31:06 -0400
-X-MC-Unique: pkwOLtYMPPmhFg_uehD0fQ-1
-Received: by mail-wm1-f69.google.com with SMTP id h6so2942858wml.8
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 15:31:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ta8W4lWYHuibGb7VenSY+ZFBUsjZkLeP1z3XiFNvHH0=;
-        b=Kd0S+3cSUm8lwRqvhjI3N57BQylQbk1WWTA24qppsAFiKk2oqlN1XKmDlMQn4RHIDK
-         EpDgONXml9V/g2dAfZwFp5I7xymjFDQkog3gguM+qU56gQMm0MLShhK004txUE+QenkB
-         04cBFbj8UMduq9Nf/PFZwc88wmWBtvKtaGIY7veA8K9Mi+N87NIUn+kiGooaYLmV+vfH
-         O7Zo4C/90a1elhEkIhHOPXB98UbTll+gGPv2Xeiyb/LUevEqN6C4JiVDUGLulTCKPLwQ
-         27+sx9KNk1ARDxcDKpROvpzpLJ8hZT1PZr/3tQUAN9hB7RlpSqVihYr/AvqV4+abJXcI
-         Dgjg==
-X-Gm-Message-State: AOAM532OBRqRCARto/sJ9cpKoF8S4utA1NYhoZvqsz+ZumCCCzgyaVjt
-        AZV37wt5o46phkkCV4wlPmfwfRtQdFtCELwIJeOcbf7kDKQ8zPgpI1Uy5SvtFVu7K49J+A65rlM
-        ypOaG6h8liqCyEtHVxJmhsPBT
-X-Received: by 2002:a5d:4ad1:: with SMTP id y17mr4895345wrs.132.1596666665632;
-        Wed, 05 Aug 2020 15:31:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJweYLLE6b8uo1XP/9+STMEkV5LbdOvdlrtunNKnBmO4rNYW4xagyblCQIRFcf+KM51Wo/Qexw==
-X-Received: by 2002:a5d:4ad1:: with SMTP id y17mr4895324wrs.132.1596666665385;
-        Wed, 05 Aug 2020 15:31:05 -0700 (PDT)
-Received: from redhat.com (bzq-79-177-102-128.red.bezeqint.net. [79.177.102.128])
-        by smtp.gmail.com with ESMTPSA id 62sm4379354wrq.31.2020.08.05.15.31.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 15:31:04 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 18:31:01 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
+        id S1726338AbgHEWg0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 Aug 2020 18:36:26 -0400
+Received: from mga06.intel.com ([134.134.136.31]:46643 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726005AbgHEWgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 18:36:25 -0400
+IronPort-SDR: RLirqUXo7HrWwklojeBehlF8me47hTIkHuWZ1BITssDU5Ynrp37mKYa/Dc18VaUj5MNV/n2SBz
+ 26c3rDd+wypg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="214193135"
+X-IronPort-AV: E=Sophos;i="5.75,439,1589266800"; 
+   d="scan'208";a="214193135"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 15:36:24 -0700
+IronPort-SDR: 4jqAPXU8L1MlPNyvW2NBUzDdlzqBwLYZRmwkPKNexXoPqVyZVaGMJ89WXsSESBXG0BcEa5uZZ1
+ Z+spat/UVAog==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,439,1589266800"; 
+   d="scan'208";a="332993780"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga007.jf.intel.com with ESMTP; 05 Aug 2020 15:36:24 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 5 Aug 2020 15:36:23 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 5 Aug 2020 15:36:23 -0700
+Received: from orsmsx612.amr.corp.intel.com ([10.22.229.25]) by
+ ORSMSX612.amr.corp.intel.com ([10.22.229.25]) with mapi id 15.01.1713.004;
+ Wed, 5 Aug 2020 15:36:23 -0700
+From:   "Dey, Megha" <megha.dey@intel.com>
 To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>, Eli Cohen <eli@mellanox.com>,
-        Shahaf Shuler <shahafs@mellanox.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
+CC:     Marc Zyngier <maz@kernel.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Lin, Jing" <jing.lin@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>
-Subject: Re: [PATCH V4 linux-next 00/12] VDPA support for Mellanox ConnectX
- devices
-Message-ID: <20200805183017-mutt-send-email-mst@kernel.org>
-References: <20200804162048.22587-1-eli@mellanox.com>
- <20200805075856-mutt-send-email-mst@kernel.org>
- <20200805124054.GA125576@mtl-vdi-166.wap.labs.mlnx>
- <20200805084604-mutt-send-email-mst@kernel.org>
- <20200805130158.GA126406@mtl-vdi-166.wap.labs.mlnx>
- <20200805090304-mutt-send-email-mst@kernel.org>
- <063f66418da235ee459b367c5049948ee6db59ce.camel@mellanox.com>
- <20200805194646.GJ19097@mellanox.com>
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: RE: [PATCH RFC v2 02/18] irq/dev-msi: Add support for a new DEV_MSI
+ irq domain
+Thread-Topic: [PATCH RFC v2 02/18] irq/dev-msi: Add support for a new DEV_MSI
+ irq domain
+Thread-Index: AQHWX3hgWhQMXvQig0qc4n40fOCoeakUaOyAgAASsgCAFXzAsIAAqfsA//+MFHA=
+Date:   Wed, 5 Aug 2020 22:36:23 +0000
+Message-ID: <70465fd3a7ae428a82e19f98daa779e8@intel.com>
+References: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com>
+ <159534734833.28840.10067945890695808535.stgit@djiang5-desk3.ch.intel.com>
+ <878sfbxtzi.wl-maz@kernel.org> <20200722195928.GN2021248@mellanox.com>
+ <96a1eb5ccc724790b5404a642583919d@intel.com>
+ <20200805221548.GK19097@mellanox.com>
+In-Reply-To: <20200805221548.GK19097@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805194646.GJ19097@mellanox.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 04:46:46PM -0300, Jason Gunthorpe wrote:
-> On Wed, Aug 05, 2020 at 07:01:52PM +0000, Saeed Mahameed wrote:
-> > On Wed, 2020-08-05 at 09:12 -0400, Michael S. Tsirkin wrote:
-> > > On Wed, Aug 05, 2020 at 04:01:58PM +0300, Eli Cohen wrote:
-> > > > On Wed, Aug 05, 2020 at 08:48:52AM -0400, Michael S. Tsirkin wrote:
-> > > > > > Did you merge this?:
-> > > > > > git pull
-> > > > > > git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.gi
-> > > > > > t mlx5-next
-> > > > > 
-> > > > > I can only merge this tree if no one else will. Linus does not
-> > > > > like getting same patches through two trees.
-> 
-> This is not quite the case
-> 
-> Linus does not like multiple *copies* of the same patches. The same
-> actual git commits can be OK.
-> 
-> Linus also does not like unnecessarily cross linking trees, mlx5-next
-> is designed to be small enough and approved enough that it is not
-> controversial.
-> 
-> Linus really doesn't like it when people jams stuff together in rc7 or
-> the weeks of the merge window. He wants to see stuff be in linux-next
-> for at least a bit. So it may be too late regardless.
+Hi Jason,
 
-I'll try, let's see what happens.
-
-> > We do this all the time with net-next and rdma,
-> > mlx5-next is a very small branch based on a very early rc that includes
-> > mlx5 shared stuff between rdma and net-next, and now virtio as well.
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> Sent: Wednesday, August 5, 2020 3:16 PM
+> To: Dey, Megha <megha.dey@intel.com>
+> Cc: Marc Zyngier <maz@kernel.org>; Jiang, Dave <dave.jiang@intel.com>;
+> vkoul@kernel.org; bhelgaas@google.com; rafael@kernel.org;
+> gregkh@linuxfoundation.org; tglx@linutronix.de; hpa@zytor.com;
+> alex.williamson@redhat.com; Pan, Jacob jun <jacob.jun.pan@intel.com>; Raj,
+> Ashok <ashok.raj@intel.com>; Liu, Yi L <yi.l.liu@intel.com>; Lu, Baolu
+> <baolu.lu@intel.com>; Tian, Kevin <kevin.tian@intel.com>; Kumar, Sanjay K
+> <sanjay.k.kumar@intel.com>; Luck, Tony <tony.luck@intel.com>; Lin, Jing
+> <jing.lin@intel.com>; Williams, Dan J <dan.j.williams@intel.com>;
+> kwankhede@nvidia.com; eric.auger@redhat.com; parav@mellanox.com;
+> Hansen, Dave <dave.hansen@intel.com>; netanelg@mellanox.com;
+> shahafs@mellanox.com; yan.y.zhao@linux.intel.com; pbonzini@redhat.com;
+> Ortiz, Samuel <samuel.ortiz@intel.com>; Hossain, Mona
+> <mona.hossain@intel.com>; dmaengine@vger.kernel.org; linux-
+> kernel@vger.kernel.org; x86@kernel.org; linux-pci@vger.kernel.org;
+> kvm@vger.kernel.org
+> Subject: Re: [PATCH RFC v2 02/18] irq/dev-msi: Add support for a new DEV_MSI
+> irq domain
 > 
-> Yes, going on two years now? Been working well
+> On Wed, Aug 05, 2020 at 07:18:39PM +0000, Dey, Megha wrote:
+> 
+> > Hence we will only have one create_dev_msi_domain which can be called
+> > by any device driver that wants to use the dev-msi IRQ domain to
+> > alloc/free IRQs. It would be the responsibility of the device driver
+> > to provide the correct device and update the dev->msi_domain.
+> 
+> I'm not sure that sounds like a good idea, why should a device driver touch dev-
+> >msi_domain?
+> 
+> There was a certain appeal to the api I suggested by having everything related to
+> setting up the new IRQs being in the core code.
+
+The basic API to create the dev_msi domain would be :
+
+struct irq_domain *create_dev_msi_irq_domain(struct irq_domain *parent)
+
+This can be called by devices according to their use case.
+
+For e.g. in dsa case, it is called from the irq remapping driver:
+iommu->ir_dev_msi_domain = create_dev_msi_domain(iommu->ir_domain)
+
+and from the dsa mdev driver:
+p_dev = get_parent_pci_dev(dev);
+iommu = device_to_iommu(p_dev);
+
+dev->msi_domain = iommu->ir_dev_msi_domain;
+
+So we are creating the domain in the IRQ  remapping domain which can be used by other devices which want to have the same IRQ parent domain and use dev-msi APIs. We are only updating that device's msi_domain to the already created dev-msi domain in the driver. 
+
+Other devices (your rdma driver etc) can create their own dev-msi domain by passing the appropriate parent IRq domain.
+
+We cannot have this in the core code since the parent domain cannot be the same?
+
+Please let me know if you think otherwise..
 > 
 > Jason
-
-OK, I'll merge it then. Thanks!
-
--- 
-MST
-
