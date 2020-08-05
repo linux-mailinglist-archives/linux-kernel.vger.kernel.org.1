@@ -2,183 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CCBF23CE2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB9823CDF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729182AbgHESSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 14:18:12 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15727 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728825AbgHESQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 14:16:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596651362; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=S5hJFYd7MMSkEoR3CdrZ7jrWlq63SZiOAFEvmVnWV/Q=;
- b=rSU3E4qIHnT1Oj4c+tpmfOBjzlFDhsU4pFzKtzGdINmB4QRSY6AnGeYagigdLUdMAaL6E0ET
- gmoxxUhsCtiRU/iZLp+EHIsFVhtlH2LK3XMUivGrktUvdxB/ZpMcD6pREmeFBT9T2i2xtAcX
- DmITxWiz+FzcJULi9cvr7g6C7j0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n17.prod.us-east-1.postgun.com with SMTP id
- 5f2abfa7eecfc978d337cfbf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 05 Aug 2020 14:18:15
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C623EC433C6; Wed,  5 Aug 2020 14:18:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1728935AbgHER7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:59:51 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:38660 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728704AbgHER6X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:58:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596650298;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2x3mgNdTSCpVK/PvsDtS076Na69D7EpUGAvTaGV+Rek=;
+        b=NeztqPI2uItGb/UxDEd+G6pKaCRCvntgYgwWHswtfJyH8R9Yw6RHDt4zBWh3iLGD2Lo3ZV
+        4+GxcgXISsi0AKhaqv2GaJsjvpjNsMZQ4dwno2rwQ/eMwitQVSFI4pO8BJQQSksYZSHi6z
+        eb0j0JydXf3Jqy+wa/QvULg3jLDrpfU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-EZlvipCxNui6X3CIYHErHA-1; Wed, 05 Aug 2020 13:58:16 -0400
+X-MC-Unique: EZlvipCxNui6X3CIYHErHA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kalyan_t)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EE057C433C9;
-        Wed,  5 Aug 2020 14:18:13 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A74F81EDB7;
+        Wed,  5 Aug 2020 17:58:06 +0000 (UTC)
+Received: from gimli.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CC8441755E;
+        Wed,  5 Aug 2020 17:58:05 +0000 (UTC)
+Subject: [PATCH] vfio-pci: Avoid recursive read-lock usage
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     alex.williamson@redhat.com
+Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 05 Aug 2020 11:58:05 -0600
+Message-ID: <159665024415.30380.4401928486051321567.stgit@gimli.home>
+User-Agent: StGit/0.19-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 05 Aug 2020 19:48:13 +0530
-From:   kalyan_t@codeaurora.org
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        nganji@codeaurora.org, Sean Paul <seanpaul@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Drew Davenport <ddavenport@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>
-Subject: Re: [Freedreno] [v1] drm/msm/dpu: update reservations in commit path
-In-Reply-To: <CAF6AEGtpPU+ALcpQMuy-MpLF_ZwjD+k=aN7gkoBFjJPq1++9qQ@mail.gmail.com>
-References: <1596540744-6902-1-git-send-email-kalyan_t@codeaurora.org>
- <CAF6AEGtpPU+ALcpQMuy-MpLF_ZwjD+k=aN7gkoBFjJPq1++9qQ@mail.gmail.com>
-Message-ID: <37bbf6e41a844f681e263bc13bd6e7ef@codeaurora.org>
-X-Sender: kalyan_t@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-05 01:02, Rob Clark wrote:
-> On Tue, Aug 4, 2020 at 4:32 AM Kalyan Thota <kalyan_t@codeaurora.org> 
-> wrote:
->> 
->> DPU resources reserved in the atomic_check path gets unwinded
->> during modeset operation before commit happens in a non seamless
->> transition.
->> 
->> Update the reservations in the commit path to avoid resource
->> failures. Secondly have dummy reservations in atomic_check path
->> so that we can gracefully fail the composition if resources are
->> not available.
->> 
->> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
->> ---
->>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 15 +++++++++++----
->>  1 file changed, 11 insertions(+), 4 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c 
->> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> index 63976dc..c6b8254 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> @@ -565,7 +565,7 @@ static int dpu_encoder_virt_atomic_check(
->>         const struct drm_display_mode *mode;
->>         struct drm_display_mode *adj_mode;
->>         struct msm_display_topology topology;
->> -       struct dpu_global_state *global_state;
->> +       struct dpu_global_state tmp_resv_state;
->>         int i = 0;
->>         int ret = 0;
->> 
->> @@ -582,7 +582,7 @@ static int dpu_encoder_virt_atomic_check(
->>         dpu_kms = to_dpu_kms(priv->kms);
->>         mode = &crtc_state->mode;
->>         adj_mode = &crtc_state->adjusted_mode;
->> -       global_state = dpu_kms_get_existing_global_state(dpu_kms);
->> +       memset(&tmp_resv_state, 0, sizeof(tmp_resv_state));
-> 
-> I think what you want to do is dpu_kms_get_global_state().. that will
-> clone/duplicate the existing global state (or return the already
-> duplicated global state if it is called multiple times).
-> 
-Thanks Rob, realized the same after posting patch. Made changes in the 
-new patch
-accordingly.
+A down_read on memory_lock is held when performing read/write accesses
+to MMIO BAR space, including across the copy_to/from_user() callouts
+which may fault.  If the user buffer for these copies resides in an
+mmap of device MMIO space, the mmap fault handler will acquire a
+recursive read-lock on memory_lock.  Avoid this by reducing the lock
+granularity.  Sequential accesses requiring multiple ioread/iowrite
+cycles are expected to be rare, therefore typical accesses should not
+see additional overhead.
 
-> It is safe to modify this global state in the atomic_check() path.. in
-> fact that is the intention.  For a TEST_ONLY atomic commit, or if any
-> of the atomic_check()'s fail, this new duplicated global state is
-> discarded.  If all the checks succeed and the atomic update is
-> committed to hw, this new global state replaces the existing global
-> state.
-> 
-Posted a new change kindly review.
+VGA MMIO accesses are expected to be non-fatal regardless of the PCI
+memory enable bit to allow legacy probing, this behavior remains with
+a comment added.  ioeventfds are now included in memory access testing,
+with writes dropped while memory space is disabled.
 
-> BR,
-> -R
-> 
->>         trace_dpu_enc_atomic_check(DRMID(drm_enc));
->> 
->>         /*
->> @@ -621,7 +621,7 @@ static int dpu_encoder_virt_atomic_check(
->>                  * info may not be available to complete reservation.
->>                  */
->>                 if (drm_atomic_crtc_needs_modeset(crtc_state)) {
->> -                       ret = dpu_rm_reserve(&dpu_kms->rm, 
->> global_state,
->> +                       ret = dpu_rm_reserve(&dpu_kms->rm, 
->> &tmp_resv_state,
->>                                         drm_enc, crtc_state, 
->> topology);
->>                 }
->>         }
->> @@ -966,7 +966,7 @@ static void dpu_encoder_virt_mode_set(struct 
->> drm_encoder *drm_enc,
->>         struct dpu_hw_blk *hw_lm[MAX_CHANNELS_PER_ENC];
->>         struct dpu_hw_blk *hw_dspp[MAX_CHANNELS_PER_ENC] = { NULL };
->>         int num_lm, num_ctl, num_pp, num_dspp;
->> -       int i, j;
->> +       int i, j, rc;
->> 
->>         if (!drm_enc) {
->>                 DPU_ERROR("invalid encoder\n");
->> @@ -1006,6 +1006,13 @@ static void dpu_encoder_virt_mode_set(struct 
->> drm_encoder *drm_enc,
->> 
->>         topology = dpu_encoder_get_topology(dpu_enc, dpu_kms, 
->> adj_mode);
->> 
->> +       rc = dpu_rm_reserve(&dpu_kms->rm, global_state, drm_enc,
->> +               drm_crtc->state, topology);
->> +       if (rc) {
->> +               DPU_ERROR_ENC(dpu_enc, "Failed to reserve 
->> resources\n");
->> +               return;
->> +       }
->> +
->>         /* Query resource that have been reserved in atomic check 
->> step. */
->>         num_pp = dpu_rm_get_assigned_resources(&dpu_kms->rm, 
->> global_state,
->>                 drm_enc->base.id, DPU_HW_BLK_PINGPONG, hw_pp,
->> --
->> 1.9.1
->> 
-> _______________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
+Fixes: abafbc551fdd ("vfio-pci: Invalidate mmaps and block MMIO access on disabled memory")
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+---
+ drivers/vfio/pci/vfio_pci_private.h |    2 +
+ drivers/vfio/pci/vfio_pci_rdwr.c    |  120 ++++++++++++++++++++++++++++-------
+ 2 files changed, 98 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
+index 86a02aff8735..61ca8ab165dc 100644
+--- a/drivers/vfio/pci/vfio_pci_private.h
++++ b/drivers/vfio/pci/vfio_pci_private.h
+@@ -33,12 +33,14 @@
+ 
+ struct vfio_pci_ioeventfd {
+ 	struct list_head	next;
++	struct vfio_pci_device	*vdev;
+ 	struct virqfd		*virqfd;
+ 	void __iomem		*addr;
+ 	uint64_t		data;
+ 	loff_t			pos;
+ 	int			bar;
+ 	int			count;
++	bool			test_mem;
+ };
+ 
+ struct vfio_pci_irq_ctx {
+diff --git a/drivers/vfio/pci/vfio_pci_rdwr.c b/drivers/vfio/pci/vfio_pci_rdwr.c
+index 916b184df3a5..9e353c484ace 100644
+--- a/drivers/vfio/pci/vfio_pci_rdwr.c
++++ b/drivers/vfio/pci/vfio_pci_rdwr.c
+@@ -37,17 +37,70 @@
+ #define vfio_ioread8	ioread8
+ #define vfio_iowrite8	iowrite8
+ 
++#define VFIO_IOWRITE(size) \
++static int vfio_pci_iowrite##size(struct vfio_pci_device *vdev,		\
++			bool test_mem, u##size val, void __iomem *io)	\
++{									\
++	if (test_mem) {							\
++		down_read(&vdev->memory_lock);				\
++		if (!__vfio_pci_memory_enabled(vdev)) {			\
++			up_read(&vdev->memory_lock);			\
++			return -EIO;					\
++		}							\
++	}								\
++									\
++	vfio_iowrite##size(val, io);					\
++									\
++	if (test_mem)							\
++		up_read(&vdev->memory_lock);				\
++									\
++	return 0;							\
++}
++
++VFIO_IOWRITE(8)
++VFIO_IOWRITE(16)
++VFIO_IOWRITE(32)
++#ifdef iowrite64
++VFIO_IOWRITE(64)
++#endif
++
++#define VFIO_IOREAD(size) \
++static int vfio_pci_ioread##size(struct vfio_pci_device *vdev,		\
++			bool test_mem, u##size *val, void __iomem *io)	\
++{									\
++	if (test_mem) {							\
++		down_read(&vdev->memory_lock);				\
++		if (!__vfio_pci_memory_enabled(vdev)) {			\
++			up_read(&vdev->memory_lock);			\
++			return -EIO;					\
++		}							\
++	}								\
++									\
++	*val = vfio_ioread##size(io);					\
++									\
++	if (test_mem)							\
++		up_read(&vdev->memory_lock);				\
++									\
++	return 0;							\
++}
++
++VFIO_IOREAD(8)
++VFIO_IOREAD(16)
++VFIO_IOREAD(32)
++
+ /*
+  * Read or write from an __iomem region (MMIO or I/O port) with an excluded
+  * range which is inaccessible.  The excluded range drops writes and fills
+  * reads with -1.  This is intended for handling MSI-X vector tables and
+  * leftover space for ROM BARs.
+  */
+-static ssize_t do_io_rw(void __iomem *io, char __user *buf,
++static ssize_t do_io_rw(struct vfio_pci_device *vdev, bool test_mem,
++			void __iomem *io, char __user *buf,
+ 			loff_t off, size_t count, size_t x_start,
+ 			size_t x_end, bool iswrite)
+ {
+ 	ssize_t done = 0;
++	int ret;
+ 
+ 	while (count) {
+ 		size_t fillable, filled;
+@@ -66,9 +119,15 @@ static ssize_t do_io_rw(void __iomem *io, char __user *buf,
+ 				if (copy_from_user(&val, buf, 4))
+ 					return -EFAULT;
+ 
+-				vfio_iowrite32(val, io + off);
++				ret = vfio_pci_iowrite32(vdev, test_mem,
++							 val, io + off);
++				if (ret)
++					return ret;
+ 			} else {
+-				val = vfio_ioread32(io + off);
++				ret = vfio_pci_ioread32(vdev, test_mem,
++							&val, io + off);
++				if (ret)
++					return ret;
+ 
+ 				if (copy_to_user(buf, &val, 4))
+ 					return -EFAULT;
+@@ -82,9 +141,15 @@ static ssize_t do_io_rw(void __iomem *io, char __user *buf,
+ 				if (copy_from_user(&val, buf, 2))
+ 					return -EFAULT;
+ 
+-				vfio_iowrite16(val, io + off);
++				ret = vfio_pci_iowrite16(vdev, test_mem,
++							 val, io + off);
++				if (ret)
++					return ret;
+ 			} else {
+-				val = vfio_ioread16(io + off);
++				ret = vfio_pci_ioread16(vdev, test_mem,
++							&val, io + off);
++				if (ret)
++					return ret;
+ 
+ 				if (copy_to_user(buf, &val, 2))
+ 					return -EFAULT;
+@@ -98,9 +163,15 @@ static ssize_t do_io_rw(void __iomem *io, char __user *buf,
+ 				if (copy_from_user(&val, buf, 1))
+ 					return -EFAULT;
+ 
+-				vfio_iowrite8(val, io + off);
++				ret = vfio_pci_iowrite8(vdev, test_mem,
++							val, io + off);
++				if (ret)
++					return ret;
+ 			} else {
+-				val = vfio_ioread8(io + off);
++				ret = vfio_pci_ioread8(vdev, test_mem,
++						       &val, io + off);
++				if (ret)
++					return ret;
+ 
+ 				if (copy_to_user(buf, &val, 1))
+ 					return -EFAULT;
+@@ -178,14 +249,6 @@ ssize_t vfio_pci_bar_rw(struct vfio_pci_device *vdev, char __user *buf,
+ 
+ 	count = min(count, (size_t)(end - pos));
+ 
+-	if (res->flags & IORESOURCE_MEM) {
+-		down_read(&vdev->memory_lock);
+-		if (!__vfio_pci_memory_enabled(vdev)) {
+-			up_read(&vdev->memory_lock);
+-			return -EIO;
+-		}
+-	}
+-
+ 	if (bar == PCI_ROM_RESOURCE) {
+ 		/*
+ 		 * The ROM can fill less space than the BAR, so we start the
+@@ -213,7 +276,8 @@ ssize_t vfio_pci_bar_rw(struct vfio_pci_device *vdev, char __user *buf,
+ 		x_end = vdev->msix_offset + vdev->msix_size;
+ 	}
+ 
+-	done = do_io_rw(io, buf, pos, count, x_start, x_end, iswrite);
++	done = do_io_rw(vdev, res->flags & IORESOURCE_MEM, io, buf, pos,
++			count, x_start, x_end, iswrite);
+ 
+ 	if (done >= 0)
+ 		*ppos += done;
+@@ -221,9 +285,6 @@ ssize_t vfio_pci_bar_rw(struct vfio_pci_device *vdev, char __user *buf,
+ 	if (bar == PCI_ROM_RESOURCE)
+ 		pci_unmap_rom(pdev, io);
+ out:
+-	if (res->flags & IORESOURCE_MEM)
+-		up_read(&vdev->memory_lock);
+-
+ 	return done;
+ }
+ 
+@@ -278,7 +339,12 @@ ssize_t vfio_pci_vga_rw(struct vfio_pci_device *vdev, char __user *buf,
+ 		return ret;
+ 	}
+ 
+-	done = do_io_rw(iomem, buf, off, count, 0, 0, iswrite);
++	/*
++	 * VGA MMIO is a legacy, non-BAR resource that hopefully allows
++	 * probing, so we don't currently worry about access in relation
++	 * to the memory enable bit in the command register.
++	 */
++	done = do_io_rw(vdev, false, iomem, buf, off, count, 0, 0, iswrite);
+ 
+ 	vga_put(vdev->pdev, rsrc);
+ 
+@@ -296,17 +362,21 @@ static int vfio_pci_ioeventfd_handler(void *opaque, void *unused)
+ 
+ 	switch (ioeventfd->count) {
+ 	case 1:
+-		vfio_iowrite8(ioeventfd->data, ioeventfd->addr);
++		vfio_pci_iowrite8(ioeventfd->vdev, ioeventfd->test_mem,
++				  ioeventfd->data, ioeventfd->addr);
+ 		break;
+ 	case 2:
+-		vfio_iowrite16(ioeventfd->data, ioeventfd->addr);
++		vfio_pci_iowrite16(ioeventfd->vdev, ioeventfd->test_mem,
++				   ioeventfd->data, ioeventfd->addr);
+ 		break;
+ 	case 4:
+-		vfio_iowrite32(ioeventfd->data, ioeventfd->addr);
++		vfio_pci_iowrite32(ioeventfd->vdev, ioeventfd->test_mem,
++				   ioeventfd->data, ioeventfd->addr);
+ 		break;
+ #ifdef iowrite64
+ 	case 8:
+-		vfio_iowrite64(ioeventfd->data, ioeventfd->addr);
++		vfio_pci_iowrite64(ioeventfd->vdev, ioeventfd->test_mem,
++				   ioeventfd->data, ioeventfd->addr);
+ 		break;
+ #endif
+ 	}
+@@ -378,11 +448,13 @@ long vfio_pci_ioeventfd(struct vfio_pci_device *vdev, loff_t offset,
+ 		goto out_unlock;
+ 	}
+ 
++	ioeventfd->vdev = vdev;
+ 	ioeventfd->addr = vdev->barmap[bar] + pos;
+ 	ioeventfd->data = data;
+ 	ioeventfd->pos = pos;
+ 	ioeventfd->bar = bar;
+ 	ioeventfd->count = count;
++	ioeventfd->test_mem = vdev->pdev->resource[bar].flags & IORESOURCE_MEM;
+ 
+ 	ret = vfio_virqfd_enable(ioeventfd, vfio_pci_ioeventfd_handler,
+ 				 NULL, NULL, &ioeventfd->virqfd, fd);
+
