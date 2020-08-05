@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E4A23CCF6
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4132723CD07
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728163AbgHERNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:13:07 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32213 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728565AbgHERKO (ORCPT
+        id S1728414AbgHERQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:16:29 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39449 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728590AbgHERLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:10:14 -0400
+        Wed, 5 Aug 2020 13:11:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647413;
+        s=mimecast20190719; t=1596647462;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kSRe7wmYN+c40TNuZd0aK8LNMOsV+g9hMYDNFujk/tc=;
-        b=IPtCCwa6LmFTew0cHgVuDnGZh+pjcuxTDimYCLo1WgZwiMHYzCqCajXh1izsbyS6E3vndP
-        D8aF5NA6TfDyEHXN2yyxULA3yaxUoRYTS7g9fqiUdz+PC1/i+0R4Bfoh9CYp5bENuCTXDN
-        6i8PR71f52VhYTeXn5ZamBRMzYbuPNw=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-288-UnXyzEaAM5OJi1x8uyekmA-1; Wed, 05 Aug 2020 09:44:22 -0400
-X-MC-Unique: UnXyzEaAM5OJi1x8uyekmA-1
-Received: by mail-wr1-f69.google.com with SMTP id 89so13594838wrr.15
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:22 -0700 (PDT)
+        bh=BcmxULBo78pH6q1E4zPETJD9ZEtc8ZzF1e95CUApETA=;
+        b=aIz+FC144gjjvm09abnuMHlg2Fm0Ya3xjQw6RwTXUT3cH80O7pNOa+wBSex61AvT4AByet
+        1PrKKjePHwiFSaXFYRUsBiATCjvI99sDlBDxBrjSe7S13DuJRGHlffQK+HnSwjvB0wR1Gi
+        kcK8LfP/ZmrkLfMTKMOgppnoKEkZTBE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-484-SzMq4FHTOmKsfBUCcWgbWg-1; Wed, 05 Aug 2020 09:44:25 -0400
+X-MC-Unique: SzMq4FHTOmKsfBUCcWgbWg-1
+Received: by mail-wr1-f72.google.com with SMTP id m7so13585716wrb.20
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:44:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=kSRe7wmYN+c40TNuZd0aK8LNMOsV+g9hMYDNFujk/tc=;
-        b=GNEOzxpCIZdbqLRNUZF/t+3fWTTD01SCav/UyrJ00vi3LRtxOrLAduPRNzDiJt2GRT
-         vjnOu6zoitVL+LJI8+gmGMrgJtlzZPtDulKBBxP2T2SB+mmXtAuclB8rTWPuCJEfeinA
-         X+T4S201cxUGxpTPsm/qL+8/DBYpFyb8Ks7TRhKJSUeBmEbXxRxk89PqIqb2uTnCTSm2
-         mjOaxZCYq9eIx1Rx8Rj3NH9KJDeyxSLX6NAQm1Nj2JVX9n7OBvlwOCtgr/3RJUN7dX2F
-         AAUlSpq60HcDrdJ0oZYmq/ThgsMSAPU1hAZSuHNYr8Vq8mKAdIMqJVfpmRlQdivKBNWY
-         /VUQ==
-X-Gm-Message-State: AOAM530HD3VEKoejkw+z8ICNb5cK8hj6jRdVjtbxFhdnTp9qncAlhhr+
-        qdIxEngt9VLhaoc82++wrTCFMurStYFswK8XHAinD5OLJm1srRgrmtWQk7DQnQUHHzpTYFtEWlh
-        AQT4fsxXIJFHVEBTEjK+R9xad
-X-Received: by 2002:a1c:38c5:: with SMTP id f188mr3184181wma.7.1596635060870;
-        Wed, 05 Aug 2020 06:44:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwtu4fGrz2OcjqJ60Gx1dujnfxQ+ydCwiHL+CZ6x4QY+RWP5ctttNcCg2cu41yMIpSX3GIA4Q==
-X-Received: by 2002:a1c:38c5:: with SMTP id f188mr3184169wma.7.1596635060701;
-        Wed, 05 Aug 2020 06:44:20 -0700 (PDT)
-Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id f131sm2902892wme.40.2020.08.05.06.44.19
+        bh=BcmxULBo78pH6q1E4zPETJD9ZEtc8ZzF1e95CUApETA=;
+        b=JqI1xbpoZPYoP0MYsTTHfAXaUbSkBIglQXiIDIZGCIVGSDoAednKeqGaYeE5cVPxOY
+         EiF2cRK8lfSDcsCJKN+39e6h0+gUctfw1z5LZjmKp5LRjsaR01FInZJtRrwNX7mJGeYl
+         IC18wNqFKbAl53fYTyIhCjSi04I5VIMa/G4VXMTmcJq7S9KB7KL4Kdf5wNKb+ro8LFGN
+         TOrghByTL77Aa2CnaEkjezZh3c+VFRfK/+MYsn690VT+fhOz2D09PHd/vX2q7pphS2Vv
+         R5aHfjQe+OTw2fAcACebjLp8rfJBHji2dLrc7ocBQ7lf1dzH+BNc5S0V4stNU0zqjdgr
+         qAsQ==
+X-Gm-Message-State: AOAM531eR0hWjFhO6JX+Z28yACnzVJKMvu+lM/uP/YNtYqCUGXvSKVKp
+        9p9p0wmmyL77k6Oedtqil9HTqAjawCoeCoyDewT/r16vG9DqhHANLM0HlTbKRrKyx8nzPwKefa5
+        UlckdjlhXqk5anpwzHL6r1EIC
+X-Received: by 2002:adf:ea4f:: with SMTP id j15mr2838550wrn.253.1596635063549;
+        Wed, 05 Aug 2020 06:44:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwSybiU/FyPdajMdrsmZfmBUP0E8TCoz99TsqC+I00TKFZQMsUz0UIrkpU8WBC2m1fP5bkNnQ==
+X-Received: by 2002:adf:ea4f:: with SMTP id j15mr2838533wrn.253.1596635063264;
+        Wed, 05 Aug 2020 06:44:23 -0700 (PDT)
+Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
+        by smtp.gmail.com with ESMTPSA id u6sm2662067wrn.95.2020.08.05.06.44.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:44:20 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:44:18 -0400
+        Wed, 05 Aug 2020 06:44:22 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:44:21 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Jason Wang <jasowang@redhat.com>,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 23/38] virtio_config: cread/write cleanup
-Message-ID: <20200805134226.1106164-24-mst@redhat.com>
+Subject: [PATCH v3 24/38] virtio_config: rewrite using _Generic
+Message-ID: <20200805134226.1106164-25-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -69,90 +69,207 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vars of the correct type instead of casting.
+Min compiler version has been raised, so that's ok now.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- include/linux/virtio_config.h | 31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
+ include/linux/virtio_config.h | 163 ++++++++++++++++------------------
+ 1 file changed, 77 insertions(+), 86 deletions(-)
 
 diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index c68f58f3bf34..5c3b02245ecd 100644
+index 5c3b02245ecd..7fa000f02721 100644
 --- a/include/linux/virtio_config.h
 +++ b/include/linux/virtio_config.h
-@@ -444,53 +444,60 @@ static inline void virtio_cwrite8(struct virtio_device *vdev,
- static inline u16 virtio_cread16(struct virtio_device *vdev,
- 				 unsigned int offset)
- {
--	u16 ret;
-+	__virtio16 ret;
- 
- 	might_sleep();
- 	vdev->config->get(vdev, offset, &ret, sizeof(ret));
--	return virtio16_to_cpu(vdev, (__force __virtio16)ret);
-+	return virtio16_to_cpu(vdev, ret);
+@@ -288,112 +288,103 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
+ 	return __cpu_to_virtio64(virtio_is_little_endian(vdev), val);
  }
  
- static inline void virtio_cwrite16(struct virtio_device *vdev,
- 				   unsigned int offset, u16 val)
- {
-+	__virtio16 v;
-+
- 	might_sleep();
--	val = (__force u16)cpu_to_virtio16(vdev, val);
--	vdev->config->set(vdev, offset, &val, sizeof(val));
-+	v = cpu_to_virtio16(vdev, val);
-+	vdev->config->set(vdev, offset, &v, sizeof(v));
- }
+-/*
+- * Only the checker differentiates between __virtioXX and __uXX types. But we
+- * try to share as much code as we can with the regular GCC build.
+- */
+-#if !defined(CONFIG_CC_IS_GCC) && !defined(__CHECKER__)
++#define virtio_to_cpu(vdev, x) \
++	_Generic((x), \
++		__u8: (x), \
++		__virtio16: virtio16_to_cpu((vdev), (x)), \
++		__virtio32: virtio32_to_cpu((vdev), (x)), \
++		__virtio64: virtio64_to_cpu((vdev), (x)), \
++		/*
++		 * Why define a default? checker can distinguish between
++		 * e.g. __u16, __le16 and __virtio16, but GCC can't so
++		 * attempts to define variants for both look like a duplicate
++		 * variant to it.
++		 */ \
++		default: _Generic((x), \
++				 __u8: (x), \
++				 __le16: virtio16_to_cpu((vdev), (__force __virtio16)(x)), \
++				 __le32: virtio32_to_cpu((vdev), (__force __virtio32)(x)), \
++				 __le64: virtio64_to_cpu((vdev), (__force __virtio64)(x)), \
++				 default: _Generic((x), \
++						  __u8: (x), \
++						  __u16: virtio16_to_cpu((vdev), (__force __virtio16)(x)), \
++						  __u32: virtio32_to_cpu((vdev), (__force __virtio32)(x)), \
++						  __u64: virtio64_to_cpu((vdev), (__force __virtio64)(x)) \
++						  ) \
++				 ) \
++		)
  
- static inline u32 virtio_cread32(struct virtio_device *vdev,
- 				 unsigned int offset)
- {
--	u32 ret;
-+	__virtio32 ret;
+-/* Not a checker - we can keep things simple */
+-#define __virtio_native_typeof(x) typeof(x)
+-
+-#else
+-
+-/*
+- * We build this out of a couple of helper macros in a vain attempt to
+- * help you keep your lunch down while reading it.
+- */
+-#define __virtio_pick_value(x, type, then, otherwise)			\
+-	__builtin_choose_expr(__same_type(x, type), then, otherwise)
+-
+-#define __virtio_pick_type(x, type, then, otherwise)			\
+-	__virtio_pick_value(x, type, (then)0, otherwise)
+-
+-#define __virtio_pick_endian(x, x16, x32, x64, otherwise)			\
+-	__virtio_pick_type(x, x16, __u16,					\
+-		__virtio_pick_type(x, x32, __u32,				\
+-			__virtio_pick_type(x, x64, __u64,			\
+-				otherwise)))
+-
+-#define __virtio_native_typeof(x) typeof(					\
+-	__virtio_pick_type(x, __u8, __u8,					\
+-		__virtio_pick_endian(x, __virtio16, __virtio32, __virtio64,	\
+-			__virtio_pick_endian(x, __le16, __le32, __le64,		\
+-				/* No other type allowed */			\
+-				(void)0))))
+-
+-#endif
++#define cpu_to_virtio(vdev, x, m) \
++	_Generic((m), \
++		__u8: (x), \
++		__virtio16: cpu_to_virtio16((vdev), (x)), \
++		__virtio32: cpu_to_virtio32((vdev), (x)), \
++		__virtio64: cpu_to_virtio64((vdev), (x)), \
++		/*
++		 * Why define a default? checker can distinguish between
++		 * e.g. __u16, __le16 and __virtio16, but GCC can't so
++		 * attempts to define variants for both look like a duplicate
++		 * variant to it.
++		 */ \
++		default: _Generic((m), \
++				 __u8: (x), \
++				 __le16: (__force __le16)cpu_to_virtio16((vdev), (x)), \
++				 __le32: (__force __le32)cpu_to_virtio32((vdev), (x)), \
++				 __le64: (__force __le64)cpu_to_virtio64((vdev), (x)), \
++				 default: _Generic((m), \
++						  __u8: (x), \
++						  __u16: (__force __u16)cpu_to_virtio16((vdev), (x)), \
++						  __u32: (__force __u32)cpu_to_virtio32((vdev), (x)), \
++						  __u64: (__force __u64)cpu_to_virtio64((vdev), (x)) \
++						  ) \
++				 ) \
++		)
  
- 	might_sleep();
- 	vdev->config->get(vdev, offset, &ret, sizeof(ret));
--	return virtio32_to_cpu(vdev, (__force __virtio32)ret);
-+	return virtio32_to_cpu(vdev, ret);
- }
+ #define __virtio_native_type(structname, member) \
+-	__virtio_native_typeof(((structname*)0)->member)
+-
+-#define __virtio_typecheck(structname, member, val) \
+-		/* Must match the member's type, and be integer */ \
+-		typecheck(__virtio_native_type(structname, member), (val))
+-
++	typeof(virtio_to_cpu(NULL, ((structname*)0)->member))
  
- static inline void virtio_cwrite32(struct virtio_device *vdev,
- 				   unsigned int offset, u32 val)
- {
-+	__virtio32 v;
-+
- 	might_sleep();
--	val = (__force u32)cpu_to_virtio32(vdev, val);
--	vdev->config->set(vdev, offset, &val, sizeof(val));
-+	v = cpu_to_virtio32(vdev, val);
-+	vdev->config->set(vdev, offset, &v, sizeof(v));
- }
+ /* Config space accessors. */
+ #define virtio_cread(vdev, structname, member, ptr)			\
+ 	do {								\
+-		might_sleep();						\
+-		/* Must match the member's type, and be integer */	\
+-		if (!__virtio_typecheck(structname, member, *(ptr)))	\
+-			(*ptr) = 1;					\
++		typeof(((structname*)0)->member) virtio_cread_v;	\
+ 									\
+-		switch (sizeof(*ptr)) {					\
++		might_sleep();						\
++		/* Sanity check: must match the member's type */	\
++		typecheck(typeof(virtio_to_cpu((vdev), virtio_cread_v)), *(ptr)); \
++									\
++		switch (sizeof(virtio_cread_v)) {			\
+ 		case 1:							\
+-			*(ptr) = virtio_cread8(vdev,			\
+-					       offsetof(structname, member)); \
+-			break;						\
+ 		case 2:							\
+-			*(ptr) = virtio_cread16(vdev,			\
+-						offsetof(structname, member)); \
+-			break;						\
+ 		case 4:							\
+-			*(ptr) = virtio_cread32(vdev,			\
+-						offsetof(structname, member)); \
+-			break;						\
+-		case 8:							\
+-			*(ptr) = virtio_cread64(vdev,			\
+-						offsetof(structname, member)); \
++			vdev->config->get((vdev), 			\
++					  offsetof(structname, member), \
++					  &virtio_cread_v,		\
++					  sizeof(virtio_cread_v));	\
+ 			break;						\
+ 		default:						\
+-			BUG();						\
++			__virtio_cread_many((vdev), 			\
++					  offsetof(structname, member), \
++					  &virtio_cread_v,		\
++					  1,				\
++					  sizeof(virtio_cread_v));	\
++			break;						\
+ 		}							\
++		*(ptr) = virtio_to_cpu(vdev, virtio_cread_v);		\
+ 	} while(0)
  
- static inline u64 virtio_cread64(struct virtio_device *vdev,
- 				 unsigned int offset)
- {
--	u64 ret;
-+	__virtio64 ret;
-+
- 	__virtio_cread_many(vdev, offset, &ret, 1, sizeof(ret));
--	return virtio64_to_cpu(vdev, (__force __virtio64)ret);
-+	return virtio64_to_cpu(vdev, ret);
- }
+ /* Config space accessors. */
+ #define virtio_cwrite(vdev, structname, member, ptr)			\
+ 	do {								\
+-		might_sleep();						\
+-		/* Must match the member's type, and be integer */	\
+-		if (!__virtio_typecheck(structname, member, *(ptr)))	\
+-			BUG_ON((*ptr) == 1);				\
++		typeof(((structname*)0)->member) virtio_cwrite_v =	\
++			cpu_to_virtio(vdev, *(ptr), ((structname*)0)->member); \
+ 									\
+-		switch (sizeof(*ptr)) {					\
+-		case 1:							\
+-			virtio_cwrite8(vdev,				\
+-				       offsetof(structname, member),	\
+-				       *(ptr));				\
+-			break;						\
+-		case 2:							\
+-			virtio_cwrite16(vdev,				\
+-					offsetof(structname, member),	\
+-					*(ptr));			\
+-			break;						\
+-		case 4:							\
+-			virtio_cwrite32(vdev,				\
+-					offsetof(structname, member),	\
+-					*(ptr));			\
+-			break;						\
+-		case 8:							\
+-			virtio_cwrite64(vdev,				\
+-					offsetof(structname, member),	\
+-					*(ptr));			\
+-			break;						\
+-		default:						\
+-			BUG();						\
+-		}							\
++		might_sleep();						\
++		/* Sanity check: must match the member's type */	\
++		typecheck(typeof(virtio_to_cpu((vdev), virtio_cwrite_v)), *(ptr)); \
++									\
++		vdev->config->set((vdev), offsetof(structname, member),	\
++				  &virtio_cwrite_v,			\
++				  sizeof(virtio_cwrite_v));		\
+ 	} while(0)
  
- static inline void virtio_cwrite64(struct virtio_device *vdev,
- 				   unsigned int offset, u64 val)
- {
-+	__virtio64 v;
-+
- 	might_sleep();
--	val = (__force u64)cpu_to_virtio64(vdev, val);
--	vdev->config->set(vdev, offset, &val, sizeof(val));
-+	v = cpu_to_virtio64(vdev, val);
-+	vdev->config->set(vdev, offset, &v, sizeof(v));
- }
- 
- /* Conditional config space accessors. */
+ /* Read @count fields, @bytes each. */
 -- 
 MST
 
