@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C5F23C7E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A86023C7E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgHEIhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 04:37:21 -0400
-Received: from lucky1.263xmail.com ([211.157.147.131]:49546 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728021AbgHEIhB (ORCPT
+        id S1727998AbgHEIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 04:36:58 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:53851 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgHEIg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 04:37:01 -0400
-Received: from localhost (unknown [192.168.167.209])
-        by lucky1.263xmail.com (Postfix) with ESMTP id E6688B0743;
-        Wed,  5 Aug 2020 16:36:50 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P12030T139956846577408S1596616609190052_;
-        Wed, 05 Aug 2020 16:36:50 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <8e8bd938e45a208ef8604a951d9c156f>
-X-RL-SENDER: hjc@rock-chips.com
-X-SENDER: hjc@rock-chips.com
-X-LOGIN-NAME: hjc@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Sandy Huang <hjc@rock-chips.com>
-To:     heiko@sntech.de,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     huangtao@rock-chips.com, andy.yan@rock-chips.com,
-        linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, kever.yang@rock-chips.com,
-        Sandy Huang <hjc@rock-chips.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: sysfs: Add to get current mode
-Date:   Wed,  5 Aug 2020 16:36:46 +0800
-Message-Id: <20200805083646.4123-1-hjc@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 5 Aug 2020 04:36:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1596616615; x=1628152615;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=LfYO9g+FGWyDgQ8j8fkTqXUVuxUq9UB8VMpu2RT1Ofw=;
+  b=S4oUcCos7NUDdLqYjYMw00oHKb5ZXLLyC+o5E9WVHrfPtkRjQZ6gJa77
+   0TC/PkL2hJzegANNVp8xZRDc4rZs0+FU9OaM5Y62PcXKAhSiGmaDUuzAX
+   7RNoVwzrcIcWT6IaHwAOt9ibdRYCuDeW1IyxMbroUgrHvpqU8EbVE//o3
+   XMMc1w32KzDbe0XzGHy3GgdZATmRruG75hX31jqFE3Spgd9UT/l9g7ZmJ
+   Lx+oHwKQJRTVfVqIA/YI6vcRkrnTDVzta68u41sSIArkWtSwvp+P/94r3
+   fgywTR/8SlvLvcmxvOL+vxcBtCRd/s2nt8G4qjc6k6TAN/SuklCGVj9H6
+   A==;
+IronPort-SDR: BZL2Dno/Vjfcv7QsqHVjuwisQAhByW+Qyr9Ato6QtAo+OGPvvz2k5RCTjfMB+VYjQlgK6Zp9jc
+ sItWqCjYHMFmw+Dh0+fdm/AdrXg/WUfR03+Qq0nfeD7l2EL7zVZ3sPFk11To/QTrpV+RKj9g/a
+ a+Lw8lqDZ/JKKkaUtQOyQ1G1qHeyD912ZVkTq0pahZf3tCezJsd3kPhMIsQPPVO/sQwbsr9ST8
+ r5/veCPTGZJ3i7URI1Ewp0JJZvUjpI0+G7RwSlDloUVVhlxi/uuC5UJ3kflMkpn4eHbQpNrBkv
+ W2M=
+X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
+   d="scan'208";a="84485775"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Aug 2020 01:36:55 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 5 Aug 2020 01:36:53 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 5 Aug 2020 01:36:51 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v3 0/3] AT91 PM improvements
+Date:   Wed, 5 Aug 2020 11:36:47 +0300
+Message-ID: <1596616610-15460-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add this node to get the current true mode.
+Hi,
 
-Signed-off-by: Sandy Huang <hjc@rock-chips.com>
----
- drivers/gpu/drm/drm_sysfs.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+This series adds ULP0 fast mode intended to reduce the suspend/resume
+time in the detriment of power consumption (patch 1/3).
+Along with this patch 2/3 adds code to avoid requesting a PM mode
+not available on platforms not supporting it.
+Patch 3/3 decrements a device_node refcount after its usage.
 
-diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
-index 939f0032aab1..f39bcd34853b 100644
---- a/drivers/gpu/drm/drm_sysfs.c
-+++ b/drivers/gpu/drm/drm_sysfs.c
-@@ -19,6 +19,7 @@
- #include <linux/slab.h>
- 
- #include <drm/drm_connector.h>
-+#include <drm/drm_crtc.h>
- #include <drm/drm_device.h>
- #include <drm/drm_file.h>
- #include <drm/drm_modes.h>
-@@ -236,16 +237,45 @@ static ssize_t modes_show(struct device *device,
- 	return written;
- }
- 
-+static ssize_t current_mode_show(struct device *device,
-+		      struct device_attribute *attr,
-+		      char *buf)
-+{
-+	struct drm_connector *connector = to_drm_connector(device);
-+	struct drm_display_mode *mode;
-+	struct drm_crtc_state *crtc_state;
-+	bool interlaced;
-+	int written = 0;
-+
-+	if (!connector->state || !connector->state->crtc)
-+		return written;
-+
-+	crtc_state = connector->state->crtc->state;
-+	if (!crtc_state)
-+		return written;
-+
-+	mode = &crtc_state->mode;
-+
-+	interlaced = !!(mode->flags & DRM_MODE_FLAG_INTERLACE);
-+	written += snprintf(buf + written, PAGE_SIZE - written, "%dx%d%s%d\n",
-+			    mode->hdisplay, mode->vdisplay,
-+			    interlaced ? "i" : "p", drm_mode_vrefresh(mode));
-+
-+	return written;
-+}
-+
- static DEVICE_ATTR_RW(status);
- static DEVICE_ATTR_RO(enabled);
- static DEVICE_ATTR_RO(dpms);
- static DEVICE_ATTR_RO(modes);
-+static DEVICE_ATTR_RO(current_mode);
- 
- static struct attribute *connector_dev_attrs[] = {
- 	&dev_attr_status.attr,
- 	&dev_attr_enabled.attr,
- 	&dev_attr_dpms.attr,
- 	&dev_attr_modes.attr,
-+	&dev_attr_current_mode.attr,
- 	NULL
- };
- 
+Thank you,
+Claudiu Beznea
+
+Changes in v3:
+- force STANDBY and ULP0 modes for rm9200 and at91sam9 to avoid
+  looping over all available modes and thus preserving booting time
+- keep static in "static const int modes[] __initconst" in *_pm_init()
+  functions to avoid compilation error "error: section attribute cannot
+  be specified for local variables const int modes[] __initconst = {"
+- remove sama5_pm() introduced in v2
+
+Changes in v2:
+- in patch 2/3:
+	- move per SoC supported mode arrays in *_pm_init() functions.
+	- use 2 booleans in at91_pm_modes_validate() for modes validation
+	- continue to use array of supported modes in at91rm9200_pm_init()
+	  and at91sam9_pm_init() instead of forcing
+	  soc_pm.data.standby_mode = AT91_PM_STANDBY and
+	  soc_pm.data.suspend_mode = AT91_PM_ULP0 to breaking the user
+	  configuration (it might request ulp0 as standby mode or vice versa)
+
+Claudiu Beznea (3):
+  ARM: at91: pm: add support for ULP0 fast wakeup
+  ARM: at91: pm: add per soc validation of pm modes
+  ARM: at91: pm: of_node_put() after its usage
+
+ arch/arm/mach-at91/pm.c         | 90 ++++++++++++++++++++++++++++++++++++++---
+ arch/arm/mach-at91/pm.h         |  5 ++-
+ arch/arm/mach-at91/pm_suspend.S | 41 +++++++++++++++++--
+ 3 files changed, 125 insertions(+), 11 deletions(-)
+
 -- 
-2.17.1
-
-
+2.7.4
 
