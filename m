@@ -2,199 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945B823D0F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A88123D067
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgHETzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:55:00 -0400
-Received: from mga01.intel.com ([192.55.52.88]:32825 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727945AbgHEQsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:48:11 -0400
-IronPort-SDR: nwkqXAT6CZOZ69x8LDzWCwzN33zlJckC1mY5EC5ptco192YfQkftpxb0bLRLMRp89yiItIwNGD
- CFFRomAQscsw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="170622868"
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="170622868"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 07:36:34 -0700
-IronPort-SDR: 5s5xL7ULjjcKwA1ZbMpzVSNN1By1k0TkGC8gswbPhyywEmWjzJT3xp3c7P9Gm/qC4oSD3648GN
- nvO0VM/eQO3A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="323117445"
-Received: from lkp-server02.sh.intel.com (HELO 37a337f97289) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 05 Aug 2020 07:36:30 -0700
-Received: from kbuild by 37a337f97289 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k3KWs-0000oK-7X; Wed, 05 Aug 2020 14:36:30 +0000
-Date:   Wed, 5 Aug 2020 22:35:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Oleksandr Andrushchenko <andr2000@gmail.com>,
-        xen-devel@lists.xenproject.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, boris.ostrovsky@oracle.com,
-        jgross@suse.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     kbuild-all@lists.01.org, intel-gfx@lists.freedesktop.org,
-        sstabellini@kernel.org, dan.carpenter@oracle.com
-Subject: Re: [Intel-gfx] [PATCH 6/6] drm/xen-front: Add support for EDID
- based configuration
-Message-ID: <202008052221.duhA3v0p%lkp@intel.com>
-References: <20200731125109.18666-7-andr2000@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200731125109.18666-7-andr2000@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728233AbgHETsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:48:20 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:39006 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728145AbgHEQ6y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:58:54 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D79E28EE1DD;
+        Wed,  5 Aug 2020 08:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1596639691;
+        bh=5KjscTjJ2rT9ybNg+PHjihmjqEcOr8OKbSKYiE1mN1I=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=B1prvCHaxEOP6CSKSR0sHnRVt+H7uKCtNBlJKR80V92AyV4g/UjhOaObGhccE1cxU
+         h67RP5SGz6mKGuFNlGpONxtoRbl7VGSuPWAch2yCZ1IyNcoEJYsxbLlHDD3W5DNw4C
+         EiJrjXIJ5VmBGYjtG0XlF6FaVWV2wOa28tr7BgzY=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FBfBPUShTYhM; Wed,  5 Aug 2020 08:01:31 -0700 (PDT)
+Received: from [153.66.254.194] (unknown [50.35.76.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 3D9978EE0F8;
+        Wed,  5 Aug 2020 08:01:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1596639691;
+        bh=5KjscTjJ2rT9ybNg+PHjihmjqEcOr8OKbSKYiE1mN1I=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=B1prvCHaxEOP6CSKSR0sHnRVt+H7uKCtNBlJKR80V92AyV4g/UjhOaObGhccE1cxU
+         h67RP5SGz6mKGuFNlGpONxtoRbl7VGSuPWAch2yCZ1IyNcoEJYsxbLlHDD3W5DNw4C
+         EiJrjXIJ5VmBGYjtG0XlF6FaVWV2wOa28tr7BgzY=
+Message-ID: <1596639689.3457.17.camel@HansenPartnership.com>
+Subject: Re: [dm-devel] [RFC PATCH v5 00/11] Integrity Policy Enforcement
+ LSM (IPE)
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Deven Bowers <deven.desai@linux.microsoft.com>,
+        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
+Cc:     snitzer@redhat.com, zohar@linux.ibm.com, dm-devel@redhat.com,
+        tyhicks@linux.microsoft.com, agk@redhat.com, paul@paul-moore.com,
+        corbet@lwn.net, jmorris@namei.org, nramas@linux.microsoft.com,
+        serge@hallyn.com, pasha.tatashin@soleen.com, jannh@google.com,
+        linux-block@vger.kernel.org, viro@zeniv.linux.org.uk,
+        axboe@kernel.dk, mdsakib@microsoft.com,
+        linux-kernel@vger.kernel.org, eparis@redhat.com,
+        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        jaskarankhurana@linux.microsoft.com
+Date:   Wed, 05 Aug 2020 08:01:29 -0700
+In-Reply-To: <fb35a1f7-7633-a678-3f0f-17cf83032d2b@linux.microsoft.com>
+References: <20200728213614.586312-1-deven.desai@linux.microsoft.com>
+         <20200802115545.GA1162@bug> <20200802140300.GA2975990@sasha-vm>
+         <20200802143143.GB20261@amd>
+         <1596386606.4087.20.camel@HansenPartnership.com>
+         <fb35a1f7-7633-a678-3f0f-17cf83032d2b@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksandr,
+On Tue, 2020-08-04 at 09:07 -0700, Deven Bowers wrote:
+> On 8/2/2020 9:43 AM, James Bottomley wrote:
+> > On Sun, 2020-08-02 at 16:31 +0200, Pavel Machek wrote:
+> > > On Sun 2020-08-02 10:03:00, Sasha Levin wrote:
+> > > > On Sun, Aug 02, 2020 at 01:55:45PM +0200, Pavel Machek wrote:
+> > > > > Hi!
+> > > > > 
+> > > > > > IPE is a Linux Security Module which allows for a
+> > > > > > configurable policy to enforce integrity requirements on
+> > > > > > the whole system. It attempts to solve the issue of Code
+> > > > > > Integrity: that any code being executed (or files being
+> > > > > > read), are identical to the version that was built by a
+> > > > > > trusted source.
+> > > > > 
+> > > > > How is that different from security/integrity/ima?
+> > > > 
+> > > > Maybe if you would have read the cover letter all the way down
+> > > > to the 5th paragraph which explains how IPE is different from
+> > > > IMA we could avoided this mail exchange...
+> > > 
+> > > "
+> > > IPE differs from other LSMs which provide integrity checking (for
+> > > instance, IMA), as it has no dependency on the filesystem
+> > > metadata itself.
+> > > The attributes that IPE checks are deterministic properties that
+> > > exist solely in the kernel. Additionally, IPE provides no
+> > > additional mechanisms of verifying these files (e.g. IMA
+> > > Signatures) - all of the attributes of verifying files are
+> > > existing features within the kernel, such as dm-verity
+> > > or fsverity.
+> > > "
+> > > 
+> > > That is not really helpful.
+> 
+> Perhaps I can explain (and re-word this paragraph) a bit better.
+> 
+> As James indicates, IPE does try to close the gap of the IMA
+> limitation with xattr. I honestly wasn’t familiar with the appended
+> signatures, which seems fine.
+> 
+> Regardless, this isn’t the larger benefit that IPE provides. The
+> larger benefit of this is how IPE separates _mechanisms_ (properties)
+> to enforce integrity requirements, from _policy_. The LSM provides
+> policy, while things like dm-verity provide mechanism.
 
-I love your patch! Perhaps something to improve:
+Colour me confused here, but I thought that's exactly what IMA does. 
+The mechanism is the gates and the policy is simply a list of rules
+which are applied when a gate is triggered.  The policy necessarily has
+to be tailored to the information available at the gate (so the bprm
+exec gate knows filesystem things like the inode for instance) but the
+whole thing looks very extensible.
 
-[auto build test WARNING on drm-exynos/exynos-drm-next]
-[also build test WARNING on drm-intel/for-linux-next tegra-drm/drm/tegra/for-next drm-tip/drm-tip linus/master v5.8 next-20200804]
-[cannot apply to xen-tip/linux-next drm/drm-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+> So to speak, IPE acts as the glue for other mechanisms to leverage a
+> customizable, system-wide policy to enforce. While this initial
+> patchset only onboards dm-verity, there’s also potential for MAC
+> labels, fs-verity, authenticated BTRFS, dm-integrity, etc. IPE
+> leverages existing systems in the kernel, while IMA uses its own.
 
-url:    https://github.com/0day-ci/linux/commits/Oleksandr-Andrushchenko/Fixes-and-improvements-for-Xen-pvdrm/20200731-205350
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/daeinki/drm-exynos.git exynos-drm-next
-compiler: aarch64-linux-gcc (GCC) 9.3.0
+Is this about who does the measurement?  I think there's no reason at
+all why IMA can't leverage existing measurements, it's just nothing to
+leverage existed when it was created.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> Another difference is the general coverage. IMA has some difficulties
+> in covering mprotect[1], IPE doesn’t (the MAP_ANONYMOUS indicated by
+> Jann in that thread would be denied as the file struct would be null,
+> with IPE’s current set of supported mechanisms. mprotect would
+> continue to function as expected if you change to PROT_EXEC).
 
+I don't really think a debate over who does what and why is productive
+at this stage.  I just note that IMA policy could be updated to deny
+MAP_ANONYMOUS, but no-one's asked for that (probably because of the
+huge application breakage that would ensue).  The policy is a product
+of the use case and the current use case for IMA is working with
+existing filesystem semantics.
 
-cppcheck warnings: (new ones prefixed by >>)
+> > Perhaps the big question is: If we used the existing IMA appended
+> > signature for detached signatures (effectively becoming the
+> > "properties" referred to in the cover letter) and hooked IMA into
+> > device mapper using additional policy terms, would that satisfy all
+> > the requirements this new LSM has?
+> 
+> Well, Mimi, what do you think? Should we integrate all the features
+> of IPE into IMA, or do you think they are sufficiently different in
+> architecture that it would be worth it to keep the code base in
+> separate LSMs?
 
->> drivers/irqchip/irq-gic.c:161:24: warning: Local variable gic_data shadows outer variable [shadowVar]
-    struct gic_chip_data *gic_data = irq_data_get_irq_chip_data(d);
-                          ^
-   drivers/irqchip/irq-gic.c:123:29: note: Shadowed declaration
-   static struct gic_chip_data gic_data[CONFIG_ARM_GIC_MAX_NR] __read_mostly;
-                               ^
-   drivers/irqchip/irq-gic.c:161:24: note: Shadow variable
-    struct gic_chip_data *gic_data = irq_data_get_irq_chip_data(d);
-                          ^
-   drivers/irqchip/irq-gic.c:167:24: warning: Local variable gic_data shadows outer variable [shadowVar]
-    struct gic_chip_data *gic_data = irq_data_get_irq_chip_data(d);
-                          ^
-   drivers/irqchip/irq-gic.c:123:29: note: Shadowed declaration
-   static struct gic_chip_data gic_data[CONFIG_ARM_GIC_MAX_NR] __read_mostly;
-                               ^
-   drivers/irqchip/irq-gic.c:167:24: note: Shadow variable
-    struct gic_chip_data *gic_data = irq_data_get_irq_chip_data(d);
-                          ^
->> drivers/irqchip/irq-gic.c:400:28: warning: Local variable gic_irq shadows outer function [shadowFunction]
-    unsigned int cascade_irq, gic_irq;
-                              ^
-   drivers/irqchip/irq-gic.c:171:28: note: Shadowed declaration
-   static inline unsigned int gic_irq(struct irq_data *d)
-                              ^
-   drivers/irqchip/irq-gic.c:400:28: note: Shadow variable
-    unsigned int cascade_irq, gic_irq;
-                              ^
->> drivers/irqchip/irq-gic.c:1507:14: warning: Local variable gic_cpu_base shadows outer function [shadowFunction]
-    phys_addr_t gic_cpu_base;
-                ^
-   drivers/irqchip/irq-gic.c:165:29: note: Shadowed declaration
-   static inline void __iomem *gic_cpu_base(struct irq_data *d)
-                               ^
-   drivers/irqchip/irq-gic.c:1507:14: note: Shadow variable
-    phys_addr_t gic_cpu_base;
-                ^
->> drivers/irqchip/irq-gic-v3.c:874:71: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
-    gic_data.rdists.has_direct_lpi &= (!!(typer & GICR_TYPER_DirectLPIS) |
-                                                                         ^
->> drivers/irqchip/irq-gic-v3.c:1808:6: warning: Local variable nr_redist_regions shadows outer variable [shadowVar]
-    u32 nr_redist_regions;
-        ^
-   drivers/irqchip/irq-gic-v3.c:1880:6: note: Shadowed declaration
-    u32 nr_redist_regions;
-        ^
-   drivers/irqchip/irq-gic-v3.c:1808:6: note: Shadow variable
-    u32 nr_redist_regions;
-        ^
->> drivers/irqchip/irq-gic-v3.c:2042:6: warning: Local variable maint_irq_mode shadows outer variable [shadowVar]
-    int maint_irq_mode;
-        ^
-   drivers/irqchip/irq-gic-v3.c:1884:6: note: Shadowed declaration
-    int maint_irq_mode;
-        ^
-   drivers/irqchip/irq-gic-v3.c:2042:6: note: Shadow variable
-    int maint_irq_mode;
-        ^
->> drivers/gpu/drm/xen/xen_drm_front_cfg.c:76:6: warning: Variable 'ret' is reassigned a value before the old one has been used. [redundantAssignment]
-    ret = xen_drm_front_get_edid(front_info, index, pages,
-        ^
-   drivers/gpu/drm/xen/xen_drm_front_cfg.c:61:0: note: Variable 'ret' is reassigned a value before the old one has been used.
-    int i, npages, ret = -ENOMEM;
-   ^
-   drivers/gpu/drm/xen/xen_drm_front_cfg.c:76:6: note: Variable 'ret' is reassigned a value before the old one has been used.
-    ret = xen_drm_front_get_edid(front_info, index, pages,
-        ^
+I'll leave Mimi to answer, but really this is exactly the question that
+should have been asked before writing IPE.  However, since we have the
+cart before the horse, let me break the above down into two specific
+questions.
 
-vim +/ret +76 drivers/gpu/drm/xen/xen_drm_front_cfg.c
+   1. Could we implement IPE in IMA (as in would extensions to IMA cover
+      everything).  I think the answers above indicate this is a "yes".
+   2. Should we extend IMA to implement it?  This is really whether from a
+      usability standpoint two seperate LSMs would make sense to cover the
+      different use cases.  I've got to say the least attractive thing
+      about separation is the fact that you now both have a policy parser.
+       You've tried to differentiate yours by making it more Kconfig
+      based, but policy has a way of becoming user space supplied because
+      the distros hate config options, so I think you're going to end up
+      with a policy parser very like IMAs.
 
-    54	
-    55	static void cfg_connector_edid(struct xen_drm_front_info *front_info,
-    56				       struct xen_drm_front_cfg_connector *connector,
-    57				       int index)
-    58	{
-    59		struct page **pages;
-    60		u32 edid_sz;
-    61		int i, npages, ret = -ENOMEM;
-    62	
-    63		connector->edid = vmalloc(XENDISPL_EDID_MAX_SIZE);
-    64		if (!connector->edid)
-    65			goto fail;
-    66	
-    67		npages = DIV_ROUND_UP(XENDISPL_EDID_MAX_SIZE, PAGE_SIZE);
-    68		pages = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
-    69		if (!pages)
-    70			goto fail_free_edid;
-    71	
-    72		for (i = 0; i < npages; i++)
-    73			pages[i] = vmalloc_to_page((u8 *)connector->edid +
-    74						   i * PAGE_SIZE);
-    75	
-  > 76		ret = xen_drm_front_get_edid(front_info, index, pages,
-    77					     XENDISPL_EDID_MAX_SIZE, &edid_sz);
-    78	
-    79		kvfree(pages);
-    80	
-    81		if (ret < 0)
-    82			goto fail_free_edid;
-    83	
-    84		ret = -EINVAL;
-    85		if (!edid_sz || (edid_sz % EDID_LENGTH))
-    86			goto fail_free_edid;
-    87	
-    88		if (!drm_edid_is_valid(connector->edid))
-    89			goto fail_free_edid;
-    90	
-    91		DRM_INFO("Connector %s: using EDID for configuration, size %d\n",
-    92			 connector->xenstore_path, edid_sz);
-    93		return;
-    94	
-    95	fail_free_edid:
-    96		cfg_connector_free_edid(connector);
-    97	fail:
-    98		/*
-    99		 * If any error this is not critical as we can still read
-   100		 * connector settings from XenStore, so just warn.
-   101		 */
-   102		DRM_WARN("Connector %s: cannot read or wrong EDID: %d\n",
-   103			 connector->xenstore_path, ret);
-   104	}
-   105	
+James
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
