@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF15D23D266
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A2323D16C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728832AbgHEUMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726645AbgHEQZe (ORCPT
+        id S1729190AbgHEUAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:00:33 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:43808 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727077AbgHEQlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:25:34 -0400
-Received: from EUR02-HE1-obe.outbound.protection.outlook.com (mail-he1eur02on0631.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe05::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FAAC00869A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 07:36:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cak5xyR3KUMq43XbA2vlAEAfgBgsAh7WuCQ4KnaY7k3DJ9J/0kwqFfboTD8XmqaLIeoOHVgWqctiVA6+e2UQdUXsgmXR9Dke9cn9V710sfL9tzedBNQRfCpOE/rK940SgXkqkMhcZVEZjxGMVuLVP+tya4k3FrfPEnpOSQ4Xi6Tj8UV8Fobt/Mfrez1ZgwEnv7D6KWXImwdXSHVklCG6nw+JR3qGrJM5ZaXpTUyAFM8N8AfD5OMkefg0q+8R3oI+bF+Dh0E/fDGef0d36RXzsN9SneMJyIq80mG43ELbP5ktKzqJjc/dHdZAlvYSuqMzE2Furo/O0oBP5fjH1HsNXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DbZP+klGJ2QwpyaOEcuajI61mtvAop+EzZBGa2ZnRlc=;
- b=TYUfhPODFVsOmNhXAbC2OgJ5u50Ve+5woGyU6y2qAlFiMZ1lujHWx61EBXxf4C47UnZD+kmIGpVUgAWPOQngpM92LLsQP9nj9SdO7K+vTGbzRJ+cIox8urr3UDDuLJsv1K633MNHPbp8ggtOgrd0u40Pgz0sR0W95aRIwhqtSS8zsnxhfy/rQkoQX6s8Avsqc56aV80fzL3dA3X2Cj4L7ln6RLUX50WsZefs3/qCr6F6DD2KiglOWo0Dx7Ev4lfM/rPRQ7rJgww/6uMv47jcbe8QCxURHI50ewV+IKFfZVIr5iCUK7ZEPsRiUB13ZM3ESoPLnQ1irC3DtvsWFq1dMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DbZP+klGJ2QwpyaOEcuajI61mtvAop+EzZBGa2ZnRlc=;
- b=SJ6JFGTG0dkaWmds0u3f3Y3a8vPYYyFMWYg4IEITeRKJsMCiRhm/0KUPgF14uNf/QlsexfAoDR96UCYBealk+iw9rkCe2ZU9A9HVfFtOEIZUxkA4vjK+Xj5x/jP5Z7vWcnwquqa7ygYBR9OE9KflWfGUgIDVGyFnjk8uLTseNk0=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM0PR05MB4786.eurprd05.prod.outlook.com (2603:10a6:208:b3::15)
- by AM4PR05MB3378.eurprd05.prod.outlook.com (2603:10a6:205:d::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.27; Wed, 5 Aug
- 2020 13:02:02 +0000
-Received: from AM0PR05MB4786.eurprd05.prod.outlook.com
- ([fe80::9186:8b7:3cf7:7813]) by AM0PR05MB4786.eurprd05.prod.outlook.com
- ([fe80::9186:8b7:3cf7:7813%7]) with mapi id 15.20.3239.021; Wed, 5 Aug 2020
- 13:02:02 +0000
-Date:   Wed, 5 Aug 2020 16:01:58 +0300
-From:   Eli Cohen <eli@mellanox.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
-        saeedm@mellanox.com, parav@mellanox.com
-Subject: Re: [PATCH V4 linux-next 00/12] VDPA support for Mellanox ConnectX
- devices
-Message-ID: <20200805130158.GA126406@mtl-vdi-166.wap.labs.mlnx>
-References: <20200804162048.22587-1-eli@mellanox.com>
- <20200805075856-mutt-send-email-mst@kernel.org>
- <20200805124054.GA125576@mtl-vdi-166.wap.labs.mlnx>
- <20200805084604-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805084604-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-ClientProxiedBy: AM0P190CA0016.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:208:190::26) To AM0PR05MB4786.eurprd05.prod.outlook.com
- (2603:10a6:208:b3::15)
+        Wed, 5 Aug 2020 12:41:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596645679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Htm2JdguJ9wMbfUtNGIDXZzv/Zt05ES7M0m8GbVzmRI=;
+        b=Gh+sCAEAdGXKIjSuTtiwJB9iB9HPP+PB1SJTOrR/Cgb4GnZWl1whY8PTniAE4jp97YtQwK
+        gASuurYHRyWBH8GVqQQ0SbC3E2nZwd5g98OQ7aD2+PABWth2kOfvhfrwXrkiCgFmWZMQ+Q
+        Poc4+DhB+daagcCLCcT5ZJE8PGmAAzk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-432-bSMZvbQQPtmbHwA5KYU1wQ-1; Wed, 05 Aug 2020 09:06:35 -0400
+X-MC-Unique: bSMZvbQQPtmbHwA5KYU1wQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BFAEB80183C;
+        Wed,  5 Aug 2020 13:06:33 +0000 (UTC)
+Received: from localhost (unknown [10.36.110.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5F7537B900;
+        Wed,  5 Aug 2020 13:06:31 +0000 (UTC)
+Date:   Wed, 5 Aug 2020 15:06:27 +0200
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        <heiko.carstens@de.ibm.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+Message-ID: <20200805150627.3351fe24@redhat.com>
+In-Reply-To: <20200805223121.7dec86de@canb.auug.org.au>
+References: <20200805223121.7dec86de@canb.auug.org.au>
+Organization: Red Hat
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mtl-vdi-166.wap.labs.mlnx (94.188.199.18) by AM0P190CA0016.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:190::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15 via Frontend Transport; Wed, 5 Aug 2020 13:02:01 +0000
-X-Originating-IP: [94.188.199.18]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ae1b5536-bff4-4835-6153-08d8393fbee4
-X-MS-TrafficTypeDiagnostic: AM4PR05MB3378:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM4PR05MB3378A541A55CCF0BFC50857AC54B0@AM4PR05MB3378.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6+vrnMm4HfSsl4L9vE7MhQj7Zn+zEshr4q/LIt3jGVuGSqwx8+8P76a560a93H8cbpmPZDZ4aUU623fScRyX2ENZBLHs2r30ALje3lPBQXhsbWNac8qIcxPmRu3EfNjvlHnPdAcCPGYageXosX7Yho+Lf7REbjdVh4hWStxGSJ8t9YbRe9xO/KHfDtrHGP9lvzlXZOQ/0FkXz4ij56Ry6StH1VDIBAopzmqqWyZX4B9QJfPsBN1uwI3WWWZ+8MEu+BFiSsTAmYM/cR46z/pnvM7fiFwTi6LWloIYFEx1tVT2XWX9aTnrPVCQBK3+Fy6yPdYUrHsbQtH3PJS7oC57Lg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB4786.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(346002)(396003)(136003)(39860400002)(6666004)(186003)(1076003)(66946007)(6506007)(478600001)(16526019)(26005)(956004)(4744005)(5660300002)(66476007)(6916009)(9686003)(316002)(55016002)(66556008)(2906002)(8936002)(4326008)(107886003)(7696005)(52116002)(8676002)(33656002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Wxea2JcINurQ34DVXSkUBJGLfcmji/2NN2drk63spz/pnskcnURJOMkWvIjXh8OD+4ORIfrk1LuCkrnskAthoTW2FGRW4hnfc8uMSNW8eNaa7kCI82FlcUV8EAkXTcJl7lhSHxDRmZ3rPnrUIeymYlJSzjw8PudpOMid8KP+BQoy80rDCsxMd3JqRPD3YXuYUZnY3fB0eBYRFD2W9CO2CY3cqiIw4Bm9it3S5wpjQxvXrnouYzQxWuElgqpqnSQxwWUODZNhwvUpJWBDQ7fcs1pBt8WTRkEzfW9PoWAWIkLd/nkEmzr7ikXhfMK2pv0kvwyD3er61lbajyE80WrwlSAFd8sRKRJhPx92Tpb/wRAdo3zG4Q2G/mBz5a71Xa1hiXliCS2puEqVvlYfA8Xa36cEUKe61FAySTOb9cfpF/MU7sL3B9GWH3kjSJ+dKSt6bbl756ShXkObyxs05OaX8KegbFj9eITyy8yzH2mLg9NGHuIYhXIxK/ZkYpSsAn5X
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae1b5536-bff4-4835-6153-08d8393fbee4
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB4786.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2020 13:02:02.3075
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LNAS/eUgtJ6Z4RuC4/NEVS2QYkJHnFj5PFqn+WgueVDSsW6Rq8uoO3UdW8EywiUMF6lXzYTHfrhHFda9p4Q17Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3378
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 08:48:52AM -0400, Michael S. Tsirkin wrote:
-> > 
-> > Did you merge this?:
-> > git pull git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next
-> 
-> 
-> I can only merge this tree if no one else will. Linus does not like
-> getting same patches through two trees.
-> 
-> Is this the case? Is mlx5-next going to be merged through
-> my tree in this cycle?
-> 
+On Wed, 5 Aug 2020 22:31:21 +1000
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-Saeed Mahameed from Mellanox (located in California) usuaally sends out
-net patches. So he's supposed to send that to Dave Miller.
+> Hi all,
+> 
+> After merging the net-next tree, today's linux-next build (s390 defconfig)
+> failed like this:
+> 
+> net/ipv4/ip_tunnel_core.c:335:2: error: implicit declaration of function 'csum_ipv6_magic' [-Werror=implicit-function-declaration]
+> 
+> Caused by commit
+> 
+>   4cb47a8644cc ("tunnels: PMTU discovery support for directly bridged IP packets")
 
-I think Saeed should answer this. Let's wait a few more hours till he
-wakes up.
+Ouch, sorry for that.
+
+I'm getting a few of them by the way:
+
+---
+net/core/skbuff.o: In function `skb_checksum_setup_ipv6':
+/home/sbrivio/net-next/net/core/skbuff.c:4980: undefined reference to `csum_ipv6_magic'
+net/core/netpoll.o: In function `netpoll_send_udp':
+/home/sbrivio/net-next/net/core/netpoll.c:419: undefined reference to `csum_ipv6_magic'
+net/netfilter/utils.o: In function `nf_ip6_checksum':
+/home/sbrivio/net-next/net/netfilter/utils.c:74: undefined reference to `csum_ipv6_magic'
+/home/sbrivio/net-next/net/netfilter/utils.c:84: undefined reference to `csum_ipv6_magic'
+net/netfilter/utils.o: In function `nf_ip6_checksum_partial':
+/home/sbrivio/net-next/net/netfilter/utils.c:112: undefined reference to `csum_ipv6_magic'
+net/ipv4/ip_tunnel_core.o:/home/sbrivio/net-next/net/ipv4/ip_tunnel_core.c:335: more undefined references to `csum_ipv6_magic' follow
+---
+
+...checking how it should be fixed now.
+
+Heiko, by the way, do we want to provide a s390 version similar to the
+existing csum_partial() implementation in
+arch/s390/include/asm/checksum.h right away? Otherwise, I'll just take
+care of the ifdeffery.
+
+-- 
+Stefano
+
