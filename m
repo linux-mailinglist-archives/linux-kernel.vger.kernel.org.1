@@ -2,190 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D38223D115
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1382023D08C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728038AbgHET4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
+        id S1728268AbgHETu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727104AbgHEQqQ (ORCPT
+        with ESMTP id S1728100AbgHEQxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:46:16 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D984AC034614
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:49:45 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a14so40608189wra.5
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:49:45 -0700 (PDT)
+        Wed, 5 Aug 2020 12:53:52 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B759CC034617
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:49:48 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d190so5697530wmd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:49:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=NGh3qV9bnhStjMJvm5/xoTqyt0oZ80U2JyhykslboTM=;
-        b=dJ7L5plirWRryjsL0w+sJdTROVivbDeTQAkwANWl4dPDxYJDMr8xmxqugElTamdk/C
-         DIp8qiSY4E3w3uk6Q/hZNyz+5z9YF/9oVzR8hMoB1YUX9JtDvk01+bBwbLwzmYgya+sT
-         fpt4pVhtNx8pzHiLR8591sACDg7U9ccxPEVTi57bFi/0vd3iT7S7IG1UjjrB9nLrPCrQ
-         0ql8jUDRfEP/FWyrgGB/Tktb9p+8Z9BQHnVBvjgwN8vjgDkpIQjJPRYsV+5DFAuo7JjC
-         vLBE2Yf/p3sAo9P8t+kXMtFUq8lpczXR0FoAZkb2nyAI5aVwXJNebMCqJVNu1k7AW45B
-         g7bQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=aeL1/kmzV5klgxwNmoqHqRskkWEVKnTd0w9wdAMhO/E=;
+        b=WAmuiavoNO5SrR9ev60NCdMPW1s7JSDTVl3tsS2T9FBY1b18G+eebdQyaaJeIT0Ghi
+         Pex8XIIGsYw4qPwkMZTz6zmTuHVi4T+PLDokYUjqNdPV+MDNMJnppTHQe/mBZjjluqic
+         0FI/5htQhx5Pw+hs3C4xYFIoxIz5BFheWT/idUSj56K+Q/G61X+zyb5UzjGSLFizZbzY
+         SSY0dTnkJ5vAidyXonsHmnucPLm4yoMlv7yv6D86gaMHZhMxXrDkIIgGSgCQ4k/ESe5U
+         FvQ4esh+ykvDYYrX1QT+5qyF8ckUY3SSTNU/BvL4ViaI2XKWEcks/ECt8bzz5spVnmdk
+         W5+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=NGh3qV9bnhStjMJvm5/xoTqyt0oZ80U2JyhykslboTM=;
-        b=q/WzpOi6rL9qynj6MBmjLhHipe37PQq5s0Ow2bsZH+Rfr8fZXdg/RoSHuOj2yAKuNC
-         Ob7DiktZqo9ElFtCT+GYZGQqyDI8S1vfcLMkY7QDX5a0l2+bLf/LNm38ErnUI5tGfcOT
-         +7cyLzLPZFav1ZI9Ylrrm1s3PztqZyT1EgtD28+ULbYlmLHiLHwbWjBa0Q6DCJd+pkRZ
-         l7IlBx/vddrTOQM/BPgDXuxh1sDQ9RIfIIUPIR9xabhYUFNVdB6HoebX25gD3xgFiHTH
-         zPUep3Nv+331A+Eu8Yq8GRpT2AUmBcfnyEzrqNWhg9tBQXTgovIexK+OvWS5iI9VkvOl
-         FH9w==
-X-Gm-Message-State: AOAM53183zjHOrDAEVb+jKgQXuMdfy8fX365Tr8V70xYP5UgSjR3zmBA
-        f2O7vTcoFfgIC4cY+7gckyDZ5vMJ
-X-Google-Smtp-Source: ABdhPJy7mglUaNyadtCneLJtoiOr+c9efaQCWD3ufWo36Iu3UnV+qw5Tzxf4W4mHSIiRQbZqzRKXKA==
-X-Received: by 2002:a5d:494b:: with SMTP id r11mr2813496wrs.419.1596631783888;
-        Wed, 05 Aug 2020 05:49:43 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=aeL1/kmzV5klgxwNmoqHqRskkWEVKnTd0w9wdAMhO/E=;
+        b=LuvOgNG3krafyC9QFZAWOpDqpXz051hBJWKMYaIwPQEFnnOUwz8gQDTcUGAimp8njI
+         tjMqzawccrYli7o1vw4TK10oDKD2pJf+l4lFrylG+IaiRStBHdvy+Lz/PUPuu7kcXpsb
+         1MmWygSybC22NTUGI0BCaVnlZntGTf2uPilawub5y3U/rKXhfI0+hv7JIshTx0kizt3I
+         UBTMrhd+YLkNvcfQyC1wqJ2GxoPlGJBd+r8NFDVJ6+vt4VOsq2gZyMm5ejjO3S2DHC1W
+         qniAOnCNSRK0lDmCKp8uhLtHw7MXV91T4FZkiQsc6dm289f4/ys1+hXtezcYaXfSTaxR
+         9yyQ==
+X-Gm-Message-State: AOAM53168VKYN2GpRvrkGUDdzuH6ZfDRk2im0KGbylVryH7jwm7+EkGp
+        9VfgGV1dMGvxPuZN4Dv7lWnXnERP
+X-Google-Smtp-Source: ABdhPJylKwIbndyLGfYQ0B7bmzNn5iv4k0xutgN9bL9Dv48Z0AtPAYsK0ZAePNYdSmBptYcPdUaX/g==
+X-Received: by 2002:a1c:7d12:: with SMTP id y18mr3035240wmc.115.1596631786445;
+        Wed, 05 Aug 2020 05:49:46 -0700 (PDT)
 Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id 33sm2713525wri.16.2020.08.05.05.49.42
+        by smtp.gmail.com with ESMTPSA id 33sm2713525wri.16.2020.08.05.05.49.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 05:49:42 -0700 (PDT)
+        Wed, 05 Aug 2020 05:49:44 -0700 (PDT)
 From:   Oded Gabbay <oded.gabbay@gmail.com>
 To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 1/2] habanalabs: PCIe Advanced Error Reporting support
-Date:   Wed,  5 Aug 2020 15:49:38 +0300
-Message-Id: <20200805124939.13935-1-oded.gabbay@gmail.com>
+Cc:     farah kassabri <fkassabri@habana.ai>
+Subject: [PATCH 2/2] habanalabs: remove security from ARB_MST_QUIET register
+Date:   Wed,  5 Aug 2020 15:49:39 +0300
+Message-Id: <20200805124939.13935-2-oded.gabbay@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200805124939.13935-1-oded.gabbay@gmail.com>
+References: <20200805124939.13935-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+From: farah kassabri <fkassabri@habana.ai>
 
-driver will now get notified upon any PCI error occurred and
-will respond according to the severity of the error.
+Allow user application to write to this register in order
+to be able to configure the quiet period of the QMAN between grants.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Signed-off-by: farah kassabri <fkassabri@habana.ai>
 Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
 Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 ---
- .../misc/habanalabs/common/habanalabs_drv.c   | 76 ++++++++++++++++++-
- 1 file changed, 75 insertions(+), 1 deletion(-)
+ .../misc/habanalabs/gaudi/gaudi_security.c    | 55 +++++++------------
+ 1 file changed, 19 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-index c6b31e93fb5e..a36e33c58d37 100644
---- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-@@ -11,6 +11,7 @@
- #include "habanalabs.h"
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi_security.c b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+index 8d5d6ddee6ed..615b547ad2b7 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi_security.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+@@ -831,8 +831,7 @@ static void gaudi_init_mme_protection_bits(struct hl_device *hdev)
+ 			PROT_BITS_OFFS;
+ 	word_offset = ((mmMME0_QM_ARB_MST_CHOISE_PUSH_OFST_23 &
+ 			PROT_BITS_OFFS) >> 7) << 2;
+-	mask = 1 << ((mmMME0_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmMME0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmMME0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME0_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME0_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME0_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -1311,8 +1310,7 @@ static void gaudi_init_mme_protection_bits(struct hl_device *hdev)
+ 			PROT_BITS_OFFS;
+ 	word_offset = ((mmMME2_QM_ARB_MST_CHOISE_PUSH_OFST_23 &
+ 			PROT_BITS_OFFS) >> 7) << 2;
+-	mask = 1 << ((mmMME2_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmMME2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmMME2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME2_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME2_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME2_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -1790,8 +1788,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA0_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA0_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA0_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA0_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA0_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -2186,8 +2183,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA1_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA1_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA1_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA1_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA1_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA1_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA1_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -2582,8 +2578,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA2_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA2_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA2_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA2_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA2_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -2978,8 +2973,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA3_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA3_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA3_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA3_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA3_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA3_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA3_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -3374,8 +3368,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA4_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA4_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA4_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA4_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA4_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA4_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA4_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -3770,8 +3763,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA5_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA5_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA5_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA5_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA5_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA5_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA5_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -4166,8 +4158,8 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA6_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA6_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA6_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++
++	mask = 1 << ((mmDMA6_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA6_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA6_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA6_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -4562,8 +4554,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA7_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA7_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA7_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA7_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA7_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA7_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA7_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -5491,8 +5482,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
  
- #include <linux/pci.h>
-+#include <linux/aer.h>
- #include <linux/module.h>
+ 	word_offset = ((mmTPC0_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC0_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC0_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC0_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC0_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -5947,8 +5937,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
  
- #define HL_DRIVER_AUTHOR	"HabanaLabs Kernel Driver Team"
-@@ -408,6 +409,8 @@ static int hl_pci_probe(struct pci_dev *pdev,
+ 	word_offset = ((mmTPC1_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC1_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC1_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC1_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC1_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC1_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC1_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -6402,8 +6391,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 								PROT_BITS_OFFS;
+ 	word_offset = ((mmTPC2_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC2_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC2_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC2_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC2_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -6857,8 +6845,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 								PROT_BITS_OFFS;
+ 	word_offset = ((mmTPC3_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC3_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC3_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC3_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC3_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC3_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC3_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -7312,8 +7299,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 								PROT_BITS_OFFS;
+ 	word_offset = ((mmTPC4_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC4_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC4_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC4_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC4_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC4_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC4_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -7767,8 +7753,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 								PROT_BITS_OFFS;
+ 	word_offset = ((mmTPC5_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC5_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC5_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC5_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC5_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC5_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC5_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -8223,8 +8208,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
  
- 	pci_set_drvdata(pdev, hdev);
- 
-+	pci_enable_pcie_error_reporting(pdev);
-+
- 	rc = hl_device_init(hdev, hl_class);
- 	if (rc) {
- 		dev_err(&pdev->dev, "Fatal error during habanalabs device init\n");
-@@ -440,22 +443,93 @@ static void hl_pci_remove(struct pci_dev *pdev)
- 		return;
- 
- 	hl_device_fini(hdev);
-+	pci_disable_pcie_error_reporting(pdev);
- 	pci_set_drvdata(pdev, NULL);
--
- 	destroy_hdev(hdev);
- }
- 
-+/**
-+ * hl_pci_err_detected - a PCI bus error detected on this device
-+ *
-+ * @pdev: pointer to pci device
-+ * @err: PCI error type
-+ *
-+ * Called by the PCI subsystem whenever a non-correctable
-+ * PCI bus error is detected
-+ */
-+static pci_ers_result_t
-+hl_pci_err_detected(struct pci_dev *pdev, enum pci_channel_state state)
-+{
-+	struct hl_device *hdev = pci_get_drvdata(pdev);
-+	enum pci_ers_result result;
-+
-+	switch (state) {
-+	case pci_channel_io_normal:
-+		return PCI_ERS_RESULT_CAN_RECOVER;
-+
-+	case pci_channel_io_frozen:
-+		dev_warn(hdev->dev, "frozen state error detected\n");
-+		result = PCI_ERS_RESULT_NEED_RESET;
-+		break;
-+
-+	case pci_channel_io_perm_failure:
-+		dev_warn(hdev->dev, "failure state error detected\n");
-+		result = PCI_ERS_RESULT_DISCONNECT;
-+		break;
-+
-+	default:
-+		result = PCI_ERS_RESULT_NONE;
-+	}
-+
-+	hdev->asic_funcs->halt_engines(hdev, true);
-+
-+	return result;
-+}
-+
-+/**
-+ * hl_pci_err_resume - resume after a PCI slot reset
-+ *
-+ * @pdev: pointer to pci device
-+ *
-+ */
-+static void hl_pci_err_resume(struct pci_dev *pdev)
-+{
-+	struct hl_device *hdev = pci_get_drvdata(pdev);
-+
-+	dev_warn(hdev->dev, "Resuming device after PCI slot reset\n");
-+	hl_device_resume(hdev);
-+}
-+
-+/**
-+ * hl_pci_err_slot_reset - a PCI slot reset has just happened
-+ *
-+ * @pdev: pointer to pci device
-+ *
-+ * Determine if the driver can recover from the PCI slot reset
-+ */
-+static pci_ers_result_t hl_pci_err_slot_reset(struct pci_dev *pdev)
-+{
-+	return PCI_ERS_RESULT_RECOVERED;
-+}
-+
- static const struct dev_pm_ops hl_pm_ops = {
- 	.suspend = hl_pmops_suspend,
- 	.resume = hl_pmops_resume,
- };
- 
-+static const struct pci_error_handlers hl_pci_err_handler = {
-+	.error_detected = hl_pci_err_detected,
-+	.slot_reset = hl_pci_err_slot_reset,
-+	.resume = hl_pci_err_resume,
-+};
-+
- static struct pci_driver hl_pci_driver = {
- 	.name = HL_NAME,
- 	.id_table = ids,
- 	.probe = hl_pci_probe,
- 	.remove = hl_pci_remove,
- 	.driver.pm = &hl_pm_ops,
-+	.err_handler = &hl_pci_err_handler,
- };
- 
- /*
+ 	word_offset = ((mmTPC6_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC6_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC6_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC6_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC6_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC6_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC6_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -8681,8 +8665,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 			PROT_BITS_OFFS;
+ 	word_offset = ((mmTPC7_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC7_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC7_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC7_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC7_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC7_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC7_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
 -- 
 2.17.1
 
