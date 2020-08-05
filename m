@@ -2,305 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D17F23E325
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A20123E353
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgHFU1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 16:27:30 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:20686 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgHFU13 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 16:27:29 -0400
-Received: from localhost.localdomain ([93.22.37.174])
-        by mwinf5d46 with ME
-        id CLTR230083lSDvh03LTR5x; Thu, 06 Aug 2020 22:27:26 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 06 Aug 2020 22:27:26 +0200
-X-ME-IP: 93.22.37.174
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     davem@davemloft.net, kuba@kernel.org, steve.glendinning@shawell.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] smsc9420: switch from 'pci_' to 'dma_' API
-Date:   Thu,  6 Aug 2020 22:27:23 +0200
-Message-Id: <20200806202723.734581-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        id S1726238AbgHFUzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 16:55:15 -0400
+Received: from crapouillou.net ([89.234.176.41]:35280 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725875AbgHFUzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 16:55:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1596747312; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IBFRdiJpx6gDDqGjzCQG6RaWnse1sSSLfX/Lv9JDZeI=;
+        b=T6jTH60Y6CtWnBhropJA1Y8XhgnMQnsAb98TDZ/ObOsbPAP9D/AEIX1HaO7IafjXxAxnS8
+        YpNOyl4H3cmD8LFDWPQVkkOAQN3UxOsw/5QomVhHixmIKs3Wsu7mwcDKbwgJZzUem6hhPP
+        fk8hq1CEzIGVvO5AXFTAtNN9WvXjfCA=
+Date:   Wed, 05 Aug 2020 02:04:34 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] memory: jz4780_nemc: Fix an error pointer vs NULL check
+ in probe()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Message-Id: <MJDKEQ.BWLP6TXTA14J1@crapouillou.net>
+In-Reply-To: <20200803143607.GC346925@mwanda>
+References: <20200803143607.GC346925@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
-
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
-
-When memory is allocated in 'smsc9420_probe()', GFP_KERNEL can be used
-because it is a probe function and no lock is acquired.
-
-While at it, rewrite the size passed to 'dma_alloc_coherent()' the same way
-as the one passed to 'dma_free_coherent()'. This form is less verbose:
-   sizeof(struct smsc9420_dma_desc) * RX_RING_SIZE +
-   sizeof(struct smsc9420_dma_desc) * TX_RING_SIZE,
-vs
-   sizeof(struct smsc9420_dma_desc) * (RX_RING_SIZE + TX_RING_SIZE)
 
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+Le lun. 3 ao=FBt 2020 =E0 17:36, Dan Carpenter <dan.carpenter@oracle.com>=20
+a =E9crit :
+> The devm_ioremap() function returns NULL on error, it doesn't return
+> error pointers.  This bug could lead to an Oops during probe.
+>=20
+> Fixes: f046e4a3f0b9 ("memory: jz4780_nemc: Only request IO memory the=20
+> driver will use")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
+Thanks!
+-Paul
 
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
+> ---
+>  drivers/memory/jz4780-nemc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/memory/jz4780-nemc.c=20
+> b/drivers/memory/jz4780-nemc.c
+> index 3ec5cb0fce1e..608ae925e641 100644
+> --- a/drivers/memory/jz4780-nemc.c
+> +++ b/drivers/memory/jz4780-nemc.c
+> @@ -304,9 +304,9 @@ static int jz4780_nemc_probe(struct=20
+> platform_device *pdev)
+>  	}
+>=20
+>  	nemc->base =3D devm_ioremap(dev, res->start, NEMC_REG_LEN);
+> -	if (IS_ERR(nemc->base)) {
+> +	if (!nemc->base) {
+>  		dev_err(dev, "failed to get I/O memory\n");
+> -		return PTR_ERR(nemc->base);
+> +		return -ENOMEM;
+>  	}
+>=20
+>  	writel(0, nemc->base + NEMC_NFCSR);
+> --
+> 2.27.0
+>=20
 
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/ethernet/smsc/smsc9420.c | 51 +++++++++++++++-------------
- 1 file changed, 28 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/net/ethernet/smsc/smsc9420.c b/drivers/net/ethernet/smsc/smsc9420.c
-index 42bef04d65ba..68969549a5c7 100644
---- a/drivers/net/ethernet/smsc/smsc9420.c
-+++ b/drivers/net/ethernet/smsc/smsc9420.c
-@@ -497,8 +497,9 @@ static void smsc9420_free_tx_ring(struct smsc9420_pdata *pd)
- 
- 		if (skb) {
- 			BUG_ON(!pd->tx_buffers[i].mapping);
--			pci_unmap_single(pd->pdev, pd->tx_buffers[i].mapping,
--					 skb->len, PCI_DMA_TODEVICE);
-+			dma_unmap_single(&pd->pdev->dev,
-+					 pd->tx_buffers[i].mapping, skb->len,
-+					 DMA_TO_DEVICE);
- 			dev_kfree_skb_any(skb);
- 		}
- 
-@@ -530,8 +531,9 @@ static void smsc9420_free_rx_ring(struct smsc9420_pdata *pd)
- 			dev_kfree_skb_any(pd->rx_buffers[i].skb);
- 
- 		if (pd->rx_buffers[i].mapping)
--			pci_unmap_single(pd->pdev, pd->rx_buffers[i].mapping,
--				PKT_BUF_SZ, PCI_DMA_FROMDEVICE);
-+			dma_unmap_single(&pd->pdev->dev,
-+					 pd->rx_buffers[i].mapping,
-+					 PKT_BUF_SZ, DMA_FROM_DEVICE);
- 
- 		pd->rx_ring[i].status = 0;
- 		pd->rx_ring[i].length = 0;
-@@ -749,8 +751,8 @@ static void smsc9420_rx_handoff(struct smsc9420_pdata *pd, const int index,
- 	dev->stats.rx_packets++;
- 	dev->stats.rx_bytes += packet_length;
- 
--	pci_unmap_single(pd->pdev, pd->rx_buffers[index].mapping,
--		PKT_BUF_SZ, PCI_DMA_FROMDEVICE);
-+	dma_unmap_single(&pd->pdev->dev, pd->rx_buffers[index].mapping,
-+			 PKT_BUF_SZ, DMA_FROM_DEVICE);
- 	pd->rx_buffers[index].mapping = 0;
- 
- 	skb = pd->rx_buffers[index].skb;
-@@ -782,9 +784,9 @@ static int smsc9420_alloc_rx_buffer(struct smsc9420_pdata *pd, int index)
- 	if (unlikely(!skb))
- 		return -ENOMEM;
- 
--	mapping = pci_map_single(pd->pdev, skb_tail_pointer(skb),
--				 PKT_BUF_SZ, PCI_DMA_FROMDEVICE);
--	if (pci_dma_mapping_error(pd->pdev, mapping)) {
-+	mapping = dma_map_single(&pd->pdev->dev, skb_tail_pointer(skb),
-+				 PKT_BUF_SZ, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(&pd->pdev->dev, mapping)) {
- 		dev_kfree_skb_any(skb);
- 		netif_warn(pd, rx_err, pd->dev, "pci_map_single failed!\n");
- 		return -ENOMEM;
-@@ -901,8 +903,10 @@ static void smsc9420_complete_tx(struct net_device *dev)
- 		BUG_ON(!pd->tx_buffers[index].skb);
- 		BUG_ON(!pd->tx_buffers[index].mapping);
- 
--		pci_unmap_single(pd->pdev, pd->tx_buffers[index].mapping,
--			pd->tx_buffers[index].skb->len, PCI_DMA_TODEVICE);
-+		dma_unmap_single(&pd->pdev->dev,
-+				 pd->tx_buffers[index].mapping,
-+				 pd->tx_buffers[index].skb->len,
-+				 DMA_TO_DEVICE);
- 		pd->tx_buffers[index].mapping = 0;
- 
- 		dev_kfree_skb_any(pd->tx_buffers[index].skb);
-@@ -932,9 +936,9 @@ static netdev_tx_t smsc9420_hard_start_xmit(struct sk_buff *skb,
- 	BUG_ON(pd->tx_buffers[index].skb);
- 	BUG_ON(pd->tx_buffers[index].mapping);
- 
--	mapping = pci_map_single(pd->pdev, skb->data,
--				 skb->len, PCI_DMA_TODEVICE);
--	if (pci_dma_mapping_error(pd->pdev, mapping)) {
-+	mapping = dma_map_single(&pd->pdev->dev, skb->data, skb->len,
-+				 DMA_TO_DEVICE);
-+	if (dma_mapping_error(&pd->pdev->dev, mapping)) {
- 		netif_warn(pd, tx_err, pd->dev,
- 			   "pci_map_single failed, dropping packet\n");
- 		return NETDEV_TX_BUSY;
-@@ -1522,7 +1526,7 @@ smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto out_free_netdev_2;
- 	}
- 
--	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
-+	if (dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))) {
- 		netdev_err(dev, "No usable DMA configuration, aborting\n");
- 		goto out_free_regions_3;
- 	}
-@@ -1540,10 +1544,9 @@ smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	pd = netdev_priv(dev);
- 
- 	/* pci descriptors are created in the PCI consistent area */
--	pd->rx_ring = pci_alloc_consistent(pdev,
--		sizeof(struct smsc9420_dma_desc) * RX_RING_SIZE +
--		sizeof(struct smsc9420_dma_desc) * TX_RING_SIZE,
--		&pd->rx_dma_addr);
-+	pd->rx_ring = dma_alloc_coherent(&pdev->dev,
-+		sizeof(struct smsc9420_dma_desc) * (RX_RING_SIZE + TX_RING_SIZE),
-+		&pd->rx_dma_addr, GFP_KERNEL);
- 
- 	if (!pd->rx_ring)
- 		goto out_free_io_4;
-@@ -1599,8 +1602,9 @@ smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return 0;
- 
- out_free_dmadesc_5:
--	pci_free_consistent(pdev, sizeof(struct smsc9420_dma_desc) *
--		(RX_RING_SIZE + TX_RING_SIZE), pd->rx_ring, pd->rx_dma_addr);
-+	dma_free_coherent(&pdev->dev,
-+			  sizeof(struct smsc9420_dma_desc) * (RX_RING_SIZE + TX_RING_SIZE),
-+			  pd->rx_ring, pd->rx_dma_addr);
- out_free_io_4:
- 	iounmap(virt_addr - LAN9420_CPSR_ENDIAN_OFFSET);
- out_free_regions_3:
-@@ -1632,8 +1636,9 @@ static void smsc9420_remove(struct pci_dev *pdev)
- 	BUG_ON(!pd->tx_ring);
- 	BUG_ON(!pd->rx_ring);
- 
--	pci_free_consistent(pdev, sizeof(struct smsc9420_dma_desc) *
--		(RX_RING_SIZE + TX_RING_SIZE), pd->rx_ring, pd->rx_dma_addr);
-+	dma_free_coherent(&pdev->dev,
-+			  sizeof(struct smsc9420_dma_desc) * (RX_RING_SIZE + TX_RING_SIZE),
-+			  pd->rx_ring, pd->rx_dma_addr);
- 
- 	iounmap(pd->ioaddr - LAN9420_CPSR_ENDIAN_OFFSET);
- 	pci_release_regions(pdev);
--- 
-2.25.1
 
