@@ -2,81 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365DD23CE1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887E223CE3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728879AbgHESNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 14:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59676 "EHLO
+        id S1729060AbgHESVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 14:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729048AbgHESIy (ORCPT
+        with ESMTP id S1729181AbgHESLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 14:08:54 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3ADC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 11:08:54 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id s15so16741022qvv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 11:08:54 -0700 (PDT)
+        Wed, 5 Aug 2020 14:11:22 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2CCC06138D;
+        Wed,  5 Aug 2020 11:10:32 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id s15so16744045qvv.7;
+        Wed, 05 Aug 2020 11:10:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=TKYRPGPLHCWrMIu7pyuuJy9bkPwY7mqum0/IqDLNX9Q=;
-        b=hWqfthpN1kxgRdozFdigqWZhlrxM3Bq1/DKEB+wrmgW9FCiv+nTg28h85JfxbOgHfC
-         v0ucln+sfvTxDLrxy1ePEG/JlHAlg1qJw55Ug67MVO3aRIoUii7J+1tSAQN6cpRwMvv1
-         mEJ4tOMcLyuUYE73d7ak3ql37HdoU+Mum9Kt7dcX3CgEj7aa8qPDzxVVvkz0IxiTM0PU
-         mRW58XLvYxRYNaw/w8nqo5r8IcG/uXrQHK9FdTkt8tzAIcI+etjkH2HpNR5u1yDxrQCb
-         xk1OdDdHDJa6fVPvt1+f/tHKyZwxgAj0iYv17wCws+h54H8NqPoazwhYXap/HQVax9IN
-         vBhA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CSOoq3zhF6z2fZ+X97MfanJIRrTuyK8BNIkdVGDMQEQ=;
+        b=WkEWqptLDy3R6ioOulhs9LCTz33DYC1YwZpUJavPXOLVGV2Oh1GCAetOfpDiAicnfC
+         bnnTTBfinXKPD8zwEhxTo3jAr1u6b1KivySeOrU9BiBn/I6UQAqhjBJCNsMKvG0hkImf
+         ALAyJ0TBul74xRJlxBK0ORqfKLnd46HXDgh18AjaR8DPqu0fHH8ldssbfQi1trX6tRB7
+         5UW7Vc1V2K2qydneRegNu1wCNbnVqa8s8SaDMEMPNS65YHhlNkvARMGJz77FYBEcMec3
+         v1SU3F9ISIdfIyZiYpIFsVgMAzZcO+5s6AMfJZRSIANi/QySkiAvuVZebvBhIVj14HNN
+         KJ6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TKYRPGPLHCWrMIu7pyuuJy9bkPwY7mqum0/IqDLNX9Q=;
-        b=CJ2xvdiYre4OAiiKo94+I6vl8aAwj0SzOvs7XDbEHEvJ7rBsqOxXBuiq8uD8hCFzjm
-         w34+jVo/PTRj8CSGhvBBc8MkwgfSlkMbtg+kOfMIvnA9ln5DkKgUrJfviGiAZavLBQVZ
-         T8cF3gqA7amsJS7FQOtiLlSSGWdtwQhMsgHCwC1MwcxjUm1xPzDIIPHnnHdscuS6lyU/
-         kX6WcxpQ5zoGEbYswX0TAuDbRQSQ2MHzNsBEHW3EQeH5svjM5tdrStGG8SIjwADsnMZ5
-         T+SsHn5TA20aGqYgzs+waYGd0T9Ru0EeaymRxFeyGFcyZotDRt52HkrVwyYCLafpV9iJ
-         VmYw==
-X-Gm-Message-State: AOAM532iAaw8/1JRjT3HZxsLm7rPdNDZpN3H9nrsM2zeQSlOegPhM8Pf
-        RxAUw/0mp6gtHmqxembME5o=
-X-Google-Smtp-Source: ABdhPJw0E/iVtQf8MQPZ3yxGZTwFzEI5nzK94oaCcxa5kXq+Gaoi4HeL8nChAJTI+0bZaA1JiLqI+Q==
-X-Received: by 2002:ad4:446d:: with SMTP id s13mr4966591qvt.183.1596650929271;
-        Wed, 05 Aug 2020 11:08:49 -0700 (PDT)
-Received: from LeoBras (179-125-154-168.dynamic.desktop.com.br. [179.125.154.168])
-        by smtp.gmail.com with ESMTPSA id c33sm2744722qtk.40.2020.08.05.11.08.45
+        bh=CSOoq3zhF6z2fZ+X97MfanJIRrTuyK8BNIkdVGDMQEQ=;
+        b=a4Plm0h/9rXTD4DSDFG67hE/2D5IY1EAldWANby4cPctLkiqPo4Ped9khm/Z1iUGuX
+         soLEHmcfXVsL2O3zVZSsvIzjZGDrzdeJfP7kAo5cjj1UTD3u+GxwICQgQW5Ffvisjqc1
+         WMc/mS1lTjSmN7w3GcdzWX2R/14/TPkHIsuSZMj3OeCew7e96gBJCVGz9diRbEBL+I9r
+         seAheRMgxGkRCxnFvXscmqKwnljpGc83bQSouqJdjkMq/xtk7nG4wPlKZ5Vx1jYpjR/y
+         UCl/re5o8+CpdaWuAoWv4Bvs5oYxW053tWhI3oNqceyFn1dYBfAwKBLXoiaOPPnym312
+         OT4w==
+X-Gm-Message-State: AOAM530BDCfwX1T4ctGYQKfWyNjVotXgZnz12wqWqp4YweWjpH8dQfH6
+        ibluYCAoc+ODEW6S1UTe+Q==
+X-Google-Smtp-Source: ABdhPJybD0CTplQH9PaqhvAh94r4pvrJHLy/2Cb1rWWuo+HcvlxTLUJMXYleqq82a0Jy8907RV108g==
+X-Received: by 2002:ad4:438f:: with SMTP id s15mr5142142qvr.164.1596651031728;
+        Wed, 05 Aug 2020 11:10:31 -0700 (PDT)
+Received: from localhost.localdomain (146-115-88-66.s3894.c3-0.sbo-ubr1.sbo.ma.cable.rcncustomer.com. [146.115.88.66])
+        by smtp.gmail.com with ESMTPSA id i7sm2571560qtb.27.2020.08.05.11.10.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 11:08:48 -0700 (PDT)
-Message-ID: <e60591c023173ac04057293962c498a09acc1fc1.camel@gmail.com>
-Subject: Re: [PATCH v5 0/4] Allow bigger 64bit window by removing default
- DMA window
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Brian King <brking@linux.vnet.ibm.com>,
-        Murilo Fossa Vicentini <muvic@linux.ibm.com>,
-        David Dai <zdai@linux.vnet.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Wed, 05 Aug 2020 15:08:42 -0300
-In-Reply-To: <20200805030455.123024-1-leobras.c@gmail.com>
-References: <20200805030455.123024-1-leobras.c@gmail.com>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Wed, 05 Aug 2020 11:10:31 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH net] Bluetooth: Fix slab-out-of-bounds read in hci_le_direct_adv_report_evt()
+Date:   Wed,  5 Aug 2020 14:09:02 -0400
+Message-Id: <20200805180902.684024-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Travis reported successful compilation with mpe/merge:
+`num_reports` is not being properly checked. A malformed event packet with
+a large `num_reports` number makes hci_le_direct_adv_report_evt() read out
+of bounds. Fix it.
 
-https://travis-ci.org/github/LeoBras/linux-ppc/builds/715028857
+Reported-and-tested-by: syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
+Fixes: 2f010b55884e ("Bluetooth: Add support for handling LE Direct Advertising Report events")
+Link: https://syzkaller.appspot.com/bug?extid=24ebd650e20bd263ca01
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+I moved the initialization of `ev` out of the loop and restructured the
+function a bit, since otherwise the check would look like:
+
+	if (!num_reports || skb->len < num_reports * sizeof(struct hci_ev_le_direct_adv_info) + 1)
+		return;
+
+Therefore I used the similar structure with hci_inquiry_result_evt() etc.
+
+hci_le_adv_report_evt() and hci_le_ext_adv_report_evt() also have the
+same issue with `num_reports`, but I'm not sure how to perform the check
+for them, since they use variable-length reports. Should we do something
+like this? (take hci_le_adv_report_evt() as example:)
+
+	if (!num_reports ||
+	    skb->len < num_reports * (sizeof(*ev) + HCI_MAX_AD_LENGTH + 1) + 1)
+		return;
+
+Then how about hci_le_ext_adv_report_evt()? There is no such
+`HCI_MAX_AD_LENGTH` restrictions on `ev->length` for it, I assume?
+
+Would like to hear your opinion. Thank you!
+
+ net/bluetooth/hci_event.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 4b7fc430793c..aec43ae488d1 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5863,21 +5863,19 @@ static void hci_le_direct_adv_report_evt(struct hci_dev *hdev,
+ 					 struct sk_buff *skb)
+ {
+ 	u8 num_reports = skb->data[0];
+-	void *ptr = &skb->data[1];
++	struct hci_ev_le_direct_adv_info *ev = (void *)&skb->data[1];
+ 
+-	hci_dev_lock(hdev);
++	if (!num_reports || skb->len < num_reports * sizeof(*ev) + 1)
++		return;
+ 
+-	while (num_reports--) {
+-		struct hci_ev_le_direct_adv_info *ev = ptr;
++	hci_dev_lock(hdev);
+ 
++	for (; num_reports; num_reports--, ev++)
+ 		process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
+ 				   ev->bdaddr_type, &ev->direct_addr,
+ 				   ev->direct_addr_type, ev->rssi, NULL, 0,
+ 				   false);
+ 
+-		ptr += sizeof(*ev);
+-	}
+-
+ 	hci_dev_unlock(hdev);
+ }
+ 
+-- 
+2.25.1
 
