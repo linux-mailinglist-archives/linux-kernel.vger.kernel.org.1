@@ -2,101 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C9523CC5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1451623CCBE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgHEQji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:39:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727823AbgHEQgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:36:47 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E76B7233F6;
-        Wed,  5 Aug 2020 15:53:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596642816;
-        bh=gXEwiYtWJrb+EFFUrwnNNz7Jzhi9gU+IQFe3eDUXoAg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZPkgQtuofnj6+ejtHRgUm/Puh426mtVgv16RnHXv/j1+yTPGz0gClrtUgfFuJ+Dlp
-         9No5+7j68M/5as5dUChHTiZio5/jM21/sC3/oXJtarPYC9Jf/DXjQtccSZQEaFPtYd
-         n3RQCJKdOH+Ber/3z6Emxz1b/VIb8/PMnhlOm+LU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Willy Tarreau <w@1wt.eu>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 4/8] random: fix circular include dependency on arm64 after addition of percpu.h
-Date:   Wed,  5 Aug 2020 17:53:30 +0200
-Message-Id: <20200805153507.213380115@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200805153507.005753845@linuxfoundation.org>
-References: <20200805153507.005753845@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728399AbgHERAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:00:25 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:44772 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728360AbgHEQ5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:57:44 -0400
+Received: by mail-il1-f198.google.com with SMTP id y82so26271918ilk.11
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:57:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=vD/veeEc05bcXlG0e+JSfe9O59TwwwUvH3Hr6H/SIyA=;
+        b=DT4ShEHPi6FH6QoYLd3QL9v5ycy4OPhG8zz34atxEDEb98d8T0mS5Q1SDdtQ23O1DX
+         jM3R7SJ9PTZPwXe27H+cbdMgDAI+bt4n2eU74g5vIlb4f0mJu+N02Og3kLlDpw/ArJaR
+         JJuCQpk0lYgHzMYu7M/BjrEzQGQIYudZLL78O1+6LOi6hxaX2KkRaGgmiAdNY/Y5OZc5
+         GbHHhXOqUmdln5OkaGJQ7Fw+L/yLWS+2pAhmkPqh5or9uOZFjKRC7mZVqQl4DYQiwqcW
+         YqOaRUXHHZ1hrIsnx6O1gDFkoQTDPDKvUts4dulzYsKfp8wyesntu+V/5EwP4zKqDcts
+         WlvQ==
+X-Gm-Message-State: AOAM531FE9Yz5A8blOLvGLKmVD1+Mkyc4CEdAZ9VMs9n64DTAMFB1Nj3
+        XwRwtlHxR2GiBQWY87FPQtowl9MjMkxuL7KPxafZksfhiGxQ
+X-Google-Smtp-Source: ABdhPJyCIyEAmTjH3mqmhkj1F6rTlvWQHvwfZk6hoXyQVk34+x2BOvU/JDLR5tpGpsL3ZeWGnfdbt0fxmuRIfqVtucp3aBL6viaF
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:dcc6:: with SMTP id b6mr4591063ilr.147.1596642980561;
+ Wed, 05 Aug 2020 08:56:20 -0700 (PDT)
+Date:   Wed, 05 Aug 2020 08:56:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b087a705ac2369dd@google.com>
+Subject: INFO: trying to register non-static key in l2cap_chan_del
+From:   syzbot <syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willy Tarreau <w@1wt.eu>
+Hello,
 
-commit 1c9df907da83812e4f33b59d3d142c864d9da57f upstream.
+syzbot found the following issue on:
 
-Daniel Díaz and Kees Cook independently reported that commit
-f227e3ec3b5c ("random32: update the net random state on interrupt and
-activity") broke arm64 due to a circular dependency on include files
-since the addition of percpu.h in random.h.
+HEAD commit:    442489c2 Merge tag 'timers-core-2020-08-04' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15aa9494900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=669b4bedb6478222
+dashboard link: https://syzkaller.appspot.com/bug?extid=abfc0f5e668d4099af73
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-The correct fix would definitely be to move all the prandom32 stuff out
-of random.h but for backporting, a smaller solution is preferred.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-This one replaces linux/percpu.h with asm/percpu.h, and this fixes the
-problem on x86_64, arm64, arm, and mips.  Note that moving percpu.h
-around didn't change anything and that removing it entirely broke
-differently.  When backporting, such options might still be considered
-if this patch fails to help.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com
 
-[ It turns out that an alternate fix seems to be to just remove the
-  troublesome <asm/pointer_auth.h> remove from the arm64 <asm/smp.h>
-  that causes the circular dependency.
+INFO: trying to register non-static key.
+the code is fine but needs lockdep annotation.
+turning off the locking correctness validator.
+CPU: 1 PID: 27 Comm: kworker/1:1 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ assign_lock_key kernel/locking/lockdep.c:894 [inline]
+ register_lock_class+0x157d/0x1630 kernel/locking/lockdep.c:1206
+ __lock_acquire+0xf9/0x5640 kernel/locking/lockdep.c:4305
+ lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:5005
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+ _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+ spin_lock_bh include/linux/spinlock.h:359 [inline]
+ lock_sock_nested+0x3b/0x110 net/core/sock.c:3070
+ l2cap_sock_teardown_cb+0x88/0x400 net/bluetooth/l2cap_sock.c:1520
+ l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
+ l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:824
+ l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 32376067 P4D 32376067 PUD 9356f067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 27 Comm: kworker/1:1 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events l2cap_chan_timeout
+RIP: 0010:0x0
+Code: Bad RIP value.
+RSP: 0018:ffffc90000e17b60 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88808d94c000 RCX: ffffffff8723aa4f
+RDX: 1ffff11005e48c8c RSI: ffffffff8723ac9c RDI: ffff88802f246000
+RBP: 0000000000000005 R08: 0000000000000001 R09: ffff88802f246067
+R10: 0000000000000009 R11: 0000000000000001 R12: 000000000000006f
+R13: ffff88802f246000 R14: 0000000000000000 R15: 0000000000000005
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000094fa9000 CR4: 00000000001426e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ l2cap_sock_teardown_cb+0x374/0x400 net/bluetooth/l2cap_sock.c:1547
+ l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
+ l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:824
+ l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 661471e896caece1 ]---
+RIP: 0010:0x0
+Code: Bad RIP value.
+RSP: 0018:ffffc90000e17b60 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88808d94c000 RCX: ffffffff8723aa4f
+RDX: 1ffff11005e48c8c RSI: ffffffff8723ac9c RDI: ffff88802f246000
+RBP: 0000000000000005 R08: 0000000000000001 R09: ffff88802f246067
+R10: 0000000000000009 R11: 0000000000000001 R12: 000000000000006f
+R13: ffff88802f246000 R14: 0000000000000000 R15: 0000000000000005
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000094fa9000 CR4: 00000000001426e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-  But we might as well do the whole belt-and-suspenders thing, and
-  minimize inclusion in <linux/random.h> too. Either will fix the
-  problem, and both are good changes.   - Linus ]
-
-Reported-by: Daniel Díaz <daniel.diaz@linaro.org>
-Reported-by: Kees Cook <keescook@chromium.org>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Fixes: f227e3ec3b5c
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/random.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
---- a/include/linux/random.h
-+++ b/include/linux/random.h
-@@ -9,7 +9,7 @@
- 
- #include <linux/list.h>
- #include <linux/once.h>
--#include <linux/percpu.h>
-+#include <asm/percpu.h>
- 
- #include <uapi/linux/random.h>
- 
-
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
