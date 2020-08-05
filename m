@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1137023C335
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 03:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8692423C336
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 03:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgHEByf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 21:54:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726664AbgHEByd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 21:54:33 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C25952070A;
-        Wed,  5 Aug 2020 01:54:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596592473;
-        bh=6WuUaY2tobi7XDMfQxUO1QCMtPwFMpcnoqYaKtUHEIg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jxOU7qJip+BIptS9IAJPVXLxIqwsbv6rQlx3hYKXA4nFpt2I11g1koq1zW58tuqEm
-         Z7ehSFoTnx4WXRGZzm/ASvj7k1z0M66kpQiFbCP73xyhgNS55qbyGgCFwm07FdygsY
-         7r24unP3i462r+a+GMj1mCbf6lWNQGo6v1wghWdM=
-Date:   Tue, 4 Aug 2020 18:54:31 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, linux-fscrypt@vger.kernel.org
-Subject: Re: include/asm-generic/mmiowb.h:56:9: sparse: sparse: context
- imbalance in 'fscrypt_put_direct_key' - unexpected unlock
-Message-ID: <20200805015431.GA1136@sol.localdomain>
-References: <202008050849.sZpPDokm%lkp@intel.com>
+        id S1726927AbgHEBzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 21:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725981AbgHEBzd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 21:55:33 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2488C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 18:55:32 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id jp10so18034971ejb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 18:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=teUqnhvEEAahNtC2XP50lOuVEmqnMGxKLPq+FU+cEiM=;
+        b=Y14qR7M1mTFlhH4hvtVfRx09MmQ4b1sevV6B6lU36YQpbuX+FciNawWcbEGxNa03x1
+         Yvu88CrCbYAXh9F8u04ogOHj2ABubxrcSSz2lVZ2FnJBjzQsMOos/flpihX9ukNbUQsr
+         KjP12bj6BraPuj8Csj9tnJowO++TzDyCwtcB2U4Uy6CU4STDOUzzWL/KOJxDFsdKcVxy
+         XXO0Ox9visik6a8MO5EKqY6y0rLptK4Jpsi0fiaI4Bf/+H8Nv657tB7fqzglZDem075x
+         onHhcGUbbXphsR7Ixv+Pm6uzRdkc9GBw/4PdrztXiAfQ3B9Df4cvLoteruw9sVitG14v
+         ocTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=teUqnhvEEAahNtC2XP50lOuVEmqnMGxKLPq+FU+cEiM=;
+        b=P2Rgb0q710JZhXV0Hvw5Mk9m3+tTRQSl/S0mkVPemOgXok1qcr7cjURjNTS59uLzMf
+         3kJB37twSh1l73Z7UpRJrT/OFE4PDaWP0NXXZAd+lDmQ6dXL6gpYmqaleI17cWqTKv1n
+         XV1ZOKZuqPntVP60+VMHzIY0AqspOBpE3w5El+MLVUZjRZDZB6TvT8hdRWMZ4oBb/qmg
+         7DxUWUIOD2bxkS3pxLFZcYpkpr8eiAT5AZJwYiwprlY/WNqO4V4u4DVlmD+EnMjiBE9y
+         HuhPNIsMKES9+YWzXI4WCvdCOeni0sXhIGgaAaj8h7RS/qbdMH7ElKcVLYKb6t4dyivc
+         iPng==
+X-Gm-Message-State: AOAM531CdMOcTE0mZmxwV/qdxIRPqQrcjYCbGg4jYAD1Ob7mfe6wPgvU
+        4+5+iCvKwXRrzfqULMXF5QI=
+X-Google-Smtp-Source: ABdhPJzB7MIo5hvV3vzzmVQnNfWMUhW4reKmbOGQvPr0fAMsAaYNMIy8F1s/PjpHzyZL1w1YLOyezQ==
+X-Received: by 2002:a17:907:94ce:: with SMTP id dn14mr914542ejc.351.1596592531489;
+        Tue, 04 Aug 2020 18:55:31 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id x1sm456763ejc.119.2020.08.04.18.55.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Aug 2020 18:55:30 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 03:55:28 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [GIT PULL] sched/fifo changes for v5.9
+Message-ID: <20200805015528.GA1620836@gmail.com>
+References: <20200804111025.GA1556312@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202008050849.sZpPDokm%lkp@intel.com>
+In-Reply-To: <20200804111025.GA1556312@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 08:28:53AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   4f30a60aa78410496e5ffe632a371c00f0d83a8d
-> commit: 0109ce76dd6e9e69559e56ea9f10d1e12ca4a50b fscrypt: move v1 policy key setup to keysetup_v1.c
-> date:   12 months ago
-> config: powerpc64-randconfig-s031-20200805 (attached as .config)
-> compiler: powerpc64-linux-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.2-117-g8c7aee71-dirty
->         git checkout 0109ce76dd6e9e69559e56ea9f10d1e12ca4a50b
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=powerpc64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> sparse warnings: (new ones prefixed by >>)
-> 
->    fs/crypto/keysetup_v1.c: note: in included file (through arch/powerpc/include/asm/mmiowb.h, include/linux/spinlock.h, include/linux/mmzone.h, ...):
-> >> include/asm-generic/mmiowb.h:56:9: sparse: sparse: context imbalance in 'fscrypt_put_direct_key' - unexpected unlock
-> 
-> vim +/fscrypt_put_direct_key +56 include/asm-generic/mmiowb.h
-> 
-> d1be6a28b13ce6d Will Deacon 2019-02-22  46  
-> d1be6a28b13ce6d Will Deacon 2019-02-22  47  static inline void mmiowb_spin_unlock(void)
-> d1be6a28b13ce6d Will Deacon 2019-02-22  48  {
-> d1be6a28b13ce6d Will Deacon 2019-02-22  49  	struct mmiowb_state *ms = __mmiowb_state();
-> d1be6a28b13ce6d Will Deacon 2019-02-22  50  
-> d1be6a28b13ce6d Will Deacon 2019-02-22  51  	if (unlikely(ms->mmiowb_pending)) {
-> d1be6a28b13ce6d Will Deacon 2019-02-22  52  		ms->mmiowb_pending = 0;
-> d1be6a28b13ce6d Will Deacon 2019-02-22  53  		mmiowb();
-> d1be6a28b13ce6d Will Deacon 2019-02-22  54  	}
-> d1be6a28b13ce6d Will Deacon 2019-02-22  55  
-> d1be6a28b13ce6d Will Deacon 2019-02-22 @56  	ms->nesting_count--;
-> 
-> :::::: The code at line 56 was first introduced by commit
-> :::::: d1be6a28b13ce6d1bc42bf9b6a9454c65839225b asm-generic/mmiowb: Add generic implementation of mmiowb() tracking
-> 
-> :::::: TO: Will Deacon <will.deacon@arm.com>
-> :::::: CC: Will Deacon <will.deacon@arm.com>
-> 
 
-False positive because refcount_dec_and_lock() is missing a sparse annotation.
-I tried to add one to make it match atomic_dec_and_lock(), but the patch was
-rejected: https://lkml.kernel.org/lkml/20191226152922.2034-1-ebiggers@kernel.org/T/#u
+* Ingo Molnar <mingo@kernel.org> wrote:
+
+> When merging to the latest upstream tree there's a conflict in drivers/spi/spi.c,
+> which can be resolved via:
+> 
+> 	sched_set_fifo(ctlr->kworker_task);
+
+Correction, the suggested resolution would be:
+
+	sched_set_fifo(ctlr->kworker->task);
+
+Thanks,
+
+	Ingo
