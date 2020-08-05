@@ -2,237 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AB823CC7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 687F023CC46
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbgHEQso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728037AbgHEQqQ (ORCPT
+        id S1727783AbgHEQfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:35:39 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:58002 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726859AbgHEQcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:46:16 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62E5C0086D6
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 07:24:09 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id v9so13425676ljk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 07:24:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4sZV1/gQN/258iL0rr5Xs5RZ6T6r7SkqFDya4T9+hhQ=;
-        b=E9b9xRUZtCoNc7BmcnjKZKhPMW4C6kTS55eaU+9K6uRzDuW4TNj3CRV97WvzO/of2Y
-         zwdRFO6qTxVL/8AJOZFe2VwM18ZDpa2zt7HE8TMzl/K9XNvba6QLBigNU4LDkz9fEp8h
-         TozZAI8dmNwaLYwAj+rpf5m+fZxw1RFzua2mawTi4OcXBq0HskcqEmw7dfMK3gjhlI1f
-         6+d48Ygix+b6dZvLFiZNPH1GLGnwyTP2eBGGnUlCxJzjYvmkqZ5LhvG60bflC5NfrouR
-         qteTlbkjDme/q3Om8n6GR6GNVSRNYYXYVd93qBD8bFFI+1Ok7+GkCFm4Mbwy/lZUE3se
-         BxTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4sZV1/gQN/258iL0rr5Xs5RZ6T6r7SkqFDya4T9+hhQ=;
-        b=BagE2tJGSGl1v1FIKI3lsO5tFWuaajOWfP6T7ecXxthnEf6rSmDeNly6ZPbc1x2Tgo
-         Uq8NoEkSulX5mokfH2KPxGrlSOQRAHYCEm4/qC6Wb4soiAsuVRIYhwK2Kod7HJ26nXhh
-         nwII8xgXjnf3DySfLn1OcASD5mQBkVJZbGMb2IUNRv8PAfGM3Ps8sJ31g2BbmlJ7fDCu
-         J4GZ24weZRemVCsMPpIh+LcC4s7LRqVriCIIKVA5ce9EOKKMqgEtHEctz0oamSbSfWmW
-         JxfUDCi5XJs7aPsXlJY0kCUCEyQMyD8VdnpzM3U5yURrHvfrNJJwiXut7oXMGbAD2wyL
-         Sd6w==
-X-Gm-Message-State: AOAM533bEFgE+r0vQ12opG4O+h8ZjlXo9d554FLkX8/y226ZVkpcqzub
-        oekwywQlRq1uAn8q6GoRQ2SzYw==
-X-Google-Smtp-Source: ABdhPJx5GVKqBcJfUrSinpyw/JPyAmFuCbg4ibeeyeBsa4MFulh9QF9PIbff8txGT7dzYpPegeBNSw==
-X-Received: by 2002:a05:651c:3c5:: with SMTP id f5mr1467608ljp.209.1596637447389;
-        Wed, 05 Aug 2020 07:24:07 -0700 (PDT)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id e69sm1172866lfd.21.2020.08.05.07.24.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 07:24:06 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 16:24:04 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-Cc:     sumit.garg@linaro.org, ricardo@foundries.io, mike@foundries.io,
-        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv6] drivers: optee: allow op-tee to access devices on the
- i2c bus
-Message-ID: <20200805142404.GA550721@jade>
-References: <20200722212105.1798-1-jorge@foundries.io>
- <20200805133501.GA8360@trex>
+        Wed, 5 Aug 2020 12:32:54 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200805142610euoutp02c8d7294eb754701a26059e38182eab8b~oZWlRf7D41552415524euoutp024
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 14:26:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200805142610euoutp02c8d7294eb754701a26059e38182eab8b~oZWlRf7D41552415524euoutp024
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1596637570;
+        bh=gjhBwwgPlUZEYSWjIb4aDpMpOOLI4HYQ7gqDYEGNrtc=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Okos5qou1WX6fBINRIkuhwhp2TbM9kAZzAT921REnzoubMGQdEMxAP7Ejp0Uo+6NG
+         WWd95WuvR9k0APe5pr4ZkHfNKKVeFrnwIPGo/muWsPOKrsbw57Kzv4IAAsrNYuunc+
+         KQqaODF/CUxOFmXjgsrMsqMSzHTbL6L8iJVlr+rs=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200805142610eucas1p2c1456071b4639a0ce881db0f0ad68b89~oZWlBOxBB2990729907eucas1p2S;
+        Wed,  5 Aug 2020 14:26:10 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 26.EC.06318.281CA2F5; Wed,  5
+        Aug 2020 15:26:10 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200805142610eucas1p1dd85e87d57dab1433d3d31a9c0ec49d6~oZWkjAiLC1890318903eucas1p1g;
+        Wed,  5 Aug 2020 14:26:10 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200805142610eusmtrp183e03cba612bfb8a51a6e6ab435272f1~oZWkiac_90665906659eusmtrp1L;
+        Wed,  5 Aug 2020 14:26:10 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-59-5f2ac1829217
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 24.6A.06314.281CA2F5; Wed,  5
+        Aug 2020 15:26:10 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200805142609eusmtip2a46f6651d1b46b3aa1ded3af2def4e88~oZWkJo5Pb2968329683eusmtip2G;
+        Wed,  5 Aug 2020 14:26:09 +0000 (GMT)
+Subject: Re: [PATCH 1/1] mfd: core: Fix memory leak of 'cell'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <072c29cf-b842-28b7-6abb-99ff8f2f5d57@samsung.com>
+Date:   Wed, 5 Aug 2020 16:26:09 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200805133501.GA8360@trex>
+In-Reply-To: <20200716142851.1669946-1-lee.jones@linaro.org>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMKsWRmVeSWpSXmKPExsWy7djPc7pNB7XiDfb+V7XYOGM9q8X58xvY
+        Le5/PcposenxNVaLy7vmsFkcftPO6sDmsWlVJ5vHnWt72Dw2L6n36NuyitHj8ya5ANYoLpuU
+        1JzMstQifbsErozzp98yF2xRrZh5WKeB8YhCFyMnh4SAicTaO6dZuxi5OIQEVjBKzFt0mgXC
+        +cIocfP+RXYI5zOjxM8ts1lgWt7+WsYIkVjOKLGk+wyU855R4tS8T0xdjBwcwgK2EucmZIGY
+        IgIqEufemIOUMAtcYZR4ueA7G8ggNgFDia63XWA2r4CdROucU4wgNgtQ/a2rW5lAbFGBOImt
+        x68yQdQISpyc+YQFZCangI3Eyq9BIGFmAXmJ5q2zmSFscYlbT+YzgeySEFjFLvFg1242iKNd
+        JK5daGOEsIUlXh3fwg5hy0icntzDAtHQzCjx8Nxadginh1HictMMqA5riTvnfrGBbGYW0JRY
+        v0sfIuwosXnFXrCDJAT4JG68FYQ4gk9i0rbpzBBhXomONiGIajWJWcfXwa09eOES8wRGpVlI
+        PpuF5J1ZSN6ZhbB3ASPLKkbx1NLi3PTUYuO81HK94sTc4tK8dL3k/NxNjMCkc/rf8a87GPf9
+        STrEKMDBqMTDu2CFVrwQa2JZcWXuIUYJDmYlEV6ns6fjhHhTEiurUovy44tKc1KLDzFKc7Ao
+        ifMaL3oZKySQnliSmp2aWpBaBJNl4uCUamCUbAo8s9FSmP/vxeDQD7d8hefblt/6dGX2Bv03
+        PSl/5GveP5uvN+PQAyWFXvWUMh0GzlLJdQyPhJMD5eymtPLdi7ee4uUdsEPpSvYehVV7/L/s
+        LjuzTM67io/jzJuybXFn7Vh79+/i3tC/wGJ7ottawWRJG4Vsq0Mainu1mqzmT9qZqihUqKTE
+        UpyRaKjFXFScCAB4axm9NgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMIsWRmVeSWpSXmKPExsVy+t/xe7pNB7XiDRYuYbXYOGM9q8X58xvY
+        Le5/PcposenxNVaLy7vmsFkcftPO6sDmsWlVJ5vHnWt72Dw2L6n36NuyitHj8ya5ANYoPZui
+        /NKSVIWM/OISW6VoQwsjPUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYzzp98yF2xR
+        rZh5WKeB8YhCFyMnh4SAicTbX8sYQWwhgaWMEi3LYiHiMhInpzWwQtjCEn+udbF1MXIB1bxl
+        lDj46DmQw8EhLGArcW5CFogpIqAice6NOUgJs8A1RolTk7ewQcy0lph2aSHYfDYBQ4mut11g
+        cV4BO4nWOafA4ixAvbeubmUCsUUF4iQe9/5nhqgRlDg58wkLyHxOARuJlV+DQMLMAmYS8zY/
+        ZIaw5SWat86GssUlbj2ZzzSBUWgWku5ZSFpmIWmZhaRlASPLKkaR1NLi3PTcYkO94sTc4tK8
+        dL3k/NxNjMAI23bs5+YdjJc2Bh9iFOBgVOLhXbBCK16INbGsuDL3EKMEB7OSCK/T2dNxQrwp
+        iZVVqUX58UWlOanFhxhNgX6byCwlmpwPjP68knhDU0NzC0tDc2NzYzMLJXHeDoGDMUIC6Ykl
+        qdmpqQWpRTB9TBycUg2Mk+6VpH1RF9tfd8x5z8K8Oa3G+jamQktjI2bmf/s0Z+6k+AVCexfc
+        +NIz7ept5rkrvv09O+Hiro/GNy/v0/oz82mNhW5O7f2XWlknq1a/4OXT2GH8YXLCRDMrDrbo
+        5SJ6Cw6v6jZUi3HylXOqXLi5LvB2Zez0fNspj1b9nNi3ZFHTcaH5SponniqxFGckGmoxFxUn
+        AgCsrDlxxgIAAA==
+X-CMS-MailID: 20200805142610eucas1p1dd85e87d57dab1433d3d31a9c0ec49d6
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200805142610eucas1p1dd85e87d57dab1433d3d31a9c0ec49d6
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200805142610eucas1p1dd85e87d57dab1433d3d31a9c0ec49d6
+References: <20200716142851.1669946-1-lee.jones@linaro.org>
+        <CGME20200805142610eucas1p1dd85e87d57dab1433d3d31a9c0ec49d6@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 03:35:01PM +0200, Jorge Ramirez-Ortiz, Foundries wrote:
-> On 22/07/20, Jorge Ramirez-Ortiz wrote:
-> > Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
-> > control this type of cryptographic devices it needs coordinated access
-> > to the bus, so collisions and RUNTIME_PM dont get in the way.
-> > 
-> > This trampoline driver allow OP-TEE to access them.
-> > Tested on imx8mm LPDDR4
-> > 
-> > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> > ---
-> >  v6: compile out if CONFIG_I2C not enabled
-> >  v5: alphabetic order of includes
-> >  v4: remove unnecessary extra line in optee_msg.h
-> >  v3: use from/to msg param to support all types of memory
-> >      modify OPTEE_MSG_RPC_CMD_I2C_TRANSFER message id
-> >      
-> >  drivers/tee/optee/optee_msg.h | 16 +++++++
-> >  drivers/tee/optee/rpc.c       | 88 +++++++++++++++++++++++++++++++++++
-> >  2 files changed, 104 insertions(+)
-> > 
-> > diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
-> > index 795bc19ae17a..14b580f55356 100644
-> > --- a/drivers/tee/optee/optee_msg.h
-> > +++ b/drivers/tee/optee/optee_msg.h
-> > @@ -419,4 +419,20 @@ struct optee_msg_arg {
-> >   */
-> >  #define OPTEE_MSG_RPC_CMD_SHM_FREE	7
-> >  
-> > +/*
-> > + * Access a device on an i2c bus
-> > + *
-> > + * [in]  param[0].u.value.a		mode: RD(0), WR(1)
-> > + * [in]  param[0].u.value.b		i2c adapter
-> > + * [in]  param[0].u.value.c		i2c chip
-> > + *
-> > + * [in/out] memref[1]			buffer to exchange the transfer data
-> > + *					with the secure world
-> > + *
-> > + * [out]  param[0].u.value.a		bytes transferred by the driver
-> > + */
-> > +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 21
-> > +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
-> > +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
-> > +
-> >  #endif /* _OPTEE_MSG_H */
-> > diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-> > index b4ade54d1f28..5fd5c6c93896 100644
-> > --- a/drivers/tee/optee/rpc.c
-> > +++ b/drivers/tee/optee/rpc.c
-> > @@ -7,6 +7,7 @@
-> >  
-> >  #include <linux/delay.h>
-> >  #include <linux/device.h>
-> > +#include <linux/i2c.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/tee_drv.h>
-> >  #include "optee_private.h"
-> > @@ -49,6 +50,90 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
-> >  	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-> >  }
-> >  
-> > +#if IS_ENABLED(CONFIG_I2C)
-> > +static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> > +					     struct optee_msg_arg *arg)
-> > +{
-> > +	struct i2c_client client;
-> > +	struct tee_param *params;
-> > +	uint32_t type;
-> > +	int i, ret;
-> > +	size_t len;
-> > +	char *buf;
-> > +	uint32_t attr[] = {
-> > +		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
-> > +		TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT,
-> > +		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT,
-> > +	};
-> > +
-> > +	if (arg->num_params != ARRAY_SIZE(attr)) {
-> > +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-> > +		return;
-> > +	}
-> > +
-> > +	params = kmalloc_array(arg->num_params, sizeof(struct tee_param),
-> > +			       GFP_KERNEL);
-> > +	if (!params) {
-> > +		arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
-> > +		return;
-> > +	}
-> > +
-> > +	if (optee_from_msg_param(params, arg->num_params, arg->params))
-> > +		goto bad;
-> > +
-> > +	for (i = 0; i < arg->num_params; i++) {
-> > +		type = params[i].attr & TEE_IOCTL_PARAM_ATTR_TYPE_MASK;
-> > +		if (type != attr[i])
-> > +			goto bad;
-> > +	}
-> > +
-> > +	client.addr = params[0].u.value.c;
-> > +	client.adapter = i2c_get_adapter(params[0].u.value.b);
-> > +	if (!client.adapter)
-> > +		goto bad;
-> > +
-> > +	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
-> > +
-> > +	buf = params[1].u.memref.shm->kaddr;
-> > +	len = params[1].u.memref.size;
-> > +
-> > +	switch (params[0].u.value.a) {
-> > +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
-> > +		ret = i2c_master_recv(&client, buf, len);
-> > +		break;
-> > +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
-> > +		ret = i2c_master_send(&client, buf, len);
-> > +		break;
-> > +	default:
-> > +		i2c_put_adapter(client.adapter);
-> > +		goto bad;
-> > +	}
-> > +
-> > +	if (ret >= 0) {
-> > +		params[2].u.value.a = ret;
-> > +		arg->ret = TEEC_SUCCESS;
-> > +	} else {
-> > +		arg->ret = TEEC_ERROR_COMMUNICATION;
-> > +	}
-> > +
-> > +	if (optee_to_msg_param(arg->params, arg->num_params, params))
-> > +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-> > +
-> > +	i2c_put_adapter(client.adapter);
-> > +	kfree(params);
-> > +	return;
-> > +bad:
-> > +	kfree(params);
-> > +	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-> > +}
-> > +#else
-> > +static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> > +					     struct optee_msg_arg *arg)
-> > +{
-> > +	arg->ret = TEEC_ERROR_COMMUNICATION;
-> > +}
-> > +#endif
-> > +
-> >  static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
-> >  {
-> >  	struct wq_entry *w;
-> > @@ -382,6 +467,9 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
-> >  	case OPTEE_MSG_RPC_CMD_SHM_FREE:
-> >  		handle_rpc_func_cmd_shm_free(ctx, arg);
-> >  		break;
-> > +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
-> > +		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
-> > +		break;
-> >  	default:
-> >  		handle_rpc_supp_cmd(ctx, arg);
-> >  	}
-> 
-> 
-> any comments please?
+Hi
 
-As you know we're still reviewing the secure world counterpart at
-https://github.com/OP-TEE/optee_os/pull/3905
-Where we're sorting out the ABI. Thanks for your patience.
+On 16.07.2020 16:28, Lee Jones wrote:
+> When creating a platform device from an MFD cell description, we
+> allocate some memory and make a copy which is then stored inside the
+> platform_device's structure.  However, care is not currently taken to
+> free the allocated memory when the platform device is torn down.
+>
+> This patch takes care of the leak.
+>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Cheers,
-Jens
+This patch landed recently in linux-next as commit 126f33704d9d ("mfd: 
+core: Fix memory leak of 'cell'"). Sadly it causes a regression on 
+Samsung Exynos4412-based Trats2 board:
+
+8<--- cut here ---
+Unable to handle kernel NULL pointer dereference at virtual address 00000023
+pgd = (ptrval)
+[00000023] *pgd=00000000
+Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+Modules linked in:
+CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc1-00055-g126f33704d9d 
+#1379
+Hardware name: Samsung Exynos (Flattened Device Tree)
+PC is at __kmalloc_track_caller+0xe0/0x454
+LR is at __kmalloc_track_caller+0x60/0x454
+...
+Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+Control: 10c5387d  Table: 4000404a  DAC: 00000051
+Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
+Stack: (0xef0f19d8 to 0xef0f2000)
+...
+[<c02b62ec>] (__kmalloc_track_caller) from [<c026e220>] (kstrdup+0x30/0x5c)
+[<c026e220>] (kstrdup) from [<c0361250>] (__kernfs_new_node+0x2c/0x280)
+[<c0361250>] (__kernfs_new_node) from [<c036247c>] 
+(kernfs_new_node+0x40/0x60)
+[<c036247c>] (kernfs_new_node) from [<c03643fc>] 
+(kernfs_create_link+0x3c/0x90)
+[<c03643fc>] (kernfs_create_link) from [<c0365460>] 
+(sysfs_do_create_link_sd+0x64/0xd8)
+[<c0365460>] (sysfs_do_create_link_sd) from [<c0646fe4>] 
+(device_add+0x388/0x744)
+[<c0646fe4>] (device_add) from [<c0583874>] 
+(regulator_register+0xba8/0x1344)
+[<c0583874>] (regulator_register) from [<c0585b74>] 
+(devm_regulator_register+0x3c/0x78)
+[<c0585b74>] (devm_regulator_register) from [<c058b448>] 
+(max77686_pmic_probe+0xc8/0x140)
+[<c058b448>] (max77686_pmic_probe) from [<c064d484>] 
+(platform_drv_probe+0x6c/0xa4)
+[<c064d484>] (platform_drv_probe) from [<c064aab8>] 
+(really_probe+0x200/0x48c)
+[<c064aab8>] (really_probe) from [<c064aeac>] 
+(driver_probe_device+0x78/0x1fc)
+[<c064aeac>] (driver_probe_device) from [<c0648998>] 
+(bus_for_each_drv+0x74/0xb8)
+[<c0648998>] (bus_for_each_drv) from [<c064a818>] 
+(__device_attach+0xd4/0x16c)
+[<c064a818>] (__device_attach) from [<c064995c>] 
+(bus_probe_device+0x88/0x90)
+[<c064995c>] (bus_probe_device) from [<c06470ec>] (device_add+0x490/0x744)
+[<c06470ec>] (device_add) from [<c064d1e8>] 
+(platform_device_add+0x114/0x258)
+[<c064d1e8>] (platform_device_add) from [<c067d69c>] 
+(mfd_add_devices+0x344/0x408)
+[<c067d69c>] (mfd_add_devices) from [<c067d7c4>] 
+(devm_mfd_add_devices+0x64/0xa4)
+[<c067d7c4>] (devm_mfd_add_devices) from [<c067dfe4>] 
+(max77686_i2c_probe+0xfc/0x19c)
+[<c067dfe4>] (max77686_i2c_probe) from [<c07c5e40>] 
+(i2c_device_probe+0x12c/0x2c4)
+[<c07c5e40>] (i2c_device_probe) from [<c064aab8>] (really_probe+0x200/0x48c)
+[<c064aab8>] (really_probe) from [<c064aeac>] 
+(driver_probe_device+0x78/0x1fc)
+[<c064aeac>] (driver_probe_device) from [<c064b294>] 
+(device_driver_attach+0x58/0x60)
+[<c064b294>] (device_driver_attach) from [<c064b378>] 
+(__driver_attach+0xdc/0x174)
+[<c064b378>] (__driver_attach) from [<c06488c4>] 
+(bus_for_each_dev+0x68/0xb4)
+[<c06488c4>] (bus_for_each_dev) from [<c0649bf8>] 
+(bus_add_driver+0x158/0x214)
+[<c0649bf8>] (bus_add_driver) from [<c064c24c>] (driver_register+0x78/0x110)
+[<c064c24c>] (driver_register) from [<c07c6dac>] 
+(i2c_register_driver+0x3c/0xac)
+[<c07c6dac>] (i2c_register_driver) from [<c0102378>] 
+(do_one_initcall+0x8c/0x424)
+[<c0102378>] (do_one_initcall) from [<c1001158>] 
+(kernel_init_freeable+0x190/0x204)
+[<c1001158>] (kernel_init_freeable) from [<c0ab600c>] 
+(kernel_init+0x8/0x118)
+[<c0ab600c>] (kernel_init) from [<c0100114>] (ret_from_fork+0x14/0x20)
+Exception stack(0xef0f1fb0 to 0xef0f1ff8)
+...
+---[ end trace 1d585642d0e3339f ]---
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+I suspect that this is somehow related to the deferred probe and/or 
+devm_ helpers, but I didn't analyze it further yet. Reverting it on top 
+of current linux-next (and resolving conflict) fixes the boot. Bisecting 
+it was really hard because the issue is not fully reproducible, what 
+suggests memory trashing. Various tests of linux-next with the reverted 
+patch have shown at least that the issue is gone.
+
+I've compiled the kernel from exynos_defconfig, the dts used for the 
+test is arch/arm/boot/dts/exynos4412-trats2.dts
+
+ > ...
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
