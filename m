@@ -2,101 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C9B23C682
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4603323C680
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728509AbgHEHFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 03:05:09 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:8914 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728363AbgHEHEh (ORCPT
+        id S1728476AbgHEHEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 03:04:54 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42670 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728392AbgHEHEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 03:04:37 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07572SqX030160;
-        Wed, 5 Aug 2020 09:04:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=5f/kmG4N622sMrrGFS0Jhu+gX16MgwdDVf5qJCdceBQ=;
- b=PRIhE/WWA2z7xAjACT5MgmqYL9rp4r/aryLr4UTUHIqp/BAi141gpZ5eNi4SOgqk6KPv
- sVsCndw+E0LKq9Symouh6wSxpiyaDRexj+VgJolgrMHdlxpKDX5AVmzmAcosbogb/Ud6
- 5BHCpX5KrAeWvzj7QVQCb7kOFqxoKaXlkRc7J3NCYEdp+fGJP7FnA6vZimNRxJaC6ABC
- quTSCqtKAEJ0hiwuCTSOEncfaZ2qPUcO22NXExez5f4Uf/Fd+oDvi2rEXWMkEdwYHEgT
- fs9lBLZBwgHMe75OWp6dUWYOrXTz7yZSIDgH3Nb7gmPbfVBs+1mtWQwXRp71NyPnwekg BA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 32n6hyq7tx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 09:04:21 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EE32C10002A;
-        Wed,  5 Aug 2020 09:04:20 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E2F812A4D8E;
-        Wed,  5 Aug 2020 09:04:20 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 5 Aug 2020 09:04:20
- +0200
-From:   Alain Volmat <alain.volmat@st.com>
-To:     <broonie@kernel.org>, <amelie.delaunay@st.com>
-CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
-        <alain.volmat@st.com>
-Subject: [PATCH 18/18] spi: stm32h7: ensure message are smaller than max size
-Date:   Wed, 5 Aug 2020 09:02:13 +0200
-Message-ID: <1596610933-32599-19-git-send-email-alain.volmat@st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596610933-32599-1-git-send-email-alain.volmat@st.com>
-References: <1596610933-32599-1-git-send-email-alain.volmat@st.com>
+        Wed, 5 Aug 2020 03:04:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596611081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OllU2AtLxALI933xrusVDqtVc7Jp0X73cxjCgcSpPPs=;
+        b=NEE4+B+uEWOzaqcFoJYtM9Vmuw0U/3GzD5CuREmUEtqYWDK6ANNvAxbSxWiE9hkk9w+2J3
+        TsSd01HEalKVQxDiqhFTgLEP+S4SXnO4mdsdeZXTVPssNrw89I+KMORiS5VgX41PFXPy/q
+        LU++aMz5IVjWVzNV5asC29QGM59KnDQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-zYa7F1cJNfOsJ3ezn09pKw-1; Wed, 05 Aug 2020 03:04:33 -0400
+X-MC-Unique: zYa7F1cJNfOsJ3ezn09pKw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD99D101C8A9;
+        Wed,  5 Aug 2020 07:04:30 +0000 (UTC)
+Received: from starship (unknown [10.35.206.144])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E26571D35;
+        Wed,  5 Aug 2020 07:04:27 +0000 (UTC)
+Message-ID: <084a332afc149c0c647e86f71fea49bb0665a843.camel@redhat.com>
+Subject: Re: [PATCH] KVM: x86: Don't attempt to load PDPTRs when 64-bit mode
+ is enabled
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Oliver Upton <oupton@google.com>,
+        Peter Shier <pshier@google.com>
+Date:   Wed, 05 Aug 2020 10:04:26 +0300
+In-Reply-To: <20200714015732.32426-1-sean.j.christopherson@intel.com>
+References: <20200714015732.32426-1-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-05_04:2020-08-03,2020-08-05 signatures=0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensure that messages given to transfer_one handler can actually be
-handled by it. For that purpose rely on the SPI framework
-spi_split_transfers_maxsize function to split messages whenever necessary.
+On Mon, 2020-07-13 at 18:57 -0700, Sean Christopherson wrote:
+> Don't attempt to load PDPTRs if EFER.LME=1, i.e. if 64-bit mode is
+> enabled.  A recent change to reload the PDTPRs when CR0.CD or CR0.NW is
+> toggled botched the EFER.LME handling and sends KVM down the PDTPR path
+> when is_paging() is true, i.e. when the guest toggles CD/NW in 64-bit
+> mode.
+> 
+> Split the CR0 checks for 64-bit vs. 32-bit PAE into separate paths.  The
+> 64-bit path is specifically checking state when paging is toggled on,
+> i.e. CR0.PG transititions from 0->1.  The PDPTR path now needs to run if
+> the new CR0 state has paging enabled, irrespective of whether paging was
+> already enabled.  Trying to shave a few cycles to make the PDPTR path an
+> "else if" case is a mess.
+> 
+> Fixes: d42e3fae6faed ("kvm: x86: Read PDPTEs on CR0.CD and CR0.NW changes")
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Oliver Upton <oupton@google.com>
+> Cc: Peter Shier <pshier@google.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+> 
+> The other way to fix this, with a much smaller diff stat, is to simply
+> move the !is_page(vcpu) check inside (vcpu->arch.efer & EFER_LME).  But
+> that results in a ridiculous amount of nested conditionals for what is a
+> very straightforward check e.g.
+> 
+> 	if (cr0 & X86_CR0_PG) {
+> 		if (vcpu->arch.efer & EFER_LME) }
+> 			if (!is_paging(vcpu)) {
+> 				...
+> 			}
+> 		}
+> 	}
+> 
+> Since this doesn't need to be backported anywhere, I didn't see any value
+> in having an intermediate step.
+> 
+>  arch/x86/kvm/x86.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 95ef629228691..5f526d94c33f3 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -819,22 +819,22 @@ int kvm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+>  	if ((cr0 & X86_CR0_PG) && !(cr0 & X86_CR0_PE))
+>  		return 1;
+>  
+> -	if (cr0 & X86_CR0_PG) {
+>  #ifdef CONFIG_X86_64
+> -		if (!is_paging(vcpu) && (vcpu->arch.efer & EFER_LME)) {
+> -			int cs_db, cs_l;
+> +	if ((vcpu->arch.efer & EFER_LME) && !is_paging(vcpu) &&
+> +	    (cr0 & X86_CR0_PG)) {
+> +		int cs_db, cs_l;
+>  
+> -			if (!is_pae(vcpu))
+> -				return 1;
+> -			kvm_x86_ops.get_cs_db_l_bits(vcpu, &cs_db, &cs_l);
+> -			if (cs_l)
+> -				return 1;
+> -		} else
+> -#endif
+> -		if (is_pae(vcpu) && ((cr0 ^ old_cr0) & pdptr_bits) &&
+> -		    !load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu)))
+> +		if (!is_pae(vcpu))
+> +			return 1;
+> +		kvm_x86_ops.get_cs_db_l_bits(vcpu, &cs_db, &cs_l);
+> +		if (cs_l)
+>  			return 1;
+>  	}
+> +#endif
+> +	if (!(vcpu->arch.efer & EFER_LME) && (cr0 & X86_CR0_PG) &&
+> +	    is_pae(vcpu) && ((cr0 ^ old_cr0) & pdptr_bits) &&
+> +	    !load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu)))
+> +		return 1;
+>  
+>  	if (!(cr0 & X86_CR0_PG) && kvm_read_cr4_bits(vcpu, X86_CR4_PCIDE))
+>  		return 1;
 
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
----
- drivers/spi/spi-stm32.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+I also investigated this issue (also same thing, OVMF doesn't boot),
+and after looking at the intel and amd's PRM, this looks like correct solution.
+I also tested this and it works.
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index b909afd9e99b..bd21b698af84 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -1021,6 +1021,20 @@ static int stm32_spi_prepare_msg(struct spi_master *master,
- 		spi_dev->mode & SPI_LSB_FIRST,
- 		spi_dev->mode & SPI_CS_HIGH);
- 
-+	/* On STM32H7, messages should not exceed a maximum size setted
-+	 * afterward via the set_number_of_data function. In order to
-+	 * ensure that, split large messages into several messages
-+	 */
-+	if (spi->cfg->set_number_of_data) {
-+		int ret;
-+
-+		ret = spi_split_transfers_maxsize(master, msg,
-+						  STM32H7_SPI_TSIZE_MAX,
-+						  GFP_KERNEL | GFP_DMA);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	spin_lock_irqsave(&spi->lock, flags);
- 
- 	/* CPOL, CPHA and LSB FIRST bits have common register */
--- 
-2.7.4
+
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+Best regards,
+	Maxim Levitsky
 
