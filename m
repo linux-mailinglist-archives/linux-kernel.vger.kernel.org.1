@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B302323C6D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D760723C6DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbgHEHS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 03:18:26 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:36552 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgHEHSX (ORCPT
+        id S1728092AbgHEHTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 03:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbgHEHTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 03:18:23 -0400
-Received: by mail-il1-f197.google.com with SMTP id o191so30182996ila.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 00:18:23 -0700 (PDT)
+        Wed, 5 Aug 2020 03:19:49 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3287DC06174A;
+        Wed,  5 Aug 2020 00:19:49 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id p25so332206qkp.2;
+        Wed, 05 Aug 2020 00:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=FaEGzOgyBR8AMrEH/saCACEjpxQkzKeYijkuZ/V+U+o=;
+        b=ilW8vnnJJfaLmaAF552XrtvQJaLxZzmJQYy9RZXrp9+zWxJSn7ZBqnocioKgTZD7di
+         M+gu5qpz8NGmWu8e5WFOIHch8DUejIzqTm4RA9XDm7qvF3qd0onAuG1HvZBA81ykTbe8
+         ALSOyP42Da9aX1NBhuS99F4K8XEkal3QwiTCBi+OO2ud8gAvin9ReEiDk82Qw8/5+23h
+         wi3ydf7gcOvfCey581GZTctje7xG35/DzCuxRGmvSmtSn2w02SGHDAtvtkMGjwq5lYI1
+         OT0qk1uFZY66uxVv9UUw47h2Yd7BWoAXTsMJCg1/gS+Dzhu5FEimycK/4tNaOU7UR9Sn
+         Qulw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Fa0gLd9XVcoRN25QyrKmn6yha622efdv80gtOrAX5uA=;
-        b=FPwQ5NOSh+OmabXtczBYFDIJCTz7+f7Z/yaLeHkvJEnNKuQIo6OWlPQNA2rwJGk+jU
-         SkUlxGZLxAf1DusOrDPVKsleh487K+dgFL1R2SdC1w38siiZZIIo+0pIOqwJuhW1g9X2
-         wRzyhzgvEDB9Af3e7nlZmigXysxsR1VfWviIqa3OdoSdH1Sb9Hkg/UHkjwCfsUYqaSat
-         m4abVChS9E5EtYwgILl3pq/VGi7UIcMuHnoJeJCwMUbj7BRLDST/dAFNKNJH6y4sO3V4
-         hCPIzaDdeNy8U1OrgivVC1VVWTVDRKNYRw7dMG3tRflM7zRLIGEta21F1LFP93diR21R
-         qoOQ==
-X-Gm-Message-State: AOAM533QS9Ieuu12qJH5EeZw/2a7zHRXED1IAJOrLpdpQ2YVfBIRAsVr
-        Osqb8sh7wegCS+ueNb6ZVaptt16A8nSdexLQ6pPGIqKpdtNP
-X-Google-Smtp-Source: ABdhPJx37KgKaXdMV9jxRlO8ttoO67P5NQABfCZCP2MWRuE2Mzy+hPYLLl/H4xpv1mwfNNh78hENiSdgUk2zrje3gvEUZYqE/ha4
-MIME-Version: 1.0
-X-Received: by 2002:a92:7010:: with SMTP id l16mr2547146ilc.91.1596611902772;
- Wed, 05 Aug 2020 00:18:22 -0700 (PDT)
-Date:   Wed, 05 Aug 2020 00:18:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004f1bb205ac1c2dce@google.com>
-Subject: upstream test error: WARNING in ep_scan_ready_list
-From:   syzbot <syzbot+d99fcdc44745d2f54a57@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FaEGzOgyBR8AMrEH/saCACEjpxQkzKeYijkuZ/V+U+o=;
+        b=n8h5oCPrw2lWN63UXVsdn28ANbQ6UMhJZfepC97oCvVJQZTh5X/7xO8V6QD+XOeSBJ
+         j9sOgxiAkhVaKBA5N/C+xA19jaOJKJ3pztmucp0y8TV1UaSs4JnJr/OoSti+tpR9A+7l
+         qmicFC3E/CrYsZG3wiDNCs/2zoA33D0k22igu7V43enTllfazC6c6YYK9ipe0TlikniM
+         91gokPJ1QgLwyEbWvdA35X1z+yjwwK95nU317IdLwDPK6ceJsXT4ZXB7mOudjKMAczJ4
+         HCK2gHK1a+W/0dojAWNk3hfVVlp5g7pSBWbMvW7Rka3Jk5POz5Ri8t6zAbW1hKwZmQc1
+         9jeg==
+X-Gm-Message-State: AOAM533la/Stk8MxOAhalJS1xH7VOZnvXodWJt9EIZp9JNchLqi9Suc6
+        Xj/v6Bv/2Bq+4xQLOziOkuA=
+X-Google-Smtp-Source: ABdhPJxTwbNbMDnDvBuxSOb/SHAzcUaYN56CL+kG8AQqLnCQWcOsXUp0JwT+Hecp1bNzf8wZlGuGcw==
+X-Received: by 2002:a05:620a:490:: with SMTP id 16mr1848131qkr.89.1596611988431;
+        Wed, 05 Aug 2020 00:19:48 -0700 (PDT)
+Received: from localhost.localdomain ([111.205.198.3])
+        by smtp.gmail.com with ESMTPSA id y14sm1389009qtc.84.2020.08.05.00.19.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 05 Aug 2020 00:19:47 -0700 (PDT)
+From:   xiangxia.m.yue@gmail.com
+To:     davem@davemloft.net, echaudro@redhat.com, kuba@kernel.org,
+        pabeni@redhat.com, pshelar@ovn.org, syzkaller-bugs@googlegroups.com
+Cc:     dev@openvswitch.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Subject: [PATCH] net: openvswitch: silence suspicious RCU usage warning
+Date:   Wed,  5 Aug 2020 15:19:11 +0800
+Message-Id: <20200805071911.64101-1-xiangxia.m.yue@gmail.com>
+X-Mailer: git-send-email 2.15.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-syzbot found the following issue on:
+ovs_flow_tbl_destroy always is called from RCU callback
+or error path. It is no need to check if rcu_read_lock
+or lockdep_ovsl_is_held was held.
 
-HEAD commit:    3950e975 Merge branch 'exec-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13be87cc900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c2b75627f23a2ff9
-dashboard link: https://syzkaller.appspot.com/bug?extid=d99fcdc44745d2f54a57
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+ovs_dp_cmd_fill_info always is called with ovs_mutex,
+So use the rcu_dereference_ovsl instead of rcu_dereference
+in ovs_flow_tbl_masks_cache_size.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d99fcdc44745d2f54a57@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 1 at fs/eventpoll.c:688 ep_scan_ready_list+0x9f/0x470 fs/eventpoll.c:688
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 1 Comm: systemd Not tainted 5.8.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x16e/0x25d lib/dump_stack.c:118
- panic+0x20c/0x69a kernel/panic.c:231
- __warn+0x211/0x240 kernel/panic.c:600
- report_bug+0x153/0x1d0 lib/bug.c:198
- handle_bug+0x4d/0x90 arch/x86/kernel/traps.c:235
- exc_invalid_op+0x16/0x70 arch/x86/kernel/traps.c:255
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:547
-RIP: 0010:ep_scan_ready_list+0x9f/0x470 fs/eventpoll.c:688
-Code: 37 d4 c6 ff 85 db 74 1d e8 1e d0 c6 ff 40 84 ed 75 0c eb 1d e8 12 d0 c6 ff 40 84 ed 74 13 e8 08 d0 c6 ff eb 1c e8 01 d0 c6 ff <0f> 0b 40 84 ed 75 ed e8 f5 cf c6 ff 4c 89 f7 44 89 fe e8 1a 8b a5
-RSP: 0000:ffffc90000c73dc8 EFLAGS: 00010293
-RAX: ffffffff81853bff RBX: 0000000000000000 RCX: ffff88812b766040
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff81853bd9 R09: 0000ffff88619eb7
-R10: 0000ffffffffffff R11: 0000000000000000 R12: 0000000000000000
-R13: ffffc90000c73de8 R14: ffff8881297af600 R15: 0000000000000000
- ep_send_events fs/eventpoll.c:1788 [inline]
- ep_poll fs/eventpoll.c:1944 [inline]
- do_epoll_wait+0x55c/0x920 fs/eventpoll.c:2333
- __do_sys_epoll_wait fs/eventpoll.c:2343 [inline]
- __se_sys_epoll_wait fs/eventpoll.c:2340 [inline]
- __x64_sys_epoll_wait+0x4d/0x60 fs/eventpoll.c:2340
- do_syscall_64+0x6a/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f310b8db303
-Code: 49 89 ca b8 e8 00 00 00 0f 05 48 3d 01 f0 ff ff 73 34 c3 48 83 ec 08 e8 0b c2 00 00 48 89 04 24 49 89 ca b8 e8 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 51 c2 00 00 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ffdc7ffa4c0 EFLAGS: 00000293 ORIG_RAX: 00000000000000e8
-RAX: ffffffffffffffda RBX: 000055e909e78f50 RCX: 00007f310b8db303
-RDX: 0000000000000025 RSI: 00007ffdc7ffa4d0 RDI: 0000000000000004
-RBP: 00007ffdc7ffa790 R08: 846474467368a395 R09: 00000000000061c0
-R10: 00000000ffffffff R11: 0000000000000293 R12: 00007ffdc7ffa4d0
-R13: 0000000000000001 R14: ffffffffffffffff R15: 0000000000000002
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
+Fixes: 9bf24f594c6a ("net: openvswitch: make masks cache size configurable")
+Cc: Eelco Chaudron <echaudro@redhat.com>
+Reported-by: syzbot+c0eb9e7cdde04e4eb4be@syzkaller.appspotmail.com
+Reported-by: syzbot+f612c02823acb02ff9bc@syzkaller.appspotmail.com
+Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ net/openvswitch/flow_table.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/net/openvswitch/flow_table.c b/net/openvswitch/flow_table.c
+index 6527d84c3ea6..8c12675cbb67 100644
+--- a/net/openvswitch/flow_table.c
++++ b/net/openvswitch/flow_table.c
+@@ -518,8 +518,8 @@ void ovs_flow_tbl_destroy(struct flow_table *table)
+ {
+ 	struct table_instance *ti = rcu_dereference_raw(table->ti);
+ 	struct table_instance *ufid_ti = rcu_dereference_raw(table->ufid_ti);
+-	struct mask_cache *mc = rcu_dereference(table->mask_cache);
+-	struct mask_array *ma = rcu_dereference_ovsl(table->mask_array);
++	struct mask_cache *mc = rcu_dereference_raw(table->mask_cache);
++	struct mask_array *ma = rcu_dereference_raw(table->mask_array);
+ 
+ 	call_rcu(&mc->rcu, mask_cache_rcu_cb);
+ 	call_rcu(&ma->rcu, mask_array_rcu_cb);
+@@ -937,7 +937,7 @@ int ovs_flow_tbl_num_masks(const struct flow_table *table)
+ 
+ u32 ovs_flow_tbl_masks_cache_size(const struct flow_table *table)
+ {
+-	struct mask_cache *mc = rcu_dereference(table->mask_cache);
++	struct mask_cache *mc = rcu_dereference_ovsl(table->mask_cache);
+ 
+ 	return READ_ONCE(mc->cache_size);
+ }
+-- 
+2.26.1
+
