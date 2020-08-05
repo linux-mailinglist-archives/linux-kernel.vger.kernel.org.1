@@ -2,78 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683C223C960
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BB823C956
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728546AbgHEJiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 05:38:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728416AbgHEJfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 05:35:23 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E15A92067C;
-        Wed,  5 Aug 2020 09:35:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596620123;
-        bh=sRK1VT2n7iXkftZGPejCEcTo2BNKyrAMP+gaG0CRD5I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tHkbuu8xPAEJ9ciXcq6XPAI0aM13ahh4h/kEpFpBy0p+eK0fJVFm5wLgIloAEdQE2
-         27qfosrKd9MMF2R6TAXsqZz2MT5QRiWoMHtZOnA9NvLXziKN7B/ku9AXwqMdHo9jsj
-         cLUKDidhRZV8Qn3MVqeP3gbFZtlYubJx5ATAULWc=
-Date:   Wed, 5 Aug 2020 11:35:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.7 000/116] 5.7.13-rc3 review
-Message-ID: <20200805093541.GC1388764@kroah.com>
-References: <20200804085233.484875373@linuxfoundation.org>
- <CA+G9fYsPq80QDQYbkCQPwS5DLCZXk7cZR8BeY6VHU4gyWGckwA@mail.gmail.com>
+        id S1728478AbgHEJh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 05:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728119AbgHEJgy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 05:36:54 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FD9C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 02:36:54 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id h22so3598877otq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 02:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6QAf2r22ie0nJ9P9yn7tCrZWYCPDCIRxVkswdnQpyC0=;
+        b=R9PgmfP4r/afAuE6yEI5xwzwZqrkDG1FMSlt+zUdxWUaS4wWM+lhaaJ3udKFGIHV/W
+         Sxr3aqMHHy30L/DQSNLDdmhLhwdZ6M+XCwLD+M0bLPKXBlfV9xBmPsPg27gzv1ujq3a2
+         YgKJtw3aPeIIZqvGF1oQZ/LAv6nhBrxZ1HTv4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6QAf2r22ie0nJ9P9yn7tCrZWYCPDCIRxVkswdnQpyC0=;
+        b=VByxOfoGjYoFbAxQ3PE6B0+Lcii9d0caxVlJ7Dnf3TcIp40kU2U11CdiEJV8ZTuIHN
+         c/imBA6WlaxajqlIos2oroDytzg0rTSlxZdkSo/UcS+a2qQHJZA2KeF5qkQR4vcgVjW3
+         U5O+BZjT5TNlTACwcPU1bMLAQbcm3YZ86duQE5AgIjyjbBTHcGqWw57vwSA6AojdebxD
+         F5H4y9zO0jFewdaXKMN1a86i9171sCkJjtsqQWrRBZqCMFxh1U2ntOTS6ymeq9GmDe6/
+         8xKTvesqMtIdjP+NgJMr+x3uDP05fvwa8e02Slq5Hyt6lh6k5YRK+ATSurBtCAPhNIFs
+         cIOA==
+X-Gm-Message-State: AOAM533Wss3z91bK5SDnKPqiJH6svayoPa4+r63r0cASaa5w0LyCgsc1
+        d0X8mRbn4YApLX4ulKCgrhNZ5f3KDCd9WDnUGLvhCA==
+X-Google-Smtp-Source: ABdhPJxbvKXGNnuWD4z2BMkiilvW3CUx+kj1KpLvwjAj9AlKw4Z10kOAXFUtCEfBE2pJ5diZAjtOip4Pqm/YdXEBojM=
+X-Received: by 2002:a9d:7283:: with SMTP id t3mr1760637otj.303.1596620213781;
+ Wed, 05 Aug 2020 02:36:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYsPq80QDQYbkCQPwS5DLCZXk7cZR8BeY6VHU4gyWGckwA@mail.gmail.com>
+References: <20200805083646.4123-1-hjc@rock-chips.com>
+In-Reply-To: <20200805083646.4123-1-hjc@rock-chips.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 5 Aug 2020 11:36:42 +0200
+Message-ID: <CAKMK7uGmKJqZJ0ONQjjquZn6mksKbkScmcUSEA43eg1jFskmTg@mail.gmail.com>
+Subject: Re: [PATCH] drm: sysfs: Add to get current mode
+To:     Sandy Huang <hjc@rock-chips.com>
+Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Tao Huang <huangtao@rock-chips.com>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 11:32:56AM +0530, Naresh Kamboju wrote:
-> On Tue, 4 Aug 2020 at 14:24, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.7.13 release.
-> > There are 116 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Thu, 06 Aug 2020 08:51:59 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.13-rc3.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
+On Wed, Aug 5, 2020 at 10:37 AM Sandy Huang <hjc@rock-chips.com> wrote:
+>
+> add this node to get the current true mode.
+>
+> Signed-off-by: Sandy Huang <hjc@rock-chips.com>
 
-Thanks for testing all of these and letting me know.
+Uh what's this for? Since it's sysfs, I guess there's something
+parsing this, which means we'd kinda need to have that piece too.
 
-greg k-h
+If it's just for debugging purposes, then we already have this
+information in debugfs, together with everything else that's in the
+atomic modeset state.
+-Daniel
+
+> ---
+>  drivers/gpu/drm/drm_sysfs.c | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
+> index 939f0032aab1..f39bcd34853b 100644
+> --- a/drivers/gpu/drm/drm_sysfs.c
+> +++ b/drivers/gpu/drm/drm_sysfs.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/slab.h>
+>
+>  #include <drm/drm_connector.h>
+> +#include <drm/drm_crtc.h>
+>  #include <drm/drm_device.h>
+>  #include <drm/drm_file.h>
+>  #include <drm/drm_modes.h>
+> @@ -236,16 +237,45 @@ static ssize_t modes_show(struct device *device,
+>         return written;
+>  }
+>
+> +static ssize_t current_mode_show(struct device *device,
+> +                     struct device_attribute *attr,
+> +                     char *buf)
+> +{
+> +       struct drm_connector *connector = to_drm_connector(device);
+> +       struct drm_display_mode *mode;
+> +       struct drm_crtc_state *crtc_state;
+> +       bool interlaced;
+> +       int written = 0;
+> +
+> +       if (!connector->state || !connector->state->crtc)
+> +               return written;
+> +
+> +       crtc_state = connector->state->crtc->state;
+> +       if (!crtc_state)
+> +               return written;
+> +
+> +       mode = &crtc_state->mode;
+> +
+> +       interlaced = !!(mode->flags & DRM_MODE_FLAG_INTERLACE);
+> +       written += snprintf(buf + written, PAGE_SIZE - written, "%dx%d%s%d\n",
+> +                           mode->hdisplay, mode->vdisplay,
+> +                           interlaced ? "i" : "p", drm_mode_vrefresh(mode));
+> +
+> +       return written;
+> +}
+> +
+>  static DEVICE_ATTR_RW(status);
+>  static DEVICE_ATTR_RO(enabled);
+>  static DEVICE_ATTR_RO(dpms);
+>  static DEVICE_ATTR_RO(modes);
+> +static DEVICE_ATTR_RO(current_mode);
+>
+>  static struct attribute *connector_dev_attrs[] = {
+>         &dev_attr_status.attr,
+>         &dev_attr_enabled.attr,
+>         &dev_attr_dpms.attr,
+>         &dev_attr_modes.attr,
+> +       &dev_attr_current_mode.attr,
+>         NULL
+>  };
+>
+> --
+> 2.17.1
+>
+>
+>
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
