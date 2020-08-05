@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB5423C38E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 04:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8925923C39B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 04:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbgHECnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 22:43:13 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:46114 "EHLO inva020.nxp.com"
+        id S1727782AbgHECsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 22:48:15 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:53210 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgHECnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 22:43:13 -0400
+        id S1725864AbgHECsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 22:48:14 -0400
 Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3E9851A149A;
-        Wed,  5 Aug 2020 04:43:11 +0200 (CEST)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6335B1A04E6;
+        Wed,  5 Aug 2020 04:48:12 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 44CA31A149B;
-        Wed,  5 Aug 2020 04:42:46 +0200 (CEST)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B49B91A1487;
+        Wed,  5 Aug 2020 04:48:06 +0200 (CEST)
 Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 583D5402CF;
-        Wed,  5 Aug 2020 04:42:40 +0200 (CEST)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 4FDAD402E1;
+        Wed,  5 Aug 2020 04:47:59 +0200 (CEST)
 From:   Anson Huang <Anson.Huang@nxp.com>
-To:     zbr@ioremap.net, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        mfuzzey@parkeon.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, marex@denx.de,
+        s.trumtrar@pengutronix.de, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 Cc:     Linux-imx@nxp.com
-Subject: [PATCH] dt-bindings: w1: Convert i.MX to json-schema
-Date:   Wed,  5 Aug 2020 10:38:11 +0800
-Message-Id: <1596595091-26760-1-git-send-email-Anson.Huang@nxp.com>
+Subject: [PATCH 1/3] dt-bindings: crypto: Convert MXS DCP to json-schema
+Date:   Wed,  5 Aug 2020 10:43:28 +0800
+Message-Id: <1596595410-26921-1-git-send-email-Anson.Huang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
@@ -36,87 +38,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX one wire binding to DT schema format using json-schema.
+Convert the MXS DCP binding to DT schema format using json-schema.
 
 Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- .../devicetree/bindings/w1/fsl-imx-owire.txt       | 18 ----------
- .../devicetree/bindings/w1/fsl-imx-owire.yaml      | 42 ++++++++++++++++++++++
- 2 files changed, 42 insertions(+), 18 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/w1/fsl-imx-owire.txt
- create mode 100644 Documentation/devicetree/bindings/w1/fsl-imx-owire.yaml
+ .../devicetree/bindings/crypto/fsl-dcp.txt         | 18 --------
+ .../devicetree/bindings/crypto/fsl-dcp.yaml        | 49 ++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 18 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/crypto/fsl-dcp.txt
+ create mode 100644 Documentation/devicetree/bindings/crypto/fsl-dcp.yaml
 
-diff --git a/Documentation/devicetree/bindings/w1/fsl-imx-owire.txt b/Documentation/devicetree/bindings/w1/fsl-imx-owire.txt
+diff --git a/Documentation/devicetree/bindings/crypto/fsl-dcp.txt b/Documentation/devicetree/bindings/crypto/fsl-dcp.txt
 deleted file mode 100644
-index cbaa646..0000000
---- a/Documentation/devicetree/bindings/w1/fsl-imx-owire.txt
+index 513499f..0000000
+--- a/Documentation/devicetree/bindings/crypto/fsl-dcp.txt
 +++ /dev/null
 @@ -1,18 +0,0 @@
--* Freescale i.MX One wire bus master controller
+-Freescale DCP (Data Co-Processor) found on i.MX23/i.MX28 .
 -
 -Required properties:
--- compatible : should be "fsl,imx21-owire"
--- reg : Address and length of the register set for the device
--
--Optional properties:
--- clocks : phandle of clock that supplies the module (required if platform
--		clock bindings use device tree)
+-- compatible : Should be "fsl,<soc>-dcp"
+-- reg : Should contain MXS DCP registers location and length
+-- interrupts : Should contain MXS DCP interrupt numbers, VMI IRQ and DCP IRQ
+-               must be supplied, optionally Secure IRQ can be present, but
+-	       is currently not implemented and not used.
+-- clocks : Clock reference (only required on some SOCs: 6ull and 6sll).
+-- clock-names : Must be "dcp".
 -
 -Example:
 -
--- From imx53.dtsi:
--owire: owire@63fa4000 {
--	compatible = "fsl,imx53-owire", "fsl,imx21-owire";
--	reg = <0x63fa4000 0x4000>;
--	clocks = <&clks 159>;
+-dcp: crypto@80028000 {
+-	compatible = "fsl,imx28-dcp", "fsl,imx23-dcp";
+-	reg = <0x80028000 0x2000>;
+-	interrupts = <52 53>;
 -};
-diff --git a/Documentation/devicetree/bindings/w1/fsl-imx-owire.yaml b/Documentation/devicetree/bindings/w1/fsl-imx-owire.yaml
+diff --git a/Documentation/devicetree/bindings/crypto/fsl-dcp.yaml b/Documentation/devicetree/bindings/crypto/fsl-dcp.yaml
 new file mode 100644
-index 0000000..67681fa
+index 0000000..1ed86cd
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/w1/fsl-imx-owire.yaml
-@@ -0,0 +1,42 @@
++++ b/Documentation/devicetree/bindings/crypto/fsl-dcp.yaml
+@@ -0,0 +1,49 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/w1/fsl-imx-owire.yaml#
++$id: http://devicetree.org/schemas/crypto/fsl-dcp.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Freescale i.MX One wire bus master controller
++title: Freescale DCP (Data Co-Processor) found on i.MX23/i.MX28
 +
 +maintainers:
-+  - Martin Fuzzey <mfuzzey@parkeon.com>
++  - Marek Vasut <marex@denx.de>
 +
 +properties:
 +  compatible:
-+    oneOf:
-+      - const: fsl,imx21-owire
-+      - items:
-+          - enum:
-+            - fsl,imx27-owire
-+            - fsl,imx50-owire
-+            - fsl,imx51-owire
-+            - fsl,imx53-owire
-+          - const: fsl,imx21-owire
++    enum:
++      - fsl,imx23-dcp
++      - fsl,imx28-dcp
 +
 +  reg:
 +    maxItems: 1
 +
++  interrupts:
++    description: Should contain MXS DCP interrupt numbers, VMI IRQ and DCP IRQ
++      must be supplied, optionally Secure IRQ can be present, but is currently
++      not implemented and not used.
++    items:
++      - description: MXS DCP VMI interrupt
++      - description: MXS DCP DCP interrupt
++      - description: MXS DCP secure interrupt
++    minItems: 2
++    maxItems: 3
++
 +  clocks:
 +    maxItems: 1
++
++  clock-names:
++    const: dcp
 +
 +required:
 +  - compatible
 +  - reg
++  - interrupts
 +
 +examples:
 +  - |
-+    #include <dt-bindings/clock/imx5-clock.h>
-+
-+    owire@63fa4000 {
-+        compatible = "fsl,imx53-owire", "fsl,imx21-owire";
-+        reg = <0x63fa4000 0x4000>;
-+        clocks = <&clks IMX5_CLK_OWIRE_GATE>;
++    crypto@80028000 {
++        compatible = "fsl,imx23-dcp";
++        reg = <0x80028000 0x2000>;
++        interrupts = <53>, <54>;
 +    };
 -- 
 2.7.4
