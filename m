@@ -2,240 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F18A23D083
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D38223D115
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgHETtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
+        id S1728038AbgHET4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728308AbgHEQys (ORCPT
+        with ESMTP id S1727104AbgHEQqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:54:48 -0400
+        Wed, 5 Aug 2020 12:46:16 -0400
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AD6C034613
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:48:27 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z18so37008562wrm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:48:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D984AC034614
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:49:45 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a14so40608189wra.5
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:49:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LM1Oj6CMy+UaQUy6SY0cJrL8H1cD8DIwTKTLLUxm8GE=;
-        b=rOYHKIk2WUpgZa45oMbWh2DnljJ5I+n+pazqzyVsDFmp6noTkD4zpRRBr+2skUktXm
-         rRB/zrjgE9MMR44w5chRNM32rHnHBmDlARXh4uTjNtxk1cnVUH7KmtQ+kTXtUWA1serr
-         VDY75YQnXce7fJEwpsfcBZf8/EIfeVnQTNDQvMibMjKW4Wy42NZUYaIH4+Df0gLy7Sge
-         3ZgD1cclW+hpFCg5mOoYvsVL/XH+a/3tKmKLIAS1489rI/Sbs1su05BP4dRcdSTaq524
-         oHeM7ommoBXcMvVGQImg96ZDrBdihNboMA26O9BeGI6f5ixLZloh58Uc1cvwoMrcqQKt
-         uBrg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=NGh3qV9bnhStjMJvm5/xoTqyt0oZ80U2JyhykslboTM=;
+        b=dJ7L5plirWRryjsL0w+sJdTROVivbDeTQAkwANWl4dPDxYJDMr8xmxqugElTamdk/C
+         DIp8qiSY4E3w3uk6Q/hZNyz+5z9YF/9oVzR8hMoB1YUX9JtDvk01+bBwbLwzmYgya+sT
+         fpt4pVhtNx8pzHiLR8591sACDg7U9ccxPEVTi57bFi/0vd3iT7S7IG1UjjrB9nLrPCrQ
+         0ql8jUDRfEP/FWyrgGB/Tktb9p+8Z9BQHnVBvjgwN8vjgDkpIQjJPRYsV+5DFAuo7JjC
+         vLBE2Yf/p3sAo9P8t+kXMtFUq8lpczXR0FoAZkb2nyAI5aVwXJNebMCqJVNu1k7AW45B
+         g7bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LM1Oj6CMy+UaQUy6SY0cJrL8H1cD8DIwTKTLLUxm8GE=;
-        b=JSqq+dsCXmRDZanFQ8csqUbP+u+SCzRanB1SxLEMFAN8JEZSGLMQdUsdFhJ5kX874j
-         SGnUUzpWavX/8l+B9o/nRT3LejE4PeeR4ToVcpekkQdq6TPjA1Z0b21es3rST8MmcDqi
-         qCXH8LODKcOe7P5CntvNBwCm/I6H3Hmm5PMV7NyPyK1Hq0z6Es0Rx8UNihxgdWXz088D
-         MnFCp/j0kZfNP4ByHQMSJ3XXzE7VQzUF94vkDBKfoURdhwc+M4+rEgflTGfIQ0EFb8z2
-         4rw5FcOIieyg6ZOfmOcRPa6akCn+lao/RXzRcjjczbRi6cQWd3pnNXW/KkZPVDKAmGjT
-         kegg==
-X-Gm-Message-State: AOAM531sxPkV/g1pNnfaOnPip6fLt9jJ82gNFuajUfw8LJSRqhtVZWBL
-        +k41RHajXV43GJ7Owabas5uTs/A9
-X-Google-Smtp-Source: ABdhPJwns0f79W21zd+CDXGFbNlaOdl5o/pkTTuvMe3TQVysVA42W5WFRn7lvo0y+ImDfuf99D7wYA==
-X-Received: by 2002:a5d:6401:: with SMTP id z1mr2639637wru.272.1596631704839;
-        Wed, 05 Aug 2020 05:48:24 -0700 (PDT)
-Received: from [192.168.1.20] ([213.122.218.185])
-        by smtp.googlemail.com with ESMTPSA id 8sm2777286wrl.7.2020.08.05.05.48.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 05:48:24 -0700 (PDT)
-Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader on
- Intel NUC boxes
-From:   Chris Clayton <chris2553@googlemail.com>
-To:     =?UTF-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "philquadra@gmail.com" <philquadra@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <862172f0-cd23-800c-27b1-27cb49e99099@googlemail.com>
- <a9a94d7f-4873-7a10-4911-f3c760257c5c@googlemail.com>
- <5729c72bbc2740d3917619c85e2fde58@realtek.com>
- <20200804074831.GB1761483@kroah.com>
- <11e224ca299b48f1bea07082f2ff7c00@realtek.com>
- <0afbd711-0bda-d9a3-138d-5c713b4e2ed9@googlemail.com>
- <19de15c2f07d447dace6bea483d38159@realtek.com>
- <152ef6c0-f3c0-bb67-4175-adced3c720cd@googlemail.com>
- <e1c295f28e3d4bdd8c78dfd3a5ed398c@realtek.com>
- <68b9bdd2-a05e-7fb0-ec9a-70b03e0c5289@googlemail.com>
-Message-ID: <20da8b4b-8426-9568-c0f1-4d1c2006c53f@googlemail.com>
-Date:   Wed, 5 Aug 2020 13:48:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <68b9bdd2-a05e-7fb0-ec9a-70b03e0c5289@googlemail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NGh3qV9bnhStjMJvm5/xoTqyt0oZ80U2JyhykslboTM=;
+        b=q/WzpOi6rL9qynj6MBmjLhHipe37PQq5s0Ow2bsZH+Rfr8fZXdg/RoSHuOj2yAKuNC
+         Ob7DiktZqo9ElFtCT+GYZGQqyDI8S1vfcLMkY7QDX5a0l2+bLf/LNm38ErnUI5tGfcOT
+         +7cyLzLPZFav1ZI9Ylrrm1s3PztqZyT1EgtD28+ULbYlmLHiLHwbWjBa0Q6DCJd+pkRZ
+         l7IlBx/vddrTOQM/BPgDXuxh1sDQ9RIfIIUPIR9xabhYUFNVdB6HoebX25gD3xgFiHTH
+         zPUep3Nv+331A+Eu8Yq8GRpT2AUmBcfnyEzrqNWhg9tBQXTgovIexK+OvWS5iI9VkvOl
+         FH9w==
+X-Gm-Message-State: AOAM53183zjHOrDAEVb+jKgQXuMdfy8fX365Tr8V70xYP5UgSjR3zmBA
+        f2O7vTcoFfgIC4cY+7gckyDZ5vMJ
+X-Google-Smtp-Source: ABdhPJy7mglUaNyadtCneLJtoiOr+c9efaQCWD3ufWo36Iu3UnV+qw5Tzxf4W4mHSIiRQbZqzRKXKA==
+X-Received: by 2002:a5d:494b:: with SMTP id r11mr2813496wrs.419.1596631783888;
+        Wed, 05 Aug 2020 05:49:43 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id 33sm2713525wri.16.2020.08.05.05.49.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 05:49:42 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
+Cc:     Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH 1/2] habanalabs: PCIe Advanced Error Reporting support
+Date:   Wed,  5 Aug 2020 15:49:38 +0300
+Message-Id: <20200805124939.13935-1-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricky
+From: Ofir Bitton <obitton@habana.ai>
 
-On 05/08/2020 06:51, Chris Clayton wrote:
-> Thanks, Ricky.
-> 
-> On 05/08/2020 03:35, 吳昊澄 Ricky wrote:
->>
->>
->>> -----Original Message-----
->>> From: Chris Clayton [mailto:chris2553@googlemail.com]
->>> Sent: Tuesday, August 04, 2020 7:52 PM
->>> To: 吳昊澄 Ricky; gregkh@linuxfoundation.org
->>> Cc: LKML; rdunlap@infradead.org; philquadra@gmail.com; Arnd Bergmann
->>> Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader on
->>> Intel NUC boxes
->>>
->>>
->>>
->>> On 04/08/2020 11:46, 吳昊澄 Ricky wrote:
->>>>> -----Original Message-----
->>>>> From: Chris Clayton [mailto:chris2553@googlemail.com]
->>>>> Sent: Tuesday, August 04, 2020 4:51 PM
->>>>> To: 吳昊澄 Ricky; gregkh@linuxfoundation.org
->>>>> Cc: LKML; rdunlap@infradead.org; philquadra@gmail.com; Arnd Bergmann
->>>>> Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader on
->>>>> Intel NUC boxes
->>>>>
->>>>>
->>>>>
->>>>> On 04/08/2020 09:08, 吳昊澄 Ricky wrote:
->>>>>>> -----Original Message-----
->>>>>>> From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
->>>>>>> Sent: Tuesday, August 04, 2020 3:49 PM
->>>>>>> To: 吳昊澄 Ricky
->>>>>>> Cc: Chris Clayton; LKML; rdunlap@infradead.org; philquadra@gmail.com;
->>>>> Arnd
->>>>>>> Bergmann
->>>>>>> Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader
->>> on
->>>>>>> Intel NUC boxes
->>>>>>>
->>>>>>> On Tue, Aug 04, 2020 at 02:44:41AM +0000, 吳昊澄 Ricky wrote:
->>>>>>>> Hi Chris,
->>>>>>>>
->>>>>>>> rtsx_pci_write_register(pcr, FPDTL, OC_POWER_DOWN,
->>>>> OC_POWER_DOWN);
->>>>>>>> This register operation saved power under 1mA, so if do not care the 1mA
->>>>>>> power we can have a patch to remove it, make compatible with NUC6
->>>>>>>> We tested others our card reader that remove it, we did not see any side
->>>>> effect
->>>>>>>>
->>>>>>>> Hi Greg k-h,
->>>>>>>>
->>>>>>>> Do you have any comments?
->>>>>>>
->>>>>>> comments on what?  I don't know what you are responding to here, sorry.
->>>>>>>
->>>>>> Can we have a patch to kernel for NUC6? It may cause more power(1mA) but
->>> it
->>>>> will have more compatibility
->>>>>>
->>>>>
->>>>> Ricky,
->>>>>
->>>>> I don't understand why you want to completely remove the code that sets up
->>> the
->>>>> 1mA power saving. That code was there
->>>>> even before your patch (bede03a579b3b4a036003c4862cc1baa4ddc351f), so I
->>>>> assume it benefits some of the Realtek card
->>>>> readers. Before your patch however, rtsx_pci_init_ocp() was not called for the
->>>>> rts5229 reader, but the patch introduced
->>>>> an unconditional call to that function into rtsx_pci_init_hw(), which is run for
->>> the
->>>>> rts5229. That is what now disables
->>>>> the card reader.
->>>>>
->>>>> Now, I don't know whether other cards are affected, although I don't recall
->>>>> seeing any reported as I searched the kernel
->>>>> and ubuntu bugzillas for any analysis of the problem. I know this is not what
->>> the
->>>>> patch I sent does, but having thought
->>>>> about it more, seems to me that the simplest fix is to skip the new call to
->>>>> rtsx_pci_init_ocp() if the reader is an rts5229.
->>>>>
->>>>
->>>> Because we are thinking about if others our card reader that not belong A
->>> series(my ocp patch coverage) also on NUC6 platform maybe have the same
->>> problem...
->>>>
->>>
->>> OK. What if we do make the new call but only for the card readers that are in the
->>> A series? Are they the ones that have
->>> PID_5nnn defines in include/linux/rtsx_pci.h? Or is there another simple way of
->>> identifying that a reader is a member of
->>> the A series?
->>>
->>> I'm thinking of something like:
->>> static bool rtsx_pci_is_series_A(pcr)
->>> {
->>> 	unsigned short device = pcr->pci->device;
->>>
->>> 	return device == PID524A || device == PID_5249 || device == PID_5250 ||
->>> device == PID_525A
->>> 			|| device == PID_525A || device == PID_5260 || device ==
->>> PID_5261;
->>> }
->>>
->>> then in rtsx_pci_init_hw() change the unconditional call to:
->>>
->>> 	if rtsx_pci_is_series_A(pcr)
->>> 		rtsx_pci_init_ocp();
->>>
->>> Does that seem OK?
->>>
->> Previously, I want to remove
->> else {
->> 		/* OC power down */
->> 		rtsx_pci_write_register(pcr, FPDCTL, OC_POWER_DOWN,
->> 			OC_POWER_DOWN);
->> }
->> Because in our A-series card Reader we already assigned option->ocp_en to 1 in self init_params() , this is an easy way to fix this problem
->>
-> 
-> Ah, OK. I'll prepare the patch and send it to you once I've tested it.
-> 
+driver will now get notified upon any PCI error occurred and
+will respond according to the severity of the error.
 
-Please see the patch included below. As you suggested, it removes the code that does the OC power down on card readers
-that are not members of your A series. The patch is against a fresh pull of Linus's tree this morning
-(v5.8-2768-g4da9f3302615).
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ .../misc/habanalabs/common/habanalabs_drv.c   | 76 ++++++++++++++++++-
+ 1 file changed, 75 insertions(+), 1 deletion(-)
 
-I've tested the resultant kernel on my Intel NUC6CAYH box (which contains an NUC66AYB board) and the rts5229 works fine.
-I've also tested it on my laptop which also has a card reader supported by the rtsx_pci driver (an RTL8411B) and that
-also works fine.
-
-As I mentioned yesterday, I think it's a candidate for the 5.4 ans 5.7 stable series.
-
-Thanks for your patience!
-
-Chris
-
-Signed-off-by: Chris Clayton <chris2553@googlemail.com>
-
---- a/drivers/misc/cardreader/rtsx_pcr.c        2020-08-05 07:10:21.752072515 +0100
-+++ b/drivers/misc/cardreader/rtsx_pcr.c        2020-08-05 07:11:05.568074278 +0100
-@@ -1172,10 +1172,6 @@ void rtsx_pci_init_ocp(struct rtsx_pcr *
-                        rtsx_pci_write_register(pcr, REG_OCPGLITCH,
-                                SD_OCP_GLITCH_MASK, pcr->hw_param.ocp_glitch);
-                        rtsx_pci_enable_ocp(pcr);
--               } else {
--                       /* OC power down */
--                       rtsx_pci_write_register(pcr, FPDCTL, OC_POWER_DOWN,
--                               OC_POWER_DOWN);
-                }
-        }
+diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
+index c6b31e93fb5e..a36e33c58d37 100644
+--- a/drivers/misc/habanalabs/common/habanalabs_drv.c
++++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
+@@ -11,6 +11,7 @@
+ #include "habanalabs.h"
+ 
+ #include <linux/pci.h>
++#include <linux/aer.h>
+ #include <linux/module.h>
+ 
+ #define HL_DRIVER_AUTHOR	"HabanaLabs Kernel Driver Team"
+@@ -408,6 +409,8 @@ static int hl_pci_probe(struct pci_dev *pdev,
+ 
+ 	pci_set_drvdata(pdev, hdev);
+ 
++	pci_enable_pcie_error_reporting(pdev);
++
+ 	rc = hl_device_init(hdev, hl_class);
+ 	if (rc) {
+ 		dev_err(&pdev->dev, "Fatal error during habanalabs device init\n");
+@@ -440,22 +443,93 @@ static void hl_pci_remove(struct pci_dev *pdev)
+ 		return;
+ 
+ 	hl_device_fini(hdev);
++	pci_disable_pcie_error_reporting(pdev);
+ 	pci_set_drvdata(pdev, NULL);
+-
+ 	destroy_hdev(hdev);
  }
-
+ 
++/**
++ * hl_pci_err_detected - a PCI bus error detected on this device
++ *
++ * @pdev: pointer to pci device
++ * @err: PCI error type
++ *
++ * Called by the PCI subsystem whenever a non-correctable
++ * PCI bus error is detected
++ */
++static pci_ers_result_t
++hl_pci_err_detected(struct pci_dev *pdev, enum pci_channel_state state)
++{
++	struct hl_device *hdev = pci_get_drvdata(pdev);
++	enum pci_ers_result result;
++
++	switch (state) {
++	case pci_channel_io_normal:
++		return PCI_ERS_RESULT_CAN_RECOVER;
++
++	case pci_channel_io_frozen:
++		dev_warn(hdev->dev, "frozen state error detected\n");
++		result = PCI_ERS_RESULT_NEED_RESET;
++		break;
++
++	case pci_channel_io_perm_failure:
++		dev_warn(hdev->dev, "failure state error detected\n");
++		result = PCI_ERS_RESULT_DISCONNECT;
++		break;
++
++	default:
++		result = PCI_ERS_RESULT_NONE;
++	}
++
++	hdev->asic_funcs->halt_engines(hdev, true);
++
++	return result;
++}
++
++/**
++ * hl_pci_err_resume - resume after a PCI slot reset
++ *
++ * @pdev: pointer to pci device
++ *
++ */
++static void hl_pci_err_resume(struct pci_dev *pdev)
++{
++	struct hl_device *hdev = pci_get_drvdata(pdev);
++
++	dev_warn(hdev->dev, "Resuming device after PCI slot reset\n");
++	hl_device_resume(hdev);
++}
++
++/**
++ * hl_pci_err_slot_reset - a PCI slot reset has just happened
++ *
++ * @pdev: pointer to pci device
++ *
++ * Determine if the driver can recover from the PCI slot reset
++ */
++static pci_ers_result_t hl_pci_err_slot_reset(struct pci_dev *pdev)
++{
++	return PCI_ERS_RESULT_RECOVERED;
++}
++
+ static const struct dev_pm_ops hl_pm_ops = {
+ 	.suspend = hl_pmops_suspend,
+ 	.resume = hl_pmops_resume,
+ };
+ 
++static const struct pci_error_handlers hl_pci_err_handler = {
++	.error_detected = hl_pci_err_detected,
++	.slot_reset = hl_pci_err_slot_reset,
++	.resume = hl_pci_err_resume,
++};
++
+ static struct pci_driver hl_pci_driver = {
+ 	.name = HL_NAME,
+ 	.id_table = ids,
+ 	.probe = hl_pci_probe,
+ 	.remove = hl_pci_remove,
+ 	.driver.pm = &hl_pm_ops,
++	.err_handler = &hl_pci_err_handler,
+ };
+ 
+ /*
+-- 
+2.17.1
 
