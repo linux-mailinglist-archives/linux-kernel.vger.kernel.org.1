@@ -2,134 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F40E23C36B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 04:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D224323C375
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 04:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgHECXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 Aug 2020 22:23:30 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:53722 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725864AbgHECXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 Aug 2020 22:23:30 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 20BF45C884C4A241AFA3;
-        Wed,  5 Aug 2020 10:23:24 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.214) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Wed, 5 Aug 2020
- 10:23:18 +0800
-Subject: Re: [PATCH] ubi: check kthread_should_stop() after the setting of
- task state
-To:     Richard Weinberger <richard.weinberger@gmail.com>
-CC:     <linux-mtd@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        "zhangyi (F)" <yi.zhang@huawei.com>
-References: <20200601091231.3794350-1-chengzhihao1@huawei.com>
- <CAFLxGvwLSvYsQ+OPi85VS8aQ2uge_JqQRD2C8h=XMORvCej3Sw@mail.gmail.com>
- <211afcd0-d5b3-5ac0-1fd1-dc789634a858@huawei.com>
- <CAFLxGvwRDfB4mqxJhOLwWvoZ3yzpVY-kuAiovYLf8T7WwJqaTg@mail.gmail.com>
- <9caa4860-975c-70bb-c8b9-737d1db9ead4@huawei.com>
- <CAFLxGvycs7DNu5o5QY1WwTPfS6cTTykTh-91n9TQZ7yP_ADr4A@mail.gmail.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <2086f822-e67a-43e4-76d8-5339eaccd3ac@huawei.com>
-Date:   Wed, 5 Aug 2020 10:23:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <CAFLxGvycs7DNu5o5QY1WwTPfS6cTTykTh-91n9TQZ7yP_ADr4A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.214]
-X-CFilter-Loop: Reflected
+        id S1726854AbgHEC2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 Aug 2020 22:28:36 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:46288 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725864AbgHEC2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 Aug 2020 22:28:36 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BFDA7200354;
+        Wed,  5 Aug 2020 04:28:34 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1EB2320138C;
+        Wed,  5 Aug 2020 04:28:30 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 294AD4024E;
+        Wed,  5 Aug 2020 04:28:24 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] refine and clean code for synchronous mode
+Date:   Wed,  5 Aug 2020 10:23:51 +0800
+Message-Id: <1596594233-13489-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020/8/5 5:56, Richard Weinberger 写道:
-> On Tue, Aug 4, 2020 at 4:58 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
->> Oh, you're thinking about influence by schedule(), I get it. But I think
->> it still works. Because the ubi_thread is still on runqueue, it will be
->> scheduled to execute later anyway.
-> It will not get woken. This is the problem.
->
->> op                                                    state of
->> ubi_thread           on runqueue
->> set_current_state(TASK_INTERRUPTIBLE) TASK_INTERRUPTIBLE              Yes
->> if (kthread_should_stop()) // not satisfy
->> TASK_INTERRUPTIBLE              Yes
->> kthread_stop:
->>     wake_up_process
->>       ttwu_queue
->>         ttwu_do_activate
->>           ttwu_do_wakeup TASK_RUNNING                       Yes
->> schedule
->>     __schedule(false)
->>
->>    // prev->state is TASK_RUNNING, so we cannot move it from runqueue by
->> deactivate_task(). So just pick next task to execute, ubi_thread is
->> still on runqueue and will be scheduled to execute later.
-> It will be in state TASK_RUNNING only if your check is reached.
->
-> If kthread_stop() is called *before* your code:
-> +                       if (kthread_should_stop()) {
-> +                               set_current_state(TASK_RUNNING);
-> +                               break;
-> +                       }
->
-> ...everything is fine.
-> But there is still a race window between your if
-> (kthread_should_stop()) and schedule() in the next line.
-> So if kthread_stop() is called right *after* the if and *before*
-> schedule(), the task state is still TASK_INTERRUPTIBLE
-> --> schedule() will not return unless the task is explicitly woken,
-> which does not happen.
-Er, I can't get the point. I can list two possible situations, did I 
-miss other situations?
+refine and clean code for synchronous mode
 
-P1:ubi_thread
-   set_current_state(TASK_INTERRUPTIBLE)
-   if (kthread_should_stop()) {
-     set_current_state(TASK_RUNNING)
-     break
-   }
-   schedule()                            -> don't *remove* task from 
-runqueue if *TASK_RUNNING*, removing operation is protected by rq_lock
+Shengjiu Wang (2):
+  ASoC: fsl_sai: Clean code for synchronous mode
+  ASoC: fsl_sai: Refine enable and disable sequence for synchronous mode
 
-P2:kthread_stop
-   set_bit(KTHREAD_SHOULD_STOP, &kthread->flags)
-   wake_up_process(k)             -> enqueue task & set *TASK_RUNNING*, 
-these two operations are protected by rq_lock
-   wait_for_completion(&kthread->exited)
+changes in v2:
+- Split the commit
+- refine the sequence in trigger stop
 
 
-Situation 1:
-P1_set_current_state               on-rq, TASK_RUNNING -> TASK_INTERRUPTIBLE
-P1_kthread_should_stop        on-rq, TASK_INTERRUPTIBLE
-P2_set_bit                               on-rq, TASK_INTERRUPTIBLE , 
-KTHREAD_SHOULD_STOP
-P2_wake_up_process             on-rq, TASK_INTERRUPTIBLE -> TASK_RUNNING 
-, KTHREAD_SHOULD_STOP
-P1_schedule                           on-rq, TASK_RUNNING , 
-KTHREAD_SHOULD_STOP
-P2_wait_for_completion        // wait for P1 exit
+ sound/soc/fsl/fsl_sai.c | 133 ++++++++++++++++++++++++++--------------
+ 1 file changed, 86 insertions(+), 47 deletions(-)
 
-Situation 2:
-P1_set_current_state             on-rq, TASK_RUNNING -> TASK_INTERRUPTIBLE
-P1_kthread_should_stop       on-rq, TASK_INTERRUPTIBLE
-P2_set_bit                             on-rq, TASK_INTERRUPTIBLE , 
-KTHREAD_SHOULD_STOP
-P1_schedule                          off-rq, TASK_INTERRUPTIBLE , 
-KTHREAD_SHOULD_STOP
-P2_wake_up_process             on-rq, TASK_INTERRUPTIBLE -> TASK_RUNNING 
-, KTHREAD_SHOULD_STOP
-P2_wait_for_completion       // wait for P1 exit
-> Before your patch, the race window was much larger, I fully agree, but
-> your patch does not cure the problem
-> it just makes it harder to hit.
->
-> And using mdelay() to verify such a thing is also tricky because
-> mdelay() will influence the task state.
->
-
+-- 
+2.27.0
 
