@@ -2,166 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF6F23D2F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8D723D2EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgHEUZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:25:18 -0400
-Received: from mga06.intel.com ([134.134.136.31]:32773 "EHLO mga06.intel.com"
+        id S1726606AbgHEUYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:24:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726817AbgHEUZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 16:25:17 -0400
-IronPort-SDR: +jc5eSvx9IzaTLfiWlwOtDaWltYXBJAWP9yEF/5lR8ydijy3KMuAHL4ICsDGEQQCDj0leNcRUc
- 3ZOA3C2bRPlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="214171518"
-X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="214171518"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 13:25:14 -0700
-IronPort-SDR: MtIgX8SoHgondyZMI8wne+KgfuLoVcV7HGR5U6y9r4Cd2Z9HZz1Nq5X6Jdw6DK8kDzbI9vZrK/
- LiPFoOF6GbWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="332958451"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by orsmga007.jf.intel.com with ESMTP; 05 Aug 2020 13:25:14 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     bhelgaas@google.com, eranian@google.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V2 6/6] perf/x86/intel/uncore: Support PCIe3 unit on Snow Ridge
-Date:   Wed,  5 Aug 2020 13:24:11 -0700
-Message-Id: <1596659051-95759-7-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596659051-95759-1-git-send-email-kan.liang@linux.intel.com>
-References: <1596659051-95759-1-git-send-email-kan.liang@linux.intel.com>
+        id S1725921AbgHEUYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 16:24:54 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F33422CAD;
+        Wed,  5 Aug 2020 20:24:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596659093;
+        bh=1pc0m+mor7fcXCDG3jZxLB2PnEuA2MfsacFWqfeX5CE=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=0tekPfO+EVNWpUVU8saTzhp7fiPLfF9kbHOizjy+L15rLvnb6b3s3nlXQnVEDDgYT
+         B1SuZTMBnHya1XTdBAzrMnM2eNxYmFxdUtddGL6uv1FieXSYDaRFbeyufRdcMQbJAE
+         Z5itMJrGoMtlgH7dbgdPFIrzDN6AupUqmVeAMLAU=
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1595606878-2664-5-git-send-email-tdas@codeaurora.org>
+References: <1595606878-2664-1-git-send-email-tdas@codeaurora.org> <1595606878-2664-5-git-send-email-tdas@codeaurora.org>
+Subject: Re: [PATCH v5 4/4] clk: qcom: lpass: Add support for LPASS clock controller for SC7180
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        robh@kernel.org, robh+dt@kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Wed, 05 Aug 2020 13:24:52 -0700
+Message-ID: <159665909245.1360974.10366839079633595523@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+Quoting Taniya Das (2020-07-24 09:07:58)
+> +
+> +static struct clk_rcg2 core_clk_src =3D {
+> +       .cmd_rcgr =3D 0x1d000,
+> +       .mnd_width =3D 8,
+> +       .hid_width =3D 5,
+> +       .parent_map =3D lpass_core_cc_parent_map_2,
+> +       .clkr.hw.init =3D &(struct clk_init_data){
+> +               .name =3D "core_clk_src",
 
-The Snow Ridge integrated PCIe3 uncore unit can be used to collect
-performance data, e.g. utilization, between PCIe devices, plugged into
-the PCIe port, and the components (in M2IOSF) responsible for
-translating and managing requests to/from the device. The performance
-data is very useful for analyzing the performance of PCIe devices.
+Any chance this can get a better name? Something with LPASS prefix?
 
-The device with the PCIe3 uncore PMON units is owned by the portdrv_pci
-driver. Create a PCI sub driver for the PCIe3 uncore PMON units.
+> +               .parent_data =3D &(const struct clk_parent_data){
+> +                       .fw_name =3D "bi_tcxo",
+> +               },
+> +               .num_parents =3D 1,
+> +               .ops =3D &clk_rcg2_ops,
+> +       },
+> +};
+> +
+[...]
+> +
+> +static struct clk_branch lpass_audio_core_sysnoc_mport_core_clk =3D {
+> +       .halt_reg =3D 0x23000,
+> +       .halt_check =3D BRANCH_HALT,
+> +       .hwcg_reg =3D 0x23000,
+> +       .hwcg_bit =3D 1,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0x23000,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "lpass_audio_core_sysnoc_mport_core_clk=
+",
+> +                       .parent_data =3D &(const struct clk_parent_data){
+> +                               .hw =3D &core_clk_src.clkr.hw,
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_SET_RATE_PARENT,
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
+> +static struct clk_regmap *lpass_core_cc_sc7180_clocks[] =3D {
+> +       [EXT_MCLK0_CLK_SRC] =3D &ext_mclk0_clk_src.clkr,
+> +       [LPAIF_PRI_CLK_SRC] =3D &lpaif_pri_clk_src.clkr,
+> +       [LPAIF_SEC_CLK_SRC] =3D &lpaif_sec_clk_src.clkr,
+> +       [CORE_CLK_SRC] =3D &core_clk_src.clkr,
 
-Here are some difference between PCIe3 uncore unit and other uncore
-pci units.
-- There may be several Root Ports on a system. But the uncore counters
-  only exist in the Root Port A. A user can configure the channel mask
-  to collect the data from other Root Ports.
-- The event format of the PCIe3 uncore unit is the same as IIO unit of
-  SKX.
-- The Control Register of PCIe3 uncore unit is 64 bits.
-- The offset of each counters is 8, which is the same as M2M unit of
-  SNR.
-- New MSR addresses for unit control, counter and counter config.
+And all of these, can they have LPASS_ prefix on the defines? Seems
+like we're missing a namespace otherwise.
 
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/uncore_snbep.c | 53 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
-
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 62e88ad..495056f 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -393,6 +393,11 @@
- #define SNR_M2M_PCI_PMON_BOX_CTL		0x438
- #define SNR_M2M_PCI_PMON_UMASK_EXT		0xff
- 
-+/* SNR PCIE3 */
-+#define SNR_PCIE3_PCI_PMON_CTL0			0x508
-+#define SNR_PCIE3_PCI_PMON_CTR0			0x4e8
-+#define SNR_PCIE3_PCI_PMON_BOX_CTL		0x4e0
-+
- /* SNR IMC */
- #define SNR_IMC_MMIO_PMON_FIXED_CTL		0x54
- #define SNR_IMC_MMIO_PMON_FIXED_CTR		0x38
-@@ -4551,12 +4556,46 @@ static struct intel_uncore_type snr_uncore_m2m = {
- 	.format_group	= &snr_m2m_uncore_format_group,
- };
- 
-+static void snr_uncore_pci_enable_event(struct intel_uncore_box *box, struct perf_event *event)
-+{
-+	struct pci_dev *pdev = box->pci_dev;
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	pci_write_config_dword(pdev, hwc->config_base, (u32)(hwc->config | SNBEP_PMON_CTL_EN));
-+	pci_write_config_dword(pdev, hwc->config_base + 4, (u32)(hwc->config >> 32));
-+}
-+
-+static struct intel_uncore_ops snr_pcie3_uncore_pci_ops = {
-+	.init_box	= snr_m2m_uncore_pci_init_box,
-+	.disable_box	= snbep_uncore_pci_disable_box,
-+	.enable_box	= snbep_uncore_pci_enable_box,
-+	.disable_event	= snbep_uncore_pci_disable_event,
-+	.enable_event	= snr_uncore_pci_enable_event,
-+	.read_counter	= snbep_uncore_pci_read_counter,
-+};
-+
-+static struct intel_uncore_type snr_uncore_pcie3 = {
-+	.name		= "pcie3",
-+	.num_counters	= 4,
-+	.num_boxes	= 1,
-+	.perf_ctr_bits	= 48,
-+	.perf_ctr	= SNR_PCIE3_PCI_PMON_CTR0,
-+	.event_ctl	= SNR_PCIE3_PCI_PMON_CTL0,
-+	.event_mask	= SKX_IIO_PMON_RAW_EVENT_MASK,
-+	.event_mask_ext	= SKX_IIO_PMON_RAW_EVENT_MASK_EXT,
-+	.box_ctl	= SNR_PCIE3_PCI_PMON_BOX_CTL,
-+	.ops		= &snr_pcie3_uncore_pci_ops,
-+	.format_group	= &skx_uncore_iio_format_group,
-+};
-+
- enum {
- 	SNR_PCI_UNCORE_M2M,
-+	SNR_PCI_UNCORE_PCIE3,
- };
- 
- static struct intel_uncore_type *snr_pci_uncores[] = {
- 	[SNR_PCI_UNCORE_M2M]		= &snr_uncore_m2m,
-+	[SNR_PCI_UNCORE_PCIE3]		= &snr_uncore_pcie3,
- 	NULL,
- };
- 
-@@ -4573,6 +4612,19 @@ static struct pci_driver snr_uncore_pci_driver = {
- 	.id_table	= snr_uncore_pci_ids,
- };
- 
-+static const struct pci_device_id snr_uncore_pci_sub_ids[] = {
-+	{ /* PCIe3 RP */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x334a),
-+		.driver_data = UNCORE_PCI_DEV_FULL_DATA(4, 0, SNR_PCI_UNCORE_PCIE3, 0),
-+	},
-+	{ /* end: all zeroes */ }
-+};
-+
-+static struct pci_driver snr_uncore_pci_sub_driver = {
-+	.name		= "snr_uncore_sub",
-+	.id_table	= snr_uncore_pci_sub_ids,
-+};
-+
- int snr_uncore_pci_init(void)
- {
- 	/* SNR UBOX DID */
-@@ -4584,6 +4636,7 @@ int snr_uncore_pci_init(void)
- 
- 	uncore_pci_uncores = snr_pci_uncores;
- 	uncore_pci_driver = &snr_uncore_pci_driver;
-+	uncore_pci_sub_driver = &snr_uncore_pci_sub_driver;
- 	return 0;
- }
- 
--- 
-2.7.4
-
+> +       [LPASS_AUDIO_CORE_EXT_MCLK0_CLK] =3D &lpass_audio_core_ext_mclk0_=
+clk.clkr,
+> +       [LPASS_AUDIO_CORE_LPAIF_PRI_IBIT_CLK] =3D
+> +               &lpass_audio_core_lpaif_pri_ibit_clk.clkr,
+> +       [LPASS_AUDIO_CORE_LPAIF_SEC_IBIT_CLK] =3D
+> +               &lpass_audio_core_lpaif_sec_ibit_clk.clkr,
+> +       [LPASS_AUDIO_CORE_SYSNOC_MPORT_CORE_CLK] =3D
+> +               &lpass_audio_core_sysnoc_mport_core_clk.clkr,
+> +       [LPASS_LPAAUDIO_DIG_PLL] =3D &lpass_lpaaudio_dig_pll.clkr,
+> +       [LPASS_LPAAUDIO_DIG_PLL_OUT_ODD] =3D &lpass_lpaaudio_dig_pll_out_=
+odd.clkr,
+> +};
+> +
