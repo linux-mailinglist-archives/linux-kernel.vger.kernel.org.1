@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FB323CCDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B10A23CD1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728526AbgHERJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:09:20 -0400
-Received: from mout.gmx.net ([212.227.17.22]:41503 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728455AbgHEREv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:04:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1596647056;
-        bh=30nFNzwPxZmz9Y2oABIElubYun9r6VlJJIvIzFQZ2Xg=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=j1Y6eOK4/meE5OlJuq7nV5/1tZQTDbIb0WAyuTnEV9W9352mCZM3HHaq831GiceSx
-         fgLA0zs30eUwgj/z5EAxrGr9g97L+Ulxo1k83AHy0VNfGgt5sBKeIEwHFaXQzQv2bW
-         1f8xJG600QmOvgSFHH6ezeOrOkMafkMRsbtLzx2I=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [80.208.209.197] ([80.208.209.197]) by web-mail.gmx.net
- (3c-app-gmx-bap13.server.lan [172.19.172.83]) (via HTTP); Wed, 5 Aug 2020
- 15:01:52 +0200
+        id S1728531AbgHERUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:20:38 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:51030 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728714AbgHERSk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:18:40 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 075DHV9M072287;
+        Wed, 5 Aug 2020 08:17:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596633451;
+        bh=57yF68qyZ0azOmyzTIEwYs+6yRB7tuKz3qfi5lQTL2Y=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=fb84QEizh1xqIZv4YwwWKBoNcIaWNZdLEhdp8PKXmcuSz5LdjdZudXZ+ZMNZfMHp+
+         I3YuZE1CRruSM+2Cd9D/meA6KiIyju3KG+y7B2dEGuxf4+6NuubBU86ah5a8RLBs36
+         MaqnS51DCQ7/TOyrO0POqJY3nYVUcAdxjSdLfkaA=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 075DHVG9004195
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 5 Aug 2020 08:17:31 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 5 Aug
+ 2020 08:17:30 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 5 Aug 2020 08:17:30 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 075DHSMg035743;
+        Wed, 5 Aug 2020 08:17:28 -0500
+Subject: Re: [PATCH] dmaengine: ti: k3-udma-glue: Fix parameters for rx ring
+ pair request
+To:     Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+CC:     <ssantosh@kernel.org>, <santosh.shilimkar@oracle.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>
+References: <20200805112746.15475-1-peter.ujfalusi@ti.com>
+ <20200805113237.GX12965@vkoul-mobl>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <3eea63fe-88f5-d6b6-433a-bb15495a839d@ti.com>
+Date:   Wed, 5 Aug 2020 16:17:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Message-ID: <trinity-9f86ac52-5249-44e7-b51d-1ee00850f544-1596632511956@3c-app-gmx-bap13>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        chunhui dai <chunhui.dai@mediatek.com>,
-        David Airlie <airlied@linux.ie>,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        CK Hu <ck.hu@mediatek.com>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Frank Wunderlich <linux@fw-web.de>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Aw: [PATCH 2/3] arm: dts: mt7623: move MT7623N GPU to separate
- mt7623n.dtsi file
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 5 Aug 2020 15:01:52 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20200805113013.2763510-2-dwmw2@infradead.org>
-References: <8ef96e4d02ef82e171409945ee6cc0348c4fe594.camel@infradead.org>
- <20200805113013.2763510-1-dwmw2@infradead.org>
- <20200805113013.2763510-2-dwmw2@infradead.org>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:G8MRnqoV1D2B0ErxKua+b90DZKS/NUdemUbrgGRwofr3Vs3wa3sLtGJLSaIjAmckjfQuY
- N2q+Z1WAU5keJxhmjgF2SFnKLAx/+ssSg5jG4hUSN4rhMAozwVfyIJHClWHwJMkftrm1YI9Hdl3N
- N2EZp25fXiSYSNd4CgWyeh3C56OTSnt6jPqOH91UQ3q3+VeqQ8/hSKikviDmaPX5zjuc+ZoBk88W
- vF8v75+g6PyEv8XnV1zeMlKR5e7LgiTjKKDbo3QbXbuY0GPdBBboJNcu7cnHK7c5hBWoJyu0lqbH
- o0=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eGU+7LZ5Pbw=:Sko+N8vHSN+A2ehhghqC1j
- 5MMHe1kmzGXDBBaX64keZASyrgU+qlX7o+JajiNRC6IRo9MZqvUkedHsVkSpGrYyojWGuNB5H
- 9KX1Vczr5d3J9h3acYQQxadMgAe7EIh1s+76gXgbfOKinVAl6wBWexiuVdHHlLm/S0sbjyF9Z
- VCg3ZXCpzu6fmA31EjSdFKB2pcoLxliB/Q7NPN3eooHXsaGpXjApg57qAs/HMfESeQDYciWaj
- 1UXePZmbm63g2L6/RZcFtdy6zOGcKiETn2s1FvAeli1kHSopIklGmblk7nQcKLjMajrjcOioG
- qfKDuin+bEuUmkjk4SXsLduH2DnX/+zEHre1Jesd+haC8kLTCV8+0Geripw13gnzPZ62bT6Dh
- Ed2rUps/JEPdMUhlja5BNgD62C8B3h2JUqowbeA4SaRKReeOVoAERR3HMfyi5WPouE5xhRptf
- RegBBdMk6+sDlsVu/hMMy2GrDgn/0Kei1XN+EM2Vf3JMpezFWZIxQ5CPMViCq0kJDpQo1hKVy
- PVCsWTlDGdOqvi+A2cXB31zpPAjkQ70+ArZJtecl8ubq7u0yzeuGfM7eX6oKM00njHW43ArRA
- GiHHCcgL8ITsw5cRGaoytN9wRwUhCjEXKYOSUfXL0F6iggOsgPH7w4MqxWCpNaTGH58tI1Ihz
- dpPIcjKdEbs7ykZdlqhL5i7kp+5L5wwL7znRsOMEXPWEMJnFC1v9bUxQ489+GPvW3DQA=
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200805113237.GX12965@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David
 
-> Gesendet: Mittwoch, 05. August 2020 um 13:30 Uhr
-> Von: "David Woodhouse" <dwmw2@infradead.org>
-> From: David Woodhouse <dwmw@amazon.co.uk>
->
-> The MT7623A doesn't have a GPU; add it only for MT7623N boards.
->
-> Fixes: 1f6ed224594 ("arm: dts: mt7623: add Mali-450 device node")
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 
-> diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dt=
-si
-> index 3a6b856e5b74..dcd2f5ba4e20 100644
-> --- a/arch/arm/boot/dts/mt7623.dtsi
-> +++ b/arch/arm/boot/dts/mt7623.dtsi
-> @@ -734,30 +734,6 @@ g3dsys: syscon@13000000 {
->  		#reset-cells =3D <1>;
->  	};
->
-> -	mali: gpu@13040000 {
-> -		compatible =3D "mediatek,mt7623-mali", "arm,mali-450";
-...
-> -		clocks =3D <&topckgen CLK_TOP_MMPLL>,
-> -			 <&g3dsys CLK_G3DSYS_CORE>;
-> -		clock-names =3D "bus", "core";
-> -		power-domains =3D <&scpsys MT2701_POWER_DOMAIN_MFG>;
-> -		resets =3D <&g3dsys MT2701_G3DSYS_CORE_RST>;
-> -	};
+On 05/08/2020 14:32, Vinod Koul wrote:
+> On 05-08-20, 14:27, Peter Ujfalusi wrote:
+>> The original commit mixed up the forward and completion ring IDs for the
+>> rx flow configuration.
+> 
+> Acked-By: Vinod Koul <vkoul@kernel.org>
+> 
+>>
+>> Fixes: 4927b1ab2047 ("dmaengine: ti: k3-udma: Switch to k3_ringacc_request_rings_pair")
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> ---
+>> Hi Santosh, Vinod,
+>>
+>> the offending patch was queued via ti SoC tree.
+>> Santosh, can you pick up this fix also?
 
-i guess you should to move g3dsys too, and maybe the mmsys which is also d=
-rm-related?
+Thank you Peter for catching this - it's valid issue.
+but I'd like to note that issue was discovered with private code and
+nothing is broken in Master.
 
-I can add this to my series, but before i change my series, i need advice =
-from MTK/DT owners whats the preferred way ;)
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-regards Frank
+-- 
+Best regards,
+grygorii
