@@ -2,152 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA38823CC72
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AB823CC7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728016AbgHEQpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
+        id S1727913AbgHEQso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727928AbgHEQmM (ORCPT
+        with ESMTP id S1728037AbgHEQqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:42:12 -0400
+        Wed, 5 Aug 2020 12:46:16 -0400
 Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237C9C0086D2;
-        Wed,  5 Aug 2020 07:19:56 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id h19so47888800ljg.13;
-        Wed, 05 Aug 2020 07:19:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62E5C0086D6
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 07:24:09 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id v9so13425676ljk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 07:24:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Qm6Ej0exkuDwKqXg5SiXppSqBSR/B5iSnMsDgHpre7I=;
-        b=gwlV0g6jtWbcz3d4+dfyYotSLCuWXlwfq5pi61UDD/9b97I+lD8aaLS+mZb52iNqIe
-         IS6aCP90M8Va2j9rHpQr/J2yKrX8DJYesdYthy28qYmvwgaP1eLNkABPQgu1PxN5KaYA
-         jNI9o3XnFGb+RX1AQaLbu072D16Wx5oXtsHISbtvOiYFa8hqYxnNt3cBVNw4gImM1AyG
-         0YCTkAiOMV76R7adrn1xyldkdCAfT34MhLg/oGUw+7HG9sUxJHcUUEwbW8X03H/Rs/ka
-         KUTUUJasa2YqvCfN7ltLjnKV+nDdJlpMR+TUaAr0NhLPBtCtpw66i6spOVroxsWeb7+j
-         +ujQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4sZV1/gQN/258iL0rr5Xs5RZ6T6r7SkqFDya4T9+hhQ=;
+        b=E9b9xRUZtCoNc7BmcnjKZKhPMW4C6kTS55eaU+9K6uRzDuW4TNj3CRV97WvzO/of2Y
+         zwdRFO6qTxVL/8AJOZFe2VwM18ZDpa2zt7HE8TMzl/K9XNvba6QLBigNU4LDkz9fEp8h
+         TozZAI8dmNwaLYwAj+rpf5m+fZxw1RFzua2mawTi4OcXBq0HskcqEmw7dfMK3gjhlI1f
+         6+d48Ygix+b6dZvLFiZNPH1GLGnwyTP2eBGGnUlCxJzjYvmkqZ5LhvG60bflC5NfrouR
+         qteTlbkjDme/q3Om8n6GR6GNVSRNYYXYVd93qBD8bFFI+1Ok7+GkCFm4Mbwy/lZUE3se
+         BxTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qm6Ej0exkuDwKqXg5SiXppSqBSR/B5iSnMsDgHpre7I=;
-        b=bXaBAVIP8mGjAvjdhzqjUlnoQVV0JFJ4RoQ9nIn3ffAq9DPuNj6EIo8aA33PBDAT+j
-         mRx6DIcGVhdo7i8/yEVP7+wJ6Q/00TsQKGQAd0k2wOE1ntm1jrgY3EzdKzxJNSfOyFfH
-         VdmRLE127qMVkdq1WlDdZrF10B7aFvH3lc3/XAqOFyW0dcSBFEMjcUS9Oz0t8gRgteNJ
-         NQPL+EeQpmzodI3+wDnvT/5cIrYzkX7AGCk24kT3xKZm7++fRHwAGuZ4bNDYCEEYA4wT
-         ZD+62oAHJkNiw8izYjGLzFeFYJjYtuIvlkYPzwSeuYW/JJ1n+uNTCQCV3bGzBLgHlnEX
-         fHnw==
-X-Gm-Message-State: AOAM530goFGc9eoPb0Opk5XgX0kRkkK/fqq9eK5EEQq6jouedmezCx3T
-        8S67q0hZypCbLIjYDPbgbLHlMT7i
-X-Google-Smtp-Source: ABdhPJyX/nk4BnxYLi+IZ2EQX/2K3hvXCNEtxm0Q1OtvaDN4g1VTEtKtaj5iBJmRqEIBT+Wsd7t/Nw==
-X-Received: by 2002:a2e:9449:: with SMTP id o9mr1667761ljh.403.1596637194081;
-        Wed, 05 Aug 2020 07:19:54 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
-        by smtp.googlemail.com with ESMTPSA id c4sm1263842lfs.27.2020.08.05.07.19.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 07:19:53 -0700 (PDT)
-Subject: Re: [PATCH v8 08/10] gpu: host1x: mipi: Keep MIPI clock enabled till
- calibration is done
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     jonathanh@nvidia.com, frankc@nvidia.com, hverkuil@xs4all.nl,
-        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
- <1596469346-937-9-git-send-email-skomatineni@nvidia.com>
- <20200805134600.GA3351349@ulmo>
- <103efe31-1abc-54f2-6004-490d7bb1b61a@gmail.com>
-Message-ID: <dcd58ae7-58ed-11d1-0e10-7f522b651b30@gmail.com>
-Date:   Wed, 5 Aug 2020 17:19:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4sZV1/gQN/258iL0rr5Xs5RZ6T6r7SkqFDya4T9+hhQ=;
+        b=BagE2tJGSGl1v1FIKI3lsO5tFWuaajOWfP6T7ecXxthnEf6rSmDeNly6ZPbc1x2Tgo
+         Uq8NoEkSulX5mokfH2KPxGrlSOQRAHYCEm4/qC6Wb4soiAsuVRIYhwK2Kod7HJ26nXhh
+         nwII8xgXjnf3DySfLn1OcASD5mQBkVJZbGMb2IUNRv8PAfGM3Ps8sJ31g2BbmlJ7fDCu
+         J4GZ24weZRemVCsMPpIh+LcC4s7LRqVriCIIKVA5ce9EOKKMqgEtHEctz0oamSbSfWmW
+         JxfUDCi5XJs7aPsXlJY0kCUCEyQMyD8VdnpzM3U5yURrHvfrNJJwiXut7oXMGbAD2wyL
+         Sd6w==
+X-Gm-Message-State: AOAM533bEFgE+r0vQ12opG4O+h8ZjlXo9d554FLkX8/y226ZVkpcqzub
+        oekwywQlRq1uAn8q6GoRQ2SzYw==
+X-Google-Smtp-Source: ABdhPJx5GVKqBcJfUrSinpyw/JPyAmFuCbg4ibeeyeBsa4MFulh9QF9PIbff8txGT7dzYpPegeBNSw==
+X-Received: by 2002:a05:651c:3c5:: with SMTP id f5mr1467608ljp.209.1596637447389;
+        Wed, 05 Aug 2020 07:24:07 -0700 (PDT)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id e69sm1172866lfd.21.2020.08.05.07.24.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 07:24:06 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 16:24:04 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+Cc:     sumit.garg@linaro.org, ricardo@foundries.io, mike@foundries.io,
+        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv6] drivers: optee: allow op-tee to access devices on the
+ i2c bus
+Message-ID: <20200805142404.GA550721@jade>
+References: <20200722212105.1798-1-jorge@foundries.io>
+ <20200805133501.GA8360@trex>
 MIME-Version: 1.0
-In-Reply-To: <103efe31-1abc-54f2-6004-490d7bb1b61a@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20200805133501.GA8360@trex>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-05.08.2020 17:05, Dmitry Osipenko пишет:
-> 05.08.2020 16:46, Thierry Reding пишет:
->> On Mon, Aug 03, 2020 at 08:42:24AM -0700, Sowjanya Komatineni wrote:
->>> With the split of MIPI calibration into tegra_mipi_calibrate() and
->>> tegra_mipi_wait(), MIPI clock is not kept enabled till the calibration
->>> is done.
->>>
->>> So, this patch skips disabling MIPI clock after triggering start of
->>> calibration and disables it only after waiting for done status from
->>> the calibration logic.
->>>
->>> This patch renames tegra_mipi_calibrate() as tegra_mipi_start_calibration()
->>> and tegra_mipi_wait() as tegra_mipi_finish_calibration() to be inline
->>> with their usage.
->>>
->>> As MIPI clock is left enabled and in case of any failures with CSI input
->>> streaming tegra_mipi_finish_calibration() will not get invoked.
->>> So added new API tegra_mipi_cancel_calibration() which disables MIPI clock
->>> and consumer drivers can call this in such cases.
->>>
->>> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
->>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->>> ---
->>>  drivers/gpu/drm/tegra/dsi.c |  4 ++--
->>>  drivers/gpu/host1x/mipi.c   | 19 ++++++++++---------
->>>  include/linux/host1x.h      |  5 +++--
->>>  3 files changed, 15 insertions(+), 13 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/tegra/dsi.c b/drivers/gpu/drm/tegra/dsi.c
->>> index 3820e8d..a7864e9 100644
->>> --- a/drivers/gpu/drm/tegra/dsi.c
->>> +++ b/drivers/gpu/drm/tegra/dsi.c
->>> @@ -694,11 +694,11 @@ static int tegra_dsi_pad_calibrate(struct tegra_dsi *dsi)
->>>  		DSI_PAD_PREEMP_PD(0x03) | DSI_PAD_PREEMP_PU(0x3);
->>>  	tegra_dsi_writel(dsi, value, DSI_PAD_CONTROL_3);
->>>  
->>> -	err = tegra_mipi_calibrate(dsi->mipi);
->>> +	err = tegra_mipi_start_calibration(dsi->mipi);
->>>  	if (err < 0)
->>>  		return err;
->>>  
->>> -	return tegra_mipi_wait(dsi->mipi);
->>> +	return tegra_mipi_finish_calibration(dsi->mipi);
->>>  }
->>>  
->>>  static void tegra_dsi_set_timeout(struct tegra_dsi *dsi, unsigned long bclk,
->>> diff --git a/drivers/gpu/host1x/mipi.c b/drivers/gpu/host1x/mipi.c
->>> index e606464..b15ab6e 100644
->>> --- a/drivers/gpu/host1x/mipi.c
->>> +++ b/drivers/gpu/host1x/mipi.c
->>> @@ -293,17 +293,19 @@ int tegra_mipi_disable(struct tegra_mipi_device *dev)
->>>  }
->>>  EXPORT_SYMBOL(tegra_mipi_disable);
->>>  
->>> -int tegra_mipi_wait(struct tegra_mipi_device *device)
->>> +void tegra_mipi_cancel_calibration(struct tegra_mipi_device *device)
->>> +{
->>> +	clk_disable(device->mipi->clk);
->>
->> Do we need to do anything with the MIPI_CAL_CTRL and MIPI_CAL_STATUS
->> registers here? We don't clear the START bit in the former when the
->> calibration has successfully finished, but I suspect that's because
->> the bit is self-clearing. But I wonder if we still need to clear it
->> upon cancellation to make sure the calibration does indeed stop.
+On Wed, Aug 05, 2020 at 03:35:01PM +0200, Jorge Ramirez-Ortiz, Foundries wrote:
+> On 22/07/20, Jorge Ramirez-Ortiz wrote:
+> > Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
+> > control this type of cryptographic devices it needs coordinated access
+> > to the bus, so collisions and RUNTIME_PM dont get in the way.
+> > 
+> > This trampoline driver allow OP-TEE to access them.
+> > Tested on imx8mm LPDDR4
+> > 
+> > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> > ---
+> >  v6: compile out if CONFIG_I2C not enabled
+> >  v5: alphabetic order of includes
+> >  v4: remove unnecessary extra line in optee_msg.h
+> >  v3: use from/to msg param to support all types of memory
+> >      modify OPTEE_MSG_RPC_CMD_I2C_TRANSFER message id
+> >      
+> >  drivers/tee/optee/optee_msg.h | 16 +++++++
+> >  drivers/tee/optee/rpc.c       | 88 +++++++++++++++++++++++++++++++++++
+> >  2 files changed, 104 insertions(+)
+> > 
+> > diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
+> > index 795bc19ae17a..14b580f55356 100644
+> > --- a/drivers/tee/optee/optee_msg.h
+> > +++ b/drivers/tee/optee/optee_msg.h
+> > @@ -419,4 +419,20 @@ struct optee_msg_arg {
+> >   */
+> >  #define OPTEE_MSG_RPC_CMD_SHM_FREE	7
+> >  
+> > +/*
+> > + * Access a device on an i2c bus
+> > + *
+> > + * [in]  param[0].u.value.a		mode: RD(0), WR(1)
+> > + * [in]  param[0].u.value.b		i2c adapter
+> > + * [in]  param[0].u.value.c		i2c chip
+> > + *
+> > + * [in/out] memref[1]			buffer to exchange the transfer data
+> > + *					with the secure world
+> > + *
+> > + * [out]  param[0].u.value.a		bytes transferred by the driver
+> > + */
+> > +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 21
+> > +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
+> > +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
+> > +
+> >  #endif /* _OPTEE_MSG_H */
+> > diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+> > index b4ade54d1f28..5fd5c6c93896 100644
+> > --- a/drivers/tee/optee/rpc.c
+> > +++ b/drivers/tee/optee/rpc.c
+> > @@ -7,6 +7,7 @@
+> >  
+> >  #include <linux/delay.h>
+> >  #include <linux/device.h>
+> > +#include <linux/i2c.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/tee_drv.h>
+> >  #include "optee_private.h"
+> > @@ -49,6 +50,90 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+> >  	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> >  }
+> >  
+> > +#if IS_ENABLED(CONFIG_I2C)
+> > +static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+> > +					     struct optee_msg_arg *arg)
+> > +{
+> > +	struct i2c_client client;
+> > +	struct tee_param *params;
+> > +	uint32_t type;
+> > +	int i, ret;
+> > +	size_t len;
+> > +	char *buf;
+> > +	uint32_t attr[] = {
+> > +		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
+> > +		TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT,
+> > +		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT,
+> > +	};
+> > +
+> > +	if (arg->num_params != ARRAY_SIZE(attr)) {
+> > +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> > +		return;
+> > +	}
+> > +
+> > +	params = kmalloc_array(arg->num_params, sizeof(struct tee_param),
+> > +			       GFP_KERNEL);
+> > +	if (!params) {
+> > +		arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
+> > +		return;
+> > +	}
+> > +
+> > +	if (optee_from_msg_param(params, arg->num_params, arg->params))
+> > +		goto bad;
+> > +
+> > +	for (i = 0; i < arg->num_params; i++) {
+> > +		type = params[i].attr & TEE_IOCTL_PARAM_ATTR_TYPE_MASK;
+> > +		if (type != attr[i])
+> > +			goto bad;
+> > +	}
+> > +
+> > +	client.addr = params[0].u.value.c;
+> > +	client.adapter = i2c_get_adapter(params[0].u.value.b);
+> > +	if (!client.adapter)
+> > +		goto bad;
+> > +
+> > +	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
+> > +
+> > +	buf = params[1].u.memref.shm->kaddr;
+> > +	len = params[1].u.memref.size;
+> > +
+> > +	switch (params[0].u.value.a) {
+> > +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
+> > +		ret = i2c_master_recv(&client, buf, len);
+> > +		break;
+> > +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
+> > +		ret = i2c_master_send(&client, buf, len);
+> > +		break;
+> > +	default:
+> > +		i2c_put_adapter(client.adapter);
+> > +		goto bad;
+> > +	}
+> > +
+> > +	if (ret >= 0) {
+> > +		params[2].u.value.a = ret;
+> > +		arg->ret = TEEC_SUCCESS;
+> > +	} else {
+> > +		arg->ret = TEEC_ERROR_COMMUNICATION;
+> > +	}
+> > +
+> > +	if (optee_to_msg_param(arg->params, arg->num_params, params))
+> > +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> > +
+> > +	i2c_put_adapter(client.adapter);
+> > +	kfree(params);
+> > +	return;
+> > +bad:
+> > +	kfree(params);
+> > +	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> > +}
+> > +#else
+> > +static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+> > +					     struct optee_msg_arg *arg)
+> > +{
+> > +	arg->ret = TEEC_ERROR_COMMUNICATION;
+> > +}
+> > +#endif
+> > +
+> >  static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
+> >  {
+> >  	struct wq_entry *w;
+> > @@ -382,6 +467,9 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+> >  	case OPTEE_MSG_RPC_CMD_SHM_FREE:
+> >  		handle_rpc_func_cmd_shm_free(ctx, arg);
+> >  		break;
+> > +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
+> > +		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
+> > +		break;
+> >  	default:
+> >  		handle_rpc_supp_cmd(ctx, arg);
+> >  	}
 > 
-> Apparently there is no way to explicitly stop calibration other than to
-> reset MIPI calibration block, but Sowjanya says this is unnecessary.
 > 
-> Perhaps having a fixed delay before disabling clock could be enough to
-> ensure that calibration is stopped before the clock is disabled?
-> 
+> any comments please?
 
-Actually, there is a MIPI_CAL_ACTIVE bit in the status register. Maybe
-it needs to be polled until it's unset?
+As you know we're still reviewing the secure world counterpart at
+https://github.com/OP-TEE/optee_os/pull/3905
+Where we're sorting out the ABI. Thanks for your patience.
+
+Cheers,
+Jens
