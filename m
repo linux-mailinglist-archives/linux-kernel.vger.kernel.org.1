@@ -2,123 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6529023CDD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F19623CDDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729024AbgHERtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
+        id S1728252AbgHERzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728986AbgHERoo (ORCPT
+        with ESMTP id S1729061AbgHERzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:44:44 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED6AC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:44:43 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id bh1so12583302plb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:44:43 -0700 (PDT)
+        Wed, 5 Aug 2020 13:55:14 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FF7C061757;
+        Wed,  5 Aug 2020 10:45:11 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id e14so10370555ybf.4;
+        Wed, 05 Aug 2020 10:45:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OeVarHB8PyC/4WrdMH1wOnZuquqBZq7uGaYiqaJ/H2s=;
-        b=iYNRhBUE6a6QRqZgvap/7b6HfFiE6nn5SF6u9BZ45g4hcY5ly0Tddjzei52onqC+ua
-         nPE6GMic/x8EdXYFlIZDbKtcad+icJvGX3GCSblD8YJnipnUimix3w1YUBEqJF7uNKIQ
-         SyMZMMX9um2AZK0j+y258RYcKICG+Kr3q7aUuCTm8kL/G7cH+vGSy6AXxstJxKZCKiEA
-         Avsvi2T6+glTOJKwv4M3c2hK/bf+NloSXGW66axtsQ6nRrPp0h0BKvQQFuA7UvBsSgCE
-         2aXiKHiI/CVmpPlQN/pXwGB34/FyJBOpUQve7SYpYzOxBHlc/Uo6JETHMS2C1CWmXvzg
-         9jtg==
+        bh=WASnyqpRdX3pKbpXG9wBHZsTQpXpNL3ba2dFW/cytJg=;
+        b=lz9h/9TsV9rSWTnJYNn6ppFAXqyT82G4yQRK/yeyn1L0pu83Wg8DDjN/XvMNaLK1Ff
+         s699Q+oNFtp3j4FwZ0RyDxOgWudW49RYRaNLl3gwGRrYZTz7luLxYTrKSCv9+ErsWdWq
+         INvY3CMrAteZA/Q8DvGu8eDRqIN6y0nqQE20DOto68YEL9+7daUtm5pAl5xYxqCznVtH
+         SdouWsdMlk/N93eAOE8otLqXmfGeiYJ1G1hhO892NjUNSmVLtMHDxUnAY6GtwDUf/W4g
+         cNtYxBHev1jXwn+MEFNWsX1c5bYWlz8luCYnGAZDcul7McvLs7mmx3kPdahO3HOvP7ai
+         S9MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OeVarHB8PyC/4WrdMH1wOnZuquqBZq7uGaYiqaJ/H2s=;
-        b=K4TTn9UcLLyS1BeuWvNS7USiT7S+SjS8DWCZc7ciytTyHvNh8ncwZzaaL4EWwj9GEb
-         kk/tw4IJfIN8yQnNr4gHMdvgaOU3IQEH65RZTUYk4madwZgRsYybZHvMNYWepxAUTRgE
-         2i9K0x2KnLrOrA1DQCOs1hZJhP2fX7mdbrWwFw7yHnfXvAMnAOZOq7z/Eugy0iq2Vgr1
-         xU8V3TiB/sMOVrhZOD2lpOx/t3Q3FrBu8hHU8ufJn1JE/pv4wns+Xi01qb/u7A6DW+m8
-         ex+RN6Yo7EHVnr3X8gqfuquCuZXQdIJ39bNZqVosTW/DUGwuCRkMsPp53QDnRLQ456Qt
-         +Z5w==
-X-Gm-Message-State: AOAM5327Y4P2xPzACh4VTsxweqDZ+2SvmkJ0JDpr5g07Z59fgJotaBNQ
-        AVv6VvbS5UYBE/Q/Jp4FnGAenFjPOD5opiXRGkoAlg==
-X-Google-Smtp-Source: ABdhPJxYIH4X/KPPSVLO3TPfmhVajNLyAm6evVBVZ4ZWeH0jRb4W3Vq6aFy+xQJKcALm/osgPRjKbK+HjbIGlOk2hTY=
-X-Received: by 2002:a17:90a:3ad1:: with SMTP id b75mr4123456pjc.25.1596649482146;
- Wed, 05 Aug 2020 10:44:42 -0700 (PDT)
+        bh=WASnyqpRdX3pKbpXG9wBHZsTQpXpNL3ba2dFW/cytJg=;
+        b=An4+1/UB89ahgwCgjD5CcrotIyXgc8901MVYbvGMy455wXqUwiyoU2POiIygbFS62B
+         bXZlLH4qGtjCpJvCdz8UyYY/s6gg2cBSnh6LcMI7WInC7sRUs52qo2gIXWuWUBEEhL0X
+         +JNK/gOukoWd6v7ZC8c0OBf9BJCp4Ozy18a+3cu40TtakGNSqeItY11z3RPdr6USt9Of
+         040vU/R5n5s2q9vxbZYImHrElUKS/9aK4Xvi3kqz29Ql2rsDFwPO1BuPsp7LbGdmH0Ae
+         l1Pcmbo4kr1jB0wnLX9znPkk3k1jmQ0oW8p84YPLdCr+Ar/uY26EpC8tjRdm7Ew7L+KC
+         khug==
+X-Gm-Message-State: AOAM532Rcl3lHYzXV/MTiiugYrhfHKje7z2SdbszSfnSgnAMEB9sd1iA
+        N70dwrU2z73P7On9t5PCXg2kts1Fv2bJPl99E9uYQg==
+X-Google-Smtp-Source: ABdhPJyz1QXVgqVK8+dIwmFgxFVPfScHXk6KuaCo4C84uXyJXxmWd99+aubDp31eFiZDo7C1LBefr+6JPeTPdFDCEWw=
+X-Received: by 2002:a5b:44d:: with SMTP id s13mr6588545ybp.403.1596649509768;
+ Wed, 05 Aug 2020 10:45:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200708230402.1644819-1-ndesaulniers@google.com>
- <CAKwvOdmXtFo8YoNd7pgBnTQEwTZw0nGx-LypDiFKRR_HzZm9aA@mail.gmail.com>
- <CAKwvOdkGmgdh6-4VRUGkd1KRC-PgFcGwP5vKJvO9Oj3cB_Qh6Q@mail.gmail.com>
- <20200720.163458.475401930020484350.davem@davemloft.net> <CAKwvOdmU+Eh0BF+o4yqSBFRXkokLOzvy-Qni27DcXOSKv5KOtQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdmU+Eh0BF+o4yqSBFRXkokLOzvy-Qni27DcXOSKv5KOtQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 5 Aug 2020 10:44:30 -0700
-Message-ID: <CAKwvOd=YBL_igN-Z1V9bePdt9+GOqkKq-H4Wg8GBZvBsdOHeOw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2 net] bitfield.h cleanups
-To:     David Miller <davem@davemloft.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20200801084721.1812607-1-songliubraving@fb.com>
+ <20200801084721.1812607-3-songliubraving@fb.com> <CAEf4BzYp4gO1P+OrY7hGyQjdia3BuSu4DX2_z=UF6RfGNa+gkQ@mail.gmail.com>
+ <9C1285C1-ECD6-46BD-BA95-3E9E81C00EF0@fb.com> <CAEf4BzYojfFiMn6VeUkxUsdSTdFK0A4MzKQxhCCp_OowkseznQ@mail.gmail.com>
+ <5BC1D7AD-32C1-4CDC-BA99-F4DABE61EEA3@fb.com> <CAEf4BzbbCZmijrU4vfkmq2PFsMMFG+xz9qR1e4wfrdm6tF4_hA@mail.gmail.com>
+ <4DB698F2-BC51-4E96-BC3B-F478BE9AE106@fb.com> <CAEf4Bza4KXkVov=UwouryG5JcqYQ=9mDG8nBoWmb97rv+_yqTw@mail.gmail.com>
+ <88081DFA-39FF-42BB-98F4-CCDE634A1775@fb.com>
+In-Reply-To: <88081DFA-39FF-42BB-98F4-CCDE634A1775@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 5 Aug 2020 10:44:59 -0700
+Message-ID: <CAEf4Bza+GYLb=jVLsf_Q7O8Tpa-EXP4tiHGuuyDmTXs80njXRQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] libbpf: support BPF_PROG_TYPE_USER programs
+To:     Song Liu <songliubraving@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, oss-drivers@netronome.com,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alex Elder <elder@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Xu <dlxu@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 3:37 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Wed, Aug 5, 2020 at 12:23 AM Song Liu <songliubraving@fb.com> wrote:
 >
-> On Mon, Jul 20, 2020 at 4:35 PM David Miller <davem@davemloft.net> wrote:
-> >
-> > From: Nick Desaulniers <ndesaulniers@google.com>
-> > Date: Mon, 20 Jul 2020 12:48:38 -0700
-> >
-> > > Hi David, bumping for review.
-> >
-> > If it's not active in my networking patchwork you can't just bump your original
-> > submission like this.
-> >
-> > You have to submit your series entirely again.
-> >
-> > And if it is in patchwork, such "bumping" is %100 unnecessary.  It's
-> > in my queue, it is not lost, and I will process it when I have the
-> > time.
-> >
-> > Thank you.
 >
-> Hi David,
-> Sorry, I'm not familiar with your workflow.  By patchwork, are you
-> referring to patchwork.ozlabs.org?  If so, I guess filtering on
-> Delegate=davem
-> (https://patchwork.ozlabs.org/project/netdev/list/?series=&submitter=&state=&q=&archive=&delegate=34)
-> is your queue?  I don't see my patches in the above query, but I do
-> see my series here:
-> https://patchwork.ozlabs.org/project/netdev/list/?series=188486&state=*
-> but they're marked "Not Applicable".  What does that mean?
+>
+> > On Aug 4, 2020, at 11:54 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Aug 4, 2020 at 11:26 PM Song Liu <songliubraving@fb.com> wrote:
+> >>
+> >>
+> >>
+> >>> On Aug 4, 2020, at 10:32 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >>>
+> >>> On Tue, Aug 4, 2020 at 8:59 PM Song Liu <songliubraving@fb.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>>> On Aug 4, 2020, at 6:38 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >>>>>
+> >>>>> On Mon, Aug 3, 2020 at 6:18 PM Song Liu <songliubraving@fb.com> wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>>> On Aug 2, 2020, at 6:40 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >>>>>>>
+> >>>>>>> On Sat, Aug 1, 2020 at 1:50 AM Song Liu <songliubraving@fb.com> wrote:
+> >>>>>>>>
+> >>>>>>
+> >>>>>> [...]
+> >>>>>>
+> >>>>>>>
+> >>>>>>>> };
+> >>>>>>>>
+> >>>>>>>> LIBBPF_API int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *test_attr);
+> >>>>>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >>>>>>>> index b9f11f854985b..9ce175a486214 100644
+> >>>>>>>> --- a/tools/lib/bpf/libbpf.c
+> >>>>>>>> +++ b/tools/lib/bpf/libbpf.c
+> >>>>>>>> @@ -6922,6 +6922,7 @@ static const struct bpf_sec_def section_defs[] = {
+> >>>>>>>>     BPF_PROG_SEC("lwt_out",                 BPF_PROG_TYPE_LWT_OUT),
+> >>>>>>>>     BPF_PROG_SEC("lwt_xmit",                BPF_PROG_TYPE_LWT_XMIT),
+> >>>>>>>>     BPF_PROG_SEC("lwt_seg6local",           BPF_PROG_TYPE_LWT_SEG6LOCAL),
+> >>>>>>>> +       BPF_PROG_SEC("user",                    BPF_PROG_TYPE_USER),
+> >>>>>>>
+> >>>>>>> let's do "user/" for consistency with most other prog types (and nice
+> >>>>>>> separation between prog type and custom user name)
+> >>>>>>
+> >>>>>> About "user" vs. "user/", I still think "user" is better.
+> >>>>>>
+> >>>>>> Unlike kprobe and tracepoint, user prog doesn't use the part after "/".
+> >>>>>> This is similar to "perf_event" for BPF_PROG_TYPE_PERF_EVENT, "xdl" for
+> >>>>>> BPF_PROG_TYPE_XDP, etc. If we specify "user" here, "user/" and "user/xxx"
+> >>>>>> would also work. However, if we specify "user/" here, programs that used
+> >>>>>> "user" by accident will fail to load, with a message like:
+> >>>>>>
+> >>>>>>      libbpf: failed to load program 'user'
+> >>>>>>
+> >>>>>> which is confusing.
+> >>>>>
+> >>>>> xdp, perf_event and a bunch of others don't enforce it, that's true,
+> >>>>> they are a bit of a legacy,
+> >>>>
+> >>>> I don't see w/o "/" is a legacy thing. BPF_PROG_TYPE_STRUCT_OPS just uses
+> >>>> "struct_ops".
+> >>>>
+> >>>>> unfortunately. But all the recent ones do,
+> >>>>> and we explicitly did that for xdp_dev/xdp_cpu, for instance.
+> >>>>> Specifying just "user" in the spec would allow something nonsensical
+> >>>>> like "userargh", for instance, due to this being treated as a prefix.
+> >>>>> There is no harm to require users to do "user/my_prog", though.
+> >>>>
+> >>>> I don't see why allowing "userargh" is a problem. Failing "user" is
+> >>>> more confusing. We can probably improve that by a hint like:
+> >>>>
+> >>>>   libbpf: failed to load program 'user', do you mean "user/"?
+> >>>>
+> >>>> But it is pretty silly. "user/something_never_used" also looks weird.
+> >>>
+> >>> "userargh" is terrible, IMO. It's a different identifier that just
+> >>> happens to have the first 4 letters matching "user" program type.
+> >>> There must be either a standardized separator (which happens to be
+> >>> '/') or none. See the suggestion below.
+> >>
+> >> We have no problem deal with "a different identifier that just happens
+> >> to have the first letters matching", like xdp vs. xdp_devmap and
+> >> xdp_cpumap, right?
+> >>
+> >
+> > xdp vs xdp_devmap is an entirely different thing. We deal with it by
+> > checking xdp_devmap first. What I'm saying is that user can do
+> > "xdpomg" and libbpf would be happy (today). And I don't think that's
+> > good. But further, if someone does something like "xdp_devmap_omg",
+> > guess which program type will be inferred? Hint: not xdp_devmap and
+> > libbpf won't report an error either. All because "xdp" is so lax
+> > today.
+> >
+> >>>>
+> >>>>> Alternatively, we could introduce a new convention in the spec,
+> >>>>> something like "user?", which would accept either "user" or
+> >>>>> "user/something", but not "user/" nor "userblah". We can try that as
+> >>>>> well.
+> >>>>
+> >>>> Again, I don't really understand why allowing "userblah" is a problem.
+> >>>> We already have "xdp", "xdp_devmap/", and "xdp_cpumap/", they all work
+> >>>> fine so far.
+> >>>
+> >>> Right, we have "xdp_devmap/" and "xdp_cpumap/", as you say. I haven't
+> >>> seen so much pushback against trailing forward slash with those ;)
+> >>
+> >> I haven't seen any issue with old "perf_event", "xdp" and new "struct_ops"
+> >> either.
+> >>
+> >>>
+> >>> But anyways, as part of deprecating APIs and preparing libbpf for 1.0
+> >>> release over this half, I think I'm going to emit warnings for names
+> >>> like "prog_type_whatever" or "prog_typeevenworse", etc. And asking
+> >>> users to normalize section names to either "prog_type" or
+> >>> "prog_type/something/here", whichever makes sense for a specific
+> >>> program type.
+> >>
+> >> Exactly, "user" makes sense here; while "kprobe/__set_task_comm" makes
+> >> sense for kprobe.
+> >
+> > Right, but "userblah" doesn't. It would be great if you could help
+> > make what I described above become true. But at least don't make it
+> > worse by allowing unrestricted "user" prefix. I'm OK with strict
+> > "user" or "user/blah", I'm not OK with "userblah", I'm sorry.
+>
+> If the concern with "userblah" is real and unbearable, so is "xdpblah"
+> and "perf_eventblah", and so on, and so on.
+>
 
-Hi David,
-I read through https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html#q-how-often-do-changes-from-these-trees-make-it-to-the-mainline-linus-tree
-and noticed http://vger.kernel.org/~davem/net-next.html.  Since the
-merge window just opened, it sounds like I'll need to wait 2 weeks for
-it to close before resending? Is that correct? Based on:
+Oh yeah, "xdpblah" makes me cringe. "Some other kid is doing wrong
+thing, let me do it as well" style of argument never worked for me
+with my parents, I don't see why it should work here :)
 
-> IMPORTANT: Do not send new net-next content to netdev during the period during which net-next tree is closed.
+But anyways, let's table this discussion, it's not worth spending so
+much time on it. As I said, I'm going to start enforcing standardized
+separator or a single program type word soon enough. Might as well do
+that for "userblah".
 
-Then based on the next section in the doc, it sounds like I was
-missing which tree to put the patch in, in the subject? I believe
-these patches should target net-next (not net) since they're not
-addressing regressions from the most recent cycle.
+> >
+> >>
+> >>> Right now libbpf doesn't allow two separate BPF programs
+> >>> with the same section name, so enforcing strict "user" is limiting to
+> >>> users. We are going to lift that restriction pretty soon, though. But
+> >>> for now, please stick with what we've been doing lately and mark it as
+> >>> "user/", later we'll allow just "user" as well.
+> >>
+> >> Since we would allow "user" later, why we have to reject it for now?
+> >
+> > Because libbpf is dumb in that regard today? And instead of migrating
+> > users later, I want to prevent users making bad choices right now.
+>
+> The good choice here is to use "user", IMO. And you are preventing people
+> to use it. If user has to use "user/" for now. They will have to update
+> the programs later, right? If the conclusion is "user/xxx" is the ultimate
+> goal, I would agree with "user/" for now.
 
-Do I have all that right?
--- 
-Thanks,
-~Nick Desaulniers
+They won't have to update, "user/something" would still work.
+
+>
+> > Then relax it, if necessary. Alternatively, we can fix up libbpf logic
+> > before the USER program type lands.
+>
+> I don't see why the USER program type need to wait for libbpf fix, as
+> "xdp", "perf_event", etc. all work well today.
+
+It's about being a good citizen and helping move libbpf forward.
+
+>
+> >
+> >> Imagine the user just compiled and booted into a new kernel with user
+> >> program support; and then got the following message:
+> >>
+> >>        libbpf: failed to load program 'user'
+> >>
+> >> If I were the user, I would definitely question whether the kernel was
+> >> correct...
+> >
+> > That's also bad, and again, we can make libbpf better. I think moving
+> > forward any non-recognized BPF program type should be reported by
+> > libbpf as an error. But we can't do it right now, we have to have a
+> > period in which users will get a chance to update their BPF programs.
+> > This will have to happen over few libbpf releases at least. So please
+> > join in on the fun of fixing stuff like this.
+>
+> I'd love to join the fun. Maybe after user program lands ;)
+>
+>
+
+Of course :) see above.
