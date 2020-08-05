@@ -2,110 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AAF23CCC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E70623CCED
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgHERDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:03:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30146 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728274AbgHERBU (ORCPT
+        id S1728468AbgHERLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:11:54 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52874 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728466AbgHERJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:01:20 -0400
+        Wed, 5 Aug 2020 13:09:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596646862;
+        s=mimecast20190719; t=1596647344;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bM6BX5L4/TWGWo6Fw0MECvbQOerPg7X6HOlNI1yptJk=;
-        b=c/aJXW5V2bW96PpUMpUyEZEDeF+Kdw2/6TRizqF1g12wuOD8mLnhpany40DNnBaWSTRKM7
-        FqjJg/tcK7LdYys39+gyeNcSVAqtZO2B3VlsBYfusMIed/ZYyOXfkYsOPYFtCuVm//qq2G
-        vfPpfIdCoAps7hZbsaoUT0d0Nksd4F4=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=nsePUp5bwDzPkeGMt9DhuoyzhxlPvsYKTxQ+QKtzY8M=;
+        b=Kbd4MUPyz5KLtsirjxwE9j/1dddSQL9UdrLzbAZQPAQL0nC3jDbOl942DZhhLjm7V+yjLI
+        WURrq+rBxiNMHXU3bIx9aR0aGuvpEX2WwNPElxXlo/tgUnFhl6eegzOVbY1Qyv50Bnf3ud
+        zdlvdjJEqDC6sPd3bkGL2SBwB+NFKgM=
 Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
  [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-XSqVGqvPOMqnzOisVT-AbQ-1; Wed, 05 Aug 2020 09:29:54 -0400
-X-MC-Unique: XSqVGqvPOMqnzOisVT-AbQ-1
-Received: by mail-wr1-f71.google.com with SMTP id s23so13416777wrb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:29:53 -0700 (PDT)
+ us-mta-248-wbachtwONJi36YeQtIotYQ-1; Wed, 05 Aug 2020 09:38:55 -0400
+X-MC-Unique: wbachtwONJi36YeQtIotYQ-1
+Received: by mail-wr1-f71.google.com with SMTP id k11so13082364wrv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:38:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bM6BX5L4/TWGWo6Fw0MECvbQOerPg7X6HOlNI1yptJk=;
-        b=LzdPR0M1yMpV3zzhp3GeSSpBaaaYaWmuhg3UbgghDvJFhMa8sx6EVJeDeK8cBEA8cc
-         PIFzyuV/tUX80uQPLvi1RAblam1EzPgI702XbwEaUY4qGjAXCUCE4WJEtsAh7n2dXnOG
-         3JsWJ27u2trGt973KzRVJEbR32VpS5IW2q+bRcfVRJQOcBfiFF1BwZVbyNtj+FgqFvlH
-         UIRySnoNPp3geHLFjp+88s1ulcoUCXn5hHlTElXRYHif9PI/sMAjH7b39gtO4HpEGeax
-         tq3XhAoaPaVSc36woPgbNNETzPZIs8M/0cOYLX42RMoW+djvUj6X8thXey8NuZ9DKzoj
-         KLEg==
-X-Gm-Message-State: AOAM5320SB9s7LYFgT0EaYxZB69Z2xByyavvZ6D9hOer+uzmJldG2WKQ
-        QtZWtNHwa28nmjULXu4cMNgS+4zFi/dh1IJvzksHMnbE9BgyYgSuHYPGmBl+CHuBQle9eKowI4U
-        xxszp/9lCi7NpofxjHNi+ESsv
-X-Received: by 2002:adf:fd04:: with SMTP id e4mr2729024wrr.353.1596634191933;
-        Wed, 05 Aug 2020 06:29:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzD71GjrxuIPt/70247PjYqetL3L7dJwS2itOOTaj8djrdCVByKfXCsWH/un1uLPcWYOq4+WA==
-X-Received: by 2002:adf:fd04:: with SMTP id e4mr2729006wrr.353.1596634191720;
-        Wed, 05 Aug 2020 06:29:51 -0700 (PDT)
-Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
-        by smtp.gmail.com with ESMTPSA id q2sm2752486wro.8.2020.08.05.06.29.50
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=nsePUp5bwDzPkeGMt9DhuoyzhxlPvsYKTxQ+QKtzY8M=;
+        b=QoTWsdxqLZVQHX0jLF5K4s4wjEP//Zjnum637v4Y+KbGjoylbgrDQMlRRtVIqpgkDh
+         VlM1d30abs5cdEi+zSTAwtAa1UweG/kwqWD/sM/cgj2h/ltXVQ5kSlakpvQF0L9dvjnW
+         HOFXJDQyvlaZxVweBJhMQd78xb7izGlXAv9LR4ax0kYTzFj/WZA1/fCWaj9w37psHfTe
+         +COKZ28WtzgyawFvXOpnj/vMgb7PbZY/2K2rwvP2IohrEF0t6GqPj6oJTTiufLbXjKpc
+         6ov1UlRWtUMN5br/jzKxUX6Z0GR+ZREaNCrWZTF8AMp/JoAZtusPIy/Lf9VDzId8FKda
+         r5ww==
+X-Gm-Message-State: AOAM5324cPCLy4ySknDR0fE1rgLb1siO8Fp5nU9mYSGNvCSKgpvMWsL4
+        AXzZHiVD8jZL4gsY7u7Trsj0/ZGGpxb9AHwpLYZf7vnhjuNP8x8Zf/xTDR9MJ8jhtMr+AQO8DBP
+        +aHmqkmsidrRHse5FcivXGZcQ
+X-Received: by 2002:adf:f486:: with SMTP id l6mr2832109wro.265.1596634733651;
+        Wed, 05 Aug 2020 06:38:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrJHbiAkvwUZChxw62cK2kQ+h4SfhhoyHmbeMJJ3IoB9ua448nhQGhAU9Dt58uSQD6O7qCdw==
+X-Received: by 2002:adf:f486:: with SMTP id l6mr2832102wro.265.1596634733486;
+        Wed, 05 Aug 2020 06:38:53 -0700 (PDT)
+Received: from redhat.com ([192.117.173.58])
+        by smtp.gmail.com with ESMTPSA id w1sm2855531wmc.18.2020.08.05.06.38.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:29:51 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:29:48 -0400
+        Wed, 05 Aug 2020 06:38:52 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:38:49 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 17/24] virtio_config: disallow native type fields
-Message-ID: <20200805092923-mutt-send-email-mst@kernel.org>
-References: <20200803205814.540410-1-mst@redhat.com>
- <20200803205814.540410-18-mst@redhat.com>
- <20200804165039.58dcb29e.cohuck@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: [PATCH] virtio_net: use LE accessors for speed/duplex
+Message-ID: <20200805133843.1105808-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200804165039.58dcb29e.cohuck@redhat.com>
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
+X-Mutt-Fcc: =sent
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 04:50:39PM +0200, Cornelia Huck wrote:
-> On Mon, 3 Aug 2020 16:59:57 -0400
-> "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> 
-> > Transitional devices should all use __virtioXX types.
-> 
-> I think they should use __leXX for those fields that are not present
-> with legacy devices?
+Speed and duplex config fields depend on VIRTIO_NET_F_SPEED_DUPLEX
+which being 63>31 depends on VIRTIO_F_VERSION_1.
 
-Will correct.
+Accordingly, use LE accessors for these fields.
 
-> > Modern ones should use __leXX.
-> > _uXX type would be a bug.
-> > Let's prevent that.
-> 
-> That sounds right, though.
-> 
-> > 
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > ---
-> >  include/linux/virtio_config.h | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-> > index 64da491936f7..c68f58f3bf34 100644
-> > --- a/include/linux/virtio_config.h
-> > +++ b/include/linux/virtio_config.h
-> > @@ -319,9 +319,8 @@ static inline __virtio64 cpu_to_virtio64(struct virtio_device *vdev, u64 val)
-> >  	__virtio_pick_type(x, __u8, __u8,					\
-> >  		__virtio_pick_endian(x, __virtio16, __virtio32, __virtio64,	\
-> >  			__virtio_pick_endian(x, __le16, __le32, __le64,		\
-> > -				__virtio_pick_endian(x, __u16, __u32, __u64,	\
-> > -					/* No other type allowed */		\
-> > -					(void)0)))))
-> > +				/* No other type allowed */			\
-> > +				(void)0))))
-> >  
-> >  #endif
-> >  
+Reported-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ drivers/net/virtio_net.c        | 9 +++++----
+ include/uapi/linux/virtio_net.h | 2 +-
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index ba38765dc490..0934b1ec5320 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2264,12 +2264,13 @@ static void virtnet_update_settings(struct virtnet_info *vi)
+ 	if (!virtio_has_feature(vi->vdev, VIRTIO_NET_F_SPEED_DUPLEX))
+ 		return;
+ 
+-	speed = virtio_cread32(vi->vdev, offsetof(struct virtio_net_config,
+-						  speed));
++	virtio_cread_le(vi->vdev, struct virtio_net_config, speed, &speed);
++
+ 	if (ethtool_validate_speed(speed))
+ 		vi->speed = speed;
+-	duplex = virtio_cread8(vi->vdev, offsetof(struct virtio_net_config,
+-						  duplex));
++
++	virtio_cread_le(vi->vdev, struct virtio_net_config, duplex, &duplex);
++
+ 	if (ethtool_validate_duplex(duplex))
+ 		vi->duplex = duplex;
+ }
+diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+index 27d996f29dd1..3f55a4215f11 100644
+--- a/include/uapi/linux/virtio_net.h
++++ b/include/uapi/linux/virtio_net.h
+@@ -99,7 +99,7 @@ struct virtio_net_config {
+ 	 * speed, in units of 1Mb. All values 0 to INT_MAX are legal.
+ 	 * Any other value stands for unknown.
+ 	 */
+-	__virtio32 speed;
++	__le32 speed;
+ 	/*
+ 	 * 0x00 - half duplex
+ 	 * 0x01 - full duplex
+-- 
+MST
 
