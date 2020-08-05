@@ -2,89 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D8923CB55
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 16:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBD723CBD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 17:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729434AbgHEODh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 10:03:37 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:42345 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728426AbgHEMfj (ORCPT
+        id S1726226AbgHEPyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 11:54:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58924 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725830AbgHEPsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 08:35:39 -0400
-Received: by mail-oi1-f196.google.com with SMTP id j7so23030665oij.9;
-        Wed, 05 Aug 2020 05:31:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5lnCZoNdrZNQbQaV/iF1DKtpBff6Ck+1xozm4eqaEmw=;
-        b=aOLS0YI9SWLSUoNLnu8p9qwzutJsdBBtkn2A5QoLlzTZUMf0jB7nD9mhVxQb6HN6z5
-         8kbL+Gmi8kOZZFORMBklZGWLFqvj/btZNAttkTRoMziwYmii4etM3Ed++hA9p1uFgkw6
-         wYluwBY2STm+TRUFk7uymZ3tyAjfsYUagmLNKPx4sLuuU0dLlZGqq/oPDiNMidNNz0Rp
-         LEd6pHxpoefFACtirha+4tcvNFyTM4uFhh6o4yFRzvq+qMgavBiDBo13rHCCFUkZDIMQ
-         bhYcOUHWGm7eULfhprpPdIwPK6AQx6c1MfU0lG70z+DnEoR6BAQ+0UidT2+8ynnGdEbl
-         xKFw==
-X-Gm-Message-State: AOAM5331Fa40cBaCCw6jmNEScmXnFn+iDmHomF9v/PK8YducSlygeP+8
-        YpnL62MYrUH516Fs6TUsaKvc3rFqqFuhV1i8EbULynsj
-X-Google-Smtp-Source: ABdhPJwhUm4QHaZz7xbR+lTUoUQuyCH4le0QF/k75iMvl2tButnuNI7+iEhEoJyqrnRXlecEQMMJHtDC6cCth7F51hU=
-X-Received: by 2002:aca:4b54:: with SMTP id y81mr2275594oia.54.1596626072299;
- Wed, 05 Aug 2020 04:14:32 -0700 (PDT)
+        Wed, 5 Aug 2020 11:48:38 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 075DMYiJ001183;
+        Wed, 5 Aug 2020 09:35:09 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qwkcrar0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 09:35:09 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 075DZ7d8014782;
+        Wed, 5 Aug 2020 13:35:07 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma02fra.de.ibm.com with ESMTP id 32n018aq0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 13:35:06 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 075DZ4aO26280306
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 5 Aug 2020 13:35:04 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA59C11C058;
+        Wed,  5 Aug 2020 13:35:03 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 992E911C064;
+        Wed,  5 Aug 2020 13:35:03 +0000 (GMT)
+Received: from pomme.tlslab.ibm.com (unknown [9.145.52.198])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  5 Aug 2020 13:35:03 +0000 (GMT)
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     mpe@ellerman.id.au, nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        benh@kernel.crashing.org
+Subject: [PATCH v2] powerpc/drmem: Don't compute the NUMA node for each LMB
+Date:   Wed,  5 Aug 2020 15:35:02 +0200
+Message-Id: <20200805133502.33723-1-ldufour@linux.ibm.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <202008051807.Vi8NDJtX%lkp@intel.com>
+References: <202008051807.Vi8NDJtX%lkp@intel.com>
 MIME-Version: 1.0
-References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594919915-5225-11-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1594919915-5225-11-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 5 Aug 2020 13:14:20 +0200
-Message-ID: <CAMuHMdW5_yBdEidPiVNeQO0QwuJfTe0kSiHLg4hkQLzVuRM7VA@mail.gmail.com>
-Subject: Re: [PATCH 10/20] arm64: dts: renesas: r8a774e1: Add USB3.0 device nodes
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
-        Niklas <niklas.soderlund@ragnatech.se>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-ide@vger.kernel.org,
-        dmaengine <dmaengine@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-05_09:2020-08-03,2020-08-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 clxscore=1015 bulkscore=0
+ priorityscore=1501 phishscore=0 spamscore=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008050108
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 7:19 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add usb3.0 phy, host and function device nodes on RZ/G2H SoC dtsi.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+All the LMB from the same set of ibm,dynamic-memory-v2 property are
+sharing the same NUMA node. Don't compute that node for each one.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.10.
+Tested on a system with 1022 LMBs spread on 4 NUMA nodes, only 4 calls to
+lmb_set_nid() have been made instead of 1022.
 
-Gr{oetje,eeting}s,
+This should prevent some soft lockups when starting large guests
 
-                        Geert
+Code has meaning only if CONFIG_MEMORY_HOTPLUG is set, otherwise the nid
+field is not present in the drmem_lmb structure.
 
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+---
+ arch/powerpc/mm/drmem.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
+index b2eeea39684c..c11b6ec99ea3 100644
+--- a/arch/powerpc/mm/drmem.c
++++ b/arch/powerpc/mm/drmem.c
+@@ -402,6 +402,9 @@ static void __init init_drmem_v2_lmbs(const __be32 *prop)
+ 	const __be32 *p;
+ 	u32 i, j, lmb_sets;
+ 	int lmb_index;
++#ifdef CONFIG_MEMORY_HOTPLUG
++	struct drmem_lmb *first = NULL;
++#endif
+ 
+ 	lmb_sets = of_read_number(prop++, 1);
+ 	if (lmb_sets == 0)
+@@ -426,6 +429,15 @@ static void __init init_drmem_v2_lmbs(const __be32 *prop)
+ 	for (i = 0; i < lmb_sets; i++) {
+ 		read_drconf_v2_cell(&dr_cell, &p);
+ 
++#ifdef CONFIG_MEMORY_HOTPLUG
++		/*
++		 * Fetch the NUMA node id for the fist set or if the
++		 * associativity index is different from the previous set.
++		 */
++		if (first && dr_cell.aa_index != first->aa_index)
++			first = NULL;
++#endif
++
+ 		for (j = 0; j < dr_cell.seq_lmbs; j++) {
+ 			lmb = &drmem_info->lmbs[lmb_index++];
+ 
+@@ -438,7 +450,18 @@ static void __init init_drmem_v2_lmbs(const __be32 *prop)
+ 			lmb->aa_index = dr_cell.aa_index;
+ 			lmb->flags = dr_cell.flags;
+ 
+-			lmb_set_nid(lmb);
++#ifdef CONFIG_MEMORY_HOTPLUG
++			/*
++			 * All the LMB in the set share the same NUMA
++			 * associativity property. So read that node only once.
++			 */
++			if (!first) {
++				lmb_set_nid(lmb);
++				first = lmb;
++			} else {
++				lmb->nid = first->nid;
++			}
++#endif
+ 		}
+ 	}
+ }
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.28.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
