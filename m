@@ -2,149 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427B223C98D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C92A23C992
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728473AbgHEJt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 05:49:57 -0400
-Received: from mga14.intel.com ([192.55.52.115]:36869 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725946AbgHEJrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 05:47:21 -0400
-IronPort-SDR: tQV1dEeKKGd7aZzxmJg+nlDvhl+W6IAbdKyYIchxrZtaqFOWtO8nARSxcM2/BQmg4hHs/yLnGt
- 4zqeaNAJlESQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9703"; a="151724075"
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="151724075"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 02:47:19 -0700
-IronPort-SDR: mgkR+4TR9AuXaEUmyoWXi85tF139cYRXvEZHA/bwpLHVTm93M+Df5h+btdjwm+yhbwA/CfA2Tu
- EjIVB/n/7/4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,436,1589266800"; 
-   d="scan'208";a="493219085"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
-  by fmsmga005.fm.intel.com with ESMTP; 05 Aug 2020 02:47:17 -0700
-Subject: Re: [PATCH] mmc: sdhci_am654: Add workaround for card detect debounce
- timer
-To:     Faiz Abbas <faiz_abbas@ti.com>, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Cc:     ulf.hansson@linaro.org
-References: <20200729234130.25056-1-faiz_abbas@ti.com>
- <2d692a90-0e58-ae69-9b5b-c9eb3ffe21ec@intel.com>
- <75b188ef-2755-b833-4756-79f0f171f8bd@ti.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <c5b166c9-f9ba-e01e-b759-57ac93d99832@intel.com>
-Date:   Wed, 5 Aug 2020 12:46:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728330AbgHEJyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 05:54:00 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:54984 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgHEJvl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 05:51:41 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0759m3pf153911;
+        Wed, 5 Aug 2020 09:51:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=MT1IenkERUHhaKZWvKrpivkl0Eede+Swc2LRUTtH294=;
+ b=rYobUMFBIajWJ2Q3kT+ueBPxDbpnt6r65crxNIHkm86jJe8yu4zrlDJaaB6efWydeyYF
+ Yc43ZrX01JQADrs7MeUI/vnIA9pERmT5v3K0wsh+EATP7b2qlIWR3JTiGChB4QBBJjQe
+ 5+MyixKOQvWiHYHmoRkdqViK3OPXQFQun5n8O6InmizgsAMs93/RtWa1pJzRQ+AEUa4b
+ L/uSXBlwzevqTm/9Pz48WSxQauRREnP1T0Ds98p4oPTKwDdcXGWiapPPoIGvrrfSwD0o
+ DjpR1LQyaAID8c9oYbbAZhp7cv2sOr+NYHOt5cmI3nX+1t6NzYsbnj6KdNJ8GrHKQNCj vA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 32n11n92f3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 05 Aug 2020 09:51:17 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0759n4Kb132827;
+        Wed, 5 Aug 2020 09:51:17 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 32pdhdxk3r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 05 Aug 2020 09:51:17 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0759pD60018117;
+        Wed, 5 Aug 2020 09:51:16 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 05 Aug 2020 02:51:12 -0700
+Date:   Wed, 5 Aug 2020 12:51:05 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        Ofir Bitton <obitton@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] habanalabs: Fix a loop in gaudi_extract_ecc_info()
+Message-ID: <20200805095105.GA483832@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <75b188ef-2755-b833-4756-79f0f171f8bd@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9703 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050081
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9703 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050081
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/08/20 11:22 am, Faiz Abbas wrote:
-> Hi Adrian,
-> 
-> On 05/08/20 1:44 pm, Adrian Hunter wrote:
->> On 30/07/20 2:41 am, Faiz Abbas wrote:
->>> There is a one time delay because of a card detect debounce timer in the
->>> controller IP. This timer runs as soon as power is applied to the module
->>> regardless of whether a card is present or not and any writes to
->>> SDHCI_POWER_ON will return 0 before it expires. This timeout has been
->>> measured to be about 1 second in am654x and j721e.
->>>
->>> Write-and-read-back in a loop on SDHCI_POWER_ON for a maximum of
->>> 1.5 seconds to make sure that the controller actually powers on.
->>>
->>> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
->>> ---
->>>  drivers/mmc/host/sdhci_am654.c | 21 +++++++++++++++++++++
->>>  1 file changed, 21 insertions(+)
->>>
->>> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
->>> index 1718b9e8af63..55cff9de2f3e 100644
->>> --- a/drivers/mmc/host/sdhci_am654.c
->>> +++ b/drivers/mmc/host/sdhci_am654.c
->>> @@ -272,6 +272,7 @@ static void sdhci_j721e_4bit_set_clock(struct sdhci_host *host,
->>>  	sdhci_set_clock(host, clock);
->>>  }
->>>  
->>> +#define MAX_POWER_ON_TIMEOUT	1500 /* ms */
->>>  static void sdhci_am654_write_b(struct sdhci_host *host, u8 val, int reg)
->>>  {
->>>  	unsigned char timing = host->mmc->ios.timing;
->>> @@ -291,6 +292,26 @@ static void sdhci_am654_write_b(struct sdhci_host *host, u8 val, int reg)
->>>  	}
->>>  
->>>  	writeb(val, host->ioaddr + reg);
->>> +	if (reg == SDHCI_POWER_CONTROL && (val & SDHCI_POWER_ON)) {
->>> +		/*
->>> +		 * Power on will not happen until the card detect debounce
->>> +		 * timer expires. Wait at least 1.5 seconds for the power on
->>> +		 * bit to be set
->>> +		 */
->>
->> Can you use readb_poll_timeout() here?
->>
-> 
-> The loop is write -> readback -> check for set bit -> write again and so on until timeout
-> so poll_timeout() calls will not work.
+The condition was reversed.  It should have been less than instead of
+greater than.  The result is that we never enter the loop.
 
-I mentioned it because pedantically you need to check the condition
-again after a timeout.  Alternatively, the read_poll_timeout macro
-can be used with a function, something like below (not even compile
-tested!)
+Fixes: fcc6a4e60678 ("habanalabs: Extract ECC information from FW")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-static u8 write_power_on(struct sdhci_host *host, u8 val, int reg)
-{
-	writeb(val, host->ioaddr + reg);
-	usleep_range(1000, 10000);
-	return readb(host->ioaddr + reg);
-}
-
-#define MAX_POWER_ON_TIMEOUT	1500000 /* us */
-static void sdhci_am654_write_b(struct sdhci_host *host, u8 val, int reg)
-{
-	unsigned char timing = host->mmc->ios.timing;
-	u8 pwr;
-
-	if (reg == SDHCI_HOST_CONTROL) {
-		switch (timing) {
-		/*
-		 * According to the data manual, HISPD bit
-		 * should not be set in these speed modes.
-		 */
-		case MMC_TIMING_SD_HS:
-		case MMC_TIMING_MMC_HS:
-		case MMC_TIMING_UHS_SDR12:
-		case MMC_TIMING_UHS_SDR25:
-			val &= ~SDHCI_CTRL_HISPD;
-		}
-	}
-
-	writeb(val, host->ioaddr + reg);
-
-	/*
-	 * Power on will not happen until the card detect debounce
-	 * timer expires. Wait at least 1.5 seconds for the power on
-	 * bit to be set
-	 */
-	if (reg == SDHCI_POWER_CONTROL && (val & SDHCI_POWER_ON) &&
-	    read_poll_timeout(write_power_on, pwr, (pwr & SDHCI_POWER_ON), 0,
-			      MAX_POWER_ON_TIMEOUT, false, host, val, reg))
-			dev_warn(mmc_dev(host->mmc), "Power on failed\n");
-			return;
-		}
-	}
-}
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 00a0a7238d81..de2f81b80ced 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -5215,7 +5215,7 @@ static int gaudi_extract_ecc_info(struct hl_device *hdev,
+ 	*memory_wrapper_idx = 0xFF;
+ 
+ 	/* Iterate through memory wrappers, a single bit must be set */
+-	for (i = 0 ; i > num_mem_regs ; i++) {
++	for (i = 0 ; i < num_mem_regs ; i++) {
+ 		err_addr += i * 4;
+ 		err_word = RREG32(err_addr);
+ 		if (err_word) {
+-- 
+2.27.0
 
