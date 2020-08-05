@@ -2,177 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAB923CF9E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D0823CF8D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728921AbgHETXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728947AbgHERju (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:39:50 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD66C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:39:49 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id j8so34427724ioe.9
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:39:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ltXiat2Rl2Zwbogz+0r5FKwZHjDORLemXuadza+vI+Q=;
-        b=Ya3jo9QJDcOA6NffqQfhpqKparGgzal9V+JPBiYU4afxBELrAdQZJKpN77F6OHvG2j
-         0LgWLVjraEAcCbRa70iPs+xRARHMu3NwCtbyhcT0sYY4bbuXXlfMbd6q0uhG4YOBBaDf
-         GLy4rLWmBI24Wbb9KFKW1Z+hv6w0zSikRGiha05Ko6lAntvWEAuKWgy9T43+o6t5WjIK
-         OF5XQXzdU2zHIQUd6UXL/vMefBjaDUDOTx1PqHmP9p3vHmRp5F7bRqWoybKf9zM91N6a
-         UvAmoeHGvce1psyCwUAPesnydIxy8TNzzRlMkx2re4mSSw9WDW0ccl/aLKJKGSEZUDfi
-         gbxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ltXiat2Rl2Zwbogz+0r5FKwZHjDORLemXuadza+vI+Q=;
-        b=LnWCj7P5bvn1VXlg7ZsWnGGyfJZnV69u91B9WLlfzbagxbkhsbhgILDaafuCDXDXeJ
-         Megs2jxzAsrfC+bxH4k7q7O793+JFw227NkFR4aByFW1/tEZOrh+gl2kz1lyxkUvkGQf
-         4KeYZoz6seNVjVonqwBFQ+po8Y7sI+1tWRGSId3W/H58xGe7t8sZsi4GKBIlq4EzsJaT
-         o+PvbmFrCkY3Y74SE0KlYep88hg0+RnmZk3PVJ660FtlsOfj1IoSTWmiK1O1t+obHPyk
-         zR/V5k9zsdVII3SB+AXZjtP2dRd2FNXClUW06ggPfjLb1vEXmcXUlYHmiXWuoKfUJp4v
-         Xk0g==
-X-Gm-Message-State: AOAM531q6HWIWNqoHtqQJGg/jN9nBloBgLDyxpTMIA+k0ykn00XTAygM
-        l5mfO8C2I3u1OoQaB/HhkJLehbTAvAKed7m+Jd97MbWZnFvcIw==
-X-Google-Smtp-Source: ABdhPJyFew5VLDSWc3gE+0xFUlGE3hKSfOMO1eUbHLBzf9JX57Tz6MZ9GTG6hb1mgP02FR8F+uwTF+rF0OjPkL+kLVk=
-X-Received: by 2002:a5d:995a:: with SMTP id v26mr4435600ios.176.1596649188239;
- Wed, 05 Aug 2020 10:39:48 -0700 (PDT)
+        id S1729047AbgHETWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:22:31 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2579 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728961AbgHERlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:41:49 -0400
+Received: from lhreml712-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 6699C2A264AE1F7A9CDD;
+        Wed,  5 Aug 2020 18:41:46 +0100 (IST)
+Received: from localhost (10.52.120.30) by lhreml712-chm.china.huawei.com
+ (10.201.108.63) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 5 Aug 2020
+ 18:41:45 +0100
+Date:   Wed, 5 Aug 2020 18:40:20 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <ashok.raj@intel.com>,
+        <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Subject: Re: [PATCH V2 6/9] PCI: Add 'rcec' field to pci_dev for associated
+ RCiEPs
+Message-ID: <20200805184020.00000cf3@Huawei.com>
+In-Reply-To: <20200804194052.193272-7-sean.v.kelley@intel.com>
+References: <20200804194052.193272-1-sean.v.kelley@intel.com>
+        <20200804194052.193272-7-sean.v.kelley@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20200805153506.978105994@linuxfoundation.org>
-In-Reply-To: <20200805153506.978105994@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 5 Aug 2020 23:09:37 +0530
-Message-ID: <CA+G9fYv_aX36Kq_RD5dAL_By4AFq=-ZY_qh7VhLG=HJQv5mDzg@mail.gmail.com>
-Subject: Re: [PATCH 5.7 0/6] 5.7.14-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>, w@1wt.eu,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.30]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml712-chm.china.huawei.com (10.201.108.63)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 at 21:22, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.7.14 release.
-> There are 6 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.14-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
-> -------------
-> Pseudo-Shortlog of commits:
->
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 5.7.14-rc1
->
-> Marc Zyngier <maz@kernel.org>
->     arm64: Workaround circular dependency in pointer_auth.h
->
-> Linus Torvalds <torvalds@linux-foundation.org>
->     random32: move the pseudo-random 32-bit definitions to prandom.h
->
-> Linus Torvalds <torvalds@linux-foundation.org>
->     random32: remove net_rand_state from the latent entropy gcc plugin
->
-> Willy Tarreau <w@1wt.eu>
->     random: fix circular include dependency on arm64 after addition of percpu.h
->
-> Grygorii Strashko <grygorii.strashko@ti.com>
->     ARM: percpu.h: fix build error
->
-> Willy Tarreau <w@1wt.eu>
->     random32: update the net random state on interrupt and activity
->
+On Tue, 4 Aug 2020 12:40:49 -0700
+Sean V Kelley <sean.v.kelley@intel.com> wrote:
 
-[ sorry if it is not interesting ! ]
+> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> 
+> When attempting error recovery for an RCiEP associated with an RCEC device,
+> there needs to be a way to update the Root Error Status, the Uncorrectable
+> Error Status and the Uncorrectable Error Severity of the parent RCEC.
+> So add the 'rcec' field to the pci_dev structure and provide a hook for the
+> Root Port Driver to associate RCiEPs with their respective parent RCEC.
+> 
+> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+Hi,
 
-While building with old gcc-7.3.0 the build breaks for arm64
-whereas build PASS on gcc-8, gcc-9 and gcc-10.
+One question in line.
 
-with gcc 7.3.0 build breaks log,
+> ---
+>  drivers/pci/pcie/aer.c         |  9 +++++----
+>  drivers/pci/pcie/err.c         | 12 ++++++++++++
+>  drivers/pci/pcie/portdrv_pci.c | 15 +++++++++++++++
+>  include/linux/pci.h            |  3 +++
+>  4 files changed, 35 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index 87283cda3990..f658607e8e00 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -1358,17 +1358,18 @@ static int aer_probe(struct pcie_device *dev)
+>  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+>  {
+>  	int aer = dev->aer_cap;
+> +	int rc = 0;
+>  	u32 reg32;
+> -	int rc;
+> -
+>  
+>  	/* Disable Root's interrupt in response to error messages */
+>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+>  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+>  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+>  
+> -	rc = pci_bus_error_reset(dev);
+> -	pci_info(dev, "Root Port link has been reset\n");
+> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
+> +		rc = pci_bus_error_reset(dev);
+> +		pci_info(dev, "Root Port link has been reset\n");
+> +	}
+>  
+>  	/* Clear Root Error Status */
+>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index 4812aa678eff..43f1c55c76db 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -203,6 +203,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  		pci_walk_dev_affected(dev, report_frozen_detected, &status);
+>  		if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
+>  			status = flr_on_rciep(dev);
+> +			/*
+> +			 * The callback only clears the Root Error Status
+> +			 * of the RCEC (see aer.c).
+> +			 */
+> +			if (pcie_aer_is_native(dev) && dev->rcec)
+> +				reset_link(dev->rcec);
 
-In file included from arch/arm64/include/asm/archrandom.h:9:0,
-                 from arch/arm64/kernel/kaslr.c:14:
-include/linux/random.h: In function 'arch_get_random_seed_long_early':
-include/linux/random.h:149:9: error: implicit declaration of function
-'arch_get_random_seed_long'; did you mean
-'arch_get_random_seed_long_early'?
-[-Werror=implicit-function-declaration]
-  return arch_get_random_seed_long(v);
-         ^~~~~~~~~~~~~~~~~~~~~~~~~
-         arch_get_random_seed_long_early
-include/linux/random.h: In function 'arch_get_random_long_early':
-include/linux/random.h:157:9: error: implicit declaration of function
-'arch_get_random_long'; did you mean 'get_random_long'?
-[-Werror=implicit-function-declaration]
-  return arch_get_random_long(v);
-         ^~~~~~~~~~~~~~~~~~~~
-         get_random_long
-In file included from arch/arm64/kernel/kaslr.c:14:0:
-arch/arm64/include/asm/archrandom.h: At top level:
-arch/arm64/include/asm/archrandom.h:30:33: error: conflicting types
-for 'arch_get_random_long'
- static inline bool __must_check arch_get_random_long(unsigned long *v)
-                                 ^~~~~~~~~~~~~~~~~~~~
-In file included from arch/arm64/include/asm/archrandom.h:9:0,
-                 from arch/arm64/kernel/kaslr.c:14:
-include/linux/random.h:157:9: note: previous implicit declaration of
-'arch_get_random_long' was here
-  return arch_get_random_long(v);
-         ^~~~~~~~~~~~~~~~~~~~
-In file included from arch/arm64/kernel/kaslr.c:14:0:
-arch/arm64/include/asm/archrandom.h:40:33: error: conflicting types
-for 'arch_get_random_seed_long'
- static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
-                                 ^~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from arch/arm64/include/asm/archrandom.h:9:0,
-                 from arch/arm64/kernel/kaslr.c:14:
-include/linux/random.h:149:9: note: previous implicit declaration of
-'arch_get_random_seed_long' was here
-  return arch_get_random_seed_long(v);
-         ^~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from arch/arm64/kernel/kaslr.c:14:0:
-arch/arm64/include/asm/archrandom.h:72:1: error: redefinition of
-'arch_get_random_seed_long_early'
- arch_get_random_seed_long_early(unsigned long *v)
- ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from arch/arm64/include/asm/archrandom.h:9:0,
-                 from arch/arm64/kernel/kaslr.c:14:
-include/linux/random.h:146:27: note: previous definition of
-'arch_get_random_seed_long_early' was here
- static inline bool __init arch_get_random_seed_long_early(unsigned long *v)
+I'm not sure about this pcie_aer_is_native check.
+We don't check in the normal EP path.  Perhaps we should be checking there
+as well?
+
+I can contrive a CPER record that hits the reset_link for the normal EP on my qemu
+test setup.  Just for fun it causes a synchronous external abort that I need
+to track down but not related this patch or indeed reset_link and may just reflect
+an impossible to hit path in the e1000e driver.
+
+It needs a very contrived combination of blocks that say the error is fatal
+and others that say it isn't so I'm not that worried about that.
 
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+>  			if (status != PCI_ERS_RESULT_RECOVERED) {
+>  				pci_warn(dev, "function level reset failed\n");
+>  				goto failed;
+> @@ -247,7 +253,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  		if (pcie_aer_is_native(dev))
+>  			pcie_clear_device_status(dev);
+>  		pci_aer_clear_nonfatal_status(dev);
+> +	} else if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
+> +		if (pcie_aer_is_native(dev) && dev->rcec)
+> +			pcie_clear_device_status(dev->rcec);
+> +		if (dev->rcec)
+> +			pci_aer_clear_nonfatal_status(dev->rcec);
+>  	}
+> +
+>  	pci_info(dev, "device recovery successful\n");
+>  	return status;
+>  
+> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
+> index 4d880679b9b1..dff5c9e13412 100644
+> --- a/drivers/pci/pcie/portdrv_pci.c
+> +++ b/drivers/pci/pcie/portdrv_pci.c
+> @@ -90,6 +90,18 @@ static const struct dev_pm_ops pcie_portdrv_pm_ops = {
+>  #define PCIE_PORTDRV_PM_OPS	NULL
+>  #endif /* !PM */
+>  
+> +static int pcie_hook_rcec(struct pci_dev *pdev, void *data)
+> +{
+> +	struct pci_dev *rcec = (struct pci_dev *)data;
+> +
+> +	pdev->rcec = rcec;
+> +	pci_dbg(rcec, "RCiEP(under an RCEC) %04x:%02x:%02x.%d\n",
+> +		pci_domain_nr(pdev->bus), pdev->bus->number,
+> +		PCI_SLOT(pdev->devfn), PCI_FUNC(pdev->devfn));
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * pcie_portdrv_probe - Probe PCI-Express port devices
+>   * @dev: PCI-Express port device being probed
+> @@ -110,6 +122,9 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
+>  	     (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)))
+>  		return -ENODEV;
+>  
+> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)
+> +		pcie_walk_rcec(dev, pcie_hook_rcec, dev);
+> +
+>  	status = pcie_port_device_register(dev);
+>  	if (status)
+>  		return status;
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index ee49469bd2b5..d5f7dbbf5e2f 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -326,6 +326,9 @@ struct pci_dev {
+>  #ifdef CONFIG_PCIEAER
+>  	u16		aer_cap;	/* AER capability offset */
+>  	struct aer_stats *aer_stats;	/* AER stats for this device */
+> +#endif
+> +#ifdef CONFIG_PCIEPORTBUS
+> +	struct pci_dev	*rcec;		/* Associated RCEC device */
+>  #endif
+>  	u8		pcie_cap;	/* PCIe capability offset */
+>  	u8		msi_cap;	/* MSI capability offset */
+
+
