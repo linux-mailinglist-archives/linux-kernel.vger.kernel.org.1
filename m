@@ -2,71 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D7823D0E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B71C23D0B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729453AbgHETyF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 Aug 2020 15:54:05 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:42396 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728121AbgHEQtJ (ORCPT
+        id S1729415AbgHETw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:52:26 -0400
+Received: from mail.efficios.com ([167.114.26.124]:32988 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728107AbgHEQvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:49:09 -0400
-X-Greylist: delayed 2502 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 12:49:07 EDT
-Received: from relay3-d.mail.gandi.net (unknown [217.70.183.195])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 947DC3A9F99;
-        Wed,  5 Aug 2020 15:27:41 +0000 (UTC)
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 385F760004;
-        Wed,  5 Aug 2020 15:22:18 +0000 (UTC)
-Date:   Wed, 5 Aug 2020 17:22:17 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Nicolas Pitre <nico@fluxnic.net>
-Cc:     Conor Culhane <conor.culhane@silvaco.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        "linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rajeev Huralikoppi <rajeev.huralikoppi@silvaco.com>
-Subject: Re: [PATCH 3/4] i3c: master: svc: Add Silvaco I3C master driver
-Message-ID: <20200805172217.27a00af5@xps13>
-In-Reply-To: <nycvar.YSQ.7.77.849.2008051105550.1112668@knanqh.ubzr>
-References: <20200709080159.2178-1-miquel.raynal@bootlin.com>
-        <20200709080159.2178-3-miquel.raynal@bootlin.com>
-        <nycvar.YSQ.7.77.849.2008031546570.1112668@knanqh.ubzr>
-        <BN6PR16MB1762D6CE430AB08B7A2BE5FCF14A0@BN6PR16MB1762.namprd16.prod.outlook.com>
-        <nycvar.YSQ.7.77.849.2008051105550.1112668@knanqh.ubzr>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 5 Aug 2020 12:51:31 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 138C32410FB;
+        Wed,  5 Aug 2020 11:22:37 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id g8E5Syga9F-S; Wed,  5 Aug 2020 11:22:36 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id B55412410FA;
+        Wed,  5 Aug 2020 11:22:36 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B55412410FA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1596640956;
+        bh=PHVRLh6Cmkd9W13moPK4iqU63eBTINCfC1k584pKmOI=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=UsCuAQoxDUQr2njf/HwYp6eQfL/v74fiL53wRUY4El3KPVlJInCE+k2vIf684o08J
+         4Khc8GIIjYGHAaGqIyQIlNyhYEjKsE6ujAMP8j//4AEqevxRseZdFh4nM1SnIgITO0
+         JWkZ+6q74w9XQKwGbKziCQIaMRrrB/w8z9A0wCWASaqUo9PUSH5D2qlZVUqWAqTYwF
+         JhTlD9AvEzKIQ2OEdBHEvQYrFX/iKWRA6Cwp6L/g7WFjOiV9R3PlcCu9uzCfUgcEMB
+         hvUlhOayDsR9a86J0ve/gs0k28fx/jKP2Ps7tpt5F2qI/Vfn9LAzWh9hfD9xoiVrgG
+         kqz74o0d8TNFg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id RFWI2s-X7TAy; Wed,  5 Aug 2020 11:22:36 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id A308D241373;
+        Wed,  5 Aug 2020 11:22:36 -0400 (EDT)
+Date:   Wed, 5 Aug 2020 11:22:36 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <498869868.209.1596640956570.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200805105920.GB35926@hirez.programming.kicks-ass.net>
+References: <20200728160010.3314-1-mathieu.desnoyers@efficios.com> <20200728160010.3314-2-mathieu.desnoyers@efficios.com> <20200804145145.GM2657@hirez.programming.kicks-ass.net> <1708074166.39992.1596553173337.JavaMail.zimbra@efficios.com> <20200804170153.GO2657@hirez.programming.kicks-ass.net> <20200805105920.GB35926@hirez.programming.kicks-ass.net>
+Subject: Re: [RFC PATCH 2/2] sched: membarrier: cover kthread_use_mm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3959 (ZimbraWebClient - FF79 (Linux)/8.8.15_GA_3953)
+Thread-Topic: sched: membarrier: cover kthread_use_mm
+Thread-Index: 5QouM8yhSnNFf8/xdSYji3LqtJUJCw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+----- On Aug 5, 2020, at 6:59 AM, Peter Zijlstra peterz@infradead.org wrote:
 
-Nicolas Pitre <nico@fluxnic.net> wrote on Wed, 5 Aug 2020 11:13:41
--0400 (EDT):
+> On Tue, Aug 04, 2020 at 07:01:53PM +0200, peterz@infradead.org wrote:
+>> On Tue, Aug 04, 2020 at 10:59:33AM -0400, Mathieu Desnoyers wrote:
+>> > ----- On Aug 4, 2020, at 10:51 AM, Peter Zijlstra peterz@infradead.org wrote:
+>> > > On Tue, Jul 28, 2020 at 12:00:10PM -0400, Mathieu Desnoyers wrote:
+>> 
+>> > >>  	task_lock(tsk);
+>> > >> +	/*
+>> > >> +	 * When a kthread stops operating on an address space, the loop
+>> > >> +	 * in membarrier_{private,global}_expedited() may not observe
+>> > >> +	 * that tsk->mm, and not issue an IPI. Membarrier requires a
+>> > >> +	 * memory barrier after accessing user-space memory, before
+>> > >> +	 * clearing tsk->mm.
+>> > >> +	 */
+>> > >> +	smp_mb();
+>> > >>  	sync_mm_rss(mm);
+>> > >>  	local_irq_disable();
+>> > > 
+>> > > Would it make sense to put the smp_mb() inside the IRQ disable region?
+>> > 
+>> > I've initially placed it right after task_lock so we could eventually
+>> > have a smp_mb__after_non_raw_spinlock or something with a much better naming,
+>> > which would allow removing the extra barrier when it is implied by the
+>> > spinlock.
+>> 
+>> Oh, right, fair enough. I'll go think about if smp_mb__after_spinlock()
+>> will work for mutexes too.
+>> 
+>> It basically needs to upgrade atomic*_acquire() to smp_mb(). So that's
+>> all architectures that have their own _acquire() and an actual
+>> smp_mb__after_atomic().
+>> 
+>> Which, from the top of my head are only arm64, power and possibly riscv.
+>> And if I then git-grep smp_mb__after_spinlock, all those seem to be
+>> covered.
+>> 
+>> But let me do a better audit..
+> 
+> All I could find is csky, which, afaict, defines a superfluous
+> smp_mb__after_spinlock.
+> 
+> The relevant architectures are indeed power, arm64 and riscv, they all
+> have custom acquire/release and all define smp_mb__after_spinlock()
+> appropriately.
+> 
+> Should we rename it to smp_mb__after_acquire() ?
 
-> On Tue, 4 Aug 2020, Conor Culhane wrote:
-> 
-> > Miquel is passing 0 as the delay_us argument.  
-> 
-> Good point.
-> 
-> > Is this still a concern?  
-> 
-> Not in that case.
+As discussed over IRC, smp_mb__after_atomic_acquire() would be better, because
+load_acquire and spin_lock have different semantic.
 
-I will check again if looping over this register read actually
-makes sense or not. If yes, I will add a comment here.
+We could keep a define of smp_mb__after_spinlock to smp_mb__after_atomic_acquire
+to make the transition simpler.
 
 Thanks,
-Miquèl
+
+Mathieu
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
