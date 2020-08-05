@@ -2,85 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E5F23CD21
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178C123CD48
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgHERVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:21:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:33666 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728650AbgHERSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:18:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F4401FB;
-        Wed,  5 Aug 2020 03:35:07 -0700 (PDT)
-Received: from localhost (e108754-lin.cambridge.arm.com [10.1.198.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B26013FA32;
-        Wed,  5 Aug 2020 03:35:06 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 11:35:05 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rjw@rjwysocki.net, dietmar.eggemann@arm.com,
-        catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
-        linux@armlinux.org.uk, mingo@redhat.com, peterz@infradead.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] cpufreq: set invariance scale factor on
- transition end
-Message-ID: <20200805103452.GA4817@arm.com>
-References: <20200722093732.14297-1-ionela.voinescu@arm.com>
- <20200722093732.14297-3-ionela.voinescu@arm.com>
- <20200730041334.cjg5mc5xpopd2lst@vireshk-mac-ubuntu>
- <20200803135838.GB9512@arm.com>
- <20200804062611.6jpra73hmhybdw3i@vireshk-mac-ubuntu>
+        id S1728836AbgHERX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:23:57 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:45990 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728524AbgHERQJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:16:09 -0400
+Received: by mail-ua1-f66.google.com with SMTP id p27so9758806uaa.12;
+        Wed, 05 Aug 2020 10:16:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AXKpgsbLcw7z2C6ljXHBYtvVN+NDPtHizk0roOICInI=;
+        b=HDxvQeBHBH6wHy2UhDpdh7Ye5pVuATgudTrV0WGoTKTtsB3KmrmihTUKbNbD0yrdDO
+         dHVa3LL4WMOVGQA52EuDPmV6DSLYnCHQHie11WNUCa523R2vtlAY3QCvzd1MkEHJTrkv
+         2DunOy3wZpxELNXhwogS+tMhpNgkznSi4FYNuP01t5INSR+nrzI9ay6aahOW4VN0mTVi
+         xIGVm1agQrl0VdPuKd6SccG/1OGT4MdFbbztZmJqeVsYnSLpoul3oRmY7TQi8C8ltqFo
+         DKn2AxAOyG37mcw1iV3mNalzmTa22t/ipLkSLfpcNlnJOuXqWN8UBPGVutfCUMcQ3VnE
+         YJPg==
+X-Gm-Message-State: AOAM530DutCgMwXmD0tg9LxU/xBiukDGat3oRtPSkCwIz6TjfKhV20Pm
+        QzJrAvBOTfTj+UvCIbucaEXV4vKNPPV4ixWH7bPld1gx
+X-Google-Smtp-Source: ABdhPJwV3n8tOAcfpMHynj9j+mQfpTpf9DYt0YtMCyg/CBd6L07ZVwpSWSi6SSwkA6/AmBSX9QS/9q9S3w/0cDUPDdY=
+X-Received: by 2002:a05:6830:1b79:: with SMTP id d25mr2057730ote.107.1596626350552;
+ Wed, 05 Aug 2020 04:19:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804062611.6jpra73hmhybdw3i@vireshk-mac-ubuntu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-21-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594919915-5225-21-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 5 Aug 2020 13:18:59 +0200
+Message-ID: <CAMuHMdVriWnPK8-=w=0mq8yj9+1jbsg9yH8aV=ygyHsQ0f-CQQ@mail.gmail.com>
+Subject: Re: [PATCH 20/20] arm64: dts: renesas: r8a774e1: Add VIN and CSI-2 nodes
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
+        Niklas <niklas.soderlund@ragnatech.se>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-ide@vger.kernel.org,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 04 Aug 2020 at 11:56:11 (+0530), Viresh Kumar wrote:
-[..]
-> > > >  - In __target_index(), cpufreq_freq_transition_end() is called only for
-> > > >    drivers that have synchronous notifications enabled. There is only one
-> > > >    driver that disables them,
-> > > > 
-> > > >    drivers/cpufreq/powernow-k8.c:1142: .flags = CPUFREQ_ASYNC_NOTIFICATION,
-> > > > 
-> > > >    which is deprecated.
-> > > 
-> > > I don't think this is deprecated.
-> 
-> Heh, maybe I misunderstood. I thought you are talking about the flag,
-> while you were talking about the driver.
-> 
-> > Sorry, possibly 'deprecated' is a strong word.
-> > 
-> > As far as I knew acpi_cpufreq was recommended more recently for K8/K10
-> > CPUs so that's why I decided not to create a special case for it, also
-> > considering that it was not supporting cpufreq-based frequency
-> > invariance to begin with.
-> > 
-> > We could support this as well by having a call to arch_set_freq_scale()
-> > on the else path in __target_index(). But given that there was only this
-> > one user of CPUFREQ_ASYNC_NOTIFICATION, I thought I'd propose this simpler
-> > version first.
-> > 
-> > Let me know if my reasoning is wrong.
-> 
-> Nevertheless, I don't think you need to mention this detail in
-> changelog for powernow-k8 as cpufreq_freq_transition_end() does get
-> called for it as well, by the driver instead of the core.
-> 
+Hi Prabhakar,
 
-Agreed!
+On Thu, Jul 16, 2020 at 7:20 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add VIN and CSI-2 nodes to RZ/G2H (R8A774E1) SoC dtsi.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-Many thanks,
-Ionela.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> -- 
-> viresh
+However, before I queue this in renesas-devel for v5.10, I'd like to
+have some clarification about the issue below.
+
+> --- a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
+
+> +               vin4: video@e6ef4000 {
+> +                       compatible = "renesas,vin-r8a774e1";
+> +                       reg = <0 0xe6ef4000 0 0x1000>;
+> +                       interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+> +                       clocks = <&cpg CPG_MOD 807>;
+> +                       power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
+> +                       resets = <&cpg 807>;
+> +                       renesas,id = <4>;
+> +                       status = "disabled";
+> +
+> +                       ports {
+> +                               #address-cells = <1>;
+> +                               #size-cells = <0>;
+> +
+> +                               port@1 {
+> +                                       #address-cells = <1>;
+> +                                       #size-cells = <0>;
+
+"make dtbs W=1" says:
+
+    arch/arm64/boot/dts/renesas/r8a774e1.dtsi:1562.12-1572.7: Warning
+(graph_child_address): /soc/video@e6ef4000/ports/port@1: graph node
+has single child node 'endpoint@0', #address-cells/#size-cells are not
+necessary
+
+(same for vin5-7 below)
+
+> +
+> +                                       reg = <1>;
+> +
+> +                                       vin4csi20: endpoint@0 {
+> +                                               reg = <0>;
+> +                                               remote-endpoint = <&csi20vin4>;
+> +                                       };
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
