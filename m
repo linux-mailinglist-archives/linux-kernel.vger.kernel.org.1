@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5630D23C5E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250AD23C5DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbgHEGdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 02:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
+        id S1728057AbgHEGcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 02:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728126AbgHEGc5 (ORCPT
+        with ESMTP id S1726377AbgHEGct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 02:32:57 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4648C06179E
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 23:32:56 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id p8so14677350vsm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 23:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3i8XFESZihDO6mc3/4tfcR56mY/Nrg7Lzf+GDZhYM0g=;
-        b=u+hjsVhIDKbvRcozTis1DkPn0ESZP+Sd8wJOYW7WIDQKDcD7a4CcJkAWutLduFx1Ac
-         2jOZERHr/wrMd0HMCF3FNsxtJxv3fiLLKPX4kzcT9AOdYmXNV68G2Qzcjxj1YffFf50R
-         2xg3/w5dyp8w+Dbj3V1/VawrbYwILC569f3qDEjI0SFAak1NcLF9cMesEXGrZ+XP3Xry
-         WBn4lK7J2UIPYRV2SZtBvzCcdSQlRsWQo2/DuhaLoKYe/JQ7SM30i00eYs12UP0YBniE
-         yl0hpANKnYMyu9U8yCOpAbgs+p5G3lAxsa2PEMhfyT2+RVpnQL4tDH5uxTswkKlYq0ky
-         IcNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3i8XFESZihDO6mc3/4tfcR56mY/Nrg7Lzf+GDZhYM0g=;
-        b=NVz3Hn7xWbdoyZ0O3jJN16Qaw8hiQDw0RAsHu8bnujQgsD48ePgnOm6WCzdRQ/xOQm
-         ntRUev7mpmGA1sfK8IBDh0HRqwqOmfBPM7pjMVFaDq6yQKExZqRb9WzY1s2eUSxrFTMn
-         kGoy9iyQWwlbmo7sqUp27d+XbCOJe1oluaNomSVyqTwDnV4+/PpSWMaGFbC06bouORi6
-         t3jaiTatK2sQSvW5Nk4F9Iy98zPU5OsOVo3FKZfyXAeFAL/qFG9F8KrsR0opBLeaNyfG
-         6NmWCu8tiOK3qzcbyKrAcqZcPBXbFskIxku13ih4rMEtWUGc2iYHnyIzkThnYoqrSf0f
-         BCxQ==
-X-Gm-Message-State: AOAM5307h47uaz5nP92OmT5ZvPDfuabhTUcLSpvy7F/7anaI89TMOYck
-        dROOnQz2stw418zU70y3PiCp4yaS+2RqMxQMq9r1fA==
-X-Google-Smtp-Source: ABdhPJwRtcGnWnSrfLNC1GRoMPhliXQgGipO4zbcYB0cTmrrdPOh4Q7PwFb5o1O0BAF8kY6G3DlVTaO3sR41MJVFDyg=
-X-Received: by 2002:a05:6102:382:: with SMTP id m2mr883411vsq.34.1596609175004;
- Tue, 04 Aug 2020 23:32:55 -0700 (PDT)
+        Wed, 5 Aug 2020 02:32:49 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA5CC06174A;
+        Tue,  4 Aug 2020 23:32:49 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BM1yR38vWz9sRK;
+        Wed,  5 Aug 2020 16:32:47 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1596609167;
+        bh=pPI7gCgrBz7AyUXYoBTt1dPlJ+UPryDQtNyUOo0kzBE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=V022I0oiNIdRxouV0DOkDZmA6kqsm6k9i41tuhjoYGvVnWDaYUfLxWWWbKGqqasZ8
+         SpByg9VwBUTZ1xY0DZ905EleDGw4dleOqiYsT17S9Vg8pR0FREXG4QG68TFPZkCebI
+         8bCN0I+U1K34gzJDYfcJXGQkXOMGefDkxViWBJ3gK9aUdV7xrxmvnq/oZtSuD/lFre
+         nsbMnOk+X4qTWs19b45Z7I9KyGwx01GikcCtpHWaGEj5KnHQzbCsinpRwLCyeDMzGh
+         wQPBN3OEENDAbHSseM5qt1ngG1fbaEVWI77avDRteAOTb6xfiG/NgUVP2iQkUSl4v4
+         LfTbnBa0xaT6g==
+Date:   Wed, 5 Aug 2020 16:32:46 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the fsinfo tree with the kbuid tree
+Message-ID: <20200805163246.4df09c31@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1594230511-24790-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594230511-24790-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1594230511-24790-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 5 Aug 2020 08:32:18 +0200
-Message-ID: <CAPDyKFqeiEUeajprG=Bx3Nion8bGpVrDOuM7q6-kLDpOMY-QbQ@mail.gmail.com>
-Subject: Re: [PATCH 4/8] dt-bindings: mmc: renesas,sdhi: Add r8a774e1 support
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-serial@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/AkSKNCgqLbvRaMW+eA8Jnfd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Jul 2020 at 19:48, Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
->
-> Document SDHI controller for RZ/G2H (R8A774E1) SoC, which is compatible
-> with R-Car Gen3 SoC family.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+--Sig_/AkSKNCgqLbvRaMW+eA8Jnfd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Sorry, but this doesn't apply as the DT doc has been converted to
-YAML. Can you please rebase and respin.
+Hi all,
 
-Kind regards
-Uffe
+Today's linux-next merge of the fsinfo tree got a conflict in:
 
+  samples/vfs/Makefile
 
+between commit:
 
-> ---
->  Documentation/devicetree/bindings/mmc/renesas,sdhi.txt | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/mmc/renesas,sdhi.txt b/Documentation/devicetree/bindings/mmc/renesas,sdhi.txt
-> index 0ca9a622cce0..779e484fa3ef 100644
-> --- a/Documentation/devicetree/bindings/mmc/renesas,sdhi.txt
-> +++ b/Documentation/devicetree/bindings/mmc/renesas,sdhi.txt
-> @@ -14,6 +14,7 @@ Required properties:
->                 "renesas,sdhi-r8a774a1" - SDHI IP on R8A774A1 SoC
->                 "renesas,sdhi-r8a774b1" - SDHI IP on R8A774B1 SoC
->                 "renesas,sdhi-r8a774c0" - SDHI IP on R8A774C0 SoC
-> +               "renesas,sdhi-r8a774e1" - SDHI IP on R8A774E1 SoC
->                 "renesas,sdhi-r8a77470" - SDHI IP on R8A77470 SoC
->                 "renesas,sdhi-mmc-r8a77470" - SDHI/MMC IP on R8A77470 SoC
->                 "renesas,sdhi-r8a7778" - SDHI IP on R8A7778 SoC
-> --
-> 2.17.1
->
+  2f95ada7fe22 ("kbuild: introduce hostprogs-always-y and userprogs-always-=
+y")
+
+from the kbuid tree and commits:
+
+  7e786dee0b78 ("fsinfo: Add fsinfo() syscall to query filesystem informati=
+on")
+  96f310048fba ("fsinfo: sample: Mount listing program")
+
+from the fsinfo tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc samples/vfs/Makefile
+index 6377a678134a,7bcdd7a2829e..000000000000
+--- a/samples/vfs/Makefile
++++ b/samples/vfs/Makefile
+@@@ -1,4 -1,9 +1,4 @@@
+  # SPDX-License-Identifier: GPL-2.0-only
+- userprogs-always-y +=3D test-fsmount test-statx
+ -userprogs :=3D \
+ -	test-fsinfo \
+ -	test-fsmount \
+ -	test-mntinfo \
+ -	test-statx
+ -always-y :=3D $(userprogs)
+++userprogs-always-y +=3D test-fsinfo test-fsmount test-mntinfo test-statx
+ =20
+  userccflags +=3D -I usr/include
+
+--Sig_/AkSKNCgqLbvRaMW+eA8Jnfd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8qUo4ACgkQAVBC80lX
+0Gwh1gf/XqiMggfMTJGmd3Qv/6RD36/5Bo/q2gzNsAWK5DTkvAj5bDIbh9SRxRa1
+lAUaJ2f3knhAFeb60ocqVDjcgNMc7A/lJXl2RBl0WGfnf+ZWm1hlcZr0JG/A8Byj
+JY5oNtGx0lcXL7farCYje7o05r16GDm/HO3JdncBkfrDwcOgMhRnO0gKFlQAP1ik
+aSJMcQLrfd3Ri6DjTUnMYMSF6UlAlc+4ZR0W8lWiM+eF8/N+lvj9Hm6FkWIEBmuB
+gs+aknwnvWrBBAMKHMFZcDgXXNVEbHbmwXo2nV+0kCrmj2mQICWS9MVG1rVdIHtw
+s0613fru+DmECtRHvp/xAlBPfNwfaw==
+=O7Ml
+-----END PGP SIGNATURE-----
+
+--Sig_/AkSKNCgqLbvRaMW+eA8Jnfd--
