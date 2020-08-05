@@ -2,113 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CA723CD24
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0778523CD11
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728755AbgHERVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:21:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42639 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728634AbgHERRx (ORCPT
+        id S1728511AbgHERTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:19:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55616 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728329AbgHERSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:17:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647847;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7wryOIrrGjx7qHTonL03QxNMVi3GzMOIvfN7c2/DZ4s=;
-        b=NEVJjaKPqP6OEUscpFv2MTMx9g7+xAXuHwL4p2KGMlCURbbxIPh3oR58CxOLoXIccchlIZ
-        YmJXObQ7PCOPGmwZIJIG62evNNBU3gqBCSmKHCQezXsDqJHlzZBgZOI71E5Emht7+U2VrQ
-        HR4f+ZkkHNjAjB9Smsu39NPdfGa6teQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-126-lRvZ2o2HM1WFPKOHNZYtJA-1; Wed, 05 Aug 2020 08:55:32 -0400
-X-MC-Unique: lRvZ2o2HM1WFPKOHNZYtJA-1
-Received: by mail-wr1-f72.google.com with SMTP id b13so10830996wrq.19
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:55:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7wryOIrrGjx7qHTonL03QxNMVi3GzMOIvfN7c2/DZ4s=;
-        b=WdqfjnGVcEtqXwhIfax+BCSmdP63Hiuiqwq3DEY1LaOYEwpkCwLv2SY9NSdlLchgg3
-         4W3cMROu3axfxhzxAiw6dTju8QmxIOs1yKAEDDVA5GYOC8F61SW8+Q3Ndnzc0MZBI3kp
-         zcnzYhC7ie/rsnHRzgCC1E9wFClV63UeUOnuhqwCX5tE/9oW9nr9IWedBgD+7srJbq3B
-         FY4xpedMA1fWYpJb3oaLxcW9mMp42BPamK2Od5jmpCoh3X+kvd6zQRAeNeo2njKziNbp
-         Jxkytb877l6gd02dmcswK/U2Ird1mmnKaDO4zBqz4LS/p+JS5PGz4XnVlOvjQPnm+Lk3
-         A00A==
-X-Gm-Message-State: AOAM533VTeM+QQ4qol8j3Pd+BAlsmLbpiy2ENUjbkDSpVLXB/is5o5qS
-        O4j/hEXqUvzrVY94T9r0mehkpepeQ/WRkgtm2pW9yxiOgWlLGPXYq2vsF/FA89/7ZdsZOdFKRHe
-        kWLP6PzqQmux0yXttzSlK/CGj
-X-Received: by 2002:a5d:5641:: with SMTP id j1mr2726623wrw.399.1596632131183;
-        Wed, 05 Aug 2020 05:55:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+d3vclQ9GPgtT3OT3+FcxmtxQjAU228iBaB3UFD2Bzh1BnV8/Gw9OtsyrBfKZn8DubjRAFQ==
-X-Received: by 2002:a5d:5641:: with SMTP id j1mr2726609wrw.399.1596632130998;
-        Wed, 05 Aug 2020 05:55:30 -0700 (PDT)
-Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
-        by smtp.gmail.com with ESMTPSA id 32sm2783363wrn.86.2020.08.05.05.55.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 05:55:30 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 08:55:27 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
-        shahafs@mellanox.com, hanand@xilinx.com, mhabets@solarflare.com,
-        gdawar@xilinx.com, saugatm@xilinx.com, vmireyno@marvell.com,
-        zhangweining@ruijie.com.cn, eli@mellanox.com
-Subject: Re: [PATCH 3/4] vdpa: get_iova_range() is mandatory for device
- specific DMA translation
-Message-ID: <20200805085217-mutt-send-email-mst@kernel.org>
-References: <20200617032947.6371-1-jasowang@redhat.com>
- <20200617032947.6371-4-jasowang@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617032947.6371-4-jasowang@redhat.com>
+        Wed, 5 Aug 2020 13:18:17 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 075CWTU4055929;
+        Wed, 5 Aug 2020 08:57:09 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qrujyvus-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 08:57:08 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 075CWVpf056073;
+        Wed, 5 Aug 2020 08:57:08 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qrujyvu3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 08:57:08 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 075Cv6Md006291;
+        Wed, 5 Aug 2020 12:57:06 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 32mynhanre-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 12:57:05 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 075Cv3Rx61080026
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 5 Aug 2020 12:57:03 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C005AA4040;
+        Wed,  5 Aug 2020 12:57:03 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE60BA4053;
+        Wed,  5 Aug 2020 12:57:00 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.95.205])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  5 Aug 2020 12:57:00 +0000 (GMT)
+Message-ID: <31d00876438d2652890ab8bf6ba2e80f554ca7a4.camel@linux.ibm.com>
+Subject: Re: [PATCH v6 1/4] IMA: Add func to measure LSM state and policy
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        casey@schaufler-ca.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 05 Aug 2020 08:56:59 -0400
+In-Reply-To: <f88bf25e-37ef-7f00-6162-215838961bb0@gmail.com>
+References: <20200805004331.20652-1-nramas@linux.microsoft.com>
+         <20200805004331.20652-2-nramas@linux.microsoft.com>
+         <4b9d2715d3ef3c8f915ef03867cfb1a39c0abc54.camel@linux.ibm.com>
+         <f88bf25e-37ef-7f00-6162-215838961bb0@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-05_09:2020-08-03,2020-08-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 bulkscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ spamscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008050102
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 11:29:46AM +0800, Jason Wang wrote:
-> In order to let userspace work correctly, get_iova_range() is a must
-> for the device that has its own DMA translation logic.
-
-I guess you mean for a device.
-
-However in absence of ths op, I don't see what is wrong with just
-assuming device can access any address.
-
+On Wed, 2020-08-05 at 08:46 -0400, Stephen Smalley wrote:
+> On 8/4/20 11:25 PM, Mimi Zohar wrote:
 > 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/vdpa/vdpa.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> > Hi Lakshmi,
+> > 
+> > There's still  a number of other patch sets needing to be reviewed
+> > before my getting to this one.  The comment below is from a high level.
+> > 
+> > On Tue, 2020-08-04 at 17:43 -0700, Lakshmi Ramasubramanian wrote:
+> > > Critical data structures of security modules need to be measured to
+> > > enable an attestation service to verify if the configuration and
+> > > policies for the security modules have been setup correctly and
+> > > that they haven't been tampered with at runtime. A new IMA policy is
+> > > required for handling this measurement.
+> > > 
+> > > Define two new IMA policy func namely LSM_STATE and LSM_POLICY to
+> > > measure the state and the policy provided by the security modules.
+> > > Update ima_match_rules() and ima_validate_rule() to check for
+> > > the new func and ima_parse_rule() to handle the new func.
+> > I can understand wanting to measure the in kernel LSM memory state to
+> > make sure it hasn't changed, but policies are stored as files.  Buffer
+> > measurements should be limited  to those things that are not files.
+> > 
+> > Changing how data is passed to the kernel has been happening for a
+> > while.  For example, instead of passing the kernel module or kernel
+> > image in a buffer, the new syscalls - finit_module, kexec_file_load -
+> > pass an open file descriptor.  Similarly, instead of loading the IMA
+> > policy data, a pathname may be provided.
+> > 
+> > Pre and post security hooks already exist for reading files.   Instead
+> > of adding IMA support for measuring the policy file data, update the
+> > mechanism for loading the LSM policy.  Then not only will you be able
+> > to measure the policy, you'll also be able to require the policy be
+> > signed.
 > 
-> diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-> index de211ef3738c..ab7af978ef70 100644
-> --- a/drivers/vdpa/vdpa.c
-> +++ b/drivers/vdpa/vdpa.c
-> @@ -82,6 +82,10 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
->  	if (!!config->dma_map != !!config->dma_unmap)
->  		goto err;
->  
-> +	if ((config->dma_map || config->set_map) &&
-> +	    !config->get_iova_range)
-> +		goto err;
-> +
->  	err = -ENOMEM;
->  	vdev = kzalloc(size, GFP_KERNEL);
->  	if (!vdev)
+> To clarify, the policy being measured by this patch series is a 
+> serialized representation of the in-memory policy data structures being 
+> enforced by SELinux.  Not the file that was loaded.  Hence, this 
+> measurement would detect tampering with the in-memory policy data 
+> structures after the policy has been loaded.  In the case of SELinux, 
+> one can read this serialized representation via /sys/fs/selinux/policy.  
+> The result is not byte-for-byte identical to the policy file that was 
+> loaded but can be semantically compared via sediff and other tools to 
+> determine whether it is equivalent.
 
-What about devices using an IOMMU for translation?
-IOMMUs generally have a limited IOVA range too, right?
+Thank you for the clarification.   Could the policy hash be included
+with the other critical data?  Does it really need to be measured
+independently?
 
-
-
-> -- 
-> 2.20.1
+Mimi
 
