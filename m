@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF5523D252
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141D823D2D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729676AbgHEULp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:11:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727006AbgHEQ1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:27:42 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 029A72311F;
-        Wed,  5 Aug 2020 15:55:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596642942;
-        bh=qLO2o0mSxwMb9NIevBlzz6FtAr3nJ1YFHl9EQ14dEfk=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=1+HKfGAolToUv+Ni+OR9LVDesgAhGSjLcKeUX1k8GZsyM5zBJXiuKR7yXqfwLIMTi
-         7/ZTxgyDcDBXPUkCvOkWpAJEdiIlQwsJb7yBQ0q/uFOA/Fyq8tuHqXrqdgXMR4NQ+t
-         KypJKPv8fTULKS1OojELAnTGF+2jHMt75kb7GcRs=
-Date:   Wed, 05 Aug 2020 16:55:19 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Tobias Schramm <t.schramm@manjaro.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20200804195136.1485392-1-t.schramm@manjaro.org>
-References: <20200804195136.1485392-1-t.schramm@manjaro.org>
-Subject: Re: [PATCH] spi: stm32: clear only asserted irq flags on interrupt
-Message-Id: <159664291990.49398.7013081287878568700.b4-ty@kernel.org>
+        id S1727911AbgHEUQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:16:46 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:56786 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726013AbgHEQS4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:18:56 -0400
+X-IronPort-AV: E=Sophos;i="5.75,438,1589234400"; 
+   d="scan'208";a="462549311"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 17:55:32 +0200
+Date:   Wed, 5 Aug 2020 17:55:32 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+cc:     michal.lkml@markovi.net, Gilles.Muller@lip6.fr,
+        gregkh@linuxfoundation.org, nicolas.palix@imag.fr,
+        linux-kernel@vger.kernel.org, cocci@systeme.lip6.fr
+Subject: Re: [Cocci] [PATCH v2] scripts: coccicheck: Add chain mode to list
+ of     modes
+In-Reply-To: <20200805085740.9263-1-sylphrenadin@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2008051755210.2536@hadrien>
+References: <20200805085740.9263-1-sylphrenadin@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 Aug 2020 21:51:36 +0200, Tobias Schramm wrote:
-> Previously the stm32h7 interrupt thread cleared all non-masked interrupts.
-> If an interrupt was to occur during the handling of another interrupt its
-> flag would be unset, resulting in a lost interrupt.
-> This patches fixes the issue by clearing only the currently set interrupt
-> flags.
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+On Wed, 5 Aug 2020, Sumera Priyadarsini wrote:
 
-Thanks!
+> This patch adds chain mode to the list of available modes in coccicheck.
 
-[1/1] spi: stm32: clear only asserted irq flags on interrupt
-      commit: ae1ba50f1e706dfd7ce402ac52c1f1f10becad68
+Applied, Thanks!
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+julia
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+>
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> ---
+> Changes in v2:
+> 	- Change coccinelle to coccicheck as suggested by Julia Lawall.
+> ---
+>  scripts/coccicheck | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/coccicheck b/scripts/coccicheck
+> index e04d328210ac..6e37cf36caae 100755
+> --- a/scripts/coccicheck
+> +++ b/scripts/coccicheck
+> @@ -99,7 +99,7 @@ fi
+>  if [ "$MODE" = "" ] ; then
+>      if [ "$ONLINE" = "0" ] ; then
+>  	echo 'You have not explicitly specified the mode to use. Using default "report" mode.'
+> -	echo 'Available modes are the following: patch, report, context, org'
+> +	echo 'Available modes are the following: patch, report, context, org, chain'
+>  	echo 'You can specify the mode with "make coccicheck MODE=<mode>"'
+>  	echo 'Note however that some modes are not implemented by some semantic patches.'
+>      fi
+> --
+> 2.17.1
+>
+> _______________________________________________
+> Cocci mailing list
+> Cocci@systeme.lip6.fr
+> https://systeme.lip6.fr/mailman/listinfo/cocci
+>
