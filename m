@@ -2,391 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E388123D18D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB5B23D239
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgHEUCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:02:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727883AbgHEQii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:38:38 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77CD52067C;
-        Wed,  5 Aug 2020 16:26:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596644802;
-        bh=NuRrHjb75cFrk+n0vybfkD6hzBt2HG5YdzBYnMqCit0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=2BymGdaHusJTYFIG1xA3p908Cd/DF3LTrd7CO4lIWW06cbmdScox9iztI5jlm//wF
-         iJmXcdFRD7g73XSW/VqccNdZOhWBzPT+Z6vSsQfXYa52Vk5pqJDbY0A4HcRYFkyIjO
-         kqnDo0H5qnidMxWe2tEOBCpv6nYrUYhyipcTnJbM=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k3MFU-0003cw-Tu; Wed, 05 Aug 2020 17:26:41 +0100
+        id S1726422AbgHEUKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgHEQ2n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:28:43 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14119C008698
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 09:28:38 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id kr4so4798866pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 09:28:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A43ByyyVzbSptwNygct83mi3n2DzKWgXvNfPebKl6yg=;
+        b=Vhtt0A1Lb+45MJ+Wh1Mnd/6dAyl5W8x4OJgHYPrxVIsTEvhXGbgFbuLoVs9PSI6FVb
+         4+koDTinZDAnktM3XmWYW7oHe5byoeDqkyO3ubwkG+KfRrbD2WMJH0qKf4zNdJGVO8xx
+         /e+WkeJsW8Oiw8Oedhof48VQhF5C8NcxQC8V7xQa+zd9BKfaXQOlnpPjApEQoPPIPADl
+         thisXlmYHDhe2M9jishy6oQJKDq11jKExdFuyCVrsIf0fGx3Nrk9iwaKa1IrCGV07MB8
+         jCflwrMAOiNIa8bWrrpkDC6KlBXWRewwszJNRIvUcfK9Dvz2VLM9OGf6oxYKWsMATv8U
+         OmBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A43ByyyVzbSptwNygct83mi3n2DzKWgXvNfPebKl6yg=;
+        b=KetS9Lmp7NNiUs07wni62g0zMvMhFMZp5d4fOnnbkpBU6IGxSHD0aCH5I6Kz36WZFd
+         jazcGnn+qOdqg44xpbK1tR1QlLdNVob7bSJr7w6nN61/l5/op3kcDmK0hMjOWc03xphI
+         /PoEF2e5VK25mbwFAdzjnYeZRfBjHHUXZxYHe6b9b8blYK/JcV2eC0iMGa2XCwqIzGa+
+         qnbELeuHpn4H06MymLYvcA1n0zCZkXsbLQ4mkZtPKigzgOkUFtIp2Kow59NmIEGzdYJg
+         6cfKwqTWcJb8ejZP3okq5P+rny2gs6K3laXNoaky9Ka4hGyXSc2lJ0YyCfF0mbR2mNsR
+         vzUQ==
+X-Gm-Message-State: AOAM530Pn9jvLsdLfm2ieH54/xZotb7U6Mh8CP97PntwDy4ThwO9tcMO
+        DnBr7uxx8bB3OxLL1yqs5pb7zA==
+X-Google-Smtp-Source: ABdhPJz8Xblx/0gqLzz6ZElpaAiPlDeIUeBjMLlCp2hzlHJxhui/0ePgefixV57yu+dDZ6yxbRkDVQ==
+X-Received: by 2002:a17:90a:4502:: with SMTP id u2mr3822075pjg.187.1596644918065;
+        Wed, 05 Aug 2020 09:28:38 -0700 (PDT)
+Received: from localhost.localdomain ([103.136.220.70])
+        by smtp.gmail.com with ESMTPSA id 12sm3953119pfn.173.2020.08.05.09.28.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 05 Aug 2020 09:28:37 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     rostedt@goodmis.org, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
+        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        sfr@canb.auug.org.au, mingo@kernel.org, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: [PATCH v2] kprobes: fix NULL pointer dereference at kprobe_ftrace_handler
+Date:   Thu,  6 Aug 2020 00:27:13 +0800
+Message-Id: <20200805162713.16386-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-Date:   Wed, 05 Aug 2020 17:26:40 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, tglx@linutronix.de,
-        jason@lakedaemon.net, robh+dt@kernel.org, arnd@arndb.de,
-        Willy Tarreau <w@1wt.eu>, mark-pk.tsai@mediatek.com
-Subject: Re: [PATCH 2/3] irqchip: mstar: msc313-intc interrupt controller
- driver
-In-Reply-To: <20200805110052.2655487-3-daniel@0x0f.com>
-References: <20200805110052.2655487-1-daniel@0x0f.com>
- <20200805110052.2655487-3-daniel@0x0f.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <a2ac8875d67ce7afe1b28f01683e0c9d@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: daniel@0x0f.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, robh+dt@kernel.org, arnd@arndb.de, w@1wt.eu, mark-pk.tsai@mediatek.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+ Mark-PK Tsai]
+We found a case of kernel panic on our server. The stack trace is as
+follows(omit some irrelevant information):
 
-Hi Daniel,
+  BUG: kernel NULL pointer dereference, address: 0000000000000080
+  RIP: 0010:kprobe_ftrace_handler+0x5e/0xe0
+  RSP: 0018:ffffb512c6550998 EFLAGS: 00010282
+  RAX: 0000000000000000 RBX: ffff8e9d16eea018 RCX: 0000000000000000
+  RDX: ffffffffbe1179c0 RSI: ffffffffc0535564 RDI: ffffffffc0534ec0
+  RBP: ffffffffc0534ec1 R08: ffff8e9d1bbb0f00 R09: 0000000000000004
+  R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+  R13: ffff8e9d1f797060 R14: 000000000000bacc R15: ffff8e9ce13eca00
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000000000080 CR3: 00000008453d0005 CR4: 00000000003606e0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   <IRQ>
+   ftrace_ops_assist_func+0x56/0xe0
+   ftrace_call+0x5/0x34
+   tcpa_statistic_send+0x5/0x130 [ttcp_engine]
 
-On 2020-08-05 12:00, Daniel Palmer wrote:
-> Add a driver for the two peripheral interrupt controllers
-> in MStar MSC313 and other MStar/Sigmastar Armv7 SoCs.
-> 
-> Supports both the "IRQ" and "FIQ" controllers that
-> forward interrupts from the various IP blocks inside the
-> SoC to the ARM GIC.
-> 
-> They are basically the same thing except for one difference:
-> The FIQ controller needs to clear the interrupt and the IRQ
-> controller doesn't.
-> 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> Tested-by: Willy Tarreau <w@1wt.eu>
-> ---
->  MAINTAINERS                       |   1 +
->  drivers/irqchip/Makefile          |   1 +
->  drivers/irqchip/irq-msc313-intc.c | 210 ++++++++++++++++++++++++++++++
->  3 files changed, 212 insertions(+)
->  create mode 100644 drivers/irqchip/irq-msc313-intc.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 6e64d17aad7b..4d07403a7726 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2157,6 +2157,7 @@ F:	arch/arm/boot/dts/infinity*.dtsi
->  F:	arch/arm/boot/dts/mercury*.dtsi
->  F:	arch/arm/boot/dts/mstar-v7.dtsi
->  F:	arch/arm/mach-mstar/
-> +F:	drivers/irqchip/irq-msc313-intc.c
-> 
->  ARM/NEC MOBILEPRO 900/c MACHINE SUPPORT
->  M:	Michael Petchkovsky <mkpetch@internode.on.net>
-> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-> index 133f9c45744a..67f3ae3507b8 100644
-> --- a/drivers/irqchip/Makefile
-> +++ b/drivers/irqchip/Makefile
-> @@ -111,3 +111,4 @@ obj-$(CONFIG_LOONGSON_HTPIC)		+= 
-> irq-loongson-htpic.o
->  obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
->  obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
->  obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
-> +obj-$(CONFIG_ARCH_MSTARV7)		+= irq-msc313-intc.o
-> diff --git a/drivers/irqchip/irq-msc313-intc.c
-> b/drivers/irqchip/irq-msc313-intc.c
-> new file mode 100644
-> index 000000000000..b50f5c858d38
-> --- /dev/null
-> +++ b/drivers/irqchip/irq-msc313-intc.c
-> @@ -0,0 +1,210 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2019 Daniel Palmer
-> + */
-> +
-> +#include <linux/irq.h>
-> +#include <linux/irqchip.h>
-> +#include <linux/irqdomain.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +#define REGOFF_MASK		0x0
-> +#define REGOFF_POLARITY		0x10
-> +#define REGOFF_STATUSCLEAR	0x20
-> +#define IRQSPERREG		16
-> +#define IRQBIT(hwirq)		BIT((hwirq % IRQSPERREG))
-> +#define REGOFF(hwirq)		((hwirq >> 4) * 4)
-> +
-> +struct msc313_intc {
-> +	struct irq_domain *domain;
-> +	void __iomem *base;
-> +	struct irq_chip irqchip;
+The tcpa_statistic_send is the function being kprobed. After analysis,
+the root cause is that the fourth parameter regs of kprobe_ftrace_handler
+is NULL. Why regs is NULL? We use the crash tool to analyze the kdump.
 
-Why do you need to embed the irq_chip on a per-controller basis?
+  crash> dis tcpa_statistic_send -r
+         <tcpa_statistic_send>: callq 0xffffffffbd8018c0 <ftrace_caller>
 
-> +	u8 gicoff;
+The tcpa_statistic_send calls ftrace_caller instead of ftrace_regs_caller.
+So it is reasonable that the fourth parameter regs of kprobe_ftrace_handler
+is NULL. In theory, we should call the ftrace_regs_caller instead of the
+ftrace_caller. After in-depth analysis, we found a reproducible path.
 
-Given that basic SPIs can be in the 32-1019 range, this is at
-best risky. u32s are free, please use them.
+  Writing a simple kernel module which starts a periodic timer. The
+  timer's handler is named 'kprobe_test_timer_handler'. The module
+  name is kprobe_test.ko.
 
-> +};
-> +
-> +static void msc313_intc_maskunmask(struct msc313_intc *intc, int
-> hwirq, bool mask)
-> +{
-> +	int regoff = REGOFF(hwirq);
-> +	void __iomem *addr = intc->base + REGOFF_MASK + regoff;
-> +	u16 bit = IRQBIT(hwirq);
-> +	u16 reg = readw_relaxed(addr);
-> +
-> +	if (mask)
-> +		reg |= bit;
-> +	else
-> +		reg &= ~bit;
-> +
-> +	writew_relaxed(reg, addr);
+  1) insmod kprobe_test.ko
+  2) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
+  3) echo 0 > /proc/sys/kernel/ftrace_enabled
+  4) rmmod kprobe_test
+  5) stop step 2) kprobe
+  6) insmod kprobe_test.ko
+  7) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
 
-RMW on a shared MMIO register. Not going to end well. This is valid
-for all the callbacks, I believe.
+We mark the kprobe as GONE but not disarm the kprobe in the step 4).
+The step 5) also do not disarm the kprobe when unregister kprobe. So
+we do not remove the ip from the filter. In this case, when the module
+loads again in the step 6), we will replace the code to ftrace_caller
+via the ftrace_module_enable(). When we register kprobe again, we will
+not replace ftrace_caller to ftrace_regs_caller because the ftrace is
+disabled in the step 3). So the step 7) will trigger kernel panic. Fix
+this problem by disarming the kprobe when the module is going away.
 
-Also, please inline the maskunmask code in their respective callers.
-It will be much more readable.
+Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
+Acked-by: Song Liu <songliubraving@fb.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+changelogs in v2:
+ 1) fix compiler warning for !CONFIG_KPROBES_ON_FTRACE.
 
-> +}
-> +
-> +static void msc313_intc_mask_irq(struct irq_data *data)
-> +{
-> +	struct msc313_intc *intc = data->chip_data;
-> +
-> +	msc313_intc_maskunmask(intc, data->hwirq, true);
-> +	irq_chip_mask_parent(data);
-> +}
-> +
-> +static void msc313_intc_unmask_irq(struct irq_data *data)
-> +{
-> +	struct msc313_intc *intc = data->chip_data;
-> +
-> +	msc313_intc_maskunmask(intc, data->hwirq, false);
-> +	irq_chip_unmask_parent(data);
-> +}
-> +
-> +static int msc313_intc_set_type_irq(struct irq_data *data, unsigned
-> int flow_type)
-> +{
-> +	struct msc313_intc *intc = data->chip_data;
-> +	int irq = data->hwirq;
-> +	int regoff = REGOFF(irq);
-> +	void __iomem *addr = intc->base + REGOFF_POLARITY + regoff;
-> +	u16 bit = IRQBIT(irq);
-> +	u16 reg = readw_relaxed(addr);
+ kernel/kprobes.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-Please try to write this in a more readable way. For example:
-
-
-         struct msc313_intc *intc = data->chip_data;
-         void __iomem *addr;
-         u16 reg, bit;
-
-         addr = intc->base + REGOFF_POLARITY + REGOFF(d->hwirq);
-         reg = readw_relaxed(addr);
-         bit = IRQBIT(d->hwirq);
-
-White space is free, and some of the variables are really useless.
-
-> +
-> +	if (flow_type & (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_LEVEL_HIGH))
-> +		reg &= ~bit;
-> +	else
-> +		reg |= bit;
-
-I don't follow grasp the logic here. What happens on EDGE_BOTH, for
-example?
-
-> +
-> +	writew_relaxed(reg, addr);
-
-Surely you need to communicate the change of signalling mode
-to the parent irqchip, don't you?
-
-> +	return 0;
-> +}
-> +
-> +static void msc313_intc_irq_eoi(struct irq_data *data)
-> +{
-> +	struct msc313_intc *intc = data->chip_data;
-> +	int irq = data->hwirq;
-> +	int regoff = REGOFF(irq);
-> +	void __iomem *addr = intc->base + REGOFF_STATUSCLEAR + regoff;
-> +	u16 bit = IRQBIT(irq);
-> +	u16 reg = readw_relaxed(addr);
-> +
-> +	reg |= bit;
-> +	writew_relaxed(reg, addr);
-> +	irq_chip_eoi_parent(data);
-> +}
-> +
-> +static int msc313_intc_domain_translate(struct irq_domain *d,
-> +				     struct irq_fwspec *fwspec,
-> +				     unsigned long *hwirq,
-> +				     unsigned int *type)
-> +{
-> +	if (!is_of_node(fwspec->fwnode) || fwspec->param_count != 2)
-> +		return -EINVAL;
-> +
-> +	*hwirq = fwspec->param[0];
-
-Don't you want to check that the input you get is actually in range?
-Not a big deal, given that you then use it as an input parameter
-to the GIC driver, it'd better be correct.
-
-> +	*type = fwspec->param[1];
-> +
-> +	return 0;
-> +}
-> +
-> +static int msc313_intc_domain_alloc(struct irq_domain *domain,
-> unsigned int virq,
-> +				 unsigned int nr_irqs, void *data)
-> +{
-> +	struct irq_fwspec *fwspec = data;
-> +	struct irq_fwspec parent_fwspec;
-> +	struct msc313_intc *intc = domain->host_data;
-> +
-> +	if (fwspec->param_count != 2)
-> +		return -EINVAL;
-> +
-> +	irq_domain_set_hwirq_and_chip(domain, virq, fwspec->param[0],
-> &intc->irqchip, intc);
-> +
-> +	parent_fwspec.fwnode = domain->parent->fwnode;
-> +	parent_fwspec.param[0] = GIC_SPI;
-> +	parent_fwspec.param[1] = fwspec->param[0] + intc->gicoff;
-> +	parent_fwspec.param[2] = fwspec->param[1];
-> +	parent_fwspec.param_count = 3;
-> +
-> +	return irq_domain_alloc_irqs_parent(domain, virq, nr_irqs,
-> +					    &parent_fwspec);
-> +}
-> +
-> +static const struct irq_domain_ops msc313_intc_domain_ops = {
-> +		.translate = msc313_intc_domain_translate,
-> +		.alloc = msc313_intc_domain_alloc,
-> +		.free = irq_domain_free_irqs_common,
-> +};
-> +
-> +static int  msc313_intc_of_init(struct device_node *node,
-> +				   struct device_node *parent,
-> +				   void (*eoi)(struct irq_data *data))
-> +{
-> +	struct irq_domain *domain_parent;
-> +	struct msc313_intc *intc;
-> +	int ret = 0;
-> +	u32 gicoffset, numirqs;
-> +
-> +	if (of_property_read_u32(node, "mstar,gic-offset", &gicoffset)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	if (of_property_read_u32(node, "mstar,nr-interrupts", &numirqs)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	domain_parent = irq_find_host(parent);
-> +	if (!domain_parent) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	intc = kzalloc(sizeof(*intc), GFP_KERNEL);
-> +	if (!intc) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	intc->base = of_iomap(node, 0);
-> +	if (IS_ERR(intc->base)) {
-> +		ret = PTR_ERR(intc->base);
-> +		goto free_intc;
-> +	}
-> +
-> +	intc->irqchip.name = node->name;
-
-No, please. /proc/interrupt isn't a dumping ground for DT related
-information. We have debugfs for that.
-
-> +	intc->irqchip.irq_mask = msc313_intc_mask_irq;
-> +	intc->irqchip.irq_unmask = msc313_intc_unmask_irq;
-> +	intc->irqchip.irq_eoi = eoi;
-> +	intc->irqchip.irq_set_type = msc313_intc_set_type_irq;
-> +	intc->irqchip.flags = IRQCHIP_MASK_ON_SUSPEND;
-
-This needs to be a static irq_chip structure. Use two for the EOI
-weirdness, or test a flag in your eoi callback.
-
-> +
-> +	intc->gicoff = gicoffset;
-> +
-> +	intc->domain = irq_domain_add_hierarchy(domain_parent, 0, numirqs, 
-> node,
-> +			&msc313_intc_domain_ops, intc);
-> +	if (!intc->domain) {
-> +		ret = -ENOMEM;
-> +		goto unmap;
-> +	}
-> +
-> +	return 0;
-> +
-> +unmap:
-> +	iounmap(intc->base);
-> +free_intc:
-> +	kfree(intc);
-> +out:
-> +	return ret;
-> +}
-> +
-> +static int __init msc313_intc_irq_of_init(struct device_node *node,
-> +				   struct device_node *parent)
-> +{
-> +	return msc313_intc_of_init(node, parent, irq_chip_eoi_parent);
-> +};
-> +
-> +static int __init msc313_intc_fiq_of_init(struct device_node *node,
-> +				   struct device_node *parent)
-> +{
-> +	return msc313_intc_of_init(node, parent, msc313_intc_irq_eoi);
-> +};
-> +
-> +IRQCHIP_DECLARE(msc313_intc_irq, "mstar,msc313-intc-irq",
-> +		msc313_intc_irq_of_init);
-> +IRQCHIP_DECLARE(mstar_intc_fiq, "mstar,msc313-intc-fiq",
-> +		msc313_intc_fiq_of_init);
-
-This driver has a massive feeling of déja-vu. It is almost
-a copy of the one posted at [1], which I reviewed early
-this week. The issues are the exact same, and I'm 98%
-sure this is the same IP block used by two SoC vendors.
-
-Please talk to each other and come up with a single driver.
-
-Thanks,
-
-         M.
-
-[1] 
-https://lore.kernel.org/r/20200803062214.24076-1-mark-pk.tsai@mediatek.com
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 146c648eb943..d36e2b017588 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1114,9 +1114,20 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
+ 		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
+ }
+ #else	/* !CONFIG_KPROBES_ON_FTRACE */
+-#define prepare_kprobe(p)	arch_prepare_kprobe(p)
+-#define arm_kprobe_ftrace(p)	(-ENODEV)
+-#define disarm_kprobe_ftrace(p)	(-ENODEV)
++static inline int prepare_kprobe(struct kprobe *p)
++{
++	return arch_prepare_kprobe(p);
++}
++
++static inline int arm_kprobe_ftrace(struct kprobe *p)
++{
++	return -ENODEV;
++}
++
++static inline int disarm_kprobe_ftrace(struct kprobe *p)
++{
++	return -ENODEV;
++}
+ #endif
+ 
+ /* Arm a kprobe with text_mutex */
+@@ -2148,6 +2159,13 @@ static void kill_kprobe(struct kprobe *p)
+ 	 * the original probed function (which will be freed soon) any more.
+ 	 */
+ 	arch_remove_kprobe(p);
++
++	/*
++	 * The module is going away. We should disarm the kprobe which
++	 * is using ftrace.
++	 */
++	if (kprobe_ftrace(p))
++		disarm_kprobe_ftrace(p);
+ }
+ 
+ /* Disable one kprobe */
 -- 
-Jazz is not dead. It just smells funny...
+2.11.0
+
