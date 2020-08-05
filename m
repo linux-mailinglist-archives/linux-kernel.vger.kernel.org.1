@@ -2,112 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B23823CCEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3F523CD5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728342AbgHERMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:12:13 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32478 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728489AbgHERIi (ORCPT
+        id S1728723AbgHERZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:25:31 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:47730 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728409AbgHERPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:08:38 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 075CWW3e113416;
-        Wed, 5 Aug 2020 08:38:08 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32qrr1qq47-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 08:38:08 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 075CWeu2113976;
-        Wed, 5 Aug 2020 08:38:07 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32qrr1qq35-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 08:38:07 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 075CZkxk021961;
-        Wed, 5 Aug 2020 12:38:05 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma02fra.de.ibm.com with ESMTP id 32n018amv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 12:38:04 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 075Cc2Pk20775184
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 5 Aug 2020 12:38:02 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8ED954C058;
-        Wed,  5 Aug 2020 12:38:02 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 37B504C046;
-        Wed,  5 Aug 2020 12:38:00 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.95.205])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  5 Aug 2020 12:37:59 +0000 (GMT)
-Message-ID: <3a96065c7c628be36eba99ad0da8d78cdac7dcaf.camel@linux.ibm.com>
-Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        stephen.smalley.work@gmail.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 05 Aug 2020 08:37:59 -0400
-In-Reply-To: <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
-         <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-05_09:2020-08-03,2020-08-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- suspectscore=0 mlxscore=0 malwarescore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 adultscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008050102
+        Wed, 5 Aug 2020 13:15:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596647749;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CGwlDRrUmfnCA41Wd+w3m7ULgwi2rrC2tIZF7Bi6bAQ=;
+        b=JbStSWV9GFpO2a55dRse0jfAh9Jm5/6Gexio6Qi+XhwcccEX7bEWdhUS5Af4CL5Gs4xJ1W
+        BpRRm4tzCj+CFxRIbf1Ztd/CJWfmltALPN7hsSdVqZ3/NuciAwspkTJyIRU57VF69s1lRA
+        0YWSAKQKzAnyGyuwJl8ewaj1KwP+c4c=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-B6wn6-5sOsuIcigbfLDfUA-1; Wed, 05 Aug 2020 08:49:01 -0400
+X-MC-Unique: B6wn6-5sOsuIcigbfLDfUA-1
+Received: by mail-wr1-f72.google.com with SMTP id e12so13592900wra.13
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:49:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=CGwlDRrUmfnCA41Wd+w3m7ULgwi2rrC2tIZF7Bi6bAQ=;
+        b=WjRQQdyhc4WqN+W3SKZTjXT+DfArT65ds3KNqsS+CDEu58yDTHvbadwU4s+ondG80k
+         e1bUpp+Hhv2VEBgMddBhWlpN9ZrnahIQlF8gwBl6n7E/tdV/P7mqmQOTXMngfohDpOys
+         a5btxNhuXM0yqnaG/ii5UPK2vGQ+qMEzXz6zGBbMPe6R2M4QVqQGcr+V+jrQHTVOxLOa
+         WQsi0SnxMpSL8xK5jsC0PKUVqJSVXeG6ScgqVQqyzJ+6GZwEou5t03Oly+wf3V/oZgRH
+         EZU206BdiL8pXv5/XOyPYy0hm6R393jvPSO4f1+FZrCT0WPqXkE5VuKfU7Qsd1ESOyfe
+         oBfQ==
+X-Gm-Message-State: AOAM532uasULUO+FUfSqXU7dCDsdH+dc4/N5EJMPTIxsUPIzWsqXuSvx
+        kjQn4I7CA5tHeS2ncF9IQD0/dTrC+EnwkmlQ/nhIE8Jef8LAPpl1e7rxe7ejt7qZfc2+AbcnsnR
+        KhpB6b2tb4+66gSkepr+6k2Zn
+X-Received: by 2002:a5d:514e:: with SMTP id u14mr2640354wrt.20.1596631739255;
+        Wed, 05 Aug 2020 05:48:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyIfLAW5njE7a7QOoY9G/jGqPTLFGFvmbwKBzpe7hgcGZRx5BGUtja6apmF1sj4UATGv+PozQ==
+X-Received: by 2002:a5d:514e:: with SMTP id u14mr2640334wrt.20.1596631738915;
+        Wed, 05 Aug 2020 05:48:58 -0700 (PDT)
+Received: from redhat.com ([192.117.173.58])
+        by smtp.gmail.com with ESMTPSA id f15sm2777347wrt.80.2020.08.05.05.48.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 05:48:57 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 08:48:52 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <eli@mellanox.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
+        saeedm@mellanox.com, parav@mellanox.com
+Subject: Re: [PATCH V4 linux-next 00/12] VDPA support for Mellanox ConnectX
+ devices
+Message-ID: <20200805084604-mutt-send-email-mst@kernel.org>
+References: <20200804162048.22587-1-eli@mellanox.com>
+ <20200805075856-mutt-send-email-mst@kernel.org>
+ <20200805124054.GA125576@mtl-vdi-166.wap.labs.mlnx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200805124054.GA125576@mtl-vdi-166.wap.labs.mlnx>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-04 at 18:04 -0700, Casey Schaufler wrote:
-> On 8/4/2020 5:43 PM, Lakshmi Ramasubramanian wrote:
-> > Critical data structures of security modules are currently not measured.
-> > Therefore an attestation service, for instance, would not be able to
-> > attest whether the security modules are always operating with the policies
-> > and configuration that the system administrator had setup. The policies
-> > and configuration for the security modules could be tampered with by
-> > malware by exploiting kernel vulnerabilities or modified through some
-> > inadvertent actions on the system. Measuring such critical data would
-> > enable an attestation service to better assess the state of the system.
+On Wed, Aug 05, 2020 at 03:40:54PM +0300, Eli Cohen wrote:
+> On Wed, Aug 05, 2020 at 08:00:55AM -0400, Michael S. Tsirkin wrote:
+> > On Tue, Aug 04, 2020 at 07:20:36PM +0300, Eli Cohen wrote:
+> > > Hi Michael,
+> > > please note that this series depends on mlx5 core device driver patches
+> > > in mlx5-next branch in
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git.
+> > > 
+> > > git pull git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next 
+> > > 
+> > > They also depend Jason Wang's patches: https://lkml.org/lkml/2020/7/1/301
+> > 
+> > So if I apply this to linux-next branch of my tree, I get:
+> > 
 > 
-> I still wonder why you're calling this an LSM change/feature when
-> all the change is in IMA and SELinux. You're not putting anything
-> into the LSM infrastructure, not are you using the LSM infrastructure
-> to achieve your ends. Sure, you *could* support other security modules
-> using this scheme, but you have a configuration dependency on
-> SELinux, so that's at best going to be messy. If you want this to
-> be an LSM "feature" you need to use the LSM hooking mechanism.
-> 
-> I'm not objecting to the feature. It adds value. But as you've
-> implemented it it is either an IMA extension to SELinux, or an
-> SELiux extension to IMA. Could AppArmor add hooks for this without
-> changing the IMA code? It doesn't look like it to me.
+> Did you merge this?:
+> git pull git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next
 
-Agreed.  Without reviewing the patch set in depth, I'm not quite sure
-why this patch set needs to be limited to measuring just LSM critical
-data and can't be generalized.    The patch set could be titled "ima:
-measuring critical data" or "ima: measuring critical kernel data". 
-Measuring SELinux critical data would be an example of its usage.
 
-For an example, refer to the ima_file_check hook, which is an example
-of IMA being called directly, not via an LSM hook.
+I can only merge this tree if no one else will. Linus does not like
+getting same patches through two trees.
 
-Mimi
+Is this the case? Is mlx5-next going to be merged through
+my tree in this cycle?
+
+
+> > 
+> >   CALL    scripts/checksyscalls.sh
+> >   CALL    scripts/atomic/check-atomics.sh
+> >   DESCEND  objtool
+> >   CHK     include/generated/compile.h
+> >   CC [M]  drivers/vdpa/mlx5/net/main.o
+> > In file included from ./include/linux/swab.h:5,
+> >                  from ./include/uapi/linux/byteorder/little_endian.h:13,
+> >                  from ./include/linux/byteorder/little_endian.h:5,
+> >                  from ./arch/x86/include/uapi/asm/byteorder.h:5,
+> >                  from ./include/asm-generic/bitops/le.h:6,
+> >                  from ./arch/x86/include/asm/bitops.h:395,
+> >                  from ./include/linux/bitops.h:29,
+> >                  from ./include/linux/kernel.h:12,
+> >                  from ./include/linux/list.h:9,
+> >                  from ./include/linux/module.h:12,
+> >                  from drivers/vdpa/mlx5/net/main.c:4:
+> > drivers/vdpa/mlx5/net/main.c: In function ‘required_caps_supported’:
+> > ././include/linux/compiler_types.h:129:35: error: ‘struct mlx5_ifc_device_virtio_emulation_cap_bits’ has no member named ‘event_mode’
+> >   129 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+> >       |                                   ^~~~~~~~~~~~~~~~~~
+> > ./include/uapi/linux/swab.h:115:54: note: in definition of macro ‘__swab32’
+> >   115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
+> >       |                                                      ^
+> > ./include/linux/byteorder/generic.h:95:21: note: in expansion of macro ‘__be32_to_cpu’
+> >    95 | #define be32_to_cpu __be32_to_cpu
+> >       |                     ^~~~~~~~~~~~~
+> > ./include/linux/stddef.h:17:32: note: in expansion of macro ‘__compiler_offsetof’
+> >    17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+> >       |                                ^~~~~~~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:51:35: note: in expansion of macro ‘offsetof’
+> >    51 | #define __mlx5_bit_off(typ, fld) (offsetof(struct mlx5_ifc_##typ##_bits, fld))
+> >       |                                   ^~~~~~~~
+> > ./include/linux/mlx5/device.h:53:34: note: in expansion of macro ‘__mlx5_bit_off’
+> >    53 | #define __mlx5_dw_off(typ, fld) (__mlx5_bit_off(typ, fld) / 32)
+> >       |                                  ^~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:96:1: note: in expansion of macro ‘__mlx5_dw_off’
+> >    96 | __mlx5_dw_off(typ, fld))) >> __mlx5_dw_bit_off(typ, fld)) & \
+> >       | ^~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:1355:2: note: in expansion of macro ‘MLX5_GET’
+> >  1355 |  MLX5_GET(device_virtio_emulation_cap, \
+> >       |  ^~~~~~~~
+> > drivers/vdpa/mlx5/net/main.c:24:15: note: in expansion of macro ‘MLX5_CAP_DEV_VDPA_EMULATION’
+> >    24 |  event_mode = MLX5_CAP_DEV_VDPA_EMULATION(mdev, event_mode);
+> >       |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > In file included from ./include/linux/mlx5/driver.h:52,
+> >                  from drivers/vdpa/mlx5/net/main.c:5:
+> > ./include/linux/mlx5/device.h:50:57: error: ‘struct mlx5_ifc_device_virtio_emulation_cap_bits’ has no member named ‘event_mode’
+> >    50 | #define __mlx5_bit_sz(typ, fld) sizeof(__mlx5_nullp(typ)->fld)
+> >       |                                                         ^~
+> > ./include/linux/mlx5/device.h:56:43: note: in expansion of macro ‘__mlx5_bit_sz’
+> >    56 | #define __mlx5_dw_bit_off(typ, fld) (32 - __mlx5_bit_sz(typ, fld) - (__mlx5_bit_off(typ, fld) & 0x1f))
+> >       |                                           ^~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:96:30: note: in expansion of macro ‘__mlx5_dw_bit_off’
+> >    96 | __mlx5_dw_off(typ, fld))) >> __mlx5_dw_bit_off(typ, fld)) & \
+> >       |                              ^~~~~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:1355:2: note: in expansion of macro ‘MLX5_GET’
+> >  1355 |  MLX5_GET(device_virtio_emulation_cap, \
+> >       |  ^~~~~~~~
+> > drivers/vdpa/mlx5/net/main.c:24:15: note: in expansion of macro ‘MLX5_CAP_DEV_VDPA_EMULATION’
+> >    24 |  event_mode = MLX5_CAP_DEV_VDPA_EMULATION(mdev, event_mode);
+> >       |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > In file included from <command-line>:
+> > ././include/linux/compiler_types.h:129:35: error: ‘struct mlx5_ifc_device_virtio_emulation_cap_bits’ has no member named ‘event_mode’
+> >   129 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+> >       |                                   ^~~~~~~~~~~~~~~~~~
+> > ./include/linux/stddef.h:17:32: note: in expansion of macro ‘__compiler_offsetof’
+> >    17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+> >       |                                ^~~~~~~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:51:35: note: in expansion of macro ‘offsetof’
+> >    51 | #define __mlx5_bit_off(typ, fld) (offsetof(struct mlx5_ifc_##typ##_bits, fld))
+> >       |                                   ^~~~~~~~
+> > ./include/linux/mlx5/device.h:56:70: note: in expansion of macro ‘__mlx5_bit_off’
+> >    56 | #define __mlx5_dw_bit_off(typ, fld) (32 - __mlx5_bit_sz(typ, fld) - (__mlx5_bit_off(typ, fld) & 0x1f))
+> >       |                                                                      ^~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:96:30: note: in expansion of macro ‘__mlx5_dw_bit_off’
+> >    96 | __mlx5_dw_off(typ, fld))) >> __mlx5_dw_bit_off(typ, fld)) & \
+> >       |                              ^~~~~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:1355:2: note: in expansion of macro ‘MLX5_GET’
+> >  1355 |  MLX5_GET(device_virtio_emulation_cap, \
+> >       |  ^~~~~~~~
+> > drivers/vdpa/mlx5/net/main.c:24:15: note: in expansion of macro ‘MLX5_CAP_DEV_VDPA_EMULATION’
+> >    24 |  event_mode = MLX5_CAP_DEV_VDPA_EMULATION(mdev, event_mode);
+> >       |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > In file included from ./include/linux/mlx5/driver.h:52,
+> >                  from drivers/vdpa/mlx5/net/main.c:5:
+> > ./include/linux/mlx5/device.h:50:57: error: ‘struct mlx5_ifc_device_virtio_emulation_cap_bits’ has no member named ‘event_mode’
+> >    50 | #define __mlx5_bit_sz(typ, fld) sizeof(__mlx5_nullp(typ)->fld)
+> >       |                                                         ^~
+> > ./include/linux/mlx5/device.h:57:47: note: in expansion of macro ‘__mlx5_bit_sz’
+> >    57 | #define __mlx5_mask(typ, fld) ((u32)((1ull << __mlx5_bit_sz(typ, fld)) - 1))
+> >       |                                               ^~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:97:1: note: in expansion of macro ‘__mlx5_mask’
+> >    97 | __mlx5_mask(typ, fld))
+> >       | ^~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:1355:2: note: in expansion of macro ‘MLX5_GET’
+> >  1355 |  MLX5_GET(device_virtio_emulation_cap, \
+> >       |  ^~~~~~~~
+> > drivers/vdpa/mlx5/net/main.c:24:15: note: in expansion of macro ‘MLX5_CAP_DEV_VDPA_EMULATION’
+> >    24 |  event_mode = MLX5_CAP_DEV_VDPA_EMULATION(mdev, event_mode);
+> >       |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > In file included from ./include/linux/swab.h:5,
+> >                  from ./include/uapi/linux/byteorder/little_endian.h:13,
+> >                  from ./include/linux/byteorder/little_endian.h:5,
+> >                  from ./arch/x86/include/uapi/asm/byteorder.h:5,
+> >                  from ./include/asm-generic/bitops/le.h:6,
+> >                  from ./arch/x86/include/asm/bitops.h:395,
+> >                  from ./include/linux/bitops.h:29,
+> >                  from ./include/linux/kernel.h:12,
+> >                  from ./include/linux/list.h:9,
+> >                  from ./include/linux/module.h:12,
+> >                  from drivers/vdpa/mlx5/net/main.c:4:
+> > ././include/linux/compiler_types.h:129:35: error: ‘struct mlx5_ifc_device_virtio_emulation_cap_bits’ has no member named ‘eth_frame_offload_type’
+> >   129 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+> >       |                                   ^~~~~~~~~~~~~~~~~~
+> > ./include/uapi/linux/swab.h:115:54: note: in definition of macro ‘__swab32’
+> >   115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
+> >       |                                                      ^
+> > ./include/linux/byteorder/generic.h:95:21: note: in expansion of macro ‘__be32_to_cpu’
+> >    95 | #define be32_to_cpu __be32_to_cpu
+> >       |                     ^~~~~~~~~~~~~
+> > ./include/linux/stddef.h:17:32: note: in expansion of macro ‘__compiler_offsetof’
+> >    17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+> >       |                                ^~~~~~~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:51:35: note: in expansion of macro ‘offsetof’
+> >    51 | #define __mlx5_bit_off(typ, fld) (offsetof(struct mlx5_ifc_##typ##_bits, fld))
+> >       |                                   ^~~~~~~~
+> > ./include/linux/mlx5/device.h:53:34: note: in expansion of macro ‘__mlx5_bit_off’
+> >    53 | #define __mlx5_dw_off(typ, fld) (__mlx5_bit_off(typ, fld) / 32)
+> >       |                                  ^~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:96:1: note: in expansion of macro ‘__mlx5_dw_off’
+> >    96 | __mlx5_dw_off(typ, fld))) >> __mlx5_dw_bit_off(typ, fld)) & \
+> >       | ^~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:1355:2: note: in expansion of macro ‘MLX5_GET’
+> >  1355 |  MLX5_GET(device_virtio_emulation_cap, \
+> >       |  ^~~~~~~~
+> > drivers/vdpa/mlx5/net/main.c:28:7: note: in expansion of macro ‘MLX5_CAP_DEV_VDPA_EMULATION’
+> >    28 |  if (!MLX5_CAP_DEV_VDPA_EMULATION(mdev, eth_frame_offload_type))
+> >       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > In file included from ./include/linux/mlx5/driver.h:52,
+> >                  from drivers/vdpa/mlx5/net/main.c:5:
+> > ./include/linux/mlx5/device.h:50:57: error: ‘struct mlx5_ifc_device_virtio_emulation_cap_bits’ has no member named ‘eth_frame_offload_type’
+> >    50 | #define __mlx5_bit_sz(typ, fld) sizeof(__mlx5_nullp(typ)->fld)
+> >       |                                                         ^~
+> > ./include/linux/mlx5/device.h:56:43: note: in expansion of macro ‘__mlx5_bit_sz’
+> >    56 | #define __mlx5_dw_bit_off(typ, fld) (32 - __mlx5_bit_sz(typ, fld) - (__mlx5_bit_off(typ, fld) & 0x1f))
+> >       |                                           ^~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:96:30: note: in expansion of macro ‘__mlx5_dw_bit_off’
+> >    96 | __mlx5_dw_off(typ, fld))) >> __mlx5_dw_bit_off(typ, fld)) & \
+> >       |                              ^~~~~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:1355:2: note: in expansion of macro ‘MLX5_GET’
+> >  1355 |  MLX5_GET(device_virtio_emulation_cap, \
+> >       |  ^~~~~~~~
+> > drivers/vdpa/mlx5/net/main.c:28:7: note: in expansion of macro ‘MLX5_CAP_DEV_VDPA_EMULATION’
+> >    28 |  if (!MLX5_CAP_DEV_VDPA_EMULATION(mdev, eth_frame_offload_type))
+> >       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > In file included from <command-line>:
+> > ././include/linux/compiler_types.h:129:35: error: ‘struct mlx5_ifc_device_virtio_emulation_cap_bits’ has no member named ‘eth_frame_offload_type’
+> >   129 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+> >       |                                   ^~~~~~~~~~~~~~~~~~
+> > ./include/linux/stddef.h:17:32: note: in expansion of macro ‘__compiler_offsetof’
+> >    17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+> >       |                                ^~~~~~~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:51:35: note: in expansion of macro ‘offsetof’
+> >    51 | #define __mlx5_bit_off(typ, fld) (offsetof(struct mlx5_ifc_##typ##_bits, fld))
+> >       |                                   ^~~~~~~~
+> > ./include/linux/mlx5/device.h:56:70: note: in expansion of macro ‘__mlx5_bit_off’
+> >    56 | #define __mlx5_dw_bit_off(typ, fld) (32 - __mlx5_bit_sz(typ, fld) - (__mlx5_bit_off(typ, fld) & 0x1f))
+> >       |                                                                      ^~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:96:30: note: in expansion of macro ‘__mlx5_dw_bit_off’
+> >    96 | __mlx5_dw_off(typ, fld))) >> __mlx5_dw_bit_off(typ, fld)) & \
+> >       |                              ^~~~~~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:1355:2: note: in expansion of macro ‘MLX5_GET’
+> >  1355 |  MLX5_GET(device_virtio_emulation_cap, \
+> >       |  ^~~~~~~~
+> > drivers/vdpa/mlx5/net/main.c:28:7: note: in expansion of macro ‘MLX5_CAP_DEV_VDPA_EMULATION’
+> >    28 |  if (!MLX5_CAP_DEV_VDPA_EMULATION(mdev, eth_frame_offload_type))
+> >       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > In file included from ./include/linux/mlx5/driver.h:52,
+> >                  from drivers/vdpa/mlx5/net/main.c:5:
+> > ./include/linux/mlx5/device.h:50:57: error: ‘struct mlx5_ifc_device_virtio_emulation_cap_bits’ has no member named ‘eth_frame_offload_type’
+> >    50 | #define __mlx5_bit_sz(typ, fld) sizeof(__mlx5_nullp(typ)->fld)
+> >       |                                                         ^~
+> > ./include/linux/mlx5/device.h:57:47: note: in expansion of macro ‘__mlx5_bit_sz’
+> >    57 | #define __mlx5_mask(typ, fld) ((u32)((1ull << __mlx5_bit_sz(typ, fld)) - 1))
+> >       |                                               ^~~~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:97:1: note: in expansion of macro ‘__mlx5_mask’
+> >    97 | __mlx5_mask(typ, fld))
+> >       | ^~~~~~~~~~~
+> > ./include/linux/mlx5/device.h:1355:2: note: in expansion of macro ‘MLX5_GET’
+> >  1355 |  MLX5_GET(device_virtio_emulation_cap, \
+> >       |  ^~~~~~~~
+> > drivers/vdpa/mlx5/net/main.c:28:7: note: in expansion of macro ‘MLX5_CAP_DEV_VDPA_EMULATION’
+> >    28 |  if (!MLX5_CAP_DEV_VDPA_EMULATION(mdev, eth_frame_offload_type))
+> >       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/vdpa/mlx5/net/main.c: At top level:
+> > drivers/vdpa/mlx5/net/main.c:62:14: error: ‘MLX5_INTERFACE_PROTOCOL_VDPA’ undeclared here (not in a function); did you mean ‘MLX5_INTERFACE_PROTOCOL_ETH’?
+> >    62 |  .protocol = MLX5_INTERFACE_PROTOCOL_VDPA,
+> >       |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >       |              MLX5_INTERFACE_PROTOCOL_ETH
+> > make[3]: *** [scripts/Makefile.build:281: drivers/vdpa/mlx5/net/main.o] Error 1
+> > make[2]: *** [scripts/Makefile.build:497: drivers/vdpa/mlx5] Error 2
+> > make[1]: *** [scripts/Makefile.build:497: drivers/vdpa] Error 2
+> > make: *** [Makefile:1756: drivers] Error 2
+> > 
+> > 
+> > I am guessing this is because of the missing dependency, right?
+> > So what's the plan for merging this?
+> > 
+> > 
+> > -- 
+> > MST
+> > 
 
