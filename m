@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C6F23CFDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F8F23CFD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729104AbgHETZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:25:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35572 "EHLO mail.kernel.org"
+        id S1728281AbgHETZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:25:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728751AbgHERPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:15:17 -0400
+        id S1728344AbgHERPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:15:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58E9423371;
-        Wed,  5 Aug 2020 15:52:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E1BA2337F;
+        Wed,  5 Aug 2020 15:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596642763;
-        bh=47QAnSMoOVMr8QHQNgdXK4N904/7dAfTkxp4OLgXePU=;
+        s=default; t=1596642773;
+        bh=1w22+LBQnaR1M+1m8sFWAvv4+c7MzGzRZ17tDJnZxak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t9Ylgpvi0YEcEmP+ExJf6FzmK0zYUsWdnnijU1WxDn/qBN7+I0V0uDNvN/s3dDEyR
-         m4voc3+kBHhPqCjCD58CaFVWWeVlOsrpOUGgHH1yIM2jFx0uGpPqdpV040UPJbYaLd
-         i/7UTZxWg8Y0MmNm71zSMxMwaL+3IO7sgv960rlo=
+        b=ErfTKyug8PRwLfcIOWDvraLY1ZaaPGDNG2OYgk7oF25asCAoUq28wT76AzvvLeyvx
+         SA4tuz6TrPHCYcZt2mOYpy+O5RPUtA/e1drmiDsenuRXpMfiTb9T17fwLaMyHDURai
+         O5Rvt1djQ5ynXUfqsPJyIwpDTfv6WEmcJVDzjx8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 2/9] ARM: percpu.h: fix build error
-Date:   Wed,  5 Aug 2020 17:52:39 +0200
-Message-Id: <20200805153507.166338238@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.4 6/9] [PATCH] arm64: Workaround circular dependency in pointer_auth.h
+Date:   Wed,  5 Aug 2020 17:52:43 +0200
+Message-Id: <20200805153507.352774488@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200805153507.053638231@linuxfoundation.org>
 References: <20200805153507.053638231@linuxfoundation.org>
@@ -44,43 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit aa54ea903abb02303bf55855fb51e3fcee135d70 upstream.
+With the backport of f227e3ec3b5c ("random32: update the net random
+state on interrupt and activity") and its associated fixes, the
+arm64 build explodes early:
 
-Fix build error for the case:
-  defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
+In file included from ../include/linux/smp.h:67,
+                  from ../include/linux/percpu.h:7,
+                  from ../include/linux/prandom.h:12,
+                  from ../include/linux/random.h:118,
+                  from ../arch/arm64/include/asm/pointer_auth.h:6,
+                  from ../arch/arm64/include/asm/processor.h:39,
+                  from ../include/linux/mutex.h:19,
+                  from ../include/linux/kernfs.h:12,
+                  from ../include/linux/sysfs.h:16,
+                  from ../include/linux/kobject.h:20,
+                  from ../include/linux/of.h:17,
+                  from ../include/linux/irqdomain.h:35,
+                  from ../include/linux/acpi.h:13,
+                  from ../include/acpi/apei.h:9,
+                  from ../include/acpi/ghes.h:5,
+                  from ../include/linux/arm_sdei.h:8,
+                  from ../arch/arm64/kernel/asm-offsets.c:10:
+../arch/arm64/include/asm/smp.h:100:29: error: field ‘ptrauth_key’ has
+incomplete type
 
-config: keystone_defconfig
+This is due to struct ptrauth_keys_kernel not being defined before
+we transitively include asm/smp.h from linux/random.h.
 
-  CC      arch/arm/kernel/signal.o
-  In file included from ../include/linux/random.h:14,
-                    from ../arch/arm/kernel/signal.c:8:
-  ../arch/arm/include/asm/percpu.h: In function ‘__my_cpu_offset’:
-  ../arch/arm/include/asm/percpu.h:29:34: error: ‘current_stack_pointer’ undeclared (first use in this function); did you mean ‘user_stack_pointer’?
-      : "Q" (*(const unsigned long *)current_stack_pointer));
-                                     ^~~~~~~~~~~~~~~~~~~~~
-                                     user_stack_pointer
+Paper over it by moving the inclusion of linux/random.h *after* the
+type has been defined.
 
-Fixes: f227e3ec3b5c ("random32: update the net random state on interrupt and activity")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/arm/include/asm/percpu.h |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/include/asm/pointer_auth.h |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/arch/arm/include/asm/percpu.h
-+++ b/arch/arm/include/asm/percpu.h
-@@ -5,6 +5,8 @@
- #ifndef _ASM_ARM_PERCPU_H_
- #define _ASM_ARM_PERCPU_H_
+--- a/arch/arm64/include/asm/pointer_auth.h
++++ b/arch/arm64/include/asm/pointer_auth.h
+@@ -3,7 +3,6 @@
+ #define __ASM_POINTER_AUTH_H
  
-+#include <asm/thread_info.h>
+ #include <linux/bitops.h>
+-#include <linux/random.h>
+ 
+ #include <asm/cpufeature.h>
+ #include <asm/memory.h>
+@@ -30,6 +29,13 @@ struct ptrauth_keys {
+ 	struct ptrauth_key apga;
+ };
+ 
++/*
++ * Only include random.h once ptrauth_keys_* structures are defined
++ * to avoid yet another circular include hell (random.h * ends up
++ * including asm/smp.h, which requires ptrauth_keys_kernel).
++ */
++#include <linux/random.h>
 +
- /*
-  * Same as asm-generic/percpu.h, except that we store the per cpu offset
-  * in the TPIDRPRW. TPIDRPRW only exists on V6K and V7
+ static inline void ptrauth_keys_init(struct ptrauth_keys *keys)
+ {
+ 	if (system_supports_address_auth()) {
 
 
