@@ -2,333 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A86623CE3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A778023CE37
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 20:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgHESVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 14:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S1728794AbgHESVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 14:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729185AbgHESMX (ORCPT
+        with ESMTP id S1728797AbgHESOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 14:12:23 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50C5C06179E
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 11:12:23 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id mw10so1064399pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 11:12:23 -0700 (PDT)
+        Wed, 5 Aug 2020 14:14:44 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E583C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 11:14:42 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id a5so31638131ioa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 11:14:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+EY8xwLOvb0xunAeWMqIoWbMSULdQM37RXMtNt8qOxE=;
-        b=0NwH30I9cl4VJw9EDJmTKsrdcHgnhJMN6qld7YpaoUUkUdhto8jugxb/Jp0HikxVQN
-         ScAWsis+EMmaeYMoXc24ZCoZ28hwVpYebbtNOFLc3kWezqfpEWPHw0vMM97ukYZh/uIr
-         6J9UGhVT1Kx8XaawdD7/HRy6xxxts/XGqZuCV9yJGMXD+HSmibJTPg0xNvuhn1lWx6e7
-         5HLEoLih+dKl+vSulfB6u1zc9R7ohATeDCqOez2+ZGT5QOwwkBSdoAbHUdTZX0Wfxscf
-         I7vtB9bwi8WioqLnpYFpht+g4O3koHcBtn9yz9zEhzknqUIjfRZqQ04tQ1hWMjYaNBqC
-         4zxg==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=w0IXhDxPaIDABQjAbzl0aq6xX3B2TWL/BGPjCg5EAQI=;
+        b=fphzMPhyQ2D5ZWF4hklrmLqzUVH0KuSf6rTNU4w0xTT+WGpGiiCSXwekBkCLogcKoJ
+         1MdMjK8G45vo789K9a/KzsfCaCQ+xGG6uv0KNBbJZMCgH1K6wHP8pVaXGBeZ0VagkluH
+         RbWAeXBeF7eMJh5x7C07X8xm9by4NPtJWvSFd+eskC6GBtAQL1dp10+FvKAjQqZr/wR4
+         2nkhFrEQANtG7ifM8jANYvpwik7Af7PhdnHsupLErVI3jiH1XtXZQFhi711JxAZ8CLwB
+         tyiAhS/4E+HUeSbagvR3Hbm+RGbA0Q7Qly7om2rt7Yi/Bv+/bhGiCMcwSZtuF4zbBgzJ
+         K2FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+EY8xwLOvb0xunAeWMqIoWbMSULdQM37RXMtNt8qOxE=;
-        b=JYgzW4Vgq8G/Q9vE+0rjDbg6LhM86WN360oGe7IKiVzHgknRVGSh31MEq5kaCWRFd8
-         xLipiNjRqB7yqePSbI9sxNmr6yPlHWlZXkTN3ljA99NSyuQHozR960naL64NBM9LFBRg
-         ijbT/u2hBApX7erpX0FFDNcHwxSacfwv/UoxCYjcgeCBMXcldWxm/L4I8oVDV9ZMxDqJ
-         RPsI+CTFOkbtBgM4N4Zi6vTr5zgfmWHRMd0GQexVyYt/fTENi8Z1eKxRDFmKbDDPrOhr
-         zEWfH239prz2G0NqWoUIhqKkYHOXbm6OHC1mXSkvz6O1NwMAo04u4Haz7uDnWrayhfEE
-         eqjA==
-X-Gm-Message-State: AOAM533WWVxN379EELmxWMbwNdU5VKlyOOC92j9+dLYkjzMkcu4L6Mer
-        iGcfRn0CRuymBXyDMfKMuLUNNw==
-X-Google-Smtp-Source: ABdhPJxkNOvGmkIDfr9XZqptadC55bRUxwV6Wa++YQxDU6o7yKVdmjivZ+C0xuir3elNc0D7XBVQ4g==
-X-Received: by 2002:a17:90b:4b89:: with SMTP id lr9mr4738141pjb.190.1596651143167;
-        Wed, 05 Aug 2020 11:12:23 -0700 (PDT)
-Received: from [10.213.170.159] (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
-        by smtp.gmail.com with ESMTPSA id r6sm3672432pjd.1.2020.08.05.11.12.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 05 Aug 2020 11:12:22 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rjw@rjwysocki.net, ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 0/9] Add RCEC handling to PCI/AER
-Date:   Wed, 05 Aug 2020 11:12:20 -0700
-X-Mailer: MailMate (1.13.1r5671)
-Message-ID: <3C6A30BC-5826-4BD8-BF93-BE964FECAA4A@intel.com>
-In-Reply-To: <20200805180035.GA522190@bjorn-Precision-5520>
-References: <20200805180035.GA522190@bjorn-Precision-5520>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=w0IXhDxPaIDABQjAbzl0aq6xX3B2TWL/BGPjCg5EAQI=;
+        b=OHEUZ+ujwZMp27koiyYKpE77R5J1T4kKvQyy4AA9BLLZ81N3aERCKC1JOv9su98P95
+         qk6vnD5zRPqaO1qxIu/QBOGvwGGEBF1oZbX06aZmvx1rrukdh7bTse5Ax4Sja9XIi0ZW
+         HAQuYOqvXPG6QEbFPBjntw95VhrIWupM0uiDL3f52FiehzPUxXBZF+Zl78LeWanGryaD
+         CoIgzyGtMX0J79qjxopftHK+px0634caPSejcbxS1GpKWUkllLkJiZpL8Jk5BG6Bz3C1
+         ff+dvGzbxGPIImDH6Xudz8DQD9ANBkBqW1KH+C+1zR8BgAsdmhQW7xr1uxlHhFJ9WZRm
+         T6Vg==
+X-Gm-Message-State: AOAM530l8S52Ad0VcG1IGr7+EZQYlU04Z9CgcvZEWVr92uL18j4eGK6j
+        i0m9s/taEXQNgD9c14vUYplrv6gSh99Tk6WcW4NZwA==
+X-Google-Smtp-Source: ABdhPJx8vxQx+KF1GJByxSwbEm54QG5LwXEMj2NqJ+mpyyvwG22P3C6OumkFi3/l+mm9o1160Toz7uT1OuxDLF3iybc=
+X-Received: by 2002:a5d:9586:: with SMTP id a6mr4575399ioo.131.1596651279679;
+ Wed, 05 Aug 2020 11:14:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+References: <20200317151409.7940926c@endymion> <CAMRc=Mdoh5Sk3iS_CO4+++SG2jJOy1qrG4q2zOzbeYYMdJR0VA@mail.gmail.com>
+ <20200805163655.6cfa6e17@endymion>
+In-Reply-To: <20200805163655.6cfa6e17@endymion>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 5 Aug 2020 20:14:28 +0200
+Message-ID: <CAMRc=MeoWUaL_qvwL6bkpaVUvxh4x3ZN6V4UNQr+bjnLo3NubQ@mail.gmail.com>
+Subject: Re: VAIO EEPROM support in at24
+To:     Jean Delvare <jdelvare@suse.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5 Aug 2020, at 11:00, Bjorn Helgaas wrote:
-
-> On Tue, Aug 04, 2020 at 12:40:43PM -0700, Sean V Kelley wrote:
->> From: Sean V Kelley <sean.v.kelley@linux.intel.com>
->>
->> On the use of FLR on RCiEPs for the fatal case, still interested in =
-
->> more
->> feedback from the earlier discussion here [1]:
->>
->> [1] =
-
->> https://lore.kernel.org/linux-pci/C21C050B-48B1-4429-B019-C81F3AB8E843=
-@intel.com/
->>
->> There is also the question of the absence of an FLR for non-fatal =
-
->> error.
->> If the device driver tells us that it needs =
-
->> "PCI_ERS_RESULT_NEED_RESET" by
->> the callback report_normal_detected() then we should try FLR on the =
-
->> device
->> as well.
->>
->> On the use of variables with RP centric names such as the attributes
->> dev_attr_aer_rootport_total_err_..., one concern is the ripple effect =
-
->> on code
->> churn due to renaming. Open to suggestions, but trying to co-habitate =
-
->> so to
->> speak RCECs with RPs in the same drivers has trade-offs.
->>
->> Changes since v1 [2]:
->>
->> - Make PME capability of RCEC discoverable in =
-
->> get_port_device_capability().
->> - Replace the check on bnr with <=3D lastbusn in pcie_walk_rcec().
->> - Fix comment header for pcie_walk_rcec().
->> - Fix comment header for pci_walk_dev_affected().
->> - Fix spurious newline.
->> - Add sanity checks on dev->rcec.
->> - Use pci_dbg() in place of pci_info() for discovered RCiEPs.
->> - Remove AER RCEC AP FOUND message (accidently left in previously).
->> - Remove the check for RC_END from set_device_error_reporting() since
->> only Ports and RCECs are being passed.
->> (Jonathan Cameron)
->> - Fix the return type for flr_on_rciep().
->> (reported by lkp on DEC Alpha arch.)
->>
->> [1] =
-
->> https://lore.kernel.org/linux-pci/20200724172223.145608-1-sean.v.kelle=
-y@intel.com/
->>
->> Root Complex Event Collectors (RCEC) provide support for terminating =
-
->> error
->> and PME messages from Root Complex Integrated Endpoints (RCiEPs).  An =
-
->> RCEC
->> resides on a Bus in the Root Complex. Multiple RCECs can in fact =
-
->> reside on
->> a single bus. An RCEC will explicitly declare supported RCiEPs =
-
->> through the
->> Root Complex Endpoint Association Extended Capability.
->>
->> (See PCIe 5.0-1, sections 1.3.2.3 (RCiEP), and 7.9.10 (RCEC Ext. =
-
->> Cap.))
->>
->> The kernel lacks handling for these RCECs and the error messages =
-
->> received
->> from their respective associated RCiEPs. More recently, a new CPU
->> interconnect, Compute eXpress Link (CXL) depends on RCEC capabilities =
-
->> for
->> purposes of error messaging from CXL 1.1 supported RCiEP devices.
->>
->> DocLink: https://www.computeexpresslink.org/
->>
->> This use case is not limited to CXL. Existing hardware today includes
->> support for RCECs, such as the Denverton microserver product
->> family. Future hardware will be forthcoming.
->>
->> (See Intel Document, Order number: 33061-003US)
->>
->> So services such as AER or PME could be associated with an RCEC =
-
->> driver.
->> In the case of CXL, if an RCiEP (i.e., CXL 1.1 device) is associated =
-
->> with a
->> platform's RCEC it shall signal PME and AER error conditions through =
-
->> that
->> RCEC.
->>
->> Towards the above use cases, add the missing RCEC class and extend =
-
->> the
->> PCIe Root Port and service drivers to allow association of RCiEPs to =
-
->> their
->> respective parent RCEC and facilitate handling of terminating error =
-
->> and PME
->> messages.
->>
->>
->> AER Test Results:
->> 1) Inject a correctable error to the RCiEP 0000:e9:00.0
->>     Run ./aer_inject <a parameter file as below>:
->>     AER
->>     PCI_ID 0000:e9:00.0
->>     COR_STATUS BAD_TLP
->>     HEADER_LOG 0 1 2 3
->>
->>     Log:
->> [   76.155963] pcieport 0000:e8:00.4: aer_inject: Injecting errors =
-
->> 00000040/00000000 into device 0000:e9:00.0
->> [   76.166966] pcieport 0000:e8:00.4: AER: Corrected error received: =
-
->> 0000:e9:00.0
->> [   76.175253] pci 0000:e9:00.0: PCIe Bus Error: severity=3DCorrected,=
- =
-
->> type=3DData Link Layer, (Receiver ID)
->> [   76.185633] pci 0000:e9:00.0:   device [8086:4940] error =
-
->> status/mask=3D00000040/00002000
->> [   76.194604] pci 0000:e9:00.0:    [ 6] BadTLP
+On Wed, Aug 5, 2020 at 4:36 PM Jean Delvare <jdelvare@suse.de> wrote:
 >
-> If you remove the timestamps, there will be less distraction here.  As
-> I'm sure you know, the 0/n cover letter text doesn't really go
-> anywhere except the email archives.  If this is potentially useful in
-> the future, it should be in the actual patch commit logs.
-
-Right, the intent is to show how it was tested.  Understood.
-
+> Hi Bartosz,
 >
->> 2) Inject a non-fatal error to the RCiEP 0000:e8:01.0
->>     Run ./aer_inject <a parameter file as below>:
->>     AER
->>     PCI_ID 0000:e8:01.0
->>     UNCOR_STATUS COMP_ABORT
->>     HEADER_LOG 0 1 2 3
+> On Tue, 17 Mar 2020 15:32:56 +0100, Bartosz Golaszewski wrote:
+> > wt., 17 mar 2020 o 15:14 Jean Delvare <jdelvare@suse.de> napisa=C5=82(a=
+):
+> > > Before I start implementing the idea above, I would like to know if
+> > > anyone objects to it, or has a better idea?
+> >
+> > Sounds good to me in general but isn't it something we could
+> > generalize a bit more?
+> >
+> > For instance we could make at24_chip_data struct look something like th=
+is:
+> >
+> > struct at24_chip_data {
+> >     u32 byte_len;
+> >     u8 flags;
+> >     struct resource masked;
+> > };
+> >
+> > And we could introduce a new macro called AT24_CHIP_DATA_MASKED that
+> > would automacially set the AT24_FLAG_MASKED_RANGE flag and take
+> > another argument that would contain the address and size of the masked
+> > register range (we'd put it into the "masked" resource)?
+> >
+> > Other ideas are welcome too. I just think that making it
+> > SONY_VAIO-specific may be a bit limiting in the future.
 >
-> I think maybe this could be written in a way that could be cut and
-> pasted?
-
-Good point.  Will do.
-
+> I finally found the time to give it a try. Here's what my (tested)
+> prototype looks like:
 >
->>     Log:
->> [  117.791854] pcieport 0000:e8:00.4: aer_inject: Injecting errors =
 
->> 00000000/00008000 into device 0000:e8:01.0
->> [  117.804244] pcieport 0000:e8:00.4: AER: Uncorrected (Non-Fatal) =
+Hi Jean,
 
->> error received: 0000:e8:01.0
->> [  117.814652] igen6_edac 0000:e8:01.0: PCIe Bus Error: =
+this looks good at first glance.
 
->> severity=3DUncorrected (Non-Fatal), type=3DTransaction Layer, (Complet=
-er =
-
->> ID)
->> [  117.828511] igen6_edac 0000:e8:01.0:   device [8086:0b25] error =
-
->> status/mask=3D00008000/00100000
->> [  117.839189] igen6_edac 0000:e8:01.0:    [15] CmpltAbrt
->> [  117.847365] igen6_edac 0000:e8:01.0: AER:   TLP Header: 00000000 =
-
->> 00000001 00000002 00000003
->> [  117.857775] igen6_edac 0000:e8:01.0: AER: device recovery =
-
->> successful
->>
->> 3) Inject a fatal error to the RCiEP 0000:ed:01.0
->>     Run ./aer_inject <a parameter file as below>:
->>     AER
->>     PCI_ID 0000:ed:01.0
->>     UNCOR_STATUS MALF_TLP
->>     HEADER_LOG 0 1 2 3
->>
->>     Log:
->> [  131.511623] pcieport 0000:ed:00.4: aer_inject: Injecting errors =
-
->> 00000000/00040000 into device 0000:ed:01.0
->> [  131.523259] pcieport 0000:ed:00.4: AER: Uncorrected (Fatal) error =
-
->> received: 0000:ed:01.0
->> [  131.533842] igen6_edac 0000:ed:01.0: AER: PCIe Bus Error: =
-
->> severity=3DUncorrected (Fatal), type=3DInaccessible, (Unregistered Age=
-nt =
-
->> ID)
->> [  131.655618] igen6_edac 0000:ed:01.0: AER: device recovery =
-
->> successful
->>
->> Jonathan Cameron (1):
->>   PCI/AER: Extend AER error handling to RCECs
->>
->> Qiuxu Zhuo (6):
->>   pci_ids: Add class code and extended capability for RCEC
->>   PCI: Extend Root Port Driver to support RCEC
->>   PCI/portdrv: Add pcie_walk_rcec() to walk RCiEPs associated with =
-
->> RCEC
->>   PCI/AER: Apply function level reset to RCiEP on fatal error
->>   PCI: Add 'rcec' field to pci_dev for associated RCiEPs
->>   PCI/AER: Add RCEC AER error injection support
->>
->> Sean V Kelley (2):
->>   PCI/AER: Add RCEC AER handling
->>   PCI/PME: Add RCEC PME handling
->>
+> --- a/drivers/misc/eeprom/at24.c
+> +++ b/drivers/misc/eeprom/at24.c
+> @@ -8,9 +8,11 @@
 >
->>  drivers/pci/pcie/aer.c          | 36 +++++++++----
->>  drivers/pci/pcie/aer_inject.c   |  5 +-
->>  drivers/pci/pcie/err.c          | 90 =
-
->> +++++++++++++++++++++++++++------
->>  drivers/pci/pcie/pme.c          | 15 ++++--
->>  drivers/pci/pcie/portdrv.h      |  2 +
->>  drivers/pci/pcie/portdrv_core.c | 90 =
-
->> +++++++++++++++++++++++++++++++--
->>  drivers/pci/pcie/portdrv_pci.c  | 20 +++++++-
->>  include/linux/pci.h             |  3 ++
->>  include/linux/pci_ids.h         |  1 +
->>  include/uapi/linux/pci_regs.h   |  7 +++
->>  10 files changed, 233 insertions(+), 36 deletions(-)
+>  #include <linux/acpi.h>
+>  #include <linux/bitops.h>
+> +#include <linux/capability.h>
+>  #include <linux/delay.h>
+>  #include <linux/i2c.h>
+>  #include <linux/init.h>
+> +#include <linux/ioport.h>
+>  #include <linux/jiffies.h>
+>  #include <linux/kernel.h>
+>  #include <linux/mod_devicetable.h>
+> @@ -38,6 +40,8 @@
+>  #define AT24_FLAG_MAC          BIT(2)
+>  /* Does not auto-rollover reads to the next slave address. */
+>  #define AT24_FLAG_NO_RDROL     BIT(1)
+> +/* Contains an area that should not be exposed to non-root users */
+> +#define AT24_FLAG_MASKED_RANGE BIT(0)
 >
-> I always apply patches to topic branches based at my "master" branch
-> (typically -rc1, so currently v5.8-rc1, but will soon be v5.9-rc1).
+>  /*
+>   * I2C EEPROMs from most vendors are inexpensive and mostly interchangea=
+ble.
+> @@ -87,6 +91,7 @@ struct at24_data {
+>         u16 page_size;
+>         u8 flags;
 >
-> If your series doesn't apply there (as this one doesn't), it saves me
-> time if you tell me where it does apply.  I figured out that this
-> applies cleanly on top of my pci/error branch, which does make sense.
+> +       struct resource masked;
+>         struct nvmem_device *nvmem;
+>         struct regulator *vcc_reg;
 >
-> I'd actually *rather* have patches based on "master", even if I have
-> to resolve conflicts, because that gives me the flexibility to squash
-> in fixes and re-merge the topic branches.
-
-Okay. Good to know as this time it was put on your pci branch. Will =
-
-switch back to master.
-
-Thanks,
-
-Sean
-
+> @@ -121,6 +126,7 @@ MODULE_PARM_DESC(at24_write_timeout, "Ti
+>  struct at24_chip_data {
+>         u32 byte_len;
+>         u8 flags;
+> +       struct resource masked;
+>  };
 >
-> Bjorn
+>  #define AT24_CHIP_DATA(_name, _len, _flags)                            \
+> @@ -128,6 +134,16 @@ struct at24_chip_data {
+>                 .byte_len =3D _len, .flags =3D _flags,                   =
+   \
+>         }
+>
+> +#define AT24_CHIP_DATA_MASKED(_name, _len, _flags, _mstart, _mlen)     \
+> +       static const struct at24_chip_data _name =3D {                   =
+ \
+> +               .byte_len =3D _len,                                      =
+ \
+> +               .flags =3D _flags | AT24_FLAG_MASKED_RANGE,              =
+ \
+> +               .masked =3D {                                            =
+ \
+> +                       .start =3D _mstart,                              =
+ \
+> +                       .end =3D _mstart + _mlen - 1,                    =
+ \
+> +               },                                                      \
+> +       }
+> +
+>  /* needs 8 addresses as A0-A2 are ignored */
+>  AT24_CHIP_DATA(at24_data_24c00, 128 / 8, AT24_FLAG_TAKE8ADDR);
+>  /* old variants can't be handled with this generic entry! */
+> @@ -144,6 +160,9 @@ AT24_CHIP_DATA(at24_data_24mac602, 64 /
+>  /* spd is a 24c02 in memory DIMMs */
+>  AT24_CHIP_DATA(at24_data_spd, 2048 / 8,
+>         AT24_FLAG_READONLY | AT24_FLAG_IRUGO);
+> +/* vaio is a 24c02 on some Sony laptops */
+> +AT24_CHIP_DATA_MASKED(at24_data_vaio, 2048 / 8,
+> +       AT24_FLAG_READONLY | AT24_FLAG_IRUGO, 0x00, 14);
+>  AT24_CHIP_DATA(at24_data_24c04, 4096 / 8, 0);
+>  AT24_CHIP_DATA(at24_data_24cs04, 16,
+>         AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> @@ -177,6 +196,7 @@ static const struct i2c_device_id at24_i
+>         { "24mac402",   (kernel_ulong_t)&at24_data_24mac402 },
+>         { "24mac602",   (kernel_ulong_t)&at24_data_24mac602 },
+>         { "spd",        (kernel_ulong_t)&at24_data_spd },
+> +       { "eeprom-vaio",(kernel_ulong_t)&at24_data_vaio },
+>         { "24c04",      (kernel_ulong_t)&at24_data_24c04 },
+>         { "24cs04",     (kernel_ulong_t)&at24_data_24cs04 },
+>         { "24c08",      (kernel_ulong_t)&at24_data_24c08 },
+> @@ -389,6 +409,9 @@ static int at24_read(void *priv, unsigne
+>         struct device *dev;
+>         char *buf =3D val;
+>         int ret;
+> +       unsigned int orig_off =3D off;
+> +       char *orig_buf =3D buf;
+> +       size_t orig_count =3D count;
+>
+>         at24 =3D priv;
+>         dev =3D at24_base_client_dev(at24);
+> @@ -427,6 +450,15 @@ static int at24_read(void *priv, unsigne
+>
+>         pm_runtime_put(dev);
+>
+> +       if ((at24->flags & AT24_FLAG_MASKED_RANGE) && !capable(CAP_SYS_AD=
+MIN)) {
+
+Maybe use unlikely() here? It's not necessarily a hotpath but at least
+it would be obvious it's a corner case.
+
+> +               int i;
+> +
+> +               for (i =3D orig_off; i < orig_off + orig_count; i++) {
+> +                       if (i >=3D at24->masked.start && i <=3D at24->mas=
+ked.end)
+> +                               orig_buf[i] =3D 0x00;
+> +               }
+> +       }
+> +
+>         return 0;
+>  }
+>
+> @@ -654,6 +686,7 @@ static int at24_probe(struct i2c_client
+>         at24->byte_len =3D byte_len;
+>         at24->page_size =3D page_size;
+>         at24->flags =3D flags;
+> +       at24->masked =3D cdata->masked;
+>         at24->num_addresses =3D num_addresses;
+>         at24->offset_adj =3D at24_get_offset_adj(flags, byte_len);
+>         at24->client[0].client =3D client;
+>
+> Comments welcome. I already have my own comments/questions:
+>
+> 1* Do we actually need to use a struct resource? With the current
+>    requirements, that looks overkill to me. We really only need the
+>    start and end offsets of the masked area (or start and length). Or
+>    do you plan to ever support multiple masked ranges, and
+>    resource.child would be used to daisy-chain these ranges? Personally
+>    I would wait until the need exists.
+>
+
+Yes, since this change doesn't seem to commit to any stable ABI, I'd
+say we can drop the reference to struct resource and possibly add it
+in the future. This just was the first thing that came to mind when I
+suggested it.
+
+>    Note that if we would just store mstart and mlen in struct
+>    at24_chip_data then we could even get rid of AT24_FLAG_MASKED_RANGE,
+>    as mlen > 0 would imply a masked range.
+>
+
+Makes sense.
+
+> 2* I chose the name "eeprom-vaio" because "vaio" would be too generic.
+>    I'm open to suggestions if you don't like that name.
+>
+
+Are you sure there won't be any different models of vaio eeproms? How
+about '24c02-vaio' or 'eeprom-vaio-24c02'?
+
+> 3* at24_read() was pretty elegant before my changes, but with the need
+>    to remember the original value of many parameters, it no longer is.
+>    I'm considering rewriting it in a way that does not modify the
+>    parameters needed to process the masked range, either as part of
+>    this patch or as a subsequent clean-up patch. That would hopefully
+>    make the code elegant again.
+>
+
+All clean-ups are welcome.
+
+> 4* I made the masking active only for non-root users as this is what
+>    the legacy eeprom driver was doing. I hope that's OK with you.
+>
+
+Yes, it's fine with me. If more fine-grained control is needed we can
+probably extend it.
+
+Bartosz
