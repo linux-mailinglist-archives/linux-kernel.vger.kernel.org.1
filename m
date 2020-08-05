@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6058C23C82F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B16C23C828
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 10:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728255AbgHEIvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 04:51:16 -0400
-Received: from mout.gmx.net ([212.227.17.20]:44637 "EHLO mout.gmx.net"
+        id S1727946AbgHEIue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 04:50:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:56100 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgHEIvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 04:51:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1596617396;
-        bh=KouBFqPcVdY/N2jpqO+a5lVPiMqUcEXz0mYKHefvmGY=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=PQ7H44NKYk24ie8whky4P/jtvHI4A3RB5Ggj+HPlOdWg5moXiKOsEEGJf26zYDqDb
-         vfED0TdDZhJ8LzdqPusAOPTY3PjZlnRWwDXRTRL3WrRN/o33l55OP1BrQfiw01gADm
-         1uMXYlTYrbbNv4yza3AzyOVWCPWSwEzUrIiCb/Lk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [80.208.209.197] ([80.208.209.197]) by web-mail.gmx.net
- (3c-app-gmx-bap13.server.lan [172.19.172.83]) (via HTTP); Wed, 5 Aug 2020
- 10:49:56 +0200
+        id S1725868AbgHEIud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 04:50:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14D5CD6E;
+        Wed,  5 Aug 2020 01:50:33 -0700 (PDT)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDF223F6CF;
+        Wed,  5 Aug 2020 01:50:30 -0700 (PDT)
+Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level IRQ
+ time accounting
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
+        will@kernel.org, paulmck@kernel.org, mw@semihalf.com,
+        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20200729033934.22349-1-alison.wang@nxp.com> <877dumbtoi.fsf@kurt>
+ <20200729094943.lsmhsqlnl7rlnl6f@skbuf> <87mu3ho48v.fsf@kurt>
+ <20200730082228.r24zgdeiofvwxijm@skbuf> <873654m9zi.fsf@kurt>
+ <87lfiwm2bj.fsf@nanos.tec.linutronix.de>
+ <20200803114112.mrcuupz4ir5uqlp6@skbuf>
+ <87d047n4oh.fsf@nanos.tec.linutronix.de> <jhjh7tjivew.mognet@arm.com>
+ <875z9zmt4i.fsf@nanos.tec.linutronix.de> <jhjft93i8mg.mognet@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <02195130-3d9a-a206-d931-fab7dc606061@arm.com>
+Date:   Wed, 5 Aug 2020 10:50:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <trinity-35b75199-be7e-4e56-bfc9-1d8bf7075df1-1596617396324@3c-app-gmx-bap13>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        chunhui dai <chunhui.dai@mediatek.com>,
-        David Airlie <airlied@linux.ie>,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        CK Hu <ck.hu@mediatek.com>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Frank Wunderlich <linux@fw-web.de>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Aw: Re:  Re:  Re: [PATCH v4 6/6] arm: dts: mt7623: add display
- subsystem related device nodes
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 5 Aug 2020 10:49:56 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <bde8de134f59c4375e4048faf124c61af0b95920.camel@infradead.org>
-References: <20200804165555.75159-1-linux@fw-web.de>
- <20200804165555.75159-8-linux@fw-web.de>
- <3966b4f687f2fabf9041059dd5f39165177a6ef6.camel@infradead.org>
- <trinity-5335a61e-b8f0-4441-9fe9-0827cdd67ce4-1596562816887@3c-app-gmx-bap28>
- <45d34c6cc19c2e5c13f9e88a8e04bdae9259ffdc.camel@infradead.org>
- <trinity-16cee263-ff59-4595-adc1-738071745162-1596612461427@3c-app-gmx-bap13>
- <bde8de134f59c4375e4048faf124c61af0b95920.camel@infradead.org>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:02+hrQwIbNKgot54dm3HJDNKjTwKbsyfpioUZ2s9RwWRJQMTA7VOZRh/pL3a9UGoFVTCN
- ERILIMlNaDjkc2TrLP6Gpib+y9jm1gT93Gao0qy6TOyS7ZY5Pcmiwa/hFmqqBw0sETOOim7kdheu
- QrkKaZxd7kwCxWiPRVRs9Pmzo8H/6Yf7oVgLuRlm1LNtnp20Z0bybSKu/XlUT6O3aPAOSAKdTtL+
- Z5whKcy09j+dZ6HoVVNVfUZGSTZ1QRskLbtCPoKU8es+a/aXSpcl6T8dUGYxw6dTA/aBrl0rZfzX
- vE=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sGV1u3BLYEs=:ZmeFvu+MGFu42w9/0EZtNz
- y3ygbRJ/gxvzAKmPS0TDo3EqFrrvRTbvlEgmMQphdULdqverfTtQWhDOvuYX4H9XeTbDYHICh
- 1u4nPRhU8LkBfK3OQmKDaFH52AsaQoUPcpNmMFqfXgT2zismRqV4YY/DzhRedSMjbW/LXFX5O
- 9f7pJWQR/dzVelZFUa6ktefaFla1rztZfdhFaUoCMkM/6daiFmBOTW6BxP/PfcS581BqmFRvx
- kBqCAOKJN3+cXCFP/xnHMSZfPHlzY1hmvATTKLz+Y6VCSnJ6vCcbjujVUjEkqCOECZCpHjjBK
- 3MxKUsIb53GKhcCQWbS+t+6c3lhZCuevgl0ISDshpHINWCIIdvqpAT1qPqihdu1YoVeSAp4jw
- qpdG3elw3uN2wUkYCF+804pajrgO7t0IJ2JaUJHEQ3tV8xrUkA4ENN5dv+PNeOdwh9n0Mvbxw
- HwPEJ0/j3unee2GpYuPG46ZIuA4LU/8RQKdQFDvxzD6Z4WJkDHwiEWinthNXCbpy1tivg3VnK
- 5tc8jHH4eOvtsmFzG/AOh4Yib9Ts2ifF3dEcLYDT1k8/baNDPqKIs4fB/HH5zU+LVNg4mcTNr
- /ZZMS/yynDp3VUr5tkPcQ3aiIHtJO7vWqHYKlM9Z65CMilYkQFILL6kJHjWVbrET0GuGryUdz
- MLqM6V6DDQqqyb4nxNRY5/s21N7uiwhZIw6BDbNtXsFaj0hWdzTMhVOzfin8up3/DNLI=
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <jhjft93i8mg.mognet@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Gesendet: Mittwoch, 05. August 2020 um 10:36 Uhr
-> Von: "David Woodhouse" <dwmw2@infradead.org>
+On 04/08/2020 01:59, Valentin Schneider wrote:
+> 
+> On 03/08/20 20:22, Thomas Gleixner wrote:
+>> Valentin,
+>>
+>> Valentin Schneider <valentin.schneider@arm.com> writes:
+>>> On 03/08/20 16:13, Thomas Gleixner wrote:
+>>>> Vladimir Oltean <olteanv@gmail.com> writes:
+>>>>>>  1) When irq accounting is disabled, RT throttling kicks in as
+>>>>>>     expected.
+>>>>>>
+>>>>>>  2) With irq accounting the RT throttler does not kick in and the RCU
+>>>>>>     stall/lockups happen.
+>>>>> What is this telling us?
+>>>>
+>>>> It seems that the fine grained irq time accounting affects the runtime
+>>>> accounting in some way which I haven't figured out yet.
+>>>>
+>>>
+>>> With IRQ_TIME_ACCOUNTING, rq_clock_task() will always be incremented by a
+>>> lesser-or-equal value than when not having the option; you start with the
+>>> same delta_exec but slice some for the IRQ accounting, and leave the rest
+>>> for the rq_clock_task() (+paravirt).
+>>>
+>>> IIUC this means that if you spend e.g. 10% of the time in IRQ and 90% of
+>>> the time running the stress-ng RT tasks, despite having RT tasks hogging
+>>> the entirety of the "available time" it is still only 90% runtime, which is
+>>> below the 95% default and the throttling doesn't happen.
+>>
+>>    totaltime = irqtime + tasktime
+>>
+>> Ignoring irqtime and pretending that totaltime is what the scheduler
+>> can control and deal with is naive at best.
+>>
+> 
+> Agreed, however AFAICT rt_time is only incremented by rq_clock_task()
+> deltas, which don't include IRQ time with IRQ_TIME_ACCOUNTING=y. That would
+> then be directly compared to the sysctl runtime.
+> 
+> Adding some prints in sched_rt_runtime_exceeded() and running this test
+> case on my Juno, I get:
+>   # IRQ_TIME_ACCOUNTING=y
+>   cpu=2 rt_time=713455220 runtime=950000000 rq->avg_irq.util_avg=265
+>   (rt_time oscillates between [70.1e7, 75.1e7]; avg_irq between [220, 270])
+> 
+>   # IRQ_TIME_ACCOUNTING=n
+>   cpu=2 rt_time=963035300 runtime=949951811
+>   (rt_time oscillates between [94.1e7, 96.1e7];
+> 
+> Throttling happens for IRQ_TIME_ACCOUNTING=n and doesn't for
+> IRQ_TIME_ACCOUNTING=y - clearly the accounted rt_time isn't high enough for
+> that to happen, and it does look like what is missing in rt_time (or what
+> should be subtracted from the available runtime) is there in the avg_irq.
 
-> > mt7623.dtsi =3D> mt7623n.dtsi =3D> mt7623n-bananapi-bpi-r2.dts
-> > mt7623.dtsi =3D> mt7623a.dtsi =3D> mt7623a-unielec-u7623.dts (not exis=
-ting yet,
-> > openwrt seems to use a board-specific dtsi)
->
-> Yes, I think we should.
+I agree that w/ IRQ_TIME_ACCOUNTING=y rt_rq->rt_time isn't high enough
+in this testcase.
 
-i want to see what MTK/DT owner says to this...
-my current way will be still adding the nodes to existing mt7623.dtsi (lik=
-e ryder lee did it in original patch)
-but disabling them to not break mt7623a and splitting it afterwards.
+stress-ng-hrtim-1655 [001] 462.897733: bprint: update_curr_rt:
+rt_rq->rt_time=416716900 rt_rq->rt_runtime=950000000
+rt_b->rt_runtime=950000000
 
-> I'll create mt7623a.dtsi and upstream the U7623 support; I think that
-> can happen without conflicting with anything you do.
->
-> I note that the GPU node has been added to mt7623.dtsi in 5.8 too;
-> that'll want to move to the new mt7623n.dtsi that you create, along
-> with your other new additions.
+The 5% reservation (1 - sched_rt_runtime_us/sched_rt_period_us) for CFS
+is massively eclipsed by irqtime.
 
-i guess mali-node also needs to be moved to mt7623n.dtsi, so my current wa=
-y seems right...
-but it's decision of MTK/DT owner. if they make a note i squash the disabl=
-ing-commit into this and post v5
+It's true that avg_irq tracks 'irq_delta + steal' time but it is meant
+to potentially reduce cpu capacity. It's also cpu and frequency
+invariant (your CPU2 is a big CPU so no issue here).
 
-regards Frank
+Could a rq_clock(rq) derived rt_rq signal been used to compare against
+rt_runtime?
+
+BTW, DL already influences rt_rq->rt_time.
+
+[...]
