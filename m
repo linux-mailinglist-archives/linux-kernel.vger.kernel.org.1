@@ -2,69 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7519723CD1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8CBD23CD2B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728335AbgHERUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:20:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52455 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728772AbgHERTC (ORCPT
+        id S1728540AbgHERWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728787AbgHERTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:19:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647941;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kZTBrunrXrFalb8MiTTYY4li8BGfP27s1yfj7FYVgAs=;
-        b=I6zDlSJ5d7gRMIfEL0QprBsn3nu8f6L8PYwyu0mMSgMgmlZo8OfKI7II2eQ0R+eJ2axENV
-        ZXxCyYnWYDOk8OciW0aXwKAGkct/a8OZmIenfspVaixzEMXCd0pH+Mp5SRvhA/dXuBrDN+
-        gM2z52CNIoZq8CxwgGC5BWpc+dSdN2o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-Y4-7UuimPtOA66nnqm_UqQ-1; Wed, 05 Aug 2020 13:18:56 -0400
-X-MC-Unique: Y4-7UuimPtOA66nnqm_UqQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A38031B18BCD;
-        Wed,  5 Aug 2020 17:18:46 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7DBA95D9DC;
-        Wed,  5 Aug 2020 17:18:45 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAKgNAkgYZ4HrFpOW_n8BshbR8d=03wetmxX2zNv7hX4ZmeQPmg@mail.gmail.com>
-References: <CAKgNAkgYZ4HrFpOW_n8BshbR8d=03wetmxX2zNv7hX4ZmeQPmg@mail.gmail.com> <CAKgNAkjyXcXZkEczRz2yvJRFBy2zAwTaNfyiSmskAFWN_3uY1g@mail.gmail.com> <2007335.1595587534@warthog.procyon.org.uk>
-To:     mtk.manpages@gmail.com
-Cc:     dhowells@redhat.com, Petr Vorel <pvorel@suse.cz>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Mount API manual pages
+        Wed, 5 Aug 2020 13:19:49 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80480C06179E
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 10:19:48 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id bs17so14360555edb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 10:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ggWm0T5pBn7JnigTAPRbmUTfRdvzxQl+mpQ72rR0fUs=;
+        b=PoP10f4tjqT5dS5d/uwUo+sqOTBfpYa07l9Dp61aeW+rv082Wx5BtKN+1bCLsTJF1U
+         nUbzGtQNIwu2lxwjJRDipJ2qANYW9dxqDIcqBjZ++7ZQUP3W/BTxTY/e3PVATg5z5PlD
+         fovDZooeuStLnEv4MVI4Zsu2xoFIEnyOrC3BQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ggWm0T5pBn7JnigTAPRbmUTfRdvzxQl+mpQ72rR0fUs=;
+        b=SySxZlpCA7agqkNIJQhdPhliit9cq1TjTiVDgnirMcAbf8K/RZUQFogtTiDPkQ2CeB
+         OPGt3tR1r2rATtDCHqD6lfwnqI+m3Gnx8TKH0x6tRtXd6IzyrYCYTOqxgoSSd8MDN1BV
+         j/GZKuCllge5lk2M1OofG3fsSlOxBw4MtnbzNEujDnM29vYYisZUQ2pnHsf7OMScst79
+         DUebqOvRBFYKAE23RdbsLuLmLvXb+Kx0XjGQMAiH2zefRw5syX2f1wAOHBXdFQJhXGDK
+         ayzr/V1fuCDisms7lo7lcr3/Zq2sjVHviwQW3hs2mUnAVIbv2LCNrYEmP1QyDY4mnTGQ
+         vVgg==
+X-Gm-Message-State: AOAM532wFhjnD63Kv0gOmHqeGNjc1TJ/KW4axkbzIWx5ghs7NVevv8R6
+        n8a+H6jdHL3Nnl0XZrt4vpDYdD5h8tfdZNW9K9xzXw==
+X-Google-Smtp-Source: ABdhPJxDf4TG2ZDbOcy/ueJc/nhD6cuCUKJp/4SEeu6p3T512+TCDX0Q15WYk1mR9VBwMmf6ImGgphnQt/h+li9HEKQ=
+X-Received: by 2002:a05:6402:12c4:: with SMTP id k4mr288635edx.358.1596647986830;
+ Wed, 05 Aug 2020 10:19:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2329755.1596647924.1@warthog.procyon.org.uk>
-Date:   Wed, 05 Aug 2020 18:18:44 +0100
-Message-ID: <2329756.1596647924@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
+ <159646185371.1784947.14555585307218856883.stgit@warthog.procyon.org.uk>
+ <20200804133817.GD32719@miu.piliscsaba.redhat.com> <2316806.1596641851@warthog.procyon.org.uk>
+In-Reply-To: <2316806.1596641851@warthog.procyon.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 5 Aug 2020 19:19:35 +0200
+Message-ID: <CAJfpegvZqZBFb2--W315CXX40F=jLNxYK1EpVRRnn8crGUuLDw@mail.gmail.com>
+Subject: Re: [PATCH 08/18] fsinfo: Allow mount topology and propagation info
+ to be retrieved [ver #21]
+To:     David Howells <dhowells@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ian Kent <raven@themaw.net>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Kerrisk (man-pages) <mtk.manpages@gmail.com> wrote:
+On Wed, Aug 5, 2020 at 5:37 PM David Howells <dhowells@redhat.com> wrote:
+>
+> Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> > > +   __u32   shared_group_id;        /* Shared: mount group ID */
+> > > +   __u32   dependent_source_id;    /* Dependent: source mount group ID */
+> > > +   __u32   dependent_clone_of_id;  /* Dependent: ID of mount this was cloned from */
+> >
+> > Another set of ID's that are currently 32bit *internally* but that doesn't
+> > mean they will always be 32 bit.
+> >
+> > And that last one (apart from "slave" being obfuscated)
+>
+> I had "slave" in there.  It got objected to.  See
+> Documentation/process/coding-style.rst section 4.
+>
+> > is simply incorrect.  It has nothing to do with cloning.  It's the "ID of
+> > the closest peer group in the propagation chain that has a representative
+> > mount in the current root".
+>
+> You appear to be in disagreement with others that I've asked.
 
-> This is just a reminder mail :-).
+Read the code.
 
-Yep - I haven't forgotten.  Spent a chunk of time arguing with reinventors and
-arguing with a failing dishwasher.  I have some other manpages that I'm
-sprucing up too for the notifications stuff.
-
-David
-
+Thanks,
+Miklos
