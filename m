@@ -2,79 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AE423CF2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFE823CF19
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728291AbgHETQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:16:04 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:16575 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729050AbgHESDi (ORCPT
+        id S1728710AbgHESIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 14:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729070AbgHESFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 14:03:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596650580; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=wDrn6qZ0UEY+b7/V0j8agr4SjPY1RYQe65RUiGn653k=; b=vPk4QJQM2aRePokrCxCtqbItzO8H3qB4R7flgIg9jbUMZqtrdZFbczeYo/VJWXwAUH9RkAVl
- iEdheg6scPisa5Jk6Eyw4bNoYpjCoLuxRaiu34NfjgeKopfRnfNXA1QW0R1ppNXVHLUaems6
- 3XM1K0b7fikqkgZI4t19LL+SDGE=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n16.prod.us-west-2.postgun.com with SMTP id
- 5f2af44d5a221ff37b3f5414 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 05 Aug 2020 18:02:53
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3297CC433CA; Wed,  5 Aug 2020 18:02:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kathirav)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 778BAC433C6;
-        Wed,  5 Aug 2020 18:02:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 778BAC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kathirav@codeaurora.org
-From:   Kathiravan T <kathirav@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kathirav@codeaurora.org
-Subject: [PATCH] arm64: dts: ipq8074: Use the A53 PMU compatible
-Date:   Wed,  5 Aug 2020 23:32:41 +0530
-Message-Id: <1596650561-11312-1-git-send-email-kathirav@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 5 Aug 2020 14:05:41 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A086FC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 11:05:27 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id v9so14261348ljk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 11:05:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SJLLgIEjQbsi/SjTfRAATLA+9JTrjXUP0jdNW6WmMgI=;
+        b=eaY7NtzotzWV/MnsZjfDao9T2g2eCy+3wm499kvwu1wBI+Vd7me0Jx1vxfPwpDDz2e
+         +1s5SmJEh1SEzTbjd/vRaoC7ncNiNL4Lkyg2YumYQ4UA7w+AEcfjLokkCNp9gUuGZSuL
+         cWA3tsPtGDQzsow/KN0TSz2gkofo5VDhkb9Kk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SJLLgIEjQbsi/SjTfRAATLA+9JTrjXUP0jdNW6WmMgI=;
+        b=l36RRZ0Tr7noRgEjxe7zP3GJilceKenoNL9FFecDqV27oYrAkXryk7Bhp9zFGSrbrF
+         mR56NdULvcqdvj4pkVcYPSnCv3dBvYErfpJjGuQeG2ovPVXsB0Lrbkg+ozF/sjIGZZR+
+         f8tOFsbfbZXU+eky9iItPNHi7rsv+L7tLi0XWE4jxtIqBBInFXjcBnPn7Xu1k989ighU
+         TlGWsf3aIZyhf7/YlvTopKER3admGbeHIKZO/AJpdapnnAS2bWphXd6CjdeuPNlzgco5
+         ulGEhh4cT+5OEtaAs85RXrMZbOWhgO+FRbDDTdZQEN0eL24ovYYAKcRZgnnIoSkWsmiw
+         SZbg==
+X-Gm-Message-State: AOAM5334DzwbpWEEuk0QMuFbluUIA5nJyjQwV9IwWsH8GrH4xr49OOKp
+        L7cA9zzv9u0U8mr2phMTVW8+CoZj8dE=
+X-Google-Smtp-Source: ABdhPJxDv2YJIThf/IFG7b54Dzk+Px82xuzn+nZs25PjChZwmR4ijviRC86YGzQEVVZb7lcJXn3X3g==
+X-Received: by 2002:a2e:96d9:: with SMTP id d25mr2162879ljj.408.1596650725832;
+        Wed, 05 Aug 2020 11:05:25 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id t10sm1189266ljg.60.2020.08.05.11.05.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 11:05:24 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id v9so14261243ljk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 11:05:24 -0700 (PDT)
+X-Received: by 2002:a2e:9252:: with SMTP id v18mr1872739ljg.70.1596650724308;
+ Wed, 05 Aug 2020 11:05:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200805090653.GI23458@shao2-debian>
+In-Reply-To: <20200805090653.GI23458@shao2-debian>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 5 Aug 2020 11:05:08 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiuF-0JSmiDe-A--+Z4UbEWQxQ40ftm88aKwSi0FLvM+g@mail.gmail.com>
+Message-ID: <CAHk-=wiuF-0JSmiDe-A--+Z4UbEWQxQ40ftm88aKwSi0FLvM+g@mail.gmail.com>
+Subject: Re: [mm] 2a9127fcf2: vm-scalability.throughput 130.0% improvement
+To:     kernel test robot <rong.a.chen@intel.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ8074 has A53 cores, so lets use the corresponding PMU compatible.
+W00t!
 
-Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Usually I think these kinds of big changes are likely outright bugs,
+but this time I'll take it, because that improvement was the point and
+aim of the change even if I didn't have numbers to back up my BS.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 96a5ec89b5f0..e4859c7f6208 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -67,7 +67,7 @@
- 	};
- 
- 	pmu {
--		compatible = "arm,armv8-pmuv3";
-+		compatible = "arm,cortex-a53-pmu";
- 		interrupts = <GIC_PPI 7 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
- 	};
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+              Linus
 
+On Wed, Aug 5, 2020 at 2:07 AM kernel test robot <rong.a.chen@intel.com> wrote:
+>
+> Greeting,
+>
+> FYI, we noticed a 130.0% improvement of vm-scalability.throughput due to commit:
+>
+> commit: 2a9127fcf2296674d58024f83981f40b128fffea ("mm: rewrite wait_on_page_bit_common() logic")
