@@ -2,93 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA4B23CCD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A788523CD06
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728478AbgHERIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:08:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25725 "EHLO
+        id S1728461AbgHERP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:15:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32880 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728329AbgHERGO (ORCPT
+        with ESMTP id S1728593AbgHERLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:06:14 -0400
+        Wed, 5 Aug 2020 13:11:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647173;
+        s=mimecast20190719; t=1596647464;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=BJTmQpoAkIpbguLFUsJigmbm7ftZPVlO31weMkCEohw=;
-        b=L31YrSDzCl2zHFd1sJ6XsRWKZ+ibBGhncJHNbiYAMQSta4Kg5E3jSa454+/KFjRHgly5P4
-        tDuKmKUYrtIRRVLtNLn3CHHZnOzm2fC3SfZckIecSl2SmbqEfs8yX3I5cYX2wR1vIBMf1y
-        P7/bL5v3QdEeHK8SNERpiJLazce3fts=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-138-FgJlMIBBOEqWZYWlkZ1Vjw-1; Wed, 05 Aug 2020 09:39:35 -0400
-X-MC-Unique: FgJlMIBBOEqWZYWlkZ1Vjw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 390D5100A8DF;
-        Wed,  5 Aug 2020 13:39:34 +0000 (UTC)
-Received: from maya.cloud.tilaa.com (unknown [10.36.110.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EDB792DE95;
-        Wed,  5 Aug 2020 13:39:33 +0000 (UTC)
-Received: from localhost (055-041-157-037.ip-addr.inexio.net [37.157.41.55])
-        by maya.cloud.tilaa.com (Postfix) with ESMTPSA id D853F40093;
-        Wed,  5 Aug 2020 15:39:32 +0200 (CEST)
-Date:   Wed, 5 Aug 2020 15:39:31 +0200
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, heiko.carstens@de.ibm.com,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Subject: [PATCH RESEND net-next] ip_tunnel_core: Fix build for archs without
- _HAVE_ARCH_IPV6_CSUM
-Message-ID: <20200805153931.50a3d518@redhat.com>
-Organization: Red Hat
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=aKIWpeHa/RLGXCmmUH8pks8+iWsKwpmH1MNDmcSULo0=;
+        b=VJMJJfSHaZYD+ggZVLL6E9laXK16jA8d+ElLqJnO5gTZn8BthBtKBhnjaoms/HgzfKUmnq
+        f8izvuCVDDqsmv+obLD5vh/ls6jEdGOywKWvGBgaX0uaFNNjE8bl5txjoGzOxsEw/nXIv0
+        pGQmAvnTMh9aB9S1LD6aOQ8gDkpsuIc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-311-tpzE5OfnPZW2a8k_cvJUPg-1; Wed, 05 Aug 2020 09:43:18 -0400
+X-MC-Unique: tpzE5OfnPZW2a8k_cvJUPg-1
+Received: by mail-wr1-f71.google.com with SMTP id t3so12558743wrr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:43:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=aKIWpeHa/RLGXCmmUH8pks8+iWsKwpmH1MNDmcSULo0=;
+        b=nPdoGasVimeLUNJ5Zf8cdN3CgYBx6tn+xGlYKezqb/C337DQWif8sWtFmiHUhzf2OV
+         H0pS2ke19Fhkx7SHVOCXKRhnRqkoKZyZAUVpUli0V6c5SUKUTW98fY0Gtpmp06Ejws2W
+         V34GkoOQTEnyTevP+3sShBxyePeSGJ1CljFYSD8yGMyVMFzx44dZYgmNxyQ6ScFswiHE
+         xbC1BCdRDyf3YFvA/Jjqj1JE6SYK1tckdHTGN5s9gxBt98p7CahLVQpkHk5atiB71/55
+         KaygolN9hHF+6ZuJleE3hqNsuUd5c2i5GHkhapr2F+qHCuLjqqTlxlJySLwUE41EtUXT
+         ETeg==
+X-Gm-Message-State: AOAM533QeTv1pdlCpIg8pkvHXvH9zBDgp/GDfAT8npec7uWQN0C20/qU
+        DI6ygUTXJdAqIGdLznldeuDFqiNVpzB1HIad/+ElTfyQpITr+hhQsMuGA0ZpEWuYhX5OQDvAzTL
+        x+yp+quXmXtiCiXzKRe3+3tv6
+X-Received: by 2002:a7b:c0cb:: with SMTP id s11mr3324400wmh.89.1596634996846;
+        Wed, 05 Aug 2020 06:43:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCK99fQ5n5aXVlfLroRWKUif4azFqZTwF3G4NgOhHlsHfvsOV74tZlVVZA3VZg8bz8gR1Ong==
+X-Received: by 2002:a7b:c0cb:: with SMTP id s11mr3324384wmh.89.1596634996652;
+        Wed, 05 Aug 2020 06:43:16 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
+        by smtp.gmail.com with ESMTPSA id d23sm2908603wmd.27.2020.08.05.06.43.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 06:43:16 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:43:14 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/38] virtio: config space endian-ness cleanup
+Message-ID: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
+X-Mutt-Fcc: =sent
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On architectures defining _HAVE_ARCH_IPV6_CSUM, we get
-csum_ipv6_magic() defined by means of arch checksum.h headers. On
-other architectures, we actually need to include net/ip6_checksum.h
-to be able to use it.
+Config space endian-ness is currently a mess: fields are
+not tagged with the correct endian-ness so it's easy
+to make mistakes like instanciating config space in
+native endian-ness.
 
-Without this include, building with defconfig breaks at least for
-s390.
+Further, LE-only devices (e.g. modern-style) add unnecessary overhead
+by using generic transitional-style config space accesses.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 4cb47a8644cc ("tunnels: PMTU discovery support for directly bridged IP packets")
-Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
----
-I'm submitting this for net-next despite the fact it's closed, as
-the offending code isn't merged to net.git yet. Should I rather
-submit this to... linux-next?
+The following patches adding sparse tagging and then using that
+to correctly access config space as either transitional or LE
+are my tree.
+Lightly tested.
 
-Re-sending as original copy seems to be stuck in some SMTP queue.
+I also start with a version using gcc extensions, then switch
+to _Generic. This is helpful for backports to older kernels/older
+distros: _Generic patch can just be skipped there.
 
- net/ipv4/ip_tunnel_core.c | 1 +
- 1 file changed, 1 insertion(+)
+changes from v2:
+	- convert a couple of missing devices
+	- add APIs for accessing config space as LE, use that
+	  in modern devices and in balloon.
+	- code comments in vdpa_sim explaining use of transitional APIs
 
-diff --git a/net/ipv4/ip_tunnel_core.c b/net/ipv4/ip_tunnel_core.c
-index 9ddee2a0c66d..75c6013ff9a4 100644
---- a/net/ipv4/ip_tunnel_core.c
-+++ b/net/ipv4/ip_tunnel_core.c
-@@ -25,6 +25,7 @@
- #include <net/protocol.h>
- #include <net/ip_tunnels.h>
- #include <net/ip6_tunnel.h>
-+#include <net/ip6_checksum.h>
- #include <net/arp.h>
- #include <net/checksum.h>
- #include <net/dsfield.h>
+
+Michael S. Tsirkin (38):
+  virtio_balloon: fix sparse warning
+  virtio_ring: sparse warning fixup
+  virtio: allow __virtioXX, __leXX in config space
+  virtio_9p: correct tags for config space fields
+  virtio_balloon: correct tags for config space fields
+  virtio_blk: correct tags for config space fields
+  virtio_console: correct tags for config space fields
+  virtio_crypto: correct tags for config space fields
+  virtio_fs: correct tags for config space fields
+  virtio_gpu: correct tags for config space fields
+  virtio_input: correct tags for config space fields
+  virtio_iommu: correct tags for config space fields
+  virtio_mem: correct tags for config space fields
+  virtio_net: correct tags for config space fields
+  virtio_pmem: correct tags for config space fields
+  virtio_scsi: correct tags for config space fields
+  virtio_config: disallow native type fields
+  mlxbf-tmfifo: sparse tags for config access
+  vdpa: make sure set_features is invoked for legacy
+  vhost/vdpa: switch to new helpers
+  virtio_vdpa: legacy features handling
+  vdpa_sim: fix endian-ness of config space
+  virtio_config: cread/write cleanup
+  virtio_config: rewrite using _Generic
+  virtio_config: disallow native type fields (again)
+  virtio_config: LE config space accessors
+  virtio_caif: correct tags for config space fields
+  virtio_config: add virtio_cread_le_feature
+  virtio_balloon: use LE config space accesses
+  virtio_input: convert to LE accessors
+  virtio_fs: convert to LE accessors
+  virtio_crypto: convert to LE accessors
+  virtio_pmem: convert to LE accessors
+  drm/virtio: convert to LE accessors
+  virtio_mem: convert to LE accessors
+  virtio-iommu: convert to LE accessors
+  virtio_config: drop LE option from config space
+  virtio_net: use LE accessors for speed/duplex
+
+ drivers/crypto/virtio/virtio_crypto_core.c |  46 ++---
+ drivers/gpu/drm/virtio/virtgpu_kms.c       |  16 +-
+ drivers/iommu/virtio-iommu.c               |  34 ++--
+ drivers/net/virtio_net.c                   |   9 +-
+ drivers/nvdimm/virtio_pmem.c               |   4 +-
+ drivers/platform/mellanox/mlxbf-tmfifo.c   |  13 +-
+ drivers/scsi/virtio_scsi.c                 |   4 +-
+ drivers/vdpa/vdpa.c                        |   1 +
+ drivers/vdpa/vdpa_sim/vdpa_sim.c           |  33 +++-
+ drivers/vhost/vdpa.c                       |   8 +-
+ drivers/virtio/virtio_balloon.c            |  28 ++--
+ drivers/virtio/virtio_input.c              |  32 ++--
+ drivers/virtio/virtio_mem.c                |  30 ++--
+ drivers/virtio/virtio_vdpa.c               |   9 +-
+ fs/fuse/virtio_fs.c                        |   4 +-
+ include/linux/vdpa.h                       |  34 ++++
+ include/linux/virtio_caif.h                |   6 +-
+ include/linux/virtio_config.h              | 186 +++++++++++++++------
+ include/linux/virtio_ring.h                |  19 +--
+ include/uapi/linux/virtio_9p.h             |   4 +-
+ include/uapi/linux/virtio_balloon.h        |  10 +-
+ include/uapi/linux/virtio_blk.h            |  26 +--
+ include/uapi/linux/virtio_console.h        |   8 +-
+ include/uapi/linux/virtio_crypto.h         |  26 +--
+ include/uapi/linux/virtio_fs.h             |   2 +-
+ include/uapi/linux/virtio_gpu.h            |   8 +-
+ include/uapi/linux/virtio_input.h          |  18 +-
+ include/uapi/linux/virtio_iommu.h          |  12 +-
+ include/uapi/linux/virtio_mem.h            |  14 +-
+ include/uapi/linux/virtio_net.h            |   8 +-
+ include/uapi/linux/virtio_pmem.h           |   4 +-
+ include/uapi/linux/virtio_scsi.h           |  20 +--
+ 32 files changed, 405 insertions(+), 271 deletions(-)
+
 -- 
-2.27.0
+MST
 
