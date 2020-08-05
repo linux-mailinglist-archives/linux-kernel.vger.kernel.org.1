@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37DD23CC0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805A823CC05
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgHEQUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:20:47 -0400
-Received: from gate.crashing.org ([63.228.1.57]:49182 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725969AbgHEQS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:18:57 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 075DZ7fT020629;
-        Wed, 5 Aug 2020 08:35:08 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 075DZ5lG020627;
-        Wed, 5 Aug 2020 08:35:05 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Wed, 5 Aug 2020 08:35:05 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com,
-        linux-arch@vger.kernel.org, arnd@arndb.de,
-        linux-kernel@vger.kernel.org,
-        Tulio Magno Quites Machado Filho <tuliom@linux.ibm.com>,
-        luto@kernel.org, tglx@linutronix.de, vincenzo.frascino@arm.com,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v8 5/8] powerpc/vdso: Prepare for switching VDSO to generic C implementation.
-Message-ID: <20200805133505.GN6753@gate.crashing.org>
-References: <cover.1588079622.git.christophe.leroy@c-s.fr> <2a67c333893454868bbfda773ba4b01c20272a5d.1588079622.git.christophe.leroy@c-s.fr> <878sflvbad.fsf@mpe.ellerman.id.au> <65fd7823-cc9d-c05a-0816-c34882b5d55a@csgroup.eu> <87wo2dy5in.fsf@mpe.ellerman.id.au>
-Mime-Version: 1.0
+        id S1726201AbgHEQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:18:36 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:54866 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbgHEQOv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:14:51 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075Dg4nl052289;
+        Wed, 5 Aug 2020 13:44:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=RMqrIU6pEOHrTAzyAxKbs76zBmc+tuV1JrAkmGwm880=;
+ b=hEvH4qvZjPHu5hSZiQXb1nctUACF9mQajmWHFdozuJFbBo1tk5Q2Y90bmXQheI7tTAA6
+ 9rh04Y0tVq7zA16je5BZmShI6n7hRmfy7h9/Ipru34+bzvxsuBtk5KBZLfa49Y2OQ2F8
+ kKPtNM6GffAzBmWKa5Ekn9YWi6jZKuWW4w0xEea/iQ2nf5AUt+mX77gwNAfJfcYLkck+
+ ONxvE1zxG7krnhG8C0nWxufv11RXzkUpIo0sru6G5xqjMMjQpyMfb8GEUd1yfhu0xLmr
+ 2Ftv1W56uzIwzrvV9obcqXDkc6j0tD1vVh1Vp4D5cLGKW1/wU9wJHa+fmqblGF/1M1fA sg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 32qnd42dc9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 05 Aug 2020 13:44:31 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075DgtHC133802;
+        Wed, 5 Aug 2020 13:44:30 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 32pdntc5h6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 05 Aug 2020 13:44:30 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 075DiSa8029091;
+        Wed, 5 Aug 2020 13:44:28 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 05 Aug 2020 06:44:27 -0700
+Date:   Wed, 5 Aug 2020 16:44:21 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Konrad Dybcio <konradybcio@gmail.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>
+Subject: [kbuild] drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c:120:2:
+ warning: Local variable ret shadows outer variable
+Message-ID: <20200805134421.GP5493@kadam>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87wo2dy5in.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.4.2.3i
+Message-ID-Hash: B2LG3KDNHDMBDGZLGAGLKGWOTGEMYTZF
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9703 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9703 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 clxscore=1011 mlxscore=0
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 adultscore=0
+ lowpriorityscore=0 spamscore=0 bulkscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050113
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2324d50d051ec0f14a548e78554fb02513d6dcef
+commit: 02ed76b6da0710a9d24f36a4a9800a68d7edb9a7 drivers: drm: panel: Add ASUS TM5P5 NT35596 panel driver
 
-On Wed, Aug 05, 2020 at 04:24:16PM +1000, Michael Ellerman wrote:
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> > Indeed, 32-bit doesn't have a redzone, so I believe it needs a stack 
-> > frame whenever it has anything to same.
-> 
-> Yeah OK that would explain it.
-> 
-> > Here is what I have in libc.so:
-> >
-> > 000fbb60 <__clock_gettime>:
-> >     fbb60:	94 21 ff e0 	stwu    r1,-32(r1)
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-This is the *only* place where you can use a negative offset from r1:
-in the stwu to extend the stack (set up a new stack frame, or make the
-current one bigger).
+cppcheck warnings: (new ones prefixed by >>)
 
-> > diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h 
-> > b/arch/powerpc/include/asm/vdso/gettimeofday.h
-> > index a0712a6e80d9..0b6fa245d54e 100644
-> > --- a/arch/powerpc/include/asm/vdso/gettimeofday.h
-> > +++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
-> > @@ -10,6 +10,7 @@
-> >     .cfi_startproc
-> >   	PPC_STLU	r1, -STACK_FRAME_OVERHEAD(r1)
-> >   	mflr		r0
-> > +	PPC_STLU	r1, -STACK_FRAME_OVERHEAD(r1)
-> >     .cfi_register lr, r0
-> 
-> The cfi_register should come directly after the mflr I think.
+>> drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c:120:2: warning: Local variable ret shadows outer variable [shadowVar]
+    dsi_dcs_write_seq(dsi, 0x4f, 0x01);
+    ^
+   drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c:105:6: note: Shadowed declaration
+    int ret;
+        ^
+   drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c:120:2: note: Shadow variable
+    dsi_dcs_write_seq(dsi, 0x4f, 0x01);
+    ^
 
-That is the idiomatic way to write it, and most obviously correct.  But
-as long as the value in LR at function entry is available in multiple
-places (like, in LR and in R0 here), it is fine to use either for
-unwinding.  Sometimes you can use this to optimise the unwind tables a
-bit -- not really worth it in hand-written code, it's more important to
-make it legible ;-)
+# https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=02ed76b6da0710a9d24f36a4a9800a68d7edb9a7
+git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+git remote update linus
+git checkout 02ed76b6da0710a9d24f36a4a9800a68d7edb9a7
+vim +120 drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
 
-> >> There's also no code to load/restore the TOC pointer on BE, which I
-> >> think we'll need to handle.
-> >
-> > I see no code in the generated vdso64.so doing anything with r2, but if 
-> > you think that's needed, just let's do it:
-> 
-> Hmm, true.
-> 
-> The compiler will use the toc for globals (and possibly also for large
-> constants?)
+02ed76b6da0710a Konrad Dybcio 2020-05-06  101  static int tm5p5_nt35596_off(struct tm5p5_nt35596 *ctx)
+02ed76b6da0710a Konrad Dybcio 2020-05-06  102  {
+02ed76b6da0710a Konrad Dybcio 2020-05-06  103  	struct mipi_dsi_device *dsi = ctx->dsi;
+02ed76b6da0710a Konrad Dybcio 2020-05-06  104  	struct device *dev = &dsi->dev;
+02ed76b6da0710a Konrad Dybcio 2020-05-06  105  	int ret;
+02ed76b6da0710a Konrad Dybcio 2020-05-06  106  
+02ed76b6da0710a Konrad Dybcio 2020-05-06  107  	ret = mipi_dsi_dcs_set_display_off(dsi);
+02ed76b6da0710a Konrad Dybcio 2020-05-06  108  	if (ret < 0) {
+02ed76b6da0710a Konrad Dybcio 2020-05-06  109  		dev_err(dev, "Failed to set display off: %d\n", ret);
+02ed76b6da0710a Konrad Dybcio 2020-05-06  110  		return ret;
+02ed76b6da0710a Konrad Dybcio 2020-05-06  111  	}
+02ed76b6da0710a Konrad Dybcio 2020-05-06  112  	msleep(60);
+02ed76b6da0710a Konrad Dybcio 2020-05-06  113  
+02ed76b6da0710a Konrad Dybcio 2020-05-06  114  	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
+02ed76b6da0710a Konrad Dybcio 2020-05-06  115  	if (ret < 0) {
+02ed76b6da0710a Konrad Dybcio 2020-05-06  116  		dev_err(dev, "Failed to enter sleep mode: %d\n", ret);
+02ed76b6da0710a Konrad Dybcio 2020-05-06  117  		return ret;
+02ed76b6da0710a Konrad Dybcio 2020-05-06  118  	}
+02ed76b6da0710a Konrad Dybcio 2020-05-06  119  
+02ed76b6da0710a Konrad Dybcio 2020-05-06 @120  	dsi_dcs_write_seq(dsi, 0x4f, 0x01);
 
-And anything else it bloody well wants to, yeah :-)
+It's a really bad idea to hide a return inside a macro.  It will lead to
+all sorts of locking and error handling bugs.
 
-> AFAIK there's no way to disable use of the toc, or make it a build error
-> if it's needed.
+02ed76b6da0710a Konrad Dybcio 2020-05-06  121  
+02ed76b6da0710a Konrad Dybcio 2020-05-06  122  	return 0;
+02ed76b6da0710a Konrad Dybcio 2020-05-06  123  }
 
-Yes.
-
-> At the same time it's much safer for us to just save/restore r2, and
-> probably in the noise performance wise.
-
-If you want a function to be able to work with ABI-compliant code safely
-(in all cases), you'll have to make it itself ABI-compliant as well,
-yes :-)
-
-> So yeah we should probably do as below.
-
-[ snip ]
-
-Looks good yes.
-
-
-Segher
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+_______________________________________________
+kbuild mailing list -- kbuild@lists.01.org
+To unsubscribe send an email to kbuild-leave@lists.01.org
