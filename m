@@ -2,120 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B8F23D138
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F18A23D083
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbgHET5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
+        id S1728023AbgHETtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727865AbgHEQns (ORCPT
+        with ESMTP id S1728308AbgHEQys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:43:48 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E86C034612;
-        Wed,  5 Aug 2020 05:46:04 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id c12so24490446qtn.9;
-        Wed, 05 Aug 2020 05:46:03 -0700 (PDT)
+        Wed, 5 Aug 2020 12:54:48 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AD6C034613
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:48:27 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z18so37008562wrm.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=th4R0mCDoEKdxtP92DcRMWCvQNUwMm704tc+tQsZ6e8=;
-        b=CMnzX/BkmrlbcfiKr7JDmYk704xsWGknJKvd+HQfxigZlMYUd2JDxLZZJ7AM4TB3Tu
-         xU1b2tTVbUxTEcVS0keHcGIOcvDbg0Mc9e44uwsdob+ZBmNGkINJPYUrbXW1+jGpvTLK
-         q6HKh3ivwm3nAHOgsJQDTdhdUercSIIvr6v7SehaOwRjst4uDAortgK+6vcDK5Dt5wZ8
-         7kUHi9Unn4E4nmWDGVLlM94Hu3Od0H2KdOl1Ckkp64W9ckafVFOmZQUWzAWqj8Ku24va
-         Sz1jmJ4MtajaF/nWDfSRh9FPkplHRF/31M1d8qwy/IO2PlKYQYUCF5z60bd5zaEURRNn
-         opGA==
+        d=googlemail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LM1Oj6CMy+UaQUy6SY0cJrL8H1cD8DIwTKTLLUxm8GE=;
+        b=rOYHKIk2WUpgZa45oMbWh2DnljJ5I+n+pazqzyVsDFmp6noTkD4zpRRBr+2skUktXm
+         rRB/zrjgE9MMR44w5chRNM32rHnHBmDlARXh4uTjNtxk1cnVUH7KmtQ+kTXtUWA1serr
+         VDY75YQnXce7fJEwpsfcBZf8/EIfeVnQTNDQvMibMjKW4Wy42NZUYaIH4+Df0gLy7Sge
+         3ZgD1cclW+hpFCg5mOoYvsVL/XH+a/3tKmKLIAS1489rI/Sbs1su05BP4dRcdSTaq524
+         oHeM7ommoBXcMvVGQImg96ZDrBdihNboMA26O9BeGI6f5ixLZloh58Uc1cvwoMrcqQKt
+         uBrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=th4R0mCDoEKdxtP92DcRMWCvQNUwMm704tc+tQsZ6e8=;
-        b=PJU27bSOqH20mghqx6QETZ0jSO+leoLP6wgwFCxeCMoJxxR1avg5sGLxBV5C+cPUlc
-         DWT59RCsiIlY1lNKB2ljAAxaaye8nYTELA9ol90rCBwnZ4fRp3mypKEu4ClarcOlNlo/
-         Mj5hbDAFi2xQ1B9ayJsfebza8jQN/03qzPHK4pD58uZlkqzVokPhxZ+jiG4PctwxOjkL
-         o5GmfBbc9GkYf7yef6Jd0KTixNhiE6um2UNKuFWC7xQEfVGkC86IYOm2RJYVlOfYePhi
-         s0sT/DQyDxxqH440UK1xmxoCxUCQEtLeMFR9C2+65b5SWVkUO/2o7UierPSmAlPjdwao
-         NSuQ==
-X-Gm-Message-State: AOAM5328/6BBHHHxelk2/fXz5Nva/BZcrwv045lqswa5StGURkOzNZQl
-        DqdRMnnhaq0sKbou7glOiZG7CberAiY=
-X-Google-Smtp-Source: ABdhPJxrH4/VsLOKixqcHuZDqId9PnSjHLiReskUJRab0cl4DnJUCIsc2KvflzT6+UowANCjwPVYXw==
-X-Received: by 2002:ac8:6f51:: with SMTP id n17mr3057373qtv.233.1596631562731;
-        Wed, 05 Aug 2020 05:46:02 -0700 (PDT)
-Received: from [192.168.1.190] (pool-96-244-118-111.bltmmd.fios.verizon.net. [96.244.118.111])
-        by smtp.gmail.com with ESMTPSA id j15sm1410469qkl.63.2020.08.05.05.46.01
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LM1Oj6CMy+UaQUy6SY0cJrL8H1cD8DIwTKTLLUxm8GE=;
+        b=JSqq+dsCXmRDZanFQ8csqUbP+u+SCzRanB1SxLEMFAN8JEZSGLMQdUsdFhJ5kX874j
+         SGnUUzpWavX/8l+B9o/nRT3LejE4PeeR4ToVcpekkQdq6TPjA1Z0b21es3rST8MmcDqi
+         qCXH8LODKcOe7P5CntvNBwCm/I6H3Hmm5PMV7NyPyK1Hq0z6Es0Rx8UNihxgdWXz088D
+         MnFCp/j0kZfNP4ByHQMSJ3XXzE7VQzUF94vkDBKfoURdhwc+M4+rEgflTGfIQ0EFb8z2
+         4rw5FcOIieyg6ZOfmOcRPa6akCn+lao/RXzRcjjczbRi6cQWd3pnNXW/KkZPVDKAmGjT
+         kegg==
+X-Gm-Message-State: AOAM531sxPkV/g1pNnfaOnPip6fLt9jJ82gNFuajUfw8LJSRqhtVZWBL
+        +k41RHajXV43GJ7Owabas5uTs/A9
+X-Google-Smtp-Source: ABdhPJwns0f79W21zd+CDXGFbNlaOdl5o/pkTTuvMe3TQVysVA42W5WFRn7lvo0y+ImDfuf99D7wYA==
+X-Received: by 2002:a5d:6401:: with SMTP id z1mr2639637wru.272.1596631704839;
+        Wed, 05 Aug 2020 05:48:24 -0700 (PDT)
+Received: from [192.168.1.20] ([213.122.218.185])
+        by smtp.googlemail.com with ESMTPSA id 8sm2777286wrl.7.2020.08.05.05.48.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 05:46:01 -0700 (PDT)
-Subject: Re: [PATCH v6 1/4] IMA: Add func to measure LSM state and policy
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        casey@schaufler-ca.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
- <20200805004331.20652-2-nramas@linux.microsoft.com>
- <4b9d2715d3ef3c8f915ef03867cfb1a39c0abc54.camel@linux.ibm.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Message-ID: <f88bf25e-37ef-7f00-6162-215838961bb0@gmail.com>
-Date:   Wed, 5 Aug 2020 08:46:00 -0400
+        Wed, 05 Aug 2020 05:48:24 -0700 (PDT)
+Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader on
+ Intel NUC boxes
+From:   Chris Clayton <chris2553@googlemail.com>
+To:     =?UTF-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "philquadra@gmail.com" <philquadra@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <862172f0-cd23-800c-27b1-27cb49e99099@googlemail.com>
+ <a9a94d7f-4873-7a10-4911-f3c760257c5c@googlemail.com>
+ <5729c72bbc2740d3917619c85e2fde58@realtek.com>
+ <20200804074831.GB1761483@kroah.com>
+ <11e224ca299b48f1bea07082f2ff7c00@realtek.com>
+ <0afbd711-0bda-d9a3-138d-5c713b4e2ed9@googlemail.com>
+ <19de15c2f07d447dace6bea483d38159@realtek.com>
+ <152ef6c0-f3c0-bb67-4175-adced3c720cd@googlemail.com>
+ <e1c295f28e3d4bdd8c78dfd3a5ed398c@realtek.com>
+ <68b9bdd2-a05e-7fb0-ec9a-70b03e0c5289@googlemail.com>
+Message-ID: <20da8b4b-8426-9568-c0f1-4d1c2006c53f@googlemail.com>
+Date:   Wed, 5 Aug 2020 13:48:23 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <4b9d2715d3ef3c8f915ef03867cfb1a39c0abc54.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
+In-Reply-To: <68b9bdd2-a05e-7fb0-ec9a-70b03e0c5289@googlemail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/20 11:25 PM, Mimi Zohar wrote:
+Hi Ricky
 
-> Hi Lakshmi,
->
-> There's still  a number of other patch sets needing to be reviewed
-> before my getting to this one.  The comment below is from a high level.
->
-> On Tue, 2020-08-04 at 17:43 -0700, Lakshmi Ramasubramanian wrote:
->> Critical data structures of security modules need to be measured to
->> enable an attestation service to verify if the configuration and
->> policies for the security modules have been setup correctly and
->> that they haven't been tampered with at runtime. A new IMA policy is
->> required for handling this measurement.
+On 05/08/2020 06:51, Chris Clayton wrote:
+> Thanks, Ricky.
+> 
+> On 05/08/2020 03:35, 吳昊澄 Ricky wrote:
 >>
->> Define two new IMA policy func namely LSM_STATE and LSM_POLICY to
->> measure the state and the policy provided by the security modules.
->> Update ima_match_rules() and ima_validate_rule() to check for
->> the new func and ima_parse_rule() to handle the new func.
-> I can understand wanting to measure the in kernel LSM memory state to
-> make sure it hasn't changed, but policies are stored as files.  Buffer
-> measurements should be limited  to those things that are not files.
->
-> Changing how data is passed to the kernel has been happening for a
-> while.  For example, instead of passing the kernel module or kernel
-> image in a buffer, the new syscalls - finit_module, kexec_file_load -
-> pass an open file descriptor.  Similarly, instead of loading the IMA
-> policy data, a pathname may be provided.
->
-> Pre and post security hooks already exist for reading files.   Instead
-> of adding IMA support for measuring the policy file data, update the
-> mechanism for loading the LSM policy.  Then not only will you be able
-> to measure the policy, you'll also be able to require the policy be
-> signed.
+>>
+>>> -----Original Message-----
+>>> From: Chris Clayton [mailto:chris2553@googlemail.com]
+>>> Sent: Tuesday, August 04, 2020 7:52 PM
+>>> To: 吳昊澄 Ricky; gregkh@linuxfoundation.org
+>>> Cc: LKML; rdunlap@infradead.org; philquadra@gmail.com; Arnd Bergmann
+>>> Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader on
+>>> Intel NUC boxes
+>>>
+>>>
+>>>
+>>> On 04/08/2020 11:46, 吳昊澄 Ricky wrote:
+>>>>> -----Original Message-----
+>>>>> From: Chris Clayton [mailto:chris2553@googlemail.com]
+>>>>> Sent: Tuesday, August 04, 2020 4:51 PM
+>>>>> To: 吳昊澄 Ricky; gregkh@linuxfoundation.org
+>>>>> Cc: LKML; rdunlap@infradead.org; philquadra@gmail.com; Arnd Bergmann
+>>>>> Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader on
+>>>>> Intel NUC boxes
+>>>>>
+>>>>>
+>>>>>
+>>>>> On 04/08/2020 09:08, 吳昊澄 Ricky wrote:
+>>>>>>> -----Original Message-----
+>>>>>>> From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
+>>>>>>> Sent: Tuesday, August 04, 2020 3:49 PM
+>>>>>>> To: 吳昊澄 Ricky
+>>>>>>> Cc: Chris Clayton; LKML; rdunlap@infradead.org; philquadra@gmail.com;
+>>>>> Arnd
+>>>>>>> Bergmann
+>>>>>>> Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader
+>>> on
+>>>>>>> Intel NUC boxes
+>>>>>>>
+>>>>>>> On Tue, Aug 04, 2020 at 02:44:41AM +0000, 吳昊澄 Ricky wrote:
+>>>>>>>> Hi Chris,
+>>>>>>>>
+>>>>>>>> rtsx_pci_write_register(pcr, FPDTL, OC_POWER_DOWN,
+>>>>> OC_POWER_DOWN);
+>>>>>>>> This register operation saved power under 1mA, so if do not care the 1mA
+>>>>>>> power we can have a patch to remove it, make compatible with NUC6
+>>>>>>>> We tested others our card reader that remove it, we did not see any side
+>>>>> effect
+>>>>>>>>
+>>>>>>>> Hi Greg k-h,
+>>>>>>>>
+>>>>>>>> Do you have any comments?
+>>>>>>>
+>>>>>>> comments on what?  I don't know what you are responding to here, sorry.
+>>>>>>>
+>>>>>> Can we have a patch to kernel for NUC6? It may cause more power(1mA) but
+>>> it
+>>>>> will have more compatibility
+>>>>>>
+>>>>>
+>>>>> Ricky,
+>>>>>
+>>>>> I don't understand why you want to completely remove the code that sets up
+>>> the
+>>>>> 1mA power saving. That code was there
+>>>>> even before your patch (bede03a579b3b4a036003c4862cc1baa4ddc351f), so I
+>>>>> assume it benefits some of the Realtek card
+>>>>> readers. Before your patch however, rtsx_pci_init_ocp() was not called for the
+>>>>> rts5229 reader, but the patch introduced
+>>>>> an unconditional call to that function into rtsx_pci_init_hw(), which is run for
+>>> the
+>>>>> rts5229. That is what now disables
+>>>>> the card reader.
+>>>>>
+>>>>> Now, I don't know whether other cards are affected, although I don't recall
+>>>>> seeing any reported as I searched the kernel
+>>>>> and ubuntu bugzillas for any analysis of the problem. I know this is not what
+>>> the
+>>>>> patch I sent does, but having thought
+>>>>> about it more, seems to me that the simplest fix is to skip the new call to
+>>>>> rtsx_pci_init_ocp() if the reader is an rts5229.
+>>>>>
+>>>>
+>>>> Because we are thinking about if others our card reader that not belong A
+>>> series(my ocp patch coverage) also on NUC6 platform maybe have the same
+>>> problem...
+>>>>
+>>>
+>>> OK. What if we do make the new call but only for the card readers that are in the
+>>> A series? Are they the ones that have
+>>> PID_5nnn defines in include/linux/rtsx_pci.h? Or is there another simple way of
+>>> identifying that a reader is a member of
+>>> the A series?
+>>>
+>>> I'm thinking of something like:
+>>> static bool rtsx_pci_is_series_A(pcr)
+>>> {
+>>> 	unsigned short device = pcr->pci->device;
+>>>
+>>> 	return device == PID524A || device == PID_5249 || device == PID_5250 ||
+>>> device == PID_525A
+>>> 			|| device == PID_525A || device == PID_5260 || device ==
+>>> PID_5261;
+>>> }
+>>>
+>>> then in rtsx_pci_init_hw() change the unconditional call to:
+>>>
+>>> 	if rtsx_pci_is_series_A(pcr)
+>>> 		rtsx_pci_init_ocp();
+>>>
+>>> Does that seem OK?
+>>>
+>> Previously, I want to remove
+>> else {
+>> 		/* OC power down */
+>> 		rtsx_pci_write_register(pcr, FPDCTL, OC_POWER_DOWN,
+>> 			OC_POWER_DOWN);
+>> }
+>> Because in our A-series card Reader we already assigned option->ocp_en to 1 in self init_params() , this is an easy way to fix this problem
+>>
+> 
+> Ah, OK. I'll prepare the patch and send it to you once I've tested it.
+> 
 
-To clarify, the policy being measured by this patch series is a 
-serialized representation of the in-memory policy data structures being 
-enforced by SELinux.� Not the file that was loaded.� Hence, this 
-measurement would detect tampering with the in-memory policy data 
-structures after the policy has been loaded.� In the case of SELinux, 
-one can read this serialized representation via /sys/fs/selinux/policy.� 
-The result is not byte-for-byte identical to the policy file that was 
-loaded but can be semantically compared via sediff and other tools to 
-determine whether it is equivalent.
+Please see the patch included below. As you suggested, it removes the code that does the OC power down on card readers
+that are not members of your A series. The patch is against a fresh pull of Linus's tree this morning
+(v5.8-2768-g4da9f3302615).
+
+I've tested the resultant kernel on my Intel NUC6CAYH box (which contains an NUC66AYB board) and the rts5229 works fine.
+I've also tested it on my laptop which also has a card reader supported by the rtsx_pci driver (an RTL8411B) and that
+also works fine.
+
+As I mentioned yesterday, I think it's a candidate for the 5.4 ans 5.7 stable series.
+
+Thanks for your patience!
+
+Chris
+
+Signed-off-by: Chris Clayton <chris2553@googlemail.com>
+
+--- a/drivers/misc/cardreader/rtsx_pcr.c        2020-08-05 07:10:21.752072515 +0100
++++ b/drivers/misc/cardreader/rtsx_pcr.c        2020-08-05 07:11:05.568074278 +0100
+@@ -1172,10 +1172,6 @@ void rtsx_pci_init_ocp(struct rtsx_pcr *
+                        rtsx_pci_write_register(pcr, REG_OCPGLITCH,
+                                SD_OCP_GLITCH_MASK, pcr->hw_param.ocp_glitch);
+                        rtsx_pci_enable_ocp(pcr);
+-               } else {
+-                       /* OC power down */
+-                       rtsx_pci_write_register(pcr, FPDCTL, OC_POWER_DOWN,
+-                               OC_POWER_DOWN);
+                }
+        }
+ }
 
 
