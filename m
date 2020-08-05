@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CA123D16E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC13B23D294
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729797AbgHEUAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727823AbgHEQkH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:40:07 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867A2C0A3BDC
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:34:43 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q76so6359579wme.4
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries-io.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jUm96D8c3KBJ6s62BHerMk/IRi7rhmWP25W/0OLk1ZU=;
-        b=sr0mHcaFg3/B+cuW/APq4vgco/kRUKHGPN8ruB0hAt74JLypp6gI0mmL4/QMzOgpPZ
-         xX1Chxnnu4QLipjFo6IFNfNjaZjq98LJRBn4EIPSCzF/pqCAXI22oAVUVKy+yAOYe2gC
-         nz8b0qiJ8r5foCm/fMq1gaFXi97wA9uPx90RB5rqCFvDC9X64J9d9pfuSHdfHMXDmotg
-         KJ84Q85TUeoNXYyMq7hWD9y0ujzl8hCBZaOGr8LlOnFFrTL4R126pLFooZuVeJoR0EOO
-         tcJlbJ6IhM7cTQ6bH/2wlMm/iVAzf7XJvlDA7AaU0t3HAxjh2Z8ZEHCN/sc21xmgP7Mk
-         GXIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jUm96D8c3KBJ6s62BHerMk/IRi7rhmWP25W/0OLk1ZU=;
-        b=FwsUusJHYBJO9JZyVyvC2b0EgeR/swKfjZRSAh768rnCwTJfT1M5iuPJTj7X4sTrak
-         Y6PkZoW7ZIRhFgVwJUWrHUUGTrvYc4aJa7h9iW8/7yl3Dlt2Liy0INvrziIyLH+s3GvX
-         bx8XQ684X74meXoCoKev79E2R5jUN7UNN2FLaclw4nY4iOOEYgZ2/7vP2a3cxQ3byM/l
-         IqAfG5ZwoA3itz6xRnDioNiR2rDF/thtWp6//A4tcJQ/yHB01yB0r8o2spHK9oVX71WD
-         r8ZsTssSF3ZxHzg3cXo9amR2X6U8PB5ffmuS10RFAArSOrwSiy4dEsY2f/85cVQ7gFr1
-         ukEg==
-X-Gm-Message-State: AOAM532yHU7PqFxNafZuOsgb3RwFDm7mN6gxT+KfMRv9AK57l41yXdmB
-        LQNYXCE0zarIzlO7wtUv5d4EBA==
-X-Google-Smtp-Source: ABdhPJyRcs7JRyS8/812me57oeRdjLSDfD7mFLhAWXcdCLI8E9eJI4aXg9Szz5CIpD7pOchaqXtHgg==
-X-Received: by 2002:a1c:9803:: with SMTP id a3mr3193427wme.57.1596634462319;
-        Wed, 05 Aug 2020 06:34:22 -0700 (PDT)
-Received: from trex (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
-        by smtp.gmail.com with ESMTPSA id j2sm2973661wrp.46.2020.08.05.06.34.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 05 Aug 2020 06:34:21 -0700 (PDT)
-From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
-Date:   Wed, 5 Aug 2020 15:34:20 +0200
-To:     Jorge Ramirez-Ortiz <jorge@foundries.io>
-Cc:     sumit.garg@linaro.org, mpm@selenic.com,
-        herbert@gondor.apana.org.au, jens.wiklander@linaro.org,
-        arnd@arndb.de, ricardo@foundries.io, mike@foundries.io,
-        gregkh@linuxfoundation.org, op-tee@lists.trustedfirmware.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 2/2] hwrng: optee: fix wait use case
-Message-ID: <20200805133420.GA8276@trex>
-References: <20200723084622.31134-1-jorge@foundries.io>
- <20200723084622.31134-2-jorge@foundries.io>
+        id S1729720AbgHEUON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:14:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:33034 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726622AbgHEQX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:23:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 264F913D5;
+        Wed,  5 Aug 2020 06:56:56 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B9B13F7BB;
+        Wed,  5 Aug 2020 06:56:54 -0700 (PDT)
+References: <877dumbtoi.fsf@kurt> <20200729094943.lsmhsqlnl7rlnl6f@skbuf> <87mu3ho48v.fsf@kurt> <20200730082228.r24zgdeiofvwxijm@skbuf> <873654m9zi.fsf@kurt> <87lfiwm2bj.fsf@nanos.tec.linutronix.de> <20200803114112.mrcuupz4ir5uqlp6@skbuf> <87d047n4oh.fsf@nanos.tec.linutronix.de> <jhjh7tjivew.mognet@arm.com> <875z9zmt4i.fsf@nanos.tec.linutronix.de> <20200805134002.GQ2674@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     peterz@infradead.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
+        will@kernel.org, paulmck@kernel.org, mw@semihalf.com,
+        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>
+Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level IRQ time accounting
+In-reply-to: <20200805134002.GQ2674@hirez.programming.kicks-ass.net>
+Date:   Wed, 05 Aug 2020 14:56:49 +0100
+Message-ID: <jhja6z9i4bi.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200723084622.31134-2-jorge@foundries.io>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/07/20, Jorge Ramirez-Ortiz wrote:
-> The current code waits for data to be available before attempting a
-> second read. However the second read would not be executed as the
-> while loop exits.
-> 
-> This fix does not wait if all data has been read and reads a second
-> time if only partial data was retrieved on the first read.
-> 
-> This fix also does not attempt to read if not data is requested.
-> 
-> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> ---
->  v2: tidy up the while loop to avoid reading when no data is requested
-> 
->  drivers/char/hw_random/optee-rng.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/char/hw_random/optee-rng.c b/drivers/char/hw_random/optee-rng.c
-> index 5bc4700c4dae..a99d82949981 100644
-> --- a/drivers/char/hw_random/optee-rng.c
-> +++ b/drivers/char/hw_random/optee-rng.c
-> @@ -122,14 +122,14 @@ static int optee_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
->  	if (max > MAX_ENTROPY_REQ_SZ)
->  		max = MAX_ENTROPY_REQ_SZ;
->  
-> -	while (read == 0) {
-> +	while (read < max) {
->  		rng_size = get_optee_rng_data(pvt_data, data, (max - read));
->  
->  		data += rng_size;
->  		read += rng_size;
->  
->  		if (wait && pvt_data->data_rate) {
-> -			if (timeout-- == 0)
-> +			if ((timeout-- == 0) || (read == max))
->  				return read;
->  			msleep((1000 * (max - read)) / pvt_data->data_rate);
->  		} else {
 
-any comments please?
+On 05/08/20 14:40, peterz@infradead.org wrote:
+> On Mon, Aug 03, 2020 at 09:22:53PM +0200, Thomas Gleixner wrote:
+>
+>>    totaltime = irqtime + tasktime
+>>
+>> Ignoring irqtime and pretending that totaltime is what the scheduler
+>> can control and deal with is naive at best.
+>
+> Well no, that's what we call system overhead and is assumed to be
+> included in the 'error margin'.
+>
+> The way things are set up is that we say that, by default, RT tasks can
+> consume 95% of cputime and the remaining 5% is sufficient to keep the
+> system alive.
+>
+> Those 5% include all system overhead, IRQs, RCU, !RT workqueues etc..
+>
+> Obviously IRQ_TIME accounting changes the balance a bit, but that's what
+> it is. We can't really do anything better.
+>
+
+I'm starting to think that as well. I tried some fugly hack of injecting
+avg_irq into sched_rt_runtime_exceeded() with something along the lines of:
+
+  irq_time = (rq->avg_irq.util_avg * sched_rt_period(rt_rq)) >> SCHED_CAPACITY_SHIFT;
+
+It's pretty bad for a few reasons; one is that avg_irq already has its own
+period (PELT-based). Another is that it is, as Dietmar pointed out, CPU and
+freq invariant, so falls over on big.LITTLE.
+
+Making update_curr_rt() use rq_clock() rather than rq_clock_task() makes it
+"work" but goes against all the good reasons there were to introduce
+rq_clock_task() in the first place.
+
+> Apparently this SoC has significant IRQ time for some reason. Also,
+> relying on RT throttling for 'correct' behaviour is also wrong. What
+> needs to be done is find who is using all this RT time and why, that
+> isn't right.
+
+I've been tempted to say the test case is a bit bogus, but am not familiar
+enough with the RT throttling details to stand that ground. That said, from
+both looking at the execution and the stress-ng source code, it seems to
+unconditionally spawn 32 FIFO-50 tasks (there's even an option to make
+these FIFO-99!!!), which is quite a crowd on monoCPU systems.
