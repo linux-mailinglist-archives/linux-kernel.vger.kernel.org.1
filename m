@@ -2,67 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5FF23D0D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FE823D096
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbgHETx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:53:27 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:45384 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728158AbgHEQuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:50:20 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 434B1201463;
-        Wed,  5 Aug 2020 12:43:57 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 680AF200431;
-        Wed,  5 Aug 2020 12:43:53 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5282A402D0;
-        Wed,  5 Aug 2020 12:43:35 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] ARM: dts: imx6qdl-sabresd: Support headphone and microphone detection
-Date:   Wed,  5 Aug 2020 18:39:04 +0800
-Message-Id: <1596623944-3104-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728318AbgHETvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728242AbgHEQxB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:53:01 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB306C06179F;
+        Wed,  5 Aug 2020 03:39:52 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l23so18421245edv.11;
+        Wed, 05 Aug 2020 03:39:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qyFh0B+qFmeaq1ZmytjXM93bJReydW1Q9ZU9edq9NSw=;
+        b=bVFSImkw00AL0eXqqbm3McDE84S5/SUhPXauKRgX+RjQFLzzEOAeh1BxV0FJ3xAAJ8
+         1m9bTe46ht4zUL8tAAqdHoPyHHhXwgxz57qLRYZBkP1rOpXqwVPYcAxOgvpR3o1XZCvd
+         bKQ02Q/qe51m5JtFTL8dGAPE9LdxItd2sC82ekIWLriM37yTWvtT9wqaonMYVBxGcQsw
+         +zI+CvFrLgHWC4r5ucuH1UgeKusLtLEaaKkIAdpnL07hRj4ecHa4FRkTefDBklwy016F
+         SmZCH5u8fNVjpgNpY4T9v0gNPH7uqjlKD/oYpEbSz/QWj6hUWqWda6kBf+oHuX5ddoK0
+         OAgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qyFh0B+qFmeaq1ZmytjXM93bJReydW1Q9ZU9edq9NSw=;
+        b=XBS4pGdKUI13EAWBJI9b4qky93AVJszjKtxtykJrhXF0Y7Am3bzhsftJioSQDO2msx
+         xRA3nCjNpNuo7emfTZM0JKWlKHPInQnTamyXs0kQkmzsUbNpJoxpBdusq3MEVlKUTePr
+         mKTQHxag0JTUtTxvCvCsjVtWCefvSO0+HyFhHCdz1BlQUtBby2UJnBTsQho9GCpNuUCi
+         6BdiGRbkShhNKOscHob/nd8DBJeIT7va5xzmEPKraXLlJE2U31usgs9RYNhY0XrWyJA0
+         HSB1INe+wXze4IPuKnjpLaZ7fmYax0m0NnpIN05c0vRMJnrXk6SEXxs9at/wVve3oCBI
+         Q9cg==
+X-Gm-Message-State: AOAM533Z6iQuredxtrVG37hAGEG/fqtZgqUDj/z3GDz0R5T6IfNkaReH
+        RXMlwOxvtc4OtLTS5tXKmT4/3VAkfYI=
+X-Google-Smtp-Source: ABdhPJy1V19vqtue79NewqfTmzf1nPJGkjGZEOewMpAdzyXd2UkFmYEa3u7VhPr+z0BqzwARa9XAKw==
+X-Received: by 2002:a05:6402:17c2:: with SMTP id s2mr2105104edy.188.1596623990966;
+        Wed, 05 Aug 2020 03:39:50 -0700 (PDT)
+Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
+        by smtp.gmail.com with ESMTPSA id ec20sm1260116ejb.61.2020.08.05.03.39.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 03:39:50 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] crypto/x86: Use CRC32 mnemonic in crc32c-intel_glue.c
+Date:   Wed,  5 Aug 2020 12:39:32 +0200
+Message-Id: <20200805103932.255524-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "DMIC" rounting, headphone and microphone detect gpio for sound
-card, then output sound can switch between headphone and speaker.
-input sound can switch between DMIC and AMIC.
+Current minimum required version of binutils is 2.23,
+which supports CRC32 instruction mnemonic.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Replace the byte-wise specification of CRC32 with this proper mnemonic.
+The compiler is now able to pass memory operand to the instruction,
+so there is no need for a temporary register anymore.
+
+Some examples of the improvement:
+
+ 12a:	48 8b 08             	mov    (%rax),%rcx
+ 12d:	f2 48 0f 38 f1 f1    	crc32q %rcx,%rsi
+ 133:	48 83 c0 08          	add    $0x8,%rax
+ 137:	48 39 d0             	cmp    %rdx,%rax
+ 13a:	75 ee                	jne    12a <crc32c_intel_update+0x1a>
+
+to:
+
+ 125:	f2 48 0f 38 f1 06    	crc32q (%rsi),%rax
+ 12b:	48 83 c6 08          	add    $0x8,%rsi
+ 12f:	48 39 d6             	cmp    %rdx,%rsi
+ 132:	75 f1                	jne    125 <crc32c_intel_update+0x15>
+
+and:
+
+ 146:	0f b6 08             	movzbl (%rax),%ecx
+ 149:	f2 0f 38 f0 f1       	crc32b %cl,%esi
+ 14e:	48 83 c0 01          	add    $0x1,%rax
+ 152:	48 39 d0             	cmp    %rdx,%rax
+ 155:	75 ef                	jne    146 <crc32c_intel_update+0x36>
+
+to:
+
+ 13b:	f2 0f 38 f0 02       	crc32b (%rdx),%eax
+ 140:	48 83 c2 01          	add    $0x1,%rdx
+ 144:	48 39 ca             	cmp    %rcx,%rdx
+ 147:	75 f2                	jne    13b <crc32c_intel_update+0x2b>
+
+As the compiler has some more freedom w.r.t. register allocation,
+there is also a couple of reg-reg moves removed.
+
+There are no hidden states for CRC32 insn, so there is no need to mark
+assembly as volatile.
+
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+CC: Herbert Xu <herbert@gondor.apana.org.au>
+CC: "David S. Miller" <davem@davemloft.net>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: Ingo Molnar <mingo@redhat.com>
+CC: Borislav Petkov <bp@alien8.de>
+CC: "H. Peter Anvin" <hpa@zytor.com>
 ---
- arch/arm/boot/dts/imx6qdl-sabresd.dtsi | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/crypto/crc32c-intel_glue.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-sabresd.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-index 28b35ccb3757..d933b5384a96 100644
---- a/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-@@ -105,9 +105,13 @@ sound {
- 			"Ext Spk", "SPKOUTL",
- 			"Ext Spk", "SPKOUTR",
- 			"AMIC", "MICBIAS",
--			"IN3R", "AMIC";
-+			"IN3R", "AMIC",
-+			"DMIC", "MICBIAS",
-+			"DMICDAT", "DMIC";
- 		mux-int-port = <2>;
- 		mux-ext-port = <3>;
-+		hp-det-gpio = <&gpio7 8 GPIO_ACTIVE_LOW>;
-+		mic-det-gpio = <&gpio1 9 GPIO_ACTIVE_LOW>;
- 	};
+diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
+index d2d069bd459b..3a34b2351559 100644
+--- a/arch/x86/crypto/crc32c-intel_glue.c
++++ b/arch/x86/crypto/crc32c-intel_glue.c
+@@ -27,12 +27,6 @@
  
- 	backlight_lvds: backlight-lvds {
+ #define SCALE_F	sizeof(unsigned long)
+ 
+-#ifdef CONFIG_X86_64
+-#define REX_PRE "0x48, "
+-#else
+-#define REX_PRE
+-#endif
+-
+ #ifdef CONFIG_X86_64
+ /*
+  * use carryless multiply version of crc32c when buffer
+@@ -48,11 +42,8 @@ asmlinkage unsigned int crc_pcl(const u8 *buffer, int len,
+ static u32 crc32c_intel_le_hw_byte(u32 crc, unsigned char const *data, size_t length)
+ {
+ 	while (length--) {
+-		__asm__ __volatile__(
+-			".byte 0xf2, 0xf, 0x38, 0xf0, 0xf1"
+-			:"=S"(crc)
+-			:"0"(crc), "c"(*data)
+-		);
++		asm("crc32b %1, %0"
++		    : "+r" (crc) : "rm" (*data));
+ 		data++;
+ 	}
+ 
+@@ -66,11 +57,12 @@ static u32 __pure crc32c_intel_le_hw(u32 crc, unsigned char const *p, size_t len
+ 	unsigned long *ptmp = (unsigned long *)p;
+ 
+ 	while (iquotient--) {
+-		__asm__ __volatile__(
+-			".byte 0xf2, " REX_PRE "0xf, 0x38, 0xf1, 0xf1;"
+-			:"=S"(crc)
+-			:"0"(crc), "c"(*ptmp)
+-		);
++#ifdef CONFIG_X86_64
++		asm("crc32q %1, %q0"
++#else
++		asm("crc32l %1, %0"
++#endif
++		    : "+r" (crc) : "rm" (*ptmp));
+ 		ptmp++;
+ 	}
+ 
 -- 
-2.27.0
+2.26.2
 
