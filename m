@@ -2,59 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F1D23D2CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52F723D2A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 22:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbgHEUQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 16:16:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:32966 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726005AbgHEQS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:18:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B93E91424;
-        Wed,  5 Aug 2020 09:03:18 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ADCEE3F7D7;
-        Wed,  5 Aug 2020 09:03:16 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 17:03:12 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, cristian.marussi@arm.com,
-        rjw@rjwysocki.net, Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH 0/4] CPUFreq statistics retrieved by drivers
-Message-ID: <20200805160312.GC4818@bogus>
-References: <20200729151208.27737-1-lukasz.luba@arm.com>
- <a3354ae8-f40f-83f2-d6eb-7f588af75e97@gmail.com>
- <119ce268-18dc-7a4c-b0b2-3a66ff9ff4b0@arm.com>
- <20200805130436.3d2g7z2rsdoesuuk@vireshk-mac-ubuntu>
+        id S1729885AbgHEUOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 16:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726797AbgHEQXZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:23:25 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B760AC001FDB;
+        Wed,  5 Aug 2020 09:10:29 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 64C2F298FFC
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 3A939480117; Wed,  5 Aug 2020 18:05:21 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ahmet Inan <inan@distec.de>,
+        Martin Fuzzey <martin.fuzzey@flowbird.group>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCHv4 1/4] dt-bindings: touchscreen: Convert EETI EXC3000 touchscreen to json-schema
+Date:   Wed,  5 Aug 2020 18:05:17 +0200
+Message-Id: <20200805160520.456570-2-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200805160520.456570-1-sebastian.reichel@collabora.com>
+References: <20200805160520.456570-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805130436.3d2g7z2rsdoesuuk@vireshk-mac-ubuntu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 06:34:36PM +0530, Viresh Kumar wrote:
-> On 05-08-20, 12:04, Lukasz Luba wrote:
-> > I know that Viresh is going to develop patches and improve these
-> > cpufreq stats framework. Maybe he also had this 'aggregation' in mind.
-> > I will leave it him.
->
-> I am only going to look at cpufreq's view of stats independently from
-> the firmware.
->
+Convert the EETI EXC3000 binding to DT schema format using json-schema
 
-+1, I agree with that. Kernel must avoid any logic to aggregate or
-interpret the data in a generic way. The userspace tools can manage that
-especially if this tend to be platform specific.
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+ .../input/touchscreen/eeti,exc3000.yaml       | 53 +++++++++++++++++++
+ .../bindings/input/touchscreen/exc3000.txt    | 26 ---------
+ 2 files changed, 53 insertions(+), 26 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/exc3000.txt
 
---
-Regards,
-Sudeep
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml b/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
+new file mode 100644
+index 000000000000..022aa69a5dfe
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/touchscreen/eeti,exc3000.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: EETI EXC3000 series touchscreen controller
++
++maintainers:
++  - Dmitry Torokhov <dmitry.torokhov@gmail.com>
++
++allOf:
++  - $ref: touchscreen.yaml#
++
++properties:
++  compatible:
++    const: eeti,exc3000
++  reg:
++    const: 0x2a
++  interrupts:
++    maxItems: 1
++  touchscreen-size-x: true
++  touchscreen-size-y: true
++  touchscreen-inverted-x: true
++  touchscreen-inverted-y: true
++  touchscreen-swapped-x-y: true
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - touchscreen-size-x
++  - touchscreen-size-y
++
++additionalProperties: false
++
++examples:
++  - |
++    #include "dt-bindings/interrupt-controller/irq.h"
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        touchscreen@2a {
++                compatible = "eeti,exc3000";
++                reg = <0x2a>;
++                interrupt-parent = <&gpio1>;
++                interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
++                touchscreen-size-x = <4096>;
++                touchscreen-size-y = <4096>;
++                touchscreen-inverted-x;
++                touchscreen-swapped-x-y;
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/exc3000.txt b/Documentation/devicetree/bindings/input/touchscreen/exc3000.txt
+deleted file mode 100644
+index 68291b94fec2..000000000000
+--- a/Documentation/devicetree/bindings/input/touchscreen/exc3000.txt
++++ /dev/null
+@@ -1,26 +0,0 @@
+-* EETI EXC3000 Multiple Touch Controller
+-
+-Required properties:
+-- compatible: must be "eeti,exc3000"
+-- reg: i2c slave address
+-- interrupts: touch controller interrupt
+-- touchscreen-size-x: See touchscreen.txt
+-- touchscreen-size-y: See touchscreen.txt
+-
+-Optional properties:
+-- touchscreen-inverted-x: See touchscreen.txt
+-- touchscreen-inverted-y: See touchscreen.txt
+-- touchscreen-swapped-x-y: See touchscreen.txt
+-
+-Example:
+-
+-	touchscreen@2a {
+-		compatible = "eeti,exc3000";
+-		reg = <0x2a>;
+-		interrupt-parent = <&gpio1>;
+-		interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
+-		touchscreen-size-x = <4096>;
+-		touchscreen-size-y = <4096>;
+-		touchscreen-inverted-x;
+-		touchscreen-swapped-x-y;
+-	};
+-- 
+2.27.0
+
