@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1366823D050
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5C123D02C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729321AbgHETr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:47:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53656 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728443AbgHERDW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:03:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596646996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aqjcjFj0cLfrtaKdyRnzSHGUtnIcD/6QjX80vbdnnDs=;
-        b=S7o67WxFGJ7ObtRSLMZZ9347jTi9CXhSUT40ueFMXuZvV3gvb3UiIKtfG4e0Z5167D8y09
-        2JRaVIqtXAR/CKPHo4Xz5dDUe8mDYMWSxJ4bMuO2Vn+IRdPGLsv6QPZ+oXPG9pPW8VqTKb
-        UYvBV32kyhDMPPhti8tZoZ2CkaCq+hU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-v1Ut0-vMMlKQmdlxYzNI4g-1; Wed, 05 Aug 2020 13:03:04 -0400
-X-MC-Unique: v1Ut0-vMMlKQmdlxYzNI4g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5AA368F53CF;
-        Wed,  5 Aug 2020 17:02:48 +0000 (UTC)
-Received: from elisabeth (unknown [10.36.110.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 488217B910;
-        Wed,  5 Aug 2020 17:02:41 +0000 (UTC)
-Date:   Wed, 5 Aug 2020 19:02:34 +0200
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-riscv@lists.infradead.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Westphal <fw@strlen.de>,
-        David Ahern <dsahern@gmail.com>,
-        Aaron Conole <aconole@redhat.com>,
-        Numan Siddique <nusiddiq@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        Lourdes Pedrajas <lu@pplo.net>,
-        Netdev <netdev@vger.kernel.org>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        lkft-triage@lists.linaro.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH net-next v2 2/6] tunnels: PMTU discovery support for
- directly bridged IP packets
-Message-ID: <20200805190234.1d95dccd@elisabeth>
-In-Reply-To: <CA+G9fYsJdoQieVr6=e09nYAvpAjnay5XSmJ3WkZHgMdzJRUYEw@mail.gmail.com>
-References: <cover.1596520062.git.sbrivio@redhat.com>
-        <83e5876f589b0071638630dd93fbe0fa6b1b257c.1596520062.git.sbrivio@redhat.com>
-        <CA+G9fYsJdoQieVr6=e09nYAvpAjnay5XSmJ3WkZHgMdzJRUYEw@mail.gmail.com>
-Organization: Red Hat
+        id S1728469AbgHETbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:31:07 -0400
+Received: from mga04.intel.com ([192.55.52.120]:24715 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728411AbgHERHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:07:41 -0400
+IronPort-SDR: ftrn1bHXVaUoaYxBD+U0Z9VjorwkCEfZFERK8Cei8Gcv/qjHVs9x7o1YKm5zm27aV20rTtOQY5
+ 7/aBjUbmuKvw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="150056026"
+X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
+   d="scan'208";a="150056026"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 10:07:37 -0700
+IronPort-SDR: Rlyu2e2Xng1qZuyU9jpKnOH/LLO1CZOURgcYLNejTmMyJZ0iDuTI/eK/hiWBRfnKYEFrweY2cZ
+ vQvwJeWU15Gw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
+   d="scan'208";a="306768478"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orsmga002.jf.intel.com with ESMTP; 05 Aug 2020 10:07:35 -0700
+Date:   Wed, 5 Aug 2020 10:07:17 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     hpa@zytor.com, Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Cathy Zhang <cathy.zhang@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-edac@vger.kernel.org
+Subject: Re: [PATCH v2] x86/cpu: Use SERIALIZE in sync_core() when available
+Message-ID: <20200805170717.GB26661@ranerica-svr.sc.intel.com>
+References: <20200805021059.1331-1-ricardo.neri-calderon@linux.intel.com>
+ <20200805044840.GA9127@nazgul.tnic>
+ <47A60E6A-0742-45FB-B707-175E87C58184@zytor.com>
+ <20200805050808.GC9127@nazgul.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805050808.GC9127@nazgul.tnic>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naresh,
-
-On Wed, 5 Aug 2020 22:24:03 +0530
-Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-
-> On Tue, 4 Aug 2020 at 11:24, Stefano Brivio <sbrivio@redhat.com> wrote:
+On Wed, Aug 05, 2020 at 07:08:08AM +0200, Borislav Petkov wrote:
+> On Tue, Aug 04, 2020 at 09:58:25PM -0700, hpa@zytor.com wrote:
+> > Because why use an alternative to jump over one instruction?
 > >
-> > +       icmp6h->icmp6_cksum = csum_ipv6_magic(&nip6h->saddr, &nip6h->daddr, len,
-> > +                                             IPPROTO_ICMPV6, csum);
+> > I personally would prefer to have the IRET put out of line
 > 
-> Linux next build breaks for riscv architecture defconfig build.
+> Can't yet - SERIALIZE CPUs are a minority at the moment.
+> 
+> > and have the call/jmp replaced by SERIALIZE inline.
+> 
+> Well, we could do:
+> 
+> 	alternative_io("... IRET bunch", __ASM_SERIALIZE, X86_FEATURE_SERIALIZE, ...);
+> 
+> and avoid all kinds of jumping. Alternatives get padded so there
+> would be a couple of NOPs following when SERIALIZE gets patched in
+> but it shouldn't be a problem. I guess one needs to look at what gcc
+> generates...
 
-Yes, sorry for that. Stephen Rothwell already reported this for s390
-defconfig and I sent a patch some hours ago:
+But the IRET-TO-SELF code has instruction which modify the stack. This
+would violate stack invariance in alternatives as enforced in commit
+7117f16bf460 ("objtool: Fix ORC vs alternatives"). As a result, objtool
+gives warnings as follows:
 
-	https://patchwork.ozlabs.org/project/netdev/patch/a85e9878716c2904488d56335320b7131613e94c.1596633316.git.sbrivio@redhat.com/
+arch/x86/kernel/alternative.o: warning: objtool: do_sync_core()+0xe:
+alternative modifies stack
 
-Thanks for reporting this though!
+Perhaps in this specific case it does not matter as the changes in the
+stack will be undone by IRET. However, using alternative_io would require
+adding the macro STACK_FRAME_NON_STANDARD to functions using sync_core().
+IMHO, it wouldn't look good.
 
--- 
-Stefano
+So maybe the best approach is to implement as you suggested using
+static_cpu_has()?
 
+Thanks and BR,
+Ricardo
