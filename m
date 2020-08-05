@@ -2,105 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371DB23CCBF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C583423CCD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgHERAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728255AbgHERAH (ORCPT
+        id S1728530AbgHERJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:09:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36010 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728451AbgHEREw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:00:07 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DECC0F26C3
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 08:20:23 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id l23so42037543qkk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 08:20:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/tKLJQerXAd3IgNPAHruQgQjEuVQ8X51x0/Hm0qS14o=;
-        b=XkWRNKzos6RgtLNAoLG8ZqpBImUQJtQbl5iOZX6FYYABNq8W8UxSmfV5pZBOl6M8ha
-         23CqhkftlOKAS2CUfwjzJD1w9gJN9S0x1Lg3ZQA5zwHPnOh9hSin+Xe6OikM5uskHI2w
-         fvihzKHQKYICjQTiNNy4ccVCVMyjzEJU/w0R1gMGJOGhDGqo7CbsUqaT6qNVfAK8BeD4
-         Aa9NW9VcCU72QTj6uTYFa9uXcJ5wgnByQxbu9N4V8g2e5Kmr6YZmYoGPVy+y8RIik3i9
-         qy/4SlwwMX2Tt3Y+VuNhfF4eGCxhG5q4NcdQf9ZzkPhJ4hngmyu4VLfwpalUNMuSOjCJ
-         DRKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/tKLJQerXAd3IgNPAHruQgQjEuVQ8X51x0/Hm0qS14o=;
-        b=kuO+RtR1dxN0xEEABQ/szBZe5yXJUeN33S6tYNPi7vTXE+pOlTTfD8okSdTAWm0SLm
-         Vnf7vZDgRzpzDtrkToSxrNVGB+H289u0BZOvdnHcrUjC9xu55NAfmLlAIflXGJj0TX8e
-         MgRQlMg170Jba95l02FjUJL1W2J8x33BZQwjWPGEYkSf5k55OfNKd9pmFuM3Fsiq9yJ6
-         OuMA5p/0rp2Vc0HCmQiqmb2bEa+4ScNsBZpvwTlLLEWUmL1EU4pKZyVVbr84l6zkliJk
-         ZXbt6dEuG/px7W39tO+48dgd1Qag7icwqomsR3PFRodZirk753baA4ZW/nhrAKnCL2Oj
-         2mng==
-X-Gm-Message-State: AOAM530slssu2uet9/CiYkZnSQOszN042X4m3WqH0hpNcZ/AvBHQnkDV
-        qqa58/zDhJYU3NJ4NVr6nyJJPg==
-X-Google-Smtp-Source: ABdhPJwTuHqoGr+EOp/oEpmcu+tl2UY7H6KOYj4gWuTioPF0y42q1PQVq60jEk9mh3DtDWUVKuUzdQ==
-X-Received: by 2002:a37:6741:: with SMTP id b62mr3781846qkc.217.1596640812168;
-        Wed, 05 Aug 2020 08:20:12 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id x24sm2502113qtj.8.2020.08.05.08.20.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 08:20:10 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1k3LD7-003qYn-U3; Wed, 05 Aug 2020 12:20:09 -0300
-Date:   Wed, 5 Aug 2020 12:20:09 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Rustam Kovhaev <rkovhaev@gmail.com>
-Cc:     dledford@redhat.com, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: KASAN: use-after-free Read in netdevice_event_work_handler
-Message-ID: <20200805152009.GR24045@ziepe.ca>
-References: <0000000000005b9fca05aa0af1b9@google.com>
- <20200731211122.GA1728751@thinkpad>
- <20200802222226.GO24045@ziepe.ca>
- <20200804200013.GB263814@thinkpad>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804200013.GB263814@thinkpad>
+        Wed, 5 Aug 2020 13:04:52 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 075FDwkb127568;
+        Wed, 5 Aug 2020 11:32:29 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qu0v8ymy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 11:32:28 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 075FGMQE029092;
+        Wed, 5 Aug 2020 15:32:26 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 32mynhas6q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 15:32:26 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 075FUvYT60555774
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 5 Aug 2020 15:30:57 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1DF38AE045;
+        Wed,  5 Aug 2020 15:32:24 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 49002AE051;
+        Wed,  5 Aug 2020 15:32:23 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.95.205])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  5 Aug 2020 15:32:23 +0000 (GMT)
+Message-ID: <4400d951e18528297e3e63524ff0ff63d48efda1.camel@linux.ibm.com>
+Subject: [GIT PULL] integrity subsystem updates for v5.9
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Wed, 05 Aug 2020 11:32:19 -0400
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-05_10:2020-08-03,2020-08-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 suspectscore=2
+ phishscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008050124
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 01:00:13PM -0700, Rustam Kovhaev wrote:
-> On Sun, Aug 02, 2020 at 07:22:26PM -0300, Jason Gunthorpe wrote:
-> > On Fri, Jul 31, 2020 at 02:11:22PM -0700, Rustam Kovhaev wrote:
-> > 
-> > > IB roce driver receives NETDEV_UNREGISTER event, calls dev_hold() and
-> > > schedules work item to execute, and before wq gets a chance to complete
-> > > it, we return to ip_tunnel.c:274 and call free_netdev(), and then later
-> > > we get UAF when scheduled function references already freed net_device
-> > > 
-> > > i added verbose logging to ip_tunnel.c to see pcpu_refcnt:
-> > > +       pr_info("about to free_netdev(dev) dev->pcpu_refcnt %d", netdev_refcnt_read(dev));
-> > > 
-> > > and got the following:
-> > > [  410.220127][ T2944] ip_tunnel: about to free_netdev(dev) dev->pcpu_refcnt 8
-> > 
-> > I think there is a missing call to netdev_wait_allrefs() in the
-> > rollback_registered_many().
-> calling it there leads to rtnl deadlock, i think we should call
-> net_set_todo(), so that later when we call rtnl_unlock() it will
-> execute netdev_run_todo() and there it will proceed to calling
-> netdev_wait_allrefs(), but in ip tunnel i will need get
-> free_netdev() to be called after we unlock rtnl mutex
-> i'll try to send a new patch for review
+Hi Linus,
 
-Oh the whole register is called under rtnl? Yikes..
+The nicest change is the IMA policy rule checking.  The other changes
+include allowing the kexec boot cmdline line measure policy rules to be
+defined in terms of the inode associated with the kexec kernel image,
+making the IMA_APPRAISE_BOOTPARAM, which governs the IMA appraise mode
+(log, fix, enforce), a runtime decision based on the secure boot mode
+of the system, and including errno in the audit log.
 
-This is probably a systemic problem with register_netdevice error
-unwind, not just ip tunnel
+thanks,
 
-The other way to handle it would be to organize things so that
-register cannot fail once it starts calling notifiers?
+Mimi
 
-Jason
+The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
+
+  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.9
+
+for you to fetch changes up to 3db0d0c276a752af39beb5ca7424cb659aa005bb:
+
+  integrity: remove redundant initialization of variable ret (2020-07-27 16:52:09 -0400)
+
+----------------------------------------------------------------
+integrity-v5.9
+
+----------------------------------------------------------------
+Bruno Meneguele (1):
+      ima: move APPRAISE_BOOTPARAM dependency on ARCH_POLICY to runtime
+
+Colin Ian King (1):
+      integrity: remove redundant initialization of variable ret
+
+Lakshmi Ramasubramanian (2):
+      integrity: Add errno field in audit message
+      IMA: Add audit log for failure conditions
+
+Maurizio Drocco (1):
+      ima: extend boot_aggregate with kernel measurements
+
+Mimi Zohar (1):
+      Merge branch 'validate-policy-rules' into next-integrity
+
+Tyler Hicks (14):
+      ima: Have the LSM free its audit rule
+      ima: Free the entire rule when deleting a list of rules
+      ima: Free the entire rule if it fails to parse
+      ima: Fail rule parsing when buffer hook functions have an invalid action
+      ima: Fail rule parsing when the KEXEC_CMDLINE hook is combined with an invalid cond
+      ima: Fail rule parsing when the KEY_CHECK hook is combined with an invalid cond
+      ima: Fail rule parsing when appraise_flag=blacklist is unsupportable
+      ima: Shallow copy the args_p member of ima_rule_entry.lsm elements
+      ima: Use correct type for the args_p member of ima_rule_entry.lsm elements
+      ima: Move comprehensive rule validation checks out of the token parser
+      ima: Use the common function to detect LSM conditionals in a rule
+      ima: Support additional conditionals in the KEXEC_CMDLINE hook function
+      ima: Rename internal filter rule functions
+      ima: AppArmor satisfies the audit rule requirements
+
+ include/linux/ima.h                          |   4 +-
+ kernel/kexec_file.c                          |   2 +-
+ security/integrity/digsig_asymmetric.c       |   2 +-
+ security/integrity/ima/Kconfig               |   4 +-
+ security/integrity/ima/ima.h                 |  75 +++++----
+ security/integrity/ima/ima_api.c             |   2 +-
+ security/integrity/ima/ima_appraise.c        |   8 +-
+ security/integrity/ima/ima_asymmetric_keys.c |   2 +-
+ security/integrity/ima/ima_crypto.c          |  15 +-
+ security/integrity/ima/ima_main.c            |  41 +++--
+ security/integrity/ima/ima_modsig.c          |  20 ---
+ security/integrity/ima/ima_policy.c          | 240 +++++++++++++++++++--------
+ security/integrity/ima/ima_queue_keys.c      |   7 +-
+ security/integrity/integrity.h               |  13 ++
+ security/integrity/integrity_audit.c         |  11 +-
+ 15 files changed, 301 insertions(+), 145 deletions(-)
+
