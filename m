@@ -2,131 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A178E23C934
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DD923C941
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728380AbgHEJbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 05:31:10 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48813 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728324AbgHEJaE (ORCPT
+        id S1728345AbgHEJeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 05:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728119AbgHEJdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 05:30:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596619802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KGrNYVry5FOInRW/Xy0yFMiPNeyHmg20qhVD8oGfJJ4=;
-        b=aUOxTUPpBPd48TQUNVSosUBrx0RpYWwrCSGKn8GWTGhB28sC3H1gVhK3g5jDWcq7hb1KLW
-        HZC/Y/5rDZbbpdfxZ99aYgN5c7MepdlUlLdBcuzSbWncjo6uHbrkf+n4c9F1jMaqB2oSnv
-        k3iBr7h6S4pqZcnEQhPLETOc35VuQnc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-ZnwKN9E9NxSzYumJ2rNNrw-1; Wed, 05 Aug 2020 05:29:58 -0400
-X-MC-Unique: ZnwKN9E9NxSzYumJ2rNNrw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24BE680183C;
-        Wed,  5 Aug 2020 09:29:53 +0000 (UTC)
-Received: from localhost (ovpn-12-71.pek2.redhat.com [10.72.12.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 068AF726A5;
-        Wed,  5 Aug 2020 09:29:51 +0000 (UTC)
-Date:   Wed, 5 Aug 2020 17:29:48 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Stafford Horne <shorne@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        clang-built-linux@googlegroups.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
-        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org
-Subject: Re: [PATCH v2 17/17] memblock: use separate iterators for memory and
- reserved regions
-Message-ID: <20200805092948.GX10792@MiWiFi-R3L-srv>
-References: <20200802163601.8189-1-rppt@kernel.org>
- <20200802163601.8189-18-rppt@kernel.org>
+        Wed, 5 Aug 2020 05:33:51 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A98C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 02:33:50 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id q13so15379957vsn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 02:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zv3njctJm6+JcXZYqCty4/Sd4dBn0kL3k7iTzjdDtfw=;
+        b=oenfg43n0bbPqzDbC7M2gy1BFz6L4j5HVCwHLtU/Pd/u1lL9Q8XQe9N2tV7UufJLBo
+         MATyUl4G6KT941Gq5GWK1IRQAUrFB+lObmZPz6DsWSFZIk98PEkOpyS44op89AjF0Yhc
+         /nCPtftT2HFYYw1+IL9n60Qm0Rse1uvZQdFsSt1qycaGxhSvOLb2GrZKd3IQdGpnbER7
+         55M2mlDFMUTcf3/1WW8TpGa8ffoPYhK6NHu8G+w75fYXZQNHZYmxpY7ENGI8aJd1IqbQ
+         COcN6TjLK7eeGurWWCYgSthmkkpR2GYKwx/B6sEXmj3k30YgV+xNiFNNEZmqWstxYnmp
+         HSoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zv3njctJm6+JcXZYqCty4/Sd4dBn0kL3k7iTzjdDtfw=;
+        b=Ocn/ZC+jAHuCthm+KXQ0Q7sX9FHQ2lYiY5AciAVVgg1DmA6Vqa3dG1+CDzktBrRbS4
+         EXu9HuIGUkHoMXfS9o85Vyvn/AqcQlQJeUuYtrBE4jO6D9VCKV+rQw3ktycoXZUBOWAx
+         cFyCp9aWZOmsoKZYeCBWPLeQmQfFbG2ka6Fhm6G5y6kau7hT3A3CbXdjpKZ2IqhqHeTe
+         y+2eUOLwhJ3WaEHlB4PZHs8s3CNV8KwNygWqWoiikGx/fM4oXVMCHJNcWeX51Z1qdxQk
+         TjG6fWFB1VfAQVs5iKSIpnh3CznlgrY319Et7ceVTerrtz+gveuZlVXxT/xxOIs0ZFUN
+         0STw==
+X-Gm-Message-State: AOAM533gNTjiYRNQYiWhRYDaaprxKMgIgFB0ZWYLQuskt6BPmpVIpR2w
+        MUK/r2cOsnSStyI/SMaSGe3HFnwjX3o=
+X-Google-Smtp-Source: ABdhPJz9DetEpr+JggdbpwnCU/0O5SB8cvNYe/SawqCatmijrG/yrCcsNGtUD81fBEMCDTWgO9nAeA==
+X-Received: by 2002:a67:e08d:: with SMTP id f13mr1225723vsl.84.1596620029433;
+        Wed, 05 Aug 2020 02:33:49 -0700 (PDT)
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
+        by smtp.gmail.com with ESMTPSA id m62sm232626vsd.21.2020.08.05.02.33.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 02:33:48 -0700 (PDT)
+Received: by mail-vs1-f41.google.com with SMTP id p8so14849556vsm.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 02:33:48 -0700 (PDT)
+X-Received: by 2002:a05:6102:517:: with SMTP id l23mr1162285vsa.114.1596620027960;
+ Wed, 05 Aug 2020 02:33:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200802163601.8189-18-rppt@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20200802195046.402539-1-xie.he.0141@gmail.com>
+ <d02996f90f64d55d5c5e349560bfde46@dev.tdt.de> <CAJht_ENuzbyYesYtP0703xgRwRBTY9SySe3oXLEtkyL_H_yTSQ@mail.gmail.com>
+ <9975370f14b8ddeafc8dec7bc6c0878a@dev.tdt.de> <CAJht_EMf5i1qykEP6sZjLBcPAN9u9oQoZ34dfJ68Z5XL6rKuDQ@mail.gmail.com>
+In-Reply-To: <CAJht_EMf5i1qykEP6sZjLBcPAN9u9oQoZ34dfJ68Z5XL6rKuDQ@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 5 Aug 2020 11:33:10 +0200
+X-Gmail-Original-Message-ID: <CA+FuTSf2r1eFoFHov-cGDG=5iLAUGt+Jv7Aok7EFrVo8UqkJog@mail.gmail.com>
+Message-ID: <CA+FuTSf2r1eFoFHov-cGDG=5iLAUGt+Jv7Aok7EFrVo8UqkJog@mail.gmail.com>
+Subject: Re: [net v3] drivers/net/wan/lapbether: Use needed_headroom instead
+ of hard_header_len
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Martin Schiller <ms@dev.tdt.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Brian Norris <briannorris@chromium.org>,
+        netdev-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/20 at 07:36pm, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> for_each_memblock() is used to iterate over memblock.memory in
-> a few places that use data from memblock_region rather than the memory
-> ranges.
-> 
-> Introduce separate for_each_mem_region() and for_each_reserved_mem_region()
-> to improve encapsulation of memblock internals from its users.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  .clang-format                  |  3 ++-
->  arch/arm64/kernel/setup.c      |  2 +-
->  arch/arm64/mm/numa.c           |  2 +-
->  arch/mips/netlogic/xlp/setup.c |  2 +-
->  arch/x86/mm/numa.c             |  2 +-
->  include/linux/memblock.h       | 19 ++++++++++++++++---
->  mm/memblock.c                  |  4 ++--
->  mm/page_alloc.c                |  8 ++++----
->  8 files changed, 28 insertions(+), 14 deletions(-)
-> 
-...
+On Wed, Aug 5, 2020 at 10:57 AM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> On Tue, Aug 4, 2020 at 10:23 PM Martin Schiller <ms@dev.tdt.de> wrote:
+> >
+> > > Adding skb_cow before these skb_push calls would indeed help
+> > > preventing kernel panics, but that might not be the essential issue
+> > > here, and it might also prevent us from discovering the real issue. (I
+> > > guess this is also the reason skb_cow is not included in skb_push
+> > > itself.)
+> >
+> > Well, you are right that the panic is "useful" to discover the real
+> > problem. But on the other hand, if it is possible to prevent a panic, I
+> > think we should do so. Maybe with adding a warning, when skb_cow() needs
+> > to reallocate memory.
+> >
+> > But this is getting a little bit off topic. For this patch I can say:
+> >
+> > LGTM.
+> >
+> > Reviewed-by: Martin Schiller <ms@dev.tdt.de>
+>
+> Thank you so much!
+>
+> Yes, it might be better to use skb_cow with a warning so that we can
+> prevent kernel panic while still being able to discover the problem.
 
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index 9e51b3fd4134..a6970e058bd7 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -522,9 +522,22 @@ static inline unsigned long memblock_region_reserved_end_pfn(const struct memblo
->  	return PFN_UP(reg->base + reg->size);
->  }
->  
-> -#define for_each_memblock(memblock_type, region)					\
-> -	for (region = memblock.memblock_type.regions;					\
-> -	     region < (memblock.memblock_type.regions + memblock.memblock_type.cnt);	\
-> +/**
-> + * for_each_mem_region - itereate over registered memory regions
-                                          ~~~~~~~~~~~~~~~~~
-
-Wonder why emphasize 'registered' memory.
-
-Other than this confusion to me, this patch looks good.
-
-Reviewed-by: Baoquan He <bhe@redhat.com>
-
+Let's not add defenses to work around possibly buggy code. In the long
+run that reduces code quality. Instead, fix bugs at the source.
