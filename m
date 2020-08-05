@@ -2,205 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1EF23C545
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 07:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B123F23C562
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 07:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgHEFvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 01:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgHEFvo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 01:51:44 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A883C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 22:51:44 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id a14so39462044wra.5
-        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 22:51:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Nh6RpHvoBY8ofwqqO/cHqcsqgVpuTrAuC8FfP1MFzgE=;
-        b=RKIzBL+gqWhvN/gyd6TbeeRbqWFqDggHeRUAXYx3w8DL0qGytknrgACIDrxLfe/53b
-         ESwpiKrFqh4gWRGa6CNB20e/sdr0H7P5/Z+2s8uTDJwYcslkESN8q5QhlmaZvmZm8rA1
-         tXDQXJVQR4NnAA757OXPDTlEKOYtfo3Ol8r+plN13wSSdm/FSjW8oZWiEBYL87bpQLSR
-         sv6Sd2Q7/FH0sybSpk2MaZR1GBy5PGhi2THikdRRc+Tc3PtKd6Q13ocpdH5oRbqCnYMO
-         aGu4+uUdZeg36FWbcW7/4bI6ZeniEIc/V+t6hIJfudZkl5FpBmOnpmoxnLGhQfzfaqJ2
-         iZ3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Nh6RpHvoBY8ofwqqO/cHqcsqgVpuTrAuC8FfP1MFzgE=;
-        b=c06WgSZiB1GbhdvGhKv6bXuS0uLVaCp56YYFxXcjyFdmkENzqJx0En5u71gE4Xp6D/
-         k8kzV88T6e0+xn47HtH1vl/8sHtifPZ1z5f7doCMBupi+RsNa7ZwQBiigwIoM4k4gYnz
-         WuN0lmYP5PCYXKVp/ZWdxU2LXPT8OH5h2AFpDQRv7Uf/AVSLU/xV1MLvzdJQbCFE5ZTS
-         7SxQGesAIz6ONfoB0QQ2lIHGBUYdnGU0wkxPT/09M5TgFnuTt095qAuMIavzehEsgjVt
-         jqA8L9QcCF1xKTP88485e+klrld9ARwgnUY2J5l8ry21u54f/n2K5V4L+LhBnll5McvR
-         yWwg==
-X-Gm-Message-State: AOAM531DJv7Q3UAEwXkgbhyWEqKrYaGVtOU5WKCXH2bxUpjteY7kuN3j
-        +xtaUbBNc3MJBEU5wpLhkjw=
-X-Google-Smtp-Source: ABdhPJwPGiRW4zC+XLGAEfZED+c80ltvfZI18KAgFrfM6iIm1ShX3m7rzIMkeev5Gc1uCX+c+ZJxhw==
-X-Received: by 2002:a5d:4241:: with SMTP id s1mr1164054wrr.411.1596606701466;
-        Tue, 04 Aug 2020 22:51:41 -0700 (PDT)
-Received: from [192.168.1.20] ([213.122.218.185])
-        by smtp.googlemail.com with ESMTPSA id i82sm1285154wmi.10.2020.08.04.22.51.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Aug 2020 22:51:41 -0700 (PDT)
-Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader on
- Intel NUC boxes
-To:     =?UTF-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "philquadra@gmail.com" <philquadra@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <862172f0-cd23-800c-27b1-27cb49e99099@googlemail.com>
- <a9a94d7f-4873-7a10-4911-f3c760257c5c@googlemail.com>
- <5729c72bbc2740d3917619c85e2fde58@realtek.com>
- <20200804074831.GB1761483@kroah.com>
- <11e224ca299b48f1bea07082f2ff7c00@realtek.com>
- <0afbd711-0bda-d9a3-138d-5c713b4e2ed9@googlemail.com>
- <19de15c2f07d447dace6bea483d38159@realtek.com>
- <152ef6c0-f3c0-bb67-4175-adced3c720cd@googlemail.com>
- <e1c295f28e3d4bdd8c78dfd3a5ed398c@realtek.com>
-From:   Chris Clayton <chris2553@googlemail.com>
-Message-ID: <68b9bdd2-a05e-7fb0-ec9a-70b03e0c5289@googlemail.com>
-Date:   Wed, 5 Aug 2020 06:51:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726899AbgHEF6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 01:58:49 -0400
+Received: from mailout09.rmx.de ([94.199.88.74]:48953 "EHLO mailout09.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725372AbgHEF6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 01:58:48 -0400
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout09.rmx.de (Postfix) with ESMTPS id 4BM1C83SCQzbjF4;
+        Wed,  5 Aug 2020 07:58:44 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4BM1Bl5x6sz2xFM;
+        Wed,  5 Aug 2020 07:58:23 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.60) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 5 Aug
+ 2020 07:58:00 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Cameron <jic23@kernel.org>
+CC:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Christian Eggers" <ceggers@arri.de>
+Subject: [PATCH v6 0/2] iio: light: Support AMS AS73211 digital XYZ sensor
+Date:   Wed, 5 Aug 2020 07:57:42 +0200
+Message-ID: <20200805055744.31909-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <e1c295f28e3d4bdd8c78dfd3a5ed398c@realtek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.60]
+X-RMX-ID: 20200805-075825-4BM1Bl5x6sz2xFM-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks, Ricky.
+This series adds support for the AMS AS73211 digital XYZ sensor.
 
-On 05/08/2020 03:35, 吳昊澄 Ricky wrote:
-> 
-> 
->> -----Original Message-----
->> From: Chris Clayton [mailto:chris2553@googlemail.com]
->> Sent: Tuesday, August 04, 2020 7:52 PM
->> To: 吳昊澄 Ricky; gregkh@linuxfoundation.org
->> Cc: LKML; rdunlap@infradead.org; philquadra@gmail.com; Arnd Bergmann
->> Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader on
->> Intel NUC boxes
->>
->>
->>
->> On 04/08/2020 11:46, 吳昊澄 Ricky wrote:
->>>> -----Original Message-----
->>>> From: Chris Clayton [mailto:chris2553@googlemail.com]
->>>> Sent: Tuesday, August 04, 2020 4:51 PM
->>>> To: 吳昊澄 Ricky; gregkh@linuxfoundation.org
->>>> Cc: LKML; rdunlap@infradead.org; philquadra@gmail.com; Arnd Bergmann
->>>> Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader on
->>>> Intel NUC boxes
->>>>
->>>>
->>>>
->>>> On 04/08/2020 09:08, 吳昊澄 Ricky wrote:
->>>>>> -----Original Message-----
->>>>>> From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
->>>>>> Sent: Tuesday, August 04, 2020 3:49 PM
->>>>>> To: 吳昊澄 Ricky
->>>>>> Cc: Chris Clayton; LKML; rdunlap@infradead.org; philquadra@gmail.com;
->>>> Arnd
->>>>>> Bergmann
->>>>>> Subject: Re: PATCH: rtsx_pci driver - don't disable the rts5229 card reader
->> on
->>>>>> Intel NUC boxes
->>>>>>
->>>>>> On Tue, Aug 04, 2020 at 02:44:41AM +0000, 吳昊澄 Ricky wrote:
->>>>>>> Hi Chris,
->>>>>>>
->>>>>>> rtsx_pci_write_register(pcr, FPDTL, OC_POWER_DOWN,
->>>> OC_POWER_DOWN);
->>>>>>> This register operation saved power under 1mA, so if do not care the 1mA
->>>>>> power we can have a patch to remove it, make compatible with NUC6
->>>>>>> We tested others our card reader that remove it, we did not see any side
->>>> effect
->>>>>>>
->>>>>>> Hi Greg k-h,
->>>>>>>
->>>>>>> Do you have any comments?
->>>>>>
->>>>>> comments on what?  I don't know what you are responding to here, sorry.
->>>>>>
->>>>> Can we have a patch to kernel for NUC6? It may cause more power(1mA) but
->> it
->>>> will have more compatibility
->>>>>
->>>>
->>>> Ricky,
->>>>
->>>> I don't understand why you want to completely remove the code that sets up
->> the
->>>> 1mA power saving. That code was there
->>>> even before your patch (bede03a579b3b4a036003c4862cc1baa4ddc351f), so I
->>>> assume it benefits some of the Realtek card
->>>> readers. Before your patch however, rtsx_pci_init_ocp() was not called for the
->>>> rts5229 reader, but the patch introduced
->>>> an unconditional call to that function into rtsx_pci_init_hw(), which is run for
->> the
->>>> rts5229. That is what now disables
->>>> the card reader.
->>>>
->>>> Now, I don't know whether other cards are affected, although I don't recall
->>>> seeing any reported as I searched the kernel
->>>> and ubuntu bugzillas for any analysis of the problem. I know this is not what
->> the
->>>> patch I sent does, but having thought
->>>> about it more, seems to me that the simplest fix is to skip the new call to
->>>> rtsx_pci_init_ocp() if the reader is an rts5229.
->>>>
->>>
->>> Because we are thinking about if others our card reader that not belong A
->> series(my ocp patch coverage) also on NUC6 platform maybe have the same
->> problem...
->>>
->>
->> OK. What if we do make the new call but only for the card readers that are in the
->> A series? Are they the ones that have
->> PID_5nnn defines in include/linux/rtsx_pci.h? Or is there another simple way of
->> identifying that a reader is a member of
->> the A series?
->>
->> I'm thinking of something like:
->> static bool rtsx_pci_is_series_A(pcr)
->> {
->> 	unsigned short device = pcr->pci->device;
->>
->> 	return device == PID524A || device == PID_5249 || device == PID_5250 ||
->> device == PID_525A
->> 			|| device == PID_525A || device == PID_5260 || device ==
->> PID_5261;
->> }
->>
->> then in rtsx_pci_init_hw() change the unconditional call to:
->>
->> 	if rtsx_pci_is_series_A(pcr)
->> 		rtsx_pci_init_ocp();
->>
->> Does that seem OK?
->>
-> Previously, I want to remove
-> else {
-> 		/* OC power down */
-> 		rtsx_pci_write_register(pcr, FPDCTL, OC_POWER_DOWN,
-> 			OC_POWER_DOWN);
-> }
-> Because in our A-series card Reader we already assigned option->ocp_en to 1 in self init_params() , this is an easy way to fix this problem
-> 
+Probably everything is fine now...
 
-Ah, OK. I'll prepare the patch and send it to you once I've tested it.
 
-Chris
+Changes in v6:
+---------------
+- [2/2] Fixed remaining open points reported by Andy Shevchenko.
+
+Changes in v5:
+---------------
+- [1/2] Reviewed by Rob Herring
+- [2/2] Added KHZ_PER_HR define
+- [2/2] Added AS73211_SAMPLE_FREQ_BASE define
+- [2/2] Slight changes in comments
+- [2/2] Claim direct mode in write_raw()
+- [2/2] Saturate only in case of overflow
+- [2/2] Don't set indio_dev->dev.parent
+- [2/2] Fix error path (order) in probe()
+
+Changes in v4:
+---------------
+- Integrated 2nd review from Andy Shevchenko
+- Use more devm_ functions in as73211_probe()
+
+Changes in v3:
+---------------
+- Integrated comments from Andy Shevchenko
+- Integrated comments from Jonathan Cameron
+
+Changes in v2:
+---------------
+- Fix $id in dt binding
+- Document full I2C address range in "reg" property
+- Move "buffer" member out of "struct as73211_data"
+- Fix sparse warnings by using correct data types
+
+
