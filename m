@@ -2,116 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7062723CD34
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919F723CCF1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728802AbgHERWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:22:43 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:34052 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728710AbgHERVV (ORCPT
+        id S1728623AbgHERMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:12:37 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30250 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728207AbgHERIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:21:21 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075ElEES126944;
-        Wed, 5 Aug 2020 14:49:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=50kpLbsOD0ZKoRp8Q7BM9oovT52SXSK2r0dSb0ESevc=;
- b=tapVYhCIpNpfMnd3DVbCh5/jibmd+RPm0FkdZXF5he1B576M7KNK8hNAF1QkSQ4FfbFW
- PQzKZwCCQ5SBm7M0iKv1+CdnE8g4BdWCe/0cnh8GDau44yMSKn0/0l+i4h9BOrL+0qOO
- 1Tth5STnQJJ5yu7MD92TOI1ML2ULvxSG2PgC4I4nM4C1luQZOFvjckBs6H0F58VQsUc9
- geLYkajzx7MnjHjocanXbfyzziW8+fUgKnfa1IbGVjQ6gFyxLgsLZ4xkks68brlvasd0
- 5MVqhtGdPf9ofUVKTUhR/F0d/zPPuI9TVPv/bK2H5UsseHT6DGxaMDD2Cg1FQ2/oU8Q0 iA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 32pdnqdv1s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 05 Aug 2020 14:49:59 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075EmuBh181161;
-        Wed, 5 Aug 2020 14:49:59 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 32pdnth08k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 05 Aug 2020 14:49:58 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 075EnrqE009945;
-        Wed, 5 Aug 2020 14:49:55 GMT
-Received: from [10.175.0.119] (/10.175.0.119)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 05 Aug 2020 07:49:53 -0700
-Subject: Re: Re: Minor RST rant
-To:     peterz@infradead.org, NeilBrown <neilb@suse.de>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20200724132200.51fd2065@oasis.local.home>
- <20200724113325.44923f75@lwn.net> <20200724144234.3227b501@oasis.local.home>
- <877dusv5lc.fsf@notabene.neil.brown.name>
- <20200729124445.GB2638@hirez.programming.kicks-ass.net>
-From:   Vegard Nossum <vegard.nossum@oracle.com>
-Message-ID: <1e60ff85-4965-92cb-e50b-8ea9ccf6788e@oracle.com>
-Date:   Wed, 5 Aug 2020 16:49:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200729124445.GB2638@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008050123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- suspectscore=0 clxscore=1011 priorityscore=1501 bulkscore=0 adultscore=0
- malwarescore=0 phishscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008050123
+        Wed, 5 Aug 2020 13:08:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596647316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=NXrvFSV+dNzT7Ew4OtdZ4sl3Tp8McXO1LQ3a/45Cy2g=;
+        b=EcJmCxzcZ7bIjzT8p2fD9r9DFXN5PtMFJjemYihJHR4uAtiKoWvBjwWqOk9kSn9ggH+S59
+        HiABS3ToP9hSmwJ272U6SN7hSZ4lurUNFMkW9KmlzWvPenZJeHiyBvLIaA/NGv5CWCKSsk
+        pFmFSBkgEdzaSe724K3ITd1F4hkxE6g=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-YnIaVJ4UOaeY2oKgOv63Dg-1; Wed, 05 Aug 2020 10:52:19 -0400
+X-MC-Unique: YnIaVJ4UOaeY2oKgOv63Dg-1
+Received: by mail-qt1-f197.google.com with SMTP id f59so18863326qtb.22
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 07:52:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NXrvFSV+dNzT7Ew4OtdZ4sl3Tp8McXO1LQ3a/45Cy2g=;
+        b=KbveZxnjwaOimAORUVbBJqkvDq0bBZBRaFdrC5CgeoUYULUSvAHd3hgZIgCOzj1i73
+         pPu8YquJkoUFowNBuFB0+Z6LbZEIOt7mN+CkfHakfwzonSQ7UUeBrsfEwHfrZj4pqcXc
+         VFkJteZtEypHeg6TFDWuDEoiG9orKNyE2FJqpTGKyueyYJH5t+Hunn3lVlOsAMmCdoGa
+         wJUtpWIxlf2PxInSQi9aTpWckyvTzDvIGJ1tFWSQ9KTPbv94T7Y348eF/dAFWeKQxo/l
+         5XZr8Sg1Aam1AEmgA4H/IJDI/SgScIykr2ie2ZNKEyQh2dIhcvf25OPOlYA07N5viU+M
+         x0dw==
+X-Gm-Message-State: AOAM530shyjmOvNZ4U72fG4ZbjwYBSNuecxdEEImw3sA3c5IrGVl5YK3
+        IT+WtmQyvgxs39kaEs/iIxKNs2OgeuYfJbqPAhZVzbYbuUlZpzlGBUVg75g6OvcqpNMpTZhRp42
+        Tfrei6T03JXQtjg/hKayC2Lls
+X-Received: by 2002:ac8:4a99:: with SMTP id l25mr3768025qtq.132.1596639139243;
+        Wed, 05 Aug 2020 07:52:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzp5tU+SNu4wENz/P1igk4DE3nEE4fftblfRV1X1lQLG3yUmxqeZIDzwczARUE/HJu8apixFA==
+X-Received: by 2002:ac8:4a99:: with SMTP id l25mr3768003qtq.132.1596639138881;
+        Wed, 05 Aug 2020 07:52:18 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 22sm1868301qkd.64.2020.08.05.07.52.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 07:52:17 -0700 (PDT)
+From:   trix@redhat.com
+To:     thomas@winischhofer.net, b.zolnierkie@samsung.com, akpm@osdl.org
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] video: fbdev: sis: fix null ptr dereference
+Date:   Wed,  5 Aug 2020 07:52:08 -0700
+Message-Id: <20200805145208.17727-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-29 14:44, peterz@infradead.org wrote:
-> On Sat, Jul 25, 2020 at 09:46:55AM +1000, NeilBrown wrote:
-> 
->>   Constant names stand out least effectively by themselves.  In
->>   kernel-doc comments they are preceded by a '%'.  Would that make the
->>   text more readable for you?  Does our doc infrastructure honour that in
->>   .rst documents?
-> 
-> It does not. It also still reads really weird.
-> 
-> And for some reason firefox chokes on the HTML file I tried it with, and
-> make htmldocs takes for bloody ever.
-> 
-> Give me a plain text file, please. All this modern crap just doesn't
-> work.
-> 
+From: Tom Rix <trix@redhat.com>
 
-FWIW, I *really* like how the extra markup renders in a browser, and I
-don't think I'm the only one.
+Clang static analysis reports this representative error
 
-If you want to read .rst files in a terminal, I would suggest using
-something like this:
+init.c:2501:18: warning: Array access (from variable 'queuedata') results
+  in a null pointer dereference
+      templ |= ((queuedata[i] & 0xc0) << 3);
 
-$ pandoc -t plain Documentation/core-api/atomic_ops.rst | less
+This is the problem block of code
 
-It looks pretty readable to me, things like lists and code are properly
-indented, the only thing it's missing as far as I'm concerned is marking
-headings more prominently.
+   if(ModeNo > 0x13) {
+      ...
+      if(SiS_Pr->ChipType == SIS_730) {
+	 queuedata = &FQBQData730[0];
+      } else {
+	 queuedata = &FQBQData[0];
+      }
+   } else {
 
-The new online documentation is a great way to attract more people to
-kernel development (and just spread typical kernel knowledge to
-non-Linux/non-kernel programmers). The old Documentation/ was kind of
-hidden away and you only really came across it by accident if you did a
-treewide 'git grep'; the new online docs, on the other hand, are a
-pleasure to browse and explore and frequently show up in google searches
-for random kernel-related topics.
+   }
 
+queuedata is not set in the else block
 
-Vegard
+Reviewing the old code, the arrays FQBQData730 and FQBQData were
+used directly.
+
+So hoist the setting of queuedata out of the if-else block.
+
+Fixes: 544393fe584d ("[PATCH] sisfb update")
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/video/fbdev/sis/init.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/video/fbdev/sis/init.c b/drivers/video/fbdev/sis/init.c
+index dfe3eb769638..fde27feae5d0 100644
+--- a/drivers/video/fbdev/sis/init.c
++++ b/drivers/video/fbdev/sis/init.c
+@@ -2428,6 +2428,11 @@ SiS_SetCRT1FIFO_630(struct SiS_Private *SiS_Pr, unsigned short ModeNo,
+ 
+    i = 0;
+ 
++	if (SiS_Pr->ChipType == SIS_730)
++		queuedata = &FQBQData730[0];
++	else
++		queuedata = &FQBQData[0];
++
+    if(ModeNo > 0x13) {
+ 
+       /* Get VCLK  */
+@@ -2445,12 +2450,6 @@ SiS_SetCRT1FIFO_630(struct SiS_Private *SiS_Pr, unsigned short ModeNo,
+       /* Get half colordepth */
+       colorth = colortharray[(SiS_Pr->SiS_ModeType - ModeEGA)];
+ 
+-      if(SiS_Pr->ChipType == SIS_730) {
+-	 queuedata = &FQBQData730[0];
+-      } else {
+-	 queuedata = &FQBQData[0];
+-      }
+-
+       do {
+ 	 templ = SiS_CalcDelay2(SiS_Pr, queuedata[i]) * VCLK * colorth;
+ 
+-- 
+2.18.1
+
