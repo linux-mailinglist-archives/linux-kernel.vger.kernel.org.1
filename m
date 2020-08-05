@@ -2,68 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A1723D117
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6848C23D148
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgHET4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728032AbgHEQqQ (ORCPT
+        id S1729742AbgHET6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:58:39 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41933 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727039AbgHEQmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:46:16 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8BDC03461B
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:53:59 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id 77so8754689ilc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:53:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=fHP3PA7nKwjis+QPqSWarLsx0w9RaeZVGzgjAquCbb8=;
-        b=vCktk5k7L7H4mYucCNrIh9M7/sTT9LMRPPY5CsijN4u+Kuvc7atu0JrrDPPNyXojJW
-         3ZJPPswc/MHwK2R8JCS3hN6QUvZ0OfnKl6JiPot+UrpGG1Ms8/etpDiT9qCJuBQwVICI
-         k5nbjPPpzH+CtfPzKXwnkpjUSyp4tZuRoqR2iNOZSxMwl2eAEX36gQY9ZVb03Oh8aAzF
-         hZLm4p+dUQBeqFuIapqQcVryQDlH0hIhSmlUljcwuH6/uGZZTJxAA5Z3feUWRGPxwQBG
-         UOYbokSvSXtJ5UDW/2RDYlGBnelhXPhJEl2cB0Q+u1/MnCegJUZHleKLFgO8dr4cXlwp
-         Syww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=fHP3PA7nKwjis+QPqSWarLsx0w9RaeZVGzgjAquCbb8=;
-        b=dKRNKYXS6qHeUaBnjUlBvuP41Ty1P6PAqZlkYue1hDJ5Mv2cBQSFYwfuvXUaTBosbq
-         Txsxl+LUgU3zzcZASkdmJNZU6yPqCH4EERBG7n8dLboNU/dXDxCchFeTpDMxGNLeNVzr
-         knvWdMYRrHETa9+OjhqFRIGTD4h1GiWCKgu6gcp3J9YGmaI3MY2sVkkhP8t7qoJ3tcZk
-         sxfAhlUXIh85Wjrbf3PD+5QhelFL3ufkTb3khM7dXHmQzC4GJJiTieYCpcguVOnJKgt0
-         /IVeDrNTopLjPsnp7hZj79JJECHeYhPjbMy1sUkgD83PLxv3FUF8M6ynW/O/hC/3+e5s
-         ODew==
-X-Gm-Message-State: AOAM532Z0DmRA91ZjcJTN3dA9aVF96JuOTEj1VGVz7/83tIK6y+7h52+
-        Ho7Pkh33npwUo98U9K6LlngrIUVef0WIc70khok=
-X-Google-Smtp-Source: ABdhPJy/heXedQ7VP6aWKGP7JBiijc420bPuger4t8lLNhEAo5bGX/MfSiQPXlygPb+JoMJDRb87d36lvCuRBPv3RIE=
-X-Received: by 2002:a92:9fcc:: with SMTP id z73mr4184727ilk.102.1596632039068;
- Wed, 05 Aug 2020 05:53:59 -0700 (PDT)
+        Wed, 5 Aug 2020 12:42:24 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U4paFMA_1596632569;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U4paFMA_1596632569)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 05 Aug 2020 21:02:49 +0800
+Subject: Re: [PATCH] mm/memcg: remove useless check on page->mem_cgroup
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1596166480-22814-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200731151655.GB491801@cmpxchg.org>
+ <9338716f-ca0e-057f-8d94-03e2b3f70281@linux.alibaba.com>
+ <20200803081815.GD5174@dhcp22.suse.cz>
+ <bd61e672-b997-c4cd-2047-fca9dc11cc4c@linux.alibaba.com>
+ <92dd8e68-8095-72c5-0144-2a084e4d5993@linux.alibaba.com>
+Message-ID: <5622ef68-5e70-d1a9-d1be-b45411b6be5c@linux.alibaba.com>
+Date:   Wed, 5 Aug 2020 21:02:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: by 2002:ac0:e84d:0:0:0:0:0 with HTTP; Wed, 5 Aug 2020 05:53:58 -0700 (PDT)
-Reply-To: barrmawuko767@gmail.com
-From:   barr <mailsoffi8@gmail.com>
-Date:   Wed, 5 Aug 2020 13:53:58 +0100
-Message-ID: <CAERBxfy0uYvLteKZTmqfdv1uBuY-AAmbMdO9ddjLeHR+aPBs2w@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <92dd8e68-8095-72c5-0144-2a084e4d5993@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- > =EF=BB=BF what i need
-> is this honest person i can trust? Please, can I trust you well
-> heart to transfer $ 12,500,000.00 million, in
-> If possible, get back to me for more
-> the detailed information i am waiting for
-> Your answer and please, please email me on this mine
-> private email
-> address at, barrmawuko767 @ gmail.com
+
+
+在 2020/8/5 下午8:28, Alex Shi 写道:
+> The last patch has a problem on define. this version could fix it.
+> 
+> BTW, I see some !memcg happens when MEMCG compilered but disabled by cgroup_disable
+> 
+> 
+> [   94.657666] ---[ end trace f1f34bfc3b32ed2f ]---
+> [   95.138995] anon flags: 0x5005b48008000d(locked|uptodate|dirty|swapbacked)
+> [   95.146220] raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
+> [   95.154549] raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
+> [   95.162876] page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
+> 
+> 
+
+The following patch may helpful.
+
+From 8bfb26a2e37e08dc61d20212bcfa5812a367ba94 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Wed, 5 Aug 2020 20:32:12 +0800
+Subject: [PATCH] mm/memcg: don't try charge swap if memcg disabled
+
+If we disabled memcg by cgroup_disable=memory, the swap charges are
+still called. Let's return from the funcs earlier and keep WARN_ON
+monitor.
+
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/memcontrol.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index cb07a48d53aa..65f2b42d25af 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7163,6 +7163,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+ 	VM_BUG_ON_PAGE(PageLRU(page), page);
+ 	VM_BUG_ON_PAGE(page_count(page), page);
+ 
++	if (mem_cgroup_disabled())
++		return;
++
+ 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return;
+ 
+@@ -7228,6 +7231,9 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
+ 	struct mem_cgroup *memcg;
+ 	unsigned short oldid;
+ 
++	if (mem_cgroup_disabled())
++		return 0;
++
+ 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return 0;
+ 
+-- 
+1.8.3.1
+
