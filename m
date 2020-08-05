@@ -2,67 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0F723C632
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE38A23C631
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgHEGsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 02:48:19 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:53444 "EHLO smtp.al2klimov.de"
+        id S1727879AbgHEGsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 02:48:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726382AbgHEGsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 02:48:18 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id A20874E2B0;
-        Wed,  5 Aug 2020 06:48:13 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     torvalds@linux-foundation.org, corbet@lwn.net,
-        geert+renesas@glider.be, ribalda@kernel.org, martink@posteo.de,
-        grandmaster@al2klimov.de, luis.f.correia@gmail.com,
-        paulburton@kernel.org, cyphar@cyphar.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] CREDITS: add myself
-Date:   Wed,  5 Aug 2020 08:48:05 +0200
-Message-Id: <20200805064805.64688-1-grandmaster@al2klimov.de>
+        id S1725904AbgHEGsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 02:48:12 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1162E2076E;
+        Wed,  5 Aug 2020 06:48:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596610092;
+        bh=lxUXrmtcYyYIsbf10qPk2tB/GpQBGm5ms4pwycahUII=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=W9F+jzX3WAsT1XK7nkUL+HjTejTSe2aMA0xeQ9cwI6gJT5sN5EKn9Bqb9SrZ6y0iQ
+         VEL8ciAvWttha/ISJDEY8+jEbuPhBqbeZGLrbb6ZO10SRIuXKJyLN1Yt2sQ4xo4G3u
+         /si2QuMfvR5owOIKGJxhDEmilrhiLdWzLeclhVTw=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <944856eb819081268fab783236a916257de120e4.1596040416.git.gurus@codeaurora.org>
+References: <944856eb819081268fab783236a916257de120e4.1596040416.git.gurus@codeaurora.org>
+Subject: Re: [PATCH v2 1/2] thermal: qcom-spmi-temp-alarm: Don't suppress negative temp
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org,
+        Veera Vegivada <vvegivad@codeaurora.org>,
+        Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Amit Kucheria <amit.kucheria@linaro.org>,
+        Guru Das Srinagesh <gurus@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org
+Date:   Tue, 04 Aug 2020 23:48:10 -0700
+Message-ID: <159661009082.1360974.366976291381142141@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-50 already merged patches of mine.
+Quoting Guru Das Srinagesh (2020-07-29 09:52:51)
+> From: Veera Vegivada <vvegivad@codeaurora.org>
+>=20
+> Currently driver is suppressing the negative temperature
+> readings from the vadc. Consumers of the thermal zones need
+> to read the negative temperature too. Don't suppress the
+> readings.
+>=20
+> Fixes: c610afaa21d3c6e ("thermal: Add QPNP PMIC temperature alarm driver")
+> Signed-off-by: Veera Vegivada <vvegivad@codeaurora.org>
+> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> ---
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- (Let's try once more - with 50 patches instead of just 2.)
-
- See:
- git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
-
- CREDITS | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/CREDITS b/CREDITS
-index 32ee70a7562e..aaa2c20c0d86 100644
---- a/CREDITS
-+++ b/CREDITS
-@@ -1933,6 +1933,11 @@ S: Schwalbenstr. 96
- S: 85551 Ottobrunn
- S: Germany
- 
-+N: Alexander A. Klimov
-+E: grandmaster@al2klimov.de
-+W: https://github.com/Al2Klimov
-+D: documentation
-+
- N: Ian Kluft
- E: ikluft@thunder.sbay.org
- W: http://www.kluft.com/~ikluft/
--- 
-2.27.0
-
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
