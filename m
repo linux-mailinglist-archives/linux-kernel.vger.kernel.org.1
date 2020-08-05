@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D912223C93D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C0723C944
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbgHEJeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 05:34:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60410 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgHEJdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 05:33:50 -0400
-Received: from localhost (router.4pisysteme.de [80.79.225.122])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728402AbgHEJfT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 Aug 2020 05:35:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53772 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726604AbgHEJe5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 05:34:57 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-A6PLiuaHO56Nis-bj6FLOw-1; Wed, 05 Aug 2020 05:34:52 -0400
+X-MC-Unique: A6PLiuaHO56Nis-bj6FLOw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0DE4D2075A;
-        Wed,  5 Aug 2020 09:33:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596620029;
-        bh=+PVMkHow/1cTDpTZAm0fNUZhkXhy8Y97366o6wkD/AE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uld5+n9kR22gnZeVca/pluvROt16z6AmOtya7TVb6MjC7DU5KxrpqMT5M1WEYnFsq
-         ERVt39kL2w74Cdn32KGV8TUM57jhsOk3IHnmM0RoSWp0WfXUIS66PpmdYFQKf1YV4g
-         HQHBSj12KVFETrEIr67Rsha8OcMn0h5yb365wLbg=
-Date:   Wed, 5 Aug 2020 11:33:47 +0200
-From:   wsa@kernel.org
-To:     Jeffrey Lin <jeffrey@icurse.nl>
-Cc:     jdelvare@suse.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: i801: Register lis3lv02d I2C device on Dell
- Latitude 5480
-Message-ID: <20200805093347.GM1229@kunai>
-Mail-Followup-To: wsa@kernel.org, Jeffrey Lin <jeffrey@icurse.nl>,
-        jdelvare@suse.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200616234130.814499-1-jeffrey@icurse.nl>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C9E418C63C1;
+        Wed,  5 Aug 2020 09:34:50 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.194.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E70E7193A;
+        Wed,  5 Aug 2020 09:34:45 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        =?UTF-8?q?Genevi=C3=A8ve=20Bastien?= <gbastien@versatic.net>,
+        Wang Nan <wangnan0@huawei.com>,
+        Jeremie Galarneau <jgalar@efficios.com>
+Subject: [PATCH v2 0/7] perf tools: Add wallclock time conversion support
+Date:   Wed,  5 Aug 2020 11:34:37 +0200
+Message-Id: <20200805093444.314999-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="37nyS7qXrnu4wN2o"
-Content-Disposition: inline
-In-Reply-To: <20200616234130.814499-1-jeffrey@icurse.nl>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+hi,
+this patchset is based on changes made by David Ahern long time ago.
+The perf code moved a lot since then, but the idea is the same.
 
---37nyS7qXrnu4wN2o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The patchset is adding the ability to display TOD/wallclock timestamp
+in 'perf script' output and in 'perf data convert --to-ctf' subcommand,
+so the converted CTF data contain TOD/wallclock timestamps.
 
-On Tue, Jun 16, 2020 at 07:41:30PM -0400, Jeffrey Lin wrote:
-> Value of /sys/devices/platform/lis3lv02d/position when
->     Horizontal:     (36,-108,-1152)
->     Left elevated:  (-432,-126,-1062)
->     Front elevated: (36,594,-936)
->     Upside down:    (-126,-252,1098)
->=20
-> Signed-off-by: Jeffrey Lin <jeffrey@icurse.nl>
+It's done by adding new header FEATURE 'CLOCK_DATA' to perf.data, that
+stores reference times for both TOD/wallclock time and for the clock that
+perf record is configured to use. These reference times are then used to
+convert sample's timestamps to TOD/wallclock timestamps.
 
-Jean?
+The feature is available only for recording with clockid specified,
+because it's the only case where we can get reference time to TOD/wallclock
+time. We can't do that with perf clock yet.
 
-> ---
->  drivers/i2c/busses/i2c-i801.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-> index fea644921a76..d7c802e20ae6 100644
-> --- a/drivers/i2c/busses/i2c-i801.c
-> +++ b/drivers/i2c/busses/i2c-i801.c
-> @@ -1268,6 +1268,7 @@ static const struct {
->  	/*
->  	 * Additional individual entries were added after verification.
->  	 */
-> +	{ "Latitude 5480",      0x29 },
->  	{ "Vostro V131",        0x1d },
->  };
-> =20
-> --=20
-> 2.27.0
->=20
+Also available in here:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  perf/abs_time
 
---37nyS7qXrnu4wN2o
-Content-Type: application/pgp-signature; name="signature.asc"
+v2 changes:
+  - fixed HEADER_CLOCK_DATA doc, typo, print format [Namhyung]
+  - moved clockid related code into separate object [Andi]
 
------BEGIN PGP SIGNATURE-----
+thanks,
+jirka
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8qfPsACgkQFA3kzBSg
-KbYSkw//eQnM9kVffTP2sjG4jmvlxf+5TFmy//rhpCAaIOa/hBbOh2WmAsQvkcYq
-fvIDnl+RnCVuydZX1IKfIZWGaALJ2s/jNsXv8GwQMzsrEjD2HC9I2vN/ivn3le8K
-IpAcJUHylKUNV+1XeQZi+VtXUVkfGqLC88YV5Vz+Z9+peDvVFT9Vi8anDGOsnKUK
-gwvXAQndn0RHTyF6WdzZKIc4RhPX61EKZep66xScB1FXrxLgEchwkwStg9ZG5+Te
-80WmFMaEKzTPEaNiEWYsaIxHvEbF4Nkw8xHEu7I/nhP7+pzGHjAcBTlEOh4piowB
-e5xZZBVD8XpIMc3WJ5eoCNIxQSzDryQg4araqH/iWktW1lSJF2FnzHNTNDPTKjrs
-uCATpzPjDU9qODctW5EBCopH0aM00YWZGQOoWAT+SsvuRTcNNls3DkO5vNXe1okN
-s59hrS/atRFc1FVOs7ySPWAA1Kr8FApRcApE/Sjq6odkll5N9skVnNf7LOHbs907
-0hpr/4L6AQkF55oKRX/e5hJ7mIcsVbbKHRGO+1r1+KUW9UYxWI++dEfHsjbTz34w
-Rle+tp+Hw6T0S2zLuvhKYfAr+ypGb2NEwDNMnrgn0kIzRWGULQT5vhmMNvZUI8LF
-hYG0qCTuTCrewcIRAcq/FoYOUq9ybvPaIWIYAQSU9L0d6cA9yMQ=
-=ckP+
------END PGP SIGNATURE-----
 
---37nyS7qXrnu4wN2o--
+---
+Jiri Olsa (7):
+      perf tools: Move parse_clockid into clockid object
+      perf tools: Add clockid_name function
+      perf tools: Store clock references for -k/--clockid option
+      perf tools: Move clockid_res_ns under clock struct
+      perf tools: Add support to store time of day in CTF data conversion
+      perf script: Change enum perf_output_field values to be 64 bits
+      perf script: Add tod field to display time of day
+
+ tools/perf/Documentation/perf-data.txt             |   3 ++
+ tools/perf/Documentation/perf.data-file-format.txt |  13 +++++++
+ tools/perf/builtin-data.c                          |   1 +
+ tools/perf/builtin-record.c                        | 145 +++++++++++++++++++++++---------------------------------------------------
+ tools/perf/builtin-script.c                        | 195 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------------------------------
+ tools/perf/util/Build                              |   1 +
+ tools/perf/util/clockid.c                          | 119 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/perf/util/clockid.h                          |  11 ++++++
+ tools/perf/util/data-convert-bt.c                  |  57 ++++++++++++++++++-----------
+ tools/perf/util/data-convert.h                     |   1 +
+ tools/perf/util/env.h                              |  14 +++++++-
+ tools/perf/util/header.c                           | 121 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ tools/perf/util/header.h                           |   1 +
+ 13 files changed, 492 insertions(+), 190 deletions(-)
+ create mode 100644 tools/perf/util/clockid.c
+ create mode 100644 tools/perf/util/clockid.h
+
