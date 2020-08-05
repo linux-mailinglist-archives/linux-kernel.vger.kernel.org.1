@@ -2,499 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC49523D0C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C98B23D05D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728406AbgHETxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727779AbgHEQuc (ORCPT
+        id S1729168AbgHETro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:47:44 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1914 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728014AbgHERAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:50:32 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50E8C03460F
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:14:51 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a15so40462042wrh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:14:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=/bRWYsoOZ0p5Bx4PCuW1ZTPcmYl2Ss+w/1YYJUWx1rI=;
-        b=g5kKXqLglHkk3DnwMBUXWe+s+tnDlPLuD3gbk6EgJJFt9C70QsYOyvoS5GOWrW4p3t
-         DtJNguw3EdTwJ/q2C/Ki4rmNZVD9TZ3aFkS19QGRY/+XlkcBybGwhVCxJT3jsE5LFh8D
-         tIbrgFlphcG4/LRfv+lQn+x8yp1xiOj9Oi7Ie3m48b/PyYhmTr/dTn5dc9VSPq7BKK2m
-         nsJw1fzFLsr4itKTvBIKwUuIWKZaXV3nA/g1mxpjsqvX4KDOpVVjpdN1aJq42Rz29aU/
-         XZJryCQPu0UrBb90yYMK9chUnrH99W/Qt/OwPH2xwstJi8Y6lpzO1UAVcv1RsrrJ5C1q
-         r/Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=/bRWYsoOZ0p5Bx4PCuW1ZTPcmYl2Ss+w/1YYJUWx1rI=;
-        b=RcUec3u051plXvEgUGWUFsh0MHwq6m/QFzhY9Ojqa5GTYYImWHTLxFdJ0HYPD1tmvy
-         cM7qB2ISmx/SoM44zJVuSnoHTSc4cjC6v1mKfFK6MIO/Ce/Z2YynWJPtMUu9hSiZaBHf
-         U+D1jkiiLhybyVw4S8CmDhcEjnvcpEWvoqrhkMm+1JgR4oePNoI+TvAK46pBPYl3Juz1
-         k8cQ49qeQY99h3XlZIWox1Z5cX26Z6CTFOFZOCUcWvL1e7nRJbPvZC3P5gn5rjyWQa/p
-         S+tFemVwYv+gxtvY9RmKLMpb+r7r0aZ3okwEwBhGuwxHqPzG+66zlxFD6L51XNBYCPYM
-         kyDw==
-X-Gm-Message-State: AOAM530is5mVuMXjk8ITAg7vPU8Pg3+74oQaTWdw/SfQG/yUDEoW45Ww
-        EAtwAyNko8zhkjfIBxSVzXM=
-X-Google-Smtp-Source: ABdhPJxY+pBzZlPeG4Kd4STsFQEKIaKNPpXgua4wmzgmZrtn+RJMm3no3ol+ENTLapY5d1zo0D9PYw==
-X-Received: by 2002:a5d:484d:: with SMTP id n13mr2562014wrs.297.1596629686204;
-        Wed, 05 Aug 2020 05:14:46 -0700 (PDT)
-Received: from tsnow (IGLD-83-130-60-139.inter.net.il. [83.130.60.139])
-        by smtp.gmail.com with ESMTPSA id z10sm2560688wmg.13.2020.08.05.05.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 05:14:45 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 15:14:42 +0300
-From:   Tomer Samara <tomersamara98@gmail.com>
-To:     jerome.pouiller@silabs.com
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        Wed, 5 Aug 2020 13:00:01 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 075C3m1P124605;
+        Wed, 5 Aug 2020 08:24:02 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qqt1gv3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 08:24:02 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 075CFrNY010087;
+        Wed, 5 Aug 2020 12:24:00 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 32n017tmb7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Aug 2020 12:23:59 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 075CMULl54460840
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 5 Aug 2020 12:22:30 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0406411C04C;
+        Wed,  5 Aug 2020 12:23:57 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 149FC11C052;
+        Wed,  5 Aug 2020 12:23:56 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.52.198])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  5 Aug 2020 12:23:55 +0000 (GMT)
+Subject: Re: [PATCH] powerpc/drmem: Don't compute the NUMA node for each LMB
+To:     kernel test robot <lkp@intel.com>, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: wfx: refactor to avoid duplication at hif_tx.c
-Message-ID: <20200805121442.GA31953@tsnow>
+Cc:     kbuild-all@lists.01.org, mpe@ellerman.id.au, nathanl@linux.ibm.com,
+        cheloha@linux.ibm.com, benh@kernel.crashing.org
+References: <20200805092858.64143-1-ldufour@linux.ibm.com>
+ <202008051807.Vi8NDJtX%lkp@intel.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <ee7f5b73-81ee-ecc1-d7a1-9cdb3eceaf0b@linux.ibm.com>
+Date:   Wed, 5 Aug 2020 14:23:55 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <202008051807.Vi8NDJtX%lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-05_09:2020-08-03,2020-08-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 clxscore=1011 priorityscore=1501 bulkscore=0
+ spamscore=0 mlxscore=0 phishscore=0 malwarescore=0 adultscore=0
+ suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008050101
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add functions wfx_full_send(), wfx_full_send_no_reply_async(),
-wfx_full_send_no_reply() and wfx_full_send_no_reply_free()
-which works as follow:
-wfx_full_send() - simple wrapper for both wfx_fill_header()
-                  and wfx_cmd_send().
-wfx_full_send_no_reply_async() - wrapper for both but with
-                                 NULL as reply and size zero.
-wfx_full_send_no_reply() - same as wfx_full_send_no_reply_async()
-                           but with false async value
-wfx_full_send_no_reply_free() - same as wfx_full_send_no_reply()
-                                but also free the struct hif_msg.
+Le 05/08/2020 à 12:43, kernel test robot a écrit :
+> Hi Laurent,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on powerpc/next]
+> [also build test ERROR on linux/master linus/master v5.8 next-20200804]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Laurent-Dufour/powerpc-drmem-Don-t-compute-the-NUMA-node-for-each-LMB/20200805-173213
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
+> config: powerpc-mpc885_ads_defconfig (attached as .config)
+> compiler: powerpc-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>     arch/powerpc/mm/drmem.c: In function 'init_drmem_v2_lmbs':
+>>> arch/powerpc/mm/drmem.c:457:8: error: 'struct drmem_lmb' has no member named 'nid'
+>       457 |     lmb->nid = first->nid;
+>           |        ^~
+>     arch/powerpc/mm/drmem.c:457:21: error: 'struct drmem_lmb' has no member named 'nid'
+>       457 |     lmb->nid = first->nid;
+>           |                     ^~
 
-Signed-off-by: Tomer Samara <tomersamara98@gmail.com>
----
-Changes in v2:
- - Changed these functions to static
+My mistake, the nid member is only present when CONFIG_MEMORY_HOTPLUG is set.
 
-drivers/staging/wfx/hif_tx.c | 180 ++++++++++++++++-------------------
- 1 file changed, 80 insertions(+), 100 deletions(-)
+I'll send a new version fixing this.
 
-diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
-index 5110f9b93762..17f668fa40a0 100644
---- a/drivers/staging/wfx/hif_tx.c
-+++ b/drivers/staging/wfx/hif_tx.c
-@@ -40,7 +40,7 @@ static void wfx_fill_header(struct hif_msg *hif, int if_id,
- 
- static void *wfx_alloc_hif(size_t body_len, struct hif_msg **hif)
- {
--	*hif = kzalloc(sizeof(struct hif_msg) + body_len, GFP_KERNEL);
-+	*hif = kzalloc(sizeof(*hif) + body_len, GFP_KERNEL);
- 	if (*hif)
- 		return (*hif)->body;
- 	else
-@@ -123,9 +123,39 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
- 	return ret;
- }
- 
-+static int wfx_full_send(struct wfx_dev *wdev, struct hif_msg *hif, void *reply,
-+			 size_t reply_len, bool async, int if_id, unsigned int cmd,
-+			 int size)
-+{
-+	wfx_fill_header(hif, if_id, cmd, size);
-+	return wfx_cmd_send(wdev, hif, reply, reply_len, async);
-+}
-+
-+static int wfx_full_send_no_reply_async(struct wfx_dev *wdev, struct hif_msg *hif, int if_id,
-+					unsigned int cmd, int size, bool async)
-+{
-+	return wfx_full_send(wdev, hif, NULL, 0, async, if_id, cmd, size);
-+}
-+
-+static int wfx_full_send_no_reply(struct wfx_dev *wdev, struct hif_msg *hif, int if_id,
-+				  unsigned int cmd, int size)
-+{
-+	return wfx_full_send_no_reply_async(wdev, hif, if_id, cmd, size, false);
-+}
-+
-+static int wfx_full_send_no_reply_free(struct wfx_dev *wdev, struct hif_msg *hif, int if_id,
-+				       unsigned int cmd, int size)
-+{
-+	int ret;
-+
-+	ret = wfx_full_send_no_reply(wdev, hif, if_id, cmd, size);
-+	kfree(hif);
-+	return ret;
-+}
-+
- // This function is special. After HIF_REQ_ID_SHUT_DOWN, chip won't reply to any
- // request anymore. We need to slightly hack struct wfx_hif_cmd for that job. Be
--// carefull to only call this funcion during device unregister.
-+// careful to only call this function during device unregister.
- int hif_shutdown(struct wfx_dev *wdev)
- {
- 	int ret;
-@@ -136,8 +166,8 @@ int hif_shutdown(struct wfx_dev *wdev)
- 	wfx_alloc_hif(0, &hif);
- 	if (!hif)
- 		return -ENOMEM;
--	wfx_fill_header(hif, -1, HIF_REQ_ID_SHUT_DOWN, 0);
--	ret = wfx_cmd_send(wdev, hif, NULL, 0, true);
-+	ret = wfx_full_send_no_reply_async(wdev, hif, -1, HIF_REQ_ID_SHUT_DOWN,
-+					   0, true);
- 	// After this command, chip won't reply. Be sure to give enough time to
- 	// bh to send buffer:
- 	msleep(100);
-@@ -154,7 +184,6 @@ int hif_shutdown(struct wfx_dev *wdev)
- 
- int hif_configuration(struct wfx_dev *wdev, const u8 *conf, size_t len)
- {
--	int ret;
- 	size_t buf_len = sizeof(struct hif_req_configuration) + len;
- 	struct hif_msg *hif;
- 	struct hif_req_configuration *body = wfx_alloc_hif(buf_len, &hif);
-@@ -163,25 +192,20 @@ int hif_configuration(struct wfx_dev *wdev, const u8 *conf, size_t len)
- 		return -ENOMEM;
- 	body->length = cpu_to_le16(len);
- 	memcpy(body->pds_data, conf, len);
--	wfx_fill_header(hif, -1, HIF_REQ_ID_CONFIGURATION, buf_len);
--	ret = wfx_cmd_send(wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wdev, hif, -1, HIF_REQ_ID_CONFIGURATION,
-+					   buf_len);
- }
- 
- int hif_reset(struct wfx_vif *wvif, bool reset_stat)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	struct hif_req_reset *body = wfx_alloc_hif(sizeof(*body), &hif);
- 
- 	if (!hif)
- 		return -ENOMEM;
- 	body->reset_flags.reset_stat = reset_stat;
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_RESET, sizeof(*body));
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wvif->wdev, hif, wvif->id,
-+					   HIF_REQ_ID_RESET, sizeof(*body));
- }
- 
- int hif_read_mib(struct wfx_dev *wdev, int vif_id, u16 mib_id,
-@@ -198,9 +222,8 @@ int hif_read_mib(struct wfx_dev *wdev, int vif_id, u16 mib_id,
- 		goto out;
- 	}
- 	body->mib_id = cpu_to_le16(mib_id);
--	wfx_fill_header(hif, vif_id, HIF_REQ_ID_READ_MIB, sizeof(*body));
--	ret = wfx_cmd_send(wdev, hif, reply, buf_len, false);
--
-+	ret = wfx_full_send(wdev, hif, reply, buf_len, false, vif_id,
-+			    HIF_REQ_ID_READ_MIB, sizeof(*body));
- 	if (!ret && mib_id != le16_to_cpu(reply->mib_id)) {
- 		dev_warn(wdev->dev, "%s: confirmation mismatch request\n",
- 			 __func__);
-@@ -223,7 +246,6 @@ int hif_read_mib(struct wfx_dev *wdev, int vif_id, u16 mib_id,
- int hif_write_mib(struct wfx_dev *wdev, int vif_id, u16 mib_id,
- 		  void *val, size_t val_len)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	int buf_len = sizeof(struct hif_req_write_mib) + val_len;
- 	struct hif_req_write_mib *body = wfx_alloc_hif(buf_len, &hif);
-@@ -233,16 +255,14 @@ int hif_write_mib(struct wfx_dev *wdev, int vif_id, u16 mib_id,
- 	body->mib_id = cpu_to_le16(mib_id);
- 	body->length = cpu_to_le16(val_len);
- 	memcpy(&body->mib_data, val, val_len);
--	wfx_fill_header(hif, vif_id, HIF_REQ_ID_WRITE_MIB, buf_len);
--	ret = wfx_cmd_send(wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wdev, hif, vif_id, HIF_REQ_ID_WRITE_MIB,
-+					   buf_len);
- }
- 
- int hif_scan(struct wfx_vif *wvif, struct cfg80211_scan_request *req,
- 	     int chan_start_idx, int chan_num, int *timeout)
- {
--	int ret, i;
-+	int i;
- 	struct hif_msg *hif;
- 	size_t buf_len =
- 		sizeof(struct hif_req_start_scan_alt) + chan_num * sizeof(u8);
-@@ -292,31 +312,25 @@ int hif_scan(struct wfx_vif *wvif, struct cfg80211_scan_request *req,
- 	if (timeout)
- 		*timeout = usecs_to_jiffies(tmo);
- 
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_START_SCAN, buf_len);
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply(wvif->wdev, hif, wvif->id,
-+				      HIF_REQ_ID_START_SCAN, buf_len);
- }
- 
- int hif_stop_scan(struct wfx_vif *wvif)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	// body associated to HIF_REQ_ID_STOP_SCAN is empty
- 	wfx_alloc_hif(0, &hif);
- 
- 	if (!hif)
- 		return -ENOMEM;
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_STOP_SCAN, 0);
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wvif->wdev, hif, wvif->id,
-+				      HIF_REQ_ID_STOP_SCAN, 0);
- }
- 
- int hif_join(struct wfx_vif *wvif, const struct ieee80211_bss_conf *conf,
- 	     struct ieee80211_channel *channel, const u8 *ssid, int ssidlen)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	struct hif_req_join *body = wfx_alloc_hif(sizeof(*body), &hif);
- 
-@@ -341,15 +355,12 @@ int hif_join(struct wfx_vif *wvif, const struct ieee80211_bss_conf *conf,
- 		body->ssid_length = cpu_to_le32(ssidlen);
- 		memcpy(body->ssid, ssid, ssidlen);
- 	}
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_JOIN, sizeof(*body));
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wvif->wdev, hif, wvif->id,
-+					   HIF_REQ_ID_JOIN, sizeof(*body));
- }
- 
- int hif_set_bss_params(struct wfx_vif *wvif, int aid, int beacon_lost_count)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	struct hif_req_set_bss_params *body =
- 		wfx_alloc_hif(sizeof(*body), &hif);
-@@ -358,16 +369,13 @@ int hif_set_bss_params(struct wfx_vif *wvif, int aid, int beacon_lost_count)
- 		return -ENOMEM;
- 	body->aid = cpu_to_le16(aid);
- 	body->beacon_lost_count = beacon_lost_count;
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_SET_BSS_PARAMS,
--			sizeof(*body));
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wvif->wdev, hif, wvif->id,
-+					    HIF_REQ_ID_SET_BSS_PARAMS,
-+					    sizeof(*body));
- }
- 
- int hif_add_key(struct wfx_dev *wdev, const struct hif_req_add_key *arg)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	// FIXME: only send necessary bits
- 	struct hif_req_add_key *body = wfx_alloc_hif(sizeof(*body), &hif);
-@@ -379,34 +387,28 @@ int hif_add_key(struct wfx_dev *wdev, const struct hif_req_add_key *arg)
- 	if (wfx_api_older_than(wdev, 1, 5))
- 		// Legacy firmwares expect that add_key to be sent on right
- 		// interface.
--		wfx_fill_header(hif, arg->int_id, HIF_REQ_ID_ADD_KEY,
--				sizeof(*body));
--	else
--		wfx_fill_header(hif, -1, HIF_REQ_ID_ADD_KEY, sizeof(*body));
--	ret = wfx_cmd_send(wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+		return wfx_full_send_no_reply_free(wdev, hif, arg->int_id,
-+						   HIF_REQ_ID_ADD_KEY,
-+						   sizeof(*body));
-+	return wfx_full_send_no_reply_free(wdev, hif, -1, HIF_REQ_ID_ADD_KEY,
-+					   sizeof(*body));
- }
- 
- int hif_remove_key(struct wfx_dev *wdev, int idx)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	struct hif_req_remove_key *body = wfx_alloc_hif(sizeof(*body), &hif);
- 
- 	if (!hif)
- 		return -ENOMEM;
- 	body->entry_index = idx;
--	wfx_fill_header(hif, -1, HIF_REQ_ID_REMOVE_KEY, sizeof(*body));
--	ret = wfx_cmd_send(wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wdev, hif, -1, HIF_REQ_ID_REMOVE_KEY,
-+					   sizeof(*body));
- }
- 
- int hif_set_edca_queue_params(struct wfx_vif *wvif, u16 queue,
- 			      const struct ieee80211_tx_queue_params *arg)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	struct hif_req_edca_queue_params *body = wfx_alloc_hif(sizeof(*body),
- 							       &hif);
-@@ -427,16 +429,13 @@ int hif_set_edca_queue_params(struct wfx_vif *wvif, u16 queue,
- 		body->queue_id = HIF_QUEUE_ID_BACKGROUND;
- 	if (wfx_api_older_than(wvif->wdev, 2, 0) && queue == IEEE80211_AC_BK)
- 		body->queue_id = HIF_QUEUE_ID_BESTEFFORT;
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_EDCA_QUEUE_PARAMS,
--			sizeof(*body));
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wvif->wdev, hif, wvif->id,
-+					   HIF_REQ_ID_EDCA_QUEUE_PARAMS,
-+					   sizeof(*body));
- }
- 
- int hif_set_pm(struct wfx_vif *wvif, bool ps, int dynamic_ps_timeout)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	struct hif_req_set_pm_mode *body = wfx_alloc_hif(sizeof(*body), &hif);
- 
-@@ -452,16 +451,13 @@ int hif_set_pm(struct wfx_vif *wvif, bool ps, int dynamic_ps_timeout)
- 		if (body->fast_psm_idle_period)
- 			body->pm_mode.fast_psm = 1;
- 	}
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_SET_PM_MODE, sizeof(*body));
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wvif->wdev, hif, wvif->id,
-+				      HIF_REQ_ID_SET_PM_MODE, sizeof(*body));
- }
- 
- int hif_start(struct wfx_vif *wvif, const struct ieee80211_bss_conf *conf,
- 	      const struct ieee80211_channel *channel)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	struct hif_req_start *body = wfx_alloc_hif(sizeof(*body), &hif);
- 
-@@ -476,15 +472,12 @@ int hif_start(struct wfx_vif *wvif, const struct ieee80211_bss_conf *conf,
- 		cpu_to_le32(wfx_rate_mask_to_hw(wvif->wdev, conf->basic_rates));
- 	body->ssid_length = conf->ssid_len;
- 	memcpy(body->ssid, conf->ssid, conf->ssid_len);
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_START, sizeof(*body));
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wvif->wdev, hif, wvif->id,
-+					   HIF_REQ_ID_START, sizeof(*body));
- }
- 
- int hif_beacon_transmit(struct wfx_vif *wvif, bool enable)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	struct hif_req_beacon_transmit *body = wfx_alloc_hif(sizeof(*body),
- 							     &hif);
-@@ -492,16 +485,13 @@ int hif_beacon_transmit(struct wfx_vif *wvif, bool enable)
- 	if (!hif)
- 		return -ENOMEM;
- 	body->enable_beaconing = enable ? 1 : 0;
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_BEACON_TRANSMIT,
--			sizeof(*body));
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wvif->wdev, hif, wvif->id,
-+					   HIF_REQ_ID_BEACON_TRANSMIT,
-+					   sizeof(*body));
- }
- 
- int hif_map_link(struct wfx_vif *wvif, u8 *mac_addr, int flags, int sta_id)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	struct hif_req_map_link *body = wfx_alloc_hif(sizeof(*body), &hif);
- 
-@@ -511,15 +501,12 @@ int hif_map_link(struct wfx_vif *wvif, u8 *mac_addr, int flags, int sta_id)
- 		ether_addr_copy(body->mac_addr, mac_addr);
- 	body->map_link_flags = *(struct hif_map_link_flags *)&flags;
- 	body->peer_sta_id = sta_id;
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_MAP_LINK, sizeof(*body));
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wvif->wdev, hif, wvif->id,
-+					   HIF_REQ_ID_MAP_LINK, sizeof(*body));
- }
- 
- int hif_update_ie_beacon(struct wfx_vif *wvif, const u8 *ies, size_t ies_len)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	int buf_len = sizeof(struct hif_req_update_ie) + ies_len;
- 	struct hif_req_update_ie *body = wfx_alloc_hif(buf_len, &hif);
-@@ -529,10 +516,8 @@ int hif_update_ie_beacon(struct wfx_vif *wvif, const u8 *ies, size_t ies_len)
- 	body->ie_flags.beacon = 1;
- 	body->num_ies = cpu_to_le16(1);
- 	memcpy(body->ie, ies, ies_len);
--	wfx_fill_header(hif, wvif->id, HIF_REQ_ID_UPDATE_IE, buf_len);
--	ret = wfx_cmd_send(wvif->wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wvif->wdev, hif, wvif->id,
-+					   HIF_REQ_ID_UPDATE_IE, buf_len);
- }
- 
- int hif_sl_send_pub_keys(struct wfx_dev *wdev,
-@@ -549,10 +534,9 @@ int hif_sl_send_pub_keys(struct wfx_dev *wdev,
- 	memcpy(body->host_pub_key, pubkey, sizeof(body->host_pub_key));
- 	memcpy(body->host_pub_key_mac, pubkey_hmac,
- 	       sizeof(body->host_pub_key_mac));
--	wfx_fill_header(hif, -1, HIF_REQ_ID_SL_EXCHANGE_PUB_KEYS,
--			sizeof(*body));
--	ret = wfx_cmd_send(wdev, hif, NULL, 0, false);
--	kfree(hif);
-+	ret = wfx_full_send_no_reply_free(wdev, hif, -1,
-+					  HIF_REQ_ID_SL_EXCHANGE_PUB_KEYS,
-+					  sizeof(*body));
- 	// Compatibility with legacy secure link
- 	if (ret == le32_to_cpu(HIF_STATUS_SLK_NEGO_SUCCESS))
- 		ret = 0;
-@@ -561,17 +545,14 @@ int hif_sl_send_pub_keys(struct wfx_dev *wdev,
- 
- int hif_sl_config(struct wfx_dev *wdev, const unsigned long *bitmap)
- {
--	int ret;
- 	struct hif_msg *hif;
- 	struct hif_req_sl_configure *body = wfx_alloc_hif(sizeof(*body), &hif);
- 
- 	if (!hif)
- 		return -ENOMEM;
- 	memcpy(body->encr_bmp, bitmap, sizeof(body->encr_bmp));
--	wfx_fill_header(hif, -1, HIF_REQ_ID_SL_CONFIGURE, sizeof(*body));
--	ret = wfx_cmd_send(wdev, hif, NULL, 0, false);
--	kfree(hif);
--	return ret;
-+	return wfx_full_send_no_reply_free(wdev, hif, -1, HIF_REQ_ID_SL_CONFIGURE,
-+					   sizeof(*body));
- }
- 
- int hif_sl_set_mac_key(struct wfx_dev *wdev, const u8 *slk_key, int destination)
-@@ -585,9 +566,8 @@ int hif_sl_set_mac_key(struct wfx_dev *wdev, const u8 *slk_key, int destination)
- 		return -ENOMEM;
- 	memcpy(body->key_value, slk_key, sizeof(body->key_value));
- 	body->otp_or_ram = destination;
--	wfx_fill_header(hif, -1, HIF_REQ_ID_SET_SL_MAC_KEY, sizeof(*body));
--	ret = wfx_cmd_send(wdev, hif, NULL, 0, false);
--	kfree(hif);
-+	ret = wfx_full_send_no_reply_free(wdev, hif, -1, HIF_REQ_ID_SET_SL_MAC_KEY,
-+					  sizeof(*body));
- 	// Compatibility with legacy secure link
- 	if (ret == le32_to_cpu(HIF_STATUS_SLK_SET_KEY_SUCCESS))
- 		ret = 0;
--- 
-2.25.1
+
+> vim +457 arch/powerpc/mm/drmem.c
+> 
+>     397	
+>     398	static void __init init_drmem_v2_lmbs(const __be32 *prop)
+>     399	{
+>     400		struct drmem_lmb *lmb, *first;
+>     401		struct of_drconf_cell_v2 dr_cell;
+>     402		const __be32 *p;
+>     403		u32 i, j, lmb_sets;
+>     404		int lmb_index;
+>     405	
+>     406		lmb_sets = of_read_number(prop++, 1);
+>     407		if (lmb_sets == 0)
+>     408			return;
+>     409	
+>     410		/* first pass, calculate the number of LMBs */
+>     411		p = prop;
+>     412		for (i = 0; i < lmb_sets; i++) {
+>     413			read_drconf_v2_cell(&dr_cell, &p);
+>     414			drmem_info->n_lmbs += dr_cell.seq_lmbs;
+>     415		}
+>     416	
+>     417		drmem_info->lmbs = kcalloc(drmem_info->n_lmbs, sizeof(*lmb),
+>     418					   GFP_KERNEL);
+>     419		if (!drmem_info->lmbs)
+>     420			return;
+>     421	
+>     422		/* second pass, read in the LMB information */
+>     423		lmb_index = 0;
+>     424		p = prop;
+>     425		first = NULL;
+>     426	
+>     427		for (i = 0; i < lmb_sets; i++) {
+>     428			read_drconf_v2_cell(&dr_cell, &p);
+>     429	
+>     430			/*
+>     431			 * Fetch the NUMA node id for the fist set or if the
+>     432			 * associativity index is different from the previous set.
+>     433			 */
+>     434			if (first && dr_cell.aa_index != first->aa_index)
+>     435				first = NULL;
+>     436	
+>     437			for (j = 0; j < dr_cell.seq_lmbs; j++) {
+>     438				lmb = &drmem_info->lmbs[lmb_index++];
+>     439	
+>     440				lmb->base_addr = dr_cell.base_addr;
+>     441				dr_cell.base_addr += drmem_info->lmb_size;
+>     442	
+>     443				lmb->drc_index = dr_cell.drc_index;
+>     444				dr_cell.drc_index++;
+>     445	
+>     446				lmb->aa_index = dr_cell.aa_index;
+>     447				lmb->flags = dr_cell.flags;
+>     448	
+>     449				/*
+>     450				 * All the LMB in the set share the same NUMA
+>     451				 * associativity property. So read that node only once.
+>     452				 */
+>     453				if (!first) {
+>     454					lmb_set_nid(lmb);
+>     455					first = lmb;
+>     456				} else {
+>   > 457					lmb->nid = first->nid;
+>     458				}
+>     459			}
+>     460		}
+>     461	}
+>     462	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
 
