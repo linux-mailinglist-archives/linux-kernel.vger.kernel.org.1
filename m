@@ -2,85 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8702223CBF6
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37DD23CC0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgHEQL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:11:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33435 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726200AbgHEPsi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 11:48:38 -0400
-X-Greylist: delayed 723 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 11:48:37 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596642331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2rdWMsfVYoLVMGMuU1zSO9y5DV7npaEchPj2O2QlCzs=;
-        b=gqstTDtoesNQpmIXXrmaVyp1fjVXg9pB5CuuWcQrCkV5M57coYkYX0MisWG8xrv6zUm76Y
-        KMdDB3I4PugRZrBe79JUB4o0ZGSag3tb+up3l2V4SiiopX/FWB2XYWJ3XvuT0m28UQ5ZBR
-        hXv7qG8iOnwoKf+y8HADzfyRlhvQ69E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-TzVqO_I0MwqTgX4ANH4PbQ-1; Wed, 05 Aug 2020 09:18:39 -0400
-X-MC-Unique: TzVqO_I0MwqTgX4ANH4PbQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB70091270;
-        Wed,  5 Aug 2020 13:18:37 +0000 (UTC)
-Received: from epycfail.redhat.com (unknown [10.36.110.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DCBC5380;
-        Wed,  5 Aug 2020 13:18:35 +0000 (UTC)
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        heiko.carstens@de.ibm.com, Cong Wang <xiyou.wangcong@gmail.com>
-Subject: [PATCH net-next] ip_tunnel_core: Fix build for archs without _HAVE_ARCH_IPV6_CSUM
-Date:   Wed,  5 Aug 2020 15:18:21 +0200
-Message-Id: <a85e9878716c2904488d56335320b7131613e94c.1596633316.git.sbrivio@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1726524AbgHEQUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:20:47 -0400
+Received: from gate.crashing.org ([63.228.1.57]:49182 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725969AbgHEQS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:18:57 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 075DZ7fT020629;
+        Wed, 5 Aug 2020 08:35:08 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 075DZ5lG020627;
+        Wed, 5 Aug 2020 08:35:05 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 5 Aug 2020 08:35:05 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com,
+        linux-arch@vger.kernel.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org,
+        Tulio Magno Quites Machado Filho <tuliom@linux.ibm.com>,
+        luto@kernel.org, tglx@linutronix.de, vincenzo.frascino@arm.com,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v8 5/8] powerpc/vdso: Prepare for switching VDSO to generic C implementation.
+Message-ID: <20200805133505.GN6753@gate.crashing.org>
+References: <cover.1588079622.git.christophe.leroy@c-s.fr> <2a67c333893454868bbfda773ba4b01c20272a5d.1588079622.git.christophe.leroy@c-s.fr> <878sflvbad.fsf@mpe.ellerman.id.au> <65fd7823-cc9d-c05a-0816-c34882b5d55a@csgroup.eu> <87wo2dy5in.fsf@mpe.ellerman.id.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wo2dy5in.fsf@mpe.ellerman.id.au>
+User-Agent: Mutt/1.4.2.3i
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On architectures defining _HAVE_ARCH_IPV6_CSUM, we get
-csum_ipv6_magic() defined by means of arch checksum.h headers. On
-other architectures, we actually need to include net/ip6_checksum.h
-to be able to use it.
+Hi!
 
-Without this include, building with defconfig breaks at least for
-s390.
+On Wed, Aug 05, 2020 at 04:24:16PM +1000, Michael Ellerman wrote:
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> > Indeed, 32-bit doesn't have a redzone, so I believe it needs a stack 
+> > frame whenever it has anything to same.
+> 
+> Yeah OK that would explain it.
+> 
+> > Here is what I have in libc.so:
+> >
+> > 000fbb60 <__clock_gettime>:
+> >     fbb60:	94 21 ff e0 	stwu    r1,-32(r1)
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 4cb47a8644cc ("tunnels: PMTU discovery support for directly bridged IP packets")
-Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
----
-I'm submitting this for net-next despite the fact it's closed, as
-the offending code isn't merged to net.git yet. Should I rather
-submit this to... linux-next?
+This is the *only* place where you can use a negative offset from r1:
+in the stwu to extend the stack (set up a new stack frame, or make the
+current one bigger).
 
- net/ipv4/ip_tunnel_core.c | 1 +
- 1 file changed, 1 insertion(+)
+> > diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h 
+> > b/arch/powerpc/include/asm/vdso/gettimeofday.h
+> > index a0712a6e80d9..0b6fa245d54e 100644
+> > --- a/arch/powerpc/include/asm/vdso/gettimeofday.h
+> > +++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
+> > @@ -10,6 +10,7 @@
+> >     .cfi_startproc
+> >   	PPC_STLU	r1, -STACK_FRAME_OVERHEAD(r1)
+> >   	mflr		r0
+> > +	PPC_STLU	r1, -STACK_FRAME_OVERHEAD(r1)
+> >     .cfi_register lr, r0
+> 
+> The cfi_register should come directly after the mflr I think.
 
-diff --git a/net/ipv4/ip_tunnel_core.c b/net/ipv4/ip_tunnel_core.c
-index 9ddee2a0c66d..75c6013ff9a4 100644
---- a/net/ipv4/ip_tunnel_core.c
-+++ b/net/ipv4/ip_tunnel_core.c
-@@ -25,6 +25,7 @@
- #include <net/protocol.h>
- #include <net/ip_tunnels.h>
- #include <net/ip6_tunnel.h>
-+#include <net/ip6_checksum.h>
- #include <net/arp.h>
- #include <net/checksum.h>
- #include <net/dsfield.h>
--- 
-2.27.0
+That is the idiomatic way to write it, and most obviously correct.  But
+as long as the value in LR at function entry is available in multiple
+places (like, in LR and in R0 here), it is fine to use either for
+unwinding.  Sometimes you can use this to optimise the unwind tables a
+bit -- not really worth it in hand-written code, it's more important to
+make it legible ;-)
 
+> >> There's also no code to load/restore the TOC pointer on BE, which I
+> >> think we'll need to handle.
+> >
+> > I see no code in the generated vdso64.so doing anything with r2, but if 
+> > you think that's needed, just let's do it:
+> 
+> Hmm, true.
+> 
+> The compiler will use the toc for globals (and possibly also for large
+> constants?)
+
+And anything else it bloody well wants to, yeah :-)
+
+> AFAIK there's no way to disable use of the toc, or make it a build error
+> if it's needed.
+
+Yes.
+
+> At the same time it's much safer for us to just save/restore r2, and
+> probably in the noise performance wise.
+
+If you want a function to be able to work with ABI-compliant code safely
+(in all cases), you'll have to make it itself ABI-compliant as well,
+yes :-)
+
+> So yeah we should probably do as below.
+
+[ snip ]
+
+Looks good yes.
+
+
+Segher
