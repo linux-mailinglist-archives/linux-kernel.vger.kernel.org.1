@@ -2,130 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872F123CF6E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394F723CF6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbgHETUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:20:43 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2580 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729004AbgHERrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728950AbgHETUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729001AbgHERrb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 5 Aug 2020 13:47:31 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 4B69D483CC3B2D2041B1;
-        Wed,  5 Aug 2020 18:47:01 +0100 (IST)
-Received: from localhost (10.52.120.30) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 5 Aug 2020
- 18:47:00 +0100
-Date:   Wed, 5 Aug 2020 18:45:35 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <ashok.raj@intel.com>,
-        <tony.luck@intel.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Subject: Re: [PATCH V2 2/9] PCI: Extend Root Port Driver to support RCEC
-Message-ID: <20200805184535.00005711@Huawei.com>
-In-Reply-To: <20200804194052.193272-3-sean.v.kelley@intel.com>
-References: <20200804194052.193272-1-sean.v.kelley@intel.com>
-        <20200804194052.193272-3-sean.v.kelley@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0875C06179E;
+        Wed,  5 Aug 2020 10:45:57 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t6so24880229pgq.1;
+        Wed, 05 Aug 2020 10:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HFuNCX7vqXeZP0x+Utx9kB2XZUBqZjp8rc7Bdm45/qU=;
+        b=tT0P2gfIBM66/aJTeoG1Ry7EK5FwTaNH/hlK9HkMVvLN+kVAmmhOdPAi8ELLHeEDCU
+         0KXraLAtr1n8NyIr/QEri23c7DWrpESf+63g9VTADVPubl7bW1Z+EP6v1tlSB/1JfTXO
+         R2Ee3Q9xlZZBppnEA29QGNXWPd0zDiCL+Bapiw+xtI6AI2WQ+U8EN9bp9+EIOmYICacP
+         LLjt8e6wVyuUViQDMPBq5A0c2uHfEujrgGYPHh7CFpvTFAwqPYkZ3bHCARgdKHyEPw8Y
+         7asQguu96AFxxFYEsEFKKyTL1HTZRj5YaEsbWrkd1zij4iO1vMkPYzPBe21ixFgCrxOR
+         OsMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HFuNCX7vqXeZP0x+Utx9kB2XZUBqZjp8rc7Bdm45/qU=;
+        b=MUK8EN+2eKUV9r6eUZYE6/NCxU6rJnGjxSs8uxVsVwRgeU/1RykwUOEfnvZvxwkHNA
+         4I2BD2cAkz8lpGI9vJFoUtrz8kR4hSL2VHYeJWdocuHsWBXU2teOsliHSqoP6GHunQKT
+         qm0CvUDYRh8PHjMkw3ZjWQWDNuqSThUzmgetIv5xhEg8QvBkHE4V+umz8cQyzwdQI7CS
+         MsfctzgwPsFUtlyh684m+aD2B+ruC6tQ5+SeRo8Vt+5uPAYsuMDyC0LUCAgujf5iU5qe
+         2lPuw88leEcgkWf3p0bp9SPFQYWHAs8GRWwm4QddBgW4tfvgaIryBkQDu3N+UJFKuDci
+         qNAg==
+X-Gm-Message-State: AOAM532z17hWDXdNZf6drMYWSgnxsLjcXz0siVdUQHv3nstCZSFzfUCq
+        73kaZaChDKbAY1tStxvsMlwWunVQ
+X-Google-Smtp-Source: ABdhPJz/iOEFhIC/CFRoJ1NFwM7w82wEaRPvuLiln4IJEueHqgu17lX1jCDSmDaz9r2m2Alk9DYwMw==
+X-Received: by 2002:a63:8f08:: with SMTP id n8mr4130648pgd.9.1596649556565;
+        Wed, 05 Aug 2020 10:45:56 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:16b0])
+        by smtp.gmail.com with ESMTPSA id a2sm4840937pfh.152.2020.08.05.10.45.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 10:45:54 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 10:45:52 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Xu <dlxu@fb.com>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add benchmark for uprobe vs.
+ user_prog
+Message-ID: <20200805174552.56q6eauad7glyzgm@ast-mbp.dhcp.thefacebook.com>
+References: <20200801084721.1812607-1-songliubraving@fb.com>
+ <20200801084721.1812607-6-songliubraving@fb.com>
+ <CAEf4BzaP4TGF7kcmZRAKsy=oWPpFA6sUGFkctpGz-fPp+YuSOQ@mail.gmail.com>
+ <DDCD362E-21D3-46BF-90A6-8F3221CBB54E@fb.com>
+ <CAEf4BzY5RYMM6w8wn3qEB3AsuKWv-TMaD5NVFj=YqbCW4DLjqA@mail.gmail.com>
+ <7384B583-EE19-4045-AC72-B6FE87C187DD@fb.com>
+ <CAEf4BzaiJnCu14AWougmxH80msGdOp4S8ZNmAiexMmtwUM_2Xg@mail.gmail.com>
+ <AF9D0E8C-0AA5-4BE4-90F4-946FABAB63FD@fb.com>
+ <20200805171639.tsqjmifd7eb3htou@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYFfAubxo1QY6Axth=gwS9DfzwRkvnYLspfk9tLia0LPg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.30]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYFfAubxo1QY6Axth=gwS9DfzwRkvnYLspfk9tLia0LPg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 Aug 2020 12:40:45 -0700
-Sean V Kelley <sean.v.kelley@intel.com> wrote:
-
-> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+On Wed, Aug 05, 2020 at 10:27:28AM -0700, Andrii Nakryiko wrote:
+> On Wed, Aug 5, 2020 at 10:16 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Wed, Aug 05, 2020 at 04:47:30AM +0000, Song Liu wrote:
+> > >
+> > > Being able to trigger BPF program on a different CPU could enable many
+> > > use cases and optimizations. The use case I am looking at is to access
+> > > perf_event and percpu maps on the target CPU. For example:
+> > >       0. trigger the program
+> > >       1. read perf_event on cpu x;
+> > >       2. (optional) check which process is running on cpu x;
+> > >       3. add perf_event value to percpu map(s) on cpu x.
+> >
+> > If the whole thing is about doing the above then I don't understand why new
+> > prog type is needed. Can prog_test_run support existing BPF_PROG_TYPE_KPROBE?
+> > "enable many use cases" sounds vague. I don't think folks reading
+> > the patches can guess those "use cases".
+> > "Testing existing kprobe bpf progs" would sound more convincing to me.
 > 
-> If a Root Complex Integrated Endpoint (RCiEP) is implemented, errors may
-> optionally be sent to a corresponding Root Complex Event Collector (RCEC).
-> Each RCiEP must be associated with no more than one RCEC. Interface errors
-> are reported to the OS by RCECs.
+> Was just about to propose the same :) I wonder if generic test_run()
+> capability to trigger test programs of whatever supported type on a
+> specified CPU through IPI can be added. That way you can even use the
+> XDP program to do what Song seems to need.
 > 
-> For an RCEC (technically not a Bridge), error messages "received" from
-> associated RCiEPs must be enabled for "transmission" in order to cause a
-> System Error via the Root Control register or (when the Advanced Error
-> Reporting Capability is present) reporting via the Root Error Command
-> register and logging in the Root Error Status register and Error Source
-> Identification register.
+> TRACEPOINTs might also be a good fit here, given it seems simpler to
+> let users specify custom tracepoint data for test_run(). Having the
+> ability to unit-test KPROBE and TRACEPOINT, however rudimentary, is
+> already a big win.
 > 
-> Given the commonality with Root Ports and the need to also support AER
-> and PME services for RCECs, extend the Root Port driver to support RCEC
-> devices through the addition of the RCEC Class ID to the driver
-> structure.
+> > If the test_run framework can be extended to trigger kprobe with correct pt_regs.
+> > As part of it test_run would trigger on a given cpu with $ip pointing
+> > to some test fuction in test_run.c. For local test_run the stack trace
+> > would include bpf syscall chain. For IPI the stack trace would include
+> > the corresponding kernel pieces where top is our special test function.
+> > Sort of like pseudo kprobe where there is no actual kprobe logic,
+> > since kprobe prog doesn't care about mechanism. It needs correct
+> > pt_regs only as input context.
+> > The kprobe prog output (return value) has special meaning though,
+> > so may be kprobe prog type is not a good fit.
 > 
-> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-One trivial thing inline.
+> It does? I don't remember returning 1 from KPROBE changing anything. I
+> thought it's only the special bpf_override_return() that can influence
+> the kernel function return result.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-
-> ---
->  drivers/pci/pcie/portdrv_core.c | 8 ++++----
->  drivers/pci/pcie/portdrv_pci.c  | 5 ++++-
->  2 files changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-> index 50a9522ab07d..5d4a400094fc 100644
-> --- a/drivers/pci/pcie/portdrv_core.c
-> +++ b/drivers/pci/pcie/portdrv_core.c
-> @@ -234,11 +234,11 @@ static int get_port_device_capability(struct pci_dev *dev)
->  #endif
->  
->  	/*
-> -	 * Root ports are capable of generating PME too.  Root Complex
-> -	 * Event Collectors can also generate PMEs, but we don't handle
-> -	 * those yet.
-> +	 * Root ports and Root Complex Event Collectors are capable
-> +	 * of generating PME too.
-
-I'm not sure what the 'too' refers to.   I'd just drop it and avoid
-any possible confusion!
-
->  	 */
-> -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT &&
-> +	if ((pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
-> +	     pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC) &&
->  	    (pcie_ports_native || host->native_pme)) {
->  		services |= PCIE_PORT_SERVICE_PME;
->  
-> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
-> index 3a3ce40ae1ab..4d880679b9b1 100644
-> --- a/drivers/pci/pcie/portdrv_pci.c
-> +++ b/drivers/pci/pcie/portdrv_pci.c
-> @@ -106,7 +106,8 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
->  	if (!pci_is_pcie(dev) ||
->  	    ((pci_pcie_type(dev) != PCI_EXP_TYPE_ROOT_PORT) &&
->  	     (pci_pcie_type(dev) != PCI_EXP_TYPE_UPSTREAM) &&
-> -	     (pci_pcie_type(dev) != PCI_EXP_TYPE_DOWNSTREAM)))
-> +	     (pci_pcie_type(dev) != PCI_EXP_TYPE_DOWNSTREAM) &&
-> +	     (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)))
->  		return -ENODEV;
->  
->  	status = pcie_port_device_register(dev);
-> @@ -195,6 +196,8 @@ static const struct pci_device_id port_pci_ids[] = {
->  	{ PCI_DEVICE_CLASS(((PCI_CLASS_BRIDGE_PCI << 8) | 0x00), ~0) },
->  	/* subtractive decode PCI-to-PCI bridge, class type is 060401h */
->  	{ PCI_DEVICE_CLASS(((PCI_CLASS_BRIDGE_PCI << 8) | 0x01), ~0) },
-> +	/* handle any Root Complex Event Collector */
-> +	{ PCI_DEVICE_CLASS(((PCI_CLASS_SYSTEM_RCEC << 8) | 0x00), ~0) },
->  	{ },
->  };
->  
-
-
+See comment in trace_call_bpf().
+And logic to handle it in kprobe_perf_func() for kprobes.
+and in perf_trace_run_bpf_submit() for tracepoints.
+It's historical and Song actually discovered an issue with such behavior.
+I don't remember whether we've concluded on the solution.
