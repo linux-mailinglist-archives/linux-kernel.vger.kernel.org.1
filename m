@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F7C23C9B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 12:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A178E23C934
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 11:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgHEKAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 06:00:16 -0400
-Received: from ms9.eaxlabs.cz ([147.135.177.209]:45494 "EHLO ms9.eaxlabs.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgHEKAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 06:00:08 -0400
-X-Greylist: delayed 1894 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 06:00:07 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=eaxlabs.cz; s=mail;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Message-ID:Subject:From:Cc:To; bh=t+IvbY/JQGlbvRGnvirF9n+itqwG0xol8Zk+qYQz+C0=;
-        b=IutxphscpyDm1uPQQxc980NCsxvnVNuaIn7GM8bBHHNa7ij3YY7P8MR/0AqL7wBsoq1Y5uwD/a3TvrJrlO/gnpEFXPETmLdAa3UrLCWafpZQGSOGxDWlmFe8mDLY5Op6xKRfWIhSsZN7QVzIfUXZ6ydF8peyeESio9+4Yq/tR5U=;
-Received: from [82.99.129.6] (helo=[10.76.6.116])
-        by ms9.eaxlabs.cz with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.84_2)
-        (envelope-from <devik@eaxlabs.cz>)
-        id 1k3Fia-0003zx-MN; Wed, 05 Aug 2020 11:28:18 +0200
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Martin DEVERA <devik@eaxlabs.cz>
-Subject: pinctrl: sx150x bug
-Message-ID: <f32130bf-cfd4-b1bf-538c-dbc9ee2d947a@eaxlabs.cz>
-Date:   Wed, 5 Aug 2020 11:28:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728380AbgHEJbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 05:31:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48813 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728324AbgHEJaE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 05:30:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596619802;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KGrNYVry5FOInRW/Xy0yFMiPNeyHmg20qhVD8oGfJJ4=;
+        b=aUOxTUPpBPd48TQUNVSosUBrx0RpYWwrCSGKn8GWTGhB28sC3H1gVhK3g5jDWcq7hb1KLW
+        HZC/Y/5rDZbbpdfxZ99aYgN5c7MepdlUlLdBcuzSbWncjo6uHbrkf+n4c9F1jMaqB2oSnv
+        k3iBr7h6S4pqZcnEQhPLETOc35VuQnc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-ZnwKN9E9NxSzYumJ2rNNrw-1; Wed, 05 Aug 2020 05:29:58 -0400
+X-MC-Unique: ZnwKN9E9NxSzYumJ2rNNrw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24BE680183C;
+        Wed,  5 Aug 2020 09:29:53 +0000 (UTC)
+Received: from localhost (ovpn-12-71.pek2.redhat.com [10.72.12.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 068AF726A5;
+        Wed,  5 Aug 2020 09:29:51 +0000 (UTC)
+Date:   Wed, 5 Aug 2020 17:29:48 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        clang-built-linux@googlegroups.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org
+Subject: Re: [PATCH v2 17/17] memblock: use separate iterators for memory and
+ reserved regions
+Message-ID: <20200805092948.GX10792@MiWiFi-R3L-srv>
+References: <20200802163601.8189-1-rppt@kernel.org>
+ <20200802163601.8189-18-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200802163601.8189-18-rppt@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 08/02/20 at 07:36pm, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> for_each_memblock() is used to iterate over memblock.memory in
+> a few places that use data from memblock_region rather than the memory
+> ranges.
+> 
+> Introduce separate for_each_mem_region() and for_each_reserved_mem_region()
+> to improve encapsulation of memblock internals from its users.
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  .clang-format                  |  3 ++-
+>  arch/arm64/kernel/setup.c      |  2 +-
+>  arch/arm64/mm/numa.c           |  2 +-
+>  arch/mips/netlogic/xlp/setup.c |  2 +-
+>  arch/x86/mm/numa.c             |  2 +-
+>  include/linux/memblock.h       | 19 ++++++++++++++++---
+>  mm/memblock.c                  |  4 ++--
+>  mm/page_alloc.c                |  8 ++++----
+>  8 files changed, 28 insertions(+), 14 deletions(-)
+> 
+...
 
-I encountered bug in SX1502 expander driver in 5.7.7. Here is relevant 
-DTS part:
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index 9e51b3fd4134..a6970e058bd7 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -522,9 +522,22 @@ static inline unsigned long memblock_region_reserved_end_pfn(const struct memblo
+>  	return PFN_UP(reg->base + reg->size);
+>  }
+>  
+> -#define for_each_memblock(memblock_type, region)					\
+> -	for (region = memblock.memblock_type.regions;					\
+> -	     region < (memblock.memblock_type.regions + memblock.memblock_type.cnt);	\
+> +/**
+> + * for_each_mem_region - itereate over registered memory regions
+                                          ~~~~~~~~~~~~~~~~~
 
-compatible = "semtech,sx1502q";
-gpio4_cfg_pins: gpio2-cfg {
-                         pins = "gpio5";
-                         output-high;
-     };
+Wonder why emphasize 'registered' memory.
 
-And part of OOPS:
+Other than this confusion to me, this patch looks good.
 
-[    0.673996] [<c023cfa6>] (gpiochip_get_data) from [<c023b235>] 
-(sx150x_gpio_direction_output+0xd)
-[    0.683259] [<c023b235>] (sx150x_gpio_direction_output) from 
-[<c023b363>] (sx150x_pinconf_set+0x)
-[    0.692796] [<c023b363>] (sx150x_pinconf_set) from [<c0238fef>] 
-(pinconf_apply_setting+0x39/0x7e)
-[    0.701635] [<c0238fef>] (pinconf_apply_setting) from [<c0236c77>] 
-(pinctrl_commit_state+0xa5/0x)
-[    0.710648] [<c0236c77>] (pinctrl_commit_state) from [<c0237e03>] 
-(pinctrl_enable+0xff/0x1d4)
-[    0.719139] [<c0237e03>] (pinctrl_enable) from [<c023b791>] 
-(sx150x_probe+0x1a3/0x358)
-[    0.727027] [<c023b791>] (sx150x_probe) from [<c02c38bf>] 
-(i2c_device_probe+0x1bb/0x1dc)
-
-The problem is that sx150x_pinconf_set uses sx150x_gpio_direction_output 
-but gpio is not
-setup yet. Patch below fixes it but I'm not sure whether is it correct:
-
-diff --git a/drivers/pinctrl/pinctrl-sx150x.c 
-b/drivers/pinctrl/pinctrl-sx150x.c
-index 6e74bd87d959..3f5651edd336 100644
---- a/drivers/pinctrl/pinctrl-sx150x.c
-+++ b/drivers/pinctrl/pinctrl-sx150x.c
-@@ -1154,12 +1154,6 @@ static int sx150x_probe(struct i2c_client *client,
-                 return ret;
-         }
-
--       ret = pinctrl_enable(pctl->pctldev);
--       if (ret) {
--               dev_err(dev, "Failed to enable pinctrl device\n");
--               return ret;
--       }
--
-         /* Register GPIO controller */
-         pctl->gpio.base = -1;
-         pctl->gpio.ngpio = pctl->data->npins;
-@@ -1191,6 +1185,12 @@ static int sx150x_probe(struct i2c_client *client,
-         if (ret)
-                 return ret;
-
-+       ret = pinctrl_enable(pctl->pctldev);
-+       if (ret) {
-+               dev_err(dev, "Failed to enable pinctrl device\n");
-+               return ret;
-+       }
-+
-         ret = gpiochip_add_pin_range(&pctl->gpio, dev_name(dev),
-                                      0, 0, pctl->data->npins);
-         if (ret)
+Reviewed-by: Baoquan He <bhe@redhat.com>
 
