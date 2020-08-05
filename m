@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7578523CC96
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4A823CC56
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728262AbgHEQxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728147AbgHEQts (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:49:48 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA24C0A8939;
-        Wed,  5 Aug 2020 07:11:41 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id u10so15826629plr.7;
-        Wed, 05 Aug 2020 07:11:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=t3CWCXEfy1YBGVg4SnMNF6schJfAMQg5KljYK4gfTsI=;
-        b=XmnFwMtnjN75K16BQFkOpsa1h5Gm1rBb8O9whIuMSekmr/T3t27uE23AcKyg9byPcU
-         dzzBGhvcFRByy1Q8+sYNxodBAWBAwD2Lp4i1aP5x+b0f/TzAD5ltXbyjS57qa5sBvhK4
-         itlSPXslxBef0m0GB0yT2v85/iRjCac0hSY5FhBYy8l7+uKOMhY8+F02G+WVyx/EnprU
-         Ofmp8Gkc9GZhKDjLBpV3XjErYVXpzmBVXDjmieAcvLAc888ZExmqFetlaWtf5udKQXEE
-         6YFMyesazSwkr9VZwLwemb4GPyWF2WVJEabky+DzNfv257CQNCk5SbffNCoCMDGh2/Eu
-         /vNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=t3CWCXEfy1YBGVg4SnMNF6schJfAMQg5KljYK4gfTsI=;
-        b=LaflvK6Rx23mNdWE9DwZoDwBvcQT8I2/nlrcfZHGyGtAvG+g90BgsKu9EXrzyc4hvO
-         4p9ROI8ARhEfX2+FyL4RhTJmyI6rLGa1bzf87R5rjo+OXsmFukIja8jbqpyYwQzrQ8Po
-         nxgekHzvbyFXNh8SRaG4Qk05ZsCQqJuY53bN7QtGl0V09/AUTPLdZC+KTGW1OCUazruk
-         I8eVWNjl5tiO3BcilQFZObs6hiIouPxXdlrjEQZjqL9ZhbYZgxf1Ky9s+MJEhxH4EcrY
-         u4ZKIcEu+f9vfltV8v7jzQvtl4nj2QNEvlPCGKJEl7ltXShqaMP1JtIHvn2NHLRa+GJE
-         nfrg==
-X-Gm-Message-State: AOAM530v9lfwtxw/cMPibba/zpTiCQLb4JcGg6txqhJXKXaNABpIVe7/
-        j+HpASxH8Cjemk/s+jrYkcs=
-X-Google-Smtp-Source: ABdhPJyOFWD5B/gYZFHtHdIRmVl+RANMmDV8CWKM/a/07nb6tdMmsyGysW9wL9INF3jqqvCSc1Qwug==
-X-Received: by 2002:a17:90b:1106:: with SMTP id gi6mr3689116pjb.2.1596636700874;
-        Wed, 05 Aug 2020 07:11:40 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.62])
-        by smtp.gmail.com with ESMTPSA id o192sm4300017pfg.81.2020.08.05.07.11.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 07:11:40 -0700 (PDT)
-From:   Yulei Zhang <yulei.kernel@gmail.com>
-To:     pbonzini@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sean.j.christopherson@intel.com, jmattson@google.com,
-        vkuznets@redhat.com, xiaoguangrong.eric@gmail.com,
-        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
-        Yulei Zhang <yuleixzhang@tencent.com>
-Subject: [RFC 1/9] Introduce new fields in kvm_arch/vcpu_arch struct for direct build EPT support
-Date:   Wed,  5 Aug 2020 22:12:32 +0800
-Message-Id: <20200805141232.8742-1-yulei.kernel@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726078AbgHEQil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:38:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58318 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727114AbgHEQfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:35:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A4C6FB619;
+        Wed,  5 Aug 2020 14:17:24 +0000 (UTC)
+Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
+ helpers
+To:     peterz@infradead.org, Marco Elver <elver@google.com>
+Cc:     bp@alien8.de, dave.hansen@linux.intel.com, fenghua.yu@intel.com,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        tony.luck@intel.com, x86@kernel.org, yu-cheng.yu@intel.com,
+        sdeep@vmware.com, virtualization@lists.linux-foundation.org,
+        kasan-dev@googlegroups.com,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>
+References: <0000000000007d3b2d05ac1c303e@google.com>
+ <20200805132629.GA87338@elver.google.com>
+ <20200805134232.GR2674@hirez.programming.kicks-ass.net>
+ <20200805135940.GA156343@elver.google.com>
+ <20200805141237.GS2674@hirez.programming.kicks-ass.net>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <b4d46726-d343-f347-c044-06c6e815076a@suse.com>
+Date:   Wed, 5 Aug 2020 16:17:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200805141237.GS2674@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yulei Zhang <yuleixzhang@tencent.com>
+On 05.08.20 16:12, peterz@infradead.org wrote:
+> On Wed, Aug 05, 2020 at 03:59:40PM +0200, Marco Elver wrote:
+>> On Wed, Aug 05, 2020 at 03:42PM +0200, peterz@infradead.org wrote:
+> 
+>>> Shouldn't we __always_inline those? They're going to be really small.
+>>
+>> I can send a v2, and you can choose. For reference, though:
+>>
+>> 	ffffffff86271ee0 <arch_local_save_flags>:
+>> 	ffffffff86271ee0:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+>> 	ffffffff86271ee5:       48 83 3d 43 87 e4 01    cmpq   $0x0,0x1e48743(%rip)        # ffffffff880ba630 <pv_ops+0x120>
+>> 	ffffffff86271eec:       00
+>> 	ffffffff86271eed:       74 0d                   je     ffffffff86271efc <arch_local_save_flags+0x1c>
+>> 	ffffffff86271eef:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+>> 	ffffffff86271ef4:       ff 14 25 30 a6 0b 88    callq  *0xffffffff880ba630
+>> 	ffffffff86271efb:       c3                      retq
+>> 	ffffffff86271efc:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+>> 	ffffffff86271f01:       0f 0b                   ud2
+> 
+>> 	ffffffff86271a90 <arch_local_irq_restore>:
+>> 	ffffffff86271a90:       53                      push   %rbx
+>> 	ffffffff86271a91:       48 89 fb                mov    %rdi,%rbx
+>> 	ffffffff86271a94:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+>> 	ffffffff86271a99:       48 83 3d 97 8b e4 01    cmpq   $0x0,0x1e48b97(%rip)        # ffffffff880ba638 <pv_ops+0x128>
+>> 	ffffffff86271aa0:       00
+>> 	ffffffff86271aa1:       74 11                   je     ffffffff86271ab4 <arch_local_irq_restore+0x24>
+>> 	ffffffff86271aa3:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+>> 	ffffffff86271aa8:       48 89 df                mov    %rbx,%rdi
+>> 	ffffffff86271aab:       ff 14 25 38 a6 0b 88    callq  *0xffffffff880ba638
+>> 	ffffffff86271ab2:       5b                      pop    %rbx
+>> 	ffffffff86271ab3:       c3                      retq
+>> 	ffffffff86271ab4:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+>> 	ffffffff86271ab9:       0f 0b                   ud2
+> 
+> 
+> Blergh, that's abysmall. In part I suspect because you have
+> CONFIG_PARAVIRT_DEBUG, let me try and untangle that PV macro maze.
+> 
 
-Add parameter global_root_hpa for saving direct build global EPT root point,
-and add per-vcpu flag direct_build_tdp to indicate using global EPT root
-point.
+Probably. I have found the following in my kernel:
 
-Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
----
- arch/x86/include/asm/kvm_host.h | 5 +++++
- 1 file changed, 5 insertions(+)
+fffffff81540a5f <arch_local_save_flags>:
+ffffffff81540a5f:   ff 14 25 40 a4 23 82    callq  *0xffffffff8223a440
+ffffffff81540a66:   c3                      retq
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 86e2e0272c57..2407b872f493 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -821,6 +821,9 @@ struct kvm_vcpu_arch {
- 
- 	/* AMD MSRC001_0015 Hardware Configuration */
- 	u64 msr_hwcr;
-+
-+	/* vcpu use pre-constructed EPT */
-+	bool direct_build_tdp;
- };
- 
- struct kvm_lpage_info {
-@@ -983,6 +986,8 @@ struct kvm_arch {
- 
- 	struct kvm_pmu_event_filter *pmu_event_filter;
- 	struct task_struct *nx_lpage_recovery_thread;
-+	/* global root hpa for pre-constructed EPT */
-+	hpa_t  global_root_hpa;
- };
- 
- struct kvm_vm_stat {
--- 
-2.17.1
 
+Juergen
