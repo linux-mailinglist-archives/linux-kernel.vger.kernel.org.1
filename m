@@ -2,183 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4141223CD3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FC623CCC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgHERXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:23:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36178 "EHLO mail.kernel.org"
+        id S1727985AbgHERBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:01:55 -0400
+Received: from namei.org ([65.99.196.166]:57602 "EHLO namei.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728629AbgHERRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:17:40 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3899D233E2;
-        Wed,  5 Aug 2020 15:53:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596642802;
-        bh=ZbssVGpllyh0qYTSG60hN7rg8nKExPvelIXE1QW1lXM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aSVj0T1w+Mqr5fBbFHeFZbR4I5zNJG8rjdYwo6scHw8CvxYrvEe1xR2bQM+yTDzSQ
-         76FfIaz1LE4a4sQQC3/DuaT+Sp+708sLe9eun5TrPU9Tiw25Fbms/mRfQIOvMkumkw
-         sPo1MBo7f7NS3V3b3PoZg9unj+4alP8y/voqAHk0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Wang Long <wanglong19@meituan.com>,
-        Jiang Ying <jiangying8582@126.com>
-Subject: [PATCH 4.19 6/6] ext4: fix direct I/O read error
-Date:   Wed,  5 Aug 2020 17:53:05 +0200
-Message-Id: <20200805153505.794820436@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200805153505.472594546@linuxfoundation.org>
-References: <20200805153505.472594546@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728217AbgHERAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:00:19 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 075Gxe6x030131;
+        Wed, 5 Aug 2020 16:59:42 GMT
+Date:   Wed, 5 Aug 2020 09:59:40 -0700 (PDT)
+From:   James Morris <jmorris@namei.org>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+cc:     Deven Bowers <deven.desai@linux.microsoft.com>,
+        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>,
+        snitzer@redhat.com, zohar@linux.ibm.com, dm-devel@redhat.com,
+        tyhicks@linux.microsoft.com, agk@redhat.com, paul@paul-moore.com,
+        corbet@lwn.net, nramas@linux.microsoft.com, serge@hallyn.com,
+        pasha.tatashin@soleen.com, jannh@google.com,
+        linux-block@vger.kernel.org, viro@zeniv.linux.org.uk,
+        axboe@kernel.dk, mdsakib@microsoft.com,
+        linux-kernel@vger.kernel.org, eparis@redhat.com,
+        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        jaskarankhurana@linux.microsoft.com
+Subject: Re: [dm-devel] [RFC PATCH v5 00/11] Integrity Policy Enforcement
+ LSM (IPE)
+In-Reply-To: <1596639689.3457.17.camel@HansenPartnership.com>
+Message-ID: <alpine.LRH.2.21.2008050934060.28225@namei.org>
+References: <20200728213614.586312-1-deven.desai@linux.microsoft.com>  <20200802115545.GA1162@bug> <20200802140300.GA2975990@sasha-vm>  <20200802143143.GB20261@amd>  <1596386606.4087.20.camel@HansenPartnership.com>  <fb35a1f7-7633-a678-3f0f-17cf83032d2b@linux.microsoft.com>
+ <1596639689.3457.17.camel@HansenPartnership.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiang Ying <jiangying8582@126.com>
+On Wed, 5 Aug 2020, James Bottomley wrote:
 
-This patch is used to fix ext4 direct I/O read error when
-the read size is not aligned with block size.
+> I'll leave Mimi to answer, but really this is exactly the question that
+> should have been asked before writing IPE.  However, since we have the
+> cart before the horse, let me break the above down into two specific
+> questions.
 
-Then, I will use a test to explain the error.
+The question is valid and it was asked. We decided to first prototype what 
+we needed and then evaluate if it should be integrated with IMA. We 
+discussed this plan in person with Mimi (at LSS-NA in 2019), and presented 
+a more mature version of IPE to LSS-NA in 2020, with the expectation that 
+such a discussion may come up (it did not).
 
-(1) Make a file that is not aligned with block size:
-	$dd if=/dev/zero of=./test.jar bs=1000 count=3
+These patches are still part of this process and 'RFC' status.
 
-(2) I wrote a source file named "direct_io_read_file.c" as following:
+>    1. Could we implement IPE in IMA (as in would extensions to IMA cover
+>       everything).  I think the answers above indicate this is a "yes".
 
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <unistd.h>
-	#include <sys/file.h>
-	#include <sys/types.h>
-	#include <sys/stat.h>
-	#include <string.h>
-	#define BUF_SIZE 1024
+It could be done, if needed.
 
-	int main()
-	{
-		int fd;
-		int ret;
+>    2. Should we extend IMA to implement it?  This is really whether from a
+>       usability standpoint two seperate LSMs would make sense to cover the
+>       different use cases.
 
-		unsigned char *buf;
-		ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
-		if (ret) {
-			perror("posix_memalign failed");
-			exit(1);
-		}
-		fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
-		if (fd < 0){
-			perror("open ./test.jar failed");
-			exit(1);
-		}
+One issue here is that IMA is fundamentally a measurement & appraisal 
+scheme which has been extended to include integrity enforcement. IPE was 
+designed from scratch to only perform integrity enforcement. As such, it 
+is a cleaner design -- "do one thing and do it well" is a good design 
+pattern.
 
-		do {
-			ret = read(fd, buf, BUF_SIZE);
-			printf("ret=%d\n",ret);
-			if (ret < 0) {
-				perror("write test.jar failed");
-			}
-		} while (ret > 0);
+In our use-case, we utilize _both_ IMA and IPE, for attestation and code 
+integrity respectively. It is useful to be able to separate these 
+concepts. They really are different:
 
-		free(buf);
-		close(fd);
-	}
+- Code integrity enforcement ensures that code running locally is of known 
+provenance and has not been modified prior to execution.
 
-(3) Compile the source file:
-	$gcc direct_io_read_file.c -D_GNU_SOURCE
+- Attestation is about measuring the health of a system and having that 
+measurement validated by a remote system. (Local attestation is useless).
 
-(4) Run the test program:
-	$./a.out
+I'm not sure there is value in continuing to shoe-horn both of these into 
+IMA.
 
-	The result is as following:
-	ret=1024
-	ret=1024
-	ret=952
-	ret=-1
-	write test.jar failed: Invalid argument.
 
-I have tested this program on XFS filesystem, XFS does not have
-this problem, because XFS use iomap_dio_rw() to do direct I/O
-read. And the comparing between read offset and file size is done
-in iomap_dio_rw(), the code is as following:
+>  I've got to say the least attractive thing
+>       about separation is the fact that you now both have a policy parser.
+>        You've tried to differentiate yours by making it more Kconfig
+>       based, but policy has a way of becoming user space supplied because
+>       the distros hate config options, so I think you're going to end up
+>       with a policy parser very like IMAs.
 
-	if (pos < size) {
-		retval = filemap_write_and_wait_range(mapping, pos,
-				pos + iov_length(iov, nr_segs) - 1);
 
-		if (!retval) {
-			retval = mapping->a_ops->direct_IO(READ, iocb,
-						iov, pos, nr_segs);
-		}
-		...
-	}
-
-...only when "pos < size", direct I/O can be done, or 0 will be return.
-
-I have tested the fix patch on Ext4, it is up to the mustard of
-EINVAL in man2(read) as following:
-	#include <unistd.h>
-	ssize_t read(int fd, void *buf, size_t count);
-
-	EINVAL
-		fd is attached to an object which is unsuitable for reading;
-		or the file was opened with the O_DIRECT flag, and either the
-		address specified in buf, the value specified in count, or the
-		current file offset is not suitably aligned.
-
-So I think this patch can be applied to fix ext4 direct I/O error.
-
-However Ext4 introduces direct I/O read using iomap infrastructure
-on kernel 5.5, the patch is commit <b1b4705d54ab>
-("ext4: introduce direct I/O read using iomap infrastructure"),
-then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
-I/O read. So this problem does not exist on kernel 5.5 for Ext4.
-
->From above description, we can see this problem exists on all the kernel
-versions between kernel 3.14 and kernel 5.4. It will cause the Applications
-to fail to read. For example, when the search service downloads a new full
-index file, the search engine is loading the previous index file and is
-processing the search request, it can not use buffer io that may squeeze
-the previous index file in use from pagecache, so the serch service must
-use direct I/O read.
-
-Please apply this patch on these kernel versions, or please use the method
-on kernel 5.5 to fix this problem.
-
-Fixes: 9fe55eea7e4b ("Fix race when checking i_size on direct i/o read")
-Reviewed-by: Jan Kara <jack@suse.cz>
-Co-developed-by: Wang Long <wanglong19@meituan.com>
-Signed-off-by: Wang Long <wanglong19@meituan.com>
-Signed-off-by: Jiang Ying <jiangying8582@126.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- fs/ext4/inode.c |    5 +++++
- 1 file changed, 5 insertions(+)
-
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3848,6 +3848,11 @@ static ssize_t ext4_direct_IO_read(struc
- 	struct inode *inode = mapping->host;
- 	size_t count = iov_iter_count(iter);
- 	ssize_t ret;
-+	loff_t offset = iocb->ki_pos;
-+	loff_t size = i_size_read(inode);
-+
-+	if (offset >= size)
-+		return 0;
- 
- 	/*
- 	 * Shared inode_lock is enough for us - it protects against concurrent
-
+-- 
+James Morris
+<jmorris@namei.org>
 
