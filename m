@@ -2,180 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A01A23C6E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A8823C6D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 09:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgHEHU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 03:20:28 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:59538 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725904AbgHEHU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 03:20:27 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 57F512003A1;
-        Wed,  5 Aug 2020 09:20:25 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8A6A1201418;
-        Wed,  5 Aug 2020 09:20:20 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 03B5F40309;
-        Wed,  5 Aug 2020 09:20:14 +0200 (CEST)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     axboe@kernel.dk, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] dt-bindings: ata: Convert i.MX sata to json-schema
-Date:   Wed,  5 Aug 2020 15:15:46 +0800
-Message-Id: <1596611746-29155-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726344AbgHEHRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 03:17:53 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:35755 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbgHEHRu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 03:17:50 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M7sYM-1k73Qk3Kmw-00540k; Wed, 05 Aug 2020 09:17:49 +0200
+Received: by mail-qk1-f174.google.com with SMTP id j187so40765678qke.11;
+        Wed, 05 Aug 2020 00:17:48 -0700 (PDT)
+X-Gm-Message-State: AOAM530WfHW5CLKTo4yzxsctC6QH7r7wv8QCakmW3YlJo1SswawijSZk
+        gL9qO9i8tQBaUEUtV0Q2+/7pX9BJSz5f8WdIZJQ=
+X-Google-Smtp-Source: ABdhPJwc875ta9ExZX1/DvTUle7thiMXYwYloLV2Wm+kT3X53apLGCRcK45f+YRn0Oge+DYC3vh8PRvw9l2wpIgcNzM=
+X-Received: by 2002:a37:6351:: with SMTP id x78mr1971924qkb.394.1596611867220;
+ Wed, 05 Aug 2020 00:17:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200730220750.18158-1-samuel@sholland.org> <CAK8P3a2p7dWhhCqAYF_Zos-X-zBK+id-xO5hPu2fRTbNyPo9Xg@mail.gmail.com>
+ <29ea8d0f-bcab-9ffd-0e2f-f022911f4bf2@sholland.org> <CAK8P3a0xSyyaLHziuv4JKimUggF96frwLPKmjQ4G9VBWRW2EMg@mail.gmail.com>
+ <0bd43d61-4d9a-40cb-27c6-18aaf7f58b48@sholland.org>
+In-Reply-To: <0bd43d61-4d9a-40cb-27c6-18aaf7f58b48@sholland.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 5 Aug 2020 09:17:31 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3bPb+-i2YbHmn84MEuCe4xG_BKP15vNO1B1kTkYZ+=pg@mail.gmail.com>
+Message-ID: <CAK8P3a3bPb+-i2YbHmn84MEuCe4xG_BKP15vNO1B1kTkYZ+=pg@mail.gmail.com>
+Subject: Re: [PATCH v2] scsi: 3w-9xxx: Fix endianness issues found by sparse
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Adam Radford <aradford@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:sEjRjQxm9xe+XM3h7HubnfCYIZJq2EXLky7dI8JeDP3M7YTvX9J
+ C/ih5HqEv1L0Uo5TfklkVi3joITnvMp333UU8vtykpYsRQy23jOh+Os86cMVO+hk3hr4gBW
+ XQQxLZmmjfpa3w4RnBpX9Ik9UBLm+Qn04ZtjTjjcZX6/TW7/Lu1k1ZZ4FF/g3l/GM/a1QTB
+ +Csbf1YFThT5RvGt9PPaQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fQj30KgxVak=:ZGrI8ZUqpNLw6CyceElaEI
+ pYwgZQlt5P8rnBDmJ1IoTVgNG7I0qA2zYy7tB4pxKs+0Weqh2/0W14iPMgxaNKzubgWVqYxap
+ Re8DVWb7O/e2no1ql8mzPyNghsvP2eckx9epOgKR72cr62LJfxm/4EJSrsrMcq1MXcXNEyp/Z
+ iyS64Irfcnt/ecFmbTyBXRrn3FOASnBc99me18kx2XMme67oD4EjpPnOwEZCR06xB7WmpnBDQ
+ 1A1yTUWzvF7sBIVZvp6Myz5jZo4YGE7RorYfPdi8R3Gkn1d+r4WOO/QpLxWAWi6EVRQryLQhx
+ vyt85V1Ffx6VndRoCMiBXpGVWV4dm2RudZyvKSLT4UU61aNZ55f0WKKLOYTxdUGzL8JGotgJt
+ VueqDVM3+fBKVUt5OcCpgu5qIEz3P+y8/VklDh2y0xroq6is3q1KuIB4JfefYzFcSztKeKb6J
+ F1LN8YZoxVTZsVmIVMwT4ErWcXsvAzJKTE2P/YEbCGBwUEtBcmS/YcvTphfu4kODVgU1V5ypH
+ hmxEGhcbq5eGc0zFu0LoYXm9k9ogDej5ubqrQQVB2qZ8JUGCpZDXMyW45Mx9InU77eXE0q2mA
+ pgPsgNdc5HFXvXZtOUogfUH6hz11mrsxI5/pztJG5w4/P7hy9/1kI3lqrHdNsUc5HtwV3sgyE
+ Tc86gPpiCrjTPO+F4fVyK6394cM/OrdTTEtLlpgpNvI/5zRKX669aK9UJS95g0r+H2pYyUZH6
+ sfk6bBuwLxfvogoHytUNYOD6D2kgfW+PlTD23dO0ZzLaOifcAR43jl18bTJ5INbp+/FcOIDMm
+ t9dC/XTvPhESq1JgiAxggkFgQph9YyByVWQ2AoMueLbAF5OYipXoTXZZ6Ta7apqFsa8WNqR
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX sata binding to DT schema format using json-schema.
+On Wed, Aug 5, 2020 at 3:44 AM Samuel Holland <samuel@sholland.org> wrote:
+> On 8/3/20 9:02 AM, Arnd Bergmann wrote:
+> > On Mon, Aug 3, 2020 at 5:42 AM Samuel Holland <samuel@sholland.org> wrote:
+> >> All of the command structures are packed, due to the "#pragma pack(1)" earlier
+> >> in the file. So alignment is not an issue. This dma_addr_t member _is_ the
+> >> explicit padding to make sizeof(TW_Command) -
+> >> sizeof(TW_Command.byte8_offset.{io,param}.sgl) equal TW_COMMAND_SIZE * 4. And
+> >> indeed the structure is expected to be a different size depending on
+> >> sizeof(dma_addr_t).
+> >
+> > Ah, so only the first few members are accessed by hardware and the
+> > last union is only accessed by the OS then? In that case I suppose it is
+> > all fine, but I would also suggest removing the "#pragma packed"
+> > to get somewhat more efficient access on systems that have  problems
+> > with misaligned accesses.
+>
+> I don't know what part the hardware accesses; everything I know about the
+> hardware comes from reading the driver.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- Documentation/devicetree/bindings/ata/imx-sata.txt | 37 ----------
- .../devicetree/bindings/ata/imx-sata.yaml          | 81 ++++++++++++++++++++++
- 2 files changed, 81 insertions(+), 37 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/ata/imx-sata.txt
- create mode 100644 Documentation/devicetree/bindings/ata/imx-sata.yaml
+I see now from your explanation below that this is a hardware-defined
+structure. I was confused by how it can be either 32 or 64 bits wide but
+found the
 
-diff --git a/Documentation/devicetree/bindings/ata/imx-sata.txt b/Documentation/devicetree/bindings/ata/imx-sata.txt
-deleted file mode 100644
-index 781f887..0000000
---- a/Documentation/devicetree/bindings/ata/imx-sata.txt
-+++ /dev/null
-@@ -1,37 +0,0 @@
--* Freescale i.MX AHCI SATA Controller
--
--The Freescale i.MX SATA controller mostly conforms to the AHCI interface
--with some special extensions at integration level.
--
--Required properties:
--- compatible : should be one of the following:
--   - "fsl,imx53-ahci" for i.MX53 SATA controller
--   - "fsl,imx6q-ahci" for i.MX6Q SATA controller
--   - "fsl,imx6qp-ahci" for i.MX6QP SATA controller
--- interrupts : interrupt mapping for SATA IRQ
--- reg : registers mapping
--- clocks : list of clock specifiers, must contain an entry for each
--  required entry in clock-names
--- clock-names : should include "sata", "sata_ref" and "ahb" entries
--
--Optional properties:
--- fsl,transmit-level-mV : transmit voltage level, in millivolts.
--- fsl,transmit-boost-mdB : transmit boost level, in milli-decibels
--- fsl,transmit-atten-16ths : transmit attenuation, in 16ths
--- fsl,receive-eq-mdB : receive equalisation, in milli-decibels
--  Please refer to the technical documentation or the driver source code
--  for the list of legal values for these options.
--- fsl,no-spread-spectrum : disable spread-spectrum clocking on the SATA
--  link.
--
--Examples:
--
--sata@2200000 {
--	compatible = "fsl,imx6q-ahci";
--	reg = <0x02200000 0x4000>;
--	interrupts = <0 39 IRQ_TYPE_LEVEL_HIGH>;
--	clocks = <&clks IMX6QDL_CLK_SATA>,
--		 <&clks IMX6QDL_CLK_SATA_REF_100M>,
--		 <&clks IMX6QDL_CLK_AHB>;
--	clock-names = "sata", "sata_ref", "ahb";
--};
-diff --git a/Documentation/devicetree/bindings/ata/imx-sata.yaml b/Documentation/devicetree/bindings/ata/imx-sata.yaml
-new file mode 100644
-index 0000000..cd94937
---- /dev/null
-+++ b/Documentation/devicetree/bindings/ata/imx-sata.yaml
-@@ -0,0 +1,81 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/ata/imx-sata.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale i.MX AHCI SATA Controller
-+
-+maintainers:
-+  - Shawn Guo <shawn.guo@linaro.org>
-+
-+description: |
-+  The Freescale i.MX SATA controller mostly conforms to the AHCI interface
-+  with some special extensions at integration level.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx53-ahci
-+      - fsl,imx6q-ahci
-+      - fsl,imx6qp-ahci
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: sata clock
-+      - description: sata reference clock
-+      - description: ahb clock
-+
-+  clock-names:
-+    items:
-+      - const: sata
-+      - const: sata_ref
-+      - const: ahb
-+
-+  fsl,transmit-level-mV:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: transmit voltage level, in millivolts.
-+
-+  fsl,transmit-boost-mdB:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: transmit boost level, in milli-decibels.
-+
-+  fsl,transmit-atten-16ths:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: transmit attenuation, in 16ths.
-+
-+  fsl,receive-eq-mdB:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: receive equalisation, in milli-decibels.
-+
-+  fsl,no-spread-spectrum:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: if present, disable spread-spectrum clocking on the SATA link.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx6qdl-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    sata@2200000 {
-+        compatible = "fsl,imx6q-ahci";
-+        reg = <0x02200000 0x4000>;
-+        interrupts = <0 39 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&clks IMX6QDL_CLK_SATA>,
-+                 <&clks IMX6QDL_CLK_SATA_REF_100M>,
-+                 <&clks IMX6QDL_CLK_AHB>;
-+        clock-names = "sata", "sata_ref", "ahb";
-+    };
--- 
-2.7.4
+tw_initconnect->features |= sizeof(dma_addr_t) > 4 ? 1 : 0;
 
+line now that tells the hardware about which format is used.
+
+> The problem with removing the "#pragma pack(1)" is that the structure is
+> inherently misaligned: byte8_offset.io.sgl starts at offset 12, but it may begin
+> with a __le64.
+
+I think a fairly clean way to handle this would be to remove the pragma
+and instead define a local type like
+
+#if IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT)
+typedef  __le64 twa_address_t __packed;
+#else
+typedef __le32 twa_addr_t;
+#endif
+
+The problem with marking the entire structure as packed, rather than
+just individual members is that you end up with very inefficient bytewise
+access on some architectures (especially those without cache-coherent
+DMA or hardware unaligned access in the CPU), so I would recommend
+avoiding that in portable driver code.
+
+      Arnd
