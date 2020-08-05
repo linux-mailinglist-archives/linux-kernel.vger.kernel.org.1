@@ -2,92 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631AB23D427
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 01:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FF923D42E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 01:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbgHEX1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 19:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgHEX1F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 19:27:05 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832D9C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 16:27:04 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 185so39407882ljj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 16:27:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+O2DaDRZH6h9f7WMA09N1vTpbGM//lQdRVMqXRnCufc=;
-        b=hM9DERALNg5R6Ha4jhrnYmLcn0MYi6h2qZV7pDm9aM92VheCRLW3OSvuql1XKxdNuM
-         851IfSgmv7IFxSCtZQER6eUjZwn/z6gP27yfiv2fkseF97ILx4kVf17ERwgeEHXbO6AA
-         SNrRtPZsZKYmhBEv8RcLucDmAS8XK9I+f/VbWLVwuL8f/o4xLhm6FIaqTXyc45Lq8p4Y
-         qoLwfVdOrPUx6VQTzb0jqMyyWnQ8pI/2Qki0BdRpMUx9Ys4UTK+E2cEwWhxouQyxLhEP
-         eJaPtzB0yk/BavPx1s5n0GGj7pJb4JlVfwaXin94hoQhtlz+P5+gmHL2OFKrTiHJsZD0
-         csgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+O2DaDRZH6h9f7WMA09N1vTpbGM//lQdRVMqXRnCufc=;
-        b=PhOTwaipp5EsdmCsSTD7J1ci5eRbQEcDwfa6EWWzN8oRy/NwuOL86CD3UMseuqTUAC
-         xK2FNAoiozX8sb3C2fKlSfBEIHHk1wPLfFtGJvz4fIA5nhp/aKLFCV5SYqiVO097c2Kj
-         0xPwLtON81fthaBEZMu03OO4ZRA1ZxfNImrEjmUrSOg8hNurhkyFbnW2TupX7PbdDAHP
-         R6+RRtfj3EbN4BECvh7C3zCMG5gL9VXb5RZA6wCdSMmrcEuVHPLwym5rB3rwGPRcefpN
-         UjSsnVjdDO0HwSChEsJ4WLBYHiifQZGoh0deykdWDTmGOl/BsQCxVulGfqHW6okTI5bf
-         JY9g==
-X-Gm-Message-State: AOAM532sm2gDU6hjN8aLA1Ph6f5zV5atoxEXlPjqiZ2tJC4LoLE16pwF
-        iRGfEkDSTBZVcQvzyQtys/0=
-X-Google-Smtp-Source: ABdhPJzCuPYHOqSjZ8Am6w8WQojGtw7DQkpMuftiQQ3InfSqgm5i7h91jXMsShkTW4vaZgUA3OTlmQ==
-X-Received: by 2002:a05:651c:1024:: with SMTP id w4mr2419618ljm.244.1596670022934;
-        Wed, 05 Aug 2020 16:27:02 -0700 (PDT)
-Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id r16sm1485603ljd.71.2020.08.05.16.27.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 16:27:02 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     linux-fsi@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, jk@ozlabs.org, joel@jms.id.au,
-        alistair@popple.id.au, eajames@linux.ibm.com,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 3/3] fsi: scom: Constify scom_ids
-Date:   Thu,  6 Aug 2020 01:26:24 +0200
-Message-Id: <20200805232624.6938-4-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200805232624.6938-1-rikard.falkeborn@gmail.com>
-References: <20200805232624.6938-1-rikard.falkeborn@gmail.com>
+        id S1726078AbgHEXay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 19:30:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725779AbgHEXax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 19:30:53 -0400
+Received: from localhost (mobile-166-175-186-42.mycingular.net [166.175.186.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1831B2250E;
+        Wed,  5 Aug 2020 23:30:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596670252;
+        bh=vHaH0yhs28g9JbXiqhAOY+aM/CzSEYyMbl4nOxNGsk0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=2Pl3YCSzugL2WX3PfDEFCgYDQqAuubaNgW3z9pH4peyvNNb1+cV+blRPqEhCUWhgW
+         0GoxPz2Ot430E/QMGPb1ULvXq2iWxBZM1D9XIPXjr6DVSZlvPAN3sLqkBkOlf5eypv
+         9Ze3K1TUlg89eboch6gfx0uQZLtxuZxv1GJA9esc=
+Date:   Wed, 5 Aug 2020 18:30:50 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhelgaas@google.com, robh@kernel.org, maz@kernel.org
+Subject: Re: [PATCH v9 2/2] PCI: xilinx-cpm: Add Versal CPM Root Port driver
+Message-ID: <20200805233050.GA607207@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805220326.GA550962@bjorn-Precision-5520>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of scom_ids is to assign its address to the id_table
-field in the fsi_driver struct, which is a const pointer, so make it
-const to allow the compiler to put it in read-only memory
+On Wed, Aug 05, 2020 at 05:03:26PM -0500, Bjorn Helgaas wrote:
+> On Wed, Aug 05, 2020 at 10:39:28PM +0100, Lorenzo Pieralisi wrote:
+> > On Wed, Aug 05, 2020 at 03:43:58PM -0500, Bjorn Helgaas wrote:
+> > > On Tue, Jun 16, 2020 at 06:26:54PM +0530, Bharat Kumar Gogada wrote:
+> > > > - Add support for Versal CPM as Root Port.
+> > > > - The Versal ACAP devices include CCIX-PCIe Module (CPM). The integrated
+> > > >   block for CPM along with the integrated bridge can function
+> > > >   as PCIe Root Port.
+> > > > - Bridge error and legacy interrupts in Versal CPM are handled using
+> > > >   Versal CPM specific interrupt line.
+> > > 
+> > > > +static void xilinx_cpm_pcie_init_port(struct xilinx_cpm_pcie_port *port)
+> > > > +{
+> > > > +	if (cpm_pcie_link_up(port))
+> > > > +		dev_info(port->dev, "PCIe Link is UP\n");
+> > > > +	else
+> > > > +		dev_info(port->dev, "PCIe Link is DOWN\n");
+> > > > +
+> > > > +	/* Disable all interrupts */
+> > > > +	pcie_write(port, ~XILINX_CPM_PCIE_IDR_ALL_MASK,
+> > > > +		   XILINX_CPM_PCIE_REG_IMR);
+> > > > +
+> > > > +	/* Clear pending interrupts */
+> > > > +	pcie_write(port, pcie_read(port, XILINX_CPM_PCIE_REG_IDR) &
+> > > > +		   XILINX_CPM_PCIE_IMR_ALL_MASK,
+> > > > +		   XILINX_CPM_PCIE_REG_IDR);
+> > > > +
+> > > > +	/*
+> > > > +	 * XILINX_CPM_PCIE_MISC_IR_ENABLE register is mapped to
+> > > > +	 * CPM SLCR block.
+> > > > +	 */
+> > > > +	writel(XILINX_CPM_PCIE_MISC_IR_LOCAL,
+> > > > +	       port->cpm_base + XILINX_CPM_PCIE_MISC_IR_ENABLE);
+> > > > +	/* Enable the Bridge enable bit */
+> > > > +	pcie_write(port, pcie_read(port, XILINX_CPM_PCIE_REG_RPSC) |
+> > > > +		   XILINX_CPM_PCIE_REG_RPSC_BEN,
+> > > > +		   XILINX_CPM_PCIE_REG_RPSC);
+> > > > +}
+> > > > +
+> > > > +/**
+> > > > + * xilinx_cpm_pcie_parse_dt - Parse Device tree
+> > > > + * @port: PCIe port information
+> > > > + * @bus_range: Bus resource
+> > > > + *
+> > > > + * Return: '0' on success and error value on failure
+> > > > + */
+> > > > +static int xilinx_cpm_pcie_parse_dt(struct xilinx_cpm_pcie_port *port,
+> > > > +				    struct resource *bus_range)
+> > > > +{
+> > > > +	struct device *dev = port->dev;
+> > > > +	struct platform_device *pdev = to_platform_device(dev);
+> > > > +	struct resource *res;
+> > > > +
+> > > > +	port->cpm_base = devm_platform_ioremap_resource_byname(pdev,
+> > > > +							       "cpm_slcr");
+> > > > +	if (IS_ERR(port->cpm_base))
+> > > > +		return PTR_ERR(port->cpm_base);
+> > > > +
+> > > > +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
+> > > > +	if (!res)
+> > > > +		return -ENXIO;
+> > > > +
+> > > > +	port->cfg = pci_ecam_create(dev, res, bus_range,
+> > > > +				    &pci_generic_ecam_ops);
+> > > 
+> > > Aren't we passing an uninitialized pointer (bus_range) here?  This
+> > > looks broken to me.
+> > > 
+> > > The kernelci build warns about it:
+> > > https://kernelci.org/build/next/branch/master/kernel/next-20200805/
+> > > 
+> > >   /scratch/linux/drivers/pci/controller/pcie-xilinx-cpm.c:557:39: warning: variable 'bus_range' is uninitialized when used here [-Wuninitialized]
+> > > 
+> > > I'm dropping this for now.  I can't believe this actually works.
+> > 
+> > It is caused by my rebase to fix -next after the rework in pci/misc
+> > (I had to drop the call to pci_parse_request_of_pci_ranges()).
+> > 
+> > I will look into this tomorrow if Rob does not beat me to it.
+> > 
+> > Apologies, it is a new driver that was based on an interface
+> > that is being reworked, for good reasons, in pci/misc.
+> 
+> Oh, yep, I think I see what happened.  I'll try to fix this in hopes
+> of making linux-next tonight.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/fsi/fsi-scom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK, I think I fixed it.  Man, that was a lot of work for a git novice
+like me ;)  Current head: 6f119ec8d9c8 ("Merge branch 'pci/irq-error'")
 
-diff --git a/drivers/fsi/fsi-scom.c b/drivers/fsi/fsi-scom.c
-index 004dc03ccf09..b45bfab7b7f5 100644
---- a/drivers/fsi/fsi-scom.c
-+++ b/drivers/fsi/fsi-scom.c
-@@ -627,7 +627,7 @@ static int scom_remove(struct device *dev)
- 	return 0;
- }
+Diff from yesterday's "next" branch (a231039775c4 ("Merge branch
+'pci/irq-error'")):
+
+diff --git a/drivers/pci/controller/pcie-xilinx-cpm.c b/drivers/pci/controller/pcie-xilinx-cpm.c
+index 5f9b9fc12500..f3082de44e8a 100644
+--- a/drivers/pci/controller/pcie-xilinx-cpm.c
++++ b/drivers/pci/controller/pcie-xilinx-cpm.c
+@@ -539,7 +539,7 @@ static int xilinx_cpm_pcie_probe(struct platform_device *pdev)
+ 	struct xilinx_cpm_pcie_port *port;
+ 	struct device *dev = &pdev->dev;
+ 	struct pci_host_bridge *bridge;
+-	struct resource *bus_range;
++	struct resource_entry *bus;
+ 	int err;
  
--static struct fsi_device_id scom_ids[] = {
-+static const struct fsi_device_id scom_ids[] = {
- 	{
- 		.engine_type = FSI_ENGID_SCOM,
- 		.version = FSI_VERSION_ANY,
--- 
-2.28.0
-
+ 	bridge = devm_pci_alloc_host_bridge(dev, sizeof(*port));
+@@ -554,7 +554,11 @@ static int xilinx_cpm_pcie_probe(struct platform_device *pdev)
+ 	if (err)
+ 		return err;
+ 
+-	err = xilinx_cpm_pcie_parse_dt(port, bus_range);
++	bus = resource_list_first_type(&bridge->windows, IORESOURCE_BUS);
++	if (!bus)
++		return -ENODEV;
++
++	err = xilinx_cpm_pcie_parse_dt(port, bus->res);
+ 	if (err) {
+ 		dev_err(dev, "Parsing DT failed\n");
+ 		goto err_parse_dt;
