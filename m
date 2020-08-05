@@ -2,190 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63B023C5E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1774E23C5EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 08:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgHEGdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 02:33:41 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60984 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725904AbgHEGdl (ORCPT
+        id S1728168AbgHEGeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 02:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726775AbgHEGeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 02:33:41 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0756UsTo155366;
-        Wed, 5 Aug 2020 02:33:36 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32qkgjna1m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 02:33:35 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0756U9kZ030194;
-        Wed, 5 Aug 2020 06:33:34 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 32n0184309-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 Aug 2020 06:33:34 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0756XVgc20316616
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 5 Aug 2020 06:33:32 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF1BF4204B;
-        Wed,  5 Aug 2020 06:33:31 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8583B42047;
-        Wed,  5 Aug 2020 06:33:31 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  5 Aug 2020 06:33:31 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        hca@linux.ibm.com
-Subject: Re: [PATCH v3 3/3] s390: convert to GENERIC_VDSO
-References: <20200804150124.41692-1-svens@linux.ibm.com>
-        <20200804150124.41692-4-svens@linux.ibm.com>
-        <87tuxikuub.fsf@nanos.tec.linutronix.de>
-Date:   Wed, 05 Aug 2020 08:33:31 +0200
-In-Reply-To: <87tuxikuub.fsf@nanos.tec.linutronix.de> (Thomas Gleixner's
-        message of "Tue, 04 Aug 2020 22:41:00 +0200")
-Message-ID: <yt9d8setsitg.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Wed, 5 Aug 2020 02:34:16 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201CCC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 Aug 2020 23:34:16 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id o25so13554854uar.1
+        for <linux-kernel@vger.kernel.org>; Tue, 04 Aug 2020 23:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=48RB7EHgoiQleD/pQuLV1J7hsacJfpBptGUuAWwcbs8=;
+        b=B3V8rPYqR1X5GmMPhKullnNQMeoNv4O2aWsCc4hy0qDTE+AFPd0d/takEIfe9mUB8N
+         Xuy0SLylmV5K51ZJqsQVACfYmjHhoipS5TKh5Tpm3tbXH2rPOtdCL8kVKlhCyfhldMhi
+         01mpQyRUIv1iDt7zGxppNnVv1TxLO7V9nIvV39E9ejNl06lj2NYfKyzHIJy303QTie38
+         L2e558f94ZZS/RclCoXhaKX0iINW9U8kScaSpNXAw5h6QICCsbbwPDx4VV5TjfwacYDS
+         FVECR1yGlzaq0IkAyVFoVUbsd89JlQYUCChtIbZhPTr8oqx+c/eseOGnrN6/0PkG/zRo
+         kZSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=48RB7EHgoiQleD/pQuLV1J7hsacJfpBptGUuAWwcbs8=;
+        b=FWaUh60DoPNfHsKKVTiur/ggK0kkNkzlIPuG0zlBta0YG9W8SjSNyTU6H/fcTQP8+M
+         bqCsZltrud4HK4+A+FGYVgN29PSO1VEBNKbMY1z1bIV6YU5AxP7rzgFXprcURiEeZo7S
+         43EfLAWvWjwp6QaCyNBZ9isr5wUSUttk08ofQ+Em6XWjs3Sw1uyF/8CpejtsQ5cZK6W4
+         jQBDrQMiPG/SPIAffDjUf+OXo0ri/9Wz16y+HiC75XMkGzTgmyhbaY+gMAuL44vCBwVx
+         LraF6PjWxl3OM03JPl6Vk1E36C+2K6YFfwytAeFb6h/elrhM5dytU+7rZLk8QRU6c7sb
+         IDKA==
+X-Gm-Message-State: AOAM530rdJuif46c1nhxX2wuGpJcMCBiNSJ2lT6Ua4UbQh1QjvRC97a+
+        NYle8cssDWAUeGuLPBr3h7yoDejzG45XoOjoXcJOlY2E76MJaw==
+X-Google-Smtp-Source: ABdhPJxTkDLFM38hfs5s92dQJSWgH7DPegQVNI+vhRfHvfv5xab0rdFpRdaqBGmVP4Cc6LayaOhJ0C00OAiOyA9vHg0=
+X-Received: by 2002:ab0:2ea2:: with SMTP id y2mr996686uay.15.1596609255163;
+ Tue, 04 Aug 2020 23:34:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-05_04:2020-08-03,2020-08-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 mlxscore=0 phishscore=0 suspectscore=0
- mlxlogscore=999 adultscore=0 spamscore=0 priorityscore=1501 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008050054
+References: <20200717033350.13006-1-benchuanggli@gmail.com>
+In-Reply-To: <20200717033350.13006-1-benchuanggli@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 5 Aug 2020 08:33:38 +0200
+Message-ID: <CAPDyKFpp54tNRiQ+or-3o9dUJ=CB+PpsRc=fkxc10dAUY-x_SQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: Set SDR104's clock to 205MHz and
+ enable SSC for GL975x
+To:     Ben Chuang <benchuanggli@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw, SeanHY.Chen@genesyslogic.com.tw
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-Thomas Gleixner <tglx@linutronix.de> writes:
-
-> Sven Schnelle <svens@linux.ibm.com> writes:
->> --- /dev/null
->> +++ b/arch/s390/include/asm/vdso/data.h
->> @@ -0,0 +1,13 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef __S390_ASM_VDSO_DATA_H
->> +#define __S390_ASM_VDSO_DATA_H
->> +
->> +#include <linux/types.h>
->> +#include <vdso/datapage.h>
+On Fri, 17 Jul 2020 at 05:33, Ben Chuang <benchuanggli@gmail.com> wrote:
 >
-> I don't think this header needs vdso/datapage.h
-
-Agreed.
-
->> +struct arch_vdso_data {
->> +	__u64 tod_steering_delta;
->> +	__u64 tod_steering_end;
->> +};
->> +
->> +#endif /* __S390_ASM_VDSO_DATA_H */
+> From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 >
->> --- /dev/null
->> +++ b/arch/s390/include/asm/vdso/gettimeofday.h
+> Set SDR104's clock to 205MHz and enable SSC for GL9750 and GL9755
 >
->> +static inline u64 __arch_get_hw_counter(s32 clock_mode)
->> +{
->> +	const struct vdso_data *vdso = __arch_get_vdso_data();
+> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+
+Applied for next (a while ago), thanks!
+
+Kind regards
+Uffe
+
+
+> ---
+>  drivers/mmc/host/sdhci-pci-gli.c | 220 ++++++++++++++++++++++++++++++-
+>  1 file changed, 218 insertions(+), 2 deletions(-)
 >
-> If you go and implement time namespace support for VDSO then this
-> becomes a problem. See do_hres_timens().
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+> index ca0166d9bf82..5da2b06d84ae 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -31,10 +31,18 @@
+>  #define   SDHCI_GLI_9750_ALL_RST      (BIT(24)|BIT(25)|BIT(28)|BIT(30))
 >
-> As we did not expect that this function needs vdso_data we should just
-> add a vdso_data pointer argument to __arch_get_hw_counter(). And while
-> looking at it you're not the first one. MIPS already uses it and because
-> it does not support time namespaces so far nobody noticed yet.
+>  #define SDHCI_GLI_9750_PLL           0x864
+> +#define   SDHCI_GLI_9750_PLL_LDIV       GENMASK(9, 0)
+> +#define   SDHCI_GLI_9750_PLL_PDIV       GENMASK(14, 12)
+> +#define   SDHCI_GLI_9750_PLL_DIR        BIT(15)
+>  #define   SDHCI_GLI_9750_PLL_TX2_INV    BIT(23)
+>  #define   SDHCI_GLI_9750_PLL_TX2_DLY    GENMASK(22, 20)
+>  #define   GLI_9750_PLL_TX2_INV_VALUE    0x1
+>  #define   GLI_9750_PLL_TX2_DLY_VALUE    0x0
+> +#define   SDHCI_GLI_9750_PLLSSC_STEP    GENMASK(28, 24)
+> +#define   SDHCI_GLI_9750_PLLSSC_EN      BIT(31)
+> +
+> +#define SDHCI_GLI_9750_PLLSSC        0x86C
+> +#define   SDHCI_GLI_9750_PLLSSC_PPM    GENMASK(31, 16)
 >
-> That's fine for all others because the compiler will optimize it
-> out when it's unused. If the compiler fails to do so, then this is the
-> least of our worries :)
+>  #define SDHCI_GLI_9750_SW_CTRL      0x874
+>  #define   SDHCI_GLI_9750_SW_CTRL_4    GENMASK(7, 6)
+> @@ -76,6 +84,21 @@
+>  #define PCIE_GLI_9763E_SCR      0x8E0
+>  #define   GLI_9763E_SCR_AXI_REQ           BIT(9)
 >
-> As there is no new VDSO conversion pending in next, I can just queue
-> that (see below) along with #1 and #2 of this series and send it to
-> Linus by end of the week.
-
-Fine with me.
-
->> +	u64 adj, now;
->> +
->> +	now = get_tod_clock();
->> +	adj = vdso->arch.tod_steering_end - now;
->> +	if (unlikely((s64) adj > 0))
->> +		now += (vdso->arch.tod_steering_delta < 0) ? (adj >> 15) : -(adj >> 15);
->> +	return now;
->> +}
+> +#define PCI_GLI_9755_WT       0x800
+> +#define   PCI_GLI_9755_WT_EN    BIT(0)
+> +#define   GLI_9755_WT_EN_ON     0x1
+> +#define   GLI_9755_WT_EN_OFF    0x0
+> +
+> +#define PCI_GLI_9755_PLL            0x64
+> +#define   PCI_GLI_9755_PLL_LDIV       GENMASK(9, 0)
+> +#define   PCI_GLI_9755_PLL_PDIV       GENMASK(14, 12)
+> +#define   PCI_GLI_9755_PLL_DIR        BIT(15)
+> +#define   PCI_GLI_9755_PLLSSC_STEP    GENMASK(28, 24)
+> +#define   PCI_GLI_9755_PLLSSC_EN      BIT(31)
+> +
+> +#define PCI_GLI_9755_PLLSSC        0x68
+> +#define   PCI_GLI_9755_PLLSSC_PPM    GENMASK(15, 0)
+> +
+>  #define GLI_MAX_TUNING_LOOP 40
 >
+>  /* Genesys Logic chipset */
+> @@ -280,6 +303,84 @@ static int gl9750_execute_tuning(struct sdhci_host *host, u32 opcode)
+>         return 0;
+>  }
 >
->> --- /dev/null
->> +++ b/arch/s390/include/asm/vdso/processor.h
->> @@ -0,0 +1,5 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +#ifndef __ASM_VDSO_PROCESSOR_H
->> +#define __ASM_VDSO_PROCESSOR_H
->> +
->> +#endif /* __ASM_VDSO_PROCESSOR_H */
+> +static void gl9750_disable_ssc_pll(struct sdhci_host *host)
+> +{
+> +       u32 pll;
+> +
+> +       gl9750_wt_on(host);
+> +       pll = sdhci_readl(host, SDHCI_GLI_9750_PLL);
+> +       pll &= ~(SDHCI_GLI_9750_PLL_DIR | SDHCI_GLI_9750_PLLSSC_EN);
+> +       sdhci_writel(host, pll, SDHCI_GLI_9750_PLL);
+> +       gl9750_wt_off(host);
+> +}
+> +
+> +static void gl9750_set_pll(struct sdhci_host *host, u8 dir, u16 ldiv, u8 pdiv)
+> +{
+> +       u32 pll;
+> +
+> +       gl9750_wt_on(host);
+> +       pll = sdhci_readl(host, SDHCI_GLI_9750_PLL);
+> +       pll &= ~(SDHCI_GLI_9750_PLL_LDIV |
+> +                SDHCI_GLI_9750_PLL_PDIV |
+> +                SDHCI_GLI_9750_PLL_DIR);
+> +       pll |= FIELD_PREP(SDHCI_GLI_9750_PLL_LDIV, ldiv) |
+> +              FIELD_PREP(SDHCI_GLI_9750_PLL_PDIV, pdiv) |
+> +              FIELD_PREP(SDHCI_GLI_9750_PLL_DIR, dir);
+> +       sdhci_writel(host, pll, SDHCI_GLI_9750_PLL);
+> +       gl9750_wt_off(host);
+> +
+> +       /* wait for pll stable */
+> +       mdelay(1);
+> +}
+> +
+> +static void gl9750_set_ssc(struct sdhci_host *host, u8 enable, u8 step, u16 ppm)
+> +{
+> +       u32 pll;
+> +       u32 ssc;
+> +
+> +       gl9750_wt_on(host);
+> +       pll = sdhci_readl(host, SDHCI_GLI_9750_PLL);
+> +       ssc = sdhci_readl(host, SDHCI_GLI_9750_PLLSSC);
+> +       pll &= ~(SDHCI_GLI_9750_PLLSSC_STEP |
+> +                SDHCI_GLI_9750_PLLSSC_EN);
+> +       ssc &= ~SDHCI_GLI_9750_PLLSSC_PPM;
+> +       pll |= FIELD_PREP(SDHCI_GLI_9750_PLLSSC_STEP, step) |
+> +              FIELD_PREP(SDHCI_GLI_9750_PLLSSC_EN, enable);
+> +       ssc |= FIELD_PREP(SDHCI_GLI_9750_PLLSSC_PPM, ppm);
+> +       sdhci_writel(host, ssc, SDHCI_GLI_9750_PLLSSC);
+> +       sdhci_writel(host, pll, SDHCI_GLI_9750_PLL);
+> +       gl9750_wt_off(host);
+> +}
+> +
+> +static void gl9750_set_ssc_pll_205mhz(struct sdhci_host *host)
+> +{
+> +       /* set pll to 205MHz and enable ssc */
+> +       gl9750_set_ssc(host, 0x1, 0x1F, 0xFFE7);
+> +       gl9750_set_pll(host, 0x1, 0x246, 0x0);
+> +}
+> +
+> +static void sdhci_gl9750_set_clock(struct sdhci_host *host, unsigned int clock)
+> +{
+> +       struct mmc_ios *ios = &host->mmc->ios;
+> +       u16 clk;
+> +
+> +       host->mmc->actual_clock = 0;
+> +
+> +       gl9750_disable_ssc_pll(host);
+> +       sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
+> +
+> +       if (clock == 0)
+> +               return;
+> +
+> +       clk = sdhci_calc_clk(host, clock, &host->mmc->actual_clock);
+> +       if (clock == 200000000 && ios->timing == MMC_TIMING_UHS_SDR104) {
+> +               host->mmc->actual_clock = 205000000;
+> +               gl9750_set_ssc_pll_205mhz(host);
+> +       }
+> +
+> +       sdhci_enable_clk(host, clk);
+> +}
+> +
+>  static void gli_pcie_enable_msi(struct sdhci_pci_slot *slot)
+>  {
+>         int ret;
+> @@ -295,6 +396,121 @@ static void gli_pcie_enable_msi(struct sdhci_pci_slot *slot)
+>         slot->host->irq = pci_irq_vector(slot->chip->pdev, 0);
+>  }
 >
-> The idea of this file was to provide cpu_relax() self contained without
-> pulling in tons of other things from asm/processor.h.
-
-Thanks, i'll add that.
-
->> diff --git a/arch/s390/include/asm/vdso/vdso.h b/arch/s390/include/asm/vdso/vdso.h
->> new file mode 100644
->> index 000000000000..e69de29bb2d1
->> diff --git a/arch/s390/include/asm/vdso/vsyscall.h b/arch/s390/include/asm/vdso/vsyscall.h
->> new file mode 100644
->> index 000000000000..6c67c08cefdd
->> --- /dev/null
->> +++ b/arch/s390/include/asm/vdso/vsyscall.h
->> @@ -0,0 +1,26 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef __ASM_VDSO_VSYSCALL_H
->> +#define __ASM_VDSO_VSYSCALL_H
->> +
->> +#ifndef __ASSEMBLY__
->> +
->> +#include <linux/hrtimer.h>
->> +#include <linux/timekeeper_internal.h>
+> +static inline void gl9755_wt_on(struct pci_dev *pdev)
+> +{
+> +       u32 wt_value;
+> +       u32 wt_enable;
+> +
+> +       pci_read_config_dword(pdev, PCI_GLI_9755_WT, &wt_value);
+> +       wt_enable = FIELD_GET(PCI_GLI_9755_WT_EN, wt_value);
+> +
+> +       if (wt_enable == GLI_9755_WT_EN_ON)
+> +               return;
+> +
+> +       wt_value &= ~PCI_GLI_9755_WT_EN;
+> +       wt_value |= FIELD_PREP(PCI_GLI_9755_WT_EN, GLI_9755_WT_EN_ON);
+> +
+> +       pci_write_config_dword(pdev, PCI_GLI_9755_WT, wt_value);
+> +}
+> +
+> +static inline void gl9755_wt_off(struct pci_dev *pdev)
+> +{
+> +       u32 wt_value;
+> +       u32 wt_enable;
+> +
+> +       pci_read_config_dword(pdev, PCI_GLI_9755_WT, &wt_value);
+> +       wt_enable = FIELD_GET(PCI_GLI_9755_WT_EN, wt_value);
+> +
+> +       if (wt_enable == GLI_9755_WT_EN_OFF)
+> +               return;
+> +
+> +       wt_value &= ~PCI_GLI_9755_WT_EN;
+> +       wt_value |= FIELD_PREP(PCI_GLI_9755_WT_EN, GLI_9755_WT_EN_OFF);
+> +
+> +       pci_write_config_dword(pdev, PCI_GLI_9755_WT, wt_value);
+> +}
+> +
+> +static void gl9755_disable_ssc_pll(struct pci_dev *pdev)
+> +{
+> +       u32 pll;
+> +
+> +       gl9755_wt_on(pdev);
+> +       pci_read_config_dword(pdev, PCI_GLI_9755_PLL, &pll);
+> +       pll &= ~(PCI_GLI_9755_PLL_DIR | PCI_GLI_9755_PLLSSC_EN);
+> +       pci_write_config_dword(pdev, PCI_GLI_9755_PLL, pll);
+> +       gl9755_wt_off(pdev);
+> +}
+> +
+> +static void gl9755_set_pll(struct pci_dev *pdev, u8 dir, u16 ldiv, u8 pdiv)
+> +{
+> +       u32 pll;
+> +
+> +       gl9755_wt_on(pdev);
+> +       pci_read_config_dword(pdev, PCI_GLI_9755_PLL, &pll);
+> +       pll &= ~(PCI_GLI_9755_PLL_LDIV |
+> +                PCI_GLI_9755_PLL_PDIV |
+> +                PCI_GLI_9755_PLL_DIR);
+> +       pll |= FIELD_PREP(PCI_GLI_9755_PLL_LDIV, ldiv) |
+> +              FIELD_PREP(PCI_GLI_9755_PLL_PDIV, pdiv) |
+> +              FIELD_PREP(PCI_GLI_9755_PLL_DIR, dir);
+> +       pci_write_config_dword(pdev, PCI_GLI_9755_PLL, pll);
+> +       gl9755_wt_off(pdev);
+> +
+> +       /* wait for pll stable */
+> +       mdelay(1);
+> +}
+> +
+> +static void gl9755_set_ssc(struct pci_dev *pdev, u8 enable, u8 step, u16 ppm)
+> +{
+> +       u32 pll;
+> +       u32 ssc;
+> +
+> +       gl9755_wt_on(pdev);
+> +       pci_read_config_dword(pdev, PCI_GLI_9755_PLL, &pll);
+> +       pci_read_config_dword(pdev, PCI_GLI_9755_PLLSSC, &ssc);
+> +       pll &= ~(PCI_GLI_9755_PLLSSC_STEP |
+> +                PCI_GLI_9755_PLLSSC_EN);
+> +       ssc &= ~PCI_GLI_9755_PLLSSC_PPM;
+> +       pll |= FIELD_PREP(PCI_GLI_9755_PLLSSC_STEP, step) |
+> +              FIELD_PREP(PCI_GLI_9755_PLLSSC_EN, enable);
+> +       ssc |= FIELD_PREP(PCI_GLI_9755_PLLSSC_PPM, ppm);
+> +       pci_write_config_dword(pdev, PCI_GLI_9755_PLLSSC, ssc);
+> +       pci_write_config_dword(pdev, PCI_GLI_9755_PLL, pll);
+> +       gl9755_wt_off(pdev);
+> +}
+> +
+> +static void gl9755_set_ssc_pll_205mhz(struct pci_dev *pdev)
+> +{
+> +       /* set pll to 205MHz and enable ssc */
+> +       gl9755_set_ssc(pdev, 0x1, 0x1F, 0xFFE7);
+> +       gl9755_set_pll(pdev, 0x1, 0x246, 0x0);
+> +}
+> +
+> +static void sdhci_gl9755_set_clock(struct sdhci_host *host, unsigned int clock)
+> +{
+> +       struct sdhci_pci_slot *slot = sdhci_priv(host);
+> +       struct mmc_ios *ios = &host->mmc->ios;
+> +       struct pci_dev *pdev;
+> +       u16 clk;
+> +
+> +       pdev = slot->chip->pdev;
+> +       host->mmc->actual_clock = 0;
+> +
+> +       gl9755_disable_ssc_pll(pdev);
+> +       sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
+> +
+> +       if (clock == 0)
+> +               return;
+> +
+> +       clk = sdhci_calc_clk(host, clock, &host->mmc->actual_clock);
+> +       if (clock == 200000000 && ios->timing == MMC_TIMING_UHS_SDR104) {
+> +               host->mmc->actual_clock = 205000000;
+> +               gl9755_set_ssc_pll_205mhz(pdev);
+> +       }
+> +
+> +       sdhci_enable_clk(host, clk);
+> +}
+> +
+>  static int gli_probe_slot_gl9750(struct sdhci_pci_slot *slot)
+>  {
+>         struct sdhci_host *host = slot->host;
+> @@ -440,7 +656,7 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
+>  }
 >
-> I know you copied that from x86 or some other architecture, but thinking
-> about the above these two includes are not required for building VDSO
-> itself. Only the kernel update side needs them and they are included
-> already there. I'm going to remove them from x86 as well.
-
-Thanks, i removed them from my patch.
-
->> @@ -443,9 +396,8 @@ static void clock_sync_global(unsigned long long delta)
->>  		panic("TOD clock sync offset %lli is too large to drift\n",
->>  		      tod_steering_delta);
->>  	tod_steering_end = now + (abs(tod_steering_delta) << 15);
->> -	vdso_data->ts_dir = (tod_steering_delta < 0) ? 0 : 1;
->> -	vdso_data->ts_end = tod_steering_end;
->> -	vdso_data->tb_update_count++;
->> +	vdso_data->arch.tod_steering_end = tod_steering_end;
+>  static const struct sdhci_ops sdhci_gl9755_ops = {
+> -       .set_clock              = sdhci_set_clock,
+> +       .set_clock              = sdhci_gl9755_set_clock,
+>         .enable_dma             = sdhci_pci_enable_dma,
+>         .set_bus_width          = sdhci_set_bus_width,
+>         .reset                  = sdhci_reset,
+> @@ -460,7 +676,7 @@ const struct sdhci_pci_fixes sdhci_gl9755 = {
 >
-> Leftover from the previous version. Should be arch_data.tod....
-
-Oops, indeed.
-
-> Heiko, do you consider this 5.9 material or am I right to assume that
-> this targets 5.10?
-
-I talked to Heiko yesterday and we agreed that it's to late for 5.9, so
-we target 5.10.
-
-Thanks,
-Sven
+>  static const struct sdhci_ops sdhci_gl9750_ops = {
+>         .read_l                 = sdhci_gl9750_readl,
+> -       .set_clock              = sdhci_set_clock,
+> +       .set_clock              = sdhci_gl9750_set_clock,
+>         .enable_dma             = sdhci_pci_enable_dma,
+>         .set_bus_width          = sdhci_set_bus_width,
+>         .reset                  = sdhci_gl9750_reset,
+> --
+> 2.27.0
+>
