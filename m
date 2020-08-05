@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B19A23CFD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F47623CFD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728989AbgHETZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:25:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35574 "EHLO mail.kernel.org"
+        id S1729098AbgHETZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:25:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728752AbgHERPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:15:17 -0400
+        id S1728735AbgHERPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:15:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 564DD23358;
-        Wed,  5 Aug 2020 15:52:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0B562335A;
+        Wed,  5 Aug 2020 15:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596642739;
-        bh=6FgrgiJMhJWY/pk9YHVcLDKtAoJdeS6mUUN7RSlzR2c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NsfFWwfdZSB6l1WldLt9QgjlhEw/faYvDGypjB6/aDrMSzJQ11Ljz9CaKe4cTZ1nB
-         U8BYXh/OznzbeHAe3QF0gnoklRVqPnAlCSEj5SJfo7ueZYE0p3UatcQ3PvgLCBXTcf
-         NvEdOgzRyQC9dNTFg/AD7CzFAQHSE8+Y7+DMi4fo=
+        s=default; t=1596642748;
+        bh=slR+AYmepWH5RbfuDWkszwUVsGqLY8LvH8mAxHRHiv0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mj0NDPChwyrEulaChoWtzF5bFVNI2+Uo7vBI47fzF169MzjAagqloXaui9aaTKvnk
+         gA+sJss054XVWgs/oTUYw+7KEayHYF1H2z3BArcNwZwod2BOVQ6MHMF7m5S50vC3lz
+         jX0GHuxEykaMXiJSZnFZ3IQw+H59TE7R7gyyV3bo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: [PATCH 5.7 0/6] 5.7.14-rc1 review
-Date:   Wed,  5 Aug 2020 17:52:27 +0200
-Message-Id: <20200805153506.978105994@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Willy Tarreau <w@1wt.eu>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.7 3/6] random: fix circular include dependency on arm64 after addition of percpu.h
+Date:   Wed,  5 Aug 2020 17:52:30 +0200
+Message-Id: <20200805153507.134935212@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
+In-Reply-To: <20200805153506.978105994@linuxfoundation.org>
+References: <20200805153506.978105994@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.7.14-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.7.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.7.14-rc1
-X-KernelTest-Deadline: 2020-08-07T15:35+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.7.14 release.
-There are 6 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Willy Tarreau <w@1wt.eu>
 
-Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
-Anything received after that time might be too late.
+commit 1c9df907da83812e4f33b59d3d142c864d9da57f upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.14-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-and the diffstat can be found below.
+Daniel Díaz and Kees Cook independently reported that commit
+f227e3ec3b5c ("random32: update the net random state on interrupt and
+activity") broke arm64 due to a circular dependency on include files
+since the addition of percpu.h in random.h.
 
-thanks,
+The correct fix would definitely be to move all the prandom32 stuff out
+of random.h but for backporting, a smaller solution is preferred.
 
-greg k-h
+This one replaces linux/percpu.h with asm/percpu.h, and this fixes the
+problem on x86_64, arm64, arm, and mips.  Note that moving percpu.h
+around didn't change anything and that removing it entirely broke
+differently.  When backporting, such options might still be considered
+if this patch fails to help.
 
--------------
-Pseudo-Shortlog of commits:
+[ It turns out that an alternate fix seems to be to just remove the
+  troublesome <asm/pointer_auth.h> remove from the arm64 <asm/smp.h>
+  that causes the circular dependency.
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.7.14-rc1
+  But we might as well do the whole belt-and-suspenders thing, and
+  minimize inclusion in <linux/random.h> too. Either will fix the
+  problem, and both are good changes.   - Linus ]
 
-Marc Zyngier <maz@kernel.org>
-    arm64: Workaround circular dependency in pointer_auth.h
+Reported-by: Daniel Díaz <daniel.diaz@linaro.org>
+Reported-by: Kees Cook <keescook@chromium.org>
+Tested-by: Marc Zyngier <maz@kernel.org>
+Fixes: f227e3ec3b5c
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Linus Torvalds <torvalds@linux-foundation.org>
-    random32: move the pseudo-random 32-bit definitions to prandom.h
+---
+ include/linux/random.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Linus Torvalds <torvalds@linux-foundation.org>
-    random32: remove net_rand_state from the latent entropy gcc plugin
-
-Willy Tarreau <w@1wt.eu>
-    random: fix circular include dependency on arm64 after addition of percpu.h
-
-Grygorii Strashko <grygorii.strashko@ti.com>
-    ARM: percpu.h: fix build error
-
-Willy Tarreau <w@1wt.eu>
-    random32: update the net random state on interrupt and activity
-
-
--------------
-
-Diffstat:
-
- Makefile                              |  4 +-
- arch/arm/include/asm/percpu.h         |  2 +
- arch/arm64/include/asm/pointer_auth.h |  8 +++-
- drivers/char/random.c                 |  1 +
- include/linux/prandom.h               | 78 +++++++++++++++++++++++++++++++++++
- include/linux/random.h                | 63 ++--------------------------
- kernel/time/timer.c                   |  8 ++++
- lib/random32.c                        |  2 +-
- 8 files changed, 103 insertions(+), 63 deletions(-)
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -11,7 +11,7 @@
+ #include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/once.h>
+-#include <linux/percpu.h>
++#include <asm/percpu.h>
+ 
+ #include <uapi/linux/random.h>
+ 
 
 
