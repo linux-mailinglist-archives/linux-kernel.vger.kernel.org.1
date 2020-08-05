@@ -2,165 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD3F23D13C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348F723D129
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729142AbgHET6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
+        id S1728458AbgHET5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727905AbgHEQno (ORCPT
+        with ESMTP id S1727998AbgHEQoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:43:44 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083E9C08E835
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 06:14:49 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id g19so33766233ioh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:14:49 -0700 (PDT)
+        Wed, 5 Aug 2020 12:44:12 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB433C08ED2B;
+        Wed,  5 Aug 2020 06:17:29 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id j9so33893460ilc.11;
+        Wed, 05 Aug 2020 06:17:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5NGswowN9lNt0B7Qm7pFhGL8MlFG4CkHrirwlJK6xy4=;
-        b=WCRpQ+3tfoj4A2Hl+xWObW6Msn9x71auG4DLdg2jezSEoX3cmVit3924jRiOwkuth3
-         HaY51PM6suSWR2Ql0Vd6UNdErJmtitkxUpYHJXBSnZN3YEZzktCiKPrfAm+V12nKs6x3
-         lCEe5qpq5kCz2RchxzxuHe12iWIseZEKvaWxE=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U9j+MufxMDRYF1VNGK/h8ZpxbV45735lCqjDi7az7Y4=;
+        b=HYhDSNmOIeR8Tsx8WIrVaqjB1BsfWU/aDZd+mWUzIkl92tNvGHxuV98CEr4ICg5bZj
+         0hMqGfgpfY0LmImX9w5DtGi+O5L/JgjPyvAAnDDwcIFA+JiEH4lTU/iYTZ4kzSfyjVN/
+         APHqSnfypG1GSBKovRFe8+eUbJLog8nP7ypyeUlkdqpyuq3+fPS5sXRKdpZpTAHtttDW
+         VsLqacvZOAeeZOqzobmFGX5eZWyQyVHa5ExdjZ8ZigsYZzuaQEYs7/LdG+R+u8I7iMWP
+         JNNhNcHMSQRRLVOBUQiRIQY1q/eDk8A0E4ZlwRBXgQx4xECv3OiwvnkQxuUSm40BJZWG
+         YuMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5NGswowN9lNt0B7Qm7pFhGL8MlFG4CkHrirwlJK6xy4=;
-        b=G+L38QxYbN6pB4UQmI/1kf0/cs9pk16YNLYEPh3oWDGYe9tyGsvYeYlmamxSvFA75Q
-         gfkbUCeNRFXojUugvgATpDUNmC8CPfbg7QJMyfvyVlq2F06RhcktIyvAVpTw15T0NXR/
-         nE17ZevU3PO49MjXE7ySdY+jYinK2jhT6jkBR9afqeuP3fja249Qexn9BRYAGswJKWaI
-         vRmQ/4r6u9mKTt0mBRNoA/YSRdGYcrXFhJhhRL2I6IHSalwTmmBnXFJBt6rMTepXlxZz
-         PKYTrpVGHJXkqncR3LYvgTZPbATwBnbC+K397YDtf9WD8UPwS03ZWAITw29TpJX2a1C6
-         xFuw==
-X-Gm-Message-State: AOAM5338IB/tmhp/XtS4kUk+9gFP3noBQ6tldpAC64tsnWa++dR886Xd
-        pqQx6toKfJbpZLHUFUaVyZvBoCkVQgs=
-X-Google-Smtp-Source: ABdhPJyiMBH7gV9Zc6QUzz25ejAv4noYllQlkHa87ohih1OIFGenFVCFdfiA/UVUi0O1y1XyGOrqPQ==
-X-Received: by 2002:a5d:91d4:: with SMTP id k20mr3407822ior.9.1596633288660;
-        Wed, 05 Aug 2020 06:14:48 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id y8sm1003253iom.26.2020.08.05.06.14.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 06:14:47 -0700 (PDT)
-Subject: Re: [PATCH][next] greybus: Use fallthrough pseudo-keyword
-From:   Alex Elder <elder@ieee.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20200727183258.GA28571@embeddedor>
- <63871608-e076-26b0-85df-cff11699c3a3@ieee.org>
-Message-ID: <e36013ba-e19a-86c9-cb68-d7ad5559c292@ieee.org>
-Date:   Wed, 5 Aug 2020 08:14:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U9j+MufxMDRYF1VNGK/h8ZpxbV45735lCqjDi7az7Y4=;
+        b=h92tL9f5cpMt6h3GVoMA0UoUB3ySXn5whPYW9eiwm+bxH5U1fvlOhSCERFcYeI/WKT
+         +9dd2EnuYS1oi7gbcm7snOKAueLtZO3RLFYqXTLbG9V9ZJ96PKKvWcCYYDEu56ULHSxr
+         INyhRe6/ylaxuUWstTuX6GvIBGnVMy903fDTqnAaOvTsXgqL5Fz1w4e+aX15PHNMOtyR
+         pmDuDnqmdRVhGf8oeB+r3X5o8v8QvUFTtN0s46+5TLeRV/xGmoLnMWbVwnRMrjodE4WS
+         To3MHjpSCSOuUNaJw2b4qckGviptnnH/I98dGCy5bRY80/2I4K22G+oCfim2Wm4d8xnZ
+         +OZA==
+X-Gm-Message-State: AOAM532OFR6m1OGh0SOcJMtrkciGM25VFBt8DO/F/s7Dg9GKMAgA8oLx
+        5rm6uYDnY1CGTCkrELPIgVMlaRLeE2BFLa93f8gnvg==
+X-Google-Smtp-Source: ABdhPJwHeDoHvq2FDyJUbZK5qgI7U+gsBRFp8nkzGnu2r/YdKckPQIeQukn5HdbnZh+8a/s0rnH4tJdWMvWvFKiyjHE=
+X-Received: by 2002:a92:60d:: with SMTP id x13mr3933276ilg.214.1596633448397;
+ Wed, 05 Aug 2020 06:17:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <63871608-e076-26b0-85df-cff11699c3a3@ieee.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20191007220540.30690-1-aford173@gmail.com> <20191007220540.30690-2-aford173@gmail.com>
+In-Reply-To: <20191007220540.30690-2-aford173@gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Wed, 5 Aug 2020 08:17:16 -0500
+Message-ID: <CAHCN7x+fnyXb+UO3xPd0nKeZNAPhRsXd5kTCAHxvg6hSt8Bx-A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: dts: omap3: Add cpu trips and cooling map for
+ omap34/36 families
+To:     Linux-OMAP <linux-omap@vger.kernel.org>
+Cc:     Adam Ford <adam.ford@logicpd.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/20 5:37 PM, Alex Elder wrote:
-> On 7/27/20 1:32 PM, Gustavo A. R. Silva wrote:
->> Replace the existing /* fall through */ comments and its variants with
->> the new pseudo-keyword macro fallthrough[1].
->>
->> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> 
-> Thanks for the patch.  It looks good, but it raises
-> another question I'd like discussion on.
+On Mon, Oct 7, 2019 at 5:06 PM Adam Ford <aford173@gmail.com> wrote:
+>
+> The OMAP3530, OMAP3630, and DM3730 all show thresholds of 90C and 105C
+> depending on commercial or industrial temperature ratings.
+>
+> This patch expands the thermal information to include the limits of 90
+> and 105C for alert and critical.  It sets the coolings-cells for the
+> 34xx and 36xx CPU's which both point to omap3-cpu-thermal.dtsi.
+>
+> For boards who never use industrial temperatures, these can be
+> changed on their respective device trees with something like:
+>
+> &cpu_alert0 {
+>         temperature = <85000>; /* millicelsius */
+> };
+>
+> &cpu_crit {
+>         temperature = <90000>; /* millicelsius */
+> };
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # on GTA04A5 with dm3730cbp100
+>
 
-It's been a week, and we heard back from Viresh (and Joe) on
-this, but no one else.  Viresh left out the break statement on
-the last case of the switch statement intentionally, arguing
-that it is not needed (much like a return statement at the end
-of a void function).  But he doesn't feel strongly enough
-insist it should stay that way.  I'm sure the others omitted
-the break statement intentionally as well.
+Tony,
 
-Given no strong pushback, I'll ask you (Gustavo) to post a
-second patch adding the missing break statements I described
-(and look for any others I might have missed).  If you would
-prefer not to do that, just say so, and I will send out such
-a patch myself.
+I know this is an old thread.  I am trying to revisit some of the
+other issues that came about with this, but is there any way we can
+get patch 2/2 applied?  It might not do anything unless the bandgap
+sensor is enabled, but it at least gets us one step closer for those
+who choose to enable it.  With 1GHz support now available, it would be
+nice to have the precautions to protect the processor from running too
+fast when its too hot.
 
-On your original patch, it looks good to me.  Thank you.
+thanks
 
-Reviewed-by: Alex Elder <elder@linaro.org>
+adam
 
-> It seems that Johan likes default (or final) cases in
-> switch statements without a "break" statement.  Viresh
-> and Bryan appear to be fond of this too.
-> 
-> It's pedantic, but I don't like that.  Am I wrong?
->   --> Johan/Viresh/Bryan would you please comment?
-> 
-> If they aren't convincing (or don't care) I think break
-> statements should also be added here:
-> - In gb_interface_read_and_clear_init_status() for the
->   default case
-> - In gb_interface_activate() for the default case.
-> - In gb_svc_process_deferred_request() for the default
->   case
-> 
-> But let's wait to see what Johan (et al) says.  If you
-> don't want to do that, say so and I'll do it later.
-> 
-> I looked at the code in drivers/staging/greybus/ and saw
-> no need to add a "fallthrough" anywhere, but:
-> - In fw_mgmt_backend_fw_version_operation() Viresh
->   seems to have skipped the break in the fault statement
-> - In gb_uart_request_handler() Bryan did this too.
-> 
-> Depending on discussion, these could be fixed in a
-> separate patch as well.
-> 
-> These cases aren't found by "checkpatch.pl" because it only
-> looks at case "blocks" that are followed by another case.
-> So the last case isn't checked.
-> 
->                     -Alex
-> 
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>   drivers/greybus/es2.c       | 2 +-
->>   drivers/greybus/interface.c | 2 +-
->>   2 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/greybus/es2.c b/drivers/greybus/es2.c
->> index 366716f11b1a..1df6ab5d339d 100644
->> --- a/drivers/greybus/es2.c
->> +++ b/drivers/greybus/es2.c
->> @@ -759,7 +759,7 @@ static int check_urb_status(struct urb *urb)
->>       case -EOVERFLOW:
->>           dev_err(dev, "%s: overflow actual length is %d\n",
->>               __func__, urb->actual_length);
->> -        /* fall through */
->> +        fallthrough;
->>       case -ECONNRESET:
->>       case -ENOENT:
->>       case -ESHUTDOWN:
->> diff --git a/drivers/greybus/interface.c b/drivers/greybus/interface.c
->> index 67dbe6fda9a1..58ea374d8aaa 100644
->> --- a/drivers/greybus/interface.c
->> +++ b/drivers/greybus/interface.c
->> @@ -1233,7 +1233,7 @@ int gb_interface_add(struct gb_interface *intf)
->>       case GB_INTERFACE_TYPE_GREYBUS:
->>           dev_info(&intf->dev, "GMP VID=0x%08x, PID=0x%08x\n",
->>                intf->vendor_id, intf->product_id);
->> -        /* fall-through */
->> +        fallthrough;
->>       case GB_INTERFACE_TYPE_UNIPRO:
->>           dev_info(&intf->dev, "DDBL1 Manufacturer=0x%08x, Product=0x%08x\n",
->>                intf->ddbl1_manufacturer_id,
->>
-> 
-
+> diff --git a/arch/arm/boot/dts/omap3-cpu-thermal.dtsi b/arch/arm/boot/dts/omap3-cpu-thermal.dtsi
+> index 235ecfd61e2d..dfbd0cb0b00b 100644
+> --- a/arch/arm/boot/dts/omap3-cpu-thermal.dtsi
+> +++ b/arch/arm/boot/dts/omap3-cpu-thermal.dtsi
+> @@ -17,4 +17,25 @@ cpu_thermal: cpu_thermal {
+>
+>                         /* sensor       ID */
+>         thermal-sensors = <&bandgap     0>;
+> +
+> +       cpu_trips: trips {
+> +               cpu_alert0: cpu_alert {
+> +                       temperature = <90000>; /* millicelsius */
+> +                       hysteresis = <2000>; /* millicelsius */
+> +                       type = "passive";
+> +               };
+> +               cpu_crit: cpu_crit {
+> +                       temperature = <105000>; /* millicelsius */
+> +                       hysteresis = <2000>; /* millicelsius */
+> +                       type = "critical";
+> +               };
+> +       };
+> +
+> +       cpu_cooling_maps: cooling-maps {
+> +               map0 {
+> +                       trip = <&cpu_alert0>;
+> +                       cooling-device =
+> +                               <&cpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +               };
+> +       };
+>  };
+> diff --git a/arch/arm/boot/dts/omap34xx.dtsi b/arch/arm/boot/dts/omap34xx.dtsi
+> index 7b09cbee8bb8..99a7161bebb2 100644
+> --- a/arch/arm/boot/dts/omap34xx.dtsi
+> +++ b/arch/arm/boot/dts/omap34xx.dtsi
+> @@ -26,6 +26,7 @@
+>                                 600000  1350000
+>                         >;
+>                         clock-latency = <300000>; /* From legacy driver */
+> +                       #cooling-cells = <2>;
+>                 };
+>         };
+>
+> diff --git a/arch/arm/boot/dts/omap36xx.dtsi b/arch/arm/boot/dts/omap36xx.dtsi
+> index 1e552f08f120..8096b6ef0ae1 100644
+> --- a/arch/arm/boot/dts/omap36xx.dtsi
+> +++ b/arch/arm/boot/dts/omap36xx.dtsi
+> @@ -28,6 +28,7 @@
+>                                 800000  1325000
+>                         >;
+>                         clock-latency = <300000>; /* From legacy driver */
+> +                       #cooling-cells = <2>;
+>                 };
+>         };
+>
+> --
+> 2.17.1
+>
