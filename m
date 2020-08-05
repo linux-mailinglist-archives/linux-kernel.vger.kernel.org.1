@@ -2,243 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFD723D08B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B8F23D138
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728113AbgHETuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47334 "EHLO
+        id S1729251AbgHET5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbgHEQxw (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:53:52 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF741C034611
-        for <Linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:45:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=unp2ULRv3n88LTY/GZXfJgG6CYh6rsWdx2r0Nn+lYa4=; b=tlMr0ee5tqEHn8jmPLIhwMd3R4
-        xHTX+0F6Xm0542kkqE05tQMKd8tUr3AmyWi/BoiRJ9hWbnzctbx2gROvD45wboJGPP6Nc4xz+rKMn
-        6O1h0X+hb6hw7qL9CsRplNZwx+ozmZFh4c+67CZZSyRL71NM9wuMRbMw9OWnnpArjcR8EtJ0wipRZ
-        NjhLoY4BxwBqBww+csnY9YUWwwwdble4rvygMYwTh8s3UgluucVW+cJhmW5S4pPzGL2G0qCUCnOI5
-        fV470+cIrIItw06PjGGTSC2oVxFLelj0iHWRzXWigoIOq9x9k+h2YT7ACf6Qdprs2egJDNhRKDvOl
-        SHB+dleQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3Imv-0000GA-Lo; Wed, 05 Aug 2020 12:44:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BC085301E02;
-        Wed,  5 Aug 2020 14:44:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AE16223E7A6AB; Wed,  5 Aug 2020 14:44:54 +0200 (CEST)
-Date:   Wed, 5 Aug 2020 14:44:54 +0200
-From:   peterz@infradead.org
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     mingo@redhat.com, oleg@redhat.com, acme@kernel.org,
-        jolsa@kernel.org, Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        alexander.shishkin@linux.intel.com, mark.rutland@arm.com
-Subject: Re: [PATCH v1 2/2] perf/core: Fake regs for leaked kernel samples
-Message-ID: <20200805124454.GP2657@hirez.programming.kicks-ass.net>
-References: <20200731025617.16243-1-yao.jin@linux.intel.com>
- <20200731025617.16243-2-yao.jin@linux.intel.com>
- <20200804114900.GI2657@hirez.programming.kicks-ass.net>
- <4c958d61-11a7-9f3e-9e7d-d733270144a1@linux.intel.com>
+        with ESMTP id S1727865AbgHEQns (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:43:48 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E86C034612;
+        Wed,  5 Aug 2020 05:46:04 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id c12so24490446qtn.9;
+        Wed, 05 Aug 2020 05:46:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=th4R0mCDoEKdxtP92DcRMWCvQNUwMm704tc+tQsZ6e8=;
+        b=CMnzX/BkmrlbcfiKr7JDmYk704xsWGknJKvd+HQfxigZlMYUd2JDxLZZJ7AM4TB3Tu
+         xU1b2tTVbUxTEcVS0keHcGIOcvDbg0Mc9e44uwsdob+ZBmNGkINJPYUrbXW1+jGpvTLK
+         q6HKh3ivwm3nAHOgsJQDTdhdUercSIIvr6v7SehaOwRjst4uDAortgK+6vcDK5Dt5wZ8
+         7kUHi9Unn4E4nmWDGVLlM94Hu3Od0H2KdOl1Ckkp64W9ckafVFOmZQUWzAWqj8Ku24va
+         Sz1jmJ4MtajaF/nWDfSRh9FPkplHRF/31M1d8qwy/IO2PlKYQYUCF5z60bd5zaEURRNn
+         opGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=th4R0mCDoEKdxtP92DcRMWCvQNUwMm704tc+tQsZ6e8=;
+        b=PJU27bSOqH20mghqx6QETZ0jSO+leoLP6wgwFCxeCMoJxxR1avg5sGLxBV5C+cPUlc
+         DWT59RCsiIlY1lNKB2ljAAxaaye8nYTELA9ol90rCBwnZ4fRp3mypKEu4ClarcOlNlo/
+         Mj5hbDAFi2xQ1B9ayJsfebza8jQN/03qzPHK4pD58uZlkqzVokPhxZ+jiG4PctwxOjkL
+         o5GmfBbc9GkYf7yef6Jd0KTixNhiE6um2UNKuFWC7xQEfVGkC86IYOm2RJYVlOfYePhi
+         s0sT/DQyDxxqH440UK1xmxoCxUCQEtLeMFR9C2+65b5SWVkUO/2o7UierPSmAlPjdwao
+         NSuQ==
+X-Gm-Message-State: AOAM5328/6BBHHHxelk2/fXz5Nva/BZcrwv045lqswa5StGURkOzNZQl
+        DqdRMnnhaq0sKbou7glOiZG7CberAiY=
+X-Google-Smtp-Source: ABdhPJxrH4/VsLOKixqcHuZDqId9PnSjHLiReskUJRab0cl4DnJUCIsc2KvflzT6+UowANCjwPVYXw==
+X-Received: by 2002:ac8:6f51:: with SMTP id n17mr3057373qtv.233.1596631562731;
+        Wed, 05 Aug 2020 05:46:02 -0700 (PDT)
+Received: from [192.168.1.190] (pool-96-244-118-111.bltmmd.fios.verizon.net. [96.244.118.111])
+        by smtp.gmail.com with ESMTPSA id j15sm1410469qkl.63.2020.08.05.05.46.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 05:46:01 -0700 (PDT)
+Subject: Re: [PATCH v6 1/4] IMA: Add func to measure LSM state and policy
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        casey@schaufler-ca.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200805004331.20652-1-nramas@linux.microsoft.com>
+ <20200805004331.20652-2-nramas@linux.microsoft.com>
+ <4b9d2715d3ef3c8f915ef03867cfb1a39c0abc54.camel@linux.ibm.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Message-ID: <f88bf25e-37ef-7f00-6162-215838961bb0@gmail.com>
+Date:   Wed, 5 Aug 2020 08:46:00 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c958d61-11a7-9f3e-9e7d-d733270144a1@linux.intel.com>
+In-Reply-To: <4b9d2715d3ef3c8f915ef03867cfb1a39c0abc54.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 10:15:26AM +0800, Jin, Yao wrote:
-> Hi Peter,
-> 
-> On 8/4/2020 7:49 PM, peterz@infradead.org wrote:
-> > On Fri, Jul 31, 2020 at 10:56:17AM +0800, Jin Yao wrote:
-> > > @@ -6973,7 +6973,8 @@ static struct perf_callchain_entry __empty_callchain = { .nr = 0, };
-> > >   struct perf_callchain_entry *
-> > >   perf_callchain(struct perf_event *event, struct pt_regs *regs)
-> > >   {
-> > > -	bool kernel = !event->attr.exclude_callchain_kernel;
-> > > +	bool kernel = !event->attr.exclude_callchain_kernel &&
-> > > +		      !event->attr.exclude_kernel;
-> > 
-> > This seems weird; how can we get there. Also it seems to me that if you
-> > have !exclude_callchain_kernel you already have permission for kernel
-> > bits, so who cares.
-> > 
-> 
-> In perf tool, exclude_callchain_kernel is set to 1 when perf-record only
-> collects the user callchains and exclude_kernel is set to 1 when events are
-> configured to run in user space.
-> 
-> So if an event is configured to run in user space, that should make sense we
-> don't need it's kernel callchains.
-> 
-> But it seems to me there is no code logic in perf tool which can make sure
-> !exclude_callchain_kernel -> !exclude_kernel.
-> 
-> Jiri, Arnaldo, is my understanding correct?
+On 8/4/20 11:25 PM, Mimi Zohar wrote:
 
-What the perf tool does or does not do is irrelevant. It is a valid,
-(albeit slightly silly) configuration to have:
+> Hi Lakshmi,
+>
+> There's still  a number of other patch sets needing to be reviewed
+> before my getting to this one.  The comment below is from a high level.
+>
+> On Tue, 2020-08-04 at 17:43 -0700, Lakshmi Ramasubramanian wrote:
+>> Critical data structures of security modules need to be measured to
+>> enable an attestation service to verify if the configuration and
+>> policies for the security modules have been setup correctly and
+>> that they haven't been tampered with at runtime. A new IMA policy is
+>> required for handling this measurement.
+>>
+>> Define two new IMA policy func namely LSM_STATE and LSM_POLICY to
+>> measure the state and the policy provided by the security modules.
+>> Update ima_match_rules() and ima_validate_rule() to check for
+>> the new func and ima_parse_rule() to handle the new func.
+> I can understand wanting to measure the in kernel LSM memory state to
+> make sure it hasn't changed, but policies are stored as files.  Buffer
+> measurements should be limited  to those things that are not files.
+>
+> Changing how data is passed to the kernel has been happening for a
+> while.  For example, instead of passing the kernel module or kernel
+> image in a buffer, the new syscalls - finit_module, kexec_file_load -
+> pass an open file descriptor.  Similarly, instead of loading the IMA
+> policy data, a pathname may be provided.
+>
+> Pre and post security hooks already exist for reading files.   Instead
+> of adding IMA support for measuring the policy file data, update the
+> mechanism for loading the LSM policy.  Then not only will you be able
+> to measure the policy, you'll also be able to require the policy be
+> signed.
 
-	exclude_kernel && !exclude_callchain_kernel
+To clarify, the policy being measured by this patch series is a 
+serialized representation of the in-memory policy data structures being 
+enforced by SELinux.  Not the file that was loaded.  Hence, this 
+measurement would detect tampering with the in-memory policy data 
+structures after the policy has been loaded.  In the case of SELinux, 
+one can read this serialized representation via /sys/fs/selinux/policy.  
+The result is not byte-for-byte identical to the policy file that was 
+loaded but can be semantically compared via sediff and other tools to 
+determine whether it is equivalent.
 
-You're now saying that when you configure things like this you're not
-allowed kernel IPs, that's wrong I think.
 
-Also, !exclude_callchain_kernel should require privilidge, whcih needs
-fixing, see below.
-
-> So the new code looks like:
-> 
-> if (event->attr.exclude_kernel && !user_mode(regs)) {
-> 	if (!(current->flags & PF_KTHREAD)) {
-> 		regs_fake = task_pt_regs(current);
-> 		if (!regs_fake)
-> 			instruction_pointer_set(regs, -1L);
-> 	} else {
-> 		instruction_pointer_set(regs, -1L);
-> 	}
-
-Again:
-
-	if (!(current->flags & PF_KTHREAD))
-		regs_fake = task_pt_regs(current);
-
-	if (!regs_fake)
-		instruction_pointer_set(regs, -1L);
-
-Is much simpler and more readable.
-
-> > > +		if ((header->misc & PERF_RECORD_MISC_CPUMODE_MASK) ==
-> > > +		     PERF_RECORD_MISC_KERNEL) {
-> > > +			header->misc &= ~PERF_RECORD_MISC_CPUMODE_MASK;
-> > > +			header->misc |= PERF_RECORD_MISC_USER;
-> > > +		}
-> > 
-> > Why the conditional? At this point it had better be unconditionally
-> > user, no?
-> > 
-> > 		headers->misc &= ~PERF_RECORD_MISC_CPUMODE_MASK;
-> > 		headers->misc |= PERF_RECORD_MISC_USER;
-> > 
-> 
-> #define PERF_RECORD_MISC_CPUMODE_MASK		(7 << 0)
-> #define PERF_RECORD_MISC_CPUMODE_UNKNOWN	(0 << 0)
-> #define PERF_RECORD_MISC_KERNEL			(1 << 0)
-> #define PERF_RECORD_MISC_USER			(2 << 0)
-> #define PERF_RECORD_MISC_HYPERVISOR		(3 << 0)
-> #define PERF_RECORD_MISC_GUEST_KERNEL		(4 << 0)
-> #define PERF_RECORD_MISC_GUEST_USER		(5 << 0)
-> 
-> If we unconditionally set user, it will reset for hypervisor, guest
-> kernel and guest_user.
-
-At the same time :u had better not get any of those either. Which seems
-to suggest we're going about this wrong.
-
-Also, if we call this before perf_misc_flags() we don't need to fix it
-up.
-
-How's this?
-
----
- kernel/events/core.c | 38 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 33 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 7c436d705fbd..3e4e328b521a 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6988,23 +6988,49 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
- 	return callchain ?: &__empty_callchain;
- }
- 
-+/*
-+ * Due to interrupt latency (skid), we may enter the kernel before taking the
-+ * PMI, even if the PMU is configured to only count user events. To avoid
-+ * leaking kernel addresses, use task_pt_regs(), when available.
-+ */
-+static struct pt_regs *sanitize_sample_regs(struct perf_event *event, struct pt_regs *regs)
-+{
-+	struct pt_regs *sample_regs = regs;
-+
-+	/* user only */
-+	if (!event->attr.exclude_kernel || !event->attr.exclude_hv ||
-+	    !event->attr.exclude_host   || !event->attr.exclude_guest)
-+		return sample_regs;
-+
-+	if (sample_regs(regs))
-+		return sample_regs;
-+
-+	if (!(current->flags & PF_KTHREAD)) {
-+		sample_regs = task_pt_regs(current);
-+	else
-+		instruction_pointer_set(regs, -1L);
-+
-+	return sample_regs;
-+}
-+
- void perf_prepare_sample(struct perf_event_header *header,
- 			 struct perf_sample_data *data,
- 			 struct perf_event *event,
- 			 struct pt_regs *regs)
- {
-+	struct pt_regs *sample_regs = sanitize_sample_regs(event, regs);
- 	u64 sample_type = event->attr.sample_type;
- 
- 	header->type = PERF_RECORD_SAMPLE;
- 	header->size = sizeof(*header) + event->header_size;
- 
- 	header->misc = 0;
--	header->misc |= perf_misc_flags(regs);
-+	header->misc |= perf_misc_flags(sample_regs);
- 
- 	__perf_event_header__init_id(header, data, event);
- 
- 	if (sample_type & PERF_SAMPLE_IP)
--		data->ip = perf_instruction_pointer(regs);
-+		data->ip = perf_instruction_pointer(sample_regs);
- 
- 	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
- 		int size = 1;
-@@ -7054,9 +7080,10 @@ void perf_prepare_sample(struct perf_event_header *header,
- 		header->size += size;
- 	}
- 
--	if (sample_type & (PERF_SAMPLE_REGS_USER | PERF_SAMPLE_STACK_USER))
-+	if (sample_type & (PERF_SAMPLE_REGS_USER | PERF_SAMPLE_STACK_USER)) {
- 		perf_sample_regs_user(&data->regs_user, regs,
- 				      &data->regs_user_copy);
-+	}
- 
- 	if (sample_type & PERF_SAMPLE_REGS_USER) {
- 		/* regs dump ABI info */
-@@ -7099,7 +7126,7 @@ void perf_prepare_sample(struct perf_event_header *header,
- 		/* regs dump ABI info */
- 		int size = sizeof(u64);
- 
--		perf_sample_regs_intr(&data->regs_intr, regs);
-+		perf_sample_regs_intr(&data->regs_intr, sample_regs);
- 
- 		if (data->regs_intr.regs) {
- 			u64 mask = event->attr.sample_regs_intr;
-@@ -11609,7 +11636,8 @@ SYSCALL_DEFINE5(perf_event_open,
- 	if (err)
- 		return err;
- 
--	if (!attr.exclude_kernel) {
-+	if (!attr.exclude_kernel || !attr.exclude_callchain_kernel ||
-+	    !attr.exclude_hv || !attr.exclude_host || !attr.exclude_guest) {
- 		err = perf_allow_kernel(&attr);
- 		if (err)
- 			return err;
