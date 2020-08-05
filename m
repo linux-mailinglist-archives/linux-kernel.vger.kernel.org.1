@@ -2,133 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9EB23CF1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3CA23CF15
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728694AbgHETOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:14:14 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:57818 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729127AbgHESIN (ORCPT
+        id S1729221AbgHETNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728621AbgHESYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 14:08:13 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3F24120B4908;
-        Wed,  5 Aug 2020 11:08:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3F24120B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1596650892;
-        bh=nmsxVvy9uSl1xEN+jjXmNcxFl8xyf7PQlgsr4N4w3tY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ZfjAliDROLZOk0o0RA2eB/39qWP4JJcgS24/LRkShVDpP5hiCcHhbZYGr2WdptVHW
-         sUMFKc/XA5VQE8yTMpCuBMtovTVgF8rjaK72HzsCGnWOyUOIM9pVlXWfIWPPwXUzMX
-         SfNkxA/7bH/HwehmjdTi6UPbBGN/EM1LGhBgvrao=
-Subject: Re: [PATCH v6 0/4] LSM: Measure security module data
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     stephen.smalley.work@gmail.com, sashal@kernel.org,
-        jmorris@namei.org, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200805004331.20652-1-nramas@linux.microsoft.com>
- <f3971f35-309d-c3e5-9126-69add7ad4c11@schaufler-ca.com>
- <50587a3e-bcb5-c68e-c16c-41baf68b4d4a@linux.microsoft.com>
- <c7c168f2-e30b-d2c5-abcb-1b6919197474@schaufler-ca.com>
- <20200805154504.GB4365@sequoia>
- <69810007161e689ac817099fb1c6df21962963e4.camel@linux.ibm.com>
- <9ad079ff-1bd4-1302-e6fb-25a7396ef12f@linux.microsoft.com>
- <ecc97f59-c2cc-0b23-6199-925ba0d6358b@schaufler-ca.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <50f00ace-8d46-01c2-bf0f-d5484aafd95c@linux.microsoft.com>
-Date:   Wed, 5 Aug 2020 11:08:11 -0700
+        Wed, 5 Aug 2020 14:24:25 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F09C061575;
+        Wed,  5 Aug 2020 11:24:25 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id d19so1415585pgl.10;
+        Wed, 05 Aug 2020 11:24:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sesb+iOajMrkthKitgXHyu1N3R51OJyrL241Xs6whr8=;
+        b=chNJhfF7a+/eQFIbz8EN66bcNCKTFuLcvelW5TuPxN4hdyLi7eWIXZZSH2gBrk/JUo
+         b7qK0y5fVrx1I1EYXGcnauESoF0La+GysDkT8s1uIo3y0AefGOvNE9c3CjYH65iWeD8/
+         GC2VrsbKdQA6yDOO8FWZyncn9nXhB+C4UrlB67IWspLd5mz53EAbuMyPYIdwauunvOv4
+         Map3/4Rq1W3FJSXXtqV4lsdkNdrJ/ovYxqQDuHs4tYBmPw/huOgtFJCOoLsnL33uZf32
+         RdlUugTIw2kSTrpn6mda882UUKZ4seU/17PpirFgDaf5SV7J1DUZCgIQWhsTT76wGu2Y
+         Oq9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=sesb+iOajMrkthKitgXHyu1N3R51OJyrL241Xs6whr8=;
+        b=Yq0z9gABYNsu3F1Q0r2rO6l2ZSo+cF1GjgrLVc7ewUYjT4GnqOCtYueGID0735EwQ4
+         CPsdMHQKnp+9IY37xIUEb2CIepPkW03VRKtd33eHBrgdftzJuxHoV0u6oPnWQ71CQ2xB
+         x8CZZPCfxFSPl0rszCrKCRfztfdrQyiQSozBLPimsxlQo2bEaNtHsRrjDSBaaDeeaGJC
+         xRKzp2mmCWp2rVaMlbHLPV/6n1PhGmWT50LzHPWBPwYKLkspSsfaMksMVdRB6lw2RGpA
+         4NFPmdhzNSLEeeO15CYo5E0a1ZpEA5UHbNvVEK5YD9GcB8K7qYyexreT7f3vH6SUhEsm
+         z7DQ==
+X-Gm-Message-State: AOAM532ScrqlfD3D9oCVguPsgCe7g6saKeIYWtnjVU6MxPBvKhBRA5nT
+        7dCHPxdus9LxgTDN2Frent6RhbgA
+X-Google-Smtp-Source: ABdhPJwKLNOLC8w3MreF/H6NQ6gI/veJY+Itb1bCqCCkcsYAmS/VSOhslcfnVigCbZHx8w/cv0IZHw==
+X-Received: by 2002:a62:1d1:: with SMTP id 200mr4409861pfb.161.1596651865244;
+        Wed, 05 Aug 2020 11:24:25 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l16sm4493848pff.167.2020.08.05.11.24.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 11:24:24 -0700 (PDT)
+Subject: Re: [PATCH 5.7 0/6] 5.7.14-rc1 review
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, w@1wt.eu,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+References: <20200805153506.978105994@linuxfoundation.org>
+ <CA+G9fYv_aX36Kq_RD5dAL_By4AFq=-ZY_qh7VhLG=HJQv5mDzg@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <71a132bf-5ddb-a97a-9b65-6767fd806ee9@roeck-us.net>
+Date:   Wed, 5 Aug 2020 11:24:22 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <ecc97f59-c2cc-0b23-6199-925ba0d6358b@schaufler-ca.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
+In-Reply-To: <CA+G9fYv_aX36Kq_RD5dAL_By4AFq=-ZY_qh7VhLG=HJQv5mDzg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/20 10:57 AM, Casey Schaufler wrote:
-> On 8/5/2020 10:25 AM, Lakshmi Ramasubramanian wrote:
->> On 8/5/20 10:03 AM, Mimi Zohar wrote:
->>> On Wed, 2020-08-05 at 10:45 -0500, Tyler Hicks wrote:
->>>
->>>> In addition to SELINUX_STATE and SELINUX_POLICY, we should also consider
->>>> the proposed LSM_STATE and LSM_POLICY func values but require an "lsm"
->>>> rule conditional.
->>>>
->>>> So the current proposed rules:
->>>>
->>>> ? measure func=LSM_STATE
->>>> ? measure func=LSM_POLICY
->>>>
->>>> Would become:
->>>>
->>>> ? measure func=LSM_STATE lsm=selinux
->>>> ? measure func=LSM_POLICY lsm=selinux
->>>>
->>>> The following rules would be rejected:
->>>>
->>>> ? measure func=LSM_STATE
->>>> ? measure func=LSM_POLICY
->>>> ? measure func=LSM_STATE lsm=apparmor
->>>> ? measure func=LSM_POLICY lsm=smack
->>>
->>> Kees is cleaning up the firmware code which differentiated between how
->>> firmware was loaded.?? There will be a single firmware enumeration.
->>>
->>> Similarly, the new IMA hook to measure critical state may be placed in
->>> multiple places.? Is there really a need from a policy perspective for
->>> differentiating the source of the critical state being measurind??? The
->>> data being measured should include some identifying information.
+On 8/5/20 10:39 AM, Naresh Kamboju wrote:
+> On Wed, 5 Aug 2020 at 21:22, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
 >>
->> Yes Mimi - SELinux is including the identifying information in the "event name" field. Please see a sample measurement of STATE and POLICY for SELinux below:
+>> This is the start of the stable review cycle for the 5.7.14 release.
+>> There are 6 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
 >>
->> 10 e32e...5ac3 ima-buf sha256:86e8...4594 selinux-state-1595389364:287899386 696e697469616c697a65643d313b656e61626c65643d313b656e666f7263696e673d303b636865636b72657170726f743d313b6e6574776f726b5f706565725f636f6e74726f6c733d313b6f70656e5f7065726d733d313b657874656e6465645f736f636b65745f636c6173733d313b616c776179735f636865636b5f6e6574776f726b3d303b6367726f75705f7365636c6162656c3d313b6e6e705f6e6f737569645f7472616e736974696f6e3d313b67656e66735f7365636c6162656c5f73796d6c696e6b733d303
+>> Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
+>> Anything received after that time might be too late.
 >>
->> 10 f4a7...9408 ima-ng sha256:8d1d...1834 selinux-policy-hash-1595389353:863934271
+>> The whole patch series can be found in one patch at:
+>>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.14-rc1.gz
+>> or in the git tree and branch at:
+>>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
+>> and the diffstat can be found below.
 >>
->>>
->>> I think moving away from the idea that measuring "critical" data should
->>> be limited to LSMs, will clarify this.
->>>
+>> thanks,
 >>
->> Are you suggesting that instead of calling the hooks LSM_STATE and LSM_POLICY, we should keep it more generic so that it can be utilized by any subsystem to measure their "critical data"?
+>> greg k-h
+>>
+>> -------------
+>> Pseudo-Shortlog of commits:
+>>
+>> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>     Linux 5.7.14-rc1
+>>
+>> Marc Zyngier <maz@kernel.org>
+>>     arm64: Workaround circular dependency in pointer_auth.h
+>>
+>> Linus Torvalds <torvalds@linux-foundation.org>
+>>     random32: move the pseudo-random 32-bit definitions to prandom.h
+>>
+>> Linus Torvalds <torvalds@linux-foundation.org>
+>>     random32: remove net_rand_state from the latent entropy gcc plugin
+>>
+>> Willy Tarreau <w@1wt.eu>
+>>     random: fix circular include dependency on arm64 after addition of percpu.h
+>>
+>> Grygorii Strashko <grygorii.strashko@ti.com>
+>>     ARM: percpu.h: fix build error
+>>
+>> Willy Tarreau <w@1wt.eu>
+>>     random32: update the net random state on interrupt and activity
+>>
 > 
-> Policy, state, history or whim, it should be up to the security module
-> to determine what data it cares about, and how it should be measured.
-> Smack does not keep its policy in a single blob of data, it uses lists
-> which can be modified at will. Your definition of the behavior for
-> LSM_POLICY wouldn't work for Smack. That doesn't mean that there isn't
-> a viable way to measure the Smack policy, it just means that IMA isn't
-> the place for it. If SELinux wants its data measured, SELinux should be
-> providing the mechanism to do it.
+> [ sorry if it is not interesting ! ]
 > 
-> I guess that I'm agreeing with you in part. If you want a generic measurement
-> of "critical data", you don't need to assign a type to it, you have the
-> caller (a security module, a device driver or whatever) identify itself and
-> how it is going to deal with the data. That's very different from what you've
-> done to date.
+> While building with old gcc-7.3.0 the build breaks for arm64
+> whereas build PASS on gcc-8, gcc-9 and gcc-10.
+> 
+> with gcc 7.3.0 build breaks log,
+> 
+Same with older versions of gcc. I don't see the problem with the
+mainline kernel.
 
-Agree.
+I think this is caused by more recursive includes.
+arch/arm64/include/asm/archrandom.h includes include/linux/random.h
+which includes arch/arm64/include/asm/archrandom.h to get the definition
+of arch_get_random_seed_long_early (which it won't get because of
+the recursion).
 
-Like Stephen had stated earlier, the reason we kept separate hooks 
-(STATE and POLICY) is because the data for state is usually small and 
-therefore we measure the entire data. Whereas, policy data is usually 
-quite large (a few MB) and hence we measure a hash of the policy.
+What I don't really understand is how this works with new versions
+of gcc.
 
-If change to a generic measurement of "critical data", at the least IMA 
-should provide a way to measure "data" and "hash(data)".
+Guenter
 
-And, with the caller providing the identifying information, there would 
-be no need to call it "LSM_STATE" or "SELINUX_STATE" or such.
-
-  -lakshmi
-
+> In file included from arch/arm64/include/asm/archrandom.h:9:0,
+>                  from arch/arm64/kernel/kaslr.c:14:
+> include/linux/random.h: In function 'arch_get_random_seed_long_early':
+> include/linux/random.h:149:9: error: implicit declaration of function
+> 'arch_get_random_seed_long'; did you mean
+> 'arch_get_random_seed_long_early'?
+> [-Werror=implicit-function-declaration]
+>   return arch_get_random_seed_long(v);
+>          ^~~~~~~~~~~~~~~~~~~~~~~~~
+>          arch_get_random_seed_long_early
+> include/linux/random.h: In function 'arch_get_random_long_early':
+> include/linux/random.h:157:9: error: implicit declaration of function
+> 'arch_get_random_long'; did you mean 'get_random_long'?
+> [-Werror=implicit-function-declaration]
+>   return arch_get_random_long(v);
+>          ^~~~~~~~~~~~~~~~~~~~
+>          get_random_long
+> In file included from arch/arm64/kernel/kaslr.c:14:0:
+> arch/arm64/include/asm/archrandom.h: At top level:
+> arch/arm64/include/asm/archrandom.h:30:33: error: conflicting types
+> for 'arch_get_random_long'
+>  static inline bool __must_check arch_get_random_long(unsigned long *v)
+>                                  ^~~~~~~~~~~~~~~~~~~~
+> In file included from arch/arm64/include/asm/archrandom.h:9:0,
+>                  from arch/arm64/kernel/kaslr.c:14:
+> include/linux/random.h:157:9: note: previous implicit declaration of
+> 'arch_get_random_long' was here
+>   return arch_get_random_long(v);
+>          ^~~~~~~~~~~~~~~~~~~~
+> In file included from arch/arm64/kernel/kaslr.c:14:0:
+> arch/arm64/include/asm/archrandom.h:40:33: error: conflicting types
+> for 'arch_get_random_seed_long'
+>  static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
+>                                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from arch/arm64/include/asm/archrandom.h:9:0,
+>                  from arch/arm64/kernel/kaslr.c:14:
+> include/linux/random.h:149:9: note: previous implicit declaration of
+> 'arch_get_random_seed_long' was here
+>   return arch_get_random_seed_long(v);
+>          ^~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from arch/arm64/kernel/kaslr.c:14:0:
+> arch/arm64/include/asm/archrandom.h:72:1: error: redefinition of
+> 'arch_get_random_seed_long_early'
+>  arch_get_random_seed_long_early(unsigned long *v)
+>  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from arch/arm64/include/asm/archrandom.h:9:0,
+>                  from arch/arm64/kernel/kaslr.c:14:
+> include/linux/random.h:146:27: note: previous definition of
+> 'arch_get_random_seed_long_early' was here
+>  static inline bool __init arch_get_random_seed_long_early(unsigned long *v)
+> 
+> 
 
