@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B6923CD5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F8C23CCFA
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728078AbgHER0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:26:03 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55896 "EHLO
+        id S1728661AbgHERNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:13:51 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51064 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728754AbgHERPU (ORCPT
+        with ESMTP id S1728582AbgHERKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:15:20 -0400
+        Wed, 5 Aug 2020 13:10:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647719;
+        s=mimecast20190719; t=1596647428;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=F9jhUCzJG3d5qzZf8hbOT7t6D5kO04BfJCWtdPEBjeI=;
-        b=EuGfFuJ98jJiI4vsrkwF3s3H/97E3GQGNHLc8xOsNdA2dYfWXvBrvIgwRsaLz+uot22U4A
-        FSM0hzYQCHeot5QW9HB0gYDZWrIN4/VvZZ2Ul5C4AhemnHlcC0ENiK1ffFheILhTQ4cuy1
-        udItHAzhDwtC+rrIkIXG4pCNYriKHEI=
+        bh=X64Xsc1z0L/QmYHsVcy3UgDLuv0e4itd0R0ewdQxVFs=;
+        b=cAKB4VBiWGsWoVdhTQEmJMGXUZaHU7yOmJB6Dj59PjBlD7drjLWv6SiBGULhdbsLekF8sL
+        Raqv9iMpJF+B55JRm1YCe90L7e1vTvbXJqCQ47xzZ4DtIH7ZjNFuOUNFU0KB9Ih73ZPf+B
+        NaiXW/IEaEXCg8qw2lk+J33HZBJivNI=
 Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
  [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-wCXaPYhgNDObTGfCwAs9Uw-1; Wed, 05 Aug 2020 09:43:35 -0400
-X-MC-Unique: wCXaPYhgNDObTGfCwAs9Uw-1
-Received: by mail-wr1-f69.google.com with SMTP id m7so13584758wrb.20
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:43:35 -0700 (PDT)
+ us-mta-485-8A0H6pRlM7y9Qd_YLgNwIQ-1; Wed, 05 Aug 2020 09:43:41 -0400
+X-MC-Unique: 8A0H6pRlM7y9Qd_YLgNwIQ-1
+Received: by mail-wr1-f69.google.com with SMTP id m7so13584862wrb.20
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:43:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=F9jhUCzJG3d5qzZf8hbOT7t6D5kO04BfJCWtdPEBjeI=;
-        b=IMk7g9XwQgBLeCnW3liIY4JwJKqmp47hmkTI3R4i8qv+alomDxDF0NFAi9RcnGEA/s
-         1cVFJ3DLJyS65efrpKS802SrEVakC5HgHdL0aZubtjEfjvq0ePGCfX17X5YLHypw5n0N
-         f3USVmB5bZhgmyuFoIOQHoIib2GWahpS7VvwDhZKBkapE0BtbSz+quWVbBS1k/ma24gL
-         cgXTkocBJYaTLtFY/nHGbJi0OeNQxBe6N2E74rO7x1YUhR5hsdUwPseyqypVFA4xhU/T
-         YieNP9U6DIGNEMN0nFurnHHs4cpT8IyIPdieRi5B2c2SSr1QKmYUX5fACyTN4zyNaBTj
-         xOfg==
-X-Gm-Message-State: AOAM5305L72KFefwnaFbOBclkDynzCLIltDDZ6HO1o1eYRbA35FpTDcc
-        7MxewTvjzXxRI2A/5WJatFtecsZ4b5wxSwq6t8a/oyWDrIRG9KlP39n91soU0SLGXqfe1PQcyDW
-        gtkfPJd2M+2rn8UqrGcOGEwVc
-X-Received: by 2002:adf:e7c9:: with SMTP id e9mr2969673wrn.10.1596635013754;
-        Wed, 05 Aug 2020 06:43:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyfXfkwVyl/Yt6AwMxy0nKXq0LBvruLr2Su9H68DLB9XOWjMZCC4BO0f4hY/ktMSHKoTxRjuA==
-X-Received: by 2002:adf:e7c9:: with SMTP id e9mr2969643wrn.10.1596635013338;
-        Wed, 05 Aug 2020 06:43:33 -0700 (PDT)
-Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
-        by smtp.gmail.com with ESMTPSA id y203sm2956845wmc.29.2020.08.05.06.43.31
+        bh=X64Xsc1z0L/QmYHsVcy3UgDLuv0e4itd0R0ewdQxVFs=;
+        b=aRBp9jvR44ybCE2Cib4QR9pgbbECRSKQOQ/EV1zvdFSKw/J4Vs3j4iviXtEkgd11ci
+         i68qGVdvc4zSo7ByM4XJuKLqi7LMgp4m/yR3XjzfL58e/9wIJjqbhBcD2uFneR4Mam6i
+         tGqF4UUVPSKtmAYrDmG8mBLT9SB+TvdS2A9ld4shDg2zB/aQl8aUhEZ8unuQPS/UXvM2
+         TuTsvKi5txNLM6oc/bPZ6dYxWWuI89BpC7tox9Rjg+fKU12ifzTxv0CTSqMq8NdIhUHz
+         f/GYyUf42Qi6QmUt5Dd8tyDfUslxVP4U1ftbb7TP89urr3G7vGFWQrzL9M7qiwDxMHnI
+         0KMA==
+X-Gm-Message-State: AOAM5324vx93wzeGCFnwOyipbuxUIGKQDNOHnFvkeZ7DOxMtUmb8xoEN
+        Jd6U/496pTYiJPk3+TbbGnEjiVeJ9S4ZLX/ZuyDsJ21gC9AKaBSlPmSLZnDSZfc5vOqzFaj8lFE
+        4t+1GVlftc4E0o+bAV31wwuH0
+X-Received: by 2002:a1c:750f:: with SMTP id o15mr3524221wmc.182.1596635019142;
+        Wed, 05 Aug 2020 06:43:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7HPK5kJbXhcBrmG1OonTHBBSwSvqaL+QYwUQafnUdvO/7RhWcIcON1LYaynur3bpXqN2OHA==
+X-Received: by 2002:a1c:750f:: with SMTP id o15mr3524205wmc.182.1596635018970;
+        Wed, 05 Aug 2020 06:43:38 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
+        by smtp.gmail.com with ESMTPSA id x204sm13094657wmg.2.2020.08.05.06.43.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:43:32 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:43:30 -0400
+        Wed, 05 Aug 2020 06:43:38 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 09:43:36 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Gonglei <arei.gonglei@huawei.com>,
         Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 06/38] virtio_blk: correct tags for config space fields
-Message-ID: <20200805134226.1106164-7-mst@redhat.com>
+        virtualization@lists.linux-foundation.org,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v3 08/38] virtio_crypto: correct tags for config space fields
+Message-ID: <20200805134226.1106164-9-mst@redhat.com>
 References: <20200805134226.1106164-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -72,95 +72,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tag config space fields as having virtio endian-ness.
+Since crypto is a modern-only device,
+tag config space fields as having little endian-ness.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 ---
- include/uapi/linux/virtio_blk.h | 26 +++++++++++++-------------
+ include/uapi/linux/virtio_crypto.h | 26 +++++++++++++-------------
  1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/include/uapi/linux/virtio_blk.h b/include/uapi/linux/virtio_blk.h
-index 0f99d7b49ede..d888f013d9ff 100644
---- a/include/uapi/linux/virtio_blk.h
-+++ b/include/uapi/linux/virtio_blk.h
-@@ -57,20 +57,20 @@
+diff --git a/include/uapi/linux/virtio_crypto.h b/include/uapi/linux/virtio_crypto.h
+index 50cdc8aebfcf..a03932f10565 100644
+--- a/include/uapi/linux/virtio_crypto.h
++++ b/include/uapi/linux/virtio_crypto.h
+@@ -414,33 +414,33 @@ struct virtio_crypto_op_data_req {
  
- struct virtio_blk_config {
- 	/* The capacity (in 512-byte sectors). */
--	__u64 capacity;
-+	__virtio64 capacity;
- 	/* The maximum segment size (if VIRTIO_BLK_F_SIZE_MAX) */
--	__u32 size_max;
-+	__virtio32 size_max;
- 	/* The maximum number of segments (if VIRTIO_BLK_F_SEG_MAX) */
--	__u32 seg_max;
-+	__virtio32 seg_max;
- 	/* geometry of the device (if VIRTIO_BLK_F_GEOMETRY) */
- 	struct virtio_blk_geometry {
--		__u16 cylinders;
-+		__virtio16 cylinders;
- 		__u8 heads;
- 		__u8 sectors;
- 	} geometry;
+ struct virtio_crypto_config {
+ 	/* See VIRTIO_CRYPTO_OP_* above */
+-	__u32  status;
++	__le32  status;
  
- 	/* block size of device (if VIRTIO_BLK_F_BLK_SIZE) */
--	__u32 blk_size;
-+	__virtio32 blk_size;
- 
- 	/* the next 4 entries are guarded by VIRTIO_BLK_F_TOPOLOGY  */
- 	/* exponent for physical block per logical block. */
-@@ -78,42 +78,42 @@ struct virtio_blk_config {
- 	/* alignment offset in logical blocks. */
- 	__u8 alignment_offset;
- 	/* minimum I/O size without performance penalty in logical blocks. */
--	__u16 min_io_size;
-+	__virtio16 min_io_size;
- 	/* optimal sustained I/O size in logical blocks. */
--	__u32 opt_io_size;
-+	__virtio32 opt_io_size;
- 
- 	/* writeback mode (if VIRTIO_BLK_F_CONFIG_WCE) */
- 	__u8 wce;
- 	__u8 unused;
- 
- 	/* number of vqs, only available when VIRTIO_BLK_F_MQ is set */
--	__u16 num_queues;
-+	__virtio16 num_queues;
- 
- 	/* the next 3 entries are guarded by VIRTIO_BLK_F_DISCARD */
  	/*
- 	 * The maximum discard sectors (in 512-byte sectors) for
- 	 * one segment.
+ 	 * Maximum number of data queue
  	 */
--	__u32 max_discard_sectors;
-+	__virtio32 max_discard_sectors;
- 	/*
- 	 * The maximum number of discard segments in a
- 	 * discard command.
- 	 */
--	__u32 max_discard_seg;
-+	__virtio32 max_discard_seg;
- 	/* Discard commands must be aligned to this number of sectors. */
--	__u32 discard_sector_alignment;
-+	__virtio32 discard_sector_alignment;
+-	__u32  max_dataqueues;
++	__le32  max_dataqueues;
  
- 	/* the next 3 entries are guarded by VIRTIO_BLK_F_WRITE_ZEROES */
  	/*
- 	 * The maximum number of write zeroes sectors (in 512-byte sectors) in
- 	 * one segment.
+ 	 * Specifies the services mask which the device support,
+ 	 * see VIRTIO_CRYPTO_SERVICE_* above
  	 */
--	__u32 max_write_zeroes_sectors;
-+	__virtio32 max_write_zeroes_sectors;
- 	/*
- 	 * The maximum number of segments in a write zeroes
- 	 * command.
- 	 */
--	__u32 max_write_zeroes_seg;
-+	__virtio32 max_write_zeroes_seg;
- 	/*
- 	 * Set if a VIRTIO_BLK_T_WRITE_ZEROES request may result in the
- 	 * deallocation of one or more of the sectors.
+-	__u32 crypto_services;
++	__le32 crypto_services;
+ 
+ 	/* Detailed algorithms mask */
+-	__u32 cipher_algo_l;
+-	__u32 cipher_algo_h;
+-	__u32 hash_algo;
+-	__u32 mac_algo_l;
+-	__u32 mac_algo_h;
+-	__u32 aead_algo;
++	__le32 cipher_algo_l;
++	__le32 cipher_algo_h;
++	__le32 hash_algo;
++	__le32 mac_algo_l;
++	__le32 mac_algo_h;
++	__le32 aead_algo;
+ 	/* Maximum length of cipher key */
+-	__u32 max_cipher_key_len;
++	__le32 max_cipher_key_len;
+ 	/* Maximum length of authenticated key */
+-	__u32 max_auth_key_len;
+-	__u32 reserve;
++	__le32 max_auth_key_len;
++	__le32 reserve;
+ 	/* Maximum size of each crypto request's content */
+-	__u64 max_size;
++	__le64 max_size;
+ };
+ 
+ struct virtio_crypto_inhdr {
 -- 
 MST
 
