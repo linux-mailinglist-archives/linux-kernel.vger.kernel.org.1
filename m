@@ -2,183 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA9D23CC86
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B0B23CC61
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 18:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgHEQuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 12:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727985AbgHEQsi (ORCPT
+        id S1727781AbgHEQlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 12:41:39 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:52080 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727115AbgHEQii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:48:38 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D254C061A2D;
-        Wed,  5 Aug 2020 04:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
-        To:From:Reply-To:Content-ID:Content-Description;
-        bh=YDX2dL3dA5DnPicWfPc6UxoSlo/ROXibu/4w9Wyspnk=; b=Iyr12YsJcO1QsAETO6CjuPY/zM
-        tmWmBP037J/hBchf7ZFu5fQJbhPZM+CxoSC70l4K+dv55iTzk43a5LcoCGIj02QOkjSbHe+Z9e0j3
-        Rn+iauWU9aRpErMR89PTODIK/zT+QEe9ba3/Ubx+YKzJV3C1IMlkRODCF2O1CD8Rs6Len2R0LPU/r
-        qPKuoOf3wKEuXJogT1iwm3oCZBVZrK86eOcTZgccApTB0HVbSlZ+gq9udTl6w0szybhlC4A3rGApb
-        QrGEhrWVdykBHA4YoPYWlXhPNtfEt93mw5H1MnEhjI6RMOyHPx6twAHqp/EpGB3mPaN9USYzUmYZz
-        9CfbLv/A==;
-Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3Hcc-0002bF-PC; Wed, 05 Aug 2020 11:30:14 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1k3Hcb-00BavX-Nw; Wed, 05 Aug 2020 12:30:13 +0100
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        chunhui dai <chunhui.dai@mediatek.com>,
-        David Airlie <airlied@linux.ie>,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        CK Hu <ck.hu@mediatek.com>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Frank Wunderlich <linux@fw-web.de>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 2/3] arm: dts: mt7623: move MT7623N GPU to separate mt7623n.dtsi file
-Date:   Wed,  5 Aug 2020 12:30:12 +0100
-Message-Id: <20200805113013.2763510-2-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200805113013.2763510-1-dwmw2@infradead.org>
-References: <8ef96e4d02ef82e171409945ee6cc0348c4fe594.camel@infradead.org>
- <20200805113013.2763510-1-dwmw2@infradead.org>
+        Wed, 5 Aug 2020 12:38:38 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075BS1Fh028001;
+        Wed, 5 Aug 2020 11:34:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=7pIsLGqMjIgL87suiIaeNB75q2taIqw/jMzR5b9gh7E=;
+ b=gVqWoW0GUND4SXsTdTj42hKtT0Igc/eqPZHKXy9+Scve/pr7PhCMgzFgeQI5cpBodBpv
+ 9kDGVgtNjb5MQCGBVcPm1yOR16evziikZafORHUebh4NXuNDy/zcWyx45GA72fWeMtkP
+ 80mlyaQRUR+Bvz1kVB6AB7NI+8F/1o5vrLQl5IkMQkb9SPt4pnU3s4irs7nb2eP7jjw4
+ SDHe2I5M0ATO2MW3KMNrJqQg/Jyjc8FFepZotFa3aK5K/TGExTwZ0ThJ2W2Iw1aG3hTg
+ NTgV/wRElZ0Ils+pFAPXe0vnrNxKtp43x+54g8EJWhWxn/otPhiQDpQYgfKEvJvvKsad Ow== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 32qnd41rw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 05 Aug 2020 11:34:08 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075BSswc034976;
+        Wed, 5 Aug 2020 11:34:08 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 32pdnt2jk4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 05 Aug 2020 11:34:07 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 075BY3U2012723;
+        Wed, 5 Aug 2020 11:34:03 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 05 Aug 2020 04:34:02 -0700
+Date:   Wed, 5 Aug 2020 14:33:51 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Dongdong Yang <contribute.kernel@gmail.com>, juri.lelli@redhat.com,
+        peterz@infradead.org, bsegall@google.com, gulinghua@xiaomi.com,
+        duhui@xiaomi.com, rocking@linux.alibaba.com,
+        devel@driverdev.osuosl.org, vincent.guittot@linaro.org,
+        tanggeliang@xiaomi.com, mingo@redhat.com, yangdongdong@xiaomi.com,
+        mgorman@suse.de, linux-pm@vger.kernel.org, rostedt@goodmis.org,
+        fengwei@xiaomi.com, taojun@xiaomi.com, dietmar.eggemann@arm.com,
+        huangqiwu@xiaomi.com, gregkh@linuxfoundation.org,
+        rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
+        zhangguoquan@xiaomi.com
+Subject: Re: [PATCH v3] Provide USF for the portable equipment.
+Message-ID: <20200805113351.GE1793@kadam>
+References: <cover.1596464894.git.yangdongdong@xiaomi.com>
+ <20200804054728.ojudxu5fmd54lar5@vireshk-mac-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200804054728.ojudxu5fmd54lar5@vireshk-mac-ubuntu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9703 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=987
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050096
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9703 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 clxscore=1015 mlxscore=0
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 adultscore=0
+ lowpriorityscore=0 spamscore=0 bulkscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050096
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+On Tue, Aug 04, 2020 at 11:17:28AM +0530, Viresh Kumar wrote:
+> Sending updated patchset for this isn't going to help you my friend. You need
+> people (maintainers) to agree on the idea here first.
 
-The MT7623A doesn't have a GPU; add it only for MT7623N boards.
+It doesn't take much work to make the code look nice.  Writing pretty
+code is always a good idea because then people assume you know what
+you're doing.
 
-Fixes: 1f6ed224594 ("arm: dts: mt7623: add Mali-450 device node")
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- arch/arm/boot/dts/mt7623.dtsi                 | 24 -------------
- arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts |  2 +-
- arch/arm/boot/dts/mt7623n-rfb-emmc.dts        |  2 +-
- arch/arm/boot/dts/mt7623n.dtsi                | 35 +++++++++++++++++++
- 4 files changed, 37 insertions(+), 26 deletions(-)
- create mode 100644 arch/arm/boot/dts/mt7623n.dtsi
-
-diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
-index 3a6b856e5b74..dcd2f5ba4e20 100644
---- a/arch/arm/boot/dts/mt7623.dtsi
-+++ b/arch/arm/boot/dts/mt7623.dtsi
-@@ -734,30 +734,6 @@ g3dsys: syscon@13000000 {
- 		#reset-cells = <1>;
- 	};
- 
--	mali: gpu@13040000 {
--		compatible = "mediatek,mt7623-mali", "arm,mali-450";
--		reg = <0 0x13040000 0 0x30000>;
--		interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 171 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 172 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 173 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 174 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 175 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 176 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 177 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 178 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 179 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 180 IRQ_TYPE_LEVEL_LOW>;
--		interrupt-names = "gp", "gpmmu", "pp0", "ppmmu0", "pp1",
--				  "ppmmu1", "pp2", "ppmmu2", "pp3", "ppmmu3",
--				  "pp";
--		clocks = <&topckgen CLK_TOP_MMPLL>,
--			 <&g3dsys CLK_G3DSYS_CORE>;
--		clock-names = "bus", "core";
--		power-domains = <&scpsys MT2701_POWER_DOMAIN_MFG>;
--		resets = <&g3dsys MT2701_G3DSYS_CORE_RST>;
--	};
--
- 	mmsys: syscon@14000000 {
- 		compatible = "mediatek,mt7623-mmsys",
- 			     "mediatek,mt2701-mmsys",
-diff --git a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-index 2b760f90f38c..344f8c65c4aa 100644
---- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-+++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-@@ -6,7 +6,7 @@
- 
- /dts-v1/;
- #include <dt-bindings/input/input.h>
--#include "mt7623.dtsi"
-+#include "mt7623n.dtsi"
- #include "mt6323.dtsi"
- 
- / {
-diff --git a/arch/arm/boot/dts/mt7623n-rfb-emmc.dts b/arch/arm/boot/dts/mt7623n-rfb-emmc.dts
-index 0447748f9fa0..f8efcc364bc3 100644
---- a/arch/arm/boot/dts/mt7623n-rfb-emmc.dts
-+++ b/arch/arm/boot/dts/mt7623n-rfb-emmc.dts
-@@ -7,7 +7,7 @@
- 
- /dts-v1/;
- #include <dt-bindings/input/input.h>
--#include "mt7623.dtsi"
-+#include "mt7623n.dtsi"
- #include "mt6323.dtsi"
- 
- / {
-diff --git a/arch/arm/boot/dts/mt7623n.dtsi b/arch/arm/boot/dts/mt7623n.dtsi
-new file mode 100644
-index 000000000000..7724a4d05b89
---- /dev/null
-+++ b/arch/arm/boot/dts/mt7623n.dtsi
-@@ -0,0 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright © 2017-2020 MediaTek Inc.
-+ * Author: Sean Wang <sean.wang@mediatek.com>
-+ *	   Ryder Lee <ryder.lee@mediatek.com>
-+ *
-+ */
-+
-+#include "mt7623.dtsi"
-+
-+/ {
-+	mali: gpu@13040000 {
-+		compatible = "mediatek,mt7623-mali", "arm,mali-450";
-+		reg = <0 0x13040000 0 0x30000>;
-+		interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 171 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 172 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 173 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 174 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 175 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 176 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 177 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 178 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 179 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 180 IRQ_TYPE_LEVEL_LOW>;
-+		interrupt-names = "gp", "gpmmu", "pp0", "ppmmu0", "pp1",
-+				  "ppmmu1", "pp2", "ppmmu2", "pp3", "ppmmu3",
-+				  "pp";
-+		clocks = <&topckgen CLK_TOP_MMPLL>,
-+			 <&g3dsys CLK_G3DSYS_CORE>;
-+		clock-names = "bus", "core";
-+		power-domains = <&scpsys MT2701_POWER_DOMAIN_MFG>;
-+		resets = <&g3dsys MT2701_G3DSYS_CORE_RST>;
-+	};
-+};
--- 
-2.26.2
+regards,
+dan carpenter
 
