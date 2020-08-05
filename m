@@ -2,325 +2,522 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E0323D146
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBA123D093
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729707AbgHET6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
+        id S1728918AbgHETum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727842AbgHEQnT (ORCPT
+        with ESMTP id S1728175AbgHEQxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:43:19 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEE4C06138E
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 04:01:29 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s15so12678801pgc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 04:01:29 -0700 (PDT)
+        Wed, 5 Aug 2020 12:53:09 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D2AC0611E2
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 04:02:50 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id l2so29731132wrc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 04:02:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=R4fpWOqpBFl4YW+gjIGDtcJmKMkUJgphCM8cmn4jPi0=;
-        b=AgEIBPo7jkQpOlkHlqljgV9zaXxH9CVK+sp71nP3S85oCgjoPbBIX9hEGrvRfF8S2S
-         wlH9yDchUSJ6psQ2YzxDgSpauTHLTHImjH5yH8kKL6CeUv99FqEdaqknCPh1sARYsZBK
-         YhPW3G2PXL8mkDbHfkm5wZ4IsdFbbDarKqxPQ=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2mVJZYy/OqQnFmyBjgjVC9KVgEiqoHAPrCIlOse5RoE=;
+        b=Cftn+TBpWIxWV9C9HoErSDSkxHRVQlSO1jquyaEn2K16GU4o5FSla7tLkyQt54Nahs
+         kYNjv7yHtx5jEOvPm6kT+1jXvHUdjHI6MT5MvWQP9X9AgWXgxdY3p68rI+fomMh0wZ/j
+         XkDlxHSBWx5YEpl08NWFFOVWRaiIOUn3MS1YnDTGPg/APojlcJlIR+VFnW7Izew8ZgDO
+         Dg4L2n5jl+5tQ9DFSuY/nNIsJgg87vfQ1jGzhsrxJnY/FmeBxv8PCoJzo5vm8K5Xch8T
+         I+kwBNTmEE0VFh7LPGI88j5/92LoYXxvWcLlk0dF/45x/Kn15M9mfS6MqfNqUKqsO+ak
+         bQJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=R4fpWOqpBFl4YW+gjIGDtcJmKMkUJgphCM8cmn4jPi0=;
-        b=Ni5ZhuDHCAoMO32dX1EOG1fr/Nz7jhbcZytLs+Fx8HTWkQsYSe2kgcfC4otkdBmmse
-         jzi3XruGMVfjeQAuf74HCgwBz2PiFVOJrOnEvJd7+oqKteE3pgEkEde1OLowcdejJ4L4
-         RtrkGhDjw4gLGjKWBbJIPgiPvkQmIQlx5FC9y0dFMMNSwx4626yl3GLZHRtlpr+z7SKX
-         lqehFSuFlYOjmpVhbaOSmx2VD+dQeU1rF46BisY3Adkf72tj2uWIqODVakGYAR1m/4z2
-         pEVMjjRbXvXkTr2lDBXPrXRO0a/TUVh0gCIfhOypoqiMEpAF+knJF61+tHPUuz+Gw8k0
-         1mlw==
-X-Gm-Message-State: AOAM530deda+u5OLfq1F79q8ksy714Gcw8y3fkflX04DSh5PraWTNf+M
-        I7SPiDw3O6Pth6pMkrC/1xO99Q==
-X-Google-Smtp-Source: ABdhPJySE9UZPCujh2vALZVNOpXJZnYkWwGKM0HQFCvSc2ybGU3FBflfuw+pnV1AAWlHtgeBiS3E6Q==
-X-Received: by 2002:aa7:8eca:: with SMTP id b10mr1046302pfr.50.1596625288482;
-        Wed, 05 Aug 2020 04:01:28 -0700 (PDT)
-Received: from shiro.work (p532183-ipngn200506sizuokaden.shizuoka.ocn.ne.jp. [153.199.2.183])
-        by smtp.googlemail.com with ESMTPSA id fv21sm2583142pjb.16.2020.08.05.04.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 04:01:27 -0700 (PDT)
-From:   Daniel Palmer <daniel@0x0f.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
-        robh+dt@kernel.org, arnd@arndb.de, Daniel Palmer <daniel@0x0f.com>,
-        Willy Tarreau <w@1wt.eu>
-Subject: [PATCH 2/3] irqchip: mstar: msc313-intc interrupt controller driver
-Date:   Wed,  5 Aug 2020 20:00:51 +0900
-Message-Id: <20200805110052.2655487-3-daniel@0x0f.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200805110052.2655487-1-daniel@0x0f.com>
-References: <20200805110052.2655487-1-daniel@0x0f.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2mVJZYy/OqQnFmyBjgjVC9KVgEiqoHAPrCIlOse5RoE=;
+        b=ZAUvn9k1RgIrgzT3z31Yd2/yA/EZKB6WBWf2wiqm7Hc0h12rQ1oqiVGrbjFViAiY9N
+         ngZrO3khnx8wVqGr5kKK0NyjRzywUTsE82JhpvBSyQUQgAXc/1W/xnFzX+RYeIUPAD3o
+         hL0vis4/q0LpsS5nF7V8jgzcUcGO0RhjQGqYzM8sXlYVJc75cOgGfcMg737FPwqTqKu0
+         ia0zsSEVkEYOvwJvbwD87DJbHewIZZHZG3TEGzFsXT/F7wUbBBxbeADcd0a0FmLcmor6
+         xqyWVndNXh0zruq+RzHMGl3zPxJImB5hCcOlvm5avhA7mmUD3ZflrwfNtu56KEq23SOU
+         yIyA==
+X-Gm-Message-State: AOAM532VgxYBR3BzrwiSTAGY4SQ2BwXd7rZ9lSeFSsfTq7HfBGtRXmcY
+        Vs3OCZWR7blaoU6qAtKUFaE7+hGQVws3YH6vW1ZfDQ==
+X-Google-Smtp-Source: ABdhPJwDuJiy5CsjUDejutiblk6XEbM2qLtUATeuCIy8jDEdK+RI4FqaE6ihe+dtW4NGhVpatND8hJdz6U8tbl6VJxg=
+X-Received: by 2002:a5d:4c8f:: with SMTP id z15mr2412688wrs.9.1596625365487;
+ Wed, 05 Aug 2020 04:02:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1596624708-18417-1-git-send-email-amit.pundir@linaro.org>
+In-Reply-To: <1596624708-18417-1-git-send-email-amit.pundir@linaro.org>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Wed, 5 Aug 2020 16:32:08 +0530
+Message-ID: <CAMi1Hd3Dv_T7kgThLTk2QLtfS7LBvhJ5R=6C3seUYK0GvNV6eA@mail.gmail.com>
+Subject: Re: [PATCH v4] arm64: dts: qcom: Add support for Xiaomi Poco F1 (Beryllium)
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a driver for the two peripheral interrupt controllers
-in MStar MSC313 and other MStar/Sigmastar Armv7 SoCs.
+On Wed, 5 Aug 2020 at 16:21, Amit Pundir <amit.pundir@linaro.org> wrote:
+>
+> Add initial dts support for Xiaomi Poco F1 (Beryllium).
+>
+> This initial support is based on upstream Dragonboard 845c
+> (sdm845) device. With this dts, Beryllium boots AOSP up to
+> ADB shell over USB-C.
+>
+> Supported functionality includes UFS, USB-C (peripheral),
+> microSD card and Vol+/Vol-/power keys. Bluetooth should work
+> too but couldn't be verified from adb command line, it is
+> verified when enabled from UI with few WIP display patches.
+>
+> Just like initial db845c support, initializing the SMMU is
+> clearing the mapping used for the splash screen framebuffer,
+> which causes the device to hang during boot and recovery
+> needs a hard power reset. This can be worked around using:
+>
+>     fastboot oem select-display-panel none
+>
+> To switch ON the display back run:
+>
+>     fastboot oem select-display-panel
+>
+> But this only works on Beryllium devices running bootloader
+> version BOOT.XF.2.0-00369-SDM845LZB-1 that shipped with
+> Android-9 based release. Newer bootloader version do not
+> support switching OFF the display panel at all. So we need
+> a few additional smmu patches (under review) from here to
+> boot to shell:
+> https://github.com/pundiramit/linux/commits/beryllium-mainline
+>
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+> ---
+> v4: Added more downstream reserved memory regions. It probably
+>     need more work, but for now I see adsp/cdsp/wlan remoteprocs
+>     powering up properly. Also removed the regulator nodes not
+>     required for the device, as suggested by Bjorn.
 
-Supports both the "IRQ" and "FIQ" controllers that
-forward interrupts from the various IP blocks inside the
-SoC to the ARM GIC.
+Forgot to mention that I added couple of clocks to protected clocks in v4,
+which need for display to work.
 
-They are basically the same thing except for one difference:
-The FIQ controller needs to clear the interrupt and the IRQ
-controller doesn't.
-
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-Tested-by: Willy Tarreau <w@1wt.eu>
----
- MAINTAINERS                       |   1 +
- drivers/irqchip/Makefile          |   1 +
- drivers/irqchip/irq-msc313-intc.c | 210 ++++++++++++++++++++++++++++++
- 3 files changed, 212 insertions(+)
- create mode 100644 drivers/irqchip/irq-msc313-intc.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6e64d17aad7b..4d07403a7726 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2157,6 +2157,7 @@ F:	arch/arm/boot/dts/infinity*.dtsi
- F:	arch/arm/boot/dts/mercury*.dtsi
- F:	arch/arm/boot/dts/mstar-v7.dtsi
- F:	arch/arm/mach-mstar/
-+F:	drivers/irqchip/irq-msc313-intc.c
- 
- ARM/NEC MOBILEPRO 900/c MACHINE SUPPORT
- M:	Michael Petchkovsky <mkpetch@internode.on.net>
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 133f9c45744a..67f3ae3507b8 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -111,3 +111,4 @@ obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
- obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
- obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
- obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
-+obj-$(CONFIG_ARCH_MSTARV7)		+= irq-msc313-intc.o
-diff --git a/drivers/irqchip/irq-msc313-intc.c b/drivers/irqchip/irq-msc313-intc.c
-new file mode 100644
-index 000000000000..b50f5c858d38
---- /dev/null
-+++ b/drivers/irqchip/irq-msc313-intc.c
-@@ -0,0 +1,210 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019 Daniel Palmer
-+ */
-+
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqdomain.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+#define REGOFF_MASK		0x0
-+#define REGOFF_POLARITY		0x10
-+#define REGOFF_STATUSCLEAR	0x20
-+#define IRQSPERREG		16
-+#define IRQBIT(hwirq)		BIT((hwirq % IRQSPERREG))
-+#define REGOFF(hwirq)		((hwirq >> 4) * 4)
-+
-+struct msc313_intc {
-+	struct irq_domain *domain;
-+	void __iomem *base;
-+	struct irq_chip irqchip;
-+	u8 gicoff;
-+};
-+
-+static void msc313_intc_maskunmask(struct msc313_intc *intc, int hwirq, bool mask)
-+{
-+	int regoff = REGOFF(hwirq);
-+	void __iomem *addr = intc->base + REGOFF_MASK + regoff;
-+	u16 bit = IRQBIT(hwirq);
-+	u16 reg = readw_relaxed(addr);
-+
-+	if (mask)
-+		reg |= bit;
-+	else
-+		reg &= ~bit;
-+
-+	writew_relaxed(reg, addr);
-+}
-+
-+static void msc313_intc_mask_irq(struct irq_data *data)
-+{
-+	struct msc313_intc *intc = data->chip_data;
-+
-+	msc313_intc_maskunmask(intc, data->hwirq, true);
-+	irq_chip_mask_parent(data);
-+}
-+
-+static void msc313_intc_unmask_irq(struct irq_data *data)
-+{
-+	struct msc313_intc *intc = data->chip_data;
-+
-+	msc313_intc_maskunmask(intc, data->hwirq, false);
-+	irq_chip_unmask_parent(data);
-+}
-+
-+static int msc313_intc_set_type_irq(struct irq_data *data, unsigned int flow_type)
-+{
-+	struct msc313_intc *intc = data->chip_data;
-+	int irq = data->hwirq;
-+	int regoff = REGOFF(irq);
-+	void __iomem *addr = intc->base + REGOFF_POLARITY + regoff;
-+	u16 bit = IRQBIT(irq);
-+	u16 reg = readw_relaxed(addr);
-+
-+	if (flow_type & (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_LEVEL_HIGH))
-+		reg &= ~bit;
-+	else
-+		reg |= bit;
-+
-+	writew_relaxed(reg, addr);
-+	return 0;
-+}
-+
-+static void msc313_intc_irq_eoi(struct irq_data *data)
-+{
-+	struct msc313_intc *intc = data->chip_data;
-+	int irq = data->hwirq;
-+	int regoff = REGOFF(irq);
-+	void __iomem *addr = intc->base + REGOFF_STATUSCLEAR + regoff;
-+	u16 bit = IRQBIT(irq);
-+	u16 reg = readw_relaxed(addr);
-+
-+	reg |= bit;
-+	writew_relaxed(reg, addr);
-+	irq_chip_eoi_parent(data);
-+}
-+
-+static int msc313_intc_domain_translate(struct irq_domain *d,
-+				     struct irq_fwspec *fwspec,
-+				     unsigned long *hwirq,
-+				     unsigned int *type)
-+{
-+	if (!is_of_node(fwspec->fwnode) || fwspec->param_count != 2)
-+		return -EINVAL;
-+
-+	*hwirq = fwspec->param[0];
-+	*type = fwspec->param[1];
-+
-+	return 0;
-+}
-+
-+static int msc313_intc_domain_alloc(struct irq_domain *domain, unsigned int virq,
-+				 unsigned int nr_irqs, void *data)
-+{
-+	struct irq_fwspec *fwspec = data;
-+	struct irq_fwspec parent_fwspec;
-+	struct msc313_intc *intc = domain->host_data;
-+
-+	if (fwspec->param_count != 2)
-+		return -EINVAL;
-+
-+	irq_domain_set_hwirq_and_chip(domain, virq, fwspec->param[0], &intc->irqchip, intc);
-+
-+	parent_fwspec.fwnode = domain->parent->fwnode;
-+	parent_fwspec.param[0] = GIC_SPI;
-+	parent_fwspec.param[1] = fwspec->param[0] + intc->gicoff;
-+	parent_fwspec.param[2] = fwspec->param[1];
-+	parent_fwspec.param_count = 3;
-+
-+	return irq_domain_alloc_irqs_parent(domain, virq, nr_irqs,
-+					    &parent_fwspec);
-+}
-+
-+static const struct irq_domain_ops msc313_intc_domain_ops = {
-+		.translate = msc313_intc_domain_translate,
-+		.alloc = msc313_intc_domain_alloc,
-+		.free = irq_domain_free_irqs_common,
-+};
-+
-+static int  msc313_intc_of_init(struct device_node *node,
-+				   struct device_node *parent,
-+				   void (*eoi)(struct irq_data *data))
-+{
-+	struct irq_domain *domain_parent;
-+	struct msc313_intc *intc;
-+	int ret = 0;
-+	u32 gicoffset, numirqs;
-+
-+	if (of_property_read_u32(node, "mstar,gic-offset", &gicoffset)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (of_property_read_u32(node, "mstar,nr-interrupts", &numirqs)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	domain_parent = irq_find_host(parent);
-+	if (!domain_parent) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	intc = kzalloc(sizeof(*intc), GFP_KERNEL);
-+	if (!intc) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	intc->base = of_iomap(node, 0);
-+	if (IS_ERR(intc->base)) {
-+		ret = PTR_ERR(intc->base);
-+		goto free_intc;
-+	}
-+
-+	intc->irqchip.name = node->name;
-+	intc->irqchip.irq_mask = msc313_intc_mask_irq;
-+	intc->irqchip.irq_unmask = msc313_intc_unmask_irq;
-+	intc->irqchip.irq_eoi = eoi;
-+	intc->irqchip.irq_set_type = msc313_intc_set_type_irq;
-+	intc->irqchip.flags = IRQCHIP_MASK_ON_SUSPEND;
-+
-+	intc->gicoff = gicoffset;
-+
-+	intc->domain = irq_domain_add_hierarchy(domain_parent, 0, numirqs, node,
-+			&msc313_intc_domain_ops, intc);
-+	if (!intc->domain) {
-+		ret = -ENOMEM;
-+		goto unmap;
-+	}
-+
-+	return 0;
-+
-+unmap:
-+	iounmap(intc->base);
-+free_intc:
-+	kfree(intc);
-+out:
-+	return ret;
-+}
-+
-+static int __init msc313_intc_irq_of_init(struct device_node *node,
-+				   struct device_node *parent)
-+{
-+	return msc313_intc_of_init(node, parent, irq_chip_eoi_parent);
-+};
-+
-+static int __init msc313_intc_fiq_of_init(struct device_node *node,
-+				   struct device_node *parent)
-+{
-+	return msc313_intc_of_init(node, parent, msc313_intc_irq_eoi);
-+};
-+
-+IRQCHIP_DECLARE(msc313_intc_irq, "mstar,msc313-intc-irq",
-+		msc313_intc_irq_of_init);
-+IRQCHIP_DECLARE(mstar_intc_fiq, "mstar,msc313-intc-fiq",
-+		msc313_intc_fiq_of_init);
--- 
-2.27.0
-
+> v3: Added a reserved-memory region from downstream kernel to fix
+>     a boot regression with recent dma-pool changes in v5.8-rc6.
+> v2: Updated machine compatible string for seemingly inevitable
+>     future quirks.
+>
+>  arch/arm64/boot/dts/qcom/Makefile             |   1 +
+>  arch/arm64/boot/dts/qcom/sdm845-beryllium.dts | 383 ++++++++++++++++++++++++++
+>  2 files changed, 384 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sdm845-beryllium.dts
+>
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index 0f2c33d611df..3ef1b48bc0cb 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -21,6 +21,7 @@ dtb-$(CONFIG_ARCH_QCOM)       += sdm845-cheza-r1.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sdm845-cheza-r2.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sdm845-cheza-r3.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sdm845-db845c.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)        += sdm845-beryllium.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sdm845-mtp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sdm850-lenovo-yoga-c630.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sm8150-mtp.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-beryllium.dts b/arch/arm64/boot/dts/qcom/sdm845-beryllium.dts
+> new file mode 100644
+> index 000000000000..0f9f61bf9fa4
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-beryllium.dts
+> @@ -0,0 +1,383 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/dts-v1/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> +#include "sdm845.dtsi"
+> +#include "pm8998.dtsi"
+> +#include "pmi8998.dtsi"
+> +
+> +/ {
+> +       model = "Xiaomi Technologies Inc. Beryllium";
+> +       compatible = "xiaomi,beryllium", "qcom,sdm845";
+> +
+> +       /* required for bootloader to select correct board */
+> +       qcom,board-id = <69 0>;
+> +       qcom,msm-id = <321 0x20001>;
+> +
+> +       aliases {
+> +               hsuart0 = &uart6;
+> +       };
+> +
+> +       gpio-keys {
+> +               compatible = "gpio-keys";
+> +               autorepeat;
+> +
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&vol_up_pin_a>;
+> +
+> +               vol-up {
+> +                       label = "Volume Up";
+> +                       linux,code = <KEY_VOLUMEUP>;
+> +                       gpios = <&pm8998_gpio 6 GPIO_ACTIVE_LOW>;
+> +               };
+> +       };
+> +
+> +       vreg_s4a_1p8: vreg-s4a-1p8 {
+> +               compatible = "regulator-fixed";
+> +               regulator-name = "vreg_s4a_1p8";
+> +
+> +               regulator-min-microvolt = <1800000>;
+> +               regulator-max-microvolt = <1800000>;
+> +               regulator-always-on;
+> +       };
+> +};
+> +
+> +&adsp_pas {
+> +       status = "okay";
+> +       firmware-name = "qcom/sdm845/adsp.mdt";
+> +};
+> +
+> +&apps_rsc {
+> +       pm8998-rpmh-regulators {
+> +               compatible = "qcom,pm8998-rpmh-regulators";
+> +               qcom,pmic-id = "a";
+> +
+> +               vreg_l1a_0p875: ldo1 {
+> +                       regulator-min-microvolt = <880000>;
+> +                       regulator-max-microvolt = <880000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l5a_0p8: ldo5 {
+> +                       regulator-min-microvolt = <800000>;
+> +                       regulator-max-microvolt = <800000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l7a_1p8: ldo7 {
+> +                       regulator-min-microvolt = <1800000>;
+> +                       regulator-max-microvolt = <1800000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l12a_1p8: ldo12 {
+> +                       regulator-min-microvolt = <1800000>;
+> +                       regulator-max-microvolt = <1800000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l13a_2p95: ldo13 {
+> +                       regulator-min-microvolt = <1800000>;
+> +                       regulator-max-microvolt = <2960000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l17a_1p3: ldo17 {
+> +                       regulator-min-microvolt = <1304000>;
+> +                       regulator-max-microvolt = <1304000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l20a_2p95: ldo20 {
+> +                       regulator-min-microvolt = <2960000>;
+> +                       regulator-max-microvolt = <2968000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l21a_2p95: ldo21 {
+> +                       regulator-min-microvolt = <2960000>;
+> +                       regulator-max-microvolt = <2968000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l24a_3p075: ldo24 {
+> +                       regulator-min-microvolt = <3088000>;
+> +                       regulator-max-microvolt = <3088000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l25a_3p3: ldo25 {
+> +                       regulator-min-microvolt = <3300000>;
+> +                       regulator-max-microvolt = <3312000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +
+> +               vreg_l26a_1p2: ldo26 {
+> +                       regulator-min-microvolt = <1200000>;
+> +                       regulator-max-microvolt = <1200000>;
+> +                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +               };
+> +       };
+> +};
+> +
+> +&cdsp_pas {
+> +       status = "okay";
+> +       firmware-name = "qcom/sdm845/cdsp.mdt";
+> +};
+> +
+> +&gcc {
+> +       protected-clocks = <GCC_QSPI_CORE_CLK>,
+> +                          <GCC_QSPI_CORE_CLK_SRC>,
+> +                          <GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
+> +                          <GCC_LPASS_Q6_AXI_CLK>,
+> +                          <GCC_LPASS_SWAY_CLK>;
+> +};
+> +
+> +&gpu {
+> +       zap-shader {
+> +               memory-region = <&gpu_mem>;
+> +               firmware-name = "qcom/sdm845/a630_zap.mbn";
+> +       };
+> +};
+> +
+> +/* Reserved memory changes from downstream */
+> +/delete-node/ &adsp_mem;
+> +/delete-node/ &wlan_msa_mem;
+> +/delete-node/ &mpss_region;
+> +/delete-node/ &venus_mem;
+> +/delete-node/ &cdsp_mem;
+> +/delete-node/ &mba_region;
+> +/delete-node/ &slpi_mem;
+> +/delete-node/ &spss_mem;
+> +/delete-node/ &rmtfs_mem;
+> +/ {
+> +       reserved-memory {
+> +               // This removed_region is needed to boot the device
+> +               // TODO: Find out the user of this reserved memory
+> +               removed_region: memory@88f00000 {
+> +                       reg = <0 0x88f00000 0 0x1a00000>;
+> +                       no-map;
+> +               };
+> +
+> +               adsp_mem: memory@8c500000 {
+> +                       reg = <0 0x8c500000 0 0x1e00000>;
+> +                       no-map;
+> +               };
+> +
+> +               wlan_msa_mem: memory@8e300000 {
+> +                       reg = <0 0x8e300000 0 0x100000>;
+> +                       no-map;
+> +               };
+> +
+> +               mpss_region: memory@8e400000 {
+> +                       reg = <0 0x8e400000 0 0x7800000>;
+> +                       no-map;
+> +               };
+> +
+> +               venus_mem: memory@95c00000 {
+> +                       reg = <0 0x95c00000 0 0x500000>;
+> +                       no-map;
+> +               };
+> +
+> +               cdsp_mem: memory@96100000 {
+> +                       reg = <0 0x96100000 0 0x800000>;
+> +                       no-map;
+> +               };
+> +
+> +               mba_region: memory@96900000 {
+> +                       reg = <0 0x96900000 0 0x200000>;
+> +                       no-map;
+> +               };
+> +
+> +               slpi_mem: memory@96b00000 {
+> +                       reg = <0 0x96b00000 0 0x1400000>;
+> +                       no-map;
+> +               };
+> +
+> +               spss_mem: memory@97f00000 {
+> +                       reg = <0 0x97f00000 0 0x100000>;
+> +                       no-map;
+> +               };
+> +
+> +               rmtfs_mem: memory@f6301000 {
+> +                       compatible = "qcom,rmtfs-mem";
+> +                       reg = <0 0xf6301000 0 0x200000>;
+> +                       no-map;
+> +
+> +                       qcom,client-id = <1>;
+> +                       qcom,vmid = <15>;
+> +               };
+> +       };
+> +};
+> +
+> +&mss_pil {
+> +       status = "okay";
+> +       firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mdt";
+> +};
+> +
+> +&pm8998_gpio {
+> +       vol_up_pin_a: vol-up-active {
+> +               pins = "gpio6";
+> +               function = "normal";
+> +               input-enable;
+> +               bias-pull-up;
+> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
+> +       };
+> +};
+> +
+> +&pm8998_pon {
+> +       resin {
+> +               compatible = "qcom,pm8941-resin";
+> +               interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
+> +               debounce = <15625>;
+> +               bias-pull-up;
+> +               linux,code = <KEY_VOLUMEDOWN>;
+> +       };
+> +};
+> +
+> +&qupv3_id_0 {
+> +       status = "okay";
+> +};
+> +
+> +&sdhc_2 {
+> +       status = "okay";
+> +
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&sdc2_default_state &sdc2_card_det_n>;
+> +
+> +       vmmc-supply = <&vreg_l21a_2p95>;
+> +       vqmmc-supply = <&vreg_l13a_2p95>;
+> +
+> +       bus-width = <4>;
+> +       cd-gpios = <&tlmm 126 GPIO_ACTIVE_HIGH>;
+> +};
+> +
+> +&tlmm {
+> +       gpio-reserved-ranges = <0 4>, <81 4>;
+> +
+> +       sdc2_default_state: sdc2-default {
+> +               clk {
+> +                       pins = "sdc2_clk";
+> +                       bias-disable;
+> +
+> +                       /*
+> +                        * It seems that mmc_test reports errors if drive
+> +                        * strength is not 16 on clk, cmd, and data pins.
+> +                        */
+> +                       drive-strength = <16>;
+> +               };
+> +
+> +               cmd {
+> +                       pins = "sdc2_cmd";
+> +                       bias-pull-up;
+> +                       drive-strength = <10>;
+> +               };
+> +
+> +               data {
+> +                       pins = "sdc2_data";
+> +                       bias-pull-up;
+> +                       drive-strength = <10>;
+> +               };
+> +       };
+> +
+> +       sdc2_card_det_n: sd-card-det-n {
+> +               pins = "gpio126";
+> +               function = "gpio";
+> +               bias-pull-up;
+> +       };
+> +};
+> +
+> +&uart6 {
+> +       status = "okay";
+> +
+> +       bluetooth {
+> +               compatible = "qcom,wcn3990-bt";
+> +
+> +               vddio-supply = <&vreg_s4a_1p8>;
+> +               vddxo-supply = <&vreg_l7a_1p8>;
+> +               vddrf-supply = <&vreg_l17a_1p3>;
+> +               vddch0-supply = <&vreg_l25a_3p3>;
+> +               max-speed = <3200000>;
+> +       };
+> +};
+> +
+> +&usb_1 {
+> +       status = "okay";
+> +};
+> +
+> +&usb_1_dwc3 {
+> +       dr_mode = "peripheral";
+> +};
+> +
+> +&usb_1_hsphy {
+> +       status = "okay";
+> +
+> +       vdd-supply = <&vreg_l1a_0p875>;
+> +       vdda-pll-supply = <&vreg_l12a_1p8>;
+> +       vdda-phy-dpdm-supply = <&vreg_l24a_3p075>;
+> +
+> +       qcom,imp-res-offset-value = <8>;
+> +       qcom,hstx-trim-value = <QUSB2_V2_HSTX_TRIM_21_6_MA>;
+> +       qcom,preemphasis-level = <QUSB2_V2_PREEMPHASIS_5_PERCENT>;
+> +       qcom,preemphasis-width = <QUSB2_V2_PREEMPHASIS_WIDTH_HALF_BIT>;
+> +};
+> +
+> +&usb_1_qmpphy {
+> +       status = "okay";
+> +
+> +       vdda-phy-supply = <&vreg_l26a_1p2>;
+> +       vdda-pll-supply = <&vreg_l1a_0p875>;
+> +};
+> +
+> +&ufs_mem_hc {
+> +       status = "okay";
+> +
+> +       reset-gpios = <&tlmm 150 GPIO_ACTIVE_LOW>;
+> +
+> +       vcc-supply = <&vreg_l20a_2p95>;
+> +       vcc-max-microamp = <800000>;
+> +};
+> +
+> +&ufs_mem_phy {
+> +       status = "okay";
+> +
+> +       vdda-phy-supply = <&vreg_l1a_0p875>;
+> +       vdda-pll-supply = <&vreg_l26a_1p2>;
+> +};
+> +
+> +&wifi {
+> +       status = "okay";
+> +
+> +       vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
+> +       vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+> +       vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+> +       vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
+> +};
+> +
+> +/* PINCTRL - additions to nodes defined in sdm845.dtsi */
+> +
+> +&qup_uart6_default {
+> +       pinmux {
+> +               pins = "gpio45", "gpio46", "gpio47", "gpio48";
+> +               function = "qup6";
+> +       };
+> +
+> +       cts {
+> +               pins = "gpio45";
+> +               bias-disable;
+> +       };
+> +
+> +       rts-tx {
+> +               pins = "gpio46", "gpio47";
+> +               drive-strength = <2>;
+> +               bias-disable;
+> +       };
+> +
+> +       rx {
+> +               pins = "gpio48";
+> +               bias-pull-up;
+> +       };
+> +};
+> --
+> 2.7.4
+>
