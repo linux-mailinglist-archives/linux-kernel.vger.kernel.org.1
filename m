@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5748323CEDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B5B23CF25
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728233AbgHETHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:07:54 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:52505 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbgHETHG (ORCPT
+        id S1729037AbgHETOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727066AbgHETMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 15:07:06 -0400
-Received: from mail-qk1-f180.google.com ([209.85.222.180]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MuUvU-1ktqiK3KZG-00ralV for <linux-kernel@vger.kernel.org>; Wed, 05 Aug
- 2020 21:07:03 +0200
-Received: by mail-qk1-f180.google.com with SMTP id p25so2232493qkp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:07:02 -0700 (PDT)
-X-Gm-Message-State: AOAM5327EMIC2+pHCnhzADtBtRjUtmqNExpKbaf1+pBPUraBz2CTZ61k
-        QQiIO0FW0Y5rYo6dIViGuBoZBX+LGwDd5MGrQGc=
-X-Google-Smtp-Source: ABdhPJxjj0wDC7OhYiMfIDd49ORNWNupSh5DH92LofMPrEqb1HOApEvRkUJlmHW3pwJQra2jfF+7R0Ek62KzxwXcbfs=
-X-Received: by 2002:a37:b942:: with SMTP id j63mr4772181qkf.138.1596654421650;
- Wed, 05 Aug 2020 12:07:01 -0700 (PDT)
+        Wed, 5 Aug 2020 15:12:45 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85711C0611E0
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 12:10:56 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id k13so18104424plk.13
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 12:10:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/BPxTQP7JYvXtVQk0ki81teqlb2JaRXEp1ARBXZnsKo=;
+        b=BZyj8tQZ0jh5Oos+bACAQdHzM8BctEVB1nm/RUpKxUQ6Pi6G9SvTFeD7fBZ/X6lfVI
+         FkEJ/WjkqHZlKv6fs1JF+djzVBcU9No5gkz3vxU0yeAYZg6d4i9kwLBmPh3V4BN9RclB
+         zTSxsjl5UmQZ3wGmv+ar3sNRei7z2zx0aTBPLAJrM8lq2oHQ27xaltidycvB+G9bYUaR
+         iPPkoe5114KZNWhvTOaH3rhFgeMCltmUtlYFwAd/c5ctZi1gdsQ0E0v/X7k+i7g+xyTm
+         JUxqfiNWjVM174YYeHWS7YFZ5kytejVTaFOyGZHdu4NYhmfkoZnYnf3xaO34Fv5Opblj
+         Nqmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/BPxTQP7JYvXtVQk0ki81teqlb2JaRXEp1ARBXZnsKo=;
+        b=nbIiSRJNNQi8WwW52gAbmLVSZ4Y99WIWSZt5ugNnS12fYvG8tGnNaspWQEmoHRYvaE
+         uEMMexe8q15fnRsA/ozfeyvL4cAZIzF/CA5FfEu7AxJAA8XeYSSz6YeKEYqianrMXAet
+         bxFCwI50dlCFgYb4AD67fqTJTIdrCTxm9hAwn2pg/litClXsGccluUMjAke2Aj35c7Dl
+         vPxflvn7idjSv6agVlFwIkJWgMNDYfMHHtQv4cWy/DNVErcFh9JtAIM6kM/+fy+7tkCd
+         hx8Jxz6cg2SwH+nz07PAXhepR94JuQZTZA3HrWUh7EXj4YeWhUB2jw+iLy0gj6wVA3uJ
+         +Lng==
+X-Gm-Message-State: AOAM530alCsnqEWiioPJG75gLm/RFLCf7Mk/SI+NCCubCaGq1g19Z80n
+        VUNjc6sPpAA5e8MIL1RYjrj0aPsjrbQ=
+X-Google-Smtp-Source: ABdhPJxBxqd+46Ue4ysKapAHTBKv3UWlsAyzGfbE/liq0Ut6moG79tcjnHZxH6I+Zn1xfkVM57hEQA==
+X-Received: by 2002:a17:90a:77ca:: with SMTP id e10mr4434931pjs.150.1596654655824;
+        Wed, 05 Aug 2020 12:10:55 -0700 (PDT)
+Received: from [192.168.1.58] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id s125sm5061242pfc.63.2020.08.05.12.10.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 12:10:55 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: Fix use-after-free in io_sq_wq_submit_work()
+To:     Guoyu Huang <hgy5945@gmail.com>, viro@zeniv.linux.org.uk
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200805034042.GA29805@ubuntu>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <f4e1b9ee-1b13-9862-8df8-cdad62821715@kernel.dk>
+Date:   Wed, 5 Aug 2020 13:10:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAK8P3a1vFJ+uUGPGifZGhECXvxA=2u745WrGNZb08s1nHkZQ9g@mail.gmail.com>
- <20200805172746.GC1118@bug>
-In-Reply-To: <20200805172746.GC1118@bug>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 5 Aug 2020 21:06:45 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2KnmDXYCyst15=kZWneDTMFAbz47F_TYnY_26+W4PM6A@mail.gmail.com>
-Message-ID: <CAK8P3a2KnmDXYCyst15=kZWneDTMFAbz47F_TYnY_26+W4PM6A@mail.gmail.com>
-Subject: Re: [GIT PULL 0/5] ARM: SoC: changes for v5.9
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Konrad Dybcio <konradybcio@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:bGbsl3BEepsSAYqvdVmSXF/5nBRHuGya08h7FkJDE8Ps8OjD/Zt
- dNGz17iV9XQ8VfQTgaKs8GoY3UN5jtHOfTDa5spYsVCY4lhtK/tgBKg/E3Yj7Uv+1m1D3wU
- Q3+XLNogeZmIvMVKBvMieEIvzckEGy7R3QbGWGGcUQFsf0yqrg7qsLxnzjWohXgukRguvs0
- i06gabXC3kDtoEKkP0h3w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9GPoFj7rbPA=:U5u0PWKZkePxzrGz8hAokU
- JAMQa+rq3a6gw8M70zPBv9/SaM/DbpaVOacioq+rq04sry2/ndJkOakOytJn5dLzDI36bBBZu
- tbgDP+QgSvNrWyAkUIoFDn0GYNFmuxiyx4tJTTKAmitvk2f35JdqMz8EX2TxoDGV2lAi47L9t
- daRXtbFLyYx8HyqyTeayZqTHDuJP2K/RKLheucSgsXqDdsFOoQF6ix4fQ6D568ygWHwhAlVRO
- 5YnKELMPJDC7BJ9cx3DuLh6tob7R6JtI3R5hfh6Zp9v+Mq3hYKSKpVLcFZcIQVwZPcrpSpeDX
- ZwCHHrd0cs1IPg4oqCSUPFZegG1jtcNHZdCNqT1f/GQr8vg7e2l26JtUk4RG3Tp72Ef6prk5G
- MGbf1F9CqFIckfHhQKjLSFxDE1die9zppRbvyz+nuWkchisu9UAvewOcIAehZ6NYuMB7Y9Y2x
- qp3LYu2idLLZW8Cv3f+xMWl+PbWv8C01cr793FtzqzomyAXWA0pWx6T+SUBHllbj7AoFkQNTi
- Kk6jNjpQSlXdD5XLO91WYHuOy1+MWK+yh52FluRDCByAY4peYGkEJCBdvKs20kr3wEyVfgdOS
- hMzsFXGN6hPDTszt9a8mD5IOuXyhrXLwYC3sjrk04hbRG/OtL9yGAzuDUFfk6JvYnR9VsHYo9
- peohmagdSqi4+MNwYDV/TnZS7UlMDcxRQHeZymmNA/a5tayoR2kjVWV5AMZkWnVwb8v6Lluzk
- Wh2zjNtW0MD6WV2M+UZBvwQvax+4POArF2Qs6dtMFuZjIXxYWiIuqrtyVgtBUknZnnxWlYmDo
- uURaYYjLLGQVO9PfSBQ3OYYX5yX3cZCgcCKu2cJI5jM3aM4ErZ+jbGqmAJxmqnEIXL7Dg0F
+In-Reply-To: <20200805034042.GA29805@ubuntu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 7:27 PM Pavel Machek <pavel@ucw.cz> wrote:
-> > 2. In the past few merge windows we have seen an increase in (usually
-> >    older) Android phones and tablets gaining mainline kernel support.
-> >    This time we get a total of eight Snapdragon phones and two Tegra
-> >    tablets. To me this indicates that we finally have sufficient driver
-> >    support, in particular on the GPU side, to make this workable.
-> >    It also shows the impact that a single hobbyist developer can have,
-> >    as most of the new support was submitted by Konrad Dybcio who only
-> >    started contributing kernel patches to mainline Linux for postmarketos
-> >    earlier this year.
->
-> I'm happy to see that. So far, Nokia N900 is reaonably supported (basically everything
-> but Bluetooth works, voicecalls miss userland daemon for audio), and Motorola
-> Droid 4 (modem needs some more in kernel, camera will be hard).
->
-> Is there anything with similar support coming in, or is it usual "it boots,
-> serial console works"?
+On 8/4/20 9:40 PM, Guoyu Huang wrote:
+> when ctx->sqo_mm is zero, io_sq_wq_submit_work() frees 'req'
+> without deleting it from 'task_list'. After that, 'req' is
+> accessed in io_ring_ctx_wait_and_kill() which lead to
+> a use-after-free.
 
-My impression is that the newly added phones are still fairly rudimentary,
-but some others that were added in the past releases have gotten
-further. I don't know any details, but I've added Konrad to Cc, he can
-comment on his work.
+This looks like an old one, that affects 5.4 only. I've massaged
+it to apply on top of another fix, will ask to get it queued up for
+stable. Thanks!
 
-One of the missing pieces with the OMAP based phones has always
-been the GPU, and on that front I think by now almost every other GPU
-is ahead.
+-- 
+Jens Axboe
 
-> Should we have some kind of linux-phones mailing list? There is quite a lot of
-> stuff common in phones.
-
-PostmarketOS is probably the right place to look for this.
-
-       Arnd
