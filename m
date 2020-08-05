@@ -2,76 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6288D23CAAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 14:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1483D23CABF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 14:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbgHEMqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 08:46:21 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:38087 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728411AbgHEMgA (ORCPT
+        id S1728415AbgHEMxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 08:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728378AbgHEMfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 08:36:00 -0400
-Received: by mail-yb1-f193.google.com with SMTP id e187so11384689ybc.5;
-        Wed, 05 Aug 2020 05:35:56 -0700 (PDT)
+        Wed, 5 Aug 2020 08:35:43 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81BEC034614
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 05:29:41 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w14so17616828ljj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 05:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=m/HjrwgANJ8PQYoygV3h9t78fC88XwgOTu6N21/7jsU=;
+        b=wJESEINa50YXFAOvvT+ZjoFcwfezYCjc+aFZwKvaqZgKzJkvDJ3dDvDHgb3d+YlpiV
+         Zu/xKxVk8HXXbc6bqS+9Xsi9wdRtSo3zfueJOQxOu2zJDRI8ov8UCP1NOYhlSllRZbxK
+         uAZprp4t2CmB87pxUcIjU0Tw+SIoG4ekrPels87nZiMVu70rlMszzl3etxDyL4fjSR5G
+         H/63ayB5Cfr1wqSu8BTvktM8UNczdcnydn7WGwiqLp4JKcheq3r+mIt0SSVw6aBtCf0p
+         2Ov0/7UIjc4+H5QI5bHF9zVVu5Sp4UTrjs/HZJgS2Ch/lzcEn3mPZZts37p41CgdXNn8
+         m3zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8hbSnFLozAnFw+mEl1ug9b36cQI1zAqdjX8AiRGf5eg=;
-        b=hb2pliSgGkPsyEzfmhgDjqehn0bPAW56+btYIyS3Np8i6buuK88MET9JSJ0TqygRBT
-         23LL8QrPlV9+46Lz87nOYn0sqCxZxW+eTmuw3pc69a7mZRAxC+PDtskzQ2Vjf90poscz
-         yuwCQ+uPR9dY0OkOrTorM1bTnfUnbsMuWD8k+c4PYLLoNln40qGT4lTvCJcOq+0REmKY
-         XVUiKkaQX3xNIKocFBFHvJgczF39n2el1aePaKWZf8+ySADLC7AAqJXLt2Q/dSx9Rl1F
-         u0FIXItziNBtm47+Z812Exka5pBv0CvXaIRQkaXYRyb85w+gRdHBRZo/WkKNKIAcq5L6
-         bOLw==
-X-Gm-Message-State: AOAM532FqcQHW4+l+EpxH7jOipve+LsrBI2O9m9vmgy1kqmQCzksQFuB
-        RknedRfMQu4z23qaR4phw0ZPyjC7LszLzjzOgymkEg==
-X-Google-Smtp-Source: ABdhPJz68cp3BRosp19kHXfNdEIyo86KFXA5kI74C0lDw4gKE3Oz8neNAi9dx02X0JasBYqG0QOhCPNYbri4NwptkNk=
-X-Received: by 2002:a05:6830:1b79:: with SMTP id d25mr2165898ote.107.1596628926098;
- Wed, 05 Aug 2020 05:02:06 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=m/HjrwgANJ8PQYoygV3h9t78fC88XwgOTu6N21/7jsU=;
+        b=hoxRC54LQCSROn8j9s6cZ2lA7KimWy0m2eRbl+L/0eIPSZeWCh7kHl/f4Ddl2Mx+JP
+         O+jZyI2sHHskQ6At/elHVpt3eRL3lMLmdsDLHXLPd1NXpVw4MlF+C5dy9s3MtWQgPxWF
+         7FxElDxqVpeRkbPifeVrEiUmmAN9qq2xXq1ib/ah35y2co80oOs5JrZnIAthpgnAfCka
+         VzT0zH8J/HPrQAlOYvfvrt7J2yCNsfkur/IOX/hOLbOU90dfCEDSHkXJJztnipczZ7cy
+         APGLQaeMOMGxS46NSQveIRzk8vbM6uwUAisSI7QMGIpFEllwuQkBX3co3doFP4ZQWZDi
+         BvBQ==
+X-Gm-Message-State: AOAM532qpWHYagwdiA58C4VUg7hLbXmUgqi/OTr86vQx5fTs146fbuuD
+        a4+qbaoA6S6akAr8nCUGXtd9ozmxwkm+aud0k4ALvDfcmriKYw==
+X-Google-Smtp-Source: ABdhPJyOjEZP47sZuldKNYJEYhNasYStQC+Fa3ES/mPukklZJ0Ni87yn1PSduKSm1D8JMHN41/q6VU9WiSOspSt7ifk=
+X-Received: by 2002:a2e:844a:: with SMTP id u10mr1402186ljh.213.1596630579936;
+ Wed, 05 Aug 2020 05:29:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <1595005225-11519-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1595005225-11519-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1595005225-11519-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 5 Aug 2020 14:01:54 +0200
-Message-ID: <CAMuHMdX17U-wBTZ6Z2=yHn4x9N1CwEUJNBmYKaSV5v_sxUd+5w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ARM: dts: r8a7742-iwg21d-q7: Enable HSUSB, USB2.0
- and xHCI
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
+References: <20200722051851.72662-1-hexin.op@bytedance.com>
+In-Reply-To: <20200722051851.72662-1-hexin.op@bytedance.com>
+From:   =?UTF-8?B?5L2V6ZGr?= <hexin.op@bytedance.com>
+Date:   Wed, 5 Aug 2020 20:29:29 +0800
+Message-ID: <CACKzwjntROYA0WjdVewmozrXnzb=YX2dvqHgEpj4POOy0-QXOw@mail.gmail.com>
+Subject: Re: [PATCH] drm/virtio: fix memory leak in virtio_gpu_cleanup_object()
+To:     airlied@linux.ie, kraxel@redhat.com,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Qi Liu <liuqi.16@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 7:00 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Enable support for HSUSB, USB2.0 and xHCI on iWave RZ/G1H carrier board.
+Xin He <hexin.op@bytedance.com> =E4=BA=8E2020=E5=B9=B47=E6=9C=8822=E6=97=A5=
+=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=881:19=E5=86=99=E9=81=93=EF=BC=9A
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Before setting shmem->pages to NULL, kfree() should
+> be called.
+>
+> Signed-off-by: Xin He <hexin.op@bytedance.com>
+> Reviewed-by: Qi Liu <liuqi.16@bytedance.com>
+> ---
+>  drivers/gpu/drm/virtio/virtgpu_object.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/vi=
+rtio/virtgpu_object.c
+> index 6ccbd01cd888..703b5cd51751 100644
+> --- a/drivers/gpu/drm/virtio/virtgpu_object.c
+> +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+> @@ -79,6 +79,7 @@ void virtio_gpu_cleanup_object(struct virtio_gpu_object=
+ *bo)
+>                         }
+>
+>                         sg_free_table(shmem->pages);
+> +                       kfree(shmem->pages);
+>                         shmem->pages =3D NULL;
+>                         drm_gem_shmem_unpin(&bo->base.base);
+>                 }
+> --
+> 2.21.1 (Apple Git-122.3)
+>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.10.
+Ping guys. Any comments or suggestions=EF=BC=9F
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--
+Xin He
