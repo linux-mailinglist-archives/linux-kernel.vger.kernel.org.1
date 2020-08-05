@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BCA23CD14
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7062723CD34
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728740AbgHERTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:19:48 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:33145 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728404AbgHERSH (ORCPT
+        id S1728802AbgHERWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:22:43 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34052 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728710AbgHERVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:18:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647883;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u6BgoSObisAMVxaJpQKxat6BIIq50UZiECX71HIFPB8=;
-        b=aZ7tmdLEVPwzcCnIg5z/chXFiwdYPYYXh1YUAkWe4dNyTansASoFm8SX/FUSs4eBu28m0u
-        CgEKFtkb8iMep2NL8PGzRBLsOsDfwuJO6GunnhW0cZ0fjVePGpp23SeOmPlX1cs2aRv0D2
-        kjRwobiwce7PFTYoCgVa9TSrKxn5WDk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-EMfVmt2BMeOPnRR1pJUjkQ-1; Wed, 05 Aug 2020 09:59:56 -0400
-X-MC-Unique: EMfVmt2BMeOPnRR1pJUjkQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D27D80183C;
-        Wed,  5 Aug 2020 13:59:55 +0000 (UTC)
-Received: from gondolin (ovpn-113-4.ams2.redhat.com [10.36.113.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 943062B6D9;
-        Wed,  5 Aug 2020 13:59:50 +0000 (UTC)
-Date:   Wed, 5 Aug 2020 15:59:48 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 38/38] virtio_net: use LE accessors for speed/duplex
-Message-ID: <20200805155948.4869b0cc.cohuck@redhat.com>
-In-Reply-To: <20200805134226.1106164-39-mst@redhat.com>
-References: <20200805134226.1106164-1-mst@redhat.com>
-        <20200805134226.1106164-39-mst@redhat.com>
-Organization: Red Hat GmbH
+        Wed, 5 Aug 2020 13:21:21 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075ElEES126944;
+        Wed, 5 Aug 2020 14:49:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=50kpLbsOD0ZKoRp8Q7BM9oovT52SXSK2r0dSb0ESevc=;
+ b=tapVYhCIpNpfMnd3DVbCh5/jibmd+RPm0FkdZXF5he1B576M7KNK8hNAF1QkSQ4FfbFW
+ PQzKZwCCQ5SBm7M0iKv1+CdnE8g4BdWCe/0cnh8GDau44yMSKn0/0l+i4h9BOrL+0qOO
+ 1Tth5STnQJJ5yu7MD92TOI1ML2ULvxSG2PgC4I4nM4C1luQZOFvjckBs6H0F58VQsUc9
+ geLYkajzx7MnjHjocanXbfyzziW8+fUgKnfa1IbGVjQ6gFyxLgsLZ4xkks68brlvasd0
+ 5MVqhtGdPf9ofUVKTUhR/F0d/zPPuI9TVPv/bK2H5UsseHT6DGxaMDD2Cg1FQ2/oU8Q0 iA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 32pdnqdv1s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 05 Aug 2020 14:49:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075EmuBh181161;
+        Wed, 5 Aug 2020 14:49:59 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 32pdnth08k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 05 Aug 2020 14:49:58 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 075EnrqE009945;
+        Wed, 5 Aug 2020 14:49:55 GMT
+Received: from [10.175.0.119] (/10.175.0.119)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 05 Aug 2020 07:49:53 -0700
+Subject: Re: Re: Minor RST rant
+To:     peterz@infradead.org, NeilBrown <neilb@suse.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20200724132200.51fd2065@oasis.local.home>
+ <20200724113325.44923f75@lwn.net> <20200724144234.3227b501@oasis.local.home>
+ <877dusv5lc.fsf@notabene.neil.brown.name>
+ <20200729124445.GB2638@hirez.programming.kicks-ass.net>
+From:   Vegard Nossum <vegard.nossum@oracle.com>
+Message-ID: <1e60ff85-4965-92cb-e50b-8ea9ccf6788e@oracle.com>
+Date:   Wed, 5 Aug 2020 16:49:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200729124445.GB2638@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
+ suspectscore=0 clxscore=1011 priorityscore=1501 bulkscore=0 adultscore=0
+ malwarescore=0 phishscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008050123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 09:45:00 -0400
-"Michael S. Tsirkin" <mst@redhat.com> wrote:
-
-> Speed and duplex config fields depend on VIRTIO_NET_F_SPEED_DUPLEX
-> which being 63>31 depends on VIRTIO_F_VERSION_1.
+On 2020-07-29 14:44, peterz@infradead.org wrote:
+> On Sat, Jul 25, 2020 at 09:46:55AM +1000, NeilBrown wrote:
 > 
-> Accordingly, use LE accessors for these fields.
+>>   Constant names stand out least effectively by themselves.  In
+>>   kernel-doc comments they are preceded by a '%'.  Would that make the
+>>   text more readable for you?  Does our doc infrastructure honour that in
+>>   .rst documents?
 > 
-> Reported-by: Cornelia Huck <cohuck@redhat.com>
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->  drivers/net/virtio_net.c        | 9 +++++----
->  include/uapi/linux/virtio_net.h | 2 +-
->  2 files changed, 6 insertions(+), 5 deletions(-)
+> It does not. It also still reads really weird.
 > 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index ba38765dc490..0934b1ec5320 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -2264,12 +2264,13 @@ static void virtnet_update_settings(struct virtnet_info *vi)
->  	if (!virtio_has_feature(vi->vdev, VIRTIO_NET_F_SPEED_DUPLEX))
->  		return;
->  
-> -	speed = virtio_cread32(vi->vdev, offsetof(struct virtio_net_config,
-> -						  speed));
-> +	virtio_cread_le(vi->vdev, struct virtio_net_config, speed, &speed);
-> +
->  	if (ethtool_validate_speed(speed))
->  		vi->speed = speed;
-> -	duplex = virtio_cread8(vi->vdev, offsetof(struct virtio_net_config,
-> -						  duplex));
-> +
-> +	virtio_cread_le(vi->vdev, struct virtio_net_config, duplex, &duplex);
+> And for some reason firefox chokes on the HTML file I tried it with, and
+> make htmldocs takes for bloody ever.
+> 
+> Give me a plain text file, please. All this modern crap just doesn't
+> work.
+> 
 
-Looks a bit odd for an u8, but does not really hurt.
+FWIW, I *really* like how the extra markup renders in a browser, and I
+don't think I'm the only one.
 
-> +
->  	if (ethtool_validate_duplex(duplex))
->  		vi->duplex = duplex;
->  }
-> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
-> index 27d996f29dd1..3f55a4215f11 100644
-> --- a/include/uapi/linux/virtio_net.h
-> +++ b/include/uapi/linux/virtio_net.h
-> @@ -99,7 +99,7 @@ struct virtio_net_config {
->  	 * speed, in units of 1Mb. All values 0 to INT_MAX are legal.
->  	 * Any other value stands for unknown.
->  	 */
-> -	__virtio32 speed;
-> +	__le32 speed;
->  	/*
->  	 * 0x00 - half duplex
->  	 * 0x01 - full duplex
+If you want to read .rst files in a terminal, I would suggest using
+something like this:
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+$ pandoc -t plain Documentation/core-api/atomic_ops.rst | less
 
+It looks pretty readable to me, things like lists and code are properly
+indented, the only thing it's missing as far as I'm concerned is marking
+headings more prominently.
+
+The new online documentation is a great way to attract more people to
+kernel development (and just spread typical kernel knowledge to
+non-Linux/non-kernel programmers). The old Documentation/ was kind of
+hidden away and you only really came across it by accident if you did a
+treewide 'git grep'; the new online docs, on the other hand, are a
+pleasure to browse and explore and frequently show up in google searches
+for random kernel-related topics.
+
+
+Vegard
