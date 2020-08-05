@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5C123D02C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B7423D04B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 21:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728469AbgHETbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 15:31:07 -0400
-Received: from mga04.intel.com ([192.55.52.120]:24715 "EHLO mga04.intel.com"
+        id S1728862AbgHETbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 15:31:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728411AbgHERHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:07:41 -0400
-IronPort-SDR: ftrn1bHXVaUoaYxBD+U0Z9VjorwkCEfZFERK8Cei8Gcv/qjHVs9x7o1YKm5zm27aV20rTtOQY5
- 7/aBjUbmuKvw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="150056026"
-X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="150056026"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 10:07:37 -0700
-IronPort-SDR: Rlyu2e2Xng1qZuyU9jpKnOH/LLO1CZOURgcYLNejTmMyJZ0iDuTI/eK/hiWBRfnKYEFrweY2cZ
- vQvwJeWU15Gw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,438,1589266800"; 
-   d="scan'208";a="306768478"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga002.jf.intel.com with ESMTP; 05 Aug 2020 10:07:35 -0700
-Date:   Wed, 5 Aug 2020 10:07:17 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     hpa@zytor.com, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Cathy Zhang <cathy.zhang@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-edac@vger.kernel.org
-Subject: Re: [PATCH v2] x86/cpu: Use SERIALIZE in sync_core() when available
-Message-ID: <20200805170717.GB26661@ranerica-svr.sc.intel.com>
-References: <20200805021059.1331-1-ricardo.neri-calderon@linux.intel.com>
- <20200805044840.GA9127@nazgul.tnic>
- <47A60E6A-0742-45FB-B707-175E87C58184@zytor.com>
- <20200805050808.GC9127@nazgul.tnic>
+        id S1728295AbgHERIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:08:17 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AA6A22D00;
+        Wed,  5 Aug 2020 17:08:09 +0000 (UTC)
+Date:   Wed, 5 Aug 2020 13:08:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, mhiramat@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, sfr@canb.auug.org.au, mingo@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [External] Re: [PATCH v2] kprobes: fix NULL pointer dereference
+ at kprobe_ftrace_handler
+Message-ID: <20200805130807.268cc1a8@oasis.local.home>
+In-Reply-To: <CAMZfGtW2LJTUB6OaixF-V0tVPXt5kEzVvUvOSbO551r0vvZGbg@mail.gmail.com>
+References: <20200805162713.16386-1-songmuchun@bytedance.com>
+        <20200805125056.1dfe74b5@oasis.local.home>
+        <CAMZfGtW2LJTUB6OaixF-V0tVPXt5kEzVvUvOSbO551r0vvZGbg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805050808.GC9127@nazgul.tnic>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 07:08:08AM +0200, Borislav Petkov wrote:
-> On Tue, Aug 04, 2020 at 09:58:25PM -0700, hpa@zytor.com wrote:
-> > Because why use an alternative to jump over one instruction?
-> >
-> > I personally would prefer to have the IRET put out of line
-> 
-> Can't yet - SERIALIZE CPUs are a minority at the moment.
-> 
-> > and have the call/jmp replaced by SERIALIZE inline.
-> 
-> Well, we could do:
-> 
-> 	alternative_io("... IRET bunch", __ASM_SERIALIZE, X86_FEATURE_SERIALIZE, ...);
-> 
-> and avoid all kinds of jumping. Alternatives get padded so there
-> would be a couple of NOPs following when SERIALIZE gets patched in
-> but it shouldn't be a problem. I guess one needs to look at what gcc
-> generates...
+On Thu, 6 Aug 2020 00:59:41 +0800
+Muchun Song <songmuchun@bytedance.com> wrote:
 
-But the IRET-TO-SELF code has instruction which modify the stack. This
-would violate stack invariance in alternatives as enforced in commit
-7117f16bf460 ("objtool: Fix ORC vs alternatives"). As a result, objtool
-gives warnings as follows:
+> > The original patch has already been pulled into the queue and tested.
+> > Please make a new patch that adds this update, as if your original
+> > patch has already been accepted.  
+> 
+> Will do, thanks!
 
-arch/x86/kernel/alternative.o: warning: objtool: do_sync_core()+0xe:
-alternative modifies stack
+Also, if you can, add the following:
 
-Perhaps in this specific case it does not matter as the changes in the
-stack will be undone by IRET. However, using alternative_io would require
-adding the macro STACK_FRAME_NON_STANDARD to functions using sync_core().
-IMHO, it wouldn't look good.
+Link: https://lore.kernel.org/r/20200805142136.0331f7ea@canb.auug.org.au
 
-So maybe the best approach is to implement as you suggested using
-static_cpu_has()?
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler")
 
-Thanks and BR,
-Ricardo
+It's no big deal if you don't, because I will ;-)
+
+-- Steve
