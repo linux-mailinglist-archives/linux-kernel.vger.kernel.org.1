@@ -2,120 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E70623CCED
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA4B23CCD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 Aug 2020 19:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728468AbgHERLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 13:11:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52874 "EHLO
+        id S1728478AbgHERIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 13:08:36 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25725 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728466AbgHERJF (ORCPT
+        with ESMTP id S1728329AbgHERGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:09:05 -0400
+        Wed, 5 Aug 2020 13:06:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647344;
+        s=mimecast20190719; t=1596647173;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=nsePUp5bwDzPkeGMt9DhuoyzhxlPvsYKTxQ+QKtzY8M=;
-        b=Kbd4MUPyz5KLtsirjxwE9j/1dddSQL9UdrLzbAZQPAQL0nC3jDbOl942DZhhLjm7V+yjLI
-        WURrq+rBxiNMHXU3bIx9aR0aGuvpEX2WwNPElxXlo/tgUnFhl6eegzOVbY1Qyv50Bnf3ud
-        zdlvdjJEqDC6sPd3bkGL2SBwB+NFKgM=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-wbachtwONJi36YeQtIotYQ-1; Wed, 05 Aug 2020 09:38:55 -0400
-X-MC-Unique: wbachtwONJi36YeQtIotYQ-1
-Received: by mail-wr1-f71.google.com with SMTP id k11so13082364wrv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 06:38:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=nsePUp5bwDzPkeGMt9DhuoyzhxlPvsYKTxQ+QKtzY8M=;
-        b=QoTWsdxqLZVQHX0jLF5K4s4wjEP//Zjnum637v4Y+KbGjoylbgrDQMlRRtVIqpgkDh
-         VlM1d30abs5cdEi+zSTAwtAa1UweG/kwqWD/sM/cgj2h/ltXVQ5kSlakpvQF0L9dvjnW
-         HOFXJDQyvlaZxVweBJhMQd78xb7izGlXAv9LR4ax0kYTzFj/WZA1/fCWaj9w37psHfTe
-         +COKZ28WtzgyawFvXOpnj/vMgb7PbZY/2K2rwvP2IohrEF0t6GqPj6oJTTiufLbXjKpc
-         6ov1UlRWtUMN5br/jzKxUX6Z0GR+ZREaNCrWZTF8AMp/JoAZtusPIy/Lf9VDzId8FKda
-         r5ww==
-X-Gm-Message-State: AOAM5324cPCLy4ySknDR0fE1rgLb1siO8Fp5nU9mYSGNvCSKgpvMWsL4
-        AXzZHiVD8jZL4gsY7u7Trsj0/ZGGpxb9AHwpLYZf7vnhjuNP8x8Zf/xTDR9MJ8jhtMr+AQO8DBP
-        +aHmqkmsidrRHse5FcivXGZcQ
-X-Received: by 2002:adf:f486:: with SMTP id l6mr2832109wro.265.1596634733651;
-        Wed, 05 Aug 2020 06:38:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyrJHbiAkvwUZChxw62cK2kQ+h4SfhhoyHmbeMJJ3IoB9ua448nhQGhAU9Dt58uSQD6O7qCdw==
-X-Received: by 2002:adf:f486:: with SMTP id l6mr2832102wro.265.1596634733486;
-        Wed, 05 Aug 2020 06:38:53 -0700 (PDT)
-Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id w1sm2855531wmc.18.2020.08.05.06.38.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 06:38:52 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 09:38:49 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH] virtio_net: use LE accessors for speed/duplex
-Message-ID: <20200805133843.1105808-1-mst@redhat.com>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BJTmQpoAkIpbguLFUsJigmbm7ftZPVlO31weMkCEohw=;
+        b=L31YrSDzCl2zHFd1sJ6XsRWKZ+ibBGhncJHNbiYAMQSta4Kg5E3jSa454+/KFjRHgly5P4
+        tDuKmKUYrtIRRVLtNLn3CHHZnOzm2fC3SfZckIecSl2SmbqEfs8yX3I5cYX2wR1vIBMf1y
+        P7/bL5v3QdEeHK8SNERpiJLazce3fts=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-138-FgJlMIBBOEqWZYWlkZ1Vjw-1; Wed, 05 Aug 2020 09:39:35 -0400
+X-MC-Unique: FgJlMIBBOEqWZYWlkZ1Vjw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 390D5100A8DF;
+        Wed,  5 Aug 2020 13:39:34 +0000 (UTC)
+Received: from maya.cloud.tilaa.com (unknown [10.36.110.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EDB792DE95;
+        Wed,  5 Aug 2020 13:39:33 +0000 (UTC)
+Received: from localhost (055-041-157-037.ip-addr.inexio.net [37.157.41.55])
+        by maya.cloud.tilaa.com (Postfix) with ESMTPSA id D853F40093;
+        Wed,  5 Aug 2020 15:39:32 +0200 (CEST)
+Date:   Wed, 5 Aug 2020 15:39:31 +0200
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, heiko.carstens@de.ibm.com,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Subject: [PATCH RESEND net-next] ip_tunnel_core: Fix build for archs without
+ _HAVE_ARCH_IPV6_CSUM
+Message-ID: <20200805153931.50a3d518@redhat.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Speed and duplex config fields depend on VIRTIO_NET_F_SPEED_DUPLEX
-which being 63>31 depends on VIRTIO_F_VERSION_1.
+On architectures defining _HAVE_ARCH_IPV6_CSUM, we get
+csum_ipv6_magic() defined by means of arch checksum.h headers. On
+other architectures, we actually need to include net/ip6_checksum.h
+to be able to use it.
 
-Accordingly, use LE accessors for these fields.
+Without this include, building with defconfig breaks at least for
+s390.
 
-Reported-by: Cornelia Huck <cohuck@redhat.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 4cb47a8644cc ("tunnels: PMTU discovery support for directly bridged IP packets")
+Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
 ---
- drivers/net/virtio_net.c        | 9 +++++----
- include/uapi/linux/virtio_net.h | 2 +-
- 2 files changed, 6 insertions(+), 5 deletions(-)
+I'm submitting this for net-next despite the fact it's closed, as
+the offending code isn't merged to net.git yet. Should I rather
+submit this to... linux-next?
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ba38765dc490..0934b1ec5320 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2264,12 +2264,13 @@ static void virtnet_update_settings(struct virtnet_info *vi)
- 	if (!virtio_has_feature(vi->vdev, VIRTIO_NET_F_SPEED_DUPLEX))
- 		return;
- 
--	speed = virtio_cread32(vi->vdev, offsetof(struct virtio_net_config,
--						  speed));
-+	virtio_cread_le(vi->vdev, struct virtio_net_config, speed, &speed);
-+
- 	if (ethtool_validate_speed(speed))
- 		vi->speed = speed;
--	duplex = virtio_cread8(vi->vdev, offsetof(struct virtio_net_config,
--						  duplex));
-+
-+	virtio_cread_le(vi->vdev, struct virtio_net_config, duplex, &duplex);
-+
- 	if (ethtool_validate_duplex(duplex))
- 		vi->duplex = duplex;
- }
-diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
-index 27d996f29dd1..3f55a4215f11 100644
---- a/include/uapi/linux/virtio_net.h
-+++ b/include/uapi/linux/virtio_net.h
-@@ -99,7 +99,7 @@ struct virtio_net_config {
- 	 * speed, in units of 1Mb. All values 0 to INT_MAX are legal.
- 	 * Any other value stands for unknown.
- 	 */
--	__virtio32 speed;
-+	__le32 speed;
- 	/*
- 	 * 0x00 - half duplex
- 	 * 0x01 - full duplex
+Re-sending as original copy seems to be stuck in some SMTP queue.
+
+ net/ipv4/ip_tunnel_core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/ipv4/ip_tunnel_core.c b/net/ipv4/ip_tunnel_core.c
+index 9ddee2a0c66d..75c6013ff9a4 100644
+--- a/net/ipv4/ip_tunnel_core.c
++++ b/net/ipv4/ip_tunnel_core.c
+@@ -25,6 +25,7 @@
+ #include <net/protocol.h>
+ #include <net/ip_tunnels.h>
+ #include <net/ip6_tunnel.h>
++#include <net/ip6_checksum.h>
+ #include <net/arp.h>
+ #include <net/checksum.h>
+ #include <net/dsfield.h>
 -- 
-MST
+2.27.0
 
