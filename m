@@ -2,168 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8CB23D829
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D337A23D832
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728935AbgHFIwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        id S1728618AbgHFIy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgHFIwB (ORCPT
+        with ESMTP id S1726094AbgHFIyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:52:01 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3D0C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 01:52:00 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id p16so29004425ile.0
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 01:52:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VaSV/iOvU4KTpuYFNqKMq1HFqHP5k5kT1iej1ya7KdQ=;
-        b=tDn2Fk6RhwRhI/ZdCNLFMXX8oTnr1BGydvcryTFZLifDcdTJ33JCpN+J6BYeM6k9KO
-         KFJHdLqpNuisjDFG3rCZd2ReM2Ho8wGVuZXeISHpl56E18GE/M3qz7Oz3a3MBkfRcN62
-         p1kdotbeYQCoOX9pepWkSv0jP8T/nqmFBaUUQ++cxyOUgmyFmA5kraGMewqOKpjAXw0o
-         /x3EwYzg+AC3ywQdAUCNWUnilEdTNQDJktiVhls1MdZ02dqfXUmWuylPb8YbjX0PqKrH
-         yLU8Hm1PU0lxGm17SbjBihDIV/NWX4X/tTj8lxQfcrxLiNnBtz61+WBs5rkAoZqOaChG
-         +eFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VaSV/iOvU4KTpuYFNqKMq1HFqHP5k5kT1iej1ya7KdQ=;
-        b=EG//mfmG4GSjdCxWFdCnRF83yAMA8SogndbWa9moMMay1gqbyt8dTmulPEnDYfmWxB
-         R69fxVa4u6v+GWuexDfaRdknA0PWYwfS/SfBMkuNdHmy3sxmUJShS0GYtib4UGYZZp0l
-         9JZr4S9VUDVGx62pRdUZHGseZtwt7erL2r4bpCOGiPtsG4L/YxUGevePfi2ypM/0VTY8
-         99eakmBwvHEvuHGmimFTG467OzI+/HPZ+emzKpsisYBPkVOtVr+rIVdnRyfzRqq7UB8u
-         vp7Pwahyjc1cPOLwMyj8NbrPbIMVHMsQs/tSCc7oqqqVGq34/dyrhrZEIVER1w3GV+7X
-         yHBg==
-X-Gm-Message-State: AOAM5321jJ0KedBkeaG4X8A/l/NOsK+mnDwt4r5TKR+r6mlRgpWUvkJi
-        o9ctdMhQ5w4Es8RNnIW6l6bnjQUqf2ykX1O/+/3H95wicR3J/A==
-X-Google-Smtp-Source: ABdhPJzGpNbmtnmC6ma4yk3rvNm7OdHnI1PDjmt9Qpv76QdRLXqmmEKMgXT9m4eEF1glYKlS2oM8/jelYTGC7QG/uZQ=
-X-Received: by 2002:a92:1d1:: with SMTP id 200mr9616426ilb.71.1596703919933;
- Thu, 06 Aug 2020 01:51:59 -0700 (PDT)
+        Thu, 6 Aug 2020 04:54:55 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3D0C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 01:54:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sjPmb+gKsoTr4gKJxpXZXAXQKQybWUTDRfPhRmtRJlU=; b=dpiWAUFOI4iJE6fUsW+QV7ZkXa
+        3x7q97QuD47tPatxuiiBA1P/Eep1oUtAWOT92PyLEhU6C9/Z8UitQ402UZeE9c1UKKNrbO5irRBp0
+        Enx+csJ8wy5fBJqVwlsjoFybJ8npL89aW15HpTNnOQRTZ0rJsPu6MFixyeZTzcMqofbz63Jpsr5jv
+        z/Gwf9hhnmiqm/9Iy4467sJv4j45XA0HNJ3V0XZBKVgjjIhgPzqlxkamOQptyfSZAhwtMuhwtN58h
+        fhGPSupzZpnZyFtJRTZvDL9DzOO7Qq1oA0bF2ubMk956U/AUoeo2im/KJzY2iGpRzF9Mou7o4LY2a
+        zB6S1g8w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3bfV-00041J-VU; Thu, 06 Aug 2020 08:54:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8F0F2304D28;
+        Thu,  6 Aug 2020 10:54:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5274C220F91BB; Thu,  6 Aug 2020 10:54:29 +0200 (CEST)
+Date:   Thu, 6 Aug 2020 10:54:29 +0200
+From:   peterz@infradead.org
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Subject: Re: [PATCH 1/2] sched/topology: Allow archs to override cpu_smt_mask
+Message-ID: <20200806085429.GX2674@hirez.programming.kicks-ass.net>
+References: <20200804033307.76111-1-srikar@linux.vnet.ibm.com>
+ <20200804104520.GB2657@hirez.programming.kicks-ass.net>
+ <20200804121007.GJ24375@linux.vnet.ibm.com>
+ <20200804124755.GJ2674@hirez.programming.kicks-ass.net>
+ <87ft90z6dy.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-References: <20200805153507.053638231@linuxfoundation.org>
-In-Reply-To: <20200805153507.053638231@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 6 Aug 2020 14:21:48 +0530
-Message-ID: <CA+G9fYujKYgN1r168ot8Kvx2SNtYOgAj8gBCYxQ6ek9mUzndrg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 0/9] 5.4.57-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ft90z6dy.fsf@mpe.ellerman.id.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 at 21:23, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.57 release.
-> There are 9 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.57-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Thu, Aug 06, 2020 at 03:32:25PM +1000, Michael Ellerman wrote:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> That brings with it a bunch of problems, such as existing software that
+> has been developed/configured for Power8 and expects to see SMT8.
+> 
+> We also allow LPARs to be live migrated from Power8 to Power9 (and back), so
+> maintaining the illusion of SMT8 is considered a requirement to make that work.
 
-Summary
-------------------------------------------------------------------------
+So how does that work if the kernel booted on P9 and demuxed the SMT8
+into 2xSMT4? If you migrate that state onto a P8 with actual SMT8 you're
+toast again.
 
-kernel: 5.4.57-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 1c4819817cd892724f91e5d253eec5f746243602
-git describe: v5.4.56-10-g1c4819817cd8
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/bui=
-ld/v5.4.56-10-g1c4819817cd8
+> Yeah I agree the naming is confusing.
+> 
+> Let's call them "SMT4 cores" and "SMT8 cores"?
 
+Works for me, thanks!
 
-No regressions (compared to build v5.4.55-87-g47b594b8993f)
+> The problem is we are already lying to userspace, because firmware lies to us.
+> 
+> ie. the firmware on these systems shows us an SMT8 core, and so current kernels
+> show SMT8 to userspace. I don't think we can realistically change that fact now,
+> as these systems are already out in the field.
+> 
+> What this patch tries to do is undo some of the mess, and at least give the
+> scheduler the right information.
 
-No fixes (compared to build v5.4.55-87-g47b594b8993f)
-
-Ran 35321 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* install-android-platform-tools-r2800
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* v4l2-compliance
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-math-tests
-* ltp-open-posix-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* igt-gpu-tools
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+What a mess... I think it depends on what you do with that P9 to P8
+migration case. Does it make sense to have a "p8_compat" boot arg for
+the case where you want LPAR migration back onto P8 systems -- in which
+case it simply takes the firmware's word as gospel and doesn't untangle
+things, because it can actually land on a P8.
