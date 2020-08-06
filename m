@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58FB23DC38
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6AC23DD14
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729472AbgHFQrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42458 "EHLO
+        id S1729823AbgHFQ7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729201AbgHFQpH (ORCPT
+        with ESMTP id S1728999AbgHFQkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:45:07 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CD3C002173
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:14:14 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id jp10so24368870ejb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:14:14 -0700 (PDT)
+        Thu, 6 Aug 2020 12:40:40 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CA1C002174
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:14:46 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id r4so17213173pls.2
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:14:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dUhK6XxdfktnJLvVMPHZp4b3o9WzGcvCUn7lMMPRpRY=;
-        b=HfTFo6+NCf3S+9swY/fTtzedig26g/bIhESx5DqzJjD9jwCMYVYCAJ5R4bYYX1iFHL
-         VIUbSAxvhkjzG6ciZBhTCBev/lO/UqdxZ9W8Wqx5lgO+UIVj2VM+t7uzUerAjmP0fdfl
-         tFxW8XHxFKmfxrZGYEgJ26hAeI4WJA3Y2FngZioz0t/MTTQdN15ghhB/EQPQzWI0fMBF
-         qfjzLg/pO1Yl0glZRJalvO2Y6LnvTXgOzhT2/3gQ2a41cxQP+0hYlw8kfm7mrkGKgxMi
-         MhBR+SHavb9nXwJbX9BDptI7gXYjP3X4vdy9eXkKFtJW2c+u3a637bDi/9t+H7ZeI3u4
-         wCqQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E+VfmnxDV498yxI5rDUMFgAbVpKeY5DLzESFio3gnB4=;
+        b=UBJ+xRcZblEVxSJwz/PK+6Kw1nyvUVkSJPh5W3yJfyKUV1zBsLoDfTSVMzPYi0aXAB
+         MoIYnymHlZyzMpW2QDQGcE1yacW3lPSxo41W77F74qUi7yZyaUPg4mZaaTps4uw7arDv
+         MHSZarQlh9DmRRObpE31wn60GWelGoIPB5AylEpEXUq4SI+QeMWpN/xCPgXX1c1h//Sp
+         S9Ey6QXTSzW1azNC4LSOgHLG0DM60r0TB8IOANE/aQ4gxx5NyI3mz9gnPTAW/h9jxKfp
+         0lb+PuigzZbdX2MQNlrcwr4HG7qc6BD+BJ/i/5L79G1rwr7l4ZDWOMuBD7XJZmcLs1MT
+         o4KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dUhK6XxdfktnJLvVMPHZp4b3o9WzGcvCUn7lMMPRpRY=;
-        b=srZooTz/FEGx5ajTwLZAL1/SPi2cpv5immEruTs2Mxz2r1o6QzkIoZN9Ccv5NaDkHo
-         YVB4utTuhJwhsmWN5yDUsRasQHgTOnQ7kA3DNVFiJKepKkLwALvq4wluLVQgovoyCSiu
-         TFJgfJmWi5G5Dm33F87T0Tw8ka1KtkyLsgjDKJIGSGUfVcxV6KMSACms+HU/UsdRjv5O
-         wKa6fbTV3vuQjsIkbMd1l4re+KadOl9C/EAyZ9fZp5FQA3lCqyUpJLvrmUxf3Ted5uay
-         wofYZ2T0BxdoEz3G5XZkl5wm0irSW+E0/MY+zTPNIeujvJqzXprli11bh9x9NJnikW6z
-         w9mw==
-X-Gm-Message-State: AOAM531+dOXj481MA6gR07LgIF+bADOr7tnxF9LttgCVR4WccVgRkKFh
-        ae/jxUhlqrEO88lmuyjUxyIxQbSpl1D8NWM+cqjBpLFR
-X-Google-Smtp-Source: ABdhPJxJI5PkLwFsxMCbJSijgov8BkA6HTM/g4dOfaBOhR8DivHf4LCdyjvKHRZzQJWu3M/JyvJujWB1lbvsAWeL0eQ=
-X-Received: by 2002:a17:906:c406:: with SMTP id u6mr5330651ejz.47.1596730453302;
- Thu, 06 Aug 2020 09:14:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E+VfmnxDV498yxI5rDUMFgAbVpKeY5DLzESFio3gnB4=;
+        b=SBwnrenk2TlLHmHqwQdZ9N44NQ2mS85L2DpxBwFRZB77ilnNExoP+VEYN5J0M1Z2Zv
+         +tM2ip3ZuFA4zWqku8hsner9i/80LJKBNpqUhDSsFpNVqwpKkyCSfWJvvGzwwU9T0z5e
+         w4RU33xki2cxtZ83xstkPxC0D4fU/LSKwSc8n/MpiDzC6tBCBRIlE4VOzntu002vdTH2
+         Vn6fcBiMpNxzZZw1BLmlztYeuLXS7BO+wRmRY5WQzDWySNIioB5NnDbzEj7QywLLe67U
+         zg5qoR4RQcrNxXGyw5dxVgg/uLBeuZyioq+GldYdAibwPGOaZxiH9LRtixa+GEM5SItq
+         A6EA==
+X-Gm-Message-State: AOAM5330OeXPq5ZwXtTN/XtgBhYo1U8WMQL1s1C0mN6jD1O7ef20Sfdn
+        9dikICr73SKkc45BxIif9oA=
+X-Google-Smtp-Source: ABdhPJygnoz1mAHZpteX4eA3W25LGEwX06xrCjfRfUvdj+ghvykms+CWaAws1JOdPxRlOy6x95gWgw==
+X-Received: by 2002:a17:90a:e551:: with SMTP id ei17mr9109006pjb.224.1596730485648;
+        Thu, 06 Aug 2020 09:14:45 -0700 (PDT)
+Received: from localhost.localdomain ([112.44.78.113])
+        by smtp.gmail.com with ESMTPSA id x127sm9537245pfd.86.2020.08.06.09.14.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Aug 2020 09:14:44 -0700 (PDT)
+From:   Jiang Biao <benbjiang@gmail.com>
+X-Google-Original-From: Jiang Biao <benbjiang@tencent.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, linux-kernel@vger.kernel.org,
+        Jiang Biao <benbjiang@tencent.com>
+Subject: [PATCH RFC v2] sched/fair: simplify the work when reweighting entity
+Date:   Fri,  7 Aug 2020 00:14:06 +0800
+Message-Id: <20200806161406.22629-1-benbjiang@tencent.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <0000000000006925ea05a69d5bfb@google.com> <000000000000ecb92805ac33a761@google.com>
- <CAG48ez0Rdut=HxSyKUCiCVU=zZJPR7YXcOfL3tRBXXwUS0iKxw@mail.gmail.com>
-In-Reply-To: <CAG48ez0Rdut=HxSyKUCiCVU=zZJPR7YXcOfL3tRBXXwUS0iKxw@mail.gmail.com>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Thu, 6 Aug 2020 09:14:01 -0700
-Message-ID: <CAHRSSEyJHcjZj73SjkzavdeDnoAp2pREJxQa58k94hEph8tRwA@mail.gmail.com>
-Subject: Re: WARNING in binder_transaction_buffer_release (2)
-To:     Jann Horn <jannh@google.com>
-Cc:     syzbot <syzbot+e113a0b970b7b3f394ba@syzkaller.appspotmail.com>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Martijn Coenen <maco@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Christian Brauner <christian@brauner.io>,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 9:09 AM Jann Horn <jannh@google.com> wrote:
->
-> On Thu, Aug 6, 2020 at 1:19 PM syzbot
-> <syzbot+e113a0b970b7b3f394ba@syzkaller.appspotmail.com> wrote:
-> > syzbot suspects this issue was fixed by commit:
-> >
-> > commit 4b836a1426cb0f1ef2a6e211d7e553221594f8fc
-> > Author: Jann Horn <jannh@google.com>
-> > Date:   Mon Jul 27 12:04:24 2020 +0000
-> >
-> >     binder: Prevent context manager from incrementing ref 0
-> [...]
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=e113a0b970b7b3f394ba
-> [...]
-> > If the result looks correct, please mark the issue as fixed by replying with:
-> >
-> > #syz fix: binder: Prevent context manager from incrementing ref 0
->
-> I think this issue still exists, syzbot probably just hit it in a
-> weird way that doesn't work anymore.
->
-> This warning:
->
-> case BINDER_TYPE_FD: {
->         /*
->          * No need to close the file here since user-space
->          * closes it for for successfully delivered
->          * transactions. For transactions that weren't
->          * delivered, the new fd was never allocated so
->          * there is no need to close and the fput on the
->          * file is done when the transaction is torn
->          * down.
->          */
->         WARN_ON(failed_at &&
->                 proc->tsk == current->group_leader);
-> } break;
->
-> can be false-positive if the sender and recipient of the transaction
-> are associated with the same task_struct. But there isn't really any
-> reason why you wouldn't be able to have sender and recipient in the
-> same process, as long as the binder_proc is different.
-> (binder_transaction() has a weird check that refuses transactions to
-> handle 0 based on task_struct equality - which IMO doesn't really make
-> sense -, but transactions to other handles can happen just fine even
-> if both ends are in the same task_struct.)
->
-> Maybe the best fix is just to rip out that WARN_ON()?
+From: Jiang Biao <benbjiang@tencent.com>
 
-Yes, probably so.
+If a se is on_rq when reweighting entity, all we need should be
+updating the load of cfs_rq, other dequeue/enqueue work could be
+redundant, such as,
+* nr_running--/nr_running++
+
+Even though the following dequeue/enqueue path would never be reached
+* account_numa_dequeue/account_numa_enqueue
+* list_del/list_add from/into cfs_tasks
+but it could be a little confusing.
+
+Simplifying the logic could be helpful to reduce a litte overhead for
+hot path, and make it cleaner and more readable.
+
+Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+---
+v2<-v1: 
+- Amend the commit log.
+
+ kernel/sched/fair.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 04fa8dbcfa4d..18a8fc7bd0de 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3086,7 +3086,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+ 		/* commit outstanding execution time */
+ 		if (cfs_rq->curr == se)
+ 			update_curr(cfs_rq);
+-		account_entity_dequeue(cfs_rq, se);
++		update_load_sub(&cfs_rq->load, se->load.weight);
+ 	}
+ 	dequeue_load_avg(cfs_rq, se);
+ 
+@@ -3102,7 +3102,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+ 
+ 	enqueue_load_avg(cfs_rq, se);
+ 	if (se->on_rq)
+-		account_entity_enqueue(cfs_rq, se);
++		update_load_add(&cfs_rq->load, se->load.weight);
+ 
+ }
+ 
+-- 
+2.21.0
+
