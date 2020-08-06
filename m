@@ -2,150 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AAB23DE60
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F88A23DE1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729936AbgHFRZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729470AbgHFRDD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:03:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6C6C08ED2B
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:49:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nr6d4+1/21dKoRr3pOwdT2uZTauWD92kHkuX5AwgccU=; b=huHb36wxaS7Dp9fcrj+YWMJBxo
-        O3j3zRijlfzgS7PhyYwDday3McecnS578tCKGg/WqybGs2nKgw8RGAzm+oscg5tSXBDhOpt1KWm08
-        4P+8qoUuG2kAYUxOAb3sQY6URsu032mSHv8Q6rJ0aS2pxwH7LpgB3tWbu/WcPS4tOBZtMa2f7i0UL
-        ZxlaSQ+ue4TpWleXRBNIIJbFfhsUBxO2yJJvmLgdt28HxxAsXSyxw2mivohA4kjbAn87WC8cPLBz3
-        NcVmgaWY3uWrMdkD+Toix1aaUlPj6DfhzLuyEO5f0WIhVlhwK4DVi/R3pOiQvDM2K69LHjsYOXVhk
-        70s4Jebg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3gGJ-00043r-Gv; Thu, 06 Aug 2020 13:48:51 +0000
-Date:   Thu, 6 Aug 2020 14:48:51 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        cai@lca.pw, kirill@shutemov.name, rppt@linux.ibm.com,
-        william.kucharski@oracle.com,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v2] mm, dump_page: do not crash with bad
- compound_mapcount()
-Message-ID: <20200806134851.GN23808@casper.infradead.org>
-References: <20200804214807.169256-1-jhubbard@nvidia.com>
- <ac97deea-4638-badd-9495-c9ca313837bb@suse.cz>
+        id S1727768AbgHFRWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:22:24 -0400
+Received: from mga12.intel.com ([192.55.52.136]:21019 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729682AbgHFRWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:22:20 -0400
+IronPort-SDR: nPbIrXuGCnxNcfTnCprALzQ0BFh3/+vc1AVHiSEpzU8dU7pTug7ieOKjXn37vd6bRUGDA4AHsb
+ nFgKIoQosE2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="132350916"
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="132350916"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 06:49:33 -0700
+IronPort-SDR: VifqmHcioRWCOYS5d4Qs4Nqs93YWd2Lrl0707lzM3kzXcZU+XnNUN4NdD0v/f0VeHjPIv8ISA3
+ /7ePweAgmmZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="333190377"
+Received: from lkp-server02.sh.intel.com (HELO 37a337f97289) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 06 Aug 2020 06:49:32 -0700
+Received: from kbuild by 37a337f97289 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k3gGx-0001K8-Md; Thu, 06 Aug 2020 13:49:31 +0000
+Date:   Thu, 06 Aug 2020 21:49:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.08.04a] BUILD SUCCESS
+ 9acd395ec8a6addc60cc95c6ba0c9a70e85d0601
+Message-ID: <5f2c0a4c.vKH25GcoWnQnVl8R%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ac97deea-4638-badd-9495-c9ca313837bb@suse.cz>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 01:45:11PM +0200, Vlastimil Babka wrote:
-> How about this additional patch now that we have head_mapcoun()? (I wouldn't
-> go for squashing as the goal and scope is too different).
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.08.04a
+branch HEAD: 9acd395ec8a6addc60cc95c6ba0c9a70e85d0601  squash! tools/memory-model: Improve litmus-test documentation
 
-I like it.  It bothers me that the compiler doesn't know that
-compound_head(compound_head(x)) == compound_head(x).  I updated
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=32911 with a request to be
-able to tell the compiler that compound_head() is idempotent.
+elapsed time: 720m
 
-> The bloat-o-meter difference without DEBUG_VM is the following:
-> 
-> add/remove: 0/0 grow/shrink: 1/4 up/down: 32/-56 (-24)
-> Function                                     old     new   delta
-> __split_huge_pmd                            2867    2899     +32
-> shrink_page_list                            3860    3847     -13
-> reuse_swap_page                              762     748     -14
-> page_trans_huge_mapcount                     153     139     -14
-> total_mapcount                               187     172     -15
-> Total: Before=8687306, After=8687282, chg -0.00%
+configs tested: 139
+configs skipped: 9
 
-That's great.  I'm expecting improvements from my thp_head() macro when
-that lands (currently in Andrew's tree).  I have been reluctant to replace
-current callers of compound_head() with thp_head(), but I suspect PF_HEAD
-could use thp_head() and save a few bytes on a tinyconfig build.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> +++ b/mm/huge_memory.c
-> @@ -2125,7 +2125,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
->  	 * Set PG_double_map before dropping compound_mapcount to avoid
->  	 * false-negative page_mapped().
->  	 */
-> -	if (compound_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
-> +	if (head_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       mainstone_defconfig
+sh                   sh7770_generic_defconfig
+mips                       rbtx49xx_defconfig
+ia64                         bigsur_defconfig
+arm                          simpad_defconfig
+sh                          polaris_defconfig
+powerpc64                           defconfig
+mips                  mips_paravirt_defconfig
+microblaze                      mmu_defconfig
+sh                          rsk7201_defconfig
+powerpc                      mgcoge_defconfig
+powerpc64                        alldefconfig
+mips                      maltasmvp_defconfig
+arm                         axm55xx_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                       m5475evb_defconfig
+powerpc                       holly_defconfig
+mips                         tb0287_defconfig
+arc                              allyesconfig
+sh                        dreamcast_defconfig
+mips                      fuloong2e_defconfig
+mips                     loongson1c_defconfig
+arm                          lpd270_defconfig
+m68k                       m5249evb_defconfig
+arm                            qcom_defconfig
+powerpc                      ep88xc_defconfig
+mips                           jazz_defconfig
+arm                       netwinder_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                    amigaone_defconfig
+powerpc                      pasemi_defconfig
+arm                             rpc_defconfig
+m68k                        mvme147_defconfig
+m68k                          multi_defconfig
+powerpc                  mpc885_ads_defconfig
+sh                   secureedge5410_defconfig
+ia64                          tiger_defconfig
+arm                         mv78xx0_defconfig
+mips                     loongson1b_defconfig
+sh                         apsh4a3a_defconfig
+s390                          debug_defconfig
+powerpc                     powernv_defconfig
+arm                        spear6xx_defconfig
+mips                         db1xxx_defconfig
+mips                            gpr_defconfig
+arm                       imx_v4_v5_defconfig
+arm                     eseries_pxa_defconfig
+arm                            pleb_defconfig
+arm                        keystone_defconfig
+arm                          collie_defconfig
+arm                         bcm2835_defconfig
+c6x                        evmc6678_defconfig
+sh                         microdev_defconfig
+sh                           se7751_defconfig
+powerpc                       ppc64_defconfig
+m68k                       m5275evb_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+x86_64               randconfig-a006-20200806
+x86_64               randconfig-a001-20200806
+x86_64               randconfig-a004-20200806
+x86_64               randconfig-a005-20200806
+x86_64               randconfig-a003-20200806
+x86_64               randconfig-a002-20200806
+i386                 randconfig-a004-20200805
+i386                 randconfig-a001-20200805
+i386                 randconfig-a002-20200805
+i386                 randconfig-a006-20200805
+i386                 randconfig-a005-20200805
+i386                 randconfig-a003-20200805
+i386                 randconfig-a005-20200806
+i386                 randconfig-a004-20200806
+i386                 randconfig-a001-20200806
+i386                 randconfig-a002-20200806
+i386                 randconfig-a003-20200806
+i386                 randconfig-a006-20200806
+x86_64               randconfig-a013-20200805
+x86_64               randconfig-a011-20200805
+x86_64               randconfig-a012-20200805
+x86_64               randconfig-a016-20200805
+x86_64               randconfig-a015-20200805
+x86_64               randconfig-a014-20200805
+i386                 randconfig-a011-20200805
+i386                 randconfig-a012-20200805
+i386                 randconfig-a013-20200805
+i386                 randconfig-a014-20200805
+i386                 randconfig-a015-20200805
+i386                 randconfig-a016-20200805
+i386                 randconfig-a011-20200806
+i386                 randconfig-a012-20200806
+i386                 randconfig-a013-20200806
+i386                 randconfig-a015-20200806
+i386                 randconfig-a014-20200806
+i386                 randconfig-a016-20200806
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-I'm a little nervous about this one.  The page does actually come from
-pmd_page(), and today that's guaranteed to be a head page.  But I'm
-not convinced that's going to still be true in twenty years.  With the
-current THP patchset, I won't allocate pages larger than PMD order, but
-I can see there being interest in tracking pages in chunks larger than
-2MB in the future.  And then pmd_page() might well return a tail page.
-So it might be a good idea to not convert this one.
-
-> @@ -2467,7 +2467,7 @@ int total_mapcount(struct page *page)
->  	if (likely(!PageCompound(page)))
->  		return atomic_read(&page->_mapcount) + 1;
->  
-> -	compound = compound_mapcount(page);
-> +	compound = head_mapcount(page);
->  	if (PageHuge(page))
->  		return compound;
->  	ret = compound;
-
-Yes.  This function is a little confusing because it uses PageCompound()
-all the way through when it really should be using PageHead ... because
-the opening line of the function is: VM_BUG_ON_PAGE(PageTail(page), page);
-
-> @@ -2531,7 +2531,7 @@ int page_trans_huge_mapcount(struct page *page, int *total_mapcount)
->  		ret -= 1;
->  		_total_mapcount -= HPAGE_PMD_NR;
->  	}
-> -	mapcount = compound_mapcount(page);
-> +	mapcount = head_mapcount(page);
->  	ret += mapcount;
->  	_total_mapcount += mapcount;
->  	if (total_mapcount)
-
-Yes, we called compound_head() earlier in the function.  Safe.
-
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 9ee4211835c6..c5e722de38b8 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -1673,7 +1673,7 @@ static int page_trans_huge_map_swapcount(struct page *page, int *total_mapcount,
->  		map_swapcount -= 1;
->  		_total_mapcount -= HPAGE_PMD_NR;
->  	}
-> -	mapcount = compound_mapcount(page);
-> +	mapcount = head_mapcount(page);
->  	map_swapcount += mapcount;
->  	_total_mapcount += mapcount;
->  	if (total_mapcount)
-
-Yes.  page is a head page at this point.
-
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index a086c104a9a6..72218cdfd902 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1248,7 +1248,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->  					 * away. Chances are some or all of the
->  					 * tail pages can be freed without IO.
->  					 */
-> -					if (!compound_mapcount(page) &&
-> +					if (!head_mapcount(page) &&
->  					    split_huge_page_to_list(page,
->  								    page_list))
->  						goto activate_locked;
-
-Yes.  We don't put (can't put!) tail pages on the lists, so this must be a
-head page.
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
