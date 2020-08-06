@@ -2,135 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE56023DA29
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 13:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBCF23DA0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 13:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgHFL5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 07:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
+        id S1726464AbgHFLX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 07:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727800AbgHFLRA (ORCPT
+        with ESMTP id S1726197AbgHFLRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 07:17:00 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ABC1C0617AB
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 04:06:47 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id m20so25358002eds.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 04:06:47 -0700 (PDT)
+        Thu, 6 Aug 2020 07:17:18 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B291FC0617A3
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 04:17:15 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z18so40049703wrm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 04:17:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=PYSsCrOysop+Sh0mOiJ6j1B4kZ/DvpynNkFjKlnFTtk=;
-        b=RiFKf1ZDy1QYFqUEaD38cJSlgDMEp2uzQNfOQF28/kHkXz8nwtGrTxRXuMrcxIYUCW
-         i2SyC7q4a+Hlfbov9p/707mge6kYnZcvbb5lGvpuhHnY31qyhnKNTbtuVD2yDg9qiOEk
-         qNaAgDRhdrN8EJBFTY21+UBpZpx4oQr7+6Fvj9CXtFRbGci0z3mOdfwp0aC+9050chrZ
-         LLwgUne6B29yqzjvBmLRuhX/PYNrfZXCRyh0YlNI+DC5W0JzExy464GxzNPr5wtaLEDz
-         Gk7/o17kfdrVqw+JiskeC3yrY8gnyjlwl4LeYXXih14fnlWw37D7OPiB9aJpJevfHU86
-         mDeA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=9iOCr7eJp9cKSC0EzGHUv7YGIck1uWeEY2I5uy4YNVw=;
+        b=A5uzzMDlT7sF3Aq8xz0Mc97XaqowFT8jF2OuQeB3jO6f0XJE+2jhpT/a9sJR0O8ctk
+         j5g0YpEN9bejb6H965LB+B22WyD9ycS4AC0RQRSPwFsS1e34ApOVP1r5oITCkZul4BsK
+         U1aXsVJfiZma3bWjGBMgeCaobOkVEOC5PClJU8yEfAWGsNdVpWuJih6LrWHhy0lvdv+r
+         vDNqC9C2cxAdiQGjSHIwSXVNcmlUPykFTQeveoTQI9pZ5ML6H7f+7kkPWHBkrlHj7hys
+         AuQ6VW8HYXITfNBUKp50OtMPewNmRCVK3k/InR057UlaFsC7nFPkc07eqL8OnAjOM9Vl
+         yTCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=PYSsCrOysop+Sh0mOiJ6j1B4kZ/DvpynNkFjKlnFTtk=;
-        b=Sd+jE3k8NhB1AwLP2N8MnsV8GN3+rE4Q02Z6Ua2bzaSwYuygqsaLkaA7CeKzXxfOnx
-         p5qbnYZAZUZEQSSFQcsUr8BSB061hvuSZ93ZqUpNVZe5a6PsaKuDG8Yc5aXlx4YH26nq
-         mlXUjJdC3gwVGjlxP/Kp3Z5gf630C9jRpAsjNCeVVI2se8Y3NtjpeODpLtvRPd9+9uRt
-         77TvX8pH5p0oUrRmBG0N0Jp0Fw00Rh4owE+a8GM2uAyWPoP9HhMCKuEBcheJX/98ryVL
-         nZ29CY8fTtRJpdxtpx4Ia1Tp1Yf07k7U4f8LWWxyXO8CX7Oh04jHHu7BJYn9bbHBvdQg
-         2ISA==
-X-Gm-Message-State: AOAM530kZopWXRaFT78nLF74d9jq8B8snxul5v8ZMs7fzGcOf4WFgl/8
-        9egPx/rZglj8SL99AMJnW/jBtQ1xVW1XOnjvUPxrMR545AyHdQMipBIMs5TJX+45wSYsGHhsa/G
-        Quj9qR7Vu/22SLx6fbw==
-X-Google-Smtp-Source: ABdhPJwLqyoWjwRDYILTF5e67AwRbZf7hhQrvTreE0IkPpokDMYDsXaFaI97KW0N6QvK5JTBtuHSbQ==
-X-Received: by 2002:a05:6402:899:: with SMTP id e25mr3435126edy.311.1596712006085;
-        Thu, 06 Aug 2020 04:06:46 -0700 (PDT)
-Received: from tim.froidcoeur.net (ptr-7tznw15pracyli75x11.18120a2.ip6.access.telenet.be. [2a02:1811:50e:f0f0:d05d:939:f42b:f575])
-        by smtp.gmail.com with ESMTPSA id v13sm3597682edl.9.2020.08.06.04.06.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=9iOCr7eJp9cKSC0EzGHUv7YGIck1uWeEY2I5uy4YNVw=;
+        b=lxErgzDR52QXSg0MYR+Acn4PAUV0C6IxCpkeH13ZmbmtwkkjO0CiOl3RM8aStzJSxx
+         TDfHsTejjO4ZAxOxSbORlELW1vBfMpL8NETNhZayG7fn3en1q3ivAGPwHTHlT5SSqk0w
+         aHcNRy1idIJ3tFhYFzQI1ogsH5E2LV8/9j7chK4gsd2+SkgyUH5leBrOOjoZrfhG8iFi
+         RvEj0rmJaIGzeN7K511FZHlQEqxiXiPemtsgLPslFOJ506x1IfpwhduyiX2ej+6FQf20
+         S9XLy0TU3X03eSqJE2onvpQ0WNrugdMTRys2XFKg4mWY+Ns+igPdnYgXzZgcGL0S9gqp
+         e1jg==
+X-Gm-Message-State: AOAM530NnaT1j6jwQPTQdHedKOW+9VdW+n1qYQljGYUvqvDc+Sfm3tAr
+        qDGckHw94dDLBZBT3f52vV4=
+X-Google-Smtp-Source: ABdhPJzAXSYcp8Fz4bXyGNvGF3pByi4yiYy5EZAlfiVFHfBSznTJC2Z/b6aOTAah5qSMecN0pqtvcQ==
+X-Received: by 2002:a05:6000:1152:: with SMTP id d18mr7443159wrx.357.1596712632165;
+        Thu, 06 Aug 2020 04:17:12 -0700 (PDT)
+Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
+        by smtp.gmail.com with ESMTPSA id x82sm6243352wmb.30.2020.08.06.04.17.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 04:06:45 -0700 (PDT)
-From:   Tim Froidcoeur <tim.froidcoeur@tessares.net>
-To:     tim.froidcoeur@tessares.net,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Patrick McHardy <kaber@trash.net>,
-        KOVACS Krisztian <hidden@balabit.hu>
-Cc:     matthieu.baerts@tessares.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net v2 2/2] net: initialize fastreuse on inet_inherit_port
-Date:   Thu,  6 Aug 2020 13:06:31 +0200
-Message-Id: <20200806110631.475855-3-tim.froidcoeur@tessares.net>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200806110631.475855-1-tim.froidcoeur@tessares.net>
-References: <20200806110631.475855-1-tim.froidcoeur@tessares.net>
+        Thu, 06 Aug 2020 04:17:11 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 08:17:05 -0300
+From:   Melissa Wen <melissa.srw@gmail.com>
+To:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Sidong Yang <realwakka@gmail.com>
+Cc:     twoerner@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-usp@googlegroups.com
+Subject: [PATCH v2] drm/vkms: guarantee vblank when capturing crc
+Message-ID: <20200806111705.xebopzucxr3367z4@smtp.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the case of TPROXY, bind_conflict optimizations for SO_REUSEADDR or
-SO_REUSEPORT are broken, possibly resulting in O(n) instead of O(1) bind
-behaviour or in the incorrect reuse of a bind.
+VKMS needs vblank interrupts enabled to capture CRC. When vblank is
+disabled, tests like kms_cursor_crc and kms_pipe_crc_basic getting stuck
+waiting for a capture that will not occur until vkms wakes up. This patch
+adds a helper to set composer and ensure that vblank remains enabled as
+long as the CRC capture is needed.
 
-the kernel keeps track for each bind_bucket if all sockets in the
-bind_bucket support SO_REUSEADDR or SO_REUSEPORT in two fastreuse flags.
-These flags allow skipping the costly bind_conflict check when possible
-(meaning when all sockets have the proper SO_REUSE option).
+It clears the execution of the following kms_cursor_crc subtests:
+1. pipe-A-cursor-[size,alpha-opaque, NxN-(on-screen, off-screen, sliding,
+random, fast-moving])] - successful when running individually.
+2. pipe-A-cursor-dpms passes again
+3. pipe-A-cursor-suspend also passes
 
-For every socket added to a bind_bucket, these flags need to be updated.
-As soon as a socket that does not support reuse is added, the flag is
-set to false and will never go back to true, unless the bind_bucket is
-deleted.
+The issue was initially tracked in the sequential execution of IGT
+kms_cursor_crc subtest: when running the test sequence or one of its
+subtests twice, the odd execs complete and the pairs get stuck in an
+endless wait. In the IGT code, calling a wait_for_vblank on preparing for
+CRC capture prevented the busy-wait. But the problem persisted in the
+pipe-A-cursor-dpms and -suspend subtests.
 
-Note that there is no mechanism to re-evaluate these flags when a socket
-is removed (this might make sense when removing a socket that would not
-allow reuse; this leaves room for a future patch).
+Checking the history, the pipe-A-cursor-dpms subtest was successful when,
+in vkms_atomic_commit_tail, instead of using the flip_done op, it used
+wait_for_vblanks. Another way to prevent blocking was wait_one_vblank when
+enabling crtc. However, in both cases, pipe-A-cursor-suspend persisted
+blocking in the 2nd start of CRC capture, which may indicate that
+something got stuck in the step of CRC setup. Indeed, wait_one_vblank in
+the crc setup was able to sync things and free all kms_cursor_crc
+subtests. Besides, other alternatives to force enabling vblanks or prevent
+disabling them such as calling drm_crtc_put_vblank or modeset_enables
+before commit_planes + offdelay = 0, also unlock all subtests executions.
 
-For this optimization to work, it is mandatory that these flags are
-properly initialized and updated.
+Finally, due to vkms's dependence on vblank interruptions to perform
+tasks, this patch uses refcount to ensure that vblanks happen when
+enabling composer and while crc capture is needed.
 
-When a child socket is created from a listen socket in
-__inet_inherit_port, the TPROXY case could create a new bind bucket
-without properly initializing these flags, thus preventing the
-optimization to work. Alternatively, a socket not allowing reuse could
-be added to an existing bind bucket without updating the flags, causing
-bind_conflict to never be called as it should.
-
-Call inet_csk_update_fastreuse when __inet_inherit_port decides to create
-a new bind_bucket or use a different bind_bucket than the one of the
-listen socket.
-
-Fixes: 093d282321da ("tproxy: fix hash locking issue when using port redirection in __inet_inherit_port()")
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
+Co-developed-by: Sidong Yang <realwakka@gmail.com>
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+Co-developed-by: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
 ---
- net/ipv4/inet_hashtables.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/vkms/vkms_composer.c | 20 +++++++++++++++++---
+ drivers/gpu/drm/vkms/vkms_drv.h      |  1 +
+ 2 files changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-index 2bbaaf0c7176..006a34b18537 100644
---- a/net/ipv4/inet_hashtables.c
-+++ b/net/ipv4/inet_hashtables.c
-@@ -163,6 +163,7 @@ int __inet_inherit_port(const struct sock *sk, struct sock *child)
- 				return -ENOMEM;
- 			}
- 		}
-+		inet_csk_update_fastreuse(tb, child);
- 	}
- 	inet_bind_hash(child, tb, port);
- 	spin_unlock(&head->lock);
+diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
+index b8b060354667..e2ac2b9759bf 100644
+--- a/drivers/gpu/drm/vkms/vkms_composer.c
++++ b/drivers/gpu/drm/vkms/vkms_composer.c
+@@ -233,6 +233,22 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *src_name,
+ 	return 0;
+ }
+ 
++void vkms_set_composer(struct vkms_output *out, bool enabled)
++{
++	bool old_enabled;
++
++	if (enabled)
++		drm_crtc_vblank_get(&out->crtc);
++
++	spin_lock_irq(&out->lock);
++	old_enabled = out->composer_enabled;
++	out->composer_enabled = enabled;
++	spin_unlock_irq(&out->lock);
++
++	if (old_enabled)
++		drm_crtc_vblank_put(&out->crtc);
++}
++
+ int vkms_set_crc_source(struct drm_crtc *crtc, const char *src_name)
+ {
+ 	struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
+@@ -241,9 +257,7 @@ int vkms_set_crc_source(struct drm_crtc *crtc, const char *src_name)
+ 
+ 	ret = vkms_crc_parse_source(src_name, &enabled);
+ 
+-	spin_lock_irq(&out->lock);
+-	out->composer_enabled = enabled;
+-	spin_unlock_irq(&out->lock);
++	vkms_set_composer(out, enabled);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+index f4036bb0b9a8..2cc86d08bd4e 100644
+--- a/drivers/gpu/drm/vkms/vkms_drv.h
++++ b/drivers/gpu/drm/vkms/vkms_drv.h
+@@ -142,6 +142,7 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *source_name,
+ 			   size_t *values_cnt);
+ 
+ /* Composer Support */
++void vkms_set_composer(struct vkms_output *output, bool enabled);
+ void vkms_composer_worker(struct work_struct *work);
+ 
+ #endif /* _VKMS_DRV_H_ */
 -- 
-2.25.1
-
-
--- 
-
-
-Disclaimer: https://www.tessares.net/mail-disclaimer/ 
-<https://www.tessares.net/mail-disclaimer/>
-
+2.27.0
 
