@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3989623D472
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 02:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E7623D479
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 02:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgHFAPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 20:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
+        id S1726899AbgHFAPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 20:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726605AbgHFAOp (ORCPT
+        with ESMTP id S1726726AbgHFAOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 20:14:45 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808B2C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 17:14:44 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id l67so21056880ybb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 17:14:44 -0700 (PDT)
+        Wed, 5 Aug 2020 20:14:53 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041DFC0617A3
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 17:14:50 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id y30so5983421qvy.9
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 17:14:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=Xwhl6oTAS7prpbXCRZdZshg5xz57JrEbZ056Cu9NiLQ=;
-        b=VKxFANE2z8MkZfjpbuaXTo5P0s50q7AGLs5Y57qk8+qSFN45yWmnON2wvsbgP2aWqe
-         EBFsVb1emqXoo16aaqh2e223MPRKIRHggIQI3gjhx3BjgZXiqMIozVHGxjmXQNLXgqoo
-         L/BEsleyNk+bsbmRzMwQFTYc64tVPcEWQ9Jcgx+IytqxeluWoQU7xOd12x+RomIJyoib
-         TeKOijeKxj1NcXOxiPSMQxBecKm+jMeR5jnHGv3MV4k7dAat60xTlWY/rLDArWBXZtqY
-         KXAFOX83AU/ixka8rnhi3PcwcrJ1odMJHVhJCXpVf2GfwNqYwvHVeuI4eE8brjJKtC/R
-         3kaA==
+        bh=O7nU7lYRfe2R9ziGF333WHlsyARaR/Q4/HWduypodHg=;
+        b=P2x3PctwOJH5TuP9RSIAld4PsP/j3XNf0AvQXQ/DodKu083Iwcspo5T0atbcBDsOrJ
+         0muuNfCGfJv2UYZs4THq+0JJHbABbX5/d+U9rXKBjhLAcqh/qA9l+wDxBWI5FlGn48GT
+         n//FasAVkPn21NR0+MvA0EQn1nxFbtKy6fABVAr7Mp1OMARjoHZ8T/jsqEcUhx3bj6/2
+         V+ADQDg90iYizGu72GdVwVjhB0p43nWwLP9qqQSCMCjudSGp4lbe1Y6GvsMCowNuzxah
+         1ljHzyW2xnvEJmsBpWAhJgQzacZvfeFe36VRxoG3XAwexV99oPDYkDxdZgV3+aIYp2vJ
+         VEbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Xwhl6oTAS7prpbXCRZdZshg5xz57JrEbZ056Cu9NiLQ=;
-        b=cj9yo3/nxpg1bpNYC46Re9+gvKa2viWmbb5nTTUoZjqgle/CpAYN9I3owhO2tBCuFf
-         5t80/LpkHxnDm4E7O3RfOlhzB8pt+IRXDREjOYwVoYxDbaW0S6+dBpQI/KhTOHFYk5jt
-         nDo0zjumBLHpA94bAQjVjVbo1Q5/Fbnr7McvX0SgOOU77+MO3pSsFl32MdnPNldFx1ar
-         sehTF2+N6Q0t4c5I3rjC0g27PfCukL3dwsh7OXRDiedbZxKhU/8DD2R36whUSoiuPYZ6
-         W1FiK61cVR9hmUqLLV4V6QT39Z6x85Be3x9AAiAa+tf1/DnGVRPVSUi/UmkZuvgLPxaY
-         KGMA==
-X-Gm-Message-State: AOAM533U5Pyd/u7edH9MGVwpCwXQuD6w+IOu9eco+i+pggLF4F2fel3o
-        APV+5/Qv5/JxY9uBXZATFm/9Fee2TyuMNlDGvPf9np8oAoqWhM3BSenT/DT7hpf9N4HokTbBuZP
-        4jJ82ApZIRQ75xteo7cR6c0cpLIhgxYoV8jk+VzwSaGb+U18Xv+D7TYHkqfP5m918LYocXZQ=
-X-Google-Smtp-Source: ABdhPJwRQIuaxLlvD7nKGgHBW7zgYR9Ow2PSyUVWdoP+ivcY83drRuY5X7rDV9GVTrdHfjvWqwKBlSLXadLA
-X-Received: by 2002:a25:b41:: with SMTP id 62mr9521967ybl.8.1596672883707;
- Wed, 05 Aug 2020 17:14:43 -0700 (PDT)
-Date:   Wed,  5 Aug 2020 17:14:27 -0700
+        bh=O7nU7lYRfe2R9ziGF333WHlsyARaR/Q4/HWduypodHg=;
+        b=CJvkahFqeZC+JuLNJOCsi2HhwN7j5uu4CORKwneMJyhUqoVHoRaRv7E65XBTuKVr7y
+         JPOUguaH6raBuGUSiH9MBVlW0Va+qkJ4OYcAh5VkYYozx1MLHS4FwDVvEaUYEqgSFADt
+         QGuZVZWIEiX8J7B5AFWuUrM1k2teakOuKjKb72a2Xr8b8DyOLQufl25fcKgdM1k2yfTp
+         aJup5COkR0DUOd0RjwpelFddxDXJoMRYEmjGV9JLCm+0SQMiZo/MnN6jjpbADfef2z+3
+         11+GfGEiVhAUGEOHz/rKH6zMysCnEIB/rI/NBKoSBRlG6jr7rtk4MP89aiHEx8yCCkpA
+         tK0w==
+X-Gm-Message-State: AOAM5333s0ISD5G/TpJY1UrQ6gfT8RObRSX1VsqnE54K5Us8ijdvywkY
+        ewVscl2sKu5jP+EG2DlqPa6POZfh2XHjWD7o6VzFexyEWEuLkqxIeOWj+dJITBRWRciBsoUF827
+        epju0O54QCxjFWvKALtozDgXjw2oVgIWH8z232vdFxz/4lxqDc6p0cKmEUszaerDCig5ep1c=
+X-Google-Smtp-Source: ABdhPJwdyTprB9qz0EIRwUGruGxBVFwvWVEzapoGVgGGJXsE7/AA/AyXt0lpcFDiRYIFwQKbOSD1eVkGKwTK
+X-Received: by 2002:ad4:4ea5:: with SMTP id ed5mr6415961qvb.130.1596672885491;
+ Wed, 05 Aug 2020 17:14:45 -0700 (PDT)
+Date:   Wed,  5 Aug 2020 17:14:28 -0700
 In-Reply-To: <20200806001431.2072150-1-jwadams@google.com>
-Message-Id: <20200806001431.2072150-4-jwadams@google.com>
+Message-Id: <20200806001431.2072150-5-jwadams@google.com>
 Mime-Version: 1.0
 References: <20200806001431.2072150-1-jwadams@google.com>
 X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
-Subject: [RFC PATCH 3/7] core/metricfs: metric for kernel warnings
+Subject: [RFC PATCH 4/7] core/metricfs: expose softirq information through metricfs
 From:   Jonathan Adams <jwadams@google.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
@@ -64,189 +64,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Count kernel warnings by function name of the caller.
+Add metricfs support for displaying percpu softirq counters.  The
+top directory is /sys/kernel/debug/metricfs/softirq.  Then there
+is a subdirectory for each softirq type.  For example:
 
-Each time WARN() is called, which includes WARN_ON(), increment a counter
-in a 256-entry hash table. The table key is the entry point of the calling
-function, which is found using kallsyms.
-
-We store the name of the function in the table (because it may be a
-module address); reporting the metric just walks the table and prints
-the values.
-
-The "warnings" metric is cumulative.
+    cat /sys/kernel/debug/metricfs/softirq/NET_RX/values
 
 Signed-off-by: Jonathan Adams <jwadams@google.com>
 
 ---
 
-jwadams@google.com: rebased to 5.8-rc6, removed google-isms,
-	added lockdep_assert_held(), NMI handling, ..._unknown*_counts
-	and locking in warn_tbl_fn(); renamed warn_metric... to
-	warn_tbl...
-
-	The original work was done in 2012 by an engineer no longer
-	at Google.
+jwadams@google.com: rebased to 5.8-pre6
+	This is work originally done by another engineer at
+	google, who would rather not have their name associated with this
+	patchset. They're okay with me sending it under my name.
 ---
- kernel/panic.c | 131 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 131 insertions(+)
+ kernel/softirq.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/kernel/panic.c b/kernel/panic.c
-index e2157ca387c8..c019b41ab387 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -31,6 +31,9 @@
- #include <linux/bug.h>
- #include <linux/ratelimit.h>
- #include <linux/debugfs.h>
-+#include <linux/utsname.h>
-+#include <linux/hash.h>
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index c4201b7f42b1..1ae3a540b789 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -25,6 +25,8 @@
+ #include <linux/smpboot.h>
+ #include <linux/tick.h>
+ #include <linux/irq.h>
++#include <linux/jump_label.h>
 +#include <linux/metricfs.h>
- #include <asm/sections.h>
  
- #define PANIC_TIMER_STEP 100
-@@ -568,6 +571,133 @@ void oops_exit(void)
- 	kmsg_dump(KMSG_DUMP_OOPS);
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/irq.h>
+@@ -738,3 +740,46 @@ unsigned int __weak arch_dynirq_lower_bound(unsigned int from)
+ {
+ 	return from;
  }
- 
++
 +#ifdef CONFIG_METRICFS
 +
-+/*
-+ * Hash table from function address to count of WARNs called within that
-+ * function.
-+ * So far this is an add-only hash table (ie, entries never removed), so some
-+ * simplifying assumptions are made.
-+ */
-+#define WARN_TBL_BITS (8)
-+#define WARN_TBL_SIZE (1<<WARN_TBL_BITS)
-+static struct {
-+	void *function;
-+	int count;
-+	char function_name[KSYM_NAME_LEN];
-+} warn_tbl[WARN_TBL_SIZE];
++#define METRICFS_ITEM(name) \
++static void \
++metricfs_##name(struct metric_emitter *e, int cpu) \
++{ \
++	int64_t v = kstat_softirqs_cpu(name##_SOFTIRQ, cpu); \
++	METRIC_EMIT_PERCPU_INT(e, cpu, v); \
++} \
++METRIC_EXPORT_PERCPU_COUNTER(name, #name " softirq", metricfs_##name)
 +
-+static DEFINE_SPINLOCK(warn_tbl_lock);
-+static atomic_t warn_tbl_unknown_lookup_count = ATOMIC_INIT(0);
-+static atomic_t warn_tbl_unknown_nmi_count = ATOMIC_INIT(0);
-+static int warn_tbl_unknown_count;
++METRICFS_ITEM(HI);
++METRICFS_ITEM(TIMER);
++METRICFS_ITEM(NET_TX);
++METRICFS_ITEM(NET_RX);
++METRICFS_ITEM(BLOCK);
++METRICFS_ITEM(IRQ_POLL);
++METRICFS_ITEM(TASKLET);
++METRICFS_ITEM(SCHED);
++METRICFS_ITEM(HRTIMER);
++METRICFS_ITEM(RCU);
 +
-+/*
-+ * Find the entry corresponding to the given function address.
-+ * Insert a new entry if one doesn't exist yet.
-+ * Returns -1 if the hash table is full.
-+ */
-+static int tbl_find(void *caller_function)
++static int __init init_softirq_metricfs(void)
 +{
-+	int entry, start_entry;
++	struct metricfs_subsys *subsys;
 +
-+	lockdep_assert_held(&warn_tbl_lock);
++	subsys = metricfs_create_subsys("softirq", NULL);
++	metric_init_HI(subsys);
++	metric_init_TIMER(subsys);
++	metric_init_NET_TX(subsys);
++	metric_init_NET_RX(subsys);
++	metric_init_BLOCK(subsys);
++	metric_init_IRQ_POLL(subsys);
++	metric_init_TASKLET(subsys);
++	metric_init_SCHED(subsys);
++	metric_init_RCU(subsys);
 +
-+	start_entry = hash_ptr(caller_function, WARN_TBL_BITS);
-+	entry = start_entry;
-+	do {
-+		if (warn_tbl[entry].function == caller_function)
-+			return entry;
-+		if (warn_tbl[entry].function == NULL) {
-+			if (!kallsyms_lookup((unsigned long)caller_function,
-+					NULL, NULL, NULL,
-+					warn_tbl[entry].function_name))
-+				return -1;
-+			warn_tbl[entry].function = caller_function;
-+			return entry;
-+		}
-+		entry = (entry + 1) % (WARN_TBL_SIZE);
-+	} while (entry != start_entry);
-+
-+	return -1;
-+}
-+
-+static void tbl_increment(void *caller)
-+{
-+	void *caller_function;
-+	unsigned long caller_offset;
-+	unsigned long flags;
-+	int entry;
-+
-+	if (!kallsyms_lookup_size_offset(
-+			(unsigned long)caller, NULL, &caller_offset)) {
-+		atomic_inc(&warn_tbl_unknown_lookup_count);
-+		return;
-+	}
-+	/* use function entrypoint */
-+	caller_function = caller - caller_offset;
-+
-+	if (in_nmi()) {
-+		if (!spin_trylock_irqsave(&warn_tbl_lock, flags)) {
-+			atomic_inc(&warn_tbl_unknown_nmi_count);
-+			return;
-+		}
-+	} else {
-+		spin_lock_irqsave(&warn_tbl_lock, flags);
-+	}
-+	entry = tbl_find(caller_function);
-+	if (entry >= 0)
-+		warn_tbl[entry].count++;
-+	else
-+		warn_tbl_unknown_count++;
-+
-+	spin_unlock_irqrestore(&warn_tbl_lock, flags);
-+}
-+
-+/*
-+ * Export the hash table to metricfs.
-+ */
-+static void warn_tbl_fn(struct metric_emitter *e)
-+{
-+	int i;
-+	unsigned long flags;
-+	int unknown_count = READ_ONCE(warn_tbl_unknown_count) +
-+		atomic_read(&warn_tbl_unknown_nmi_count) +
-+		atomic_read(&warn_tbl_unknown_lookup_count);
-+
-+	if (unknown_count != 0)
-+		METRIC_EMIT_INT(e, unknown_count, "(unknown)", NULL);
-+
-+	spin_lock_irqsave(&warn_tbl_lock, flags);
-+	for (i = 0; i < WARN_TBL_SIZE; i++) {
-+		unsigned long fn = (unsigned long)warn_tbl[i].function;
-+		const char *function_name = warn_tbl[i].function_name;
-+		int count = warn_tbl[i].count;
-+
-+		if (!fn)
-+			continue;
-+
-+		// function_name[] is constant once function is non-NULL
-+		spin_unlock_irqrestore(&warn_tbl_lock, flags);
-+		METRIC_EMIT_INT(e, count, function_name, NULL);
-+		spin_lock_irqsave(&warn_tbl_lock, flags);
-+	}
-+	spin_unlock_irqrestore(&warn_tbl_lock, flags);
-+}
-+METRIC_EXPORT_COUNTER(warnings, "Count of calls to WARN().",
-+		      "function", NULL, warn_tbl_fn);
-+
-+static int __init metricfs_panic_init(void)
-+{
-+	metric_init_warnings(NULL);
 +	return 0;
 +}
-+late_initcall(metricfs_panic_init);
++module_init(init_softirq_metricfs);
 +
-+#else  /* CONFIG_METRICFS */
-+inline void tbl_increment(void *caller) {}
 +#endif
-+
- struct warn_args {
- 	const char *fmt;
- 	va_list args;
-@@ -576,6 +706,7 @@ struct warn_args {
- void __warn(const char *file, int line, void *caller, unsigned taint,
- 	    struct pt_regs *regs, struct warn_args *args)
- {
-+	tbl_increment(caller);
- 	disable_trace_on_warning();
- 
- 	if (file)
 -- 
 2.28.0.236.gb10cc79966-goog
 
