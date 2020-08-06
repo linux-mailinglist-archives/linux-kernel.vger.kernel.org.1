@@ -2,173 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BAD23E265
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F84923E247
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726058AbgHFTl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 15:41:58 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:46408 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725272AbgHFTl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 15:41:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596742917; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ZYadisCTQSXaXKPrEzfTRnoXgPlBsKm1tiWBuOzw0mE=;
- b=cslBfxQPUGdIYJmjMOIOusCRZibKBW4ylkRqOiOg4btck5l5e8bdDcOaoDVDd/sVH2TJ/aEY
- qbDE0UNNlfl7voYznoXm7TPZQQLeJ7rreuWonfea4vwAfnmittrs3qfxiSnmiP11/V5RG3w+
- rUp/5qGxHVDDCFqlPCJNETJ2htg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
- 5f2c17a04c787f237b7af23c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 14:45:52
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8F2FEC43391; Thu,  6 Aug 2020 14:45:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kalyan_t)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BFEC3C433C9;
-        Thu,  6 Aug 2020 14:45:51 +0000 (UTC)
+        id S1726230AbgHFTd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 15:33:56 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:59006 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725875AbgHFTdz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 15:33:55 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076FDKla152834;
+        Thu, 6 Aug 2020 15:15:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=1AolOzPIOMQfffxKB/08KHsr7Q43v8tlBZ0VC1SgVt0=;
+ b=Jx8yPjarhGqYqBChfic+cjx/BI/ITyQWMId9lGoivE/0I7swJiFhYUNxa0WEUbMWt/v/
+ Z1S3CkmvxQWeVAElcXL9Jsf42P34si+clZMrb87bA7oVBZVJ/3vg5EgocSfzkryra2gP
+ Ai+jJhSR0TPgOudRPLlGaNPI8EsjO51252JYAntus0KSTK5GANtYIt0yHqx2tmU4reYY
+ QrJq4G8+gM1/Y7yh02eMb3tqIPlFwhqGb3N7tvfZhI3p0l7XNDCz1kRurw2w8N8aOybY
+ wxKcCdKOEIRPQxXmdmask8dYuICptSbXEbvifLmlSmILL6EqzYqEJKknDX8CBRxt2gjD kA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 32r6gwukgt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 06 Aug 2020 15:15:34 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076FD0oh121832;
+        Thu, 6 Aug 2020 15:13:34 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 32pdnwmrks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Aug 2020 15:13:34 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 076FDWUG023250;
+        Thu, 6 Aug 2020 15:13:33 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 Aug 2020 08:13:32 -0700
+Date:   Thu, 6 Aug 2020 08:13:31 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Eiichi Tsukata <devel@etsukata.com>
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] xfs: Fix UBSAN null-ptr-deref in xfs_sysfs_init
+Message-ID: <20200806151331.GD6107@magnolia>
+References: <20200806150527.2283029-1-devel@etsukata.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 06 Aug 2020 20:15:51 +0530
-From:   kalyan_t@codeaurora.org
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        nganji@codeaurora.org, Sean Paul <seanpaul@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Drew Davenport <ddavenport@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>
-Subject: Re: [Freedreno] [v1] drm/msm/dpu: Fix reservation failures in modeset
-In-Reply-To: <CAF6AEGtWNDGDsUBVk-Ud5OpretHA4qKDKtE+3mS=C8DAa=+Heg@mail.gmail.com>
-References: <1596634446-1413-1-git-send-email-kalyan_t@codeaurora.org>
- <CAF6AEGtWNDGDsUBVk-Ud5OpretHA4qKDKtE+3mS=C8DAa=+Heg@mail.gmail.com>
-Message-ID: <1101abba0c8082da196f36636ef07a84@codeaurora.org>
-X-Sender: kalyan_t@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806150527.2283029-1-devel@etsukata.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 spamscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008060109
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
+ phishscore=0 clxscore=1011 suspectscore=2 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008060109
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-05 21:18, Rob Clark wrote:
-> On Wed, Aug 5, 2020 at 6:34 AM Kalyan Thota <kalyan_t@codeaurora.org> 
-> wrote:
->> 
->> In TEST_ONLY commit, rm global_state will duplicate the
->> object and request for new reservations, once they pass
->> then the new state will be swapped with the old and will
->> be available for the Atomic Commit.
->> 
->> This patch fixes some of missing links in the resource
->> reservation sequence mentioned above.
->> 
->> 1) Creation of a duplicate state in test_only commit (Rob)
->> 2) Allow resource release only during crtc_active false.
->> 
->> For #2
->> In a modeset operation, swap state happens well before disable.
->> Hence clearing reservations in disable will cause failures
->> in modeset enable.
->> 
->> Sequence:
->>     Swap state --> old, new
->>     modeset disables --> virt disable
->>     modeset enable --> virt modeset
->> 
->> Allow reservations to be cleared only when crtc active is false
->> as in that case there wont be any modeset enable after disable.
->> 
->> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
->> ---
->>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 7 +++++--
->>  1 file changed, 5 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c 
->> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> index 63976dc..b85a576 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> @@ -582,7 +582,7 @@ static int dpu_encoder_virt_atomic_check(
->>         dpu_kms = to_dpu_kms(priv->kms);
->>         mode = &crtc_state->mode;
->>         adj_mode = &crtc_state->adjusted_mode;
->> -       global_state = dpu_kms_get_existing_global_state(dpu_kms);
->> +       global_state = dpu_kms_get_global_state(crtc_state->state);
->>         trace_dpu_enc_atomic_check(DRMID(drm_enc));
->> 
->>         /*
->> @@ -1172,6 +1172,7 @@ static void dpu_encoder_virt_disable(struct 
->> drm_encoder *drm_enc)
->>         struct msm_drm_private *priv;
->>         struct dpu_kms *dpu_kms;
->>         struct dpu_global_state *global_state;
->> +       struct drm_crtc_state *crtc_state;
->>         int i = 0;
->> 
->>         if (!drm_enc) {
->> @@ -1191,6 +1192,7 @@ static void dpu_encoder_virt_disable(struct 
->> drm_encoder *drm_enc)
->>         priv = drm_enc->dev->dev_private;
->>         dpu_kms = to_dpu_kms(priv->kms);
->>         global_state = dpu_kms_get_existing_global_state(dpu_kms);
->> +       crtc_state = drm_enc->crtc->state;
->> 
->>         trace_dpu_enc_disable(DRMID(drm_enc));
->> 
->> @@ -1220,7 +1222,8 @@ static void dpu_encoder_virt_disable(struct 
->> drm_encoder *drm_enc)
->> 
->>         DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
->> 
->> -       dpu_rm_release(global_state, drm_enc);
->> +       if (crtc_state->active_changed && !crtc_state->active)
->> +               dpu_rm_release(global_state, drm_enc);
-> 
-> I still think releasing the state in the atomic_commit() path is the
-> wrong thing to do.  In the commit path, the various state objects
-> should be immutable.. ie. in the atomic_test() path you derive the new
-> hw state (including assignment/release of resources), and
-> atomic_commit() is simply pushing the state down to the hw.
-> 
-> Otherwise, this looks better than v1.
-> 
-> BR,
-> -R
-> 
-okay. Should we avoid reservation all together if active=0 on that crtc 
-and trigger rm_release on the enc during atomic_check ?
-how do you see the approach ?
+On Fri, Aug 07, 2020 at 12:05:27AM +0900, Eiichi Tsukata wrote:
+> If xfs_sysfs_init is called with parent_kobj == NULL, UBSAN
+> shows the following warning:
 
--Kalyan
->> 
->>         mutex_unlock(&dpu_enc->enc_lock);
->>  }
->> --
->> 1.9.1
->> 
-> _______________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
+This needs to be sent to the xfs mailing list, per get_maintainers.pl.
+
+--D
+
+>   UBSAN: null-ptr-deref in ./fs/xfs/xfs_sysfs.h:37:23
+>   member access within null pointer of type 'struct xfs_kobj'
+>   Call Trace:
+>    dump_stack+0x10e/0x195
+>    ubsan_type_mismatch_common+0x241/0x280
+>    __ubsan_handle_type_mismatch_v1+0x32/0x40
+>    init_xfs_fs+0x12b/0x28f
+>    do_one_initcall+0xdd/0x1d0
+>    do_initcall_level+0x151/0x1b6
+>    do_initcalls+0x50/0x8f
+>    do_basic_setup+0x29/0x2b
+>    kernel_init_freeable+0x19f/0x20b
+>    kernel_init+0x11/0x1e0
+>    ret_from_fork+0x22/0x30
+> 
+> Fix it by checking parent_kobj before the code accesses its member.
+> 
+> Signed-off-by: Eiichi Tsukata <devel@etsukata.com>
+> ---
+>  fs/xfs/xfs_sysfs.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_sysfs.h b/fs/xfs/xfs_sysfs.h
+> index e9f810fc6731..aad67dc4ab5b 100644
+> --- a/fs/xfs/xfs_sysfs.h
+> +++ b/fs/xfs/xfs_sysfs.h
+> @@ -32,9 +32,9 @@ xfs_sysfs_init(
+>  	struct xfs_kobj		*parent_kobj,
+>  	const char		*name)
+>  {
+> +	struct kobject *parent = parent_kobj ? &parent_kobj->kobject : NULL;
+>  	init_completion(&kobj->complete);
+> -	return kobject_init_and_add(&kobj->kobject, ktype,
+> -				    &parent_kobj->kobject, "%s", name);
+> +	return kobject_init_and_add(&kobj->kobject, ktype, parent, "%s", name);
+>  }
+>  
+>  static inline void
+> -- 
+> 2.26.2
+> 
