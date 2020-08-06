@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B70523D8EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE0B23D8F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgHFJxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
+        id S1729142AbgHFJxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:53:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729146AbgHFJxb (ORCPT
+        with ESMTP id S1729072AbgHFJxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 Aug 2020 05:53:31 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE48EC061757;
-        Thu,  6 Aug 2020 02:52:41 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id qc22so34819056ejb.4;
-        Thu, 06 Aug 2020 02:52:41 -0700 (PDT)
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E70C06179E;
+        Thu,  6 Aug 2020 02:53:13 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id i92so4501581pje.0;
+        Thu, 06 Aug 2020 02:53:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GFHE6B9er+V6kO04ZtSKBTS+EAvO4hcEEjI2b6b0D+I=;
-        b=DpiiAAVKzREL5OIZYC1Tfs4DJZFD6nzKoG13wu4Nt0dWX+8kk4k3cZevbPBL64y8Vw
-         lrhZXXyNy+HskoRhtaKDyhXOas+wvBInhS/fbae17b1eLLawO4fWquqnWAGatKARIiPP
-         Y6V+t6xvkF6YR15kqF3ZdrLoLW6S+J8x4ZINWIvmyzefelkBN15pl+wMFEvR5SidrFbO
-         SbmmlBSenVaOSkm8k2M5HxJAGdICqM8Zwd9PZQRxw+j57hvz9Hv6BHNv17vvTiY0NVW+
-         Ggo1OlWDcX4kuxrlL/5/oD+FoM94SQpar46jbmQOtgjFnjPb/GMuKXEZATILtZwLoTK6
-         vXUQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SXSnxxCYD2md6x19BIcV4dv3O6O3P24XFKvfPThGQJo=;
+        b=XiWGQvg9Bit4nzKJF4qTwKdmAD1Q2E8m0XLXObi9vRO8M1t4VdTiK64oHbv/HyOTvg
+         Iph0ndBegJGa710ZTHuhZ+ZoFOjKdukKozcCicBgLXX3y6uliKL/WS9BOsbd6KMTNBYV
+         +nEGz4/MJztzxsjdU/7KBRNvEeW9+FJvkqwX5EIGlY58knyzPMbs/i/pkxxlRStNhW01
+         u7mJDA/obpT1Enlojzjpv/fmkrEJ9Ni+5i1QasAQ8DjJ7xYVjUF1+dZQi3PfCMhkOGLq
+         y6MLVqLBGMJKSb8/DYc6unpKl++YUtTzIvAXUpCK53ktVcgNw5a/VRRZUvPZh4Xo/Qsh
+         vKgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GFHE6B9er+V6kO04ZtSKBTS+EAvO4hcEEjI2b6b0D+I=;
-        b=QllogKA4sD5RwdaBcf8+4FccCGxIAXdNBNl5HYTAWUH6fy/nXqb8LynPuJe0nAg1yy
-         WtYfWpgQB62BpN+ct7JL02UOgnzJ5C4dTrHVX92xJSGLBZsIh1OfLlNEW+BMN8Cqa+T+
-         YSn+/D6yk2enL9Exla9RZdQbFr+e/mE3yBsWgpMxC+8cE/ARDG4jjiaSa3W/9cvTA5ar
-         OwcDV+8v3AKmSmroq27YHKVj7M81Qxc6jUeWSZQ1weq27mKAWoa07gu3mgM0QITszQSA
-         Fvrm+OIRl1LfWabypev44vMRQ2UObmKYpxxC0jFJ9c2qkYsFpEnGYPU0i8lQSrT5/YZh
-         6RPA==
-X-Gm-Message-State: AOAM533Rw7Nx5itZD7NrxKZnH/zOJewk0k+FFjIgjDc4fcYaWEP1Mvy3
-        iVty1b+sFaZeuV8LtuEL0q0=
-X-Google-Smtp-Source: ABdhPJywEah00tll5sMrzN/RAV2Vc8AayWtESH8W9br3szTn+TauF7Rm/eXWZ1VoY4uwqq5LRMzycQ==
-X-Received: by 2002:a17:906:e46:: with SMTP id q6mr3486285eji.234.1596707560708;
-        Thu, 06 Aug 2020 02:52:40 -0700 (PDT)
-Received: from ubuntu-laptop ([2a01:598:b906:f0c9:15b9:533b:62ba:b5b3])
-        by smtp.googlemail.com with ESMTPSA id g9sm3393498ejf.101.2020.08.06.02.52.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 06 Aug 2020 02:52:39 -0700 (PDT)
-Message-ID: <7c59c7abf7b00c368228b3096e1bea8c9e2b2e80.camel@gmail.com>
-Subject: Re: [PATCH v8 0/4] scsi: ufs: Add Host Performance Booster Support
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Thu, 06 Aug 2020 11:52:32 +0200
-In-Reply-To: <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
-References: <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p6>
-         <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
-Content-Type: text/plain
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SXSnxxCYD2md6x19BIcV4dv3O6O3P24XFKvfPThGQJo=;
+        b=Xci9mUnh53DfhQBoD4g9N+XPdnKygI9R/+eQdjm250Hbu6If1r0TaAzzMciVukEnLN
+         VtplrWDjsBWFZ49tlYQWts44XEj3fC431wFdrqSeYWymcRoNUPMBp+CooXsLFt3rJRqC
+         XK9Sq76p8c/OHSZ95rb5dR9j1zpJkzKYsl+H+zpYEskbsZdOepWVHUZ1QPFCIIPq0KSE
+         v0+dWwbMdUJAZGTLe9UEuXd4NPyjCEZarm3fyMzrE3sPLqz19/DcNFZPon2eWtJCLXCj
+         4tPJcUKQkEHC7narV0y7ZhGD0WO+3AaY3apyc0tj6KxgZ0nM107R63eQrT+aZ3+jlfG+
+         dQFQ==
+X-Gm-Message-State: AOAM533GmHenOw8XryrAnzUduUC3YQkl++ptu+DGoGfWifdD1rDaLnaG
+        N5EIYJru4zKVCHtUBJtLsXCB6rnk2U1a6J/k+mw=
+X-Google-Smtp-Source: ABdhPJzZw1D9NdNDiy6amHPeR9pus0fXPnyBQGsA7oVjd8LW6an5Aly4sIaPIHNzyMhPT2bcLdXfSKW/9XHV18gYBRo=
+X-Received: by 2002:a17:90a:fa06:: with SMTP id cm6mr7815995pjb.129.1596707593391;
+ Thu, 06 Aug 2020 02:53:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200806094440.14962-1-98.arpi@gmail.com>
+In-Reply-To: <20200806094440.14962-1-98.arpi@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 6 Aug 2020 12:52:57 +0300
+Message-ID: <CAHp75Vdpyr=LiOsjgoJ1YscrvFwivtfg58dePtF9aQDYp6V9-A@mail.gmail.com>
+Subject: Re: [PATCH] lib: Convert test_hexdump.c to KUnit
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avri
-what is your plan for this series patchset?
+On Thu, Aug 6, 2020 at 12:48 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>
+> Converts test lib/test_hexdump.c to KUnit.
+> More information about KUnit can be found at
+> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
+> KUnit provides a common framework for unit tests in the kernel.
 
-Bean
+> -config TEST_HEXDUMP
+> -       tristate "Test functions located in the hexdump module at runtime"
 
+We have a nice collection of tests starting with TEST_ in the
+configuration, now it's gone.
+I'm strongly against this change.
+Code itself okay, but without addressing above - NAK.
+
+-- 
+With Best Regards,
+Andy Shevchenko
