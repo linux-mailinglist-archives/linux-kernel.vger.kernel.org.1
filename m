@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1285A23DECF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1C423DED6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728488AbgHFRcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:32:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
+        id S1730488AbgHFRdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:33:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:46002 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730003AbgHFRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:32:05 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FAAF20855;
-        Thu,  6 Aug 2020 11:28:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596713335;
-        bh=SXBG3d+40joIiETd4BEf9KDW1I5AsutaJSgaQGqb84k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GhjzyO5t2lZbx98Q4lcj/h975RF5zZJUyBjr+rFxL4lOT4zkMZ+laBDYkGRDrNGcD
-         AuWB7JBjFZDDD8OD3InXu+oEKrgfO/dhCmOmGpz7N9lQ9YzpQUis7j5JPU9cYSi1FU
-         +aLOSKQ+1x1WjqtDMFGVRCEsS5xQ/qF2OFHxa4Zw=
-Date:   Thu, 6 Aug 2020 12:28:31 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ASoC: amd: Replacing component->name with codec_dai->name
-Message-ID: <20200806112831.GA6442@sirena.org.uk>
-References: <20200806101451.7918-1-Vishnuvardhanrao.Ravulapati@amd.com>
+        id S1729889AbgHFRcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:32:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7906D1063;
+        Thu,  6 Aug 2020 04:33:17 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE94F3F99C;
+        Thu,  6 Aug 2020 04:33:15 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 12:33:13 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Zhenyu Ye <yezhenyu2@huawei.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] arm64: tlb: fix ARM64_TLB_RANGE with LLVM's integrated
+ assembler
+Message-ID: <20200806113313.GC23785@gaia>
+References: <20200805181920.4013059-1-samitolvanen@google.com>
+ <95156879-d76e-65cc-1469-ae3096aa95e4@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="X1bOJ3K7DJ5YkBrT"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200806101451.7918-1-Vishnuvardhanrao.Ravulapati@amd.com>
-X-Cookie: Hedonist for hire... no job too easy!
+In-Reply-To: <95156879-d76e-65cc-1469-ae3096aa95e4@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 06, 2020 at 03:17:40PM +0800, Zhenyu Ye wrote:
+> On 2020/8/6 2:19, Sami Tolvanen wrote:
+> > Commit 7c78f67e9bd9 ("arm64: enable tlbi range instructions") breaks
+> > LLVM's integrated assembler, because -Wa,-march is only passed to
+> > external assemblers and therefore, the new instructions are not enabled
+> > when IAS is used.
+> 
+> I have looked through the discussion on Github issues. The best way to
+> solve this problem is try to pass the "-Wa,-march" parameter to clang
+> even when IAS is enabled, which may need the cooperation of compilation
+> tool chains :(
+> 
+> Currently, I think we can solve the problem by passing
+> the '-march=armv8.4-a' when using the integrated assembler, just like:
+> 
+> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+> index 55bc8546d9c7..e5ce184e98c2 100644
+> --- a/arch/arm64/Makefile
+> +++ b/arch/arm64/Makefile
+> @@ -91,8 +91,12 @@ KBUILD_CFLAGS += $(branch-prot-flags-y)
+> 
+>  ifeq ($(CONFIG_AS_HAS_ARMV8_4), y)
+>  # make sure to pass the newest target architecture to -march.
+> +ifneq ($(LLVM),)
+> +KBUILD_CFLAGS  += -march=armv8.4-a
+> +else
+>  KBUILD_CFLAGS  += -Wa,-march=armv8.4-a
+>  endif
+> +endif
 
---X1bOJ3K7DJ5YkBrT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+No, see my other reply. This only works for .S files. For inline
+assembly, passing -march to .c files will make the compiler generate
+ARMv8.4 instructions and break the kernel single image that's supposed
+to run on ARMv8.0 hardware (even if you don't have any range TLBI
+instructions).
 
-On Thu, Aug 06, 2020 at 03:44:12PM +0530, Ravulapati Vishnu vardhan rao wrote:
-
-> Replacing string compare with codec_dai->name instead of comparing with
-> codec_dai->component->name in hw_params.
-
-Why?
-
---X1bOJ3K7DJ5YkBrT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8r6V8ACgkQJNaLcl1U
-h9C99wf+Iwfs3UAnESFIX3Jun3tiCmnkiuI29dljakUab4crGEgKNWCADublBHk/
-8d8piOMAHBtWET14c2kaaCFv8h+6R8YxULrI5lPtMpCt9HZ+AiE4WozIy40VoWk9
-u3DhDuk69o5ghnTlETNo5fdtYURPk45dZ6mgZYKlVX/vuIZLtGOK5n+UJT3yCn8p
-5tbr/j4E8nIkTHhicgYAB62oSvedeRZeFuuGD6LodfgIexQsNVke8UEXgHftCkrd
-Tnxx3YUc8eEPomhMY/v8S33ICO9Y6P5jabrGZSFKLaI5Bc1236r2SPAhPMYep9bO
-IKSc8vpRI5xBjJhnVrX+BNUjFTNFpw==
-=bFdy
------END PGP SIGNATURE-----
-
---X1bOJ3K7DJ5YkBrT--
+-- 
+Catalin
