@@ -2,124 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870AB23DED7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2F223DEE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730222AbgHFRdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:33:08 -0400
-Received: from verein.lst.de ([213.95.11.211]:50470 "EHLO verein.lst.de"
+        id S1727971AbgHFReQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:34:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729500AbgHFRcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:32:54 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id B828768D0F; Thu,  6 Aug 2020 16:48:35 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 16:48:35 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>, Vikas Kumar <vikas.kumar2@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, rafael@kernel.org
-Subject: Re: [LTP-FAIL][02/21] fs: refactor ksys_umount
-Message-ID: <20200806144834.GA7818@lst.de>
-References: <d28d2235-9b1c-0403-59ca-e57ac5d0460e@arm.com> <20200806141732.GA5902@lst.de> <20200806143221.GQ1236603@ZenIV.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200806143221.GQ1236603@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1729731AbgHFRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:32:05 -0400
+Received: from localhost.localdomain (unknown [89.208.247.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09D5523123;
+        Thu,  6 Aug 2020 14:52:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596725526;
+        bh=i5ANlpqR018YR0d6q0AnTMbQwaCSVTrwSPCu4a3h7lc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NWfRvtbaky3m3FtA0y3zzCKqvokh4wOi44r6qO8lyx6VnY3sSO1XUFafedRF6Eh8Y
+         up9hJkXBv3MqNDx1IBqInmV8ifJpbXr7ybPfA/nitNWGSwgx/f8Clc9hmt/420yBDE
+         Pyg1GFqDe84WMyVVFL2oHiVYusgeLw25WfXIHINE=
+From:   guoren@kernel.org
+To:     guoren@kernel.org, rostedt@goodmis.org, mingo@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH] ftrace: Fixup lockdep assert held of text_mutex
+Date:   Thu,  6 Aug 2020 14:50:54 +0000
+Message-Id: <1596725454-16245-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 03:32:21PM +0100, Al Viro wrote:
-> On Thu, Aug 06, 2020 at 04:17:32PM +0200, Christoph Hellwig wrote:
-> > Fix for umount03 below.  The other one works fine here, but from
-> > your logs this might be a follow on if you run it after umount without
-> > the fix.
-> 
-> Ugh...
-> 
-> How about 
-> static int may_umount(const struct path *path, int flags)
+From: Guo Ren <guoren@linux.alibaba.com>
 
-may_umount is already take.  But with can_umount this would work:
+The function ftrace_process_locs() will modify text code, so we
+should give a text_mutex lock. Because some arch's patch code
+will assert held of text_mutex even during start_kernel->
+ftrace_init().
 
+backtrace log:
+   assert by lockdep_assert_held(&text_mutex)
+0  patch_insn_write (addr=0xffffffe0000010fc <set_reset_devices+10>, insn=0xffffffe001203eb8, len=8) at arch/riscv/kernel/patch.c:63
+1  0xffffffe0002042ec in patch_text_nosync (addr=<optimized out>, insns=<optimized out>, len=<optimized out>) at arch/riscv/kernel/patch.c:93
+2  0xffffffe00020628e in __ftrace_modify_call (hook_pos=<optimized out>, target=<optimized out>, enable=<optimized out>) at arch/riscv/kernel/ftrace.c:68
+3  0xffffffe0002063c0 in ftrace_make_nop (mod=<optimized out>, rec=0xffffffe001221c70 <text_mutex+96>, addr=18446743936272720288) at arch/riscv/kernel/ftrace.c:97
+4  0xffffffe0002b13f0 in ftrace_init_nop (rec=<optimized out>, mod=<optimized out>) at ./include/linux/ftrace.h:647
+5  ftrace_nop_initialize (rec=<optimized out>, mod=<optimized out>) at kernel/trace/ftrace.c:2619
+6  ftrace_update_code (new_pgs=<optimized out>, mod=<optimized out>) at kernel/trace/ftrace.c:3063
+7  ftrace_process_locs (mod=<optimized out>, start=<optimized out>, end=<optimized out>) at kernel/trace/ftrace.c:6154
+8  0xffffffe00000b6e6 in ftrace_init () at kernel/trace/ftrace.c:6715
+9  0xffffffe000001b48 in start_kernel () at init/main.c:888
+10 0xffffffe0000010a8 in _start_kernel () at arch/riscv/kernel/head.S:247
+
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
 ---
-From e4ccb3da160831a43eeea48c68d2d43fd7cf6724 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Thu, 6 Aug 2020 16:07:10 +0200
-Subject: fs: fix a struct path leak in path_umount
+ kernel/trace/ftrace.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Make sure we also put the dentry and vfsmnt in the illegal flags
-and !may_umount cases.
-
-Fixes: 41525f56e256 ("fs: refactor ksys_umount")
-Reported-by: Vikas Kumar <vikas.kumar2@arm.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/namespace.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
-
-diff --git a/fs/namespace.c b/fs/namespace.c
-index a7301790abb211..1c74a46367df4e 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -1706,34 +1706,38 @@ static inline bool may_mandlock(void)
- }
- #endif
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 1903b80..4b48b88 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -26,6 +26,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/bsearch.h>
+ #include <linux/module.h>
++#include <linux/memory.h>
+ #include <linux/ftrace.h>
+ #include <linux/sysctl.h>
+ #include <linux/slab.h>
+@@ -6712,9 +6713,11 @@ void __init ftrace_init(void)
  
--int path_umount(struct path *path, int flags)
-+static int can_umount(const struct path *path, int flags)
- {
--	struct mount *mnt;
--	int retval;
-+	struct mount *mnt = real_mount(path->mnt);
+ 	last_ftrace_enabled = ftrace_enabled = 1;
  
- 	if (flags & ~(MNT_FORCE | MNT_DETACH | MNT_EXPIRE | UMOUNT_NOFOLLOW))
- 		return -EINVAL;
- 	if (!may_mount())
- 		return -EPERM;
--
--	mnt = real_mount(path->mnt);
--	retval = -EINVAL;
- 	if (path->dentry != path->mnt->mnt_root)
--		goto dput_and_out;
-+		return -EINVAL;
- 	if (!check_mnt(mnt))
--		goto dput_and_out;
-+		return -EINVAL;
- 	if (mnt->mnt.mnt_flags & MNT_LOCKED) /* Check optimistically */
--		goto dput_and_out;
--	retval = -EPERM;
-+		return -EINVAL;
- 	if (flags & MNT_FORCE && !capable(CAP_SYS_ADMIN))
--		goto dput_and_out;
-+		return -EPERM;
-+	return 0;
-+}
-+
-+int path_umount(struct path *path, int flags)
-+{
-+	struct mount *mnt = real_mount(path->mnt);
-+	int ret;
-+
-+	ret = can_umount(path, flags);
-+	if (!ret)
-+		ret = do_umount(mnt, flags);
++	mutex_lock(&text_mutex);
+ 	ret = ftrace_process_locs(NULL,
+ 				  __start_mcount_loc,
+ 				  __stop_mcount_loc);
++	mutex_unlock(&text_mutex);
  
--	retval = do_umount(mnt, flags);
--dput_and_out:
- 	/* we mustn't call path_put() as that would clear mnt_expiry_mark */
- 	dput(path->dentry);
- 	mntput_no_expire(mnt);
--	return retval;
-+	return ret;
- }
- 
- static int ksys_umount(char __user *name, int flags)
+ 	pr_info("ftrace: allocated %ld pages with %ld groups\n",
+ 		ftrace_number_of_pages, ftrace_number_of_groups);
 -- 
-2.27.0
+2.7.4
 
