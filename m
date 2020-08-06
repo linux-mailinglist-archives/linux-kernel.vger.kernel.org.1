@@ -2,77 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E0423DFFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1F623DFDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgHFR4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:56:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725927AbgHFQRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:17:23 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60833206C3;
-        Thu,  6 Aug 2020 16:16:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596730581;
-        bh=Go2sWZfxTTzTPYGn6XoCJvsRXRnN2EaJUECx0AoDb7A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wLqr1QNn3UVaZB4dJw58Fzn6f2R9YD+QKzUF/5/drVhZa8T/Y8WslRwpZNZdUKsPO
-         s/lgGMSEo5Als7HXZZn4/gdR4PiUdvdcVkQIBin6HT7NvdwPOPbwcvPByzN4vTcAc3
-         EjLhMSIM2VzPJKC4VF+W4jAwH1BwzJQvLsOj2Ofk=
-Date:   Thu, 6 Aug 2020 17:15:57 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: pwm: Do not print error on probe deferral
-Message-ID: <20200806161557.GD6442@sirena.org.uk>
-References: <20200806155515.3936329-1-thierry.reding@gmail.com>
+        id S1729825AbgHFRyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728166AbgHFQaX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:30:23 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF464C002176
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:16:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=SfddbmLFlUQ0+2CTU0mFNxT8HQmZBOw2XCU66BDvkhs=; b=D1Q6EoCdlM8ll41mrAcZKGhTm
+        pVW2jMOhfFTnt2JXtVqIaZ+mZQW6opyRTrizzkANylnv5MBDdHdW045799Oo0VejOaxfXeh0s2vNd
+        63Vdl8ja/0pFIHKfux22Yh2UgYpCxDbjilE755ube/ntYMY9SPWjs2XxcanigYvmnY8fVxreZ/7+B
+        tQqdbXuLK5y+BOvELwtrNI/s2rcrRf7b78FyRgbFYxHUYMAUZ5OI0N6rGSXClGfh5vRNciXOUhtCY
+        1XaQo+LRdyfIT4nvvZoll6dJEWXe6yA3HnJzA5K1AIlxqsP5qlKEoAdMJs5BbgtPReWFVub/SwLGf
+        kskdKohPQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49130)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1k3iZW-0004re-CI; Thu, 06 Aug 2020 17:16:50 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1k3iZV-0006Jp-NZ; Thu, 06 Aug 2020 17:16:49 +0100
+Date:   Thu, 6 Aug 2020 17:16:49 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Pratyush Anand <panand@redhat.com>,
+        Pavel Labath <labath@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kazuhiro Inaba <kinaba@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] ARM: hw_breakpoint: Handle inexact watchpoint addresses
+Message-ID: <20200806161649.GB1605@shell.armlinux.org.uk>
+References: <20191019111216.1.I82eae759ca6dc28a245b043f485ca490e3015321@changeid>
+ <20191120191813.GD4799@willie-the-truck>
+ <CAD=FV=Wntf0TCwdtNNvPY-CXX1VL_SZK8Y8yw1r=UfeayHfwgw@mail.gmail.com>
+ <CAD=FV=WgoVN-scgT41R=6Toif2Zrskb3rNzZn_xbP_-ByZC1MA@mail.gmail.com>
+ <20200806154144.GD1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EY/WZ/HvNxOox07X"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200806155515.3936329-1-thierry.reding@gmail.com>
-X-Cookie: Hedonist for hire... no job too easy!
+In-Reply-To: <20200806154144.GD1551@shell.armlinux.org.uk>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 06, 2020 at 04:41:44PM +0100, Russell King - ARM Linux admin wrote:
+> On Thu, Aug 06, 2020 at 08:05:10AM -0700, Doug Anderson wrote:
+> > Yet if I go check mainline the patch is not there.  This came to my
+> > attention since we had my patch picked to the Chrome OS 4.19 tree and
+> > suddenly recently got a stable merge conflict with "ARM: 8986/1:
+> > hw_breakpoint: Don't invoke overflow handler on uaccess watchpoints".
+> > 
+> > Anyone know what happened here?
+> 
+> Yes.  Stephen Rothwell raised a complaint against it, which you were
+> copied with:
+> 
+> > Hi all,
+> > 
+> > Commit
+> > 
+> >   116375be0461 ("ARM: 8944/1: hw_breakpoint: Handle inexact watchpoint addresses")
+> > 
+> > is missing a Signed-off-by from its author.
+> 
+> My reply to Stephen's email was:
+> 
+> > Thanks Stephen, patch dropped.
+> > 
+> > It looks like Doug used his "m.disordat.com" address to submit the
+> > patch through the web interface, and there was no From: in the patch
+> > itself, so that was used as the patch author.  However, as you spotted,
+> > it was signed off using Doug's "chromium.org" address.
+> > 
+> > I think it's time to make the patch system a bit more strict, checking
+> > that the submission address is mentioned in a signed-off-by tag
+> > somewhere in the commit message.
+> > 
+> > Doug, the patch system does have your "chromium.org" address, if that's
+> > the one you want to use as the author, please submit using that instead.
+> > Thanks.
+> > 
+> > Russell.
+> 
+> Neither email got a response from you, so the patch was dropped and
+> nothing further happened.
 
---EY/WZ/HvNxOox07X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I should've also said, there's two ways to avoid that problem:
 
-On Thu, Aug 06, 2020 at 05:55:15PM +0200, Thierry Reding wrote:
+1. Provide a From: line in the standard way to tell the patch system
+   who the author of the patch is (the author defaults to the known
+   login email address.)
 
->  	if (IS_ERR(drvdata->enb_gpio)) {
->  		ret = PTR_ERR(drvdata->enb_gpio);
-> -		dev_err(&pdev->dev, "Failed to get enable GPIO: %d\n", ret);
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(&pdev->dev, "Failed to get enable GPIO: %d\n", ret);
+2. Update your login email address in the system to the one you
+   normally author patches.
 
-This will not provide any diagnostics if there's an issue with probe
-deferral it'll be hard for people to figure out what's going on.  At
-most lower the severity to dev_dbg() but don't totally remove the
-logging.
-
---EY/WZ/HvNxOox07X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8sLL0ACgkQJNaLcl1U
-h9A+ZQf+JLu+ogtTHXQeHNP5UIbUOInHJJyLt6Pw17nALqc/IYVP6qs1dR+rJ0Pg
-LG2Qhmo2tb1cMQAGQXVrdjHgCECdZ3vh+F39ZICxm8FQX/NCaQ8bTQeQ8sdf+qX/
-fjpUXQ+FCRMLX7m40nMqygI6RAj+32/HVEvJBTL6V90Pv417kyWz3exmhm7hPR4c
-sNxfROheDoBFwGoe3sGYB4AhUTCGYHhifHS3Ue/oBfAz/sHcfJurVK02+R5UC/zU
-ZZLMmuMJtJf3CcTa0dI0fTIlijYIl0Lt/IZ2bLJjXyblhSe+tSmaH0+yrM8PNjNz
-GRZOnZu99eSBQAFKFLzhTaTg1KkH8A==
-=R5xO
------END PGP SIGNATURE-----
-
---EY/WZ/HvNxOox07X--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
