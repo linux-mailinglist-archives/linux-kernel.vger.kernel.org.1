@@ -2,151 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8037B23DC89
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544F623DCA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729675AbgHFQx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729365AbgHFQu7 (ORCPT
+        id S1729786AbgHFQys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:54:48 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52960 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729111AbgHFQym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:50:59 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E6FC0086B7;
-        Thu,  6 Aug 2020 08:33:22 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o13so26959041pgf.0;
-        Thu, 06 Aug 2020 08:33:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=NXM7oKIqExo6jQUCEcqG7gsdReCWsat1fidWX99SIu0=;
-        b=qtmrG/B/x58Madbk7LLC7WKbj2mBIkC1GmyA7WafBLX+ZoV6WYIRo1bU1eavNX5Odx
-         H7cx7siSu0FEcpEG2ucdbQh8uMSgyJr3m/zq34an/vJzcmGC7ug1STJRw2wYoPazPWX3
-         TBZCJdqoyqyzJhoHsFQkqguml/jS1jLMWrcpfXAo1/LjQZa9WLmgoCG77PRUFZw8W8k1
-         A/MAfASV7jEhnvtYzFzzxlanVOh+iy0XW5b/BflcA14wgsmEFuXTkzOWpE74LxS4I4BL
-         gwRxBfJbn5omiFoDDdm1r7IJHL8wf2cKCRw1mKh8WRS+dagMNRS1v5jr6fOWnfWBq/8t
-         1zhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references;
-        bh=NXM7oKIqExo6jQUCEcqG7gsdReCWsat1fidWX99SIu0=;
-        b=dVf//0zjvqXYIg6M0m+pXTnQGf6rRBpRFoXxc1ye615zEoKj17MtWKMd0HMYBFBwt8
-         IgYwjOyzRA24hBWiRPPCW3N4IgjcvTxXiA1pdHVI3E/vgZAXvVd/F4Jzo/oTxYN/bzy3
-         TNV4u1Pcu3Y7TIxe/on3KEKwe48TZgp99pk/Cpca2HmGaOT7kUsIqOzeeUOGni8f98B4
-         OZhoa5ZrBzbzAczuOh8C6l44/r3AEiG+VbxIGCSOWaPrrJIuLxRVNWQV08+7D67gGc0y
-         eIOfJQEsSdwxG/ZfgzW9ynmB1kxqSEZ4B84Jng5Ib8F/LzuCkVp1VNNemnjgBm44dKoe
-         AsUw==
-X-Gm-Message-State: AOAM531vWQ8K+/fV/tqgitgQE93kMwMGOmIr6NIsV7vkod+qV9lEXZD6
-        EzM6YLr8cYD55zmuEvNis6k=
-X-Google-Smtp-Source: ABdhPJxPgUkkRVp7LsuLLycjHy7G09Nd7fR2ySbGBe+ceuVccLylbMsZBpLGEhRshGy64Vbl4JwA2A==
-X-Received: by 2002:a63:d143:: with SMTP id c3mr7775779pgj.306.1596728002409;
-        Thu, 06 Aug 2020 08:33:22 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 12sm8379264pfn.173.2020.08.06.08.33.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 06 Aug 2020 08:33:21 -0700 (PDT)
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v4 7/7] pwm: cros-ec: Simplify EC error handling
-Date:   Thu,  6 Aug 2020 08:33:08 -0700
-Message-Id: <20200806153308.204605-8-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200806153308.204605-1-linux@roeck-us.net>
-References: <20200806153308.204605-1-linux@roeck-us.net>
+        Thu, 6 Aug 2020 12:54:42 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076FVtLN001663;
+        Thu, 6 Aug 2020 11:34:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/6OwY2FMLYMMfilDKDbdLEaroXYly6ajpHy06tH7vzE=;
+ b=NFp7G9kd2x96lc9KEZiGdkoiJtZVPUeCg+siGa9Rvr+HnY3ZwjZHVOiTfqDwgSCPW+Tc
+ iBDfRXr0claVrFidVYxv7V2IYQzOQwBVk4nGtfYZYPN5PqB3+pk+VMlJ0chbURrLir9W
+ 1hgjui5lwxXaXhU+Ye7jMRSajeC8rMDRlotc7FrkXP1qwAwvsH/dbKvBKSfZjpEc+/J9
+ GmEGWO4h5GI2Bgi+3kjgnQ1ycjz5i/zbYiF1M7Jncc+PMyFW1a0l6vOEd2d0+rLCUlDb
+ UD2Ou4iJP+c3h7K4bcLdfqya0iBR0RxJd5IivrCFQIXoQduwt0WcXW5+HrqmSDhZWj8i OA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32repgumnm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 11:34:48 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 076FWxK7005324;
+        Thu, 6 Aug 2020 11:34:48 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32repgumn8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 11:34:48 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 076FYC00010222;
+        Thu, 6 Aug 2020 15:34:47 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma01wdc.us.ibm.com with ESMTP id 32n018jgks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 15:34:47 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 076FYkDv60096866
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 Aug 2020 15:34:46 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F1999C605B;
+        Thu,  6 Aug 2020 15:34:45 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1F259C6055;
+        Thu,  6 Aug 2020 15:34:44 +0000 (GMT)
+Received: from swastik.ibm.com (unknown [9.160.68.187])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  6 Aug 2020 15:34:43 +0000 (GMT)
+Subject: Re: [PATCH 1/2] ima: Pre-parse the list of keyrings in a KEY_CHECK
+ rule
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Nayna Jain <nayna@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20200727140831.64251-1-tyhicks@linux.microsoft.com>
+ <20200727140831.64251-2-tyhicks@linux.microsoft.com>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+Message-ID: <8f749594-1214-9f2d-4614-d360772a2ab6@linux.vnet.ibm.com>
+Date:   Thu, 6 Aug 2020 11:34:43 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200727140831.64251-2-tyhicks@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-06_12:2020-08-06,2020-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ adultscore=0 mlxlogscore=999 clxscore=1011 phishscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008060108
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With enhanced error reporting from cros_ec_cmd_xfer_status() in place,
-we can fully use it and no longer rely on EC error codes.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/pwm/pwm-cros-ec.c | 26 ++++----------------------
- 1 file changed, 4 insertions(+), 22 deletions(-)
+On 7/27/20 10:08 AM, Tyler Hicks wrote:
+> The ima_keyrings buffer was used as a work buffer for strsep()-based
+> parsing of the "keyrings=" option of an IMA policy rule. This parsing
+> was re-performed each time an asymmetric key was added to a kernel
+> keyring for each loaded policy rule that contained a "keyrings=" option.
+>
+> An example rule specifying this option is:
+>
+>   measure func=KEY_CHECK keyrings=a|b|c
+>
+> The rule says to measure asymmetric keys added to any of the kernel
+> keyrings named "a", "b", or "c". The size of the buffer size was
+> equal to the size of the largest "keyrings=" value seen in a previously
+> loaded rule (5 + 1 for the NUL-terminator in the previous example) and
+> the buffer was pre-allocated at the time of policy load.
+>
+> The pre-allocated buffer approach suffered from a couple bugs:
+>
+> 1) There was no locking around the use of the buffer so concurrent key
+>     add operations, to two different keyrings, would result in the
+>     strsep() loop of ima_match_keyring() to modify the buffer at the same
+>     time. This resulted in unexpected results from ima_match_keyring()
+>     and, therefore, could cause unintended keys to be measured or keys to
+>     not be measured when IMA policy intended for them to be measured.
+>
+> 2) If the kstrdup() that initialized entry->keyrings in ima_parse_rule()
+>     failed, the ima_keyrings buffer was freed and set to NULL even when a
+>     valid KEY_CHECK rule was previously loaded. The next KEY_CHECK event
+>     would trigger a call to strcpy() with a NULL destination pointer and
+>     crash the kernel.
+>
+> Remove the need for a pre-allocated global buffer by parsing the list of
+> keyrings in a KEY_CHECK rule at the time of policy load. The
+> ima_rule_entry will contain an array of string pointers which point to
+> the name of each keyring specified in the rule. No string processing
+> needs to happen at the time of asymmetric key add so iterating through
+> the list and doing a string comparison is all that's required at the
+> time of policy check.
+>
+> In the process of changing how the "keyrings=" policy option is handled,
+> a couple additional bugs were fixed:
+>
+> 1) The rule parser accepted rules containing invalid "keyrings=" values
+>     such as "a|b||c", "a|b|", or simply "|".
+>
+> 2) The /sys/kernel/security/ima/policy file did not display the entire
+>     "keyrings=" value if the list of keyrings was longer than what could
+>     fit in the fixed size tbuf buffer in ima_policy_show().
+>
+> Fixes: 5c7bac9fb2c5 ("IMA: pre-allocate buffer to hold keyrings string")
+> Fixes: 2b60c0ecedf8 ("IMA: Read keyrings= option from the IMA policy")
+> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+>   security/integrity/ima/ima_policy.c | 138 +++++++++++++++++++---------
+>   1 file changed, 93 insertions(+), 45 deletions(-)
+>
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 07f033634b27..c328cfa0fc49 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -59,6 +59,11 @@ enum policy_types { ORIGINAL_TCB = 1, DEFAULT_TCB };
+>   
+>   enum policy_rule_list { IMA_DEFAULT_POLICY = 1, IMA_CUSTOM_POLICY };
+>   
+> +struct ima_rule_opt_list {
+> +	size_t count;
+> +	char *items[];
+> +};
+> +
+>   struct ima_rule_entry {
+>   	struct list_head list;
+>   	int action;
+> @@ -78,7 +83,7 @@ struct ima_rule_entry {
+>   		int type;	/* audit type */
+>   	} lsm[MAX_LSM_RULES];
+>   	char *fsname;
+> -	char *keyrings; /* Measure keys added to these keyrings */
+> +	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
+>   	struct ima_template_desc *template;
+>   };
+>   
+> @@ -206,10 +211,6 @@ static LIST_HEAD(ima_policy_rules);
+>   static LIST_HEAD(ima_temp_rules);
+>   static struct list_head *ima_rules = &ima_default_rules;
+>   
+> -/* Pre-allocated buffer used for matching keyrings. */
+> -static char *ima_keyrings;
+> -static size_t ima_keyrings_len;
+> -
+>   static int ima_policy __initdata;
+>   
+>   static int __init default_measure_policy_setup(char *str)
+> @@ -253,6 +254,72 @@ static int __init default_appraise_policy_setup(char *str)
+>   }
+>   __setup("ima_appraise_tcb", default_appraise_policy_setup);
+>   
+> +static struct ima_rule_opt_list *ima_alloc_rule_opt_list(const substring_t *src)
+> +{
+> +	struct ima_rule_opt_list *opt_list;
+> +	size_t count = 0;
+> +	char *src_copy;
+> +	char *cur, *next;
+> +	size_t i;
+> +
+> +	src_copy = match_strdup(src);
+> +	if (!src_copy)
+> +		return NULL;
 
-diff --git a/drivers/pwm/pwm-cros-ec.c b/drivers/pwm/pwm-cros-ec.c
-index 94d3dff9b0e5..c1c337969e4e 100644
---- a/drivers/pwm/pwm-cros-ec.c
-+++ b/drivers/pwm/pwm-cros-ec.c
-@@ -81,8 +81,7 @@ static int cros_ec_pwm_set_duty(struct cros_ec_device *ec, u8 index, u16 duty)
- 	return cros_ec_cmd_xfer_status(ec, msg);
- }
- 
--static int __cros_ec_pwm_get_duty(struct cros_ec_device *ec, u8 index,
--				  u32 *result)
-+static int cros_ec_pwm_get_duty(struct cros_ec_device *ec, u8 index)
- {
- 	struct {
- 		struct cros_ec_command msg;
-@@ -107,19 +106,12 @@ static int __cros_ec_pwm_get_duty(struct cros_ec_device *ec, u8 index,
- 	params->index = index;
- 
- 	ret = cros_ec_cmd_xfer_status(ec, msg);
--	if (result)
--		*result = msg->result;
- 	if (ret < 0)
- 		return ret;
- 
- 	return resp->duty;
- }
- 
--static int cros_ec_pwm_get_duty(struct cros_ec_device *ec, u8 index)
--{
--	return __cros_ec_pwm_get_duty(ec, index, NULL);
--}
--
- static int cros_ec_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 			     const struct pwm_state *state)
- {
-@@ -215,28 +207,18 @@ static int cros_ec_num_pwms(struct cros_ec_device *ec)
- 
- 	/* The index field is only 8 bits */
- 	for (i = 0; i <= U8_MAX; i++) {
--		u32 result = 0;
--
--		ret = __cros_ec_pwm_get_duty(ec, i, &result);
-+		ret = cros_ec_pwm_get_duty(ec, i);
- 		/*
- 		 * We look for SUCCESS, INVALID_COMMAND, or INVALID_PARAM
- 		 * responses; everything else is treated as an error.
--		 * The EC error codes either map to -EOPNOTSUPP / -EINVAL,
--		 * or -EPROTO is returned and the EC error is in the result
--		 * field. Check for both.
-+		 * The EC error codes map to -EOPNOTSUPP and -EINVAL,
-+		 * so check for those.
- 		 */
- 		switch (ret) {
- 		case -EOPNOTSUPP:	/* invalid command */
- 			return -ENODEV;
- 		case -EINVAL:		/* invalid parameter */
- 			return i;
--		case -EPROTO:
--			/* Old or new error return code: Handle both */
--			if (result == EC_RES_INVALID_COMMAND)
--				return -ENODEV;
--			else if (result == EC_RES_INVALID_PARAM)
--				return i;
--			return -EPROTO;
- 		default:
- 			if (ret < 0)
- 				return ret;
--- 
-2.17.1
+The caller of this function checks for IS_ERR(..) and not 
+IS_ERR_OR_NULL(..). Shouldn't it return ERR_PTR(-EINVAL) instead of NULL ?
+
+Thanks & Regards,
+
+     - Nayna
 
