@@ -2,227 +2,518 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868FC23E46A
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 01:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B7023E46C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 01:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726155AbgHFXi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 19:38:27 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36208 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726071AbgHFXiW (ORCPT
+        id S1726212AbgHFXik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 19:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbgHFXij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 19:38:22 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 076NZudU018128;
-        Thu, 6 Aug 2020 16:38:11 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Axx3uzYJkcGLNIJwuepaIbiT+OCkIkYvvznDoJgrYnY=;
- b=bC38AaV2JnE05jtbnm1b4Wj4bBKS4FUERpv0rrzPuld9yUkpDLrO4jY+DsGSWOD8EepD
- s5QtxXFzX1QyPDXEFzAivpasI3nB/7nKGvKxR/j1HAUVVKiz3AnyB9ixMk6GOSmA1xoM
- JaSAK9+QAFQC0oypRJgx/1c6JqqNGHQ/B8M= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 32qy1yfufy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 06 Aug 2020 16:38:10 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 6 Aug 2020 16:38:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yg7nT/l7SYPV7CWHmw3TAdGYpIw/yaVxOjzpo9Bu7XByb16dGSgHqSOI1JkM0shWbahs8iaMVBZjhUvB3NR7VlW+gw0GvkqpykPel+AxvCk9d32ErN+7GPCAiqkE8hWFTSIjKtPyEfR7HRxiybKgFZxjTpGl59bcccLM3HT2Qa+yifwM8HQoGLtCFJojSrXPb2LsyoZftBA8ZWWFS+JAeFmqgFUtlrilhP+sCmwzfuQJf4yKMaT1wHaMqiiAUEe56R4F8Ipe6q7Bb/T6hvx3MbT3N9Ew86nbURX241noUU+K2ec3FkVtR5GuJD2lNdwBr3sILZG1i0mvk5wTNfZ07w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Axx3uzYJkcGLNIJwuepaIbiT+OCkIkYvvznDoJgrYnY=;
- b=odl4WqHqcGYNPVU1jX4/qn+MvveNmiyzZkZK6lBrxjSQk6NthJ56UxQzQ51cQlSxQJh5kqF6cH+EzU7A0s5KilGMGE8YCVntGQAwFJgAp3OaE9SGj6h+ekTem4CDs11GH1wqdoYz62RVmxV32U2vRWTOIHDr1yyGj6ZFO44fry1O9Wx3349v61CazaBhos9Zd0s7bduaaN/m+XafdTTSdfZNKxzwAUz11YXddJ/Egaudg6zpmER/m+2G3xdoFAHHnRTQABBtobulep77IPsXmRM869c9OY/7BLIAYu2oazvTQn4ynrJNBg9emJQd0V/X3fDc1Yeh+P+w0Aiv78UOnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Axx3uzYJkcGLNIJwuepaIbiT+OCkIkYvvznDoJgrYnY=;
- b=gGYi6dPWrd1dBDcqC1hpJnZ4BflAu4uRF7a/FdESp4oWYF6VU4Gigfeu6EuPrQabHtUtG0vpEzpkFqvgIeudQ2gQiXCtzX6RHxuUSjMVnQr02gHTZNvHasgiSAPbvnYTzBbQcg6ui2uQ5z9M+fSXmUZFjDk76cTzNYHE38VT3n0=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2760.namprd15.prod.outlook.com (2603:10b6:a03:159::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.17; Thu, 6 Aug
- 2020 23:38:07 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3239.022; Thu, 6 Aug 2020
- 23:38:07 +0000
-Date:   Thu, 6 Aug 2020 16:38:04 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mm: vmstat: fix /proc/sys/vm/stat_refresh generating
- false warnings
-Message-ID: <20200806233804.GB1217906@carbon.dhcp.thefacebook.com>
-References: <20200714173920.3319063-1-guro@fb.com>
- <alpine.LSU.2.11.2007291902340.6363@eggly.anvils>
- <20200730162348.GA679955@carbon.dhcp.thefacebook.com>
- <alpine.LSU.2.11.2007302018350.2410@eggly.anvils>
- <20200801011821.GA859734@carbon.dhcp.thefacebook.com>
- <alpine.LSU.2.11.2007311915130.9716@eggly.anvils>
- <20200804004012.GA1049259@carbon.dhcp.thefacebook.com>
- <alpine.LSU.2.11.2008051913580.8184@eggly.anvils>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2008051913580.8184@eggly.anvils>
-X-ClientProxiedBy: BY5PR13CA0010.namprd13.prod.outlook.com
- (2603:10b6:a03:180::23) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Thu, 6 Aug 2020 19:38:39 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56C6C061574;
+        Thu,  6 Aug 2020 16:38:38 -0700 (PDT)
+Date:   Thu, 06 Aug 2020 23:38:35 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1596757116;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Dh878ulTm58j52vB2t8SDG3bvxlQZveC80F1dZ6R2E=;
+        b=MYGAeFMYosluD7w5a9vE7HGkv8qeKKWv4pKOvlZKmT2l/9fPH5B+52eubByMu5ltimc594
+        BrrpdoLQeENyWOvx8qjQdiSf64aEASZfbage1gJBRMhQbhrrPX4+ikFm9vjvG1vb8hoIW/
+        zhimPvhIXN9SYZhAkfPUWGUkl69VhZXdzI0AjxbacDFTnBJONEjob6lFaQ1b8xsHiNhapw
+        xq8jcSWYyqgo2qhnFaZXx16LkRbx20eqLR5MEIwHrzpbRaetzB3HSPn1/EhGFYQBeJM1n7
+        p+1uWB0xiqPQA4onRza+3+i5CfoJIq/2ixljDkaIqldwhegiglLmhN+WeXyV9g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1596757116;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Dh878ulTm58j52vB2t8SDG3bvxlQZveC80F1dZ6R2E=;
+        b=6gWuqTVIBhH4G5EpmHxOvGWmdQpN2ExZkzFYp1otcZD4mQMfyX/P+jnZ6U3IvIo/VhA/z9
+        YhBrVsupQO5X8lAw==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] locking/seqlock, headers: Untangle the
+ spaghetti monster
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200804133438.GK2674@hirez.programming.kicks-ass.net>
+References: <20200804133438.GK2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:9943) by BY5PR13CA0010.namprd13.prod.outlook.com (2603:10b6:a03:180::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.12 via Frontend Transport; Thu, 6 Aug 2020 23:38:07 +0000
-X-Originating-IP: [2620:10d:c090:400::5:9943]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f503d457-0a53-44e8-83ff-08d83a61c5c3
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2760:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2760ACC62935F675A8C65666BE480@BYAPR15MB2760.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QEm2HpT4BQI+FgApLGYZd+fx6vORWBqA3c3WH+QiDQa11T5pWyJwD7IfGcZ665OdVq/5RzzCLKTVcJ4rIdS6DQWLEQI7uB5zF/r8br3FqjsWD2p+Bm9opqVjSfhEC29iqAwJfBG/tbkoY2sP6e5ygIYdFakOUy4haaaR/2tRFY+gGLoKIWkiPJb4ZvxyFTMblF7IW/qkAjDDl/UpKGNIPJLWT23Q8aVyIf20x27rRt9bObmmdp5BkpDSTRAhW8mIAkgiYIoNtaQ39Uq1UK/R/1QNvTdh3LlPVBE34cOdqlLEZ4tp7O3xRCIWw8pG0s0iredc7c+wQhu0J+8b9IAM5w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(366004)(39860400002)(136003)(396003)(346002)(8676002)(316002)(8936002)(83380400001)(478600001)(66946007)(33656002)(66476007)(66556008)(4326008)(5660300002)(9686003)(6506007)(186003)(16526019)(6916009)(6666004)(55016002)(86362001)(1076003)(54906003)(2906002)(52116002)(7696005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: N5Fb+DSgIUtZM/U0z4qbin+e8YoR/99j8/3C3C64vzynDEMRuncOjc1DjrB7LpW2iUGGjGkOZ3wmpJfXoQ+cf/X/ZRCYRg8M1d5+9ry0t/s4grKxjcqhUDaW3YfvgSGofA9YhgczGzZoDYsoWec45pwhXlMsVwOVH6aUX7OkcSqLGGhya+Jkx4qelZndBaRZfdydHmSE5ZaKJ5MgjKY52XfLVg+koLBHLYpSEzCT9ZGNZ2I3ZFwSlMSyxkSwht+iMfGxE5L1ZlmhWmzxY+b2x/llnAzeT6+0qH64sKRcID9tPrA9/UkfpgFeNzjvjUSPklvdZQG06dKt4DlNGYZ9GvjxCgdoC+WfrhMx8YeAGixT8Z4KnqzBE5+8H+XDAusO6Bt55bnY5yEVSaAWo3xPF+Yok+zl9R3QIdpND1udqZ/Yzn5zJI11h2UjMCbrllc7kHRWgnWxmnY7x6p4UuRUkX4MugvGO/xmvP6OTMm1ftWJ+bnXHQQUhmGe6T1aSKvWftUDIEhrg6c8QG7CskhoifeiJAo4+XFJo3cKCK0GjmgRqbztN1uXPx6YxgMevl2tBSSq2nycvZw2Af3AIfpuauRhnE+Tw30XBu6QAGPi6I+aMfQ//psOVqVec6TaA3LwwrpRBlEcUmkPIlC9BZAbEBEjm/snANLtMytLJlrCqrE=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f503d457-0a53-44e8-83ff-08d83a61c5c3
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2020 23:38:07.8198
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XPINQ6CiyxmRHrvpENgBsT9VOFMamGlk3GxMr4Ew+IyvxKBwccvfk6tb2wwoDe0k
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2760
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-06_17:2020-08-06,2020-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- suspectscore=5 clxscore=1015 spamscore=0 malwarescore=0 phishscore=0
- adultscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008060152
-X-FB-Internal: deliver
+Message-ID: <159675711517.3192.14692354707303315043.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the locking/urgent branch of tip:
 
-On Wed, Aug 05, 2020 at 08:01:33PM -0700, Hugh Dickins wrote:
-> On Mon, 3 Aug 2020, Roman Gushchin wrote:
-> > On Fri, Jul 31, 2020 at 07:17:05PM -0700, Hugh Dickins wrote:
-> > > On Fri, 31 Jul 2020, Roman Gushchin wrote:
-> > > > On Thu, Jul 30, 2020 at 09:06:55PM -0700, Hugh Dickins wrote:
-> > > > > 
-> > > > > Though another alternative did occur to me overnight: we could
-> > > > > scrap the logged warning, and show "nr_whatever -53" as output
-> > > > > from /proc/sys/vm/stat_refresh: that too would be acceptable
-> > > > > to me, and you redirect to /dev/null.
-> > > > 
-> > > > It sounds like a good idea to me. Do you want me to prepare a patch?
-> > > 
-> > > Yes, if you like that one best, please do prepare a patch - thanks!
-> > 
-> > Hi Hugh,
-> > 
-> > I mastered a patch (attached below), but honestly I can't say I like it.
-> > The resulting interface is confusing: we don't generally use sysctls to
-> > print debug data and/or warnings.
-> 
-> Since you confessed to not liking it yourself, I paid it very little
-> attention.  Yes, when I made that suggestion, I wasn't really thinking
-> of how stat_refresh is a /proc/sys/vm sysctl thing; and I'm not at all
-> sure how issuing output from a /proc file intended for input works out
-> (perhaps there are plenty of good examples, and you followed one, but
-> it smells fishy to me now).
-> 
-> > 
-> > I thought about treating a write to this sysctls as setting the threshold,
-> > so that "echo 0 > /proc/sys/vm/stat_refresh" would warn on all negative
-> > entries, and "cat /proc/sys/vm/stat_refresh" would use the default threshold
-> > as in my patch. But this breaks  to some extent the current ABI, as passing
-> > an incorrect value will result in -EINVAL instead of passing (as now).
-> 
-> I expect we could handle that well enough, by more lenient validation
-> of the input; though my comment above on output versus input sheds doubt.
-> 
-> > 
-> > Overall I still think we shouldn't warn on any values inside the possible
-> > range, as it's not an indication of any kind of error. The only reason
-> > why we see some values going negative and some not, is that some of them
-> > are updated more frequently than others, and some are bouncing around
-> > zero, while other can't reach zero too easily (like the number of free pages).
-> 
-> We continue to disagree on that (and it amuses me that you who are so
-> sure they can be ignored, cannot ignore them; whereas I who am so curious
-> to investigate them, have not actually found the time to do so in years).
-> It was looking as if nothing could satisfy us both, but...
-> 
-> > 
-> > Actually, if someone wants to ensure that numbers are accurate,
-> > we have to temporarily set the threshold to 0, then flush the percpu data
-> > and only then check atomics. In the current design flushing percpu data
-> > matters for only slowly updated counters, as all others will run away while
-> > we're waiting for the flush. So if we're targeting some slowly updating
-> > counters, maybe we should warn only on them being negative, Idk.
-> 
-> I was going to look into that angle, though it would probably add a little
-> unjustifiable overhead to fast paths, and be rejected on that basis.
-> 
-> But in going to do so, came up against an earlier comment of yours, of
-> which I had misunderstood the significance. I had said and you replied:
-> 
-> > > nr_zone_write_pending: yes, I've looked at our machines, and see that
-> > > showing up for us too (-49 was the worst I saw).  Not at all common,
-> > > but seen.  And not followed by increasingly worse numbers, so a state
-> > > that corrects itself.  nr_dirty too (fewer instances, bigger numbers);
-> > > but never nr_writeback, which you'd expect to go along with those.
-> > 
-> > NR_DIRTY and NR_WRITEBACK are node counters, so we don't check them?
-> 
-> Wow. Now I see what you were pointing out: when v4.8's 75ef71840539
-> ("mm, vmstat: add infrastructure for per-node vmstats") went in, it
-> missed updating vmstat_refresh() to check all the NR_VM_NODE_STAT items.
-> 
-> And I've never noticed, and have interpreted its silence on those items
-> as meaning they're all good (and the nr_dirty ones I mentioned above,
-> must have been from residual old kernels, hence the fewer instances).
-> I see the particularly tricky NR_ISOLATED ones are in that category.
-> Maybe they are all good, but I have been mistaken.
-> 
-> I shall certainly want to reintroduce those stats to checking for
-> negatives, even if it's in a patch that never earns your approval,
-> and just ends up kept internal for debugging.  But equally certainly,
-> I must not suddenly reintroduce that checking without gaining some
-> experience of it (and perhaps getting as irritated as you by more
-> transient negatives).
-> 
-> I said earlier that I'd prefer you to rip out all that checking for
-> negatives, rather than retaining it with the uselessly over-generous
-> 125 * nr_cpus leeway.  Please, Roman, would you send Andrew a patch
-> doing that, to replace the patch in this thread?  Or if you prefer,
-> I can do so.
+Commit-ID:     0cd39f4600ed4de859383018eb10f0f724900e1b
+Gitweb:        https://git.kernel.org/tip/0cd39f4600ed4de859383018eb10f0f724900e1b
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Thu, 06 Aug 2020 14:35:11 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 06 Aug 2020 16:13:13 +02:00
 
-Hi Andrew,
+locking/seqlock, headers: Untangle the spaghetti monster
 
-it seems that Hugh and me haven't reached a consensus here.
-Can, you, please, not merge this patch into 5.9, so we would have
-more time to find a solution, acceptable for all?
+By using lockdep_assert_*() from seqlock.h, the spaghetti monster
+attacked.
 
-Thank you!
+Attack back by reducing seqlock.h dependencies from two key high level headers:
 
-Roman
+ - <linux/seqlock.h>:               -Remove <linux/ww_mutex.h>
+ - <linux/time.h>:                  -Remove <linux/seqlock.h>
+ - <linux/sched.h>:                 +Add    <linux/seqlock.h>
+
+The price was to add it to sched.h ...
+
+Core header fallout, we add direct header dependencies instead of gaining them
+parasitically from higher level headers:
+
+ - <linux/dynamic_queue_limits.h>:  +Add <asm/bug.h>
+ - <linux/hrtimer.h>:               +Add <linux/seqlock.h>
+ - <linux/ktime.h>:                 +Add <asm/bug.h>
+ - <linux/lockdep.h>:               +Add <linux/smp.h>
+ - <linux/sched.h>:                 +Add <linux/seqlock.h>
+ - <linux/videodev2.h>:             +Add <linux/kernel.h>
+
+Arch headers fallout:
+
+ - PARISC: <asm/timex.h>:           +Add <asm/special_insns.h>
+ - SH:     <asm/io.h>:              +Add <asm/page.h>
+ - SPARC:  <asm/timer_64.h>:        +Add <uapi/asm/asi.h>
+ - SPARC:  <asm/vvar.h>:            +Add <asm/processor.h>, <asm/barrier.h>
+                                    -Remove <linux/seqlock.h>
+ - X86:    <asm/fixmap.h>:          +Add <asm/pgtable_types.h>
+                                    -Remove <asm/acpi.h>
+
+There's also a bunch of parasitic header dependency fallout in .c files, not listed
+separately.
+
+[ mingo: Extended the changelog, split up & fixed the original patch. ]
+
+Co-developed-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200804133438.GK2674@hirez.programming.kicks-ass.net
+---
+ arch/sh/include/asm/io.h             |  1 +
+ arch/sh/kernel/machvec.c             |  1 +
+ arch/sparc/include/asm/timer_64.h    |  1 +
+ arch/sparc/include/asm/vvar.h        |  3 ++-
+ arch/sparc/kernel/vdso.c             |  1 -
+ arch/x86/include/asm/fixmap.h        |  2 +-
+ arch/x86/kernel/apic/apic_noop.c     |  1 +
+ arch/x86/kernel/apic/hw_nmi.c        |  1 +
+ arch/x86/kernel/apic/probe_64.c      |  1 +
+ arch/x86/kernel/cpu/amd.c            |  1 +
+ arch/x86/kernel/cpu/common.c         |  1 +
+ arch/x86/kernel/cpu/hygon.c          |  1 +
+ arch/x86/kernel/cpu/intel.c          |  1 +
+ arch/x86/kernel/jailhouse.c          |  1 +
+ arch/x86/kernel/tsc_msr.c            |  1 +
+ arch/x86/mm/init_32.c                |  1 +
+ arch/x86/xen/apic.c                  |  1 +
+ arch/x86/xen/smp_hvm.c               |  1 +
+ arch/x86/xen/suspend_pv.c            |  4 ++--
+ include/linux/dynamic_queue_limits.h |  2 ++
+ include/linux/hrtimer.h              |  1 +
+ include/linux/ktime.h                |  1 +
+ include/linux/lockdep.h              |  1 +
+ include/linux/mutex.h                | 11 +++++++++++
+ include/linux/sched.h                |  1 +
+ include/linux/seqlock.h              |  1 -
+ include/linux/time.h                 |  1 -
+ include/linux/videodev2.h            |  1 +
+ include/linux/ww_mutex.h             |  8 --------
+ 29 files changed, 38 insertions(+), 15 deletions(-)
+
+diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
+index 26f0f9b..ec587b5 100644
+--- a/arch/sh/include/asm/io.h
++++ b/arch/sh/include/asm/io.h
+@@ -17,6 +17,7 @@
+ #include <asm/cache.h>
+ #include <asm/addrspace.h>
+ #include <asm/machvec.h>
++#include <asm/page.h>
+ #include <linux/pgtable.h>
+ #include <asm-generic/iomap.h>
+ 
+diff --git a/arch/sh/kernel/machvec.c b/arch/sh/kernel/machvec.c
+index beadbbd..76bd895 100644
+--- a/arch/sh/kernel/machvec.c
++++ b/arch/sh/kernel/machvec.c
+@@ -15,6 +15,7 @@
+ #include <asm/setup.h>
+ #include <asm/io.h>
+ #include <asm/irq.h>
++#include <asm/processor.h>
+ 
+ #define MV_NAME_SIZE 32
+ 
+diff --git a/arch/sparc/include/asm/timer_64.h b/arch/sparc/include/asm/timer_64.h
+index c7e4fb6..dcfad46 100644
+--- a/arch/sparc/include/asm/timer_64.h
++++ b/arch/sparc/include/asm/timer_64.h
+@@ -7,6 +7,7 @@
+ #ifndef _SPARC64_TIMER_H
+ #define _SPARC64_TIMER_H
+ 
++#include <uapi/asm/asi.h>
+ #include <linux/types.h>
+ #include <linux/init.h>
+ 
+diff --git a/arch/sparc/include/asm/vvar.h b/arch/sparc/include/asm/vvar.h
+index 0289503..6eaf5cf 100644
+--- a/arch/sparc/include/asm/vvar.h
++++ b/arch/sparc/include/asm/vvar.h
+@@ -6,7 +6,8 @@
+ #define _ASM_SPARC_VVAR_DATA_H
+ 
+ #include <asm/clocksource.h>
+-#include <linux/seqlock.h>
++#include <asm/processor.h>
++#include <asm/barrier.h>
+ #include <linux/time.h>
+ #include <linux/types.h>
+ 
+diff --git a/arch/sparc/kernel/vdso.c b/arch/sparc/kernel/vdso.c
+index 5888066..0e27437 100644
+--- a/arch/sparc/kernel/vdso.c
++++ b/arch/sparc/kernel/vdso.c
+@@ -7,7 +7,6 @@
+  *  a different vsyscall implementation for Linux/IA32 and for the name.
+  */
+ 
+-#include <linux/seqlock.h>
+ #include <linux/time.h>
+ #include <linux/timekeeper_internal.h>
+ 
+diff --git a/arch/x86/include/asm/fixmap.h b/arch/x86/include/asm/fixmap.h
+index b9527a5..0f0dd64 100644
+--- a/arch/x86/include/asm/fixmap.h
++++ b/arch/x86/include/asm/fixmap.h
+@@ -26,9 +26,9 @@
+ 
+ #ifndef __ASSEMBLY__
+ #include <linux/kernel.h>
+-#include <asm/acpi.h>
+ #include <asm/apicdef.h>
+ #include <asm/page.h>
++#include <asm/pgtable_types.h>
+ #ifdef CONFIG_X86_32
+ #include <linux/threads.h>
+ #include <asm/kmap_types.h>
+diff --git a/arch/x86/kernel/apic/apic_noop.c b/arch/x86/kernel/apic/apic_noop.c
+index 98c9bb7..780c702 100644
+--- a/arch/x86/kernel/apic/apic_noop.c
++++ b/arch/x86/kernel/apic/apic_noop.c
+@@ -10,6 +10,7 @@
+  * like self-ipi, etc...
+  */
+ #include <linux/cpumask.h>
++#include <linux/thread_info.h>
+ 
+ #include <asm/apic.h>
+ 
+diff --git a/arch/x86/kernel/apic/hw_nmi.c b/arch/x86/kernel/apic/hw_nmi.c
+index d1fc62a..34a992e 100644
+--- a/arch/x86/kernel/apic/hw_nmi.c
++++ b/arch/x86/kernel/apic/hw_nmi.c
+@@ -9,6 +9,7 @@
+  *  Bits copied from original nmi.c file
+  *
+  */
++#include <linux/thread_info.h>
+ #include <asm/apic.h>
+ #include <asm/nmi.h>
+ 
+diff --git a/arch/x86/kernel/apic/probe_64.c b/arch/x86/kernel/apic/probe_64.c
+index 29f0e09..bd3835d 100644
+--- a/arch/x86/kernel/apic/probe_64.c
++++ b/arch/x86/kernel/apic/probe_64.c
+@@ -8,6 +8,7 @@
+  * Martin Bligh, Andi Kleen, James Bottomley, John Stultz, and
+  * James Cleverdon.
+  */
++#include <linux/thread_info.h>
+ #include <asm/apic.h>
+ 
+ #include "local.h"
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index d4806ea..dcc3d94 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -15,6 +15,7 @@
+ #include <asm/cpu.h>
+ #include <asm/spec-ctrl.h>
+ #include <asm/smp.h>
++#include <asm/numa.h>
+ #include <asm/pci-direct.h>
+ #include <asm/delay.h>
+ #include <asm/debugreg.h>
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 95c090a..52b5650 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -45,6 +45,7 @@
+ #include <asm/mtrr.h>
+ #include <asm/hwcap2.h>
+ #include <linux/numa.h>
++#include <asm/numa.h>
+ #include <asm/asm.h>
+ #include <asm/bugs.h>
+ #include <asm/cpu.h>
+diff --git a/arch/x86/kernel/cpu/hygon.c b/arch/x86/kernel/cpu/hygon.c
+index 4e28c1f..ac6c30e 100644
+--- a/arch/x86/kernel/cpu/hygon.c
++++ b/arch/x86/kernel/cpu/hygon.c
+@@ -10,6 +10,7 @@
+ 
+ #include <asm/cpu.h>
+ #include <asm/smp.h>
++#include <asm/numa.h>
+ #include <asm/cacheinfo.h>
+ #include <asm/spec-ctrl.h>
+ #include <asm/delay.h>
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 0ab48f1..6eb42d7 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -23,6 +23,7 @@
+ #include <asm/cmdline.h>
+ #include <asm/traps.h>
+ #include <asm/resctrl.h>
++#include <asm/numa.h>
+ 
+ #ifdef CONFIG_X86_64
+ #include <linux/topology.h>
+diff --git a/arch/x86/kernel/jailhouse.c b/arch/x86/kernel/jailhouse.c
+index 2caf5b9..4eb8f2d 100644
+--- a/arch/x86/kernel/jailhouse.c
++++ b/arch/x86/kernel/jailhouse.c
+@@ -14,6 +14,7 @@
+ #include <linux/serial_8250.h>
+ #include <asm/apic.h>
+ #include <asm/io_apic.h>
++#include <asm/acpi.h>
+ #include <asm/cpu.h>
+ #include <asm/hypervisor.h>
+ #include <asm/i8259.h>
+diff --git a/arch/x86/kernel/tsc_msr.c b/arch/x86/kernel/tsc_msr.c
+index 4fec6f3..46c72f2 100644
+--- a/arch/x86/kernel/tsc_msr.c
++++ b/arch/x86/kernel/tsc_msr.c
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <linux/kernel.h>
++#include <linux/thread_info.h>
+ 
+ #include <asm/apic.h>
+ #include <asm/cpu_device_id.h>
+diff --git a/arch/x86/mm/init_32.c b/arch/x86/mm/init_32.c
+index 8b4afad..d46a5cf 100644
+--- a/arch/x86/mm/init_32.c
++++ b/arch/x86/mm/init_32.c
+@@ -52,6 +52,7 @@
+ #include <asm/cpu_entry_area.h>
+ #include <asm/init.h>
+ #include <asm/pgtable_areas.h>
++#include <asm/numa.h>
+ 
+ #include "mm_internal.h"
+ 
+diff --git a/arch/x86/xen/apic.c b/arch/x86/xen/apic.c
+index 2df7d08..1aff4ae 100644
+--- a/arch/x86/xen/apic.c
++++ b/arch/x86/xen/apic.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <linux/init.h>
++#include <linux/thread_info.h>
+ 
+ #include <asm/x86_init.h>
+ #include <asm/apic.h>
+diff --git a/arch/x86/xen/smp_hvm.c b/arch/x86/xen/smp_hvm.c
+index f8d3944..f5e7db4 100644
+--- a/arch/x86/xen/smp_hvm.c
++++ b/arch/x86/xen/smp_hvm.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <linux/thread_info.h>
+ #include <asm/smp.h>
+ 
+ #include <xen/events.h>
+diff --git a/arch/x86/xen/suspend_pv.c b/arch/x86/xen/suspend_pv.c
+index 8303b58..cae9660 100644
+--- a/arch/x86/xen/suspend_pv.c
++++ b/arch/x86/xen/suspend_pv.c
+@@ -1,11 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <linux/types.h>
+ 
+-#include <asm/fixmap.h>
+-
+ #include <asm/xen/hypercall.h>
+ #include <asm/xen/page.h>
+ 
++#include <asm/fixmap.h>
++
+ #include "xen-ops.h"
+ 
+ void xen_pv_pre_suspend(void)
+diff --git a/include/linux/dynamic_queue_limits.h b/include/linux/dynamic_queue_limits.h
+index 99fc06f..407c2f2 100644
+--- a/include/linux/dynamic_queue_limits.h
++++ b/include/linux/dynamic_queue_limits.h
+@@ -38,6 +38,8 @@
+ 
+ #ifdef __KERNEL__
+ 
++#include <asm/bug.h>
++
+ struct dql {
+ 	/* Fields accessed in enqueue path (dql_queued) */
+ 	unsigned int	num_queued;		/* Total ever queued */
+diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
+index 25993b8..107cedd 100644
+--- a/include/linux/hrtimer.h
++++ b/include/linux/hrtimer.h
+@@ -17,6 +17,7 @@
+ #include <linux/init.h>
+ #include <linux/list.h>
+ #include <linux/percpu.h>
++#include <linux/seqlock.h>
+ #include <linux/timer.h>
+ #include <linux/timerqueue.h>
+ 
+diff --git a/include/linux/ktime.h b/include/linux/ktime.h
+index 42d2e6a..a12b552 100644
+--- a/include/linux/ktime.h
++++ b/include/linux/ktime.h
+@@ -23,6 +23,7 @@
+ 
+ #include <linux/time.h>
+ #include <linux/jiffies.h>
++#include <asm/bug.h>
+ 
+ /* Nanosecond scalar representation for kernel time values */
+ typedef s64	ktime_t;
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index 39a3569..62a382d 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -11,6 +11,7 @@
+ #define __LINUX_LOCKDEP_H
+ 
+ #include <linux/lockdep_types.h>
++#include <linux/smp.h>
+ #include <asm/percpu.h>
+ 
+ struct task_struct;
+diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+index ae197cc..dcd185c 100644
+--- a/include/linux/mutex.h
++++ b/include/linux/mutex.h
+@@ -65,6 +65,17 @@ struct mutex {
+ #endif
+ };
+ 
++struct ww_class;
++struct ww_acquire_ctx;
++
++struct ww_mutex {
++	struct mutex base;
++	struct ww_acquire_ctx *ctx;
++#ifdef CONFIG_DEBUG_MUTEXES
++	struct ww_class *ww_class;
++#endif
++};
++
+ /*
+  * This is the control structure for tasks blocked on mutex,
+  * which resides on the blocked task's kernel stack:
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 9a9d826..7c7a949 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -31,6 +31,7 @@
+ #include <linux/task_io_accounting.h>
+ #include <linux/posix-timers.h>
+ #include <linux/rseq.h>
++#include <linux/seqlock.h>
+ #include <linux/kcsan.h>
+ 
+ /* task_struct member predeclarations (sorted alphabetically): */
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index a076f78..962d976 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -19,7 +19,6 @@
+ #include <linux/mutex.h>
+ #include <linux/preempt.h>
+ #include <linux/spinlock.h>
+-#include <linux/ww_mutex.h>
+ 
+ #include <asm/processor.h>
+ 
+diff --git a/include/linux/time.h b/include/linux/time.h
+index 4c325bf..b142cb5 100644
+--- a/include/linux/time.h
++++ b/include/linux/time.h
+@@ -3,7 +3,6 @@
+ #define _LINUX_TIME_H
+ 
+ # include <linux/cache.h>
+-# include <linux/seqlock.h>
+ # include <linux/math64.h>
+ # include <linux/time64.h>
+ 
+diff --git a/include/linux/videodev2.h b/include/linux/videodev2.h
+index 16c0ed6..219037f 100644
+--- a/include/linux/videodev2.h
++++ b/include/linux/videodev2.h
+@@ -57,6 +57,7 @@
+ #define __LINUX_VIDEODEV2_H
+ 
+ #include <linux/time.h>     /* need struct timeval */
++#include <linux/kernel.h>
+ #include <uapi/linux/videodev2.h>
+ 
+ #endif /* __LINUX_VIDEODEV2_H */
+diff --git a/include/linux/ww_mutex.h b/include/linux/ww_mutex.h
+index d755425..850424e 100644
+--- a/include/linux/ww_mutex.h
++++ b/include/linux/ww_mutex.h
+@@ -48,14 +48,6 @@ struct ww_acquire_ctx {
+ #endif
+ };
+ 
+-struct ww_mutex {
+-	struct mutex base;
+-	struct ww_acquire_ctx *ctx;
+-#ifdef CONFIG_DEBUG_MUTEXES
+-	struct ww_class *ww_class;
+-#endif
+-};
+-
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ # define __WW_CLASS_MUTEX_INITIALIZER(lockname, class) \
+ 		, .ww_class = class
