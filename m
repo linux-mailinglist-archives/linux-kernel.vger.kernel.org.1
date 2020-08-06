@@ -2,88 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC1823D79B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B380B23D7A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgHFHmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 03:42:35 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:48155 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727998AbgHFHmF (ORCPT
+        id S1728675AbgHFHqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 03:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726799AbgHFHpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 03:42:05 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U4uOac3_1596699708;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U4uOac3_1596699708)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 06 Aug 2020 15:41:49 +0800
-Subject: Re: [PATCH v17 17/21] mm/lru: replace pgdat lru_lock with lruvec lock
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
- <1595681998-19193-18-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <bf2e2e9d-ce1c-f0d5-3ccc-9499c09831cb@linux.alibaba.com>
-Date:   Thu, 6 Aug 2020 15:41:28 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Thu, 6 Aug 2020 03:45:51 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FA3C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 00:45:51 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id z20so6324915plo.6
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 00:45:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V4vziIOnsYsNSJ2sZd3hBsKudMXx7jTbaEJS7ylUkkk=;
+        b=nugW4y5eMhXNCObM/4CbLO3YApAHY87G2PRBwb1bOlLpWWzx6o40qrn1L6R2qWhv7U
+         zuVfdeXJC26qy2YGegsWXSB3QpQR9btcQiXqPJCCgpy9eFX9Lq99nY489y7tXad+qINq
+         Qqzj+YQPp+ZlUWTcvR4ZscWjBGc5PCEf+F5cVne0cWzB19yBtYRJXvZ7LR7JmpCf7IkS
+         Ilp3gpe4gWpSJ+fd0Wk1Nz6QhiMktPSnjyoDxINH1ont9PlMclRmLyUjmsumYOZ/dV44
+         1yRTfjqtk1SgUZb4Ga+WNAWU5OF2Un03WYtaO9sOPJ/f5QdxkAWol7pMzW/Qljnpi0Gg
+         1TfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V4vziIOnsYsNSJ2sZd3hBsKudMXx7jTbaEJS7ylUkkk=;
+        b=kxhmIzeneT/Ye/0Y7DJnmJX6lmj3GpoG0eUOeGxczMe0yPNGcyARqeDo8Gh/TLKIb2
+         PJh1sggr2fqjfcUNrismoC4wxor1iBS6sa8PpoLwLWZweC/GNRhE4Qb/lVYeA+ZaGME7
+         GiNePuyygL1BaBygeHB0vnGTWKiR8lX92pXhTH7isZmHBjQd/1gtzfq5+ruIsCLpauWX
+         IUOunBqCkQ9ZT76eRBI8RMfsWLCyi9ddXLlLWZxTN6aAFnlVyRGmUH/wfj7DeDShEnGI
+         LmZZQMtLyHMIv/7uQGkcpAQL8kG9lpOoYUH2OkHFuG7YWI+7YV7pfJF7c8FMKbNSMExB
+         /KFA==
+X-Gm-Message-State: AOAM533SYsvkwvXdnnsXrQ/Gvd7+b3bXgZEJvSHF74TEcFfKMntWvFfo
+        +ifTYaxl9KflWEcPXBBGgBmTxd02s3r0ZwUYtRUGSg==
+X-Google-Smtp-Source: ABdhPJzdjiuyIgHM2geRvWH0EJ20/xGHVcUqQTqcj8nIheEBUk7XBKKxrl0fdmLBuAK1s6Cnp3FlaNL2IbOS/kBtS5s=
+X-Received: by 2002:a17:90a:fa8c:: with SMTP id cu12mr7353995pjb.229.1596699950726;
+ Thu, 06 Aug 2020 00:45:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1595681998-19193-18-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+References: <20200728034938.14993-1-songmuchun@bytedance.com>
+In-Reply-To: <20200728034938.14993-1-songmuchun@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 6 Aug 2020 15:45:14 +0800
+Message-ID: <CAMZfGtVE4BJppEHrh=+E4+mo+K5Q9M5q+oBv64q_94x0YyGpqA@mail.gmail.com>
+Subject: Re: [PATCH v4] mm/hugetlb: add mempolicy check in the reservation routine
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     mike.kravetz@oracle.com, David Rientjes <rientjes@google.com>,
+        mgorman@suse.de, Michel Lespinasse <walken@google.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johannes, Michal,
+On Tue, Jul 28, 2020 at 11:49 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> In the reservation routine, we only check whether the cpuset meets
+> the memory allocation requirements. But we ignore the mempolicy of
+> MPOL_BIND case. If someone mmap hugetlb succeeds, but the subsequent
+> memory allocation may fail due to mempolicy restrictions and receives
+> the SIGBUS signal. This can be reproduced by the follow steps.
+>
+>  1) Compile the test case.
+>     cd tools/testing/selftests/vm/
+>     gcc map_hugetlb.c -o map_hugetlb
+>
+>  2) Pre-allocate huge pages. Suppose there are 2 numa nodes in the
+>     system. Each node will pre-allocate one huge page.
+>     echo 2 > /proc/sys/vm/nr_hugepages
+>
+>  3) Run test case(mmap 4MB). We receive the SIGBUS signal.
+>     numactl --membind=0 ./map_hugetlb 4
+>
+> With this patch applied, the mmap will fail in the step 3) and throw
+> "mmap: Cannot allocate memory".
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reported-by: Jianchao Guo <guojianchao@bytedance.com>
+> Suggested-by: Michal Hocko <mhocko@kernel.org>
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-From page to its lruvec, a few memory access under lock cause extra cost.
-Would you like to save the per memcg lruvec pointer to page->private?
+Hi Andrew,
 
-Thanks
-Alex
+Any comments or forgot to add this to the queue for the
+merge window?
 
-
-
-ÔÚ 2020/7/25 ÏÂÎç8:59, Alex Shi Ð´µÀ:
->  /**
->   * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
->   * @page: the page
-> @@ -1215,7 +1228,8 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
->  		goto out;
->  	}
->  
-> -	memcg = page->mem_cgroup;
-> +	VM_BUG_ON_PAGE(PageTail(page), page);
-> +	memcg = READ_ONCE(page->mem_cgroup);
->  	/*
->  	 * Swapcache readahead pages are added to the LRU - and
->  	 * possibly migrated - before they are charged.
-> @@ -1236,6 +1250,51 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
->  	return lruvec;
->  }
->  
-> +struct lruvec *lock_page_lruvec(struct page *page)
+> ---
+> changelog in v4:
+>  1) Fix compilation errors with !CONFIG_NUMA.
+>
+> changelog in v3:
+>  1) Do not allocate nodemask on the stack.
+>  2) Update comment.
+>
+> changelog in v2:
+>  1) Reuse policy_nodemask().
+>
+>  include/linux/mempolicy.h | 14 ++++++++++++++
+>  mm/hugetlb.c              | 22 ++++++++++++++++++----
+>  mm/mempolicy.c            |  2 +-
+>  3 files changed, 33 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+> index ea9c15b60a96..0656ece1ccf1 100644
+> --- a/include/linux/mempolicy.h
+> +++ b/include/linux/mempolicy.h
+> @@ -152,6 +152,15 @@ extern int huge_node(struct vm_area_struct *vma,
+>  extern bool init_nodemask_of_mempolicy(nodemask_t *mask);
+>  extern bool mempolicy_nodemask_intersects(struct task_struct *tsk,
+>                                 const nodemask_t *mask);
+> +extern nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy);
+> +
+> +static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
 > +{
-> +	struct lruvec *lruvec;
-> +	struct pglist_data *pgdat = page_pgdat(page);
+> +       struct mempolicy *mpol = get_task_policy(current);
 > +
-> +	rcu_read_lock();
-> +	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	spin_lock(&lruvec->lru_lock);
-> +	rcu_read_unlock();
-> +
-> +	lruvec_memcg_debug(lruvec, page);
-> +
-> +	return lruvec;
+> +       return policy_nodemask(gfp, mpol);
 > +}
 > +
+>  extern unsigned int mempolicy_slab_node(void);
+>
+>  extern enum zone_type policy_zone;
+> @@ -281,5 +290,10 @@ static inline int mpol_misplaced(struct page *page, struct vm_area_struct *vma,
+>  static inline void mpol_put_task_policy(struct task_struct *task)
+>  {
+>  }
+> +
+> +static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
+> +{
+> +       return NULL;
+> +}
+>  #endif /* CONFIG_NUMA */
+>  #endif
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 589c330df4db..a34458f6a475 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3463,13 +3463,21 @@ static int __init default_hugepagesz_setup(char *s)
+>  }
+>  __setup("default_hugepagesz=", default_hugepagesz_setup);
+>
+> -static unsigned int cpuset_mems_nr(unsigned int *array)
+> +static unsigned int allowed_mems_nr(struct hstate *h)
+>  {
+>         int node;
+>         unsigned int nr = 0;
+> +       nodemask_t *mpol_allowed;
+> +       unsigned int *array = h->free_huge_pages_node;
+> +       gfp_t gfp_mask = htlb_alloc_mask(h);
+> +
+> +       mpol_allowed = policy_nodemask_current(gfp_mask);
+>
+> -       for_each_node_mask(node, cpuset_current_mems_allowed)
+> -               nr += array[node];
+> +       for_each_node_mask(node, cpuset_current_mems_allowed) {
+> +               if (!mpol_allowed ||
+> +                   (mpol_allowed && node_isset(node, *mpol_allowed)))
+> +                       nr += array[node];
+> +       }
+>
+>         return nr;
+>  }
+> @@ -3648,12 +3656,18 @@ static int hugetlb_acct_memory(struct hstate *h, long delta)
+>          * we fall back to check against current free page availability as
+>          * a best attempt and hopefully to minimize the impact of changing
+>          * semantics that cpuset has.
+> +        *
+> +        * Apart from cpuset, we also have memory policy mechanism that
+> +        * also determines from which node the kernel will allocate memory
+> +        * in a NUMA system. So similar to cpuset, we also should consider
+> +        * the memory policy of the current task. Similar to the description
+> +        * above.
+>          */
+>         if (delta > 0) {
+>                 if (gather_surplus_pages(h, delta) < 0)
+>                         goto out;
+>
+> -               if (delta > cpuset_mems_nr(h->free_huge_pages_node)) {
+> +               if (delta > allowed_mems_nr(h)) {
+>                         return_unused_surplus_pages(h, delta);
+>                         goto out;
+>                 }
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 93fcfc1f2fa2..fce14c3f4f38 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -1873,7 +1873,7 @@ static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
+>   * Return a nodemask representing a mempolicy for filtering nodes for
+>   * page allocation
+>   */
+> -static nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
+> +nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
+>  {
+>         /* Lower zones don't get a nodemask applied for MPOL_BIND */
+>         if (unlikely(policy->mode == MPOL_BIND) &&
+> --
+> 2.11.0
+>
+
+
+-- 
+Yours,
+Muchun
