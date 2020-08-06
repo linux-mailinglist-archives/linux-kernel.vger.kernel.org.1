@@ -2,189 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C39823E064
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D537E23E077
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728845AbgHFSdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728460AbgHFSbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:31:18 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 071CA2311E;
-        Thu,  6 Aug 2020 18:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596738662;
-        bh=ifE3q8dvN5O9kW6qxl8b0ad3j9sHHhi+zNx7/LqGEHY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=COMD6VDLuWla/+lmK58mlUNjqv6lYcFIFiz36oWeov/YgPF3LKV1aecWHiCUaSiot
-         xs5FGqCiRlXyHFSPiukjSZ71BDEcwNaylxalW9E8ZGHkcBYKQfQyC4LGw64kLycJmX
-         RPAo5r/qH6ewcUL0bGLK+XnUiBnjBTf982vH6E8o=
-Date:   Thu, 6 Aug 2020 19:30:57 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Daniel Campello <campello@chromium.org>
-Cc:     LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org
-Subject: Re: [PATCH v5 07/15] iio: sx9310: Use long instead of int for
- channel bitmaps
-Message-ID: <20200806193057.163e2363@archlinux>
-In-Reply-To: <20200803175559.v5.7.Iecaa50e469918a385b3e5dab375e442540ea2ad4@changeid>
-References: <20200803235815.778997-1-campello@chromium.org>
-        <20200803175559.v5.7.Iecaa50e469918a385b3e5dab375e442540ea2ad4@changeid>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729164AbgHFSd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:33:58 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:4877 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728343AbgHFScK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:32:10 -0400
+X-IronPort-AV: E=Sophos;i="5.75,441,1589209200"; 
+   d="scan'208";a="54073234"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 07 Aug 2020 03:31:57 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9D57D40062A0;
+        Fri,  7 Aug 2020 03:31:54 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        linux-renesas-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pwm@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 0/5] r8a7742: Enable support for CMT, PWM and TPU
+Date:   Thu,  6 Aug 2020 19:31:47 +0100
+Message-Id: <20200806183152.11809-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  3 Aug 2020 17:58:07 -0600
-Daniel Campello <campello@chromium.org> wrote:
+Hi All,
 
-> Uses for_each_set_bit() macro to loop over channel bitmaps.
-> 
-> Signed-off-by: Daniel Campello <campello@chromium.org>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Applied,
+This patch series adds support for PWM and TPU to r8a7742 SoC dtsi
+and enables CMT0 node for r8a7742-iwg21d-q7 board.
 
-Thanks,
+Cheers,
+Prabhakar
 
-Jonathan
+Lad Prabhakar (5):
+  ARM: dts: r8a7742-iwg21d-q7: Enable cmt0
+  dt-bindings: pwm: renesas,pwm-rcar: Add r8a7742 support
+  ARM: dts: r8a7742: Add PWM SoC support
+  dt-bindings: pwm: renesas,tpu-pwm: Document r8a7742 support
+  ARM: dts: r8a7742: Add TPU support
 
-> ---
-> 
-> Changes in v5: None
-> Changes in v4: None
-> Changes in v3:
->  - Added static assert for number of channels.
-> 
-> Changes in v2:
->  - Changed prox_stat to chan_prox_stat bitmap.
-> 
->  drivers/iio/proximity/sx9310.c | 39 ++++++++++++++++++----------------
->  1 file changed, 21 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-> index 127b1ba79e2dea..f78500b8a5841e 100644
-> --- a/drivers/iio/proximity/sx9310.c
-> +++ b/drivers/iio/proximity/sx9310.c
-> @@ -119,6 +119,7 @@
->  
->  /* 4 hardware channels, as defined in STAT0: COMB, CS2, CS1 and CS0. */
->  #define SX9310_NUM_CHANNELS				4
-> +static_assert(SX9310_NUM_CHANNELS < BITS_PER_LONG);
->  
->  struct sx9310_data {
->  	/* Serialize access to registers and channel configuration */
-> @@ -130,7 +131,7 @@ struct sx9310_data {
->  	 * Last reading of the proximity status for each channel.
->  	 * We only send an event to user space when this changes.
->  	 */
-> -	bool prox_stat[SX9310_NUM_CHANNELS];
-> +	unsigned long chan_prox_stat;
->  	bool trigger_enabled;
->  	/* Ensure correct alignment of timestamp when present. */
->  	struct {
-> @@ -140,7 +141,8 @@ struct sx9310_data {
->  	/* Remember enabled channels and sample rate during suspend. */
->  	unsigned int suspend_ctrl0;
->  	struct completion completion;
-> -	unsigned int chan_read, chan_event;
-> +	unsigned long chan_read;
-> +	unsigned long chan_event;
->  	int channel_users[SX9310_NUM_CHANNELS];
->  	unsigned int whoami;
->  };
-> @@ -283,15 +285,16 @@ static const struct regmap_config sx9310_regmap_config = {
->  };
->  
->  static int sx9310_update_chan_en(struct sx9310_data *data,
-> -				 unsigned int chan_read,
-> -				 unsigned int chan_event)
-> +				 unsigned long chan_read,
-> +				 unsigned long chan_event)
->  {
->  	int ret;
-> +	unsigned long channels = chan_read | chan_event;
->  
-> -	if ((data->chan_read | data->chan_event) != (chan_read | chan_event)) {
-> +	if ((data->chan_read | data->chan_event) != channels) {
->  		ret = regmap_update_bits(data->regmap, SX9310_REG_PROX_CTRL0,
->  					 SX9310_REG_PROX_CTRL0_SENSOREN_MASK,
-> -					 chan_read | chan_event);
-> +					 channels);
->  		if (ret)
->  			return ret;
->  	}
-> @@ -532,6 +535,7 @@ static void sx9310_push_events(struct iio_dev *indio_dev)
->  	unsigned int val, chan;
->  	struct sx9310_data *data = iio_priv(indio_dev);
->  	s64 timestamp = iio_get_time_ns(indio_dev);
-> +	unsigned long prox_changed;
->  
->  	/* Read proximity state on all channels */
->  	ret = regmap_read(data->regmap, SX9310_REG_STAT0, &val);
-> @@ -540,24 +544,23 @@ static void sx9310_push_events(struct iio_dev *indio_dev)
->  		return;
->  	}
->  
-> -	for (chan = 0; chan < SX9310_NUM_CHANNELS; chan++) {
-> +	/*
-> +	 * Only iterate over channels with changes on proximity status that have
-> +	 * events enabled.
-> +	 */
-> +	prox_changed = (data->chan_prox_stat ^ val) & data->chan_event;
-> +
-> +	for_each_set_bit(chan, &prox_changed, SX9310_NUM_CHANNELS) {
->  		int dir;
->  		u64 ev;
-> -		bool new_prox = val & BIT(chan);
-> -
-> -		if (!(data->chan_event & BIT(chan)))
-> -			continue;
-> -		if (new_prox == data->prox_stat[chan])
-> -			/* No change on this channel. */
-> -			continue;
->  
-> -		dir = new_prox ? IIO_EV_DIR_FALLING : IIO_EV_DIR_RISING;
-> +		dir = val & BIT(chan) ? IIO_EV_DIR_FALLING : IIO_EV_DIR_RISING;
->  		ev = IIO_UNMOD_EVENT_CODE(IIO_PROXIMITY, chan,
->  					  IIO_EV_TYPE_THRESH, dir);
->  
->  		iio_push_event(indio_dev, ev, timestamp);
-> -		data->prox_stat[chan] = new_prox;
->  	}
-> +	data->chan_prox_stat = val;
->  }
->  
->  static irqreturn_t sx9310_irq_thread_handler(int irq, void *private)
-> @@ -714,13 +717,13 @@ static irqreturn_t sx9310_trigger_handler(int irq, void *private)
->  static int sx9310_buffer_preenable(struct iio_dev *indio_dev)
->  {
->  	struct sx9310_data *data = iio_priv(indio_dev);
-> -	unsigned int channels = 0;
-> +	unsigned long channels = 0;
->  	int bit, ret;
->  
->  	mutex_lock(&data->mutex);
->  	for_each_set_bit(bit, indio_dev->active_scan_mask,
->  			 indio_dev->masklength)
-> -		channels |= BIT(indio_dev->channels[bit].channel);
-> +		__set_bit(indio_dev->channels[bit].channel, &channels);
->  
->  	ret = sx9310_update_chan_en(data, channels, data->chan_event);
->  	mutex_unlock(&data->mutex);
+ .../bindings/pwm/renesas,pwm-rcar.yaml        |  1 +
+ .../bindings/pwm/renesas,tpu-pwm.yaml         |  1 +
+ arch/arm/boot/dts/r8a7742-iwg21d-q7.dts       |  4 +
+ arch/arm/boot/dts/r8a7742.dtsi                | 81 +++++++++++++++++++
+ 4 files changed, 87 insertions(+)
+
+-- 
+2.17.1
 
