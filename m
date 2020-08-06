@@ -2,188 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28A423D956
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B8023D954
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729388AbgHFKll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 06:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729392AbgHFKgX (ORCPT
+        id S1729403AbgHFKkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 06:40:43 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:34530 "EHLO
+        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1729371AbgHFKgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 06:36:23 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C69C061757
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:26:32 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z188so16840337pfc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:26:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HFQwzbiefbpfbQFLc0zRge0aMRzUuoiJq6/bLA8CABQ=;
-        b=z8tydMrbJZmdGu0lb6D8fiATUQOQnZ2LTi3TH8K+kklHy1YxIMA7o18BjoXkNo8SLu
-         uDGXiQIhcaweqBHVQaS6UwO954M24jqnaK3oZEE49+ChN0NRBTjvEJttxbrsPVBge/3J
-         kX1nJEAklBNWWZXdGZ1fyUiWi9EBasqndrPm2LhFaaI2/uWnnk6n1BAYBZXWeD6MSUww
-         d3740yD04zI0BzUmuurGfrH2rXG794yB3fE9/pGbc5eEz3Fmu2wpxjzX5Xi7/6R6g5P3
-         g35ZMrhUwug0NSjANrWSnp7LSIfGJAgDOMOdfSRpNmi+jSZoTbCV+bE8Glrk15ra+PVk
-         oetg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HFQwzbiefbpfbQFLc0zRge0aMRzUuoiJq6/bLA8CABQ=;
-        b=atTu1Uail3ZH2pQ5iJeQjNZvzpYRZn05rhKRUmf1Me4VmEAx8bTfZNsp+zt0nxIigS
-         EvED74o027pLcjHtheS2Br/ETnXRVOPs2N4cWsHUf6jbvyD21Fpa4oi3pNRjDC1TRx1t
-         46dK5yMAdq4YExmgpPydcY1yxC187CU2oQT/EeRWBDiluZ/gSqAf2ttgdQucGiq0CsY1
-         7ZtIXtojmIRpuI98jFzDGtsyCOL5nIeFEosVlY48ZRh7EJpDYU2FSBlFEZHIO1+wvfMt
-         xzt7pQ0tiv/7rt9UayO6b7FjX2mFcWkv1dcETQDtJCDgcVSRsS76mxTPFf16bz5xtDgB
-         ouKw==
-X-Gm-Message-State: AOAM532TxKurFCIBgsQICzFpXHLSlrEJ3hIAjN68ucu7Klo5/VUICNF6
-        pYhx8UDrv2p+Bislei049hCB
-X-Google-Smtp-Source: ABdhPJyeuaqpfkpPTZXEXyS2DV+YjRijY6hoRp+ZiREGIm+IZTpaxIeO+Am8BZpkc2kEWk4wH+OEtA==
-X-Received: by 2002:a63:c50a:: with SMTP id f10mr6885148pgd.167.1596709591711;
-        Thu, 06 Aug 2020 03:26:31 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:594:2f7a:c8c3:17bf:d7ce:f7e2])
-        by smtp.gmail.com with ESMTPSA id a18sm6181942pjh.42.2020.08.06.03.26.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 06 Aug 2020 03:26:31 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 15:56:23 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        sboyd@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH v2 3/3] arm64: dts: Enabled MHI device over PCIe
-Message-ID: <20200806102623.GB2406@Mani-XPS-13-9360>
-References: <1596706332-12957-1-git-send-email-gokulsri@codeaurora.org>
- <1596706332-12957-4-git-send-email-gokulsri@codeaurora.org>
+        Thu, 6 Aug 2020 06:36:24 -0400
+Received: from hanazono.local (unknown [58.33.27.210])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 460476006D;
+        Thu,  6 Aug 2020 18:26:53 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
+        t=1596709613; bh=72yqEUWNLfVUrnKtkeWf6AZaFSEy3MP5VW3cQu6vR04=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=GwQrlQeGEejtXKU5Qk/mhYtlA2KK7TdnpScCU8cMr1Omj1iuTp94+NJ1d0HaT05aT
+         eA7C1G6GdKEe+vc8Eso6p9kku115jscJqASE2e4kiK9pIyUn0J+90DefZs1E3KldGK
+         It8k1NB8L4UNdOQjbVeNQQ05/9LcpN/46fKeogSg=
+Subject: Re: [PATCH v2] MIPS: Provide Kconfig option for default IEEE 754
+ conformance mode
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     WANG Xuerui <git@xen0n.name>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+References: <20200801061147.1412187-1-jiaxun.yang@flygoat.com>
+ <d03a350c-842c-c041-f11b-017ec68e3de4@flygoat.com>
+From:   WANG Xuerui <kernel@xen0n.name>
+Message-ID: <9823ab9b-1f02-c8af-7d62-80a1d24aaaa3@xen0n.name>
+Date:   Thu, 6 Aug 2020 18:26:52 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:81.0)
+ Gecko/20100101 Thunderbird/81.0a1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596706332-12957-4-git-send-email-gokulsri@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <d03a350c-842c-c041-f11b-017ec68e3de4@flygoat.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 03:02:12PM +0530, Gokul Sriram Palanisamy wrote:
-> Enabled MHI device support over PCIe and added memory
-> reservation required for MHI enabled QCN9000 PCIe card.
-> 
+Hi Jiaxun,
 
-There is no DT support exist for MHI as of now, so this is not going to work.
 
-Thanks,
-Mani
+On 2020/8/5 21:59, Jiaxun Yang wrote:
+>
+>
+> ÔÚ 2020/8/1 14:11, Jiaxun Yang Ð´µÀ:
+>> Requested by downstream distros, a Kconfig option for default
+>> IEEE 754 conformance mode allows them to set their mode to
+>> relaxed by default.
+>>
+>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>> Reviewed-by: WANG Xuerui <git@xen0n.name>
+>> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+>> Reviewed-by: Huacai Chen <chenhc@lemote.com>
+>>
+>> -- 
+>> v2: Reword according to Xuerui's suggestion.
+>> ---
+> Hi Thomas,
+>
+> Is it possible to get this patch into 5.9 merge window?
+> I think it have got enough review tag, and the config option was
+> requested
+> by a Debian developer. The next Debian release will take 5.9 lts
+> kernel and
+> they don't want to ship a non-bootable kernel in a major release.
 
-> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi | 58 ++++++++++++++++++++++++++++++
->  arch/arm64/boot/dts/qcom/ipq8074.dtsi      |  8 +++++
->  2 files changed, 66 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
-> index 0827055..d201a7b 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
-> @@ -24,6 +24,22 @@
->  		device_type = "memory";
->  		reg = <0x0 0x40000000 0x0 0x20000000>;
->  	};
-> +
-> +	reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		qcn9000_pcie0: memory@50f00000 {
-> +			no-map;
-> +			reg = <0x0 0x50f00000 0x0 0x03700000>;
-> +		};
-> +
-> +		qcn9000_pcie1: memory@54600000 {
-> +			no-map;
-> +			reg = <0x0 0x54600000 0x0 0x03700000>;
-> +		};
-> +	};
->  };
->  
->  &blsp1_spi1 {
-> @@ -74,3 +90,45 @@
->  		nand-bus-width = <8>;
->  	};
->  };
-> +
-> +&pcie0_rp {
-> +	status = "ok";
-> +
-> +	mhi_0: qcom,mhi@0 {
-> +		reg = <0 0 0 0 0 >;
-> +		qrtr_instance_id = <0x20>;
-> +		#address-cells = <0x2>;
-> +		#size-cells = <0x2>;
-> +
-> +		base-addr = <0x50f00000>;
-> +		qcom,caldb-addr = <0x53E00000>;
-> +		qrtr_node_id = <0x27>;
-> +		mhi,max-channels = <30>;
-> +		mhi,timeout = <10000>;
-> +
-> +		pcie0_mhi: pcie0_mhi {
-> +			status = "ok";
-> +		};
-> +	};
-> +};
-> +
-> +&pcie1_rp {
-> +	status = "ok";
-> +
-> +	mhi_1: qcom,mhi@1 {
-> +		reg = <0 0 0 0 0 >;
-> +		qrtr_instance_id = <0x21>;
-> +		#address-cells = <0x2>;
-> +		#size-cells = <0x2>;
-> +
-> +		base-addr = <0x54600000>;
-> +		qcom,caldb-addr = <0x57500000>;
-> +		qrtr_node_id = <0x28>;
-> +		mhi,max-channels = <30>;
-> +		mhi,timeout = <10000>;
-> +
-> +		pcie1_mhi: pcie1_mhi {
-> +			status = "ok";
-> +		};
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> index b651345..eef47c1 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> @@ -709,6 +709,10 @@
->  				      "ahb",
->  				      "axi_m_sticky";
->  			status = "disabled";
-> +
-> +			pcie1_rp: pcie1_rp {
-> +				reg = <0 0 0 0 0>;
-> +			};
->  		};
->  
->  		pcie0: pci@20000000 {
-> @@ -779,6 +783,10 @@
->  				      "axi_m_sticky",
->  				      "axi_s_sticky";
->  			status = "disabled";
-> +
-> +			pcie0_rp: pcie0_rp {
-> +				reg = <0 0 0 0 0>;
-> +			};
->  		};
->  
->  		tcsr_q6: syscon@1945000 {
-> -- 
-> 2.7.4
-> 
+I have an idea. Can the downstream packagers make use of the builtin
+command line config options, to inject the "ieee754=relaxed" or whatever
+option necessary? If it is acceptable this patch should not be necessary
+in the short term.
+
+>
+> Thanks.
+>
+> - Jiaxun
