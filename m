@@ -2,150 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E87923E01C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B2223E029
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728817AbgHFSCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:02:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727874AbgHFSCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:02:12 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C12F4206A2;
-        Thu,  6 Aug 2020 18:02:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596736932;
-        bh=9sUjY/EQ0U39oYMlQPvEvGW/9HCx2e58IMNn3pm5wdo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=e91T2UBSmufrS+L3aMM6kobPSgaPYhhSo5y3MAMj03UBN7dpEAXH5UQtYSIU01FZ+
-         JhCDjj6MTMVULCix/AicmBkscE3jV/iEFhezcyFIaoegCptSvwz2S/S396IjT9nGY/
-         Ke/Fea9xrxiIUPJ9gpqlUIIroRM2faIdcXBwIRXg=
-Date:   Thu, 6 Aug 2020 19:02:08 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Stefan Popa <stefan.popa@analog.com>
-Subject: Re: [PATCH 2/2] iio: imu: adis16480: Add the option to
- enable/disable burst mode
-Message-ID: <20200806190208.7d4899e2@archlinux>
-In-Reply-To: <20200804100414.39002-2-alexandru.ardelean@analog.com>
-References: <20200804100414.39002-1-alexandru.ardelean@analog.com>
-        <20200804100414.39002-2-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727081AbgHFSJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727021AbgHFSG2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:06:28 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D958BC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 11:06:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d22so7210998pfn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 11:06:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ylCjemrTuNIFJbRktj1/dL7hZ8gSo2npn8SY8jax5gQ=;
+        b=W515vg/30bkvIr9ovaD7pallgaeK4PaZItShKIvofk6SkZWY6nxUa0T9Rvg/J6pcDl
+         0zhRo5qE3I8oTFFKS/tXbzaoxe3OFiKoDR/FA7LkamHucSt2LNptWQUVQd3tllTu0/Zp
+         9IbTsClNA1MXSvr5s/j0Es7uAdCbwNDEe/yjhfq0eatrzS70oPh4ExhsEOmN+m7SyN/6
+         ox37RInCzs4p2+I1Fqw96gSAImm2hl6sF3dOFjRToZa+na52lu4uB5LrH4nYMOA3x8uN
+         1etbbkyv8uQp5x6Wp6iHTyTwyLobYapujcHbciVaS+35xJ7LuODbDH1R7fP4CNYnLd5v
+         qmcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ylCjemrTuNIFJbRktj1/dL7hZ8gSo2npn8SY8jax5gQ=;
+        b=U28UYmfvIyw4D7Z8e1PzW30sH86GVcv1iLPzAsdnh6wLys+NkK0iFIFt9H2DXlB4K0
+         M9jbeDKto3Bq+JM+MZMV9CbLCTFhHTqouxP3qpMzZWpGX43lCt8XUD3jSoJTH3QUECyc
+         zF7mzjbt8xByLwolw6s/1lJpoIQSs17qfgILZ+RCOxluPaPg3bNxzrENdGitXUeZqX0O
+         /MawGYXPsx/exQ4+QjafPdpSnMVX0Dy/c+G0oQhO9JrnPzEK4Ti5fA6qKvW8OKzaS2zr
+         boMBM4DUtvP8oyzKRQXQDAHsGudbrCK6w3rtRDI5UDJVovG6eNg0dcBU1kQuStNr1YbF
+         UBQQ==
+X-Gm-Message-State: AOAM5304wenC0fXBzfd7JzNeixX0b69XxgwiFqhTYH5Q+xHVmnKNTKJ+
+        +DWjNjDFhBUt/KjCcmlem35sYVRR9SUzsPnbQoTpDuFN
+X-Google-Smtp-Source: ABdhPJxe86jVj9BTFCBMyCA/7qhgFwu4dSvBhB7qMRfIc9vQCd4mbllXI4drBsZvFenvyPYIcN49oB627PCOsPutoSs=
+X-Received: by 2002:a05:6a00:2295:: with SMTP id f21mr9115086pfe.51.1596737168463;
+ Thu, 06 Aug 2020 11:06:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200718000637.3632841-1-saravanak@google.com>
+ <20200718000637.3632841-3-saravanak@google.com> <CALAqxLVZ+rFE+hM9OtQ46NqpTHeLu6oKLNWKstLv1U5zbwyq7g@mail.gmail.com>
+ <CAGETcx_rkK3-bKhDP_N4n_WyXLXFPoaUV9rbY_Y+H1Joj=dCyw@mail.gmail.com>
+ <CALAqxLUz6GTT96nO9igiWVwyaRs_xbO+=mySLm4BKX6-Uh90ZA@mail.gmail.com> <5e6124390b9e3e7f4d6f6decbdb669ca@kernel.org>
+In-Reply-To: <5e6124390b9e3e7f4d6f6decbdb669ca@kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 6 Aug 2020 11:05:32 -0700
+Message-ID: <CAGETcx89BRdSP6FKjDPU0zapt0ET9_PUr6bjZb9EA-jYn0maFw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] irqchip/qcom-pdc: Switch to using
+ IRQCHIP_PLATFORM_DRIVER helper macros
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>, steev@kali.org,
+        Nial Peters <uceenpe@ucl.ac.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 Aug 2020 13:04:14 +0300
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+On Thu, Aug 6, 2020 at 5:12 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2020-08-06 02:24, John Stultz wrote:
+> > On Wed, Aug 5, 2020 at 1:19 PM Saravana Kannan <saravanak@google.com>
+> > wrote:
+> >> On Wed, Aug 5, 2020 at 12:44 AM John Stultz <john.stultz@linaro.org>
+> >> wrote:
+> >> > On Fri, Jul 17, 2020 at 5:06 PM Saravana Kannan <saravanak@google.com> wrote:
+> >> > >
+> >> > > Switch the driver to use the helper macros. In addition to reducing the
+> >> > > number of lines, this also adds module unload protection (if the driver
+> >> > > is compiled as a module) by switching from module_platform_driver to
+> >> > > builtin_platform_driver.
+> >> > >
+> >> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >> > > ---
+> >> > >  drivers/irqchip/qcom-pdc.c | 26 +++-----------------------
+> >> > >  1 file changed, 3 insertions(+), 23 deletions(-)
+> >> > >
+> >> > > diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+> >> > > index 5b624e3295e4..c1c5dfad57cc 100644
+> >> > > --- a/drivers/irqchip/qcom-pdc.c
+> >> > > +++ b/drivers/irqchip/qcom-pdc.c
+> >> > > @@ -432,28 +432,8 @@ static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
+> >> > >         return ret;
+> >> > >  }
+> >> > >
+> >> > > -static int qcom_pdc_probe(struct platform_device *pdev)
+> >> > > -{
+> >> > > -       struct device_node *np = pdev->dev.of_node;
+> >> > > -       struct device_node *parent = of_irq_find_parent(np);
+> >> > > -
+> >> > > -       return qcom_pdc_init(np, parent);
+> >> > > -}
+> >> > > -
+> >> > > -static const struct of_device_id qcom_pdc_match_table[] = {
+> >> > > -       { .compatible = "qcom,pdc" },
+> >> > > -       {}
+> >> > > -};
+> >> > > -MODULE_DEVICE_TABLE(of, qcom_pdc_match_table);
+> >> > > -
+> >> > > -static struct platform_driver qcom_pdc_driver = {
+> >> > > -       .probe = qcom_pdc_probe,
+> >> > > -       .driver = {
+> >> > > -               .name = "qcom-pdc",
+> >> > > -               .of_match_table = qcom_pdc_match_table,
+> >> > > -               .suppress_bind_attrs = true,
+> >> > > -       },
+> >> > > -};
+> >> > > -module_platform_driver(qcom_pdc_driver);
+> >> > > +IRQCHIP_PLATFORM_DRIVER_BEGIN(qcom_pdc)
+> >> > > +IRQCHIP_MATCH("qcom,pdc", qcom_pdc_init)
+> >> > > +IRQCHIP_PLATFORM_DRIVER_END(qcom_pdc)
+> >> > >  MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller");
+> >> > >  MODULE_LICENSE("GPL v2");
+> >> >
+> >> > <sigh>
+> >> > So this is where I bashfully admit I didn't get a chance to try this
+> >> > patch series out, as I had success with a much older version of
+> >> > Saravana's macro magic.
+> >> >
+> >> > But unfortunately, now that this has landed in mainline, I'm seeing
+> >> > boot regressions on db845c. :( This is in the non-modular case,
+> >> > building the driver in.
+> >>
+> >> Does that mean the modular version is working? Or you haven't tried
+> >> that yet? I'll wait for your reply before I try to fix it. I don't
+> >> have the hardware, but it should be easy to guess this issue looking
+> >> at the code delta.
+> >
+> > I've not yet tested with modules with your patch.
+> >
+> >> The only significant change from what your probe function is doing is
+> >> this snippet. But it'd be surprising if this only affects the builtin
+> >> case.
+> >>
+> >> + if (par_np == np)
+> >> +         par_np = NULL;
+> >> +
+> >> + /*
+> >> + * If there's a parent interrupt controller and  none of the parent
+> >> irq
+> >> + * domains have been registered, that means the parent interrupt
+> >> + * controller has not been initialized yet.  it's not time for this
+> >> + * interrupt controller to initialize. So, defer probe of this
+> >> + * interrupt controller. The actual initialization callback of this
+> >> + * interrupt controller can check for specific domains as necessary.
+> >> + */
+> >> + if (par_np && !irq_find_matching_host(np, DOMAIN_BUS_ANY))
+> >> +         return -EPROBE_DEFER;
+> >
+> > Yep. We're getting caught on the irq_find_matching_host() check. I'm a
+> > little lost as when I look at the qcom,pdc node in the dtsi its not
+> > under a parent controller (instead the soc node).
+> > Not sure if that's an issue in the dtsi or if par_np check needs to
+> > ignore the soc node and pass null?
+>
+> I think you have nailed it. This checks for a domain attached to
+> the driver we are about to probe, and this domain cannot possibly
+> exist. Instead, it is the *parent* this should check for, as we
+> depend on it for successful probing.
 
-> From: Stefan Popa <stefan.popa@analog.com>
-> 
-> Although the burst read function does not require a stall time between
-> each 16-bit segment, it however requires more processing since the
-> software needs to look for the BURST_ID and take into account the offset
-> to the first data channel. Some users might find it useful to be able to
-> switch between the two modes.
+Duh! Looks like I made a copy-paste/typo error. The comment clearly
+says I'm trying to check the parent and then I end up checking the
+node getting registered. I'm sure this will fix it.
 
-Ah, when you say future patch, you meant extremely near future. :)
+Actually Nial sent an email a few hours after your and he had found
+the same issue. He even tested the fix with an irqchip driver and it
+fixed the probe issue.
 
-> 
-> Signed-off-by: Stefan Popa <stefan.popa@analog.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+I'm assuming you'll put up the patch yourself. Please let me know if
+you need me to send one.
 
-First rule of new ABI, document it.
-
-As mentioned in previous patch, this sort of user interface is very hard to
-use. You are much better off estimating whether it is a good idea or
-not for a given set of channels.   If it isn't don't use it, if
-it is turn it on.
-There is compelling reason to let users choose that I can think of...
-
-
-Jonathan
-
-> ---
->  drivers/iio/imu/adis16480.c | 48 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
-> 
-> diff --git a/drivers/iio/imu/adis16480.c b/drivers/iio/imu/adis16480.c
-> index 9b100c8fb744..7d7712c33435 100644
-> --- a/drivers/iio/imu/adis16480.c
-> +++ b/drivers/iio/imu/adis16480.c
-> @@ -330,6 +330,45 @@ static int adis16480_debugfs_init(struct iio_dev *indio_dev)
->  
->  #endif
->  
-> +static ssize_t adis16495_burst_mode_enable_get(struct device *dev,
-> +					       struct device_attribute *attr,
-> +					       char *buf)
-> +{
-> +	struct adis16480 *st = iio_priv(dev_to_iio_dev(dev));
-> +
-> +	return sprintf(buf, "%d\n", st->adis.burst->en);
-> +}
-> +
-> +static ssize_t adis16495_burst_mode_enable_set(struct device *dev,
-> +					       struct device_attribute *attr,
-> +					       const char *buf, size_t len)
-> +{
-> +	struct adis16480 *st = iio_priv(dev_to_iio_dev(dev));
-> +	bool val;
-> +	int ret;
-> +
-> +	ret = kstrtobool(buf, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	st->adis.burst->en = val;
-> +
-> +	return len;
-> +}
-> +
-> +static IIO_DEVICE_ATTR(burst_mode_enable, 0644,
-> +		       adis16495_burst_mode_enable_get,
-> +		       adis16495_burst_mode_enable_set, 0);
-> +
-> +static struct attribute *adis16495_attributes[] = {
-> +	&iio_dev_attr_burst_mode_enable.dev_attr.attr,
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group adis16495_attribute_group = {
-> +	.attrs = adis16495_attributes,
-> +};
-> +
->  static int adis16480_set_freq(struct iio_dev *indio_dev, int val, int val2)
->  {
->  	struct adis16480 *st = iio_priv(indio_dev);
-> @@ -1131,6 +1170,14 @@ static const struct iio_info adis16480_info = {
->  	.debugfs_reg_access = adis_debugfs_reg_access,
->  };
->  
-> +static const struct iio_info adis16495_info = {
-> +	.attrs = &adis16495_attribute_group,
-> +	.read_raw = &adis16480_read_raw,
-> +	.write_raw = &adis16480_write_raw,
-> +	.update_scan_mode = adis_update_scan_mode,
-> +	.debugfs_reg_access = adis_debugfs_reg_access,
-> +};
-> +
->  static int adis16480_stop_device(struct iio_dev *indio_dev)
->  {
->  	struct adis16480 *st = iio_priv(indio_dev);
-> @@ -1365,6 +1412,7 @@ static int adis16480_probe(struct spi_device *spi)
->  	if (st->chip_info->burst) {
->  		st->adis.burst = st->chip_info->burst;
->  		st->adis.burst_extra_len = st->chip_info->burst->extra_len;
-> +		indio_dev->info = &adis16495_info;
->  	}
->  
->  	ret = adis_setup_buffer_and_trigger(&st->adis, indio_dev,
-
+Thanks,
+Saravana
