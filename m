@@ -2,131 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA57A23D910
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B2723D912
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729248AbgHFKEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 06:04:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31572 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729289AbgHFKAh (ORCPT
+        id S1729342AbgHFKEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 06:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729320AbgHFKCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 06:00:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596708027;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OndzkDmNcgoNifiVvnQ+KZRjYfgTXWBU8ZH831EcGLA=;
-        b=fpd4ctnjqxoKlkASyYkbfYgqlojy2pKz5NlJJyRzgNDxxErkXg2NKsfqWwuWVL7TWuZRLo
-        OPRVRb4Qwo1FqR+eQ0ed9/za1vXcFe3lGCSB7/bzod8V2oi6MtllI0+1qKk5RUK8RAamVr
-        lcjvDCFeHMXeQ553Z4gPS2cj0qqx6AU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-4OTyKbREO_6sna_L6eQh3A-1; Thu, 06 Aug 2020 06:00:25 -0400
-X-MC-Unique: 4OTyKbREO_6sna_L6eQh3A-1
-Received: by mail-wm1-f69.google.com with SMTP id q15so3910074wmj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:00:25 -0700 (PDT)
+        Thu, 6 Aug 2020 06:02:44 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3570C061574;
+        Thu,  6 Aug 2020 03:02:23 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id bs17so15963907edb.1;
+        Thu, 06 Aug 2020 03:02:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=acMvcXwcBtYuVO1z9M48ehd2KmaNhkmanOT5DecFSow=;
+        b=fcm4hbV0mIupq6Ura/mLhD/DOSw0Muno0UEUr1h23NY7lfO4425p3RubEE+6LZGCOv
+         U4eWSzvyUmDd9twx/WjZZCkSm/JBx43TrqrubefNLuwpN5PGA7V5ST/VQxNNSJN4vWRC
+         1wGiyAsVhS+zEaOHmt78llB+pFx8PItTUS9VFdEcuBErwkWevMcIWRk+SR+Mw5m/U2rt
+         nDoRpgS36shjRjhOdsl//DC+nCF7YjdaWHoTalr/hqhUpXaJV0Z5WUVBMPZjASX3XLYS
+         1jJHfSVO6HvjrwWmZGXKcilqx1Oy73TEVqMK4bkUyrwSqJz8Kq2p7CZ+KFSgG5xGDD2e
+         I1hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OndzkDmNcgoNifiVvnQ+KZRjYfgTXWBU8ZH831EcGLA=;
-        b=B7CClfPKwkcCZYuvyFFY+hwbtPA8OgdtbfLyWZu/uBkDQ++o0t8Ms5kAB4lkXwsGF4
-         RbfHT2MwkTO7fZJonQXI2EZPUxp08UZOePNIqz+1VL1BFqXxns0CCALraHKMb3xpr9vR
-         KFcA3CycCaItiE+F110GQAModgjOfYCa0gsX3nhQJ9Xv2ml03pQvuhTXqndtM7eKJQNE
-         wln15BlKcm/uCX0ZtXmI7yBaDtjAHXsMp+7/kbpTrZPfUSb/Y5iADTuBRqka/z7Rb8we
-         spVMQo1OKZxT9o1cttCDGFaEG6xcFxjo6kBSueBUgvsDkBZftv6MPom4MLuFIT91TYhS
-         dg2w==
-X-Gm-Message-State: AOAM5313iaxVvC+Qv1FGREh8Wc6ol+JwZMiAMQRdbZP6IqDmyjKK1yiH
-        l0sQGLpT2rsex/z1YP+t5gxd8EVMiSMylAlda81YYPmqVxlatJd6i80cDIF+GjAbGITaGhRxg30
-        yjZ3S4eYf3LAX3M60bREfIxnk
-X-Received: by 2002:adf:a35e:: with SMTP id d30mr7131954wrb.53.1596708024438;
-        Thu, 06 Aug 2020 03:00:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz5PxHtKOZg3btYcrqVmyb7L9kNpR4DBCaDwStXUxvVDuujSnEeCKFRtxCmXegq8/gGKsNKQg==
-X-Received: by 2002:adf:a35e:: with SMTP id d30mr7131930wrb.53.1596708024241;
-        Thu, 06 Aug 2020 03:00:24 -0700 (PDT)
-Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
-        by smtp.gmail.com with ESMTPSA id z6sm6435422wml.41.2020.08.06.03.00.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 03:00:23 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 06:00:21 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 19/24] vdpa: make sure set_features in invoked for
- legacy
-Message-ID: <20200806055818-mutt-send-email-mst@kernel.org>
-References: <20200803205814.540410-1-mst@redhat.com>
- <20200803205814.540410-20-mst@redhat.com>
- <9e47d227-f220-4651-dcb9-7a11f059a715@redhat.com>
- <20200805073929-mutt-send-email-mst@kernel.org>
- <bd915b30-0604-da1b-343f-e228bce4d1d8@redhat.com>
- <20200806015112-mutt-send-email-mst@kernel.org>
- <cc5cb366-be79-908d-edc6-4aebb488cc59@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cc5cb366-be79-908d-edc6-4aebb488cc59@redhat.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=acMvcXwcBtYuVO1z9M48ehd2KmaNhkmanOT5DecFSow=;
+        b=N55nLPfOH23FHfIhNjBrESMGi+Lm2gdo+yYf/br/XsGtKafs0EYlpf4gIuv0tCRmQE
+         17TW/Sgdh4mfZ7jNqUGtqbqzppy5LDg6YwmpzG3YgsWaKEEdD08q5Idxmjmy0CNK0TGo
+         E1J6YnRq5ZlIjkuVdxhsLn7Pwwum1H4WTaw97TkSTdSjAgFfqHx+tMFiyJmAIW6vHZ28
+         GT6WxewPtg1ODhD8czKFqlo6mKYVai/QwZfHW6T1rPn4ZOgMDlLK4uoE6VNJpoiFeJdm
+         qfUsKL8JtPSP+0NUVHCvJ8djNADpTgmWMonO3JCLHnY47FpRkRbiO3drsRxe08QmsJ9o
+         MsPw==
+X-Gm-Message-State: AOAM5337zlLLovGsOL9RHwrR6+H9oMN2bVIgTaIhpTsh5sP8A/fJM6zL
+        4OOLHJlW3pnlDmDumPgqvuo=
+X-Google-Smtp-Source: ABdhPJzwPfwKxoJyv2ZuVSzlGqJr3G+W4jzjeJ2TLOEologbczcQgS9xKnZPeUGONELkdNwDrAp35g==
+X-Received: by 2002:aa7:c382:: with SMTP id k2mr3209558edq.249.1596708140320;
+        Thu, 06 Aug 2020 03:02:20 -0700 (PDT)
+Received: from ubuntu-laptop ([2a01:598:b906:f0c9:15b9:533b:62ba:b5b3])
+        by smtp.googlemail.com with ESMTPSA id f20sm3332916ejq.60.2020.08.06.03.02.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Aug 2020 03:02:19 -0700 (PDT)
+Message-ID: <39c546268abead68f4c00f17dc47c1597f3e0273.camel@gmail.com>
+Subject: Re: [PATCH v8 0/4] scsi: ufs: Add Host Performance Booster Support
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Thu, 06 Aug 2020 12:02:14 +0200
+In-Reply-To: <SN6PR04MB4640CE297AAB3CF4D37EE002FC480@SN6PR04MB4640.namprd04.prod.outlook.com>
+References: <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p6>
+         <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
+         <7c59c7abf7b00c368228b3096e1bea8c9e2b2e80.camel@gmail.com>
+         <SN6PR04MB4640CE297AAB3CF4D37EE002FC480@SN6PR04MB4640.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 03:27:38PM +0800, Jason Wang wrote:
+On Thu, 2020-08-06 at 09:56 +0000, Avri Altman wrote:
+> > 
+> > Hi Avri
+> > what is your plan for this series patchset?
 > 
-> On 2020/8/6 下午1:53, Michael S. Tsirkin wrote:
-> > On Thu, Aug 06, 2020 at 11:23:05AM +0800, Jason Wang wrote:
-> > > On 2020/8/5 下午7:40, Michael S. Tsirkin wrote:
-> > > > On Wed, Aug 05, 2020 at 02:14:07PM +0800, Jason Wang wrote:
-> > > > > On 2020/8/4 上午5:00, Michael S. Tsirkin wrote:
-> > > > > > Some legacy guests just assume features are 0 after reset.
-> > > > > > We detect that config space is accessed before features are
-> > > > > > set and set features to 0 automatically.
-> > > > > > Note: some legacy guests might not even access config space, if this is
-> > > > > > reported in the field we might need to catch a kick to handle these.
-> > > > > I wonder whether it's easier to just support modern device?
-> > > > > 
-> > > > > Thanks
-> > > > Well hardware vendors are I think interested in supporting legacy
-> > > > guests. Limiting vdpa to modern only would make it uncompetitive.
-> > > 
-> > > My understanding is that, IOMMU_PLATFORM is mandatory for hardware vDPA to
-> > > work.
-> > Hmm I don't really see why. Assume host maps guest memory properly,
-> > VM does not have an IOMMU, legacy guest can just work.
+> I already acked it.
+> Waiting for the senior members to decide.
 > 
-> 
-> Yes, guest may not set IOMMU_PLATFORM.
-> 
+> Thanks,
+> Avri
 > 
 > > 
-> > Care explaining what's wrong with this picture?
+> > Bean
 > 
 > 
-> The problem is virtio_vdpa, without IOMMU_PLATFORM it uses PA which can not
-> work if IOMMU is enabled.
-> 
-> Thanks
+we didn't see you Acked-by in the pathwork, would you like to add them?
+Just for reminding us that you have agreed to mainline this series
+patchset.
 
-So that's a virtio_vdpa limitation. In the same way, if a device
-does not have an on-device iommu *and* is not behind an iommu,
-then vdpa can't bind to it.
 
-But this virtio_vdpa specific hack does not belong in a generic vdpa code.
-
-> 
-> > 
-> > 
-> > > So it can only work for modern device ...
-> > > 
-> > > Thanks
-> > > 
-> > > 
-> > > > 
-> > > > 
+thanks,
+Bean
 
