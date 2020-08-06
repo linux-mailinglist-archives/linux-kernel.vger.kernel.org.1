@@ -2,50 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8B023E11B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B7523E0B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729483AbgHFSka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:40:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33610 "EHLO mail.kernel.org"
+        id S1729692AbgHFShr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729089AbgHFSkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:40:22 -0400
+        id S1728935AbgHFSf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:35:58 -0400
 Received: from localhost.localdomain (unknown [194.230.155.117])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B4C522D70;
-        Thu,  6 Aug 2020 18:22:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D81F22CE3;
+        Thu,  6 Aug 2020 18:22:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596738173;
-        bh=e1oSXjKRZ1/t6yaGmxeMpFJIIqxQuITtDtfD3fTgYtQ=;
+        s=default; t=1596738176;
+        bh=lU5wNn/T9PmwblR4OUI1J7Lrz/yR8NVfa8Ry3YJWFwQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RnJk8Nw20oovJGOtix16awmixT2stIdDZnn5cCpdsfoPL1ZDrAouFmfTXazZkBryt
-         U6+/C4sQrMYB7/RhwqVpMgQSY+Lnf776wVev3iQBKSSjccZfpKA0QCfvg58nAuJV/9
-         XLhS2JgfS/EMeK/1j1FFEu/fmUc6n1ay5mUcjoIg=
+        b=2CkLjH1W6F26DkdSLwSedU1vIjnnjDrR3jFSKAOn3jiYv5qhJzJb5IL00vTAcBFWr
+         i2VPDnZGE84wG8GJYdwLd3CVGXta3qSoS5aKbL46Y9IqUmleVAqPH1neNdkw7kR9N0
+         SWcWUrarZ4rqSDEogsdgJK6OyMBAihDa4woY0v5Y=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Sangbeom Kim <sbkim73@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-serial@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v2 18/41] ARM: s5pv210: don't imply CONFIG_PLAT_SAMSUNG
-Date:   Thu,  6 Aug 2020 20:20:35 +0200
-Message-Id: <20200806182059.2431-18-krzk@kernel.org>
+        Kukjin Kim <kgene@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH v2 19/41] ARM: s3c64xx: remove mach/hardware.h
+Date:   Thu,  6 Aug 2020 20:20:36 +0200
+Message-Id: <20200806182059.2431-19-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200806181932.2253-1-krzk@kernel.org>
 References: <20200806181932.2253-1-krzk@kernel.org>
@@ -56,146 +44,170 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The plat-samsung directory and mach-s5pv210 can be build
-completely independently, so split the two Kconfig symbols
-CONFIG_PLAT_SAMSUNG and CONFIG_ARCH_S5PV210.
+This header is empty and conflicts with the s3c24xx version
+of the same file when we merge the two, so stop including it.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
-Acked-by: Thierry Reding <thierry.reding@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/Kconfig.debug        | 6 +++---
- arch/arm/Makefile             | 1 -
- arch/arm/plat-samsung/Kconfig | 2 +-
- drivers/mmc/host/Kconfig      | 2 +-
- drivers/pwm/Kconfig           | 2 +-
- drivers/spi/Kconfig           | 2 +-
- drivers/tty/serial/Kconfig    | 2 +-
- sound/soc/samsung/Kconfig     | 2 +-
- 8 files changed, 9 insertions(+), 10 deletions(-)
+ arch/arm/mach-s3c64xx/common.c                |  1 -
+ arch/arm/mach-s3c64xx/dev-uart.c              |  1 -
+ arch/arm/mach-s3c64xx/include/mach/hardware.h | 17 -----------------
+ arch/arm/mach-s3c64xx/mach-anw6410.c          |  1 -
+ arch/arm/mach-s3c64xx/mach-crag6410.c         |  1 -
+ arch/arm/mach-s3c64xx/mach-hmt.c              |  1 -
+ arch/arm/mach-s3c64xx/mach-ncp.c              |  1 -
+ arch/arm/mach-s3c64xx/mach-smdk6400.c         |  1 -
+ arch/arm/mach-s3c64xx/mach-smdk6410.c         |  1 -
+ arch/arm/mach-s3c64xx/s3c6400.c               |  1 -
+ arch/arm/mach-s3c64xx/s3c6410.c               |  1 -
+ 11 files changed, 27 deletions(-)
+ delete mode 100644 arch/arm/mach-s3c64xx/include/mach/hardware.h
 
-diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
-index 153a9a35dd20..b4b41f9d246b 100644
---- a/arch/arm/Kconfig.debug
-+++ b/arch/arm/Kconfig.debug
-@@ -1005,7 +1005,7 @@ choice
- 		  via SCIFA4 on Renesas SH-Mobile AG5 (SH73A0).
+diff --git a/arch/arm/mach-s3c64xx/common.c b/arch/arm/mach-s3c64xx/common.c
+index c9c20256488b..efda4bfb7948 100644
+--- a/arch/arm/mach-s3c64xx/common.c
++++ b/arch/arm/mach-s3c64xx/common.c
+@@ -37,7 +37,6 @@
  
- 	config DEBUG_S3C_UART0
--		depends on PLAT_SAMSUNG || ARCH_EXYNOS
-+		depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS
- 		select DEBUG_EXYNOS_UART if ARCH_EXYNOS
- 		select DEBUG_S3C24XX_UART if ARCH_S3C24XX
- 		select DEBUG_S3C64XX_UART if ARCH_S3C64XX
-@@ -1017,7 +1017,7 @@ choice
- 		  by the boot-loader before use.
+ #include <mach/map.h>
+ #include <mach/irqs.h>
+-#include <mach/hardware.h>
+ #include <mach/regs-gpio.h>
+ #include <mach/gpio-samsung.h>
  
- 	config DEBUG_S3C_UART1
--		depends on PLAT_SAMSUNG || ARCH_EXYNOS
-+		depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS
- 		select DEBUG_EXYNOS_UART if ARCH_EXYNOS
- 		select DEBUG_S3C24XX_UART if ARCH_S3C24XX
- 		select DEBUG_S3C64XX_UART if ARCH_S3C64XX
-@@ -1029,7 +1029,7 @@ choice
- 		  by the boot-loader before use.
+diff --git a/arch/arm/mach-s3c64xx/dev-uart.c b/arch/arm/mach-s3c64xx/dev-uart.c
+index 5fb59ad30008..021a2b7926fa 100644
+--- a/arch/arm/mach-s3c64xx/dev-uart.c
++++ b/arch/arm/mach-s3c64xx/dev-uart.c
+@@ -15,7 +15,6 @@
  
- 	config DEBUG_S3C_UART2
--		depends on PLAT_SAMSUNG || ARCH_EXYNOS
-+		depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS
- 		select DEBUG_EXYNOS_UART if ARCH_EXYNOS
- 		select DEBUG_S3C24XX_UART if ARCH_S3C24XX
- 		select DEBUG_S3C64XX_UART if ARCH_S3C64XX
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 826613a20b7d..3997cec8848e 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -234,7 +234,6 @@ machine-$(CONFIG_PLAT_SPEAR)		+= spear
- # by CONFIG_* macro name.
- plat-$(CONFIG_ARCH_OMAP)	+= omap
- plat-$(CONFIG_ARCH_S3C64XX)	+= samsung
--plat-$(CONFIG_ARCH_S5PV210)	+= samsung
- plat-$(CONFIG_PLAT_ORION)	+= orion
- plat-$(CONFIG_PLAT_PXA)		+= pxa
- plat-$(CONFIG_PLAT_S3C24XX)	+= samsung
-diff --git a/arch/arm/plat-samsung/Kconfig b/arch/arm/plat-samsung/Kconfig
-index a7cb0db1d5cc..13b39684b582 100644
---- a/arch/arm/plat-samsung/Kconfig
-+++ b/arch/arm/plat-samsung/Kconfig
-@@ -4,7 +4,7 @@
+ #include <asm/mach/arch.h>
+ #include <asm/mach/irq.h>
+-#include <mach/hardware.h>
+ #include <mach/map.h>
+ #include <mach/irqs.h>
  
- config PLAT_SAMSUNG
- 	bool
--	depends on PLAT_S3C24XX || ARCH_S3C64XX || ARCH_S5PV210
-+	depends on PLAT_S3C24XX || ARCH_S3C64XX
- 	default y
- 	select GENERIC_IRQ_CHIP
- 	select NO_IOPORT_MAP
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index ddce8e62280c..9f387daa764a 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -289,7 +289,7 @@ config MMC_SDHCI_TEGRA
+diff --git a/arch/arm/mach-s3c64xx/include/mach/hardware.h b/arch/arm/mach-s3c64xx/include/mach/hardware.h
+deleted file mode 100644
+index c4ed359474de..000000000000
+--- a/arch/arm/mach-s3c64xx/include/mach/hardware.h
++++ /dev/null
+@@ -1,17 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/* linux/arch/arm/mach-s3c6400/include/mach/hardware.h
+- *
+- * Copyright 2008 Openmoko, Inc.
+- * Copyright 2008 Simtec Electronics
+- *      Ben Dooks <ben@simtec.co.uk>
+- *      http://armlinux.simtec.co.uk/
+- *
+- * S3C6400 - Hardware support
+- */
+-
+-#ifndef __ASM_ARCH_HARDWARE_H
+-#define __ASM_ARCH_HARDWARE_H __FILE__
+-
+-/* currently nothing here, placeholder */
+-
+-#endif /* __ASM_ARCH_IRQ_H */
+diff --git a/arch/arm/mach-s3c64xx/mach-anw6410.c b/arch/arm/mach-s3c64xx/mach-anw6410.c
+index e783f5b3593a..bb248b12e308 100644
+--- a/arch/arm/mach-s3c64xx/mach-anw6410.c
++++ b/arch/arm/mach-s3c64xx/mach-anw6410.c
+@@ -30,7 +30,6 @@
+ #include <asm/mach/map.h>
+ #include <asm/mach/irq.h>
  
- config MMC_SDHCI_S3C
- 	tristate "SDHCI support on Samsung S3C SoC"
--	depends on MMC_SDHCI && (PLAT_SAMSUNG || ARCH_EXYNOS)
-+	depends on MMC_SDHCI && (PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS)
- 	help
- 	  This selects the Secure Digital Host Controller Interface (SDHCI)
- 	  often referrered to as the HSMMC block in some of the Samsung S3C
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 7dbcf6973d33..9448e4ca8c73 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -410,7 +410,7 @@ config PWM_ROCKCHIP
+-#include <mach/hardware.h>
+ #include <mach/map.h>
  
- config PWM_SAMSUNG
- 	tristate "Samsung PWM support"
--	depends on PLAT_SAMSUNG || ARCH_EXYNOS || COMPILE_TEST
-+	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
- 	help
- 	  Generic PWM framework driver for Samsung.
+ #include <asm/irq.h>
+diff --git a/arch/arm/mach-s3c64xx/mach-crag6410.c b/arch/arm/mach-s3c64xx/mach-crag6410.c
+index 223a3d51d8b6..a2fefb2609e7 100644
+--- a/arch/arm/mach-s3c64xx/mach-crag6410.c
++++ b/arch/arm/mach-s3c64xx/mach-crag6410.c
+@@ -44,7 +44,6 @@
+ #include <asm/mach-types.h>
  
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index c3008e423f59..85619ab64156 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -680,7 +680,7 @@ config SPI_S3C24XX_FIQ
+ #include <video/samsung_fimd.h>
+-#include <mach/hardware.h>
+ #include <mach/map.h>
+ #include <mach/regs-gpio.h>
+ #include <mach/gpio-samsung.h>
+diff --git a/arch/arm/mach-s3c64xx/mach-hmt.c b/arch/arm/mach-s3c64xx/mach-hmt.c
+index ad15260c12b4..32b555a4757b 100644
+--- a/arch/arm/mach-s3c64xx/mach-hmt.c
++++ b/arch/arm/mach-s3c64xx/mach-hmt.c
+@@ -25,7 +25,6 @@
+ #include <asm/mach/irq.h>
  
- config SPI_S3C64XX
- 	tristate "Samsung S3C64XX series type SPI"
--	depends on (PLAT_SAMSUNG || ARCH_EXYNOS || COMPILE_TEST)
-+	depends on (PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST)
- 	help
- 	  SPI driver for Samsung S3C64XX and newer SoCs.
+ #include <video/samsung_fimd.h>
+-#include <mach/hardware.h>
+ #include <mach/map.h>
+ #include <mach/irqs.h>
  
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 8a0352eb337c..10de494e808a 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -235,7 +235,7 @@ config SERIAL_CLPS711X_CONSOLE
+diff --git a/arch/arm/mach-s3c64xx/mach-ncp.c b/arch/arm/mach-s3c64xx/mach-ncp.c
+index 0a67ff173575..f0a26dd27938 100644
+--- a/arch/arm/mach-s3c64xx/mach-ncp.c
++++ b/arch/arm/mach-s3c64xx/mach-ncp.c
+@@ -25,7 +25,6 @@
+ #include <asm/mach/irq.h>
  
- config SERIAL_SAMSUNG
- 	tristate "Samsung SoC serial support"
--	depends on PLAT_SAMSUNG || ARCH_EXYNOS || COMPILE_TEST
-+	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
- 	select SERIAL_CORE
- 	help
- 	  Support for the on-chip UARTs on the Samsung S3C24XX series CPUs,
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 1431be4ed054..a2221ebb1b6a 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig SND_SOC_SAMSUNG
- 	tristate "ASoC support for Samsung"
--	depends on PLAT_SAMSUNG || ARCH_EXYNOS || COMPILE_TEST
-+	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
- 	depends on COMMON_CLK
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
+ #include <mach/irqs.h>
+-#include <mach/hardware.h>
+ #include <mach/map.h>
+ 
+ #include <asm/irq.h>
+diff --git a/arch/arm/mach-s3c64xx/mach-smdk6400.c b/arch/arm/mach-s3c64xx/mach-smdk6400.c
+index d24899dd3883..ca033450ab8c 100644
+--- a/arch/arm/mach-s3c64xx/mach-smdk6400.c
++++ b/arch/arm/mach-s3c64xx/mach-smdk6400.c
+@@ -23,7 +23,6 @@
+ #include <asm/mach/irq.h>
+ 
+ #include <mach/irqs.h>
+-#include <mach/hardware.h>
+ #include <mach/map.h>
+ 
+ #include <plat/devs.h>
+diff --git a/arch/arm/mach-s3c64xx/mach-smdk6410.c b/arch/arm/mach-s3c64xx/mach-smdk6410.c
+index 104548fb192a..7b931e7a7913 100644
+--- a/arch/arm/mach-s3c64xx/mach-smdk6410.c
++++ b/arch/arm/mach-s3c64xx/mach-smdk6410.c
+@@ -45,7 +45,6 @@
+ #include <asm/mach/map.h>
+ #include <asm/mach/irq.h>
+ 
+-#include <mach/hardware.h>
+ #include <mach/irqs.h>
+ #include <mach/map.h>
+ 
+diff --git a/arch/arm/mach-s3c64xx/s3c6400.c b/arch/arm/mach-s3c64xx/s3c6400.c
+index 545eea716db8..81233495d548 100644
+--- a/arch/arm/mach-s3c64xx/s3c6400.c
++++ b/arch/arm/mach-s3c64xx/s3c6400.c
+@@ -26,7 +26,6 @@
+ #include <asm/mach/map.h>
+ #include <asm/mach/irq.h>
+ 
+-#include <mach/hardware.h>
+ #include <asm/irq.h>
+ 
+ #include <plat/cpu-freq.h>
+diff --git a/arch/arm/mach-s3c64xx/s3c6410.c b/arch/arm/mach-s3c64xx/s3c6410.c
+index 47e04e019624..9465a6e0f068 100644
+--- a/arch/arm/mach-s3c64xx/s3c6410.c
++++ b/arch/arm/mach-s3c64xx/s3c6410.c
+@@ -27,7 +27,6 @@
+ #include <asm/mach/map.h>
+ #include <asm/mach/irq.h>
+ 
+-#include <mach/hardware.h>
+ #include <asm/irq.h>
+ 
+ #include <plat/cpu-freq.h>
 -- 
 2.17.1
 
