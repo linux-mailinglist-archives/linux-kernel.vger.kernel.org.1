@@ -2,85 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C772A23DDB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989D223DD34
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730042AbgHFRNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:13:50 -0400
-Received: from elvis.franken.de ([193.175.24.41]:36776 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728618AbgHFRNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:13:10 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1k3cy8-0001w1-00; Thu, 06 Aug 2020 12:17:52 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0C114C0C5C; Thu,  6 Aug 2020 12:17:34 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 12:17:34 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
+        id S1730007AbgHFRFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729537AbgHFREq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:04:46 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70175C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:47:12 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id bo3so27146426ejb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YG1Q9ynyALFe9AR4AZSnu22cCvufmDI+jK/ShRTakaM=;
+        b=y5QJ1RTOml2RSAjIvBYsdVJ2k8poyIbAEqK9gbXMvf/anLbi20BZWlKrIHnB30nI0o
+         LMcfKgqvmQhpTkNTN/uVT2Oppdah2LqBb4AFhcL2ZU0O84VOqggfijA3nXRfjnyWxMqg
+         8LYg/feEy49SaB/FTnYHvZpsjBaae2IF4aai6ydPwwXY271DMkUG+tnTFfLuA481asuY
+         ncqAKCMbDfhJbvRlEToPaTm8qaLiG/vCaXTCTxqMtZ5LfCGpeORnYTysGbGUccu8RqHP
+         Y/FNI3Z4fHBttNubfHeMVQnHSB3brn45wUMNRL8WM0cu9ZHtIdjUGC5q5rs1uDKQzlIZ
+         fFlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YG1Q9ynyALFe9AR4AZSnu22cCvufmDI+jK/ShRTakaM=;
+        b=lKLv7CBK5Mm5WqitZfoYjNi39Kv6IdHwycIyScfnJbzXGbDAznb/NHHKlt9AadhSGa
+         La2rxWazx6g401+tDzBO1kRNMbFnHhMhHTwkk2FFsi9FSp10wBy5FL5jPCwMrAbFmQDW
+         MjdHubCUC1WD0p+KmoeU2Yqsde+No2kC0b2K3JaR8q7oUKDYKgvA+Z469Swadb6c1AJ8
+         803sMMR1Cz2qLUXfz7SvdHaEXXrVqVnBrATdOWR+3LJELlXfnC4mH4DRHGMAhXe+7Zgv
+         Xc3Fa6TIP55I0X7+z6t6yLOyw1BWDXnXTTDsmAMIKeFc2gpxM1grMUyQXsn4cqer5dg/
+         I0BA==
+X-Gm-Message-State: AOAM530JUfbyX9c/JkZYDdKqL9hiI1nge0k4VHL5CWf3HQWnjE+Y5eRF
+        NHTSVJ8YUUrorh6hbYb0wfqouK32cJg=
+X-Google-Smtp-Source: ABdhPJySSAYHHGXG7ZhusGtY3TlrMlJ2Bid0HtSCCmNCIXaptwIq+EGfkdHrYLhPWUyULEZJsrYJKQ==
+X-Received: by 2002:a17:906:1986:: with SMTP id g6mr3896501ejd.404.1596710830139;
+        Thu, 06 Aug 2020 03:47:10 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([79.132.248.22])
+        by smtp.gmail.com with ESMTPSA id e14sm3227107edl.86.2020.08.06.03.47.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 03:47:09 -0700 (PDT)
+Subject: Re: [PATCH net 1/2] net: refactor bind_bucket fastreuse into helper
+To:     Tim Froidcoeur <tim.froidcoeur@tessares.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Patrick McHardy <kaber@trash.net>,
+        KOVACS Krisztian <hidden@balabit.hu>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Introduce cmdline argument writecombine=
-Message-ID: <20200806101733.GA8136@alpha.franken.de>
-References: <1596697741-3561-1-git-send-email-yangtiezhu@loongson.cn>
- <10e04885-b775-e7db-b927-6400382fd32d@flygoat.com>
- <cc0c8b89-748d-0d38-bcc8-1c2dbb0996bf@loongson.cn>
+References: <20200806064109.183059-1-tim.froidcoeur@tessares.net>
+ <20200806064109.183059-2-tim.froidcoeur@tessares.net>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Message-ID: <a4143368-bfe8-a3f1-c6e0-753359388191@tessares.net>
+Date:   Thu, 6 Aug 2020 12:47:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cc0c8b89-748d-0d38-bcc8-1c2dbb0996bf@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200806064109.183059-2-tim.froidcoeur@tessares.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 04:32:13PM +0800, Tiezhu Yang wrote:
-> On 08/06/2020 03:39 PM, Jiaxun Yang wrote:
-> >
-> >
-> >在 2020/8/6 下午3:09, Tiezhu Yang 写道:
-> >>Loongson processors have a writecombine issue that maybe failed to
-> >>write back framebuffer used with ATI Radeon or AMD GPU at times,
-> >>after commit 8a08e50cee66 ("drm: Permit video-buffers writecombine
-> >>mapping for MIPS"), there exists some errors such as blurred screen
-> >>and lockup, and so on.
-> >>
-> >>With this patch, disable writecombine by default for Loongson64 to
-> >>work well with ATI Radeon or AMD GPU, and it has no influence on the
-> >>other platforms due to writecombine is enabled by default.
-> >>
-> >>Additionally, if it is necessary, writecombine=on can be set manually
-> >>in the cmdline to enhance the performance for Loongson LS7A integrated
-> >>graphics in the future.
-> >>
-> >>[   60.958721] radeon 0000:03:00.0: ring 0 stalled for more than
-> >>10079msec
-> >>[   60.965315] radeon 0000:03:00.0: GPU lockup (current fence id
-> >>0x0000000000000112 last fence id 0x000000000000011d on ring 0)
-> >>[   60.976525] radeon 0000:03:00.0: ring 3 stalled for more than
-> >>10086msec
-> >>[   60.983156] radeon 0000:03:00.0: GPU lockup (current fence id
-> >>0x0000000000000374 last fence id 0x00000000000003a8 on ring 3)
-> >Hi Tiezhu,
-> >
-> >Thanks for your patch.
-> >Personally I didn't have any issue with writecombine on my test systems,
-> >but there
-> >are some complains about unstable graphic card from users. So generally a
-> >cmdline
-> >writecombine switch is necessary.
+Hi Tim,
 
-no, if there is hardware which can't work with writecombining enabled
-the driver should disable it by it's own and not by some user switch.
-It might even be better to revert the patch enabling writecombining
-blindly and add code to enable it for hardware where it works.
+Thank you for having sent the patch!
 
-Thomas.
+On 06/08/2020 08:41, Tim Froidcoeur wrote:
+> Refactor the fastreuse update code in inet_csk_get_port into a small
+> helper function that can be called from other places.
 
+(...)
+
+> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+> index afaf582a5aa9..3b46b1f6086e 100644
+> --- a/net/ipv4/inet_connection_sock.c
+> +++ b/net/ipv4/inet_connection_sock.c
+> @@ -266,7 +266,7 @@ inet_csk_find_open_port(struct sock *sk, struct inet_bind_bucket **tb_ret, int *
+>   static inline int sk_reuseport_match(struct inet_bind_bucket *tb,
+>   				     struct sock *sk)
+>   {
+> -	kuid_t uid = sock_i_uid(sk);
+> +	kuid_t uid = sock_i_uid((struct sock *)sk);
+
+It seems there is a left over from a previous version. This modification 
+is no longer needed.
+
+>   
+>   	if (tb->fastreuseport <= 0)
+>   		return 0;
+> @@ -296,6 +296,57 @@ static inline int sk_reuseport_match(struct inet_bind_bucket *tb,
+>   				    ipv6_only_sock(sk), true, false);
+>   }
+>   
+> +void inet_csk_update_fastreuse(struct inet_bind_bucket *tb,
+> +			       struct sock *sk)
+> +{
+> +	kuid_t uid = sock_i_uid((struct sock *)sk);
+
+Same here.
+
+May you send a v2 without these two casts please?
+
+Cheers,
+Matt
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
