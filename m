@@ -2,168 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 411FF23DE18
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3CB23DD18
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729699AbgHFRWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:22:02 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6842 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729491AbgHFRVm (ORCPT
+        id S1729522AbgHFRAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:00:17 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:56960 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728862AbgHFQ75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:21:42 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f2c28c90000>; Thu, 06 Aug 2020 08:59:05 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 06 Aug 2020 08:59:55 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 06 Aug 2020 08:59:55 -0700
-Received: from [10.2.172.190] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 6 Aug
- 2020 15:59:54 +0000
-Subject: Re: [PATCH v8 08/10] gpu: host1x: mipi: Keep MIPI clock enabled till
- calibration is done
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
- <1596469346-937-9-git-send-email-skomatineni@nvidia.com>
- <20200805134600.GA3351349@ulmo>
- <103efe31-1abc-54f2-6004-490d7bb1b61a@gmail.com>
- <dcd58ae7-58ed-11d1-0e10-7f522b651b30@gmail.com>
- <addb92e5-7c7a-6fba-117d-c7880b2d4597@nvidia.com>
- <ed80bf2f-213f-286a-59b2-fc85e4181b3d@gmail.com>
- <6eede805-80fd-016f-22f8-b6d25f6587af@nvidia.com>
- <1c12e40e-de7f-0599-a941-82760b4c7668@gmail.com>
- <9ef0b875-e826-43e2-207e-168d2081ff6a@nvidia.com>
- <4689cfe9-e7c4-48bf-217f-3a31b59b8bda@nvidia.com>
- <0e78c5ca-c529-1e98-891d-30351c9aae81@gmail.com>
- <b2098a68-d02f-b406-fc57-56e3ff5d8d1a@nvidia.com>
- <309e3b66-9288-91ef-71b4-be73eacbbd62@nvidia.com>
- <fde2431a-0585-ac32-ac25-73e198aaa948@nvidia.com>
- <4025a458-fa78-924d-c84f-166f82df0f8e@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <4f15d655-3d62-cf9f-82da-eae379d60fa6@nvidia.com>
-Date:   Thu, 6 Aug 2020 08:59:56 -0700
+        Thu, 6 Aug 2020 12:59:57 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 076G4WnY125708;
+        Thu, 6 Aug 2020 11:04:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596729872;
+        bh=ICIS9Sht6UPt8BwrkTEtZAjurj+RzuPZfxYhonfMTBQ=;
+        h=Subject:From:To:References:Date:In-Reply-To;
+        b=feCyacuHlGAmRnLqHVxvPEvYz5TuNd62e1X9qchvYdNPXPm1YsfrgvItZOT22bvr8
+         qPPvJGxytrFr2M7mfhnmFrtTECc+vvuaFW5dvbv2ijNkUQFDmnFQIZjl62D2aYqPSU
+         teu2V9VGS6RX5ZX+gxIC2d0R/vfpy3j77ee5j9uA=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 076G4Wqw111227
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 6 Aug 2020 11:04:32 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 6 Aug
+ 2020 11:04:32 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 6 Aug 2020 11:04:32 -0500
+Received: from [10.250.53.226] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 076G4V8G043252;
+        Thu, 6 Aug 2020 11:04:31 -0500
+Subject: Re: [net-next iproute2 PATCH v3 1/2] iplink: hsr: add support for
+ creating PRP device similar to HSR
+From:   Murali Karicheri <m-karicheri2@ti.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        <nsekhar@ti.com>, <grygorii.strashko@ti.com>,
+        <vinicius.gomes@intel.com>, <stephen@networkplumber.org>,
+        <kuznet@ms2.inr.ac.ru>
+References: <20200717152205.826-1-m-karicheri2@ti.com>
+Message-ID: <e6ac459e-b81c-48ee-d82c-36a533e2aa29@ti.com>
+Date:   Thu, 6 Aug 2020 12:04:31 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <4025a458-fa78-924d-c84f-166f82df0f8e@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
+In-Reply-To: <20200717152205.826-1-m-karicheri2@ti.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
 Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596729545; bh=BmP7tNOgCgboFqvS8lSz48oQDm4QwQamCVy+CrncH7k=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=hPfwC07LV+YrR7dnigHuF0tUwgIgPps+81M9GhtJxH8WlghHga5Ip43DtfXVjdEsD
-         KMZch65jTrOCyTidWLf3/qfMCuGuPFobjYrTkqv6m5kY1DqmNLLWuSrsgjkIKvu4zn
-         2CFhjK0VJJRvGTRVCw8vga5wkYG3ikBI5Oo7BaDw7QsYyOGBqvIv+pRJl5JV2Yv76Z
-         P8Nd7TogwVBLaSpDCLtmJqJnVyN3n9JPqaOg89O0i6rsgfTRjfxipnOObcshlI58M7
-         PxgovQ7gWocIEfCe8Aul5zvlYspj3W146SaFtTWmJ0v3ER5HcrNmSXDe6KgIXvxCSG
-         AbrdX6IXw+OUw==
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stephen, Alexey,
 
-On 8/6/20 6:32 AM, Dmitry Osipenko wrote:
-> 06.08.2020 03:47, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> On 8/5/20 11:06 AM, Sowjanya Komatineni wrote:
->>> On 8/5/20 10:46 AM, Sowjanya Komatineni wrote:
->>>> On 8/5/20 10:34 AM, Dmitry Osipenko wrote:
->>>>> 05.08.2020 20:29, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>>> ...
->>>>>> UART_FST_MIPI_CAL is the clock used for calibration logic which is F=
-SM
->>>>>> that goes thru sequence codes and when done waits for pads to be in
->>>>>> LP-11 to apply results.
->>>>>>
->>>>>> MIPI_CLK is controller gate clock which is also need to be kept
->>>>>> enabled
->>>>>> as incase if it sees LP-11 it updates registers so its recommended t=
-o
->>>>>> have this clock enabled.
->>>>>>
->>>>>> We can cancel_calibration() in CSI only when csi/sensor stream on
->>>>>> fails
->>>>>> and in which case there will be no LP-11 so we can unconditionally
->>>>>> disable MIPI_CLK.
->>>>>>
->>>>> There is no guarantee that the fail comes before the LP-11. For
->>>>> example,
->>>>> some odd camera driver may have a complicated enable sequence which m=
-ay
->>>>> fail after enabling the hardware streaming.
->>>> MIPI_CLK to keep enable is for calibration logic to update results,
->>>> but like I said calibration logic uses UART_FST_MIPI_CAL clock. So
->>>> even in case if fail happens from sensor after having pads in LP-11
->>>> then, calibration logic will still be running but result update will
->>>> not happen with clock disabled. But HW will not stuck as this is
->>>> confirmed from HW designer.
->>> If LP-11 happens from sensor stream (followed by fail) and by that
->>> time if calibration FSM is done and if calibration logic sees LP-11
->>> then results will be applied to pads.
->>>
->>> We did start of calibration before CSI stream so by the time we do
->>> sensor stream enable, calibration logic might have done with FSM and
->>> waiting for LP-11
->>>
->>> Also if we see any special case, we always can use
->>> finish_calibration() instead of cancel_calibration() as well.
-> Why not to do it right now?
+On 7/17/20 11:22 AM, Murali Karicheri wrote:
+> This patch enhances the iplink command to add a proto parameters to
+> create PRP device/interface similar to HSR. Both protocols are
+> quite similar and requires a pair of Ethernet interfaces. So re-use
+> the existing HSR iplink command to create PRP device/interface as
+> well. Use proto parameter to differentiate the two protocols.
+> 
+> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+> ---
+>   dependent on the series "[net-next PATCH v3 0/7] Add PRP driver"
+>   include/uapi/linux/if_link.h | 12 +++++++++++-
+>   ip/iplink_hsr.c              | 19 +++++++++++++++++--
+>   2 files changed, 28 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+> index a8901a39a345..fa2e3f642deb 100644
+> --- a/include/uapi/linux/if_link.h
+> +++ b/include/uapi/linux/if_link.h
+> @@ -904,7 +904,14 @@ enum {
+>   #define IFLA_IPOIB_MAX (__IFLA_IPOIB_MAX - 1)
+>   
+>   
+> -/* HSR section */
+> +/* HSR/PRP section, both uses same interface */
+> +
+> +/* Different redundancy protocols for hsr device */
+> +enum {
+> +	HSR_PROTOCOL_HSR,
+> +	HSR_PROTOCOL_PRP,
+> +	HSR_PROTOCOL_MAX,
+> +};
+>   
+>   enum {
+>   	IFLA_HSR_UNSPEC,
+> @@ -914,6 +921,9 @@ enum {
+>   	IFLA_HSR_SUPERVISION_ADDR,	/* Supervision frame multicast addr */
+>   	IFLA_HSR_SEQ_NR,
+>   	IFLA_HSR_VERSION,		/* HSR version */
+> +	IFLA_HSR_PROTOCOL,		/* Indicate different protocol than
+> +					 * HSR. For example PRP.
+> +					 */
+>   	__IFLA_HSR_MAX,
+>   };
+>   
+> diff --git a/ip/iplink_hsr.c b/ip/iplink_hsr.c
+> index 7d9167d4e6a3..6ea138a23cbc 100644
+> --- a/ip/iplink_hsr.c
+> +++ b/ip/iplink_hsr.c
+> @@ -25,7 +25,7 @@ static void print_usage(FILE *f)
+>   {
+>   	fprintf(f,
+>   		"Usage:\tip link add name NAME type hsr slave1 SLAVE1-IF slave2 SLAVE2-IF\n"
+> -		"\t[ supervision ADDR-BYTE ] [version VERSION]\n"
+> +		"\t[ supervision ADDR-BYTE ] [version VERSION] [proto PROTOCOL]\n"
+>   		"\n"
+>   		"NAME\n"
+>   		"	name of new hsr device (e.g. hsr0)\n"
+> @@ -35,7 +35,9 @@ static void print_usage(FILE *f)
+>   		"	0-255; the last byte of the multicast address used for HSR supervision\n"
+>   		"	frames (default = 0)\n"
+>   		"VERSION\n"
+> -		"	0,1; the protocol version to be used. (default = 0)\n");
+> +		"	0,1; the protocol version to be used. (default = 0)\n"
+> +		"PROTOCOL\n"
+> +		"	0 - HSR, 1 - PRP. (default = 0 - HSR)\n");
+>   }
+>   
+>   static void usage(void)
+> @@ -49,6 +51,7 @@ static int hsr_parse_opt(struct link_util *lu, int argc, char **argv,
+>   	int ifindex;
+>   	unsigned char multicast_spec;
+>   	unsigned char protocol_version;
+> +	unsigned char protocol = HSR_PROTOCOL_HSR;
+>   
+>   	while (argc > 0) {
+>   		if (matches(*argv, "supervision") == 0) {
+> @@ -64,6 +67,13 @@ static int hsr_parse_opt(struct link_util *lu, int argc, char **argv,
+>   				invarg("version is invalid", *argv);
+>   			addattr_l(n, 1024, IFLA_HSR_VERSION,
+>   				  &protocol_version, 1);
+> +		} else if (matches(*argv, "proto") == 0) {
+> +			NEXT_ARG();
+> +			if (!(get_u8(&protocol, *argv, 0) == HSR_PROTOCOL_HSR ||
+> +			      get_u8(&protocol, *argv, 0) == HSR_PROTOCOL_PRP))
+> +				invarg("protocol is invalid", *argv);
+> +			addattr_l(n, 1024, IFLA_HSR_PROTOCOL,
+> +				  &protocol, 1);
+>   		} else if (matches(*argv, "slave1") == 0) {
+>   			NEXT_ARG();
+>   			ifindex = ll_name_to_index(*argv);
+> @@ -140,6 +150,11 @@ static void hsr_print_opt(struct link_util *lu, FILE *f, struct rtattr *tb[])
+>   					 RTA_PAYLOAD(tb[IFLA_HSR_SUPERVISION_ADDR]),
+>   					 ARPHRD_VOID,
+>   					 b1, sizeof(b1)));
+> +	if (tb[IFLA_HSR_PROTOCOL])
+> +		print_int(PRINT_ANY,
+> +			  "proto",
+> +			  "proto %d ",
+> +			  rta_getattr_u8(tb[IFLA_HSR_PROTOCOL]));
+>   }
+>   
+>   static void hsr_print_help(struct link_util *lu, int argc, char **argv,
+> Sorry, I missed you in my email on this patch set as I didn't realize
+that the maintainers are different than the netdev maintainers. My bad.
+The PRP driver support in kernel is merged by Dave to net-next and this
+iproute2 change has to go with it. So please review and apply this if it
+looks good. The kernel part merged is at
 
-> Then the code could look like this:
->
-> src_subdev =3D tegra_channel_get_remote_source_subdev(chan);
-> ret =3D v4l2_subdev_call(src_subdev, video, s_stream, true);
-> err =3D tegra_mipi_finish_calibration(csi_chan->mipi);
->
-> if (ret < 0 && ret !=3D -ENOIOCTLCMD)
-> 	goto err_disable_csi_stream;
->
-> if (err < 0)
-> 	dev_warn(csi_chan->csi->dev,
-> 		 "MIPI calibration failed: %d\n", err);
->
->>> finish_calibration() has extra 250ms wait time polling done bit and we
->>> can ignore its return code during fail pathway.
->>>
->> Confirmed from HW designer, calibration FSM to finish takes worst case
->> 72uS so by the time it gets to sensor stream it will be done its
->> sequence and will be waiting for DONE bit.
->>
->> So disabling MIPI CAL clock on sensor stream fails is safe.
->
-> 72us is quite a lot of time, what will happen if LP-11 happens before
-> FSM finished calibration?
->
-> Maybe the finish_calibration() needs to split into two parts:
->
->   1. wait for CAL_STATUS_ACTIVE before enabling sensor
->   2. wait for CAL_STATUS_DONE after enabling sensor
+https://www.spinics.net/lists/linux-api/msg42615.html
 
-I don't think we need to split for active and done. Active will be 1 as=20
-long as other pads are in calibration as well.
-
-We cant use active status check for specific pads under calibration.=20
-This is common bit for all pads.
-
-Unfortunately HW don't have separate status indicating when sequence is=20
-done to indicate its waiting for LP11.
-
-
-To avoid all this, will remove cancel_calibration() totally and use same=20
-finish calibration even in case of stream failure then.
-
+-- 
+Murali Karicheri
+Texas Instruments
