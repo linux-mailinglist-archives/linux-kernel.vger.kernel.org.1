@@ -2,127 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FCE23DD87
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B56523DD82
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730262AbgHFRLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46502 "EHLO
+        id S1730205AbgHFRLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730176AbgHFRKM (ORCPT
+        with ESMTP id S1730054AbgHFRK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:10:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E41AC061756;
-        Thu,  6 Aug 2020 10:10:12 -0700 (PDT)
-Date:   Thu, 06 Aug 2020 17:10:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596733810;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=+gF51AHiKQFl7hxR7OgTYQ6FP7pdmHlCFI0G/5ZYzH4=;
-        b=3+jjPumHstPAUuHszokE80GOLGNYprTrFfSGN/BNl8GLtVDRqu+IHfsOTBRC/cZOjnQR5N
-        8XZcKZ1rtInUXJCiYS8oWnI3CzRUVv+E7V/nSDGo0D8OSCBR0O5see0z3hmz0V6YmsCi1B
-        ZnCbHWJLp+5LcAaxJOSg6KmuYpfSSAPmriPP7xcslPOJF5Ort024O4fATE8UozxjfGocxb
-        4gntjprvnWHRrR922VHkghQfIZE0aqYXbtknFdEZRaF5yht6sGBI5LKj9noW1MELG4t01m
-        JFoj++uLwydk+ZFLnh3Y5Jndmfp2rRTHbmhHoD3fC3aVjAGrkvsG6RVA5fKDLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596733810;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=+gF51AHiKQFl7hxR7OgTYQ6FP7pdmHlCFI0G/5ZYzH4=;
-        b=hyqFUROIfdH/aWsVT8nBc5LRMYaGdljxbpaam28xiR4zGOX+rzQPkQ1G86BM/2Y29v/FBP
-        UTjYApxohsnipyBg==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] Revert "x86/mm/64: Do not sync vmalloc/ioremap mappings"
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Joerg Roedel <jroedel@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        Thu, 6 Aug 2020 13:10:59 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF823C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 10:10:58 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id n4so4081494vsl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 10:10:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RD9t29t1v98ogyD8lQB3RUWz9hPTYpLrp7YMZku9nHg=;
+        b=EoctqEgGeRfj+GIQ1puBow1pVS3Z9fg7LL1rIfvDiQ+TB0ExWfCIJn/9tospNxO+W6
+         DYyHiaUILSls8W1Qmyz5Hq6JznJVxuQf8sqZbQ7yE5Yvpp3Ed4K+JRN6+oMoRjukLqN0
+         fKrwJRk8X+Ko3dFNAioDV6GlR0jjdql3cOBGo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RD9t29t1v98ogyD8lQB3RUWz9hPTYpLrp7YMZku9nHg=;
+        b=K7xY0Qe+9jgxHmtJgXIqRStghlESRvJmdcsYd4TGxzCcD3ytOLksK+PcN2SqKnGV/R
+         eb4xV48lGEoeyzaNWrlnCUrAehujM/i1mADbfayRTB+erq/zK0uko24k05G2ZE4KMpM8
+         LrkF7+Z9BiAAepHOWDD8LBaBGTIgXAZ8OR7taOn9eiTE+ed5YMO1GdhW+v2g+uL+fQPo
+         /iQcGg3VnoK3cnaHdL9TF94iDoAx7m5VQum4N0ZSj9Rrv6b6qU1kWC8GYK60Q94t6GF2
+         ilOizhMFuUe/kNUyuG23MRgqc1j4hrUKgVMABKRcVKjWaP8o03bmdwGPjSnWt2hsuO1F
+         lVLA==
+X-Gm-Message-State: AOAM532mRAhmqSZ9cScGp7C1+/UsJw/YCnoTWEoPSOYLfm/Bpj6HHkye
+        2Krf41dZNMUq362QqzjGAmm2nzm+/7o=
+X-Google-Smtp-Source: ABdhPJy5U1iEaYqe69I5A2mh6tvRFh03jRt0fx7b42qm/5anev2wCgGAvWbaRZYpkrHTm/4pDV8veQ==
+X-Received: by 2002:a67:d516:: with SMTP id l22mr3165907vsj.177.1596733857724;
+        Thu, 06 Aug 2020 10:10:57 -0700 (PDT)
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com. [209.85.217.52])
+        by smtp.gmail.com with ESMTPSA id b21sm281303vkb.30.2020.08.06.10.10.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 10:10:57 -0700 (PDT)
+Received: by mail-vs1-f52.google.com with SMTP id p8so17023678vsm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 10:10:57 -0700 (PDT)
+X-Received: by 2002:a67:d714:: with SMTP id p20mr7558655vsj.119.1596733856473;
+ Thu, 06 Aug 2020 10:10:56 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159673380949.3192.14983535678351816282.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20200805091141.1.I86b3faaecb0d82997b599b1300f879606c71e116@changeid>
+ <159664899840.1360974.7548807728313161626@swboyd.mtv.corp.google.com>
+ <CAD=FV=UK+xHV6qsr2AsPB=BzmzN77AT-du8G2tt1QZMQUpGgKg@mail.gmail.com>
+ <159666852526.1360974.3062132560884413001@swboyd.mtv.corp.google.com> <4c40db0fe88dd9aff6897ebc103aa3e9@codeaurora.org>
+In-Reply-To: <4c40db0fe88dd9aff6897ebc103aa3e9@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 6 Aug 2020 10:10:44 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Xmf5Qj8obuKdE5CqYL7ek7CQQLPt4j4eTu=RpwcDwM2w@mail.gmail.com>
+Message-ID: <CAD=FV=Xmf5Qj8obuKdE5CqYL7ek7CQQLPt4j4eTu=RpwcDwM2w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] soc: qcom: aoss: Don't wait for IRQ if we might be in
+ suspend/resume noirq
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alex Elder <elder@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hi,
 
-Commit-ID:     f17506e2f14bfa8a6a2de9b8b6a3ccc6b6f7c9b6
-Gitweb:        https://git.kernel.org/tip/f17506e2f14bfa8a6a2de9b8b6a3ccc6b6f7c9b6
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Thu, 06 Aug 2020 15:11:03 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 06 Aug 2020 15:11:03 +02:00
-
-Revert "x86/mm/64: Do not sync vmalloc/ioremap mappings"
-
-This reverts commit 8bb9bf242d1fee925636353807c511d54fde8986.
-
-Jason reported that this causes a new oops in process_one_work(),
-and bisected it to this commit.
-
-Linus suspects that it was caused by missing pagetable synchronization:
-
-> > BUG: unable to handle page fault for address: ffffe8ffffd00608
-> > #PF: supervisor read access in kernel mode
-> > #PF: error_code(0x0000) - not-present page
-> > PGD 0 P4D 0
+On Thu, Aug 6, 2020 at 7:36 AM Sibi Sankar <sibis@codeaurora.org> wrote:
 >
-> Yeah, missing page table because it wasn't copied.
+> On 2020-08-06 04:32, Stephen Boyd wrote:
+> > +Sibi who wrote the code
+> >
+> > Quoting Doug Anderson (2020-08-05 13:24:06)
+> >>
+> >> On Wed, Aug 5, 2020 at 10:36 AM Stephen Boyd <swboyd@chromium.org>
+> >> wrote:
+> >> >
+> >> > Why is the genpd being powered off at all? It looks like the driver is
+> >> > written in a way that it doesn't expect this to happen. See where
+> >> > adsp_pds_disable() is called from. Looks like the remoteproc "stop"
+> >> > callback should be called or the driver should be detached.
+> >> >
+> >> > It sort of looks like the genpd is expected to be at the max level all
+> >> > the time (it sets INT_MAX in adsp_pds_enable(), cool).
+> >>
+> >> In general in Linux there are some things that, at suspend time, get
+> >> done behind a driver's back.  The regulator API, for instance, allows
+> >> for regulators to be turned off in suspend even if a driver leaves
+> >> them on.  Sure, it's good practice for a driver to be explicit but the
+> >> regulator suspend states do allow for the more heavy-handed approach.
+> >>
+> >> I guess I assume that genpd is a bit similar.  If a driver leaves a
+> >> genpd on all the time then it will still be turned off at suspend time
+> >> and then turned back on at resume time.  It seems like it must be part
+> >> of the genpd API.  Specifically genpd_sync_power_off() says: "Check if
+> >> the given PM domain can be powered off (during system suspend or
+> >> hibernation) and do that if so."  That makes it seem like it's how
+> >> genpd works.
+> >>
+> >> Reading all the descriptions of things like GENPD_FLAG_ALWAYS_ON,
+> >> GENPD_FLAG_ACTIVE_WAKEUP, GENPD_FLAG_RPM_ALWAYS_ON makes me even more
+> >> convinced that it's normal (unless otherwise specified) for genpds to
+> >> get turned off in suspend even if a driver just blindly left them on.
+> >>
+> >> Presumably if this "modem" genpd is supposed to stay on in suspend
+> >> time it should have been marked "always on"?  I'd guess we'd need to
+> >> add "GENPD_FLAG_ALWAYS_ON" in some (or all?) cases in qmp_pd_add() if
+> >> this was true?
+> >
+> > Agreed. I can't read the mind of Sibi so I can only guess that Sibi
+> > wasn't expecting this behavior by reading the driver structure. That
+> > could be a wrong assumption.
+> >
+> >>
+> >>
+> >> > Maybe we need to
+> >> > add some sort of suspend hooks to the remote proc driver instead? Where
+> >> > those suspend hooks are called earlier and drop the genpd performance
+> >> > state request but otherwise leave it enabled across suspend?
+> >>
+> >> I think you're saying:
+> >>
+> >> a) You think it's a bug today that the "modem" genpd is being powered
+> >> off in suspend.  Any evidence to back this up?
+> >>
+> >> b) Assuming it's a bug today, we should mark the "modem" as
+> >> GENPD_FLAG_ALWAYS_ON.
+> >>
+> >> c) If there are genpds that sometimes should be left on in suspend but
+> >> sometimes not (and that doesn't match up with what
+> >> GENPD_FLAG_ACTIVE_WAKEUP does), then we'd have to pass
+> >> GENPD_FLAG_ALWAYS_ON as a flag and then add suspend hooks to make the
+> >> decision for us.
 >
-> Presumably because that kthread is using the active_mm of some random
-> user space process that didn't get sync'ed.
+> Doug/Stephen,
 >
-> And the sync_global_pgds() may have ended up being sufficient
-> synchronization with whoever allocated thigns, even if it wasn't about
-> the TLB contents themselves.
->
-> So apparently the "the page-table pages are all pre-allocated now" is
-> simply not true.
+> Yes this is a bug, we wouldn't want
+> to disable aoss_qmp genpd for modem
+> during suspend (when the modem is
+> running). The qmp send for modem
+> is the primary means through which
+> aoss determines whether to wait for
+> modem before proceeding to sleep. So
+> looks like updating the flag with
+> GENPD_FLAG_ACTIVE_WAKEUP is the way
+> to go. But introducing another flag
+> that doesn't touch genpd's during
+> suspend/resume should also work.
 
-Revert the commit for now.
+OK, sounds good.  As per out-of-band conversation:
 
-Reported-by: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Analyzed-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- arch/x86/include/asm/pgtable_64_types.h | 2 ++
- arch/x86/mm/init_64.c                   | 5 +++++
- 2 files changed, 7 insertions(+)
+* You'll plan to post a patch updating the flag.
 
-diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
-index 52e5f5f..8f63efb 100644
---- a/arch/x86/include/asm/pgtable_64_types.h
-+++ b/arch/x86/include/asm/pgtable_64_types.h
-@@ -159,4 +159,6 @@ extern unsigned int ptrs_per_p4d;
- 
- #define PGD_KERNEL_START	((PAGE_SIZE / 2) / sizeof(pgd_t))
- 
-+#define ARCH_PAGE_TABLE_SYNC_MASK	(pgtable_l5_enabled() ?	PGTBL_PGD_MODIFIED : PGTBL_P4D_MODIFIED)
-+
- #endif /* _ASM_X86_PGTABLE_64_DEFS_H */
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index e65b96f..3f4e29a 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -217,6 +217,11 @@ static void sync_global_pgds(unsigned long start, unsigned long end)
- 		sync_global_pgds_l4(start, end);
- }
- 
-+void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
-+{
-+	sync_global_pgds(start, end);
-+}
-+
- /*
-  * NOTE: This function is marked __ref because it calls __init function
-  * (alloc_bootmem_pages). It's safe to do it ONLY when after_bootmem == 0.
+* There's still nothing here that says my patch is the wrong thing to
+do also.  It seems like genpd poweroff routine are expected to be able
+to run at "noirq" time so we should make sure we are able to do that.
+
+I'm also curious: my patch doesn't affect the behavior.  The genpd
+would be powered off with or without my patch, my patch just removes a
+pointless 1 second delay.  Therefore I guess today there is some type
+of bug because the genpd is being turned off.  What would be the
+visible impact of that bug?  ...or is it somehow masked by something
+else keeping this power on so it wasn't an issue right now?
+
+-Doug
+
+
+-Doug
