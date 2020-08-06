@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7589023DE04
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B211023DD49
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729392AbgHFRVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:21:12 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53400 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729376AbgHFRVF (ORCPT
+        id S1729583AbgHFRHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:07:50 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:63876 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729728AbgHFRGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:21:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596734464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z0yMbsT7pcgi1iAHyYcod+CvrElFV6deSSG6mOjxpA8=;
-        b=JpkurE4TQ0HhBbugzOI7UcoukIohiO+2Q5pZdlZta5wGBQh2pLUmIxq935ZGVMRDOU724r
-        ucCGYCiLwevzBgTcx3OoYOAhWyEp4urAQQBfXgdMC+HUyEiw9BIFqhjKmfxoy6b4WXPCq7
-        gesZp62tf4JugFPJPFt1yEBtsQy+A7I=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-UXY6awtINe2hI5AmW3Xsdw-1; Thu, 06 Aug 2020 07:39:12 -0400
-X-MC-Unique: UXY6awtINe2hI5AmW3Xsdw-1
-Received: by mail-ej1-f72.google.com with SMTP id lg2so13622407ejb.23
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 04:39:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=z0yMbsT7pcgi1iAHyYcod+CvrElFV6deSSG6mOjxpA8=;
-        b=QNqNJkPyFAAc+YLamO7ydEFLRpENZjOJbFGCYyn0/+i077yzpdg8+MOgV2VOO7yX1R
-         /RzKbvFwmI05cpjGeLc73sbSCWsQDVsMnDuiPW70ZueTn4ulSOk4kJZOM5+n5Oo5r7fJ
-         MayOJOc2MO3REePgQLjEFEkgwgHACU4G75UFtiY501YbSW8RvZYsD/5igTtkFfWyip9G
-         KTkZEazA/wjogoZ5+81VNCNtVI656ba3/OFqtbOh6GGRjNZmLpT2m+oKf2ipEr/E7R+X
-         TxrhIUWFqy2K/4dZHZ/kCUpzgCYLNmCM1JPfUpgbERFC7FMfr9wOEUw/p7dtWdUPaM/N
-         2CLg==
-X-Gm-Message-State: AOAM530a1OQ34t/1GErgOkR+rb6HDcAnFt7XIsA5EbYde+cPpykuMkIk
-        02OqlrjjXjkaavNFCHRT6ZKRd25bk5BQkNctk3MwjFGtuuGMlTr6FJ/S+YjQ0DbeY1roTk9Much
-        DtOtKjakPjxM6jXGmD1dGITaN
-X-Received: by 2002:a50:d485:: with SMTP id s5mr3707037edi.285.1596713951113;
-        Thu, 06 Aug 2020 04:39:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9gpH7Y4wZjbEShVJ7bFDHbXcr/x4vdBu+Kk8uS1Zn8NzRbVW/Adp0kk2I0m9EFJ/FFoNX6Q==
-X-Received: by 2002:a50:d485:: with SMTP id s5mr3707021edi.285.1596713950936;
-        Thu, 06 Aug 2020 04:39:10 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id w7sm3521262ejb.3.2020.08.06.04.39.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 04:39:10 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
-In-Reply-To: <20200806055008-mutt-send-email-mst@kernel.org>
-References: <20200728143741.2718593-1-vkuznets@redhat.com> <20200805201851-mutt-send-email-mst@kernel.org> <873650p1vo.fsf@vitty.brq.redhat.com> <20200806055008-mutt-send-email-mst@kernel.org>
-Date:   Thu, 06 Aug 2020 13:39:09 +0200
-Message-ID: <87wo2cngv6.fsf@vitty.brq.redhat.com>
+        Thu, 6 Aug 2020 13:06:41 -0400
+Received: from 89-64-86-116.dynamic.chello.pl (89.64.86.116) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id a0952d0a893f35a5; Thu, 6 Aug 2020 13:39:54 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "'Rafael J. Wysocki'" <rafael@kernel.org>,
+        'Linux Documentation' <linux-doc@vger.kernel.org>,
+        'LKML' <linux-kernel@vger.kernel.org>,
+        'Peter Zijlstra' <peterz@infradead.org>,
+        'Srinivas Pandruvada' <srinivas.pandruvada@linux.intel.com>,
+        'Giovanni Gherdovich' <ggherdovich@suse.cz>,
+        'Francisco Jerez' <francisco.jerez.plata@intel.com>,
+        'Linux PM' <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Implement passive mode with HWP enabled
+Date:   Thu, 06 Aug 2020 13:39:53 +0200
+Message-ID: <5275102.Ez0hqPNOlg@kreacher>
+In-Reply-To: <004601d66bb6$199ce1a0$4cd6a4e0$@net>
+References: <3955470.QvD6XneCf3@kreacher> <2418846.A4mPlhI7ni@kreacher> <004601d66bb6$199ce1a0$4cd6a4e0$@net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Michael S. Tsirkin" <mst@redhat.com> writes:
+On Thursday, August 6, 2020 7:54:47 AM CEST Doug Smythies wrote:
+> On 2020.08.03 10:09 Rafael J. Wysocki wrote:
+> > On Sunday, August 2, 2020 5:17:39 PM CEST Doug Smythies wrote:
+> > > On 2020.07.19 04:43 Rafael J. Wysocki wrote:
+> > > > On Fri, Jul 17, 2020 at 3:37 PM Doug Smythies <dsmythies@telus.net> wrote:
+> > > > > On 2020.07.16 05:08 Rafael J. Wysocki wrote:
+> > > > > > On Wed, Jul 15, 2020 at 10:39 PM Doug Smythies <dsmythies@telus.net> wrote:
+> > > > > >> On 2020.07.14 11:16 Rafael J. Wysocki wrote:
+> > > > > >> >
+> > > > > >> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > > > >> ...
+> > > > > >> > Since the passive mode hasn't worked with HWP at all, and it is not going to
+> > > > > >> > the default for HWP systems anyway, I don't see any drawbacks related to making
+> > > > > >> > this change, so I would consider this as 5.9 material unless there are any
+> > > > > >> > serious objections.
+> > > > > >>
+> > > > > >> Good point.
+> > > > >
+> > > > > Actually, for those users that default to passive mode upon boot,
+> > > > > this would mean they would find themselves using this.
+> > > > > Also, it isn't obvious, from the typical "what driver and what governor"
+> > > > > inquiry.
+> > > >
+> > > > So the change in behavior is that after this patch
+> > > > intel_pstate=passive doesn't imply no_hwp any more.
+> > > >
+> > > > That's a very minor difference though and I'm not aware of any adverse
+> > > > effects it can cause on HWP systems anyway.
+> > >
+> > > My point was, that it will now default to something where
+> > > testing has not been completed.
+> > >
+> > > > The "what governor" is straightforward in the passive mode: that's
+> > > > whatever cpufreq governor has been selected.
+> > >
+> > > I think you might have missed my point.
+> > > From the normal methods of inquiry one does not know
+> > > if HWP is being used or not. Why? Because with
+> > > or without HWP one gets the same answers under:
+> > >
+> > > /sys/devices/system/cpu/cpu*/cpufreq/scaling_driver
+> > > /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+> > 
+> > Yes, but this is also the case in the active mode, isn't it?
+> 
+> Yes, fair enough.
+> But we aren't changing what it means by default
+> between kernel 5.8 and 5.9-rc1.
 
-> About the feature bit, I am not sure why it's really needed. A single
-> mmio access is cheaper than two io accesses anyway, right? So it makes
-> sense for a kvm guest whether host has this feature or not.
-> We need to be careful and limit to a specific QEMU implementation
-> to avoid tripping up bugs, but it seems more appropriate to
-> check it using pci host IDs.
+No, we aren't.
 
-Right, it's just that "running on KVM" is too coarse grained, we just
-need a way to somehow distinguish between "known/good" and
-"unknown/buggy" configurations.
+The only (expected) change is when booting with intel_pstate=passive and
+without intel_pstate=no_hwp in the command line.
 
--- 
-Vitaly
+Which should be easy enough to address by adding intel_pstate=no_hwp to the
+command line in 5.9-rc1 and later (to achieve the same behavior after a
+fresh boot).
+
+Cheers!
+
+
 
