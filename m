@@ -2,119 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5AC23D72F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225B423D730
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbgHFHJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 03:09:28 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:47006 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728443AbgHFHJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 03:09:16 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP9yNrCtfsTgFAA--.866S2;
-        Thu, 06 Aug 2020 15:09:05 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Introduce cmdline argument writecombine=
-Date:   Thu,  6 Aug 2020 15:09:01 +0800
-Message-Id: <1596697741-3561-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxP9yNrCtfsTgFAA--.866S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGFWUGFyrtw1ftr47CF48JFb_yoW5XrW7pF
-        4qk3Z7Gr4Fgw1vyF9xAr1jgrW5Zrn5AFZxJr4UCw18Zas0qr4kKFnaqrWaqF48XFyxJa48
-        tFWruFyUKw1Iy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyqb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCF
-        x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
-        v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
-        67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
-        IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
-        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUy75rDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1728594AbgHFHKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 03:10:09 -0400
+Received: from 2.mo69.mail-out.ovh.net ([178.33.251.80]:47043 "EHLO
+        2.mo69.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727852AbgHFHJl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 03:09:41 -0400
+Received: from player774.ha.ovh.net (unknown [10.110.103.2])
+        by mo69.mail-out.ovh.net (Postfix) with ESMTP id 182DE95909
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:09:30 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player774.ha.ovh.net (Postfix) with ESMTPSA id 678AE151CBA45;
+        Thu,  6 Aug 2020 07:09:27 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-100R003ae728b2c-0a5b-4560-ba92-7fc4479bba6b,
+                    9D5F4B8471F7AF6BEF45141B8B52B4DEEC6DEFE4) smtp.auth=steve@sk2.org
+Date:   Thu, 6 Aug 2020 09:09:26 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: remove the 2.6 "Upgrading I2C Drivers" guide
+Message-ID: <20200806090800.08b77d4a@heffalump.sk2.org>
+In-Reply-To: <20200805215351.GB2182@kunai>
+References: <20200805183149.21647-1-steve@sk2.org>
+        <20200805215351.GB2182@kunai>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/kgU_wN_WIe/3qfVl_jWGz_t"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 12441756922702286274
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrjeelgdduvddtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeejgedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Loongson processors have a writecombine issue that maybe failed to
-write back framebuffer used with ATI Radeon or AMD GPU at times,
-after commit 8a08e50cee66 ("drm: Permit video-buffers writecombine
-mapping for MIPS"), there exists some errors such as blurred screen
-and lockup, and so on.
+--Sig_/kgU_wN_WIe/3qfVl_jWGz_t
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-With this patch, disable writecombine by default for Loongson64 to
-work well with ATI Radeon or AMD GPU, and it has no influence on the
-other platforms due to writecombine is enabled by default.
+Hi Wolfram,
 
-Additionally, if it is necessary, writecombine=on can be set manually
-in the cmdline to enhance the performance for Loongson LS7A integrated
-graphics in the future.
+On Wed, 5 Aug 2020 23:53:51 +0200, Wolfram Sang <wsa@kernel.org> wrote:
+> On Wed, Aug 05, 2020 at 08:31:49PM +0200, Stephen Kitt wrote:
+> > All the drivers have long since been upgraded, and all the important
+> > information here is also included in the "Implementing I2C device
+> > drivers" guide.
+> >=20
+> > Signed-off-by: Stephen Kitt <steve@sk2.org> =20
+>=20
+> True! Thanks.
+>=20
+> But I can't apply the patch?
+>=20
+> > base-commit: 2324d50d051ec0f14a548e78554fb02513d6dcef =20
+>=20
+> Maybe because I don't have the commit in my tree? Can you rebase on top
+> of 5.8?
 
-[   60.958721] radeon 0000:03:00.0: ring 0 stalled for more than 10079msec
-[   60.965315] radeon 0000:03:00.0: GPU lockup (current fence id 0x0000000000000112 last fence id 0x000000000000011d on ring 0)
-[   60.976525] radeon 0000:03:00.0: ring 3 stalled for more than 10086msec
-[   60.983156] radeon 0000:03:00.0: GPU lockup (current fence id 0x0000000000000374 last fence id 0x00000000000003a8 on ring 3)
+Ah, yes, the commit is on top of Linus=E2=80=99 current master, following t=
+he merge
+of docs-5.9 from Jon=E2=80=99s tree. In 5.8 the file is a .txt file, but Ma=
+uro
+converted it to .rst for 5.9, and this patch removes the latter file (to
+avoid a merge conflict later on...). If you prefer, I can submit it to the
+docs tree instead!
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/include/asm/pgtable.h |  4 ++++
- arch/mips/kernel/cpu-probe.c    | 19 +++++++++++++++++++
- 2 files changed, 23 insertions(+)
+> And please also remove the reference in Documentation/i2c/index.rst
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index dd7a0f5..34869f7 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -473,6 +473,10 @@ static inline pgprot_t pgprot_noncached(pgprot_t _prot)
- static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
- {
- 	unsigned long prot = pgprot_val(_prot);
-+	extern bool mips_writecombine;
-+
-+	if (!mips_writecombine)
-+		return pgprot_noncached(_prot);
- 
- 	/* cpu_data[0].writecombine is already shifted by _CACHE_SHIFT */
- 	prot = (prot & ~_CACHE_MASK) | cpu_data[0].writecombine;
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index e2955f1..98777ca 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -459,6 +459,25 @@ static int __init ftlb_disable(char *s)
- 
- __setup("noftlb", ftlb_disable);
- 
-+#ifdef CONFIG_MACH_LOONGSON64
-+bool mips_writecombine; /* initialise to false by default */
-+#else
-+bool mips_writecombine = true;
-+#endif
-+EXPORT_SYMBOL(mips_writecombine);
-+
-+static int __init writecombine_setup(char *str)
-+{
-+	if (strcmp(str, "on") == 0)
-+		mips_writecombine = true;
-+	else if (strcmp(str, "off") == 0)
-+		mips_writecombine = false;
-+
-+	return 1;
-+}
-+
-+__setup("writecombine=", writecombine_setup);
-+
- /*
-  * Check if the CPU has per tc perf counters
-  */
--- 
-2.1.0
+Oops, yes, I=E2=80=99ll do that in v2 once we decide where it should go.
 
+Regards,
+
+Stephen
+
+--Sig_/kgU_wN_WIe/3qfVl_jWGz_t
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl8rrKYACgkQgNMC9Yht
+g5zSLRAAhKG82QKWhcfBEqXAUYW+EI/HS4cuNBAHc7jtXMtRu7AHa7IWbTNUREg3
+D4bgLDHTCb605RUYkcQNhHsyIwtX7E+TKW2aXOyCb3fSV13JQQ390twdyD3MQ+nB
++h/wVup17oOrSJ1ff/ZuJ5Hew1kRJmov8hHsicOxAhxQiiHUarIHh3bxGYU+4+iI
+LeL0IzP2gyvm9gUP4SIDHSaLhz/80ESr1K5ZUM7BjfMwiMULw0MzAFc50fTHO/FI
+wW4NJxR3eW1U3kmF/EhgiPJBUdhT/8AUyqD9IDo2dfvfAnypyby6EwTJlCFq/M1G
+o7vdVWVVCzj8ozZY0uLiOW9t3g+LUDtSrZbCcT6ZaSzbbxkMjlfC73qgwXBRiBSC
+RovhF5r8STb398bLJL2wpe5uvP5NJwj9Vtl030itXFtsRefQwow45CTSV0Z4nSGv
+RGMceBwwLAeF75A07fPFnruuHCb+Aazmh0JFdb8BIaj6DwaEFyuvAwOOhQSrDuLj
+tkS+/f5SQykJknaGH8ZohRNJ/36/iBZvhDPzZkpQQeNr/rDpSG80D+ZiUVe2ZZX8
+rQaGeeLhk/+SwD4CyiHjBhzcgOt8vDCd19ua/HVKZnpiYveuMpY61fqiXLVoeNaW
+BQ2Vx2lbfyEL1j92/uY2V4nHH0BCFyUqqfN8ECg8TN5FlTH5K6E=
+=qNI2
+-----END PGP SIGNATURE-----
+
+--Sig_/kgU_wN_WIe/3qfVl_jWGz_t--
