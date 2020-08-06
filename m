@@ -2,105 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A23423DD31
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A6623DE2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729979AbgHFRF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
+        id S1727868AbgHFRWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729922AbgHFREh (ORCPT
+        with ESMTP id S1729978AbgHFRF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:04:37 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6ACC034627;
-        Thu,  6 Aug 2020 06:36:32 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id a26so24554335ejc.2;
-        Thu, 06 Aug 2020 06:36:32 -0700 (PDT)
+        Thu, 6 Aug 2020 13:05:29 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54118C08E834;
+        Thu,  6 Aug 2020 06:46:04 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id x7so6104756qvi.5;
+        Thu, 06 Aug 2020 06:46:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gIDHrckbjX7A25XdrR7+VuHvfE++wIYqYDxklPozcMs=;
-        b=ogSom+x8Vy+lrAdhx1aGY5/eZbaKav0gVy1rtsnre4Wxvro3UESENnKfnCp/QxCtmG
-         fW5QRMvekFqUn3rRvHSO0BVG77bAIelCG1bTOXD3LZh+CjPOWHHlBw6YNgv4yxyWxZ1A
-         C2MtbtQJlwXe0jG5hKajDsyJBM1ZI881zSKQnR1JyP/vsNpY/I4tAkQEfGlTqBz4ikWO
-         8uiMs17fIiTulh4cHi8R/rcX/ZP3A6ZBHdcA2FT6m7uZyIoFs7mEANUdpHknqNVgI7xv
-         geOQu7Af/PNjiCUOmAWBleQ8MnuxaZLIhkPbbGEI7EYs0CjOlF5400DjzClFHZI+z9ii
-         Qt3w==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Noe4wrhHeIIK26GAoxH7cWbO0xP9alc9hvsEUqIX8NA=;
+        b=cv/95UJph2wr3UWInLzIaEl9oiswTM9TRU4cQfMXkEZoqrQEFWcICBh2QDk6mp1Qfw
+         KpR6V2c1AOvb2DPEJAgM4oED/8vLiZC8HsU0fFeagcUgfjt4lnO2/8pwAin7o0i/3ekq
+         TfLLFQg+VNvw2yYWW01MeOjPuIxsPlD7zR/Kn9dFXY4CCIIEcxFXnq/tbu6ajTWhQ3YN
+         Y7WoYGhOLddFLwZkgIaWhNfNcOfwxQVhMQr/ChvdyVmMjhdh2vrKQXTqXGOVRKrn7ae1
+         RhP0KgyQ0XmQmIA2BRRKUAyx1LVf61bfgtYtSxz6/tJ6IkGMQWWX6ZCO3meTwThYO3dH
+         NM1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=gIDHrckbjX7A25XdrR7+VuHvfE++wIYqYDxklPozcMs=;
-        b=kM3nsUP0pF6E9AdOjLoAVx4mRxszl9T5Zs+EBFwp8TvVKTStDaF0JnR22MNVr3ksf5
-         GiRrISKGykfgJe6abQgDTgH1OA2AGAJkNa5KaY1mvO/Ws3gEltnho6jIRV6ZD7OQjpWI
-         G6wV9M5W8aJDVdDAv/sveyeWHVtqgiqCKT3oIvHJp+lNbR55C+DjTDLg6ZCjQLhqNenS
-         nDcS0UwKYwUnpNn0jM97QUt1eoE6htdzz6QZJpxdEsT4xOUzz67zMsR8gpc4EW1qHTLv
-         b4dKoSzqLL838BqTyueXRPE7prsCQw86mFccSlynZWZA3IdymYFeYtN3skD+4JhWGXrv
-         7jPg==
-X-Gm-Message-State: AOAM530laNci504X9mHnc0aZJAD46qv/Iabfx+rwI+xDDXTLwc61Td6C
-        Z0+ZrNUH5O+84swvyd34WMs=
-X-Google-Smtp-Source: ABdhPJxwl1YXqFobKjLCcATa/wMS8MPiG3+A3CHWjljmnJY2ertpfCVqc4nVSOG5Fs9xOTTwnb/N0A==
-X-Received: by 2002:a17:906:b59:: with SMTP id v25mr4357184ejg.436.1596720991043;
-        Thu, 06 Aug 2020 06:36:31 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id pv28sm3788137ejb.71.2020.08.06.06.36.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 06:36:29 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 15:36:27 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com,
-        tglx@linutronix.de, mingo@redhat.com, dyoung@redhat.com,
-        bhe@redhat.com, corbet@lwn.net, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, bhsharma@redhat.com, horms@verge.net.au,
-        robh+dt@kernel.org, arnd@arndb.de, nsaenzjulienne@suse.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v11 2/5] x86: kdump: move reserve_crashkernel_low() into
- crash_core.c
-Message-ID: <20200806133627.GB2077191@gmail.com>
-References: <20200801130856.86625-1-chenzhou10@huawei.com>
- <20200801130856.86625-3-chenzhou10@huawei.com>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Noe4wrhHeIIK26GAoxH7cWbO0xP9alc9hvsEUqIX8NA=;
+        b=B7zfhbBwNQZQ2Vb3H90MCYBypw/fQiLUkYmd++K5bak74FOnoSWzJNZz4xUmd+X2K8
+         NuOhPBNWjGn372D8iFAbqKUwbH/FW0RO36PsPRRJjVv/OV9p0jVrY0DAqBK+Yc3rc0Ce
+         A8JiBfwVp2VXpP3UyoC25bjhKKspBUBZ5OFmYVDmY8EF638Ilj6UUm0y8vLRYxOr47/s
+         uPGGRzOas+9PZg7zZohv8xJINMODOIbyTiZoMlP4A32lvmgCv8M1CAR3PM96gCxncpiD
+         774Kme8oIeZsLi2A6L0P56wss/IZryfqOIhgtVBNP2Gxr7WTFSdlFaaIs5DevtHVtp2f
+         1SHQ==
+X-Gm-Message-State: AOAM531LrRs4C3w9LqKm3VgUJgRQRgjfXnXiz+jyNSdmzoN8Zlv8GsWk
+        pOyH/S62jxHJc//iArEU5CdvZrtk
+X-Google-Smtp-Source: ABdhPJw2x4WU2W9FDOCW+Ug5kBjdCTPlTiPVRAcE3dURT7jwFxY8gJBcK+ltJpICNFCiCipgP1PqgA==
+X-Received: by 2002:ad4:4ea5:: with SMTP id ed5mr9085944qvb.130.1596721551815;
+        Thu, 06 Aug 2020 06:45:51 -0700 (PDT)
+Received: from [192.168.1.190] (pool-68-134-6-11.bltmmd.fios.verizon.net. [68.134.6.11])
+        by smtp.gmail.com with ESMTPSA id g136sm4331573qke.82.2020.08.06.06.45.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 06:45:51 -0700 (PDT)
+Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+To:     peter enderborg <peter.enderborg@sony.com>,
+        =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Nick Kralevich <nnk@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
+References: <20200806080358.3124505-1-tweek@google.com>
+ <20200806080358.3124505-2-tweek@google.com>
+ <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
+ <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
+ <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
+Message-ID: <07e2c48d-3918-6ceb-a6b2-4e2f18f9ea01@gmail.com>
+Date:   Thu, 6 Aug 2020 09:45:50 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200801130856.86625-3-chenzhou10@huawei.com>
+In-Reply-To: <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/6/20 8:32 AM, Stephen Smalley wrote:
 
-* Chen Zhou <chenzhou10@huawei.com> wrote:
+> On 8/6/20 8:24 AM, peter enderborg wrote:
+>
+>> On 8/6/20 2:11 PM, Stephen Smalley wrote:
+>>> On 8/6/20 4:03 AM, Thiébaud Weksteen wrote:
+>>>
+>>>> From: Peter Enderborg <peter.enderborg@sony.com>
+>>>>
+>>>> Add further attributes to filter the trace events from AVC.
+>>> Please include sample usage and output in the description.
+>>>
+>>>
+>> Im not sure where you want it to be.
+>>
+>> In the commit message or in a Documentation/trace/events-avc.rst ?
+>
+> I was just asking for it in the commit message / patch description.  I 
+> don't know what is typical for Documentation/trace.
 
-> In preparation for supporting reserve_crashkernel_low in arm64 as
-> x86_64 does, move reserve_crashkernel_low() into kernel/crash_core.c.
-> 
-> BTW, move x86_64 CRASH_ALIGN to 2M suggested by Dave. CONFIG_PHYSICAL_ALIGN
-> can be selected from 2M to 16M, move to the same as arm64.
-> 
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> ---
->  arch/x86/include/asm/kexec.h | 24 ++++++++++
->  arch/x86/kernel/setup.c      | 86 +++---------------------------------
->  include/linux/crash_core.h   |  3 ++
->  include/linux/kexec.h        |  2 -
->  kernel/crash_core.c          | 74 +++++++++++++++++++++++++++++++
->  kernel/kexec_core.c          | 17 -------
->  6 files changed, 107 insertions(+), 99 deletions(-)
+For example, I just took the patches for a spin, running the 
+selinux-testsuite under perf like so:
 
-Since the changes are centered around arm64, I suppose the arm64 tree 
-will carry this patchset?
+sudo perf record -e avc:selinux_audited -g make test
 
-Assuming that this is a 100% invariant moving of code that doesn't 
-regress on x86:
+and then ran:
 
-  Acked-by: Ingo Molnar <mingo@kernel.org>
+sudo perf report -g
 
-Thanks,
+and a snippet of sample output included:
 
-	Ingo
+      6.40%     6.40%  requested=0x800000 denied=0x800000 
+audited=0x800000 result=-13 ssid=922 tsid=922 
+scontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023 
+tcontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023 
+tclass=capability
+             |
+             ---0x495641000028933d
+                __libc_start_main
+                |
+                |--4.60%--__GI___ioctl
+                |          entry_SYSCALL_64
+                |          do_syscall_64
+                |          __x64_sys_ioctl
+                |          ksys_ioctl
+                |          binder_ioctl
+                |          binder_set_nice
+                |          can_nice
+                |          capable
+                |          security_capable
+                |          cred_has_capability.isra.0
+                |          slow_avc_audit
+                |          common_lsm_audit
+                |          avc_audit_post_callback
+                |          avc_audit_post_callback
+                |
+
