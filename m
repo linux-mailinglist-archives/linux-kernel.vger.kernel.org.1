@@ -2,131 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508CF23E2A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F2523E2AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbgHFT4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 15:56:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725875AbgHFT4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 15:56:50 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC0512173E;
-        Thu,  6 Aug 2020 19:56:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596743810;
-        bh=hTLw5ILiv66vXjziu/wz3b7OS2jZ1a120WnIytyZ+eY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mnHQ3cuDtvkhWsN/eoxq0jfiWLkvUeuynBMipXGyCVmNeLp4wWjqlSiU8Q/NBgFDJ
-         yAVFwSR9IVaN5A/B0JUvjzSuB/DR+sGBJMasCKYvRJz+eyGSgJw6sMyAVq0E+Uzeq+
-         26EImv3CnwNWZGRDfvyIfariYWpauP3cmcHdGfMM=
-Date:   Thu, 6 Aug 2020 21:57:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Matthias Maennich <maennich@google.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        YueHaibing <yuehaibing@huawei.com>, jeyu@kernel.org,
-        cocci@systeme.lip6.fr, stable@vger.kernel.org
-Subject: Re: [PATCH] scripts: add dummy report mode to add_namespace.cocci
-Message-ID: <20200806195704.GA2950037@kroah.com>
-References: <20200604164145.173925-1-maennich@google.com>
- <alpine.DEB.2.21.2006042130080.2577@hadrien>
- <bf757b9d-6a67-598b-ed6e-7ee24464abfa@linuxfoundation.org>
- <20200622080345.GD260206@google.com>
- <0eda607e-4083-46d2-acb8-63cfa2697a71@linuxfoundation.org>
- <20200622150605.GA3828014@kroah.com>
- <f09e32dc-8f17-d09a-b2e4-fb4c0699838e@linuxfoundation.org>
- <baf80622-0860-e640-eb14-dffc02597ed3@linuxfoundation.org>
+        id S1726418AbgHFT5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 15:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725875AbgHFT52 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 15:57:28 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B897CC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 12:57:28 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id v22so31405275qtq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 12:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FCOZIRhvd3ECxrtGqId1ZP0YOYmVDIm1/Jxa7nxwJQE=;
+        b=kmKAxtd0R5xtd5UrJA4nBn3Y3xBU0sEQNaIeK846VSdEuH/EVHCsgWQ7m8P0p2ndBq
+         681i8D+ofQEmE8WtQCMQeT2uJRF13V9skph1L+7NH05h/v6EplObdgpBI7GZGEyczYdP
+         OLxiHhGfszlB36ydgn2ODdwb1THR/DGSQayGdpl7Af0A+5/yiGJF6WpGa6WUeuSNcymn
+         jaOILBebxiySjSPned545p1+5uEnvY/1o3qCDltq0cQG0T0GDapp+zQ0nc5lnFunMK1d
+         PFNwUtsogJ5XOv+iCAuTz80DdqeBte71GAv4GXujTazfMa8vE0OLc9YdEd1loNNbWEK+
+         X02A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=FCOZIRhvd3ECxrtGqId1ZP0YOYmVDIm1/Jxa7nxwJQE=;
+        b=A2Qx/uwcx79Q76O7zB7J24O8vDGadMOVJKFGvXZym7LfEBkj2WtcOHhyolnRdWpI8m
+         ziluvD7nAxFBrMQtS8GbXhX70L78zRSVg/HoWLK1fSIo4qgV1Tr7Bs+TjpHhouKiUx2p
+         DfUMK+yp0EmIXZHi3Fx3Xkqbo2NjwX+y4GCUvyMWzeCgLfLoOWm/B1n41utZ7YRhMtvZ
+         xQTMUAoSwyXD6pyRFjC4Ie0/7DZG1s97UT9L55z9FcuRChdUmqqlpzPBxwJotTMCX3OA
+         BIJ9Xldf5sxugy1jI4YNuF7TQ4VEtbNIuYe4quZM7Scppo7u2pEdy9HABLafryu1Y5A3
+         skcw==
+X-Gm-Message-State: AOAM531iOT9ndZxlkB87QIadu9pvz/h5PfI6xE9nxIaxmRCfwlKwEMXY
+        8pSjKFIfIs5DbnBibQFQqYE=
+X-Google-Smtp-Source: ABdhPJzNtt5jxhK+32G/3aTp+8cfRJKiz84iuUBNxYQDTlyrpx/Ptr2LlUF8qSd0mlMsOw4KDquILA==
+X-Received: by 2002:aed:2f02:: with SMTP id l2mr10786981qtd.48.1596743847866;
+        Thu, 06 Aug 2020 12:57:27 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:2e8b])
+        by smtp.gmail.com with ESMTPSA id s30sm5693189qtc.87.2020.08.06.12.57.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 12:57:27 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 15:57:26 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Joerg Roedel <jroedel@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] x86/mm changes for v5.9
+Message-ID: <20200806195726.GI4520@mtj.thefacebook.com>
+References: <20200803190354.GA1293087@gmail.com>
+ <20200805110348.GA108872@zx2c4.com>
+ <CAHk-=wiq+7sW3Lk5iQ0-zY5XWES4rSxK505vXsgFY=za88+RZw@mail.gmail.com>
+ <20200806131034.GA2067370@gmail.com>
+ <20200806185723.GA24304@suse.de>
+ <CAHk-=wg7PHCUMD1xY=YCCeVHspAhw0YNEhyO3CnHfRPwsf6P8A@mail.gmail.com>
+ <20200806192333.GB24304@suse.de>
+ <CAHk-=win5DxMK-MH57NSrA+nVxF60MYR9RyArPX5NW_0yaBpoA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <baf80622-0860-e640-eb14-dffc02597ed3@linuxfoundation.org>
+In-Reply-To: <CAHk-=win5DxMK-MH57NSrA+nVxF60MYR9RyArPX5NW_0yaBpoA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 01:48:26PM -0600, Shuah Khan wrote:
-> On 6/22/20 10:14 AM, Shuah Khan wrote:
-> > On 6/22/20 9:06 AM, Greg Kroah-Hartman wrote:
-> > > On Mon, Jun 22, 2020 at 08:46:18AM -0600, Shuah Khan wrote:
-> > > > On 6/22/20 2:03 AM, Matthias Maennich wrote:
-> > > > > On Thu, Jun 04, 2020 at 02:39:18PM -0600, Shuah Khan wrote:
-> > > > > > On 6/4/20 1:31 PM, Julia Lawall wrote:
-> > > > > > > 
-> > > > > > > 
-> > > > > > > On Thu, 4 Jun 2020, Matthias Maennich wrote:
-> > > > > > > 
-> > > > > > > > When running `make coccicheck` in report mode using the
-> > > > > > > > add_namespace.cocci file, it will fail for files that contain
-> > > > > > > > MODULE_LICENSE. Those match the replacement precondition, but spatch
-> > > > > > > > errors out as virtual.ns is not set.
-> > > > > > > > 
-> > > > > > > > In order to fix that, add the virtual rule nsdeps and only
-> > > > > > > > do search and
-> > > > > > > > replace if that rule has been explicitly requested.
-> > > > > > > > 
-> > > > > > > > In order to make spatch happy in report mode, we also need a
-> > > > > > > > dummy rule,
-> > > > > > > > as otherwise it errors out with "No rules
-> > > > > > > > apply". Using a script:python
-> > > > > > > > rule appears unrelated and odd, but this is the shortest I
-> > > > > > > > could come up
-> > > > > > > > with.
-> > > > > > > > 
-> > > > > > > > Adjust scripts/nsdeps accordingly to set the nsdeps rule
-> > > > > > > > when run trough
-> > > > > > > > `make nsdeps`.
-> > > > > > > > 
-> > > > > > > > Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-> > > > > > > > Fixes: c7c4e29fb5a4 ("scripts: add_namespace:
-> > > > > > > > Fix coccicheck failed")
-> > > > > > > > Cc: YueHaibing <yuehaibing@huawei.com>
-> > > > > > > > Cc: jeyu@kernel.org
-> > > > > > > > Cc: cocci@systeme.lip6.fr
-> > > > > > > > Cc: stable@vger.kernel.org
-> > > > > > > > Signed-off-by: Matthias Maennich <maennich@google.com>
-> > > > > > > 
-> > > > > > > Acked-by: Julia Lawall <julia.lawall@inria.fr>
-> > > > > > > 
-> > > > > > > Shuah reported the problem to me, so you could add
-> > > > > > > 
-> > > > > > > Reported-by: Shuah Khan <skhan@linuxfoundation.org>
-> > > > > > > 
-> > > > > > 
-> > > > > > Very cool. No errors with this patch. Thanks for fixing it
-> > > > > > quickly.
-> > > > > 
-> > > > > I am happy I could fix that and thanks for confirming. I assume your
-> > > > > Tested-by could be added?
-> > > > 
-> > > > Yes
-> > > > 
-> > > > Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-> > > > > 
-> > > > > Is somebody willing to take this patch through their tree?
-> > > > > 
-> > > > 
-> > > > My guess is that these go through kbuild git??
-> > > 
-> > > If you want to take this, that's fine with me.  But as I had the
-> > > original file come through my tree, I can take it too.  It's up to you,
-> > > either is ok with me.
-> > > 
-> > 
-> > Great. Please take this through your tree.
-> > 
+On Thu, Aug 06, 2020 at 12:42:23PM -0700, Linus Torvalds wrote:
+> that admittedly odd sequence is get_work_pwq(work)
 > 
-> Greg! Looks like this one didn't make it in. Can you pick this up?
+> And then the faulting instruction is:
+> 
+> >   2a:* 49 8b 46 08          mov    0x8(%r14),%rax <-- trapping instruction
+> 
+> and this is the "->wq" dereference.
+> 
+> So it's the pwq->wq that traps, with 'pwq' being the trapping base
+> pointer, and clearly being in the vmalloc space.
+> 
+> I think pwq may a percpu allocation, so not _directly_ vmalloc().
+> Adding Tejun to the cc in case he can clarify ("No, silly Linus, it's
+> allocated here..").
 
-I think this is 55c7549819e4 ("scripts: add dummy report mode to
-add_namespace.cocci") in Linus's tree right now, right?
+Hey, silly Linus, yeap, they're per-cpu allocations and will be in vmalloc
+address space for per-cpu workqueues. For unbound workqueues, they're
+regular kmallocs. The per-cpu allocation happens in alloc_and_link_pwqs():
 
-thanks,
+  static int alloc_and_link_pwqs(struct workqueue_struct *wq)
+  {
+          bool highpri = wq->flags & WQ_HIGHPRI;
+          int cpu, ret;
 
-greg k-h
+          if (!(wq->flags & WQ_UNBOUND)) {
+                  wq->cpu_pwqs = alloc_percpu(struct pool_workqueue);
+                  if (!wq->cpu_pwqs)
+                          return -ENOMEM;
+
+Thanks.
+
+-- 
+tejun
