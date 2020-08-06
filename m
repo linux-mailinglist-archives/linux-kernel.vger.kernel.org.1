@@ -2,123 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCC723DEF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616C923DEC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730594AbgHFRe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:34:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39642 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729382AbgHFRbn (ORCPT
+        id S1728473AbgHFR3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729924AbgHFRAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:31:43 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076EXCZP003778;
-        Thu, 6 Aug 2020 10:33:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=MrweLZr65tdDL5CZMf8GqFvMQW1Pa0eEhdhRCa8/Rl8=;
- b=bMeu9VLDdOGfRt59JZ1nCfEW4qn+TnVsKMh7ZkE8Rbrz6IK6zZ/7V46qw6msXhAK3x3X
- WjoZCzT0Ehh04xKqenqoLHPKjddYRzPlVLlwo0rvNkJONfmMk9hWFUn3gGoi9qORgbef
- 32sJwQ/xgAERC6vf3KcXSSnnB965i3l14tRIlHRYbOCneBpg7S9UM2Paxc44hy9tP/1b
- pFNra3BULZG4i/NbCagg6W43vHCisfiqrky2Mcd4icM8ZW2zw6zVwKEzYc7YfS/ZtwdJ
- VEY1Kcrpu3t5N+mG7D02qhqDv/Gl7cvl1TlVuzBDna74gIikinGUNqb1lsXYhKz0nv7R JQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32rhhk4k4a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 10:33:33 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 076EXXS5005245;
-        Thu, 6 Aug 2020 10:33:33 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32rhhk4k38-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 10:33:32 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 076EVGC6007671;
-        Thu, 6 Aug 2020 14:33:30 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 32n018bdfn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 14:33:30 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 076EW1RT62521766
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 6 Aug 2020 14:32:01 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D7DB4A4054;
-        Thu,  6 Aug 2020 14:33:27 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A08B0A405B;
-        Thu,  6 Aug 2020 14:33:22 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.58.181])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  6 Aug 2020 14:33:22 +0000 (GMT)
-Message-ID: <eb7a2f5b5cd22cf9231aa0fd8fdb77c729a83428.camel@linux.ibm.com>
-Subject: Re: [dm-devel] [RFC PATCH v5 00/11] Integrity Policy Enforcement
- LSM (IPE)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     James Morris <jmorris@namei.org>
-Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>,
-        snitzer@redhat.com, dm-devel@redhat.com,
-        tyhicks@linux.microsoft.com, agk@redhat.com, paul@paul-moore.com,
-        corbet@lwn.net, nramas@linux.microsoft.com, serge@hallyn.com,
-        pasha.tatashin@soleen.com, jannh@google.com,
-        linux-block@vger.kernel.org, viro@zeniv.linux.org.uk,
-        axboe@kernel.dk, mdsakib@microsoft.com,
-        linux-kernel@vger.kernel.org, eparis@redhat.com,
-        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        jaskarankhurana@linux.microsoft.com
-Date:   Thu, 06 Aug 2020 10:33:21 -0400
-In-Reply-To: <alpine.LRH.2.21.2008060949410.20084@namei.org>
-References: <20200728213614.586312-1-deven.desai@linux.microsoft.com>
-           <20200802115545.GA1162@bug> <20200802140300.GA2975990@sasha-vm>
-           <20200802143143.GB20261@amd>
-           <1596386606.4087.20.camel@HansenPartnership.com>
-           <fb35a1f7-7633-a678-3f0f-17cf83032d2b@linux.microsoft.com>
-         <1596639689.3457.17.camel@HansenPartnership.com>
-          <alpine.LRH.2.21.2008050934060.28225@namei.org>
-         <b08ae82102f35936427bf138085484f75532cff1.camel@linux.ibm.com>
-         <alpine.LRH.2.21.2008060949410.20084@namei.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-06_09:2020-08-06,2020-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 bulkscore=0 impostorscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 spamscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008060104
+        Thu, 6 Aug 2020 13:00:08 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0EDC0A8894
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 07:45:01 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id x1so20331002ilp.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 07:45:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W4cJ9kP3/QwzZNthUtsOjhu6rTVF+wY/ZoFelfzu+s4=;
+        b=enQ46/8UJpafoTUsx6GsvtfMUmNj8dZqxhKn+aekJLw24TGyQe/9DB4NMJrXz8Gn3X
+         3b8hQW1zt5ezg94/dlUE4j8oCdS173qlNMiCdLG8K2BfsoCmfCERxTEOAhj42XxdGKgE
+         KvwVkfS2Lessc5mXmUyz2vADfJJWRjk6rpTdhboV/e+8IVyqnK4vGqIkEib5X05o6zOm
+         XgjdZY+T09eZ100PUl6LzLJBDftBKLDGrLi8+JgHNxwZw5Jtqxn1Hc2lsok+1FPDxJ9q
+         E+NLTBSs3wkCkdi+G+CAXN+V36HZms5s1ZjpxEJIJ8Db9qlBcOXc7SldMjuo92CmNbn3
+         /vWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W4cJ9kP3/QwzZNthUtsOjhu6rTVF+wY/ZoFelfzu+s4=;
+        b=hD4zJVLVGvX/UwoKhA0Gq+DIY7g7v1CdLLEJImZYPAIeXzJN48T7gFeR4YhkpdgnIy
+         AnO5geIjNbErntSmwpyfzC5y7zUNDE42EYdOXY4DnCOhoFmHj/AGlfEGH5btDuhBNiJB
+         XzSHq1kjlLIFu1vy/15Ie4KuozVZ6vLTzPKTdgKijpLKO9VOd4jPVoFaWpHleeb3rlga
+         JMUIBqBqBwc+MhGNImGOYyvOyE4XM5+vc3+4OVGs4klBpBTWApoamV1Kj5RZ2hmJbrrJ
+         WsyipkUPb2HntdD1OiGDGehClrx/vKbsDMDKxIobpPdxHVrwFSn5KVhzB+nWzyMcdCM2
+         Y7cA==
+X-Gm-Message-State: AOAM532aM8MHsxFNJ2sJaK3VYdiae6+NH5skxzKV30kh0GhkHNMu/thb
+        7pvhj7/GzLU+lbDKdHesl4KFZcTau0CUHed/RnmjUw==
+X-Google-Smtp-Source: ABdhPJwu/iLGRyqF0WyJN5ax5yp/CiX30nzRev10q3kB+HJmWGfUejCN7JqZDvohvLvyDAkwALRDLN5XJzctNqyJ27w=
+X-Received: by 2002:a92:1805:: with SMTP id 5mr10588552ily.127.1596725099915;
+ Thu, 06 Aug 2020 07:44:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200728163416.556521-1-hch@lst.de> <20200728163416.556521-3-hch@lst.de>
+In-Reply-To: <20200728163416.556521-3-hch@lst.de>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 6 Aug 2020 20:14:48 +0530
+Message-ID: <CA+G9fYuYxGBKR5aQqCQwA=SjLRDbyQKwQYJvbJRaKT7qwy7voQ@mail.gmail.com>
+Subject: Re: [PATCH 02/23] fs: refactor ksys_umount
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, Jan Stancek <jstancek@redhat.com>,
+        chrubis <chrubis@suse.cz>, lkft-triage@lists.linaro.org,
+        LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-06 at 09:51 +1000, James Morris wrote:
-> On Wed, 5 Aug 2020, Mimi Zohar wrote:
-> 
-> > If block layer integrity was enough, there wouldn't have been a need
-> > for fs-verity.   Even fs-verity is limited to read only filesystems,
-> > which makes validating file integrity so much easier.  From the
-> > beginning, we've said that fs-verity signatures should be included in
-> > the measurement list.  (I thought someone signed on to add that support
-> > to IMA, but have not yet seen anything.)
-> > 
-> > Going forward I see a lot of what we've accomplished being incorporated
-> > into the filesystems.  When IMA will be limited to defining a system
-> > wide policy, I'll have completed my job.
-> 
-> What are your thoughts on IPE being a standalone LSM? Would you prefer to 
-> see its functionality integrated into IMA?
+On Tue, 28 Jul 2020 at 22:04, Christoph Hellwig <hch@lst.de> wrote:
+>
+> Factor out a path_umount helper that takes a struct path * instead of the
+> actual file name.  This will allow to convert the init and devtmpfs code
+> to properly mount based on a kernel pointer instead of relying on the
+> implicit set_fs(KERNEL_DS) during early init.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/namespace.c | 40 ++++++++++++++++++----------------------
+>  1 file changed, 18 insertions(+), 22 deletions(-)
+>
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index 6f8234f74bed90..43834b59eff6c3 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -1706,36 +1706,19 @@ static inline bool may_mandlock(void)
+>  }
+>  #endif
+>
+> -/*
+> - * Now umount can handle mount points as well as block devices.
+> - * This is important for filesystems which use unnamed block devices.
+> - *
+> - * We now support a flag for forced unmount like the other 'big iron'
+> - * unixes. Our API is identical to OSF/1 to avoid making a mess of AMD
+> - */
+> -
+> -int ksys_umount(char __user *name, int flags)
+> +static int path_umount(struct path *path, int flags)
+>  {
+> -       struct path path;
+>         struct mount *mnt;
+>         int retval;
+> -       int lookup_flags = LOOKUP_MOUNTPOINT;
+>
+>         if (flags & ~(MNT_FORCE | MNT_DETACH | MNT_EXPIRE | UMOUNT_NOFOLLOW))
+>                 return -EINVAL;
+> -
+>         if (!may_mount())
+>                 return -EPERM;
+>
+> -       if (!(flags & UMOUNT_NOFOLLOW))
+> -               lookup_flags |= LOOKUP_FOLLOW;
+> -
+> -       retval = user_path_at(AT_FDCWD, name, lookup_flags, &path);
+> -       if (retval)
+> -               goto out;
+> -       mnt = real_mount(path.mnt);
+> +       mnt = real_mount(path->mnt);
+>         retval = -EINVAL;
+> -       if (path.dentry != path.mnt->mnt_root)
+> +       if (path->dentry != path->mnt->mnt_root)
+>                 goto dput_and_out;
+>         if (!check_mnt(mnt))
+>                 goto dput_and_out;
+> @@ -1748,12 +1731,25 @@ int ksys_umount(char __user *name, int flags)
+>         retval = do_umount(mnt, flags);
+>  dput_and_out:
+>         /* we mustn't call path_put() as that would clear mnt_expiry_mark */
+> -       dput(path.dentry);
+> +       dput(path->dentry);
+>         mntput_no_expire(mnt);
+> -out:
+>         return retval;
+>  }
+>
+> +int ksys_umount(char __user *name, int flags)
+> +{
+> +       int lookup_flags = LOOKUP_MOUNTPOINT;
+> +       struct path path;
+> +       int ret;
+> +
+> +       if (!(flags & UMOUNT_NOFOLLOW))
+> +               lookup_flags |= LOOKUP_FOLLOW;
+> +       ret = user_path_at(AT_FDCWD, name, lookup_flags, &path);
+> +       if (ret)
+> +               return ret;
+> +       return path_umount(&path, flags);
+> +}
+> +
+>  SYSCALL_DEFINE2(umount, char __user *, name, int, flags)
+>  {
+>         return ksys_umount(name, flags);
 
-Improving the integrity subsystem would be preferred.
+Regressions on linux next 20200803 tag kernel.
+LTP syscalls test umount03 mount a path for testing and
+umount failed and retired for 50 times and test exit with warning
+and following test cases using that mount path failed.
 
-Mimi
+LTP syscalls tests failed list,
+    * umount03
+    * umount2_01
+    * umount2_02
+    * umount2_03
+    * utime06
+    * copy_file_range01
 
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.8.0
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+git branch: master
+git describe: next-20200803
+Test details: https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200803
+------------------------------------------------------------------------
+
+test failed log:
+tst_device.c:262: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.8 (1-Jan-2018)
+tst_test.c:1246: INFO: Timeout per run is 0h 15m 00s
+[  870.449934] EXT4-fs (loop0): mounting ext2 file system using the
+ext4 subsystem
+[  870.454338] EXT4-fs (loop0): mounted filesystem without journal. Opts: (null)
+[  870.456412] ext2 filesystem being mounted at
+/tmp/ltp-YQrzWZNEEy/jVhqum/mntpoint supports timestamps until 2038
+(0x7fffffff)
+umount03.c:35: PASS: umount() fails as expected: EPERM (1)
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  1...
+tst_device.c:388: INFO: Likely gvfsd-trash is probing newly mounted
+fs, kill it to speed up tests.
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  2...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  3...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  4...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  5...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  6...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  7...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  8...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  9...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 10...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 11...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 12...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 13...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 14...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 15...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 16...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 17...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 18...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 19...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 20...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 21...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 22...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 23...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 24...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 25...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 26...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 27...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 28...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 29...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 30...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 31...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 32...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 33...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 34...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 35...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 36...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 37...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 38...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 39...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 40...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 41...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 42...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 43...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 44...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 45...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 46...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 47...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 48...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 49...
+tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 50...
+tst_device.c:394: WARN: Failed to umount('mntpoint') after 50 retries
+tst_tmpdir.c:337: WARN: tst_rmdir: rmobj(/tmp/ltp-YQrzWZNEEy/jVhqum)
+failed: remove(/tmp/ltp-YQrzWZNEEy/jVhqum/mntpoint) failed; errno=16:
+EBUSY
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 1
+
+mke2fs 1.43.8 (1-Jan-2018)
+/dev/loop0 is mounted; will not make a filesystem here!
+umount2_01    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+umount2_01    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+umount2_01    1  TBROK  :  tst_mkfs.c:103: umount2_01.c:81: mkfs.ext2
+failed with 1
+umount2_01    2  TBROK  :  tst_mkfs.c:103: Remaining cases broken
+mke2fs 1.43.8 (1-Jan-2018)
+/dev/loop0 is mounted; will not make a filesystem here!
+umount2_02    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+umount2_02    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+umount2_02    1  TBROK  :  tst_mkfs.c:103: umount2_02.c:121: mkfs.ext2
+failed with 1
+umount2_02    2  TBROK  :  tst_mkfs.c:103: Remaining cases broken
+mke2fs 1.43.8 (1-Jan-2018)
+/dev/loop0 is mounted; will not make a filesystem here!
+umount2_03    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+umount2_03    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+umount2_03    1  TBROK  :  tst_mkfs.c:103: umount2_03.c:101: mkfs.ext2
+failed with 1
+umount2_03    2  TBROK  :  tst_mkfs.c:103: Remaining cases broken
+
+mke2fs 1.43.8 (1-Jan-2018)
+/dev/loop0 is mounted; will not make a filesystem here!
+utime06     0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+utime06     0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+utime06     1  TBROK  :  tst_mkfs.c:103: utime06.c:122: mkfs.ext2 failed with 1
+utime06     2  TBROK  :  tst_mkfs.c:103: Remaining cases broken
+
+Steps to reproduce:
+-------------------------
+cd /opt/ltp
+./runltp -s umount                 --> FAILS
+
+Above command runs all umount tests.
+
+Test case description,
+Verify that umount(2) returns -1 and sets errno to EPERM if the user
+is not the super-user.
+Test case link,
+https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/umount/umount03.c
+
+full test log,
+https://lkft.validation.linaro.org/scheduler/job/1642287
+
+--
+Linaro LKFT
+https://lkft.linaro.org
