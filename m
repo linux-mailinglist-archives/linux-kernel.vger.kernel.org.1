@@ -2,71 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59AF23D7F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C2623D7FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728926AbgHFIYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:24:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51150 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728489AbgHFIYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:24:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0EBA7AB9F;
-        Thu,  6 Aug 2020 08:24:55 +0000 (UTC)
-Date:   Thu, 6 Aug 2020 10:24:37 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, live-patching@vger.kernel.org
-Subject: [GIT PULL] livepatching for 5.9
-Message-ID: <20200806082437.GK24529@alley>
+        id S1728962AbgHFIZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728946AbgHFIZG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 04:25:06 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8A8C061574;
+        Thu,  6 Aug 2020 01:25:06 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id p1so27121669pls.4;
+        Thu, 06 Aug 2020 01:25:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VtZTL6+gIK1sJt3cJ7zuQJSCi6/qCpwrTyBQLHCj2S8=;
+        b=OG+9CdJZ3W44CK1x0ACetduLjsaqgdlaCWAGhCBzH4drk+NT/7sVWJqo5EQ4O40wjU
+         X//LkVywCyxSs+DykBCjxmdogajLS7NiiItI9NutC96YSTCBWLLvxc8T0LgyV17Rdp4e
+         E+Qm1vMT8Gkd72bQhQ1ln4bHvMnOzRqe6aLBc6loKakLLdqAGLHysU5wYm8m5vyLhfsQ
+         e77LvT8zt26rYT0jOEyz8bYTidpZR21VsWmMvCmhtnEfYRmj3uHtTZj+dcxSGQ1MXgCW
+         nKD4XiOU57DnhL7nSogbW8Auk/uvTE7WLTIHEgmvtbt0Za7DhGoPCKzAL0quEp2wnmMC
+         2/sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VtZTL6+gIK1sJt3cJ7zuQJSCi6/qCpwrTyBQLHCj2S8=;
+        b=hr2uvFmW4/cpq2mhqEOr8b45mb/lee+z/UB8kC1NiEHD5MHAXQ/hkTH0ioWv4BAbIl
+         Eog8PXMUuLXXZiQ4hQAF/1AUUoge3cQFMhYdggkxfNyadcjoFJiI7qvEZBYB8ueSeLkQ
+         h0aIY3nNlq2+Z8IHliPmgFKQcS2xXZ2UPtvteJvULOFn9RM4aNJBT0gNX5O1Q9svhB8u
+         3b9za5puVnoEX4oVji80nLtZXvU0Uo7rTCiggRcg8Kut7lavGWFxIkO49tsXRO109tbh
+         GCKKbM3JxtRzgNyqMRKFg9SFLlfXrf7hAkHSieiyvqKKR6b/iDSWvDJrCVO3MB8kPZta
+         asKg==
+X-Gm-Message-State: AOAM532xUGJBjz9B3Lxexcwm7POOLxUcnbWlyGX6qZVA93xqJvRsdRH5
+        JQ81hig7IV1FzmGBtrYHz5YjrKV/HidzaJlc+XM=
+X-Google-Smtp-Source: ABdhPJzmbxmj08PcVsTlWSiqof+tF9qK3QjOl3a4d12D0ib+K78WCQkugcFS8JtCY3shZrfclqs6X4bZD0ZXQyH/S3M=
+X-Received: by 2002:a17:902:59dd:: with SMTP id d29mr6753635plj.170.1596702305301;
+ Thu, 06 Aug 2020 01:25:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20170912 (1.9.0)
+References: <20200805130252.41973-1-patrick.riphagen@xsens.com>
+In-Reply-To: <20200805130252.41973-1-patrick.riphagen@xsens.com>
+From:   Frans Klaver <fransklaver@gmail.com>
+Date:   Thu, 6 Aug 2020 10:24:54 +0200
+Message-ID: <CAH6sp9NE_U-CDcrBueTPpzvCRUC3unCZFhhLFPTRVsCyN9THCQ@mail.gmail.com>
+Subject: Re: [PATCH] USB: serial: ftdi_sio: add IDs for Xsens Mti USB converter
+To:     Patrick Riphagen <ppriphagen@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Patrick Riphagen <patrick.riphagen@xsens.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Patrick,
 
-please pull the latest livepatching changes from
+On Wed, Aug 5, 2020 at 9:57 PM Patrick Riphagen <ppriphagen@gmail.com> wrote:
+>
+> The device added has an FTDI chip inside.
+> The device is used to connect Xsens USB Motion Trackers.
+>
+> Signed-off-by: Patrick Riphagen <patrick.riphagen@xsens.com>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching tags/livepatching-for-5.9
+Now you've dropped the backport to stable. Just put
 
-==================================
+Cc: stable@vger.kernel.org
 
-- Improvements and cleanups of livepatching self tests.
+just before your sign-off. Everything will be taken care of
+automatically once the patch is merged.
 
-----------------------------------------------------------------
-Joe Lawrence (5):
-      selftests/livepatch: simplify test-klp-callbacks busy target tests
-      selftests/livepatch: Don't clear dmesg when running tests
-      selftests/livepatch: refine dmesg 'taints' in dmesg comparison
-      selftests/livepatch: add test delimiter to dmesg
-      selftests/livepatch: Use "comm" instead of "diff" for dmesg
-
-Petr Mladek (1):
-      selftests/livepatch: adopt to newer sysctl error format
-
-Yannick Cote (3):
-      selftests/livepatch: rework test-klp-shadow-vars
-      selftests/livepatch: more verification in test-klp-shadow-vars
-      selftests/livepatch: fix mem leaks in test-klp-shadow-vars
-
- lib/livepatch/test_klp_callbacks_busy.c            |  37 +++-
- lib/livepatch/test_klp_shadow_vars.c               | 240 +++++++++++----------
- tools/testing/selftests/livepatch/README           |  16 +-
- tools/testing/selftests/livepatch/functions.sh     |  40 +++-
- .../testing/selftests/livepatch/test-callbacks.sh  |  84 +++-----
- tools/testing/selftests/livepatch/test-ftrace.sh   |   6 +-
- .../testing/selftests/livepatch/test-livepatch.sh  |  12 +-
- .../selftests/livepatch/test-shadow-vars.sh        |  85 +++++---
- tools/testing/selftests/livepatch/test-state.sh    |  21 +-
- 9 files changed, 296 insertions(+), 245 deletions(-)
-
-
-Best Regards,
-Petr
+Frans
