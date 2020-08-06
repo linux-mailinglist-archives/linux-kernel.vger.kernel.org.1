@@ -2,205 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2231123DC32
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8173523DC75
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729427AbgHFQr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:47:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25398 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729212AbgHFQpP (ORCPT
+        id S1729637AbgHFQwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729508AbgHFQvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:45:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596732313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yq06NoGira3XJqUtq4OjZJOaAZeoUPCFVsdiIYhXg5k=;
-        b=QKumoDKSyhlrP3AWcV+Ky64NMseRT+67caqbtGZnqxP/ZNgjxsBmP0VeUSKO6H4czJwwny
-        ri5aMhpVUtN/enEgF3g4nF+qaBifs/yuovp13eZCXYeGBfSdnCp1kY8EPRhQD7erN1ubSI
-        0uiirNnL0MA9Y3DdY2HsNM/lmtgLlUQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-504-07Wt8F2CPnqXy1snbvub0g-1; Thu, 06 Aug 2020 11:28:17 -0400
-X-MC-Unique: 07Wt8F2CPnqXy1snbvub0g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5BFF1005504;
-        Thu,  6 Aug 2020 15:28:16 +0000 (UTC)
-Received: from thinkpad.redhat.com (ovpn-113-9.ams2.redhat.com [10.36.113.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A8D05DA6B;
-        Thu,  6 Aug 2020 15:28:15 +0000 (UTC)
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Amit Shah <amit@kernel.org>,
-        Laurent Vivier <lvivier@redhat.com>
-Subject: [PATCH] hwrng: core - allocate a one page buffer
-Date:   Thu,  6 Aug 2020 17:28:14 +0200
-Message-Id: <20200806152814.1325776-1-lvivier@redhat.com>
+        Thu, 6 Aug 2020 12:51:03 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717FCC0086AB;
+        Thu,  6 Aug 2020 08:31:45 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id z6so50062328iow.6;
+        Thu, 06 Aug 2020 08:31:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T9d2cPoZwDqNGPTOF/xh+MxXI5gE97qXPjeblukEaaA=;
+        b=vQcflc2YsOmgW2sQjngcKtZEcaKtv5UkXvVETU5hbzK6g0ksH2yEr8GcVsuKfRcpsR
+         EFW2Dxuq+ZVOurLvqdJcInXpyTCS4D5zF0d9Gu1tWjyu6PSFcwzbHQoqPL9cVwSsVT4I
+         THCWUNf3YKvfZhJG/jaBUwiX7vn+TLoxKzj33KMkHw2AABschis+j1bRkvEk6gvGBOHV
+         gvNx8YOSEbBcBQO5NDwNosSImG3Jg9yxf3z87RhWVJkfTQPlHDuICSpTDX08c+rws8ZR
+         CF51+6gtwtvDWoSteC6vZ2C3x6k1f+8j9/p1QeDxVSxuOZR4yvDnu+NtziMwVpVpauNa
+         ccJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T9d2cPoZwDqNGPTOF/xh+MxXI5gE97qXPjeblukEaaA=;
+        b=hqdq/N9R+HxJtnC0gmqQqmjbRwVIvD6kdQyW7TYK3MSFQ7HXxZJGYfu+9p+bhREK1f
+         qAQm5XykoW1arwnS628T5Wit3j10ZyYf9XfOoaTkbZelx8KwZm9F0W5MF6lWb1vsLUMz
+         P2UoCX0zmQmsoveZbQWx0gtzyVt+ee2RFzqD/qFPV05lU+fSFxDjOEduUa+8tzekPIcz
+         7Ncr0p00plsqlVFlBEpDU2zXa6YRp71WNtKOpJ/FBGUnjKf7ulErUeXZDDqPLyX/MnMx
+         BdqVFmICzacH3aj4yplVv4aM/AuDsRHV+JYdbA/CN+7wo43+mEqA390MVF91e1Yhd4E0
+         A3ew==
+X-Gm-Message-State: AOAM531D7Eieg7u1InwFawT4WT7LwwKCy0RapBJrQh6/tW9EeQ2BbDk2
+        KZ4d4atOpGkM6eg4Q2qJ6NXVGmwTwpdeQhOiHsSQ8Yoo
+X-Google-Smtp-Source: ABdhPJzmjtu3I9LpJ7xxUqAWkEMGb6vq1m8lbFSQ4AwTzFSkP9twdx78ZCkmV7yKZa1BLk2PvG5WRWqNadBbvjcTUho=
+X-Received: by 2002:a5e:d80e:: with SMTP id l14mr10808869iok.65.1596727904697;
+ Thu, 06 Aug 2020 08:31:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200806164505.0eada105@canb.auug.org.au>
+In-Reply-To: <20200806164505.0eada105@canb.auug.org.au>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 6 Aug 2020 10:31:33 -0500
+Message-ID: <CAH2r5mvGD3ftLDfwrpx61kaJQnPpspupdDHD8NOjnF-q-ByTfg@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the cifs tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows the driver to move bigger data block when the backend allows
-it.
+Dan,
+I just fixed the Author tag in this patch to match your email address
+but seems like the author email address gets mangled when sent through
+some mailing lists.  Any ideas how to avoid this.
 
-Add a backend buffer_size for this purpose. For the moment only
-virtio-rng defines it.
+On Thu, Aug 6, 2020 at 1:45 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Commit
+>
+>   2676d210d2f4 ("cifs: Fix an error pointer dereference in cifs_mount()")
+>
+> is missing a Signed-off-by from its author.
+>
+> This is only pisked up by my script because of the mangling of the email
+> sender address by the mailing list it passed through.  I guess a little
+> more care is required to make sure the author attribution is correct in
+> this case.
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-Using bigger buffer with virtio-rng improves performance from:
 
-  # dd if=/dev/hwrng of=/dev/null bs=1024 count=1024000
-  1048576000 bytes (1.0 GB, 1000 MiB) copied, 674.303 s, 1.6 MB/s
-  # dd if=/dev/hwrng of=/dev/null bs=4096 count=256000
-  1048576000 bytes (1.0 GB, 1000 MiB) copied, 622.394 s, 1.7 MB/s
 
-to
-
-  # dd if=/dev/hwrng of=/dev/null bs=1024 count=1024000
-  1048576000 bytes (1.0 GB, 1000 MiB) copied, 41.0579 s, 25.5 MB/s
-  # dd if=/dev/hwrng of=/dev/null bs=4096 count=256000
-  1048576000 bytes (1.0 GB, 1000 MiB) copied, 14.394 s, 72.8 MB/s
-
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
----
- drivers/char/hw_random/core.c       | 37 ++++++++++++++++++++---------
- drivers/char/hw_random/virtio-rng.c |  1 +
- include/linux/hw_random.h           |  2 ++
- 3 files changed, 29 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
-index 8c1c47dd9f46..3d8ce3c4d79c 100644
---- a/drivers/char/hw_random/core.c
-+++ b/drivers/char/hw_random/core.c
-@@ -56,15 +56,25 @@ static void start_khwrngd(void);
- static inline int rng_get_data(struct hwrng *rng, u8 *buffer, size_t size,
- 			       int wait);
- 
--static size_t rng_buffer_size(void)
-+static size_t rng_min_buffer_size(void)
- {
--	return SMP_CACHE_BYTES < 32 ? 32 : SMP_CACHE_BYTES;
-+	return max_t(size_t, 32, SMP_CACHE_BYTES);
-+}
-+
-+static size_t rng_max_buffer_size(struct hwrng *rng)
-+{
-+	size_t size;
-+
-+	size = max_t(size_t, rng->buffer_size, SMP_CACHE_BYTES);
-+
-+	/* rng_buffer can store up to PAGE_SIZE */
-+	return min(PAGE_SIZE, size);
- }
- 
- static void add_early_randomness(struct hwrng *rng)
- {
- 	int bytes_read;
--	size_t size = min_t(size_t, 16, rng_buffer_size());
-+	size_t size = min_t(size_t, 16, rng_min_buffer_size());
- 
- 	mutex_lock(&reading_mutex);
- 	bytes_read = rng_get_data(rng, rng_buffer, size, 0);
-@@ -226,9 +236,14 @@ static ssize_t rng_dev_read(struct file *filp, char __user *buf,
- 			goto out_put;
- 		}
- 		if (!data_avail) {
--			bytes_read = rng_get_data(rng, rng_buffer,
--				rng_buffer_size(),
--				!(filp->f_flags & O_NONBLOCK));
-+			size_t to_read;
-+			/* read at least 32 bytes, up to rng_max_buffer_size()
-+			 * but no more than size
-+			 */
-+			to_read = max_t(size_t, 32,
-+					min(size, rng_max_buffer_size(rng)));
-+			bytes_read = rng_get_data(rng, rng_buffer, to_read,
-+						  !(filp->f_flags & O_NONBLOCK));
- 			if (bytes_read < 0) {
- 				err = bytes_read;
- 				goto out_unlock_reading;
-@@ -440,7 +455,7 @@ static int hwrng_fillfn(void *unused)
- 			break;
- 		mutex_lock(&reading_mutex);
- 		rc = rng_get_data(rng, rng_fillbuf,
--				  rng_buffer_size(), 1);
-+				  rng_min_buffer_size(), 1);
- 		mutex_unlock(&reading_mutex);
- 		put_rng(rng);
- 		if (rc <= 0) {
-@@ -614,11 +629,11 @@ static int __init hwrng_modinit(void)
- 	int ret;
- 
- 	/* kmalloc makes this safe for virt_to_page() in virtio_rng.c */
--	rng_buffer = kmalloc(rng_buffer_size(), GFP_KERNEL);
-+	rng_buffer = (u8 *)get_zeroed_page(GFP_KERNEL);
- 	if (!rng_buffer)
- 		return -ENOMEM;
- 
--	rng_fillbuf = kmalloc(rng_buffer_size(), GFP_KERNEL);
-+	rng_fillbuf = kmalloc(rng_min_buffer_size(), GFP_KERNEL);
- 	if (!rng_fillbuf) {
- 		kfree(rng_buffer);
- 		return -ENOMEM;
-@@ -627,7 +642,7 @@ static int __init hwrng_modinit(void)
- 	ret = register_miscdev();
- 	if (ret) {
- 		kfree(rng_fillbuf);
--		kfree(rng_buffer);
-+		free_page((unsigned long)rng_buffer);
- 	}
- 
- 	return ret;
-@@ -637,7 +652,7 @@ static void __exit hwrng_modexit(void)
- {
- 	mutex_lock(&rng_mutex);
- 	BUG_ON(current_rng);
--	kfree(rng_buffer);
-+	free_page((unsigned long)rng_buffer);
- 	kfree(rng_fillbuf);
- 	mutex_unlock(&rng_mutex);
- 
-diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
-index a90001e02bf7..b71c137fcd05 100644
---- a/drivers/char/hw_random/virtio-rng.c
-+++ b/drivers/char/hw_random/virtio-rng.c
-@@ -104,6 +104,7 @@ static int probe_common(struct virtio_device *vdev)
- 
- 	vi->hwrng = (struct hwrng) {
- 		.read = virtio_read,
-+		.buffer_size = PAGE_SIZE,
- 		.cleanup = virtio_cleanup,
- 		.priv = (unsigned long)vi,
- 		.name = vi->name,
-diff --git a/include/linux/hw_random.h b/include/linux/hw_random.h
-index 8e6dd908da21..582c8787f808 100644
---- a/include/linux/hw_random.h
-+++ b/include/linux/hw_random.h
-@@ -31,6 +31,7 @@
-  * @read:		New API. drivers can fill up to max bytes of data
-  *			into the buffer. The buffer is aligned for any type
-  *			and max is a multiple of 4 and >= 32 bytes.
-+ * @buffer_size:	Optional. if not 0, optimal buffer size.
-  * @priv:		Private data, for use by the RNG driver.
-  * @quality:		Estimation of true entropy in RNG's bitstream
-  *			(in bits of entropy per 1024 bits of input;
-@@ -43,6 +44,7 @@ struct hwrng {
- 	int (*data_present)(struct hwrng *rng, int wait);
- 	int (*data_read)(struct hwrng *rng, u32 *data);
- 	int (*read)(struct hwrng *rng, void *data, size_t max, bool wait);
-+	size_t buffer_size;
- 	unsigned long priv;
- 	unsigned short quality;
- 
 -- 
-2.26.2
+Thanks,
 
+Steve
