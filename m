@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DD823DBE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14ED823DBC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgHFQgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbgHFQfY (ORCPT
+        id S1728537AbgHFQcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:32:12 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24772 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728207AbgHFQad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:35:24 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9355C0A893C;
-        Thu,  6 Aug 2020 08:08:16 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id i26so32073921edv.4;
-        Thu, 06 Aug 2020 08:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/NBVKOjlAWWfsV7g9wQU/wL49LI80XYT8ZZs5+X9WF4=;
-        b=X0/iNYVseeiv7KKCcoHOOF+EgAeIK3Jhiqd/cqA341huobn7TndXq1Xkph67VmiIIQ
-         pL8KNuqR9x09+LI3pU1gcxrBk4ffIub0jP2cj9GfKvNY+c1QALaWRd2uSovGRaO8fhiP
-         uyJkUPPDA4ggB3mgn0K4MiFUaU5ZAzJC1IqwqJH8IY+Vm9rAeRqdYPnGgZjXQPZAUX9d
-         lD/yHm37Y7GShrMpO60wOb2AzykPpn0tbk5EkF4BExNpSy7MJV9U8YDZ6YOdHvEVzF09
-         Ri/5Vn9xpo2XomBE4jkhZbLdHRmTK6kEZrCsJnNzvKEhYhjBRYE9ILZzFDCs93li9gil
-         qPHw==
+        Thu, 6 Aug 2020 12:30:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596731413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y0hRjxIYgtYoy/h39f3PiFZ6a4d+4DkToJeydt3cH9g=;
+        b=iZtXESXtVYz10VmHreFwC22BNjliTNzd81kbPEN7/+3dBgwyMWYaOhsniO9mSVUNFArjzl
+        x90ovgo6CjLZ2rO/L0p9/Y3aBFobK/nPS3wEu1SmToTs0G9DT2iZWHysY574tAvNjxHHCg
+        i7TfiR5jkbD3fs6I1i4+ZFGA7ZlDiQY=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-0ULF9YdJPSOq6V_mIsxuMQ-1; Thu, 06 Aug 2020 11:09:52 -0400
+X-MC-Unique: 0ULF9YdJPSOq6V_mIsxuMQ-1
+Received: by mail-qk1-f199.google.com with SMTP id d131so33791010qke.3
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:09:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/NBVKOjlAWWfsV7g9wQU/wL49LI80XYT8ZZs5+X9WF4=;
-        b=gBugjOcQ68WL+pel+9/6nwRgCh31FJlMPaogSCwghNSUpiC+iFj8IREXiVIcFQKONo
-         YSm4ik2UzVqcNkAoJ0j4/py66+b5L7xTPv5ri8wwxf+eW4vjpScvrDXREFopr5SxZ0Jb
-         B62UIZPleEAyEDeibqHhYKOTSlHC+/lRo9TDhHaYis3Pr83k8HaaeoXk8RQhjQIh8N/q
-         uISll/xFlFqiEA+hiX6BGDNI4VHKh3OmLzphKDdYCCWUq6KlSrSEBA/OD3VPDfO9yPKO
-         WJAMEl1L5NDmh8DSqORAM6s/l9c1NZGaIWiPKbODCfkwU1ULdQeRYangKHSyN0QuwMZe
-         cBXA==
-X-Gm-Message-State: AOAM53283/BerG7oWJIXavA7PkYScGK16Jc2cgAM+u2K5q+c55lICrN8
-        mAmeGZbjv+Vpr1hIoQXZiQg=
-X-Google-Smtp-Source: ABdhPJx4tglb5q6BahdDY6UfNDnLH/fg9q5/lMjer49/21DCpLvr0dFIv9J/IPh1tHwgokZaqFNpmg==
-X-Received: by 2002:aa7:c74f:: with SMTP id c15mr4558837eds.331.1596726495566;
-        Thu, 06 Aug 2020 08:08:15 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id 4sm3886474ejn.84.2020.08.06.08.08.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 08:08:14 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 17:08:10 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     changhuaixin <changhuaixin@linux.alibaba.com>
-Cc:     bp@alien8.de, hpa@zytor.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luto@amacapital.net,
-        michal.lkml@markovi.net, mingo@redhat.com,
-        Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        x86@kernel.org, yamada.masahiro@socionext.com, jpoimboe@redhat.com
-Subject: Re: [PATCH 1/3] scripts/sorttable: Change section type of orc_lookup
- to SHT_PROGBITS
-Message-ID: <20200806150810.GA2127855@gmail.com>
-References: <20200723034643.33537-1-changhuaixin@linux.alibaba.com>
- <20200723034643.33537-2-changhuaixin@linux.alibaba.com>
- <2714DF66-5F65-4CB1-A232-B88E4D5AF566@linux.alibaba.com>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y0hRjxIYgtYoy/h39f3PiFZ6a4d+4DkToJeydt3cH9g=;
+        b=B6rrzip0HiRf5CsEXSqhTZblkrVRZ2koI17vVziksRCqq1erFgHufAs3e+tITJ4vDb
+         hpEJ30yOr0Rwt66OzWyNNURAOrz4AeoV7SruhyV4FLWuRh6QY+EAcarxA//y7U53XHlg
+         zbFjmMQ+b8eYP68z6Y5767Ca37dy2mt3+eq1NX0YNA9856bqaN7PD7vPQ4YPJVDvLtbw
+         fD6fxfvb1UvImDSyv09yscGNkwy7icwf27RY/aY2/gaqLFPti79/YMNx4wdzUhJiV2GJ
+         YqfKFdFaEGeXPdxnP4lLzc6Ma8xKmNLdIpHSlJ0bcRLO8jE1QXkJ+Ix0ynwDVBOJwauu
+         u1xg==
+X-Gm-Message-State: AOAM532pARuZQdEfW7zkUG9oN7nmd1vWLKMoXka9L/XpKA10CgnA2slw
+        NZm9XUt8FdeL6/3JHNvQRDe4DRJAL1u8AlL/388ZAoF3fMqOON+hBrvHrGU2ZAOD0x0f6GUi0Tq
+        rj9DWOUbdbtgjirlhsVUyfUql
+X-Received: by 2002:a37:4d09:: with SMTP id a9mr7354943qkb.157.1596726591372;
+        Thu, 06 Aug 2020 08:09:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy805HTIuuD4jVfreBGZ/exggS77Pp3EK2TvUaU5b2qywpfHQSnY0gYW5+tnwJiE06+MrWX0Q==
+X-Received: by 2002:a37:4d09:: with SMTP id a9mr7354918qkb.157.1596726591081;
+        Thu, 06 Aug 2020 08:09:51 -0700 (PDT)
+Received: from x1.bristot.me (host-87-16-204-193.retail.telecomitalia.it. [87.16.204.193])
+        by smtp.gmail.com with ESMTPSA id q13sm4607376qkn.85.2020.08.06.08.09.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 08:09:50 -0700 (PDT)
+Subject: Re: [ANNOUNCE][CFP] Real-Time Micro Conference at LPC 2020
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Dhaval Giani <dhaval.giani@gmail.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        =?UTF-8?Q?Luis_Claudio_R=2e_Gon=c3=a7alves?= <lclaudio@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        Tom Rix <trix@redhat.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+References: <72353caf-c2aa-f2e4-fe2d-778f04625b70@redhat.com>
+Message-ID: <d0a0ef26-f24d-a5bb-5812-4ef4efe82704@redhat.com>
+Date:   Thu, 6 Aug 2020 17:09:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2714DF66-5F65-4CB1-A232-B88E4D5AF566@linux.alibaba.com>
+In-Reply-To: <72353caf-c2aa-f2e4-fe2d-778f04625b70@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/3/20 6:51 PM, Daniel Bristot de Oliveira wrote:
+> Proposals must be submitted by August 2nd, and submitters will be notified of
+> acceptance by August 9th.
 
-* changhuaixin <changhuaixin@linux.alibaba.com> wrote:
+Because some people asked for more time to work on their proposals, we ended up
+leaving the submission open during this week, postponing the deadline to August
+9th, with notifications not later than August 16th!
 
-> Hi, Ingo
-> 
-> Another way to write SHT_PROGBITS is using elf_create_section to write orc_lookup table headers, when orc_unwind_ip table and orc_unwind table are written. Is this a better solution?
-> 
-> diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-> index 3f98dcfbc177..860d4dcec8e6 100644
-> --- a/tools/objtool/orc_gen.c
-> +++ b/tools/objtool/orc_gen.c
-> @@ -183,6 +183,10 @@ int create_orc_sections(struct objtool_file *file)
->         u_sec = elf_create_section(file->elf, ".orc_unwind",
->                                    sizeof(struct orc_entry), idx);
-> 
-> +       /* make flags of section orc_lookup right */
-> +       if (!elf_create_section(file->elf, ".orc_lookup", sizeof(int), 0))
-> +               return -1;
-> +
->         /* populate sections */
->         idx = 0;
->         for_each_sec(file, sec) {
+[Feel free to ping me in case of doubts]
 
-Looks much nicer IMO.
+Thanks!
+-- Daniel
 
-Mind turning this into a proper patch that does it plus reverts the 
-hack?
-
-Thanks,
-
-	Ingo
