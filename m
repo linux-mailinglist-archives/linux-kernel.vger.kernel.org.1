@@ -2,142 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC4E23DFCF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8E923DFEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730605AbgHFRx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728333AbgHFQaz (ORCPT
+        id S1728666AbgHFRz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:55:26 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50308 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728050AbgHFQ2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:30:55 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8B7C0086A9
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:22:17 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id x6so11885720pgx.12
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:22:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nR6p+azSrG4y2Tef6cprsCVi44IERGjpbRkmYO5cRCo=;
-        b=oQMfwnMBo7iIyU3XgTKjs+tm2fwISj9oPIXtpEOq4WbZyW2p7xX7jErO6D6GEq9RTy
-         wQ+Sksn3rn0kdhQfVBPHDpQ+mM+C/fLwCMcW8Sh98adiZ2CFeDNwk0iLXc3tFeIzFmjU
-         kjVnpRQRW0O/YafrCjyofizkbKWBbD7NcPpxyk+2FVMUH/MqbxGdtqY5XlMBqJbrGE5g
-         kqp87WWAchGt1Vr2wNBeLBdWEspXIVxxLzDQNQqQtUqwvXudlGcIRBzChNeJaqU//GvA
-         ee6Jeefgj9xc7wF3iyS+lLjG7EYrRyqDwCK4j7TTfmWqrNYythuMiKS/gWcf8pJRuTwm
-         IP4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nR6p+azSrG4y2Tef6cprsCVi44IERGjpbRkmYO5cRCo=;
-        b=nm9RZ5P9Z0gUkMVKaSkVHjsLLHcx0x6h8pSE1SkgMrKfstTc6Yhz3DXothlu1jcDWL
-         TeomOryVsM3L0D5TqmpRPDi9p06Z0Bm9zA1hQWK1fSgWeP2LS+muxLa0QFZVwRmjCJGm
-         Q1xxq4Y1eckWtpCdVMQ72AAKGPb0HoWjw8Z812PZ5P4Pn8iI/KXTKakAZMsU0p6Yl/2n
-         I4T3Yh3vR3ZQTBmCr2j0rUCowyH2NVPHWsNEXr8xmfDxD4CTfa5sqLQxCUuU1m1GgFrH
-         RI6WJ3LRUm8vfCkhnuYAV/mN25jXri2NhRrnqitS3e7moTMFZU/FLtHPRNqBV0VAs2qY
-         sB5g==
-X-Gm-Message-State: AOAM532qyBErueH0JLUdr/c3Z/YBLUMjlk/IOxO8ZNDFyHVA2em+t164
-        8tRXwggUEdt9lRxKXOUpCkk=
-X-Google-Smtp-Source: ABdhPJzzoRuSmi+2TOb+YGFPFJ3J09xwFNwGYghnAUhqbdTk5IO8ZOcSsIr6O8leoTNYiO6KUU/fDw==
-X-Received: by 2002:a65:6093:: with SMTP id t19mr7822568pgu.13.1596730936624;
-        Thu, 06 Aug 2020 09:22:16 -0700 (PDT)
-Received: from cvds-vagarw7.iind.intel.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
-        by smtp.googlemail.com with ESMTPSA id e22sm7393556pgi.62.2020.08.06.09.22.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 Aug 2020 09:22:16 -0700 (PDT)
-From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Mark Greer <mgreer@animalcreek.com>
-Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: [PATCH v1] staging: greybus: audio: fix uninitialized value issue
-Date:   Thu,  6 Aug 2020 21:51:57 +0530
-Message-Id: <a5d4bb540e606d7980d4127a82e6af9b436e0642.1596730667.git.vaibhav.sr@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 6 Aug 2020 12:28:52 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k3ijY-0003ET-2S; Thu, 06 Aug 2020 16:27:12 +0000
+To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
+ 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
+Subject: re: net: dsa: sja1105: use detected device id instead of DT one on
+ mismatch
+Message-ID: <60d2d8f9-1376-2047-b958-7bdbbde1538e@canonical.com>
+Date:   Thu, 6 Aug 2020 17:27:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation for gbcodec_mixer_dapm_ctl_put() uses
-uninitialized gbvalue for comparison with updated value. This was found
-using static analysis with coverity.
+Hi,
 
-Uninitialized scalar variable (UNINIT)
-11. uninit_use: Using uninitialized value
-gbvalue.value.integer_value[0].
-460        if (gbvalue.value.integer_value[0] != val) {
+Static analysis with Coverity has detected a potential issue with the
+following commit:
 
-This patch fixes the issue with fetching the gbvalue before using it for
-comparision.
+commit 0b0e299720bb99428892a23ecbd2b4b7f61ccf6d
+Author: Vladimir Oltean <olteanv@gmail.com>
+Date:   Mon Aug 3 19:48:23 2020 +0300
 
-Fixes: 6339d2322c47 ("greybus: audio: Add topology parser for GB codec")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
----
- drivers/staging/greybus/audio_topology.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+    net: dsa: sja1105: use detected device id instead of DT one on mismatch
 
-diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
-index 2f9fdbdcd547..4b914d0edef2 100644
---- a/drivers/staging/greybus/audio_topology.c
-+++ b/drivers/staging/greybus/audio_topology.c
-@@ -456,6 +456,13 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
- 	val = ucontrol->value.integer.value[0] & mask;
- 	connect = !!val;
- 
-+	ret = gb_pm_runtime_get_sync(bundle);
-+	if (ret)
-+		return ret;
-+
-+	ret = gb_audio_gb_get_control(module->mgmt_connection, data->ctl_id,
-+				      GB_AUDIO_INVALID_INDEX, &gbvalue);
-+
- 	/* update ucontrol */
- 	if (gbvalue.value.integer_value[0] != val) {
- 		for (wi = 0; wi < wlist->num_widgets; wi++) {
-@@ -466,16 +473,10 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
- 		gbvalue.value.integer_value[0] =
- 			cpu_to_le32(ucontrol->value.integer.value[0]);
- 
--		ret = gb_pm_runtime_get_sync(bundle);
--		if (ret)
--			return ret;
--
- 		ret = gb_audio_gb_set_control(module->mgmt_connection,
- 					      data->ctl_id,
- 					      GB_AUDIO_INVALID_INDEX, &gbvalue);
- 
--		gb_pm_runtime_put_autosuspend(bundle);
--
- 		if (ret) {
- 			dev_err_ratelimited(codec_dev,
- 					    "%d:Error in %s for %s\n", ret,
-@@ -483,6 +484,7 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
- 			return ret;
- 		}
- 	}
-+	gb_pm_runtime_put_autosuspend(bundle);
- 
- 	return 0;
- }
+The analysis is as follows:
 
-base-commit: 5bbd90550da8f7bdac769b5825597e67183c9411
-prerequisite-patch-id: 2b8901339222ff7b94f10cf2341734c0fb82591c
-prerequisite-patch-id: 38dad8879a2b73bce6e89481973c7c5b82bd7145
-prerequisite-patch-id: 5f0042ccedae292395ec617789be6bf465463c1c
-prerequisite-patch-id: 35d001c366dfa4b567e59abbb37bd691a18f5e14
-prerequisite-patch-id: f13ce918ebc3796cd3c81716a7b2adf4519e7387
-prerequisite-patch-id: 0fcc6d38699a9b72ca94280d7a4dc18f0823b6f7
-prerequisite-patch-id: 8074e935bdc3dd7b114245b0648552d0ff6871c9
--- 
-2.27.0
+Array compared against 0 (NO_EFFECT)array_null: Comparing an array to
+null is not useful: match->compatible, since the test will always
+evaluate as true.
 
+    Was match->compatible formerly declared as a pointer?
+
+3418        for (match = sja1105_dt_ids; match->compatible; match++) {
+3419                const struct sja1105_info *info = match->data;
+3420
+
+I'm not sure what the original intention was, so I was unable to fix
+this hence I'm sending this report as I think it needs addressing.
+
+Colin
