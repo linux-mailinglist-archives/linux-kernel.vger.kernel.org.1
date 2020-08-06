@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6141023DCC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728C523DCE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729385AbgHFQzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:55:49 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:33314 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729580AbgHFQzr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:55:47 -0400
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 8EC6B3B2C33;
-        Thu,  6 Aug 2020 14:37:42 +0000 (UTC)
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 75B25C000F;
-        Thu,  6 Aug 2020 14:32:18 +0000 (UTC)
-Date:   Thu, 6 Aug 2020 16:35:59 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: media: ov772x: Document endpoint
- properties
-Message-ID: <20200806143559.ha6amfa4gq2o4jbi@uno.localdomain>
-References: <1596454753-13612-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1596454753-13612-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1729903AbgHFQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:58:10 -0400
+Received: from mga09.intel.com ([134.134.136.24]:49498 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729764AbgHFQ6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:58:00 -0400
+IronPort-SDR: WLdqZe4tV5KZW1xn3O0Emg85d3+Vn67AdmIpBEeCjw+MwRhCIGI+pIKGeAkwjR+T4S2gA+e6rA
+ T+4+HRfk57BA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="153943831"
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="153943831"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 07:25:09 -0700
+IronPort-SDR: ah2anX3z0TQP0vyEw5c+uaJdOGWBrH1WybS8y6rEptf+myvDgodfHn1Rz3Xu4D9TCsXM8cp6EV
+ +g8yWwfENwGA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="437557111"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
+  by orsmga004.jf.intel.com with ESMTP; 06 Aug 2020 07:25:08 -0700
+Date:   Thu, 6 Aug 2020 22:37:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Shannon Nelson <snelson@pensando.io>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: drivers/net/ethernet/pensando/ionic/ionic_txrx.c:608:3: warning:
+ Variable 'done' is modified but its new value is never used.
+Message-ID: <20200806143735.GA9232@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1596454753-13612-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   fffe3ae0ee84e25d2befe2ae59bc32aa2b6bc77b
+commit: f9c00e2cf258d215a1ed2a7b2ae5b91ac2f29582 ionic: clean tx queue of unfinished requests
+date:   4 months ago
+:::::: branch date: 5 hours ago
+:::::: commit date: 4 months ago
+compiler: ia64-linux-gcc (GCC) 9.3.0
 
-On Mon, Aug 03, 2020 at 12:39:11PM +0100, Lad Prabhakar wrote:
-> Document endpoint properties required for parallel interface
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  .../devicetree/bindings/media/i2c/ov772x.txt     | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/media/i2c/ov772x.txt b/Documentation/devicetree/bindings/media/i2c/ov772x.txt
-> index 0b3ede5b8e6a..1f4153484717 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/ov772x.txt
-> +++ b/Documentation/devicetree/bindings/media/i2c/ov772x.txt
-> @@ -21,6 +21,22 @@ subnode for its digital output video port, in accordance with the video
->  interface bindings defined in Documentation/devicetree/bindings/media/
->  video-interfaces.txt.
->
-> +Endpoint node required properties for parallel connection are:
-> +- remote-endpoint: a phandle to the bus receiver's endpoint node.
-
-we allow endpoints without a remote end connected usually. They can be
-filled in later, in example, with an overlay.
-
-> +- bus-width: shall be set to <8> for 8 bits parallel bus
-> +	     or <10> for 10 bits parallel bus
-> +- data-shift: shall be set to <2> for 8 bits parallel bus
-> +	      (lines 9:2 are used) or <0> for 10 bits parallel bus
-
-defining what is required or optional might be hard. I don't see the
-driver enforcing their presence and I assume they have safe default.
-Maybe make them optional and specify what the defaul value is ?
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
 
-> +- hsync-active: active state of the HSYNC signal, 0/1 for LOW/HIGH respectively.
-> +		(Not required for bus-type equal 6)
-> +- vsync-active: active state of the VSYNC signal, 0/1 for LOW/HIGH respectively.
-> +		(Not required for bus-type equal 6)
+cppcheck warnings: (new ones prefixed by >>)
 
-If they're not required, they're optional, aren't they ? :)
+>> drivers/net/ethernet/pensando/ionic/ionic_txrx.c:608:3: warning: Variable 'done' is modified but its new value is never used. [unreadVariable]
+     done++;
+     ^
 
-> +- pclk-sample: sample data on rising (1) or falling (0) edge of the pixel clock
-> +	       signal. (Not required for bus-type equal 6)
+# https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f9c00e2cf258d215a1ed2a7b2ae5b91ac2f29582
+git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+git remote update linus
+git checkout f9c00e2cf258d215a1ed2a7b2ae5b91ac2f29582
+vim +/done +608 drivers/net/ethernet/pensando/ionic/ionic_txrx.c
 
-Why the pclk polarity is does not apply to BT.656 ?
+0f3154e6bcb3549 Shannon Nelson 2019-09-03  595  
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  596  void ionic_tx_empty(struct ionic_queue *q)
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  597  {
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  598  	struct ionic_desc_info *desc_info;
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  599  	int done = 0;
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  600  
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  601  	/* walk the not completed tx entries, if any */
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  602  	while (q->head != q->tail) {
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  603  		desc_info = q->tail;
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  604  		q->tail = desc_info->next;
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  605  		ionic_tx_clean(q, desc_info, NULL, desc_info->cb_arg);
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  606  		desc_info->cb = NULL;
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  607  		desc_info->cb_arg = NULL;
+f9c00e2cf258d21 Shannon Nelson 2020-03-27 @608  		done++;
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  609  	}
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  610  }
+f9c00e2cf258d21 Shannon Nelson 2020-03-27  611  
 
-> +- bus-type: data bus type. Possible values are:
-> +	    5 - Parallel
-> +	    6 - Bt.656
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Are we making this required, or do we expect this to be deduced
-depending on which other properties have been specified ? Sakari it
-seems you would like this to become a properties that has to be
-specified most of the times, right ? (I tend to agree with that FWIW),
-but does it impact retro-compatibility ?
-
-> +
->  Example:
->
->  &i2c0 {
-> --
-> 2.17.1
->
