@@ -2,77 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB6423E0F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F6023E14A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgHFS1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:27:39 -0400
-Received: from mga12.intel.com ([192.55.52.136]:27886 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728124AbgHFSVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:21:03 -0400
-IronPort-SDR: noAHKqFJIQV3sD5SUhb4a/r8pkm8jihDVMMa6s+aJI6nF3YNTFBlYfyQiehKjbdDCO8GePPCv3
- g+192+pulvQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9705"; a="132448828"
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="132448828"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 11:18:28 -0700
-IronPort-SDR: exZ+VA/4rPSrLhgnrM0hOuqyMMY99Ay6UL5nlXad7g94VaZuIZ5HNAbkEidoLHlkkDTLQl3E+w
- Eo/pXnnAf8fg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="316248781"
-Received: from lkp-server02.sh.intel.com (HELO 37a337f97289) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 06 Aug 2020 11:18:26 -0700
-Received: from kbuild by 37a337f97289 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k3kTB-0001fc-MR; Thu, 06 Aug 2020 18:18:25 +0000
-Date:   Fri, 7 Aug 2020 02:18:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        brouer@redhat.com, dlxu@fb.com
-Subject: [RFC PATCH] bpf: user_verifier_ops can be static
-Message-ID: <20200806181814.GA5058@26715c783541>
-References: <20200801084721.1812607-2-songliubraving@fb.com>
+        id S1729935AbgHFSmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:42:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727939AbgHFSUB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:20:01 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B82DC0617A2;
+        Thu,  6 Aug 2020 11:18:39 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b30so26611445lfj.12;
+        Thu, 06 Aug 2020 11:18:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zyDgQ58yfMwWuCC3duccdkOno3vWVcRNh6nKRXhidek=;
+        b=MyRZbQfGm1TKcB+zBssqDMtxcidwjYO7hE4TlnATgTe0SqNa0BctoPeiVmFPhWxaxw
+         9HgsPi+ytgS6C+dLS5cbg0t0zGUI60l7w7qf/X76752INI/nDLHSPBvwvEwIxHkg72yr
+         t1fYK9Exm0UHawEzsVglsQvCFsKhh/WbzOc/0g23Wo7JMNB/zosNweCHyQ2LegAovw05
+         WJ3fpKjmLSt7TgLgMRKQU3ArR+P/c9OM3aRMi98LMDd/HJX3vg5qP+/AzIuUBlYSNOkA
+         oQyNWVqpRJlY7P35stTlbYDVn/6G4U4AAhKrSI/lKFSErmYn1AgtYwJ6iTmw+k9jSvsP
+         9WdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zyDgQ58yfMwWuCC3duccdkOno3vWVcRNh6nKRXhidek=;
+        b=FhyP0Nfzr24jUSUFQ8fqTltCvBNEe8LZsNSLvoewUNY6us5ZV+uc4+4yoFMEKQNjDB
+         9GljJU84S5p+pAUZBWt5bJnl6TebTu+TgcRXHxhWPdVvJz/R6wtAvBRFwBk5J3IGWGy4
+         T533yTqL5lkDKBneHhlMwgd0bndgCKkCHWEKNs5JOQSUqPR6/LJuGPsZmW+vMEi3HnDm
+         RZwxmocv6A0sMC7sc8+VmDQLVlc+k2pMQ2+3Iz93vUWvoJOcdyoklMGBZxJRdizQ6vSn
+         MoqA3zqBJja5TNDX1OkIPuw052LzSe8VEUx+y488bnJuMIekgleSIceyokd43z+xOvLJ
+         +b3A==
+X-Gm-Message-State: AOAM530qLF2xi/+NlrRlTq0Pd+RyCpcAKc0S3CbFxTui5x4WomIuD8WU
+        VUvazRwHhNA1LM+T2k8PBu1D1lEA
+X-Google-Smtp-Source: ABdhPJwsXrrzhKIHd4U+0mxTpUSDS+7zShPN2F0Yc4n/A8sv96yqeEPFnojDg1v3UbYpBfNORZD/4A==
+X-Received: by 2002:ac2:5e2c:: with SMTP id o12mr4378022lfg.71.1596737916355;
+        Thu, 06 Aug 2020 11:18:36 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
+        by smtp.googlemail.com with ESMTPSA id 1sm2751561ljr.6.2020.08.06.11.18.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 11:18:35 -0700 (PDT)
+Subject: Re: [PATCH v8 08/10] gpu: host1x: mipi: Keep MIPI clock enabled till
+ calibration is done
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     jonathanh@nvidia.com, frankc@nvidia.com, hverkuil@xs4all.nl,
+        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
+ <6eede805-80fd-016f-22f8-b6d25f6587af@nvidia.com>
+ <1c12e40e-de7f-0599-a941-82760b4c7668@gmail.com>
+ <9ef0b875-e826-43e2-207e-168d2081ff6a@nvidia.com>
+ <4689cfe9-e7c4-48bf-217f-3a31b59b8bda@nvidia.com>
+ <0e78c5ca-c529-1e98-891d-30351c9aae81@gmail.com>
+ <b2098a68-d02f-b406-fc57-56e3ff5d8d1a@nvidia.com>
+ <309e3b66-9288-91ef-71b4-be73eacbbd62@nvidia.com>
+ <fde2431a-0585-ac32-ac25-73e198aaa948@nvidia.com>
+ <4025a458-fa78-924d-c84f-166f82df0f8e@gmail.com>
+ <4f15d655-3d62-cf9f-82da-eae379d60fa6@nvidia.com>
+ <b5612e93-f1c4-4762-baa1-5d85eb1edbe1@gmail.com>
+ <412f8c53-1aca-db31-99a1-a0ecb2081ca5@nvidia.com>
+ <61275bd6-58e7-887f-aa7d-8e60895e7b2b@nvidia.com>
+ <6ff57c38-9847-42b0-643b-0d167c13779f@gmail.com>
+ <c6ef5e77-2b0a-1712-ca58-dbd8d232e1f1@nvidia.com>
+ <ed79b201-85ba-f725-c5fa-fcde0761bc3d@nvidia.com>
+ <26ed2841-db5d-aeb0-11c7-cbe2ddd1d76b@gmail.com>
+ <eddfdaf0-818a-c4dd-e3b4-4d432af56982@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e965076a-dc31-5774-dd27-98c992331bd2@gmail.com>
+Date:   Thu, 6 Aug 2020 21:18:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200801084721.1812607-2-songliubraving@fb.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <eddfdaf0-818a-c4dd-e3b4-4d432af56982@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+06.08.2020 21:07, Sowjanya Komatineni пишет:
+> 
+> On 8/6/20 11:01 AM, Dmitry Osipenko wrote:
+>> 06.08.2020 20:52, Sowjanya Komatineni пишет:
+>> ...
+>>> Right mutex_unlock should happen at end of finish_calibration.
+>>>
+>>> With keeping mutex locked in start, we dont have to check for active to
+>>> be 0 to issue start as mutex will keep it locked and other pads
+>>> calibration can only go thru when current one is done.
+>>>
+>>> So instead of below sequence, its simpler to do this way?
+>>>
+>>> start_calibration()
+>>>
+>>> - mutex_lock
+>>>
+>>> - wait for 72uS after start
+>>>
+>>> finish_calibration()
+>>>
+>>> - keep check for ACTIVE = 0 and DONE = 1
+>> I think only the DONE bits which correspond to the mipi_device->pads
+>> bitmask should be awaited.
+> 
+> As next START can't be triggered when auto cal is ACTIVE, we should keep
+> this in finish.
+> 
+> As we do mutex_unlock only at end of finish, other pads calibrations
+> dont go thru till the one in process is finished.
+> 
+> So in this case ACTIVE applies to current selected pads that are under
+> calibration.
 
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- bpf_trace.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Should be better to check only the relevant bits in order to catch bugs,
+otherwise you may get a DONE status from the irrelevant pads.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index cbe789bc1b986..4b8f380694a10 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1852,12 +1852,12 @@ user_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	}
- }
- 
--const struct bpf_verifier_ops user_verifier_ops = {
-+static const struct bpf_verifier_ops user_verifier_ops = {
- 	.get_func_proto		= user_prog_func_proto,
- 	.is_valid_access	= user_prog_is_valid_access,
- };
- 
--const struct bpf_prog_ops user_prog_ops = {
-+static const struct bpf_prog_ops user_prog_ops = {
- 	.test_run	= bpf_prog_test_run_user,
- };
- 
+>>> - mutex_unlock()
+>> Perhaps the start_calibration() also needs to be changed to not touch
+>> the MIPI_CAL_CONFIG bits of the unrelated pads?
+> Driver already takes care of programming corresponding pads config only.
+
+It writes 0 to the config of the unrelated pads, which probably isn't
+nice if some pads use periodic auto-calibration.
+
+https://elixir.bootlin.com/linux/v5.8/source/drivers/gpu/host1x/mipi.c#L350
+
+Although looks like auto-calibration isn't supported by the current driver.
