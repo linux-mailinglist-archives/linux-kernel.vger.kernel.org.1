@@ -2,63 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9139D23D740
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D2923D744
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgHFH0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 03:26:40 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:50820 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728334AbgHFH0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 03:26:38 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id E051740D4004;
-        Thu,  6 Aug 2020 07:26:35 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Stefan Agner <stefan@agner.ch>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Aditya Pakki <pakki001@umn.edu>, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: [PATCH] mtd: rawnand: vf610: disable clk on error handling path in probe
-Date:   Thu,  6 Aug 2020 10:26:34 +0300
-Message-Id: <20200806072634.23528-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.16.4
+        id S1728597AbgHFH2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 03:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727891AbgHFH2m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 03:28:42 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37536C061574;
+        Thu,  6 Aug 2020 00:28:42 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id p1so27052997pls.4;
+        Thu, 06 Aug 2020 00:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XxdgRFlQigk4lLEnKCMOhpL5rmLS0bgdeVzH2zzhbYk=;
+        b=FlHv4vQ3VE/olmEyXl/0XGGhlOpr/3Wij7v72m3kCKiJ8HQN64oV/l2YU6MpViKD/c
+         VzriSXtzL1h10FtNlHeGdJFQdfemeX+u/yNotMOdpLtO+npHb1nsBD6M579Bd0RM7Akz
+         TbvVB8Ex6/YW7ZRmE/1vGxX7gl19yorBetIWPr5QIEY6AZB/kCh6NJFzppkjQnakoH6Q
+         RPTFCddX7l/tegFjdysNNCgDMYpgyQAyPKU5OFSIfzTzcDS6l3AHJoOrIerAQaIiUZHx
+         1QcqOue1z1k9sId/jFdRzdAEvJvU2sm8hJOYSNZ3y07QmZuV69+W9IRprFpWLBJmypFW
+         vKsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XxdgRFlQigk4lLEnKCMOhpL5rmLS0bgdeVzH2zzhbYk=;
+        b=N4XCc1tJh2k3d9ngCi9jnrCUaod8QSFyQEQ9tYR47TkwjKujREK6j68FGbDKbozAEn
+         U5yYtB5HeBt4Q6RKzYJwRlvepDuXk68TFoEWDLHWhltpjjZaCbILYBqJdGuL0w1NWrKS
+         wteRymcXnpvJdGL+Rib4qemBLWV6tNBv9Jwi43mqV2pRAhbFsci5fNPsWm9daBHDtAQ8
+         s8OioX4A+ntNI71cMTluhy+C6Pzg0HLNCRhZoLjVQD1D1UUix9lMSTPR5a2gzPwfOQnz
+         RFL/XrmoZPhR9ybn3poG0AyX0Btt7NlK9ZUqPqWcWcxB/fszTmnNgHXwl7fBCtTcON1M
+         mpJw==
+X-Gm-Message-State: AOAM533v1nijGyzFnpuwOhfbWTsJj+JDlcqv1a+uP06PnTZAla5WmhLt
+        ZyIBdJQyWBphNBB1LOgKHKs=
+X-Google-Smtp-Source: ABdhPJy7rdcwXEx1kuFL2y1hDY5pQJYgbk0CrGVGdH58fTlyJBq3RxNFJpj108XYiC7FRL9fXS9JyQ==
+X-Received: by 2002:a17:90b:368c:: with SMTP id mj12mr6307408pjb.152.1596698921683;
+        Thu, 06 Aug 2020 00:28:41 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id e125sm6654646pfh.69.2020.08.06.00.28.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 00:28:41 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v1 0/2] video: fbdev: radeonfb: PCI PM framework upgrade and fix-ups.
+Date:   Thu,  6 Aug 2020 12:56:56 +0530
+Message-Id: <20200806072658.592444-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200806072256.585705-1-vaibhavgupta40@gmail.com>
+References: <20200806072256.585705-1-vaibhavgupta40@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vf610_nfc_probe() does not invoke clk_disable_unprepare() on one error
-handling path. The patch fixes that.
+Linux Kernel Mentee: Remove Legacy Power Management. 
 
-Found by Linux Driver Verification project (linuxtesting.org).
+The original goal of the patch series is to upgrade the power management
+framework of radeonfb fbdev driver. This has been done by upgrading .suspend()
+and .resume() callbacks.
 
-Fixes: 6f0ce4dfc5a3 ("mtd: rawnand: vf610: Avoid a potential NULL pointer dereference")
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
----
- drivers/mtd/nand/raw/vf610_nfc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+The upgrade makes sure that the involvement of PCI Core does not change the
+order of operations executed in a driver. Thus, does not change its behavior.
 
-diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-index 7248c5901183..fcca45e2abe2 100644
---- a/drivers/mtd/nand/raw/vf610_nfc.c
-+++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -852,8 +852,10 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	}
- 
- 	of_id = of_match_device(vf610_nfc_dt_ids, &pdev->dev);
--	if (!of_id)
--		return -ENODEV;
-+	if (!of_id) {
-+		err = -ENODEV;
-+		goto err_disable_clk;
-+	}
- 
- 	nfc->variant = (enum vf610_nfc_variant)of_id->data;
- 
+During this process, it was found that "#if defined(CONFIG_PM)" at line 1434 is
+redundant. This was introduced in the commit
+42ddb453a0cd ("radeon: Conditionally compile PM code").
+
+------------
+
+Before 42ddb453a0cd:
+$ git show 65122f7e80b5:drivers/video/aty/radeon_pm.c | grep -n "#ifdef\|#if\|#else\|#endif\|#elif\|#ifndef"
+
+Based on output in terminal:
+
+547:#ifdef CONFIG_PM
+       |-- 959:#ifdef CONFIG_PPC_PMAC
+       |-- 972:#endif
+       |-- 1291:#ifdef CONFIG_PPC_OF
+       |-- 1301:#endif /* CONFIG_PPC_OF */
+       |-- 1943:#ifdef CONFIG_PPC_OF
+                   |-- 2206:#if 0 /* Not ready yet */
+                   |-- 2508:#endif /* 0 */
+       |-- 2510:#endif /* CONFIG_PPC_OF */
+       |-- 2648:#ifdef CONFIG_PPC_PMAC
+       |-- 2654:#endif /* CONFIG_PPC_PMAC */
+       |-- 2768:#ifdef CONFIG_PPC_PMAC
+       |-- 2774:#endif /* CONFIG_PPC_PMAC */
+       |-- 2791:#ifdef CONFIG_PPC_OF__disabled
+       |-- 2801:#endif /* CONFIG_PPC_OF */
+2803:#endif /* CONFIG_PM */
+
+------------
+
+After 42ddb453a0cd:
+$ git show 42ddb453a0cd:drivers/video/aty/radeon_pm.c | grep -n "#ifdef\|#if\|#else\|#endif\|#elif\|#ifndef"
+
+Based on output in terminal:
+
+547:#ifdef CONFIG_PM
+       |-- 959:#ifdef CONFIG_PPC_PMAC
+       |-- 972:#endif
+       |-- 1291:#ifdef CONFIG_PPC_OF
+       |-- 1301:#endif /* CONFIG_PPC_OF */
+       |-- 1430:#if defined(CONFIG_PM)
+                   |-- 1431:#if defined(CONFIG_X86) || defined(CONFIG_PPC_PMAC)
+                   |-- 1944:#endif
+                   |-- 1946:#ifdef CONFIG_PPC_OF
+                               |-- 1947:#ifdef CONFIG_PPC_PMAC
+                               |-- 2208:#endif
+                   |-- 2209:#endif
+                   |-- 2211:#if 0 /* Not ready yet */
+                   |-- 2513:#endif /* 0 */
+       |-- 2515:#endif /* CONFIG_PPC_OF */
+       |-- 2653:#ifdef CONFIG_PPC_PMAC
+       |-- 2659:#endif /* CONFIG_PPC_PMAC */
+       |-- 2773:#ifdef CONFIG_PPC_PMAC
+       |-- 2779:#endif /* CONFIG_PPC_PMAC */
+       |-- 2796:#ifdef CONFIG_PPC_OF__disabled
+       |-- 2806:#endif /* CONFIG_PPC_OF */
+2808:#endif /* CONFIG_PM */
+
+------------
+
+This also affected the CONFIG_PPC_OF container (line 1943 at commit 65122f7e80b5)
+
+The patch-series fixes it along with PM upgrade.
+
+All patches are compile-tested only.
+
+Test tools:
+    - Compiler: gcc (GCC) 10.1.0
+    - allmodconfig build: make -j$(nproc) W=1 all
+
+Vaibhav Gupta (2):
+  video: fbdev: aty: radeon_pm: remove redundant CONFIG_PM container
+  fbdev: radeonfb:use generic power management
+
+ drivers/video/fbdev/aty/radeon_base.c | 10 ++++---
+ drivers/video/fbdev/aty/radeon_pm.c   | 38 ++++++++++++++++++++-------
+ drivers/video/fbdev/aty/radeonfb.h    |  3 +--
+ 3 files changed, 35 insertions(+), 16 deletions(-)
+
 -- 
-2.26.2
+2.27.0
 
