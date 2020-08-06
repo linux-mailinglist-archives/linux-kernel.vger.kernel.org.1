@@ -2,477 +2,457 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA4D23DFAF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A630E23DFE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgHFRvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:51:45 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:50150 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728414AbgHFQcI (ORCPT
+        id S1730533AbgHFRzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:55:06 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:60577 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728053AbgHFQ2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:32:08 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076GMNsN159956;
-        Thu, 6 Aug 2020 16:31:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=io5XVicEvApOYkGu7iPL4PHkcDMG7c3iftvJFDaHaic=;
- b=W7Sqw6a92lnINEtmsvEVtmT/xwxyzTRCLJ+pvrGYdN3euFc8IrKlV636GCGEfhqD9V1T
- g/IPpOfoFWkw4H4G9gN2wc659RFF+5U4jMezb1u4sQzT47CuMZ+8QxkHKCftttdRBdfO
- gy9m/I4gmnCAOZi66mDjfnA1MVGy/x4bEIcBu5yBfgORonUucO/Grg05Xi0SwcSqmZIx
- Ohwtpvd351GQw3Bf0RrQo27icXESZoLNT+b2oVGkDCUZDEz6GzLGqwWZPv1fleAdwtN+
- cjyICHbLzlHZ9wa+2v1Uz6m/UbMJI6SHJo0/W0KAoAru6+gMr3FMdyyX0WdneFf4wZmH 1w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 32r6fxm2v9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 06 Aug 2020 16:31:27 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076GNKSw022863;
-        Thu, 6 Aug 2020 16:29:27 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 32pdnwtuk7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Aug 2020 16:29:26 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 076GTKff031029;
-        Thu, 6 Aug 2020 16:29:20 GMT
-Received: from starbug-mbp.localdomain (/79.97.215.145)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 09:29:19 -0700
-Received: by starbug-mbp.localdomain (Postfix, from userid 501)
-        id A643FF0941D; Thu,  6 Aug 2020 17:29:12 +0100 (IST)
-From:   Darren Kenny <darren.kenny@oracle.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v36 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
-In-Reply-To: <20200716135303.276442-14-jarkko.sakkinen@linux.intel.com>
-References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
- <20200716135303.276442-14-jarkko.sakkinen@linux.intel.com>
-Date:   Thu, 06 Aug 2020 17:29:12 +0100
-Message-ID: <m2d043rb53.fsf@oracle.com>
+        Thu, 6 Aug 2020 12:28:53 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 6EA461BF209;
+        Thu,  6 Aug 2020 16:27:13 +0000 (UTC)
+Date:   Thu, 6 Aug 2020 18:30:54 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] media: i2c: ov5640: Enable data pins on poweron
+ for DVP mode
+Message-ID: <20200806163054.vz7t7jgm4bapzkpq@uno.localdomain>
+References: <1596465107-14251-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1596465107-14251-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9705 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=5 spamscore=0 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9705 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 adultscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 suspectscore=5 spamscore=0 clxscore=1015 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060113
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1596465107-14251-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 2020-07-16 at 16:52:52 +03, Jarkko Sakkinen wrote:
-> Add an ioctl, which performs ENCLS[EADD] that adds new visible page to an
-> enclave, and optionally ENCLS[EEXTEND] operations that hash the page to the
-> enclave measurement. By visible we mean a page that can be mapped to the
-> address range of an enclave.
+Hi Prabhakar,
+
+On Mon, Aug 03, 2020 at 03:31:45PM +0100, Lad Prabhakar wrote:
+> During testing this sensor on iW-RainboW-G21D-Qseven platform in 8-bit DVP
+> mode with rcar-vin bridge noticed the capture worked fine for the first run
+> (with yavta), but for subsequent runs the bridge driver waited for the
+> frame to be captured. Debugging further noticed the data lines were
+> enabled/disabled in stream on/off callback and dumping the register
+> contents 0x3017/0x3018 in ov5640_set_stream_dvp() reported the correct
+> values, but yet frame capturing failed.
+
+That's pretty weird, I wonder if that's not an issue in the bridge, as
+I expect someone tryed to capture more than 1 image in DVP mode with
+this driver already.
+
+I didn't get from your commit message if you have been able to
+identify where the issue is. You said register values are correct, but
+did you try to plug a scope and see if data are actually put on the
+bus ? Does this happen with full parallel too or BT.656 only ?
+
 >
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Tested-by: Jethro Beekman <jethro@fortanix.com>
-> Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
-> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
-> Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
-> Tested-by: Seth Moore <sethmo@google.com>
-
-Tested-by: Darren Kenny <darren.kenny@oracle.com>
-Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Co-developed-by: Suresh Siddha <suresh.b.siddha@intel.com>
-> Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> To get around this issue the following actions are performed for
+> parallel mode (DVP):
+> 1: Keeps the sensor in software power down mode and is woken up only in
+>    ov5640_set_stream_dvp() callback.
+> 2: Enables data lines in s_power callback
+> 3: Configures HVP lines in s_power callback instead of configuring
+>    everytime in ov5640_set_stream_dvp().
+> 4: Disables MIPI interface.
+>
+> Fixes: f22996db44e2d ("media: ov5640: add support of DVP parallel interface")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 > ---
->  arch/x86/include/uapi/asm/sgx.h |  30 ++++
->  arch/x86/kernel/cpu/sgx/ioctl.c | 291 ++++++++++++++++++++++++++++++++
->  2 files changed, 321 insertions(+)
+>  drivers/media/i2c/ov5640.c | 321 ++++++++++++++++++++-----------------
+>  1 file changed, 172 insertions(+), 149 deletions(-)
 >
-> diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-> index 3787d278e84b..c8f199b3fb6f 100644
-> --- a/arch/x86/include/uapi/asm/sgx.h
-> +++ b/arch/x86/include/uapi/asm/sgx.h
-> @@ -8,10 +8,21 @@
->  #include <linux/types.h>
->  #include <linux/ioctl.h>
->  
-> +/**
-> + * enum sgx_epage_flags - page control flags
-> + * %SGX_PAGE_MEASURE:	Measure the page contents with a sequence of
-> + *			ENCLS[EEXTEND] operations.
-> + */
-> +enum sgx_page_flags {
-> +	SGX_PAGE_MEASURE	= 0x01,
-> +};
+> diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
+> index 2fe4a7ac0592..ec444bee2ce9 100644
+> --- a/drivers/media/i2c/ov5640.c
+> +++ b/drivers/media/i2c/ov5640.c
+> @@ -94,6 +94,9 @@
+>  #define OV5640_REG_SDE_CTRL5		0x5585
+>  #define OV5640_REG_AVG_READOUT		0x56a1
+>
+> +#define OV5640_SOFTWARE_PWDN		0x42
+> +#define OV5640_SOFTWARE_WAKEUP		0x02
 > +
->  #define SGX_MAGIC 0xA4
->  
->  #define SGX_IOC_ENCLAVE_CREATE \
->  	_IOW(SGX_MAGIC, 0x00, struct sgx_enclave_create)
-> +#define SGX_IOC_ENCLAVE_ADD_PAGES \
-> +	_IOWR(SGX_MAGIC, 0x01, struct sgx_enclave_add_pages)
->  
->  /**
->   * struct sgx_enclave_create - parameter structure for the
-> @@ -22,4 +33,23 @@ struct sgx_enclave_create  {
->  	__u64	src;
->  };
->  
-> +/**
-> + * struct sgx_enclave_add_pages - parameter structure for the
-> + *                                %SGX_IOC_ENCLAVE_ADD_PAGE ioctl
-> + * @src:	start address for the page data
-> + * @offset:	starting page offset
-> + * @length:	length of the data (multiple of the page size)
-> + * @secinfo:	address for the SECINFO data
-> + * @flags:	page control flags
-> + * @count:	number of bytes added (multiple of the page size)
-> + */
-> +struct sgx_enclave_add_pages {
-> +	__u64	src;
-> +	__u64	offset;
-> +	__u64	length;
-> +	__u64	secinfo;
-> +	__u64	flags;
-> +	__u64	count;
-> +};
+>  enum ov5640_mode_id {
+>  	OV5640_MODE_QCIF_176_144 = 0,
+>  	OV5640_MODE_QVGA_320_240,
+> @@ -274,7 +277,7 @@ static inline struct v4l2_subdev *ctrl_to_sd(struct v4l2_ctrl *ctrl)
+>  /* YUV422 UYVY VGA@30fps */
+>  static const struct reg_value ov5640_init_setting_30fps_VGA[] = {
+>  	{0x3103, 0x11, 0, 0}, {0x3008, 0x82, 0, 5}, {0x3008, 0x42, 0, 0},
+> -	{0x3103, 0x03, 0, 0}, {0x3017, 0x00, 0, 0}, {0x3018, 0x00, 0, 0},
+> +	{0x3103, 0x03, 0, 0},
+>  	{0x3630, 0x36, 0, 0},
+>  	{0x3631, 0x0e, 0, 0}, {0x3632, 0xe2, 0, 0}, {0x3633, 0x12, 0, 0},
+>  	{0x3621, 0xe0, 0, 0}, {0x3704, 0xa0, 0, 0}, {0x3703, 0x5a, 0, 0},
+> @@ -1120,6 +1123,11 @@ static int ov5640_load_regs(struct ov5640_dev *sensor,
+>  		val = regs->val;
+>  		mask = regs->mask;
+>
+> +		/* remain in power down mode for DVP */
+> +		if (regs->reg_addr == OV5640_REG_SYS_CTRL0 && val == OV5640_SOFTWARE_WAKEUP &&
+> +		    sensor->ep.bus_type != V4L2_MBUS_CSI2_DPHY)
+> +			continue;
 > +
->  #endif /* _UAPI_ASM_X86_SGX_H */
-> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-> index 7981c411b05a..c63a51362d14 100644
-> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> @@ -197,6 +197,294 @@ static long sgx_ioc_enclave_create(struct sgx_encl *encl, void __user *arg)
->  	return ret;
+>  		if (mask)
+>  			ret = ov5640_mod_reg(sensor, reg_addr, mask, val);
+>  		else
+> @@ -1210,96 +1218,8 @@ static int ov5640_set_autogain(struct ov5640_dev *sensor, bool on)
+>
+>  static int ov5640_set_stream_dvp(struct ov5640_dev *sensor, bool on)
+>  {
+> -	int ret;
+> -	unsigned int flags = sensor->ep.bus.parallel.flags;
+> -	u8 pclk_pol = 0;
+> -	u8 hsync_pol = 0;
+> -	u8 vsync_pol = 0;
+> -
+> -	/*
+> -	 * Note about parallel port configuration.
+> -	 *
+> -	 * When configured in parallel mode, the OV5640 will
+> -	 * output 10 bits data on DVP data lines [9:0].
+> -	 * If only 8 bits data are wanted, the 8 bits data lines
+> -	 * of the camera interface must be physically connected
+> -	 * on the DVP data lines [9:2].
+> -	 *
+> -	 * Control lines polarity can be configured through
+> -	 * devicetree endpoint control lines properties.
+> -	 * If no endpoint control lines properties are set,
+> -	 * polarity will be as below:
+> -	 * - VSYNC:	active high
+> -	 * - HREF:	active low
+> -	 * - PCLK:	active low
+> -	 */
+> -
+> -	if (on) {
+> -		/*
+> -		 * configure parallel port control lines polarity
+> -		 *
+> -		 * POLARITY CTRL0
+> -		 * - [5]:	PCLK polarity (0: active low, 1: active high)
+> -		 * - [1]:	HREF polarity (0: active low, 1: active high)
+> -		 * - [0]:	VSYNC polarity (mismatch here between
+> -		 *		datasheet and hardware, 0 is active high
+> -		 *		and 1 is active low...)
+> -		 */
+> -		if (flags & V4L2_MBUS_PCLK_SAMPLE_RISING)
+> -			pclk_pol = 1;
+> -		if (flags & V4L2_MBUS_HSYNC_ACTIVE_HIGH)
+> -			hsync_pol = 1;
+> -		if (flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
+> -			vsync_pol = 1;
+> -
+> -		ret = ov5640_write_reg(sensor,
+> -				       OV5640_REG_POLARITY_CTRL00,
+> -				       (pclk_pol << 5) |
+> -				       (hsync_pol << 1) |
+> -				       vsync_pol);
+> -
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+> -	/*
+> -	 * powerdown MIPI TX/RX PHY & disable MIPI
+> -	 *
+> -	 * MIPI CONTROL 00
+> -	 * 4:	 PWDN PHY TX
+> -	 * 3:	 PWDN PHY RX
+> -	 * 2:	 MIPI enable
+> -	 */
+> -	ret = ov5640_write_reg(sensor,
+> -			       OV5640_REG_IO_MIPI_CTRL00, on ? 0x18 : 0);
+> -	if (ret)
+> -		return ret;
+> -
+> -	/*
+> -	 * enable VSYNC/HREF/PCLK DVP control lines
+> -	 * & D[9:6] DVP data lines
+> -	 *
+> -	 * PAD OUTPUT ENABLE 01
+> -	 * - 6:		VSYNC output enable
+> -	 * - 5:		HREF output enable
+> -	 * - 4:		PCLK output enable
+> -	 * - [3:0]:	D[9:6] output enable
+> -	 */
+> -	ret = ov5640_write_reg(sensor,
+> -			       OV5640_REG_PAD_OUTPUT_ENABLE01,
+> -			       on ? 0x7f : 0);
+> -	if (ret)
+> -		return ret;
+> -
+> -	/*
+> -	 * enable D[5:0] DVP data lines
+> -	 *
+> -	 * PAD OUTPUT ENABLE 02
+> -	 * - [7:2]:	D[5:0] output enable
+> -	 */
+> -	return ov5640_write_reg(sensor,
+> -				OV5640_REG_PAD_OUTPUT_ENABLE02,
+> -				on ? 0xfc : 0);
+> +	return ov5640_write_reg(sensor, OV5640_REG_SYS_CTRL0, on ?
+> +				OV5640_SOFTWARE_WAKEUP : OV5640_SOFTWARE_PWDN);
 >  }
->  
-> +static struct sgx_encl_page *sgx_encl_page_alloc(struct sgx_encl *encl,
-> +						 unsigned long offset,
-> +						 u64 secinfo_flags)
+>
+>  static int ov5640_set_stream_mipi(struct ov5640_dev *sensor, bool on)
+> @@ -2001,6 +1921,159 @@ static void ov5640_set_power_off(struct ov5640_dev *sensor)
+>  	clk_disable_unprepare(sensor->xclk);
+>  }
+>
+> +static int ov5640_set_mipi(struct ov5640_dev *sensor, bool on)
 > +{
-> +	struct sgx_encl_page *encl_page;
-> +	unsigned long prot;
+> +	int ret = 0;
 > +
-> +	encl_page = kzalloc(sizeof(*encl_page), GFP_KERNEL);
-> +	if (!encl_page)
-> +		return ERR_PTR(-ENOMEM);
+> +	if (!on) {
+> +		/* Reset MIPI bus settings to their default values. */
+> +		ov5640_write_reg(sensor, OV5640_REG_IO_MIPI_CTRL00, 0x58);
+> +		ov5640_write_reg(sensor, OV5640_REG_MIPI_CTRL00, 0x04);
+> +		ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT00, 0x00);
 > +
-> +	encl_page->desc = encl->base + offset;
-> +	encl_page->encl = encl;
-> +
-> +	prot = _calc_vm_trans(secinfo_flags, SGX_SECINFO_R, PROT_READ)  |
-> +	       _calc_vm_trans(secinfo_flags, SGX_SECINFO_W, PROT_WRITE) |
-> +	       _calc_vm_trans(secinfo_flags, SGX_SECINFO_X, PROT_EXEC);
-> +
-> +	/*
-> +	 * TCS pages must always RW set for CPU access while the SECINFO
-> +	 * permissions are *always* zero - the CPU ignores the user provided
-> +	 * values and silently overwrites them with zero permissions.
-> +	 */
-> +	if ((secinfo_flags & SGX_SECINFO_PAGE_TYPE_MASK) == SGX_SECINFO_TCS)
-> +		prot |= PROT_READ | PROT_WRITE;
-> +
-> +	/* Calculate maximum of the VM flags for the page. */
-> +	encl_page->vm_max_prot_bits = calc_vm_prot_bits(prot, 0);
-> +
-> +	return encl_page;
-> +}
-> +
-> +static int sgx_validate_secinfo(struct sgx_secinfo *secinfo)
-> +{
-> +	u64 perm = secinfo->flags & SGX_SECINFO_PERMISSION_MASK;
-> +	u64 pt = secinfo->flags & SGX_SECINFO_PAGE_TYPE_MASK;
-> +
-> +	if (pt != SGX_SECINFO_REG && pt != SGX_SECINFO_TCS)
-> +		return -EINVAL;
-> +
-> +	if ((perm & SGX_SECINFO_W) && !(perm & SGX_SECINFO_R))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * CPU will silently overwrite the permissions as zero, which means
-> +	 * that we need to validate it ourselves.
-> +	 */
-> +	if (pt == SGX_SECINFO_TCS && perm)
-> +		return -EINVAL;
-> +
-> +	if (secinfo->flags & SGX_SECINFO_RESERVED_MASK)
-> +		return -EINVAL;
-> +
-> +	if (memchr_inv(secinfo->reserved, 0, sizeof(secinfo->reserved)))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static int __sgx_encl_add_page(struct sgx_encl *encl,
-> +			       struct sgx_encl_page *encl_page,
-> +			       struct sgx_epc_page *epc_page,
-> +			       struct sgx_secinfo *secinfo, unsigned long src)
-> +{
-> +	struct sgx_pageinfo pginfo;
-> +	struct vm_area_struct *vma;
-> +	struct page *src_page;
-> +	int ret;
-> +
-> +	/* Query vma's VM_MAYEXEC as an indirect path_noexec() check. */
-> +	if (encl_page->vm_max_prot_bits & VM_EXEC) {
-> +		vma = find_vma(current->mm, src);
-> +		if (!vma)
-> +			return -EFAULT;
-> +
-> +		if (!(vma->vm_flags & VM_MAYEXEC))
-> +			return -EACCES;
+> +		return ret;
 > +	}
 > +
-> +	ret = get_user_pages(src, 1, 0, &src_page, NULL);
-> +	if (ret < 1)
+> +	/*
+> +	 * Power up MIPI HS Tx and LS Rx; 2 data lanes mode
+> +	 *
+> +	 * 0x300e = 0x40
+> +	 * [7:5] = 010	: 2 data lanes mode (see FIXME note in
+> +	 *		  "ov5640_set_stream_mipi()")
+> +	 * [4] = 0	: Power up MIPI HS Tx
+> +	 * [3] = 0	: Power up MIPI LS Rx
+> +	 * [2] = 0	: MIPI interface disabled
+> +	 */
+> +	ret = ov5640_write_reg(sensor, OV5640_REG_IO_MIPI_CTRL00, 0x40);
+> +	if (ret)
 > +		return ret;
 > +
-> +	pginfo.secs = (unsigned long)sgx_get_epc_addr(encl->secs.epc_page);
-> +	pginfo.addr = SGX_ENCL_PAGE_ADDR(encl_page);
-> +	pginfo.metadata = (unsigned long)secinfo;
-> +	pginfo.contents = (unsigned long)kmap_atomic(src_page);
+> +	/*
+> +	 * Gate clock and set LP11 in 'no packets mode' (idle)
+> +	 *
+> +	 * 0x4800 = 0x24
+> +	 * [5] = 1	: Gate clock when 'no packets'
+> +	 * [2] = 1	: MIPI bus in LP11 when 'no packets'
+> +	 */
+> +	ret = ov5640_write_reg(sensor, OV5640_REG_MIPI_CTRL00, 0x24);
+> +	if (ret)
+> +		return ret;
 > +
-> +	ret = __eadd(&pginfo, sgx_get_epc_addr(epc_page));
+> +	/*
+> +	 * Set data lanes and clock in LP11 when 'sleeping'
+> +	 *
+> +	 * 0x3019 = 0x70
+> +	 * [6] = 1	: MIPI data lane 2 in LP11 when 'sleeping'
+> +	 * [5] = 1	: MIPI data lane 1 in LP11 when 'sleeping'
+> +	 * [4] = 1	: MIPI clock lane in LP11 when 'sleeping'
+> +	 */
+> +	ret = ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT00, 0x70);
+> +	if (ret)
+> +		return ret;
 > +
-> +	kunmap_atomic((void *)pginfo.contents);
-> +	put_page(src_page);
-> +
-> +	return ret ? -EIO : 0;
-> +}
-> +
-> +/*
-> + * If the caller requires measurement of the page as a proof for the content,
-> + * use EEXTEND to add a measurement for 256 bytes of the page. Repeat this
-> + * operation until the entire page is measured."
-> + */
-> +static int __sgx_encl_extend(struct sgx_encl *encl,
-> +			     struct sgx_epc_page *epc_page)
-> +{
-> +	int ret;
-> +	int i;
-> +
-> +	for (i = 0; i < 16; i++) {
-> +		ret = __eextend(sgx_get_epc_addr(encl->secs.epc_page),
-> +				sgx_get_epc_addr(epc_page) + (i * 0x100));
-> +		if (ret) {
-> +			if (encls_failed(ret))
-> +				ENCLS_WARN(ret, "EEXTEND");
-> +			return -EIO;
-> +		}
-> +	}
+> +	/* Give lanes some time to coax into LP11 state. */
+> +	usleep_range(500, 1000);
 > +
 > +	return 0;
 > +}
 > +
-> +static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
-> +			     unsigned long offset, unsigned long length,
-> +			     struct sgx_secinfo *secinfo, unsigned long flags)
+> +static int ov5640_set_dvp(struct ov5640_dev *sensor, bool on)
 > +{
-> +	struct sgx_encl_page *encl_page;
-> +	struct sgx_epc_page *epc_page;
-> +	int ret;
+> +	unsigned int flags = sensor->ep.bus.parallel.flags;
+> +	u8 pclk_pol = 0;
+> +	u8 hsync_pol = 0;
+> +	u8 vsync_pol = 0;
+> +	int ret = 0;
 > +
-> +	encl_page = sgx_encl_page_alloc(encl, offset, secinfo->flags);
-> +	if (IS_ERR(encl_page))
-> +		return PTR_ERR(encl_page);
+> +	if (!on) {
+> +		/* Reset settings to their default values. */
+> +		ov5640_write_reg(sensor, OV5640_REG_IO_MIPI_CTRL00, 0x58);
+> +		ov5640_write_reg(sensor, OV5640_REG_POLARITY_CTRL00, 0x20);
+> +		ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT_ENABLE01, 0x00);
+> +		ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT_ENABLE02, 0x00);
 > +
-> +	epc_page = __sgx_alloc_epc_page();
-> +	if (IS_ERR(epc_page)) {
-> +		kfree(encl_page);
-> +		return PTR_ERR(epc_page);
+> +		return ret;
 > +	}
 > +
-> +	mmap_read_lock(current->mm);
-> +	mutex_lock(&encl->lock);
-> +
 > +	/*
-> +	 * Insert prior to EADD in case of OOM.  EADD modifies MRENCLAVE, i.e.
-> +	 * can't be gracefully unwound, while failure on EADD/EXTEND is limited
-> +	 * to userspace errors (or kernel/hardware bugs).
+> +	 * Note about parallel port configuration.
+> +	 *
+> +	 * When configured in parallel mode, the OV5640 will
+> +	 * output 10 bits data on DVP data lines [9:0].
+> +	 * If only 8 bits data are wanted, the 8 bits data lines
+> +	 * of the camera interface must be physically connected
+> +	 * on the DVP data lines [9:2].
+> +	 *
+> +	 * Control lines polarity can be configured through
+> +	 * devicetree endpoint control lines properties.
+> +	 * If no endpoint control lines properties are set,
+> +	 * polarity will be as below:
+> +	 * - VSYNC:	active high
+> +	 * - HREF:	active low
+> +	 * - PCLK:	active low
 > +	 */
-> +	ret = xa_insert(&encl->page_array, PFN_DOWN(encl_page->desc),
-> +			encl_page, GFP_KERNEL);
+> +	/*
+> +	 * configure parallel port control lines polarity
+> +	 *
+> +	 * POLARITY CTRL0
+> +	 * - [5]:	PCLK polarity (0: active low, 1: active high)
+> +	 * - [1]:	HREF polarity (0: active low, 1: active high)
+> +	 * - [0]:	VSYNC polarity (mismatch here between
+> +	 *		datasheet and hardware, 0 is active high
+> +	 *		and 1 is active low...)
+> +	 */
+> +	if (flags & V4L2_MBUS_PCLK_SAMPLE_RISING)
+> +		pclk_pol = 1;
+> +	if (flags & V4L2_MBUS_HSYNC_ACTIVE_HIGH)
+> +		hsync_pol = 1;
+> +	if (flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
+> +		vsync_pol = 1;
+> +
+> +	ret = ov5640_write_reg(sensor, OV5640_REG_POLARITY_CTRL00,
+> +			       (pclk_pol << 5) | (hsync_pol << 1) | vsync_pol);
+> +
 > +	if (ret)
-> +		goto err_out_unlock;
+> +		return ret;
 > +
-> +	ret = __sgx_encl_add_page(encl, encl_page, epc_page, secinfo,
-> +				  src);
+> +	/*
+> +	 * powerdown MIPI TX/RX PHY & disable MIPI
+> +	 *
+> +	 * MIPI CONTROL 00
+> +	 * 4:	 PWDN PHY TX
+> +	 * 3:	 PWDN PHY RX
+> +	 * 2:	 MIPI enable
+> +	 */
+> +	ret = ov5640_write_reg(sensor, OV5640_REG_IO_MIPI_CTRL00, 0x18);
 > +	if (ret)
-> +		goto err_out;
+> +		return ret;
 > +
 > +	/*
-> +	 * Complete the "add" before doing the "extend" so that the "add"
-> +	 * isn't in a half-baked state in the extremely unlikely scenario the
-> +	 * the enclave will be destroyed in response to EEXTEND failure.
+> +	 * enable VSYNC/HREF/PCLK DVP control lines
+> +	 * & D[9:6] DVP data lines
+> +	 *
+> +	 * PAD OUTPUT ENABLE 01
+> +	 * - 6:		VSYNC output enable
+> +	 * - 5:		HREF output enable
+> +	 * - 4:		PCLK output enable
+> +	 * - [3:0]:	D[9:6] output enable
 > +	 */
-> +	encl_page->encl = encl;
-> +	encl_page->epc_page = epc_page;
-> +	encl->secs_child_cnt++;
-> +
-> +	if (flags & SGX_PAGE_MEASURE) {
-> +		ret = __sgx_encl_extend(encl, epc_page);
-> +		if (ret)
-> +			goto err_out;
-> +	}
-> +
-> +	mutex_unlock(&encl->lock);
-> +	mmap_read_unlock(current->mm);
-> +	return ret;
-> +
-> +err_out:
-> +	xa_erase(&encl->page_array, PFN_DOWN(encl_page->desc));
-> +
-> +err_out_unlock:
-> +	mutex_unlock(&encl->lock);
-> +	mmap_read_unlock(current->mm);
-> +
-> +	sgx_free_epc_page(epc_page);
-> +	kfree(encl_page);
+> +	ret = ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT_ENABLE01, 0x7f);
+> +	if (ret)
+> +		return ret;
 > +
 > +	/*
-> +	 * Destroy enclave on ENCLS failure as this means that EPC has been
-> +	 * invalidated.
+> +	 * enable D[5:0] DVP data lines
+> +	 *
+> +	 * PAD OUTPUT ENABLE 02
+> +	 * - [7:2]:	D[5:0] output enable
 > +	 */
-> +	if (ret == -EIO) {
-> +		mutex_lock(&encl->lock);
-> +		sgx_encl_destroy(encl);
-> +		mutex_unlock(&encl->lock);
-> +	}
+> +	ret = ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT_ENABLE02, 0xfc);
+> +	if (ret)
+> +		return ret;
 > +
-> +	return ret;
+> +	return 0;
 > +}
 > +
-> +/**
-> + * sgx_ioc_enclave_add_pages() - The handler for %SGX_IOC_ENCLAVE_ADD_PAGES
-> + * @encl:       pointer to an enclave instance (via ioctl() file pointer)
-> + * @arg:	a user pointer to a struct sgx_enclave_add_pages instance
-> + *
-> + * Add one or more pages to an uninitialized enclave, and optionally extend the
-> + * measurement with the contents of the page. The SECINFO and measurement mask
-> + * are applied to all pages.
-> + *
-> + * A SECINFO for a TCS is required to always contain zero permissions because
-> + * CPU silently zeros them. Allowing anything else would cause a mismatch in
-> + * the measurement.
-> + *
-> + * mmap()'s protection bits are capped by the page permissions. For each page
-> + * address, the maximum protection bits are computed with the following
-> + * heuristics:
-> + *
-> + * 1. A regular page: PROT_R, PROT_W and PROT_X match the SECINFO permissions.
-> + * 2. A TCS page: PROT_R | PROT_W.
-> + *
-> + * mmap() is not allowed to surpass the minimum of the maximum protection bits
-> + * within the given address range.
-> + *
-> + * If ENCLS opcode fails, that effectively means that EPC has been invalidated.
-> + * When this happens the enclave is destroyed and -EIO is returned to the
-> + * caller.
-> + *
-> + * Return:
-> + *   0 on success,
-> + *   -EACCES if an executable source page is located in a noexec partition,
-> + *   -EIO if either ENCLS[EADD] or ENCLS[EEXTEND] fails
-> + *   -errno otherwise
-> + */
-> +static long sgx_ioc_enclave_add_pages(struct sgx_encl *encl, void __user *arg)
-> +{
-> +	struct sgx_enclave_add_pages addp;
-> +	struct sgx_secinfo secinfo;
-> +	unsigned long c;
-> +	int ret;
-> +
-> +	if ((atomic_read(&encl->flags) & SGX_ENCL_INITIALIZED) ||
-> +	    !(atomic_read(&encl->flags) & SGX_ENCL_CREATED))
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(&addp, arg, sizeof(addp)))
-> +		return -EFAULT;
-> +
-> +	if (!IS_ALIGNED(addp.offset, PAGE_SIZE) ||
-> +	    !IS_ALIGNED(addp.src, PAGE_SIZE))
-> +		return -EINVAL;
-> +
-> +	if (!(access_ok(addp.src, PAGE_SIZE)))
-> +		return -EFAULT;
-> +
-> +	if (addp.length & (PAGE_SIZE - 1))
-> +		return -EINVAL;
-> +
-> +	if (addp.offset + addp.length - PAGE_SIZE >= encl->size)
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(&secinfo, (void __user *)addp.secinfo,
-> +			   sizeof(secinfo)))
-> +		return -EFAULT;
-> +
-> +	if (sgx_validate_secinfo(&secinfo))
-> +		return -EINVAL;
-> +
-> +	for (c = 0 ; c < addp.length; c += PAGE_SIZE) {
-> +		if (signal_pending(current)) {
-> +			ret = -EINTR;
-> +			break;
-> +		}
-> +
-> +		if (need_resched())
-> +			cond_resched();
-> +
-> +		ret = sgx_encl_add_page(encl, addp.src + c, addp.offset + c,
-> +					addp.length - c, &secinfo, addp.flags);
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	addp.count = c;
-> +
-> +	if (copy_to_user(arg, &addp, sizeof(addp)))
-> +		return -EFAULT;
-> +
-> +	return ret;
-> +}
-> +
->  long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
+>  static int ov5640_set_power(struct ov5640_dev *sensor, bool on)
 >  {
->  	struct sgx_encl *encl = filep->private_data;
-> @@ -215,6 +503,9 @@ long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
->  	case SGX_IOC_ENCLAVE_CREATE:
->  		ret = sgx_ioc_enclave_create(encl, (void __user *)arg);
->  		break;
-> +	case SGX_IOC_ENCLAVE_ADD_PAGES:
-> +		ret = sgx_ioc_enclave_add_pages(encl, (void __user *)arg);
-> +		break;
->  	default:
->  		ret = -ENOIOCTLCMD;
->  		break;
-> -- 
-> 2.25.1
+>  	int ret = 0;
+> @@ -2013,67 +2086,17 @@ static int ov5640_set_power(struct ov5640_dev *sensor, bool on)
+>  		ret = ov5640_restore_mode(sensor);
+>  		if (ret)
+>  			goto power_off;
+> +	}
+>
+> -		/* We're done here for DVP bus, while CSI-2 needs setup. */
+> -		if (sensor->ep.bus_type != V4L2_MBUS_CSI2_DPHY)
+> -			return 0;
+> -
+> -		/*
+> -		 * Power up MIPI HS Tx and LS Rx; 2 data lanes mode
+> -		 *
+> -		 * 0x300e = 0x40
+> -		 * [7:5] = 010	: 2 data lanes mode (see FIXME note in
+> -		 *		  "ov5640_set_stream_mipi()")
+> -		 * [4] = 0	: Power up MIPI HS Tx
+> -		 * [3] = 0	: Power up MIPI LS Rx
+> -		 * [2] = 0	: MIPI interface disabled
+> -		 */
+> -		ret = ov5640_write_reg(sensor,
+> -				       OV5640_REG_IO_MIPI_CTRL00, 0x40);
+> -		if (ret)
+> -			goto power_off;
+> -
+> -		/*
+> -		 * Gate clock and set LP11 in 'no packets mode' (idle)
+> -		 *
+> -		 * 0x4800 = 0x24
+> -		 * [5] = 1	: Gate clock when 'no packets'
+> -		 * [2] = 1	: MIPI bus in LP11 when 'no packets'
+> -		 */
+> -		ret = ov5640_write_reg(sensor,
+> -				       OV5640_REG_MIPI_CTRL00, 0x24);
+> -		if (ret)
+> -			goto power_off;
+> -
+> -		/*
+> -		 * Set data lanes and clock in LP11 when 'sleeping'
+> -		 *
+> -		 * 0x3019 = 0x70
+> -		 * [6] = 1	: MIPI data lane 2 in LP11 when 'sleeping'
+> -		 * [5] = 1	: MIPI data lane 1 in LP11 when 'sleeping'
+> -		 * [4] = 1	: MIPI clock lane in LP11 when 'sleeping'
+> -		 */
+> -		ret = ov5640_write_reg(sensor,
+> -				       OV5640_REG_PAD_OUTPUT00, 0x70);
+> -		if (ret)
+> -			goto power_off;
+> -
+> -		/* Give lanes some time to coax into LP11 state. */
+> -		usleep_range(500, 1000);
+> -
+> -	} else {
+> -		if (sensor->ep.bus_type == V4L2_MBUS_CSI2_DPHY) {
+> -			/* Reset MIPI bus settings to their default values. */
+> -			ov5640_write_reg(sensor,
+> -					 OV5640_REG_IO_MIPI_CTRL00, 0x58);
+> -			ov5640_write_reg(sensor,
+> -					 OV5640_REG_MIPI_CTRL00, 0x04);
+> -			ov5640_write_reg(sensor,
+> -					 OV5640_REG_PAD_OUTPUT00, 0x00);
+> -		}
+> +	if (sensor->ep.bus_type == V4L2_MBUS_CSI2_DPHY)
+> +		ret = ov5640_set_mipi(sensor, on);
+> +	else
+> +		ret = ov5640_set_dvp(sensor, on);
+> +	if (ret)
+> +		goto power_off;
+>
+> +	if (!on)
+>  		ov5640_set_power_off(sensor);
+> -	}
+>
+>  	return 0;
+>
+> --
+> 2.17.1
+>
