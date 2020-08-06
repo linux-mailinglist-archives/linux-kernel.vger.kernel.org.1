@@ -2,145 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD1923DE76
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95D123DE50
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729680AbgHFR0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S1729537AbgHFRYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729100AbgHFRCb (ORCPT
+        with ESMTP id S1729929AbgHFREn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:02:31 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08431C0A888A
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 07:20:30 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id qc22so35720388ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 07:20:29 -0700 (PDT)
+        Thu, 6 Aug 2020 13:04:43 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A516C03460C;
+        Thu,  6 Aug 2020 07:22:50 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 185so41736659ljj.7;
+        Thu, 06 Aug 2020 07:22:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pmb1iEsk02Ktbby15UBHnv6Nn0dAPG2lRhmD1yH0a80=;
-        b=sWE7THrjlHNLdtN4mIh5h4fTj8KCy3mVPv1JEAB/wX9MgwhCEmWMjH/DqccDYjeTE7
-         MtDnU6Zm5PvCdRpb3rJU8nVpMIgdMxDmkYFgJkZ/c9U/P+bi3EEiiY05oudV1m1zMfrt
-         TvwBOBlsfE6kicwzKDs+Zxx5WlG8sIHf+kDoWEq7EgcKbCOG2/+t/cCRCo1yLBV6hfhq
-         s5MJg7YHAQoixFsAwZL/djN1KuAXP7CjO0BtPruHxhS9GAPQwavznxEzo74/HimtM6Om
-         vdxUhwCoGgEq+E5ze89pDEX/fzZBMA1sKcDwuxiU6Md/vzrKxgyNnynKnJX5osAKz60+
-         EMMw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XByk4zQLeWdVJ99jAPoK52EaFY9Nq96sXFd7ZxTXSZs=;
+        b=T0JlCXRlEg1AKCwQb1Q6HbT/3xfXPI1KwN7z3+S4H2XdoJf5sckRXpOd32Vj99hdZL
+         37mV132mg68iZ3zO5YvGKQBpF4ZmLRSkbzl9rdYzDZZDGFw8O8b+S0Uq9Vq50z6pIVR+
+         7zD4im9G8SYACEta3zEIjft/lAZB1aTVdYmJ+L3Y0S34NidBHYZ7yh9ee/J2ye9CgA3P
+         /lJ5WIpzDneUNMyM1VHVqjwIAPrL0Pxab33D5KBqnh67nkkXTXcLe+46/lNeUrb+LrsA
+         5VQFpXLPhIINuM8eV5bGVSYNijh7laO+zCxpNisCSy8HwtoQkSIowyDIIujk9DMonPW4
+         gdow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=pmb1iEsk02Ktbby15UBHnv6Nn0dAPG2lRhmD1yH0a80=;
-        b=Cm4G3rSmTFZHbtrxVgb+GR2AsgbU6S7ACxbLYvcQkUhpO+dOf7qMhbfGrxzT47ZHv4
-         nN4iXLwxn227mdicHqxOXNVRtVW2Z/Smv0FFJdIFkfsKSwLjlNtuGk3k2glJNQ8pYB6/
-         IFWnbXCKdQwyz/ZmiKW+ueMAlr9svZVjn055rx9Qm9P3EsxzLgdHHdMFq6vtvS6j8gL4
-         1F5BI82ZTyFPxw3DNRo30/EQlsfsEroyIzcfQisM0TIECgKA7QpczmwcAXmEt5tt5+EI
-         5VmuaOLJzOcjfrWpXnXDmJICLja/0MKnUlMx/R+2GtORhgHlal7hRVMQy+u/w7Vsssk1
-         mkiQ==
-X-Gm-Message-State: AOAM533U/Yhhk5eplnwbVsLunuj/Cnxva5eeq9coSINb8iU7hJ2siqOt
-        7IDxVtDhECBOuQk7uAa7N/U=
-X-Google-Smtp-Source: ABdhPJxtEf/TMq+OtbgjEnfVmr1L884FceniIKzXmMKSw7kOAIBmsNSevXnhSG4VlvtUFycjHcOV3g==
-X-Received: by 2002:a17:906:a18e:: with SMTP id s14mr4570218ejy.168.1596723628805;
-        Thu, 06 Aug 2020 07:20:28 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id v13sm3917056ejq.59.2020.08.06.07.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 07:20:27 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 16:20:25 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, morten.rasmussen@arm.com
-Subject: Re: [PATCH v4 03/10] sched/topology: Propagate SD_ASYM_CPUCAPACITY
- upwards
-Message-ID: <20200806142025.GD2077896@gmail.com>
-References: <20200731115502.12954-1-valentin.schneider@arm.com>
- <20200731115502.12954-4-valentin.schneider@arm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XByk4zQLeWdVJ99jAPoK52EaFY9Nq96sXFd7ZxTXSZs=;
+        b=LsiPdCSSIGezBLwLMm67zLU5h4j/XH/3HNXICixllh2bQwJih88B/4+HMoie+FYAat
+         kPjz35npSDaoyd0v+njcqFdK7FXP4c/n/piP7hjvYU/R8/003cKpo6CPdP0m3MBa4hT5
+         IXQd23k6FVopVTHZLxo/1OmVhuq+qhgrEJ05UxYUjsLpR6gLwEwX48wqfZkmsl2H9dlz
+         2O8v++SH54T/V18McZQLjyYb57U+QAWH7vMGywHMTFPypa0MRncRtStop/lNR7EzBY+5
+         41HU8jmRsd9FL4PjGSZmCpLdwlCLpLD2bZ2Mjmh3dTBlcw/twNkkXB2NRhbc0gAYTXqd
+         CS6Q==
+X-Gm-Message-State: AOAM532aEAxUGSRASymmXM040IztMx4Ikt5XrnZEAokGqrhrYKUTAvvN
+        dbfjGgo1untPtR7UEDivDrA=
+X-Google-Smtp-Source: ABdhPJxA2Tkfxwf/RHpIug+GOl8r/RwGGUhTAJxYzx5jCzoXQ539huOTFz7Djjq2XQjHvs9c2QBk/Q==
+X-Received: by 2002:a2e:3c03:: with SMTP id j3mr3998129lja.397.1596723767006;
+        Thu, 06 Aug 2020 07:22:47 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
+        by smtp.googlemail.com with ESMTPSA id h17sm2479535ljj.118.2020.08.06.07.22.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 07:22:45 -0700 (PDT)
+Subject: Re: [Patch v2 2/4] dmaengine: tegra: Add Tegra GPC DMA driver
+To:     Rajesh Gumasta <rgumasta@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Krishna Yarlagadda <kyarlagadda@nvidia.com>,
+        Pavan Kunapuli <pkunapuli@nvidia.com>
+References: <1596699006-9934-1-git-send-email-rgumasta@nvidia.com>
+ <1596699006-9934-3-git-send-email-rgumasta@nvidia.com>
+ <bc7d0d9d-ac7f-b720-64f5-63e0c76e6786@gmail.com>
+ <CH2PR12MB41350E273B36463F9B372A52A2480@CH2PR12MB4135.namprd12.prod.outlook.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <8fa139f2-685e-9e19-df55-bc7f84ec9a4c@gmail.com>
+Date:   Thu, 6 Aug 2020 17:22:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200731115502.12954-4-valentin.schneider@arm.com>
+In-Reply-To: <CH2PR12MB41350E273B36463F9B372A52A2480@CH2PR12MB4135.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+06.08.2020 16:56, Rajesh Gumasta пишет:
+...
+>>> +static const struct __maybe_unused dev_pm_ops
+>> tegra_dma_dev_pm_ops = {
+>>> +     SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(tegra_dma_pm_suspend,
+>>> +tegra_dma_pm_resume) };
+>>
+>> Please explain why this is needed. All DMA should be stopped (not
+>> paused) on system's suspend, shouldn't it?
+> I have rechecked with HW verification team and they confirmed that after suspend, csr and channel registers will get reset hence on resume we need to restore back.
+> Also GPCDMA does not support power gate as a unit.
 
-* Valentin Schneider <valentin.schneider@arm.com> wrote:
-
-> We currently set this flag *only* on domains whose topology level exactly
-> match the level where we detect asymmetry (as returned by
-> asym_cpu_capacity_level()). This is rather problematic.
-> 
-> Say there are two clusters in the system, one with a lone big CPU and the
-> other with a mix of big and LITTLE CPUs (as is allowed by DynamIQ):
-> 
-> DIE [                ]
-> MC  [             ][ ]
->      0   1   2   3  4
->      L   L   B   B  B
-> 
-> asym_cpu_capacity_level() will figure out that the MC level is the one
-> where all CPUs can see a CPU of max capacity, and we will thus set
-> SD_ASYM_CPUCAPACITY at MC level for all CPUs.
-> 
-> That lone big CPU will degenerate its MC domain, since it would be alone in
-> there, and will end up with just a DIE domain. Since the flag was only set
-> at MC, this CPU ends up not seeing any SD with the flag set, which is
-> broken.
-> 
-> Rather than clearing dflags at every topology level, clear it before
-> entering the topology level loop. This will properly propagate upwards
-> flags that are set starting from a certain level.
-> 
-> Reviewed-by: Quentin Perret <qperret@google.com>
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  kernel/sched/topology.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 865fff3ef20a..42b89668e1e4 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1985,11 +1985,10 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
->  	/* Set up domains for CPUs specified by the cpu_map: */
->  	for_each_cpu(i, cpu_map) {
->  		struct sched_domain_topology_level *tl;
-> +		int dflags = 0;
->  
->  		sd = NULL;
->  		for_each_sd_topology(tl) {
-> -			int dflags = 0;
-> -
->  			if (tl == tl_asym) {
->  				dflags |= SD_ASYM_CPUCAPACITY;
->  				has_asym = true;
-
-I'd suggest ordering all patches with potential side effects at the 
-end, to make them easier to bisect.
-
-I.e. I'd reorder this series to do:
-
- - Obviously correct renamings & cleanups
-
- - Convert the code over to the new instrumented sd-flags method. This 
-   will presumably spew a few warnings for problems the new debugging 
-   checks catch in existing topologies.
-
- - Do all the behavioral changes and fixes like this patch, even if we 
-   think that they have no serious side effects.
-
-In that sense it might make sense to order the two ARM patches to the 
-later stage as well - but I suppose it's OK to do those two first as 
-well.
-
-Nice series otherwise, these new checks look really useful and already 
-caught bugs.
-
-Thanks,
-
-	Ingo
+But all registers are re-programmed on starting a DMA transfer, hence
+why do you need to save-restore them on suspend-resume?
