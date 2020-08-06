@@ -2,55 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376C423E030
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE2623E054
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbgHFSKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:10:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728057AbgHFSJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:09:55 -0400
-Subject: Re: [GIT PULL] Smack patches for v5.9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596737394;
-        bh=s2E2AZg9Rq24AcGg3lWK4zcwHLb91fKHlAzIexnkNv0=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ShfW0YRIsAUEae61UgU1p62cG4v+u1kGD2Zg0tNwcn81g1WO4bWdKw7YHA/qKL3Cz
-         ZT4+srS3tLUO7svGCBQ0am3+WlKPgMK4dhjsyq4cgNeRN+Z9hNJBMHH2UBZP0sU1gD
-         4TDtiJlM6D69+Q6jlJg7dD9F9q6qSFTCjs2uxxmg=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <8ce85723-5656-0ee8-67a7-35597d9df0dd@schaufler-ca.com>
-References: <8ce85723-5656-0ee8-67a7-35597d9df0dd.ref@schaufler-ca.com> <8ce85723-5656-0ee8-67a7-35597d9df0dd@schaufler-ca.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <8ce85723-5656-0ee8-67a7-35597d9df0dd@schaufler-ca.com>
-X-PR-Tracked-Remote: https://github.com/cschaufler/smack-next smack-for-5.9
-X-PR-Tracked-Commit-Id: 42a2df3e829f3c5562090391b33714b2e2e5ad4a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bfdd5aaa54b0a44d9df550fe4c9db7e1470a11b8
-Message-Id: <159673739379.10708.792636659703040715.pr-tracker-bot@kernel.org>
-Date:   Thu, 06 Aug 2020 18:09:53 +0000
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
+        id S1727037AbgHFS3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728111AbgHFSUP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:20:15 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A11C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 11:13:35 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id h7so45788606qkk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 11:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9yZTfDkEtZAucfZS+LTKDBeUjM1A4AsheL4Ns5qz48o=;
+        b=Vob4VjLjMjw8QEx0srRb6AStJuBSKw/7ZQZwPKrnmlnCGqMxVTxZEruxzDoGbBq+oo
+         34460532lj1Mias3E2IM+yOnk74kzfgVpu4hFTILa0bUAR9G5kEBewt/yGZazzNnmta8
+         h9Op2kMGvdZULV7cFw42FdshN1A/hATDSF+eHb6zhZA1Kpjv1VPIwGHxsJHzqIVtIxSy
+         UXTBsj7xAJ2EZ82yLgBLinYDXjsFfO0K4UPLvsHfTBeOmpTzk16tMUoa4Ta8CmQ3YlB3
+         k+zkqZuSRdtlFcczLK/V+rjxqMngCs27DEXZvi0g8f2TLF4ektFkTh4IRu4K4fWr+cl5
+         QRTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9yZTfDkEtZAucfZS+LTKDBeUjM1A4AsheL4Ns5qz48o=;
+        b=l+ppC0KzDvW9qsWfDM+nt6zW1ylzl/Cw+Kq0e0wi/OED0yQY0Mo6zng00+TWJXPJxp
+         W+N4tcTAc6vYAWPGZseDUuTJo1/j1IpVIaeZsprUXGR6d+0DVNPcMILs/S5xFR14FwVz
+         03tDoSJx7/hNdD2z5EYU4Y76v5k8aoNCxgkUh9ZI8lknPcjWzfafOUgK0Nzf6ekm78A4
+         +RUrsfNcrWNVAdXgN62VGjjRWcQI7tRb/PhFPCXShd9dMpmvjL3lEAfjbw0XkYZp39X/
+         geE84DTDtxtv2e8r9ck8lMLEsNxOIfdbQOIfQY7pB8Hm/wG4RWrRAqcgw9sArmrKhdh7
+         E35Q==
+X-Gm-Message-State: AOAM532a/hYRmpxSPhYd3XmDzATKBdayTQg2hmcCaTblheugeb4/jFv0
+        ujA08IOehNZYxX1+cg7ySgYZrg==
+X-Google-Smtp-Source: ABdhPJzgOFc2hANTgnQ6sTf92pAcoW8/J6OWFg3g19UAoi6XQ6dxEWZ+rDTYkzs7Xut3xIrM8qEStw==
+X-Received: by 2002:a37:d83:: with SMTP id 125mr10036498qkn.430.1596737614950;
+        Thu, 06 Aug 2020 11:13:34 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id d143sm4643471qkc.59.2020.08.06.11.13.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 11:13:33 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1k3kOT-004SGh-0u; Thu, 06 Aug 2020 15:13:33 -0300
+Date:   Thu, 6 Aug 2020 15:13:33 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     dledford@redhat.com, leon@kernel.org, parav@mellanox.com,
+        maorg@mellanox.com, maxg@mellanox.com, monis@mellanox.com,
+        chuck.lever@oracle.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tianjia.zhang@alibaba.com
+Subject: Re: [PATCH] IB/core: Fix wrong return value in _ib_modify_qp()
+Message-ID: <20200806181333.GT24045@ziepe.ca>
+References: <20200802111542.5475-1-tianjia.zhang@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200802111542.5475-1-tianjia.zhang@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 4 Aug 2020 10:49:09 -0700:
+On Sun, Aug 02, 2020 at 07:15:42PM +0800, Tianjia Zhang wrote:
+> On an error exit path, a negative error code should be returned
+> instead of a positive return value.
+> 
+> Fixes: 7a5c938b9ed09 ("IB/core: Check for rdma_protocol_ib only after validating port_num")
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>  drivers/infiniband/core/verbs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+> index 53d6505c0c7b..f369f0a19e85 100644
+> --- a/drivers/infiniband/core/verbs.c
+> +++ b/drivers/infiniband/core/verbs.c
+> @@ -1712,7 +1712,7 @@ static int _ib_modify_qp(struct ib_qp *qp, struct ib_qp_attr *attr,
+>  		if (!(rdma_protocol_ib(qp->device,
+>  				       attr->alt_ah_attr.port_num) &&
+>  		      rdma_protocol_ib(qp->device, port))) {
+> -			ret = EINVAL;
+> +			ret = -EINVAL;
+>  			goto out;
+>  		}
+>  	}
 
-> https://github.com/cschaufler/smack-next smack-for-5.9
+This was already fixed here:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bfdd5aaa54b0a44d9df550fe4c9db7e1470a11b8
+commit 47fda651d5af2506deac57d54887cf55ce26e244
+Author: Li Heng <liheng40@huawei.com>
+Date:   Sat Jul 25 10:56:27 2020 +0800
 
-Thank you!
+    RDMA/core: Fix return error value in _ib_modify_qp() to negative
+    
+    The error codes in _ib_modify_qp() are supposed to be negative errno.
+    
+    Fixes: 7a5c938b9ed0 ("IB/core: Check for rdma_protocol_ib only after validating port_num")
+    Link: https://lore.kernel.org/r/1595645787-20375-1-git-send-email-liheng40@huawei.com
+    Reported-by: Hulk Robot <hulkci@huawei.com>
+    Signed-off-by: Li Heng <liheng40@huawei.com>
+    Reviewed-by: Parav Pandit <parav@mellanox.com>
+    Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks,
+Jason
