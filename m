@@ -2,169 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367BB23D7D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9360C23D7E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728854AbgHFIJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47862 "EHLO
+        id S1728794AbgHFIOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:14:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728473AbgHFIJz (ORCPT
+        with ESMTP id S1728615AbgHFIOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:09:55 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEADC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 01:09:47 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id a14so17515836edx.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 01:09:47 -0700 (PDT)
+        Thu, 6 Aug 2020 04:14:41 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13563C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 01:14:40 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 9so8011667wmj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 01:14:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rtxbf+KzxxAKdZrZpK8qZ6M0GgUs2xeceelnbjMimXo=;
-        b=B7Q04tBAwLpVa9KQyl9BvCH9GjVf224TCPiDKaxGfs3TlZWojccALd62hMPM8okUdk
-         Qi63kdNUDDogSX1ytIIT8E8d8vQRwzRTg/E6vXlgHOrtuitVs1jpTubcMsqXMBeOq7AN
-         mq4d0GzBWGr8/FcQ8bo7mO30x3hIIKJZOMEB5RjzajSi8tFmuMo+E0TUaEjKORTWK+h2
-         DbX5zR6yH+64g5LnhPEcFTDPXYZr4baMN7M8mjWf8D4F9VqZlLy0K3aUmbMF/4eh88hH
-         vQE3qBEZPHrnckTZHRxbmjlGwXGlhejpWpM8uiwgZYecooFOgVRBCQCYw9wOIuRukYoI
-         wSxQ==
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5PktqX1lhXj7JIJmMasUxCbKwHj1GRVaq6Q9Nfn/AB0=;
+        b=Y02KnJPdyHNoxv5A62MbXo+ySPtxSc7Zo6WJLI3eoRZB5waqsU59OlqE92BgFcDE/4
+         dTWfYDULmCIgQQ1nP8sS/vW7g6x9PnmV1lDiyUOHw1VQU/vSMF+8aBtc0xagQagpAtKX
+         0vRoWdnr5KcIoi4ExzFLCB3i/FODp+Gb/9+9IgjVuCjbdNxgLhnXmWqEEIyM7aEfdES0
+         QCPS5Y5P1JCXd3t/1W8d0NVECwmfvcxxUYZa4/kfDWrBMglf3/uvk9HdK638sa8rzvZQ
+         nSv7FICaSMsbklecY+ehKAGVFb6c+/AXslwso6PoftJn7hjfjSLT761UaZg6lSTkdnfe
+         pl2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rtxbf+KzxxAKdZrZpK8qZ6M0GgUs2xeceelnbjMimXo=;
-        b=YALNjrWc0jDNKsrqWq/trWSG7uNgFDkcVPiP/xmeUqFwc0LUZeF1Tl2Vx8L1q/ZCLT
-         wZfMSsJPtNcQ1zB2bifgx5D51VlixUr6zBQcDZXpLSPn/pIjqRGVYBJSqImlAN1ZjOft
-         qidobPo/en9tIabQjTERH7JYy45V0BqU8BPMOXdXAg5pzauH9xZwUtObVbFDdj1RVCOV
-         WTLPh/OhyVsTWEdojVfFWS1WdZb7sayw8QACuAmPydppILfckqx/prwn2zuTGLW/1omG
-         LSoMe2ikqnT0//3gY852G1xBETEM5qltVessrnXh6VPSYKiKGBs2nBBsbkF8J6r9YPg6
-         Tsvw==
-X-Gm-Message-State: AOAM5321ker9L6qtLjfBQUk64sbzaiqLQ5yzxxWg23pbIc2IGB9rPTQs
-        hH3n0sKDvH6so49tkYOjHBA=
-X-Google-Smtp-Source: ABdhPJzkz9LEL73jLhWyNmM4lEF+kHoeZMdpebhWdevnPF7bXAe85kHJVhJgL71RipZL+tWHlSsGiQ==
-X-Received: by 2002:aa7:c251:: with SMTP id y17mr3041043edo.13.1596701385870;
-        Thu, 06 Aug 2020 01:09:45 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id t19sm2997957edw.63.2020.08.06.01.09.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 01:09:44 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 10:09:41 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     torvalds@linux-foundation.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>
-Subject: Re: [PATCH v4 00/14] liblockdep fixes for 5.9-rc1
-Message-ID: <20200806080941.GA1697074@gmail.com>
-References: <20200805001043.3331907-1-sashal@kernel.org>
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5PktqX1lhXj7JIJmMasUxCbKwHj1GRVaq6Q9Nfn/AB0=;
+        b=siy4/VUq9Ts2EzDDYj2qygidVD//V/mdlNNatLbGP4Zo3XmNMac+FnoByZqB85vYhO
+         pXs92vE/RhqNHUnXZIVX1VrLPCUlqQef51WSIrBm5CPf3t/2oKCR780OHhv6AvEZ+ANC
+         3acTbKXSaarPPG/q+DknSAEN7bg50JXf4VslSWGA17DJrOFKmobM3abnpzrVWSuRMvw6
+         UMTZW8GqWaj21Wps2NXZjijVU9IxjAR3Otjpov+0mWv3PT22BH3sK+i6UEF0clSk+LOO
+         HqwOAbtDQNz+aK4e68jSOKapVtbAP3LGgqYLoAQdQfn4bYSGKR0rXBnriQZlcwY2p26p
+         nPFQ==
+X-Gm-Message-State: AOAM531vL7OdAegGPF8uD1SXfxOkWJPgUT7XIaM8gFB3w6IK54bh/teR
+        MyTeKFAmfC3F4GTVbdQ1XHYfTQ==
+X-Google-Smtp-Source: ABdhPJxKVWFIn+tzSkG2xCzWTuprtYCwg5y0fKh1L37+YmaeQYDCm5+KsZhOgFUVcf4NDAu+eSgfXQ==
+X-Received: by 2002:a1c:2985:: with SMTP id p127mr6571788wmp.166.1596701679009;
+        Thu, 06 Aug 2020 01:14:39 -0700 (PDT)
+Received: from trex (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
+        by smtp.gmail.com with ESMTPSA id h14sm5422330wml.30.2020.08.06.01.14.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Aug 2020 01:14:38 -0700 (PDT)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Thu, 6 Aug 2020 10:14:37 +0200
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, ricardo@foundries.io,
+        Michael Scott <mike@foundries.io>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        op-tee@lists.trustedfirmware.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv2 2/2] hwrng: optee: fix wait use case
+Message-ID: <20200806081437.GA21405@trex>
+References: <20200723084622.31134-1-jorge@foundries.io>
+ <20200723084622.31134-2-jorge@foundries.io>
+ <CAFA6WYPQ3GGYostoHU=6qg4c_LqoqOZVbZ8gbQbGkNfyGydQjQ@mail.gmail.com>
+ <20200724142305.GA24164@trex>
+ <CAFA6WYOGu4DPzd93h-yFLJvLmRH=ZroN70+ZNY6xCOOM+TJOSA@mail.gmail.com>
+ <20200805203817.GA12229@trex>
+ <CAFA6WYPKGTb6Qj7emETpB9-XXO8vcf6v2ONKD4pt+M9F-=HWbQ@mail.gmail.com>
+ <20200806063040.GA27943@trex>
+ <CAFA6WYMSXGKXx2vM2qcTLpRUugQUphM8Gn5YvPX9fTj3MHvXqQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200805001043.3331907-1-sashal@kernel.org>
+In-Reply-To: <CAFA6WYMSXGKXx2vM2qcTLpRUugQUphM8Gn5YvPX9fTj3MHvXqQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Sasha Levin <sashal@kernel.org> wrote:
-
-> Hi Linus,
+On 06/08/20, Sumit Garg wrote:
+> On Thu, 6 Aug 2020 at 12:00, Jorge Ramirez-Ortiz, Foundries
+> <jorge@foundries.io> wrote:
+> >
+> > On 06/08/20, Sumit Garg wrote:
+> > > On Thu, 6 Aug 2020 at 02:08, Jorge Ramirez-Ortiz, Foundries
+> > > <jorge@foundries.io> wrote:
+> > > >
+> > > > On 05/08/20, Sumit Garg wrote:
+> > > > > Apologies for my delayed response as I was busy with some other tasks
+> > > > > along with holidays.
+> > > >
+> > > > no pb! was just making sure this wasnt falling through some cracks.
+> > > >
+> > > > >
+> > > > > On Fri, 24 Jul 2020 at 19:53, Jorge Ramirez-Ortiz, Foundries
+> > > > > <jorge@foundries.io> wrote:
+> > > > > >
+> > > > > > On 24/07/20, Sumit Garg wrote:
+> > > > > > > On Thu, 23 Jul 2020 at 14:16, Jorge Ramirez-Ortiz <jorge@foundries.io> wrote:
+> > > > > > > >
+> > > > > > > > The current code waits for data to be available before attempting a
+> > > > > > > > second read. However the second read would not be executed as the
+> > > > > > > > while loop exits.
+> > > > > > > >
+> > > > > > > > This fix does not wait if all data has been read and reads a second
+> > > > > > > > time if only partial data was retrieved on the first read.
+> > > > > > > >
+> > > > > > > > This fix also does not attempt to read if not data is requested.
+> > > > > > >
+> > > > > > > I am not sure how this is possible, can you elaborate?
+> > > > > >
+> > > > > > currently, if the user sets max 0, get_optee_rng_data will regardless
+> > > > > > issuese a call to the secure world requesting 0 bytes from the RNG
+> > > > > >
+> > > > >
+> > > > > This case is already handled by core API: rng_dev_read().
+> > > >
+> > > > ah ok good point, you are right
+> > > > but yeah, there is no consequence to the actual patch.
+> > > >
+> > >
+> > > So, at least you could get rid of the corresponding text from commit message.
+> > >
+> > > > >
+> > > > > > with this patch, this request is avoided.
+> > > > > >
+> > > > > > >
+> > > > > > > >
+> > > > > > > > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> > > > > > > > ---
+> > > > > > > >  v2: tidy up the while loop to avoid reading when no data is requested
+> > > > > > > >
+> > > > > > > >  drivers/char/hw_random/optee-rng.c | 4 ++--
+> > > > > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/char/hw_random/optee-rng.c b/drivers/char/hw_random/optee-rng.c
+> > > > > > > > index 5bc4700c4dae..a99d82949981 100644
+> > > > > > > > --- a/drivers/char/hw_random/optee-rng.c
+> > > > > > > > +++ b/drivers/char/hw_random/optee-rng.c
+> > > > > > > > @@ -122,14 +122,14 @@ static int optee_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+> > > > > > > >         if (max > MAX_ENTROPY_REQ_SZ)
+> > > > > > > >                 max = MAX_ENTROPY_REQ_SZ;
+> > > > > > > >
+> > > > > > > > -       while (read == 0) {
+> > > > > > > > +       while (read < max) {
+> > > > > > > >                 rng_size = get_optee_rng_data(pvt_data, data, (max - read));
+> > > > > > > >
+> > > > > > > >                 data += rng_size;
+> > > > > > > >                 read += rng_size;
+> > > > > > > >
+> > > > > > > >                 if (wait && pvt_data->data_rate) {
+> > > > > > > > -                       if (timeout-- == 0)
+> > > > > > > > +                       if ((timeout-- == 0) || (read == max))
+> > > > > > >
+> > > > > > > If read == max, would there be any sleep?
+> > > > > >
+> > > > > > no but I see no reason why there should be a wait since we already have
+> > > > > > all the data that we need; the msleep is only required when we need to
+> > > > > > wait for the RNG to generate entropy for the number of bytes we are
+> > > > > > requesting. if we are requesting 0 bytes, the entropy is already
+> > > > > > available. at leat this is what makes sense to me.
+> > > > > >
+> > > > >
+> > > > > Wouldn't it lead to a call as msleep(0); that means no wait as well?
+> > > >
+> > > > I dont understand: there is no reason to wait if read == max and this
+> > > > patch will not wait: if read == max it calls 'return read'
+> > > >
+> > > > am I misunderstanding your point?
+> > >
+> > > What I mean is that we shouldn't require this extra check here as
+> > > there wasn't any wait if read == max with existing implementation too.
+> >
+> > um, I am getting confused Sumit
+> >
+> > with the exisiting implementation (the one we aim to replace), if get_optee_rng_data reads all the values requested on the first call (ie, read = 0) with wait set to true, the call will wait with msleep(0). Which is unnecessary and waits for a jiffy (ie, the call to msleep 0 will schedule a one jiffy timeout interrruptible)
+> >
+> > with this alternative implementation, msleep(0) does not get called.
+> >
+> > are we in synch?
 > 
-> Please consider applying these patches for liblockdep, or alternatively
-> pull from:
+> Ah, I see msleep(0) also by default schedules timeout for 1 jiffy. So
+> we are in sync now. Probably you can clarify this in commit message as
+> well to avoid confusion.
+
+ok will do.
+shall I add your reviewed-by line or just resend?
+
 > 
->   git://git.kernel.org/pub/scm/linux/kernel/git/sashal/linux.git tags/liblockdep-fixes-040820
+> -Sumit
 > 
-> The patches fix up compilation and functionality of liblockdep on 5.8,
-> they were tested using liblockdep's internal testsuite.
-> 
-> I was unable to get the x86 folks to pull these fixes for the past few
-> months:
-
-So the primary reason I didn't pull is that liblockdep was permanently 
-build-broken from February 2019 to around February 2020, despite me 
-pinging you multiple times about it.
-
->  - https://lkml.org/lkml/2020/2/17/1089
-
-This pull request still said that if fixes "most of" liblockdep, not 
-"all of", which is the benchmark really after such a long series of 
-breakage.
-
->  - https://lkml.org/lkml/2020/4/18/817
-
-This still said "most of".
-
->  - https://lkml.org/lkml/2020/6/22/1262
-
-Same 'most of' verbiage.
-
-> Which is why this pull request ends up going straight to you.
-
-So at this point I think we need to ask whether it's worth it: are 
-there any actual users of liblockdep, besides the testcases in 
-liblockdep itself? I see there's a 'liblockdep-dev' package for 
-Debian, but not propagated to Ubuntu or other popular variants AFAICS.
-
-Also, could you please specify whether all bugs are fixed or just 
-'most'?
-
-> Sasha Levin (14):
->   tools headers: Add kprobes.h header
->   tools headers: Add rcupdate.h header
->   tools/kernel.h: extend with dummy RCU functions
->   tools bitmap: add bitmap_andnot definition
->   tools/lib/lockdep: add definition required for IRQ flag tracing
->   tools bitmap: add bitmap_clear definition
->   tools/lib/lockdep: Hook up vsprintf, find_bit, hweight libraries
->   tools/lib/lockdep: Enable building with CONFIG_TRACE_IRQFLAGS
->   tools/lib/lockdep: New stacktrace API
->   tools/lib/lockdep: call lockdep_init_task on init
->   tools/lib/lockdep: switch to using lockdep_init_map_waits
->   tools/kernel.h: hide noinstr
->   tools/lib/lockdep: explicitly declare lockdep_init_task()
->   tools/kernel.h: hide task_struct.hardirq_chain_key
-
-Style nits, please use consistent titles for patches:
-
- - First word should be capitalized consistently, instead of mismash 
-   of lower case mixed with upper case.
-
- - First word should preferably be a verb, i.e. "Add new stacktrace 
-   API stubs", not "New stacktrace API"
-
-Also, please always check linux-next whether there's some new upstream 
-changes that liblockdep needs to adapt to. Right now there's a new 
-build breakage even with all your fixes applied:
-
-  thule:~/tip/tools/lib/lockdep> make
-    CC       common.o
-  In file included from ../../include/linux/lockdep.h:24,
-                   from common.c:5:
-   ../../include/linux/../../../include/linux/lockdep.h:13:10: fatal error: linux/lockdep_types.h: No such file or directory
-     13 | #include <linux/lockdep_types.h>
-        |          ^~~~~~~~~~~~~~~~~~~~~~~
-
-At which point we need to step back and analyze the development model: 
-this comparatively high rate of breakage derives from the unorthodox 
-direct coupling of a kernel subsystem to a user-space library.
-
-The solution for that would be to use the method how perf syncs to 
-kernel space headers, by maintaining a 100% copy in tools/include/ and 
-having automatic mechanism that warns about out of sync headers but 
-doesn't break functionality.
-
-See tools/perf/check-headers.sh for details.
-
-I believe this same half-automated sync-on-upstream-changes model 
-could be used for liblockdep as well, i.e. lets copy kernel/lockdep.c 
-and lockdep*.h over to tools/lib/lockdep/, and reuse the perf header 
-syncing method to keep it synchronized from that point on.
-
-That would result in a far more maintainable liblockdep end result 
-IMO?
-
-Thanks,
-
-	Ingo
+> >
+> > >
+> > > -Sumit
+> > >
+> > > >
+> > > > >
+> > > > > -Sumit
+> > > > >
+> > > > > >
+> > > > > > >
+> > > > > > > -Sumit
+> > > > > > >
+> > > > > > > >                                 return read;
+> > > > > > > >                         msleep((1000 * (max - read)) / pvt_data->data_rate);
+> > > > > > > >                 } else {
+> > > > > > > > --
+> > > > > > > > 2.17.1
+> > > > > > > >
