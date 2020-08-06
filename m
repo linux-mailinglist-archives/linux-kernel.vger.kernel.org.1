@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED89223D596
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 04:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9691023D59C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 04:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgHFCqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 22:46:54 -0400
-Received: from mga03.intel.com ([134.134.136.65]:31727 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbgHFCqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 22:46:54 -0400
-IronPort-SDR: km/KR8PRN/Nij8Go8vonj+fuLrQJGI0rBINlR1H33UWfEaklJz7hFSnwwJ9NvDfmf6OhnV58A0
- VlOo6gior4xw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="152669288"
-X-IronPort-AV: E=Sophos;i="5.75,440,1589266800"; 
-   d="scan'208";a="152669288"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 19:46:53 -0700
-IronPort-SDR: JMPts0zLGa2TK4nZ6M81SgCrSmtUhNnShl1R21rIm7wIaMLTD6VNClCV3MU7E412fJa7zMqZVG
- GxMj3meML9Mg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,440,1589266800"; 
-   d="scan'208";a="437387590"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga004.jf.intel.com with ESMTP; 05 Aug 2020 19:46:51 -0700
-Date:   Thu, 6 Aug 2020 10:43:22 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>
-Subject: Re: [PATCH v3 2/4] fpga: dfl: map feature mmio resources in their
- own  feature drivers
-Message-ID: <20200806024322.GA7179@yilunxu-OptiPlex-7050>
-References: <1596524715-18038-1-git-send-email-yilun.xu@intel.com>
- <1596524715-18038-3-git-send-email-yilun.xu@intel.com>
- <DM6PR11MB3819B8C6D19C351CC9366685854B0@DM6PR11MB3819.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB3819B8C6D19C351CC9366685854B0@DM6PR11MB3819.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1726844AbgHFC4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 22:56:48 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:59037 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725999AbgHFC4s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 22:56:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596682607; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=JFOp/jVg5UwpwKPOBbfJhhBblw4OLtDNa2EdgPT55ms=; b=goBgrfj3M2hnQO2LOv9EaHfPi0Rv6Ps5HJ/KBtsezWqbYhn7Ky3X8oxhORvPUGzFcE4NaoRS
+ iErs53/QIeDnn1Y0J1wzcp4y9Mkl5fzP49dq2gSrwk6d6uTZ1+Rit/4+aYyM8mpK4iaGuF/J
+ MyNEe23ohMfXp3ATiFLKteYLtOQ=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n15.prod.us-east-1.postgun.com with SMTP id
+ 5f2b716231ad46de43c88eb4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 02:56:34
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D6DF9C433A1; Thu,  6 Aug 2020 02:56:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from cgoldswo-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98BE5C433C9;
+        Thu,  6 Aug 2020 02:56:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 98BE5C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=cgoldswo@codeaurora.org
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pratikp@codeaurora.org,
+        pdaly@codeaurora.org, sudraja@codeaurora.org,
+        iamjoonsoo.kim@lge.com
+Subject: cma_alloc(), add sleep-and-retry for temporary page pinning
+Date:   Wed,  5 Aug 2020 19:56:21 -0700
+Message-Id: <1596682582-29139-1-git-send-email-cgoldswo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 08:15:27PM +0800, Wu, Hao wrote:
-> > Subject: [PATCH v3 2/4] fpga: dfl: map feature mmio resources in their own
-> > feature drivers
-> >
-> > +static int dfl_binfo_prepare(struct build_feature_devs_info *binfo,
-> > +     resource_size_t start, resource_size_t len)
-> > +{
-> > +struct device *dev = binfo->dev;
-> > +void __iomem *ioaddr;
-> > +
-> > +if (!devm_request_mem_region(dev, start, len, dev_name(dev))) {
-> > +dev_err(dev, "request region fail, start:%pa, len:%pa\n",
-> > +&start, &len);
-> > +return -EBUSY;
-> > +}
-> > +
-> > +ioaddr = devm_ioremap(dev, start, len);
-> > +if (!ioaddr) {
-> > +dev_err(dev, "ioremap region fail, start:%pa, len:%pa\n",
-> > +&start, &len);
-> > +devm_release_mem_region(dev, start, len);
-> 
-> as it's devm_request_mem_region, do we still need to release it here?
+On mobile devices, failure to allocate from a CMA area constitutes a
+functional failure.  Sometimes during CMA allocations, we have observed
+that pages in a CMA area allocated through alloc_pages(), that we're trying
+to migrate away to make room for a CMA allocation, are temporarily pinned.
+This temporary pinning can occur when a process that owns the pinned page
+is being forked (the example is explained further in the commit text).
+This patch addresses this issue by adding a sleep-and-retry loop in
+cma_alloc() . There's another example we know of similar to the above that
+occurs during exit_mmap() (in zap_pte_range() specifically), but I need to
+determine if this is still relevant today.
 
-Yes, I could delete it.
-
-> > @@ -869,24 +935,24 @@ static int parse_feature_private(struct
-> > build_feature_devs_info *binfo,
-> >   *
-> >   * @binfo: build feature devices information.
-> >   * @dfl: device feature list to parse
-> 
-> Remove this line.
-
-Yes.
-
-Thanks,
-Yilun.
-
-> 
-> Other place looks good to me.
-> 
-> Thanks
-> Hao 
