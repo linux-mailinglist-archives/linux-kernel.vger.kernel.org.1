@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7167223D6CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 08:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF1E23D6D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 08:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgHFG12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 02:27:28 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:65192 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726051AbgHFG10 (ORCPT
+        id S1728152AbgHFGaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 02:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726051AbgHFGa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 02:27:26 -0400
-X-UUID: 2fc2f2a842ec4c078ca32d6b7ed97daf-20200806
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=0AEHGNsfy4Kowym5Y/9MX+FAdIMhxa+q99bMpmtdLlk=;
-        b=SmiOYQX5nyus4h0miAuTv0wdQMYEQaHIIwRMlc3P5i506JhUbx5z30hsDOB89C96iB3eHHb5Qc770W0lXJTvqw4ggj9gtm6OdEaIFxOd1+8gHq0siEBivLLJ6SvSaNQ0ZoZ8Msp7vo3D7iBGOgHaitPGIcCOmK8Y1UWdERXj+/w=;
-X-UUID: 2fc2f2a842ec4c078ca32d6b7ed97daf-20200806
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
-        (envelope-from <eastl.lee@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1876968445; Thu, 06 Aug 2020 14:27:21 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 6 Aug 2020 14:27:18 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 6 Aug 2020 14:27:18 +0800
-Message-ID: <1596695238.26800.4.camel@mtkswgap22>
-Subject: Re: [PATCH v6 2/4] dmaengine: mediatek-cqdma: remove redundant
- queue structure
-From:   EastL <EastL.Lee@mediatek.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Sean Wang <sean.wang@mediatek.com>, <robh+dt@kernel.org>,
-        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, <cc.hwang@mediatek.com>
-Date:   Thu, 6 Aug 2020 14:27:18 +0800
-In-Reply-To: <20200727094458.GU12965@vkoul-mobl>
-References: <1593673564-4425-1-git-send-email-EastL.Lee@mediatek.com>
-         <1593673564-4425-3-git-send-email-EastL.Lee@mediatek.com>
-         <20200715061957.GA34333@vkoul-mobl> <1595471650.22392.12.camel@mtkswgap22>
-         <20200727094458.GU12965@vkoul-mobl>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Thu, 6 Aug 2020 02:30:29 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA40C061574;
+        Wed,  5 Aug 2020 23:30:29 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f7so42865215wrw.1;
+        Wed, 05 Aug 2020 23:30:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=TGBk281x4usHvdNF4g8zlmo5D8Bhv5Q8McyHFyF9+HM=;
+        b=S9i0qvlyIu7dYtrctjS8zURJfTNuaHUJFmsq4RntwuztGPv3fezc0gZ2Inj8VFKNBP
+         4rhI8IZMOrILBx/Nbiu+ecCVYOd6XKJ4IIXi84lO/jr0ffXbsSPR8BVfOXcKV+7zVLPv
+         5lQyCgYIBncfg0vVH+zfq4RCtq4+YpON6IY+zrQI0YuRYdezFn4PU8pDKr4sX20MPbR6
+         iO36Y7WznBJxbke2ec0xKTU746X/WAqFqCAY5rM1p/koUVFiGPSoZEyXvJKrKc8Nd69L
+         6j+pSMvOmWkc9u17AydlJuDf+u2HEQLwt1/sWDZjwKMIlzOfkgzmIOW7+l5pz6QcMiri
+         A/9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TGBk281x4usHvdNF4g8zlmo5D8Bhv5Q8McyHFyF9+HM=;
+        b=tWZm01VGgzcptqn4kiDBEGyvnaOeCxCzwmkDgKpbLdRMt20qTjAbnv6IJoRi9jkgdM
+         gXt0LOKZV5TN1G0lGly+XpNb7egoZu8nj09SsZ10e+gvvQwu+cq2bfpIqMaHYozP6t4i
+         ZQw5Qac8CyZv/PGDCHCCVF92HWBDfovO35kA1YHh8jje36SHlcCwV7cOn075ZahCU0Tj
+         9pHnSiLVjBiAdd40Miyzq0i2W1tuMZUdFbty5kADInUU2pjSCwrGNGYO6YpciXYcnb4d
+         4TyMIRItiohezjZHWlxtx1PXSK7tdRw/Jzm7YXhb2CdMqYVDcTdkBv3gAX0mNKmnRjX9
+         QFvA==
+X-Gm-Message-State: AOAM533NP/V2xhE4ny9TTZS+GH+g68gqnvKAaW7eLY7T7Sr35McsX2xV
+        twAHMdpj4XgrPnr09P/tRVs=
+X-Google-Smtp-Source: ABdhPJz3fQId2Mfvo2IM9cPHd13bLT4jFeUUbQi44lKhwcEHOz/i4+jVOl9dhB1/oKwPNdmuXVjHIA==
+X-Received: by 2002:adf:b1ca:: with SMTP id r10mr6294501wra.150.1596695427645;
+        Wed, 05 Aug 2020 23:30:27 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.117.232])
+        by smtp.gmail.com with ESMTPSA id t11sm4967586wrs.66.2020.08.05.23.30.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2020 23:30:26 -0700 (PDT)
+Subject: Re: [PATCH v3 0/4] add i2c support for mt8192
+To:     wsa@the-dreams.de, Qii Wang <qii.wang@mediatek.com>,
+        robh+dt@kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        srv_heupstream@mediatek.com
+References: <1596624742-14727-1-git-send-email-qii.wang@mediatek.com>
+ <20200805214242.GA2182@kunai>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <249df8b3-6125-6ebd-2835-ab703f05b85a@gmail.com>
+Date:   Thu, 6 Aug 2020 08:30:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: F4B7DC2C1D8B20EE4F229651815F3A8E35BCF4AAA4E64D95EAC95B78FBFF707C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200805214242.GA2182@kunai>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA3LTI3IGF0IDE1OjE0ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOg0KPiBP
-biAyMy0wNy0yMCwgMTA6MzQsIEVhc3RMIHdyb3RlOg0KPiA+IE9uIFdlZCwgMjAyMC0wNy0xNSBh
-dCAxMTo0OSArMDUzMCwgVmlub2QgS291bCB3cm90ZToNCj4gPiA+IE9uIDAyLTA3LTIwLCAxNTow
-NiwgRWFzdEwgTGVlIHdyb3RlOg0KPiA+ID4gDQo+ID4gPiA+ICBzdGF0aWMgZW51bSBkbWFfc3Rh
-dHVzIG10a19jcWRtYV90eF9zdGF0dXMoc3RydWN0IGRtYV9jaGFuICpjLA0KPiA+ID4gPiAgCQkJ
-CQkgICBkbWFfY29va2llX3QgY29va2llLA0KPiA+ID4gPiAgCQkJCQkgICBzdHJ1Y3QgZG1hX3R4
-X3N0YXRlICp0eHN0YXRlKQ0KPiA+ID4gPiAgew0KPiA+ID4gPiAtCXN0cnVjdCBtdGtfY3FkbWFf
-dmNoYW4gKmN2YyA9IHRvX2NxZG1hX3ZjaGFuKGMpOw0KPiA+ID4gPiAtCXN0cnVjdCBtdGtfY3Fk
-bWFfdmRlc2MgKmN2ZDsNCj4gPiA+ID4gLQlzdHJ1Y3QgdmlydF9kbWFfZGVzYyAqdmQ7DQo+ID4g
-PiA+IC0JZW51bSBkbWFfc3RhdHVzIHJldDsNCj4gPiA+ID4gLQl1bnNpZ25lZCBsb25nIGZsYWdz
-Ow0KPiA+ID4gPiAtCXNpemVfdCBieXRlcyA9IDA7DQo+ID4gPiA+IC0NCj4gPiA+ID4gLQlyZXQg
-PSBkbWFfY29va2llX3N0YXR1cyhjLCBjb29raWUsIHR4c3RhdGUpOw0KPiA+ID4gPiAtCWlmIChy
-ZXQgPT0gRE1BX0NPTVBMRVRFIHx8ICF0eHN0YXRlKQ0KPiA+ID4gPiAtCQlyZXR1cm4gcmV0Ow0K
-PiA+ID4gPiAtDQo+ID4gPiA+IC0Jc3Bpbl9sb2NrX2lycXNhdmUoJmN2Yy0+dmMubG9jaywgZmxh
-Z3MpOw0KPiA+ID4gPiAtCXZkID0gbXRrX2NxZG1hX2ZpbmRfYWN0aXZlX2Rlc2MoYywgY29va2ll
-KTsNCj4gPiA+ID4gLQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZjdmMtPnZjLmxvY2ssIGZsYWdz
-KTsNCj4gPiA+ID4gLQ0KPiA+ID4gPiAtCWlmICh2ZCkgew0KPiA+ID4gPiAtCQljdmQgPSB0b19j
-cWRtYV92ZGVzYyh2ZCk7DQo+ID4gPiA+IC0JCWJ5dGVzID0gY3ZkLT5yZXNpZHVlOw0KPiA+ID4g
-PiAtCX0NCj4gPiA+ID4gLQ0KPiA+ID4gPiAtCWRtYV9zZXRfcmVzaWR1ZSh0eHN0YXRlLCBieXRl
-cyk7DQo+ID4gPiANCj4gPiA+IGFueSByZWFzb24gd2h5IHlvdSB3YW50IHRvIHJlbW92ZSBzZXR0
-aW5nIHJlc2lkdWU/DQo+ID4gQmVjYXVzZSBNZWRpYXRlayBDUURNQSBIVyBjYW4ndCBzdXBwb3J0
-IHJlc2lkdWUuDQo+IA0KPiBBbmQgcHJldmlvdXNseSBpdCBkaWQ/DQpObywgSXQgd2FzIGNhbGN1
-bGF0ZWQgYnkgc3cgYmVmb3JlLg0KV2UgZm91bmQgdGhhdCB0aGUgcmVzaWR1ZSB3YXMgbm90IG5l
-Y2Vzc2FyeSwgc28gd2UgcmVtb3ZlZCBpdC4NCg0K
 
+
+On 05/08/2020 23:42, wsa@the-dreams.de wrote:
+> On Wed, Aug 05, 2020 at 06:52:18PM +0800, Qii Wang wrote:
+>> This series are based on 5.8-rc1 and we provide four i2c patches
+>> to support mt8192 SoC.
+>>
+>> Main changes compared to v2:
+>> --delete unused I2C_DMA_4G_MODE
+>>
+>> Main changes compared to v1:
+>> --modify the commit with access more than 8GB dram
+>> --add Reviewed-by and Acked-by from Yingjoe, Matthias and Rob
+>>
+>> Qii Wang (4):
+>>    i2c: mediatek: Add apdma sync in i2c driver
+>>    i2c: mediatek: Add access to more than 8GB dram in i2c driver
+>>    dt-bindings: i2c: update bindings for MT8192 SoC
+>>    i2c: mediatek: Add i2c compatible for MediaTek MT8192
+>>
+>>   .../devicetree/bindings/i2c/i2c-mt65xx.txt         |  1 +
+> 
+> Applied to for-next, thanks!
+> 
+> Sidenote: I get these warnings when compiling the driver:
+> 
+> drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'min_low_ns' not described in 'i2c_spec_values'
+> drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'min_high_ns' not described in 'i2c_spec_values'
+> drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'min_su_sta_ns' not described in 'i2c_spec_values'
+> drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'max_hd_dat_ns' not described in 'i2c_spec_values'
+> drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'min_su_dat_ns' not described in 'i2c_spec_values'
+> 
+> Is someone interested to fix these?
+> 
+
+I just send a fix for that.
+
+Regards,
+Matthias
