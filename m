@@ -2,101 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A398423D636
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 06:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA9F23D63E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 07:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgHFEyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 00:54:00 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:29364 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727816AbgHFEx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 00:53:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596689638; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=OsZPoBJQJp6PSyMnKPpLTNg227XLM8APZn+rJSU8syY=;
- b=qdfz5IWX2EzNno2a+ham3E+H55z0oV1WTgDGF44Ed1JA1Raf9kNgVSW7gsTnwVgHAGuOWOmY
- 3+1fFw7jljjGjH6oguvlQY5yM0o9r0Op9a1p5+X6eCJYaS2VMTHRd21DLn4MaDwiAY/Yph/R
- eK3EZrj+d4a042iTvV5JweWz3nY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f2b8ce5725833be3066a6b0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 04:53:57
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E4599C433AF; Thu,  6 Aug 2020 04:53:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22634C433C6;
-        Thu,  6 Aug 2020 04:53:55 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 06 Aug 2020 12:53:55 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
+        id S1727905AbgHFFDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 01:03:20 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45517 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725271AbgHFFDR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 01:03:17 -0400
+Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0765355t023378
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 6 Aug 2020 01:03:06 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id C7274420263; Thu,  6 Aug 2020 01:03:05 -0400 (EDT)
+Date:   Thu, 6 Aug 2020 01:03:05 -0400
+From:   tytso@mit.edu
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     adilger.kernel@dilger.ca, corbet@lwn.net,
+        linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 8/9] scsi: ufs: Fix a racing problem btw error handler
- and runtime PM ops
-In-Reply-To: <yq1r1slzxoh.fsf@ca-mkp.ca.oracle.com>
-References: <1596445485-19834-1-git-send-email-cang@codeaurora.org>
- <1596445485-19834-9-git-send-email-cang@codeaurora.org>
- <yq1r1slzxoh.fsf@ca-mkp.ca.oracle.com>
-Message-ID: <f6a49b77e381c274e1a4cfd11e088304@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: Ext4
+Message-ID: <20200806050305.GF7657@mit.edu>
+References: <20200706190339.20709-1-grandmaster@al2klimov.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200706190339.20709-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-05 09:31, Martin K. Petersen wrote:
-> Can,
-> 
->> Current IRQ handler blocks scsi requests before scheduling eh_work,
->> when error handler calls pm_runtime_get_sync, if ufshcd_suspend/resume
->> sends a scsi cmd, most likely the SSU cmd, since scsi requests are
->> blocked, pm_runtime_get_sync() will never return because
->> ufshcd_suspend/reusme is blocked by the scsi cmd. Some changes and
->> code re-arrangement can be made to resolve it.
-> 
->   CC [M]  drivers/scsi/ufs/ufshcd.o
-> drivers/scsi/ufs/ufshcd.c: In function ‘ufshcd_queuecommand’:
-> drivers/scsi/ufs/ufshcd.c:2570:6: error: this statement may fall
-> through [-Werror=implicit-fallthrough=]
->  2570 |   if (hba->pm_op_in_progress) {
->       |      ^
-> drivers/scsi/ufs/ufshcd.c:2575:2: note: here
->  2575 |  case UFSHCD_STATE_RESET:
->       |  ^~~~
-> cc1: all warnings being treated as errors
-> make[3]: *** [scripts/Makefile.build:280: drivers/scsi/ufs/ufshcd.o] 
-> Error 1
-> make[2]: *** [scripts/Makefile.build:497: drivers/scsi/ufs] Error 2
-> make[1]: *** [scripts/Makefile.build:497: drivers/scsi] Error 2
-> make: *** [Makefile:1764: drivers] Error 2
+On Mon, Jul 06, 2020 at 09:03:39PM +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
 
-Thanks Martin, will fix it in next version.
+Thanks, applied.
 
-Can Guo.
+						- Ted
