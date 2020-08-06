@@ -2,56 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD25423D874
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B02C23D875
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729130AbgHFJUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
+        id S1725927AbgHFJTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729072AbgHFJS4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        with ESMTP id S1729074AbgHFJS4 (ORCPT
+        <rfc822;Linux-kernel@vger.kernel.org>);
         Thu, 6 Aug 2020 05:18:56 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB3BC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:18:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8EBC061575
+        for <Linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:18:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LGsolx+q4+pRQwaFegj0pZt825v+uaehpXLibfoN7qg=; b=Ns3KKIZDE6iGgMooNVVQ63I1br
-        CvPi4fQkVVaIqdaadNEcdq5e/qP0sFb+t7e7CxNw088wxUDhKLm0p07hCuJGdrAGGqArmBx3z+bcJ
-        XAvI8FNyeJOKqNSXUOHdyXSYxUg6XuIVnKb6IMunukKE/jeTy9iKElJdtoyUUk6W3Kaj1ukYnZE9M
-        UMqYPPJHj4IxUeNE6DnokltXo2FBVwg0LhQRzaOHrAkSzlN8ICB9ytGWeBT56i8nx35AsTjrmPfCe
-        eN2klwLsvDa2jdXush1PsPISlab9rjivhBUdiBnclY6XsfOdaYiIMuAamMjrQkst0K9boxWwrfnlm
-        a57pVYTg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3c2A-0000FS-J5; Thu, 06 Aug 2020 09:17:58 +0000
-Date:   Thu, 6 Aug 2020 10:17:58 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v3 3/3] powerpc/uaccess: simplify the get_fs() set_fs()
- logic
-Message-ID: <20200806091758.GA653@infradead.org>
-References: <a6e62627d25fb7ae9b91d8bf553e707689e37498.1596702117.git.christophe.leroy@csgroup.eu>
- <cf39cb8e42cffe323393b8cecdc59a7230298eab.1596702117.git.christophe.leroy@csgroup.eu>
+        bh=HBfnhIZeMcT664G81tfZBhokhfWHpa8MvvKA8GAKnW4=; b=JdRQpYBXtol5csn+jTgJXmQMuC
+        Rs9h+TuA6T61PEr5h3BLllrn0OLlKXAcDPGljedtzehj0V9Ib14nNX+O242NSr+7ppICimAwMl6Cp
+        SElRBKTxlvGzzzm6VjBDBVBSWBB9HBYeaoZ9w3igbe9Gwtx8ldr3+VpIk1FNF2ww0hRoQuIpUZwXT
+        V+SekrLBrpuM8VUhukWogLMMdge1r7Hk3ctdLHjKtcYK4bukzZzHXUOvBTF3yNUoTea5XUQzVkhaC
+        3q4JIqbp4ahtvWW6/0I77cqPifyI6EOHxPR9UQPBKJtVLXsJ1thFo9iL5rr3Vy2VLyozx5wN17PMu
+        vMTFeTqg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3c2e-0000GO-Ej; Thu, 06 Aug 2020 09:18:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 92C25300446;
+        Thu,  6 Aug 2020 11:18:27 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7A50D220F91BB; Thu,  6 Aug 2020 11:18:27 +0200 (CEST)
+Date:   Thu, 6 Aug 2020 11:18:27 +0200
+From:   peterz@infradead.org
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     mingo@redhat.com, oleg@redhat.com, acme@kernel.org,
+        jolsa@kernel.org, Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com
+Subject: Re: [PATCH v1 2/2] perf/core: Fake regs for leaked kernel samples
+Message-ID: <20200806091827.GY2674@hirez.programming.kicks-ass.net>
+References: <20200731025617.16243-1-yao.jin@linux.intel.com>
+ <20200731025617.16243-2-yao.jin@linux.intel.com>
+ <20200804114900.GI2657@hirez.programming.kicks-ass.net>
+ <4c958d61-11a7-9f3e-9e7d-d733270144a1@linux.intel.com>
+ <20200805124454.GP2657@hirez.programming.kicks-ass.net>
+ <797aa4de-c618-f340-ad7b-cef38c96b035@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cf39cb8e42cffe323393b8cecdc59a7230298eab.1596702117.git.christophe.leroy@csgroup.eu>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <797aa4de-c618-f340-ad7b-cef38c96b035@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do you urgently need this?  My plan for 5.10 is to rebased and submit
-the remaining bits of this branch:
+On Thu, Aug 06, 2020 at 10:26:29AM +0800, Jin, Yao wrote:
 
-    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/set_fs-removal
+> > +static struct pt_regs *sanitize_sample_regs(struct perf_event *event, struct pt_regs *regs)
+> > +{
+> > +	struct pt_regs *sample_regs = regs;
+> > +
+> > +	/* user only */
+> > +	if (!event->attr.exclude_kernel || !event->attr.exclude_hv ||
+> > +	    !event->attr.exclude_host   || !event->attr.exclude_guest)
+> > +		return sample_regs;
+> > +
+> 
+> Is this condition correct?
+> 
+> Say counting user event on host, exclude_kernel = 1 and exclude_host = 0. It
+> will go "return sample_regs" path.
 
-which will kill off set_fs/get_fs entirely.
+I'm not sure, I'm terminally confused on virt stuff.
+
+Suppose we have nested virt:
+
+	L0-hv
+	|
+	G0/L1-hv
+	   |
+	   G1
+
+And we're running in G0, then:
+
+ - 'exclude_hv' would exclude L0 events
+ - 'exclude_host' would ... exclude L1-hv events?
+ - 'exclude_guest' would ... exclude G1 events?
+
+Then the next question is, if G0 is a host, does the L1-hv run in
+G0 userspace or G0 kernel space?
+
+I was assuming G0 userspace would not include anything L1 (kvm is a
+kernel module after all), but what do I know.
+
+> > @@ -11609,7 +11636,8 @@ SYSCALL_DEFINE5(perf_event_open,
+> >   	if (err)
+> >   		return err;
+> > -	if (!attr.exclude_kernel) {
+> > +	if (!attr.exclude_kernel || !attr.exclude_callchain_kernel ||
+> > +	    !attr.exclude_hv || !attr.exclude_host || !attr.exclude_guest) {
+> >   		err = perf_allow_kernel(&attr);
+> >   		if (err)
+> >   			return err;
+> > 
+> 
+> I can understand the conditions "!attr.exclude_kernel || !attr.exclude_callchain_kernel".
+> 
+> But I'm not very sure about the "!attr.exclude_hv || !attr.exclude_host || !attr.exclude_guest".
+
+Well, I'm very sure G0 userspace should never see L0 or G1 state, so
+exclude_hv and exclude_guest had better be true.
+
+> On host, exclude_hv = 1, exclude_guest = 1 and exclude_host = 0, right?
+
+Same as above, is G0 host state G0 userspace?
+
+> So even exclude_kernel = 1 but exclude_host = 0, we will still go
+> perf_allow_kernel path. Please correct me if my understanding is wrong.
+
+Yes, because with those permission checks in place it means you have
+permission to see kernel bits.
