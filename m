@@ -2,137 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1853623D5C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 05:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB1123D5BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 05:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730629AbgHFD2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 23:28:18 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24025 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730582AbgHFD2D (ORCPT
+        id S1730244AbgHFDUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 23:20:51 -0400
+Received: from nl101-3.vfemail.net ([149.210.219.33]:30008 "EHLO
+        nl101-3.vfemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730228AbgHFDUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 23:28:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596684481;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=fv3CnjYaDNIHTU7CqIhzqNedLZ06zeIgR5EU/DfXL/4=;
-        b=hUKhqieFBa5J57whBZbx609Apal04a/P/dfRsi4TPyyJOROdnKTG0krj/QlI+NMYBcJZku
-        ILY04arSSsf5z1keXUVGPmeCchra49SmxXT7ZAH6Gx5HJ1PSxWAuJ+UsbQFvnfeptZQlSM
-        jBdKWYPy0WXowVn4DW//7+PCSIoLQeQ=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-Lc2dETV0Pz6ttQwf1XgJeg-1; Wed, 05 Aug 2020 23:20:32 -0400
-X-MC-Unique: Lc2dETV0Pz6ttQwf1XgJeg-1
-Received: by mail-pg1-f198.google.com with SMTP id h2so32713083pgc.19
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 20:20:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=fv3CnjYaDNIHTU7CqIhzqNedLZ06zeIgR5EU/DfXL/4=;
-        b=U+/5nbjy1HuG7vnnHzjI5LHIsfL9UJJO+SQgEZoqWsMh39JsJngbLmxG6Lp+aGSVUX
-         pAhqV+Pg4otH/G/UrbU4B0lm/jJgr/LHKHORKMe8xVOKbYbKR2blhCeTMTkRQUvoq/AT
-         APi82vCsK8Unv0TaFVWPv8IGUBA28Wf7P1SCzsmiVumU8bRGUEJBRmvW6y4R5GxPUdrc
-         PlISjG8+yhGwJI9LfgcFNxoRn0U0Ph6khpj2SIRzmYdcVeKXW5wgobDjtEc71peqkpEd
-         wiVqnwzAMY5LPB7NzdNKmgfZM9vWwWfpQUOVc05Og/SEsQvocK0mA8GcDK6tRDSkoS1F
-         COyw==
-X-Gm-Message-State: AOAM530VnLRX/GgUs6D8KndXYAiBjnn3qIlIpizVQHBphDaA0+cw8831
-        Wf5RtH/3kjDUp8SCKT3bDj/WcfDZ7sTFTCrfKea3dzUpqjNo4EBgoWvhXJqVhmA/VpRtCjZ7R6Z
-        J6PIDT5p12phqSK3YxJ5snAr7
-X-Received: by 2002:a17:90a:6d26:: with SMTP id z35mr6170203pjj.164.1596684030848;
-        Wed, 05 Aug 2020 20:20:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw1dO1CoIriHlooHe7iPiLtnA9/a4o5ehfwXRyowc0cEPLGbBaMduX4YaDzusso9AlMTbBwLw==
-X-Received: by 2002:a17:90a:6d26:: with SMTP id z35mr6170176pjj.164.1596684030608;
-        Wed, 05 Aug 2020 20:20:30 -0700 (PDT)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id g4sm4971772pgn.64.2020.08.05.20.20.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 20:20:29 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 11:20:17 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miao Xie <miaoxie@huawei.com>, Chao Yu <yuchao0@huawei.com>,
-        Fang Wei <fangwei1@huawei.com>,
-        Li Guifu <bluce.liguifu@huawei.com>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [GIT PULL] erofs fixes for 5.9-rc1
-Message-ID: <20200806032017.GA4442@xiangao.remote.csb>
+        Wed, 5 Aug 2020 23:20:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=vfemail.net; h=date:from
+        :to:cc:subject:message-id:in-reply-to:references:mime-version
+        :content-type:content-transfer-encoding; s=2018; bh=Ue08wca4aM0I
+        SmyWal/liLfS8epsmUBIz5UxuAqlMdw=; b=WkKjeeRRzXXMuvvZ7LZy7tuRkHmJ
+        xnuXeUrmIDPlpQT8vqygaTkAIy85owyfpWtBJT7ufwuZ+UOzpNujxMT5hOy3dIhJ
+        dqDp/UBPWqvlCQwSUixUl2k5dtDXXnABZKIAaDUKhVQzeIN2TGSs3PYDisxdH4lL
+        imqJEI7J6fQ2/Ns=
+Received: (qmail 56125 invoked from network); 6 Aug 2020 03:20:47 -0000
+Received: by simscan 1.4.0 ppid: 56117, pid: 56122, t: 0.2011s
+         scanners:none
+Received: from unknown (HELO d3d3MTkyLnZmZW1haWwubmV0) (aGdudGt3aXNAdmZlbWFpbC5uZXQ=@MTkyLjE2OC4xLjE5Mg==)
+  by nl101.vfemail.net with ESMTPA; 6 Aug 2020 03:20:47 -0000
+Date:   Wed, 5 Aug 2020 23:20:38 -0400
+From:   David Niklas <Hgntkwis@vfemail.net>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Is anyone else getting a bad signature from kernel.org's 5.8
+ sources+Greg's sign?
+Message-ID: <20200805232038.7a1767cc@Phenom-II-x6.niklas.com>
+In-Reply-To: <5a943a1f-c5ef-937f-f67e-1c59c04d63fb@infradead.org>
+References: <20200805205924.1f646d45@Phenom-II-x6.niklas.com>
+        <5a943a1f-c5ef-937f-f67e-1c59c04d63fb@infradead.org>
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, 5 Aug 2020 18:36:08 -0700
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-Could you consider this pull request for 5.9-rc1?
+> On 8/5/20 5:59 PM, David Niklas wrote:
+> > Hello,
+> > I downloaded the kernel sources from kernel.org using curl, then
+> > opera, and finally lynx (to rule out an html parsing bug). I did the
+> > same with the sign and I keep getting:
+> > 
+> > %  gpg2 --verify linux-5.8.tar.sign linux-5.8.tar.xz
+> > gpg: Signature made Mon Aug  3 00:19:13 2020 EDT
+> > gpg:                using RSA key
+> > 647F28654894E3BD457199BE38DBBDC86092693E gpg: BAD signature from
+> > "Greg Kroah-Hartman <gregkh@linuxfoundation.org>" [unknown]
+> > 
+> > I did refresh all the keys just in case.
+> > I believe this is important so I'm addressing this to the signer and
+> > only CC'ing the list.
+> > 
+> > If I'm made some simple mistake, feel free to send SIG666 to my
+> > terminal. I did re-read the man page just in case.  
+> 
+> It works successfully for me.
+> 
+> 
+> from https://www.kernel.org/category/signatures.html::
+> 
+> 
+> If you get "BAD signature"
+> 
+> If at any time you see "BAD signature" output from "gpg2 --verify",
+> please first check the following first:
+> 
+>     Make sure that you are verifying the signature against the .tar
+> version of the archive, not the compressed (.tar.xz) version. Make sure
+> the the downloaded file is correct and not truncated or otherwise
+> corrupted.
+> 
+> If you repeatedly get the same "BAD signature" output, please email
+> helpdesk@kernel.org, so we can investigate the problem.
+> 
+> 
+> 
 
-This cycle mainly addresses an issue out of some extended inode with
-designated location, which can hardly be generated by current mkfs but
-needs to handle at runtime anyway. The others are quite trivial ones.
+Many thanks. I've never seen a signature done that way before, but I
+understand why you would do it that way.
 
-All commits have been tested and have been in linux-next as well.
-This merges cleanly with master.
-
-Thanks,
-Gao Xiang
-
-The following changes since commit 92ed301919932f777713b9172e525674157e983d:
-
-  Linux 5.8-rc7 (2020-07-26 14:14:06 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.9-rc1
-
-for you to fetch changes up to 0e62ea33ac12ebde876b67eca113630805191a66:
-
-  erofs: remove WQ_CPU_INTENSIVE flag from unbound wq's (2020-08-03 21:04:46 +0800)
-
-----------------------------------------------------------------
-Changes since last update:
-
- - use HTTPS links instead of insecure HTTP ones;
-
- - fix crossing page boundary on specific extended inodes;
-
- - remove useless WQ_CPU_INTENSIVE flag for unbound wq;
-
- - minor cleanup.
-
-----------------------------------------------------------------
-Alexander A. Klimov (1):
-      erofs: Replace HTTP links with HTTPS ones
-
-Gao Xiang (3):
-      erofs: fix extended inode could cross boundary
-      erofs: fold in used-once helper erofs_workgroup_unfreeze_final()
-      erofs: remove WQ_CPU_INTENSIVE flag from unbound wq's
-
- fs/erofs/compress.h     |   2 +-
- fs/erofs/data.c         |   2 +-
- fs/erofs/decompressor.c |   2 +-
- fs/erofs/dir.c          |   2 +-
- fs/erofs/erofs_fs.h     |   2 +-
- fs/erofs/inode.c        | 123 +++++++++++++++++++++++++++++++-----------------
- fs/erofs/internal.h     |   2 +-
- fs/erofs/namei.c        |   2 +-
- fs/erofs/super.c        |   2 +-
- fs/erofs/utils.c        |  16 ++-----
- fs/erofs/xattr.c        |   2 +-
- fs/erofs/xattr.h        |   2 +-
- fs/erofs/zdata.c        |   6 +--
- fs/erofs/zdata.h        |   2 +-
- fs/erofs/zmap.c         |   2 +-
- fs/erofs/zpvec.h        |   2 +-
- 16 files changed, 100 insertions(+), 71 deletions(-)
-
+David
