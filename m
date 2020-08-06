@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA19623DF09
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C2F23DF56
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730604AbgHFRga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729698AbgHFRfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:35:24 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BED4C0086A7
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:20:03 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id g19so36922114ejc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=27KOdDBMR58YvRnK7H5/nd9yUqjH+UuYcfpnQiwOOLU=;
-        b=tGrB7Z7WS0HHtWrS+RAu0IAYwU8Nad8rwMZdG73SY5x2ARE0d1FqXwWCLzD3UMrdlR
-         6Kn0kjJyU3Zbj6OubM+TRf7kg41JZspNfLxofrrUzUQMRrYpHgt6yi61+Rzw0TSxyySG
-         ZrV978lfm55ZcESwNGZp975asvMxzL4xk01lDpBkj9kuUKt1y4ZnLs/xyWsATvELhJk1
-         kFLFuZbHju979DVXXQ3lQhqftMpDMvL9oc++9T2qcgkhq/HPw08XX+JQDNIRTow6uAXN
-         WiVbdduH+x+EmynnvVmeE/Jlm8OcHRV5jln6i5lJFo17YjLsUFxNhJ1YjoX3Mjouet1b
-         4MZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=27KOdDBMR58YvRnK7H5/nd9yUqjH+UuYcfpnQiwOOLU=;
-        b=VYimEth6TiqnsnInDDBRwXzdmZIvJFUwBGOH1wa/DLtnZ01l/rMhfatTMzPX77/W5x
-         1zpGwSrTmuaw8w/dbWIZPH1yoi3sjTUOJ5cqvEzgvA4j+MhWDwo/EbBCN+WK1k0+7/SJ
-         +OQVTIs5gxba/FnuATfMZWc44qGLwVrcuGGd5yyCSVxJ6hObV0q4GlGF8BazVb2hruxM
-         A6AiIfGTS5LSKqf5H1xSPrb9uuvi+wy0/wsO9vwXD6WOWdTCrmpBUJ0hfwHhIOp4/Sjd
-         E82r1qGN4wFGmSTIFX011YJDv/dHTtDMPwd7zH+KKG1z9HQ5vHH9blMwSFVPgIPBXF60
-         q70Q==
-X-Gm-Message-State: AOAM531DjbEtsbAaNQlAv/xe8vLLEJ8rre3XUetxa558Nys2skuMl4vQ
-        vtA9S0AWiiLEdig4PauDj8jPwvPhaHZTL9dlXzHd7w==
-X-Google-Smtp-Source: ABdhPJzrlkvHWWpq4WM0aG15rib8qGzmbNy1T+8TCAaz/ASsMen1gmJIqTYuiQwAEJfL8+D0y5EKRfUDgIokuAOiI0I=
-X-Received: by 2002:a17:906:38d8:: with SMTP id r24mr4667542ejd.341.1596727202027;
- Thu, 06 Aug 2020 08:20:02 -0700 (PDT)
+        id S1729894AbgHFRpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:45:55 -0400
+Received: from mga02.intel.com ([134.134.136.20]:11127 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728234AbgHFQih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:38:37 -0400
+IronPort-SDR: fE0GVkJOzDvZFi9c+cQSHzm6Kwn6tKCMAJDuCnq+64C7u5C2+4HbO5755dcdHPGMkRynQeee/m
+ D3yab4csLR7w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="140707733"
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="140707733"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 08:32:06 -0700
+IronPort-SDR: 9dqFfthCWP0LCXusvT7/YdIN2LUfL+dM8a7cOSPw//37suISlg4AYceONUhkp3L97Q2vJ28zie
+ pSeFYhboG0hA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="276413105"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by fmsmga008.fm.intel.com with ESMTP; 06 Aug 2020 08:32:05 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 76CC6301CAC; Thu,  6 Aug 2020 08:32:05 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 08:32:05 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     peterz@infradead.org
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, alexey.budankov@linux.intel.com,
+        adrian.hunter@intel.com
+Subject: Re: [PATCH 1/2] perf: Add closing sibling events' file descriptors
+Message-ID: <20200806153205.GA1448395@tassilo.jf.intel.com>
+References: <20200708151635.81239-1-alexander.shishkin@linux.intel.com>
+ <20200708151635.81239-2-alexander.shishkin@linux.intel.com>
+ <20200806083530.GV2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <159630256804.3143511.8894023468833792004.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20200803094257.GA23458@shao2-debian> <20200806133452.GA2077191@gmail.com>
-In-Reply-To: <20200806133452.GA2077191@gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 6 Aug 2020 08:19:52 -0700
-Message-ID: <CAPcyv4hS7K0Arrd+C0LhjrFH=yGJf3g55_WkHOET4z58AcWrJw@mail.gmail.com>
-Subject: Re: [x86/copy_mc] a0ac629ebe: fio.read_iops -43.3% regression
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        X86 ML <x86@kernel.org>, stable <stable@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        0day robot <lkp@intel.com>, lkp@lists.01.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806083530.GV2674@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 6:35 AM Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * kernel test robot <rong.a.chen@intel.com> wrote:
->
-> > Greeting,
-> >
-> > FYI, we noticed a -43.3% regression of fio.read_iops due to commit:
-> >
-> >
-> > commit: a0ac629ebe7b3d248cb93807782a00d9142fdb98 ("x86/copy_mc: Introduce copy_mc_generic()")
-> > url: https://github.com/0day-ci/linux/commits/Dan-Williams/Renovate-memcpy_mcsafe-with-copy_mc_to_-user-kernel/20200802-014046
-> >
-> >
-> > in testcase: fio-basic
-> > on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 256G memory
-> > with following parameters:
->
-> So this performance regression, if it isn't a spurious result, looks
-> concerning. Is this expected?
+> > This adds an opt-in flag to the perf_event_open() syscall to retain
+> > sibling events after their file descriptors are closed. In this case, the
+> > actual events will be closed with the group leader.
+> 
+> So having the 1:1 relation with filedesc imposes a resource limit on
+> userspace.
+> 
+> This patch breaks that and enables a user to basically DoS the system by
+> creating unbound events.
 
-This is not expected and I think delays these patches until I'm back
-from leave in a few weeks. I know that we might lose some inlining
-effect due to replacing native memcpy, but I did not expect it would
-have an impact like this. In my testing I was seeing a performance
-improvement from replacing the careful / open-coded copy with rep;
-mov;, which increases the surprise of this result.
+The idea was to account the events in the locked memory allocation too.
+Not sure that made it into the patch though.
+
+It has a minor issue that it might break some existing setups that rely
+on the mmap fitting exactly into the mmap allocation, but that could
+be solved by allowing a little slack, since the existing setups
+likely don't have that many events.
+
+There's also a secondary issue of DoS the kernel by creating very long
+lists to iterate, but I suppose this is already quite possible, so probably
+not a new issue.
+
+-Andi
+
