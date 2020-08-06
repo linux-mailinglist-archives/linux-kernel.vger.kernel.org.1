@@ -2,210 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A459223DCDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E1923DC33
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729867AbgHFQ5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:57:10 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:40758 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728723AbgHFQkm (ORCPT
+        id S1729442AbgHFQr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:47:27 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:43670 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727081AbgHFQpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:40:42 -0400
-Received: by mail-il1-f194.google.com with SMTP id x1so20675139ilp.7;
-        Thu, 06 Aug 2020 09:39:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xk1+TxcE3QnIGMOvPraXoKHV6uIacnJL3Sj3a6NYZPM=;
-        b=N58pHWGrEBfXX6ulurZai9KKwSZKQyXXXeGIqHspMfWQ3boJDtauhQfgXIGMyS0jlC
-         h0JKwoll4DUykjdW23kB9e9urpcMdd7Vw1pkkP1nkeasL63Or4fkxoHrE/buXuNmTbvP
-         iHrrg/cJ28dwr7PYELBjFX8LKjqQLXHczvfz5xcNUqjnBwFpmNvkRsa9tuX2cIzkolM7
-         XJss5IvxakrXjZy/mVHtR0cphCWz8N18q4R0yqGcW17cvM3uca7xO2GzxK2dVSRFR79+
-         mQ32TAuukBpIPeTSJMOhZc/lqWCZRXsEszSsmcoE5eY60qQpTRbUyns20FmQj0qVEcYf
-         lMPQ==
-X-Gm-Message-State: AOAM531D69kdV7mzrS9XQI1KvdKCVlV3Chg9IGuv6m9BDe4L2oDtS+vF
-        eHb5OuWDNjLhQxYC+lsUQdHFXlI=
-X-Google-Smtp-Source: ABdhPJywUa1fS+mhDPPCoUj+LuP94rGkcgwbq8VHiTsnW6mBNPkpA3uSHzABW0gjnvpFFTpk6c+lhA==
-X-Received: by 2002:a05:6602:24d5:: with SMTP id h21mr10407216ioe.108.1596724757598;
-        Thu, 06 Aug 2020 07:39:17 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id a18sm4061245ilp.52.2020.08.06.07.39.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 07:39:16 -0700 (PDT)
-Received: (nullmailer pid 822114 invoked by uid 1000);
-        Thu, 06 Aug 2020 14:39:12 -0000
-Date:   Thu, 6 Aug 2020 08:39:12 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Cheng-Yi Chiang <cychiang@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>, dianders@chromium.org,
-        dgreid@chromium.org, tzungbi@chromium.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 1/2] ASoC: qcom: dt-bindings: Add sc7180 machine
- bindings
-Message-ID: <20200806143912.GA816294@bogus>
-References: <20200803040122.2063634-1-cychiang@chromium.org>
- <20200803040122.2063634-2-cychiang@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200803040122.2063634-2-cychiang@chromium.org>
+        Thu, 6 Aug 2020 12:45:14 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076EXSii075967;
+        Thu, 6 Aug 2020 14:43:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
+ bh=theamiPcOekYRX6Mv+pKryKVA4+IUThIhqCbFzscYqY=;
+ b=VmoCVrPZHrL4uHzHSvj14hJdREyXwOFtbXUrsaMLAjjWGwMww/GLYv/sxUgO/6Rf42CJ
+ OJlG6zZ8A5l52eMYKNdzy9S2bKZN+XZIP8K5lw/15OWzCABQdEY0Gih0UbDzNLy/vEDs
+ yq6cJQizIstrW3kNpYZo497C8qUAlWVtzsJDTQpFltRWEfwa8LHcRolIT3KQGZI8LT9f
+ tufp8yPamsnMOLDSLQN9XxtbAerBX4frvFiwPKYys8MtzIEZFX28gNn3sRw0V9+kSeFx
+ RcucPHUZbLd4RwSNh0i7LnjimFbh/eF0ikoWiq6VPbuwytvBoLZjc1fr5eX34J10TnS2 7Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 32r6gwucgc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 06 Aug 2020 14:43:02 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076Egxms192395;
+        Thu, 6 Aug 2020 14:43:01 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 32pdnwj85k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Aug 2020 14:43:01 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 076EgjIB005861;
+        Thu, 6 Aug 2020 14:42:45 GMT
+Received: from localhost.uk.oracle.com (/10.175.182.235)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 Aug 2020 07:42:45 -0700
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com, yhs@fb.com
+Cc:     linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
+        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
+        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
+        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
+        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [RFC PATCH bpf-next 1/4] bpf: provide function to get vmlinux BTF information
+Date:   Thu,  6 Aug 2020 15:42:22 +0100
+Message-Id: <1596724945-22859-2-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1596724945-22859-1-git-send-email-alan.maguire@oracle.com>
+References: <1596724945-22859-1-git-send-email-alan.maguire@oracle.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008060105
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
+ phishscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008060104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 12:01:21PM +0800, Cheng-Yi Chiang wrote:
-> Add devicetree bindings documentation file for sc7180 sound card.
-> 
-> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> ---
->  .../bindings/sound/qcom,sc7180.yaml           | 113 ++++++++++++++++++
->  1 file changed, 113 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
-> new file mode 100644
-> index 000000000000..c74f0fe9fb3b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
-> @@ -0,0 +1,113 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
-> +
-> +maintainers:
-> +  - Rohit kumar <rohitkr@codeaurora.org>
-> +  - Cheng-Yi Chiang <cychiang@chromium.org>
-> +
-> +description:
-> +  This binding describes the SC7180 sound card which uses LPASS for audio.
-> +
-> +properties:
-> +  compatible:
-> +    contains:
-> +      const: qcom,sc7180-sndcard
-> +
-> +  audio-routing:
-> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> +    description:
-> +      A list of the connections between audio components. Each entry is a
-> +      pair of strings, the first being the connection's sink, the second
-> +      being the connection's source.
-> +
-> +  model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: User specified audio sound card name
-> +
-> +  aux-dev:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: phandle of the codec for headset detection
-> +
-> +patternProperties:
-> +  "^dai-link(@[0-9]+)?$":
-> +    description:
-> +      Each subnode represents a dai link. Subnodes of each dai links would be
-> +      cpu/codec dais.
-> +
-> +    type: object
-> +
-> +    properties:
-> +      link-name:
-> +        description: Indicates dai-link name and PCM stream name.
-> +        $ref: /schemas/types.yaml#/definitions/string
-> +        maxItems: 1
-> +
-> +      reg:
-> +        description: dai link address.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        maxItems: 1
-> +
-> +      cpu:
-> +        description: Holds subnode which indicates cpu dai.
-> +        type: object
-> +        properties:
-> +          sound-dai: true
-> +
-> +      codec:
-> +        description: Holds subnode which indicates codec dai.
-> +        type: object
-> +        properties:
-> +          sound-dai: true
-> +
-> +    required:
-> +      - link-name
-> +      - cpu
-> +      - codec
-> +
-> +    additionalProperties: false
+It will be used later for BPF structure display support
 
-Nothing required?
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ include/linux/bpf.h   |  2 ++
+ kernel/bpf/verifier.c | 18 ++++++++++++------
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
-Add:
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index cef4ef0..55eb67d 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1290,6 +1290,8 @@ int bpf_check(struct bpf_prog **fp, union bpf_attr *attr,
+ 	      union bpf_attr __user *uattr);
+ void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth);
+ 
++struct btf *bpf_get_btf_vmlinux(void);
++
+ /* Map specifics */
+ struct xdp_buff;
+ struct sk_buff;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index b6ccfce..05dfc41 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11064,6 +11064,17 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 	}
+ }
+ 
++struct btf *bpf_get_btf_vmlinux(void)
++{
++	if (!btf_vmlinux && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
++		mutex_lock(&bpf_verifier_lock);
++		if (!btf_vmlinux)
++			btf_vmlinux = btf_parse_vmlinux();
++		mutex_unlock(&bpf_verifier_lock);
++	}
++	return btf_vmlinux;
++}
++
+ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+ 	      union bpf_attr __user *uattr)
+ {
+@@ -11097,12 +11108,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+ 	env->ops = bpf_verifier_ops[env->prog->type];
+ 	is_priv = bpf_capable();
+ 
+-	if (!btf_vmlinux && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
+-		mutex_lock(&bpf_verifier_lock);
+-		if (!btf_vmlinux)
+-			btf_vmlinux = btf_parse_vmlinux();
+-		mutex_unlock(&bpf_verifier_lock);
+-	}
++	bpf_get_btf_vmlinux();
+ 
+ 	/* grab the mutex to protect few globals used by verifier */
+ 	if (!is_priv)
+-- 
+1.8.3.1
 
-additionalProperties: false
-
-(And you'll need to define #address-cells and #size-cells)
-
-> +
-> +examples:
-> +
-> +  - |
-> +    sound {
-> +        compatible = "qcom,sc7180-sndcard";
-> +        model = "sc7180-snd-card";
-> +
-> +        audio-routing =
-> +                    "Headphone Jack", "HPOL",
-> +                    "Headphone Jack", "HPOR";
-> +
-> +        aux-dev = <&alc5682>;
-> +
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        dai-link@0 {
-> +            link-name = "MultiMedia0";
-> +            reg = <0>;
-> +            cpu {
-> +                sound-dai = <&lpass_cpu 0>;
-> +            };
-> +
-> +            codec {
-> +                sound-dai = <&alc5682 0>;
-> +            };
-> +        };
-> +
-> +        dai-link@1 {
-> +            link-name = "MultiMedia1";
-> +            reg = <1>;
-> +            cpu {
-> +                sound-dai = <&lpass_cpu 1>;
-> +            };
-> +
-> +            codec {
-> +                sound-dai = <&max98357a>;
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.28.0.163.g6104cc2f0b6-goog
-> 
