@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EF723DB9D
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A21C23DB91
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbgHFQZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:25:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43262 "EHLO mail.kernel.org"
+        id S1727905AbgHFQUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:20:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727045AbgHFQRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:17:24 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1727771AbgHFQRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:17:23 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.162.129.152])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E66DE22D71;
-        Thu,  6 Aug 2020 12:13:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F70323107;
+        Thu,  6 Aug 2020 12:42:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596716036;
-        bh=O+Yq62Jpar2u7KQqkWw3dmiGoRjXxGUD+TIIm4JmqPg=;
+        s=default; t=1596717728;
+        bh=LToSf9qiFfcTFFkO5/+RnwE73rgrNVOOXFCuz8bkIZI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UVLTvmkatzujC2ujO9N7gWd52kh2sNsgn5jwQ+uywt+FYWEPpJBsVba/+L3uMReZm
-         63eUsD7dqXhwQ2ECvgg8qWpw/0ZDSTubwwYZUAEirXTLleLjzlzlfRAOUraMbW650E
-         RVkGTvGqJr2ao26DVT9G+MDQ9KjBGWZVD6ZAxpRA=
-Date:   Thu, 6 Aug 2020 13:13:32 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>, rafael@kernel.org,
-        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>, benjamin.chao@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com
-Subject: Re: [PATCH 9/9] mfd: mt6360: Merge different sub-devices I2C
- read/write
-Message-ID: <20200806121332.GB6442@sirena.org.uk>
-References: <1596558782-3415-1-git-send-email-gene.chen.richtek@gmail.com>
- <1596558782-3415-11-git-send-email-gene.chen.richtek@gmail.com>
- <20200805161021.GK5556@sirena.org.uk>
- <CAE+NS360iKLoGxiiz8NmQqCp2Uge98Eehe4g2sn_N0e-E3DgyQ@mail.gmail.com>
+        b=S1+5mX2bU/0rMTqkWBQLOK/cXVGnW3qRmge/+BmJBQYHzqah5ARosH9up1eQjVjkl
+         zHdE2T7vF5o9voFcyVCixcd5a7SJAb24v/4S3+cvb9pFuYZy4d8m4o+MLoBaJUss8F
+         mNyu711Oo/LBN+TxJbkk86kKMBPk+EwsdZ/9Gtns=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 088C640524; Thu,  6 Aug 2020 09:42:05 -0300 (-03)
+Date:   Thu, 6 Aug 2020 09:42:05 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     David Ahern <dsahern@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        =?iso-8859-1?Q?Genevi=E8ve?= Bastien <gbastien@versatic.net>,
+        Wang Nan <wangnan0@huawei.com>,
+        Jeremie Galarneau <jgalar@efficios.com>
+Subject: Re: [PATCH v2 3/7] perf tools: Store clock references for
+ -k/--clockid option
+Message-ID: <20200806124204.GE71359@kernel.org>
+References: <20200805093444.314999-1-jolsa@kernel.org>
+ <20200805093444.314999-4-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="s2ZSL+KKDSLx8OML"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAE+NS360iKLoGxiiz8NmQqCp2Uge98Eehe4g2sn_N0e-E3DgyQ@mail.gmail.com>
-X-Cookie: Hedonist for hire... no job too easy!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200805093444.314999-4-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Wed, Aug 05, 2020 at 11:34:40AM +0200, Jiri Olsa escreveu:
+> Adding new CLOCK_DATA feature that stores reference times
+> when -k/--clockid option is specified.
+> 
+> It contains clock id and its reference time together with
+> wall clock time taken at the 'same time', both values are
+> in nanoseconds.
+> 
+> The format of data is as below:
+> 
+>   struct {
+>        u32 version;  /* version = 1 */
+>        u32 clockid;
+>        u64 wall_clock_ns;
+>        u64 clockid_time_ns;
+>   };
+> 
+> This clock reference times will be used in following changes
+> to display wall clock for perf events.
+> 
+> It's available only for recording with clockid specified,
+> because it's the only case where we can get reference time
+> to wallclock time. It's can't do that with perf clock yet.
 
---s2ZSL+KKDSLx8OML
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, applied and added this committer testing section:
 
-On Thu, Aug 06, 2020 at 11:30:56AM +0800, Gene Chen wrote:
-> Mark Brown <broonie@kernel.org> =E6=96=BC 2020=E5=B9=B48=E6=9C=886=E6=97=
-=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8812:10=E5=AF=AB=E9=81=93=EF=BC=9A
 
-> > It's not clear why this isn't just done in the device regmap, there's
-> > exactly one user?
+    Committer testing:
 
-> because I use one regmap to access 4 I2C devices,
+      $ perf record -h -k
 
-There appears to be only one device here?
+       Usage: perf record [<options>] [<command>]
+          or: perf record [<options>] -- <command> [<options>]
 
-> I need change the regmap_bus struct to fit I2C read/write with CRC bit
-> Therefore, MFD reviewer suggests I can move the regmap api to regmap
-> folder such as regmap-ac97.c
+          -k, --clockid <clockid>
+                                clockid to use for events, see clock_gettime()
 
-AC'97 is an industry standard bus used by a range of devices in
-different subsystems.  You can already have custom operations for a
-device just in a regular regmap using the reg_read() and reg_write()
-operations which are there so devices that individual device support
-doesn't need to be added to the regmap core.
+      $ perf record -k monotonic sleep 1
+      [ perf record: Woken up 1 times to write data ]
+      [ perf record: Captured and wrote 0.017 MB perf.data (8 samples) ]
+      $ perf report --header-only | grep clockid -A1
+      # event : name = cycles:u, , id = { 88815, 88816, 88817, 88818, 88819, 88820, 88821, 88822 }, size = 120, { sample_period, sample_freq } = 4000, sample_type = IP|TID|TIME|PERIOD, read_format = ID, disabled = 1, inherit = 1, exclude_kernel = 1, mmap = 1, comm = 1, freq = 1, enable_on_exec = 1, task = 1, precise_ip = 3, sample_id_all = 1, exclude_guest = 1, mmap2 = 1, comm_exec = 1, use_clockid = 1, ksymbol = 1, bpf_event = 1, clockid = 1
+      # CPU_TOPOLOGY info available, use -I to display
+      --
+      # clockid frequency: 1000 MHz
+      # cpu pmu capabilities: branches=32, max_precise=3, pmu_name=skylake
+      # clockid: monotonic (1)
+      # reference time: 2020-08-06 09:40:21.619290 = 1596717621.619290 (TOD) = 21931.077673635 (monotonic)
+      $
 
-You really also need to write a much clearer changelog, I would be hard
-pressed to tell from the changelog that this was moving things to the
-regmap core rather than shuffling regmaps within the device.
-
---s2ZSL+KKDSLx8OML
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8r8+sACgkQJNaLcl1U
-h9B2agf7BQ0T2JHp32v4pfLGpKGHkSI9JcjEGjBwSmahI1cX35HCV5U268ZSJX3d
-BLazy73BTK0mInugyZ9eWwpku1FaC3/t7Iof6Vm8rLUkpEPezWLYamGihace/tjc
-qAUXy954H3ad8WHYtHulkoolE9B8YXr5hxMJ+vN8PNOYMkCuCWHlis1hR4ipH6mJ
-9xdU/uD88UEf/E0JjxmKr/szzWQVrdfQ3pN7j1T5cl44fzYFXpyeH21pq+Qjg6tX
-8moEToplBFHmRmrDPDryDbqRLHLhCLknTcfyAfYM8T9aZUysEdcSDDh/A7FQJ7cq
-f2/PfBNJ2N1pmMGhdyZd01U9Qjr41w==
-=qguZ
------END PGP SIGNATURE-----
-
---s2ZSL+KKDSLx8OML--
