@@ -2,81 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDF923E402
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 00:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1675A23E422
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 00:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgHFW2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 18:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726050AbgHFW2n (ORCPT
+        id S1726316AbgHFWm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 18:42:58 -0400
+Received: from 15.mo6.mail-out.ovh.net ([188.165.39.161]:57388 "EHLO
+        15.mo6.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgHFWm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 18:28:43 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EBFC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 15:28:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ROL26wzrBi3BA4eoI4YIkoABUg6mXp3MZ30GChFull0=; b=g+2hVCddKbli5fq/v23yGI4l4
-        y152Oi78OWzqSYJGVTI0s2Uh0Uc2BET8ObNRpqfiFLUH0Ba+Y+33cwPgMq1CLSNW5IthPAw0atRDi
-        NEffDvexq+clGUN9DX9/8D0eGj1HVtiT3XzwwmoQGHnSvIaZhqX6D/kehyQ0tN1/QvjMz67M26LXL
-        3JYupLPS1qUE57EKkRMYO7CPg28XUeTeGQTltOPIALictEHR5AiqvoQAP17hXK6GOQfa2UqpxgdmP
-        vNLP81Xw4OjJtA9woPXFHJ0hNT24YGFwWHE+opuiwwmB62PhUKOpkzAAL0l5uHm9kZKoY4fBAZh6F
-        BEakLZMkA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49236)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1k3oNM-00059q-RH; Thu, 06 Aug 2020 23:28:40 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1k3oNM-0006YP-22; Thu, 06 Aug 2020 23:28:40 +0100
-Date:   Thu, 6 Aug 2020 23:28:40 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Pratyush Anand <panand@redhat.com>,
-        Pavel Labath <labath@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kazuhiro Inaba <kinaba@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] ARM: hw_breakpoint: Handle inexact watchpoint addresses
-Message-ID: <20200806222839.GG1551@shell.armlinux.org.uk>
-References: <20191019111216.1.I82eae759ca6dc28a245b043f485ca490e3015321@changeid>
- <20191120191813.GD4799@willie-the-truck>
- <CAD=FV=Wntf0TCwdtNNvPY-CXX1VL_SZK8Y8yw1r=UfeayHfwgw@mail.gmail.com>
- <CAD=FV=WgoVN-scgT41R=6Toif2Zrskb3rNzZn_xbP_-ByZC1MA@mail.gmail.com>
- <20200806154144.GD1551@shell.armlinux.org.uk>
- <CAD=FV=XBinO0+uSt_sDTw_YFiZC4Gf8RMSC9ycDg+RWH=63Tog@mail.gmail.com>
- <CAD=FV=XAi6J1LZRZJacTVhX=PYCWs3-5MtS_bG2_ZTuQPfxstQ@mail.gmail.com>
- <20200806220241.GE1551@shell.armlinux.org.uk>
- <CAD=FV=UMc=YVpDRfWdtv_g5=zhCRg=y8JeszYQLUZbgtHC6dLg@mail.gmail.com>
+        Thu, 6 Aug 2020 18:42:57 -0400
+X-Greylist: delayed 12599 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Aug 2020 18:42:56 EDT
+Received: from player695.ha.ovh.net (unknown [10.110.171.30])
+        by mo6.mail-out.ovh.net (Postfix) with ESMTP id 3974021E3F8
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 18:13:22 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player695.ha.ovh.net (Postfix) with ESMTPSA id 41BAC14F12692;
+        Thu,  6 Aug 2020 16:13:16 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-96R0017a5c1c93-e9a5-4fdb-9f0b-f187a326bc09,
+                    9D5F4B8471F7AF6BEF45141B8B52B4DEEC6DEFE4) smtp.auth=steve@sk2.org
+Date:   Thu, 6 Aug 2020 18:13:05 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH] docs: remove the 2.6 "Upgrading I2C Drivers" guide
+Message-ID: <20200806181305.26777f7c@heffalump.sk2.org>
+In-Reply-To: <20200806083339.GA1549@kunai>
+References: <20200805183149.21647-1-steve@sk2.org>
+        <20200805215351.GB2182@kunai>
+        <20200806090800.08b77d4a@heffalump.sk2.org>
+        <20200806083339.GA1549@kunai>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=UMc=YVpDRfWdtv_g5=zhCRg=y8JeszYQLUZbgtHC6dLg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/GpoHHLK2k0P4x+Ck5RFNKd7"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 3179822812265467244
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrkedtgddutddtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrieelhedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 03:26:09PM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> Sigh.  OK, hopefully correct now:
-> 
-> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=8997/2
+--Sig_/GpoHHLK2k0P4x+Ck5RFNKd7
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-LGTM.  Thanks.
+Hi Jon,
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+You=E2=80=99ll see v2 of this patch show up soon, see the context below =E2=
+=80=94 this is a
+patch on top of Mauro=E2=80=99s conversion of the i2c docs to .rst.
+
+Regards,
+
+Stephen
+
+
+On Thu, 6 Aug 2020 10:33:56 +0200, Wolfram Sang <wsa@the-dreams.de> wrote:
+
+> > > Maybe because I don't have the commit in my tree? Can you rebase on t=
+op
+> > > of 5.8? =20
+> >=20
+> > Ah, yes, the commit is on top of Linus=E2=80=99 current master, followi=
+ng the
+> > merge of docs-5.9 from Jon=E2=80=99s tree. In 5.8 the file is a .txt fi=
+le, but
+> > Mauro converted it to .rst for 5.9, and this patch removes the latter
+> > file (to avoid a merge conflict later on...). If you prefer, I can subm=
+it
+> > it to the docs tree instead! =20
+>=20
+> I see. Thanks for the heads up!
+>=20
+> > > And please also remove the reference in Documentation/i2c/index.rst =
+=20
+> >=20
+> > Oops, yes, I=E2=80=99ll do that in v2 once we decide where it should go=
+. =20
+>=20
+> I am fine with either it going via the doc-tree or you sending me v2
+> again after 5.9-rc1. For the first case:
+>=20
+> Acked-by: Wolfram Sang <wsa@kernel.org>
+>=20
+
+--Sig_/GpoHHLK2k0P4x+Ck5RFNKd7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl8sLBEACgkQgNMC9Yht
+g5yRgg/9Epmyf8KbpXV7TBXzcezJGcky3j9GSC4cj7bQQxeV5Nlf8K0lvLQbSv7A
+tU5Ry0vhSJih1GbWvh9eL+UXmW8Lg/wKzl8mKP7Ni08MzUxsE77TD577zClaxk8R
+4bsWosh/J2gm0xiM7GobnDfiWaM0OwECb7i69x5Yg9NVJ6HVz+jvAlURCp1YzASP
+knLFewEVpVbbEEx0a8KewRMIXf1XzKT7DIOCb22zaEPlXKdgBjjfKfHpLmc0Mmoo
+sL95ukBOURiO7fePThg6OpxgkfE9rPyQy0kKmLhIkAbNXZeN/DLgfiFfm/S6ZLJA
+iwqbZPh6M8fP1ulJfPLUX+xY66YAILH3lA9ets8pISmExp08UFX8P3ngGDNClmgv
+p2l1u7VMH8X9zbIV5Q4y50r86/OJnBjAzBoIycuxsuIT78qCZ1pq0dD3lK09PrnG
+hQ9HRe6t0HB1hDGNlkGwv3ej1AcpzNkox8meqT49FWBSfDa2lobr8kbLgACyjFoa
+uhKJGjVb93d3E4PRZPFHxWiwhdf5X8mt4+MQ3mbJA/GRAZ+X74ZGeVbyIkHj4bx8
+HCLdoi8MuJBxhyH5/o2FSUVxkx9EmALhwS+oUOcT72owAG4+qIBtoQ3cySIA6LCw
+C5ZCU7mKw/9oMTkPR5VuPnLCQMcSeIyMYjdXsHcR8cxgvAsUvlw=
+=S2+b
+-----END PGP SIGNATURE-----
+
+--Sig_/GpoHHLK2k0P4x+Ck5RFNKd7--
