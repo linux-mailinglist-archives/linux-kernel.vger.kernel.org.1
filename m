@@ -2,122 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226B923DEBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EF623DE9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730430AbgHFR3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        id S1729931AbgHFR2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729813AbgHFRAb (ORCPT
+        with ESMTP id S1729501AbgHFRB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:00:31 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EC6C061A31
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 05:30:30 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BMnkh4f89z9sPC;
-        Thu,  6 Aug 2020 22:25:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1596716718;
-        bh=OQRBrR5Fsm//taUE85YKbMemDfw0kUen/ms/QyveqNQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Q+kEKUMCbHCmeqwBMVERODUOkcxvF7KpSgfRZYhXP6uzFJyKNFbiWJv5G9wCQruFs
-         mDL0ty4slEQyPKAueGO4odrYBBBXC4FHvixJ9aXUx106Kaq0VRvNQb8ovvVcu8iTf1
-         DDLELQbwSldB4r0far6mxGYGnSLsaP6cWFnHMOx/9JXiIGNpYnuTraxPZ9F02QpFzb
-         BbAc9zZv0DcSSz6VJbJus6PSAo38oUdTiKuJMd4Hu1h6FIGAg3Kcz6qh4P7r3CiBN1
-         LBinTXpoqcdpd83XY0IFbgVZ9IPahsjjMBOi9okNPZ4bnXWlK59FxpPfEowKm2Op/A
-         N/BfBIZTwerCg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     peterz@infradead.org
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Subject: Re: [PATCH 1/2] sched/topology: Allow archs to override cpu_smt_mask
-In-Reply-To: <20200806085429.GX2674@hirez.programming.kicks-ass.net>
-References: <20200804033307.76111-1-srikar@linux.vnet.ibm.com> <20200804104520.GB2657@hirez.programming.kicks-ass.net> <20200804121007.GJ24375@linux.vnet.ibm.com> <20200804124755.GJ2674@hirez.programming.kicks-ass.net> <87ft90z6dy.fsf@mpe.ellerman.id.au> <20200806085429.GX2674@hirez.programming.kicks-ass.net>
-Date:   Thu, 06 Aug 2020 22:25:12 +1000
-Message-ID: <87d044yn9z.fsf@mpe.ellerman.id.au>
+        Thu, 6 Aug 2020 13:01:28 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288A9C061A2B
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 05:26:36 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id d20so4258169ual.13
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 05:26:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ENhodf2YoBg1Pmsfjazaz/7CkxNbPH+EsWhjLL6Mz5A=;
+        b=QC7prWFPCRV++k6goOsc8GWMtgQPqd9JxDIp4XUlR+Fyr283M++afQrf7AAWOAmF3o
+         HKKC2CP0NgoqF0ByInagurjybL1pic7EwqN9flQcd9bT2C1R1Wng+uBy4A/2OHyikrOu
+         D3NW9SAee5kn/dv9QwzytpUFFisgpUtv8KswkBDpxnCcB4IiULkVC6f+zuFitfePEwsm
+         lyCRR9RXn9qC8EptXYgNA3WtjmZ9lxM7GAUjWf1LAZ6EgKIeutCyepkZS0n3/4ure6nL
+         lJJH2mhtSB/9KI4Spictb/CWwLX4qnQHRfuLg9LdJh3psSlU8Fhkxjv+wTfO9mmQi+re
+         gmvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ENhodf2YoBg1Pmsfjazaz/7CkxNbPH+EsWhjLL6Mz5A=;
+        b=VO654QAi9PwbXqaU1JoNARENy8H7DXz10oLAugYxZ9P+S/yFDwJUMhBngsY6B2Iium
+         uP8kjY5LyZSeTU7Syyd/Nv7YFwVPgHZkJhApvYKbyhg6d9TDb7f+I7+b8XDGS/Ls1VEX
+         /+2BHNBmC+2fKX7ne1nBu6KWVu8bOcZb9GsRG7qlxlcmAWyzUO39gIuJv0eMzzfJMYtB
+         vVrnfzK5jJV6XQp9IWdBv8E/lqPShG2XGl1iB0czJN0NxogSFYHdAESg8bTk/u0Dgbtx
+         Btl/ca7wpIj7JwFjUcLw7nYnUTYRIPA9Fi/dPCbfoSuAf/hd02QTSyFOw5oF28l6gX14
+         sNLg==
+X-Gm-Message-State: AOAM531R7OVZGas6A6hTghezeQWGXKaPzNeWVFIeIeFhjw7V1c5WIkcc
+        SPa98hCUxNRAIbkWhqI54/XqHqS26HI=
+X-Google-Smtp-Source: ABdhPJwJ9pKO1JuKQBxAo4IZYdWwSz0Tnj6YA2vBozU9lYG+byjbp/adagVIMskb8Ff45YaI1tN1iA==
+X-Received: by 2002:ab0:2ea2:: with SMTP id y2mr5818327uay.15.1596716792798;
+        Thu, 06 Aug 2020 05:26:32 -0700 (PDT)
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
+        by smtp.gmail.com with ESMTPSA id p5sm997315vkp.44.2020.08.06.05.26.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 05:26:32 -0700 (PDT)
+Received: by mail-vs1-f41.google.com with SMTP id b26so19503600vsa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 05:26:32 -0700 (PDT)
+X-Received: by 2002:a67:bb06:: with SMTP id m6mr6268521vsn.54.1596716791730;
+ Thu, 06 Aug 2020 05:26:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1596714642-25183-1-git-send-email-linmiaohe@huawei.com>
+In-Reply-To: <1596714642-25183-1-git-send-email-linmiaohe@huawei.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 6 Aug 2020 14:25:54 +0200
+X-Gmail-Original-Message-ID: <CA+FuTSf48QvUhzmUROmSe-3W_H-FuCigq8Rg7otB0-XprDu6-A@mail.gmail.com>
+Message-ID: <CA+FuTSf48QvUhzmUROmSe-3W_H-FuCigq8Rg7otB0-XprDu6-A@mail.gmail.com>
+Subject: Re: [PATCH 1/5] net: Fix potential deadloop in skb_copy_ubufs()
+To:     linmiaohe <linmiaohe@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, rdunlap@infradead.org,
+        decui@microsoft.com, Jakub Sitnicki <jakub@cloudflare.com>,
+        jeremy@azazel.net, mashirle@us.ibm.com,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-peterz@infradead.org writes:
-> On Thu, Aug 06, 2020 at 03:32:25PM +1000, Michael Ellerman wrote:
+On Thu, Aug 6, 2020 at 1:48 PM linmiaohe <linmiaohe@huawei.com> wrote:
 >
->> That brings with it a bunch of problems, such as existing software that
->> has been developed/configured for Power8 and expects to see SMT8.
->> 
->> We also allow LPARs to be live migrated from Power8 to Power9 (and back), so
->> maintaining the illusion of SMT8 is considered a requirement to make that work.
+> From: Miaohe Lin <linmiaohe@huawei.com>
 >
-> So how does that work if the kernel booted on P9 and demuxed the SMT8
-> into 2xSMT4? If you migrate that state onto a P8 with actual SMT8 you're
-> toast again.
-
-The SMT mask would be inaccurate on the P8, rather than the current case
-where it's inaccurate on the P9.
-
-Which would be our preference, because the backward migration case is
-not common AIUI.
-
-Or am I missing a reason we'd be even more toast than that?
-
-Under PowerVM the kernel does know it's being migrated, so we could
-actually update the mask, but I'm not sure if that's really feasible.
-
->> Yeah I agree the naming is confusing.
->> 
->> Let's call them "SMT4 cores" and "SMT8 cores"?
+> We could be trapped in deadloop when we try to copy userspace skb frags
+> buffers to kernel with a cloned skb:
 >
-> Works for me, thanks!
+> [kbox] catch panic event, panic reason:kernel stack overflow
+> [kbox] catch panic event, start logging.
+> CPU: 3 PID: 4083 Comm: insmod Kdump: loaded Tainted: G       OE  4.19 #6
+> Hardware name: linux,dummy-virt (DT)
+> Call trace:
+>         dump_backtrace+0x0/0x198
+>         show_stack+0x24/0x30
+>         dump_stack+0xa4/0xcc
+>         kbox_panic_notifier_callback+0x1d0/0x310 [kbox]
+>         notifier_call_chain+0x5c/0xa0
+>         atomic_notifier_call_chain+0x3c/0x50
+>         panic+0x164/0x314
+>         __stack_chk_fail+0x0/0x28
+>         handle_bad_stack+0xfc/0x108
+>         __bad_stack+0x90/0x94
+>         pskb_expand_head+0x0/0x2c8
+>         pskb_expand_head+0x290/0x2c8
+>         skb_copy_ubufs+0x3cc/0x520
+>         pskb_expand_head+0x290/0x2c8
+>         skb_copy_ubufs+0x3cc/0x520
+>         pskb_expand_head+0x290/0x2c8
+>         skb_copy_ubufs+0x3cc/0x520
+>         pskb_expand_head+0x290/0x2c8
+>         skb_copy_ubufs+0x3cc/0x520
+>         ...
+>         pskb_expand_head+0x290/0x2c8
+>         skb_copy_ubufs+0x3cc/0x520
+>         ...
 >
->> The problem is we are already lying to userspace, because firmware lies to us.
->> 
->> ie. the firmware on these systems shows us an SMT8 core, and so current kernels
->> show SMT8 to userspace. I don't think we can realistically change that fact now,
->> as these systems are already out in the field.
->> 
->> What this patch tries to do is undo some of the mess, and at least give the
->> scheduler the right information.
+> Reproduce code snippet:
+>         skb = alloc_skb(UBUF_DATA_LEN, GFP_ATOMIC);
+>         clone = skb_clone(skb, GFP_ATOMIC);
+>         skb_zcopy_set_nouarg(clone, NULL);
+>         pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
 >
-> What a mess... I think it depends on what you do with that P9 to P8
-> migration case. Does it make sense to have a "p8_compat" boot arg for
-> the case where you want LPAR migration back onto P8 systems -- in which
-> case it simply takes the firmware's word as gospel and doesn't untangle
-> things, because it can actually land on a P8.
+> Catch this unexpected case and return -EINVAL in skb_orphan_frags() before
+> we call skb_copy_ubufs() to fix it.
 
-We already get told by firmware that we're running in "p8 compat" mode,
-because we have to pretend to userspace that it's running on a P8. So we
-could use that as a signal to leave things alone.
+Is this a hypothetical codepath?
 
-But my understanding is most LPARs don't get migrated back and forth,
-they'll start life on a P8 and only get migrated to a P9 once when the
-customer gets a P9. They might then run for a long time (months to
-years) on the P9 in P8 compat mode, not because they ever want to
-migrate back to a real P8, but because the software in the LPAR is still
-expecting to be on a P8.
+skb zerocopy carefully tracks clone calls where necessary. See the
+call to skb_orphan_frags in skb_clone, and the implementation of that
+callee.
 
-I'm not a real expert on all the Enterprisey stuff though, so someone
-else might be able to give us a better picture.
+The only caller of skb zerocopy with nouarg is tpacket_fill_skb, as
+of commit 5cd8d46ea156 ("packet: copy user buffers before orphan or
+clone").
 
-But the point of mentioning the migration stuff was mainly just to
-explain why we feel we need to present SMT8 to userspace even on P9.
+As the commit subject indicates, this sets skb_zcopy_set_nouarg
+exactly to be sure that any clone will trigger a copy of "zerocopy"
+user data to private kernel memory.
 
-cheers
+No clone must happen between alloc_skb and
+skb_zcopy_set_nouarg, indeed. But AFAIK, none exists.
