@@ -2,360 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CA123DED3
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C34923E00C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730316AbgHFRcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:32:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729990AbgHFRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:32:05 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.162.129.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40B6122E00;
-        Thu,  6 Aug 2020 12:46:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596717979;
-        bh=2YyO1ZqH/6cnyMPPGg73Ui0g57bCCXYKUQEKexUXx3Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O9uop/ZUocbLCmFVUhPP4EbZ84zTLLkbhvET+p+8XavNveD1egkGHnllzLGaDdMra
-         yOunxij9yATii/ElapTlYASqKHDGGAZe0odkc+JkhEragd+pw/Z5IO5Q3vSMu/sJOQ
-         5DH4CzLDYgMEAGhh1K2nqfuC5T/C3KxRPSbcmgSs=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6798840DEA; Thu,  6 Aug 2020 09:46:17 -0300 (-03)
-Date:   Thu, 6 Aug 2020 09:46:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     David Ahern <dsahern@gmail.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        =?iso-8859-1?Q?Genevi=E8ve?= Bastien <gbastien@versatic.net>,
-        Wang Nan <wangnan0@huawei.com>,
-        Jeremie Galarneau <jgalar@efficios.com>
-Subject: Re: [PATCH v2 7/7] perf script: Add tod field to display time of day
-Message-ID: <20200806124617.GI71359@kernel.org>
-References: <20200805093444.314999-1-jolsa@kernel.org>
- <20200805093444.314999-8-jolsa@kernel.org>
+        id S1728445AbgHFR7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:59:21 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3127 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726899AbgHFR7V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:59:21 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f2bfd290001>; Thu, 06 Aug 2020 05:52:57 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Thu, 06 Aug 2020 05:54:37 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Thu, 06 Aug 2020 05:54:37 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 6 Aug
+ 2020 12:54:36 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Thu, 6 Aug 2020 12:54:36 +0000
+Received: from moonraker.nvidia.com (Not Verified[10.26.73.183]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f2bfd890000>; Thu, 06 Aug 2020 05:54:35 -0700
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] rtc: max77686: Fix wake-ups for max77620
+Date:   Thu, 6 Aug 2020 13:54:31 +0100
+Message-ID: <20200806125431.699339-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805093444.314999-8-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1596718377; bh=HvOnCueSYaWkbR/lK4/JjyTNelcuLb3sqOohz8d9Wgk=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=iZKuG+9V2GSEnYBHLIuTX7/GI49h/PYN0JI+D19w3Am19SRs+06evOrkm2BwvJTmB
+         63QhahVCwdlvttes8rLWKGxClzNgn1p4i7ERyhRkPEhC2otKCwhf5LgtaTrI6FxQJJ
+         Mt7Ks9g0zVfCwYaSP7HdlEHc4YH5thy3JZYInIMw3uLEnDeIkxtBCxYPS8ZT4j+LUI
+         Qv6Iwu3/QiPhcYYuiDhxFrg4PNAD4CUSjpcTU+W0VX6BQWKHVBJDT5NxLqjWdUnCbN
+         zoIW0LVGJ0rfQPun9qoBJxIz9dMwXrYYWSkhzPBqAkzLJvq1LocSJpwqx+dqeXMKEE
+         Q8bA+ypgsh4wg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Aug 05, 2020 at 11:34:44AM +0200, Jiri Olsa escreveu:
-> Adding tod field to display time of day column with
-> time of date (wallclock) time.
-> 
->   # perf record -k CLOCK_MONOTONIC kill
->   kill: not enough arguments
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 0.033 MB perf.data (8 samples) ]
+Following commit d8f090dbeafd ("rtc: max77686: Do not allow interrupt to
+fire before system resume"), RTC wake-ups stopped working on Jetson TX2
+and Jetson Xavier platforms. The Jetson TX2 uses the max77620 PMIC and
+the Jetson Xavier uses max20024 PMIC. Both of these PMICs have the same
+max77620 RTC controller.
 
-Thanks, applied.
+For the max77620 RTC, the variable 'rtc_irq_from_platform' is defined as
+true in the max77686 driver and because of this the IRQ passed to the
+max77686 driver for RTC is the PMIC IRQ and not the parent. Hence,
+following commit d8f090dbeafd ("rtc: max77686: Do not allow interrupt to
+fire before system resume"), for the max77620 the RTC IRQ within the
+PMIC is now getting disabled on entry to suspend and unable to wake the
+system up. Fix this by only disabling interrupts on entry to suspend
+in the max77686 RTC driver, if the interrupt is the parent interrupt.
 
-- Arnaldo
- 
->   # perf script
->             perf 261340 152919.481538:          1 cycles:  ffffffff8106d104 ...
->             perf 261340 152919.481543:          1 cycles:  ffffffff8106d104 ...
->             perf 261340 152919.481545:          7 cycles:  ffffffff8106d104 ...
->   ...
-> 
->   # perf script --ns
->             perf 261340 152919.481538922:          1 cycles:  ffffffff8106d ...
->             perf 261340 152919.481543286:          1 cycles:  ffffffff8106d ...
->             perf 261340 152919.481545397:          7 cycles:  ffffffff8106d ...
->   ...
-> 
->   # perf script -F+tod
->             perf 261340 2020-07-13 18:26:55.620971 152919.481538:           ...
->             perf 261340 2020-07-13 18:26:55.620975 152919.481543:           ...
->             perf 261340 2020-07-13 18:26:55.620978 152919.481545:           ...
->   ...
-> 
->   # perf script -F+tod --ns
->             perf 261340 2020-07-13 18:26:55.620971621 152919.481538922:     ...
->             perf 261340 2020-07-13 18:26:55.620975985 152919.481543286:     ...
->             perf 261340 2020-07-13 18:26:55.620978096 152919.481545397:     ...
->   ...
-> 
-> It's available only for recording with clockid specified,
-> because it's the only case where we can get reference time
-> to wallclock time. It's can't do that with perf clock yet.
-> 
-> Error is display if you want to use --tod on data without
-> clockid specified:
-> 
->   # perf script -F+tod
->   Can't provide 'tod' time, missing clock data. Please record with -k/--clockid option.
-> 
-> Original-patch-by: David Ahern <dsahern@gmail.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/builtin-script.c | 131 +++++++++++++++++++++++++++---------
->  1 file changed, 98 insertions(+), 33 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index eb45f678dc2f..484ce6067d23 100644
-> --- a/tools/perf/builtin-script.c
-> +++ b/tools/perf/builtin-script.c
-> @@ -114,6 +114,32 @@ enum perf_output_field {
->  	PERF_OUTPUT_MISC            = 1ULL << 29,
->  	PERF_OUTPUT_SRCCODE	    = 1ULL << 30,
->  	PERF_OUTPUT_IPC             = 1ULL << 31,
-> +	PERF_OUTPUT_TOD             = 1ULL << 32,
-> +};
-> +
-> +struct perf_script {
-> +	struct perf_tool	tool;
-> +	struct perf_session	*session;
-> +	bool			show_task_events;
-> +	bool			show_mmap_events;
-> +	bool			show_switch_events;
-> +	bool			show_namespace_events;
-> +	bool			show_lost_events;
-> +	bool			show_round_events;
-> +	bool			show_bpf_events;
-> +	bool			show_cgroup_events;
-> +	bool			show_text_poke_events;
-> +	bool			allocated;
-> +	bool			per_event_dump;
-> +	bool			stitch_lbr;
-> +	struct evswitch		evswitch;
-> +	struct perf_cpu_map	*cpus;
-> +	struct perf_thread_map *threads;
-> +	int			name_width;
-> +	const char              *time_str;
-> +	struct perf_time_interval *ptime_range;
-> +	int			range_size;
-> +	int			range_num;
->  };
->  
->  struct output_option {
-> @@ -152,6 +178,7 @@ struct output_option {
->  	{.str = "misc", .field = PERF_OUTPUT_MISC},
->  	{.str = "srccode", .field = PERF_OUTPUT_SRCCODE},
->  	{.str = "ipc", .field = PERF_OUTPUT_IPC},
-> +	{.str = "tod", .field = PERF_OUTPUT_TOD},
->  };
->  
->  enum {
-> @@ -502,6 +529,7 @@ static void set_print_ip_opts(struct perf_event_attr *attr)
->   */
->  static int perf_session__check_output_opt(struct perf_session *session)
->  {
-> +	bool tod = false;
->  	unsigned int j;
->  	struct evsel *evsel;
->  
-> @@ -528,6 +556,7 @@ static int perf_session__check_output_opt(struct perf_session *session)
->  			continue;
->  
->  		set_print_ip_opts(&evsel->core.attr);
-> +		tod |= output[j].fields & PERF_OUTPUT_TOD;
->  	}
->  
->  	if (!no_callchain) {
-> @@ -568,13 +597,17 @@ static int perf_session__check_output_opt(struct perf_session *session)
->  		}
->  	}
->  
-> +	if (tod && !session->header.env.clock.enabled) {
-> +		pr_err("Can't provide 'tod' time, missing clock data. "
-> +		       "Please record with -k/--clockid option.\n");
-> +		return -1;
-> +	}
->  out:
->  	return 0;
->  }
->  
->  static int perf_sample__fprintf_regs(struct regs_dump *regs, uint64_t mask,
-> -				     FILE *fp
-> -)
-> +				     FILE *fp)
->  {
->  	unsigned i = 0, r;
->  	int printed = 0;
-> @@ -592,6 +625,56 @@ static int perf_sample__fprintf_regs(struct regs_dump *regs, uint64_t mask,
->  	return printed;
->  }
->  
-> +#define DEFAULT_TOD_FMT "%F %H:%M:%S"
-> +
-> +static char*
-> +tod_scnprintf(struct perf_script *script, char *buf, int buflen,
-> +	     u64 timestamp)
-> +{
-> +	u64 tod_ns, clockid_ns;
-> +	struct perf_env *env;
-> +	unsigned long nsec;
-> +	struct tm ltime;
-> +	char date[64];
-> +	time_t sec;
-> +
-> +	buf[0] = '\0';
-> +	if (buflen < 64 || !script)
-> +		return buf;
-> +
-> +	env = &script->session->header.env;
-> +	if (!env->clock.enabled) {
-> +		scnprintf(buf, buflen, "disabled");
-> +		return buf;
-> +	}
-> +
-> +	clockid_ns = env->clock.clockid_ns;
-> +	tod_ns     = env->clock.tod_ns;
-> +
-> +	if (timestamp > clockid_ns)
-> +		tod_ns += timestamp - clockid_ns;
-> +	else
-> +		tod_ns -= clockid_ns - timestamp;
-> +
-> +	sec  = (time_t) (tod_ns / NSEC_PER_SEC);
-> +	nsec = tod_ns - sec * NSEC_PER_SEC;
-> +
-> +	if (localtime_r(&sec, &ltime) == NULL) {
-> +		scnprintf(buf, buflen, "failed");
-> +	} else {
-> +		strftime(date, sizeof(date), DEFAULT_TOD_FMT, &ltime);
-> +
-> +		if (symbol_conf.nanosecs) {
-> +			snprintf(buf, buflen, "%s.%09lu", date, nsec);
-> +		} else {
-> +			snprintf(buf, buflen, "%s.%06lu",
-> +				 date, nsec / NSEC_PER_USEC);
-> +		}
-> +	}
-> +
-> +	return buf;
-> +}
-> +
->  static int perf_sample__fprintf_iregs(struct perf_sample *sample,
->  				      struct perf_event_attr *attr, FILE *fp)
->  {
-> @@ -606,7 +689,8 @@ static int perf_sample__fprintf_uregs(struct perf_sample *sample,
->  					 attr->sample_regs_user, fp);
->  }
->  
-> -static int perf_sample__fprintf_start(struct perf_sample *sample,
-> +static int perf_sample__fprintf_start(struct perf_script *script,
-> +				      struct perf_sample *sample,
->  				      struct thread *thread,
->  				      struct evsel *evsel,
->  				      u32 type, FILE *fp)
-> @@ -615,6 +699,7 @@ static int perf_sample__fprintf_start(struct perf_sample *sample,
->  	unsigned long secs;
->  	unsigned long long nsecs;
->  	int printed = 0;
-> +	char tstr[128];
->  
->  	if (PRINT_FIELD(COMM)) {
->  		if (latency_format)
-> @@ -683,6 +768,11 @@ static int perf_sample__fprintf_start(struct perf_sample *sample,
->  		printed += ret;
->  	}
->  
-> +	if (PRINT_FIELD(TOD)) {
-> +		tod_scnprintf(script, tstr, sizeof(tstr), sample->time);
-> +		printed += fprintf(fp, "%s ", tstr);
-> +	}
-> +
->  	if (PRINT_FIELD(TIME)) {
->  		u64 t = sample->time;
->  		if (reltime) {
-> @@ -1667,31 +1757,6 @@ static int perf_sample__fprintf_synth(struct perf_sample *sample,
->  	return 0;
->  }
->  
-> -struct perf_script {
-> -	struct perf_tool	tool;
-> -	struct perf_session	*session;
-> -	bool			show_task_events;
-> -	bool			show_mmap_events;
-> -	bool			show_switch_events;
-> -	bool			show_namespace_events;
-> -	bool			show_lost_events;
-> -	bool			show_round_events;
-> -	bool			show_bpf_events;
-> -	bool			show_cgroup_events;
-> -	bool			show_text_poke_events;
-> -	bool			allocated;
-> -	bool			per_event_dump;
-> -	bool			stitch_lbr;
-> -	struct evswitch		evswitch;
-> -	struct perf_cpu_map	*cpus;
-> -	struct perf_thread_map *threads;
-> -	int			name_width;
-> -	const char              *time_str;
-> -	struct perf_time_interval *ptime_range;
-> -	int			range_size;
-> -	int			range_num;
-> -};
-> -
->  static int evlist__max_name_len(struct evlist *evlist)
->  {
->  	struct evsel *evsel;
-> @@ -1739,7 +1804,7 @@ static void script_print_metric(struct perf_stat_config *config __maybe_unused,
->  
->  	if (!fmt)
->  		return;
-> -	perf_sample__fprintf_start(mctx->sample, mctx->thread, mctx->evsel,
-> +	perf_sample__fprintf_start(NULL, mctx->sample, mctx->thread, mctx->evsel,
->  				   PERF_RECORD_SAMPLE, mctx->fp);
->  	fputs("\tmetric: ", mctx->fp);
->  	if (color)
-> @@ -1754,7 +1819,7 @@ static void script_new_line(struct perf_stat_config *config __maybe_unused,
->  {
->  	struct metric_ctx *mctx = ctx;
->  
-> -	perf_sample__fprintf_start(mctx->sample, mctx->thread, mctx->evsel,
-> +	perf_sample__fprintf_start(NULL, mctx->sample, mctx->thread, mctx->evsel,
->  				   PERF_RECORD_SAMPLE, mctx->fp);
->  	fputs("\tmetric: ", mctx->fp);
->  }
-> @@ -1865,7 +1930,7 @@ static void process_event(struct perf_script *script,
->  
->  	++es->samples;
->  
-> -	perf_sample__fprintf_start(sample, thread, evsel,
-> +	perf_sample__fprintf_start(script, sample, thread, evsel,
->  				   PERF_RECORD_SAMPLE, fp);
->  
->  	if (PRINT_FIELD(PERIOD))
-> @@ -2174,7 +2239,7 @@ static int print_event_with_time(struct perf_tool *tool,
->  		thread = machine__findnew_thread(machine, pid, tid);
->  
->  	if (thread && evsel) {
-> -		perf_sample__fprintf_start(sample, thread, evsel,
-> +		perf_sample__fprintf_start(script, sample, thread, evsel,
->  					   event->header.type, stdout);
->  	}
->  
-> @@ -3439,7 +3504,7 @@ int cmd_script(int argc, const char **argv)
->  		     "Fields: comm,tid,pid,time,cpu,event,trace,ip,sym,dso,"
->  		     "addr,symoff,srcline,period,iregs,uregs,brstack,"
->  		     "brstacksym,flags,bpf-output,brstackinsn,brstackoff,"
-> -		     "callindent,insn,insnlen,synth,phys_addr,metric,misc,ipc",
-> +		     "callindent,insn,insnlen,synth,phys_addr,metric,misc,ipc,tod",
->  		     parse_output_fields),
->  	OPT_BOOLEAN('a', "all-cpus", &system_wide,
->  		    "system-wide collection from all CPUs"),
-> -- 
-> 2.25.4
-> 
+Fixes: d8f090dbeafd ("rtc: max77686: Do not allow interrupt to fire before =
+system resume")
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+---
+ drivers/rtc/rtc-max77686.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
--- 
+diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
+index 645de5af707b..d51cc12114cb 100644
+--- a/drivers/rtc/rtc-max77686.c
++++ b/drivers/rtc/rtc-max77686.c
+@@ -815,13 +815,15 @@ static int max77686_rtc_suspend(struct device *dev)
+ 	}
+=20
+ 	/*
+-	 * Main IRQ (not virtual) must be disabled during suspend because if it
+-	 * happens while suspended it will be handled before resuming I2C.
++	 * If the main IRQ (not virtual) is the parent IRQ, then it must be
++	 * disabled during suspend because if it happens while suspended it
++	 * will be handled before resuming I2C.
+ 	 *
+ 	 * Since Main IRQ is shared, all its users should disable it to be sure
+ 	 * it won't fire while one of them is still suspended.
+ 	 */
+-	disable_irq(info->rtc_irq);
++	if (!info->drv_data->rtc_irq_from_platform)
++		disable_irq(info->rtc_irq);
+=20
+ 	return ret;
+ }
+@@ -830,7 +832,8 @@ static int max77686_rtc_resume(struct device *dev)
+ {
+ 	struct max77686_rtc_info *info =3D dev_get_drvdata(dev);
+=20
+-	enable_irq(info->rtc_irq);
++	if (!info->drv_data->rtc_irq_from_platform)
++		enable_irq(info->rtc_irq);
+=20
+ 	if (device_may_wakeup(dev)) {
+ 		struct max77686_rtc_info *info =3D dev_get_drvdata(dev);
+--=20
+2.25.1
 
-- Arnaldo
