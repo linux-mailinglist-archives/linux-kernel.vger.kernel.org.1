@@ -2,119 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8792823E2EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1561E23E2FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgHFUMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 16:12:48 -0400
-Received: from 8.mo68.mail-out.ovh.net ([46.105.74.219]:55943 "EHLO
-        8.mo68.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgHFUMr (ORCPT
+        id S1726197AbgHFUP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 16:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725875AbgHFUP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 16:12:47 -0400
-X-Greylist: delayed 82257 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Aug 2020 16:12:46 EDT
-Received: from player797.ha.ovh.net (unknown [10.110.171.49])
-        by mo68.mail-out.ovh.net (Postfix) with ESMTP id 4E54A17429C
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 22:12:45 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player797.ha.ovh.net (Postfix) with ESMTPSA id 733BB11028092;
-        Thu,  6 Aug 2020 20:12:39 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-105G0062b87a758-947a-4325-be91-5786992cb203,
-                    9D5F4B8471F7AF6BEF45141B8B52B4DEEC6DEFE4) smtp.auth=steve@sk2.org
-Date:   Thu, 6 Aug 2020 22:12:32 +0200
-From:   Stephen Kitt <steve@sk2.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon/pmbus: use simple i2c probe function
-Message-ID: <20200806221232.278c3878@heffalump.sk2.org>
-In-Reply-To: <5f7b5828-cb7c-127a-e454-6c8b8d98777b@roeck-us.net>
-References: <20200806161645.9437-1-steve@sk2.org>
-        <5f7b5828-cb7c-127a-e454-6c8b8d98777b@roeck-us.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 6 Aug 2020 16:15:59 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A917C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 13:15:58 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id l64so39376294qkb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 13:15:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z5BaX90LdW8Ugx54ddA3KoziTH/PsAA8tFDwiMrbnR8=;
+        b=h35Sp8BEgVxDlpWym/cQDqC4zseWQpiWdcfic5rVu1+3HpzGdKAeQGbagPrCRlkBKx
+         7BMR5dsAGTbm/KvFxdORSZ4SwErxkTluAWtQIVmJmv1vPKSWOw2zKya/kpKjJGw1bfis
+         oq/GYvo44pMAk3bLZT7xeexIRN5NYpjMf32iiSgGOUJ4Jz40CAVQmSTWWwTFWf0c1GQJ
+         MZlwfp4WKJ0iWSTN4ua7uIngbzICK/dUIxzZN6y3Q4FuadADXkBP+K8AcbENRmGNdSdY
+         neh4s3xk1Fs7HJeLqHFMOMdvS2D3/bS9KTtc5xiaBcK9aDYpHCG+6ngpGQ0d/0FDBmgd
+         iiKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z5BaX90LdW8Ugx54ddA3KoziTH/PsAA8tFDwiMrbnR8=;
+        b=f9DGjiJ4KNP+JcgDMHznHnxEMU16c2e3bEdSO+dOoXoVuJl4uWLBu0u5DUj5LOyeKw
+         jc7l8O3TDE6TWq2Mf08fEHJeP2ygT3H7LzOFpzfaGCMfV4qN0R4EDLztolXWkdZILfLq
+         nyzcxbPDm/XkD/xbNUlqGm7dW6J4Vc/F07BhMbqC2c3SLkq5zWz27OcCNVzUStmbUQZO
+         uRFT/RXJ+zO9er3jyC2QUm1cKnln8FEQWU9lmamsYeRKnBbCLYjCqJ7dl5UxhIpf05VA
+         6EuGzUhbeRAw7ze5N7k9kweVIe9ZEIqI9FaKiVTBp8Z23UukNXDJC90q+mM1j4kRBveV
+         YHNg==
+X-Gm-Message-State: AOAM5302LipwCIrkmrMApW9OSJP8kxtZdHcI2NV0ss13ZV9658QyFeca
+        AAJQJaLc5xzBzm8yrNmBEKF5bqfAJD4Tpd1O72o=
+X-Google-Smtp-Source: ABdhPJwSfeFtVLjjuWu43jt9dVPk/qZN6CoHRswsFXANDqtxyDrzZufWflt9mHDnqAa1Yh69p4Nz07aZufBWpHGp3/A=
+X-Received: by 2002:a37:a44:: with SMTP id 65mr10479172qkk.370.1596744957954;
+ Thu, 06 Aug 2020 13:15:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/FbGeJp=0MdtdV4bDqgXCQEv"; protocol="application/pgp-signature"
-X-Ovh-Tracer-Id: 7222929379186658574
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrkedtgdduhedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeeljedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+References: <20200601091231.3794350-1-chengzhihao1@huawei.com>
+ <CAFLxGvwLSvYsQ+OPi85VS8aQ2uge_JqQRD2C8h=XMORvCej3Sw@mail.gmail.com>
+ <211afcd0-d5b3-5ac0-1fd1-dc789634a858@huawei.com> <CAFLxGvwRDfB4mqxJhOLwWvoZ3yzpVY-kuAiovYLf8T7WwJqaTg@mail.gmail.com>
+ <9caa4860-975c-70bb-c8b9-737d1db9ead4@huawei.com> <CAFLxGvycs7DNu5o5QY1WwTPfS6cTTykTh-91n9TQZ7yP_ADr4A@mail.gmail.com>
+ <2086f822-e67a-43e4-76d8-5339eaccd3ac@huawei.com>
+In-Reply-To: <2086f822-e67a-43e4-76d8-5339eaccd3ac@huawei.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Thu, 6 Aug 2020 22:15:46 +0200
+Message-ID: <CAFLxGvzwoC1GcjJOfwpc8V5LD79=8XiJaNV2HjOm8EdQcCbp+w@mail.gmail.com>
+Subject: Re: [PATCH] ubi: check kthread_should_stop() after the setting of
+ task state
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        "zhangyi (F)" <yi.zhang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/FbGeJp=0MdtdV4bDqgXCQEv
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, Aug 5, 2020 at 4:23 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
+> Er, I can't get the point. I can list two possible situations, did I
+> miss other situations?
 
-On Thu, 6 Aug 2020 12:15:55 -0700, Guenter Roeck <linux@roeck-us.net> wrote:
-> On 8/6/20 9:16 AM, Stephen Kitt wrote:
-> > pmbus_do_probe doesn't use the id information provided in its second
-> > argument, so this can be removed, which then allows using the
-> > single-parameter i2c probe function ("probe_new") for probes which
-> > don't use the id information either.
-> >=20
-> > This avoids scanning the identifier tables during probes.
-> >=20
-> > Additionally, in cases where the id information (driver_data) isn't
-> > used, the corresponding declarations are removed from the id_table,
-> > and .name is specified explicitly.
-> >  =20
->=20
-> The ultimate idea seems to be to remove the "old" i2c probe function
-> entirely. This means we'll have to touch the various drivers again
-> to make that happen if they are not converted to probe_new.
->=20
-> With that in mind, since we are at it, why not use probe_new() in
-> every driver and call i2c_match_id() in cases where it is actually
-> needed/used ?
+Yes. You keep ignoring the case I brought up.
 
-Yes, I was planning on doing that in a second phase, but I can do it right
-now (perhaps as a patch series) if that would be better.
+Let's start from scratch, maybe I miss something.
+So I'm sorry for being persistent.
 
-> Also, I am not convinced that replacements such as
->=20
-> -	{ "ipsps1", 0 },
-> +	{ .name =3D "ipsps1" },
->=20
-> are an improvement. I would suggest to leave that alone for
-> consistency (and to make it easier to add more devices to the
-> various drivers if that happens in the future).
+The ubi thread can be reduced to a loop like this one:
+1. for (;;) {
+2.      if (kthread_should_stop())
+3.              break;
+4.
+5.      if ( /* no work pending*/ ){
+6.              set_current_state(TASK_INTERRUPTIBLE);
+7.              schedule();
+8.              continue;
+9.      }
+10.
+11.     do_work();
+12. }
 
-=46rom reading through all the drivers using id_table, it seems to me that we
-could do away with driver_data altogether and move all that to driver-local
-structures, in many cases covering more than just an id. By only initialisi=
-ng
-the elements of the structure that are really needed, I was hoping to (a)
-make it more obvious that driver_data isn=E2=80=99t used, and (b) allow rem=
-oving it
-without touching all the code again.
+syzcaller found a case where stopping the thread did not work.
+If another task tries to stop the thread while no work is pending and
+the program counter in the thread
+is between lines 5 and 6, the kthread_stop() instruction has no effect.
+It has no effect because the thread sets the thread state to
+interruptible sleep and then schedules away.
 
-Regards,
+This is a common anti-pattern in the Linux kernel, sadly.
 
-Stephen
+Do you agree with me so far or do you think syzcaller found a different issue?
 
---Sig_/FbGeJp=0MdtdV4bDqgXCQEv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Your patch changes the loop as follows:
+1. for (;;) {
+2.      if (kthread_should_stop())
+3.              break;
+4.
+5.      if ( /* no work pending*/ ){
+6.              set_current_state(TASK_INTERRUPTIBLE);
+7.
+8.              if (kthread_should_stop()) {
+9.                      set_current_state(TASK_RUNNING);
+10.                     break;
+11.             }
+12.
+13.             schedule();
+14.             continue;
+15.     }
+16.
+17.     do_work();
+18. }
 
------BEGIN PGP SIGNATURE-----
+That way there is a higher chance that the thread sees the stop flag
+and gracefully terminates, I fully agree on that.
+But it does not completely solve the problem.
+If kthread_stop() happens while the program counter of the ubi thread
+is at line 12, the stop flag is still missed
+and we end up in interruptible sleep just like before.
 
-iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl8sZDAACgkQgNMC9Yht
-g5zUtw//T4ogD7rGy/Ecq0wgWYSJcZ7q0mB+9R6Rs3hJ4/NvVTM6U7Bf+nvNIKwC
-TX6RvB1ucbbhxjwZXEzHy/+jOYYBD7/Cy+zDrJkizArvsfAvxcQ15nIBDtEJ/LdT
-zkcInTdWOZxbvPPfsvmkEiYVCaDrch8nN7wpbpWhaaDvMUYPKBPLYBM1YHkUcB6k
-/9t0kUj9vIQzeFQeqPMbVxD8sZH2wmjF9tL9uYhKqMTHH2jeWkOSOf65+khjxYJB
-y5y0sw1O0pRruDGpdjMEq9bw4TQLiElFvjQa3JGoV/VjHnDG3O/4FXb8oJd+Fsso
-W+B+rOp1a/i18CAd1Y+pptxx/t8YWPy4xPjX0zcJ7dcgWBdJng+CkyQdOvi1gQ6E
-2pX6dP7ve2l1n+WFqVZz5RRyEPEnr1ACK4W+MOZpwOmDxDFNOkRIv0+REF7n1qOx
-6XzaNnRt4rzcVQr0y/LdhNu9ZwNoDt9UsceJV6clBes8wrvLHXyTvBXjcIIKrZGW
-4BYhZEB7VzYMndG4VJAtga521ph7HV9J2RD3EbL9Ad+RyZ9vkqYUS5JizECEuvvO
-ofSBEaesYZgkaRVeF+bEaw42BmYR3bjr1K8hY4ZLqV6UPokV5sjL0mn4FfuWl+bA
-oV6cVxwVPirVYd7smYbViflVGmKBFw+nAYH8WFYoMWWAhbJwr/A=
-=1Q6B
------END PGP SIGNATURE-----
+So, to solve the problem entirely I suggest changing schedule() to
+schedule_timeout() and let the thread wake up
+periodically.
 
---Sig_/FbGeJp=0MdtdV4bDqgXCQEv--
+-- 
+Thanks,
+//richard
