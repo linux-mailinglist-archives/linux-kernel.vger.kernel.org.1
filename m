@@ -2,131 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699E023E2AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D326D23E2B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgHFT5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 15:57:30 -0400
-Received: from mga09.intel.com ([134.134.136.24]:3730 "EHLO mga09.intel.com"
+        id S1726217AbgHFT7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 15:59:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725272AbgHFT52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 15:57:28 -0400
-IronPort-SDR: ZJ2JZUl+2AR4S//HhElvMgKQ2OWwWRUN3wuWAejLeZdQs0BwNNb1TM5oNetBIJBAOOIF3U/72Z
- LAkReYsp65KQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9705"; a="154048021"
-X-IronPort-AV: E=Sophos;i="5.75,443,1589266800"; 
-   d="scan'208";a="154048021"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 12:57:27 -0700
-IronPort-SDR: yaGGlH+7mbxkgDypb72zjuN8ACoJW9PVrdREy8YLH0MvK4k9o3g6X+rw4+tjBcY0kTMeP6E2I1
- a3J3OKbwq9Jw==
-X-IronPort-AV: E=Sophos;i="5.75,443,1589266800"; 
-   d="scan'208";a="307144312"
-Received: from vharish-mobl.amr.corp.intel.com (HELO [10.251.1.104]) ([10.251.1.104])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 12:57:26 -0700
-Subject: Re: [PATCH v3] x86/cpu: Use SERIALIZE in sync_core() when available
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Cathy Zhang <cathy.zhang@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-edac@vger.kernel.org
-References: <20200806192531.25136-1-ricardo.neri-calderon@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <a6ab438e-8ca8-999f-9eb9-c43fe1b9f128@intel.com>
-Date:   Thu, 6 Aug 2020 12:57:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725875AbgHFT7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 15:59:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DFBAE2173E;
+        Thu,  6 Aug 2020 19:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596743970;
+        bh=rZzNB7Mchw1xUwGcA2KB6ufKo5ZZoG/yMfMIbq6pK/Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=2oq7B8IMmc0UB+V4Gs9PVKpLknPtYkzLPt6nce5QAFIKMqUSYttUwXraHgU41ekQg
+         idJrEf9h1GGJy7Kb1jWhp9GWclJ9y5E0WckC6dyocfEOOSli3dSDSVcshgAAIiOcbz
+         1H86dIn1t92Nnw6/n5miq3I0V0KITvHSGAIBX5LM=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k3m2y-000Mn1-AH; Thu, 06 Aug 2020 20:59:28 +0100
 MIME-Version: 1.0
-In-Reply-To: <20200806192531.25136-1-ricardo.neri-calderon@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 06 Aug 2020 20:59:28 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>, steev@kali.org,
+        Nial Peters <uceenpe@ucl.ac.uk>
+Subject: Re: [PATCH v3 2/4] irqchip/qcom-pdc: Switch to using
+ IRQCHIP_PLATFORM_DRIVER helper macros
+In-Reply-To: <CAGETcx89BRdSP6FKjDPU0zapt0ET9_PUr6bjZb9EA-jYn0maFw@mail.gmail.com>
+References: <20200718000637.3632841-1-saravanak@google.com>
+ <20200718000637.3632841-3-saravanak@google.com>
+ <CALAqxLVZ+rFE+hM9OtQ46NqpTHeLu6oKLNWKstLv1U5zbwyq7g@mail.gmail.com>
+ <CAGETcx_rkK3-bKhDP_N4n_WyXLXFPoaUV9rbY_Y+H1Joj=dCyw@mail.gmail.com>
+ <CALAqxLUz6GTT96nO9igiWVwyaRs_xbO+=mySLm4BKX6-Uh90ZA@mail.gmail.com>
+ <5e6124390b9e3e7f4d6f6decbdb669ca@kernel.org>
+ <CAGETcx89BRdSP6FKjDPU0zapt0ET9_PUr6bjZb9EA-jYn0maFw@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.5
+Message-ID: <4d79a3e9c8c24f8adb6f7ade97d5a9c6@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: saravanak@google.com, john.stultz@linaro.org, tglx@linutronix.de, jason@lakedaemon.net, matthias.bgg@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org, kernel-team@android.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, hanks.chen@mediatek.com, cc.hwang@mediatek.com, loda.chou@mediatek.com, steev@kali.org, uceenpe@ucl.ac.uk
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/20 12:25 PM, Ricardo Neri wrote:
->  static inline void sync_core(void)
->  {
->  	/*
-> -	 * There are quite a few ways to do this.  IRET-to-self is nice
-> +	 * Hardware can do this for us if SERIALIZE is available. Otherwise,
-> +	 * there are quite a few ways to do this.  IRET-to-self is nice
+On 2020-08-06 19:05, Saravana Kannan wrote:
+> On Thu, Aug 6, 2020 at 5:12 AM Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> On 2020-08-06 02:24, John Stultz wrote:
 
-This seems to imply that things other than SERIALIZE aren't the hardware
-doing this.  All of these methods are equally architecturally
-serializing *and* provided by the hardware.
+[...]
 
-I also don't quite get the point of separating the comments from the
-code.  Shouldn't this be:
+>> >> + if (par_np == np)
+>> >> +         par_np = NULL;
+>> >> +
+>> >> + /*
+>> >> + * If there's a parent interrupt controller and  none of the parent
+>> >> irq
+>> >> + * domains have been registered, that means the parent interrupt
+>> >> + * controller has not been initialized yet.  it's not time for this
+>> >> + * interrupt controller to initialize. So, defer probe of this
+>> >> + * interrupt controller. The actual initialization callback of this
+>> >> + * interrupt controller can check for specific domains as necessary.
+>> >> + */
+>> >> + if (par_np && !irq_find_matching_host(np, DOMAIN_BUS_ANY))
+>> >> +         return -EPROBE_DEFER;
+>> >
+>> > Yep. We're getting caught on the irq_find_matching_host() check. I'm a
+>> > little lost as when I look at the qcom,pdc node in the dtsi its not
+>> > under a parent controller (instead the soc node).
+>> > Not sure if that's an issue in the dtsi or if par_np check needs to
+>> > ignore the soc node and pass null?
+>> 
+>> I think you have nailed it. This checks for a domain attached to
+>> the driver we are about to probe, and this domain cannot possibly
+>> exist. Instead, it is the *parent* this should check for, as we
+>> depend on it for successful probing.
+> 
+> Duh! Looks like I made a copy-paste/typo error. The comment clearly
+> says I'm trying to check the parent and then I end up checking the
+> node getting registered. I'm sure this will fix it.
+> 
+> Actually Nial sent an email a few hours after your and he had found
+> the same issue. He even tested the fix with an irqchip driver and it
+> fixed the probe issue.
 
-	/*
-	 * The SERIALIZE instruction is the most straightforward way to
-	 * do this but it not universally available.
-	 */
-	if (static_cpu_has(X86_FEATURE_SERIALIZE)) {
-		asm volatile(__ASM_SERIALIZE ::: "memory");
-		return;
-	}
+OK, thanks for confirming. It would have been good if these patches
+had seen a bit more testing.
 
-	/*
-	 * For all other processors, IRET-to-self is nice ...
-	 */
-	iret_to_self();
+> 
+> I'm assuming you'll put up the patch yourself. Please let me know if
+> you need me to send one.
+
+I have queued this [1] in -next.
+
+It'd be good if someone (John?) could give a Tested-by.
+
+Thanks,
+
+         M.
+
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/commit/?h=irq/irqchip-next
+-- 
+Jazz is not dead. It just smells funny...
