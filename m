@@ -2,187 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A33223E396
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 23:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFC623E387
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 23:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgHFVoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 17:44:25 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:51594 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726050AbgHFVoX (ORCPT
+        id S1726202AbgHFVcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 17:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgHFVcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 17:44:23 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076EgE5q153796;
-        Thu, 6 Aug 2020 14:45:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=obaVmbgBXXm2urNWlyNH2OLW5Z9/AQRdX/v3/ftgK3I=;
- b=s1LhiUzq1dgyKH3qyoMLnYz3ie+BDgWEI4dISFmv/s8DaVMMcGuguvxcwBu7siJ+L6FX
- zgSpw1/o5BGY1SW2MQOmRwMf7+iBZp2/LIP72VAY+adyjZaooootLFHUudgSbWlooXyo
- hy7uvsRMJ4w1aTjyl/M48sHkjXxMDBJh+8/u00/1qMPlqYP7hDpN7c9lxYrpAhUW9Ro2
- x/Y1KMqqYEIydrEN8fR983yRhCpKJ5SA33vbdc2M1sOwncxDq57xtxUNmfhtlLvbOzZK
- CaV/2gNf1zktGy1jAaGaqJScVALXs0V2lwznAchVKkNhEm+1FZZ69j/HKMWJ0pHeOg34 hQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 32r6ep3dj0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 06 Aug 2020 14:45:05 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076EbpDM077357;
-        Thu, 6 Aug 2020 14:43:04 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 32r6cvhq5k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Aug 2020 14:43:04 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 076Eh3fK006113;
-        Thu, 6 Aug 2020 14:43:03 GMT
-Received: from localhost.uk.oracle.com (/10.175.182.235)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 07:43:03 -0700
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com, yhs@fb.com
-Cc:     linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
-        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
-        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
-        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
-        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [RFC PATCH bpf-next 4/4] selftests/bpf: add bpf_trace_btf helper tests
-Date:   Thu,  6 Aug 2020 15:42:25 +0100
-Message-Id: <1596724945-22859-5-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1596724945-22859-1-git-send-email-alan.maguire@oracle.com>
-References: <1596724945-22859-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 bulkscore=0
- spamscore=0 adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060104
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- malwarescore=0 clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0
- impostorscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008060105
+        Thu, 6 Aug 2020 17:32:46 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B9C3C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 14:32:46 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id z18so16102otk.6
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 14:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bMdUvR5cvJpWBqS4UuMvvAwpXkYNV4aiHJRiohzePLg=;
+        b=igUkUtxNZ6QY8ZC0CF73xy8YqEiLjqFpG9/3LS9S27kT9ZRuFxZgQ7Gz02TrcYyeHb
+         P7M3oF0HvZj84He4lV1336ZVwTZMWwbSOWdqjsdJcRz7oft8mSVSfC+UfSk+dgDi5sFX
+         rpgjLVZ/+elZdeH/FimeO1H1/Zu5CLcwMgxER0IdCDHnlfHVA1z85CN84XEmUHwVTIpp
+         8b8ifZ/vNnV5iNVAQvFMgEDLR4mA6j2OKYOk0PSM69IjLpWZIvLCD4Mv6BYMg8qT/S5f
+         HXseBtqpzHZUONovVBLxoihOGl0jfHKRFQyuDS2KnMAv6DLy/0fwtCXFRp6I/lHlwPEX
+         RhKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bMdUvR5cvJpWBqS4UuMvvAwpXkYNV4aiHJRiohzePLg=;
+        b=XgaiHqL/AhoYlIHt1M33b2odTZBpp5sixNtCrHvRUyuf5yRfOyGsbcqqZjzVe1HKSy
+         fokbDWxi7YDgnPLHcgfieL4rjebjFiTcFuwZi6E/UVV34Nl2l49g8Le0N7xwirr/DAje
+         pJEtAe0ydG+Ry8yRy+VJIauWw2SgPMsmJFiSbdm/VplHGDC3exKOSS32mq+Ybfx5iQA+
+         MtbYi5A185MFE4jyUS5TnK8mgRnPKQFLnD4WLDiAxUTmowOZxTXsOQSFLFZrJzhaGFG8
+         X1FILkJukHTej3m6NvKlAEdoKkxidOdo2U5CcpnwJEuyrhiewycl+BDMN6bA8RLa5MQC
+         Pjyg==
+X-Gm-Message-State: AOAM531uaHslHe0xdwqX7W0mebqVhEslX7+UOBM06FCSAonVG364+ynS
+        HJsN4g86O2/qDwsX0AqHJMoxtX88AWavMdV7Aw49RA==
+X-Google-Smtp-Source: ABdhPJx/Hxhcn35FYgvdCjsHnqMZ2uPaHzIqV74EY0tHiSr6yJAFi2hvz3eL78Cw58pEOzQveLpUre0/Lum6uk6Kzkk=
+X-Received: by 2002:a9d:65ca:: with SMTP id z10mr9442637oth.295.1596749565185;
+ Thu, 06 Aug 2020 14:32:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200714015732.32426-1-sean.j.christopherson@intel.com> <084a332afc149c0c647e86f71fea49bb0665a843.camel@redhat.com>
+In-Reply-To: <084a332afc149c0c647e86f71fea49bb0665a843.camel@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 6 Aug 2020 14:32:33 -0700
+Message-ID: <CALMp9eR94d9Xbt7ZTiaezL3hSuTQTCNX8pxiDFE9tHCpDRjrQg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Don't attempt to load PDPTRs when 64-bit mode
+ is enabled
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oliver Upton <oupton@google.com>,
+        Peter Shier <pshier@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Basic tests verifying various flag combinations for bpf_trace_btf()
-using a tp_btf program to trace skb data.
+On Wed, Aug 5, 2020 at 12:04 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+>
+> On Mon, 2020-07-13 at 18:57 -0700, Sean Christopherson wrote:
+> > Don't attempt to load PDPTRs if EFER.LME=1, i.e. if 64-bit mode is
+> > enabled.  A recent change to reload the PDTPRs when CR0.CD or CR0.NW is
+> > toggled botched the EFER.LME handling and sends KVM down the PDTPR path
+> > when is_paging() is true, i.e. when the guest toggles CD/NW in 64-bit
+> > mode.
+> >
+> > Split the CR0 checks for 64-bit vs. 32-bit PAE into separate paths.  The
+> > 64-bit path is specifically checking state when paging is toggled on,
+> > i.e. CR0.PG transititions from 0->1.  The PDPTR path now needs to run if
+> > the new CR0 state has paging enabled, irrespective of whether paging was
+> > already enabled.  Trying to shave a few cycles to make the PDPTR path an
+> > "else if" case is a mess.
+> >
+> > Fixes: d42e3fae6faed ("kvm: x86: Read PDPTEs on CR0.CD and CR0.NW changes")
+> > Cc: Jim Mattson <jmattson@google.com>
+> > Cc: Oliver Upton <oupton@google.com>
+> > Cc: Peter Shier <pshier@google.com>
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > ---
+> >
+> > The other way to fix this, with a much smaller diff stat, is to simply
+> > move the !is_page(vcpu) check inside (vcpu->arch.efer & EFER_LME).  But
+> > that results in a ridiculous amount of nested conditionals for what is a
+> > very straightforward check e.g.
+> >
+> >       if (cr0 & X86_CR0_PG) {
+> >               if (vcpu->arch.efer & EFER_LME) }
+> >                       if (!is_paging(vcpu)) {
+> >                               ...
+> >                       }
+> >               }
+> >       }
+> >
+> > Since this doesn't need to be backported anywhere, I didn't see any value
+> > in having an intermediate step.
+> >
+> >  arch/x86/kvm/x86.c | 24 ++++++++++++------------
+> >  1 file changed, 12 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 95ef629228691..5f526d94c33f3 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -819,22 +819,22 @@ int kvm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+> >       if ((cr0 & X86_CR0_PG) && !(cr0 & X86_CR0_PE))
+> >               return 1;
+> >
+> > -     if (cr0 & X86_CR0_PG) {
+> >  #ifdef CONFIG_X86_64
+> > -             if (!is_paging(vcpu) && (vcpu->arch.efer & EFER_LME)) {
+> > -                     int cs_db, cs_l;
+> > +     if ((vcpu->arch.efer & EFER_LME) && !is_paging(vcpu) &&
+> > +         (cr0 & X86_CR0_PG)) {
+> > +             int cs_db, cs_l;
+> >
+> > -                     if (!is_pae(vcpu))
+> > -                             return 1;
+> > -                     kvm_x86_ops.get_cs_db_l_bits(vcpu, &cs_db, &cs_l);
+> > -                     if (cs_l)
+> > -                             return 1;
+> > -             } else
+> > -#endif
+> > -             if (is_pae(vcpu) && ((cr0 ^ old_cr0) & pdptr_bits) &&
+> > -                 !load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu)))
+> > +             if (!is_pae(vcpu))
+> > +                     return 1;
+> > +             kvm_x86_ops.get_cs_db_l_bits(vcpu, &cs_db, &cs_l);
+> > +             if (cs_l)
+> >                       return 1;
+> >       }
+> > +#endif
+> > +     if (!(vcpu->arch.efer & EFER_LME) && (cr0 & X86_CR0_PG) &&
+> > +         is_pae(vcpu) && ((cr0 ^ old_cr0) & pdptr_bits) &&
+> > +         !load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu)))
+> > +             return 1;
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- tools/testing/selftests/bpf/prog_tests/trace_btf.c | 45 ++++++++++++++++++++++
- .../selftests/bpf/progs/netif_receive_skb.c        | 43 +++++++++++++++++++++
- 2 files changed, 88 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_btf.c
- create mode 100644 tools/testing/selftests/bpf/progs/netif_receive_skb.c
+It might be worth commenting on the subtlety of the test below being
+skipped if the PDPTEs were loaded above. I'm assuming that the PDPTEs
+shouldn't be loaded if the instruction faults.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/trace_btf.c b/tools/testing/selftests/bpf/prog_tests/trace_btf.c
-new file mode 100644
-index 0000000..e64b69d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/trace_btf.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+
-+#include "netif_receive_skb.skel.h"
-+
-+void test_trace_btf(void)
-+{
-+	struct netif_receive_skb *skel;
-+	struct netif_receive_skb__bss *bss;
-+	int err, duration = 0;
-+
-+	skel = netif_receive_skb__open();
-+	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-+		return;
-+
-+	err = netif_receive_skb__load(skel);
-+	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-+		goto cleanup;
-+
-+	bss = skel->bss;
-+
-+	err = netif_receive_skb__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	/* generate receive event */
-+	system("ping -c 10 127.0.0.1");
-+
-+	/*
-+	 * Make sure netif_receive_skb program was triggered
-+	 * and it set expected return values from bpf_trace_printk()s
-+	 * and all tests ran.
-+	 */
-+	if (CHECK(bss->ret <= 0,
-+		  "bpf_trace_btf: got return value",
-+		  "ret <= 0 %ld test %d\n", bss->ret, bss->num_subtests))
-+		goto cleanup;
-+
-+	CHECK(bss->num_subtests != bss->ran_subtests, "check all subtests ran",
-+	      "only ran %d of %d tests\n", bss->num_subtests,
-+	      bss->ran_subtests);
-+
-+cleanup:
-+	netif_receive_skb__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-new file mode 100644
-index 0000000..cab764e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020, Oracle and/or its affiliates. */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+long ret = 0;
-+int num_subtests = 0;
-+int ran_subtests = 0;
-+
-+#define CHECK_TRACE(_p, flags)						 \
-+	do {								 \
-+		++num_subtests;						 \
-+		if (ret >= 0) {						 \
-+			++ran_subtests;					 \
-+			ret = bpf_trace_btf(_p, sizeof(*(_p)), 0, flags);\
-+		}							 \
-+	} while (0)
-+
-+/* TRACE_EVENT(netif_receive_skb,
-+ *	TP_PROTO(struct sk_buff *skb),
-+ */
-+SEC("tp_btf/netif_receive_skb")
-+int BPF_PROG(trace_netif_receive_skb, struct sk_buff *skb)
-+{
-+	static const char skb_type[] = "struct sk_buff";
-+	static struct btf_ptr p = { };
-+
-+	p.ptr = skb;
-+	p.type = skb_type;
-+
-+	CHECK_TRACE(&p, 0);
-+	CHECK_TRACE(&p, BTF_TRACE_F_COMPACT);
-+	CHECK_TRACE(&p, BTF_TRACE_F_NONAME);
-+	CHECK_TRACE(&p, BTF_TRACE_F_PTR_RAW);
-+	CHECK_TRACE(&p, BTF_TRACE_F_ZERO);
-+	CHECK_TRACE(&p, BTF_TRACE_F_COMPACT | BTF_TRACE_F_NONAME |
-+		    BTF_TRACE_F_PTR_RAW | BTF_TRACE_F_ZERO);
-+
-+	return 0;
-+}
--- 
-1.8.3.1
-
+> >       if (!(cr0 & X86_CR0_PG) && kvm_read_cr4_bits(vcpu, X86_CR4_PCIDE))
+> >               return 1;
+>
+> I also investigated this issue (also same thing, OVMF doesn't boot),
+> and after looking at the intel and amd's PRM, this looks like correct solution.
+> I also tested this and it works.
+>
+>
+> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+>
+> Best regards,
+>         Maxim Levitsky
+>
