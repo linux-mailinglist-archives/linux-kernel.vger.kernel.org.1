@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEBF23DC0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31EA23DC4B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgHFQoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:44:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:45204 "EHLO foss.arm.com"
+        id S1729496AbgHFQs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:48:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:45200 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729100AbgHFQmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729098AbgHFQmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 Aug 2020 12:42:46 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5598511D4;
-        Thu,  6 Aug 2020 09:18:51 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D93013D5;
+        Thu,  6 Aug 2020 09:19:30 -0700 (PDT)
 Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54BBF3F887;
-        Thu,  6 Aug 2020 09:18:50 -0700 (PDT)
-References: <20200731115502.12954-1-valentin.schneider@arm.com> <20200731115502.12954-6-valentin.schneider@arm.com> <20200806140750.GC2077896@gmail.com>
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D14B3F887;
+        Thu,  6 Aug 2020 09:19:28 -0700 (PDT)
+References: <20200731115502.12954-1-valentin.schneider@arm.com> <20200731115502.12954-4-valentin.schneider@arm.com> <20200806142025.GD2077896@gmail.com>
 User-agent: mu4e 0.9.17; emacs 26.3
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v4 05/10] sched/topology: Define and assign sched_domain flag metadata
-Message-ID: <jhj8serixd4.mognet@arm.com>
-In-reply-to: <20200806140750.GC2077896@gmail.com>
-Date:   Thu, 06 Aug 2020 17:18:45 +0100
+Cc:     linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, morten.rasmussen@arm.com
+Subject: Re: [PATCH v4 03/10] sched/topology: Propagate SD_ASYM_CPUCAPACITY upwards
+In-reply-to: <20200806142025.GD2077896@gmail.com>
+Date:   Thu, 06 Aug 2020 17:19:26 +0100
+Message-ID: <jhj5z9viw6p.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -36,108 +36,94 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 06/08/20 15:07, Ingo Molnar wrote:
+On 06/08/20 15:20, Ingo Molnar wrote:
 > * Valentin Schneider <valentin.schneider@arm.com> wrote:
 >
->> +#ifndef SD_FLAG
->> +#define SD_FLAG(x, y, z)
->> +#endif
+>> We currently set this flag *only* on domains whose topology level exactly
+>> match the level where we detect asymmetry (as returned by
+>> asym_cpu_capacity_level()). This is rather problematic.
+>>
+>> Say there are two clusters in the system, one with a lone big CPU and the
+>> other with a mix of big and LITTLE CPUs (as is allowed by DynamIQ):
+>>
+>> DIE [                ]
+>> MC  [             ][ ]
+>>      0   1   2   3  4
+>>      L   L   B   B  B
+>>
+>> asym_cpu_capacity_level() will figure out that the MC level is the one
+>> where all CPUs can see a CPU of max capacity, and we will thus set
+>> SD_ASYM_CPUCAPACITY at MC level for all CPUs.
+>>
+>> That lone big CPU will degenerate its MC domain, since it would be alone in
+>> there, and will end up with just a DIE domain. Since the flag was only set
+>> at MC, this CPU ends up not seeing any SD with the flag set, which is
+>> broken.
+>>
+>> Rather than clearing dflags at every topology level, clear it before
+>> entering the topology level loop. This will properly propagate upwards
+>> flags that are set starting from a certain level.
+>>
+>> Reviewed-by: Quentin Perret <qperret@google.com>
+>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+>> ---
+>>  kernel/sched/topology.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>> index 865fff3ef20a..42b89668e1e4 100644
+>> --- a/kernel/sched/topology.c
+>> +++ b/kernel/sched/topology.c
+>> @@ -1985,11 +1985,10 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+>>      /* Set up domains for CPUs specified by the cpu_map: */
+>>      for_each_cpu(i, cpu_map) {
+>>              struct sched_domain_topology_level *tl;
+>> +		int dflags = 0;
+>>
+>>              sd = NULL;
+>>              for_each_sd_topology(tl) {
+>> -			int dflags = 0;
+>> -
+>>                      if (tl == tl_asym) {
+>>                              dflags |= SD_ASYM_CPUCAPACITY;
+>>                              has_asym = true;
 >
-> AFAICS there's not a single use of sd_flags.h that doesn't come with
-> its own SD_FLAG definition, so I suppose this should be:
+> I'd suggest ordering all patches with potential side effects at the
+> end, to make them easier to bisect.
 >
-> #ifndef SD_FLAG
-> # error "Should not happen."
-> #endif
+> I.e. I'd reorder this series to do:
 >
-> ?
+>  - Obviously correct renamings & cleanups
 >
-
-I can give this a try; for the context, I copied uapi/asm-generic/unistd.h
-without thinking too much, and that does:
-
-  #ifndef __SYSCALL
-  #define __SYSCALL(x, y)
-  #endif
-
-> Also, some nits:
+>  - Convert the code over to the new instrumented sd-flags method. This
+>    will presumably spew a few warnings for problems the new debugging
+>    checks catch in existing topologies.
 >
->> +/*
->> + * Expected flag uses
->> + *
->> + * SHARED_CHILD: These flags are meant to be set from the base domain upwards.
->> + * If a domain has this flag set, all of its children should have it set. This
->> + * is usually because the flag describes some shared resource (all CPUs in that
->> + * domain share the same foobar), or because they are tied to a scheduling
->> + * behaviour that we want to disable at some point in the hierarchy for
->> + * scalability reasons.
+>  - Do all the behavioral changes and fixes like this patch, even if we
+>    think that they have no serious side effects.
 >
-> s/foobar/resource
->
-> ?
+> In that sense it might make sense to order the two ARM patches to the
+> later stage as well - but I suppose it's OK to do those two first as
+> well.
 >
 
-That's better indeed, I think that's a remnant of when I was listing a lot
-of things that could be shared.
+This does sound sensible; I can shuffle this around for v5.
 
->> +/*
->> + * cross-node balancing
->> + *
->> + * SHARED_PARENT: Set for all NUMA levels above NODE.
->> + */
->> +SD_FLAG(SD_NUMA,                12, SDF_SHARED_PARENT)
->
-> s/cross-node/Cross-node
->
-> BTW., is there any particular reason why these need to be defines with
-> a manual enumeration of flag values - couldn't we generate
-> auto-enumerated C enums instead or so?
+FWIW the reason I had this very patch before the instrumentation is that
+IMO it really wants to be propagated and could thus directly be tagged with
+SDF_SHARED_PARENT when the instrumentation hits. It's a minor thing, but
+having it after the instrumentation means that I'll first have to tag it
+without any hierarchical metaflag, and then tag it with SDF_SHARED_PARENT
+in the propagation fix.
+
+If that sounds fine by you, I'll do just that.
+
+> Nice series otherwise, these new checks look really useful and already
+> caught bugs.
 >
 
-I remember exploring a few different options there, but it's been a while
-already. I think one of the reasons I kept some form of explicit assignment
-is to avoid making reading
+Thanks!
 
-  /proc/sys/kernel/sched_domain/cpu*/domain*/flags
-
-more convoluted than it is now (i.e. you have to go fetch the
-bit -> name translation in the source code).
-
-In the grand scheme of things I'd actually like to have this file output
-the names of the flags rather than their values (since I now save them when
-SCHED_DEBUG=y), but I didn't find a simple way to hack the existing SD ctl
-table (sd_alloc_ctl_domain_table() and co) into doing this.
-
-
-Now as to making this fully automagic, I *think* I could do something like
-having a first enum to set up an ordering:
-
-  #define SD_FLAG(name, ...) __##name,
-  enum {
-    #include <linux/sched/sd_flags.h>
-  };
-
-A second one to have powers of 2:
-
-  #define SD_FLAG(name, ...) name = 1 << __##name,
-  enum {
-    #include <linux/sched/sd_flags.h>
-  };
-
-And finally the metadata array assignment might be doable with:
-
-  #define SD_FLAG(_name, mflags) [__##_name] = { .meta_flags = mflags, .name = #_name },
-
-Or, if there is a way somehow to directly get powers of 2 out of an enum:
-
-  #define SD_FLAG(_name, mflags) [_ffs(_name)] = { .meta_flags = mflags, .name = #_name },
-
->> +#ifdef CONFIG_SCHED_DEBUG
->> +#define SD_FLAG(_name, idx, mflags) [idx] = {.meta_flags = mflags, .name = #_name},
->
-> s/{./{ .
-> s/e}/e }
->
 > Thanks,
 >
 >       Ingo
