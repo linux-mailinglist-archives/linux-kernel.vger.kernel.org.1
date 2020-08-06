@@ -2,126 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE75223DF3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87C023DF35
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729222AbgHFRnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:43:35 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:11892 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728862AbgHFRna (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:43:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596735809; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=ggOg6zyHd/BJyz6p09BxDxipcYys+9vo5wRtRWDV+Dw=; b=tS2mJ8Ub0u94CgYFT8OEriZCdjnAlhmSrtGy+cINM+lAmRkBBIzihWwfPBL1skbkrSSKmQAz
- tiq299hP1/y/zKzfjUDPePgFdAJUXYoV4xqXBoDBR53k8EEP07vlFprI2qVm6tdZHxhks9cD
- IKVx46psV0dKCWoGZenLK3FA79c=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
- 5f2c1da548ee73b1c7a30a67 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 15:11:33
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 75D15C4339C; Thu,  6 Aug 2020 15:11:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.129] (unknown [183.83.142.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729699AbgHFRmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:42:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729403AbgHFRbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:31:43 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: rohitkr)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 62261C433C9;
-        Thu,  6 Aug 2020 15:11:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 62261C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rohitkr@codeaurora.org
-Subject: Re: [PATCH v5 00/12] ASoC: qcom: Add support for SC7180 lpass variant
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1596528453-11437-1-git-send-email-rohitkr@codeaurora.org>
-From:   Rohit Kumar <rohitkr@codeaurora.org>
-Message-ID: <1aa197e8-0c11-e2f1-d067-c74c1a185b8a@codeaurora.org>
-Date:   Thu, 6 Aug 2020 20:41:04 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        by mail.kernel.org (Postfix) with ESMTPSA id C5FC523133;
+        Thu,  6 Aug 2020 15:12:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596726754;
+        bh=cUg8ko8OEiK/4qIbgfajwCnFYSLMbgT5cLNLiBOA0zc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AbFccKDJye+6TKEYkdO27Ltto8sfBzN9avARpUTzS2JIZOCnVJJvIiHQp6vOomQOC
+         F8JNZCzIVobAp32SyKnSVXDA/lbtwWMtL78IWNpUC9RYHN0kLSqSvrU3xvklsMNxUQ
+         acUSid/EZztAy2Hg3NFiZG8sWBd8qI54SF2roqnw=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k3hZJ-000Iec-1O; Thu, 06 Aug 2020 16:12:33 +0100
 MIME-Version: 1.0
-In-Reply-To: <1596528453-11437-1-git-send-email-rohitkr@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Date:   Thu, 06 Aug 2020 16:12:32 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Daniel Palmer <daniel@0x0f.com>,
+        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Cc:     alix.wu@mediatek.com, DTML <devicetree@vger.kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, yj.chiang@mediatek.com
+Subject: Re: [PATCH 0/2] irqchip: irq-mt58xx: Add mt58xx series interrupt
+In-Reply-To: <CAFr9PXkFJJKnqVkPBXgh1kqL_serK4DmrmJ73xU+ZMA+NuF-bA@mail.gmail.com>
+References: <CAFr9PX=Gk9h6ASi6saBLhoZ45g-WqCzDQo2XWT033fJykFSY_g@mail.gmail.com>
+ <20200806140739.31501-1-mark-pk.tsai@mediatek.com>
+ <CAFr9PXkFJJKnqVkPBXgh1kqL_serK4DmrmJ73xU+ZMA+NuF-bA@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.5
+Message-ID: <654a81dcefb3024d762ff338d4bd7f14@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: daniel@0x0f.com, mark-pk.tsai@mediatek.com, alix.wu@mediatek.com, devicetree@vger.kernel.org, jason@lakedaemon.net, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, yj.chiang@mediatek.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mark,
+On 2020-08-06 15:58, Daniel Palmer wrote:
+> Hi Mark-PK,
+> 
+> On Thu, 6 Aug 2020 at 23:08, Mark-PK Tsai <mark-pk.tsai@mediatek.com> 
+> wrote:
+>> > Do you know if it would be possible to confirm if they are
+>> > the
+>> > same thing? MediaTek bought MStar a few years ago so it seems likely
+>> > but I have no hard information.
+>> >
+>> 
+>> Yes, it's for the same interrupt controller IP.
+> 
+> That's good news. :)
+> 
+>> > If they are the same thing could we work on making one series that
+>> > supports both use cases?
+>> 
+>> Sure, and I think the irq controller driver should support both use 
+>> cases.
+>> So how about keep the MTK version driver?
+> 
+> I'm fine with that. Maybe you can push the MTK version and I can send
+> a small patch after that to add the small bits I need?
 
-Other than patch 12, there is no comment on other patches from anyone as 
-of now.
-
-[PATCH v5 12/12] dt-bindings: sound: lpass-cpu: Move to yaml format
-
-I will plan to post patch12 only with comments addressed if other
-changes does not have any comment. Please let me know your inputs.
+In the interest of being vendor agnostic, please rename the properties
+such as mediatek,irqs-map-range to something less brand-specific.
+The compatible string should be enough.
 
 Thanks,
-Rohit
-On 8/4/2020 1:37 PM, Rohit kumar wrote:
-> This patch chain add audio support for SC7180 soc by doing the required
-> modification in existing common lpass-cpu/lpass-platform driver.
-> This also fixes some concurrency issue.
->
-> This patch series is already tested by Srinivas on Dragon Board 410c.
-> Changes since v4:
->          - Updated compatible string for sc7180 lpass cpu as suggested by Rob
->          - Addressed comments by Rob in yaml Documentation.
->
-> Ajit Pandey (4):
->    ASoC: qcom: Add common array to initialize soc based core clocks
->    ASoC: qcom: lpass-platform: Replace card->dev with component->dev
->    include: dt-bindings: sound: Add sc7180-lpass bindings header
->    ASoC: qcom: lpass-sc7180: Add platform driver for lpass audio
->
-> Rohit kumar (8):
->    ASoC: qcom: lpass-cpu: Move ahbix clk to platform specific function
->    ASoC: qcom: lpass-platform: fix memory leak
->    ASoC: qcom: lpass: Use regmap_field for i2sctl and dmactl registers
->    ASoC: qcom: lpass-cpu: fix concurrency issue
->    dt-bindings: sound: lpass-cpu: Add sc7180 lpass cpu node
->    ASoC: qcom: lpass-cpu: Use platform_get_resource
->    ASoC: qcom: lpass-platform: Use platform_get_irq
->    dt-bindings: sound: lpass-cpu: Move to yaml format
->
->   .../devicetree/bindings/sound/qcom,lpass-cpu.txt   |  79 --------
->   .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 179 +++++++++++++++++
->   include/dt-bindings/sound/sc7180-lpass.h           |  10 +
->   sound/soc/qcom/Kconfig                             |   5 +
->   sound/soc/qcom/Makefile                            |   2 +
->   sound/soc/qcom/lpass-apq8016.c                     |  86 ++++++--
->   sound/soc/qcom/lpass-cpu.c                         | 204 ++++++++++---------
->   sound/soc/qcom/lpass-ipq806x.c                     |  67 +++++++
->   sound/soc/qcom/lpass-lpaif-reg.h                   | 157 ++++++++-------
->   sound/soc/qcom/lpass-platform.c                    | 155 +++++++++++----
->   sound/soc/qcom/lpass-sc7180.c                      | 216 +++++++++++++++++++++
->   sound/soc/qcom/lpass.h                             |  63 +++++-
->   12 files changed, 924 insertions(+), 299 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
->   create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
->   create mode 100644 include/dt-bindings/sound/sc7180-lpass.h
->   create mode 100644 sound/soc/qcom/lpass-sc7180.c
->
--- 
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the Linux Foundation.
 
+         M.
+-- 
+Jazz is not dead. It just smells funny...
