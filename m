@@ -2,94 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B3A23D676
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 07:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F5B23D67D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 07:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgHFFln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 01:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgHFFll (ORCPT
+        id S1727933AbgHFFnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 01:43:24 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:44399 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726093AbgHFFnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 01:41:41 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D89AC061574;
-        Wed,  5 Aug 2020 22:41:41 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id y18so30989545ilp.10;
-        Wed, 05 Aug 2020 22:41:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=HIGPgBL7n98bpEVZBM/4G2APCFecCIPvFc7WiIgCYY0=;
-        b=FiJgIehPKvn2HJA91Zt1bLnAxrIVtSKzm8V2TXidY17vnP9eFbF33heWll62gghlgO
-         XfMOrBzima/hMa6eeD21FBfFGWkNznqaMlpoGEIhvI6RGOWsbYCiu404LXAJnsqhZsI1
-         WFN2Mo/MV6O5TG9DqXjZBcM7xJEsHjZVgvnbmaCOMagFpIm9W6cex5AQj1s5JAqndb03
-         Bi5x+kYXZSSUYKBZajnFd3deR5qcTVmv7GdpyIT1cGJFTclKzRgbq3lgXTfpwe0BTCvN
-         v6N5t+yTKM30fvYyAjJxtOuxbiJG9eHmsM19GAQk9Ur+6dPGjj3c7iKUUrGHR5XdRbTV
-         MgeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=HIGPgBL7n98bpEVZBM/4G2APCFecCIPvFc7WiIgCYY0=;
-        b=Ch5xNxILbM0D9L3WBQForNm0mf9jZRG9ZcHmh4Z3K04Vn1KHYqERY1sGbUxM/zCgI4
-         vpyYmz9065MJe5Igl+GzMy+X2iywAw3SQV1iXaE9TFcs4zNFDthPDLDSbWApT1AHJzlk
-         BeaLmU3vBaXzMcbOXibwltSSdyTMkZ35BOGmuKxxxuIM7BLQDcoSydVdatfVnvcVEunc
-         dTRxJz+K0BfuNagU/RRenrPYMv7oCGjHgE0/WlMy99j1Dp0nGwZDS2GqAF0JaL4Uuo/Y
-         Q97bFpERfduSynkmLFX2A0NDBk6Rq4WI1vVe+WVelbn7uCruWPXI8SpvO4iT6Pn57TX0
-         atpA==
-X-Gm-Message-State: AOAM530wU8jJjQbQ/iHKkxZFsX7zSZl7wpLqH2Y9h8U+YZUn4SvBoluR
-        wH58CgImD2I1m06q/KAgYY8=
-X-Google-Smtp-Source: ABdhPJzfFQrkhxfiSuEnos5KxcjG3hgktUyK5qO7wvdWxUZYYXobmNCqd9eumJE1qTchwrRO1oLRCA==
-X-Received: by 2002:a92:d34c:: with SMTP id a12mr8492912ilh.20.1596692500154;
-        Wed, 05 Aug 2020 22:41:40 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id n10sm2879634ila.2.2020.08.05.22.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 22:41:39 -0700 (PDT)
-Date:   Wed, 05 Aug 2020 22:41:30 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Muchun Song <songmuchun@bytedance.com>, rostedt@goodmis.org,
-        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, mhiramat@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, sfr@canb.auug.org.au, mingo@kernel.org,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>
-Message-ID: <5f2b980abeaad_291f2b27e574e5b82@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200805172046.19066-1-songmuchun@bytedance.com>
-References: <20200805172046.19066-1-songmuchun@bytedance.com>
-Subject: RE: [PATCH] kprobes: fix compiler warning for
- !CONFIG_KPROBES_ON_FTRACE
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        Thu, 6 Aug 2020 01:43:23 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id B1A6FC10;
+        Thu,  6 Aug 2020 01:43:21 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 06 Aug 2020 01:43:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        Awpd/iaKMwO3xriBXgL7yRd6ZsbwGEwHcJ9iVbEAWAs=; b=1krTwyayDva0Q1mK
+        m6P8LfWxFtP0gbC5ZJ4RXLrW4Xe3B+4DvLjbWeiGFj6KbGknmmigNG2sczhB0pcG
+        13nhBFr7d4/GOjO6ol86Fq6R0tks5VS0Y8ZasfxsrRZlVdjrKyq8YzfFcG6cksw2
+        fmiIS+SwhFecOGr6hs2vrTnBCgZZQAyTlJlvrrSvijUecgyWUFcre4aMZaTcWp8V
+        o2ffi+CgrWkpBgpdrNBWsVFhZsR0EaRMyXM9kMFOYp48W1uOibG7iUx/HBqCzMqT
+        3qy2MXnvbgV1QDuMCz5n5aCDC7hrTdsaymx+RfzFPZP9v/yME/r2wN+n572rU40y
+        6Rdb5A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=Awpd/iaKMwO3xriBXgL7yRd6ZsbwGEwHcJ9iVbEAW
+        As=; b=q4byEJlGrJpU4Clt62ffMOHvyBeHqc8C49IeF6pTmi7wr38QHrxKsMNpl
+        y5dLQJjehgjmpRhgdyrHqIJM96MnLMEqv2uIEfVh+6c/g4ip2shY47lR8d6Cmmlf
+        OwIWw4AENYOwphwTZwXTQgCLOcFzMdAQseX4NITk+jA3z/mDNi6EVqnH4hA94Cex
+        M4teDxu4YBDH0MvD4NF99T/BrjbDMC3Qv4FyRD4oxYERb2ttk1kc7Cj6nXM71eh/
+        J4RQK7qglO5YRf3zWv639KugPAyujWjKJ56z+0VJ2tvQNHtTQAqFRmKOTC7Z2CxZ
+        GBj2WEEHNmbzR/5lxWi9FFCZQsfqw==
+X-ME-Sender: <xms:d5grXypyMjU5lPa9O4PGPfW_TL8izh0JfU_S0FxO4JBNUUSrSvVtcQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrjeelgddutdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthejredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    effeettedvgeduvdevfeevfeettdffudduheeuiefhueevgfevheffledugefgjeenucfk
+    phepuddukedrvddtkedrhedvrddutdelnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:d5grXwp0uuu8oMFPdvGqzuBMRqEA3BQKG45IOM9gIDwhnWZDUE42EQ>
+    <xmx:d5grX3O8PH9YKBd8nAHvF_fed9saYJjKkXqKcvJbWWRWqa2xQdb7Ww>
+    <xmx:d5grXx77End6UsceFnSpNn6SWZS4jkW4VNblRQK2WzSbvaqpHFr_2w>
+    <xmx:eZgrX-x5TRGWifJQA8UOi0mdSPMkYSl7bB2iSPKyppoLGJ0yjVu8kiLTR-w>
+Received: from mickey.themaw.net (unknown [118.208.52.109])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E5174328005E;
+        Thu,  6 Aug 2020 01:43:14 -0400 (EDT)
+Message-ID: <61ad7b12b1d242247b066e6ffbf5f9382bc57b2a.camel@themaw.net>
+Subject: Re: [PATCH 06/18] fsinfo: Add a uniquifier ID to struct mount [ver
+ #21]
+From:   Ian Kent <raven@themaw.net>
+To:     Matthew Wilcox <willy@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 06 Aug 2020 13:43:11 +0800
+In-Reply-To: <20200805193303.GM23808@casper.infradead.org>
+References: <CAJfpegtOguKOGWxv-sA_C9eSWG_3Srnj_k=oW-wSHNprCipFVg@mail.gmail.com>
+         <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
+         <159646183662.1784947.5709738540440380373.stgit@warthog.procyon.org.uk>
+         <20200804104108.GC32719@miu.piliscsaba.redhat.com>
+         <2306029.1596636828@warthog.procyon.org.uk>
+         <2315925.1596641410@warthog.procyon.org.uk>
+         <20200805193303.GM23808@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Muchun Song wrote:
-> Fix compiler warning(as show below) for !CONFIG_KPROBES_ON_FTRACE.
+On Wed, 2020-08-05 at 20:33 +0100, Matthew Wilcox wrote:
+> On Wed, Aug 05, 2020 at 04:30:10PM +0100, David Howells wrote:
+> > Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > 
+> > > idr_alloc_cyclic() seems to be a good template for doing the
+> > > lower
+> > > 32bit allocation, and we can add code to increment the high 32bit
+> > > on
+> > > wraparound.
+> > > 
+> > > Lots of code uses idr_alloc_cyclic() so I guess it shouldn't be
+> > > too
+> > > bad in terms of memory use or performance.
+> > 
+> > It's optimised for shortness of path and trades memory for
+> > performance.  It's
+> > currently implemented using an xarray, so memory usage is dependent
+> > on the
+> > sparseness of the tree.  Each node in the tree is 576 bytes and in
+> > the worst
+> > case, each one node will contain one mount - and then you have to
+> > backfill the
+> > ancestry, though for lower memory costs.
+> > 
+> > Systemd makes life more interesting since it sets up a whole load
+> > of
+> > propagations.  Each mount you make may cause several others to be
+> > created, but
+> > that would likely make the tree more efficient.
 > 
-> kernel/kprobes.c: In function 'kill_kprobe':
-> kernel/kprobes.c:1116:33: warning: statement with no effect
-> [-Wunused-value]
->  1116 | #define disarm_kprobe_ftrace(p) (-ENODEV)
->       |                                 ^
-> kernel/kprobes.c:2154:3: note: in expansion of macro
-> 'disarm_kprobe_ftrace'
->  2154 |   disarm_kprobe_ftrace(p);
-> 
-> Link: https://lore.kernel.org/r/20200805142136.0331f7ea@canb.auug.org.au
-> 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Fixes: 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
+> I would recommend using xa_alloc and ignoring the ID assigned from
+> xa_alloc.  Looking up by unique ID is then a matter of iterating
+> every
+> mount (xa_for_each()) looking for a matching unique ID in the mount
+> struct.  That's O(n) search, but it's faster than a linked list, and
+> we
+> don't have that many mounts in a system.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+How many is not many, 5000, 10000, I agree that 30000 plus is fairly
+rare, even for the autofs direct mount case I hope the implementation
+here will help to fix.
+
+Ian
+
