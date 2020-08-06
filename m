@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA9423E35B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4787F23E333
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgHFU7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 16:59:35 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56602 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgHFU7f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 16:59:35 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 076AnV9p040546;
-        Thu, 6 Aug 2020 05:49:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1596710971;
-        bh=/TAJIpYqryMmmTpOr2TbNaq9wdkP1C9Qtn8+dcFlgos=;
-        h=From:To:CC:Subject:Date;
-        b=kCEoiLXsM48Apv1lOQICiH+Ru4e5lLNVgwWRBgob4HWjO97V++CzXICYyZ+FlsPv8
-         4AAsd9btlfYgbCPWTAlb3cvZP1LJJ/muzgdhn9l6A6ddyXxwQ/7//65itD7w9+TXfi
-         hs0U5LKQiNSBxyaq4HEpqZYn7QUT1Xm2TTjRykME=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 076AnUw6059545;
-        Thu, 6 Aug 2020 05:49:30 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 6 Aug
- 2020 05:49:30 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 6 Aug 2020 05:49:30 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 076AnSCZ111264;
-        Thu, 6 Aug 2020 05:49:29 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <dan.j.williams@intel.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] dmaengine: of-dma: Fix of_dma_router_xlate's of_dma_xlate handling
-Date:   Thu, 6 Aug 2020 13:49:28 +0300
-Message-ID: <20200806104928.25975-1-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.28.0
+        id S1726242AbgHFUbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 16:31:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725535AbgHFUbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 16:31:04 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BD7620855;
+        Thu,  6 Aug 2020 20:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596745863;
+        bh=F4AtrtRO9qwW/JfWMr8YyqALJC/wmxeoK0pMEZzq7Hk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ziD/DCjCAm6/8RP+Os8tyl7Pjhc+IhZ/+KJZNdOmtc8xt0MQoKUjHbTZ93QLIu8V6
+         PffbS3Ag2oN3S8rv2RneDQxmak9pUkTtCNF11RA2IEKrp6A8UXavZbbxAZt6Wya05H
+         5PxzdWZHxj2pG65AYFYnDlO0Lhj01VgVg+5ok6kU=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k3mXV-000N83-Lh; Thu, 06 Aug 2020 21:31:01 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 06 Aug 2020 21:31:01 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        Nial Peters <uceenpe@ucl.ac.uk>
+Subject: Re: [PATCH v3 2/4] irqchip/qcom-pdc: Switch to using
+ IRQCHIP_PLATFORM_DRIVER helper macros
+In-Reply-To: <CALAqxLUhit4Zz27Uce7gPGVRmkDJ_2UTC2fyk8NkOfgqR8diHQ@mail.gmail.com>
+References: <20200718000637.3632841-1-saravanak@google.com>
+ <20200718000637.3632841-3-saravanak@google.com>
+ <CALAqxLVZ+rFE+hM9OtQ46NqpTHeLu6oKLNWKstLv1U5zbwyq7g@mail.gmail.com>
+ <CAGETcx_rkK3-bKhDP_N4n_WyXLXFPoaUV9rbY_Y+H1Joj=dCyw@mail.gmail.com>
+ <CALAqxLUz6GTT96nO9igiWVwyaRs_xbO+=mySLm4BKX6-Uh90ZA@mail.gmail.com>
+ <5e6124390b9e3e7f4d6f6decbdb669ca@kernel.org>
+ <CAGETcx89BRdSP6FKjDPU0zapt0ET9_PUr6bjZb9EA-jYn0maFw@mail.gmail.com>
+ <4d79a3e9c8c24f8adb6f7ade97d5a9c6@kernel.org>
+ <CALAqxLUhit4Zz27Uce7gPGVRmkDJ_2UTC2fyk8NkOfgqR8diHQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.5
+Message-ID: <c5e73672a123ee6a920bdd0c3d6023c4@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: john.stultz@linaro.org, saravanak@google.com, tglx@linutronix.de, jason@lakedaemon.net, matthias.bgg@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org, kernel-team@android.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, hanks.chen@mediatek.com, cc.hwang@mediatek.com, loda.chou@mediatek.com, steev@kali.org, uceenpe@ucl.ac.uk
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_dma_xlate callback can return ERR_PTR as well NULL in case of failure.
+On 2020-08-06 21:09, John Stultz wrote:
+> On Thu, Aug 6, 2020 at 12:59 PM Marc Zyngier <maz@kernel.org> wrote:
+>> OK, thanks for confirming. It would have been good if these patches
+>> had seen a bit more testing.
+> 
+> Yes, again, my apologies for that!
 
-If error code is returned (not NULL) then the route should be released and
-the router should not be registered for the channel.
+I would say this should be the job of the patch author, before
+anyone else. Yes, silly bugs happen. In this occurrence, it
+could have been avoided by just boot-testing it, though.
 
-Fixes: 56f13c0d9524c ("dmaengine: of_dma: Support for DMA routers")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/dma/of-dma.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Oh well. At least it was caught early.
 
-diff --git a/drivers/dma/of-dma.c b/drivers/dma/of-dma.c
-index 863f2aaf5c8f..8a4f608904b9 100644
---- a/drivers/dma/of-dma.c
-+++ b/drivers/dma/of-dma.c
-@@ -71,12 +71,12 @@ static struct dma_chan *of_dma_router_xlate(struct of_phandle_args *dma_spec,
- 		return NULL;
- 
- 	chan = ofdma_target->of_dma_xlate(&dma_spec_target, ofdma_target);
--	if (chan) {
--		chan->router = ofdma->dma_router;
--		chan->route_data = route_data;
--	} else {
-+	if (IS_ERR_OR_NULL(chan)) {
- 		ofdma->dma_router->route_free(ofdma->dma_router->dev,
- 					      route_data);
-+	} else {
-+		chan->router = ofdma->dma_router;
-+		chan->route_data = route_data;
- 	}
- 
- 	/*
+>> > I'm assuming you'll put up the patch yourself. Please let me know if
+>> > you need me to send one.
+>> 
+>> I have queued this [1] in -next.
+>> 
+>> It'd be good if someone (John?) could give a Tested-by.
+> 
+> Just validated. Tested-by: John Stultz <john.stultz@linaro.org>
+
+Thanks for your patience, the reporting and testing.
+
+         M.
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+Jazz is not dead. It just smells funny...
