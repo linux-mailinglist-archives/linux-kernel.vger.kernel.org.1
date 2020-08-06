@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F2523DE21
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC4623DE70
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729870AbgHFRWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:22:41 -0400
-Received: from mga11.intel.com ([192.55.52.93]:3476 "EHLO mga11.intel.com"
+        id S1730075AbgHFRZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:25:54 -0400
+Received: from mga01.intel.com ([192.55.52.88]:64102 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729665AbgHFRWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:22:37 -0400
-IronPort-SDR: yyORRzSJEl0V8o5hcvxC/eYyQIuLKGuLaZ8xFtrq3juxDof2VuGbePyuXWEPhvzTHZdGen/wX9
- JjuxI0WMQAsw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="150518237"
+        id S1730283AbgHFRZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:25:45 -0400
+IronPort-SDR: GiCGVqhsGD1OtAIvfDH+NGiGAbJAYdliFeJTqs1T5PMN8q4NBlNj0rmLqMt9obDhdg415mNNdF
+ 2k8Ru72/5I0Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="170852068"
 X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="150518237"
+   d="scan'208";a="170852068"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 04:39:34 -0700
-IronPort-SDR: GVSZ3kCnw8m+69EDPK41POPkktXHjiKGvSG3bhUH3UdHGxrs3zrMjvRdtn11fOgC27cPV+7RJP
- J7MU0L3LCb0w==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 04:39:11 -0700
+IronPort-SDR: NTu3N6LJ5Wvo61B+4fxwImjZf/gwiJeMxDnfmY4s5sofJC5B/SgaPNs5YeCfL9O58bOjwnmVer
+ N4GL+X13yszA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="316119581"
-Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.135])
-  by fmsmga004.fm.intel.com with ESMTP; 06 Aug 2020 04:39:30 -0700
-From:   Shuo Liu <shuo.a.liu@intel.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH] x86/acrn: Allow ACRN guest to use X2APIC mode
-Date:   Thu,  6 Aug 2020 19:38:02 +0800
-Message-Id: <20200806113802.9325-1-shuo.a.liu@intel.com>
-X-Mailer: git-send-email 2.28.0
+   d="scan'208";a="397219766"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 06 Aug 2020 04:39:08 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 06 Aug 2020 14:39:07 +0300
+Date:   Thu, 6 Aug 2020 14:39:07 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     "Shaikh, Azhar" <azhar.shaikh@intel.com>,
+        "bleung@chromium.org" <bleung@chromium.org>,
+        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
+        "groeck@chromium.org" <groeck@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>,
+        "Bowman, Casey G" <casey.g.bowman@intel.com>,
+        "Mani, Rajmohan" <rajmohan.mani@intel.com>
+Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Avoid setting usb
+ role during disconnect
+Message-ID: <20200806113907.GX883641@kuha.fi.intel.com>
+References: <20200730225609.7395-1-azhar.shaikh@intel.com>
+ <20200730225609.7395-3-azhar.shaikh@intel.com>
+ <20200730230238.GD3145664@google.com>
+ <MWHPR11MB1518178C5B2335FC02CD36AE91710@MWHPR11MB1518.namprd11.prod.outlook.com>
+ <20200730232504.GG3145664@google.com>
+ <MWHPR11MB151867DF25664C80E99A326D914B0@MWHPR11MB1518.namprd11.prod.outlook.com>
+ <CACeCKaf6WuW6XbFBQoVEW55w=OHfaVmmDn1xepiYYeRyMzZFrA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACeCKaf6WuW6XbFBQoVEW55w=OHfaVmmDn1xepiYYeRyMzZFrA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ACRN Hypervisor did not support x2APIC and thus x2APIC support was
-disabled by always returning false when VM checked for x2APIC support.
+On Wed, Aug 05, 2020 at 12:37:14PM -0700, Prashant Malani wrote:
+> Hi Azhar,
+> 
+> 
+> On Wed, Aug 5, 2020 at 12:22 PM Shaikh, Azhar <azhar.shaikh@intel.com> wrote:
+> >
+> > Hi Prashant,
+> >
+> > > Is this documented anywhere? Kindly provide the links to that if so. I wasn't
+> > > aware of any ordering requirements (but I may be missing something).
+> >
+> > The configuration of the connector should always happen in the order defined in the
+> > USB Type-C specification. Check ch. 2.3 (USB Type-C Spec R2.0). So that will basically give you:
+> >
+> > 1. orientation
+> > 2. role(s)
+> > 3. the rest.
+> 
+> Thanks for the link. Are you referring to Section 2.3 (Configuration
+> Process) ? I couldn't find anything there which
+> implied any required ordering (I'm reading Release 2.0, Aug 2019, so I
+> don't know if something has been added since).
+> Could you kindly point me to the appropriate subsection?
 
-ACRN received full support of x2APIC and exports the capability through
-CPUID feature bits.
+Please check the section 4.5.1.2 (Connecting Sources and Sinks). Check
+the typical flow. You can also check the Connection State Machine
+Requirements. The order should be clear from those as well.
 
-Let VM decide if it needs to switch to x2APIC mode according to CPUID
-features.
+1. Source/sink detection
+2. Orientation
+3. Data role
+4. VCONN
+5. VBUS (USB Type-C currents)
+6. The connector is now configured. We can start the PD communication
+   that should lead into configuration of the mux if we enter a mode.
 
-Originally-by: Yakui Zhao <yakui.zhao@intel.com>
-Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Fengwei Yin <fengwei.yin@intel.com>
-Cc: Zhi Wang <zhi.a.wang@intel.com>
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc: Yu Wang <yu1.wang@intel.com>
-Cc: Reinette Chatre <reinette.chatre@intel.com>
----
- arch/x86/kernel/cpu/acrn.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+The data role, the thing that we are talking about here, really should
+be set before the mux is configured.
 
-diff --git a/arch/x86/kernel/cpu/acrn.c b/arch/x86/kernel/cpu/acrn.c
-index 1da9b1c9a2db..3b08cdfc6514 100644
---- a/arch/x86/kernel/cpu/acrn.c
-+++ b/arch/x86/kernel/cpu/acrn.c
-@@ -11,6 +11,7 @@
- 
- #include <linux/interrupt.h>
- #include <asm/apic.h>
-+#include <asm/cpufeatures.h>
- #include <asm/desc.h>
- #include <asm/hypervisor.h>
- #include <asm/idtentry.h>
-@@ -29,12 +30,7 @@ static void __init acrn_init_platform(void)
- 
- static bool acrn_x2apic_available(void)
- {
--	/*
--	 * x2apic is not supported for now. Future enablement will have to check
--	 * X86_FEATURE_X2APIC to determine whether x2apic is supported in the
--	 * guest.
--	 */
--	return false;
-+	return boot_cpu_has(X86_FEATURE_X2APIC);
- }
- 
- static void (*acrn_intr_handler)(void);
+> Additionally, I think any ordering requirements there are already
+> handled by the TCPM in the Chrome OS EC.
 
-base-commit: 48778464bb7d346b47157d21ffde2af6b2d39110
+The TCPM does not execute the steps that configure the port on this
+platform. The OS is the part that actually executes the steps.
+
+That is one reason (but not the only one) why it is important that
+both parts follow the order that is proposed in the spec. Otherwise we
+may endup negotiating things with the partner in one order but then
+actually executing those steps in some other.
+
+
+thanks,
+
 -- 
-2.28.0
-
+heikki
