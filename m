@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC4623DE70
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7589023DE04
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730075AbgHFRZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:25:54 -0400
-Received: from mga01.intel.com ([192.55.52.88]:64102 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730283AbgHFRZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:25:45 -0400
-IronPort-SDR: GiCGVqhsGD1OtAIvfDH+NGiGAbJAYdliFeJTqs1T5PMN8q4NBlNj0rmLqMt9obDhdg415mNNdF
- 2k8Ru72/5I0Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="170852068"
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="170852068"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 04:39:11 -0700
-IronPort-SDR: NTu3N6LJ5Wvo61B+4fxwImjZf/gwiJeMxDnfmY4s5sofJC5B/SgaPNs5YeCfL9O58bOjwnmVer
- N4GL+X13yszA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="397219766"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 06 Aug 2020 04:39:08 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 06 Aug 2020 14:39:07 +0300
-Date:   Thu, 6 Aug 2020 14:39:07 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     "Shaikh, Azhar" <azhar.shaikh@intel.com>,
-        "bleung@chromium.org" <bleung@chromium.org>,
-        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
-        "groeck@chromium.org" <groeck@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>,
-        "Bowman, Casey G" <casey.g.bowman@intel.com>,
-        "Mani, Rajmohan" <rajmohan.mani@intel.com>
-Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Avoid setting usb
- role during disconnect
-Message-ID: <20200806113907.GX883641@kuha.fi.intel.com>
-References: <20200730225609.7395-1-azhar.shaikh@intel.com>
- <20200730225609.7395-3-azhar.shaikh@intel.com>
- <20200730230238.GD3145664@google.com>
- <MWHPR11MB1518178C5B2335FC02CD36AE91710@MWHPR11MB1518.namprd11.prod.outlook.com>
- <20200730232504.GG3145664@google.com>
- <MWHPR11MB151867DF25664C80E99A326D914B0@MWHPR11MB1518.namprd11.prod.outlook.com>
- <CACeCKaf6WuW6XbFBQoVEW55w=OHfaVmmDn1xepiYYeRyMzZFrA@mail.gmail.com>
+        id S1729392AbgHFRVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:21:12 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53400 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729376AbgHFRVF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:21:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596734464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z0yMbsT7pcgi1iAHyYcod+CvrElFV6deSSG6mOjxpA8=;
+        b=JpkurE4TQ0HhBbugzOI7UcoukIohiO+2Q5pZdlZta5wGBQh2pLUmIxq935ZGVMRDOU724r
+        ucCGYCiLwevzBgTcx3OoYOAhWyEp4urAQQBfXgdMC+HUyEiw9BIFqhjKmfxoy6b4WXPCq7
+        gesZp62tf4JugFPJPFt1yEBtsQy+A7I=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-430-UXY6awtINe2hI5AmW3Xsdw-1; Thu, 06 Aug 2020 07:39:12 -0400
+X-MC-Unique: UXY6awtINe2hI5AmW3Xsdw-1
+Received: by mail-ej1-f72.google.com with SMTP id lg2so13622407ejb.23
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 04:39:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=z0yMbsT7pcgi1iAHyYcod+CvrElFV6deSSG6mOjxpA8=;
+        b=QNqNJkPyFAAc+YLamO7ydEFLRpENZjOJbFGCYyn0/+i077yzpdg8+MOgV2VOO7yX1R
+         /RzKbvFwmI05cpjGeLc73sbSCWsQDVsMnDuiPW70ZueTn4ulSOk4kJZOM5+n5Oo5r7fJ
+         MayOJOc2MO3REePgQLjEFEkgwgHACU4G75UFtiY501YbSW8RvZYsD/5igTtkFfWyip9G
+         KTkZEazA/wjogoZ5+81VNCNtVI656ba3/OFqtbOh6GGRjNZmLpT2m+oKf2ipEr/E7R+X
+         TxrhIUWFqy2K/4dZHZ/kCUpzgCYLNmCM1JPfUpgbERFC7FMfr9wOEUw/p7dtWdUPaM/N
+         2CLg==
+X-Gm-Message-State: AOAM530a1OQ34t/1GErgOkR+rb6HDcAnFt7XIsA5EbYde+cPpykuMkIk
+        02OqlrjjXjkaavNFCHRT6ZKRd25bk5BQkNctk3MwjFGtuuGMlTr6FJ/S+YjQ0DbeY1roTk9Much
+        DtOtKjakPjxM6jXGmD1dGITaN
+X-Received: by 2002:a50:d485:: with SMTP id s5mr3707037edi.285.1596713951113;
+        Thu, 06 Aug 2020 04:39:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9gpH7Y4wZjbEShVJ7bFDHbXcr/x4vdBu+Kk8uS1Zn8NzRbVW/Adp0kk2I0m9EFJ/FFoNX6Q==
+X-Received: by 2002:a50:d485:: with SMTP id s5mr3707021edi.285.1596713950936;
+        Thu, 06 Aug 2020 04:39:10 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id w7sm3521262ejb.3.2020.08.06.04.39.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 04:39:10 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
+In-Reply-To: <20200806055008-mutt-send-email-mst@kernel.org>
+References: <20200728143741.2718593-1-vkuznets@redhat.com> <20200805201851-mutt-send-email-mst@kernel.org> <873650p1vo.fsf@vitty.brq.redhat.com> <20200806055008-mutt-send-email-mst@kernel.org>
+Date:   Thu, 06 Aug 2020 13:39:09 +0200
+Message-ID: <87wo2cngv6.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACeCKaf6WuW6XbFBQoVEW55w=OHfaVmmDn1xepiYYeRyMzZFrA@mail.gmail.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 12:37:14PM -0700, Prashant Malani wrote:
-> Hi Azhar,
-> 
-> 
-> On Wed, Aug 5, 2020 at 12:22 PM Shaikh, Azhar <azhar.shaikh@intel.com> wrote:
-> >
-> > Hi Prashant,
-> >
-> > > Is this documented anywhere? Kindly provide the links to that if so. I wasn't
-> > > aware of any ordering requirements (but I may be missing something).
-> >
-> > The configuration of the connector should always happen in the order defined in the
-> > USB Type-C specification. Check ch. 2.3 (USB Type-C Spec R2.0). So that will basically give you:
-> >
-> > 1. orientation
-> > 2. role(s)
-> > 3. the rest.
-> 
-> Thanks for the link. Are you referring to Section 2.3 (Configuration
-> Process) ? I couldn't find anything there which
-> implied any required ordering (I'm reading Release 2.0, Aug 2019, so I
-> don't know if something has been added since).
-> Could you kindly point me to the appropriate subsection?
+"Michael S. Tsirkin" <mst@redhat.com> writes:
 
-Please check the section 4.5.1.2 (Connecting Sources and Sinks). Check
-the typical flow. You can also check the Connection State Machine
-Requirements. The order should be clear from those as well.
+> About the feature bit, I am not sure why it's really needed. A single
+> mmio access is cheaper than two io accesses anyway, right? So it makes
+> sense for a kvm guest whether host has this feature or not.
+> We need to be careful and limit to a specific QEMU implementation
+> to avoid tripping up bugs, but it seems more appropriate to
+> check it using pci host IDs.
 
-1. Source/sink detection
-2. Orientation
-3. Data role
-4. VCONN
-5. VBUS (USB Type-C currents)
-6. The connector is now configured. We can start the PD communication
-   that should lead into configuration of the mux if we enter a mode.
-
-The data role, the thing that we are talking about here, really should
-be set before the mux is configured.
-
-> Additionally, I think any ordering requirements there are already
-> handled by the TCPM in the Chrome OS EC.
-
-The TCPM does not execute the steps that configure the port on this
-platform. The OS is the part that actually executes the steps.
-
-That is one reason (but not the only one) why it is important that
-both parts follow the order that is proposed in the spec. Otherwise we
-may endup negotiating things with the partner in one order but then
-actually executing those steps in some other.
-
-
-thanks,
+Right, it's just that "running on KVM" is too coarse grained, we just
+need a way to somehow distinguish between "known/good" and
+"unknown/buggy" configurations.
 
 -- 
-heikki
+Vitaly
+
