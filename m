@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EA723DEAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F078523DEE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729717AbgHFR2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:28:36 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:38867 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730422AbgHFR2O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:28:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596734892;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MwHd6CcJYEmEuf+YoO55dE8m5E0R87S7YH74U/aXf1A=;
-        b=Wzydsvz+CgFV08PnSwCga3m51Yl0+Yh98F/ELo+/7zTJMQIwrdni7S5cuddE4bVPl3k70D
-        n7zVtcl+KMA1fkDj25156nCeq6nH3cMzzsmOXalPwxzAMLxPGgsTZEPwKSpXJi7vQYUdBg
-        cUUxwACifn8/+2iPNocajYDVCPiq6Zc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-121-yw4yRZZJNTKvU8TjJjHtNg-1; Thu, 06 Aug 2020 13:28:10 -0400
-X-MC-Unique: yw4yRZZJNTKvU8TjJjHtNg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729889AbgHFRdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:33:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729903AbgHFRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:32:05 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34FF6106F8C4;
-        Thu,  6 Aug 2020 17:28:09 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-112-23.rdu2.redhat.com [10.10.112.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D74767C0E5;
-        Thu,  6 Aug 2020 17:28:02 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 47886220441; Thu,  6 Aug 2020 13:28:02 -0400 (EDT)
-Date:   Thu, 6 Aug 2020 13:28:02 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 31/38] virtio_fs: convert to LE accessors
-Message-ID: <20200806172802.GD367847@redhat.com>
-References: <20200805134226.1106164-1-mst@redhat.com>
- <20200805134226.1106164-32-mst@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 36A2922CAF;
+        Thu,  6 Aug 2020 11:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596712212;
+        bh=EBG5noCPf3hsffiJxbyTLsGHbvKaQ8YSkj29Tp6pgqs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LGgIEfg4DK+e9lI12t1JcRwHSyOXrah9Cvrd92x/Bp20mcheMF+0N3Pqy7EO0pIeR
+         Xs7QA3Nx+5a1tCS76l6z5uuSMUt5Tg0kfeBnpr/kE6leX0IzMahFBVN3kSttU9xXpC
+         aLFwYjN3W3UYIOuteDGltfjWTpJ/KbdOO8QBzklE=
+Date:   Thu, 6 Aug 2020 09:08:34 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     linux- stable <stable@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Subject: Re: stable rc 4.9- v4.9.232-51-g1f47445197d2 - build breaks on
+ arm64, arm, x86_64 and i386.
+Message-ID: <20200806070834.GE2582961@kroah.com>
+References: <CA+G9fYu4tshr3YUqqU-y8vXtoMVt5BgHtmFXqMUa_457_-8D-A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200805134226.1106164-32-mst@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYu4tshr3YUqqU-y8vXtoMVt5BgHtmFXqMUa_457_-8D-A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 09:44:39AM -0400, Michael S. Tsirkin wrote:
-> Virtio fs is modern-only. Use LE accessors for config space.
+On Wed, Aug 05, 2020 at 10:34:44PM +0530, Naresh Kamboju wrote:
+> stable rc 4.9 build breaks on arm64, arm, x86_64 and i386.
 > 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-Acked-by: Vivek Goyal <vgoyal@redhat.com>
-
-Vivek
-
-> ---
->  fs/fuse/virtio_fs.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Here are the build log failures on arm64.
 > 
-> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-> index 4c4ef5d69298..104f35de5270 100644
-> --- a/fs/fuse/virtio_fs.c
-> +++ b/fs/fuse/virtio_fs.c
-> @@ -606,8 +606,8 @@ static int virtio_fs_setup_vqs(struct virtio_device *vdev,
->  	unsigned int i;
->  	int ret = 0;
->  
-> -	virtio_cread(vdev, struct virtio_fs_config, num_request_queues,
-> -		     &fs->num_request_queues);
-> +	virtio_cread_le(vdev, struct virtio_fs_config, num_request_queues,
-> +			&fs->num_request_queues);
->  	if (fs->num_request_queues == 0)
->  		return -EINVAL;
->  
-> -- 
-> MST
+>     git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>     target_arch: arm64
+>     toolchain: gcc-9
+>     git_short_log: 1f47445197d2 (\Linux 4.9.233-rc1\)
+>     git_sha: 1f47445197d2c8eecafa2b996f635aa89851c123
+>     git_describe: v4.9.232-51-g1f47445197d2
+>     kernel_version: 4.9.233-rc1
 > 
+> make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=arm64
+> CROSS_COMPILE=aarch64-linux-gnu- HOSTCC=gcc CC="sccache
+> aarch64-linux-gnu-gcc" O=build Image
+> #
+> ../arch/arm64/kernel/hw_breakpoint.c: In function ‘arch_bp_generic_fields’:
+> ../arch/arm64/kernel/hw_breakpoint.c:352:5: note: parameter passing
+> for argument of type ‘struct arch_hw_breakpoint_ctrl’ changed in GCC
+> 9.1
+>   352 | int arch_bp_generic_fields(struct arch_hw_breakpoint_ctrl ctrl,
+>       |     ^~~~~~~~~~~~~~~~~~~~~~
 
+Is this warning new?
+
+> ../fs/ext4/inode.c: In function ‘ext4_direct_IO’:
+> ../fs/ext4/inode.c:3610:9: error: redefinition of ‘offset’
+>  3610 |  loff_t offset = iocb->ki_pos;
+>       |         ^~~~~~
+> ../fs/ext4/inode.c:3608:9: note: previous definition of ‘offset’ was here
+>  3608 |  loff_t offset = iocb->ki_pos;
+>       |         ^~~~~~
+
+Sorry I missed these, now dropped the offending patch from 4.4 and 4.9
+queues.
+
+greg k-h
