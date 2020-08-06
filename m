@@ -2,121 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989D223DD34
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E054523DEA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730007AbgHFRFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
+        id S1730401AbgHFR2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729537AbgHFREq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:04:46 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70175C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:47:12 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id bo3so27146426ejb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:47:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YG1Q9ynyALFe9AR4AZSnu22cCvufmDI+jK/ShRTakaM=;
-        b=y5QJ1RTOml2RSAjIvBYsdVJ2k8poyIbAEqK9gbXMvf/anLbi20BZWlKrIHnB30nI0o
-         LMcfKgqvmQhpTkNTN/uVT2Oppdah2LqBb4AFhcL2ZU0O84VOqggfijA3nXRfjnyWxMqg
-         8LYg/feEy49SaB/FTnYHvZpsjBaae2IF4aai6ydPwwXY271DMkUG+tnTFfLuA481asuY
-         ncqAKCMbDfhJbvRlEToPaTm8qaLiG/vCaXTCTxqMtZ5LfCGpeORnYTysGbGUccu8RqHP
-         Y/FNI3Z4fHBttNubfHeMVQnHSB3brn45wUMNRL8WM0cu9ZHtIdjUGC5q5rs1uDKQzlIZ
-         fFlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YG1Q9ynyALFe9AR4AZSnu22cCvufmDI+jK/ShRTakaM=;
-        b=lKLv7CBK5Mm5WqitZfoYjNi39Kv6IdHwycIyScfnJbzXGbDAznb/NHHKlt9AadhSGa
-         La2rxWazx6g401+tDzBO1kRNMbFnHhMhHTwkk2FFsi9FSp10wBy5FL5jPCwMrAbFmQDW
-         MjdHubCUC1WD0p+KmoeU2Yqsde+No2kC0b2K3JaR8q7oUKDYKgvA+Z469Swadb6c1AJ8
-         803sMMR1Cz2qLUXfz7SvdHaEXXrVqVnBrATdOWR+3LJELlXfnC4mH4DRHGMAhXe+7Zgv
-         Xc3Fa6TIP55I0X7+z6t6yLOyw1BWDXnXTTDsmAMIKeFc2gpxM1grMUyQXsn4cqer5dg/
-         I0BA==
-X-Gm-Message-State: AOAM530JUfbyX9c/JkZYDdKqL9hiI1nge0k4VHL5CWf3HQWnjE+Y5eRF
-        NHTSVJ8YUUrorh6hbYb0wfqouK32cJg=
-X-Google-Smtp-Source: ABdhPJySSAYHHGXG7ZhusGtY3TlrMlJ2Bid0HtSCCmNCIXaptwIq+EGfkdHrYLhPWUyULEZJsrYJKQ==
-X-Received: by 2002:a17:906:1986:: with SMTP id g6mr3896501ejd.404.1596710830139;
-        Thu, 06 Aug 2020 03:47:10 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([79.132.248.22])
-        by smtp.gmail.com with ESMTPSA id e14sm3227107edl.86.2020.08.06.03.47.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 03:47:09 -0700 (PDT)
-Subject: Re: [PATCH net 1/2] net: refactor bind_bucket fastreuse into helper
-To:     Tim Froidcoeur <tim.froidcoeur@tessares.net>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Patrick McHardy <kaber@trash.net>,
-        KOVACS Krisztian <hidden@balabit.hu>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200806064109.183059-1-tim.froidcoeur@tessares.net>
- <20200806064109.183059-2-tim.froidcoeur@tessares.net>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Message-ID: <a4143368-bfe8-a3f1-c6e0-753359388191@tessares.net>
-Date:   Thu, 6 Aug 2020 12:47:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        with ESMTP id S1729795AbgHFRBX (ORCPT
+        <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:01:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E7BC0617A2
+        for <Linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 04:01:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uPvg2X3v/p/lXfd6jcp/t8NGbBzcgZV+OIEIyK+LKHM=; b=eVUIpkThwVZu3ji7f/oUjKFYso
+        3gtqKsitPC1QmRkSe4U3nEPyNmPEnefLRMCo5sTMIhMmsAo7rrouRruRScmwOfc/xgh6AMdGsyF5Q
+        AzkzS8Lh8wzUsycVR2vCmpIuie+z4tWJE3edoxbGVCPwoK4+GnvvTPVgQOlDVYOzBu5hxCjRskzbt
+        bsz2bfskqSKPvaS8MoSFxcqund85paa9509EvdrYenlcCkrrykeY9Kbb9a/RR8hbXFGs830bPiguB
+        0PmI8z+W3NGLjtEyGEx+YT3z++rWpHN0ohih1lJBfFVSFbs/38lgX5y582Qj4/HSRiPasAV2A/TuO
+        S7QxncBg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3ddg-0004n2-EA; Thu, 06 Aug 2020 11:00:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8E638301A66;
+        Thu,  6 Aug 2020 13:00:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5D3E22123A1E7; Thu,  6 Aug 2020 13:00:46 +0200 (CEST)
+Date:   Thu, 6 Aug 2020 13:00:46 +0200
+From:   peterz@infradead.org
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     mingo@redhat.com, oleg@redhat.com, acme@kernel.org,
+        jolsa@kernel.org, Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com
+Subject: Re: [PATCH v1 2/2] perf/core: Fake regs for leaked kernel samples
+Message-ID: <20200806110046.GF35926@hirez.programming.kicks-ass.net>
+References: <20200731025617.16243-1-yao.jin@linux.intel.com>
+ <20200731025617.16243-2-yao.jin@linux.intel.com>
+ <20200804114900.GI2657@hirez.programming.kicks-ass.net>
+ <4c958d61-11a7-9f3e-9e7d-d733270144a1@linux.intel.com>
+ <20200805124454.GP2657@hirez.programming.kicks-ass.net>
+ <797aa4de-c618-f340-ad7b-cef38c96b035@linux.intel.com>
+ <20200806091827.GY2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200806064109.183059-2-tim.froidcoeur@tessares.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806091827.GY2674@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tim,
+On Thu, Aug 06, 2020 at 11:18:27AM +0200, peterz@infradead.org wrote:
 
-Thank you for having sent the patch!
+> Suppose we have nested virt:
+> 
+> 	L0-hv
+> 	|
+> 	G0/L1-hv
+> 	   |
+> 	   G1
+> 
+> And we're running in G0, then:
+> 
+>  - 'exclude_hv' would exclude L0 events
+>  - 'exclude_host' would ... exclude L1-hv events?
+>  - 'exclude_guest' would ... exclude G1 events?
 
-On 06/08/2020 08:41, Tim Froidcoeur wrote:
-> Refactor the fastreuse update code in inet_csk_get_port into a small
-> helper function that can be called from other places.
+So in arch/x86/events/intel/core.c we have:
 
-(...)
+static inline void intel_set_masks(struct perf_event *event, int idx)
+{
+	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
 
-> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> index afaf582a5aa9..3b46b1f6086e 100644
-> --- a/net/ipv4/inet_connection_sock.c
-> +++ b/net/ipv4/inet_connection_sock.c
-> @@ -266,7 +266,7 @@ inet_csk_find_open_port(struct sock *sk, struct inet_bind_bucket **tb_ret, int *
->   static inline int sk_reuseport_match(struct inet_bind_bucket *tb,
->   				     struct sock *sk)
->   {
-> -	kuid_t uid = sock_i_uid(sk);
-> +	kuid_t uid = sock_i_uid((struct sock *)sk);
+	if (event->attr.exclude_host)
+		__set_bit(idx, (unsigned long *)&cpuc->intel_ctrl_guest_mask);
+	if (event->attr.exclude_guest)
+		__set_bit(idx, (unsigned long *)&cpuc->intel_ctrl_host_mask);
+	if (event_is_checkpointed(event))
+		__set_bit(idx, (unsigned long *)&cpuc->intel_cp_status);
+}
 
-It seems there is a left over from a previous version. This modification 
-is no longer needed.
+which is, afaict, just plain wrong. Should that not be something like:
 
->   
->   	if (tb->fastreuseport <= 0)
->   		return 0;
-> @@ -296,6 +296,57 @@ static inline int sk_reuseport_match(struct inet_bind_bucket *tb,
->   				    ipv6_only_sock(sk), true, false);
->   }
->   
-> +void inet_csk_update_fastreuse(struct inet_bind_bucket *tb,
-> +			       struct sock *sk)
-> +{
-> +	kuid_t uid = sock_i_uid((struct sock *)sk);
+	if (!event->attr.exclude_host)
+		__set_bit(idx, (unsigned long *)&cpuc->intel_ctrl_host_mask);
+	if (!event->attr.exclude_guest)
+		__set_bit(idx, (unsigned long *)&cpuc->intel_ctrl_guest_mask);
 
-Same here.
 
-May you send a v2 without these two casts please?
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+Also, ARM64 seems to also implement this stuff, Mark, do you have any
+insight on how all this is 'supposed' to work?
