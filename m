@@ -2,78 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEFB23DE91
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43AAB23DE60
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730352AbgHFR1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44902 "EHLO
+        id S1729936AbgHFRZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729546AbgHFRBd (ORCPT
+        with ESMTP id S1729470AbgHFRDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:01:33 -0400
+        Thu, 6 Aug 2020 13:03:03 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B143C08EA0C
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:48:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6C6C08ED2B
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:49:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fVBnHUcFxQGjvxOa6RZAyjHA4KKJKA6BGBKM0Icu23A=; b=NalefOkaTW/5+O9kt3/ME+A+/S
-        wqUiV4ev4go7Gn0R+sqowD4RwjR6/fY09Lha2ZgageW4yhT49toZCiB0ctmdHGDQ4htmOVfFOW5He
-        Ycy+PybX6eEJ7jQksDhLlEf+s090tP8vH5/p0X9reCWrOPU/mX7ZqFhc9Ep73xA3fYNh409wkJf85
-        iHfPzks0HAK1tJNtbVC95PQaZ7xxetO7SidA9S+0TbA5ffV1e+QEEOdpB7m8ankOAIpommV/iVeNY
-        jSZpKkrW7LJ/GRIxJsWn8vtZzBQCrD3WC8WxNe2a329WZr5jaWpibDeHhrc/klaphqDYIg55SDO7r
-        lL3XbzBA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3gFy-00043K-8q; Thu, 06 Aug 2020 13:48:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 51832301A66;
-        Thu,  6 Aug 2020 15:48:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 253CA213C4897; Thu,  6 Aug 2020 15:48:29 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 15:48:28 +0200
-From:   peterz@infradead.org
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, Paul Turner <pjt@google.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Peter Oskolkov <posk@posk.io>
-Subject: Re: [PATCH 1/2] membarrier: add
- MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
-Message-ID: <20200806134828.GA165568@hirez.programming.kicks-ass.net>
-References: <20200806000859.160882-1-posk@google.com>
+        bh=nr6d4+1/21dKoRr3pOwdT2uZTauWD92kHkuX5AwgccU=; b=huHb36wxaS7Dp9fcrj+YWMJBxo
+        O3j3zRijlfzgS7PhyYwDday3McecnS578tCKGg/WqybGs2nKgw8RGAzm+oscg5tSXBDhOpt1KWm08
+        4P+8qoUuG2kAYUxOAb3sQY6URsu032mSHv8Q6rJ0aS2pxwH7LpgB3tWbu/WcPS4tOBZtMa2f7i0UL
+        ZxlaSQ+ue4TpWleXRBNIIJbFfhsUBxO2yJJvmLgdt28HxxAsXSyxw2mivohA4kjbAn87WC8cPLBz3
+        NcVmgaWY3uWrMdkD+Toix1aaUlPj6DfhzLuyEO5f0WIhVlhwK4DVi/R3pOiQvDM2K69LHjsYOXVhk
+        70s4Jebg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3gGJ-00043r-Gv; Thu, 06 Aug 2020 13:48:51 +0000
+Date:   Thu, 6 Aug 2020 14:48:51 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        cai@lca.pw, kirill@shutemov.name, rppt@linux.ibm.com,
+        william.kucharski@oracle.com,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v2] mm, dump_page: do not crash with bad
+ compound_mapcount()
+Message-ID: <20200806134851.GN23808@casper.infradead.org>
+References: <20200804214807.169256-1-jhubbard@nvidia.com>
+ <ac97deea-4638-badd-9495-c9ca313837bb@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200806000859.160882-1-posk@google.com>
+In-Reply-To: <ac97deea-4638-badd-9495-c9ca313837bb@suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 05:08:58PM -0700, Peter Oskolkov wrote:
+On Thu, Aug 06, 2020 at 01:45:11PM +0200, Vlastimil Babka wrote:
+> How about this additional patch now that we have head_mapcoun()? (I wouldn't
+> go for squashing as the goal and scope is too different).
 
-Thanks for the Cc!
+I like it.  It bothers me that the compiler doesn't know that
+compound_head(compound_head(x)) == compound_head(x).  I updated
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=32911 with a request to be
+able to tell the compiler that compound_head() is idempotent.
 
-> + * @MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU:
-> + *                          If a thread belonging to the current process
-> + *                          is currently in an RSEQ critical section on the
-> + *                          CPU identified by flags parameter, restart it.
-> + *                          @flags: if @flags >= 0, identifies the CPU to
-> + *                                  restart RSEQ CS on; if == -1, restarts
-> + *                                  RSEQ CSs on all CPUs.
+> The bloat-o-meter difference without DEBUG_VM is the following:
+> 
+> add/remove: 0/0 grow/shrink: 1/4 up/down: 32/-56 (-24)
+> Function                                     old     new   delta
+> __split_huge_pmd                            2867    2899     +32
+> shrink_page_list                            3860    3847     -13
+> reuse_swap_page                              762     748     -14
+> page_trans_huge_mapcount                     153     139     -14
+> total_mapcount                               187     172     -15
+> Total: Before=8687306, After=8687282, chg -0.00%
 
-> +	} else if (cpu_id == -1) {
-> +		on_each_cpu(membarrier_rseq_ipi,
-> +			    current->group_leader, true);
+That's great.  I'm expecting improvements from my thp_head() macro when
+that lands (currently in Andrew's tree).  I have been reluctant to replace
+current callers of compound_head() with thp_head(), but I suspect PF_HEAD
+could use thp_head() and save a few bytes on a tinyconfig build.
 
-This is an unpriv IPI the world. That's a big no-no.
+> +++ b/mm/huge_memory.c
+> @@ -2125,7 +2125,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>  	 * Set PG_double_map before dropping compound_mapcount to avoid
+>  	 * false-negative page_mapped().
+>  	 */
+> -	if (compound_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
+> +	if (head_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
 
-Double so because all you want to target is the current process, which
-you're defining as CLONE_THREAD, where the rest of this file uses
-CLONE_VM to define a process.
+I'm a little nervous about this one.  The page does actually come from
+pmd_page(), and today that's guaranteed to be a head page.  But I'm
+not convinced that's going to still be true in twenty years.  With the
+current THP patchset, I won't allocate pages larger than PMD order, but
+I can see there being interest in tracking pages in chunks larger than
+2MB in the future.  And then pmd_page() might well return a tail page.
+So it might be a good idea to not convert this one.
+
+> @@ -2467,7 +2467,7 @@ int total_mapcount(struct page *page)
+>  	if (likely(!PageCompound(page)))
+>  		return atomic_read(&page->_mapcount) + 1;
+>  
+> -	compound = compound_mapcount(page);
+> +	compound = head_mapcount(page);
+>  	if (PageHuge(page))
+>  		return compound;
+>  	ret = compound;
+
+Yes.  This function is a little confusing because it uses PageCompound()
+all the way through when it really should be using PageHead ... because
+the opening line of the function is: VM_BUG_ON_PAGE(PageTail(page), page);
+
+> @@ -2531,7 +2531,7 @@ int page_trans_huge_mapcount(struct page *page, int *total_mapcount)
+>  		ret -= 1;
+>  		_total_mapcount -= HPAGE_PMD_NR;
+>  	}
+> -	mapcount = compound_mapcount(page);
+> +	mapcount = head_mapcount(page);
+>  	ret += mapcount;
+>  	_total_mapcount += mapcount;
+>  	if (total_mapcount)
+
+Yes, we called compound_head() earlier in the function.  Safe.
+
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 9ee4211835c6..c5e722de38b8 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1673,7 +1673,7 @@ static int page_trans_huge_map_swapcount(struct page *page, int *total_mapcount,
+>  		map_swapcount -= 1;
+>  		_total_mapcount -= HPAGE_PMD_NR;
+>  	}
+> -	mapcount = compound_mapcount(page);
+> +	mapcount = head_mapcount(page);
+>  	map_swapcount += mapcount;
+>  	_total_mapcount += mapcount;
+>  	if (total_mapcount)
+
+Yes.  page is a head page at this point.
+
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index a086c104a9a6..72218cdfd902 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1248,7 +1248,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+>  					 * away. Chances are some or all of the
+>  					 * tail pages can be freed without IO.
+>  					 */
+> -					if (!compound_mapcount(page) &&
+> +					if (!head_mapcount(page) &&
+>  					    split_huge_page_to_list(page,
+>  								    page_list))
+>  						goto activate_locked;
+
+Yes.  We don't put (can't put!) tail pages on the lists, so this must be a
+head page.
