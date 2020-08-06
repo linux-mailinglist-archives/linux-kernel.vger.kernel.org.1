@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B654323DD8F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321AB23DE94
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730299AbgHFRLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:11:35 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:38614 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729357AbgHFRLX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:11:23 -0400
-Received: from relay1-d.mail.gandi.net (unknown [217.70.183.193])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id B382C3B2BA2;
-        Thu,  6 Aug 2020 14:50:12 +0000 (UTC)
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id D8F3024000C;
-        Thu,  6 Aug 2020 14:44:48 +0000 (UTC)
-Date:   Thu, 6 Aug 2020 16:48:28 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] media: i2c: ov5640 feature enhancement and fixes
-Message-ID: <20200806144828.bflbpla2x4sjfsbp@uno.localdomain>
-References: <1596465107-14251-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1730377AbgHFR1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:27:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:45934 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729265AbgHFR1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:27:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFDE911B3;
+        Thu,  6 Aug 2020 07:48:56 -0700 (PDT)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C8F43F887;
+        Thu,  6 Aug 2020 07:48:52 -0700 (PDT)
+Subject: Re: [PATCH RFC] sched/fair: simplfy the work when reweighting entity
+To:     =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
+Cc:     Jiang Biao <benbjiang@gmail.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200804071222.31675-1-benbjiang@tencent.com>
+ <f9eab9a5-c7c2-dbf3-834b-abd9c376f92c@arm.com>
+ <8FA38F12-3CB4-46A9-B654-92DC384D3103@tencent.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <c97da668-09ec-4368-cfd4-13cbbbd6a4a5@arm.com>
+Date:   Thu, 6 Aug 2020 16:48:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <8FA38F12-3CB4-46A9-B654-92DC384D3103@tencent.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1596465107-14251-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 06/08/2020 04:42, benbjiang(蒋彪) wrote:
+> 
+> 
+>> On Aug 6, 2020, at 12:21 AM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 04/08/2020 09:12, Jiang Biao wrote:
+>>> If a se is on_rq when reweighting entity, all we need should be
+>>> updating the load of cfs_rq, other dequeue/enqueue works could be
+>>> redundant, such as,
+>>> * account_numa_dequeue/account_numa_enqueue
+>>> * list_del/list_add from/into cfs_tasks
+>>> * nr_running--/nr_running++
+>>
+>> I think this could make sense. Have you spotted a code path where this
+>> gives you a change?
+>>
+>> I guess only for a task on the rq, so: entity_is_task(se) && se->on_rq
+> Yes, you're right. No other code path I spotted except what you list below.
+> 
+>>
+>>> Just simplfy the work. Could be helpful for the hot path.
+>>
+>> IMHO hotpath is update_cfs_group() -> reweight_entity() but this is only
+>> called for '!entity_is_task(se)'.
+>>
+>> See
+>>
+>> 3290         if (!gcfs_rq)
+>> 3291                 return;
+>>
+>> in update_cfs_group().
+> Yes, It is.
+> But *nr_running--/nr_running++* works are still redundant for
+> ‘!entity_is_task(se)' hot path. :)
 
-On Mon, Aug 03, 2020 at 03:31:43PM +0100, Lad Prabhakar wrote:
-> Hi All,
->
-> This patch series fixes DVP support and enables BT656 mode in
-> the driver.
->
-> @Jacopo Mondi - patch 1/4 will collide with your patch series [1],
-> feel free to merge it as part of your v2.
+True.
 
-This would actually make my life simpler, as one of the issues I had
-was trying to make bus-type required to be able to differentiate
-between different properties.
+> Besides, I guess we could simplify the logic and make it cleaner and
+> more readable with this patch.
 
->
-> [1] https://www.spinics.net/lists/linux-renesas-soc/msg51236.html
->
-> Cheers,
-> Prabhakar
->
-> Changes for v2:
-> * Added support to fallback in parallel mode
-> * Documented bus-type property
-> * Added descriptive commit message for patch 2/4 as pointed
->   by Sakari
-> * Fixed review comments pointed by Laurent to have separate functions
->   for mipi and dvp setup
-> * Made sure the sensor is in power down mode during startup too for
->   DVP mode
->
-> Lad Prabhakar (4):
->   dt-bindings: media: i2c: ov5640: Document bus-type property
->   media: i2c: ov5640: Enable data pins on poweron for DVP mode
->   media: i2c: ov5640: Add support for BT656 mode
->   media: i2c: ov5640: Fallback to parallel mode
->
->  .../devicetree/bindings/media/i2c/ov5640.txt  |   9 +-
->  drivers/media/i2c/ov5640.c                    | 333 ++++++++++--------
->  2 files changed, 198 insertions(+), 144 deletions(-)
->
-> --
-> 2.17.1
->
+Yes.
+
+> If it could make sense to you, would you mind if I resend the patch
+> with the commit log amended?
+
+LGTM so why not?
+
+>> The 'entity_is_task(se)' case is
+>>
+>> set_load_weight(struct task_struct *p, ...) -> reweight_task(p, ...) ->
+>> reweight_entity(..., &p->se, ...)
+>>
+>> but here !se->on_rq.
+> Yes, indeed.
+
+[...]
