@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BD123D8EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B70523D8EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729111AbgHFJti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
+        id S1729238AbgHFJxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbgHFJsl (ORCPT
+        with ESMTP id S1729146AbgHFJxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:48:41 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F350C061574;
-        Thu,  6 Aug 2020 02:48:41 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id l2so32826649wrc.7;
-        Thu, 06 Aug 2020 02:48:40 -0700 (PDT)
+        Thu, 6 Aug 2020 05:53:31 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE48EC061757;
+        Thu,  6 Aug 2020 02:52:41 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id qc22so34819056ejb.4;
+        Thu, 06 Aug 2020 02:52:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=pQQbHRDXqKGonZmyfA/7H4FL5vlKcEV+QfkkDKraWtE=;
-        b=dM1GCLp90nDRXLp2vBQkMHchQY/VB0Hl0yinYxzsStKhyeDUdDIRSOhlF8vCsf4yPr
-         8192NiIdKfXofwr/WBi1KQTyQ+SJFKamXxfpj8yDxy5RzUWAuaPh/BKJO3PxeM+LO+/O
-         b/zYTOKj2B5A8pWSFqWoh2s3kZkNnqfPJNxY8HKJhxWQW/GHP7IvF+yA8wyPSnNPOlfa
-         enJgFTQdOx7wz/8vRiJWngQxGVbzv30hkrsy2bwErUSHueFpZoZ948cZriM6VhA3dmpv
-         QvbAKqCTFOa/2R7MI4Xk6L+HDX0REwv3bxioVIDBcIVrBk7B8GE4rCctE9kiDQUyyjhf
-         e4ag==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GFHE6B9er+V6kO04ZtSKBTS+EAvO4hcEEjI2b6b0D+I=;
+        b=DpiiAAVKzREL5OIZYC1Tfs4DJZFD6nzKoG13wu4Nt0dWX+8kk4k3cZevbPBL64y8Vw
+         lrhZXXyNy+HskoRhtaKDyhXOas+wvBInhS/fbae17b1eLLawO4fWquqnWAGatKARIiPP
+         Y6V+t6xvkF6YR15kqF3ZdrLoLW6S+J8x4ZINWIvmyzefelkBN15pl+wMFEvR5SidrFbO
+         SbmmlBSenVaOSkm8k2M5HxJAGdICqM8Zwd9PZQRxw+j57hvz9Hv6BHNv17vvTiY0NVW+
+         Ggo1OlWDcX4kuxrlL/5/oD+FoM94SQpar46jbmQOtgjFnjPb/GMuKXEZATILtZwLoTK6
+         vXUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=pQQbHRDXqKGonZmyfA/7H4FL5vlKcEV+QfkkDKraWtE=;
-        b=gzuyisSIdrWyCD9uEwyksY9j009WfJcbRiQVzt0rlkMUu2vwv2hNi3Qs4wj0/0r3c7
-         zgnANGQOLOswjUszFoWcxWQO1cKlZinlbt3MFreJIK6SUSFQJbNQEabqYjQ95QQJ5q7R
-         c5zvccpKPqwSHUi+N/HnXKBBAm9DfXDMl6/SHsVZi8bggfiJCY1jCA9JHHhue8yEtuhv
-         bOe3I6ZRMUQ+2sloCjSQUCgKSKgYluiMKBAF1SfaxCaC6zccntn337Wkq5jfy5K+BYFF
-         QtFWCHQslZmOfyKcM8KoL0SoIkKJHuUJ+p2iGcEvInw5VVQqsf3KbuatJjBiwmwPcIo9
-         n1Zg==
-X-Gm-Message-State: AOAM533rA5y9U43W2lBK9NA4Ij1FF4d+FeJHpDiErDBtwgb+lMQ5+/kY
-        u2FiNjcvoihXpt2D1Lh+RP+FjJNbyfo=
-X-Google-Smtp-Source: ABdhPJy+IhnQM7YA6Ai0q9y4WNhairm37cfGCaJNnuPGVOSZRyFre9wihzJzR2mBEro2zDDT753Wbg==
-X-Received: by 2002:adf:9e90:: with SMTP id a16mr7034449wrf.40.1596707319687;
-        Thu, 06 Aug 2020 02:48:39 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.117.232])
-        by smtp.gmail.com with ESMTPSA id v12sm5795282wrs.2.2020.08.06.02.48.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 02:48:38 -0700 (PDT)
-To:     qii.wang@mediatek.com, wsa@the-dreams.de, yingjoe.chen@mediatek.com
-Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Matthias Brugger <mbrugger@suse.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH] i2c: mediatek: Fix i2c_spec_values description
-Message-ID: <c410f784-7b51-0d65-7a41-3845214dd273@gmail.com>
-Date:   Thu, 6 Aug 2020 11:48:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GFHE6B9er+V6kO04ZtSKBTS+EAvO4hcEEjI2b6b0D+I=;
+        b=QllogKA4sD5RwdaBcf8+4FccCGxIAXdNBNl5HYTAWUH6fy/nXqb8LynPuJe0nAg1yy
+         WtYfWpgQB62BpN+ct7JL02UOgnzJ5C4dTrHVX92xJSGLBZsIh1OfLlNEW+BMN8Cqa+T+
+         YSn+/D6yk2enL9Exla9RZdQbFr+e/mE3yBsWgpMxC+8cE/ARDG4jjiaSa3W/9cvTA5ar
+         OwcDV+8v3AKmSmroq27YHKVj7M81Qxc6jUeWSZQ1weq27mKAWoa07gu3mgM0QITszQSA
+         Fvrm+OIRl1LfWabypev44vMRQ2UObmKYpxxC0jFJ9c2qkYsFpEnGYPU0i8lQSrT5/YZh
+         6RPA==
+X-Gm-Message-State: AOAM533Rw7Nx5itZD7NrxKZnH/zOJewk0k+FFjIgjDc4fcYaWEP1Mvy3
+        iVty1b+sFaZeuV8LtuEL0q0=
+X-Google-Smtp-Source: ABdhPJywEah00tll5sMrzN/RAV2Vc8AayWtESH8W9br3szTn+TauF7Rm/eXWZ1VoY4uwqq5LRMzycQ==
+X-Received: by 2002:a17:906:e46:: with SMTP id q6mr3486285eji.234.1596707560708;
+        Thu, 06 Aug 2020 02:52:40 -0700 (PDT)
+Received: from ubuntu-laptop ([2a01:598:b906:f0c9:15b9:533b:62ba:b5b3])
+        by smtp.googlemail.com with ESMTPSA id g9sm3393498ejf.101.2020.08.06.02.52.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Aug 2020 02:52:39 -0700 (PDT)
+Message-ID: <7c59c7abf7b00c368228b3096e1bea8c9e2b2e80.camel@gmail.com>
+Subject: Re: [PATCH v8 0/4] scsi: ufs: Add Host Performance Booster Support
+From:   Bean Huo <huobean@gmail.com>
+To:     daejun7.park@samsung.com,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Thu, 06 Aug 2020 11:52:32 +0200
+In-Reply-To: <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
+References: <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p6>
+         <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
+Content-Type: text/plain
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct i2c_spec_values have it's members documented but is missing the 
-starting '@', which leads to warings like:
+Hi Avri
+what is your plan for this series patchset?
 
-drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 
-'min_low_ns' not described in 'i2c_spec_values'
+Bean
 
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
----
-  drivers/i2c/busses/i2c-mt65xx.c | 8 ++++----
-  1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index e889f74703e4..f51b35fc400f 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -253,10 +253,10 @@ struct mtk_i2c {
-
-  /**
-   * struct i2c_spec_values:
-- * min_low_ns: min LOW period of the SCL clock
-- * min_su_sta_ns: min set-up time for a repeated START condition
-- * max_hd_dat_ns: max data hold time
-- * min_su_dat_ns: min data set-up time
-+ * @min_low_ns: min LOW period of the SCL clock
-+ * @min_su_sta_ns: min set-up time for a repeated START condition
-+ * @max_hd_dat_ns: max data hold time
-+ * @min_su_dat_ns: min data set-up time
-   */
-  struct i2c_spec_values {
-  	unsigned int min_low_ns;
--- 
-2.27.0
