@@ -2,377 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF0923DB47
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 17:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F4A23DB6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 17:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgHFPFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 11:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        id S1729740AbgHFPeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 11:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726403AbgHFOUR (ORCPT
+        with ESMTP id S1726225AbgHFOUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 Aug 2020 10:20:17 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C280C0A3BD0
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:50:00 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id t14so9772119wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 06:50:00 -0700 (PDT)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3901C0A54D6
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:57:59 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id q4so31994328edv.13
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 06:57:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=D2nPuh6+PfL0pW7ynAT+SzMECoPzN1zrqCQoSJsgD8I=;
-        b=r5Rp1ZyQLReNIQzLJnzNIwfTUQ2LL3PCoGanIuiyoHll/QnJXJrqFFw5jOcck2mM+v
-         L7IMLj4cPILDecQWjxOXKfxnlp37Rrn2Hkl6KflsSK+lZY8N1cipRb0fiPzy++JDQqt6
-         l8t8g1L6iwhDQjazMh+Ay4NJ6VNloCD+tdnAogxjSHEho40vqMhitBoJQcuxt7l/ONws
-         U0mzNbRE4E5OGJEnAawJUHfVaTTNL8KbpdA28hJ1IBahnFIug2GGzLTiXvRGiGlJf4Cu
-         cM+roV5Uvye60/uRXodWvu0Og3luLHWs9GmuZlcfs5drdGBkDLqBTI8QCwKifYnnshMK
-         JG5Q==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IIm6TB2DhuDQ44K6wIJRyHH6Xdto2sFrurS9xyjL+rA=;
+        b=rd1vI8Zlk7oq+FHWbvUuvfUOesZGL+1j6zN0cGdF5/0N+mvQt/d72y655/XSu1FIms
+         fhsGfoFsLAw8xYk4ZXkEVZDlL7D8YhHX8ICjz52hB2y8K8AKwh0t52NRNms/RIjR4vaf
+         IG9TbK3IJarxL49Ti9ODqMHSrshGBLHM22YAjo2NOhWirqHqYodvI9GgI4nW2BQnVCjA
+         2kUR7YWtDdT2WqUQOCuUOsglzHAoAqSthD7IibVLp3kwyFvZWFLfnA9ITZDYIS5JQSPe
+         IOJRmrSdFeHbUU+K4b3ho4uisvZy08XXzMSTd63Vj3ALNKSbS1DC6su0H9KXWMr8xf1K
+         DBjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=D2nPuh6+PfL0pW7ynAT+SzMECoPzN1zrqCQoSJsgD8I=;
-        b=ctscdqkzC27dX0Qs0dPA+AHSrBtlxwe/eFtaLVB0t6UOKICYDJMKxJfSSazNtXitP3
-         qZN+NBOpysRt6GQY+Yt8N7Lndb38NW49IKMIoBATV8hKRC0pCbWU/QWbtog/t3xgJuXp
-         xdhLVbq3qr5Fb/VYG3u7t5e9HzM/WhZ/l8+eux7E7ZfUqU2lGkiHuhcsHkeRT9mWEggh
-         dR1oA0tq3a3y35T7hsabGYAPu7lyiyGnge3k1RNCIr2Sn8yUP2PiJMKw7Xp6v5Z6yqmn
-         LfIaFuD8Nb/ZdfB+7/uJBCXFDyr/1hFwvTJ+zoYxhxqU0HRCZq2/M9257ppwP/c5OM9J
-         sCEQ==
-X-Gm-Message-State: AOAM530LKwGVORtF5HLV4jDdkcy1UQhgMaqhBM+lunJLE7yA1VgBNicG
-        f8kmk6vbvXxBoUreGYMhPVHXQ1LoqSb45Q==
-X-Google-Smtp-Source: ABdhPJzCtC50wteJfCe1Z+M9Kc8c7ktFbmPycBp15RkNBzYTe4u5SEDG5ziRmdrOT3g3TUsL6szDNA==
-X-Received: by 2002:a1c:28c4:: with SMTP id o187mr7776064wmo.62.1596721788974;
-        Thu, 06 Aug 2020 06:49:48 -0700 (PDT)
-Received: from linux.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id h11sm6535503wrb.68.2020.08.06.06.49.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 06:49:48 -0700 (PDT)
-Subject: Re: [PATCH 3/6] remoteproc: mtk_vpu_rproc: Add support of JTAG
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200713132927.24925-1-abailon@baylibre.com>
- <20200713132927.24925-4-abailon@baylibre.com>
- <20200721195231.GA1227776@xps15>
-From:   Alexandre Bailon <abailon@baylibre.com>
-Message-ID: <cc53a2c1-4349-e489-0087-a31a13edef8f@baylibre.com>
-Date:   Thu, 6 Aug 2020 15:49:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=IIm6TB2DhuDQ44K6wIJRyHH6Xdto2sFrurS9xyjL+rA=;
+        b=niYkXG56CJ84G5hGYQxzAB2yvW68pUa23mRrmdnnGpwSLoskVQeJhFZYIEZsoDyMYK
+         U8ZEgOf0dEDoe2hokGNtR55WdiXqUUgtaPDPaXyRyCVfEMps1+3pl2slZVoFcwZ16HUe
+         c1Li2zBHU0rn545f3F7JKNsAHEmR6cQVElqI8XGgRr6Oajujq5Tljzm17Kv+hPZ2Ivhb
+         InMzo5uyeZrXYFkkKOv/tiT+W2ak0rgGkVp/J2jEM4eZMQdUjB8zaENh5QHeM2mbdBpT
+         osubX02paOJYfKP+5hoiBq7P1f0yQjxopaTUdu0GoCDnqFN9F4OzDH7jlArnne35jQS+
+         tuDA==
+X-Gm-Message-State: AOAM530pxoyMSq0BL6OrAc4au/v/TAgGE+OI/EP7XF43RpjeSQ7RPke6
+        RHhQyyxI2cQsPp4mB0F7jvo=
+X-Google-Smtp-Source: ABdhPJx5o+15B/66I272m4UZ+rb1HvnvnKwemZ6TbWP/v7P69Hkts0QWBS0WzpCMwst+5V0EqlTvOQ==
+X-Received: by 2002:aa7:c697:: with SMTP id n23mr4103938edq.50.1596722257591;
+        Thu, 06 Aug 2020 06:57:37 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id bd13sm3548692edb.38.2020.08.06.06.57.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 06:57:36 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 15:57:34 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH v4 07/10] sched/topology: Add more flags to the SD
+ degeneration mask
+Message-ID: <20200806135734.GB2077896@gmail.com>
+References: <20200731115502.12954-1-valentin.schneider@arm.com>
+ <20200731115502.12954-8-valentin.schneider@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200721195231.GA1227776@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731115502.12954-8-valentin.schneider@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/21/20 9:52 PM, Mathieu Poirier wrote:
-> On Mon, Jul 13, 2020 at 03:29:24PM +0200, Alexandre Bailon wrote:
->> The DSP could be debugged using JTAG.
->> The support of JTAG could enabled at build time and it could be enabled
->> using debugfs.
->>
->> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
->> ---
->>   drivers/remoteproc/Kconfig         |   9 ++
->>   drivers/remoteproc/mtk_apu_rproc.c | 156 ++++++++++++++++++++++++++++-
->>   2 files changed, 162 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
->> index e116d4a12ac3..e1158563e2e8 100644
->> --- a/drivers/remoteproc/Kconfig
->> +++ b/drivers/remoteproc/Kconfig
->> @@ -52,6 +52,15 @@ config MTK_APU
->>   
->>   	  It's safe to say N here.
->>   
->> +config MTK_APU_JTAG
->> +	bool "Enable support of JTAG"
->> +	depends on MTK_APU
->> +	help
->> +	  Say y to enable support of JTAG.
->> +	  By default, JTAG will remain disabled until it is enabled using
->> +	  debugfs: remoteproc/remoteproc0/jtag. Write 1 to enable it and
->> +	  0 to disable it.
->> +
->>   config OMAP_REMOTEPROC
->>   	tristate "OMAP remoteproc support"
->>   	depends on ARCH_OMAP4 || SOC_OMAP5 || SOC_DRA7XX
->> diff --git a/drivers/remoteproc/mtk_apu_rproc.c b/drivers/remoteproc/mtk_apu_rproc.c
->> index fb416a817ef3..f2342b747a35 100644
->> --- a/drivers/remoteproc/mtk_apu_rproc.c
->> +++ b/drivers/remoteproc/mtk_apu_rproc.c
->> @@ -5,6 +5,7 @@
->>   
->>   #include <linux/bitops.h>
->>   #include <linux/clk.h>
->> +#include <linux/debugfs.h>
->>   #include <linux/delay.h>
->>   #include <linux/interrupt.h>
->>   #include <linux/io.h>
->> @@ -14,6 +15,7 @@
->>   #include <linux/highmem.h>
->>   #include <linux/module.h>
->>   #include <linux/of_reserved_mem.h>
->> +#include <linux/pinctrl/consumer.h>
->>   #include <linux/platform_device.h>
->>   #include <linux/remoteproc.h>
->>   
->> @@ -48,6 +50,11 @@
->>   #define CORE_DEFAULT1				(0x00000140)
->>   #define  CORE_DEFAULT0_ARUSER_IDMA_USE_IOMMU	(0x10 << 0)
->>   #define  CORE_DEFAULT0_AWUSER_IDMA_USE_IOMMU	(0x10 << 5)
->> +#define CORE_DEFAULT2				(0x00000144)
->> +#define CORE_DEFAULT2_DBG_EN			BIT(3)
->> +#define CORE_DEFAULT2_NIDEN			BIT(2)
->> +#define CORE_DEFAULT2_SPNIDEN			BIT(1)
->> +#define CORE_DEFAULT2_SPIDEN			BIT(0)
->>   #define CORE_XTENSA_ALTRESETVEC			(0x000001F8)
->>   
->>   struct mtk_vpu_rproc {
->> @@ -59,6 +66,13 @@ struct mtk_vpu_rproc {
->>   	struct clk *axi;
->>   	struct clk *ipu;
->>   	struct clk *jtag;
->> +
->> +#ifdef CONFIG_MTK_APU_JTAG
->> +	struct pinctrl *pinctrl;
->> +	struct pinctrl_state *pinctrl_default;
->> +	struct pinctrl_state *pinctrl_jtag;
->> +	bool jtag_enabled;
->> +#endif
->>   };
->>   
->>   static u32 vpu_read32(struct mtk_vpu_rproc *vpu_rproc, u32 off)
->> @@ -149,6 +163,133 @@ static irqreturn_t handle_event(int irq, void *data)
->>   	return IRQ_HANDLED;
->>   }
->>   
->> +#ifdef CONFIG_MTK_APU_JTAG
->> +
->> +static int vpu_enable_jtag(struct mtk_vpu_rproc *vpu_rproc)
->> +{
->> +	int ret = 0;
->> +
->> +	if (vpu_rproc->jtag_enabled)
->> +		return -EINVAL;
->> +
->> +	ret = pinctrl_select_state(vpu_rproc->pinctrl,
->> +				   vpu_rproc->pinctrl_jtag);
->> +	if (ret < 0) {
->> +		dev_err(vpu_rproc->dev, "Failed to configure pins for JTAG\n");
->> +		return ret;
->> +	}
->> +
->> +	vpu_write32(vpu_rproc, CORE_DEFAULT2,
->> +		    CORE_DEFAULT2_SPNIDEN | CORE_DEFAULT2_SPIDEN |
->> +		    CORE_DEFAULT2_NIDEN | CORE_DEFAULT2_DBG_EN);
->> +
->> +	vpu_rproc->jtag_enabled = 1;
-> There should be mutex that gets taken at the beginning and released at the end of
-> this function.
->
->> +
->> +	return ret;
->> +}
->> +
->> +static int vpu_disable_jtag(struct mtk_vpu_rproc *vpu_rproc)
->> +{
->> +	int ret = 0;
->> +
->> +	if (!vpu_rproc->jtag_enabled)
->> +		return -EINVAL;
->> +
->> +	vpu_write32(vpu_rproc, CORE_DEFAULT2, 0);
->> +
->> +	ret = pinctrl_select_state(vpu_rproc->pinctrl,
->> +				   vpu_rproc->pinctrl_default);
->> +	if (ret < 0) {
->> +		dev_err(vpu_rproc->dev,
->> +			"Failed to configure pins to default\n");
->> +		return ret;
->> +	}
->> +
->> +	vpu_rproc->jtag_enabled = 0;
-> Same comment as above.
->
->> +
->> +	return ret;
->> +}
->> +
->> +static ssize_t rproc_jtag_read(struct file *filp, char __user *userbuf,
->> +			       size_t count, loff_t *ppos)
->> +{
->> +	struct rproc *rproc = filp->private_data;
->> +	struct mtk_vpu_rproc *vpu_rproc = (struct mtk_vpu_rproc *)rproc->priv;
->> +	char *buf = vpu_rproc->jtag_enabled ? "enabled\n" : "disabled\n";
->> +
->> +	return simple_read_from_buffer(userbuf, count, ppos, buf, strlen(buf));
->> +}
->> +
->> +static ssize_t rproc_jtag_write(struct file *filp, const char __user *user_buf,
->> +				size_t count, loff_t *ppos)
->> +{
->> +	struct rproc *rproc = filp->private_data;
->> +	struct mtk_vpu_rproc *vpu_rproc = (struct mtk_vpu_rproc *)rproc->priv;
->> +	char buf[10];
->> +	int ret;
->> +
->> +	if (count < 1 || count > sizeof(buf))
->> +		return -EINVAL;
->> +
->> +	ret = copy_from_user(buf, user_buf, count);
->> +	if (ret)
->> +		return -EFAULT;
->> +
->> +	/* remove end of line */
->> +	if (buf[count - 1] == '\n')
->> +		buf[count - 1] = '\0';
->> +
->> +	if (!strncmp(buf, "1", count) || !strncmp(buf, "enabled", count))
->> +		ret = vpu_enable_jtag(vpu_rproc);
->> +	else if (!strncmp(buf, "0", count) || !strncmp(buf, "disabled", count))
->> +		ret = vpu_disable_jtag(vpu_rproc);
->> +	else
->> +		return -EINVAL;
-> I think we should simply stick with "enabled" and "disabled" to be in line with
-> what is done in rproc_recovery_write().
->
->> +
->> +	return ret ? ret : count;
->> +}
->> +
->> +static const struct file_operations rproc_jtag_ops = {
->> +	.read = rproc_jtag_read,
->> +	.write = rproc_jtag_write,
->> +	.open = simple_open,
->> +};
->> +
->> +static int vpu_jtag_probe(struct mtk_vpu_rproc *vpu_rproc)
->> +{
->> +	int ret;
->> +
->> +	if (!vpu_rproc->rproc->dbg_dir)
->> +		return -ENODEV;
->> +
->> +	vpu_rproc->pinctrl = devm_pinctrl_get(vpu_rproc->dev);
->> +	if (IS_ERR(vpu_rproc->pinctrl)) {
->> +		dev_warn(vpu_rproc->dev, "Failed to find JTAG pinctrl\n");
->> +		return PTR_ERR(vpu_rproc->pinctrl);
->> +	}
->> +
->> +	vpu_rproc->pinctrl_default = pinctrl_lookup_state(vpu_rproc->pinctrl,
->> +							PINCTRL_STATE_DEFAULT);
-> Indentation problem.
->
->> +	if (IS_ERR(vpu_rproc->pinctrl_default))
->> +		return PTR_ERR(vpu_rproc->pinctrl_default);
->> +
->> +	vpu_rproc->pinctrl_jtag = pinctrl_lookup_state(vpu_rproc->pinctrl,
->> +						       "jtag");
->> +	if (IS_ERR(vpu_rproc->pinctrl_jtag))
->> +		return PTR_ERR(vpu_rproc->pinctrl_jtag);
->> +
->> +	ret = pinctrl_select_state(vpu_rproc->pinctrl,
->> +				   vpu_rproc->pinctrl_default);
-> What is the default configuration for?  It does not seem to be needed to
-> properly boot the remote processor since it is not part of the example in the
-> bindings or dts patch included in this set.   Moreover it is part of a
-> configuration option so I really don't understand what it does.
+* Valentin Schneider <valentin.schneider@arm.com> wrote:
 
-I have a poor knowledge of pinctrl framework so I may have done things 
-wrong here.
-This is not really needed for the remote processor.
-By default, I don't want pin to be configured for JTAG until we enable 
-it and
-I want to be able to revert it the default state.
-May be this is too much and I should assume that if we build the driver 
-with JTAG enabled
-then we want the pins to be configured for JTAG by default.
+> I don't think it is going to change much in practice, but we were missing
+> those:
+> 
+> o SD_BALANCE_WAKE: Used just like the other SD_BALANCE_* flags, so also
+>   needs > 1 group.
+> o SD_ASYM_PACKING: Hinges on load balancing (periodic / wakeup), thus needs
+>   > 1 group to happen
+> o SD_OVERLAP: Describes domains with overlapping groups; can't have
+>   overlaps with a single group.
+> 
+> SD_PREFER_SIBLING is as always the odd one out: we currently consider it
+> in sd_parent_degenerate() but not in sd_degenerate(). It too hinges on load
+> balancing, and thus won't have any effect when set on a domain with a
+> single group. Add it to the sd_degenerate() groups mask.
 
->
->
->
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	debugfs_create_file("jtag", 0600, vpu_rproc->rproc->dbg_dir,
->> +			    vpu_rproc->rproc, &rproc_jtag_ops);
->> +
->> +	return 0;
->> +}
->> +#endif /* CONFIG_MTK_APU_JTAG */
->> +
->>   static int mtk_vpu_rproc_probe(struct platform_device *pdev)
->>   {
->>   	struct device *dev = &pdev->dev;
->> @@ -228,16 +369,16 @@ static int mtk_vpu_rproc_probe(struct platform_device *pdev)
->>   		goto clk_disable_ipu;
->>   	}
->>   
->> -	vpu_rproc->jtag = devm_clk_get_optional(dev, "jtag");
->> +	vpu_rproc->jtag = devm_clk_get(vpu_rproc->dev, "jtag");
-> As I remarked in my comments on the previous patch, this should have been
-> devm_clk_get() from the start.  Either that or the bindings are wrong.
-
-I should have not made the change in this patch. I will fix it.
+Would be nice to add these one by one, just in case there's a 
+performance or boot regression with any of them.
 
 Thanks,
-Alexandre
 
->
->>   	if (IS_ERR(vpu_rproc->jtag)) {
->> -		dev_err(dev, "Failed to enable jtag clock\n");
->> +		dev_err(vpu_rproc->dev, "Failed to get jtag clock\n");
-> Why go from dev to vpu_rproc->dev?
->
->>   		ret = PTR_ERR(vpu_rproc->jtag);
->>   		goto clk_disable_axi;
->>   	}
->>   
->>   	ret = clk_prepare_enable(vpu_rproc->jtag);
->>   	if (ret) {
->> -		dev_err(dev, "Failed to enable jtag clock\n");
->> +		dev_err(vpu_rproc->dev, "Failed to enable jtag clock\n");
-> Same here.
->
->>   		goto clk_disable_axi;
->>   	}
->>   
->> @@ -253,6 +394,12 @@ static int mtk_vpu_rproc_probe(struct platform_device *pdev)
->>   		goto free_mem;
->>   	}
->>   
->> +#ifdef CONFIG_MTK_APU_JTAG
->> +	ret = vpu_jtag_probe(vpu_rproc);
->> +	if (ret)
->> +		dev_warn(dev, "Failed to configure jtag\n");
->> +#endif
-> Please don't use #ifdefs in the code like that.  It is better to introduce a
-> #else (above) with stubs that don't do anything.
->
->> +
->>   	return 0;
->>   
->>   free_mem:
->> @@ -277,6 +424,9 @@ static int mtk_vpu_rproc_remove(struct platform_device *pdev)
->>   
->>   	disable_irq(vpu_rproc->irq);
->>   
->> +#ifdef CONFIG_MTK_APU_JTAG
->> +	vpu_disable_jtag(vpu_rproc);
->> +#endif
->>   	rproc_del(rproc);
->>   	of_reserved_mem_device_release(dev);
->>   	clk_disable_unprepare(vpu_rproc->jtag);
->> -- 
->> 2.26.2
->>
+	Ingo
