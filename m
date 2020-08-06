@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A766223D929
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0B623D927
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgHFKNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 06:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
+        id S1729360AbgHFKMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 06:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729336AbgHFKMf (ORCPT
+        with ESMTP id S1729265AbgHFKM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 06:12:35 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B5EC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:12:35 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f18so6236340wmc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sVXbFojH/0R1sh5NGJY6hM5Fv6yHchdFYqFYRJiPcsk=;
-        b=RCqGu7txZxmTvjk8hFf9VCO6P0oOQtU9w1qLjI9bgEqPurJEc5ppShIfh23PTPqZOF
-         Rx4V3jSS2vqgcGVkhDFvZIr71G3bon5/yAvpGu8v4V3+H8kAyNOvxjumBbk9gU8dCboq
-         XiuD6bY5nCpwm0ePducl8RnH1HsiCdyzM5SwY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sVXbFojH/0R1sh5NGJY6hM5Fv6yHchdFYqFYRJiPcsk=;
-        b=O42bnZ/ys/g7g5RABEhr5Jir14C3F8v4TadPWTFx4GKzoUcfHQDUbp0wX1qMDb9tII
-         Hj+bxN0d7L7PqSDaXsxclf8apnPwYbntvWl1+XMjfjy5FRR9Va2Be+t3300KVAC5D6hb
-         BJqrXAuVJ5wqalAN8RCY1rUkKm6UClsHn8+aL1EzFb8TYFce0Ia2PRcyduuu5D244dAd
-         t8iWkz9kgZ1afhrtAvnpGFeggpTokooueG3AOKXWYyCax7Vm3a2RuUROd7vu58HVtknn
-         zNUOum+iQBpuvvKcQIhCaag3W6mJnhhfWwdxFCPONvj+kAgc6fPtJ1p5h/6D/ven2nQr
-         1t5g==
-X-Gm-Message-State: AOAM532AteQY1YE63T5lGqfhk4mgEuAneohb469QHxWc8aJ6o5n+RDj/
-        V/rA2jHOHy9coWSgeM2QQMMYlegrUIYBj7sqE9Rg1w==
-X-Google-Smtp-Source: ABdhPJzlXXZln0onZBt7l5va/GB6ImScyHaiS3RfhGoDY/VOeSuREACSW8Vh6oIT4OB38N29lX47wSMOiyyn3mPjIOY=
-X-Received: by 2002:a1c:2646:: with SMTP id m67mr7719681wmm.137.1596708752740;
- Thu, 06 Aug 2020 03:12:32 -0700 (PDT)
+        Thu, 6 Aug 2020 06:12:27 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEABC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:12:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
+        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=9dX/bRSkZ53qhCOq8/7508fbRufKnExby3lIfqewQ/k=; b=oT6asMAWUevoGmLuxn2iarS9l/
+        UgaQ6ZDHg/+xij+wXVy8oAhgVCD9nouYVrBc+rV/DNnG9FtHCX6vMi0E1O5tJPKehtK0rBDPG0mbu
+        86VJbBQnZn8RhOsnRZ67KnEkEuhnzKKTU2VP4HBQgIehtotTUcbY0Hq5lnjLU8eKLqxt2NqLmiECH
+        c7kTyiLlF1V9CS6oDrxjGHadEH1+KOijMnMzhov74wDhlJYoukOf1lLgQSqvtVBZThWJJV+I62mQK
+        xVjQMSddlC6RSSTG6ivVwTeHTJK9mrBULj7GLRcSvlyHT8g5TfuwaGnkwZtmJ0g3Olj1Mc8E8RvuR
+        1BETifbA==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:58866 helo=rmk-PC.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1k3csp-0004V7-76; Thu, 06 Aug 2020 11:12:23 +0100
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1k3cso-0007LC-VJ; Thu, 06 Aug 2020 11:12:23 +0100
+In-Reply-To: <20200806101145.GC1551@shell.armlinux.org.uk>
+References: <20200806101145.GC1551@shell.armlinux.org.uk>
+From:   Russell King <rmk+kernel@armlinux.org.uk>
+To:     Norbert Lange <nolange79@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Petr Malat <oss@malat.biz>, Kees Cook <keescook@chromium.org>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Terrell <terrelln@fb.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/2] ARM: add TEXT_OFFSET to decompressor kexec image
+ structure
 MIME-Version: 1.0
-References: <20200803062214.24076-1-mark-pk.tsai@mediatek.com>
-In-Reply-To: <20200803062214.24076-1-mark-pk.tsai@mediatek.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Thu, 6 Aug 2020 19:12:21 +0900
-Message-ID: <CAFr9PX=Gk9h6ASi6saBLhoZ45g-WqCzDQo2XWT033fJykFSY_g@mail.gmail.com>
-Subject: Re: [PATCH 0/2] irqchip: irq-mt58xx: Add mt58xx series interrupt
-To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Cc:     yj.chiang@mediatek.com, alix.wu@mediatek.com, tglx@linutronix.de,
-        jason@lakedaemon.net, Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1k3cso-0007LC-VJ@rmk-PC.armlinux.org.uk>
+Date:   Thu, 06 Aug 2020 11:12:22 +0100
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark-PK,
+Add the TEXT_OFFSET to the decompressor's kexec image structure to
+kexec knows what offset to use.
 
-Your driver seems to be for the same interrupt controller IP that is
-present in MStar's TV and camera SoCs and now SigmaStar's SoCs.
-I sent a series[0] for a driver very similar to yours but for the
-MStar SoCs. Do you know if it would be possible to confirm if they are
-the
-same thing? MediaTek bought MStar a few years ago so it seems likely
-but I have no hard information.
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+---
+ arch/arm/Makefile                      | 3 +++
+ arch/arm/boot/compressed/Makefile      | 1 +
+ arch/arm/boot/compressed/vmlinux.lds.S | 3 ++-
+ 3 files changed, 6 insertions(+), 1 deletion(-)
 
-If they are the same thing could we work on making one series that
-supports both use cases?
-It's also possible that if the interrupt controller is the same some
-other things like the SPI NOR controller etc are also common and
-working
-on a single driver for those would save us both time.
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 01ed27a538b4..ab2d66e40b7f 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -139,6 +139,9 @@ head-y		:= arch/arm/kernel/head$(MMUEXT).o
+ 
+ # Text offset. This list is sorted numerically by address in order to
+ # provide a means to avoid/resolve conflicts in multi-arch kernels.
++# Note: the 32kB below this value is reserved for use by the kernel
++# during boot, and this offset is critical to the functioning of
++# kexec-tools.
+ textofs-y	:= 0x00008000
+ # We don't want the htc bootloader to corrupt kernel during resume
+ textofs-$(CONFIG_PM_H1940)      := 0x00108000
+diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
+index 433fb7f04aa5..0890d82b8cf4 100644
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -70,6 +70,7 @@ ZBSSADDR	:= ALIGN(8)
+ endif
+ 
+ CPPFLAGS_vmlinux.lds := -DTEXT_START="$(ZTEXTADDR)" -DBSS_START="$(ZBSSADDR)"
++CPPFLAGS_vmlinux.lds += -DTEXT_OFFSET="$(TEXT_OFFSET)"
+ 
+ compress-$(CONFIG_KERNEL_GZIP) = gzip
+ compress-$(CONFIG_KERNEL_LZO)  = lzo
+diff --git a/arch/arm/boot/compressed/vmlinux.lds.S b/arch/arm/boot/compressed/vmlinux.lds.S
+index 09ac33f52814..da1f6fa5345b 100644
+--- a/arch/arm/boot/compressed/vmlinux.lds.S
++++ b/arch/arm/boot/compressed/vmlinux.lds.S
+@@ -42,10 +42,11 @@ SECTIONS
+   }
+   .table : ALIGN(4) {
+     _table_start = .;
+-    LONG(ZIMAGE_MAGIC(4))
++    LONG(ZIMAGE_MAGIC(5))
+     LONG(ZIMAGE_MAGIC(0x5a534c4b))
+     LONG(ZIMAGE_MAGIC(__piggy_size_addr - _start))
+     LONG(ZIMAGE_MAGIC(_kernel_bss_size))
++    LONG(ZIMAGE_MAGIC(TEXT_OFFSET))
+     LONG(0)
+     _table_end = .;
+   }
+-- 
+2.20.1
 
-[0] - https://lore.kernel.org/linux-arm-kernel/20200805110052.2655487-1-daniel@0x0f.com/
