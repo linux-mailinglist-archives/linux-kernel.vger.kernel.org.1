@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1862823DC85
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B54F623DCDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729665AbgHFQxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:53:24 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56292 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729231AbgHFQwy (ORCPT
+        id S1729766AbgHFQ5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728977AbgHFQkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:52:54 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 076F15Ev107938;
-        Thu, 6 Aug 2020 10:01:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1596726065;
-        bh=SsDht611ujdkNQFc6BFSfYMna5LmuK9AurW2tYiBVyU=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=IydTJGkvBiT7VaX6EBJOe1Z1CzhZiR6dHukbm9n8mlGN/ogWpgM04AcWOGWWqilRV
-         aVoxk2TSG5yjqHjWygESa/KQksSSpl/nyd+5j9Y0f+uKkuyeyay94f0K+0S0ahvi4w
-         a3NIvRw6BmqgBwxkkKa4qNyqzlfEDuB14CS9L//w=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 076F15G0015172
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 6 Aug 2020 10:01:05 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 6 Aug
- 2020 10:01:05 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 6 Aug 2020 10:01:05 -0500
-Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 076F14J2050834;
-        Thu, 6 Aug 2020 10:01:04 -0500
-Subject: Re: [PATCH 1/2] leds: is31fl319x: Add sdb pin and generate a 5ms low
- pulse when startup
-To:     Grant Feng <von81@163.com>, <jacek.anaszewski@gmail.com>,
-        <pavel@ucw.cz>, <robh+dt@kernel.org>, <linux-leds@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200806062130.25187-1-von81@163.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <7c828160-bef6-45b5-60d1-85c6074953c4@ti.com>
-Date:   Thu, 6 Aug 2020 10:00:59 -0500
+        Thu, 6 Aug 2020 12:40:42 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0215AC0A8921;
+        Thu,  6 Aug 2020 08:02:44 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id g6so39491697ljn.11;
+        Thu, 06 Aug 2020 08:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FRLGrXmYURDQT4jjHt8eSTzOHaMGuqVLG4OQ53qtVbI=;
+        b=mK2TApaeMLPwdu9HF70ojxwm7ZUs+w6NO+TI8LWnPh5C3NwdrLHKA2lX59OHagNj2m
+         L4BIeBalExOwh/f5brHD8SHCoZ0gnvaM9zkdfNQMb4uxcELZIKE5+jAe4cHBc/+H1HPf
+         jcGwM5VhjTh130aLISlmqIA3FUZjYPloD1eK+wOXB8D4hoJO1i2H/IC7Ays5VUF4P+OU
+         NZUVr8CQRz1voy64aSsE7xbR65Qflo+gbspbFU+UGY/xHa2Cn3Mh1WC9OLUbcdBlW0PO
+         +MRkZemi79hgawLxMTBnfJu8vFvRT1JnQEo5Cy3CT7MlbPTkvf43Lg3719N6MMVb3bZA
+         RmTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FRLGrXmYURDQT4jjHt8eSTzOHaMGuqVLG4OQ53qtVbI=;
+        b=b2DTxJ30uy29QhQokRlu3a1E54bgyrz4FJ6cv6eg2jQNm+tqa4rxV9eedi16GUecog
+         SnKKNBwsG6xjq1SdT+BJv0UxUlxd/MlpOTN0ekUHKjCQj4oVpiNMlrUi4C6Fi7FAhQg9
+         UCd/KxAUZJsCEBz1bNBPQH+lpK5ph1XsfKiHYnHRokvt7dW7svayh5ttNZsCtdApau02
+         Qf7PX2ZcDPoF1xWA6J6BdeEqjoU6ebrRhgDNOOAufc5SBJvnybLaNjn2Zk0LXnV12nYP
+         E1isLGwq01K+LYo6wD7c7Jdam9bEP/F4UXaXF60mI/y46UjWzTfta4gNlZdFO5T3pALF
+         Yb7w==
+X-Gm-Message-State: AOAM531hGP+yCjgdSrJpnCuE5r8HsPmX752JMEDfuDgVWRTxk4PNoRCG
+        boJ06fxaI89jjiEFrUXgaHY=
+X-Google-Smtp-Source: ABdhPJxmVntrfJXbx7gn5IV414m2Z4GaYwG1UUTqxROn64w7h7pvKoG/QJ1Z9+LJ7Bd1189Ir9ocbg==
+X-Received: by 2002:a05:651c:2007:: with SMTP id s7mr3839916ljo.74.1596726156822;
+        Thu, 06 Aug 2020 08:02:36 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
+        by smtp.googlemail.com with ESMTPSA id 132sm2842862lfo.16.2020.08.06.08.02.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 08:02:35 -0700 (PDT)
+Subject: Re: [Patch v2 2/4] dmaengine: tegra: Add Tegra GPC DMA driver
+To:     Rajesh Gumasta <rgumasta@nvidia.com>, ldewangan@nvidia.com,
+        jonathanh@nvidia.com, vkoul@kernel.org, dan.j.williams@intel.com,
+        thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kyarlagadda@nvidia.com, Pavan Kunapuli <pkunapuli@nvidia.com>
+References: <1596699006-9934-1-git-send-email-rgumasta@nvidia.com>
+ <1596699006-9934-3-git-send-email-rgumasta@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <67b9821a-1820-5089-445b-0d1b4f4ee996@gmail.com>
+Date:   Thu, 6 Aug 2020 18:02:34 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200806062130.25187-1-von81@163.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1596699006-9934-3-git-send-email-rgumasta@nvidia.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Grant
+06.08.2020 10:30, Rajesh Gumasta пишет:
+> +static int tegra_dma_program_sid(struct tegra_dma_channel *tdc,
+> +				 int chan, int stream_id)
+> +{
+> +	unsigned int reg_val =  tdc_read(tdc, TEGRA_GPCDMA_CHAN_MCSEQ);
+> +
+> +	reg_val &= ~(TEGRA_GPCDMA_MCSEQ_STREAM_ID_MASK <<
+> +					TEGRA_GPCDMA_MCSEQ_STREAM_ID0_SHIFT);
+> +	reg_val &= ~(TEGRA_GPCDMA_MCSEQ_STREAM_ID_MASK <<
+> +					TEGRA_GPCDMA_MCSEQ_STREAM_ID1_SHIFT);
+> +
+> +	reg_val |= (stream_id << TEGRA_GPCDMA_MCSEQ_STREAM_ID0_SHIFT);
+> +	reg_val |= (stream_id << TEGRA_GPCDMA_MCSEQ_STREAM_ID1_SHIFT);
 
-On 8/6/20 1:21 AM, Grant Feng wrote:
-> generate a 5ms low pulse on sdb pin when startup, then the chip
-> becomes more stable in the complex EM environment.
->
-> Signed-off-by: Grant Feng <von81@163.com>
-> ---
->   drivers/leds/leds-is31fl319x.c | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
->
-> diff --git a/drivers/leds/leds-is31fl319x.c b/drivers/leds/leds-is31fl319x.c
-> index ca6634b8683c..b4f70002cec9 100644
-> --- a/drivers/leds/leds-is31fl319x.c
-> +++ b/drivers/leds/leds-is31fl319x.c
-> @@ -16,6 +16,8 @@
->   #include <linux/of_device.h>
->   #include <linux/regmap.h>
->   #include <linux/slab.h>
-> +#include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
->   
->   /* register numbers */
->   #define IS31FL319X_SHUTDOWN		0x00
-> @@ -61,6 +63,7 @@
->   struct is31fl319x_chip {
->   	const struct is31fl319x_chipdef *cdef;
->   	struct i2c_client               *client;
-> +	struct gpio_desc		*sdb_pin;
->   	struct regmap                   *regmap;
->   	struct mutex                    lock;
->   	u32                             audio_gain_db;
-> @@ -265,6 +268,15 @@ static int is31fl319x_parse_dt(struct device *dev,
->   		is31->audio_gain_db = min(is31->audio_gain_db,
->   					  IS31FL319X_AUDIO_GAIN_DB_MAX);
->   
-> +	is31->sdb_pin = gpiod_get(dev, "sdb", GPIOD_ASIS);
+Have you seen my comment to v1 about FIELD_GET/FIELD_PREP?
 
-Since this is optional maybe use devm_gpiod_get_optional.
-
-If this is required for stability then if the GPIO is not present then 
-the parse_dt should return the error.
-
-And use the devm_gpiod_get call.  Otherwise you are missing the 
-gpiod_put when exiting or removing the driver.
-
-Dan
-
-
+If you disagree with something, then you should answer with a rationale
+and not silently ignore review comments.
