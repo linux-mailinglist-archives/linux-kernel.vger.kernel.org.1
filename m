@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B211023DD49
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E362123DE3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbgHFRHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:07:50 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:63876 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729728AbgHFRGl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:06:41 -0400
-Received: from 89-64-86-116.dynamic.chello.pl (89.64.86.116) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id a0952d0a893f35a5; Thu, 6 Aug 2020 13:39:54 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "'Rafael J. Wysocki'" <rafael@kernel.org>,
-        'Linux Documentation' <linux-doc@vger.kernel.org>,
-        'LKML' <linux-kernel@vger.kernel.org>,
-        'Peter Zijlstra' <peterz@infradead.org>,
-        'Srinivas Pandruvada' <srinivas.pandruvada@linux.intel.com>,
-        'Giovanni Gherdovich' <ggherdovich@suse.cz>,
-        'Francisco Jerez' <francisco.jerez.plata@intel.com>,
-        'Linux PM' <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Implement passive mode with HWP enabled
-Date:   Thu, 06 Aug 2020 13:39:53 +0200
-Message-ID: <5275102.Ez0hqPNOlg@kreacher>
-In-Reply-To: <004601d66bb6$199ce1a0$4cd6a4e0$@net>
-References: <3955470.QvD6XneCf3@kreacher> <2418846.A4mPlhI7ni@kreacher> <004601d66bb6$199ce1a0$4cd6a4e0$@net>
+        id S1729099AbgHFRXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:23:54 -0400
+Received: from mga02.intel.com ([134.134.136.20]:16275 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730067AbgHFRXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:23:48 -0400
+IronPort-SDR: NUN5F1RX9GtuzdrBYwbPdzfQua30nba7qIoguDWiq4RRq0FszVO639tW2s86kpETSI3ljowEHj
+ KeqN9kZg6ypQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="140656246"
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="140656246"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 04:41:36 -0700
+IronPort-SDR: +d4867QDCujq41rvKqrfx2h6Kf0Vidyy7RoD1048MOXYZmoVWbq0g1SrfBI7j4RbMrCurwgl2h
+ ZiORzQGDQIgQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="307007972"
+Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.135])
+  by orsmga002.jf.intel.com with ESMTP; 06 Aug 2020 04:41:33 -0700
+From:   Shuo Liu <shuo.a.liu@intel.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuo Liu <shuo.a.liu@intel.com>
+Subject: [PATCH] x86/acrn: Remove redundant chars from ACRN signature
+Date:   Thu,  6 Aug 2020 19:41:11 +0800
+Message-Id: <20200806114111.9448-1-shuo.a.liu@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 6, 2020 7:54:47 AM CEST Doug Smythies wrote:
-> On 2020.08.03 10:09 Rafael J. Wysocki wrote:
-> > On Sunday, August 2, 2020 5:17:39 PM CEST Doug Smythies wrote:
-> > > On 2020.07.19 04:43 Rafael J. Wysocki wrote:
-> > > > On Fri, Jul 17, 2020 at 3:37 PM Doug Smythies <dsmythies@telus.net> wrote:
-> > > > > On 2020.07.16 05:08 Rafael J. Wysocki wrote:
-> > > > > > On Wed, Jul 15, 2020 at 10:39 PM Doug Smythies <dsmythies@telus.net> wrote:
-> > > > > >> On 2020.07.14 11:16 Rafael J. Wysocki wrote:
-> > > > > >> >
-> > > > > >> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > > > >> ...
-> > > > > >> > Since the passive mode hasn't worked with HWP at all, and it is not going to
-> > > > > >> > the default for HWP systems anyway, I don't see any drawbacks related to making
-> > > > > >> > this change, so I would consider this as 5.9 material unless there are any
-> > > > > >> > serious objections.
-> > > > > >>
-> > > > > >> Good point.
-> > > > >
-> > > > > Actually, for those users that default to passive mode upon boot,
-> > > > > this would mean they would find themselves using this.
-> > > > > Also, it isn't obvious, from the typical "what driver and what governor"
-> > > > > inquiry.
-> > > >
-> > > > So the change in behavior is that after this patch
-> > > > intel_pstate=passive doesn't imply no_hwp any more.
-> > > >
-> > > > That's a very minor difference though and I'm not aware of any adverse
-> > > > effects it can cause on HWP systems anyway.
-> > >
-> > > My point was, that it will now default to something where
-> > > testing has not been completed.
-> > >
-> > > > The "what governor" is straightforward in the passive mode: that's
-> > > > whatever cpufreq governor has been selected.
-> > >
-> > > I think you might have missed my point.
-> > > From the normal methods of inquiry one does not know
-> > > if HWP is being used or not. Why? Because with
-> > > or without HWP one gets the same answers under:
-> > >
-> > > /sys/devices/system/cpu/cpu*/cpufreq/scaling_driver
-> > > /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-> > 
-> > Yes, but this is also the case in the active mode, isn't it?
-> 
-> Yes, fair enough.
-> But we aren't changing what it means by default
-> between kernel 5.8 and 5.9-rc1.
+hypervisor_cpuid_base() only handles 12 chars of the hypervisor
+signature string but is provided with 14 chars.
 
-No, we aren't.
+Remove the redundancy. Additionally, replace the user space uint32_t
+with preferred kernel type u32.
 
-The only (expected) change is when booting with intel_pstate=passive and
-without intel_pstate=no_hwp in the command line.
+Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>
+---
+ arch/x86/kernel/cpu/acrn.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Which should be easy enough to address by adding intel_pstate=no_hwp to the
-command line in 5.9-rc1 and later (to achieve the same behavior after a
-fresh boot).
+diff --git a/arch/x86/kernel/cpu/acrn.c b/arch/x86/kernel/cpu/acrn.c
+index 3b08cdfc6514..0b2c03943ac6 100644
+--- a/arch/x86/kernel/cpu/acrn.c
++++ b/arch/x86/kernel/cpu/acrn.c
+@@ -17,9 +17,9 @@
+ #include <asm/idtentry.h>
+ #include <asm/irq_regs.h>
+ 
+-static uint32_t __init acrn_detect(void)
++static u32 __init acrn_detect(void)
+ {
+-	return hypervisor_cpuid_base("ACRNACRNACRN\0\0", 0);
++	return hypervisor_cpuid_base("ACRNACRNACRN", 0);
+ }
+ 
+ static void __init acrn_init_platform(void)
 
-Cheers!
-
-
+base-commit: 48778464bb7d346b47157d21ffde2af6b2d39110
+-- 
+2.28.0
 
