@@ -2,130 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4B123DA41
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 14:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580B023DA36
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 14:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgHFMSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 08:18:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32230 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726970AbgHFLPk (ORCPT
+        id S1728854AbgHFMO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 08:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726596AbgHFLSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 07:15:40 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076B5Irv003910;
-        Thu, 6 Aug 2020 07:14:27 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32ra0rjm1p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 07:14:26 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 076B5tLh007950;
-        Thu, 6 Aug 2020 07:14:26 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32ra0rjm0j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 07:14:25 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 076B6ULk029608;
-        Thu, 6 Aug 2020 11:14:23 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 32mynhba4f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 11:14:22 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 076BEKJH58065174
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 6 Aug 2020 11:14:20 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B613BAE051;
-        Thu,  6 Aug 2020 11:14:20 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6127CAE055;
-        Thu,  6 Aug 2020 11:14:17 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.24.39])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  6 Aug 2020 11:14:17 +0000 (GMT)
-Date:   Thu, 6 Aug 2020 14:14:15 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v3 3/6] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <20200806111415.GL163101@linux.ibm.com>
-References: <20200804095035.18778-1-rppt@kernel.org>
- <20200804095035.18778-4-rppt@kernel.org>
- <20200806102757.7vobcaewdukr2xdl@box>
+        Thu, 6 Aug 2020 07:18:33 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16F0C0617A4;
+        Thu,  6 Aug 2020 04:17:31 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id v89so11271403ybi.8;
+        Thu, 06 Aug 2020 04:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IkZFSPvcY5I31SF4ovGBrfHT1rxg0M171V/0SMIVx2k=;
+        b=W1T7PMyTGM7VIbxN0FUlHyTKpaK0nw8VbeY8YI4ksk9CWWKzLOGNJsuFVpAeVzqEDQ
+         l5jy7ReADQ2WPptC19aMYCiHXKqdoGibvICjZi24Fx59vEVwEvfL4yZTHGzKYmCRL03U
+         RVTRjFq4TV8+2/gTNJkJ/Htgj1Fhq5P1qcxe/eQL/FoLz9bwZG6KJsHhvjn7+xr/6u/A
+         ZwyurJY9E7i7o/VwJb0vYHsxFh1fqfcI6q3MWsQ7MjEBH949S7NP+IoE180+3rUUw9UI
+         +/+wKAisrtczBHnl7YHt8MqtQz67j1T9EoVK3At6moXH+T7btd80HOMRDedl6B5O04Fc
+         C4rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IkZFSPvcY5I31SF4ovGBrfHT1rxg0M171V/0SMIVx2k=;
+        b=g67kPD/j95qTl+nSE82sBYDekoxbS1PiK2Tg09FZoroG9kInTPi/m/ggaM4nk9P9CC
+         iSnd0fPe+8394pPmMrq6GNs8+scxrtN8VyiLjMNFXulPSXoe5KORzJ3zGp3cpIuUiXEC
+         zepQ0ZkznvpuUvLmULR0+Bv5rSUSUejjz6SwMWuA2DKS7B96KlGvchGWcM6HPf+qZIvn
+         AlNWx1iUxAQp1s6JmbdIEFXXwUi2p3RDKrqzNbyW18TGybaFfbuVWz2pabsraTzrSrek
+         nMok3hQbEk44a9wlxHprIzAZvGHtNt3pWgqGwo95Ftofql4Wo6agwTLMeR256HhTh4Tm
+         0WRQ==
+X-Gm-Message-State: AOAM532SNiuhML1IP3RP2/AkmTWejLC4WI6F7qE3KRIy7Cs+sP9H+6rA
+        JYtYPHOnlsV3ojMSpRKIcVpsFUnL7aqd/hl33yA=
+X-Google-Smtp-Source: ABdhPJxC1QZwDQjfBbSfcHd9+nWr/d1KIV+hOzv93X+1QoDGFFoAz1yykeKI4ZMC4cs50cyA5iK5Orky9ZbUh/KQlXM=
+X-Received: by 2002:a25:c743:: with SMTP id w64mr11132228ybe.127.1596712641618;
+ Thu, 06 Aug 2020 04:17:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200806102757.7vobcaewdukr2xdl@box>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-06_06:2020-08-06,2020-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- mlxlogscore=923 lowpriorityscore=0 suspectscore=1 bulkscore=0
- clxscore=1015 spamscore=0 priorityscore=1501 impostorscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008060079
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-21-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVriWnPK8-=w=0mq8yj9+1jbsg9yH8aV=ygyHsQ0f-CQQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdVriWnPK8-=w=0mq8yj9+1jbsg9yH8aV=ygyHsQ0f-CQQ@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Thu, 6 Aug 2020 12:16:55 +0100
+Message-ID: <CA+V-a8vXjhV-EeQb=bBhoRmuVA=0GSuFiV33N9nkhi39VNN6oA@mail.gmail.com>
+Subject: Re: [PATCH 20/20] arm64: dts: renesas: r8a774e1: Add VIN and CSI-2 nodes
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
+        Niklas <niklas.soderlund@ragnatech.se>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-ide@vger.kernel.org,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 01:27:57PM +0300, Kirill A. Shutemov wrote:
-> On Tue, Aug 04, 2020 at 12:50:32PM +0300, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Introduce "memfd_secret" system call with the ability to create memory
-> > areas visible only in the context of the owning process and not mapped not
-> > only to other processes but in the kernel page tables as well.
-> > 
-> > The user will create a file descriptor using the memfd_secret() system call
-> > where flags supplied as a parameter to this system call will define the
-> > desired protection mode for the memory associated with that file
-> > descriptor. Currently there are two protection modes:
-> > 
-> > * exclusive - the memory area is unmapped from the kernel direct map and it
-> >               is present only in the page tables of the owning mm.
-> > * uncached  - the memory area is present only in the page tables of the
-> >               owning mm and it is mapped there as uncached.
-> 
-> I'm not sure why flag for exclusive mode is needed. It has to be default.
-> And if you want uncached on top of that set the flag.
+Hi Geert,
 
-Makes sense.
+Thank you for the review.
 
-> What am I missing?
+On Wed, Aug 5, 2020 at 12:19 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> -- 
->  Kirill A. Shutemov
+> Hi Prabhakar,
+>
+> On Thu, Jul 16, 2020 at 7:20 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add VIN and CSI-2 nodes to RZ/G2H (R8A774E1) SoC dtsi.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> However, before I queue this in renesas-devel for v5.10, I'd like to
+> have some clarification about the issue below.
+>
+> > --- a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
+> > +++ b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
+>
+> > +               vin4: video@e6ef4000 {
+> > +                       compatible = "renesas,vin-r8a774e1";
+> > +                       reg = <0 0xe6ef4000 0 0x1000>;
+> > +                       interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+> > +                       clocks = <&cpg CPG_MOD 807>;
+> > +                       power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
+> > +                       resets = <&cpg 807>;
+> > +                       renesas,id = <4>;
+> > +                       status = "disabled";
+> > +
+> > +                       ports {
+> > +                               #address-cells = <1>;
+> > +                               #size-cells = <0>;
+> > +
+> > +                               port@1 {
+> > +                                       #address-cells = <1>;
+> > +                                       #size-cells = <0>;
+>
+> "make dtbs W=1" says:
+>
+>     arch/arm64/boot/dts/renesas/r8a774e1.dtsi:1562.12-1572.7: Warning
+> (graph_child_address): /soc/video@e6ef4000/ports/port@1: graph node
+> has single child node 'endpoint@0', #address-cells/#size-cells are not
+> necessary
+>
+> (same for vin5-7 below)
+>
+Referring to commit 5e53dbf4edb4d ("arm64: dts: renesas: r8a77990: Fix
+VIN endpoint numbering") we definitely need endpoint numbering.
+Probably the driver needs to be fixed to handle such cases.
 
--- 
-Sincerely yours,
-Mike.
+Cheers,
+Prabhakar
+
+> > +
+> > +                                       reg = <1>;
+> > +
+> > +                                       vin4csi20: endpoint@0 {
+> > +                                               reg = <0>;
+> > +                                               remote-endpoint = <&csi20vin4>;
+> > +                                       };
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
