@@ -2,87 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2EB23D651
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 07:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8C323D667
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 07:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbgHFFHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 01:07:12 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:4057 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728276AbgHFFHF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 01:07:05 -0400
-IronPort-SDR: QLVrMAOEpUUgTjsvYyz0a51seXYBaPgpETDw5Qyl6hTyOv4IIZ0wZ/qjPIR84Fc21aFvbVtmyy
- bY7wkePJzez75bac8OW0bapsr7te5gNNUn/bGjLTXw6D6PmAZdokjkkc7OfI1zIE/B0w69d87H
- vCnncy80cu+7lr6wWFN7WE42ysz6wOPpgDSpWX29+4BIZOWojIOjmyEvxUTrKg98Y30hTy5n8B
- z0HhIL06ehxA3n3QqHRNhicrvwgJ7odwX55ya8llmBmvXVWVY+lK/TlLfNKLIlxcTpb8pggV7e
- I4E=
-X-IronPort-AV: E=Sophos;i="5.75,440,1589266800"; 
-   d="scan'208";a="29068261"
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by labrats.qualcomm.com with ESMTP; 05 Aug 2020 22:07:04 -0700
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg02-sd.qualcomm.com with ESMTP; 05 Aug 2020 22:07:03 -0700
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 06A2621562; Wed,  5 Aug 2020 22:07:04 -0700 (PDT)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
-Cc:     Stanley Chu <stanley.chu@mediatek.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Subject: [PATCH 9/9] scsi: ufs: Properly release resources if a task is aborted successfully
-Date:   Wed,  5 Aug 2020 22:06:20 -0700
-Message-Id: <1596690383-16438-10-git-send-email-cang@codeaurora.org>
+        id S1727937AbgHFFWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 01:22:43 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:45928 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727828AbgHFFWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 01:22:41 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CCBEB200788;
+        Thu,  6 Aug 2020 07:22:37 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2946A200785;
+        Thu,  6 Aug 2020 07:22:34 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8650640309;
+        Thu,  6 Aug 2020 07:22:29 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        shengjiu.wang@nxp.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] dt-bindings: sound: Convert NXP spdif to json-schema
+Date:   Thu,  6 Aug 2020 13:17:57 +0800
+Message-Id: <1596691077-30658-1-git-send-email-Anson.Huang@nxp.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596690383-16438-1-git-send-email-cang@codeaurora.org>
-References: <1596690383-16438-1-git-send-email-cang@codeaurora.org>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In current UFS task abort hook, namely ufshcd_abort(), if a task is
-aborted successfully, clock scaling busy time statistics is not updated
-and, most important, clk_gating.active_reqs is not decreased, which makes
-clk_gating.active_reqs stay above zero forever, thus clock gating would
-never happen. To fix it, instead of releasing resources "mannually", use
-the existing func __ufshcd_transfer_req_compl(). This can also eliminate
-racing of scsi_dma_unmap() from the real completion in IRQ handler path.
+Convert the NXP SPDIF binding to DT schema format using json-schema.
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
-CC: Stanley Chu <stanley.chu@mediatek.com>
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../devicetree/bindings/sound/fsl,spdif.txt        |  68 -------------
+ .../devicetree/bindings/sound/fsl,spdif.yaml       | 108 +++++++++++++++++++++
+ 2 files changed, 108 insertions(+), 68 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.yaml
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index b2947ab..9541fc7 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6636,11 +6636,8 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- 		goto out;
- 	}
- 
--	scsi_dma_unmap(cmd);
+diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.txt b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
+deleted file mode 100644
+index e1365b0..0000000
+--- a/Documentation/devicetree/bindings/sound/fsl,spdif.txt
++++ /dev/null
+@@ -1,68 +0,0 @@
+-Freescale Sony/Philips Digital Interface Format (S/PDIF) Controller
 -
- 	spin_lock_irqsave(host->host_lock, flags);
--	ufshcd_outstanding_req_clear(hba, tag);
--	hba->lrb[tag].cmd = NULL;
-+	__ufshcd_transfer_req_compl(hba, (1UL << tag));
- 	spin_unlock_irqrestore(host->host_lock, flags);
- 
- out:
+-The Freescale S/PDIF audio block is a stereo transceiver that allows the
+-processor to receive and transmit digital audio via an coaxial cable or
+-a fibre cable.
+-
+-Required properties:
+-
+-  - compatible		: Compatible list, should contain one of the following
+-			  compatibles:
+-			  "fsl,imx35-spdif",
+-			  "fsl,vf610-spdif",
+-			  "fsl,imx6sx-spdif",
+-
+-  - reg			: Offset and length of the register set for the device.
+-
+-  - interrupts		: Contains the spdif interrupt.
+-
+-  - dmas		: Generic dma devicetree binding as described in
+-			  Documentation/devicetree/bindings/dma/dma.txt.
+-
+-  - dma-names		: Two dmas have to be defined, "tx" and "rx".
+-
+-  - clocks		: Contains an entry for each entry in clock-names.
+-
+-  - clock-names		: Includes the following entries:
+-	"core"		  The core clock of spdif controller.
+-	"rxtx<0-7>"	  Clock source list for tx and rx clock.
+-			  This clock list should be identical to the source
+-			  list connecting to the spdif clock mux in "SPDIF
+-			  Transceiver Clock Diagram" of SoC reference manual.
+-			  It can also be referred to TxClk_Source bit of
+-			  register SPDIF_STC.
+-	"spba"		  The spba clock is required when SPDIF is placed as a
+-			  bus slave of the Shared Peripheral Bus and when two
+-			  or more bus masters (CPU, DMA or DSP) try to access
+-			  it. This property is optional depending on the SoC
+-			  design.
+-
+-Optional properties:
+-
+-   - big-endian		: If this property is absent, the native endian mode
+-			  will be in use as default, or the big endian mode
+-			  will be in use for all the device registers.
+-
+-Example:
+-
+-spdif: spdif@2004000 {
+-	compatible = "fsl,imx35-spdif";
+-	reg = <0x02004000 0x4000>;
+-	interrupts = <0 52 0x04>;
+-	dmas = <&sdma 14 18 0>,
+-	       <&sdma 15 18 0>;
+-	dma-names = "rx", "tx";
+-
+-	clocks = <&clks 197>, <&clks 3>,
+-	       <&clks 197>, <&clks 107>,
+-	       <&clks 0>, <&clks 118>,
+-	       <&clks 62>, <&clks 139>,
+-	       <&clks 0>;
+-	clock-names = "core", "rxtx0",
+-		"rxtx1", "rxtx2",
+-		"rxtx3", "rxtx4",
+-		"rxtx5", "rxtx6",
+-		"rxtx7";
+-
+-	big-endian;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+new file mode 100644
+index 0000000..819f37f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+@@ -0,0 +1,108 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/fsl,spdif.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale Sony/Philips Digital Interface Format (S/PDIF) Controller
++
++maintainers:
++  - Shengjiu Wang <shengjiu.wang@nxp.com>
++
++description: |
++  The Freescale S/PDIF audio block is a stereo transceiver that allows the
++  processor to receive and transmit digital audio via an coaxial cable or
++  a fibre cable.
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx35-spdif
++      - fsl,vf610-spdif
++      - fsl,imx6sx-spdif
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  dmas:
++    items:
++      - description: DMA controller phandle and request line for RX
++      - description: DMA controller phandle and request line for TX
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++  clocks:
++    items:
++      - description: The core clock of spdif controller.
++      - description: Clock for tx0 and rx0.
++      - description: Clock for tx1 and rx1.
++      - description: Clock for tx2 and rx2.
++      - description: Clock for tx3 and rx3.
++      - description: Clock for tx4 and rx4.
++      - description: Clock for tx5 and rx5.
++      - description: Clock for tx6 and rx6.
++      - description: Clock for tx7 and rx7.
++      - description: The spba clock is required when SPDIF is placed as a bus
++          slave of the Shared Peripheral Bus and when two or more bus masters
++          (CPU, DMA or DSP) try to access it. This property is optional depending
++          on the SoC design.
++    minItems: 9
++
++  clock-names:
++    items:
++      - const: core
++      - const: rxtx0
++      - const: rxtx1
++      - const: rxtx2
++      - const: rxtx3
++      - const: rxtx4
++      - const: rxtx5
++      - const: rxtx6
++      - const: rxtx7
++      - const: spba
++    minItems: 9
++
++  big-endian:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      If this property is absent, the native endian mode will be in use
++      as default, or the big endian mode will be in use for all the device
++      registers. Set this flag for HCDs with big endian descriptors and big
++      endian registers.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - dmas
++  - dma-names
++  - clocks
++  - clock-names
++
++examples:
++  - |
++    spdif@2004000 {
++        compatible = "fsl,imx35-spdif";
++        reg = <0x02004000 0x4000>;
++        interrupts = <0 52 0x04>;
++        dmas = <&sdma 14 18 0>,
++               <&sdma 15 18 0>;
++        dma-names = "rx", "tx";
++        clocks = <&clks 197>, <&clks 3>,
++                 <&clks 197>, <&clks 107>,
++                 <&clks 0>, <&clks 118>,
++                 <&clks 62>, <&clks 139>,
++                 <&clks 0>;
++        clock-names = "core", "rxtx0",
++                      "rxtx1", "rxtx2",
++                      "rxtx3", "rxtx4",
++                      "rxtx5", "rxtx6",
++                      "rxtx7";
++        big-endian;
++    };
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.7.4
 
