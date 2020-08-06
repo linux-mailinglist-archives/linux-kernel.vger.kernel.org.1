@@ -2,130 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC2223DFB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F17023DF76
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730377AbgHFRwd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 Aug 2020 13:52:33 -0400
-Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:8045 "EHLO
-        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728399AbgHFQbU (ORCPT
+        id S1730465AbgHFRsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728952AbgHFQfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:31:20 -0400
-Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>
-CC:     Nick Kralevich <nnk@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>
-References: <20200806080358.3124505-1-tweek@google.com>
- <20200806080358.3124505-2-tweek@google.com>
- <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
- <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
- <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
- <07e2c48d-3918-6ceb-a6b2-4e2f18f9ea01@gmail.com>
- <CAEjxPJ4no_GqMp8aw43zpwmwq42Wi_1dvP+ZBs1a-mnReDt5Og@mail.gmail.com>
-From:   peter enderborg <peter.enderborg@sony.com>
-Message-ID: <dfeac808-b40d-77fd-0d31-f66f279083eb@sony.com>
-Date:   Thu, 6 Aug 2020 16:51:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 6 Aug 2020 12:35:47 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6A6C0A8937
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:05:26 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id g11so2336943ual.2
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:05:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2574RlgF+iKSb8pLYcGAdJ2nQ/imhKaFZrt0sBio8rA=;
+        b=V0kKR174Sjfx9VDdkI05TbPvA8HiaJEEicV+UecZM/xQeqVrUeFfh2LfH25y9Qpmf2
+         bNfmtysveg5dnoVC9HaJACB06LZxhE4Z+PTpsbBPyFu0+n9+8nnNFvqf2vhCbUYeKGTg
+         N68jHWYIPcG0s80seVHHpSqrJTsmH/A+xVVyg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2574RlgF+iKSb8pLYcGAdJ2nQ/imhKaFZrt0sBio8rA=;
+        b=ldQS8hvQei9M1/DmePJaBUY2HLK8q+k/VbnQIAL51loZW8mTn6HdRwuDhi/c+dvMK9
+         79qgygRWYObgUmp6Gulp8E/19aXWnWVlgbvK/wUdP3YcynTaNd3b8F4wsw6kpF5SlGQF
+         44OcbZTRSV24xQfF4wMEkhUk/hBMcUSGRvuzAdBw1FoEPxyynvvWwVIVm7bFuaEP33va
+         7ck/dzB/h6/VKFRQryT78orpgatLesk9iIhDs8t2byCuajEZ75JDJ35Kadm7rPg3X/Oj
+         DH+3NpmCF/F4+lVyLDBNXQfhW77q6LT9f2sieGwcOnDoL8xbBeoLBwTkzHA9a/HKYd1O
+         Lf+g==
+X-Gm-Message-State: AOAM531NMbFyLEDC0hRBX6/o1GdcyZJe8U/Prcl7nj2OBin9QoQfTbE1
+        8s7nA5a1TV6j5ay4KQvUHES8ITXMIRQ=
+X-Google-Smtp-Source: ABdhPJy3cnE/49We7400yEA7TOg87tBtF61LfWMa58F/BsWzxj1PRzjtonmAiqnUGAOMvY4v8vgFCA==
+X-Received: by 2002:ab0:4263:: with SMTP id i90mr6825664uai.35.1596726323559;
+        Thu, 06 Aug 2020 08:05:23 -0700 (PDT)
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
+        by smtp.gmail.com with ESMTPSA id f10sm749888uad.5.2020.08.06.08.05.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 08:05:23 -0700 (PDT)
+Received: by mail-vs1-f44.google.com with SMTP id y8so18035254vsq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:05:22 -0700 (PDT)
+X-Received: by 2002:a05:6102:213a:: with SMTP id f26mr6774155vsg.6.1596726321900;
+ Thu, 06 Aug 2020 08:05:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEjxPJ4no_GqMp8aw43zpwmwq42Wi_1dvP+ZBs1a-mnReDt5Og@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-GB
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=frmim2wf c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=pGLkceISAAAA:8 a=z6gsHLkEAAAA:8 a=Fbti1pkVs00Xad8lyQgA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
-X-SEG-SpamProfiler-Score: 0
+References: <20191019111216.1.I82eae759ca6dc28a245b043f485ca490e3015321@changeid>
+ <20191120191813.GD4799@willie-the-truck> <CAD=FV=Wntf0TCwdtNNvPY-CXX1VL_SZK8Y8yw1r=UfeayHfwgw@mail.gmail.com>
+In-Reply-To: <CAD=FV=Wntf0TCwdtNNvPY-CXX1VL_SZK8Y8yw1r=UfeayHfwgw@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 6 Aug 2020 08:05:10 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WgoVN-scgT41R=6Toif2Zrskb3rNzZn_xbP_-ByZC1MA@mail.gmail.com>
+Message-ID: <CAD=FV=WgoVN-scgT41R=6Toif2Zrskb3rNzZn_xbP_-ByZC1MA@mail.gmail.com>
+Subject: Re: [PATCH] ARM: hw_breakpoint: Handle inexact watchpoint addresses
+To:     Will Deacon <will@kernel.org>, Russell King <linux@armlinux.org.uk>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Pavel Labath <labath@google.com>,
+        Pratyush Anand <panand@redhat.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Kazuhiro Inaba <kinaba@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/20 3:49 PM, Stephen Smalley wrote:
-> On Thu, Aug 6, 2020 at 9:45 AM Stephen Smalley
-> <stephen.smalley.work@gmail.com> wrote:
->> On 8/6/20 8:32 AM, Stephen Smalley wrote:
->>
->>> On 8/6/20 8:24 AM, peter enderborg wrote:
->>>
->>>> On 8/6/20 2:11 PM, Stephen Smalley wrote:
->>>>> On 8/6/20 4:03 AM, Thiébaud Weksteen wrote:
->>>>>
->>>>>> From: Peter Enderborg <peter.enderborg@sony.com>
->>>>>>
->>>>>> Add further attributes to filter the trace events from AVC.
->>>>> Please include sample usage and output in the description.
->>>>>
->>>>>
->>>> Im not sure where you want it to be.
->>>>
->>>> In the commit message or in a Documentation/trace/events-avc.rst ?
->>> I was just asking for it in the commit message / patch description.  I
->>> don't know what is typical for Documentation/trace.
->> For example, I just took the patches for a spin, running the
->> selinux-testsuite under perf like so:
->>
->> sudo perf record -e avc:selinux_audited -g make test
->>
->> and then ran:
->>
->> sudo perf report -g
->>
->> and a snippet of sample output included:
->>
->>       6.40%     6.40%  requested=0x800000 denied=0x800000
->> audited=0x800000 result=-13 ssid=922 tsid=922
->> scontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
->> tcontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
->> tclass=capability
-> So then the question becomes how do you use the above information,
-> e.g. is that sufficient to correlate it to an actual avc: denied
-> message, how do you decode the requested/denied/audited fields (or
-> should the code do that for you and just report the string name(s) of
-> the permission(s), do you need all three of those fields separately,
-> is it useful to log the ssid/tsid at all given that you have the
-> contexts and sids are dynamically assigned, etc.
+Hi,
+
+On Mon, Dec 2, 2019 at 8:36 AM Doug Anderson <dianders@chromium.org> wrote:
 >
->>              |
->>              ---0x495641000028933d
->>                 __libc_start_main
->>                 |
->>                 |--4.60%--__GI___ioctl
->>                 |          entry_SYSCALL_64
->>                 |          do_syscall_64
->>                 |          __x64_sys_ioctl
->>                 |          ksys_ioctl
->>                 |          binder_ioctl
->>                 |          binder_set_nice
->>                 |          can_nice
->>                 |          capable
->>                 |          security_capable
->>                 |          cred_has_capability.isra.0
->>                 |          slow_avc_audit
->>                 |          common_lsm_audit
->>                 |          avc_audit_post_callback
->>                 |          avc_audit_post_callback
+> Hi,
+>
+> On Wed, Nov 20, 2019 at 11:18 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Sat, Oct 19, 2019 at 11:12:26AM -0700, Douglas Anderson wrote:
+> > > This is commit fdfeff0f9e3d ("arm64: hw_breakpoint: Handle inexact
+> > > watchpoint addresses") but ported to arm32, which has the same
+> > > problem.
+> > >
+> > > This problem was found by Android CTS tests, notably the
+> > > "watchpoint_imprecise" test [1].  I tested locally against a copycat
+> > > (simplified) version of the test though.
+> > >
+> > > [1] https://android.googlesource.com/platform/bionic/+/master/tests/sys_ptrace_test.cpp
+> > >
+> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > ---
+> > >
+> > >  arch/arm/kernel/hw_breakpoint.c | 96 ++++++++++++++++++++++++---------
+> > >  1 file changed, 70 insertions(+), 26 deletions(-)
+> >
+> > Sorry for taking so long to look at this. After wrapping my head around the
+> > logic again
+>
+> Yeah.  It was a little weird and (unfortunately) arbitrarily different
+> in some places compared to the arm64 code.
+>
+>
+> > I think it looks fine, so please put it into the patch system
+> > with my Ack:
+> >
+> > Acked-by: Will Deacon <will@kernel.org>
+>
+> Thanks!  Submitted as:
+>
+> https://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=8944/1
 
-The real cool thing happen when you enable "user-stack-trace" too.
+Oddly, I found that if I go visit that page now I see:
 
-           <...>-4820  [007] .... 85878.897553: selinux_audited: requested=0x4000000 denied=0x4000000 audited=0x4000000 result=-13 ssid=341 tsid=61 scontext=system_u:system_r:ntpd_t:s0 tcontext=system_u:object_r:bin_t:s0 tclass=file
-           <...>-4820  [007] .... 85878.897572: <user stack trace>
- =>  <00007f07d99bb45b>
- =>  <0000555ecd89ca57>
+> - - - Note 2 submitted by Russell King on 17 Jan 2020 11:16:34 (UTC) - - -
+> Moved to applied
+>
+> Applied to git-curr (misc branch).
 
-The fields are useful for filter what you what to see and what you can ignore.  Having the ssid and text was from the part where it is called.
-The numeric can be used for two things. When you dont have any context. Same same reason as in post_callback. We need to be static
-in format so it need  be there if it ever can happen. And it is also useful for faster filtering.
+Yet if I go check mainline the patch is not there.  This came to my
+attention since we had my patch picked to the Chrome OS 4.19 tree and
+suddenly recently got a stable merge conflict with "ARM: 8986/1:
+hw_breakpoint: Don't invoke overflow handler on uaccess watchpoints".
 
-You can do "ssid!=42 && ssid!=43 && tsid==666".  From my view it would be good to have all fields there. But they need to right typed to be able
-to use the filter mechanism. There must me some trade-off too where the argument filtering get bigger than the processing, but I think we can
-add a lot more before we reach that threshold.
+Anyone know what happened here?
 
+-Doug
